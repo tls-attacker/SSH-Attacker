@@ -9,17 +9,13 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.protocol.core.message.Message;
 
-/**
- *
- * @author spotz
- */
 public class ClientInitMessage extends Message {
 
     /**
      * version identifier + optional comment
      */
     private ModifiableString version;
-    private ModifiableString yrdy;
+    private ModifiableString comment;
 
     public ClientInitMessage() {
     }
@@ -38,15 +34,15 @@ public class ClientInitMessage extends Message {
     }
 
     public ModifiableString getComment() {
-        return yrdy;
+        return comment;
     }
 
     public void setComment(String comment) {
-        this.yrdy = ModifiableVariableFactory.safelySetValue(this.yrdy, comment);
+        this.comment = ModifiableVariableFactory.safelySetValue(this.comment, comment);
     }
     
     public void setComment(ModifiableString comment) {
-        this.yrdy = comment;
+        this.comment = comment;
     }
     
     @Override

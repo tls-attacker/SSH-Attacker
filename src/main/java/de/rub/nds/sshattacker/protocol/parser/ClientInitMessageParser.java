@@ -10,10 +10,6 @@ import de.rub.nds.sshattacker.protocol.message.ClientInitMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-/**
- *
- * @author spotz
- */
 public class ClientInitMessageParser extends Parser<ClientInitMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
