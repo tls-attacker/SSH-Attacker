@@ -1,0 +1,60 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package de.rub.nds.sshattacker.protocol.parser;
+
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.sshattacker.protocol.message.ClientInitMessage;
+import java.util.Arrays;
+import java.util.Collection;
+import org.junit.Assert;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+
+/**
+ *
+ * @author Daniel Hirschberger <daniel.hirschberger@rub.de>
+ */
+
+@RunWith(Parameterized.class)
+public class ClientInitMessageParserTest {
+    @Parameterized.Parameters
+    public static Collection<Object[]> generateData() {
+        return Arrays
+                .asList(new Object[][] {
+                        {
+                            ArrayConverter.hexStringToByteArray("5353482d322e302d4f70656e5353485f372e380d0a"),
+                            "SSH-2.0-OpenSSH_7.8",
+                            ""
+                        }
+                });
+    }
+    
+    private final byte[] message;
+    
+    private final String version;
+    private final String comment;
+    
+    public ClientInitMessageParserTest(byte[] message, String version, String comment)
+    {
+        this.message = message;
+        this.version = version;
+        this.comment = comment;
+    }
+    
+     /**
+     * Test of parse method, of class ClientInitMessageParser.
+     */
+    @Test
+    public void testParse()
+    {
+        ClientInitMessageParser parser = new ClientInitMessageParser(0, message);
+        ClientInitMessage msg = parser.parse();
+        
+        Assert.assertEquals(version, msg.getVersion().getValue());
+        Assert.assertEquals(comment, msg.getComment().getValue());
+    }
+}
