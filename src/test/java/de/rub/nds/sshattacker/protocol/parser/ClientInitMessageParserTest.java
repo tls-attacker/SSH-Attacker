@@ -19,6 +19,12 @@ public class ClientInitMessageParserTest {
                             ArrayConverter.hexStringToByteArray("5353482d322e302d4f70656e5353485f372e380d0a"),
                             "SSH-2.0-OpenSSH_7.8",
                             null
+                        },
+                          
+                        {
+                            ArrayConverter.hexStringToByteArray("5353482d322e302d6c69627373685f302e372e300d0a"),
+                            "SSH-2.0-libssh_0.7.0",
+                            null
                         }
                 });
     }
