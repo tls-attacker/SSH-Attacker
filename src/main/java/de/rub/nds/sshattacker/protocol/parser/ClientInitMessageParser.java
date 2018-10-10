@@ -7,6 +7,7 @@ package de.rub.nds.sshattacker.protocol.parser;
 
 import de.rub.nds.protocol.core.message.Parser;
 import de.rub.nds.sshattacker.protocol.message.ClientInitMessage;
+import de.rub.nds.sshattacker.constants.ByteConstants;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -21,24 +22,25 @@ public class ClientInitMessageParser extends Parser<ClientInitMessage> {
     private void parseVersion(ClientInitMessage msg)
     {
         // parse till CR NL
-        String result = this.parseStringTill(new byte[] {0x0d, 0x0a});
+        String result = this.parseStringTill(new byte[] {ByteConstants.CR, ByteConstants.NL});
         if (result.contains(" "))
         {
             // contains a comment
-            // TODO what if comment contains space
-            // what if no comment follows
-            String[] parts = result.split(" ");
+            String[] parts = result.split(" ", 2);
             msg.setVersion(parts[0]);
             LOGGER.debug("Version: " + parts[0]);
-            msg.setComment(parts[1]);
-            LOGGER.debug("Comment: " + parts[1]);
+            if (parts.length >= 2)
+            {
+                msg.setComment(parts[1]);
+                LOGGER.debug("Comment: " + parts[1]);
+            }
         }
         else
         {
             msg.setVersion(result);
             LOGGER.debug("Version: " + result);
-            msg.setComment("");
-            LOGGER.debug("Comment empty");
+            msg.setComment((String) null);
+            LOGGER.debug("Comment: null");
         }
     }
 

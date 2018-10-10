@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package de.rub.nds.sshattacker.protocol.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -14,11 +9,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
-/**
- *
- * @author Daniel Hirschberger <daniel.hirschberger@rub.de>
- */
-
 @RunWith(Parameterized.class)
 public class ClientInitMessageParserTest {
     @Parameterized.Parameters
@@ -28,7 +18,7 @@ public class ClientInitMessageParserTest {
                         {
                             ArrayConverter.hexStringToByteArray("5353482d322e302d4f70656e5353485f372e380d0a"),
                             "SSH-2.0-OpenSSH_7.8",
-                            ""
+                            null
                         }
                 });
     }
