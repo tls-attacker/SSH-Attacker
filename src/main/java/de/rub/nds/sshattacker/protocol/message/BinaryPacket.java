@@ -27,6 +27,10 @@ public class BinaryPacket extends Message {
         return packetLength;
     }
 
+    public void setPacketLength(int packetLength) {
+        this.packetLength = ModifiableVariableFactory.safelySetValue(this.packetLength, packetLength);
+    }
+    
     public void setPacketLength(ModifiableInteger packetLength) {
         this.packetLength = packetLength;
     }
@@ -35,6 +39,10 @@ public class BinaryPacket extends Message {
         return paddingLength;
     }
 
+    public void setPaddingLength(byte paddingLength) {
+        this.paddingLength = ModifiableVariableFactory.safelySetValue(this.paddingLength, paddingLength);
+    }
+    
     public void setPaddingLength(ModifiableByte paddingLength) {
         this.paddingLength = paddingLength;
     }
@@ -43,6 +51,10 @@ public class BinaryPacket extends Message {
         return payload;
     }
 
+    public void setPayload(byte[] payload) {
+        this.payload = ModifiableVariableFactory.safelySetValue(this.payload, payload);
+    }
+    
     public void setPayload(ModifiableByteArray payload) {
         this.payload = payload;
     }
@@ -51,6 +63,10 @@ public class BinaryPacket extends Message {
         return padding;
     }
 
+    public void setPadding(byte[] padding) {
+        this.padding = ModifiableVariableFactory.safelySetValue(this.padding, padding);
+    }
+    
     public void setPadding(ModifiableByteArray padding) {
         this.padding = padding;
     }
@@ -59,6 +75,10 @@ public class BinaryPacket extends Message {
         return mac;
     }
 
+    public void setMac(byte[] mac) {
+        this.mac = ModifiableVariableFactory.safelySetValue(this.mac, mac);
+    }
+    
     public void setMac(ModifiableByteArray mac) {
         this.mac = mac;
     }
