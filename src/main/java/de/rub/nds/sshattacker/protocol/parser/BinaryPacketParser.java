@@ -53,7 +53,13 @@ public class BinaryPacketParser extends Parser<BinaryPacket> {
     
     @Override
     public BinaryPacket parse() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        BinaryPacket msg = new BinaryPacket();
+        parsePacketLength(msg);
+        parsePaddingLength(msg);
+        parsePayload(msg);
+        parsePadding(msg);
+        parseMAC(msg);
+        return msg;
     }
 
 }
