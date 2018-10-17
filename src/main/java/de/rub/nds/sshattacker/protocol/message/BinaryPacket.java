@@ -16,6 +16,9 @@ public class BinaryPacket extends Message {
     private ModifiableByteArray padding;
     private ModifiableByteArray mac;
     
+    public BinaryPacket(){
+    }
+    
     public BinaryPacket(ModifiableByteArray payload){
         this.payload = payload;
     }
