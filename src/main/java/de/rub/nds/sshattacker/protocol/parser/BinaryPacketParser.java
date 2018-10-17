@@ -20,13 +20,13 @@ public class BinaryPacketParser extends Parser<BinaryPacket> {
     
     private void parsePacketLength(BinaryPacket msg){
         ModifiableInteger packetLength = ModifiableVariableFactory.safelySetValue(null, parseIntField(4));
-        LOGGER.debug("Packet Length: " + packetLength);
+        LOGGER.debug("Packet Length: " + packetLength.getValue());
         msg.setPacketLength(packetLength);
     } 
     
     private void parsePaddingLength(BinaryPacket msg){
         ModifiableByte paddingLength = ModifiableVariableFactory.safelySetValue(null, parseByteField(1));
-        LOGGER.debug("Padding Length: " + paddingLength);
+        LOGGER.debug("Padding Length: " + paddingLength.getValue());
         msg.setPaddingLength(paddingLength);
     }
     
