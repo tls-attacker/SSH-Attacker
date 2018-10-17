@@ -58,10 +58,6 @@ public class ClientInitMessageSerializerTest {
         msg.setVersion(version);
         msg.setComment(comment);
         ClientInitMessageSerializer serializer = new ClientInitMessageSerializer(msg);
-        if (bytes == null)
-                {
-                    System.out.println("Bytes == null");
-                }
         assertArrayEquals(bytes, serializer.serialize());
     }
 }
