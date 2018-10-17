@@ -40,7 +40,7 @@ public class BinaryPacketParser extends Parser<BinaryPacket> {
     
     private void parsePadding(BinaryPacket msg){
         ModifiableByteArray padding = ModifiableVariableFactory.safelySetValue(null,
-                parseByteArrayField(msg.getPacketLength().getValue()));
+                parseByteArrayField(msg.getPaddingLength().getValue()));
         LOGGER.debug("Padding: " + padding);
         msg.setPadding(padding);
     }
