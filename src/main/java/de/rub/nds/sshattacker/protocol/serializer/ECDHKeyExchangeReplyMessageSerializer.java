@@ -1,0 +1,89 @@
+package de.rub.nds.sshattacker.protocol.serializer;
+
+import de.rub.nds.protocol.core.message.Serializer;
+import de.rub.nds.sshattacker.protocol.message.ECDHKeyExchangeReplyMessage;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+public class ECDHKeyExchangeReplyMessageSerializer extends Serializer<ECDHKeyExchangeReplyMessage> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
+
+    public ECDHKeyExchangeReplyMessageSerializer(ECDHKeyExchangeReplyMessage msg) {
+        this.msg = msg;
+    }
+
+    private final ECDHKeyExchangeReplyMessage msg;
+
+    private void serializeHostKeyLength(ECDHKeyExchangeReplyMessage msg) {
+        appendInt(msg.getHostKeyLength().getValue(), 4);
+        LOGGER.debug("HostKeyLength: " + msg.getHostKeyLength().getValue());
+    }
+
+    private void serializeHostKeyTypeLength(ECDHKeyExchangeReplyMessage msg) {
+        appendInt(msg.getHostKeyTypeLength().getValue(), 4);
+        LOGGER.debug("HostKeyTypeLength: " + msg.getHostKeyTypeLength().getValue());
+    }
+
+    private void serializeHostKeyType(ECDHKeyExchangeReplyMessage msg) {
+        appendString(msg.getHostKeyType().getValue());
+        LOGGER.debug("HostKeyType: " + msg.getHostKeyType().getValue());
+    }
+
+    private void serializeExponentLength(ECDHKeyExchangeReplyMessage msg) {
+        appendInt(msg.getExponentLength().getValue(), 4);
+        LOGGER.debug("ExponentLength: " + msg.getExponentLength().getValue());
+    }
+
+    private void serializeExponent(ECDHKeyExchangeReplyMessage msg) {
+        appendBytes(msg.getExponent().getValue());
+        LOGGER.debug("Exponent: " + msg.getExponent());
+    }
+
+    private void serializeModulusLength(ECDHKeyExchangeReplyMessage msg) {
+        appendInt(msg.getModulusLength().getValue(), 4);
+        LOGGER.debug("ModulusLength: " + msg.getModulusLength().getValue());
+    }
+
+    private void serializeModulus(ECDHKeyExchangeReplyMessage msg) {
+        appendBytes(msg.getModulus().getValue());
+        LOGGER.debug("Modulus: " + msg.getModulus());
+    }
+
+    private void serializePublicKeyLength(ECDHKeyExchangeReplyMessage msg) {
+        appendInt(msg.getPublicKeyLength().getValue(), 4);
+        LOGGER.debug("PublicKeyLength: " + msg.getPublicKeyLength().getValue());
+    }
+
+    private void serializePublicKey(ECDHKeyExchangeReplyMessage msg) {
+        appendBytes(msg.getPublicKey().getValue());
+        LOGGER.debug("PublicKey: " + msg.getPublicKey());
+    }
+
+    private void serializeSignatureLength(ECDHKeyExchangeReplyMessage msg) {
+        appendInt(msg.getSignatureLength().getValue(), 4);
+        LOGGER.debug("SignatureLength: " + msg.getSignatureLength().getValue());
+    }
+
+    private void serializeSignature(ECDHKeyExchangeReplyMessage msg) {
+        appendBytes(msg.getSignature().getValue());
+        LOGGER.debug("Signature: " + msg.getSignature());
+    }
+
+    @Override
+    protected byte[] serializeBytes() {
+        serializeHostKeyLength(msg);
+        serializeHostKeyTypeLength(msg);
+        serializeHostKeyType(msg);
+        serializeExponentLength(msg);
+        serializeExponent(msg);
+        serializeModulusLength(msg);
+        serializeModulus(msg);
+        serializePublicKeyLength(msg);
+        serializePublicKey(msg);
+        serializeSignatureLength(msg);
+        serializeSignature(msg);
+        return getAlreadySerialized();
+    }
+
+}
