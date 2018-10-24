@@ -18,25 +18,20 @@ public class ClientInitMessageParser extends Parser<ClientInitMessage> {
     public ClientInitMessageParser(int startposition, byte[] array) {
         super(startposition, array);
     }
-    
-    private void parseVersion(ClientInitMessage msg)
-    {
+
+    private void parseVersion(ClientInitMessage msg) {
         // parse till CR NL
-        String result = this.parseStringTill(new byte[] {ByteConstants.CR, ByteConstants.NL});
-        if (result.contains(" "))
-        {
+        String result = this.parseStringTill(new byte[]{ByteConstants.CR, ByteConstants.NL});
+        if (result.contains(" ")) {
             // contains a comment
             String[] parts = result.split(" ", 2);
             msg.setVersion(parts[0]);
             LOGGER.debug("Version: " + parts[0]);
-            if (parts.length >= 2)
-            {
+            if (parts.length >= 2) {
                 msg.setComment(parts[1]);
                 LOGGER.debug("Comment: " + parts[1]);
             }
-        }
-        else
-        {
+        } else {
             msg.setVersion(result);
             LOGGER.debug("Version: " + result);
             msg.setComment((String) null);
@@ -46,8 +41,8 @@ public class ClientInitMessageParser extends Parser<ClientInitMessage> {
 
     @Override
     public ClientInitMessage parse() {
-    ClientInitMessage msg = new ClientInitMessage();
-    this.parseVersion(msg);
-    return msg;
+        ClientInitMessage msg = new ClientInitMessage();
+        this.parseVersion(msg);
+        return msg;
     }
 }

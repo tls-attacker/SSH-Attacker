@@ -7,46 +7,39 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class ClientInitMessageSerializer extends Serializer<ClientInitMessage> {
-    
+
     private static final Logger LOGGER = LogManager.getLogger();
 
     private final ClientInitMessage msg;
-    
-    public ClientInitMessageSerializer(ClientInitMessage msg) 
-    {
-        this.msg = msg;
-    };
 
-    private void serializeVersion()
-    {
-        if (msg.getVersion().getValue() == null)
-        {
+    public ClientInitMessageSerializer(ClientInitMessage msg) {
+        this.msg = msg;
+    }
+
+    ;
+
+    private void serializeVersion() {
+        if (msg.getVersion().getValue() == null) {
             LOGGER.debug("Version: null");
-        }
-        else
-        {
+        } else {
             LOGGER.debug("Version: " + msg.getVersion().getValue());
             appendString(msg.getVersion().getValue());
         }
     }
-    
-    private void serializeComment()
-    {
-        if (msg.getComment().getValue() == null)
-        {
+
+    private void serializeComment() {
+        if (msg.getComment().getValue() == null) {
             LOGGER.debug("Comment: null");
-        }
-        else
-        {
-        LOGGER.debug("Comment: " + msg.getComment().getValue());
-        appendString(msg.getComment().getValue());
+        } else {
+            LOGGER.debug("Comment: " + msg.getComment().getValue());
+            appendString(msg.getComment().getValue());
         }
     }
-    
-    private void serializeCRNL()
-    {
-        appendBytes(new byte[] {ByteConstants.CR, ByteConstants.NL});
+
+    private void serializeCRNL() {
+        appendBytes(new byte[]{ByteConstants.CR, ByteConstants.NL});
     }
+
     @Override
     protected byte[] serializeBytes() {
         serializeVersion();

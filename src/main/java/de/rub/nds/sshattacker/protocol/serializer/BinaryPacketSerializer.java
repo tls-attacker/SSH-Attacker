@@ -1,4 +1,3 @@
-
 package de.rub.nds.sshattacker.protocol.serializer;
 
 import de.rub.nds.protocol.core.message.Serializer;
@@ -11,41 +10,40 @@ public class BinaryPacketSerializer extends Serializer<BinaryPacket> {
     private static final Logger LOGGER = LogManager.getLogger();
 
     private final BinaryPacket msg;
-    
-    public BinaryPacketSerializer(BinaryPacket msg){
+
+    public BinaryPacketSerializer(BinaryPacket msg) {
         this.msg = msg;
     }
-    
-    private void serializePacketLength(){
+
+    private void serializePacketLength() {
         LOGGER.debug("Packet Length: " + msg.getPacketLength().getValue());
         appendInt(msg.getPacketLength().getValue(), 4);
     }
-    
-    private void serializePaddingLength(){
+
+    private void serializePaddingLength() {
         LOGGER.debug("Padding Length: " + msg.getPaddingLength().getValue());
         appendByte(msg.getPaddingLength().getValue());
     }
-    
-    private void serializePayload(){
+
+    private void serializePayload() {
         LOGGER.debug("Payload: " + msg.getPayload());
         appendBytes(msg.getPayload().getValue());
     }
-    
-    private void serializePadding(){
+
+    private void serializePadding() {
         LOGGER.debug("Padding: " + msg.getPadding());
         appendBytes(msg.getPadding().getValue());
     }
-    
-    private void serializeMac(){
-        if (msg.getMac().getValue() == null){
+
+    private void serializeMac() {
+        if (msg.getMac().getValue() == null) {
             LOGGER.debug("MAC: none");
-        }
-        else{
-        LOGGER.debug("MAC: " + msg.getMac());
-        appendBytes(msg.getMac().getValue());
+        } else {
+            LOGGER.debug("MAC: " + msg.getMac());
+            appendBytes(msg.getMac().getValue());
         }
     }
-    
+
     @Override
     public byte[] serializeBytes() {
         serializePacketLength();

@@ -27,9 +27,8 @@ public class ClientInitMessage extends Message {
     public void setVersion(ModifiableString version) {
         this.version = version;
     }
-    
-    public void setVersion(String version)
-    {
+
+    public void setVersion(String version) {
         this.version = ModifiableVariableFactory.safelySetValue(this.version, version);
     }
 
@@ -40,14 +39,14 @@ public class ClientInitMessage extends Message {
     public void setComment(String comment) {
         this.comment = ModifiableVariableFactory.safelySetValue(this.comment, comment);
     }
-    
+
     public void setComment(ModifiableString comment) {
         this.comment = comment;
     }
-    
+
     @Override
     public String toCompactString() {
         return "ClientInitMessage";
     }
-    
+
 }

@@ -14,19 +14,20 @@ import org.junit.runners.Parameterized;
 
 @RunWith(Parameterized.class)
 public class BinaryPacketSerializerTest {
+
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
         return BinaryPacketParserTest.generateData();
     }
-    
+
     private final int packetLength;
     private final byte paddingLength;
     private final byte[] payload;
     private final byte[] padding;
     private final byte[] mac;
-    
+
     private final byte[] bytes;
-    
+
     public BinaryPacketSerializerTest(byte[] bytes, int packetLength, byte paddingLength, byte[] payload, byte[] padding, byte[] mac) {
         this.bytes = bytes;
         this.packetLength = packetLength;
@@ -35,19 +36,19 @@ public class BinaryPacketSerializerTest {
         this.padding = padding;
         this.mac = mac;
     }
-    
+
     @BeforeClass
     public static void setUpClass() {
     }
-    
+
     @AfterClass
     public static void tearDownClass() {
     }
-    
+
     @Before
     public void setUp() {
     }
-    
+
     @After
     public void tearDown() {
     }
@@ -66,5 +67,5 @@ public class BinaryPacketSerializerTest {
         BinaryPacketSerializer serializer = new BinaryPacketSerializer(msg);
         assertArrayEquals(bytes, serializer.serialize());
     }
-    
+
 }

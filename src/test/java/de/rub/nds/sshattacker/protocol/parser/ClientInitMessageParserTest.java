@@ -11,45 +11,43 @@ import org.junit.runners.Parameterized;
 
 @RunWith(Parameterized.class)
 public class ClientInitMessageParserTest {
+
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
         return Arrays
-                .asList(new Object[][] {
-                        {
-                            ArrayConverter.hexStringToByteArray("5353482d322e302d4f70656e5353485f372e380d0a"),
-                            "SSH-2.0-OpenSSH_7.8",
-                            null
-                        },
-                          
-                        {
-                            ArrayConverter.hexStringToByteArray("5353482d322e302d6c69627373685f302e372e300d0a"),
-                            "SSH-2.0-libssh_0.7.0",
-                            null
-                        }
-                });
+                .asList(new Object[][]{
+            {
+                ArrayConverter.hexStringToByteArray("5353482d322e302d4f70656e5353485f372e380d0a"),
+                "SSH-2.0-OpenSSH_7.8",
+                null
+            },
+            {
+                ArrayConverter.hexStringToByteArray("5353482d322e302d6c69627373685f302e372e300d0a"),
+                "SSH-2.0-libssh_0.7.0",
+                null
+            }
+        });
     }
-    
+
     private final byte[] message;
-    
+
     private final String version;
     private final String comment;
-    
-    public ClientInitMessageParserTest(byte[] message, String version, String comment)
-    {
+
+    public ClientInitMessageParserTest(byte[] message, String version, String comment) {
         this.message = message;
         this.version = version;
         this.comment = comment;
     }
-    
-     /**
+
+    /**
      * Test of parse method, of class ClientInitMessageParser.
      */
     @Test
-    public void testParse()
-    {
+    public void testParse() {
         ClientInitMessageParser parser = new ClientInitMessageParser(0, message);
         ClientInitMessage msg = parser.parse();
-        
+
         Assert.assertEquals(version, msg.getVersion().getValue());
         Assert.assertEquals(comment, msg.getComment().getValue());
     }

@@ -1,4 +1,3 @@
-
 package de.rub.nds.sshattacker.protocol.serializer;
 
 import de.rub.nds.protocol.core.message.Serializer;
@@ -15,96 +14,96 @@ public class KeyExchangeInitMessageSerializer extends Serializer {
     public KeyExchangeInitMessageSerializer(KeyExchangeInitMessage msg) {
         this.msg = msg;
     }
-    
-    private void serializeCookie(){
+
+    private void serializeCookie() {
         appendBytes(msg.getCookie().getValue());
     }
 
-    private void serializeKeyExchangeAlgorithmsLength(){
-        appendInt(msg.getKeyExchangeAlgorithmsLength().getValue(),4);
+    private void serializeKeyExchangeAlgorithmsLength() {
+        appendInt(msg.getKeyExchangeAlgorithmsLength().getValue(), 4);
     }
-    
-    private void serializeKeyExchangeAlgorithms(){
+
+    private void serializeKeyExchangeAlgorithms() {
         appendString(msg.getKeyExchangeAlgorithms().getValue());
     }
-    
-    private void serializeServerHostKeyAlgorithmsLength(){
+
+    private void serializeServerHostKeyAlgorithmsLength() {
         appendInt(msg.getServerHostKeyAlgorithmsLength().getValue(), 4);
     }
-    
-    private void serializeServerHostKeyAlgorithms(){
+
+    private void serializeServerHostKeyAlgorithms() {
         appendString(msg.getServerHostKeyAlgorithms().getValue());
     }
-    
-    private void serializeEncryptionAlgorithmsClientToServerLength(){
+
+    private void serializeEncryptionAlgorithmsClientToServerLength() {
         appendInt(msg.getEncryptionAlgorithmsClientToServerLength().getValue(), 4);
     }
-    
-    private void serializeEncryptionAlgorithmsClientToServer(){
+
+    private void serializeEncryptionAlgorithmsClientToServer() {
         appendString(msg.getEncryptionAlgorithmsClientToServer().getValue());
     }
-    
-    private void serializeEncryptionAlgorithmsServerToClientLength(){
+
+    private void serializeEncryptionAlgorithmsServerToClientLength() {
         appendInt(msg.getEncryptionAlgorithmsServerToClientLength().getValue(), 4);
     }
-    
-    private void serializeEncryptionAlgorithmsServerToClient(){
+
+    private void serializeEncryptionAlgorithmsServerToClient() {
         appendString(msg.getEncryptionAlgorithmsServerToClient().getValue());
     }
-    
-    private void serializeMacAlgorithmsClientToServerLength(){
+
+    private void serializeMacAlgorithmsClientToServerLength() {
         appendInt(msg.getMacAlgorithmsClientToServerLength().getValue(), 4);
     }
 
-    private void serializeMacAlgorithmsClientToServer(){
+    private void serializeMacAlgorithmsClientToServer() {
         appendString(msg.getMacAlgorithmsClientToServer().getValue());
     }
-    
-    private void serializeMacAlgorithmsServerToClientLength(){
+
+    private void serializeMacAlgorithmsServerToClientLength() {
         appendInt(msg.getMacAlgorithmsServerToClientLength().getValue(), 4);
     }
-    
-    private void serializeMacAlgorithmsServerToClient(){
+
+    private void serializeMacAlgorithmsServerToClient() {
         appendString(msg.getMacAlgorithmsServerToClient().getValue());
     }
-    
-    private void serializeCompressionAlgorithmsClientToServerLength(){
+
+    private void serializeCompressionAlgorithmsClientToServerLength() {
         appendInt(msg.getCompressionAlgorithmsClientToServerLength().getValue(), 4);
     }
-    
-    private void serializeCompressionAlgorithmsClientToServer(){
+
+    private void serializeCompressionAlgorithmsClientToServer() {
         appendString(msg.getCompressionAlgorithmsClientToServer().getValue());
     }
-    
-    private void serializeCompressionAlgorithmsServerToClientLength(){
+
+    private void serializeCompressionAlgorithmsServerToClientLength() {
         appendInt(msg.getCompressionAlgorithmsServerToClientLength().getValue(), 4);
     }
-    
-    private void serializeCompressionAlgorithmsServerToClient(){
+
+    private void serializeCompressionAlgorithmsServerToClient() {
         appendString(msg.getCompressionAlgorithmsServerToClient().getValue());
     }
-    
-    private void serializeLanguagesClientToServerLength(){
+
+    private void serializeLanguagesClientToServerLength() {
         appendInt(msg.getLanguagesClientToServerLength().getValue(), 4);
     }
-    
-    private void serializeLanguagesClientToServer(){
+
+    private void serializeLanguagesClientToServer() {
         appendString(msg.getLanguagesClientToServer().getValue());
     }
-    
-    private void serializeLanguagesServerToClientLength(){
+
+    private void serializeLanguagesServerToClientLength() {
         appendInt(msg.getLanguagesServerToClientLength().getValue(), 4);
     }
 
-    private void serializeLanguagesServerToClient(){
+    private void serializeLanguagesServerToClient() {
         appendString(msg.getLanguagesServerToClient().getValue());
     }
-    
-    private void serializeFirstKeyExchangePacketFollows(){
+
+    private void serializeFirstKeyExchangePacketFollows() {
         appendByte(msg.getFirstKeyExchangePacketFollows().getValue());
     }
-    
-    private void serializeReserved(){
+
+    private void serializeReserved() {
         appendInt(msg.getReserved().getValue(), 4);
     }
 
