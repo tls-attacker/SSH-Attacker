@@ -1,6 +1,8 @@
 package de.rub.nds.sshattacker.protocol.parser;
 
 import de.rub.nds.protocol.core.message.Parser;
+import de.rub.nds.sshattacker.constants.BinaryPacketConstants;
+import de.rub.nds.sshattacker.constants.KeyExchangeInitConstants;
 import de.rub.nds.sshattacker.protocol.message.KeyExchangeInitMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -14,12 +16,12 @@ public class KeyExchangeInitMessageParser extends Parser<KeyExchangeInitMessage>
     }
 
     private void parseCookie(KeyExchangeInitMessage msg) {
-        msg.setCookie(parseByteArrayField(16));
+        msg.setCookie(parseByteArrayField(KeyExchangeInitConstants.COOKIE_LENGTH));
         LOGGER.debug("Cookie: " + msg.getCookie());
     }
 
     private void parseKeyExchangeAlgorithmsLength(KeyExchangeInitMessage msg) {
-        msg.setKeyExchangeAlgorithmsLength(parseIntField(4));
+        msg.setKeyExchangeAlgorithmsLength(parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH));
         LOGGER.debug("KeyExchangeAlgorithmsLength: " + msg.getKeyExchangeAlgorithmsLength().getValue());
     }
 
@@ -29,7 +31,7 @@ public class KeyExchangeInitMessageParser extends Parser<KeyExchangeInitMessage>
     }
 
     private void parseServerHostKeyAlgorithmsLength(KeyExchangeInitMessage msg) {
-        msg.setServerHostKeyAlgorithmsLength(parseIntField(4));
+        msg.setServerHostKeyAlgorithmsLength(parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH));
         LOGGER.debug("ServerHostKeyAlgorithmsLength: " + msg.getServerHostKeyAlgorithmsLength().getValue());
     }
 
@@ -39,7 +41,7 @@ public class KeyExchangeInitMessageParser extends Parser<KeyExchangeInitMessage>
     }
 
     private void parseEncryptionAlgorithmsClientToServerLength(KeyExchangeInitMessage msg) {
-        msg.setEncryptionAlgorithmsClientToServerLength(parseIntField(4));
+        msg.setEncryptionAlgorithmsClientToServerLength(parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH));
         LOGGER.debug("EncryptionAlgorithmsClientToServerLength: " + msg.getEncryptionAlgorithmsClientToServerLength().getValue());
     }
 
@@ -49,7 +51,7 @@ public class KeyExchangeInitMessageParser extends Parser<KeyExchangeInitMessage>
     }
 
     private void parseEncryptionAlgorithmsServerToClientLength(KeyExchangeInitMessage msg) {
-        msg.setEncryptionAlgorithmsServerToClientLength(parseIntField(4));
+        msg.setEncryptionAlgorithmsServerToClientLength(parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH));
         LOGGER.debug("EncryptionAlgorithmsServerToClientLength: " + msg.getEncryptionAlgorithmsServerToClientLength().getValue());
     }
 
@@ -59,7 +61,7 @@ public class KeyExchangeInitMessageParser extends Parser<KeyExchangeInitMessage>
     }
 
     private void parseMacAlgorithmsClientToServerLength(KeyExchangeInitMessage msg) {
-        msg.setMacAlgorithmsClientToServerLength(parseIntField(4));
+        msg.setMacAlgorithmsClientToServerLength(parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH));
         LOGGER.debug("MacAlgorithmsClientToServerLength: " + msg.getMacAlgorithmsClientToServerLength().getValue());
     }
 
@@ -69,7 +71,7 @@ public class KeyExchangeInitMessageParser extends Parser<KeyExchangeInitMessage>
     }
 
     private void parseMacAlgorithmsServerToClientLength(KeyExchangeInitMessage msg) {
-        msg.setMacAlgorithmsServerToClientLength(parseIntField(4));
+        msg.setMacAlgorithmsServerToClientLength(parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH));
         LOGGER.debug("MacAlgorithmsServerToClientLength: " + msg.getMacAlgorithmsServerToClientLength().getValue());
     }
 
@@ -79,7 +81,7 @@ public class KeyExchangeInitMessageParser extends Parser<KeyExchangeInitMessage>
     }
 
     private void parseCompressionAlgorithmsClientToServerLength(KeyExchangeInitMessage msg) {
-        msg.setCompressionAlgorithmsClientToServerLength(parseIntField(4));
+        msg.setCompressionAlgorithmsClientToServerLength(parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH));
         LOGGER.debug("CompressionAlgorithmsClientToServerLength: " + msg.getCompressionAlgorithmsClientToServerLength().getValue());
     }
 
@@ -89,7 +91,7 @@ public class KeyExchangeInitMessageParser extends Parser<KeyExchangeInitMessage>
     }
 
     private void parseCompressionAlgorithmsServerToClientLength(KeyExchangeInitMessage msg) {
-        msg.setCompressionAlgorithmsServerToClientLength(parseIntField(4));
+        msg.setCompressionAlgorithmsServerToClientLength(parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH));
         LOGGER.debug("CompressionAlgorithmsServerToClientLength: " + msg.getCompressionAlgorithmsServerToClientLength().getValue());
     }
 
@@ -99,7 +101,7 @@ public class KeyExchangeInitMessageParser extends Parser<KeyExchangeInitMessage>
     }
 
     private void parseLanguagesClientToServerLength(KeyExchangeInitMessage msg) {
-        msg.setLanguagesClientToServerLength(parseIntField(4));
+        msg.setLanguagesClientToServerLength(parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH));
         LOGGER.debug("LanguagesClientToServerLength: " + msg.getLanguagesClientToServerLength().getValue());
     }
 
@@ -109,7 +111,7 @@ public class KeyExchangeInitMessageParser extends Parser<KeyExchangeInitMessage>
     }
 
     private void parseLanguagesServerToClientLength(KeyExchangeInitMessage msg) {
-        msg.setLanguagesServerToClientLength(parseIntField(4));
+        msg.setLanguagesServerToClientLength(parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH));
         LOGGER.debug("LanguagesServerToClientLength: " + msg.getLanguagesServerToClientLength().getValue());
     }
 
@@ -124,7 +126,7 @@ public class KeyExchangeInitMessageParser extends Parser<KeyExchangeInitMessage>
     }
 
     private void parseReserved(KeyExchangeInitMessage msg) {
-        msg.setReserved(parseIntField(4));
+        msg.setReserved(parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH));
         LOGGER.debug("Reserved: " + msg.getReserved().getValue());
     }
 

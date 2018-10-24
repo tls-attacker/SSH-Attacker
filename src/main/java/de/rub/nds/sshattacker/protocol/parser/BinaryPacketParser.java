@@ -5,6 +5,7 @@ import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.protocol.core.message.Parser;
+import de.rub.nds.sshattacker.constants.BinaryPacketConstants;
 import de.rub.nds.sshattacker.protocol.message.BinaryPacket;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -18,19 +19,19 @@ public class BinaryPacketParser extends Parser<BinaryPacket> {
     }
 
     private void parsePacketLength(BinaryPacket msg) {
-        ModifiableInteger packetLength = ModifiableVariableFactory.safelySetValue(null, parseIntField(4));
+        ModifiableInteger packetLength = ModifiableVariableFactory.safelySetValue(null, parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH));
         LOGGER.debug("Packet Length: " + packetLength.getValue());
         msg.setPacketLength(packetLength);
     }
 
     private void parsePaddingLength(BinaryPacket msg) {
-        ModifiableByte paddingLength = ModifiableVariableFactory.safelySetValue(null, parseByteField(1));
+        ModifiableByte paddingLength = ModifiableVariableFactory.safelySetValue(null, parseByteField(BinaryPacketConstants.PADDING_FIELD_LENGTH));
         LOGGER.debug("Padding Length: " + paddingLength.getValue());
         msg.setPaddingLength(paddingLength);
     }
 
     private void parsePayload(BinaryPacket msg) {
-        int payloadSize = msg.getPacketLength().getValue() - msg.getPaddingLength().getValue() - 1;
+        int payloadSize = msg.getPacketLength().getValue() - msg.getPaddingLength().getValue() - BinaryPacketConstants.PADDING_FIELD_LENGTH;
         LOGGER.debug("Payload Size: " + payloadSize);
         ModifiableByteArray payload = ModifiableVariableFactory.safelySetValue(null, parseByteArrayField(payloadSize));
         LOGGER.debug("Payload: " + payload);

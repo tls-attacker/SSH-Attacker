@@ -1,6 +1,7 @@
 package de.rub.nds.sshattacker.protocol.parser;
 
 import de.rub.nds.protocol.core.message.Parser;
+import de.rub.nds.sshattacker.constants.BinaryPacketConstants;
 import de.rub.nds.sshattacker.protocol.message.ECDHKeyExchangeReplyMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -14,12 +15,12 @@ public class ECDHKeyExchangeReplyMessageParser extends Parser<ECDHKeyExchangeRep
     }
 
     private void parseHostKeyLength(ECDHKeyExchangeReplyMessage msg) {
-        msg.setHostKeyLength(parseIntField(4));
+        msg.setHostKeyLength(parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH));
         LOGGER.debug("HostKeyLength: " + msg.getHostKeyLength().getValue());
     }
 
     private void parseHostKeyTypeLength(ECDHKeyExchangeReplyMessage msg) {
-        msg.setHostKeyTypeLength(parseIntField(4));
+        msg.setHostKeyTypeLength(parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH));
         LOGGER.debug("HostKeyTypeLength: " + msg.getHostKeyLength().getValue());
     }
 
@@ -29,7 +30,7 @@ public class ECDHKeyExchangeReplyMessageParser extends Parser<ECDHKeyExchangeRep
     }
 
     private void parseExponentLength(ECDHKeyExchangeReplyMessage msg) {
-        msg.setExponentLength(parseIntField(4));
+        msg.setExponentLength(parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH));
         LOGGER.debug("ExponentLength: " + msg.getExponentLength().getValue());
     }
 
@@ -39,7 +40,7 @@ public class ECDHKeyExchangeReplyMessageParser extends Parser<ECDHKeyExchangeRep
     }
 
     private void parseModulusLength(ECDHKeyExchangeReplyMessage msg) {
-        msg.setModulusLength(parseIntField(4));
+        msg.setModulusLength(parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH));
         LOGGER.debug("ModulusLength: " + msg.getModulusLength().getValue());
     }
 
@@ -49,7 +50,7 @@ public class ECDHKeyExchangeReplyMessageParser extends Parser<ECDHKeyExchangeRep
     }
 
     private void parsePublicKeyLength(ECDHKeyExchangeReplyMessage msg) {
-        msg.setPublicKeyLength(parseIntField(4));
+        msg.setPublicKeyLength(parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH));
         LOGGER.debug("PublicKeyLength: " + msg.getPublicKeyLength().getValue());
     }
 
@@ -59,7 +60,7 @@ public class ECDHKeyExchangeReplyMessageParser extends Parser<ECDHKeyExchangeRep
     }
 
     private void parseSignatureLength(ECDHKeyExchangeReplyMessage msg) {
-        msg.setSignatureLength(parseIntField(4));
+        msg.setSignatureLength(parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH));
         LOGGER.debug("SignatureLength: " + msg.getSignatureLength().getValue());
     }
 

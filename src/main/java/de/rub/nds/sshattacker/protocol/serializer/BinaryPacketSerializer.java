@@ -1,6 +1,7 @@
 package de.rub.nds.sshattacker.protocol.serializer;
 
 import de.rub.nds.protocol.core.message.Serializer;
+import de.rub.nds.sshattacker.constants.BinaryPacketConstants;
 import de.rub.nds.sshattacker.protocol.message.BinaryPacket;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -17,7 +18,7 @@ public class BinaryPacketSerializer extends Serializer<BinaryPacket> {
 
     private void serializePacketLength() {
         LOGGER.debug("Packet Length: " + msg.getPacketLength().getValue());
-        appendInt(msg.getPacketLength().getValue(), 4);
+        appendInt(msg.getPacketLength().getValue(), BinaryPacketConstants.LENGTH_FIELD_LENGTH);
     }
 
     private void serializePaddingLength() {

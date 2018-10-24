@@ -1,7 +1,6 @@
 package de.rub.nds.sshattacker.protocol.serializer;
 
 import de.rub.nds.sshattacker.protocol.message.ECDHKeyExchangeReplyMessage;
-import de.rub.nds.sshattacker.protocol.parser.ECDHKeyExchangeInitMessageParserTest;
 import de.rub.nds.sshattacker.protocol.parser.ECDHKeyExchangeReplyMessageParserTest;
 import java.util.Collection;
 import org.junit.After;

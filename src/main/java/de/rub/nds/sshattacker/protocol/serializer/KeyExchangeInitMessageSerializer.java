@@ -1,6 +1,7 @@
 package de.rub.nds.sshattacker.protocol.serializer;
 
 import de.rub.nds.protocol.core.message.Serializer;
+import de.rub.nds.sshattacker.constants.BinaryPacketConstants;
 import de.rub.nds.sshattacker.protocol.message.KeyExchangeInitMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -22,7 +23,7 @@ public class KeyExchangeInitMessageSerializer extends Serializer {
 
     private void serializeKeyExchangeAlgorithmsLength() {
         LOGGER.debug("KeyExchangeAlgorithmsLength: " + msg.getKeyExchangeAlgorithmsLength().getValue());
-        appendInt(msg.getKeyExchangeAlgorithmsLength().getValue(), 4);
+        appendInt(msg.getKeyExchangeAlgorithmsLength().getValue(), BinaryPacketConstants.LENGTH_FIELD_LENGTH);
     }
 
     private void serializeKeyExchangeAlgorithms() {
@@ -32,7 +33,7 @@ public class KeyExchangeInitMessageSerializer extends Serializer {
 
     private void serializeServerHostKeyAlgorithmsLength() {
         LOGGER.debug("ServerHostKeyAlgorithmsLength: " + msg.getServerHostKeyAlgorithmsLength().getValue());
-        appendInt(msg.getServerHostKeyAlgorithmsLength().getValue(), 4);
+        appendInt(msg.getServerHostKeyAlgorithmsLength().getValue(), BinaryPacketConstants.LENGTH_FIELD_LENGTH);
     }
 
     private void serializeServerHostKeyAlgorithms() {
@@ -42,7 +43,7 @@ public class KeyExchangeInitMessageSerializer extends Serializer {
 
     private void serializeEncryptionAlgorithmsClientToServerLength() {
         LOGGER.debug("EncryptionAlgorithmsClientToServerLength" + msg.getEncryptionAlgorithmsClientToServerLength().getValue());
-        appendInt(msg.getEncryptionAlgorithmsClientToServerLength().getValue(), 4);
+        appendInt(msg.getEncryptionAlgorithmsClientToServerLength().getValue(), BinaryPacketConstants.LENGTH_FIELD_LENGTH);
     }
 
     private void serializeEncryptionAlgorithmsClientToServer() {
@@ -52,7 +53,7 @@ public class KeyExchangeInitMessageSerializer extends Serializer {
 
     private void serializeEncryptionAlgorithmsServerToClientLength() {
         LOGGER.debug("EncryptionAlgorithmsServerToClientLength: " + msg.getEncryptionAlgorithmsServerToClientLength().getValue());
-        appendInt(msg.getEncryptionAlgorithmsServerToClientLength().getValue(), 4);
+        appendInt(msg.getEncryptionAlgorithmsServerToClientLength().getValue(), BinaryPacketConstants.LENGTH_FIELD_LENGTH);
     }
 
     private void serializeEncryptionAlgorithmsServerToClient() {
@@ -62,7 +63,7 @@ public class KeyExchangeInitMessageSerializer extends Serializer {
 
     private void serializeMacAlgorithmsClientToServerLength() {
         LOGGER.debug("MacAlgorithmsClientToServerLength: " + msg.getMacAlgorithmsClientToServerLength().getValue());
-        appendInt(msg.getMacAlgorithmsClientToServerLength().getValue(), 4);
+        appendInt(msg.getMacAlgorithmsClientToServerLength().getValue(), BinaryPacketConstants.LENGTH_FIELD_LENGTH);
     }
 
     private void serializeMacAlgorithmsClientToServer() {
@@ -72,7 +73,7 @@ public class KeyExchangeInitMessageSerializer extends Serializer {
 
     private void serializeMacAlgorithmsServerToClientLength() {
         LOGGER.debug("MacAlgorithmsServerToClientLength: " + msg.getMacAlgorithmsServerToClientLength().getValue());
-        appendInt(msg.getMacAlgorithmsServerToClientLength().getValue(), 4);
+        appendInt(msg.getMacAlgorithmsServerToClientLength().getValue(), BinaryPacketConstants.LENGTH_FIELD_LENGTH);
     }
 
     private void serializeMacAlgorithmsServerToClient() {
@@ -82,7 +83,7 @@ public class KeyExchangeInitMessageSerializer extends Serializer {
 
     private void serializeCompressionAlgorithmsClientToServerLength() {
         LOGGER.debug("CompressionAlgorithmsClientToServerLength: " + msg.getCompressionAlgorithmsClientToServerLength().getValue());
-        appendInt(msg.getCompressionAlgorithmsClientToServerLength().getValue(), 4);
+        appendInt(msg.getCompressionAlgorithmsClientToServerLength().getValue(), BinaryPacketConstants.LENGTH_FIELD_LENGTH);
     }
 
     private void serializeCompressionAlgorithmsClientToServer() {
@@ -92,7 +93,7 @@ public class KeyExchangeInitMessageSerializer extends Serializer {
 
     private void serializeCompressionAlgorithmsServerToClientLength() {
         LOGGER.debug("CompressionAlgorithmsServerToClientLength: " + msg.getCompressionAlgorithmsServerToClientLength().getValue());
-        appendInt(msg.getCompressionAlgorithmsServerToClientLength().getValue(), 4);
+        appendInt(msg.getCompressionAlgorithmsServerToClientLength().getValue(), BinaryPacketConstants.LENGTH_FIELD_LENGTH);
     }
 
     private void serializeCompressionAlgorithmsServerToClient() {
@@ -102,7 +103,7 @@ public class KeyExchangeInitMessageSerializer extends Serializer {
 
     private void serializeLanguagesClientToServerLength() {
         LOGGER.debug("LanguagesClientToServerLength: " + msg.getLanguagesClientToServerLength().getValue());
-        appendInt(msg.getLanguagesClientToServerLength().getValue(), 4);
+        appendInt(msg.getLanguagesClientToServerLength().getValue(), BinaryPacketConstants.LENGTH_FIELD_LENGTH);
     }
 
     private void serializeLanguagesClientToServer() {
@@ -112,7 +113,7 @@ public class KeyExchangeInitMessageSerializer extends Serializer {
 
     private void serializeLanguagesServerToClientLength() {
         LOGGER.debug("LanguagesServerToClientLength: " + msg.getLanguagesServerToClientLength().getValue());
-        appendInt(msg.getLanguagesServerToClientLength().getValue(), 4);
+        appendInt(msg.getLanguagesServerToClientLength().getValue(), BinaryPacketConstants.LENGTH_FIELD_LENGTH);
     }
 
     private void serializeLanguagesServerToClient() {
@@ -127,7 +128,7 @@ public class KeyExchangeInitMessageSerializer extends Serializer {
 
     private void serializeReserved() {
         LOGGER.debug("Reserved: " + msg.getReserved().getValue());
-        appendInt(msg.getReserved().getValue(), 4);
+        appendInt(msg.getReserved().getValue(), BinaryPacketConstants.LENGTH_FIELD_LENGTH);
     }
 
     @Override

@@ -1,6 +1,7 @@
 package de.rub.nds.sshattacker.protocol.serializer;
 
 import de.rub.nds.protocol.core.message.Serializer;
+import de.rub.nds.sshattacker.constants.BinaryPacketConstants;
 import de.rub.nds.sshattacker.protocol.message.ECDHKeyExchangeReplyMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -16,12 +17,12 @@ public class ECDHKeyExchangeReplyMessageSerializer extends Serializer<ECDHKeyExc
     private final ECDHKeyExchangeReplyMessage msg;
 
     private void serializeHostKeyLength(ECDHKeyExchangeReplyMessage msg) {
-        appendInt(msg.getHostKeyLength().getValue(), 4);
+        appendInt(msg.getHostKeyLength().getValue(), BinaryPacketConstants.LENGTH_FIELD_LENGTH);
         LOGGER.debug("HostKeyLength: " + msg.getHostKeyLength().getValue());
     }
 
     private void serializeHostKeyTypeLength(ECDHKeyExchangeReplyMessage msg) {
-        appendInt(msg.getHostKeyTypeLength().getValue(), 4);
+        appendInt(msg.getHostKeyTypeLength().getValue(), BinaryPacketConstants.LENGTH_FIELD_LENGTH);
         LOGGER.debug("HostKeyTypeLength: " + msg.getHostKeyTypeLength().getValue());
     }
 
@@ -31,7 +32,7 @@ public class ECDHKeyExchangeReplyMessageSerializer extends Serializer<ECDHKeyExc
     }
 
     private void serializeExponentLength(ECDHKeyExchangeReplyMessage msg) {
-        appendInt(msg.getExponentLength().getValue(), 4);
+        appendInt(msg.getExponentLength().getValue(), BinaryPacketConstants.LENGTH_FIELD_LENGTH);
         LOGGER.debug("ExponentLength: " + msg.getExponentLength().getValue());
     }
 
@@ -41,7 +42,7 @@ public class ECDHKeyExchangeReplyMessageSerializer extends Serializer<ECDHKeyExc
     }
 
     private void serializeModulusLength(ECDHKeyExchangeReplyMessage msg) {
-        appendInt(msg.getModulusLength().getValue(), 4);
+        appendInt(msg.getModulusLength().getValue(), BinaryPacketConstants.LENGTH_FIELD_LENGTH);
         LOGGER.debug("ModulusLength: " + msg.getModulusLength().getValue());
     }
 
@@ -51,7 +52,7 @@ public class ECDHKeyExchangeReplyMessageSerializer extends Serializer<ECDHKeyExc
     }
 
     private void serializePublicKeyLength(ECDHKeyExchangeReplyMessage msg) {
-        appendInt(msg.getPublicKeyLength().getValue(), 4);
+        appendInt(msg.getPublicKeyLength().getValue(), BinaryPacketConstants.LENGTH_FIELD_LENGTH);
         LOGGER.debug("PublicKeyLength: " + msg.getPublicKeyLength().getValue());
     }
 
@@ -61,7 +62,7 @@ public class ECDHKeyExchangeReplyMessageSerializer extends Serializer<ECDHKeyExc
     }
 
     private void serializeSignatureLength(ECDHKeyExchangeReplyMessage msg) {
-        appendInt(msg.getSignatureLength().getValue(), 4);
+        appendInt(msg.getSignatureLength().getValue(), BinaryPacketConstants.LENGTH_FIELD_LENGTH);
         LOGGER.debug("SignatureLength: " + msg.getSignatureLength().getValue());
     }
 

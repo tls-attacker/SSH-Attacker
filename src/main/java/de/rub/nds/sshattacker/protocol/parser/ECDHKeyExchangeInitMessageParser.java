@@ -1,6 +1,7 @@
 package de.rub.nds.sshattacker.protocol.parser;
 
 import de.rub.nds.protocol.core.message.Parser;
+import de.rub.nds.sshattacker.constants.BinaryPacketConstants;
 import de.rub.nds.sshattacker.protocol.message.ECDHKeyExchangeInitMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -14,12 +15,12 @@ public class ECDHKeyExchangeInitMessageParser extends Parser<ECDHKeyExchangeInit
     }
 
     private void parsePublicKeyLength(ECDHKeyExchangeInitMessage msg) {
-        msg.setPublicKeyLength(parseIntField(4));
+        msg.setPublicKeyLength(parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH));
         LOGGER.debug("PublicKeyLength: " + msg.getPublicKeyLength().getValue());
     }
 
     private void parsePublicKey(ECDHKeyExchangeInitMessage msg) {
-        msg.setPublicKey(parseArrayOrTillEnd(-1));
+        msg.setPublicKey(parseArrayOrTillEnd(msg.getPublicKeyLength().getValue()));
         LOGGER.debug("PublicKey: " + msg.getPublicKey());
     }
 
