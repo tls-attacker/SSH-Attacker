@@ -11,6 +11,7 @@ public class BinaryPacket extends Message {
 
     private ModifiableInteger packetLength;
     private ModifiableByte paddingLength;
+    private ModifiableByte messageID;
     private ModifiableByteArray payload;
     private ModifiableByteArray padding;
     private ModifiableByteArray mac;
@@ -20,6 +21,18 @@ public class BinaryPacket extends Message {
 
     public BinaryPacket(ModifiableByteArray payload) {
         this.payload = payload;
+    }
+
+    public ModifiableByte getMessageID() {
+        return messageID;
+    }
+
+    public void setMessageID(ModifiableByte messageID) {
+        this.messageID = messageID;
+    }
+
+    public void setMessageID(byte messageID) {
+        this.messageID = ModifiableVariableFactory.safelySetValue(this.messageID, messageID);
     }
 
     public ModifiableInteger getPacketLength() {

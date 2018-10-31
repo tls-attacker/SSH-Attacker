@@ -4,7 +4,7 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 
-public class ECDHKeyExchangeInitMessage {
+public class ECDHKeyExchangeInitMessage extends BinaryPacket {
 
     private ModifiableInteger publicKeyLength;
     private ModifiableByteArray publicKey;

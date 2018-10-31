@@ -16,6 +16,11 @@ public class BinaryPacketSerializer extends Serializer<BinaryPacket> {
         this.msg = msg;
     }
 
+    private void serializeMessageID() {
+        LOGGER.debug("MessageID: " + msg.getMessageID().getValue());
+        appendByte(msg.getMessageID().getValue());
+    }
+
     private void serializePacketLength() {
         LOGGER.debug("Packet Length: " + msg.getPacketLength().getValue());
         appendInt(msg.getPacketLength().getValue(), BinaryPacketConstants.LENGTH_FIELD_LENGTH);
@@ -49,6 +54,7 @@ public class BinaryPacketSerializer extends Serializer<BinaryPacket> {
     public byte[] serializeBytes() {
         serializePacketLength();
         serializePaddingLength();
+        serializeMessageID();
         serializePayload();
         serializePadding();
         serializeMac();

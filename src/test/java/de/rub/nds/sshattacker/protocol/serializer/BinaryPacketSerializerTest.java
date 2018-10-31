@@ -22,16 +22,18 @@ public class BinaryPacketSerializerTest {
 
     private final int packetLength;
     private final byte paddingLength;
+    private final byte messageID;
     private final byte[] payload;
     private final byte[] padding;
     private final byte[] mac;
 
     private final byte[] bytes;
 
-    public BinaryPacketSerializerTest(byte[] bytes, int packetLength, byte paddingLength, byte[] payload, byte[] padding, byte[] mac) {
+    public BinaryPacketSerializerTest(byte[] bytes, int packetLength, byte paddingLength, byte messageID, byte[] payload, byte[] padding, byte[] mac) {
         this.bytes = bytes;
         this.packetLength = packetLength;
         this.paddingLength = paddingLength;
+        this.messageID = messageID;
         this.payload = payload;
         this.padding = padding;
         this.mac = mac;
@@ -61,6 +63,7 @@ public class BinaryPacketSerializerTest {
         BinaryPacket msg = new BinaryPacket();
         msg.setPacketLength(packetLength);
         msg.setPaddingLength(paddingLength);
+        msg.setMessageID(messageID);
         msg.setPayload(payload);
         msg.setPadding(padding);
         msg.setMac(mac);

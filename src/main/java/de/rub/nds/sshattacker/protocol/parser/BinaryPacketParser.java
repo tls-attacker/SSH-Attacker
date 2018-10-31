@@ -18,6 +18,11 @@ public class BinaryPacketParser extends Parser<BinaryPacket> {
         super(startPosition, array);
     }
 
+    private void parseMessageID(BinaryPacket msg) {
+        msg.setMessageID(parseByteField(BinaryPacketConstants.MESSAGE_ID_LENGTH));
+        LOGGER.debug("Message ID: " + msg.getMessageID().getValue());
+    }
+
     private void parsePacketLength(BinaryPacket msg) {
         ModifiableInteger packetLength = ModifiableVariableFactory.safelySetValue(null, parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH));
         LOGGER.debug("Packet Length: " + packetLength.getValue());
@@ -31,7 +36,7 @@ public class BinaryPacketParser extends Parser<BinaryPacket> {
     }
 
     private void parsePayload(BinaryPacket msg) {
-        int payloadSize = msg.getPacketLength().getValue() - msg.getPaddingLength().getValue() - BinaryPacketConstants.PADDING_FIELD_LENGTH;
+        int payloadSize = msg.getPacketLength().getValue() - msg.getPaddingLength().getValue() - BinaryPacketConstants.PADDING_FIELD_LENGTH - BinaryPacketConstants.MESSAGE_ID_LENGTH;
         LOGGER.debug("Payload Size: " + payloadSize);
         ModifiableByteArray payload = ModifiableVariableFactory.safelySetValue(null, parseByteArrayField(payloadSize));
         LOGGER.debug("Payload: " + payload);
@@ -61,6 +66,7 @@ public class BinaryPacketParser extends Parser<BinaryPacket> {
         BinaryPacket msg = new BinaryPacket();
         parsePacketLength(msg);
         parsePaddingLength(msg);
+        parseMessageID(msg);
         parsePayload(msg);
         parsePadding(msg);
         parseMAC(msg);

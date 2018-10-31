@@ -1,14 +1,12 @@
 package de.rub.nds.sshattacker.protocol.message;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
-import de.rub.nds.modifiablevariable.bool.ModifiableBoolean;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
-import de.rub.nds.protocol.core.message.Message;
 
-public class KeyExchangeInitMessage extends Message {
+public class KeyExchangeInitMessage extends BinaryPacket {
 
     private ModifiableByteArray cookie;
     private ModifiableInteger keyExchangeAlgorithmsLength;
