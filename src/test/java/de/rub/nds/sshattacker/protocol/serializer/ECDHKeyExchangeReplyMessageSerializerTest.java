@@ -75,7 +75,7 @@ public class ECDHKeyExchangeReplyMessageSerializerTest {
      * ECDHKeyExchangeReplyMessageSerializer.
      */
     @Test
-    public void testSerializeBytes() {
+    public void testSerializeMessageSpecificPayload() {
         ECDHKeyExchangeReplyMessage msg = new ECDHKeyExchangeReplyMessage();
         msg.setHostKeyLength(hostKeyLength);
         msg.setHostKeyTypeLength(hostKeyTypeLength);
@@ -91,7 +91,7 @@ public class ECDHKeyExchangeReplyMessageSerializerTest {
 
         ECDHKeyExchangeReplyMessageSerializer serializer = new ECDHKeyExchangeReplyMessageSerializer(msg);
 
-        assertArrayEquals(bytes, serializer.serialize());
+        assertArrayEquals(bytes, serializer.serializeMessageSpecificPayload());
     }
 
 }

@@ -90,9 +90,10 @@ public class ECDHKeyExchangeReplyMessageParserTest {
      * Test of parse method, of class ECDHKeyExchangeReplyMessageParser.
      */
     @Test
-    public void testParse() {
+    public void testParseMessageSpecificPayload() {
         ECDHKeyExchangeReplyMessageParser parser = new ECDHKeyExchangeReplyMessageParser(0, bytes);
-        ECDHKeyExchangeReplyMessage msg = parser.parse();
+        ECDHKeyExchangeReplyMessage msg = new ECDHKeyExchangeReplyMessage();
+        parser.parseMessageSpecificPayload(msg);
         assertEquals(hostKeyLength, msg.getHostKeyLength().getValue().intValue());
         assertEquals(hostKeyTypeLength, msg.getHostKeyTypeLength().getValue().intValue());
         assertEquals(hostKeyType, msg.getHostKeyType().getValue());

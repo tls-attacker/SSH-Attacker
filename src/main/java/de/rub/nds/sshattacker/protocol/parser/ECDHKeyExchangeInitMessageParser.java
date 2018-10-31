@@ -1,12 +1,11 @@
 package de.rub.nds.sshattacker.protocol.parser;
 
-import de.rub.nds.protocol.core.message.Parser;
 import de.rub.nds.sshattacker.constants.BinaryPacketConstants;
 import de.rub.nds.sshattacker.protocol.message.ECDHKeyExchangeInitMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class ECDHKeyExchangeInitMessageParser extends Parser<ECDHKeyExchangeInitMessage> {
+public class ECDHKeyExchangeInitMessageParser extends BinaryPacketParser<ECDHKeyExchangeInitMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -25,11 +24,13 @@ public class ECDHKeyExchangeInitMessageParser extends Parser<ECDHKeyExchangeInit
     }
 
     @Override
-    public ECDHKeyExchangeInitMessage parse() {
-        ECDHKeyExchangeInitMessage msg = new ECDHKeyExchangeInitMessage();
+    public void parseMessageSpecificPayload(ECDHKeyExchangeInitMessage msg) {
         parsePublicKeyLength(msg);
         parsePublicKey(msg);
-        return msg;
     }
 
+    @Override
+    public ECDHKeyExchangeInitMessage createMessage() {
+        return new ECDHKeyExchangeInitMessage();
+    }
 }

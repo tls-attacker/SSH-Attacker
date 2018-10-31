@@ -1,13 +1,12 @@
 package de.rub.nds.sshattacker.protocol.parser;
 
-import de.rub.nds.protocol.core.message.Parser;
 import de.rub.nds.sshattacker.constants.BinaryPacketConstants;
 import de.rub.nds.sshattacker.constants.KeyExchangeInitConstants;
 import de.rub.nds.sshattacker.protocol.message.KeyExchangeInitMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class KeyExchangeInitMessageParser extends Parser<KeyExchangeInitMessage> {
+public class KeyExchangeInitMessageParser extends BinaryPacketParser<KeyExchangeInitMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -131,8 +130,8 @@ public class KeyExchangeInitMessageParser extends Parser<KeyExchangeInitMessage>
     }
 
     @Override
-    public KeyExchangeInitMessage parse() {
-        KeyExchangeInitMessage msg = new KeyExchangeInitMessage();
+    public void parseMessageSpecificPayload(KeyExchangeInitMessage msg) {
+        //KeyExchangeInitMessage msg = new KeyExchangeInitMessage();
         parseCookie(msg);
         parseKeyExchangeAlgorithmsLength(msg);
         parseKeyExchangeAlgorithms(msg);
@@ -156,6 +155,10 @@ public class KeyExchangeInitMessageParser extends Parser<KeyExchangeInitMessage>
         parseLanguagesServerToClient(msg);
         parseFirstKeyExchangePacketFollows(msg);
         parseReserved(msg);
-        return msg;
+    }
+
+    @Override
+    public KeyExchangeInitMessage createMessage() {
+        return new KeyExchangeInitMessage();
     }
 }

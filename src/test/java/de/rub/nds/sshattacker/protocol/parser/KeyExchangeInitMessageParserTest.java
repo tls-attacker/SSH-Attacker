@@ -147,9 +147,10 @@ public class KeyExchangeInitMessageParserTest {
      * Test of parse method, of class KeyExchangeInitMessageParser.
      */
     @Test
-    public void testParse() {
+    public void testParseMessageSpecificPayload() {
         KeyExchangeInitMessageParser parser = new KeyExchangeInitMessageParser(0, bytes);
-        KeyExchangeInitMessage msg = parser.parse();
+        KeyExchangeInitMessage msg = new KeyExchangeInitMessage();
+        parser.parseMessageSpecificPayload(msg);
         assertArrayEquals(cookie, msg.getCookie().getValue());
         assertEquals(keyExchangeAlgorithmsLength, msg.getKeyExchangeAlgorithmsLength().getValue().intValue());
         assertEquals(keyExchangeAlgorithms, msg.getKeyExchangeAlgorithms().getValue());

@@ -52,14 +52,14 @@ public class ECDHKeyExchangeInitMessageSerializerTest {
      * ECDHKeyExchangeInitMessageSerializer.
      */
     @Test
-    public void testSerializeBytes() {
+    public void testSerializeMessageSpecificPayload() {
         ECDHKeyExchangeInitMessage msg = new ECDHKeyExchangeInitMessage();
         msg.setPublicKeyLength(publicKeyLength);
         msg.setPublicKey(publicKey);
 
         ECDHKeyExchangeInitMessageSerializer serializer = new ECDHKeyExchangeInitMessageSerializer(msg);
 
-        assertArrayEquals(bytes, serializer.serialize());
+        assertArrayEquals(bytes, serializer.serializeMessageSpecificPayload());
     }
 
 }

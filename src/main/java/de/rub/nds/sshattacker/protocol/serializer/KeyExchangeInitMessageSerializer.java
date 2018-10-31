@@ -6,13 +6,14 @@ import de.rub.nds.sshattacker.protocol.message.KeyExchangeInitMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class KeyExchangeInitMessageSerializer extends Serializer {
+public class KeyExchangeInitMessageSerializer extends BinaryPacketSerializer<KeyExchangeInitMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
     private final KeyExchangeInitMessage msg;
 
     public KeyExchangeInitMessageSerializer(KeyExchangeInitMessage msg) {
+        super(msg);
         this.msg = msg;
     }
 
@@ -132,7 +133,7 @@ public class KeyExchangeInitMessageSerializer extends Serializer {
     }
 
     @Override
-    protected byte[] serializeBytes() {
+    protected byte[] serializeMessageSpecificPayload() {
         serializeCookie();
         serializeKeyExchangeAlgorithmsLength();
         serializeKeyExchangeAlgorithms();

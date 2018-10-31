@@ -10,7 +10,7 @@ import de.rub.nds.sshattacker.protocol.message.BinaryPacket;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class BinaryPacketParser extends Parser<BinaryPacket> {
+public abstract class BinaryPacketParser<T extends BinaryPacket> extends Parser<T> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -62,15 +62,19 @@ public class BinaryPacketParser extends Parser<BinaryPacket> {
     }
 
     @Override
-    public BinaryPacket parse() {
-        BinaryPacket msg = new BinaryPacket();
+    public T parse() {
+        T msg = createMessage();
         parsePacketLength(msg);
         parsePaddingLength(msg);
         parseMessageID(msg);
         parsePayload(msg);
         parsePadding(msg);
         parseMAC(msg);
+        parseMessageSpecificPayload(msg);
         return msg;
     }
 
+    public abstract T createMessage();
+
+    protected abstract void parseMessageSpecificPayload(T msg);
 }

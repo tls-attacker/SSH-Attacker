@@ -6,11 +6,12 @@ import de.rub.nds.sshattacker.protocol.message.ECDHKeyExchangeReplyMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class ECDHKeyExchangeReplyMessageSerializer extends Serializer<ECDHKeyExchangeReplyMessage> {
+public class ECDHKeyExchangeReplyMessageSerializer extends BinaryPacketSerializer<ECDHKeyExchangeReplyMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
     public ECDHKeyExchangeReplyMessageSerializer(ECDHKeyExchangeReplyMessage msg) {
+        super(msg);
         this.msg = msg;
     }
 
@@ -72,7 +73,7 @@ public class ECDHKeyExchangeReplyMessageSerializer extends Serializer<ECDHKeyExc
     }
 
     @Override
-    protected byte[] serializeBytes() {
+    public byte[] serializeMessageSpecificPayload() {
         serializeHostKeyLength(msg);
         serializeHostKeyTypeLength(msg);
         serializeHostKeyType(msg);
@@ -86,5 +87,4 @@ public class ECDHKeyExchangeReplyMessageSerializer extends Serializer<ECDHKeyExc
         serializeSignature(msg);
         return getAlreadySerialized();
     }
-
 }

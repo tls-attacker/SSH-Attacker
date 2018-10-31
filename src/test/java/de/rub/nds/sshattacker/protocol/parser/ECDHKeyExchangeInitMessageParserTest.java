@@ -57,9 +57,10 @@ public class ECDHKeyExchangeInitMessageParserTest {
      * Test of parse method, of class ECDHKeyExchangeInitMessageParser.
      */
     @Test
-    public void testParse() {
+    public void testParseMessageSpecificPayload() {
         ECDHKeyExchangeInitMessageParser parser = new ECDHKeyExchangeInitMessageParser(0, bytes);
-        ECDHKeyExchangeInitMessage msg = parser.parse();
+        ECDHKeyExchangeInitMessage msg = new ECDHKeyExchangeInitMessage();
+        parser.parseMessageSpecificPayload(msg);
         assertEquals(publicKeyLength, msg.getPublicKeyLength().getValue().intValue());
         assertArrayEquals(publicKey, msg.getPublicKey().getValue());
 

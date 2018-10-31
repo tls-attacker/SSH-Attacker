@@ -93,7 +93,7 @@ public class KeyExchangeInitMessageSerializerTest {
      * Test of serializeBytes method, of class KeyExchangeInitMessageSerializer.
      */
     @Test
-    public void testSerializeBytes() {
+    public void testSerializeMessageSpecificPayload() {
         KeyExchangeInitMessage msg = new KeyExchangeInitMessage();
         msg.setCookie(cookie);
         msg.setKeyExchangeAlgorithmsLength(keyExchangeAlgorithmsLength);
@@ -120,7 +120,7 @@ public class KeyExchangeInitMessageSerializerTest {
         msg.setReserved(reserved);
 
         KeyExchangeInitMessageSerializer serializer = new KeyExchangeInitMessageSerializer(msg);
-        assertArrayEquals(bytes, serializer.serialize());
+        assertArrayEquals(bytes, serializer.serializeMessageSpecificPayload());
     }
 
 }
