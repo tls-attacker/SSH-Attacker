@@ -1,6 +1,10 @@
 package de.rub.nds.sshattacker.constants;
 
-public enum PublicKeyType {
+// same values for
+// PubkeyAcceptedKeyTypes
+// HostbasedAcceptedKeyTypes
+// HostKeyAlgorithms
+public enum PublicKeyAuthenticationAlgorithm {
     ecdsa_sha2_nistp256_cert_v01_openssh_com("ecdsa-sha2-nistp256-cert-v01@openssh.com"),
     ecdsa_sha2_nistp384_cert_v01_openssh_com("ecdsa-sha2-nistp384-cert-v01@openssh.com"),
     ecdsa_sha2_nistp521_cert_v01_openssh_com("ecdsa-sha2-nistp521-cert-v01@openssh.com"),
@@ -20,7 +24,7 @@ public enum PublicKeyType {
 
     private String name;
 
-    private PublicKeyType(String name) {
+    private PublicKeyAuthenticationAlgorithm(String name) {
         this.name = name;
     }
 }
