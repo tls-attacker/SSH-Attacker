@@ -131,7 +131,6 @@ public class KeyExchangeInitMessageParser extends BinaryPacketParser<KeyExchange
 
     @Override
     public void parseMessageSpecificPayload(KeyExchangeInitMessage msg) {
-        //KeyExchangeInitMessage msg = new KeyExchangeInitMessage();
         parseCookie(msg);
         parseKeyExchangeAlgorithmsLength(msg);
         parseKeyExchangeAlgorithms(msg);
