@@ -36,15 +36,18 @@ public class Config implements Serializable {
     /**
      * From ClientInitMessage
      */
-    private String version;
-    private String comment;
+    private String clientVersion;
+    private String clientComment;
+    private String serverVersion;
+    private String serverComment;
 
     /**
      * From KeyExchangeInitMessage
      */
-    private byte[] cookie;
+    private byte[] clientCookie;
+    private byte[] serverCookie;
     private List<KeyExchangeAlgorithm> supportedKeyExchangeAlgorithms;
-    private List<PublicKeyAuthenticationAlgorithm> supportedHostKeyAlgorithms;
+    private List<PublicKeyAuthenticationAlgorithm> PublicKeyAuthenticationAlgorithms;
     private List<CipherAlgorithm> supportedEncryptionAlgorithmsClientToServer;
     private List<CipherAlgorithm> supportedEncryptionAlgorithmsServerToClient;
     private List<MACAlgorithm> supportedMacAlgorithmsClientToServer;
@@ -82,16 +85,18 @@ public class Config implements Serializable {
     private RunningModeType defaultRunningMode = RunningModeType.CLIENT;
 
     Config() {
-        defaultClientConnection = new OutboundConnection("client", 443, "localhost");
-        defaultServerConnection = new InboundConnection("server", 443);
-        version = "SSH-2.0-OpenSSH_7.8";
-        comment = "";
-        cookie = ArrayConverter.hexStringToByteArray("0000000000000000");
+        defaultClientConnection = new OutboundConnection("client", 22, "localhost");
+        defaultServerConnection = new InboundConnection("server", 22);
+        clientVersion = "SSH-2.0-OpenSSH_7.8";
+        clientComment = "";
+        serverVersion = "SSH-2.0-libssh_0.7.0";
+        serverComment = "";
+        clientCookie = ArrayConverter.hexStringToByteArray("0000000000000000");
         supportedKeyExchangeAlgorithms = new LinkedList<>();
         supportedKeyExchangeAlgorithms.add(KeyExchangeAlgorithm.diffie_hellman_group1_sha1);
         supportedKeyExchangeAlgorithms.add(KeyExchangeAlgorithm.diffie_hellman_group14_sha1);
-        supportedHostKeyAlgorithms = new LinkedList<>();
-        supportedHostKeyAlgorithms.add(PublicKeyAuthenticationAlgorithm.ssh_dss);
+        PublicKeyAuthenticationAlgorithms = new LinkedList<>();
+        PublicKeyAuthenticationAlgorithms.add(PublicKeyAuthenticationAlgorithm.ssh_dss);
         supportedEncryptionAlgorithmsClientToServer = new LinkedList<>();
         supportedEncryptionAlgorithmsClientToServer.add(CipherAlgorithm.tdes_cbc);
         supportedEncryptionAlgorithmsServerToClient = new LinkedList<>();
@@ -110,6 +115,13 @@ public class Config implements Serializable {
         supportedLanguagesServerToClient.add(Language.None);
         defaultFirstKeyExchangePacketFollows = (byte) 0;
         defaultReserved = 0;
+        defaultHostKeyType = PublicKeyAuthenticationAlgorithm.ssh_dss.getValue();
+        
+        //TODO create default private/public keypairs and store them in constants
+        defaultRsaExponent = BigInteger.valueOf(65537);
+        defaultRsaModulus = BigInteger.valueOf(13);
+        defaultServerEcdhPublicKey = new byte[] {1,2};
+        defaultClientEcdhPublicKey = new byte[] {3,4};
     }
 
     public static Config createConfig() {
@@ -151,28 +163,28 @@ public class Config implements Serializable {
         return c;
     }
 
-    public String getVersion() {
-        return version;
+    public String getClientVersion() {
+        return clientVersion;
     }
 
-    public void setVersion(String version) {
-        this.version = version;
+    public void setClientVersion(String clientVersion) {
+        this.clientVersion = clientVersion;
     }
 
-    public String getComment() {
-        return comment;
+    public String getClientComment() {
+        return clientComment;
     }
 
-    public void setComment(String comment) {
-        this.comment = comment;
+    public void setClientComment(String clientComment) {
+        this.clientComment = clientComment;
     }
 
-    public byte[] getCookie() {
-        return cookie;
+    public byte[] getClientCookie() {
+        return clientCookie;
     }
 
-    public void setCookie(byte[] cookie) {
-        this.cookie = cookie;
+    public void setClientCookie(byte[] clientCookie) {
+        this.clientCookie = clientCookie;
     }
 
     public List<KeyExchangeAlgorithm> getSupportedKeyExchangeAlgorithms() {
@@ -183,12 +195,12 @@ public class Config implements Serializable {
         this.supportedKeyExchangeAlgorithms = supportedKeyExchangeAlgorithms;
     }
 
-    public List<PublicKeyAuthenticationAlgorithm> getSupportedHostKeyAlgorithms() {
-        return supportedHostKeyAlgorithms;
+    public List<PublicKeyAuthenticationAlgorithm> getPublicKeyAuthenticationAlgorithms() {
+        return PublicKeyAuthenticationAlgorithms;
     }
 
-    public void setSupportedHostKeyAlgorithms(List<PublicKeyAuthenticationAlgorithm> supportedHostKeyAlgorithms) {
-        this.supportedHostKeyAlgorithms = supportedHostKeyAlgorithms;
+    public void setPublicKeyAuthenticationAlgorithms(List<PublicKeyAuthenticationAlgorithm> PublicKeyAuthenticationAlgorithms) {
+        this.PublicKeyAuthenticationAlgorithms = PublicKeyAuthenticationAlgorithms;
     }
 
     public List<CipherAlgorithm> getSupportedEncryptionAlgorithmsClientToServer() {
@@ -295,4 +307,69 @@ public class Config implements Serializable {
         this.defaultRunningMode = defaultRunningMode;
     }
 
+    public byte[] getDefaultClientEcdhPublicKey() {
+        return defaultClientEcdhPublicKey;
+    }
+
+    public void setDefaultClientEcdhPublicKey(byte[] defaultClientEcdhPublicKey) {
+        this.defaultClientEcdhPublicKey = defaultClientEcdhPublicKey;
+    }
+
+    public String getDefaultHostKeyType() {
+        return defaultHostKeyType;
+    }
+
+    public void setDefaultHostKeyType(String defaultHostKeyType) {
+        this.defaultHostKeyType = defaultHostKeyType;
+    }
+
+    public BigInteger getDefaultRsaExponent() {
+        return defaultRsaExponent;
+    }
+
+    public void setDefaultRsaExponent(BigInteger defaultRsaExponent) {
+        this.defaultRsaExponent = defaultRsaExponent;
+    }
+
+    public BigInteger getDefaultRsaModulus() {
+        return defaultRsaModulus;
+    }
+
+    public void setDefaultRsaModulus(BigInteger defaultRsaModulus) {
+        this.defaultRsaModulus = defaultRsaModulus;
+    }
+
+    public byte[] getDefaultServerEcdhPublicKey() {
+        return defaultServerEcdhPublicKey;
+    }
+
+    public void setDefaultServerEcdhPublicKey(byte[] defaultServerEcdhPublicKey) {
+        this.defaultServerEcdhPublicKey = defaultServerEcdhPublicKey;
+    }
+
+    public byte[] getServerCookie() {
+        return serverCookie;
+    }
+
+    public void setServerCookie(byte[] serverCookie) {
+        this.serverCookie = serverCookie;
+    }
+
+    public String getServerVersion() {
+        return serverVersion;
+    }
+
+    public void setServerVersion(String serverVersion) {
+        this.serverVersion = serverVersion;
+    }
+
+    public String getServerComment() {
+        return serverComment;
+    }
+
+    public void setServerComment(String serverComment) {
+        this.serverComment = serverComment;
+    }
+    
+    
 }

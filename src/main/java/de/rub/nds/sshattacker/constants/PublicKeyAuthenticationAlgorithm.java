@@ -22,9 +22,13 @@ public enum PublicKeyAuthenticationAlgorithm {
     ssh_dss("ssh-dss"),
     ssh_dss_cert_v01_openssh_com("ssh-dss-cert-v01@openssh.com");
 
-    private String name;
+    private final String name;
 
     private PublicKeyAuthenticationAlgorithm(String name) {
         this.name = name;
+    }
+    
+    public String getValue(){
+        return name;
     }
 }
