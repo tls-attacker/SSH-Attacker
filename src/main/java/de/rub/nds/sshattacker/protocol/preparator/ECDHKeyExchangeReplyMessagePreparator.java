@@ -11,7 +11,18 @@ public class ECDHKeyExchangeReplyMessagePreparator extends Preparator<ECDHKeyExc
 
     @Override
     public void prepare() {
-        message.set
+        message.setHostKeyLength(context.getDefaultRsaExponent().bitLength());
+        message.setHostKeyType(context.getDefaultHostKeyType());
+        message.setHostKeyTypeLength(context.getDefaultHostKeyType().length());
+        message.setExponentLength(context.getDefaultRsaExponent().bitLength());
+        message.setExponent(context.getDefaultRsaExponent());
+        message.setModulus(context.getDefaultRsaModulus());
+        message.setModulusLength(context.getDefaultRsaModulus().bitLength());
+        message.setEphemeralPublicKey(context.getDefaultServerEcdhPublicKey());
+        message.setEphemeralPublicKeyLength(context.getDefaultServerEcdhPublicKey().length);
+        // TODO implement signature calculation
+        //message.setSignature();
+        //message.setSignatureLength(0);
     }
 
 }
