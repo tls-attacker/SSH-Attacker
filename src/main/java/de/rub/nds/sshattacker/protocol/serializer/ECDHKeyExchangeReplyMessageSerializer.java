@@ -1,6 +1,5 @@
 package de.rub.nds.sshattacker.protocol.serializer;
 
-import de.rub.nds.protocol.core.message.Serializer;
 import de.rub.nds.sshattacker.constants.BinaryPacketConstants;
 import de.rub.nds.sshattacker.protocol.message.ECDHKeyExchangeReplyMessage;
 import org.apache.logging.log4j.LogManager;
@@ -38,7 +37,7 @@ public class ECDHKeyExchangeReplyMessageSerializer extends BinaryPacketSerialize
     }
 
     private void serializeExponent(ECDHKeyExchangeReplyMessage msg) {
-        appendBytes(msg.getExponent().getValue());
+        appendBytes(msg.getExponent().getValue().toByteArray());
         LOGGER.debug("Exponent: " + msg.getExponent());
     }
 
@@ -48,18 +47,18 @@ public class ECDHKeyExchangeReplyMessageSerializer extends BinaryPacketSerialize
     }
 
     private void serializeModulus(ECDHKeyExchangeReplyMessage msg) {
-        appendBytes(msg.getModulus().getValue());
+        appendBytes(msg.getModulus().getValue().toByteArray());
         LOGGER.debug("Modulus: " + msg.getModulus());
     }
 
     private void serializePublicKeyLength(ECDHKeyExchangeReplyMessage msg) {
-        appendInt(msg.getPublicKeyLength().getValue(), BinaryPacketConstants.LENGTH_FIELD_LENGTH);
-        LOGGER.debug("PublicKeyLength: " + msg.getPublicKeyLength().getValue());
+        appendInt(msg.getEphemeralPublicKeyLength().getValue(), BinaryPacketConstants.LENGTH_FIELD_LENGTH);
+        LOGGER.debug("PublicKeyLength: " + msg.getEphemeralPublicKeyLength().getValue());
     }
 
     private void serializePublicKey(ECDHKeyExchangeReplyMessage msg) {
-        appendBytes(msg.getPublicKey().getValue());
-        LOGGER.debug("PublicKey: " + msg.getPublicKey());
+        appendBytes(msg.getEphemeralPublicKey().getValue());
+        LOGGER.debug("PublicKey: " + msg.getEphemeralPublicKey());
     }
 
     private void serializeSignatureLength(ECDHKeyExchangeReplyMessage msg) {

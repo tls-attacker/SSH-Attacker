@@ -1,9 +1,11 @@
 package de.rub.nds.sshattacker.protocol.message;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
+import de.rub.nds.modifiablevariable.biginteger.ModifiableBigInteger;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
+import java.math.BigInteger;
 
 public class ECDHKeyExchangeReplyMessage extends BinaryPacket {
 
@@ -13,13 +15,13 @@ public class ECDHKeyExchangeReplyMessage extends BinaryPacket {
     private ModifiableString hostKeyType;
 
     private ModifiableInteger exponentLength;
-    private ModifiableByteArray exponent;
+    private ModifiableBigInteger exponent;
 
     private ModifiableInteger modulusLength;
-    private ModifiableByteArray modulus;
+    private ModifiableBigInteger modulus;
 
-    private ModifiableInteger publicKeyLength;
-    private ModifiableByteArray publicKey;
+    private ModifiableInteger ephemeralPublicKeyLength;
+    private ModifiableByteArray ephemeralPublicKey;
 
     private ModifiableInteger signatureLength;
     private ModifiableByteArray signature;
@@ -72,15 +74,15 @@ public class ECDHKeyExchangeReplyMessage extends BinaryPacket {
         this.exponentLength = ModifiableVariableFactory.safelySetValue(this.exponentLength, exponentLength);
     }
 
-    public ModifiableByteArray getExponent() {
+    public ModifiableBigInteger getExponent() {
         return exponent;
     }
 
-    public void setExponent(ModifiableByteArray exponent) {
+    public void setExponent(ModifiableBigInteger exponent) {
         this.exponent = exponent;
     }
 
-    public void setExponent(byte[] exponent) {
+    public void setExponent(BigInteger exponent) {
         this.exponent = ModifiableVariableFactory.safelySetValue(this.exponent, exponent);
     }
 
@@ -96,40 +98,48 @@ public class ECDHKeyExchangeReplyMessage extends BinaryPacket {
         this.modulusLength = ModifiableVariableFactory.safelySetValue(this.modulusLength, modulusLength);
     }
 
-    public ModifiableByteArray getModulus() {
+    public ModifiableBigInteger getModulus() {
         return modulus;
     }
 
-    public void setModulus(ModifiableByteArray modulus) {
+    public void setModulus(ModifiableBigInteger modulus) {
         this.modulus = modulus;
     }
 
-    public void setModulus(byte[] modulus) {
+    public void setModulus(BigInteger modulus) {
         this.modulus = ModifiableVariableFactory.safelySetValue(this.modulus, modulus);
     }
 
-    public ModifiableInteger getPublicKeyLength() {
-        return publicKeyLength;
+    public ModifiableInteger getEphemeralPublicKeyLength() {
+        return ephemeralPublicKeyLength;
     }
 
-    public void setPublicKeyLength(ModifiableInteger publicKeyLength) {
-        this.publicKeyLength = publicKeyLength;
+    public void setEphemeralPublicKeyLength(ModifiableInteger ephemeralPublicKeyLength) {
+        this.ephemeralPublicKeyLength = ephemeralPublicKeyLength;
+    }
+    
+    public void setEphemeralPublicKeyLength(int ephemeralPublicKeyLength) {
+        this.ephemeralPublicKeyLength = ModifiableVariableFactory.safelySetValue(this.ephemeralPublicKeyLength, ephemeralPublicKeyLength);
     }
 
     public void setPublicKeyLength(int publicKeyLength) {
-        this.publicKeyLength = ModifiableVariableFactory.safelySetValue(this.publicKeyLength, publicKeyLength);
+        this.ephemeralPublicKeyLength = ModifiableVariableFactory.safelySetValue(this.ephemeralPublicKeyLength, publicKeyLength);
     }
 
-    public ModifiableByteArray getPublicKey() {
-        return publicKey;
+    public ModifiableByteArray getEphemeralPublicKey() {
+        return ephemeralPublicKey;
     }
 
-    public void setPublicKey(ModifiableByteArray publicKey) {
-        this.publicKey = publicKey;
+    public void setEphemeralPublicKey(ModifiableByteArray ephemeralPublicKey) {
+        this.ephemeralPublicKey = ephemeralPublicKey;
+    }
+    
+    public void setEphemeralPublicKey(byte[] ephemeralPublicKey) {
+        this.ephemeralPublicKey = ModifiableVariableFactory.safelySetValue(this.ephemeralPublicKey,ephemeralPublicKey);
     }
 
     public void setPublicKey(byte[] publicKey) {
-        this.publicKey = ModifiableVariableFactory.safelySetValue(this.publicKey, publicKey);
+        this.ephemeralPublicKey = ModifiableVariableFactory.safelySetValue(this.ephemeralPublicKey, publicKey);
     }
 
     public ModifiableInteger getSignatureLength() {

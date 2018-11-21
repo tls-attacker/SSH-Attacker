@@ -34,7 +34,7 @@ public class ECDHKeyExchangeReplyMessageParser extends BinaryPacketParser<ECDHKe
     }
 
     private void parseExponent(ECDHKeyExchangeReplyMessage msg) {
-        msg.setExponent(parseByteArrayField(msg.getExponentLength().getValue()));
+        msg.setExponent(parseBigIntField(msg.getExponentLength().getValue()));
         LOGGER.debug("Exponent: " + msg.getExponent());
     }
 
@@ -44,18 +44,18 @@ public class ECDHKeyExchangeReplyMessageParser extends BinaryPacketParser<ECDHKe
     }
 
     private void parseModulus(ECDHKeyExchangeReplyMessage msg) {
-        msg.setModulus(parseByteArrayField(msg.getModulusLength().getValue()));
+        msg.setModulus(parseBigIntField(msg.getModulusLength().getValue()));
         LOGGER.debug("Modulus: " + msg.getModulus());
     }
 
     private void parsePublicKeyLength(ECDHKeyExchangeReplyMessage msg) {
         msg.setPublicKeyLength(parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH));
-        LOGGER.debug("PublicKeyLength: " + msg.getPublicKeyLength().getValue());
+        LOGGER.debug("PublicKeyLength: " + msg.getEphemeralPublicKeyLength().getValue());
     }
 
     private void parsePublicKey(ECDHKeyExchangeReplyMessage msg) {
-        msg.setPublicKey(parseByteArrayField(msg.getPublicKeyLength().getValue()));
-        LOGGER.debug("PublicKey: " + msg.getPublicKey());
+        msg.setPublicKey(parseByteArrayField(msg.getEphemeralPublicKeyLength().getValue()));
+        LOGGER.debug("PublicKey: " + msg.getEphemeralPublicKey());
     }
 
     private void parseSignatureLength(ECDHKeyExchangeReplyMessage msg) {

@@ -2,6 +2,7 @@ package de.rub.nds.sshattacker.protocol.serializer;
 
 import de.rub.nds.sshattacker.protocol.message.ECDHKeyExchangeReplyMessage;
 import de.rub.nds.sshattacker.protocol.parser.ECDHKeyExchangeReplyMessageParserTest;
+import java.math.BigInteger;
 import java.util.Collection;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -28,10 +29,10 @@ public class ECDHKeyExchangeReplyMessageSerializerTest {
     private final String hostKeyType;
 
     private final int exponentLength;
-    private final byte[] exponent;
+    private final BigInteger exponent;
 
     private final int modulusLength;
-    private final byte[] modulus;
+    private final BigInteger modulus;
 
     private final int publicKeyLength;
     private final byte[] publicKey;
@@ -39,7 +40,7 @@ public class ECDHKeyExchangeReplyMessageSerializerTest {
     private final int signatureLength;
     private final byte[] signature;
 
-    public ECDHKeyExchangeReplyMessageSerializerTest(byte[] bytes, int hostKeyLength, int hostKeyTypeLength, String hostKeyType, int exponentLength, byte[] exponent, int modulusLength, byte[] modulus, int publicKeyLength, byte[] publicKey, int signatureLength, byte[] signature) {
+    public ECDHKeyExchangeReplyMessageSerializerTest(byte[] bytes, int hostKeyLength, int hostKeyTypeLength, String hostKeyType, int exponentLength, BigInteger exponent, int modulusLength, BigInteger modulus, int publicKeyLength, byte[] publicKey, int signatureLength, byte[] signature) {
         this.bytes = bytes;
         this.hostKeyLength = hostKeyLength;
         this.hostKeyTypeLength = hostKeyTypeLength;

@@ -2,6 +2,7 @@ package de.rub.nds.sshattacker.protocol.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.protocol.message.ECDHKeyExchangeReplyMessage;
+import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.Collection;
 import org.junit.After;
@@ -26,9 +27,9 @@ public class ECDHKeyExchangeReplyMessageParserTest {
                 7,
                 "ssh-rsa",
                 0x1,
-                new byte[]{0x23},
+                new BigInteger(new byte[] {0x23}),
                 257,
-                ArrayConverter.hexStringToByteArray("00ab603b8511a67679bdb540db3bd2034b004ae936d06be3d760f08fcbaadb4eb4edc3b3c791c70aae9a74c95869e4774421c2abea92e554305f38b5fd414b3208e574c337e320936518462c7652c98b31e16e7da6523bd200742a6444d83fcd5e1732d03673c7b7811555487b55f0c4494f3829ece60f94255a95cb9af537d7fc8c7fe49ef318474ef2920992052265b0a06ea66d4a167fd9f3a48a1a4a307ec1eaaa5149a969a6ac5d56a5ef627e517d81fb644f5b745c4f478ecd082a9492f744aad326f76c8c4dc9100bc6ab79461d2657cb6f06dec92e6b64a6562ff0e32084ea06ce0ea9d35a583bfb00bad38c9d19703c549892e5aa78dc95e250514069"),
+                new BigInteger(ArrayConverter.hexStringToByteArray("00ab603b8511a67679bdb540db3bd2034b004ae936d06be3d760f08fcbaadb4eb4edc3b3c791c70aae9a74c95869e4774421c2abea92e554305f38b5fd414b3208e574c337e320936518462c7652c98b31e16e7da6523bd200742a6444d83fcd5e1732d03673c7b7811555487b55f0c4494f3829ece60f94255a95cb9af537d7fc8c7fe49ef318474ef2920992052265b0a06ea66d4a167fd9f3a48a1a4a307ec1eaaa5149a969a6ac5d56a5ef627e517d81fb644f5b745c4f478ecd082a9492f744aad326f76c8c4dc9100bc6ab79461d2657cb6f06dec92e6b64a6562ff0e32084ea06ce0ea9d35a583bfb00bad38c9d19703c549892e5aa78dc95e250514069")),
                 32,
                 ArrayConverter.hexStringToByteArray("1c79ad1bb2ac0016492475c7d3807847e9827b640565c170732d001e16414843"),
                 271,
@@ -44,10 +45,10 @@ public class ECDHKeyExchangeReplyMessageParserTest {
     private final String hostKeyType;
 
     private final int exponentLength;
-    private final byte[] exponent;
+    private final BigInteger exponent;
 
     private final int modulusLength;
-    private final byte[] modulus;
+    private final BigInteger modulus;
 
     private final int publicKeyLength;
     private final byte[] publicKey;
@@ -55,7 +56,7 @@ public class ECDHKeyExchangeReplyMessageParserTest {
     private final int signatureLength;
     private final byte[] signature;
 
-    public ECDHKeyExchangeReplyMessageParserTest(byte[] bytes, int hostKeyLength, int hostKeyTypeLength, String hostKeyType, int exponentLength, byte[] exponent, int modulusLength, byte[] modulus, int publicKeyLength, byte[] publicKey, int signatureLength, byte[] signature) {
+    public ECDHKeyExchangeReplyMessageParserTest(byte[] bytes, int hostKeyLength, int hostKeyTypeLength, String hostKeyType, int exponentLength, BigInteger exponent, int modulusLength, BigInteger modulus, int publicKeyLength, byte[] publicKey, int signatureLength, byte[] signature) {
         this.bytes = bytes;
         this.hostKeyLength = hostKeyLength;
         this.hostKeyTypeLength = hostKeyTypeLength;
@@ -98,11 +99,11 @@ public class ECDHKeyExchangeReplyMessageParserTest {
         assertEquals(hostKeyTypeLength, msg.getHostKeyTypeLength().getValue().intValue());
         assertEquals(hostKeyType, msg.getHostKeyType().getValue());
         assertEquals(exponentLength, msg.getExponentLength().getValue().intValue());
-        assertArrayEquals(exponent, msg.getExponent().getValue());
+        assertEquals(exponent, msg.getExponent().getValue());
         assertEquals(modulusLength, msg.getModulusLength().getValue().intValue());
-        assertArrayEquals(modulus, msg.getModulus().getValue());
-        assertEquals(publicKeyLength, msg.getPublicKeyLength().getValue().intValue());
-        assertArrayEquals(publicKey, msg.getPublicKey().getValue());
+        assertEquals(modulus, msg.getModulus().getValue());
+        assertEquals(publicKeyLength, msg.getEphemeralPublicKeyLength().getValue().intValue());
+        assertArrayEquals(publicKey, msg.getEphemeralPublicKey().getValue());
         assertEquals(signatureLength, msg.getSignatureLength().getValue().intValue());
         assertArrayEquals(signature, msg.getSignature().getValue());
     }
