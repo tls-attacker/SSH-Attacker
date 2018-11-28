@@ -2,7 +2,7 @@ package de.rub.nds.sshattacker.protocol.serializer;
 
 import de.rub.nds.protocol.core.message.Serializer;
 import de.rub.nds.sshattacker.constants.ByteConstants;
-import de.rub.nds.sshattacker.constants.InitMessageConstants;
+import de.rub.nds.sshattacker.constants.CharConstants;
 import de.rub.nds.sshattacker.protocol.message.ClientInitMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -33,7 +33,7 @@ public class ClientInitMessageSerializer extends Serializer<ClientInitMessage> {
             LOGGER.debug("Comment: null");
         } else {
             LOGGER.debug("Comment: " + msg.getComment().getValue());
-            appendString(String.valueOf(InitMessageConstants.VERSION_COMMENT_SEPARATOR));
+            appendString(String.valueOf(CharConstants.VERSION_COMMENT_SEPARATOR));
             appendString(msg.getComment().getValue());
         }
     }

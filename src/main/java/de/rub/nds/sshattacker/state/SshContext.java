@@ -29,7 +29,6 @@ public class SshContext {
     private byte[] integrityKeyClientToServer;
     private byte[] integrityKeyServerToClient;
     
-    
     private String clientVersion;
     private String clientComment;
     private String serverVersion;
@@ -38,8 +37,8 @@ public class SshContext {
     private byte[] serverCookie;
     private List<KeyExchangeAlgorithm> clientSupportedKeyExchangeAlgorithms;
     private List<KeyExchangeAlgorithm> serverSupportedKeyExchangeAlgorithms;
-    private List<PublicKeyAuthenticationAlgorithm> clientSupportedPublicKeyAuthenticationAlgorithms;
-    private List<PublicKeyAuthenticationAlgorithm> serverSupportedPublicKeyAuthenticationAlgorithms;
+    private List<PublicKeyAuthenticationAlgorithm> clientSupportedHostKeyAlgorithms;
+    private List<PublicKeyAuthenticationAlgorithm> serverSupportedHostKeyAlgorithms;
     private List<CipherAlgorithm> clientSupportedCipherAlgorithms;
     private List<CipherAlgorithm> serverSupportedCipherAlgorithms;
     private List<MACAlgorithm> clientSupportedMacAlgorithms;
@@ -48,6 +47,8 @@ public class SshContext {
     private List<CompressionAlgorithm> serverSupportedCompressionAlgorithms;
     private List<Language> clientSupportedLanguages;
     private List<Language> serverSupportedLanguages;
+    private byte firstKeyExchangePacketFollows;
+    private int reserved;
     
     private byte[] defaultClientEcdhPublicKey;
 
@@ -176,20 +177,20 @@ public class SshContext {
         this.serverSupportedKeyExchangeAlgorithms = serverSupportedKeyExchangeAlgorithms;
     }
 
-    public List<PublicKeyAuthenticationAlgorithm> getClientSupportedPublicKeyAuthenticationAlgorithms() {
-        return clientSupportedPublicKeyAuthenticationAlgorithms;
+    public List<PublicKeyAuthenticationAlgorithm> getClientSupportedHostKeyAlgorithms() {
+        return clientSupportedHostKeyAlgorithms;
     }
 
-    public void setClientSupportedPublicKeyAuthenticationAlgorithms(List<PublicKeyAuthenticationAlgorithm> clientSupportedPublicKeyAuthenticationAlgorithms) {
-        this.clientSupportedPublicKeyAuthenticationAlgorithms = clientSupportedPublicKeyAuthenticationAlgorithms;
+    public void setClientSupportedHostKeyAlgorithms(List<PublicKeyAuthenticationAlgorithm> clientSupportedHostKeyAlgorithms) {
+        this.clientSupportedHostKeyAlgorithms = clientSupportedHostKeyAlgorithms;
     }
 
-    public List<PublicKeyAuthenticationAlgorithm> getServerSupportedPublicKeyAuthenticationAlgorithms() {
-        return serverSupportedPublicKeyAuthenticationAlgorithms;
+    public List<PublicKeyAuthenticationAlgorithm> getServerSupportedHostKeyAlgorithms() {
+        return serverSupportedHostKeyAlgorithms;
     }
 
-    public void setServerSupportedPublicKeyAuthenticationAlgorithms(List<PublicKeyAuthenticationAlgorithm> serverSupportedPublicKeyAuthenticationAlgorithms) {
-        this.serverSupportedPublicKeyAuthenticationAlgorithms = serverSupportedPublicKeyAuthenticationAlgorithms;
+    public void setServerSupportedHostKeyAlgorithms(List<PublicKeyAuthenticationAlgorithm> serverSupportedHostKeyAlgorithms) {
+        this.serverSupportedHostKeyAlgorithms = serverSupportedHostKeyAlgorithms;
     }
 
     public List<CipherAlgorithm> getClientSupportedCipherAlgorithms() {
@@ -391,7 +392,22 @@ public class SshContext {
     public void setDefaultServerEcdhPublicKey(byte[] defaultServerEcdhPublicKey) {
         this.defaultServerEcdhPublicKey = defaultServerEcdhPublicKey;
     }
-    
+
+    public byte getFirstKeyExchangePacketFollows() {
+        return firstKeyExchangePacketFollows;
+    }
+
+    public void setFirstKeyExchangePacketFollows(byte firstKeyExchangePacketFollows) {
+        this.firstKeyExchangePacketFollows = firstKeyExchangePacketFollows;
+    }
+
+    public int getReserved() {
+        return reserved;
+    }
+
+    public void setReserved(int reserved) {
+        this.reserved = reserved;
+    }
     
     
     private void initFromConfig(){
@@ -407,8 +423,8 @@ public class SshContext {
         this.defaultRsaModulus = config.getDefaultRsaModulus();
         this.clientSupportedKeyExchangeAlgorithms = config.getSupportedKeyExchangeAlgorithms();
         this.serverSupportedKeyExchangeAlgorithms = config.getSupportedKeyExchangeAlgorithms();
-        this.clientSupportedPublicKeyAuthenticationAlgorithms = config.getPublicKeyAuthenticationAlgorithms();
-        this.serverSupportedPublicKeyAuthenticationAlgorithms = config.getPublicKeyAuthenticationAlgorithms();
+        this.clientSupportedHostKeyAlgorithms = config.getPublicKeyAuthenticationAlgorithms();
+        this.serverSupportedHostKeyAlgorithms = config.getPublicKeyAuthenticationAlgorithms();
         this.clientSupportedCipherAlgorithms = config.getSupportedEncryptionAlgorithmsClientToServer();
         this.serverSupportedCipherAlgorithms = config.getSupportedEncryptionAlgorithmsServerToClient();
         this.clientSupportedMacAlgorithms = config.getSupportedMacAlgorithmsClientToServer();
