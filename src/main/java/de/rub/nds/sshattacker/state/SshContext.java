@@ -56,6 +56,7 @@ public class SshContext {
     private BigInteger defaultRsaExponent;
     private BigInteger defaultRsaModulus;
     private byte[] defaultServerEcdhPublicKey;
+    private byte[] keyExchangeSignature;
     
     /**
      * selected values for this connection
@@ -407,6 +408,14 @@ public class SshContext {
 
     public void setReserved(int reserved) {
         this.reserved = reserved;
+    }
+
+    public byte[] getKeyExchangeSignature() {
+        return keyExchangeSignature;
+    }
+
+    public void setKeyExchangeSignature(byte[] keyExchangeSignature) {
+        this.keyExchangeSignature = keyExchangeSignature;
     }
     
     

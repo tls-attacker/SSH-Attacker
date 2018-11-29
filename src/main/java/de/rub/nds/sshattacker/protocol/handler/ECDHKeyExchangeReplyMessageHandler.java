@@ -11,6 +11,10 @@ public class ECDHKeyExchangeReplyMessageHandler extends Handler<ECDHKeyExchangeR
 
     @Override
     public void handle() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        context.setDefaultHostKeyType(message.getHostKeyType().getValue());
+        context.setDefaultRsaExponent(message.getExponent().getValue());
+        context.setDefaultRsaModulus(message.getModulus().getValue());
+        context.setDefaultServerEcdhPublicKey(message.getEphemeralPublicKey().getValue());
+        context.setKeyExchangeSignature(message.getSignature().getValue());
     }
 }
