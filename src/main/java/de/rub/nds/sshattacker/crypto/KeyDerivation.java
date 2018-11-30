@@ -1,6 +1,7 @@
 package de.rub.nds.sshattacker.crypto;
 
 import de.rub.nds.sshattacker.constants.CryptoConstants;
+import de.rub.nds.sshattacker.util.Converter;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.security.MessageDigest;
@@ -21,7 +22,16 @@ public class KeyDerivation {
         return sharedKey;
     }
 
-    public static byte[] computeExchangeHash(byte[] input, String hashFunction) {
+    public static byte[] computeExchangeHash(String clientVersion, String serverVersion, String clientInitMessage, String serverInitMessage, String hostKey, byte[] clientKeyShare, byte[] serverKeyShare, byte[] sharedSecret, String hashFunction) {
+        byte[] clientVersionConverted = Converter.stringToLengthPrefixedString(clientVersion);
+        byte[] serverVersionConverted = Converter.stringToLengthPrefixedString(serverVersion);
+        byte[] clientInitMessageConverted = Converter.stringToLengthPrefixedString(clientInitMessage);
+        byte[] serverInitMessageConverted = Converter.stringToLengthPrefixedString(serverInitMessage);
+        byte[] hostKeyConverted = Converter.stringToLengthPrefixedString(hostKey);
+        byte[] clientKeyShareConverted = Converter.byteArraytoMpint(clientKeyShare);
+        byte[] serverKeyShareConverted = Converter.byteArraytoMpint(serverKeyShare);
+        byte[] keyShareConverted = Converter.byteArraytoMpint(sharedSecret);
+        byte[] input = Converter.concatenate(clientVersionConverted, serverVersionConverted, clientInitMessageConverted, serverInitMessageConverted, hostKeyConverted, clientKeyShareConverted, serverKeyShareConverted, keyShareConverted);
         return getMessageDigestInstance(hashFunction).digest(input);
     }
 
@@ -37,14 +47,15 @@ public class KeyDerivation {
     }
 
     public static byte[] deriveKey(byte[] sharedKey, byte[] exchangeHash, byte use, byte[] sessionID, int outputLen, String hashFunction) {
+        byte[] sharedKeyMpint = Converter.byteArraytoMpint(sharedKey);
         try {
             MessageDigest md = MessageDigest.getInstance(hashFunction);
             ByteArrayOutputStream outStream = new ByteArrayOutputStream();
 
-            outStream.write(md.digest(Arrays.concatenate(sharedKey, exchangeHash, new byte[]{use}, sessionID)));
+            outStream.write(md.digest(Arrays.concatenate(sharedKeyMpint, exchangeHash, new byte[]{use}, sessionID)));
             
             while (outStream.size() < outputLen) {
-                outStream.write(md.digest(Arrays.concatenate(sharedKey, exchangeHash, outStream.toByteArray())));
+                outStream.write(md.digest(Arrays.concatenate(sharedKeyMpint, exchangeHash, outStream.toByteArray())));
             }
             return Arrays.copyOfRange(outStream.toByteArray(), 0, outputLen);
         } catch (NoSuchAlgorithmException e) {
