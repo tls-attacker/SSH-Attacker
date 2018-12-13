@@ -1,5 +1,6 @@
 package de.rub.nds.sshattacker.crypto;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.constants.CryptoConstants;
 import de.rub.nds.sshattacker.util.Converter;
 import java.io.ByteArrayOutputStream;
@@ -22,16 +23,17 @@ public class KeyDerivation {
         return sharedKey;
     }
 
-    public static byte[] computeExchangeHash(String clientVersion, String serverVersion, String clientInitMessage, String serverInitMessage, String hostKey, byte[] clientKeyShare, byte[] serverKeyShare, byte[] sharedSecret, String hashFunction) {
+    public static byte[] computeExchangeHash(String clientVersion, String serverVersion, String clientInitMessage, String serverInitMessage, String hostKey, String clientKeyShare, String serverKeyShare, byte[] sharedSecret, String hashFunction) {
         byte[] clientVersionConverted = Converter.stringToLengthPrefixedString(clientVersion);
         byte[] serverVersionConverted = Converter.stringToLengthPrefixedString(serverVersion);
         byte[] clientInitMessageConverted = Converter.stringToLengthPrefixedString(clientInitMessage);
         byte[] serverInitMessageConverted = Converter.stringToLengthPrefixedString(serverInitMessage);
         byte[] hostKeyConverted = Converter.stringToLengthPrefixedString(hostKey);
-        byte[] clientKeyShareConverted = Converter.byteArraytoMpint(clientKeyShare);
-        byte[] serverKeyShareConverted = Converter.byteArraytoMpint(serverKeyShare);
+        byte[] clientKeyShareConverted = Converter.stringToLengthPrefixedString(clientKeyShare);
+        byte[] serverKeyShareConverted = Converter.stringToLengthPrefixedString(serverKeyShare);
         byte[] keyShareConverted = Converter.byteArraytoMpint(sharedSecret);
         byte[] input = Converter.concatenate(clientVersionConverted, serverVersionConverted, clientInitMessageConverted, serverInitMessageConverted, hostKeyConverted, clientKeyShareConverted, serverKeyShareConverted, keyShareConverted);
+        System.out.println(ArrayConverter.bytesToRawHexString(input));
         return getMessageDigestInstance(hashFunction).digest(input);
     }
 

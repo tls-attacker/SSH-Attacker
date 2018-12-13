@@ -5,6 +5,7 @@ import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.constants.CharConstants;
 import de.rub.nds.sshattacker.constants.DataFormatConstants;
+import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -44,7 +45,13 @@ public class Converter {
     }
     
     public static byte[] stringToLengthPrefixedString(String input){
-        return concatenate(ArrayConverter.intToBytes(input.length(), DataFormatConstants.STRING_SIZE_LENGTH),input.getBytes());
+        try{
+        return concatenate(ArrayConverter.intToBytes(input.length(), DataFormatConstants.STRING_SIZE_LENGTH),input.getBytes("ISO-8859-1"));
+        }
+        catch (UnsupportedEncodingException e){
+            System.out.println("Unsupported Encoding: " + e.getMessage());
+            return new byte[0];
+        }
     }
     
     /**

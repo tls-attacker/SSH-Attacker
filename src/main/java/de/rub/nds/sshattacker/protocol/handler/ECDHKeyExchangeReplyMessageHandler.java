@@ -12,8 +12,8 @@ public class ECDHKeyExchangeReplyMessageHandler extends Handler<ECDHKeyExchangeR
     @Override
     public void handle() {
         context.setDefaultHostKeyType(message.getHostKeyType().getValue());
-        context.setDefaultRsaExponent(message.getExponent().getValue());
-        context.setDefaultRsaModulus(message.getModulus().getValue());
+        context.setDefaultRsaExponent(message.getHostKeyRsaExponent().getValue());
+        context.setDefaultRsaModulus(message.getHostKeyRsaModulus().getValue());
         context.setDefaultServerEcdhPublicKey(message.getEphemeralPublicKey().getValue());
         context.setKeyExchangeSignature(message.getSignature().getValue());
     }

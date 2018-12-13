@@ -64,12 +64,12 @@ public abstract class BinaryPacketParser<T extends BinaryPacket> extends Parser<
     @Override
     public T parse() {
         T msg = createMessage();
-        parsePacketLength(msg);
-        parsePaddingLength(msg);
-        parseMessageID(msg);
-        parsePayload(msg);
-        parsePadding(msg);
-        parseMAC(msg);
+//        parsePacketLength(msg);
+//        parsePaddingLength(msg);
+//        parseMessageID(msg);
+//        parsePayload(msg);
+//        parsePadding(msg);
+//        parseMAC(msg);
         parseMessageSpecificPayload(msg);
         return msg;
     }

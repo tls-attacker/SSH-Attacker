@@ -32,23 +32,23 @@ public class ECDHKeyExchangeReplyMessageSerializer extends BinaryPacketSerialize
     }
 
     private void serializeExponentLength(ECDHKeyExchangeReplyMessage msg) {
-        appendInt(msg.getExponentLength().getValue(), BinaryPacketConstants.LENGTH_FIELD_LENGTH);
-        LOGGER.debug("ExponentLength: " + msg.getExponentLength().getValue());
+        appendInt(msg.getHostKeyRsaExponentLength().getValue(), BinaryPacketConstants.LENGTH_FIELD_LENGTH);
+        LOGGER.debug("ExponentLength: " + msg.getHostKeyRsaExponentLength().getValue());
     }
 
     private void serializeExponent(ECDHKeyExchangeReplyMessage msg) {
-        appendBytes(msg.getExponent().getValue().toByteArray());
-        LOGGER.debug("Exponent: " + msg.getExponent());
+        appendBytes(msg.getHostKeyRsaExponent().getValue().toByteArray());
+        LOGGER.debug("Exponent: " + msg.getHostKeyRsaExponent());
     }
 
     private void serializeModulusLength(ECDHKeyExchangeReplyMessage msg) {
-        appendInt(msg.getModulusLength().getValue(), BinaryPacketConstants.LENGTH_FIELD_LENGTH);
-        LOGGER.debug("ModulusLength: " + msg.getModulusLength().getValue());
+        appendInt(msg.getHostKeyRsaModulusLength().getValue(), BinaryPacketConstants.LENGTH_FIELD_LENGTH);
+        LOGGER.debug("ModulusLength: " + msg.getHostKeyRsaModulusLength().getValue());
     }
 
     private void serializeModulus(ECDHKeyExchangeReplyMessage msg) {
-        appendBytes(msg.getModulus().getValue().toByteArray());
-        LOGGER.debug("Modulus: " + msg.getModulus());
+        appendBytes(msg.getHostKeyRsaModulus().getValue().toByteArray());
+        LOGGER.debug("Modulus: " + msg.getHostKeyRsaModulus());
     }
 
     private void serializePublicKeyLength(ECDHKeyExchangeReplyMessage msg) {

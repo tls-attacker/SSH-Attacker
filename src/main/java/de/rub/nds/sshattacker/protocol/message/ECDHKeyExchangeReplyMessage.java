@@ -14,11 +14,16 @@ public class ECDHKeyExchangeReplyMessage extends BinaryPacket {
     private ModifiableInteger hostKeyTypeLength;
     private ModifiableString hostKeyType;
 
-    private ModifiableInteger exponentLength;
-    private ModifiableBigInteger exponent;
+    private ModifiableInteger hostKeyRsaExponentLength;
+    private ModifiableBigInteger hostKeyRsaExponent;
 
-    private ModifiableInteger modulusLength;
-    private ModifiableBigInteger modulus;
+    private ModifiableInteger hostKeyRsaModulusLength;
+    private ModifiableBigInteger hostKeyRsaModulus;
+    
+    private ModifiableInteger eccCurveIdentifierLength;
+    private ModifiableString eccCurveIdentifier;
+    private ModifiableInteger hostKeyEccLength;
+    private ModifiableByteArray hostKeyEcc;
 
     private ModifiableInteger ephemeralPublicKeyLength;
     private ModifiableByteArray ephemeralPublicKey;
@@ -62,52 +67,52 @@ public class ECDHKeyExchangeReplyMessage extends BinaryPacket {
         this.hostKeyLength = ModifiableVariableFactory.safelySetValue(this.hostKeyLength, hostKeyLength);
     }
 
-    public ModifiableInteger getExponentLength() {
-        return exponentLength;
+    public ModifiableInteger getHostKeyRsaExponentLength() {
+        return hostKeyRsaExponentLength;
     }
 
-    public void setExponentLength(ModifiableInteger exponentLength) {
-        this.exponentLength = exponentLength;
+    public void setHostKeyRsaExponentLength(ModifiableInteger hostKeyRsaExponentLength) {
+        this.hostKeyRsaExponentLength = hostKeyRsaExponentLength;
     }
 
     public void setExponentLength(int exponentLength) {
-        this.exponentLength = ModifiableVariableFactory.safelySetValue(this.exponentLength, exponentLength);
+        this.hostKeyRsaExponentLength = ModifiableVariableFactory.safelySetValue(this.hostKeyRsaExponentLength, exponentLength);
     }
 
-    public ModifiableBigInteger getExponent() {
-        return exponent;
+    public ModifiableBigInteger getHostKeyRsaExponent() {
+        return hostKeyRsaExponent;
     }
 
-    public void setExponent(ModifiableBigInteger exponent) {
-        this.exponent = exponent;
+    public void setHostKeyRsaExponent(ModifiableBigInteger hostKeyRsaExponent) {
+        this.hostKeyRsaExponent = hostKeyRsaExponent;
     }
 
     public void setExponent(BigInteger exponent) {
-        this.exponent = ModifiableVariableFactory.safelySetValue(this.exponent, exponent);
+        this.hostKeyRsaExponent = ModifiableVariableFactory.safelySetValue(this.hostKeyRsaExponent, exponent);
     }
 
-    public ModifiableInteger getModulusLength() {
-        return modulusLength;
+    public ModifiableInteger getHostKeyRsaModulusLength() {
+        return hostKeyRsaModulusLength;
     }
 
-    public void setModulusLength(ModifiableInteger modulusLength) {
-        this.modulusLength = modulusLength;
+    public void setHostKeyRsaModulusLength(ModifiableInteger hostKeyRsaModulusLength) {
+        this.hostKeyRsaModulusLength = hostKeyRsaModulusLength;
     }
 
     public void setModulusLength(int modulusLength) {
-        this.modulusLength = ModifiableVariableFactory.safelySetValue(this.modulusLength, modulusLength);
+        this.hostKeyRsaModulusLength = ModifiableVariableFactory.safelySetValue(this.hostKeyRsaModulusLength, modulusLength);
     }
 
-    public ModifiableBigInteger getModulus() {
-        return modulus;
+    public ModifiableBigInteger getHostKeyRsaModulus() {
+        return hostKeyRsaModulus;
     }
 
-    public void setModulus(ModifiableBigInteger modulus) {
-        this.modulus = modulus;
+    public void setHostKeyRsaModulus(ModifiableBigInteger hostKeyRsaModulus) {
+        this.hostKeyRsaModulus = hostKeyRsaModulus;
     }
 
     public void setModulus(BigInteger modulus) {
-        this.modulus = ModifiableVariableFactory.safelySetValue(this.modulus, modulus);
+        this.hostKeyRsaModulus = ModifiableVariableFactory.safelySetValue(this.hostKeyRsaModulus, modulus);
     }
 
     public ModifiableInteger getEphemeralPublicKeyLength() {
@@ -165,4 +170,53 @@ public class ECDHKeyExchangeReplyMessage extends BinaryPacket {
     public void setSignature(byte[] signature) {
         this.signature = ModifiableVariableFactory.safelySetValue(this.signature, signature);
     }
+
+    public ModifiableInteger getHostKeyEccLength() {
+        return hostKeyEccLength;
+    }
+
+    public void setHostKeyEccLength(ModifiableInteger hostKeyEccLength) {
+        this.hostKeyEccLength = hostKeyEccLength;
+    }
+    
+    public void setHostKeyEccLength(int hostKeyEccLength) {
+        this.hostKeyEccLength = ModifiableVariableFactory.safelySetValue(this.hostKeyEccLength, hostKeyEccLength);
+    }
+
+    public ModifiableByteArray getHostKeyEcc() {
+        return hostKeyEcc;
+    }
+
+    public void setHostKeyEcc(ModifiableByteArray hostKeyEcc) {
+        this.hostKeyEcc = hostKeyEcc;
+    }
+    
+    public void setHostKeyEcc(byte[] hostKeyEcc) {
+        this.hostKeyEcc = ModifiableVariableFactory.safelySetValue(this.hostKeyEcc, hostKeyEcc);
+    }
+
+    public ModifiableInteger getEccCurveIdentifierLength() {
+        return eccCurveIdentifierLength;
+    }
+
+    public void setEccCurveIdentifierLength(ModifiableInteger eccCurveIdentifierLength) {
+        this.eccCurveIdentifierLength = eccCurveIdentifierLength;
+    }
+    
+    public void setEccCurveIdentifierLength(int eccCurveIdentifierLength) {
+        this.eccCurveIdentifierLength = ModifiableVariableFactory.safelySetValue(this.eccCurveIdentifierLength, eccCurveIdentifierLength);
+    }
+
+    public ModifiableString getEccCurveIdentifier() {
+        return eccCurveIdentifier;
+    }
+
+    public void setEccCurveIdentifier(ModifiableString eccCurveIdentifier) {
+        this.eccCurveIdentifier = eccCurveIdentifier;
+    }
+    
+    public void setEccCurveIdentifier(String eccCurveIdentifier) {
+        this.eccCurveIdentifier = ModifiableVariableFactory.safelySetValue(this.eccCurveIdentifier, eccCurveIdentifier);
+    }
+    
 }

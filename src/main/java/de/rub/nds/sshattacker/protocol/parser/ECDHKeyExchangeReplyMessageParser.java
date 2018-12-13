@@ -20,32 +20,32 @@ public class ECDHKeyExchangeReplyMessageParser extends BinaryPacketParser<ECDHKe
 
     private void parseHostKeyTypeLength(ECDHKeyExchangeReplyMessage msg) {
         msg.setHostKeyTypeLength(parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH));
-        LOGGER.debug("HostKeyTypeLength: " + msg.getHostKeyLength().getValue());
+        LOGGER.debug("HostKeyTypeLength: " + msg.getHostKeyTypeLength().getValue());
     }
 
     private void parseHostKeyType(ECDHKeyExchangeReplyMessage msg) {
         msg.setHostKeyType(parseByteString(msg.getHostKeyTypeLength().getValue()));
-        LOGGER.debug("HostKeyType: " + msg.getHostKeyType());
+        LOGGER.debug("HostKeyType: " + msg.getHostKeyType().getValue());
     }
 
-    private void parseExponentLength(ECDHKeyExchangeReplyMessage msg) {
+    private void parseHostKeyRsaExponentLength(ECDHKeyExchangeReplyMessage msg) {
         msg.setExponentLength(parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH));
-        LOGGER.debug("ExponentLength: " + msg.getExponentLength().getValue());
+        LOGGER.debug("ExponentLength: " + msg.getHostKeyRsaExponentLength().getValue());
     }
 
-    private void parseExponent(ECDHKeyExchangeReplyMessage msg) {
-        msg.setExponent(parseBigIntField(msg.getExponentLength().getValue()));
-        LOGGER.debug("Exponent: " + msg.getExponent());
+    private void parseHostKeyRsaExponent(ECDHKeyExchangeReplyMessage msg) {
+        msg.setExponent(parseBigIntField(msg.getHostKeyRsaExponentLength().getValue()));
+        LOGGER.debug("Exponent: " + msg.getHostKeyRsaExponent());
     }
 
-    private void parseModulusLength(ECDHKeyExchangeReplyMessage msg) {
+    private void parseHostKeyRsaModulusLength(ECDHKeyExchangeReplyMessage msg) {
         msg.setModulusLength(parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH));
-        LOGGER.debug("ModulusLength: " + msg.getModulusLength().getValue());
+        LOGGER.debug("ModulusLength: " + msg.getHostKeyRsaModulusLength().getValue());
     }
 
-    private void parseModulus(ECDHKeyExchangeReplyMessage msg) {
-        msg.setModulus(parseBigIntField(msg.getModulusLength().getValue()));
-        LOGGER.debug("Modulus: " + msg.getModulus());
+    private void parseHostKeyRsaModulus(ECDHKeyExchangeReplyMessage msg) {
+        msg.setModulus(parseBigIntField(msg.getHostKeyRsaModulusLength().getValue()));
+        LOGGER.debug("Modulus: " + msg.getHostKeyRsaModulus());
     }
 
     private void parsePublicKeyLength(ECDHKeyExchangeReplyMessage msg) {
@@ -68,21 +68,53 @@ public class ECDHKeyExchangeReplyMessageParser extends BinaryPacketParser<ECDHKe
         LOGGER.debug("Signature :" + msg.getSignature());
     }
 
+    private void parseEccCurveIdentifierLength(ECDHKeyExchangeReplyMessage msg){
+        msg.setEccCurveIdentifierLength(parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH));
+        LOGGER.debug("EccIdentifierLength: " + msg.getEccCurveIdentifierLength().getValue());
+    }
+
+    private void parseEccCurveIdentifier(ECDHKeyExchangeReplyMessage msg){
+        msg.setEccCurveIdentifier(parseByteString(msg.getEccCurveIdentifierLength().getValue()));
+        LOGGER.debug("EccIdentifier: " + msg.getEccCurveIdentifier().getValue());
+    }
+    
+    private void parseEccHostKeyLength(ECDHKeyExchangeReplyMessage msg){
+        msg.setHostKeyEccLength(parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH));
+        LOGGER.debug("EccHostKeyLength: " + msg.getHostKeyEccLength().getValue());
+    }
+    
+    private void parseEccHostKeyValue(ECDHKeyExchangeReplyMessage msg){
+        msg.setHostKeyEcc(parseByteArrayField(msg.getHostKeyEccLength().getValue()));
+        LOGGER.debug("EccHostKey: " + msg.getHostKeyEcc());
+    }
+    
     @Override
     public void parseMessageSpecificPayload(ECDHKeyExchangeReplyMessage msg) {
         parseHostKeyLength(msg);
         parseHostKeyTypeLength(msg);
         parseHostKeyType(msg);
-        parseExponentLength(msg);
-        parseExponent(msg);
-        parseModulusLength(msg);
-        parseModulus(msg);
+        //parseRsaHostKey(msg);
+        parseEccHostKey(msg);
         parsePublicKeyLength(msg);
         parsePublicKey(msg);
         parseSignatureLength(msg);
         parseSignature(msg);
     }
 
+    private void parseEccHostKey(ECDHKeyExchangeReplyMessage msg){
+        parseEccCurveIdentifierLength(msg);
+        parseEccCurveIdentifier(msg);
+        parseEccHostKeyLength(msg);
+        parseEccHostKeyValue(msg);
+    }
+    
+    private void parseRsaHostKey(ECDHKeyExchangeReplyMessage msg){
+        parseHostKeyRsaExponentLength(msg);
+        parseHostKeyRsaExponent(msg);
+        parseHostKeyRsaModulusLength(msg);
+        parseHostKeyRsaModulus(msg);
+    }
+    
     @Override
     public ECDHKeyExchangeReplyMessage createMessage() {
         return new ECDHKeyExchangeReplyMessage();
