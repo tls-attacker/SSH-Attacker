@@ -7,6 +7,7 @@ import de.rub.nds.sshattacker.constants.CharConstants;
 import de.rub.nds.sshattacker.constants.DataFormatConstants;
 import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.apache.logging.log4j.LogManager;
@@ -30,8 +31,10 @@ public class Converter {
     
     public static List StringToAlgorithms(String string, Class myClass){
         String[] splitted = string.split(String.valueOf(CharConstants.ALGORITHM_SEPARATOR));
-        // TODO make robust
-        return Arrays.stream(splitted).map(s -> Enum.valueOf(myClass, string)).collect(Collectors.toList());
+        // TODO return enums or strings
+        //return Arrays.stream(splitted).map(s -> Enum.valueOf(myClass, string))
+                                      //.collect(Collectors.toList());
+        return new LinkedList();
     }
     
     public static byte[] byteArraytoMpint(byte[] input){

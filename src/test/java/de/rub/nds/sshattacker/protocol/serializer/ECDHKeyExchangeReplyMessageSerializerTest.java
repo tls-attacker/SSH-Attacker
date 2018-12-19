@@ -2,7 +2,6 @@ package de.rub.nds.sshattacker.protocol.serializer;
 
 import de.rub.nds.sshattacker.protocol.message.ECDHKeyExchangeReplyMessage;
 import de.rub.nds.sshattacker.protocol.parser.ECDHKeyExchangeReplyMessageParserTest;
-import java.math.BigInteger;
 import java.util.Collection;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -28,11 +27,11 @@ public class ECDHKeyExchangeReplyMessageSerializerTest {
     private final int hostKeyTypeLength;
     private final String hostKeyType;
 
-    private final int exponentLength;
-    private final BigInteger exponent;
+    private final int eccCurveIdentifierLength;
+    private final String eccCurveIdentifier;
 
-    private final int modulusLength;
-    private final BigInteger modulus;
+    private final int eccHostKeyLength;
+    private final byte[] eccHostKey;
 
     private final int publicKeyLength;
     private final byte[] publicKey;
@@ -40,15 +39,15 @@ public class ECDHKeyExchangeReplyMessageSerializerTest {
     private final int signatureLength;
     private final byte[] signature;
 
-    public ECDHKeyExchangeReplyMessageSerializerTest(byte[] bytes, int hostKeyLength, int hostKeyTypeLength, String hostKeyType, int exponentLength, BigInteger exponent, int modulusLength, BigInteger modulus, int publicKeyLength, byte[] publicKey, int signatureLength, byte[] signature) {
+    public ECDHKeyExchangeReplyMessageSerializerTest(byte[] bytes, int hostKeyLength, int hostKeyTypeLength, String hostKeyType, int eccCurveIdentifierLength, String eccCurveIdentifier, int eccHostKeyLength, byte[] eccHostKey, int publicKeyLength, byte[] publicKey, int signatureLength, byte[] signature) {
         this.bytes = bytes;
         this.hostKeyLength = hostKeyLength;
         this.hostKeyTypeLength = hostKeyTypeLength;
         this.hostKeyType = hostKeyType;
-        this.exponentLength = exponentLength;
-        this.exponent = exponent;
-        this.modulusLength = modulusLength;
-        this.modulus = modulus;
+        this.eccCurveIdentifierLength = eccCurveIdentifierLength;
+        this.eccCurveIdentifier = eccCurveIdentifier;
+        this.eccHostKeyLength = eccHostKeyLength;
+        this.eccHostKey = eccHostKey;
         this.publicKeyLength = publicKeyLength;
         this.publicKey = publicKey;
         this.signatureLength = signatureLength;
@@ -81,10 +80,10 @@ public class ECDHKeyExchangeReplyMessageSerializerTest {
         msg.setHostKeyLength(hostKeyLength);
         msg.setHostKeyTypeLength(hostKeyTypeLength);
         msg.setHostKeyType(hostKeyType);
-        msg.setExponentLength(exponentLength);
-        msg.setExponent(exponent);
-        msg.setModulusLength(modulusLength);
-        msg.setModulus(modulus);
+        msg.setEccCurveIdentifierLength(eccCurveIdentifierLength);
+        msg.setEccCurveIdentifier(eccCurveIdentifier);
+        msg.setHostKeyEccLength(eccHostKeyLength);
+        msg.setHostKeyEcc(eccHostKey);
         msg.setPublicKeyLength(publicKeyLength);
         msg.setPublicKey(publicKey);
         msg.setSignatureLength(signatureLength);

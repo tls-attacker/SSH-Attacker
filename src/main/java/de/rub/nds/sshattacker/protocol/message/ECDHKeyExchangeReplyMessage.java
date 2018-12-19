@@ -218,5 +218,4 @@ public class ECDHKeyExchangeReplyMessage extends BinaryPacket {
     public void setEccCurveIdentifier(String eccCurveIdentifier) {
         this.eccCurveIdentifier = ModifiableVariableFactory.safelySetValue(this.eccCurveIdentifier, eccCurveIdentifier);
     }
-    
 }
