@@ -6,7 +6,10 @@ import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.protocol.core.message.Parser;
 import de.rub.nds.sshattacker.constants.BinaryPacketConstants;
+import de.rub.nds.sshattacker.constants.MessageIDConstants;
 import de.rub.nds.sshattacker.protocol.message.BinaryPacket;
+import de.rub.nds.sshattacker.protocol.message.ECDHKeyExchangeInitMessage;
+import de.rub.nds.sshattacker.protocol.message.ECDHKeyExchangeReplyMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -60,21 +63,38 @@ public abstract class BinaryPacketParser<T extends BinaryPacket> extends Parser<
             msg.setMac(mac);
         }
     }
+    
+    public static BinaryPacket delegateParsing(byte[] raw){
+        byte messageID = raw[5];
+        switch (messageID){
+            case MessageIDConstants.SSH_MSG_KEXINIT: return new KeyExchangeInitMessageParser(0, raw).parse();
+            case MessageIDConstants.SSH_MSG_KEX_ECDH_INIT: return new ECDHKeyExchangeInitMessageParser(0, raw).parse();
+            case MessageIDConstants.SSH_MSG_KEX_ECDH_REPLY: return new ECDHKeyExchangeReplyMessageParser(0, raw).parse();
+            case MessageIDConstants.SSH_MSG_NEWKEYS: return // TODO what to do with newkeys? derive a new binarypacket instance?
+            default: LOGGER.debug("Unknown MessageID: " + messageID);
+                     return null;
+        }
+    }
 
     @Override
     public T parse() {
         T msg = createMessage();
-//        parsePacketLength(msg);
-//        parsePaddingLength(msg);
-//        parseMessageID(msg);
-//        parsePayload(msg);
-//        parsePadding(msg);
-//        parseMAC(msg);
+        parsePacketLength(msg);
+        parsePaddingLength(msg);
+        parseMessageID(msg);
         parseMessageSpecificPayload(msg);
+//        parsePayload(msg);
+        parsePadding(msg);
+        parseMAC(msg);
         return msg;
     }
 
     public abstract T createMessage();
 
     protected abstract void parseMessageSpecificPayload(T msg);
+    public T parseMessageSpecificPayload(){
+        T msg = createMessage();
+        parseMessageSpecificPayload(msg);
+        return msg;
+    }
 }

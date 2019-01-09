@@ -11,7 +11,7 @@ public class BinaryPacket extends Message {
 
     private ModifiableInteger packetLength;
     private ModifiableByte paddingLength;
-    private ModifiableByte messageID;
+    protected ModifiableByte messageID;
     private ModifiableByteArray payload;
     private ModifiableByteArray padding;
     private ModifiableByteArray mac;

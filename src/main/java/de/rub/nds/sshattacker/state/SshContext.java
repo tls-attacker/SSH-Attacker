@@ -56,6 +56,7 @@ public class SshContext {
     private BigInteger defaultRsaExponent;
     private BigInteger defaultRsaModulus;
     private byte[] defaultServerEcdhPublicKey;
+    private byte[] serverHostKey;
     private byte[] keyExchangeSignature;
     
     /**
@@ -417,7 +418,14 @@ public class SshContext {
     public void setKeyExchangeSignature(byte[] keyExchangeSignature) {
         this.keyExchangeSignature = keyExchangeSignature;
     }
-    
+
+    public byte[] getServerHostKey() {
+        return serverHostKey;
+    }
+
+    public void setServerHostKey(byte[] serverHostKey) {
+        this.serverHostKey = serverHostKey;
+    }
     
     private void initFromConfig(){
         this.clientVersion = config.getClientVersion();
