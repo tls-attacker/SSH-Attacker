@@ -10,7 +10,7 @@ public class ECDHKeyExchangeReplyMessageHandler extends Handler<ECDHKeyExchangeR
     }
 
     @Override
-    public void handle() {
+    public void handle() { // TODO conditional handling of host keys
         context.setDefaultHostKeyType(message.getHostKeyType().getValue());
         context.setDefaultServerEcdhPublicKey(message.getEphemeralPublicKey().getValue());
         context.setKeyExchangeSignature(message.getSignature().getValue());

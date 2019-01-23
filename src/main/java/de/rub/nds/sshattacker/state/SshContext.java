@@ -2,7 +2,7 @@ package de.rub.nds.sshattacker.state;
 
 import de.rub.nds.sshattacker.config.Config;
 import de.rub.nds.sshattacker.connection.AliasedConnection;
-import de.rub.nds.sshattacker.constants.CipherAlgorithm;
+import de.rub.nds.sshattacker.constants.EncryptionAlgorithm;
 import de.rub.nds.sshattacker.constants.CompressionAlgorithm;
 import de.rub.nds.sshattacker.constants.KeyExchangeAlgorithm;
 import de.rub.nds.sshattacker.constants.Language;
@@ -12,23 +12,43 @@ import java.math.BigInteger;
 import java.util.List;
 
 public class SshContext {
-    
+
     private Config config;
     private AliasedConnection connection;
 
     private byte[] sharedSecret;
     private byte[] exchangeHash;
     private byte[] sessionID;
-    
+
     private byte[] initialIvClientToServer;
     private byte[] initialIvServerToClient;
-    
+
     private byte[] encryptionKeyClientToServer;
     private byte[] encryptionKeyServerToClient;
-    
+
     private byte[] integrityKeyClientToServer;
     private byte[] integrityKeyServerToClient;
-    
+
+    private byte[] defaultClientEcdhPublicKey;
+
+    private String defaultHostKeyType;
+    private BigInteger defaultRsaExponent;
+    private BigInteger defaultRsaModulus;
+    private byte[] defaultServerEcdhPublicKey;
+    private byte[] serverHostKey;
+    private byte[] keyExchangeSignature;
+
+    /**
+     * selected values for this connection
+     */
+    private KeyExchangeAlgorithm keyExchangeAlgorithm;
+    private PublicKeyAuthenticationAlgorithm publicKeyAuthenticationAlgorithm;
+    private EncryptionAlgorithm cipherAlgorithm;
+    private MACAlgorithm macAlgorithm;
+    private CompressionAlgorithm compressionAlgorithm;
+    private Language language;
+
+// BEGIN_GENERATED
     private String clientVersion;
     private String clientComment;
     private String serverVersion;
@@ -39,42 +59,273 @@ public class SshContext {
     private List<KeyExchangeAlgorithm> serverSupportedKeyExchangeAlgorithms;
     private List<PublicKeyAuthenticationAlgorithm> clientSupportedHostKeyAlgorithms;
     private List<PublicKeyAuthenticationAlgorithm> serverSupportedHostKeyAlgorithms;
-    private List<CipherAlgorithm> clientSupportedCipherAlgorithms;
-    private List<CipherAlgorithm> serverSupportedCipherAlgorithms;
-    private List<MACAlgorithm> clientSupportedMacAlgorithms;
-    private List<MACAlgorithm> serverSupportedMacAlgorithms;
-    private List<CompressionAlgorithm> clientSupportedCompressionAlgorithms;
-    private List<CompressionAlgorithm> serverSupportedCompressionAlgorithms;
-    private List<Language> clientSupportedLanguages;
-    private List<Language> serverSupportedLanguages;
-    private byte firstKeyExchangePacketFollows;
-    private int reserved;
-    
-    private byte[] defaultClientEcdhPublicKey;
+    private List<EncryptionAlgorithm> clientSupportedCipherAlgorithmsSending;
+    private List<EncryptionAlgorithm> clientSupportedCipherAlgorithmsReceiving;
+    private List<EncryptionAlgorithm> serverSupportedCipherAlgorithmsSending;
+    private List<EncryptionAlgorithm> serverSupportedCipherAlgorithmsReceiving;
+    private List<MACAlgorithm> clientSupportedMacAlgorithmsSending;
+    private List<MACAlgorithm> clientSupportedMacAlgorithmsReceiving;
+    private List<MACAlgorithm> serverSupportedMacAlgorithmsSending;
+    private List<MACAlgorithm> serverSupportedMacAlgorithmsReceiving;
+    private List<CompressionAlgorithm> clientSupportedCompressionAlgorithmsSending;
+    private List<CompressionAlgorithm> clientSupportedCompressionAlgorithmsReceiving;
+    private List<CompressionAlgorithm> serverSupportedCompressionAlgorithmsSending;
+    private List<CompressionAlgorithm> serverSupportedCompressionAlgorithmsReceiving;
+    private List<Language> clientSupportedLanguagesSending;
+    private List<Language> clientSupportedLanguagesReceiving;
+    private List<Language> serverSupportedLanguagesSending;
+    private List<Language> serverSupportedLanguagesReceiving;
+    private Byte clientFirstKeyExchangePacketFollows;
+    private Byte serverFirstKeyExchangePacketFollows;
+    private Integer clientReserved;
+    private Integer serverReserved;
 
-    private String defaultHostKeyType;
-    private BigInteger defaultRsaExponent;
-    private BigInteger defaultRsaModulus;
-    private byte[] defaultServerEcdhPublicKey;
-    private byte[] serverHostKey;
-    private byte[] keyExchangeSignature;
-    
-    /**
-     * selected values for this connection
-     */
-    private KeyExchangeAlgorithm keyExchangeAlgorithm;
-    private PublicKeyAuthenticationAlgorithm publicKeyAuthenticationAlgorithm;
-    private CipherAlgorithm cipherAlgorithm;
-    private MACAlgorithm macAlgorithm;
-    private CompressionAlgorithm compressionAlgorithm;
-    private Language language;
+    public String getClientVersion() {
+        return clientVersion;
+    }
 
+    public String getClientComment() {
+        return clientComment;
+    }
+
+    public String getServerVersion() {
+        return serverVersion;
+    }
+
+    public String getServerComment() {
+        return serverComment;
+    }
+
+    public byte[] getClientCookie() {
+        return clientCookie;
+    }
+
+    public byte[] getServerCookie() {
+        return serverCookie;
+    }
+
+    public List<KeyExchangeAlgorithm> getClientSupportedKeyExchangeAlgorithms() {
+        return clientSupportedKeyExchangeAlgorithms;
+    }
+
+    public List<KeyExchangeAlgorithm> getServerSupportedKeyExchangeAlgorithms() {
+        return serverSupportedKeyExchangeAlgorithms;
+    }
+
+    public List<PublicKeyAuthenticationAlgorithm> getClientSupportedHostKeyAlgorithms() {
+        return clientSupportedHostKeyAlgorithms;
+    }
+
+    public List<PublicKeyAuthenticationAlgorithm> getServerSupportedHostKeyAlgorithms() {
+        return serverSupportedHostKeyAlgorithms;
+    }
+
+    public List<EncryptionAlgorithm> getClientSupportedCipherAlgorithmsSending() {
+        return clientSupportedCipherAlgorithmsSending;
+    }
+
+    public List<EncryptionAlgorithm> getClientSupportedCipherAlgorithmsReceiving() {
+        return clientSupportedCipherAlgorithmsReceiving;
+    }
+
+    public List<EncryptionAlgorithm> getServerSupportedCipherAlgorithmsSending() {
+        return serverSupportedCipherAlgorithmsSending;
+    }
+
+    public List<EncryptionAlgorithm> getServerSupportedCipherAlgorithmsReceiving() {
+        return serverSupportedCipherAlgorithmsReceiving;
+    }
+
+    public List<MACAlgorithm> getClientSupportedMacAlgorithmsSending() {
+        return clientSupportedMacAlgorithmsSending;
+    }
+
+    public List<MACAlgorithm> getClientSupportedMacAlgorithmsReceiving() {
+        return clientSupportedMacAlgorithmsReceiving;
+    }
+
+    public List<MACAlgorithm> getServerSupportedMacAlgorithmsSending() {
+        return serverSupportedMacAlgorithmsSending;
+    }
+
+    public List<MACAlgorithm> getServerSupportedMacAlgorithmsReceiving() {
+        return serverSupportedMacAlgorithmsReceiving;
+    }
+
+    public List<CompressionAlgorithm> getClientSupportedCompressionAlgorithmsSending() {
+        return clientSupportedCompressionAlgorithmsSending;
+    }
+
+    public List<CompressionAlgorithm> getClientSupportedCompressionAlgorithmsReceiving() {
+        return clientSupportedCompressionAlgorithmsReceiving;
+    }
+
+    public List<CompressionAlgorithm> getServerSupportedCompressionAlgorithmsSending() {
+        return serverSupportedCompressionAlgorithmsSending;
+    }
+
+    public List<CompressionAlgorithm> getServerSupportedCompressionAlgorithmsReceiving() {
+        return serverSupportedCompressionAlgorithmsReceiving;
+    }
+
+    public List<Language> getClientSupportedLanguagesSending() {
+        return clientSupportedLanguagesSending;
+    }
+
+    public List<Language> getClientSupportedLanguagesReceiving() {
+        return clientSupportedLanguagesReceiving;
+    }
+
+    public List<Language> getServerSupportedLanguagesSending() {
+        return serverSupportedLanguagesSending;
+    }
+
+    public List<Language> getServerSupportedLanguagesReceiving() {
+        return serverSupportedLanguagesReceiving;
+    }
+
+    public Byte getClientFirstKeyExchangePacketFollows() {
+        return clientFirstKeyExchangePacketFollows;
+    }
+
+    public Byte getServerFirstKeyExchangePacketFollows() {
+        return serverFirstKeyExchangePacketFollows;
+    }
+
+    public Integer getClientReserved() {
+        return clientReserved;
+    }
+
+    public Integer getServerReserved() {
+        return serverReserved;
+    }
+
+    public void setClientVersion(String clientVersion) {
+        this.clientVersion = clientVersion;
+    }
+
+    public void setClientComment(String clientComment) {
+        this.clientComment = clientComment;
+    }
+
+    public void setServerVersion(String serverVersion) {
+        this.serverVersion = serverVersion;
+    }
+
+    public void setServerComment(String serverComment) {
+        this.serverComment = serverComment;
+    }
+
+    public void setClientCookie(byte[] clientCookie) {
+        this.clientCookie = clientCookie;
+    }
+
+    public void setServerCookie(byte[] serverCookie) {
+        this.serverCookie = serverCookie;
+    }
+
+    public void setClientSupportedKeyExchangeAlgorithms(List<KeyExchangeAlgorithm> clientSupportedKeyExchangeAlgorithms) {
+        this.clientSupportedKeyExchangeAlgorithms = clientSupportedKeyExchangeAlgorithms;
+    }
+
+    public void setServerSupportedKeyExchangeAlgorithms(List<KeyExchangeAlgorithm> serverSupportedKeyExchangeAlgorithms) {
+        this.serverSupportedKeyExchangeAlgorithms = serverSupportedKeyExchangeAlgorithms;
+    }
+
+    public void setClientSupportedHostKeyAlgorithms(List<PublicKeyAuthenticationAlgorithm> clientSupportedHostKeyAlgorithms) {
+        this.clientSupportedHostKeyAlgorithms = clientSupportedHostKeyAlgorithms;
+    }
+
+    public void setServerSupportedHostKeyAlgorithms(List<PublicKeyAuthenticationAlgorithm> serverSupportedHostKeyAlgorithms) {
+        this.serverSupportedHostKeyAlgorithms = serverSupportedHostKeyAlgorithms;
+    }
+
+    public void setClientSupportedCipherAlgorithmsSending(List<EncryptionAlgorithm> clientSupportedCipherAlgorithmsSending) {
+        this.clientSupportedCipherAlgorithmsSending = clientSupportedCipherAlgorithmsSending;
+    }
+
+    public void setClientSupportedCipherAlgorithmsReceiving(List<EncryptionAlgorithm> clientSupportedCipherAlgorithmsReceiving) {
+        this.clientSupportedCipherAlgorithmsReceiving = clientSupportedCipherAlgorithmsReceiving;
+    }
+
+    public void setServerSupportedCipherAlgorithmsSending(List<EncryptionAlgorithm> serverSupportedCipherAlgorithmsSending) {
+        this.serverSupportedCipherAlgorithmsSending = serverSupportedCipherAlgorithmsSending;
+    }
+
+    public void setServerSupportedCipherAlgorithmsReceiving(List<EncryptionAlgorithm> serverSupportedCipherAlgorithmsReceiving) {
+        this.serverSupportedCipherAlgorithmsReceiving = serverSupportedCipherAlgorithmsReceiving;
+    }
+
+    public void setClientSupportedMacAlgorithmsSending(List<MACAlgorithm> clientSupportedMacAlgorithmsSending) {
+        this.clientSupportedMacAlgorithmsSending = clientSupportedMacAlgorithmsSending;
+    }
+
+    public void setClientSupportedMacAlgorithmsReceiving(List<MACAlgorithm> clientSupportedMacAlgorithmsReceiving) {
+        this.clientSupportedMacAlgorithmsReceiving = clientSupportedMacAlgorithmsReceiving;
+    }
+
+    public void setServerSupportedMacAlgorithmsSending(List<MACAlgorithm> serverSupportedMacAlgorithmsSending) {
+        this.serverSupportedMacAlgorithmsSending = serverSupportedMacAlgorithmsSending;
+    }
+
+    public void setServerSupportedMacAlgorithmsReceiving(List<MACAlgorithm> serverSupportedMacAlgorithmsReceiving) {
+        this.serverSupportedMacAlgorithmsReceiving = serverSupportedMacAlgorithmsReceiving;
+    }
+
+    public void setClientSupportedCompressionAlgorithmsSending(List<CompressionAlgorithm> clientSupportedCompressionAlgorithmsSending) {
+        this.clientSupportedCompressionAlgorithmsSending = clientSupportedCompressionAlgorithmsSending;
+    }
+
+    public void setClientSupportedCompressionAlgorithmsReceiving(List<CompressionAlgorithm> clientSupportedCompressionAlgorithmsReceiving) {
+        this.clientSupportedCompressionAlgorithmsReceiving = clientSupportedCompressionAlgorithmsReceiving;
+    }
+
+    public void setServerSupportedCompressionAlgorithmsSending(List<CompressionAlgorithm> serverSupportedCompressionAlgorithmsSending) {
+        this.serverSupportedCompressionAlgorithmsSending = serverSupportedCompressionAlgorithmsSending;
+    }
+
+    public void setServerSupportedCompressionAlgorithmsReceiving(List<CompressionAlgorithm> serverSupportedCompressionAlgorithmsReceiving) {
+        this.serverSupportedCompressionAlgorithmsReceiving = serverSupportedCompressionAlgorithmsReceiving;
+    }
+
+    public void setClientSupportedLanguagesSending(List<Language> clientSupportedLanguagesSending) {
+        this.clientSupportedLanguagesSending = clientSupportedLanguagesSending;
+    }
+
+    public void setClientSupportedLanguagesReceiving(List<Language> clientSupportedLanguagesReceiving) {
+        this.clientSupportedLanguagesReceiving = clientSupportedLanguagesReceiving;
+    }
+
+    public void setServerSupportedLanguagesSending(List<Language> serverSupportedLanguagesSending) {
+        this.serverSupportedLanguagesSending = serverSupportedLanguagesSending;
+    }
+
+    public void setServerSupportedLanguagesReceiving(List<Language> serverSupportedLanguagesReceiving) {
+        this.serverSupportedLanguagesReceiving = serverSupportedLanguagesReceiving;
+    }
+
+    public void setClientFirstKeyExchangePacketFollows(byte clientFirstKeyExchangePacketFollows) {
+        this.clientFirstKeyExchangePacketFollows = clientFirstKeyExchangePacketFollows;
+    }
+
+    public void setServerFirstKeyExchangePacketFollows(byte serverFirstKeyExchangePacketFollows) {
+        this.serverFirstKeyExchangePacketFollows = serverFirstKeyExchangePacketFollows;
+    }
+
+    public void setClientReserved(int clientReserved) {
+        this.clientReserved = clientReserved;
+    }
+
+    public void setServerReserved(int serverReserved) {
+        this.serverReserved = serverReserved;
+    }
+
+// END_GENERATED
     public SshContext(Config config, AliasedConnection connection) {
         this.config = config;
         this.connection = connection;
-        initFromConfig();
     }
-    
+
     public Config getConfig() {
         return config;
     }
@@ -161,294 +412,5 @@ public class SshContext {
 
     public void setIntegrityKeyServerToClient(byte[] integrityKeyServerToClient) {
         this.integrityKeyServerToClient = integrityKeyServerToClient;
-    }
-
-    public List<KeyExchangeAlgorithm> getClientSupportedKeyExchangeAlgorithms() {
-        return clientSupportedKeyExchangeAlgorithms;
-    }
-
-    public void setClientSupportedKeyExchangeAlgorithms(List<KeyExchangeAlgorithm> clientSupportedKeyExchangeAlgorithms) {
-        this.clientSupportedKeyExchangeAlgorithms = clientSupportedKeyExchangeAlgorithms;
-    }
-
-    public List<KeyExchangeAlgorithm> getServerSupportedKeyExchangeAlgorithms() {
-        return serverSupportedKeyExchangeAlgorithms;
-    }
-
-    public void setServerSupportedKeyExchangeAlgorithms(List<KeyExchangeAlgorithm> serverSupportedKeyExchangeAlgorithms) {
-        this.serverSupportedKeyExchangeAlgorithms = serverSupportedKeyExchangeAlgorithms;
-    }
-
-    public List<PublicKeyAuthenticationAlgorithm> getClientSupportedHostKeyAlgorithms() {
-        return clientSupportedHostKeyAlgorithms;
-    }
-
-    public void setClientSupportedHostKeyAlgorithms(List<PublicKeyAuthenticationAlgorithm> clientSupportedHostKeyAlgorithms) {
-        this.clientSupportedHostKeyAlgorithms = clientSupportedHostKeyAlgorithms;
-    }
-
-    public List<PublicKeyAuthenticationAlgorithm> getServerSupportedHostKeyAlgorithms() {
-        return serverSupportedHostKeyAlgorithms;
-    }
-
-    public void setServerSupportedHostKeyAlgorithms(List<PublicKeyAuthenticationAlgorithm> serverSupportedHostKeyAlgorithms) {
-        this.serverSupportedHostKeyAlgorithms = serverSupportedHostKeyAlgorithms;
-    }
-
-    public List<CipherAlgorithm> getClientSupportedCipherAlgorithms() {
-        return clientSupportedCipherAlgorithms;
-    }
-
-    public void setClientSupportedCipherAlgorithms(List<CipherAlgorithm> clientSupportedCipherAlgorithms) {
-        this.clientSupportedCipherAlgorithms = clientSupportedCipherAlgorithms;
-    }
-
-    public List<CipherAlgorithm> getServerSupportedCipherAlgorithms() {
-        return serverSupportedCipherAlgorithms;
-    }
-
-    public void setServerSupportedCipherAlgorithms(List<CipherAlgorithm> serverSupportedCipherAlgorithms) {
-        this.serverSupportedCipherAlgorithms = serverSupportedCipherAlgorithms;
-    }
-
-    public List<MACAlgorithm> getClientSupportedMacAlgorithms() {
-        return clientSupportedMacAlgorithms;
-    }
-
-    public void setClientSupportedMacAlgorithms(List<MACAlgorithm> clientSupportedMacAlgorithms) {
-        this.clientSupportedMacAlgorithms = clientSupportedMacAlgorithms;
-    }
-
-    public List<MACAlgorithm> getServerSupportedMacAlgorithms() {
-        return serverSupportedMacAlgorithms;
-    }
-
-    public void setServerSupportedMacAlgorithms(List<MACAlgorithm> serverSupportedMacAlgorithms) {
-        this.serverSupportedMacAlgorithms = serverSupportedMacAlgorithms;
-    }
-
-    public List<CompressionAlgorithm> getClientSupportedCompressionAlgorithms() {
-        return clientSupportedCompressionAlgorithms;
-    }
-
-    public void setClientSupportedCompressionAlgorithms(List<CompressionAlgorithm> clientSupportedCompressionAlgorithms) {
-        this.clientSupportedCompressionAlgorithms = clientSupportedCompressionAlgorithms;
-    }
-
-    public List<CompressionAlgorithm> getServerSupportedCompressionAlgorithms() {
-        return serverSupportedCompressionAlgorithms;
-    }
-
-    public void setServerSupportedCompressionAlgorithms(List<CompressionAlgorithm> serverSupportedCompressionAlgorithms) {
-        this.serverSupportedCompressionAlgorithms = serverSupportedCompressionAlgorithms;
-    }
-
-    public List<Language> getClientSupportedLanguages() {
-        return clientSupportedLanguages;
-    }
-
-    public void setClientSupportedLanguages(List<Language> clientSupportedLanguages) {
-        this.clientSupportedLanguages = clientSupportedLanguages;
-    }
-
-    public List<Language> getServerSupportedLanguages() {
-        return serverSupportedLanguages;
-    }
-
-    public void setServerSupportedLanguages(List<Language> serverSupportedLanguages) {
-        this.serverSupportedLanguages = serverSupportedLanguages;
-    }
-
-    public KeyExchangeAlgorithm getKeyExchangeAlgorithm() {
-        return keyExchangeAlgorithm;
-    }
-
-    public void setKeyExchangeAlgorithm(KeyExchangeAlgorithm keyExchangeAlgorithm) {
-        this.keyExchangeAlgorithm = keyExchangeAlgorithm;
-    }
-
-    public PublicKeyAuthenticationAlgorithm getPublicKeyAuthenticationAlgorithm() {
-        return publicKeyAuthenticationAlgorithm;
-    }
-
-    public void setPublicKeyAuthenticationAlgorithm(PublicKeyAuthenticationAlgorithm publicKeyAuthenticationAlgorithm) {
-        this.publicKeyAuthenticationAlgorithm = publicKeyAuthenticationAlgorithm;
-    }
-
-    public CipherAlgorithm getCipherAlgorithm() {
-        return cipherAlgorithm;
-    }
-
-    public void setCipherAlgorithm(CipherAlgorithm cipherAlgorithm) {
-        this.cipherAlgorithm = cipherAlgorithm;
-    }
-
-    public MACAlgorithm getMacAlgorithm() {
-        return macAlgorithm;
-    }
-
-    public void setMacAlgorithm(MACAlgorithm macAlgorithm) {
-        this.macAlgorithm = macAlgorithm;
-    }
-
-    public CompressionAlgorithm getCompressionAlgorithm() {
-        return compressionAlgorithm;
-    }
-
-    public void setCompressionAlgorithm(CompressionAlgorithm compressionAlgorithm) {
-        this.compressionAlgorithm = compressionAlgorithm;
-    }
-
-    public Language getLanguage() {
-        return language;
-    }
-
-    public void setLanguage(Language language) {
-        this.language = language;
-    }
-
-    public byte[] getClientCookie() {
-        return clientCookie;
-    }
-
-    public void setClientCookie(byte[] clientCookie) {
-        this.clientCookie = clientCookie;
-    }
-
-    public byte[] getServerCookie() {
-        return serverCookie;
-    }
-
-    public void setServerCookie(byte[] serverCookie) {
-        this.serverCookie = serverCookie;
-    }
-
-    public String getClientVersion() {
-        return clientVersion;
-    }
-
-    public void setClientVersion(String clientVersion) {
-        this.clientVersion = clientVersion;
-    }
-
-    public String getServerVersion() {
-        return serverVersion;
-    }
-
-    public void setServerVersion(String serverVersion) {
-        this.serverVersion = serverVersion;
-    }
-
-    public String getClientComment() {
-        return clientComment;
-    }
-
-    public void setClientComment(String clientComment) {
-        this.clientComment = clientComment;
-    }
-
-    public String getServerComment() {
-        return serverComment;
-    }
-
-    public void setServerComment(String serverComment) {
-        this.serverComment = serverComment;
-    }
-
-    public byte[] getDefaultClientEcdhPublicKey() {
-        return defaultClientEcdhPublicKey;
-    }
-
-    public void setDefaultClientEcdhPublicKey(byte[] defaultClientEcdhPublicKey) {
-        this.defaultClientEcdhPublicKey = defaultClientEcdhPublicKey;
-    }
-
-    public String getDefaultHostKeyType() {
-        return defaultHostKeyType;
-    }
-
-    public void setDefaultHostKeyType(String defaultHostKeyType) {
-        this.defaultHostKeyType = defaultHostKeyType;
-    }
-
-    public BigInteger getDefaultRsaExponent() {
-        return defaultRsaExponent;
-    }
-
-    public void setDefaultRsaExponent(BigInteger defaultRsaExponent) {
-        this.defaultRsaExponent = defaultRsaExponent;
-    }
-
-    public BigInteger getDefaultRsaModulus() {
-        return defaultRsaModulus;
-    }
-
-    public void setDefaultRsaModulus(BigInteger defaultRsaModulus) {
-        this.defaultRsaModulus = defaultRsaModulus;
-    }
-
-    public byte[] getDefaultServerEcdhPublicKey() {
-        return defaultServerEcdhPublicKey;
-    }
-
-    public void setDefaultServerEcdhPublicKey(byte[] defaultServerEcdhPublicKey) {
-        this.defaultServerEcdhPublicKey = defaultServerEcdhPublicKey;
-    }
-
-    public byte getFirstKeyExchangePacketFollows() {
-        return firstKeyExchangePacketFollows;
-    }
-
-    public void setFirstKeyExchangePacketFollows(byte firstKeyExchangePacketFollows) {
-        this.firstKeyExchangePacketFollows = firstKeyExchangePacketFollows;
-    }
-
-    public int getReserved() {
-        return reserved;
-    }
-
-    public void setReserved(int reserved) {
-        this.reserved = reserved;
-    }
-
-    public byte[] getKeyExchangeSignature() {
-        return keyExchangeSignature;
-    }
-
-    public void setKeyExchangeSignature(byte[] keyExchangeSignature) {
-        this.keyExchangeSignature = keyExchangeSignature;
-    }
-
-    public byte[] getServerHostKey() {
-        return serverHostKey;
-    }
-
-    public void setServerHostKey(byte[] serverHostKey) {
-        this.serverHostKey = serverHostKey;
-    }
-    
-    private void initFromConfig(){
-        this.clientVersion = config.getClientVersion();
-        this.clientComment = config.getClientComment();
-        this.serverVersion = config.getServerVersion();
-        this.serverComment = config.getServerComment();
-        this.clientCookie = config.getClientCookie();
-        this.serverCookie = config.getServerCookie();
-        this.defaultClientEcdhPublicKey = config.getDefaultClientEcdhPublicKey();
-        this.defaultServerEcdhPublicKey = config.getDefaultServerEcdhPublicKey();
-        this.defaultRsaExponent = config.getDefaultRsaExponent();
-        this.defaultRsaModulus = config.getDefaultRsaModulus();
-        this.clientSupportedKeyExchangeAlgorithms = config.getSupportedKeyExchangeAlgorithms();
-        this.serverSupportedKeyExchangeAlgorithms = config.getSupportedKeyExchangeAlgorithms();
-        this.clientSupportedHostKeyAlgorithms = config.getPublicKeyAuthenticationAlgorithms();
-        this.serverSupportedHostKeyAlgorithms = config.getPublicKeyAuthenticationAlgorithms();
-        this.clientSupportedCipherAlgorithms = config.getSupportedEncryptionAlgorithmsClientToServer();
-        this.serverSupportedCipherAlgorithms = config.getSupportedEncryptionAlgorithmsServerToClient();
-        this.clientSupportedMacAlgorithms = config.getSupportedMacAlgorithmsClientToServer();
-        this.serverSupportedMacAlgorithms = config.getSupportedMacAlgorithmsServerToClient();
-        this.clientSupportedCompressionAlgorithms = config.getSupportedCompressionAlgorithmsClientToServer();
-        this.serverSupportedCompressionAlgorithms = config.getSupportedCompressionAlgorithmsServerToClient();
-        this.clientSupportedLanguages = config.getSupportedLanguagesClientToServer();
-        this.serverSupportedLanguages = config.getSupportedLanguagesServerToClient();
     }
 }

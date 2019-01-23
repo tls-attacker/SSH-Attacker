@@ -1,6 +1,6 @@
 package de.rub.nds.sshattacker.constants;
 
-public enum CipherAlgorithm {
+public enum EncryptionAlgorithm {
     tdes_cbc("3des-cbc"),
     aes128_cbc("aes128-cbc"),
     aes192_cbc("aes192-cbc"),
@@ -15,7 +15,7 @@ public enum CipherAlgorithm {
 
     private String name;
 
-    private CipherAlgorithm(String name) {
+    private EncryptionAlgorithm(String name) {
         this.name = name;
     }
 }

@@ -8,8 +8,6 @@ import de.rub.nds.protocol.core.message.Parser;
 import de.rub.nds.sshattacker.constants.BinaryPacketConstants;
 import de.rub.nds.sshattacker.constants.MessageIDConstants;
 import de.rub.nds.sshattacker.protocol.message.BinaryPacket;
-import de.rub.nds.sshattacker.protocol.message.ECDHKeyExchangeInitMessage;
-import de.rub.nds.sshattacker.protocol.message.ECDHKeyExchangeReplyMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -70,8 +68,8 @@ public abstract class BinaryPacketParser<T extends BinaryPacket> extends Parser<
             case MessageIDConstants.SSH_MSG_KEXINIT: return new KeyExchangeInitMessageParser(0, raw).parse();
             case MessageIDConstants.SSH_MSG_KEX_ECDH_INIT: return new ECDHKeyExchangeInitMessageParser(0, raw).parse();
             case MessageIDConstants.SSH_MSG_KEX_ECDH_REPLY: return new ECDHKeyExchangeReplyMessageParser(0, raw).parse();
-            case MessageIDConstants.SSH_MSG_NEWKEYS: return // TODO what to do with newkeys? derive a new binarypacket instance?
-            default: LOGGER.debug("Unknown MessageID: " + messageID);
+            case MessageIDConstants.SSH_MSG_NEWKEYS: return new NewKeysMessageParser(0, raw).parse();
+            default: LOGGER.warn("Unknown MessageID: " + messageID);
                      return null;
         }
     }
