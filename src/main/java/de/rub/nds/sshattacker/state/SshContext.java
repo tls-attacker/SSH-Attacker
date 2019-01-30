@@ -8,12 +8,12 @@ import de.rub.nds.sshattacker.constants.KeyExchangeAlgorithm;
 import de.rub.nds.sshattacker.constants.Language;
 import de.rub.nds.sshattacker.constants.MACAlgorithm;
 import de.rub.nds.sshattacker.constants.PublicKeyAuthenticationAlgorithm;
-import java.math.BigInteger;
 import java.util.List;
 
 public class SshContext {
 
     private Config config;
+    private Chooser chooser;
     private AliasedConnection connection;
 
     private byte[] sharedSecret;
@@ -29,24 +29,31 @@ public class SshContext {
     private byte[] integrityKeyClientToServer;
     private byte[] integrityKeyServerToClient;
 
-    private byte[] defaultClientEcdhPublicKey;
-
-    private String defaultHostKeyType;
-    private BigInteger defaultRsaExponent;
-    private BigInteger defaultRsaModulus;
-    private byte[] defaultServerEcdhPublicKey;
+    private String hostKeyType;
     private byte[] serverHostKey;
     private byte[] keyExchangeSignature;
+    
+    private byte[] clientEcdhPublicKey;
+    private byte[] serverEcdhPublicKey;
 
     /**
-     * selected values for this connection
+     * selected algorithms for this connection
      */
     private KeyExchangeAlgorithm keyExchangeAlgorithm;
-    private PublicKeyAuthenticationAlgorithm publicKeyAuthenticationAlgorithm;
-    private EncryptionAlgorithm cipherAlgorithm;
-    private MACAlgorithm macAlgorithm;
-    private CompressionAlgorithm compressionAlgorithm;
-    private Language language;
+    private PublicKeyAuthenticationAlgorithm serverHostKeyAlgorithm;
+    
+    private EncryptionAlgorithm cipherAlgorithmClientToServer;
+    private EncryptionAlgorithm cipherAlgorithmServerToClient;
+
+    private MACAlgorithm macAlgorithmClientToServer;
+    private MACAlgorithm macAlgorithmServerToClient;
+
+    private CompressionAlgorithm compressionAlgorithmClientToServer;
+    private CompressionAlgorithm compressionAlgorithmServerToClient;
+
+    private Language languageClientToServer;
+    private Language languageServerToClient;
+
 
 // BEGIN_GENERATED
     private String clientVersion;
@@ -59,22 +66,22 @@ public class SshContext {
     private List<KeyExchangeAlgorithm> serverSupportedKeyExchangeAlgorithms;
     private List<PublicKeyAuthenticationAlgorithm> clientSupportedHostKeyAlgorithms;
     private List<PublicKeyAuthenticationAlgorithm> serverSupportedHostKeyAlgorithms;
-    private List<EncryptionAlgorithm> clientSupportedCipherAlgorithmsSending;
-    private List<EncryptionAlgorithm> clientSupportedCipherAlgorithmsReceiving;
-    private List<EncryptionAlgorithm> serverSupportedCipherAlgorithmsSending;
-    private List<EncryptionAlgorithm> serverSupportedCipherAlgorithmsReceiving;
-    private List<MACAlgorithm> clientSupportedMacAlgorithmsSending;
-    private List<MACAlgorithm> clientSupportedMacAlgorithmsReceiving;
-    private List<MACAlgorithm> serverSupportedMacAlgorithmsSending;
-    private List<MACAlgorithm> serverSupportedMacAlgorithmsReceiving;
-    private List<CompressionAlgorithm> clientSupportedCompressionAlgorithmsSending;
-    private List<CompressionAlgorithm> clientSupportedCompressionAlgorithmsReceiving;
-    private List<CompressionAlgorithm> serverSupportedCompressionAlgorithmsSending;
-    private List<CompressionAlgorithm> serverSupportedCompressionAlgorithmsReceiving;
-    private List<Language> clientSupportedLanguagesSending;
-    private List<Language> clientSupportedLanguagesReceiving;
-    private List<Language> serverSupportedLanguagesSending;
-    private List<Language> serverSupportedLanguagesReceiving;
+    private List<EncryptionAlgorithm> clientSupportedCipherAlgorithmsClientToServer;
+    private List<EncryptionAlgorithm> clientSupportedCipherAlgorithmsServerToClient;
+    private List<EncryptionAlgorithm> serverSupportedCipherAlgorithmsServerToClient;
+    private List<EncryptionAlgorithm> serverSupportedCipherAlgorithmsClientToServer;
+    private List<MACAlgorithm> clientSupportedMacAlgorithmsClientToServer;
+    private List<MACAlgorithm> clientSupportedMacAlgorithmsServerToClient;
+    private List<MACAlgorithm> serverSupportedMacAlgorithmsServerToClient;
+    private List<MACAlgorithm> serverSupportedMacAlgorithmsClientToServer;
+    private List<CompressionAlgorithm> clientSupportedCompressionAlgorithmsClientToServer;
+    private List<CompressionAlgorithm> clientSupportedCompressionAlgorithmsServerToClient;
+    private List<CompressionAlgorithm> serverSupportedCompressionAlgorithmsServerToClient;
+    private List<CompressionAlgorithm> serverSupportedCompressionAlgorithmsClientToServer;
+    private List<Language> clientSupportedLanguagesClientToServer;
+    private List<Language> clientSupportedLanguagesServerToClient;
+    private List<Language> serverSupportedLanguagesServerToClient;
+    private List<Language> serverSupportedLanguagesClientToServer;
     private Byte clientFirstKeyExchangePacketFollows;
     private Byte serverFirstKeyExchangePacketFollows;
     private Integer clientReserved;
@@ -120,68 +127,68 @@ public class SshContext {
         return serverSupportedHostKeyAlgorithms;
     }
 
-    public List<EncryptionAlgorithm> getClientSupportedCipherAlgorithmsSending() {
-        return clientSupportedCipherAlgorithmsSending;
+    public List<EncryptionAlgorithm> getClientSupportedCipherAlgorithmsClientToServer() {
+        return clientSupportedCipherAlgorithmsClientToServer;
     }
 
-    public List<EncryptionAlgorithm> getClientSupportedCipherAlgorithmsReceiving() {
-        return clientSupportedCipherAlgorithmsReceiving;
+    public List<EncryptionAlgorithm> getClientSupportedCipherAlgorithmsServerToClient() {
+        return clientSupportedCipherAlgorithmsServerToClient;
     }
 
-    public List<EncryptionAlgorithm> getServerSupportedCipherAlgorithmsSending() {
-        return serverSupportedCipherAlgorithmsSending;
+    public List<EncryptionAlgorithm> getServerSupportedCipherAlgorithmsServerToClient() {
+        return serverSupportedCipherAlgorithmsServerToClient;
     }
 
-    public List<EncryptionAlgorithm> getServerSupportedCipherAlgorithmsReceiving() {
-        return serverSupportedCipherAlgorithmsReceiving;
+    public List<EncryptionAlgorithm> getServerSupportedCipherAlgorithmsClientToServer() {
+        return serverSupportedCipherAlgorithmsClientToServer;
     }
 
-    public List<MACAlgorithm> getClientSupportedMacAlgorithmsSending() {
-        return clientSupportedMacAlgorithmsSending;
+    public List<MACAlgorithm> getClientSupportedMacAlgorithmsClientToServer() {
+        return clientSupportedMacAlgorithmsClientToServer;
     }
 
-    public List<MACAlgorithm> getClientSupportedMacAlgorithmsReceiving() {
-        return clientSupportedMacAlgorithmsReceiving;
+    public List<MACAlgorithm> getClientSupportedMacAlgorithmsServerToClient() {
+        return clientSupportedMacAlgorithmsServerToClient;
     }
 
-    public List<MACAlgorithm> getServerSupportedMacAlgorithmsSending() {
-        return serverSupportedMacAlgorithmsSending;
+    public List<MACAlgorithm> getServerSupportedMacAlgorithmsServerToClient() {
+        return serverSupportedMacAlgorithmsServerToClient;
     }
 
-    public List<MACAlgorithm> getServerSupportedMacAlgorithmsReceiving() {
-        return serverSupportedMacAlgorithmsReceiving;
+    public List<MACAlgorithm> getServerSupportedMacAlgorithmsClientToServer() {
+        return serverSupportedMacAlgorithmsClientToServer;
     }
 
-    public List<CompressionAlgorithm> getClientSupportedCompressionAlgorithmsSending() {
-        return clientSupportedCompressionAlgorithmsSending;
+    public List<CompressionAlgorithm> getClientSupportedCompressionAlgorithmsClientToServer() {
+        return clientSupportedCompressionAlgorithmsClientToServer;
     }
 
-    public List<CompressionAlgorithm> getClientSupportedCompressionAlgorithmsReceiving() {
-        return clientSupportedCompressionAlgorithmsReceiving;
+    public List<CompressionAlgorithm> getClientSupportedCompressionAlgorithmsServerToClient() {
+        return clientSupportedCompressionAlgorithmsServerToClient;
     }
 
-    public List<CompressionAlgorithm> getServerSupportedCompressionAlgorithmsSending() {
-        return serverSupportedCompressionAlgorithmsSending;
+    public List<CompressionAlgorithm> getServerSupportedCompressionAlgorithmsServerToClient() {
+        return serverSupportedCompressionAlgorithmsServerToClient;
     }
 
-    public List<CompressionAlgorithm> getServerSupportedCompressionAlgorithmsReceiving() {
-        return serverSupportedCompressionAlgorithmsReceiving;
+    public List<CompressionAlgorithm> getServerSupportedCompressionAlgorithmsClientToServer() {
+        return serverSupportedCompressionAlgorithmsClientToServer;
     }
 
-    public List<Language> getClientSupportedLanguagesSending() {
-        return clientSupportedLanguagesSending;
+    public List<Language> getClientSupportedLanguagesClientToServer() {
+        return clientSupportedLanguagesClientToServer;
     }
 
-    public List<Language> getClientSupportedLanguagesReceiving() {
-        return clientSupportedLanguagesReceiving;
+    public List<Language> getClientSupportedLanguagesServerToClient() {
+        return clientSupportedLanguagesServerToClient;
     }
 
-    public List<Language> getServerSupportedLanguagesSending() {
-        return serverSupportedLanguagesSending;
+    public List<Language> getServerSupportedLanguagesServerToClient() {
+        return serverSupportedLanguagesServerToClient;
     }
 
-    public List<Language> getServerSupportedLanguagesReceiving() {
-        return serverSupportedLanguagesReceiving;
+    public List<Language> getServerSupportedLanguagesClientToServer() {
+        return serverSupportedLanguagesClientToServer;
     }
 
     public Byte getClientFirstKeyExchangePacketFollows() {
@@ -240,68 +247,68 @@ public class SshContext {
         this.serverSupportedHostKeyAlgorithms = serverSupportedHostKeyAlgorithms;
     }
 
-    public void setClientSupportedCipherAlgorithmsSending(List<EncryptionAlgorithm> clientSupportedCipherAlgorithmsSending) {
-        this.clientSupportedCipherAlgorithmsSending = clientSupportedCipherAlgorithmsSending;
+    public void setClientSupportedCipherAlgorithmsClientToServer(List<EncryptionAlgorithm> clientSupportedCipherAlgorithmsClientToServer) {
+        this.clientSupportedCipherAlgorithmsClientToServer = clientSupportedCipherAlgorithmsClientToServer;
     }
 
-    public void setClientSupportedCipherAlgorithmsReceiving(List<EncryptionAlgorithm> clientSupportedCipherAlgorithmsReceiving) {
-        this.clientSupportedCipherAlgorithmsReceiving = clientSupportedCipherAlgorithmsReceiving;
+    public void setClientSupportedCipherAlgorithmsServerToClient(List<EncryptionAlgorithm> clientSupportedCipherAlgorithmsServerToClient) {
+        this.clientSupportedCipherAlgorithmsServerToClient = clientSupportedCipherAlgorithmsServerToClient;
     }
 
-    public void setServerSupportedCipherAlgorithmsSending(List<EncryptionAlgorithm> serverSupportedCipherAlgorithmsSending) {
-        this.serverSupportedCipherAlgorithmsSending = serverSupportedCipherAlgorithmsSending;
+    public void setServerSupportedCipherAlgorithmsServerToClient(List<EncryptionAlgorithm> serverSupportedCipherAlgorithmsServerToClient) {
+        this.serverSupportedCipherAlgorithmsServerToClient = serverSupportedCipherAlgorithmsServerToClient;
     }
 
-    public void setServerSupportedCipherAlgorithmsReceiving(List<EncryptionAlgorithm> serverSupportedCipherAlgorithmsReceiving) {
-        this.serverSupportedCipherAlgorithmsReceiving = serverSupportedCipherAlgorithmsReceiving;
+    public void setServerSupportedCipherAlgorithmsClientToServer(List<EncryptionAlgorithm> serverSupportedCipherAlgorithmsClientToServer) {
+        this.serverSupportedCipherAlgorithmsClientToServer = serverSupportedCipherAlgorithmsClientToServer;
     }
 
-    public void setClientSupportedMacAlgorithmsSending(List<MACAlgorithm> clientSupportedMacAlgorithmsSending) {
-        this.clientSupportedMacAlgorithmsSending = clientSupportedMacAlgorithmsSending;
+    public void setClientSupportedMacAlgorithmsClientToServer(List<MACAlgorithm> clientSupportedMacAlgorithmsClientToServer) {
+        this.clientSupportedMacAlgorithmsClientToServer = clientSupportedMacAlgorithmsClientToServer;
     }
 
-    public void setClientSupportedMacAlgorithmsReceiving(List<MACAlgorithm> clientSupportedMacAlgorithmsReceiving) {
-        this.clientSupportedMacAlgorithmsReceiving = clientSupportedMacAlgorithmsReceiving;
+    public void setClientSupportedMacAlgorithmsServerToClient(List<MACAlgorithm> clientSupportedMacAlgorithmsServerToClient) {
+        this.clientSupportedMacAlgorithmsServerToClient = clientSupportedMacAlgorithmsServerToClient;
     }
 
-    public void setServerSupportedMacAlgorithmsSending(List<MACAlgorithm> serverSupportedMacAlgorithmsSending) {
-        this.serverSupportedMacAlgorithmsSending = serverSupportedMacAlgorithmsSending;
+    public void setServerSupportedMacAlgorithmsServerToClient(List<MACAlgorithm> serverSupportedMacAlgorithmsServerToClient) {
+        this.serverSupportedMacAlgorithmsServerToClient = serverSupportedMacAlgorithmsServerToClient;
     }
 
-    public void setServerSupportedMacAlgorithmsReceiving(List<MACAlgorithm> serverSupportedMacAlgorithmsReceiving) {
-        this.serverSupportedMacAlgorithmsReceiving = serverSupportedMacAlgorithmsReceiving;
+    public void setServerSupportedMacAlgorithmsClientToServer(List<MACAlgorithm> serverSupportedMacAlgorithmsClientToServer) {
+        this.serverSupportedMacAlgorithmsClientToServer = serverSupportedMacAlgorithmsClientToServer;
     }
 
-    public void setClientSupportedCompressionAlgorithmsSending(List<CompressionAlgorithm> clientSupportedCompressionAlgorithmsSending) {
-        this.clientSupportedCompressionAlgorithmsSending = clientSupportedCompressionAlgorithmsSending;
+    public void setClientSupportedCompressionAlgorithmsClientToServer(List<CompressionAlgorithm> clientSupportedCompressionAlgorithmsClientToServer) {
+        this.clientSupportedCompressionAlgorithmsClientToServer = clientSupportedCompressionAlgorithmsClientToServer;
     }
 
-    public void setClientSupportedCompressionAlgorithmsReceiving(List<CompressionAlgorithm> clientSupportedCompressionAlgorithmsReceiving) {
-        this.clientSupportedCompressionAlgorithmsReceiving = clientSupportedCompressionAlgorithmsReceiving;
+    public void setClientSupportedCompressionAlgorithmsServerToClient(List<CompressionAlgorithm> clientSupportedCompressionAlgorithmsServerToClient) {
+        this.clientSupportedCompressionAlgorithmsServerToClient = clientSupportedCompressionAlgorithmsServerToClient;
     }
 
-    public void setServerSupportedCompressionAlgorithmsSending(List<CompressionAlgorithm> serverSupportedCompressionAlgorithmsSending) {
-        this.serverSupportedCompressionAlgorithmsSending = serverSupportedCompressionAlgorithmsSending;
+    public void setServerSupportedCompressionAlgorithmsServerToClient(List<CompressionAlgorithm> serverSupportedCompressionAlgorithmsServerToClient) {
+        this.serverSupportedCompressionAlgorithmsServerToClient = serverSupportedCompressionAlgorithmsServerToClient;
     }
 
-    public void setServerSupportedCompressionAlgorithmsReceiving(List<CompressionAlgorithm> serverSupportedCompressionAlgorithmsReceiving) {
-        this.serverSupportedCompressionAlgorithmsReceiving = serverSupportedCompressionAlgorithmsReceiving;
+    public void setServerSupportedCompressionAlgorithmsClientToServer(List<CompressionAlgorithm> serverSupportedCompressionAlgorithmsClientToServer) {
+        this.serverSupportedCompressionAlgorithmsClientToServer = serverSupportedCompressionAlgorithmsClientToServer;
     }
 
-    public void setClientSupportedLanguagesSending(List<Language> clientSupportedLanguagesSending) {
-        this.clientSupportedLanguagesSending = clientSupportedLanguagesSending;
+    public void setClientSupportedLanguagesClientToServer(List<Language> clientSupportedLanguagesClientToServer) {
+        this.clientSupportedLanguagesClientToServer = clientSupportedLanguagesClientToServer;
     }
 
-    public void setClientSupportedLanguagesReceiving(List<Language> clientSupportedLanguagesReceiving) {
-        this.clientSupportedLanguagesReceiving = clientSupportedLanguagesReceiving;
+    public void setClientSupportedLanguagesServerToClient(List<Language> clientSupportedLanguagesServerToClient) {
+        this.clientSupportedLanguagesServerToClient = clientSupportedLanguagesServerToClient;
     }
 
-    public void setServerSupportedLanguagesSending(List<Language> serverSupportedLanguagesSending) {
-        this.serverSupportedLanguagesSending = serverSupportedLanguagesSending;
+    public void setServerSupportedLanguagesServerToClient(List<Language> serverSupportedLanguagesServerToClient) {
+        this.serverSupportedLanguagesServerToClient = serverSupportedLanguagesServerToClient;
     }
 
-    public void setServerSupportedLanguagesReceiving(List<Language> serverSupportedLanguagesReceiving) {
-        this.serverSupportedLanguagesReceiving = serverSupportedLanguagesReceiving;
+    public void setServerSupportedLanguagesClientToServer(List<Language> serverSupportedLanguagesClientToServer) {
+        this.serverSupportedLanguagesClientToServer = serverSupportedLanguagesClientToServer;
     }
 
     public void setClientFirstKeyExchangePacketFollows(byte clientFirstKeyExchangePacketFollows) {
@@ -412,5 +419,133 @@ public class SshContext {
 
     public void setIntegrityKeyServerToClient(byte[] integrityKeyServerToClient) {
         this.integrityKeyServerToClient = integrityKeyServerToClient;
+    }
+
+    public String getHostKeyType() {
+        return hostKeyType;
+    }
+
+    public void setHostKeyType(String hostKeyType) {
+        this.hostKeyType = hostKeyType;
+    }
+
+    public byte[] getServerHostKey() {
+        return serverHostKey;
+    }
+
+    public void setServerHostKey(byte[] serverHostKey) {
+        this.serverHostKey = serverHostKey;
+    }
+
+    public byte[] getKeyExchangeSignature() {
+        return keyExchangeSignature;
+    }
+
+    public void setKeyExchangeSignature(byte[] keyExchangeSignature) {
+        this.keyExchangeSignature = keyExchangeSignature;
+    }
+
+    public KeyExchangeAlgorithm getKeyExchangeAlgorithm() {
+        return keyExchangeAlgorithm;
+    }
+
+    public void setKeyExchangeAlgorithm(KeyExchangeAlgorithm keyExchangeAlgorithm) {
+        this.keyExchangeAlgorithm = keyExchangeAlgorithm;
+    }
+
+    public EncryptionAlgorithm getCipherAlgorithmClientToServer() {
+        return cipherAlgorithmClientToServer;
+    }
+
+    public void setCipherAlgorithmClientToServer(EncryptionAlgorithm cipherAlgorithmClientToServer) {
+        this.cipherAlgorithmClientToServer = cipherAlgorithmClientToServer;
+    }
+
+    public EncryptionAlgorithm getCipherAlgorithmServerToClient() {
+        return cipherAlgorithmServerToClient;
+    }
+
+    public void setCipherAlgorithmServerToClient(EncryptionAlgorithm cipherAlgorithmServerToClient) {
+        this.cipherAlgorithmServerToClient = cipherAlgorithmServerToClient;
+    }
+
+    public MACAlgorithm getMacAlgorithmClientToServer() {
+        return macAlgorithmClientToServer;
+    }
+
+    public void setMacAlgorithmClientToServer(MACAlgorithm macAlgorithmClientToServer) {
+        this.macAlgorithmClientToServer = macAlgorithmClientToServer;
+    }
+
+    public MACAlgorithm getMacAlgorithmServerToClient() {
+        return macAlgorithmServerToClient;
+    }
+
+    public void setMacAlgorithmServerToClient(MACAlgorithm macAlgorithmServerToClient) {
+        this.macAlgorithmServerToClient = macAlgorithmServerToClient;
+    }
+
+    public CompressionAlgorithm getCompressionAlgorithmClientToServer() {
+        return compressionAlgorithmClientToServer;
+    }
+
+    public void setCompressionAlgorithmClientToServer(CompressionAlgorithm compressionAlgorithmClientToServer) {
+        this.compressionAlgorithmClientToServer = compressionAlgorithmClientToServer;
+    }
+
+    public CompressionAlgorithm getCompressionAlgorithmServerToClient() {
+        return compressionAlgorithmServerToClient;
+    }
+
+    public void setCompressionAlgorithmServerToClient(CompressionAlgorithm compressionAlgorithmServerToClient) {
+        this.compressionAlgorithmServerToClient = compressionAlgorithmServerToClient;
+    }
+
+    public Language getLanguageClientToServer() {
+        return languageClientToServer;
+    }
+
+    public void setLanguageClientToServer(Language languageClientToServer) {
+        this.languageClientToServer = languageClientToServer;
+    }
+
+    public Language getLanguageServerToClient() {
+        return languageServerToClient;
+    }
+
+    public void setLanguageServerToClient(Language languageServerToClient) {
+        this.languageServerToClient = languageServerToClient;
+    }
+
+    public PublicKeyAuthenticationAlgorithm getServerHostKeyAlgorithm() {
+        return serverHostKeyAlgorithm;
+    }
+
+    public void setServerHostKeyAlgorithm(PublicKeyAuthenticationAlgorithm serverHostKeyAlgorithm) {
+        this.serverHostKeyAlgorithm = serverHostKeyAlgorithm;
+    }
+
+    public byte[] getClientEcdhPublicKey() {
+        return clientEcdhPublicKey;
+    }
+
+    public void setClientEcdhPublicKey(byte[] clientEcdhPublicKey) {
+        this.clientEcdhPublicKey = clientEcdhPublicKey;
+    }
+
+    public byte[] getServerEcdhPublicKey() {
+        return serverEcdhPublicKey;
+    }
+
+    public void setServerEcdhPublicKey(byte[] serverEcdhPublicKey) {
+        this.serverEcdhPublicKey = serverEcdhPublicKey;
+    }
+
+    public Chooser getChooser() {
+        return chooser;
+    }
+
+    public void setChooser(Chooser chooser) {
+        this.chooser = chooser;
     }
 }

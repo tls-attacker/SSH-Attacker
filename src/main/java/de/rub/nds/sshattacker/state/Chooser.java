@@ -13,11 +13,12 @@ public class Chooser {
 
     private SshContext context;
     private Config config;
-    
-    public Chooser(SshContext context, Config config){
+
+    public Chooser(SshContext context, Config config) {
         this.context = context;
         this.config = config;
     }
+
     public String getClientVersion() {
         if (context.getClientVersion() != null) {
             return context.getClientVersion();
@@ -98,131 +99,131 @@ public class Chooser {
         }
     }
 
-    public List<EncryptionAlgorithm> getClientSupportedCipherAlgorithmsSending() {
-        if (context.getClientSupportedCipherAlgorithmsSending() != null) {
-            return context.getClientSupportedCipherAlgorithmsSending();
+    public List<EncryptionAlgorithm> getClientSupportedCipherAlgorithmsClientToServer() {
+        if (context.getClientSupportedCipherAlgorithmsClientToServer() != null) {
+            return context.getClientSupportedCipherAlgorithmsClientToServer();
         } else {
-            return config.getClientSupportedCipherAlgorithmsSending();
+            return config.getClientSupportedCipherAlgorithmsClientToServer();
         }
     }
 
-    public List<EncryptionAlgorithm> getClientSupportedCipherAlgorithmsReceiving() {
-        if (context.getClientSupportedCipherAlgorithmsReceiving() != null) {
-            return context.getClientSupportedCipherAlgorithmsReceiving();
+    public List<EncryptionAlgorithm> getClientSupportedCipherAlgorithmsServertoClient() {
+        if (context.getClientSupportedCipherAlgorithmsServerToClient() != null) {
+            return context.getClientSupportedCipherAlgorithmsServerToClient();
         } else {
-            return config.getClientSupportedCipherAlgorithmsReceiving();
+            return config.getClientSupportedCipherAlgorithmsServerToClient();
         }
     }
 
-    public List<EncryptionAlgorithm> getServerSupportedCipherAlgorithmsSending() {
-        if (context.getServerSupportedCipherAlgorithmsSending() != null) {
-            return context.getServerSupportedCipherAlgorithmsSending();
+    public List<EncryptionAlgorithm> getServerSupportedCipherAlgorithmsServerToClient() {
+        if (context.getServerSupportedCipherAlgorithmsServerToClient() != null) {
+            return context.getServerSupportedCipherAlgorithmsServerToClient();
         } else {
-            return config.getServerSupportedCipherAlgorithmsSending();
+            return config.getServerSupportedCipherAlgorithmsServerToClient();
         }
     }
 
-    public List<EncryptionAlgorithm> getServerSupportedCipherAlgorithmsReceiving() {
-        if (context.getServerSupportedCipherAlgorithmsReceiving() != null) {
-            return context.getServerSupportedCipherAlgorithmsReceiving();
+    public List<EncryptionAlgorithm> getServerSupportedCipherAlgorithmsClientToServer() {
+        if (context.getServerSupportedCipherAlgorithmsClientToServer() != null) {
+            return context.getServerSupportedCipherAlgorithmsClientToServer();
         } else {
-            return config.getServerSupportedCipherAlgorithmsReceiving();
+            return config.getServerSupportedCipherAlgorithmsClientToServer();
         }
     }
 
-    public List<MACAlgorithm> getClientSupportedMacAlgorithmsSending() {
-        if (context.getClientSupportedMacAlgorithmsSending() != null) {
-            return context.getClientSupportedMacAlgorithmsSending();
+    public List<MACAlgorithm> getClientSupportedMacAlgorithmsClientToServer() {
+        if (context.getClientSupportedMacAlgorithmsClientToServer() != null) {
+            return context.getClientSupportedMacAlgorithmsClientToServer();
         } else {
-            return config.getClientSupportedMacAlgorithmsSending();
+            return config.getClientSupportedMacAlgorithmsClientToServer();
         }
     }
 
-    public List<MACAlgorithm> getClientSupportedMacAlgorithmsReceiving() {
-        if (context.getClientSupportedMacAlgorithmsReceiving() != null) {
-            return context.getClientSupportedMacAlgorithmsReceiving();
+    public List<MACAlgorithm> getClientSupportedMacAlgorithmsServerToClient() {
+        if (context.getClientSupportedMacAlgorithmsServerToClient() != null) {
+            return context.getClientSupportedMacAlgorithmsServerToClient();
         } else {
-            return config.getClientSupportedMacAlgorithmsReceiving();
+            return config.getClientSupportedMacAlgorithmsServerToClient();
         }
     }
 
-    public List<MACAlgorithm> getServerSupportedMacAlgorithmsSending() {
-        if (context.getServerSupportedMacAlgorithmsSending() != null) {
-            return context.getServerSupportedMacAlgorithmsSending();
+    public List<MACAlgorithm> getServerSupportedMacAlgorithmsServerToClient() {
+        if (context.getServerSupportedMacAlgorithmsServerToClient() != null) {
+            return context.getServerSupportedMacAlgorithmsServerToClient();
         } else {
-            return config.getServerSupportedMacAlgorithmsSending();
+            return config.getServerSupportedMacAlgorithmsServerToClient();
         }
     }
 
-    public List<MACAlgorithm> getServerSupportedMacAlgorithmsReceiving() {
-        if (context.getServerSupportedMacAlgorithmsReceiving() != null) {
-            return context.getServerSupportedMacAlgorithmsReceiving();
+    public List<MACAlgorithm> getServerSupportedMacAlgorithmsClientToServer() {
+        if (context.getServerSupportedMacAlgorithmsClientToServer() != null) {
+            return context.getServerSupportedMacAlgorithmsClientToServer();
         } else {
-            return config.getServerSupportedMacAlgorithmsReceiving();
+            return config.getServerSupportedMacAlgorithmsClientToServer();
         }
     }
 
-    public List<CompressionAlgorithm> getClientSupportedCompressionAlgorithmsSending() {
-        if (context.getClientSupportedCompressionAlgorithmsSending() != null) {
-            return context.getClientSupportedCompressionAlgorithmsSending();
+    public List<CompressionAlgorithm> getClientSupportedCompressionAlgorithmsClientToServer() {
+        if (context.getClientSupportedCompressionAlgorithmsClientToServer() != null) {
+            return context.getClientSupportedCompressionAlgorithmsClientToServer();
         } else {
-            return config.getClientSupportedCompressionAlgorithmsSending();
+            return config.getClientSupportedCompressionAlgorithmsClientToServer();
         }
     }
 
-    public List<CompressionAlgorithm> getClientSupportedCompressionAlgorithmsReceiving() {
-        if (context.getClientSupportedCompressionAlgorithmsReceiving() != null) {
-            return context.getClientSupportedCompressionAlgorithmsReceiving();
+    public List<CompressionAlgorithm> getClientSupportedCompressionAlgorithmsServerToClient() {
+        if (context.getClientSupportedCompressionAlgorithmsServerToClient() != null) {
+            return context.getClientSupportedCompressionAlgorithmsServerToClient();
         } else {
-            return config.getClientSupportedCompressionAlgorithmsReceiving();
+            return config.getClientSupportedCompressionAlgorithmsServerToClient();
         }
     }
 
-    public List<CompressionAlgorithm> getServerSupportedCompressionAlgorithmsSending() {
-        if (context.getServerSupportedCompressionAlgorithmsSending() != null) {
-            return context.getServerSupportedCompressionAlgorithmsSending();
+    public List<CompressionAlgorithm> getServerSupportedCompressionAlgorithmsServerToClient() {
+        if (context.getServerSupportedCompressionAlgorithmsServerToClient() != null) {
+            return context.getServerSupportedCompressionAlgorithmsServerToClient();
         } else {
-            return config.getServerSupportedCompressionAlgorithmsSending();
+            return config.getServerSupportedCompressionAlgorithmsServerToClient();
         }
     }
 
-    public List<CompressionAlgorithm> getServerSupportedCompressionAlgorithmsReceiving() {
-        if (context.getServerSupportedCompressionAlgorithmsReceiving() != null) {
-            return context.getServerSupportedCompressionAlgorithmsReceiving();
+    public List<CompressionAlgorithm> getServerSupportedCompressionAlgorithmsClientToServer() {
+        if (context.getServerSupportedCompressionAlgorithmsClientToServer() != null) {
+            return context.getServerSupportedCompressionAlgorithmsClientToServer();
         } else {
-            return config.getServerSupportedCompressionAlgorithmsReceiving();
+            return config.getServerSupportedCompressionAlgorithmsClientToServer();
         }
     }
 
-    public List<Language> getClientSupportedLanguagesSending() {
-        if (context.getClientSupportedLanguagesSending() != null) {
-            return context.getClientSupportedLanguagesSending();
+    public List<Language> getClientSupportedLanguagesClientToServer() {
+        if (context.getClientSupportedLanguagesClientToServer() != null) {
+            return context.getClientSupportedLanguagesClientToServer();
         } else {
-            return config.getClientSupportedLanguagesSending();
+            return config.getClientSupportedLanguagesClientToServer();
         }
     }
 
-    public List<Language> getClientSupportedLanguagesReceiving() {
-        if (context.getClientSupportedLanguagesReceiving() != null) {
-            return context.getClientSupportedLanguagesReceiving();
+    public List<Language> getClientSupportedLanguagesServerToClient() {
+        if (context.getClientSupportedLanguagesServerToClient() != null) {
+            return context.getClientSupportedLanguagesServerToClient();
         } else {
-            return config.getClientSupportedLanguagesReceiving();
+            return config.getClientSupportedLanguagesServerToClient();
         }
     }
 
-    public List<Language> getServerSupportedLanguagesSending() {
-        if (context.getServerSupportedLanguagesSending() != null) {
-            return context.getServerSupportedLanguagesSending();
+    public List<Language> getServerSupportedLanguagesServerToClient() {
+        if (context.getServerSupportedLanguagesServerToClient() != null) {
+            return context.getServerSupportedLanguagesServerToClient();
         } else {
-            return config.getServerSupportedLanguagesSending();
+            return config.getServerSupportedLanguagesServerToClient();
         }
     }
 
-    public List<Language> getServerSupportedLanguagesReceiving() {
-        if (context.getServerSupportedLanguagesReceiving() != null) {
-            return context.getServerSupportedLanguagesReceiving();
+    public List<Language> getServerSupportedLanguagesClientToServer() {
+        if (context.getServerSupportedLanguagesClientToServer() != null) {
+            return context.getServerSupportedLanguagesClientToServer();
         } else {
-            return config.getServerSupportedLanguagesReceiving();
+            return config.getServerSupportedLanguagesClientToServer();
         }
     }
 
@@ -255,6 +256,22 @@ public class Chooser {
             return context.getServerReserved();
         } else {
             return config.getServerReserved();
+        }
+    }
+
+    public byte[] getClientEcdhPublicKey() {
+        if (context.getClientEcdhPublicKey() != null) {
+            return context.getClientEcdhPublicKey();
+        } else {
+            return config.getClientEcdhPublicKey();
+        }
+    }
+
+    public byte[] getServerEcdhPublicKey() {
+        if (context.getServerEcdhPublicKey() != null) {
+            return context.getServerEcdhPublicKey();
+        } else {
+            return config.getServerEcdhPublicKey();
         }
     }
 }

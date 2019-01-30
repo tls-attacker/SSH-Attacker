@@ -33,44 +33,6 @@ public class Config implements Serializable {
         DEFAULT_CONFIG_CACHE = new ConfigCache(createConfig());
     }
 
-//    /**
-//     * From ClientInitMessage
-//     */
-//    private String clientVersion;
-//    private String clientComment;
-//    private String serverVersion;
-//    private String serverComment;
-//
-//    /**
-//     * From KeyExchangeInitMessage
-//     */
-//    private byte[] clientCookie;
-//    private byte[] serverCookie;
-//    private List<KeyExchangeAlgorithm> supportedKeyExchangeAlgorithms;
-//    private List<PublicKeyAuthenticationAlgorithm> PublicKeyAuthenticationAlgorithms;
-//    private List<EncryptionAlgorithm> supportedEncryptionAlgorithmsClientToServer;
-//    private List<EncryptionAlgorithm> supportedEncryptionAlgorithmsServerToClient;
-//    private List<MACAlgorithm> supportedMacAlgorithmsClientToServer;
-//    private List<MACAlgorithm> supportedMacAlgorithmsServerToClient;
-//    private List<CompressionAlgorithm> supportedCompressionAlgorithmsClientToServer;
-//    private List<CompressionAlgorithm> supportedCompressionAlgorithmsServerToClient;
-//    private List<Language> supportedLanguagesClientToServer;
-//    private List<Language> supportedLanguagesServerToClient;
-//    private byte defaultFirstKeyExchangePacketFollows;
-//    private int defaultReserved;
-//
-//    /**
-//     * From ECDHKeyExchangeInitMessage
-//     */
-//    private byte[] defaultClientEcdhPublicKey;
-//
-//    /**
-//     * From ECDHKeyExchangeReplyMessage
-//     */
-//    private String defaultHostKeyType;
-//    private BigInteger defaultRsaExponent;
-//    private BigInteger defaultRsaModulus;
-//    private byte[] defaultServerEcdhPublicKey;
 // BEGIN_GENERATED
     private String clientVersion;
     private String clientComment;
@@ -82,27 +44,31 @@ public class Config implements Serializable {
     private List<KeyExchangeAlgorithm> serverSupportedKeyExchangeAlgorithms;
     private List<PublicKeyAuthenticationAlgorithm> clientSupportedHostKeyAlgorithms;
     private List<PublicKeyAuthenticationAlgorithm> serverSupportedHostKeyAlgorithms;
-    private List<EncryptionAlgorithm> clientSupportedCipherAlgorithmsSending;
-    private List<EncryptionAlgorithm> clientSupportedCipherAlgorithmsReceiving;
-    private List<EncryptionAlgorithm> serverSupportedCipherAlgorithmsSending;
-    private List<EncryptionAlgorithm> serverSupportedCipherAlgorithmsReceiving;
-    private List<MACAlgorithm> clientSupportedMacAlgorithmsSending;
-    private List<MACAlgorithm> clientSupportedMacAlgorithmsReceiving;
-    private List<MACAlgorithm> serverSupportedMacAlgorithmsSending;
-    private List<MACAlgorithm> serverSupportedMacAlgorithmsReceiving;
-    private List<CompressionAlgorithm> clientSupportedCompressionAlgorithmsSending;
-    private List<CompressionAlgorithm> clientSupportedCompressionAlgorithmsReceiving;
-    private List<CompressionAlgorithm> serverSupportedCompressionAlgorithmsSending;
-    private List<CompressionAlgorithm> serverSupportedCompressionAlgorithmsReceiving;
-    private List<Language> clientSupportedLanguagesSending;
-    private List<Language> clientSupportedLanguagesReceiving;
-    private List<Language> serverSupportedLanguagesSending;
-    private List<Language> serverSupportedLanguagesReceiving;
+    private List<EncryptionAlgorithm> clientSupportedCipherAlgorithmsClientToServer;
+    private List<EncryptionAlgorithm> clientSupportedCipherAlgorithmsServerToClient;
+    private List<EncryptionAlgorithm> serverSupportedCipherAlgorithmsServerToClient;
+    private List<EncryptionAlgorithm> serverSupportedCipherAlgorithmsClientToServer;
+    private List<MACAlgorithm> clientSupportedMacAlgorithmsClientToServer;
+    private List<MACAlgorithm> clientSupportedMacAlgorithmsServerToClient;
+    private List<MACAlgorithm> serverSupportedMacAlgorithmsServerToClient;
+    private List<MACAlgorithm> serverSupportedMacAlgorithmsClientToServer;
+    private List<CompressionAlgorithm> clientSupportedCompressionAlgorithmsClientToServer;
+    private List<CompressionAlgorithm> clientSupportedCompressionAlgorithmsServerToClient;
+    private List<CompressionAlgorithm> serverSupportedCompressionAlgorithmsServerToClient;
+    private List<CompressionAlgorithm> serverSupportedCompressionAlgorithmsClientToServer;
+    private List<Language> clientSupportedLanguagesClientToServer;
+    private List<Language> clientSupportedLanguagesServerToClient;
+    private List<Language> serverSupportedLanguagesServerToClient;
+    private List<Language> serverSupportedLanguagesClientToServer;
     private byte clientFirstKeyExchangePacketFollows;
     private byte serverFirstKeyExchangePacketFollows;
     private int clientReserved;
     private int serverReserved;
 // END GENERATED
+    
+    private byte[] clientEcdhPublicKey;
+    private byte[] serverEcdhPublicKey;
+    
     /**
      * Default Connection to use when running as Client
      */
@@ -135,33 +101,33 @@ public class Config implements Serializable {
 
         serverSupportedHostKeyAlgorithms = new LinkedList<>(clientSupportedHostKeyAlgorithms);
 
-        clientSupportedCipherAlgorithmsSending = new LinkedList<>();
-        clientSupportedCipherAlgorithmsSending.add(EncryptionAlgorithm.tdes_cbc);
-        clientSupportedCipherAlgorithmsReceiving = new LinkedList<>(clientSupportedCipherAlgorithmsSending);
+        clientSupportedCipherAlgorithmsClientToServer = new LinkedList<>();
+        clientSupportedCipherAlgorithmsClientToServer.add(EncryptionAlgorithm.tdes_cbc);
+        clientSupportedCipherAlgorithmsServerToClient = new LinkedList<>(clientSupportedCipherAlgorithmsClientToServer);
 
-        serverSupportedCipherAlgorithmsReceiving = new LinkedList<>(clientSupportedCipherAlgorithmsSending);
-        serverSupportedCipherAlgorithmsSending = new LinkedList<>(clientSupportedCipherAlgorithmsSending);
+        serverSupportedCipherAlgorithmsClientToServer = new LinkedList<>(clientSupportedCipherAlgorithmsClientToServer);
+        serverSupportedCipherAlgorithmsServerToClient = new LinkedList<>(clientSupportedCipherAlgorithmsClientToServer);
 
-        clientSupportedMacAlgorithmsSending = new LinkedList<>();
-        clientSupportedMacAlgorithmsSending.add(MACAlgorithm.hmac_sha1);
-        clientSupportedMacAlgorithmsReceiving = new LinkedList<>(clientSupportedMacAlgorithmsSending);
+        clientSupportedMacAlgorithmsClientToServer = new LinkedList<>();
+        clientSupportedMacAlgorithmsClientToServer.add(MACAlgorithm.hmac_sha1);
+        clientSupportedMacAlgorithmsServerToClient = new LinkedList<>(clientSupportedMacAlgorithmsClientToServer);
 
-        serverSupportedMacAlgorithmsSending = new LinkedList<>(clientSupportedMacAlgorithmsSending);
-        serverSupportedMacAlgorithmsReceiving = new LinkedList<>(clientSupportedMacAlgorithmsSending);
+        serverSupportedMacAlgorithmsServerToClient = new LinkedList<>(clientSupportedMacAlgorithmsClientToServer);
+        serverSupportedMacAlgorithmsClientToServer = new LinkedList<>(clientSupportedMacAlgorithmsClientToServer);
 
-        clientSupportedCompressionAlgorithmsSending = new LinkedList<>();
-        clientSupportedCompressionAlgorithmsSending.add(CompressionAlgorithm.none);
-        clientSupportedCompressionAlgorithmsReceiving = new LinkedList<>(clientSupportedCompressionAlgorithmsSending);
+        clientSupportedCompressionAlgorithmsClientToServer = new LinkedList<>();
+        clientSupportedCompressionAlgorithmsClientToServer.add(CompressionAlgorithm.none);
+        clientSupportedCompressionAlgorithmsServerToClient = new LinkedList<>(clientSupportedCompressionAlgorithmsClientToServer);
 
-        serverSupportedCompressionAlgorithmsSending = new LinkedList<>(clientSupportedCompressionAlgorithmsSending);
-        serverSupportedCompressionAlgorithmsReceiving = new LinkedList<>(clientSupportedCompressionAlgorithmsSending);
+        serverSupportedCompressionAlgorithmsServerToClient = new LinkedList<>(clientSupportedCompressionAlgorithmsClientToServer);
+        serverSupportedCompressionAlgorithmsClientToServer = new LinkedList<>(clientSupportedCompressionAlgorithmsClientToServer);
 
-        clientSupportedLanguagesSending = new LinkedList<>();
-        clientSupportedLanguagesSending.add(Language.None);
-        clientSupportedLanguagesReceiving = new LinkedList<>(clientSupportedLanguagesSending);
+        clientSupportedLanguagesClientToServer = new LinkedList<>();
+        clientSupportedLanguagesClientToServer.add(Language.None);
+        clientSupportedLanguagesServerToClient = new LinkedList<>(clientSupportedLanguagesClientToServer);
 
-        serverSupportedLanguagesSending = new LinkedList<>(clientSupportedLanguagesSending);
-        serverSupportedLanguagesReceiving = new LinkedList<>(clientSupportedLanguagesSending);
+        serverSupportedLanguagesServerToClient = new LinkedList<>(clientSupportedLanguagesClientToServer);
+        serverSupportedLanguagesClientToServer = new LinkedList<>(clientSupportedLanguagesClientToServer);
 
         clientFirstKeyExchangePacketFollows = (byte) 0;
         serverFirstKeyExchangePacketFollows = (byte) 0;
@@ -259,68 +225,68 @@ public class Config implements Serializable {
         return serverSupportedHostKeyAlgorithms;
     }
 
-    public List<EncryptionAlgorithm> getClientSupportedCipherAlgorithmsSending() {
-        return clientSupportedCipherAlgorithmsSending;
+    public List<EncryptionAlgorithm> getClientSupportedCipherAlgorithmsClientToServer() {
+        return clientSupportedCipherAlgorithmsClientToServer;
     }
 
-    public List<EncryptionAlgorithm> getClientSupportedCipherAlgorithmsReceiving() {
-        return clientSupportedCipherAlgorithmsReceiving;
+    public List<EncryptionAlgorithm> getClientSupportedCipherAlgorithmsServerToClient() {
+        return clientSupportedCipherAlgorithmsServerToClient;
     }
 
-    public List<EncryptionAlgorithm> getServerSupportedCipherAlgorithmsSending() {
-        return serverSupportedCipherAlgorithmsSending;
+    public List<EncryptionAlgorithm> getServerSupportedCipherAlgorithmsServerToClient() {
+        return serverSupportedCipherAlgorithmsServerToClient;
     }
 
-    public List<EncryptionAlgorithm> getServerSupportedCipherAlgorithmsReceiving() {
-        return serverSupportedCipherAlgorithmsReceiving;
+    public List<EncryptionAlgorithm> getServerSupportedCipherAlgorithmsClientToServer() {
+        return serverSupportedCipherAlgorithmsClientToServer;
     }
 
-    public List<MACAlgorithm> getClientSupportedMacAlgorithmsSending() {
-        return clientSupportedMacAlgorithmsSending;
+    public List<MACAlgorithm> getClientSupportedMacAlgorithmsClientToServer() {
+        return clientSupportedMacAlgorithmsClientToServer;
     }
 
-    public List<MACAlgorithm> getClientSupportedMacAlgorithmsReceiving() {
-        return clientSupportedMacAlgorithmsReceiving;
+    public List<MACAlgorithm> getClientSupportedMacAlgorithmsServerToClient() {
+        return clientSupportedMacAlgorithmsServerToClient;
     }
 
-    public List<MACAlgorithm> getServerSupportedMacAlgorithmsSending() {
-        return serverSupportedMacAlgorithmsSending;
+    public List<MACAlgorithm> getServerSupportedMacAlgorithmsServerToClient() {
+        return serverSupportedMacAlgorithmsServerToClient;
     }
 
-    public List<MACAlgorithm> getServerSupportedMacAlgorithmsReceiving() {
-        return serverSupportedMacAlgorithmsReceiving;
+    public List<MACAlgorithm> getServerSupportedMacAlgorithmsClientToServer() {
+        return serverSupportedMacAlgorithmsClientToServer;
     }
 
-    public List<CompressionAlgorithm> getClientSupportedCompressionAlgorithmsSending() {
-        return clientSupportedCompressionAlgorithmsSending;
+    public List<CompressionAlgorithm> getClientSupportedCompressionAlgorithmsClientToServer() {
+        return clientSupportedCompressionAlgorithmsClientToServer;
     }
 
-    public List<CompressionAlgorithm> getClientSupportedCompressionAlgorithmsReceiving() {
-        return clientSupportedCompressionAlgorithmsReceiving;
+    public List<CompressionAlgorithm> getClientSupportedCompressionAlgorithmsServerToClient() {
+        return clientSupportedCompressionAlgorithmsServerToClient;
     }
 
-    public List<CompressionAlgorithm> getServerSupportedCompressionAlgorithmsSending() {
-        return serverSupportedCompressionAlgorithmsSending;
+    public List<CompressionAlgorithm> getServerSupportedCompressionAlgorithmsServerToClient() {
+        return serverSupportedCompressionAlgorithmsServerToClient;
     }
 
-    public List<CompressionAlgorithm> getServerSupportedCompressionAlgorithmsReceiving() {
-        return serverSupportedCompressionAlgorithmsReceiving;
+    public List<CompressionAlgorithm> getServerSupportedCompressionAlgorithmsClientToServer() {
+        return serverSupportedCompressionAlgorithmsClientToServer;
     }
 
-    public List<Language> getClientSupportedLanguagesSending() {
-        return clientSupportedLanguagesSending;
+    public List<Language> getClientSupportedLanguagesClientToServer() {
+        return clientSupportedLanguagesClientToServer;
     }
 
-    public List<Language> getClientSupportedLanguagesReceiving() {
-        return clientSupportedLanguagesReceiving;
+    public List<Language> getClientSupportedLanguagesServerToClient() {
+        return clientSupportedLanguagesServerToClient;
     }
 
-    public List<Language> getServerSupportedLanguagesSending() {
-        return serverSupportedLanguagesSending;
+    public List<Language> getServerSupportedLanguagesServerToClient() {
+        return serverSupportedLanguagesServerToClient;
     }
 
-    public List<Language> getServerSupportedLanguagesReceiving() {
-        return serverSupportedLanguagesReceiving;
+    public List<Language> getServerSupportedLanguagesClientToServer() {
+        return serverSupportedLanguagesClientToServer;
     }
 
     public byte getClientFirstKeyExchangePacketFollows() {
@@ -340,4 +306,22 @@ public class Config implements Serializable {
     }
 
 // END GENERATED
+
+    public byte[] getClientEcdhPublicKey() {
+        return clientEcdhPublicKey;
+    }
+
+    public void setClientEcdhPublicKey(byte[] clientEcdhPublicKey) {
+        this.clientEcdhPublicKey = clientEcdhPublicKey;
+    }
+
+    public byte[] getServerEcdhPublicKey() {
+        return serverEcdhPublicKey;
+    }
+
+    public void setServerEcdhPublicKey(byte[] serverEcdhPublicKey) {
+        this.serverEcdhPublicKey = serverEcdhPublicKey;
+    }
+
+    
 }

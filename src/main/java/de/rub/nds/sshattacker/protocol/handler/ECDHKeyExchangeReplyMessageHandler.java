@@ -11,8 +11,8 @@ public class ECDHKeyExchangeReplyMessageHandler extends Handler<ECDHKeyExchangeR
 
     @Override
     public void handle() { // TODO conditional handling of host keys
-        context.setDefaultHostKeyType(message.getHostKeyType().getValue());
-        context.setDefaultServerEcdhPublicKey(message.getEphemeralPublicKey().getValue());
+        context.setHostKeyType(message.getHostKeyType().getValue());
+        context.setServerEcdhPublicKey(message.getEphemeralPublicKey().getValue());
         context.setKeyExchangeSignature(message.getSignature().getValue());
         handleEccHostKey();
     }
@@ -22,7 +22,7 @@ public class ECDHKeyExchangeReplyMessageHandler extends Handler<ECDHKeyExchangeR
     }
     
     private void handleRsaHostKey(){
-        context.setDefaultRsaExponent(message.getHostKeyRsaExponent().getValue());
-        context.setDefaultRsaModulus(message.getHostKeyRsaModulus().getValue());
+//        context.setDefaultRsaExponent(message.getHostKeyRsaExponent().getValue());
+//        context.setDefaultRsaModulus(message.getHostKeyRsaModulus().getValue());
     }
 }

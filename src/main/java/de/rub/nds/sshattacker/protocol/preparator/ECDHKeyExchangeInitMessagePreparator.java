@@ -11,8 +11,7 @@ public class ECDHKeyExchangeInitMessagePreparator extends Preparator<ECDHKeyExch
 
     @Override
     public void prepare() {
-        message.setPublicKey(context.getDefaultClientEcdhPublicKey());
-        message.setPublicKeyLength(message.getPublicKey().getValue().length);
+        message.setPublicKey(context.getChooser().getClientEcdhPublicKey());
+        message.setPublicKeyLength(context.getChooser().getClientEcdhPublicKey().length);
     }
-
 }

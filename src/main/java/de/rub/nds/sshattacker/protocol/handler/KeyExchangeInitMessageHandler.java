@@ -22,10 +22,14 @@ public class KeyExchangeInitMessageHandler extends Handler<KeyExchangeInitMessag
         context.setServerCookie(message.getCookie().getValue());
         context.setServerSupportedKeyExchangeAlgorithms(Converter.StringToAlgorithms(message.getKeyExchangeAlgorithms().getValue(), KeyExchangeAlgorithm.class));
         context.setServerSupportedHostKeyAlgorithms(Converter.StringToAlgorithms(message.getServerHostKeyAlgorithms().getValue(), PublicKeyAuthenticationAlgorithm.class));
-        context.setServerSupportedCipherAlgorithms(Converter.StringToAlgorithms(message.getEncryptionAlgorithmsServerToClient().getValue(), EncryptionAlgorithm.class));
-        context.setServerSupportedMacAlgorithms(Converter.StringToAlgorithms(message.getMacAlgorithmsServerToClient().getValue(), MACAlgorithm.class));
-        context.setServerSupportedCompressionAlgorithms(Converter.StringToAlgorithms(message.getCompressionAlgorithmsServerToClient().getValue(), CompressionAlgorithm.class));
-        context.setServerSupportedLanguages(Converter.StringToAlgorithms(message.getLanguagesServerToClient().getValue(), Language.class));
-        context.setReserved(message.getReserved().getValue());
+        context.setServerSupportedCipherAlgorithmsClientToServer(Converter.StringToAlgorithms(message.getEncryptionAlgorithmsClientToServer().getValue(), EncryptionAlgorithm.class));
+        context.setServerSupportedCipherAlgorithmsServerToClient(Converter.StringToAlgorithms(message.getEncryptionAlgorithmsServerToClient().getValue(), EncryptionAlgorithm.class));
+        context.setServerSupportedMacAlgorithmsClientToServer(Converter.StringToAlgorithms(message.getMacAlgorithmsClientToServer().getValue(), MACAlgorithm.class));
+        context.setServerSupportedMacAlgorithmsServerToClient(Converter.StringToAlgorithms(message.getMacAlgorithmsServerToClient().getValue(), MACAlgorithm.class));
+        context.setServerSupportedCompressionAlgorithmsClientToServer(Converter.StringToAlgorithms(message.getCompressionAlgorithmsClientToServer().getValue(), CompressionAlgorithm.class));
+        context.setServerSupportedCompressionAlgorithmsServerToClient(Converter.StringToAlgorithms(message.getCompressionAlgorithmsServerToClient().getValue(), CompressionAlgorithm.class));
+        context.setServerSupportedLanguagesClientToServer(Converter.StringToAlgorithms(message.getLanguagesClientToServer().getValue(), Language.class));
+        context.setServerSupportedLanguagesServerToClient(Converter.StringToAlgorithms(message.getLanguagesServerToClient().getValue(), Language.class));
+        context.setServerReserved(message.getReserved().getValue());
     }
 }

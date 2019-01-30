@@ -12,30 +12,28 @@ public class KeyExchangeInitMessagePreparator extends Preparator<KeyExchangeInit
 
     @Override
     public void prepare() {
-        //TODO for now we only support using the same algorithms in both directions
-        // adapt context to hold for client/server {algorithm for direction to and from client}
-        message.setCookie(context.getClientCookie());
-        message.setKeyExchangeAlgorithms(Converter.listofAlgorithmstoString(context.getClientSupportedKeyExchangeAlgorithms()));
+        message.setCookie(context.getChooser().getClientCookie());
+        message.setKeyExchangeAlgorithms(Converter.listofAlgorithmstoString(context.getChooser().getClientSupportedKeyExchangeAlgorithms()));
         message.setKeyExchangeAlgorithmsLength(message.getKeyExchangeAlgorithms().getValue().length());
-        message.setServerHostKeyAlgorithms(Converter.listofAlgorithmstoString(context.getClientSupportedHostKeyAlgorithms()));
+        message.setServerHostKeyAlgorithms(Converter.listofAlgorithmstoString(context.getChooser().getClientSupportedHostKeyAlgorithms()));
         message.setServerHostKeyAlgorithmsLength(message.getServerHostKeyAlgorithms().getValue().length());
-        message.setEncryptionAlgorithmsClientToServer(Converter.listofAlgorithmstoString(context.getClientSupportedCipherAlgorithms()));
+        message.setEncryptionAlgorithmsClientToServer(Converter.listofAlgorithmstoString(context.getChooser().getClientSupportedCipherAlgorithmsClientToServer()));
         message.setEncryptionAlgorithmsClientToServerLength(message.getEncryptionAlgorithmsClientToServer().getValue().length());
-        message.setEncryptionAlgorithmsServerToClient(Converter.listofAlgorithmstoString(context.getClientSupportedCipherAlgorithms()));
+        message.setEncryptionAlgorithmsServerToClient(Converter.listofAlgorithmstoString(context.getChooser().getClientSupportedCipherAlgorithmsServertoClient()));
         message.setEncryptionAlgorithmsServerToClientLength(message.getEncryptionAlgorithmsServerToClient().getValue().length());
-        message.setMacAlgorithmsClientToServer(Converter.listofAlgorithmstoString(context.getClientSupportedMacAlgorithms()));
+        message.setMacAlgorithmsClientToServer(Converter.listofAlgorithmstoString(context.getChooser().getClientSupportedMacAlgorithmsClientToServer()));
         message.setMacAlgorithmsClientToServerLength(message.getMacAlgorithmsClientToServer().getValue().length());
-        message.setMacAlgorithmsServerToClient(Converter.listofAlgorithmstoString(context.getClientSupportedMacAlgorithms()));
+        message.setMacAlgorithmsServerToClient(Converter.listofAlgorithmstoString(context.getChooser().getClientSupportedMacAlgorithmsServerToClient()));
         message.setMacAlgorithmsServerToClientLength(message.getMacAlgorithmsServerToClient().getValue().length());
-        message.setCompressionAlgorithmsClientToServer(Converter.listofAlgorithmstoString(context.getClientSupportedCompressionAlgorithms()));
+        message.setCompressionAlgorithmsClientToServer(Converter.listofAlgorithmstoString(context.getChooser().getClientSupportedCompressionAlgorithmsClientToServer()));
         message.setCompressionAlgorithmsClientToServerLength(message.getCompressionAlgorithmsClientToServer().getValue().length());
-        message.setCompressionAlgorithmsServerToClient(Converter.listofAlgorithmstoString(context.getClientSupportedCompressionAlgorithms()));
+        message.setCompressionAlgorithmsServerToClient(Converter.listofAlgorithmstoString(context.getChooser().getClientSupportedCompressionAlgorithmsServerToClient()));
         message.setCompressionAlgorithmsServerToClientLength(message.getCompressionAlgorithmsServerToClient().getValue().length());
-        message.setLanguagesClientToServer(Converter.listofAlgorithmstoString(context.getClientSupportedLanguages()));
+        message.setLanguagesClientToServer(Converter.listofAlgorithmstoString(context.getChooser().getClientSupportedLanguagesClientToServer()));
         message.setLanguagesClientToServerLength(message.getCompressionAlgorithmsClientToServer().getValue().length());
-        message.setLanguagesServerToClient(Converter.listofAlgorithmstoString(context.getClientSupportedLanguages()));
+        message.setLanguagesServerToClient(Converter.listofAlgorithmstoString(context.getChooser().getClientSupportedLanguagesServerToClient()));
         message.setLanguagesServerToClientLength(message.getLanguagesServerToClient().getValue().length());
-        message.setFirstKeyExchangePacketFollows(context.getFirstKeyExchangePacketFollows());
-        message.setReserved(context.getReserved());
+        message.setFirstKeyExchangePacketFollows(context.getChooser().getClientFirstKeyExchangePacketFollows());
+        message.setReserved(context.getChooser().getClientReserved());
     }
 }
