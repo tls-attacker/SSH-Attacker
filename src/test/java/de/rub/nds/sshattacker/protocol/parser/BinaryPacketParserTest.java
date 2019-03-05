@@ -114,7 +114,7 @@ public class BinaryPacketParserTest {
         Assert.assertEquals(packetLength, msg.getPacketLength().getValue().intValue());
         Assert.assertEquals(paddingLength, msg.getPaddingLength().getValue().byteValue());
         Assert.assertEquals(messageID, (byte) msg.getMessageID().getValue());
-        //Assert.assertArrayEquals(payload, msg.getPayload().getValue());
+//        Assert.assertArrayEquals(payload, msg.getPayload().getValue());
         Assert.assertArrayEquals(padding, msg.getPadding().getValue());
         if (msg.getMac() == null) {
             Assert.assertArrayEquals(mac, msg.getMac().getValue());

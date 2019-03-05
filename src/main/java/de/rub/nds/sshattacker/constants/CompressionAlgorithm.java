@@ -5,9 +5,14 @@ public enum CompressionAlgorithm {
     zlib("zlib"),
     zlib_openssh_com("zlib@openssh.com");
 
-    private String name;
+    private final String name;
 
     private CompressionAlgorithm(String name) {
         this.name = name;
+    }
+    
+    @Override
+    public String toString(){
+        return name;
     }
 }

@@ -14,10 +14,15 @@ public enum KeyExchangeAlgorithm {
     ecdh_sha2_nistp384("ecdh-sha2-nistp384"),
     ecdh_sha2_nistp521("ecdh-sha2-nistp521");
 
-    private String name;
+    private final String name;
 
     private KeyExchangeAlgorithm(String name) {
         this.name = name;
+    }
+    
+    @Override
+    public String toString(){
+        return name;
     }
 
 }

@@ -5,6 +5,7 @@ import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
+import de.rub.nds.sshattacker.constants.MessageIDConstants;
 
 public class KeyExchangeInitMessage extends BinaryPacket {
 
@@ -32,6 +33,9 @@ public class KeyExchangeInitMessage extends BinaryPacket {
     private ModifiableByte firstKeyExchangePacketFollows;
     private ModifiableInteger reserved;
 
+    public KeyExchangeInitMessage(){
+        messageID = ModifiableVariableFactory.safelySetValue(messageID, MessageIDConstants.SSH_MSG_KEXINIT);
+    }
     public ModifiableInteger getKeyExchangeAlgorithmsLength() {
         return keyExchangeAlgorithmsLength;
     }

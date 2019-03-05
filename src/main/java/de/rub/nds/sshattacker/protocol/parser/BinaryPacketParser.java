@@ -62,7 +62,8 @@ public abstract class BinaryPacketParser<T extends BinaryPacket> extends Parser<
         }
     }
     
-    public static BinaryPacket delegateParsing(byte[] raw){
+//    public static <T extends BinaryPacket> T delegateParsing(byte[] raw){
+        public static BinaryPacket delegateParsing(byte[] raw){
         byte messageID = raw[5];
         switch (messageID){
             case MessageIDConstants.SSH_MSG_KEXINIT: return new KeyExchangeInitMessageParser(0, raw).parse();

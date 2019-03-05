@@ -1,6 +1,7 @@
 package de.rub.nds.sshattacker.protocol.preparator;
 
 import de.rub.nds.sshattacker.protocol.message.KeyExchangeInitMessage;
+import de.rub.nds.sshattacker.protocol.serializer.KeyExchangeInitMessageSerializer;
 import de.rub.nds.sshattacker.state.SshContext;
 import de.rub.nds.sshattacker.util.Converter;
 
@@ -30,10 +31,14 @@ public class KeyExchangeInitMessagePreparator extends Preparator<KeyExchangeInit
         message.setCompressionAlgorithmsServerToClient(Converter.listofAlgorithmstoString(context.getChooser().getClientSupportedCompressionAlgorithmsServerToClient()));
         message.setCompressionAlgorithmsServerToClientLength(message.getCompressionAlgorithmsServerToClient().getValue().length());
         message.setLanguagesClientToServer(Converter.listofAlgorithmstoString(context.getChooser().getClientSupportedLanguagesClientToServer()));
-        message.setLanguagesClientToServerLength(message.getCompressionAlgorithmsClientToServer().getValue().length());
+        message.setLanguagesClientToServerLength(message.getLanguagesClientToServer().getValue().length());
         message.setLanguagesServerToClient(Converter.listofAlgorithmstoString(context.getChooser().getClientSupportedLanguagesServerToClient()));
         message.setLanguagesServerToClientLength(message.getLanguagesServerToClient().getValue().length());
         message.setFirstKeyExchangePacketFollows(context.getChooser().getClientFirstKeyExchangePacketFollows());
         message.setReserved(context.getChooser().getClientReserved());
+        message.setPayload(new KeyExchangeInitMessageSerializer(message).serializeMessageSpecificPayload());
+        message.computePaddingLength((byte) 0);
+        message.generatePadding();
+        message.computePacketLength();
     }
 }

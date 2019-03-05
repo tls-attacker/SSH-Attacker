@@ -10,6 +10,8 @@ public class NewKeysMessageSerializer extends BinaryPacketSerializer<NewKeysMess
     
     @Override
     protected byte[] serializeMessageSpecificPayload() {
+        // does not have a message specific payload
+        // specific part is only the messagetype
         return new byte[0];
     }
 }

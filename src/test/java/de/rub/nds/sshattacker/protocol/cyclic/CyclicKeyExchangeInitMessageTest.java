@@ -35,6 +35,5 @@ public class CyclicKeyExchangeInitMessageTest {
         KeyExchangeInitMessage msg = new KeyExchangeInitMessageParser(0,bytes).parseMessageSpecificPayload();
         byte[] serialized = new KeyExchangeInitMessageSerializer(msg).serializeMessageSpecificPayload();
         Assert.assertArrayEquals(bytes, serialized);
-        
     }
 }

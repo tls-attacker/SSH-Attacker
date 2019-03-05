@@ -1,6 +1,7 @@
 package de.rub.nds.sshattacker.protocol.parser;
 
 import de.rub.nds.sshattacker.constants.BinaryPacketConstants;
+import de.rub.nds.sshattacker.constants.PublicKeyAuthenticationAlgorithm;
 import de.rub.nds.sshattacker.protocol.message.ECDHKeyExchangeReplyMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -93,8 +94,15 @@ public class ECDHKeyExchangeReplyMessageParser extends BinaryPacketParser<ECDHKe
         parseHostKeyLength(msg);
         parseHostKeyTypeLength(msg);
         parseHostKeyType(msg);
-        //parseRsaHostKey(msg);
-        parseEccHostKey(msg);
+        if (msg.getHostKeyType().getValue().equals(PublicKeyAuthenticationAlgorithm.ssh_rsa.toString())) //TODO refine logic
+        {
+            parseRsaHostKey(msg);
+        }
+        else 
+        {
+            parseEccHostKey(msg);
+        }
+        
         parsePublicKeyLength(msg);
         parsePublicKey(msg);
         parseSignatureLength(msg);

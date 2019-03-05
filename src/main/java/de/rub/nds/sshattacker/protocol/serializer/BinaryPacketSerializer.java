@@ -42,7 +42,7 @@ public abstract class BinaryPacketSerializer<T extends BinaryPacket> extends Ser
     }
 
     private void serializeMac() {
-        if (msg.getMac().getValue() == null) {
+        if (msg.getMac() == null) {
             LOGGER.debug("MAC: none");
         } else {
             LOGGER.debug("MAC: " + msg.getMac());
@@ -55,7 +55,7 @@ public abstract class BinaryPacketSerializer<T extends BinaryPacket> extends Ser
         serializePacketLength();
         serializePaddingLength();
         serializeMessageID();
-        appendBytes(serializeMessageSpecificPayload());
+        serializeMessageSpecificPayload();
         serializePadding();
         serializeMac();
         return getAlreadySerialized();

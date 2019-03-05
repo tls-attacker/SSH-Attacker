@@ -8,6 +8,9 @@ import de.rub.nds.sshattacker.constants.KeyExchangeAlgorithm;
 import de.rub.nds.sshattacker.constants.Language;
 import de.rub.nds.sshattacker.constants.MACAlgorithm;
 import de.rub.nds.sshattacker.constants.PublicKeyAuthenticationAlgorithm;
+import de.rub.nds.sshattacker.crypto.KeyDerivation;
+import de.rub.nds.sshattacker.util.Converter;
+import java.math.BigInteger;
 import java.util.List;
 
 public class SshContext {
@@ -15,6 +18,8 @@ public class SshContext {
     private Config config;
     private Chooser chooser;
     private AliasedConnection connection;
+    
+    private byte[] exchangeHashInput;
 
     private byte[] sharedSecret;
     private byte[] exchangeHash;
@@ -31,9 +36,12 @@ public class SshContext {
 
     private String hostKeyType;
     private byte[] serverHostKey;
+    private BigInteger hostKeyRsaExponent;
+    private BigInteger hostKeyRsaModulus;
     private byte[] keyExchangeSignature;
     
     private byte[] clientEcdhPublicKey;
+    private byte[] clientEcdhSecretKey;
     private byte[] serverEcdhPublicKey;
 
     /**
@@ -332,6 +340,10 @@ public class SshContext {
         this.config = config;
         this.connection = connection;
     }
+    
+    public SshContext(){
+        
+    }
 
     public Config getConfig() {
         return config;
@@ -541,11 +553,47 @@ public class SshContext {
         this.serverEcdhPublicKey = serverEcdhPublicKey;
     }
 
+    public BigInteger getHostKeyRsaExponent() {
+        return hostKeyRsaExponent;
+    }
+
+    public void setHostKeyRsaExponent(BigInteger hostKeyRsaExponent) {
+        this.hostKeyRsaExponent = hostKeyRsaExponent;
+    }
+
+    public BigInteger getHostKeyRsaModulus() {
+        return hostKeyRsaModulus;
+    }
+
+    public void setHostKeyRsaModulus(BigInteger hostKeyRsaModulus) {
+        this.hostKeyRsaModulus = hostKeyRsaModulus;
+    }
+    
     public Chooser getChooser() {
         return chooser;
     }
 
     public void setChooser(Chooser chooser) {
         this.chooser = chooser;
+    }
+
+    public byte[] getExchangeHashInput() {
+        return exchangeHashInput;
+    }
+
+    public void setExchangeHashInput(byte[] exchangeHashInput) {
+        this.exchangeHashInput = exchangeHashInput;
+    }
+    
+    public void appendToExchangeHashInput(byte[] additionalData){
+        exchangeHashInput = Converter.concatenate(exchangeHashInput, Converter.bytesToLenghPrefixedString(additionalData));
+    }
+
+    public byte[] getClientEcdhSecretKey() {
+        return clientEcdhSecretKey;
+    }
+
+    public void setClientEcdhSecretKey(byte[] clientEcdhSecretKey) {
+        this.clientEcdhSecretKey = clientEcdhSecretKey;
     }
 }

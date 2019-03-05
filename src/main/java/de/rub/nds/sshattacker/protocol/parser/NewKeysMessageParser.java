@@ -15,7 +15,6 @@ public class NewKeysMessageParser extends BinaryPacketParser<NewKeysMessage> {
 
     @Override
     protected void parseMessageSpecificPayload(NewKeysMessage msg) {
-        
+        // TODO only sets messagetype to NewKeysMessage
     }
-
 }

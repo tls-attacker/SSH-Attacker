@@ -5,6 +5,9 @@ import de.rub.nds.sshattacker.constants.CryptoConstants;
 import de.rub.nds.sshattacker.util.Converter;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import org.apache.logging.log4j.LogManager;
@@ -23,7 +26,22 @@ public class KeyDerivation {
         return sharedKey;
     }
 
-    public static byte[] computeExchangeHash(String clientVersion, String serverVersion, String clientInitMessage, String serverInitMessage, String hostKey, String clientKeyShare, String serverKeyShare, byte[] sharedSecret, String hashFunction) {
+    public static byte[] computeExchangeHash(byte[] input, String hashAlgorithm){
+        System.out.println(ArrayConverter.bytesToRawHexString(input));
+        try{
+             Files.write(Paths.get("/home/spotz/git/sshlab/kex.javadump"),
+                    java.util.Arrays.asList(ArrayConverter.bytesToRawHexString(input)));
+        }
+        catch (IOException e){
+            System.out.println(e.getMessage());
+        }
+        return getMessageDigestInstance(hashAlgorithm).digest(input);
+    }
+    
+    public static byte[] computeExchangeHash(String clientVersion, 
+            String serverVersion, String clientInitMessage, 
+            String serverInitMessage, String hostKey, String clientKeyShare,
+            String serverKeyShare, byte[] sharedSecret, String hashFunction) {
         byte[] clientVersionConverted = Converter.stringToLengthPrefixedString(clientVersion);
         byte[] serverVersionConverted = Converter.stringToLengthPrefixedString(serverVersion);
         byte[] clientInitMessageConverted = Converter.stringToLengthPrefixedString(clientInitMessage);
@@ -34,9 +52,10 @@ public class KeyDerivation {
         byte[] keyShareConverted = Converter.byteArraytoMpint(sharedSecret);
         byte[] input = Converter.concatenate(clientVersionConverted, serverVersionConverted, clientInitMessageConverted, serverInitMessageConverted, hostKeyConverted, clientKeyShareConverted, serverKeyShareConverted, keyShareConverted);
         System.out.println(ArrayConverter.bytesToRawHexString(input));
+       
         return getMessageDigestInstance(hashFunction).digest(input);
     }
-
+    
     public static MessageDigest getMessageDigestInstance(String hashFunction) {
         MessageDigest md = null;
         try {

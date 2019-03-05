@@ -21,10 +21,10 @@ public class BinaryPacketTest {
     @Before
     public void setUp() {
         byte[] payload = new byte[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
-        paddingLength_8 = 1;
-        paddingLength_5 = 0;
-        packetLength_8 = payload.length + paddingLength_8 + 1;
-        packetLength_5 = payload.length + paddingLength_5 + 1;
+        paddingLength_8 = 8;
+        paddingLength_5 = 8;
+        packetLength_8 = payload.length + paddingLength_8 + BinaryPacketConstants.PADDING_FIELD_LENGTH + BinaryPacketConstants.MESSAGE_ID_LENGTH;
+        packetLength_5 = payload.length + paddingLength_5 + BinaryPacketConstants.PADDING_FIELD_LENGTH + BinaryPacketConstants.MESSAGE_ID_LENGTH;
         binaryPacket = new BinaryPacket(ModifiableVariableFactory.safelySetValue(null, payload));
     }
 
@@ -39,7 +39,7 @@ public class BinaryPacketTest {
     public void testComputePacketLength() {
         binaryPacket.computePaddingLength((byte) BinaryPacketConstants.DEFAULT_BLOCK_SIZE);
         binaryPacket.computePacketLength();
-        assertTrue(binaryPacket.getPacketLength().getValue() == packetLength_8);
+        assertEquals(packetLength_8, binaryPacket.getPacketLength().getValue().intValue());
     }
 
     /**
@@ -48,7 +48,7 @@ public class BinaryPacketTest {
     @Test
     public void testComputePaddingLength_8() {
         binaryPacket.computePaddingLength((byte) BinaryPacketConstants.DEFAULT_BLOCK_SIZE);
-        assertTrue(binaryPacket.getPaddingLength().getValue() == paddingLength_8);
+        assertEquals(paddingLength_8,binaryPacket.getPaddingLength().getValue().intValue());
     }
 
     /**
@@ -57,6 +57,6 @@ public class BinaryPacketTest {
     @Test
     public void testComputePaddingLength_byte() {
         binaryPacket.computePaddingLength((byte) 5);
-        assertTrue(binaryPacket.getPaddingLength().getValue() == paddingLength_5);
+        assertEquals(paddingLength_5, binaryPacket.getPaddingLength().getValue().intValue());
     }
 }

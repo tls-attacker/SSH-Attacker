@@ -82,6 +82,10 @@ public class BinaryPacket extends Message {
     public void setPadding(ModifiableByteArray padding) {
         this.padding = padding;
     }
+    
+    public void generatePadding(){
+        setPadding(new byte[getPaddingLength().getValue()]);
+    }
 
     public ModifiableByteArray getMac() {
         return mac;
@@ -98,15 +102,27 @@ public class BinaryPacket extends Message {
     public void computePacketLength() {
         packetLength = ModifiableVariableFactory.safelySetValue(packetLength,
                 payload.getValue().length + paddingLength.getValue()
-                + BinaryPacketConstants.PADDING_FIELD_LENGTH);
+                + BinaryPacketConstants.PADDING_FIELD_LENGTH
+                + BinaryPacketConstants.MESSAGE_ID_LENGTH);
     }
 
     public void computePaddingLength(byte blockSize) {
-        byte excessBytes = (byte) ((payload.getValue().length
+        //packetLength has to be divisible by 8 or blockSize whichever is greater
+        if (blockSize < 8){
+            blockSize = 8;
+        }
+        
+        byte excessBytes = (byte) ((BinaryPacketConstants.MESSAGE_ID_LENGTH
+                + payload.getValue().length
                 + BinaryPacketConstants.PADDING_FIELD_LENGTH
                 + BinaryPacketConstants.PACKET_FIELD_LENGTH) % blockSize);
+        
+        byte intermediatePaddingLength = (byte) (blockSize - excessBytes);
+        if (intermediatePaddingLength < 4){
+            intermediatePaddingLength += blockSize; 
+        }
         paddingLength = ModifiableVariableFactory.safelySetValue(paddingLength,
-                excessBytes == 0 ? 0 : (byte) (blockSize - excessBytes));
+                intermediatePaddingLength);
     }
 
     @Override

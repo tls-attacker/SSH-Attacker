@@ -15,7 +15,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.lang.reflect.Field;
-import java.math.BigInteger;
 import java.util.LinkedList;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
@@ -123,7 +122,7 @@ public class Config implements Serializable {
         serverSupportedCompressionAlgorithmsClientToServer = new LinkedList<>(clientSupportedCompressionAlgorithmsClientToServer);
 
         clientSupportedLanguagesClientToServer = new LinkedList<>();
-        clientSupportedLanguagesClientToServer.add(Language.None);
+        clientSupportedLanguagesClientToServer.add(Language.none);
         clientSupportedLanguagesServerToClient = new LinkedList<>(clientSupportedLanguagesClientToServer);
 
         serverSupportedLanguagesServerToClient = new LinkedList<>(clientSupportedLanguagesClientToServer);

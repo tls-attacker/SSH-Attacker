@@ -3,11 +3,16 @@ package de.rub.nds.sshattacker.protocol.message;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
+import de.rub.nds.sshattacker.constants.MessageIDConstants;
 
 public class ECDHKeyExchangeInitMessage extends BinaryPacket {
 
     private ModifiableInteger publicKeyLength;
     private ModifiableByteArray publicKey;
+    
+    public ECDHKeyExchangeInitMessage(){
+        messageID = ModifiableVariableFactory.safelySetValue(messageID, MessageIDConstants.SSH_MSG_KEX_ECDH_INIT);
+    }
 
     public ModifiableInteger getPublicKeyLength() {
         return publicKeyLength;

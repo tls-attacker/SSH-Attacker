@@ -6,8 +6,10 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.constants.CharConstants;
 import de.rub.nds.sshattacker.constants.DataFormatConstants;
 import java.io.UnsupportedEncodingException;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -22,18 +24,26 @@ public class Converter {
     
     public static String listofAlgorithmstoString(List list){
         StringBuilder builder = new StringBuilder();
-        list.forEach(element -> builder.append(CharConstants.ALGORITHM_SEPARATOR).append(element));
+        list.forEach(element -> builder.append(CharConstants.ALGORITHM_SEPARATOR).append(element.toString()));
         builder.deleteCharAt(0); // delete first separator before the first element
         return builder.toString();
     }
     
     public static List StringToAlgorithms(String string, Class myClass){
+
         String[] splitted = string.split(String.valueOf(CharConstants.ALGORITHM_SEPARATOR));
         // TODO return enums or strings
-        //return Arrays.stream(splitted).map(s -> Enum.valueOf(myClass, string))
-                                      //.collect(Collectors.toList());
-        return new LinkedList();
+        return Arrays.stream(splitted).map(s -> Enum.valueOf(myClass, toEnumName(s)))
+                                      .collect(Collectors.toList());
+//        return new LinkedList();
     }
+    private static String toEnumName(String input){
+            String result = input.replace('-', '_').replace('.', '_').replace('@', '_').replace("3des", "tdes");
+            if (result.equals("")){
+                return "none";
+            }
+            return result;
+        }
     
     public static byte[] byteArraytoMpint(byte[] input){
         byte[] mpint = input;
@@ -53,6 +63,28 @@ public class Converter {
             System.out.println("Unsupported Encoding: " + e.getMessage());
             return new byte[0];
         }
+    }
+    
+    public static String bytesToString(byte[] input){
+        String result = "";
+        try{
+            result = new String(input, "ISO-8859-1");
+        }
+        catch (UnsupportedEncodingException e){
+            System.out.println("Unsupported Encoding: " + e.getMessage());
+        }
+        return result;
+    }
+    
+    public static byte[] bytesToLenghPrefixedString(byte[] input){
+        return stringToLengthPrefixedString(bytesToString(input));
+    }
+    
+    public static byte[] bytesToBytesWithSignByte(byte[] input){
+        if ((input[0] & 0x80) >>7 == 1 ){
+        return concatenate(new byte[] {0x00}, input);
+    }
+        return input;
     }
     
     /**

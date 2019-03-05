@@ -133,7 +133,7 @@ public class KeyExchangeInitMessageSerializer extends BinaryPacketSerializer<Key
     }
 
     @Override
-    protected byte[] serializeMessageSpecificPayload() {
+    public byte[] serializeMessageSpecificPayload() {
         serializeCookie();
         serializeKeyExchangeAlgorithmsLength();
         serializeKeyExchangeAlgorithms();

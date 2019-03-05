@@ -18,6 +18,10 @@ public class Chooser {
         this.context = context;
         this.config = config;
     }
+    
+    public Chooser(SshContext context){
+        this.context = context;
+    }
 
     public String getClientVersion() {
         if (context.getClientVersion() != null) {

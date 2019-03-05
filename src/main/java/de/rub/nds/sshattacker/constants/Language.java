@@ -1,11 +1,16 @@
 package de.rub.nds.sshattacker.constants;
 
 public enum Language {
-    None("");
+    none("");
 
-    private String value;
+    private String name;
 
-    private Language(String value) {
-        this.value = value;
+    private Language(String name) {
+        this.name = name;
+    }
+    
+    @Override
+    public String toString(){
+        return name;
     }
 }
