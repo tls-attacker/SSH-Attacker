@@ -11,6 +11,7 @@ package de.rub.nds.sshattacker.imported.ec_;
 import java.math.BigInteger;
 
 public class EllipticCurveSECP224K1 extends EllipticCurveOverFp {
+
     public EllipticCurveSECP224K1() {
         super(BigInteger.ZERO, new BigInteger("5"), new BigInteger(
                 "FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEFFFFE56D", 16), new BigInteger(

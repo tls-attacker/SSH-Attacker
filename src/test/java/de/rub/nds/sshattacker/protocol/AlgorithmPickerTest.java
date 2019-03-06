@@ -19,22 +19,22 @@ import static org.junit.Assert.*;
  * @author spotz
  */
 public class AlgorithmPickerTest {
-    
+
     public AlgorithmPickerTest() {
     }
-    
+
     @BeforeClass
     public static void setUpClass() {
     }
-    
+
     @AfterClass
     public static void tearDownClass() {
     }
-    
+
     @Before
     public void setUp() {
     }
-    
+
     @After
     public void tearDown() {
     }
@@ -44,19 +44,19 @@ public class AlgorithmPickerTest {
      */
     @Test
     public void testIdentity() {
-        List<String> left= Arrays.asList("curve25519-sha256","curve25519-sha256@libssh.org","ecdh-sha2-nistp256","ecdh-sha2-nistp384","ecdh-sha2-nistp521","diffie-hellman-group-exchange-sha256","diffie-hellman-group16-sha512","diffie-hellman-group18-sha512","diffie-hellman-group14-sha256","diffie-hellman-group14-sha1","ext-info-c"
-);
+        List<String> left = Arrays.asList("curve25519-sha256", "curve25519-sha256@libssh.org", "ecdh-sha2-nistp256", "ecdh-sha2-nistp384", "ecdh-sha2-nistp521", "diffie-hellman-group-exchange-sha256", "diffie-hellman-group16-sha512", "diffie-hellman-group18-sha512", "diffie-hellman-group14-sha256", "diffie-hellman-group14-sha1", "ext-info-c"
+        );
         String picked = AlgorithmPicker.pickAlgorithm(left, left).get();
         assertEquals(left.get(0), picked);
     }
-    
+
     @Test
-    public void testNoMatch(){
+    public void testNoMatch() {
         List<String> left = Arrays.asList("curve25519-sha256");
         List<String> right = Arrays.asList("ecdh-sha2-nistp256");
-        
+
         String picked = AlgorithmPicker.pickAlgorithm(left, right).orElse("");
         assertEquals("", picked);
     }
-    
+
 }

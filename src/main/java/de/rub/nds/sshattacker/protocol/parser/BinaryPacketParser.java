@@ -6,22 +6,16 @@ import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.protocol.core.message.Parser;
 import de.rub.nds.sshattacker.constants.BinaryPacketConstants;
-import de.rub.nds.sshattacker.constants.MessageIDConstants;
 import de.rub.nds.sshattacker.protocol.message.BinaryPacket;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public abstract class BinaryPacketParser<T extends BinaryPacket> extends Parser<T> {
+public class BinaryPacketParser extends Parser<BinaryPacket> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
     public BinaryPacketParser(int startPosition, byte[] array) {
         super(startPosition, array);
-    }
-
-    private void parseMessageID(BinaryPacket msg) {
-        msg.setMessageID(parseByteField(BinaryPacketConstants.MESSAGE_ID_LENGTH));
-        LOGGER.debug("Message ID: " + msg.getMessageID().getValue());
     }
 
     private void parsePacketLength(BinaryPacket msg) {
@@ -37,7 +31,7 @@ public abstract class BinaryPacketParser<T extends BinaryPacket> extends Parser<
     }
 
     private void parsePayload(BinaryPacket msg) {
-        int payloadSize = msg.getPacketLength().getValue() - msg.getPaddingLength().getValue() - BinaryPacketConstants.PADDING_FIELD_LENGTH - BinaryPacketConstants.MESSAGE_ID_LENGTH;
+        int payloadSize = msg.getPacketLength().getValue() - msg.getPaddingLength().getValue() - BinaryPacketConstants.PADDING_FIELD_LENGTH;
         LOGGER.debug("Payload Size: " + payloadSize);
         ModifiableByteArray payload = ModifiableVariableFactory.safelySetValue(null, parseByteArrayField(payloadSize));
         LOGGER.debug("Payload: " + payload);
@@ -61,39 +55,15 @@ public abstract class BinaryPacketParser<T extends BinaryPacket> extends Parser<
             msg.setMac(mac);
         }
     }
-    
-//    public static <T extends BinaryPacket> T delegateParsing(byte[] raw){
-        public static BinaryPacket delegateParsing(byte[] raw){
-        byte messageID = raw[5];
-        switch (messageID){
-            case MessageIDConstants.SSH_MSG_KEXINIT: return new KeyExchangeInitMessageParser(0, raw).parse();
-            case MessageIDConstants.SSH_MSG_KEX_ECDH_INIT: return new ECDHKeyExchangeInitMessageParser(0, raw).parse();
-            case MessageIDConstants.SSH_MSG_KEX_ECDH_REPLY: return new ECDHKeyExchangeReplyMessageParser(0, raw).parse();
-            case MessageIDConstants.SSH_MSG_NEWKEYS: return new NewKeysMessageParser(0, raw).parse();
-            default: LOGGER.warn("Unknown MessageID: " + messageID);
-                     return null;
-        }
-    }
 
     @Override
-    public T parse() {
-        T msg = createMessage();
+    public BinaryPacket parse() {
+        BinaryPacket msg = new BinaryPacket();
         parsePacketLength(msg);
         parsePaddingLength(msg);
-        parseMessageID(msg);
-        parseMessageSpecificPayload(msg);
-//        parsePayload(msg);
+        parsePayload(msg);
         parsePadding(msg);
         parseMAC(msg);
-        return msg;
-    }
-
-    public abstract T createMessage();
-
-    protected abstract void parseMessageSpecificPayload(T msg);
-    public T parseMessageSpecificPayload(){
-        T msg = createMessage();
-        parseMessageSpecificPayload(msg);
         return msg;
     }
 }

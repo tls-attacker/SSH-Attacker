@@ -10,12 +10,13 @@ package de.rub.nds.sshattacker.imported.ec_;
 
 /**
  * Can be used to store a point of an elliptic curve.
- * 
+ *
  * Affine points store their x and y coordinates. The projective z-coordinate
  * (equal to 1) will not be stored. The point at infinity [0:1:0] (the only
  * point with z-coordinate 0) does not store any of it's coordinates.
  */
 public class Point {
+
     /*
      * Point objects are immutable. This should make deep copies in the methods
      * of the EllipticCurve class unnecessary.
@@ -37,12 +38,10 @@ public class Point {
      * Instantiates an affine point with coordinates x and y. Calling
      * EllipticCurve.getPoint() should always be preferred over using this
      * constructor.
-     * 
-     * @param x
-     *            A FieldElement representing the x-coordinate of the point.
-     * @param y
-     *            A FieldElement representing the y-coordinate of the point. x
-     *            and y must be elements of the same field.
+     *
+     * @param x A FieldElement representing the x-coordinate of the point.
+     * @param y A FieldElement representing the y-coordinate of the point. x and
+     * y must be elements of the same field.
      */
     public Point(FieldElement x, FieldElement y) {
         this.x = x;

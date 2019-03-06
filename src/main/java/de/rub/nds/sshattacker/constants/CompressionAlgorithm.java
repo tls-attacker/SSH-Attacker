@@ -10,9 +10,9 @@ public enum CompressionAlgorithm {
     private CompressionAlgorithm(String name) {
         this.name = name;
     }
-    
+
     @Override
-    public String toString(){
+    public String toString() {
         return name;
     }
 }

@@ -6,21 +6,22 @@
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  */
-
 package de.rub.nds.sshattacker.imported.ec_;
 
 import java.math.BigInteger;
 
 /**
  * Can be used to store elements of a galois field.<br />
- * The attribute data should contain some BigInteger representing the element.<br />
+ * The attribute data should contain some BigInteger representing the
+ * element.<br />
  * The attribute modulus should contain some BigInteger that may be used to
  * identify the field (and for calculations).<br />
- * 
+ *
  * All arithmetic operations are performed within the laws of the specified
  * field.
  */
 public abstract class FieldElement {
+
     /*
      * FieldElement objects are immutable. This should make deep copies in the
      * methods of the EllipticCurve class unnecessary.
@@ -35,18 +36,15 @@ public abstract class FieldElement {
 
     /**
      * Returns this + f.
-     * 
-     * @param f
-     *            An element of the field, which this is an element of.
+     *
+     * @param f An element of the field, which this is an element of.
      */
-
     public abstract FieldElement add(FieldElement f);
 
     /**
      * Returns this - f. <br />
-     * 
-     * @param f
-     *            An element of the field, which this is an element of.
+     *
+     * @param f An element of the field, which this is an element of.
      */
     public FieldElement subtract(FieldElement f) {
         f = f.addInv();
@@ -55,17 +53,15 @@ public abstract class FieldElement {
 
     /**
      * Returns this * f.<br />
-     * 
-     * @param f
-     *            An element of the field, which this is an element of.
+     *
+     * @param f An element of the field, which this is an element of.
      */
     public abstract FieldElement mult(FieldElement f);
 
     /**
      * Returns this * f^-1.<br />
-     * 
-     * @param f
-     *            An element of the field, which this is an element of.
+     *
+     * @param f An element of the field, which this is an element of.
      */
     public FieldElement divide(FieldElement f) {
         f = f.multInv();

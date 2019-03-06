@@ -6,7 +6,7 @@ import de.rub.nds.sshattacker.protocol.message.KeyExchangeInitMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class KeyExchangeInitMessageParser extends BinaryPacketParser<KeyExchangeInitMessage> {
+public class KeyExchangeInitMessageParser extends MessageParser<KeyExchangeInitMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 

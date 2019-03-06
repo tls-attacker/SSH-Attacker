@@ -5,7 +5,7 @@ import de.rub.nds.sshattacker.protocol.message.ECDHKeyExchangeReplyMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class ECDHKeyExchangeReplyMessageSerializer extends BinaryPacketSerializer<ECDHKeyExchangeReplyMessage> {
+public class ECDHKeyExchangeReplyMessageSerializer extends MessageSerializer<ECDHKeyExchangeReplyMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -50,23 +50,23 @@ public class ECDHKeyExchangeReplyMessageSerializer extends BinaryPacketSerialize
         appendBytes(msg.getHostKeyRsaModulus().getValue().toByteArray());
         LOGGER.debug("Modulus: " + msg.getHostKeyRsaModulus());
     }
-    
-    private void serializeEccCurveIdentifierLength(ECDHKeyExchangeReplyMessage msg){
+
+    private void serializeEccCurveIdentifierLength(ECDHKeyExchangeReplyMessage msg) {
         appendInt(msg.getEccCurveIdentifierLength().getValue(), BinaryPacketConstants.LENGTH_FIELD_LENGTH);
         LOGGER.debug("EccCurveIdentifierLength: " + msg.getEccCurveIdentifierLength().getValue());
     }
-    
-    private void serializeEccCurveIdentifier(ECDHKeyExchangeReplyMessage msg){
+
+    private void serializeEccCurveIdentifier(ECDHKeyExchangeReplyMessage msg) {
         appendString(msg.getEccCurveIdentifier().getValue());
         LOGGER.debug("EccCurveIdentifier: " + msg.getEccCurveIdentifier().getValue());
     }
-    
-    private void serializeHostKeyEccLength(ECDHKeyExchangeReplyMessage msg){
+
+    private void serializeHostKeyEccLength(ECDHKeyExchangeReplyMessage msg) {
         appendInt(msg.getHostKeyEccLength().getValue(), BinaryPacketConstants.LENGTH_FIELD_LENGTH);
         LOGGER.debug("HostKeyEccLength: " + msg.getHostKeyEccLength().getValue());
     }
-    
-    private void serializeHostKeyEcc(ECDHKeyExchangeReplyMessage msg){
+
+    private void serializeHostKeyEcc(ECDHKeyExchangeReplyMessage msg) {
         appendBytes(msg.getHostKeyEcc().getValue());
         LOGGER.debug("HostKeyEcc: " + msg.getHostKeyEcc());
     }
@@ -96,24 +96,29 @@ public class ECDHKeyExchangeReplyMessageSerializer extends BinaryPacketSerialize
         serializeHostKeyLength(msg);
         serializeHostKeyTypeLength(msg);
         serializeHostKeyType(msg);
-        
-        serializeHostKeyEcc();
-        
+
+        if (msg.getHostKeyType().getValue().equals("ssh-rsa")) {
+            serializeHostKeyRsa();
+        } else {
+            serializeHostKeyEcc(); // TODO better conditions
+
+        }
+
         serializePublicKeyLength(msg);
         serializePublicKey(msg);
         serializeSignatureLength(msg);
         serializeSignature(msg);
         return getAlreadySerialized();
     }
-    
-    private void serializeHostKeyRsa(){
+
+    private void serializeHostKeyRsa() {
         serializeExponentLength(msg);
         serializeExponent(msg);
         serializeModulusLength(msg);
         serializeModulus(msg);
     }
-    
-    private void serializeHostKeyEcc(){
+
+    private void serializeHostKeyEcc() {
         serializeEccCurveIdentifierLength(msg);
         serializeEccCurveIdentifier(msg);
         serializeHostKeyEccLength(msg);

@@ -1,12 +1,11 @@
 package de.rub.nds.sshattacker.protocol.serializer;
 
-import de.rub.nds.protocol.core.message.Serializer;
 import de.rub.nds.sshattacker.constants.BinaryPacketConstants;
 import de.rub.nds.sshattacker.protocol.message.KeyExchangeInitMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class KeyExchangeInitMessageSerializer extends BinaryPacketSerializer<KeyExchangeInitMessage> {
+public class KeyExchangeInitMessageSerializer extends MessageSerializer<KeyExchangeInitMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 

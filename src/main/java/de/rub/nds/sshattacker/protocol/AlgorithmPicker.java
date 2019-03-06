@@ -10,9 +10,9 @@ public class AlgorithmPicker {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public static <T> Optional<T> pickAlgorithm(List<T> left, List<T> right){
+    public static <T> Optional<T> pickAlgorithm(List<T> left, List<T> right) {
         List<T> intersection = left.stream().filter(right::contains).collect(Collectors.toList());
-        if (intersection.isEmpty()){
+        if (intersection.isEmpty()) {
             LOGGER.debug("No intersection between " + left + "and " + right);
             return Optional.empty();
         }

@@ -27,9 +27,9 @@ public enum PublicKeyAuthenticationAlgorithm {
     private PublicKeyAuthenticationAlgorithm(String name) {
         this.name = name;
     }
-    
+
     @Override
-    public String toString(){
+    public String toString() {
         return name;
     }
 }

@@ -64,10 +64,10 @@ public class Config implements Serializable {
     private int clientReserved;
     private int serverReserved;
 // END GENERATED
-    
+
     private byte[] clientEcdhPublicKey;
     private byte[] serverEcdhPublicKey;
-    
+
     /**
      * Default Connection to use when running as Client
      */
@@ -133,8 +133,7 @@ public class Config implements Serializable {
 
         clientReserved = 0;
         serverReserved = 0;
-        
-        
+
 //        defaultHostKeyType = PublicKeyAuthenticationAlgorithm.ssh_dss.getValue();
 //
 //        //TODO create default private/public keypairs and store them in constants
@@ -305,7 +304,6 @@ public class Config implements Serializable {
     }
 
 // END GENERATED
-
     public byte[] getClientEcdhPublicKey() {
         return clientEcdhPublicKey;
     }
@@ -322,5 +320,4 @@ public class Config implements Serializable {
         this.serverEcdhPublicKey = serverEcdhPublicKey;
     }
 
-    
 }

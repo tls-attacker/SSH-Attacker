@@ -26,13 +26,14 @@ public class CyclicECDHKeyExchangeReplyMessageTest {
 
     private final byte[] bytes;
 
-    public CyclicECDHKeyExchangeReplyMessageTest(byte[] bytes){
+    public CyclicECDHKeyExchangeReplyMessageTest(byte[] bytes) {
         this.bytes = bytes;
     }
-    
+
     @Test
-    public void test(){
-        ECDHKeyExchangeReplyMessage msg = new ECDHKeyExchangeReplyMessageParser(0, bytes).parseMessageSpecificPayload();
+    public void test() {
+        ECDHKeyExchangeReplyMessage msg = new ECDHKeyExchangeReplyMessage();
+        new ECDHKeyExchangeReplyMessageParser(0, bytes).parseMessageSpecificPayload(msg);
         byte[] serialized = new ECDHKeyExchangeReplyMessageSerializer(msg).serializeMessageSpecificPayload();
         Assert.assertArrayEquals(bytes, serialized);
     }

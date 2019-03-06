@@ -26,20 +26,19 @@ public class KeyDerivation {
         return sharedKey;
     }
 
-    public static byte[] computeExchangeHash(byte[] input, String hashAlgorithm){
+    public static byte[] computeExchangeHash(byte[] input, String hashAlgorithm) {
         System.out.println(ArrayConverter.bytesToRawHexString(input));
-        try{
-             Files.write(Paths.get("/home/spotz/git/sshlab/kex.javadump"),
+        try {
+            Files.write(Paths.get("/home/spotz/git/sshlab/kex.javadump"),
                     java.util.Arrays.asList(ArrayConverter.bytesToRawHexString(input)));
-        }
-        catch (IOException e){
+        } catch (IOException e) {
             System.out.println(e.getMessage());
         }
         return getMessageDigestInstance(hashAlgorithm).digest(input);
     }
-    
-    public static byte[] computeExchangeHash(String clientVersion, 
-            String serverVersion, String clientInitMessage, 
+
+    public static byte[] computeExchangeHash(String clientVersion,
+            String serverVersion, String clientInitMessage,
             String serverInitMessage, String hostKey, String clientKeyShare,
             String serverKeyShare, byte[] sharedSecret, String hashFunction) {
         byte[] clientVersionConverted = Converter.stringToLengthPrefixedString(clientVersion);
@@ -52,10 +51,10 @@ public class KeyDerivation {
         byte[] keyShareConverted = Converter.byteArraytoMpint(sharedSecret);
         byte[] input = Converter.concatenate(clientVersionConverted, serverVersionConverted, clientInitMessageConverted, serverInitMessageConverted, hostKeyConverted, clientKeyShareConverted, serverKeyShareConverted, keyShareConverted);
         System.out.println(ArrayConverter.bytesToRawHexString(input));
-       
+
         return getMessageDigestInstance(hashFunction).digest(input);
     }
-    
+
     public static MessageDigest getMessageDigestInstance(String hashFunction) {
         MessageDigest md = null;
         try {
@@ -74,7 +73,7 @@ public class KeyDerivation {
             ByteArrayOutputStream outStream = new ByteArrayOutputStream();
 
             outStream.write(md.digest(Arrays.concatenate(sharedKeyMpint, exchangeHash, new byte[]{use}, sessionID)));
-            
+
             while (outStream.size() < outputLen) {
                 outStream.write(md.digest(Arrays.concatenate(sharedKeyMpint, exchangeHash, outStream.toByteArray())));
             }
@@ -82,7 +81,7 @@ public class KeyDerivation {
         } catch (NoSuchAlgorithmException e) {
             LOGGER.error("Provider does not support this hashFunction:" + e.getMessage());
             return new byte[0];
-        } catch (IOException e){
+        } catch (IOException e) {
             LOGGER.error("Error while writing: " + e.getMessage());
             return new byte[0];
         }

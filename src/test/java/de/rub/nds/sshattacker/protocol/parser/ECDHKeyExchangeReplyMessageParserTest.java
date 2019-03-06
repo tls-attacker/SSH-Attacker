@@ -46,7 +46,7 @@ public class ECDHKeyExchangeReplyMessageParserTest {
 
     private final int eccCurveIdentifierLength;
     private final String eccCurveIdentifier;
-    
+
     private final int eccHostKeyLength;
     private final byte[] eccHostKey;
 
@@ -58,7 +58,7 @@ public class ECDHKeyExchangeReplyMessageParserTest {
 
     public ECDHKeyExchangeReplyMessageParserTest(byte[] bytes, int hostKeyLength,
             int hostKeyTypeLength, String hostKeyType, int eccCurveIdentifierLength,
-            String eccCurveIdentifier, int eccHostKeyLength, byte[] eccHostKey, 
+            String eccCurveIdentifier, int eccHostKeyLength, byte[] eccHostKey,
             int publicKeyLength, byte[] publicKey, int signatureLength, byte[] signature) {
         this.bytes = bytes;
         this.hostKeyLength = hostKeyLength;
@@ -106,7 +106,7 @@ public class ECDHKeyExchangeReplyMessageParserTest {
         assertEquals(eccCurveIdentifier, msg.getEccCurveIdentifier().getValue());
         assertEquals(eccHostKeyLength, msg.getHostKeyEccLength().getValue().intValue());
         Assert.assertArrayEquals(eccHostKey, msg.getHostKeyEcc().getValue());
-        
+
         assertEquals(publicKeyLength, msg.getEphemeralPublicKeyLength().getValue().intValue());
         assertArrayEquals(publicKey, msg.getEphemeralPublicKey().getValue());
         assertEquals(signatureLength, msg.getSignatureLength().getValue().intValue());

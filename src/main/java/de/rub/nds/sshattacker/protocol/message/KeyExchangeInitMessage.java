@@ -6,8 +6,11 @@ import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.sshattacker.constants.MessageIDConstants;
+import de.rub.nds.sshattacker.protocol.handler.Handler;
+import de.rub.nds.sshattacker.protocol.handler.KeyExchangeInitMessageHandler;
+import de.rub.nds.sshattacker.state.SshContext;
 
-public class KeyExchangeInitMessage extends BinaryPacket {
+public class KeyExchangeInitMessage extends Message {
 
     private ModifiableByteArray cookie;
     private ModifiableInteger keyExchangeAlgorithmsLength;
@@ -33,9 +36,10 @@ public class KeyExchangeInitMessage extends BinaryPacket {
     private ModifiableByte firstKeyExchangePacketFollows;
     private ModifiableInteger reserved;
 
-    public KeyExchangeInitMessage(){
+    public KeyExchangeInitMessage() {
         messageID = ModifiableVariableFactory.safelySetValue(messageID, MessageIDConstants.SSH_MSG_KEXINIT);
     }
+
     public ModifiableInteger getKeyExchangeAlgorithmsLength() {
         return keyExchangeAlgorithmsLength;
     }
@@ -317,4 +321,8 @@ public class KeyExchangeInitMessage extends BinaryPacket {
         return "KeyExchangeInitMessage";
     }
 
+    @Override
+    public Handler getHandler(SshContext context) {
+        return new KeyExchangeInitMessageHandler(context);
+    }
 }

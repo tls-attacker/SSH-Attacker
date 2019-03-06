@@ -36,9 +36,5 @@ public class KeyExchangeInitMessagePreparator extends Preparator<KeyExchangeInit
         message.setLanguagesServerToClientLength(message.getLanguagesServerToClient().getValue().length());
         message.setFirstKeyExchangePacketFollows(context.getChooser().getClientFirstKeyExchangePacketFollows());
         message.setReserved(context.getChooser().getClientReserved());
-        message.setPayload(new KeyExchangeInitMessageSerializer(message).serializeMessageSpecificPayload());
-        message.computePaddingLength((byte) 0);
-        message.generatePadding();
-        message.computePacketLength();
     }
 }

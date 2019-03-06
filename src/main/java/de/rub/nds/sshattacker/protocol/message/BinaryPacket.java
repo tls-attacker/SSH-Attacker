@@ -11,7 +11,6 @@ public class BinaryPacket extends Message {
 
     private ModifiableInteger packetLength;
     private ModifiableByte paddingLength;
-    protected ModifiableByte messageID;
     private ModifiableByteArray payload;
     private ModifiableByteArray padding;
     private ModifiableByteArray mac;
@@ -23,16 +22,8 @@ public class BinaryPacket extends Message {
         this.payload = payload;
     }
 
-    public ModifiableByte getMessageID() {
-        return messageID;
-    }
-
-    public void setMessageID(ModifiableByte messageID) {
-        this.messageID = messageID;
-    }
-
-    public void setMessageID(byte messageID) {
-        this.messageID = ModifiableVariableFactory.safelySetValue(this.messageID, messageID);
+    public BinaryPacket(byte[] payload) {
+        this.payload = ModifiableVariableFactory.safelySetValue(this.payload, payload);
     }
 
     public ModifiableInteger getPacketLength() {
@@ -82,8 +73,8 @@ public class BinaryPacket extends Message {
     public void setPadding(ModifiableByteArray padding) {
         this.padding = padding;
     }
-    
-    public void generatePadding(){
+
+    public void generatePadding() {
         setPadding(new byte[getPaddingLength().getValue()]);
     }
 
@@ -102,24 +93,22 @@ public class BinaryPacket extends Message {
     public void computePacketLength() {
         packetLength = ModifiableVariableFactory.safelySetValue(packetLength,
                 payload.getValue().length + paddingLength.getValue()
-                + BinaryPacketConstants.PADDING_FIELD_LENGTH
-                + BinaryPacketConstants.MESSAGE_ID_LENGTH);
+                + BinaryPacketConstants.PADDING_FIELD_LENGTH);
     }
 
     public void computePaddingLength(byte blockSize) {
         //packetLength has to be divisible by 8 or blockSize whichever is greater
-        if (blockSize < 8){
+        if (blockSize < 8) {
             blockSize = 8;
         }
-        
-        byte excessBytes = (byte) ((BinaryPacketConstants.MESSAGE_ID_LENGTH
-                + payload.getValue().length
+
+        byte excessBytes = (byte) ((payload.getValue().length
                 + BinaryPacketConstants.PADDING_FIELD_LENGTH
                 + BinaryPacketConstants.PACKET_FIELD_LENGTH) % blockSize);
-        
+
         byte intermediatePaddingLength = (byte) (blockSize - excessBytes);
-        if (intermediatePaddingLength < 4){
-            intermediatePaddingLength += blockSize; 
+        if (intermediatePaddingLength < 4) {
+            intermediatePaddingLength += blockSize;
         }
         paddingLength = ModifiableVariableFactory.safelySetValue(paddingLength,
                 intermediatePaddingLength);

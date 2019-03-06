@@ -23,16 +23,17 @@ public class CyclicECDHKeyEchangeInitMessageTest {
         });
         return bytesOnly;
     }
-    
+
     private final byte[] bytes;
-    
-    public CyclicECDHKeyEchangeInitMessageTest(byte[] bytes){
+
+    public CyclicECDHKeyEchangeInitMessageTest(byte[] bytes) {
         this.bytes = bytes;
     }
-    
+
     @Test
-    public void test(){
-        ECDHKeyExchangeInitMessage msg = new ECDHKeyExchangeInitMessageParser(0, bytes).parseMessageSpecificPayload();
+    public void test() {
+        ECDHKeyExchangeInitMessage msg = new ECDHKeyExchangeInitMessage();
+        new ECDHKeyExchangeInitMessageParser(0, bytes).parseMessageSpecificPayload(msg);
         byte[] serialized = new ECDHKeyExchangeInitMessageSerializer(msg).serializeMessageSpecificPayload();
         Assert.assertArrayEquals(bytes, serialized);
     }

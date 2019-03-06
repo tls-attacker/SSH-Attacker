@@ -5,9 +5,12 @@ import de.rub.nds.modifiablevariable.biginteger.ModifiableBigInteger;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
+import de.rub.nds.sshattacker.protocol.handler.ECDHKeyExchangeReplyMessageHandler;
+import de.rub.nds.sshattacker.protocol.handler.Handler;
+import de.rub.nds.sshattacker.state.SshContext;
 import java.math.BigInteger;
 
-public class ECDHKeyExchangeReplyMessage extends BinaryPacket {
+public class ECDHKeyExchangeReplyMessage extends Message {
 
     private ModifiableInteger hostKeyLength;
 
@@ -19,7 +22,7 @@ public class ECDHKeyExchangeReplyMessage extends BinaryPacket {
 
     private ModifiableInteger hostKeyRsaModulusLength;
     private ModifiableBigInteger hostKeyRsaModulus;
-    
+
     private ModifiableInteger eccCurveIdentifierLength;
     private ModifiableString eccCurveIdentifier;
     private ModifiableInteger hostKeyEccLength;
@@ -122,7 +125,7 @@ public class ECDHKeyExchangeReplyMessage extends BinaryPacket {
     public void setEphemeralPublicKeyLength(ModifiableInteger ephemeralPublicKeyLength) {
         this.ephemeralPublicKeyLength = ephemeralPublicKeyLength;
     }
-    
+
     public void setEphemeralPublicKeyLength(int ephemeralPublicKeyLength) {
         this.ephemeralPublicKeyLength = ModifiableVariableFactory.safelySetValue(this.ephemeralPublicKeyLength, ephemeralPublicKeyLength);
     }
@@ -138,9 +141,9 @@ public class ECDHKeyExchangeReplyMessage extends BinaryPacket {
     public void setEphemeralPublicKey(ModifiableByteArray ephemeralPublicKey) {
         this.ephemeralPublicKey = ephemeralPublicKey;
     }
-    
+
     public void setEphemeralPublicKey(byte[] ephemeralPublicKey) {
-        this.ephemeralPublicKey = ModifiableVariableFactory.safelySetValue(this.ephemeralPublicKey,ephemeralPublicKey);
+        this.ephemeralPublicKey = ModifiableVariableFactory.safelySetValue(this.ephemeralPublicKey, ephemeralPublicKey);
     }
 
     public void setPublicKey(byte[] publicKey) {
@@ -178,7 +181,7 @@ public class ECDHKeyExchangeReplyMessage extends BinaryPacket {
     public void setHostKeyEccLength(ModifiableInteger hostKeyEccLength) {
         this.hostKeyEccLength = hostKeyEccLength;
     }
-    
+
     public void setHostKeyEccLength(int hostKeyEccLength) {
         this.hostKeyEccLength = ModifiableVariableFactory.safelySetValue(this.hostKeyEccLength, hostKeyEccLength);
     }
@@ -190,7 +193,7 @@ public class ECDHKeyExchangeReplyMessage extends BinaryPacket {
     public void setHostKeyEcc(ModifiableByteArray hostKeyEcc) {
         this.hostKeyEcc = hostKeyEcc;
     }
-    
+
     public void setHostKeyEcc(byte[] hostKeyEcc) {
         this.hostKeyEcc = ModifiableVariableFactory.safelySetValue(this.hostKeyEcc, hostKeyEcc);
     }
@@ -202,7 +205,7 @@ public class ECDHKeyExchangeReplyMessage extends BinaryPacket {
     public void setEccCurveIdentifierLength(ModifiableInteger eccCurveIdentifierLength) {
         this.eccCurveIdentifierLength = eccCurveIdentifierLength;
     }
-    
+
     public void setEccCurveIdentifierLength(int eccCurveIdentifierLength) {
         this.eccCurveIdentifierLength = ModifiableVariableFactory.safelySetValue(this.eccCurveIdentifierLength, eccCurveIdentifierLength);
     }
@@ -214,8 +217,18 @@ public class ECDHKeyExchangeReplyMessage extends BinaryPacket {
     public void setEccCurveIdentifier(ModifiableString eccCurveIdentifier) {
         this.eccCurveIdentifier = eccCurveIdentifier;
     }
-    
+
     public void setEccCurveIdentifier(String eccCurveIdentifier) {
         this.eccCurveIdentifier = ModifiableVariableFactory.safelySetValue(this.eccCurveIdentifier, eccCurveIdentifier);
+    }
+
+    @Override
+    String toCompactString() {
+        return "ECDHKeyExchangeReplyMessage";
+    }
+
+    @Override
+    public Handler getHandler(SshContext context) {
+        return new ECDHKeyExchangeReplyMessageHandler(context);
     }
 }

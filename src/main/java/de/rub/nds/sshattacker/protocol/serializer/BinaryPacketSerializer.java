@@ -6,19 +6,14 @@ import de.rub.nds.sshattacker.protocol.message.BinaryPacket;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public abstract class BinaryPacketSerializer<T extends BinaryPacket> extends Serializer<T> {
+public class BinaryPacketSerializer extends Serializer<BinaryPacket> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
     private final BinaryPacket msg;
 
-    public BinaryPacketSerializer(T msg) {
+    public BinaryPacketSerializer(BinaryPacket msg) {
         this.msg = msg;
-    }
-
-    private void serializeMessageID() {
-        LOGGER.debug("MessageID: " + msg.getMessageID().getValue());
-        appendByte(msg.getMessageID().getValue());
     }
 
     private void serializePacketLength() {
@@ -54,12 +49,9 @@ public abstract class BinaryPacketSerializer<T extends BinaryPacket> extends Ser
     public byte[] serializeBytes() {
         serializePacketLength();
         serializePaddingLength();
-        serializeMessageID();
-        serializeMessageSpecificPayload();
+        serializePayload();
         serializePadding();
         serializeMac();
         return getAlreadySerialized();
     }
-
-    protected abstract byte[] serializeMessageSpecificPayload();
 }

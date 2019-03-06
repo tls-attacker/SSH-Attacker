@@ -8,8 +8,10 @@ import de.rub.nds.sshattacker.constants.KeyExchangeAlgorithm;
 import de.rub.nds.sshattacker.constants.Language;
 import de.rub.nds.sshattacker.constants.MACAlgorithm;
 import de.rub.nds.sshattacker.constants.PublicKeyAuthenticationAlgorithm;
-import de.rub.nds.sshattacker.crypto.KeyDerivation;
+import de.rub.nds.sshattacker.protocol.layers.BinaryPacketLayer;
+import de.rub.nds.sshattacker.protocol.layers.MessageLayer;
 import de.rub.nds.sshattacker.util.Converter;
+import de.rub.nds.tlsattacker.transport.TransportHandler;
 import java.math.BigInteger;
 import java.util.List;
 
@@ -18,7 +20,11 @@ public class SshContext {
     private Config config;
     private Chooser chooser;
     private AliasedConnection connection;
-    
+
+    private BinaryPacketLayer binaryPacketLayer;
+    private MessageLayer messageLayer;
+    private TransportHandler transportHandler;
+
     private byte[] exchangeHashInput;
 
     private byte[] sharedSecret;
@@ -39,7 +45,7 @@ public class SshContext {
     private BigInteger hostKeyRsaExponent;
     private BigInteger hostKeyRsaModulus;
     private byte[] keyExchangeSignature;
-    
+
     private byte[] clientEcdhPublicKey;
     private byte[] clientEcdhSecretKey;
     private byte[] serverEcdhPublicKey;
@@ -49,7 +55,7 @@ public class SshContext {
      */
     private KeyExchangeAlgorithm keyExchangeAlgorithm;
     private PublicKeyAuthenticationAlgorithm serverHostKeyAlgorithm;
-    
+
     private EncryptionAlgorithm cipherAlgorithmClientToServer;
     private EncryptionAlgorithm cipherAlgorithmServerToClient;
 
@@ -61,7 +67,6 @@ public class SshContext {
 
     private Language languageClientToServer;
     private Language languageServerToClient;
-
 
 // BEGIN_GENERATED
     private String clientVersion;
@@ -340,9 +345,9 @@ public class SshContext {
         this.config = config;
         this.connection = connection;
     }
-    
-    public SshContext(){
-        
+
+    public SshContext() {
+
     }
 
     public Config getConfig() {
@@ -568,7 +573,7 @@ public class SshContext {
     public void setHostKeyRsaModulus(BigInteger hostKeyRsaModulus) {
         this.hostKeyRsaModulus = hostKeyRsaModulus;
     }
-    
+
     public Chooser getChooser() {
         return chooser;
     }
@@ -584,8 +589,8 @@ public class SshContext {
     public void setExchangeHashInput(byte[] exchangeHashInput) {
         this.exchangeHashInput = exchangeHashInput;
     }
-    
-    public void appendToExchangeHashInput(byte[] additionalData){
+
+    public void appendToExchangeHashInput(byte[] additionalData) {
         exchangeHashInput = Converter.concatenate(exchangeHashInput, Converter.bytesToLenghPrefixedString(additionalData));
     }
 
@@ -596,4 +601,29 @@ public class SshContext {
     public void setClientEcdhSecretKey(byte[] clientEcdhSecretKey) {
         this.clientEcdhSecretKey = clientEcdhSecretKey;
     }
+
+    public BinaryPacketLayer getBinaryPacketLayer() {
+        return binaryPacketLayer;
+    }
+
+    public MessageLayer getMessageLayer() {
+        return messageLayer;
+    }
+
+    public TransportHandler getTransportHandler() {
+        return transportHandler;
+    }
+
+    public void setBinaryPacketLayer(BinaryPacketLayer binaryPacketLayer) {
+        this.binaryPacketLayer = binaryPacketLayer;
+    }
+
+    public void setMessageLayer(MessageLayer messageLayer) {
+        this.messageLayer = messageLayer;
+    }
+
+    public void setTransportHandler(TransportHandler transportHandler) {
+        this.transportHandler = transportHandler;
+    }
+
 }

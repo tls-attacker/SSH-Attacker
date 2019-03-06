@@ -19,20 +19,21 @@ public class CyclicKeyExchangeInitMessageTest {
         Collection<Object[]> fullData = KeyExchangeInitMessageParserTest.generateData();
         Collection<Object[]> bytesOnly = new LinkedList<>();
         fullData.forEach((obj) -> {
-            bytesOnly.add(new Object[] {obj[0]});
+            bytesOnly.add(new Object[]{obj[0]});
         });
         return bytesOnly;
     }
-    
+
     private final byte[] bytes;
 
     public CyclicKeyExchangeInitMessageTest(byte[] bytes) {
         this.bytes = bytes;
     }
-    
+
     @Test
-    public void test(){
-        KeyExchangeInitMessage msg = new KeyExchangeInitMessageParser(0,bytes).parseMessageSpecificPayload();
+    public void test() {
+        KeyExchangeInitMessage msg = new KeyExchangeInitMessage();
+        new KeyExchangeInitMessageParser(0, bytes).parseMessageSpecificPayload(msg);
         byte[] serialized = new KeyExchangeInitMessageSerializer(msg).serializeMessageSpecificPayload();
         Assert.assertArrayEquals(bytes, serialized);
     }

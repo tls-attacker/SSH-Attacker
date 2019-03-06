@@ -4,13 +4,15 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.sshattacker.constants.MessageIDConstants;
+import de.rub.nds.sshattacker.protocol.handler.Handler;
+import de.rub.nds.sshattacker.state.SshContext;
 
-public class ECDHKeyExchangeInitMessage extends BinaryPacket {
+public class ECDHKeyExchangeInitMessage extends Message {
 
     private ModifiableInteger publicKeyLength;
     private ModifiableByteArray publicKey;
-    
-    public ECDHKeyExchangeInitMessage(){
+
+    public ECDHKeyExchangeInitMessage() {
         messageID = ModifiableVariableFactory.safelySetValue(messageID, MessageIDConstants.SSH_MSG_KEX_ECDH_INIT);
     }
 
@@ -36,6 +38,21 @@ public class ECDHKeyExchangeInitMessage extends BinaryPacket {
 
     public void setPublicKey(byte[] publicKey) {
         this.publicKey = ModifiableVariableFactory.safelySetValue(this.publicKey, publicKey);
+    }
+
+    @Override
+    String toCompactString() {
+        return "ECDHKeyExchangeInitMessage";
+    }
+
+    @Override
+    public Handler getHandler(SshContext context) {
+        return new Handler(context) {
+            @Override
+            public void handle(Object msg) {
+                // TODO implement
+            }
+        };
     }
 
 }

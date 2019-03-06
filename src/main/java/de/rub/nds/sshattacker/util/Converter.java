@@ -17,76 +17,74 @@ public class Converter {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    
-    public static ModifiableString listOfAlgorithmsToModifiableString(List list){
+    public static ModifiableString listOfAlgorithmsToModifiableString(List list) {
         return ModifiableVariableFactory.safelySetValue(null, listofAlgorithmstoString(list));
     }
-    
-    public static String listofAlgorithmstoString(List list){
+
+    public static String listofAlgorithmstoString(List list) {
         StringBuilder builder = new StringBuilder();
         list.forEach(element -> builder.append(CharConstants.ALGORITHM_SEPARATOR).append(element.toString()));
         builder.deleteCharAt(0); // delete first separator before the first element
         return builder.toString();
     }
-    
-    public static List StringToAlgorithms(String string, Class myClass){
+
+    public static List StringToAlgorithms(String string, Class myClass) {
 
         String[] splitted = string.split(String.valueOf(CharConstants.ALGORITHM_SEPARATOR));
         // TODO return enums or strings
         return Arrays.stream(splitted).map(s -> Enum.valueOf(myClass, toEnumName(s)))
-                                      .collect(Collectors.toList());
+                .collect(Collectors.toList());
 //        return new LinkedList();
     }
-    private static String toEnumName(String input){
-            String result = input.replace('-', '_').replace('.', '_').replace('@', '_').replace("3des", "tdes");
-            if (result.equals("")){
-                return "none";
-            }
-            return result;
+
+    private static String toEnumName(String input) {
+        String result = input.replace('-', '_').replace('.', '_').replace('@', '_').replace("3des", "tdes");
+        if (result.equals("")) {
+            return "none";
         }
-    
-    public static byte[] byteArraytoMpint(byte[] input){
+        return result;
+    }
+
+    public static byte[] byteArraytoMpint(byte[] input) {
         byte[] mpint = input;
-        if ((input[0] & 0x80) == 0x80){ // need to append 0 if MSB would be set (twos complement)
-            mpint = concatenate(new byte[] {0}, input);
+        if ((input[0] & 0x80) == 0x80) { // need to append 0 if MSB would be set (twos complement)
+            mpint = concatenate(new byte[]{0}, input);
         }
         byte[] length = ArrayConverter.intToBytes(mpint.length, DataFormatConstants.MPINT_SIZE_LENGTH);
         mpint = concatenate(length, mpint);
         return mpint;
     }
-    
-    public static byte[] stringToLengthPrefixedString(String input){
-        try{
-        return concatenate(ArrayConverter.intToBytes(input.length(), DataFormatConstants.STRING_SIZE_LENGTH),input.getBytes("ISO-8859-1"));
-        }
-        catch (UnsupportedEncodingException e){
+
+    public static byte[] stringToLengthPrefixedString(String input) {
+        try {
+            return concatenate(ArrayConverter.intToBytes(input.length(), DataFormatConstants.STRING_SIZE_LENGTH), input.getBytes("ISO-8859-1"));
+        } catch (UnsupportedEncodingException e) {
             System.out.println("Unsupported Encoding: " + e.getMessage());
             return new byte[0];
         }
     }
-    
-    public static String bytesToString(byte[] input){
+
+    public static String bytesToString(byte[] input) {
         String result = "";
-        try{
+        try {
             result = new String(input, "ISO-8859-1");
-        }
-        catch (UnsupportedEncodingException e){
+        } catch (UnsupportedEncodingException e) {
             System.out.println("Unsupported Encoding: " + e.getMessage());
         }
         return result;
     }
-    
-    public static byte[] bytesToLenghPrefixedString(byte[] input){
+
+    public static byte[] bytesToLenghPrefixedString(byte[] input) {
         return stringToLengthPrefixedString(bytesToString(input));
     }
-    
-    public static byte[] bytesToBytesWithSignByte(byte[] input){
-        if ((input[0] & 0x80) >>7 == 1 ){
-        return concatenate(new byte[] {0x00}, input);
-    }
+
+    public static byte[] bytesToBytesWithSignByte(byte[] input) {
+        if ((input[0] & 0x80) >> 7 == 1) {
+            return concatenate(new byte[]{0x00}, input);
+        }
         return input;
     }
-    
+
     /**
      * Concatenates an array of byte[] to one big byte[]
      *

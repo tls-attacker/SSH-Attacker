@@ -11,6 +11,7 @@ package de.rub.nds.sshattacker.imported.ec_;
 import java.math.BigInteger;
 
 public class EllipticCurveBrainpoolP384R1 extends EllipticCurveOverFp {
+
     public EllipticCurveBrainpoolP384R1() {
         super(
                 new BigInteger(

@@ -19,9 +19,9 @@ public enum KeyExchangeAlgorithm {
     private KeyExchangeAlgorithm(String name) {
         this.name = name;
     }
-    
+
     @Override
-    public String toString(){
+    public String toString() {
         return name;
     }
 

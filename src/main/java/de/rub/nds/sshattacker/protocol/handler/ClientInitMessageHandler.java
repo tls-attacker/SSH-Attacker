@@ -5,14 +5,14 @@ import de.rub.nds.sshattacker.state.SshContext;
 
 public class ClientInitMessageHandler extends Handler<ClientInitMessage> {
 
-    public ClientInitMessageHandler(SshContext context, ClientInitMessage message) {
-        super(context, message);
+    public ClientInitMessageHandler(SshContext context) {
+        super(context);
     }
+
     @Override
-    public void handle() {
+    public void handle(ClientInitMessage message) {
         context.setServerVersion(message.getVersion().getValue());
         context.setServerComment(message.getComment().getValue());
         context.appendToExchangeHashInput(context.getServerVersion().getBytes());
     }
-
 }

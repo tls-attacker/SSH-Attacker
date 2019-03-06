@@ -22,17 +22,17 @@ public enum EncryptionAlgorithm {
         this.keySize = keySize;
         this.blockSize = blockSize;
     }
-    
+
     @Override
-    public String toString(){
+    public String toString() {
         return name;
     }
-    
-    public int getKeySize(){
+
+    public int getKeySize() {
         return keySize;
     }
-    
-    public int getBlockSize(){
+
+    public int getBlockSize() {
         return blockSize;
     }
 }

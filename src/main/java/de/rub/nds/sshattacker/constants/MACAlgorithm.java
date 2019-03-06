@@ -27,19 +27,19 @@ public enum MACAlgorithm {
         this.name = name;
         this.keySize = keySize;
         this.outputSize = outputSize;
-        
+
     }
-    
+
     @Override
-    public String toString(){
+    public String toString() {
         return name;
     }
-    
-    public int getKeySize(){
+
+    public int getKeySize() {
         return keySize;
     }
-    
-    public int getOutputSize(){
+
+    public int getOutputSize() {
         return outputSize;
     }
 

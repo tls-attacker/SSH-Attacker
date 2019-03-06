@@ -15,12 +15,12 @@ import de.rub.nds.sshattacker.util.Converter;
 
 public class KeyExchangeInitMessageHandler extends Handler<KeyExchangeInitMessage> {
 
-    public KeyExchangeInitMessageHandler(SshContext context, KeyExchangeInitMessage message) {
-        super(context, message);
+    public KeyExchangeInitMessageHandler(SshContext context) {
+        super(context);
     }
 
     @Override
-    public void handle() {
+    public void handle(KeyExchangeInitMessage message) {
         // TODO currently only handling for server messages
         context.setServerCookie(message.getCookie().getValue());
         context.setServerSupportedKeyExchangeAlgorithms(Converter.StringToAlgorithms(message.getKeyExchangeAlgorithms().getValue(), KeyExchangeAlgorithm.class));
@@ -34,16 +34,15 @@ public class KeyExchangeInitMessageHandler extends Handler<KeyExchangeInitMessag
         context.setServerSupportedLanguagesClientToServer(Converter.StringToAlgorithms(message.getLanguagesClientToServer().getValue(), Language.class));
         context.setServerSupportedLanguagesServerToClient(Converter.StringToAlgorithms(message.getLanguagesServerToClient().getValue(), Language.class));
         context.setServerReserved(message.getReserved().getValue());
-        
+
         adjustAlgorithms();
-        
-        context.appendToExchangeHashInput(Converter.concatenate(new byte[] {MessageIDConstants.SSH_MSG_KEXINIT},
+
+        context.appendToExchangeHashInput(Converter.concatenate(new byte[]{MessageIDConstants.SSH_MSG_KEXINIT},
                 new KeyExchangeInitMessageSerializer(message).serializeMessageSpecificPayload()));
-        
-        
+
     }
-    
-        private void adjustAlgorithms() {
+
+    private void adjustAlgorithms() {
         context.setKeyExchangeAlgorithm(
                 AlgorithmPicker.pickAlgorithm(
                         context.getClientSupportedKeyExchangeAlgorithms(),
@@ -62,32 +61,32 @@ public class KeyExchangeInitMessageHandler extends Handler<KeyExchangeInitMessag
         context.setServerHostKeyAlgorithm(
                 AlgorithmPicker.pickAlgorithm(context.getClientSupportedHostKeyAlgorithms(),
                         context.getServerSupportedHostKeyAlgorithms()).get());
-        
+
         context.setMacAlgorithmClientToServer(
                 AlgorithmPicker.pickAlgorithm(
-                context.getClientSupportedMacAlgorithmsClientToServer(),
-                context.getServerSupportedMacAlgorithmsClientToServer()).get());
-        
+                        context.getClientSupportedMacAlgorithmsClientToServer(),
+                        context.getServerSupportedMacAlgorithmsClientToServer()).get());
+
         context.setMacAlgorithmServerToClient(
                 AlgorithmPicker.pickAlgorithm(
-                context.getClientSupportedMacAlgorithmsServerToClient(),
-                context.getServerSupportedMacAlgorithmsServerToClient()).get());
+                        context.getClientSupportedMacAlgorithmsServerToClient(),
+                        context.getServerSupportedMacAlgorithmsServerToClient()).get());
 
         context.setCompressionAlgorithmClientToServer(
                 AlgorithmPicker.pickAlgorithm(
-                context.getClientSupportedCompressionAlgorithmsClientToServer(),
+                        context.getClientSupportedCompressionAlgorithmsClientToServer(),
                         context.getServerSupportedCompressionAlgorithmsClientToServer()).get());
-        
+
         context.setCompressionAlgorithmServerToClient(
                 AlgorithmPicker.pickAlgorithm(
-                context.getClientSupportedCompressionAlgorithmsServerToClient(),
-                context.getServerSupportedCompressionAlgorithmsServerToClient()).get());
-        
+                        context.getClientSupportedCompressionAlgorithmsServerToClient(),
+                        context.getServerSupportedCompressionAlgorithmsServerToClient()).get());
+
         context.setLanguageClientToServer(
                 AlgorithmPicker.pickAlgorithm(
                         context.getClientSupportedLanguagesClientToServer(),
                         context.getServerSupportedLanguagesServerToClient()).get());
-        
+
         context.setLanguageServerToClient(
                 AlgorithmPicker.pickAlgorithm(
                         context.getClientSupportedLanguagesServerToClient(),

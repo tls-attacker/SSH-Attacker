@@ -5,7 +5,7 @@ import de.rub.nds.sshattacker.protocol.message.ECDHKeyExchangeInitMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class ECDHKeyExchangeInitMessageParser extends BinaryPacketParser<ECDHKeyExchangeInitMessage> {
+public class ECDHKeyExchangeInitMessageParser extends MessageParser<ECDHKeyExchangeInitMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 

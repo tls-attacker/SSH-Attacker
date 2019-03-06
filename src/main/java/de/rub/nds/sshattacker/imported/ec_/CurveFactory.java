@@ -12,9 +12,8 @@ public class CurveFactory {
 
     /**
      * Returns a named elliptic curve.
-     * 
-     * @param name
-     *            The name of the curve, that should be returned.
+     *
+     * @param name The name of the curve, that should be returned.
      */
     public static EllipticCurve getCurve(NamedGroup name) {
 

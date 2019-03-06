@@ -14,42 +14,42 @@ import java.util.Arrays;
 
 public class ECDHKeyExchangeReplyMessageHandler extends Handler<ECDHKeyExchangeReplyMessage> {
 
-    public ECDHKeyExchangeReplyMessageHandler(SshContext context, ECDHKeyExchangeReplyMessage message) {
-        super(context, message);
+    public ECDHKeyExchangeReplyMessageHandler(SshContext context) {
+        super(context);
     }
 
     @Override
-    public void handle() { // TODO conditional handling of host keys
+    public void handle(ECDHKeyExchangeReplyMessage message) { // TODO conditional handling of host keys
         context.setHostKeyType(message.getHostKeyType().getValue());
         context.setServerEcdhPublicKey(message.getEphemeralPublicKey().getValue());
         context.setKeyExchangeSignature(message.getSignature().getValue());
         if (context.getHostKeyType().equals("ssh-rsa")) {
-            handleRsaHostKey();
+            handleRsaHostKey(message);
         } else {
-            handleEccHostKey();
+            handleEccHostKey(message);
         }
-        
+
         adjustExchangeHash();
         adjustKeys();
     }
 
-    private void handleEccHostKey() {
+    private void handleEccHostKey(ECDHKeyExchangeReplyMessage message) {
         context.setServerHostKey(message.getHostKeyEcc().getValue());
     }
 
-    private void handleRsaHostKey() {
+    private void handleRsaHostKey(ECDHKeyExchangeReplyMessage message) {
         context.setHostKeyRsaExponent(message.getHostKeyRsaExponent().getValue());
         context.setHostKeyRsaModulus(message.getHostKeyRsaModulus().getValue());
         context.appendToExchangeHashInput(
                 Converter.concatenate(
                         Converter.stringToLengthPrefixedString(context.getHostKeyType()),
                         Converter.bytesToLenghPrefixedString(ArrayConverter.bigIntegerToByteArray(context.getHostKeyRsaExponent())),
-                        Converter.bytesToLenghPrefixedString(Converter.concatenate(new byte[] {00}, // asn1 leading byte
-                                ArrayConverter.bigIntegerToByteArray(context.getHostKeyRsaModulus())))
-//                        Converter.bytesToLenghPrefixedString(ArrayConverter.bigIntegerToByteArray(context.getHostKeyRsaModulus(), 32, false))
+                        Converter.bytesToLenghPrefixedString(Converter.concatenate(new byte[]{00}, // asn1 leading byte
+                        ArrayConverter.bigIntegerToByteArray(context.getHostKeyRsaModulus())))
+                //                        Converter.bytesToLenghPrefixedString(ArrayConverter.bigIntegerToByteArray(context.getHostKeyRsaModulus(), 32, false))
                 ));
     }
-    
+
     private void adjustKeys() {
         // hashalgorithm is the same used in the key exchange
 
@@ -89,26 +89,26 @@ public class ECDHKeyExchangeReplyMessageHandler extends Handler<ECDHKeyExchangeR
         context.appendToExchangeHashInput(context.getClientEcdhPublicKey());
         context.appendToExchangeHashInput(context.getServerEcdhPublicKey());
         computeSharedSecret();
-        
-    // TODO apply ASN1 sign coding to all bignums
+
+        // TODO apply ASN1 sign coding to all bignums
         context.appendToExchangeHashInput(Converter.bytesToBytesWithSignByte(context.getSharedSecret()));
         context.setExchangeHash(KeyDerivation.computeExchangeHash(context.getExchangeHashInput(), hashAlgorithm));
     }
-    
-    private void computeSharedSecret(){
+
+    private void computeSharedSecret() {
         // skip asn1 byte
 
         EllipticCurve curve = CurveFactory.getCurve(NamedGroup.SECP256R1);
-        BigInteger serverX = new BigInteger(1,Arrays.copyOfRange(context.getServerEcdhPublicKey(), 1, 33));
-        BigInteger serverY = new BigInteger(1,Arrays.copyOfRange(context.getServerEcdhPublicKey(), 33, 65));
+        BigInteger serverX = new BigInteger(1, Arrays.copyOfRange(context.getServerEcdhPublicKey(), 1, 33));
+        BigInteger serverY = new BigInteger(1, Arrays.copyOfRange(context.getServerEcdhPublicKey(), 33, 65));
 //        System.out.println("ServerX");
 //        System.out.println(ArrayConverter.bytesToRawHexString(ArrayConverter.bigIntegerToByteArray(serverX)));
 //        System.out.println("ServerY");
 //        System.out.println(ArrayConverter.bytesToRawHexString(ArrayConverter.bigIntegerToByteArray(serverY)));
 
         Point serverPoint = curve.getPoint(serverX, serverY);
-        Point sharedPoint = curve.mult(new BigInteger(1,context.getClientEcdhSecretKey()), serverPoint);
+        Point sharedPoint = curve.mult(new BigInteger(1, context.getClientEcdhSecretKey()), serverPoint);
         context.setSharedSecret(sharedPoint.getX().getData().toByteArray());
-        
+
     }
 }

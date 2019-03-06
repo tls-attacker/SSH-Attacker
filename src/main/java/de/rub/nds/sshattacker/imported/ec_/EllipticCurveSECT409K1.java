@@ -11,6 +11,7 @@ package de.rub.nds.sshattacker.imported.ec_;
 import java.math.BigInteger;
 
 public class EllipticCurveSECT409K1 extends EllipticCurveOverF2m {
+
     public EllipticCurveSECT409K1() {
         super(
                 BigInteger.ZERO,
