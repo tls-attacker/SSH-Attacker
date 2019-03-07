@@ -115,8 +115,6 @@ public class AsClient {
         receiveMessageHelper.receiveMessages(context);
 
         sendMessageHelper.sendMessages(Arrays.asList(new NewKeysMessage()), context);
-        System.out.println("ExchangeHash");
-        System.out.println(ArrayConverter.bytesToHexString(context.getExchangeHash()));
 
         BinaryPacket bp = new BinaryPacket(new byte[]{0, 1, 2, 3, 4, 5});
         bp.computePaddingLength((byte) 0);
