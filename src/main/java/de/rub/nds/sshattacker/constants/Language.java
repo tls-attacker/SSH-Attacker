@@ -1,7 +1,7 @@
 package de.rub.nds.sshattacker.constants;
 
 public enum Language {
-    none("");
+    NONE("");
 
     private String name;
 

@@ -5,12 +5,12 @@ import de.rub.nds.modifiablevariable.biginteger.ModifiableBigInteger;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
-import de.rub.nds.sshattacker.protocol.handler.ECDHKeyExchangeReplyMessageHandler;
+import de.rub.nds.sshattacker.protocol.handler.EcdhKeyExchangeReplyMessageHandler;
 import de.rub.nds.sshattacker.protocol.handler.Handler;
 import de.rub.nds.sshattacker.state.SshContext;
 import java.math.BigInteger;
 
-public class ECDHKeyExchangeReplyMessage extends Message {
+public class EcdhKeyExchangeReplyMessage extends Message {
 
     private ModifiableInteger hostKeyLength;
 
@@ -229,6 +229,6 @@ public class ECDHKeyExchangeReplyMessage extends Message {
 
     @Override
     public Handler getHandler(SshContext context) {
-        return new ECDHKeyExchangeReplyMessageHandler(context);
+        return new EcdhKeyExchangeReplyMessageHandler(context);
     }
 }

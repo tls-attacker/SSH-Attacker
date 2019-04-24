@@ -1,10 +1,10 @@
 package de.rub.nds.sshattacker.crypto;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.sshattacker.protocol.message.ECDHKeyExchangeInitMessage;
-import de.rub.nds.sshattacker.protocol.message.ECDHKeyExchangeReplyMessage;
-import de.rub.nds.sshattacker.protocol.parser.ECDHKeyExchangeInitMessageParser;
-import de.rub.nds.sshattacker.protocol.parser.ECDHKeyExchangeReplyMessageParser;
+import de.rub.nds.sshattacker.protocol.message.EcdhKeyExchangeInitMessage;
+import de.rub.nds.sshattacker.protocol.message.EcdhKeyExchangeReplyMessage;
+import de.rub.nds.sshattacker.protocol.parser.EcdhKeyExchangeInitMessageParser;
+import de.rub.nds.sshattacker.protocol.parser.EcdhKeyExchangeReplyMessageParser;
 import java.io.UnsupportedEncodingException;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -80,8 +80,8 @@ public class KeyDerivationTest {
         String clientVersion = "SSH-2.0-OpenSSH_7.9";
         String serverVersion = "SSH-2.0-OpenSSH_7.9";
         byte[] sharedSecret = ArrayConverter.hexStringToByteArray("13625c19127efdb1b15f1d5f48550760f29228342fbc438c06c56d795f31d109");
-        ECDHKeyExchangeInitMessage ecdhInit = new ECDHKeyExchangeInitMessageParser(0, ArrayConverter.hexStringToByteArray("000000207ca8902c60338482678b029a7b4484cb69e167922865c1217203dcb8050cd043")).parse();
-        ECDHKeyExchangeReplyMessage ecdhReply = new ECDHKeyExchangeReplyMessageParser(0, ArrayConverter.hexStringToByteArray("000000680000001365636473612d736861322d6e69737470323536000000086e69737470323536000000410435496f94112c3234092471322c26dd21ebfd2da156e5a17dcc5dc98020afedd64ae82e5d4c28251187a2191fe85ae43de9734711c087b784eaa713d5b6e065410000002020b9f89aba2d7da23775b3ce085ff65f4d4b7ccf51ce2d073ef9158d6df1e905000000630000001365636473612d736861322d6e6973747032353600000048000000204e553a825dd144d7ddbd38cbd10a153a8a4ad597bf8da7ef1fe2546c851d6e89000000205bc4705cdac12213822e61c3b48ab7c84489ef3be0bb94ef524a45664b473856")).parse();
+        EcdhKeyExchangeInitMessage ecdhInit = new EcdhKeyExchangeInitMessageParser(0, ArrayConverter.hexStringToByteArray("000000207ca8902c60338482678b029a7b4484cb69e167922865c1217203dcb8050cd043")).parse();
+        EcdhKeyExchangeReplyMessage ecdhReply = new EcdhKeyExchangeReplyMessageParser(0, ArrayConverter.hexStringToByteArray("000000680000001365636473612d736861322d6e69737470323536000000086e69737470323536000000410435496f94112c3234092471322c26dd21ebfd2da156e5a17dcc5dc98020afedd64ae82e5d4c28251187a2191fe85ae43de9734711c087b784eaa713d5b6e065410000002020b9f89aba2d7da23775b3ce085ff65f4d4b7ccf51ce2d073ef9158d6df1e905000000630000001365636473612d736861322d6e6973747032353600000048000000204e553a825dd144d7ddbd38cbd10a153a8a4ad597bf8da7ef1fe2546c851d6e89000000205bc4705cdac12213822e61c3b48ab7c84489ef3be0bb94ef524a45664b473856")).parse();
 
         byte[] expectedHash = ArrayConverter.hexStringToByteArray("76ccc4d868fbce7a0b02b4545ccf01893ac034c73e8f7be3452fdf22360d6f3d");
         byte[] exchangeHash = KeyDerivation.computeExchangeHash(

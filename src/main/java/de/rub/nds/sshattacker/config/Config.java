@@ -7,7 +7,7 @@ import de.rub.nds.sshattacker.constants.EncryptionAlgorithm;
 import de.rub.nds.sshattacker.constants.CompressionAlgorithm;
 import de.rub.nds.sshattacker.constants.KeyExchangeAlgorithm;
 import de.rub.nds.sshattacker.constants.Language;
-import de.rub.nds.sshattacker.constants.MACAlgorithm;
+import de.rub.nds.sshattacker.constants.MacAlgorithm;
 import de.rub.nds.sshattacker.constants.PublicKeyAuthenticationAlgorithm;
 import de.rub.nds.sshattacker.constants.RunningModeType;
 import java.io.File;
@@ -47,10 +47,10 @@ public class Config implements Serializable {
     private List<EncryptionAlgorithm> clientSupportedCipherAlgorithmsServerToClient;
     private List<EncryptionAlgorithm> serverSupportedCipherAlgorithmsServerToClient;
     private List<EncryptionAlgorithm> serverSupportedCipherAlgorithmsClientToServer;
-    private List<MACAlgorithm> clientSupportedMacAlgorithmsClientToServer;
-    private List<MACAlgorithm> clientSupportedMacAlgorithmsServerToClient;
-    private List<MACAlgorithm> serverSupportedMacAlgorithmsServerToClient;
-    private List<MACAlgorithm> serverSupportedMacAlgorithmsClientToServer;
+    private List<MacAlgorithm> clientSupportedMacAlgorithmsClientToServer;
+    private List<MacAlgorithm> clientSupportedMacAlgorithmsServerToClient;
+    private List<MacAlgorithm> serverSupportedMacAlgorithmsServerToClient;
+    private List<MacAlgorithm> serverSupportedMacAlgorithmsClientToServer;
     private List<CompressionAlgorithm> clientSupportedCompressionAlgorithmsClientToServer;
     private List<CompressionAlgorithm> clientSupportedCompressionAlgorithmsServerToClient;
     private List<CompressionAlgorithm> serverSupportedCompressionAlgorithmsServerToClient;
@@ -90,39 +90,39 @@ public class Config implements Serializable {
         clientCookie = ArrayConverter.hexStringToByteArray("0000000000000000");
 
         clientSupportedKeyExchangeAlgorithms = new LinkedList<>();
-        clientSupportedKeyExchangeAlgorithms.add(KeyExchangeAlgorithm.diffie_hellman_group1_sha1);
-        clientSupportedKeyExchangeAlgorithms.add(KeyExchangeAlgorithm.diffie_hellman_group14_sha1);
+        clientSupportedKeyExchangeAlgorithms.add(KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP1_SHA1);
+        clientSupportedKeyExchangeAlgorithms.add(KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP14_SHA1);
 
         serverSupportedKeyExchangeAlgorithms = new LinkedList<>(clientSupportedKeyExchangeAlgorithms);
 
         clientSupportedHostKeyAlgorithms = new LinkedList<>();
-        clientSupportedHostKeyAlgorithms.add(PublicKeyAuthenticationAlgorithm.ssh_dss);
+        clientSupportedHostKeyAlgorithms.add(PublicKeyAuthenticationAlgorithm.SSH_DSS);
 
         serverSupportedHostKeyAlgorithms = new LinkedList<>(clientSupportedHostKeyAlgorithms);
 
         clientSupportedCipherAlgorithmsClientToServer = new LinkedList<>();
-        clientSupportedCipherAlgorithmsClientToServer.add(EncryptionAlgorithm.tdes_cbc);
+        clientSupportedCipherAlgorithmsClientToServer.add(EncryptionAlgorithm.TDES_CBC);
         clientSupportedCipherAlgorithmsServerToClient = new LinkedList<>(clientSupportedCipherAlgorithmsClientToServer);
 
         serverSupportedCipherAlgorithmsClientToServer = new LinkedList<>(clientSupportedCipherAlgorithmsClientToServer);
         serverSupportedCipherAlgorithmsServerToClient = new LinkedList<>(clientSupportedCipherAlgorithmsClientToServer);
 
         clientSupportedMacAlgorithmsClientToServer = new LinkedList<>();
-        clientSupportedMacAlgorithmsClientToServer.add(MACAlgorithm.hmac_sha1);
+        clientSupportedMacAlgorithmsClientToServer.add(MacAlgorithm.HMAC_SHA1);
         clientSupportedMacAlgorithmsServerToClient = new LinkedList<>(clientSupportedMacAlgorithmsClientToServer);
 
         serverSupportedMacAlgorithmsServerToClient = new LinkedList<>(clientSupportedMacAlgorithmsClientToServer);
         serverSupportedMacAlgorithmsClientToServer = new LinkedList<>(clientSupportedMacAlgorithmsClientToServer);
 
         clientSupportedCompressionAlgorithmsClientToServer = new LinkedList<>();
-        clientSupportedCompressionAlgorithmsClientToServer.add(CompressionAlgorithm.none);
+        clientSupportedCompressionAlgorithmsClientToServer.add(CompressionAlgorithm.NONE);
         clientSupportedCompressionAlgorithmsServerToClient = new LinkedList<>(clientSupportedCompressionAlgorithmsClientToServer);
 
         serverSupportedCompressionAlgorithmsServerToClient = new LinkedList<>(clientSupportedCompressionAlgorithmsClientToServer);
         serverSupportedCompressionAlgorithmsClientToServer = new LinkedList<>(clientSupportedCompressionAlgorithmsClientToServer);
 
         clientSupportedLanguagesClientToServer = new LinkedList<>();
-        clientSupportedLanguagesClientToServer.add(Language.none);
+        clientSupportedLanguagesClientToServer.add(Language.NONE);
         clientSupportedLanguagesServerToClient = new LinkedList<>(clientSupportedLanguagesClientToServer);
 
         serverSupportedLanguagesServerToClient = new LinkedList<>(clientSupportedLanguagesClientToServer);
@@ -134,7 +134,7 @@ public class Config implements Serializable {
         clientReserved = 0;
         serverReserved = 0;
 
-//        defaultHostKeyType = PublicKeyAuthenticationAlgorithm.ssh_dss.getValue();
+//        defaultHostKeyType = PublicKeyAuthenticationAlgorithm.SSH_DSS.getValue();
 //
 //        //TODO create default private/public keypairs and store them in constants
 //        defaultRsaExponent = BigInteger.valueOf(65537);
@@ -169,8 +169,7 @@ public class Config implements Serializable {
     public static Config createEmptyConfig() {
         Config c = new Config();
         for (Field field : c.getClass().getDeclaredFields()) {
-            if (!field.getName().equals("LOGGER") && !field.getType().isPrimitive()
-                    && !field.getName().contains("Extension")) {
+            if (!field.getName().equals("LOGGER") && !field.getType().isPrimitive()) {
                 field.setAccessible(true);
                 try {
                     field.set(c, null);
@@ -239,19 +238,19 @@ public class Config implements Serializable {
         return serverSupportedCipherAlgorithmsClientToServer;
     }
 
-    public List<MACAlgorithm> getClientSupportedMacAlgorithmsClientToServer() {
+    public List<MacAlgorithm> getClientSupportedMacAlgorithmsClientToServer() {
         return clientSupportedMacAlgorithmsClientToServer;
     }
 
-    public List<MACAlgorithm> getClientSupportedMacAlgorithmsServerToClient() {
+    public List<MacAlgorithm> getClientSupportedMacAlgorithmsServerToClient() {
         return clientSupportedMacAlgorithmsServerToClient;
     }
 
-    public List<MACAlgorithm> getServerSupportedMacAlgorithmsServerToClient() {
+    public List<MacAlgorithm> getServerSupportedMacAlgorithmsServerToClient() {
         return serverSupportedMacAlgorithmsServerToClient;
     }
 
-    public List<MACAlgorithm> getServerSupportedMacAlgorithmsClientToServer() {
+    public List<MacAlgorithm> getServerSupportedMacAlgorithmsClientToServer() {
         return serverSupportedMacAlgorithmsClientToServer;
     }
 
@@ -319,5 +318,4 @@ public class Config implements Serializable {
     public void setServerEcdhPublicKey(byte[] serverEcdhPublicKey) {
         this.serverEcdhPublicKey = serverEcdhPublicKey;
     }
-
 }

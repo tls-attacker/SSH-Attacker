@@ -22,7 +22,7 @@ public class ClientInitMessageParser extends Parser<ClientInitMessage> {
 
     private void parseVersion(ClientInitMessage msg) {
         // parse till CR NL
-        String result = this.parseStringTill(new byte[]{ByteConstants.CR, ByteConstants.NL});
+        String result = this.parseStringTill(new byte[]{ByteConstants.CARRIAGE_RETURN, ByteConstants.NEWLINE});
         if (result.contains(String.valueOf(CharConstants.VERSION_COMMENT_SEPARATOR))) {
             // contains a comment
             String[] parts = result.split(String.valueOf(CharConstants.VERSION_COMMENT_SEPARATOR), 2);

@@ -1,6 +1,6 @@
 package de.rub.nds.sshattacker.protocol.serializer;
 
-import de.rub.nds.sshattacker.protocol.message.ECDHKeyExchangeInitMessage;
+import de.rub.nds.sshattacker.protocol.message.EcdhKeyExchangeInitMessage;
 import de.rub.nds.sshattacker.protocol.parser.ECDHKeyExchangeInitMessageParserTest;
 import java.util.Collection;
 import org.junit.After;
@@ -49,15 +49,15 @@ public class ECDHKeyExchangeInitMessageSerializerTest {
 
     /**
      * Test of serializeBytes method, of class
-     * ECDHKeyExchangeInitMessageSerializer.
+ EcdhKeyExchangeInitMessageSerializer.
      */
     @Test
     public void testSerializeMessageSpecificPayload() {
-        ECDHKeyExchangeInitMessage msg = new ECDHKeyExchangeInitMessage();
+        EcdhKeyExchangeInitMessage msg = new EcdhKeyExchangeInitMessage();
         msg.setPublicKeyLength(publicKeyLength);
         msg.setPublicKey(publicKey);
 
-        ECDHKeyExchangeInitMessageSerializer serializer = new ECDHKeyExchangeInitMessageSerializer(msg);
+        EcdhKeyExchangeInitMessageSerializer serializer = new EcdhKeyExchangeInitMessageSerializer(msg);
 
         assertArrayEquals(bytes, serializer.serializeMessageSpecificPayload());
     }

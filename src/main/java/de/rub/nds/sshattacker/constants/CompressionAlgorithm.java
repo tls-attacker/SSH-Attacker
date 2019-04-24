@@ -1,9 +1,9 @@
 package de.rub.nds.sshattacker.constants;
 
 public enum CompressionAlgorithm {
-    none("none"),
-    zlib("zlib"),
-    zlib_openssh_com("zlib@openssh.com");
+    NONE("none"),
+    ZLIB("zlib"),
+    ZLIB_OPENSSH_COM("zlib@openssh.com");
 
     private final String name;
 

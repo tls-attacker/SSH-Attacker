@@ -1,6 +1,6 @@
 package de.rub.nds.sshattacker.protocol.serializer;
 
-import de.rub.nds.sshattacker.protocol.message.ECDHKeyExchangeReplyMessage;
+import de.rub.nds.sshattacker.protocol.message.EcdhKeyExchangeReplyMessage;
 import de.rub.nds.sshattacker.protocol.parser.ECDHKeyExchangeReplyMessageParserTest;
 import java.util.Collection;
 import org.junit.After;
@@ -72,11 +72,11 @@ public class ECDHKeyExchangeReplyMessageSerializerTest {
 
     /**
      * Test of serializeBytes method, of class
-     * ECDHKeyExchangeReplyMessageSerializer.
+ EcdhKeyExchangeReplyMessageSerializer.
      */
     @Test
     public void testSerializeMessageSpecificPayload() {
-        ECDHKeyExchangeReplyMessage msg = new ECDHKeyExchangeReplyMessage();
+        EcdhKeyExchangeReplyMessage msg = new EcdhKeyExchangeReplyMessage();
         msg.setHostKeyLength(hostKeyLength);
         msg.setHostKeyTypeLength(hostKeyTypeLength);
         msg.setHostKeyType(hostKeyType);
@@ -89,7 +89,7 @@ public class ECDHKeyExchangeReplyMessageSerializerTest {
         msg.setSignatureLength(signatureLength);
         msg.setSignature(signature);
 
-        ECDHKeyExchangeReplyMessageSerializer serializer = new ECDHKeyExchangeReplyMessageSerializer(msg);
+        EcdhKeyExchangeReplyMessageSerializer serializer = new EcdhKeyExchangeReplyMessageSerializer(msg);
 
         assertArrayEquals(bytes, serializer.serializeMessageSpecificPayload());
     }

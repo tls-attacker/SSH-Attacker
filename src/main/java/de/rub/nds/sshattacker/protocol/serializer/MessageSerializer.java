@@ -2,8 +2,8 @@ package de.rub.nds.sshattacker.protocol.serializer;
 
 import de.rub.nds.protocol.core.message.Serializer;
 import de.rub.nds.sshattacker.constants.MessageIDConstants;
-import de.rub.nds.sshattacker.protocol.message.ECDHKeyExchangeInitMessage;
-import de.rub.nds.sshattacker.protocol.message.ECDHKeyExchangeReplyMessage;
+import de.rub.nds.sshattacker.protocol.message.EcdhKeyExchangeInitMessage;
+import de.rub.nds.sshattacker.protocol.message.EcdhKeyExchangeReplyMessage;
 import de.rub.nds.sshattacker.protocol.message.KeyExchangeInitMessage;
 import de.rub.nds.sshattacker.protocol.message.Message;
 import de.rub.nds.sshattacker.protocol.message.NewKeysMessage;
@@ -29,14 +29,16 @@ public abstract class MessageSerializer<T extends Message> extends Serializer<Me
 
     protected abstract byte[] serializeMessageSpecificPayload();
 
+    // TODO implement like in TLS-attacker
+    // message.getHandler.getSerializer
     public static <T extends Message> byte[] delegateSerialization(T message) {
         switch (message.getMessageID().getValue()) {
             case MessageIDConstants.SSH_MSG_KEXINIT:
                 return new KeyExchangeInitMessageSerializer((KeyExchangeInitMessage) message).serialize();
             case MessageIDConstants.SSH_MSG_KEX_ECDH_INIT:
-                return new ECDHKeyExchangeInitMessageSerializer((ECDHKeyExchangeInitMessage) message).serialize();
+                return new EcdhKeyExchangeInitMessageSerializer((EcdhKeyExchangeInitMessage) message).serialize();
             case MessageIDConstants.SSH_MSG_KEX_ECDH_REPLY:
-                return new ECDHKeyExchangeReplyMessageSerializer((ECDHKeyExchangeReplyMessage) message).serialize();
+                return new EcdhKeyExchangeReplyMessageSerializer((EcdhKeyExchangeReplyMessage) message).serialize();
             case MessageIDConstants.SSH_MSG_NEWKEYS:
                 return new NewKeysMessageSerializer((NewKeysMessage) message).serialize();
             default:

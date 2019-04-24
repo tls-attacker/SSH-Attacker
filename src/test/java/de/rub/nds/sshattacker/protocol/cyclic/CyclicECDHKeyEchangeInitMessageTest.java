@@ -1,9 +1,9 @@
 package de.rub.nds.sshattacker.protocol.cyclic;
 
-import de.rub.nds.sshattacker.protocol.message.ECDHKeyExchangeInitMessage;
+import de.rub.nds.sshattacker.protocol.message.EcdhKeyExchangeInitMessage;
 import de.rub.nds.sshattacker.protocol.parser.ClientInitMessageParserTest;
-import de.rub.nds.sshattacker.protocol.parser.ECDHKeyExchangeInitMessageParser;
-import de.rub.nds.sshattacker.protocol.serializer.ECDHKeyExchangeInitMessageSerializer;
+import de.rub.nds.sshattacker.protocol.parser.EcdhKeyExchangeInitMessageParser;
+import de.rub.nds.sshattacker.protocol.serializer.EcdhKeyExchangeInitMessageSerializer;
 import java.util.Collection;
 import java.util.LinkedList;
 import org.junit.Assert;
@@ -32,9 +32,9 @@ public class CyclicECDHKeyEchangeInitMessageTest {
 
     @Test
     public void test() {
-        ECDHKeyExchangeInitMessage msg = new ECDHKeyExchangeInitMessage();
-        new ECDHKeyExchangeInitMessageParser(0, bytes).parseMessageSpecificPayload(msg);
-        byte[] serialized = new ECDHKeyExchangeInitMessageSerializer(msg).serializeMessageSpecificPayload();
+        EcdhKeyExchangeInitMessage msg = new EcdhKeyExchangeInitMessage();
+        new EcdhKeyExchangeInitMessageParser(0, bytes).parseMessageSpecificPayload(msg);
+        byte[] serialized = new EcdhKeyExchangeInitMessageSerializer(msg).serializeMessageSpecificPayload();
         Assert.assertArrayEquals(bytes, serialized);
     }
 }

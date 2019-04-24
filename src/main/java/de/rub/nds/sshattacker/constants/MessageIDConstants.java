@@ -12,8 +12,8 @@ public class MessageIDConstants {
     public static final byte SSH_MSG_NEWKEYS = 21;
     public static final byte SSH_MSG_KEX_ECDH_INIT = 30;
     public static final byte SSH_MSG_KEX_ECDH_REPLY = 31;
-    //public static final byte SSH_MSG_ECMQV_INIT = 30;
-    //public static final byte SSH_MSG_ECMQV_REPLY = 31;
+    public static final byte SSH_MSG_ECMQV_INIT = 30;
+    public static final byte SSH_MSG_ECMQV_REPLY = 31;
     public static final byte SSH_MSG_USERAUTH_REQUEST = 50;
     public static final byte SSH_MSG_USERAUTH_FAILURE = 51;
     public static final byte SSH_MSG_USERAUTH_SUCCESS = 52;

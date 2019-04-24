@@ -1,17 +1,17 @@
 package de.rub.nds.sshattacker.protocol.serializer;
 
 import de.rub.nds.sshattacker.constants.BinaryPacketConstants;
-import de.rub.nds.sshattacker.protocol.message.ECDHKeyExchangeInitMessage;
+import de.rub.nds.sshattacker.protocol.message.EcdhKeyExchangeInitMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class ECDHKeyExchangeInitMessageSerializer extends MessageSerializer<ECDHKeyExchangeInitMessage> {
+public class EcdhKeyExchangeInitMessageSerializer extends MessageSerializer<EcdhKeyExchangeInitMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private final ECDHKeyExchangeInitMessage msg;
+    private final EcdhKeyExchangeInitMessage msg;
 
-    public ECDHKeyExchangeInitMessageSerializer(ECDHKeyExchangeInitMessage msg) {
+    public EcdhKeyExchangeInitMessageSerializer(EcdhKeyExchangeInitMessage msg) {
         super(msg);
         this.msg = msg;
     }

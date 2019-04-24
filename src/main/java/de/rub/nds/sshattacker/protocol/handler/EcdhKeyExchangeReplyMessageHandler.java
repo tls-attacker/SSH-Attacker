@@ -6,20 +6,20 @@ import de.rub.nds.sshattacker.imported.ec_.CurveFactory;
 import de.rub.nds.sshattacker.imported.ec_.EllipticCurve;
 import de.rub.nds.sshattacker.imported.ec_.NamedGroup;
 import de.rub.nds.sshattacker.imported.ec_.Point;
-import de.rub.nds.sshattacker.protocol.message.ECDHKeyExchangeReplyMessage;
+import de.rub.nds.sshattacker.protocol.message.EcdhKeyExchangeReplyMessage;
 import de.rub.nds.sshattacker.state.SshContext;
 import de.rub.nds.sshattacker.util.Converter;
 import java.math.BigInteger;
 import java.util.Arrays;
 
-public class ECDHKeyExchangeReplyMessageHandler extends Handler<ECDHKeyExchangeReplyMessage> {
+public class EcdhKeyExchangeReplyMessageHandler extends Handler<EcdhKeyExchangeReplyMessage> {
 
-    public ECDHKeyExchangeReplyMessageHandler(SshContext context) {
+    public EcdhKeyExchangeReplyMessageHandler(SshContext context) {
         super(context);
     }
 
     @Override
-    public void handle(ECDHKeyExchangeReplyMessage message) { // TODO conditional handling of host keys
+    public void handle(EcdhKeyExchangeReplyMessage message) { // TODO conditional handling of host keys
         context.setHostKeyType(message.getHostKeyType().getValue());
         context.setServerEcdhPublicKey(message.getEphemeralPublicKey().getValue());
         context.setKeyExchangeSignature(message.getSignature().getValue());
@@ -33,18 +33,18 @@ public class ECDHKeyExchangeReplyMessageHandler extends Handler<ECDHKeyExchangeR
         adjustKeys();
     }
 
-    private void handleEccHostKey(ECDHKeyExchangeReplyMessage message) {
+    private void handleEccHostKey(EcdhKeyExchangeReplyMessage message) {
         context.setServerHostKey(message.getHostKeyEcc().getValue());
     }
 
-    private void handleRsaHostKey(ECDHKeyExchangeReplyMessage message) {
+    private void handleRsaHostKey(EcdhKeyExchangeReplyMessage message) {
         context.setHostKeyRsaExponent(message.getHostKeyRsaExponent().getValue());
         context.setHostKeyRsaModulus(message.getHostKeyRsaModulus().getValue());
         context.appendToExchangeHashInput(
-                Converter.concatenate(
+                ArrayConverter.concatenate(
                         Converter.stringToLengthPrefixedString(context.getHostKeyType()),
                         Converter.bytesToLenghPrefixedString(ArrayConverter.bigIntegerToByteArray(context.getHostKeyRsaExponent())),
-                        Converter.bytesToLenghPrefixedString(Converter.concatenate(new byte[]{00}, // asn1 leading byte
+                        Converter.bytesToLenghPrefixedString(ArrayConverter.concatenate(new byte[]{00}, // asn1 leading byte
                         ArrayConverter.bigIntegerToByteArray(context.getHostKeyRsaModulus())))
                 //                        Converter.bytesToLenghPrefixedString(ArrayConverter.bigIntegerToByteArray(context.getHostKeyRsaModulus(), 32, false))
                 ));
@@ -101,6 +101,7 @@ public class ECDHKeyExchangeReplyMessageHandler extends Handler<ECDHKeyExchangeR
         EllipticCurve curve = CurveFactory.getCurve(NamedGroup.SECP256R1);
         BigInteger serverX = new BigInteger(1, Arrays.copyOfRange(context.getServerEcdhPublicKey(), 1, 33));
         BigInteger serverY = new BigInteger(1, Arrays.copyOfRange(context.getServerEcdhPublicKey(), 33, 65));
+// TODO remove debug code
 //        System.out.println("ServerX");
 //        System.out.println(ArrayConverter.bytesToRawHexString(ArrayConverter.bigIntegerToByteArray(serverX)));
 //        System.out.println("ServerY");

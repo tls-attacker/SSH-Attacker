@@ -1,11 +1,11 @@
 package de.rub.nds.sshattacker.protocol.preparator;
 
-import de.rub.nds.sshattacker.protocol.message.ECDHKeyExchangeInitMessage;
+import de.rub.nds.sshattacker.protocol.message.EcdhKeyExchangeInitMessage;
 import de.rub.nds.sshattacker.state.SshContext;
 
-public class ECDHKeyExchangeInitMessagePreparator extends Preparator<ECDHKeyExchangeInitMessage> {
+public class EcdhKeyExchangeInitMessagePreparator extends Preparator<EcdhKeyExchangeInitMessage> {
 
-    public ECDHKeyExchangeInitMessagePreparator(SshContext context, ECDHKeyExchangeInitMessage message) {
+    public EcdhKeyExchangeInitMessagePreparator(SshContext context, EcdhKeyExchangeInitMessage message) {
         super(context, message);
     }
 

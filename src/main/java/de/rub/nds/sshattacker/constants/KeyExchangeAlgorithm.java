@@ -1,18 +1,18 @@
 package de.rub.nds.sshattacker.constants;
 
 public enum KeyExchangeAlgorithm {
-    curve25519_sha256("curve25519-sha256"),
-    curve25519_sha256_libssh_org("curve25519-sha256@libssh.org"),
-    diffie_hellman_group1_sha1("diffie-hellman-group1-sha1"),
-    diffie_hellman_group14_sha1("diffie-hellman-group14-sha1"),
-    diffie_hellman_group14_sha256("diffie-hellman-group14-sha256"),
-    diffie_hellman_group16_sha512("diffie-hellman-group16-sha512"),
-    diffie_hellman_group18_sha512("diffie-hellman-group18-sha512"),
-    diffie_hellman_group_exchange_sha1("diffie-hellman-group-exchange-sha1"),
-    diffie_hellman_group_exchange_sha256("diffie-hellman-group-exchange-sha256"),
-    ecdh_sha2_nistp256("ecdh-sha2-nistp256"),
-    ecdh_sha2_nistp384("ecdh-sha2-nistp384"),
-    ecdh_sha2_nistp521("ecdh-sha2-nistp521");
+    CURVE25519_SHA256("curve25519-sha256"),
+    CURVE25519_SHA256_LIBSSH_ORG("curve25519-sha256@libssh.org"),
+    DIFFIE_HELLMAN_GROUP1_SHA1("diffie-hellman-group1-sha1"),
+    DIFFIE_HELLMAN_GROUP14_SHA1("diffie-hellman-group14-sha1"),
+    DIFFIE_HELLMAN_GROUP14_SHA256("diffie-hellman-group14-sha256"),
+    DIFFIE_HELLMAN_GROUP16_SHA512("diffie-hellman-group16-sha512"),
+    DIFFIE_HELLMAN_GROUP18_SHA512("diffie-hellman-group18-sha512"),
+    DIFFIE_HELLMAN_GROUP_EXCHANGE_SHA1("diffie-hellman-group-exchange-sha1"),
+    DIFFIE_HELLMAN_GROUP_EXCHANGE_SHA256("diffie-hellman-group-exchange-sha256"),
+    ECDH_SHA2_NISTP256("ecdh-sha2-nistp256"),
+    ECDH_SHA2_NISTP384("ecdh-sha2-nistp384"),
+    ECDH_SHA2_NISTP521("ecdh-sha2-nistp521");
 
     private final String name;
 

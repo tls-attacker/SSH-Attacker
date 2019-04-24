@@ -1,7 +1,7 @@
 package de.rub.nds.sshattacker.protocol.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.sshattacker.protocol.message.ECDHKeyExchangeInitMessage;
+import de.rub.nds.sshattacker.protocol.message.EcdhKeyExchangeInitMessage;
 import java.util.Arrays;
 import java.util.Collection;
 import org.junit.After;
@@ -54,12 +54,12 @@ public class ECDHKeyExchangeInitMessageParserTest {
     }
 
     /**
-     * Test of parse method, of class ECDHKeyExchangeInitMessageParser.
+     * Test of parse method, of class EcdhKeyExchangeInitMessageParser.
      */
     @Test
     public void testParseMessageSpecificPayload() {
-        ECDHKeyExchangeInitMessageParser parser = new ECDHKeyExchangeInitMessageParser(0, bytes);
-        ECDHKeyExchangeInitMessage msg = new ECDHKeyExchangeInitMessage();
+        EcdhKeyExchangeInitMessageParser parser = new EcdhKeyExchangeInitMessageParser(0, bytes);
+        EcdhKeyExchangeInitMessage msg = new EcdhKeyExchangeInitMessage();
         parser.parseMessageSpecificPayload(msg);
         assertEquals(publicKeyLength, msg.getPublicKeyLength().getValue().intValue());
         assertArrayEquals(publicKey, msg.getPublicKey().getValue());

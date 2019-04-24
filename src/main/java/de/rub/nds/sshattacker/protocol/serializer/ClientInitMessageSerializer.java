@@ -39,7 +39,7 @@ public class ClientInitMessageSerializer extends Serializer<ClientInitMessage> {
     }
 
     private void serializeCRNL() {
-        appendBytes(new byte[]{ByteConstants.CR, ByteConstants.NL});
+        appendBytes(new byte[]{ByteConstants.CARRIAGE_RETURN, ByteConstants.NEWLINE});
     }
 
     @Override

@@ -7,12 +7,12 @@ import de.rub.nds.sshattacker.constants.MessageIDConstants;
 import de.rub.nds.sshattacker.protocol.handler.Handler;
 import de.rub.nds.sshattacker.state.SshContext;
 
-public class ECDHKeyExchangeInitMessage extends Message {
+public class EcdhKeyExchangeInitMessage extends Message {
 
     private ModifiableInteger publicKeyLength;
     private ModifiableByteArray publicKey;
 
-    public ECDHKeyExchangeInitMessage() {
+    public EcdhKeyExchangeInitMessage() {
         messageID = ModifiableVariableFactory.safelySetValue(messageID, MessageIDConstants.SSH_MSG_KEX_ECDH_INIT);
     }
 

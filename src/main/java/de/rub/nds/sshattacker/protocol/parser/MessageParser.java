@@ -34,9 +34,9 @@ public abstract class MessageParser<T extends Message> extends Parser<T> {
             case MessageIDConstants.SSH_MSG_KEXINIT:
                 return new KeyExchangeInitMessageParser(0, raw).parse();
             case MessageIDConstants.SSH_MSG_KEX_ECDH_INIT:
-                return new ECDHKeyExchangeInitMessageParser(0, raw).parse();
+                return new EcdhKeyExchangeInitMessageParser(0, raw).parse();
             case MessageIDConstants.SSH_MSG_KEX_ECDH_REPLY:
-                return new ECDHKeyExchangeReplyMessageParser(0, raw).parse();
+                return new EcdhKeyExchangeReplyMessageParser(0, raw).parse();
             case MessageIDConstants.SSH_MSG_NEWKEYS:
                 return new NewKeysMessageParser(0, raw).parse();
             default:

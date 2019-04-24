@@ -1,12 +1,13 @@
 package de.rub.nds.sshattacker.state;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.config.Config;
 import de.rub.nds.sshattacker.connection.AliasedConnection;
 import de.rub.nds.sshattacker.constants.EncryptionAlgorithm;
 import de.rub.nds.sshattacker.constants.CompressionAlgorithm;
 import de.rub.nds.sshattacker.constants.KeyExchangeAlgorithm;
 import de.rub.nds.sshattacker.constants.Language;
-import de.rub.nds.sshattacker.constants.MACAlgorithm;
+import de.rub.nds.sshattacker.constants.MacAlgorithm;
 import de.rub.nds.sshattacker.constants.PublicKeyAuthenticationAlgorithm;
 import de.rub.nds.sshattacker.protocol.layers.BinaryPacketLayer;
 import de.rub.nds.sshattacker.protocol.layers.MessageLayer;
@@ -59,8 +60,8 @@ public class SshContext {
     private EncryptionAlgorithm cipherAlgorithmClientToServer;
     private EncryptionAlgorithm cipherAlgorithmServerToClient;
 
-    private MACAlgorithm macAlgorithmClientToServer;
-    private MACAlgorithm macAlgorithmServerToClient;
+    private MacAlgorithm macAlgorithmClientToServer;
+    private MacAlgorithm macAlgorithmServerToClient;
 
     private CompressionAlgorithm compressionAlgorithmClientToServer;
     private CompressionAlgorithm compressionAlgorithmServerToClient;
@@ -83,10 +84,10 @@ public class SshContext {
     private List<EncryptionAlgorithm> clientSupportedCipherAlgorithmsServerToClient;
     private List<EncryptionAlgorithm> serverSupportedCipherAlgorithmsServerToClient;
     private List<EncryptionAlgorithm> serverSupportedCipherAlgorithmsClientToServer;
-    private List<MACAlgorithm> clientSupportedMacAlgorithmsClientToServer;
-    private List<MACAlgorithm> clientSupportedMacAlgorithmsServerToClient;
-    private List<MACAlgorithm> serverSupportedMacAlgorithmsServerToClient;
-    private List<MACAlgorithm> serverSupportedMacAlgorithmsClientToServer;
+    private List<MacAlgorithm> clientSupportedMacAlgorithmsClientToServer;
+    private List<MacAlgorithm> clientSupportedMacAlgorithmsServerToClient;
+    private List<MacAlgorithm> serverSupportedMacAlgorithmsServerToClient;
+    private List<MacAlgorithm> serverSupportedMacAlgorithmsClientToServer;
     private List<CompressionAlgorithm> clientSupportedCompressionAlgorithmsClientToServer;
     private List<CompressionAlgorithm> clientSupportedCompressionAlgorithmsServerToClient;
     private List<CompressionAlgorithm> serverSupportedCompressionAlgorithmsServerToClient;
@@ -156,19 +157,19 @@ public class SshContext {
         return serverSupportedCipherAlgorithmsClientToServer;
     }
 
-    public List<MACAlgorithm> getClientSupportedMacAlgorithmsClientToServer() {
+    public List<MacAlgorithm> getClientSupportedMacAlgorithmsClientToServer() {
         return clientSupportedMacAlgorithmsClientToServer;
     }
 
-    public List<MACAlgorithm> getClientSupportedMacAlgorithmsServerToClient() {
+    public List<MacAlgorithm> getClientSupportedMacAlgorithmsServerToClient() {
         return clientSupportedMacAlgorithmsServerToClient;
     }
 
-    public List<MACAlgorithm> getServerSupportedMacAlgorithmsServerToClient() {
+    public List<MacAlgorithm> getServerSupportedMacAlgorithmsServerToClient() {
         return serverSupportedMacAlgorithmsServerToClient;
     }
 
-    public List<MACAlgorithm> getServerSupportedMacAlgorithmsClientToServer() {
+    public List<MacAlgorithm> getServerSupportedMacAlgorithmsClientToServer() {
         return serverSupportedMacAlgorithmsClientToServer;
     }
 
@@ -276,19 +277,19 @@ public class SshContext {
         this.serverSupportedCipherAlgorithmsClientToServer = serverSupportedCipherAlgorithmsClientToServer;
     }
 
-    public void setClientSupportedMacAlgorithmsClientToServer(List<MACAlgorithm> clientSupportedMacAlgorithmsClientToServer) {
+    public void setClientSupportedMacAlgorithmsClientToServer(List<MacAlgorithm> clientSupportedMacAlgorithmsClientToServer) {
         this.clientSupportedMacAlgorithmsClientToServer = clientSupportedMacAlgorithmsClientToServer;
     }
 
-    public void setClientSupportedMacAlgorithmsServerToClient(List<MACAlgorithm> clientSupportedMacAlgorithmsServerToClient) {
+    public void setClientSupportedMacAlgorithmsServerToClient(List<MacAlgorithm> clientSupportedMacAlgorithmsServerToClient) {
         this.clientSupportedMacAlgorithmsServerToClient = clientSupportedMacAlgorithmsServerToClient;
     }
 
-    public void setServerSupportedMacAlgorithmsServerToClient(List<MACAlgorithm> serverSupportedMacAlgorithmsServerToClient) {
+    public void setServerSupportedMacAlgorithmsServerToClient(List<MacAlgorithm> serverSupportedMacAlgorithmsServerToClient) {
         this.serverSupportedMacAlgorithmsServerToClient = serverSupportedMacAlgorithmsServerToClient;
     }
 
-    public void setServerSupportedMacAlgorithmsClientToServer(List<MACAlgorithm> serverSupportedMacAlgorithmsClientToServer) {
+    public void setServerSupportedMacAlgorithmsClientToServer(List<MacAlgorithm> serverSupportedMacAlgorithmsClientToServer) {
         this.serverSupportedMacAlgorithmsClientToServer = serverSupportedMacAlgorithmsClientToServer;
     }
 
@@ -486,19 +487,19 @@ public class SshContext {
         this.cipherAlgorithmServerToClient = cipherAlgorithmServerToClient;
     }
 
-    public MACAlgorithm getMacAlgorithmClientToServer() {
+    public MacAlgorithm getMacAlgorithmClientToServer() {
         return macAlgorithmClientToServer;
     }
 
-    public void setMacAlgorithmClientToServer(MACAlgorithm macAlgorithmClientToServer) {
+    public void setMacAlgorithmClientToServer(MacAlgorithm macAlgorithmClientToServer) {
         this.macAlgorithmClientToServer = macAlgorithmClientToServer;
     }
 
-    public MACAlgorithm getMacAlgorithmServerToClient() {
+    public MacAlgorithm getMacAlgorithmServerToClient() {
         return macAlgorithmServerToClient;
     }
 
-    public void setMacAlgorithmServerToClient(MACAlgorithm macAlgorithmServerToClient) {
+    public void setMacAlgorithmServerToClient(MacAlgorithm macAlgorithmServerToClient) {
         this.macAlgorithmServerToClient = macAlgorithmServerToClient;
     }
 
@@ -591,7 +592,7 @@ public class SshContext {
     }
 
     public void appendToExchangeHashInput(byte[] additionalData) {
-        exchangeHashInput = Converter.concatenate(exchangeHashInput, Converter.bytesToLenghPrefixedString(additionalData));
+        exchangeHashInput = ArrayConverter.concatenate(exchangeHashInput, Converter.bytesToLenghPrefixedString(additionalData));
     }
 
     public byte[] getClientEcdhSecretKey() {

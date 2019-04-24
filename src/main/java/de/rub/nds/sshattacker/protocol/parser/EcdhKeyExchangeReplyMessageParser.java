@@ -2,99 +2,100 @@ package de.rub.nds.sshattacker.protocol.parser;
 
 import de.rub.nds.sshattacker.constants.BinaryPacketConstants;
 import de.rub.nds.sshattacker.constants.PublicKeyAuthenticationAlgorithm;
-import de.rub.nds.sshattacker.protocol.message.ECDHKeyExchangeReplyMessage;
+import de.rub.nds.sshattacker.protocol.message.EcdhKeyExchangeReplyMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class ECDHKeyExchangeReplyMessageParser extends MessageParser<ECDHKeyExchangeReplyMessage> {
+public class EcdhKeyExchangeReplyMessageParser extends MessageParser<EcdhKeyExchangeReplyMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public ECDHKeyExchangeReplyMessageParser(int startposition, byte[] array) {
+    public EcdhKeyExchangeReplyMessageParser(int startposition, byte[] array) {
         super(startposition, array);
     }
 
-    private void parseHostKeyLength(ECDHKeyExchangeReplyMessage msg) {
+    private void parseHostKeyLength(EcdhKeyExchangeReplyMessage msg) {
         msg.setHostKeyLength(parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH));
         LOGGER.debug("HostKeyLength: " + msg.getHostKeyLength().getValue());
     }
 
-    private void parseHostKeyTypeLength(ECDHKeyExchangeReplyMessage msg) {
+    private void parseHostKeyTypeLength(EcdhKeyExchangeReplyMessage msg) {
         msg.setHostKeyTypeLength(parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH));
         LOGGER.debug("HostKeyTypeLength: " + msg.getHostKeyTypeLength().getValue());
     }
 
-    private void parseHostKeyType(ECDHKeyExchangeReplyMessage msg) {
+    private void parseHostKeyType(EcdhKeyExchangeReplyMessage msg) {
         msg.setHostKeyType(parseByteString(msg.getHostKeyTypeLength().getValue()));
         LOGGER.debug("HostKeyType: " + msg.getHostKeyType().getValue());
     }
 
-    private void parseHostKeyRsaExponentLength(ECDHKeyExchangeReplyMessage msg) {
+    private void parseHostKeyRsaExponentLength(EcdhKeyExchangeReplyMessage msg) {
         msg.setExponentLength(parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH));
         LOGGER.debug("ExponentLength: " + msg.getHostKeyRsaExponentLength().getValue());
     }
 
-    private void parseHostKeyRsaExponent(ECDHKeyExchangeReplyMessage msg) {
+    private void parseHostKeyRsaExponent(EcdhKeyExchangeReplyMessage msg) {
         msg.setExponent(parseBigIntField(msg.getHostKeyRsaExponentLength().getValue()));
         LOGGER.debug("Exponent: " + msg.getHostKeyRsaExponent());
     }
 
-    private void parseHostKeyRsaModulusLength(ECDHKeyExchangeReplyMessage msg) {
+    private void parseHostKeyRsaModulusLength(EcdhKeyExchangeReplyMessage msg) {
         msg.setModulusLength(parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH));
         LOGGER.debug("ModulusLength: " + msg.getHostKeyRsaModulusLength().getValue());
     }
 
-    private void parseHostKeyRsaModulus(ECDHKeyExchangeReplyMessage msg) {
+    private void parseHostKeyRsaModulus(EcdhKeyExchangeReplyMessage msg) {
         msg.setModulus(parseBigIntField(msg.getHostKeyRsaModulusLength().getValue()));
         LOGGER.debug("Modulus: " + msg.getHostKeyRsaModulus());
     }
 
-    private void parsePublicKeyLength(ECDHKeyExchangeReplyMessage msg) {
+    private void parsePublicKeyLength(EcdhKeyExchangeReplyMessage msg) {
         msg.setPublicKeyLength(parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH));
         LOGGER.debug("PublicKeyLength: " + msg.getEphemeralPublicKeyLength().getValue());
     }
 
-    private void parsePublicKey(ECDHKeyExchangeReplyMessage msg) {
+    private void parsePublicKey(EcdhKeyExchangeReplyMessage msg) {
         msg.setPublicKey(parseByteArrayField(msg.getEphemeralPublicKeyLength().getValue()));
         LOGGER.debug("PublicKey: " + msg.getEphemeralPublicKey());
     }
 
-    private void parseSignatureLength(ECDHKeyExchangeReplyMessage msg) {
+    private void parseSignatureLength(EcdhKeyExchangeReplyMessage msg) {
         msg.setSignatureLength(parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH));
         LOGGER.debug("SignatureLength: " + msg.getSignatureLength().getValue());
     }
 
-    private void parseSignature(ECDHKeyExchangeReplyMessage msg) {
+    private void parseSignature(EcdhKeyExchangeReplyMessage msg) {
         msg.setSignature(parseByteArrayField(msg.getSignatureLength().getValue()));
         LOGGER.debug("Signature :" + msg.getSignature());
     }
 
-    private void parseEccCurveIdentifierLength(ECDHKeyExchangeReplyMessage msg) {
+    private void parseEccCurveIdentifierLength(EcdhKeyExchangeReplyMessage msg) {
         msg.setEccCurveIdentifierLength(parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH));
         LOGGER.debug("EccIdentifierLength: " + msg.getEccCurveIdentifierLength().getValue());
     }
 
-    private void parseEccCurveIdentifier(ECDHKeyExchangeReplyMessage msg) {
+    private void parseEccCurveIdentifier(EcdhKeyExchangeReplyMessage msg) {
         msg.setEccCurveIdentifier(parseByteString(msg.getEccCurveIdentifierLength().getValue()));
         LOGGER.debug("EccIdentifier: " + msg.getEccCurveIdentifier().getValue());
     }
 
-    private void parseEccHostKeyLength(ECDHKeyExchangeReplyMessage msg) {
+    private void parseEccHostKeyLength(EcdhKeyExchangeReplyMessage msg) {
         msg.setHostKeyEccLength(parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH));
         LOGGER.debug("EccHostKeyLength: " + msg.getHostKeyEccLength().getValue());
     }
 
-    private void parseEccHostKeyValue(ECDHKeyExchangeReplyMessage msg) {
+    private void parseEccHostKeyValue(EcdhKeyExchangeReplyMessage msg) {
         msg.setHostKeyEcc(parseByteArrayField(msg.getHostKeyEccLength().getValue()));
         LOGGER.debug("EccHostKey: " + msg.getHostKeyEcc());
     }
 
     @Override
-    public void parseMessageSpecificPayload(ECDHKeyExchangeReplyMessage msg) {
+    public void parseMessageSpecificPayload(EcdhKeyExchangeReplyMessage msg) {
         parseHostKeyLength(msg);
         parseHostKeyTypeLength(msg);
         parseHostKeyType(msg);
-        if (msg.getHostKeyType().getValue().equals(PublicKeyAuthenticationAlgorithm.ssh_rsa.toString())) //TODO refine logic
+        if (msg.getHostKeyType().getValue().
+                equals(PublicKeyAuthenticationAlgorithm.SSH_RSA.toString())) //TODO refine logic
         {
             parseRsaHostKey(msg);
         } else {
@@ -107,14 +108,14 @@ public class ECDHKeyExchangeReplyMessageParser extends MessageParser<ECDHKeyExch
         parseSignature(msg);
     }
 
-    private void parseEccHostKey(ECDHKeyExchangeReplyMessage msg) {
+    private void parseEccHostKey(EcdhKeyExchangeReplyMessage msg) {
         parseEccCurveIdentifierLength(msg);
         parseEccCurveIdentifier(msg);
         parseEccHostKeyLength(msg);
         parseEccHostKeyValue(msg);
     }
 
-    private void parseRsaHostKey(ECDHKeyExchangeReplyMessage msg) {
+    private void parseRsaHostKey(EcdhKeyExchangeReplyMessage msg) {
         parseHostKeyRsaExponentLength(msg);
         parseHostKeyRsaExponent(msg);
         parseHostKeyRsaModulusLength(msg);
@@ -122,7 +123,7 @@ public class ECDHKeyExchangeReplyMessageParser extends MessageParser<ECDHKeyExch
     }
 
     @Override
-    public ECDHKeyExchangeReplyMessage createMessage() {
-        return new ECDHKeyExchangeReplyMessage();
+    public EcdhKeyExchangeReplyMessage createMessage() {
+        return new EcdhKeyExchangeReplyMessage();
     }
 }

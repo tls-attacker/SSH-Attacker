@@ -1,10 +1,11 @@
 package de.rub.nds.sshattacker.protocol.handler;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.constants.EncryptionAlgorithm;
 import de.rub.nds.sshattacker.constants.CompressionAlgorithm;
 import de.rub.nds.sshattacker.constants.KeyExchangeAlgorithm;
 import de.rub.nds.sshattacker.constants.Language;
-import de.rub.nds.sshattacker.constants.MACAlgorithm;
+import de.rub.nds.sshattacker.constants.MacAlgorithm;
 import de.rub.nds.sshattacker.constants.MessageIDConstants;
 import de.rub.nds.sshattacker.constants.PublicKeyAuthenticationAlgorithm;
 import de.rub.nds.sshattacker.protocol.AlgorithmPicker;
@@ -27,8 +28,8 @@ public class KeyExchangeInitMessageHandler extends Handler<KeyExchangeInitMessag
         context.setServerSupportedHostKeyAlgorithms(Converter.StringToAlgorithms(message.getServerHostKeyAlgorithms().getValue(), PublicKeyAuthenticationAlgorithm.class));
         context.setServerSupportedCipherAlgorithmsClientToServer(Converter.StringToAlgorithms(message.getEncryptionAlgorithmsClientToServer().getValue(), EncryptionAlgorithm.class));
         context.setServerSupportedCipherAlgorithmsServerToClient(Converter.StringToAlgorithms(message.getEncryptionAlgorithmsServerToClient().getValue(), EncryptionAlgorithm.class));
-        context.setServerSupportedMacAlgorithmsClientToServer(Converter.StringToAlgorithms(message.getMacAlgorithmsClientToServer().getValue(), MACAlgorithm.class));
-        context.setServerSupportedMacAlgorithmsServerToClient(Converter.StringToAlgorithms(message.getMacAlgorithmsServerToClient().getValue(), MACAlgorithm.class));
+        context.setServerSupportedMacAlgorithmsClientToServer(Converter.StringToAlgorithms(message.getMacAlgorithmsClientToServer().getValue(), MacAlgorithm.class));
+        context.setServerSupportedMacAlgorithmsServerToClient(Converter.StringToAlgorithms(message.getMacAlgorithmsServerToClient().getValue(), MacAlgorithm.class));
         context.setServerSupportedCompressionAlgorithmsClientToServer(Converter.StringToAlgorithms(message.getCompressionAlgorithmsClientToServer().getValue(), CompressionAlgorithm.class));
         context.setServerSupportedCompressionAlgorithmsServerToClient(Converter.StringToAlgorithms(message.getCompressionAlgorithmsServerToClient().getValue(), CompressionAlgorithm.class));
         context.setServerSupportedLanguagesClientToServer(Converter.StringToAlgorithms(message.getLanguagesClientToServer().getValue(), Language.class));
@@ -37,12 +38,13 @@ public class KeyExchangeInitMessageHandler extends Handler<KeyExchangeInitMessag
 
         adjustAlgorithms();
 
-        context.appendToExchangeHashInput(Converter.concatenate(new byte[]{MessageIDConstants.SSH_MSG_KEXINIT},
+        context.appendToExchangeHashInput(ArrayConverter.concatenate(new byte[]{MessageIDConstants.SSH_MSG_KEXINIT},
                 new KeyExchangeInitMessageSerializer(message).serializeMessageSpecificPayload()));
 
     }
 
     private void adjustAlgorithms() {
+        // TODO implement enforcing of user-specified algorithms
         context.setKeyExchangeAlgorithm(
                 AlgorithmPicker.pickAlgorithm(
                         context.getClientSupportedKeyExchangeAlgorithms(),

@@ -5,7 +5,7 @@ import de.rub.nds.sshattacker.constants.CompressionAlgorithm;
 import de.rub.nds.sshattacker.constants.EncryptionAlgorithm;
 import de.rub.nds.sshattacker.constants.KeyExchangeAlgorithm;
 import de.rub.nds.sshattacker.constants.Language;
-import de.rub.nds.sshattacker.constants.MACAlgorithm;
+import de.rub.nds.sshattacker.constants.MacAlgorithm;
 import de.rub.nds.sshattacker.constants.PublicKeyAuthenticationAlgorithm;
 import java.util.List;
 
@@ -135,7 +135,7 @@ public class Chooser {
         }
     }
 
-    public List<MACAlgorithm> getClientSupportedMacAlgorithmsClientToServer() {
+    public List<MacAlgorithm> getClientSupportedMacAlgorithmsClientToServer() {
         if (context.getClientSupportedMacAlgorithmsClientToServer() != null) {
             return context.getClientSupportedMacAlgorithmsClientToServer();
         } else {
@@ -143,7 +143,7 @@ public class Chooser {
         }
     }
 
-    public List<MACAlgorithm> getClientSupportedMacAlgorithmsServerToClient() {
+    public List<MacAlgorithm> getClientSupportedMacAlgorithmsServerToClient() {
         if (context.getClientSupportedMacAlgorithmsServerToClient() != null) {
             return context.getClientSupportedMacAlgorithmsServerToClient();
         } else {
@@ -151,7 +151,7 @@ public class Chooser {
         }
     }
 
-    public List<MACAlgorithm> getServerSupportedMacAlgorithmsServerToClient() {
+    public List<MacAlgorithm> getServerSupportedMacAlgorithmsServerToClient() {
         if (context.getServerSupportedMacAlgorithmsServerToClient() != null) {
             return context.getServerSupportedMacAlgorithmsServerToClient();
         } else {
@@ -159,7 +159,7 @@ public class Chooser {
         }
     }
 
-    public List<MACAlgorithm> getServerSupportedMacAlgorithmsClientToServer() {
+    public List<MacAlgorithm> getServerSupportedMacAlgorithmsClientToServer() {
         if (context.getServerSupportedMacAlgorithmsClientToServer() != null) {
             return context.getServerSupportedMacAlgorithmsClientToServer();
         } else {

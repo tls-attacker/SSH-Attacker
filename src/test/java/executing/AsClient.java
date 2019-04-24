@@ -5,7 +5,7 @@ import de.rub.nds.sshattacker.constants.CompressionAlgorithm;
 import de.rub.nds.sshattacker.constants.EncryptionAlgorithm;
 import de.rub.nds.sshattacker.constants.KeyExchangeAlgorithm;
 import de.rub.nds.sshattacker.constants.Language;
-import de.rub.nds.sshattacker.constants.MACAlgorithm;
+import de.rub.nds.sshattacker.constants.MacAlgorithm;
 import de.rub.nds.sshattacker.constants.PublicKeyAuthenticationAlgorithm;
 import de.rub.nds.sshattacker.imported.ec_.EllipticCurveOverFp;
 import de.rub.nds.sshattacker.imported.ec_.EllipticCurveSECP256R1;
@@ -17,12 +17,12 @@ import de.rub.nds.sshattacker.protocol.layers.BinaryPacketLayer;
 import de.rub.nds.sshattacker.protocol.layers.MessageLayer;
 import de.rub.nds.sshattacker.protocol.message.BinaryPacket;
 import de.rub.nds.sshattacker.protocol.message.ClientInitMessage;
-import de.rub.nds.sshattacker.protocol.message.ECDHKeyExchangeInitMessage;
+import de.rub.nds.sshattacker.protocol.message.EcdhKeyExchangeInitMessage;
 import de.rub.nds.sshattacker.protocol.message.KeyExchangeInitMessage;
 import de.rub.nds.sshattacker.protocol.message.NewKeysMessage;
 import de.rub.nds.sshattacker.protocol.parser.ClientInitMessageParser;
 import de.rub.nds.sshattacker.protocol.preparator.ClientInitMessagePreparator;
-import de.rub.nds.sshattacker.protocol.preparator.ECDHKeyExchangeInitMessagePreparator;
+import de.rub.nds.sshattacker.protocol.preparator.EcdhKeyExchangeInitMessagePreparator;
 import de.rub.nds.sshattacker.protocol.preparator.KeyExchangeInitMessagePreparator;
 import de.rub.nds.sshattacker.protocol.serializer.ClientInitMessageSerializer;
 import de.rub.nds.sshattacker.protocol.serializer.KeyExchangeInitMessageSerializer;
@@ -59,16 +59,16 @@ public class AsClient {
         context.setClientVersion("SSH-2.0-OpenSSH_7.8");
 
         context.setClientCookie(ArrayConverter.hexStringToByteArray("00000000000000000000000000000000"));
-        context.setClientSupportedKeyExchangeAlgorithms(Arrays.asList(KeyExchangeAlgorithm.ecdh_sha2_nistp256));
-        context.setClientSupportedHostKeyAlgorithms(Arrays.asList(PublicKeyAuthenticationAlgorithm.ssh_rsa));
-        context.setClientSupportedCipherAlgorithmsClientToServer(Arrays.asList(EncryptionAlgorithm.aes128_cbc));
-        context.setClientSupportedCipherAlgorithmsServerToClient(Arrays.asList(EncryptionAlgorithm.aes128_cbc));
-        context.setClientSupportedMacAlgorithmsClientToServer(Arrays.asList(MACAlgorithm.hmac_sha1));
-        context.setClientSupportedMacAlgorithmsServerToClient(Arrays.asList(MACAlgorithm.hmac_sha1));
-        context.setClientSupportedCompressionAlgorithmsClientToServer(Arrays.asList(CompressionAlgorithm.none));
-        context.setClientSupportedCompressionAlgorithmsServerToClient(Arrays.asList(CompressionAlgorithm.none));
-        context.setClientSupportedLanguagesClientToServer(Arrays.asList(Language.none));
-        context.setClientSupportedLanguagesServerToClient(Arrays.asList(Language.none));
+        context.setClientSupportedKeyExchangeAlgorithms(Arrays.asList(KeyExchangeAlgorithm.ECDH_SHA2_NISTP256));
+        context.setClientSupportedHostKeyAlgorithms(Arrays.asList(PublicKeyAuthenticationAlgorithm.SSH_RSA));
+        context.setClientSupportedCipherAlgorithmsClientToServer(Arrays.asList(EncryptionAlgorithm.AES128_CBC));
+        context.setClientSupportedCipherAlgorithmsServerToClient(Arrays.asList(EncryptionAlgorithm.AES128_CBC));
+        context.setClientSupportedMacAlgorithmsClientToServer(Arrays.asList(MacAlgorithm.HMAC_SHA1));
+        context.setClientSupportedMacAlgorithmsServerToClient(Arrays.asList(MacAlgorithm.HMAC_SHA1));
+        context.setClientSupportedCompressionAlgorithmsClientToServer(Arrays.asList(CompressionAlgorithm.NONE));
+        context.setClientSupportedCompressionAlgorithmsServerToClient(Arrays.asList(CompressionAlgorithm.NONE));
+        context.setClientSupportedLanguagesClientToServer(Arrays.asList(Language.NONE));
+        context.setClientSupportedLanguagesServerToClient(Arrays.asList(Language.NONE));
         context.setClientFirstKeyExchangePacketFollows((byte) 0);
         context.setClientReserved(0);
 
@@ -86,7 +86,7 @@ public class AsClient {
         byte[] y = ArrayConverter.bigIntegerToByteArray(myPoint.getY().getData());
 
         // 04 -> no point compression used
-        context.setClientEcdhPublicKey(Converter.concatenate(new byte[]{04}, x, y));
+        context.setClientEcdhPublicKey(ArrayConverter.concatenate(new byte[]{04}, x, y));
         ClientInitMessage clientInit = new ClientInitMessage();
         new ClientInitMessagePreparator(context, clientInit).prepare();
 
@@ -108,8 +108,8 @@ public class AsClient {
         sendMessageHelper.sendMessages(Arrays.asList(clientKeyInit), context);
         receiveMessageHelper.receiveMessages(context);
 
-        ECDHKeyExchangeInitMessage ecdhInit = new ECDHKeyExchangeInitMessage();
-        new ECDHKeyExchangeInitMessagePreparator(context, ecdhInit).prepare();
+        EcdhKeyExchangeInitMessage ecdhInit = new EcdhKeyExchangeInitMessage();
+        new EcdhKeyExchangeInitMessagePreparator(context, ecdhInit).prepare();
 
         sendMessageHelper.sendMessages(Arrays.asList(ecdhInit), context);
         receiveMessageHelper.receiveMessages(context);

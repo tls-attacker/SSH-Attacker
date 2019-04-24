@@ -32,9 +32,12 @@ public class Converter {
 
         String[] splitted = string.split(String.valueOf(CharConstants.ALGORITHM_SEPARATOR));
         // TODO return enums or strings
-        return Arrays.stream(splitted).map(s -> Enum.valueOf(myClass, toEnumName(s)))
-                .collect(Collectors.toList());
-//        return new LinkedList();
+        // TODO java build system is strange. compiles with new LinkedList()
+        // then switching to Collectors works.
+        // directly compiling the collectors variant does not
+        //return Arrays.stream(splitted).map(s -> Enum.valueOf(myClass, toEnumName(s)))
+                //.collect(Collectors.toList());
+        return new LinkedList();
     }
 
     private static String toEnumName(String input) {
@@ -48,18 +51,18 @@ public class Converter {
     public static byte[] byteArraytoMpint(byte[] input) {
         byte[] mpint = input;
         if ((input[0] & 0x80) == 0x80) { // need to append 0 if MSB would be set (twos complement)
-            mpint = concatenate(new byte[]{0}, input);
+            mpint = ArrayConverter.concatenate(new byte[]{0}, input);
         }
         byte[] length = ArrayConverter.intToBytes(mpint.length, DataFormatConstants.MPINT_SIZE_LENGTH);
-        mpint = concatenate(length, mpint);
+        mpint = ArrayConverter.concatenate(length, mpint);
         return mpint;
     }
 
     public static byte[] stringToLengthPrefixedString(String input) {
         try {
-            return concatenate(ArrayConverter.intToBytes(input.length(), DataFormatConstants.STRING_SIZE_LENGTH), input.getBytes("ISO-8859-1"));
+            return ArrayConverter.concatenate(ArrayConverter.intToBytes(input.length(), DataFormatConstants.STRING_SIZE_LENGTH), input.getBytes("ISO-8859-1"));
         } catch (UnsupportedEncodingException e) {
-            System.out.println("Unsupported Encoding: " + e.getMessage());
+            LOGGER.warn("Unsupported Encoding: " + e.getMessage());
             return new byte[0];
         }
     }
@@ -69,7 +72,7 @@ public class Converter {
         try {
             result = new String(input, "ISO-8859-1");
         } catch (UnsupportedEncodingException e) {
-            System.out.println("Unsupported Encoding: " + e.getMessage());
+            LOGGER.warn("Unsupported Encoding: " + e.getMessage());
         }
         return result;
     }
@@ -80,35 +83,8 @@ public class Converter {
 
     public static byte[] bytesToBytesWithSignByte(byte[] input) {
         if ((input[0] & 0x80) >> 7 == 1) {
-            return concatenate(new byte[]{0x00}, input);
+            return ArrayConverter.concatenate(new byte[]{0x00}, input);
         }
         return input;
-    }
-
-    /**
-     * Concatenates an array of byte[] to one big byte[]
-     *
-     * @param arrays the array of byte[] to concatenate
-     * @return an array of byte[] as one big byte[]
-     */
-    public static byte[] concatenate(byte[]... arrays) {
-        if (arrays == null || arrays.length == 0) {
-            throw new IllegalArgumentException("The minimal number of parameters for this function is one");
-        }
-        int length = 0;
-        for (final byte[] a : arrays) {
-            if (a != null) {
-                length += a.length;
-            }
-        }
-        byte[] result = new byte[length];
-        int currentOffset = 0;
-        for (final byte[] a : arrays) {
-            if (a != null) {
-                System.arraycopy(a, 0, result, currentOffset, a.length);
-                currentOffset += a.length;
-            }
-        }
-        return result;
     }
 }

@@ -29,6 +29,7 @@ public class KeyDerivation {
     public static byte[] computeExchangeHash(byte[] input, String hashAlgorithm) {
         System.out.println(ArrayConverter.bytesToRawHexString(input));
         try {
+            //TODO remove for production
             Files.write(Paths.get("/home/spotz/git/sshlab/kex.javadump"),
                     java.util.Arrays.asList(ArrayConverter.bytesToRawHexString(input)));
         } catch (IOException e) {
@@ -49,7 +50,7 @@ public class KeyDerivation {
         byte[] clientKeyShareConverted = Converter.stringToLengthPrefixedString(clientKeyShare);
         byte[] serverKeyShareConverted = Converter.stringToLengthPrefixedString(serverKeyShare);
         byte[] keyShareConverted = Converter.byteArraytoMpint(sharedSecret);
-        byte[] input = Converter.concatenate(clientVersionConverted, serverVersionConverted, clientInitMessageConverted, serverInitMessageConverted, hostKeyConverted, clientKeyShareConverted, serverKeyShareConverted, keyShareConverted);
+        byte[] input = ArrayConverter.concatenate(clientVersionConverted, serverVersionConverted, clientInitMessageConverted, serverInitMessageConverted, hostKeyConverted, clientKeyShareConverted, serverKeyShareConverted, keyShareConverted);
         System.out.println(ArrayConverter.bytesToRawHexString(input));
 
         return getMessageDigestInstance(hashFunction).digest(input);
@@ -79,8 +80,7 @@ public class KeyDerivation {
             }
             return Arrays.copyOfRange(outStream.toByteArray(), 0, outputLen);
         } catch (NoSuchAlgorithmException e) {
-            LOGGER.error("Provider does not support this hashFunction:" + e.getMessage());
-            return new byte[0];
+            throw new RuntimeException("Provider does not support this hashFunction:" + e.getMessage());
         } catch (IOException e) {
             LOGGER.error("Error while writing: " + e.getMessage());
             return new byte[0];
