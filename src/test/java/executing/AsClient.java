@@ -28,7 +28,6 @@ import de.rub.nds.sshattacker.protocol.serializer.ClientInitMessageSerializer;
 import de.rub.nds.sshattacker.protocol.serializer.KeyExchangeInitMessageSerializer;
 import de.rub.nds.sshattacker.state.Chooser;
 import de.rub.nds.sshattacker.state.SshContext;
-import de.rub.nds.sshattacker.util.Converter;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import de.rub.nds.tlsattacker.transport.tcp.ClientTcpTransportHandler;
 import java.math.BigInteger;
