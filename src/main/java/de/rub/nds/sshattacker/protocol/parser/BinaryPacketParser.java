@@ -49,7 +49,7 @@ public class BinaryPacketParser extends Parser<BinaryPacket> {
         ModifiableByteArray mac = ModifiableVariableFactory.safelySetValue(null, parseArrayOrTillEnd(-1));
         if (mac.getValue().length == 0) {
             LOGGER.debug("MAC: none");
-            msg.setMac((byte[]) null);
+            msg.setMac(new byte[] {});
         } else {
             LOGGER.debug("MAC: " + mac);
             msg.setMac(mac);

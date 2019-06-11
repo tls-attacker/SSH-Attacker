@@ -33,11 +33,10 @@ import de.rub.nds.tlsattacker.transport.tcp.ClientTcpTransportHandler;
 import java.math.BigInteger;
 import java.security.SecureRandom;
 import java.util.Arrays;
-import org.junit.Test;
 
 public class AsClient {
 
-    @Test
+    // integration test
     public void main() throws Exception {
         BinaryPacketLayer binaryPacketLayer = new BinaryPacketLayer();
         MessageLayer messageLayer = new MessageLayer();
