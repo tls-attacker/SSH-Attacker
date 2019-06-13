@@ -43,10 +43,7 @@ public class AsClient {
 
         SshContext context = new SshContext();
         context.setChooser(new Chooser(context));
-
-        // TODO move transporthandler to Protocol-Attacker
         TransportHandler transport = new ClientTcpTransportHandler(2000, "localhost", 65222);
-        transport.initialize();
         context.setBinaryPacketLayer(binaryPacketLayer);
         context.setMessageLayer(messageLayer);
         context.setTransportHandler(transport);
@@ -91,6 +88,7 @@ public class AsClient {
         context.appendToExchangeHashInput(clientInit.getVersion().getValue().getBytes());
         byte[] toSend = new ClientInitMessageSerializer(clientInit).serialize();
 
+        transport.initialize();
         transport.sendData(toSend);
 
         byte[] response = transport.fetchData();
@@ -118,6 +116,8 @@ public class AsClient {
         bp.computePaddingLength((byte) 0);
         bp.generatePadding();
         bp.computePacketLength();
+        byte[] payload = binaryPacketLayer.serializeBinaryPackets(Arrays.asList(bp));
+        transport.sendData(payload);
         Thread.sleep(2000);
     }
 }
