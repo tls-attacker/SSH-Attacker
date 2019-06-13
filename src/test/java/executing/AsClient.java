@@ -37,7 +37,7 @@ import java.util.Arrays;
 public class AsClient {
 
     // integration test
-    public void main() throws Exception {
+    public static void main(String[] args) throws Exception {
         BinaryPacketLayer binaryPacketLayer = new BinaryPacketLayer();
         MessageLayer messageLayer = new MessageLayer();
 
