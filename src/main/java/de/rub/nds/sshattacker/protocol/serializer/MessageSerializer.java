@@ -32,20 +32,6 @@ public abstract class MessageSerializer<T extends Message> extends Serializer<Me
     // TODO implement like in TLS-attacker
     // message.getHandler.getSerializer
     public static <T extends Message> byte[] delegateSerialization(T message) {
-        switch (message.getMessageID().getValue()) {
-            case MessageIDConstants.SSH_MSG_KEXINIT:
-                return new KeyExchangeInitMessageSerializer((KeyExchangeInitMessage) message).serialize();
-            case MessageIDConstants.SSH_MSG_KEX_ECDH_INIT:
-                return new EcdhKeyExchangeInitMessageSerializer((EcdhKeyExchangeInitMessage) message).serialize();
-            case MessageIDConstants.SSH_MSG_KEX_ECDH_REPLY:
-                return new EcdhKeyExchangeReplyMessageSerializer((EcdhKeyExchangeReplyMessage) message).serialize();
-            case MessageIDConstants.SSH_MSG_NEWKEYS:
-                return new NewKeysMessageSerializer((NewKeysMessage) message).serialize();
-            default:
-                LOGGER.debug("Tried to serialize a Message with unknown MessageID " + message.getMessageID().getValue());
-                return new byte[0];
-        }
+          return message.getSerializer().serialize();
     }
-;
-
 }

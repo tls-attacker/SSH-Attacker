@@ -2,6 +2,7 @@ package de.rub.nds.sshattacker.protocol.helper;
 
 import de.rub.nds.sshattacker.protocol.layers.BinaryPacketLayer;
 import de.rub.nds.sshattacker.protocol.layers.MessageLayer;
+import de.rub.nds.sshattacker.protocol.message.ClientInitMessage;
 import de.rub.nds.sshattacker.protocol.message.Message;
 import de.rub.nds.sshattacker.state.SshContext;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
@@ -23,6 +24,16 @@ public class SendMessageHelper {
             transport.sendData(binaryPacketLayer.serializeBinaryPackets(messageLayer.serializeMessages(list)));
         } catch (IOException e) {
             LOGGER.debug("Error while sending messages" + e.getMessage());
+        }
+    }
+    
+    public void sendInitMessage(ClientInitMessage msg, SshContext context){
+        TransportHandler transport = context.getTransportHandler();
+        try{
+            transport.sendData(msg.getSerializer().serialize());
+        }
+        catch (IOException e){
+            LOGGER.debug("Error while sending ClientInitMessage" + e.getMessage());
         }
     }
 }

@@ -31,13 +31,12 @@ public class Converter {
     public static List StringToAlgorithms(String string, Class myClass) {
 
         String[] splitted = string.split(String.valueOf(CharConstants.ALGORITHM_SEPARATOR));
-        // TODO return enums or strings
-        // TODO java build system is strange. compiles with new LinkedList()
-        // then switching to Collectors works.
-        // directly compiling the collectors variant does not
-        //return Arrays.stream(splitted).map(s -> Enum.valueOf(myClass, toEnumName(s)))
-                //.collect(Collectors.toList());
-        return new LinkedList();
+        List list = new LinkedList();
+        for (String algo : splitted){
+            Enum myenum = Enum.valueOf(myClass, toEnumName(algo).toUpperCase());
+            list.add(myenum);
+        }
+        return list;
     }
 
     private static String toEnumName(String input) {

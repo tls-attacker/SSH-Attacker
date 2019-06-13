@@ -19,11 +19,11 @@ public class EcdhKeyExchangeReplyMessageHandler extends Handler<EcdhKeyExchangeR
     }
 
     @Override
-    public void handle(EcdhKeyExchangeReplyMessage message) { // TODO conditional handling of host keys
+    public void handle(EcdhKeyExchangeReplyMessage message) {
         context.setHostKeyType(message.getHostKeyType().getValue());
         context.setServerEcdhPublicKey(message.getEphemeralPublicKey().getValue());
         context.setKeyExchangeSignature(message.getSignature().getValue());
-        if (context.getHostKeyType().equals("ssh-rsa")) {
+        if (context.getHostKeyType().equals("ssh-rsa")) { // TODO refine logic
             handleRsaHostKey(message);
         } else {
             handleEccHostKey(message);
@@ -101,11 +101,6 @@ public class EcdhKeyExchangeReplyMessageHandler extends Handler<EcdhKeyExchangeR
         EllipticCurve curve = CurveFactory.getCurve(NamedGroup.SECP256R1);
         BigInteger serverX = new BigInteger(1, Arrays.copyOfRange(context.getServerEcdhPublicKey(), 1, 33));
         BigInteger serverY = new BigInteger(1, Arrays.copyOfRange(context.getServerEcdhPublicKey(), 33, 65));
-// TODO remove debug code
-//        System.out.println("ServerX");
-//        System.out.println(ArrayConverter.bytesToRawHexString(ArrayConverter.bigIntegerToByteArray(serverX)));
-//        System.out.println("ServerY");
-//        System.out.println(ArrayConverter.bytesToRawHexString(ArrayConverter.bigIntegerToByteArray(serverY)));
 
         Point serverPoint = curve.getPoint(serverX, serverY);
         Point sharedPoint = curve.mult(new BigInteger(1, context.getClientEcdhSecretKey()), serverPoint);

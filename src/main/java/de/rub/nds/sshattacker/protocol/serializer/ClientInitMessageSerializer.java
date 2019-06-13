@@ -17,8 +17,6 @@ public class ClientInitMessageSerializer extends Serializer<ClientInitMessage> {
         this.msg = msg;
     }
 
-    ;
-
     private void serializeVersion() {
         if (msg.getVersion().getValue() == null) {
             LOGGER.debug("Version: null");

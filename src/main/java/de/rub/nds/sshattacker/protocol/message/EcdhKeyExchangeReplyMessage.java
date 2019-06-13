@@ -5,8 +5,10 @@ import de.rub.nds.modifiablevariable.biginteger.ModifiableBigInteger;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
+import de.rub.nds.protocol.core.message.Serializer;
 import de.rub.nds.sshattacker.protocol.handler.EcdhKeyExchangeReplyMessageHandler;
 import de.rub.nds.sshattacker.protocol.handler.Handler;
+import de.rub.nds.sshattacker.protocol.serializer.EcdhKeyExchangeReplyMessageSerializer;
 import de.rub.nds.sshattacker.state.SshContext;
 import java.math.BigInteger;
 
@@ -230,5 +232,10 @@ public class EcdhKeyExchangeReplyMessage extends Message {
     @Override
     public Handler getHandler(SshContext context) {
         return new EcdhKeyExchangeReplyMessageHandler(context);
+    }
+
+    @Override
+    public Serializer getSerializer() {
+        return new EcdhKeyExchangeReplyMessageSerializer(this);
     }
 }

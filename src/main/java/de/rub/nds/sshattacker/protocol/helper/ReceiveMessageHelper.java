@@ -1,8 +1,11 @@
 package de.rub.nds.sshattacker.protocol.helper;
 
+import de.rub.nds.sshattacker.protocol.handler.ClientInitMessageHandler;
 import de.rub.nds.sshattacker.protocol.layers.BinaryPacketLayer;
 import de.rub.nds.sshattacker.protocol.layers.MessageLayer;
+import de.rub.nds.sshattacker.protocol.message.ClientInitMessage;
 import de.rub.nds.sshattacker.protocol.message.Message;
+import de.rub.nds.sshattacker.protocol.parser.ClientInitMessageParser;
 import de.rub.nds.sshattacker.state.SshContext;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import java.io.IOException;
@@ -26,6 +29,16 @@ public class ReceiveMessageHelper {
             });
         } catch (IOException e) {
             LOGGER.debug("Error while receiving Data " + e.getMessage());
+        }
+    }
+    
+    public void receiveInitMessage(SshContext context){
+        TransportHandler transport = context.getTransportHandler();
+        try{
+            new ClientInitMessageHandler(context).handle(new ClientInitMessageParser(0,transport.fetchData()).parse());
+        }
+        catch (IOException e){
+            LOGGER.debug("Error while receiving ClientInit" + e.getMessage());
         }
     }
 

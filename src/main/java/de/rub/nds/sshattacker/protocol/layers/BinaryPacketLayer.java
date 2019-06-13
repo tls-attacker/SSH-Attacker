@@ -20,6 +20,7 @@ public class BinaryPacketLayer {
     // TODO add encryption
     // TODO add decryption
     public List<BinaryPacket> parseBinaryPackets(byte[] raw) {
+        //TODO only parses one packet for now
         List<BinaryPacket> list = new ArrayList<>();
         BinaryPacket packet = new BinaryPacketParser(0, raw).parse();
         list.add(packet);

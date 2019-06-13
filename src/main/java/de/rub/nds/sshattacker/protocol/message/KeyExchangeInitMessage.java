@@ -5,9 +5,11 @@ import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
+import de.rub.nds.protocol.core.message.Serializer;
 import de.rub.nds.sshattacker.constants.MessageIDConstants;
 import de.rub.nds.sshattacker.protocol.handler.Handler;
 import de.rub.nds.sshattacker.protocol.handler.KeyExchangeInitMessageHandler;
+import de.rub.nds.sshattacker.protocol.serializer.KeyExchangeInitMessageSerializer;
 import de.rub.nds.sshattacker.state.SshContext;
 
 public class KeyExchangeInitMessage extends Message {
@@ -324,5 +326,10 @@ public class KeyExchangeInitMessage extends Message {
     @Override
     public Handler getHandler(SshContext context) {
         return new KeyExchangeInitMessageHandler(context);
+    }
+
+    @Override
+    public Serializer getSerializer() {
+        return new KeyExchangeInitMessageSerializer(this);
     }
 }

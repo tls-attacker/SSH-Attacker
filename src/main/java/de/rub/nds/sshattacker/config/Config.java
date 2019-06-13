@@ -32,7 +32,6 @@ public class Config implements Serializable {
         DEFAULT_CONFIG_CACHE = new ConfigCache(createConfig());
     }
 
-// BEGIN_GENERATED
     private String clientVersion;
     private String clientComment;
     private String serverVersion;
@@ -63,7 +62,6 @@ public class Config implements Serializable {
     private byte serverFirstKeyExchangePacketFollows;
     private int clientReserved;
     private int serverReserved;
-// END GENERATED
 
     private byte[] clientEcdhPublicKey;
     private byte[] serverEcdhPublicKey;
@@ -133,14 +131,6 @@ public class Config implements Serializable {
 
         clientReserved = 0;
         serverReserved = 0;
-
-//        defaultHostKeyType = PublicKeyAuthenticationAlgorithm.SSH_DSS.getValue();
-//
-//        //TODO create default private/public keypairs and store them in constants
-//        defaultRsaExponent = BigInteger.valueOf(65537);
-//        defaultRsaModulus = BigInteger.valueOf(13);
-//        defaultServerEcdhPublicKey = new byte[]{1, 2};
-//        defaultClientEcdhPublicKey = new byte[]{3, 4};
     }
 
     public static Config createConfig() {
@@ -180,7 +170,6 @@ public class Config implements Serializable {
         }
         return c;
     }
-// BEGIN_GENERATED
 
     public String getClientVersion() {
         return clientVersion;
@@ -302,7 +291,6 @@ public class Config implements Serializable {
         return serverReserved;
     }
 
-// END GENERATED
     public byte[] getClientEcdhPublicKey() {
         return clientEcdhPublicKey;
     }

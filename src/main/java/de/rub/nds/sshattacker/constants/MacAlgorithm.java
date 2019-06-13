@@ -1,7 +1,6 @@
 package de.rub.nds.sshattacker.constants;
 
 public enum MacAlgorithm {
-    // TODO are these lengths right?
     HMAC_MD5("hmac-md5", 16, 16),
     HMAC_MD5_96("hmac-md5-96", 12, 12),
     HMAC_SHA1("hmac-sha1", 20, 20),
