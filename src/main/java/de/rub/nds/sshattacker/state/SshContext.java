@@ -10,6 +10,7 @@ import de.rub.nds.sshattacker.constants.Language;
 import de.rub.nds.sshattacker.constants.MacAlgorithm;
 import de.rub.nds.sshattacker.constants.PublicKeyAuthenticationAlgorithm;
 import de.rub.nds.sshattacker.protocol.layers.BinaryPacketLayer;
+import de.rub.nds.sshattacker.protocol.layers.CryptoLayer;
 import de.rub.nds.sshattacker.protocol.layers.MessageLayer;
 import de.rub.nds.sshattacker.util.Converter;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
@@ -25,6 +26,7 @@ public class SshContext {
     private BinaryPacketLayer binaryPacketLayer;
     private MessageLayer messageLayer;
     private TransportHandler transportHandler;
+    private CryptoLayer cryptoLayer;
 
     private byte[] exchangeHashInput;
 
@@ -41,6 +43,9 @@ public class SshContext {
     private byte[] integrityKeyClientToServer;
     private byte[] integrityKeyServerToClient;
 
+    private int sequenceNumber = 0;
+    private boolean isEncryptionActive = false;
+    
     private String hostKeyType;
     private byte[] serverHostKey;
     private BigInteger hostKeyRsaExponent;
@@ -626,5 +631,37 @@ public class SshContext {
     public void setTransportHandler(TransportHandler transportHandler) {
         this.transportHandler = transportHandler;
     }
+    
+    public int getSequenceNumber() {
+        return sequenceNumber;
+    }
 
+    public void setSequenceNumber(int sequenceNumber) {
+        this.sequenceNumber = sequenceNumber;
+    }
+    
+    public void incrementSequenceNumter(int i){
+        sequenceNumber+=i;
+    }
+    
+    public void incrementSequenceNumber(){
+        incrementSequenceNumter(1);
+    }
+
+    public boolean isIsEncryptionActive() {
+        return isEncryptionActive;
+    }
+
+    public void setIsEncryptionActive(boolean isEncryptionActive) {
+        this.isEncryptionActive = isEncryptionActive;
+    }
+
+    public CryptoLayer getCryptoLayer() {
+        return cryptoLayer;
+    }
+
+    public void setCryptoLayer(CryptoLayer cryptoLayer) {
+        this.cryptoLayer = cryptoLayer;
+    }
+    
 }

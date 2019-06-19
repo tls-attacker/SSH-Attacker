@@ -10,6 +10,8 @@ public class MessageIDConstants {
     public static final byte SSH_MSG_SERVICE_ACCEPT = 6;
     public static final byte SSH_MSG_KEXINIT = 20;
     public static final byte SSH_MSG_NEWKEYS = 21;
+    public static final byte SSH_MSG_KEXDH_INIT = 30;
+    public static final byte SSH_MSG_KEXDH_REPLY = 31;
     public static final byte SSH_MSG_KEX_ECDH_INIT = 30;
     public static final byte SSH_MSG_KEX_ECDH_REPLY = 31;
     public static final byte SSH_MSG_ECMQV_INIT = 30;

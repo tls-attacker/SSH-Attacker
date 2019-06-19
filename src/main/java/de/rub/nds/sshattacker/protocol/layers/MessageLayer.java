@@ -22,15 +22,19 @@ public class MessageLayer {
         return returnList;
     }
 
-    public List<BinaryPacket> serializeMessages(List<Message> list) {
-        List<BinaryPacket> returnList = new ArrayList();
-        for (Message msg : list) {
+    public BinaryPacket serializeMessage(Message msg){
             BinaryPacket packet = new BinaryPacket();
             byte[] payload = MessageSerializer.delegateSerialization(msg);
             packet.setPayload(payload);
             packet.computePaddingLength((byte) 8);
             packet.generatePadding();
             packet.computePacketLength();
+            return packet;
+    }
+    public List<BinaryPacket> serializeMessages(List<Message> list) {
+        List<BinaryPacket> returnList = new ArrayList();
+        for (Message msg : list) {
+            BinaryPacket packet = serializeMessage(msg);
             returnList.add(packet);
         }
         return returnList;

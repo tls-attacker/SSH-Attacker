@@ -30,7 +30,9 @@ public class EcdhKeyExchangeReplyMessageHandler extends Handler<EcdhKeyExchangeR
         }
 
         adjustExchangeHash();
+        context.setSessionID(context.getExchangeHash());
         adjustKeys();
+        context.getCryptoLayer().init();
     }
 
     private void handleEccHostKey(EcdhKeyExchangeReplyMessage message) {
@@ -105,6 +107,5 @@ public class EcdhKeyExchangeReplyMessageHandler extends Handler<EcdhKeyExchangeR
         Point serverPoint = curve.getPoint(serverX, serverY);
         Point sharedPoint = curve.mult(new BigInteger(1, context.getClientEcdhSecretKey()), serverPoint);
         context.setSharedSecret(sharedPoint.getX().getData().toByteArray());
-
     }
 }

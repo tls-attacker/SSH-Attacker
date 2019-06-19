@@ -7,6 +7,8 @@ import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.protocol.core.message.Parser;
 import de.rub.nds.sshattacker.constants.BinaryPacketConstants;
 import de.rub.nds.sshattacker.protocol.message.BinaryPacket;
+import java.util.ArrayList;
+import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -65,5 +67,13 @@ public class BinaryPacketParser extends Parser<BinaryPacket> {
         parsePadding(msg);
         parseMAC(msg);
         return msg;
+    }
+    
+    public List<BinaryPacket> parseAll(){
+        List<BinaryPacket> list = new ArrayList<>();
+        while(getBytesLeft()>= BinaryPacketConstants.LENGTH_FIELD_LENGTH){
+            list.add(parse());
+        }
+        return list;
     }
 }

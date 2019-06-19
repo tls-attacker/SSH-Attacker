@@ -5,9 +5,6 @@ import de.rub.nds.sshattacker.constants.CryptoConstants;
 import de.rub.nds.sshattacker.util.Converter;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import org.apache.logging.log4j.LogManager;
@@ -27,14 +24,6 @@ public class KeyDerivation {
     }
 
     public static byte[] computeExchangeHash(byte[] input, String hashAlgorithm) {
-        System.out.println(ArrayConverter.bytesToRawHexString(input));
-        try {
-            //TODO remove for production
-            Files.write(Paths.get("/home/spotz/git/sshlab/kex.javadump"),
-                    java.util.Arrays.asList(ArrayConverter.bytesToRawHexString(input)));
-        } catch (IOException e) {
-            System.out.println(e.getMessage());
-        }
         return getMessageDigestInstance(hashAlgorithm).digest(input);
     }
 

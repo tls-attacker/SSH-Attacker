@@ -6,6 +6,7 @@ import de.rub.nds.sshattacker.constants.EncryptionAlgorithm;
 import de.rub.nds.sshattacker.constants.KeyExchangeAlgorithm;
 import de.rub.nds.sshattacker.constants.Language;
 import de.rub.nds.sshattacker.constants.MacAlgorithm;
+import de.rub.nds.sshattacker.constants.MessageIDConstants;
 import de.rub.nds.sshattacker.constants.PublicKeyAuthenticationAlgorithm;
 import de.rub.nds.sshattacker.imported.ec_.EllipticCurveOverFp;
 import de.rub.nds.sshattacker.imported.ec_.EllipticCurveSECP256R1;
@@ -14,20 +15,21 @@ import de.rub.nds.sshattacker.imported.ec_.Point;
 import de.rub.nds.sshattacker.protocol.helper.ReceiveMessageHelper;
 import de.rub.nds.sshattacker.protocol.helper.SendMessageHelper;
 import de.rub.nds.sshattacker.protocol.layers.BinaryPacketLayer;
+import de.rub.nds.sshattacker.protocol.layers.CryptoLayer;
 import de.rub.nds.sshattacker.protocol.layers.MessageLayer;
 import de.rub.nds.sshattacker.protocol.message.BinaryPacket;
 import de.rub.nds.sshattacker.protocol.message.ClientInitMessage;
 import de.rub.nds.sshattacker.protocol.message.EcdhKeyExchangeInitMessage;
 import de.rub.nds.sshattacker.protocol.message.KeyExchangeInitMessage;
 import de.rub.nds.sshattacker.protocol.message.NewKeysMessage;
-import de.rub.nds.sshattacker.protocol.parser.ClientInitMessageParser;
+import de.rub.nds.sshattacker.protocol.message.UnknownMessage;
 import de.rub.nds.sshattacker.protocol.preparator.ClientInitMessagePreparator;
 import de.rub.nds.sshattacker.protocol.preparator.EcdhKeyExchangeInitMessagePreparator;
 import de.rub.nds.sshattacker.protocol.preparator.KeyExchangeInitMessagePreparator;
-import de.rub.nds.sshattacker.protocol.serializer.ClientInitMessageSerializer;
 import de.rub.nds.sshattacker.protocol.serializer.KeyExchangeInitMessageSerializer;
 import de.rub.nds.sshattacker.state.Chooser;
 import de.rub.nds.sshattacker.state.SshContext;
+import de.rub.nds.sshattacker.util.Converter;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import de.rub.nds.tlsattacker.transport.tcp.ClientTcpTransportHandler;
 import java.math.BigInteger;
@@ -43,10 +45,13 @@ public class AsClient {
 
         SshContext context = new SshContext();
         context.setChooser(new Chooser(context));
+        CryptoLayer cryptoLayer = new CryptoLayer(context);
+
         TransportHandler transport = new ClientTcpTransportHandler(2000, "localhost", 65222);
         context.setBinaryPacketLayer(binaryPacketLayer);
         context.setMessageLayer(messageLayer);
         context.setTransportHandler(transport);
+        context.setCryptoLayer(cryptoLayer);
 
         SendMessageHelper sendMessageHelper = new SendMessageHelper();
         ReceiveMessageHelper receiveMessageHelper = new ReceiveMessageHelper();
@@ -86,15 +91,12 @@ public class AsClient {
         new ClientInitMessagePreparator(context, clientInit).prepare();
 
         context.appendToExchangeHashInput(clientInit.getVersion().getValue().getBytes());
-        byte[] toSend = new ClientInitMessageSerializer(clientInit).serialize();
 
         transport.initialize();
-        transport.sendData(toSend);
+        sendMessageHelper.sendInitMessage(clientInit, context);
 
-        byte[] response = transport.fetchData();
-
-        ClientInitMessage serverInit = new ClientInitMessageParser(0, response).parse();
-        serverInit.getHandler(context).handle(serverInit);
+        //TODO race condition occurs here, socket taking too long to respond
+        receiveMessageHelper.receiveInitMessage(context);
 
         KeyExchangeInitMessage clientKeyInit = new KeyExchangeInitMessage();
         new KeyExchangeInitMessagePreparator(context, clientKeyInit).prepare();
@@ -106,18 +108,23 @@ public class AsClient {
 
         EcdhKeyExchangeInitMessage ecdhInit = new EcdhKeyExchangeInitMessage();
         new EcdhKeyExchangeInitMessagePreparator(context, ecdhInit).prepare();
-
         sendMessageHelper.sendMessages(Arrays.asList(ecdhInit), context);
         receiveMessageHelper.receiveMessages(context);
 
-        sendMessageHelper.sendMessages(Arrays.asList(new NewKeysMessage()), context);
+        sendMessageHelper.sendMessage(new NewKeysMessage(), context);
+        context.setIsEncryptionActive(true);
 
-        BinaryPacket bp = new BinaryPacket(new byte[]{0, 1, 2, 3, 4, 5});
-        bp.computePaddingLength((byte) 0);
-        bp.generatePadding();
-        bp.computePacketLength();
-        byte[] payload = binaryPacketLayer.serializeBinaryPackets(Arrays.asList(bp));
-        transport.sendData(payload);
-        Thread.sleep(2000);
+        UnknownMessage serviceRequest = new UnknownMessage(MessageIDConstants.SSH_MSG_SERVICE_REQUEST, Converter.stringToLengthPrefixedString("ssh-userauth"));
+        sendMessageHelper.sendMessage(serviceRequest, context);
+        receiveMessageHelper.receiveMessages(context);
+        
+        byte[] ukPayload = ArrayConverter.concatenate(Converter.stringToLengthPrefixedString("spotz"), 
+                Converter.stringToLengthPrefixedString("ssh-connection"),
+                Converter.stringToLengthPrefixedString("none"));
+        UnknownMessage userAuthRequest = new UnknownMessage(MessageIDConstants.SSH_MSG_USERAUTH_REQUEST, ukPayload);
+        sendMessageHelper.sendMessage(userAuthRequest, context);
+//        receiveMessageHelper.receiveMessages(context);
+        
+        Thread.sleep(10000);
     }
 }

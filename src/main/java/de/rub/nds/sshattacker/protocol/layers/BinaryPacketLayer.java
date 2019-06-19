@@ -17,14 +17,18 @@ public class BinaryPacketLayer {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    // TODO add encryption
-    // TODO add decryption
     public List<BinaryPacket> parseBinaryPackets(byte[] raw) {
-        //TODO only parses one packet for now
-        List<BinaryPacket> list = new ArrayList<>();
-        BinaryPacket packet = new BinaryPacketParser(0, raw).parse();
-        list.add(packet);
-        return list;
+        return new BinaryPacketParser(0, raw).parseAll();
+    }
+    
+    public byte[] serializeBinaryPacket(BinaryPacket packet){
+        ByteArrayOutputStream serialized = new ByteArrayOutputStream();
+        try {
+                serialized.write(new BinaryPacketSerializer(packet).serialize());
+            } catch (IOException e) {
+                LOGGER.debug("Error while writing to ByteArrayOutputStream " + e.getMessage());
+            }
+        return serialized.toByteArray();
     }
 
     public byte[] serializeBinaryPackets(List<BinaryPacket> list) {
@@ -32,7 +36,7 @@ public class BinaryPacketLayer {
 
         for (BinaryPacket packet : list) {
             try {
-                serialized.write(new BinaryPacketSerializer(packet).serialize());
+                serialized.write(serializeBinaryPacket(packet));
             } catch (IOException e) {
                 LOGGER.debug("Error while writing to ByteArrayOutputStream " + e.getMessage());
             }

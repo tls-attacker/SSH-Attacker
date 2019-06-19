@@ -40,7 +40,7 @@ public abstract class MessageParser<T extends Message> extends Parser<T> {
             case MessageIDConstants.SSH_MSG_NEWKEYS:
                 return new NewKeysMessageParser(0, raw).parse();
             default:
-                LOGGER.debug("Received unknown Message with MessageID " + raw[0]);
+                LOGGER.debug("Received unknown Message with MessageID " + raw[0] + " ");
                 return new UnknownMessageParser(0, raw).parse();
         }
     }

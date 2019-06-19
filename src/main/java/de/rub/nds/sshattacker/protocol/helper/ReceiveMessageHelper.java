@@ -1,7 +1,7 @@
 package de.rub.nds.sshattacker.protocol.helper;
 
-import de.rub.nds.sshattacker.protocol.handler.ClientInitMessageHandler;
 import de.rub.nds.sshattacker.protocol.layers.BinaryPacketLayer;
+import de.rub.nds.sshattacker.protocol.layers.CryptoLayer;
 import de.rub.nds.sshattacker.protocol.layers.MessageLayer;
 import de.rub.nds.sshattacker.protocol.message.ClientInitMessage;
 import de.rub.nds.sshattacker.protocol.message.Message;
@@ -21,9 +21,10 @@ public class ReceiveMessageHelper {
         TransportHandler transportHandler = context.getTransportHandler();
         BinaryPacketLayer binaryPacketLayer = context.getBinaryPacketLayer();
         MessageLayer messageLayer = context.getMessageLayer();
+        CryptoLayer cryptoLayer = context.getCryptoLayer();
 
         try {
-            List<Message> messages = messageLayer.parseMessages(binaryPacketLayer.parseBinaryPackets(transportHandler.fetchData()));
+            List<Message> messages = messageLayer.parseMessages(binaryPacketLayer.parseBinaryPackets(cryptoLayer.decryptAndCopyMac(transportHandler.fetchData())));
             messages.forEach(message -> {
                 message.getHandler(context).handle(message);
             });
@@ -35,7 +36,9 @@ public class ReceiveMessageHelper {
     public void receiveInitMessage(SshContext context){
         TransportHandler transport = context.getTransportHandler();
         try{
-            new ClientInitMessageHandler(context).handle(new ClientInitMessageParser(0,transport.fetchData()).parse());
+            byte[] response = transport.fetchData();
+            ClientInitMessage serverInit = new ClientInitMessageParser(0, response).parse();
+             serverInit.getHandler(context).handle(serverInit);
         }
         catch (IOException e){
             LOGGER.debug("Error while receiving ClientInit" + e.getMessage());
