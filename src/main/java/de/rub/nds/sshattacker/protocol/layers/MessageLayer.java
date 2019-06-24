@@ -4,6 +4,7 @@ import de.rub.nds.sshattacker.protocol.message.BinaryPacket;
 import de.rub.nds.sshattacker.protocol.message.Message;
 import de.rub.nds.sshattacker.protocol.parser.MessageParser;
 import de.rub.nds.sshattacker.protocol.serializer.MessageSerializer;
+import de.rub.nds.sshattacker.state.SshContext;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
@@ -12,6 +13,11 @@ import org.apache.logging.log4j.Logger;
 public class MessageLayer {
 
     private static final Logger LOGGER = LogManager.getLogger();
+    private SshContext context;
+    
+    public MessageLayer(SshContext context){
+        this.context = context;
+    }
 
     public List<Message> parseMessages(List<BinaryPacket> list) {
         List<Message> returnList = new ArrayList<>();
@@ -26,7 +32,11 @@ public class MessageLayer {
             BinaryPacket packet = new BinaryPacket();
             byte[] payload = MessageSerializer.delegateSerialization(msg);
             packet.setPayload(payload);
-            packet.computePaddingLength((byte) 8);
+            byte blocksize = 8;
+            if (context.getCipherAlgorithmClientToServer() != null){
+                blocksize = (byte) context.getCipherAlgorithmClientToServer().getBlockSize();
+            }
+            packet.computePaddingLength(blocksize);
             packet.generatePadding();
             packet.computePacketLength();
             return packet;

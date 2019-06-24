@@ -17,7 +17,6 @@ import de.rub.nds.sshattacker.protocol.helper.SendMessageHelper;
 import de.rub.nds.sshattacker.protocol.layers.BinaryPacketLayer;
 import de.rub.nds.sshattacker.protocol.layers.CryptoLayer;
 import de.rub.nds.sshattacker.protocol.layers.MessageLayer;
-import de.rub.nds.sshattacker.protocol.message.BinaryPacket;
 import de.rub.nds.sshattacker.protocol.message.ClientInitMessage;
 import de.rub.nds.sshattacker.protocol.message.EcdhKeyExchangeInitMessage;
 import de.rub.nds.sshattacker.protocol.message.KeyExchangeInitMessage;
@@ -41,11 +40,12 @@ public class AsClient {
     // integration test
     public static void main(String[] args) throws Exception {
         BinaryPacketLayer binaryPacketLayer = new BinaryPacketLayer();
-        MessageLayer messageLayer = new MessageLayer();
 
         SshContext context = new SshContext();
         context.setChooser(new Chooser(context));
         CryptoLayer cryptoLayer = new CryptoLayer(context);
+        MessageLayer messageLayer = new MessageLayer(context);
+
 
         TransportHandler transport = new ClientTcpTransportHandler(2000, "localhost", 65222);
         context.setBinaryPacketLayer(binaryPacketLayer);
@@ -114,17 +114,39 @@ public class AsClient {
         sendMessageHelper.sendMessage(new NewKeysMessage(), context);
         context.setIsEncryptionActive(true);
 
-        UnknownMessage serviceRequest = new UnknownMessage(MessageIDConstants.SSH_MSG_SERVICE_REQUEST, Converter.stringToLengthPrefixedString("ssh-userauth"));
+        UnknownMessage serviceRequest = new UnknownMessage(MessageIDConstants.SSH_MSG_SERVICE_REQUEST,
+                Converter.stringToLengthPrefixedString("ssh-userauth"));
         sendMessageHelper.sendMessage(serviceRequest, context);
         receiveMessageHelper.receiveMessages(context);
         
-        byte[] ukPayload = ArrayConverter.concatenate(Converter.stringToLengthPrefixedString("spotz"), 
+        byte[] ukPayload = ArrayConverter.concatenate(Converter.stringToLengthPrefixedString("sshattack"), 
                 Converter.stringToLengthPrefixedString("ssh-connection"),
-                Converter.stringToLengthPrefixedString("none"));
+                Converter.stringToLengthPrefixedString("password"),
+                new byte[] {0},
+                Converter.stringToLengthPrefixedString("bydahirsch")
+        );
         UnknownMessage userAuthRequest = new UnknownMessage(MessageIDConstants.SSH_MSG_USERAUTH_REQUEST, ukPayload);
         sendMessageHelper.sendMessage(userAuthRequest, context);
-//        receiveMessageHelper.receiveMessages(context);
+        receiveMessageHelper.receiveMessages(context);
         
-        Thread.sleep(10000);
+        receiveMessageHelper.receiveMessages(context); // Server Global Request
+        
+        UnknownMessage channelOpen = new UnknownMessage(MessageIDConstants.SSH_MSG_CHANNEL_OPEN, ArrayConverter.concatenate(
+        Converter.stringToLengthPrefixedString("session"), ArrayConverter.intToBytes(1337, 4), ArrayConverter.intToBytes(Integer.MAX_VALUE, 4),
+                ArrayConverter.intToBytes(Integer.MAX_VALUE, 4)));
+        sendMessageHelper.sendMessage(channelOpen, context);
+        receiveMessageHelper.receiveMessages(context);
+        
+        UnknownMessage netcat = new UnknownMessage(MessageIDConstants.SSH_MSG_CHANNEL_REQUEST,
+                ArrayConverter.concatenate(ArrayConverter.intToBytes(0, 4),
+                Converter.stringToLengthPrefixedString("exec"), new byte[] {0},
+                Converter.stringToLengthPrefixedString("nc -l -p 13370")));
+        sendMessageHelper.sendMessage(netcat, context);
+        receiveMessageHelper.receiveMessages(context);
+//        
+//        while (true){
+//            receiveMessageHelper.receiveMessages(context);
+//        }
+        Thread.sleep(60* 1000);
     }
 }
