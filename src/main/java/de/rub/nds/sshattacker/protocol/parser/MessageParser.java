@@ -3,6 +3,8 @@ package de.rub.nds.sshattacker.protocol.parser;
 import de.rub.nds.protocol.core.message.Parser;
 import de.rub.nds.sshattacker.constants.MessageIDConstants;
 import de.rub.nds.sshattacker.protocol.message.Message;
+import de.rub.nds.sshattacker.protocol.message.ServiceAcceptMessage;
+import de.rub.nds.sshattacker.protocol.message.ServiceRequestMessage;
 import org.apache.logging.log4j.LogManager;
 
 public abstract class MessageParser<T extends Message> extends Parser<T> {
@@ -39,6 +41,10 @@ public abstract class MessageParser<T extends Message> extends Parser<T> {
                 return new EcdhKeyExchangeReplyMessageParser(0, raw).parse();
             case MessageIDConstants.SSH_MSG_NEWKEYS:
                 return new NewKeysMessageParser(0, raw).parse();
+            case MessageIDConstants.SSH_MSG_SERVICE_REQUEST:
+                return new ServiceRequestMessageParser(0, raw).parse();
+            case MessageIDConstants.SSH_MSG_SERVICE_ACCEPT:
+                return new ServiceAcceptMessageParser(0, raw).parse();
             default:
                 LOGGER.debug("Received unknown Message with MessageID " + raw[0] + " ");
                 return new UnknownMessageParser(0, raw).parse();

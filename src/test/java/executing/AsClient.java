@@ -21,6 +21,7 @@ import de.rub.nds.sshattacker.protocol.message.ClientInitMessage;
 import de.rub.nds.sshattacker.protocol.message.EcdhKeyExchangeInitMessage;
 import de.rub.nds.sshattacker.protocol.message.KeyExchangeInitMessage;
 import de.rub.nds.sshattacker.protocol.message.NewKeysMessage;
+import de.rub.nds.sshattacker.protocol.message.ServiceRequestMessage;
 import de.rub.nds.sshattacker.protocol.message.UnknownMessage;
 import de.rub.nds.sshattacker.protocol.preparator.ClientInitMessagePreparator;
 import de.rub.nds.sshattacker.protocol.preparator.EcdhKeyExchangeInitMessagePreparator;
@@ -114,8 +115,7 @@ public class AsClient {
         sendMessageHelper.sendMessage(new NewKeysMessage(), context);
         context.setIsEncryptionActive(true);
 
-        UnknownMessage serviceRequest = new UnknownMessage(MessageIDConstants.SSH_MSG_SERVICE_REQUEST,
-                Converter.stringToLengthPrefixedString("ssh-userauth"));
+        ServiceRequestMessage serviceRequest = new ServiceRequestMessage("ssh-userauth");
         sendMessageHelper.sendMessage(serviceRequest, context);
         receiveMessageHelper.receiveMessages(context);
         
