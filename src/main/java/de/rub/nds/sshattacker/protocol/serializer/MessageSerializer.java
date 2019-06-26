@@ -14,7 +14,7 @@ public abstract class MessageSerializer<T extends Message> extends Serializer<Me
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private final T msg;
+    protected final T msg;
 
     public MessageSerializer(T msg) {
         this.msg = msg;

@@ -7,7 +7,7 @@ import de.rub.nds.sshattacker.protocol.handler.Handler;
 import de.rub.nds.sshattacker.state.SshContext;
 
 public abstract class Message {
-
+    
     protected ModifiableByte messageID;
 
     public ModifiableByte getMessageID() {

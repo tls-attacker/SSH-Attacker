@@ -17,12 +17,16 @@ import de.rub.nds.sshattacker.protocol.helper.SendMessageHelper;
 import de.rub.nds.sshattacker.protocol.layers.BinaryPacketLayer;
 import de.rub.nds.sshattacker.protocol.layers.CryptoLayer;
 import de.rub.nds.sshattacker.protocol.layers.MessageLayer;
+import de.rub.nds.sshattacker.protocol.message.ChannelDataMessage;
+import de.rub.nds.sshattacker.protocol.message.ChannelOpenMessage;
+import de.rub.nds.sshattacker.protocol.message.ChannelRequestMessage;
 import de.rub.nds.sshattacker.protocol.message.ClientInitMessage;
 import de.rub.nds.sshattacker.protocol.message.EcdhKeyExchangeInitMessage;
 import de.rub.nds.sshattacker.protocol.message.KeyExchangeInitMessage;
 import de.rub.nds.sshattacker.protocol.message.NewKeysMessage;
 import de.rub.nds.sshattacker.protocol.message.ServiceRequestMessage;
 import de.rub.nds.sshattacker.protocol.message.UnknownMessage;
+import de.rub.nds.sshattacker.protocol.message.UserauthPasswordMessage;
 import de.rub.nds.sshattacker.protocol.preparator.ClientInitMessagePreparator;
 import de.rub.nds.sshattacker.protocol.preparator.EcdhKeyExchangeInitMessagePreparator;
 import de.rub.nds.sshattacker.protocol.preparator.KeyExchangeInitMessagePreparator;
@@ -119,34 +123,40 @@ public class AsClient {
         sendMessageHelper.sendMessage(serviceRequest, context);
         receiveMessageHelper.receiveMessages(context);
         
-        byte[] ukPayload = ArrayConverter.concatenate(Converter.stringToLengthPrefixedString("sshattack"), 
-                Converter.stringToLengthPrefixedString("ssh-connection"),
-                Converter.stringToLengthPrefixedString("password"),
-                new byte[] {0},
-                Converter.stringToLengthPrefixedString("bydahirsch")
-        );
-        UnknownMessage userAuthRequest = new UnknownMessage(MessageIDConstants.SSH_MSG_USERAUTH_REQUEST, ukPayload);
-        sendMessageHelper.sendMessage(userAuthRequest, context);
+        UserauthPasswordMessage userauthRequest = new UserauthPasswordMessage();
+        userauthRequest.setUsername("sshattack");
+        userauthRequest.setServicename("ssh-connection");
+        userauthRequest.setExpectResponse((byte) 0);
+        userauthRequest.setPassword("bydahirsch");
+        
+        sendMessageHelper.sendMessage(userauthRequest, context);
         receiveMessageHelper.receiveMessages(context);
         
         receiveMessageHelper.receiveMessages(context); // Server Global Request
         
-        UnknownMessage channelOpen = new UnknownMessage(MessageIDConstants.SSH_MSG_CHANNEL_OPEN, ArrayConverter.concatenate(
-        Converter.stringToLengthPrefixedString("session"), ArrayConverter.intToBytes(1337, 4), ArrayConverter.intToBytes(Integer.MAX_VALUE, 4),
-                ArrayConverter.intToBytes(Integer.MAX_VALUE, 4)));
-        sendMessageHelper.sendMessage(channelOpen, context);
+        ChannelOpenMessage sessionOpen = new ChannelOpenMessage();
+        sessionOpen.setChannelType("session");
+        sessionOpen.setSenderChannel(1337);
+        sessionOpen.setWindowSize(Integer.MAX_VALUE);
+        sessionOpen.setPacketSize(Integer.MAX_VALUE);
+        
+        sendMessageHelper.sendMessage(sessionOpen, context);
         receiveMessageHelper.receiveMessages(context);
         
-        UnknownMessage netcat = new UnknownMessage(MessageIDConstants.SSH_MSG_CHANNEL_REQUEST,
-                ArrayConverter.concatenate(ArrayConverter.intToBytes(0, 4),
-                Converter.stringToLengthPrefixedString("exec"), new byte[] {0},
-                Converter.stringToLengthPrefixedString("nc -l -p 13370")));
+        ChannelRequestMessage netcat = new ChannelRequestMessage();
+        netcat.setRecipientChannel(0);
+        netcat.setRequestType("exec");
+        netcat.setReplyWanted((byte) 0);
+        netcat.setPayload(Converter.stringToLengthPrefixedString("nc -l -p 13370"));
+
         sendMessageHelper.sendMessage(netcat, context);
         receiveMessageHelper.receiveMessages(context);
-//        
-//        while (true){
-//            receiveMessageHelper.receiveMessages(context);
-//        }
-        Thread.sleep(60* 1000);
+//      
+        while (true){
+            receiveMessageHelper.receiveMessages(context);
+            Thread.sleep(2000);
+//            sendMessageHelper.sendMessage(new ChannelDataMessage(0, "Slept".getBytes()), context);
+        }
+//        Thread.sleep(60* 1000);
     }
 }

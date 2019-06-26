@@ -10,7 +10,7 @@ public enum EncryptionAlgorithm {
     AES256_CTR("aes256-ctr", 32, 16),
     AES128_GCM_OPENSSH_COM("aes128-gcm@openssh.com", 16, 16),
     AES256_GCM_OPENSSH_COM("aes256-gcm@openssh.com", 32, 16),
-    CHACHA20_POLY1305_OPENSSH_COM("chacha20-poly1305@openssh.com", 64, 0), // todo find keylength
+    CHACHA20_POLY1305_OPENSSH_COM("chacha20-poly1305@openssh.com", 64, 0), // TODO find keylength
     RIJNDAEL_CBC_LYSATOR_LIU_SE("rijndael-cbc@lysator.liu.se", 16, 16);
 
     private final String name;
