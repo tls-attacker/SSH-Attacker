@@ -17,7 +17,7 @@ public class ChannelDataMessageSerializer extends MessageSerializer<ChannelDataM
     protected byte[] serializeMessageSpecificPayload() {
         LOGGER.debug("recipientChannel: " + msg.getRecipientChannel().getValue());
         appendInt(msg.getRecipientChannel().getValue(), DataFormatConstants.INT32_SIZE);
-        LOGGER.debug("data: " + msg.getData().getValue());
+        LOGGER.debug("data: " + new String(msg.getData().getValue()));
         appendBytes(msg.getData().getValue());
         return getAlreadySerialized();
     }

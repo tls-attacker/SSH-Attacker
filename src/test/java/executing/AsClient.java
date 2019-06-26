@@ -155,7 +155,7 @@ public class AsClient {
         while (true){
             receiveMessageHelper.receiveMessages(context);
             Thread.sleep(2000);
-//            sendMessageHelper.sendMessage(new ChannelDataMessage(0, "Slept".getBytes()), context);
+            sendMessageHelper.sendMessage(new ChannelDataMessage(0, "Slept".getBytes()), context);
         }
 //        Thread.sleep(60* 1000);
     }

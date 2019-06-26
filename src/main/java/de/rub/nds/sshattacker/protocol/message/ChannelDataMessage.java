@@ -20,6 +20,7 @@ public class ChannelDataMessage extends Message {
     }
     
     public ChannelDataMessage(int recipientChannel, byte[] data){
+        this();
         this.recipientChannel = ModifiableVariableFactory.safelySetValue(this.recipientChannel, recipientChannel);
         this.data = ModifiableVariableFactory.safelySetValue(this.data, data);
     }
