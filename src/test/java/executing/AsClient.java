@@ -151,11 +151,11 @@ public class AsClient {
 
         sendMessageHelper.sendMessage(netcat, context);
         receiveMessageHelper.receiveMessages(context);
-//      
+        
         while (true){
-            receiveMessageHelper.receiveMessages(context);
-            Thread.sleep(2000);
             sendMessageHelper.sendMessage(new ChannelDataMessage(0, "Slept".getBytes()), context);
+            receiveMessageHelper.receiveMessages(context);
+            Thread.sleep(1000);
         }
 //        Thread.sleep(60* 1000);
     }

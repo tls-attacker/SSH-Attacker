@@ -1,6 +1,8 @@
 package de.rub.nds.sshattacker.protocol.layers;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.sshattacker.constants.BinaryPacketConstants;
+import de.rub.nds.sshattacker.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.state.SshContext;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
@@ -18,106 +20,120 @@ import org.apache.logging.log4j.Logger;
 public class CryptoLayer {
 
     private SshContext context;
-    
+
     private static final Logger LOGGER = LogManager.getLogger();
-        
+
     private Cipher encryption;
     private Cipher decryption;
-    
+
     private Mac mac;
     private Mac verify;
-    
-    public CryptoLayer(SshContext context){
+
+    public CryptoLayer(SshContext context) {
         this.context = context;
     }
-    
-    public void init(){
+
+    public void init() {
         initCiphers();
         initMacs();
     }
-    
-    private void initCiphers(){
-        try{
-        encryption = Cipher.getInstance("AES/CBC/NoPadding");
-        Key encryptionKey = new SecretKeySpec(context.getEncryptionKeyClientToServer(), "AES");
-        IvParameterSpec encryptionIV = new IvParameterSpec(context.getInitialIvClientToServer());
-        encryption.init(Cipher.ENCRYPT_MODE, encryptionKey, encryptionIV);
-        
-        decryption = Cipher.getInstance("AES/CBC/NoPadding");
-        Key decryptionKey = new SecretKeySpec(context.getEncryptionKeyServerToClient(), "AES");
-        IvParameterSpec decryptionIV = new IvParameterSpec(context.getInitialIvServerToClient());
-        decryption.init(Cipher.DECRYPT_MODE, decryptionKey, decryptionIV);
-        }
-        catch (NoSuchAlgorithmException e){
+
+    private void initCiphers() {
+        try {
+            encryption = Cipher.getInstance("AES/CBC/NoPadding");
+            Key encryptionKey = new SecretKeySpec(context.getEncryptionKeyClientToServer(), "AES");
+            IvParameterSpec encryptionIV = new IvParameterSpec(context.getInitialIvClientToServer());
+            encryption.init(Cipher.ENCRYPT_MODE, encryptionKey, encryptionIV);
+
+            decryption = Cipher.getInstance("AES/CBC/NoPadding");
+            Key decryptionKey = new SecretKeySpec(context.getEncryptionKeyServerToClient(), "AES");
+            IvParameterSpec decryptionIV = new IvParameterSpec(context.getInitialIvServerToClient());
+            decryption.init(Cipher.DECRYPT_MODE, decryptionKey, decryptionIV);
+        } catch (NoSuchAlgorithmException e) {
             LOGGER.warn("Provider does not support this algorithm. " + e.getMessage());
-        }
-        catch (NoSuchPaddingException e){
+        } catch (NoSuchPaddingException e) {
             LOGGER.warn("Provider does not support this padding. " + e.getMessage());
-        }
-        catch (InvalidKeyException e){
+        } catch (InvalidKeyException e) {
             LOGGER.warn("Keys does not correspond to used cipher. " + e.getMessage());
-        }
-        catch (InvalidAlgorithmParameterException e){
+        } catch (InvalidAlgorithmParameterException e) {
             LOGGER.warn(e.getMessage());
         }
     }
-    
-    private void initMacs(){
-        try{
-        mac = Mac.getInstance("HMacSHA1");
-        Key macKey = new SecretKeySpec(context.getIntegrityKeyClientToServer(), "HMac-SHA1");
-        mac.init(macKey);
-        
-        verify = Mac.getInstance("HMacSHA1");
-        Key verifyKey = new SecretKeySpec(context.getIntegrityKeyServerToClient(), "HMac-SHA1");
-        verify.init(verifyKey);
-        }
-        catch (NoSuchAlgorithmException e){
+
+    private void initMacs() {
+        try {
+            mac = Mac.getInstance("HMacSHA1");
+            Key macKey = new SecretKeySpec(context.getIntegrityKeyClientToServer(), "HMac-SHA1");
+            mac.init(macKey);
+
+            verify = Mac.getInstance("HMacSHA1");
+            Key verifyKey = new SecretKeySpec(context.getIntegrityKeyServerToClient(), "HMac-SHA1");
+            verify.init(verifyKey);
+        } catch (NoSuchAlgorithmException e) {
             LOGGER.warn("HMac is not supported. " + e.getMessage());
-        }
-        catch (InvalidKeyException e){
+        } catch (InvalidKeyException e) {
             LOGGER.warn("Key is not suitable for this Mac. " + e.getMessage());
         }
     }
-    
+
     // TODO only supports aes-128-cbc, hmac-sha1
-    public byte[] decryptBinaryPacket(byte[] raw){
-        byte[] result = decryption.update(raw);
-        return result;
+    public byte[] decrypt(byte[] raw) {
+        return decryption.update(raw);
     }
-    
-    public byte[] encryptBinaryPacket(byte[] raw){
-        byte[] result = encryption.update(raw);
-        return result;
+
+    public byte[] encrypt(byte[] raw) {
+        return encryption.update(raw);
     }
-    
+
     // mac = MAC(key, sequence_number || unencrypted_packet)
-    public byte[] computeMac(byte[] raw){
+    public byte[] computeMac(byte[] raw) {
         byte[] byteSequenceNumber = ArrayConverter.intToBytes(context.getSequenceNumber(), 4);
         byte[] toMac = ArrayConverter.concatenate(byteSequenceNumber, raw);
         return mac.doFinal(toMac);
     }
-    
-    public byte[] macAndEncrypt(byte[] packet){
-        if (context.isIsEncryptionActive()){
-            return ArrayConverter.concatenate(encryptBinaryPacket(packet),
+
+    public byte[] macAndEncrypt(byte[] packet) {
+        if (context.isIsEncryptionActive()) {
+            return ArrayConverter.concatenate(encrypt(packet),
                     computeMac(packet));
-        }
-        else{
+        } else {
             return packet;
         }
     }
-    
-    public byte[] decryptAndCopyMac(byte[] raw){
-        if (context.isIsEncryptionActive()){
-            int macStart = raw.length-context.getMacAlgorithmClientToServer().getOutputSize();
-            byte[] macced = Arrays.copyOfRange(raw, macStart, raw.length);
-            byte[] toDecrypt = Arrays.copyOfRange(raw, 0, macStart);
-            byte[] decrypted = decryptBinaryPacket(toDecrypt);
-            byte[] result = ArrayConverter.concatenate(decrypted, macced);
+
+    public byte[] decryptBinaryPacket(byte[] raw) {
+            byte[] firstBlock = Arrays.copyOfRange(raw, 0,
+                    context.getCipherAlgorithmServerToClient().getBlockSize());
+
+            byte[] decryptedFirstBlock = decrypt(firstBlock);
+            int packetLength = ArrayConverter.bytesToInt(
+                    Arrays.copyOfRange(decryptedFirstBlock, 0, DataFormatConstants.INT32_SIZE));
+
+//            int macStart = raw.length-context.getMacAlgorithmClientToServer().getOutputSize();
+            int macStart = BinaryPacketConstants.LENGTH_FIELD_LENGTH + packetLength;
+            int macEnd = macStart + context.getMacAlgorithmServerToClient().getOutputSize();
+            byte[] macced = Arrays.copyOfRange(raw, macStart, macEnd);
+            byte[] toDecrypt = Arrays.copyOfRange(raw, context.getCipherAlgorithmServerToClient().getBlockSize(), macStart);
+            byte[] decrypted = decrypt(toDecrypt);
+            byte[] result = ArrayConverter.concatenate(decryptedFirstBlock, decrypted, macced);
             return result;
-        }
-        else{
+    }
+
+    public byte[] decryptBinaryPackets(byte[] raw) {
+        if (context.isIsEncryptionActive()) {
+            
+            return decryptBinaryPacket(raw);
+            byte[] toDecrypt = raw;
+            byte[] completeDecrypted = new byte[0];
+
+            while (toDecrypt.length >= context.getCipherAlgorithmServerToClient().getBlockSize() +
+                    context.getMacAlgorithmServerToClient().getOutputSize()) {
+                byte[] decrypted = decryptBinaryPacket(raw);
+                completeDecrypted = ArrayConverter.concatenate(completeDecrypted, decrypted);
+                toDecrypt = Arrays.copyOfRange(toDecrypt, decrypted.length, toDecrypt.length);
+            }
+            return completeDecrypted;
+        } else {
             return raw;
         }
     }

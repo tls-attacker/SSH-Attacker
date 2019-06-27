@@ -24,10 +24,16 @@ public class ReceiveMessageHelper {
         CryptoLayer cryptoLayer = context.getCryptoLayer();
 
         try {
-            List<Message> messages = messageLayer.parseMessages(binaryPacketLayer.parseBinaryPackets(cryptoLayer.decryptAndCopyMac(transportHandler.fetchData())));
+            byte[] data = transportHandler.fetchData();
+            if (data.length != 0) {
+                List<Message> messages = messageLayer.parseMessages(binaryPacketLayer.parseBinaryPackets(cryptoLayer.decryptBinaryPackets(data)));
             messages.forEach(message -> {
                 message.getHandler(context).handle(message);
             });
+            }
+            else{
+                LOGGER.debug("TransportHandler does not have data.");
+            }
         } catch (IOException e) {
             LOGGER.debug("Error while receiving Data " + e.getMessage());
         }
