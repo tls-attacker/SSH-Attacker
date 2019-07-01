@@ -65,6 +65,18 @@ public class Config implements Serializable {
 
     private byte[] clientEcdhPublicKey;
     private byte[] serverEcdhPublicKey;
+    
+    private String serviceType;
+    private String username;
+    private String password;
+    private int localChannel;
+    private int remoteChannel;
+    private int windowSize;
+    private int packetSize;
+    private String channelType;
+    private String channelRequestType;
+    private String channelCommand;
+    private byte replyWanted;
 
     /**
      * Default Connection to use when running as Client
@@ -78,7 +90,7 @@ public class Config implements Serializable {
 
     private RunningModeType defaultRunningMode = RunningModeType.CLIENT;
 
-    Config() {
+    public Config() {
         defaultClientConnection = new OutboundConnection("client", 22, "localhost");
         defaultServerConnection = new InboundConnection("server", 22);
         clientVersion = "SSH-2.0-OpenSSH_7.8";
@@ -131,6 +143,17 @@ public class Config implements Serializable {
 
         clientReserved = 0;
         serverReserved = 0;
+        
+        serviceType = "exec";
+        username = "sshattack";
+        password = "bydahirsch";
+        localChannel = 0;
+        remoteChannel = 0;
+        windowSize = Integer.MAX_VALUE;
+        packetSize = Integer.MAX_VALUE;
+        channelType = "session";
+        channelCommand = "nc -l -p 13370";
+        replyWanted = 0;
     }
 
     public static Config createConfig() {
@@ -306,4 +329,117 @@ public class Config implements Serializable {
     public void setServerEcdhPublicKey(byte[] serverEcdhPublicKey) {
         this.serverEcdhPublicKey = serverEcdhPublicKey;
     }
+
+    public String getServiceType() {
+        return serviceType;
+    }
+
+    public void setServiceType(String serviceType) {
+        this.serviceType = serviceType;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public int getLocalChannel() {
+        return localChannel;
+    }
+
+    public void setLocalChannel(int localChannel) {
+        this.localChannel = localChannel;
+    }
+
+    public int getWindowSize() {
+        return windowSize;
+    }
+
+    public void setWindowSize(int windowSize) {
+        this.windowSize = windowSize;
+    }
+
+    public int getPacketSize() {
+        return packetSize;
+    }
+
+    public void setPacketSize(int packetSize) {
+        this.packetSize = packetSize;
+    }
+
+    public String getChannelType() {
+        return channelType;
+    }
+
+    public void setChannelType(String channelType) {
+        this.channelType = channelType;
+    }
+
+    public String getChannelCommand() {
+        return channelCommand;
+    }
+
+    public void setChannelCommand(String channelCommand) {
+        this.channelCommand = channelCommand;
+    }
+
+    public byte getReplyWanted() {
+        return replyWanted;
+    }
+
+    public void setReplyWanted(byte replyWanted) {
+        this.replyWanted = replyWanted;
+    }
+
+    public OutboundConnection getDefaultClientConnection() {
+        return defaultClientConnection;
+    }
+
+    public void setDefaultClientConnection(OutboundConnection defaultClientConnection) {
+        this.defaultClientConnection = defaultClientConnection;
+    }
+
+    public InboundConnection getDefaultServerConnection() {
+        return defaultServerConnection;
+    }
+
+    public void setDefaultServerConnection(InboundConnection defaultServerConnection) {
+        this.defaultServerConnection = defaultServerConnection;
+    }
+
+    public RunningModeType getDefaultRunningMode() {
+        return defaultRunningMode;
+    }
+
+    public void setDefaultRunningMode(RunningModeType defaultRunningMode) {
+        this.defaultRunningMode = defaultRunningMode;
+    }
+
+    public String getChannelRequestType() {
+        return channelRequestType;
+    }
+
+    public void setChannelRequestType(String channelRequestType) {
+        this.channelRequestType = channelRequestType;
+    }
+
+    public int getRemoteChannel() {
+        return remoteChannel;
+    }
+
+    public void setRemoteChannel(int remoteChannel) {
+        this.remoteChannel = remoteChannel;
+    }
+    
 }

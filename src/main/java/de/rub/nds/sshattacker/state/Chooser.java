@@ -278,4 +278,87 @@ public class Chooser {
             return config.getServerEcdhPublicKey();
         }
     }
+
+    public String getUsername() {
+        if (context.getUsername() != null) {
+            return context.getUsername();
+        } else {
+            return config.getUsername();
+        }
+    }
+
+    public String getPassword() {
+        if (context.getUsername() != null) {
+            return context.getPassword();
+        } else {
+            return config.getPassword();
+        }
+    }
+
+    public byte getReplyWanted() {
+        return 0;
+        if (context.getReplyWanted() != 0) {
+            return context.getReplyWanted();
+        } else {
+            return config.getReplyWanted();
+        }
+    }
+
+    public int getLocalChannel() {
+        return 0;
+        if (context.getLocalChannel() != 0) {
+            return context.getLocalChannel();
+        } else {
+            return config.getLocalChannel();
+        }
+    }
+    
+    public String getChannelType() {
+        if (context.getChannelType() != null){
+            return context.getChannelType();
+        } else {
+            return config.getChannelType();
+        }
+    }
+    
+    public int getWindowSize() {
+        if (context.getWindowSize() != 0){
+            return context.getWindowSize();
+        } else {
+            return config.getWindowSize();
+        }
+    }
+    
+    public int getPacketSize() {
+        if (context.getPacketSize() != 0){
+            return context.getPacketSize();
+        } else {
+            return config.getPacketSize();
+        }
+    }
+    
+    public String getRequestType() {
+        if (context.getChannelRequestType() != null){
+            return context.getChannelRequestType();
+        } else {
+            return config.getChannelRequestType();
+        }
+    }
+    
+    public String getChannelCommand() {
+        if (context.getChannelCommand() != null){
+            return context.getChannelCommand();
+        } else {
+            return config.getChannelCommand();
+        }
+    }
+    
+    public int getRemoteChannel() {
+        return 0;
+        if (context.getRemoteChannel() != 0){
+            return context.getRemoteChannel();
+        } else {
+            return config.getRemoteChannel();
+        }
+    }
 }

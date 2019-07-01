@@ -74,7 +74,6 @@ public class SshContext {
     private Language languageClientToServer;
     private Language languageServerToClient;
 
-// BEGIN_GENERATED
     private String clientVersion;
     private String clientComment;
     private String serverVersion;
@@ -105,6 +104,18 @@ public class SshContext {
     private Byte serverFirstKeyExchangePacketFollows;
     private Integer clientReserved;
     private Integer serverReserved;
+    
+    private String serviceType;
+    private String username;
+    private String password;
+    private int localChannel;
+    private int remoteChannel;
+    private int windowSize;
+    private int packetSize;
+    private String channelType;
+    private String channelRequestType;
+    private String channelCommand;
+    private byte replyWanted;
 
     public String getClientVersion() {
         return clientVersion;
@@ -346,7 +357,6 @@ public class SshContext {
         this.serverReserved = serverReserved;
     }
 
-// END_GENERATED
     public SshContext(Config config, AliasedConnection connection) {
         this.config = config;
         this.connection = connection;
@@ -663,5 +673,92 @@ public class SshContext {
     public void setCryptoLayer(CryptoLayer cryptoLayer) {
         this.cryptoLayer = cryptoLayer;
     }
-    
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public int getLocalChannel() {
+        return localChannel;
+    }
+
+    public void setLocalChannel(int localChannel) {
+        this.localChannel = localChannel;
+    }
+
+    public int getWindowSize() {
+        return windowSize;
+    }
+
+    public void setWindowSize(int windowSize) {
+        this.windowSize = windowSize;
+    }
+
+    public int getPacketSize() {
+        return packetSize;
+    }
+
+    public void setPacketSize(int packetSize) {
+        this.packetSize = packetSize;
+    }
+
+    public String getChannelType() {
+        return channelType;
+    }
+
+    public void setChannelType(String channelType) {
+        this.channelType = channelType;
+    }
+
+    public String getChannelCommand() {
+        return channelCommand;
+    }
+
+    public void setChannelCommand(String channelCommand) {
+        this.channelCommand = channelCommand;
+    }
+
+    public byte getReplyWanted() {
+        return replyWanted;
+    }
+
+    public void setReplyWanted(byte replyWanted) {
+        this.replyWanted = replyWanted;
+    }
+
+    public String getServiceType() {
+        return serviceType;
+    }
+
+    public void setServiceType(String serviceType) {
+        this.serviceType = serviceType;
+    }
+
+    public String getChannelRequestType() {
+        return channelRequestType;
+    }
+
+    public void setChannelRequestType(String channelRequestType) {
+        this.channelRequestType = channelRequestType;
+    }
+
+    public int getRemoteChannel() {
+        return remoteChannel;
+    }
+
+    public void setRemoteChannel(int remoteChannel) {
+        this.remoteChannel = remoteChannel;
+    }
 }

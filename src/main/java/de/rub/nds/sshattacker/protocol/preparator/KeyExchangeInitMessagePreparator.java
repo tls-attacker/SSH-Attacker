@@ -1,7 +1,6 @@
 package de.rub.nds.sshattacker.protocol.preparator;
 
 import de.rub.nds.sshattacker.protocol.message.KeyExchangeInitMessage;
-import de.rub.nds.sshattacker.protocol.serializer.KeyExchangeInitMessageSerializer;
 import de.rub.nds.sshattacker.state.SshContext;
 import de.rub.nds.sshattacker.util.Converter;
 

@@ -109,32 +109,28 @@ public class CryptoLayer {
             int packetLength = ArrayConverter.bytesToInt(
                     Arrays.copyOfRange(decryptedFirstBlock, 0, DataFormatConstants.INT32_SIZE));
 
-//            int macStart = raw.length-context.getMacAlgorithmClientToServer().getOutputSize();
             int macStart = BinaryPacketConstants.LENGTH_FIELD_LENGTH + packetLength;
             int macEnd = macStart + context.getMacAlgorithmServerToClient().getOutputSize();
-            byte[] macced = Arrays.copyOfRange(raw, macStart, macEnd);
+            byte[] macced = Arrays.copyOfRange(raw, macStart, macEnd);// TODO sometimes throws outOfBoundsException... Except when singlestep debugging
             byte[] toDecrypt = Arrays.copyOfRange(raw, context.getCipherAlgorithmServerToClient().getBlockSize(), macStart);
             byte[] decrypted = decrypt(toDecrypt);
             byte[] result = ArrayConverter.concatenate(decryptedFirstBlock, decrypted, macced);
             return result;
     }
 
-    public byte[] decryptBinaryPackets(byte[] raw) {
+    public byte[] decryptBinaryPackets(byte[] toDecrypt) {
         if (context.isIsEncryptionActive()) {
-            
-            return decryptBinaryPacket(raw);
-            byte[] toDecrypt = raw;
             byte[] completeDecrypted = new byte[0];
 
             while (toDecrypt.length >= context.getCipherAlgorithmServerToClient().getBlockSize() +
                     context.getMacAlgorithmServerToClient().getOutputSize()) {
-                byte[] decrypted = decryptBinaryPacket(raw);
+                byte[] decrypted = decryptBinaryPacket(toDecrypt);
                 completeDecrypted = ArrayConverter.concatenate(completeDecrypted, decrypted);
                 toDecrypt = Arrays.copyOfRange(toDecrypt, decrypted.length, toDecrypt.length);
             }
             return completeDecrypted;
         } else {
-            return raw;
+            return toDecrypt;
         }
     }
 }

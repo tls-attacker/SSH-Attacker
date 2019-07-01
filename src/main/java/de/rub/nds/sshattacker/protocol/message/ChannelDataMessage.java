@@ -63,5 +63,4 @@ public class ChannelDataMessage extends Message {
     public Serializer getSerializer() {
         return new ChannelDataMessageSerializer(this);
     }
-
 }

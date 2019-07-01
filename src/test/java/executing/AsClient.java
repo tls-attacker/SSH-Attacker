@@ -6,7 +6,6 @@ import de.rub.nds.sshattacker.constants.EncryptionAlgorithm;
 import de.rub.nds.sshattacker.constants.KeyExchangeAlgorithm;
 import de.rub.nds.sshattacker.constants.Language;
 import de.rub.nds.sshattacker.constants.MacAlgorithm;
-import de.rub.nds.sshattacker.constants.MessageIDConstants;
 import de.rub.nds.sshattacker.constants.PublicKeyAuthenticationAlgorithm;
 import de.rub.nds.sshattacker.imported.ec_.EllipticCurveOverFp;
 import de.rub.nds.sshattacker.imported.ec_.EllipticCurveSECP256R1;
@@ -25,15 +24,16 @@ import de.rub.nds.sshattacker.protocol.message.EcdhKeyExchangeInitMessage;
 import de.rub.nds.sshattacker.protocol.message.KeyExchangeInitMessage;
 import de.rub.nds.sshattacker.protocol.message.NewKeysMessage;
 import de.rub.nds.sshattacker.protocol.message.ServiceRequestMessage;
-import de.rub.nds.sshattacker.protocol.message.UnknownMessage;
 import de.rub.nds.sshattacker.protocol.message.UserauthPasswordMessage;
+import de.rub.nds.sshattacker.protocol.preparator.ChannelOpenMessagePreparator;
+import de.rub.nds.sshattacker.protocol.preparator.ChannelRequestMessagePreparator;
 import de.rub.nds.sshattacker.protocol.preparator.ClientInitMessagePreparator;
 import de.rub.nds.sshattacker.protocol.preparator.EcdhKeyExchangeInitMessagePreparator;
 import de.rub.nds.sshattacker.protocol.preparator.KeyExchangeInitMessagePreparator;
+import de.rub.nds.sshattacker.protocol.preparator.UserauthPasswordMessagePreparator;
 import de.rub.nds.sshattacker.protocol.serializer.KeyExchangeInitMessageSerializer;
 import de.rub.nds.sshattacker.state.Chooser;
 import de.rub.nds.sshattacker.state.SshContext;
-import de.rub.nds.sshattacker.util.Converter;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import de.rub.nds.tlsattacker.transport.tcp.ClientTcpTransportHandler;
 import java.math.BigInteger;
@@ -48,6 +48,7 @@ public class AsClient {
 
         SshContext context = new SshContext();
         context.setChooser(new Chooser(context));
+//        context.setConfig(new Config());
         CryptoLayer cryptoLayer = new CryptoLayer(context);
         MessageLayer messageLayer = new MessageLayer(context);
 
@@ -76,6 +77,17 @@ public class AsClient {
         context.setClientSupportedLanguagesServerToClient(Arrays.asList(Language.NONE));
         context.setClientFirstKeyExchangePacketFollows((byte) 0);
         context.setClientReserved(0);
+        
+        context.setUsername("sshattack");
+        context.setPassword("bydahirsch");
+        context.setChannelType("session");
+        context.setChannelCommand("nc -l -p 13370");
+        context.setLocalChannel(1337);
+        context.setReplyWanted((byte) 0);
+        context.setWindowSize(Integer.MAX_VALUE);
+        context.setPacketSize(Integer.MAX_VALUE);
+        context.setChannelRequestType("exec");
+        context.setRemoteChannel(0);
 
         EllipticCurveOverFp secp256r1 = new EllipticCurveSECP256R1();
 
@@ -124,39 +136,29 @@ public class AsClient {
         receiveMessageHelper.receiveMessages(context);
         
         UserauthPasswordMessage userauthRequest = new UserauthPasswordMessage();
-        userauthRequest.setUsername("sshattack");
-        userauthRequest.setServicename("ssh-connection");
-        userauthRequest.setExpectResponse((byte) 0);
-        userauthRequest.setPassword("bydahirsch");
+        new UserauthPasswordMessagePreparator(context, userauthRequest).prepare();
         
         sendMessageHelper.sendMessage(userauthRequest, context);
         receiveMessageHelper.receiveMessages(context);
         
-        receiveMessageHelper.receiveMessages(context); // Server Global Request
+        receiveMessageHelper.receiveMessages(context); // Server Global Request no idea what this is
         
         ChannelOpenMessage sessionOpen = new ChannelOpenMessage();
-        sessionOpen.setChannelType("session");
-        sessionOpen.setSenderChannel(1337);
-        sessionOpen.setWindowSize(Integer.MAX_VALUE);
-        sessionOpen.setPacketSize(Integer.MAX_VALUE);
+        new ChannelOpenMessagePreparator(context, sessionOpen).prepare();
         
         sendMessageHelper.sendMessage(sessionOpen, context);
         receiveMessageHelper.receiveMessages(context);
         
         ChannelRequestMessage netcat = new ChannelRequestMessage();
-        netcat.setRecipientChannel(0);
-        netcat.setRequestType("exec");
-        netcat.setReplyWanted((byte) 0);
-        netcat.setPayload(Converter.stringToLengthPrefixedString("nc -l -p 13370"));
+        new ChannelRequestMessagePreparator(context, netcat).prepare();
 
         sendMessageHelper.sendMessage(netcat, context);
         receiveMessageHelper.receiveMessages(context);
         
         while (true){
-            sendMessageHelper.sendMessage(new ChannelDataMessage(0, "Slept".getBytes()), context);
+            sendMessageHelper.sendMessage(new ChannelDataMessage(0, "Awaiting next line\n".getBytes()), context);
             receiveMessageHelper.receiveMessages(context);
             Thread.sleep(1000);
         }
-//        Thread.sleep(60* 1000);
     }
 }
