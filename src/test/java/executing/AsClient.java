@@ -36,6 +36,9 @@ import de.rub.nds.sshattacker.state.Chooser;
 import de.rub.nds.sshattacker.state.SshContext;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import de.rub.nds.tlsattacker.transport.tcp.ClientTcpTransportHandler;
+import java.io.BufferedReader;
+import java.io.Console;
+import java.io.InputStreamReader;
 import java.math.BigInteger;
 import java.security.SecureRandom;
 import java.util.Arrays;
@@ -155,10 +158,12 @@ public class AsClient {
         sendMessageHelper.sendMessage(netcat, context);
         receiveMessageHelper.receiveMessages(context);
         
+        BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
         while (true){
-            sendMessageHelper.sendMessage(new ChannelDataMessage(0, "Awaiting next line\n".getBytes()), context);
+            Thread.sleep(5000);
             receiveMessageHelper.receiveMessages(context);
-            Thread.sleep(1000);
+            String read = in.readLine();
+            sendMessageHelper.sendMessage(new ChannelDataMessage(0, (read + "\n").getBytes()), context);
         }
     }
 }
