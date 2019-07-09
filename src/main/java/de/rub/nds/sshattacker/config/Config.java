@@ -142,14 +142,15 @@ public class Config implements Serializable {
         clientReserved = 0;
         serverReserved = 0;
 
-        serviceType = "exec";
-        username = "sshattack";
+//        serviceType = "exec";
+        username = "sshattacker";
         password = "bydahirsch";
         localChannel = 1337;
         remoteChannel = 0;
         windowSize = Integer.MAX_VALUE;
         packetSize = Integer.MAX_VALUE;
         channelType = "session";
+        channelRequestType = "exec";
         channelCommand = "nc -l -p 13370";
         replyWanted = 0;
     }

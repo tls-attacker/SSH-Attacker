@@ -18,7 +18,7 @@ public class ClientInitMessageSerializer extends Serializer<ClientInitMessage> {
     }
 
     private void serializeVersion() {
-        if (msg.getVersion().getValue() == null) {
+        if (msg.getVersion().getValue() == "") {
             LOGGER.debug("Version: null");
         } else {
             LOGGER.debug("Version: " + msg.getVersion().getValue());
@@ -27,7 +27,7 @@ public class ClientInitMessageSerializer extends Serializer<ClientInitMessage> {
     }
 
     private void serializeComment() {
-        if (msg.getComment().getValue() == null) {
+        if (msg.getComment().getValue() == "") {
             LOGGER.debug("Comment: null");
         } else {
             LOGGER.debug("Comment: " + msg.getComment().getValue());

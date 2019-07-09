@@ -106,7 +106,9 @@ public class EcdhKeyExchangeReplyMessageHandler extends Handler<EcdhKeyExchangeR
 
         // TODO apply ASN1 sign coding to all bignums
         context.appendToExchangeHashInput(Converter.bytesToBytesWithSignByte(context.getSharedSecret()));
+        LOGGER.debug("ExchangeHash Input: " + ArrayConverter.bytesToRawHexString(context.getExchangeHashInput()));
         context.setExchangeHash(KeyDerivation.computeExchangeHash(context.getExchangeHashInput(), hashAlgorithm));
+        LOGGER.debug("ExchangeHash " + ArrayConverter.bytesToRawHexString(context.getExchangeHash()));
     }
 
     private void computeSharedSecret() {

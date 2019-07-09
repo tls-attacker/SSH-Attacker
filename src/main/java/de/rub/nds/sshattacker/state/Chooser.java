@@ -293,20 +293,20 @@ public class Chooser {
 
     public byte getReplyWanted() {
         return 0;
-        if (context.getReplyWanted() != 0) {
-            return context.getReplyWanted();
-        } else {
-            return config.getReplyWanted();
-        }
+//        if (context.getReplyWanted() != 0) {
+//            return context.getReplyWanted();
+//        } else {
+//            return config.getReplyWanted();
+//        }
     }
 
     public int getLocalChannel() {
         return 0;
-        if (context.getLocalChannel() != 0) {
-            return context.getLocalChannel();
-        } else {
-            return config.getLocalChannel();
-        }
+//        if (context.getLocalChannel() != 0) {
+//            return context.getLocalChannel();
+//        } else {
+//            return config.getLocalChannel();
+//        }
     }
     
     public String getChannelType() {
@@ -333,7 +333,7 @@ public class Chooser {
         }
     }
     
-    public String getRequestType() {
+    public String getChannelRequestType() {
         if (context.getChannelRequestType() != null){
             return context.getChannelRequestType();
         } else {
@@ -351,10 +351,10 @@ public class Chooser {
     
     public int getRemoteChannel() {
         return 0;
-        if (context.getRemoteChannel() != 0){
-            return context.getRemoteChannel();
-        } else {
-            return config.getRemoteChannel();
-        }
+//        if (context.getRemoteChannel() != 0){
+//            return context.getRemoteChannel();
+//        } else {
+//            return config.getRemoteChannel();
+//        }
     }
 }

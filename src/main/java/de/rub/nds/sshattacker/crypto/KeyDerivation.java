@@ -35,8 +35,13 @@ BigInteger serverX = new BigInteger(1, java.util.Arrays.copyOfRange(publicKey, 1
         BigInteger serverY = new BigInteger(1, java.util.Arrays.copyOfRange(publicKey, 33, 65));
         Point serverPoint = curve.getPoint(serverX, serverY);
         Point sharedPoint = curve.mult(new BigInteger(1, secretKey), serverPoint);
-        return sharedPoint.getX().getData().toByteArray();
-//        return Arrays.copyOfRange(sharedPoint.getX().getData().toByteArray(), 1, sharedPoint.getX().getData().toByteArray().length);
+        byte[] sharedSecret = sharedPoint.getX().getData().toByteArray();
+        
+        // remove leading 0 byte
+        if (sharedSecret.length > 32){
+            sharedSecret = Arrays.copyOfRange(sharedSecret, 1, sharedSecret.length);
+        }
+        return sharedSecret;
 }
 
     public static byte[] computeExchangeHash(byte[] input, String hashAlgorithm) {
@@ -56,7 +61,6 @@ BigInteger serverX = new BigInteger(1, java.util.Arrays.copyOfRange(publicKey, 1
         byte[] serverKeyShareConverted = Converter.stringToLengthPrefixedString(serverKeyShare);
         byte[] keyShareConverted = Converter.byteArraytoMpint(sharedSecret);
         byte[] input = ArrayConverter.concatenate(clientVersionConverted, serverVersionConverted, clientInitMessageConverted, serverInitMessageConverted, hostKeyConverted, clientKeyShareConverted, serverKeyShareConverted, keyShareConverted);
-        System.out.println(ArrayConverter.bytesToRawHexString(input));
 
         return getMessageDigestInstance(hashFunction).digest(input);
     }
