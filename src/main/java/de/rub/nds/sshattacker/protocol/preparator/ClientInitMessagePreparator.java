@@ -15,7 +15,7 @@ public class ClientInitMessagePreparator extends Preparator<ClientInitMessage> {
 
     @Override
     public void prepare() {
-        message.setVersion(context.getClientVersion());
-        message.setComment(context.getClientComment());
+        message.setVersion(context.getChooser().getClientVersion());
+        message.setComment(context.getChooser().getClientComment());
     }
 }
