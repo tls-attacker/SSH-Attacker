@@ -26,12 +26,10 @@ public class Config implements Serializable {
 
     private static final String DEFAULT_CONFIG_FILE = "/default_config.xml";
 
-    private static final ConfigCache DEFAULT_CONFIG_CACHE;
-
-    static {
-        DEFAULT_CONFIG_CACHE = new ConfigCache(createConfig());
-    }
-
+//    private static final ConfigCache DEFAULT_CONFIG_CACHE;
+//    static {
+//        DEFAULT_CONFIG_CACHE = new ConfigCache(createConfig());
+//    }
     private String clientVersion;
     private String clientComment;
     private String serverVersion;
@@ -65,7 +63,7 @@ public class Config implements Serializable {
 
     private byte[] clientEcdhPublicKey;
     private byte[] serverEcdhPublicKey;
-    
+
     private String serviceType;
     private String username;
     private String password;
@@ -91,27 +89,27 @@ public class Config implements Serializable {
     private RunningModeType defaultRunningMode = RunningModeType.CLIENT;
 
     public Config() {
+
         defaultClientConnection = new OutboundConnection("client", 22, "localhost");
         defaultServerConnection = new InboundConnection("server", 22);
         clientVersion = "SSH-2.0-OpenSSH_7.8";
         clientComment = "";
-        serverVersion = "SSH-2.0-libssh_0.7.0";
-        serverComment = "";
-        clientCookie = ArrayConverter.hexStringToByteArray("0000000000000000");
+        serverVersion = clientVersion;
+        serverComment = clientComment;
+        clientCookie = ArrayConverter.hexStringToByteArray("00000000000000000000000000000000");
 
         clientSupportedKeyExchangeAlgorithms = new LinkedList<>();
-        clientSupportedKeyExchangeAlgorithms.add(KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP1_SHA1);
-        clientSupportedKeyExchangeAlgorithms.add(KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP14_SHA1);
+        clientSupportedKeyExchangeAlgorithms.add(KeyExchangeAlgorithm.ECDH_SHA2_NISTP256);
 
         serverSupportedKeyExchangeAlgorithms = new LinkedList<>(clientSupportedKeyExchangeAlgorithms);
 
         clientSupportedHostKeyAlgorithms = new LinkedList<>();
-        clientSupportedHostKeyAlgorithms.add(PublicKeyAuthenticationAlgorithm.SSH_DSS);
+        clientSupportedHostKeyAlgorithms.add(PublicKeyAuthenticationAlgorithm.SSH_RSA);
 
         serverSupportedHostKeyAlgorithms = new LinkedList<>(clientSupportedHostKeyAlgorithms);
 
         clientSupportedCipherAlgorithmsClientToServer = new LinkedList<>();
-        clientSupportedCipherAlgorithmsClientToServer.add(EncryptionAlgorithm.TDES_CBC);
+        clientSupportedCipherAlgorithmsClientToServer.add(EncryptionAlgorithm.AES128_CBC);
         clientSupportedCipherAlgorithmsServerToClient = new LinkedList<>(clientSupportedCipherAlgorithmsClientToServer);
 
         serverSupportedCipherAlgorithmsClientToServer = new LinkedList<>(clientSupportedCipherAlgorithmsClientToServer);
@@ -143,11 +141,11 @@ public class Config implements Serializable {
 
         clientReserved = 0;
         serverReserved = 0;
-        
+
         serviceType = "exec";
         username = "sshattack";
         password = "bydahirsch";
-        localChannel = 0;
+        localChannel = 1337;
         remoteChannel = 0;
         windowSize = Integer.MAX_VALUE;
         packetSize = Integer.MAX_VALUE;
@@ -156,14 +154,13 @@ public class Config implements Serializable {
         replyWanted = 0;
     }
 
-    public static Config createConfig() {
-        if (DEFAULT_CONFIG_CACHE != null) {
-            return DEFAULT_CONFIG_CACHE.getCachedCopy();
-        }
-        InputStream stream = Config.class.getResourceAsStream(DEFAULT_CONFIG_FILE);
-        return ConfigIO.read(stream);
-    }
-
+//    public static Config createConfig() {
+//        if (DEFAULT_CONFIG_CACHE != null) {
+//            return DEFAULT_CONFIG_CACHE.getCachedCopy();
+//        }
+//        InputStream stream = Config.class.getResourceAsStream(DEFAULT_CONFIG_FILE);
+//        return ConfigIO.read(stream);
+//    }
     public static Config createConfig(File f) {
         return ConfigIO.read(f);
     }
@@ -441,5 +438,4 @@ public class Config implements Serializable {
     public void setRemoteChannel(int remoteChannel) {
         this.remoteChannel = remoteChannel;
     }
-    
 }
