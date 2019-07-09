@@ -2,9 +2,14 @@ package de.rub.nds.sshattacker.crypto;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.constants.CryptoConstants;
+import de.rub.nds.sshattacker.imported.ec_.CurveFactory;
+import de.rub.nds.sshattacker.imported.ec_.EllipticCurve;
+import de.rub.nds.sshattacker.imported.ec_.NamedGroup;
+import de.rub.nds.sshattacker.imported.ec_.Point;
 import de.rub.nds.sshattacker.util.Converter;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import org.apache.logging.log4j.LogManager;
@@ -22,6 +27,17 @@ public class KeyDerivation {
         X25519.scalarMult(secretKey, 0, publicKey, 0, sharedKey, 0);
         return sharedKey;
     }
+    
+    public static byte[] DheNistP256(byte[] secretKey, byte[] publicKey){
+        EllipticCurve curve = CurveFactory.getCurve(NamedGroup.SECP256R1);
+        // skip asn1 byte
+BigInteger serverX = new BigInteger(1, java.util.Arrays.copyOfRange(publicKey, 1, 33));
+        BigInteger serverY = new BigInteger(1, java.util.Arrays.copyOfRange(publicKey, 33, 65));
+        Point serverPoint = curve.getPoint(serverX, serverY);
+        Point sharedPoint = curve.mult(new BigInteger(1, secretKey), serverPoint);
+        return sharedPoint.getX().getData().toByteArray();
+//        return Arrays.copyOfRange(sharedPoint.getX().getData().toByteArray(), 1, sharedPoint.getX().getData().toByteArray().length);
+}
 
     public static byte[] computeExchangeHash(byte[] input, String hashAlgorithm) {
         return getMessageDigestInstance(hashAlgorithm).digest(input);

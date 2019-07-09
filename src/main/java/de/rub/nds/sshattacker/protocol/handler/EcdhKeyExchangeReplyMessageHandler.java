@@ -11,9 +11,14 @@ import de.rub.nds.sshattacker.state.SshContext;
 import de.rub.nds.sshattacker.util.Converter;
 import java.math.BigInteger;
 import java.util.Arrays;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class EcdhKeyExchangeReplyMessageHandler extends Handler<EcdhKeyExchangeReplyMessage> {
 
+    private static final Logger LOGGER = LogManager.getLogger();
+
+    
     public EcdhKeyExchangeReplyMessageHandler(SshContext context) {
         super(context);
     }
@@ -68,11 +73,18 @@ public class EcdhKeyExchangeReplyMessageHandler extends Handler<EcdhKeyExchangeR
         }
 
         context.setInitialIvClientToServer(KeyDerivation.deriveKey(context.getSharedSecret(), context.getExchangeHash(), (byte) 'A', context.getSessionID(), context.getCipherAlgorithmClientToServer().getBlockSize(), hashAlgorithm));
+        LOGGER.debug("Key A: " + ArrayConverter.bytesToRawHexString(context.getInitialIvClientToServer()));
         context.setInitialIvServerToClient(KeyDerivation.deriveKey(context.getSharedSecret(), context.getExchangeHash(), (byte) 'B', context.getSessionID(), context.getCipherAlgorithmServerToClient().getBlockSize(), hashAlgorithm));
+        LOGGER.debug("Key B: " + ArrayConverter.bytesToRawHexString(context.getInitialIvServerToClient()));
         context.setEncryptionKeyClientToServer(KeyDerivation.deriveKey(context.getSharedSecret(), context.getExchangeHash(), (byte) 'C', context.getSessionID(), context.getCipherAlgorithmClientToServer().getKeySize(), hashAlgorithm));
+        LOGGER.debug("Key C: " + ArrayConverter.bytesToRawHexString(context.getEncryptionKeyClientToServer()));
         context.setEncryptionKeyServerToClient(KeyDerivation.deriveKey(context.getSharedSecret(), context.getExchangeHash(), (byte) 'D', context.getSessionID(), context.getCipherAlgorithmServerToClient().getKeySize(), hashAlgorithm));
+        LOGGER.debug("Key D: " + ArrayConverter.bytesToRawHexString(context.getEncryptionKeyServerToClient()));
         context.setIntegrityKeyClientToServer(KeyDerivation.deriveKey(context.getSharedSecret(), context.getExchangeHash(), (byte) 'E', context.getSessionID(), context.getMacAlgorithmClientToServer().getKeySize(), hashAlgorithm));
+        LOGGER.debug("Key E: " + ArrayConverter.bytesToRawHexString(context.getIntegrityKeyClientToServer()));
         context.setIntegrityKeyServerToClient(KeyDerivation.deriveKey(context.getSharedSecret(), context.getExchangeHash(), (byte) 'A', context.getSessionID(), context.getMacAlgorithmServerToClient().getKeySize(), hashAlgorithm));
+        LOGGER.debug("Key F: " + ArrayConverter.bytesToRawHexString(context.getIntegrityKeyServerToClient()));
+
     }
 
     private void adjustExchangeHash() {
@@ -98,14 +110,8 @@ public class EcdhKeyExchangeReplyMessageHandler extends Handler<EcdhKeyExchangeR
     }
 
     private void computeSharedSecret() {
-        // skip asn1 byte
-
-        EllipticCurve curve = CurveFactory.getCurve(NamedGroup.SECP256R1);
-        BigInteger serverX = new BigInteger(1, Arrays.copyOfRange(context.getServerEcdhPublicKey(), 1, 33));
-        BigInteger serverY = new BigInteger(1, Arrays.copyOfRange(context.getServerEcdhPublicKey(), 33, 65));
-
-        Point serverPoint = curve.getPoint(serverX, serverY);
-        Point sharedPoint = curve.mult(new BigInteger(1, context.getClientEcdhSecretKey()), serverPoint);
-        context.setSharedSecret(sharedPoint.getX().getData().toByteArray());
+        byte[] sharedSecret = KeyDerivation.DheNistP256(context.getClientEcdhSecretKey(), context.getServerEcdhPublicKey());
+        context.setSharedSecret(sharedSecret);
+        LOGGER.debug("SharedSecret: " + ArrayConverter.bytesToRawHexString(context.getSharedSecret()));
     }
 }
