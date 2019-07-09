@@ -14,13 +14,9 @@ public class Chooser {
     private SshContext context;
     private Config config;
 
-    public Chooser(SshContext context, Config config) {
-        this.context = context;
-        this.config = config;
-    }
-
     public Chooser(SshContext context) {
         this.context = context;
+        config = context.getConfig();
     }
 
     public String getClientVersion() {
