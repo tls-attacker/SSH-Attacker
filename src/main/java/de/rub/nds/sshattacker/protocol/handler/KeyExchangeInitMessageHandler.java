@@ -47,51 +47,51 @@ public class KeyExchangeInitMessageHandler extends Handler<KeyExchangeInitMessag
         // TODO implement enforcing of user-specified algorithms
         context.setKeyExchangeAlgorithm(
                 AlgorithmPicker.pickAlgorithm(
-                        context.getClientSupportedKeyExchangeAlgorithms(),
-                        context.getServerSupportedKeyExchangeAlgorithms()).get());
+                        context.getChooser().getClientSupportedKeyExchangeAlgorithms(),
+                        context.getChooser().getServerSupportedKeyExchangeAlgorithms()).get());
 
         context.setCipherAlgorithmClientToServer(
                 AlgorithmPicker.pickAlgorithm(
-                        context.getClientSupportedCipherAlgorithmsClientToServer(),
-                        context.getServerSupportedCipherAlgorithmsClientToServer()).get());
+                        context.getChooser().getClientSupportedCipherAlgorithmsClientToServer(),
+                        context.getChooser().getServerSupportedCipherAlgorithmsClientToServer()).get());
 
         context.setCipherAlgorithmServerToClient(
                 AlgorithmPicker.pickAlgorithm(
-                        context.getClientSupportedCipherAlgorithmsServerToClient(),
-                        context.getServerSupportedCipherAlgorithmsServerToClient()).get());
+                        context.getChooser().getClientSupportedCipherAlgorithmsServertoClient(),
+                        context.getChooser().getServerSupportedCipherAlgorithmsServerToClient()).get());
 
         context.setServerHostKeyAlgorithm(
-                AlgorithmPicker.pickAlgorithm(context.getClientSupportedHostKeyAlgorithms(),
-                        context.getServerSupportedHostKeyAlgorithms()).get());
+                AlgorithmPicker.pickAlgorithm(context.getChooser().getClientSupportedHostKeyAlgorithms(),
+                        context.getChooser().getServerSupportedHostKeyAlgorithms()).get());
 
         context.setMacAlgorithmClientToServer(
                 AlgorithmPicker.pickAlgorithm(
-                        context.getClientSupportedMacAlgorithmsClientToServer(),
-                        context.getServerSupportedMacAlgorithmsClientToServer()).get());
+                        context.getChooser().getClientSupportedMacAlgorithmsClientToServer(),
+                        context.getChooser().getServerSupportedMacAlgorithmsClientToServer()).get());
 
         context.setMacAlgorithmServerToClient(
                 AlgorithmPicker.pickAlgorithm(
-                        context.getClientSupportedMacAlgorithmsServerToClient(),
-                        context.getServerSupportedMacAlgorithmsServerToClient()).get());
+                        context.getChooser().getClientSupportedMacAlgorithmsServerToClient(),
+                        context.getChooser().getServerSupportedMacAlgorithmsServerToClient()).get());
 
         context.setCompressionAlgorithmClientToServer(
                 AlgorithmPicker.pickAlgorithm(
-                        context.getClientSupportedCompressionAlgorithmsClientToServer(),
-                        context.getServerSupportedCompressionAlgorithmsClientToServer()).get());
+                        context.getChooser().getClientSupportedCompressionAlgorithmsClientToServer(),
+                        context.getChooser().getServerSupportedCompressionAlgorithmsClientToServer()).get());
 
         context.setCompressionAlgorithmServerToClient(
                 AlgorithmPicker.pickAlgorithm(
-                        context.getClientSupportedCompressionAlgorithmsServerToClient(),
-                        context.getServerSupportedCompressionAlgorithmsServerToClient()).get());
+                        context.getChooser().getClientSupportedCompressionAlgorithmsServerToClient(),
+                        context.getChooser().getServerSupportedCompressionAlgorithmsServerToClient()).get());
 
         context.setLanguageClientToServer(
                 AlgorithmPicker.pickAlgorithm(
-                        context.getClientSupportedLanguagesClientToServer(),
-                        context.getServerSupportedLanguagesServerToClient()).get());
+                        context.getChooser().getClientSupportedLanguagesClientToServer(),
+                        context.getChooser().getServerSupportedLanguagesServerToClient()).get());
 
         context.setLanguageServerToClient(
                 AlgorithmPicker.pickAlgorithm(
-                        context.getClientSupportedLanguagesServerToClient(),
-                        context.getServerSupportedLanguagesServerToClient()).get());
+                        context.getChooser().getClientSupportedLanguagesServerToClient(),
+                        context.getChooser().getServerSupportedLanguagesServerToClient()).get());
     }
 }
