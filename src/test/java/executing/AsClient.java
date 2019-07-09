@@ -1,12 +1,7 @@
 package executing;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.sshattacker.constants.CompressionAlgorithm;
-import de.rub.nds.sshattacker.constants.EncryptionAlgorithm;
-import de.rub.nds.sshattacker.constants.KeyExchangeAlgorithm;
-import de.rub.nds.sshattacker.constants.Language;
-import de.rub.nds.sshattacker.constants.MacAlgorithm;
-import de.rub.nds.sshattacker.constants.PublicKeyAuthenticationAlgorithm;
+import de.rub.nds.sshattacker.config.Config;
 import de.rub.nds.sshattacker.imported.ec_.EllipticCurveOverFp;
 import de.rub.nds.sshattacker.imported.ec_.EllipticCurveSECP256R1;
 import de.rub.nds.sshattacker.imported.ec_.FieldElementFp;
@@ -37,60 +32,32 @@ import de.rub.nds.sshattacker.state.SshContext;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import de.rub.nds.tlsattacker.transport.tcp.ClientTcpTransportHandler;
 import java.io.BufferedReader;
-import java.io.Console;
 import java.io.InputStreamReader;
 import java.math.BigInteger;
 import java.security.SecureRandom;
-import java.util.Arrays;
 
 public class AsClient {
 
     // integration test
     public static void main(String[] args) throws Exception {
-        BinaryPacketLayer binaryPacketLayer = new BinaryPacketLayer();
-
         SshContext context = new SshContext();
-        context.setChooser(new Chooser(context));
-//        context.setConfig(new Config());
-        CryptoLayer cryptoLayer = new CryptoLayer(context);
-        MessageLayer messageLayer = new MessageLayer(context);
 
+        BinaryPacketLayer binaryPacketLayer = new BinaryPacketLayer();
+        context.setBinaryPacketLayer(binaryPacketLayer);
+
+        context.setConfig(new Config());
+        context.setChooser(new Chooser(context));
+        CryptoLayer cryptoLayer = new CryptoLayer(context);
+        context.setCryptoLayer(cryptoLayer);
+
+        MessageLayer messageLayer = new MessageLayer(context);
+        context.setMessageLayer(messageLayer);
 
         TransportHandler transport = new ClientTcpTransportHandler(2000, "localhost", 65222);
-        context.setBinaryPacketLayer(binaryPacketLayer);
-        context.setMessageLayer(messageLayer);
         context.setTransportHandler(transport);
-        context.setCryptoLayer(cryptoLayer);
 
         SendMessageHelper sendMessageHelper = new SendMessageHelper();
         ReceiveMessageHelper receiveMessageHelper = new ReceiveMessageHelper();
-
-        context.setClientVersion("SSH-2.0-OpenSSH_7.8");
-
-        context.setClientCookie(ArrayConverter.hexStringToByteArray("00000000000000000000000000000000"));
-        context.setClientSupportedKeyExchangeAlgorithms(Arrays.asList(KeyExchangeAlgorithm.ECDH_SHA2_NISTP256));
-        context.setClientSupportedHostKeyAlgorithms(Arrays.asList(PublicKeyAuthenticationAlgorithm.SSH_RSA));
-        context.setClientSupportedCipherAlgorithmsClientToServer(Arrays.asList(EncryptionAlgorithm.AES128_CBC));
-        context.setClientSupportedCipherAlgorithmsServerToClient(Arrays.asList(EncryptionAlgorithm.AES128_CBC));
-        context.setClientSupportedMacAlgorithmsClientToServer(Arrays.asList(MacAlgorithm.HMAC_SHA1));
-        context.setClientSupportedMacAlgorithmsServerToClient(Arrays.asList(MacAlgorithm.HMAC_SHA1));
-        context.setClientSupportedCompressionAlgorithmsClientToServer(Arrays.asList(CompressionAlgorithm.NONE));
-        context.setClientSupportedCompressionAlgorithmsServerToClient(Arrays.asList(CompressionAlgorithm.NONE));
-        context.setClientSupportedLanguagesClientToServer(Arrays.asList(Language.NONE));
-        context.setClientSupportedLanguagesServerToClient(Arrays.asList(Language.NONE));
-        context.setClientFirstKeyExchangePacketFollows((byte) 0);
-        context.setClientReserved(0);
-        
-        context.setUsername("sshattack");
-        context.setPassword("bydahirsch");
-        context.setChannelType("session");
-        context.setChannelCommand("nc -l -p 13370");
-        context.setLocalChannel(1337);
-        context.setReplyWanted((byte) 0);
-        context.setWindowSize(Integer.MAX_VALUE);
-        context.setPacketSize(Integer.MAX_VALUE);
-        context.setChannelRequestType("exec");
-        context.setRemoteChannel(0);
 
         EllipticCurveOverFp secp256r1 = new EllipticCurveSECP256R1();
 
@@ -115,7 +82,6 @@ public class AsClient {
         transport.initialize();
         sendMessageHelper.sendInitMessage(clientInit, context);
 
-        //TODO race condition occurs here, socket taking too long to respond
         receiveMessageHelper.receiveInitMessage(context);
 
         KeyExchangeInitMessage clientKeyInit = new KeyExchangeInitMessage();
@@ -123,12 +89,12 @@ public class AsClient {
 
         context.appendToExchangeHashInput(new KeyExchangeInitMessageSerializer(clientKeyInit).serialize());
 
-        sendMessageHelper.sendMessages(Arrays.asList(clientKeyInit), context);
+        sendMessageHelper.sendMessage(clientKeyInit, context);
         receiveMessageHelper.receiveMessages(context);
 
         EcdhKeyExchangeInitMessage ecdhInit = new EcdhKeyExchangeInitMessage();
         new EcdhKeyExchangeInitMessagePreparator(context, ecdhInit).prepare();
-        sendMessageHelper.sendMessages(Arrays.asList(ecdhInit), context);
+        sendMessageHelper.sendMessage(ecdhInit, context);
         receiveMessageHelper.receiveMessages(context);
 
         sendMessageHelper.sendMessage(new NewKeysMessage(), context);
@@ -137,29 +103,29 @@ public class AsClient {
         ServiceRequestMessage serviceRequest = new ServiceRequestMessage("ssh-userauth");
         sendMessageHelper.sendMessage(serviceRequest, context);
         receiveMessageHelper.receiveMessages(context);
-        
+
         UserauthPasswordMessage userauthRequest = new UserauthPasswordMessage();
         new UserauthPasswordMessagePreparator(context, userauthRequest).prepare();
-        
+
         sendMessageHelper.sendMessage(userauthRequest, context);
         receiveMessageHelper.receiveMessages(context);
-        
+
         receiveMessageHelper.receiveMessages(context); // Server Global Request no idea what this is
-        
+
         ChannelOpenMessage sessionOpen = new ChannelOpenMessage();
         new ChannelOpenMessagePreparator(context, sessionOpen).prepare();
-        
+
         sendMessageHelper.sendMessage(sessionOpen, context);
         receiveMessageHelper.receiveMessages(context);
-        
+
         ChannelRequestMessage netcat = new ChannelRequestMessage();
         new ChannelRequestMessagePreparator(context, netcat).prepare();
 
         sendMessageHelper.sendMessage(netcat, context);
         receiveMessageHelper.receiveMessages(context);
-        
+
         BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
-        while (true){
+        while (true) {
             Thread.sleep(5000);
             receiveMessageHelper.receiveMessages(context);
             String read = in.readLine();
