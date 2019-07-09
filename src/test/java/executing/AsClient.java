@@ -72,7 +72,7 @@ public class AsClient {
         byte[] x = ArrayConverter.bigIntegerToByteArray(myPoint.getX().getData());
         byte[] y = ArrayConverter.bigIntegerToByteArray(myPoint.getY().getData());
 
-        // 04 -> no point compression used
+        // 04 -> no point compression used; it is not supported by openssh
         context.setClientEcdhPublicKey(ArrayConverter.concatenate(new byte[]{04}, x, y));
         ClientInitMessage clientInit = new ClientInitMessage();
         new ClientInitMessagePreparator(context, clientInit).prepare();

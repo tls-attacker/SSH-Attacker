@@ -1,5 +1,6 @@
 package de.rub.nds.sshattacker.protocol.serializer;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.protocol.message.ChannelRequestMessage;
 import de.rub.nds.sshattacker.util.Converter;
@@ -24,7 +25,7 @@ public class ChannelRequestMessageSerializer extends MessageSerializer<ChannelRe
         appendBytes(Converter.stringToLengthPrefixedString(msg.getRequestType().getValue()));
         LOGGER.debug("replyWanted: " + msg.getReplyWanted().getValue());
         appendByte(msg.getReplyWanted().getValue());
-        LOGGER.debug("payload: " + msg.getPayload().getValue());
+        LOGGER.debug("payload: " + ArrayConverter.bytesToHexString(msg.getPayload().getValue()));
         appendBytes(msg.getPayload().getValue());
         return getAlreadySerialized();
     }

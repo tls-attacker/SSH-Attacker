@@ -13,7 +13,7 @@ public class ChannelRequestMessagePreparator extends Preparator<ChannelRequestMe
     @Override
     public void prepare() {
         message.setReplyWanted(context.getChooser().getReplyWanted());
-        message.setRequestType(context.getChooser().getChannelRequestType());
+        message.setRequestType(context.getChooser().getChannelRequestType().toString());
         message.setPayload(Converter.stringToLengthPrefixedString(context.getChooser().getChannelCommand()));
         message.setRecipientChannel(context.getChooser().getRemoteChannel());
     }

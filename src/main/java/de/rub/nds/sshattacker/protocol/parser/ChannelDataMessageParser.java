@@ -20,7 +20,7 @@ public class ChannelDataMessageParser extends MessageParser<ChannelDataMessage>{
     @Override
     protected void parseMessageSpecificPayload(ChannelDataMessage msg) {
         msg.setRecipientChannel(parseIntField(DataFormatConstants.INT32_SIZE));
-        LOGGER.debug("recipientChannel: " + msg.getRecipientChannel());
+        LOGGER.debug("recipientChannel: " + msg.getRecipientChannel().getValue());
         int length = parseIntField(DataFormatConstants.INT32_SIZE);
         LOGGER.debug("data length: " + length);
         msg.setData(parseByteArrayField(length));

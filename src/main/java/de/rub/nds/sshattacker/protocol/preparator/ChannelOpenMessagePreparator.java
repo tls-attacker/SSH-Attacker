@@ -12,7 +12,7 @@ public class ChannelOpenMessagePreparator extends Preparator<ChannelOpenMessage>
     @Override
     public void prepare() {
         message.setSenderChannel(context.getChooser().getLocalChannel());
-        message.setChannelType(context.getChooser().getChannelType());
+        message.setChannelType(context.getChooser().getChannelType().toString());
         message.setWindowSize(context.getChooser().getWindowSize());
         message.setPacketSize(context.getChooser().getPacketSize());
     }

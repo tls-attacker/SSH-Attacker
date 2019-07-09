@@ -3,6 +3,8 @@ package de.rub.nds.sshattacker.config;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.connection.InboundConnection;
 import de.rub.nds.sshattacker.connection.OutboundConnection;
+import de.rub.nds.sshattacker.constants.ChannelRequestType;
+import de.rub.nds.sshattacker.constants.ChannelType;
 import de.rub.nds.sshattacker.constants.EncryptionAlgorithm;
 import de.rub.nds.sshattacker.constants.CompressionAlgorithm;
 import de.rub.nds.sshattacker.constants.KeyExchangeAlgorithm;
@@ -10,6 +12,7 @@ import de.rub.nds.sshattacker.constants.Language;
 import de.rub.nds.sshattacker.constants.MacAlgorithm;
 import de.rub.nds.sshattacker.constants.PublicKeyAuthenticationAlgorithm;
 import de.rub.nds.sshattacker.constants.RunningModeType;
+import de.rub.nds.sshattacker.constants.ServiceType;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -64,15 +67,14 @@ public class Config implements Serializable {
     private byte[] clientEcdhPublicKey;
     private byte[] serverEcdhPublicKey;
 
-    private String serviceType;
     private String username;
     private String password;
     private int localChannel;
     private int remoteChannel;
     private int windowSize;
     private int packetSize;
-    private String channelType;
-    private String channelRequestType;
+    private ChannelType channelType;
+    private ChannelRequestType channelRequestType;
     private String channelCommand;
     private byte replyWanted;
 
@@ -142,15 +144,14 @@ public class Config implements Serializable {
         clientReserved = 0;
         serverReserved = 0;
 
-//        serviceType = "exec";
         username = "sshattacker";
         password = "bydahirsch";
         localChannel = 1337;
         remoteChannel = 0;
         windowSize = Integer.MAX_VALUE;
         packetSize = Integer.MAX_VALUE;
-        channelType = "session";
-        channelRequestType = "exec";
+        channelType = ChannelType.SESSION;
+        channelRequestType = ChannelRequestType.EXEC;
         channelCommand = "nc -l -p 13370";
         replyWanted = 0;
     }
@@ -328,14 +329,6 @@ public class Config implements Serializable {
         this.serverEcdhPublicKey = serverEcdhPublicKey;
     }
 
-    public String getServiceType() {
-        return serviceType;
-    }
-
-    public void setServiceType(String serviceType) {
-        this.serviceType = serviceType;
-    }
-
     public String getUsername() {
         return username;
     }
@@ -376,11 +369,11 @@ public class Config implements Serializable {
         this.packetSize = packetSize;
     }
 
-    public String getChannelType() {
+    public ChannelType getChannelType() {
         return channelType;
     }
 
-    public void setChannelType(String channelType) {
+    public void setChannelType(ChannelType channelType) {
         this.channelType = channelType;
     }
 
@@ -424,11 +417,11 @@ public class Config implements Serializable {
         this.defaultRunningMode = defaultRunningMode;
     }
 
-    public String getChannelRequestType() {
+    public ChannelRequestType getChannelRequestType() {
         return channelRequestType;
     }
 
-    public void setChannelRequestType(String channelRequestType) {
+    public void setChannelRequestType(ChannelRequestType channelRequestType) {
         this.channelRequestType = channelRequestType;
     }
 

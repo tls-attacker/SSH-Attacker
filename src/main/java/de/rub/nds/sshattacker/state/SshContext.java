@@ -3,6 +3,8 @@ package de.rub.nds.sshattacker.state;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.config.Config;
 import de.rub.nds.sshattacker.connection.AliasedConnection;
+import de.rub.nds.sshattacker.constants.ChannelRequestType;
+import de.rub.nds.sshattacker.constants.ChannelType;
 import de.rub.nds.sshattacker.constants.EncryptionAlgorithm;
 import de.rub.nds.sshattacker.constants.CompressionAlgorithm;
 import de.rub.nds.sshattacker.constants.KeyExchangeAlgorithm;
@@ -105,15 +107,14 @@ public class SshContext {
     private Integer clientReserved;
     private Integer serverReserved;
     
-    private String serviceType;
     private String username;
     private String password;
     private int localChannel;
     private int remoteChannel;
     private int windowSize;
     private int packetSize;
-    private String channelType;
-    private String channelRequestType;
+    private ChannelType channelType;
+    private ChannelRequestType channelRequestType;
     private String channelCommand;
     private byte replyWanted;
 
@@ -714,11 +715,11 @@ public class SshContext {
         this.packetSize = packetSize;
     }
 
-    public String getChannelType() {
+    public ChannelType getChannelType() {
         return channelType;
     }
 
-    public void setChannelType(String channelType) {
+    public void setChannelType(ChannelType channelType) {
         this.channelType = channelType;
     }
 
@@ -738,19 +739,11 @@ public class SshContext {
         this.replyWanted = replyWanted;
     }
 
-    public String getServiceType() {
-        return serviceType;
-    }
-
-    public void setServiceType(String serviceType) {
-        this.serviceType = serviceType;
-    }
-
-    public String getChannelRequestType() {
+    public ChannelRequestType getChannelRequestType() {
         return channelRequestType;
     }
 
-    public void setChannelRequestType(String channelRequestType) {
+    public void setChannelRequestType(ChannelRequestType channelRequestType) {
         this.channelRequestType = channelRequestType;
     }
 

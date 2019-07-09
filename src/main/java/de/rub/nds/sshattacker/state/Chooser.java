@@ -1,6 +1,8 @@
 package de.rub.nds.sshattacker.state;
 
 import de.rub.nds.sshattacker.config.Config;
+import de.rub.nds.sshattacker.constants.ChannelRequestType;
+import de.rub.nds.sshattacker.constants.ChannelType;
 import de.rub.nds.sshattacker.constants.CompressionAlgorithm;
 import de.rub.nds.sshattacker.constants.EncryptionAlgorithm;
 import de.rub.nds.sshattacker.constants.KeyExchangeAlgorithm;
@@ -309,7 +311,7 @@ public class Chooser {
 //        }
     }
     
-    public String getChannelType() {
+    public ChannelType getChannelType() {
         if (context.getChannelType() != null){
             return context.getChannelType();
         } else {
@@ -333,7 +335,7 @@ public class Chooser {
         }
     }
     
-    public String getChannelRequestType() {
+    public ChannelRequestType getChannelRequestType() {
         if (context.getChannelRequestType() != null){
             return context.getChannelRequestType();
         } else {
