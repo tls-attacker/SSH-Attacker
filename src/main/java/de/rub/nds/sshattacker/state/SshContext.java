@@ -2,7 +2,7 @@ package de.rub.nds.sshattacker.state;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.config.Config;
-import de.rub.nds.sshattacker.connection.AliasedConnection;
+import de.rub.nds.sshattacker.transport.AliasedConnection;
 import de.rub.nds.sshattacker.constants.ChannelRequestType;
 import de.rub.nds.sshattacker.constants.ChannelType;
 import de.rub.nds.sshattacker.constants.EncryptionAlgorithm;

@@ -1,6 +1,9 @@
 package de.rub.nds.sshattacker.workflow.action;
 
-import de.rub.nds.sshattacker.connection.Aliasable;
+import de.rub.nds.sshattacker.transport.Aliasable;
+import de.rub.nds.sshattacker.exceptions.ConfigurationException;
+import de.rub.nds.sshattacker.exceptions.WorkflowExecutionException;
+import de.rub.nds.sshattacker.state.State;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.LinkedHashSet;

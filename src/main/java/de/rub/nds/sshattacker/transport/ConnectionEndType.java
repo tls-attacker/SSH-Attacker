@@ -1,4 +1,4 @@
-package de.rub.nds.sshattacker.connection;
+package de.rub.nds.sshattacker.transport;
 
 /**
  * Defines the connection end. Either client or server.

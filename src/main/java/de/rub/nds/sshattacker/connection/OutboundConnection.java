@@ -1,5 +1,8 @@
 package de.rub.nds.sshattacker.connection;
 
+import de.rub.nds.sshattacker.transport.ConnectionEndType;
+import de.rub.nds.sshattacker.transport.AliasedConnection;
+
 public class OutboundConnection extends AliasedConnection {
 
     private static final ConnectionEndType LOCAL_CONNECTION_END_TYPE = ConnectionEndType.CLIENT;

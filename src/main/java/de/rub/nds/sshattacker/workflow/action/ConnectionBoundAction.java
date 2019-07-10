@@ -8,8 +8,8 @@
  */
 package de.rub.nds.sshattacker.workflow.action;
 
-import de.rub.nds.tlsattacker.core.connection.AliasedConnection;
-import de.rub.nds.tlsattacker.core.exceptions.ConfigurationException;
+import de.rub.nds.sshattacker.transport.AliasedConnection;
+import de.rub.nds.sshattacker.exceptions.ConfigurationException;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Objects;

@@ -1,5 +1,6 @@
 package de.rub.nds.sshattacker.connection;
 
+import de.rub.nds.sshattacker.transport.ConnectionEndType;
 import de.rub.nds.sshattacker.transport.TransportHandlerType;
 import java.io.Serializable;
 import java.util.Objects;

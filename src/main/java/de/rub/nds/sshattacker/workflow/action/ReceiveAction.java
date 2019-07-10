@@ -8,12 +8,13 @@
  */
 package de.rub.nds.sshattacker.workflow.action;
 
-import de.rub.nds.tlsattacker.core.exceptions.WorkflowExecutionException;
-import de.rub.nds.tlsattacker.core.protocol.message.*;
+import de.rub.nds.sshattacker.exceptions.WorkflowExecutionException;
+import de.rub.nds.sshattacker.protocol.message.*;
 import de.rub.nds.tlsattacker.core.record.AbstractRecord;
-import de.rub.nds.tlsattacker.core.state.State;
+import de.rub.nds.sshattacker.state.State;
 import java.util.*;
 import javax.xml.bind.annotation.XmlElement;
+import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class ReceiveAction extends MessageAction implements ReceivingAction {
@@ -82,14 +83,14 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
 
     @Override
     public void execute(State state) throws WorkflowExecutionException {
-        TlsContext tlsContext = state.getTlsContext(getConnectionAlias());
+        SshContext sshContext = state.getSshContext(getConnectionAlias());
 
         if (isExecuted()) {
             throw new WorkflowExecutionException("Action already executed!");
         }
 
         LOGGER.debug("Receiving Messages...");
-        MessageActionResult result = receiveMessageHelper.receiveMessages(expectedMessages, tlsContext);
+        MessageActionResult result = receiveMessageHelper.receiveMessages(expectedMessages, sshContext);
         records = new ArrayList<>(result.getRecordList());
         messages = new ArrayList<>(result.getMessageList());
         setExecuted(true);
@@ -102,7 +103,7 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
         } else {
             LOGGER.info("Received Messages (" + getConnectionAlias() + "): " + received);
         }
-        tlsContext.setEarlyCleanShutdown(earlyCleanShutdown == null ? false : earlyCleanShutdown);
+        sshContext.setEarlyCleanShutdown(earlyCleanShutdown == null ? false : earlyCleanShutdown);
     }
 
     @Override
@@ -249,7 +250,7 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
     }
 
     @Override
-    public void normalize(TlsAction defaultAction) {
+    public void normalize(SshAction defaultAction) {
         super.normalize(defaultAction);
         initEmptyLists();
     }
@@ -261,7 +262,7 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
     }
 
     @Override
-    public void filter(TlsAction defaultCon) {
+    public void filter(SshAction defaultCon) {
         super.filter(defaultCon);
         filterEmptyLists();
     }

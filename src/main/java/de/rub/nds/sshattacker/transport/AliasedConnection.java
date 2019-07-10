@@ -1,6 +1,7 @@
-package de.rub.nds.sshattacker.connection;
+package de.rub.nds.sshattacker.transport;
 
-import de.rub.nds.sshattacker.exception.ConfigurationException;
+import de.rub.nds.sshattacker.connection.Connection;
+import de.rub.nds.sshattacker.exceptions.ConfigurationException;
 import de.rub.nds.sshattacker.transport.TransportHandlerType;
 import java.util.Collection;
 import java.util.HashSet;
