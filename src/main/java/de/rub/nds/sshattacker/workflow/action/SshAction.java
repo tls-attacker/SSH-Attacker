@@ -2,6 +2,7 @@ package de.rub.nds.sshattacker.workflow.action;
 
 import de.rub.nds.sshattacker.connection.Aliasable;
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -47,5 +48,99 @@ public abstract class SshAction implements Serializable, Aliasable {
 
     public void setSingleConnectionWorkflow(Boolean singleConnectionWorkflow) {
         this.singleConnectionWorkflow = singleConnectionWorkflow;
+    }
+    
+    public abstract void execute(State state) throws WorkflowExecutionException;
+
+    public abstract void reset();
+
+    /**
+     * Add default values and initialize empty fields.
+     */
+    public void normalize() {
+        // We don't need any defaults
+    }
+
+    /**
+     * Add default values from given defaultAction and initialize empty fields.
+     *
+     * @param defaultAction
+     *            Not needed / not evaluated
+     */
+    public void normalize(SshAction defaultAction) {
+        // We don't need any defaults
+    }
+
+    /**
+     * Filter empty fields and default values.
+     */
+    public void filter() {
+    }
+
+    /**
+     * Filter empty fields and default values given in defaultAction.
+     *
+     * @param defaultAction
+     *            Not needed / not evaluated
+     */
+    public void filter(SshAction defaultAction) {
+    }
+
+    @Override
+    public String getFirstAlias() {
+        return getAllAliases().iterator().next();
+    }
+
+    @Override
+    public boolean containsAllAliases(Collection<String> aliases) {
+        return getAllAliases().containsAll(aliases);
+    }
+
+    ;
+
+    @Override
+    public boolean containsAlias(String alias) {
+        return getAllAliases().contains(alias);
+    }
+
+    ;
+
+    @Override
+    public void assertAliasesSetProperly() throws ConfigurationException {
+    }
+
+    @Override
+    public Set<String> getAllAliases() {
+        return aliases;
+    }
+
+    /**
+     * Check that the Action got executed as planned.
+     *
+     * @return True if the Action executed as planned
+     */
+    public abstract boolean executedAsPlanned();
+
+    public boolean isMessageAction() {
+        return this instanceof MessageAction;
+    }
+
+    @Override
+    public String aliasesToString() {
+        StringBuilder sb = new StringBuilder();
+        for (String alias : getAllAliases()) {
+            sb.append(alias).append(",");
+        }
+        sb.deleteCharAt(sb.lastIndexOf(","));
+        return sb.toString();
+    }
+
+    public String toCompactString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(this.getClass().getSimpleName());
+        if (!getAllAliases().isEmpty()) {
+            sb.append(" [").append(aliasesToString()).append("]");
+        }
+        return sb.toString();
     }
 }
