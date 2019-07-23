@@ -25,6 +25,7 @@ public class SshContext {
     private Chooser chooser;
     private AliasedConnection connection;
 
+    private boolean receivedTransportHandlerException = false;
     private BinaryPacketLayer binaryPacketLayer;
     private MessageLayer messageLayer;
     private TransportHandler transportHandler;
@@ -754,4 +755,14 @@ public class SshContext {
     public void setRemoteChannel(int remoteChannel) {
         this.remoteChannel = remoteChannel;
     }
+
+    public boolean isReceivedTransportHandlerException() {
+        return receivedTransportHandlerException;
+    }
+
+    public void setReceivedTransportHandlerException(boolean receivedTransportHandlerException) {
+        this.receivedTransportHandlerException = receivedTransportHandlerException;
+    }
+    
+    
 }

@@ -20,8 +20,8 @@ public class FilterFactory {
         switch (type) {
             case DEFAULT:
                 return new DefaultFilter(config);
-            case DISCARD_RECORDS:
-                return new DiscardRecordsFilter(config);
+//            case DISCARD_RECORDS:
+//                return new DiscardRecordsFilter(config);
             default:
                 throw new UnsupportedOperationException(type.name() + " not yet implemented");
         }

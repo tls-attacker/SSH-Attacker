@@ -13,11 +13,14 @@ import de.rub.nds.sshattacker.constants.MacAlgorithm;
 import de.rub.nds.sshattacker.constants.PublicKeyAuthenticationAlgorithm;
 import de.rub.nds.sshattacker.constants.RunningModeType;
 import de.rub.nds.sshattacker.constants.ServiceType;
+import de.rub.nds.sshattacker.workflow.factory.WorkflowTraceType;
+import de.rub.nds.sshattacker.workflow.filter.FilterType;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
@@ -29,10 +32,10 @@ public class Config implements Serializable {
 
     private static final String DEFAULT_CONFIG_FILE = "/default_config.xml";
 
-//    private static final ConfigCache DEFAULT_CONFIG_CACHE;
-//    static {
-//        DEFAULT_CONFIG_CACHE = new ConfigCache(createConfig());
-//    }
+    private static final ConfigCache DEFAULT_CONFIG_CACHE;
+    static {
+        DEFAULT_CONFIG_CACHE = new ConfigCache(createConfig());
+    }
     private String clientVersion;
     private String clientComment;
     private String serverVersion;
@@ -89,6 +92,20 @@ public class Config implements Serializable {
     private InboundConnection defaultServerConnection;
 
     private RunningModeType defaultRunningMode = RunningModeType.CLIENT;
+    
+    private Boolean filtersKeepUserSettings = true;
+    
+    private String workflowInput = null;
+    
+    private WorkflowTraceType workflowTraceType = null;
+    
+    private List<FilterType> outputFilters;
+    
+    private String workflowOutput = null;
+
+    private Boolean applyFiltersInPlace = true;
+
+
 
     public Config() {
 
@@ -154,15 +171,22 @@ public class Config implements Serializable {
         channelRequestType = ChannelRequestType.EXEC;
         channelCommand = "nc -l -p 13370";
         replyWanted = 0;
+        
+        workflowTraceType = WorkflowTraceType.FULL;
+        outputFilters = new ArrayList<>();
+        outputFilters.add(FilterType.DEFAULT);
+        applyFiltersInPlace = false;
+
+
     }
 
-//    public static Config createConfig() {
-//        if (DEFAULT_CONFIG_CACHE != null) {
-//            return DEFAULT_CONFIG_CACHE.getCachedCopy();
-//        }
-//        InputStream stream = Config.class.getResourceAsStream(DEFAULT_CONFIG_FILE);
-//        return ConfigIO.read(stream);
-//    }
+    public static Config createConfig() {
+        if (DEFAULT_CONFIG_CACHE != null) {
+            return DEFAULT_CONFIG_CACHE.getCachedCopy();
+        }
+        InputStream stream = Config.class.getResourceAsStream(DEFAULT_CONFIG_FILE);
+        return ConfigIO.read(stream);
+    }
     public static Config createConfig(File f) {
         return ConfigIO.read(f);
     }
@@ -431,5 +455,53 @@ public class Config implements Serializable {
 
     public void setRemoteChannel(int remoteChannel) {
         this.remoteChannel = remoteChannel;
+    }
+    
+    public Boolean isFiltersKeepUserSettings() {
+        return filtersKeepUserSettings;
+    }
+
+    public void setFiltersKeepUserSettings(Boolean filtersKeepUserSettings) {
+        this.filtersKeepUserSettings = filtersKeepUserSettings;
+    }
+    
+    public void setWorkflowInput(String workflowInput) {
+        this.workflowInput = workflowInput;
+    }
+    
+    public String getWorkflowInput() {
+        return workflowInput;
+    }
+    
+    public WorkflowTraceType getWorkflowTraceType() {
+        return workflowTraceType;
+    }
+
+    public void setWorkflowTraceType(WorkflowTraceType workflowTraceType) {
+        this.workflowTraceType = workflowTraceType;
+    }
+    
+    public List<FilterType> getOutputFilters() {
+        return outputFilters;
+    }
+
+    public void setOutputFilters(List<FilterType> outputFilters) {
+        this.outputFilters = outputFilters;
+    }
+    
+    public String getWorkflowOutput() {
+        return workflowOutput;
+    }
+
+    public void setWorkflowOutput(String workflowOutput) {
+        this.workflowOutput = workflowOutput;
+    }
+    
+    public Boolean isApplyFiltersInPlace() {
+        return applyFiltersInPlace;
+    }
+
+    public void setApplyFiltersInPlace(Boolean applyFiltersInPlace) {
+        this.applyFiltersInPlace = applyFiltersInPlace;
     }
 }

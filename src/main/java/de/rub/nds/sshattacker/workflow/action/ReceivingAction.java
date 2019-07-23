@@ -8,13 +8,13 @@
  */
 package de.rub.nds.sshattacker.workflow.action;
 
-import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
-import de.rub.nds.tlsattacker.core.record.AbstractRecord;
+import de.rub.nds.sshattacker.protocol.message.BinaryPacket;
+import de.rub.nds.sshattacker.protocol.message.Message;
 import java.util.List;
 
 public interface ReceivingAction {
 
-    public abstract List<ProtocolMessage> getReceivedMessages();
+    public abstract List<Message> getReceivedMessages();
 
-    public abstract List<AbstractRecord> getReceivedRecords();
+    public abstract List<BinaryPacket> getReceivedRecords();
 }

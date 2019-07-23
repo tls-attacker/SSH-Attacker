@@ -13,7 +13,6 @@ import de.rub.nds.modifiablevariable.ModificationFilter;
 import de.rub.nds.modifiablevariable.VariableModification;
 import de.rub.nds.modifiablevariable.util.XMLPrettyPrinter;
 import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
-import de.rub.nds.tlsattacker.core.protocol.message.extension.ExtensionMessage;
 import de.rub.nds.sshattacker.workflow.action.ReceiveAction;
 import de.rub.nds.sshattacker.workflow.action.SendAction;
 import de.rub.nds.sshattacker.workflow.action.SshAction;
@@ -53,7 +52,7 @@ public class WorkflowTraceSerializer {
 
     private static synchronized JAXBContext getJAXBContext() throws JAXBException, IOException {
         if (context == null) {
-            context = JAXBContext.newInstance(ExtensionMessage.class, WorkflowTrace.class, ProtocolMessage.class,
+            context = JAXBContext.newInstance(WorkflowTrace.class, ProtocolMessage.class,
                     ModificationFilter.class, VariableModification.class, ModifiableVariable.class, SshAction.class,
                     SendAction.class, ReceiveAction.class);
         }

@@ -10,8 +10,9 @@ package de.rub.nds.sshattacker.workflow.action;
 
 import de.rub.nds.sshattacker.exceptions.WorkflowExecutionException;
 import de.rub.nds.sshattacker.protocol.message.*;
-import de.rub.nds.tlsattacker.core.record.AbstractRecord;
+import de.rub.nds.sshattacker.state.SshContext;
 import de.rub.nds.sshattacker.state.State;
+import de.rub.nds.sshattacker.workflow.action.executor.MessageActionResult;
 import java.util.*;
 import javax.xml.bind.annotation.XmlElement;
 import org.apache.logging.log4j.LogManager;
@@ -21,7 +22,7 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    protected List<ProtocolMessage> expectedMessages = new ArrayList<>();
+    protected List<Message> expectedMessages = new ArrayList<>();
 
     @XmlElement
     protected Boolean earlyCleanShutdown = null;
@@ -33,27 +34,27 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
         super();
     }
 
-    public ReceiveAction(List<ProtocolMessage> expectedMessages) {
+    public ReceiveAction(List<Message> expectedMessages) {
         super();
         this.expectedMessages = expectedMessages;
     }
 
-    public ReceiveAction(ProtocolMessage... expectedMessages) {
+    public ReceiveAction(Message... expectedMessages) {
         super();
         this.expectedMessages = new ArrayList(Arrays.asList(expectedMessages));
     }
 
-    public ReceiveAction(Set<ReceiveOption> receiveOptions, List<ProtocolMessage> messages) {
+    public ReceiveAction(Set<ReceiveOption> receiveOptions, List<Message> messages) {
         this(messages);
         this.earlyCleanShutdown = receiveOptions.contains(ReceiveOption.EARLY_CLEAN_SHUTDOWN);
         this.checkOnlyExpected = receiveOptions.contains(ReceiveOption.CHECK_ONLY_EXPECTED);
     }
 
-    public ReceiveAction(Set<ReceiveOption> receiveOptions, ProtocolMessage... messages) {
+    public ReceiveAction(Set<ReceiveOption> receiveOptions, Message... messages) {
         this(receiveOptions, new ArrayList(Arrays.asList(messages)));
     }
 
-    public ReceiveAction(ReceiveOption receiveOption, List<ProtocolMessage> messages) {
+    public ReceiveAction(ReceiveOption receiveOption, List<Message> messages) {
         this(messages);
         switch (receiveOption) {
             case CHECK_ONLY_EXPECTED:
@@ -64,7 +65,7 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
         }
     }
 
-    public ReceiveAction(ReceiveOption receiveOption, ProtocolMessage... messages) {
+    public ReceiveAction(ReceiveOption receiveOption, Message... messages) {
         this(receiveOption, new ArrayList<>(Arrays.asList(messages)));
     }
 
@@ -72,12 +73,12 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
         super(connectionAlias);
     }
 
-    public ReceiveAction(String connectionAliasAlias, List<ProtocolMessage> messages) {
+    public ReceiveAction(String connectionAliasAlias, List<Message> messages) {
         super(connectionAliasAlias);
         this.expectedMessages = messages;
     }
 
-    public ReceiveAction(String connectionAliasAlias, ProtocolMessage... messages) {
+    public ReceiveAction(String connectionAliasAlias, Message... messages) {
         this(connectionAliasAlias, new ArrayList<>(Arrays.asList(messages)));
     }
 
@@ -91,7 +92,7 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
 
         LOGGER.debug("Receiving Messages...");
         MessageActionResult result = receiveMessageHelper.receiveMessages(expectedMessages, sshContext);
-        records = new ArrayList<>(result.getRecordList());
+        binaryPackets = new ArrayList<>(result.getBinaryPacketList());
         messages = new ArrayList<>(result.getMessageList());
         setExecuted(true);
 
@@ -103,7 +104,6 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
         } else {
             LOGGER.info("Received Messages (" + getConnectionAlias() + "): " + received);
         }
-        sshContext.setEarlyCleanShutdown(earlyCleanShutdown == null ? false : earlyCleanShutdown);
     }
 
     @Override
@@ -112,7 +112,7 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
 
         sb.append("\tExpected:");
         if ((expectedMessages != null)) {
-            for (ProtocolMessage message : expectedMessages) {
+            for (Message message : expectedMessages) {
                 sb.append(message.toCompactString());
                 sb.append(", ");
             }
@@ -121,7 +121,7 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
         }
         sb.append("\n\tActual:");
         if ((messages != null) && (!messages.isEmpty())) {
-            for (ProtocolMessage message : messages) {
+            for (Message message : messages) {
                 sb.append(message.toCompactString());
                 sb.append(", ");
             }
@@ -137,7 +137,7 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
         StringBuilder sb = new StringBuilder(super.toCompactString());
         if ((expectedMessages != null) && (!expectedMessages.isEmpty())) {
             sb.append(" (");
-            for (ProtocolMessage message : expectedMessages) {
+            for (Message message : expectedMessages) {
                 sb.append(message.toCompactString());
                 sb.append(",");
             }
@@ -172,41 +172,41 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
         return true;
     }
 
-    public List<ProtocolMessage> getExpectedMessages() {
+    public List<Message> getExpectedMessages() {
         return expectedMessages;
     }
 
-    void setReceivedMessages(List<ProtocolMessage> receivedMessages) {
+    void setReceivedMessages(List<Message> receivedMessages) {
         this.messages = receivedMessages;
     }
 
-    void setReceivedRecords(List<AbstractRecord> receivedRecords) {
-        this.records = receivedRecords;
+    void setReceivedRecords(List<BinaryPacket> receivedRecords) {
+        this.binaryPackets = receivedRecords;
     }
 
-    public void setExpectedMessages(List<ProtocolMessage> expectedMessages) {
+    public void setExpectedMessages(List<Message> expectedMessages) {
         this.expectedMessages = expectedMessages;
     }
 
-    public void setExpectedMessages(ProtocolMessage... expectedMessages) {
+    public void setExpectedMessages(Message... expectedMessages) {
         this.expectedMessages = new ArrayList(Arrays.asList(expectedMessages));
     }
 
     @Override
     public void reset() {
         messages = null;
-        records = null;
+        binaryPackets = null;
         setExecuted(null);
     }
 
     @Override
-    public List<ProtocolMessage> getReceivedMessages() {
+    public List<Message> getReceivedMessages() {
         return messages;
     }
 
     @Override
-    public List<AbstractRecord> getReceivedRecords() {
-        return records;
+    public List<BinaryPacket> getReceivedRecords() {
+        return binaryPackets;
     }
 
     @Override
@@ -214,7 +214,7 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
         int hash = super.hashCode();
         hash = 67 * hash + Objects.hashCode(this.expectedMessages);
         hash = 67 * hash + Objects.hashCode(this.messages);
-        hash = 67 * hash + Objects.hashCode(this.records);
+        hash = 67 * hash + Objects.hashCode(this.binaryPackets);
 
         return hash;
     }
@@ -237,7 +237,7 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
         if (!Objects.equals(this.messages, other.messages)) {
             return false;
         }
-        if (!Objects.equals(this.records, other.records)) {
+        if (!Objects.equals(this.binaryPackets, other.binaryPackets)) {
             return false;
         }
         return super.equals(obj);

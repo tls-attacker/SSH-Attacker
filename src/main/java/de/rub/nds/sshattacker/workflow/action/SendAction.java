@@ -8,16 +8,26 @@
  */
 package de.rub.nds.sshattacker.workflow.action;
 
+import de.rub.nds.modifiablevariable.ModifiableVariable;
 import de.rub.nds.sshattacker.exceptions.WorkflowExecutionException;
-import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
-import de.rub.nds.tlsattacker.core.record.AbstractRecord;
+import de.rub.nds.sshattacker.protocol.ModifiableVariableHolder;
+import de.rub.nds.sshattacker.protocol.message.BinaryPacket;
+import de.rub.nds.sshattacker.protocol.message.Message;
+import de.rub.nds.sshattacker.state.SshContext;
 import de.rub.nds.sshattacker.state.State;
+import de.rub.nds.sshattacker.workflow.action.executor.MessageActionResult;
+import java.io.IOException;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * todo print configured records
+ * todo print configured binaryPackets
  */
 public class SendAction extends MessageAction implements SendingAction {
 
@@ -27,11 +37,11 @@ public class SendAction extends MessageAction implements SendingAction {
         super();
     }
 
-    public SendAction(List<ProtocolMessage> messages) {
+    public SendAction(List<Message> messages) {
         super(messages);
     }
 
-    public SendAction(ProtocolMessage... messages) {
+    public SendAction(Message... messages) {
         this(new ArrayList<>(Arrays.asList(messages)));
     }
 
@@ -39,17 +49,17 @@ public class SendAction extends MessageAction implements SendingAction {
         super(connectionAlias);
     }
 
-    public SendAction(String connectionAlias, List<ProtocolMessage> messages) {
+    public SendAction(String connectionAlias, List<Message> messages) {
         super(connectionAlias, messages);
     }
 
-    public SendAction(String connectionAlias, ProtocolMessage... messages) {
+    public SendAction(String connectionAlias, Message... messages) {
         super(connectionAlias, new ArrayList<>(Arrays.asList(messages)));
     }
 
     @Override
     public void execute(State state) throws WorkflowExecutionException {
-        TlsContext tlsContext = state.getTlsContext(connectionAlias);
+        SshContext sshContext = state.getSshContext(connectionAlias);
 
         if (isExecuted()) {
             throw new WorkflowExecutionException("Action already executed!");
@@ -63,12 +73,12 @@ public class SendAction extends MessageAction implements SendingAction {
         }
 
         try {
-            MessageActionResult result = sendMessageHelper.sendMessages(messages, records, tlsContext);
+            MessageActionResult result = sendMessageHelper.sendMessages(messages, binaryPackets, sshContext);
             messages = new ArrayList<>(result.getMessageList());
-            records = new ArrayList<>(result.getRecordList());
+            binaryPackets = new ArrayList<>(result.getBinaryPacketList());
             setExecuted(true);
         } catch (IOException E) {
-            tlsContext.setReceivedTransportHandlerException(true);
+            sshContext.setReceivedTransportHandlerException(true);
             LOGGER.debug(E);
             setExecuted(false);
         }
@@ -84,7 +94,7 @@ public class SendAction extends MessageAction implements SendingAction {
         }
         sb.append("\tMessages:");
         if (messages != null) {
-            for (ProtocolMessage message : messages) {
+            for (Message message : messages) {
                 sb.append(message.toCompactString());
                 sb.append(", ");
             }
@@ -100,7 +110,7 @@ public class SendAction extends MessageAction implements SendingAction {
         StringBuilder sb = new StringBuilder(super.toCompactString());
         if ((messages != null) && (!messages.isEmpty())) {
             sb.append(" (");
-            for (ProtocolMessage message : messages) {
+            for (Message message : messages) {
                 sb.append(message.toCompactString());
                 sb.append(",");
             }
@@ -117,21 +127,21 @@ public class SendAction extends MessageAction implements SendingAction {
     }
 
     @Override
-    public void setRecords(List<AbstractRecord> records) {
-        this.records = records;
+    public void setBinaryPackets(List<BinaryPacket> records) {
+        this.binaryPackets = records;
     }
 
     @Override
     public void reset() {
         List<ModifiableVariableHolder> holders = new LinkedList<>();
         if (messages != null) {
-            for (ProtocolMessage message : messages) {
+            for (Message message : messages) {
                 holders.addAll(message.getAllModifiableVariableHolders());
             }
         }
-        if (getRecords() != null) {
-            for (AbstractRecord record : getRecords()) {
-                holders.addAll(record.getAllModifiableVariableHolders());
+        if (getBinaryPackets() != null) {
+            for (BinaryPacket binaryPacket : getBinaryPackets()) {
+                holders.addAll(binaryPacket.getAllModifiableVariableHolders());
             }
         }
         for (ModifiableVariableHolder holder : holders) {
@@ -163,13 +173,13 @@ public class SendAction extends MessageAction implements SendingAction {
     }
 
     @Override
-    public List<ProtocolMessage> getSendMessages() {
+    public List<Message> getSendMessages() {
         return messages;
     }
 
     @Override
-    public List<AbstractRecord> getSendRecords() {
-        return records;
+    public List<BinaryPacket> getSendBinaryPackets() {
+        return binaryPackets;
     }
 
     @Override
@@ -187,7 +197,7 @@ public class SendAction extends MessageAction implements SendingAction {
         if (!Objects.equals(this.messages, other.messages)) {
             return false;
         }
-        if (!Objects.equals(this.records, other.records)) {
+        if (!Objects.equals(this.binaryPackets, other.binaryPackets)) {
             return false;
         }
         return super.equals(obj);
@@ -197,7 +207,7 @@ public class SendAction extends MessageAction implements SendingAction {
     public int hashCode() {
         int hash = super.hashCode();
         hash = 67 * hash + Objects.hashCode(this.messages);
-        hash = 67 * hash + Objects.hashCode(this.records);
+        hash = 67 * hash + Objects.hashCode(this.binaryPackets);
 
         return hash;
     }

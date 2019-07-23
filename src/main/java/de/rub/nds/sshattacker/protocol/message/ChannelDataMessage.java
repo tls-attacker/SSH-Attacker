@@ -50,7 +50,7 @@ public class ChannelDataMessage extends Message {
     }
 
     @Override
-    String toCompactString() {
+    public String toCompactString() {
         return this.getClass().getSimpleName();
     }
 

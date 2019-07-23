@@ -339,11 +339,11 @@ public class WorkflowConfigurationFactory {
 
         MessageAction action = MessageActionFactory.createAction(connection, ConnectionEndType.CLIENT,
                 new SSL2ClientHelloMessage(config));
-        action.setRecords(new BlobRecord());
+        action.setBinaryPackets(new BlobRecord());
         trace.addTlsAction(action);
         action = MessageActionFactory.createAction(connection, ConnectionEndType.SERVER, new SSL2ServerHelloMessage(
                 config));
-        action.setRecords(new BlobRecord());
+        action.setBinaryPackets(new BlobRecord());
         trace.addTlsAction(action);
         return trace;
     }

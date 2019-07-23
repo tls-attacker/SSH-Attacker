@@ -6,7 +6,7 @@ import de.rub.nds.protocol.core.message.Serializer;
 import de.rub.nds.sshattacker.protocol.handler.Handler;
 import de.rub.nds.sshattacker.state.SshContext;
 
-public abstract class Message {
+public abstract class Message extends ProtocolMessage {
     
     protected ModifiableByte messageID;
 
@@ -22,8 +22,7 @@ public abstract class Message {
         this.messageID = ModifiableVariableFactory.safelySetValue(this.messageID, messageID);
     }
 
-    abstract String toCompactString();
-
+    @Override
     public abstract Handler getHandler(SshContext context);
     public abstract Serializer getSerializer();
 }

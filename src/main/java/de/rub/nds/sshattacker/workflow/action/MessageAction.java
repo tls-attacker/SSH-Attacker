@@ -9,12 +9,12 @@
 package de.rub.nds.sshattacker.workflow.action;
 
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
-import de.rub.nds.tlsattacker.core.protocol.message.*;
-import de.rub.nds.tlsattacker.core.record.AbstractRecord;
-import de.rub.nds.tlsattacker.core.record.BlobRecord;
-import de.rub.nds.tlsattacker.core.record.Record;
-import de.rub.nds.tlsattacker.core.workflow.action.executor.ReceiveMessageHelper;
-import de.rub.nds.tlsattacker.core.workflow.action.executor.SendMessageHelper;
+import de.rub.nds.sshattacker.protocol.helper.ReceiveMessageHelper;
+import de.rub.nds.sshattacker.protocol.helper.SendMessageHelper;
+import de.rub.nds.sshattacker.protocol.message.BinaryPacket;
+import de.rub.nds.sshattacker.protocol.message.Message;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
@@ -23,13 +23,11 @@ import javax.xml.bind.annotation.XmlTransient;
 
 public abstract class MessageAction extends ConnectionBoundAction {
 
-    protected List<ProtocolMessage> messages = new ArrayList<>();
+    protected List<Message> messages = new ArrayList<>();
 
     @HoldsModifiableVariable
     @XmlElementWrapper
-    @XmlElements(value = { @XmlElement(type = Record.class, name = "Record"),
-            @XmlElement(type = BlobRecord.class, name = "BlobRecord") })
-    protected List<AbstractRecord> records = new ArrayList<>();
+    protected List<BinaryPacket> binaryPackets = new ArrayList<>();
 
     @XmlTransient
     protected ReceiveMessageHelper receiveMessageHelper;
@@ -42,13 +40,13 @@ public abstract class MessageAction extends ConnectionBoundAction {
         sendMessageHelper = new SendMessageHelper();
     }
 
-    public MessageAction(List<ProtocolMessage> messages) {
+    public MessageAction(List<Message> messages) {
         this.messages = new ArrayList<>(messages);
         receiveMessageHelper = new ReceiveMessageHelper();
         sendMessageHelper = new SendMessageHelper();
     }
 
-    public MessageAction(ProtocolMessage... messages) {
+    public MessageAction(Message... messages) {
         this.messages = new ArrayList<>(Arrays.asList(messages));
         receiveMessageHelper = new ReceiveMessageHelper();
         sendMessageHelper = new SendMessageHelper();
@@ -60,14 +58,14 @@ public abstract class MessageAction extends ConnectionBoundAction {
         sendMessageHelper = new SendMessageHelper();
     }
 
-    public MessageAction(String connectionAlias, List<ProtocolMessage> messages) {
+    public MessageAction(String connectionAlias, List<Message> messages) {
         super(connectionAlias);
         this.messages = new ArrayList<>(messages);
         receiveMessageHelper = new ReceiveMessageHelper();
         sendMessageHelper = new SendMessageHelper();
     }
 
-    public MessageAction(String connectionAlias, ProtocolMessage... messages) {
+    public MessageAction(String connectionAlias, Message... messages) {
         this(connectionAlias, new ArrayList<>(Arrays.asList(messages)));
     }
 
@@ -79,20 +77,20 @@ public abstract class MessageAction extends ConnectionBoundAction {
         this.sendMessageHelper = sendMessageHelper;
     }
 
-    public String getReadableString(ProtocolMessage... messages) {
+    public String getReadableString(Message... messages) {
         return getReadableString(Arrays.asList(messages));
     }
 
-    public String getReadableString(List<ProtocolMessage> messages) {
+    public String getReadableString(List<Message> messages) {
         return getReadableString(messages, false);
     }
 
-    public String getReadableString(List<ProtocolMessage> messages, Boolean verbose) {
+    public String getReadableString(List<Message> messages, Boolean verbose) {
         StringBuilder builder = new StringBuilder();
         if (messages == null) {
             return builder.toString();
         }
-        for (ProtocolMessage message : messages) {
+        for (Message message : messages) {
             if (verbose) {
                 builder.append(message.toString());
             } else {
@@ -106,32 +104,32 @@ public abstract class MessageAction extends ConnectionBoundAction {
         return builder.toString();
     }
 
-    public List<ProtocolMessage> getMessages() {
+    public List<Message> getMessages() {
         return messages;
     }
 
-    public void setMessages(List<ProtocolMessage> messages) {
+    public void setMessages(List<Message> messages) {
         this.messages = messages;
     }
 
-    public void setMessages(ProtocolMessage... messages) {
+    public void setMessages(Message... messages) {
         this.messages = new ArrayList(Arrays.asList(messages));
     }
 
-    public List<AbstractRecord> getRecords() {
-        return records;
+    public List<BinaryPacket> getBinaryPackets() {
+        return binaryPackets;
     }
 
-    public void setRecords(List<AbstractRecord> records) {
-        this.records = records;
+    public void setBinaryPackets(List<BinaryPacket> binaryPackets) {
+        this.binaryPackets = binaryPackets;
     }
 
-    public void setRecords(AbstractRecord... records) {
-        this.records = new ArrayList<>(Arrays.asList(records));
+    public void setRecords(BinaryPacket... binaryPackets) {
+        this.binaryPackets = new ArrayList<>(Arrays.asList(binaryPackets));
     }
 
     public void clearRecords() {
-        this.records = null;
+        this.binaryPackets = null;
     }
 
     @Override
@@ -141,7 +139,7 @@ public abstract class MessageAction extends ConnectionBoundAction {
     }
 
     @Override
-    public void normalize(TlsAction defaultAction) {
+    public void normalize(SshAction defaultAction) {
         super.normalize(defaultAction);
         initEmptyLists();
     }
@@ -153,7 +151,7 @@ public abstract class MessageAction extends ConnectionBoundAction {
     }
 
     @Override
-    public void filter(TlsAction defaultAction) {
+    public void filter(SshAction defaultAction) {
         super.filter(defaultAction);
         stripEmptyLists();
     }
@@ -162,8 +160,8 @@ public abstract class MessageAction extends ConnectionBoundAction {
         if (messages == null || messages.isEmpty()) {
             messages = null;
         }
-        if (records == null || records.isEmpty()) {
-            records = null;
+        if (binaryPackets == null || binaryPackets.isEmpty()) {
+            binaryPackets = null;
         }
     }
 
@@ -171,8 +169,8 @@ public abstract class MessageAction extends ConnectionBoundAction {
         if (messages == null) {
             messages = new ArrayList<>();
         }
-        if (records == null) {
-            records = new ArrayList<>();
+        if (binaryPackets == null) {
+            binaryPackets = new ArrayList<>();
         }
     }
 
