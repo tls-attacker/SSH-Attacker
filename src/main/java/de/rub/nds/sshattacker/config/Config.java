@@ -105,7 +105,17 @@ public class Config implements Serializable {
 
     private Boolean applyFiltersInPlace = true;
 
-
+    private Boolean workflowExecutorShouldOpen = true;
+    
+    private Boolean stopActionsAfterDisconnect = true;
+    
+    private Boolean stopActionsAfterIOException = true;
+    
+    private Boolean workflowExecutorShouldClose = true;
+    
+    private Boolean resetWorkflowtracesBeforeSaving = true;
+    
+    private String configOutput = null;
 
     public Config() {
 
@@ -504,4 +514,53 @@ public class Config implements Serializable {
     public void setApplyFiltersInPlace(Boolean applyFiltersInPlace) {
         this.applyFiltersInPlace = applyFiltersInPlace;
     }
+
+    public Boolean getWorkflowExecutorShouldOpen() {
+        return workflowExecutorShouldOpen;
+    }
+
+    public void setWorkflowExecutorShouldOpen(Boolean workflowExecutorShouldOpen) {
+        this.workflowExecutorShouldOpen = workflowExecutorShouldOpen;
+    }
+
+    public Boolean getStopActionsAfterDisconnect() {
+        return stopActionsAfterDisconnect;
+    }
+
+    public void setStopActionsAfterDisconnect(Boolean stopActionsAfterDisconnect) {
+        this.stopActionsAfterDisconnect = stopActionsAfterDisconnect;
+    }
+
+    public Boolean getStopActionsAfterIOException() {
+        return stopActionsAfterIOException;
+    }
+
+    public void setStopActionsAfterIOException(Boolean stopActionsAfterIOException) {
+        this.stopActionsAfterIOException = stopActionsAfterIOException;
+    }
+
+    public Boolean getWorkflowExecutorShouldClose() {
+        return workflowExecutorShouldClose;
+    }
+
+    public void setWorkflowExecutorShouldClose(Boolean workflowExecutorShouldClose) {
+        this.workflowExecutorShouldClose = workflowExecutorShouldClose;
+    }
+
+    public Boolean getResetWorkflowtracesBeforeSaving() {
+        return resetWorkflowtracesBeforeSaving;
+    }
+
+    public void setResetWorkflowtracesBeforeSaving(Boolean resetWorkflowtracesBeforeSaving) {
+        this.resetWorkflowtracesBeforeSaving = resetWorkflowtracesBeforeSaving;
+    }
+
+    public String getConfigOutput() {
+        return configOutput;
+    }
+
+    public void setConfigOutput(String configOutput) {
+        this.configOutput = configOutput;
+    }
+    
 }

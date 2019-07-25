@@ -8,7 +8,7 @@ import de.rub.nds.sshattacker.protocol.message.ClientInitMessage;
 import de.rub.nds.sshattacker.protocol.message.Message;
 import de.rub.nds.sshattacker.protocol.parser.ClientInitMessageParser;
 import de.rub.nds.sshattacker.state.SshContext;
-import de.rub.nds.sshattacker.workflow.action.executor.MessageActionResult;
+import de.rub.nds.sshattacker.workflow.action.result.MessageActionResult;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import java.io.IOException;
 import java.util.LinkedList;
@@ -29,7 +29,7 @@ public class ReceiveMessageHelper {
         try {
             byte[] data = transportHandler.fetchData();
             if (data.length != 0) {
-                List<BinaryPacket> binaryPackets = binaryPacketLayer.parseBinaryPackets(cryptoLayer.decryptBinaryPacket(data));
+                List<BinaryPacket> binaryPackets = binaryPacketLayer.parseBinaryPackets(cryptoLayer.decryptBinaryPackets(data));
                 List<Message> messages = messageLayer.parseMessages(binaryPackets);
             messages.forEach(message -> {
                 message.getHandler(context).handle(message);

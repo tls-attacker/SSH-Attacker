@@ -28,7 +28,7 @@ public class UnknownMessage extends Message {
     }
     
     @Override
-    String toCompactString() {
+    public String toCompactString() {
         return "UnknownMessage";
     }
 

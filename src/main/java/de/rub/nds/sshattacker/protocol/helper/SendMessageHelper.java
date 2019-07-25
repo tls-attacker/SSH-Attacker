@@ -8,7 +8,7 @@ import de.rub.nds.sshattacker.protocol.message.ClientInitMessage;
 import de.rub.nds.sshattacker.protocol.message.Message;
 import de.rub.nds.sshattacker.state.SshContext;
 import de.rub.nds.sshattacker.workflow.action.MessageAction;
-import de.rub.nds.sshattacker.workflow.action.executor.MessageActionResult;
+import de.rub.nds.sshattacker.workflow.action.result.MessageActionResult;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import java.io.IOException;
 import java.util.Arrays;

@@ -16,6 +16,7 @@ import de.rub.nds.sshattacker.protocol.layers.CryptoLayer;
 import de.rub.nds.sshattacker.protocol.layers.MessageLayer;
 import de.rub.nds.sshattacker.util.Converter;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
+import java.io.IOException;
 import java.math.BigInteger;
 import java.util.List;
 
@@ -118,6 +119,8 @@ public class SshContext {
     private ChannelRequestType channelRequestType;
     private String channelCommand;
     private byte replyWanted;
+    
+    private Boolean receivedDisconnectMessage;
 
     public String getClientVersion() {
         return clientVersion;
@@ -763,6 +766,16 @@ public class SshContext {
     public void setReceivedTransportHandlerException(boolean receivedTransportHandlerException) {
         this.receivedTransportHandlerException = receivedTransportHandlerException;
     }
-    
-    
+
+    public Boolean getReceivedDisconnectMessage() {
+        return receivedDisconnectMessage;
+    }
+
+    public void setReceivedDisconnectMessage(Boolean receivedDisconnectMessage) {
+        this.receivedDisconnectMessage = receivedDisconnectMessage;
+    }
+
+    public void initTransportHandler() throws IOException {
+        transportHandler.initialize();
+    }
 }

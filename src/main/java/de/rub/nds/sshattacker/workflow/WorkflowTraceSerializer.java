@@ -12,7 +12,7 @@ import de.rub.nds.modifiablevariable.ModifiableVariable;
 import de.rub.nds.modifiablevariable.ModificationFilter;
 import de.rub.nds.modifiablevariable.VariableModification;
 import de.rub.nds.modifiablevariable.util.XMLPrettyPrinter;
-import de.rub.nds.tlsattacker.core.protocol.message.ProtocolMessage;
+import de.rub.nds.sshattacker.protocol.message.ProtocolMessage;
 import de.rub.nds.sshattacker.workflow.action.ReceiveAction;
 import de.rub.nds.sshattacker.workflow.action.SendAction;
 import de.rub.nds.sshattacker.workflow.action.SshAction;

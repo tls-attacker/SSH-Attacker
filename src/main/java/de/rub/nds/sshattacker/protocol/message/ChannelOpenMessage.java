@@ -71,7 +71,7 @@ public class ChannelOpenMessage extends Message {
     
     
     @Override
-    String toCompactString() {
+    public String toCompactString() {
         return this.getClass().getSimpleName();
     }
 

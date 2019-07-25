@@ -43,7 +43,7 @@ public class EcdhKeyExchangeInitMessage extends Message {
     }
 
     @Override
-    String toCompactString() {
+    public String toCompactString() {
         return "ECDHKeyExchangeInitMessage";
     }
 
@@ -52,7 +52,7 @@ public class EcdhKeyExchangeInitMessage extends Message {
         return new Handler(context) {
             @Override
             public void handle(Object msg) {
-                // TODO implement
+                // TODO not needed as Client
             }
         };
     }

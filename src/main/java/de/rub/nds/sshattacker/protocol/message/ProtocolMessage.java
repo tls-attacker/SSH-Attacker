@@ -12,9 +12,8 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bool.ModifiableBoolean;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
-//import de.rub.nds.sshattacker.constants.ProtocolMessageType;
-import de.rub.nds.sshattacker.protocol.ModifiableVariableHolder;
-import de.rub.nds.sshattacker.protocol.handler.ProtocolMessageHandler;
+import de.rub.nds.protocol.core.message.ModifiableVariableHolder;
+import de.rub.nds.sshattacker.protocol.handler.Handler;
 import de.rub.nds.sshattacker.state.SshContext;
 import java.lang.reflect.Field;
 import java.util.List;
@@ -146,5 +145,5 @@ public abstract class ProtocolMessage extends ModifiableVariableHolder {
 
     public abstract String toCompactString();
 
-    public abstract ProtocolMessageHandler getHandler(SshContext context);
+    public abstract Handler getHandler(SshContext context);
 }

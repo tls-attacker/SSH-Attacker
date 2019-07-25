@@ -225,7 +225,7 @@ public class EcdhKeyExchangeReplyMessage extends Message {
     }
 
     @Override
-    String toCompactString() {
+    public String toCompactString() {
         return "ECDHKeyExchangeReplyMessage";
     }
 

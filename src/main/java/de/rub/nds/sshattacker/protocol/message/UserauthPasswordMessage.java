@@ -71,7 +71,7 @@ public class UserauthPasswordMessage extends Message{
     
     
     @Override
-    String toCompactString() {
+    public String toCompactString() {
         return this.getClass().getSimpleName(); // TODO test
     }
 

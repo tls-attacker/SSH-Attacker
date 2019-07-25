@@ -9,13 +9,13 @@
 package de.rub.nds.sshattacker.workflow.action;
 
 import de.rub.nds.modifiablevariable.ModifiableVariable;
+import de.rub.nds.protocol.core.message.ModifiableVariableHolder;
 import de.rub.nds.sshattacker.exceptions.WorkflowExecutionException;
-import de.rub.nds.sshattacker.protocol.ModifiableVariableHolder;
 import de.rub.nds.sshattacker.protocol.message.BinaryPacket;
 import de.rub.nds.sshattacker.protocol.message.Message;
 import de.rub.nds.sshattacker.state.SshContext;
 import de.rub.nds.sshattacker.state.State;
-import de.rub.nds.sshattacker.workflow.action.executor.MessageActionResult;
+import de.rub.nds.sshattacker.workflow.action.result.MessageActionResult;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -72,16 +72,10 @@ public class SendAction extends MessageAction implements SendingAction {
             LOGGER.info("Sending messages (" + connectionAlias + "): " + sending);
         }
 
-        try {
-            MessageActionResult result = sendMessageHelper.sendMessages(messages, binaryPackets, sshContext);
-            messages = new ArrayList<>(result.getMessageList());
-            binaryPackets = new ArrayList<>(result.getBinaryPacketList());
-            setExecuted(true);
-        } catch (IOException E) {
-            sshContext.setReceivedTransportHandlerException(true);
-            LOGGER.debug(E);
-            setExecuted(false);
-        }
+        MessageActionResult result = sendMessageHelper.sendMessages(messages, binaryPackets, sshContext);
+        messages = new ArrayList<>(result.getMessageList());
+        binaryPackets = new ArrayList<>(result.getBinaryPacketList());
+        setExecuted(true);
     }
 
     @Override
@@ -136,7 +130,7 @@ public class SendAction extends MessageAction implements SendingAction {
         List<ModifiableVariableHolder> holders = new LinkedList<>();
         if (messages != null) {
             for (Message message : messages) {
-                holders.addAll(message.getAllModifiableVariableHolders());
+                holders.addAll((List<ModifiableVariableHolder>) message.getAllModifiableVariableHolders());
             }
         }
         if (getBinaryPackets() != null) {

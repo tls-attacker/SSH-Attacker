@@ -14,7 +14,7 @@ public class NewKeysMessage extends Message {
     }
 
     @Override
-    String toCompactString() {
+    public String toCompactString() {
         return "NewKeysMessage";
     }
 
