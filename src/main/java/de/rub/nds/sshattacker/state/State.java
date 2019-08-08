@@ -10,9 +10,9 @@ package de.rub.nds.sshattacker.state;
 
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.sshattacker.config.Config;
-import de.rub.nds.sshattacker.transport.AliasedConnection;
 import de.rub.nds.sshattacker.constants.RunningModeType;
 import de.rub.nds.sshattacker.exceptions.ConfigurationException;
+import de.rub.nds.sshattacker.transport.AliasedConnection;
 import de.rub.nds.sshattacker.workflow.WorkflowTrace;
 import de.rub.nds.sshattacker.workflow.WorkflowTraceNormalizer;
 import de.rub.nds.sshattacker.workflow.WorkflowTraceSerializer;
@@ -158,8 +158,7 @@ public class State {
      * Replace existing SshContext with new SshContext. This can only be done if
      * existingSshContext.connection equals newSshContext.connection.
      *
-     * @param newSshContext
-     *            The new SshContext to replace the old with
+     * @param newSshContext The new SshContext to replace the old with
      */
     public void replaceSshContext(SshContext newSshContext) {
         contextContainer.replaceSshContext(newSshContext);
@@ -193,8 +192,7 @@ public class State {
      * invalidation.
      *
      *
-     * @param alias
-     *            The Alias for which the TLSContext should be returned
+     * @param alias The Alias for which the TLSContext should be returned
      *
      * @return the context with the given connection end alias
      */
@@ -248,8 +246,7 @@ public class State {
      * Return a filtered copy of the given workflow trace. This method does not
      * modify the input trace.
      *
-     * @param trace
-     *            The workflow trace that should be filtered
+     * @param trace The workflow trace that should be filtered
      * @return A filtered copy of the input workflow trace
      */
     private WorkflowTrace getFilteredTraceCopy(WorkflowTrace trace) {
@@ -261,8 +258,7 @@ public class State {
     /**
      * Apply filters to trace in place.
      *
-     * @param trace
-     *            The workflow trace that should be filtered
+     * @param trace The workflow trace that should be filtered
      */
     private void filterTrace(WorkflowTrace trace) {
         List<FilterType> filters = config.getOutputFilters();

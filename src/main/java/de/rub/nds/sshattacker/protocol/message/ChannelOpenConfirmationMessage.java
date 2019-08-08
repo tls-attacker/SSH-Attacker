@@ -8,7 +8,7 @@ import de.rub.nds.sshattacker.protocol.handler.Handler;
 import de.rub.nds.sshattacker.state.SshContext;
 
 public class ChannelOpenConfirmationMessage extends Message {
-    
+
     private ModifiableInteger recipientChannel;
     private ModifiableInteger senderChannel;
     private ModifiableInteger windowSize;
@@ -21,7 +21,7 @@ public class ChannelOpenConfirmationMessage extends Message {
     public void setRecipientChannel(ModifiableInteger recipientChannel) {
         this.recipientChannel = recipientChannel;
     }
-    
+
     public void setRecipientChannel(int recipientChannel) {
         this.recipientChannel = ModifiableVariableFactory.safelySetValue(this.recipientChannel, recipientChannel);
     }
@@ -33,7 +33,7 @@ public class ChannelOpenConfirmationMessage extends Message {
     public void setSenderChannel(ModifiableInteger senderChannel) {
         this.senderChannel = senderChannel;
     }
-    
+
     public void setSenderChannel(Integer senderChannel) {
         this.senderChannel = ModifiableVariableFactory.safelySetValue(this.senderChannel, senderChannel);
     }
@@ -45,7 +45,7 @@ public class ChannelOpenConfirmationMessage extends Message {
     public void setWindowSize(ModifiableInteger windowSize) {
         this.windowSize = windowSize;
     }
-    
+
     public void setWindowSize(Integer windowSize) {
         this.windowSize = ModifiableVariableFactory.safelySetValue(this.windowSize, windowSize);
     }
@@ -57,13 +57,11 @@ public class ChannelOpenConfirmationMessage extends Message {
     public void setPacketSize(ModifiableInteger packetSize) {
         this.packetSize = packetSize;
     }
-    
+
     public void setPacketSize(Integer packetSize) {
         this.packetSize = ModifiableVariableFactory.safelySetValue(this.packetSize, packetSize);
     }
-    
-    
-    
+
     @Override
     public String toCompactString() {
         return this.getClass().getSimpleName();
@@ -78,6 +76,5 @@ public class ChannelOpenConfirmationMessage extends Message {
     public Serializer getSerializer() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-
 
 }

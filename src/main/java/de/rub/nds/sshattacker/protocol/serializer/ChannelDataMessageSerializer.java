@@ -6,14 +6,14 @@ import de.rub.nds.sshattacker.util.Converter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class ChannelDataMessageSerializer extends MessageSerializer<ChannelDataMessage>{
+public class ChannelDataMessageSerializer extends MessageSerializer<ChannelDataMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
     public ChannelDataMessageSerializer(ChannelDataMessage msg) {
         super(msg);
     }
-    
+
     @Override
     protected byte[] serializeMessageSpecificPayload() {
         LOGGER.debug("recipientChannel: " + msg.getRecipientChannel().getValue());

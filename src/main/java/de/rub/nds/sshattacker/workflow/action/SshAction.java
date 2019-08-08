@@ -1,9 +1,9 @@
 package de.rub.nds.sshattacker.workflow.action;
 
-import de.rub.nds.sshattacker.transport.Aliasable;
 import de.rub.nds.sshattacker.exceptions.ConfigurationException;
 import de.rub.nds.sshattacker.exceptions.WorkflowExecutionException;
 import de.rub.nds.sshattacker.state.State;
+import de.rub.nds.sshattacker.transport.Aliasable;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.LinkedHashSet;
@@ -30,11 +30,11 @@ public abstract class SshAction implements Serializable, Aliasable {
 
     @XmlTransient
     private final Set<String> aliases = new LinkedHashSet<>();
-    
-    public SshAction(){
+
+    public SshAction() {
     }
-    
-        public boolean isExecuted() {
+
+    public boolean isExecuted() {
         if (executed == null) {
             return EXECUTED_DEFAULT;
         }
@@ -52,7 +52,7 @@ public abstract class SshAction implements Serializable, Aliasable {
     public void setSingleConnectionWorkflow(Boolean singleConnectionWorkflow) {
         this.singleConnectionWorkflow = singleConnectionWorkflow;
     }
-    
+
     public abstract void execute(State state) throws WorkflowExecutionException;
 
     public abstract void reset();
@@ -67,8 +67,7 @@ public abstract class SshAction implements Serializable, Aliasable {
     /**
      * Add default values from given defaultAction and initialize empty fields.
      *
-     * @param defaultAction
-     *            Not needed / not evaluated
+     * @param defaultAction Not needed / not evaluated
      */
     public void normalize(SshAction defaultAction) {
         // We don't need any defaults
@@ -83,8 +82,7 @@ public abstract class SshAction implements Serializable, Aliasable {
     /**
      * Filter empty fields and default values given in defaultAction.
      *
-     * @param defaultAction
-     *            Not needed / not evaluated
+     * @param defaultAction Not needed / not evaluated
      */
     public void filter(SshAction defaultAction) {
     }

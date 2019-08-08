@@ -16,10 +16,10 @@ public class ChannelOpenMessage extends Message {
     private ModifiableInteger windowSize;
     private ModifiableInteger packetSize;
 
-    public ChannelOpenMessage(){
+    public ChannelOpenMessage() {
         messageID = ModifiableVariableFactory.safelySetValue(messageID, MessageIDConstant.SSH_MSG_CHANNEL_OPEN.id);
     }
-    
+
     public ModifiableString getChannelType() {
         return channelType;
     }
@@ -27,7 +27,7 @@ public class ChannelOpenMessage extends Message {
     public void setChannelType(ModifiableString channelType) {
         this.channelType = channelType;
     }
-    
+
     public void setChannelType(String channelType) {
         this.channelType = ModifiableVariableFactory.safelySetValue(this.channelType, channelType);
     }
@@ -39,7 +39,7 @@ public class ChannelOpenMessage extends Message {
     public void setSenderChannel(ModifiableInteger senderChannel) {
         this.senderChannel = senderChannel;
     }
-    
+
     public void setSenderChannel(Integer senderChannel) {
         this.senderChannel = ModifiableVariableFactory.safelySetValue(this.senderChannel, senderChannel);
     }
@@ -51,7 +51,7 @@ public class ChannelOpenMessage extends Message {
     public void setWindowSize(ModifiableInteger windowSize) {
         this.windowSize = windowSize;
     }
-    
+
     public void setWindowSize(Integer windowSize) {
         this.windowSize = ModifiableVariableFactory.safelySetValue(this.windowSize, windowSize);
     }
@@ -63,13 +63,11 @@ public class ChannelOpenMessage extends Message {
     public void setPacketSize(ModifiableInteger packetSize) {
         this.packetSize = packetSize;
     }
-    
+
     public void setPacketSize(Integer packetSize) {
         this.packetSize = ModifiableVariableFactory.safelySetValue(this.packetSize, packetSize);
     }
-    
-    
-    
+
     @Override
     public String toCompactString() {
         return this.getClass().getSimpleName();

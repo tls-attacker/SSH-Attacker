@@ -12,7 +12,6 @@ public class EcdhKeyExchangeReplyMessageHandler extends Handler<EcdhKeyExchangeR
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    
     public EcdhKeyExchangeReplyMessageHandler(SshContext context) {
         super(context);
     }

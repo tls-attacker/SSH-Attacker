@@ -22,215 +22,111 @@ public class Chooser {
     }
 
     public String getClientVersion() {
-        if (context.getClientVersion() != null) {
-            return context.getClientVersion();
-        } else {
-            return config.getClientVersion();
-        }
+        return context.getClientVersion().orElse(config.getClientVersion());
     }
 
     public String getClientComment() {
-        if (context.getClientComment() != null) {
-            return context.getClientComment();
-        } else {
-            return config.getClientComment();
-        }
+        return context.getClientComment().orElse(config.getClientComment());
     }
 
     public String getServerVersion() {
-        if (context.getServerVersion() != null) {
-            return context.getServerVersion();
-        } else {
-            return config.getServerVersion();
-        }
+        return context.getServerVersion().orElse(config.getServerVersion());
     }
 
     public String getServerComment() {
-        if (context.getServerComment() != null) {
-            return context.getServerComment();
-        } else {
-            return config.getServerComment();
-        }
+        return context.getServerComment().orElse(config.getServerComment());
     }
 
     public byte[] getClientCookie() {
-        if (context.getClientCookie() != null) {
-            return context.getClientCookie();
-        } else {
-            return config.getClientCookie();
-        }
+        return context.getClientCookie().orElse(config.getClientCookie());
     }
 
     public byte[] getServerCookie() {
-        if (context.getServerCookie() != null) {
-            return context.getServerCookie();
-        } else {
-            return config.getServerCookie();
-        }
+        return context.getServerCookie().orElse(config.getServerCookie());
     }
 
     public List<KeyExchangeAlgorithm> getClientSupportedKeyExchangeAlgorithms() {
-        if (context.getClientSupportedKeyExchangeAlgorithms() != null) {
-            return context.getClientSupportedKeyExchangeAlgorithms();
-        } else {
-            return config.getClientSupportedKeyExchangeAlgorithms();
-        }
+        return context.getClientSupportedKeyExchangeAlgorithms().orElse(config.getClientSupportedKeyExchangeAlgorithms());
     }
 
     public List<KeyExchangeAlgorithm> getServerSupportedKeyExchangeAlgorithms() {
-        if (context.getServerSupportedKeyExchangeAlgorithms() != null) {
-            return context.getServerSupportedKeyExchangeAlgorithms();
-        } else {
-            return config.getServerSupportedKeyExchangeAlgorithms();
-        }
+        return context.getServerSupportedKeyExchangeAlgorithms().orElse(config.getServerSupportedKeyExchangeAlgorithms());
     }
 
     public List<PublicKeyAuthenticationAlgorithm> getClientSupportedHostKeyAlgorithms() {
-        if (context.getClientSupportedHostKeyAlgorithms() != null) {
-            return context.getClientSupportedHostKeyAlgorithms();
-        } else {
-            return config.getClientSupportedHostKeyAlgorithms();
-        }
+        return context.getClientSupportedHostKeyAlgorithms().orElse(config.getClientSupportedHostKeyAlgorithms());
     }
 
     public List<PublicKeyAuthenticationAlgorithm> getServerSupportedHostKeyAlgorithms() {
-        if (context.getServerSupportedHostKeyAlgorithms() != null) {
-            return context.getServerSupportedHostKeyAlgorithms();
-        } else {
-            return config.getServerSupportedHostKeyAlgorithms();
-        }
+        return context.getServerSupportedHostKeyAlgorithms().orElse(config.getServerSupportedHostKeyAlgorithms());
     }
 
     public List<EncryptionAlgorithm> getClientSupportedCipherAlgorithmsClientToServer() {
-        if (context.getClientSupportedCipherAlgorithmsClientToServer() != null) {
-            return context.getClientSupportedCipherAlgorithmsClientToServer();
-        } else {
-            return config.getClientSupportedCipherAlgorithmsClientToServer();
-        }
+        return context.getClientSupportedCipherAlgorithmsClientToServer().orElse(config.getClientSupportedCipherAlgorithmsClientToServer());
     }
 
     public List<EncryptionAlgorithm> getClientSupportedCipherAlgorithmsServertoClient() {
-        if (context.getClientSupportedCipherAlgorithmsServerToClient() != null) {
-            return context.getClientSupportedCipherAlgorithmsServerToClient();
-        } else {
-            return config.getClientSupportedCipherAlgorithmsServerToClient();
-        }
+        return context.getClientSupportedCipherAlgorithmsServertoClient().orElse(config.getClientSupportedCipherAlgorithmsServerToClient());
     }
 
     public List<EncryptionAlgorithm> getServerSupportedCipherAlgorithmsServerToClient() {
-        if (context.getServerSupportedCipherAlgorithmsServerToClient() != null) {
-            return context.getServerSupportedCipherAlgorithmsServerToClient();
-        } else {
-            return config.getServerSupportedCipherAlgorithmsServerToClient();
-        }
+        return context.getServerSupportedCipherAlgorithmsServerToClient().orElse(config.getServerSupportedCipherAlgorithmsServerToClient());
     }
 
     public List<EncryptionAlgorithm> getServerSupportedCipherAlgorithmsClientToServer() {
-        if (context.getServerSupportedCipherAlgorithmsClientToServer() != null) {
-            return context.getServerSupportedCipherAlgorithmsClientToServer();
-        } else {
-            return config.getServerSupportedCipherAlgorithmsClientToServer();
-        }
+        return context.getServerSupportedCipherAlgorithmsClientToServer().orElse(config.getServerSupportedCipherAlgorithmsClientToServer());
     }
 
     public List<MacAlgorithm> getClientSupportedMacAlgorithmsClientToServer() {
-        if (context.getClientSupportedMacAlgorithmsClientToServer() != null) {
-            return context.getClientSupportedMacAlgorithmsClientToServer();
-        } else {
-            return config.getClientSupportedMacAlgorithmsClientToServer();
-        }
+        return context.getClientSupportedMacAlgorithmsClientToServer().orElse(config.getClientSupportedMacAlgorithmsClientToServer());
     }
 
     public List<MacAlgorithm> getClientSupportedMacAlgorithmsServerToClient() {
-        if (context.getClientSupportedMacAlgorithmsServerToClient() != null) {
-            return context.getClientSupportedMacAlgorithmsServerToClient();
-        } else {
-            return config.getClientSupportedMacAlgorithmsServerToClient();
-        }
+        return context.getClientSupportedMacAlgorithmsServerToClient().orElse(config.getClientSupportedMacAlgorithmsServerToClient());
     }
 
     public List<MacAlgorithm> getServerSupportedMacAlgorithmsServerToClient() {
-        if (context.getServerSupportedMacAlgorithmsServerToClient() != null) {
-            return context.getServerSupportedMacAlgorithmsServerToClient();
-        } else {
-            return config.getServerSupportedMacAlgorithmsServerToClient();
-        }
+        return context.getServerSupportedMacAlgorithmsServerToClient().orElse(config.getServerSupportedMacAlgorithmsServerToClient());
     }
 
     public List<MacAlgorithm> getServerSupportedMacAlgorithmsClientToServer() {
-        if (context.getServerSupportedMacAlgorithmsClientToServer() != null) {
-            return context.getServerSupportedMacAlgorithmsClientToServer();
-        } else {
-            return config.getServerSupportedMacAlgorithmsClientToServer();
-        }
+        return context.getServerSupportedMacAlgorithmsClientToServer().orElse(config.getServerSupportedMacAlgorithmsClientToServer());
     }
 
     public List<CompressionAlgorithm> getClientSupportedCompressionAlgorithmsClientToServer() {
-        if (context.getClientSupportedCompressionAlgorithmsClientToServer() != null) {
-            return context.getClientSupportedCompressionAlgorithmsClientToServer();
-        } else {
-            return config.getClientSupportedCompressionAlgorithmsClientToServer();
-        }
+        return context.getClientSupportedCompressionAlgorithmsClientToServer().orElse(config.getClientSupportedCompressionAlgorithmsClientToServer());
     }
 
     public List<CompressionAlgorithm> getClientSupportedCompressionAlgorithmsServerToClient() {
-        if (context.getClientSupportedCompressionAlgorithmsServerToClient() != null) {
-            return context.getClientSupportedCompressionAlgorithmsServerToClient();
-        } else {
-            return config.getClientSupportedCompressionAlgorithmsServerToClient();
-        }
+        return context.getClientSupportedCompressionAlgorithmsServerToClient().orElse(config.getClientSupportedCompressionAlgorithmsServerToClient());
     }
 
     public List<CompressionAlgorithm> getServerSupportedCompressionAlgorithmsServerToClient() {
-        if (context.getServerSupportedCompressionAlgorithmsServerToClient() != null) {
-            return context.getServerSupportedCompressionAlgorithmsServerToClient();
-        } else {
-            return config.getServerSupportedCompressionAlgorithmsServerToClient();
-        }
+        return context.getServerSupportedCompressionAlgorithmsServerToClient().orElse(config.getServerSupportedCompressionAlgorithmsServerToClient());
     }
 
     public List<CompressionAlgorithm> getServerSupportedCompressionAlgorithmsClientToServer() {
-        if (context.getServerSupportedCompressionAlgorithmsClientToServer() != null) {
-            return context.getServerSupportedCompressionAlgorithmsClientToServer();
-        } else {
-            return config.getServerSupportedCompressionAlgorithmsClientToServer();
-        }
+        return context.getServerSupportedCompressionAlgorithmsClientToServer().orElse(config.getServerSupportedCompressionAlgorithmsClientToServer());
     }
 
     public List<Language> getClientSupportedLanguagesClientToServer() {
-        if (context.getClientSupportedLanguagesClientToServer() != null) {
-            return context.getClientSupportedLanguagesClientToServer();
-        } else {
-            return config.getClientSupportedLanguagesClientToServer();
-        }
+        return context.getClientSupportedLanguagesClientToServer().orElse(config.getClientSupportedLanguagesClientToServer());
     }
 
     public List<Language> getClientSupportedLanguagesServerToClient() {
-        if (context.getClientSupportedLanguagesServerToClient() != null) {
-            return context.getClientSupportedLanguagesServerToClient();
-        } else {
-            return config.getClientSupportedLanguagesServerToClient();
-        }
+        return context.getClientSupportedLanguagesServerToClient().orElse(config.getClientSupportedLanguagesServerToClient());
     }
 
     public List<Language> getServerSupportedLanguagesServerToClient() {
-        if (context.getServerSupportedLanguagesServerToClient() != null) {
-            return context.getServerSupportedLanguagesServerToClient();
-        } else {
-            return config.getServerSupportedLanguagesServerToClient();
-        }
+        return context.getServerSupportedLanguagesServerToClient().orElse(config.getServerSupportedLanguagesServerToClient());
     }
 
     public List<Language> getServerSupportedLanguagesClientToServer() {
-        if (context.getServerSupportedLanguagesClientToServer() != null) {
-            return context.getServerSupportedLanguagesClientToServer();
-        } else {
-            return config.getServerSupportedLanguagesClientToServer();
-        }
+        return context.getServerSupportedLanguagesClientToServer().orElse(config.getServerSupportedLanguagesClientToServer());
     }
 
     public byte getClientFirstKeyExchangePacketFollows() {
-        if (context.getClientFirstKeyExchangePacketFollows() != null) {
+        if (context.getClientFirstKeyExchangePacketFollows() != 0) {
             return context.getClientFirstKeyExchangePacketFollows();
         } else {
             return config.getClientFirstKeyExchangePacketFollows();
@@ -238,7 +134,7 @@ public class Chooser {
     }
 
     public byte getServerFirstKeyExchangePacketFollows() {
-        if (context.getServerFirstKeyExchangePacketFollows() != null) {
+        if (context.getServerFirstKeyExchangePacketFollows() != 0) {
             return context.getServerFirstKeyExchangePacketFollows();
         } else {
             return config.getServerFirstKeyExchangePacketFollows();
@@ -246,7 +142,7 @@ public class Chooser {
     }
 
     public int getClientReserved() {
-        if (context.getClientReserved() != null) {
+        if (context.getClientReserved() != 0) {
             return context.getClientReserved();
         } else {
             return config.getClientReserved();
@@ -254,7 +150,7 @@ public class Chooser {
     }
 
     public int getServerReserved() {
-        if (context.getServerReserved() != null) {
+        if (context.getServerReserved() != 0) {
             return context.getServerReserved();
         } else {
             return config.getServerReserved();
@@ -310,47 +206,47 @@ public class Chooser {
 //            return config.getLocalChannel();
 //        }
     }
-    
+
     public ChannelType getChannelType() {
-        if (context.getChannelType() != null){
+        if (context.getChannelType() != null) {
             return context.getChannelType();
         } else {
             return config.getChannelType();
         }
     }
-    
+
     public int getWindowSize() {
-        if (context.getWindowSize() != 0){
+        if (context.getWindowSize() != 0) {
             return context.getWindowSize();
         } else {
             return config.getWindowSize();
         }
     }
-    
+
     public int getPacketSize() {
-        if (context.getPacketSize() != 0){
+        if (context.getPacketSize() != 0) {
             return context.getPacketSize();
         } else {
             return config.getPacketSize();
         }
     }
-    
+
     public ChannelRequestType getChannelRequestType() {
-        if (context.getChannelRequestType() != null){
+        if (context.getChannelRequestType() != null) {
             return context.getChannelRequestType();
         } else {
             return config.getChannelRequestType();
         }
     }
-    
+
     public String getChannelCommand() {
-        if (context.getChannelCommand() != null){
+        if (context.getChannelCommand() != null) {
             return context.getChannelCommand();
         } else {
             return config.getChannelCommand();
         }
     }
-    
+
     public int getRemoteChannel() {
         return 0;
 //        if (context.getRemoteChannel() != 0){

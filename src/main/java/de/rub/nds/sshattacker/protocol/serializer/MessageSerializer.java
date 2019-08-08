@@ -1,12 +1,7 @@
 package de.rub.nds.sshattacker.protocol.serializer;
 
 import de.rub.nds.protocol.core.message.Serializer;
-import de.rub.nds.sshattacker.constants.MessageIDConstant;
-import de.rub.nds.sshattacker.protocol.message.EcdhKeyExchangeInitMessage;
-import de.rub.nds.sshattacker.protocol.message.EcdhKeyExchangeReplyMessage;
-import de.rub.nds.sshattacker.protocol.message.KeyExchangeInitMessage;
 import de.rub.nds.sshattacker.protocol.message.Message;
-import de.rub.nds.sshattacker.protocol.message.NewKeysMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -31,6 +26,6 @@ public abstract class MessageSerializer<T extends Message> extends Serializer<Me
 
     // TODO cleanup?
     public static <T extends Message> byte[] delegateSerialization(T message) {
-          return message.getSerializer().serialize();
+        return message.getSerializer().serialize();
     }
 }

@@ -6,10 +6,8 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.constants.CharConstants;
 import de.rub.nds.sshattacker.constants.DataFormatConstants;
 import java.io.UnsupportedEncodingException;
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.stream.Collectors;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -32,7 +30,7 @@ public class Converter {
 
         String[] splitted = string.split(String.valueOf(CharConstants.ALGORITHM_SEPARATOR));
         List list = new LinkedList();
-        for (String algo : splitted){
+        for (String algo : splitted) {
             Enum myenum = Enum.valueOf(myClass, toEnumName(algo).toUpperCase());
             list.add(myenum);
         }

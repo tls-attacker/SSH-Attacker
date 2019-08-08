@@ -45,7 +45,7 @@ public class DefaultWorkflowExecutor extends WorkflowExecutor {
                 LOGGER.debug("Connection for " + ctx + " initiliazed");
             }
         }
-        
+
         // why are you resetting?
 //        state.getWorkflowTrace().reset();
         int numSshContexts = allSshContexts.size();

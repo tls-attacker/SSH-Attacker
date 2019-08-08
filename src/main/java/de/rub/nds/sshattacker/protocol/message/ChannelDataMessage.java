@@ -18,8 +18,8 @@ public class ChannelDataMessage extends Message {
     public ChannelDataMessage() {
         messageID = ModifiableVariableFactory.safelySetValue(messageID, MessageIDConstant.SSH_MSG_CHANNEL_DATA.id);
     }
-    
-    public ChannelDataMessage(int recipientChannel, byte[] data){
+
+    public ChannelDataMessage(int recipientChannel, byte[] data) {
         this();
         this.recipientChannel = ModifiableVariableFactory.safelySetValue(this.recipientChannel, recipientChannel);
         this.data = ModifiableVariableFactory.safelySetValue(this.data, data);

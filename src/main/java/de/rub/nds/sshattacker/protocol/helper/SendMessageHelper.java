@@ -7,8 +7,8 @@ import de.rub.nds.sshattacker.protocol.message.BinaryPacket;
 import de.rub.nds.sshattacker.protocol.message.ClientInitMessage;
 import de.rub.nds.sshattacker.protocol.message.Message;
 import de.rub.nds.sshattacker.state.SshContext;
-import de.rub.nds.sshattacker.workflow.action.result.MessageActionResult;
 import de.rub.nds.sshattacker.transport.TransportHandler;
+import de.rub.nds.sshattacker.workflow.action.result.MessageActionResult;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
@@ -18,51 +18,46 @@ import org.apache.logging.log4j.Logger;
 public class SendMessageHelper {
 
     private static final Logger LOGGER = LogManager.getLogger();
-    
-    public MessageActionResult sendMessage(Message msg, SshContext context){
+
+    public MessageActionResult sendMessage(Message msg, SshContext context) {
         MessageLayer messageLayer = context.getMessageLayer();
         BinaryPacketLayer binaryPacketLayer = context.getBinaryPacketLayer();
         TransportHandler transportHandler = context.getTransportHandler();
         CryptoLayer cryptoLayer = context.getCryptoLayer();
-        
-        try{
+
+        try {
             BinaryPacket binaryPacket = messageLayer.serializeMessage(msg);
             transportHandler.sendData(cryptoLayer.macAndEncrypt(binaryPacketLayer.serializeBinaryPacket(binaryPacket)));
             context.incrementSequenceNumber();
             return new MessageActionResult(Arrays.asList(binaryPacket), Arrays.asList(msg));
-        }
-        catch (IOException e)
-        {
+        } catch (IOException e) {
             LOGGER.warn("Error while sending packet: " + e.getMessage());
             return new MessageActionResult();
         }
     }
-    
+
     public MessageActionResult sendMessages(List<Message> list, SshContext context) {
         MessageActionResult result = new MessageActionResult();
-        for(Message msg : list){
-            if ("ClientInitMessage".equals(msg.getClass().getSimpleName())){
+        for (Message msg : list) {
+            if ("ClientInitMessage".equals(msg.getClass().getSimpleName())) {
                 sendInitMessage((ClientInitMessage) msg, context);
-            }
-            else
-            {
+            } else {
                 result.merge(sendMessage(msg, context));
             }
         }
         return result;
     }
-    
+
     // TODO dummy
     public MessageActionResult sendMessages(List<Message> messageList, List<BinaryPacket> binaryPackets, SshContext context) {
         return sendMessages(messageList, context);
     }
-    
-    public void sendInitMessage(ClientInitMessage msg, SshContext context){
+
+    public void sendInitMessage(ClientInitMessage msg, SshContext context) {
         TransportHandler transport = context.getTransportHandler();
-        try{
+        try {
             transport.sendData(msg.getSerializer().serialize());
-        }
-        catch (IOException e){
+        } catch (IOException e) {
             LOGGER.debug("Error while sending ClientInitMessage" + e.getMessage());
         }
     }

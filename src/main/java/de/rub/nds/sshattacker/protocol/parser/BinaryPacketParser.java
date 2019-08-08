@@ -11,7 +11,6 @@ import java.util.ArrayList;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.bouncycastle.crypto.tls.MACAlgorithm;
 
 public class BinaryPacketParser extends Parser<BinaryPacket> {
 
@@ -52,7 +51,7 @@ public class BinaryPacketParser extends Parser<BinaryPacket> {
         ModifiableByteArray mac = ModifiableVariableFactory.safelySetValue(null, parseArrayOrTillEnd(20)); //TODO hardcoded hmac-sha1 size
         if (mac.getValue().length == 0) {
             LOGGER.debug("MAC: none");
-            msg.setMac(new byte[] {});
+            msg.setMac(new byte[]{});
         } else {
             LOGGER.debug("MAC: " + mac);
             msg.setMac(mac);
@@ -69,10 +68,10 @@ public class BinaryPacketParser extends Parser<BinaryPacket> {
         parseMAC(msg);
         return msg;
     }
-    
-    public List<BinaryPacket> parseAll(){
+
+    public List<BinaryPacket> parseAll() {
         List<BinaryPacket> list = new ArrayList<>();
-        while(getBytesLeft()>= BinaryPacketConstants.LENGTH_FIELD_LENGTH){
+        while (getBytesLeft() >= BinaryPacketConstants.LENGTH_FIELD_LENGTH) {
             list.add(parse());
         }
         return list;

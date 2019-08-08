@@ -9,19 +9,19 @@ import de.rub.nds.sshattacker.protocol.handler.ServiceAcceptMessageHandler;
 import de.rub.nds.sshattacker.protocol.serializer.ServiceAcceptMessageSerializer;
 import de.rub.nds.sshattacker.state.SshContext;
 
-public class ServiceAcceptMessage extends Message{
+public class ServiceAcceptMessage extends Message {
 
     private ModifiableString serviceName;
 
-    public ServiceAcceptMessage(){
+    public ServiceAcceptMessage() {
         messageID = ModifiableVariableFactory.safelySetValue(this.messageID, MessageIDConstant.SSH_MSG_SERVICE_ACCEPT.id);
     }
-    
-    public ServiceAcceptMessage(String serviceName){
+
+    public ServiceAcceptMessage(String serviceName) {
         this();
         this.serviceName = ModifiableVariableFactory.safelySetValue(this.serviceName, serviceName);
     }
-    
+
     public ModifiableString getServiceName() {
         return serviceName;
     }
@@ -29,11 +29,11 @@ public class ServiceAcceptMessage extends Message{
     public void setServiceName(ModifiableString serviceName) {
         this.serviceName = serviceName;
     }
-    
+
     public void setServiceName(String serviceName) {
         this.serviceName = ModifiableVariableFactory.safelySetValue(this.serviceName, serviceName);
     }
-    
+
     @Override
     public String toCompactString() {
         return this.getClass().getSimpleName(); // TODO test?

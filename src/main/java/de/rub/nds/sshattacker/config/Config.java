@@ -5,14 +5,13 @@ import de.rub.nds.sshattacker.connection.InboundConnection;
 import de.rub.nds.sshattacker.connection.OutboundConnection;
 import de.rub.nds.sshattacker.constants.ChannelRequestType;
 import de.rub.nds.sshattacker.constants.ChannelType;
-import de.rub.nds.sshattacker.constants.EncryptionAlgorithm;
 import de.rub.nds.sshattacker.constants.CompressionAlgorithm;
+import de.rub.nds.sshattacker.constants.EncryptionAlgorithm;
 import de.rub.nds.sshattacker.constants.KeyExchangeAlgorithm;
 import de.rub.nds.sshattacker.constants.Language;
 import de.rub.nds.sshattacker.constants.MacAlgorithm;
 import de.rub.nds.sshattacker.constants.PublicKeyAuthenticationAlgorithm;
 import de.rub.nds.sshattacker.constants.RunningModeType;
-import de.rub.nds.sshattacker.constants.ServiceType;
 import de.rub.nds.sshattacker.workflow.factory.WorkflowTraceType;
 import de.rub.nds.sshattacker.workflow.filter.FilterType;
 import java.io.File;
@@ -33,6 +32,7 @@ public class Config implements Serializable {
     private static final String DEFAULT_CONFIG_FILE = "/default_config.xml";
 
     private static final ConfigCache DEFAULT_CONFIG_CACHE;
+
     static {
         DEFAULT_CONFIG_CACHE = new ConfigCache(createConfig());
     }
@@ -92,29 +92,29 @@ public class Config implements Serializable {
     private InboundConnection defaultServerConnection;
 
     private RunningModeType defaultRunningMode = RunningModeType.CLIENT;
-    
+
     private Boolean filtersKeepUserSettings = true;
-    
+
     private String workflowInput = null;
-    
+
     private WorkflowTraceType workflowTraceType = null;
-    
+
     private List<FilterType> outputFilters;
-    
+
     private String workflowOutput = null;
 
     private Boolean applyFiltersInPlace = true;
 
     private Boolean workflowExecutorShouldOpen = true;
-    
+
     private Boolean stopActionsAfterDisconnect = true;
-    
+
     private Boolean stopActionsAfterIOException = true;
-    
+
     private Boolean workflowExecutorShouldClose = true;
-    
+
     private Boolean resetWorkflowtracesBeforeSaving = true;
-    
+
     private String configOutput = null;
 
     public Config() {
@@ -181,7 +181,7 @@ public class Config implements Serializable {
         channelRequestType = ChannelRequestType.EXEC;
         channelCommand = "nc -l -p 13370";
         replyWanted = 0;
-        
+
         workflowTraceType = WorkflowTraceType.FULL;
         outputFilters = new ArrayList<>();
         outputFilters.add(FilterType.DEFAULT);
@@ -195,7 +195,7 @@ public class Config implements Serializable {
         InputStream stream = Config.class.getResourceAsStream(DEFAULT_CONFIG_FILE);
         return ConfigIO.read(stream);
     }
-    
+
     public static Config createConfig(File f) {
         return ConfigIO.read(f);
     }
@@ -465,7 +465,7 @@ public class Config implements Serializable {
     public void setRemoteChannel(int remoteChannel) {
         this.remoteChannel = remoteChannel;
     }
-    
+
     public Boolean isFiltersKeepUserSettings() {
         return filtersKeepUserSettings;
     }
@@ -473,15 +473,15 @@ public class Config implements Serializable {
     public void setFiltersKeepUserSettings(Boolean filtersKeepUserSettings) {
         this.filtersKeepUserSettings = filtersKeepUserSettings;
     }
-    
+
     public void setWorkflowInput(String workflowInput) {
         this.workflowInput = workflowInput;
     }
-    
+
     public String getWorkflowInput() {
         return workflowInput;
     }
-    
+
     public WorkflowTraceType getWorkflowTraceType() {
         return workflowTraceType;
     }
@@ -489,7 +489,7 @@ public class Config implements Serializable {
     public void setWorkflowTraceType(WorkflowTraceType workflowTraceType) {
         this.workflowTraceType = workflowTraceType;
     }
-    
+
     public List<FilterType> getOutputFilters() {
         return outputFilters;
     }
@@ -497,7 +497,7 @@ public class Config implements Serializable {
     public void setOutputFilters(List<FilterType> outputFilters) {
         this.outputFilters = outputFilters;
     }
-    
+
     public String getWorkflowOutput() {
         return workflowOutput;
     }
@@ -505,7 +505,7 @@ public class Config implements Serializable {
     public void setWorkflowOutput(String workflowOutput) {
         this.workflowOutput = workflowOutput;
     }
-    
+
     public Boolean isApplyFiltersInPlace() {
         return applyFiltersInPlace;
     }
@@ -561,5 +561,5 @@ public class Config implements Serializable {
     public void setConfigOutput(String configOutput) {
         this.configOutput = configOutput;
     }
-    
+
 }

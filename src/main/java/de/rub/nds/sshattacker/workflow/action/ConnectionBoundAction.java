@@ -8,8 +8,8 @@
  */
 package de.rub.nds.sshattacker.workflow.action;
 
-import de.rub.nds.sshattacker.transport.AliasedConnection;
 import de.rub.nds.sshattacker.exceptions.ConfigurationException;
+import de.rub.nds.sshattacker.transport.AliasedConnection;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Objects;
@@ -66,12 +66,16 @@ public abstract class ConnectionBoundAction extends SshAction {
     @Override
     public boolean containsAllAliases(Collection<String> aliases) {
         return getAllAliases().containsAll(aliases);
-    };
+    }
+
+    ;
 
     @Override
     public boolean containsAlias(String alias) {
         return getAllAliases().contains(alias);
-    };
+    }
+
+    ;
 
     @Override
     public void assertAliasesSetProperly() throws ConfigurationException {

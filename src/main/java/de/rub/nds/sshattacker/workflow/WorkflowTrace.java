@@ -8,10 +8,10 @@
  */
 package de.rub.nds.sshattacker.workflow;
 
-import de.rub.nds.sshattacker.transport.AliasedConnection;
 import de.rub.nds.sshattacker.connection.InboundConnection;
 import de.rub.nds.sshattacker.connection.OutboundConnection;
 import de.rub.nds.sshattacker.exceptions.ConfigurationException;
+import de.rub.nds.sshattacker.transport.AliasedConnection;
 import de.rub.nds.sshattacker.workflow.action.*;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -52,8 +52,7 @@ public class WorkflowTrace implements Serializable {
      * arises because the classes are configured for nice JAXB output, and not
      * for copying/storing full objects.
      *
-     * @param orig
-     *            the original WorkflowTrace object to copy
+     * @param orig the original WorkflowTrace object to copy
      * @return a copy of the original WorkflowTrace
      */
     public static WorkflowTrace copy(WorkflowTrace orig) {
@@ -77,9 +76,10 @@ public class WorkflowTrace implements Serializable {
         return copy;
     }
 
-    @XmlElements(value = { @XmlElement(type = AliasedConnection.class, name = "AliasedConnection"),
-            @XmlElement(type = InboundConnection.class, name = "InboundConnection"),
-            @XmlElement(type = OutboundConnection.class, name = "OutboundConnection") })
+    @XmlElements(value = {
+        @XmlElement(type = AliasedConnection.class, name = "AliasedConnection"),
+        @XmlElement(type = InboundConnection.class, name = "InboundConnection"),
+        @XmlElement(type = OutboundConnection.class, name = "OutboundConnection")})
     private List<AliasedConnection> connections = new ArrayList<>();
 
     private List<SshAction> sshActions = new ArrayList<>();
@@ -161,8 +161,7 @@ public class WorkflowTrace implements Serializable {
      * doing. Unless you are manually configuring workflow traces (say for MiTM
      * or unit tests), there shouldn't be any need to call this method.
      *
-     * @param connections
-     *            new connection to use with this workflow trace
+     * @param connections new connection to use with this workflow trace
      */
     public void setConnections(List<AliasedConnection> connections) {
         dirty = true;
@@ -174,8 +173,7 @@ public class WorkflowTrace implements Serializable {
      * doing. Unless you are manually configuring workflow traces (say for MiTM
      * or unit tests), there shouldn't be any need to call this method.
      *
-     * @param connection
-     *            new connection to add to the workflow trace
+     * @param connection new connection to add to the workflow trace
      */
     public void addConnection(AliasedConnection connection) {
         dirty = true;
@@ -216,7 +214,7 @@ public class WorkflowTrace implements Serializable {
      * Get the last SshAction of the workflow trace.
      *
      * @return the last SshAction of the workflow trace. Null if no actions are
-     *         defined
+     * defined
      */
     public SshAction getLastAction() {
         int size = sshActions.size();
@@ -230,7 +228,7 @@ public class WorkflowTrace implements Serializable {
      * Get the last MessageAction of the workflow trace.
      *
      * @return the last MessageAction of the workflow trace. Null if no message
-     *         actions are defined
+     * actions are defined
      */
     public MessageAction getLastMessageAction() {
         for (int i = sshActions.size() - 1; i >= 0; i--) {
@@ -245,7 +243,7 @@ public class WorkflowTrace implements Serializable {
      * Get the last SendingAction of the workflow trace.
      *
      * @return the last SendingAction of the workflow trace. Null if no sending
-     *         actions are defined
+     * actions are defined
      */
     public SendingAction getLastSendingAction() {
         for (int i = sshActions.size() - 1; i >= 0; i--) {
@@ -260,7 +258,7 @@ public class WorkflowTrace implements Serializable {
      * Get the last ReceivingActionAction of the workflow trace.
      *
      * @return the last ReceivingActionAction of the workflow trace. Null if no
-     *         receiving actions are defined
+     * receiving actions are defined
      */
     public ReceivingAction getLastReceivingAction() {
         for (int i = sshActions.size() - 1; i >= 0; i--) {

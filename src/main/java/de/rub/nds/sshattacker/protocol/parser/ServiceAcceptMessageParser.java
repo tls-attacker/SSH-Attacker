@@ -5,7 +5,8 @@ import de.rub.nds.sshattacker.protocol.message.ServiceAcceptMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class ServiceAcceptMessageParser extends MessageParser<ServiceAcceptMessage>{
+public class ServiceAcceptMessageParser extends MessageParser<ServiceAcceptMessage> {
+
     private static final Logger LOGGER = LogManager.getLogger();
 
     public ServiceAcceptMessageParser(int startposition, byte[] array) {

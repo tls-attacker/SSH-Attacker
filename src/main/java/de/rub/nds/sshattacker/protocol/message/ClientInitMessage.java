@@ -56,8 +56,8 @@ public class ClientInitMessage extends Message {
     public Handler getHandler(SshContext context) {
         return new ClientInitMessageHandler(context);
     }
-    
-    public Serializer getSerializer(){
+
+    public Serializer getSerializer() {
         return new ClientInitMessageSerializer(this);
     }
 }

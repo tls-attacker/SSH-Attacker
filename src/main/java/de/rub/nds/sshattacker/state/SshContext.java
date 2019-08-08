@@ -2,7 +2,6 @@ package de.rub.nds.sshattacker.state;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.config.Config;
-import de.rub.nds.sshattacker.connection.Connection;
 import de.rub.nds.sshattacker.transport.AliasedConnection;
 import de.rub.nds.sshattacker.constants.ChannelRequestType;
 import de.rub.nds.sshattacker.constants.ChannelType;
@@ -21,12 +20,13 @@ import de.rub.nds.sshattacker.util.Converter;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.util.List;
+import java.util.Optional;
 
 public class SshContext {
 
     private Config config;
     private Chooser chooser;
-            
+
     private AliasedConnection connection;
 
     private boolean receivedTransportHandlerException = false;
@@ -52,7 +52,7 @@ public class SshContext {
 
     private int sequenceNumber = 0;
     private boolean isEncryptionActive = false;
-    
+
     private String hostKeyType;
     private byte[] serverHostKey;
     private BigInteger hostKeyRsaExponent;
@@ -111,7 +111,7 @@ public class SshContext {
     private Byte serverFirstKeyExchangePacketFollows;
     private Integer clientReserved;
     private Integer serverReserved;
-    
+
     private String username;
     private String password;
     private int localChannel;
@@ -122,127 +122,127 @@ public class SshContext {
     private ChannelRequestType channelRequestType;
     private String channelCommand;
     private byte replyWanted;
-    
+
     private Boolean receivedDisconnectMessage = false;
     private Boolean receivedServerInit = false;
 
-    public String getClientVersion() {
-        return clientVersion;
+    public Optional<String> getClientVersion() {
+        return Optional.ofNullable(clientVersion);
     }
 
-    public String getClientComment() {
-        return clientComment;
+    public Optional<String> getClientComment() {
+        return Optional.ofNullable(clientComment);
     }
 
-    public String getServerVersion() {
-        return serverVersion;
+    public Optional<String> getServerVersion() {
+        return Optional.ofNullable(serverVersion);
     }
 
-    public String getServerComment() {
-        return serverComment;
+    public Optional<String> getServerComment() {
+        return Optional.ofNullable(serverComment);
     }
 
-    public byte[] getClientCookie() {
-        return clientCookie;
+    public Optional<byte[]> getClientCookie() {
+        return Optional.ofNullable(clientCookie);
     }
 
-    public byte[] getServerCookie() {
-        return serverCookie;
+    public Optional<byte[]> getServerCookie() {
+        return Optional.ofNullable(serverCookie);
     }
 
-    public List<KeyExchangeAlgorithm> getClientSupportedKeyExchangeAlgorithms() {
-        return clientSupportedKeyExchangeAlgorithms;
+    public Optional<List<KeyExchangeAlgorithm>> getClientSupportedKeyExchangeAlgorithms() {
+        return Optional.ofNullable(clientSupportedKeyExchangeAlgorithms);
     }
 
-    public List<KeyExchangeAlgorithm> getServerSupportedKeyExchangeAlgorithms() {
-        return serverSupportedKeyExchangeAlgorithms;
+    public Optional<List<KeyExchangeAlgorithm>> getServerSupportedKeyExchangeAlgorithms() {
+        return Optional.ofNullable(serverSupportedKeyExchangeAlgorithms);
     }
 
-    public List<PublicKeyAuthenticationAlgorithm> getClientSupportedHostKeyAlgorithms() {
-        return clientSupportedHostKeyAlgorithms;
+    public Optional<List<PublicKeyAuthenticationAlgorithm>> getClientSupportedHostKeyAlgorithms() {
+        return Optional.ofNullable(clientSupportedHostKeyAlgorithms);
     }
 
-    public List<PublicKeyAuthenticationAlgorithm> getServerSupportedHostKeyAlgorithms() {
-        return serverSupportedHostKeyAlgorithms;
+    public Optional<List<PublicKeyAuthenticationAlgorithm>> getServerSupportedHostKeyAlgorithms() {
+        return Optional.ofNullable(serverSupportedHostKeyAlgorithms);
     }
 
-    public List<EncryptionAlgorithm> getClientSupportedCipherAlgorithmsClientToServer() {
-        return clientSupportedCipherAlgorithmsClientToServer;
+    public Optional<List<EncryptionAlgorithm>> getClientSupportedCipherAlgorithmsClientToServer() {
+        return Optional.ofNullable(clientSupportedCipherAlgorithmsClientToServer);
     }
 
-    public List<EncryptionAlgorithm> getClientSupportedCipherAlgorithmsServerToClient() {
-        return clientSupportedCipherAlgorithmsServerToClient;
+    public Optional<List<EncryptionAlgorithm>> getClientSupportedCipherAlgorithmsServertoClient() {
+        return Optional.ofNullable(clientSupportedCipherAlgorithmsServerToClient);
     }
 
-    public List<EncryptionAlgorithm> getServerSupportedCipherAlgorithmsServerToClient() {
-        return serverSupportedCipherAlgorithmsServerToClient;
+    public Optional<List<EncryptionAlgorithm>> getServerSupportedCipherAlgorithmsServerToClient() {
+        return Optional.ofNullable(serverSupportedCipherAlgorithmsServerToClient);
     }
 
-    public List<EncryptionAlgorithm> getServerSupportedCipherAlgorithmsClientToServer() {
-        return serverSupportedCipherAlgorithmsClientToServer;
+    public Optional<List<EncryptionAlgorithm>> getServerSupportedCipherAlgorithmsClientToServer() {
+        return Optional.ofNullable(serverSupportedCipherAlgorithmsClientToServer);
     }
 
-    public List<MacAlgorithm> getClientSupportedMacAlgorithmsClientToServer() {
-        return clientSupportedMacAlgorithmsClientToServer;
+    public Optional<List<MacAlgorithm>> getClientSupportedMacAlgorithmsClientToServer() {
+        return Optional.ofNullable(clientSupportedMacAlgorithmsClientToServer);
     }
 
-    public List<MacAlgorithm> getClientSupportedMacAlgorithmsServerToClient() {
-        return clientSupportedMacAlgorithmsServerToClient;
+    public Optional<List<MacAlgorithm>> getClientSupportedMacAlgorithmsServerToClient() {
+        return Optional.ofNullable(clientSupportedMacAlgorithmsServerToClient);
     }
 
-    public List<MacAlgorithm> getServerSupportedMacAlgorithmsServerToClient() {
-        return serverSupportedMacAlgorithmsServerToClient;
+    public Optional<List<MacAlgorithm>> getServerSupportedMacAlgorithmsServerToClient() {
+        return Optional.ofNullable(serverSupportedMacAlgorithmsServerToClient);
     }
 
-    public List<MacAlgorithm> getServerSupportedMacAlgorithmsClientToServer() {
-        return serverSupportedMacAlgorithmsClientToServer;
+    public Optional<List<MacAlgorithm>> getServerSupportedMacAlgorithmsClientToServer() {
+        return Optional.ofNullable(serverSupportedMacAlgorithmsClientToServer);
     }
 
-    public List<CompressionAlgorithm> getClientSupportedCompressionAlgorithmsClientToServer() {
-        return clientSupportedCompressionAlgorithmsClientToServer;
+    public Optional<List<CompressionAlgorithm>> getClientSupportedCompressionAlgorithmsClientToServer() {
+        return Optional.ofNullable(clientSupportedCompressionAlgorithmsClientToServer);
     }
 
-    public List<CompressionAlgorithm> getClientSupportedCompressionAlgorithmsServerToClient() {
-        return clientSupportedCompressionAlgorithmsServerToClient;
+    public Optional<List<CompressionAlgorithm>> getClientSupportedCompressionAlgorithmsServerToClient() {
+        return Optional.ofNullable(clientSupportedCompressionAlgorithmsServerToClient);
     }
 
-    public List<CompressionAlgorithm> getServerSupportedCompressionAlgorithmsServerToClient() {
-        return serverSupportedCompressionAlgorithmsServerToClient;
+    public Optional<List<CompressionAlgorithm>> getServerSupportedCompressionAlgorithmsServerToClient() {
+        return Optional.ofNullable(serverSupportedCompressionAlgorithmsServerToClient);
     }
 
-    public List<CompressionAlgorithm> getServerSupportedCompressionAlgorithmsClientToServer() {
-        return serverSupportedCompressionAlgorithmsClientToServer;
+    public Optional<List<CompressionAlgorithm>> getServerSupportedCompressionAlgorithmsClientToServer() {
+        return Optional.ofNullable(serverSupportedCompressionAlgorithmsClientToServer);
     }
 
-    public List<Language> getClientSupportedLanguagesClientToServer() {
-        return clientSupportedLanguagesClientToServer;
+    public Optional<List<Language>> getClientSupportedLanguagesClientToServer() {
+        return Optional.ofNullable(clientSupportedLanguagesClientToServer);
     }
 
-    public List<Language> getClientSupportedLanguagesServerToClient() {
-        return clientSupportedLanguagesServerToClient;
+    public Optional<List<Language>> getClientSupportedLanguagesServerToClient() {
+        return Optional.ofNullable(clientSupportedLanguagesServerToClient);
     }
 
-    public List<Language> getServerSupportedLanguagesServerToClient() {
-        return serverSupportedLanguagesServerToClient;
+    public Optional<List<Language>> getServerSupportedLanguagesServerToClient() {
+        return Optional.ofNullable(serverSupportedLanguagesServerToClient);
     }
 
-    public List<Language> getServerSupportedLanguagesClientToServer() {
-        return serverSupportedLanguagesClientToServer;
+    public Optional<List<Language>> getServerSupportedLanguagesClientToServer() {
+        return Optional.ofNullable(serverSupportedLanguagesClientToServer);
     }
 
-    public Byte getClientFirstKeyExchangePacketFollows() {
+    public byte getClientFirstKeyExchangePacketFollows() {
         return clientFirstKeyExchangePacketFollows;
     }
 
-    public Byte getServerFirstKeyExchangePacketFollows() {
+    public byte getServerFirstKeyExchangePacketFollows() {
         return serverFirstKeyExchangePacketFollows;
     }
 
-    public Integer getClientReserved() {
+    public int getClientReserved() {
         return clientReserved;
     }
 
-    public Integer getServerReserved() {
+    public int getServerReserved() {
         return serverReserved;
     }
 
@@ -652,7 +652,7 @@ public class SshContext {
     public void setTransportHandler(TransportHandler transportHandler) {
         this.transportHandler = transportHandler;
     }
-    
+
     public int getSequenceNumber() {
         return sequenceNumber;
     }
@@ -660,12 +660,12 @@ public class SshContext {
     public void setSequenceNumber(int sequenceNumber) {
         this.sequenceNumber = sequenceNumber;
     }
-    
-    public void incrementSequenceNumter(int i){
-        sequenceNumber+=i;
+
+    public void incrementSequenceNumter(int i) {
+        sequenceNumber += i;
     }
-    
-    public void incrementSequenceNumber(){
+
+    public void incrementSequenceNumber() {
         incrementSequenceNumter(1);
     }
 
@@ -792,5 +792,5 @@ public class SshContext {
     public void setReceivedServerInit(Boolean receivedServerInit) {
         this.receivedServerInit = receivedServerInit;
     }
-    
+
 }

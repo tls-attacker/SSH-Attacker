@@ -5,14 +5,14 @@ import de.rub.nds.sshattacker.protocol.message.ServiceRequestMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class ServiceRequestMessageParser  extends MessageParser<ServiceRequestMessage>{
+public class ServiceRequestMessageParser extends MessageParser<ServiceRequestMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
     public ServiceRequestMessageParser(int startposition, byte[] array) {
         super(startposition, array);
     }
-    
+
     @Override
     public ServiceRequestMessage createMessage() {
         return new ServiceRequestMessage();

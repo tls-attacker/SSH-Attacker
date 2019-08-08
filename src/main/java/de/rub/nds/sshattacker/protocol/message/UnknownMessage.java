@@ -13,20 +13,20 @@ public class UnknownMessage extends Message {
 
     private ModifiableByteArray payload;
 
-    public UnknownMessage(){
-        
+    public UnknownMessage() {
+
     }
-    
-    public UnknownMessage(ModifiableByte id, ModifiableByteArray payload){
+
+    public UnknownMessage(ModifiableByte id, ModifiableByteArray payload) {
         this.messageID = id;
         this.payload = payload;
     }
-    
-    public UnknownMessage(byte id, byte[] payload){
+
+    public UnknownMessage(byte id, byte[] payload) {
         this.messageID = ModifiableVariableFactory.safelySetValue(this.messageID, id);
         this.payload = ModifiableVariableFactory.safelySetValue(this.payload, payload);
     }
-    
+
     @Override
     public String toCompactString() {
         return "UnknownMessage";

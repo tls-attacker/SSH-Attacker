@@ -9,14 +9,14 @@
 package de.rub.nds.sshattacker.workflow;
 
 import de.rub.nds.sshattacker.config.Config;
-import de.rub.nds.sshattacker.transport.AliasedConnection;
 import de.rub.nds.sshattacker.connection.InboundConnection;
 import de.rub.nds.sshattacker.connection.OutboundConnection;
 import de.rub.nds.sshattacker.constants.RunningModeType;
 import de.rub.nds.sshattacker.exceptions.ConfigurationException;
+import de.rub.nds.sshattacker.transport.AliasedConnection;
+import de.rub.nds.sshattacker.transport.ConnectionEndType;
 import de.rub.nds.sshattacker.workflow.action.GeneralAction;
 import de.rub.nds.sshattacker.workflow.action.SshAction;
-import de.rub.nds.sshattacker.transport.ConnectionEndType;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
@@ -36,12 +36,9 @@ public class WorkflowTraceNormalizer {
     /**
      * Merge in default values from Config if necessary.
      *
-     * @param trace
-     *            The trace that should be normalized
-     * @param config
-     *            The config that is used
-     * @param mode
-     *            The mode the Trace is ran in
+     * @param trace The trace that should be normalized
+     * @param config The config that is used
+     * @param mode The mode the Trace is ran in
      */
     public void normalize(WorkflowTrace trace, Config config, RunningModeType mode) {
         List<AliasedConnection> traceConnections = trace.getConnections();
@@ -143,8 +140,7 @@ public class WorkflowTraceNormalizer {
      * that we can call here. This would be a "self test" of the Connection
      * object to check that all values are set and in expected range.
      *
-     * @param trace
-     *            The WorkflowTrace to check
+     * @param trace The WorkflowTrace to check
      */
     public void assertNormalizedWorkflowTrace(WorkflowTrace trace) {
         List<AliasedConnection> connections = trace.getConnections();

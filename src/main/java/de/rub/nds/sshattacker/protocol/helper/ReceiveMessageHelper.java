@@ -8,10 +8,9 @@ import de.rub.nds.sshattacker.protocol.message.ClientInitMessage;
 import de.rub.nds.sshattacker.protocol.message.Message;
 import de.rub.nds.sshattacker.protocol.parser.ClientInitMessageParser;
 import de.rub.nds.sshattacker.state.SshContext;
-import de.rub.nds.sshattacker.workflow.action.result.MessageActionResult;
 import de.rub.nds.sshattacker.transport.TransportHandler;
+import de.rub.nds.sshattacker.workflow.action.result.MessageActionResult;
 import java.io.IOException;
-import java.util.LinkedList;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -26,47 +25,43 @@ public class ReceiveMessageHelper {
         MessageLayer messageLayer = context.getMessageLayer();
         CryptoLayer cryptoLayer = context.getCryptoLayer();
 
-        if (context.getReceivedServerInit() == false){
+        if (context.getReceivedServerInit() == false) {
             receiveInitMessage(context);
             context.setReceivedServerInit(true);
             return new MessageActionResult();
-        }
-        else{
-        try {
-            byte[] data = transportHandler.fetchData();
-            if (data.length != 0) {
-                List<BinaryPacket> binaryPackets = binaryPacketLayer.parseBinaryPackets(cryptoLayer.decryptBinaryPackets(data));
-                List<Message> messages = messageLayer.parseMessages(binaryPackets);
-            messages.forEach(message -> {
-                message.getHandler(context).handle(message);
-            });
-            return new MessageActionResult(binaryPackets, messages);
-            }
-            
-            else{
-                LOGGER.debug("TransportHandler does not have data.");
+        } else {
+            try {
+                byte[] data = transportHandler.fetchData();
+                if (data.length != 0) {
+                    List<BinaryPacket> binaryPackets = binaryPacketLayer.parseBinaryPackets(cryptoLayer.decryptBinaryPackets(data));
+                    List<Message> messages = messageLayer.parseMessages(binaryPackets);
+                    messages.forEach(message -> {
+                        message.getHandler(context).handle(message);
+                    });
+                    return new MessageActionResult(binaryPackets, messages);
+                } else {
+                    LOGGER.debug("TransportHandler does not have data.");
+                    return new MessageActionResult();
+                }
+            } catch (IOException e) {
+                LOGGER.debug("Error while receiving Data " + e.getMessage());
                 return new MessageActionResult();
             }
-        } catch (IOException e) {
-            LOGGER.debug("Error while receiving Data " + e.getMessage());
-            return new MessageActionResult();
         }
     }
-    }
-    
+
     // TODO dummy method until expectedMessages are used
-    public MessageActionResult receiveMessages(List<Message> expectedMessages, SshContext context){
+    public MessageActionResult receiveMessages(List<Message> expectedMessages, SshContext context) {
         return receiveMessages(context);
     }
-    
-    public void receiveInitMessage(SshContext context){
+
+    public void receiveInitMessage(SshContext context) {
         TransportHandler transport = context.getTransportHandler();
-        try{
+        try {
             byte[] response = transport.fetchData();
             ClientInitMessage serverInit = new ClientInitMessageParser(0, response).parse();
-             serverInit.getHandler(context).handle(serverInit);
-        }
-        catch (IOException e){
+            serverInit.getHandler(context).handle(serverInit);
+        } catch (IOException e) {
             LOGGER.debug("Error while receiving ClientInit" + e.getMessage());
         }
     }

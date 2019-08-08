@@ -19,14 +19,14 @@ public class BinaryPacketLayer {
     public List<BinaryPacket> parseBinaryPackets(byte[] raw) {
         return new BinaryPacketParser(0, raw).parseAll();
     }
-    
-    public byte[] serializeBinaryPacket(BinaryPacket packet){
+
+    public byte[] serializeBinaryPacket(BinaryPacket packet) {
         ByteArrayOutputStream serialized = new ByteArrayOutputStream();
         try {
-                serialized.write(new BinaryPacketSerializer(packet).serialize());
-            } catch (IOException e) {
-                LOGGER.debug("Error while writing to ByteArrayOutputStream " + e.getMessage());
-            }
+            serialized.write(new BinaryPacketSerializer(packet).serialize());
+        } catch (IOException e) {
+            LOGGER.debug("Error while writing to ByteArrayOutputStream " + e.getMessage());
+        }
         return serialized.toByteArray();
     }
 

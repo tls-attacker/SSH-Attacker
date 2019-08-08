@@ -12,27 +12,27 @@ public class ServiceRequestMessage extends Message {
 
     private ModifiableString serviceName;
 
-    public ServiceRequestMessage(){
+    public ServiceRequestMessage() {
         messageID = ModifiableVariableFactory.safelySetValue(messageID, MessageIDConstant.SSH_MSG_SERVICE_REQUEST.id);
     }
-    
-    public ServiceRequestMessage(String serviceName){
+
+    public ServiceRequestMessage(String serviceName) {
         this();
         this.serviceName = ModifiableVariableFactory.safelySetValue(this.serviceName, serviceName);
     }
-    
+
     public ModifiableString getServiceName() {
         return serviceName;
     }
-    
+
     public void setServiceName(ModifiableString serviceName) {
         this.serviceName = serviceName;
     }
-    
+
     public void setServiceName(String serviceName) {
         this.serviceName = ModifiableVariableFactory.safelySetValue(this.serviceName, serviceName);
     }
-    
+
     @Override
     public String toCompactString() {
         return this.getClass().getSimpleName(); //test

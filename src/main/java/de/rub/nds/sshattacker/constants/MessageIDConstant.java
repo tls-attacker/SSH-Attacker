@@ -12,15 +12,14 @@ public enum MessageIDConstant {
     SSH_MSG_SERVICE_ACCEPT((byte) 6),
     SSH_MSG_KEXINIT((byte) 20),
     SSH_MSG_NEWKEYS((byte) 21),
-
     SSH_MSG_KEX_ECDH_INIT((byte) 30),
     SSH_MSG_KEX_ECDH_REPLY((byte) 31),
-// these collide with the current default of ECDH in the hashmap so they are
-// disabled
-//    SSH_MSG_KEXDH_INIT((byte) 30),
-//    SSH_MSG_KEXDH_REPLY((byte) 31),
-//    SSH_MSG_ECMQV_INIT((byte) 30),
-//    SSH_MSG_ECMQV_REPLY((byte) 31),
+    // these collide with the current default of ECDH in the hashmap so they are
+    // disabled
+    //    SSH_MSG_KEXDH_INIT((byte) 30),
+    //    SSH_MSG_KEXDH_REPLY((byte) 31),
+    //    SSH_MSG_ECMQV_INIT((byte) 30),
+    //    SSH_MSG_ECMQV_REPLY((byte) 31),
     SSH_MSG_USERAUTH_REQUEST((byte) 50),
     SSH_MSG_USERAUTH_FAILURE((byte) 51),
     SSH_MSG_USERAUTH_SUCCESS((byte) 52),
@@ -40,18 +39,18 @@ public enum MessageIDConstant {
     SSH_MSG_CHANNEL_SUCCESS((byte) 99),
     SSH_MSG_CHANNEL_FAILURE((byte) 100),
     UNKNOWN((byte) 255); // reserved by us
-    
+
     public final byte id;
-    
-    public static final Map<Byte,MessageIDConstant> map;
-    
-    static{
+
+    public static final Map<Byte, MessageIDConstant> map;
+
+    static {
         map = new TreeMap<>();
-        for (MessageIDConstant constant : MessageIDConstant.values()){
+        for (MessageIDConstant constant : MessageIDConstant.values()) {
             map.put(constant.id, constant);
         }
     }
-    
+
     private MessageIDConstant(byte id) {
         this.id = id;
     }
@@ -59,8 +58,8 @@ public enum MessageIDConstant {
     public static String getNameByID(byte id) {
         return map.get(id).toString();
     }
-    
-    public static MessageIDConstant fromId(byte id){
+
+    public static MessageIDConstant fromId(byte id) {
         return map.get(id);
     }
 }

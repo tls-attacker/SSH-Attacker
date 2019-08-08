@@ -9,7 +9,6 @@
 package de.rub.nds.sshattacker.workflow.executor;
 
 import de.rub.nds.sshattacker.config.Config;
-import de.rub.nds.sshattacker.exceptions.BouncyCastleNotLoadedException;
 import de.rub.nds.sshattacker.exceptions.WorkflowExecutionException;
 import de.rub.nds.sshattacker.state.State;
 import org.apache.logging.log4j.LogManager;
@@ -35,11 +34,9 @@ public abstract class WorkflowExecutor {
      * to the state. For workflow creation, use the first method which does not
      * return null, in the following order: state.getWorkflowTrace(),
      * state.config.getWorkflowInput(), config.getWorkflowTraceType().
-     * 
-     * @param type
-     *            of the workflow executor (currently only DEFAULT)
-     * @param state
-     *            to work on
+     *
+     * @param type of the workflow executor (currently only DEFAULT)
+     * @param state to work on
      */
     public WorkflowExecutor(WorkflowExecutorType type, State state) {
         this.type = type;

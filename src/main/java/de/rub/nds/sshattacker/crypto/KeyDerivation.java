@@ -27,22 +27,22 @@ public class KeyDerivation {
         X25519.scalarMult(secretKey, 0, publicKey, 0, sharedKey, 0);
         return sharedKey;
     }
-    
-    public static byte[] DheNistP256(byte[] secretKey, byte[] publicKey){
+
+    public static byte[] DheNistP256(byte[] secretKey, byte[] publicKey) {
         EllipticCurve curve = CurveFactory.getCurve(NamedGroup.SECP256R1);
         // skip asn1 byte
-BigInteger serverX = new BigInteger(1, java.util.Arrays.copyOfRange(publicKey, 1, 33));
+        BigInteger serverX = new BigInteger(1, java.util.Arrays.copyOfRange(publicKey, 1, 33));
         BigInteger serverY = new BigInteger(1, java.util.Arrays.copyOfRange(publicKey, 33, 65));
         Point serverPoint = curve.getPoint(serverX, serverY);
         Point sharedPoint = curve.mult(new BigInteger(1, secretKey), serverPoint);
         byte[] sharedSecret = sharedPoint.getX().getData().toByteArray();
-        
+
         // remove leading 0 byte
-        if (sharedSecret.length > 32){
+        if (sharedSecret.length > 32) {
             sharedSecret = Arrays.copyOfRange(sharedSecret, 1, sharedSecret.length);
         }
         return sharedSecret;
-}
+    }
 
     public static byte[] computeExchangeHash(byte[] input, String hashAlgorithm) {
         return getMessageDigestInstance(hashAlgorithm).digest(input);

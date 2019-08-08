@@ -18,10 +18,10 @@ public class ChannelRequestMessage extends Message {
     private ModifiableByte replyWanted;
     private ModifiableByteArray payload;
 
-    public ChannelRequestMessage(){
+    public ChannelRequestMessage() {
         messageID = ModifiableVariableFactory.safelySetValue(messageID, MessageIDConstant.SSH_MSG_CHANNEL_REQUEST.id);
     }
-    
+
     public ModifiableInteger getRecipientChannel() {
         return recipientChannel;
     }
@@ -29,7 +29,7 @@ public class ChannelRequestMessage extends Message {
     public void setRecipientChannel(ModifiableInteger recipientChannel) {
         this.recipientChannel = recipientChannel;
     }
-    
+
     public void setRecipientChannel(int recipientChannel) {
         this.recipientChannel = ModifiableVariableFactory.safelySetValue(this.recipientChannel, recipientChannel);
     }
@@ -41,7 +41,7 @@ public class ChannelRequestMessage extends Message {
     public void setRequestType(ModifiableString requestType) {
         this.requestType = requestType;
     }
-    
+
     public void setRequestType(String requestType) {
         this.requestType = ModifiableVariableFactory.safelySetValue(this.requestType, requestType);
     }
@@ -53,7 +53,7 @@ public class ChannelRequestMessage extends Message {
     public void setReplyWanted(ModifiableByte replyWanted) {
         this.replyWanted = replyWanted;
     }
-    
+
     public void setReplyWanted(byte replyWanted) {
         this.replyWanted = ModifiableVariableFactory.safelySetValue(this.replyWanted, replyWanted);
     }
@@ -65,11 +65,11 @@ public class ChannelRequestMessage extends Message {
     public void setPayload(ModifiableByteArray payload) {
         this.payload = payload;
     }
-    
+
     public void setPayload(byte[] payload) {
         this.payload = ModifiableVariableFactory.safelySetValue(this.payload, payload);
     }
-    
+
     @Override
     public String toCompactString() {
         return this.getClass().getSimpleName();

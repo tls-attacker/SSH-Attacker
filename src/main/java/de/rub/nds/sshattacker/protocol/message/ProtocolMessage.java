@@ -33,7 +33,6 @@ public abstract class ProtocolMessage extends ModifiableVariableHolder {
      */
 //    @XmlTransient
 //    protected ProtocolMessageType protocolMessageType;
-
     @XmlTransient
     protected boolean GOING_TO_BE_SENT_DEFAULT = true;
 
@@ -71,7 +70,6 @@ public abstract class ProtocolMessage extends ModifiableVariableHolder {
 //    public ProtocolMessageType getProtocolMessageType() {
 //        return protocolMessageType;
 //    }
-
     public boolean isRequired() {
         if (required == null || required.getValue() == null) {
             return REQUIRED_DEFAULT;
@@ -142,7 +140,6 @@ public abstract class ProtocolMessage extends ModifiableVariableHolder {
 //    public boolean isHandshakeMessage() {
 //        return this instanceof HandshakeMessage;
 //    }
-
     public abstract String toCompactString();
 
     public abstract Handler getHandler(SshContext context);

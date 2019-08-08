@@ -9,7 +9,7 @@ import org.apache.logging.log4j.Logger;
 public class ChannelOpenMessageSerializer extends MessageSerializer<ChannelOpenMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
-    
+
     public ChannelOpenMessageSerializer(ChannelOpenMessage msg) {
         super(msg);
     }

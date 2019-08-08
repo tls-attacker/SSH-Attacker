@@ -5,12 +5,12 @@ import de.rub.nds.sshattacker.util.Converter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class ServiceRequestMessageSerializer extends MessageSerializer<ServiceRequestMessage>{
+public class ServiceRequestMessageSerializer extends MessageSerializer<ServiceRequestMessage> {
 
-        private static final Logger LOGGER = LogManager.getLogger();
-        private final ServiceRequestMessage msg;
+    private static final Logger LOGGER = LogManager.getLogger();
+    private final ServiceRequestMessage msg;
 
-    public ServiceRequestMessageSerializer(ServiceRequestMessage msg){
+    public ServiceRequestMessageSerializer(ServiceRequestMessage msg) {
         super(msg);
         this.msg = msg;
     }

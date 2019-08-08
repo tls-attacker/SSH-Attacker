@@ -1,11 +1,9 @@
 package de.rub.nds.sshattacker.constants;
 
 /**
- * These values are also used for
- * PubkeyAcceptedKeyTypes
- * HostbasedAcceptedKeyTypes
- * HostKeyAlgorithms
-*/
+ * These values are also used for PubkeyAcceptedKeyTypes
+ * HostbasedAcceptedKeyTypes HostKeyAlgorithms
+ */
 public enum PublicKeyAuthenticationAlgorithm {
     ECDSA_SHA2_NISTP256_CERT_V01_OPENSSH_COM("ecdsa-sha2-nistp256-cert-v01@openssh.com"),
     ECDSA_SHA2_NISTP384_CERT_V01_OPENSSH_COM("ecdsa-sha2-nistp384-cert-v01@openssh.com"),

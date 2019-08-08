@@ -13,9 +13,9 @@ import de.rub.nds.sshattacker.workflow.WorkflowTrace;
 
 /**
  * Filters workflow trace data for output.
- * 
+ *
  * Usually used to clean up workflow traces before serialization.
- * 
+ *
  * Note that filtering is unidirectional, i.e. we cannot guarantee that a
  * filtered workflow trace can be loaded to a normalized workflow again.
  */
@@ -29,29 +29,26 @@ public abstract class Filter {
 
     /**
      * Get the type of the filter.
-     * 
+     *
      * @return The type of the filter
      */
     public abstract FilterType getFilterType();
 
     /**
      * Apply filter to trace.
-     * 
-     * @param trace
-     *            The workflow trace that should be filtered.
+     *
+     * @param trace The workflow trace that should be filtered.
      */
     public abstract void applyFilter(WorkflowTrace trace);
 
     /**
      * Perform some additional steps after filtering, for example restoring user
      * defined values.
-     * 
-     * @param trace
-     *            Apply post filtering to this workflow trace.
-     * @param reference
-     *            A reference trace that the postFilter can use. This could be a
-     *            trace containing original user definitions, for example.
-     * 
+     *
+     * @param trace Apply post filtering to this workflow trace.
+     * @param reference A reference trace that the postFilter can use. This
+     * could be a trace containing original user definitions, for example.
+     *
      */
     public void postFilter(WorkflowTrace trace, WorkflowTrace reference) {
     }

@@ -3,7 +3,7 @@ package de.rub.nds.sshattacker.protocol.preparator;
 import de.rub.nds.sshattacker.protocol.message.UserauthPasswordMessage;
 import de.rub.nds.sshattacker.state.SshContext;
 
-public class UserauthPasswordMessagePreparator extends Preparator<UserauthPasswordMessage>{
+public class UserauthPasswordMessagePreparator extends Preparator<UserauthPasswordMessage> {
 
     public UserauthPasswordMessagePreparator(SshContext context, UserauthPasswordMessage message) {
         super(context, message);

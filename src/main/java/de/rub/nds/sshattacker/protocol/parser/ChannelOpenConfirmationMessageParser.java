@@ -5,7 +5,8 @@ import de.rub.nds.sshattacker.protocol.message.ChannelOpenConfirmationMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class ChannelOpenConfirmationMessageParser extends MessageParser<ChannelOpenConfirmationMessage>{
+public class ChannelOpenConfirmationMessageParser extends MessageParser<ChannelOpenConfirmationMessage> {
+
     private static final Logger LOGGER = LogManager.getLogger();
 
     public ChannelOpenConfirmationMessageParser(int startposition, byte[] array) {
@@ -20,7 +21,7 @@ public class ChannelOpenConfirmationMessageParser extends MessageParser<ChannelO
     @Override
     protected void parseMessageSpecificPayload(ChannelOpenConfirmationMessage msg) {
         msg.setRecipientChannel(parseIntField(DataFormatConstants.INT32_SIZE));
-        LOGGER.debug("recipientChannel: "+ msg.getRecipientChannel().getValue());
+        LOGGER.debug("recipientChannel: " + msg.getRecipientChannel().getValue());
         msg.setSenderChannel(parseIntField(DataFormatConstants.INT32_SIZE));
         LOGGER.debug("senderChannel: " + msg.getSenderChannel().getValue());
         msg.setWindowSize(parseIntField(DataFormatConstants.INT32_SIZE));
@@ -29,5 +30,4 @@ public class ChannelOpenConfirmationMessageParser extends MessageParser<ChannelO
         LOGGER.debug("packetSize: " + msg.getPacketSize().getValue());
     }
 
-    
 }

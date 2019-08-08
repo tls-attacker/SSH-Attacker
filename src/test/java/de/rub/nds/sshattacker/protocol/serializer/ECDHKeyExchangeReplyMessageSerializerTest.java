@@ -5,10 +5,10 @@ import de.rub.nds.sshattacker.protocol.parser.ECDHKeyExchangeReplyMessageParserT
 import java.util.Collection;
 import org.junit.After;
 import org.junit.AfterClass;
+import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import static org.junit.Assert.*;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
@@ -72,7 +72,7 @@ public class ECDHKeyExchangeReplyMessageSerializerTest {
 
     /**
      * Test of serializeBytes method, of class
- EcdhKeyExchangeReplyMessageSerializer.
+     * EcdhKeyExchangeReplyMessageSerializer.
      */
     @Test
     public void testSerializeMessageSpecificPayload() {

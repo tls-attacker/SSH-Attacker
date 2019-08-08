@@ -9,17 +9,17 @@ import de.rub.nds.sshattacker.protocol.handler.Handler;
 import de.rub.nds.sshattacker.protocol.serializer.UserauthPasswordMessageSerializer;
 import de.rub.nds.sshattacker.state.SshContext;
 
-public class UserauthPasswordMessage extends Message{
+public class UserauthPasswordMessage extends Message {
 
     private ModifiableString username;
     private ModifiableString servicename;
     private ModifiableByte expectResponse;
     private ModifiableString password;
 
-    public UserauthPasswordMessage(){
+    public UserauthPasswordMessage() {
         messageID = ModifiableVariableFactory.safelySetValue(messageID, MessageIDConstant.SSH_MSG_USERAUTH_REQUEST.id);
     }
-    
+
     public ModifiableString getUsername() {
         return username;
     }
@@ -27,11 +27,11 @@ public class UserauthPasswordMessage extends Message{
     public void setUsername(ModifiableString username) {
         this.username = username;
     }
-    
+
     public void setUsername(String username) {
         this.username = ModifiableVariableFactory.safelySetValue(this.username, username);
     }
-    
+
     public ModifiableString getServicename() {
         return servicename;
     }
@@ -39,11 +39,10 @@ public class UserauthPasswordMessage extends Message{
     public void setServicename(ModifiableString servicename) {
         this.servicename = servicename;
     }
-    
+
     public void setServicename(String servicename) {
         this.servicename = ModifiableVariableFactory.safelySetValue(this.servicename, servicename);
     }
-    
 
     public ModifiableByte getExpectResponse() {
         return expectResponse;
@@ -52,7 +51,7 @@ public class UserauthPasswordMessage extends Message{
     public void setExpectResponse(ModifiableByte expectResponse) {
         this.expectResponse = expectResponse;
     }
-    
+
     public void setExpectResponse(byte expectResponse) {
         this.expectResponse = ModifiableVariableFactory.safelySetValue(this.expectResponse, expectResponse);
     }
@@ -64,12 +63,11 @@ public class UserauthPasswordMessage extends Message{
     public void setPassword(ModifiableString password) {
         this.password = password;
     }
-    
+
     public void setPassword(String password) {
         this.password = ModifiableVariableFactory.safelySetValue(this.password, password);
     }
-    
-    
+
     @Override
     public String toCompactString() {
         return this.getClass().getSimpleName(); // TODO test

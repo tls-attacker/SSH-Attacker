@@ -4,11 +4,10 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.protocol.core.message.Serializer;
 import de.rub.nds.sshattacker.protocol.handler.Handler;
-import de.rub.nds.sshattacker.protocol.preparator.Preparator;
 import de.rub.nds.sshattacker.state.SshContext;
 
 public abstract class Message extends ProtocolMessage {
-    
+
     protected ModifiableByte messageID;
 
     public ModifiableByte getMessageID() {
@@ -25,5 +24,6 @@ public abstract class Message extends ProtocolMessage {
 
     @Override
     public abstract Handler getHandler(SshContext context);
+
     public abstract Serializer getSerializer();
 }

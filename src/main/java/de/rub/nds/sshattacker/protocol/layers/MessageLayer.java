@@ -14,8 +14,8 @@ public class MessageLayer {
 
     private static final Logger LOGGER = LogManager.getLogger();
     private SshContext context;
-    
-    public MessageLayer(SshContext context){
+
+    public MessageLayer(SshContext context) {
         this.context = context;
     }
 
@@ -28,19 +28,20 @@ public class MessageLayer {
         return returnList;
     }
 
-    public BinaryPacket serializeMessage(Message msg){
-            BinaryPacket packet = new BinaryPacket();
-            byte[] payload = MessageSerializer.delegateSerialization(msg);
-            packet.setPayload(payload);
-            byte blocksize = 8;
-            if (context.getCipherAlgorithmClientToServer() != null){
-                blocksize = (byte) context.getCipherAlgorithmClientToServer().getBlockSize();
-            }
-            packet.computePaddingLength(blocksize);
-            packet.generatePadding();
-            packet.computePacketLength();
-            return packet;
+    public BinaryPacket serializeMessage(Message msg) {
+        BinaryPacket packet = new BinaryPacket();
+        byte[] payload = MessageSerializer.delegateSerialization(msg);
+        packet.setPayload(payload);
+        byte blocksize = 8;
+        if (context.getCipherAlgorithmClientToServer() != null) {
+            blocksize = (byte) context.getCipherAlgorithmClientToServer().getBlockSize();
+        }
+        packet.computePaddingLength(blocksize);
+        packet.generatePadding();
+        packet.computePacketLength();
+        return packet;
     }
+
     public List<BinaryPacket> serializeMessages(List<Message> list) {
         List<BinaryPacket> returnList = new ArrayList();
         for (Message msg : list) {

@@ -9,6 +9,7 @@
 package de.rub.nds.sshattacker.exceptions;
 
 public class BouncyCastleNotLoadedException extends RuntimeException {
+
     public BouncyCastleNotLoadedException() {
         super();
     }

@@ -5,7 +5,8 @@ import de.rub.nds.sshattacker.protocol.message.ChannelDataMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class ChannelDataMessageParser extends MessageParser<ChannelDataMessage>{
+public class ChannelDataMessageParser extends MessageParser<ChannelDataMessage> {
+
     private static final Logger LOGGER = LogManager.getLogger();
 
     public ChannelDataMessageParser(int startposition, byte[] array) {

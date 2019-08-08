@@ -29,5 +29,5 @@ public class ChannelRequestMessageSerializer extends MessageSerializer<ChannelRe
         appendBytes(msg.getPayload().getValue());
         return getAlreadySerialized();
     }
-    
+
 }
