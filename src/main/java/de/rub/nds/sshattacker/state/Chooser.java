@@ -126,35 +126,21 @@ public class Chooser {
     }
 
     public byte getClientFirstKeyExchangePacketFollows() {
-        if (context.getClientFirstKeyExchangePacketFollows() != 0) {
-            return context.getClientFirstKeyExchangePacketFollows();
-        } else {
-            return config.getClientFirstKeyExchangePacketFollows();
-        }
+        return context.getClientFirstKeyExchangePacketFollows().orElse(
+                config.getClientFirstKeyExchangePacketFollows());
     }
 
     public byte getServerFirstKeyExchangePacketFollows() {
-        if (context.getServerFirstKeyExchangePacketFollows() != 0) {
-            return context.getServerFirstKeyExchangePacketFollows();
-        } else {
-            return config.getServerFirstKeyExchangePacketFollows();
-        }
+        return context.getServerFirstKeyExchangePacketFollows().orElse(
+                config.getServerFirstKeyExchangePacketFollows());
     }
 
     public int getClientReserved() {
-        if (context.getClientReserved() != 0) {
-            return context.getClientReserved();
-        } else {
-            return config.getClientReserved();
-        }
+        return context.getClientReserved().orElse(config.getClientReserved());
     }
 
     public int getServerReserved() {
-        if (context.getServerReserved() != 0) {
-            return context.getServerReserved();
-        } else {
-            return config.getServerReserved();
-        }
+        return context.getServerReserved().orElse(config.getServerReserved());
     }
 
     public byte[] getClientEcdhPublicKey() {

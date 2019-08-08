@@ -2,11 +2,10 @@ package de.rub.nds.sshattacker.state;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.config.Config;
-import de.rub.nds.sshattacker.transport.AliasedConnection;
 import de.rub.nds.sshattacker.constants.ChannelRequestType;
 import de.rub.nds.sshattacker.constants.ChannelType;
-import de.rub.nds.sshattacker.constants.EncryptionAlgorithm;
 import de.rub.nds.sshattacker.constants.CompressionAlgorithm;
+import de.rub.nds.sshattacker.constants.EncryptionAlgorithm;
 import de.rub.nds.sshattacker.constants.KeyExchangeAlgorithm;
 import de.rub.nds.sshattacker.constants.Language;
 import de.rub.nds.sshattacker.constants.MacAlgorithm;
@@ -14,6 +13,7 @@ import de.rub.nds.sshattacker.constants.PublicKeyAuthenticationAlgorithm;
 import de.rub.nds.sshattacker.protocol.layers.BinaryPacketLayer;
 import de.rub.nds.sshattacker.protocol.layers.CryptoLayer;
 import de.rub.nds.sshattacker.protocol.layers.MessageLayer;
+import de.rub.nds.sshattacker.transport.AliasedConnection;
 import de.rub.nds.sshattacker.transport.ClientTcpTransportHandler;
 import de.rub.nds.sshattacker.transport.TransportHandler;
 import de.rub.nds.sshattacker.util.Converter;
@@ -230,20 +230,20 @@ public class SshContext {
         return Optional.ofNullable(serverSupportedLanguagesClientToServer);
     }
 
-    public byte getClientFirstKeyExchangePacketFollows() {
-        return clientFirstKeyExchangePacketFollows;
+    public Optional<Byte> getClientFirstKeyExchangePacketFollows() {
+        return Optional.ofNullable(clientFirstKeyExchangePacketFollows);
     }
 
-    public byte getServerFirstKeyExchangePacketFollows() {
-        return serverFirstKeyExchangePacketFollows;
+    public Optional<Byte> getServerFirstKeyExchangePacketFollows() {
+        return Optional.ofNullable(serverFirstKeyExchangePacketFollows);
     }
 
-    public int getClientReserved() {
-        return clientReserved;
+    public Optional<Integer> getClientReserved() {
+        return Optional.ofNullable(clientReserved);
     }
 
-    public int getServerReserved() {
-        return serverReserved;
+    public Optional<Integer> getServerReserved() {
+        return Optional.ofNullable(serverReserved);
     }
 
     public void setClientVersion(String clientVersion) {
@@ -489,8 +489,8 @@ public class SshContext {
         this.keyExchangeSignature = keyExchangeSignature;
     }
 
-    public KeyExchangeAlgorithm getKeyExchangeAlgorithm() {
-        return keyExchangeAlgorithm;
+    public Optional<KeyExchangeAlgorithm> getKeyExchangeAlgorithm() {
+        return Optional.ofNullable(keyExchangeAlgorithm);
     }
 
     public void setKeyExchangeAlgorithm(KeyExchangeAlgorithm keyExchangeAlgorithm) {
