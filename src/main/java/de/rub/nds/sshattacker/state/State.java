@@ -66,11 +66,11 @@ public class State {
     private RunningModeType runningMode = null;
 
     @HoldsModifiableVariable
-    private final WorkflowTrace workflowTrace;
+    private WorkflowTrace workflowTrace;
     private WorkflowTrace originalWorkflowTrace;
 
     public State() {
-        this(Config.createConfig());
+        this(new Config());
     }
 
     public State(WorkflowTrace trace) {
@@ -102,9 +102,9 @@ public class State {
      */
     public final void initState() {
         // Keep a snapshot to restore user defined trace values after filtering.
-        if (config.isFiltersKeepUserSettings()) {
-            originalWorkflowTrace = WorkflowTrace.copy(workflowTrace);
-        }
+//        if (config.isFiltersKeepUserSettings()) {
+//            originalWorkflowTrace = WorkflowTrace.copy(workflowTrace);
+//        }
 
         WorkflowTraceNormalizer normalizer = new WorkflowTraceNormalizer();
         normalizer.normalize(workflowTrace, config, runningMode);
@@ -323,6 +323,10 @@ public class State {
             err.append(" Operation ").append(operation_name).append(" not permitted");
         }
         throw new ConfigurationException(err.toString());
+    }
+
+    public void setWorkflowTrace(WorkflowTrace trace) {
+        this.workflowTrace = trace;
     }
 
 }

@@ -119,8 +119,8 @@ public class Config implements Serializable {
 
     public Config() {
 
-        defaultClientConnection = new OutboundConnection("client", 22, "localhost");
-        defaultServerConnection = new InboundConnection("server", 22);
+        defaultClientConnection = new OutboundConnection("client", 65222, "localhost");
+        defaultServerConnection = new InboundConnection("server", 65222);
         clientVersion = "SSH-2.0-OpenSSH_7.8";
         clientComment = "";
         serverVersion = clientVersion;
@@ -186,8 +186,6 @@ public class Config implements Serializable {
         outputFilters = new ArrayList<>();
         outputFilters.add(FilterType.DEFAULT);
         applyFiltersInPlace = false;
-
-
     }
 
     public static Config createConfig() {
@@ -197,6 +195,7 @@ public class Config implements Serializable {
         InputStream stream = Config.class.getResourceAsStream(DEFAULT_CONFIG_FILE);
         return ConfigIO.read(stream);
     }
+    
     public static Config createConfig(File f) {
         return ConfigIO.read(f);
     }

@@ -9,20 +9,8 @@
 package de.rub.nds.sshattacker.workflow.factory;
 
 import de.rub.nds.sshattacker.config.Config;
-import de.rub.nds.sshattacker.transport.AliasedConnection;
-import de.rub.nds.sshattacker.constants.KeyExchangeAlgorithm;
 import de.rub.nds.sshattacker.constants.RunningModeType;
-import de.rub.nds.sshattacker.exceptions.ConfigurationException;
-import de.rub.nds.sshattacker.protocol.message.*;
 import de.rub.nds.sshattacker.workflow.WorkflowTrace;
-import de.rub.nds.sshattacker.workflow.action.MessageAction;
-import de.rub.nds.sshattacker.workflow.action.ReceiveAction;
-import de.rub.nds.sshattacker.workflow.action.SendAction;
-import de.rub.nds.sshattacker.workflow.action.SshAction;
-import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -41,6 +29,6 @@ public class WorkflowConfigurationFactory {
     }
 
     public WorkflowTrace createWorkflowTrace(WorkflowTraceType workflowTraceType, RunningModeType runningMode) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return new WorkflowTrace();
     }
 }

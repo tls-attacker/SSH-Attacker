@@ -4,7 +4,7 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.protocol.core.message.Serializer;
-import de.rub.nds.sshattacker.constants.MessageIDConstants;
+import de.rub.nds.sshattacker.constants.MessageIDConstant;
 import de.rub.nds.sshattacker.protocol.handler.Handler;
 import de.rub.nds.sshattacker.protocol.serializer.ChannelOpenMessageSerializer;
 import de.rub.nds.sshattacker.state.SshContext;
@@ -17,7 +17,7 @@ public class ChannelOpenMessage extends Message {
     private ModifiableInteger packetSize;
 
     public ChannelOpenMessage(){
-        messageID = ModifiableVariableFactory.safelySetValue(messageID, MessageIDConstants.SSH_MSG_CHANNEL_OPEN);
+        messageID = ModifiableVariableFactory.safelySetValue(messageID, MessageIDConstant.SSH_MSG_CHANNEL_OPEN.id);
     }
     
     public ModifiableString getChannelType() {

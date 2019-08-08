@@ -29,8 +29,8 @@ import de.rub.nds.sshattacker.protocol.preparator.UserauthPasswordMessagePrepara
 import de.rub.nds.sshattacker.protocol.serializer.KeyExchangeInitMessageSerializer;
 import de.rub.nds.sshattacker.state.Chooser;
 import de.rub.nds.sshattacker.state.SshContext;
-import de.rub.nds.tlsattacker.transport.TransportHandler;
-import de.rub.nds.tlsattacker.transport.tcp.ClientTcpTransportHandler;
+import de.rub.nds.sshattacker.transport.TransportHandler;
+import de.rub.nds.sshattacker.transport.ClientTcpTransportHandler;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.math.BigInteger;

@@ -33,6 +33,9 @@ public class CryptoLayer {
         this.context = context;
     }
 
+    /**
+     * Can only be called after keys have been derived
+     */
     public void init() {
         initCiphers();
         initMacs();

@@ -7,12 +7,10 @@ import de.rub.nds.sshattacker.protocol.message.BinaryPacket;
 import de.rub.nds.sshattacker.protocol.message.ClientInitMessage;
 import de.rub.nds.sshattacker.protocol.message.Message;
 import de.rub.nds.sshattacker.state.SshContext;
-import de.rub.nds.sshattacker.workflow.action.MessageAction;
 import de.rub.nds.sshattacker.workflow.action.result.MessageActionResult;
-import de.rub.nds.tlsattacker.transport.TransportHandler;
+import de.rub.nds.sshattacker.transport.TransportHandler;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -43,7 +41,13 @@ public class SendMessageHelper {
     public MessageActionResult sendMessages(List<Message> list, SshContext context) {
         MessageActionResult result = new MessageActionResult();
         for(Message msg : list){
-            result.merge(sendMessage(msg, context));
+            if ("ClientInitMessage".equals(msg.getClass().getSimpleName())){
+                sendInitMessage((ClientInitMessage) msg, context);
+            }
+            else
+            {
+                result.merge(sendMessage(msg, context));
+            }
         }
         return result;
     }

@@ -16,7 +16,6 @@ import de.rub.nds.sshattacker.protocol.message.Message;
 import de.rub.nds.sshattacker.state.SshContext;
 import de.rub.nds.sshattacker.state.State;
 import de.rub.nds.sshattacker.workflow.action.result.MessageActionResult;
-import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;

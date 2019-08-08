@@ -2,6 +2,7 @@ package de.rub.nds.sshattacker.state;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.config.Config;
+import de.rub.nds.sshattacker.connection.Connection;
 import de.rub.nds.sshattacker.transport.AliasedConnection;
 import de.rub.nds.sshattacker.constants.ChannelRequestType;
 import de.rub.nds.sshattacker.constants.ChannelType;
@@ -14,8 +15,9 @@ import de.rub.nds.sshattacker.constants.PublicKeyAuthenticationAlgorithm;
 import de.rub.nds.sshattacker.protocol.layers.BinaryPacketLayer;
 import de.rub.nds.sshattacker.protocol.layers.CryptoLayer;
 import de.rub.nds.sshattacker.protocol.layers.MessageLayer;
+import de.rub.nds.sshattacker.transport.ClientTcpTransportHandler;
+import de.rub.nds.sshattacker.transport.TransportHandler;
 import de.rub.nds.sshattacker.util.Converter;
-import de.rub.nds.tlsattacker.transport.TransportHandler;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.util.List;
@@ -24,13 +26,14 @@ public class SshContext {
 
     private Config config;
     private Chooser chooser;
+            
     private AliasedConnection connection;
 
     private boolean receivedTransportHandlerException = false;
-    private BinaryPacketLayer binaryPacketLayer;
-    private MessageLayer messageLayer;
+    private BinaryPacketLayer binaryPacketLayer = new BinaryPacketLayer();
+    private MessageLayer messageLayer = new MessageLayer(this);
     private TransportHandler transportHandler;
-    private CryptoLayer cryptoLayer;
+    private CryptoLayer cryptoLayer = new CryptoLayer(this);
 
     private byte[] exchangeHashInput;
 
@@ -120,7 +123,8 @@ public class SshContext {
     private String channelCommand;
     private byte replyWanted;
     
-    private Boolean receivedDisconnectMessage;
+    private Boolean receivedDisconnectMessage = false;
+    private Boolean receivedServerInit = false;
 
     public String getClientVersion() {
         return clientVersion;
@@ -365,6 +369,8 @@ public class SshContext {
     public SshContext(Config config, AliasedConnection connection) {
         this.config = config;
         this.connection = connection;
+        transportHandler = new ClientTcpTransportHandler(connection);
+        chooser = new Chooser(this); // TODO this could introduce bugs
     }
 
     public SshContext() {
@@ -778,4 +784,13 @@ public class SshContext {
     public void initTransportHandler() throws IOException {
         transportHandler.initialize();
     }
+
+    public Boolean getReceivedServerInit() {
+        return receivedServerInit;
+    }
+
+    public void setReceivedServerInit(Boolean receivedServerInit) {
+        this.receivedServerInit = receivedServerInit;
+    }
+    
 }

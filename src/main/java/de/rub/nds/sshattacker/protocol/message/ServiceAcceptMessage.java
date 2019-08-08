@@ -3,7 +3,7 @@ package de.rub.nds.sshattacker.protocol.message;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.protocol.core.message.Serializer;
-import de.rub.nds.sshattacker.constants.MessageIDConstants;
+import de.rub.nds.sshattacker.constants.MessageIDConstant;
 import de.rub.nds.sshattacker.protocol.handler.Handler;
 import de.rub.nds.sshattacker.protocol.handler.ServiceAcceptMessageHandler;
 import de.rub.nds.sshattacker.protocol.serializer.ServiceAcceptMessageSerializer;
@@ -14,7 +14,7 @@ public class ServiceAcceptMessage extends Message{
     private ModifiableString serviceName;
 
     public ServiceAcceptMessage(){
-        messageID = ModifiableVariableFactory.safelySetValue(this.messageID, MessageIDConstants.SSH_MSG_SERVICE_ACCEPT);
+        messageID = ModifiableVariableFactory.safelySetValue(this.messageID, MessageIDConstant.SSH_MSG_SERVICE_ACCEPT.id);
     }
     
     public ServiceAcceptMessage(String serviceName){

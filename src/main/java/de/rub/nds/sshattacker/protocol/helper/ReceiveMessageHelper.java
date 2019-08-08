@@ -9,7 +9,7 @@ import de.rub.nds.sshattacker.protocol.message.Message;
 import de.rub.nds.sshattacker.protocol.parser.ClientInitMessageParser;
 import de.rub.nds.sshattacker.state.SshContext;
 import de.rub.nds.sshattacker.workflow.action.result.MessageActionResult;
-import de.rub.nds.tlsattacker.transport.TransportHandler;
+import de.rub.nds.sshattacker.transport.TransportHandler;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
@@ -26,6 +26,12 @@ public class ReceiveMessageHelper {
         MessageLayer messageLayer = context.getMessageLayer();
         CryptoLayer cryptoLayer = context.getCryptoLayer();
 
+        if (context.getReceivedServerInit() == false){
+            receiveInitMessage(context);
+            context.setReceivedServerInit(true);
+            return new MessageActionResult();
+        }
+        else{
         try {
             byte[] data = transportHandler.fetchData();
             if (data.length != 0) {
@@ -45,6 +51,7 @@ public class ReceiveMessageHelper {
             LOGGER.debug("Error while receiving Data " + e.getMessage());
             return new MessageActionResult();
         }
+    }
     }
     
     // TODO dummy method until expectedMessages are used

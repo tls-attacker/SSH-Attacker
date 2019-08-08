@@ -1,7 +1,7 @@
 package de.rub.nds.sshattacker.protocol.serializer;
 
 import de.rub.nds.protocol.core.message.Serializer;
-import de.rub.nds.sshattacker.constants.MessageIDConstants;
+import de.rub.nds.sshattacker.constants.MessageIDConstant;
 import de.rub.nds.sshattacker.protocol.message.EcdhKeyExchangeInitMessage;
 import de.rub.nds.sshattacker.protocol.message.EcdhKeyExchangeReplyMessage;
 import de.rub.nds.sshattacker.protocol.message.KeyExchangeInitMessage;

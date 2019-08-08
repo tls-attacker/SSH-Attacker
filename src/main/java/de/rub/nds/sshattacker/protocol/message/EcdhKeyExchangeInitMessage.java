@@ -4,7 +4,7 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.protocol.core.message.Serializer;
-import de.rub.nds.sshattacker.constants.MessageIDConstants;
+import de.rub.nds.sshattacker.constants.MessageIDConstant;
 import de.rub.nds.sshattacker.protocol.handler.Handler;
 import de.rub.nds.sshattacker.protocol.serializer.EcdhKeyExchangeInitMessageSerializer;
 import de.rub.nds.sshattacker.state.SshContext;
@@ -15,7 +15,7 @@ public class EcdhKeyExchangeInitMessage extends Message {
     private ModifiableByteArray publicKey;
 
     public EcdhKeyExchangeInitMessage() {
-        messageID = ModifiableVariableFactory.safelySetValue(messageID, MessageIDConstants.SSH_MSG_KEX_ECDH_INIT);
+        messageID = ModifiableVariableFactory.safelySetValue(messageID, MessageIDConstant.SSH_MSG_KEX_ECDH_INIT.id);
     }
 
     public ModifiableInteger getPublicKeyLength() {

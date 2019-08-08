@@ -2,15 +2,9 @@ package de.rub.nds.sshattacker.protocol.handler;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.crypto.KeyDerivation;
-import de.rub.nds.sshattacker.imported.ec_.CurveFactory;
-import de.rub.nds.sshattacker.imported.ec_.EllipticCurve;
-import de.rub.nds.sshattacker.imported.ec_.NamedGroup;
-import de.rub.nds.sshattacker.imported.ec_.Point;
 import de.rub.nds.sshattacker.protocol.message.EcdhKeyExchangeReplyMessage;
 import de.rub.nds.sshattacker.state.SshContext;
 import de.rub.nds.sshattacker.util.Converter;
-import java.math.BigInteger;
-import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

@@ -37,20 +37,20 @@ public class DefaultWorkflowExecutor extends WorkflowExecutor {
         if (config.getWorkflowExecutorShouldOpen()) {
             for (SshContext ctx : allSshContexts) {
                 AliasedConnection con = ctx.getConnection();
-                try{
-                ctx.initTransportHandler();
-                }
-                catch (IOException e){
+                try {
+                    ctx.initTransportHandler();
+                } catch (IOException e) {
                     LOGGER.error("Unable to initialize transportHandler");
                 }
                 LOGGER.debug("Connection for " + ctx + " initiliazed");
             }
         }
-
-        state.getWorkflowTrace().reset();
+        
+        // why are you resetting?
+//        state.getWorkflowTrace().reset();
         int numSshContexts = allSshContexts.size();
-        List<SshAction> tlsActions = state.getWorkflowTrace().getSshActions();
-        for (SshAction action : tlsActions) {
+        List<SshAction> sshActions = state.getWorkflowTrace().getSshActions();
+        for (SshAction action : sshActions) {
 
             if ((state.getConfig().getStopActionsAfterDisconnect() && isReceivedDisconnectMessage())) {
                 LOGGER.debug("Skipping all Actions, received Disconnect, StopActionsAfterDisconnect active");

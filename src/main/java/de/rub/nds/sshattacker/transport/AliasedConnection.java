@@ -16,7 +16,7 @@ public abstract class AliasedConnection extends Connection implements Aliasable 
     public static final TransportHandlerType DEFAULT_TRANSPORT_HANDLER_TYPE = TransportHandlerType.TCP;
     public static final Integer DEFAULT_TIMEOUT = 1000;
     public static final String DEFAULT_HOSTNAME = "localhost";
-    public static final Integer DEFAULT_PORT = 443;
+    public static final Integer DEFAULT_PORT = 65222;
 
     protected String alias = null;
 

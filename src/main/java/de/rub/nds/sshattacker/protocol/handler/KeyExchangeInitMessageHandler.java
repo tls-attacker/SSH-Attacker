@@ -6,7 +6,7 @@ import de.rub.nds.sshattacker.constants.CompressionAlgorithm;
 import de.rub.nds.sshattacker.constants.KeyExchangeAlgorithm;
 import de.rub.nds.sshattacker.constants.Language;
 import de.rub.nds.sshattacker.constants.MacAlgorithm;
-import de.rub.nds.sshattacker.constants.MessageIDConstants;
+import de.rub.nds.sshattacker.constants.MessageIDConstant;
 import de.rub.nds.sshattacker.constants.PublicKeyAuthenticationAlgorithm;
 import de.rub.nds.sshattacker.protocol.AlgorithmPicker;
 import de.rub.nds.sshattacker.protocol.message.KeyExchangeInitMessage;
@@ -38,7 +38,7 @@ public class KeyExchangeInitMessageHandler extends Handler<KeyExchangeInitMessag
 
         adjustAlgorithms();
 
-        context.appendToExchangeHashInput(ArrayConverter.concatenate(new byte[]{MessageIDConstants.SSH_MSG_KEXINIT},
+        context.appendToExchangeHashInput(ArrayConverter.concatenate(new byte[]{MessageIDConstant.SSH_MSG_KEXINIT.id},
                 new KeyExchangeInitMessageSerializer(message).serializeMessageSpecificPayload()));
 
     }

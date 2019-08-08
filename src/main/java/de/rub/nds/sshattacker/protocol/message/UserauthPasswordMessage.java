@@ -4,7 +4,7 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.protocol.core.message.Serializer;
-import de.rub.nds.sshattacker.constants.MessageIDConstants;
+import de.rub.nds.sshattacker.constants.MessageIDConstant;
 import de.rub.nds.sshattacker.protocol.handler.Handler;
 import de.rub.nds.sshattacker.protocol.serializer.UserauthPasswordMessageSerializer;
 import de.rub.nds.sshattacker.state.SshContext;
@@ -17,7 +17,7 @@ public class UserauthPasswordMessage extends Message{
     private ModifiableString password;
 
     public UserauthPasswordMessage(){
-        messageID = ModifiableVariableFactory.safelySetValue(messageID, MessageIDConstants.SSH_MSG_USERAUTH_REQUEST);
+        messageID = ModifiableVariableFactory.safelySetValue(messageID, MessageIDConstant.SSH_MSG_USERAUTH_REQUEST.id);
     }
     
     public ModifiableString getUsername() {
