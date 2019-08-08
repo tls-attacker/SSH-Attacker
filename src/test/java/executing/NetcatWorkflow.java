@@ -1,10 +1,5 @@
 package executing;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.sshattacker.imported.ec_.EllipticCurveOverFp;
-import de.rub.nds.sshattacker.imported.ec_.EllipticCurveSECP256R1;
-import de.rub.nds.sshattacker.imported.ec_.FieldElementFp;
-import de.rub.nds.sshattacker.imported.ec_.Point;
 import de.rub.nds.sshattacker.protocol.helper.ReceiveMessageHelper;
 import de.rub.nds.sshattacker.protocol.helper.SendMessageHelper;
 import de.rub.nds.sshattacker.protocol.message.ChannelDataMessage;
@@ -32,8 +27,6 @@ import de.rub.nds.sshattacker.workflow.action.SendAction;
 import de.rub.nds.sshattacker.workflow.executor.DefaultWorkflowExecutor;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.math.BigInteger;
-import java.security.SecureRandom;
 
 public class NetcatWorkflow {
 
@@ -41,20 +34,6 @@ public class NetcatWorkflow {
     public static void main(String[] args) throws Exception {
 
         State state = new State();
-
-        // TODO extract keyexchange
-        EllipticCurveOverFp secp256r1 = new EllipticCurveSECP256R1();
-
-        SecureRandom random = new SecureRandom();
-        byte[] clientEcdhSecretKey = new byte[32];
-        random.nextBytes(clientEcdhSecretKey);
-        FieldElementFp a = new FieldElementFp(new BigInteger(1, clientEcdhSecretKey), secp256r1.getBasePointOrder());
-        state.getSshContext().setClientEcdhSecretKey(ArrayConverter.bigIntegerToByteArray(a.getData()));
-        Point myPoint = secp256r1.mult(new BigInteger(1, state.getSshContext().getClientEcdhSecretKey()), secp256r1.getBasePoint());
-        byte[] x = ArrayConverter.bigIntegerToByteArray(myPoint.getX().getData());
-        byte[] y = ArrayConverter.bigIntegerToByteArray(myPoint.getY().getData());
-        // 04 -> no point compression used; it is not supported by openssh
-        state.getSshContext().setClientEcdhPublicKey(ArrayConverter.concatenate(new byte[]{04}, x, y));
 
         ClientInitMessage clientInit = new ClientInitMessage();
         new ClientInitMessagePreparator(state.getSshContext(), clientInit).prepare();
