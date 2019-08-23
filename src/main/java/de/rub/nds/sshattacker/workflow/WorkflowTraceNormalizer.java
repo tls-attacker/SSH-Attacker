@@ -1,11 +1,3 @@
-/**
- * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
- *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
- */
 package de.rub.nds.sshattacker.workflow;
 
 import de.rub.nds.sshattacker.config.Config;
@@ -132,7 +124,7 @@ public class WorkflowTraceNormalizer {
 
     /**
      * Assert that a workflow trace is "well defined". A well defined workflow
-     * trace contains one or more Connections and zero or more TlsActions which
+     * trace contains one or more Connections and zero or more SshActions which
      * refer to defined Connections only (i.e. the alias must match a known
      * connection alias).
      *

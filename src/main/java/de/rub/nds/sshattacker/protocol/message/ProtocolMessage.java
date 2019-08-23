@@ -1,11 +1,3 @@
-/**
- * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
- *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
- */
 package de.rub.nds.sshattacker.protocol.message;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
@@ -22,9 +14,6 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlTransient;
 
-/**
- * TLS Protocol message is the message included in the Record message.
- */
 @XmlAccessorType(XmlAccessType.FIELD)
 public abstract class ProtocolMessage extends ModifiableVariableHolder {
 

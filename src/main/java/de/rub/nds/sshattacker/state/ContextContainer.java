@@ -1,11 +1,3 @@
-/**
- * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
- *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
- */
 package de.rub.nds.sshattacker.state;
 
 import de.rub.nds.sshattacker.exceptions.ConfigurationException;
@@ -24,7 +16,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * Manage TLS contexts.
+ * Manage SSH contexts.
  *
  */
 public class ContextContainer {
@@ -33,52 +25,52 @@ public class ContextContainer {
 
     private final Set<String> knownAliases = new HashSet<>();
 
-    private final Map<String, SshContext> tlsContexts = new HashMap<>();
+    private final Map<String, SshContext> sshContexts = new HashMap<>();
 
     /**
-     * An inbound TLS context is a context bound to an incoming connection. I.e.
+     * An inbound SSH context is a context bound to an incoming connection. I.e.
      * it represents a connection that we accepted from a connecting client.
      */
     private final List<SshContext> inboundSshContexts = new ArrayList<>();
 
     /**
-     * An outbound TLS context is a context bound to an outgoing connection.
+     * An outbound SSH context is a context bound to an outgoing connection.
      * I.e. it represents a connection established by us to a remote server.
      */
     private final List<SshContext> outboundSshContexts = new ArrayList<>();
 
     /**
-     * Get the only defined TLS context.
+     * Get the only defined SSH context.
      * <p>
      * </p>
      * Convenience method, useful when working with a single context only.
      *
-     * @return the only known TLS context
-     * @throws ConfigurationException if there is more than one TLS context in
+     * @return the only known SSH context
+     * @throws ConfigurationException if there is more than one SSH context in
      * the container
      *
      */
     public SshContext getSshContext() {
-        if (tlsContexts.isEmpty()) {
+        if (sshContexts.isEmpty()) {
             throw new ConfigurationException("No context defined.");
         }
-        if (tlsContexts.size() > 1) {
+        if (sshContexts.size() > 1) {
             throw new ConfigurationException("getSshContext requires an alias if multiple contexts are defined");
         }
-        return tlsContexts.entrySet().iterator().next().getValue();
+        return sshContexts.entrySet().iterator().next().getValue();
     }
 
     /**
-     * Get TLS context with the given alias.
+     * Get SSH context with the given alias.
      *
      * @param alias
      * @return the context with the given connection end alias
-     * @throws ConfigurationException if there is no TLS context with the given
+     * @throws ConfigurationException if there is no SSH context with the given
      * alias
      *
      */
     public SshContext getSshContext(String alias) {
-        SshContext ctx = tlsContexts.get(alias);
+        SshContext ctx = sshContexts.get(alias);
         if (ctx == null) {
             throw new ConfigurationException("No context defined with alias '" + alias + "'.");
         }
@@ -89,13 +81,13 @@ public class ContextContainer {
         AliasedConnection con = context.getConnection();
         String alias = con.getAlias();
         if (alias == null) {
-            throw new ContextHandlingException("Connection end alias not set (null). Can't add the TLS context.");
+            throw new ContextHandlingException("Connection end alias not set (null). Can't add the SSH context.");
         }
         if (containsAlias(alias)) {
             throw new ConfigurationException("Connection end alias already in use: " + alias);
         }
 
-        tlsContexts.put(alias, context);
+        sshContexts.put(alias, context);
         knownAliases.add(alias);
 
         if (con.getLocalConnectionEndType() == ConnectionEndType.SERVER) {
@@ -108,7 +100,7 @@ public class ContextContainer {
     }
 
     public List<SshContext> getAllContexts() {
-        return new ArrayList<>(tlsContexts.values());
+        return new ArrayList<>(sshContexts.values());
     }
 
     public List<SshContext> getInboundSshContexts() {
@@ -132,11 +124,11 @@ public class ContextContainer {
     }
 
     public boolean isEmpty() {
-        return tlsContexts.isEmpty();
+        return sshContexts.isEmpty();
     }
 
     public void clear() {
-        tlsContexts.clear();
+        sshContexts.clear();
         knownAliases.clear();
         inboundSshContexts.clear();
         outboundSshContexts.clear();
@@ -144,10 +136,10 @@ public class ContextContainer {
 
     public void removeSshContext(String alias) {
         if (containsAlias(alias)) {
-            SshContext removeMe = tlsContexts.get(alias);
+            SshContext removeMe = sshContexts.get(alias);
             inboundSshContexts.remove(removeMe);
             outboundSshContexts.remove(removeMe);
-            tlsContexts.remove(alias);
+            sshContexts.remove(alias);
             knownAliases.remove(alias);
         } else {
             LOGGER.debug("No context with alias " + alias + " found, nothing to remove");
@@ -170,7 +162,7 @@ public class ContextContainer {
         if (!containsAlias(alias)) {
             throw new ConfigurationException("No SshContext to replace for alias " + alias);
         }
-        SshContext replaceMe = tlsContexts.get(alias);
+        SshContext replaceMe = sshContexts.get(alias);
         if (!replaceMe.getConnection().equals(newSshContext.getConnection())) {
             throw new ContextHandlingException("Cannot replace SshContext because the new SshContext"
                     + " defines another connection.");

@@ -1,11 +1,3 @@
-/**
- * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
- *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
- */
 package de.rub.nds.sshattacker.workflow.action;
 
 import de.rub.nds.sshattacker.exceptions.ConfigurationException;
@@ -19,7 +11,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlTransient;
 
 /**
- * TLS Action bound to a single connection/TLS context. This should be the
+ * SSH Action bound to a single connection/SSH context. This should be the
  * default abstract base class for most actions. Provides automatic fallback to
  * default context alias.
  */

@@ -1,15 +1,7 @@
-/**
- * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
- *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
- */
 package de.rub.nds.sshattacker.exceptions;
 
 /**
- * Thrown when problems by in the TLS workflow appear.
+ * Thrown when problems by in the SSH workflow appear.
  */
 public class WorkflowExecutionException extends RuntimeException {
 

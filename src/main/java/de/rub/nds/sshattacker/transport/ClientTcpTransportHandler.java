@@ -1,16 +1,6 @@
-/**
- * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
- *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
- */
 package de.rub.nds.sshattacker.transport;
 
 import de.rub.nds.sshattacker.connection.Connection;
-import de.rub.nds.tlsattacker.transport.exception.InvalidTransportHandlerStateException;
-import de.rub.nds.tlsattacker.transport.socket.SocketState;
 import java.io.IOException;
 import java.io.PushbackInputStream;
 import java.net.InetSocketAddress;

@@ -1,11 +1,3 @@
-/**
- * TLS-Attacker - A Modular Penetration Testing Framework for TLS
- *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
- *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
- */
 package de.rub.nds.sshattacker.state;
 
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
@@ -34,19 +26,19 @@ import org.apache.logging.log4j.Logger;
 /**
  * The central object passed around during program execution. The state
  * initializes and holds the workflow trace, the default configuration and the
- * corresponding TLS contexts.
+ * corresponding SSH contexts.
  *
  * <p>
  * The concept behind this class is as follows: the state is initialized with
  * the user configured values, that is, via default configuration and a given
  * workflow trace (type). On initialization, the state will create the necessary
- * TLS contexts for workflow execution. These contexts should be considered as
- * dynamic objects, representing TLS connections, calculations and other data
- * exchanged during the TLS actual workflow execution.
+ * SSH contexts for workflow execution. These contexts should be considered as
+ * dynamic objects, representing SSH connections, calculations and other data
+ * exchanged during the SSH actual workflow execution.
  * </p>
  *
  * <p>
- * Therefore, there is no public interface for setting TLS contexts manually.
+ * Therefore, there is no public interface for setting SSH contexts manually.
  * They are always automatically created based on the connections defined in the
  * workflow trace.
  * </p>
@@ -98,7 +90,7 @@ public class State {
     }
 
     /**
-     * Normalize trace and initialize TLS contexts.
+     * Normalize trace and initialize SSH contexts.
      */
     public final void initState() {
         // Keep a snapshot to restore user defined trace values after filtering.
@@ -182,7 +174,7 @@ public class State {
     }
 
     /**
-     * Get TLS context with given alias. Aliases are the ones assigned to the
+     * Get SSH context with given alias. Aliases are the ones assigned to the
      * corresponding connection ends.
      *
      * Note: Be careful when changing the context. I.e. if you change it's
@@ -192,7 +184,7 @@ public class State {
      * invalidation.
      *
      *
-     * @param alias The Alias for which the TLSContext should be returned
+     * @param alias The Alias for which the SshContext should be returned
      *
      * @return the context with the given connection end alias
      */
