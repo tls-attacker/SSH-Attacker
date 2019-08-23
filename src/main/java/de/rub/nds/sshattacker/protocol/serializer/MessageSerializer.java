@@ -24,7 +24,6 @@ public abstract class MessageSerializer<T extends Message> extends Serializer<Me
 
     protected abstract byte[] serializeMessageSpecificPayload();
 
-    // TODO cleanup?
     public static <T extends Message> byte[] delegateSerialization(T message) {
         return message.getSerializer().serialize();
     }

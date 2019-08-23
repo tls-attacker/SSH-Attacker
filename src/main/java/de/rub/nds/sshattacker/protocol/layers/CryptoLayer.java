@@ -114,7 +114,7 @@ public class CryptoLayer {
 
         int macStart = BinaryPacketConstants.LENGTH_FIELD_LENGTH + packetLength;
         int macEnd = macStart + context.getMacAlgorithmServerToClient().getOutputSize();
-        byte[] macced = Arrays.copyOfRange(raw, macStart, macEnd);// TODO sometimes throws outOfBoundsException... Except when singlestep debugging
+        byte[] macced = Arrays.copyOfRange(raw, macStart, macEnd);
         byte[] toDecrypt = Arrays.copyOfRange(raw, context.getCipherAlgorithmServerToClient().getBlockSize(), macStart);
         byte[] decrypted = decrypt(toDecrypt);
         byte[] result = ArrayConverter.concatenate(decryptedFirstBlock, decrypted, macced);

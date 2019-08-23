@@ -12,7 +12,9 @@ public class NewKeysMessageParser extends MessageParser<NewKeysMessage> {
         return new NewKeysMessage();
     }
 
+    @Override
     protected void parseMessageSpecificPayload(NewKeysMessage msg) {
-        // TODO only sets messagetype to NewKeysMessage
+        // only sets messagetype to NewKeysMessage
+        // so this can be void
     }
 }

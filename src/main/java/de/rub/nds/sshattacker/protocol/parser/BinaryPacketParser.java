@@ -48,7 +48,7 @@ public class BinaryPacketParser extends Parser<BinaryPacket> {
     }
 
     private void parseMAC(BinaryPacket msg) {
-        ModifiableByteArray mac = ModifiableVariableFactory.safelySetValue(null, parseArrayOrTillEnd(20)); //TODO hardcoded hmac-sha1 size
+        ModifiableByteArray mac = ModifiableVariableFactory.safelySetValue(null, parseArrayOrTillEnd(20)); //TODO hardcoded hmac-sha1 size, needs context to work
         if (mac.getValue().length == 0) {
             LOGGER.debug("MAC: none");
             msg.setMac(new byte[]{});

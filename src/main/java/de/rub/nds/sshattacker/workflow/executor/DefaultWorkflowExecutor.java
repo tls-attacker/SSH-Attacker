@@ -46,7 +46,7 @@ public class DefaultWorkflowExecutor extends WorkflowExecutor {
             }
         }
 
-        // why are you resetting?
+        // TODO why are you resetting?
 //        state.getWorkflowTrace().reset();
         int numSshContexts = allSshContexts.size();
         List<SshAction> sshActions = state.getWorkflowTrace().getSshActions();

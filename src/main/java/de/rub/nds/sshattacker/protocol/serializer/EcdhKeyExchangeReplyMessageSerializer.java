@@ -100,7 +100,7 @@ public class EcdhKeyExchangeReplyMessageSerializer extends MessageSerializer<Ecd
         if (msg.getHostKeyType().getValue().equals("ssh-rsa")) {
             serializeHostKeyRsa();
         } else {
-            serializeHostKeyEcc(); // TODO better conditions
+            serializeHostKeyEcc(); // TODO refine logic
         }
 
         serializePublicKeyLength(msg);

@@ -19,6 +19,19 @@ public class SendMessageHelper {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
+    public void sendBinaryPacket(BinaryPacket bp, SshContext context) {
+        BinaryPacketLayer binaryPacketLayer = context.getBinaryPacketLayer();
+        TransportHandler transportHandler = context.getTransportHandler();
+        CryptoLayer cryptoLayer = context.getCryptoLayer();
+
+        try {
+            transportHandler.sendData(cryptoLayer.macAndEncrypt(binaryPacketLayer.serializeBinaryPacket(bp)));
+        } catch (IOException e) {
+            LOGGER.warn("Error while sending packet: " + e.getMessage());
+
+        }
+    }
+
     public MessageActionResult sendMessage(Message msg, SshContext context) {
         MessageLayer messageLayer = context.getMessageLayer();
         BinaryPacketLayer binaryPacketLayer = context.getBinaryPacketLayer();

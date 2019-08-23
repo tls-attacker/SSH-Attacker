@@ -52,7 +52,7 @@ public class EcdhKeyExchangeInitMessage extends Message {
         return new Handler(context) {
             @Override
             public void handle(Object msg) {
-                // TODO not needed as Client
+                // not needed as Client
             }
         };
     }

@@ -5,6 +5,7 @@ import de.rub.nds.sshattacker.crypto.KeyDerivation;
 import de.rub.nds.sshattacker.protocol.message.EcdhKeyExchangeReplyMessage;
 import de.rub.nds.sshattacker.state.SshContext;
 import de.rub.nds.sshattacker.util.Converter;
+import de.rub.nds.sshattacker.util.Util;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -54,16 +55,7 @@ public class EcdhKeyExchangeReplyMessageHandler extends Handler<EcdhKeyExchangeR
         // hashalgorithm is the same used in the key exchange
 
         // TODO not clean, works for now
-        String hashAlgorithm = "";
-        if (context.getKeyExchangeAlgorithm().toString().contains("256")) {
-            hashAlgorithm = "SHA-256";
-        } else if (context.getKeyExchangeAlgorithm().toString().contains("384")) {
-            hashAlgorithm = "SHA-384";
-        } else if (context.getKeyExchangeAlgorithm().toString().contains("512")) {
-            hashAlgorithm = "SHA-512";
-        } else if (context.getKeyExchangeAlgorithm().toString().contains("sha1")) {
-            hashAlgorithm = "SHA-1";
-        }
+        String hashAlgorithm = Util.getDigestAlgorithmFromKeyExchange(context.getKeyExchangeAlgorithm().toString());
 
         context.setInitialIvClientToServer(KeyDerivation.deriveKey(context.getSharedSecret(), context.getExchangeHash(), (byte) 'A', context.getSessionID(), context.getCipherAlgorithmClientToServer().getBlockSize(), hashAlgorithm));
         LOGGER.debug("Key A: " + ArrayConverter.bytesToRawHexString(context.getInitialIvClientToServer()));
@@ -81,23 +73,12 @@ public class EcdhKeyExchangeReplyMessageHandler extends Handler<EcdhKeyExchangeR
     }
 
     private void adjustExchangeHash() {
-        // TODO not clean, works for now
-        String hashAlgorithm = "";
-        if (context.getKeyExchangeAlgorithm().toString().contains("256")) {
-            hashAlgorithm = "SHA-256";
-        } else if (context.getKeyExchangeAlgorithm().toString().contains("384")) {
-            hashAlgorithm = "SHA-384";
-        } else if (context.getKeyExchangeAlgorithm().toString().contains("512")) {
-            hashAlgorithm = "SHA-512";
-        } else if (context.getKeyExchangeAlgorithm().toString().contains("sha1")) {
-            hashAlgorithm = "SHA-1";
-        }
+        String hashAlgorithm = Util.getDigestAlgorithmFromKeyExchange(context.getKeyExchangeAlgorithm().toString());
 
         context.appendToExchangeHashInput(context.getClientEcdhPublicKey());
         context.appendToExchangeHashInput(context.getServerEcdhPublicKey());
         computeSharedSecret();
 
-        // TODO apply ASN1 sign coding to all bignums
         context.appendToExchangeHashInput(Converter.bytesToBytesWithSignByte(context.getSharedSecret()));
         LOGGER.debug("ExchangeHash Input: " + ArrayConverter.bytesToRawHexString(context.getExchangeHashInput()));
         context.setExchangeHash(KeyDerivation.computeExchangeHash(context.getExchangeHashInput(), hashAlgorithm));
