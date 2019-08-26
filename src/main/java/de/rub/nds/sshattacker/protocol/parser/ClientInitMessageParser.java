@@ -6,9 +6,9 @@
 package de.rub.nds.sshattacker.protocol.parser;
 
 import de.rub.nds.protocol.core.message.Parser;
-import de.rub.nds.sshattacker.protocol.message.ClientInitMessage;
 import de.rub.nds.sshattacker.constants.ByteConstants;
 import de.rub.nds.sshattacker.constants.CharConstants;
+import de.rub.nds.sshattacker.protocol.message.ClientInitMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -35,7 +35,7 @@ public class ClientInitMessageParser extends Parser<ClientInitMessage> {
         } else {
             msg.setVersion(result);
             LOGGER.debug("Version: " + result);
-            msg.setComment((String) null);
+            msg.setComment("");
             LOGGER.debug("Comment: null");
         }
     }
