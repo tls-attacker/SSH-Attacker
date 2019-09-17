@@ -9,6 +9,7 @@
 package de.rub.nds.sshattacker.workflow;
 
 import de.rub.nds.sshattacker.protocol.message.ProtocolMessage;
+import de.rub.nds.sshattacker.workflow.action.SendingAction;
 import java.util.LinkedList;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;

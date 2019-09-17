@@ -117,6 +117,8 @@ public class Config implements Serializable {
 
     private String configOutput = null;
 
+    private Boolean enforceSettings = false;
+
     public Config() {
 
         defaultClientConnection = new OutboundConnection(65222, "localhost");
@@ -562,4 +564,11 @@ public class Config implements Serializable {
         this.configOutput = configOutput;
     }
 
+    public Boolean getEnforceSettings() {
+        return enforceSettings;
+    }
+
+    public void setEnforceSettings(Boolean enforceSettings) {
+        this.enforceSettings = enforceSettings;
+    }
 }

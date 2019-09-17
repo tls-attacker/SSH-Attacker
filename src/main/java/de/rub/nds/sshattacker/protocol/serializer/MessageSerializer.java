@@ -1,6 +1,7 @@
 package de.rub.nds.sshattacker.protocol.serializer;
 
 import de.rub.nds.protocol.core.message.Serializer;
+import de.rub.nds.sshattacker.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.protocol.message.Message;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -20,6 +21,11 @@ public abstract class MessageSerializer<T extends Message> extends Serializer<Me
         appendByte(msg.getMessageID().getValue());
         serializeMessageSpecificPayload();
         return getAlreadySerialized();
+    }
+
+    protected final void serializeSshString(String string) {
+        appendInt(string.length(), DataFormatConstants.STRING_SIZE_LENGTH);
+        appendString(string);
     }
 
     protected abstract byte[] serializeMessageSpecificPayload();

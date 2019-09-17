@@ -26,4 +26,10 @@ public abstract class Message extends ProtocolMessage {
     public abstract Handler getHandler(SshContext context);
 
     public abstract Serializer getSerializer();
+
+    @Override
+    public String toCompactString() {
+        return this.getClass().getSimpleName();
+    }
+
 }

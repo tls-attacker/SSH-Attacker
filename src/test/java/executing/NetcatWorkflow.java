@@ -37,6 +37,8 @@ public class NetcatWorkflow {
 
         ClientInitMessage clientInit = new ClientInitMessage();
         new ClientInitMessagePreparator(state.getSshContext(), clientInit).prepare();
+        clientInit.getVersion().createRandomModificationAtRuntime();
+
         WorkflowTrace trace = new WorkflowTrace();
         SendAction sendClientInit = new SendAction("defaultConnection", clientInit);
         AppendToDigestAction clientInitDigest = new AppendToDigestAction(clientInit.getVersion().getValue().getBytes());
