@@ -8,6 +8,7 @@
  */
 package de.rub.nds.sshattacker.workflow;
 
+import de.rub.nds.sshattacker.constants.MessageIDConstant;
 import de.rub.nds.sshattacker.protocol.message.ProtocolMessage;
 import de.rub.nds.sshattacker.workflow.action.SendingAction;
 import java.util.LinkedList;
@@ -223,7 +224,7 @@ public class WorkflowTraceUtil {
         return receivedMessage;
     }
 
-    public static List<ProtocolMessage> getAllReceivedMessages(WorkflowTrace trace, ProtocolMessageType type) {
+    public static List<ProtocolMessage> getAllReceivedMessages(WorkflowTrace trace, MessageIDConstant type) {
         List<ProtocolMessage> receivedMessage = new LinkedList<>();
         for (ProtocolMessage message : getAllReceivedMessages(trace)) {
             if (message.getProtocolMessageType() == type) {

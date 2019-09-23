@@ -197,7 +197,7 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
     }
 
     @Override
-    public List<BinaryPacket> getReceivedRecords() {
+    public List<BinaryPacket> getReceivedBinaryPackets() {
         return binaryPackets;
     }
 

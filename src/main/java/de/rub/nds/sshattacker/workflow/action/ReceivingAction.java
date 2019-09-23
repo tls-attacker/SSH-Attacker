@@ -8,5 +8,5 @@ public interface ReceivingAction {
 
     public abstract List<Message> getReceivedMessages();
 
-    public abstract List<BinaryPacket> getReceivedRecords();
+    public abstract List<BinaryPacket> getReceivedBinaryPackets();
 }

@@ -56,9 +56,6 @@ public abstract class ProtocolMessage extends ModifiableVariableHolder {
     public ProtocolMessage() {
     }
 
-//    public ProtocolMessageType getProtocolMessageType() {
-//        return protocolMessageType;
-//    }
     public boolean isRequired() {
         if (required == null || required.getValue() == null) {
             return REQUIRED_DEFAULT;
