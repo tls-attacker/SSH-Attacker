@@ -17,9 +17,6 @@ import java.util.Objects;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-/**
- * todo print configured binaryPackets
- */
 public class SendAction extends MessageAction implements SendingAction {
 
     private static final Logger LOGGER = LogManager.getLogger();
@@ -34,6 +31,10 @@ public class SendAction extends MessageAction implements SendingAction {
 
     public SendAction(Message... messages) {
         this(new ArrayList<>(Arrays.asList(messages)));
+    }
+
+    public SendAction(Message message) {
+        this(new Message[]{message});
     }
 
     public SendAction(String connectionAlias) {
