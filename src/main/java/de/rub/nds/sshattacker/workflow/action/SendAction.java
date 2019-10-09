@@ -64,6 +64,12 @@ public class SendAction extends MessageAction implements SendingAction {
             LOGGER.info("Sending messages (" + connectionAlias + "): " + sending);
         }
 
+        // TODO is this a copy?
+        List<Message> preparedMessages = new LinkedList();
+        for (Message m : messages) {
+            m.getPreparator(sshContext).prepare();
+            preparedMessages.add(m);
+        }
         MessageActionResult result = sendMessageHelper.sendMessages(messages, binaryPackets, sshContext);
         messages = new ArrayList<>(result.getMessageList());
         binaryPackets = new ArrayList<>(result.getBinaryPacketList());

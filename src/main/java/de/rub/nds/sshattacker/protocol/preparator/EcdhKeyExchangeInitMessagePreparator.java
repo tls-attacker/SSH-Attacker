@@ -1,6 +1,7 @@
 package de.rub.nds.sshattacker.protocol.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.sshattacker.constants.MessageIDConstant;
 import de.rub.nds.sshattacker.imported.ec_.EllipticCurveOverFp;
 import de.rub.nds.sshattacker.imported.ec_.EllipticCurveSECP256R1;
 import de.rub.nds.sshattacker.imported.ec_.FieldElementFp;
@@ -35,6 +36,7 @@ public class EcdhKeyExchangeInitMessagePreparator extends Preparator<EcdhKeyExch
     @Override
     public void prepare() {
         createKeys();
+        message.setMessageID(MessageIDConstant.SSH_MSG_KEX_ECDH_INIT.id);
         message.setPublicKey(context.getChooser().getClientEcdhPublicKey());
         message.setPublicKeyLength(context.getChooser().getClientEcdhPublicKey().length);
     }

@@ -9,6 +9,8 @@ import de.rub.nds.protocol.core.message.Serializer;
 import de.rub.nds.sshattacker.constants.MessageIDConstant;
 import de.rub.nds.sshattacker.protocol.handler.Handler;
 import de.rub.nds.sshattacker.protocol.handler.KeyExchangeInitMessageHandler;
+import de.rub.nds.sshattacker.protocol.preparator.KeyExchangeInitMessagePreparator;
+import de.rub.nds.sshattacker.protocol.preparator.Preparator;
 import de.rub.nds.sshattacker.protocol.serializer.KeyExchangeInitMessageSerializer;
 import de.rub.nds.sshattacker.state.SshContext;
 
@@ -331,5 +333,10 @@ public class KeyExchangeInitMessage extends Message {
     @Override
     public Serializer getSerializer() {
         return new KeyExchangeInitMessageSerializer(this);
+    }
+
+    @Override
+    public Preparator getPreparator(SshContext context) {
+        return new KeyExchangeInitMessagePreparator(context, this);
     }
 }

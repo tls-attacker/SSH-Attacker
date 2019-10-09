@@ -6,6 +6,7 @@ import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.protocol.core.message.Serializer;
 import de.rub.nds.sshattacker.protocol.handler.Handler;
 import de.rub.nds.sshattacker.protocol.handler.UnknownMessageHandler;
+import de.rub.nds.sshattacker.protocol.preparator.Preparator;
 import de.rub.nds.sshattacker.protocol.serializer.UnknownMessageSerializer;
 import de.rub.nds.sshattacker.state.SshContext;
 
@@ -52,5 +53,10 @@ public class UnknownMessage extends Message {
     @Override
     public Serializer getSerializer() {
         return new UnknownMessageSerializer(this);
+    }
+
+    @Override
+    public Preparator getPreparator(SshContext context) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

@@ -11,17 +11,9 @@ import de.rub.nds.sshattacker.protocol.message.KeyExchangeInitMessage;
 import de.rub.nds.sshattacker.protocol.message.NewKeysMessage;
 import de.rub.nds.sshattacker.protocol.message.ServiceRequestMessage;
 import de.rub.nds.sshattacker.protocol.message.UserauthPasswordMessage;
-import de.rub.nds.sshattacker.protocol.preparator.ChannelOpenMessagePreparator;
-import de.rub.nds.sshattacker.protocol.preparator.ChannelRequestMessagePreparator;
-import de.rub.nds.sshattacker.protocol.preparator.ClientInitMessagePreparator;
-import de.rub.nds.sshattacker.protocol.preparator.EcdhKeyExchangeInitMessagePreparator;
-import de.rub.nds.sshattacker.protocol.preparator.KeyExchangeInitMessagePreparator;
-import de.rub.nds.sshattacker.protocol.preparator.UserauthPasswordMessagePreparator;
-import de.rub.nds.sshattacker.protocol.serializer.KeyExchangeInitMessageSerializer;
 import de.rub.nds.sshattacker.state.State;
 import de.rub.nds.sshattacker.workflow.WorkflowTrace;
 import de.rub.nds.sshattacker.workflow.action.ActivateEncryptionAction;
-import de.rub.nds.sshattacker.workflow.action.AppendToDigestAction;
 import de.rub.nds.sshattacker.workflow.action.ReceiveAction;
 import de.rub.nds.sshattacker.workflow.action.SendAction;
 import de.rub.nds.sshattacker.workflow.executor.DefaultWorkflowExecutor;
@@ -34,64 +26,44 @@ public class NetcatWorkflow {
     public static void main(String[] args) throws Exception {
 
         State state = new State();
-
-        ClientInitMessage clientInit = new ClientInitMessage();
-        new ClientInitMessagePreparator(state.getSshContext(), clientInit).prepare();
-        clientInit.getVersion().createRandomModificationAtRuntime();
-
         WorkflowTrace trace = new WorkflowTrace();
-        SendAction sendClientInit = new SendAction("defaultConnection", clientInit);
-        AppendToDigestAction clientInitDigest = new AppendToDigestAction(clientInit.getVersion().getValue().getBytes());
-        trace.addSshAction(clientInitDigest);
-        trace.addSshAction(sendClientInit);
-        ReceiveAction receiveServerInit = new ReceiveAction("defaultConnection");
-        trace.addSshAction(receiveServerInit);
 
-        KeyExchangeInitMessage clientKeyInit = new KeyExchangeInitMessage();
-        new KeyExchangeInitMessagePreparator(state.getSshContext(), clientKeyInit).prepare();
-        SendAction sendKex = new SendAction("defaultConnection", clientKeyInit);
+        SendAction sendClientInit = new SendAction("defaultConnection", new ClientInitMessage());
+        trace.addSshAction(sendClientInit);
+        trace.addSshAction(new ReceiveAction("defaultConnection"));
+
+        SendAction sendKex = new SendAction("defaultConnection", new KeyExchangeInitMessage());
         ReceiveAction receiveKex = new ReceiveAction("defaultConnection");
-        AppendToDigestAction kexInitDigest = new AppendToDigestAction(new KeyExchangeInitMessageSerializer(clientKeyInit).serialize());
-        trace.addSshAction(kexInitDigest);
         trace.addSshAction(sendKex);
         trace.addSshAction(receiveKex);
 
         EcdhKeyExchangeInitMessage ecdhInit = new EcdhKeyExchangeInitMessage();
-        new EcdhKeyExchangeInitMessagePreparator(state.getSshContext(), ecdhInit).prepare();
         SendAction sendEcdhKex = new SendAction("defaultConnection", ecdhInit);
         ReceiveAction receiveEcdhKex = new ReceiveAction("defaultConnection");
         trace.addSshAction(sendEcdhKex);
         trace.addSshAction(receiveEcdhKex);
-        NewKeysMessage newKeys = new NewKeysMessage();
-        SendAction sendNewKeys = new SendAction("defaultConnection", newKeys);
+        SendAction sendNewKeys = new SendAction("defaultConnection", new NewKeysMessage());
         trace.addSshAction(sendNewKeys);
         trace.addSshAction(new ActivateEncryptionAction());
 
-        ServiceRequestMessage serviceRequest = new ServiceRequestMessage("ssh-userauth");
-        SendAction sendServiceRequest = new SendAction("defaultConnection", serviceRequest);
+        SendAction sendServiceRequest = new SendAction("defaultConnection", new ServiceRequestMessage());
         ReceiveAction receiveServiceRequestResponse = new ReceiveAction("defaultConnection");
         trace.addSshAction(sendServiceRequest);
         trace.addSshAction(receiveServiceRequestResponse);
 
-        UserauthPasswordMessage userauthRequest = new UserauthPasswordMessage();
-        new UserauthPasswordMessagePreparator(state.getSshContext(), userauthRequest).prepare();
-        SendAction sendUserauthRequest = new SendAction("defaultConnection", userauthRequest);
+        SendAction sendUserauthRequest = new SendAction("defaultConnection", new UserauthPasswordMessage());
         ReceiveAction receiveUserauthRequestResponse = new ReceiveAction("defaultConnection");
         ReceiveAction receiveGlobalRequest = new ReceiveAction("defaultConnection");
         trace.addSshActions(sendUserauthRequest);
         trace.addSshAction(receiveUserauthRequestResponse);
         trace.addSshAction(receiveGlobalRequest);
 
-        ChannelOpenMessage sessionOpen = new ChannelOpenMessage();
-        new ChannelOpenMessagePreparator(state.getSshContext(), sessionOpen).prepare();
-        SendAction sendSessionOpen = new SendAction("defaultConnection", sessionOpen);
+        SendAction sendSessionOpen = new SendAction("defaultConnection", new ChannelOpenMessage());
         ReceiveAction receiveSessionOpen = new ReceiveAction("defaultConnection");
         trace.addSshAction(sendSessionOpen);
         trace.addSshAction(receiveSessionOpen);
 
-        ChannelRequestMessage netcat = new ChannelRequestMessage();
-        new ChannelRequestMessagePreparator(state.getSshContext(), netcat).prepare();
-        SendAction sendChannelRequest = new SendAction("defaultConnection", netcat);
+        SendAction sendChannelRequest = new SendAction("defaultConnection", new ChannelRequestMessage());
         ReceiveAction receiveChannelResponse = new ReceiveAction("defaultConnection");
         trace.addSshAction(sendChannelRequest);
         trace.addSshAction(receiveChannelResponse);

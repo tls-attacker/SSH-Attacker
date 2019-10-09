@@ -6,6 +6,8 @@ import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.protocol.core.message.Serializer;
 import de.rub.nds.sshattacker.constants.MessageIDConstant;
 import de.rub.nds.sshattacker.protocol.handler.Handler;
+import de.rub.nds.sshattacker.protocol.preparator.EcdhKeyExchangeInitMessagePreparator;
+import de.rub.nds.sshattacker.protocol.preparator.Preparator;
 import de.rub.nds.sshattacker.protocol.serializer.EcdhKeyExchangeInitMessageSerializer;
 import de.rub.nds.sshattacker.state.SshContext;
 
@@ -60,6 +62,11 @@ public class EcdhKeyExchangeInitMessage extends Message {
     @Override
     public Serializer getSerializer() {
         return new EcdhKeyExchangeInitMessageSerializer(this);
+    }
+
+    @Override
+    public Preparator getPreparator(SshContext context) {
+        return new EcdhKeyExchangeInitMessagePreparator(context, this);
     }
 
 }

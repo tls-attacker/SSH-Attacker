@@ -70,6 +70,7 @@ public class Config implements Serializable {
     private byte[] clientEcdhPublicKey;
     private byte[] serverEcdhPublicKey;
 
+    private String serviceName;
     private String username;
     private String password;
     private int localChannel;
@@ -173,6 +174,7 @@ public class Config implements Serializable {
         clientReserved = 0;
         serverReserved = 0;
 
+        serviceName = "ssh-userauth";
         username = "sshattacker";
         password = "bydahirsch";
         localChannel = 1337;
@@ -571,4 +573,13 @@ public class Config implements Serializable {
     public void setEnforceSettings(Boolean enforceSettings) {
         this.enforceSettings = enforceSettings;
     }
+
+    public String getServiceName() {
+        return serviceName;
+    }
+
+    public void setServiceName(String serviceName) {
+        this.serviceName = serviceName;
+    }
+
 }

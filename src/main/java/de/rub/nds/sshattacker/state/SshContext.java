@@ -112,6 +112,7 @@ public class SshContext {
     private Integer clientReserved;
     private Integer serverReserved;
 
+    private String serviceName;
     private String username;
     private String password;
     private int localChannel;
@@ -791,6 +792,14 @@ public class SshContext {
 
     public void setReceivedServerInit(Boolean receivedServerInit) {
         this.receivedServerInit = receivedServerInit;
+    }
+
+    public Optional<String> getServiceName() {
+        return Optional.ofNullable(serviceName);
+    }
+
+    public void setServiceName(String serviceName) {
+        this.serviceName = serviceName;
     }
 
 }

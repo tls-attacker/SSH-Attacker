@@ -1,5 +1,6 @@
 package de.rub.nds.sshattacker.protocol.preparator;
 
+import de.rub.nds.sshattacker.constants.MessageIDConstant;
 import de.rub.nds.sshattacker.protocol.message.ChannelOpenMessage;
 import de.rub.nds.sshattacker.state.SshContext;
 
@@ -11,6 +12,7 @@ public class ChannelOpenMessagePreparator extends Preparator<ChannelOpenMessage>
 
     @Override
     public void prepare() {
+        message.setMessageID(MessageIDConstant.SSH_MSG_CHANNEL_OPEN.id);
         message.setSenderChannel(context.getChooser().getLocalChannel());
         message.setChannelType(context.getChooser().getChannelType().toString());
         message.setWindowSize(context.getChooser().getWindowSize());

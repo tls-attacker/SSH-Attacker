@@ -7,6 +7,7 @@ import de.rub.nds.protocol.core.message.Serializer;
 import de.rub.nds.sshattacker.constants.MessageIDConstant;
 import de.rub.nds.sshattacker.protocol.handler.DisconnectMessageHandler;
 import de.rub.nds.sshattacker.protocol.handler.Handler;
+import de.rub.nds.sshattacker.protocol.preparator.Preparator;
 import de.rub.nds.sshattacker.protocol.serializer.DisconnectMessageSerializer;
 import de.rub.nds.sshattacker.state.SshContext;
 
@@ -64,5 +65,10 @@ public class DisconnectMessage extends Message {
     @Override
     public Serializer getSerializer() {
         return new DisconnectMessageSerializer(this);
+    }
+
+    @Override
+    public Preparator getPreparator(SshContext context) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

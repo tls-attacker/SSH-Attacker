@@ -17,5 +17,6 @@ public class ClientInitMessagePreparator extends Preparator<ClientInitMessage> {
     public void prepare() {
         message.setVersion(context.getChooser().getClientVersion());
         message.setComment(context.getChooser().getClientComment());
+        context.appendToExchangeHashInput(message.getVersion().getValue().getBytes());
     }
 }

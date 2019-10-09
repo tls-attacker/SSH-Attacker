@@ -8,6 +8,8 @@ import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.protocol.core.message.Serializer;
 import de.rub.nds.sshattacker.constants.MessageIDConstant;
 import de.rub.nds.sshattacker.protocol.handler.Handler;
+import de.rub.nds.sshattacker.protocol.preparator.ChannelRequestMessagePreparator;
+import de.rub.nds.sshattacker.protocol.preparator.Preparator;
 import de.rub.nds.sshattacker.protocol.serializer.ChannelRequestMessageSerializer;
 import de.rub.nds.sshattacker.state.SshContext;
 
@@ -83,5 +85,10 @@ public class ChannelRequestMessage extends Message {
     @Override
     public Serializer getSerializer() {
         return new ChannelRequestMessageSerializer(this);
+    }
+
+    @Override
+    public Preparator getPreparator(SshContext context) {
+        return new ChannelRequestMessagePreparator(context, this);
     }
 }

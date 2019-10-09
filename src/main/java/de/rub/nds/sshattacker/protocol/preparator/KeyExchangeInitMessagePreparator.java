@@ -1,6 +1,8 @@
 package de.rub.nds.sshattacker.protocol.preparator;
 
+import de.rub.nds.sshattacker.constants.MessageIDConstant;
 import de.rub.nds.sshattacker.protocol.message.KeyExchangeInitMessage;
+import de.rub.nds.sshattacker.protocol.serializer.KeyExchangeInitMessageSerializer;
 import de.rub.nds.sshattacker.state.SshContext;
 import de.rub.nds.sshattacker.util.Converter;
 
@@ -12,6 +14,7 @@ public class KeyExchangeInitMessagePreparator extends Preparator<KeyExchangeInit
 
     @Override
     public void prepare() {
+        message.setMessageID(MessageIDConstant.SSH_MSG_KEXINIT.id);
         message.setCookie(context.getChooser().getClientCookie());
         message.setKeyExchangeAlgorithms(Converter.listofAlgorithmstoString(context.getChooser().getClientSupportedKeyExchangeAlgorithms()));
         message.setKeyExchangeAlgorithmsLength(message.getKeyExchangeAlgorithms().getValue().length());
@@ -35,5 +38,7 @@ public class KeyExchangeInitMessagePreparator extends Preparator<KeyExchangeInit
         message.setLanguagesServerToClientLength(message.getLanguagesServerToClient().getValue().length());
         message.setFirstKeyExchangePacketFollows(context.getChooser().getClientFirstKeyExchangePacketFollows());
         message.setReserved(context.getChooser().getClientReserved());
+
+        context.appendToExchangeHashInput(new KeyExchangeInitMessageSerializer(message).serialize());
     }
 }

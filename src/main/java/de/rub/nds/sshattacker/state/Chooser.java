@@ -241,4 +241,8 @@ public class Chooser {
 //            return config.getRemoteChannel();
 //        }
     }
+
+    public String getServiceName() {
+        return context.getServiceName().orElse(config.getServiceName());
+    }
 }

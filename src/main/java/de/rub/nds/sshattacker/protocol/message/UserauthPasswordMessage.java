@@ -6,6 +6,8 @@ import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.protocol.core.message.Serializer;
 import de.rub.nds.sshattacker.constants.MessageIDConstant;
 import de.rub.nds.sshattacker.protocol.handler.Handler;
+import de.rub.nds.sshattacker.protocol.preparator.Preparator;
+import de.rub.nds.sshattacker.protocol.preparator.UserauthPasswordMessagePreparator;
 import de.rub.nds.sshattacker.protocol.serializer.UserauthPasswordMessageSerializer;
 import de.rub.nds.sshattacker.state.SshContext;
 
@@ -81,6 +83,11 @@ public class UserauthPasswordMessage extends Message {
     @Override
     public Serializer getSerializer() {
         return new UserauthPasswordMessageSerializer(this);
+    }
+
+    @Override
+    public Preparator getPreparator(SshContext context) {
+        return new UserauthPasswordMessagePreparator(context, this);
     }
 
 }

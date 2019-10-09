@@ -5,6 +5,8 @@ import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.protocol.core.message.Serializer;
 import de.rub.nds.sshattacker.constants.MessageIDConstant;
 import de.rub.nds.sshattacker.protocol.handler.Handler;
+import de.rub.nds.sshattacker.protocol.preparator.Preparator;
+import de.rub.nds.sshattacker.protocol.preparator.ServiceRequestMessagePreparator;
 import de.rub.nds.sshattacker.protocol.serializer.ServiceRequestMessageSerializer;
 import de.rub.nds.sshattacker.state.SshContext;
 
@@ -46,6 +48,11 @@ public class ServiceRequestMessage extends Message {
     @Override
     public Serializer getSerializer() {
         return new ServiceRequestMessageSerializer(this);
+    }
+
+    @Override
+    public Preparator getPreparator(SshContext context) {
+        return new ServiceRequestMessagePreparator(context, this);
     }
 
 }
