@@ -32,7 +32,7 @@ public class DefaultWorkflowExecutor extends WorkflowExecutor {
                 try {
                     ctx.initTransportHandler();
                 } catch (IOException e) {
-                    LOGGER.error("Unable to initialize transportHandler");
+                    LOGGER.error("Unable to initialize transportHandler: " + e);
                 }
                 LOGGER.debug("Connection for " + ctx + " initiliazed");
             }
