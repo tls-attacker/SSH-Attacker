@@ -32,13 +32,12 @@ public class DefaultWorkflowExecutor extends WorkflowExecutor {
                 try {
                     ctx.initTransportHandler();
                 } catch (IOException e) {
-                    LOGGER.error("Unable to initialize transportHandler: " + e);
+                    LOGGER.error("Unable to initialize transportHandler: " + e + "\n" + e.getStackTrace());
                 }
                 LOGGER.debug("Connection for " + ctx + " initiliazed");
             }
         }
 
-        // TODO why are you resetting?
         state.getWorkflowTrace().reset();
         int numSshContexts = allSshContexts.size();
         List<SshAction> sshActions = state.getWorkflowTrace().getSshActions();

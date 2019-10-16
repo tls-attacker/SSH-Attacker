@@ -1,6 +1,7 @@
 package de.rub.nds.sshattacker.workflow.action;
 
 import de.rub.nds.modifiablevariable.ModifiableVariable;
+import de.rub.nds.protocol.core.connection.AliasedConnection;
 import de.rub.nds.protocol.core.message.ModifiableVariableHolder;
 import de.rub.nds.sshattacker.exceptions.WorkflowExecutionException;
 import de.rub.nds.sshattacker.protocol.message.BinaryPacket;
@@ -26,15 +27,15 @@ public class SendAction extends MessageAction implements SendingAction {
     }
 
     public SendAction(List<Message> messages) {
-        super(messages);
+        super(AliasedConnection.DEFAULT_CONNECTION_ALIAS, messages);
     }
 
     public SendAction(Message... messages) {
-        this(new ArrayList<>(Arrays.asList(messages)));
+        this(AliasedConnection.DEFAULT_CONNECTION_ALIAS, new ArrayList<>(Arrays.asList(messages)));
     }
 
     public SendAction(Message message) {
-        this(new Message[]{message});
+        this(AliasedConnection.DEFAULT_CONNECTION_ALIAS, new Message[]{message});
     }
 
     public SendAction(String connectionAlias) {

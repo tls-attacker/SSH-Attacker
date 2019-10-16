@@ -4,6 +4,7 @@ import de.rub.nds.sshattacker.exceptions.WorkflowExecutionException;
 import de.rub.nds.sshattacker.protocol.message.*;
 import de.rub.nds.sshattacker.state.SshContext;
 import de.rub.nds.sshattacker.state.State;
+import de.rub.nds.sshattacker.transport.AliasedConnection;
 import de.rub.nds.sshattacker.workflow.action.result.MessageActionResult;
 import java.util.*;
 import javax.xml.bind.annotation.XmlElement;
@@ -23,16 +24,16 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
     protected Boolean checkOnlyExpected = null;
 
     public ReceiveAction() {
-        super();
+        super(AliasedConnection.DEFAULT_CONNECTION_ALIAS);
     }
 
     public ReceiveAction(List<Message> expectedMessages) {
-        super();
+        super(AliasedConnection.DEFAULT_CONNECTION_ALIAS);
         this.expectedMessages = expectedMessages;
     }
 
     public ReceiveAction(Message... expectedMessages) {
-        super();
+        super(AliasedConnection.DEFAULT_CONNECTION_ALIAS);
         this.expectedMessages = new ArrayList(Arrays.asList(expectedMessages));
     }
 
