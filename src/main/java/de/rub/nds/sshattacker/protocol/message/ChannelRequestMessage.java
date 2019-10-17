@@ -6,7 +6,6 @@ import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.protocol.core.message.Serializer;
-import de.rub.nds.sshattacker.constants.MessageIDConstant;
 import de.rub.nds.sshattacker.protocol.handler.Handler;
 import de.rub.nds.sshattacker.protocol.preparator.ChannelRequestMessagePreparator;
 import de.rub.nds.sshattacker.protocol.preparator.Preparator;
@@ -21,7 +20,6 @@ public class ChannelRequestMessage extends Message {
     private ModifiableByteArray payload;
 
     public ChannelRequestMessage() {
-        messageID = ModifiableVariableFactory.safelySetValue(messageID, MessageIDConstant.SSH_MSG_CHANNEL_REQUEST.id);
     }
 
     public ModifiableInteger getRecipientChannel() {

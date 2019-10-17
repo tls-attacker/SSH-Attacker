@@ -60,6 +60,7 @@ public class GenericReceiveAction extends MessageAction implements ReceivingActi
         MessageActionResult result = receiveMessageHelper.receiveMessages(ctx);
         binaryPackets.addAll(result.getBinaryPacketList());
         messages.addAll(result.getMessageList());
+        LOGGER.debug("Received MessageAction: " + result);
         setExecuted(true);
         String received = getReadableString(messages);
         LOGGER.info("Received Messages (" + ctx + "): " + received);

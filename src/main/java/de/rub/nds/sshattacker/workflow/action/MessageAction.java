@@ -4,15 +4,51 @@ import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.sshattacker.protocol.helper.ReceiveMessageHelper;
 import de.rub.nds.sshattacker.protocol.helper.SendMessageHelper;
 import de.rub.nds.sshattacker.protocol.message.BinaryPacket;
+import de.rub.nds.sshattacker.protocol.message.ChannelDataMessage;
+import de.rub.nds.sshattacker.protocol.message.ChannelOpenConfirmationMessage;
+import de.rub.nds.sshattacker.protocol.message.ChannelOpenMessage;
+import de.rub.nds.sshattacker.protocol.message.ChannelRequestMessage;
+import de.rub.nds.sshattacker.protocol.message.ClientInitMessage;
+import de.rub.nds.sshattacker.protocol.message.DisconnectMessage;
+import de.rub.nds.sshattacker.protocol.message.EcdhKeyExchangeInitMessage;
+import de.rub.nds.sshattacker.protocol.message.EcdhKeyExchangeReplyMessage;
+import de.rub.nds.sshattacker.protocol.message.KeyExchangeInitMessage;
 import de.rub.nds.sshattacker.protocol.message.Message;
+import de.rub.nds.sshattacker.protocol.message.NewKeysMessage;
+import de.rub.nds.sshattacker.protocol.message.ProtocolMessage;
+import de.rub.nds.sshattacker.protocol.message.ServiceAcceptMessage;
+import de.rub.nds.sshattacker.protocol.message.ServiceRequestMessage;
+import de.rub.nds.sshattacker.protocol.message.UnknownMessage;
+import de.rub.nds.sshattacker.protocol.message.UserauthPasswordMessage;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlTransient;
 
 public abstract class MessageAction extends ConnectionBoundAction {
 
+    @HoldsModifiableVariable
+    @XmlElementWrapper
+    @XmlElements(value = {
+        @XmlElement(type = ChannelDataMessage.class, name = "ChannelDataMessage"),
+        @XmlElement(type = ChannelOpenConfirmationMessage.class, name = "ChannelOpenConfirmationMessage"),
+        @XmlElement(type = ChannelOpenMessage.class, name = "ChannelOpenMessage"),
+        @XmlElement(type = ChannelRequestMessage.class, name = "ChannelRequestMessage"),
+        @XmlElement(type = ClientInitMessage.class, name = "ClientInitMessage"),
+        @XmlElement(type = DisconnectMessage.class, name = "DisconnectMessage"),
+        @XmlElement(type = EcdhKeyExchangeInitMessage.class, name = "EcdhKeyExchangeInitMessage"),
+        @XmlElement(type = EcdhKeyExchangeReplyMessage.class, name = "EcdhKeyExchangeReplyMessage"),
+        @XmlElement(type = KeyExchangeInitMessage.class, name = "KeyExchangeInitMessage"),
+        @XmlElement(type = Message.class, name = "Message"),
+        @XmlElement(type = NewKeysMessage.class, name = "NewKeysMessage"),
+        @XmlElement(type = ProtocolMessage.class, name = "ProtocolMessage"),
+        @XmlElement(type = ServiceAcceptMessage.class, name = "ServiceAcceptMessage"),
+        @XmlElement(type = ServiceRequestMessage.class, name = "ServiceRequestMessage"),
+        @XmlElement(type = UnknownMessage.class, name = "UnknownMessage"),
+        @XmlElement(type = UserauthPasswordMessage.class, name = "UserauthPasswordMessage")})
     protected List<Message> messages = new ArrayList<>();
 
     @HoldsModifiableVariable

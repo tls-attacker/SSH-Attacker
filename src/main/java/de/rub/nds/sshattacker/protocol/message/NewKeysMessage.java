@@ -1,6 +1,5 @@
 package de.rub.nds.sshattacker.protocol.message;
 
-import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.protocol.core.message.Serializer;
 import de.rub.nds.sshattacker.protocol.handler.Handler;
 import de.rub.nds.sshattacker.protocol.preparator.NewKeysMessagePreparator;
@@ -12,7 +11,6 @@ public class NewKeysMessage extends Message {
 
     public NewKeysMessage() {
         super();
-        messageID = ModifiableVariableFactory.safelySetValue(messageID, (byte) 21);
     }
 
     @Override

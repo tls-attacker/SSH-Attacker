@@ -6,7 +6,9 @@ import de.rub.nds.protocol.core.message.Serializer;
 import de.rub.nds.sshattacker.protocol.handler.Handler;
 import de.rub.nds.sshattacker.protocol.preparator.Preparator;
 import de.rub.nds.sshattacker.state.SshContext;
+import javax.xml.bind.annotation.XmlType;
 
+@XmlType(name = "SshMessage")
 public abstract class Message extends ProtocolMessage {
 
     protected ModifiableByte messageID;

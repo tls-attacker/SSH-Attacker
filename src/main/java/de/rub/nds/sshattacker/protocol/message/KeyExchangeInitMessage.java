@@ -6,7 +6,6 @@ import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.protocol.core.message.Serializer;
-import de.rub.nds.sshattacker.constants.MessageIDConstant;
 import de.rub.nds.sshattacker.protocol.handler.Handler;
 import de.rub.nds.sshattacker.protocol.handler.KeyExchangeInitMessageHandler;
 import de.rub.nds.sshattacker.protocol.preparator.KeyExchangeInitMessagePreparator;
@@ -39,10 +38,6 @@ public class KeyExchangeInitMessage extends Message {
     private ModifiableString languagesServerToClient;
     private ModifiableByte firstKeyExchangePacketFollows;
     private ModifiableInteger reserved;
-
-    public KeyExchangeInitMessage() {
-        messageID = ModifiableVariableFactory.safelySetValue(messageID, MessageIDConstant.SSH_MSG_KEXINIT.id);
-    }
 
     public ModifiableInteger getKeyExchangeAlgorithmsLength() {
         return keyExchangeAlgorithmsLength;

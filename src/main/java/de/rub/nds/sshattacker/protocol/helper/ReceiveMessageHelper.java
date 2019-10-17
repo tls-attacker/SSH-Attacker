@@ -11,6 +11,8 @@ import de.rub.nds.sshattacker.state.SshContext;
 import de.rub.nds.sshattacker.transport.TransportHandler;
 import de.rub.nds.sshattacker.workflow.action.result.MessageActionResult;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -26,9 +28,9 @@ public class ReceiveMessageHelper {
         CryptoLayer cryptoLayer = context.getCryptoLayer();
 
         if (context.getReceivedServerInit() == false) {
-            receiveInitMessage(context);
+            MessageActionResult result = receiveInitMessage(context);
             context.setReceivedServerInit(true);
-            return new MessageActionResult();
+            return result;
         } else {
             try {
                 byte[] data = transportHandler.fetchData();
@@ -55,14 +57,16 @@ public class ReceiveMessageHelper {
         return receiveMessages(context);
     }
 
-    public void receiveInitMessage(SshContext context) {
+    public MessageActionResult receiveInitMessage(SshContext context) {
         TransportHandler transport = context.getTransportHandler();
         try {
             byte[] response = transport.fetchData();
             ClientInitMessage serverInit = new ClientInitMessageParser(0, response).parse();
             serverInit.getHandler(context).handle(serverInit);
+            return new MessageActionResult(new LinkedList<>(), Arrays.asList(serverInit));
         } catch (IOException e) {
             LOGGER.debug("Error while receiving ClientInit" + e.getMessage());
+            return new MessageActionResult();
         }
     }
 

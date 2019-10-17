@@ -6,6 +6,7 @@
 package de.rub.nds.sshattacker.protocol.message;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
+import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.protocol.core.message.Serializer;
 import de.rub.nds.sshattacker.protocol.handler.ClientInitMessageHandler;
@@ -14,13 +15,18 @@ import de.rub.nds.sshattacker.protocol.preparator.ClientInitMessagePreparator;
 import de.rub.nds.sshattacker.protocol.preparator.Preparator;
 import de.rub.nds.sshattacker.protocol.serializer.ClientInitMessageSerializer;
 import de.rub.nds.sshattacker.state.SshContext;
+import javax.xml.bind.annotation.XmlRootElement;
 
+@XmlRootElement
 public class ClientInitMessage extends Message {
 
     /**
      * version identifier + optional comment
      */
+    @ModifiableVariableProperty
     private ModifiableString version;
+
+    @ModifiableVariableProperty
     private ModifiableString comment;
 
     public ClientInitMessage() {

@@ -14,10 +14,6 @@ public class UnknownMessage extends Message {
 
     private ModifiableByteArray payload;
 
-    public UnknownMessage() {
-
-    }
-
     public UnknownMessage(ModifiableByte id, ModifiableByteArray payload) {
         this.messageID = id;
         this.payload = payload;
@@ -26,6 +22,10 @@ public class UnknownMessage extends Message {
     public UnknownMessage(byte id, byte[] payload) {
         this.messageID = ModifiableVariableFactory.safelySetValue(this.messageID, id);
         this.payload = ModifiableVariableFactory.safelySetValue(this.payload, payload);
+    }
+
+    public UnknownMessage() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override

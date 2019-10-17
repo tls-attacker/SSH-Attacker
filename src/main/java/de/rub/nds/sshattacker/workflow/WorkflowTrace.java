@@ -1,5 +1,6 @@
 package de.rub.nds.sshattacker.workflow;
 
+import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.sshattacker.connection.InboundConnection;
 import de.rub.nds.sshattacker.connection.OutboundConnection;
 import de.rub.nds.sshattacker.exceptions.ConfigurationException;
@@ -74,6 +75,12 @@ public class WorkflowTrace implements Serializable {
         @XmlElement(type = OutboundConnection.class, name = "OutboundConnection")})
     private List<AliasedConnection> connections = new ArrayList<>();
 
+    @HoldsModifiableVariable
+    @XmlElements(value = {
+        @XmlElement(type = SendAction.class, name = "Send"),
+        @XmlElement(type = ReceiveAction.class, name = "Receive"),
+        @XmlElement(type = GenericReceiveAction.class, name = "GenericReceive"),
+        @XmlElement(type = ActivateEncryptionAction.class, name = "ActivateEncryption")})
     private List<SshAction> sshActions = new ArrayList<>();
 
     private String name = null;
