@@ -335,7 +335,6 @@ public class WorkflowTrace implements Serializable {
             }
         }
         return true;
-
     }
 
     public boolean isDirty() {

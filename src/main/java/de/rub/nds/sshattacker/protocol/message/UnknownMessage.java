@@ -25,7 +25,6 @@ public class UnknownMessage extends Message {
     }
 
     public UnknownMessage() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override

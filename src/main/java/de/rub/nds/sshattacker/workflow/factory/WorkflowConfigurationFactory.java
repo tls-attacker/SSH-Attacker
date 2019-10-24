@@ -36,18 +36,10 @@ public class WorkflowConfigurationFactory {
 
     public WorkflowTrace createWorkflowTrace(WorkflowTraceType workflowTraceType, RunningModeType runningMode) {
         WorkflowTrace workflow = new WorkflowTrace();
+        List<SshAction> sshActions = new LinkedList<>();
 
         switch (workflowTraceType) {
             case FULL:
-                List<SshAction> sshActions = new LinkedList<>();
-                sshActions.add(new SendAction(new ClientInitMessage()));
-                sshActions.add(new ReceiveAction());
-                sshActions.add(new SendAction(new KeyExchangeInitMessage()));
-                sshActions.add(new ReceiveAction());
-                sshActions.add(new SendAction(new EcdhKeyExchangeInitMessage()));
-                sshActions.add(new ReceiveAction());
-                sshActions.add(new SendAction(new NewKeysMessage()));
-                sshActions.add(new ActivateEncryptionAction());
                 sshActions.add(new SendAction(new ServiceRequestMessage()));
                 sshActions.add(new ReceiveAction());
                 sshActions.add(new SendAction(new UserauthPasswordMessage()));
@@ -56,9 +48,22 @@ public class WorkflowConfigurationFactory {
                 sshActions.add(new ReceiveAction());
                 sshActions.add(new SendAction(new ChannelRequestMessage()));
                 sshActions.add(new ReceiveAction());
+                break;
 
-                workflow.addSshActions(sshActions);
+            case KEYEXCHANGE:
+                sshActions.add(new SendAction(new ClientInitMessage()));
+                sshActions.add(new ReceiveAction());
+                sshActions.add(new SendAction(new KeyExchangeInitMessage()));
+                sshActions.add(new ReceiveAction());
+                sshActions.add(new SendAction(new EcdhKeyExchangeInitMessage()));
+                sshActions.add(new ReceiveAction());
+                sshActions.add(new SendAction(new NewKeysMessage()));
+                sshActions.add(new ActivateEncryptionAction());
+                break;
+
         }
+        workflow.addSshActions(sshActions);
+
         return workflow;
     }
 }

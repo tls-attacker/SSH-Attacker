@@ -1,5 +1,6 @@
 package de.rub.nds.sshattacker.protocol.helper;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.protocol.layers.BinaryPacketLayer;
 import de.rub.nds.sshattacker.protocol.layers.CryptoLayer;
 import de.rub.nds.sshattacker.protocol.layers.MessageLayer;
@@ -35,6 +36,17 @@ public class ReceiveMessageHelper {
             try {
                 byte[] data = transportHandler.fetchData();
                 if (data.length != 0) {
+
+                    LOGGER.debug("Received Data: ");
+                    LOGGER.debug(ArrayConverter.bytesToRawHexString(data));
+
+                    // Response from server: Invalid SSH identification string.
+                    if (Arrays.equals(data, ArrayConverter.hexStringToByteArray("496E76616C696420535348206964656E74696669636174696F6E20737472696E672E0D0A"))
+                            || Arrays.equals(data, ArrayConverter.hexStringToByteArray("496E76616C696420535348206964656E74696669636174696F6E20737472696E672E"))) {
+                        LOGGER.debug("Invalid identification string");
+                        return new MessageActionResult(); // TODO implement fitting message
+                    }
+
                     List<BinaryPacket> binaryPackets = binaryPacketLayer.parseBinaryPackets(cryptoLayer.decryptBinaryPackets(data));
                     List<Message> messages = messageLayer.parseMessages(binaryPackets);
                     messages.forEach(message -> {
