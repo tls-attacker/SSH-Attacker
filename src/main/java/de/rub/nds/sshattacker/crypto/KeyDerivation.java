@@ -71,7 +71,13 @@ public class KeyDerivation {
             md = MessageDigest.getInstance(hashFunction);
 
         } catch (NoSuchAlgorithmException e) {
-            LOGGER.error("Provider does not support this hashFunction:" + e.getMessage());
+            if (hashFunction == null) {
+                hashFunction = "null";
+            }
+            if (hashFunction.equals("")) {
+                hashFunction = "empty";
+            }
+            LOGGER.error("Provider does not support this hashFunction:" + hashFunction + e.getMessage());
         }
         return md;
     }
