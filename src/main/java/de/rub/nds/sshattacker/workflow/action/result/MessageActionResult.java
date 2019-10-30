@@ -37,8 +37,8 @@ public class MessageActionResult {
      * Merger this with other results, forming a new result.
      */
     public MessageActionResult merge(MessageActionResult... other) {
-        LinkedList<MessageActionResult> results = new LinkedList<MessageActionResult>(Arrays.asList(other));
-        results.add(0, this);
+        LinkedList<MessageActionResult> results = new LinkedList<>(Arrays.asList(this));
+        results.addAll(Arrays.asList(other));
         List<BinaryPacket> binaryPacketList = new LinkedList<>();
         List<Message> messageList = new LinkedList<>();
 

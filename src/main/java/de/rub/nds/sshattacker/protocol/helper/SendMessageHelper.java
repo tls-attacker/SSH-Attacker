@@ -11,6 +11,7 @@ import de.rub.nds.sshattacker.transport.TransportHandler;
 import de.rub.nds.sshattacker.workflow.action.result.MessageActionResult;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -53,9 +54,9 @@ public class SendMessageHelper {
         MessageActionResult result = new MessageActionResult();
         for (Message msg : list) {
             if ("ClientInitMessage".equals(msg.getClass().getSimpleName())) {
-                sendInitMessage((ClientInitMessage) msg, context);
+                result = sendInitMessage((ClientInitMessage) msg, context);
             } else {
-                result.merge(sendMessage(msg, context));
+                result = result.merge(sendMessage(msg, context));
             }
         }
         return result;
@@ -66,12 +67,14 @@ public class SendMessageHelper {
         return sendMessages(messageList, context);
     }
 
-    public void sendInitMessage(ClientInitMessage msg, SshContext context) {
+    public MessageActionResult sendInitMessage(ClientInitMessage msg, SshContext context) {
         TransportHandler transport = context.getTransportHandler();
         try {
             transport.sendData(msg.getSerializer().serialize());
         } catch (IOException e) {
             LOGGER.debug("Error while sending ClientInitMessage" + e.getMessage());
         }
+
+        return new MessageActionResult(new LinkedList(), Arrays.asList(msg));
     }
 }

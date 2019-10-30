@@ -30,7 +30,6 @@ import javax.xml.bind.annotation.XmlTransient;
 
 public abstract class MessageAction extends ConnectionBoundAction {
 
-    //@HoldsModifiableVariable
     @XmlElementWrapper
     @XmlElements(value = {
         @XmlElement(type = ChannelDataMessage.class, name = "ChannelDataMessage"),

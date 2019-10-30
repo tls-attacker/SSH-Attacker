@@ -71,9 +71,10 @@ public class SendAction extends MessageAction implements SendingAction {
             m.getPreparator(sshContext).prepare();
             preparedMessages.add(m);
         }
-        MessageActionResult result = sendMessageHelper.sendMessages(messages, binaryPackets, sshContext);
-        messages = new ArrayList<>(result.getMessageList());
-        binaryPackets = new ArrayList<>(result.getBinaryPacketList());
+
+        MessageActionResult result = sendMessageHelper.sendMessages(preparedMessages, binaryPackets, sshContext);
+        messages = result.getMessageList();
+        binaryPackets = result.getBinaryPacketList();
         setExecuted(true);
     }
 
