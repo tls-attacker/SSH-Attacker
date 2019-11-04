@@ -4,6 +4,7 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.protocol.core.message.Serializer;
+import de.rub.nds.sshattacker.constants.MessageIDConstant;
 import de.rub.nds.sshattacker.protocol.handler.Handler;
 import de.rub.nds.sshattacker.protocol.handler.UnknownMessageHandler;
 import de.rub.nds.sshattacker.protocol.preparator.Preparator;
@@ -29,7 +30,7 @@ public class UnknownMessage extends Message {
 
     @Override
     public String toCompactString() {
-        return "UnknownMessage";
+        return "UnknownMessage (" + MessageIDConstant.getNameByID(messageID.getValue()) + ")";
     }
 
     public ModifiableByteArray getPayload() {

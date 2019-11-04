@@ -2,6 +2,7 @@ package de.rub.nds.sshattacker.protocol.message;
 
 import de.rub.nds.protocol.core.message.Serializer;
 import de.rub.nds.sshattacker.protocol.handler.Handler;
+import de.rub.nds.sshattacker.protocol.handler.NewKeysMessageHandler;
 import de.rub.nds.sshattacker.protocol.preparator.NewKeysMessagePreparator;
 import de.rub.nds.sshattacker.protocol.preparator.Preparator;
 import de.rub.nds.sshattacker.protocol.serializer.NewKeysMessageSerializer;
@@ -20,7 +21,7 @@ public class NewKeysMessage extends Message {
 
     @Override
     public Handler getHandler(SshContext context) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return new NewKeysMessageHandler(context);
     }
 
     @Override

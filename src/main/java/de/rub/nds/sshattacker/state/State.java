@@ -4,7 +4,6 @@ import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.sshattacker.config.Config;
 import de.rub.nds.sshattacker.constants.RunningModeType;
 import de.rub.nds.sshattacker.exceptions.ConfigurationException;
-import de.rub.nds.sshattacker.transport.AliasedConnection;
 import de.rub.nds.sshattacker.workflow.WorkflowTrace;
 import de.rub.nds.sshattacker.workflow.WorkflowTraceNormalizer;
 import de.rub.nds.sshattacker.workflow.WorkflowTraceSerializer;
@@ -93,19 +92,18 @@ public class State {
      * Normalize trace and initialize SSH contexts.
      */
     public final void initState() {
-        // Keep a snapshot to restore user defined trace values after filtering.
-//        if (config.isFiltersKeepUserSettings()) {
-//            originalWorkflowTrace = WorkflowTrace.copy(workflowTrace);
-//        }
+//        Keep a snapshot to restore user defined trace values after filtering.
+        if (config.isFiltersKeepUserSettings()) {
+            originalWorkflowTrace = WorkflowTrace.copy(workflowTrace);
+        }
 
         WorkflowTraceNormalizer normalizer = new WorkflowTraceNormalizer();
         normalizer.normalize(workflowTrace, config, runningMode);
         workflowTrace.setDirty(false);
 
-        for (AliasedConnection con : workflowTrace.getConnections()) {
-            SshContext ctx = new SshContext(config, con);
-            addSshContext(ctx);
-        }
+        LOGGER.debug("Config Connection is: " + config.getDefaultClientConnection());
+        SshContext ctx = new SshContext(config, config.getDefaultClientConnection());
+        addSshContext(ctx);
     }
 
     private WorkflowTrace loadWorkflowTrace() {
