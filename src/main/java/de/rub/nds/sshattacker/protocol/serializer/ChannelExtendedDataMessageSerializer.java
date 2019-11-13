@@ -2,6 +2,7 @@ package de.rub.nds.sshattacker.protocol.serializer;
 
 import de.rub.nds.sshattacker.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.protocol.message.ChannelExtendedDataMessage;
+import de.rub.nds.sshattacker.util.Converter;
 
 public class ChannelExtendedDataMessageSerializer extends MessageSerializer<ChannelExtendedDataMessage> {
 
@@ -17,19 +18,14 @@ public class ChannelExtendedDataMessageSerializer extends MessageSerializer<Chan
         appendInt(msg.getDataTypeCode().getValue(), DataFormatConstants.INT32_SIZE);
     }
 
-    private void serializeDataLength() {
-        appendInt(msg.getDataLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
-    }
-
     private void serializeData() {
-        appendString(msg.getData().getValue());
+        appendBytes(Converter.stringToLengthPrefixedString(msg.getData().getValue()));
     }
 
     @Override
     protected byte[] serializeMessageSpecificPayload() {
         serializeRecipientChannel();
         serializeDataTypeCode();
-        serializeDataLength();
         serializeData();
         return getAlreadySerialized();
     }

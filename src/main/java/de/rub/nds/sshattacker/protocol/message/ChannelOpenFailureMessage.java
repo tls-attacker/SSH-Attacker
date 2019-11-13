@@ -15,9 +15,7 @@ public class ChannelOpenFailureMessage extends Message {
 
     private ModifiableInteger recipientChannel;
     private ModifiableInteger reasonCode;
-    private ModifiableInteger reasonLength;
     private ModifiableString reason;
-    private ModifiableInteger languageTagLength;
     private ModifiableString languageTag;
 
     public ModifiableInteger getRecipientChannel() {
@@ -44,18 +42,6 @@ public class ChannelOpenFailureMessage extends Message {
         this.reasonCode = ModifiableVariableFactory.safelySetValue(this.reasonCode, reasonCode);
     }
 
-    public ModifiableInteger getReasonLength() {
-        return reasonLength;
-    }
-
-    public void setReasonLength(ModifiableInteger reasonLength) {
-        this.reasonLength = reasonLength;
-    }
-
-    public void setReasonLength(int reasonLength) {
-        this.reasonLength = ModifiableVariableFactory.safelySetValue(this.reasonLength, reasonLength);
-    }
-
     public ModifiableString getReason() {
         return reason;
     }
@@ -66,18 +52,6 @@ public class ChannelOpenFailureMessage extends Message {
 
     public void setReason(String reason) {
         this.reason = ModifiableVariableFactory.safelySetValue(this.reason, reason);
-    }
-
-    public ModifiableInteger getLanguageTagLength() {
-        return languageTagLength;
-    }
-
-    public void setLanguageTagLength(ModifiableInteger languageTagLength) {
-        this.languageTagLength = languageTagLength;
-    }
-
-    public void setLanguageTagLength(int languageTagLength) {
-        this.languageTagLength = ModifiableVariableFactory.safelySetValue(this.languageTagLength, languageTagLength);
     }
 
     public ModifiableString getLanguageTag() {

@@ -18,28 +18,18 @@ public class DebugMessageParser extends MessageParser<DebugMessage> {
         msg.setAlwaysDisplay(parseByteField(1));
     }
 
-    private void parseMessageLength(DebugMessage msg) {
-        msg.setMessageLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-    }
-
     private void parseMessage(DebugMessage msg) {
-        msg.setMessage(parseByteString(msg.getMessageLength().getValue()));
-    }
-
-    private void parseLanguageTagLength(DebugMessage msg) {
-        msg.setLanguageTagLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
+        msg.setMessage(parseByteString(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH)));
     }
 
     private void parseLanguageTag(DebugMessage msg) {
-        msg.setLanguageTag(parseByteString(msg.getLanguageTagLength().getValue()));
+        msg.setLanguageTag(parseByteString(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH)));
     }
 
     @Override
     protected void parseMessageSpecificPayload(DebugMessage msg) {
         parseAlwaysDisplay(msg);
-        parseMessageLength(msg);
         parseMessage(msg);
-        parseLanguageTagLength(msg);
         parseLanguageTag(msg);
     }
 }

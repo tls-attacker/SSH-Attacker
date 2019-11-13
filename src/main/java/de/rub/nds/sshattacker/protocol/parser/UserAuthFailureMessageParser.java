@@ -14,12 +14,8 @@ public class UserAuthFailureMessageParser extends MessageParser<UserAuthFailureM
         return new UserAuthFailureMessage();
     }
 
-    private void parsePossibleAuthenticationMethodsLength(UserAuthFailureMessage msg) {
-        msg.setPossibleAuthenticationMethodsLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-    }
-
     private void parsePossibleAuthenticationMethods(UserAuthFailureMessage msg) {
-        msg.setPossibleAuthenticationMethods(parseByteString(msg.getPossibleAuthenticationMethodsLength().getValue()));
+        msg.setPossibleAuthenticationMethods(parseByteString(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH)));
     }
 
     private void parsePartialSuccess(UserAuthFailureMessage msg) {
@@ -28,7 +24,6 @@ public class UserAuthFailureMessageParser extends MessageParser<UserAuthFailureM
 
     @Override
     protected void parseMessageSpecificPayload(UserAuthFailureMessage msg) {
-        parsePossibleAuthenticationMethodsLength(msg);
         parsePossibleAuthenticationMethods(msg);
         parsePartialSuccess(msg);
     }

@@ -14,27 +14,17 @@ public class UserAuthBannerMessageParser extends MessageParser<UserAuthBannerMes
         return new UserAuthBannerMessage();
     }
 
-    private void parseMessageLength(UserAuthBannerMessage msg) {
-        msg.setMessageLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-    }
-
     private void parseMessage(UserAuthBannerMessage msg) {
-        msg.setMessage(parseByteString(msg.getMessageLength().getValue()));
-    }
-
-    private void parseLanguageTagLength(UserAuthBannerMessage msg) {
-        msg.setLanguageTagLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
+        msg.setMessage(parseByteString(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH)));
     }
 
     private void parseLanguageTag(UserAuthBannerMessage msg) {
-        msg.setLanguageTag(parseByteString(msg.getLanguageTagLength().getValue()));
+        msg.setLanguageTag(parseByteString(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH)));
     }
 
     @Override
     protected void parseMessageSpecificPayload(UserAuthBannerMessage msg) {
-        parseMessageLength(msg);
         parseMessage(msg);
-        parseLanguageTagLength(msg);
         parseLanguageTag(msg);
     }
 

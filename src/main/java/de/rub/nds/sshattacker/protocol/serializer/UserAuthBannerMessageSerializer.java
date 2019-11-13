@@ -1,7 +1,7 @@
 package de.rub.nds.sshattacker.protocol.serializer;
 
-import de.rub.nds.sshattacker.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.protocol.message.UserAuthBannerMessage;
+import de.rub.nds.sshattacker.util.Converter;
 
 public class UserAuthBannerMessageSerializer extends MessageSerializer<UserAuthBannerMessage> {
 
@@ -9,27 +9,17 @@ public class UserAuthBannerMessageSerializer extends MessageSerializer<UserAuthB
         super(msg);
     }
 
-    private void serializeMessageLength() {
-        appendInt(msg.getMessageLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
-    }
-
     private void serializeMessage() {
-        appendString(msg.getMessage().getValue());
-    }
-
-    private void serializeLanguageTagLength() {
-        appendInt(msg.getLanguageTagLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
+        appendBytes(Converter.stringToLengthPrefixedString(msg.getMessage().getValue()));
     }
 
     private void serializeLanguageTag() {
-        appendString(msg.getLanguageTag().getValue());
+        appendBytes(Converter.stringToLengthPrefixedString(msg.getLanguageTag().getValue()));
     }
 
     @Override
     protected byte[] serializeMessageSpecificPayload() {
-        serializeMessageLength();
         serializeMessage();
-        serializeLanguageTagLength();
         serializeLanguageTag();
         return getAlreadySerialized();
     }

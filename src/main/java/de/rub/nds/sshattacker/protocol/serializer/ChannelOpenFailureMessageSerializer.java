@@ -2,6 +2,7 @@ package de.rub.nds.sshattacker.protocol.serializer;
 
 import de.rub.nds.sshattacker.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.protocol.message.ChannelOpenFailureMessage;
+import de.rub.nds.sshattacker.util.Converter;
 
 public class ChannelOpenFailureMessageSerializer extends MessageSerializer<ChannelOpenFailureMessage> {
 
@@ -17,29 +18,19 @@ public class ChannelOpenFailureMessageSerializer extends MessageSerializer<Chann
         appendInt(msg.getReasonCode().getValue(), DataFormatConstants.INT32_SIZE);
     }
 
-    private void serializeReasonLength() {
-        appendInt(msg.getReasonLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
-    }
-
     private void serializeReason() {
-        appendString(msg.getReason().getValue());
-    }
-
-    private void serializeLanguageTagLength() {
-        appendInt(msg.getLanguageTagLength().getValue(), DataFormatConstants.INT32_SIZE);
+        appendBytes(Converter.stringToLengthPrefixedString(msg.getReason().getValue()));
     }
 
     private void serializeLanguageTag() {
-        appendString(msg.getLanguageTag().getValue());
+        appendBytes(Converter.stringToLengthPrefixedString(msg.getLanguageTag().getValue()));
     }
 
     @Override
     protected byte[] serializeMessageSpecificPayload() {
         serializeRecipientChannel();
         serializeReasonCode();
-        serializeReasonLength();
         serializeReason();
-        serializeLanguageTagLength();
         serializeLanguageTag();
         return getAlreadySerialized();
     }

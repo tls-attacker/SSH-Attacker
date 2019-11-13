@@ -1,7 +1,7 @@
 package de.rub.nds.sshattacker.protocol.serializer;
 
-import de.rub.nds.sshattacker.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.protocol.message.UserAuthFailureMessage;
+import de.rub.nds.sshattacker.util.Converter;
 
 public class UserAuthFailureMessageSerializer extends MessageSerializer<UserAuthFailureMessage> {
 
@@ -9,12 +9,8 @@ public class UserAuthFailureMessageSerializer extends MessageSerializer<UserAuth
         super(msg);
     }
 
-    private void serializePossibleAuthenticationMethodslLength() {
-        appendInt(msg.getPossibleAuthenticationMethodsLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
-    }
-
     private void serializePossibleAuthenticationMethods() {
-        appendString(msg.getPossibleAuthenticationMethods().getValue());
+        appendBytes(Converter.stringToLengthPrefixedString(msg.getPossibleAuthenticationMethods().getValue()));
     }
 
     private void serializePartialSuccess() {
@@ -23,7 +19,6 @@ public class UserAuthFailureMessageSerializer extends MessageSerializer<UserAuth
 
     @Override
     protected byte[] serializeMessageSpecificPayload() {
-        serializePossibleAuthenticationMethodslLength();
         serializePossibleAuthenticationMethods();
         serializePartialSuccess();
         return getAlreadySerialized();

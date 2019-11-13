@@ -22,19 +22,15 @@ public class ChannelExtendedDataMessageParser extends MessageParser<ChannelExten
         msg.setDataTypeCode(parseIntField(DataFormatConstants.INT32_SIZE));
     }
 
-    private void parseDataLength(ChannelExtendedDataMessage msg) {
-        msg.setDataLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-    }
-
     private void parseData(ChannelExtendedDataMessage msg) {
-        msg.setData(parseByteString(msg.getDataLength().getValue()));
+        int length = parseIntField(DataFormatConstants.STRING_SIZE_LENGTH);
+        msg.setData(parseByteString(length));
     }
 
     @Override
     protected void parseMessageSpecificPayload(ChannelExtendedDataMessage msg) {
         parseRecipientChannel(msg);
         parseDataTypeCode(msg);
-        parseDataLength(msg);
         parseData(msg);
     }
 

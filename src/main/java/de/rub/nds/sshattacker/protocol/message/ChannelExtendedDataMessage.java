@@ -15,7 +15,6 @@ public class ChannelExtendedDataMessage extends Message {
 
     private ModifiableInteger recipientChannel;
     private ModifiableInteger dataTypeCode;
-    private ModifiableInteger dataLength;
     private ModifiableString data;
 
     public ModifiableInteger getRecipientChannel() {
@@ -40,18 +39,6 @@ public class ChannelExtendedDataMessage extends Message {
 
     public void setDataTypeCode(int dataTypeCode) {
         this.dataTypeCode = ModifiableVariableFactory.safelySetValue(this.dataTypeCode, dataTypeCode);
-    }
-
-    public ModifiableInteger getDataLength() {
-        return dataLength;
-    }
-
-    public void setDataLength(ModifiableInteger dataLength) {
-        this.dataLength = dataLength;
-    }
-
-    public void setDataLength(int dataLength) {
-        this.dataLength = ModifiableVariableFactory.safelySetValue(this.dataLength, dataLength);
     }
 
     public ModifiableString getData() {

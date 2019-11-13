@@ -22,30 +22,19 @@ public class ChannelOpenFailureMessageParser extends MessageParser<ChannelOpenFa
         msg.setReasonCode(parseIntField(DataFormatConstants.INT32_SIZE));
     }
 
-    private void parseReasonLength(ChannelOpenFailureMessage msg) {
-        msg.setReasonLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-    }
-
     private void parseReason(ChannelOpenFailureMessage msg) {
-        msg.setReason(parseByteString(msg.getReasonLength().getValue()));
-    }
-
-    private void parseLanguageTagLength(ChannelOpenFailureMessage msg) {
-        msg.setLanguageTagLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
+        msg.setReason(parseByteString(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH)));
     }
 
     private void parseLanguageTag(ChannelOpenFailureMessage msg) {
-        msg.setLanguageTag(parseByteString(msg.getLanguageTagLength().getValue()));
+        msg.setLanguageTag(parseByteString(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH)));
     }
 
     @Override
     protected void parseMessageSpecificPayload(ChannelOpenFailureMessage msg) {
         parseRecipientChannel(msg);
         parseReasonCode(msg);
-        parseReasonLength(msg);
         parseReason(msg);
-        parseLanguageTagLength(msg);
         parseLanguageTag(msg);
     }
-
 }

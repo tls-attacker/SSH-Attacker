@@ -1,7 +1,6 @@
 package de.rub.nds.sshattacker.protocol.message;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
-import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.protocol.core.message.Serializer;
@@ -14,21 +13,8 @@ import de.rub.nds.sshattacker.state.SshContext;
 
 public class UserAuthFailureMessage extends Message {
 
-    private ModifiableInteger possibleAuthenticationMethodsLength;
     private ModifiableString possibleAuthenticationMethods;
     private ModifiableByte partialSuccess;
-
-    public ModifiableInteger getPossibleAuthenticationMethodsLength() {
-        return possibleAuthenticationMethodsLength;
-    }
-
-    public void setPossibleAuthenticationMethodsLength(ModifiableInteger possibleAuthenticationMethodsLength) {
-        this.possibleAuthenticationMethodsLength = possibleAuthenticationMethodsLength;
-    }
-
-    public void setPossibleAuthenticationMethodsLength(int possibleAuthenticationMethodsLength) {
-        this.possibleAuthenticationMethodsLength = ModifiableVariableFactory.safelySetValue(this.possibleAuthenticationMethodsLength, possibleAuthenticationMethodsLength);
-    }
 
     public ModifiableString getPossibleAuthenticationMethods() {
         return possibleAuthenticationMethods;

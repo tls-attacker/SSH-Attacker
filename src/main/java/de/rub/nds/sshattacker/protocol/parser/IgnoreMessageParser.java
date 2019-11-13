@@ -14,17 +14,13 @@ public class IgnoreMessageParser extends MessageParser<IgnoreMessage> {
         return new IgnoreMessage();
     }
 
-    private void parseDataLength(IgnoreMessage msg) {
-        msg.setDataLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-    }
-
     private void parseData(IgnoreMessage msg) {
-        msg.setData(parseByteString(msg.getDataLength().getValue()));
+        msg.setData(parseByteString(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH)));
     }
 
     @Override
     protected void parseMessageSpecificPayload(IgnoreMessage msg) {
-
+        parseData(msg);
     }
 
 }
