@@ -13,6 +13,11 @@ public class DebugMessagePreparator extends Preparator<DebugMessage> {
     @Override
     public void prepare() {
         message.setMessageID(MessageIDConstant.SSH_MSG_DEBUG.id);
+
+        // TODO dummy values for fuzzing
+        message.setMessage("");
+        message.setLanguageTag("");
+        message.setAlwaysDisplay((byte) 0xff);
     }
 
 }

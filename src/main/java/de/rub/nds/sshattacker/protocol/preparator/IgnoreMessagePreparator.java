@@ -13,6 +13,9 @@ public class IgnoreMessagePreparator extends Preparator<IgnoreMessage> {
     @Override
     public void prepare() {
         message.setMessageID(MessageIDConstant.SSH_MSG_IGNORE.id);
+
+        // TODO dummy values for fuzzing
+        message.setData("");
     }
 
 }

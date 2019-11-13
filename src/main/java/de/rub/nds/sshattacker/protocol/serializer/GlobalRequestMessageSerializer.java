@@ -1,7 +1,7 @@
 package de.rub.nds.sshattacker.protocol.serializer;
 
-import de.rub.nds.sshattacker.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.protocol.message.GlobalRequestMessage;
+import de.rub.nds.sshattacker.util.Converter;
 
 public class GlobalRequestMessageSerializer extends MessageSerializer<GlobalRequestMessage> {
 
@@ -9,12 +9,8 @@ public class GlobalRequestMessageSerializer extends MessageSerializer<GlobalRequ
         super(msg);
     }
 
-    private void serializeRequestNameLength() {
-        appendInt(msg.getRequestNameLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
-    }
-
     private void serializeRequestName() {
-        appendString(msg.getRequestName().getValue());
+        appendBytes(Converter.stringToLengthPrefixedString(msg.getRequestName().getValue()));
     }
 
     private void serializeWantReplay() {
@@ -27,7 +23,6 @@ public class GlobalRequestMessageSerializer extends MessageSerializer<GlobalRequ
 
     @Override
     protected byte[] serializeMessageSpecificPayload() {
-        serializeRequestNameLength();
         serializeRequestName();
         serializeWantReplay();
         serializePayload();

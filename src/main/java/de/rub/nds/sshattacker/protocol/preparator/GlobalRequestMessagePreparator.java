@@ -13,6 +13,11 @@ public class GlobalRequestMessagePreparator extends Preparator<GlobalRequestMess
     @Override
     public void prepare() {
         message.setMessageID(MessageIDConstant.SSH_MSG_GLOBAL_REQUEST.id);
+
+        // TODO dummy values for fuzzing
+        message.setWantReply((byte) 0xff);
+        message.setRequestName("");
+        message.setPayload(new byte[0]);
     }
 
 }

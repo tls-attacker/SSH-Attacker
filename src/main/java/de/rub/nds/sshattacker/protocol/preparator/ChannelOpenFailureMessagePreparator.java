@@ -13,6 +13,12 @@ public class ChannelOpenFailureMessagePreparator extends Preparator<ChannelOpenF
     @Override
     public void prepare() {
         message.setMessageID(MessageIDConstant.SSH_MSG_CHANNEL_FAILURE.id);
+
+        // TODO dummy values for fuzzing
+        message.setRecipientChannel(Integer.MAX_VALUE);
+        message.setReasonCode(Integer.MAX_VALUE);
+        message.setReason("");
+        message.setLanguageTag("");
     }
 
 }

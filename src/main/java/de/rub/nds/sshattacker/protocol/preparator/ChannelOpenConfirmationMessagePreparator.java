@@ -13,6 +13,12 @@ public class ChannelOpenConfirmationMessagePreparator extends Preparator<Channel
     @Override
     public void prepare() {
         message.setMessageID(MessageIDConstant.SSH_MSG_CHANNEL_OPEN_CONFIRMATION.id);
+        // TODO dummy values for fuzzing
+
+        message.setPacketSize(Integer.MAX_VALUE);
+        message.setRecipientChannel(Integer.MAX_VALUE);
+        message.setSenderChannel(Integer.MAX_VALUE);
+        message.setWindowSize(Integer.MAX_VALUE);
     }
 
 }

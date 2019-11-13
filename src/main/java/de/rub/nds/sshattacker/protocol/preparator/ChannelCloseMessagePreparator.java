@@ -13,6 +13,9 @@ public class ChannelCloseMessagePreparator extends Preparator<ChannelCloseMessag
     @Override
     public void prepare() {
         message.setMessageID(MessageIDConstant.SSH_MSG_CHANNEL_CLOSE.id);
+
+        // TODO dummy values for fuzzing
+        message.setRecipientChannel(Integer.MAX_VALUE);
     }
 
 }

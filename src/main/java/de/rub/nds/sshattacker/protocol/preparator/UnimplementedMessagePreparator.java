@@ -13,6 +13,9 @@ public class UnimplementedMessagePreparator extends Preparator<UnimplementedMess
     @Override
     public void prepare() {
         message.setMessageID(MessageIDConstant.SSH_MSG_UNIMPLEMENTED.id);
+        // TODO dummy values for fuzzing
+
+        message.setSequenceNumber(Integer.MAX_VALUE);
     }
 
 }

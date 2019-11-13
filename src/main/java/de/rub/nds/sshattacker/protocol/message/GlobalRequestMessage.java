@@ -2,7 +2,6 @@ package de.rub.nds.sshattacker.protocol.message;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
-import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.protocol.core.message.Serializer;
@@ -15,22 +14,9 @@ import de.rub.nds.sshattacker.state.SshContext;
 
 public class GlobalRequestMessage extends Message {
 
-    private ModifiableInteger requestNameLength;
     private ModifiableString requestName;
     private ModifiableByte wantReply;
     private ModifiableByteArray payload;
-
-    public ModifiableInteger getRequestNameLength() {
-        return requestNameLength;
-    }
-
-    public void setRequestNameLength(ModifiableInteger requestNameLength) {
-        this.requestNameLength = requestNameLength;
-    }
-
-    public void setRequestNameLength(int requestNameLength) {
-        this.requestNameLength = ModifiableVariableFactory.safelySetValue(this.requestNameLength, requestNameLength);
-    }
 
     public ModifiableString getRequestName() {
         return requestName;

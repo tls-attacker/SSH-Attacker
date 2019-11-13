@@ -14,12 +14,8 @@ public class GlobalRequestMessageParser extends MessageParser<GlobalRequestMessa
         return new GlobalRequestMessage();
     }
 
-    private void parseRequestNameLength(GlobalRequestMessage msg) {
-        msg.setRequestNameLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-    }
-
     private void parseRequestName(GlobalRequestMessage msg) {
-        msg.setRequestName(parseByteString(msg.getRequestNameLength().getValue()));
+        msg.setRequestName(parseByteString(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH)));
     }
 
     private void parseWantReply(GlobalRequestMessage msg) {
@@ -32,7 +28,6 @@ public class GlobalRequestMessageParser extends MessageParser<GlobalRequestMessa
 
     @Override
     protected void parseMessageSpecificPayload(GlobalRequestMessage msg) {
-        parseRequestNameLength(msg);
         parseRequestName(msg);
         parseWantReply(msg);
         parsePayload(msg);
