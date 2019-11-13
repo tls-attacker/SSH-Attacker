@@ -1,5 +1,6 @@
 package de.rub.nds.sshattacker.protocol.preparator;
 
+import de.rub.nds.sshattacker.constants.MessageIDConstant;
 import de.rub.nds.sshattacker.protocol.message.EcdhKeyExchangeReplyMessage;
 import de.rub.nds.sshattacker.state.SshContext;
 
@@ -11,6 +12,7 @@ public class EcdhKeyExchangeReplyMessagePreparator extends Preparator<EcdhKeyExc
 
     @Override
     public void prepare() {
+        message.setMessageID(MessageIDConstant.SSH_MSG_KEX_ECDH_REPLY.id);
 //        message.setHostKeyLength(context.getDefaultRsaExponent().bitLength());
 //        message.setHostKeyType(context.getDefaultHostKeyType());
 //        message.setHostKeyTypeLength(context.getDefaultHostKeyType().length());
