@@ -1,5 +1,6 @@
 package de.rub.nds.sshattacker.protocol.parser;
 
+import de.rub.nds.protocol.core.exception.ParserException;
 import de.rub.nds.protocol.core.message.Parser;
 import de.rub.nds.sshattacker.constants.MessageIDConstant;
 import de.rub.nds.sshattacker.protocol.message.Message;
@@ -30,26 +31,31 @@ public abstract class MessageParser<T extends Message> extends Parser<T> {
     }
 
     public static Message delegateParsing(byte[] raw) {
-        switch (MessageIDConstant.fromId(raw[0])) {
-            case SSH_MSG_KEXINIT:
-                return new KeyExchangeInitMessageParser(0, raw).parse();
-            case SSH_MSG_KEX_ECDH_INIT:
-                return new EcdhKeyExchangeInitMessageParser(0, raw).parse();
-            case SSH_MSG_KEX_ECDH_REPLY:
-                return new EcdhKeyExchangeReplyMessageParser(0, raw).parse();
-            case SSH_MSG_NEWKEYS:
-                return new NewKeysMessageParser(0, raw).parse();
-            case SSH_MSG_SERVICE_REQUEST:
-                return new ServiceRequestMessageParser(0, raw).parse();
-            case SSH_MSG_SERVICE_ACCEPT:
-                return new ServiceAcceptMessageParser(0, raw).parse();
-            case SSH_MSG_CHANNEL_OPEN_CONFIRMATION:
-                return new ChannelOpenConfirmationMessageParser(0, raw).parse();
-            case SSH_MSG_CHANNEL_DATA:
-                return new ChannelDataMessageParser(0, raw).parse();
-            default:
-                LOGGER.debug("Received unimplemented Message " + MessageIDConstant.getNameByID(raw[0]) + " (" + raw[0] + ")");
-                return new UnknownMessageParser(0, raw).parse();
+        try {
+            switch (MessageIDConstant.fromId(raw[0])) {
+                case SSH_MSG_KEXINIT:
+                    return new KeyExchangeInitMessageParser(0, raw).parse();
+                case SSH_MSG_KEX_ECDH_INIT:
+                    return new EcdhKeyExchangeInitMessageParser(0, raw).parse();
+                case SSH_MSG_KEX_ECDH_REPLY:
+                    return new EcdhKeyExchangeReplyMessageParser(0, raw).parse();
+                case SSH_MSG_NEWKEYS:
+                    return new NewKeysMessageParser(0, raw).parse();
+                case SSH_MSG_SERVICE_REQUEST:
+                    return new ServiceRequestMessageParser(0, raw).parse();
+                case SSH_MSG_SERVICE_ACCEPT:
+                    return new ServiceAcceptMessageParser(0, raw).parse();
+                case SSH_MSG_CHANNEL_OPEN_CONFIRMATION:
+                    return new ChannelOpenConfirmationMessageParser(0, raw).parse();
+                case SSH_MSG_CHANNEL_DATA:
+                    return new ChannelDataMessageParser(0, raw).parse();
+                default:
+                    LOGGER.debug("Received unimplemented Message " + MessageIDConstant.getNameByID(raw[0]) + " (" + raw[0] + ")");
+                    return new UnknownMessageParser(0, raw).parse();
+            }
+        } catch (ParserException e) {
+            LOGGER.debug("Error while Parsing, now parsing as UnknownMessage");
+            return new UnknownMessageParser(0, raw).parse();
         }
     }
 }

@@ -1,6 +1,7 @@
 package de.rub.nds.sshattacker.protocol.helper;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.protocol.core.exception.ParserException;
 import de.rub.nds.sshattacker.protocol.layers.BinaryPacketLayer;
 import de.rub.nds.sshattacker.protocol.layers.CryptoLayer;
 import de.rub.nds.sshattacker.protocol.layers.MessageLayer;
@@ -47,12 +48,18 @@ public class ReceiveMessageHelper {
                         return new MessageActionResult(); // TODO implement fitting message
                     }
 
-                    List<BinaryPacket> binaryPackets = binaryPacketLayer.parseBinaryPackets(cryptoLayer.decryptBinaryPackets(data));
-                    List<Message> messages = messageLayer.parseMessages(binaryPackets);
-                    messages.forEach(message -> {
-                        message.getHandler(context).handle(message);
-                    });
-                    return new MessageActionResult(binaryPackets, messages);
+                    byte[] decryptedData = cryptoLayer.decryptBinaryPackets(data);
+                    try {
+                        List<BinaryPacket> binaryPackets = binaryPacketLayer.parseBinaryPackets(decryptedData);
+                        List<Message> messages = messageLayer.parseMessages(binaryPackets);
+                        messages.forEach(message -> {
+                            message.getHandler(context).handle(message);
+                        });
+                        return new MessageActionResult(binaryPackets, messages);
+                    } catch (ParserException e) {
+                        BinaryPacket dummyPacket = new BinaryPacket(decryptedData);
+                        return new MessageActionResult(Arrays.asList(new BinaryPacket[]{dummyPacket}), new LinkedList());
+                    }
                 } else {
                     LOGGER.debug("TransportHandler does not have data.");
                     return new MessageActionResult();

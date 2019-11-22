@@ -123,9 +123,6 @@ public abstract class ProtocolMessage extends ModifiableVariableHolder {
         this.adjustContext = ModifiableVariableFactory.safelySetValue(this.adjustContext, adjustContext);
     }
 
-//    public boolean isHandshakeMessage() {
-//        return this instanceof HandshakeMessage;
-//    }
     public abstract String toCompactString();
 
     public abstract Handler getHandler(SshContext context);
