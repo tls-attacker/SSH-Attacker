@@ -4,6 +4,7 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.protocol.core.message.Serializer;
+import de.rub.nds.sshattacker.protocol.handler.ChannelOpenMessageHandler;
 import de.rub.nds.sshattacker.protocol.handler.Handler;
 import de.rub.nds.sshattacker.protocol.preparator.ChannelOpenMessagePreparator;
 import de.rub.nds.sshattacker.protocol.preparator.Preparator;
@@ -75,7 +76,7 @@ public class ChannelOpenMessage extends Message {
 
     @Override
     public Handler getHandler(SshContext context) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return new ChannelOpenMessageHandler(context);
     }
 
     @Override

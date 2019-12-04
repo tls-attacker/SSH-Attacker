@@ -4,6 +4,7 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.protocol.core.message.Serializer;
 import de.rub.nds.sshattacker.protocol.handler.Handler;
+import de.rub.nds.sshattacker.protocol.handler.ServiceRequestMessageHandler;
 import de.rub.nds.sshattacker.protocol.preparator.Preparator;
 import de.rub.nds.sshattacker.protocol.preparator.ServiceRequestMessagePreparator;
 import de.rub.nds.sshattacker.protocol.serializer.ServiceRequestMessageSerializer;
@@ -40,7 +41,7 @@ public class ServiceRequestMessage extends Message {
 
     @Override
     public Handler getHandler(SshContext context) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return new ServiceRequestMessageHandler(context);
     }
 
     @Override

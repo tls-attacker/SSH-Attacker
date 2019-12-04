@@ -49,6 +49,45 @@ public abstract class MessageParser<T extends Message> extends Parser<T> {
                     return new ChannelOpenConfirmationMessageParser(0, raw).parse();
                 case SSH_MSG_CHANNEL_DATA:
                     return new ChannelDataMessageParser(0, raw).parse();
+                case SSH_MSG_CHANNEL_CLOSE:
+                    return new ChannelCloseMessageParser(0, raw).parse();
+                case SSH_MSG_CHANNEL_EOF:
+                    return new ChannelEofMessageParser(0, raw).parse();
+                case SSH_MSG_CHANNEL_EXTENDED_DATA:
+                    return new ChannelExtendedDataMessageParser(0, raw).parse();
+                case SSH_MSG_CHANNEL_FAILURE:
+                    return new ChannelFailureMessageParser(0, raw).parse();
+                case SSH_MSG_CHANNEL_OPEN_FAILURE:
+                    return new ChannelOpenFailureMessageParser(0, raw).parse();
+                case SSH_MSG_CHANNEL_OPEN:
+                    return new ChannelOpenMessageParser(0, raw).parse();
+                case SSH_MSG_CHANNEL_REQUEST:
+                    return new ChannelRequestMessageParser(0, raw).parse();
+                case SSH_MSG_CHANNEL_SUCCESS:
+                    return new ChannelSuccessMessageParser(0, raw).parse();
+                case SSH_MSG_CHANNEL_WINDOW_ADJUST:
+                    return new ChannelWindowAdjustMessageParser(0, raw).parse();
+                case SSH_MSG_DEBUG:
+                    return new DebugMessageParser(0, raw).parse();
+                case SSH_MSG_DISCONNECT:
+                    return new DisconnectMessageParser(0, raw).parse();
+                case SSH_MSG_GLOBAL_REQUEST:
+                    return new GlobalRequestMessageParser(0, raw).parse();
+                case SSH_MSG_IGNORE:
+                    return new IgnoreMessageParser(0, raw).parse();
+                case SSH_MSG_REQUEST_FAILURE:
+                    return new RequestFailureMessageParser(0, raw).parse();
+                case SSH_MSG_REQUEST_SUCCESS:
+                    return new RequestSuccessMessageParser(0, raw).parse();
+                case SSH_MSG_UNIMPLEMENTED:
+                    return new UnimplementedMessageParser(0, raw).parse();
+                case SSH_MSG_USERAUTH_BANNER:
+                    return new UserAuthBannerMessageParser(0, raw).parse();
+                case SSH_MSG_USERAUTH_FAILURE:
+                    return new UserAuthFailureMessageParser(0, raw).parse();
+                case SSH_MSG_USERAUTH_SUCCESS:
+                    return new UserAuthSuccessMessageParser(0, raw).parse();
+
                 default:
                     LOGGER.debug("Received unimplemented Message " + MessageIDConstant.getNameByID(raw[0]) + " (" + raw[0] + ")");
                     return new UnknownMessageParser(0, raw).parse();

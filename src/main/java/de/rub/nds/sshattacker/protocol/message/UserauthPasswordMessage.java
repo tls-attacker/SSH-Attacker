@@ -5,6 +5,7 @@ import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.protocol.core.message.Serializer;
 import de.rub.nds.sshattacker.protocol.handler.Handler;
+import de.rub.nds.sshattacker.protocol.handler.UserauthPasswordMessageHandler;
 import de.rub.nds.sshattacker.protocol.preparator.Preparator;
 import de.rub.nds.sshattacker.protocol.preparator.UserauthPasswordMessagePreparator;
 import de.rub.nds.sshattacker.protocol.serializer.UserauthPasswordMessageSerializer;
@@ -75,7 +76,7 @@ public class UserauthPasswordMessage extends Message {
 
     @Override
     public Handler getHandler(SshContext context) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return new UserauthPasswordMessageHandler(context);
     }
 
     @Override

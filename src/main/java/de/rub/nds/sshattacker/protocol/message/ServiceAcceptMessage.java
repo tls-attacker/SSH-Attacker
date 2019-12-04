@@ -6,6 +6,7 @@ import de.rub.nds.protocol.core.message.Serializer;
 import de.rub.nds.sshattacker.protocol.handler.Handler;
 import de.rub.nds.sshattacker.protocol.handler.ServiceAcceptMessageHandler;
 import de.rub.nds.sshattacker.protocol.preparator.Preparator;
+import de.rub.nds.sshattacker.protocol.preparator.ServiceAcceptMessagePreparator;
 import de.rub.nds.sshattacker.protocol.serializer.ServiceAcceptMessageSerializer;
 import de.rub.nds.sshattacker.state.SshContext;
 
@@ -50,7 +51,7 @@ public class ServiceAcceptMessage extends Message {
 
     @Override
     public Preparator getPreparator(SshContext context) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return new ServiceAcceptMessagePreparator(context, this);
     }
 
 }

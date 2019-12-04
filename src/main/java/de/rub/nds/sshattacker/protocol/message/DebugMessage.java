@@ -4,8 +4,11 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.protocol.core.message.Serializer;
+import de.rub.nds.sshattacker.protocol.handler.DebugMessageHandler;
 import de.rub.nds.sshattacker.protocol.handler.Handler;
+import de.rub.nds.sshattacker.protocol.preparator.DebugMessagePreparator;
 import de.rub.nds.sshattacker.protocol.preparator.Preparator;
+import de.rub.nds.sshattacker.protocol.serializer.DebugMessageSerializer;
 import de.rub.nds.sshattacker.state.SshContext;
 
 public class DebugMessage extends Message {
@@ -52,17 +55,17 @@ public class DebugMessage extends Message {
 
     @Override
     public Handler getHandler(SshContext context) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return new DebugMessageHandler(context);
     }
 
     @Override
     public Serializer getSerializer() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return new DebugMessageSerializer(this);
     }
 
     @Override
     public Preparator getPreparator(SshContext context) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return new DebugMessagePreparator(context, this);
     }
 
 }

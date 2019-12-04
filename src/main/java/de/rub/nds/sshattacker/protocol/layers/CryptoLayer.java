@@ -8,7 +8,9 @@ import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.Key;
 import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import java.util.Arrays;
+import java.util.logging.Level;
 import javax.crypto.Cipher;
 import javax.crypto.Mac;
 import javax.crypto.NoSuchPaddingException;
@@ -81,10 +83,64 @@ public class CryptoLayer {
 
     // TODO only supports aes-128-cbc, hmac-sha1
     public byte[] decrypt(byte[] raw) {
+        if (decryption == null) {
+            return decrypt_temp(raw);
+        }
         return decryption.update(raw);
     }
 
+    public byte[] decrypt_temp(byte[] raw) {
+        try {
+            SecureRandom random = new SecureRandom();
+            byte[] key = new byte[32];
+            byte[] iv = new byte[32];
+            random.nextBytes(key);
+            random.nextBytes(iv);
+            Cipher temp = Cipher.getInstance("AES/CBC/NoPadding");
+            Key encryptionKey = new SecretKeySpec(key, "AES");
+            IvParameterSpec encryptionIV = new IvParameterSpec(iv);
+            temp.init(Cipher.DECRYPT_MODE, encryptionKey, encryptionIV);
+            return temp.update(raw);
+        } catch (NoSuchAlgorithmException ex) {
+            java.util.logging.Logger.getLogger(CryptoLayer.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (NoSuchPaddingException ex) {
+            java.util.logging.Logger.getLogger(CryptoLayer.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (InvalidKeyException ex) {
+            java.util.logging.Logger.getLogger(CryptoLayer.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (InvalidAlgorithmParameterException ex) {
+            java.util.logging.Logger.getLogger(CryptoLayer.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return new byte[0];
+    }
+
+    public byte[] encrypt_temp(byte[] raw) {
+        try {
+            SecureRandom random = new SecureRandom();
+            byte[] key = new byte[32];
+            byte[] iv = new byte[32];
+            random.nextBytes(key);
+            random.nextBytes(iv);
+            Cipher temp = Cipher.getInstance("AES/CBC/NoPadding");
+            Key encryptionKey = new SecretKeySpec(key, "AES");
+            IvParameterSpec encryptionIV = new IvParameterSpec(iv);
+            temp.init(Cipher.ENCRYPT_MODE, encryptionKey, encryptionIV);
+            return temp.update(raw);
+        } catch (NoSuchAlgorithmException ex) {
+            java.util.logging.Logger.getLogger(CryptoLayer.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (NoSuchPaddingException ex) {
+            java.util.logging.Logger.getLogger(CryptoLayer.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (InvalidKeyException ex) {
+            java.util.logging.Logger.getLogger(CryptoLayer.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (InvalidAlgorithmParameterException ex) {
+            java.util.logging.Logger.getLogger(CryptoLayer.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return new byte[0];
+    }
+
     public byte[] encrypt(byte[] raw) {
+        if (encryption == null) {
+            return encrypt_temp(raw);
+        }
         return encryption.update(raw);
     }
 

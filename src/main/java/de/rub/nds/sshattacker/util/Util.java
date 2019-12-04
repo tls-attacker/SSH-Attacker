@@ -13,7 +13,7 @@ public class Util {
         } else if (kexAlgorithm.contains("sha1")) {
             return "SHA-1";
         }
-        return "";
+        return "SHA-256";
     }
 
 }

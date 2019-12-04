@@ -6,6 +6,7 @@ import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.protocol.core.message.Serializer;
 import de.rub.nds.sshattacker.protocol.handler.ChannelDataMessageHandler;
 import de.rub.nds.sshattacker.protocol.handler.Handler;
+import de.rub.nds.sshattacker.protocol.preparator.ChannelDataMessagePreparator;
 import de.rub.nds.sshattacker.protocol.preparator.Preparator;
 import de.rub.nds.sshattacker.protocol.serializer.ChannelDataMessageSerializer;
 import de.rub.nds.sshattacker.state.SshContext;
@@ -65,6 +66,6 @@ public class ChannelDataMessage extends Message {
 
     @Override
     public Preparator getPreparator(SshContext context) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return new ChannelDataMessagePreparator(context, this);
     }
 }
