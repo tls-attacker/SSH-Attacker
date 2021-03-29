@@ -88,7 +88,7 @@ public class EcdhKeyExchangeReplyMessageHandler extends Handler<EcdhKeyExchangeR
                 .getKeySize(), hashAlgorithm));
         LOGGER.debug("Key E: " + ArrayConverter.bytesToRawHexString(context.getIntegrityKeyClientToServer()));
         context.setIntegrityKeyServerToClient(KeyDerivation.deriveKey(context.getSharedSecret(), context
-                .getExchangeHash(), (byte) 'A', context.getSessionID(), context.getMacAlgorithmServerToClient()
+                .getExchangeHash(), (byte) 'F', context.getSessionID(), context.getMacAlgorithmServerToClient()
                 .getKeySize(), hashAlgorithm));
         LOGGER.debug("Key F: " + ArrayConverter.bytesToRawHexString(context.getIntegrityKeyServerToClient()));
 
