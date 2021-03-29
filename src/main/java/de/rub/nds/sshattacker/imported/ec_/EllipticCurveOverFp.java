@@ -1,7 +1,8 @@
 /**
- * TLS-Attacker - A Modular Penetration Testing Framework for TLS
+ * SSH-Attacker - A Modular Penetration Testing Framework for SSH
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -19,13 +20,15 @@ public class EllipticCurveOverFp extends EllipticCurve {
     private final FieldElementFp b;
 
     /**
-     * Instantiates the curve y^2 = x^3 + ax + b over F_p. p must be
-     * prime.<br />
+     * Instantiates the curve y^2 = x^3 + ax + b over F_p. p must be prime.<br />
      *
-     * @param a The coefficient a in the equation of the curve.
-     * @param b The coefficient b in the equation of the curve.
-     * @param p The prime order of the field over which the curve shall be
-     * defined.
+     * @param a
+     *            The coefficient a in the equation of the curve.
+     * @param b
+     *            The coefficient b in the equation of the curve.
+     * @param p
+     *            The prime order of the field over which the curve shall be
+     *            defined.
      */
     public EllipticCurveOverFp(BigInteger a, BigInteger b, BigInteger p) {
         super(p);
@@ -37,13 +40,19 @@ public class EllipticCurveOverFp extends EllipticCurve {
      * Instantiates the curve y^2 = x^3 + ax + b over F_p.<br />
      * With base point (x,y) and base point order q. p must be prime.
      *
-     * @param a The coefficient a in the equation of the curve.
-     * @param b The coefficient b in the equation of the curve.
-     * @param p The prime order of the field over which the curve shall be
-     * defined.
-     * @param x The x-coordinate of the base point.
-     * @param y The y-coordinate of the base point.
-     * @param q The order of the base point.
+     * @param a
+     *            The coefficient a in the equation of the curve.
+     * @param b
+     *            The coefficient b in the equation of the curve.
+     * @param p
+     *            The prime order of the field over which the curve shall be
+     *            defined.
+     * @param x
+     *            The x-coordinate of the base point.
+     * @param y
+     *            The y-coordinate of the base point.
+     * @param q
+     *            The order of the base point.
      */
     public EllipticCurveOverFp(BigInteger a, BigInteger b, BigInteger p, BigInteger x, BigInteger y, BigInteger q) {
         super(p, x, y, q);
@@ -75,7 +84,7 @@ public class EllipticCurveOverFp extends EllipticCurve {
         }
         FieldElementFp x = (FieldElementFp) p.getX();
         FieldElementFp y = (FieldElementFp) p.getY();
-        if (x.getModulus() != this.getModulus() || y.getModulus() != this.getModulus()) {
+        if (!x.getModulus().equals(this.getModulus()) || !y.getModulus().equals(this.getModulus())) {
             return false;
         }
 

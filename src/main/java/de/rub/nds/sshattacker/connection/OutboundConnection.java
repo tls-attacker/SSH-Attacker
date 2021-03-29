@@ -1,3 +1,12 @@
+/**
+ * SSH-Attacker - A Modular Penetration Testing Framework for SSH
+ *
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
+ *
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
+ */
 package de.rub.nds.sshattacker.connection;
 
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
@@ -44,23 +53,13 @@ public class OutboundConnection extends AliasedConnection {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder("OutboundConnection{");
-        sb.append(" alias=").append(alias);
-        sb.append(" host=").append(hostname);
-        sb.append(" port=").append(port);
-        sb.append(" type=").append(transportHandlerType);
-        sb.append(" timeout=").append(timeout);
-        sb.append("}");
-        return sb.toString();
+        return "OutboundConnection{" + " alias=" + alias + " host=" + hostname + " port=" + port + " type="
+                + transportHandlerType + " timeout=" + timeout + "}";
     }
 
     @Override
     public String toCompactString() {
-        StringBuilder sb = new StringBuilder("OutboundConnection[");
-        sb.append(alias);
-        sb.append(":").append(hostname);
-        sb.append(":").append(port).append("]");
-        return sb.toString();
+        return "OutboundConnection[" + alias + ":" + hostname + ":" + port + "]";
     }
 
     @Override

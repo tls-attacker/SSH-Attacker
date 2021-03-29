@@ -1,3 +1,12 @@
+/**
+ * SSH-Attacker - A Modular Penetration Testing Framework for SSH
+ *
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
+ *
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
+ */
 package de.rub.nds.sshattacker.protocol.parser;
 
 import de.rub.nds.sshattacker.constants.BinaryPacketConstants;
@@ -41,21 +50,25 @@ public class KeyExchangeInitMessageParser extends MessageParser<KeyExchangeInitM
 
     private void parseEncryptionAlgorithmsClientToServerLength(KeyExchangeInitMessage msg) {
         msg.setEncryptionAlgorithmsClientToServerLength(parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH));
-        LOGGER.debug("EncryptionAlgorithmsClientToServerLength: " + msg.getEncryptionAlgorithmsClientToServerLength().getValue());
+        LOGGER.debug("EncryptionAlgorithmsClientToServerLength: "
+                + msg.getEncryptionAlgorithmsClientToServerLength().getValue());
     }
 
     private void parseEncryptionAlgorithmsClientToServer(KeyExchangeInitMessage msg) {
-        msg.setEncryptionAlgorithmsClientToServer(parseByteString(msg.getEncryptionAlgorithmsClientToServerLength().getValue()));
+        msg.setEncryptionAlgorithmsClientToServer(parseByteString(msg.getEncryptionAlgorithmsClientToServerLength()
+                .getValue()));
         LOGGER.debug("EncryptionAlgorithmsClientToServer: " + msg.getEncryptionAlgorithmsClientToServer().getValue());
     }
 
     private void parseEncryptionAlgorithmsServerToClientLength(KeyExchangeInitMessage msg) {
         msg.setEncryptionAlgorithmsServerToClientLength(parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH));
-        LOGGER.debug("EncryptionAlgorithmsServerToClientLength: " + msg.getEncryptionAlgorithmsServerToClientLength().getValue());
+        LOGGER.debug("EncryptionAlgorithmsServerToClientLength: "
+                + msg.getEncryptionAlgorithmsServerToClientLength().getValue());
     }
 
     private void parseEncryptionAlgorithmsServerToClient(KeyExchangeInitMessage msg) {
-        msg.setEncryptionAlgorithmsServerToClient(parseByteString(msg.getEncryptionAlgorithmsServerToClientLength().getValue()));
+        msg.setEncryptionAlgorithmsServerToClient(parseByteString(msg.getEncryptionAlgorithmsServerToClientLength()
+                .getValue()));
         LOGGER.debug("EncryptionAlgorithmsServerToClient: " + msg.getEncryptionAlgorithmsServerToClient().getValue());
     }
 
@@ -81,21 +94,25 @@ public class KeyExchangeInitMessageParser extends MessageParser<KeyExchangeInitM
 
     private void parseCompressionAlgorithmsClientToServerLength(KeyExchangeInitMessage msg) {
         msg.setCompressionAlgorithmsClientToServerLength(parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH));
-        LOGGER.debug("CompressionAlgorithmsClientToServerLength: " + msg.getCompressionAlgorithmsClientToServerLength().getValue());
+        LOGGER.debug("CompressionAlgorithmsClientToServerLength: "
+                + msg.getCompressionAlgorithmsClientToServerLength().getValue());
     }
 
     private void parseCompressionAlgorithmsClientToServer(KeyExchangeInitMessage msg) {
-        msg.setCompressionAlgorithmsClientToServer(parseByteString(msg.getCompressionAlgorithmsClientToServerLength().getValue()));
+        msg.setCompressionAlgorithmsClientToServer(parseByteString(msg.getCompressionAlgorithmsClientToServerLength()
+                .getValue()));
         LOGGER.debug("CompressionAlgorithmsClientToServer: " + msg.getCompressionAlgorithmsClientToServer().getValue());
     }
 
     private void parseCompressionAlgorithmsServerToClientLength(KeyExchangeInitMessage msg) {
         msg.setCompressionAlgorithmsServerToClientLength(parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH));
-        LOGGER.debug("CompressionAlgorithmsServerToClientLength: " + msg.getCompressionAlgorithmsServerToClientLength().getValue());
+        LOGGER.debug("CompressionAlgorithmsServerToClientLength: "
+                + msg.getCompressionAlgorithmsServerToClientLength().getValue());
     }
 
     private void parseCompressionAlgorithmsServerToClient(KeyExchangeInitMessage msg) {
-        msg.setCompressionAlgorithmsServerToClient(parseByteString(msg.getCompressionAlgorithmsServerToClientLength().getValue()));
+        msg.setCompressionAlgorithmsServerToClient(parseByteString(msg.getCompressionAlgorithmsServerToClientLength()
+                .getValue()));
         LOGGER.debug("CompressionAlgorithmsServerToClient" + msg.getCompressionAlgorithmsServerToClient().getValue());
     }
 

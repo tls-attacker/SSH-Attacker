@@ -1,3 +1,12 @@
+/**
+ * SSH-Attacker - A Modular Penetration Testing Framework for SSH
+ *
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
+ *
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
+ */
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -21,7 +30,7 @@ public class ClientInitMessageParser extends Parser<ClientInitMessage> {
 
     private void parseVersion(ClientInitMessage msg) {
         // parse till CR NL (and remove them)
-        String result = this.parseStringTill(new byte[]{ ByteConstants.CARRIAGE_RETURN, ByteConstants.NEWLINE })
+        String result = this.parseStringTill(new byte[] { ByteConstants.CARRIAGE_RETURN, ByteConstants.NEWLINE })
                 .replace("\r\n", "");
         if (result.contains(String.valueOf(CharConstants.VERSION_COMMENT_SEPARATOR))) {
             // contains a comment

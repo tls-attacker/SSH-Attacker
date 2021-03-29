@@ -1,3 +1,12 @@
+/**
+ * SSH-Attacker - A Modular Penetration Testing Framework for SSH
+ *
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
+ *
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
+ */
 package de.rub.nds.sshattacker.state;
 
 import de.rub.nds.sshattacker.exceptions.ConfigurationException;
@@ -46,8 +55,8 @@ public class ContextContainer {
      * Convenience method, useful when working with a single context only.
      *
      * @return the only known SSH context
-     * @throws ConfigurationException if there is more than one SSH context in
-     * the container
+     * @throws ConfigurationException
+     *             if there is more than one SSH context in the container
      *
      */
     public SshContext getSshContext() {
@@ -65,8 +74,8 @@ public class ContextContainer {
      *
      * @param alias
      * @return the context with the given connection end alias
-     * @throws ConfigurationException if there is no SSH context with the given
-     * alias
+     * @throws ConfigurationException
+     *             if there is no SSH context with the given alias
      *
      */
     public SshContext getSshContext(String alias) {
@@ -153,9 +162,10 @@ public class ContextContainer {
      * The SshContext can only be replaced if the connection of both the new and
      * the old SshContext equal.
      *
-     * @param newSshContext the new SshContext, not null
-     * @throws ConfigurationException if the connections of new and old
-     * SshContext differ
+     * @param newSshContext
+     *            the new SshContext, not null
+     * @throws ConfigurationException
+     *             if the connections of new and old SshContext differ
      */
     public void replaceSshContext(SshContext newSshContext) {
         String alias = newSshContext.getConnection().getAlias();

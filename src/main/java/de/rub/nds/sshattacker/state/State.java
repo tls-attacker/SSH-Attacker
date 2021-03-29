@@ -1,3 +1,12 @@
+/**
+ * SSH-Attacker - A Modular Penetration Testing Framework for SSH
+ *
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
+ *
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
+ */
 package de.rub.nds.sshattacker.state;
 
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
@@ -53,8 +62,8 @@ public class State {
     private static final Logger LOGGER = LogManager.getLogger();
 
     private final ContextContainer contextContainer = new ContextContainer();
-    private Config config = null;
-    private RunningModeType runningMode = null;
+    private final Config config;
+    private RunningModeType runningMode;
 
     @HoldsModifiableVariable
     private WorkflowTrace workflowTrace;
@@ -92,7 +101,7 @@ public class State {
      * Normalize trace and initialize SSH contexts.
      */
     public final void initState() {
-//        Keep a snapshot to restore user defined trace values after filtering.
+        // Keep a snapshot to restore user defined trace values after filtering.
         if (config.isFiltersKeepUserSettings()) {
             originalWorkflowTrace = WorkflowTrace.copy(workflowTrace);
         }
@@ -111,7 +120,7 @@ public class State {
 
         if (config.getWorkflowInput() != null) {
             try {
-                trace = WorkflowTraceSerializer.read(new FileInputStream(new File(config.getWorkflowInput())));
+                trace = WorkflowTraceSerializer.read(new FileInputStream(config.getWorkflowInput()));
                 LOGGER.debug("Loaded workflow trace from " + config.getWorkflowInput());
             } catch (FileNotFoundException ex) {
                 LOGGER.warn("Could not read workflow trace. File not found: " + config.getWorkflowInput());
@@ -148,7 +157,8 @@ public class State {
      * Replace existing SshContext with new SshContext. This can only be done if
      * existingSshContext.connection equals newSshContext.connection.
      *
-     * @param newSshContext The new SshContext to replace the old with
+     * @param newSshContext
+     *            The new SshContext to replace the old with
      */
     public void replaceSshContext(SshContext newSshContext) {
         contextContainer.replaceSshContext(newSshContext);
@@ -182,7 +192,8 @@ public class State {
      * invalidation.
      *
      *
-     * @param alias The Alias for which the SshContext should be returned
+     * @param alias
+     *            The Alias for which the SshContext should be returned
      *
      * @return the context with the given connection end alias
      */
@@ -236,7 +247,8 @@ public class State {
      * Return a filtered copy of the given workflow trace. This method does not
      * modify the input trace.
      *
-     * @param trace The workflow trace that should be filtered
+     * @param trace
+     *            The workflow trace that should be filtered
      * @return A filtered copy of the input workflow trace
      */
     private WorkflowTrace getFilteredTraceCopy(WorkflowTrace trace) {
@@ -248,7 +260,8 @@ public class State {
     /**
      * Apply filters to trace in place.
      *
-     * @param trace The workflow trace that should be filtered
+     * @param trace
+     *            The workflow trace that should be filtered
      */
     private void filterTrace(WorkflowTrace trace) {
         List<FilterType> filters = config.getOutputFilters();

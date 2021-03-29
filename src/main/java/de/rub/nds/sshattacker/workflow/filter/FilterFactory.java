@@ -1,3 +1,12 @@
+/**
+ * SSH-Attacker - A Modular Penetration Testing Framework for SSH
+ *
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
+ *
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
+ */
 package de.rub.nds.sshattacker.workflow.filter;
 
 import de.rub.nds.sshattacker.config.Config;
@@ -9,14 +18,10 @@ public class FilterFactory {
     private static final Logger LOGGER = LogManager.getLogger();
 
     public static Filter createWorkflowTraceFilter(FilterType type, Config config) {
-        switch (type) {
-            case DEFAULT:
-                return new DefaultFilter(config);
-//            case DISCARD_RECORDS:
-//                return new DiscardRecordsFilter(config);
-            default:
-                throw new UnsupportedOperationException(type.name() + " not yet implemented");
+        if (type == FilterType.DEFAULT) {
+            return new DefaultFilter(config);
         }
+        throw new UnsupportedOperationException(type.name() + " not yet implemented");
     }
 
     private FilterFactory() {

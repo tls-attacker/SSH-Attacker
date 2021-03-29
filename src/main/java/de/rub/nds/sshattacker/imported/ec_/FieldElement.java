@@ -1,7 +1,8 @@
 /**
- * TLS-Attacker - A Modular Penetration Testing Framework for TLS
+ * SSH-Attacker - A Modular Penetration Testing Framework for SSH
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -12,8 +13,7 @@ import java.math.BigInteger;
 
 /**
  * Can be used to store elements of a galois field.<br />
- * The attribute data should contain some BigInteger representing the
- * element.<br />
+ * The attribute data should contain some BigInteger representing the element.<br />
  * The attribute modulus should contain some BigInteger that may be used to
  * identify the field (and for calculations).<br />
  *
@@ -37,14 +37,16 @@ public abstract class FieldElement {
     /**
      * Returns this + f.
      *
-     * @param f An element of the field, which this is an element of.
+     * @param f
+     *            An element of the field, which this is an element of.
      */
     public abstract FieldElement add(FieldElement f);
 
     /**
      * Returns this - f. <br />
      *
-     * @param f An element of the field, which this is an element of.
+     * @param f
+     *            An element of the field, which this is an element of.
      */
     public FieldElement subtract(FieldElement f) {
         f = f.addInv();
@@ -54,14 +56,16 @@ public abstract class FieldElement {
     /**
      * Returns this * f.<br />
      *
-     * @param f An element of the field, which this is an element of.
+     * @param f
+     *            An element of the field, which this is an element of.
      */
     public abstract FieldElement mult(FieldElement f);
 
     /**
      * Returns this * f^-1.<br />
      *
-     * @param f An element of the field, which this is an element of.
+     * @param f
+     *            An element of the field, which this is an element of.
      */
     public FieldElement divide(FieldElement f) {
         f = f.multInv();

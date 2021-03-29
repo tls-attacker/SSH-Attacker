@@ -1,3 +1,12 @@
+/**
+ * SSH-Attacker - A Modular Penetration Testing Framework for SSH
+ *
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
+ *
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
+ */
 package de.rub.nds.sshattacker.protocol.layers;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -21,7 +30,7 @@ import org.apache.logging.log4j.Logger;
 
 public class CryptoLayer {
 
-    private SshContext context;
+    private final SshContext context;
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -29,6 +38,7 @@ public class CryptoLayer {
     private Cipher decryption;
 
     private Mac mac;
+    @SuppressWarnings("FieldCanBeLocal")
     private Mac verify;
 
     public CryptoLayer(SshContext context) {
@@ -101,13 +111,8 @@ public class CryptoLayer {
             IvParameterSpec encryptionIV = new IvParameterSpec(iv);
             temp.init(Cipher.DECRYPT_MODE, encryptionKey, encryptionIV);
             return temp.update(raw);
-        } catch (NoSuchAlgorithmException ex) {
-            java.util.logging.Logger.getLogger(CryptoLayer.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (NoSuchPaddingException ex) {
-            java.util.logging.Logger.getLogger(CryptoLayer.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (InvalidKeyException ex) {
-            java.util.logging.Logger.getLogger(CryptoLayer.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (InvalidAlgorithmParameterException ex) {
+        } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException
+                | InvalidAlgorithmParameterException ex) {
             java.util.logging.Logger.getLogger(CryptoLayer.class.getName()).log(Level.SEVERE, null, ex);
         }
         return new byte[0];
@@ -125,13 +130,8 @@ public class CryptoLayer {
             IvParameterSpec encryptionIV = new IvParameterSpec(iv);
             temp.init(Cipher.ENCRYPT_MODE, encryptionKey, encryptionIV);
             return temp.update(raw);
-        } catch (NoSuchAlgorithmException ex) {
-            java.util.logging.Logger.getLogger(CryptoLayer.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (NoSuchPaddingException ex) {
-            java.util.logging.Logger.getLogger(CryptoLayer.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (InvalidKeyException ex) {
-            java.util.logging.Logger.getLogger(CryptoLayer.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (InvalidAlgorithmParameterException ex) {
+        } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException
+                | InvalidAlgorithmParameterException ex) {
             java.util.logging.Logger.getLogger(CryptoLayer.class.getName()).log(Level.SEVERE, null, ex);
         }
         return new byte[0];
@@ -153,28 +153,25 @@ public class CryptoLayer {
 
     public byte[] macAndEncrypt(byte[] packet) {
         if (context.isIsEncryptionActive()) {
-            return ArrayConverter.concatenate(encrypt(packet),
-                    computeMac(packet));
+            return ArrayConverter.concatenate(encrypt(packet), computeMac(packet));
         } else {
             return packet;
         }
     }
 
     public byte[] decryptBinaryPacket(byte[] raw) {
-        byte[] firstBlock = Arrays.copyOfRange(raw, 0,
-                context.getCipherAlgorithmServerToClient().getBlockSize());
+        byte[] firstBlock = Arrays.copyOfRange(raw, 0, context.getCipherAlgorithmServerToClient().getBlockSize());
 
         byte[] decryptedFirstBlock = decrypt(firstBlock);
-        int packetLength = ArrayConverter.bytesToInt(
-                Arrays.copyOfRange(decryptedFirstBlock, 0, DataFormatConstants.INT32_SIZE));
+        int packetLength = ArrayConverter.bytesToInt(Arrays.copyOfRange(decryptedFirstBlock, 0,
+                DataFormatConstants.INT32_SIZE));
 
         int macStart = BinaryPacketConstants.LENGTH_FIELD_LENGTH + packetLength;
         int macEnd = macStart + context.getMacAlgorithmServerToClient().getOutputSize();
         byte[] macced = Arrays.copyOfRange(raw, macStart, macEnd);
         byte[] toDecrypt = Arrays.copyOfRange(raw, context.getCipherAlgorithmServerToClient().getBlockSize(), macStart);
         byte[] decrypted = decrypt(toDecrypt);
-        byte[] result = ArrayConverter.concatenate(decryptedFirstBlock, decrypted, macced);
-        return result;
+        return ArrayConverter.concatenate(decryptedFirstBlock, decrypted, macced);
     }
 
     public byte[] decryptBinaryPackets(byte[] toDecrypt) {

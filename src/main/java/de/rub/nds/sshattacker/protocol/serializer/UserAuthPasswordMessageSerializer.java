@@ -1,17 +1,26 @@
+/**
+ * SSH-Attacker - A Modular Penetration Testing Framework for SSH
+ *
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
+ *
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
+ */
 package de.rub.nds.sshattacker.protocol.serializer;
 
 import de.rub.nds.sshattacker.constants.UserauthMethodsConstants;
-import de.rub.nds.sshattacker.protocol.message.UserauthPasswordMessage;
+import de.rub.nds.sshattacker.protocol.message.UserAuthPasswordMessage;
 import de.rub.nds.sshattacker.util.Converter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class UserauthPasswordMessageSerializer extends MessageSerializer<UserauthPasswordMessage> {
+public class UserAuthPasswordMessageSerializer extends MessageSerializer<UserAuthPasswordMessage> {
 
-    private final UserauthPasswordMessage msg;
+    private final UserAuthPasswordMessage msg;
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public UserauthPasswordMessageSerializer(UserauthPasswordMessage msg) {
+    public UserAuthPasswordMessageSerializer(UserAuthPasswordMessage msg) {
         super(msg);
         this.msg = msg;
     }

@@ -1,3 +1,12 @@
+/**
+ * SSH-Attacker - A Modular Penetration Testing Framework for SSH
+ *
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
+ *
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
+ */
 package de.rub.nds.sshattacker.workflow.action;
 
 import de.rub.nds.sshattacker.exceptions.WorkflowExecutionException;
@@ -15,7 +24,7 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    protected List<Message> expectedMessages = new ArrayList<>();
+    protected List<Message<?>> expectedMessages = new ArrayList<>();
 
     @XmlElement
     protected Boolean earlyCleanShutdown = null;
@@ -27,27 +36,27 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
         super(AliasedConnection.DEFAULT_CONNECTION_ALIAS);
     }
 
-    public ReceiveAction(List<Message> expectedMessages) {
+    public ReceiveAction(List<Message<?>> expectedMessages) {
         super(AliasedConnection.DEFAULT_CONNECTION_ALIAS);
         this.expectedMessages = expectedMessages;
     }
 
-    public ReceiveAction(Message... expectedMessages) {
+    public ReceiveAction(Message<?>... expectedMessages) {
         super(AliasedConnection.DEFAULT_CONNECTION_ALIAS);
-        this.expectedMessages = new ArrayList(Arrays.asList(expectedMessages));
+        this.expectedMessages = new ArrayList<>(Arrays.asList(expectedMessages));
     }
 
-    public ReceiveAction(Set<ReceiveOption> receiveOptions, List<Message> messages) {
+    public ReceiveAction(Set<ReceiveOption> receiveOptions, List<Message<?>> messages) {
         this(messages);
         this.earlyCleanShutdown = receiveOptions.contains(ReceiveOption.EARLY_CLEAN_SHUTDOWN);
         this.checkOnlyExpected = receiveOptions.contains(ReceiveOption.CHECK_ONLY_EXPECTED);
     }
 
-    public ReceiveAction(Set<ReceiveOption> receiveOptions, Message... messages) {
-        this(receiveOptions, new ArrayList(Arrays.asList(messages)));
+    public ReceiveAction(Set<ReceiveOption> receiveOptions, Message<?>... messages) {
+        this(receiveOptions, new ArrayList<>(Arrays.asList(messages)));
     }
 
-    public ReceiveAction(ReceiveOption receiveOption, List<Message> messages) {
+    public ReceiveAction(ReceiveOption receiveOption, List<Message<?>> messages) {
         this(messages);
         switch (receiveOption) {
             case CHECK_ONLY_EXPECTED:
@@ -58,7 +67,7 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
         }
     }
 
-    public ReceiveAction(ReceiveOption receiveOption, Message... messages) {
+    public ReceiveAction(ReceiveOption receiveOption, Message<?>... messages) {
         this(receiveOption, new ArrayList<>(Arrays.asList(messages)));
     }
 
@@ -66,12 +75,12 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
         super(connectionAlias);
     }
 
-    public ReceiveAction(String connectionAliasAlias, List<Message> messages) {
+    public ReceiveAction(String connectionAliasAlias, List<Message<?>> messages) {
         super(connectionAliasAlias);
         this.expectedMessages = messages;
     }
 
-    public ReceiveAction(String connectionAliasAlias, Message... messages) {
+    public ReceiveAction(String connectionAliasAlias, Message<?>... messages) {
         this(connectionAliasAlias, new ArrayList<>(Arrays.asList(messages)));
     }
 
@@ -105,7 +114,7 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
 
         sb.append("\tExpected:");
         if ((expectedMessages != null)) {
-            for (Message message : expectedMessages) {
+            for (Message<?> message : expectedMessages) {
                 sb.append(message.toCompactString());
                 sb.append(", ");
             }
@@ -114,7 +123,7 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
         }
         sb.append("\n\tActual:");
         if ((messages != null) && (!messages.isEmpty())) {
-            for (Message message : messages) {
+            for (Message<?> message : messages) {
                 sb.append(message.toCompactString());
                 sb.append(", ");
             }
@@ -130,7 +139,7 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
         StringBuilder sb = new StringBuilder(super.toCompactString());
         if ((expectedMessages != null) && (!expectedMessages.isEmpty())) {
             sb.append(" (");
-            for (Message message : expectedMessages) {
+            for (Message<?> message : expectedMessages) {
                 sb.append(message.toCompactString());
                 sb.append(",");
             }
@@ -165,11 +174,11 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
         return true;
     }
 
-    public List<Message> getExpectedMessages() {
+    public List<Message<?>> getExpectedMessages() {
         return expectedMessages;
     }
 
-    void setReceivedMessages(List<Message> receivedMessages) {
+    void setReceivedMessages(List<Message<?>> receivedMessages) {
         this.messages = receivedMessages;
     }
 
@@ -177,12 +186,12 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
         this.binaryPackets = receivedRecords;
     }
 
-    public void setExpectedMessages(List<Message> expectedMessages) {
+    public void setExpectedMessages(List<Message<?>> expectedMessages) {
         this.expectedMessages = expectedMessages;
     }
 
-    public void setExpectedMessages(Message... expectedMessages) {
-        this.expectedMessages = new ArrayList(Arrays.asList(expectedMessages));
+    public void setExpectedMessages(Message<?>... expectedMessages) {
+        this.expectedMessages = new ArrayList<>(Arrays.asList(expectedMessages));
     }
 
     @Override
@@ -193,7 +202,7 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
     }
 
     @Override
-    public List<Message> getReceivedMessages() {
+    public List<Message<?>> getReceivedMessages() {
         return messages;
     }
 
@@ -278,9 +287,7 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
         CHECK_ONLY_EXPECTED;
 
         public static Set<ReceiveOption> bundle(ReceiveOption... receiveOptions) {
-            HashSet<ReceiveOption> options = new HashSet<>();
-            options.addAll(Arrays.asList(receiveOptions));
-            return options;
+            return new HashSet<>(Arrays.asList(receiveOptions));
         }
     }
 }

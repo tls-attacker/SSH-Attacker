@@ -1,3 +1,12 @@
+/**
+ * SSH-Attacker - A Modular Penetration Testing Framework for SSH
+ *
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
+ *
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
+ */
 package de.rub.nds.sshattacker.protocol.message;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
@@ -5,15 +14,12 @@ import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
-import de.rub.nds.sshattacker.protocol.handler.Handler;
 import de.rub.nds.sshattacker.protocol.handler.KeyExchangeInitMessageHandler;
 import de.rub.nds.sshattacker.protocol.preparator.KeyExchangeInitMessagePreparator;
-import de.rub.nds.sshattacker.protocol.preparator.Preparator;
 import de.rub.nds.sshattacker.protocol.serializer.KeyExchangeInitMessageSerializer;
-import de.rub.nds.sshattacker.protocol.serializer.Serializer;
 import de.rub.nds.sshattacker.state.SshContext;
 
-public class KeyExchangeInitMessage extends Message {
+public class KeyExchangeInitMessage extends Message<KeyExchangeInitMessage> {
 
     private ModifiableByteArray cookie;
     private ModifiableInteger keyExchangeAlgorithmsLength;
@@ -48,7 +54,8 @@ public class KeyExchangeInitMessage extends Message {
     }
 
     public void setKeyExchangeAlgorithmsLength(int keyExchangeAlgorithmsLength) {
-        this.keyExchangeAlgorithmsLength = ModifiableVariableFactory.safelySetValue(this.keyExchangeAlgorithmsLength, keyExchangeAlgorithmsLength);
+        this.keyExchangeAlgorithmsLength = ModifiableVariableFactory.safelySetValue(this.keyExchangeAlgorithmsLength,
+                keyExchangeAlgorithmsLength);
     }
 
     public ModifiableInteger getServerHostKeyAlgorithmsLength() {
@@ -60,7 +67,8 @@ public class KeyExchangeInitMessage extends Message {
     }
 
     public void setServerHostKeyAlgorithmsLength(int serverHostKeyAlgorithmsLength) {
-        this.serverHostKeyAlgorithmsLength = ModifiableVariableFactory.safelySetValue(this.serverHostKeyAlgorithmsLength, serverHostKeyAlgorithmsLength);
+        this.serverHostKeyAlgorithmsLength = ModifiableVariableFactory.safelySetValue(
+                this.serverHostKeyAlgorithmsLength, serverHostKeyAlgorithmsLength);
     }
 
     public ModifiableInteger getEncryptionAlgorithmsClientToServerLength() {
@@ -72,7 +80,8 @@ public class KeyExchangeInitMessage extends Message {
     }
 
     public void setEncryptionAlgorithmsClientToServerLength(int encryptionAlgorithmsClientToServerLength) {
-        this.encryptionAlgorithmsClientToServerLength = ModifiableVariableFactory.safelySetValue(this.encryptionAlgorithmsClientToServerLength, encryptionAlgorithmsClientToServerLength);
+        this.encryptionAlgorithmsClientToServerLength = ModifiableVariableFactory.safelySetValue(
+                this.encryptionAlgorithmsClientToServerLength, encryptionAlgorithmsClientToServerLength);
     }
 
     public ModifiableInteger getEncryptionAlgorithmsServerToClientLength() {
@@ -84,7 +93,8 @@ public class KeyExchangeInitMessage extends Message {
     }
 
     public void setEncryptionAlgorithmsServerToClientLength(int encryptionAlgorithmsServerToClientLength) {
-        this.encryptionAlgorithmsServerToClientLength = ModifiableVariableFactory.safelySetValue(this.encryptionAlgorithmsServerToClientLength, encryptionAlgorithmsServerToClientLength);
+        this.encryptionAlgorithmsServerToClientLength = ModifiableVariableFactory.safelySetValue(
+                this.encryptionAlgorithmsServerToClientLength, encryptionAlgorithmsServerToClientLength);
     }
 
     public ModifiableInteger getMacAlgorithmsClientToServerLength() {
@@ -96,7 +106,8 @@ public class KeyExchangeInitMessage extends Message {
     }
 
     public void setMacAlgorithmsClientToServerLength(int macAlgorithmsClientToServerLength) {
-        this.macAlgorithmsClientToServerLength = ModifiableVariableFactory.safelySetValue(this.macAlgorithmsClientToServerLength, macAlgorithmsClientToServerLength);
+        this.macAlgorithmsClientToServerLength = ModifiableVariableFactory.safelySetValue(
+                this.macAlgorithmsClientToServerLength, macAlgorithmsClientToServerLength);
     }
 
     public ModifiableInteger getMacAlgorithmsServerToClientLength() {
@@ -108,7 +119,8 @@ public class KeyExchangeInitMessage extends Message {
     }
 
     public void setMacAlgorithmsServerToClientLength(int macAlgorithmsServerToClientLength) {
-        this.macAlgorithmsServerToClientLength = ModifiableVariableFactory.safelySetValue(this.macAlgorithmsServerToClientLength, macAlgorithmsServerToClientLength);
+        this.macAlgorithmsServerToClientLength = ModifiableVariableFactory.safelySetValue(
+                this.macAlgorithmsServerToClientLength, macAlgorithmsServerToClientLength);
     }
 
     public ModifiableInteger getCompressionAlgorithmsClientToServerLength() {
@@ -120,7 +132,8 @@ public class KeyExchangeInitMessage extends Message {
     }
 
     public void setCompressionAlgorithmsClientToServerLength(int compressionAlgorithmsClientToServerLength) {
-        this.compressionAlgorithmsClientToServerLength = ModifiableVariableFactory.safelySetValue(this.compressionAlgorithmsClientToServerLength, compressionAlgorithmsClientToServerLength);
+        this.compressionAlgorithmsClientToServerLength = ModifiableVariableFactory.safelySetValue(
+                this.compressionAlgorithmsClientToServerLength, compressionAlgorithmsClientToServerLength);
     }
 
     public ModifiableInteger getCompressionAlgorithmsServerToClientLength() {
@@ -132,7 +145,8 @@ public class KeyExchangeInitMessage extends Message {
     }
 
     public void setCompressionAlgorithmsServerToClientLength(int compressionAlgorithmsServerToClientLength) {
-        this.compressionAlgorithmsServerToClientLength = ModifiableVariableFactory.safelySetValue(this.compressionAlgorithmsServerToClientLength, compressionAlgorithmsServerToClientLength);
+        this.compressionAlgorithmsServerToClientLength = ModifiableVariableFactory.safelySetValue(
+                this.compressionAlgorithmsServerToClientLength, compressionAlgorithmsServerToClientLength);
     }
 
     public ModifiableInteger getLanguagesClientToServerLength() {
@@ -144,7 +158,8 @@ public class KeyExchangeInitMessage extends Message {
     }
 
     public void setLanguagesClientToServerLength(int languagesClientToServerLength) {
-        this.languagesClientToServerLength = ModifiableVariableFactory.safelySetValue(this.languagesClientToServerLength, languagesClientToServerLength);
+        this.languagesClientToServerLength = ModifiableVariableFactory.safelySetValue(
+                this.languagesClientToServerLength, languagesClientToServerLength);
     }
 
     public ModifiableInteger getLanguagesServerToClientLength() {
@@ -156,7 +171,8 @@ public class KeyExchangeInitMessage extends Message {
     }
 
     public void setLanguagesServerToClientLength(int languagesServerToClientLength) {
-        this.languagesServerToClientLength = ModifiableVariableFactory.safelySetValue(this.languagesServerToClientLength, languagesServerToClientLength);
+        this.languagesServerToClientLength = ModifiableVariableFactory.safelySetValue(
+                this.languagesServerToClientLength, languagesServerToClientLength);
     }
 
     public ModifiableByteArray getCookie() {
@@ -180,7 +196,8 @@ public class KeyExchangeInitMessage extends Message {
     }
 
     public void setKeyExchangeAlgorithms(String keyExchangeAlgorithms) {
-        this.keyExchangeAlgorithms = ModifiableVariableFactory.safelySetValue(this.keyExchangeAlgorithms, keyExchangeAlgorithms);
+        this.keyExchangeAlgorithms = ModifiableVariableFactory.safelySetValue(this.keyExchangeAlgorithms,
+                keyExchangeAlgorithms);
     }
 
     public ModifiableString getServerHostKeyAlgorithms() {
@@ -192,7 +209,8 @@ public class KeyExchangeInitMessage extends Message {
     }
 
     public void setServerHostKeyAlgorithms(String serverHostKeyAlgorithms) {
-        this.serverHostKeyAlgorithms = ModifiableVariableFactory.safelySetValue(this.serverHostKeyAlgorithms, serverHostKeyAlgorithms);
+        this.serverHostKeyAlgorithms = ModifiableVariableFactory.safelySetValue(this.serverHostKeyAlgorithms,
+                serverHostKeyAlgorithms);
     }
 
     public ModifiableString getEncryptionAlgorithmsClientToServer() {
@@ -204,7 +222,8 @@ public class KeyExchangeInitMessage extends Message {
     }
 
     public void setEncryptionAlgorithmsClientToServer(String encryptionAlgorithmsClientToServer) {
-        this.encryptionAlgorithmsClientToServer = ModifiableVariableFactory.safelySetValue(this.encryptionAlgorithmsClientToServer, encryptionAlgorithmsClientToServer);
+        this.encryptionAlgorithmsClientToServer = ModifiableVariableFactory.safelySetValue(
+                this.encryptionAlgorithmsClientToServer, encryptionAlgorithmsClientToServer);
     }
 
     public ModifiableString getEncryptionAlgorithmsServerToClient() {
@@ -216,7 +235,8 @@ public class KeyExchangeInitMessage extends Message {
     }
 
     public void setEncryptionAlgorithmsServerToClient(String encryptionAlgorithmsServerToClient) {
-        this.encryptionAlgorithmsServerToClient = ModifiableVariableFactory.safelySetValue(this.encryptionAlgorithmsServerToClient, encryptionAlgorithmsServerToClient);
+        this.encryptionAlgorithmsServerToClient = ModifiableVariableFactory.safelySetValue(
+                this.encryptionAlgorithmsServerToClient, encryptionAlgorithmsServerToClient);
     }
 
     public ModifiableString getMacAlgorithmsClientToServer() {
@@ -228,7 +248,8 @@ public class KeyExchangeInitMessage extends Message {
     }
 
     public void setMacAlgorithmsClientToServer(String macAlgorithmsClientToServer) {
-        this.macAlgorithmsClientToServer = ModifiableVariableFactory.safelySetValue(this.macAlgorithmsClientToServer, macAlgorithmsClientToServer);
+        this.macAlgorithmsClientToServer = ModifiableVariableFactory.safelySetValue(this.macAlgorithmsClientToServer,
+                macAlgorithmsClientToServer);
     }
 
     public ModifiableString getMacAlgorithmsServerToClient() {
@@ -240,7 +261,8 @@ public class KeyExchangeInitMessage extends Message {
     }
 
     public void setMacAlgorithmsServerToClient(String macAlgorithmsServerToClient) {
-        this.macAlgorithmsServerToClient = ModifiableVariableFactory.safelySetValue(this.macAlgorithmsServerToClient, macAlgorithmsServerToClient);
+        this.macAlgorithmsServerToClient = ModifiableVariableFactory.safelySetValue(this.macAlgorithmsServerToClient,
+                macAlgorithmsServerToClient);
     }
 
     public ModifiableString getCompressionAlgorithmsClientToServer() {
@@ -252,7 +274,8 @@ public class KeyExchangeInitMessage extends Message {
     }
 
     public void setCompressionAlgorithmsClientToServer(String compressionAlgorithmsClientToServer) {
-        this.compressionAlgorithmsClientToServer = ModifiableVariableFactory.safelySetValue(this.compressionAlgorithmsClientToServer, compressionAlgorithmsClientToServer);
+        this.compressionAlgorithmsClientToServer = ModifiableVariableFactory.safelySetValue(
+                this.compressionAlgorithmsClientToServer, compressionAlgorithmsClientToServer);
     }
 
     public ModifiableString getCompressionAlgorithmsServerToClient() {
@@ -264,7 +287,8 @@ public class KeyExchangeInitMessage extends Message {
     }
 
     public void setCompressionAlgorithmsServerToClient(String compressionAlgorithmsServerToClient) {
-        this.compressionAlgorithmsServerToClient = ModifiableVariableFactory.safelySetValue(this.compressionAlgorithmsServerToClient, compressionAlgorithmsServerToClient);
+        this.compressionAlgorithmsServerToClient = ModifiableVariableFactory.safelySetValue(
+                this.compressionAlgorithmsServerToClient, compressionAlgorithmsServerToClient);
     }
 
     public ModifiableString getLanguagesClientToServer() {
@@ -276,7 +300,8 @@ public class KeyExchangeInitMessage extends Message {
     }
 
     public void setLanguagesClientToServer(String languagesClientToServer) {
-        this.languagesClientToServer = ModifiableVariableFactory.safelySetValue(this.languagesClientToServer, languagesClientToServer);
+        this.languagesClientToServer = ModifiableVariableFactory.safelySetValue(this.languagesClientToServer,
+                languagesClientToServer);
     }
 
     public ModifiableString getLanguagesServerToClient() {
@@ -288,7 +313,8 @@ public class KeyExchangeInitMessage extends Message {
     }
 
     public void setLanguagesServerToClient(String languagesServerToClient) {
-        this.languagesServerToClient = ModifiableVariableFactory.safelySetValue(this.languagesServerToClient, languagesServerToClient);
+        this.languagesServerToClient = ModifiableVariableFactory.safelySetValue(this.languagesServerToClient,
+                languagesServerToClient);
     }
 
     public ModifiableByte getFirstKeyExchangePacketFollows() {
@@ -300,7 +326,8 @@ public class KeyExchangeInitMessage extends Message {
     }
 
     public void setFirstKeyExchangePacketFollows(byte firstKeyExchangePacketFollows) {
-        this.firstKeyExchangePacketFollows = ModifiableVariableFactory.safelySetValue(this.firstKeyExchangePacketFollows, firstKeyExchangePacketFollows);
+        this.firstKeyExchangePacketFollows = ModifiableVariableFactory.safelySetValue(
+                this.firstKeyExchangePacketFollows, firstKeyExchangePacketFollows);
     }
 
     public ModifiableInteger getReserved() {
@@ -321,17 +348,17 @@ public class KeyExchangeInitMessage extends Message {
     }
 
     @Override
-    public Handler getHandler(SshContext context) {
+    public KeyExchangeInitMessageHandler getHandler(SshContext context) {
         return new KeyExchangeInitMessageHandler(context);
     }
 
     @Override
-    public Serializer getSerializer() {
+    public KeyExchangeInitMessageSerializer getSerializer() {
         return new KeyExchangeInitMessageSerializer(this);
     }
 
     @Override
-    public Preparator getPreparator(SshContext context) {
+    public KeyExchangeInitMessagePreparator getPreparator(SshContext context) {
         return new KeyExchangeInitMessagePreparator(context, this);
     }
 }

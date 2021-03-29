@@ -1,3 +1,12 @@
+/**
+ * SSH-Attacker - A Modular Penetration Testing Framework for SSH
+ *
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
+ *
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
+ */
 package de.rub.nds.sshattacker.workflow.action;
 
 import de.rub.nds.sshattacker.exceptions.ConfigurationException;
@@ -60,14 +69,10 @@ public abstract class ConnectionBoundAction extends SshAction {
         return getAllAliases().containsAll(aliases);
     }
 
-    ;
-
     @Override
     public boolean containsAlias(String alias) {
         return getAllAliases().contains(alias);
     }
-
-    ;
 
     @Override
     public void assertAliasesSetProperly() throws ConfigurationException {

@@ -1,3 +1,12 @@
+/**
+ * SSH-Attacker - A Modular Penetration Testing Framework for SSH
+ *
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
+ *
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
+ */
 package de.rub.nds.sshattacker.protocol.serializer;
 
 import de.rub.nds.sshattacker.protocol.message.EcdhKeyExchangeReplyMessage;
@@ -39,7 +48,9 @@ public class ECDHKeyExchangeReplyMessageSerializerTest {
     private final int signatureLength;
     private final byte[] signature;
 
-    public ECDHKeyExchangeReplyMessageSerializerTest(byte[] bytes, int hostKeyLength, int hostKeyTypeLength, String hostKeyType, int eccCurveIdentifierLength, String eccCurveIdentifier, int eccHostKeyLength, byte[] eccHostKey, int publicKeyLength, byte[] publicKey, int signatureLength, byte[] signature) {
+    public ECDHKeyExchangeReplyMessageSerializerTest(byte[] bytes, int hostKeyLength, int hostKeyTypeLength,
+            String hostKeyType, int eccCurveIdentifierLength, String eccCurveIdentifier, int eccHostKeyLength,
+            byte[] eccHostKey, int publicKeyLength, byte[] publicKey, int signatureLength, byte[] signature) {
         this.bytes = bytes;
         this.hostKeyLength = hostKeyLength;
         this.hostKeyTypeLength = hostKeyTypeLength;

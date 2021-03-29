@@ -1,3 +1,12 @@
+/**
+ * SSH-Attacker - A Modular Penetration Testing Framework for SSH
+ *
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
+ *
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
+ */
 package de.rub.nds.sshattacker.workflow;
 
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
@@ -45,11 +54,12 @@ public class WorkflowTrace implements Serializable {
      * arises because the classes are configured for nice JAXB output, and not
      * for copying/storing full objects.
      *
-     * @param orig the original WorkflowTrace object to copy
+     * @param orig
+     *            the original WorkflowTrace object to copy
      * @return a copy of the original WorkflowTrace
      */
     public static WorkflowTrace copy(WorkflowTrace orig) {
-        WorkflowTrace copy = null;
+        WorkflowTrace copy;
 
         List<SshAction> origActions = orig.getSshActions();
 
@@ -69,18 +79,16 @@ public class WorkflowTrace implements Serializable {
         return copy;
     }
 
-    @XmlElements(value = {
-        @XmlElement(type = AliasedConnection.class, name = "AliasedConnection"),
-        @XmlElement(type = InboundConnection.class, name = "InboundConnection"),
-        @XmlElement(type = OutboundConnection.class, name = "OutboundConnection")})
+    @XmlElements(value = { @XmlElement(type = AliasedConnection.class, name = "AliasedConnection"),
+            @XmlElement(type = InboundConnection.class, name = "InboundConnection"),
+            @XmlElement(type = OutboundConnection.class, name = "OutboundConnection") })
     private List<AliasedConnection> connections = new ArrayList<>();
 
     @HoldsModifiableVariable
-    @XmlElements(value = {
-        @XmlElement(type = SendAction.class, name = "Send"),
-        @XmlElement(type = ReceiveAction.class, name = "Receive"),
-        @XmlElement(type = GenericReceiveAction.class, name = "GenericReceive"),
-        @XmlElement(type = ActivateEncryptionAction.class, name = "ActivateEncryption")})
+    @XmlElements(value = { @XmlElement(type = SendAction.class, name = "Send"),
+            @XmlElement(type = ReceiveAction.class, name = "Receive"),
+            @XmlElement(type = GenericReceiveAction.class, name = "GenericReceive"),
+            @XmlElement(type = ActivateEncryptionAction.class, name = "ActivateEncryption") })
     private List<SshAction> sshActions = new ArrayList<>();
 
     private String name = null;
@@ -160,7 +168,8 @@ public class WorkflowTrace implements Serializable {
      * doing. Unless you are manually configuring workflow traces (say for MiTM
      * or unit tests), there shouldn't be any need to call this method.
      *
-     * @param connections new connection to use with this workflow trace
+     * @param connections
+     *            new connection to use with this workflow trace
      */
     public void setConnections(List<AliasedConnection> connections) {
         dirty = true;
@@ -172,7 +181,8 @@ public class WorkflowTrace implements Serializable {
      * doing. Unless you are manually configuring workflow traces (say for MiTM
      * or unit tests), there shouldn't be any need to call this method.
      *
-     * @param connection new connection to add to the workflow trace
+     * @param connection
+     *            new connection to add to the workflow trace
      */
     public void addConnection(AliasedConnection connection) {
         dirty = true;
@@ -213,7 +223,7 @@ public class WorkflowTrace implements Serializable {
      * Get the last SshAction of the workflow trace.
      *
      * @return the last SshAction of the workflow trace. Null if no actions are
-     * defined
+     *         defined
      */
     public SshAction getLastAction() {
         int size = sshActions.size();
@@ -227,7 +237,7 @@ public class WorkflowTrace implements Serializable {
      * Get the last MessageAction of the workflow trace.
      *
      * @return the last MessageAction of the workflow trace. Null if no message
-     * actions are defined
+     *         actions are defined
      */
     public MessageAction getLastMessageAction() {
         for (int i = sshActions.size() - 1; i >= 0; i--) {
@@ -242,7 +252,7 @@ public class WorkflowTrace implements Serializable {
      * Get the last SendingAction of the workflow trace.
      *
      * @return the last SendingAction of the workflow trace. Null if no sending
-     * actions are defined
+     *         actions are defined
      */
     public SendingAction getLastSendingAction() {
         for (int i = sshActions.size() - 1; i >= 0; i--) {
@@ -257,7 +267,7 @@ public class WorkflowTrace implements Serializable {
      * Get the last ReceivingActionAction of the workflow trace.
      *
      * @return the last ReceivingActionAction of the workflow trace. Null if no
-     * receiving actions are defined
+     *         receiving actions are defined
      */
     public ReceivingAction getLastReceivingAction() {
         for (int i = sshActions.size() - 1; i >= 0; i--) {

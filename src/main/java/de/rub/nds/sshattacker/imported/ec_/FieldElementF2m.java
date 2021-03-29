@@ -1,7 +1,8 @@
 /**
- * TLS-Attacker - A Modular Penetration Testing Framework for TLS
+ * SSH-Attacker - A Modular Penetration Testing Framework for SSH
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -22,9 +23,12 @@ public class FieldElementF2m extends FieldElement {
     /**
      * Instantiates an element of a galois field F{2^m}.
      *
-     * @param data The binary polynomial representing the element.<br />
-     * The degree must be smaller than the reduction polynomial's degree.
-     * @param modulus The binary reduction polynomial defining the field.
+     * @param data
+     *            The binary polynomial representing the element.<br />
+     *            The degree must be smaller than the reduction polynomial's
+     *            degree.
+     * @param modulus
+     *            The binary reduction polynomial defining the field.
      */
     public FieldElementF2m(BigInteger data, BigInteger modulus) {
         super(data, modulus);
@@ -110,12 +114,13 @@ public class FieldElementF2m extends FieldElement {
 
     /**
      * Polynomial division f/p.<br />
-     * Returns an BigInteger array representing the polynomials q and r with:
-     * <br />
+     * Returns an BigInteger array representing the polynomials q and r with: <br />
      * q * p + r = f.
      *
-     * @param f A BigInteger representing a binary polynomial.
-     * @param p A BigInteger representing a binary polynomial.
+     * @param f
+     *            A BigInteger representing a binary polynomial.
+     * @param p
+     *            A BigInteger representing a binary polynomial.
      *
      */
     private BigInteger[] polynomialDivision(BigInteger f, BigInteger p) {
@@ -134,14 +139,14 @@ public class FieldElementF2m extends FieldElement {
 
         // q is the quotient.
         // f is the remainder.
-        BigInteger[] result = {q, f};
-        return result;
+        return new BigInteger[] { q, f };
     }
 
     /**
      * Returns f mod this.getModulus().
      *
-     * @param f A BigInteger representing a binary polynomial.
+     * @param f
+     *            A BigInteger representing a binary polynomial.
      */
     private BigInteger reduce(BigInteger f) {
         return this.polynomialDivision(f, this.getModulus())[1];

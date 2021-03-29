@@ -1,3 +1,12 @@
+/**
+ * SSH-Attacker - A Modular Penetration Testing Framework for SSH
+ *
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
+ *
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
+ */
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -9,16 +18,13 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.sshattacker.protocol.handler.ClientInitMessageHandler;
-import de.rub.nds.sshattacker.protocol.handler.Handler;
 import de.rub.nds.sshattacker.protocol.preparator.ClientInitMessagePreparator;
-import de.rub.nds.sshattacker.protocol.preparator.Preparator;
 import de.rub.nds.sshattacker.protocol.serializer.ClientInitMessageSerializer;
-import de.rub.nds.sshattacker.protocol.serializer.Serializer;
 import de.rub.nds.sshattacker.state.SshContext;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
-public class ClientInitMessage extends Message {
+public class ClientInitMessage extends Message<ClientInitMessage> {
 
     /**
      * version identifier + optional comment
@@ -61,16 +67,18 @@ public class ClientInitMessage extends Message {
         return "ClientInitMessage";
     }
 
-    public Handler getHandler(SshContext context) {
+    @Override
+    public ClientInitMessageHandler getHandler(SshContext context) {
         return new ClientInitMessageHandler(context);
     }
 
-    public Serializer getSerializer() {
+    @Override
+    public ClientInitMessageSerializer getSerializer() {
         return new ClientInitMessageSerializer(this);
     }
 
     @Override
-    public Preparator getPreparator(SshContext context) {
+    public ClientInitMessagePreparator getPreparator(SshContext context) {
         return new ClientInitMessagePreparator(context, this);
     }
 }

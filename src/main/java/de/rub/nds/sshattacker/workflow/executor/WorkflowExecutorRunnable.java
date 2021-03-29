@@ -1,7 +1,8 @@
 /**
- * TLS-Attacker - A Modular Penetration Testing Framework for TLS
+ * SSH-Attacker - A Modular Penetration Testing Framework for SSH
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -58,7 +59,7 @@ public class WorkflowExecutorRunnable implements Runnable {
         AliasedConnection serverCon = serverCtx.getConnection();
         serverCon.setHostname(socket.getInetAddress().getHostAddress());
         serverCon.setPort(socket.getLocalPort());
-        long timeout = new Long(serverCon.getTimeout());
+        long timeout = Long.valueOf(serverCon.getTimeout());
         ServerTcpTransportHandler th;
         try {
             th = new ServerTcpTransportHandler(timeout, socket);

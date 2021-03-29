@@ -1,3 +1,12 @@
+/**
+ * SSH-Attacker - A Modular Penetration Testing Framework for SSH
+ *
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
+ *
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
+ */
 package de.rub.nds.sshattacker.protocol.parser;
 
 import de.rub.nds.sshattacker.exceptions.ParserException;
@@ -5,7 +14,7 @@ import de.rub.nds.sshattacker.constants.MessageIDConstant;
 import de.rub.nds.sshattacker.protocol.message.Message;
 import org.apache.logging.log4j.LogManager;
 
-public abstract class MessageParser<T extends Message> extends Parser<T> {
+public abstract class MessageParser<T extends Message<T>> extends Parser<T> {
 
     private static final org.apache.logging.log4j.Logger LOGGER = LogManager.getLogger();
 
@@ -29,7 +38,7 @@ public abstract class MessageParser<T extends Message> extends Parser<T> {
         return msg;
     }
 
-    public static Message delegateParsing(byte[] raw) {
+    public static Message<?> delegateParsing(byte[] raw) {
         try {
             switch (MessageIDConstant.fromId(raw[0])) {
                 case SSH_MSG_KEXINIT:
@@ -88,7 +97,8 @@ public abstract class MessageParser<T extends Message> extends Parser<T> {
                     return new UserAuthSuccessMessageParser(0, raw).parse();
 
                 default:
-                    LOGGER.debug("Received unimplemented Message " + MessageIDConstant.getNameByID(raw[0]) + " (" + raw[0] + ")");
+                    LOGGER.debug("Received unimplemented Message " + MessageIDConstant.getNameByID(raw[0]) + " ("
+                            + raw[0] + ")");
                     return new UnknownMessageParser(0, raw).parse();
             }
         } catch (ParserException e) {

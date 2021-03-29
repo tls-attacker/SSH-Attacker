@@ -1,3 +1,12 @@
+/**
+ * SSH-Attacker - A Modular Penetration Testing Framework for SSH
+ *
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
+ *
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
+ */
 package de.rub.nds.sshattacker.protocol.message;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
@@ -6,15 +15,12 @@ import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.sshattacker.protocol.handler.EcdhKeyExchangeReplyMessageHandler;
-import de.rub.nds.sshattacker.protocol.handler.Handler;
 import de.rub.nds.sshattacker.protocol.preparator.EcdhKeyExchangeReplyMessagePreparator;
-import de.rub.nds.sshattacker.protocol.preparator.Preparator;
 import de.rub.nds.sshattacker.protocol.serializer.EcdhKeyExchangeReplyMessageSerializer;
-import de.rub.nds.sshattacker.protocol.serializer.Serializer;
 import de.rub.nds.sshattacker.state.SshContext;
 import java.math.BigInteger;
 
-public class EcdhKeyExchangeReplyMessage extends Message {
+public class EcdhKeyExchangeReplyMessage extends Message<EcdhKeyExchangeReplyMessage> {
 
     private ModifiableInteger hostKeyLength;
 
@@ -83,7 +89,8 @@ public class EcdhKeyExchangeReplyMessage extends Message {
     }
 
     public void setExponentLength(int exponentLength) {
-        this.hostKeyRsaExponentLength = ModifiableVariableFactory.safelySetValue(this.hostKeyRsaExponentLength, exponentLength);
+        this.hostKeyRsaExponentLength = ModifiableVariableFactory.safelySetValue(this.hostKeyRsaExponentLength,
+                exponentLength);
     }
 
     public ModifiableBigInteger getHostKeyRsaExponent() {
@@ -107,7 +114,8 @@ public class EcdhKeyExchangeReplyMessage extends Message {
     }
 
     public void setModulusLength(int modulusLength) {
-        this.hostKeyRsaModulusLength = ModifiableVariableFactory.safelySetValue(this.hostKeyRsaModulusLength, modulusLength);
+        this.hostKeyRsaModulusLength = ModifiableVariableFactory.safelySetValue(this.hostKeyRsaModulusLength,
+                modulusLength);
     }
 
     public ModifiableBigInteger getHostKeyRsaModulus() {
@@ -131,11 +139,13 @@ public class EcdhKeyExchangeReplyMessage extends Message {
     }
 
     public void setEphemeralPublicKeyLength(int ephemeralPublicKeyLength) {
-        this.ephemeralPublicKeyLength = ModifiableVariableFactory.safelySetValue(this.ephemeralPublicKeyLength, ephemeralPublicKeyLength);
+        this.ephemeralPublicKeyLength = ModifiableVariableFactory.safelySetValue(this.ephemeralPublicKeyLength,
+                ephemeralPublicKeyLength);
     }
 
     public void setPublicKeyLength(int publicKeyLength) {
-        this.ephemeralPublicKeyLength = ModifiableVariableFactory.safelySetValue(this.ephemeralPublicKeyLength, publicKeyLength);
+        this.ephemeralPublicKeyLength = ModifiableVariableFactory.safelySetValue(this.ephemeralPublicKeyLength,
+                publicKeyLength);
     }
 
     public ModifiableByteArray getEphemeralPublicKey() {
@@ -211,7 +221,8 @@ public class EcdhKeyExchangeReplyMessage extends Message {
     }
 
     public void setEccCurveIdentifierLength(int eccCurveIdentifierLength) {
-        this.eccCurveIdentifierLength = ModifiableVariableFactory.safelySetValue(this.eccCurveIdentifierLength, eccCurveIdentifierLength);
+        this.eccCurveIdentifierLength = ModifiableVariableFactory.safelySetValue(this.eccCurveIdentifierLength,
+                eccCurveIdentifierLength);
     }
 
     public ModifiableString getEccCurveIdentifier() {
@@ -232,17 +243,17 @@ public class EcdhKeyExchangeReplyMessage extends Message {
     }
 
     @Override
-    public Handler getHandler(SshContext context) {
+    public EcdhKeyExchangeReplyMessageHandler getHandler(SshContext context) {
         return new EcdhKeyExchangeReplyMessageHandler(context);
     }
 
     @Override
-    public Serializer getSerializer() {
+    public EcdhKeyExchangeReplyMessageSerializer getSerializer() {
         return new EcdhKeyExchangeReplyMessageSerializer(this);
     }
 
     @Override
-    public Preparator getPreparator(SshContext context) {
+    public EcdhKeyExchangeReplyMessagePreparator getPreparator(SshContext context) {
         return new EcdhKeyExchangeReplyMessagePreparator(context, this);
     }
 }

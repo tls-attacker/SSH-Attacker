@@ -1,16 +1,22 @@
+/**
+ * SSH-Attacker - A Modular Penetration Testing Framework for SSH
+ *
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
+ *
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
+ */
 package de.rub.nds.sshattacker.protocol.message;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
-import de.rub.nds.sshattacker.protocol.handler.Handler;
 import de.rub.nds.sshattacker.protocol.handler.UnimplementedMessageHandler;
-import de.rub.nds.sshattacker.protocol.preparator.Preparator;
 import de.rub.nds.sshattacker.protocol.preparator.UnimplementedMessagePreparator;
-import de.rub.nds.sshattacker.protocol.serializer.Serializer;
 import de.rub.nds.sshattacker.protocol.serializer.UnimplementedMessageSerializer;
 import de.rub.nds.sshattacker.state.SshContext;
 
-public class UnimplementedMessage extends Message {
+public class UnimplementedMessage extends Message<UnimplementedMessage> {
 
     private ModifiableInteger sequenceNumber;
 
@@ -27,17 +33,17 @@ public class UnimplementedMessage extends Message {
     }
 
     @Override
-    public Handler getHandler(SshContext context) {
+    public UnimplementedMessageHandler getHandler(SshContext context) {
         return new UnimplementedMessageHandler(context);
     }
 
     @Override
-    public Serializer getSerializer() {
+    public UnimplementedMessageSerializer getSerializer() {
         return new UnimplementedMessageSerializer(this);
     }
 
     @Override
-    public Preparator getPreparator(SshContext context) {
+    public UnimplementedMessagePreparator getPreparator(SshContext context) {
         return new UnimplementedMessagePreparator(context, this);
     }
 }

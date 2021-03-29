@@ -1,3 +1,12 @@
+/**
+ * SSH-Attacker - A Modular Penetration Testing Framework for SSH
+ *
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
+ *
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
+ */
 package executing;
 
 import de.rub.nds.sshattacker.constants.RunningModeType;
@@ -18,7 +27,8 @@ public class NetcatWorkflowFactory {
     public static void main(String[] args) throws Exception {
 
         State state = new State();
-        WorkflowTrace trace = new WorkflowConfigurationFactory(state.getConfig()).createWorkflowTrace(WorkflowTraceType.FULL, RunningModeType.SERVER);
+        WorkflowTrace trace = new WorkflowConfigurationFactory(state.getConfig()).createWorkflowTrace(
+                WorkflowTraceType.FULL, RunningModeType.SERVER);
 
         state.setWorkflowTrace(trace);
         DefaultWorkflowExecutor executor = new DefaultWorkflowExecutor(state);

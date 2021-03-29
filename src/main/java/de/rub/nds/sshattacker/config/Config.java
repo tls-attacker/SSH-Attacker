@@ -1,3 +1,12 @@
+/**
+ * SSH-Attacker - A Modular Penetration Testing Framework for SSH
+ *
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
+ *
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
+ */
 package de.rub.nds.sshattacker.config;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -36,36 +45,36 @@ public class Config implements Serializable {
     static {
         DEFAULT_CONFIG_CACHE = new ConfigCache(createConfig());
     }
-    private String clientVersion;
-    private String clientComment;
-    private String serverVersion;
-    private String serverComment;
-    private byte[] clientCookie;
-    private byte[] serverCookie;
-    private List<KeyExchangeAlgorithm> clientSupportedKeyExchangeAlgorithms;
-    private List<KeyExchangeAlgorithm> serverSupportedKeyExchangeAlgorithms;
-    private List<PublicKeyAuthenticationAlgorithm> clientSupportedHostKeyAlgorithms;
-    private List<PublicKeyAuthenticationAlgorithm> serverSupportedHostKeyAlgorithms;
-    private List<EncryptionAlgorithm> clientSupportedCipherAlgorithmsClientToServer;
-    private List<EncryptionAlgorithm> clientSupportedCipherAlgorithmsServerToClient;
-    private List<EncryptionAlgorithm> serverSupportedCipherAlgorithmsServerToClient;
-    private List<EncryptionAlgorithm> serverSupportedCipherAlgorithmsClientToServer;
-    private List<MacAlgorithm> clientSupportedMacAlgorithmsClientToServer;
-    private List<MacAlgorithm> clientSupportedMacAlgorithmsServerToClient;
-    private List<MacAlgorithm> serverSupportedMacAlgorithmsServerToClient;
-    private List<MacAlgorithm> serverSupportedMacAlgorithmsClientToServer;
-    private List<CompressionAlgorithm> clientSupportedCompressionAlgorithmsClientToServer;
-    private List<CompressionAlgorithm> clientSupportedCompressionAlgorithmsServerToClient;
-    private List<CompressionAlgorithm> serverSupportedCompressionAlgorithmsServerToClient;
-    private List<CompressionAlgorithm> serverSupportedCompressionAlgorithmsClientToServer;
-    private List<Language> clientSupportedLanguagesClientToServer;
-    private List<Language> clientSupportedLanguagesServerToClient;
-    private List<Language> serverSupportedLanguagesServerToClient;
-    private List<Language> serverSupportedLanguagesClientToServer;
-    private byte clientFirstKeyExchangePacketFollows;
-    private byte serverFirstKeyExchangePacketFollows;
-    private int clientReserved;
-    private int serverReserved;
+    private final String clientVersion;
+    private final String clientComment;
+    private final String serverVersion;
+    private final String serverComment;
+    private final byte[] clientCookie;
+    private final byte[] serverCookie;
+    private final List<KeyExchangeAlgorithm> clientSupportedKeyExchangeAlgorithms;
+    private final List<KeyExchangeAlgorithm> serverSupportedKeyExchangeAlgorithms;
+    private final List<PublicKeyAuthenticationAlgorithm> clientSupportedHostKeyAlgorithms;
+    private final List<PublicKeyAuthenticationAlgorithm> serverSupportedHostKeyAlgorithms;
+    private final List<EncryptionAlgorithm> clientSupportedCipherAlgorithmsClientToServer;
+    private final List<EncryptionAlgorithm> clientSupportedCipherAlgorithmsServerToClient;
+    private final List<EncryptionAlgorithm> serverSupportedCipherAlgorithmsServerToClient;
+    private final List<EncryptionAlgorithm> serverSupportedCipherAlgorithmsClientToServer;
+    private final List<MacAlgorithm> clientSupportedMacAlgorithmsClientToServer;
+    private final List<MacAlgorithm> clientSupportedMacAlgorithmsServerToClient;
+    private final List<MacAlgorithm> serverSupportedMacAlgorithmsServerToClient;
+    private final List<MacAlgorithm> serverSupportedMacAlgorithmsClientToServer;
+    private final List<CompressionAlgorithm> clientSupportedCompressionAlgorithmsClientToServer;
+    private final List<CompressionAlgorithm> clientSupportedCompressionAlgorithmsServerToClient;
+    private final List<CompressionAlgorithm> serverSupportedCompressionAlgorithmsServerToClient;
+    private final List<CompressionAlgorithm> serverSupportedCompressionAlgorithmsClientToServer;
+    private final List<Language> clientSupportedLanguagesClientToServer;
+    private final List<Language> clientSupportedLanguagesServerToClient;
+    private final List<Language> serverSupportedLanguagesServerToClient;
+    private final List<Language> serverSupportedLanguagesClientToServer;
+    private final byte clientFirstKeyExchangePacketFollows;
+    private final byte serverFirstKeyExchangePacketFollows;
+    private final int clientReserved;
+    private final int serverReserved;
 
     private byte[] clientEcdhPublicKey;
     private byte[] serverEcdhPublicKey;
@@ -98,13 +107,13 @@ public class Config implements Serializable {
 
     private String workflowInput = null;
 
-    private WorkflowTraceType workflowTraceType = null;
+    private WorkflowTraceType workflowTraceType;
 
     private List<FilterType> outputFilters;
 
     private String workflowOutput = null;
 
-    private Boolean applyFiltersInPlace = true;
+    private Boolean applyFiltersInPlace;
 
     private Boolean workflowExecutorShouldOpen = true;
 
@@ -129,6 +138,7 @@ public class Config implements Serializable {
         serverVersion = clientVersion;
         serverComment = clientComment;
         clientCookie = ArrayConverter.hexStringToByteArray("00000000000000000000000000000000");
+        serverCookie = ArrayConverter.hexStringToByteArray("00000000000000000000000000000000");
 
         clientSupportedKeyExchangeAlgorithms = new LinkedList<>();
         clientSupportedKeyExchangeAlgorithms.add(KeyExchangeAlgorithm.ECDH_SHA2_NISTP256);
@@ -156,10 +166,13 @@ public class Config implements Serializable {
 
         clientSupportedCompressionAlgorithmsClientToServer = new LinkedList<>();
         clientSupportedCompressionAlgorithmsClientToServer.add(CompressionAlgorithm.NONE);
-        clientSupportedCompressionAlgorithmsServerToClient = new LinkedList<>(clientSupportedCompressionAlgorithmsClientToServer);
+        clientSupportedCompressionAlgorithmsServerToClient = new LinkedList<>(
+                clientSupportedCompressionAlgorithmsClientToServer);
 
-        serverSupportedCompressionAlgorithmsServerToClient = new LinkedList<>(clientSupportedCompressionAlgorithmsClientToServer);
-        serverSupportedCompressionAlgorithmsClientToServer = new LinkedList<>(clientSupportedCompressionAlgorithmsClientToServer);
+        serverSupportedCompressionAlgorithmsServerToClient = new LinkedList<>(
+                clientSupportedCompressionAlgorithmsClientToServer);
+        serverSupportedCompressionAlgorithmsClientToServer = new LinkedList<>(
+                clientSupportedCompressionAlgorithmsClientToServer);
 
         clientSupportedLanguagesClientToServer = new LinkedList<>();
         clientSupportedLanguagesClientToServer.add(Language.NONE);

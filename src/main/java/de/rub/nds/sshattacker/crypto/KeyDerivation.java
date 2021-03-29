@@ -1,3 +1,12 @@
+/**
+ * SSH-Attacker - A Modular Penetration Testing Framework for SSH
+ *
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
+ *
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
+ */
 package de.rub.nds.sshattacker.crypto;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -48,10 +57,9 @@ public class KeyDerivation {
         return getMessageDigestInstance(hashAlgorithm).digest(input);
     }
 
-    public static byte[] computeExchangeHash(String clientVersion,
-            String serverVersion, byte[] clientInitMessage,
-            byte[] serverInitMessage, byte[] hostKey, byte[] clientKeyShare,
-            byte[] serverKeyShare, byte[] sharedSecret, String hashFunction) {
+    public static byte[] computeExchangeHash(String clientVersion, String serverVersion, byte[] clientInitMessage,
+            byte[] serverInitMessage, byte[] hostKey, byte[] clientKeyShare, byte[] serverKeyShare,
+            byte[] sharedSecret, String hashFunction) {
         byte[] clientVersionConverted = Converter.stringToLengthPrefixedBinaryString(clientVersion);
         byte[] serverVersionConverted = Converter.stringToLengthPrefixedBinaryString(serverVersion);
         byte[] clientInitMessageString = Converter.bytesToLengthPrefixedBinaryString(clientInitMessage);
@@ -60,7 +68,9 @@ public class KeyDerivation {
         byte[] clientKeyShareString = Converter.bytesToLengthPrefixedBinaryString(clientKeyShare);
         byte[] serverKeyShareString = Converter.bytesToLengthPrefixedBinaryString(serverKeyShare);
         byte[] keyShareString = Converter.byteArrayToMpint(sharedSecret);
-        byte[] input = ArrayConverter.concatenate(clientVersionConverted, serverVersionConverted, clientInitMessageString, serverInitMessageString, hostKeyString, clientKeyShareString, serverKeyShareString, keyShareString);
+        byte[] input = ArrayConverter.concatenate(clientVersionConverted, serverVersionConverted,
+                clientInitMessageString, serverInitMessageString, hostKeyString, clientKeyShareString,
+                serverKeyShareString, keyShareString);
 
         return getMessageDigestInstance(hashFunction).digest(input);
     }
@@ -71,9 +81,6 @@ public class KeyDerivation {
             md = MessageDigest.getInstance(hashFunction);
 
         } catch (NoSuchAlgorithmException e) {
-            if (hashFunction == null) {
-                hashFunction = "null";
-            }
             if (hashFunction.equals("")) {
                 hashFunction = "empty";
             }
@@ -82,13 +89,14 @@ public class KeyDerivation {
         return md;
     }
 
-    public static byte[] deriveKey(byte[] sharedKey, byte[] exchangeHash, byte use, byte[] sessionID, int outputLen, String hashFunction) {
+    public static byte[] deriveKey(byte[] sharedKey, byte[] exchangeHash, byte use, byte[] sessionID, int outputLen,
+            String hashFunction) {
         byte[] sharedKeyMpint = Converter.byteArrayToMpint(sharedKey);
         try {
             MessageDigest md = MessageDigest.getInstance(hashFunction);
             ByteArrayOutputStream outStream = new ByteArrayOutputStream();
 
-            outStream.write(md.digest(Arrays.concatenate(sharedKeyMpint, exchangeHash, new byte[]{use}, sessionID)));
+            outStream.write(md.digest(Arrays.concatenate(sharedKeyMpint, exchangeHash, new byte[] { use }, sessionID)));
 
             while (outStream.size() < outputLen) {
                 outStream.write(md.digest(Arrays.concatenate(sharedKeyMpint, exchangeHash, outStream.toByteArray())));

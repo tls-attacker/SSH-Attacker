@@ -1,3 +1,12 @@
+/**
+ * SSH-Attacker - A Modular Penetration Testing Framework for SSH
+ *
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
+ *
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
+ */
 package de.rub.nds.sshattacker.constants;
 
 import java.util.Map;
@@ -16,10 +25,10 @@ public enum MessageIDConstant {
     SSH_MSG_KEX_ECDH_REPLY((byte) 31),
     // these collide with the current default of ECDH in the hashmap so they are
     // disabled
-    //    SSH_MSG_KEXDH_INIT((byte) 30),
-    //    SSH_MSG_KEXDH_REPLY((byte) 31),
-    //    SSH_MSG_ECMQV_INIT((byte) 30),
-    //    SSH_MSG_ECMQV_REPLY((byte) 31),
+    // SSH_MSG_KEXDH_INIT((byte) 30),
+    // SSH_MSG_KEXDH_REPLY((byte) 31),
+    // SSH_MSG_ECMQV_INIT((byte) 30),
+    // SSH_MSG_ECMQV_REPLY((byte) 31),
     SSH_MSG_USERAUTH_REQUEST((byte) 50),
     SSH_MSG_USERAUTH_FAILURE((byte) 51),
     SSH_MSG_USERAUTH_SUCCESS((byte) 52),
@@ -51,7 +60,7 @@ public enum MessageIDConstant {
         }
     }
 
-    private MessageIDConstant(byte id) {
+    MessageIDConstant(byte id) {
         this.id = id;
     }
 

@@ -1,17 +1,23 @@
+/**
+ * SSH-Attacker - A Modular Penetration Testing Framework for SSH
+ *
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
+ *
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
+ */
 package de.rub.nds.sshattacker.protocol.message;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.sshattacker.protocol.handler.ChannelExtendedDataMessageHandler;
-import de.rub.nds.sshattacker.protocol.handler.Handler;
 import de.rub.nds.sshattacker.protocol.preparator.ChannelExtendedDataMessagePreparator;
-import de.rub.nds.sshattacker.protocol.preparator.Preparator;
 import de.rub.nds.sshattacker.protocol.serializer.ChannelExtendedDataMessageSerializer;
-import de.rub.nds.sshattacker.protocol.serializer.Serializer;
 import de.rub.nds.sshattacker.state.SshContext;
 
-public class ChannelExtendedDataMessage extends Message {
+public class ChannelExtendedDataMessage extends Message<ChannelExtendedDataMessage> {
 
     private ModifiableInteger recipientChannel;
     private ModifiableInteger dataTypeCode;
@@ -54,17 +60,17 @@ public class ChannelExtendedDataMessage extends Message {
     }
 
     @Override
-    public Handler getHandler(SshContext context) {
+    public ChannelExtendedDataMessageHandler getHandler(SshContext context) {
         return new ChannelExtendedDataMessageHandler(context);
     }
 
     @Override
-    public Serializer getSerializer() {
+    public ChannelExtendedDataMessageSerializer getSerializer() {
         return new ChannelExtendedDataMessageSerializer(this);
     }
 
     @Override
-    public Preparator getPreparator(SshContext context) {
+    public ChannelExtendedDataMessagePreparator getPreparator(SshContext context) {
         return new ChannelExtendedDataMessagePreparator(context, this);
     }
 

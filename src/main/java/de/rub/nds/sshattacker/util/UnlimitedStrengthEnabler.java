@@ -1,7 +1,8 @@
 /**
- * TLS-Attacker - A Modular Penetration Testing Framework for TLS
+ * SSH-Attacker - A Modular Penetration Testing Framework for SSH
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -23,7 +24,7 @@ public class UnlimitedStrengthEnabler {
     public static void enable() {
         try {
             if (Cipher.getMaxAllowedKeyLength("AES") < 256) {
-                Class jceSecurity = Class.forName("javax.crypto.JceSecurity");
+                Class<?> jceSecurity = Class.forName("javax.crypto.JceSecurity");
                 Field isRestricted = jceSecurity.getDeclaredField("isRestricted");
                 if (Modifier.isFinal(isRestricted.getModifiers())) {
                     Field modifiers = Field.class.getDeclaredField("modifiers");

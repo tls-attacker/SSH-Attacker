@@ -1,7 +1,8 @@
 /**
- * TLS-Attacker - A Modular Penetration Testing Framework for TLS
+ * SSH-Attacker - A Modular Penetration Testing Framework for SSH
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -30,11 +31,11 @@ public class GenericReceiveAction extends MessageAction implements ReceivingActi
         super();
     }
 
-    public GenericReceiveAction(List<Message> messages) {
+    public GenericReceiveAction(List<Message<?>> messages) {
         super(messages);
     }
 
-    public GenericReceiveAction(Message... messages) {
+    public GenericReceiveAction(Message<?>... messages) {
         this(new ArrayList<>(Arrays.asList(messages)));
     }
 
@@ -42,11 +43,11 @@ public class GenericReceiveAction extends MessageAction implements ReceivingActi
         super(connectionAlias);
     }
 
-    public GenericReceiveAction(String connectionAlias, List<Message> messages) {
+    public GenericReceiveAction(String connectionAlias, List<Message<?>> messages) {
         super(connectionAlias, messages);
     }
 
-    public GenericReceiveAction(String connectionAlias, Message... messages) {
+    public GenericReceiveAction(String connectionAlias, Message<?>... messages) {
         super(connectionAlias, new ArrayList<>(Arrays.asList(messages)));
     }
 
@@ -90,7 +91,7 @@ public class GenericReceiveAction extends MessageAction implements ReceivingActi
     }
 
     @Override
-    public List<Message> getReceivedMessages() {
+    public List<Message<?>> getReceivedMessages() {
         return messages;
     }
 

@@ -1,3 +1,12 @@
+/**
+ * SSH-Attacker - A Modular Penetration Testing Framework for SSH
+ *
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
+ *
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
+ */
 package de.rub.nds.sshattacker.connection;
 
 import de.rub.nds.sshattacker.exceptions.ConfigurationException;
@@ -12,15 +21,15 @@ import java.util.Set;
  */
 public interface Aliasable {
 
-    public abstract void assertAliasesSetProperly() throws ConfigurationException;
+    void assertAliasesSetProperly() throws ConfigurationException;
 
-    public abstract String aliasesToString();
+    String aliasesToString();
 
-    public abstract String getFirstAlias();
+    String getFirstAlias();
 
-    public abstract Set<String> getAllAliases();
+    Set<String> getAllAliases();
 
-    public abstract boolean containsAlias(String alias);
+    boolean containsAlias(String alias);
 
-    public abstract boolean containsAllAliases(Collection<String> aliases);
+    boolean containsAllAliases(Collection<String> aliases);
 }

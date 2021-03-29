@@ -1,24 +1,30 @@
+/**
+ * SSH-Attacker - A Modular Penetration Testing Framework for SSH
+ *
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
+ *
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
+ */
 package de.rub.nds.sshattacker.protocol.message;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
-import de.rub.nds.sshattacker.protocol.handler.Handler;
 import de.rub.nds.sshattacker.protocol.handler.UserauthPasswordMessageHandler;
-import de.rub.nds.sshattacker.protocol.preparator.Preparator;
-import de.rub.nds.sshattacker.protocol.preparator.UserauthPasswordMessagePreparator;
-import de.rub.nds.sshattacker.protocol.serializer.Serializer;
-import de.rub.nds.sshattacker.protocol.serializer.UserauthPasswordMessageSerializer;
+import de.rub.nds.sshattacker.protocol.preparator.UserAuthPasswordMessagePreparator;
+import de.rub.nds.sshattacker.protocol.serializer.UserAuthPasswordMessageSerializer;
 import de.rub.nds.sshattacker.state.SshContext;
 
-public class UserauthPasswordMessage extends Message {
+public class UserAuthPasswordMessage extends Message<UserAuthPasswordMessage> {
 
     private ModifiableString username;
     private ModifiableString servicename;
     private ModifiableByte expectResponse;
     private ModifiableString password;
 
-    public UserauthPasswordMessage() {
+    public UserAuthPasswordMessage() {
     }
 
     public ModifiableString getUsername() {
@@ -75,18 +81,18 @@ public class UserauthPasswordMessage extends Message {
     }
 
     @Override
-    public Handler getHandler(SshContext context) {
+    public UserauthPasswordMessageHandler getHandler(SshContext context) {
         return new UserauthPasswordMessageHandler(context);
     }
 
     @Override
-    public Serializer getSerializer() {
-        return new UserauthPasswordMessageSerializer(this);
+    public UserAuthPasswordMessageSerializer getSerializer() {
+        return new UserAuthPasswordMessageSerializer(this);
     }
 
     @Override
-    public Preparator getPreparator(SshContext context) {
-        return new UserauthPasswordMessagePreparator(context, this);
+    public UserAuthPasswordMessagePreparator getPreparator(SshContext context) {
+        return new UserAuthPasswordMessagePreparator(context, this);
     }
 
 }

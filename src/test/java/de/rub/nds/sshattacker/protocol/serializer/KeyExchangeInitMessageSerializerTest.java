@@ -1,3 +1,12 @@
+/**
+ * SSH-Attacker - A Modular Penetration Testing Framework for SSH
+ *
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
+ *
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
+ */
 package de.rub.nds.sshattacker.protocol.serializer;
 
 import de.rub.nds.sshattacker.protocol.message.KeyExchangeInitMessage;
@@ -46,7 +55,16 @@ public class KeyExchangeInitMessageSerializerTest {
     private final byte firstKeyExchangePacketFollows;
     private final int reserved;
 
-    public KeyExchangeInitMessageSerializerTest(byte[] bytes, byte[] cookie, int keyExchangeAlgorithmsLength, String keyExchangeAlgorithms, int serverHostKeyAlgorithmsLength, String serverHostKeyAlgorithms, int encryptionAlgorithmsClientToServerLength, String encryptionAlgorithmsClientToServer, int encryptionAlgorithmsServerToClientLength, String encryptionAlgorithmsServerToClient, int macAlgorithmsClientToServerLength, String macAlgorithmsClientToServer, int macAlgorithmsServerToClientLength, String macAlgorithmsServerToClient, int compressionAlgorithmsClientToServerLength, String compressionAlgorithmsClientToServer, int compressionAlgorithmsServerToClientLength, String compressionAlgorithmsServerToClient, int languagesClientToServerLength, String languagesClientToServer, int languagesServerToClientLength, String languagesServerToClient, byte firstKeyExchangePacketFollows, int reserved) {
+    public KeyExchangeInitMessageSerializerTest(byte[] bytes, byte[] cookie, int keyExchangeAlgorithmsLength,
+            String keyExchangeAlgorithms, int serverHostKeyAlgorithmsLength, String serverHostKeyAlgorithms,
+            int encryptionAlgorithmsClientToServerLength, String encryptionAlgorithmsClientToServer,
+            int encryptionAlgorithmsServerToClientLength, String encryptionAlgorithmsServerToClient,
+            int macAlgorithmsClientToServerLength, String macAlgorithmsClientToServer,
+            int macAlgorithmsServerToClientLength, String macAlgorithmsServerToClient,
+            int compressionAlgorithmsClientToServerLength, String compressionAlgorithmsClientToServer,
+            int compressionAlgorithmsServerToClientLength, String compressionAlgorithmsServerToClient,
+            int languagesClientToServerLength, String languagesClientToServer, int languagesServerToClientLength,
+            String languagesServerToClient, byte firstKeyExchangePacketFollows, int reserved) {
         this.bytes = bytes;
         this.cookie = cookie;
         this.keyExchangeAlgorithmsLength = keyExchangeAlgorithmsLength;

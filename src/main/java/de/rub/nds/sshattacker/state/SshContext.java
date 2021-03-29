@@ -1,3 +1,12 @@
+/**
+ * SSH-Attacker - A Modular Penetration Testing Framework for SSH
+ *
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
+ *
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
+ */
 package de.rub.nds.sshattacker.state;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -279,59 +288,73 @@ public class SshContext {
         this.serverSupportedKeyExchangeAlgorithms = serverSupportedKeyExchangeAlgorithms;
     }
 
-    public void setClientSupportedHostKeyAlgorithms(List<PublicKeyAuthenticationAlgorithm> clientSupportedHostKeyAlgorithms) {
+    public void setClientSupportedHostKeyAlgorithms(
+            List<PublicKeyAuthenticationAlgorithm> clientSupportedHostKeyAlgorithms) {
         this.clientSupportedHostKeyAlgorithms = clientSupportedHostKeyAlgorithms;
     }
 
-    public void setServerSupportedHostKeyAlgorithms(List<PublicKeyAuthenticationAlgorithm> serverSupportedHostKeyAlgorithms) {
+    public void setServerSupportedHostKeyAlgorithms(
+            List<PublicKeyAuthenticationAlgorithm> serverSupportedHostKeyAlgorithms) {
         this.serverSupportedHostKeyAlgorithms = serverSupportedHostKeyAlgorithms;
     }
 
-    public void setClientSupportedCipherAlgorithmsClientToServer(List<EncryptionAlgorithm> clientSupportedCipherAlgorithmsClientToServer) {
+    public void setClientSupportedCipherAlgorithmsClientToServer(
+            List<EncryptionAlgorithm> clientSupportedCipherAlgorithmsClientToServer) {
         this.clientSupportedCipherAlgorithmsClientToServer = clientSupportedCipherAlgorithmsClientToServer;
     }
 
-    public void setClientSupportedCipherAlgorithmsServerToClient(List<EncryptionAlgorithm> clientSupportedCipherAlgorithmsServerToClient) {
+    public void setClientSupportedCipherAlgorithmsServerToClient(
+            List<EncryptionAlgorithm> clientSupportedCipherAlgorithmsServerToClient) {
         this.clientSupportedCipherAlgorithmsServerToClient = clientSupportedCipherAlgorithmsServerToClient;
     }
 
-    public void setServerSupportedCipherAlgorithmsServerToClient(List<EncryptionAlgorithm> serverSupportedCipherAlgorithmsServerToClient) {
+    public void setServerSupportedCipherAlgorithmsServerToClient(
+            List<EncryptionAlgorithm> serverSupportedCipherAlgorithmsServerToClient) {
         this.serverSupportedCipherAlgorithmsServerToClient = serverSupportedCipherAlgorithmsServerToClient;
     }
 
-    public void setServerSupportedCipherAlgorithmsClientToServer(List<EncryptionAlgorithm> serverSupportedCipherAlgorithmsClientToServer) {
+    public void setServerSupportedCipherAlgorithmsClientToServer(
+            List<EncryptionAlgorithm> serverSupportedCipherAlgorithmsClientToServer) {
         this.serverSupportedCipherAlgorithmsClientToServer = serverSupportedCipherAlgorithmsClientToServer;
     }
 
-    public void setClientSupportedMacAlgorithmsClientToServer(List<MacAlgorithm> clientSupportedMacAlgorithmsClientToServer) {
+    public void setClientSupportedMacAlgorithmsClientToServer(
+            List<MacAlgorithm> clientSupportedMacAlgorithmsClientToServer) {
         this.clientSupportedMacAlgorithmsClientToServer = clientSupportedMacAlgorithmsClientToServer;
     }
 
-    public void setClientSupportedMacAlgorithmsServerToClient(List<MacAlgorithm> clientSupportedMacAlgorithmsServerToClient) {
+    public void setClientSupportedMacAlgorithmsServerToClient(
+            List<MacAlgorithm> clientSupportedMacAlgorithmsServerToClient) {
         this.clientSupportedMacAlgorithmsServerToClient = clientSupportedMacAlgorithmsServerToClient;
     }
 
-    public void setServerSupportedMacAlgorithmsServerToClient(List<MacAlgorithm> serverSupportedMacAlgorithmsServerToClient) {
+    public void setServerSupportedMacAlgorithmsServerToClient(
+            List<MacAlgorithm> serverSupportedMacAlgorithmsServerToClient) {
         this.serverSupportedMacAlgorithmsServerToClient = serverSupportedMacAlgorithmsServerToClient;
     }
 
-    public void setServerSupportedMacAlgorithmsClientToServer(List<MacAlgorithm> serverSupportedMacAlgorithmsClientToServer) {
+    public void setServerSupportedMacAlgorithmsClientToServer(
+            List<MacAlgorithm> serverSupportedMacAlgorithmsClientToServer) {
         this.serverSupportedMacAlgorithmsClientToServer = serverSupportedMacAlgorithmsClientToServer;
     }
 
-    public void setClientSupportedCompressionAlgorithmsClientToServer(List<CompressionAlgorithm> clientSupportedCompressionAlgorithmsClientToServer) {
+    public void setClientSupportedCompressionAlgorithmsClientToServer(
+            List<CompressionAlgorithm> clientSupportedCompressionAlgorithmsClientToServer) {
         this.clientSupportedCompressionAlgorithmsClientToServer = clientSupportedCompressionAlgorithmsClientToServer;
     }
 
-    public void setClientSupportedCompressionAlgorithmsServerToClient(List<CompressionAlgorithm> clientSupportedCompressionAlgorithmsServerToClient) {
+    public void setClientSupportedCompressionAlgorithmsServerToClient(
+            List<CompressionAlgorithm> clientSupportedCompressionAlgorithmsServerToClient) {
         this.clientSupportedCompressionAlgorithmsServerToClient = clientSupportedCompressionAlgorithmsServerToClient;
     }
 
-    public void setServerSupportedCompressionAlgorithmsServerToClient(List<CompressionAlgorithm> serverSupportedCompressionAlgorithmsServerToClient) {
+    public void setServerSupportedCompressionAlgorithmsServerToClient(
+            List<CompressionAlgorithm> serverSupportedCompressionAlgorithmsServerToClient) {
         this.serverSupportedCompressionAlgorithmsServerToClient = serverSupportedCompressionAlgorithmsServerToClient;
     }
 
-    public void setServerSupportedCompressionAlgorithmsClientToServer(List<CompressionAlgorithm> serverSupportedCompressionAlgorithmsClientToServer) {
+    public void setServerSupportedCompressionAlgorithmsClientToServer(
+            List<CompressionAlgorithm> serverSupportedCompressionAlgorithmsClientToServer) {
         this.serverSupportedCompressionAlgorithmsClientToServer = serverSupportedCompressionAlgorithmsClientToServer;
     }
 
@@ -619,7 +642,8 @@ public class SshContext {
     }
 
     public void appendToExchangeHashInput(byte[] additionalData) {
-        exchangeHashInput = ArrayConverter.concatenate(exchangeHashInput, Converter.bytesToLengthPrefixedBinaryString(additionalData));
+        exchangeHashInput = ArrayConverter.concatenate(exchangeHashInput,
+                Converter.bytesToLengthPrefixedBinaryString(additionalData));
     }
 
     public byte[] getClientEcdhSecretKey() {

@@ -1,17 +1,23 @@
+/**
+ * SSH-Attacker - A Modular Penetration Testing Framework for SSH
+ *
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
+ *
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
+ */
 package de.rub.nds.sshattacker.protocol.message;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.sshattacker.protocol.handler.ChannelOpenFailureMessageHandler;
-import de.rub.nds.sshattacker.protocol.handler.Handler;
 import de.rub.nds.sshattacker.protocol.preparator.ChannelOpenFailureMessagePreparator;
-import de.rub.nds.sshattacker.protocol.preparator.Preparator;
 import de.rub.nds.sshattacker.protocol.serializer.ChannelOpenFailureMessageSerializer;
-import de.rub.nds.sshattacker.protocol.serializer.Serializer;
 import de.rub.nds.sshattacker.state.SshContext;
 
-public class ChannelOpenFailureMessage extends Message {
+public class ChannelOpenFailureMessage extends Message<ChannelOpenFailureMessage> {
 
     private ModifiableInteger recipientChannel;
     private ModifiableInteger reasonCode;
@@ -67,17 +73,17 @@ public class ChannelOpenFailureMessage extends Message {
     }
 
     @Override
-    public Handler getHandler(SshContext context) {
+    public ChannelOpenFailureMessageHandler getHandler(SshContext context) {
         return new ChannelOpenFailureMessageHandler(context);
     }
 
     @Override
-    public Serializer getSerializer() {
+    public ChannelOpenFailureMessageSerializer getSerializer() {
         return new ChannelOpenFailureMessageSerializer(this);
     }
 
     @Override
-    public Preparator getPreparator(SshContext context) {
+    public ChannelOpenFailureMessagePreparator getPreparator(SshContext context) {
         return new ChannelOpenFailureMessagePreparator(context, this);
     }
 

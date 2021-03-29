@@ -1,7 +1,8 @@
 /**
- * TLS-Attacker - A Modular Penetration Testing Framework for TLS
+ * SSH-Attacker - A Modular Penetration Testing Framework for SSH
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -22,8 +23,8 @@ public class WorkflowTraceUtil {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public static List<Message> getAllSendMessages(WorkflowTrace trace) {
-        List<Message> sendMessages = new LinkedList<>();
+    public static List<Message<?>> getAllSendMessages(WorkflowTrace trace) {
+        List<Message<?>> sendMessages = new LinkedList<>();
         for (SendingAction action : trace.getSendingActions()) {
             sendMessages.addAll(action.getSendMessages());
         }
@@ -38,8 +39,8 @@ public class WorkflowTraceUtil {
         return sendBinaryPackets;
     }
 
-    public static List<Message> getAllReceivedMessages(WorkflowTrace trace) {
-        List<Message> receivedMessage = new LinkedList<>();
+    public static List<Message<?>> getAllReceivedMessages(WorkflowTrace trace) {
+        List<Message<?>> receivedMessage = new LinkedList<>();
         for (ReceivingAction action : trace.getReceivingActions()) {
             if (action.getReceivedMessages() != null) {
                 receivedMessage.addAll(action.getReceivedMessages());
@@ -48,9 +49,9 @@ public class WorkflowTraceUtil {
         return receivedMessage;
     }
 
-    public static List<Message> getAllReceivedMessages(WorkflowTrace trace, MessageIDConstant type) {
-        List<Message> receivedMessage = new LinkedList<>();
-        for (Message message : getAllReceivedMessages(trace)) {
+    public static List<Message<?>> getAllReceivedMessages(WorkflowTrace trace, MessageIDConstant type) {
+        List<Message<?>> receivedMessage = new LinkedList<>();
+        for (Message<?> message : getAllReceivedMessages(trace)) {
             if (message.getMessageID().getValue() == type.id) {
                 receivedMessage.add(message);
             }

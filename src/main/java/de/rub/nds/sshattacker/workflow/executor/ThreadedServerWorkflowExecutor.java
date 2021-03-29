@@ -1,7 +1,8 @@
 /**
- * TLS-Attacker - A Modular Penetration Testing Framework for TLS
+ * SSH-Attacker - A Modular Penetration Testing Framework for SSH
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -34,9 +35,7 @@ public final class ThreadedServerWorkflowExecutor extends WorkflowExecutor {
     private ServerSocket serverSocket;
     private Socket socket;
     private final int port;
-    private Thread currentThread;
-    List<Socket> sockets = new ArrayList<>();
-    private final int poolSize = 3;
+    final List<Socket> sockets = new ArrayList<>();
     private boolean killed = true;
     private boolean shutdown = true;
     private final ExecutorService pool;
@@ -45,41 +44,39 @@ public final class ThreadedServerWorkflowExecutor extends WorkflowExecutor {
         super(WorkflowExecutorType.THREADED_SERVER, state);
 
         port = config.getDefaultServerConnection().getPort();
+        int poolSize = 3;
         pool = Executors.newFixedThreadPool(poolSize);
         addHook();
     }
 
     public void addHook() {
-        Runtime.getRuntime().addShutdownHook(new Thread() {
-            @Override
-            public void run() {
-                LOGGER.info("Received shutdown signal, shutting down server.");
-                kill();
-                LOGGER.info("Waiting for connections to be closed...");
-                int watchDog = 3;
-                while ((!shutdown) && (watchDog > 0)) {
-                    try {
-                        TimeUnit.SECONDS.sleep(1);
-                    } catch (InterruptedException ex) {
-                        LOGGER.warn("Problem while waiting, could not sleep");
-                    }
-                    watchDog--;
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            LOGGER.info("Received shutdown signal, shutting down server.");
+            kill();
+            LOGGER.info("Waiting for connections to be closed...");
+            int watchDog = 3;
+            while ((!shutdown) && (watchDog > 0)) {
+                try {
+                    TimeUnit.SECONDS.sleep(1);
+                } catch (InterruptedException ex) {
+                    LOGGER.warn("Problem while waiting, could not sleep");
                 }
-                if (!shutdown) {
-                    LOGGER.debug("Forcing sockets to close");
-                    closeSockets();
-                    shutdownAndAwaitTermination();
-                }
-                LOGGER.debug("Server shutdown complete.");
+                watchDog--;
             }
-        });
+            if (!shutdown) {
+                LOGGER.debug("Forcing sockets to close");
+                closeSockets();
+                shutdownAndAwaitTermination();
+            }
+            LOGGER.debug("Server shutdown complete.");
+        }));
     }
 
     @Override
     public void executeWorkflow() throws WorkflowExecutionException {
 
         synchronized (this) {
-            this.currentThread = Thread.currentThread();
+            Thread currentThread = Thread.currentThread();
         }
 
         LOGGER.info("Listening on port " + port + "...");
@@ -130,7 +127,6 @@ public final class ThreadedServerWorkflowExecutor extends WorkflowExecutor {
             try {
                 if (s != null) {
                     s.close();
-                    s = null;
                 } else {
                     LOGGER.debug("... already closed.");
                 }
@@ -152,6 +148,7 @@ public final class ThreadedServerWorkflowExecutor extends WorkflowExecutor {
     }
 
     // Straight from the java docs for ExecutorService
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     private void shutdownAndAwaitTermination() {
         pool.shutdown(); // Disable new tasks from being submitted
         try {
@@ -159,8 +156,7 @@ public final class ThreadedServerWorkflowExecutor extends WorkflowExecutor {
             if (!pool.awaitTermination(60, TimeUnit.SECONDS)) {
                 pool.shutdownNow(); // Cancel currently executing tasks
                 // Wait a while for tasks to respond to being cancelled
-                if (!pool.awaitTermination(60, TimeUnit.SECONDS)) {
-                }
+                pool.awaitTermination(60, TimeUnit.SECONDS);
             }
         } catch (InterruptedException ie) {
             // (Re-)Cancel if current thread also interrupted

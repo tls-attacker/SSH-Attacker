@@ -1,3 +1,12 @@
+/**
+ * SSH-Attacker - A Modular Penetration Testing Framework for SSH
+ *
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
+ *
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
+ */
 package de.rub.nds.sshattacker.protocol.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -19,12 +28,12 @@ public class ECDHKeyExchangeInitMessageParserTest {
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
         return Arrays
-                .asList(new Object[][]{
-            {
-                ArrayConverter.hexStringToByteArray("00000020c3579aa0b92395e888ed16a546587c5d8879f0f2f813b2bc68bab3325b9a6f0f"),
-                32,
-                ArrayConverter.hexStringToByteArray("c3579aa0b92395e888ed16a546587c5d8879f0f2f813b2bc68bab3325b9a6f0f")
-            },});
+                .asList(new Object[][] { {
+                        ArrayConverter
+                                .hexStringToByteArray("00000020c3579aa0b92395e888ed16a546587c5d8879f0f2f813b2bc68bab3325b9a6f0f"),
+                        32,
+                        ArrayConverter
+                                .hexStringToByteArray("c3579aa0b92395e888ed16a546587c5d8879f0f2f813b2bc68bab3325b9a6f0f") }, });
     }
 
     private final byte[] bytes;

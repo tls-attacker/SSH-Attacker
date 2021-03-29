@@ -1,3 +1,12 @@
+/**
+ * SSH-Attacker - A Modular Penetration Testing Framework for SSH
+ *
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
+ *
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
+ */
 package de.rub.nds.sshattacker.protocol.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -14,19 +23,11 @@ public class ClientInitMessageParserTest {
 
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
-        return Arrays
-                .asList(new Object[][]{
-            {
-                ArrayConverter.hexStringToByteArray("5353482d322e302d4f70656e5353485f372e380d0a"),
-                "SSH-2.0-OpenSSH_7.8",
-                ""
-            },
-            {
-                ArrayConverter.hexStringToByteArray("5353482d322e302d6c69627373685f302e372e300d0a"),
-                "SSH-2.0-libssh_0.7.0",
-                ""
-            }
-        });
+        return Arrays.asList(new Object[][] {
+                { ArrayConverter.hexStringToByteArray("5353482d322e302d4f70656e5353485f372e380d0a"),
+                        "SSH-2.0-OpenSSH_7.8", "" },
+                { ArrayConverter.hexStringToByteArray("5353482d322e302d6c69627373685f302e372e300d0a"),
+                        "SSH-2.0-libssh_0.7.0", "" } });
     }
 
     private final byte[] message;

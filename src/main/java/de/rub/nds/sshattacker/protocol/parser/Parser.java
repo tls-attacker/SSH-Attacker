@@ -1,3 +1,12 @@
+/**
+ * SSH-Attacker - A Modular Penetration Testing Framework for SSH
+ *
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
+ *
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
+ */
 package de.rub.nds.sshattacker.protocol.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -130,11 +139,12 @@ public abstract class Parser<T> {
     }
 
     /**
-     * Parses a number of bytes from the Array and returns them as a string (using UTF-8 encoding).
-     * Throws a ParserException if the number of bytes cannot be parsed. Moves
-     * the pointer accordingly.
+     * Parses a number of bytes from the Array and returns them as a string
+     * (using UTF-8 encoding). Throws a ParserException if the number of bytes
+     * cannot be parsed. Moves the pointer accordingly.
      *
-     * @param length Number of bytes to be parsed
+     * @param length
+     *            Number of bytes to be parsed
      *
      * @return A string representation of the subbyteArray
      */
@@ -147,8 +157,10 @@ public abstract class Parser<T> {
      * Throws a ParserException if the number of bytes cannot be parsed. Moves
      * the pointer accordingly.
      *
-     * @param length Number of bytes to be parsed
-     * @param charset Charset used to convert the bytes into a String
+     * @param length
+     *            Number of bytes to be parsed
+     * @param charset
+     *            Charset used to convert the bytes into a String
      *
      * @return A string representation of the subbyteArray
      */
@@ -157,11 +169,12 @@ public abstract class Parser<T> {
     }
 
     /**
-     * Parses the Array until the specified sequence is encountered.
-     * Throws a ParserException if the byte sequence is not present within
-     * the array. Moves the pointer accordingly.
+     * Parses the Array until the specified sequence is encountered. Throws a
+     * ParserException if the byte sequence is not present within the array.
+     * Moves the pointer accordingly.
      *
-     * @param endSequence Byte to parse until (included in return value)
+     * @param endSequence
+     *            Byte to parse until (included in return value)
      *
      * @return A string representation of the bytes parsed (UTF-8 encoded)
      */
@@ -177,11 +190,12 @@ public abstract class Parser<T> {
     }
 
     /**
-     * Parses the Array until the specified byte sequence is encountered.
-     * Throws a ParserException if the byte sequence is not present within
-     * the array. Moves the pointer accordingly.
+     * Parses the Array until the specified byte sequence is encountered. Throws
+     * a ParserException if the byte sequence is not present within the array.
+     * Moves the pointer accordingly.
      *
-     * @param endSequence Byte sequence to parse until (included in return value)
+     * @param endSequence
+     *            Byte sequence to parse until (included in return value)
      *
      * @return A string representation of the bytes parsed (UTF-8 encoded)
      */
@@ -196,7 +210,7 @@ public abstract class Parser<T> {
             } else {
                 endSequencePosition = 0;
             }
-            if(endSequencePosition == endSequence.length) {
+            if (endSequencePosition == endSequence.length) {
                 return new String(stream.toByteArray(), StandardCharsets.UTF_8);
             }
         }

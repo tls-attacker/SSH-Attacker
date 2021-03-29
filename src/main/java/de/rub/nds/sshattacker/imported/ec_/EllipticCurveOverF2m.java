@@ -1,7 +1,8 @@
 /**
- * TLS-Attacker - A Modular Penetration Testing Framework for TLS
+ * SSH-Attacker - A Modular Penetration Testing Framework for SSH
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -12,8 +13,7 @@ import java.math.BigInteger;
 
 /**
  * An elliptic curve over a galois field F_{2^m}.<br />
- * Please notice that the coordinates of affine points are binary
- * polynomials.<br />
+ * Please notice that the coordinates of affine points are binary polynomials.<br />
  * They are represented by BigIntegers, where the i-th bit represents the i-th
  * coefficient.
  */
@@ -25,12 +25,15 @@ public class EllipticCurveOverF2m extends EllipticCurve {
     /**
      * Instantiates the curve y^2 + xy = x^3 + ax^2 + b over F_{2^m}.<br />
      *
-     * @param a A BigInteger representing the binary polynomial a in the
-     * equation of the curve.
-     * @param b A BigInteger representing the binary polynomial b in the
-     * equation of the curve.
-     * @param polynomial A BigInteger representing the binary reduction
-     * polynomial that defines the field over which the curve is defined.
+     * @param a
+     *            A BigInteger representing the binary polynomial a in the
+     *            equation of the curve.
+     * @param b
+     *            A BigInteger representing the binary polynomial b in the
+     *            equation of the curve.
+     * @param polynomial
+     *            A BigInteger representing the binary reduction polynomial that
+     *            defines the field over which the curve is defined.
      */
     public EllipticCurveOverF2m(BigInteger a, BigInteger b, BigInteger polynomial) {
         super(polynomial);
@@ -43,17 +46,23 @@ public class EllipticCurveOverF2m extends EllipticCurve {
      * polynomial is the reduction polynomial of the field.<br />
      * With base point (x, y) and base point order q.
      *
-     * @param a A BigInteger representing the binary polynomial a in the
-     * equation of the curve.
-     * @param b A BigInteger representing the binary polynomial b in the
-     * equation of the curve.
-     * @param polynomial A BigInteger representing the binary reduction
-     * polynomial that defines the field over which the curve is defined.
-     * @param x A BigInteger representing the binary polynomial that represents
-     * the x-coordinate of the base point.
-     * @param y A BigInteger representing the binary polynomial that represents
-     * the y-coordinate of the base point.
-     * @param q The order of the base point.
+     * @param a
+     *            A BigInteger representing the binary polynomial a in the
+     *            equation of the curve.
+     * @param b
+     *            A BigInteger representing the binary polynomial b in the
+     *            equation of the curve.
+     * @param polynomial
+     *            A BigInteger representing the binary reduction polynomial that
+     *            defines the field over which the curve is defined.
+     * @param x
+     *            A BigInteger representing the binary polynomial that
+     *            represents the x-coordinate of the base point.
+     * @param y
+     *            A BigInteger representing the binary polynomial that
+     *            represents the y-coordinate of the base point.
+     * @param q
+     *            The order of the base point.
      */
     public EllipticCurveOverF2m(BigInteger a, BigInteger b, BigInteger polynomial, BigInteger x, BigInteger y,
             BigInteger q) {
@@ -86,7 +95,7 @@ public class EllipticCurveOverF2m extends EllipticCurve {
         }
         FieldElementF2m x = (FieldElementF2m) p.getX();
         FieldElementF2m y = (FieldElementF2m) p.getY();
-        if (x.getModulus() != this.getModulus() || y.getModulus() != this.getModulus()) {
+        if (!x.getModulus().equals(this.getModulus()) || !y.getModulus().equals(this.getModulus())) {
             return false;
         }
 

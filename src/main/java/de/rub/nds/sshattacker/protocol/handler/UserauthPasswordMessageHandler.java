@@ -1,16 +1,25 @@
+/**
+ * SSH-Attacker - A Modular Penetration Testing Framework for SSH
+ *
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
+ *
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
+ */
 package de.rub.nds.sshattacker.protocol.handler;
 
-import de.rub.nds.sshattacker.protocol.message.UserauthPasswordMessage;
+import de.rub.nds.sshattacker.protocol.message.UserAuthPasswordMessage;
 import de.rub.nds.sshattacker.state.SshContext;
 
-public class UserauthPasswordMessageHandler extends Handler<UserauthPasswordMessage> {
+public class UserauthPasswordMessageHandler extends Handler<UserAuthPasswordMessage> {
 
     public UserauthPasswordMessageHandler(SshContext context) {
         super(context);
     }
 
     @Override
-    public void handle(UserauthPasswordMessage msg) {
+    public void handle(UserAuthPasswordMessage msg) {
     }
 
 }

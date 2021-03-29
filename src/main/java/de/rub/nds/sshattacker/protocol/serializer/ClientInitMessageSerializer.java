@@ -1,3 +1,12 @@
+/**
+ * SSH-Attacker - A Modular Penetration Testing Framework for SSH
+ *
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
+ *
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
+ */
 package de.rub.nds.sshattacker.protocol.serializer;
 
 import de.rub.nds.sshattacker.constants.ByteConstants;
@@ -17,7 +26,7 @@ public class ClientInitMessageSerializer extends Serializer<ClientInitMessage> {
     }
 
     private void serializeVersion() {
-        if (msg.getVersion().getValue() == "") {
+        if (msg.getVersion().getValue().equals("")) {
             LOGGER.debug("Version: null");
         } else {
             LOGGER.debug("Version: " + msg.getVersion().getValue());
@@ -26,7 +35,7 @@ public class ClientInitMessageSerializer extends Serializer<ClientInitMessage> {
     }
 
     private void serializeComment() {
-        if (msg.getComment().getValue() == "") {
+        if (msg.getComment().getValue().equals("")) {
             LOGGER.debug("Comment: null");
         } else {
             LOGGER.debug("Comment: " + msg.getComment().getValue());
@@ -36,7 +45,7 @@ public class ClientInitMessageSerializer extends Serializer<ClientInitMessage> {
     }
 
     private void serializeCRNL() {
-        appendBytes(new byte[]{ByteConstants.CARRIAGE_RETURN, ByteConstants.NEWLINE});
+        appendBytes(new byte[] { ByteConstants.CARRIAGE_RETURN, ByteConstants.NEWLINE });
     }
 
     @Override

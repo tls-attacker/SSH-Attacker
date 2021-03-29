@@ -1,3 +1,12 @@
+/**
+ * SSH-Attacker - A Modular Penetration Testing Framework for SSH
+ *
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
+ *
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
+ */
 package de.rub.nds.sshattacker.protocol.serializer;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -112,7 +121,8 @@ public abstract class Serializer<T> {
     /**
      * Adds a string (using UTF-8 encoding) to the final byte[]
      *
-     * @param s String which should be added
+     * @param s
+     *            String which should be added
      */
     protected final void appendString(String s) {
         appendString(s, StandardCharsets.UTF_8);
@@ -121,8 +131,10 @@ public abstract class Serializer<T> {
     /**
      * Adds a string (using the specified charset) to the final byte[]
      *
-     * @param s String which should be added
-     * @param charset Charset used to convert the string into bytes
+     * @param s
+     *            String which should be added
+     * @param charset
+     *            Charset used to convert the string into bytes
      */
     protected final void appendString(String s, Charset charset) {
         appendBytes(s.getBytes(charset));

@@ -1,16 +1,22 @@
+/**
+ * SSH-Attacker - A Modular Penetration Testing Framework for SSH
+ *
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
+ *
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
+ */
 package de.rub.nds.sshattacker.protocol.message;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
-import de.rub.nds.sshattacker.protocol.handler.Handler;
 import de.rub.nds.sshattacker.protocol.handler.RequestSuccessMessageHandler;
-import de.rub.nds.sshattacker.protocol.preparator.Preparator;
 import de.rub.nds.sshattacker.protocol.preparator.RequestSuccessMessagePreparator;
 import de.rub.nds.sshattacker.protocol.serializer.RequestSuccessMessageSerializer;
-import de.rub.nds.sshattacker.protocol.serializer.Serializer;
 import de.rub.nds.sshattacker.state.SshContext;
 
-public class RequestSuccessMessage extends Message {
+public class RequestSuccessMessage extends Message<RequestSuccessMessage> {
 
     private ModifiableByteArray payload;
 
@@ -27,17 +33,17 @@ public class RequestSuccessMessage extends Message {
     }
 
     @Override
-    public Handler getHandler(SshContext context) {
+    public RequestSuccessMessageHandler getHandler(SshContext context) {
         return new RequestSuccessMessageHandler(context);
     }
 
     @Override
-    public Serializer getSerializer() {
+    public RequestSuccessMessageSerializer getSerializer() {
         return new RequestSuccessMessageSerializer(this);
     }
 
     @Override
-    public Preparator getPreparator(SshContext context) {
+    public RequestSuccessMessagePreparator getPreparator(SshContext context) {
         return new RequestSuccessMessagePreparator(context, this);
     }
 

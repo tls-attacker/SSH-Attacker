@@ -1,3 +1,12 @@
+/**
+ * SSH-Attacker - A Modular Penetration Testing Framework for SSH
+ *
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
+ *
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
+ */
 package de.rub.nds.sshattacker.protocol.message;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
@@ -5,14 +14,11 @@ import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.sshattacker.protocol.handler.GlobalRequestMessageHandler;
-import de.rub.nds.sshattacker.protocol.handler.Handler;
 import de.rub.nds.sshattacker.protocol.preparator.GlobalRequestMessagePreparator;
-import de.rub.nds.sshattacker.protocol.preparator.Preparator;
 import de.rub.nds.sshattacker.protocol.serializer.GlobalRequestMessageSerializer;
-import de.rub.nds.sshattacker.protocol.serializer.Serializer;
 import de.rub.nds.sshattacker.state.SshContext;
 
-public class GlobalRequestMessage extends Message {
+public class GlobalRequestMessage extends Message<GlobalRequestMessage> {
 
     private ModifiableString requestName;
     private ModifiableByte wantReply;
@@ -55,17 +61,17 @@ public class GlobalRequestMessage extends Message {
     }
 
     @Override
-    public Handler getHandler(SshContext context) {
+    public GlobalRequestMessageHandler getHandler(SshContext context) {
         return new GlobalRequestMessageHandler(context);
     }
 
     @Override
-    public Serializer getSerializer() {
+    public GlobalRequestMessageSerializer getSerializer() {
         return new GlobalRequestMessageSerializer(this);
     }
 
     @Override
-    public Preparator getPreparator(SshContext context) {
+    public GlobalRequestMessagePreparator getPreparator(SshContext context) {
         return new GlobalRequestMessagePreparator(context, this);
     }
 

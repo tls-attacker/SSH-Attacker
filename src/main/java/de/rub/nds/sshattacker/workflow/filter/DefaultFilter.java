@@ -1,3 +1,12 @@
+/**
+ * SSH-Attacker - A Modular Penetration Testing Framework for SSH
+ *
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
+ *
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
+ */
 package de.rub.nds.sshattacker.workflow.filter;
 
 import de.rub.nds.sshattacker.config.Config;
@@ -32,7 +41,8 @@ public class DefaultFilter extends Filter {
     /**
      * Apply filter to trace.
      *
-     * @param trace The workflow trace that should be filtered.
+     * @param trace
+     *            The workflow trace that should be filtered.
      */
     @Override
     public void applyFilter(WorkflowTrace trace) {
@@ -70,6 +80,7 @@ public class DefaultFilter extends Filter {
         }
 
         // Remove unnecessary action connection aliases
+        assert lastProcessedCon != null;
         SshAction defaultAction = new GeneralAction(lastProcessedCon.getAlias());
         if (trace.getSshActions() != null) {
             for (SshAction action : trace.getSshActions()) {
@@ -85,9 +96,10 @@ public class DefaultFilter extends Filter {
      * <p>
      * Currently restores only workflow trace connections set by the user.
      *
-     * @param trace the trace to which the postFilter should be applied
-     * @param reference the reference trace holding the original user defined
-     * values
+     * @param trace
+     *            the trace to which the postFilter should be applied
+     * @param reference
+     *            the reference trace holding the original user defined values
      *
      */
     @Override

@@ -1,3 +1,12 @@
+/**
+ * SSH-Attacker - A Modular Penetration Testing Framework for SSH
+ *
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
+ *
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
+ */
 package de.rub.nds.sshattacker.protocol.serializer;
 
 import de.rub.nds.sshattacker.protocol.message.BinaryPacket;
@@ -28,7 +37,8 @@ public class BinaryPacketSerializerTest {
 
     private final byte[] bytes;
 
-    public BinaryPacketSerializerTest(byte[] bytes, int packetLength, byte paddingLength, byte[] payload, byte[] padding, byte[] mac) {
+    public BinaryPacketSerializerTest(byte[] bytes, int packetLength, byte paddingLength, byte[] payload,
+            byte[] padding, byte[] mac) {
         this.bytes = bytes;
         this.packetLength = packetLength;
         this.paddingLength = paddingLength;

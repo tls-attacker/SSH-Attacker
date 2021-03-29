@@ -1,3 +1,12 @@
+/**
+ * SSH-Attacker - A Modular Penetration Testing Framework for SSH
+ *
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
+ *
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
+ */
 package de.rub.nds.sshattacker.protocol.message;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
@@ -6,14 +15,11 @@ import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.sshattacker.protocol.handler.ChannelRequestMessageHandler;
-import de.rub.nds.sshattacker.protocol.handler.Handler;
 import de.rub.nds.sshattacker.protocol.preparator.ChannelRequestMessagePreparator;
-import de.rub.nds.sshattacker.protocol.preparator.Preparator;
 import de.rub.nds.sshattacker.protocol.serializer.ChannelRequestMessageSerializer;
-import de.rub.nds.sshattacker.protocol.serializer.Serializer;
 import de.rub.nds.sshattacker.state.SshContext;
 
-public class ChannelRequestMessage extends Message {
+public class ChannelRequestMessage extends Message<ChannelRequestMessage> {
 
     private ModifiableInteger recipientChannel;
     private ModifiableString requestType;
@@ -77,17 +83,17 @@ public class ChannelRequestMessage extends Message {
     }
 
     @Override
-    public Handler getHandler(SshContext context) {
+    public ChannelRequestMessageHandler getHandler(SshContext context) {
         return new ChannelRequestMessageHandler(context);
     }
 
     @Override
-    public Serializer getSerializer() {
+    public ChannelRequestMessageSerializer getSerializer() {
         return new ChannelRequestMessageSerializer(this);
     }
 
     @Override
-    public Preparator getPreparator(SshContext context) {
+    public ChannelRequestMessagePreparator getPreparator(SshContext context) {
         return new ChannelRequestMessagePreparator(context, this);
     }
 }

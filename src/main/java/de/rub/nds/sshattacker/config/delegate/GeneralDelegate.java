@@ -1,7 +1,8 @@
 /**
- * TLS-Attacker - A Modular Penetration Testing Framework for TLS
+ * SSH-Attacker - A Modular Penetration Testing Framework for SSH
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -23,7 +24,7 @@ public class GeneralDelegate extends Delegate {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    @Parameter(names = {"-h", "-help"}, help = true, description = "Prints usage for all the existing commands.")
+    @Parameter(names = { "-h", "-help" }, help = true, description = "Prints usage for all the existing commands.")
     private boolean help;
 
     @Parameter(names = "-debug", description = "Show extra debug output (sets logLevel to DEBUG)")

@@ -1,3 +1,12 @@
+/**
+ * SSH-Attacker - A Modular Penetration Testing Framework for SSH
+ *
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
+ *
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
+ */
 package de.rub.nds.sshattacker.connection;
 
 import de.rub.nds.sshattacker.exceptions.ConfigurationException;
@@ -11,7 +20,7 @@ import java.util.Objects;
 import java.util.Set;
 import javax.xml.bind.annotation.XmlType;
 
-@XmlType(propOrder = {"alias", "port", "hostname", "timeout", "transportHandlerType"})
+@XmlType(propOrder = { "alias", "port", "hostname", "timeout", "transportHandlerType" })
 public abstract class AliasedConnection extends Connection implements Aliasable {
 
     public static final String DEFAULT_CONNECTION_ALIAS = "defaultConnection";

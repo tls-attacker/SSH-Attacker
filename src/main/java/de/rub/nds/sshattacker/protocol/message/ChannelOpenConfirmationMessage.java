@@ -1,16 +1,22 @@
+/**
+ * SSH-Attacker - A Modular Penetration Testing Framework for SSH
+ *
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
+ *
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
+ */
 package de.rub.nds.sshattacker.protocol.message;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.sshattacker.protocol.handler.ChannelOpenConfirmationMessageHandler;
-import de.rub.nds.sshattacker.protocol.handler.Handler;
 import de.rub.nds.sshattacker.protocol.preparator.ChannelOpenConfirmationMessagePreparator;
-import de.rub.nds.sshattacker.protocol.preparator.Preparator;
 import de.rub.nds.sshattacker.protocol.serializer.ChannelOpenConfirmationMessageSerializer;
-import de.rub.nds.sshattacker.protocol.serializer.Serializer;
 import de.rub.nds.sshattacker.state.SshContext;
 
-public class ChannelOpenConfirmationMessage extends Message {
+public class ChannelOpenConfirmationMessage extends Message<ChannelOpenConfirmationMessage> {
 
     private ModifiableInteger recipientChannel;
     private ModifiableInteger senderChannel;
@@ -71,17 +77,17 @@ public class ChannelOpenConfirmationMessage extends Message {
     }
 
     @Override
-    public Handler getHandler(SshContext context) {
+    public ChannelOpenConfirmationMessageHandler getHandler(SshContext context) {
         return new ChannelOpenConfirmationMessageHandler(context);
     }
 
     @Override
-    public Serializer getSerializer() {
+    public ChannelOpenConfirmationMessageSerializer getSerializer() {
         return new ChannelOpenConfirmationMessageSerializer(this);
     }
 
     @Override
-    public Preparator getPreparator(SshContext context) {
+    public ChannelOpenConfirmationMessagePreparator getPreparator(SshContext context) {
         return new ChannelOpenConfirmationMessagePreparator(context, this);
     }
 

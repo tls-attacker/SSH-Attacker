@@ -1,3 +1,12 @@
+/**
+ * SSH-Attacker - A Modular Penetration Testing Framework for SSH
+ *
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
+ *
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
+ */
 package de.rub.nds.sshattacker.protocol.helper;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -14,6 +23,7 @@ import de.rub.nds.tlsattacker.transport.TransportHandler;
 import de.rub.nds.sshattacker.workflow.action.result.MessageActionResult;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
@@ -29,7 +39,7 @@ public class ReceiveMessageHelper {
         MessageLayer messageLayer = context.getMessageLayer();
         CryptoLayer cryptoLayer = context.getCryptoLayer();
 
-        if (context.getReceivedServerInit() == false) {
+        if (!context.getReceivedServerInit()) {
             MessageActionResult result = receiveInitMessage(context);
             context.setReceivedServerInit(true);
             return result;
@@ -51,14 +61,12 @@ public class ReceiveMessageHelper {
                     byte[] decryptedData = cryptoLayer.decryptBinaryPackets(data);
                     try {
                         List<BinaryPacket> binaryPackets = binaryPacketLayer.parseBinaryPackets(decryptedData);
-                        List<Message> messages = messageLayer.parseMessages(binaryPackets);
-                        messages.forEach(message -> {
-                            message.getHandler(context).handle(message);
-                        });
+                        List<Message<?>> messages = messageLayer.parseMessages(binaryPackets);
+                        messages.forEach(message -> message.handleSelf(context));
                         return new MessageActionResult(binaryPackets, messages);
                     } catch (ParserException e) {
                         BinaryPacket dummyPacket = new BinaryPacket(decryptedData);
-                        return new MessageActionResult(Arrays.asList(new BinaryPacket[]{dummyPacket}), new LinkedList());
+                        return new MessageActionResult(Collections.singletonList(dummyPacket), new LinkedList<>());
                     }
                 } else {
                     LOGGER.debug("TransportHandler does not have data.");
@@ -72,7 +80,7 @@ public class ReceiveMessageHelper {
     }
 
     // TODO dummy method until expectedMessages are used
-    public MessageActionResult receiveMessages(List<Message> expectedMessages, SshContext context) {
+    public MessageActionResult receiveMessages(List<Message<?>> expectedMessages, SshContext context) {
         return receiveMessages(context);
     }
 
@@ -81,8 +89,8 @@ public class ReceiveMessageHelper {
         try {
             byte[] response = transport.fetchData();
             ClientInitMessage serverInit = new ClientInitMessageParser(0, response).parse();
-            serverInit.getHandler(context).handle(serverInit);
-            return new MessageActionResult(new LinkedList<>(), Arrays.asList(serverInit));
+            serverInit.handleSelf(context);
+            return new MessageActionResult(new LinkedList<>(), Collections.singletonList(serverInit));
         } catch (IOException e) {
             LOGGER.debug("Error while receiving ClientInit" + e.getMessage());
             return new MessageActionResult();

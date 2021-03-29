@@ -1,3 +1,12 @@
+/**
+ * SSH-Attacker - A Modular Penetration Testing Framework for SSH
+ *
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
+ *
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
+ */
 package executing;
 
 import de.rub.nds.sshattacker.protocol.helper.ReceiveMessageHelper;
@@ -10,7 +19,7 @@ import de.rub.nds.sshattacker.protocol.message.EcdhKeyExchangeInitMessage;
 import de.rub.nds.sshattacker.protocol.message.KeyExchangeInitMessage;
 import de.rub.nds.sshattacker.protocol.message.NewKeysMessage;
 import de.rub.nds.sshattacker.protocol.message.ServiceRequestMessage;
-import de.rub.nds.sshattacker.protocol.message.UserauthPasswordMessage;
+import de.rub.nds.sshattacker.protocol.message.UserAuthPasswordMessage;
 import de.rub.nds.sshattacker.state.State;
 import de.rub.nds.sshattacker.workflow.WorkflowTrace;
 import de.rub.nds.sshattacker.workflow.action.ActivateEncryptionAction;
@@ -51,7 +60,7 @@ public class NetcatWorkflow {
         trace.addSshAction(sendServiceRequest);
         trace.addSshAction(receiveServiceRequestResponse);
 
-        SendAction sendUserauthRequest = new SendAction("defaultConnection", new UserauthPasswordMessage());
+        SendAction sendUserauthRequest = new SendAction("defaultConnection", new UserAuthPasswordMessage());
         ReceiveAction receiveUserauthRequestResponse = new ReceiveAction("defaultConnection");
         ReceiveAction receiveGlobalRequest = new ReceiveAction("defaultConnection");
         trace.addSshActions(sendUserauthRequest);

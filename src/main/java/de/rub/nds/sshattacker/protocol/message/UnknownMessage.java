@@ -1,17 +1,24 @@
+/**
+ * SSH-Attacker - A Modular Penetration Testing Framework for SSH
+ *
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
+ *
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
+ */
 package de.rub.nds.sshattacker.protocol.message;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.sshattacker.constants.MessageIDConstant;
-import de.rub.nds.sshattacker.protocol.handler.Handler;
 import de.rub.nds.sshattacker.protocol.handler.UnknownMessageHandler;
 import de.rub.nds.sshattacker.protocol.preparator.Preparator;
-import de.rub.nds.sshattacker.protocol.serializer.Serializer;
 import de.rub.nds.sshattacker.protocol.serializer.UnknownMessageSerializer;
 import de.rub.nds.sshattacker.state.SshContext;
 
-public class UnknownMessage extends Message {
+public class UnknownMessage extends Message<UnknownMessage> {
 
     private ModifiableByteArray payload;
 
@@ -46,17 +53,26 @@ public class UnknownMessage extends Message {
     }
 
     @Override
-    public Handler getHandler(SshContext context) {
+    public UnknownMessageHandler getHandler(SshContext context) {
         return new UnknownMessageHandler(context);
     }
 
     @Override
-    public Serializer getSerializer() {
+    public UnknownMessageSerializer getSerializer() {
         return new UnknownMessageSerializer(this);
     }
 
     @Override
-    public Preparator getPreparator(SshContext context) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public Preparator<UnknownMessage> getPreparator(SshContext context) {
+        throw new UnsupportedOperationException("Not supported yet."); // To
+                                                                       // change
+                                                                       // body
+                                                                       // of
+                                                                       // generated
+                                                                       // methods,
+                                                                       // choose
+                                                                       // Tools
+                                                                       // |
+                                                                       // Templates.
     }
 }

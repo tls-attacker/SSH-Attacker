@@ -1,3 +1,12 @@
+/**
+ * SSH-Attacker - A Modular Penetration Testing Framework for SSH
+ *
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
+ *
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
+ */
 package de.rub.nds.sshattacker.constants;
 
 public enum EncryptionAlgorithm {
@@ -10,14 +19,16 @@ public enum EncryptionAlgorithm {
     AES256_CTR("aes256-ctr", 32, 16),
     AES128_GCM_OPENSSH_COM("aes128-gcm@openssh.com", 16, 16),
     AES256_GCM_OPENSSH_COM("aes256-gcm@openssh.com", 32, 16),
-    CHACHA20_POLY1305_OPENSSH_COM("chacha20-poly1305@openssh.com", 64, 0), // TODO find keylength
+    CHACHA20_POLY1305_OPENSSH_COM("chacha20-poly1305@openssh.com", 64, 0), // TODO
+                                                                           // find
+                                                                           // keylength
     RIJNDAEL_CBC_LYSATOR_LIU_SE("rijndael-cbc@lysator.liu.se", 16, 16);
 
     private final String name;
     private final int keySize;
     private final int blockSize;
 
-    private EncryptionAlgorithm(String name, int keySize, int blockSize) {
+    EncryptionAlgorithm(String name, int keySize, int blockSize) {
         this.name = name;
         this.keySize = keySize;
         this.blockSize = blockSize;

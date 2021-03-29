@@ -1,3 +1,12 @@
+/**
+ * SSH-Attacker - A Modular Penetration Testing Framework for SSH
+ *
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
+ *
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
+ */
 package de.rub.nds.sshattacker.workflow.filter;
 
 import de.rub.nds.sshattacker.config.Config;
@@ -29,7 +38,8 @@ public abstract class Filter {
     /**
      * Apply filter to trace.
      *
-     * @param trace The workflow trace that should be filtered.
+     * @param trace
+     *            The workflow trace that should be filtered.
      */
     public abstract void applyFilter(WorkflowTrace trace);
 
@@ -37,9 +47,11 @@ public abstract class Filter {
      * Perform some additional steps after filtering, for example restoring user
      * defined values.
      *
-     * @param trace Apply post filtering to this workflow trace.
-     * @param reference A reference trace that the postFilter can use. This
-     * could be a trace containing original user definitions, for example.
+     * @param trace
+     *            Apply post filtering to this workflow trace.
+     * @param reference
+     *            A reference trace that the postFilter can use. This could be a
+     *            trace containing original user definitions, for example.
      *
      */
     public void postFilter(WorkflowTrace trace, WorkflowTrace reference) {

@@ -1,3 +1,12 @@
+/**
+ * SSH-Attacker - A Modular Penetration Testing Framework for SSH
+ *
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
+ *
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
+ */
 package de.rub.nds.sshattacker.protocol.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -30,7 +39,7 @@ public class EcdhKeyExchangeInitMessagePreparator extends Preparator<EcdhKeyExch
         byte[] x = ArrayConverter.bigIntegerToByteArray(myPoint.getX().getData());
         byte[] y = ArrayConverter.bigIntegerToByteArray(myPoint.getY().getData());
         // 04 -> no point compression used; it is not supported by openssh
-        context.setClientEcdhPublicKey(ArrayConverter.concatenate(new byte[]{04}, x, y));
+        context.setClientEcdhPublicKey(ArrayConverter.concatenate(new byte[] { 0x04 }, x, y));
     }
 
     @Override

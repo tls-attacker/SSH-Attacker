@@ -1,3 +1,12 @@
+/**
+ * SSH-Attacker - A Modular Penetration Testing Framework for SSH
+ *
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
+ *
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
+ */
 package de.rub.nds.sshattacker.protocol.preparator;
 
 import de.rub.nds.sshattacker.constants.MessageIDConstant;
@@ -28,7 +37,7 @@ public class EcdhKeyExchangeReplyMessagePreparator extends Preparator<EcdhKeyExc
         message.setEphemeralPublicKeyLength(Integer.MAX_VALUE);
         message.setEccCurveIdentifier("");
         message.setEccCurveIdentifierLength(Integer.MAX_VALUE);
-//        TODO implement signature calculation
+        // TODO implement signature calculation
         message.setSignature(new byte[0]);
         message.setSignatureLength(Integer.MAX_VALUE);
     }

@@ -1,3 +1,12 @@
+/**
+ * SSH-Attacker - A Modular Penetration Testing Framework for SSH
+ *
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
+ *
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
+ */
 package de.rub.nds.sshattacker.protocol.message;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
@@ -10,7 +19,7 @@ import de.rub.nds.sshattacker.protocol.preparator.Preparator;
 import de.rub.nds.sshattacker.protocol.serializer.Serializer;
 import de.rub.nds.sshattacker.state.SshContext;
 
-public class BinaryPacket extends Message {
+public class BinaryPacket extends Message<BinaryPacket> {
 
     private ModifiableInteger packetLength;
     private ModifiableByte paddingLength;
@@ -26,7 +35,7 @@ public class BinaryPacket extends Message {
     }
 
     public BinaryPacket(byte[] payload) {
-        this.payload = ModifiableVariableFactory.safelySetValue(this.payload, payload);
+        this.payload = ModifiableVariableFactory.safelySetValue(null, payload);
     }
 
     public ModifiableInteger getPacketLength() {
@@ -95,40 +104,37 @@ public class BinaryPacket extends Message {
 
     public void computePacketLength() {
         packetLength = ModifiableVariableFactory.safelySetValue(packetLength,
-                payload.getValue().length + paddingLength.getValue()
-                + BinaryPacketConstants.PADDING_FIELD_LENGTH);
+                payload.getValue().length + paddingLength.getValue() + BinaryPacketConstants.PADDING_FIELD_LENGTH);
     }
 
     public void computePaddingLength(byte blockSize) {
-        //packetLength has to be divisible by 8 or blockSize whichever is greater
+        // packetLength has to be divisible by 8 or blockSize whichever is
+        // greater
         if (blockSize < 8) {
             blockSize = 8;
         }
 
-        byte excessBytes = (byte) ((payload.getValue().length
-                + BinaryPacketConstants.PADDING_FIELD_LENGTH
-                + BinaryPacketConstants.PACKET_FIELD_LENGTH) % blockSize);
+        byte excessBytes = (byte) ((payload.getValue().length + BinaryPacketConstants.PADDING_FIELD_LENGTH + BinaryPacketConstants.PACKET_FIELD_LENGTH) % blockSize);
 
         byte intermediatePaddingLength = (byte) (blockSize - excessBytes);
         if (intermediatePaddingLength < 4) {
             intermediatePaddingLength += blockSize;
         }
-        paddingLength = ModifiableVariableFactory.safelySetValue(paddingLength,
-                intermediatePaddingLength);
+        paddingLength = ModifiableVariableFactory.safelySetValue(paddingLength, intermediatePaddingLength);
     }
 
     @Override
-    public Handler getHandler(SshContext context) {
+    public Handler<BinaryPacket> getHandler(SshContext context) {
         return null;
     }
 
     @Override
-    public Serializer getSerializer() {
+    public Serializer<BinaryPacket> getSerializer() {
         return null;
     }
 
     @Override
-    public Preparator getPreparator(SshContext context) {
+    public Preparator<BinaryPacket> getPreparator(SshContext context) {
         return null;
     }
 

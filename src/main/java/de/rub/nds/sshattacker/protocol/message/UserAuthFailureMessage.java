@@ -1,17 +1,23 @@
+/**
+ * SSH-Attacker - A Modular Penetration Testing Framework for SSH
+ *
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
+ *
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
+ */
 package de.rub.nds.sshattacker.protocol.message;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
-import de.rub.nds.sshattacker.protocol.handler.Handler;
 import de.rub.nds.sshattacker.protocol.handler.UserAuthFailureMessageHandler;
-import de.rub.nds.sshattacker.protocol.preparator.Preparator;
 import de.rub.nds.sshattacker.protocol.preparator.UserAuthFailureMessagePreparator;
-import de.rub.nds.sshattacker.protocol.serializer.Serializer;
 import de.rub.nds.sshattacker.protocol.serializer.UserAuthFailureMessageSerializer;
 import de.rub.nds.sshattacker.state.SshContext;
 
-public class UserAuthFailureMessage extends Message {
+public class UserAuthFailureMessage extends Message<UserAuthFailureMessage> {
 
     private ModifiableString possibleAuthenticationMethods;
     private ModifiableByte partialSuccess;
@@ -21,7 +27,8 @@ public class UserAuthFailureMessage extends Message {
     }
 
     public void setPossibleAuthenticationMethods(String possibleAuthenticationMethods) {
-        this.possibleAuthenticationMethods = ModifiableVariableFactory.safelySetValue(this.possibleAuthenticationMethods, possibleAuthenticationMethods);
+        this.possibleAuthenticationMethods = ModifiableVariableFactory.safelySetValue(
+                this.possibleAuthenticationMethods, possibleAuthenticationMethods);
     }
 
     public ModifiableByte getPartialSuccess() {
@@ -37,17 +44,17 @@ public class UserAuthFailureMessage extends Message {
     }
 
     @Override
-    public Handler getHandler(SshContext context) {
+    public UserAuthFailureMessageHandler getHandler(SshContext context) {
         return new UserAuthFailureMessageHandler(context);
     }
 
     @Override
-    public Serializer getSerializer() {
+    public UserAuthFailureMessageSerializer getSerializer() {
         return new UserAuthFailureMessageSerializer(this);
     }
 
     @Override
-    public Preparator getPreparator(SshContext context) {
+    public UserAuthFailureMessagePreparator getPreparator(SshContext context) {
         return new UserAuthFailureMessagePreparator(context, this);
     }
 

@@ -1,3 +1,12 @@
+/**
+ * SSH-Attacker - A Modular Penetration Testing Framework for SSH
+ *
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
+ *
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
+ */
 package de.rub.nds.sshattacker.protocol.message;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
@@ -10,7 +19,7 @@ import de.rub.nds.sshattacker.protocol.serializer.ChannelCloseMessageSerializer;
 import de.rub.nds.sshattacker.protocol.serializer.Serializer;
 import de.rub.nds.sshattacker.state.SshContext;
 
-public class ChannelCloseMessage extends Message {
+public class ChannelCloseMessage extends Message<ChannelCloseMessage> {
 
     private ModifiableInteger recipientChannel;
 
@@ -27,17 +36,17 @@ public class ChannelCloseMessage extends Message {
     }
 
     @Override
-    public Handler getHandler(SshContext context) {
+    public Handler<ChannelCloseMessage> getHandler(SshContext context) {
         return new ChannelCloseMessageHandler(context);
     }
 
     @Override
-    public Serializer getSerializer() {
+    public Serializer<ChannelCloseMessage> getSerializer() {
         return new ChannelCloseMessageSerializer(this);
     }
 
     @Override
-    public Preparator getPreparator(SshContext context) {
+    public Preparator<ChannelCloseMessage> getPreparator(SshContext context) {
         return new ChannelCloseMessagePreparator(context, this);
     }
 

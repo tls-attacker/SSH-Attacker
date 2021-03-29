@@ -1,3 +1,12 @@
+/**
+ * SSH-Attacker - A Modular Penetration Testing Framework for SSH
+ *
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
+ *
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
+ */
 package de.rub.nds.sshattacker.constants;
 
 public enum MacAlgorithm {
@@ -22,7 +31,7 @@ public enum MacAlgorithm {
     private final int keySize;
     private final int outputSize;
 
-    private MacAlgorithm(String name, int keySize, int outputSize) {
+    MacAlgorithm(String name, int keySize, int outputSize) {
         this.name = name;
         this.keySize = keySize;
         this.outputSize = outputSize;

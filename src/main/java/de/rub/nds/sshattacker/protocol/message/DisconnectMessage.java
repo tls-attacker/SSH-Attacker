@@ -1,17 +1,23 @@
+/**
+ * SSH-Attacker - A Modular Penetration Testing Framework for SSH
+ *
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
+ *
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
+ */
 package de.rub.nds.sshattacker.protocol.message;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.sshattacker.protocol.handler.DisconnectMessageHandler;
-import de.rub.nds.sshattacker.protocol.handler.Handler;
 import de.rub.nds.sshattacker.protocol.preparator.DisconnectMessagePreparator;
-import de.rub.nds.sshattacker.protocol.preparator.Preparator;
 import de.rub.nds.sshattacker.protocol.serializer.DisconnectMessageSerializer;
-import de.rub.nds.sshattacker.protocol.serializer.Serializer;
 import de.rub.nds.sshattacker.state.SshContext;
 
-public class DisconnectMessage extends Message {
+public class DisconnectMessage extends Message<DisconnectMessage> {
 
     private ModifiableInteger reasonCode;
     private ModifiableString description;
@@ -57,17 +63,17 @@ public class DisconnectMessage extends Message {
     }
 
     @Override
-    public Handler getHandler(SshContext context) {
+    public DisconnectMessageHandler getHandler(SshContext context) {
         return new DisconnectMessageHandler(context);
     }
 
     @Override
-    public Serializer getSerializer() {
+    public DisconnectMessageSerializer getSerializer() {
         return new DisconnectMessageSerializer(this);
     }
 
     @Override
-    public Preparator getPreparator(SshContext context) {
+    public DisconnectMessagePreparator getPreparator(SshContext context) {
         return new DisconnectMessagePreparator(context, this);
     }
 }

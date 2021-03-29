@@ -1,3 +1,12 @@
+/**
+ * SSH-Attacker - A Modular Penetration Testing Framework for SSH
+ *
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
+ *
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
+ */
 package de.rub.nds.sshattacker.protocol.serializer;
 
 import de.rub.nds.sshattacker.constants.BinaryPacketConstants;
@@ -42,8 +51,10 @@ public class KeyExchangeInitMessageSerializer extends MessageSerializer<KeyExcha
     }
 
     private void serializeEncryptionAlgorithmsClientToServerLength() {
-        LOGGER.debug("EncryptionAlgorithmsClientToServerLength" + msg.getEncryptionAlgorithmsClientToServerLength().getValue());
-        appendInt(msg.getEncryptionAlgorithmsClientToServerLength().getValue(), BinaryPacketConstants.LENGTH_FIELD_LENGTH);
+        LOGGER.debug("EncryptionAlgorithmsClientToServerLength"
+                + msg.getEncryptionAlgorithmsClientToServerLength().getValue());
+        appendInt(msg.getEncryptionAlgorithmsClientToServerLength().getValue(),
+                BinaryPacketConstants.LENGTH_FIELD_LENGTH);
     }
 
     private void serializeEncryptionAlgorithmsClientToServer() {
@@ -52,8 +63,10 @@ public class KeyExchangeInitMessageSerializer extends MessageSerializer<KeyExcha
     }
 
     private void serializeEncryptionAlgorithmsServerToClientLength() {
-        LOGGER.debug("EncryptionAlgorithmsServerToClientLength: " + msg.getEncryptionAlgorithmsServerToClientLength().getValue());
-        appendInt(msg.getEncryptionAlgorithmsServerToClientLength().getValue(), BinaryPacketConstants.LENGTH_FIELD_LENGTH);
+        LOGGER.debug("EncryptionAlgorithmsServerToClientLength: "
+                + msg.getEncryptionAlgorithmsServerToClientLength().getValue());
+        appendInt(msg.getEncryptionAlgorithmsServerToClientLength().getValue(),
+                BinaryPacketConstants.LENGTH_FIELD_LENGTH);
     }
 
     private void serializeEncryptionAlgorithmsServerToClient() {
@@ -82,8 +95,10 @@ public class KeyExchangeInitMessageSerializer extends MessageSerializer<KeyExcha
     }
 
     private void serializeCompressionAlgorithmsClientToServerLength() {
-        LOGGER.debug("CompressionAlgorithmsClientToServerLength: " + msg.getCompressionAlgorithmsClientToServerLength().getValue());
-        appendInt(msg.getCompressionAlgorithmsClientToServerLength().getValue(), BinaryPacketConstants.LENGTH_FIELD_LENGTH);
+        LOGGER.debug("CompressionAlgorithmsClientToServerLength: "
+                + msg.getCompressionAlgorithmsClientToServerLength().getValue());
+        appendInt(msg.getCompressionAlgorithmsClientToServerLength().getValue(),
+                BinaryPacketConstants.LENGTH_FIELD_LENGTH);
     }
 
     private void serializeCompressionAlgorithmsClientToServer() {
@@ -92,8 +107,10 @@ public class KeyExchangeInitMessageSerializer extends MessageSerializer<KeyExcha
     }
 
     private void serializeCompressionAlgorithmsServerToClientLength() {
-        LOGGER.debug("CompressionAlgorithmsServerToClientLength: " + msg.getCompressionAlgorithmsServerToClientLength().getValue());
-        appendInt(msg.getCompressionAlgorithmsServerToClientLength().getValue(), BinaryPacketConstants.LENGTH_FIELD_LENGTH);
+        LOGGER.debug("CompressionAlgorithmsServerToClientLength: "
+                + msg.getCompressionAlgorithmsServerToClientLength().getValue());
+        appendInt(msg.getCompressionAlgorithmsServerToClientLength().getValue(),
+                BinaryPacketConstants.LENGTH_FIELD_LENGTH);
     }
 
     private void serializeCompressionAlgorithmsServerToClient() {

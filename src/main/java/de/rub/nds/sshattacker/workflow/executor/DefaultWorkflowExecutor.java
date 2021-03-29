@@ -1,3 +1,12 @@
+/**
+ * SSH-Attacker - A Modular Penetration Testing Framework for SSH
+ *
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
+ *
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
+ */
 package de.rub.nds.sshattacker.workflow.executor;
 
 import de.rub.nds.sshattacker.exceptions.PreparationException;
@@ -9,6 +18,7 @@ import de.rub.nds.sshattacker.connection.AliasedConnection;
 import de.rub.nds.sshattacker.workflow.action.SshAction;
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -32,7 +42,8 @@ public class DefaultWorkflowExecutor extends WorkflowExecutor {
                 try {
                     ctx.initTransportHandler();
                 } catch (IOException e) {
-                    LOGGER.error("Unable to initialize transportHandler: " + e + "\n" + e.getStackTrace());
+                    LOGGER.error("Unable to initialize transportHandler: " + e + "\n"
+                            + Arrays.toString(e.getStackTrace()));
                     LOGGER.error("Hostname: " + con.getHostname());
                     LOGGER.error("Port: " + con.getPort());
 

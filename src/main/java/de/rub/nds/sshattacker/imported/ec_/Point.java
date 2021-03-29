@@ -1,7 +1,8 @@
 /**
- * TLS-Attacker - A Modular Penetration Testing Framework for TLS
+ * SSH-Attacker - A Modular Penetration Testing Framework for SSH
  *
- * Copyright 2014-2017 Ruhr University Bochum / Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -39,9 +40,11 @@ public class Point {
      * EllipticCurve.getPoint() should always be preferred over using this
      * constructor.
      *
-     * @param x A FieldElement representing the x-coordinate of the point.
-     * @param y A FieldElement representing the y-coordinate of the point. x and
-     * y must be elements of the same field.
+     * @param x
+     *            A FieldElement representing the x-coordinate of the point.
+     * @param y
+     *            A FieldElement representing the y-coordinate of the point. x
+     *            and y must be elements of the same field.
      */
     public Point(FieldElement x, FieldElement y) {
         this.x = x;
@@ -75,7 +78,11 @@ public class Point {
             if (this.isAtInfinity() || p.isAtInfinity()) {
                 return this.isAtInfinity() == p.isAtInfinity();
             } else {
-                return this.x.equals(p.getX()) && this.y.equals(p.getY());
+                assert this.x != null;
+                if (!this.x.equals(p.getX()))
+                    return false;
+                assert this.y != null;
+                return this.y.equals(p.getY());
             }
         }
     }

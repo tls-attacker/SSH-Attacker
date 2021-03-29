@@ -1,3 +1,12 @@
+/**
+ * SSH-Attacker - A Modular Penetration Testing Framework for SSH
+ *
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
+ *
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
+ */
 package de.rub.nds.sshattacker.protocol.parser;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
@@ -20,19 +29,22 @@ public class BinaryPacketParser extends Parser<BinaryPacket> {
     }
 
     private void parsePacketLength(BinaryPacket msg) {
-        ModifiableInteger packetLength = ModifiableVariableFactory.safelySetValue(null, parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH));
+        ModifiableInteger packetLength = ModifiableVariableFactory.safelySetValue(null,
+                parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH));
         LOGGER.debug("Packet Length: " + packetLength.getValue());
         msg.setPacketLength(packetLength);
     }
 
     private void parsePaddingLength(BinaryPacket msg) {
-        ModifiableByte paddingLength = ModifiableVariableFactory.safelySetValue(null, parseByteField(BinaryPacketConstants.PADDING_FIELD_LENGTH));
+        ModifiableByte paddingLength = ModifiableVariableFactory.safelySetValue(null,
+                parseByteField(BinaryPacketConstants.PADDING_FIELD_LENGTH));
         LOGGER.debug("Padding Length: " + paddingLength.getValue());
         msg.setPaddingLength(paddingLength);
     }
 
     private void parsePayload(BinaryPacket msg) {
-        int payloadSize = msg.getPacketLength().getValue() - msg.getPaddingLength().getValue() - BinaryPacketConstants.PADDING_FIELD_LENGTH;
+        int payloadSize = msg.getPacketLength().getValue() - msg.getPaddingLength().getValue()
+                - BinaryPacketConstants.PADDING_FIELD_LENGTH;
         LOGGER.debug("Payload Size: " + payloadSize);
         ModifiableByteArray payload = ModifiableVariableFactory.safelySetValue(null, parseByteArrayField(payloadSize));
         LOGGER.debug("Payload: " + payload);
@@ -40,17 +52,24 @@ public class BinaryPacketParser extends Parser<BinaryPacket> {
     }
 
     private void parsePadding(BinaryPacket msg) {
-        ModifiableByteArray padding = ModifiableVariableFactory.safelySetValue(null,
-                parseByteArrayField(msg.getPaddingLength().getValue()));
+        ModifiableByteArray padding = ModifiableVariableFactory.safelySetValue(null, parseByteArrayField(msg
+                .getPaddingLength().getValue()));
         LOGGER.debug("Padding: " + padding);
         msg.setPadding(padding);
     }
 
     private void parseMAC(BinaryPacket msg) {
-        ModifiableByteArray mac = ModifiableVariableFactory.safelySetValue(null, parseArrayOrTillEnd(20)); //TODO hardcoded hmac-sha1 size, needs context to work
+        ModifiableByteArray mac = ModifiableVariableFactory.safelySetValue(null, parseArrayOrTillEnd(20)); // TODO
+                                                                                                           // hardcoded
+                                                                                                           // hmac-sha1
+                                                                                                           // size,
+                                                                                                           // needs
+                                                                                                           // context
+                                                                                                           // to
+                                                                                                           // work
         if (mac.getValue().length == 0) {
             LOGGER.debug("MAC: none");
-            msg.setMac(new byte[]{});
+            msg.setMac(new byte[] {});
         } else {
             LOGGER.debug("MAC: " + mac);
             msg.setMac(mac);

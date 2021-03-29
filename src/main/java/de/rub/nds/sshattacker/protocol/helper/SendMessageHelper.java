@@ -1,3 +1,12 @@
+/**
+ * SSH-Attacker - A Modular Penetration Testing Framework for SSH
+ *
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
+ *
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
+ */
 package de.rub.nds.sshattacker.protocol.helper;
 
 import de.rub.nds.sshattacker.protocol.layers.BinaryPacketLayer;
@@ -10,7 +19,7 @@ import de.rub.nds.sshattacker.state.SshContext;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import de.rub.nds.sshattacker.workflow.action.result.MessageActionResult;
 import java.io.IOException;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
@@ -33,7 +42,7 @@ public class SendMessageHelper {
         }
     }
 
-    public MessageActionResult sendMessage(Message msg, SshContext context) {
+    public MessageActionResult sendMessage(Message<?> msg, SshContext context) {
         MessageLayer messageLayer = context.getMessageLayer();
         BinaryPacketLayer binaryPacketLayer = context.getBinaryPacketLayer();
         TransportHandler transportHandler = context.getTransportHandler();
@@ -43,16 +52,16 @@ public class SendMessageHelper {
             BinaryPacket binaryPacket = messageLayer.serializeMessage(msg);
             transportHandler.sendData(cryptoLayer.macAndEncrypt(binaryPacketLayer.serializeBinaryPacket(binaryPacket)));
             context.incrementSequenceNumber();
-            return new MessageActionResult(Arrays.asList(binaryPacket), Arrays.asList(msg));
+            return new MessageActionResult(Collections.singletonList(binaryPacket), Collections.singletonList(msg));
         } catch (IOException e) {
             LOGGER.warn("Error while sending packet: " + e.getMessage());
             return new MessageActionResult();
         }
     }
 
-    public MessageActionResult sendMessages(List<Message> list, SshContext context) {
+    public MessageActionResult sendMessages(List<Message<?>> list, SshContext context) {
         MessageActionResult result = new MessageActionResult();
-        for (Message msg : list) {
+        for (Message<?> msg : list) {
             if ("ClientInitMessage".equals(msg.getClass().getSimpleName())) {
                 result = sendInitMessage((ClientInitMessage) msg, context);
             } else {
@@ -63,7 +72,8 @@ public class SendMessageHelper {
     }
 
     // TODO dummy
-    public MessageActionResult sendMessages(List<Message> messageList, List<BinaryPacket> binaryPackets, SshContext context) {
+    public MessageActionResult sendMessages(List<Message<?>> messageList, List<BinaryPacket> binaryPackets,
+            SshContext context) {
         return sendMessages(messageList, context);
     }
 
@@ -75,6 +85,6 @@ public class SendMessageHelper {
             LOGGER.debug("Error while sending ClientInitMessage" + e.getMessage());
         }
 
-        return new MessageActionResult(new LinkedList(), Arrays.asList(msg));
+        return new MessageActionResult(new LinkedList<>(), Collections.singletonList(msg));
     }
 }

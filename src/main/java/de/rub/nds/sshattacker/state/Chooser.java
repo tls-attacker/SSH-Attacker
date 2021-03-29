@@ -1,3 +1,12 @@
+/**
+ * SSH-Attacker - A Modular Penetration Testing Framework for SSH
+ *
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
+ *
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
+ */
 package de.rub.nds.sshattacker.state;
 
 import de.rub.nds.sshattacker.config.Config;
@@ -13,8 +22,8 @@ import java.util.List;
 
 public class Chooser {
 
-    private SshContext context;
-    private Config config;
+    private final SshContext context;
+    private final Config config;
 
     public Chooser(SshContext context) {
         this.context = context;
@@ -46,11 +55,13 @@ public class Chooser {
     }
 
     public List<KeyExchangeAlgorithm> getClientSupportedKeyExchangeAlgorithms() {
-        return context.getClientSupportedKeyExchangeAlgorithms().orElse(config.getClientSupportedKeyExchangeAlgorithms());
+        return context.getClientSupportedKeyExchangeAlgorithms().orElse(
+                config.getClientSupportedKeyExchangeAlgorithms());
     }
 
     public List<KeyExchangeAlgorithm> getServerSupportedKeyExchangeAlgorithms() {
-        return context.getServerSupportedKeyExchangeAlgorithms().orElse(config.getServerSupportedKeyExchangeAlgorithms());
+        return context.getServerSupportedKeyExchangeAlgorithms().orElse(
+                config.getServerSupportedKeyExchangeAlgorithms());
     }
 
     public List<PublicKeyAuthenticationAlgorithm> getClientSupportedHostKeyAlgorithms() {
@@ -62,77 +73,91 @@ public class Chooser {
     }
 
     public List<EncryptionAlgorithm> getClientSupportedCipherAlgorithmsClientToServer() {
-        return context.getClientSupportedCipherAlgorithmsClientToServer().orElse(config.getClientSupportedCipherAlgorithmsClientToServer());
+        return context.getClientSupportedCipherAlgorithmsClientToServer().orElse(
+                config.getClientSupportedCipherAlgorithmsClientToServer());
     }
 
     public List<EncryptionAlgorithm> getClientSupportedCipherAlgorithmsServertoClient() {
-        return context.getClientSupportedCipherAlgorithmsServertoClient().orElse(config.getClientSupportedCipherAlgorithmsServerToClient());
+        return context.getClientSupportedCipherAlgorithmsServertoClient().orElse(
+                config.getClientSupportedCipherAlgorithmsServerToClient());
     }
 
     public List<EncryptionAlgorithm> getServerSupportedCipherAlgorithmsServerToClient() {
-        return context.getServerSupportedCipherAlgorithmsServerToClient().orElse(config.getServerSupportedCipherAlgorithmsServerToClient());
+        return context.getServerSupportedCipherAlgorithmsServerToClient().orElse(
+                config.getServerSupportedCipherAlgorithmsServerToClient());
     }
 
     public List<EncryptionAlgorithm> getServerSupportedCipherAlgorithmsClientToServer() {
-        return context.getServerSupportedCipherAlgorithmsClientToServer().orElse(config.getServerSupportedCipherAlgorithmsClientToServer());
+        return context.getServerSupportedCipherAlgorithmsClientToServer().orElse(
+                config.getServerSupportedCipherAlgorithmsClientToServer());
     }
 
     public List<MacAlgorithm> getClientSupportedMacAlgorithmsClientToServer() {
-        return context.getClientSupportedMacAlgorithmsClientToServer().orElse(config.getClientSupportedMacAlgorithmsClientToServer());
+        return context.getClientSupportedMacAlgorithmsClientToServer().orElse(
+                config.getClientSupportedMacAlgorithmsClientToServer());
     }
 
     public List<MacAlgorithm> getClientSupportedMacAlgorithmsServerToClient() {
-        return context.getClientSupportedMacAlgorithmsServerToClient().orElse(config.getClientSupportedMacAlgorithmsServerToClient());
+        return context.getClientSupportedMacAlgorithmsServerToClient().orElse(
+                config.getClientSupportedMacAlgorithmsServerToClient());
     }
 
     public List<MacAlgorithm> getServerSupportedMacAlgorithmsServerToClient() {
-        return context.getServerSupportedMacAlgorithmsServerToClient().orElse(config.getServerSupportedMacAlgorithmsServerToClient());
+        return context.getServerSupportedMacAlgorithmsServerToClient().orElse(
+                config.getServerSupportedMacAlgorithmsServerToClient());
     }
 
     public List<MacAlgorithm> getServerSupportedMacAlgorithmsClientToServer() {
-        return context.getServerSupportedMacAlgorithmsClientToServer().orElse(config.getServerSupportedMacAlgorithmsClientToServer());
+        return context.getServerSupportedMacAlgorithmsClientToServer().orElse(
+                config.getServerSupportedMacAlgorithmsClientToServer());
     }
 
     public List<CompressionAlgorithm> getClientSupportedCompressionAlgorithmsClientToServer() {
-        return context.getClientSupportedCompressionAlgorithmsClientToServer().orElse(config.getClientSupportedCompressionAlgorithmsClientToServer());
+        return context.getClientSupportedCompressionAlgorithmsClientToServer().orElse(
+                config.getClientSupportedCompressionAlgorithmsClientToServer());
     }
 
     public List<CompressionAlgorithm> getClientSupportedCompressionAlgorithmsServerToClient() {
-        return context.getClientSupportedCompressionAlgorithmsServerToClient().orElse(config.getClientSupportedCompressionAlgorithmsServerToClient());
+        return context.getClientSupportedCompressionAlgorithmsServerToClient().orElse(
+                config.getClientSupportedCompressionAlgorithmsServerToClient());
     }
 
     public List<CompressionAlgorithm> getServerSupportedCompressionAlgorithmsServerToClient() {
-        return context.getServerSupportedCompressionAlgorithmsServerToClient().orElse(config.getServerSupportedCompressionAlgorithmsServerToClient());
+        return context.getServerSupportedCompressionAlgorithmsServerToClient().orElse(
+                config.getServerSupportedCompressionAlgorithmsServerToClient());
     }
 
     public List<CompressionAlgorithm> getServerSupportedCompressionAlgorithmsClientToServer() {
-        return context.getServerSupportedCompressionAlgorithmsClientToServer().orElse(config.getServerSupportedCompressionAlgorithmsClientToServer());
+        return context.getServerSupportedCompressionAlgorithmsClientToServer().orElse(
+                config.getServerSupportedCompressionAlgorithmsClientToServer());
     }
 
     public List<Language> getClientSupportedLanguagesClientToServer() {
-        return context.getClientSupportedLanguagesClientToServer().orElse(config.getClientSupportedLanguagesClientToServer());
+        return context.getClientSupportedLanguagesClientToServer().orElse(
+                config.getClientSupportedLanguagesClientToServer());
     }
 
     public List<Language> getClientSupportedLanguagesServerToClient() {
-        return context.getClientSupportedLanguagesServerToClient().orElse(config.getClientSupportedLanguagesServerToClient());
+        return context.getClientSupportedLanguagesServerToClient().orElse(
+                config.getClientSupportedLanguagesServerToClient());
     }
 
     public List<Language> getServerSupportedLanguagesServerToClient() {
-        return context.getServerSupportedLanguagesServerToClient().orElse(config.getServerSupportedLanguagesServerToClient());
+        return context.getServerSupportedLanguagesServerToClient().orElse(
+                config.getServerSupportedLanguagesServerToClient());
     }
 
     public List<Language> getServerSupportedLanguagesClientToServer() {
-        return context.getServerSupportedLanguagesClientToServer().orElse(config.getServerSupportedLanguagesClientToServer());
+        return context.getServerSupportedLanguagesClientToServer().orElse(
+                config.getServerSupportedLanguagesClientToServer());
     }
 
     public byte getClientFirstKeyExchangePacketFollows() {
-        return context.getClientFirstKeyExchangePacketFollows().orElse(
-                config.getClientFirstKeyExchangePacketFollows());
+        return context.getClientFirstKeyExchangePacketFollows().orElse(config.getClientFirstKeyExchangePacketFollows());
     }
 
     public byte getServerFirstKeyExchangePacketFollows() {
-        return context.getServerFirstKeyExchangePacketFollows().orElse(
-                config.getServerFirstKeyExchangePacketFollows());
+        return context.getServerFirstKeyExchangePacketFollows().orElse(config.getServerFirstKeyExchangePacketFollows());
     }
 
     public int getClientReserved() {
@@ -177,20 +202,20 @@ public class Chooser {
 
     public byte getReplyWanted() {
         return 0;
-//        if (context.getReplyWanted() != 0) {
-//            return context.getReplyWanted();
-//        } else {
-//            return config.getReplyWanted();
-//        }
+        // if (context.getReplyWanted() != 0) {
+        // return context.getReplyWanted();
+        // } else {
+        // return config.getReplyWanted();
+        // }
     }
 
     public int getLocalChannel() {
         return 0;
-//        if (context.getLocalChannel() != 0) {
-//            return context.getLocalChannel();
-//        } else {
-//            return config.getLocalChannel();
-//        }
+        // if (context.getLocalChannel() != 0) {
+        // return context.getLocalChannel();
+        // } else {
+        // return config.getLocalChannel();
+        // }
     }
 
     public ChannelType getChannelType() {
@@ -235,11 +260,11 @@ public class Chooser {
 
     public int getRemoteChannel() {
         return 0;
-//        if (context.getRemoteChannel() != 0){
-//            return context.getRemoteChannel();
-//        } else {
-//            return config.getRemoteChannel();
-//        }
+        // if (context.getRemoteChannel() != 0){
+        // return context.getRemoteChannel();
+        // } else {
+        // return config.getRemoteChannel();
+        // }
     }
 
     public String getServiceName() {

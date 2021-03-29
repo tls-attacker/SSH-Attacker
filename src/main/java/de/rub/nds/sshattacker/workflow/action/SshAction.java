@@ -1,3 +1,12 @@
+/**
+ * SSH-Attacker - A Modular Penetration Testing Framework for SSH
+ *
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
+ *
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
+ */
 package de.rub.nds.sshattacker.workflow.action;
 
 import de.rub.nds.sshattacker.exceptions.ConfigurationException;
@@ -67,7 +76,8 @@ public abstract class SshAction implements Serializable, Aliasable {
     /**
      * Add default values from given defaultAction and initialize empty fields.
      *
-     * @param defaultAction Not needed / not evaluated
+     * @param defaultAction
+     *            Not needed / not evaluated
      */
     public void normalize(SshAction defaultAction) {
         // We don't need any defaults
@@ -82,7 +92,8 @@ public abstract class SshAction implements Serializable, Aliasable {
     /**
      * Filter empty fields and default values given in defaultAction.
      *
-     * @param defaultAction Not needed / not evaluated
+     * @param defaultAction
+     *            Not needed / not evaluated
      */
     public void filter(SshAction defaultAction) {
     }
@@ -97,14 +108,10 @@ public abstract class SshAction implements Serializable, Aliasable {
         return getAllAliases().containsAll(aliases);
     }
 
-    ;
-
     @Override
     public boolean containsAlias(String alias) {
         return getAllAliases().contains(alias);
     }
-
-    ;
 
     @Override
     public void assertAliasesSetProperly() throws ConfigurationException {
