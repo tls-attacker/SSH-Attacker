@@ -17,6 +17,7 @@ package de.rub.nds.sshattacker.protocol.message;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
+import de.rub.nds.sshattacker.constants.CharConstants;
 import de.rub.nds.sshattacker.protocol.handler.ClientInitMessageHandler;
 import de.rub.nds.sshattacker.protocol.preparator.ClientInitMessagePreparator;
 import de.rub.nds.sshattacker.protocol.serializer.ClientInitMessageSerializer;
@@ -56,6 +57,12 @@ public class ClientInitMessage extends Message<ClientInitMessage> {
 
     public void setComment(String comment) {
         this.comment = ModifiableVariableFactory.safelySetValue(this.comment, comment);
+    }
+
+    public String getIdentification() {
+        if(this.comment.getValue().isEmpty())
+            return this.version.getValue();
+        return this.version.getValue() + CharConstants.VERSION_COMMENT_SEPARATOR + this.comment.getValue();
     }
 
     public void setComment(ModifiableString comment) {

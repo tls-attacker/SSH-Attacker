@@ -24,6 +24,6 @@ public class ClientInitMessageHandler extends Handler<ClientInitMessage> {
     public void handle(ClientInitMessage message) {
         context.setServerVersion(message.getVersion().getValue());
         context.setServerComment(message.getComment().getValue());
-        context.appendToExchangeHashInput(Objects.requireNonNull(context.getServerVersion().orElse(null)).getBytes());
+        context.appendToExchangeHashInput(message.getIdentification().getBytes());
     }
 }
