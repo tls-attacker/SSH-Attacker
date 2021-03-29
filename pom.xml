@@ -1,10 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>SSH-Attacker</artifactId>
     <groupId>de.rub.nds.sshattacker</groupId>
+    <artifactId>SSH-Attacker</artifactId>
     <version>0.1</version>
     <packaging>jar</packaging>
+    <name>SSH-Attacker</name>
+    <url>https://github.com/RUB-NDS/SSH-Attacker</url>
+
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <!-- Information to version control system -->
+    <scm>
+        <connection>scm:git:git://github.com/RUB-NDS/SSH-Attacker.git</connection>
+        <developerConnection>scm:git:ssh://github.com/RUB_NDS/SSH-Attacker.git</developerConnection>
+        <url>https://github.com/RUB-NDS/SSH-Attacker/tree/master</url>
+    </scm>
+
     <dependencies>
         <dependency>
             <groupId>junit</groupId>
@@ -70,11 +88,12 @@
                     </execution> 
                 </executions> 
             </plugin>
+            <!-- Build an executable JAR -->
+            <!-- TODO: Adjust mainClass -->
             <plugin>
-                <!-- Build an executable JAR -->
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
-                <version>2.6</version>
+                <version>3.2.0</version>
                 <configuration>
                     <archive>
                         <manifest>
@@ -85,6 +104,34 @@
                     </archive>
                 </configuration>
             </plugin>
+            <!-- Specify Java Version -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.8.1</version>
+                <configuration>
+                    <source>8</source>
+                    <target>8</target>
+                </configuration>
+            </plugin>
+            <!-- Format the Code -->
+            <plugin>
+                <groupId>net.revelc.code</groupId>
+                <artifactId>formatter-maven-plugin</artifactId>
+                <version>0.5.2</version>
+                <configuration>
+                    <configFile>${project.basedir}/maven-eclipse-codestyle.xml</configFile>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>process-sources</phase>
+                        <goals>
+                            <goal>format</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <!-- Use a license header -->
             <plugin>
                 <groupId>com.mycila</groupId>
                 <artifactId>license-maven-plugin</artifactId>
@@ -100,6 +147,38 @@
                         <owner>Ruhr University Bochum, Hackmanit GmbH</owner>
                     </properties>
                 </configuration>
+                <executions>
+                    <execution>
+                        <phase>process-sources</phase>
+                        <goals>
+                            <goal>format</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <!-- Enforce Maven and Java Version -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <version>3.0.0-M3</version>
+                <executions>
+                    <execution>
+                        <id>default-cli</id>
+                        <goals>
+                            <goal>enforce</goal>
+                        </goals>
+                        <configuration>
+                            <rules>
+                                <requireMavenVersion>
+                                    <version>3.3.9</version>
+                                </requireMavenVersion>
+                                <requireJavaVersion>
+                                    <version>1.8,11</version>
+                                </requireJavaVersion>
+                            </rules>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
