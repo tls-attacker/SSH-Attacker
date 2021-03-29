@@ -18,7 +18,7 @@ public class ServiceRequestMessageSerializer extends MessageSerializer<ServiceRe
     @Override
     protected byte[] serializeMessageSpecificPayload() {
         LOGGER.debug("serviceName: " + msg.getServiceName().getValue());
-        appendBytes(Converter.stringToLengthPrefixedString(msg.getServiceName().getValue()));
+        appendBytes(Converter.stringToLengthPrefixedBinaryString(msg.getServiceName().getValue()));
         return getAlreadySerialized();
     }
 

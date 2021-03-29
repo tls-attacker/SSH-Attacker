@@ -22,7 +22,7 @@ public class ChannelRequestMessageSerializer extends MessageSerializer<ChannelRe
         LOGGER.debug("recipientChannel: " + msg.getRecipientChannel().getValue());
         appendInt(msg.getRecipientChannel().getValue(), DataFormatConstants.INT32_SIZE);
         LOGGER.debug("requestType: " + msg.getRequestType().getValue());
-        appendBytes(Converter.stringToLengthPrefixedString(msg.getRequestType().getValue()));
+        appendBytes(Converter.stringToLengthPrefixedBinaryString(msg.getRequestType().getValue()));
         LOGGER.debug("replyWanted: " + msg.getReplyWanted().getValue());
         appendByte(msg.getReplyWanted().getValue());
         LOGGER.debug("payload: " + ArrayConverter.bytesToHexString(msg.getPayload().getValue()));

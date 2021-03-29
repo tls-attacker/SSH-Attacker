@@ -16,7 +16,7 @@ public class ChannelRequestMessagePreparator extends Preparator<ChannelRequestMe
         message.setMessageID(MessageIDConstant.SSH_MSG_CHANNEL_REQUEST.id);
         message.setReplyWanted(context.getChooser().getReplyWanted());
         message.setRequestType(context.getChooser().getChannelRequestType().toString());
-        message.setPayload(Converter.stringToLengthPrefixedString(context.getChooser().getChannelCommand()));
+        message.setPayload(Converter.stringToLengthPrefixedBinaryString(context.getChooser().getChannelCommand()));
         message.setRecipientChannel(context.getChooser().getRemoteChannel());
     }
 

@@ -10,7 +10,7 @@ public class UserAuthFailureMessageSerializer extends MessageSerializer<UserAuth
     }
 
     private void serializePossibleAuthenticationMethods() {
-        appendBytes(Converter.stringToLengthPrefixedString(msg.getPossibleAuthenticationMethods().getValue()));
+        appendBytes(Converter.stringToLengthPrefixedBinaryString(msg.getPossibleAuthenticationMethods().getValue()));
     }
 
     private void serializePartialSuccess() {

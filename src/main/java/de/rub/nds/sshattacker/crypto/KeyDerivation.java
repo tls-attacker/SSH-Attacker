@@ -49,18 +49,18 @@ public class KeyDerivation {
     }
 
     public static byte[] computeExchangeHash(String clientVersion,
-            String serverVersion, String clientInitMessage,
-            String serverInitMessage, String hostKey, String clientKeyShare,
-            String serverKeyShare, byte[] sharedSecret, String hashFunction) {
-        byte[] clientVersionConverted = Converter.stringToLengthPrefixedString(clientVersion);
-        byte[] serverVersionConverted = Converter.stringToLengthPrefixedString(serverVersion);
-        byte[] clientInitMessageConverted = Converter.stringToLengthPrefixedString(clientInitMessage);
-        byte[] serverInitMessageConverted = Converter.stringToLengthPrefixedString(serverInitMessage);
-        byte[] hostKeyConverted = Converter.stringToLengthPrefixedString(hostKey);
-        byte[] clientKeyShareConverted = Converter.stringToLengthPrefixedString(clientKeyShare);
-        byte[] serverKeyShareConverted = Converter.stringToLengthPrefixedString(serverKeyShare);
-        byte[] keyShareConverted = Converter.byteArraytoMpint(sharedSecret);
-        byte[] input = ArrayConverter.concatenate(clientVersionConverted, serverVersionConverted, clientInitMessageConverted, serverInitMessageConverted, hostKeyConverted, clientKeyShareConverted, serverKeyShareConverted, keyShareConverted);
+            String serverVersion, byte[] clientInitMessage,
+            byte[] serverInitMessage, byte[] hostKey, byte[] clientKeyShare,
+            byte[] serverKeyShare, byte[] sharedSecret, String hashFunction) {
+        byte[] clientVersionConverted = Converter.stringToLengthPrefixedBinaryString(clientVersion);
+        byte[] serverVersionConverted = Converter.stringToLengthPrefixedBinaryString(serverVersion);
+        byte[] clientInitMessageString = Converter.bytesToLengthPrefixedBinaryString(clientInitMessage);
+        byte[] serverInitMessageString = Converter.bytesToLengthPrefixedBinaryString(serverInitMessage);
+        byte[] hostKeyString = Converter.bytesToLengthPrefixedBinaryString(hostKey);
+        byte[] clientKeyShareString = Converter.bytesToLengthPrefixedBinaryString(clientKeyShare);
+        byte[] serverKeyShareString = Converter.bytesToLengthPrefixedBinaryString(serverKeyShare);
+        byte[] keyShareString = Converter.byteArrayToMpint(sharedSecret);
+        byte[] input = ArrayConverter.concatenate(clientVersionConverted, serverVersionConverted, clientInitMessageString, serverInitMessageString, hostKeyString, clientKeyShareString, serverKeyShareString, keyShareString);
 
         return getMessageDigestInstance(hashFunction).digest(input);
     }
@@ -83,7 +83,7 @@ public class KeyDerivation {
     }
 
     public static byte[] deriveKey(byte[] sharedKey, byte[] exchangeHash, byte use, byte[] sessionID, int outputLen, String hashFunction) {
-        byte[] sharedKeyMpint = Converter.byteArraytoMpint(sharedKey);
+        byte[] sharedKeyMpint = Converter.byteArrayToMpint(sharedKey);
         try {
             MessageDigest md = MessageDigest.getInstance(hashFunction);
             ByteArrayOutputStream outStream = new ByteArrayOutputStream();

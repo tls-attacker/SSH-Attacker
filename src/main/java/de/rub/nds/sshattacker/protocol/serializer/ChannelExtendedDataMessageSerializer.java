@@ -19,7 +19,7 @@ public class ChannelExtendedDataMessageSerializer extends MessageSerializer<Chan
     }
 
     private void serializeData() {
-        appendBytes(Converter.stringToLengthPrefixedString(msg.getData().getValue()));
+        appendBytes(Converter.stringToLengthPrefixedBinaryString(msg.getData().getValue()));
     }
 
     @Override

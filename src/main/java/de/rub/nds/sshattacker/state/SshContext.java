@@ -619,7 +619,7 @@ public class SshContext {
     }
 
     public void appendToExchangeHashInput(byte[] additionalData) {
-        exchangeHashInput = ArrayConverter.concatenate(exchangeHashInput, Converter.bytesToLenghPrefixedString(additionalData));
+        exchangeHashInput = ArrayConverter.concatenate(exchangeHashInput, Converter.bytesToLengthPrefixedBinaryString(additionalData));
     }
 
     public byte[] getClientEcdhSecretKey() {

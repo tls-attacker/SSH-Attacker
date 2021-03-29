@@ -43,11 +43,11 @@ public class EcdhKeyExchangeReplyMessageHandler extends Handler<EcdhKeyExchangeR
         context.setHostKeyRsaModulus(message.getHostKeyRsaModulus().getValue());
         context.appendToExchangeHashInput(
                 ArrayConverter.concatenate(
-                        Converter.stringToLengthPrefixedString(context.getHostKeyType()),
-                        Converter.bytesToLenghPrefixedString(ArrayConverter.bigIntegerToByteArray(context.getHostKeyRsaExponent())),
-                        Converter.bytesToLenghPrefixedString(ArrayConverter.concatenate(new byte[]{00}, // asn1 leading byte
+                        Converter.stringToLengthPrefixedBinaryString(context.getHostKeyType()),
+                        Converter.bytesToLengthPrefixedBinaryString(ArrayConverter.bigIntegerToByteArray(context.getHostKeyRsaExponent())),
+                        Converter.bytesToLengthPrefixedBinaryString(ArrayConverter.concatenate(new byte[]{00}, // asn1 leading byte
                         ArrayConverter.bigIntegerToByteArray(context.getHostKeyRsaModulus())))
-                //                        Converter.bytesToLenghPrefixedString(ArrayConverter.bigIntegerToByteArray(context.getHostKeyRsaModulus(), 32, false))
+                //                        Converter.bytesToLengthPrefixedBinaryString(ArrayConverter.bigIntegerToByteArray(context.getHostKeyRsaModulus(), 32, false))
                 ));
     }
 

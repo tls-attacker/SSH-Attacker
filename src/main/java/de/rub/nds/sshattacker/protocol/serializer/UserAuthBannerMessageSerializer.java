@@ -10,11 +10,11 @@ public class UserAuthBannerMessageSerializer extends MessageSerializer<UserAuthB
     }
 
     private void serializeMessage() {
-        appendBytes(Converter.stringToLengthPrefixedString(msg.getMessage().getValue()));
+        appendBytes(Converter.stringToLengthPrefixedBinaryString(msg.getMessage().getValue()));
     }
 
     private void serializeLanguageTag() {
-        appendBytes(Converter.stringToLengthPrefixedString(msg.getLanguageTag().getValue()));
+        appendBytes(Converter.stringToLengthPrefixedBinaryString(msg.getLanguageTag().getValue()));
     }
 
     @Override

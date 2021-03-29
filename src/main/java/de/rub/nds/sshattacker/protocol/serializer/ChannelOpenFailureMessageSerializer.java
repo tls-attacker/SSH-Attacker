@@ -19,11 +19,11 @@ public class ChannelOpenFailureMessageSerializer extends MessageSerializer<Chann
     }
 
     private void serializeReason() {
-        appendBytes(Converter.stringToLengthPrefixedString(msg.getReason().getValue()));
+        appendBytes(Converter.stringToLengthPrefixedBinaryString(msg.getReason().getValue()));
     }
 
     private void serializeLanguageTag() {
-        appendBytes(Converter.stringToLengthPrefixedString(msg.getLanguageTag().getValue()));
+        appendBytes(Converter.stringToLengthPrefixedBinaryString(msg.getLanguageTag().getValue()));
     }
 
     @Override

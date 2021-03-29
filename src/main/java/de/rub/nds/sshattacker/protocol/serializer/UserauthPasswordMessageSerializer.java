@@ -19,14 +19,14 @@ public class UserauthPasswordMessageSerializer extends MessageSerializer<Useraut
     @Override
     protected byte[] serializeMessageSpecificPayload() {
         LOGGER.debug("username: " + msg.getUsername().getValue());
-        appendBytes(Converter.stringToLengthPrefixedString(msg.getUsername().getValue()));
+        appendBytes(Converter.stringToLengthPrefixedBinaryString(msg.getUsername().getValue()));
         LOGGER.debug("servicename: " + msg.getServicename().getValue());
-        appendBytes(Converter.stringToLengthPrefixedString(msg.getServicename().getValue()));
-        appendBytes(Converter.stringToLengthPrefixedString(UserauthMethodsConstants.PASSWORD));
+        appendBytes(Converter.stringToLengthPrefixedBinaryString(msg.getServicename().getValue()));
+        appendBytes(Converter.stringToLengthPrefixedBinaryString(UserauthMethodsConstants.PASSWORD));
         LOGGER.debug("expectResponse: " + msg.getExpectResponse().getValue());
         appendByte(msg.getExpectResponse().getValue());
         LOGGER.debug("password: " + msg.getPassword().getValue());
-        appendBytes(Converter.stringToLengthPrefixedString(msg.getPassword().getValue()));
+        appendBytes(Converter.stringToLengthPrefixedBinaryString(msg.getPassword().getValue()));
         return getAlreadySerialized();
     }
 

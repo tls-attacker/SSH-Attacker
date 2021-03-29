@@ -17,7 +17,7 @@ public class ChannelOpenMessageSerializer extends MessageSerializer<ChannelOpenM
     @Override
     protected byte[] serializeMessageSpecificPayload() {
         LOGGER.debug("channel type: " + msg.getChannelType().getValue());
-        appendBytes(Converter.stringToLengthPrefixedString(msg.getChannelType().getValue()));
+        appendBytes(Converter.stringToLengthPrefixedBinaryString(msg.getChannelType().getValue()));
         LOGGER.debug("senderChannel: " + msg.getSenderChannel().getValue());
         appendInt(msg.getSenderChannel().getValue(), DataFormatConstants.INT32_SIZE);
         LOGGER.debug("windowSize: " + msg.getWindowSize().getValue());

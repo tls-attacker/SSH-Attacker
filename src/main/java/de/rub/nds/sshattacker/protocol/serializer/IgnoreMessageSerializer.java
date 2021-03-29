@@ -10,7 +10,7 @@ public class IgnoreMessageSerializer extends MessageSerializer<IgnoreMessage> {
     }
 
     private void serializeData() {
-        appendBytes(Converter.stringToLengthPrefixedString(msg.getData().getValue()));
+        appendBytes(Converter.stringToLengthPrefixedBinaryString(msg.getData().getValue()));
     }
 
     @Override

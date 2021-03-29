@@ -19,7 +19,7 @@ public class ChannelDataMessageSerializer extends MessageSerializer<ChannelDataM
         LOGGER.debug("recipientChannel: " + msg.getRecipientChannel().getValue());
         appendInt(msg.getRecipientChannel().getValue(), DataFormatConstants.INT32_SIZE);
         LOGGER.debug("data: " + new String(msg.getData().getValue()));
-        appendBytes(Converter.bytesToLenghPrefixedString(msg.getData().getValue()));
+        appendBytes(Converter.bytesToLengthPrefixedBinaryString(msg.getData().getValue()));
         return getAlreadySerialized();
     }
 

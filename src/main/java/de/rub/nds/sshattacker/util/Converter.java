@@ -16,17 +16,17 @@ public class Converter {
     private static final Logger LOGGER = LogManager.getLogger();
 
     public static ModifiableString listOfAlgorithmsToModifiableString(List list) {
-        return ModifiableVariableFactory.safelySetValue(null, listofAlgorithmstoString(list));
+        return ModifiableVariableFactory.safelySetValue(null, listOfAlgorithmsToString(list));
     }
 
-    public static String listofAlgorithmstoString(List list) {
+    public static String listOfAlgorithmsToString(List list) {
         StringBuilder builder = new StringBuilder();
         list.forEach(element -> builder.append(CharConstants.ALGORITHM_SEPARATOR).append(element.toString()));
         builder.deleteCharAt(0); // delete first separator before the first element
         return builder.toString();
     }
 
-    public static List StringToAlgorithms(String string, Class myClass) {
+    public static List stringToAlgorithms(String string, Class myClass) {
 
         String[] splitted = string.split(String.valueOf(CharConstants.ALGORITHM_SEPARATOR));
         List list = new LinkedList();
@@ -45,7 +45,7 @@ public class Converter {
         return result;
     }
 
-    public static byte[] byteArraytoMpint(byte[] input) {
+    public static byte[] byteArrayToMpint(byte[] input) {
         byte[] mpint = input;
         if ((input[0] & 0x80) == 0x80) { // need to append 0 if MSB would be set (twos complement)
             mpint = ArrayConverter.concatenate(new byte[]{0}, input);
@@ -55,16 +55,12 @@ public class Converter {
         return mpint;
     }
 
-    public static byte[] stringToLengthPrefixedString(String input) {
-        return ArrayConverter.concatenate(ArrayConverter.intToBytes(input.length(), DataFormatConstants.STRING_SIZE_LENGTH), input.getBytes(StandardCharsets.UTF_8));
+    public static byte[] stringToLengthPrefixedBinaryString(String input) {
+        return bytesToLengthPrefixedBinaryString(input.getBytes(StandardCharsets.UTF_8));
     }
 
-    public static String bytesToString(byte[] input) {
-        return new String(input, StandardCharsets.UTF_8);
-    }
-
-    public static byte[] bytesToLenghPrefixedString(byte[] input) {
-        return stringToLengthPrefixedString(bytesToString(input));
+    public static byte[] bytesToLengthPrefixedBinaryString(byte[] input) {
+        return ArrayConverter.concatenate(ArrayConverter.intToBytes(input.length, DataFormatConstants.STRING_SIZE_LENGTH), input);
     }
 
     public static byte[] bytesToBytesWithSignByte(byte[] input) {

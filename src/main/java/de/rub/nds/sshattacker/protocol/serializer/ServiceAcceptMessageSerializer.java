@@ -17,7 +17,7 @@ public class ServiceAcceptMessageSerializer extends Serializer<ServiceAcceptMess
     @Override
     protected byte[] serializeBytes() {
         LOGGER.debug("serviceName: " + msg.getServiceName().getValue());
-        appendBytes(Converter.stringToLengthPrefixedString(msg.getServiceName().getValue()));
+        appendBytes(Converter.stringToLengthPrefixedBinaryString(msg.getServiceName().getValue()));
         return getAlreadySerialized();
     }
 

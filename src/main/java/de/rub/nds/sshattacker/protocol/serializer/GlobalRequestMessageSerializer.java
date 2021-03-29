@@ -10,7 +10,7 @@ public class GlobalRequestMessageSerializer extends MessageSerializer<GlobalRequ
     }
 
     private void serializeRequestName() {
-        appendBytes(Converter.stringToLengthPrefixedString(msg.getRequestName().getValue()));
+        appendBytes(Converter.stringToLengthPrefixedBinaryString(msg.getRequestName().getValue()));
     }
 
     private void serializeWantReplay() {
