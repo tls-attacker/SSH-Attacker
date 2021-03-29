@@ -132,7 +132,7 @@ public class Config implements Serializable {
     public Config() {
 
         defaultClientConnection = new OutboundConnection(65222, "localhost");
-        defaultServerConnection = new InboundConnection("server", 65222);
+        defaultServerConnection = new InboundConnection("server", 65222, "localhost");
         clientVersion = "SSH-2.0-OpenSSH_7.8";
         clientComment = "";
         serverVersion = clientVersion;

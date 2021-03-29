@@ -41,7 +41,12 @@ public class InboundConnection extends AliasedConnection {
     public InboundConnection(InboundConnection other) {
         this.alias = other.alias;
         this.hostname = other.hostname;
+        this.ip = other.ip;
         this.port = other.port;
+        this.proxyDataHostname = other.proxyDataHostname;
+        this.proxyDataPort = other.proxyDataPort;
+        this.proxyControlHostname = other.proxyControlHostname;
+        this.proxyControlPort = other.proxyControlPort;
         this.timeout = other.timeout;
         this.transportHandlerType = other.transportHandlerType;
     }
@@ -53,13 +58,21 @@ public class InboundConnection extends AliasedConnection {
 
     @Override
     public String toString() {
-        return "InboundConnection{" + " alias=" + alias + " port=" + port + " type=" + transportHandlerType
-                + " timeout=" + timeout + "}";
+        return "InboundConnection{" + " alias=" + alias +
+                " port=" + port +
+                " proxyDataHost=" + proxyDataHostname +
+                " proxyDataPort=" + proxyDataPort +
+                " proxyControlHost=" + proxyControlHostname +
+                " proxyControlPort=" + proxyControlPort +
+                " type=" + transportHandlerType +
+                " timeout=" + timeout +
+                "}";
     }
 
     @Override
     public String toCompactString() {
-        return "InboundConnection[" + alias + ":" + port + "]";
+        return "InboundConnection[" + alias +
+                ":" + port + "]";
     }
 
     @Override

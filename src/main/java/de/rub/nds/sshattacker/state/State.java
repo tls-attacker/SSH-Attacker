@@ -11,6 +11,7 @@ package de.rub.nds.sshattacker.state;
 
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.sshattacker.config.Config;
+import de.rub.nds.sshattacker.connection.AliasedConnection;
 import de.rub.nds.sshattacker.constants.RunningModeType;
 import de.rub.nds.sshattacker.exceptions.ConfigurationException;
 import de.rub.nds.sshattacker.workflow.WorkflowTrace;
@@ -110,9 +111,10 @@ public class State {
         normalizer.normalize(workflowTrace, config, runningMode);
         workflowTrace.setDirty(false);
 
-        LOGGER.debug("Config Connection is: " + config.getDefaultClientConnection());
-        SshContext ctx = new SshContext(config, config.getDefaultClientConnection());
-        addSshContext(ctx);
+        for (AliasedConnection con : workflowTrace.getConnections()) {
+            SshContext ctx = new SshContext(config, con);
+            addSshContext(ctx);
+        }
     }
 
     private WorkflowTrace loadWorkflowTrace() {

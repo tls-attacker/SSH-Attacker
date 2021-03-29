@@ -20,13 +20,15 @@ import java.util.Objects;
 import java.util.Set;
 import javax.xml.bind.annotation.XmlType;
 
-@XmlType(propOrder = { "alias", "port", "hostname", "timeout", "transportHandlerType" })
+@XmlType(propOrder = { "alias", "ip", "port", "hostname", "proxyDataPort", "proxyDataHostname", "proxyControlPort",
+        "proxyControlHostname", "timeout", "transportHandlerType" })
 public abstract class AliasedConnection extends Connection implements Aliasable {
 
     public static final String DEFAULT_CONNECTION_ALIAS = "defaultConnection";
     public static final TransportHandlerType DEFAULT_TRANSPORT_HANDLER_TYPE = TransportHandlerType.TCP;
     public static final Integer DEFAULT_TIMEOUT = 1000;
     public static final String DEFAULT_HOSTNAME = "localhost";
+    public static final String DEFAULT_IP = "127.0.0.1";
     public static final Integer DEFAULT_PORT = 65222;
 
     protected String alias = null;
@@ -161,6 +163,12 @@ public abstract class AliasedConnection extends Connection implements Aliasable 
                 hostname = DEFAULT_HOSTNAME;
             }
         }
+        if (ip == null || ip.isEmpty()) {
+            ip = defaultCon.getHostname();
+            if (ip == null || ip.isEmpty()) {
+                ip = DEFAULT_IP;
+            }
+        }
         if (port == null) {
             port = defaultCon.getPort();
             if (port == null) {
@@ -186,6 +194,9 @@ public abstract class AliasedConnection extends Connection implements Aliasable 
         }
         if (hostname.equals(defaultCon.getHostname()) || Objects.equals(hostname, DEFAULT_HOSTNAME)) {
             hostname = null;
+        }
+        if (ip.equals(defaultCon.getHostname()) || Objects.equals(ip, DEFAULT_IP)) {
+            ip = null;
         }
         if (Objects.equals(port, defaultCon.getPort()) || Objects.equals(port, DEFAULT_PORT)) {
             port = null;
