@@ -5,7 +5,7 @@ import de.rub.nds.sshattacker.config.ConfigIO;
 import de.rub.nds.sshattacker.exceptions.WorkflowExecutionException;
 import de.rub.nds.sshattacker.state.SshContext;
 import de.rub.nds.sshattacker.state.State;
-import de.rub.nds.sshattacker.transport.AliasedConnection;
+import de.rub.nds.sshattacker.connection.AliasedConnection;
 import de.rub.nds.sshattacker.workflow.action.SshAction;
 import java.io.File;
 import java.io.IOException;

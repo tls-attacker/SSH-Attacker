@@ -2,9 +2,9 @@ package de.rub.nds.sshattacker.state;
 
 import de.rub.nds.sshattacker.exceptions.ConfigurationException;
 import de.rub.nds.sshattacker.exceptions.ContextHandlingException;
-import de.rub.nds.sshattacker.transport.Aliasable;
-import de.rub.nds.sshattacker.transport.AliasedConnection;
-import de.rub.nds.sshattacker.transport.ConnectionEndType;
+import de.rub.nds.sshattacker.connection.Aliasable;
+import de.rub.nds.sshattacker.connection.AliasedConnection;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;

@@ -10,8 +10,8 @@ package de.rub.nds.sshattacker.workflow.executor;
 
 import de.rub.nds.sshattacker.state.SshContext;
 import de.rub.nds.sshattacker.state.State;
-import de.rub.nds.sshattacker.transport.AliasedConnection;
-import de.rub.nds.sshattacker.transport.ServerTcpTransportHandler;
+import de.rub.nds.sshattacker.connection.AliasedConnection;
+import de.rub.nds.tlsattacker.transport.tcp.ServerTcpTransportHandler;
 import de.rub.nds.sshattacker.workflow.WorkflowTrace;
 import java.io.IOException;
 import java.net.Socket;

@@ -1,7 +1,6 @@
 package de.rub.nds.sshattacker.connection;
 
-import de.rub.nds.sshattacker.transport.ConnectionEndType;
-import de.rub.nds.sshattacker.transport.AliasedConnection;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 
 public class InboundConnection extends AliasedConnection {
 

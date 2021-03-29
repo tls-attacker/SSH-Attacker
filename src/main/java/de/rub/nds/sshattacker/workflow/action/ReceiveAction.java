@@ -4,7 +4,7 @@ import de.rub.nds.sshattacker.exceptions.WorkflowExecutionException;
 import de.rub.nds.sshattacker.protocol.message.*;
 import de.rub.nds.sshattacker.state.SshContext;
 import de.rub.nds.sshattacker.state.State;
-import de.rub.nds.sshattacker.transport.AliasedConnection;
+import de.rub.nds.sshattacker.connection.AliasedConnection;
 import de.rub.nds.sshattacker.workflow.action.result.MessageActionResult;
 import java.util.*;
 import javax.xml.bind.annotation.XmlElement;

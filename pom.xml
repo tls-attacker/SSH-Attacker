@@ -55,6 +55,11 @@
             <artifactId>ModifiableVariable</artifactId>
             <version>3.0.0</version>
         </dependency>
+        <dependency>
+            <groupId>de.rub.nds.tlsattacker</groupId>
+            <artifactId>Transport</artifactId>
+            <version>3.6.0</version>
+        </dependency>
     </dependencies>
     <build>
         <finalName>SSH-Attacker</finalName>              

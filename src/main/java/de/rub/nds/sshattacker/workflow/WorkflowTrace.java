@@ -4,7 +4,7 @@ import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.sshattacker.connection.InboundConnection;
 import de.rub.nds.sshattacker.connection.OutboundConnection;
 import de.rub.nds.sshattacker.exceptions.ConfigurationException;
-import de.rub.nds.sshattacker.transport.AliasedConnection;
+import de.rub.nds.sshattacker.connection.AliasedConnection;
 import de.rub.nds.sshattacker.workflow.action.*;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;

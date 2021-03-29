@@ -10,7 +10,7 @@ import de.rub.nds.sshattacker.protocol.message.ClientInitMessage;
 import de.rub.nds.sshattacker.protocol.message.Message;
 import de.rub.nds.sshattacker.protocol.parser.ClientInitMessageParser;
 import de.rub.nds.sshattacker.state.SshContext;
-import de.rub.nds.sshattacker.transport.TransportHandler;
+import de.rub.nds.tlsattacker.transport.TransportHandler;
 import de.rub.nds.sshattacker.workflow.action.result.MessageActionResult;
 import java.io.IOException;
 import java.util.Arrays;

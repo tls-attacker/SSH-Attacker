@@ -1,4 +1,4 @@
-package de.rub.nds.sshattacker.transport;
+package de.rub.nds.sshattacker.connection;
 
 import de.rub.nds.sshattacker.exceptions.ConfigurationException;
 import java.util.Collection;
