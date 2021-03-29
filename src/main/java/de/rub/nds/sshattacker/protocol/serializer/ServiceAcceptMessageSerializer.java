@@ -1,6 +1,5 @@
 package de.rub.nds.sshattacker.protocol.serializer;
 
-import de.rub.nds.protocol.core.message.Serializer;
 import de.rub.nds.sshattacker.protocol.message.ServiceAcceptMessage;
 import de.rub.nds.sshattacker.util.Converter;
 import org.apache.logging.log4j.LogManager;

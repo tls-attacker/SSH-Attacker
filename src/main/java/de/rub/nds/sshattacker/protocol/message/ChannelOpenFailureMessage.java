@@ -3,12 +3,12 @@ package de.rub.nds.sshattacker.protocol.message;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
-import de.rub.nds.protocol.core.message.Serializer;
 import de.rub.nds.sshattacker.protocol.handler.ChannelOpenFailureMessageHandler;
 import de.rub.nds.sshattacker.protocol.handler.Handler;
 import de.rub.nds.sshattacker.protocol.preparator.ChannelOpenFailureMessagePreparator;
 import de.rub.nds.sshattacker.protocol.preparator.Preparator;
 import de.rub.nds.sshattacker.protocol.serializer.ChannelOpenFailureMessageSerializer;
+import de.rub.nds.sshattacker.protocol.serializer.Serializer;
 import de.rub.nds.sshattacker.state.SshContext;
 
 public class ChannelOpenFailureMessage extends Message {

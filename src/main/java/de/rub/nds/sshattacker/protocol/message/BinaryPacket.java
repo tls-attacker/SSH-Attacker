@@ -4,8 +4,11 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
-import de.rub.nds.protocol.core.message.Message;
 import de.rub.nds.sshattacker.constants.BinaryPacketConstants;
+import de.rub.nds.sshattacker.protocol.handler.Handler;
+import de.rub.nds.sshattacker.protocol.preparator.Preparator;
+import de.rub.nds.sshattacker.protocol.serializer.Serializer;
+import de.rub.nds.sshattacker.state.SshContext;
 
 public class BinaryPacket extends Message {
 
@@ -112,6 +115,21 @@ public class BinaryPacket extends Message {
         }
         paddingLength = ModifiableVariableFactory.safelySetValue(paddingLength,
                 intermediatePaddingLength);
+    }
+
+    @Override
+    public Handler getHandler(SshContext context) {
+        return null;
+    }
+
+    @Override
+    public Serializer getSerializer() {
+        return null;
+    }
+
+    @Override
+    public Preparator getPreparator(SshContext context) {
+        return null;
     }
 
     @Override

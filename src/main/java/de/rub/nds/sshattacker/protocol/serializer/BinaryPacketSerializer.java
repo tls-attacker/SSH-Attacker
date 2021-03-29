@@ -1,6 +1,5 @@
 package de.rub.nds.sshattacker.protocol.serializer;
 
-import de.rub.nds.protocol.core.message.Serializer;
 import de.rub.nds.sshattacker.constants.BinaryPacketConstants;
 import de.rub.nds.sshattacker.protocol.message.BinaryPacket;
 import org.apache.logging.log4j.LogManager;

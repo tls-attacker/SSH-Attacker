@@ -5,7 +5,6 @@
  */
 package de.rub.nds.sshattacker.protocol.parser;
 
-import de.rub.nds.protocol.core.message.Parser;
 import de.rub.nds.sshattacker.constants.ByteConstants;
 import de.rub.nds.sshattacker.constants.CharConstants;
 import de.rub.nds.sshattacker.protocol.message.ClientInitMessage;
@@ -21,8 +20,9 @@ public class ClientInitMessageParser extends Parser<ClientInitMessage> {
     }
 
     private void parseVersion(ClientInitMessage msg) {
-        // parse till CR NL
-        String result = this.parseStringTill(new byte[]{ByteConstants.CARRIAGE_RETURN, ByteConstants.NEWLINE});
+        // parse till CR NL (and remove them)
+        String result = this.parseStringTill(new byte[]{ ByteConstants.CARRIAGE_RETURN, ByteConstants.NEWLINE })
+                .replace("\r\n", "");
         if (result.contains(String.valueOf(CharConstants.VERSION_COMMENT_SEPARATOR))) {
             // contains a comment
             String[] parts = result.split(String.valueOf(CharConstants.VERSION_COMMENT_SEPARATOR), 2);

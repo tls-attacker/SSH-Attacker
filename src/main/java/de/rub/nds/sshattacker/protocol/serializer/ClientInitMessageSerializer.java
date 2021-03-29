@@ -1,6 +1,5 @@
 package de.rub.nds.sshattacker.protocol.serializer;
 
-import de.rub.nds.protocol.core.message.Serializer;
 import de.rub.nds.sshattacker.constants.ByteConstants;
 import de.rub.nds.sshattacker.constants.CharConstants;
 import de.rub.nds.sshattacker.protocol.message.ClientInitMessage;

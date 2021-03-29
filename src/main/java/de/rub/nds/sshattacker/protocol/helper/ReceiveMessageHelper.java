@@ -1,7 +1,7 @@
 package de.rub.nds.sshattacker.protocol.helper;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.protocol.core.exception.ParserException;
+import de.rub.nds.sshattacker.exceptions.ParserException;
 import de.rub.nds.sshattacker.protocol.layers.BinaryPacketLayer;
 import de.rub.nds.sshattacker.protocol.layers.CryptoLayer;
 import de.rub.nds.sshattacker.protocol.layers.MessageLayer;

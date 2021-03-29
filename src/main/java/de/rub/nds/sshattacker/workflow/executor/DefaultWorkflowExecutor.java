@@ -1,6 +1,6 @@
 package de.rub.nds.sshattacker.workflow.executor;
 
-import de.rub.nds.protocol.core.exception.PreparationException;
+import de.rub.nds.sshattacker.exceptions.PreparationException;
 import de.rub.nds.sshattacker.config.ConfigIO;
 import de.rub.nds.sshattacker.exceptions.WorkflowExecutionException;
 import de.rub.nds.sshattacker.state.SshContext;

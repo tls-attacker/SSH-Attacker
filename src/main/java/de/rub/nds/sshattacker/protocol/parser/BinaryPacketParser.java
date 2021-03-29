@@ -4,7 +4,6 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
-import de.rub.nds.protocol.core.message.Parser;
 import de.rub.nds.sshattacker.constants.BinaryPacketConstants;
 import de.rub.nds.sshattacker.protocol.message.BinaryPacket;
 import java.util.ArrayList;

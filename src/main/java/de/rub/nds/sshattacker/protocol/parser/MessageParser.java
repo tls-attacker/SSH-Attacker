@@ -1,7 +1,6 @@
 package de.rub.nds.sshattacker.protocol.parser;
 
-import de.rub.nds.protocol.core.exception.ParserException;
-import de.rub.nds.protocol.core.message.Parser;
+import de.rub.nds.sshattacker.exceptions.ParserException;
 import de.rub.nds.sshattacker.constants.MessageIDConstant;
 import de.rub.nds.sshattacker.protocol.message.Message;
 import org.apache.logging.log4j.LogManager;

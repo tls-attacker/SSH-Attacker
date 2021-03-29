@@ -5,7 +5,7 @@ import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.constants.CharConstants;
 import de.rub.nds.sshattacker.constants.DataFormatConstants;
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.LinkedList;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
@@ -56,22 +56,11 @@ public class Converter {
     }
 
     public static byte[] stringToLengthPrefixedString(String input) {
-        try {
-            return ArrayConverter.concatenate(ArrayConverter.intToBytes(input.length(), DataFormatConstants.STRING_SIZE_LENGTH), input.getBytes("ISO-8859-1"));
-        } catch (UnsupportedEncodingException e) {
-            LOGGER.warn("Unsupported Encoding: " + e.getMessage());
-            return new byte[0];
-        }
+        return ArrayConverter.concatenate(ArrayConverter.intToBytes(input.length(), DataFormatConstants.STRING_SIZE_LENGTH), input.getBytes(StandardCharsets.UTF_8));
     }
 
     public static String bytesToString(byte[] input) {
-        String result = "";
-        try {
-            result = new String(input, "ISO-8859-1");
-        } catch (UnsupportedEncodingException e) {
-            LOGGER.warn("Unsupported Encoding: " + e.getMessage());
-        }
-        return result;
+        return new String(input, StandardCharsets.UTF_8);
     }
 
     public static byte[] bytesToLenghPrefixedString(byte[] input) {

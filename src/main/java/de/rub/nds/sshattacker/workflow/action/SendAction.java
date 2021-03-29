@@ -1,8 +1,8 @@
 package de.rub.nds.sshattacker.workflow.action;
 
 import de.rub.nds.modifiablevariable.ModifiableVariable;
-import de.rub.nds.protocol.core.connection.AliasedConnection;
-import de.rub.nds.protocol.core.message.ModifiableVariableHolder;
+import de.rub.nds.sshattacker.connection.AliasedConnection;
+import de.rub.nds.sshattacker.protocol.ModifiableVariableHolder;
 import de.rub.nds.sshattacker.exceptions.WorkflowExecutionException;
 import de.rub.nds.sshattacker.protocol.message.BinaryPacket;
 import de.rub.nds.sshattacker.protocol.message.Message;
