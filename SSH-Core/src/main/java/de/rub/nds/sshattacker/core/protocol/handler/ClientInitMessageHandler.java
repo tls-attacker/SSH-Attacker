@@ -1,0 +1,27 @@
+/**
+ * SSH-Attacker - A Modular Penetration Testing Framework for SSH
+ *
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
+ *
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
+ */
+package de.rub.nds.sshattacker.core.protocol.handler;
+
+import de.rub.nds.sshattacker.core.protocol.message.ClientInitMessage;
+import de.rub.nds.sshattacker.core.state.SshContext;
+
+public class ClientInitMessageHandler extends Handler<ClientInitMessage> {
+
+    public ClientInitMessageHandler(SshContext context) {
+        super(context);
+    }
+
+    @Override
+    public void handle(ClientInitMessage message) {
+        context.setServerVersion(message.getVersion().getValue());
+        context.setServerComment(message.getComment().getValue());
+        context.appendToExchangeHashInput(message.getIdentification().getBytes());
+    }
+}

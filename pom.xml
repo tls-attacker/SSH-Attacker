@@ -4,9 +4,11 @@
     <groupId>de.rub.nds.sshattacker</groupId>
     <artifactId>SSH-Attacker</artifactId>
     <version>0.1</version>
-    <packaging>jar</packaging>
+    <packaging>pom</packaging>
+    <inceptionYear>2015</inceptionYear>
     <name>SSH-Attacker</name>
     <url>https://github.com/RUB-NDS/SSH-Attacker</url>
+    <description>SSH-Attacker is a Java-based framework for analyzing SSH libraries. It is developed by the Ruhr University Bochum (http://nds.rub.de/), the Paderborn University, and the Hackmanit GmbH (http://hackmanit.de/).</description>
 
     <licenses>
         <license>
@@ -23,6 +25,10 @@
         <url>https://github.com/RUB-NDS/SSH-Attacker/tree/master</url>
     </scm>
 
+    <modules>
+        <module>SSH-Core</module>
+        <module>SSH-Client</module>
+    </modules>
     <dependencies>
         <dependency>
             <groupId>junit</groupId>
@@ -55,86 +61,132 @@
             <artifactId>ModifiableVariable</artifactId>
             <version>3.0.0</version>
         </dependency>
-        <dependency>
-            <groupId>de.rub.nds.tlsattacker</groupId>
-            <artifactId>Transport</artifactId>
-            <version>3.6.0</version>
-        </dependency>
     </dependencies>
     <build>
-        <finalName>SSH-Attacker</finalName>              
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-dependency-plugin</artifactId>
+                    <version>3.1.2</version>
+                    <executions>
+                        <execution>
+                            <id>copy</id>
+                            <phase>package</phase>
+                            <goals>
+                                <goal>copy</goal>
+                            </goals>
+                            <configuration>
+                                <artifactItems>
+                                    <artifactItem>
+                                        <groupId>${project.groupId}</groupId>
+                                        <artifactId>${project.artifactId}</artifactId>
+                                        <version>${project.version}</version>
+                                        <type>${project.packaging}</type>
+                                        <destFileName>${project.build.finalName}.${project.packaging}</destFileName>
+                                    </artifactItem>
+                                </artifactItems>
+                                <outputDirectory>${project.parent.basedir}/apps</outputDirectory>
+                            </configuration>
+                        </execution>
+                        <execution>
+                            <id>copy-dependencies</id>
+                            <phase>package</phase>
+                            <goals>
+                                <goal>copy-dependencies</goal>
+                            </goals>
+                            <configuration>
+                                <outputDirectory>${project.parent.basedir}/apps/lib</outputDirectory>
+                                <!--Ensures only runnable dependencies are included-->
+                                <includeScope>compile</includeScope>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>3.0.0-M5</version>
+                    <dependencies>
+                        <dependency>
+                            <groupId>org.apache.maven.surefire</groupId>
+                            <artifactId>surefire-junit47</artifactId>
+                            <version>3.0.0-M5</version>
+                        </dependency>
+                    </dependencies>
+                    <configuration>
+                        <trimStackTrace>false</trimStackTrace>
+                        <includes>
+                            <include>**/*.java</include>
+                        </includes>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-failsafe-plugin</artifactId>
+                    <version>3.0.0-M5</version>
+                    <dependencies>
+                        <dependency>
+                            <groupId>org.apache.maven.surefire</groupId>
+                            <artifactId>surefire-junit47</artifactId>
+                            <version>3.0.0-M5</version>
+                        </dependency>
+                    </dependencies>
+                    <configuration>
+                        <!-- By default, the Failsafe plugin excludes various files. We have to override that. -->
+                        <excludes>
+                            <exclude>**/*.java</exclude>
+                        </excludes>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <goals>
+                                <goal>integration-test</goal>
+                                <goal>verify</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+                <!-- Specify Java Version -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>3.8.1</version>
+                    <configuration>
+                        <source>8</source>
+                        <target>8</target>
+                    </configuration>
+                </plugin>
+                <!-- Format the Code -->
+                <plugin>
+                    <groupId>net.revelc.code</groupId>
+                    <artifactId>formatter-maven-plugin</artifactId>
+                    <version>0.5.2</version>
+                </plugin>
+                <!-- Use a Licence Header -->
+                <plugin>
+                    <groupId>com.mycila</groupId>
+                    <artifactId>license-maven-plugin</artifactId>
+                    <version>3.0</version>
+                </plugin>
+                <plugin>
+                    <artifactId>maven-project-info-reports-plugin</artifactId>
+                    <version>3.1.1</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
         <plugins>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <version>3.1.2</version>
-                <executions>
-                    <execution>             
-                        <id>copy</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>copy</goal>
-                        </goals>
-                        <configuration>
-                            <artifactItems>
-                                <artifactItem>
-                                    <groupId>${project.groupId}</groupId>
-                                    <artifactId>${project.artifactId}</artifactId>
-                                    <version>${project.version}</version>
-                                    <type>${project.packaging}</type>
-                                    <destFileName>${project.build.finalName}.${project.packaging}</destFileName>
-                                </artifactItem>
-                            </artifactItems>
-                            <outputDirectory>${basedir}/apps</outputDirectory>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>copy-dependencies</id>
-                        <phase>package</phase> 
-                        <goals> 
-                            <goal>copy-dependencies</goal> 
-                        </goals> 
-                        <configuration> 
-                            <outputDirectory>${basedir}/apps/lib</outputDirectory>
-                            <!--Ensures only runnable dependencies are included-->
-                            <includeScope>compile</includeScope> 
-                        </configuration> 
-                    </execution> 
-                </executions> 
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>versions-maven-plugin</artifactId>
+                <version>2.8.1</version>
             </plugin>
-            <!-- Build an executable JAR -->
-            <!-- TODO: Adjust mainClass -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <version>3.2.0</version>
-                <configuration>
-                    <archive>
-                        <manifest>
-                            <addClasspath>true</addClasspath>
-                            <classpathPrefix>lib/</classpathPrefix>
-                            <mainClass>de.rub.nds.tls.attacker.template.ExampleClass</mainClass>
-                        </manifest>
-                    </archive>
-                </configuration>
-            </plugin>
-            <!-- Specify Java Version -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.8.1</version>
-                <configuration>
-                    <source>8</source>
-                    <target>8</target>
-                </configuration>
-            </plugin>
-            <!-- Format the Code -->
             <plugin>
                 <groupId>net.revelc.code</groupId>
                 <artifactId>formatter-maven-plugin</artifactId>
-                <version>0.5.2</version>
                 <configuration>
-                    <configFile>${project.basedir}/maven-eclipse-codestyle.xml</configFile>
+                    <configFile>${main.basedir}/maven-eclipse-codestyle.xml</configFile>
+                    <lineEnding>LF</lineEnding>
                 </configuration>
                 <executions>
                     <execution>
@@ -145,20 +197,18 @@
                     </execution>
                 </executions>
             </plugin>
-            <!-- Use a license header -->
             <plugin>
                 <groupId>com.mycila</groupId>
                 <artifactId>license-maven-plugin</artifactId>
-                <version>3.0</version>
                 <configuration>
-                    <header>${project.basedir}/license_header_plain.txt</header>
+                    <header>${main.basedir}/license_header_plain.txt</header>
                     <strictCheck>true</strictCheck>
                     <includes>
                         <include>src/**/*.java</include>
                     </includes>
                     <properties>
                         <year>${project.inceptionYear}</year>
-                        <owner>Ruhr University Bochum, Hackmanit GmbH</owner>
+                        <owner>Ruhr University Bochum, Paderborn University, Hackmanit GmbH</owner>
                     </properties>
                 </configuration>
                 <executions>
@@ -170,7 +220,6 @@
                     </execution>
                 </executions>
             </plugin>
-            <!-- Enforce Maven and Java Version -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-enforcer-plugin</artifactId>
@@ -196,22 +245,42 @@
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-failsafe-plugin</artifactId>
-                <version>3.0.0-M5</version>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>3.2.1</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar-no-fork</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>3.0.0-M5</version>
-                <configuration>
-                    <argLine>-Dfile.encoding=${project.build.sourceEncoding}</argLine>
-                </configuration>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.2.0</version>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <phase>deploy</phase>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                        <configuration>
+                            <doclint>none</doclint>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
+        <licenseOwner>Ruhr University Bochum, Paderborn University, Hackmanit GmbH</licenseOwner>
+        <main.basedir>${project.basedir}</main.basedir>
     </properties>
 </project>
