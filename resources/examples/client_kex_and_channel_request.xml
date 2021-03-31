@@ -8,7 +8,6 @@
     <Receive/>
     <Send>
         <messages>
-            <ClientInitMessage/>
             <KeyExchangeInitMessage/>
         </messages>
     </Send>
