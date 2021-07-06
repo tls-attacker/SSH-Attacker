@@ -1,0 +1,116 @@
+/**
+ * SSH-Attacker - A Modular Penetration Testing Framework for SSH
+ *
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
+ *
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
+ */
+package de.rub.nds.sshattacker.core.protocol.handler;
+
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.sshattacker.core.protocol.message.EcdhKeyExchangeReplyMessage;
+import de.rub.nds.sshattacker.core.util.Converter;
+import de.rub.nds.sshattacker.core.util.Util;
+import de.rub.nds.sshattacker.core.crypto.KeyDerivation;
+import de.rub.nds.sshattacker.core.state.SshContext;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+public class EcdhKeyExchangeReplyMessageHandler extends Handler<EcdhKeyExchangeReplyMessage> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
+
+    public EcdhKeyExchangeReplyMessageHandler(SshContext context) {
+        super(context);
+    }
+
+    @Override
+    public void handle(EcdhKeyExchangeReplyMessage message) {
+        context.setHostKeyType(message.getHostKeyType().getValue());
+        context.setServerEcdhPublicKey(message.getEphemeralPublicKey().getValue());
+        context.setKeyExchangeSignature(message.getSignature().getValue());
+        if (context.getHostKeyType().equals("ssh-rsa")) { // TODO refine logic
+            handleRsaHostKey(message);
+        } else {
+            handleEccHostKey(message);
+        }
+
+        adjustExchangeHash();
+        context.setSessionID(context.getExchangeHash());
+        adjustKeys();
+        context.getCryptoLayer().init();
+    }
+
+    private void handleEccHostKey(EcdhKeyExchangeReplyMessage message) {
+        context.setServerHostKey(message.getHostKeyEcc().getValue());
+    }
+
+    private void handleRsaHostKey(EcdhKeyExchangeReplyMessage message) {
+        context.setHostKeyRsaExponent(message.getHostKeyRsaExponent().getValue());
+        context.setHostKeyRsaModulus(message.getHostKeyRsaModulus().getValue());
+        context.appendToExchangeHashInput(ArrayConverter.concatenate(Converter
+                .stringToLengthPrefixedBinaryString(context.getHostKeyType()),
+                Converter.bytesToLengthPrefixedBinaryString(ArrayConverter.bigIntegerToByteArray(context
+                        .getHostKeyRsaExponent())), Converter.bytesToLengthPrefixedBinaryString(ArrayConverter
+                        .concatenate(new byte[] { 0x00 }, // asn1 leading byte
+                                ArrayConverter.bigIntegerToByteArray(context.getHostKeyRsaModulus())))
+        // Converter.bytesToLengthPrefixedBinaryString(ArrayConverter.bigIntegerToByteArray(context.getHostKeyRsaModulus(),
+        // 32, false))
+                ));
+    }
+
+    private void adjustKeys() {
+        // hashalgorithm is the same used in the key exchange
+
+        // TODO not clean, works for now
+        String hashAlgorithm = Util.getDigestAlgorithmFromKeyExchange(context.getKeyExchangeAlgorithm().toString());
+
+        context.setInitialIvClientToServer(KeyDerivation.deriveKey(context.getSharedSecret(),
+                context.getExchangeHash(), (byte) 'A', context.getSessionID(), context
+                        .getCipherAlgorithmClientToServer().getBlockSize(), hashAlgorithm));
+        LOGGER.debug("Key A: " + ArrayConverter.bytesToRawHexString(context.getInitialIvClientToServer()));
+        context.setInitialIvServerToClient(KeyDerivation.deriveKey(context.getSharedSecret(),
+                context.getExchangeHash(), (byte) 'B', context.getSessionID(), context
+                        .getCipherAlgorithmServerToClient().getBlockSize(), hashAlgorithm));
+        LOGGER.debug("Key B: " + ArrayConverter.bytesToRawHexString(context.getInitialIvServerToClient()));
+        context.setEncryptionKeyClientToServer(KeyDerivation.deriveKey(context.getSharedSecret(), context
+                .getExchangeHash(), (byte) 'C', context.getSessionID(), context.getCipherAlgorithmClientToServer()
+                .getKeySize(), hashAlgorithm));
+        LOGGER.debug("Key C: " + ArrayConverter.bytesToRawHexString(context.getEncryptionKeyClientToServer()));
+        context.setEncryptionKeyServerToClient(KeyDerivation.deriveKey(context.getSharedSecret(), context
+                .getExchangeHash(), (byte) 'D', context.getSessionID(), context.getCipherAlgorithmServerToClient()
+                .getKeySize(), hashAlgorithm));
+        LOGGER.debug("Key D: " + ArrayConverter.bytesToRawHexString(context.getEncryptionKeyServerToClient()));
+        context.setIntegrityKeyClientToServer(KeyDerivation.deriveKey(context.getSharedSecret(), context
+                .getExchangeHash(), (byte) 'E', context.getSessionID(), context.getMacAlgorithmClientToServer()
+                .getKeySize(), hashAlgorithm));
+        LOGGER.debug("Key E: " + ArrayConverter.bytesToRawHexString(context.getIntegrityKeyClientToServer()));
+        context.setIntegrityKeyServerToClient(KeyDerivation.deriveKey(context.getSharedSecret(), context
+                .getExchangeHash(), (byte) 'F', context.getSessionID(), context.getMacAlgorithmServerToClient()
+                .getKeySize(), hashAlgorithm));
+        LOGGER.debug("Key F: " + ArrayConverter.bytesToRawHexString(context.getIntegrityKeyServerToClient()));
+
+    }
+
+    private void adjustExchangeHash() {
+        String hashAlgorithm = Util.getDigestAlgorithmFromKeyExchange(context.getKeyExchangeAlgorithm().toString());
+
+        context.appendToExchangeHashInput(context.getClientEcdhPublicKey());
+        context.appendToExchangeHashInput(context.getServerEcdhPublicKey());
+        computeSharedSecret();
+
+        context.appendToExchangeHashInput(Converter.bytesToBytesWithSignByte(context.getSharedSecret()));
+        LOGGER.debug("ExchangeHash Input: " + ArrayConverter.bytesToRawHexString(context.getExchangeHashInput()));
+        context.setExchangeHash(KeyDerivation.computeExchangeHash(context.getExchangeHashInput(), hashAlgorithm));
+        LOGGER.debug("ExchangeHash " + ArrayConverter.bytesToRawHexString(context.getExchangeHash()));
+    }
+
+    private void computeSharedSecret() {
+        byte[] sharedSecret = KeyDerivation.DheNistP256(context.getClientEcdhSecretKey(),
+                context.getServerEcdhPublicKey());
+        context.setSharedSecret(sharedSecret);
+        LOGGER.debug("SharedSecret: " + ArrayConverter.bytesToRawHexString(context.getSharedSecret()));
+    }
+}

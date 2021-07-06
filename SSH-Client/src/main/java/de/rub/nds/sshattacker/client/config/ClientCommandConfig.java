@@ -1,0 +1,60 @@
+/**
+ * SSH-Attacker - A Modular Penetration Testing Framework for SSH
+ *
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
+ * and Hackmanit GmbH
+ *
+ * Licensed under Apache License 2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
+ */
+package de.rub.nds.sshattacker.client.config;
+
+import com.beust.jcommander.ParametersDelegate;
+import de.rub.nds.sshattacker.core.config.Config;
+import de.rub.nds.sshattacker.core.config.SSHDelegateConfig;
+import de.rub.nds.sshattacker.core.config.delegate.*;
+import de.rub.nds.sshattacker.core.workflow.factory.WorkflowTraceType;
+
+public class ClientCommandConfig extends SSHDelegateConfig {
+
+    public static final String COMMAND = "client";
+
+    @ParametersDelegate
+    private ClientDelegate clientDelegate;
+    @ParametersDelegate
+    private ConfigOutputDelegate configOutputDelegate;
+    @ParametersDelegate
+    private TimeoutDelegate timeoutDelegate;
+    @ParametersDelegate
+    private WorkflowInputDelegate workflowInputDelegate;
+    @ParametersDelegate
+    private WorkflowOutputDelegate workflowOutputDelegate;
+    @ParametersDelegate
+    private WorkflowTypeDelegate workflowTypeDelegate;
+
+    public ClientCommandConfig(GeneralDelegate delegate) {
+        super(delegate);
+        this.clientDelegate = new ClientDelegate();
+        this.configOutputDelegate = new ConfigOutputDelegate();
+        this.timeoutDelegate = new TimeoutDelegate();
+        this.workflowInputDelegate = new WorkflowInputDelegate();
+        this.workflowOutputDelegate = new WorkflowOutputDelegate();
+        this.workflowTypeDelegate = new WorkflowTypeDelegate();
+        addDelegate(clientDelegate);
+        addDelegate(configOutputDelegate);
+        addDelegate(timeoutDelegate);
+        addDelegate(workflowInputDelegate);
+        addDelegate(workflowOutputDelegate);
+        addDelegate(workflowTypeDelegate);
+    }
+
+    @Override
+    public Config createConfig() {
+        Config config = super.createConfig();
+
+        if (config.getWorkflowTraceType() == null) {
+            config.setWorkflowTraceType(WorkflowTraceType.KEYEXCHANGE);
+        }
+        return config;
+    }
+}
