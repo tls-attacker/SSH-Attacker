@@ -31,7 +31,7 @@ public class MessageLayer {
     public List<Message<?>> parseMessages(List<BinaryPacket> list) {
         List<Message<?>> returnList = new ArrayList<>();
         for (BinaryPacket packet : list) {
-            Message<?> msg = MessageParser.delegateParsing(packet.getPayload().getValue());
+            Message<?> msg = MessageParser.delegateParsing(packet.getPayload().getValue(), context);
             returnList.add(msg);
         }
         return returnList;

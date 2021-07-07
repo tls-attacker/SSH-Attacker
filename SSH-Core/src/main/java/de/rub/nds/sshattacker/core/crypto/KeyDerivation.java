@@ -11,10 +11,10 @@ package de.rub.nds.sshattacker.core.crypto;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.CryptoConstants;
-import de.rub.nds.sshattacker.core.imported.ec_.CurveFactory;
-import de.rub.nds.sshattacker.core.imported.ec_.EllipticCurve;
-import de.rub.nds.sshattacker.core.imported.ec_.NamedGroup;
-import de.rub.nds.sshattacker.core.imported.ec_.Point;
+import de.rub.nds.sshattacker.core.constants.NamedGroup;
+import de.rub.nds.sshattacker.core.crypto.ec.CurveFactory;
+import de.rub.nds.sshattacker.core.crypto.ec.EllipticCurve;
+import de.rub.nds.sshattacker.core.crypto.ec.Point;
 import de.rub.nds.sshattacker.core.util.Converter;
 
 import java.io.ByteArrayOutputStream;
@@ -45,7 +45,7 @@ public class KeyDerivation {
         BigInteger serverY = new BigInteger(1, java.util.Arrays.copyOfRange(publicKey, 33, 65));
         Point serverPoint = curve.getPoint(serverX, serverY);
         Point sharedPoint = curve.mult(new BigInteger(1, secretKey), serverPoint);
-        byte[] sharedSecret = sharedPoint.getX().getData().toByteArray();
+        byte[] sharedSecret = sharedPoint.getFieldX().getData().toByteArray();
 
         // remove leading 0 byte
         if (sharedSecret.length > 32) {

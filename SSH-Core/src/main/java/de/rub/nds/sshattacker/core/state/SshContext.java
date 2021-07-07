@@ -11,14 +11,7 @@ package de.rub.nds.sshattacker.core.state;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.config.Config;
-import de.rub.nds.sshattacker.core.constants.ChannelRequestType;
-import de.rub.nds.sshattacker.core.constants.ChannelType;
-import de.rub.nds.sshattacker.core.constants.CompressionAlgorithm;
-import de.rub.nds.sshattacker.core.constants.EncryptionAlgorithm;
-import de.rub.nds.sshattacker.core.constants.KeyExchangeAlgorithm;
-import de.rub.nds.sshattacker.core.constants.Language;
-import de.rub.nds.sshattacker.core.constants.MacAlgorithm;
-import de.rub.nds.sshattacker.core.constants.PublicKeyAuthenticationAlgorithm;
+import de.rub.nds.sshattacker.core.constants.*;
 import de.rub.nds.sshattacker.core.connection.AliasedConnection;
 import de.rub.nds.sshattacker.core.protocol.layers.BinaryPacketLayer;
 import de.rub.nds.sshattacker.core.protocol.layers.CryptoLayer;
@@ -122,6 +115,7 @@ public class SshContext {
     private Integer clientReserved;
     private Integer serverReserved;
 
+    private AuthenticationMethod authenticationMethod;
     private String serviceName;
     private String username;
     private String password;
@@ -827,4 +821,11 @@ public class SshContext {
         this.serviceName = serviceName;
     }
 
+    public Optional<AuthenticationMethod> getAuthenticationMethod() {
+        return Optional.ofNullable(authenticationMethod);
+    }
+
+    public void setAuthenticationMethod(AuthenticationMethod authenticationMethod) {
+        this.authenticationMethod = authenticationMethod;
+    }
 }
