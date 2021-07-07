@@ -10,14 +10,7 @@
 package de.rub.nds.sshattacker.core.state;
 
 import de.rub.nds.sshattacker.core.config.Config;
-import de.rub.nds.sshattacker.core.constants.ChannelRequestType;
-import de.rub.nds.sshattacker.core.constants.ChannelType;
-import de.rub.nds.sshattacker.core.constants.CompressionAlgorithm;
-import de.rub.nds.sshattacker.core.constants.EncryptionAlgorithm;
-import de.rub.nds.sshattacker.core.constants.KeyExchangeAlgorithm;
-import de.rub.nds.sshattacker.core.constants.Language;
-import de.rub.nds.sshattacker.core.constants.MacAlgorithm;
-import de.rub.nds.sshattacker.core.constants.PublicKeyAuthenticationAlgorithm;
+import de.rub.nds.sshattacker.core.constants.*;
 
 import java.util.List;
 
@@ -183,6 +176,10 @@ public class Chooser {
         } else {
             return config.getServerEcdhPublicKey();
         }
+    }
+
+    public AuthenticationMethod getAuthenticationMethod() {
+        return context.getAuthenticationMethod().orElse(config.getAuthenticationMethod());
     }
 
     public String getUsername() {

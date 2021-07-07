@@ -27,7 +27,8 @@ public enum KeyExchangeAlgorithm {
     DIFFIE_HELLMAN_GROUP17_SHA512("diffie-hellman-group17-sha512"),
     DIFFIE_HELLMAN_GROUP18_SHA512("diffie-hellman-group18-sha512"),
     // [ RFC 5656 ]
-    // RFC 5656 defines ecdh-sha2-*, where * is the OID of the curve to use (except for nistp256, nistp384, nistp521)
+    // RFC 5656 defines ecdh-sha2-*, where * is the OID of the curve to use
+    // (except for nistp256, nistp384, nistp521)
     ECDH_SHA2_SECP160K1("ecdh-sha2-1.3.132.0.9"),
     ECDH_SHA2_SECP160R1("ecdh-sha2-1.3.132.0.8"),
     ECDH_SHA2_SECP160R2("ecdh-sha2-1.3.132.0.30"),

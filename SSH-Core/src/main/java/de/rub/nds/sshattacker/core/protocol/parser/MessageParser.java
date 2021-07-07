@@ -12,6 +12,7 @@ package de.rub.nds.sshattacker.core.protocol.parser;
 import de.rub.nds.sshattacker.core.exceptions.ParserException;
 import de.rub.nds.sshattacker.core.protocol.message.Message;
 import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
+import de.rub.nds.sshattacker.core.state.SshContext;
 import org.apache.logging.log4j.LogManager;
 
 public abstract class MessageParser<T extends Message<T>> extends Parser<T> {
@@ -38,9 +39,9 @@ public abstract class MessageParser<T extends Message<T>> extends Parser<T> {
         return msg;
     }
 
-    public static Message<?> delegateParsing(byte[] raw) {
+    public static Message<?> delegateParsing(byte[] raw, SshContext context) {
         try {
-            switch (MessageIDConstant.fromId(raw[0])) {
+            switch (MessageIDConstant.fromId(raw[0], context)) {
                 case SSH_MSG_KEXINIT:
                     return new KeyExchangeInitMessageParser(0, raw).parse();
                 case SSH_MSG_KEX_ECDH_INIT:

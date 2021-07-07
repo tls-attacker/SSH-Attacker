@@ -9,33 +9,138 @@
  */
 package de.rub.nds.sshattacker.core.constants;
 
-import java.util.Map;
-import java.util.TreeMap;
+import de.rub.nds.sshattacker.core.exceptions.ParserException;
+import de.rub.nds.sshattacker.core.state.SshContext;
+
+import java.util.*;
 
 public enum MessageIDConstant {
+    /*
+     * Sources:
+     *  - https://www.iana.org/assignments/ssh-parameters/ssh-parameters.xhtml#ssh-parameters-1
+     */
+    // [ RFC 4253 ]
     SSH_MSG_DISCONNECT((byte) 1),
     SSH_MSG_IGNORE((byte) 2),
     SSH_MSG_UNIMPLEMENTED((byte) 3),
     SSH_MSG_DEBUG((byte) 4),
     SSH_MSG_SERVICE_REQUEST((byte) 5),
     SSH_MSG_SERVICE_ACCEPT((byte) 6),
+    // [ RFC 8308 ]
+    SSH_MSG_EXT_INFO((byte) 7),
+    SSH_MSG_NEWCOMPRESS((byte) 8),
+    // 9 - 19 unassigned (transport layer generic)
     SSH_MSG_KEXINIT((byte) 20),
     SSH_MSG_NEWKEYS((byte) 21),
-    SSH_MSG_KEX_ECDH_INIT((byte) 30),
-    SSH_MSG_KEX_ECDH_REPLY((byte) 31),
-    // these collide with the current default of ECDH in the hashmap so they are
-    // disabled
-    // SSH_MSG_KEXDH_INIT((byte) 30),
-    // SSH_MSG_KEXDH_REPLY((byte) 31),
-    // SSH_MSG_ECMQV_INIT((byte) 30),
-    // SSH_MSG_ECMQV_REPLY((byte) 31),
+    // 22 - 29 unassigned (algorithm negotiation)
+    // 30 - 49 reserved (key exchange method specific)
+    // [ RFC 4419 ]
+    SSH_MSG_KEX_DH_GEX_REQUEST_OLD((byte) 30, new KeyExchangeAlgorithm[] {
+            KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP_EXCHANGE_SHA1,
+            KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP_EXCHANGE_SHA256 }),
+    SSH_MSG_KEX_DH_GEX_REQUEST((byte) 34, new KeyExchangeAlgorithm[] {
+            KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP_EXCHANGE_SHA1,
+            KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP_EXCHANGE_SHA256 }),
+    SSH_MSG_KEX_DH_GEX_GROUP((byte) 31, new KeyExchangeAlgorithm[] {
+            KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP_EXCHANGE_SHA1,
+            KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP_EXCHANGE_SHA256 }),
+    SSH_MSG_KEX_DH_GEX_INIT((byte) 32, new KeyExchangeAlgorithm[] {
+            KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP_EXCHANGE_SHA1,
+            KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP_EXCHANGE_SHA256 }),
+    SSH_MSG_KEX_DH_GEX_REPLY((byte) 33, new KeyExchangeAlgorithm[] {
+            KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP_EXCHANGE_SHA1,
+            KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP_EXCHANGE_SHA256 }),
+    // [ RFC 4253 ]
+    SSH_MSG_KEXDH_INIT((byte) 30, new KeyExchangeAlgorithm[] { KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP1_SHA1,
+            KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP14_SHA1, KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP14_SHA256,
+            KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP15_SHA512, KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP16_SHA512,
+            KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP17_SHA512, KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP18_SHA512 }),
+    SSH_MSG_KEXDH_REPLY((byte) 31, new KeyExchangeAlgorithm[] { KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP1_SHA1,
+            KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP14_SHA1, KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP14_SHA256,
+            KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP15_SHA512, KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP16_SHA512,
+            KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP17_SHA512, KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP18_SHA512 }),
+    // [ RFC 5656 ]
+    SSH_MSG_KEX_ECDH_INIT((byte) 30, new KeyExchangeAlgorithm[] { KeyExchangeAlgorithm.ECDH_SHA2_SECP160K1,
+            KeyExchangeAlgorithm.ECDH_SHA2_SECP160R1, KeyExchangeAlgorithm.ECDH_SHA2_SECP160R2,
+            KeyExchangeAlgorithm.ECDH_SHA2_SECP192K1, KeyExchangeAlgorithm.ECDH_SHA2_SECP192R1,
+            KeyExchangeAlgorithm.ECDH_SHA2_SECP224K1, KeyExchangeAlgorithm.ECDH_SHA2_SECP224R1,
+            KeyExchangeAlgorithm.ECDH_SHA2_SECP256K1, KeyExchangeAlgorithm.ECDH_SHA2_NISTP256,
+            KeyExchangeAlgorithm.ECDH_SHA2_NISTP384, KeyExchangeAlgorithm.ECDH_SHA2_NISTP521,
+            KeyExchangeAlgorithm.ECDH_SHA2_SECT163K1, KeyExchangeAlgorithm.ECDH_SHA2_SECT163R1,
+            KeyExchangeAlgorithm.ECDH_SHA2_SECT163R2, KeyExchangeAlgorithm.ECDH_SHA2_SECT193R1,
+            KeyExchangeAlgorithm.ECDH_SHA2_SECT193R2, KeyExchangeAlgorithm.ECDH_SHA2_SECT233K1,
+            KeyExchangeAlgorithm.ECDH_SHA2_SECT233R1, KeyExchangeAlgorithm.ECDH_SHA2_SECT239K1,
+            KeyExchangeAlgorithm.ECDH_SHA2_SECT283K1, KeyExchangeAlgorithm.ECDH_SHA2_SECT283R1,
+            KeyExchangeAlgorithm.ECDH_SHA2_SECT409K1, KeyExchangeAlgorithm.ECDH_SHA2_SECT409R1,
+            KeyExchangeAlgorithm.ECDH_SHA2_SECT571K1, KeyExchangeAlgorithm.ECDH_SHA2_SECT571R1,
+            KeyExchangeAlgorithm.ECDH_SHA2_BRAINPOOL_P256R1, KeyExchangeAlgorithm.ECDH_SHA2_BRAINPOOL_P384R1,
+            KeyExchangeAlgorithm.ECDH_SHA2_BRAINPOOL_P512R1, KeyExchangeAlgorithm.CURVE25519_SHA256,
+            KeyExchangeAlgorithm.CURVE448_SHA512, KeyExchangeAlgorithm.CURVE25519_SHA256_LIBSSH_ORG }),
+    SSH_MSG_KEX_ECDH_REPLY((byte) 31, new KeyExchangeAlgorithm[] { KeyExchangeAlgorithm.ECDH_SHA2_SECP160K1,
+            KeyExchangeAlgorithm.ECDH_SHA2_SECP160R1, KeyExchangeAlgorithm.ECDH_SHA2_SECP160R2,
+            KeyExchangeAlgorithm.ECDH_SHA2_SECP192K1, KeyExchangeAlgorithm.ECDH_SHA2_SECP192R1,
+            KeyExchangeAlgorithm.ECDH_SHA2_SECP224K1, KeyExchangeAlgorithm.ECDH_SHA2_SECP224R1,
+            KeyExchangeAlgorithm.ECDH_SHA2_SECP256K1, KeyExchangeAlgorithm.ECDH_SHA2_NISTP256,
+            KeyExchangeAlgorithm.ECDH_SHA2_NISTP384, KeyExchangeAlgorithm.ECDH_SHA2_NISTP521,
+            KeyExchangeAlgorithm.ECDH_SHA2_SECT163K1, KeyExchangeAlgorithm.ECDH_SHA2_SECT163R1,
+            KeyExchangeAlgorithm.ECDH_SHA2_SECT163R2, KeyExchangeAlgorithm.ECDH_SHA2_SECT193R1,
+            KeyExchangeAlgorithm.ECDH_SHA2_SECT193R2, KeyExchangeAlgorithm.ECDH_SHA2_SECT233K1,
+            KeyExchangeAlgorithm.ECDH_SHA2_SECT233R1, KeyExchangeAlgorithm.ECDH_SHA2_SECT239K1,
+            KeyExchangeAlgorithm.ECDH_SHA2_SECT283K1, KeyExchangeAlgorithm.ECDH_SHA2_SECT283R1,
+            KeyExchangeAlgorithm.ECDH_SHA2_SECT409K1, KeyExchangeAlgorithm.ECDH_SHA2_SECT409R1,
+            KeyExchangeAlgorithm.ECDH_SHA2_SECT571K1, KeyExchangeAlgorithm.ECDH_SHA2_SECT571R1,
+            KeyExchangeAlgorithm.ECDH_SHA2_BRAINPOOL_P256R1, KeyExchangeAlgorithm.ECDH_SHA2_BRAINPOOL_P384R1,
+            KeyExchangeAlgorithm.ECDH_SHA2_BRAINPOOL_P512R1, KeyExchangeAlgorithm.CURVE25519_SHA256,
+            KeyExchangeAlgorithm.CURVE448_SHA512, KeyExchangeAlgorithm.CURVE25519_SHA256_LIBSSH_ORG }),
+    SSH_MSG_ECMQV_INIT((byte) 30, KeyExchangeAlgorithm.ECMQV_SHA2),
+    SSH_MSG_ECMQV_REPLY((byte) 31, KeyExchangeAlgorithm.ECMQV_SHA2),
+    // [ RFC 4432 ]
+    SSH_MSG_KEXRSA_PUBKEY((byte) 30, new KeyExchangeAlgorithm[] { KeyExchangeAlgorithm.RSA1024_SHA1,
+            KeyExchangeAlgorithm.RSA2048_SHA256 }),
+    SSH_MSG_KEXRSA_SECRET((byte) 31, new KeyExchangeAlgorithm[] { KeyExchangeAlgorithm.RSA1024_SHA1,
+            KeyExchangeAlgorithm.RSA2048_SHA256 }),
+    SSH_MSG_KEXRSA_DONE((byte) 32, new KeyExchangeAlgorithm[] { KeyExchangeAlgorithm.RSA1024_SHA1,
+            KeyExchangeAlgorithm.RSA2048_SHA256 }),
+    // [ RFC 4462 ]
+    // TODO: Add specificTo on GSS messages
+    SSH_MSG_KEXGSS_INIT((byte) 30),
+    SSH_MSG_KEXGSS_CONTINUE((byte) 31),
+    SSH_MSG_KEXGSS_COMPLETE((byte) 32),
+    SSH_MSG_KEXGSS_HOSTKEY((byte) 33),
+    SSH_MSG_KEXGSS_ERROR((byte) 34),
+    SSH_MSG_KEXGSS_GROUPREQ((byte) 40),
+    SSH_MSG_KEXGSS_GROUP((byte) 41),
+    // [ RFC 4252 ]
     SSH_MSG_USERAUTH_REQUEST((byte) 50),
     SSH_MSG_USERAUTH_FAILURE((byte) 51),
     SSH_MSG_USERAUTH_SUCCESS((byte) 52),
     SSH_MSG_USERAUTH_BANNER((byte) 53),
+    // 54 - 59 unassigned (user authentication generic)
+    // 60 - 79 reserved (user authentication method specific)
+    // [ RFC 4252 ]
+    SSH_MSG_USERAUTH_PK_OK((byte) 60, AuthenticationMethod.PUBLICKEY),
+    SSH_MSG_USERAUTH_PASSWD_CHANGEREQ((byte) 60, AuthenticationMethod.PASSWORD),
+    // [ RFC 4256 ]
+    SSH_MSG_USERAUTH_INFO_REQUEST((byte) 60, AuthenticationMethod.KEYBOARD_INTERACTIVE),
+    SSH_MSG_USERAUTH_INFO_RESPONSE((byte) 61, AuthenticationMethod.KEYBOARD_INTERACTIVE),
+    // [ RFC 4462 ]
+    SSH_MSG_USERAUTH_GSSAPI_RESPONSE((byte) 60, new AuthenticationMethod[] { AuthenticationMethod.GSSAPI,
+            AuthenticationMethod.GSSAPI_WITH_MIC, AuthenticationMethod.GSSAPI_KEYEX }),
+    SSH_MSG_USERAUTH_GSSAPI_TOKEN((byte) 61, new AuthenticationMethod[] { AuthenticationMethod.GSSAPI,
+            AuthenticationMethod.GSSAPI_WITH_MIC, AuthenticationMethod.GSSAPI_KEYEX }),
+    SSH_MSG_USERAUTH_GSSAPI_EXCHANGE_COMPLETE((byte) 63, new AuthenticationMethod[] { AuthenticationMethod.GSSAPI,
+            AuthenticationMethod.GSSAPI_WITH_MIC, AuthenticationMethod.GSSAPI_KEYEX }),
+    SSH_MSG_USERAUTH_GSSAPI_ERROR((byte) 64, new AuthenticationMethod[] { AuthenticationMethod.GSSAPI,
+            AuthenticationMethod.GSSAPI_WITH_MIC, AuthenticationMethod.GSSAPI_KEYEX }),
+    SSH_MSG_USERAUTH_GSSAPI_ERRTOK((byte) 65, new AuthenticationMethod[] { AuthenticationMethod.GSSAPI,
+            AuthenticationMethod.GSSAPI_WITH_MIC, AuthenticationMethod.GSSAPI_KEYEX }),
+    SSH_MSG_USERAUTH_GSSAPI_MIC((byte) 66, new AuthenticationMethod[] { AuthenticationMethod.GSSAPI,
+            AuthenticationMethod.GSSAPI_WITH_MIC, AuthenticationMethod.GSSAPI_KEYEX }),
+    // [ RFC 4254 ]
     SSH_MSG_GLOBAL_REQUEST((byte) 80),
     SSH_MSG_REQUEST_SUCCESS((byte) 81),
     SSH_MSG_REQUEST_FAILURE((byte) 82),
+    // 83 - 89 unassigned (connection protocol generic)
     SSH_MSG_CHANNEL_OPEN((byte) 90),
     SSH_MSG_CHANNEL_OPEN_CONFIRMATION((byte) 91),
     SSH_MSG_CHANNEL_OPEN_FAILURE((byte) 92),
@@ -47,28 +152,69 @@ public enum MessageIDConstant {
     SSH_MSG_CHANNEL_REQUEST((byte) 98),
     SSH_MSG_CHANNEL_SUCCESS((byte) 99),
     SSH_MSG_CHANNEL_FAILURE((byte) 100),
-    UNKNOWN((byte) 255); // reserved by us
+    // 101 - 127 unassigned (channel related messages)
+    // 128 - 191 reserved (for client protocols)
+    // 192 - 255 reserved for private use (local extensions)
+    UNKNOWN((byte) 255);
 
     public final byte id;
+    public final Enum<?>[] specificTo;
 
-    public static final Map<Byte, MessageIDConstant> map;
+    public static final Map<Byte, List<MessageIDConstant>> map;
 
     static {
         map = new TreeMap<>();
         for (MessageIDConstant constant : MessageIDConstant.values()) {
-            map.put(constant.id, constant);
+            map.putIfAbsent(constant.id, new LinkedList<>());
+            map.get(constant.id).add(constant);
         }
     }
 
     MessageIDConstant(byte id) {
         this.id = id;
+        this.specificTo = new Enum<?>[] {};
+    }
+
+    MessageIDConstant(byte id, Enum<?>... specificTo) {
+        this.id = id;
+        this.specificTo = specificTo;
     }
 
     public static String getNameByID(byte id) {
         return map.get(id).toString();
     }
 
-    public static MessageIDConstant fromId(byte id) {
-        return map.get(id);
+    public static MessageIDConstant fromId(byte id, SshContext context) {
+        List<MessageIDConstant> idList = map.get(id);
+        if (idList == null) {
+            throw new ParserException("Unable to parse message with unknown id");
+        }
+        if (id >= (byte) 30 && id <= (byte) 49) {
+            if (!context.getKeyExchangeAlgorithm().isPresent()) {
+                throw new ParserException(
+                        "Unable to parse key exchange specific message id without negotiating one first");
+            }
+            KeyExchangeAlgorithm kexInContext = context.getKeyExchangeAlgorithm().get();
+            for (MessageIDConstant candidate : idList) {
+                if (Arrays.asList(candidate.specificTo).contains(kexInContext)) {
+                    return candidate;
+                }
+            }
+            throw new ParserException("Unable to parse key exchange specific message in the current context");
+        }
+        if (id >= (byte) 60 && id <= (byte) 79) {
+            AuthenticationMethod methodInContext = context.getChooser().getAuthenticationMethod();
+            if (methodInContext == null) {
+                throw new ParserException(
+                        "Unable to parse user authentication specific message id without selecting one first");
+            }
+            for (MessageIDConstant candidate : idList) {
+                if (Arrays.asList(candidate.specificTo).contains(methodInContext)) {
+                    return candidate;
+                }
+            }
+            throw new ParserException("Unable to parse user authentication specific message in the current context");
+        }
+        return idList.get(0);
     }
 }

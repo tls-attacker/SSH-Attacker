@@ -12,15 +12,7 @@ package de.rub.nds.sshattacker.core.config;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.connection.InboundConnection;
 import de.rub.nds.sshattacker.core.connection.OutboundConnection;
-import de.rub.nds.sshattacker.core.constants.ChannelRequestType;
-import de.rub.nds.sshattacker.core.constants.ChannelType;
-import de.rub.nds.sshattacker.core.constants.CompressionAlgorithm;
-import de.rub.nds.sshattacker.core.constants.EncryptionAlgorithm;
-import de.rub.nds.sshattacker.core.constants.KeyExchangeAlgorithm;
-import de.rub.nds.sshattacker.core.constants.Language;
-import de.rub.nds.sshattacker.core.constants.MacAlgorithm;
-import de.rub.nds.sshattacker.core.constants.PublicKeyAuthenticationAlgorithm;
-import de.rub.nds.sshattacker.core.constants.RunningModeType;
+import de.rub.nds.sshattacker.core.constants.*;
 import de.rub.nds.sshattacker.core.workflow.factory.WorkflowTraceType;
 import de.rub.nds.sshattacker.core.workflow.filter.FilterType;
 import java.io.File;
@@ -79,6 +71,7 @@ public class Config implements Serializable {
     private byte[] clientEcdhPublicKey;
     private byte[] serverEcdhPublicKey;
 
+    private AuthenticationMethod authenticationMethod;
     private String serviceName;
     private String username;
     private String password;
@@ -187,6 +180,7 @@ public class Config implements Serializable {
         clientReserved = 0;
         serverReserved = 0;
 
+        authenticationMethod = AuthenticationMethod.PASSWORD;
         serviceName = "ssh-userauth";
         username = "sshattacker";
         password = "bydahirsch";
@@ -377,6 +371,14 @@ public class Config implements Serializable {
 
     public void setServerEcdhPublicKey(byte[] serverEcdhPublicKey) {
         this.serverEcdhPublicKey = serverEcdhPublicKey;
+    }
+
+    public AuthenticationMethod getAuthenticationMethod() {
+        return authenticationMethod;
+    }
+
+    public void setAuthenticationMethod(AuthenticationMethod authenticationMethod) {
+        this.authenticationMethod = authenticationMethod;
     }
 
     public String getUsername() {
