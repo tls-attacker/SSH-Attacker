@@ -11,10 +11,9 @@ package de.rub.nds.sshattacker.core.constants;
 
 public enum GlobalRequestType {
     /*
-     * Sources: -
-     * https://www.iana.org/assignments/ssh-parameters/ssh-parameters.
-     * xhtml#ssh-parameters-12 -
-     * https://cvsweb.openbsd.org/src/usr.bin/ssh/PROTOCOL?annotate=HEAD
+     * Sources:
+     * - https://www.iana.org/assignments/ssh-parameters/ssh-parameters.xhtml#ssh-parameters-12
+     * - https://cvsweb.openbsd.org/src/usr.bin/ssh/PROTOCOL?annotate=HEAD
      */
     // [ RFC 4254 ]
     TCPIP_FORWARD("tcpip-forward"),
