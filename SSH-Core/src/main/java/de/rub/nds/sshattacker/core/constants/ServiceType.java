@@ -10,6 +10,10 @@
 package de.rub.nds.sshattacker.core.constants;
 
 public enum ServiceType {
+    /*
+     * Sources:
+     *  - https://www.iana.org/assignments/ssh-parameters/ssh-parameters.xhtml#ssh-parameters-9
+     */
     SSH_USERAUTH("ssh-userauth"),
     SSH_CONNECTION("ssh-connection");
 
