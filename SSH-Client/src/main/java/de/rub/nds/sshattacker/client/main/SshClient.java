@@ -1,4 +1,4 @@
-/**
+/*
  * SSH-Attacker - A Modular Penetration Testing Framework for SSH
  *
  * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
@@ -56,7 +56,7 @@ public class SshClient {
         try {
             workflowExecutor.executeWorkflow();
         } catch (WorkflowExecutionException ex) {
-            LOGGER.warn("The TLS protocol flow was not executed completely, follow the debug messages for more information.");
+            LOGGER.warn("The SSH protocol flow was not executed completely, follow the debug messages for more information.");
             LOGGER.debug(ex.getLocalizedMessage(), ex);
         }
     }
