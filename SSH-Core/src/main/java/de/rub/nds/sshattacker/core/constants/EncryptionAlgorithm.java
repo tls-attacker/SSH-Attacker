@@ -32,7 +32,8 @@ public enum EncryptionAlgorithm {
     SERPENT192_CBC("serpent192-cbc", 24, 16),
     SERPENT128_CBC("serpent128-cbc", 16, 16),
     // arcfour was deprecated in [ RFC 8758 ]
-    // blockSize = 0 as arcfour is a stream cipher, the output is used as a keystream
+    // blockSize = 0 as arcfour is a stream cipher, the output is used as a
+    // keystream
     ARCFOUR("arcfour", 16, 0),
     IDEA_CBC("idea-cbc", 16, 8),
     CAST128_CBC("cast128-cbc", 16, 8),
@@ -65,7 +66,8 @@ public enum EncryptionAlgorithm {
     // [ OpenSSH ]
     AES128_GCM_OPENSSH_COM("aes128-gcm@openssh.com", 16, 16),
     AES256_GCM_OPENSSH_COM("aes256-gcm@openssh.com", 32, 16),
-    // blockSize = 0 as ChaCha20 is a stream cipher, the output is used as a keystream
+    // blockSize = 0 as ChaCha20 is a stream cipher, the output is used as a
+    // keystream
     CHACHA20_POLY1305_OPENSSH_COM("chacha20-poly1305@openssh.com", 64, 0),
     // [ Lysator Academic Computer Society ]
     RIJNDAEL_CBC_LYSATOR_LIU_SE("rijndael-cbc@lysator.liu.se", 16, 16);
