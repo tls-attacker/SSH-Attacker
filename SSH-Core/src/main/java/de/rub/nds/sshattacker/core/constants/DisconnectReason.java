@@ -13,7 +13,11 @@ import java.util.Map;
 import java.util.TreeMap;
 
 public enum DisconnectReason {
-
+    /*
+     * Sources:
+     *  - https://www.iana.org/assignments/ssh-parameters/ssh-parameters.xhtml#ssh-parameters-3
+     */
+    // [ RFC 4253 ]
     SSH_DISCONNECT_HOST_NOT_ALLOWED_TO_CONNECT((byte) 1),
     SSH_DISCONNECT_PROTOCOL_ERROR((byte) 2),
     SSH_DISCONNECT_KEY_EXCHANGE_FAILED((byte) 3),
