@@ -1,4 +1,4 @@
-/*
+/**
  * SSH-Attacker - A Modular Penetration Testing Framework for SSH
  *
  * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
