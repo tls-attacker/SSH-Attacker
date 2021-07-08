@@ -12,7 +12,7 @@ package de.rub.nds.sshattacker.core.protocol.message;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
-import de.rub.nds.sshattacker.core.protocol.handler.UserauthPasswordMessageHandler;
+import de.rub.nds.sshattacker.core.protocol.handler.UserAuthPasswordMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.preparator.UserAuthPasswordMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.serializer.UserAuthPasswordMessageSerializer;
 import de.rub.nds.sshattacker.core.state.SshContext;
@@ -81,8 +81,8 @@ public class UserAuthPasswordMessage extends Message<UserAuthPasswordMessage> {
     }
 
     @Override
-    public UserauthPasswordMessageHandler getHandler(SshContext context) {
-        return new UserauthPasswordMessageHandler(context);
+    public UserAuthPasswordMessageHandler getHandler(SshContext context) {
+        return new UserAuthPasswordMessageHandler(context);
     }
 
     @Override
