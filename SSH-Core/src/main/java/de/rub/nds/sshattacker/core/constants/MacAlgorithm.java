@@ -22,8 +22,8 @@ public enum MacAlgorithm {
     HMAC_MD5_96("hmac-md5-96", 16, 12),
     NONE("none", 0, 0),
     // [ RFC 5647 ]
-    AEAD_AES128_GCM("AEAD_AES_128_GCM", 16, 16),
-    AEAD_AES256_GCM("AEAD_AES_256_GCM", 32, 16),
+    AEAD_AES_128_GCM("AEAD_AES_128_GCM", 16, 16),
+    AEAD_AES_256_GCM("AEAD_AES_256_GCM", 32, 16),
     // [ RFC 6668 ]
     HMAC_SHA2_256("hmac-sha2-256", 32, 32),
     HMAC_SHA2_512("hmac-sha2-512", 64, 64),
