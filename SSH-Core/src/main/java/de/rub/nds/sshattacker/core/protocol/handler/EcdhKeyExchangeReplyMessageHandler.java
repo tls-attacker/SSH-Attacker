@@ -10,9 +10,10 @@
 package de.rub.nds.sshattacker.core.protocol.handler;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.sshattacker.core.exceptions.AdjustmentException;
+import de.rub.nds.sshattacker.core.protocol.layers.CryptoLayerFactory;
 import de.rub.nds.sshattacker.core.protocol.message.EcdhKeyExchangeReplyMessage;
 import de.rub.nds.sshattacker.core.util.Converter;
-import de.rub.nds.sshattacker.core.util.Util;
 import de.rub.nds.sshattacker.core.crypto.KeyDerivation;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import org.apache.logging.log4j.LogManager;
@@ -40,7 +41,10 @@ public class EcdhKeyExchangeReplyMessageHandler extends Handler<EcdhKeyExchangeR
         adjustExchangeHash();
         context.setSessionID(context.getExchangeHash());
         adjustKeys();
-        context.getCryptoLayer().init();
+
+        context.setCryptoLayerClientToServer(CryptoLayerFactory.getCryptoLayer(true, context));
+        context.setCryptoLayerServerToClient(CryptoLayerFactory.getCryptoLayer(false, context));
+        context.setKeyExchangeComplete(true);
     }
 
     private void handleEccHostKey(EcdhKeyExchangeReplyMessage message) {
@@ -63,9 +67,7 @@ public class EcdhKeyExchangeReplyMessageHandler extends Handler<EcdhKeyExchangeR
 
     private void adjustKeys() {
         // hashalgorithm is the same used in the key exchange
-
-        // TODO not clean, works for now
-        String hashAlgorithm = Util.getDigestAlgorithmFromKeyExchange(context.getKeyExchangeAlgorithm().toString());
+        String hashAlgorithm = context.getKeyExchangeAlgorithm().orElseThrow(AdjustmentException::new).getDigest();
 
         context.setInitialIvClientToServer(KeyDerivation.deriveKey(context.getSharedSecret(),
                 context.getExchangeHash(), (byte) 'A', context.getSessionID(), context
@@ -95,7 +97,7 @@ public class EcdhKeyExchangeReplyMessageHandler extends Handler<EcdhKeyExchangeR
     }
 
     private void adjustExchangeHash() {
-        String hashAlgorithm = Util.getDigestAlgorithmFromKeyExchange(context.getKeyExchangeAlgorithm().toString());
+        String hashAlgorithm = context.getKeyExchangeAlgorithm().orElseThrow(AdjustmentException::new).getDigest();
 
         context.appendToExchangeHashInput(context.getClientEcdhPublicKey());
         context.appendToExchangeHashInput(context.getServerEcdhPublicKey());

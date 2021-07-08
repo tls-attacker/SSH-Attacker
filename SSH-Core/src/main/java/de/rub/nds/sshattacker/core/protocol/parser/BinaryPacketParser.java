@@ -14,19 +14,25 @@ import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.sshattacker.core.constants.BinaryPacketConstants;
+import de.rub.nds.sshattacker.core.constants.MacAlgorithm;
 import de.rub.nds.sshattacker.core.protocol.message.BinaryPacket;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class BinaryPacketParser extends Parser<BinaryPacket> {
 
     private static final Logger LOGGER = LogManager.getLogger();
+    private final SshContext context;
 
-    public BinaryPacketParser(int startPosition, byte[] array) {
+    public BinaryPacketParser(int startPosition, byte[] array, SshContext context) {
         super(startPosition, array);
+        this.context = context;
     }
 
     private void parsePacketLength(BinaryPacket msg) {
@@ -60,21 +66,18 @@ public class BinaryPacketParser extends Parser<BinaryPacket> {
     }
 
     private void parseMAC(BinaryPacket msg) {
-        ModifiableByteArray mac = ModifiableVariableFactory.safelySetValue(null, parseArrayOrTillEnd(20)); // TODO
-                                                                                                           // hardcoded
-                                                                                                           // hmac-sha1
-                                                                                                           // size,
-                                                                                                           // needs
-                                                                                                           // context
-                                                                                                           // to
-                                                                                                           // work
-        if (mac.getValue().length == 0) {
+        MacAlgorithm macAlgorithm = context.getConnection().getLocalConnectionEndType() == ConnectionEndType.CLIENT ? context
+                .getMacAlgorithmServerToClient() : context.getMacAlgorithmClientToServer();
+        if (macAlgorithm == null || macAlgorithm.getOutputSize() == 0 || !context.isKeyExchangeComplete()) {
             LOGGER.debug("MAC: none");
             msg.setMac(new byte[] {});
         } else {
+            ModifiableByteArray mac = ModifiableVariableFactory.safelySetValue(null,
+                    parseArrayOrTillEnd(macAlgorithm.getOutputSize()));
             LOGGER.debug("MAC: " + mac);
             msg.setMac(mac);
         }
+
     }
 
     @Override

@@ -33,10 +33,11 @@ public class SshContext {
     private AliasedConnection connection;
 
     private boolean receivedTransportHandlerException = false;
-    private BinaryPacketLayer binaryPacketLayer = new BinaryPacketLayer();
+    private BinaryPacketLayer binaryPacketLayer = new BinaryPacketLayer(this);
     private MessageLayer messageLayer = new MessageLayer(this);
     private TransportHandler transportHandler;
-    private CryptoLayer cryptoLayer = new CryptoLayer(this);
+    private CryptoLayer cryptoLayerClientToServer;
+    private CryptoLayer cryptoLayerServerToClient;
 
     private byte[] exchangeHashInput;
 
@@ -55,6 +56,7 @@ public class SshContext {
 
     private int sequenceNumber = 0;
     private boolean isEncryptionActive = false;
+    private boolean keyExchangeCompleted = false;
 
     private String hostKeyType;
     private byte[] serverHostKey;
@@ -689,7 +691,7 @@ public class SshContext {
         incrementSequenceNumter(1);
     }
 
-    public boolean isIsEncryptionActive() {
+    public boolean isEncryptionActive() {
         return isEncryptionActive;
     }
 
@@ -697,12 +699,28 @@ public class SshContext {
         this.isEncryptionActive = isEncryptionActive;
     }
 
-    public CryptoLayer getCryptoLayer() {
-        return cryptoLayer;
+    public boolean isKeyExchangeComplete() {
+        return keyExchangeCompleted;
     }
 
-    public void setCryptoLayer(CryptoLayer cryptoLayer) {
-        this.cryptoLayer = cryptoLayer;
+    public void setKeyExchangeComplete(boolean keyExchangeCompleted) {
+        this.keyExchangeCompleted = keyExchangeCompleted;
+    }
+
+    public CryptoLayer getCryptoLayerClientToServer() {
+        return cryptoLayerClientToServer;
+    }
+
+    public void setCryptoLayerClientToServer(CryptoLayer cryptoLayerClientToServer) {
+        this.cryptoLayerClientToServer = cryptoLayerClientToServer;
+    }
+
+    public CryptoLayer getCryptoLayerServerToClient() {
+        return cryptoLayerServerToClient;
+    }
+
+    public void setCryptoLayerServerToClient(CryptoLayer cryptoLayerServerToClient) {
+        this.cryptoLayerServerToClient = cryptoLayerServerToClient;
     }
 
     public String getUsername() {

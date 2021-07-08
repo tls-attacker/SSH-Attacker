@@ -17,6 +17,7 @@ import de.rub.nds.sshattacker.core.protocol.message.Message;
 import de.rub.nds.sshattacker.core.workflow.action.result.MessageActionResult;
 import de.rub.nds.sshattacker.core.protocol.layers.MessageLayer;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 
 import java.io.IOException;
@@ -30,28 +31,27 @@ public class SendMessageHelper {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public void sendBinaryPacket(BinaryPacket bp, SshContext context) {
+    public void sendBinaryPacket(BinaryPacket bp, SshContext context) throws IOException {
         BinaryPacketLayer binaryPacketLayer = context.getBinaryPacketLayer();
         TransportHandler transportHandler = context.getTransportHandler();
-        CryptoLayer cryptoLayer = context.getCryptoLayer();
 
-        try {
-            transportHandler.sendData(cryptoLayer.macAndEncrypt(binaryPacketLayer.serializeBinaryPacket(bp)));
-        } catch (IOException e) {
-            LOGGER.warn("Error while sending packet: " + e.getMessage());
-
+        byte[] data;
+        if (context.isEncryptionActive()) {
+            CryptoLayer cryptoLayer = context.getConnection().getLocalConnectionEndType() == ConnectionEndType.CLIENT ? context
+                    .getCryptoLayerClientToServer() : context.getCryptoLayerServerToClient();
+            data = cryptoLayer.encryptPacket(bp);
+        } else {
+            data = binaryPacketLayer.serializeBinaryPacket(bp);
         }
+        transportHandler.sendData(data);
     }
 
     public MessageActionResult sendMessage(Message<?> msg, SshContext context) {
         MessageLayer messageLayer = context.getMessageLayer();
-        BinaryPacketLayer binaryPacketLayer = context.getBinaryPacketLayer();
-        TransportHandler transportHandler = context.getTransportHandler();
-        CryptoLayer cryptoLayer = context.getCryptoLayer();
 
         try {
             BinaryPacket binaryPacket = messageLayer.serializeMessage(msg);
-            transportHandler.sendData(cryptoLayer.macAndEncrypt(binaryPacketLayer.serializeBinaryPacket(binaryPacket)));
+            sendBinaryPacket(binaryPacket, context);
             context.incrementSequenceNumber();
             return new MessageActionResult(Collections.singletonList(binaryPacket), Collections.singletonList(msg));
         } catch (IOException e) {

@@ -20,6 +20,7 @@ import de.rub.nds.sshattacker.core.protocol.message.Message;
 import de.rub.nds.sshattacker.core.protocol.parser.ClientInitMessageParser;
 import de.rub.nds.sshattacker.core.workflow.action.result.MessageActionResult;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 
 import java.io.IOException;
@@ -38,7 +39,6 @@ public class ReceiveMessageHelper {
         TransportHandler transportHandler = context.getTransportHandler();
         BinaryPacketLayer binaryPacketLayer = context.getBinaryPacketLayer();
         MessageLayer messageLayer = context.getMessageLayer();
-        CryptoLayer cryptoLayer = context.getCryptoLayer();
 
         if (!context.getReceivedServerInit()) {
             MessageActionResult result = receiveInitMessage(context);
@@ -59,14 +59,19 @@ public class ReceiveMessageHelper {
                         return new MessageActionResult(); // TODO implement fitting message
                     }
 
-                    byte[] decryptedData = cryptoLayer.decryptBinaryPackets(data);
+                    if(context.isEncryptionActive()) {
+                        CryptoLayer cryptoLayer = context.getConnection().getLocalConnectionEndType() == ConnectionEndType.CLIENT ?
+                                context.getCryptoLayerServerToClient() : context.getCryptoLayerClientToServer();
+                        data = cryptoLayer.decryptBinaryPackets(data);
+                    }
+
                     try {
-                        List<BinaryPacket> binaryPackets = binaryPacketLayer.parseBinaryPackets(decryptedData);
+                        List<BinaryPacket> binaryPackets = binaryPacketLayer.parseBinaryPackets(data);
                         List<Message<?>> messages = messageLayer.parseMessages(binaryPackets);
                         messages.forEach(message -> message.handleSelf(context));
                         return new MessageActionResult(binaryPackets, messages);
                     } catch (ParserException e) {
-                        BinaryPacket dummyPacket = new BinaryPacket(decryptedData);
+                        BinaryPacket dummyPacket = new BinaryPacket(data);
                         return new MessageActionResult(Collections.singletonList(dummyPacket), new LinkedList<>());
                     }
                 } else {

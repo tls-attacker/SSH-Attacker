@@ -12,181 +12,147 @@ package de.rub.nds.sshattacker.core.protocol.layers;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.BinaryPacketConstants;
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
+import de.rub.nds.sshattacker.core.constants.EncryptionAlgorithm;
+import de.rub.nds.sshattacker.core.constants.MacAlgorithm;
+import de.rub.nds.sshattacker.core.protocol.message.BinaryPacket;
+import de.rub.nds.sshattacker.core.protocol.serializer.BinaryPacketSerializer;
 import de.rub.nds.sshattacker.core.state.SshContext;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
-import java.security.Key;
-import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
-import java.util.Arrays;
-import java.util.logging.Level;
-import javax.crypto.Cipher;
-import javax.crypto.Mac;
-import javax.crypto.NoSuchPaddingException;
-import javax.crypto.spec.IvParameterSpec;
-import javax.crypto.spec.SecretKeySpec;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class CryptoLayer {
+import java.util.Arrays;
 
-    private final SshContext context;
+public abstract class CryptoLayer {
 
-    private static final Logger LOGGER = LogManager.getLogger();
+    protected static final Logger LOGGER = LogManager.getLogger();
+    protected final SshContext context;
+    protected final EncryptionAlgorithm encryptionAlgorithm;
+    protected final MacAlgorithm macAlgorithm;
 
-    private Cipher encryption;
-    private Cipher decryption;
-
-    private Mac mac;
-    @SuppressWarnings("FieldCanBeLocal")
-    private Mac verify;
-
-    public CryptoLayer(SshContext context) {
+    protected CryptoLayer(EncryptionAlgorithm encryptionAlgorithm, MacAlgorithm macAlgorithm, SshContext context) {
         this.context = context;
+        this.encryptionAlgorithm = encryptionAlgorithm;
+        this.macAlgorithm = macAlgorithm;
     }
 
-    /**
-     * Can only be called after keys have been derived
-     */
-    public void init() {
-        initCiphers();
-        initMacs();
+    protected abstract byte[] encrypt(byte[] plaintext);
+
+    protected abstract byte[] decrypt(byte[] ciphertext);
+
+    protected abstract byte[] computeMAC(byte[] input);
+
+    protected abstract void verifyMAC(byte[] input, byte[] mac);
+
+    private void computePacketFields(BinaryPacket packet, boolean encryptedPacketLength) {
+        packet.computePaddingLength((byte) getEncryptionAlgorithm().getBlockSize(), encryptedPacketLength);
+        packet.generatePadding();
+        packet.computePacketLength();
     }
 
-    private void initCiphers() {
-        try {
-            encryption = Cipher.getInstance("AES/CBC/NoPadding");
-            Key encryptionKey = new SecretKeySpec(context.getEncryptionKeyClientToServer(), "AES");
-            IvParameterSpec encryptionIV = new IvParameterSpec(context.getInitialIvClientToServer());
-            encryption.init(Cipher.ENCRYPT_MODE, encryptionKey, encryptionIV);
+    private byte[] encryptAndMac(BinaryPacket packet) {
+        computePacketFields(packet, true);
+        byte[] serializedPacket = new BinaryPacketSerializer(packet).serializeForEncryption();
+        byte[] encryptedPacket = encrypt(serializedPacket);
+        byte[] toMac = ArrayConverter.concatenate(
+                ArrayConverter.intToBytes(context.getSequenceNumber(), DataFormatConstants.INT32_SIZE),
+                serializedPacket);
+        byte[] mac = computeMAC(toMac);
 
-            decryption = Cipher.getInstance("AES/CBC/NoPadding");
-            Key decryptionKey = new SecretKeySpec(context.getEncryptionKeyServerToClient(), "AES");
-            IvParameterSpec decryptionIV = new IvParameterSpec(context.getInitialIvServerToClient());
-            decryption.init(Cipher.DECRYPT_MODE, decryptionKey, decryptionIV);
-        } catch (NoSuchAlgorithmException e) {
-            LOGGER.warn("Provider does not support this algorithm. " + e.getMessage());
-        } catch (NoSuchPaddingException e) {
-            LOGGER.warn("Provider does not support this padding. " + e.getMessage());
-        } catch (InvalidKeyException e) {
-            LOGGER.warn("Keys does not correspond to used cipher. " + e.getMessage());
-        } catch (InvalidAlgorithmParameterException e) {
-            LOGGER.warn(e.getMessage());
+        // Support for HMAC_SHA1_96 and similar algorithms
+        if (mac.length > getMacAlgorithm().getOutputSize()) {
+            LOGGER.info("MAC needs to be shorter, expected " + getMacAlgorithm().getOutputSize() + " but got "
+                    + mac.length);
+            mac = Arrays.copyOfRange(mac, 0, getMacAlgorithm().getOutputSize());
         }
+
+        return ArrayConverter.concatenate(encryptedPacket, mac);
     }
 
-    private void initMacs() {
-        try {
-            mac = Mac.getInstance("HMacSHA1");
-            Key macKey = new SecretKeySpec(context.getIntegrityKeyClientToServer(), "HMac-SHA1");
-            mac.init(macKey);
+    private byte[] encryptThenMac(BinaryPacket packet) {
+        computePacketFields(packet, false);
+        byte[] serializedPacket = new BinaryPacketSerializer(packet).serializeForETMEncryption();
+        LOGGER.info("About to encrypt packet with length " + serializedPacket.length);
+        byte[] encryptedPacket = encrypt(serializedPacket);
+        byte[] packetLength = ArrayConverter.intToBytes(packet.getPacketLength().getValue(),
+                BinaryPacketConstants.LENGTH_FIELD_LENGTH);
+        LOGGER.info("Package length is: " + Arrays.toString(packetLength));
+        byte[] toMac = ArrayConverter.concatenate(
+                ArrayConverter.intToBytes(context.getSequenceNumber(), DataFormatConstants.INT32_SIZE), packetLength,
+                encryptedPacket);
+        byte[] mac = computeMAC(toMac);
 
-            verify = Mac.getInstance("HMacSHA1");
-            Key verifyKey = new SecretKeySpec(context.getIntegrityKeyServerToClient(), "HMac-SHA1");
-            verify.init(verifyKey);
-        } catch (NoSuchAlgorithmException e) {
-            LOGGER.warn("HMac is not supported. " + e.getMessage());
-        } catch (InvalidKeyException e) {
-            LOGGER.warn("Key is not suitable for this Mac. " + e.getMessage());
+        // Support for HMAC_SHA1_96_ETM_OPENSSH_COM and similar algorithms
+        if (mac.length > getMacAlgorithm().getOutputSize()) {
+            LOGGER.info("MAC needs to be shorter, expected " + getMacAlgorithm().getOutputSize() + " but got "
+                    + mac.length);
+            mac = Arrays.copyOfRange(mac, 0, getMacAlgorithm().getOutputSize());
         }
+
+        return ArrayConverter.concatenate(packetLength, encryptedPacket, mac);
     }
 
-    // TODO only supports aes-128-cbc, hmac-sha1
-    public byte[] decrypt(byte[] raw) {
-        if (decryption == null) {
-            return decrypt_temp(raw);
-        }
-        return decryption.update(raw);
-    }
-
-    public byte[] decrypt_temp(byte[] raw) {
-        try {
-            SecureRandom random = new SecureRandom();
-            byte[] key = new byte[32];
-            byte[] iv = new byte[32];
-            random.nextBytes(key);
-            random.nextBytes(iv);
-            Cipher temp = Cipher.getInstance("AES/CBC/NoPadding");
-            Key encryptionKey = new SecretKeySpec(key, "AES");
-            IvParameterSpec encryptionIV = new IvParameterSpec(iv);
-            temp.init(Cipher.DECRYPT_MODE, encryptionKey, encryptionIV);
-            return temp.update(raw);
-        } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException
-                | InvalidAlgorithmParameterException ex) {
-            java.util.logging.Logger.getLogger(CryptoLayer.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return new byte[0];
-    }
-
-    public byte[] encrypt_temp(byte[] raw) {
-        try {
-            SecureRandom random = new SecureRandom();
-            byte[] key = new byte[32];
-            byte[] iv = new byte[32];
-            random.nextBytes(key);
-            random.nextBytes(iv);
-            Cipher temp = Cipher.getInstance("AES/CBC/NoPadding");
-            Key encryptionKey = new SecretKeySpec(key, "AES");
-            IvParameterSpec encryptionIV = new IvParameterSpec(iv);
-            temp.init(Cipher.ENCRYPT_MODE, encryptionKey, encryptionIV);
-            return temp.update(raw);
-        } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException
-                | InvalidAlgorithmParameterException ex) {
-            java.util.logging.Logger.getLogger(CryptoLayer.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return new byte[0];
-    }
-
-    public byte[] encrypt(byte[] raw) {
-        if (encryption == null) {
-            return encrypt_temp(raw);
-        }
-        return encryption.update(raw);
-    }
-
-    // mac = MAC(key, sequence_number || unencrypted_packet)
-    public byte[] computeMac(byte[] raw) {
-        byte[] byteSequenceNumber = ArrayConverter.intToBytes(context.getSequenceNumber(), 4);
-        byte[] toMac = ArrayConverter.concatenate(byteSequenceNumber, raw);
-        return mac.doFinal(toMac);
-    }
-
-    public byte[] macAndEncrypt(byte[] packet) {
-        if (context.isIsEncryptionActive()) {
-            return ArrayConverter.concatenate(encrypt(packet), computeMac(packet));
-        } else {
-            return packet;
-        }
-    }
-
-    public byte[] decryptBinaryPacket(byte[] raw) {
-        byte[] firstBlock = Arrays.copyOfRange(raw, 0, context.getCipherAlgorithmServerToClient().getBlockSize());
-
+    private byte[] decryptEAM(byte[] encryptedPacket) {
+        byte[] firstBlock = Arrays.copyOfRange(encryptedPacket, 0, encryptionAlgorithm.getBlockSize());
         byte[] decryptedFirstBlock = decrypt(firstBlock);
         int packetLength = ArrayConverter.bytesToInt(Arrays.copyOfRange(decryptedFirstBlock, 0,
-                DataFormatConstants.INT32_SIZE));
-
+                BinaryPacketConstants.LENGTH_FIELD_LENGTH));
         int macStart = BinaryPacketConstants.LENGTH_FIELD_LENGTH + packetLength;
-        int macEnd = macStart + context.getMacAlgorithmServerToClient().getOutputSize();
-        byte[] macced = Arrays.copyOfRange(raw, macStart, macEnd);
-        byte[] toDecrypt = Arrays.copyOfRange(raw, context.getCipherAlgorithmServerToClient().getBlockSize(), macStart);
+        int macEnd = macStart + macAlgorithm.getOutputSize();
+        byte[] mac = Arrays.copyOfRange(encryptedPacket, macStart, macEnd);
+        byte[] toDecrypt = Arrays.copyOfRange(encryptedPacket, encryptionAlgorithm.getBlockSize(), macStart);
         byte[] decrypted = decrypt(toDecrypt);
-        return ArrayConverter.concatenate(decryptedFirstBlock, decrypted, macced);
+
+        // TODO: MAC verification
+
+        return ArrayConverter.concatenate(decryptedFirstBlock, decrypted, mac);
     }
 
-    public byte[] decryptBinaryPackets(byte[] toDecrypt) {
-        if (context.isIsEncryptionActive()) {
-            byte[] completeDecrypted = new byte[0];
+    private byte[] decryptETM(byte[] encryptedPacket) {
+        byte[] serializedPacketLength = Arrays.copyOfRange(encryptedPacket, 0,
+                BinaryPacketConstants.LENGTH_FIELD_LENGTH);
+        int packetLength = ArrayConverter.bytesToInt(serializedPacketLength);
+        int macStart = BinaryPacketConstants.LENGTH_FIELD_LENGTH + packetLength;
+        int macEnd = macStart + macAlgorithm.getOutputSize();
+        byte[] mac = Arrays.copyOfRange(encryptedPacket, macStart, macEnd);
+        byte[] toDecrypt = Arrays.copyOfRange(encryptedPacket, BinaryPacketConstants.LENGTH_FIELD_LENGTH, macStart);
+        byte[] decrypted = decrypt(toDecrypt);
 
-            while (toDecrypt.length >= context.getCipherAlgorithmServerToClient().getBlockSize()
-                    + context.getMacAlgorithmServerToClient().getOutputSize()) {
-                byte[] decrypted = decryptBinaryPacket(toDecrypt);
-                completeDecrypted = ArrayConverter.concatenate(completeDecrypted, decrypted);
-                toDecrypt = Arrays.copyOfRange(toDecrypt, decrypted.length, toDecrypt.length);
-            }
-            return completeDecrypted;
+        // TODO: MAC verification
+
+        return ArrayConverter.concatenate(serializedPacketLength, decrypted, mac);
+    }
+
+    private byte[] decryptPacket(byte[] encryptedPacket) {
+        if (macAlgorithm.isEncryptThenMacAlgorithm()) {
+            return decryptETM(encryptedPacket);
         } else {
-            return toDecrypt;
+            return decryptEAM(encryptedPacket);
         }
+    }
+
+    public byte[] encryptPacket(BinaryPacket packet) {
+        if (macAlgorithm.isEncryptThenMacAlgorithm()) {
+            return encryptThenMac(packet);
+        } else {
+            return encryptAndMac(packet);
+        }
+    }
+
+    public byte[] decryptBinaryPackets(byte[] encryptedPackets) {
+        byte[] completeDecrypted = new byte[0];
+        while (encryptedPackets.length >= encryptionAlgorithm.getBlockSize() + macAlgorithm.getOutputSize()) {
+            byte[] decrypted = decryptPacket(encryptedPackets);
+            completeDecrypted = ArrayConverter.concatenate(completeDecrypted, decrypted);
+            encryptedPackets = Arrays.copyOfRange(encryptedPackets, decrypted.length, encryptedPackets.length);
+        }
+        return completeDecrypted;
+    }
+
+    public EncryptionAlgorithm getEncryptionAlgorithm() {
+        return encryptionAlgorithm;
+    }
+
+    public MacAlgorithm getMacAlgorithm() {
+        return macAlgorithm;
     }
 }

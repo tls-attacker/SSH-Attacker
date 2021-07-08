@@ -29,6 +29,10 @@ public class Converter {
     }
 
     public static <T extends Enum<T>> String listOfAlgorithmsToString(List<T> list) {
+        if(list.isEmpty()) {
+            return "";
+        }
+
         StringBuilder builder = new StringBuilder();
         list.forEach(element -> builder.append(CharConstants.ALGORITHM_SEPARATOR).append(element.toString()));
         builder.deleteCharAt(0); // delete first separator before the first element
@@ -46,7 +50,8 @@ public class Converter {
     }
 
     private static String toEnumName(String input) {
-        String result = input.replace('-', '_').replace('.', '_').replace('@', '_').replace("3des", "tdes");
+        // TODO: This method will fail to parse named elliptic curve algorithms
+        String result = input.replace('-', '_').replace('.', '_').replace('@', '_').replace("3des", "TRIPLE_DES");
         if (result.equals("")) {
             return "none";
         }

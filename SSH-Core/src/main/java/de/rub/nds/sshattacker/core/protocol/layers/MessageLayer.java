@@ -41,11 +41,9 @@ public class MessageLayer {
         BinaryPacket packet = new BinaryPacket();
         byte[] payload = MessageSerializer.delegateSerialization(msg);
         packet.setPayload(payload);
-        byte blocksize = 8;
-        if (context.getCipherAlgorithmClientToServer() != null) {
-            blocksize = (byte) context.getCipherAlgorithmClientToServer().getBlockSize();
-        }
-        packet.computePaddingLength(blocksize);
+        // Compute with minimal block length (assuming no encryption later on)
+        // If the package will be encrypted, padding will be recalculated in CryptoLayer (necessary for ETM support)
+        packet.computePaddingLength((byte) 8);
         packet.generatePadding();
         packet.computePacketLength();
         return packet;
