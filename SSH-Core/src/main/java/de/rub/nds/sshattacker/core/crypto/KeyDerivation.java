@@ -11,15 +11,12 @@ package de.rub.nds.sshattacker.core.crypto;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.CryptoConstants;
-import de.rub.nds.sshattacker.core.constants.NamedGroup;
-import de.rub.nds.sshattacker.core.crypto.ec.CurveFactory;
-import de.rub.nds.sshattacker.core.crypto.ec.EllipticCurve;
-import de.rub.nds.sshattacker.core.crypto.ec.Point;
+import de.rub.nds.sshattacker.core.exceptions.AdjustmentException;
+import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.util.Converter;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import org.apache.logging.log4j.LogManager;
@@ -36,22 +33,6 @@ public class KeyDerivation {
         X25519.precompute();
         X25519.scalarMult(secretKey, 0, publicKey, 0, sharedKey, 0);
         return sharedKey;
-    }
-
-    public static byte[] DheNistP256(byte[] secretKey, byte[] publicKey) {
-        EllipticCurve curve = CurveFactory.getCurve(NamedGroup.SECP256R1);
-        // skip asn1 byte
-        BigInteger serverX = new BigInteger(1, java.util.Arrays.copyOfRange(publicKey, 1, 33));
-        BigInteger serverY = new BigInteger(1, java.util.Arrays.copyOfRange(publicKey, 33, 65));
-        Point serverPoint = curve.getPoint(serverX, serverY);
-        Point sharedPoint = curve.mult(new BigInteger(1, secretKey), serverPoint);
-        byte[] sharedSecret = sharedPoint.getFieldX().getData().toByteArray();
-
-        // remove leading 0 byte
-        if (sharedSecret.length > 32) {
-            sharedSecret = Arrays.copyOfRange(sharedSecret, 1, sharedSecret.length);
-        }
-        return sharedSecret;
     }
 
     public static byte[] computeExchangeHash(byte[] input, String hashAlgorithm) {
@@ -90,7 +71,37 @@ public class KeyDerivation {
         return md;
     }
 
-    public static byte[] deriveKey(byte[] sharedKey, byte[] exchangeHash, byte use, byte[] sessionID, int outputLen,
+    public static void deriveKeys(SshContext context) {
+        String hashAlgorithm = context.getKeyExchangeAlgorithm().orElseThrow(AdjustmentException::new).getDigest();
+        KeyExchange keyExchange = context.getKeyExchangeInstance();
+
+        context.setInitialIvClientToServer(KeyDerivation.deriveKey(keyExchange.getSharedSecret(),
+                context.getExchangeHash(), (byte) 'A', context.getSessionID(), context
+                        .getCipherAlgorithmClientToServer().getBlockSize(), hashAlgorithm));
+        LOGGER.debug("Key A: " + ArrayConverter.bytesToRawHexString(context.getInitialIvClientToServer()));
+        context.setInitialIvServerToClient(KeyDerivation.deriveKey(keyExchange.getSharedSecret(),
+                context.getExchangeHash(), (byte) 'B', context.getSessionID(), context
+                        .getCipherAlgorithmServerToClient().getBlockSize(), hashAlgorithm));
+        LOGGER.debug("Key B: " + ArrayConverter.bytesToRawHexString(context.getInitialIvServerToClient()));
+        context.setEncryptionKeyClientToServer(KeyDerivation.deriveKey(keyExchange.getSharedSecret(), context
+                .getExchangeHash(), (byte) 'C', context.getSessionID(), context.getCipherAlgorithmClientToServer()
+                .getKeySize(), hashAlgorithm));
+        LOGGER.debug("Key C: " + ArrayConverter.bytesToRawHexString(context.getEncryptionKeyClientToServer()));
+        context.setEncryptionKeyServerToClient(KeyDerivation.deriveKey(keyExchange.getSharedSecret(), context
+                .getExchangeHash(), (byte) 'D', context.getSessionID(), context.getCipherAlgorithmServerToClient()
+                .getKeySize(), hashAlgorithm));
+        LOGGER.debug("Key D: " + ArrayConverter.bytesToRawHexString(context.getEncryptionKeyServerToClient()));
+        context.setIntegrityKeyClientToServer(KeyDerivation.deriveKey(keyExchange.getSharedSecret(), context
+                .getExchangeHash(), (byte) 'E', context.getSessionID(), context.getMacAlgorithmClientToServer()
+                .getKeySize(), hashAlgorithm));
+        LOGGER.debug("Key E: " + ArrayConverter.bytesToRawHexString(context.getIntegrityKeyClientToServer()));
+        context.setIntegrityKeyServerToClient(KeyDerivation.deriveKey(keyExchange.getSharedSecret(), context
+                .getExchangeHash(), (byte) 'F', context.getSessionID(), context.getMacAlgorithmServerToClient()
+                .getKeySize(), hashAlgorithm));
+        LOGGER.debug("Key F: " + ArrayConverter.bytesToRawHexString(context.getIntegrityKeyServerToClient()));
+    }
+
+    static byte[] deriveKey(byte[] sharedKey, byte[] exchangeHash, byte use, byte[] sessionID, int outputLen,
             String hashFunction) {
         byte[] sharedKeyMpint = Converter.byteArrayToMpint(sharedKey);
         try {

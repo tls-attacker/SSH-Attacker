@@ -13,6 +13,7 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.constants.*;
 import de.rub.nds.sshattacker.core.connection.AliasedConnection;
+import de.rub.nds.sshattacker.core.crypto.KeyExchange;
 import de.rub.nds.sshattacker.core.protocol.layers.BinaryPacketLayer;
 import de.rub.nds.sshattacker.core.protocol.layers.CryptoLayer;
 import de.rub.nds.sshattacker.core.protocol.layers.MessageLayer;
@@ -40,8 +41,6 @@ public class SshContext {
     private CryptoLayer cryptoLayerServerToClient;
 
     private byte[] exchangeHashInput;
-
-    private byte[] sharedSecret;
     private byte[] exchangeHash;
     private byte[] sessionID;
 
@@ -64,9 +63,7 @@ public class SshContext {
     private BigInteger hostKeyRsaModulus;
     private byte[] keyExchangeSignature;
 
-    private byte[] clientEcdhPublicKey;
-    private byte[] clientEcdhSecretKey;
-    private byte[] serverEcdhPublicKey;
+    private KeyExchange keyExchangeInstance;
 
     /**
      * selected algorithms for this connection
@@ -414,14 +411,6 @@ public class SshContext {
         this.connection = connection;
     }
 
-    public byte[] getSharedSecret() {
-        return sharedSecret;
-    }
-
-    public void setSharedSecret(byte[] sharedSecret) {
-        this.sharedSecret = sharedSecret;
-    }
-
     public byte[] getExchangeHash() {
         return exchangeHash;
     }
@@ -590,22 +579,6 @@ public class SshContext {
         this.serverHostKeyAlgorithm = serverHostKeyAlgorithm;
     }
 
-    public byte[] getClientEcdhPublicKey() {
-        return clientEcdhPublicKey;
-    }
-
-    public void setClientEcdhPublicKey(byte[] clientEcdhPublicKey) {
-        this.clientEcdhPublicKey = clientEcdhPublicKey;
-    }
-
-    public byte[] getServerEcdhPublicKey() {
-        return serverEcdhPublicKey;
-    }
-
-    public void setServerEcdhPublicKey(byte[] serverEcdhPublicKey) {
-        this.serverEcdhPublicKey = serverEcdhPublicKey;
-    }
-
     public BigInteger getHostKeyRsaExponent() {
         return hostKeyRsaExponent;
     }
@@ -643,12 +616,12 @@ public class SshContext {
                 Converter.bytesToLengthPrefixedBinaryString(additionalData));
     }
 
-    public byte[] getClientEcdhSecretKey() {
-        return clientEcdhSecretKey;
+    public KeyExchange getKeyExchangeInstance() {
+        return keyExchangeInstance;
     }
 
-    public void setClientEcdhSecretKey(byte[] clientEcdhSecretKey) {
-        this.clientEcdhSecretKey = clientEcdhSecretKey;
+    public void setKeyExchangeInstance(KeyExchange keyExchangeInstance) {
+        this.keyExchangeInstance = keyExchangeInstance;
     }
 
     public BinaryPacketLayer getBinaryPacketLayer() {

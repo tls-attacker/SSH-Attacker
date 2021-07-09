@@ -57,8 +57,7 @@ public class ECDHKeyExchangeInitMessageSerializerTest {
     }
 
     /**
-     * Test of serializeBytes method, of class
-     * EcdhKeyExchangeInitMessageSerializer.
+     * Test of serializeBytes method, of class EcdhKeyExchangeInitMessageSerializer.
      */
     @Test
     public void testSerializeMessageSpecificPayload() {

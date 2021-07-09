@@ -10,6 +10,7 @@
 package de.rub.nds.sshattacker.core.protocol.handler;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.sshattacker.core.crypto.ECDHKeyExchange;
 import de.rub.nds.sshattacker.core.exceptions.AdjustmentException;
 import de.rub.nds.sshattacker.core.protocol.layers.CryptoLayerFactory;
 import de.rub.nds.sshattacker.core.protocol.message.EcdhKeyExchangeReplyMessage;
@@ -30,21 +31,28 @@ public class EcdhKeyExchangeReplyMessageHandler extends Handler<EcdhKeyExchangeR
     @Override
     public void handle(EcdhKeyExchangeReplyMessage message) {
         context.setHostKeyType(message.getHostKeyType().getValue());
-        context.setServerEcdhPublicKey(message.getEphemeralPublicKey().getValue());
         context.setKeyExchangeSignature(message.getSignature().getValue());
-        if (context.getHostKeyType().equals("ssh-rsa")) { // TODO refine logic
+        // TODO: Make sure we got an ECDHKeyExchange instance here
+        ECDHKeyExchange ecdhKeyExchange = (ECDHKeyExchange) context.getKeyExchangeInstance();
+        ecdhKeyExchange.setRemotePublicKey(message.getEphemeralPublicKey().getValue());
+        ecdhKeyExchange.computeSharedSecret();
+
+        handleHostKey(message);
+        computeExchangeHash();
+        KeyDerivation.deriveKeys(context);
+
+        initializeCryptoLayers();
+        context.setKeyExchangeComplete(true);
+    }
+
+    private void handleHostKey(EcdhKeyExchangeReplyMessage message) {
+        // TODO: Implement host key types as enumeration
+        // TODO: Improve host key handling in separate class
+        if (context.getHostKeyType().equals("ssh-rsa")) {
             handleRsaHostKey(message);
         } else {
             handleEccHostKey(message);
         }
-
-        adjustExchangeHash();
-        context.setSessionID(context.getExchangeHash());
-        adjustKeys();
-
-        context.setCryptoLayerClientToServer(CryptoLayerFactory.getCryptoLayer(true, context));
-        context.setCryptoLayerServerToClient(CryptoLayerFactory.getCryptoLayer(false, context));
-        context.setKeyExchangeComplete(true);
     }
 
     private void handleEccHostKey(EcdhKeyExchangeReplyMessage message) {
@@ -65,54 +73,21 @@ public class EcdhKeyExchangeReplyMessageHandler extends Handler<EcdhKeyExchangeR
                 ));
     }
 
-    private void adjustKeys() {
-        // hashalgorithm is the same used in the key exchange
+    private void computeExchangeHash() {
         String hashAlgorithm = context.getKeyExchangeAlgorithm().orElseThrow(AdjustmentException::new).getDigest();
 
-        context.setInitialIvClientToServer(KeyDerivation.deriveKey(context.getSharedSecret(),
-                context.getExchangeHash(), (byte) 'A', context.getSessionID(), context
-                        .getCipherAlgorithmClientToServer().getBlockSize(), hashAlgorithm));
-        LOGGER.debug("Key A: " + ArrayConverter.bytesToRawHexString(context.getInitialIvClientToServer()));
-        context.setInitialIvServerToClient(KeyDerivation.deriveKey(context.getSharedSecret(),
-                context.getExchangeHash(), (byte) 'B', context.getSessionID(), context
-                        .getCipherAlgorithmServerToClient().getBlockSize(), hashAlgorithm));
-        LOGGER.debug("Key B: " + ArrayConverter.bytesToRawHexString(context.getInitialIvServerToClient()));
-        context.setEncryptionKeyClientToServer(KeyDerivation.deriveKey(context.getSharedSecret(), context
-                .getExchangeHash(), (byte) 'C', context.getSessionID(), context.getCipherAlgorithmClientToServer()
-                .getKeySize(), hashAlgorithm));
-        LOGGER.debug("Key C: " + ArrayConverter.bytesToRawHexString(context.getEncryptionKeyClientToServer()));
-        context.setEncryptionKeyServerToClient(KeyDerivation.deriveKey(context.getSharedSecret(), context
-                .getExchangeHash(), (byte) 'D', context.getSessionID(), context.getCipherAlgorithmServerToClient()
-                .getKeySize(), hashAlgorithm));
-        LOGGER.debug("Key D: " + ArrayConverter.bytesToRawHexString(context.getEncryptionKeyServerToClient()));
-        context.setIntegrityKeyClientToServer(KeyDerivation.deriveKey(context.getSharedSecret(), context
-                .getExchangeHash(), (byte) 'E', context.getSessionID(), context.getMacAlgorithmClientToServer()
-                .getKeySize(), hashAlgorithm));
-        LOGGER.debug("Key E: " + ArrayConverter.bytesToRawHexString(context.getIntegrityKeyClientToServer()));
-        context.setIntegrityKeyServerToClient(KeyDerivation.deriveKey(context.getSharedSecret(), context
-                .getExchangeHash(), (byte) 'F', context.getSessionID(), context.getMacAlgorithmServerToClient()
-                .getKeySize(), hashAlgorithm));
-        LOGGER.debug("Key F: " + ArrayConverter.bytesToRawHexString(context.getIntegrityKeyServerToClient()));
+        context.appendToExchangeHashInput(context.getKeyExchangeInstance().getLocalKeyPair().serializePublicKey());
+        context.appendToExchangeHashInput(context.getKeyExchangeInstance().getRemotePublicKey().serializePublicKey());
+        context.appendToExchangeHashInput(Converter.bytesToBytesWithSignByte(context.getKeyExchangeInstance().getSharedSecret()));
 
-    }
-
-    private void adjustExchangeHash() {
-        String hashAlgorithm = context.getKeyExchangeAlgorithm().orElseThrow(AdjustmentException::new).getDigest();
-
-        context.appendToExchangeHashInput(context.getClientEcdhPublicKey());
-        context.appendToExchangeHashInput(context.getServerEcdhPublicKey());
-        computeSharedSecret();
-
-        context.appendToExchangeHashInput(Converter.bytesToBytesWithSignByte(context.getSharedSecret()));
         LOGGER.debug("ExchangeHash Input: " + ArrayConverter.bytesToRawHexString(context.getExchangeHashInput()));
         context.setExchangeHash(KeyDerivation.computeExchangeHash(context.getExchangeHashInput(), hashAlgorithm));
         LOGGER.debug("ExchangeHash " + ArrayConverter.bytesToRawHexString(context.getExchangeHash()));
+        context.setSessionID(context.getExchangeHash());
     }
 
-    private void computeSharedSecret() {
-        byte[] sharedSecret = KeyDerivation.DheNistP256(context.getClientEcdhSecretKey(),
-                context.getServerEcdhPublicKey());
-        context.setSharedSecret(sharedSecret);
-        LOGGER.debug("SharedSecret: " + ArrayConverter.bytesToRawHexString(context.getSharedSecret()));
+    private void initializeCryptoLayers() {
+        context.setCryptoLayerClientToServer(CryptoLayerFactory.getCryptoLayer(true, context));
+        context.setCryptoLayerServerToClient(CryptoLayerFactory.getCryptoLayer(false, context));
     }
 }

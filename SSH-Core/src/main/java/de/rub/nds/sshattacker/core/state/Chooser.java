@@ -162,18 +162,22 @@ public class Chooser {
         return context.getServerReserved().orElse(config.getServerReserved());
     }
 
-    public byte[] getClientEcdhPublicKey() {
-        if (context.getClientEcdhPublicKey() != null) {
-            return context.getClientEcdhPublicKey();
+    public byte[] getLocalEphemeralPublicKey() {
+        if (context.getKeyExchangeInstance() != null) {
+            return context.getKeyExchangeInstance().getLocalKeyPair().serializePublicKey();
         } else {
+            // TODO: Rename client to local
+            // TODO: Support for multiple key exchange algorithms
             return config.getClientEcdhPublicKey();
         }
     }
 
-    public byte[] getServerEcdhPublicKey() {
-        if (context.getServerEcdhPublicKey() != null) {
-            return context.getServerEcdhPublicKey();
+    public byte[] getRemoteEphemeralPublicKey() {
+        if (context.getKeyExchangeInstance() != null) {
+            return context.getKeyExchangeInstance().getRemotePublicKey().serializePublicKey();
         } else {
+            // TODO: Rename server to remote
+            // TODO: Support for multiple key exchange algorithms
             return config.getServerEcdhPublicKey();
         }
     }
