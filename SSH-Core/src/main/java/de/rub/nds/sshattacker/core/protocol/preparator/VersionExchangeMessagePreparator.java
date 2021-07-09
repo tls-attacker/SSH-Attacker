@@ -9,16 +9,16 @@
  */
 package de.rub.nds.sshattacker.core.protocol.preparator;
 
-import de.rub.nds.sshattacker.core.protocol.message.ClientInitMessage;
+import de.rub.nds.sshattacker.core.protocol.message.VersionExchangeMessage;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class ClientInitMessagePreparator extends Preparator<ClientInitMessage> {
+public class VersionExchangeMessagePreparator extends Preparator<VersionExchangeMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public ClientInitMessagePreparator(SshContext context, ClientInitMessage message) {
+    public VersionExchangeMessagePreparator(SshContext context, VersionExchangeMessage message) {
         super(context, message);
     }
 

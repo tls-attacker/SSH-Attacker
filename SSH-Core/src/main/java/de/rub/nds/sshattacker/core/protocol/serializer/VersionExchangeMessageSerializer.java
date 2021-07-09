@@ -11,17 +11,17 @@ package de.rub.nds.sshattacker.core.protocol.serializer;
 
 import de.rub.nds.sshattacker.core.constants.ByteConstants;
 import de.rub.nds.sshattacker.core.constants.CharConstants;
-import de.rub.nds.sshattacker.core.protocol.message.ClientInitMessage;
+import de.rub.nds.sshattacker.core.protocol.message.VersionExchangeMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class ClientInitMessageSerializer extends Serializer<ClientInitMessage> {
+public class VersionExchangeMessageSerializer extends Serializer<VersionExchangeMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private final ClientInitMessage msg;
+    private final VersionExchangeMessage msg;
 
-    public ClientInitMessageSerializer(ClientInitMessage msg) {
+    public VersionExchangeMessageSerializer(VersionExchangeMessage msg) {
         this.msg = msg;
     }
 

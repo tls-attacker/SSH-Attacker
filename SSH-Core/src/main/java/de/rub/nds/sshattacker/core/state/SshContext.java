@@ -32,11 +32,11 @@ public class SshContext {
     private Chooser chooser;
 
     private AliasedConnection connection;
-
+    private TransportHandler transportHandler;
     private boolean receivedTransportHandlerException = false;
+
     private BinaryPacketLayer binaryPacketLayer = new BinaryPacketLayer(this);
     private MessageLayer messageLayer = new MessageLayer(this);
-    private TransportHandler transportHandler;
     private CryptoLayer cryptoLayerClientToServer;
     private CryptoLayer cryptoLayerServerToClient;
 
@@ -54,8 +54,6 @@ public class SshContext {
     private byte[] integrityKeyServerToClient;
 
     private int sequenceNumber = 0;
-    private boolean isEncryptionActive = false;
-    private boolean keyExchangeCompleted = false;
 
     private String hostKeyType;
     private byte[] serverHostKey;
@@ -127,8 +125,10 @@ public class SshContext {
     private String channelCommand;
     private byte replyWanted;
 
-    private Boolean receivedDisconnectMessage = false;
-    private Boolean receivedServerInit = false;
+    private boolean receivedDisconnectMessage = false;
+    private boolean isEncryptionActive = false;
+    private boolean versionExchangeCompleted = false;
+    private boolean keyExchangeCompleted = false;
 
     public Optional<String> getClientVersion() {
         return Optional.ofNullable(clientVersion);
@@ -796,12 +796,12 @@ public class SshContext {
         transportHandler.initialize();
     }
 
-    public Boolean getReceivedServerInit() {
-        return receivedServerInit;
+    public Boolean isVersionExchangeComplete() {
+        return versionExchangeCompleted;
     }
 
-    public void setReceivedServerInit(Boolean receivedServerInit) {
-        this.receivedServerInit = receivedServerInit;
+    public void setVersionExchangeComplete(Boolean complete) {
+        this.versionExchangeCompleted = complete;
     }
 
     public Optional<String> getServiceName() {

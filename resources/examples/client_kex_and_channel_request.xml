@@ -2,7 +2,7 @@
 <workflowTrace>
     <Send>
         <messages>
-            <ClientInitMessage/>
+            <VersionExchangeMessage/>
         </messages>
     </Send>
     <Receive/>

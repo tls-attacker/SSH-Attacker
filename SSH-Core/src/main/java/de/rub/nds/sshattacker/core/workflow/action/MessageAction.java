@@ -37,7 +37,6 @@ public abstract class MessageAction extends ConnectionBoundAction {
             @XmlElement(type = ChannelRequestMessage.class, name = "ChannelRequestMessage"),
             @XmlElement(type = ChannelSuccessMessage.class, name = "ChannelSuccessMessage"),
             @XmlElement(type = ChannelWindowAdjustMessage.class, name = "ChannelWindowAdjustMessage"),
-            @XmlElement(type = ClientInitMessage.class, name = "ClientInitMessage"),
             @XmlElement(type = DebugMessage.class, name = "DebugMessage"),
             @XmlElement(type = DisconnectMessage.class, name = "DisconnectMessage"),
             @XmlElement(type = EcdhKeyExchangeInitMessage.class, name = "EcdhKeyExchangeInitMessage"),
@@ -57,7 +56,8 @@ public abstract class MessageAction extends ConnectionBoundAction {
             @XmlElement(type = UserAuthBannerMessage.class, name = "UserAuthBannerMessage"),
             @XmlElement(type = UserAuthFailureMessage.class, name = "UserAuthFailureMessage"),
             @XmlElement(type = UserAuthPasswordMessage.class, name = "UserAuthPasswordMessage"),
-            @XmlElement(type = UserAuthSuccessMessage.class, name = "UserAuthSuccessMessage") })
+            @XmlElement(type = UserAuthSuccessMessage.class, name = "UserAuthSuccessMessage"),
+            @XmlElement(type = VersionExchangeMessage.class, name = "VersionExchangeMessage") })
     protected List<Message<?>> messages = new ArrayList<>();
 
     @HoldsModifiableVariable

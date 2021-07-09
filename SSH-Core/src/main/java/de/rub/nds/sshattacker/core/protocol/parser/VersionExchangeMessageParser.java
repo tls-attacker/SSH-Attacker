@@ -16,19 +16,19 @@ package de.rub.nds.sshattacker.core.protocol.parser;
 
 import de.rub.nds.sshattacker.core.constants.ByteConstants;
 import de.rub.nds.sshattacker.core.constants.CharConstants;
-import de.rub.nds.sshattacker.core.protocol.message.ClientInitMessage;
+import de.rub.nds.sshattacker.core.protocol.message.VersionExchangeMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class ClientInitMessageParser extends Parser<ClientInitMessage> {
+public class VersionExchangeMessageParser extends Parser<VersionExchangeMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public ClientInitMessageParser(int startposition, byte[] array) {
+    public VersionExchangeMessageParser(int startposition, byte[] array) {
         super(startposition, array);
     }
 
-    private void parseVersion(ClientInitMessage msg) {
+    private void parseVersion(VersionExchangeMessage msg) {
         // parse till CR NL (and remove them)
         String result = this.parseStringTill(new byte[] { ByteConstants.CARRIAGE_RETURN, ByteConstants.NEWLINE })
                 .replace("\r\n", "");
@@ -50,8 +50,8 @@ public class ClientInitMessageParser extends Parser<ClientInitMessage> {
     }
 
     @Override
-    public ClientInitMessage parse() {
-        ClientInitMessage msg = new ClientInitMessage();
+    public VersionExchangeMessage parse() {
+        VersionExchangeMessage msg = new VersionExchangeMessage();
         this.parseVersion(msg);
         return msg;
     }

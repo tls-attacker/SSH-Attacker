@@ -9,17 +9,17 @@
  */
 package de.rub.nds.sshattacker.core.protocol.handler;
 
-import de.rub.nds.sshattacker.core.protocol.message.ClientInitMessage;
+import de.rub.nds.sshattacker.core.protocol.message.VersionExchangeMessage;
 import de.rub.nds.sshattacker.core.state.SshContext;
 
-public class ClientInitMessageHandler extends Handler<ClientInitMessage> {
+public class VersionExchangeMessageHandler extends Handler<VersionExchangeMessage> {
 
-    public ClientInitMessageHandler(SshContext context) {
+    public VersionExchangeMessageHandler(SshContext context) {
         super(context);
     }
 
     @Override
-    public void handle(ClientInitMessage message) {
+    public void handle(VersionExchangeMessage message) {
         context.setServerVersion(message.getVersion().getValue());
         context.setServerComment(message.getComment().getValue());
         context.appendToExchangeHashInput(message.getIdentification().getBytes());

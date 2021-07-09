@@ -15,9 +15,9 @@ import de.rub.nds.sshattacker.core.protocol.layers.BinaryPacketLayer;
 import de.rub.nds.sshattacker.core.protocol.layers.CryptoLayer;
 import de.rub.nds.sshattacker.core.protocol.layers.MessageLayer;
 import de.rub.nds.sshattacker.core.protocol.message.BinaryPacket;
-import de.rub.nds.sshattacker.core.protocol.message.ClientInitMessage;
+import de.rub.nds.sshattacker.core.protocol.message.VersionExchangeMessage;
 import de.rub.nds.sshattacker.core.protocol.message.Message;
-import de.rub.nds.sshattacker.core.protocol.parser.ClientInitMessageParser;
+import de.rub.nds.sshattacker.core.protocol.parser.VersionExchangeMessageParser;
 import de.rub.nds.sshattacker.core.workflow.action.result.MessageActionResult;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
@@ -40,9 +40,9 @@ public class ReceiveMessageHelper {
         BinaryPacketLayer binaryPacketLayer = context.getBinaryPacketLayer();
         MessageLayer messageLayer = context.getMessageLayer();
 
-        if (!context.getReceivedServerInit()) {
-            MessageActionResult result = receiveInitMessage(context);
-            context.setReceivedServerInit(true);
+        if (!context.isVersionExchangeComplete()) {
+            MessageActionResult result = receiveVersionExchangeMessage(context);
+            context.setVersionExchangeComplete(true);
             return result;
         } else {
             try {
@@ -90,15 +90,15 @@ public class ReceiveMessageHelper {
         return receiveMessages(context);
     }
 
-    public MessageActionResult receiveInitMessage(SshContext context) {
+    public MessageActionResult receiveVersionExchangeMessage(SshContext context) {
         TransportHandler transport = context.getTransportHandler();
         try {
             byte[] response = transport.fetchData();
-            ClientInitMessage serverInit = new ClientInitMessageParser(0, response).parse();
-            serverInit.handleSelf(context);
-            return new MessageActionResult(new LinkedList<>(), Collections.singletonList(serverInit));
+            VersionExchangeMessage serverVersion = new VersionExchangeMessageParser(0, response).parse();
+            serverVersion.handleSelf(context);
+            return new MessageActionResult(new LinkedList<>(), Collections.singletonList(serverVersion));
         } catch (IOException e) {
-            LOGGER.debug("Error while receiving ClientInit" + e.getMessage());
+            LOGGER.debug("Error while receiving VersionExchange from remote: " + e.getMessage());
             return new MessageActionResult();
         }
     }

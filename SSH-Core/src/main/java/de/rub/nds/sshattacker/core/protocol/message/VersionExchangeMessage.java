@@ -18,14 +18,14 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.sshattacker.core.constants.CharConstants;
-import de.rub.nds.sshattacker.core.protocol.preparator.ClientInitMessagePreparator;
-import de.rub.nds.sshattacker.core.protocol.serializer.ClientInitMessageSerializer;
-import de.rub.nds.sshattacker.core.protocol.handler.ClientInitMessageHandler;
+import de.rub.nds.sshattacker.core.protocol.preparator.VersionExchangeMessagePreparator;
+import de.rub.nds.sshattacker.core.protocol.serializer.VersionExchangeMessageSerializer;
+import de.rub.nds.sshattacker.core.protocol.handler.VersionExchangeMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
-public class ClientInitMessage extends Message<ClientInitMessage> {
+public class VersionExchangeMessage extends Message<VersionExchangeMessage> {
 
     /**
      * version identifier + optional comment
@@ -36,7 +36,7 @@ public class ClientInitMessage extends Message<ClientInitMessage> {
     @ModifiableVariableProperty
     private ModifiableString comment;
 
-    public ClientInitMessage() {
+    public VersionExchangeMessage() {
     }
 
     public ModifiableString getVersion() {
@@ -71,21 +71,21 @@ public class ClientInitMessage extends Message<ClientInitMessage> {
 
     @Override
     public String toCompactString() {
-        return "ClientInitMessage";
+        return "VersionExchangeMessage";
     }
 
     @Override
-    public ClientInitMessageHandler getHandler(SshContext context) {
-        return new ClientInitMessageHandler(context);
+    public VersionExchangeMessageHandler getHandler(SshContext context) {
+        return new VersionExchangeMessageHandler(context);
     }
 
     @Override
-    public ClientInitMessageSerializer getSerializer() {
-        return new ClientInitMessageSerializer(this);
+    public VersionExchangeMessageSerializer getSerializer() {
+        return new VersionExchangeMessageSerializer(this);
     }
 
     @Override
-    public ClientInitMessagePreparator getPreparator(SshContext context) {
-        return new ClientInitMessagePreparator(context, this);
+    public VersionExchangeMessagePreparator getPreparator(SshContext context) {
+        return new VersionExchangeMessagePreparator(context, this);
     }
 }

@@ -10,7 +10,7 @@
 package de.rub.nds.sshattacker.core.protocol.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.sshattacker.core.protocol.message.ClientInitMessage;
+import de.rub.nds.sshattacker.core.protocol.message.VersionExchangeMessage;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -20,7 +20,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
 @RunWith(Parameterized.class)
-public class ClientInitMessageParserTest {
+public class VersionExchangeMessageParserTest {
 
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
@@ -36,7 +36,7 @@ public class ClientInitMessageParserTest {
     private final String version;
     private final String comment;
 
-    public ClientInitMessageParserTest(byte[] message, String version, String comment) {
+    public VersionExchangeMessageParserTest(byte[] message, String version, String comment) {
         this.message = message;
         this.version = version;
         this.comment = comment;
@@ -47,8 +47,8 @@ public class ClientInitMessageParserTest {
      */
     @Test
     public void testParse() {
-        ClientInitMessageParser parser = new ClientInitMessageParser(0, message);
-        ClientInitMessage msg = parser.parse();
+        VersionExchangeMessageParser parser = new VersionExchangeMessageParser(0, message);
+        VersionExchangeMessage msg = parser.parse();
 
         Assert.assertEquals(version, msg.getVersion().getValue());
         Assert.assertEquals(comment, msg.getComment().getValue());

@@ -14,8 +14,8 @@
  */
 package de.rub.nds.sshattacker.core.protocol.serializer;
 
-import de.rub.nds.sshattacker.core.protocol.message.ClientInitMessage;
-import de.rub.nds.sshattacker.core.protocol.parser.ClientInitMessageParserTest;
+import de.rub.nds.sshattacker.core.protocol.message.VersionExchangeMessage;
+import de.rub.nds.sshattacker.core.protocol.parser.VersionExchangeMessageParserTest;
 import java.util.Collection;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -27,11 +27,11 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
 @RunWith(Parameterized.class)
-public class ClientInitMessageSerializerTest {
+public class VersionExchangeMessageSerializerTest {
 
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
-        return ClientInitMessageParserTest.generateData();
+        return VersionExchangeMessageParserTest.generateData();
     }
 
     private final String version;
@@ -39,7 +39,7 @@ public class ClientInitMessageSerializerTest {
 
     private final byte[] bytes;
 
-    public ClientInitMessageSerializerTest(byte[] bytes, String version, String comment) {
+    public VersionExchangeMessageSerializerTest(byte[] bytes, String version, String comment) {
         this.bytes = bytes;
         this.version = version;
         this.comment = comment;
@@ -63,10 +63,10 @@ public class ClientInitMessageSerializerTest {
 
     @Test
     public void testSerializeBytes() {
-        ClientInitMessage msg = new ClientInitMessage();
+        VersionExchangeMessage msg = new VersionExchangeMessage();
         msg.setVersion(version);
         msg.setComment(comment);
-        ClientInitMessageSerializer serializer = new ClientInitMessageSerializer(msg);
+        VersionExchangeMessageSerializer serializer = new VersionExchangeMessageSerializer(msg);
         assertArrayEquals(bytes, serializer.serialize());
     }
 }

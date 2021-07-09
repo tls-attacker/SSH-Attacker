@@ -10,7 +10,7 @@
 package de.rub.nds.sshattacker.core.protocol.cyclic;
 
 import de.rub.nds.sshattacker.core.protocol.message.EcdhKeyExchangeInitMessage;
-import de.rub.nds.sshattacker.core.protocol.parser.ClientInitMessageParserTest;
+import de.rub.nds.sshattacker.core.protocol.parser.VersionExchangeMessageParserTest;
 import de.rub.nds.sshattacker.core.protocol.serializer.EcdhKeyExchangeInitMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.parser.EcdhKeyExchangeInitMessageParser;
 
@@ -22,11 +22,11 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
 @RunWith(Parameterized.class)
-public class CyclicECDHKeyEchangeInitMessageTest {
+public class CyclicECDHKeyExchangeInitMessageTest {
 
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
-        Collection<Object[]> fullData = ClientInitMessageParserTest.generateData();
+        Collection<Object[]> fullData = VersionExchangeMessageParserTest.generateData();
         Collection<Object[]> bytesOnly = new LinkedList<>();
         fullData.forEach((obj) -> bytesOnly.add(new Object[]{obj[0]}));
         return bytesOnly;
@@ -34,7 +34,7 @@ public class CyclicECDHKeyEchangeInitMessageTest {
 
     private final byte[] bytes;
 
-    public CyclicECDHKeyEchangeInitMessageTest(byte[] bytes) {
+    public CyclicECDHKeyExchangeInitMessageTest(byte[] bytes) {
         this.bytes = bytes;
     }
 

@@ -12,7 +12,7 @@ package de.rub.nds.sshattacker.core.protocol.helper;
 import de.rub.nds.sshattacker.core.protocol.layers.BinaryPacketLayer;
 import de.rub.nds.sshattacker.core.protocol.layers.CryptoLayer;
 import de.rub.nds.sshattacker.core.protocol.message.BinaryPacket;
-import de.rub.nds.sshattacker.core.protocol.message.ClientInitMessage;
+import de.rub.nds.sshattacker.core.protocol.message.VersionExchangeMessage;
 import de.rub.nds.sshattacker.core.protocol.message.Message;
 import de.rub.nds.sshattacker.core.workflow.action.result.MessageActionResult;
 import de.rub.nds.sshattacker.core.protocol.layers.MessageLayer;
@@ -63,8 +63,8 @@ public class SendMessageHelper {
     public MessageActionResult sendMessages(List<Message<?>> list, SshContext context) {
         MessageActionResult result = new MessageActionResult();
         for (Message<?> msg : list) {
-            if ("ClientInitMessage".equals(msg.getClass().getSimpleName())) {
-                result = sendInitMessage((ClientInitMessage) msg, context);
+            if (msg instanceof VersionExchangeMessage) {
+                result = sendVersionExchangeMessage((VersionExchangeMessage) msg, context);
             } else {
                 result = result.merge(sendMessage(msg, context));
             }
@@ -78,12 +78,12 @@ public class SendMessageHelper {
         return sendMessages(messageList, context);
     }
 
-    public MessageActionResult sendInitMessage(ClientInitMessage msg, SshContext context) {
+    public MessageActionResult sendVersionExchangeMessage(VersionExchangeMessage msg, SshContext context) {
         TransportHandler transport = context.getTransportHandler();
         try {
             transport.sendData(msg.getSerializer().serialize());
         } catch (IOException e) {
-            LOGGER.debug("Error while sending ClientInitMessage" + e.getMessage());
+            LOGGER.debug("Error while sending VersionExchangeMessage to remote: " + e.getMessage());
         }
 
         return new MessageActionResult(new LinkedList<>(), Collections.singletonList(msg));
