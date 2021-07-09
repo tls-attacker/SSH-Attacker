@@ -56,7 +56,7 @@ public abstract class MessageAction extends ConnectionBoundAction {
             @XmlElement(type = UnknownMessage.class, name = "UnknownMessage"),
             @XmlElement(type = UserAuthBannerMessage.class, name = "UserAuthBannerMessage"),
             @XmlElement(type = UserAuthFailureMessage.class, name = "UserAuthFailureMessage"),
-            @XmlElement(type = UserAuthPasswordMessage.class, name = "UserauthPasswordMessage"),
+            @XmlElement(type = UserAuthPasswordMessage.class, name = "UserAuthPasswordMessage"),
             @XmlElement(type = UserAuthSuccessMessage.class, name = "UserAuthSuccessMessage") })
     protected List<Message<?>> messages = new ArrayList<>();
 

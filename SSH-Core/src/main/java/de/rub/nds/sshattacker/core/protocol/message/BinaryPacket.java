@@ -108,13 +108,18 @@ public class BinaryPacket extends Message<BinaryPacket> {
     }
 
     public void computePaddingLength(byte blockSize) {
+        computePaddingLength(blockSize, true);
+    }
+
+    public void computePaddingLength(byte blockSize, boolean encryptedPacketLength) {
         // packetLength has to be divisible by 8 or blockSize whichever is
         // greater
         if (blockSize < 8) {
             blockSize = 8;
         }
 
-        byte excessBytes = (byte) ((payload.getValue().length + BinaryPacketConstants.PADDING_FIELD_LENGTH + BinaryPacketConstants.PACKET_FIELD_LENGTH) % blockSize);
+        byte excessBytes = (byte) ((payload.getValue().length + BinaryPacketConstants.PADDING_FIELD_LENGTH + (encryptedPacketLength ? BinaryPacketConstants.PACKET_FIELD_LENGTH
+                : 0)) % blockSize);
 
         byte intermediatePaddingLength = (byte) (blockSize - excessBytes);
         if (intermediatePaddingLength < 4) {

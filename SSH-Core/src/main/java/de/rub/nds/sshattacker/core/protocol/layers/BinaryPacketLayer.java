@@ -25,8 +25,12 @@ public class BinaryPacketLayer {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
+    public BinaryPacketLayer(SshContext context) {
+        this.context = context;
+    }
+
     public List<BinaryPacket> parseBinaryPackets(byte[] raw) {
-        return new BinaryPacketParser(0, raw).parseAll();
+        return new BinaryPacketParser(0, raw, context).parseAll();
     }
 
     public byte[] serializeBinaryPacket(BinaryPacket packet) {

@@ -60,8 +60,8 @@ public enum EncryptionAlgorithm {
     IDEA_CTR("idea-ctr", 16, 8),
     CAST128_CTR("cast128-ctr", 16, 8),
     // [ RFC 5647 ]
-    AEAD_AES128_GCM("AEAD_AES_128_GCM", 16, 8),
-    AEAD_AES256_GCM("AEAD_AES_256_GCM", 32, 8),
+    AEAD_AES_128_GCM("AEAD_AES_128_GCM", 16, 8),
+    AEAD_AES_256_GCM("AEAD_AES_256_GCM", 32, 8),
     // Vendor extensions
     // [ OpenSSH ]
     AES128_GCM_OPENSSH_COM("aes128-gcm@openssh.com", 16, 16),

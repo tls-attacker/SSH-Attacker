@@ -62,4 +62,19 @@ public class BinaryPacketSerializer extends Serializer<BinaryPacket> {
         serializeMac();
         return getAlreadySerialized();
     }
+
+    public byte[] serializeForEncryption() {
+        serializePacketLength();
+        serializePaddingLength();
+        serializePayload();
+        serializePadding();
+        return getAlreadySerialized();
+    }
+
+    public byte[] serializeForETMEncryption() {
+        serializePaddingLength();
+        serializePayload();
+        serializePadding();
+        return getAlreadySerialized();
+    }
 }

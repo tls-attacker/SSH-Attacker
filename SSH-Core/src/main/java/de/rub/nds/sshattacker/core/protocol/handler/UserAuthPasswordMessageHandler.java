@@ -12,9 +12,9 @@ package de.rub.nds.sshattacker.core.protocol.handler;
 import de.rub.nds.sshattacker.core.protocol.message.UserAuthPasswordMessage;
 import de.rub.nds.sshattacker.core.state.SshContext;
 
-public class UserauthPasswordMessageHandler extends Handler<UserAuthPasswordMessage> {
+public class UserAuthPasswordMessageHandler extends Handler<UserAuthPasswordMessage> {
 
-    public UserauthPasswordMessageHandler(SshContext context) {
+    public UserAuthPasswordMessageHandler(SshContext context) {
         super(context);
     }
 

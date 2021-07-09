@@ -16,6 +16,7 @@ import java.math.BigInteger;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -46,8 +47,7 @@ public abstract class Parser<T> {
      * Constructor for the Parser
      *
      * @param startposition
-     *            Position in the array from which the Parser should start
-     *            working
+     *            Position in the array from which the Parser should start working
      * @param array
      *            Array that should be parsed
      */
@@ -62,9 +62,8 @@ public abstract class Parser<T> {
     }
 
     /**
-     * Parses a number of bytes from the Array and returns them as a byte[].
-     * Throws a ParserException if the number of bytes cannot be parsed. Moves
-     * the pointer accordingly.
+     * Parses a number of bytes from the Array and returns them as a byte[]. Throws a ParserException if the number of
+     * bytes cannot be parsed. Moves the pointer accordingly.
      *
      * @param length
      *            Number of bytes to be parsed
@@ -88,9 +87,8 @@ public abstract class Parser<T> {
     }
 
     /**
-     * Parses a number of bytes from the Array and returns them as a int. Throws
-     * a ParserException if the number of bytes cannot be parsed. Moves the
-     * pointer accordingly.
+     * Parses a number of bytes from the Array and returns them as a int. Throws a ParserException if the number of
+     * bytes cannot be parsed. Moves the pointer accordingly.
      *
      * @param length
      *            Number of bytes to be parsed
@@ -104,9 +102,8 @@ public abstract class Parser<T> {
     }
 
     /**
-     * Parses a number of bytes from the Array and returns them as a positive
-     * BigInteger. Throws a ParserException if the number of bytes cannot be
-     * parsed. Moves the pointer accordingly.
+     * Parses a number of bytes from the Array and returns them as a positive BigInteger. Throws a ParserException if
+     * the number of bytes cannot be parsed. Moves the pointer accordingly.
      *
      * @param length
      *            Number of bytes to be parsed
@@ -120,9 +117,8 @@ public abstract class Parser<T> {
     }
 
     /**
-     * Parses a number of bytes from the Array and returns them as a byte.
-     * Throws a ParserException if the number of bytes cannot be parsed. Moves
-     * the pointer accordingly.
+     * Parses a number of bytes from the Array and returns them as a byte. Throws a ParserException if the number of
+     * bytes cannot be parsed. Moves the pointer accordingly.
      *
      * @param length
      *            Number of bytes to be parsed
@@ -139,9 +135,8 @@ public abstract class Parser<T> {
     }
 
     /**
-     * Parses a number of bytes from the Array and returns them as a string
-     * (using UTF-8 encoding). Throws a ParserException if the number of bytes
-     * cannot be parsed. Moves the pointer accordingly.
+     * Parses a number of bytes from the Array and returns them as a string (using UTF-8 encoding). Throws a
+     * ParserException if the number of bytes cannot be parsed. Moves the pointer accordingly.
      *
      * @param length
      *            Number of bytes to be parsed
@@ -153,9 +148,8 @@ public abstract class Parser<T> {
     }
 
     /**
-     * Parses a number of bytes from the Array and returns them as a string.
-     * Throws a ParserException if the number of bytes cannot be parsed. Moves
-     * the pointer accordingly.
+     * Parses a number of bytes from the Array and returns them as a string. Throws a ParserException if the number of
+     * bytes cannot be parsed. Moves the pointer accordingly.
      *
      * @param length
      *            Number of bytes to be parsed
@@ -169,9 +163,8 @@ public abstract class Parser<T> {
     }
 
     /**
-     * Parses the Array until the specified sequence is encountered. Throws a
-     * ParserException if the byte sequence is not present within the array.
-     * Moves the pointer accordingly.
+     * Parses the Array until the specified sequence is encountered. Throws a ParserException if the byte sequence is
+     * not present within the array. Moves the pointer accordingly.
      *
      * @param endSequence
      *            Byte to parse until (included in return value)
@@ -190,9 +183,8 @@ public abstract class Parser<T> {
     }
 
     /**
-     * Parses the Array until the specified byte sequence is encountered. Throws
-     * a ParserException if the byte sequence is not present within the array.
-     * Moves the pointer accordingly.
+     * Parses the Array until the specified byte sequence is encountered. Throws a ParserException if the byte sequence
+     * is not present within the array. Moves the pointer accordingly.
      *
      * @param endSequence
      *            Byte sequence to parse until (included in return value)
