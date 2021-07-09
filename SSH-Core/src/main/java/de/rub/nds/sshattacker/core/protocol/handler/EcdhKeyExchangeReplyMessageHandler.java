@@ -10,7 +10,7 @@
 package de.rub.nds.sshattacker.core.protocol.handler;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.sshattacker.core.crypto.ECDHKeyExchange;
+import de.rub.nds.sshattacker.core.crypto.kex.ECDHKeyExchange;
 import de.rub.nds.sshattacker.core.exceptions.AdjustmentException;
 import de.rub.nds.sshattacker.core.protocol.layers.CryptoLayerFactory;
 import de.rub.nds.sshattacker.core.protocol.message.EcdhKeyExchangeReplyMessage;

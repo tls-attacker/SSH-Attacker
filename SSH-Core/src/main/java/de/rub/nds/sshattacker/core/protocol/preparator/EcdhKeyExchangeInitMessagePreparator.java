@@ -10,7 +10,7 @@
 package de.rub.nds.sshattacker.core.protocol.preparator;
 
 import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
-import de.rub.nds.sshattacker.core.crypto.ECDHKeyExchange;
+import de.rub.nds.sshattacker.core.crypto.kex.ECDHKeyExchange;
 import de.rub.nds.sshattacker.core.exceptions.PreparationException;
 import de.rub.nds.sshattacker.core.protocol.message.EcdhKeyExchangeInitMessage;
 import de.rub.nds.sshattacker.core.state.SshContext;
