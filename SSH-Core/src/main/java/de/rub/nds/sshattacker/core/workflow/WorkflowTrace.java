@@ -49,11 +49,9 @@ public class WorkflowTrace implements Serializable {
     /**
      * Copy a workflow trace.
      *
-     * TODO: This should be replaced by a better copy method. Using
-     * serialization is slow and needs some additional "tweaks", i.e. we have to
-     * manually restore important fields marked as XmlTransient. This problem
-     * arises because the classes are configured for nice JAXB output, and not
-     * for copying/storing full objects.
+     * TODO: This should be replaced by a better copy method. Using serialization is slow and needs some additional
+     * "tweaks", i.e. we have to manually restore important fields marked as XmlTransient. This problem arises because
+     * the classes are configured for nice JAXB output, and not for copying/storing full objects.
      *
      * @param orig
      *            the original WorkflowTrace object to copy
@@ -165,9 +163,8 @@ public class WorkflowTrace implements Serializable {
     }
 
     /**
-     * Set connections of the workflow trace. Use only if you know what you are
-     * doing. Unless you are manually configuring workflow traces (say for MiTM
-     * or unit tests), there shouldn't be any need to call this method.
+     * Set connections of the workflow trace. Use only if you know what you are doing. Unless you are manually
+     * configuring workflow traces (say for MiTM or unit tests), there shouldn't be any need to call this method.
      *
      * @param connections
      *            new connection to use with this workflow trace
@@ -178,9 +175,8 @@ public class WorkflowTrace implements Serializable {
     }
 
     /**
-     * Add a connection to the workflow trace. Use only if you know what you are
-     * doing. Unless you are manually configuring workflow traces (say for MiTM
-     * or unit tests), there shouldn't be any need to call this method.
+     * Add a connection to the workflow trace. Use only if you know what you are doing. Unless you are manually
+     * configuring workflow traces (say for MiTM or unit tests), there shouldn't be any need to call this method.
      *
      * @param connection
      *            new connection to add to the workflow trace
@@ -223,8 +219,7 @@ public class WorkflowTrace implements Serializable {
     /**
      * Get the last SshAction of the workflow trace.
      *
-     * @return the last SshAction of the workflow trace. Null if no actions are
-     *         defined
+     * @return the last SshAction of the workflow trace. Null if no actions are defined
      */
     public SshAction getLastAction() {
         int size = sshActions.size();
@@ -237,8 +232,7 @@ public class WorkflowTrace implements Serializable {
     /**
      * Get the last MessageAction of the workflow trace.
      *
-     * @return the last MessageAction of the workflow trace. Null if no message
-     *         actions are defined
+     * @return the last MessageAction of the workflow trace. Null if no message actions are defined
      */
     public MessageAction getLastMessageAction() {
         for (int i = sshActions.size() - 1; i >= 0; i--) {
@@ -252,8 +246,7 @@ public class WorkflowTrace implements Serializable {
     /**
      * Get the last SendingAction of the workflow trace.
      *
-     * @return the last SendingAction of the workflow trace. Null if no sending
-     *         actions are defined
+     * @return the last SendingAction of the workflow trace. Null if no sending actions are defined
      */
     public SendingAction getLastSendingAction() {
         for (int i = sshActions.size() - 1; i >= 0; i--) {
@@ -267,8 +260,7 @@ public class WorkflowTrace implements Serializable {
     /**
      * Get the last ReceivingActionAction of the workflow trace.
      *
-     * @return the last ReceivingActionAction of the workflow trace. Null if no
-     *         receiving actions are defined
+     * @return the last ReceivingActionAction of the workflow trace. Null if no receiving actions are defined
      */
     public ReceivingAction getLastReceivingAction() {
         for (int i = sshActions.size() - 1; i >= 0; i--) {

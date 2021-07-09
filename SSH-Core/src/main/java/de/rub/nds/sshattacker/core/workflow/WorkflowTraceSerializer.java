@@ -74,8 +74,7 @@ public class WorkflowTraceSerializer {
      * @throws JAXBException
      *             Is thrown if the Object cannot be serialized
      * @throws IOException
-     *             Is thrown if the Process doesn't have the rights to write to
-     *             the File
+     *             Is thrown if the Process doesn't have the rights to write to the File
      */
     public static void write(File file, WorkflowTrace trace) throws FileNotFoundException, JAXBException, IOException {
         FileOutputStream fos = new FileOutputStream(file);
@@ -87,13 +86,11 @@ public class WorkflowTraceSerializer {
      *
      * @param trace
      *            WorkflowTrace that should be written
-     * @return String containing XML/serialized representation of the
-     *         WorkflowTrace
+     * @return String containing XML/serialized representation of the WorkflowTrace
      * @throws JAXBException
      *             Is thrown if the Object cannot be serialized
      * @throws IOException
-     *             Is thrown if the Process doesn't have the rights to write to
-     *             the File
+     *             Is thrown if the Process doesn't have the rights to write to the File
      */
     public static String write(WorkflowTrace trace) throws JAXBException, IOException {
         ByteArrayOutputStream bos = new ByteArrayOutputStream();

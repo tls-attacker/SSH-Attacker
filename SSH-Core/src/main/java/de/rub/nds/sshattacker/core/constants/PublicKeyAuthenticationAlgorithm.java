@@ -10,8 +10,7 @@
 package de.rub.nds.sshattacker.core.constants;
 
 /**
- * These values are also used for PubkeyAcceptedKeyTypes
- * HostbasedAcceptedKeyTypes HostKeyAlgorithms
+ * These values are also used for PubkeyAcceptedKeyTypes HostbasedAcceptedKeyTypes HostKeyAlgorithms
  */
 public enum PublicKeyAuthenticationAlgorithm {
     /*

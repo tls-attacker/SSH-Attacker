@@ -31,8 +31,7 @@ public class EllipticCurveOverFp extends EllipticCurve {
      * @param b
      *            The coefficient b in the equation of the curve.
      * @param p
-     *            The prime order of the field over which the curve shall be
-     *            defined.
+     *            The prime order of the field over which the curve shall be defined.
      */
     public EllipticCurveOverFp(BigInteger a, BigInteger b, BigInteger p) {
         super(p);
@@ -49,8 +48,7 @@ public class EllipticCurveOverFp extends EllipticCurve {
      * @param b
      *            The coefficient b in the equation of the curve.
      * @param p
-     *            The prime order of the field over which the curve shall be
-     *            defined.
+     *            The prime order of the field over which the curve shall be defined.
      * @param x
      *            The x-coordinate of the base point.
      * @param y
@@ -157,9 +155,8 @@ public class EllipticCurveOverFp extends EllipticCurve {
     }
 
     /**
-     * Returns a point on the curve for the given x coordinate - or the
-     * basepoint if such a point does not exist. Of the two possible points, the
-     * function always returns the point whose y coordinate is odd.
+     * Returns a point on the curve for the given x coordinate - or the basepoint if such a point does not exist. Of the
+     * two possible points, the function always returns the point whose y coordinate is odd.
      */
     @Override
     public Point createAPointOnCurve(BigInteger x) {

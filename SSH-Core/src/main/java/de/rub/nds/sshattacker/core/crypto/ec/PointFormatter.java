@@ -91,9 +91,8 @@ public class PointFormatter {
     }
 
     /**
-     * Tries to read the first N byte[] as a point of the curve of the form x|y.
-     * If the byte[] has enough bytes the base point of the named group is
-     * returned
+     * Tries to read the first N byte[] as a point of the curve of the form x|y. If the byte[] has enough bytes the base
+     * point of the named group is returned
      *
      * @param group
      * @param pointBytes
