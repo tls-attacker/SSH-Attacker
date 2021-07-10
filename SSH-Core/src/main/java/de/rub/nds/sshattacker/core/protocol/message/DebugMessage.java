@@ -10,6 +10,7 @@
 package de.rub.nds.sshattacker.core.protocol.message;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
+import de.rub.nds.modifiablevariable.bool.ModifiableBoolean;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.sshattacker.core.protocol.preparator.DebugMessagePreparator;
@@ -19,19 +20,19 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class DebugMessage extends Message<DebugMessage> {
 
-    private ModifiableByte alwaysDisplay;
+    private ModifiableBoolean alwaysDisplay;
     private ModifiableString message;
     private ModifiableString languageTag;
 
-    public ModifiableByte getAlwaysDisplay() {
+    public ModifiableBoolean getAlwaysDisplay() {
         return alwaysDisplay;
     }
 
-    public void setAlwaysDisplay(ModifiableByte alwaysDisplay) {
+    public void setAlwaysDisplay(ModifiableBoolean alwaysDisplay) {
         this.alwaysDisplay = alwaysDisplay;
     }
 
-    public void setAlwaysDisplay(byte alwaysDisplay) {
+    public void setAlwaysDisplay(boolean alwaysDisplay) {
         this.alwaysDisplay = ModifiableVariableFactory.safelySetValue(this.alwaysDisplay, alwaysDisplay);
     }
 

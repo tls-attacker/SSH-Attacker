@@ -24,7 +24,7 @@ public class DebugMessageParser extends MessageParser<DebugMessage> {
     }
 
     private void parseAlwaysDisplay(DebugMessage msg) {
-        msg.setAlwaysDisplay(parseByteField(1));
+        msg.setAlwaysDisplay(parseByteField(1) != 0);
     }
 
     private void parseMessage(DebugMessage msg) {

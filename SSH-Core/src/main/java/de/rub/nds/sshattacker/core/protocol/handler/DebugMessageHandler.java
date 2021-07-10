@@ -11,8 +11,12 @@ package de.rub.nds.sshattacker.core.protocol.handler;
 
 import de.rub.nds.sshattacker.core.protocol.message.DebugMessage;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class DebugMessageHandler extends Handler<DebugMessage> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public DebugMessageHandler(SshContext context) {
         super(context);
@@ -20,6 +24,11 @@ public class DebugMessageHandler extends Handler<DebugMessage> {
 
     @Override
     public void handle(DebugMessage msg) {
+        if(msg.getAlwaysDisplay().getValue()) {
+            LOGGER.info("DebugMessage retrieved from remote, message: " + msg.getMessage().getValue());
+        } else {
+            LOGGER.debug("DebugMessage retrieved from remote, message: " + msg.getMessage().getValue());
+        }
     }
 
 }
