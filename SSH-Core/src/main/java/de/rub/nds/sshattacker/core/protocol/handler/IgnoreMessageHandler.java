@@ -11,8 +11,12 @@ package de.rub.nds.sshattacker.core.protocol.handler;
 
 import de.rub.nds.sshattacker.core.protocol.message.IgnoreMessage;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class IgnoreMessageHandler extends Handler<IgnoreMessage> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public IgnoreMessageHandler(SshContext context) {
         super(context);
@@ -20,6 +24,7 @@ public class IgnoreMessageHandler extends Handler<IgnoreMessage> {
 
     @Override
     public void handle(IgnoreMessage msg) {
+        LOGGER.debug("IgnoreMessage retrieved from remote, data: " + msg.getData().getValue());
     }
 
 }
