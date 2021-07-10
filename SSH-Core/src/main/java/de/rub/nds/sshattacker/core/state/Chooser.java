@@ -74,7 +74,7 @@ public class Chooser {
                 config.getClientSupportedCipherAlgorithmsClientToServer());
     }
 
-    public List<EncryptionAlgorithm> getClientSupportedCipherAlgorithmsServertoClient() {
+    public List<EncryptionAlgorithm> getClientSupportedCipherAlgorithmsServerToClient() {
         return context.getClientSupportedCipherAlgorithmsServerToClient().orElse(
                 config.getClientSupportedCipherAlgorithmsServerToClient());
     }

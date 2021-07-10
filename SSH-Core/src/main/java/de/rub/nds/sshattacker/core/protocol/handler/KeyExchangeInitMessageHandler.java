@@ -95,7 +95,7 @@ public class KeyExchangeInitMessageHandler extends Handler<KeyExchangeInitMessag
                     context.getChooser().getServerSupportedCipherAlgorithmsClientToServer()).orElse(null));
 
             context.setCipherAlgorithmServerToClient(AlgorithmPicker.pickAlgorithm(
-                    context.getChooser().getClientSupportedCipherAlgorithmsServertoClient(),
+                    context.getChooser().getClientSupportedCipherAlgorithmsServerToClient(),
                     context.getChooser().getServerSupportedCipherAlgorithmsServerToClient()).orElse(null));
 
             context.setServerHostKeyAlgorithm(AlgorithmPicker.pickAlgorithm(
