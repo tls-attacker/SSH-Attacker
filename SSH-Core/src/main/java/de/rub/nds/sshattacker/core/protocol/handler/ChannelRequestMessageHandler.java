@@ -20,6 +20,7 @@ public class ChannelRequestMessageHandler extends Handler<ChannelRequestMessage>
 
     @Override
     public void handle(ChannelRequestMessage msg) {
+        // TODO: Handle ChannelRequestMessage
     }
 
 }

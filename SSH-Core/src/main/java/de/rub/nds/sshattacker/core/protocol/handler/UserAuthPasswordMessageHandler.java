@@ -20,6 +20,7 @@ public class UserAuthPasswordMessageHandler extends Handler<UserAuthPasswordMess
 
     @Override
     public void handle(UserAuthPasswordMessage msg) {
+        // TODO: Handle UserAuthPasswordMessage
     }
 
 }

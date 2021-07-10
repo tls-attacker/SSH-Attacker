@@ -20,6 +20,7 @@ public class GlobalRequestMessageHandler extends Handler<GlobalRequestMessage> {
 
     @Override
     public void handle(GlobalRequestMessage msg) {
+        // TODO: Handle GlobalRequestMessage
     }
 
 }

@@ -20,6 +20,7 @@ public class RequestFailureMessageHandler extends Handler<RequestFailureMessage>
 
     @Override
     public void handle(RequestFailureMessage msg) {
+        // TODO: Handle RequestFailureMessage
     }
 
 }

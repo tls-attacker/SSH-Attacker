@@ -20,6 +20,7 @@ public class UserAuthBannerMessageHandler extends Handler<UserAuthBannerMessage>
 
     @Override
     public void handle(UserAuthBannerMessage msg) {
+        // TODO: Handle UserAuthBannerMessage
     }
 
 }

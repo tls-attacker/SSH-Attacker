@@ -21,6 +21,7 @@ public class ChannelOpenConfirmationMessageHandler extends Handler<ChannelOpenCo
     @Override
     public void handle(ChannelOpenConfirmationMessage msg) {
         context.setRemoteChannel(msg.getSenderChannel().getValue());
+        // TODO: Set window and packet size for outgoing packets
     }
 
 }

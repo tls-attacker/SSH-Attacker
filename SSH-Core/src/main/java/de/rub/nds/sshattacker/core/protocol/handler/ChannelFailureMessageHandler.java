@@ -20,6 +20,7 @@ public class ChannelFailureMessageHandler extends Handler<ChannelFailureMessage>
 
     @Override
     public void handle(ChannelFailureMessage msg) {
+        // TODO: Handle ChannelFailureMessage
     }
 
 }
