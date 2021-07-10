@@ -26,6 +26,6 @@ public class VersionExchangeMessagePreparator extends Preparator<VersionExchange
     public void prepare() {
         message.setVersion(context.getChooser().getClientVersion());
         message.setComment(context.getChooser().getClientComment());
-        context.appendToExchangeHashInput(message.getVersion().getValue().getBytes());
+        context.appendToExchangeHashInput(message.getIdentification().getBytes());
     }
 }
