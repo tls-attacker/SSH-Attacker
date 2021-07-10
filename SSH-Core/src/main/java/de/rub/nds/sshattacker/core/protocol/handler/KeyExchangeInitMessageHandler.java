@@ -28,7 +28,7 @@ public class KeyExchangeInitMessageHandler extends Handler<KeyExchangeInitMessag
 
     @Override
     public void handle(KeyExchangeInitMessage message) {
-        if (context.isServer()) {
+        if (context.isClient()) {
             context.setServerCookie(message.getCookie().getValue());
             context.setServerSupportedKeyExchangeAlgorithms(Converter.stringToAlgorithms(message
                     .getKeyExchangeAlgorithms().getValue(), KeyExchangeAlgorithm.class));
