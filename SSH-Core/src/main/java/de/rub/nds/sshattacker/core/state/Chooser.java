@@ -24,6 +24,7 @@ public class Chooser {
         config = context.getConfig();
     }
 
+    //region Version Exchange
     public String getClientVersion() {
         return context.getClientVersion().orElse(config.getClientVersion());
     }
@@ -39,7 +40,9 @@ public class Chooser {
     public String getServerComment() {
         return context.getServerComment().orElse(config.getServerComment());
     }
+    //endregion
 
+    //region Key Exchange Initialization
     public byte[] getClientCookie() {
         return context.getClientCookie().orElse(config.getClientCookie());
     }
@@ -72,7 +75,7 @@ public class Chooser {
     }
 
     public List<EncryptionAlgorithm> getClientSupportedCipherAlgorithmsServertoClient() {
-        return context.getClientSupportedCipherAlgorithmsServertoClient().orElse(
+        return context.getClientSupportedCipherAlgorithmsServerToClient().orElse(
                 config.getClientSupportedCipherAlgorithmsServerToClient());
     }
 
@@ -126,31 +129,31 @@ public class Chooser {
                 config.getServerSupportedCompressionAlgorithmsClientToServer());
     }
 
-    public List<Language> getClientSupportedLanguagesClientToServer() {
+    public List<String> getClientSupportedLanguagesClientToServer() {
         return context.getClientSupportedLanguagesClientToServer().orElse(
                 config.getClientSupportedLanguagesClientToServer());
     }
 
-    public List<Language> getClientSupportedLanguagesServerToClient() {
+    public List<String> getClientSupportedLanguagesServerToClient() {
         return context.getClientSupportedLanguagesServerToClient().orElse(
                 config.getClientSupportedLanguagesServerToClient());
     }
 
-    public List<Language> getServerSupportedLanguagesServerToClient() {
+    public List<String> getServerSupportedLanguagesServerToClient() {
         return context.getServerSupportedLanguagesServerToClient().orElse(
                 config.getServerSupportedLanguagesServerToClient());
     }
 
-    public List<Language> getServerSupportedLanguagesClientToServer() {
+    public List<String> getServerSupportedLanguagesClientToServer() {
         return context.getServerSupportedLanguagesClientToServer().orElse(
                 config.getServerSupportedLanguagesClientToServer());
     }
 
-    public byte getClientFirstKeyExchangePacketFollows() {
+    public boolean getClientFirstKeyExchangePacketFollows() {
         return context.getClientFirstKeyExchangePacketFollows().orElse(config.getClientFirstKeyExchangePacketFollows());
     }
 
-    public byte getServerFirstKeyExchangePacketFollows() {
+    public boolean getServerFirstKeyExchangePacketFollows() {
         return context.getServerFirstKeyExchangePacketFollows().orElse(config.getServerFirstKeyExchangePacketFollows());
     }
 
@@ -161,24 +164,23 @@ public class Chooser {
     public int getServerReserved() {
         return context.getServerReserved().orElse(config.getServerReserved());
     }
+    //endregion
 
     public byte[] getLocalEphemeralPublicKey() {
-        if (context.getKeyExchangeInstance() != null) {
-            return context.getKeyExchangeInstance().getLocalKeyPair().serializePublicKey();
+        if (context.getKeyExchangeInstance().isPresent()) {
+            return context.getKeyExchangeInstance().get().getLocalKeyPair().serializePublicKey();
         } else {
-            // TODO: Rename client to local
             // TODO: Support for multiple key exchange algorithms
-            return config.getClientEcdhPublicKey();
+            return context.isClient() ? config.getClientEcdhPublicKey() : config.getServerEcdhPublicKey();
         }
     }
 
     public byte[] getRemoteEphemeralPublicKey() {
-        if (context.getKeyExchangeInstance() != null) {
-            return context.getKeyExchangeInstance().getRemotePublicKey().serializePublicKey();
+        if (!context.getKeyExchangeInstance().isPresent()) {
+            return context.getKeyExchangeInstance().get().getRemotePublicKey().serializePublicKey();
         } else {
-            // TODO: Rename server to remote
             // TODO: Support for multiple key exchange algorithms
-            return config.getServerEcdhPublicKey();
+            return context.isClient() ? config.getServerEcdhPublicKey() : config.getClientEcdhPublicKey();
         }
     }
 
@@ -186,90 +188,19 @@ public class Chooser {
         return context.getAuthenticationMethod().orElse(config.getAuthenticationMethod());
     }
 
-    public String getUsername() {
-        if (context.getUsername() != null) {
-            return context.getUsername();
-        } else {
-            return config.getUsername();
-        }
-    }
-
-    public String getPassword() {
-        if (context.getUsername() != null) {
-            return context.getPassword();
-        } else {
-            return config.getPassword();
-        }
-    }
-
-    public byte getReplyWanted() {
-        return 0;
-        // if (context.getReplyWanted() != 0) {
-        // return context.getReplyWanted();
-        // } else {
-        // return config.getReplyWanted();
-        // }
-    }
-
     public int getLocalChannel() {
-        return 0;
-        // if (context.getLocalChannel() != 0) {
-        // return context.getLocalChannel();
-        // } else {
-        // return config.getLocalChannel();
-        // }
+        return context.getLocalChannel().orElse(config.getLocalChannel());
     }
 
     public ChannelType getChannelType() {
-        if (context.getChannelType() != null) {
-            return context.getChannelType();
-        } else {
-            return config.getChannelType();
-        }
+        return context.getChannelType().orElse(config.getChannelType());
     }
 
     public int getWindowSize() {
-        if (context.getWindowSize() != 0) {
-            return context.getWindowSize();
-        } else {
-            return config.getWindowSize();
-        }
+        return context.getWindowSize().orElse(config.getWindowSize());
     }
 
     public int getPacketSize() {
-        if (context.getPacketSize() != 0) {
-            return context.getPacketSize();
-        } else {
-            return config.getPacketSize();
-        }
-    }
-
-    public ChannelRequestType getChannelRequestType() {
-        if (context.getChannelRequestType() != null) {
-            return context.getChannelRequestType();
-        } else {
-            return config.getChannelRequestType();
-        }
-    }
-
-    public String getChannelCommand() {
-        if (context.getChannelCommand() != null) {
-            return context.getChannelCommand();
-        } else {
-            return config.getChannelCommand();
-        }
-    }
-
-    public int getRemoteChannel() {
-        return 0;
-        // if (context.getRemoteChannel() != 0){
-        // return context.getRemoteChannel();
-        // } else {
-        // return config.getRemoteChannel();
-        // }
-    }
-
-    public String getServiceName() {
-        return context.getServiceName().orElse(config.getServiceName());
+        return context.getPacketSize().orElse(config.getPacketSize());
     }
 }

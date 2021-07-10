@@ -9,7 +9,6 @@
  */
 package de.rub.nds.sshattacker.core.protocol.serializer;
 
-import de.rub.nds.sshattacker.core.constants.ByteConstants;
 import de.rub.nds.sshattacker.core.constants.CharConstants;
 import de.rub.nds.sshattacker.core.protocol.message.VersionExchangeMessage;
 import org.apache.logging.log4j.LogManager;
@@ -45,7 +44,7 @@ public class VersionExchangeMessageSerializer extends Serializer<VersionExchange
     }
 
     private void serializeCRNL() {
-        appendBytes(new byte[] { ByteConstants.CARRIAGE_RETURN, ByteConstants.NEWLINE });
+        appendBytes(new byte[] { CharConstants.CARRIAGE_RETURN, CharConstants.NEWLINE });
     }
 
     @Override

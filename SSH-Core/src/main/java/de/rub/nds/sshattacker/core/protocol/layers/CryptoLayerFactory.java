@@ -11,6 +11,7 @@ package de.rub.nds.sshattacker.core.protocol.layers;
 
 import de.rub.nds.sshattacker.core.constants.EncryptionAlgorithm;
 import de.rub.nds.sshattacker.core.constants.MacAlgorithm;
+import de.rub.nds.sshattacker.core.exceptions.AdjustmentException;
 import de.rub.nds.sshattacker.core.exceptions.NotImplementedException;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import org.apache.logging.log4j.LogManager;
@@ -109,18 +110,18 @@ public class CryptoLayerFactory {
     }
 
     public static CryptoLayer getCryptoLayer(boolean clientToServer, SshContext sshContext) {
-        EncryptionAlgorithm encryptionAlgorithm = clientToServer ? sshContext.getCipherAlgorithmClientToServer()
-                : sshContext.getCipherAlgorithmServerToClient();
-        MacAlgorithm macAlgorithm = clientToServer ? sshContext.getMacAlgorithmClientToServer() : sshContext
-                .getMacAlgorithmServerToClient();
+        EncryptionAlgorithm encryptionAlgorithm = (clientToServer ? sshContext.getCipherAlgorithmClientToServer()
+                : sshContext.getCipherAlgorithmServerToClient()).orElseThrow(IllegalArgumentException::new);
+        MacAlgorithm macAlgorithm = (clientToServer ? sshContext.getMacAlgorithmClientToServer() : sshContext
+                .getMacAlgorithmServerToClient()).orElseThrow(IllegalArgumentException::new);
         String cipherTransform = getCipherTransformByAlgorithm(encryptionAlgorithm);
         String macTransform = getMacTransformByAlgorithm(macAlgorithm);
-        Key cipherKey = new SecretKeySpec(clientToServer ? sshContext.getEncryptionKeyClientToServer()
-                : sshContext.getEncryptionKeyServerToClient(), cipherTransform);
-        Key macKey = new SecretKeySpec(clientToServer ? sshContext.getIntegrityKeyClientToServer()
-                : sshContext.getIntegrityKeyServerToClient(), macTransform);
+        Key cipherKey = new SecretKeySpec((clientToServer ? sshContext.getEncryptionKeyClientToServer()
+                : sshContext.getEncryptionKeyServerToClient()).orElseThrow(IllegalArgumentException::new), cipherTransform);
+        Key macKey = new SecretKeySpec((clientToServer ? sshContext.getIntegrityKeyClientToServer()
+                : sshContext.getIntegrityKeyServerToClient()).orElseThrow(IllegalArgumentException::new), macTransform);
         AlgorithmParameterSpec cipherParams = getCipherParametersByAlgorithm(
-                clientToServer ? sshContext.getInitialIvClientToServer() : sshContext.getInitialIvServerToClient(),
+                (clientToServer ? sshContext.getInitialIvClientToServer() : sshContext.getInitialIvServerToClient()).orElseThrow(IllegalArgumentException::new),
                 encryptionAlgorithm);
 
         LOGGER.info("Instantiating a new JCACryptoLayer with the following specifications:");

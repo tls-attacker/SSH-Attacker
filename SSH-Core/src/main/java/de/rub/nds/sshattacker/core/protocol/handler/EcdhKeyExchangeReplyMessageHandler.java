@@ -10,7 +10,9 @@
 package de.rub.nds.sshattacker.core.protocol.handler;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.sshattacker.core.constants.PublicKeyAuthenticationAlgorithm;
 import de.rub.nds.sshattacker.core.crypto.kex.ECDHKeyExchange;
+import de.rub.nds.sshattacker.core.crypto.kex.KeyExchange;
 import de.rub.nds.sshattacker.core.exceptions.AdjustmentException;
 import de.rub.nds.sshattacker.core.protocol.layers.CryptoLayerFactory;
 import de.rub.nds.sshattacker.core.protocol.message.EcdhKeyExchangeReplyMessage;
@@ -30,10 +32,10 @@ public class EcdhKeyExchangeReplyMessageHandler extends Handler<EcdhKeyExchangeR
 
     @Override
     public void handle(EcdhKeyExchangeReplyMessage message) {
-        context.setHostKeyType(message.getHostKeyType().getValue());
+        context.setHostKeyType(PublicKeyAuthenticationAlgorithm.fromName(message.getHostKeyType().getValue()));
         context.setKeyExchangeSignature(message.getSignature().getValue());
         // TODO: Make sure we got an ECDHKeyExchange instance here
-        ECDHKeyExchange ecdhKeyExchange = (ECDHKeyExchange) context.getKeyExchangeInstance();
+        ECDHKeyExchange ecdhKeyExchange = (ECDHKeyExchange) context.getKeyExchangeInstance().orElseThrow(AdjustmentException::new);
         ecdhKeyExchange.setRemotePublicKey(message.getEphemeralPublicKey().getValue());
         ecdhKeyExchange.computeSharedSecret();
 
@@ -42,48 +44,43 @@ public class EcdhKeyExchangeReplyMessageHandler extends Handler<EcdhKeyExchangeR
         KeyDerivation.deriveKeys(context);
 
         initializeCryptoLayers();
-        context.setKeyExchangeComplete(true);
     }
 
     private void handleHostKey(EcdhKeyExchangeReplyMessage message) {
         // TODO: Implement host key types as enumeration
         // TODO: Improve host key handling in separate class
-        if (context.getHostKeyType().equals("ssh-rsa")) {
+        if (context.getHostKeyType().orElseThrow(AdjustmentException::new) == PublicKeyAuthenticationAlgorithm.SSH_RSA) {
             handleRsaHostKey(message);
         } else {
-            handleEccHostKey(message);
+            LOGGER.fatal("Unable to handle host key, unsupported host key algorithm: " + context.getHostKeyType().toString());
+            throw new AdjustmentException("Unsupported host key algorithm");
         }
     }
 
-    private void handleEccHostKey(EcdhKeyExchangeReplyMessage message) {
-        context.setServerHostKey(message.getHostKeyEcc().getValue());
-    }
-
     private void handleRsaHostKey(EcdhKeyExchangeReplyMessage message) {
-        context.setHostKeyRsaExponent(message.getHostKeyRsaExponent().getValue());
-        context.setHostKeyRsaModulus(message.getHostKeyRsaModulus().getValue());
         context.appendToExchangeHashInput(ArrayConverter.concatenate(Converter
-                .stringToLengthPrefixedBinaryString(context.getHostKeyType()),
-                Converter.bytesToLengthPrefixedBinaryString(ArrayConverter.bigIntegerToByteArray(context
-                        .getHostKeyRsaExponent())), Converter.bytesToLengthPrefixedBinaryString(ArrayConverter
-                        .concatenate(new byte[] { 0x00 }, // asn1 leading byte
-                                ArrayConverter.bigIntegerToByteArray(context.getHostKeyRsaModulus())))
-        // Converter.bytesToLengthPrefixedBinaryString(ArrayConverter.bigIntegerToByteArray(context.getHostKeyRsaModulus(),
-        // 32, false))
-                ));
+                .stringToLengthPrefixedBinaryString(context.getHostKeyType().orElseThrow(AdjustmentException::new).toString()), Converter
+                .bytesToLengthPrefixedBinaryString(ArrayConverter.bigIntegerToByteArray(message.getHostKeyRsaExponent()
+                        .getValue())), Converter.bytesToLengthPrefixedBinaryString(ArrayConverter.concatenate(
+                new byte[] { 0x00 }, // asn1 leading byte
+                ArrayConverter.bigIntegerToByteArray(message.getHostKeyRsaModulus().getValue())))));
     }
 
     private void computeExchangeHash() {
         String hashAlgorithm = context.getKeyExchangeAlgorithm().orElseThrow(AdjustmentException::new).getDigest();
+        KeyExchange keyExchange = context.getKeyExchangeInstance().orElseThrow(AdjustmentException::new);
 
-        context.appendToExchangeHashInput(context.getKeyExchangeInstance().getLocalKeyPair().serializePublicKey());
-        context.appendToExchangeHashInput(context.getKeyExchangeInstance().getRemotePublicKey().serializePublicKey());
-        context.appendToExchangeHashInput(Converter.bytesToBytesWithSignByte(context.getKeyExchangeInstance().getSharedSecret()));
+        context.appendToExchangeHashInput(keyExchange.getLocalKeyPair().serializePublicKey());
+        context.appendToExchangeHashInput(keyExchange.getRemotePublicKey().serializePublicKey());
+        context.appendToExchangeHashInput(Converter.bytesToBytesWithSignByte(keyExchange.getSharedSecret()));
 
         LOGGER.debug("ExchangeHash Input: " + ArrayConverter.bytesToRawHexString(context.getExchangeHashInput()));
-        context.setExchangeHash(KeyDerivation.computeExchangeHash(context.getExchangeHashInput(), hashAlgorithm));
-        LOGGER.debug("ExchangeHash " + ArrayConverter.bytesToRawHexString(context.getExchangeHash()));
-        context.setSessionID(context.getExchangeHash());
+        byte[] exchangeHash = KeyDerivation.computeExchangeHash(context.getExchangeHashInput(), hashAlgorithm);
+        context.setExchangeHash(exchangeHash);
+        LOGGER.debug("ExchangeHash " + ArrayConverter.bytesToRawHexString(exchangeHash));
+        if(!context.getSessionID().isPresent()) {
+            context.setSessionID(exchangeHash);
+        }
     }
 
     private void initializeCryptoLayers() {

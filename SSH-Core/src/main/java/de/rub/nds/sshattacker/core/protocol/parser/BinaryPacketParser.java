@@ -15,13 +15,13 @@ import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.sshattacker.core.constants.BinaryPacketConstants;
 import de.rub.nds.sshattacker.core.constants.MacAlgorithm;
+import de.rub.nds.sshattacker.core.exceptions.ParserException;
 import de.rub.nds.sshattacker.core.protocol.message.BinaryPacket;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import de.rub.nds.sshattacker.core.state.SshContext;
-import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -66,9 +66,10 @@ public class BinaryPacketParser extends Parser<BinaryPacket> {
     }
 
     private void parseMAC(BinaryPacket msg) {
-        MacAlgorithm macAlgorithm = context.getConnection().getLocalConnectionEndType() == ConnectionEndType.CLIENT ? context
-                .getMacAlgorithmServerToClient() : context.getMacAlgorithmClientToServer();
-        if (macAlgorithm == null || macAlgorithm.getOutputSize() == 0 || !context.isKeyExchangeComplete()) {
+        MacAlgorithm macAlgorithm = (context.isClient() ? context.getMacAlgorithmServerToClient() : context
+                .getMacAlgorithmClientToServer()).orElse(null);
+        if (macAlgorithm == null || macAlgorithm.getOutputSize() == 0 || !context.getKeyExchangeInstance().isPresent()
+                || !context.getKeyExchangeInstance().get().isComplete()) {
             LOGGER.debug("MAC: none");
             msg.setMac(new byte[] {});
         } else {

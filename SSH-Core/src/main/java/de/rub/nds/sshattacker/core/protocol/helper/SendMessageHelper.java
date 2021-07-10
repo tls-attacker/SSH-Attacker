@@ -17,7 +17,6 @@ import de.rub.nds.sshattacker.core.protocol.message.Message;
 import de.rub.nds.sshattacker.core.workflow.action.result.MessageActionResult;
 import de.rub.nds.sshattacker.core.protocol.layers.MessageLayer;
 import de.rub.nds.sshattacker.core.state.SshContext;
-import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 
 import java.io.IOException;
@@ -36,9 +35,10 @@ public class SendMessageHelper {
         TransportHandler transportHandler = context.getTransportHandler();
 
         byte[] data;
-        if (context.isEncryptionActive()) {
-            CryptoLayer cryptoLayer = context.getConnection().getLocalConnectionEndType() == ConnectionEndType.CLIENT ? context
-                    .getCryptoLayerClientToServer() : context.getCryptoLayerServerToClient();
+        if ((context.isClient() && context.isClientToServerEncryptionActive())
+                || (context.isServer() && context.isServerToClientEncryptionActive())) {
+            CryptoLayer cryptoLayer = context.isClient() ? context.getCryptoLayerClientToServer() : context
+                    .getCryptoLayerServerToClient();
             data = cryptoLayer.encryptPacket(bp);
         } else {
             data = binaryPacketLayer.serializeBinaryPacket(bp);

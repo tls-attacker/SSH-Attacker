@@ -140,7 +140,7 @@ public class KeyExchangeInitMessageSerializer extends MessageSerializer<KeyExcha
 
     private void serializeFirstKeyExchangePacketFollows() {
         LOGGER.debug("FirstKeyExchangePacketFollows: " + msg.getFirstKeyExchangePacketFollows().getValue());
-        appendByte(msg.getFirstKeyExchangePacketFollows().getValue());
+        appendByte((byte) (msg.getFirstKeyExchangePacketFollows().getValue() ? 0x01 : 0x00));
     }
 
     private void serializeReserved() {

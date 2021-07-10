@@ -14,7 +14,6 @@
  */
 package de.rub.nds.sshattacker.core.protocol.parser;
 
-import de.rub.nds.sshattacker.core.constants.ByteConstants;
 import de.rub.nds.sshattacker.core.constants.CharConstants;
 import de.rub.nds.sshattacker.core.protocol.message.VersionExchangeMessage;
 import org.apache.logging.log4j.LogManager;
@@ -30,7 +29,7 @@ public class VersionExchangeMessageParser extends Parser<VersionExchangeMessage>
 
     private void parseVersion(VersionExchangeMessage msg) {
         // parse till CR NL (and remove them)
-        String result = this.parseStringTill(new byte[] { ByteConstants.CARRIAGE_RETURN, ByteConstants.NEWLINE })
+        String result = this.parseStringTill(new byte[] { CharConstants.CARRIAGE_RETURN, CharConstants.NEWLINE })
                 .replace("\r\n", "");
         if (result.contains(String.valueOf(CharConstants.VERSION_COMMENT_SEPARATOR))) {
             // contains a comment

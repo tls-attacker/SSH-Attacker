@@ -59,8 +59,8 @@ public class ReceiveMessageHelper {
                         return new MessageActionResult(); // TODO implement fitting message
                     }
 
-                    if(context.isEncryptionActive()) {
-                        CryptoLayer cryptoLayer = context.getConnection().getLocalConnectionEndType() == ConnectionEndType.CLIENT ?
+                    if((context.isClient() && context.isServerToClientEncryptionActive()) || (context.isServer() && context.isClientToServerEncryptionActive())) {
+                        CryptoLayer cryptoLayer = context.isClient() ?
                                 context.getCryptoLayerServerToClient() : context.getCryptoLayerClientToServer();
                         data = cryptoLayer.decryptBinaryPackets(data);
                     }

@@ -13,7 +13,7 @@ import de.rub.nds.sshattacker.core.constants.KeyExchangeAlgorithm;
 
 public abstract class KeyExchange {
 
-    private KeyExchangeAlgorithm negotiatedKeyExchange;
+    private final KeyExchangeAlgorithm negotiatedKeyExchange;
     protected byte[] sharedSecret;
 
     KeyExchange(KeyExchangeAlgorithm negotiatedKeyExchange) {
@@ -25,6 +25,10 @@ public abstract class KeyExchange {
     public abstract KeyPair getLocalKeyPair();
 
     public abstract KeyPair getRemotePublicKey();
+
+    public boolean isComplete() {
+        return sharedSecret != null;
+    }
 
     public byte[] getSharedSecret() {
         return sharedSecret;

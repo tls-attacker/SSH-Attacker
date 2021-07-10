@@ -17,7 +17,7 @@ public enum ChannelRequestType {
      */
     // [ RFC 4254 ]
     PTY_REQ("pty-req"),
-    X11_REQ("x11_req"),
+    X11_REQ("x11-req"),
     ENV("env"),
     SHELL("shell"),
     EXEC("exec"),

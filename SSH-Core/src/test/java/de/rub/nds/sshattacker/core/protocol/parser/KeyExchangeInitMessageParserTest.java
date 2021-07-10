@@ -44,7 +44,7 @@ public class KeyExchangeInitMessageParserTest {
                                 "chacha20-poly1305@openssh.com,aes256-ctr,aes192-ctr,aes128-ctr,aes256-cbc,aes192-cbc,aes128-cbc",
                                 37, "hmac-sha2-256,hmac-sha2-512,hmac-sha1", 37,
                                 "hmac-sha2-256,hmac-sha2-512,hmac-sha1", 26, "none,zlib,zlib@openssh.com", 26,
-                                "none,zlib,zlib@openssh.com", 0, "", 0, "", (byte) 0, 0x00000000 },
+                                "none,zlib,zlib@openssh.com", 0, "", 0, "", false, 0x00000000 },
                         {
                                 ArrayConverter
                                         .hexStringToByteArray("fbf207980a5e1f64469ee7dad6593e070000010d637572766532353531392d7368613235362c637572766532353531392d736861323536406c69627373682e6f72672c656364682d736861322d6e697374703235362c656364682d736861322d6e697374703338342c656364682d736861322d6e697374703532312c6469666669652d68656c6c6d616e2d67726f75702d65786368616e67652d7368613235362c6469666669652d68656c6c6d616e2d67726f757031362d7368613531322c6469666669652d68656c6c6d616e2d67726f757031382d7368613531322c6469666669652d68656c6c6d616e2d67726f757031342d7368613235362c6469666669652d68656c6c6d616e2d67726f757031342d736861312c6578742d696e666f2d63000001667273612d736861322d3531322d636572742d763031406f70656e7373682e636f6d2c7273612d736861322d3235362d636572742d763031406f70656e7373682e636f6d2c7373682d7273612d636572742d763031406f70656e7373682e636f6d2c7273612d736861322d3531322c7273612d736861322d3235362c7373682d7273612c65636473612d736861322d6e697374703235362d636572742d763031406f70656e7373682e636f6d2c65636473612d736861322d6e697374703338342d636572742d763031406f70656e7373682e636f6d2c65636473612d736861322d6e697374703532312d636572742d763031406f70656e7373682e636f6d2c7373682d656432353531392d636572742d763031406f70656e7373682e636f6d2c65636473612d736861322d6e697374703235362c65636473612d736861322d6e697374703338342c65636473612d736861322d6e697374703532312c7373682d656432353531390000006c63686163686132302d706f6c7931333035406f70656e7373682e636f6d2c6165733132382d6374722c6165733139322d6374722c6165733235362d6374722c6165733132382d67636d406f70656e7373682e636f6d2c6165733235362d67636d406f70656e7373682e636f6d0000006c63686163686132302d706f6c7931333035406f70656e7373682e636f6d2c6165733132382d6374722c6165733139322d6374722c6165733235362d6374722c6165733132382d67636d406f70656e7373682e636f6d2c6165733235362d67636d406f70656e7373682e636f6d000000d5756d61632d36342d65746d406f70656e7373682e636f6d2c756d61632d3132382d65746d406f70656e7373682e636f6d2c686d61632d736861322d3235362d65746d406f70656e7373682e636f6d2c686d61632d736861322d3531322d65746d406f70656e7373682e636f6d2c686d61632d736861312d65746d406f70656e7373682e636f6d2c756d61632d3634406f70656e7373682e636f6d2c756d61632d313238406f70656e7373682e636f6d2c686d61632d736861322d3235362c686d61632d736861322d3531322c686d61632d73686131000000d5756d61632d36342d65746d406f70656e7373682e636f6d2c756d61632d3132382d65746d406f70656e7373682e636f6d2c686d61632d736861322d3235362d65746d406f70656e7373682e636f6d2c686d61632d736861322d3531322d65746d406f70656e7373682e636f6d2c686d61632d736861312d65746d406f70656e7373682e636f6d2c756d61632d3634406f70656e7373682e636f6d2c756d61632d313238406f70656e7373682e636f6d2c686d61632d736861322d3235362c686d61632d736861322d3531322c686d61632d736861310000001a6e6f6e652c7a6c6962406f70656e7373682e636f6d2c7a6c69620000001a6e6f6e652c7a6c6962406f70656e7373682e636f6d2c7a6c696200000000000000000000000000"),
@@ -62,7 +62,7 @@ public class KeyExchangeInitMessageParserTest {
                                 213,
                                 "umac-64-etm@openssh.com,umac-128-etm@openssh.com,hmac-sha2-256-etm@openssh.com,hmac-sha2-512-etm@openssh.com,hmac-sha1-etm@openssh.com,umac-64@openssh.com,umac-128@openssh.com,hmac-sha2-256,hmac-sha2-512,hmac-sha1",
                                 26, "none,zlib@openssh.com,zlib", 26, "none,zlib@openssh.com,zlib", 0, "", 0, "",
-                                (byte) 0, 0x00000000 } });
+                                false, 0x00000000 } });
     }
 
     private final byte[] bytes;
@@ -88,7 +88,7 @@ public class KeyExchangeInitMessageParserTest {
     private final String languagesClientToServer;
     private final int languagesServerToClientLength;
     private final String languagesServerToClient;
-    private final byte firstKeyExchangePacketFollows;
+    private final boolean firstKeyExchangePacketFollows;
     private final int reserved;
 
     public KeyExchangeInitMessageParserTest(byte[] bytes, byte[] cookie, int keyExchangeAlgorithmsLength,
@@ -100,7 +100,7 @@ public class KeyExchangeInitMessageParserTest {
             int compressionAlgorithmsClientToServerLength, String compressionAlgorithmsClientToServer,
             int compressionAlgorithmsServerToClientLength, String compressionAlgorithmsServerToClient,
             int languagesClientToServerLength, String languagesClientToServer, int languagesServerToClientLength,
-            String languagesServerToClient, byte firstKeyExchangePacketFollows, int reserved) {
+            String languagesServerToClient, boolean firstKeyExchangePacketFollows, int reserved) {
         this.bytes = bytes;
         this.cookie = cookie;
         this.keyExchangeAlgorithmsLength = keyExchangeAlgorithmsLength;
@@ -178,7 +178,7 @@ public class KeyExchangeInitMessageParserTest {
         assertEquals(languagesClientToServer, msg.getLanguagesClientToServer().getValue());
         assertEquals(languagesServerToClientLength, msg.getLanguagesServerToClientLength().getValue().intValue());
         assertEquals(languagesServerToClient, msg.getLanguagesServerToClient().getValue());
-        assertEquals(firstKeyExchangePacketFollows, msg.getFirstKeyExchangePacketFollows().getValue().byteValue());
+        assertEquals(firstKeyExchangePacketFollows, msg.getFirstKeyExchangePacketFollows().getValue());
         assertEquals(reserved, msg.getReserved().getValue().intValue());
     }
 }

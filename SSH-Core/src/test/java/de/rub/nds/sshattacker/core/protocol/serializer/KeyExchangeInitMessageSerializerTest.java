@@ -52,7 +52,7 @@ public class KeyExchangeInitMessageSerializerTest {
     private final String languagesClientToServer;
     private final int languagesServerToClientLength;
     private final String languagesServerToClient;
-    private final byte firstKeyExchangePacketFollows;
+    private final boolean firstKeyExchangePacketFollows;
     private final int reserved;
 
     public KeyExchangeInitMessageSerializerTest(byte[] bytes, byte[] cookie, int keyExchangeAlgorithmsLength,
@@ -64,7 +64,7 @@ public class KeyExchangeInitMessageSerializerTest {
             int compressionAlgorithmsClientToServerLength, String compressionAlgorithmsClientToServer,
             int compressionAlgorithmsServerToClientLength, String compressionAlgorithmsServerToClient,
             int languagesClientToServerLength, String languagesClientToServer, int languagesServerToClientLength,
-            String languagesServerToClient, byte firstKeyExchangePacketFollows, int reserved) {
+            String languagesServerToClient, boolean firstKeyExchangePacketFollows, int reserved) {
         this.bytes = bytes;
         this.cookie = cookie;
         this.keyExchangeAlgorithmsLength = keyExchangeAlgorithmsLength;

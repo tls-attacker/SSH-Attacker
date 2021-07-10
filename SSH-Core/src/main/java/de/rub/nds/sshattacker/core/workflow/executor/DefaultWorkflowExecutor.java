@@ -107,7 +107,7 @@ public class DefaultWorkflowExecutor extends WorkflowExecutor {
 
     private boolean isIoException() {
         for (SshContext ctx : state.getAllSshContexts()) {
-            if (ctx.isReceivedTransportHandlerException()) {
+            if (ctx.hasReceivedTransportHandlerException()) {
                 return true;
             }
         }

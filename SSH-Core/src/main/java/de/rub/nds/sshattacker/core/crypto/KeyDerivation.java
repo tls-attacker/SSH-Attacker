@@ -74,32 +74,30 @@ public class KeyDerivation {
 
     public static void deriveKeys(SshContext context) {
         String hashAlgorithm = context.getKeyExchangeAlgorithm().orElseThrow(AdjustmentException::new).getDigest();
-        KeyExchange keyExchange = context.getKeyExchangeInstance();
+        KeyExchange keyExchange = context.getKeyExchangeInstance().orElseThrow(AdjustmentException::new);
+        byte[] exchangeHash = context.getExchangeHash().orElseThrow(AdjustmentException::new);
+        byte[] sessionId = context.getSessionID().orElseThrow(AdjustmentException::new);
 
         context.setInitialIvClientToServer(KeyDerivation.deriveKey(keyExchange.getSharedSecret(),
-                context.getExchangeHash(), (byte) 'A', context.getSessionID(), context
-                        .getCipherAlgorithmClientToServer().getBlockSize(), hashAlgorithm));
-        LOGGER.debug("Key A: " + ArrayConverter.bytesToRawHexString(context.getInitialIvClientToServer()));
+                exchangeHash, (byte) 'A', sessionId, context
+                        .getCipherAlgorithmClientToServer().orElseThrow(AdjustmentException::new).getBlockSize(), hashAlgorithm));
+        LOGGER.debug("Key A: " + ArrayConverter.bytesToRawHexString(context.getInitialIvClientToServer().orElse(new byte[0])));
         context.setInitialIvServerToClient(KeyDerivation.deriveKey(keyExchange.getSharedSecret(),
-                context.getExchangeHash(), (byte) 'B', context.getSessionID(), context
-                        .getCipherAlgorithmServerToClient().getBlockSize(), hashAlgorithm));
-        LOGGER.debug("Key B: " + ArrayConverter.bytesToRawHexString(context.getInitialIvServerToClient()));
-        context.setEncryptionKeyClientToServer(KeyDerivation.deriveKey(keyExchange.getSharedSecret(), context
-                .getExchangeHash(), (byte) 'C', context.getSessionID(), context.getCipherAlgorithmClientToServer()
-                .getKeySize(), hashAlgorithm));
-        LOGGER.debug("Key C: " + ArrayConverter.bytesToRawHexString(context.getEncryptionKeyClientToServer()));
-        context.setEncryptionKeyServerToClient(KeyDerivation.deriveKey(keyExchange.getSharedSecret(), context
-                .getExchangeHash(), (byte) 'D', context.getSessionID(), context.getCipherAlgorithmServerToClient()
-                .getKeySize(), hashAlgorithm));
-        LOGGER.debug("Key D: " + ArrayConverter.bytesToRawHexString(context.getEncryptionKeyServerToClient()));
-        context.setIntegrityKeyClientToServer(KeyDerivation.deriveKey(keyExchange.getSharedSecret(), context
-                .getExchangeHash(), (byte) 'E', context.getSessionID(), context.getMacAlgorithmClientToServer()
-                .getKeySize(), hashAlgorithm));
-        LOGGER.debug("Key E: " + ArrayConverter.bytesToRawHexString(context.getIntegrityKeyClientToServer()));
-        context.setIntegrityKeyServerToClient(KeyDerivation.deriveKey(keyExchange.getSharedSecret(), context
-                .getExchangeHash(), (byte) 'F', context.getSessionID(), context.getMacAlgorithmServerToClient()
-                .getKeySize(), hashAlgorithm));
-        LOGGER.debug("Key F: " + ArrayConverter.bytesToRawHexString(context.getIntegrityKeyServerToClient()));
+                exchangeHash, (byte) 'B', sessionId, context
+                        .getCipherAlgorithmServerToClient().orElseThrow(AdjustmentException::new).getBlockSize(), hashAlgorithm));
+        LOGGER.debug("Key B: " + ArrayConverter.bytesToRawHexString(context.getInitialIvServerToClient().orElse(new byte[0])));
+        context.setEncryptionKeyClientToServer(KeyDerivation.deriveKey(keyExchange.getSharedSecret(), exchangeHash, (byte) 'C', sessionId, context.getCipherAlgorithmClientToServer()
+                .orElseThrow(AdjustmentException::new).getKeySize(), hashAlgorithm));
+        LOGGER.debug("Key C: " + ArrayConverter.bytesToRawHexString(context.getEncryptionKeyClientToServer().orElse(new byte[0])));
+        context.setEncryptionKeyServerToClient(KeyDerivation.deriveKey(keyExchange.getSharedSecret(), exchangeHash, (byte) 'D', sessionId, context.getCipherAlgorithmServerToClient()
+                .orElseThrow(AdjustmentException::new).getKeySize(), hashAlgorithm));
+        LOGGER.debug("Key D: " + ArrayConverter.bytesToRawHexString(context.getEncryptionKeyServerToClient().orElse(new byte[0])));
+        context.setIntegrityKeyClientToServer(KeyDerivation.deriveKey(keyExchange.getSharedSecret(), exchangeHash, (byte) 'E', sessionId, context.getMacAlgorithmClientToServer()
+                .orElseThrow(AdjustmentException::new).getKeySize(), hashAlgorithm));
+        LOGGER.debug("Key E: " + ArrayConverter.bytesToRawHexString(context.getIntegrityKeyClientToServer().orElse(new byte[0])));
+        context.setIntegrityKeyServerToClient(KeyDerivation.deriveKey(keyExchange.getSharedSecret(), exchangeHash, (byte) 'F', sessionId, context.getMacAlgorithmServerToClient()
+                .orElseThrow(AdjustmentException::new).getKeySize(), hashAlgorithm));
+        LOGGER.debug("Key F: " + ArrayConverter.bytesToRawHexString(context.getIntegrityKeyServerToClient().orElse(new byte[0])));
     }
 
     static byte[] deriveKey(byte[] sharedKey, byte[] exchangeHash, byte use, byte[] sessionID, int outputLen,

@@ -10,6 +10,7 @@
 package de.rub.nds.sshattacker.core.protocol.preparator;
 
 import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
+import de.rub.nds.sshattacker.core.exceptions.PreparationException;
 import de.rub.nds.sshattacker.core.util.Converter;
 import de.rub.nds.sshattacker.core.protocol.message.ChannelRequestMessage;
 import de.rub.nds.sshattacker.core.state.SshContext;
@@ -23,10 +24,9 @@ public class ChannelRequestMessagePreparator extends Preparator<ChannelRequestMe
     @Override
     public void prepare() {
         message.setMessageID(MessageIDConstant.SSH_MSG_CHANNEL_REQUEST.id);
-        message.setReplyWanted(context.getChooser().getReplyWanted());
-        message.setRequestType(context.getChooser().getChannelRequestType().toString());
-        message.setPayload(Converter.stringToLengthPrefixedBinaryString(context.getChooser().getChannelCommand()));
-        message.setRecipientChannel(context.getChooser().getRemoteChannel());
+        message.setReplyWanted(context.getConfig().getReplyWanted());
+        message.setRequestType(context.getConfig().getChannelRequestType().toString());
+        message.setPayload(Converter.stringToLengthPrefixedBinaryString(context.getConfig().getChannelCommand()));
+        message.setRecipientChannel(context.getRemoteChannel().orElseThrow(PreparationException::new));
     }
-
 }

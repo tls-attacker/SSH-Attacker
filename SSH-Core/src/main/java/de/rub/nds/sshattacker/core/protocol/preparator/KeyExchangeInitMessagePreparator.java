@@ -9,6 +9,7 @@
  */
 package de.rub.nds.sshattacker.core.protocol.preparator;
 
+import de.rub.nds.sshattacker.core.constants.CharConstants;
 import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
 import de.rub.nds.sshattacker.core.protocol.serializer.KeyExchangeInitMessageSerializer;
 import de.rub.nds.sshattacker.core.util.Converter;
@@ -53,11 +54,11 @@ public class KeyExchangeInitMessagePreparator extends Preparator<KeyExchangeInit
                 .getClientSupportedCompressionAlgorithmsServerToClient()));
         message.setCompressionAlgorithmsServerToClientLength(message.getCompressionAlgorithmsServerToClient()
                 .getValue().length());
-        message.setLanguagesClientToServer(Converter.listOfAlgorithmsToString(context.getChooser()
-                .getClientSupportedLanguagesClientToServer()));
+        message.setLanguagesClientToServer(Converter.joinStringList(context.getChooser()
+                .getClientSupportedLanguagesClientToServer(), CharConstants.ALGORITHM_SEPARATOR));
         message.setLanguagesClientToServerLength(message.getLanguagesClientToServer().getValue().length());
-        message.setLanguagesServerToClient(Converter.listOfAlgorithmsToString(context.getChooser()
-                .getClientSupportedLanguagesServerToClient()));
+        message.setLanguagesServerToClient(Converter.joinStringList(context.getChooser()
+                .getClientSupportedLanguagesServerToClient(), CharConstants.ALGORITHM_SEPARATOR));
         message.setLanguagesServerToClientLength(message.getLanguagesServerToClient().getValue().length());
         message.setFirstKeyExchangePacketFollows(context.getChooser().getClientFirstKeyExchangePacketFollows());
         message.setReserved(context.getChooser().getClientReserved());

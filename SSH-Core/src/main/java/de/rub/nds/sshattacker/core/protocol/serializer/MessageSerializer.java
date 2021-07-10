@@ -31,11 +31,6 @@ public abstract class MessageSerializer<T extends Message<T>> extends Serializer
         return getAlreadySerialized();
     }
 
-    protected final void serializeSshString(String string) {
-        appendInt(string.length(), DataFormatConstants.STRING_SIZE_LENGTH);
-        appendString(string);
-    }
-
     protected abstract byte[] serializeMessageSpecificPayload();
 
     public static <T extends Message<T>> byte[] delegateSerialization(Message<T> message) {

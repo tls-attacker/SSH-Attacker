@@ -20,6 +20,7 @@ public class ChannelOpenConfirmationMessageHandler extends Handler<ChannelOpenCo
 
     @Override
     public void handle(ChannelOpenConfirmationMessage msg) {
+        context.setRemoteChannel(msg.getSenderChannel().getValue());
     }
 
 }
