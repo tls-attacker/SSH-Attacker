@@ -172,22 +172,8 @@ public class PointFormatter {
                     throw new UnsupportedOperationException("Unsupported PointFormat: " + pointFormat);
 
             }
-        } else {
-            if (compressedPoint.length != elementLength) {
-                LOGGER.warn("Could not parse point. Point needs to be " + elementLength + " bytes long, but was "
-                        + compressedPoint.length + "bytes long. Returning Basepoint");
-                return curve.getBasePoint();
-            }
-            byte[] coordX = new byte[elementLength];
-            try {
-                inputStream.read(coordX);
-            } catch (IOException ex) {
-                LOGGER.warn("Could not read from byteArrayStream. Returning Basepoint", ex);
-                return curve.getBasePoint();
-            }
-            RFC7748Curve computation = (RFC7748Curve) curve;
-            return curve.createAPointOnCurve(computation.decodeCoordinate(new BigInteger(1, coordX)));
         }
+        throw new UnsupportedOperationException("Unsupported NamedGroup: " + group);
     }
 
     private PointFormatter() {

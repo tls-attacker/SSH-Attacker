@@ -9,7 +9,6 @@
  */
 package de.rub.nds.sshattacker.core.crypto.ec;
 
-import de.rub.nds.sshattacker.core.constants.GOSTCurve;
 import de.rub.nds.sshattacker.core.constants.NamedGroup;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -25,11 +24,6 @@ public class CurveFactory {
      * @return EllipticCurve for the provided NamedGroup
      */
     public static EllipticCurve getCurve(NamedGroup name) {
-        if (name.isGrease()) {
-            LOGGER.warn("Using a GREASE elliptic curve. Falling back to a SECP256R1 curve.");
-            return new EllipticCurveSECP256R1();
-        }
-
         switch (name) {
             case BRAINPOOLP256R1:
                 return new EllipticCurveBrainpoolP256R1();
@@ -87,46 +81,9 @@ public class CurveFactory {
                 return new EllipticCurveSECT571K1();
             case SECT571R1:
                 return new EllipticCurveSECT571R1();
-            case ECDH_X25519:
-                return new EllipticCurveX25519();
-            case ECDH_X448:
-                return new EllipticCurveX448();
             default:
                 throw new UnsupportedOperationException("The provided group '" + name
                         + "' is not supported by this method.");
-
-        }
-    }
-
-    /**
-     * Returns a named gost curve.
-     *
-     * @param curve
-     *            The name of the curve, that should be returned.
-     * @return
-     */
-    public static EllipticCurve getCurve(GOSTCurve curve) {
-        switch (curve) {
-            case GostR3410_2001_CryptoPro_A:
-                return new EllipticCurveGost2001SetA();
-            case GostR3410_2001_CryptoPro_B:
-                return new EllipticCurveGost2001SetB();
-            case GostR3410_2001_CryptoPro_C:
-                return new EllipticCurveGost2001SetC();
-            case GostR3410_2001_CryptoPro_XchA:
-                return new EllipticCurveGost2001SetXchA();
-            case GostR3410_2001_CryptoPro_XchB:
-                return new EllipticCurveGost2001SetXchB();
-            case Tc26_Gost_3410_12_256_paramSetA:
-                return new EllipticCurveGost2012SetA256();
-            case Tc26_Gost_3410_12_512_paramSetA:
-                return new EllipticCurveGost2012SetA512();
-            case Tc26_Gost_3410_12_512_paramSetB:
-                return new EllipticCurveGost2012SetB512();
-            case Tc26_Gost_3410_12_512_paramSetC:
-                return new EllipticCurveGost2012SetC512();
-            default:
-                throw new UnsupportedOperationException("The provided curve '" + curve + "' is not supported.");
 
         }
     }

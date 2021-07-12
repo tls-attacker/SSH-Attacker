@@ -10,7 +10,6 @@
 package de.rub.nds.sshattacker.core.workflow.action;
 
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
-import de.rub.nds.sshattacker.core.crypto.kex.DhKeyExchange;
 import de.rub.nds.sshattacker.core.protocol.helper.ReceiveMessageHelper;
 import de.rub.nds.sshattacker.core.protocol.helper.SendMessageHelper;
 import de.rub.nds.sshattacker.core.protocol.message.*;
