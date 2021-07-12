@@ -168,6 +168,22 @@ public class Chooser {
 
     // endregion
 
+    // region Key Exchange
+    // TODO: Use config and context here
+    public int getMinimalDHGroupSize() {
+        return 2048;
+    }
+
+    public int getPreferredDHGroupSize() {
+        return 4096;
+    }
+
+    public int getMaximalDHGroupSize() {
+        return 8192;
+    }
+
+    // endregion
+
     public AuthenticationMethod getAuthenticationMethod() {
         return context.getAuthenticationMethod().orElse(config.getAuthenticationMethod());
     }

@@ -10,7 +10,7 @@
 package de.rub.nds.sshattacker.core.protocol.preparator;
 
 import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
-import de.rub.nds.sshattacker.core.crypto.hash.DhExchangeHash;
+import de.rub.nds.sshattacker.core.crypto.hash.DhNamedExchangeHash;
 import de.rub.nds.sshattacker.core.crypto.kex.DhKeyExchange;
 import de.rub.nds.sshattacker.core.exceptions.PreparationException;
 import de.rub.nds.sshattacker.core.protocol.message.DhKeyExchangeInitMessage;
@@ -27,9 +27,9 @@ public class DhKeyExchangeInitMessagePreparator extends Preparator<DhKeyExchange
         DhKeyExchange keyExchange = DhKeyExchange.newInstance(context.getKeyExchangeAlgorithm().orElseThrow(PreparationException::new));
         keyExchange.generateLocalKeyPair();
         context.setKeyExchangeInstance(keyExchange);
-        DhExchangeHash dhExchangeHash = DhExchangeHash.from(context.getExchangeHashInstance());
-        dhExchangeHash.setClientDHPublicKey(keyExchange.getLocalKeyPair().getPublic());
-        context.setExchangeHashInstance(dhExchangeHash);
+        DhNamedExchangeHash dhNamedExchangeHash = DhNamedExchangeHash.from(context.getExchangeHashInstance());
+        dhNamedExchangeHash.setClientDHPublicKey(keyExchange.getLocalKeyPair().getPublic());
+        context.setExchangeHashInstance(dhNamedExchangeHash);
 
         message.setMessageID(MessageIDConstant.SSH_MSG_KEXDH_INIT.id);
         message.setPublicKeyLength(keyExchange.getLocalKeyPair().getPublic().getEncoded().length);

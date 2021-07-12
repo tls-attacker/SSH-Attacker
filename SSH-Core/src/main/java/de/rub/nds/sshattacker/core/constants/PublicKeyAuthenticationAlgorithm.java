@@ -9,8 +9,6 @@
  */
 package de.rub.nds.sshattacker.core.constants;
 
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 

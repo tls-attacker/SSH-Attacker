@@ -12,26 +12,28 @@ package de.rub.nds.sshattacker.core.protocol.handler;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.PublicKeyAuthenticationAlgorithm;
 import de.rub.nds.sshattacker.core.crypto.KeyDerivation;
-import de.rub.nds.sshattacker.core.crypto.hash.DhNamedExchangeHash;
+import de.rub.nds.sshattacker.core.crypto.hash.DhGexExchangeHash;
+import de.rub.nds.sshattacker.core.crypto.hash.DhGexOldExchangeHash;
+import de.rub.nds.sshattacker.core.crypto.hash.ExchangeHash;
 import de.rub.nds.sshattacker.core.crypto.kex.DhKeyExchange;
 import de.rub.nds.sshattacker.core.exceptions.AdjustmentException;
 import de.rub.nds.sshattacker.core.protocol.layers.CryptoLayerFactory;
-import de.rub.nds.sshattacker.core.protocol.message.DhKeyExchangeReplyMessage;
+import de.rub.nds.sshattacker.core.protocol.message.DhGexKeyExchangeReplyMessage;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.util.Converter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class DhKeyExchangeReplyMessageHandler extends Handler<DhKeyExchangeReplyMessage> {
+public class DhGexKeyExchangeReplyMessageHandler extends Handler<DhGexKeyExchangeReplyMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public DhKeyExchangeReplyMessageHandler(SshContext context) {
+    public DhGexKeyExchangeReplyMessageHandler(SshContext context) {
         super(context);
     }
 
     @Override
-    public void handle(DhKeyExchangeReplyMessage message) {
+    public void handle(DhGexKeyExchangeReplyMessage message) {
         context.setHostKeyType(PublicKeyAuthenticationAlgorithm.fromName(message.getHostKeyType().getValue()));
         context.setKeyExchangeSignature(message.getSignature().getValue());
 
@@ -40,18 +42,22 @@ public class DhKeyExchangeReplyMessageHandler extends Handler<DhKeyExchangeReply
         dhKeyExchange.computeSharedSecret();
 
         handleHostKey(message);
-        DhNamedExchangeHash dhNamedExchangeHash = (DhNamedExchangeHash) context.getExchangeHashInstance();
-        dhNamedExchangeHash.setServerDHPublicKey(dhKeyExchange.getRemotePublicKey());
-        dhNamedExchangeHash.setSharedSecret(dhKeyExchange.getSharedSecret());
+        ExchangeHash exchangeHash = context.getExchangeHashInstance();
+        if(exchangeHash instanceof DhGexExchangeHash) {
+            ((DhGexExchangeHash) exchangeHash).setServerDHPublicKey(dhKeyExchange.getRemotePublicKey());
+        } else {
+            ((DhGexOldExchangeHash) exchangeHash).setServerDHPublicKey(dhKeyExchange.getRemotePublicKey());
+        }
+        exchangeHash.setSharedSecret(dhKeyExchange.getSharedSecret());
         if(!context.getSessionID().isPresent()) {
-            context.setSessionID(dhNamedExchangeHash.get());
+            context.setSessionID(exchangeHash.get());
         }
 
         KeyDerivation.deriveKeys(context);
         initializeCryptoLayers();
     }
 
-    private void handleHostKey(DhKeyExchangeReplyMessage message) {
+    private void handleHostKey(DhGexKeyExchangeReplyMessage message) {
         // TODO: Implement host key types as enumeration
         // TODO: Improve host key handling in separate class
         if (context.getHostKeyType().orElseThrow(AdjustmentException::new) == PublicKeyAuthenticationAlgorithm.SSH_RSA) {
@@ -62,7 +68,7 @@ public class DhKeyExchangeReplyMessageHandler extends Handler<DhKeyExchangeReply
         }
     }
 
-    private void handleRsaHostKey(DhKeyExchangeReplyMessage message) {
+    private void handleRsaHostKey(DhGexKeyExchangeReplyMessage message) {
         context.getExchangeHashInstance().setServerHostKey(ArrayConverter.concatenate(Converter
                 .stringToLengthPrefixedBinaryString(context.getHostKeyType().orElseThrow(AdjustmentException::new).toString()), Converter
                 .bytesToLengthPrefixedBinaryString(ArrayConverter.bigIntegerToByteArray(message.getHostKeyRsaExponent()

@@ -20,7 +20,6 @@ import de.rub.nds.sshattacker.core.protocol.message.Message;
 import de.rub.nds.sshattacker.core.protocol.parser.VersionExchangeMessageParser;
 import de.rub.nds.sshattacker.core.workflow.action.result.MessageActionResult;
 import de.rub.nds.sshattacker.core.state.SshContext;
-import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 
 import java.io.IOException;

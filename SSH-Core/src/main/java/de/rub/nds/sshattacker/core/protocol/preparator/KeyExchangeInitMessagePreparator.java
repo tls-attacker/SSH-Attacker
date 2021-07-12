@@ -11,7 +11,6 @@ package de.rub.nds.sshattacker.core.protocol.preparator;
 
 import de.rub.nds.sshattacker.core.constants.CharConstants;
 import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
-import de.rub.nds.sshattacker.core.protocol.serializer.KeyExchangeInitMessageSerializer;
 import de.rub.nds.sshattacker.core.util.Converter;
 import de.rub.nds.sshattacker.core.protocol.message.KeyExchangeInitMessage;
 import de.rub.nds.sshattacker.core.state.SshContext;

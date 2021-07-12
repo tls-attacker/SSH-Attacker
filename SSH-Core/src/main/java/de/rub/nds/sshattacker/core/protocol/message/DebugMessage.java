@@ -11,7 +11,6 @@ package de.rub.nds.sshattacker.core.protocol.message;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.bool.ModifiableBoolean;
-import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.sshattacker.core.protocol.preparator.DebugMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.serializer.DebugMessageSerializer;

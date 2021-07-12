@@ -16,12 +16,12 @@ import de.rub.nds.sshattacker.core.util.Converter;
 
 import java.math.BigInteger;
 
-public class DhExchangeHash extends ExchangeHash {
+public class DhNamedExchangeHash extends ExchangeHash {
 
     private byte[] clientDHPublicKey;
     private byte[] serverDHPublicKey;
 
-    public DhExchangeHash(SshContext context) {
+    public DhNamedExchangeHash(SshContext context) {
         super(context);
     }
 
@@ -73,18 +73,18 @@ public class DhExchangeHash extends ExchangeHash {
                 Converter.byteArrayToMpint(sharedSecret));
     }
 
-    public static DhExchangeHash from(ExchangeHash exchangeHash) {
-        DhExchangeHash dhExchangeHash = new DhExchangeHash(exchangeHash.context);
-        dhExchangeHash.setClientVersion(exchangeHash.clientVersion);
-        dhExchangeHash.setServerVersion(exchangeHash.serverVersion);
-        dhExchangeHash.setClientKeyExchangeInit(exchangeHash.clientKeyExchangeInit);
-        dhExchangeHash.setServerKeyExchangeInit(exchangeHash.serverKeyExchangeInit);
-        dhExchangeHash.setServerHostKey(exchangeHash.serverHostKey);
-        dhExchangeHash.setSharedSecret(exchangeHash.sharedSecret);
-        if (exchangeHash instanceof DhExchangeHash) {
-            dhExchangeHash.setClientDHPublicKey(((DhExchangeHash) exchangeHash).clientDHPublicKey);
-            dhExchangeHash.setServerDHPublicKey(((DhExchangeHash) exchangeHash).serverDHPublicKey);
+    public static DhNamedExchangeHash from(ExchangeHash exchangeHash) {
+        DhNamedExchangeHash dhNamedExchangeHash = new DhNamedExchangeHash(exchangeHash.context);
+        dhNamedExchangeHash.setClientVersion(exchangeHash.clientVersion);
+        dhNamedExchangeHash.setServerVersion(exchangeHash.serverVersion);
+        dhNamedExchangeHash.setClientKeyExchangeInit(exchangeHash.clientKeyExchangeInit);
+        dhNamedExchangeHash.setServerKeyExchangeInit(exchangeHash.serverKeyExchangeInit);
+        dhNamedExchangeHash.setServerHostKey(exchangeHash.serverHostKey);
+        dhNamedExchangeHash.setSharedSecret(exchangeHash.sharedSecret);
+        if (exchangeHash instanceof DhNamedExchangeHash) {
+            dhNamedExchangeHash.setClientDHPublicKey(((DhNamedExchangeHash) exchangeHash).clientDHPublicKey);
+            dhNamedExchangeHash.setServerDHPublicKey(((DhNamedExchangeHash) exchangeHash).serverDHPublicKey);
         }
-        return dhExchangeHash;
+        return dhNamedExchangeHash;
     }
 }

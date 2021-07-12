@@ -50,6 +50,10 @@ public abstract class MessageParser<T extends Message<T>> extends Parser<T> {
                     return new EcdhKeyExchangeReplyMessageParser(0, raw).parse();
                 case SSH_MSG_KEXDH_REPLY:
                     return new DhKeyExchangeReplyMessageParser(0, raw).parse();
+                case SSH_MSG_KEX_DH_GEX_GROUP:
+                    return new DhGexKeyExchangeGroupMessageParser(0, raw).parse();
+                case SSH_MSG_KEX_DH_GEX_REPLY:
+                    return new DhGexKeyExchangeReplyMessageParser(0, raw).parse();
                 case SSH_MSG_NEWKEYS:
                     return new NewKeysMessageParser(0, raw).parse();
                 case SSH_MSG_SERVICE_REQUEST:

@@ -9,16 +9,13 @@
  */
 package de.rub.nds.sshattacker.core.protocol.handler;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.*;
 import de.rub.nds.sshattacker.core.protocol.message.KeyExchangeInitMessage;
-import de.rub.nds.sshattacker.core.protocol.serializer.KeyExchangeInitMessageSerializer;
 import de.rub.nds.sshattacker.core.util.Converter;
 import de.rub.nds.sshattacker.core.protocol.AlgorithmPicker;
 import de.rub.nds.sshattacker.core.state.SshContext;
 
 import java.util.Arrays;
-import java.util.LinkedList;
 
 public class KeyExchangeInitMessageHandler extends Handler<KeyExchangeInitMessage> {
 

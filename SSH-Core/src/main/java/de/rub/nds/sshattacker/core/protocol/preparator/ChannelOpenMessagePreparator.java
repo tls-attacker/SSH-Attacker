@@ -10,7 +10,6 @@
 package de.rub.nds.sshattacker.core.protocol.preparator;
 
 import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
-import de.rub.nds.sshattacker.core.exceptions.PreparationException;
 import de.rub.nds.sshattacker.core.protocol.message.ChannelOpenMessage;
 import de.rub.nds.sshattacker.core.state.SshContext;
 

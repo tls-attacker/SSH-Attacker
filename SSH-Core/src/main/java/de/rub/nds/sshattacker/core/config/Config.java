@@ -134,7 +134,7 @@ public class Config implements Serializable {
         serverCookie = ArrayConverter.hexStringToByteArray("00000000000000000000000000000000");
 
         clientSupportedKeyExchangeAlgorithms = new LinkedList<>();
-        clientSupportedKeyExchangeAlgorithms.add(KeyExchangeAlgorithm.ECDH_SHA2_NISTP256);
+        clientSupportedKeyExchangeAlgorithms.add(KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP_EXCHANGE_SHA256);
         serverSupportedKeyExchangeAlgorithms = new LinkedList<>(clientSupportedKeyExchangeAlgorithms);
 
         clientSupportedHostKeyAlgorithms = new LinkedList<>();
