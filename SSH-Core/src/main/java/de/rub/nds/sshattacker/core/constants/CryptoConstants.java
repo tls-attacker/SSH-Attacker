@@ -12,4 +12,5 @@ package de.rub.nds.sshattacker.core.constants;
 public class CryptoConstants {
 
     public static final int X25519_POINT_SIZE = 32;
+    public static final int X448_POINT_SIZE = 56;
 }

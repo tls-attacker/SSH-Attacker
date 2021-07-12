@@ -20,7 +20,7 @@ import org.apache.logging.log4j.Logger;
 
 import java.math.BigInteger;
 
-public class DhKeyExchange extends KeyExchange {
+public class DhKeyExchange extends DhBasedKeyExchange {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -96,6 +96,10 @@ public class DhKeyExchange extends KeyExchange {
 
     public CustomDhPublicKey getRemotePublicKey() {
         return remotePublicKey;
+    }
+
+    public void setRemotePublicKey(byte[] publicKey) {
+        setRemotePublicKey(new BigInteger(publicKey));
     }
 
     public void setRemotePublicKey(BigInteger publicKey) {

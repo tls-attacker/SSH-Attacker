@@ -10,9 +10,10 @@
 package de.rub.nds.sshattacker.core.crypto.hash;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.sshattacker.core.crypto.keys.CustomEcPublicKey;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.util.Converter;
+
+import java.security.PublicKey;
 
 public class EcdhExchangeHash extends ExchangeHash {
 
@@ -31,7 +32,7 @@ public class EcdhExchangeHash extends ExchangeHash {
         this.clientECDHPublicKey = clientECDHPublicKey;
     }
 
-    public void setClientECDHPublicKey(CustomEcPublicKey clientECDHPublicKey) {
+    public void setClientECDHPublicKey(PublicKey clientECDHPublicKey) {
         this.clientECDHPublicKey = clientECDHPublicKey.getEncoded();
     }
 
@@ -43,7 +44,7 @@ public class EcdhExchangeHash extends ExchangeHash {
         this.serverECDHPublicKey = serverECDHPublicKey;
     }
 
-    public void setServerECDHPublicKey(CustomEcPublicKey serverECDHPublicKey) {
+    public void setServerECDHPublicKey(PublicKey serverECDHPublicKey) {
         this.serverECDHPublicKey = serverECDHPublicKey.getEncoded();
     }
 
