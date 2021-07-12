@@ -10,7 +10,7 @@
 package de.rub.nds.sshattacker.core.protocol.serializer;
 
 import de.rub.nds.sshattacker.core.protocol.message.EcdhKeyExchangeReplyMessage;
-import de.rub.nds.sshattacker.core.protocol.parser.ECDHKeyExchangeReplyMessageParserTest;
+import de.rub.nds.sshattacker.core.protocol.parser.EcdhKeyExchangeReplyMessageParserTest;
 import java.util.Collection;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -22,11 +22,11 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
 @RunWith(Parameterized.class)
-public class ECDHKeyExchangeReplyMessageSerializerTest {
+public class EcdhKeyExchangeReplyMessageSerializerTest {
 
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
-        return ECDHKeyExchangeReplyMessageParserTest.generateData();
+        return EcdhKeyExchangeReplyMessageParserTest.generateData();
     }
 
     private final byte[] bytes;
@@ -48,7 +48,7 @@ public class ECDHKeyExchangeReplyMessageSerializerTest {
     private final int signatureLength;
     private final byte[] signature;
 
-    public ECDHKeyExchangeReplyMessageSerializerTest(byte[] bytes, int hostKeyLength, int hostKeyTypeLength,
+    public EcdhKeyExchangeReplyMessageSerializerTest(byte[] bytes, int hostKeyLength, int hostKeyTypeLength,
             String hostKeyType, int eccCurveIdentifierLength, String eccCurveIdentifier, int eccHostKeyLength,
             byte[] eccHostKey, int publicKeyLength, byte[] publicKey, int signatureLength, byte[] signature) {
         this.bytes = bytes;

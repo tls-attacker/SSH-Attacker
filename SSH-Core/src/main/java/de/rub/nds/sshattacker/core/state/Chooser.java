@@ -11,8 +11,6 @@ package de.rub.nds.sshattacker.core.state;
 
 import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.constants.*;
-import de.rub.nds.sshattacker.core.crypto.kex.ECDHKeyExchange;
-import de.rub.nds.sshattacker.core.crypto.kex.KeyExchange;
 
 import java.util.List;
 

@@ -11,48 +11,47 @@ package de.rub.nds.sshattacker.core.protocol.handler;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.PublicKeyAuthenticationAlgorithm;
-import de.rub.nds.sshattacker.core.crypto.hash.EcdhExchangeHash;
-import de.rub.nds.sshattacker.core.crypto.kex.EcdhKeyExchange;
+import de.rub.nds.sshattacker.core.crypto.KeyDerivation;
+import de.rub.nds.sshattacker.core.crypto.hash.DhExchangeHash;
+import de.rub.nds.sshattacker.core.crypto.kex.DhKeyExchange;
 import de.rub.nds.sshattacker.core.exceptions.AdjustmentException;
 import de.rub.nds.sshattacker.core.protocol.layers.CryptoLayerFactory;
-import de.rub.nds.sshattacker.core.protocol.message.EcdhKeyExchangeReplyMessage;
-import de.rub.nds.sshattacker.core.util.Converter;
-import de.rub.nds.sshattacker.core.crypto.KeyDerivation;
+import de.rub.nds.sshattacker.core.protocol.message.DhKeyExchangeReplyMessage;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.util.Converter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class EcdhKeyExchangeReplyMessageHandler extends Handler<EcdhKeyExchangeReplyMessage> {
+public class DhKeyExchangeReplyMessageHandler extends Handler<DhKeyExchangeReplyMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public EcdhKeyExchangeReplyMessageHandler(SshContext context) {
+    public DhKeyExchangeReplyMessageHandler(SshContext context) {
         super(context);
     }
 
     @Override
-    public void handle(EcdhKeyExchangeReplyMessage message) {
+    public void handle(DhKeyExchangeReplyMessage message) {
         context.setHostKeyType(PublicKeyAuthenticationAlgorithm.fromName(message.getHostKeyType().getValue()));
         context.setKeyExchangeSignature(message.getSignature().getValue());
 
-        EcdhKeyExchange ecdhKeyExchange = (EcdhKeyExchange) context.getKeyExchangeInstance().orElseThrow(AdjustmentException::new);
-        ecdhKeyExchange.setRemotePublicKey(message.getEphemeralPublicKey().getValue());
-        ecdhKeyExchange.computeSharedSecret();
+        DhKeyExchange dhKeyExchange = (DhKeyExchange) context.getKeyExchangeInstance().orElseThrow(AdjustmentException::new);
+        dhKeyExchange.setRemotePublicKey(message.getEphemeralPublicKey().getValue());
+        dhKeyExchange.computeSharedSecret();
 
         handleHostKey(message);
-        EcdhExchangeHash ecdhExchangeHash = (EcdhExchangeHash) context.getExchangeHashInstance();
-        ecdhExchangeHash.setServerECDHPublicKey(ecdhKeyExchange.getRemotePublicKey());
-        ecdhExchangeHash.setSharedSecret(ecdhKeyExchange.getSharedSecret());
+        DhExchangeHash dhExchangeHash = (DhExchangeHash) context.getExchangeHashInstance();
+        dhExchangeHash.setServerDHPublicKey(dhKeyExchange.getRemotePublicKey());
+        dhExchangeHash.setSharedSecret(dhKeyExchange.getSharedSecret());
         if(!context.getSessionID().isPresent()) {
-            context.setSessionID(ecdhExchangeHash.get());
+            context.setSessionID(dhExchangeHash.get());
         }
 
         KeyDerivation.deriveKeys(context);
-
         initializeCryptoLayers();
     }
 
-    private void handleHostKey(EcdhKeyExchangeReplyMessage message) {
+    private void handleHostKey(DhKeyExchangeReplyMessage message) {
         // TODO: Implement host key types as enumeration
         // TODO: Improve host key handling in separate class
         if (context.getHostKeyType().orElseThrow(AdjustmentException::new) == PublicKeyAuthenticationAlgorithm.SSH_RSA) {
@@ -63,7 +62,7 @@ public class EcdhKeyExchangeReplyMessageHandler extends Handler<EcdhKeyExchangeR
         }
     }
 
-    private void handleRsaHostKey(EcdhKeyExchangeReplyMessage message) {
+    private void handleRsaHostKey(DhKeyExchangeReplyMessage message) {
         context.getExchangeHashInstance().setServerHostKey(ArrayConverter.concatenate(Converter
                 .stringToLengthPrefixedBinaryString(context.getHostKeyType().orElseThrow(AdjustmentException::new).toString()), Converter
                 .bytesToLengthPrefixedBinaryString(ArrayConverter.bigIntegerToByteArray(message.getHostKeyRsaExponent()

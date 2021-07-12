@@ -38,6 +38,7 @@ public abstract class MessageAction extends ConnectionBoundAction {
             @XmlElement(type = ChannelSuccessMessage.class, name = "ChannelSuccessMessage"),
             @XmlElement(type = ChannelWindowAdjustMessage.class, name = "ChannelWindowAdjustMessage"),
             @XmlElement(type = DebugMessage.class, name = "DebugMessage"),
+            @XmlElement(type = DhKeyExchangeInitMessage.class, name = "DhKeyExchangeInitMessage"),
             @XmlElement(type = DisconnectMessage.class, name = "DisconnectMessage"),
             @XmlElement(type = EcdhKeyExchangeInitMessage.class, name = "EcdhKeyExchangeInitMessage"),
             @XmlElement(type = EcdhKeyExchangeReplyMessage.class, name = "EcdhKeyExchangeReplyMessage"),

@@ -10,16 +10,16 @@
 package de.rub.nds.sshattacker.core.crypto.hash;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.sshattacker.core.crypto.keys.CustomECPublicKey;
+import de.rub.nds.sshattacker.core.crypto.keys.CustomEcPublicKey;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.util.Converter;
 
-public class ECDHExchangeHash extends ExchangeHash {
+public class EcdhExchangeHash extends ExchangeHash {
 
     private byte[] serverECDHPublicKey;
     private byte[] clientECDHPublicKey;
 
-    public ECDHExchangeHash(SshContext context) {
+    public EcdhExchangeHash(SshContext context) {
         super(context);
     }
 
@@ -31,7 +31,7 @@ public class ECDHExchangeHash extends ExchangeHash {
         this.clientECDHPublicKey = clientECDHPublicKey;
     }
 
-    public void setClientECDHPublicKey(CustomECPublicKey clientECDHPublicKey) {
+    public void setClientECDHPublicKey(CustomEcPublicKey clientECDHPublicKey) {
         this.clientECDHPublicKey = clientECDHPublicKey.getEncoded();
     }
 
@@ -43,7 +43,7 @@ public class ECDHExchangeHash extends ExchangeHash {
         this.serverECDHPublicKey = serverECDHPublicKey;
     }
 
-    public void setServerECDHPublicKey(CustomECPublicKey serverECDHPublicKey) {
+    public void setServerECDHPublicKey(CustomEcPublicKey serverECDHPublicKey) {
         this.serverECDHPublicKey = serverECDHPublicKey.getEncoded();
     }
 
@@ -64,17 +64,17 @@ public class ECDHExchangeHash extends ExchangeHash {
                 Converter.byteArrayToMpint(sharedSecret));
     }
 
-    public static ECDHExchangeHash from(ExchangeHash exchangeHash) {
-        ECDHExchangeHash ecdhExchangeHash = new ECDHExchangeHash(exchangeHash.context);
+    public static EcdhExchangeHash from(ExchangeHash exchangeHash) {
+        EcdhExchangeHash ecdhExchangeHash = new EcdhExchangeHash(exchangeHash.context);
         ecdhExchangeHash.setClientVersion(exchangeHash.clientVersion);
         ecdhExchangeHash.setServerVersion(exchangeHash.serverVersion);
         ecdhExchangeHash.setClientKeyExchangeInit(exchangeHash.clientKeyExchangeInit);
         ecdhExchangeHash.setServerKeyExchangeInit(exchangeHash.serverKeyExchangeInit);
         ecdhExchangeHash.setServerHostKey(exchangeHash.serverHostKey);
         ecdhExchangeHash.setSharedSecret(exchangeHash.sharedSecret);
-        if (exchangeHash instanceof ECDHExchangeHash) {
-            ecdhExchangeHash.setClientECDHPublicKey(((ECDHExchangeHash) exchangeHash).clientECDHPublicKey);
-            ecdhExchangeHash.setServerECDHPublicKey(((ECDHExchangeHash) exchangeHash).serverECDHPublicKey);
+        if (exchangeHash instanceof EcdhExchangeHash) {
+            ecdhExchangeHash.setClientECDHPublicKey(((EcdhExchangeHash) exchangeHash).clientECDHPublicKey);
+            ecdhExchangeHash.setServerECDHPublicKey(((EcdhExchangeHash) exchangeHash).serverECDHPublicKey);
         }
         return ecdhExchangeHash;
     }

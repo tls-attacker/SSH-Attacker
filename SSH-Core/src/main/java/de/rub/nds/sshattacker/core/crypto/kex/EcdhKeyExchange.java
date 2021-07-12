@@ -13,31 +13,31 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.KeyExchangeAlgorithm;
 import de.rub.nds.sshattacker.core.constants.NamedGroup;
 import de.rub.nds.sshattacker.core.crypto.ec.*;
-import de.rub.nds.sshattacker.core.crypto.keys.CustomECPrivateKey;
-import de.rub.nds.sshattacker.core.crypto.keys.CustomECPublicKey;
+import de.rub.nds.sshattacker.core.crypto.keys.CustomEcPrivateKey;
+import de.rub.nds.sshattacker.core.crypto.keys.CustomEcPublicKey;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomKeyPair;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.math.BigInteger;
 
-public class ECDHKeyExchange extends KeyExchange {
+public class EcdhKeyExchange extends KeyExchange {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
     private final NamedGroup group;
     private final EllipticCurve ellipticCurve;
 
-    private CustomKeyPair<CustomECPrivateKey, CustomECPublicKey> localKeyPair;
-    private CustomECPublicKey remotePublicKey;
+    private CustomKeyPair<CustomEcPrivateKey, CustomEcPublicKey> localKeyPair;
+    private CustomEcPublicKey remotePublicKey;
 
-    public ECDHKeyExchange(NamedGroup group) {
+    public EcdhKeyExchange(NamedGroup group) {
         super();
         this.group = group;
         this.ellipticCurve = CurveFactory.getCurve(group);
     }
 
-    public static ECDHKeyExchange instanceFromAlgorithm(KeyExchangeAlgorithm negotiatedKexAlgorithm) {
+    public static EcdhKeyExchange newInstance(KeyExchangeAlgorithm negotiatedKexAlgorithm) {
         NamedGroup group;
         switch (negotiatedKexAlgorithm) {
             case ECDH_SHA2_NISTP256:
@@ -60,26 +60,27 @@ public class ECDHKeyExchange extends KeyExchange {
                 }
                 break;
         }
-        return new ECDHKeyExchange(group);
+        return new EcdhKeyExchange(group);
     }
 
     public void generateLocalKeyPair() {
         int privateKeyBitLength = ellipticCurve.getBasePointOrder().bitLength();
-        CustomECPrivateKey privateKey;
+        CustomEcPrivateKey privateKey;
         do {
-            privateKey = new CustomECPrivateKey(new BigInteger(privateKeyBitLength, random).mod(ellipticCurve
+            privateKey = new CustomEcPrivateKey(new BigInteger(privateKeyBitLength, random).mod(ellipticCurve
                     .getBasePointOrder()), group);
         } while (privateKey.getS().equals(BigInteger.ZERO));
         Point publicKeyPoint = ellipticCurve.mult(privateKey.getS(), ellipticCurve.getBasePoint());
-        CustomECPublicKey publicKey = new CustomECPublicKey(publicKeyPoint, group);
+        CustomEcPublicKey publicKey = new CustomEcPublicKey(publicKeyPoint, group);
         this.localKeyPair = new CustomKeyPair<>(privateKey, publicKey);
     }
 
     public void setRemotePublicKey(byte[] serializedPublicKey) {
         Point publicKeyPoint = PointFormatter.formatFromByteArray(group, serializedPublicKey);
-        this.remotePublicKey = new CustomECPublicKey(publicKeyPoint, group);
+        this.remotePublicKey = new CustomEcPublicKey(publicKeyPoint, group);
     }
 
+    @Override
     public void computeSharedSecret() {
         Point sharedPoint = ellipticCurve.mult(localKeyPair.getPrivate().getS(), remotePublicKey.getWAsPoint());
         sharedSecret = sharedPoint.getFieldX().getData();
@@ -87,11 +88,11 @@ public class ECDHKeyExchange extends KeyExchange {
                 + ArrayConverter.bytesToRawHexString(sharedSecret.toByteArray()));
     }
 
-    public CustomKeyPair<CustomECPrivateKey, CustomECPublicKey> getLocalKeyPair() {
+    public CustomKeyPair<CustomEcPrivateKey, CustomEcPublicKey> getLocalKeyPair() {
         return localKeyPair;
     }
 
-    public CustomECPublicKey getRemotePublicKey() {
+    public CustomEcPublicKey getRemotePublicKey() {
         return remotePublicKey;
     }
 }

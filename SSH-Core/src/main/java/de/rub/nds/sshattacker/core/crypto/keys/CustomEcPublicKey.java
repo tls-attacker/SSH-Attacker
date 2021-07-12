@@ -22,13 +22,13 @@ import java.security.spec.ECParameterSpec;
 import java.security.spec.ECPoint;
 import java.security.spec.InvalidParameterSpecException;
 
-public class CustomECPublicKey implements ECPublicKey {
+public class CustomEcPublicKey implements ECPublicKey {
 
     public Point publicKey;
 
     public NamedGroup group;
 
-    public CustomECPublicKey(Point publicKey, NamedGroup group) {
+    public CustomEcPublicKey(Point publicKey, NamedGroup group) {
         this.publicKey = publicKey;
         this.group = group;
     }
@@ -68,7 +68,7 @@ public class CustomECPublicKey implements ECPublicKey {
         }
     }
 
-    public static CustomECPublicKey parse(byte[] encoded, NamedGroup group) {
-        return new CustomECPublicKey(PointFormatter.formatFromByteArray(group, encoded), group);
+    public static CustomEcPublicKey parse(byte[] encoded, NamedGroup group) {
+        return new CustomEcPublicKey(PointFormatter.formatFromByteArray(group, encoded), group);
     }
 }

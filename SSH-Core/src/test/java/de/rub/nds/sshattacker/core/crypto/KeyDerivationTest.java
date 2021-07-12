@@ -11,7 +11,7 @@ package de.rub.nds.sshattacker.core.crypto;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.KeyExchangeAlgorithm;
-import de.rub.nds.sshattacker.core.crypto.hash.ECDHExchangeHash;
+import de.rub.nds.sshattacker.core.crypto.hash.EcdhExchangeHash;
 import de.rub.nds.sshattacker.core.protocol.message.EcdhKeyExchangeInitMessage;
 import de.rub.nds.sshattacker.core.protocol.message.EcdhKeyExchangeReplyMessage;
 import de.rub.nds.sshattacker.core.protocol.message.VersionExchangeMessage;
@@ -133,7 +133,7 @@ public class KeyDerivationTest {
 
         SshContext context = new SshContext();
         context.setKeyExchangeAlgorithm(KeyExchangeAlgorithm.ECDH_SHA2_NISTP256);
-        ECDHExchangeHash exchangeHash = new ECDHExchangeHash(context);
+        EcdhExchangeHash exchangeHash = new EcdhExchangeHash(context);
 
         exchangeHash.setClientVersion(clientVersion);
         exchangeHash.setServerVersion(serverVersion);

@@ -20,13 +20,13 @@ import java.security.spec.ECGenParameterSpec;
 import java.security.spec.ECParameterSpec;
 import java.security.spec.InvalidParameterSpecException;
 
-public class CustomECPrivateKey implements ECPrivateKey {
+public class CustomEcPrivateKey implements ECPrivateKey {
 
     private final BigInteger privateKey;
 
     private final NamedGroup group;
 
-    public CustomECPrivateKey(BigInteger privateKey, NamedGroup group) {
+    public CustomEcPrivateKey(BigInteger privateKey, NamedGroup group) {
         this.privateKey = privateKey;
         this.group = group;
     }
@@ -62,7 +62,7 @@ public class CustomECPrivateKey implements ECPrivateKey {
         }
     }
 
-    public CustomECPrivateKey parse(byte[] encoded, NamedGroup group) {
-        return new CustomECPrivateKey(new BigInteger(encoded), group);
+    public CustomEcPrivateKey parse(byte[] encoded, NamedGroup group) {
+        return new CustomEcPrivateKey(new BigInteger(encoded), group);
     }
 }

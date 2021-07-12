@@ -10,8 +10,8 @@
 package de.rub.nds.sshattacker.core.protocol.preparator;
 
 import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
-import de.rub.nds.sshattacker.core.crypto.hash.ECDHExchangeHash;
-import de.rub.nds.sshattacker.core.crypto.kex.ECDHKeyExchange;
+import de.rub.nds.sshattacker.core.crypto.hash.EcdhExchangeHash;
+import de.rub.nds.sshattacker.core.crypto.kex.EcdhKeyExchange;
 import de.rub.nds.sshattacker.core.exceptions.PreparationException;
 import de.rub.nds.sshattacker.core.protocol.message.EcdhKeyExchangeInitMessage;
 import de.rub.nds.sshattacker.core.state.SshContext;
@@ -24,10 +24,10 @@ public class EcdhKeyExchangeInitMessagePreparator extends Preparator<EcdhKeyExch
 
     @Override
     public void prepare() {
-        ECDHKeyExchange ecdhKeyExchange = ECDHKeyExchange.instanceFromAlgorithm(context.getKeyExchangeAlgorithm().orElseThrow(PreparationException::new));
+        EcdhKeyExchange ecdhKeyExchange = EcdhKeyExchange.newInstance(context.getKeyExchangeAlgorithm().orElseThrow(PreparationException::new));
         ecdhKeyExchange.generateLocalKeyPair();
         context.setKeyExchangeInstance(ecdhKeyExchange);
-        ECDHExchangeHash ecdhExchangeHash = ECDHExchangeHash.from(context.getExchangeHashInstance());
+        EcdhExchangeHash ecdhExchangeHash = EcdhExchangeHash.from(context.getExchangeHashInstance());
         ecdhExchangeHash.setClientECDHPublicKey(ecdhKeyExchange.getLocalKeyPair().getPublic());
         context.setExchangeHashInstance(ecdhExchangeHash);
 
