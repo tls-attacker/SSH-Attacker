@@ -22,7 +22,7 @@ public class ServiceRequestMessagePreparator extends Preparator<ServiceRequestMe
     @Override
     public void prepare() {
         message.setMessageID(MessageIDConstant.SSH_MSG_SERVICE_REQUEST.id);
-        message.setServiceName(context.getChooser().getServiceName());
+        message.setServiceName(context.getConfig().getServiceName());
     }
 
 }

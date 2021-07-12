@@ -25,7 +25,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
 @RunWith(Parameterized.class)
-public class ECDHKeyExchangeReplyMessageParserTest {
+public class EcdhKeyExchangeReplyMessageParserTest {
 
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
@@ -68,7 +68,7 @@ public class ECDHKeyExchangeReplyMessageParserTest {
     private final int signatureLength;
     private final byte[] signature;
 
-    public ECDHKeyExchangeReplyMessageParserTest(byte[] bytes, int hostKeyLength, int hostKeyTypeLength,
+    public EcdhKeyExchangeReplyMessageParserTest(byte[] bytes, int hostKeyLength, int hostKeyTypeLength,
             String hostKeyType, int eccCurveIdentifierLength, String eccCurveIdentifier, int eccHostKeyLength,
             byte[] eccHostKey, int publicKeyLength, byte[] publicKey, int signatureLength, byte[] signature) {
         this.bytes = bytes;

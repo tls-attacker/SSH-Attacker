@@ -33,28 +33,24 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * The central object passed around during program execution. The state
- * initializes and holds the workflow trace, the default configuration and the
- * corresponding SSH contexts.
+ * The central object passed around during program execution. The state initializes and holds the workflow trace, the
+ * default configuration and the corresponding SSH contexts.
  *
  * <p>
- * The concept behind this class is as follows: the state is initialized with
- * the user configured values, that is, via default configuration and a given
- * workflow trace (type). On initialization, the state will create the necessary
- * SSH contexts for workflow execution. These contexts should be considered as
- * dynamic objects, representing SSH connections, calculations and other data
- * exchanged during the SSH actual workflow execution.
+ * The concept behind this class is as follows: the state is initialized with the user configured values, that is, via
+ * default configuration and a given workflow trace (type). On initialization, the state will create the necessary SSH
+ * contexts for workflow execution. These contexts should be considered as dynamic objects, representing SSH
+ * connections, calculations and other data exchanged during the SSH actual workflow execution.
  * </p>
  *
  * <p>
- * Therefore, there is no public interface for setting SSH contexts manually.
- * They are always automatically created based on the connections defined in the
- * workflow trace.
+ * Therefore, there is no public interface for setting SSH contexts manually. They are always automatically created
+ * based on the connections defined in the workflow trace.
  * </p>
  *
  * <p>
- * Please also have a look at the tests supplied with this class for some
- * initialization examples with expected behavior.
+ * Please also have a look at the tests supplied with this class for some initialization examples with expected
+ * behavior.
  * </p>
  *
  */
@@ -156,8 +152,8 @@ public class State {
     }
 
     /**
-     * Replace existing SshContext with new SshContext. This can only be done if
-     * existingSshContext.connection equals newSshContext.connection.
+     * Replace existing SshContext with new SshContext. This can only be done if existingSshContext.connection equals
+     * newSshContext.connection.
      *
      * @param newSshContext
      *            The new SshContext to replace the old with
@@ -167,15 +163,12 @@ public class State {
     }
 
     /**
-     * Use this convenience method when working with a single context only. It
-     * should be used only if there is exactly one context defined in the state.
-     * This would typically be the default context as defined in the config.
+     * Use this convenience method when working with a single context only. It should be used only if there is exactly
+     * one context defined in the state. This would typically be the default context as defined in the config.
      *
-     * Note: Be careful when changing the context. I.e. if you change it's
-     * connection, the state can get out of sync.
+     * Note: Be careful when changing the context. I.e. if you change it's connection, the state can get out of sync.
      *
-     * TODO: Ideally, this would return a deep copy to prevent State
-     * invalidation.
+     * TODO: Ideally, this would return a deep copy to prevent State invalidation.
      *
      * @return the only context known to the state
      */
@@ -184,14 +177,11 @@ public class State {
     }
 
     /**
-     * Get SSH context with given alias. Aliases are the ones assigned to the
-     * corresponding connection ends.
+     * Get SSH context with given alias. Aliases are the ones assigned to the corresponding connection ends.
      *
-     * Note: Be careful when changing the context. I.e. if you change it's
-     * connection, the state can get out of sync.
+     * Note: Be careful when changing the context. I.e. if you change it's connection, the state can get out of sync.
      *
-     * TODO: Ideally, this would return a deep copy to prevent State
-     * invalidation.
+     * TODO: Ideally, this would return a deep copy to prevent State invalidation.
      *
      *
      * @param alias
@@ -246,8 +236,7 @@ public class State {
     }
 
     /**
-     * Return a filtered copy of the given workflow trace. This method does not
-     * modify the input trace.
+     * Return a filtered copy of the given workflow trace. This method does not modify the input trace.
      *
      * @param trace
      *            The workflow trace that should be filtered

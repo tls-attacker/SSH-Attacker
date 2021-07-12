@@ -28,6 +28,19 @@ public class Converter {
         return ModifiableVariableFactory.safelySetValue(null, listOfAlgorithmsToString(list));
     }
 
+    public static String joinStringList(List<String> list, char seperator) {
+        if (list.isEmpty()) {
+            return "";
+        }
+
+        StringBuilder builder = new StringBuilder();
+        for (String listElement : list) {
+            builder.append(seperator).append(listElement);
+        }
+        builder.deleteCharAt(0); // delete first separator before the first element
+        return builder.toString();
+    }
+
     public static <T extends Enum<T>> String listOfAlgorithmsToString(List<T> list) {
         if(list.isEmpty()) {
             return "";

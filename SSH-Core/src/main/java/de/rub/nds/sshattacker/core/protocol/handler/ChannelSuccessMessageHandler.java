@@ -20,6 +20,7 @@ public class ChannelSuccessMessageHandler extends Handler<ChannelSuccessMessage>
 
     @Override
     public void handle(ChannelSuccessMessage msg) {
+        // TODO: Handle ChannelSuccessMessage
     }
 
 }

@@ -37,14 +37,14 @@ public class ContextContainer {
     private final Map<String, SshContext> sshContexts = new HashMap<>();
 
     /**
-     * An inbound SSH context is a context bound to an incoming connection. I.e.
-     * it represents a connection that we accepted from a connecting client.
+     * An inbound SSH context is a context bound to an incoming connection. I.e. it represents a connection that we
+     * accepted from a connecting client.
      */
     private final List<SshContext> inboundSshContexts = new ArrayList<>();
 
     /**
-     * An outbound SSH context is a context bound to an outgoing connection.
-     * I.e. it represents a connection established by us to a remote server.
+     * An outbound SSH context is a context bound to an outgoing connection. I.e. it represents a connection established
+     * by us to a remote server.
      */
     private final List<SshContext> outboundSshContexts = new ArrayList<>();
 
@@ -159,8 +159,7 @@ public class ContextContainer {
      * Replace existing SshContext with new SshContext.
      * <p>
      * </p>
-     * The SshContext can only be replaced if the connection of both the new and
-     * the old SshContext equal.
+     * The SshContext can only be replaced if the connection of both the new and the old SshContext equal.
      *
      * @param newSshContext
      *            the new SshContext, not null

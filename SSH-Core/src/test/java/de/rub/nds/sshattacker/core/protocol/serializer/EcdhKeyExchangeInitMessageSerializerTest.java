@@ -10,7 +10,7 @@
 package de.rub.nds.sshattacker.core.protocol.serializer;
 
 import de.rub.nds.sshattacker.core.protocol.message.EcdhKeyExchangeInitMessage;
-import de.rub.nds.sshattacker.core.protocol.parser.ECDHKeyExchangeInitMessageParserTest;
+import de.rub.nds.sshattacker.core.protocol.parser.EcdhKeyExchangeInitMessageParserTest;
 import java.util.Collection;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -22,11 +22,11 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
 @RunWith(Parameterized.class)
-public class ECDHKeyExchangeInitMessageSerializerTest {
+public class EcdhKeyExchangeInitMessageSerializerTest {
 
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
-        return ECDHKeyExchangeInitMessageParserTest.generateData();
+        return EcdhKeyExchangeInitMessageParserTest.generateData();
     }
 
     private final byte[] bytes;
@@ -34,7 +34,7 @@ public class ECDHKeyExchangeInitMessageSerializerTest {
     private final int publicKeyLength;
     private final byte[] publicKey;
 
-    public ECDHKeyExchangeInitMessageSerializerTest(byte[] bytes, int publicKeyLength, byte[] publicKey) {
+    public EcdhKeyExchangeInitMessageSerializerTest(byte[] bytes, int publicKeyLength, byte[] publicKey) {
         this.bytes = bytes;
         this.publicKeyLength = publicKeyLength;
         this.publicKey = publicKey;
@@ -57,8 +57,7 @@ public class ECDHKeyExchangeInitMessageSerializerTest {
     }
 
     /**
-     * Test of serializeBytes method, of class
-     * EcdhKeyExchangeInitMessageSerializer.
+     * Test of serializeBytes method, of class EcdhKeyExchangeInitMessageSerializer.
      */
     @Test
     public void testSerializeMessageSpecificPayload() {

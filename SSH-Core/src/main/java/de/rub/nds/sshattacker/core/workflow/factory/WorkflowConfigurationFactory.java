@@ -18,7 +18,7 @@ import de.rub.nds.sshattacker.core.workflow.action.SendAction;
 import de.rub.nds.sshattacker.core.workflow.action.SshAction;
 import de.rub.nds.sshattacker.core.protocol.message.ChannelOpenMessage;
 import de.rub.nds.sshattacker.core.protocol.message.ChannelRequestMessage;
-import de.rub.nds.sshattacker.core.protocol.message.ClientInitMessage;
+import de.rub.nds.sshattacker.core.protocol.message.VersionExchangeMessage;
 import de.rub.nds.sshattacker.core.protocol.message.EcdhKeyExchangeInitMessage;
 import de.rub.nds.sshattacker.core.protocol.message.KeyExchangeInitMessage;
 import de.rub.nds.sshattacker.core.protocol.message.NewKeysMessage;
@@ -61,7 +61,7 @@ public class WorkflowConfigurationFactory {
                 break;
 
             case KEYEXCHANGE:
-                sshActions.add(new SendAction(new ClientInitMessage()));
+                sshActions.add(new SendAction(new VersionExchangeMessage()));
                 sshActions.add(new ReceiveAction());
                 sshActions.add(new SendAction(new KeyExchangeInitMessage()));
                 sshActions.add(new ReceiveAction());

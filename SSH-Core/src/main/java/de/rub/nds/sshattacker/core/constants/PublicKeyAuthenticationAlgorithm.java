@@ -9,9 +9,11 @@
  */
 package de.rub.nds.sshattacker.core.constants;
 
+import java.util.Map;
+import java.util.TreeMap;
+
 /**
- * These values are also used for PubkeyAcceptedKeyTypes
- * HostbasedAcceptedKeyTypes HostKeyAlgorithms
+ * These values are also used for PubkeyAcceptedKeyTypes HostbasedAcceptedKeyTypes HostKeyAlgorithms
  */
 public enum PublicKeyAuthenticationAlgorithm {
     /*
@@ -107,6 +109,15 @@ public enum PublicKeyAuthenticationAlgorithm {
 
     private final String name;
 
+    public static final Map<String, PublicKeyAuthenticationAlgorithm> map;
+
+    static {
+        map = new TreeMap<>();
+        for (PublicKeyAuthenticationAlgorithm algorithm : PublicKeyAuthenticationAlgorithm.values()) {
+            map.put(algorithm.name, algorithm);
+        }
+    }
+
     PublicKeyAuthenticationAlgorithm(String name) {
         this.name = name;
     }
@@ -114,5 +125,9 @@ public enum PublicKeyAuthenticationAlgorithm {
     @Override
     public String toString() {
         return name;
+    }
+
+    public static PublicKeyAuthenticationAlgorithm fromName(String name) {
+        return map.get(name);
     }
 }

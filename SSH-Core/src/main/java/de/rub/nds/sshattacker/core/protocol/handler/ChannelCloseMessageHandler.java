@@ -20,6 +20,7 @@ public class ChannelCloseMessageHandler extends Handler<ChannelCloseMessage> {
 
     @Override
     public void handle(ChannelCloseMessage msg) {
+        // TODO: Handle ChannelCloseMessage
     }
 
 }

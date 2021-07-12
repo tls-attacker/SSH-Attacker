@@ -9,10 +9,10 @@
  */
 package de.rub.nds.sshattacker.core.protocol.cyclic;
 
-import de.rub.nds.sshattacker.core.protocol.message.ClientInitMessage;
-import de.rub.nds.sshattacker.core.protocol.parser.ClientInitMessageParserTest;
-import de.rub.nds.sshattacker.core.protocol.serializer.ClientInitMessageSerializer;
-import de.rub.nds.sshattacker.core.protocol.parser.ClientInitMessageParser;
+import de.rub.nds.sshattacker.core.protocol.message.VersionExchangeMessage;
+import de.rub.nds.sshattacker.core.protocol.parser.VersionExchangeMessageParserTest;
+import de.rub.nds.sshattacker.core.protocol.serializer.VersionExchangeMessageSerializer;
+import de.rub.nds.sshattacker.core.protocol.parser.VersionExchangeMessageParser;
 
 import java.util.Collection;
 import java.util.LinkedList;
@@ -22,26 +22,26 @@ import org.junit.runners.Parameterized;
 import org.junit.Test;
 
 @RunWith(Parameterized.class)
-public class CyclicClientInitMessageTest {
+public class CyclicVersionExchangeMessageTest {
 
     final byte[] message;
 
     @Parameterized.Parameters
     public static Collection<Object[]> generateData() {
-        Collection<Object[]> fullData = ClientInitMessageParserTest.generateData();
+        Collection<Object[]> fullData = VersionExchangeMessageParserTest.generateData();
         Collection<Object[]> bytesOnly = new LinkedList<>();
         fullData.forEach((obj) -> bytesOnly.add(new Object[]{obj[0]}));
         return bytesOnly;
     }
 
-    public CyclicClientInitMessageTest(byte[] message) {
+    public CyclicVersionExchangeMessageTest(byte[] message) {
         this.message = message;
     }
 
     @Test
     public void testCyclic() {
-        ClientInitMessage msg = new ClientInitMessageParser(0, message).parse();
-        byte[] serialized = new ClientInitMessageSerializer(msg).serialize();
+        VersionExchangeMessage msg = new VersionExchangeMessageParser(0, message).parse();
+        byte[] serialized = new VersionExchangeMessageSerializer(msg).serialize();
         Assert.assertArrayEquals(serialized, message);
     }
 }

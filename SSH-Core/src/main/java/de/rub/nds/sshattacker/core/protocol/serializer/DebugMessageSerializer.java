@@ -19,7 +19,7 @@ public class DebugMessageSerializer extends MessageSerializer<DebugMessage> {
     }
 
     private void serializeAlwaysDisplayed() {
-        appendByte(msg.getAlwaysDisplay().getValue());
+        appendByte((byte) (msg.getAlwaysDisplay().getValue() ? 0x01 : 0x00));
     }
 
     private void serializeMessage() {

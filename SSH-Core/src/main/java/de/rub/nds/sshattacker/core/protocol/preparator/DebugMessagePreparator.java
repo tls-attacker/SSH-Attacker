@@ -26,7 +26,7 @@ public class DebugMessagePreparator extends Preparator<DebugMessage> {
         // TODO dummy values for fuzzing
         message.setMessage("");
         message.setLanguageTag("");
-        message.setAlwaysDisplay((byte) 0xff);
+        message.setAlwaysDisplay(true);
     }
 
 }

@@ -10,9 +10,9 @@
 package de.rub.nds.sshattacker.core.protocol.message;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
+import de.rub.nds.modifiablevariable.bool.ModifiableBoolean;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
-import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.sshattacker.core.protocol.preparator.KeyExchangeInitMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.serializer.KeyExchangeInitMessageSerializer;
@@ -42,7 +42,7 @@ public class KeyExchangeInitMessage extends Message<KeyExchangeInitMessage> {
     private ModifiableString languagesClientToServer;
     private ModifiableInteger languagesServerToClientLength;
     private ModifiableString languagesServerToClient;
-    private ModifiableByte firstKeyExchangePacketFollows;
+    private ModifiableBoolean firstKeyExchangePacketFollows;
     private ModifiableInteger reserved;
 
     public ModifiableInteger getKeyExchangeAlgorithmsLength() {
@@ -317,15 +317,15 @@ public class KeyExchangeInitMessage extends Message<KeyExchangeInitMessage> {
                 languagesServerToClient);
     }
 
-    public ModifiableByte getFirstKeyExchangePacketFollows() {
+    public ModifiableBoolean getFirstKeyExchangePacketFollows() {
         return firstKeyExchangePacketFollows;
     }
 
-    public void setFirstKeyExchangePacketFollows(ModifiableByte firstKeyExchangePacketFollows) {
+    public void setFirstKeyExchangePacketFollows(ModifiableBoolean firstKeyExchangePacketFollows) {
         this.firstKeyExchangePacketFollows = firstKeyExchangePacketFollows;
     }
 
-    public void setFirstKeyExchangePacketFollows(byte firstKeyExchangePacketFollows) {
+    public void setFirstKeyExchangePacketFollows(boolean firstKeyExchangePacketFollows) {
         this.firstKeyExchangePacketFollows = ModifiableVariableFactory.safelySetValue(
                 this.firstKeyExchangePacketFollows, firstKeyExchangePacketFollows);
     }

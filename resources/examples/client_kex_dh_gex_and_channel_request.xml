@@ -2,7 +2,7 @@
 <workflowTrace>
     <Send>
         <messages>
-            <ClientInitMessage/>
+            <VersionExchangeMessage/>
         </messages>
     </Send>
     <Receive/>
@@ -14,7 +14,13 @@
     <Receive/>
     <Send>
         <messages>
-            <EcdhKeyExchangeInitMessage/>
+            <DhGexKeyExchangeRequestMessage/>
+        </messages>
+    </Send>
+    <Receive/>
+    <Send>
+        <messages>
+            <DhGexKeyExchangeInitMessage/>
         </messages>
     </Send>
     <Receive/>

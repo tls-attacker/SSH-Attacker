@@ -20,9 +20,8 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlTransient;
 
 /**
- * SSH Action bound to a single connection/SSH context. This should be the
- * default abstract base class for most actions. Provides automatic fallback to
- * default context alias.
+ * SSH Action bound to a single connection/SSH context. This should be the default abstract base class for most actions.
+ * Provides automatic fallback to default context alias.
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 public abstract class ConnectionBoundAction extends SshAction {

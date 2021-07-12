@@ -59,12 +59,12 @@ public class Config implements Serializable {
     private final List<CompressionAlgorithm> clientSupportedCompressionAlgorithmsServerToClient;
     private final List<CompressionAlgorithm> serverSupportedCompressionAlgorithmsServerToClient;
     private final List<CompressionAlgorithm> serverSupportedCompressionAlgorithmsClientToServer;
-    private final List<Language> clientSupportedLanguagesClientToServer;
-    private final List<Language> clientSupportedLanguagesServerToClient;
-    private final List<Language> serverSupportedLanguagesServerToClient;
-    private final List<Language> serverSupportedLanguagesClientToServer;
-    private final byte clientFirstKeyExchangePacketFollows;
-    private final byte serverFirstKeyExchangePacketFollows;
+    private final List<String> clientSupportedLanguagesClientToServer;
+    private final List<String> clientSupportedLanguagesServerToClient;
+    private final List<String> serverSupportedLanguagesServerToClient;
+    private final List<String> serverSupportedLanguagesClientToServer;
+    private final boolean clientFirstKeyExchangePacketFollows;
+    private final boolean serverFirstKeyExchangePacketFollows;
     private final int clientReserved;
     private final int serverReserved;
 
@@ -134,26 +134,22 @@ public class Config implements Serializable {
         serverCookie = ArrayConverter.hexStringToByteArray("00000000000000000000000000000000");
 
         clientSupportedKeyExchangeAlgorithms = new LinkedList<>();
-        clientSupportedKeyExchangeAlgorithms.add(KeyExchangeAlgorithm.ECDH_SHA2_NISTP256);
-
+        clientSupportedKeyExchangeAlgorithms.add(KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP_EXCHANGE_SHA256);
         serverSupportedKeyExchangeAlgorithms = new LinkedList<>(clientSupportedKeyExchangeAlgorithms);
 
         clientSupportedHostKeyAlgorithms = new LinkedList<>();
         clientSupportedHostKeyAlgorithms.add(PublicKeyAuthenticationAlgorithm.SSH_RSA);
-
         serverSupportedHostKeyAlgorithms = new LinkedList<>(clientSupportedHostKeyAlgorithms);
 
         clientSupportedCipherAlgorithmsClientToServer = new LinkedList<>();
         clientSupportedCipherAlgorithmsClientToServer.add(EncryptionAlgorithm.AES128_CBC);
         clientSupportedCipherAlgorithmsServerToClient = new LinkedList<>(clientSupportedCipherAlgorithmsClientToServer);
-
         serverSupportedCipherAlgorithmsClientToServer = new LinkedList<>(clientSupportedCipherAlgorithmsClientToServer);
         serverSupportedCipherAlgorithmsServerToClient = new LinkedList<>(clientSupportedCipherAlgorithmsClientToServer);
 
         clientSupportedMacAlgorithmsClientToServer = new LinkedList<>();
         clientSupportedMacAlgorithmsClientToServer.add(MacAlgorithm.HMAC_SHA1);
         clientSupportedMacAlgorithmsServerToClient = new LinkedList<>(clientSupportedMacAlgorithmsClientToServer);
-
         serverSupportedMacAlgorithmsServerToClient = new LinkedList<>(clientSupportedMacAlgorithmsClientToServer);
         serverSupportedMacAlgorithmsClientToServer = new LinkedList<>(clientSupportedMacAlgorithmsClientToServer);
 
@@ -161,21 +157,18 @@ public class Config implements Serializable {
         clientSupportedCompressionAlgorithmsClientToServer.add(CompressionAlgorithm.NONE);
         clientSupportedCompressionAlgorithmsServerToClient = new LinkedList<>(
                 clientSupportedCompressionAlgorithmsClientToServer);
-
         serverSupportedCompressionAlgorithmsServerToClient = new LinkedList<>(
                 clientSupportedCompressionAlgorithmsClientToServer);
         serverSupportedCompressionAlgorithmsClientToServer = new LinkedList<>(
                 clientSupportedCompressionAlgorithmsClientToServer);
 
         clientSupportedLanguagesClientToServer = new LinkedList<>();
-        clientSupportedLanguagesClientToServer.add(Language.NONE);
         clientSupportedLanguagesServerToClient = new LinkedList<>(clientSupportedLanguagesClientToServer);
-
         serverSupportedLanguagesServerToClient = new LinkedList<>(clientSupportedLanguagesClientToServer);
         serverSupportedLanguagesClientToServer = new LinkedList<>(clientSupportedLanguagesClientToServer);
 
-        clientFirstKeyExchangePacketFollows = (byte) 0;
-        serverFirstKeyExchangePacketFollows = (byte) 0;
+        clientFirstKeyExchangePacketFollows = false;
+        serverFirstKeyExchangePacketFollows = false;
 
         clientReserved = 0;
         serverReserved = 0;
@@ -325,27 +318,27 @@ public class Config implements Serializable {
         return serverSupportedCompressionAlgorithmsClientToServer;
     }
 
-    public List<Language> getClientSupportedLanguagesClientToServer() {
+    public List<String> getClientSupportedLanguagesClientToServer() {
         return clientSupportedLanguagesClientToServer;
     }
 
-    public List<Language> getClientSupportedLanguagesServerToClient() {
+    public List<String> getClientSupportedLanguagesServerToClient() {
         return clientSupportedLanguagesServerToClient;
     }
 
-    public List<Language> getServerSupportedLanguagesServerToClient() {
+    public List<String> getServerSupportedLanguagesServerToClient() {
         return serverSupportedLanguagesServerToClient;
     }
 
-    public List<Language> getServerSupportedLanguagesClientToServer() {
+    public List<String> getServerSupportedLanguagesClientToServer() {
         return serverSupportedLanguagesClientToServer;
     }
 
-    public byte getClientFirstKeyExchangePacketFollows() {
+    public boolean getClientFirstKeyExchangePacketFollows() {
         return clientFirstKeyExchangePacketFollows;
     }
 
-    public byte getServerFirstKeyExchangePacketFollows() {
+    public boolean getServerFirstKeyExchangePacketFollows() {
         return serverFirstKeyExchangePacketFollows;
     }
 

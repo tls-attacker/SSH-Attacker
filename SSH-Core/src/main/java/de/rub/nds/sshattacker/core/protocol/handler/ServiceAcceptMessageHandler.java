@@ -20,6 +20,7 @@ public class ServiceAcceptMessageHandler extends Handler<ServiceAcceptMessage> {
 
     @Override
     public void handle(ServiceAcceptMessage msg) {
+        // TODO: Handle ServiceAcceptMessage
     }
 
 }

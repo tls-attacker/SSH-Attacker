@@ -10,7 +10,8 @@
 package de.rub.nds.sshattacker.core.constants;
 
 public class CharConstants {
-
+    public static final byte CARRIAGE_RETURN = 0x0d;
+    public static final byte NEWLINE = 0x0a;
     public static final char VERSION_COMMENT_SEPARATOR = ' ';
     public static final char ALGORITHM_SEPARATOR = ',';
 }

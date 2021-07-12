@@ -9,130 +9,479 @@
  */
 package de.rub.nds.sshattacker.core.state;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.constants.*;
 import de.rub.nds.sshattacker.core.connection.AliasedConnection;
+import de.rub.nds.sshattacker.core.crypto.hash.ExchangeHash;
+import de.rub.nds.sshattacker.core.crypto.kex.KeyExchange;
+import de.rub.nds.sshattacker.core.exceptions.ConfigurationException;
+import de.rub.nds.sshattacker.core.exceptions.TransportHandlerConnectException;
 import de.rub.nds.sshattacker.core.protocol.layers.BinaryPacketLayer;
 import de.rub.nds.sshattacker.core.protocol.layers.CryptoLayer;
 import de.rub.nds.sshattacker.core.protocol.layers.MessageLayer;
-import de.rub.nds.sshattacker.core.util.Converter;
-import de.rub.nds.tlsattacker.transport.tcp.ClientTcpTransportHandler;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import de.rub.nds.tlsattacker.transport.TransportHandlerFactory;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 
 import java.io.IOException;
-import java.math.BigInteger;
 import java.util.List;
 import java.util.Optional;
 
 public class SshContext {
 
+    /**
+     * Static configuration for SSH-Attacker
+     */
     private Config config;
     private Chooser chooser;
 
+    /**
+     * Connection used to communicate with the remote peer
+     */
     private AliasedConnection connection;
-
-    private boolean receivedTransportHandlerException = false;
-    private BinaryPacketLayer binaryPacketLayer = new BinaryPacketLayer(this);
-    private MessageLayer messageLayer = new MessageLayer(this);
     private TransportHandler transportHandler;
-    private CryptoLayer cryptoLayerClientToServer;
-    private CryptoLayer cryptoLayerServerToClient;
-
-    private byte[] exchangeHashInput;
-
-    private byte[] sharedSecret;
-    private byte[] exchangeHash;
-    private byte[] sessionID;
-
-    private byte[] initialIvClientToServer;
-    private byte[] initialIvServerToClient;
-
-    private byte[] encryptionKeyClientToServer;
-    private byte[] encryptionKeyServerToClient;
-
-    private byte[] integrityKeyClientToServer;
-    private byte[] integrityKeyServerToClient;
-
-    private int sequenceNumber = 0;
-    private boolean isEncryptionActive = false;
-    private boolean keyExchangeCompleted = false;
-
-    private String hostKeyType;
-    private byte[] serverHostKey;
-    private BigInteger hostKeyRsaExponent;
-    private BigInteger hostKeyRsaModulus;
-    private byte[] keyExchangeSignature;
-
-    private byte[] clientEcdhPublicKey;
-    private byte[] clientEcdhSecretKey;
-    private byte[] serverEcdhPublicKey;
+    /**
+     * If set to true, an exception was received from the transport handler
+     */
+    private boolean receivedTransportHandlerException = false;
 
     /**
-     * selected algorithms for this connection
+     * A layer to serialize binary packets
+     */
+    private BinaryPacketLayer binaryPacketLayer = new BinaryPacketLayer(this);
+    /**
+     * A layer to serialize messages
+     */
+    private MessageLayer messageLayer = new MessageLayer(this);
+    /**
+     * Cryptographic layer implementing encryption and mac for the client to server direction
+     */
+    private CryptoLayer cryptoLayerClientToServer;
+    /**
+     * Cryptographic layer implementing encryption and mac for the server to client direction
+     */
+    private CryptoLayer cryptoLayerServerToClient;
+
+    /**
+     * Implicit packet sequence number (unsigned)
+     */
+    private int sequenceNumber = 0;
+
+    // region Version Exchange
+    /**
+     * Client protocol and software version string starting with the SSH version (SSH-2.0-...)
+     */
+    private String clientVersion;
+    /**
+     * Client comment sent alongside protocol and software version
+     */
+    private String clientComment;
+    /**
+     * Server protocol and software version string starting with the SSH version (SSH-2.0-...)
+     */
+    private String serverVersion;
+    /**
+     * Server comment sent alongside protocol and software version
+     */
+    private String serverComment;
+    // endregion
+
+    // region Key Exchange Initialization
+    /**
+     * Client cookie containing 16 random bytes
+     */
+    private byte[] clientCookie;
+    /**
+     * Server cookie containing 16 random bytes
+     */
+    private byte[] serverCookie;
+    /**
+     * List of key exchange algorithms supported by the remote peer
+     */
+    private List<KeyExchangeAlgorithm> clientSupportedKeyExchangeAlgorithms;
+    /**
+     * List of key exchange algorithms supported by the server
+     */
+    private List<KeyExchangeAlgorithm> serverSupportedKeyExchangeAlgorithms;
+    /**
+     * List of host key algorithms supported by the client
+     */
+    private List<PublicKeyAuthenticationAlgorithm> clientSupportedHostKeyAlgorithms;
+    /**
+     * List of host key algorithms supported by the server
+     */
+    private List<PublicKeyAuthenticationAlgorithm> serverSupportedHostKeyAlgorithms;
+    /**
+     * List of encryption algorithms (client to server) supported by the client
+     */
+    private List<EncryptionAlgorithm> clientSupportedCipherAlgorithmsClientToServer;
+    /**
+     * List of encryption algorithms (server to client) supported by the client
+     */
+    private List<EncryptionAlgorithm> clientSupportedCipherAlgorithmsServerToClient;
+    /**
+     * List of encryption algorithms (client to server) supported by the server
+     */
+    private List<EncryptionAlgorithm> serverSupportedCipherAlgorithmsClientToServer;
+    /**
+     * List of encryption algorithms (server to client) supported by the server
+     */
+    private List<EncryptionAlgorithm> serverSupportedCipherAlgorithmsServerToClient;
+    /**
+     * List of MAC algorithms (client to server) supported by the client
+     */
+    private List<MacAlgorithm> clientSupportedMacAlgorithmsClientToServer;
+    /**
+     * List of MAC algorithms (server to client) supported by the client
+     */
+    private List<MacAlgorithm> clientSupportedMacAlgorithmsServerToClient;
+    /**
+     * List of MAC algorithms (client to server) supported by the server
+     */
+    private List<MacAlgorithm> serverSupportedMacAlgorithmsClientToServer;
+    /**
+     * List of MAC algorithms (server to client) supported by the server
+     */
+    private List<MacAlgorithm> serverSupportedMacAlgorithmsServerToClient;
+    /**
+     * List of compression algorithms (client to server) supported by the client
+     */
+    private List<CompressionAlgorithm> clientSupportedCompressionAlgorithmsClientToServer;
+    /**
+     * List of compression algorithms (server to client) supported by the client
+     */
+    private List<CompressionAlgorithm> clientSupportedCompressionAlgorithmsServerToClient;
+    /**
+     * List of compression algorithms (client to server) supported by the server
+     */
+    private List<CompressionAlgorithm> serverSupportedCompressionAlgorithmsClientToServer;
+    /**
+     * List of compression algorithms (server to client) supported by the server
+     */
+    private List<CompressionAlgorithm> serverSupportedCompressionAlgorithmsServerToClient;
+    /**
+     * List of languages (client to server) supported by the client
+     */
+    private List<String> clientSupportedLanguagesClientToServer;
+    /**
+     * List of languages (server to client) supported by the client
+     */
+    private List<String> clientSupportedLanguagesServerToClient;
+    /**
+     * List of languages (client to server) supported by the server
+     */
+    private List<String> serverSupportedLanguagesClientToServer;
+    /**
+     * List of languages (server to client) supported by the server
+     */
+    private List<String> serverSupportedLanguagesServerToClient;
+    /**
+     * A boolean flag used to indicate that a guessed key exchange paket will be sent by the client
+     */
+    private Boolean clientFirstKeyExchangePacketFollows;
+    /**
+     * A boolean flag used to indicate that a guessed key exchange paket will be sent by the server
+     */
+    private Boolean serverFirstKeyExchangePacketFollows;
+    /**
+     * Value of the clients' reserved field which may be used for extensions in the future
+     */
+    private Integer clientReserved;
+    /**
+     * Value of the servers' reserved field which may be used for extensions in the future
+     */
+    private Integer serverReserved;
+    // endregion
+
+    // region Negotiated Parameters
+    /**
+     * Negotiated key exchange algorithm
      */
     private KeyExchangeAlgorithm keyExchangeAlgorithm;
+    /**
+     * Negotiated host key algorithm
+     */
     private PublicKeyAuthenticationAlgorithm serverHostKeyAlgorithm;
-
+    /**
+     * Negotiated cipher algorithm (client to server)
+     */
     private EncryptionAlgorithm cipherAlgorithmClientToServer;
+    /**
+     * Negotiated cipher algorithm (server to client)
+     */
     private EncryptionAlgorithm cipherAlgorithmServerToClient;
-
+    /**
+     * Negotiated MAC algorithm (client to server)
+     */
     private MacAlgorithm macAlgorithmClientToServer;
+    /**
+     * Negotiated MAC algorithm (server to client)
+     */
     private MacAlgorithm macAlgorithmServerToClient;
-
+    /**
+     * Negotiated compression algorithm (client to server)
+     */
     private CompressionAlgorithm compressionAlgorithmClientToServer;
+    /**
+     * Negotiated compression algorithm (server to client)
+     */
     private CompressionAlgorithm compressionAlgorithmServerToClient;
+    // endregion
 
-    private Language languageClientToServer;
-    private Language languageServerToClient;
+    // region Key Exchange
+    /**
+     * An ongoing or already completed key exchange which can be used to generate a key pair or compute the shared
+     * secret
+     */
+    private KeyExchange keyExchangeInstance;
+    /**
+     * Type of the servers' host key
+     */
+    private PublicKeyAuthenticationAlgorithm hostKeyType;
+    /**
+     * Host key of the server
+     */
+    // TODO: Implement host key as abstract class
+    private byte[] serverHostKey;
+    /**
+     * Signature generated by the server to authenticate the key exchange
+     */
+    private byte[] keyExchangeSignature;
+    // endregion
 
-    private String clientVersion;
-    private String clientComment;
-    private String serverVersion;
-    private String serverComment;
-    private byte[] clientCookie;
-    private byte[] serverCookie;
-    private List<KeyExchangeAlgorithm> clientSupportedKeyExchangeAlgorithms;
-    private List<KeyExchangeAlgorithm> serverSupportedKeyExchangeAlgorithms;
-    private List<PublicKeyAuthenticationAlgorithm> clientSupportedHostKeyAlgorithms;
-    private List<PublicKeyAuthenticationAlgorithm> serverSupportedHostKeyAlgorithms;
-    private List<EncryptionAlgorithm> clientSupportedCipherAlgorithmsClientToServer;
-    private List<EncryptionAlgorithm> clientSupportedCipherAlgorithmsServerToClient;
-    private List<EncryptionAlgorithm> serverSupportedCipherAlgorithmsServerToClient;
-    private List<EncryptionAlgorithm> serverSupportedCipherAlgorithmsClientToServer;
-    private List<MacAlgorithm> clientSupportedMacAlgorithmsClientToServer;
-    private List<MacAlgorithm> clientSupportedMacAlgorithmsServerToClient;
-    private List<MacAlgorithm> serverSupportedMacAlgorithmsServerToClient;
-    private List<MacAlgorithm> serverSupportedMacAlgorithmsClientToServer;
-    private List<CompressionAlgorithm> clientSupportedCompressionAlgorithmsClientToServer;
-    private List<CompressionAlgorithm> clientSupportedCompressionAlgorithmsServerToClient;
-    private List<CompressionAlgorithm> serverSupportedCompressionAlgorithmsServerToClient;
-    private List<CompressionAlgorithm> serverSupportedCompressionAlgorithmsClientToServer;
-    private List<Language> clientSupportedLanguagesClientToServer;
-    private List<Language> clientSupportedLanguagesServerToClient;
-    private List<Language> serverSupportedLanguagesServerToClient;
-    private List<Language> serverSupportedLanguagesClientToServer;
-    private Byte clientFirstKeyExchangePacketFollows;
-    private Byte serverFirstKeyExchangePacketFollows;
-    private Integer clientReserved;
-    private Integer serverReserved;
+    // region Exchange Hash and Cryptographic Keys
+    /**
+     * Instance of the ExchangeHash class for exchange hash computation
+     */
+    private ExchangeHash exchangeHash;
+    /**
+     * Unique identifier for this session. This is equal to the first computed exchange hash and never changes
+     */
+    private byte[] sessionID;
+    /**
+     * Initial IV (client to server) derived from the shared secret during the protocol
+     */
+    private byte[] initialIvClientToServer;
+    /**
+     * Initial IV (server to client) derived from the shared secret during the protocol
+     */
+    private byte[] initialIvServerToClient;
+    /**
+     * Encryption key (client to server) derived from the shared secret during the protocol
+     */
+    private byte[] encryptionKeyClientToServer;
+    /**
+     * Encryption key (server to client) derived from the shared secret during the protocol
+     */
+    private byte[] encryptionKeyServerToClient;
+    /**
+     * Integrity key (client to server) derived from the shared secret during the protocol
+     */
+    private byte[] integrityKeyClientToServer;
+    /**
+     * Integrity key (server to client) derived from the shared secret during the protocol
+     */
+    private byte[] integrityKeyServerToClient;
+    // endregion
 
+    // region Authentication Protocol
+    /**
+     * Authentication method used to authenticate against the server
+     */
     private AuthenticationMethod authenticationMethod;
-    private String serviceName;
-    private String username;
-    private String password;
-    private int localChannel;
-    private int remoteChannel;
-    private int windowSize;
-    private int packetSize;
+    // endregion
+
+    // region Connection Protocol
+    // TODO: Implement connection protocol to support multiplexing
+    /**
+     * Local channel identifier
+     */
+    private Integer localChannel;
+    /**
+     * Remote channel identifier
+     */
+    private Integer remoteChannel;
+    /**
+     * Window size of the channel. The window size defines how many bytes the local peer may send before the remote peer
+     * must send a SSH_MSG_CHANNEL_WINDOW_ADJUST to allow the local peer to send more bytes. Whenever a packet is send,
+     * this number is decremented by the packets length.
+     */
+    private Integer windowSize;
+    /**
+     * Maximum size of a single packet within the channel
+     */
+    private Integer packetSize;
+    /**
+     * Type of the channel
+     */
     private ChannelType channelType;
-    private ChannelRequestType channelRequestType;
-    private String channelCommand;
-    private byte replyWanted;
+    // TODO: Implement channel requests in such a way that allows specification within the XML file
+    // endregion
 
-    private Boolean receivedDisconnectMessage = false;
-    private Boolean receivedServerInit = false;
+    /**
+     * If set to true, a SSH_MSG_DISCONNECT has been received from the remote peer
+     */
+    private boolean receivedDisconnectMessage = false;
+    /**
+     * If set to true, encryption will be enabled for client to server communication
+     */
+    private boolean isClientToServerEncryptionActive = false;
+    /**
+     * If set to true, encryption will be enabled for server to client communication
+     */
+    private boolean isServerToClientEncryptionActive = false;
+    /**
+     * If set to true, a version exchange message was sent by each side
+     */
+    private boolean versionExchangeCompleted = false;
 
+    // region Constructors and Initalization
+    public SshContext() {
+        this(Config.createConfig());
+    }
+
+    public SshContext(Config config) {
+        RunningModeType mode = config.getDefaultRunningMode();
+        if (mode == null) {
+            throw new ConfigurationException("Cannot create connection, running mode not set");
+        } else {
+            switch (mode) {
+                case CLIENT:
+                    init(config, config.getDefaultClientConnection());
+                    break;
+                case SERVER:
+                    init(config, config.getDefaultServerConnection());
+                    break;
+                default:
+                    throw new ConfigurationException("Cannot create connection for unknown running mode '" + mode + "'");
+            }
+        }
+    }
+
+    public SshContext(Config config, AliasedConnection connection) {
+        init(config, connection);
+    }
+
+    public void init(Config config, AliasedConnection connection) {
+        this.config = config;
+        this.connection = connection;
+        transportHandler = TransportHandlerFactory.createTransportHandler(connection);
+        // TODO: this could introduce bugs
+        chooser = new Chooser(this);
+        exchangeHash = new ExchangeHash(this);
+    }
+
+    // endregion
+
+    public Config getConfig() {
+        return config;
+    }
+
+    public void setConfig(Config config) {
+        this.config = config;
+    }
+
+    public Chooser getChooser() {
+        return chooser;
+    }
+
+    public void setChooser(Chooser chooser) {
+        this.chooser = chooser;
+    }
+
+    public AliasedConnection getConnection() {
+        return connection;
+    }
+
+    public void setConnection(AliasedConnection connection) {
+        this.connection = connection;
+    }
+
+    public TransportHandler getTransportHandler() {
+        return transportHandler;
+    }
+
+    public void setTransportHandler(TransportHandler transportHandler) {
+        this.transportHandler = transportHandler;
+    }
+
+    public boolean hasReceivedTransportHandlerException() {
+        return receivedTransportHandlerException;
+    }
+
+    public void setReceivedTransportHandlerException(boolean receivedTransportHandlerException) {
+        this.receivedTransportHandlerException = receivedTransportHandlerException;
+    }
+
+    public void initTransportHandler() throws IOException {
+        if (transportHandler == null) {
+            if (connection == null) {
+                throw new ConfigurationException("Connection end not set");
+            }
+            transportHandler = TransportHandlerFactory.createTransportHandler(connection);
+        }
+
+        try {
+            transportHandler.initialize();
+        } catch (NullPointerException | NumberFormatException ex) {
+            throw new ConfigurationException("Invalid values in " + connection.toString(), ex);
+        } catch (IOException ex) {
+            throw new TransportHandlerConnectException("Unable to initialize the transport handler with: "
+                    + connection.toString(), ex);
+        }
+
+    }
+
+    public BinaryPacketLayer getBinaryPacketLayer() {
+        return binaryPacketLayer;
+    }
+
+    public void setBinaryPacketLayer(BinaryPacketLayer binaryPacketLayer) {
+        this.binaryPacketLayer = binaryPacketLayer;
+    }
+
+    public MessageLayer getMessageLayer() {
+        return messageLayer;
+    }
+
+    public void setMessageLayer(MessageLayer messageLayer) {
+        this.messageLayer = messageLayer;
+    }
+
+    public CryptoLayer getCryptoLayerClientToServer() {
+        return cryptoLayerClientToServer;
+    }
+
+    public void setCryptoLayerClientToServer(CryptoLayer cryptoLayerClientToServer) {
+        this.cryptoLayerClientToServer = cryptoLayerClientToServer;
+    }
+
+    public CryptoLayer getCryptoLayerServerToClient() {
+        return cryptoLayerServerToClient;
+    }
+
+    public void setCryptoLayerServerToClient(CryptoLayer cryptoLayerServerToClient) {
+        this.cryptoLayerServerToClient = cryptoLayerServerToClient;
+    }
+
+    public int getSequenceNumber() {
+        return sequenceNumber;
+    }
+
+    public void setSequenceNumber(int sequenceNumber) {
+        this.sequenceNumber = sequenceNumber;
+    }
+
+    public void incrementSequenceNumber() {
+        incrementSequenceNumber(1);
+    }
+
+    public void incrementSequenceNumber(int i) {
+        // Java does not support native unsigned integers :(
+        sequenceNumber = (int) ((Integer.toUnsignedLong(sequenceNumber) + Integer.toUnsignedLong(i)) % DataFormatConstants.UNSIGNED_INT_MAX_VALUE);
+    }
+
+    // region Getters for Version Exchange Fields
     public Optional<String> getClientVersion() {
         return Optional.ofNullable(clientVersion);
     }
@@ -157,6 +506,35 @@ public class SshContext {
         return Optional.ofNullable(serverCookie);
     }
 
+    // endregion
+    // region Setters for Version Exchange Fields
+    public void setClientVersion(String clientVersion) {
+        this.clientVersion = clientVersion;
+    }
+
+    public void setClientComment(String clientComment) {
+        this.clientComment = clientComment;
+    }
+
+    public void setServerVersion(String serverVersion) {
+        this.serverVersion = serverVersion;
+    }
+
+    public void setServerComment(String serverComment) {
+        this.serverComment = serverComment;
+    }
+
+    public void setClientCookie(byte[] clientCookie) {
+        this.clientCookie = clientCookie;
+    }
+
+    public void setServerCookie(byte[] serverCookie) {
+        this.serverCookie = serverCookie;
+    }
+
+    // endregion
+
+    // region Getters for Key Exchange Initialization Fields
     public Optional<List<KeyExchangeAlgorithm>> getClientSupportedKeyExchangeAlgorithms() {
         return Optional.ofNullable(clientSupportedKeyExchangeAlgorithms);
     }
@@ -177,7 +555,7 @@ public class SshContext {
         return Optional.ofNullable(clientSupportedCipherAlgorithmsClientToServer);
     }
 
-    public Optional<List<EncryptionAlgorithm>> getClientSupportedCipherAlgorithmsServertoClient() {
+    public Optional<List<EncryptionAlgorithm>> getClientSupportedCipherAlgorithmsServerToClient() {
         return Optional.ofNullable(clientSupportedCipherAlgorithmsServerToClient);
     }
 
@@ -221,27 +599,27 @@ public class SshContext {
         return Optional.ofNullable(serverSupportedCompressionAlgorithmsClientToServer);
     }
 
-    public Optional<List<Language>> getClientSupportedLanguagesClientToServer() {
+    public Optional<List<String>> getClientSupportedLanguagesClientToServer() {
         return Optional.ofNullable(clientSupportedLanguagesClientToServer);
     }
 
-    public Optional<List<Language>> getClientSupportedLanguagesServerToClient() {
+    public Optional<List<String>> getClientSupportedLanguagesServerToClient() {
         return Optional.ofNullable(clientSupportedLanguagesServerToClient);
     }
 
-    public Optional<List<Language>> getServerSupportedLanguagesServerToClient() {
+    public Optional<List<String>> getServerSupportedLanguagesServerToClient() {
         return Optional.ofNullable(serverSupportedLanguagesServerToClient);
     }
 
-    public Optional<List<Language>> getServerSupportedLanguagesClientToServer() {
+    public Optional<List<String>> getServerSupportedLanguagesClientToServer() {
         return Optional.ofNullable(serverSupportedLanguagesClientToServer);
     }
 
-    public Optional<Byte> getClientFirstKeyExchangePacketFollows() {
+    public Optional<Boolean> getClientFirstKeyExchangePacketFollows() {
         return Optional.ofNullable(clientFirstKeyExchangePacketFollows);
     }
 
-    public Optional<Byte> getServerFirstKeyExchangePacketFollows() {
+    public Optional<Boolean> getServerFirstKeyExchangePacketFollows() {
         return Optional.ofNullable(serverFirstKeyExchangePacketFollows);
     }
 
@@ -253,30 +631,8 @@ public class SshContext {
         return Optional.ofNullable(serverReserved);
     }
 
-    public void setClientVersion(String clientVersion) {
-        this.clientVersion = clientVersion;
-    }
-
-    public void setClientComment(String clientComment) {
-        this.clientComment = clientComment;
-    }
-
-    public void setServerVersion(String serverVersion) {
-        this.serverVersion = serverVersion;
-    }
-
-    public void setServerComment(String serverComment) {
-        this.serverComment = serverComment;
-    }
-
-    public void setClientCookie(byte[] clientCookie) {
-        this.clientCookie = clientCookie;
-    }
-
-    public void setServerCookie(byte[] serverCookie) {
-        this.serverCookie = serverCookie;
-    }
-
+    // endregion
+    // region Setters for Key Exchange Initialization Fields
     public void setClientSupportedKeyExchangeAlgorithms(List<KeyExchangeAlgorithm> clientSupportedKeyExchangeAlgorithms) {
         this.clientSupportedKeyExchangeAlgorithms = clientSupportedKeyExchangeAlgorithms;
     }
@@ -355,27 +711,27 @@ public class SshContext {
         this.serverSupportedCompressionAlgorithmsClientToServer = serverSupportedCompressionAlgorithmsClientToServer;
     }
 
-    public void setClientSupportedLanguagesClientToServer(List<Language> clientSupportedLanguagesClientToServer) {
+    public void setClientSupportedLanguagesClientToServer(List<String> clientSupportedLanguagesClientToServer) {
         this.clientSupportedLanguagesClientToServer = clientSupportedLanguagesClientToServer;
     }
 
-    public void setClientSupportedLanguagesServerToClient(List<Language> clientSupportedLanguagesServerToClient) {
+    public void setClientSupportedLanguagesServerToClient(List<String> clientSupportedLanguagesServerToClient) {
         this.clientSupportedLanguagesServerToClient = clientSupportedLanguagesServerToClient;
     }
 
-    public void setServerSupportedLanguagesServerToClient(List<Language> serverSupportedLanguagesServerToClient) {
+    public void setServerSupportedLanguagesServerToClient(List<String> serverSupportedLanguagesServerToClient) {
         this.serverSupportedLanguagesServerToClient = serverSupportedLanguagesServerToClient;
     }
 
-    public void setServerSupportedLanguagesClientToServer(List<Language> serverSupportedLanguagesClientToServer) {
+    public void setServerSupportedLanguagesClientToServer(List<String> serverSupportedLanguagesClientToServer) {
         this.serverSupportedLanguagesClientToServer = serverSupportedLanguagesClientToServer;
     }
 
-    public void setClientFirstKeyExchangePacketFollows(byte clientFirstKeyExchangePacketFollows) {
+    public void setClientFirstKeyExchangePacketFollows(boolean clientFirstKeyExchangePacketFollows) {
         this.clientFirstKeyExchangePacketFollows = clientFirstKeyExchangePacketFollows;
     }
 
-    public void setServerFirstKeyExchangePacketFollows(byte serverFirstKeyExchangePacketFollows) {
+    public void setServerFirstKeyExchangePacketFollows(boolean serverFirstKeyExchangePacketFollows) {
         this.serverFirstKeyExchangePacketFollows = serverFirstKeyExchangePacketFollows;
     }
 
@@ -387,431 +743,242 @@ public class SshContext {
         this.serverReserved = serverReserved;
     }
 
-    public SshContext(Config config, AliasedConnection connection) {
-        this.config = config;
-        this.connection = connection;
-        transportHandler = new ClientTcpTransportHandler(connection);
-        chooser = new Chooser(this); // TODO this could introduce bugs
-    }
+    // endregion
 
-    public SshContext() {
-
-    }
-
-    public Config getConfig() {
-        return config;
-    }
-
-    public void setConfig(Config config) {
-        this.config = config;
-    }
-
-    public AliasedConnection getConnection() {
-        return connection;
-    }
-
-    public void setConnection(AliasedConnection connection) {
-        this.connection = connection;
-    }
-
-    public byte[] getSharedSecret() {
-        return sharedSecret;
-    }
-
-    public void setSharedSecret(byte[] sharedSecret) {
-        this.sharedSecret = sharedSecret;
-    }
-
-    public byte[] getExchangeHash() {
-        return exchangeHash;
-    }
-
-    public void setExchangeHash(byte[] exchangeHash) {
-        this.exchangeHash = exchangeHash;
-    }
-
-    public byte[] getSessionID() {
-        return sessionID;
-    }
-
-    public void setSessionID(byte[] sessionID) {
-        this.sessionID = sessionID;
-    }
-
-    public byte[] getInitialIvClientToServer() {
-        return initialIvClientToServer;
-    }
-
-    public void setInitialIvClientToServer(byte[] initialIvClientToServer) {
-        this.initialIvClientToServer = initialIvClientToServer;
-    }
-
-    public byte[] getInitialIvServerToClient() {
-        return initialIvServerToClient;
-    }
-
-    public void setInitialIvServerToClient(byte[] initialIvServerToClient) {
-        this.initialIvServerToClient = initialIvServerToClient;
-    }
-
-    public byte[] getEncryptionKeyClientToServer() {
-        return encryptionKeyClientToServer;
-    }
-
-    public void setEncryptionKeyClientToServer(byte[] encryptionKeyClientToServer) {
-        this.encryptionKeyClientToServer = encryptionKeyClientToServer;
-    }
-
-    public byte[] getEncryptionKeyServerToClient() {
-        return encryptionKeyServerToClient;
-    }
-
-    public void setEncryptionKeyServerToClient(byte[] encryptionKeyServerToClient) {
-        this.encryptionKeyServerToClient = encryptionKeyServerToClient;
-    }
-
-    public byte[] getIntegrityKeyClientToServer() {
-        return integrityKeyClientToServer;
-    }
-
-    public void setIntegrityKeyClientToServer(byte[] integrityKeyClientToServer) {
-        this.integrityKeyClientToServer = integrityKeyClientToServer;
-    }
-
-    public byte[] getIntegrityKeyServerToClient() {
-        return integrityKeyServerToClient;
-    }
-
-    public void setIntegrityKeyServerToClient(byte[] integrityKeyServerToClient) {
-        this.integrityKeyServerToClient = integrityKeyServerToClient;
-    }
-
-    public String getHostKeyType() {
-        return hostKeyType;
-    }
-
-    public void setHostKeyType(String hostKeyType) {
-        this.hostKeyType = hostKeyType;
-    }
-
-    public byte[] getServerHostKey() {
-        return serverHostKey;
-    }
-
-    public void setServerHostKey(byte[] serverHostKey) {
-        this.serverHostKey = serverHostKey;
-    }
-
-    public byte[] getKeyExchangeSignature() {
-        return keyExchangeSignature;
-    }
-
-    public void setKeyExchangeSignature(byte[] keyExchangeSignature) {
-        this.keyExchangeSignature = keyExchangeSignature;
-    }
-
+    // region Getters for Negotiated Parameters
     public Optional<KeyExchangeAlgorithm> getKeyExchangeAlgorithm() {
         return Optional.ofNullable(keyExchangeAlgorithm);
     }
 
+    public Optional<PublicKeyAuthenticationAlgorithm> getServerHostKeyAlgorithm() {
+        return Optional.ofNullable(serverHostKeyAlgorithm);
+    }
+
+    public Optional<EncryptionAlgorithm> getCipherAlgorithmClientToServer() {
+        return Optional.ofNullable(cipherAlgorithmClientToServer);
+    }
+
+    public Optional<EncryptionAlgorithm> getCipherAlgorithmServerToClient() {
+        return Optional.ofNullable(cipherAlgorithmServerToClient);
+    }
+
+    public Optional<MacAlgorithm> getMacAlgorithmClientToServer() {
+        return Optional.ofNullable(macAlgorithmClientToServer);
+    }
+
+    public Optional<MacAlgorithm> getMacAlgorithmServerToClient() {
+        return Optional.ofNullable(macAlgorithmServerToClient);
+    }
+
+    public Optional<CompressionAlgorithm> getCompressionAlgorithmClientToServer() {
+        return Optional.ofNullable(compressionAlgorithmClientToServer);
+    }
+
+    public Optional<CompressionAlgorithm> getCompressionAlgorithmServerToClient() {
+        return Optional.ofNullable(compressionAlgorithmServerToClient);
+    }
+
+    // endregion
+    // region Setters for Negotiated Parameters
     public void setKeyExchangeAlgorithm(KeyExchangeAlgorithm keyExchangeAlgorithm) {
         this.keyExchangeAlgorithm = keyExchangeAlgorithm;
-    }
-
-    public EncryptionAlgorithm getCipherAlgorithmClientToServer() {
-        return cipherAlgorithmClientToServer;
-    }
-
-    public void setCipherAlgorithmClientToServer(EncryptionAlgorithm cipherAlgorithmClientToServer) {
-        this.cipherAlgorithmClientToServer = cipherAlgorithmClientToServer;
-    }
-
-    public EncryptionAlgorithm getCipherAlgorithmServerToClient() {
-        return cipherAlgorithmServerToClient;
-    }
-
-    public void setCipherAlgorithmServerToClient(EncryptionAlgorithm cipherAlgorithmServerToClient) {
-        this.cipherAlgorithmServerToClient = cipherAlgorithmServerToClient;
-    }
-
-    public MacAlgorithm getMacAlgorithmClientToServer() {
-        return macAlgorithmClientToServer;
-    }
-
-    public void setMacAlgorithmClientToServer(MacAlgorithm macAlgorithmClientToServer) {
-        this.macAlgorithmClientToServer = macAlgorithmClientToServer;
-    }
-
-    public MacAlgorithm getMacAlgorithmServerToClient() {
-        return macAlgorithmServerToClient;
-    }
-
-    public void setMacAlgorithmServerToClient(MacAlgorithm macAlgorithmServerToClient) {
-        this.macAlgorithmServerToClient = macAlgorithmServerToClient;
-    }
-
-    public CompressionAlgorithm getCompressionAlgorithmClientToServer() {
-        return compressionAlgorithmClientToServer;
-    }
-
-    public void setCompressionAlgorithmClientToServer(CompressionAlgorithm compressionAlgorithmClientToServer) {
-        this.compressionAlgorithmClientToServer = compressionAlgorithmClientToServer;
-    }
-
-    public CompressionAlgorithm getCompressionAlgorithmServerToClient() {
-        return compressionAlgorithmServerToClient;
-    }
-
-    public void setCompressionAlgorithmServerToClient(CompressionAlgorithm compressionAlgorithmServerToClient) {
-        this.compressionAlgorithmServerToClient = compressionAlgorithmServerToClient;
-    }
-
-    public Language getLanguageClientToServer() {
-        return languageClientToServer;
-    }
-
-    public void setLanguageClientToServer(Language languageClientToServer) {
-        this.languageClientToServer = languageClientToServer;
-    }
-
-    public Language getLanguageServerToClient() {
-        return languageServerToClient;
-    }
-
-    public void setLanguageServerToClient(Language languageServerToClient) {
-        this.languageServerToClient = languageServerToClient;
-    }
-
-    public PublicKeyAuthenticationAlgorithm getServerHostKeyAlgorithm() {
-        return serverHostKeyAlgorithm;
     }
 
     public void setServerHostKeyAlgorithm(PublicKeyAuthenticationAlgorithm serverHostKeyAlgorithm) {
         this.serverHostKeyAlgorithm = serverHostKeyAlgorithm;
     }
 
-    public byte[] getClientEcdhPublicKey() {
-        return clientEcdhPublicKey;
+    public void setCipherAlgorithmClientToServer(EncryptionAlgorithm cipherAlgorithmClientToServer) {
+        this.cipherAlgorithmClientToServer = cipherAlgorithmClientToServer;
     }
 
-    public void setClientEcdhPublicKey(byte[] clientEcdhPublicKey) {
-        this.clientEcdhPublicKey = clientEcdhPublicKey;
+    public void setCipherAlgorithmServerToClient(EncryptionAlgorithm cipherAlgorithmServerToClient) {
+        this.cipherAlgorithmServerToClient = cipherAlgorithmServerToClient;
     }
 
-    public byte[] getServerEcdhPublicKey() {
-        return serverEcdhPublicKey;
+    public void setMacAlgorithmClientToServer(MacAlgorithm macAlgorithmClientToServer) {
+        this.macAlgorithmClientToServer = macAlgorithmClientToServer;
     }
 
-    public void setServerEcdhPublicKey(byte[] serverEcdhPublicKey) {
-        this.serverEcdhPublicKey = serverEcdhPublicKey;
+    public void setMacAlgorithmServerToClient(MacAlgorithm macAlgorithmServerToClient) {
+        this.macAlgorithmServerToClient = macAlgorithmServerToClient;
     }
 
-    public BigInteger getHostKeyRsaExponent() {
-        return hostKeyRsaExponent;
+    public void setCompressionAlgorithmClientToServer(CompressionAlgorithm compressionAlgorithmClientToServer) {
+        this.compressionAlgorithmClientToServer = compressionAlgorithmClientToServer;
     }
 
-    public void setHostKeyRsaExponent(BigInteger hostKeyRsaExponent) {
-        this.hostKeyRsaExponent = hostKeyRsaExponent;
+    public void setCompressionAlgorithmServerToClient(CompressionAlgorithm compressionAlgorithmServerToClient) {
+        this.compressionAlgorithmServerToClient = compressionAlgorithmServerToClient;
     }
 
-    public BigInteger getHostKeyRsaModulus() {
-        return hostKeyRsaModulus;
+    // endregion
+
+    // region Getters for Key Exchange Fields
+    public Optional<KeyExchange> getKeyExchangeInstance() {
+        return Optional.ofNullable(keyExchangeInstance);
     }
 
-    public void setHostKeyRsaModulus(BigInteger hostKeyRsaModulus) {
-        this.hostKeyRsaModulus = hostKeyRsaModulus;
+    public Optional<PublicKeyAuthenticationAlgorithm> getHostKeyType() {
+        return Optional.ofNullable(hostKeyType);
     }
 
-    public Chooser getChooser() {
-        return chooser;
+    public Optional<byte[]> getServerHostKey() {
+        return Optional.ofNullable(serverHostKey);
     }
 
-    public void setChooser(Chooser chooser) {
-        this.chooser = chooser;
+    public Optional<byte[]> getKeyExchangeSignature() {
+        return Optional.ofNullable(keyExchangeSignature);
     }
 
-    public byte[] getExchangeHashInput() {
-        return exchangeHashInput;
+    // endregion
+    // region Setters for Key Exchange Fields
+    public void setKeyExchangeInstance(KeyExchange keyExchangeInstance) {
+        this.keyExchangeInstance = keyExchangeInstance;
     }
 
-    public void setExchangeHashInput(byte[] exchangeHashInput) {
-        this.exchangeHashInput = exchangeHashInput;
+    public void setHostKeyType(PublicKeyAuthenticationAlgorithm hostKeyType) {
+        this.hostKeyType = hostKeyType;
     }
 
-    public void appendToExchangeHashInput(byte[] additionalData) {
-        exchangeHashInput = ArrayConverter.concatenate(exchangeHashInput,
-                Converter.bytesToLengthPrefixedBinaryString(additionalData));
+    public void setServerHostKey(byte[] serverHostKey) {
+        this.serverHostKey = serverHostKey;
     }
 
-    public byte[] getClientEcdhSecretKey() {
-        return clientEcdhSecretKey;
+    public void setKeyExchangeSignature(byte[] keyExchangeSignature) {
+        this.keyExchangeSignature = keyExchangeSignature;
     }
 
-    public void setClientEcdhSecretKey(byte[] clientEcdhSecretKey) {
-        this.clientEcdhSecretKey = clientEcdhSecretKey;
+    // endregion
+
+    // region Getters for Exchange Hash and Cryptographic Keys
+    public ExchangeHash getExchangeHashInstance() {
+        return exchangeHash;
     }
 
-    public BinaryPacketLayer getBinaryPacketLayer() {
-        return binaryPacketLayer;
+    public Optional<byte[]> getSessionID() {
+        return Optional.ofNullable(sessionID);
     }
 
-    public MessageLayer getMessageLayer() {
-        return messageLayer;
+    public Optional<byte[]> getInitialIvClientToServer() {
+        return Optional.ofNullable(initialIvClientToServer);
     }
 
-    public TransportHandler getTransportHandler() {
-        return transportHandler;
+    public Optional<byte[]> getInitialIvServerToClient() {
+        return Optional.ofNullable(initialIvServerToClient);
     }
 
-    public void setBinaryPacketLayer(BinaryPacketLayer binaryPacketLayer) {
-        this.binaryPacketLayer = binaryPacketLayer;
+    public Optional<byte[]> getEncryptionKeyClientToServer() {
+        return Optional.ofNullable(encryptionKeyClientToServer);
     }
 
-    public void setMessageLayer(MessageLayer messageLayer) {
-        this.messageLayer = messageLayer;
+    public Optional<byte[]> getEncryptionKeyServerToClient() {
+        return Optional.ofNullable(encryptionKeyServerToClient);
     }
 
-    public void setTransportHandler(TransportHandler transportHandler) {
-        this.transportHandler = transportHandler;
+    public Optional<byte[]> getIntegrityKeyClientToServer() {
+        return Optional.ofNullable(integrityKeyClientToServer);
     }
 
-    public int getSequenceNumber() {
-        return sequenceNumber;
+    public Optional<byte[]> getIntegrityKeyServerToClient() {
+        return Optional.ofNullable(integrityKeyServerToClient);
     }
 
-    public void setSequenceNumber(int sequenceNumber) {
-        this.sequenceNumber = sequenceNumber;
+    // endregion
+    // region Setters for Exchange Hash and Cryptographic Keys
+    public void setExchangeHashInstance(ExchangeHash exchangeHash) {
+        this.exchangeHash = exchangeHash;
     }
 
-    public void incrementSequenceNumter(int i) {
-        sequenceNumber += i;
+    public void setSessionID(byte[] sessionID) {
+        this.sessionID = sessionID;
     }
 
-    public void incrementSequenceNumber() {
-        incrementSequenceNumter(1);
+    public void setInitialIvClientToServer(byte[] initialIvClientToServer) {
+        this.initialIvClientToServer = initialIvClientToServer;
     }
 
-    public boolean isEncryptionActive() {
-        return isEncryptionActive;
+    public void setInitialIvServerToClient(byte[] initialIvServerToClient) {
+        this.initialIvServerToClient = initialIvServerToClient;
     }
 
-    public void setIsEncryptionActive(boolean isEncryptionActive) {
-        this.isEncryptionActive = isEncryptionActive;
+    public void setEncryptionKeyClientToServer(byte[] encryptionKeyClientToServer) {
+        this.encryptionKeyClientToServer = encryptionKeyClientToServer;
     }
 
-    public boolean isKeyExchangeComplete() {
-        return keyExchangeCompleted;
+    public void setEncryptionKeyServerToClient(byte[] encryptionKeyServerToClient) {
+        this.encryptionKeyServerToClient = encryptionKeyServerToClient;
     }
 
-    public void setKeyExchangeComplete(boolean keyExchangeCompleted) {
-        this.keyExchangeCompleted = keyExchangeCompleted;
+    public void setIntegrityKeyClientToServer(byte[] integrityKeyClientToServer) {
+        this.integrityKeyClientToServer = integrityKeyClientToServer;
     }
 
-    public CryptoLayer getCryptoLayerClientToServer() {
-        return cryptoLayerClientToServer;
+    public void setIntegrityKeyServerToClient(byte[] integrityKeyServerToClient) {
+        this.integrityKeyServerToClient = integrityKeyServerToClient;
     }
 
-    public void setCryptoLayerClientToServer(CryptoLayer cryptoLayerClientToServer) {
-        this.cryptoLayerClientToServer = cryptoLayerClientToServer;
+    // endregion
+
+    // region Getters for Authentication Protocol Fields
+    public Optional<AuthenticationMethod> getAuthenticationMethod() {
+        return Optional.ofNullable(authenticationMethod);
     }
 
-    public CryptoLayer getCryptoLayerServerToClient() {
-        return cryptoLayerServerToClient;
+    // endregion
+    // region Setters for Authentication Protocol Fields
+    public void setAuthenticationMethod(AuthenticationMethod authenticationMethod) {
+        this.authenticationMethod = authenticationMethod;
     }
 
-    public void setCryptoLayerServerToClient(CryptoLayer cryptoLayerServerToClient) {
-        this.cryptoLayerServerToClient = cryptoLayerServerToClient;
+    // endregion
+
+    // region Getters for Connection Protocol Fields
+    public Optional<Integer> getLocalChannel() {
+        return Optional.ofNullable(localChannel);
     }
 
-    public String getUsername() {
-        return username;
+    public Optional<Integer> getRemoteChannel() {
+        return Optional.ofNullable(remoteChannel);
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public Optional<Integer> getWindowSize() {
+        return Optional.ofNullable(windowSize);
     }
 
-    public String getPassword() {
-        return password;
+    public Optional<Integer> getPacketSize() {
+        return Optional.ofNullable(packetSize);
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public Optional<ChannelType> getChannelType() {
+        return Optional.ofNullable(channelType);
     }
 
-    public int getLocalChannel() {
-        return localChannel;
-    }
-
+    // endregion
+    // region Setters for Connection Protocol Fields
     public void setLocalChannel(int localChannel) {
         this.localChannel = localChannel;
-    }
-
-    public int getWindowSize() {
-        return windowSize;
-    }
-
-    public void setWindowSize(int windowSize) {
-        this.windowSize = windowSize;
-    }
-
-    public int getPacketSize() {
-        return packetSize;
-    }
-
-    public void setPacketSize(int packetSize) {
-        this.packetSize = packetSize;
-    }
-
-    public ChannelType getChannelType() {
-        return channelType;
-    }
-
-    public void setChannelType(ChannelType channelType) {
-        this.channelType = channelType;
-    }
-
-    public String getChannelCommand() {
-        return channelCommand;
-    }
-
-    public void setChannelCommand(String channelCommand) {
-        this.channelCommand = channelCommand;
-    }
-
-    public byte getReplyWanted() {
-        return replyWanted;
-    }
-
-    public void setReplyWanted(byte replyWanted) {
-        this.replyWanted = replyWanted;
-    }
-
-    public ChannelRequestType getChannelRequestType() {
-        return channelRequestType;
-    }
-
-    public void setChannelRequestType(ChannelRequestType channelRequestType) {
-        this.channelRequestType = channelRequestType;
-    }
-
-    public int getRemoteChannel() {
-        return remoteChannel;
     }
 
     public void setRemoteChannel(int remoteChannel) {
         this.remoteChannel = remoteChannel;
     }
 
-    public boolean isReceivedTransportHandlerException() {
-        return receivedTransportHandlerException;
+    public void setWindowSize(int windowSize) {
+        this.windowSize = windowSize;
     }
 
-    public void setReceivedTransportHandlerException(boolean receivedTransportHandlerException) {
-        this.receivedTransportHandlerException = receivedTransportHandlerException;
+    public void setPacketSize(int packetSize) {
+        this.packetSize = packetSize;
     }
 
-    public Boolean getReceivedDisconnectMessage() {
+    public void setChannelType(ChannelType channelType) {
+        this.channelType = channelType;
+    }
+
+    // endregion
+
+    public boolean getReceivedDisconnectMessage() {
         return receivedDisconnectMessage;
     }
 
@@ -819,31 +986,43 @@ public class SshContext {
         this.receivedDisconnectMessage = receivedDisconnectMessage;
     }
 
-    public void initTransportHandler() throws IOException {
-        transportHandler.initialize();
+    public boolean isClientToServerEncryptionActive() {
+        return isClientToServerEncryptionActive;
     }
 
-    public Boolean getReceivedServerInit() {
-        return receivedServerInit;
+    public boolean isServerToClientEncryptionActive() {
+        return isServerToClientEncryptionActive;
     }
 
-    public void setReceivedServerInit(Boolean receivedServerInit) {
-        this.receivedServerInit = receivedServerInit;
+    public void setClientToServerEncryptionActive(boolean active) {
+        if (active && cryptoLayerClientToServer == null) {
+            throw new IllegalArgumentException(
+                    "Tried to activate encryption (client to server) without initializing a crypto layer first.");
+        }
+        this.isClientToServerEncryptionActive = active;
     }
 
-    public Optional<String> getServiceName() {
-        return Optional.ofNullable(serviceName);
+    public void setServerToClientEncryptionActive(boolean active) {
+        if (active && cryptoLayerServerToClient == null) {
+            throw new IllegalArgumentException(
+                    "Tried to activate encryption (server to client) without initializing a crypto layer first.");
+        }
+        this.isServerToClientEncryptionActive = active;
     }
 
-    public void setServiceName(String serviceName) {
-        this.serviceName = serviceName;
+    public boolean isVersionExchangeComplete() {
+        return versionExchangeCompleted;
     }
 
-    public Optional<AuthenticationMethod> getAuthenticationMethod() {
-        return Optional.ofNullable(authenticationMethod);
+    public void setVersionExchangeComplete(Boolean complete) {
+        this.versionExchangeCompleted = complete;
     }
 
-    public void setAuthenticationMethod(AuthenticationMethod authenticationMethod) {
-        this.authenticationMethod = authenticationMethod;
+    public boolean isClient() {
+        return connection.getLocalConnectionEndType() == ConnectionEndType.CLIENT;
+    }
+
+    public boolean isServer() {
+        return connection.getLocalConnectionEndType() == ConnectionEndType.SERVER;
     }
 }

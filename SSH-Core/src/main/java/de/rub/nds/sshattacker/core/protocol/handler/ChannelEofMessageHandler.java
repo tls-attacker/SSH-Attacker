@@ -20,6 +20,7 @@ public class ChannelEofMessageHandler extends Handler<ChannelEofMessage> {
 
     @Override
     public void handle(ChannelEofMessage msg) {
+        // TODO: Handle ChannelEofMessage
     }
 
 }

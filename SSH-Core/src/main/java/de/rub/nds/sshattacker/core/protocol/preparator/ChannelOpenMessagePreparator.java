@@ -27,5 +27,4 @@ public class ChannelOpenMessagePreparator extends Preparator<ChannelOpenMessage>
         message.setWindowSize(context.getChooser().getWindowSize());
         message.setPacketSize(context.getChooser().getPacketSize());
     }
-
 }

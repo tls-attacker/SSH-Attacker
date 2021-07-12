@@ -54,9 +54,9 @@ public enum KeyExchangeAlgorithm {
     ECDH_SHA2_SECT409R1("ecdh-sha2-1.3.132.0.37", "SHA-512"),
     ECDH_SHA2_SECT571K1("ecdh-sha2-1.3.132.0.38", "SHA-512"),
     ECDH_SHA2_SECT571R1("ecdh-sha2-1.3.132.0.39", "SHA-512"),
-    ECDH_SHA2_BRAINPOOL_P256R1("ecdh-sha2-1.3.36.3.3.2.8.1.1.7", "SHA-256"),
-    ECDH_SHA2_BRAINPOOL_P384R1("ecdh-sha2-1.3.36.3.3.2.8.1.1.11", "SHA-384"),
-    ECDH_SHA2_BRAINPOOL_P512R1("ecdh-sha2-1.3.36.3.3.2.8.1.1.13", "SHA-512"),
+    ECDH_SHA2_BRAINPOOLP256R1("ecdh-sha2-1.3.36.3.3.2.8.1.1.7", "SHA-256"),
+    ECDH_SHA2_BRAINPOOLP384R1("ecdh-sha2-1.3.36.3.3.2.8.1.1.11", "SHA-384"),
+    ECDH_SHA2_BRAINPOOLP512R1("ecdh-sha2-1.3.36.3.3.2.8.1.1.13", "SHA-512"),
     ECMQV_SHA2("ecmqv-sha2", null),
     // [ RFC 8732 ]
     // GSS-API key exchange methods would be listed here (gss-*)

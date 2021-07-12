@@ -15,10 +15,9 @@ import java.util.Collection;
 import java.util.Set;
 
 /**
- * Provide common alias methods for SSH context/connection bound objects. SSH
- * contexts are referenced by the alias of their connections. Objects
- * implementing this interface provide a uniform way to access aliases that
- * identify the connections they belong to.
+ * Provide common alias methods for SSH context/connection bound objects. SSH contexts are referenced by the alias of
+ * their connections. Objects implementing this interface provide a uniform way to access aliases that identify the
+ * connections they belong to.
  */
 public interface Aliasable {
 

@@ -137,7 +137,7 @@ public class KeyExchangeInitMessageParser extends MessageParser<KeyExchangeInitM
     }
 
     private void parseFirstKeyExchangePacketFollows(KeyExchangeInitMessage msg) {
-        msg.setFirstKeyExchangePacketFollows(parseByteField(1));
+        msg.setFirstKeyExchangePacketFollows(parseByteField(1) != 0);
         LOGGER.debug("FirstKeyExchangePacketFollows: " + msg.getFirstKeyExchangePacketFollows().getValue());
     }
 

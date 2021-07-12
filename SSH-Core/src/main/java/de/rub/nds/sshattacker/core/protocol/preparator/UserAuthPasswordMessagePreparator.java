@@ -10,6 +10,7 @@
 package de.rub.nds.sshattacker.core.protocol.preparator;
 
 import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
+import de.rub.nds.sshattacker.core.constants.ServiceType;
 import de.rub.nds.sshattacker.core.protocol.message.UserAuthPasswordMessage;
 import de.rub.nds.sshattacker.core.state.SshContext;
 
@@ -22,10 +23,10 @@ public class UserAuthPasswordMessagePreparator extends Preparator<UserAuthPasswo
     @Override
     public void prepare() {
         message.setMessageID(MessageIDConstant.SSH_MSG_USERAUTH_REQUEST.id);
-        message.setUsername(context.getChooser().getUsername());
-        message.setPassword(context.getChooser().getPassword());
-        message.setServicename("ssh-connection");
-        message.setExpectResponse(context.getChooser().getReplyWanted());
+        message.setUsername(context.getConfig().getUsername());
+        message.setPassword(context.getConfig().getPassword());
+        message.setServicename(ServiceType.SSH_CONNECTION.toString());
+        message.setExpectResponse(context.getConfig().getReplyWanted());
     }
 
 }

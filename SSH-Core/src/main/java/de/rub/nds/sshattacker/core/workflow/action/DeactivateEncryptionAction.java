@@ -16,7 +16,8 @@ public class DeactivateEncryptionAction extends ConnectionBoundAction {
 
     @Override
     public void execute(State state) throws WorkflowExecutionException {
-        state.getSshContext().setIsEncryptionActive(false);
+        state.getSshContext().setClientToServerEncryptionActive(false);
+        state.getSshContext().setServerToClientEncryptionActive(false);
     }
 
     @Override

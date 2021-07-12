@@ -10,6 +10,7 @@
 package de.rub.nds.sshattacker.core.workflow.action;
 
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
+import de.rub.nds.sshattacker.core.crypto.kex.DhKeyExchange;
 import de.rub.nds.sshattacker.core.protocol.helper.ReceiveMessageHelper;
 import de.rub.nds.sshattacker.core.protocol.helper.SendMessageHelper;
 import de.rub.nds.sshattacker.core.protocol.message.*;
@@ -37,8 +38,14 @@ public abstract class MessageAction extends ConnectionBoundAction {
             @XmlElement(type = ChannelRequestMessage.class, name = "ChannelRequestMessage"),
             @XmlElement(type = ChannelSuccessMessage.class, name = "ChannelSuccessMessage"),
             @XmlElement(type = ChannelWindowAdjustMessage.class, name = "ChannelWindowAdjustMessage"),
-            @XmlElement(type = ClientInitMessage.class, name = "ClientInitMessage"),
             @XmlElement(type = DebugMessage.class, name = "DebugMessage"),
+            @XmlElement(type = DhGexKeyExchangeGroupMessage.class, name = "DhGexKeyExchangeGroupMessage"),
+            @XmlElement(type = DhGexKeyExchangeInitMessage.class, name = "DhGexKeyExchangeInitMessage"),
+            @XmlElement(type = DhGexKeyExchangeOldRequestMessage.class, name = "DhGexKeyExchangeOldRequestMessage"),
+            @XmlElement(type = DhGexKeyExchangeReplyMessage.class, name = "DhGexKeyExchangeReplyMessage"),
+            @XmlElement(type = DhGexKeyExchangeRequestMessage.class, name = "DhGexKeyExchangeRequestMessage"),
+            @XmlElement(type = DhKeyExchangeInitMessage.class, name = "DhKeyExchangeInitMessage"),
+            @XmlElement(type = DhKeyExchangeReplyMessage.class, name = "DhKeyExchangeReplyMessage"),
             @XmlElement(type = DisconnectMessage.class, name = "DisconnectMessage"),
             @XmlElement(type = EcdhKeyExchangeInitMessage.class, name = "EcdhKeyExchangeInitMessage"),
             @XmlElement(type = EcdhKeyExchangeReplyMessage.class, name = "EcdhKeyExchangeReplyMessage"),
@@ -57,7 +64,8 @@ public abstract class MessageAction extends ConnectionBoundAction {
             @XmlElement(type = UserAuthBannerMessage.class, name = "UserAuthBannerMessage"),
             @XmlElement(type = UserAuthFailureMessage.class, name = "UserAuthFailureMessage"),
             @XmlElement(type = UserAuthPasswordMessage.class, name = "UserAuthPasswordMessage"),
-            @XmlElement(type = UserAuthSuccessMessage.class, name = "UserAuthSuccessMessage") })
+            @XmlElement(type = UserAuthSuccessMessage.class, name = "UserAuthSuccessMessage"),
+            @XmlElement(type = VersionExchangeMessage.class, name = "VersionExchangeMessage") })
     protected List<Message<?>> messages = new ArrayList<>();
 
     @HoldsModifiableVariable
