@@ -51,6 +51,8 @@ public class KeyExchangeInitMessageHandler extends Handler<KeyExchangeInitMessag
             context.setServerSupportedLanguagesServerToClient(Arrays.asList(message.getLanguagesServerToClient()
                     .getValue().split("" + CharConstants.ALGORITHM_SEPARATOR)));
             context.setServerReserved(message.getReserved().getValue());
+
+            context.getExchangeHashInstance().setServerKeyExchangeInit(message);
         } else {
             context.setClientCookie(message.getCookie().getValue());
             context.setClientSupportedKeyExchangeAlgorithms(Converter.stringToAlgorithms(message
@@ -74,12 +76,11 @@ public class KeyExchangeInitMessageHandler extends Handler<KeyExchangeInitMessag
             context.setClientSupportedLanguagesServerToClient(Arrays.asList(message.getLanguagesServerToClient()
                     .getValue().split("" + CharConstants.ALGORITHM_SEPARATOR)));
             context.setClientReserved(message.getReserved().getValue());
+
+            context.getExchangeHashInstance().setClientKeyExchangeInit(message);
         }
 
         pickAlgorithms();
-
-        context.appendToExchangeHashInput(new KeyExchangeInitMessageSerializer(message).serialize());
-
     }
 
     private void pickAlgorithms() {

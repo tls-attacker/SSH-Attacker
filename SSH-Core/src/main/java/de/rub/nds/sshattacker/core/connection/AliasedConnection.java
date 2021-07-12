@@ -34,27 +34,31 @@ public abstract class AliasedConnection extends Connection implements Aliasable 
     protected String alias = null;
 
     public AliasedConnection() {
+        this((Integer) null, null);
     }
 
     public AliasedConnection(Integer port) {
-        super(port);
+        this(port, null);
     }
 
     public AliasedConnection(Integer port, String hostname) {
         super(port, hostname);
+        setTimeout(DEFAULT_TIMEOUT);
+        setTransportHandlerType(DEFAULT_TRANSPORT_HANDLER_TYPE);
     }
 
     public AliasedConnection(String alias) {
+        this((Integer) null, null);
         this.alias = alias;
     }
 
     public AliasedConnection(String alias, Integer port) {
-        super(port);
+        this(port, null);
         this.alias = alias;
     }
 
     public AliasedConnection(String alias, Integer port, String hostname) {
-        super(port, hostname);
+        this(port, hostname);
         this.alias = alias;
     }
 

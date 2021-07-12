@@ -11,8 +11,8 @@ package de.rub.nds.sshattacker.core.protocol.handler;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.PublicKeyAuthenticationAlgorithm;
+import de.rub.nds.sshattacker.core.crypto.hash.ECDHExchangeHash;
 import de.rub.nds.sshattacker.core.crypto.kex.ECDHKeyExchange;
-import de.rub.nds.sshattacker.core.crypto.kex.KeyExchange;
 import de.rub.nds.sshattacker.core.exceptions.AdjustmentException;
 import de.rub.nds.sshattacker.core.protocol.layers.CryptoLayerFactory;
 import de.rub.nds.sshattacker.core.protocol.message.EcdhKeyExchangeReplyMessage;
@@ -21,6 +21,8 @@ import de.rub.nds.sshattacker.core.crypto.KeyDerivation;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.util.Arrays;
 
 public class EcdhKeyExchangeReplyMessageHandler extends Handler<EcdhKeyExchangeReplyMessage> {
 
@@ -34,13 +36,19 @@ public class EcdhKeyExchangeReplyMessageHandler extends Handler<EcdhKeyExchangeR
     public void handle(EcdhKeyExchangeReplyMessage message) {
         context.setHostKeyType(PublicKeyAuthenticationAlgorithm.fromName(message.getHostKeyType().getValue()));
         context.setKeyExchangeSignature(message.getSignature().getValue());
-        // TODO: Make sure we got an ECDHKeyExchange instance here
+
         ECDHKeyExchange ecdhKeyExchange = (ECDHKeyExchange) context.getKeyExchangeInstance().orElseThrow(AdjustmentException::new);
         ecdhKeyExchange.setRemotePublicKey(message.getEphemeralPublicKey().getValue());
         ecdhKeyExchange.computeSharedSecret();
 
         handleHostKey(message);
-        computeExchangeHash();
+        ECDHExchangeHash ecdhExchangeHash = (ECDHExchangeHash) context.getExchangeHashInstance();
+        ecdhExchangeHash.setServerECDHPublicKey(ecdhKeyExchange.getRemotePublicKey());
+        ecdhExchangeHash.setSharedSecret(ecdhKeyExchange.getSharedSecret());
+        if(!context.getSessionID().isPresent()) {
+            context.setSessionID(ecdhExchangeHash.get());
+        }
+
         KeyDerivation.deriveKeys(context);
 
         initializeCryptoLayers();
@@ -58,29 +66,12 @@ public class EcdhKeyExchangeReplyMessageHandler extends Handler<EcdhKeyExchangeR
     }
 
     private void handleRsaHostKey(EcdhKeyExchangeReplyMessage message) {
-        context.appendToExchangeHashInput(ArrayConverter.concatenate(Converter
+        context.getExchangeHashInstance().setServerHostKey(ArrayConverter.concatenate(Converter
                 .stringToLengthPrefixedBinaryString(context.getHostKeyType().orElseThrow(AdjustmentException::new).toString()), Converter
                 .bytesToLengthPrefixedBinaryString(ArrayConverter.bigIntegerToByteArray(message.getHostKeyRsaExponent()
                         .getValue())), Converter.bytesToLengthPrefixedBinaryString(ArrayConverter.concatenate(
                 new byte[] { 0x00 }, // asn1 leading byte
                 ArrayConverter.bigIntegerToByteArray(message.getHostKeyRsaModulus().getValue())))));
-    }
-
-    private void computeExchangeHash() {
-        String hashAlgorithm = context.getKeyExchangeAlgorithm().orElseThrow(AdjustmentException::new).getDigest();
-        KeyExchange keyExchange = context.getKeyExchangeInstance().orElseThrow(AdjustmentException::new);
-
-        context.appendToExchangeHashInput(keyExchange.getLocalKeyPair().serializePublicKey());
-        context.appendToExchangeHashInput(keyExchange.getRemotePublicKey().serializePublicKey());
-        context.appendToExchangeHashInput(Converter.bytesToBytesWithSignByte(keyExchange.getSharedSecret()));
-
-        LOGGER.debug("ExchangeHash Input: " + ArrayConverter.bytesToRawHexString(context.getExchangeHashInput()));
-        byte[] exchangeHash = KeyDerivation.computeExchangeHash(context.getExchangeHashInput(), hashAlgorithm);
-        context.setExchangeHash(exchangeHash);
-        LOGGER.debug("ExchangeHash " + ArrayConverter.bytesToRawHexString(exchangeHash));
-        if(!context.getSessionID().isPresent()) {
-            context.setSessionID(exchangeHash);
-        }
     }
 
     private void initializeCryptoLayers() {

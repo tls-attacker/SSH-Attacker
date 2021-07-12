@@ -9,34 +9,25 @@
  */
 package de.rub.nds.sshattacker.core.crypto.kex;
 
-import de.rub.nds.sshattacker.core.constants.KeyExchangeAlgorithm;
+import java.math.BigInteger;
+import java.security.SecureRandom;
 
 public abstract class KeyExchange {
 
-    private final KeyExchangeAlgorithm negotiatedKeyExchange;
-    protected byte[] sharedSecret;
+    protected final SecureRandom random;
+    protected BigInteger sharedSecret;
 
-    KeyExchange(KeyExchangeAlgorithm negotiatedKeyExchange) {
-        this.negotiatedKeyExchange = negotiatedKeyExchange;
+    protected KeyExchange() {
+        this.random = new SecureRandom();
     }
 
     public abstract void computeSharedSecret();
-
-    public abstract KeyPair getLocalKeyPair();
-
-    public abstract KeyPair getRemotePublicKey();
 
     public boolean isComplete() {
         return sharedSecret != null;
     }
 
-    public byte[] getSharedSecret() {
+    public BigInteger getSharedSecret() {
         return sharedSecret;
-    }
-
-    public abstract static class KeyPair {
-        public abstract byte[] serializePrivateKey();
-
-        public abstract byte[] serializePublicKey();
     }
 }

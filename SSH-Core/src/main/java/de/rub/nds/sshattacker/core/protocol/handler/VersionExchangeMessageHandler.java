@@ -20,14 +20,14 @@ public class VersionExchangeMessageHandler extends Handler<VersionExchangeMessag
 
     @Override
     public void handle(VersionExchangeMessage message) {
-        if(context.isClient()) {
+        if (context.isClient()) {
             context.setServerVersion(message.getVersion().getValue());
             context.setServerComment(message.getComment().getValue());
+            context.getExchangeHashInstance().setServerVersion(message);
         } else {
             context.setClientVersion(message.getVersion().getValue());
             context.setClientComment(message.getComment().getValue());
+            context.getExchangeHashInstance().setClientVersion(message);
         }
-
-        context.appendToExchangeHashInput(message.getIdentification().getBytes());
     }
 }

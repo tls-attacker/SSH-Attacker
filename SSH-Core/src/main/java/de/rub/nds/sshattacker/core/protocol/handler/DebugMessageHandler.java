@@ -24,7 +24,7 @@ public class DebugMessageHandler extends Handler<DebugMessage> {
 
     @Override
     public void handle(DebugMessage msg) {
-        if(msg.getAlwaysDisplay().getValue()) {
+        if (msg.getAlwaysDisplay().getValue()) {
             LOGGER.info("DebugMessage retrieved from remote, message: " + msg.getMessage().getValue());
         } else {
             LOGGER.debug("DebugMessage retrieved from remote, message: " + msg.getMessage().getValue());

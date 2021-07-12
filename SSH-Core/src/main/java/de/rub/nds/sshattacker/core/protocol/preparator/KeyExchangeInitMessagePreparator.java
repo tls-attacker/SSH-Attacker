@@ -25,7 +25,7 @@ public class KeyExchangeInitMessagePreparator extends Preparator<KeyExchangeInit
     @Override
     public void prepare() {
         message.setMessageID(MessageIDConstant.SSH_MSG_KEXINIT.id);
-        if(context.isClient()) {
+        if (context.isClient()) {
             message.setCookie(context.getChooser().getClientCookie());
             message.setKeyExchangeAlgorithms(Converter.listOfAlgorithmsToString(context.getChooser()
                     .getClientSupportedKeyExchangeAlgorithms()));
@@ -35,12 +35,12 @@ public class KeyExchangeInitMessagePreparator extends Preparator<KeyExchangeInit
             message.setServerHostKeyAlgorithmsLength(message.getServerHostKeyAlgorithms().getValue().length());
             message.setEncryptionAlgorithmsClientToServer(Converter.listOfAlgorithmsToString(context.getChooser()
                     .getClientSupportedCipherAlgorithmsClientToServer()));
-            message.setEncryptionAlgorithmsClientToServerLength(message.getEncryptionAlgorithmsClientToServer().getValue()
-                    .length());
+            message.setEncryptionAlgorithmsClientToServerLength(message.getEncryptionAlgorithmsClientToServer()
+                    .getValue().length());
             message.setEncryptionAlgorithmsServerToClient(Converter.listOfAlgorithmsToString(context.getChooser()
                     .getClientSupportedCipherAlgorithmsServerToClient()));
-            message.setEncryptionAlgorithmsServerToClientLength(message.getEncryptionAlgorithmsServerToClient().getValue()
-                    .length());
+            message.setEncryptionAlgorithmsServerToClientLength(message.getEncryptionAlgorithmsServerToClient()
+                    .getValue().length());
             message.setMacAlgorithmsClientToServer(Converter.listOfAlgorithmsToString(context.getChooser()
                     .getClientSupportedMacAlgorithmsClientToServer()));
             message.setMacAlgorithmsClientToServerLength(message.getMacAlgorithmsClientToServer().getValue().length());
@@ -63,6 +63,8 @@ public class KeyExchangeInitMessagePreparator extends Preparator<KeyExchangeInit
             message.setLanguagesServerToClientLength(message.getLanguagesServerToClient().getValue().length());
             message.setFirstKeyExchangePacketFollows(context.getChooser().getClientFirstKeyExchangePacketFollows());
             message.setReserved(context.getChooser().getClientReserved());
+
+            context.getExchangeHashInstance().setClientKeyExchangeInit(message);
         } else {
             message.setCookie(context.getChooser().getServerCookie());
             message.setKeyExchangeAlgorithms(Converter.listOfAlgorithmsToString(context.getChooser()
@@ -73,12 +75,12 @@ public class KeyExchangeInitMessagePreparator extends Preparator<KeyExchangeInit
             message.setServerHostKeyAlgorithmsLength(message.getServerHostKeyAlgorithms().getValue().length());
             message.setEncryptionAlgorithmsClientToServer(Converter.listOfAlgorithmsToString(context.getChooser()
                     .getServerSupportedCipherAlgorithmsClientToServer()));
-            message.setEncryptionAlgorithmsClientToServerLength(message.getEncryptionAlgorithmsClientToServer().getValue()
-                    .length());
+            message.setEncryptionAlgorithmsClientToServerLength(message.getEncryptionAlgorithmsClientToServer()
+                    .getValue().length());
             message.setEncryptionAlgorithmsServerToClient(Converter.listOfAlgorithmsToString(context.getChooser()
                     .getServerSupportedCipherAlgorithmsServerToClient()));
-            message.setEncryptionAlgorithmsServerToClientLength(message.getEncryptionAlgorithmsServerToClient().getValue()
-                    .length());
+            message.setEncryptionAlgorithmsServerToClientLength(message.getEncryptionAlgorithmsServerToClient()
+                    .getValue().length());
             message.setMacAlgorithmsClientToServer(Converter.listOfAlgorithmsToString(context.getChooser()
                     .getServerSupportedMacAlgorithmsClientToServer()));
             message.setMacAlgorithmsClientToServerLength(message.getMacAlgorithmsClientToServer().getValue().length());
@@ -101,9 +103,8 @@ public class KeyExchangeInitMessagePreparator extends Preparator<KeyExchangeInit
             message.setLanguagesServerToClientLength(message.getLanguagesServerToClient().getValue().length());
             message.setFirstKeyExchangePacketFollows(context.getChooser().getServerFirstKeyExchangePacketFollows());
             message.setReserved(context.getChooser().getServerReserved());
+
+            context.getExchangeHashInstance().setServerKeyExchangeInit(message);
         }
-
-
-        context.appendToExchangeHashInput(new KeyExchangeInitMessageSerializer(message).serialize());
     }
 }

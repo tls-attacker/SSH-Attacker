@@ -11,6 +11,8 @@ package de.rub.nds.sshattacker.core.state;
 
 import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.constants.*;
+import de.rub.nds.sshattacker.core.crypto.kex.ECDHKeyExchange;
+import de.rub.nds.sshattacker.core.crypto.kex.KeyExchange;
 
 import java.util.List;
 
@@ -24,7 +26,7 @@ public class Chooser {
         config = context.getConfig();
     }
 
-    //region Version Exchange
+    // region Version Exchange
     public String getClientVersion() {
         return context.getClientVersion().orElse(config.getClientVersion());
     }
@@ -40,9 +42,10 @@ public class Chooser {
     public String getServerComment() {
         return context.getServerComment().orElse(config.getServerComment());
     }
-    //endregion
 
-    //region Key Exchange Initialization
+    // endregion
+
+    // region Key Exchange Initialization
     public byte[] getClientCookie() {
         return context.getClientCookie().orElse(config.getClientCookie());
     }
@@ -164,25 +167,8 @@ public class Chooser {
     public int getServerReserved() {
         return context.getServerReserved().orElse(config.getServerReserved());
     }
-    //endregion
 
-    public byte[] getLocalEphemeralPublicKey() {
-        if (context.getKeyExchangeInstance().isPresent()) {
-            return context.getKeyExchangeInstance().get().getLocalKeyPair().serializePublicKey();
-        } else {
-            // TODO: Support for multiple key exchange algorithms
-            return context.isClient() ? config.getClientEcdhPublicKey() : config.getServerEcdhPublicKey();
-        }
-    }
-
-    public byte[] getRemoteEphemeralPublicKey() {
-        if (!context.getKeyExchangeInstance().isPresent()) {
-            return context.getKeyExchangeInstance().get().getRemotePublicKey().serializePublicKey();
-        } else {
-            // TODO: Support for multiple key exchange algorithms
-            return context.isClient() ? config.getServerEcdhPublicKey() : config.getClientEcdhPublicKey();
-        }
-    }
+    // endregion
 
     public AuthenticationMethod getAuthenticationMethod() {
         return context.getAuthenticationMethod().orElse(config.getAuthenticationMethod());

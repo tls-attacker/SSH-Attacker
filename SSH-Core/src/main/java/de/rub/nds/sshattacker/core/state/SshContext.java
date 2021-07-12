@@ -9,27 +9,21 @@
  */
 package de.rub.nds.sshattacker.core.state;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.config.Config;
-import de.rub.nds.sshattacker.core.connection.InboundConnection;
 import de.rub.nds.sshattacker.core.constants.*;
 import de.rub.nds.sshattacker.core.connection.AliasedConnection;
+import de.rub.nds.sshattacker.core.crypto.hash.ExchangeHash;
 import de.rub.nds.sshattacker.core.crypto.kex.KeyExchange;
 import de.rub.nds.sshattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.sshattacker.core.exceptions.TransportHandlerConnectException;
 import de.rub.nds.sshattacker.core.protocol.layers.BinaryPacketLayer;
 import de.rub.nds.sshattacker.core.protocol.layers.CryptoLayer;
 import de.rub.nds.sshattacker.core.protocol.layers.MessageLayer;
-import de.rub.nds.sshattacker.core.protocol.message.VersionExchangeMessage;
-import de.rub.nds.sshattacker.core.util.Converter;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.transport.TransportHandlerFactory;
-import de.rub.nds.tlsattacker.transport.tcp.ClientTcpTransportHandler;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
-import de.rub.nds.tlsattacker.transport.tcp.ServerTcpTransportHandler;
 
 import java.io.IOException;
-import java.math.BigInteger;
 import java.util.List;
 import java.util.Optional;
 
@@ -232,7 +226,7 @@ public class SshContext {
      * Negotiated compression algorithm (server to client)
      */
     private CompressionAlgorithm compressionAlgorithmServerToClient;
-    // #endregion
+    // endregion
 
     // region Key Exchange
     /**
@@ -257,13 +251,9 @@ public class SshContext {
 
     // region Exchange Hash and Cryptographic Keys
     /**
-     * Input to the hash function to compute the exchange hash
+     * Instance of the ExchangeHash class for exchange hash computation
      */
-    private byte[] exchangeHashInput = new byte[0];
-    /**
-     * Exchange hash computed during the protocol
-     */
-    private byte[] exchangeHash;
+    private ExchangeHash exchangeHash;
     /**
      * Unique identifier for this session. This is equal to the first computed exchange hash and never changes
      */
@@ -378,6 +368,7 @@ public class SshContext {
         transportHandler = TransportHandlerFactory.createTransportHandler(connection);
         // TODO: this could introduce bugs
         chooser = new Chooser(this);
+        exchangeHash = new ExchangeHash(this);
     }
 
     // endregion
@@ -861,12 +852,8 @@ public class SshContext {
     // endregion
 
     // region Getters for Exchange Hash and Cryptographic Keys
-    public byte[] getExchangeHashInput() {
-        return exchangeHashInput;
-    }
-
-    public Optional<byte[]> getExchangeHash() {
-        return Optional.ofNullable(exchangeHash);
+    public ExchangeHash getExchangeHashInstance() {
+        return exchangeHash;
     }
 
     public Optional<byte[]> getSessionID() {
@@ -899,17 +886,8 @@ public class SshContext {
 
     // endregion
     // region Setters for Exchange Hash and Cryptographic Keys
-    public void setExchangeHashInput(byte[] exchangeHashInput) {
-        this.exchangeHashInput = exchangeHashInput;
-    }
-
-    public void setExchangeHash(byte[] exchangeHash) {
+    public void setExchangeHashInstance(ExchangeHash exchangeHash) {
         this.exchangeHash = exchangeHash;
-    }
-
-    public void appendToExchangeHashInput(byte[] additionalData) {
-        exchangeHashInput = ArrayConverter.concatenate(exchangeHashInput,
-                Converter.bytesToLengthPrefixedBinaryString(additionalData));
     }
 
     public void setSessionID(byte[] sessionID) {

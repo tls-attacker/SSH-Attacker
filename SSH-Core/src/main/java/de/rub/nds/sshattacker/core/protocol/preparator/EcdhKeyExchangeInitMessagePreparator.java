@@ -10,6 +10,7 @@
 package de.rub.nds.sshattacker.core.protocol.preparator;
 
 import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
+import de.rub.nds.sshattacker.core.crypto.hash.ECDHExchangeHash;
 import de.rub.nds.sshattacker.core.crypto.kex.ECDHKeyExchange;
 import de.rub.nds.sshattacker.core.exceptions.PreparationException;
 import de.rub.nds.sshattacker.core.protocol.message.EcdhKeyExchangeInitMessage;
@@ -23,12 +24,16 @@ public class EcdhKeyExchangeInitMessagePreparator extends Preparator<EcdhKeyExch
 
     @Override
     public void prepare() {
-        ECDHKeyExchange ecdhKeyExchange = new ECDHKeyExchange(context.getKeyExchangeAlgorithm().orElseThrow(PreparationException::new));
-        ecdhKeyExchange.generateKeyPair();
+        ECDHKeyExchange ecdhKeyExchange = ECDHKeyExchange.instanceFromAlgorithm(context.getKeyExchangeAlgorithm().orElseThrow(PreparationException::new));
+        ecdhKeyExchange.generateLocalKeyPair();
         context.setKeyExchangeInstance(ecdhKeyExchange);
+        ECDHExchangeHash ecdhExchangeHash = ECDHExchangeHash.from(context.getExchangeHashInstance());
+        ecdhExchangeHash.setClientECDHPublicKey(ecdhKeyExchange.getLocalKeyPair().getPublic());
+        context.setExchangeHashInstance(ecdhExchangeHash);
 
+        byte[] encodedPublicKey = ecdhKeyExchange.getLocalKeyPair().getPublic().getEncoded();
         message.setMessageID(MessageIDConstant.SSH_MSG_KEX_ECDH_INIT.id);
-        message.setPublicKey(context.getChooser().getLocalEphemeralPublicKey());
-        message.setPublicKeyLength(context.getChooser().getLocalEphemeralPublicKey().length);
+        message.setPublicKey(encodedPublicKey);
+        message.setPublicKeyLength(encodedPublicKey.length);
     }
 }
