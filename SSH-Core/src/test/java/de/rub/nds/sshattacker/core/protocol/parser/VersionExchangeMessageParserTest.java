@@ -34,9 +34,6 @@ public class VersionExchangeMessageParserTest {
     }
 
     /**
-     * Test of parse method, of class ClientInitMessageParser.
-     */
-    /**
      * Test of VersionExchangeMessageParser::parse method
      * 
      * @param providedBytes
