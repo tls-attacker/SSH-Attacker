@@ -80,6 +80,24 @@ public class EcdhKeyExchange extends DhBasedKeyExchange {
     }
 
     @Override
+    public void setLocalKeyPair(byte[] privateKeyBytes) {
+        BigInteger privateKeyScalar = new BigInteger(privateKeyBytes);
+        Point publicKeyPoint = ellipticCurve.mult(privateKeyScalar, ellipticCurve.getBasePoint());
+        CustomEcPrivateKey privateKey = new CustomEcPrivateKey(privateKeyScalar, group);
+        CustomEcPublicKey publicKey = new CustomEcPublicKey(publicKeyPoint, group);
+        this.localKeyPair = new CustomKeyPair<>(privateKey, publicKey);
+    }
+
+    @Override
+    public void setLocalKeyPair(byte[] privateKeyBytes, byte[] publicKeyBytes) {
+        BigInteger privateKeyScalar = new BigInteger(privateKeyBytes);
+        Point publicKeyPoint = PointFormatter.formatFromByteArray(group, publicKeyBytes);
+        CustomEcPrivateKey privateKey = new CustomEcPrivateKey(privateKeyScalar, group);
+        CustomEcPublicKey publicKey = new CustomEcPublicKey(publicKeyPoint, group);
+        this.localKeyPair = new CustomKeyPair<>(privateKey, publicKey);
+    }
+
+    @Override
     public void setRemotePublicKey(byte[] serializedPublicKey) {
         Point publicKeyPoint = PointFormatter.formatFromByteArray(group, serializedPublicKey);
         this.remotePublicKey = new CustomEcPublicKey(publicKeyPoint, group);

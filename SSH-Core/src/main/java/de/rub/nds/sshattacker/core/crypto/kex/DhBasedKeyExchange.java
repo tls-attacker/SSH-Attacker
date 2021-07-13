@@ -22,6 +22,10 @@ public abstract class DhBasedKeyExchange extends KeyExchange {
 
     public abstract void generateLocalKeyPair();
 
+    public abstract void setLocalKeyPair(byte[] privateKeyBytes);
+
+    public abstract void setLocalKeyPair(byte[] privateKeyBytes, byte[] publicKeyBytes);
+
     public abstract void setRemotePublicKey(byte[] publicKeyBytes);
 
     public abstract CustomKeyPair<? extends PrivateKey, ? extends PublicKey> getLocalKeyPair();

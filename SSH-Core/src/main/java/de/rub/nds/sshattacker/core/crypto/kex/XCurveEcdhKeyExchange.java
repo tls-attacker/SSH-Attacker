@@ -87,6 +87,28 @@ public class XCurveEcdhKeyExchange extends DhBasedKeyExchange {
     }
 
     @Override
+    public void setLocalKeyPair(byte[] privateKeyBytes) {
+        byte[] publicKeyBytes;
+        if (group == NamedGroup.ECDH_X25519) {
+            publicKeyBytes = new byte[CryptoConstants.X25519_POINT_SIZE];
+            X25519.generatePublicKey(privateKeyBytes, 0, publicKeyBytes, 0);
+        } else {
+            publicKeyBytes = new byte[CryptoConstants.X448_POINT_SIZE];
+            X448.generatePublicKey(privateKeyBytes, 0, publicKeyBytes, 0);
+        }
+        XCurveEcPrivateKey privateKey = new XCurveEcPrivateKey(privateKeyBytes, group);
+        XCurveEcPublicKey publicKey = new XCurveEcPublicKey(publicKeyBytes, group);
+        this.localKeyPair = new CustomKeyPair<>(privateKey, publicKey);
+    }
+
+    @Override
+    public void setLocalKeyPair(byte[] privateKeyBytes, byte[] publicKeyBytes) {
+        XCurveEcPrivateKey privateKey = new XCurveEcPrivateKey(privateKeyBytes, group);
+        XCurveEcPublicKey publicKey = new XCurveEcPublicKey(publicKeyBytes, group);
+        this.localKeyPair = new CustomKeyPair<>(privateKey, publicKey);
+    }
+
+    @Override
     public void setRemotePublicKey(byte[] publicKeyBytes) {
         this.remotePublicKey = new XCurveEcPublicKey(publicKeyBytes, group);
     }

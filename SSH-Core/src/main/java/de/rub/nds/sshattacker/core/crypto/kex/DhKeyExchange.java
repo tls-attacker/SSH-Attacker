@@ -121,8 +121,25 @@ public class DhKeyExchange extends DhBasedKeyExchange {
                 || privateKey.getX().equals(pMinusOne));
         CustomDhPublicKey publicKey = new CustomDhPublicKey(modulus, generator, generator.modPow(privateKey.getX(),
                 modulus));
-        localKeyPair = new CustomKeyPair<>(privateKey, publicKey);
+        this.localKeyPair = new CustomKeyPair<>(privateKey, publicKey);
     }
+
+    @Override
+    public void setLocalKeyPair(byte[] privateKeyBytes) {
+        BigInteger privateKeyExponent = new BigInteger(privateKeyBytes);
+        CustomDhPrivateKey privateKey = new CustomDhPrivateKey(modulus, generator, privateKeyExponent);
+        CustomDhPublicKey publicKey = new CustomDhPublicKey(modulus, generator, generator.modPow(privateKey.getX(),
+                modulus));
+        this.localKeyPair = new CustomKeyPair<>(privateKey, publicKey);
+    }
+
+    @Override
+    public void setLocalKeyPair(byte[] privateKeyBytes, byte[] publicKeyBytes) {
+        CustomDhPrivateKey privateKey = new CustomDhPrivateKey(modulus, generator, new BigInteger(privateKeyBytes));
+        CustomDhPublicKey publicKey = new CustomDhPublicKey(modulus, generator, new BigInteger(publicKeyBytes));
+        this.localKeyPair = new CustomKeyPair<>(privateKey, publicKey);
+    }
+
 
     @Override
     public void computeSharedSecret() {
