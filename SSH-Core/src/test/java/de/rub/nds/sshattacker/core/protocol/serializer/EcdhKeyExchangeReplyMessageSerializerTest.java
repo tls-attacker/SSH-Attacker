@@ -9,99 +9,77 @@
  */
 package de.rub.nds.sshattacker.core.protocol.serializer;
 
+import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
 import de.rub.nds.sshattacker.core.protocol.message.EcdhKeyExchangeReplyMessage;
 import de.rub.nds.sshattacker.core.protocol.parser.EcdhKeyExchangeReplyMessageParserTest;
-import java.util.Collection;
-import org.junit.After;
-import org.junit.AfterClass;
-import static org.junit.Assert.*;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
-@RunWith(Parameterized.class)
+import java.util.stream.Stream;
+
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+
 public class EcdhKeyExchangeReplyMessageSerializerTest {
-
-    @Parameterized.Parameters
-    public static Collection<Object[]> generateData() {
-        return EcdhKeyExchangeReplyMessageParserTest.generateData();
-    }
-
-    private final byte[] bytes;
-
-    private final int hostKeyLength;
-
-    private final int hostKeyTypeLength;
-    private final String hostKeyType;
-
-    private final int eccCurveIdentifierLength;
-    private final String eccCurveIdentifier;
-
-    private final int eccHostKeyLength;
-    private final byte[] eccHostKey;
-
-    private final int publicKeyLength;
-    private final byte[] publicKey;
-
-    private final int signatureLength;
-    private final byte[] signature;
-
-    public EcdhKeyExchangeReplyMessageSerializerTest(byte[] bytes, int hostKeyLength, int hostKeyTypeLength,
-            String hostKeyType, int eccCurveIdentifierLength, String eccCurveIdentifier, int eccHostKeyLength,
-            byte[] eccHostKey, int publicKeyLength, byte[] publicKey, int signatureLength, byte[] signature) {
-        this.bytes = bytes;
-        this.hostKeyLength = hostKeyLength;
-        this.hostKeyTypeLength = hostKeyTypeLength;
-        this.hostKeyType = hostKeyType;
-        this.eccCurveIdentifierLength = eccCurveIdentifierLength;
-        this.eccCurveIdentifier = eccCurveIdentifier;
-        this.eccHostKeyLength = eccHostKeyLength;
-        this.eccHostKey = eccHostKey;
-        this.publicKeyLength = publicKeyLength;
-        this.publicKey = publicKey;
-        this.signatureLength = signatureLength;
-        this.signature = signature;
-    }
-
-    @BeforeClass
-    public static void setUpClass() {
-    }
-
-    @AfterClass
-    public static void tearDownClass() {
-    }
-
-    @Before
-    public void setUp() {
-    }
-
-    @After
-    public void tearDown() {
+    /**
+     * Provides a stream of test vectors for the EcdhKeyExchangeReplyMessageSerializer class
+     *
+     * @return A stream of test vectors to feed the testSerialize unit test
+     */
+    public static Stream<Arguments> provideTestVectors() {
+        return EcdhKeyExchangeReplyMessageParserTest.provideTestVectors();
     }
 
     /**
-     * Test of serializeBytes method, of class EcdhKeyExchangeReplyMessageSerializer.
+     * Test of EcdhKeyExchangeReplyMessageSerializer::serialize method
+     * 
+     * @param expectedBytes
+     *            Expected output of the serialize() call
+     * @param providedHostKeyLength
+     *            Length of the host key
+     * @param providedHostKeyTypeLength
+     *            Length of the host key type
+     * @param providedHostKeyType
+     *            Host key type
+     * @param providedEccCurveIdentifierLength
+     *            Length of the ECC curve identifier
+     * @param providedEccCurveIdentifier
+     *            ECC curve identifier
+     * @param providedEccHostKeyLength
+     *            Length of the ECC host key
+     * @param providedEccHostKey
+     *            Bytes of the ECC host key
+     * @param providedPublicKeyLength
+     *            Length of the RSA host key
+     * @param providedPublicKey
+     *            Bytes of the RSA host key
+     * @param providedSignatureLength
+     *            Length of the signature
+     * @param providedSignature
+     *            Bytes of the signature
      */
-    @Test
-    public void testSerializeMessageSpecificPayload() {
+    @ParameterizedTest
+    @MethodSource("provideTestVectors")
+    public void testSerialize(byte[] expectedBytes, int providedHostKeyLength, int providedHostKeyTypeLength,
+            String providedHostKeyType, int providedEccCurveIdentifierLength, String providedEccCurveIdentifier,
+            int providedEccHostKeyLength, byte[] providedEccHostKey, int providedPublicKeyLength,
+            byte[] providedPublicKey, int providedSignatureLength, byte[] providedSignature) {
         EcdhKeyExchangeReplyMessage msg = new EcdhKeyExchangeReplyMessage();
-        msg.setHostKeyLength(hostKeyLength);
-        msg.setHostKeyTypeLength(hostKeyTypeLength);
-        msg.setHostKeyType(hostKeyType);
-        msg.setEccCurveIdentifierLength(eccCurveIdentifierLength);
-        msg.setEccCurveIdentifier(eccCurveIdentifier);
-        msg.setHostKeyEccLength(eccHostKeyLength);
-        msg.setHostKeyEcc(eccHostKey);
-        msg.setPublicKeyLength(publicKeyLength);
-        msg.setPublicKey(publicKey);
-        msg.setSignatureLength(signatureLength);
-        msg.setSignature(signature);
-
+        msg.setMessageID(MessageIDConstant.SSH_MSG_KEX_ECDH_REPLY.id);
+        msg.setHostKeyLength(providedHostKeyLength);
+        msg.setHostKeyTypeLength(providedHostKeyTypeLength);
+        msg.setHostKeyType(providedHostKeyType);
+        msg.setEccCurveIdentifierLength(providedEccCurveIdentifierLength);
+        msg.setEccCurveIdentifier(providedEccCurveIdentifier);
+        msg.setHostKeyEccLength(providedEccHostKeyLength);
+        msg.setHostKeyEcc(providedEccHostKey);
+        msg.setPublicKeyLength(providedPublicKeyLength);
+        msg.setPublicKey(providedPublicKey);
+        msg.setSignatureLength(providedSignatureLength);
+        msg.setSignature(providedSignature);
         EcdhKeyExchangeReplyMessageSerializer serializer = new EcdhKeyExchangeReplyMessageSerializer(msg);
 
-        assertArrayEquals(bytes, serializer.serializeMessageSpecificPayload());
+        assertArrayEquals(expectedBytes, serializer.serialize());
     }
 
 }

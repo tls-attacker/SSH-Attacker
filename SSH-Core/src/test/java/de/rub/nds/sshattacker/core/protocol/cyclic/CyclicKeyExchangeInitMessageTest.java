@@ -10,39 +10,39 @@
 package de.rub.nds.sshattacker.core.protocol.cyclic;
 
 import de.rub.nds.sshattacker.core.protocol.message.KeyExchangeInitMessage;
-import de.rub.nds.sshattacker.core.protocol.parser.KeyExchangeInitMessageParserTest;
-import de.rub.nds.sshattacker.core.protocol.serializer.KeyExchangeInitMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.parser.KeyExchangeInitMessageParser;
+import de.rub.nds.sshattacker.core.protocol.parser.KeyExchangeInitMessageParserTest;
 
-import java.util.Collection;
-import java.util.LinkedList;
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import java.util.stream.Stream;
 
-@RunWith(Parameterized.class)
+import de.rub.nds.sshattacker.core.protocol.serializer.KeyExchangeInitMessageSerializer;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+
 public class CyclicKeyExchangeInitMessageTest {
-
-    @Parameterized.Parameters
-    public static Collection<Object[]> generateData() {
-        Collection<Object[]> fullData = KeyExchangeInitMessageParserTest.generateData();
-        Collection<Object[]> bytesOnly = new LinkedList<>();
-        fullData.forEach((obj) -> bytesOnly.add(new Object[]{obj[0]}));
-        return bytesOnly;
+    /**
+     * Provides a stream of test vectors for cyclic testing
+     *
+     * @return A stream of test vectors to feed the testCyclic unit test
+     */
+    public static Stream<Arguments> provideTestVectors() {
+        return KeyExchangeInitMessageParserTest.provideTestVectors()
+                .map((vector) -> Arguments.of(vector.get()[0]));
     }
 
-    private final byte[] bytes;
-
-    public CyclicKeyExchangeInitMessageTest(byte[] bytes) {
-        this.bytes = bytes;
-    }
-
-    @Test
-    public void test() {
-        KeyExchangeInitMessage msg = new KeyExchangeInitMessage();
-        new KeyExchangeInitMessageParser(0, bytes).parseMessageSpecificPayload(msg);
-        byte[] serialized = new KeyExchangeInitMessageSerializer(msg).serializeMessageSpecificPayload();
-        Assert.assertArrayEquals(bytes, serialized);
+    /**
+     * Cyclic test for parsing and serializing of KeyExchangeInitMessage
+     *
+     * @param providedBytes
+     *            Bytes to parse and serialize again
+     */
+    @ParameterizedTest
+    @MethodSource("provideTestVectors")
+    public void testCyclic(byte[] providedBytes) {
+        KeyExchangeInitMessage msg = new KeyExchangeInitMessageParser(0, providedBytes).parse();
+        assertArrayEquals(providedBytes, new KeyExchangeInitMessageSerializer(msg).serialize());
     }
 }

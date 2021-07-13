@@ -19,37 +19,17 @@ import de.rub.nds.sshattacker.core.protocol.parser.EcdhKeyExchangeInitMessagePar
 import de.rub.nds.sshattacker.core.protocol.parser.EcdhKeyExchangeReplyMessageParser;
 
 import de.rub.nds.sshattacker.core.state.SshContext;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.math.BigInteger;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 public class KeyDerivationTest {
 
-    public KeyDerivationTest() {
-    }
-
-    @BeforeClass
-    public static void setUpClass() {
-    }
-
-    @AfterClass
-    public static void tearDownClass() {
-    }
-
-    @Before
-    public void setUp() {
-    }
-
-    @After
-    public void tearDown() {
-    }
-
+    /**
+     * Test key derivation using KeyDerivation.deriveKey
+     */
     @Test
     public void testDeriveKey() {
         BigInteger sharedSecret = new BigInteger("f01590a6dbe06a5f69a0ed95a4352f7ecd38eb2e1d82dfd5bda828007e6de112", 16);
@@ -90,6 +70,9 @@ public class KeyDerivationTest {
         assertArrayEquals(expectedKeyF, keyF);
     }
 
+    /**
+     * Test the computation of an ecdh exchange hash using the EcdhExchangeHash class
+     */
     @Test
     public void testComputeECDHExchangeHash() {
         VersionExchangeMessage clientVersion = new VersionExchangeMessage();

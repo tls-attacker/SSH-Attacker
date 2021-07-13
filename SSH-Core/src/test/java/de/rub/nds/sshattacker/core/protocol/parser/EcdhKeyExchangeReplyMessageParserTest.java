@@ -10,29 +10,29 @@
 package de.rub.nds.sshattacker.core.protocol.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+
+import java.util.stream.Stream;
+
+import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
 import de.rub.nds.sshattacker.core.protocol.message.EcdhKeyExchangeReplyMessage;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
-import java.util.Arrays;
-import java.util.Collection;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import static org.junit.Assert.*;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@RunWith(Parameterized.class)
 public class EcdhKeyExchangeReplyMessageParserTest {
-
-    @Parameterized.Parameters
-    public static Collection<Object[]> generateData() {
-        return Arrays
-                .asList(new Object[][] { {
+    /**
+     * Provides a stream of test vectors for the EcdhKeyExchangeReplyMessageParser class
+     *
+     * @return A stream of test vectors to feed the testParse unit test
+     */
+    public static Stream<Arguments> provideTestVectors() {
+        return Stream
+                .of(Arguments.of(
                         ArrayConverter
-                                .hexStringToByteArray("000000680000001365636473612d736861322d6e69737470323536000000086e69737470323536000000410435496f94112c3234092471322c26dd21ebfd2da156e5a17dcc5dc98020afedd64ae82e5d4c28251187a2191fe85ae43de9734711c087b784eaa713d5b6e065410000002020b9f89aba2d7da23775b3ce085ff65f4d4b7ccf51ce2d073ef9158d6df1e905000000630000001365636473612d736861322d6e6973747032353600000048000000204e553a825dd144d7ddbd38cbd10a153a8a4ad597bf8da7ef1fe2546c851d6e89000000205bc4705cdac12213822e61c3b48ab7c84489ef3be0bb94ef524a45664b473856"),
+                                .hexStringToByteArray("1F000000680000001365636473612d736861322d6e69737470323536000000086e69737470323536000000410435496f94112c3234092471322c26dd21ebfd2da156e5a17dcc5dc98020afedd64ae82e5d4c28251187a2191fe85ae43de9734711c087b784eaa713d5b6e065410000002020b9f89aba2d7da23775b3ce085ff65f4d4b7ccf51ce2d073ef9158d6df1e905000000630000001365636473612d736861322d6e6973747032353600000048000000204e553a825dd144d7ddbd38cbd10a153a8a4ad597bf8da7ef1fe2546c851d6e89000000205bc4705cdac12213822e61c3b48ab7c84489ef3be0bb94ef524a45664b473856"),
                         104,
                         0x13,
                         "ecdsa-sha2-nistp256",
@@ -46,81 +46,57 @@ public class EcdhKeyExchangeReplyMessageParserTest {
                                 .hexStringToByteArray("20b9f89aba2d7da23775b3ce085ff65f4d4b7ccf51ce2d073ef9158d6df1e905"),
                         99,
                         ArrayConverter
-                                .hexStringToByteArray("0000001365636473612d736861322d6e6973747032353600000048000000204e553a825dd144d7ddbd38cbd10a153a8a4ad597bf8da7ef1fe2546c851d6e89000000205bc4705cdac12213822e61c3b48ab7c84489ef3be0bb94ef524a45664b473856") }, });
-    }
-
-    private final byte[] bytes;
-
-    private final int hostKeyLength;
-
-    private final int hostKeyTypeLength;
-    private final String hostKeyType;
-
-    private final int eccCurveIdentifierLength;
-    private final String eccCurveIdentifier;
-
-    private final int eccHostKeyLength;
-    private final byte[] eccHostKey;
-
-    private final int publicKeyLength;
-    private final byte[] publicKey;
-
-    private final int signatureLength;
-    private final byte[] signature;
-
-    public EcdhKeyExchangeReplyMessageParserTest(byte[] bytes, int hostKeyLength, int hostKeyTypeLength,
-            String hostKeyType, int eccCurveIdentifierLength, String eccCurveIdentifier, int eccHostKeyLength,
-            byte[] eccHostKey, int publicKeyLength, byte[] publicKey, int signatureLength, byte[] signature) {
-        this.bytes = bytes;
-        this.hostKeyLength = hostKeyLength;
-        this.hostKeyTypeLength = hostKeyTypeLength;
-        this.hostKeyType = hostKeyType;
-        this.eccCurveIdentifierLength = eccCurveIdentifierLength;
-        this.eccCurveIdentifier = eccCurveIdentifier;
-        this.eccHostKeyLength = eccHostKeyLength;
-        this.eccHostKey = eccHostKey;
-        this.publicKeyLength = publicKeyLength;
-        this.publicKey = publicKey;
-        this.signatureLength = signatureLength;
-        this.signature = signature;
-    }
-
-    @BeforeClass
-    public static void setUpClass() {
-    }
-
-    @AfterClass
-    public static void tearDownClass() {
-    }
-
-    @Before
-    public void setUp() {
-    }
-
-    @After
-    public void tearDown() {
+                                .hexStringToByteArray("0000001365636473612d736861322d6e6973747032353600000048000000204e553a825dd144d7ddbd38cbd10a153a8a4ad597bf8da7ef1fe2546c851d6e89000000205bc4705cdac12213822e61c3b48ab7c84489ef3be0bb94ef524a45664b473856")));
     }
 
     /**
-     * Test of parse method, of class EcdhKeyExchangeReplyMessageParser.
+     * Test of EcdhKeyExchangeReplyMessageParser::parse method
+     * 
+     * @param providedBytes
+     *            Bytes to parse
+     * @param expectedHostKeyLength
+     *            Expected length of the host key
+     * @param expectedHostKeyTypeLength
+     *            Expected length of the host key type
+     * @param expectedHostKeyType
+     *            Expected host key type
+     * @param expectedEccCurveIdentifierLength
+     *            Expected length of the ECC curve identifier
+     * @param expectedEccCurveIdentifier
+     *            Expected ECC curve identifier
+     * @param expectedEccHostKeyLength
+     *            Expected ECC host key length
+     * @param expectedEccHostKey
+     *            Expected ECC host key
+     * @param expectedPublicKeyLength
+     *            Expected length of the RSA public key
+     * @param expectedPublicKey
+     *            Expected bytes of the RSA public key
+     * @param expectedSignatureLength
+     *            Expected length of the signature
+     * @param expectedSignature
+     *            Expected bytes of the signature
      */
-    @Test
-    public void testParseMessageSpecificPayload() {
-        EcdhKeyExchangeReplyMessageParser parser = new EcdhKeyExchangeReplyMessageParser(0, bytes);
-        EcdhKeyExchangeReplyMessage msg = new EcdhKeyExchangeReplyMessage();
-        parser.parseMessageSpecificPayload(msg);
-        assertEquals(hostKeyLength, msg.getHostKeyLength().getValue().intValue());
-        assertEquals(hostKeyTypeLength, msg.getHostKeyTypeLength().getValue().intValue());
-        assertEquals(hostKeyType, msg.getHostKeyType().getValue());
+    @ParameterizedTest
+    @MethodSource("provideTestVectors")
+    public void testParse(byte[] providedBytes, int expectedHostKeyLength, int expectedHostKeyTypeLength,
+            String expectedHostKeyType, int expectedEccCurveIdentifierLength, String expectedEccCurveIdentifier,
+            int expectedEccHostKeyLength, byte[] expectedEccHostKey, int expectedPublicKeyLength,
+            byte[] expectedPublicKey, int expectedSignatureLength, byte[] expectedSignature) {
+        EcdhKeyExchangeReplyMessageParser parser = new EcdhKeyExchangeReplyMessageParser(0, providedBytes);
+        EcdhKeyExchangeReplyMessage msg = parser.parse();
 
-        assertEquals(eccCurveIdentifierLength, msg.getEccCurveIdentifierLength().getValue().intValue());
-        assertEquals(eccCurveIdentifier, msg.getEccCurveIdentifier().getValue());
-        assertEquals(eccHostKeyLength, msg.getHostKeyEccLength().getValue().intValue());
-        Assert.assertArrayEquals(eccHostKey, msg.getHostKeyEcc().getValue());
-
-        assertEquals(publicKeyLength, msg.getEphemeralPublicKeyLength().getValue().intValue());
-        assertArrayEquals(publicKey, msg.getEphemeralPublicKey().getValue());
-        assertEquals(signatureLength, msg.getSignatureLength().getValue().intValue());
-        assertArrayEquals(signature, msg.getSignature().getValue());
+        assertEquals(MessageIDConstant.SSH_MSG_KEX_ECDH_REPLY.id, msg.getMessageID().getValue());
+        assertEquals(expectedHostKeyLength, msg.getHostKeyLength().getValue().intValue());
+        assertEquals(expectedHostKeyTypeLength, msg.getHostKeyTypeLength().getValue().intValue());
+        assertEquals(expectedHostKeyType, msg.getHostKeyType().getValue());
+        assertEquals(expectedEccCurveIdentifierLength, msg.getEccCurveIdentifierLength().getValue().intValue());
+        assertEquals(expectedEccCurveIdentifier, msg.getEccCurveIdentifier().getValue());
+        assertEquals(expectedEccHostKeyLength, msg.getHostKeyEccLength().getValue().intValue());
+        assertArrayEquals(expectedEccHostKey, msg.getHostKeyEcc().getValue());
+        assertEquals(expectedPublicKeyLength, msg.getEphemeralPublicKeyLength().getValue().intValue());
+        assertArrayEquals(expectedPublicKey, msg.getEphemeralPublicKey().getValue());
+        assertEquals(expectedSignatureLength, msg.getSignatureLength().getValue().intValue());
+        assertArrayEquals(expectedSignature, msg.getSignature().getValue());
     }
 }

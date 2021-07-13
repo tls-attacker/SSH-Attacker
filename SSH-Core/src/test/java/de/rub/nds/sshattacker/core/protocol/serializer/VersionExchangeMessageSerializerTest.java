@@ -15,58 +15,43 @@
 package de.rub.nds.sshattacker.core.protocol.serializer;
 
 import de.rub.nds.sshattacker.core.protocol.message.VersionExchangeMessage;
+import java.util.stream.Stream;
+
 import de.rub.nds.sshattacker.core.protocol.parser.VersionExchangeMessageParserTest;
-import java.util.Collection;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import static org.junit.Assert.*;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
-@RunWith(Parameterized.class)
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+
 public class VersionExchangeMessageSerializerTest {
-
-    @Parameterized.Parameters
-    public static Collection<Object[]> generateData() {
-        return VersionExchangeMessageParserTest.generateData();
+    /**
+     * Provides a stream of test vectors for the VersionExchangeMessageSerializer class
+     *
+     * @return A stream of test vectors to feed the testSerialize unit test
+     */
+    public static Stream<Arguments> provideTestVectors() {
+        return VersionExchangeMessageParserTest.provideTestVectors();
     }
 
-    private final String version;
-    private final String comment;
-
-    private final byte[] bytes;
-
-    public VersionExchangeMessageSerializerTest(byte[] bytes, String version, String comment) {
-        this.bytes = bytes;
-        this.version = version;
-        this.comment = comment;
-    }
-
-    @BeforeClass
-    public static void setUpClass() {
-    }
-
-    @AfterClass
-    public static void tearDownClass() {
-    }
-
-    @Before
-    public void setUp() {
-    }
-
-    @After
-    public void tearDown() {
-    }
-
-    @Test
-    public void testSerializeBytes() {
+    /**
+     * Test of VersionExchangeMessageSerializer::serialize method
+     * 
+     * @param expectedBytes
+     *            Expected output bytes of the serialize() call
+     * @param providedVersion
+     *            Version string
+     * @param providedComment
+     *            Comment string
+     */
+    @ParameterizedTest
+    @MethodSource("provideTestVectors")
+    public void testSerialize(byte[] expectedBytes, String providedVersion, String providedComment) {
         VersionExchangeMessage msg = new VersionExchangeMessage();
-        msg.setVersion(version);
-        msg.setComment(comment);
+        msg.setVersion(providedVersion);
+        msg.setComment(providedComment);
         VersionExchangeMessageSerializer serializer = new VersionExchangeMessageSerializer(msg);
-        assertArrayEquals(bytes, serializer.serialize());
+
+        assertArrayEquals(expectedBytes, serializer.serialize());
     }
 }
