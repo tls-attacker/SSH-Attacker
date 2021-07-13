@@ -29,6 +29,9 @@ public class CustomEcPublicKey implements ECPublicKey {
     public NamedGroup group;
 
     public CustomEcPublicKey(Point publicKey, NamedGroup group) {
+        if (!group.isStandardCurve()) {
+            throw new IllegalArgumentException("CustomEcPublicKey does not support named group " + group);
+        }
         this.publicKey = publicKey;
         this.group = group;
     }

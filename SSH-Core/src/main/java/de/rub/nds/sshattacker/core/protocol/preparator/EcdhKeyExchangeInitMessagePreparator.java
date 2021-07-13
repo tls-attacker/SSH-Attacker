@@ -9,9 +9,12 @@
  */
 package de.rub.nds.sshattacker.core.protocol.preparator;
 
+import de.rub.nds.sshattacker.core.constants.KeyExchangeAlgorithm;
 import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
 import de.rub.nds.sshattacker.core.crypto.hash.EcdhExchangeHash;
+import de.rub.nds.sshattacker.core.crypto.kex.DhBasedKeyExchange;
 import de.rub.nds.sshattacker.core.crypto.kex.EcdhKeyExchange;
+import de.rub.nds.sshattacker.core.crypto.kex.XCurveEcdhKeyExchange;
 import de.rub.nds.sshattacker.core.exceptions.PreparationException;
 import de.rub.nds.sshattacker.core.protocol.message.EcdhKeyExchangeInitMessage;
 import de.rub.nds.sshattacker.core.state.SshContext;
@@ -24,14 +27,25 @@ public class EcdhKeyExchangeInitMessagePreparator extends Preparator<EcdhKeyExch
 
     @Override
     public void prepare() {
-        EcdhKeyExchange ecdhKeyExchange = EcdhKeyExchange.newInstance(context.getKeyExchangeAlgorithm().orElseThrow(PreparationException::new));
-        ecdhKeyExchange.generateLocalKeyPair();
-        context.setKeyExchangeInstance(ecdhKeyExchange);
+        KeyExchangeAlgorithm keyExchangeAlgorithm = context.getKeyExchangeAlgorithm().orElseThrow(PreparationException::new);
+        DhBasedKeyExchange keyExchange;
+        switch(keyExchangeAlgorithm) {
+            case CURVE448_SHA512:
+            case CURVE25519_SHA256:
+            case CURVE25519_SHA256_LIBSSH_ORG:
+                keyExchange = XCurveEcdhKeyExchange.newInstance(keyExchangeAlgorithm);
+                break;
+            default:
+                keyExchange = EcdhKeyExchange.newInstance(keyExchangeAlgorithm);
+                break;
+        }
+        keyExchange.generateLocalKeyPair();
+        context.setKeyExchangeInstance(keyExchange);
         EcdhExchangeHash ecdhExchangeHash = EcdhExchangeHash.from(context.getExchangeHashInstance());
-        ecdhExchangeHash.setClientECDHPublicKey(ecdhKeyExchange.getLocalKeyPair().getPublic());
+        ecdhExchangeHash.setClientECDHPublicKey(keyExchange.getLocalKeyPair().getPublic());
         context.setExchangeHashInstance(ecdhExchangeHash);
 
-        byte[] encodedPublicKey = ecdhKeyExchange.getLocalKeyPair().getPublic().getEncoded();
+        byte[] encodedPublicKey = keyExchange.getLocalKeyPair().getPublic().getEncoded();
         message.setMessageID(MessageIDConstant.SSH_MSG_KEX_ECDH_INIT.id);
         message.setPublicKey(encodedPublicKey);
         message.setPublicKeyLength(encodedPublicKey.length);

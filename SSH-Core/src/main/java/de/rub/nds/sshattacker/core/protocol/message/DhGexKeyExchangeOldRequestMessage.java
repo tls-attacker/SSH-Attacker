@@ -14,10 +14,8 @@ import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.sshattacker.core.exceptions.NotImplementedException;
 import de.rub.nds.sshattacker.core.protocol.handler.Handler;
 import de.rub.nds.sshattacker.core.protocol.preparator.DhGexKeyExchangeOldRequestMessagePreparator;
-import de.rub.nds.sshattacker.core.protocol.preparator.DhGexKeyExchangeRequestMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.preparator.Preparator;
 import de.rub.nds.sshattacker.core.protocol.serializer.DhGexKeyExchangeOldRequestMessageSerializer;
-import de.rub.nds.sshattacker.core.protocol.serializer.DhGexKeyExchangeRequestMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.serializer.Serializer;
 import de.rub.nds.sshattacker.core.state.SshContext;
 

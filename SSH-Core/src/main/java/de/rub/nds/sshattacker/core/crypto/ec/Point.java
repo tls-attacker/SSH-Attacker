@@ -9,7 +9,6 @@
  */
 package de.rub.nds.sshattacker.core.crypto.ec;
 
-import de.rub.nds.sshattacker.core.constants.GOSTCurve;
 import de.rub.nds.sshattacker.core.constants.NamedGroup;
 import java.io.Serializable;
 import java.math.BigInteger;
@@ -30,11 +29,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Point implements Serializable {
     public static Point createPoint(BigInteger x, BigInteger y, NamedGroup group) {
-        EllipticCurve curve = CurveFactory.getCurve(group);
-        return curve.getPoint(x, y);
-    }
-
-    public static Point createPoint(BigInteger x, BigInteger y, GOSTCurve group) {
         EllipticCurve curve = CurveFactory.getCurve(group);
         return curve.getPoint(x, y);
     }

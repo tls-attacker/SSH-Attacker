@@ -20,7 +20,7 @@ import org.apache.logging.log4j.Logger;
 
 import java.math.BigInteger;
 
-public class DhKeyExchange extends KeyExchange {
+public class DhKeyExchange extends DhBasedKeyExchange {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -98,6 +98,10 @@ public class DhKeyExchange extends KeyExchange {
         return remotePublicKey;
     }
 
+    public void setRemotePublicKey(byte[] publicKey) {
+        setRemotePublicKey(new BigInteger(publicKey));
+    }
+
     public void setRemotePublicKey(BigInteger publicKey) {
         this.remotePublicKey = new CustomDhPublicKey(modulus, generator, publicKey);
     }
@@ -117,8 +121,25 @@ public class DhKeyExchange extends KeyExchange {
                 || privateKey.getX().equals(pMinusOne));
         CustomDhPublicKey publicKey = new CustomDhPublicKey(modulus, generator, generator.modPow(privateKey.getX(),
                 modulus));
-        localKeyPair = new CustomKeyPair<>(privateKey, publicKey);
+        this.localKeyPair = new CustomKeyPair<>(privateKey, publicKey);
     }
+
+    @Override
+    public void setLocalKeyPair(byte[] privateKeyBytes) {
+        BigInteger privateKeyExponent = new BigInteger(privateKeyBytes);
+        CustomDhPrivateKey privateKey = new CustomDhPrivateKey(modulus, generator, privateKeyExponent);
+        CustomDhPublicKey publicKey = new CustomDhPublicKey(modulus, generator, generator.modPow(privateKey.getX(),
+                modulus));
+        this.localKeyPair = new CustomKeyPair<>(privateKey, publicKey);
+    }
+
+    @Override
+    public void setLocalKeyPair(byte[] privateKeyBytes, byte[] publicKeyBytes) {
+        CustomDhPrivateKey privateKey = new CustomDhPrivateKey(modulus, generator, new BigInteger(privateKeyBytes));
+        CustomDhPublicKey publicKey = new CustomDhPublicKey(modulus, generator, new BigInteger(publicKeyBytes));
+        this.localKeyPair = new CustomKeyPair<>(privateKey, publicKey);
+    }
+
 
     @Override
     public void computeSharedSecret() {

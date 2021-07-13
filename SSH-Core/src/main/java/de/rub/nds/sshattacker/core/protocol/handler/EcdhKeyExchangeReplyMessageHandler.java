@@ -12,7 +12,7 @@ package de.rub.nds.sshattacker.core.protocol.handler;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.PublicKeyAuthenticationAlgorithm;
 import de.rub.nds.sshattacker.core.crypto.hash.EcdhExchangeHash;
-import de.rub.nds.sshattacker.core.crypto.kex.EcdhKeyExchange;
+import de.rub.nds.sshattacker.core.crypto.kex.DhBasedKeyExchange;
 import de.rub.nds.sshattacker.core.exceptions.AdjustmentException;
 import de.rub.nds.sshattacker.core.protocol.layers.CryptoLayerFactory;
 import de.rub.nds.sshattacker.core.protocol.message.EcdhKeyExchangeReplyMessage;
@@ -35,14 +35,14 @@ public class EcdhKeyExchangeReplyMessageHandler extends Handler<EcdhKeyExchangeR
         context.setHostKeyType(PublicKeyAuthenticationAlgorithm.fromName(message.getHostKeyType().getValue()));
         context.setKeyExchangeSignature(message.getSignature().getValue());
 
-        EcdhKeyExchange ecdhKeyExchange = (EcdhKeyExchange) context.getKeyExchangeInstance().orElseThrow(AdjustmentException::new);
-        ecdhKeyExchange.setRemotePublicKey(message.getEphemeralPublicKey().getValue());
-        ecdhKeyExchange.computeSharedSecret();
+        DhBasedKeyExchange keyExchange = (DhBasedKeyExchange) context.getKeyExchangeInstance().orElseThrow(AdjustmentException::new);
+        keyExchange.setRemotePublicKey(message.getEphemeralPublicKey().getValue());
+        keyExchange.computeSharedSecret();
 
         handleHostKey(message);
         EcdhExchangeHash ecdhExchangeHash = (EcdhExchangeHash) context.getExchangeHashInstance();
-        ecdhExchangeHash.setServerECDHPublicKey(ecdhKeyExchange.getRemotePublicKey());
-        ecdhExchangeHash.setSharedSecret(ecdhKeyExchange.getSharedSecret());
+        ecdhExchangeHash.setServerECDHPublicKey(keyExchange.getRemotePublicKey());
+        ecdhExchangeHash.setSharedSecret(keyExchange.getSharedSecret());
         if(!context.getSessionID().isPresent()) {
             context.setSessionID(ecdhExchangeHash.get());
         }

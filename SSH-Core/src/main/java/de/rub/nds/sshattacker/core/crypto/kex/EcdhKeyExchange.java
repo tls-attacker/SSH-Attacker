@@ -21,7 +21,7 @@ import org.apache.logging.log4j.Logger;
 
 import java.math.BigInteger;
 
-public class EcdhKeyExchange extends KeyExchange {
+public class EcdhKeyExchange extends DhBasedKeyExchange {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -33,6 +33,9 @@ public class EcdhKeyExchange extends KeyExchange {
 
     public EcdhKeyExchange(NamedGroup group) {
         super();
+        if (!group.isStandardCurve()) {
+            throw new IllegalArgumentException("EcdhKeyExchange does not support named group " + group);
+        }
         this.group = group;
         this.ellipticCurve = CurveFactory.getCurve(group);
     }
@@ -63,6 +66,7 @@ public class EcdhKeyExchange extends KeyExchange {
         return new EcdhKeyExchange(group);
     }
 
+    @Override
     public void generateLocalKeyPair() {
         int privateKeyBitLength = ellipticCurve.getBasePointOrder().bitLength();
         CustomEcPrivateKey privateKey;
@@ -75,6 +79,25 @@ public class EcdhKeyExchange extends KeyExchange {
         this.localKeyPair = new CustomKeyPair<>(privateKey, publicKey);
     }
 
+    @Override
+    public void setLocalKeyPair(byte[] privateKeyBytes) {
+        BigInteger privateKeyScalar = new BigInteger(privateKeyBytes);
+        Point publicKeyPoint = ellipticCurve.mult(privateKeyScalar, ellipticCurve.getBasePoint());
+        CustomEcPrivateKey privateKey = new CustomEcPrivateKey(privateKeyScalar, group);
+        CustomEcPublicKey publicKey = new CustomEcPublicKey(publicKeyPoint, group);
+        this.localKeyPair = new CustomKeyPair<>(privateKey, publicKey);
+    }
+
+    @Override
+    public void setLocalKeyPair(byte[] privateKeyBytes, byte[] publicKeyBytes) {
+        BigInteger privateKeyScalar = new BigInteger(privateKeyBytes);
+        Point publicKeyPoint = PointFormatter.formatFromByteArray(group, publicKeyBytes);
+        CustomEcPrivateKey privateKey = new CustomEcPrivateKey(privateKeyScalar, group);
+        CustomEcPublicKey publicKey = new CustomEcPublicKey(publicKeyPoint, group);
+        this.localKeyPair = new CustomKeyPair<>(privateKey, publicKey);
+    }
+
+    @Override
     public void setRemotePublicKey(byte[] serializedPublicKey) {
         Point publicKeyPoint = PointFormatter.formatFromByteArray(group, serializedPublicKey);
         this.remotePublicKey = new CustomEcPublicKey(publicKeyPoint, group);
@@ -88,10 +111,12 @@ public class EcdhKeyExchange extends KeyExchange {
                 + ArrayConverter.bytesToRawHexString(sharedSecret.toByteArray()));
     }
 
+    @Override
     public CustomKeyPair<CustomEcPrivateKey, CustomEcPublicKey> getLocalKeyPair() {
         return localKeyPair;
     }
 
+    @Override
     public CustomEcPublicKey getRemotePublicKey() {
         return remotePublicKey;
     }

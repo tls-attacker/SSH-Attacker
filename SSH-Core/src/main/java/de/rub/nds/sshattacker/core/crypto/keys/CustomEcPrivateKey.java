@@ -27,6 +27,9 @@ public class CustomEcPrivateKey implements ECPrivateKey {
     private final NamedGroup group;
 
     public CustomEcPrivateKey(BigInteger privateKey, NamedGroup group) {
+        if (!group.isStandardCurve()) {
+            throw new IllegalArgumentException("CustomEcPrivateKey does not support named group " + group);
+        }
         this.privateKey = privateKey;
         this.group = group;
     }
