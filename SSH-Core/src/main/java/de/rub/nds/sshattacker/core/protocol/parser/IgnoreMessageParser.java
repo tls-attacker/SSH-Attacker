@@ -11,6 +11,8 @@ package de.rub.nds.sshattacker.core.protocol.parser;
 
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.message.IgnoreMessage;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class IgnoreMessageParser extends MessageParser<IgnoreMessage> {
 
@@ -24,7 +26,7 @@ public class IgnoreMessageParser extends MessageParser<IgnoreMessage> {
     }
 
     private void parseData(IgnoreMessage msg) {
-        msg.setData(parseByteString(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH)));
+        msg.setData(parseByteArrayField(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH)));
     }
 
     @Override
