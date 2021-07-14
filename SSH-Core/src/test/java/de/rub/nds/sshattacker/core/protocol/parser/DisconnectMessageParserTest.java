@@ -19,23 +19,37 @@ public class DisconnectMessageParserTest {
      * @return A stream of test vectors to feed the testParse unit test
      */
     public static Stream<Arguments> provideTestVectors() {
-        return Stream.of(
-                Arguments.of(ArrayConverter.hexStringToByteArray("01000000020000001A526563656976656420756E6578706563746564207061636B657400000002454E"), DisconnectReason.SSH_DISCONNECT_PROTOCOL_ERROR, "Received unexpected packet", "EN"),
-                Arguments.of(ArrayConverter.hexStringToByteArray("010000000500000014556E61626C6520746F20766572696679204D414300000002454E"), DisconnectReason.SSH_DISCONNECT_MAC_ERROR, "Unable to verify MAC", "EN"),
-                Arguments.of(ArrayConverter.hexStringToByteArray("010000000C00000014546F6F206D616E7920636F6E6E656374696F6E7300000000"), DisconnectReason.SSH_DISCONNECT_TOO_MANY_CONNECTIONS, "Too many connections", "")
-        );
+        return Stream
+                .of(Arguments.of(
+                        ArrayConverter
+                                .hexStringToByteArray("01000000020000001A526563656976656420756E6578706563746564207061636B657400000002454E"),
+                        DisconnectReason.SSH_DISCONNECT_PROTOCOL_ERROR, "Received unexpected packet", "EN"),
+                        Arguments.of(
+                                ArrayConverter
+                                        .hexStringToByteArray("010000000500000014556E61626C6520746F20766572696679204D414300000002454E"),
+                                DisconnectReason.SSH_DISCONNECT_MAC_ERROR, "Unable to verify MAC", "EN"),
+                        Arguments.of(
+                                ArrayConverter
+                                        .hexStringToByteArray("010000000C00000014546F6F206D616E7920636F6E6E656374696F6E7300000000"),
+                                DisconnectReason.SSH_DISCONNECT_TOO_MANY_CONNECTIONS, "Too many connections", ""));
     }
 
     /**
      * Test of DisconnectMessageParser::parse method
-     * @param providedBytes Bytes to parse
-     * @param expectedDisconnectReason Expected disconnect reason
-     * @param expectedDescription Expected disconnect description
-     * @param expectedLanguageTag Expected language tag
+     * 
+     * @param providedBytes
+     *            Bytes to parse
+     * @param expectedDisconnectReason
+     *            Expected disconnect reason
+     * @param expectedDescription
+     *            Expected disconnect description
+     * @param expectedLanguageTag
+     *            Expected language tag
      */
     @ParameterizedTest
     @MethodSource("provideTestVectors")
-    public void testParse(byte[] providedBytes, DisconnectReason expectedDisconnectReason, String expectedDescription, String expectedLanguageTag) {
+    public void testParse(byte[] providedBytes, DisconnectReason expectedDisconnectReason, String expectedDescription,
+            String expectedLanguageTag) {
         DisconnectMessageParser parser = new DisconnectMessageParser(0, providedBytes);
         DisconnectMessage msg = parser.parse();
 

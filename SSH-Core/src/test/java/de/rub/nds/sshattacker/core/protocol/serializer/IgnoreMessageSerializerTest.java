@@ -26,7 +26,8 @@ public class IgnoreMessageSerializerTest {
      *
      * @param expectedBytes
      *            Expected output bytes of the serialize() call
-     * @param providedData IgnoreMessage data
+     * @param providedData
+     *            IgnoreMessage data
      */
     @ParameterizedTest
     @MethodSource("provideTestVectors")

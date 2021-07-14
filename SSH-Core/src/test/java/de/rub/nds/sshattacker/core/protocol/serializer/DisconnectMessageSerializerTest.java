@@ -36,7 +36,8 @@ public class DisconnectMessageSerializerTest {
      */
     @ParameterizedTest
     @MethodSource("provideTestVectors")
-    public void testSerialize(byte[] expectedBytes, DisconnectReason providedReason, String providedDescription, String providedLanguageTag) {
+    public void testSerialize(byte[] expectedBytes, DisconnectReason providedReason, String providedDescription,
+            String providedLanguageTag) {
         DisconnectMessage msg = new DisconnectMessage();
         msg.setMessageID(MessageIDConstant.SSH_MSG_DISCONNECT.id);
         msg.setReasonCode(providedReason.id);

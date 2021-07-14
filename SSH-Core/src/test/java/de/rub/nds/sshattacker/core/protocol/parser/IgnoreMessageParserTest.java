@@ -19,16 +19,22 @@ public class IgnoreMessageParserTest {
      * @return A stream of test vectors to feed the testParse unit test
      */
     public static Stream<Arguments> provideTestVectors() {
-        return Stream.of(
-                Arguments.of(ArrayConverter.hexStringToByteArray("020000003CD926AFBBFC03C8636C04FC105A2DE1436FDC277EB391B28873BB34F813BCACF75538E02346E45EBD94B0A3FC64E11EEFB6A1E96740DB8ECEDDEC5068"), ArrayConverter.hexStringToByteArray("D926AFBBFC03C8636C04FC105A2DE1436FDC277EB391B28873BB34F813BCACF75538E02346E45EBD94B0A3FC64E11EEFB6A1E96740DB8ECEDDEC5068")),
-                Arguments.of(ArrayConverter.hexStringToByteArray("0200000000"), new byte[] {})
-        );
+        return Stream
+                .of(Arguments
+                        .of(ArrayConverter
+                                .hexStringToByteArray("020000003CD926AFBBFC03C8636C04FC105A2DE1436FDC277EB391B28873BB34F813BCACF75538E02346E45EBD94B0A3FC64E11EEFB6A1E96740DB8ECEDDEC5068"),
+                                ArrayConverter
+                                        .hexStringToByteArray("D926AFBBFC03C8636C04FC105A2DE1436FDC277EB391B28873BB34F813BCACF75538E02346E45EBD94B0A3FC64E11EEFB6A1E96740DB8ECEDDEC5068")),
+                        Arguments.of(ArrayConverter.hexStringToByteArray("0200000000"), new byte[] {}));
     }
 
     /**
      * Test of IgnoreMessageParser::parse method
-     * @param providedBytes Bytes to parse
-     * @param expectedData Expected IgnoreMessage data
+     * 
+     * @param providedBytes
+     *            Bytes to parse
+     * @param expectedData
+     *            Expected IgnoreMessage data
      */
     @ParameterizedTest
     @MethodSource("provideTestVectors")
