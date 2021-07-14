@@ -36,7 +36,7 @@ public class DisconnectMessageSerializer extends MessageSerializer<DisconnectMes
     }
 
     private void serializeLanguageTag() {
-        int length = msg.getDescription().getValue().length();
+        int length = msg.getLanguageTag().getValue().length();
         appendInt(length, DataFormatConstants.STRING_SIZE_LENGTH);
         LOGGER.debug("LanguageTag: " + msg.getLanguageTag().getValue());
         appendString(msg.getLanguageTag().getValue());
