@@ -17,6 +17,9 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 public class CyclicRequestFailureMessageTest {
+    /**
+     * Cyclic test for parsing and serializing of RequestFailureMessage
+     */
     @Test
     public void testCyclic() {
         byte[] bytes = new byte[] { 82 };
