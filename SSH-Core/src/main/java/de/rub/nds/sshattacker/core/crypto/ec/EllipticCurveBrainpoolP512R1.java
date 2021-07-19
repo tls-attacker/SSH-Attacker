@@ -32,6 +32,6 @@ public class EllipticCurveBrainpoolP512R1 extends EllipticCurveOverFp {
                         16),
                 new BigInteger(
                         "AADD9DB8DBE9C48B3FD4E6AE33C9FC07CB308DB3B3C9D20ED6639CCA70330870553E5C414CA92619418661197FAC10471DB1D381085DDADDB58796829CA90069",
-                        16));
+                        16), BigInteger.ONE);
     }
 }

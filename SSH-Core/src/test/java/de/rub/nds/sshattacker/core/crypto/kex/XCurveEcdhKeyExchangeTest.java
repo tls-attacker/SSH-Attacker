@@ -55,7 +55,7 @@ public class XCurveEcdhKeyExchangeTest {
     }
 
     /**
-     * Test of XCurveEcdhKeyExchange with X448 beign used as the named group
+     * Test of XCurveEcdhKeyExchange with X448 being used as the named group
      */
     @Test
     public void testXCurveEcdhX448() {
