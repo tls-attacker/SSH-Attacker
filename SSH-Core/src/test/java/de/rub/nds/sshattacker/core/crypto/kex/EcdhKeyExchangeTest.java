@@ -58,8 +58,7 @@ public class EcdhKeyExchangeTest {
      *             Thrown if the KAS_ECC_CDH_PrimitiveTest.txt file can not be found
      */
     public static Stream<Arguments> provideTestVectors() throws FileNotFoundException {
-        File testVectorFile = new File(
-                "src/test/java/de/rub/nds/sshattacker/core/crypto/kex/KAS_ECC_CDH_PrimitiveTest.txt");
+        File testVectorFile = new File("src/test/resources/KAS_ECC_CDH_PrimitiveTest.txt");
         Scanner reader = new Scanner(testVectorFile);
         Stream.Builder<Arguments> argumentsBuilder = Stream.builder();
         NamedGroup currentGroup = null;
