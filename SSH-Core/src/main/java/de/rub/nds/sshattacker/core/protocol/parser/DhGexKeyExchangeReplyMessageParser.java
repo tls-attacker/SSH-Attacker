@@ -87,6 +87,8 @@ public class DhGexKeyExchangeReplyMessageParser extends MessageParser<DhGexKeyEx
             parseRsaHostKey(msg);
         } else {
             LOGGER.warn("Unable to parse host key of unsupported host key type " + msg.getHostKeyType().getValue());
+            // Skip the remaining bytes of the host key
+            parseByteArrayField(msg.getHostKeyLength().getValue() - BinaryPacketConstants.LENGTH_FIELD_LENGTH - msg.getHostKeyTypeLength().getValue());
         }
         parsePublicKeyLength(msg);
         parsePublicKey(msg);

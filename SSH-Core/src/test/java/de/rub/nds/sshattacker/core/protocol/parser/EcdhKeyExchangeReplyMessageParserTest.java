@@ -69,9 +69,9 @@ public class EcdhKeyExchangeReplyMessageParserTest {
      * @param expectedEccHostKey
      *            Expected ECC host key
      * @param expectedPublicKeyLength
-     *            Expected length of the RSA public key
+     *            Expected length of the remote ECDH public key
      * @param expectedPublicKey
-     *            Expected bytes of the RSA public key
+     *            Expected bytes of the remote ECDH public key
      * @param expectedSignatureLength
      *            Expected length of the signature
      * @param expectedSignature
