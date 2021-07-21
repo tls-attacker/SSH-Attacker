@@ -37,8 +37,7 @@ public class ChannelRequestMessageParser extends MessageParser<ChannelRequestMes
     }
 
     private void parsePayload(ChannelRequestMessage msg) {
-        int length = parseIntField(DataFormatConstants.STRING_SIZE_LENGTH);
-        msg.setPayload(parseByteArrayField(length));
+        msg.setPayload(parseArrayOrTillEnd(Integer.MAX_VALUE));
     }
 
     @Override
