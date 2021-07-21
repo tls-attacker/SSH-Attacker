@@ -22,6 +22,8 @@ public class ChannelFailureMessagePreparator extends Preparator<ChannelFailureMe
     @Override
     public void prepare() {
         message.setMessageID(MessageIDConstant.SSH_MSG_CHANNEL_FAILURE.id);
+        // TODO: Dummy values for fuzzing
+        message.setRecipientChannel(Integer.MAX_VALUE);
     }
 
 }

@@ -9,6 +9,7 @@
  */
 package de.rub.nds.sshattacker.core.protocol.parser;
 
+import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.message.ChannelFailureMessage;
 
 public class ChannelFailureMessageParser extends MessageParser<ChannelFailureMessage> {
@@ -24,7 +25,7 @@ public class ChannelFailureMessageParser extends MessageParser<ChannelFailureMes
 
     @Override
     protected void parseMessageSpecificPayload(ChannelFailureMessage msg) {
-
+        msg.setRecipientChannel(parseIntField(DataFormatConstants.INT32_SIZE));
     }
 
 }

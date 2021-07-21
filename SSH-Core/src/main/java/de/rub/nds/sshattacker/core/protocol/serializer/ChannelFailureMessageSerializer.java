@@ -9,6 +9,7 @@
  */
 package de.rub.nds.sshattacker.core.protocol.serializer;
 
+import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.message.ChannelFailureMessage;
 
 public class ChannelFailureMessageSerializer extends MessageSerializer<ChannelFailureMessage> {
@@ -19,7 +20,8 @@ public class ChannelFailureMessageSerializer extends MessageSerializer<ChannelFa
 
     @Override
     protected byte[] serializeMessageSpecificPayload() {
-        return new byte[0];
+        appendInt(msg.getRecipientChannel().getValue(), DataFormatConstants.INT32_SIZE);
+        return getAlreadySerialized();
     }
 
 }
