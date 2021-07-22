@@ -11,63 +11,44 @@ package de.rub.nds.sshattacker.core.protocol.serializer;
 
 import de.rub.nds.sshattacker.core.protocol.message.BinaryPacket;
 import de.rub.nds.sshattacker.core.protocol.parser.BinaryPacketParserTest;
-import java.util.Collection;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import static org.junit.Assert.*;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
-@RunWith(Parameterized.class)
+import java.util.stream.Stream;
+
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+
 public class BinaryPacketSerializerTest {
-
-    @Parameterized.Parameters
-    public static Collection<Object[]> generateData() {
-        return BinaryPacketParserTest.generateData();
-    }
-
-    private final int packetLength;
-    private final byte paddingLength;
-    private final byte[] payload;
-    private final byte[] padding;
-    private final byte[] mac;
-
-    private final byte[] bytes;
-
-    public BinaryPacketSerializerTest(byte[] bytes, int packetLength, byte paddingLength, byte[] payload,
-            byte[] padding, byte[] mac) {
-        this.bytes = bytes;
-        this.packetLength = packetLength;
-        this.paddingLength = paddingLength;
-        this.payload = payload;
-        this.padding = padding;
-        this.mac = mac;
-    }
-
-    @BeforeClass
-    public static void setUpClass() {
-    }
-
-    @AfterClass
-    public static void tearDownClass() {
-    }
-
-    @Before
-    public void setUp() {
-    }
-
-    @After
-    public void tearDown() {
+    /**
+     * Provides a stream of test vectors for the BinaryPacketSerializer class
+     * 
+     * @return A stream of test vectors to feed the testSerializeEmptyMac unit test
+     */
+    public static Stream<Arguments> provideTestVectorsEmptyMac() {
+        return BinaryPacketParserTest.provideTestVectorsEmptyMac();
     }
 
     /**
-     * Test of serializeBytes method, of class BinaryPacketSerializer.
+     * Test of BinaryPacketSerializer::serialize without a MAC negotiated
+     * 
+     * @param expectedBytes
+     *            Expected output bytes of the serialize() call
+     * @param packetLength
+     *            Length of the binary packet
+     * @param paddingLength
+     *            Padding length of the binary packet
+     * @param payload
+     *            Payload of the binary packet
+     * @param padding
+     *            Padding of the binary packet
+     * @param mac
+     *            MAC of the binary packet
      */
-    @Test
-    public void testSerializeBytes() {
+    @ParameterizedTest
+    @MethodSource("provideTestVectorsEmptyMac")
+    public void testSerializeEmptyMac(byte[] expectedBytes, int packetLength, byte paddingLength, byte[] payload,
+            byte[] padding, byte[] mac) {
         BinaryPacket msg = new BinaryPacket();
         msg.setPacketLength(packetLength);
         msg.setPaddingLength(paddingLength);
@@ -75,7 +56,8 @@ public class BinaryPacketSerializerTest {
         msg.setPadding(padding);
         msg.setMac(mac);
         BinaryPacketSerializer serializer = new BinaryPacketSerializer(msg);
-        assertArrayEquals(bytes, serializer.serialize());
+
+        assertArrayEquals(expectedBytes, serializer.serialize());
     }
 
 }

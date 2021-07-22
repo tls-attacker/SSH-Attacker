@@ -9,65 +9,48 @@
  */
 package de.rub.nds.sshattacker.core.protocol.serializer;
 
+import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
 import de.rub.nds.sshattacker.core.protocol.message.EcdhKeyExchangeInitMessage;
+
+import java.util.stream.Stream;
+
 import de.rub.nds.sshattacker.core.protocol.parser.EcdhKeyExchangeInitMessageParserTest;
-import java.util.Collection;
-import org.junit.After;
-import org.junit.AfterClass;
-import static org.junit.Assert.*;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
-@RunWith(Parameterized.class)
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+
 public class EcdhKeyExchangeInitMessageSerializerTest {
-
-    @Parameterized.Parameters
-    public static Collection<Object[]> generateData() {
-        return EcdhKeyExchangeInitMessageParserTest.generateData();
-    }
-
-    private final byte[] bytes;
-
-    private final int publicKeyLength;
-    private final byte[] publicKey;
-
-    public EcdhKeyExchangeInitMessageSerializerTest(byte[] bytes, int publicKeyLength, byte[] publicKey) {
-        this.bytes = bytes;
-        this.publicKeyLength = publicKeyLength;
-        this.publicKey = publicKey;
-    }
-
-    @BeforeClass
-    public static void setUpClass() {
-    }
-
-    @AfterClass
-    public static void tearDownClass() {
-    }
-
-    @Before
-    public void setUp() {
-    }
-
-    @After
-    public void tearDown() {
+    /**
+     * Provides a stream of test vectors for the EcdhKeyExchangeInitMessageSerializer class
+     *
+     * @return A stream of test vectors to feed the testSerialize unit test
+     */
+    public static Stream<Arguments> provideTestVectors() {
+        return EcdhKeyExchangeInitMessageParserTest.provideTestVectors();
     }
 
     /**
-     * Test of serializeBytes method, of class EcdhKeyExchangeInitMessageSerializer.
+     * Test of EcdhKeyExchangeInitMessageSerializer::serialize method
+     * 
+     * @param expectedBytes
+     *            Expected output bytes of the serialize() call
+     * @param providedPublicKeyLength
+     *            Length of the public key
+     * @param providedPublicKey
+     *            Bytes of the public key
      */
-    @Test
-    public void testSerializeMessageSpecificPayload() {
+    @ParameterizedTest
+    @MethodSource("provideTestVectors")
+    public void testSerialize(byte[] expectedBytes, int providedPublicKeyLength, byte[] providedPublicKey) {
         EcdhKeyExchangeInitMessage msg = new EcdhKeyExchangeInitMessage();
-        msg.setPublicKeyLength(publicKeyLength);
-        msg.setPublicKey(publicKey);
-
+        msg.setMessageID(MessageIDConstant.SSH_MSG_KEX_ECDH_INIT.id);
+        msg.setPublicKeyLength(providedPublicKeyLength);
+        msg.setPublicKey(providedPublicKey);
         EcdhKeyExchangeInitMessageSerializer serializer = new EcdhKeyExchangeInitMessageSerializer(msg);
 
-        assertArrayEquals(bytes, serializer.serializeMessageSpecificPayload());
+        assertArrayEquals(expectedBytes, serializer.serialize());
     }
 
 }

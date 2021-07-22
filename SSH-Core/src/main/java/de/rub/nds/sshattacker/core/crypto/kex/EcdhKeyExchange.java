@@ -106,6 +106,8 @@ public class EcdhKeyExchange extends DhBasedKeyExchange {
     @Override
     public void computeSharedSecret() {
         Point sharedPoint = ellipticCurve.mult(localKeyPair.getPrivate().getS(), remotePublicKey.getWAsPoint());
+        // RFC 5656 defines ECDH with cofactor multiplication as the cryptographic primitive
+        sharedPoint = ellipticCurve.mult(ellipticCurve.getCofactor(), sharedPoint);
         sharedSecret = sharedPoint.getFieldX().getData();
         LOGGER.debug("Finished computation of shared secret: "
                 + ArrayConverter.bytesToRawHexString(sharedSecret.toByteArray()));

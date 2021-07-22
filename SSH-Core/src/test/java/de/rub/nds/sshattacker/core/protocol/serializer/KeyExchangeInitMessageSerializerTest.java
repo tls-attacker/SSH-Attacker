@@ -9,136 +9,119 @@
  */
 package de.rub.nds.sshattacker.core.protocol.serializer;
 
+import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
 import de.rub.nds.sshattacker.core.protocol.message.KeyExchangeInitMessage;
 import de.rub.nds.sshattacker.core.protocol.parser.KeyExchangeInitMessageParserTest;
-import java.util.Collection;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import static org.junit.Assert.*;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
-@RunWith(Parameterized.class)
+import java.util.stream.Stream;
+
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+
 public class KeyExchangeInitMessageSerializerTest {
-
-    @Parameterized.Parameters
-    public static Collection<Object[]> generateData() {
-        return KeyExchangeInitMessageParserTest.generateData();
-    }
-
-    private final byte[] bytes;
-
-    private final byte[] cookie;
-    private final int keyExchangeAlgorithmsLength;
-    private final String keyExchangeAlgorithms;
-    private final int serverHostKeyAlgorithmsLength;
-    private final String serverHostKeyAlgorithms;
-    private final int encryptionAlgorithmsClientToServerLength;
-    private final String encryptionAlgorithmsClientToServer;
-    private final int encryptionAlgorithmsServerToClientLength;
-    private final String encryptionAlgorithmsServerToClient;
-    private final int macAlgorithmsClientToServerLength;
-    private final String macAlgorithmsClientToServer;
-    private final int macAlgorithmsServerToClientLength;
-    private final String macAlgorithmsServerToClient;
-    private final int compressionAlgorithmsClientToServerLength;
-    private final String compressionAlgorithmsClientToServer;
-    private final int compressionAlgorithmsServerToClientLength;
-    private final String compressionAlgorithmsServerToClient;
-    private final int languagesClientToServerLength;
-    private final String languagesClientToServer;
-    private final int languagesServerToClientLength;
-    private final String languagesServerToClient;
-    private final boolean firstKeyExchangePacketFollows;
-    private final int reserved;
-
-    public KeyExchangeInitMessageSerializerTest(byte[] bytes, byte[] cookie, int keyExchangeAlgorithmsLength,
-            String keyExchangeAlgorithms, int serverHostKeyAlgorithmsLength, String serverHostKeyAlgorithms,
-            int encryptionAlgorithmsClientToServerLength, String encryptionAlgorithmsClientToServer,
-            int encryptionAlgorithmsServerToClientLength, String encryptionAlgorithmsServerToClient,
-            int macAlgorithmsClientToServerLength, String macAlgorithmsClientToServer,
-            int macAlgorithmsServerToClientLength, String macAlgorithmsServerToClient,
-            int compressionAlgorithmsClientToServerLength, String compressionAlgorithmsClientToServer,
-            int compressionAlgorithmsServerToClientLength, String compressionAlgorithmsServerToClient,
-            int languagesClientToServerLength, String languagesClientToServer, int languagesServerToClientLength,
-            String languagesServerToClient, boolean firstKeyExchangePacketFollows, int reserved) {
-        this.bytes = bytes;
-        this.cookie = cookie;
-        this.keyExchangeAlgorithmsLength = keyExchangeAlgorithmsLength;
-        this.keyExchangeAlgorithms = keyExchangeAlgorithms;
-        this.serverHostKeyAlgorithmsLength = serverHostKeyAlgorithmsLength;
-        this.serverHostKeyAlgorithms = serverHostKeyAlgorithms;
-        this.encryptionAlgorithmsClientToServerLength = encryptionAlgorithmsClientToServerLength;
-        this.encryptionAlgorithmsClientToServer = encryptionAlgorithmsClientToServer;
-        this.encryptionAlgorithmsServerToClientLength = encryptionAlgorithmsServerToClientLength;
-        this.encryptionAlgorithmsServerToClient = encryptionAlgorithmsServerToClient;
-        this.macAlgorithmsClientToServerLength = macAlgorithmsClientToServerLength;
-        this.macAlgorithmsClientToServer = macAlgorithmsClientToServer;
-        this.macAlgorithmsServerToClientLength = macAlgorithmsServerToClientLength;
-        this.macAlgorithmsServerToClient = macAlgorithmsServerToClient;
-        this.compressionAlgorithmsClientToServerLength = compressionAlgorithmsClientToServerLength;
-        this.compressionAlgorithmsClientToServer = compressionAlgorithmsClientToServer;
-        this.compressionAlgorithmsServerToClientLength = compressionAlgorithmsServerToClientLength;
-        this.compressionAlgorithmsServerToClient = compressionAlgorithmsServerToClient;
-        this.languagesClientToServerLength = languagesClientToServerLength;
-        this.languagesClientToServer = languagesClientToServer;
-        this.languagesServerToClientLength = languagesServerToClientLength;
-        this.languagesServerToClient = languagesServerToClient;
-        this.firstKeyExchangePacketFollows = firstKeyExchangePacketFollows;
-        this.reserved = reserved;
-    }
-
-    @BeforeClass
-    public static void setUpClass() {
-    }
-
-    @AfterClass
-    public static void tearDownClass() {
-    }
-
-    @Before
-    public void setUp() {
-    }
-
-    @After
-    public void tearDown() {
+    /**
+     * Provides a stream of test vectors for the KeyExchangeInitMessageSerializer class
+     *
+     * @return A stream of test vectors to feed the testSerialize unit test
+     */
+    public static Stream<Arguments> provideTestVectors() {
+        return KeyExchangeInitMessageParserTest.provideTestVectors();
     }
 
     /**
-     * Test of serializeBytes method, of class KeyExchangeInitMessageSerializer.
+     * Test of KeyExchangeInitMessageSerializer::serialize method
+     *
+     * @param expectedBytes
+     *            Expected output bytes of the serialize() call
+     * @param providedCookie
+     *            Bytes of the cookie
+     * @param providedKeyExchangeAlgorithmsLength
+     *            Length of the key exchange algorithm list
+     * @param providedKeyExchangeAlgorithms
+     *            Key exchange algorithm list
+     * @param providedServerHostKeyAlgorithmsLength
+     *            Length of the host key algorithm list
+     * @param providedServerHostKeyAlgorithms
+     *            Host key algorithm list
+     * @param providedEncryptionAlgorithmsCToSLength
+     *            Length of the encryption algorithm list (client to server)
+     * @param providedEncryptionAlgorithmsCToS
+     *            Encryption algorithm list (client to server)
+     * @param providedEncryptionAlgorithmsSToCLength
+     *            Length of the encryption algorithm list (server to client)
+     * @param providedEncryptionAlgorithmsSToC
+     *            Encryption algorithm list (server to client)
+     * @param providedMacAlgorithmsCToSLength
+     *            Length of the MAC algorithm list (client to server)
+     * @param providedMacAlgorithmsCToS
+     *            MAC algorithm list (client to server)
+     * @param providedMacAlgorithmsSToCLength
+     *            Length of the MAC algorithm list (server to client)
+     * @param providedMacAlgorithmsSToC
+     *            MAC algorithm list (server to client)
+     * @param providedCompressionAlgorithmsCToSLength
+     *            Length of the compression algorithm list (client to server)
+     * @param providedCompressionAlgorithmsCToS
+     *            Compression algorithm list (client to server)
+     * @param providedCompressionAlgorithmsSToCLength
+     *            Length of the compression algorithm list (server to client)
+     * @param providedCompressionAlgorithmsSToC
+     *            Compression algorithm list (server to client)
+     * @param providedLanguagesCToSLength
+     *            Length of the language list (client to server)
+     * @param providedLanguagesCToS
+     *            Language list (client to server)
+     * @param providedLanguagesSToCLength
+     *            Length of the language list (server to client)
+     * @param providedLanguagesSToC
+     *            Language list (server to client)
+     * @param providedFirstKeyExchangePacketFollows
+     *            Value of the firstKeyExchangePacketFollows field
+     * @param providedReserved
+     *            Value of the reserved field
      */
-    @Test
-    public void testSerializeMessageSpecificPayload() {
+    @ParameterizedTest
+    @MethodSource("provideTestVectors")
+    public void testSerialize(byte[] expectedBytes, byte[] providedCookie, int providedKeyExchangeAlgorithmsLength,
+            String providedKeyExchangeAlgorithms, int providedServerHostKeyAlgorithmsLength,
+            String providedServerHostKeyAlgorithms, int providedEncryptionAlgorithmsCToSLength,
+            String providedEncryptionAlgorithmsCToS, int providedEncryptionAlgorithmsSToCLength,
+            String providedEncryptionAlgorithmsSToC, int providedMacAlgorithmsCToSLength,
+            String providedMacAlgorithmsCToS, int providedMacAlgorithmsSToCLength, String providedMacAlgorithmsSToC,
+            int providedCompressionAlgorithmsCToSLength, String providedCompressionAlgorithmsCToS,
+            int providedCompressionAlgorithmsSToCLength, String providedCompressionAlgorithmsSToC,
+            int providedLanguagesCToSLength, String providedLanguagesCToS, int providedLanguagesSToCLength,
+            String providedLanguagesSToC, boolean providedFirstKeyExchangePacketFollows, int providedReserved) {
         KeyExchangeInitMessage msg = new KeyExchangeInitMessage();
-        msg.setCookie(cookie);
-        msg.setKeyExchangeAlgorithmsLength(keyExchangeAlgorithmsLength);
-        msg.setKeyExchangeAlgorithms(keyExchangeAlgorithms);
-        msg.setServerHostKeyAlgorithmsLength(serverHostKeyAlgorithmsLength);
-        msg.setServerHostKeyAlgorithms(serverHostKeyAlgorithms);
-        msg.setEncryptionAlgorithmsClientToServerLength(encryptionAlgorithmsClientToServerLength);
-        msg.setEncryptionAlgorithmsClientToServer(encryptionAlgorithmsClientToServer);
-        msg.setEncryptionAlgorithmsServerToClientLength(encryptionAlgorithmsServerToClientLength);
-        msg.setEncryptionAlgorithmsServerToClient(encryptionAlgorithmsServerToClient);
-        msg.setMacAlgorithmsClientToServerLength(macAlgorithmsClientToServerLength);
-        msg.setMacAlgorithmsClientToServer(macAlgorithmsClientToServer);
-        msg.setMacAlgorithmsServerToClientLength(macAlgorithmsServerToClientLength);
-        msg.setMacAlgorithmsServerToClient(macAlgorithmsServerToClient);
-        msg.setCompressionAlgorithmsClientToServerLength(compressionAlgorithmsClientToServerLength);
-        msg.setCompressionAlgorithmsClientToServer(compressionAlgorithmsClientToServer);
-        msg.setCompressionAlgorithmsServerToClientLength(compressionAlgorithmsServerToClientLength);
-        msg.setCompressionAlgorithmsServerToClient(compressionAlgorithmsServerToClient);
-        msg.setLanguagesClientToServerLength(languagesClientToServerLength);
-        msg.setLanguagesClientToServer(languagesClientToServer);
-        msg.setLanguagesServerToClientLength(languagesServerToClientLength);
-        msg.setLanguagesServerToClient(languagesServerToClient);
-        msg.setFirstKeyExchangePacketFollows(firstKeyExchangePacketFollows);
-        msg.setReserved(reserved);
-
+        msg.setMessageID(MessageIDConstant.SSH_MSG_KEXINIT.id);
+        msg.setCookie(providedCookie);
+        msg.setKeyExchangeAlgorithmsLength(providedKeyExchangeAlgorithmsLength);
+        msg.setKeyExchangeAlgorithms(providedKeyExchangeAlgorithms);
+        msg.setServerHostKeyAlgorithmsLength(providedServerHostKeyAlgorithmsLength);
+        msg.setServerHostKeyAlgorithms(providedServerHostKeyAlgorithms);
+        msg.setEncryptionAlgorithmsClientToServerLength(providedEncryptionAlgorithmsCToSLength);
+        msg.setEncryptionAlgorithmsClientToServer(providedEncryptionAlgorithmsCToS);
+        msg.setEncryptionAlgorithmsServerToClientLength(providedEncryptionAlgorithmsSToCLength);
+        msg.setEncryptionAlgorithmsServerToClient(providedEncryptionAlgorithmsSToC);
+        msg.setMacAlgorithmsClientToServerLength(providedMacAlgorithmsCToSLength);
+        msg.setMacAlgorithmsClientToServer(providedMacAlgorithmsCToS);
+        msg.setMacAlgorithmsServerToClientLength(providedMacAlgorithmsSToCLength);
+        msg.setMacAlgorithmsServerToClient(providedMacAlgorithmsSToC);
+        msg.setCompressionAlgorithmsClientToServerLength(providedCompressionAlgorithmsCToSLength);
+        msg.setCompressionAlgorithmsClientToServer(providedCompressionAlgorithmsCToS);
+        msg.setCompressionAlgorithmsServerToClientLength(providedCompressionAlgorithmsSToCLength);
+        msg.setCompressionAlgorithmsServerToClient(providedCompressionAlgorithmsSToC);
+        msg.setLanguagesClientToServerLength(providedLanguagesCToSLength);
+        msg.setLanguagesClientToServer(providedLanguagesCToS);
+        msg.setLanguagesServerToClientLength(providedLanguagesSToCLength);
+        msg.setLanguagesServerToClient(providedLanguagesSToC);
+        msg.setFirstKeyExchangePacketFollows(providedFirstKeyExchangePacketFollows);
+        msg.setReserved(providedReserved);
         KeyExchangeInitMessageSerializer serializer = new KeyExchangeInitMessageSerializer(msg);
-        assertArrayEquals(bytes, serializer.serializeMessageSpecificPayload());
+
+        assertArrayEquals(expectedBytes, serializer.serialize());
     }
 
 }

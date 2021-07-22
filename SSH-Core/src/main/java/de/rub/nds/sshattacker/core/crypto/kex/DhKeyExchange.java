@@ -140,7 +140,6 @@ public class DhKeyExchange extends DhBasedKeyExchange {
         this.localKeyPair = new CustomKeyPair<>(privateKey, publicKey);
     }
 
-
     @Override
     public void computeSharedSecret() {
         sharedSecret = remotePublicKey.getY().modPow(localKeyPair.getPrivate().getX(), modulus);

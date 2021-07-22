@@ -10,39 +10,38 @@
 package de.rub.nds.sshattacker.core.protocol.cyclic;
 
 import de.rub.nds.sshattacker.core.protocol.message.EcdhKeyExchangeInitMessage;
-import de.rub.nds.sshattacker.core.protocol.parser.VersionExchangeMessageParserTest;
+import de.rub.nds.sshattacker.core.protocol.parser.EcdhKeyExchangeInitMessageParserTest;
 import de.rub.nds.sshattacker.core.protocol.serializer.EcdhKeyExchangeInitMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.parser.EcdhKeyExchangeInitMessageParser;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
-import java.util.Collection;
-import java.util.LinkedList;
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import java.util.stream.Stream;
 
-@RunWith(Parameterized.class)
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+
 public class CyclicEcdhKeyExchangeInitMessageTest {
-
-    @Parameterized.Parameters
-    public static Collection<Object[]> generateData() {
-        Collection<Object[]> fullData = VersionExchangeMessageParserTest.generateData();
-        Collection<Object[]> bytesOnly = new LinkedList<>();
-        fullData.forEach((obj) -> bytesOnly.add(new Object[]{obj[0]}));
-        return bytesOnly;
+    /**
+     * Provides a stream of test vectors for cyclic testing
+     *
+     * @return A stream of test vectors to feed the testCyclic unit test
+     */
+    public static Stream<Arguments> provideTestVectors() {
+        return EcdhKeyExchangeInitMessageParserTest.provideTestVectors()
+                .map((vector) -> Arguments.of(vector.get()[0]));
     }
 
-    private final byte[] bytes;
-
-    public CyclicEcdhKeyExchangeInitMessageTest(byte[] bytes) {
-        this.bytes = bytes;
-    }
-
-    @Test
-    public void test() {
-        EcdhKeyExchangeInitMessage msg = new EcdhKeyExchangeInitMessage();
-        new EcdhKeyExchangeInitMessageParser(0, bytes).parseMessageSpecificPayload(msg);
-        byte[] serialized = new EcdhKeyExchangeInitMessageSerializer(msg).serializeMessageSpecificPayload();
-        Assert.assertArrayEquals(bytes, serialized);
+    /**
+     * Cyclic test for parsing and serializing of EcdhKeyExchangeInitMessages
+     *
+     * @param providedBytes
+     *            Bytes to parse and serialize again
+     */
+    @ParameterizedTest
+    @MethodSource("provideTestVectors")
+    public void testCyclic(byte[] providedBytes) {
+        EcdhKeyExchangeInitMessage msg = new EcdhKeyExchangeInitMessageParser(0, providedBytes).parse();
+        assertArrayEquals(providedBytes, new EcdhKeyExchangeInitMessageSerializer(msg).serialize());
     }
 }

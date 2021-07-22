@@ -55,9 +55,12 @@ public class EllipticCurveOverFp extends EllipticCurve {
      *            The y-coordinate of the base point.
      * @param q
      *            The order of the base point.
+     * @param h
+     *            The cofactor of the curve.
      */
-    public EllipticCurveOverFp(BigInteger a, BigInteger b, BigInteger p, BigInteger x, BigInteger y, BigInteger q) {
-        super(p, x, y, q);
+    public EllipticCurveOverFp(BigInteger a, BigInteger b, BigInteger p, BigInteger x, BigInteger y, BigInteger q,
+            BigInteger h) {
+        super(p, x, y, q, h);
         this.fieldA = new FieldElementFp(a, this.getModulus());
         this.fieldB = new FieldElementFp(b, this.getModulus());
     }

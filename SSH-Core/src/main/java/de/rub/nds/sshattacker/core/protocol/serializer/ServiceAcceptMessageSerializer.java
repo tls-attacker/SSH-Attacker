@@ -14,17 +14,18 @@ import de.rub.nds.sshattacker.core.protocol.message.ServiceAcceptMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class ServiceAcceptMessageSerializer extends Serializer<ServiceAcceptMessage> {
+public class ServiceAcceptMessageSerializer extends MessageSerializer<ServiceAcceptMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
     private final ServiceAcceptMessage msg;
 
     public ServiceAcceptMessageSerializer(ServiceAcceptMessage msg) {
+        super(msg);
         this.msg = msg;
     }
 
     @Override
-    protected byte[] serializeBytes() {
+    protected byte[] serializeMessageSpecificPayload() {
         LOGGER.debug("serviceName: " + msg.getServiceName().getValue());
         appendBytes(Converter.stringToLengthPrefixedBinaryString(msg.getServiceName().getValue()));
         return getAlreadySerialized();

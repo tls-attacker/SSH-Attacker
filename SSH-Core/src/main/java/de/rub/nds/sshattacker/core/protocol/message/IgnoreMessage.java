@@ -10,7 +10,7 @@
 package de.rub.nds.sshattacker.core.protocol.message;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
-import de.rub.nds.modifiablevariable.string.ModifiableString;
+import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.sshattacker.core.protocol.preparator.IgnoreMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.serializer.IgnoreMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.handler.IgnoreMessageHandler;
@@ -18,17 +18,17 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class IgnoreMessage extends Message<IgnoreMessage> {
 
-    private ModifiableString data;
+    private ModifiableByteArray data;
 
-    public ModifiableString getData() {
+    public ModifiableByteArray getData() {
         return data;
     }
 
-    public void setData(ModifiableString data) {
+    public void setData(ModifiableByteArray data) {
         this.data = data;
     }
 
-    public void setData(String data) {
+    public void setData(byte[] data) {
         this.data = ModifiableVariableFactory.safelySetValue(this.data, data);
     }
 

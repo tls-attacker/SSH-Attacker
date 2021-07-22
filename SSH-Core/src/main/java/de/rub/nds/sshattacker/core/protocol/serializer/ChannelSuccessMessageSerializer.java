@@ -9,6 +9,7 @@
  */
 package de.rub.nds.sshattacker.core.protocol.serializer;
 
+import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.message.ChannelSuccessMessage;
 
 public class ChannelSuccessMessageSerializer extends MessageSerializer<ChannelSuccessMessage> {
@@ -19,7 +20,8 @@ public class ChannelSuccessMessageSerializer extends MessageSerializer<ChannelSu
 
     @Override
     protected byte[] serializeMessageSpecificPayload() {
-        return new byte[0];
+        appendInt(msg.getRecipientChannel().getValue(), DataFormatConstants.INT32_SIZE);
+        return getAlreadySerialized();
     }
 
 }

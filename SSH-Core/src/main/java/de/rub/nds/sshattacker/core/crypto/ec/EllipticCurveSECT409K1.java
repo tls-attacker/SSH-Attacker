@@ -28,6 +28,6 @@ public class EllipticCurveSECT409K1 extends EllipticCurveOverF2m {
                         16),
                 new BigInteger(
                         "7FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFE5F83B2D4EA20400EC4557D5ED3E3E7CA5B4B5C83B8E01E5FCF",
-                        16));
+                        16), BigInteger.valueOf(4));
     }
 }

@@ -10,38 +10,38 @@
 package de.rub.nds.sshattacker.core.protocol.cyclic;
 
 import de.rub.nds.sshattacker.core.protocol.message.VersionExchangeMessage;
+import de.rub.nds.sshattacker.core.protocol.parser.VersionExchangeMessageParser;
 import de.rub.nds.sshattacker.core.protocol.parser.VersionExchangeMessageParserTest;
 import de.rub.nds.sshattacker.core.protocol.serializer.VersionExchangeMessageSerializer;
-import de.rub.nds.sshattacker.core.protocol.parser.VersionExchangeMessageParser;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
-import java.util.Collection;
-import java.util.LinkedList;
-import org.junit.Assert;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.Test;
+import java.util.stream.Stream;
 
-@RunWith(Parameterized.class)
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+
 public class CyclicVersionExchangeMessageTest {
-
-    final byte[] message;
-
-    @Parameterized.Parameters
-    public static Collection<Object[]> generateData() {
-        Collection<Object[]> fullData = VersionExchangeMessageParserTest.generateData();
-        Collection<Object[]> bytesOnly = new LinkedList<>();
-        fullData.forEach((obj) -> bytesOnly.add(new Object[]{obj[0]}));
-        return bytesOnly;
+    /**
+     * Provides a stream of test vectors for cyclic testing
+     *
+     * @return A stream of test vectors to feed the testCyclic unit test
+     */
+    public static Stream<Arguments> provideTestVectors() {
+        return VersionExchangeMessageParserTest.provideTestVectors()
+                .map((vector) -> Arguments.of(vector.get()[0]));
     }
 
-    public CyclicVersionExchangeMessageTest(byte[] message) {
-        this.message = message;
-    }
-
-    @Test
-    public void testCyclic() {
-        VersionExchangeMessage msg = new VersionExchangeMessageParser(0, message).parse();
-        byte[] serialized = new VersionExchangeMessageSerializer(msg).serialize();
-        Assert.assertArrayEquals(serialized, message);
+    /**
+     * Cyclic test for parsing and serializing of VersionExchangeMessage
+     *
+     * @param providedBytes
+     *            Bytes to parse and serialize again
+     */
+    @ParameterizedTest
+    @MethodSource("provideTestVectors")
+    public void testCyclic(byte[] providedBytes) {
+        VersionExchangeMessage msg = new VersionExchangeMessageParser(0, providedBytes).parse();
+        assertArrayEquals(providedBytes, new VersionExchangeMessageSerializer(msg).serialize());
     }
 }

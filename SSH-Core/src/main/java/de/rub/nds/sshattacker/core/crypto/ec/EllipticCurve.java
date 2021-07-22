@@ -18,6 +18,7 @@ public abstract class EllipticCurve {
 
     private Point basePoint;
     private BigInteger basePointOrder;
+    private BigInteger cofactor;
     /**
      * The modulus of the field over which the curve is defined.
      */
@@ -46,11 +47,15 @@ public abstract class EllipticCurve {
      *            The y coordinate of the base point.
      * @param basePointOrder
      *            The order of the base point.
+     * @param cofactor
+     *            The cofactor of the curve.
      */
-    protected EllipticCurve(BigInteger modulus, BigInteger basePointX, BigInteger basePointY, BigInteger basePointOrder) {
+    protected EllipticCurve(BigInteger modulus, BigInteger basePointX, BigInteger basePointY,
+            BigInteger basePointOrder, BigInteger cofactor) {
         this.modulus = modulus;
         this.basePoint = this.getPoint(basePointX, basePointY);
         this.basePointOrder = basePointOrder;
+        this.cofactor = cofactor;
     }
 
     /**
@@ -180,6 +185,10 @@ public abstract class EllipticCurve {
 
     public BigInteger getModulus() {
         return this.modulus;
+    }
+
+    public BigInteger getCofactor() {
+        return this.cofactor;
     }
 
     public abstract Point createAPointOnCurve(BigInteger x);

@@ -10,63 +10,67 @@
 package de.rub.nds.sshattacker.core.protocol.message;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
-import de.rub.nds.sshattacker.core.constants.BinaryPacketConstants;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
+import java.util.stream.Stream;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+/**
+ * A set of tests for the BinaryPacket class
+ */
 public class BinaryPacketTest {
-
-    private BinaryPacket binaryPacket;
-    private int paddingLength_8;
-    private int paddingLength_5;
-    private int packetLength_8;
-    @SuppressWarnings({ "FieldCanBeLocal", "unused" })
-    private int packetLength_5;
-
-    public BinaryPacketTest() {
-    }
-
-    @Before
-    public void setUp() {
-        byte[] payload = new byte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-        paddingLength_8 = 9;
-        paddingLength_5 = 9;
-        packetLength_8 = payload.length + paddingLength_8 + BinaryPacketConstants.PADDING_FIELD_LENGTH;
-        packetLength_5 = payload.length + paddingLength_5 + BinaryPacketConstants.PADDING_FIELD_LENGTH;
-        binaryPacket = new BinaryPacket(ModifiableVariableFactory.safelySetValue(null, payload));
-    }
-
-    @After
-    public void tearDown() {
+    /**
+     * Provides a stream of test vectors for the BinaryPacket class
+     * 
+     * @return A stream of test vectors to feed the testComputePaddingLength and testComputePacketLengthBlockSize unit
+     *         tests
+     */
+    public static Stream<Arguments> provideTestVectors() {
+        return Stream.of(Arguments.of(new byte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 }, (byte) 8, 9, 20),
+                Arguments.of(new byte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 }, (byte) 32, 17, 28),
+                Arguments.of(new byte[] { 0 }, (byte) 8, 10, 12));
     }
 
     /**
-     * Test of computeLength method, of class BinaryPacket.
+     * Test of method BinaryPacket::computePaddingLength
+     * 
+     * @param providedPayload
+     *            Payload of the binary packet
+     * @param providedBlockSize
+     *            Block size of the (simulated) cipher
+     * @param expectedPaddingLength
+     *            Expected padding length of the binary packet
      */
-    @Test
-    public void testComputePacketLength() {
-        binaryPacket.computePaddingLength((byte) BinaryPacketConstants.DEFAULT_BLOCK_SIZE);
+    @ParameterizedTest
+    @MethodSource("provideTestVectors")
+    public void testComputePaddingLength(byte[] providedPayload, byte providedBlockSize, int expectedPaddingLength) {
+        BinaryPacket binaryPacket = new BinaryPacket(ModifiableVariableFactory.safelySetValue(null, providedPayload));
+        binaryPacket.computePaddingLength(providedBlockSize);
+        assertEquals(expectedPaddingLength, binaryPacket.getPaddingLength().getValue().intValue());
+    }
+
+    /**
+     * Test of method BinaryPacket::computePacketLength
+     * 
+     * @param providedPayload
+     *            Payload of the binary packet
+     * @param providedBlockSize
+     *            Block size of the (simulated) cipher
+     * @param expectedPaddingLength
+     *            Expected padding length of the binary packet (not used)
+     * @param expectedPacketLength
+     *            Expected packet length
+     */
+    @ParameterizedTest
+    @MethodSource("provideTestVectors")
+    public void testComputePacketLengthBlockSize(byte[] providedPayload, byte providedBlockSize,
+            @SuppressWarnings("unused") int expectedPaddingLength, int expectedPacketLength) {
+        BinaryPacket binaryPacket = new BinaryPacket(ModifiableVariableFactory.safelySetValue(null, providedPayload));
+        binaryPacket.computePaddingLength(providedBlockSize);
         binaryPacket.computePacketLength();
-        assertEquals(packetLength_8, binaryPacket.getPacketLength().getValue().intValue());
-    }
-
-    /**
-     * Test of computePaddingLength method, of class BinaryPacket.
-     */
-    @Test
-    public void testComputePaddingLength_8() {
-        binaryPacket.computePaddingLength((byte) BinaryPacketConstants.DEFAULT_BLOCK_SIZE);
-        assertEquals(paddingLength_8, binaryPacket.getPaddingLength().getValue().intValue());
-    }
-
-    /**
-     * Test of computePaddingLength method, of class BinaryPacket.
-     */
-    @Test
-    public void testComputePaddingLength_byte() {
-        binaryPacket.computePaddingLength((byte) 5);
-        assertEquals(paddingLength_5, binaryPacket.getPaddingLength().getValue().intValue());
+        assertEquals(expectedPacketLength, binaryPacket.getPacketLength().getValue().intValue());
     }
 }

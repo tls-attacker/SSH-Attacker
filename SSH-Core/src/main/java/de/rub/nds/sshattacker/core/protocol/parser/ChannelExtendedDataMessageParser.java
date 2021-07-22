@@ -33,7 +33,7 @@ public class ChannelExtendedDataMessageParser extends MessageParser<ChannelExten
 
     private void parseData(ChannelExtendedDataMessage msg) {
         int length = parseIntField(DataFormatConstants.STRING_SIZE_LENGTH);
-        msg.setData(parseByteString(length));
+        msg.setData(parseByteArrayField(length));
     }
 
     @Override

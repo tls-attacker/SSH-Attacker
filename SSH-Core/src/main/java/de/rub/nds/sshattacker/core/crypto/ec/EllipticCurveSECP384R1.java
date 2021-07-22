@@ -32,6 +32,6 @@ public class EllipticCurveSECP384R1 extends EllipticCurveOverFp {
                         16),
                 new BigInteger(
                         "FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFC7634D81F4372DDF581A0DB248B0A77AECEC196ACCC52973",
-                        16));
+                        16), BigInteger.ONE);
     }
 }

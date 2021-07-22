@@ -61,10 +61,12 @@ public class EllipticCurveOverF2m extends EllipticCurve {
      *            A BigInteger representing the binary polynomial that represents the y-coordinate of the base point.
      * @param q
      *            The order of the base point.
+     * @param h
+     *            The cofactor of the curve.
      */
     public EllipticCurveOverF2m(BigInteger a, BigInteger b, BigInteger polynomial, BigInteger x, BigInteger y,
-            BigInteger q) {
-        super(polynomial, x, y, q);
+            BigInteger q, BigInteger h) {
+        super(polynomial, x, y, q, h);
         this.curveA = new FieldElementF2m(a, this.getModulus());
         this.curveB = new FieldElementF2m(b, this.getModulus());
     }

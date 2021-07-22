@@ -10,6 +10,7 @@
 package de.rub.nds.sshattacker.core.protocol.message;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
+import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.sshattacker.core.protocol.preparator.ChannelExtendedDataMessagePreparator;
@@ -21,7 +22,7 @@ public class ChannelExtendedDataMessage extends Message<ChannelExtendedDataMessa
 
     private ModifiableInteger recipientChannel;
     private ModifiableInteger dataTypeCode;
-    private ModifiableString data;
+    private ModifiableByteArray data;
 
     public ModifiableInteger getRecipientChannel() {
         return recipientChannel;
@@ -47,15 +48,15 @@ public class ChannelExtendedDataMessage extends Message<ChannelExtendedDataMessa
         this.dataTypeCode = ModifiableVariableFactory.safelySetValue(this.dataTypeCode, dataTypeCode);
     }
 
-    public ModifiableString getData() {
+    public ModifiableByteArray getData() {
         return data;
     }
 
-    public void setData(ModifiableString data) {
+    public void setData(ModifiableByteArray data) {
         this.data = data;
     }
 
-    public void setData(String data) {
+    public void setData(byte[] data) {
         this.data = ModifiableVariableFactory.safelySetValue(this.data, data);
     }
 
