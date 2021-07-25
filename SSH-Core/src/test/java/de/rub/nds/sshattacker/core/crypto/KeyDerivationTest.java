@@ -24,8 +24,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
-import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -40,11 +39,10 @@ public class KeyDerivationTest {
      * Provides test vectors for the testDeriveKey unit test from SSH_Key_Derivation_Test.txt file
      *
      * @return A stream of test vectors for the testDeriveKey unit test
-     * @throws FileNotFoundException
-     *             Thrown if the SSH_Key_Derivation_Test.txt file can not be found
      */
-    public static Stream<Arguments> provideKDFTestVectors() throws FileNotFoundException {
-        File testVectorFile = new File("src/test/resources/SSH_Key_Derivation_Test.txt");
+    public static Stream<Arguments> provideKDFTestVectors() {
+        InputStream testVectorFile = KeyDerivationTest.class.getClassLoader().getResourceAsStream("SSH_Key_Derivation_Test.txt");
+        assert testVectorFile != null;
         Scanner reader = new Scanner(testVectorFile);
         Stream.Builder<Arguments> argumentsBuilder = Stream.builder();
         String currentHashAlgorithm = null;
