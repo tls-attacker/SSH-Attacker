@@ -9,6 +9,7 @@
  */
 package de.rub.nds.sshattacker.core.protocol.authentication.message;
 
+import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
 import de.rub.nds.sshattacker.core.protocol.common.Message;
 import de.rub.nds.sshattacker.core.protocol.authentication.preparator.UserAuthSuccessMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.authentication.serializer.UserAuthSuccessMessageSerializer;
@@ -16,6 +17,10 @@ import de.rub.nds.sshattacker.core.protocol.authentication.handler.UserAuthSucce
 import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class UserAuthSuccessMessage extends Message<UserAuthSuccessMessage> {
+
+    public UserAuthSuccessMessage() {
+        super(MessageIDConstant.SSH_MSG_USERAUTH_SUCCESS);
+    }
 
     @Override
     public UserAuthSuccessMessageHandler getHandler(SshContext context) {

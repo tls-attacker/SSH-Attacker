@@ -97,4 +97,12 @@ public class Converter {
         }
         return input;
     }
+
+    public static byte booleanToByte(boolean value) {
+        return (byte) (value ? 0x01 : 0x00);
+    }
+
+    public static boolean byteToBoolean(byte value) {
+        return value != (byte) 0x00;
+    }
 }

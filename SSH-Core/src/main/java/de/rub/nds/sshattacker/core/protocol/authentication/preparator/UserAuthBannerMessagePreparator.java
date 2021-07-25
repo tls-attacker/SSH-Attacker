@@ -22,7 +22,7 @@ public class UserAuthBannerMessagePreparator extends Preparator<UserAuthBannerMe
 
     @Override
     public void prepare() {
-        message.setMessageID(MessageIDConstant.SSH_MSG_USERAUTH_BANNER.id);
+        message.setMessageID(MessageIDConstant.SSH_MSG_USERAUTH_BANNER);
 
         // TODO dummy values for fuzzing
         message.setMessage("");

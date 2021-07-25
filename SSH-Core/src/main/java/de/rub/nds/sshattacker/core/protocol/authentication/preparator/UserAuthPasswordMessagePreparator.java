@@ -9,6 +9,7 @@
  */
 package de.rub.nds.sshattacker.core.protocol.authentication.preparator;
 
+import de.rub.nds.sshattacker.core.constants.AuthenticationMethod;
 import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
 import de.rub.nds.sshattacker.core.constants.ServiceType;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthPasswordMessage;
@@ -23,11 +24,12 @@ public class UserAuthPasswordMessagePreparator extends Preparator<UserAuthPasswo
 
     @Override
     public void prepare() {
-        message.setMessageID(MessageIDConstant.SSH_MSG_USERAUTH_REQUEST.id);
-        message.setUsername(context.getConfig().getUsername());
+        message.setMessageID(MessageIDConstant.SSH_MSG_USERAUTH_REQUEST);
+        message.setUserName(context.getConfig().getUsername());
+        message.setServiceName(ServiceType.SSH_CONNECTION);
+        message.setMethodName(AuthenticationMethod.PASSWORD);
+        message.setChangePassword(false);
         message.setPassword(context.getConfig().getPassword());
-        message.setServicename(ServiceType.SSH_CONNECTION.toString());
-        message.setExpectResponse(context.getConfig().getReplyWanted());
     }
 
 }

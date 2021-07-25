@@ -22,11 +22,11 @@ public class UserAuthFailureMessagePreparator extends Preparator<UserAuthFailure
 
     @Override
     public void prepare() {
-        message.setMessageID(MessageIDConstant.SSH_MSG_USERAUTH_FAILURE.id);
+        message.setMessageID(MessageIDConstant.SSH_MSG_USERAUTH_FAILURE);
 
         // TODO dummy values for fuzzing
         message.setPossibleAuthenticationMethods("");
-        message.setPartialSuccess((byte) 0xff);
+        message.setPartialSuccess(true);
     }
 
 }

@@ -11,6 +11,7 @@ package de.rub.nds.sshattacker.core.protocol.serializer;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
+import de.rub.nds.sshattacker.core.constants.ServiceType;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthPasswordMessage;
 import de.rub.nds.sshattacker.core.protocol.authentication.serializer.UserAuthPasswordMessageSerializer;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -32,15 +33,15 @@ public class UserAuthPasswordMessageSerializerTest {
                 .of(Arguments.of(
                         ArrayConverter
                                 .hexStringToByteArray("320000000561646D696E0000000C7373682D75736572617574680000000870617373776F7264000000000561646D696E"),
-                        "admin", "ssh-userauth", (byte) 0x00, "admin"),
+                        "admin", ServiceType.SSH_USERAUTH, (byte) 0x00, "admin"),
                         Arguments.of(
                                 ArrayConverter
                                         .hexStringToByteArray("3200000004757365720000000C7373682D75736572617574680000000870617373776F7264000000000475736572"),
-                                "user", "ssh-userauth", (byte) 0x00, "user"),
+                                "user", ServiceType.SSH_USERAUTH, (byte) 0x00, "user"),
                         Arguments.of(
                                 ArrayConverter
-                                        .hexStringToByteArray("320000000561646D696E0000000C7373682D75736572617574680000000870617373776F7264010000000475736572"),
-                                "admin", "ssh-userauth", (byte) 0x01, "user"));
+                                        .hexStringToByteArray("320000000561646D696E0000000C7373682D75736572617574680000000870617373776F7264000000000475736572"),
+                                "admin", ServiceType.SSH_USERAUTH, (byte) 0x00, "user"));
     }
 
     /**
@@ -50,22 +51,21 @@ public class UserAuthPasswordMessageSerializerTest {
      *            Expected output bytes of the serialize() call
      * @param providedUsername
      *            Username of the user to authenticate
-     * @param providedServiceName
+     * @param providedServiceType
      *            Requested service to start after the user authentication was successful
-     * @param providedExpectedResponse
+     * @param providedChangePassword
      *            Value of the expectedResponse flag
      * @param providedPassword
      *            Password of the user to authenticate
      */
     @ParameterizedTest
     @MethodSource("provideTestVectors")
-    public void testSerialize(byte[] expectedBytes, String providedUsername, String providedServiceName,
-            byte providedExpectedResponse, String providedPassword) {
+    public void testSerialize(byte[] expectedBytes, String providedUsername, ServiceType providedServiceType,
+            byte providedChangePassword, String providedPassword) {
         UserAuthPasswordMessage msg = new UserAuthPasswordMessage();
-        msg.setMessageID(MessageIDConstant.SSH_MSG_USERAUTH_REQUEST.id);
-        msg.setUsername(providedUsername);
-        msg.setServicename(providedServiceName);
-        msg.setExpectResponse(providedExpectedResponse);
+        msg.setUserName(providedUsername);
+        msg.setServiceName(providedServiceType);
+        msg.setChangePassword(providedChangePassword);
         msg.setPassword(providedPassword);
         UserAuthPasswordMessageSerializer serializer = new UserAuthPasswordMessageSerializer(msg);
 

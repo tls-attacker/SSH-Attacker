@@ -13,10 +13,12 @@ import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthBannerMessage;
 import de.rub.nds.sshattacker.core.protocol.common.MessageParser;
 
+import java.nio.charset.StandardCharsets;
+
 public class UserAuthBannerMessageParser extends MessageParser<UserAuthBannerMessage> {
 
-    public UserAuthBannerMessageParser(int startposition, byte[] array) {
-        super(startposition, array);
+    public UserAuthBannerMessageParser(int startPosition, byte[] array) {
+        super(startPosition, array);
     }
 
     @Override
@@ -25,11 +27,13 @@ public class UserAuthBannerMessageParser extends MessageParser<UserAuthBannerMes
     }
 
     private void parseMessage(UserAuthBannerMessage msg) {
-        msg.setMessage(parseByteString(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH)));
+        msg.setMessageLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
+        msg.setMessage(parseByteString(msg.getMessageLength().getValue(), StandardCharsets.UTF_8));
     }
 
     private void parseLanguageTag(UserAuthBannerMessage msg) {
-        msg.setLanguageTag(parseByteString(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH)));
+        msg.setLanguageTagLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
+        msg.setLanguageTag(parseByteString(msg.getLanguageTagLength().getValue(), StandardCharsets.US_ASCII));
     }
 
     @Override

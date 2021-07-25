@@ -10,75 +10,122 @@
 package de.rub.nds.sshattacker.core.protocol.authentication.message;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
+import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
+import de.rub.nds.sshattacker.core.constants.AuthenticationMethod;
+import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
 import de.rub.nds.sshattacker.core.protocol.authentication.handler.UserAuthPasswordMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.common.Message;
 import de.rub.nds.sshattacker.core.protocol.authentication.preparator.UserAuthPasswordMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.authentication.serializer.UserAuthPasswordMessageSerializer;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.util.Converter;
 
-public class UserAuthPasswordMessage extends Message<UserAuthPasswordMessage> {
+import java.nio.charset.StandardCharsets;
 
-    private ModifiableString username;
-    private ModifiableString servicename;
-    private ModifiableByte expectResponse;
+public class UserAuthPasswordMessage extends UserAuthRequestMessage<UserAuthPasswordMessage> {
+
+    private ModifiableByte changePassword;
+    private ModifiableInteger passwordLength;
     private ModifiableString password;
+    private ModifiableInteger newPasswordLength;
+    private ModifiableString newPassword;
 
     public UserAuthPasswordMessage() {
+        super(AuthenticationMethod.PASSWORD);
     }
 
-    public ModifiableString getUsername() {
-        return username;
+    public ModifiableByte getChangePassword() {
+        return changePassword;
     }
 
-    public void setUsername(ModifiableString username) {
-        this.username = username;
-    }
-
-    public void setUsername(String username) {
-        this.username = ModifiableVariableFactory.safelySetValue(this.username, username);
-    }
-
-    public ModifiableString getServicename() {
-        return servicename;
-    }
-
-    public void setServicename(ModifiableString servicename) {
-        this.servicename = servicename;
-    }
-
-    public void setServicename(String servicename) {
-        this.servicename = ModifiableVariableFactory.safelySetValue(this.servicename, servicename);
-    }
-
-    public ModifiableByte getExpectResponse() {
-        return expectResponse;
-    }
-
-    public void setExpectResponse(ModifiableByte expectResponse) {
-        this.expectResponse = expectResponse;
-    }
-
-    public void setExpectResponse(byte expectResponse) {
-        this.expectResponse = ModifiableVariableFactory.safelySetValue(this.expectResponse, expectResponse);
+    public ModifiableInteger getPasswordLength() {
+        return passwordLength;
     }
 
     public ModifiableString getPassword() {
         return password;
     }
 
+    public ModifiableInteger getNewPasswordLength() {
+        return newPasswordLength;
+    }
+
+    public ModifiableString getNewPassword() {
+        return newPassword;
+    }
+
+    public void setChangePassword(ModifiableByte changePassword) {
+        this.changePassword = changePassword;
+    }
+
+    public void setChangePassword(byte changePassword) {
+        this.changePassword = ModifiableVariableFactory.safelySetValue(this.changePassword, changePassword);
+    }
+
+    public void setChangePassword(boolean changePassword) {
+        setChangePassword(Converter.booleanToByte(changePassword));
+    }
+
+    public void setPasswordLength(ModifiableInteger passwordLength) {
+        this.passwordLength = passwordLength;
+    }
+
+    public void setPasswordLength(int passwordLength) {
+        this.passwordLength = ModifiableVariableFactory.safelySetValue(this.passwordLength, passwordLength);
+    }
+
     public void setPassword(ModifiableString password) {
-        this.password = password;
+        setPassword(password, true);
     }
 
     public void setPassword(String password) {
+        setPassword(password, true);
+    }
+
+    public void setPassword(ModifiableString password, boolean adjustLengthField) {
+        if (adjustLengthField) {
+            setPasswordLength(password.getValue().getBytes(StandardCharsets.UTF_8).length);
+        }
+        this.password = password;
+    }
+
+    public void setPassword(String password, boolean adjustLengthField) {
+        if (adjustLengthField) {
+            setPasswordLength(password.getBytes(StandardCharsets.UTF_8).length);
+        }
         this.password = ModifiableVariableFactory.safelySetValue(this.password, password);
     }
 
-    @Override
-    public String toCompactString() {
-        return this.getClass().getSimpleName();
+    public void setNewPasswordLength(ModifiableInteger newPasswordLength) {
+        this.newPasswordLength = newPasswordLength;
+    }
+
+    public void setNewPasswordLength(int newPasswordLength) {
+        this.newPasswordLength = ModifiableVariableFactory.safelySetValue(this.newPasswordLength, newPasswordLength);
+    }
+
+    public void setNewPassword(ModifiableString newPassword) {
+        setNewPassword(newPassword, true);
+    }
+
+    public void setNewPassword(String newPassword) {
+        setNewPassword(newPassword, true);
+    }
+
+    public void setNewPassword(ModifiableString newPassword, boolean adjustLengthField) {
+        if (adjustLengthField) {
+            setNewPasswordLength(newPassword.getValue().getBytes(StandardCharsets.UTF_8).length);
+        }
+        this.newPassword = newPassword;
+    }
+
+    public void setNewPassword(String newPassword, boolean adjustLengthField) {
+        if (adjustLengthField) {
+            setNewPasswordLength(newPassword.getBytes(StandardCharsets.UTF_8).length);
+        }
+        this.newPassword = ModifiableVariableFactory.safelySetValue(this.newPassword, newPassword);
     }
 
     @Override

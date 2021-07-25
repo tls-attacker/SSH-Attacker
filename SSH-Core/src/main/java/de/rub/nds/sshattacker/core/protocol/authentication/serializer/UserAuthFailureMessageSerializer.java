@@ -9,21 +9,33 @@
  */
 package de.rub.nds.sshattacker.core.protocol.authentication.serializer;
 
+import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.common.MessageSerializer;
 import de.rub.nds.sshattacker.core.util.Converter;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthFailureMessage;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import java.nio.charset.StandardCharsets;
 
 public class UserAuthFailureMessageSerializer extends MessageSerializer<UserAuthFailureMessage> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public UserAuthFailureMessageSerializer(UserAuthFailureMessage msg) {
         super(msg);
     }
 
     private void serializePossibleAuthenticationMethods() {
-        appendBytes(Converter.stringToLengthPrefixedBinaryString(msg.getPossibleAuthenticationMethods().getValue()));
+        LOGGER.debug("Possible authentication methods length: "
+                + msg.getPossibleAuthenticationMethodsLength().getValue());
+        appendInt(msg.getPossibleAuthenticationMethodsLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
+        LOGGER.debug("Possible authentication methods: " + msg.getPossibleAuthenticationMethods().getValue());
+        appendString(msg.getPossibleAuthenticationMethods().getValue(), StandardCharsets.US_ASCII);
     }
 
     private void serializePartialSuccess() {
+        LOGGER.debug("Partial success: " + Converter.byteToBoolean(msg.getPartialSuccess().getValue()));
         appendByte(msg.getPartialSuccess().getValue());
     }
 

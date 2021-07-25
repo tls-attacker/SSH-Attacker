@@ -13,10 +13,12 @@ import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthFailureMessage;
 import de.rub.nds.sshattacker.core.protocol.common.MessageParser;
 
+import java.nio.charset.StandardCharsets;
+
 public class UserAuthFailureMessageParser extends MessageParser<UserAuthFailureMessage> {
 
-    public UserAuthFailureMessageParser(int startposition, byte[] array) {
-        super(startposition, array);
+    public UserAuthFailureMessageParser(int startPosition, byte[] array) {
+        super(startPosition, array);
     }
 
     @Override
@@ -25,7 +27,9 @@ public class UserAuthFailureMessageParser extends MessageParser<UserAuthFailureM
     }
 
     private void parsePossibleAuthenticationMethods(UserAuthFailureMessage msg) {
-        msg.setPossibleAuthenticationMethods(parseByteString(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH)));
+        msg.setPossibleAuthenticationMethodsLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
+        msg.setPossibleAuthenticationMethods(parseByteString(msg.getPossibleAuthenticationMethodsLength().getValue(),
+                StandardCharsets.US_ASCII));
     }
 
     private void parsePartialSuccess(UserAuthFailureMessage msg) {

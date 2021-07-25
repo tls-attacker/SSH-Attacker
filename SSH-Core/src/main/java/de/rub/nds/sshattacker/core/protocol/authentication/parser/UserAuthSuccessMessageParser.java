@@ -14,8 +14,8 @@ import de.rub.nds.sshattacker.core.protocol.common.MessageParser;
 
 public class UserAuthSuccessMessageParser extends MessageParser<UserAuthSuccessMessage> {
 
-    public UserAuthSuccessMessageParser(int startposition, byte[] array) {
-        super(startposition, array);
+    public UserAuthSuccessMessageParser(int startPosition, byte[] array) {
+        super(startPosition, array);
     }
 
     @Override

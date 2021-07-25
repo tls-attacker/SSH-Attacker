@@ -10,33 +10,50 @@
 package de.rub.nds.sshattacker.core.protocol.authentication.serializer;
 
 import de.rub.nds.sshattacker.core.constants.AuthenticationMethod;
+import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthPasswordMessage;
 import de.rub.nds.sshattacker.core.protocol.common.MessageSerializer;
 import de.rub.nds.sshattacker.core.util.Converter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class UserAuthPasswordMessageSerializer extends MessageSerializer<UserAuthPasswordMessage> {
+import java.nio.charset.StandardCharsets;
 
-    private final UserAuthPasswordMessage msg;
+public class UserAuthPasswordMessageSerializer extends UserAuthRequestMessageSerializer<UserAuthPasswordMessage> {
+
     private static final Logger LOGGER = LogManager.getLogger();
 
     public UserAuthPasswordMessageSerializer(UserAuthPasswordMessage msg) {
         super(msg);
-        this.msg = msg;
+    }
+
+    private void serializeChangePassword() {
+        LOGGER.debug("Change password: " + Converter.byteToBoolean(msg.getChangePassword().getValue()));
+        appendByte(msg.getChangePassword().getValue());
+    }
+
+    private void serializePassword() {
+        LOGGER.debug("Password length: " + msg.getPasswordLength().getValue());
+        appendInt(msg.getPasswordLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
+        LOGGER.debug("Password: " + msg.getPassword().getValue());
+        appendString(msg.getPassword().getValue(), StandardCharsets.UTF_8);
+    }
+
+    private void serializeNewPassword() {
+        LOGGER.debug("New password length: " + msg.getNewPasswordLength().getValue());
+        appendInt(msg.getNewPasswordLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
+        LOGGER.debug("New password: " + msg.getNewPassword().getValue());
+        appendString(msg.getNewPassword().getValue(), StandardCharsets.UTF_8);
     }
 
     @Override
     protected byte[] serializeMessageSpecificPayload() {
-        LOGGER.debug("username: " + msg.getUsername().getValue());
-        appendBytes(Converter.stringToLengthPrefixedBinaryString(msg.getUsername().getValue()));
-        LOGGER.debug("servicename: " + msg.getServicename().getValue());
-        appendBytes(Converter.stringToLengthPrefixedBinaryString(msg.getServicename().getValue()));
-        appendBytes(Converter.stringToLengthPrefixedBinaryString(AuthenticationMethod.PASSWORD.toString()));
-        LOGGER.debug("expectResponse: " + msg.getExpectResponse().getValue());
-        appendByte(msg.getExpectResponse().getValue());
-        LOGGER.debug("password: " + msg.getPassword().getValue());
-        appendBytes(Converter.stringToLengthPrefixedBinaryString(msg.getPassword().getValue()));
+        super.serializeMessageSpecificPayload();
+        serializeChangePassword();
+        serializePassword();
+        if (Converter.byteToBoolean(msg.getChangePassword().getValue())) {
+            serializeNewPassword();
+        }
         return getAlreadySerialized();
     }
 

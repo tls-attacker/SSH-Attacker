@@ -11,6 +11,7 @@ package de.rub.nds.sshattacker.core.protocol.common;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
+import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -22,6 +23,13 @@ public abstract class Message<T extends Message<T>> extends ProtocolMessage {
 
     protected ModifiableByte messageID;
 
+    protected Message() {
+    }
+
+    protected Message(MessageIDConstant messageID) {
+        setMessageID(messageID);
+    }
+
     public ModifiableByte getMessageID() {
         return messageID;
     }
@@ -32,6 +40,10 @@ public abstract class Message<T extends Message<T>> extends ProtocolMessage {
 
     public void setMessageID(byte messageID) {
         this.messageID = ModifiableVariableFactory.safelySetValue(this.messageID, messageID);
+    }
+
+    public void setMessageID(MessageIDConstant messageID) {
+        setMessageID(messageID.id);
     }
 
     public abstract Handler<T> getHandler(SshContext context);
