@@ -13,7 +13,8 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 
 import java.util.stream.Stream;
 
-import de.rub.nds.sshattacker.core.protocol.message.BinaryPacket;
+import de.rub.nds.sshattacker.core.protocol.transport.message.BinaryPacket;
+import de.rub.nds.sshattacker.core.protocol.transport.parser.BinaryPacketParser;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;

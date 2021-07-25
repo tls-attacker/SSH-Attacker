@@ -10,8 +10,9 @@
 package de.rub.nds.sshattacker.core.protocol.serializer;
 
 import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
-import de.rub.nds.sshattacker.core.protocol.message.IgnoreMessage;
+import de.rub.nds.sshattacker.core.protocol.transport.message.IgnoreMessage;
 import de.rub.nds.sshattacker.core.protocol.parser.IgnoreMessageParserTest;
+import de.rub.nds.sshattacker.core.protocol.transport.serializer.IgnoreMessageSerializer;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;

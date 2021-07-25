@@ -9,9 +9,9 @@
  */
 package de.rub.nds.sshattacker.core.protocol.layers;
 
-import de.rub.nds.sshattacker.core.protocol.message.BinaryPacket;
-import de.rub.nds.sshattacker.core.protocol.parser.BinaryPacketParser;
-import de.rub.nds.sshattacker.core.protocol.serializer.BinaryPacketSerializer;
+import de.rub.nds.sshattacker.core.protocol.transport.message.BinaryPacket;
+import de.rub.nds.sshattacker.core.protocol.transport.parser.BinaryPacketParser;
+import de.rub.nds.sshattacker.core.protocol.transport.serializer.BinaryPacketSerializer;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;

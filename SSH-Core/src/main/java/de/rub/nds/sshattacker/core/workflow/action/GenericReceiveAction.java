@@ -11,9 +11,9 @@ package de.rub.nds.sshattacker.core.workflow.action;
 
 import de.rub.nds.sshattacker.core.workflow.action.result.MessageActionResult;
 import de.rub.nds.sshattacker.core.exceptions.WorkflowExecutionException;
-import de.rub.nds.sshattacker.core.protocol.message.BinaryPacket;
-import de.rub.nds.sshattacker.core.protocol.message.Message;
-import de.rub.nds.sshattacker.core.protocol.message.ProtocolMessage;
+import de.rub.nds.sshattacker.core.protocol.transport.message.BinaryPacket;
+import de.rub.nds.sshattacker.core.protocol.common.Message;
+import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessage;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.state.State;
 

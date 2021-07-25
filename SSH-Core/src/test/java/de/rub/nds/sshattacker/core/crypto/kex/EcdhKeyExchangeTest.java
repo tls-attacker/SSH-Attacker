@@ -59,7 +59,8 @@ public class EcdhKeyExchangeTest {
      *             Thrown if the KAS_ECC_CDH_PrimitiveTest.txt file can not be found
      */
     public static Stream<Arguments> provideTestVectors() throws FileNotFoundException {
-        InputStream testVectorFile = EcdhKeyExchangeTest.class.getClassLoader().getResourceAsStream("KAS_ECC_CDH_PrimitiveTest.txt");
+        InputStream testVectorFile = EcdhKeyExchangeTest.class.getClassLoader().getResourceAsStream(
+                "KAS_ECC_CDH_PrimitiveTest.txt");
         assert testVectorFile != null;
         Scanner reader = new Scanner(testVectorFile);
         Stream.Builder<Arguments> argumentsBuilder = Stream.builder();

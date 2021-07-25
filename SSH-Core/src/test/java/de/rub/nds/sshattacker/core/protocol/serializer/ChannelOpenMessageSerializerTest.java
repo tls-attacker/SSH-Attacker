@@ -11,7 +11,8 @@ package de.rub.nds.sshattacker.core.protocol.serializer;
 
 import de.rub.nds.sshattacker.core.constants.ChannelType;
 import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
-import de.rub.nds.sshattacker.core.protocol.message.ChannelOpenMessage;
+import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelOpenMessage;
+import de.rub.nds.sshattacker.core.protocol.connection.serializer.ChannelOpenMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.parser.ChannelOpenMessageParserTest;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;

@@ -10,7 +10,8 @@
 package de.rub.nds.sshattacker.core.protocol.parser;
 
 import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
-import de.rub.nds.sshattacker.core.protocol.message.NewKeysMessage;
+import de.rub.nds.sshattacker.core.protocol.transport.message.NewKeysMessage;
+import de.rub.nds.sshattacker.core.protocol.transport.parser.NewKeysMessageParser;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

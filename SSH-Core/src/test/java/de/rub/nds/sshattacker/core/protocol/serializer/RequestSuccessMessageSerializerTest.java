@@ -10,7 +10,8 @@
 package de.rub.nds.sshattacker.core.protocol.serializer;
 
 import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
-import de.rub.nds.sshattacker.core.protocol.message.RequestSuccessMessage;
+import de.rub.nds.sshattacker.core.protocol.connection.message.RequestSuccessMessage;
+import de.rub.nds.sshattacker.core.protocol.connection.serializer.RequestSuccessMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.parser.RequestSuccessMessageParserTest;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;

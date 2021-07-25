@@ -11,7 +11,8 @@ package de.rub.nds.sshattacker.core.protocol.serializer;
 
 import de.rub.nds.sshattacker.core.constants.GlobalRequestType;
 import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
-import de.rub.nds.sshattacker.core.protocol.message.GlobalRequestMessage;
+import de.rub.nds.sshattacker.core.protocol.connection.message.GlobalRequestMessage;
+import de.rub.nds.sshattacker.core.protocol.connection.serializer.GlobalRequestMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.parser.GlobalRequestMessageParserTest;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;

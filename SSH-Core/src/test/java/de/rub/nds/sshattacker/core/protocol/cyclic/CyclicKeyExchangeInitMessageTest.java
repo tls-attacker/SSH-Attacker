@@ -9,13 +9,13 @@
  */
 package de.rub.nds.sshattacker.core.protocol.cyclic;
 
-import de.rub.nds.sshattacker.core.protocol.message.KeyExchangeInitMessage;
-import de.rub.nds.sshattacker.core.protocol.parser.KeyExchangeInitMessageParser;
+import de.rub.nds.sshattacker.core.protocol.transport.message.KeyExchangeInitMessage;
+import de.rub.nds.sshattacker.core.protocol.transport.parser.KeyExchangeInitMessageParser;
 import de.rub.nds.sshattacker.core.protocol.parser.KeyExchangeInitMessageParserTest;
 
 import java.util.stream.Stream;
 
-import de.rub.nds.sshattacker.core.protocol.serializer.KeyExchangeInitMessageSerializer;
+import de.rub.nds.sshattacker.core.protocol.transport.serializer.KeyExchangeInitMessageSerializer;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;

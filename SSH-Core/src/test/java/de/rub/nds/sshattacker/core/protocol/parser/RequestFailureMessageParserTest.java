@@ -10,7 +10,8 @@
 package de.rub.nds.sshattacker.core.protocol.parser;
 
 import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
-import de.rub.nds.sshattacker.core.protocol.message.RequestFailureMessage;
+import de.rub.nds.sshattacker.core.protocol.connection.message.RequestFailureMessage;
+import de.rub.nds.sshattacker.core.protocol.connection.parser.RequestFailureMessageParser;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

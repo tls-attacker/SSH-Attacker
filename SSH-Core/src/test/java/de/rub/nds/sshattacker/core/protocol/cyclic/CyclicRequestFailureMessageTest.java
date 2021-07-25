@@ -9,9 +9,9 @@
  */
 package de.rub.nds.sshattacker.core.protocol.cyclic;
 
-import de.rub.nds.sshattacker.core.protocol.message.RequestFailureMessage;
-import de.rub.nds.sshattacker.core.protocol.parser.RequestFailureMessageParser;
-import de.rub.nds.sshattacker.core.protocol.serializer.RequestFailureMessageSerializer;
+import de.rub.nds.sshattacker.core.protocol.connection.message.RequestFailureMessage;
+import de.rub.nds.sshattacker.core.protocol.connection.parser.RequestFailureMessageParser;
+import de.rub.nds.sshattacker.core.protocol.connection.serializer.RequestFailureMessageSerializer;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;

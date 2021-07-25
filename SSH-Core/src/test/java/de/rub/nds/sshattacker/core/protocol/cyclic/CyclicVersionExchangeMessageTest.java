@@ -9,10 +9,10 @@
  */
 package de.rub.nds.sshattacker.core.protocol.cyclic;
 
-import de.rub.nds.sshattacker.core.protocol.message.VersionExchangeMessage;
-import de.rub.nds.sshattacker.core.protocol.parser.VersionExchangeMessageParser;
+import de.rub.nds.sshattacker.core.protocol.transport.message.VersionExchangeMessage;
+import de.rub.nds.sshattacker.core.protocol.transport.parser.VersionExchangeMessageParser;
 import de.rub.nds.sshattacker.core.protocol.parser.VersionExchangeMessageParserTest;
-import de.rub.nds.sshattacker.core.protocol.serializer.VersionExchangeMessageSerializer;
+import de.rub.nds.sshattacker.core.protocol.transport.serializer.VersionExchangeMessageSerializer;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;

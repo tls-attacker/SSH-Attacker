@@ -10,7 +10,8 @@
 package de.rub.nds.sshattacker.core.protocol.serializer;
 
 import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
-import de.rub.nds.sshattacker.core.protocol.message.ChannelWindowAdjustMessage;
+import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelWindowAdjustMessage;
+import de.rub.nds.sshattacker.core.protocol.connection.serializer.ChannelWindowAdjustMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.parser.ChannelWindowAdjustMessageParserTest;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;

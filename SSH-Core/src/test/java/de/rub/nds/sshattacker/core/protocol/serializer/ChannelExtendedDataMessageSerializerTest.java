@@ -11,7 +11,8 @@ package de.rub.nds.sshattacker.core.protocol.serializer;
 
 import de.rub.nds.sshattacker.core.constants.ExtendedChannelDataType;
 import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
-import de.rub.nds.sshattacker.core.protocol.message.ChannelExtendedDataMessage;
+import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelExtendedDataMessage;
+import de.rub.nds.sshattacker.core.protocol.connection.serializer.ChannelExtendedDataMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.parser.ChannelExtendedDataMessageParserTest;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;

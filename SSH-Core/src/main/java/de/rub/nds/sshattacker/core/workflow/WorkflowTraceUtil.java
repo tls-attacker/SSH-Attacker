@@ -12,8 +12,8 @@ package de.rub.nds.sshattacker.core.workflow;
 import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
 import de.rub.nds.sshattacker.core.workflow.action.ReceivingAction;
 import de.rub.nds.sshattacker.core.workflow.action.SendingAction;
-import de.rub.nds.sshattacker.core.protocol.message.BinaryPacket;
-import de.rub.nds.sshattacker.core.protocol.message.Message;
+import de.rub.nds.sshattacker.core.protocol.transport.message.BinaryPacket;
+import de.rub.nds.sshattacker.core.protocol.common.Message;
 
 import java.util.LinkedList;
 import java.util.List;

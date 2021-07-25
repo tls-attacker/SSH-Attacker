@@ -10,9 +10,14 @@
 package de.rub.nds.sshattacker.core.workflow.action;
 
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
-import de.rub.nds.sshattacker.core.protocol.helper.ReceiveMessageHelper;
-import de.rub.nds.sshattacker.core.protocol.helper.SendMessageHelper;
-import de.rub.nds.sshattacker.core.protocol.message.*;
+import de.rub.nds.sshattacker.core.protocol.authentication.message.*;
+import de.rub.nds.sshattacker.core.protocol.common.Message;
+import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessage;
+import de.rub.nds.sshattacker.core.protocol.connection.message.*;
+import de.rub.nds.sshattacker.core.protocol.util.ReceiveMessageHelper;
+import de.rub.nds.sshattacker.core.protocol.util.SendMessageHelper;
+import de.rub.nds.sshattacker.core.protocol.transport.message.*;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;

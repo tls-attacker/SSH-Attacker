@@ -10,7 +10,8 @@
 package de.rub.nds.sshattacker.core.protocol.serializer;
 
 import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
-import de.rub.nds.sshattacker.core.protocol.message.UserAuthBannerMessage;
+import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthBannerMessage;
+import de.rub.nds.sshattacker.core.protocol.authentication.serializer.UserAuthBannerMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.parser.UserAuthBannerMessageParserTest;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;

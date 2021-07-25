@@ -9,8 +9,8 @@
  */
 package de.rub.nds.sshattacker.core.workflow.action.result;
 
-import de.rub.nds.sshattacker.core.protocol.message.BinaryPacket;
-import de.rub.nds.sshattacker.core.protocol.message.Message;
+import de.rub.nds.sshattacker.core.protocol.transport.message.BinaryPacket;
+import de.rub.nds.sshattacker.core.protocol.common.Message;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;

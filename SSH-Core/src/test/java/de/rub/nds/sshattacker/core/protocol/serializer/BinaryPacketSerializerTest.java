@@ -9,8 +9,9 @@
  */
 package de.rub.nds.sshattacker.core.protocol.serializer;
 
-import de.rub.nds.sshattacker.core.protocol.message.BinaryPacket;
+import de.rub.nds.sshattacker.core.protocol.transport.message.BinaryPacket;
 import de.rub.nds.sshattacker.core.protocol.parser.BinaryPacketParserTest;
+import de.rub.nds.sshattacker.core.protocol.transport.serializer.BinaryPacketSerializer;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;

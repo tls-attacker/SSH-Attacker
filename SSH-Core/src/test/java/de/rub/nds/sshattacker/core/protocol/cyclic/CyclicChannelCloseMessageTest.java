@@ -9,10 +9,10 @@
  */
 package de.rub.nds.sshattacker.core.protocol.cyclic;
 
-import de.rub.nds.sshattacker.core.protocol.message.ChannelCloseMessage;
-import de.rub.nds.sshattacker.core.protocol.parser.ChannelCloseMessageParser;
+import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelCloseMessage;
+import de.rub.nds.sshattacker.core.protocol.connection.parser.ChannelCloseMessageParser;
 import de.rub.nds.sshattacker.core.protocol.parser.ChannelCloseMessageParserTest;
-import de.rub.nds.sshattacker.core.protocol.serializer.ChannelCloseMessageSerializer;
+import de.rub.nds.sshattacker.core.protocol.connection.serializer.ChannelCloseMessageSerializer;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;

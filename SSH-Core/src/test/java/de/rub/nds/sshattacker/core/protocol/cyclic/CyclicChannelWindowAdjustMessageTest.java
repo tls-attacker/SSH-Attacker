@@ -9,10 +9,10 @@
  */
 package de.rub.nds.sshattacker.core.protocol.cyclic;
 
-import de.rub.nds.sshattacker.core.protocol.message.ChannelWindowAdjustMessage;
-import de.rub.nds.sshattacker.core.protocol.parser.ChannelWindowAdjustMessageParser;
+import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelWindowAdjustMessage;
+import de.rub.nds.sshattacker.core.protocol.connection.parser.ChannelWindowAdjustMessageParser;
 import de.rub.nds.sshattacker.core.protocol.parser.ChannelWindowAdjustMessageParserTest;
-import de.rub.nds.sshattacker.core.protocol.serializer.ChannelWindowAdjustMessageSerializer;
+import de.rub.nds.sshattacker.core.protocol.connection.serializer.ChannelWindowAdjustMessageSerializer;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;

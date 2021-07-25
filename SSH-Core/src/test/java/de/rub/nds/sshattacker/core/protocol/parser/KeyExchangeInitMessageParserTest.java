@@ -10,7 +10,8 @@
 package de.rub.nds.sshattacker.core.protocol.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.sshattacker.core.protocol.message.KeyExchangeInitMessage;
+import de.rub.nds.sshattacker.core.protocol.transport.message.KeyExchangeInitMessage;
+import de.rub.nds.sshattacker.core.protocol.transport.parser.KeyExchangeInitMessageParser;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;

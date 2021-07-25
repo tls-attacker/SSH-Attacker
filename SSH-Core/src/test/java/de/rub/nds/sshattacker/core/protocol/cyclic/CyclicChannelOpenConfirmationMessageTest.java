@@ -9,10 +9,10 @@
  */
 package de.rub.nds.sshattacker.core.protocol.cyclic;
 
-import de.rub.nds.sshattacker.core.protocol.message.ChannelOpenConfirmationMessage;
-import de.rub.nds.sshattacker.core.protocol.parser.ChannelOpenConfirmationMessageParser;
+import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelOpenConfirmationMessage;
+import de.rub.nds.sshattacker.core.protocol.connection.parser.ChannelOpenConfirmationMessageParser;
 import de.rub.nds.sshattacker.core.protocol.parser.ChannelOpenConfirmationMessageParserTest;
-import de.rub.nds.sshattacker.core.protocol.serializer.ChannelOpenConfirmationMessageSerializer;
+import de.rub.nds.sshattacker.core.protocol.connection.serializer.ChannelOpenConfirmationMessageSerializer;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;

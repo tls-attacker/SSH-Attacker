@@ -12,11 +12,11 @@ package de.rub.nds.sshattacker.core.crypto;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.KeyExchangeAlgorithm;
 import de.rub.nds.sshattacker.core.crypto.hash.EcdhExchangeHash;
-import de.rub.nds.sshattacker.core.protocol.message.EcdhKeyExchangeInitMessage;
-import de.rub.nds.sshattacker.core.protocol.message.EcdhKeyExchangeReplyMessage;
-import de.rub.nds.sshattacker.core.protocol.message.VersionExchangeMessage;
-import de.rub.nds.sshattacker.core.protocol.parser.EcdhKeyExchangeInitMessageParser;
-import de.rub.nds.sshattacker.core.protocol.parser.EcdhKeyExchangeReplyMessageParser;
+import de.rub.nds.sshattacker.core.protocol.transport.message.EcdhKeyExchangeInitMessage;
+import de.rub.nds.sshattacker.core.protocol.transport.message.EcdhKeyExchangeReplyMessage;
+import de.rub.nds.sshattacker.core.protocol.transport.message.VersionExchangeMessage;
+import de.rub.nds.sshattacker.core.protocol.transport.parser.EcdhKeyExchangeInitMessageParser;
+import de.rub.nds.sshattacker.core.protocol.transport.parser.EcdhKeyExchangeReplyMessageParser;
 
 import de.rub.nds.sshattacker.core.state.SshContext;
 import org.junit.jupiter.api.Test;
@@ -41,7 +41,8 @@ public class KeyDerivationTest {
      * @return A stream of test vectors for the testDeriveKey unit test
      */
     public static Stream<Arguments> provideKDFTestVectors() {
-        InputStream testVectorFile = KeyDerivationTest.class.getClassLoader().getResourceAsStream("SSH_Key_Derivation_Test.txt");
+        InputStream testVectorFile = KeyDerivationTest.class.getClassLoader().getResourceAsStream(
+                "SSH_Key_Derivation_Test.txt");
         assert testVectorFile != null;
         Scanner reader = new Scanner(testVectorFile);
         Stream.Builder<Arguments> argumentsBuilder = Stream.builder();

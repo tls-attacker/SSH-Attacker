@@ -12,10 +12,10 @@ package de.rub.nds.sshattacker.core.workflow.action;
 import de.rub.nds.modifiablevariable.ModifiableVariable;
 import de.rub.nds.sshattacker.core.connection.AliasedConnection;
 import de.rub.nds.sshattacker.core.workflow.action.result.MessageActionResult;
-import de.rub.nds.sshattacker.core.protocol.ModifiableVariableHolder;
+import de.rub.nds.sshattacker.core.protocol.common.ModifiableVariableHolder;
 import de.rub.nds.sshattacker.core.exceptions.WorkflowExecutionException;
-import de.rub.nds.sshattacker.core.protocol.message.BinaryPacket;
-import de.rub.nds.sshattacker.core.protocol.message.Message;
+import de.rub.nds.sshattacker.core.protocol.transport.message.BinaryPacket;
+import de.rub.nds.sshattacker.core.protocol.common.Message;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.state.State;
 

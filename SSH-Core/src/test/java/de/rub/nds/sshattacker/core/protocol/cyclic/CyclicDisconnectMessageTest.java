@@ -9,10 +9,10 @@
  */
 package de.rub.nds.sshattacker.core.protocol.cyclic;
 
-import de.rub.nds.sshattacker.core.protocol.message.DisconnectMessage;
-import de.rub.nds.sshattacker.core.protocol.parser.DisconnectMessageParser;
+import de.rub.nds.sshattacker.core.protocol.transport.message.DisconnectMessage;
+import de.rub.nds.sshattacker.core.protocol.transport.parser.DisconnectMessageParser;
 import de.rub.nds.sshattacker.core.protocol.parser.DisconnectMessageParserTest;
-import de.rub.nds.sshattacker.core.protocol.serializer.DisconnectMessageSerializer;
+import de.rub.nds.sshattacker.core.protocol.transport.serializer.DisconnectMessageSerializer;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;

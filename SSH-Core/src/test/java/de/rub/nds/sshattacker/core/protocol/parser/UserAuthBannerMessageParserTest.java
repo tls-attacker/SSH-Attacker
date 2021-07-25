@@ -11,7 +11,8 @@ package de.rub.nds.sshattacker.core.protocol.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
-import de.rub.nds.sshattacker.core.protocol.message.UserAuthBannerMessage;
+import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthBannerMessage;
+import de.rub.nds.sshattacker.core.protocol.authentication.parser.UserAuthBannerMessageParser;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;

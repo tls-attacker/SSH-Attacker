@@ -11,9 +11,9 @@ package de.rub.nds.sshattacker.core.crypto.hash;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.exceptions.AdjustmentException;
-import de.rub.nds.sshattacker.core.protocol.message.KeyExchangeInitMessage;
-import de.rub.nds.sshattacker.core.protocol.message.VersionExchangeMessage;
-import de.rub.nds.sshattacker.core.protocol.serializer.KeyExchangeInitMessageSerializer;
+import de.rub.nds.sshattacker.core.protocol.transport.message.KeyExchangeInitMessage;
+import de.rub.nds.sshattacker.core.protocol.transport.message.VersionExchangeMessage;
+import de.rub.nds.sshattacker.core.protocol.transport.serializer.KeyExchangeInitMessageSerializer;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

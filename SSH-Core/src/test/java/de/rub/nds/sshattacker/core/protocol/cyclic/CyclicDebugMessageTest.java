@@ -9,10 +9,10 @@
  */
 package de.rub.nds.sshattacker.core.protocol.cyclic;
 
-import de.rub.nds.sshattacker.core.protocol.message.DebugMessage;
-import de.rub.nds.sshattacker.core.protocol.parser.DebugMessageParser;
+import de.rub.nds.sshattacker.core.protocol.transport.message.DebugMessage;
+import de.rub.nds.sshattacker.core.protocol.transport.parser.DebugMessageParser;
 import de.rub.nds.sshattacker.core.protocol.parser.DebugMessageParserTest;
-import de.rub.nds.sshattacker.core.protocol.serializer.DebugMessageSerializer;
+import de.rub.nds.sshattacker.core.protocol.transport.serializer.DebugMessageSerializer;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;

@@ -9,16 +9,16 @@
  */
 package executing;
 
-import de.rub.nds.sshattacker.core.protocol.helper.ReceiveMessageHelper;
-import de.rub.nds.sshattacker.core.protocol.helper.SendMessageHelper;
-import de.rub.nds.sshattacker.core.protocol.message.ChannelOpenMessage;
-import de.rub.nds.sshattacker.core.protocol.message.ChannelRequestMessage;
-import de.rub.nds.sshattacker.core.protocol.message.VersionExchangeMessage;
-import de.rub.nds.sshattacker.core.protocol.message.EcdhKeyExchangeInitMessage;
-import de.rub.nds.sshattacker.core.protocol.message.KeyExchangeInitMessage;
-import de.rub.nds.sshattacker.core.protocol.message.NewKeysMessage;
-import de.rub.nds.sshattacker.core.protocol.message.ServiceRequestMessage;
-import de.rub.nds.sshattacker.core.protocol.message.UserAuthPasswordMessage;
+import de.rub.nds.sshattacker.core.protocol.util.ReceiveMessageHelper;
+import de.rub.nds.sshattacker.core.protocol.util.SendMessageHelper;
+import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelOpenMessage;
+import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelRequestMessage;
+import de.rub.nds.sshattacker.core.protocol.transport.message.VersionExchangeMessage;
+import de.rub.nds.sshattacker.core.protocol.transport.message.EcdhKeyExchangeInitMessage;
+import de.rub.nds.sshattacker.core.protocol.transport.message.KeyExchangeInitMessage;
+import de.rub.nds.sshattacker.core.protocol.transport.message.NewKeysMessage;
+import de.rub.nds.sshattacker.core.protocol.transport.message.ServiceRequestMessage;
+import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthPasswordMessage;
 import de.rub.nds.sshattacker.core.state.State;
 import de.rub.nds.sshattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.sshattacker.core.workflow.action.ActivateEncryptionAction;

@@ -11,8 +11,9 @@ package de.rub.nds.sshattacker.core.protocol.serializer;
 
 import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
 import de.rub.nds.sshattacker.core.constants.ServiceType;
-import de.rub.nds.sshattacker.core.protocol.message.ServiceAcceptMessage;
+import de.rub.nds.sshattacker.core.protocol.transport.message.ServiceAcceptMessage;
 import de.rub.nds.sshattacker.core.protocol.parser.ServiceAcceptMessageParserTest;
+import de.rub.nds.sshattacker.core.protocol.transport.serializer.ServiceAcceptMessageSerializer;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;

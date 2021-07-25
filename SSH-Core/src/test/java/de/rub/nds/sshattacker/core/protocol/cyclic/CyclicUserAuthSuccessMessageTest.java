@@ -9,9 +9,9 @@
  */
 package de.rub.nds.sshattacker.core.protocol.cyclic;
 
-import de.rub.nds.sshattacker.core.protocol.message.UserAuthSuccessMessage;
-import de.rub.nds.sshattacker.core.protocol.parser.UserAuthSuccessMessageParser;
-import de.rub.nds.sshattacker.core.protocol.serializer.UserAuthSuccessMessageSerializer;
+import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthSuccessMessage;
+import de.rub.nds.sshattacker.core.protocol.authentication.parser.UserAuthSuccessMessageParser;
+import de.rub.nds.sshattacker.core.protocol.authentication.serializer.UserAuthSuccessMessageSerializer;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;

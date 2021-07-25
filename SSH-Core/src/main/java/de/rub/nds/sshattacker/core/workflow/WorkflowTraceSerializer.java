@@ -16,7 +16,7 @@ import de.rub.nds.modifiablevariable.util.XMLPrettyPrinter;
 import de.rub.nds.sshattacker.core.workflow.action.ReceiveAction;
 import de.rub.nds.sshattacker.core.workflow.action.SendAction;
 import de.rub.nds.sshattacker.core.workflow.action.SshAction;
-import de.rub.nds.sshattacker.core.protocol.message.ProtocolMessage;
+import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessage;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;

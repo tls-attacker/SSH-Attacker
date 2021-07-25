@@ -9,10 +9,10 @@
  */
 package de.rub.nds.sshattacker.core.protocol.cyclic;
 
-import de.rub.nds.sshattacker.core.protocol.message.EcdhKeyExchangeInitMessage;
+import de.rub.nds.sshattacker.core.protocol.transport.message.EcdhKeyExchangeInitMessage;
 import de.rub.nds.sshattacker.core.protocol.parser.EcdhKeyExchangeInitMessageParserTest;
-import de.rub.nds.sshattacker.core.protocol.serializer.EcdhKeyExchangeInitMessageSerializer;
-import de.rub.nds.sshattacker.core.protocol.parser.EcdhKeyExchangeInitMessageParser;
+import de.rub.nds.sshattacker.core.protocol.transport.serializer.EcdhKeyExchangeInitMessageSerializer;
+import de.rub.nds.sshattacker.core.protocol.transport.parser.EcdhKeyExchangeInitMessageParser;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;

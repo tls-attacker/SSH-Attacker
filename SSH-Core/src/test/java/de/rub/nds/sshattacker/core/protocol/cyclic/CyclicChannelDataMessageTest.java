@@ -9,10 +9,10 @@
  */
 package de.rub.nds.sshattacker.core.protocol.cyclic;
 
-import de.rub.nds.sshattacker.core.protocol.message.ChannelDataMessage;
-import de.rub.nds.sshattacker.core.protocol.parser.ChannelDataMessageParser;
+import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelDataMessage;
+import de.rub.nds.sshattacker.core.protocol.connection.parser.ChannelDataMessageParser;
 import de.rub.nds.sshattacker.core.protocol.parser.ChannelDataMessageParserTest;
-import de.rub.nds.sshattacker.core.protocol.serializer.ChannelDataMessageSerializer;
+import de.rub.nds.sshattacker.core.protocol.connection.serializer.ChannelDataMessageSerializer;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;

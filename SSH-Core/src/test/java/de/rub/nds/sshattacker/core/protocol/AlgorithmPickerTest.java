@@ -19,6 +19,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Stream;
 
+import de.rub.nds.sshattacker.core.protocol.util.AlgorithmPicker;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;

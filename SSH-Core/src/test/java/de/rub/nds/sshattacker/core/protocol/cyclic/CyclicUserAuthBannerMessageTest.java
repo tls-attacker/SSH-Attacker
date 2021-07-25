@@ -9,10 +9,10 @@
  */
 package de.rub.nds.sshattacker.core.protocol.cyclic;
 
-import de.rub.nds.sshattacker.core.protocol.message.UserAuthBannerMessage;
-import de.rub.nds.sshattacker.core.protocol.parser.UserAuthBannerMessageParser;
+import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthBannerMessage;
+import de.rub.nds.sshattacker.core.protocol.authentication.parser.UserAuthBannerMessageParser;
 import de.rub.nds.sshattacker.core.protocol.parser.UserAuthBannerMessageParserTest;
-import de.rub.nds.sshattacker.core.protocol.serializer.UserAuthBannerMessageSerializer;
+import de.rub.nds.sshattacker.core.protocol.authentication.serializer.UserAuthBannerMessageSerializer;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
