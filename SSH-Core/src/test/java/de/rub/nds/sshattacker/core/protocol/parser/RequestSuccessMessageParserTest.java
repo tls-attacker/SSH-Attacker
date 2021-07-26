@@ -19,7 +19,6 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.stream.Stream;
 
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class RequestSuccessMessageParserTest {
@@ -29,10 +28,7 @@ public class RequestSuccessMessageParserTest {
      * @return A stream of test vectors to feed the testParse unit test
      */
     public static Stream<Arguments> provideTestVectors() {
-        return Stream.of(
-                Arguments.of(ArrayConverter.hexStringToByteArray("51"), new byte[0]),
-                Arguments.of(ArrayConverter.hexStringToByteArray("51DEADBEEF"),
-                        ArrayConverter.hexStringToByteArray("DEADBEEF")));
+        return Stream.of(Arguments.of(ArrayConverter.hexStringToByteArray("51"), new byte[0]));
     }
 
     /**
@@ -40,16 +36,13 @@ public class RequestSuccessMessageParserTest {
      *
      * @param providedBytes
      *            Bytes to parse
-     * @param expectedPayload
-     *            Expected method-specific payload of the message
      */
     @ParameterizedTest
     @MethodSource("provideTestVectors")
-    public void testParse(byte[] providedBytes, byte[] expectedPayload) {
+    public void testParse(byte[] providedBytes) {
         RequestSuccessMessageParser parser = new RequestSuccessMessageParser(0, providedBytes);
         RequestSuccessMessage msg = parser.parse();
 
         assertEquals(MessageIDConstant.SSH_MSG_REQUEST_SUCCESS.id, msg.getMessageID().getValue());
-        assertArrayEquals(expectedPayload, msg.getPayload().getValue());
     }
 }

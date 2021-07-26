@@ -9,8 +9,7 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.message;
 
-import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
-import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
+import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
 import de.rub.nds.sshattacker.core.protocol.common.Message;
 import de.rub.nds.sshattacker.core.protocol.connection.preparator.RequestSuccessMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.connection.serializer.RequestSuccessMessageSerializer;
@@ -19,18 +18,8 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class RequestSuccessMessage extends Message<RequestSuccessMessage> {
 
-    private ModifiableByteArray payload;
-
-    public ModifiableByteArray getPayload() {
-        return payload;
-    }
-
-    public void setPayload(ModifiableByteArray payload) {
-        this.payload = payload;
-    }
-
-    public void setPayload(byte[] payload) {
-        this.payload = ModifiableVariableFactory.safelySetValue(this.payload, payload);
+    public RequestSuccessMessage() {
+        super(MessageIDConstant.SSH_MSG_REQUEST_SUCCESS);
     }
 
     @Override

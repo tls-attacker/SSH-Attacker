@@ -11,10 +11,11 @@ package de.rub.nds.sshattacker.core.protocol.connection.serializer;
 
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.common.MessageSerializer;
-import de.rub.nds.sshattacker.core.util.Converter;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelOpenMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.nio.charset.StandardCharsets;
 
 public class ChannelOpenMessageSerializer extends MessageSerializer<ChannelOpenMessage> {
 
@@ -24,16 +25,34 @@ public class ChannelOpenMessageSerializer extends MessageSerializer<ChannelOpenM
         super(msg);
     }
 
+    private void serializeChannelType() {
+        LOGGER.debug("Channel type length: " + msg.getChannelTypeLength().getValue());
+        appendInt(msg.getChannelTypeLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
+        LOGGER.debug("Channel type: " + msg.getChannelType().getValue());
+        appendString(msg.getChannelType().getValue(), StandardCharsets.US_ASCII);
+    }
+
+    private void serializeSenderChannel() {
+        LOGGER.debug("Sender channel: " + msg.getSenderChannel().getValue());
+        appendInt(msg.getSenderChannel().getValue(), DataFormatConstants.INT32_SIZE);
+    }
+
+    private void serializeWindowSize() {
+        LOGGER.debug("Initial window size: " + msg.getWindowSize().getValue());
+        appendInt(msg.getWindowSize().getValue(), DataFormatConstants.INT32_SIZE);
+    }
+
+    private void serializePacketSize() {
+        LOGGER.debug("Maximum packet size: " + msg.getWindowSize().getValue());
+        appendInt(msg.getPacketSize().getValue(), DataFormatConstants.INT32_SIZE);
+    }
+
     @Override
     protected byte[] serializeMessageSpecificPayload() {
-        LOGGER.debug("channel type: " + msg.getChannelType().getValue());
-        appendBytes(Converter.stringToLengthPrefixedBinaryString(msg.getChannelType().getValue()));
-        LOGGER.debug("senderChannel: " + msg.getSenderChannel().getValue());
-        appendInt(msg.getSenderChannel().getValue(), DataFormatConstants.INT32_SIZE);
-        LOGGER.debug("windowSize: " + msg.getWindowSize().getValue());
-        appendInt(msg.getWindowSize().getValue(), DataFormatConstants.INT32_SIZE);
-        LOGGER.debug("packetSize: " + msg.getPacketSize().getValue());
-        appendInt(msg.getPacketSize().getValue(), DataFormatConstants.INT32_SIZE);
+        serializeChannelType();
+        serializeSenderChannel();
+        serializeWindowSize();
+        serializePacketSize();
         return getAlreadySerialized();
     }
 

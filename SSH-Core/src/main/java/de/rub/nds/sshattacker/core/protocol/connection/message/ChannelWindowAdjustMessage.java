@@ -11,27 +11,18 @@ package de.rub.nds.sshattacker.core.protocol.connection.message;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
-import de.rub.nds.sshattacker.core.protocol.common.Message;
+import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
 import de.rub.nds.sshattacker.core.protocol.connection.preparator.ChannelWindowAdjustMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.connection.serializer.ChannelWindowAdjustMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.connection.handler.ChannelWindowAdjustMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 
-public class ChannelWindowAdjustMessage extends Message<ChannelWindowAdjustMessage> {
+public class ChannelWindowAdjustMessage extends ChannelMessage<ChannelWindowAdjustMessage> {
 
-    private ModifiableInteger recipientChannel;
     private ModifiableInteger bytesToAdd;
 
-    public ModifiableInteger getRecipientChannel() {
-        return recipientChannel;
-    }
-
-    public void setRecipientChannel(ModifiableInteger recipientChannel) {
-        this.recipientChannel = recipientChannel;
-    }
-
-    public void setRecipientChannel(int recipientChannel) {
-        this.recipientChannel = ModifiableVariableFactory.safelySetValue(this.recipientChannel, recipientChannel);
+    public ChannelWindowAdjustMessage() {
+        super(MessageIDConstant.SSH_MSG_CHANNEL_WINDOW_ADJUST);
     }
 
     public ModifiableInteger getBytesToAdd() {

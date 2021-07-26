@@ -14,8 +14,8 @@ import de.rub.nds.sshattacker.core.protocol.connection.message.RequestFailureMes
 
 public class RequestFailureMessageParser extends MessageParser<RequestFailureMessage> {
 
-    public RequestFailureMessageParser(int startposition, byte[] array) {
-        super(startposition, array);
+    public RequestFailureMessageParser(int startPosition, byte[] array) {
+        super(startPosition, array);
     }
 
     @Override
@@ -26,5 +26,4 @@ public class RequestFailureMessageParser extends MessageParser<RequestFailureMes
     @Override
     protected void parseMessageSpecificPayload(RequestFailureMessage msg) {
     }
-
 }

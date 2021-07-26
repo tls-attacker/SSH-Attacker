@@ -9,28 +9,16 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.message;
 
-import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
-import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
-import de.rub.nds.sshattacker.core.protocol.common.Message;
+import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
 import de.rub.nds.sshattacker.core.protocol.connection.preparator.ChannelEofMessagePreparator;
-import de.rub.nds.sshattacker.core.protocol.connection.serializer.ChannelEofMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.connection.handler.ChannelEofMessageHandler;
+import de.rub.nds.sshattacker.core.protocol.connection.serializer.ChannelMessageSerializer;
 import de.rub.nds.sshattacker.core.state.SshContext;
 
-public class ChannelEofMessage extends Message<ChannelEofMessage> {
+public class ChannelEofMessage extends ChannelMessage<ChannelEofMessage> {
 
-    private ModifiableInteger recipientChannel;
-
-    public ModifiableInteger getRecipientChannel() {
-        return recipientChannel;
-    }
-
-    public void setRecipientChannel(ModifiableInteger recipientChannel) {
-        this.recipientChannel = recipientChannel;
-    }
-
-    public void setRecipientChannel(int recipientChannel) {
-        this.recipientChannel = ModifiableVariableFactory.safelySetValue(this.recipientChannel, recipientChannel);
+    public ChannelEofMessage() {
+        super(MessageIDConstant.SSH_MSG_CHANNEL_EOF);
     }
 
     @Override
@@ -39,8 +27,8 @@ public class ChannelEofMessage extends Message<ChannelEofMessage> {
     }
 
     @Override
-    public ChannelEofMessageSerializer getSerializer() {
-        return new ChannelEofMessageSerializer(this);
+    public ChannelMessageSerializer<ChannelEofMessage> getSerializer() {
+        return new ChannelMessageSerializer<>(this);
     }
 
     @Override

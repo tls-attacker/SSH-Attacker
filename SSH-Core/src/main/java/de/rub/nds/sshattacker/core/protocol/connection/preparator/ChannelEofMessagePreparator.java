@@ -22,7 +22,7 @@ public class ChannelEofMessagePreparator extends Preparator<ChannelEofMessage> {
 
     @Override
     public void prepare() {
-        message.setMessageID(MessageIDConstant.SSH_MSG_CHANNEL_EOF.id);
+        message.setMessageID(MessageIDConstant.SSH_MSG_CHANNEL_EOF);
 
         // TODO dummy values for fuzzing
         message.setRecipientChannel(Integer.MAX_VALUE);

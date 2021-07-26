@@ -43,7 +43,10 @@ public class NetcatWorkflowFactory {
             Thread.sleep(5000);
             receiveMessageHelper.receiveMessages(state.getSshContext());
             String read = in.readLine();
-            sendMessageHelper.sendMessage(new ChannelDataMessage(0, (read + "\n").getBytes()), state.getSshContext());
+            ChannelDataMessage dataMessage = new ChannelDataMessage();
+            dataMessage.setRecipientChannel(0);
+            dataMessage.setData((read + "\n").getBytes());
+            sendMessageHelper.sendMessage(dataMessage, state.getSshContext());
         }
     }
 }

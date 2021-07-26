@@ -10,17 +10,16 @@
 package de.rub.nds.sshattacker.core.protocol.connection.parser;
 
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
-import de.rub.nds.sshattacker.core.protocol.common.MessageParser;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelOpenConfirmationMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class ChannelOpenConfirmationMessageParser extends MessageParser<ChannelOpenConfirmationMessage> {
+public class ChannelOpenConfirmationMessageParser extends ChannelMessageParser<ChannelOpenConfirmationMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public ChannelOpenConfirmationMessageParser(int startposition, byte[] array) {
-        super(startposition, array);
+    public ChannelOpenConfirmationMessageParser(int startPosition, byte[] array) {
+        super(startPosition, array);
     }
 
     @Override
@@ -28,16 +27,27 @@ public class ChannelOpenConfirmationMessageParser extends MessageParser<ChannelO
         return new ChannelOpenConfirmationMessage();
     }
 
+    private void parseSenderChannel(ChannelOpenConfirmationMessage msg) {
+        msg.setSenderChannel(parseIntField(DataFormatConstants.INT32_SIZE));
+        LOGGER.debug("Sender channel: " + msg.getSenderChannel().getValue());
+    }
+
+    private void parseWindowSize(ChannelOpenConfirmationMessage msg) {
+        msg.setWindowSize(parseIntField(DataFormatConstants.INT32_SIZE));
+        LOGGER.debug("Initial window size: " + msg.getWindowSize().getValue());
+    }
+
+    private void parsePacketSize(ChannelOpenConfirmationMessage msg) {
+        msg.setPacketSize(parseIntField(DataFormatConstants.INT32_SIZE));
+        LOGGER.debug("Maximum packet size: " + msg.getPacketSize().getValue());
+    }
+
     @Override
     protected void parseMessageSpecificPayload(ChannelOpenConfirmationMessage msg) {
-        msg.setRecipientChannel(parseIntField(DataFormatConstants.INT32_SIZE));
-        LOGGER.debug("recipientChannel: " + msg.getRecipientChannel().getValue());
-        msg.setSenderChannel(parseIntField(DataFormatConstants.INT32_SIZE));
-        LOGGER.debug("senderChannel: " + msg.getSenderChannel().getValue());
-        msg.setWindowSize(parseIntField(DataFormatConstants.INT32_SIZE));
-        LOGGER.debug("windowSize: " + msg.getWindowSize().getValue());
-        msg.setPacketSize(parseIntField(DataFormatConstants.INT32_SIZE));
-        LOGGER.debug("packetSize: " + msg.getPacketSize().getValue());
+        super.parseMessageSpecificPayload(msg);
+        parseSenderChannel(msg);
+        parseWindowSize(msg);
+        parsePacketSize(msg);
     }
 
 }

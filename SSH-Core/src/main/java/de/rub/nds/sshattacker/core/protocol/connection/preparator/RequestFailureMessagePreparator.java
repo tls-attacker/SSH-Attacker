@@ -22,7 +22,7 @@ public class RequestFailureMessagePreparator extends Preparator<RequestFailureMe
 
     @Override
     public void prepare() {
-        message.setMessageID(MessageIDConstant.SSH_MSG_REQUEST_FAILURE.id);
+        message.setMessageID(MessageIDConstant.SSH_MSG_REQUEST_FAILURE);
     }
 
 }

@@ -45,7 +45,7 @@
     <Receive/>
     <Send>
         <messages>
-            <ChannelRequestMessage />
+            <ChannelRequestExecMessage />
         </messages>
     </Send>
     <Receive />

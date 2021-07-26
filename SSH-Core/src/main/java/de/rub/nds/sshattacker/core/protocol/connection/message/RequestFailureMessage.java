@@ -9,6 +9,7 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.message;
 
+import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
 import de.rub.nds.sshattacker.core.protocol.common.Message;
 import de.rub.nds.sshattacker.core.protocol.connection.preparator.RequestFailureMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.connection.serializer.RequestFailureMessageSerializer;
@@ -16,6 +17,10 @@ import de.rub.nds.sshattacker.core.protocol.connection.handler.RequestFailureMes
 import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class RequestFailureMessage extends Message<RequestFailureMessage> {
+
+    public RequestFailureMessage() {
+        super(MessageIDConstant.SSH_MSG_REQUEST_FAILURE);
+    }
 
     @Override
     public RequestFailureMessageHandler getHandler(SshContext context) {

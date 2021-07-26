@@ -9,24 +9,16 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.parser;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
-import de.rub.nds.sshattacker.core.protocol.common.MessageParser;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelEofMessage;
 
-public class ChannelEofMessageParser extends MessageParser<ChannelEofMessage> {
+public class ChannelEofMessageParser extends ChannelMessageParser<ChannelEofMessage> {
 
-    public ChannelEofMessageParser(int startposition, byte[] array) {
-        super(startposition, array);
+    public ChannelEofMessageParser(int startPosition, byte[] array) {
+        super(startPosition, array);
     }
 
     @Override
     public ChannelEofMessage createMessage() {
         return new ChannelEofMessage();
     }
-
-    @Override
-    protected void parseMessageSpecificPayload(ChannelEofMessage msg) {
-        msg.setRecipientChannel(parseIntField(DataFormatConstants.INT32_SIZE));
-    }
-
 }

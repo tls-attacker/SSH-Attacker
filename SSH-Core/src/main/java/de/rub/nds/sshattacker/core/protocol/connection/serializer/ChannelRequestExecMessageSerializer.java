@@ -10,28 +10,31 @@
 package de.rub.nds.sshattacker.core.protocol.connection.serializer;
 
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
-import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelWindowAdjustMessage;
+import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelRequestExecMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class ChannelWindowAdjustMessageSerializer extends ChannelMessageSerializer<ChannelWindowAdjustMessage> {
+import java.nio.charset.StandardCharsets;
+
+public class ChannelRequestExecMessageSerializer extends ChannelRequestMessageSerializer<ChannelRequestExecMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public ChannelWindowAdjustMessageSerializer(ChannelWindowAdjustMessage msg) {
+    public ChannelRequestExecMessageSerializer(ChannelRequestExecMessage msg) {
         super(msg);
     }
 
-    private void serializeBytesToAdd() {
-        LOGGER.debug("Bytes to add: " + msg.getBytesToAdd().getValue());
-        appendInt(msg.getBytesToAdd().getValue(), DataFormatConstants.INT32_SIZE);
+    private void serializeCommand() {
+        LOGGER.debug("Command length: " + msg.getCommandLength().getValue());
+        appendInt(msg.getCommandLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
+        LOGGER.debug("Command: " + msg.getCommand().getValue());
+        appendString(msg.getCommand().getValue(), StandardCharsets.UTF_8);
     }
 
     @Override
     protected byte[] serializeMessageSpecificPayload() {
         super.serializeMessageSpecificPayload();
-        serializeBytesToAdd();
+        serializeCommand();
         return getAlreadySerialized();
     }
-
 }

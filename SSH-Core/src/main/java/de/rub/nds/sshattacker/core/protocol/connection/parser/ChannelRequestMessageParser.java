@@ -10,43 +10,37 @@
 package de.rub.nds.sshattacker.core.protocol.connection.parser;
 
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
-import de.rub.nds.sshattacker.core.protocol.common.MessageParser;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelRequestMessage;
+import de.rub.nds.sshattacker.core.util.Converter;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-public class ChannelRequestMessageParser extends MessageParser<ChannelRequestMessage> {
+import java.nio.charset.StandardCharsets;
 
-    public ChannelRequestMessageParser(int startposition, byte[] array) {
-        super(startposition, array);
+public abstract class ChannelRequestMessageParser<T extends ChannelRequestMessage<T>> extends ChannelMessageParser<T> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
+
+    public ChannelRequestMessageParser(int startPosition, byte[] array) {
+        super(startPosition, array);
+    }
+
+    private void parseRequestType(T msg) {
+        msg.setRequestTypeLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
+        LOGGER.debug("Request type length: " + msg.getRequestTypeLength().getValue());
+        msg.setRequestType(parseByteString(msg.getRequestTypeLength().getValue(), StandardCharsets.US_ASCII));
+        LOGGER.debug("Request type: " + msg.getRequestType().getValue());
+    }
+
+    private void parseWantReply(T msg) {
+        msg.setWantReply(parseByteField(1));
+        LOGGER.debug("Reply wanted: " + Converter.byteToBoolean(msg.getWantReply().getValue()));
     }
 
     @Override
-    public ChannelRequestMessage createMessage() {
-        return new ChannelRequestMessage();
-    }
-
-    private void parseRecipientChannel(ChannelRequestMessage msg) {
-        msg.setRecipientChannel(parseIntField(DataFormatConstants.INT32_SIZE));
-    }
-
-    private void parseRequestType(ChannelRequestMessage msg) {
-        int length = parseIntField(DataFormatConstants.STRING_SIZE_LENGTH);
-        msg.setRequestType(parseByteString(length));
-    }
-
-    private void parseReplyWanted(ChannelRequestMessage msg) {
-        msg.setReplyWanted(parseByteField(1));
-    }
-
-    private void parsePayload(ChannelRequestMessage msg) {
-        msg.setPayload(parseArrayOrTillEnd(Integer.MAX_VALUE));
-    }
-
-    @Override
-    protected void parseMessageSpecificPayload(ChannelRequestMessage msg) {
-        parseRecipientChannel(msg);
+    protected void parseMessageSpecificPayload(T msg) {
+        super.parseMessageSpecificPayload(msg);
         parseRequestType(msg);
-        parseReplyWanted(msg);
-        parsePayload(msg);
+        parseWantReply(msg);
     }
-
 }

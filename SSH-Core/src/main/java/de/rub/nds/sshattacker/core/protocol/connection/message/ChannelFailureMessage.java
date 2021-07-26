@@ -9,28 +9,16 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.message;
 
-import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
-import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
-import de.rub.nds.sshattacker.core.protocol.common.Message;
+import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
 import de.rub.nds.sshattacker.core.protocol.connection.preparator.ChannelFailureMessagePreparator;
-import de.rub.nds.sshattacker.core.protocol.connection.serializer.ChannelFailureMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.connection.handler.ChannelFailureMessageHandler;
+import de.rub.nds.sshattacker.core.protocol.connection.serializer.ChannelMessageSerializer;
 import de.rub.nds.sshattacker.core.state.SshContext;
 
-public class ChannelFailureMessage extends Message<ChannelFailureMessage> {
+public class ChannelFailureMessage extends ChannelMessage<ChannelFailureMessage> {
 
-    private ModifiableInteger recipientChannel;
-
-    public ModifiableInteger getRecipientChannel() {
-        return recipientChannel;
-    }
-
-    public void setRecipientChannel(ModifiableInteger recipientChannel) {
-        this.recipientChannel = recipientChannel;
-    }
-
-    public void setRecipientChannel(int recipientChannel) {
-        this.recipientChannel = ModifiableVariableFactory.safelySetValue(this.recipientChannel, recipientChannel);
+    public ChannelFailureMessage() {
+        super(MessageIDConstant.SSH_MSG_CHANNEL_FAILURE);
     }
 
     @Override
@@ -39,8 +27,8 @@ public class ChannelFailureMessage extends Message<ChannelFailureMessage> {
     }
 
     @Override
-    public ChannelFailureMessageSerializer getSerializer() {
-        return new ChannelFailureMessageSerializer(this);
+    public ChannelMessageSerializer<ChannelFailureMessage> getSerializer() {
+        return new ChannelMessageSerializer<>(this);
     }
 
     @Override

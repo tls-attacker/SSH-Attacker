@@ -9,34 +9,40 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.serializer;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
-import de.rub.nds.sshattacker.core.protocol.common.MessageSerializer;
 import de.rub.nds.sshattacker.core.util.Converter;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelRequestMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class ChannelRequestMessageSerializer extends MessageSerializer<ChannelRequestMessage> {
+import java.nio.charset.StandardCharsets;
+
+public abstract class ChannelRequestMessageSerializer<T extends ChannelRequestMessage<T>> extends
+        ChannelMessageSerializer<T> {
 
     private static final Logger LOGGER = LogManager.getLogger();
-    private final ChannelRequestMessage msg;
 
-    public ChannelRequestMessageSerializer(ChannelRequestMessage msg) {
+    public ChannelRequestMessageSerializer(T msg) {
         super(msg);
-        this.msg = msg;
+    }
+
+    private void serializeRequestType() {
+        LOGGER.debug("Request type length: " + msg.getRequestTypeLength().getValue());
+        appendInt(msg.getRequestTypeLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
+        LOGGER.debug("Request type: " + msg.getRequestType().getValue());
+        appendString(msg.getRequestType().getValue(), StandardCharsets.US_ASCII);
+    }
+
+    private void serializeWantReply() {
+        LOGGER.debug("Want reply: " + Converter.byteToBoolean(msg.getWantReply().getValue()));
+        appendByte(msg.getWantReply().getValue());
     }
 
     @Override
     protected byte[] serializeMessageSpecificPayload() {
-        LOGGER.debug("recipientChannel: " + msg.getRecipientChannel().getValue());
-        appendInt(msg.getRecipientChannel().getValue(), DataFormatConstants.INT32_SIZE);
-        LOGGER.debug("requestType: " + msg.getRequestType().getValue());
-        appendBytes(Converter.stringToLengthPrefixedBinaryString(msg.getRequestType().getValue()));
-        LOGGER.debug("replyWanted: " + msg.getReplyWanted().getValue());
-        appendByte(msg.getReplyWanted().getValue());
-        LOGGER.debug("payload: " + ArrayConverter.bytesToHexString(msg.getPayload().getValue()));
-        appendBytes(msg.getPayload().getValue());
+        super.serializeMessageSpecificPayload();
+        serializeRequestType();
+        serializeWantReply();
         return getAlreadySerialized();
     }
 

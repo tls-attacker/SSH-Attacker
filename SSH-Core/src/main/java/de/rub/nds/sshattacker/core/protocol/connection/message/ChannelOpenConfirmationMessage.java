@@ -11,29 +11,20 @@ package de.rub.nds.sshattacker.core.protocol.connection.message;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
-import de.rub.nds.sshattacker.core.protocol.common.Message;
+import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
 import de.rub.nds.sshattacker.core.protocol.connection.preparator.ChannelOpenConfirmationMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.connection.serializer.ChannelOpenConfirmationMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.connection.handler.ChannelOpenConfirmationMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 
-public class ChannelOpenConfirmationMessage extends Message<ChannelOpenConfirmationMessage> {
+public class ChannelOpenConfirmationMessage extends ChannelMessage<ChannelOpenConfirmationMessage> {
 
-    private ModifiableInteger recipientChannel;
     private ModifiableInteger senderChannel;
     private ModifiableInteger windowSize;
     private ModifiableInteger packetSize;
 
-    public ModifiableInteger getRecipientChannel() {
-        return recipientChannel;
-    }
-
-    public void setRecipientChannel(ModifiableInteger recipientChannel) {
-        this.recipientChannel = recipientChannel;
-    }
-
-    public void setRecipientChannel(int recipientChannel) {
-        this.recipientChannel = ModifiableVariableFactory.safelySetValue(this.recipientChannel, recipientChannel);
+    public ChannelOpenConfirmationMessage() {
+        super(MessageIDConstant.SSH_MSG_CHANNEL_OPEN_CONFIRMATION);
     }
 
     public ModifiableInteger getSenderChannel() {
@@ -44,7 +35,7 @@ public class ChannelOpenConfirmationMessage extends Message<ChannelOpenConfirmat
         this.senderChannel = senderChannel;
     }
 
-    public void setSenderChannel(Integer senderChannel) {
+    public void setSenderChannel(int senderChannel) {
         this.senderChannel = ModifiableVariableFactory.safelySetValue(this.senderChannel, senderChannel);
     }
 
@@ -56,7 +47,7 @@ public class ChannelOpenConfirmationMessage extends Message<ChannelOpenConfirmat
         this.windowSize = windowSize;
     }
 
-    public void setWindowSize(Integer windowSize) {
+    public void setWindowSize(int windowSize) {
         this.windowSize = ModifiableVariableFactory.safelySetValue(this.windowSize, windowSize);
     }
 
@@ -68,13 +59,8 @@ public class ChannelOpenConfirmationMessage extends Message<ChannelOpenConfirmat
         this.packetSize = packetSize;
     }
 
-    public void setPacketSize(Integer packetSize) {
+    public void setPacketSize(int packetSize) {
         this.packetSize = ModifiableVariableFactory.safelySetValue(this.packetSize, packetSize);
-    }
-
-    @Override
-    public String toCompactString() {
-        return this.getClass().getSimpleName();
     }
 
     @Override

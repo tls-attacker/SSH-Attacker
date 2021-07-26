@@ -12,36 +12,31 @@ package de.rub.nds.sshattacker.core.protocol.connection.message;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
-import de.rub.nds.sshattacker.core.protocol.common.Message;
+import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
 import de.rub.nds.sshattacker.core.protocol.connection.preparator.ChannelDataMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.connection.serializer.ChannelDataMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.connection.handler.ChannelDataMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 
-public class ChannelDataMessage extends Message<ChannelDataMessage> {
+public class ChannelDataMessage extends ChannelMessage<ChannelDataMessage> {
 
-    private ModifiableInteger recipientChannel;
+    private ModifiableInteger dataLength;
     private ModifiableByteArray data;
 
     public ChannelDataMessage() {
+        super(MessageIDConstant.SSH_MSG_CHANNEL_DATA);
     }
 
-    public ChannelDataMessage(int recipientChannel, byte[] data) {
-        this();
-        this.recipientChannel = ModifiableVariableFactory.safelySetValue(this.recipientChannel, recipientChannel);
-        this.data = ModifiableVariableFactory.safelySetValue(this.data, data);
+    public ModifiableInteger getDataLength() {
+        return dataLength;
     }
 
-    public ModifiableInteger getRecipientChannel() {
-        return recipientChannel;
+    public void setDataLength(ModifiableInteger dataLength) {
+        this.dataLength = dataLength;
     }
 
-    public void setRecipientChannel(ModifiableInteger recipientChannel) {
-        this.recipientChannel = recipientChannel;
-    }
-
-    public void setRecipientChannel(int recipientChannel) {
-        this.recipientChannel = ModifiableVariableFactory.safelySetValue(this.recipientChannel, recipientChannel);
+    public void setDataLength(int dataLength) {
+        this.dataLength = ModifiableVariableFactory.safelySetValue(this.dataLength, dataLength);
     }
 
     public ModifiableByteArray getData() {
@@ -49,16 +44,25 @@ public class ChannelDataMessage extends Message<ChannelDataMessage> {
     }
 
     public void setData(ModifiableByteArray data) {
-        this.data = data;
+        setData(data, true);
     }
 
     public void setData(byte[] data) {
-        this.data = ModifiableVariableFactory.safelySetValue(this.data, data);
+        setData(data, true);
     }
 
-    @Override
-    public String toCompactString() {
-        return this.getClass().getSimpleName();
+    public void setData(ModifiableByteArray data, boolean adjustLengthField) {
+        if (adjustLengthField) {
+            setDataLength(data.getValue().length);
+        }
+        this.data = data;
+    }
+
+    public void setData(byte[] data, boolean adjustLengthField) {
+        if (adjustLengthField) {
+            setDataLength(data.length);
+        }
+        this.data = ModifiableVariableFactory.safelySetValue(this.data, data);
     }
 
     @Override

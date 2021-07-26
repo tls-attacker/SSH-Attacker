@@ -12,20 +12,38 @@ package de.rub.nds.sshattacker.core.protocol.connection.message;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
+import de.rub.nds.sshattacker.core.constants.ChannelType;
+import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
 import de.rub.nds.sshattacker.core.protocol.common.Message;
 import de.rub.nds.sshattacker.core.protocol.connection.preparator.ChannelOpenMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.connection.serializer.ChannelOpenMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.connection.handler.ChannelOpenMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 
+import java.nio.charset.StandardCharsets;
+
 public class ChannelOpenMessage extends Message<ChannelOpenMessage> {
 
+    private ModifiableInteger channelTypeLength;
     private ModifiableString channelType;
     private ModifiableInteger senderChannel;
     private ModifiableInteger windowSize;
     private ModifiableInteger packetSize;
 
     public ChannelOpenMessage() {
+        super(MessageIDConstant.SSH_MSG_CHANNEL_OPEN);
+    }
+
+    public ModifiableInteger getChannelTypeLength() {
+        return channelTypeLength;
+    }
+
+    public void setChannelTypeLength(ModifiableInteger channelTypeLength) {
+        this.channelTypeLength = channelTypeLength;
+    }
+
+    public void setChannelTypeLength(int channelTypeLength) {
+        this.channelTypeLength = ModifiableVariableFactory.safelySetValue(this.channelTypeLength, channelTypeLength);
     }
 
     public ModifiableString getChannelType() {
@@ -33,11 +51,33 @@ public class ChannelOpenMessage extends Message<ChannelOpenMessage> {
     }
 
     public void setChannelType(ModifiableString channelType) {
-        this.channelType = channelType;
+        setChannelType(channelType, true);
     }
 
     public void setChannelType(String channelType) {
+        setChannelType(channelType, true);
+    }
+
+    public void setChannelType(ChannelType channelType) {
+        setChannelType(channelType.toString(), true);
+    }
+
+    public void setChannelType(ModifiableString channelType, boolean adjustLengthField) {
+        if (adjustLengthField) {
+            setChannelTypeLength(channelType.getValue().getBytes(StandardCharsets.US_ASCII).length);
+        }
+        this.channelType = channelType;
+    }
+
+    public void setChannelType(String channelType, boolean adjustLengthField) {
+        if (adjustLengthField) {
+            setChannelTypeLength(channelType.getBytes(StandardCharsets.US_ASCII).length);
+        }
         this.channelType = ModifiableVariableFactory.safelySetValue(this.channelType, channelType);
+    }
+
+    public void setChannelType(ChannelType channelType, boolean adjustLengthField) {
+        setChannelType(channelType.toString(), adjustLengthField);
     }
 
     public ModifiableInteger getSenderChannel() {
@@ -48,7 +88,7 @@ public class ChannelOpenMessage extends Message<ChannelOpenMessage> {
         this.senderChannel = senderChannel;
     }
 
-    public void setSenderChannel(Integer senderChannel) {
+    public void setSenderChannel(int senderChannel) {
         this.senderChannel = ModifiableVariableFactory.safelySetValue(this.senderChannel, senderChannel);
     }
 
@@ -60,7 +100,7 @@ public class ChannelOpenMessage extends Message<ChannelOpenMessage> {
         this.windowSize = windowSize;
     }
 
-    public void setWindowSize(Integer windowSize) {
+    public void setWindowSize(int windowSize) {
         this.windowSize = ModifiableVariableFactory.safelySetValue(this.windowSize, windowSize);
     }
 
@@ -72,13 +112,8 @@ public class ChannelOpenMessage extends Message<ChannelOpenMessage> {
         this.packetSize = packetSize;
     }
 
-    public void setPacketSize(Integer packetSize) {
+    public void setPacketSize(int packetSize) {
         this.packetSize = ModifiableVariableFactory.safelySetValue(this.packetSize, packetSize);
-    }
-
-    @Override
-    public String toCompactString() {
-        return this.getClass().getSimpleName();
     }
 
     @Override

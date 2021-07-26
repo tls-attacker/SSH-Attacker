@@ -9,18 +9,18 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.parser;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
-import de.rub.nds.sshattacker.core.protocol.common.MessageParser;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelDataMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class ChannelDataMessageParser extends MessageParser<ChannelDataMessage> {
+public class ChannelDataMessageParser extends ChannelMessageParser<ChannelDataMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public ChannelDataMessageParser(int startposition, byte[] array) {
-        super(startposition, array);
+    public ChannelDataMessageParser(int startPosition, byte[] array) {
+        super(startPosition, array);
     }
 
     @Override
@@ -28,14 +28,17 @@ public class ChannelDataMessageParser extends MessageParser<ChannelDataMessage> 
         return new ChannelDataMessage();
     }
 
+    private void parseData(ChannelDataMessage msg) {
+        msg.setDataLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
+        LOGGER.debug("Data length: " + msg.getDataLength().getValue());
+        msg.setData(parseByteArrayField(msg.getDataLength().getValue()));
+        LOGGER.debug("Data: " + ArrayConverter.bytesToRawHexString(msg.getData().getValue()));
+    }
+
     @Override
     protected void parseMessageSpecificPayload(ChannelDataMessage msg) {
-        msg.setRecipientChannel(parseIntField(DataFormatConstants.INT32_SIZE));
-        LOGGER.debug("recipientChannel: " + msg.getRecipientChannel().getValue());
-        int length = parseIntField(DataFormatConstants.INT32_SIZE);
-        LOGGER.debug("data length: " + length);
-        msg.setData(parseByteArrayField(length));
-        LOGGER.debug("data: " + new String(msg.getData().getValue()));
+        super.parseMessageSpecificPayload(msg);
+        parseData(msg);
     }
 
 }

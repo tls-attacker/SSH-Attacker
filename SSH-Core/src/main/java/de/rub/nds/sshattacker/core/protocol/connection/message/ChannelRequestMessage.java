@@ -10,36 +10,36 @@
 package de.rub.nds.sshattacker.core.protocol.connection.message;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
-import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
-import de.rub.nds.sshattacker.core.protocol.common.Message;
-import de.rub.nds.sshattacker.core.protocol.connection.preparator.ChannelRequestMessagePreparator;
-import de.rub.nds.sshattacker.core.protocol.connection.serializer.ChannelRequestMessageSerializer;
-import de.rub.nds.sshattacker.core.protocol.connection.handler.ChannelRequestMessageHandler;
-import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.constants.ChannelRequestType;
+import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
+import de.rub.nds.sshattacker.core.util.Converter;
 
-public class ChannelRequestMessage extends Message<ChannelRequestMessage> {
+import java.nio.charset.StandardCharsets;
 
-    private ModifiableInteger recipientChannel;
+public abstract class ChannelRequestMessage<T extends ChannelRequestMessage<T>> extends ChannelMessage<T> {
+
+    private ModifiableInteger requestTypeLength;
     private ModifiableString requestType;
-    private ModifiableByte replyWanted;
-    private ModifiableByteArray payload;
+    private ModifiableByte wantReply;
 
-    public ChannelRequestMessage() {
+    protected ChannelRequestMessage(ChannelRequestType requestType) {
+        super(MessageIDConstant.SSH_MSG_CHANNEL_REQUEST);
+        setRequestType(requestType);
     }
 
-    public ModifiableInteger getRecipientChannel() {
-        return recipientChannel;
+    public ModifiableInteger getRequestTypeLength() {
+        return requestTypeLength;
     }
 
-    public void setRecipientChannel(ModifiableInteger recipientChannel) {
-        this.recipientChannel = recipientChannel;
+    public void setRequestTypeLength(ModifiableInteger requestTypeLength) {
+        this.requestTypeLength = requestTypeLength;
     }
 
-    public void setRecipientChannel(int recipientChannel) {
-        this.recipientChannel = ModifiableVariableFactory.safelySetValue(this.recipientChannel, recipientChannel);
+    public void setRequestTypeLength(int requestTypeLength) {
+        this.requestTypeLength = ModifiableVariableFactory.safelySetValue(this.requestTypeLength, requestTypeLength);
     }
 
     public ModifiableString getRequestType() {
@@ -47,54 +47,48 @@ public class ChannelRequestMessage extends Message<ChannelRequestMessage> {
     }
 
     public void setRequestType(ModifiableString requestType) {
-        this.requestType = requestType;
+        setRequestType(requestType, true);
     }
 
     public void setRequestType(String requestType) {
+        setRequestType(requestType, true);
+    }
+
+    public void setRequestType(ChannelRequestType requestType) {
+        setRequestType(requestType.toString(), true);
+    }
+
+    public void setRequestType(ModifiableString requestType, boolean adjustLengthField) {
+        if (adjustLengthField) {
+            setRequestTypeLength(requestType.getValue().getBytes(StandardCharsets.US_ASCII).length);
+        }
+        this.requestType = requestType;
+    }
+
+    public void setRequestType(String requestType, boolean adjustLengthField) {
+        if (adjustLengthField) {
+            setRequestTypeLength(requestType.getBytes(StandardCharsets.US_ASCII).length);
+        }
         this.requestType = ModifiableVariableFactory.safelySetValue(this.requestType, requestType);
     }
 
-    public ModifiableByte getReplyWanted() {
-        return replyWanted;
+    public void setRequestType(ChannelRequestType requestType, boolean adjustLengthField) {
+        setRequestType(requestType.toString(), adjustLengthField);
     }
 
-    public void setReplyWanted(ModifiableByte replyWanted) {
-        this.replyWanted = replyWanted;
+    public ModifiableByte getWantReply() {
+        return wantReply;
     }
 
-    public void setReplyWanted(byte replyWanted) {
-        this.replyWanted = ModifiableVariableFactory.safelySetValue(this.replyWanted, replyWanted);
+    public void setWantReply(ModifiableByte replyWanted) {
+        this.wantReply = replyWanted;
     }
 
-    public ModifiableByteArray getPayload() {
-        return payload;
+    public void setWantReply(byte wantReply) {
+        this.wantReply = ModifiableVariableFactory.safelySetValue(this.wantReply, wantReply);
     }
 
-    public void setPayload(ModifiableByteArray payload) {
-        this.payload = payload;
-    }
-
-    public void setPayload(byte[] payload) {
-        this.payload = ModifiableVariableFactory.safelySetValue(this.payload, payload);
-    }
-
-    @Override
-    public String toCompactString() {
-        return this.getClass().getSimpleName();
-    }
-
-    @Override
-    public ChannelRequestMessageHandler getHandler(SshContext context) {
-        return new ChannelRequestMessageHandler(context);
-    }
-
-    @Override
-    public ChannelRequestMessageSerializer getSerializer() {
-        return new ChannelRequestMessageSerializer(this);
-    }
-
-    @Override
-    public ChannelRequestMessagePreparator getPreparator(SshContext context) {
-        return new ChannelRequestMessagePreparator(context, this);
+    public void setWantReply(boolean wantReply) {
+        setWantReply(Converter.booleanToByte(wantReply));
     }
 }

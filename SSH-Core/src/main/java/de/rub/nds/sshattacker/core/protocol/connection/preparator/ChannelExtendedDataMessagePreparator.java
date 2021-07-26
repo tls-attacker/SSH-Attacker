@@ -23,7 +23,7 @@ public class ChannelExtendedDataMessagePreparator extends Preparator<ChannelExte
 
     @Override
     public void prepare() {
-        message.setMessageID(MessageIDConstant.SSH_MSG_CHANNEL_EXTENDED_DATA.id);
+        message.setMessageID(MessageIDConstant.SSH_MSG_CHANNEL_EXTENDED_DATA);
 
         // TODO dummy values for fuzzing
         message.setRecipientChannel(Integer.MAX_VALUE);

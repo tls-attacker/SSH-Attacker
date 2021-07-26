@@ -10,35 +10,42 @@
 package de.rub.nds.sshattacker.core.protocol.connection.serializer;
 
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
-import de.rub.nds.sshattacker.core.protocol.common.MessageSerializer;
-import de.rub.nds.sshattacker.core.util.Converter;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelOpenFailureMessage;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-public class ChannelOpenFailureMessageSerializer extends MessageSerializer<ChannelOpenFailureMessage> {
+import java.nio.charset.StandardCharsets;
+
+public class ChannelOpenFailureMessageSerializer extends ChannelMessageSerializer<ChannelOpenFailureMessage> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public ChannelOpenFailureMessageSerializer(ChannelOpenFailureMessage msg) {
         super(msg);
     }
 
-    private void serializeRecipientChannel() {
-        appendInt(msg.getRecipientChannel().getValue(), DataFormatConstants.INT32_SIZE);
-    }
-
     private void serializeReasonCode() {
+        LOGGER.debug("Reason code: " + msg.getReasonCode().getValue());
         appendInt(msg.getReasonCode().getValue(), DataFormatConstants.INT32_SIZE);
     }
 
     private void serializeReason() {
-        appendBytes(Converter.stringToLengthPrefixedBinaryString(msg.getReason().getValue()));
+        LOGGER.debug("Reason length: " + msg.getReasonLength().getValue());
+        appendInt(msg.getReasonLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
+        LOGGER.debug("Reason: " + msg.getReason().getValue());
+        appendString(msg.getReason().getValue(), StandardCharsets.UTF_8);
     }
 
     private void serializeLanguageTag() {
-        appendBytes(Converter.stringToLengthPrefixedBinaryString(msg.getLanguageTag().getValue()));
+        LOGGER.debug("Language tag length: " + msg.getLanguageTagLength().getValue());
+        appendInt(msg.getLanguageTagLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
+        LOGGER.debug("Language tag: " + msg.getLanguageTag().getValue());
+        appendString(msg.getLanguageTag().getValue(), StandardCharsets.US_ASCII);
     }
 
     @Override
     protected byte[] serializeMessageSpecificPayload() {
-        serializeRecipientChannel();
+        super.serializeMessageSpecificPayload();
         serializeReasonCode();
         serializeReason();
         serializeLanguageTag();

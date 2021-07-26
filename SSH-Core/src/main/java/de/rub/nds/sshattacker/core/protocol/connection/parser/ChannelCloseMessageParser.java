@@ -9,24 +9,16 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.parser;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
-import de.rub.nds.sshattacker.core.protocol.common.MessageParser;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelCloseMessage;
 
-public class ChannelCloseMessageParser extends MessageParser<ChannelCloseMessage> {
+public class ChannelCloseMessageParser extends ChannelMessageParser<ChannelCloseMessage> {
 
-    public ChannelCloseMessageParser(int startposition, byte[] array) {
-        super(startposition, array);
+    public ChannelCloseMessageParser(int startPosition, byte[] array) {
+        super(startPosition, array);
     }
 
     @Override
     public ChannelCloseMessage createMessage() {
         return new ChannelCloseMessage();
     }
-
-    @Override
-    protected void parseMessageSpecificPayload(ChannelCloseMessage msg) {
-        msg.setRecipientChannel(parseIntField(DataFormatConstants.INT32_SIZE));
-    }
-
 }

@@ -80,8 +80,7 @@ public abstract class MessageParser<T extends Message<T>> extends Parser<T> {
                     return new ChannelOpenFailureMessageParser(0, raw).parse();
                 case SSH_MSG_CHANNEL_OPEN:
                     return new ChannelOpenMessageParser(0, raw).parse();
-                case SSH_MSG_CHANNEL_REQUEST:
-                    return new ChannelRequestMessageParser(0, raw).parse();
+                    // TODO: Reimplement channel rqeuests
                 case SSH_MSG_CHANNEL_SUCCESS:
                     return new ChannelSuccessMessageParser(0, raw).parse();
                 case SSH_MSG_CHANNEL_WINDOW_ADJUST:
@@ -90,8 +89,7 @@ public abstract class MessageParser<T extends Message<T>> extends Parser<T> {
                     return new DebugMessageParser(0, raw).parse();
                 case SSH_MSG_DISCONNECT:
                     return new DisconnectMessageParser(0, raw).parse();
-                case SSH_MSG_GLOBAL_REQUEST:
-                    return new GlobalRequestMessageParser(0, raw).parse();
+                    // TODO: Reimplement global requests
                 case SSH_MSG_IGNORE:
                     return new IgnoreMessageParser(0, raw).parse();
                 case SSH_MSG_REQUEST_FAILURE:

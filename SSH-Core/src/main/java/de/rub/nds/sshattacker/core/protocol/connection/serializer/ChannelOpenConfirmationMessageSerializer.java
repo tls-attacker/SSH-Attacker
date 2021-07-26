@@ -11,33 +11,35 @@ package de.rub.nds.sshattacker.core.protocol.connection.serializer;
 
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelOpenConfirmationMessage;
-import de.rub.nds.sshattacker.core.protocol.common.MessageSerializer;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-public class ChannelOpenConfirmationMessageSerializer extends MessageSerializer<ChannelOpenConfirmationMessage> {
+public class ChannelOpenConfirmationMessageSerializer extends ChannelMessageSerializer<ChannelOpenConfirmationMessage> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public ChannelOpenConfirmationMessageSerializer(ChannelOpenConfirmationMessage msg) {
         super(msg);
     }
 
-    private void serializeRecipientChannel() {
-        appendInt(msg.getRecipientChannel().getValue(), DataFormatConstants.INT32_SIZE);
-    }
-
     private void serializeSenderChannel() {
+        LOGGER.debug("Sender channel: " + msg.getSenderChannel().getValue());
         appendInt(msg.getSenderChannel().getValue(), DataFormatConstants.INT32_SIZE);
     }
 
     private void serializeWindowSize() {
+        LOGGER.debug("Initial window size: " + msg.getWindowSize().getValue());
         appendInt(msg.getWindowSize().getValue(), DataFormatConstants.INT32_SIZE);
     }
 
     private void serializePacketSize() {
+        LOGGER.debug("Maximum packet size: " + msg.getWindowSize().getValue());
         appendInt(msg.getPacketSize().getValue(), DataFormatConstants.INT32_SIZE);
     }
 
     @Override
     protected byte[] serializeMessageSpecificPayload() {
-        serializeRecipientChannel();
+        super.serializeMessageSpecificPayload();
         serializeSenderChannel();
         serializeWindowSize();
         serializePacketSize();

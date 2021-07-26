@@ -11,7 +11,7 @@ package de.rub.nds.sshattacker.core.protocol.serializer;
 
 import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelFailureMessage;
-import de.rub.nds.sshattacker.core.protocol.connection.serializer.ChannelFailureMessageSerializer;
+import de.rub.nds.sshattacker.core.protocol.connection.serializer.ChannelMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.parser.ChannelFailureMessageParserTest;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -45,7 +45,7 @@ public class ChannelFailureMessageSerializerTest {
         ChannelFailureMessage msg = new ChannelFailureMessage();
         msg.setMessageID(MessageIDConstant.SSH_MSG_CHANNEL_FAILURE.id);
         msg.setRecipientChannel(providedRecipientChannel);
-        ChannelFailureMessageSerializer serializer = new ChannelFailureMessageSerializer(msg);
+        ChannelMessageSerializer<ChannelFailureMessage> serializer = new ChannelMessageSerializer<>(msg);
 
         assertArrayEquals(expectedBytes, serializer.serialize());
     }

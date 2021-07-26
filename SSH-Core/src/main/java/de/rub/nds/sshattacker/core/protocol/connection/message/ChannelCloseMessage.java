@@ -9,45 +9,30 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.message;
 
-import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
-import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
-import de.rub.nds.sshattacker.core.protocol.common.Message;
+import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
 import de.rub.nds.sshattacker.core.protocol.connection.preparator.ChannelCloseMessagePreparator;
-import de.rub.nds.sshattacker.core.protocol.common.Preparator;
-import de.rub.nds.sshattacker.core.protocol.connection.serializer.ChannelCloseMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.connection.handler.ChannelCloseMessageHandler;
-import de.rub.nds.sshattacker.core.protocol.common.Handler;
-import de.rub.nds.sshattacker.core.protocol.common.Serializer;
+import de.rub.nds.sshattacker.core.protocol.connection.serializer.ChannelMessageSerializer;
 import de.rub.nds.sshattacker.core.state.SshContext;
 
-public class ChannelCloseMessage extends Message<ChannelCloseMessage> {
+public class ChannelCloseMessage extends ChannelMessage<ChannelCloseMessage> {
 
-    private ModifiableInteger recipientChannel;
-
-    public ModifiableInteger getRecipientChannel() {
-        return recipientChannel;
-    }
-
-    public void setRecipientChannel(ModifiableInteger recipientChannel) {
-        this.recipientChannel = recipientChannel;
-    }
-
-    public void setRecipientChannel(int recipientChannel) {
-        this.recipientChannel = ModifiableVariableFactory.safelySetValue(this.recipientChannel, recipientChannel);
+    public ChannelCloseMessage() {
+        super(MessageIDConstant.SSH_MSG_CHANNEL_CLOSE);
     }
 
     @Override
-    public Handler<ChannelCloseMessage> getHandler(SshContext context) {
+    public ChannelCloseMessageHandler getHandler(SshContext context) {
         return new ChannelCloseMessageHandler(context);
     }
 
     @Override
-    public Serializer<ChannelCloseMessage> getSerializer() {
-        return new ChannelCloseMessageSerializer(this);
+    public ChannelMessageSerializer<ChannelCloseMessage> getSerializer() {
+        return new ChannelMessageSerializer<>(this);
     }
 
     @Override
-    public Preparator<ChannelCloseMessage> getPreparator(SshContext context) {
+    public ChannelCloseMessagePreparator getPreparator(SshContext context) {
         return new ChannelCloseMessagePreparator(context, this);
     }
 

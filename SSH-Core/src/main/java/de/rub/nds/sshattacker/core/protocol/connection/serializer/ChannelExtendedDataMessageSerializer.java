@@ -9,32 +9,37 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.serializer;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
-import de.rub.nds.sshattacker.core.protocol.common.MessageSerializer;
-import de.rub.nds.sshattacker.core.util.Converter;
+import de.rub.nds.sshattacker.core.constants.ExtendedChannelDataType;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelExtendedDataMessage;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-public class ChannelExtendedDataMessageSerializer extends MessageSerializer<ChannelExtendedDataMessage> {
+public class ChannelExtendedDataMessageSerializer extends ChannelMessageSerializer<ChannelExtendedDataMessage> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public ChannelExtendedDataMessageSerializer(ChannelExtendedDataMessage msg) {
         super(msg);
     }
 
-    private void serializeRecipientChannel() {
-        appendInt(msg.getRecipientChannel().getValue(), DataFormatConstants.INT32_SIZE);
-    }
-
     private void serializeDataTypeCode() {
+        LOGGER.debug("Data type code: " + msg.getDataTypeCode().getValue());
+        LOGGER.debug("Data type: " + ExtendedChannelDataType.fromDataTypeCode(msg.getDataTypeCode().getValue()));
         appendInt(msg.getDataTypeCode().getValue(), DataFormatConstants.INT32_SIZE);
     }
 
     private void serializeData() {
-        appendBytes(Converter.bytesToLengthPrefixedBinaryString(msg.getData().getValue()));
+        LOGGER.debug("Data length: " + msg.getDataLength().getValue());
+        appendInt(msg.getDataLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
+        LOGGER.debug("Data: " + ArrayConverter.bytesToRawHexString(msg.getData().getValue()));
+        appendBytes(msg.getData().getValue());
     }
 
     @Override
     protected byte[] serializeMessageSpecificPayload() {
-        serializeRecipientChannel();
+        super.serializeMessageSpecificPayload();
         serializeDataTypeCode();
         serializeData();
         return getAlreadySerialized();

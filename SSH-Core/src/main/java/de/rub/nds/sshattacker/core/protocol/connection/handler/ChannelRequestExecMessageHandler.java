@@ -10,18 +10,17 @@
 package de.rub.nds.sshattacker.core.protocol.connection.handler;
 
 import de.rub.nds.sshattacker.core.protocol.common.Handler;
-import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelRequestMessage;
+import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelRequestExecMessage;
 import de.rub.nds.sshattacker.core.state.SshContext;
 
-public class ChannelRequestMessageHandler extends Handler<ChannelRequestMessage> {
+public class ChannelRequestExecMessageHandler extends Handler<ChannelRequestExecMessage> {
 
-    public ChannelRequestMessageHandler(SshContext context) {
+    public ChannelRequestExecMessageHandler(SshContext context) {
         super(context);
     }
 
     @Override
-    public void handle(ChannelRequestMessage msg) {
-        // TODO: Handle ChannelRequestMessage
+    public void handle(ChannelRequestExecMessage msg) {
+        // TODO: Handle ChannelRequestExecMessage
     }
-
 }

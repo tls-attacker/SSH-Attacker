@@ -36,15 +36,12 @@ public class RequestSuccessMessageSerializerTest {
      *
      * @param expectedBytes
      *            Expected output bytes of the serialize() call
-     * @param providedPayload
-     *            Method-specific payload of the message
      */
     @ParameterizedTest
     @MethodSource("provideTestVectors")
-    public void testSerialize(byte[] expectedBytes, byte[] providedPayload) {
+    public void testSerialize(byte[] expectedBytes) {
         RequestSuccessMessage msg = new RequestSuccessMessage();
         msg.setMessageID(MessageIDConstant.SSH_MSG_REQUEST_SUCCESS.id);
-        msg.setPayload(providedPayload);
         RequestSuccessMessageSerializer serializer = new RequestSuccessMessageSerializer(msg);
 
         assertArrayEquals(expectedBytes, serializer.serialize());

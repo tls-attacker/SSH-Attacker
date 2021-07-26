@@ -11,7 +11,7 @@ package de.rub.nds.sshattacker.core.protocol.serializer;
 
 import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelSuccessMessage;
-import de.rub.nds.sshattacker.core.protocol.connection.serializer.ChannelSuccessMessageSerializer;
+import de.rub.nds.sshattacker.core.protocol.connection.serializer.ChannelMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.parser.ChannelSuccessMessageParserTest;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -45,7 +45,7 @@ public class ChannelSuccessMessageSerializerTest {
         ChannelSuccessMessage msg = new ChannelSuccessMessage();
         msg.setMessageID(MessageIDConstant.SSH_MSG_CHANNEL_SUCCESS.id);
         msg.setRecipientChannel(providedRecipientChannel);
-        ChannelSuccessMessageSerializer serializer = new ChannelSuccessMessageSerializer(msg);
+        ChannelMessageSerializer<ChannelSuccessMessage> serializer = new ChannelMessageSerializer<>(msg);
 
         assertArrayEquals(expectedBytes, serializer.serialize());
     }

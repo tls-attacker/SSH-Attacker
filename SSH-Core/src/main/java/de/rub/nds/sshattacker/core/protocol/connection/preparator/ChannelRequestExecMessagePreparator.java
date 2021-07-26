@@ -9,25 +9,25 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.preparator;
 
+import de.rub.nds.sshattacker.core.constants.ChannelRequestType;
 import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
 import de.rub.nds.sshattacker.core.exceptions.PreparationException;
 import de.rub.nds.sshattacker.core.protocol.common.Preparator;
-import de.rub.nds.sshattacker.core.util.Converter;
-import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelRequestMessage;
+import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelRequestExecMessage;
 import de.rub.nds.sshattacker.core.state.SshContext;
 
-public class ChannelRequestMessagePreparator extends Preparator<ChannelRequestMessage> {
+public class ChannelRequestExecMessagePreparator extends Preparator<ChannelRequestExecMessage> {
 
-    public ChannelRequestMessagePreparator(SshContext context, ChannelRequestMessage message) {
+    public ChannelRequestExecMessagePreparator(SshContext context, ChannelRequestExecMessage message) {
         super(context, message);
     }
 
     @Override
     public void prepare() {
-        message.setMessageID(MessageIDConstant.SSH_MSG_CHANNEL_REQUEST.id);
-        message.setReplyWanted(context.getConfig().getReplyWanted());
-        message.setRequestType(context.getConfig().getChannelRequestType().toString());
-        message.setPayload(Converter.stringToLengthPrefixedBinaryString(context.getConfig().getChannelCommand()));
+        message.setMessageID(MessageIDConstant.SSH_MSG_CHANNEL_REQUEST);
         message.setRecipientChannel(context.getRemoteChannel().orElseThrow(PreparationException::new));
+        message.setWantReply(context.getConfig().getReplyWanted());
+        message.setRequestType(ChannelRequestType.EXEC);
+        message.setCommand(context.getConfig().getChannelCommand());
     }
 }

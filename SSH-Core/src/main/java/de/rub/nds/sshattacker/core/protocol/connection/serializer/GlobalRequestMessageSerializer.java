@@ -9,34 +9,39 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.serializer;
 
+import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.common.MessageSerializer;
 import de.rub.nds.sshattacker.core.util.Converter;
 import de.rub.nds.sshattacker.core.protocol.connection.message.GlobalRequestMessage;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-public class GlobalRequestMessageSerializer extends MessageSerializer<GlobalRequestMessage> {
+import java.nio.charset.StandardCharsets;
 
-    public GlobalRequestMessageSerializer(GlobalRequestMessage msg) {
+public abstract class GlobalRequestMessageSerializer<T extends GlobalRequestMessage<T>> extends MessageSerializer<T> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
+
+    public GlobalRequestMessageSerializer(T msg) {
         super(msg);
     }
 
     private void serializeRequestName() {
-        appendBytes(Converter.stringToLengthPrefixedBinaryString(msg.getRequestName().getValue()));
+        LOGGER.debug("Request name length: " + msg.getRequestNameLength().getValue());
+        appendInt(msg.getRequestNameLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
+        LOGGER.debug("Request name: " + msg.getRequestName().getValue());
+        appendString(msg.getRequestName().getValue(), StandardCharsets.US_ASCII);
     }
 
-    private void serializeWantReplay() {
+    private void serializeWantReply() {
+        LOGGER.debug("Want reply: " + Converter.byteToBoolean(msg.getWantReply().getValue()));
         appendByte(msg.getWantReply().getValue());
-    }
-
-    private void serializePayload() {
-        appendBytes(msg.getPayload().getValue());
     }
 
     @Override
     protected byte[] serializeMessageSpecificPayload() {
         serializeRequestName();
-        serializeWantReplay();
-        serializePayload();
+        serializeWantReply();
         return getAlreadySerialized();
     }
-
 }

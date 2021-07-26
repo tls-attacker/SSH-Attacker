@@ -11,8 +11,8 @@ package de.rub.nds.sshattacker.core.protocol.cyclic;
 
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelCloseMessage;
 import de.rub.nds.sshattacker.core.protocol.connection.parser.ChannelCloseMessageParser;
+import de.rub.nds.sshattacker.core.protocol.connection.serializer.ChannelMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.parser.ChannelCloseMessageParserTest;
-import de.rub.nds.sshattacker.core.protocol.connection.serializer.ChannelCloseMessageSerializer;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -42,6 +42,6 @@ public class CyclicChannelCloseMessageTest {
     @MethodSource("provideTestVectors")
     public void testCyclic(byte[] providedBytes) {
         ChannelCloseMessage msg = new ChannelCloseMessageParser(0, providedBytes).parse();
-        assertArrayEquals(providedBytes, new ChannelCloseMessageSerializer(msg).serialize());
+        assertArrayEquals(providedBytes, new ChannelMessageSerializer<>(msg).serialize());
     }
 }

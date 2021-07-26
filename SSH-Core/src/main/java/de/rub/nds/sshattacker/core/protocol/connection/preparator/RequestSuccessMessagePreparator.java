@@ -22,10 +22,7 @@ public class RequestSuccessMessagePreparator extends Preparator<RequestSuccessMe
 
     @Override
     public void prepare() {
-        message.setMessageID(MessageIDConstant.SSH_MSG_REQUEST_SUCCESS.id);
-
-        // TODO dummy values for fuzzing
-        message.setPayload(new byte[0]);
+        message.setMessageID(MessageIDConstant.SSH_MSG_REQUEST_SUCCESS);
     }
 
 }

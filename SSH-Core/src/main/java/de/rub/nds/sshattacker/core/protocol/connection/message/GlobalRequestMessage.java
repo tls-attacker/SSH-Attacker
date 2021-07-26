@@ -10,31 +10,70 @@
 package de.rub.nds.sshattacker.core.protocol.connection.message;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
-import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
+import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
+import de.rub.nds.sshattacker.core.constants.GlobalRequestType;
+import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
 import de.rub.nds.sshattacker.core.protocol.common.Message;
-import de.rub.nds.sshattacker.core.protocol.connection.preparator.GlobalRequestMessagePreparator;
-import de.rub.nds.sshattacker.core.protocol.connection.serializer.GlobalRequestMessageSerializer;
-import de.rub.nds.sshattacker.core.protocol.connection.handler.GlobalRequestMessageHandler;
-import de.rub.nds.sshattacker.core.state.SshContext;
 
-public class GlobalRequestMessage extends Message<GlobalRequestMessage> {
+import java.nio.charset.StandardCharsets;
 
+public abstract class GlobalRequestMessage<T extends GlobalRequestMessage<T>> extends Message<T> {
+
+    private ModifiableInteger requestNameLength;
     private ModifiableString requestName;
     private ModifiableByte wantReply;
-    private ModifiableByteArray payload;
+
+    protected GlobalRequestMessage(GlobalRequestType requestType) {
+        super(MessageIDConstant.SSH_MSG_GLOBAL_REQUEST);
+        setRequestName(requestType);
+    }
+
+    public ModifiableInteger getRequestNameLength() {
+        return requestNameLength;
+    }
+
+    public void setRequestNameLength(ModifiableInteger requestNameLength) {
+        this.requestNameLength = requestNameLength;
+    }
+
+    public void setRequestNameLength(int requestNameLength) {
+        this.requestNameLength = ModifiableVariableFactory.safelySetValue(this.requestNameLength, requestNameLength);
+    }
 
     public ModifiableString getRequestName() {
         return requestName;
     }
 
     public void setRequestName(ModifiableString requestName) {
-        this.requestName = requestName;
+        setRequestName(requestName, true);
     }
 
     public void setRequestName(String requestName) {
+        setRequestName(requestName, true);
+    }
+
+    public void setRequestName(GlobalRequestType requestType) {
+        setRequestName(requestType.toString(), true);
+    }
+
+    public void setRequestName(ModifiableString requestName, boolean adjustLengthField) {
+        if (adjustLengthField) {
+            setRequestNameLength(requestName.getValue().getBytes(StandardCharsets.US_ASCII).length);
+        }
+        this.requestName = requestName;
+    }
+
+    public void setRequestName(String requestName, boolean adjustLengthField) {
+        if (adjustLengthField) {
+            setRequestNameLength(requestName.getBytes(StandardCharsets.US_ASCII).length);
+        }
         this.requestName = ModifiableVariableFactory.safelySetValue(this.requestName, requestName);
+    }
+
+    public void setRequestName(GlobalRequestType requestType, boolean adjustLengthField) {
+        setRequestName(requestType.toString(), adjustLengthField);
     }
 
     public ModifiableByte getWantReply() {
@@ -48,32 +87,4 @@ public class GlobalRequestMessage extends Message<GlobalRequestMessage> {
     public void setWantReply(byte wantReply) {
         this.wantReply = ModifiableVariableFactory.safelySetValue(this.wantReply, wantReply);
     }
-
-    public ModifiableByteArray getPayload() {
-        return payload;
-    }
-
-    public void setPayload(ModifiableByteArray payload) {
-        this.payload = payload;
-    }
-
-    public void setPayload(byte[] payload) {
-        this.payload = ModifiableVariableFactory.safelySetValue(this.payload, payload);
-    }
-
-    @Override
-    public GlobalRequestMessageHandler getHandler(SshContext context) {
-        return new GlobalRequestMessageHandler(context);
-    }
-
-    @Override
-    public GlobalRequestMessageSerializer getSerializer() {
-        return new GlobalRequestMessageSerializer(this);
-    }
-
-    @Override
-    public GlobalRequestMessagePreparator getPreparator(SshContext context) {
-        return new GlobalRequestMessagePreparator(context, this);
-    }
-
 }

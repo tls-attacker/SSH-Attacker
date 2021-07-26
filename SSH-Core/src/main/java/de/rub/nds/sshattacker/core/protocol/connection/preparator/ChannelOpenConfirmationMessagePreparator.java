@@ -22,7 +22,7 @@ public class ChannelOpenConfirmationMessagePreparator extends Preparator<Channel
 
     @Override
     public void prepare() {
-        message.setMessageID(MessageIDConstant.SSH_MSG_CHANNEL_OPEN_CONFIRMATION.id);
+        message.setMessageID(MessageIDConstant.SSH_MSG_CHANNEL_OPEN_CONFIRMATION);
         // TODO dummy values for fuzzing
 
         message.setPacketSize(Integer.MAX_VALUE);

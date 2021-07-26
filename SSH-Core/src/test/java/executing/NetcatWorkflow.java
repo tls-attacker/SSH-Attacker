@@ -9,10 +9,10 @@
  */
 package executing;
 
+import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelRequestExecMessage;
 import de.rub.nds.sshattacker.core.protocol.util.ReceiveMessageHelper;
 import de.rub.nds.sshattacker.core.protocol.util.SendMessageHelper;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelOpenMessage;
-import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelRequestMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.message.VersionExchangeMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.message.EcdhKeyExchangeInitMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.message.KeyExchangeInitMessage;
@@ -71,7 +71,7 @@ public class NetcatWorkflow {
         trace.addSshAction(sendSessionOpen);
         trace.addSshAction(receiveSessionOpen);
 
-        SendAction sendChannelRequest = new SendAction("defaultConnection", new ChannelRequestMessage());
+        SendAction sendChannelRequest = new SendAction("defaultConnection", new ChannelRequestExecMessage());
         ReceiveAction receiveChannelResponse = new ReceiveAction("defaultConnection");
         trace.addSshAction(sendChannelRequest);
         trace.addSshAction(receiveChannelResponse);

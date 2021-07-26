@@ -12,35 +12,34 @@ package de.rub.nds.sshattacker.core.protocol.connection.parser;
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.common.MessageParser;
 import de.rub.nds.sshattacker.core.protocol.connection.message.GlobalRequestMessage;
+import de.rub.nds.sshattacker.core.util.Converter;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-public class GlobalRequestMessageParser extends MessageParser<GlobalRequestMessage> {
+public abstract class GlobalRequestMessageParser<T extends GlobalRequestMessage<T>> extends MessageParser<T> {
 
-    public GlobalRequestMessageParser(int startposition, byte[] array) {
-        super(startposition, array);
+    private static final Logger LOGGER = LogManager.getLogger();
+
+    public GlobalRequestMessageParser(int startPosition, byte[] array) {
+        super(startPosition, array);
     }
 
-    @Override
-    public GlobalRequestMessage createMessage() {
-        return new GlobalRequestMessage();
-    }
-
-    private void parseRequestName(GlobalRequestMessage msg) {
+    private void parseRequestName(T msg) {
+        msg.setRequestNameLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
+        LOGGER.debug("Request name length: " + msg.getRequestNameLength().getValue());
         msg.setRequestName(parseByteString(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH)));
+        LOGGER.debug("Request name: " + msg.getRequestName().getValue());
     }
 
-    private void parseWantReply(GlobalRequestMessage msg) {
+    private void parseWantReply(T msg) {
         msg.setWantReply(parseByteField(1));
-    }
-
-    private void parsePayload(GlobalRequestMessage msg) {
-        msg.setPayload(parseArrayOrTillEnd(-1));
+        LOGGER.debug("Want reply: " + Converter.byteToBoolean(msg.getWantReply().getValue()));
     }
 
     @Override
-    protected void parseMessageSpecificPayload(GlobalRequestMessage msg) {
+    protected void parseMessageSpecificPayload(T msg) {
         parseRequestName(msg);
         parseWantReply(msg);
-        parsePayload(msg);
     }
 
 }

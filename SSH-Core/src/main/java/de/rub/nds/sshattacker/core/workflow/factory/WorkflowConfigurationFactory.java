@@ -11,13 +11,13 @@ package de.rub.nds.sshattacker.core.workflow.factory;
 
 import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.constants.RunningModeType;
+import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelRequestExecMessage;
 import de.rub.nds.sshattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.sshattacker.core.workflow.action.ActivateEncryptionAction;
 import de.rub.nds.sshattacker.core.workflow.action.ReceiveAction;
 import de.rub.nds.sshattacker.core.workflow.action.SendAction;
 import de.rub.nds.sshattacker.core.workflow.action.SshAction;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelOpenMessage;
-import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelRequestMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.message.VersionExchangeMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.message.EcdhKeyExchangeInitMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.message.KeyExchangeInitMessage;
@@ -56,7 +56,7 @@ public class WorkflowConfigurationFactory {
                 sshActions.add(new ReceiveAction());
                 sshActions.add(new SendAction(new ChannelOpenMessage()));
                 sshActions.add(new ReceiveAction());
-                sshActions.add(new SendAction(new ChannelRequestMessage()));
+                sshActions.add(new SendAction(new ChannelRequestExecMessage()));
                 sshActions.add(new ReceiveAction());
                 break;
 

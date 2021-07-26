@@ -9,28 +9,16 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.message;
 
-import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
-import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
-import de.rub.nds.sshattacker.core.protocol.common.Message;
+import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
 import de.rub.nds.sshattacker.core.protocol.connection.preparator.ChannelSuccessMessagePreparator;
-import de.rub.nds.sshattacker.core.protocol.connection.serializer.ChannelSuccessMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.connection.handler.ChannelSuccessMessageHandler;
+import de.rub.nds.sshattacker.core.protocol.connection.serializer.ChannelMessageSerializer;
 import de.rub.nds.sshattacker.core.state.SshContext;
 
-public class ChannelSuccessMessage extends Message<ChannelSuccessMessage> {
+public class ChannelSuccessMessage extends ChannelMessage<ChannelSuccessMessage> {
 
-    private ModifiableInteger recipientChannel;
-
-    public ModifiableInteger getRecipientChannel() {
-        return recipientChannel;
-    }
-
-    public void setRecipientChannel(ModifiableInteger recipientChannel) {
-        this.recipientChannel = recipientChannel;
-    }
-
-    public void setRecipientChannel(int recipientChannel) {
-        this.recipientChannel = ModifiableVariableFactory.safelySetValue(this.recipientChannel, recipientChannel);
+    public ChannelSuccessMessage() {
+        super(MessageIDConstant.SSH_MSG_CHANNEL_SUCCESS);
     }
 
     @Override
@@ -39,8 +27,8 @@ public class ChannelSuccessMessage extends Message<ChannelSuccessMessage> {
     }
 
     @Override
-    public ChannelSuccessMessageSerializer getSerializer() {
-        return new ChannelSuccessMessageSerializer(this);
+    public ChannelMessageSerializer<ChannelSuccessMessage> getSerializer() {
+        return new ChannelMessageSerializer<>(this);
     }
 
     @Override

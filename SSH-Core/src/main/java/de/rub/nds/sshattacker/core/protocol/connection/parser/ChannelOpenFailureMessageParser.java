@@ -10,13 +10,18 @@
 package de.rub.nds.sshattacker.core.protocol.connection.parser;
 
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
-import de.rub.nds.sshattacker.core.protocol.common.MessageParser;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelOpenFailureMessage;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-public class ChannelOpenFailureMessageParser extends MessageParser<ChannelOpenFailureMessage> {
+import java.nio.charset.StandardCharsets;
 
-    public ChannelOpenFailureMessageParser(int startposition, byte[] array) {
-        super(startposition, array);
+public class ChannelOpenFailureMessageParser extends ChannelMessageParser<ChannelOpenFailureMessage> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
+
+    public ChannelOpenFailureMessageParser(int startPosition, byte[] array) {
+        super(startPosition, array);
     }
 
     @Override
@@ -24,25 +29,28 @@ public class ChannelOpenFailureMessageParser extends MessageParser<ChannelOpenFa
         return new ChannelOpenFailureMessage();
     }
 
-    private void parseRecipientChannel(ChannelOpenFailureMessage msg) {
-        msg.setRecipientChannel(parseIntField(DataFormatConstants.INT32_SIZE));
-    }
-
     private void parseReasonCode(ChannelOpenFailureMessage msg) {
         msg.setReasonCode(parseIntField(DataFormatConstants.INT32_SIZE));
+        LOGGER.debug("Reason code: " + msg.getReasonCode());
     }
 
     private void parseReason(ChannelOpenFailureMessage msg) {
-        msg.setReason(parseByteString(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH)));
+        msg.setReasonLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
+        LOGGER.debug("Reason length: " + msg.getReasonLength());
+        msg.setReason(parseByteString(msg.getReasonLength().getValue(), StandardCharsets.UTF_8));
+        LOGGER.debug("Reason: " + msg.getReason().getValue());
     }
 
     private void parseLanguageTag(ChannelOpenFailureMessage msg) {
-        msg.setLanguageTag(parseByteString(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH)));
+        msg.setLanguageTagLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
+        LOGGER.debug("Language tag length: " + msg.getLanguageTagLength().getValue());
+        msg.setLanguageTag(parseByteString(msg.getLanguageTagLength().getValue(), StandardCharsets.US_ASCII));
+        LOGGER.debug("Language tag: " + msg.getLanguageTag().getValue());
     }
 
     @Override
     protected void parseMessageSpecificPayload(ChannelOpenFailureMessage msg) {
-        parseRecipientChannel(msg);
+        super.parseMessageSpecificPayload(msg);
         parseReasonCode(msg);
         parseReason(msg);
         parseLanguageTag(msg);

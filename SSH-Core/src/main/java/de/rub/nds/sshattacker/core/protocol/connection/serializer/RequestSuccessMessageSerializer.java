@@ -20,8 +20,7 @@ public class RequestSuccessMessageSerializer extends MessageSerializer<RequestSu
 
     @Override
     protected byte[] serializeMessageSpecificPayload() {
-        appendBytes(msg.getPayload().getValue());
-        return getAlreadySerialized();
+        return new byte[0];
     }
 
 }

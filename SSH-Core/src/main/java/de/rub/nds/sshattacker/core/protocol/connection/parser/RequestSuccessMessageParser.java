@@ -14,8 +14,8 @@ import de.rub.nds.sshattacker.core.protocol.connection.message.RequestSuccessMes
 
 public class RequestSuccessMessageParser extends MessageParser<RequestSuccessMessage> {
 
-    public RequestSuccessMessageParser(int startposition, byte[] array) {
-        super(startposition, array);
+    public RequestSuccessMessageParser(int startPosition, byte[] array) {
+        super(startPosition, array);
     }
 
     @Override
@@ -25,7 +25,5 @@ public class RequestSuccessMessageParser extends MessageParser<RequestSuccessMes
 
     @Override
     protected void parseMessageSpecificPayload(RequestSuccessMessage msg) {
-        msg.setPayload(parseArrayOrTillEnd(-1));
     }
-
 }

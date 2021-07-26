@@ -12,29 +12,24 @@ package de.rub.nds.sshattacker.core.protocol.connection.message;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
-import de.rub.nds.sshattacker.core.protocol.common.Message;
+import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
 import de.rub.nds.sshattacker.core.protocol.connection.preparator.ChannelOpenFailureMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.connection.serializer.ChannelOpenFailureMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.connection.handler.ChannelOpenFailureMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 
-public class ChannelOpenFailureMessage extends Message<ChannelOpenFailureMessage> {
+import java.nio.charset.StandardCharsets;
 
-    private ModifiableInteger recipientChannel;
+public class ChannelOpenFailureMessage extends ChannelMessage<ChannelOpenFailureMessage> {
+
     private ModifiableInteger reasonCode;
+    private ModifiableInteger reasonLength;
     private ModifiableString reason;
+    private ModifiableInteger languageTagLength;
     private ModifiableString languageTag;
 
-    public ModifiableInteger getRecipientChannel() {
-        return recipientChannel;
-    }
-
-    public void setRecipientChannel(ModifiableInteger recipientChannel) {
-        this.recipientChannel = recipientChannel;
-    }
-
-    public void setRecipientChannel(int recipientChannel) {
-        this.recipientChannel = ModifiableVariableFactory.safelySetValue(this.recipientChannel, recipientChannel);
+    public ChannelOpenFailureMessage() {
+        super(MessageIDConstant.SSH_MSG_CHANNEL_OPEN_FAILURE);
     }
 
     public ModifiableInteger getReasonCode() {
@@ -49,16 +44,54 @@ public class ChannelOpenFailureMessage extends Message<ChannelOpenFailureMessage
         this.reasonCode = ModifiableVariableFactory.safelySetValue(this.reasonCode, reasonCode);
     }
 
+    public ModifiableInteger getReasonLength() {
+        return reasonLength;
+    }
+
+    public void setReasonLength(ModifiableInteger reasonLength) {
+        this.reasonLength = reasonLength;
+    }
+
+    public void setReasonLength(int reasonLength) {
+        this.reasonLength = ModifiableVariableFactory.safelySetValue(this.reasonLength, reasonLength);
+    }
+
     public ModifiableString getReason() {
         return reason;
     }
 
     public void setReason(ModifiableString reason) {
-        this.reason = reason;
+        setReason(reason, true);
     }
 
     public void setReason(String reason) {
+        setReason(reason, true);
+    }
+
+    public void setReason(ModifiableString reason, boolean adjustLengthField) {
+        if (adjustLengthField) {
+            setReasonLength(reason.getValue().getBytes(StandardCharsets.UTF_8).length);
+        }
+        this.reason = reason;
+    }
+
+    public void setReason(String reason, boolean adjustLengthField) {
+        if (adjustLengthField) {
+            setReasonLength(reason.getBytes(StandardCharsets.UTF_8).length);
+        }
         this.reason = ModifiableVariableFactory.safelySetValue(this.reason, reason);
+    }
+
+    public ModifiableInteger getLanguageTagLength() {
+        return languageTagLength;
+    }
+
+    public void setLanguageTagLength(ModifiableInteger languageTagLength) {
+        this.languageTagLength = languageTagLength;
+    }
+
+    public void setLanguageTagLength(int languageTagLength) {
+        this.languageTagLength = ModifiableVariableFactory.safelySetValue(this.languageTagLength, languageTagLength);
     }
 
     public ModifiableString getLanguageTag() {
@@ -66,10 +99,24 @@ public class ChannelOpenFailureMessage extends Message<ChannelOpenFailureMessage
     }
 
     public void setLanguageTag(ModifiableString languageTag) {
-        this.languageTag = languageTag;
+        setLanguageTag(languageTag, true);
     }
 
     public void setLanguageTag(String languageTag) {
+        setLanguageTag(languageTag, true);
+    }
+
+    public void setLanguageTag(ModifiableString languageTag, boolean adjustLengthField) {
+        if (adjustLengthField) {
+            setLanguageTagLength(languageTag.getValue().getBytes(StandardCharsets.US_ASCII).length);
+        }
+        this.languageTag = languageTag;
+    }
+
+    public void setLanguageTag(String languageTag, boolean adjustLengthField) {
+        if (adjustLengthField) {
+            setLanguageTagLength(languageTag.getBytes(StandardCharsets.US_ASCII).length);
+        }
         this.languageTag = ModifiableVariableFactory.safelySetValue(this.languageTag, languageTag);
     }
 
