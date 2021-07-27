@@ -28,12 +28,12 @@ public class UserAuthBannerMessageParser extends MessageParser<UserAuthBannerMes
 
     private void parseMessage(UserAuthBannerMessage msg) {
         msg.setMessageLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-        msg.setMessage(parseByteString(msg.getMessageLength().getValue(), StandardCharsets.UTF_8));
+        msg.setMessage(parseByteString(msg.getMessageLength().getValue(), StandardCharsets.UTF_8), false);
     }
 
     private void parseLanguageTag(UserAuthBannerMessage msg) {
         msg.setLanguageTagLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-        msg.setLanguageTag(parseByteString(msg.getLanguageTagLength().getValue(), StandardCharsets.US_ASCII));
+        msg.setLanguageTag(parseByteString(msg.getLanguageTagLength().getValue(), StandardCharsets.US_ASCII), false);
     }
 
     @Override

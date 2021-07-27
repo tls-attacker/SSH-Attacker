@@ -27,7 +27,7 @@ public abstract class GlobalRequestMessageParser<T extends GlobalRequestMessage<
     private void parseRequestName(T msg) {
         msg.setRequestNameLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
         LOGGER.debug("Request name length: " + msg.getRequestNameLength().getValue());
-        msg.setRequestName(parseByteString(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH)));
+        msg.setRequestName(parseByteString(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH)), false);
         LOGGER.debug("Request name: " + msg.getRequestName().getValue());
     }
 

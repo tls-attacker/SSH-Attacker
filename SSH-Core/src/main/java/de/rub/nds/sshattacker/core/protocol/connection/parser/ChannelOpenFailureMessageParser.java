@@ -37,14 +37,14 @@ public class ChannelOpenFailureMessageParser extends ChannelMessageParser<Channe
     private void parseReason(ChannelOpenFailureMessage msg) {
         msg.setReasonLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
         LOGGER.debug("Reason length: " + msg.getReasonLength());
-        msg.setReason(parseByteString(msg.getReasonLength().getValue(), StandardCharsets.UTF_8));
+        msg.setReason(parseByteString(msg.getReasonLength().getValue(), StandardCharsets.UTF_8), false);
         LOGGER.debug("Reason: " + msg.getReason().getValue());
     }
 
     private void parseLanguageTag(ChannelOpenFailureMessage msg) {
         msg.setLanguageTagLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
         LOGGER.debug("Language tag length: " + msg.getLanguageTagLength().getValue());
-        msg.setLanguageTag(parseByteString(msg.getLanguageTagLength().getValue(), StandardCharsets.US_ASCII));
+        msg.setLanguageTag(parseByteString(msg.getLanguageTagLength().getValue(), StandardCharsets.US_ASCII), false);
         LOGGER.debug("Language tag: " + msg.getLanguageTag().getValue());
     }
 

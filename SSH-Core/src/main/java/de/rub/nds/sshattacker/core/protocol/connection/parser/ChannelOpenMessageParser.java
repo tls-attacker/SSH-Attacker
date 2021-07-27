@@ -33,7 +33,7 @@ public class ChannelOpenMessageParser extends MessageParser<ChannelOpenMessage> 
     public void parseChannelType(ChannelOpenMessage msg) {
         msg.setChannelTypeLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
         LOGGER.debug("Channel type length: " + msg.getChannelTypeLength().getValue());
-        msg.setChannelType(parseByteString(msg.getChannelTypeLength().getValue(), StandardCharsets.US_ASCII));
+        msg.setChannelType(parseByteString(msg.getChannelTypeLength().getValue(), StandardCharsets.US_ASCII), false);
         LOGGER.debug("Channel type: " + msg.getChannelType().getValue());
     }
 

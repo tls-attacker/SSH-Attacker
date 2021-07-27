@@ -31,7 +31,7 @@ public class ChannelDataMessageParser extends ChannelMessageParser<ChannelDataMe
     private void parseData(ChannelDataMessage msg) {
         msg.setDataLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
         LOGGER.debug("Data length: " + msg.getDataLength().getValue());
-        msg.setData(parseByteArrayField(msg.getDataLength().getValue()));
+        msg.setData(parseByteArrayField(msg.getDataLength().getValue()), false);
         LOGGER.debug("Data: " + ArrayConverter.bytesToRawHexString(msg.getData().getValue()));
     }
 
