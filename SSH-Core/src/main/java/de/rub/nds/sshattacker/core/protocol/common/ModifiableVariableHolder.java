@@ -1,11 +1,9 @@
 /**
  * SSH-Attacker - A Modular Penetration Testing Framework for SSH
  *
- * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * <p>Copyright 2014-2021 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.sshattacker.core.protocol.common;
 
@@ -35,8 +33,7 @@ public abstract class ModifiableVariableHolder implements Serializable {
     /**
      * Returns a random field representing a modifiable variable from this class
      *
-     * @param random
-     *            The RandomNumber generator that should be used
+     * @param random The RandomNumber generator that should be used
      * @return A random ModifiableVariableField
      */
     public Field getRandomModifiableVariableField(Random random) {
@@ -59,8 +56,7 @@ public abstract class ModifiableVariableHolder implements Serializable {
     /**
      * Returns a random modifiable variable holder
      *
-     * @param random
-     *            The RandomNumberGenerator that should be used
+     * @param random The RandomNumberGenerator that should be used
      * @return A Random ModifiableVariableHolder
      */
     public ModifiableVariableHolder getRandomModifiableVariableHolder(Random random) {

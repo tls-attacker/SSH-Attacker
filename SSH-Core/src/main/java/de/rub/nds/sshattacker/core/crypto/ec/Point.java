@@ -1,11 +1,9 @@
 /**
  * SSH-Attacker - A Modular Penetration Testing Framework for SSH
  *
- * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * <p>Copyright 2014-2021 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.sshattacker.core.crypto.ec;
 
@@ -22,8 +20,9 @@ import javax.xml.bind.annotation.XmlRootElement;
 /**
  * Can be used to store a point of an elliptic curve.
  *
- * Affine points store their x and y coordinates. The projective z-coordinate (equal to 1) will not be stored. The point
- * at infinity [0:1:0] (the only point with z-coordinate 0) does not store any of it's coordinates.
+ * <p>Affine points store their x and y coordinates. The projective z-coordinate (equal to 1) will
+ * not be stored. The point at infinity [0:1:0] (the only point with z-coordinate 0) does not store
+ * any of it's coordinates.
  */
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -37,17 +36,23 @@ public class Point implements Serializable {
      * Point objects are immutable. This should make deep copies in the methods
      * of the EllipticCurve class unnecessary.
      */
-    @XmlElements(value = { @XmlElement(type = FieldElementF2m.class, name = "xFieldElementF2m"),
-            @XmlElement(type = FieldElementFp.class, name = "xFieldElementFp") })
+    @XmlElements(
+            value = {
+                @XmlElement(type = FieldElementF2m.class, name = "xFieldElementF2m"),
+                @XmlElement(type = FieldElementFp.class, name = "xFieldElementFp")
+            })
     private final FieldElement fieldX;
-    @XmlElements(value = { @XmlElement(type = FieldElementF2m.class, name = "yFieldElementF2m"),
-            @XmlElement(type = FieldElementFp.class, name = "yFieldElementFp") })
+
+    @XmlElements(
+            value = {
+                @XmlElement(type = FieldElementF2m.class, name = "yFieldElementF2m"),
+                @XmlElement(type = FieldElementFp.class, name = "yFieldElementFp")
+            })
     private final FieldElement fieldY;
+
     private final boolean infinity;
 
-    /**
-     * Instantiates the point at infinity.
-     */
+    /** Instantiates the point at infinity. */
     public Point() {
         this.infinity = true;
         this.fieldX = null;
@@ -55,13 +60,12 @@ public class Point implements Serializable {
     }
 
     /**
-     * Instantiates an affine point with coordinates x and y. Calling EllipticCurve.getPoint() should always be
-     * preferred over using this constructor.
+     * Instantiates an affine point with coordinates x and y. Calling EllipticCurve.getPoint()
+     * should always be preferred over using this constructor.
      *
-     * @param x
-     *            A FieldElement representing the x-coordinate of the point.
-     * @param y
-     *            A FieldElement representing the y-coordinate of the point. x and y must be elements of the same field.
+     * @param x A FieldElement representing the x-coordinate of the point.
+     * @param y A FieldElement representing the y-coordinate of the point. x and y must be elements
+     *     of the same field.
      */
     public Point(FieldElement x, FieldElement y) {
         this.fieldX = x;
@@ -70,7 +74,8 @@ public class Point implements Serializable {
     }
 
     /**
-     * Returns true if the point is the point at infinity. Returns false if the point is an affine point.
+     * Returns true if the point is the point at infinity. Returns false if the point is an affine
+     * point.
      */
     public boolean isAtInfinity() {
         return this.infinity;
@@ -119,7 +124,11 @@ public class Point implements Serializable {
         if (this.isAtInfinity()) {
             return "Point: Infinity";
         } else {
-            return "Point: (" + this.getFieldX().toString() + ", " + this.getFieldY().toString() + ")";
+            return "Point: ("
+                    + this.getFieldX().toString()
+                    + ", "
+                    + this.getFieldY().toString()
+                    + ")";
         }
     }
 }

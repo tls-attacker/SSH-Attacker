@@ -1,11 +1,9 @@
 /**
  * SSH-Attacker - A Modular Penetration Testing Framework for SSH
  *
- * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * <p>Copyright 2014-2021 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.sshattacker.core.protocol.transport.preparator;
 
@@ -17,17 +15,22 @@ import de.rub.nds.sshattacker.core.protocol.common.Preparator;
 import de.rub.nds.sshattacker.core.protocol.transport.message.DhGexKeyExchangeRequestMessage;
 import de.rub.nds.sshattacker.core.state.SshContext;
 
-public class DhGexKeyExchangeRequestMessagePreparator extends Preparator<DhGexKeyExchangeRequestMessage> {
+public class DhGexKeyExchangeRequestMessagePreparator
+        extends Preparator<DhGexKeyExchangeRequestMessage> {
 
-    public DhGexKeyExchangeRequestMessagePreparator(SshContext context, DhGexKeyExchangeRequestMessage message) {
+    public DhGexKeyExchangeRequestMessagePreparator(
+            SshContext context, DhGexKeyExchangeRequestMessage message) {
         super(context, message);
     }
 
     @Override
     public void prepare() {
-        DhKeyExchange keyExchange = DhKeyExchange.newInstance(context.getKeyExchangeAlgorithm().orElseThrow(PreparationException::new));
+        DhKeyExchange keyExchange =
+                DhKeyExchange.newInstance(
+                        context.getKeyExchangeAlgorithm().orElseThrow(PreparationException::new));
         context.setKeyExchangeInstance(keyExchange);
-        DhGexExchangeHash dhGexExchangeHash = DhGexExchangeHash.from(context.getExchangeHashInstance());
+        DhGexExchangeHash dhGexExchangeHash =
+                DhGexExchangeHash.from(context.getExchangeHashInstance());
         dhGexExchangeHash.setMinimalGroupSize(context.getChooser().getMinimalDHGroupSize());
         dhGexExchangeHash.setPreferredGroupSize(context.getChooser().getPreferredDHGroupSize());
         dhGexExchangeHash.setMaximalGroupSize(context.getChooser().getMaximalDHGroupSize());

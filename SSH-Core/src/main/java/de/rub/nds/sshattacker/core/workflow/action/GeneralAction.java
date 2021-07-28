@@ -1,11 +1,9 @@
 /**
  * SSH-Attacker - A Modular Penetration Testing Framework for SSH
  *
- * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * <p>Copyright 2014-2021 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.sshattacker.core.workflow.action;
 
@@ -23,11 +21,9 @@ import javax.xml.bind.annotation.XmlTransient;
  */
 public class GeneralAction extends SshAction {
 
-    @XmlTransient
-    private final Set<String> aliases = new LinkedHashSet<>();
+    @XmlTransient private final Set<String> aliases = new LinkedHashSet<>();
 
-    public GeneralAction() {
-    }
+    public GeneralAction() {}
 
     public GeneralAction(String alias) {
         this.aliases.add(alias);
@@ -85,5 +81,4 @@ public class GeneralAction extends SshAction {
     public void assertAliasesSetProperly() throws ConfigurationException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
-
 }

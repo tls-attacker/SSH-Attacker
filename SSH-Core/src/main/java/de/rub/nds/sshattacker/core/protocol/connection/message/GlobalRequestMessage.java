@@ -1,11 +1,9 @@
 /**
  * SSH-Attacker - A Modular Penetration Testing Framework for SSH
  *
- * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * <p>Copyright 2014-2021 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.sshattacker.core.protocol.connection.message;
 
@@ -16,7 +14,6 @@ import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.sshattacker.core.constants.GlobalRequestType;
 import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
 import de.rub.nds.sshattacker.core.protocol.common.Message;
-
 import java.nio.charset.StandardCharsets;
 
 public abstract class GlobalRequestMessage<T extends GlobalRequestMessage<T>> extends Message<T> {
@@ -39,7 +36,8 @@ public abstract class GlobalRequestMessage<T extends GlobalRequestMessage<T>> ex
     }
 
     public void setRequestNameLength(int requestNameLength) {
-        this.requestNameLength = ModifiableVariableFactory.safelySetValue(this.requestNameLength, requestNameLength);
+        this.requestNameLength =
+                ModifiableVariableFactory.safelySetValue(this.requestNameLength, requestNameLength);
     }
 
     public ModifiableString getRequestName() {

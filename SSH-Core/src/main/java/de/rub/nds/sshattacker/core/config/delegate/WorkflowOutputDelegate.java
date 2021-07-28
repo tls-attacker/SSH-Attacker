@@ -1,11 +1,9 @@
 /**
  * SSH-Attacker - A Modular Penetration Testing Framework for SSH
  *
- * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * <p>Copyright 2014-2021 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.sshattacker.core.config.delegate;
 
@@ -14,11 +12,13 @@ import de.rub.nds.sshattacker.core.config.Config;
 
 public class WorkflowOutputDelegate extends Delegate {
 
-    @Parameter(names = "-workflow_output", description = "This parameter allows you to serialize the whole workflow trace into a specific XML file")
+    @Parameter(
+            names = "-workflow_output",
+            description =
+                    "This parameter allows you to serialize the whole workflow trace into a specific XML file")
     private String workflowOutput = null;
 
-    public WorkflowOutputDelegate() {
-    }
+    public WorkflowOutputDelegate() {}
 
     public String getWorkflowOutput() {
         return workflowOutput;
@@ -34,5 +34,4 @@ public class WorkflowOutputDelegate extends Delegate {
             config.setWorkflowOutput(workflowOutput);
         }
     }
-
 }

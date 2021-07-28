@@ -1,11 +1,9 @@
 /**
  * SSH-Attacker - A Modular Penetration Testing Framework for SSH
  *
- * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * <p>Copyright 2014-2021 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.sshattacker.core.protocol.transport.message;
 
@@ -15,13 +13,12 @@ import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
 import de.rub.nds.sshattacker.core.exceptions.NotImplementedException;
-import de.rub.nds.sshattacker.core.protocol.common.Message;
-import de.rub.nds.sshattacker.core.protocol.transport.handler.DhGexKeyExchangeReplyMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.common.Handler;
+import de.rub.nds.sshattacker.core.protocol.common.Message;
 import de.rub.nds.sshattacker.core.protocol.common.Preparator;
 import de.rub.nds.sshattacker.core.protocol.common.Serializer;
+import de.rub.nds.sshattacker.core.protocol.transport.handler.DhGexKeyExchangeReplyMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
-
 import java.math.BigInteger;
 
 public class DhGexKeyExchangeReplyMessage extends Message<DhGexKeyExchangeReplyMessage> {
@@ -50,7 +47,8 @@ public class DhGexKeyExchangeReplyMessage extends Message<DhGexKeyExchangeReplyM
     }
 
     public void setHostKeyLength(int hostKeyLength) {
-        this.hostKeyLength = ModifiableVariableFactory.safelySetValue(this.hostKeyLength, hostKeyLength);
+        this.hostKeyLength =
+                ModifiableVariableFactory.safelySetValue(this.hostKeyLength, hostKeyLength);
     }
 
     public ModifiableByteArray getHostKey() {
@@ -88,8 +86,9 @@ public class DhGexKeyExchangeReplyMessage extends Message<DhGexKeyExchangeReplyM
     }
 
     public void setEphemeralPublicKeyLength(int ephemeralPublicKeyLength) {
-        this.ephemeralPublicKeyLength = ModifiableVariableFactory.safelySetValue(this.ephemeralPublicKeyLength,
-                ephemeralPublicKeyLength);
+        this.ephemeralPublicKeyLength =
+                ModifiableVariableFactory.safelySetValue(
+                        this.ephemeralPublicKeyLength, ephemeralPublicKeyLength);
     }
 
     public ModifiableBigInteger getEphemeralPublicKey() {
@@ -104,7 +103,8 @@ public class DhGexKeyExchangeReplyMessage extends Message<DhGexKeyExchangeReplyM
         setEphemeralPublicKey(ephemeralPublicKey, false);
     }
 
-    public void setEphemeralPublicKey(ModifiableBigInteger ephemeralPublicKey, boolean adjustLengthField) {
+    public void setEphemeralPublicKey(
+            ModifiableBigInteger ephemeralPublicKey, boolean adjustLengthField) {
         if (adjustLengthField) {
             setEphemeralPublicKeyLength(ephemeralPublicKey.getValue().toByteArray().length);
         }
@@ -115,7 +115,9 @@ public class DhGexKeyExchangeReplyMessage extends Message<DhGexKeyExchangeReplyM
         if (adjustLengthField) {
             setEphemeralPublicKeyLength(ephemeralPublicKey.toByteArray().length);
         }
-        this.ephemeralPublicKey = ModifiableVariableFactory.safelySetValue(this.ephemeralPublicKey, ephemeralPublicKey);
+        this.ephemeralPublicKey =
+                ModifiableVariableFactory.safelySetValue(
+                        this.ephemeralPublicKey, ephemeralPublicKey);
     }
 
     public ModifiableInteger getSignatureLength() {
@@ -127,7 +129,8 @@ public class DhGexKeyExchangeReplyMessage extends Message<DhGexKeyExchangeReplyM
     }
 
     public void setSignatureLength(int signatureLength) {
-        this.signatureLength = ModifiableVariableFactory.safelySetValue(this.signatureLength, signatureLength);
+        this.signatureLength =
+                ModifiableVariableFactory.safelySetValue(this.signatureLength, signatureLength);
     }
 
     public ModifiableByteArray getSignature() {

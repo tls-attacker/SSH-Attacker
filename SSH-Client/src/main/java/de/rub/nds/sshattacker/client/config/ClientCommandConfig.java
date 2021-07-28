@@ -1,11 +1,9 @@
 /**
  * SSH-Attacker - A Modular Penetration Testing Framework for SSH
  *
- * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * <p>Copyright 2014-2021 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.sshattacker.client.config;
 
@@ -19,18 +17,12 @@ public class ClientCommandConfig extends SSHDelegateConfig {
 
     public static final String COMMAND = "client";
 
-    @ParametersDelegate
-    private final ClientDelegate clientDelegate;
-    @ParametersDelegate
-    private final ConfigOutputDelegate configOutputDelegate;
-    @ParametersDelegate
-    private final TimeoutDelegate timeoutDelegate;
-    @ParametersDelegate
-    private final WorkflowInputDelegate workflowInputDelegate;
-    @ParametersDelegate
-    private final WorkflowOutputDelegate workflowOutputDelegate;
-    @ParametersDelegate
-    private final WorkflowTypeDelegate workflowTypeDelegate;
+    @ParametersDelegate private final ClientDelegate clientDelegate;
+    @ParametersDelegate private final ConfigOutputDelegate configOutputDelegate;
+    @ParametersDelegate private final TimeoutDelegate timeoutDelegate;
+    @ParametersDelegate private final WorkflowInputDelegate workflowInputDelegate;
+    @ParametersDelegate private final WorkflowOutputDelegate workflowOutputDelegate;
+    @ParametersDelegate private final WorkflowTypeDelegate workflowTypeDelegate;
 
     public ClientCommandConfig(GeneralDelegate delegate) {
         super(delegate);

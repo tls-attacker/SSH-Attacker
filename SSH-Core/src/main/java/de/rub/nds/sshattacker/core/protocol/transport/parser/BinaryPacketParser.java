@@ -1,11 +1,9 @@
 /**
  * SSH-Attacker - A Modular Penetration Testing Framework for SSH
  *
- * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * <p>Copyright 2014-2021 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.sshattacker.core.protocol.transport.parser;
 
@@ -17,11 +15,9 @@ import de.rub.nds.sshattacker.core.constants.BinaryPacketConstants;
 import de.rub.nds.sshattacker.core.constants.MacAlgorithm;
 import de.rub.nds.sshattacker.core.protocol.common.Parser;
 import de.rub.nds.sshattacker.core.protocol.transport.message.BinaryPacket;
-
+import de.rub.nds.sshattacker.core.state.SshContext;
 import java.util.ArrayList;
 import java.util.List;
-
-import de.rub.nds.sshattacker.core.state.SshContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -36,49 +32,60 @@ public class BinaryPacketParser extends Parser<BinaryPacket> {
     }
 
     private void parsePacketLength(BinaryPacket msg) {
-        ModifiableInteger packetLength = ModifiableVariableFactory.safelySetValue(null,
-                parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH));
+        ModifiableInteger packetLength =
+                ModifiableVariableFactory.safelySetValue(
+                        null, parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH));
         LOGGER.debug("Packet Length: " + packetLength.getValue());
         msg.setPacketLength(packetLength);
     }
 
     private void parsePaddingLength(BinaryPacket msg) {
-        ModifiableByte paddingLength = ModifiableVariableFactory.safelySetValue(null,
-                parseByteField(BinaryPacketConstants.PADDING_FIELD_LENGTH));
+        ModifiableByte paddingLength =
+                ModifiableVariableFactory.safelySetValue(
+                        null, parseByteField(BinaryPacketConstants.PADDING_FIELD_LENGTH));
         LOGGER.debug("Padding Length: " + paddingLength.getValue());
         msg.setPaddingLength(paddingLength);
     }
 
     private void parsePayload(BinaryPacket msg) {
-        int payloadSize = msg.getPacketLength().getValue() - msg.getPaddingLength().getValue()
-                - BinaryPacketConstants.PADDING_FIELD_LENGTH;
+        int payloadSize =
+                msg.getPacketLength().getValue()
+                        - msg.getPaddingLength().getValue()
+                        - BinaryPacketConstants.PADDING_FIELD_LENGTH;
         LOGGER.debug("Payload Size: " + payloadSize);
-        ModifiableByteArray payload = ModifiableVariableFactory.safelySetValue(null, parseByteArrayField(payloadSize));
+        ModifiableByteArray payload =
+                ModifiableVariableFactory.safelySetValue(null, parseByteArrayField(payloadSize));
         LOGGER.debug("Payload: " + payload);
         msg.setPayload(payload);
     }
 
     private void parsePadding(BinaryPacket msg) {
-        ModifiableByteArray padding = ModifiableVariableFactory.safelySetValue(null, parseByteArrayField(msg
-                .getPaddingLength().getValue()));
+        ModifiableByteArray padding =
+                ModifiableVariableFactory.safelySetValue(
+                        null, parseByteArrayField(msg.getPaddingLength().getValue()));
         LOGGER.debug("Padding: " + padding);
         msg.setPadding(padding);
     }
 
     private void parseMAC(BinaryPacket msg) {
-        MacAlgorithm macAlgorithm = (context.isClient() ? context.getMacAlgorithmServerToClient() : context
-                .getMacAlgorithmClientToServer()).orElse(null);
-        if (macAlgorithm == null || macAlgorithm.getOutputSize() == 0 || !context.getKeyExchangeInstance().isPresent()
+        MacAlgorithm macAlgorithm =
+                (context.isClient()
+                                ? context.getMacAlgorithmServerToClient()
+                                : context.getMacAlgorithmClientToServer())
+                        .orElse(null);
+        if (macAlgorithm == null
+                || macAlgorithm.getOutputSize() == 0
+                || !context.getKeyExchangeInstance().isPresent()
                 || !context.getKeyExchangeInstance().get().isComplete()) {
             LOGGER.debug("MAC: none");
             msg.setMac(new byte[] {});
         } else {
-            ModifiableByteArray mac = ModifiableVariableFactory.safelySetValue(null,
-                    parseArrayOrTillEnd(macAlgorithm.getOutputSize()));
+            ModifiableByteArray mac =
+                    ModifiableVariableFactory.safelySetValue(
+                            null, parseArrayOrTillEnd(macAlgorithm.getOutputSize()));
             LOGGER.debug("MAC: " + mac);
             msg.setMac(mac);
         }
-
     }
 
     @Override

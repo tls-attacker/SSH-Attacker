@@ -1,11 +1,9 @@
 /**
  * SSH-Attacker - A Modular Penetration Testing Framework for SSH
  *
- * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * <p>Copyright 2014-2021 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.sshattacker.core.protocol.transport.parser;
 
@@ -16,7 +14,8 @@ import de.rub.nds.sshattacker.core.protocol.transport.message.DhGexKeyExchangeGr
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class DhGexKeyExchangeGroupMessageParser extends MessageParser<DhGexKeyExchangeGroupMessage> {
+public class DhGexKeyExchangeGroupMessageParser
+        extends MessageParser<DhGexKeyExchangeGroupMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -28,14 +27,19 @@ public class DhGexKeyExchangeGroupMessageParser extends MessageParser<DhGexKeyEx
         msg.setGroupModulusLength(parseIntField(DataFormatConstants.INT32_SIZE));
         LOGGER.debug("Group modulus length: " + msg.getGroupModulusLength().getValue());
         msg.setGroupModulus(parseBigIntField(msg.getGroupModulusLength().getValue()));
-        LOGGER.debug("Group modulus: " + ArrayConverter.bytesToRawHexString(msg.getGroupModulus().getByteArray()));
+        LOGGER.debug(
+                "Group modulus: "
+                        + ArrayConverter.bytesToRawHexString(msg.getGroupModulus().getByteArray()));
     }
 
     private void parseGroupGenerator(DhGexKeyExchangeGroupMessage msg) {
         msg.setGroupGeneratorLength(parseIntField(DataFormatConstants.INT32_SIZE));
         LOGGER.debug("Group generator length: " + msg.getGroupGeneratorLength().getValue());
         msg.setGroupGenerator(parseBigIntField(msg.getGroupGeneratorLength().getValue()));
-        LOGGER.debug("Group generator: " + ArrayConverter.bytesToRawHexString(msg.getGroupGenerator().getByteArray()));
+        LOGGER.debug(
+                "Group generator: "
+                        + ArrayConverter.bytesToRawHexString(
+                                msg.getGroupGenerator().getByteArray()));
     }
 
     @Override

@@ -1,11 +1,9 @@
 /**
  * SSH-Attacker - A Modular Penetration Testing Framework for SSH
  *
- * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * <p>Copyright 2014-2021 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.sshattacker.core.protocol.transport.preparator;
 
@@ -19,16 +17,20 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class DhKeyExchangeInitMessagePreparator extends Preparator<DhKeyExchangeInitMessage> {
 
-    public DhKeyExchangeInitMessagePreparator(SshContext context, DhKeyExchangeInitMessage message) {
+    public DhKeyExchangeInitMessagePreparator(
+            SshContext context, DhKeyExchangeInitMessage message) {
         super(context, message);
     }
 
     @Override
     public void prepare() {
-        DhKeyExchange keyExchange = DhKeyExchange.newInstance(context.getKeyExchangeAlgorithm().orElseThrow(PreparationException::new));
+        DhKeyExchange keyExchange =
+                DhKeyExchange.newInstance(
+                        context.getKeyExchangeAlgorithm().orElseThrow(PreparationException::new));
         keyExchange.generateLocalKeyPair();
         context.setKeyExchangeInstance(keyExchange);
-        DhNamedExchangeHash dhNamedExchangeHash = DhNamedExchangeHash.from(context.getExchangeHashInstance());
+        DhNamedExchangeHash dhNamedExchangeHash =
+                DhNamedExchangeHash.from(context.getExchangeHashInstance());
         dhNamedExchangeHash.setClientDHPublicKey(keyExchange.getLocalKeyPair().getPublic());
         context.setExchangeHashInstance(dhNamedExchangeHash);
 

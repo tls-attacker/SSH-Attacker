@@ -1,11 +1,9 @@
 /**
  * SSH-Attacker - A Modular Penetration Testing Framework for SSH
  *
- * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * <p>Copyright 2014-2021 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.sshattacker.core.protocol.transport.handler;
 
@@ -28,15 +26,18 @@ public class DhKeyExchangeReplyMessageHandler extends Handler<DhKeyExchangeReply
     public void handle(DhKeyExchangeReplyMessage message) {
         context.setKeyExchangeSignature(message.getSignature().getValue());
 
-        DhKeyExchange dhKeyExchange = (DhKeyExchange) context.getKeyExchangeInstance().orElseThrow(AdjustmentException::new);
+        DhKeyExchange dhKeyExchange =
+                (DhKeyExchange)
+                        context.getKeyExchangeInstance().orElseThrow(AdjustmentException::new);
         dhKeyExchange.setRemotePublicKey(message.getEphemeralPublicKey().getValue());
         dhKeyExchange.computeSharedSecret();
 
         handleHostKey(message);
-        DhNamedExchangeHash dhNamedExchangeHash = (DhNamedExchangeHash) context.getExchangeHashInstance();
+        DhNamedExchangeHash dhNamedExchangeHash =
+                (DhNamedExchangeHash) context.getExchangeHashInstance();
         dhNamedExchangeHash.setServerDHPublicKey(dhKeyExchange.getRemotePublicKey());
         dhNamedExchangeHash.setSharedSecret(dhKeyExchange.getSharedSecret());
-        if(!context.getSessionID().isPresent()) {
+        if (!context.getSessionID().isPresent()) {
             context.setSessionID(dhNamedExchangeHash.get());
         }
 

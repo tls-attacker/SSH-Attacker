@@ -1,21 +1,18 @@
 /**
  * SSH-Attacker - A Modular Penetration Testing Framework for SSH
  *
- * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * <p>Copyright 2014-2021 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.sshattacker.core.workflow;
 
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
+import de.rub.nds.sshattacker.core.connection.AliasedConnection;
 import de.rub.nds.sshattacker.core.connection.InboundConnection;
 import de.rub.nds.sshattacker.core.connection.OutboundConnection;
-import de.rub.nds.sshattacker.core.workflow.action.*;
 import de.rub.nds.sshattacker.core.exceptions.ConfigurationException;
-import de.rub.nds.sshattacker.core.connection.AliasedConnection;
-
+import de.rub.nds.sshattacker.core.workflow.action.*;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -37,9 +34,7 @@ import javax.xml.stream.XMLStreamException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-/**
- * A wrapper class over a list of protocol expectedMessages.
- */
+/** A wrapper class over a list of protocol expectedMessages. */
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
 public class WorkflowTrace implements Serializable {
@@ -49,12 +44,12 @@ public class WorkflowTrace implements Serializable {
     /**
      * Copy a workflow trace.
      *
-     * TODO: This should be replaced by a better copy method. Using serialization is slow and needs some additional
-     * "tweaks", i.e. we have to manually restore important fields marked as XmlTransient. This problem arises because
-     * the classes are configured for nice JAXB output, and not for copying/storing full objects.
+     * <p>TODO: This should be replaced by a better copy method. Using serialization is slow and
+     * needs some additional "tweaks", i.e. we have to manually restore important fields marked as
+     * XmlTransient. This problem arises because the classes are configured for nice JAXB output,
+     * and not for copying/storing full objects.
      *
-     * @param orig
-     *            the original WorkflowTrace object to copy
+     * @param orig the original WorkflowTrace object to copy
      * @return a copy of the original WorkflowTrace
      */
     public static WorkflowTrace copy(WorkflowTrace orig) {
@@ -64,7 +59,8 @@ public class WorkflowTrace implements Serializable {
 
         try {
             String origTraceStr = WorkflowTraceSerializer.write(orig);
-            InputStream is = new ByteArrayInputStream(origTraceStr.getBytes(StandardCharsets.UTF_8.name()));
+            InputStream is =
+                    new ByteArrayInputStream(origTraceStr.getBytes(StandardCharsets.UTF_8.name()));
             copy = WorkflowTraceSerializer.read(is);
         } catch (JAXBException | IOException | XMLStreamException ex) {
             throw new ConfigurationException("Could not copy workflow trace: " + ex);
@@ -72,22 +68,30 @@ public class WorkflowTrace implements Serializable {
 
         List<SshAction> copiedActions = copy.getSshActions();
         for (int i = 0; i < origActions.size(); i++) {
-            copiedActions.get(i).setSingleConnectionWorkflow(origActions.get(i).isSingleConnectionWorkflow());
+            copiedActions
+                    .get(i)
+                    .setSingleConnectionWorkflow(origActions.get(i).isSingleConnectionWorkflow());
         }
 
         return copy;
     }
 
-    @XmlElements(value = { @XmlElement(type = AliasedConnection.class, name = "AliasedConnection"),
-            @XmlElement(type = InboundConnection.class, name = "InboundConnection"),
-            @XmlElement(type = OutboundConnection.class, name = "OutboundConnection") })
+    @XmlElements(
+            value = {
+                @XmlElement(type = AliasedConnection.class, name = "AliasedConnection"),
+                @XmlElement(type = InboundConnection.class, name = "InboundConnection"),
+                @XmlElement(type = OutboundConnection.class, name = "OutboundConnection")
+            })
     private List<AliasedConnection> connections = new ArrayList<>();
 
     @HoldsModifiableVariable
-    @XmlElements(value = { @XmlElement(type = SendAction.class, name = "Send"),
-            @XmlElement(type = ReceiveAction.class, name = "Receive"),
-            @XmlElement(type = GenericReceiveAction.class, name = "GenericReceive"),
-            @XmlElement(type = ActivateEncryptionAction.class, name = "ActivateEncryption") })
+    @XmlElements(
+            value = {
+                @XmlElement(type = SendAction.class, name = "Send"),
+                @XmlElement(type = ReceiveAction.class, name = "Receive"),
+                @XmlElement(type = GenericReceiveAction.class, name = "GenericReceive"),
+                @XmlElement(type = ActivateEncryptionAction.class, name = "ActivateEncryption")
+            })
     private List<SshAction> sshActions = new ArrayList<>();
 
     private String name = null;
@@ -95,8 +99,7 @@ public class WorkflowTrace implements Serializable {
 
     // A dirty flag used to determine if the WorkflowTrace is well defined or
     // not.
-    @XmlTransient
-    private boolean dirty = true;
+    @XmlTransient private boolean dirty = true;
 
     public WorkflowTrace() {
         this.sshActions = new LinkedList<>();
@@ -163,11 +166,11 @@ public class WorkflowTrace implements Serializable {
     }
 
     /**
-     * Set connections of the workflow trace. Use only if you know what you are doing. Unless you are manually
-     * configuring workflow traces (say for MiTM or unit tests), there shouldn't be any need to call this method.
+     * Set connections of the workflow trace. Use only if you know what you are doing. Unless you
+     * are manually configuring workflow traces (say for MiTM or unit tests), there shouldn't be any
+     * need to call this method.
      *
-     * @param connections
-     *            new connection to use with this workflow trace
+     * @param connections new connection to use with this workflow trace
      */
     public void setConnections(List<AliasedConnection> connections) {
         dirty = true;
@@ -175,11 +178,11 @@ public class WorkflowTrace implements Serializable {
     }
 
     /**
-     * Add a connection to the workflow trace. Use only if you know what you are doing. Unless you are manually
-     * configuring workflow traces (say for MiTM or unit tests), there shouldn't be any need to call this method.
+     * Add a connection to the workflow trace. Use only if you know what you are doing. Unless you
+     * are manually configuring workflow traces (say for MiTM or unit tests), there shouldn't be any
+     * need to call this method.
      *
-     * @param connection
-     *            new connection to add to the workflow trace
+     * @param connection new connection to add to the workflow trace
      */
     public void addConnection(AliasedConnection connection) {
         dirty = true;
@@ -260,7 +263,8 @@ public class WorkflowTrace implements Serializable {
     /**
      * Get the last ReceivingActionAction of the workflow trace.
      *
-     * @return the last ReceivingActionAction of the workflow trace. Null if no receiving actions are defined
+     * @return the last ReceivingActionAction of the workflow trace. Null if no receiving actions
+     *     are defined
      */
     public ReceivingAction getLastReceivingAction() {
         for (int i = sshActions.size() - 1; i >= 0; i--) {
@@ -347,5 +351,4 @@ public class WorkflowTrace implements Serializable {
     public void setDirty(boolean dirty) {
         this.dirty = dirty;
     }
-
 }

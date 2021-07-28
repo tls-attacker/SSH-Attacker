@@ -1,11 +1,9 @@
 /**
  * SSH-Attacker - A Modular Penetration Testing Framework for SSH
  *
- * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * <p>Copyright 2014-2021 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.sshattacker.core.protocol.transport.handler;
 
@@ -27,10 +25,11 @@ public class DebugMessageHandler extends Handler<DebugMessage> {
     @Override
     public void handle(DebugMessage msg) {
         if (Converter.byteToBoolean(msg.getAlwaysDisplay().getValue())) {
-            LOGGER.info("DebugMessage retrieved from remote, message: " + msg.getMessage().getValue());
+            LOGGER.info(
+                    "DebugMessage retrieved from remote, message: " + msg.getMessage().getValue());
         } else {
-            LOGGER.debug("DebugMessage retrieved from remote, message: " + msg.getMessage().getValue());
+            LOGGER.debug(
+                    "DebugMessage retrieved from remote, message: " + msg.getMessage().getValue());
         }
     }
-
 }

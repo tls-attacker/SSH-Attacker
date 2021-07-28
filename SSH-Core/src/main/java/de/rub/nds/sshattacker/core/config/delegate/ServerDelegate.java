@@ -1,11 +1,9 @@
 /**
  * SSH-Attacker - A Modular Penetration Testing Framework for SSH
  *
- * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * <p>Copyright 2014-2021 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.sshattacker.core.config.delegate;
 
@@ -20,8 +18,7 @@ public class ServerDelegate extends Delegate {
     @Parameter(names = "-port", required = true, description = "ServerPort")
     protected Integer port = null;
 
-    public ServerDelegate() {
-    }
+    public ServerDelegate() {}
 
     public Integer getPort() {
         return port;

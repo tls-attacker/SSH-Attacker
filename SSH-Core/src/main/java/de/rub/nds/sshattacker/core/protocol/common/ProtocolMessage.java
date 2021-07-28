@@ -1,11 +1,9 @@
 /**
  * SSH-Attacker - A Modular Penetration Testing Framework for SSH
  *
- * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * <p>Copyright 2014-2021 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.sshattacker.core.protocol.common;
 
@@ -13,7 +11,6 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bool.ModifiableBoolean;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
-
 import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Random;
@@ -24,26 +21,20 @@ import javax.xml.bind.annotation.XmlTransient;
 @XmlAccessorType(XmlAccessType.FIELD)
 public abstract class ProtocolMessage extends ModifiableVariableHolder {
 
-    /**
-     * content type
-     */
-    @XmlTransient
-    protected final boolean GOING_TO_BE_SENT_DEFAULT = true;
+    /** content type */
+    @XmlTransient protected final boolean GOING_TO_BE_SENT_DEFAULT = true;
 
-    @XmlTransient
-    protected final boolean REQUIRED_DEFAULT = true;
+    @XmlTransient protected final boolean REQUIRED_DEFAULT = true;
 
-    @XmlTransient
-    protected final boolean ADJUST_CONTEXT_DEFAULT = true;
+    @XmlTransient protected final boolean ADJUST_CONTEXT_DEFAULT = true;
 
-    /**
-     * Defines whether this message is necessarily required in the workflow.
-     */
+    /** Defines whether this message is necessarily required in the workflow. */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.BEHAVIOR_SWITCH)
     private ModifiableBoolean required;
     /**
-     * Defines if the message should be sent during the workflow. Using this flag it is possible to omit a message is
-     * sent during the handshake while it is executed to initialize specific variables.
+     * Defines if the message should be sent during the workflow. Using this flag it is possible to
+     * omit a message is sent during the handshake while it is executed to initialize specific
+     * variables.
      */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.BEHAVIOR_SWITCH)
     private ModifiableBoolean goingToBeSent;
@@ -51,14 +42,11 @@ public abstract class ProtocolMessage extends ModifiableVariableHolder {
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.BEHAVIOR_SWITCH)
     private ModifiableBoolean adjustContext;
 
-    /**
-     * resulting message
-     */
+    /** resulting message */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PLAIN_PROTOCOL_MESSAGE)
     protected ModifiableByteArray completeResultingMessage;
 
-    public ProtocolMessage() {
-    }
+    public ProtocolMessage() {}
 
     public boolean isRequired() {
         if (required == null || required.getValue() == null) {
@@ -79,7 +67,8 @@ public abstract class ProtocolMessage extends ModifiableVariableHolder {
     }
 
     public void setGoingToBeSent(boolean goingToBeSent) {
-        this.goingToBeSent = ModifiableVariableFactory.safelySetValue(this.goingToBeSent, goingToBeSent);
+        this.goingToBeSent =
+                ModifiableVariableFactory.safelySetValue(this.goingToBeSent, goingToBeSent);
     }
 
     public void setGoingToBeSent(ModifiableBoolean goingToBeSent) {
@@ -102,8 +91,9 @@ public abstract class ProtocolMessage extends ModifiableVariableHolder {
     }
 
     public void setCompleteResultingMessage(byte[] completeResultingMessage) {
-        this.completeResultingMessage = ModifiableVariableFactory.safelySetValue(this.completeResultingMessage,
-                completeResultingMessage);
+        this.completeResultingMessage =
+                ModifiableVariableFactory.safelySetValue(
+                        this.completeResultingMessage, completeResultingMessage);
     }
 
     public boolean getAdjustContext() {
@@ -118,7 +108,8 @@ public abstract class ProtocolMessage extends ModifiableVariableHolder {
     }
 
     public void setAdjustContext(Boolean adjustContext) {
-        this.adjustContext = ModifiableVariableFactory.safelySetValue(this.adjustContext, adjustContext);
+        this.adjustContext =
+                ModifiableVariableFactory.safelySetValue(this.adjustContext, adjustContext);
     }
 
     public abstract String toCompactString();

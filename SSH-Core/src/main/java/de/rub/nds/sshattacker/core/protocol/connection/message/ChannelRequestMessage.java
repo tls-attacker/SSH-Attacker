@@ -1,11 +1,9 @@
 /**
  * SSH-Attacker - A Modular Penetration Testing Framework for SSH
  *
- * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * <p>Copyright 2014-2021 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.sshattacker.core.protocol.connection.message;
 
@@ -16,16 +14,17 @@ import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.sshattacker.core.constants.ChannelRequestType;
 import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
 import de.rub.nds.sshattacker.core.util.Converter;
-
 import java.nio.charset.StandardCharsets;
 
-public abstract class ChannelRequestMessage<T extends ChannelRequestMessage<T>> extends ChannelMessage<T> {
+public abstract class ChannelRequestMessage<T extends ChannelRequestMessage<T>>
+        extends ChannelMessage<T> {
 
     private ModifiableInteger requestTypeLength;
     private ModifiableString requestType;
     private ModifiableByte wantReply;
 
-    protected ChannelRequestMessage(@SuppressWarnings("SameParameterValue") ChannelRequestType requestType) {
+    protected ChannelRequestMessage(
+            @SuppressWarnings("SameParameterValue") ChannelRequestType requestType) {
         super(MessageIDConstant.SSH_MSG_CHANNEL_REQUEST);
         setRequestType(requestType);
     }
@@ -39,7 +38,8 @@ public abstract class ChannelRequestMessage<T extends ChannelRequestMessage<T>> 
     }
 
     public void setRequestTypeLength(int requestTypeLength) {
-        this.requestTypeLength = ModifiableVariableFactory.safelySetValue(this.requestTypeLength, requestTypeLength);
+        this.requestTypeLength =
+                ModifiableVariableFactory.safelySetValue(this.requestTypeLength, requestTypeLength);
     }
 
     public ModifiableString getRequestType() {

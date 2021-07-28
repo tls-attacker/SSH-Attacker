@@ -1,24 +1,21 @@
 /**
  * SSH-Attacker - A Modular Penetration Testing Framework for SSH
  *
- * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * <p>Copyright 2014-2021 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.sshattacker.core.protocol.util;
 
+import de.rub.nds.sshattacker.core.protocol.common.Message;
 import de.rub.nds.sshattacker.core.protocol.layers.BinaryPacketLayer;
 import de.rub.nds.sshattacker.core.protocol.layers.CryptoLayer;
+import de.rub.nds.sshattacker.core.protocol.layers.MessageLayer;
 import de.rub.nds.sshattacker.core.protocol.transport.message.BinaryPacket;
 import de.rub.nds.sshattacker.core.protocol.transport.message.VersionExchangeMessage;
-import de.rub.nds.sshattacker.core.protocol.common.Message;
-import de.rub.nds.sshattacker.core.workflow.action.result.MessageActionResult;
-import de.rub.nds.sshattacker.core.protocol.layers.MessageLayer;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.action.result.MessageActionResult;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
-
 import java.io.IOException;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -37,8 +34,10 @@ public class SendMessageHelper {
         byte[] data;
         if ((context.isClient() && context.isClientToServerEncryptionActive())
                 || (context.isServer() && context.isServerToClientEncryptionActive())) {
-            CryptoLayer cryptoLayer = context.isClient() ? context.getCryptoLayerClientToServer() : context
-                    .getCryptoLayerServerToClient();
+            CryptoLayer cryptoLayer =
+                    context.isClient()
+                            ? context.getCryptoLayerClientToServer()
+                            : context.getCryptoLayerServerToClient();
             data = cryptoLayer.encryptPacket(bp);
         } else {
             data = binaryPacketLayer.serializeBinaryPacket(bp);
@@ -53,7 +52,8 @@ public class SendMessageHelper {
             BinaryPacket binaryPacket = messageLayer.serializeMessage(msg);
             sendBinaryPacket(binaryPacket, context);
             context.incrementSequenceNumber();
-            return new MessageActionResult(Collections.singletonList(binaryPacket), Collections.singletonList(msg));
+            return new MessageActionResult(
+                    Collections.singletonList(binaryPacket), Collections.singletonList(msg));
         } catch (IOException e) {
             LOGGER.warn("Error while sending packet: " + e.getMessage());
             return new MessageActionResult();
@@ -73,12 +73,13 @@ public class SendMessageHelper {
     }
 
     // TODO dummy
-    public MessageActionResult sendMessages(List<Message<?>> messageList, List<BinaryPacket> binaryPackets,
-            SshContext context) {
+    public MessageActionResult sendMessages(
+            List<Message<?>> messageList, List<BinaryPacket> binaryPackets, SshContext context) {
         return sendMessages(messageList, context);
     }
 
-    public MessageActionResult sendVersionExchangeMessage(VersionExchangeMessage msg, SshContext context) {
+    public MessageActionResult sendVersionExchangeMessage(
+            VersionExchangeMessage msg, SshContext context) {
         TransportHandler transport = context.getTransportHandler();
         try {
             transport.sendData(msg.getSerializer().serialize());

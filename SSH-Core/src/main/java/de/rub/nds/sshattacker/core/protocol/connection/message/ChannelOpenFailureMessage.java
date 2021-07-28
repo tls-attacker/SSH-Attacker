@@ -1,11 +1,9 @@
 /**
  * SSH-Attacker - A Modular Penetration Testing Framework for SSH
  *
- * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * <p>Copyright 2014-2021 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.sshattacker.core.protocol.connection.message;
 
@@ -13,11 +11,10 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
+import de.rub.nds.sshattacker.core.protocol.connection.handler.ChannelOpenFailureMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.connection.preparator.ChannelOpenFailureMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.connection.serializer.ChannelOpenFailureMessageSerializer;
-import de.rub.nds.sshattacker.core.protocol.connection.handler.ChannelOpenFailureMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
-
 import java.nio.charset.StandardCharsets;
 
 public class ChannelOpenFailureMessage extends ChannelMessage<ChannelOpenFailureMessage> {
@@ -53,7 +50,8 @@ public class ChannelOpenFailureMessage extends ChannelMessage<ChannelOpenFailure
     }
 
     public void setReasonLength(int reasonLength) {
-        this.reasonLength = ModifiableVariableFactory.safelySetValue(this.reasonLength, reasonLength);
+        this.reasonLength =
+                ModifiableVariableFactory.safelySetValue(this.reasonLength, reasonLength);
     }
 
     public ModifiableString getReason() {
@@ -91,7 +89,8 @@ public class ChannelOpenFailureMessage extends ChannelMessage<ChannelOpenFailure
     }
 
     public void setLanguageTagLength(int languageTagLength) {
-        this.languageTagLength = ModifiableVariableFactory.safelySetValue(this.languageTagLength, languageTagLength);
+        this.languageTagLength =
+                ModifiableVariableFactory.safelySetValue(this.languageTagLength, languageTagLength);
     }
 
     public ModifiableString getLanguageTag() {
@@ -134,5 +133,4 @@ public class ChannelOpenFailureMessage extends ChannelMessage<ChannelOpenFailure
     public ChannelOpenFailureMessagePreparator getPreparator(SshContext context) {
         return new ChannelOpenFailureMessagePreparator(context, this);
     }
-
 }

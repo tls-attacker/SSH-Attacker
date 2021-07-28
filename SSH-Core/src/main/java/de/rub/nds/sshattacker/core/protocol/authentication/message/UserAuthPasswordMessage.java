@@ -1,11 +1,9 @@
 /**
  * SSH-Attacker - A Modular Penetration Testing Framework for SSH
  *
- * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * <p>Copyright 2014-2021 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.sshattacker.core.protocol.authentication.message;
 
@@ -19,7 +17,6 @@ import de.rub.nds.sshattacker.core.protocol.authentication.preparator.UserAuthPa
 import de.rub.nds.sshattacker.core.protocol.authentication.serializer.UserAuthPasswordMessageSerializer;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.util.Converter;
-
 import java.nio.charset.StandardCharsets;
 
 public class UserAuthPasswordMessage extends UserAuthRequestMessage<UserAuthPasswordMessage> {
@@ -43,7 +40,8 @@ public class UserAuthPasswordMessage extends UserAuthRequestMessage<UserAuthPass
     }
 
     public void setChangePassword(byte changePassword) {
-        this.changePassword = ModifiableVariableFactory.safelySetValue(this.changePassword, changePassword);
+        this.changePassword =
+                ModifiableVariableFactory.safelySetValue(this.changePassword, changePassword);
     }
 
     public void setChangePassword(boolean changePassword) {
@@ -59,7 +57,8 @@ public class UserAuthPasswordMessage extends UserAuthRequestMessage<UserAuthPass
     }
 
     public void setPasswordLength(int passwordLength) {
-        this.passwordLength = ModifiableVariableFactory.safelySetValue(this.passwordLength, passwordLength);
+        this.passwordLength =
+                ModifiableVariableFactory.safelySetValue(this.passwordLength, passwordLength);
     }
 
     public ModifiableString getPassword() {
@@ -97,7 +96,8 @@ public class UserAuthPasswordMessage extends UserAuthRequestMessage<UserAuthPass
     }
 
     public void setNewPasswordLength(int newPasswordLength) {
-        this.newPasswordLength = ModifiableVariableFactory.safelySetValue(this.newPasswordLength, newPasswordLength);
+        this.newPasswordLength =
+                ModifiableVariableFactory.safelySetValue(this.newPasswordLength, newPasswordLength);
     }
 
     public ModifiableString getNewPassword() {
@@ -140,5 +140,4 @@ public class UserAuthPasswordMessage extends UserAuthRequestMessage<UserAuthPass
     public UserAuthPasswordMessagePreparator getPreparator(SshContext context) {
         return new UserAuthPasswordMessagePreparator(context, this);
     }
-
 }

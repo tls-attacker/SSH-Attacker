@@ -1,11 +1,9 @@
 /**
  * SSH-Attacker - A Modular Penetration Testing Framework for SSH
  *
- * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * <p>Copyright 2014-2021 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.sshattacker.core.protocol.transport.message;
 
@@ -14,13 +12,12 @@ import de.rub.nds.modifiablevariable.biginteger.ModifiableBigInteger;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
 import de.rub.nds.sshattacker.core.exceptions.NotImplementedException;
-import de.rub.nds.sshattacker.core.protocol.common.Message;
-import de.rub.nds.sshattacker.core.protocol.transport.handler.DhGexKeyExchangeGroupMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.common.Handler;
+import de.rub.nds.sshattacker.core.protocol.common.Message;
 import de.rub.nds.sshattacker.core.protocol.common.Preparator;
 import de.rub.nds.sshattacker.core.protocol.common.Serializer;
+import de.rub.nds.sshattacker.core.protocol.transport.handler.DhGexKeyExchangeGroupMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
-
 import java.math.BigInteger;
 
 public class DhGexKeyExchangeGroupMessage extends Message<DhGexKeyExchangeGroupMessage> {
@@ -43,7 +40,9 @@ public class DhGexKeyExchangeGroupMessage extends Message<DhGexKeyExchangeGroupM
     }
 
     public void setGroupModulusLength(int groupModulusLength) {
-        this.groupModulusLength = ModifiableVariableFactory.safelySetValue(this.groupModulusLength, groupModulusLength);
+        this.groupModulusLength =
+                ModifiableVariableFactory.safelySetValue(
+                        this.groupModulusLength, groupModulusLength);
     }
 
     public ModifiableBigInteger getGroupModulus() {
@@ -69,7 +68,8 @@ public class DhGexKeyExchangeGroupMessage extends Message<DhGexKeyExchangeGroupM
         if (adjustLengthField) {
             setGroupModulusLength(groupModulus.toByteArray().length);
         }
-        this.groupModulus = ModifiableVariableFactory.safelySetValue(this.groupModulus, groupModulus);
+        this.groupModulus =
+                ModifiableVariableFactory.safelySetValue(this.groupModulus, groupModulus);
     }
 
     public ModifiableInteger getGroupGeneratorLength() {
@@ -81,8 +81,9 @@ public class DhGexKeyExchangeGroupMessage extends Message<DhGexKeyExchangeGroupM
     }
 
     public void setGroupGeneratorLength(int groupGeneratorLength) {
-        this.groupGeneratorLength = ModifiableVariableFactory.safelySetValue(this.groupGeneratorLength,
-                groupGeneratorLength);
+        this.groupGeneratorLength =
+                ModifiableVariableFactory.safelySetValue(
+                        this.groupGeneratorLength, groupGeneratorLength);
     }
 
     public ModifiableBigInteger getGroupGenerator() {
@@ -108,7 +109,8 @@ public class DhGexKeyExchangeGroupMessage extends Message<DhGexKeyExchangeGroupM
         if (adjustLengthField) {
             setGroupGeneratorLength(groupGenerator.toByteArray().length);
         }
-        this.groupGenerator = ModifiableVariableFactory.safelySetValue(this.groupGenerator, groupGenerator);
+        this.groupGenerator =
+                ModifiableVariableFactory.safelySetValue(this.groupGenerator, groupGenerator);
     }
 
     @Override

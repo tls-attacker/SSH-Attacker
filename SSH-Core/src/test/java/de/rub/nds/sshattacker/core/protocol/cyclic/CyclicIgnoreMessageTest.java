@@ -1,25 +1,22 @@
 /**
  * SSH-Attacker - A Modular Penetration Testing Framework for SSH
  *
- * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * <p>Copyright 2014-2021 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.sshattacker.core.protocol.cyclic;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+
+import de.rub.nds.sshattacker.core.protocol.parser.IgnoreMessageParserTest;
 import de.rub.nds.sshattacker.core.protocol.transport.message.IgnoreMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.parser.IgnoreMessageParser;
-import de.rub.nds.sshattacker.core.protocol.parser.IgnoreMessageParserTest;
 import de.rub.nds.sshattacker.core.protocol.transport.serializer.IgnoreMessageSerializer;
+import java.util.stream.Stream;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-
-import java.util.stream.Stream;
-
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 public class CyclicIgnoreMessageTest {
     /**
@@ -35,8 +32,7 @@ public class CyclicIgnoreMessageTest {
     /**
      * Cyclic test for parsing and serializing of EcdhKeyExchangeReplyMessage
      *
-     * @param providedBytes
-     *            Bytes to parse and serialize again
+     * @param providedBytes Bytes to parse and serialize again
      */
     @ParameterizedTest
     @MethodSource("provideTestVectors")

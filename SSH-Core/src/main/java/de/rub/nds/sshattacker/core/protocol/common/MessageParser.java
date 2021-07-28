@@ -1,16 +1,14 @@
 /**
  * SSH-Attacker - A Modular Penetration Testing Framework for SSH
  *
- * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * <p>Copyright 2014-2021 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.sshattacker.core.protocol.common;
 
-import de.rub.nds.sshattacker.core.exceptions.ParserException;
 import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
+import de.rub.nds.sshattacker.core.exceptions.ParserException;
 import de.rub.nds.sshattacker.core.protocol.authentication.parser.UserAuthBannerMessageParser;
 import de.rub.nds.sshattacker.core.protocol.authentication.parser.UserAuthFailureMessageParser;
 import de.rub.nds.sshattacker.core.protocol.authentication.parser.UserAuthSuccessMessageParser;
@@ -106,8 +104,12 @@ public abstract class MessageParser<T extends Message<T>> extends Parser<T> {
                     return new UserAuthSuccessMessageParser(0, raw).parse();
 
                 default:
-                    LOGGER.debug("Received unimplemented Message " + MessageIDConstant.getNameByID(raw[0]) + " ("
-                            + raw[0] + ")");
+                    LOGGER.debug(
+                            "Received unimplemented Message "
+                                    + MessageIDConstant.getNameByID(raw[0])
+                                    + " ("
+                                    + raw[0]
+                                    + ")");
                     return new UnknownMessageParser(0, raw).parse();
             }
         } catch (ParserException e) {

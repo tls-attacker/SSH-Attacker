@@ -1,21 +1,18 @@
 /**
  * SSH-Attacker - A Modular Penetration Testing Framework for SSH
  *
- * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * <p>Copyright 2014-2021 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.sshattacker.core.protocol.transport.serializer;
 
 import de.rub.nds.sshattacker.core.constants.CharConstants;
 import de.rub.nds.sshattacker.core.protocol.common.Serializer;
 import de.rub.nds.sshattacker.core.protocol.transport.message.VersionExchangeMessage;
+import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import java.nio.charset.StandardCharsets;
 
 public class VersionExchangeMessageSerializer extends Serializer<VersionExchangeMessage> {
 
@@ -41,13 +38,15 @@ public class VersionExchangeMessageSerializer extends Serializer<VersionExchange
             LOGGER.debug("Comment: [none]");
         } else {
             LOGGER.debug("Comment: " + msg.getComment().getValue());
-            appendString(String.valueOf(CharConstants.VERSION_COMMENT_SEPARATOR), StandardCharsets.US_ASCII);
+            appendString(
+                    String.valueOf(CharConstants.VERSION_COMMENT_SEPARATOR),
+                    StandardCharsets.US_ASCII);
             appendString(msg.getComment().getValue(), StandardCharsets.US_ASCII);
         }
     }
 
     private void serializeCRNL() {
-        appendBytes(new byte[] { CharConstants.CARRIAGE_RETURN, CharConstants.NEWLINE });
+        appendBytes(new byte[] {CharConstants.CARRIAGE_RETURN, CharConstants.NEWLINE});
     }
 
     @Override

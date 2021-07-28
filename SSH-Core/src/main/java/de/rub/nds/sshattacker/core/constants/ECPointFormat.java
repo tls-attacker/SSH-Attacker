@@ -1,11 +1,9 @@
 /**
  * SSH-Attacker - A Modular Penetration Testing Framework for SSH
  *
- * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * <p>Copyright 2014-2021 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.sshattacker.core.constants;
 
@@ -20,7 +18,6 @@ import java.util.Map;
 import java.util.Random;
 
 public enum ECPointFormat {
-
     UNCOMPRESSED((byte) 0),
     ANSIX962_COMPRESSED_PRIME((byte) 1),
     ANSIX962_COMPRESSED_CHAR2((byte) 2);
@@ -58,14 +55,15 @@ public enum ECPointFormat {
     }
 
     public byte[] getArrayValue() {
-        return new byte[] { value };
+        return new byte[] {value};
     }
 
     public short getShortValue() {
         return (short) (value & 0xFF);
     }
 
-    public static byte[] pointFormatsToByteArray(List<ECPointFormat> pointFormats) throws IOException {
+    public static byte[] pointFormatsToByteArray(List<ECPointFormat> pointFormats)
+            throws IOException {
         if (pointFormats == null || pointFormats.isEmpty()) {
             return new byte[0];
         }
@@ -75,11 +73,10 @@ public enum ECPointFormat {
         os.writeObject(pointFormats.toArray(new ECPointFormat[0]));
 
         return bytes.toByteArray();
-
     }
 
-    public static ECPointFormat[] pointFormatsFromByteArray(byte[] sourceBytes) throws IOException,
-            ClassNotFoundException {
+    public static ECPointFormat[] pointFormatsFromByteArray(byte[] sourceBytes)
+            throws IOException, ClassNotFoundException {
         if (sourceBytes == null || sourceBytes.length == 0) {
             return null;
         }

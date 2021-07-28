@@ -1,11 +1,9 @@
 /**
  * SSH-Attacker - A Modular Penetration Testing Framework for SSH
  *
- * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * <p>Copyright 2014-2021 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.sshattacker.core.protocol.transport.handler;
 
@@ -30,19 +28,23 @@ public class DhGexKeyExchangeReplyMessageHandler extends Handler<DhGexKeyExchang
     public void handle(DhGexKeyExchangeReplyMessage message) {
         context.setKeyExchangeSignature(message.getSignature().getValue());
 
-        DhKeyExchange dhKeyExchange = (DhKeyExchange) context.getKeyExchangeInstance().orElseThrow(AdjustmentException::new);
+        DhKeyExchange dhKeyExchange =
+                (DhKeyExchange)
+                        context.getKeyExchangeInstance().orElseThrow(AdjustmentException::new);
         dhKeyExchange.setRemotePublicKey(message.getEphemeralPublicKey().getValue());
         dhKeyExchange.computeSharedSecret();
 
         handleHostKey(message);
         ExchangeHash exchangeHash = context.getExchangeHashInstance();
-        if(exchangeHash instanceof DhGexExchangeHash) {
-            ((DhGexExchangeHash) exchangeHash).setServerDHPublicKey(dhKeyExchange.getRemotePublicKey());
+        if (exchangeHash instanceof DhGexExchangeHash) {
+            ((DhGexExchangeHash) exchangeHash)
+                    .setServerDHPublicKey(dhKeyExchange.getRemotePublicKey());
         } else {
-            ((DhGexOldExchangeHash) exchangeHash).setServerDHPublicKey(dhKeyExchange.getRemotePublicKey());
+            ((DhGexOldExchangeHash) exchangeHash)
+                    .setServerDHPublicKey(dhKeyExchange.getRemotePublicKey());
         }
         exchangeHash.setSharedSecret(dhKeyExchange.getSharedSecret());
-        if(!context.getSessionID().isPresent()) {
+        if (!context.getSessionID().isPresent()) {
             context.setSessionID(exchangeHash.get());
         }
 

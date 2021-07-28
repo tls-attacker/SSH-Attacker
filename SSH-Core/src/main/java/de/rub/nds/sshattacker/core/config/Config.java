@@ -1,11 +1,9 @@
 /**
  * SSH-Attacker - A Modular Penetration Testing Framework for SSH
  *
- * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * <p>Copyright 2014-2021 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.sshattacker.core.config;
 
@@ -37,6 +35,7 @@ public class Config implements Serializable {
     static {
         DEFAULT_CONFIG_CACHE = new ConfigCache(createConfig());
     }
+
     private final String clientVersion;
     private final String clientComment;
     private final String serverVersion;
@@ -84,14 +83,10 @@ public class Config implements Serializable {
     private String channelCommand;
     private byte replyWanted;
 
-    /**
-     * Default Connection to use when running as Client
-     */
+    /** Default Connection to use when running as Client */
     private OutboundConnection defaultClientConnection;
 
-    /**
-     * Default Connection to use when running as Server
-     */
+    /** Default Connection to use when running as Server */
     private InboundConnection defaultServerConnection;
 
     private RunningModeType defaultRunningMode = RunningModeType.CLIENT;
@@ -134,8 +129,10 @@ public class Config implements Serializable {
         serverCookie = ArrayConverter.hexStringToByteArray("00000000000000000000000000000000");
 
         clientSupportedKeyExchangeAlgorithms = new LinkedList<>();
-        clientSupportedKeyExchangeAlgorithms.add(KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP_EXCHANGE_SHA256);
-        serverSupportedKeyExchangeAlgorithms = new LinkedList<>(clientSupportedKeyExchangeAlgorithms);
+        clientSupportedKeyExchangeAlgorithms.add(
+                KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP_EXCHANGE_SHA256);
+        serverSupportedKeyExchangeAlgorithms =
+                new LinkedList<>(clientSupportedKeyExchangeAlgorithms);
 
         clientSupportedHostKeyAlgorithms = new LinkedList<>();
         clientSupportedHostKeyAlgorithms.add(PublicKeyAuthenticationAlgorithm.SSH_RSA);
@@ -143,29 +140,38 @@ public class Config implements Serializable {
 
         clientSupportedCipherAlgorithmsClientToServer = new LinkedList<>();
         clientSupportedCipherAlgorithmsClientToServer.add(EncryptionAlgorithm.AES128_CBC);
-        clientSupportedCipherAlgorithmsServerToClient = new LinkedList<>(clientSupportedCipherAlgorithmsClientToServer);
-        serverSupportedCipherAlgorithmsClientToServer = new LinkedList<>(clientSupportedCipherAlgorithmsClientToServer);
-        serverSupportedCipherAlgorithmsServerToClient = new LinkedList<>(clientSupportedCipherAlgorithmsClientToServer);
+        clientSupportedCipherAlgorithmsServerToClient =
+                new LinkedList<>(clientSupportedCipherAlgorithmsClientToServer);
+        serverSupportedCipherAlgorithmsClientToServer =
+                new LinkedList<>(clientSupportedCipherAlgorithmsClientToServer);
+        serverSupportedCipherAlgorithmsServerToClient =
+                new LinkedList<>(clientSupportedCipherAlgorithmsClientToServer);
 
         clientSupportedMacAlgorithmsClientToServer = new LinkedList<>();
         clientSupportedMacAlgorithmsClientToServer.add(MacAlgorithm.HMAC_SHA1);
-        clientSupportedMacAlgorithmsServerToClient = new LinkedList<>(clientSupportedMacAlgorithmsClientToServer);
-        serverSupportedMacAlgorithmsServerToClient = new LinkedList<>(clientSupportedMacAlgorithmsClientToServer);
-        serverSupportedMacAlgorithmsClientToServer = new LinkedList<>(clientSupportedMacAlgorithmsClientToServer);
+        clientSupportedMacAlgorithmsServerToClient =
+                new LinkedList<>(clientSupportedMacAlgorithmsClientToServer);
+        serverSupportedMacAlgorithmsServerToClient =
+                new LinkedList<>(clientSupportedMacAlgorithmsClientToServer);
+        serverSupportedMacAlgorithmsClientToServer =
+                new LinkedList<>(clientSupportedMacAlgorithmsClientToServer);
 
         clientSupportedCompressionAlgorithmsClientToServer = new LinkedList<>();
         clientSupportedCompressionAlgorithmsClientToServer.add(CompressionAlgorithm.NONE);
-        clientSupportedCompressionAlgorithmsServerToClient = new LinkedList<>(
-                clientSupportedCompressionAlgorithmsClientToServer);
-        serverSupportedCompressionAlgorithmsServerToClient = new LinkedList<>(
-                clientSupportedCompressionAlgorithmsClientToServer);
-        serverSupportedCompressionAlgorithmsClientToServer = new LinkedList<>(
-                clientSupportedCompressionAlgorithmsClientToServer);
+        clientSupportedCompressionAlgorithmsServerToClient =
+                new LinkedList<>(clientSupportedCompressionAlgorithmsClientToServer);
+        serverSupportedCompressionAlgorithmsServerToClient =
+                new LinkedList<>(clientSupportedCompressionAlgorithmsClientToServer);
+        serverSupportedCompressionAlgorithmsClientToServer =
+                new LinkedList<>(clientSupportedCompressionAlgorithmsClientToServer);
 
         clientSupportedLanguagesClientToServer = new LinkedList<>();
-        clientSupportedLanguagesServerToClient = new LinkedList<>(clientSupportedLanguagesClientToServer);
-        serverSupportedLanguagesServerToClient = new LinkedList<>(clientSupportedLanguagesClientToServer);
-        serverSupportedLanguagesClientToServer = new LinkedList<>(clientSupportedLanguagesClientToServer);
+        clientSupportedLanguagesServerToClient =
+                new LinkedList<>(clientSupportedLanguagesClientToServer);
+        serverSupportedLanguagesServerToClient =
+                new LinkedList<>(clientSupportedLanguagesClientToServer);
+        serverSupportedLanguagesClientToServer =
+                new LinkedList<>(clientSupportedLanguagesClientToServer);
 
         clientFirstKeyExchangePacketFollows = false;
         serverFirstKeyExchangePacketFollows = false;
@@ -589,5 +595,4 @@ public class Config implements Serializable {
     public void setServiceName(String serviceName) {
         this.serviceName = serviceName;
     }
-
 }

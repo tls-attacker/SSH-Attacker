@@ -1,25 +1,22 @@
 /**
  * SSH-Attacker - A Modular Penetration Testing Framework for SSH
  *
- * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * <p>Copyright 2014-2021 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.sshattacker.core.workflow.filter;
 
 import de.rub.nds.sshattacker.core.config.Config;
+import de.rub.nds.sshattacker.core.connection.AliasedConnection;
 import de.rub.nds.sshattacker.core.connection.InboundConnection;
 import de.rub.nds.sshattacker.core.connection.OutboundConnection;
-import de.rub.nds.sshattacker.core.connection.AliasedConnection;
 import de.rub.nds.sshattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.sshattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.sshattacker.core.workflow.WorkflowTraceNormalizer;
 import de.rub.nds.sshattacker.core.workflow.action.GeneralAction;
 import de.rub.nds.sshattacker.core.workflow.action.SshAction;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
@@ -28,8 +25,8 @@ import org.apache.logging.log4j.Logger;
 /**
  * Internal default filter that strips unnecessary default values.
  *
- * This filter works on a normalized workflow trace only. It is the default filter that is normally used before workflow
- * trace serialization.
+ * <p>This filter works on a normalized workflow trace only. It is the default filter that is
+ * normally used before workflow trace serialization.
  */
 public class DefaultFilter extends Filter {
 
@@ -42,8 +39,7 @@ public class DefaultFilter extends Filter {
     /**
      * Apply filter to trace.
      *
-     * @param trace
-     *            The workflow trace that should be filtered.
+     * @param trace The workflow trace that should be filtered.
      */
     @Override
     public void applyFilter(WorkflowTrace trace) {
@@ -60,8 +56,9 @@ public class DefaultFilter extends Filter {
         for (AliasedConnection traceCon : traceConnections) {
             ConnectionEndType localConEndType = traceCon.getLocalConnectionEndType();
             if (null == localConEndType) {
-                throw new ConfigurationException("WorkflowTrace defines a connection with an"
-                        + "empty localConnectionEndType. Don't know how to handle this!");
+                throw new ConfigurationException(
+                        "WorkflowTrace defines a connection with an"
+                                + "empty localConnectionEndType. Don't know how to handle this!");
             } else {
                 lastProcessedCon = traceCon.getCopy();
                 switch (traceCon.getLocalConnectionEndType()) {
@@ -72,11 +69,13 @@ public class DefaultFilter extends Filter {
                         traceCon.filter(defaultInCon);
                         break;
                     default:
-                        throw new ConfigurationException("WorkflowTrace defines a connection with an"
-                                + "unknown localConnectionEndType (" + localConEndType + "). Don't know "
-                                + "how to handle this!");
+                        throw new ConfigurationException(
+                                "WorkflowTrace defines a connection with an"
+                                        + "unknown localConnectionEndType ("
+                                        + localConEndType
+                                        + "). Don't know "
+                                        + "how to handle this!");
                 }
-
             }
         }
 
@@ -94,14 +93,11 @@ public class DefaultFilter extends Filter {
 
     /**
      * Restore workflow trace values that were explicitly set by the user.
-     * <p>
-     * Currently restores only workflow trace connections set by the user.
      *
-     * @param trace
-     *            the trace to which the postFilter should be applied
-     * @param reference
-     *            the reference trace holding the original user defined values
+     * <p>Currently restores only workflow trace connections set by the user.
      *
+     * @param trace the trace to which the postFilter should be applied
+     * @param reference the reference trace holding the original user defined values
      */
     @Override
     public void postFilter(WorkflowTrace trace, WorkflowTrace reference) {
@@ -112,5 +108,4 @@ public class DefaultFilter extends Filter {
     public FilterType getFilterType() {
         return FilterType.DEFAULT;
     }
-
 }

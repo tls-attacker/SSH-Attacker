@@ -1,32 +1,27 @@
 /**
  * SSH-Attacker - A Modular Penetration Testing Framework for SSH
  *
- * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * <p>Copyright 2014-2021 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.sshattacker.core.workflow;
 
 import de.rub.nds.sshattacker.core.config.Config;
+import de.rub.nds.sshattacker.core.connection.AliasedConnection;
 import de.rub.nds.sshattacker.core.connection.InboundConnection;
 import de.rub.nds.sshattacker.core.connection.OutboundConnection;
 import de.rub.nds.sshattacker.core.constants.RunningModeType;
+import de.rub.nds.sshattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.sshattacker.core.workflow.action.GeneralAction;
 import de.rub.nds.sshattacker.core.workflow.action.SshAction;
-import de.rub.nds.sshattacker.core.exceptions.ConfigurationException;
-import de.rub.nds.sshattacker.core.connection.AliasedConnection;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-/**
- * Builds a "normalized" workflow trace.
- */
+/** Builds a "normalized" workflow trace. */
 public class WorkflowTraceNormalizer {
 
     private static final Logger LOGGER = LogManager.getLogger();
@@ -38,12 +33,9 @@ public class WorkflowTraceNormalizer {
     /**
      * Merge in default values from Config if necessary.
      *
-     * @param trace
-     *            The trace that should be normalized
-     * @param config
-     *            The config that is used
-     * @param mode
-     *            The mode the Trace is ran in
+     * @param trace The trace that should be normalized
+     * @param config The config that is used
+     * @param mode The mode the Trace is ran in
      */
     public void normalize(WorkflowTrace trace, Config config, RunningModeType mode) {
         List<AliasedConnection> traceConnections = trace.getConnections();
@@ -71,9 +63,12 @@ public class WorkflowTraceNormalizer {
                     traceConnections.add(defaultOutCon);
                     break;
                 default:
-                    throw new ConfigurationException("No connections defined in workflow trace and "
-                            + "default configuration for this running mode (" + mode + ") is not "
-                            + "supported. Please define some connections in the workflow trace.\n");
+                    throw new ConfigurationException(
+                            "No connections defined in workflow trace and "
+                                    + "default configuration for this running mode ("
+                                    + mode
+                                    + ") is not "
+                                    + "supported. Please define some connections in the workflow trace.\n");
             }
         }
 
@@ -90,8 +85,9 @@ public class WorkflowTraceNormalizer {
         for (AliasedConnection traceCon : traceConnections) {
             ConnectionEndType localConEndType = traceCon.getLocalConnectionEndType();
             if (null == localConEndType) {
-                throw new ConfigurationException("WorkflowTrace defines a connection with an"
-                        + "empty localConnectionEndType. Don't know how to handle this!");
+                throw new ConfigurationException(
+                        "WorkflowTrace defines a connection with an"
+                                + "empty localConnectionEndType. Don't know how to handle this!");
             } else {
                 switch (traceCon.getLocalConnectionEndType()) {
                     case CLIENT:
@@ -101,9 +97,12 @@ public class WorkflowTraceNormalizer {
                         traceCon.normalize(defaultInCon);
                         break;
                     default:
-                        throw new ConfigurationException("WorkflowTrace defines a connection with an"
-                                + "unknown localConnectionEndType (" + localConEndType + "). Don't know "
-                                + "how to handle this!");
+                        throw new ConfigurationException(
+                                "WorkflowTrace defines a connection with an"
+                                        + "unknown localConnectionEndType ("
+                                        + localConEndType
+                                        + "). Don't know "
+                                        + "how to handle this!");
                 }
             }
         }
@@ -136,33 +135,35 @@ public class WorkflowTraceNormalizer {
     }
 
     /**
-     * Assert that a workflow trace is "well defined". A well defined workflow trace contains one or more Connections
-     * and zero or more SshActions which refer to defined Connections only (i.e. the alias must match a known connection
-     * alias).
+     * Assert that a workflow trace is "well defined". A well defined workflow trace contains one or
+     * more Connections and zero or more SshActions which refer to defined Connections only (i.e.
+     * the alias must match a known connection alias).
      *
-     * TODO: There could be a AliasedConnection.assertProperlyPrepared() method that we can call here. This would be a
-     * "self test" of the Connection object to check that all values are set and in expected range.
+     * <p>TODO: There could be a AliasedConnection.assertProperlyPrepared() method that we can call
+     * here. This would be a "self test" of the Connection object to check that all values are set
+     * and in expected range.
      *
-     * @param trace
-     *            The WorkflowTrace to check
+     * @param trace The WorkflowTrace to check
      */
     public void assertNormalizedWorkflowTrace(WorkflowTrace trace) {
         List<AliasedConnection> connections = trace.getConnections();
         if ((connections == null) || (connections.isEmpty())) {
-            throw new ConfigurationException("Workflow trace not well defined. "
-                    + "Trace does not define any connections.");
+            throw new ConfigurationException(
+                    "Workflow trace not well defined. " + "Trace does not define any connections.");
         }
 
         List<String> knownAliases = new ArrayList<>();
         for (AliasedConnection con : connections) {
             String conAlias = con.getAlias();
             if ((conAlias == null) || (conAlias.isEmpty())) {
-                throw new ConfigurationException("Workflow trace not well defined. "
-                        + "Trace contains connections with empty alias");
+                throw new ConfigurationException(
+                        "Workflow trace not well defined. "
+                                + "Trace contains connections with empty alias");
             }
             if (knownAliases.contains(conAlias)) {
-                throw new ConfigurationException("Workflow trace not well defined. "
-                        + "Trace contains connections with the same alias");
+                throw new ConfigurationException(
+                        "Workflow trace not well defined. "
+                                + "Trace contains connections with the same alias");
             }
             knownAliases.add(conAlias);
         }
@@ -171,13 +172,17 @@ public class WorkflowTraceNormalizer {
             try {
                 action.assertAliasesSetProperly();
             } catch (ConfigurationException e) {
-                throw new ConfigurationException("Workflow trace not well defined. " + e.getLocalizedMessage());
+                throw new ConfigurationException(
+                        "Workflow trace not well defined. " + e.getLocalizedMessage());
             }
 
             if (!knownAliases.containsAll(action.getAllAliases())) {
-                throw new ConfigurationException("Workflow trace not well defined. "
-                        + "Trace has action with reference to unknown connection alias, action: "
-                        + action.toCompactString() + ", known aliases: " + knownAliases);
+                throw new ConfigurationException(
+                        "Workflow trace not well defined. "
+                                + "Trace has action with reference to unknown connection alias, action: "
+                                + action.toCompactString()
+                                + ", known aliases: "
+                                + knownAliases);
             }
         }
     }

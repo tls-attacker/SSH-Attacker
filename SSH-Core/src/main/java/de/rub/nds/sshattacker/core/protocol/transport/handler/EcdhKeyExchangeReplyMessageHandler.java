@@ -1,21 +1,19 @@
 /**
  * SSH-Attacker - A Modular Penetration Testing Framework for SSH
  *
- * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * <p>Copyright 2014-2021 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.sshattacker.core.protocol.transport.handler;
 
+import de.rub.nds.sshattacker.core.crypto.KeyDerivation;
 import de.rub.nds.sshattacker.core.crypto.hash.EcdhExchangeHash;
 import de.rub.nds.sshattacker.core.crypto.kex.DhBasedKeyExchange;
 import de.rub.nds.sshattacker.core.exceptions.AdjustmentException;
 import de.rub.nds.sshattacker.core.protocol.common.Handler;
 import de.rub.nds.sshattacker.core.protocol.layers.CryptoLayerFactory;
 import de.rub.nds.sshattacker.core.protocol.transport.message.EcdhKeyExchangeReplyMessage;
-import de.rub.nds.sshattacker.core.crypto.KeyDerivation;
 import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class EcdhKeyExchangeReplyMessageHandler extends Handler<EcdhKeyExchangeReplyMessage> {
@@ -28,7 +26,9 @@ public class EcdhKeyExchangeReplyMessageHandler extends Handler<EcdhKeyExchangeR
     public void handle(EcdhKeyExchangeReplyMessage message) {
         context.setKeyExchangeSignature(message.getSignature().getValue());
 
-        DhBasedKeyExchange keyExchange = (DhBasedKeyExchange) context.getKeyExchangeInstance().orElseThrow(AdjustmentException::new);
+        DhBasedKeyExchange keyExchange =
+                (DhBasedKeyExchange)
+                        context.getKeyExchangeInstance().orElseThrow(AdjustmentException::new);
         keyExchange.setRemotePublicKey(message.getEphemeralPublicKey().getValue());
         keyExchange.computeSharedSecret();
 
@@ -36,7 +36,7 @@ public class EcdhKeyExchangeReplyMessageHandler extends Handler<EcdhKeyExchangeR
         EcdhExchangeHash ecdhExchangeHash = (EcdhExchangeHash) context.getExchangeHashInstance();
         ecdhExchangeHash.setServerECDHPublicKey(keyExchange.getRemotePublicKey());
         ecdhExchangeHash.setSharedSecret(keyExchange.getSharedSecret());
-        if(!context.getSessionID().isPresent()) {
+        if (!context.getSessionID().isPresent()) {
             context.setSessionID(ecdhExchangeHash.get());
         }
 

@@ -1,11 +1,9 @@
 /**
  * SSH-Attacker - A Modular Penetration Testing Framework for SSH
  *
- * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * <p>Copyright 2014-2021 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.sshattacker.core.crypto.hash;
 
@@ -15,12 +13,11 @@ import de.rub.nds.sshattacker.core.protocol.transport.message.KeyExchangeInitMes
 import de.rub.nds.sshattacker.core.protocol.transport.message.VersionExchangeMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.serializer.KeyExchangeInitMessageSerializer;
 import de.rub.nds.sshattacker.core.state.SshContext;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class ExchangeHash {
 
@@ -78,7 +75,8 @@ public class ExchangeHash {
     }
 
     public void setClientKeyExchangeInit(KeyExchangeInitMessage clientKeyExchangeInit) {
-        this.clientKeyExchangeInit = new KeyExchangeInitMessageSerializer(clientKeyExchangeInit).serialize();
+        this.clientKeyExchangeInit =
+                new KeyExchangeInitMessageSerializer(clientKeyExchangeInit).serialize();
     }
 
     public byte[] getServerKeyExchangeInit() {
@@ -90,7 +88,8 @@ public class ExchangeHash {
     }
 
     public void setServerKeyExchangeInit(KeyExchangeInitMessage serverKeyExchangeInit) {
-        this.serverKeyExchangeInit = new KeyExchangeInitMessageSerializer(serverKeyExchangeInit).serialize();
+        this.serverKeyExchangeInit =
+                new KeyExchangeInitMessageSerializer(serverKeyExchangeInit).serialize();
     }
 
     public byte[] getServerHostKey() {
@@ -114,8 +113,12 @@ public class ExchangeHash {
     }
 
     protected boolean areRequiredInputsMissing() {
-        return clientVersion == null || serverVersion == null || clientKeyExchangeInit == null
-                || serverKeyExchangeInit == null || serverHostKey == null || sharedSecret == null;
+        return clientVersion == null
+                || serverVersion == null
+                || clientKeyExchangeInit == null
+                || serverKeyExchangeInit == null
+                || serverHostKey == null
+                || sharedSecret == null;
     }
 
     protected void compute() {
@@ -123,10 +126,18 @@ public class ExchangeHash {
         LOGGER.debug("Exchange hash input: " + ArrayConverter.bytesToRawHexString(input));
         MessageDigest md;
         try {
-            md = MessageDigest.getInstance(context.getKeyExchangeAlgorithm().orElseThrow(AdjustmentException::new).getDigest());
+            md =
+                    MessageDigest.getInstance(
+                            context.getKeyExchangeAlgorithm()
+                                    .orElseThrow(AdjustmentException::new)
+                                    .getDigest());
         } catch (NoSuchAlgorithmException e) {
-            LOGGER.error("Provider does not support this hash function: " + context.getKeyExchangeAlgorithm().get().getDigest(), e);
-            throw new AdjustmentException("Unable to calculate exchange hash due to unsupported hash algorithm.", e);
+            LOGGER.error(
+                    "Provider does not support this hash function: "
+                            + context.getKeyExchangeAlgorithm().get().getDigest(),
+                    e);
+            throw new AdjustmentException(
+                    "Unable to calculate exchange hash due to unsupported hash algorithm.", e);
         }
         hash = md.digest(input);
         LOGGER.info("Computed exchange hash: " + ArrayConverter.bytesToRawHexString(hash));
@@ -144,7 +155,8 @@ public class ExchangeHash {
     public byte[] get() {
         if (!isReady()) {
             if (areRequiredInputsMissing()) {
-                throw new AdjustmentException("Unable to retrieve exchange hash, exchange hash is not ready");
+                throw new AdjustmentException(
+                        "Unable to retrieve exchange hash, exchange hash is not ready");
             }
             compute();
         }

@@ -1,17 +1,14 @@
 /**
  * SSH-Attacker - A Modular Penetration Testing Framework for SSH
  *
- * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * <p>Copyright 2014-2021 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.sshattacker.core.constants;
 
 import de.rub.nds.sshattacker.core.exceptions.ParserException;
 import de.rub.nds.sshattacker.core.state.SshContext;
-
 import java.util.*;
 
 public enum MessageIDConstant {
@@ -35,72 +32,148 @@ public enum MessageIDConstant {
     // 22 - 29 unassigned (algorithm negotiation)
     // 30 - 49 reserved (key exchange method specific)
     // [ RFC 4419 ]
-    SSH_MSG_KEX_DH_GEX_REQUEST_OLD((byte) 30, new KeyExchangeAlgorithm[] {
-            KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP_EXCHANGE_SHA1,
-            KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP_EXCHANGE_SHA256 }),
-    SSH_MSG_KEX_DH_GEX_REQUEST((byte) 34, new KeyExchangeAlgorithm[] {
-            KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP_EXCHANGE_SHA1,
-            KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP_EXCHANGE_SHA256 }),
-    SSH_MSG_KEX_DH_GEX_GROUP((byte) 31, new KeyExchangeAlgorithm[] {
-            KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP_EXCHANGE_SHA1,
-            KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP_EXCHANGE_SHA256 }),
-    SSH_MSG_KEX_DH_GEX_INIT((byte) 32, new KeyExchangeAlgorithm[] {
-            KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP_EXCHANGE_SHA1,
-            KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP_EXCHANGE_SHA256 }),
-    SSH_MSG_KEX_DH_GEX_REPLY((byte) 33, new KeyExchangeAlgorithm[] {
-            KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP_EXCHANGE_SHA1,
-            KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP_EXCHANGE_SHA256 }),
+    SSH_MSG_KEX_DH_GEX_REQUEST_OLD(
+            (byte) 30,
+            new KeyExchangeAlgorithm[] {
+                KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP_EXCHANGE_SHA1,
+                KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP_EXCHANGE_SHA256
+            }),
+    SSH_MSG_KEX_DH_GEX_REQUEST(
+            (byte) 34,
+            new KeyExchangeAlgorithm[] {
+                KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP_EXCHANGE_SHA1,
+                KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP_EXCHANGE_SHA256
+            }),
+    SSH_MSG_KEX_DH_GEX_GROUP(
+            (byte) 31,
+            new KeyExchangeAlgorithm[] {
+                KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP_EXCHANGE_SHA1,
+                KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP_EXCHANGE_SHA256
+            }),
+    SSH_MSG_KEX_DH_GEX_INIT(
+            (byte) 32,
+            new KeyExchangeAlgorithm[] {
+                KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP_EXCHANGE_SHA1,
+                KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP_EXCHANGE_SHA256
+            }),
+    SSH_MSG_KEX_DH_GEX_REPLY(
+            (byte) 33,
+            new KeyExchangeAlgorithm[] {
+                KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP_EXCHANGE_SHA1,
+                KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP_EXCHANGE_SHA256
+            }),
     // [ RFC 4253 ]
-    SSH_MSG_KEXDH_INIT((byte) 30, new KeyExchangeAlgorithm[] { KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP1_SHA1,
-            KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP14_SHA1, KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP14_SHA256,
-            KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP15_SHA512, KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP16_SHA512,
-            KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP17_SHA512, KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP18_SHA512 }),
-    SSH_MSG_KEXDH_REPLY((byte) 31, new KeyExchangeAlgorithm[] { KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP1_SHA1,
-            KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP14_SHA1, KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP14_SHA256,
-            KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP15_SHA512, KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP16_SHA512,
-            KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP17_SHA512, KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP18_SHA512 }),
+    SSH_MSG_KEXDH_INIT(
+            (byte) 30,
+            new KeyExchangeAlgorithm[] {
+                KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP1_SHA1,
+                KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP14_SHA1,
+                KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP14_SHA256,
+                KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP15_SHA512,
+                KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP16_SHA512,
+                KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP17_SHA512,
+                KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP18_SHA512
+            }),
+    SSH_MSG_KEXDH_REPLY(
+            (byte) 31,
+            new KeyExchangeAlgorithm[] {
+                KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP1_SHA1,
+                KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP14_SHA1,
+                KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP14_SHA256,
+                KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP15_SHA512,
+                KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP16_SHA512,
+                KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP17_SHA512,
+                KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP18_SHA512
+            }),
     // [ RFC 5656 ]
-    SSH_MSG_KEX_ECDH_INIT((byte) 30, new KeyExchangeAlgorithm[] { KeyExchangeAlgorithm.ECDH_SHA2_SECP160K1,
-            KeyExchangeAlgorithm.ECDH_SHA2_SECP160R1, KeyExchangeAlgorithm.ECDH_SHA2_SECP160R2,
-            KeyExchangeAlgorithm.ECDH_SHA2_SECP192K1, KeyExchangeAlgorithm.ECDH_SHA2_SECP192R1,
-            KeyExchangeAlgorithm.ECDH_SHA2_SECP224K1, KeyExchangeAlgorithm.ECDH_SHA2_SECP224R1,
-            KeyExchangeAlgorithm.ECDH_SHA2_SECP256K1, KeyExchangeAlgorithm.ECDH_SHA2_NISTP256,
-            KeyExchangeAlgorithm.ECDH_SHA2_NISTP384, KeyExchangeAlgorithm.ECDH_SHA2_NISTP521,
-            KeyExchangeAlgorithm.ECDH_SHA2_SECT163K1, KeyExchangeAlgorithm.ECDH_SHA2_SECT163R1,
-            KeyExchangeAlgorithm.ECDH_SHA2_SECT163R2, KeyExchangeAlgorithm.ECDH_SHA2_SECT193R1,
-            KeyExchangeAlgorithm.ECDH_SHA2_SECT193R2, KeyExchangeAlgorithm.ECDH_SHA2_SECT233K1,
-            KeyExchangeAlgorithm.ECDH_SHA2_SECT233R1, KeyExchangeAlgorithm.ECDH_SHA2_SECT239K1,
-            KeyExchangeAlgorithm.ECDH_SHA2_SECT283K1, KeyExchangeAlgorithm.ECDH_SHA2_SECT283R1,
-            KeyExchangeAlgorithm.ECDH_SHA2_SECT409K1, KeyExchangeAlgorithm.ECDH_SHA2_SECT409R1,
-            KeyExchangeAlgorithm.ECDH_SHA2_SECT571K1, KeyExchangeAlgorithm.ECDH_SHA2_SECT571R1,
-            KeyExchangeAlgorithm.ECDH_SHA2_BRAINPOOLP256R1, KeyExchangeAlgorithm.ECDH_SHA2_BRAINPOOLP384R1,
-            KeyExchangeAlgorithm.ECDH_SHA2_BRAINPOOLP512R1, KeyExchangeAlgorithm.CURVE25519_SHA256,
-            KeyExchangeAlgorithm.CURVE448_SHA512, KeyExchangeAlgorithm.CURVE25519_SHA256_LIBSSH_ORG }),
-    SSH_MSG_KEX_ECDH_REPLY((byte) 31, new KeyExchangeAlgorithm[] { KeyExchangeAlgorithm.ECDH_SHA2_SECP160K1,
-            KeyExchangeAlgorithm.ECDH_SHA2_SECP160R1, KeyExchangeAlgorithm.ECDH_SHA2_SECP160R2,
-            KeyExchangeAlgorithm.ECDH_SHA2_SECP192K1, KeyExchangeAlgorithm.ECDH_SHA2_SECP192R1,
-            KeyExchangeAlgorithm.ECDH_SHA2_SECP224K1, KeyExchangeAlgorithm.ECDH_SHA2_SECP224R1,
-            KeyExchangeAlgorithm.ECDH_SHA2_SECP256K1, KeyExchangeAlgorithm.ECDH_SHA2_NISTP256,
-            KeyExchangeAlgorithm.ECDH_SHA2_NISTP384, KeyExchangeAlgorithm.ECDH_SHA2_NISTP521,
-            KeyExchangeAlgorithm.ECDH_SHA2_SECT163K1, KeyExchangeAlgorithm.ECDH_SHA2_SECT163R1,
-            KeyExchangeAlgorithm.ECDH_SHA2_SECT163R2, KeyExchangeAlgorithm.ECDH_SHA2_SECT193R1,
-            KeyExchangeAlgorithm.ECDH_SHA2_SECT193R2, KeyExchangeAlgorithm.ECDH_SHA2_SECT233K1,
-            KeyExchangeAlgorithm.ECDH_SHA2_SECT233R1, KeyExchangeAlgorithm.ECDH_SHA2_SECT239K1,
-            KeyExchangeAlgorithm.ECDH_SHA2_SECT283K1, KeyExchangeAlgorithm.ECDH_SHA2_SECT283R1,
-            KeyExchangeAlgorithm.ECDH_SHA2_SECT409K1, KeyExchangeAlgorithm.ECDH_SHA2_SECT409R1,
-            KeyExchangeAlgorithm.ECDH_SHA2_SECT571K1, KeyExchangeAlgorithm.ECDH_SHA2_SECT571R1,
-            KeyExchangeAlgorithm.ECDH_SHA2_BRAINPOOLP256R1, KeyExchangeAlgorithm.ECDH_SHA2_BRAINPOOLP384R1,
-            KeyExchangeAlgorithm.ECDH_SHA2_BRAINPOOLP512R1, KeyExchangeAlgorithm.CURVE25519_SHA256,
-            KeyExchangeAlgorithm.CURVE448_SHA512, KeyExchangeAlgorithm.CURVE25519_SHA256_LIBSSH_ORG }),
+    SSH_MSG_KEX_ECDH_INIT(
+            (byte) 30,
+            new KeyExchangeAlgorithm[] {
+                KeyExchangeAlgorithm.ECDH_SHA2_SECP160K1,
+                KeyExchangeAlgorithm.ECDH_SHA2_SECP160R1,
+                KeyExchangeAlgorithm.ECDH_SHA2_SECP160R2,
+                KeyExchangeAlgorithm.ECDH_SHA2_SECP192K1,
+                KeyExchangeAlgorithm.ECDH_SHA2_SECP192R1,
+                KeyExchangeAlgorithm.ECDH_SHA2_SECP224K1,
+                KeyExchangeAlgorithm.ECDH_SHA2_SECP224R1,
+                KeyExchangeAlgorithm.ECDH_SHA2_SECP256K1,
+                KeyExchangeAlgorithm.ECDH_SHA2_NISTP256,
+                KeyExchangeAlgorithm.ECDH_SHA2_NISTP384,
+                KeyExchangeAlgorithm.ECDH_SHA2_NISTP521,
+                KeyExchangeAlgorithm.ECDH_SHA2_SECT163K1,
+                KeyExchangeAlgorithm.ECDH_SHA2_SECT163R1,
+                KeyExchangeAlgorithm.ECDH_SHA2_SECT163R2,
+                KeyExchangeAlgorithm.ECDH_SHA2_SECT193R1,
+                KeyExchangeAlgorithm.ECDH_SHA2_SECT193R2,
+                KeyExchangeAlgorithm.ECDH_SHA2_SECT233K1,
+                KeyExchangeAlgorithm.ECDH_SHA2_SECT233R1,
+                KeyExchangeAlgorithm.ECDH_SHA2_SECT239K1,
+                KeyExchangeAlgorithm.ECDH_SHA2_SECT283K1,
+                KeyExchangeAlgorithm.ECDH_SHA2_SECT283R1,
+                KeyExchangeAlgorithm.ECDH_SHA2_SECT409K1,
+                KeyExchangeAlgorithm.ECDH_SHA2_SECT409R1,
+                KeyExchangeAlgorithm.ECDH_SHA2_SECT571K1,
+                KeyExchangeAlgorithm.ECDH_SHA2_SECT571R1,
+                KeyExchangeAlgorithm.ECDH_SHA2_BRAINPOOLP256R1,
+                KeyExchangeAlgorithm.ECDH_SHA2_BRAINPOOLP384R1,
+                KeyExchangeAlgorithm.ECDH_SHA2_BRAINPOOLP512R1,
+                KeyExchangeAlgorithm.CURVE25519_SHA256,
+                KeyExchangeAlgorithm.CURVE448_SHA512,
+                KeyExchangeAlgorithm.CURVE25519_SHA256_LIBSSH_ORG
+            }),
+    SSH_MSG_KEX_ECDH_REPLY(
+            (byte) 31,
+            new KeyExchangeAlgorithm[] {
+                KeyExchangeAlgorithm.ECDH_SHA2_SECP160K1,
+                KeyExchangeAlgorithm.ECDH_SHA2_SECP160R1,
+                KeyExchangeAlgorithm.ECDH_SHA2_SECP160R2,
+                KeyExchangeAlgorithm.ECDH_SHA2_SECP192K1,
+                KeyExchangeAlgorithm.ECDH_SHA2_SECP192R1,
+                KeyExchangeAlgorithm.ECDH_SHA2_SECP224K1,
+                KeyExchangeAlgorithm.ECDH_SHA2_SECP224R1,
+                KeyExchangeAlgorithm.ECDH_SHA2_SECP256K1,
+                KeyExchangeAlgorithm.ECDH_SHA2_NISTP256,
+                KeyExchangeAlgorithm.ECDH_SHA2_NISTP384,
+                KeyExchangeAlgorithm.ECDH_SHA2_NISTP521,
+                KeyExchangeAlgorithm.ECDH_SHA2_SECT163K1,
+                KeyExchangeAlgorithm.ECDH_SHA2_SECT163R1,
+                KeyExchangeAlgorithm.ECDH_SHA2_SECT163R2,
+                KeyExchangeAlgorithm.ECDH_SHA2_SECT193R1,
+                KeyExchangeAlgorithm.ECDH_SHA2_SECT193R2,
+                KeyExchangeAlgorithm.ECDH_SHA2_SECT233K1,
+                KeyExchangeAlgorithm.ECDH_SHA2_SECT233R1,
+                KeyExchangeAlgorithm.ECDH_SHA2_SECT239K1,
+                KeyExchangeAlgorithm.ECDH_SHA2_SECT283K1,
+                KeyExchangeAlgorithm.ECDH_SHA2_SECT283R1,
+                KeyExchangeAlgorithm.ECDH_SHA2_SECT409K1,
+                KeyExchangeAlgorithm.ECDH_SHA2_SECT409R1,
+                KeyExchangeAlgorithm.ECDH_SHA2_SECT571K1,
+                KeyExchangeAlgorithm.ECDH_SHA2_SECT571R1,
+                KeyExchangeAlgorithm.ECDH_SHA2_BRAINPOOLP256R1,
+                KeyExchangeAlgorithm.ECDH_SHA2_BRAINPOOLP384R1,
+                KeyExchangeAlgorithm.ECDH_SHA2_BRAINPOOLP512R1,
+                KeyExchangeAlgorithm.CURVE25519_SHA256,
+                KeyExchangeAlgorithm.CURVE448_SHA512,
+                KeyExchangeAlgorithm.CURVE25519_SHA256_LIBSSH_ORG
+            }),
     SSH_MSG_ECMQV_INIT((byte) 30, KeyExchangeAlgorithm.ECMQV_SHA2),
     SSH_MSG_ECMQV_REPLY((byte) 31, KeyExchangeAlgorithm.ECMQV_SHA2),
     // [ RFC 4432 ]
-    SSH_MSG_KEXRSA_PUBKEY((byte) 30, new KeyExchangeAlgorithm[] { KeyExchangeAlgorithm.RSA1024_SHA1,
-            KeyExchangeAlgorithm.RSA2048_SHA256 }),
-    SSH_MSG_KEXRSA_SECRET((byte) 31, new KeyExchangeAlgorithm[] { KeyExchangeAlgorithm.RSA1024_SHA1,
-            KeyExchangeAlgorithm.RSA2048_SHA256 }),
-    SSH_MSG_KEXRSA_DONE((byte) 32, new KeyExchangeAlgorithm[] { KeyExchangeAlgorithm.RSA1024_SHA1,
-            KeyExchangeAlgorithm.RSA2048_SHA256 }),
+    SSH_MSG_KEXRSA_PUBKEY(
+            (byte) 30,
+            new KeyExchangeAlgorithm[] {
+                KeyExchangeAlgorithm.RSA1024_SHA1, KeyExchangeAlgorithm.RSA2048_SHA256
+            }),
+    SSH_MSG_KEXRSA_SECRET(
+            (byte) 31,
+            new KeyExchangeAlgorithm[] {
+                KeyExchangeAlgorithm.RSA1024_SHA1, KeyExchangeAlgorithm.RSA2048_SHA256
+            }),
+    SSH_MSG_KEXRSA_DONE(
+            (byte) 32,
+            new KeyExchangeAlgorithm[] {
+                KeyExchangeAlgorithm.RSA1024_SHA1, KeyExchangeAlgorithm.RSA2048_SHA256
+            }),
     // [ RFC 4462 ]
     // TODO: Add specificTo on GSS messages
     SSH_MSG_KEXGSS_INIT((byte) 30),
@@ -124,18 +197,48 @@ public enum MessageIDConstant {
     SSH_MSG_USERAUTH_INFO_REQUEST((byte) 60, AuthenticationMethod.KEYBOARD_INTERACTIVE),
     SSH_MSG_USERAUTH_INFO_RESPONSE((byte) 61, AuthenticationMethod.KEYBOARD_INTERACTIVE),
     // [ RFC 4462 ]
-    SSH_MSG_USERAUTH_GSSAPI_RESPONSE((byte) 60, new AuthenticationMethod[] { AuthenticationMethod.GSSAPI,
-            AuthenticationMethod.GSSAPI_WITH_MIC, AuthenticationMethod.GSSAPI_KEYEX }),
-    SSH_MSG_USERAUTH_GSSAPI_TOKEN((byte) 61, new AuthenticationMethod[] { AuthenticationMethod.GSSAPI,
-            AuthenticationMethod.GSSAPI_WITH_MIC, AuthenticationMethod.GSSAPI_KEYEX }),
-    SSH_MSG_USERAUTH_GSSAPI_EXCHANGE_COMPLETE((byte) 63, new AuthenticationMethod[] { AuthenticationMethod.GSSAPI,
-            AuthenticationMethod.GSSAPI_WITH_MIC, AuthenticationMethod.GSSAPI_KEYEX }),
-    SSH_MSG_USERAUTH_GSSAPI_ERROR((byte) 64, new AuthenticationMethod[] { AuthenticationMethod.GSSAPI,
-            AuthenticationMethod.GSSAPI_WITH_MIC, AuthenticationMethod.GSSAPI_KEYEX }),
-    SSH_MSG_USERAUTH_GSSAPI_ERRTOK((byte) 65, new AuthenticationMethod[] { AuthenticationMethod.GSSAPI,
-            AuthenticationMethod.GSSAPI_WITH_MIC, AuthenticationMethod.GSSAPI_KEYEX }),
-    SSH_MSG_USERAUTH_GSSAPI_MIC((byte) 66, new AuthenticationMethod[] { AuthenticationMethod.GSSAPI,
-            AuthenticationMethod.GSSAPI_WITH_MIC, AuthenticationMethod.GSSAPI_KEYEX }),
+    SSH_MSG_USERAUTH_GSSAPI_RESPONSE(
+            (byte) 60,
+            new AuthenticationMethod[] {
+                AuthenticationMethod.GSSAPI,
+                AuthenticationMethod.GSSAPI_WITH_MIC,
+                AuthenticationMethod.GSSAPI_KEYEX
+            }),
+    SSH_MSG_USERAUTH_GSSAPI_TOKEN(
+            (byte) 61,
+            new AuthenticationMethod[] {
+                AuthenticationMethod.GSSAPI,
+                AuthenticationMethod.GSSAPI_WITH_MIC,
+                AuthenticationMethod.GSSAPI_KEYEX
+            }),
+    SSH_MSG_USERAUTH_GSSAPI_EXCHANGE_COMPLETE(
+            (byte) 63,
+            new AuthenticationMethod[] {
+                AuthenticationMethod.GSSAPI,
+                AuthenticationMethod.GSSAPI_WITH_MIC,
+                AuthenticationMethod.GSSAPI_KEYEX
+            }),
+    SSH_MSG_USERAUTH_GSSAPI_ERROR(
+            (byte) 64,
+            new AuthenticationMethod[] {
+                AuthenticationMethod.GSSAPI,
+                AuthenticationMethod.GSSAPI_WITH_MIC,
+                AuthenticationMethod.GSSAPI_KEYEX
+            }),
+    SSH_MSG_USERAUTH_GSSAPI_ERRTOK(
+            (byte) 65,
+            new AuthenticationMethod[] {
+                AuthenticationMethod.GSSAPI,
+                AuthenticationMethod.GSSAPI_WITH_MIC,
+                AuthenticationMethod.GSSAPI_KEYEX
+            }),
+    SSH_MSG_USERAUTH_GSSAPI_MIC(
+            (byte) 66,
+            new AuthenticationMethod[] {
+                AuthenticationMethod.GSSAPI,
+                AuthenticationMethod.GSSAPI_WITH_MIC,
+                AuthenticationMethod.GSSAPI_KEYEX
+            }),
     // [ RFC 4254 ]
     SSH_MSG_GLOBAL_REQUEST((byte) 80),
     SSH_MSG_REQUEST_SUCCESS((byte) 81),
@@ -200,7 +303,8 @@ public enum MessageIDConstant {
                     return candidate;
                 }
             }
-            throw new ParserException("Unable to parse key exchange specific message in the current context");
+            throw new ParserException(
+                    "Unable to parse key exchange specific message in the current context");
         }
         if (id >= (byte) 60 && id <= (byte) 79) {
             AuthenticationMethod methodInContext = context.getChooser().getAuthenticationMethod();
@@ -213,7 +317,8 @@ public enum MessageIDConstant {
                     return candidate;
                 }
             }
-            throw new ParserException("Unable to parse user authentication specific message in the current context");
+            throw new ParserException(
+                    "Unable to parse user authentication specific message in the current context");
         }
         return idList.get(0);
     }

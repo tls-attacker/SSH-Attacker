@@ -1,11 +1,9 @@
 /**
  * SSH-Attacker - A Modular Penetration Testing Framework for SSH
  *
- * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * <p>Copyright 2014-2021 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.sshattacker.core.protocol.transport.message;
 
@@ -15,11 +13,10 @@ import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.sshattacker.core.constants.DisconnectReason;
 import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
 import de.rub.nds.sshattacker.core.protocol.common.Message;
+import de.rub.nds.sshattacker.core.protocol.transport.handler.DisconnectMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.transport.preparator.DisconnectMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.transport.serializer.DisconnectMessageSerializer;
-import de.rub.nds.sshattacker.core.protocol.transport.handler.DisconnectMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
-
 import java.nio.charset.StandardCharsets;
 
 public class DisconnectMessage extends Message<DisconnectMessage> {
@@ -59,7 +56,8 @@ public class DisconnectMessage extends Message<DisconnectMessage> {
     }
 
     public void setDescriptionLength(int descriptionLength) {
-        this.descriptionLength = ModifiableVariableFactory.safelySetValue(this.descriptionLength, descriptionLength);
+        this.descriptionLength =
+                ModifiableVariableFactory.safelySetValue(this.descriptionLength, descriptionLength);
     }
 
     public ModifiableString getDescription() {
@@ -97,7 +95,8 @@ public class DisconnectMessage extends Message<DisconnectMessage> {
     }
 
     public void setLanguageTagLength(int languageTagLength) {
-        this.languageTagLength = ModifiableVariableFactory.safelySetValue(this.languageTagLength, languageTagLength);
+        this.languageTagLength =
+                ModifiableVariableFactory.safelySetValue(this.languageTagLength, languageTagLength);
     }
 
     public ModifiableString getLanguageTag() {

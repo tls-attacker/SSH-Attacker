@@ -1,11 +1,9 @@
 /**
  * SSH-Attacker - A Modular Penetration Testing Framework for SSH
  *
- * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * <p>Copyright 2014-2021 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.sshattacker.core.crypto.hash;
 
@@ -14,10 +12,9 @@ import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomDhPublicKey;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.util.Converter;
+import java.math.BigInteger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import java.math.BigInteger;
 
 public class DhGexExchangeHash extends ExchangeHash {
 
@@ -118,14 +115,20 @@ public class DhGexExchangeHash extends ExchangeHash {
 
     @Override
     protected boolean areRequiredInputsMissing() {
-        return super.areRequiredInputsMissing() || minimalGroupSize == null || preferredGroupSize == null
-                || maximalGroupSize == null || groupModulus == null || groupGenerator == null
-                || clientDHPublicKey == null || serverDHPublicKey == null;
+        return super.areRequiredInputsMissing()
+                || minimalGroupSize == null
+                || preferredGroupSize == null
+                || maximalGroupSize == null
+                || groupModulus == null
+                || groupGenerator == null
+                || clientDHPublicKey == null
+                || serverDHPublicKey == null;
     }
 
     @Override
     protected byte[] getHashInput() {
-        return ArrayConverter.concatenate(Converter.stringToLengthPrefixedBinaryString(clientVersion),
+        return ArrayConverter.concatenate(
+                Converter.stringToLengthPrefixedBinaryString(clientVersion),
                 Converter.stringToLengthPrefixedBinaryString(serverVersion),
                 Converter.bytesToLengthPrefixedBinaryString(clientKeyExchangeInit),
                 Converter.bytesToLengthPrefixedBinaryString(serverKeyExchangeInit),
@@ -133,8 +136,10 @@ public class DhGexExchangeHash extends ExchangeHash {
                 ArrayConverter.intToBytes(minimalGroupSize, DataFormatConstants.INT32_SIZE),
                 ArrayConverter.intToBytes(preferredGroupSize, DataFormatConstants.INT32_SIZE),
                 ArrayConverter.intToBytes(maximalGroupSize, DataFormatConstants.INT32_SIZE),
-                Converter.byteArrayToMpint(groupModulus), Converter.byteArrayToMpint(groupGenerator),
-                Converter.byteArrayToMpint(clientDHPublicKey), Converter.byteArrayToMpint(serverDHPublicKey),
+                Converter.byteArrayToMpint(groupModulus),
+                Converter.byteArrayToMpint(groupGenerator),
+                Converter.byteArrayToMpint(clientDHPublicKey),
+                Converter.byteArrayToMpint(serverDHPublicKey),
                 Converter.byteArrayToMpint(sharedSecret));
     }
 
@@ -147,19 +152,29 @@ public class DhGexExchangeHash extends ExchangeHash {
         dhGexExchangeHash.setServerHostKey(exchangeHash.serverHostKey);
         dhGexExchangeHash.setSharedSecret(exchangeHash.sharedSecret);
         if (exchangeHash instanceof DhGexExchangeHash) {
-            dhGexExchangeHash.setMinimalGroupSize(((DhGexExchangeHash) exchangeHash).minimalGroupSize);
-            dhGexExchangeHash.setPreferredGroupSize(((DhGexExchangeHash) exchangeHash).preferredGroupSize);
-            dhGexExchangeHash.setMaximalGroupSize(((DhGexExchangeHash) exchangeHash).maximalGroupSize);
+            dhGexExchangeHash.setMinimalGroupSize(
+                    ((DhGexExchangeHash) exchangeHash).minimalGroupSize);
+            dhGexExchangeHash.setPreferredGroupSize(
+                    ((DhGexExchangeHash) exchangeHash).preferredGroupSize);
+            dhGexExchangeHash.setMaximalGroupSize(
+                    ((DhGexExchangeHash) exchangeHash).maximalGroupSize);
             dhGexExchangeHash.setGroupModulus(((DhGexExchangeHash) exchangeHash).groupModulus);
             dhGexExchangeHash.setGroupGenerator(((DhGexExchangeHash) exchangeHash).groupGenerator);
-            dhGexExchangeHash.setClientDHPublicKey(((DhGexExchangeHash) exchangeHash).clientDHPublicKey);
-            dhGexExchangeHash.setServerDHPublicKey(((DhGexExchangeHash) exchangeHash).serverDHPublicKey);
+            dhGexExchangeHash.setClientDHPublicKey(
+                    ((DhGexExchangeHash) exchangeHash).clientDHPublicKey);
+            dhGexExchangeHash.setServerDHPublicKey(
+                    ((DhGexExchangeHash) exchangeHash).serverDHPublicKey);
         } else if (exchangeHash instanceof DhGexOldExchangeHash) {
-            dhGexExchangeHash.setPreferredGroupSize(((DhGexOldExchangeHash) exchangeHash).getPreferredGroupSize());
-            dhGexExchangeHash.setGroupModulus(((DhGexOldExchangeHash) exchangeHash).getGroupModulus());
-            dhGexExchangeHash.setGroupGenerator(((DhGexOldExchangeHash) exchangeHash).getGroupGenerator());
-            dhGexExchangeHash.setClientDHPublicKey(((DhGexOldExchangeHash) exchangeHash).getClientDHPublicKey());
-            dhGexExchangeHash.setServerDHPublicKey(((DhGexOldExchangeHash) exchangeHash).getServerDHPublicKey());
+            dhGexExchangeHash.setPreferredGroupSize(
+                    ((DhGexOldExchangeHash) exchangeHash).getPreferredGroupSize());
+            dhGexExchangeHash.setGroupModulus(
+                    ((DhGexOldExchangeHash) exchangeHash).getGroupModulus());
+            dhGexExchangeHash.setGroupGenerator(
+                    ((DhGexOldExchangeHash) exchangeHash).getGroupGenerator());
+            dhGexExchangeHash.setClientDHPublicKey(
+                    ((DhGexOldExchangeHash) exchangeHash).getClientDHPublicKey());
+            dhGexExchangeHash.setServerDHPublicKey(
+                    ((DhGexOldExchangeHash) exchangeHash).getServerDHPublicKey());
         }
         return dhGexExchangeHash;
     }

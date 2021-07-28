@@ -1,11 +1,9 @@
 /**
  * SSH-Attacker - A Modular Penetration Testing Framework for SSH
  *
- * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * <p>Copyright 2014-2021 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.sshattacker.core.workflow.action;
 
@@ -14,10 +12,9 @@ import de.rub.nds.sshattacker.core.protocol.authentication.message.*;
 import de.rub.nds.sshattacker.core.protocol.common.Message;
 import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessage;
 import de.rub.nds.sshattacker.core.protocol.connection.message.*;
+import de.rub.nds.sshattacker.core.protocol.transport.message.*;
 import de.rub.nds.sshattacker.core.protocol.util.ReceiveMessageHelper;
 import de.rub.nds.sshattacker.core.protocol.util.SendMessageHelper;
-import de.rub.nds.sshattacker.core.protocol.transport.message.*;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -30,56 +27,84 @@ public abstract class MessageAction extends ConnectionBoundAction {
 
     @HoldsModifiableVariable
     @XmlElementWrapper
-    @XmlElements(value = { @XmlElement(type = ChannelDataMessage.class, name = "ChannelDataMessage"),
-            @XmlElement(type = ChannelCloseMessage.class, name = "ChannelCloseMessage"),
-            @XmlElement(type = ChannelDataMessage.class, name = "ChannelDataMessage"),
-            @XmlElement(type = ChannelEofMessage.class, name = "ChannelEofMessage"),
-            @XmlElement(type = ChannelExtendedDataMessage.class, name = "ChannelExtendedDataMessage"),
-            @XmlElement(type = ChannelFailureMessage.class, name = "ChannelFailureMessage"),
-            @XmlElement(type = ChannelOpenConfirmationMessage.class, name = "ChannelOpenConfirmationMessage"),
-            @XmlElement(type = ChannelOpenFailureMessage.class, name = "ChannelOpenFailureMessage"),
-            @XmlElement(type = ChannelOpenMessage.class, name = "ChannelOpenMessage"),
-            @XmlElement(type = ChannelRequestExecMessage.class, name = "ChannelRequestExecMessage"),
-            @XmlElement(type = ChannelSuccessMessage.class, name = "ChannelSuccessMessage"),
-            @XmlElement(type = ChannelWindowAdjustMessage.class, name = "ChannelWindowAdjustMessage"),
-            @XmlElement(type = DebugMessage.class, name = "DebugMessage"),
-            @XmlElement(type = DhGexKeyExchangeGroupMessage.class, name = "DhGexKeyExchangeGroupMessage"),
-            @XmlElement(type = DhGexKeyExchangeInitMessage.class, name = "DhGexKeyExchangeInitMessage"),
-            @XmlElement(type = DhGexKeyExchangeOldRequestMessage.class, name = "DhGexKeyExchangeOldRequestMessage"),
-            @XmlElement(type = DhGexKeyExchangeReplyMessage.class, name = "DhGexKeyExchangeReplyMessage"),
-            @XmlElement(type = DhGexKeyExchangeRequestMessage.class, name = "DhGexKeyExchangeRequestMessage"),
-            @XmlElement(type = DhKeyExchangeInitMessage.class, name = "DhKeyExchangeInitMessage"),
-            @XmlElement(type = DhKeyExchangeReplyMessage.class, name = "DhKeyExchangeReplyMessage"),
-            @XmlElement(type = DisconnectMessage.class, name = "DisconnectMessage"),
-            @XmlElement(type = EcdhKeyExchangeInitMessage.class, name = "EcdhKeyExchangeInitMessage"),
-            @XmlElement(type = EcdhKeyExchangeReplyMessage.class, name = "EcdhKeyExchangeReplyMessage"),
-            @XmlElement(type = IgnoreMessage.class, name = "IgnoreMessage"),
-            @XmlElement(type = KeyExchangeInitMessage.class, name = "KeyExchangeInitMessage"),
-            @XmlElement(type = Message.class, name = "Message"),
-            @XmlElement(type = NewKeysMessage.class, name = "NewKeysMessage"),
-            @XmlElement(type = ProtocolMessage.class, name = "ProtocolMessage"),
-            @XmlElement(type = RequestFailureMessage.class, name = "RequestFailureMessage"),
-            @XmlElement(type = RequestSuccessMessage.class, name = "RequestSuccessMessage"),
-            @XmlElement(type = ServiceAcceptMessage.class, name = "ServiceAcceptMessage"),
-            @XmlElement(type = ServiceRequestMessage.class, name = "ServiceRequestMessage"),
-            @XmlElement(type = UnimplementedMessage.class, name = "UnimplementedMessage"),
-            @XmlElement(type = UnknownMessage.class, name = "UnknownMessage"),
-            @XmlElement(type = UserAuthBannerMessage.class, name = "UserAuthBannerMessage"),
-            @XmlElement(type = UserAuthFailureMessage.class, name = "UserAuthFailureMessage"),
-            @XmlElement(type = UserAuthPasswordMessage.class, name = "UserAuthPasswordMessage"),
-            @XmlElement(type = UserAuthSuccessMessage.class, name = "UserAuthSuccessMessage"),
-            @XmlElement(type = VersionExchangeMessage.class, name = "VersionExchangeMessage") })
+    @XmlElements(
+            value = {
+                @XmlElement(type = ChannelDataMessage.class, name = "ChannelDataMessage"),
+                @XmlElement(type = ChannelCloseMessage.class, name = "ChannelCloseMessage"),
+                @XmlElement(type = ChannelDataMessage.class, name = "ChannelDataMessage"),
+                @XmlElement(type = ChannelEofMessage.class, name = "ChannelEofMessage"),
+                @XmlElement(
+                        type = ChannelExtendedDataMessage.class,
+                        name = "ChannelExtendedDataMessage"),
+                @XmlElement(type = ChannelFailureMessage.class, name = "ChannelFailureMessage"),
+                @XmlElement(
+                        type = ChannelOpenConfirmationMessage.class,
+                        name = "ChannelOpenConfirmationMessage"),
+                @XmlElement(
+                        type = ChannelOpenFailureMessage.class,
+                        name = "ChannelOpenFailureMessage"),
+                @XmlElement(type = ChannelOpenMessage.class, name = "ChannelOpenMessage"),
+                @XmlElement(
+                        type = ChannelRequestExecMessage.class,
+                        name = "ChannelRequestExecMessage"),
+                @XmlElement(type = ChannelSuccessMessage.class, name = "ChannelSuccessMessage"),
+                @XmlElement(
+                        type = ChannelWindowAdjustMessage.class,
+                        name = "ChannelWindowAdjustMessage"),
+                @XmlElement(type = DebugMessage.class, name = "DebugMessage"),
+                @XmlElement(
+                        type = DhGexKeyExchangeGroupMessage.class,
+                        name = "DhGexKeyExchangeGroupMessage"),
+                @XmlElement(
+                        type = DhGexKeyExchangeInitMessage.class,
+                        name = "DhGexKeyExchangeInitMessage"),
+                @XmlElement(
+                        type = DhGexKeyExchangeOldRequestMessage.class,
+                        name = "DhGexKeyExchangeOldRequestMessage"),
+                @XmlElement(
+                        type = DhGexKeyExchangeReplyMessage.class,
+                        name = "DhGexKeyExchangeReplyMessage"),
+                @XmlElement(
+                        type = DhGexKeyExchangeRequestMessage.class,
+                        name = "DhGexKeyExchangeRequestMessage"),
+                @XmlElement(
+                        type = DhKeyExchangeInitMessage.class,
+                        name = "DhKeyExchangeInitMessage"),
+                @XmlElement(
+                        type = DhKeyExchangeReplyMessage.class,
+                        name = "DhKeyExchangeReplyMessage"),
+                @XmlElement(type = DisconnectMessage.class, name = "DisconnectMessage"),
+                @XmlElement(
+                        type = EcdhKeyExchangeInitMessage.class,
+                        name = "EcdhKeyExchangeInitMessage"),
+                @XmlElement(
+                        type = EcdhKeyExchangeReplyMessage.class,
+                        name = "EcdhKeyExchangeReplyMessage"),
+                @XmlElement(type = IgnoreMessage.class, name = "IgnoreMessage"),
+                @XmlElement(type = KeyExchangeInitMessage.class, name = "KeyExchangeInitMessage"),
+                @XmlElement(type = Message.class, name = "Message"),
+                @XmlElement(type = NewKeysMessage.class, name = "NewKeysMessage"),
+                @XmlElement(type = ProtocolMessage.class, name = "ProtocolMessage"),
+                @XmlElement(type = RequestFailureMessage.class, name = "RequestFailureMessage"),
+                @XmlElement(type = RequestSuccessMessage.class, name = "RequestSuccessMessage"),
+                @XmlElement(type = ServiceAcceptMessage.class, name = "ServiceAcceptMessage"),
+                @XmlElement(type = ServiceRequestMessage.class, name = "ServiceRequestMessage"),
+                @XmlElement(type = UnimplementedMessage.class, name = "UnimplementedMessage"),
+                @XmlElement(type = UnknownMessage.class, name = "UnknownMessage"),
+                @XmlElement(type = UserAuthBannerMessage.class, name = "UserAuthBannerMessage"),
+                @XmlElement(type = UserAuthFailureMessage.class, name = "UserAuthFailureMessage"),
+                @XmlElement(type = UserAuthPasswordMessage.class, name = "UserAuthPasswordMessage"),
+                @XmlElement(type = UserAuthSuccessMessage.class, name = "UserAuthSuccessMessage"),
+                @XmlElement(type = VersionExchangeMessage.class, name = "VersionExchangeMessage")
+            })
     protected List<Message<?>> messages = new ArrayList<>();
 
-    @HoldsModifiableVariable
-    @XmlElementWrapper
+    @HoldsModifiableVariable @XmlElementWrapper
     protected List<BinaryPacket> binaryPackets = new ArrayList<>();
 
-    @XmlTransient
-    protected ReceiveMessageHelper receiveMessageHelper;
+    @XmlTransient protected ReceiveMessageHelper receiveMessageHelper;
 
-    @XmlTransient
-    protected SendMessageHelper sendMessageHelper;
+    @XmlTransient protected SendMessageHelper sendMessageHelper;
 
     public MessageAction() {
         receiveMessageHelper = new ReceiveMessageHelper();
@@ -219,5 +244,4 @@ public abstract class MessageAction extends ConnectionBoundAction {
             binaryPackets = new ArrayList<>();
         }
     }
-
 }

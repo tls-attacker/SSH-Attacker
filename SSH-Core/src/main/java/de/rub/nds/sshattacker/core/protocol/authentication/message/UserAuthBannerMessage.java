@@ -1,11 +1,9 @@
 /**
  * SSH-Attacker - A Modular Penetration Testing Framework for SSH
  *
- * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * <p>Copyright 2014-2021 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.sshattacker.core.protocol.authentication.message;
 
@@ -13,12 +11,11 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
-import de.rub.nds.sshattacker.core.protocol.common.Message;
+import de.rub.nds.sshattacker.core.protocol.authentication.handler.UserAuthBannerMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.authentication.preparator.UserAuthBannerMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.authentication.serializer.UserAuthBannerMessageSerializer;
-import de.rub.nds.sshattacker.core.protocol.authentication.handler.UserAuthBannerMessageHandler;
+import de.rub.nds.sshattacker.core.protocol.common.Message;
 import de.rub.nds.sshattacker.core.state.SshContext;
-
 import java.nio.charset.StandardCharsets;
 
 public class UserAuthBannerMessage extends Message<UserAuthBannerMessage> {
@@ -41,7 +38,8 @@ public class UserAuthBannerMessage extends Message<UserAuthBannerMessage> {
     }
 
     public void setMessageLength(int messageLength) {
-        this.messageLength = ModifiableVariableFactory.safelySetValue(this.messageLength, messageLength);
+        this.messageLength =
+                ModifiableVariableFactory.safelySetValue(this.messageLength, messageLength);
     }
 
     public ModifiableString getMessage() {
@@ -79,7 +77,8 @@ public class UserAuthBannerMessage extends Message<UserAuthBannerMessage> {
     }
 
     public void setLanguageTagLength(int languageTagLength) {
-        this.languageTagLength = ModifiableVariableFactory.safelySetValue(this.languageTagLength, languageTagLength);
+        this.languageTagLength =
+                ModifiableVariableFactory.safelySetValue(this.languageTagLength, languageTagLength);
     }
 
     public ModifiableString getLanguageTag() {
@@ -122,5 +121,4 @@ public class UserAuthBannerMessage extends Message<UserAuthBannerMessage> {
     public UserAuthBannerMessagePreparator getPreparator(SshContext context) {
         return new UserAuthBannerMessagePreparator(context, this);
     }
-
 }

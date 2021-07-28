@@ -1,11 +1,9 @@
 /**
  * SSH-Attacker - A Modular Penetration Testing Framework for SSH
  *
- * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * <p>Copyright 2014-2021 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -18,9 +16,9 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.sshattacker.core.constants.CharConstants;
 import de.rub.nds.sshattacker.core.protocol.common.Message;
+import de.rub.nds.sshattacker.core.protocol.transport.handler.VersionExchangeMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.transport.preparator.VersionExchangeMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.transport.serializer.VersionExchangeMessageSerializer;
-import de.rub.nds.sshattacker.core.protocol.transport.handler.VersionExchangeMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class VersionExchangeMessage extends Message<VersionExchangeMessage> {
@@ -57,9 +55,10 @@ public class VersionExchangeMessage extends Message<VersionExchangeMessage> {
     }
 
     public String getIdentification() {
-        if (this.comment.getValue().isEmpty())
-            return this.version.getValue();
-        return this.version.getValue() + CharConstants.VERSION_COMMENT_SEPARATOR + this.comment.getValue();
+        if (this.comment.getValue().isEmpty()) return this.version.getValue();
+        return this.version.getValue()
+                + CharConstants.VERSION_COMMENT_SEPARATOR
+                + this.comment.getValue();
     }
 
     @Override

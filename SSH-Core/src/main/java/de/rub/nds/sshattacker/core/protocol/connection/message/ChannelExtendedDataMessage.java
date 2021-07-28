@@ -1,11 +1,9 @@
 /**
  * SSH-Attacker - A Modular Penetration Testing Framework for SSH
  *
- * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * <p>Copyright 2014-2021 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.sshattacker.core.protocol.connection.message;
 
@@ -14,9 +12,9 @@ import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.sshattacker.core.constants.ExtendedChannelDataType;
 import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
+import de.rub.nds.sshattacker.core.protocol.connection.handler.ChannelExtendedDataMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.connection.preparator.ChannelExtendedDataMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.connection.serializer.ChannelExtendedDataMessageSerializer;
-import de.rub.nds.sshattacker.core.protocol.connection.handler.ChannelExtendedDataMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class ChannelExtendedDataMessage extends ChannelMessage<ChannelExtendedDataMessage> {
@@ -38,7 +36,8 @@ public class ChannelExtendedDataMessage extends ChannelMessage<ChannelExtendedDa
     }
 
     public void setDataTypeCode(int dataTypeCode) {
-        this.dataTypeCode = ModifiableVariableFactory.safelySetValue(this.dataTypeCode, dataTypeCode);
+        this.dataTypeCode =
+                ModifiableVariableFactory.safelySetValue(this.dataTypeCode, dataTypeCode);
     }
 
     public void setDataTypeCode(ExtendedChannelDataType dataType) {
@@ -97,5 +96,4 @@ public class ChannelExtendedDataMessage extends ChannelMessage<ChannelExtendedDa
     public ChannelExtendedDataMessagePreparator getPreparator(SshContext context) {
         return new ChannelExtendedDataMessagePreparator(context, this);
     }
-
 }

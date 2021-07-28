@@ -1,18 +1,15 @@
 /**
  * SSH-Attacker - A Modular Penetration Testing Framework for SSH
  *
- * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * <p>Copyright 2014-2021 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.sshattacker.core.protocol.authentication.parser;
 
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthBannerMessage;
 import de.rub.nds.sshattacker.core.protocol.common.MessageParser;
-
 import java.nio.charset.StandardCharsets;
 
 public class UserAuthBannerMessageParser extends MessageParser<UserAuthBannerMessage> {
@@ -28,12 +25,15 @@ public class UserAuthBannerMessageParser extends MessageParser<UserAuthBannerMes
 
     private void parseMessage(UserAuthBannerMessage msg) {
         msg.setMessageLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-        msg.setMessage(parseByteString(msg.getMessageLength().getValue(), StandardCharsets.UTF_8), false);
+        msg.setMessage(
+                parseByteString(msg.getMessageLength().getValue(), StandardCharsets.UTF_8), false);
     }
 
     private void parseLanguageTag(UserAuthBannerMessage msg) {
         msg.setLanguageTagLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-        msg.setLanguageTag(parseByteString(msg.getLanguageTagLength().getValue(), StandardCharsets.US_ASCII), false);
+        msg.setLanguageTag(
+                parseByteString(msg.getLanguageTagLength().getValue(), StandardCharsets.US_ASCII),
+                false);
     }
 
     @Override
@@ -41,5 +41,4 @@ public class UserAuthBannerMessageParser extends MessageParser<UserAuthBannerMes
         parseMessage(msg);
         parseLanguageTag(msg);
     }
-
 }

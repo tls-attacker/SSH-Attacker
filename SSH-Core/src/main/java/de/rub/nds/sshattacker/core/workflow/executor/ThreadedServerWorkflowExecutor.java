@@ -1,11 +1,9 @@
 /**
  * SSH-Attacker - A Modular Penetration Testing Framework for SSH
  *
- * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * <p>Copyright 2014-2021 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.sshattacker.core.workflow.executor;
 
@@ -25,7 +23,7 @@ import org.apache.logging.log4j.Logger;
 /**
  * Execute a workflow trace for each new connection/socket that connects to the server.
  *
- * Highly experimental. Just a starting point.
+ * <p>Highly experimental. Just a starting point.
  */
 public final class ThreadedServerWorkflowExecutor extends WorkflowExecutor {
 
@@ -49,26 +47,29 @@ public final class ThreadedServerWorkflowExecutor extends WorkflowExecutor {
     }
 
     public void addHook() {
-        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            LOGGER.info("Received shutdown signal, shutting down server.");
-            kill();
-            LOGGER.info("Waiting for connections to be closed...");
-            int watchDog = 3;
-            while ((!shutdown) && (watchDog > 0)) {
-                try {
-                    TimeUnit.SECONDS.sleep(1);
-                } catch (InterruptedException ex) {
-                    LOGGER.warn("Problem while waiting, could not sleep");
-                }
-                watchDog--;
-            }
-            if (!shutdown) {
-                LOGGER.debug("Forcing sockets to close");
-                closeSockets();
-                shutdownAndAwaitTermination();
-            }
-            LOGGER.debug("Server shutdown complete.");
-        }));
+        Runtime.getRuntime()
+                .addShutdownHook(
+                        new Thread(
+                                () -> {
+                                    LOGGER.info("Received shutdown signal, shutting down server.");
+                                    kill();
+                                    LOGGER.info("Waiting for connections to be closed...");
+                                    int watchDog = 3;
+                                    while ((!shutdown) && (watchDog > 0)) {
+                                        try {
+                                            TimeUnit.SECONDS.sleep(1);
+                                        } catch (InterruptedException ex) {
+                                            LOGGER.warn("Problem while waiting, could not sleep");
+                                        }
+                                        watchDog--;
+                                    }
+                                    if (!shutdown) {
+                                        LOGGER.debug("Forcing sockets to close");
+                                        closeSockets();
+                                        shutdownAndAwaitTermination();
+                                    }
+                                    LOGGER.debug("Server shutdown complete.");
+                                }));
     }
 
     @Override

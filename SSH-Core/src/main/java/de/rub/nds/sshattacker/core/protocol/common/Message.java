@@ -1,11 +1,9 @@
 /**
  * SSH-Attacker - A Modular Penetration Testing Framework for SSH
  *
- * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * <p>Copyright 2014-2021 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.sshattacker.core.protocol.common;
 
@@ -23,8 +21,7 @@ public abstract class Message<T extends Message<T>> extends ProtocolMessage {
 
     protected ModifiableByte messageID;
 
-    protected Message() {
-    }
+    protected Message() {}
 
     protected Message(MessageIDConstant messageID) {
         setMessageID(messageID);
@@ -61,5 +58,4 @@ public abstract class Message<T extends Message<T>> extends ProtocolMessage {
     public String toCompactString() {
         return this.getClass().getSimpleName();
     }
-
 }

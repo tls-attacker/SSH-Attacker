@@ -1,20 +1,17 @@
 /**
  * SSH-Attacker - A Modular Penetration Testing Framework for SSH
  *
- * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * <p>Copyright 2014-2021 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.sshattacker.core.workflow.executor;
 
 import de.rub.nds.sshattacker.core.connection.AliasedConnection;
-import de.rub.nds.sshattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.state.State;
+import de.rub.nds.sshattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.transport.tcp.ServerTcpTransportHandler;
-
 import java.io.IOException;
 import java.net.Socket;
 import org.apache.logging.log4j.LogManager;
@@ -23,7 +20,7 @@ import org.apache.logging.log4j.Logger;
 /**
  * Spawn a new workflow trace for incoming connection.
  *
- * Experimental. Really just a starting point (it works, though ;)
+ * <p>Experimental. Really just a starting point (it works, though ;)
  */
 public class WorkflowExecutorRunnable implements Runnable {
 
@@ -76,5 +73,4 @@ public class WorkflowExecutorRunnable implements Runnable {
         workflowExecutor.executeWorkflow();
         LOGGER.info("Workflow execution done on " + socket + " (" + serverCtx + ")");
     }
-
 }

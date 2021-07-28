@@ -1,11 +1,9 @@
 /**
  * SSH-Attacker - A Modular Penetration Testing Framework for SSH
  *
- * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * <p>Copyright 2014-2021 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.sshattacker.core.protocol.transport.preparator;
 
@@ -21,19 +19,24 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class DhGexKeyExchangeInitMessagePreparator extends Preparator<DhGexKeyExchangeInitMessage> {
 
-    public DhGexKeyExchangeInitMessagePreparator(SshContext context, DhGexKeyExchangeInitMessage message) {
+    public DhGexKeyExchangeInitMessagePreparator(
+            SshContext context, DhGexKeyExchangeInitMessage message) {
         super(context, message);
     }
 
     @Override
     public void prepare() {
-        DhKeyExchange keyExchange = (DhKeyExchange) context.getKeyExchangeInstance().orElseThrow(PreparationException::new);
+        DhKeyExchange keyExchange =
+                (DhKeyExchange)
+                        context.getKeyExchangeInstance().orElseThrow(PreparationException::new);
         keyExchange.generateLocalKeyPair();
         ExchangeHash exchangeHash = context.getExchangeHashInstance();
-        if(exchangeHash instanceof DhGexExchangeHash) {
-            ((DhGexExchangeHash) exchangeHash).setClientDHPublicKey(keyExchange.getLocalKeyPair().getPublic());
+        if (exchangeHash instanceof DhGexExchangeHash) {
+            ((DhGexExchangeHash) exchangeHash)
+                    .setClientDHPublicKey(keyExchange.getLocalKeyPair().getPublic());
         } else {
-            ((DhGexOldExchangeHash) exchangeHash).setClientDHPublicKey(keyExchange.getLocalKeyPair().getPublic());
+            ((DhGexOldExchangeHash) exchangeHash)
+                    .setClientDHPublicKey(keyExchange.getLocalKeyPair().getPublic());
         }
 
         message.setMessageID(MessageIDConstant.SSH_MSG_KEX_DH_GEX_INIT);

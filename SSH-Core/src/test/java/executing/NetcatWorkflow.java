@@ -1,24 +1,22 @@
 /**
  * SSH-Attacker - A Modular Penetration Testing Framework for SSH
  *
- * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * <p>Copyright 2014-2021 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
 package executing;
 
-import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelRequestExecMessage;
-import de.rub.nds.sshattacker.core.protocol.util.ReceiveMessageHelper;
-import de.rub.nds.sshattacker.core.protocol.util.SendMessageHelper;
+import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthPasswordMessage;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelOpenMessage;
-import de.rub.nds.sshattacker.core.protocol.transport.message.VersionExchangeMessage;
+import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelRequestExecMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.message.EcdhKeyExchangeInitMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.message.KeyExchangeInitMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.message.NewKeysMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.message.ServiceRequestMessage;
-import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthPasswordMessage;
+import de.rub.nds.sshattacker.core.protocol.transport.message.VersionExchangeMessage;
+import de.rub.nds.sshattacker.core.protocol.util.ReceiveMessageHelper;
+import de.rub.nds.sshattacker.core.protocol.util.SendMessageHelper;
 import de.rub.nds.sshattacker.core.state.State;
 import de.rub.nds.sshattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.sshattacker.core.workflow.action.ActivateEncryptionAction;
@@ -36,7 +34,8 @@ public class NetcatWorkflow {
         State state = new State();
         WorkflowTrace trace = new WorkflowTrace();
 
-        SendAction sendClientInit = new SendAction("defaultConnection", new VersionExchangeMessage());
+        SendAction sendClientInit =
+                new SendAction("defaultConnection", new VersionExchangeMessage());
         trace.addSshAction(sendClientInit);
         trace.addSshAction(new ReceiveAction("defaultConnection"));
 
@@ -54,12 +53,14 @@ public class NetcatWorkflow {
         trace.addSshAction(sendNewKeys);
         trace.addSshAction(new ActivateEncryptionAction());
 
-        SendAction sendServiceRequest = new SendAction("defaultConnection", new ServiceRequestMessage());
+        SendAction sendServiceRequest =
+                new SendAction("defaultConnection", new ServiceRequestMessage());
         ReceiveAction receiveServiceRequestResponse = new ReceiveAction("defaultConnection");
         trace.addSshAction(sendServiceRequest);
         trace.addSshAction(receiveServiceRequestResponse);
 
-        SendAction sendUserauthRequest = new SendAction("defaultConnection", new UserAuthPasswordMessage());
+        SendAction sendUserauthRequest =
+                new SendAction("defaultConnection", new UserAuthPasswordMessage());
         ReceiveAction receiveUserauthRequestResponse = new ReceiveAction("defaultConnection");
         ReceiveAction receiveGlobalRequest = new ReceiveAction("defaultConnection");
         trace.addSshActions(sendUserauthRequest);
@@ -71,7 +72,8 @@ public class NetcatWorkflow {
         trace.addSshAction(sendSessionOpen);
         trace.addSshAction(receiveSessionOpen);
 
-        SendAction sendChannelRequest = new SendAction("defaultConnection", new ChannelRequestExecMessage());
+        SendAction sendChannelRequest =
+                new SendAction("defaultConnection", new ChannelRequestExecMessage());
         ReceiveAction receiveChannelResponse = new ReceiveAction("defaultConnection");
         trace.addSshAction(sendChannelRequest);
         trace.addSshAction(receiveChannelResponse);

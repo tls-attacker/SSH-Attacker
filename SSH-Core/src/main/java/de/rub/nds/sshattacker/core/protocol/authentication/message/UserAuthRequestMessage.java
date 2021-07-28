@@ -1,11 +1,9 @@
 /**
  * SSH-Attacker - A Modular Penetration Testing Framework for SSH
  *
- * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * <p>Copyright 2014-2021 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.sshattacker.core.protocol.authentication.message;
 
@@ -16,10 +14,10 @@ import de.rub.nds.sshattacker.core.constants.AuthenticationMethod;
 import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
 import de.rub.nds.sshattacker.core.constants.ServiceType;
 import de.rub.nds.sshattacker.core.protocol.common.Message;
-
 import java.nio.charset.StandardCharsets;
 
-public abstract class UserAuthRequestMessage<T extends UserAuthRequestMessage<T>> extends Message<T> {
+public abstract class UserAuthRequestMessage<T extends UserAuthRequestMessage<T>>
+        extends Message<T> {
 
     protected ModifiableInteger userNameLength;
     protected ModifiableString userName;
@@ -28,7 +26,8 @@ public abstract class UserAuthRequestMessage<T extends UserAuthRequestMessage<T>
     protected ModifiableInteger methodNameLength;
     protected ModifiableString methodName;
 
-    protected UserAuthRequestMessage(@SuppressWarnings("SameParameterValue") AuthenticationMethod authenticationMethod) {
+    protected UserAuthRequestMessage(
+            @SuppressWarnings("SameParameterValue") AuthenticationMethod authenticationMethod) {
         super(MessageIDConstant.SSH_MSG_USERAUTH_REQUEST);
         setMethodName(authenticationMethod, true);
     }
@@ -42,7 +41,8 @@ public abstract class UserAuthRequestMessage<T extends UserAuthRequestMessage<T>
     }
 
     public void setUserNameLength(int userNameLength) {
-        this.userNameLength = ModifiableVariableFactory.safelySetValue(this.userNameLength, userNameLength);
+        this.userNameLength =
+                ModifiableVariableFactory.safelySetValue(this.userNameLength, userNameLength);
     }
 
     public ModifiableString getUserName() {
@@ -80,7 +80,8 @@ public abstract class UserAuthRequestMessage<T extends UserAuthRequestMessage<T>
     }
 
     public void setServiceNameLength(int serviceNameLength) {
-        this.serviceNameLength = ModifiableVariableFactory.safelySetValue(this.serviceNameLength, serviceNameLength);
+        this.serviceNameLength =
+                ModifiableVariableFactory.safelySetValue(this.serviceNameLength, serviceNameLength);
     }
 
     public ModifiableString getServiceName() {
@@ -126,7 +127,8 @@ public abstract class UserAuthRequestMessage<T extends UserAuthRequestMessage<T>
     }
 
     public void setMethodNameLength(int methodNameLength) {
-        this.methodNameLength = ModifiableVariableFactory.safelySetValue(this.methodNameLength, methodNameLength);
+        this.methodNameLength =
+                ModifiableVariableFactory.safelySetValue(this.methodNameLength, methodNameLength);
     }
 
     public ModifiableString getMethodName() {
@@ -159,7 +161,8 @@ public abstract class UserAuthRequestMessage<T extends UserAuthRequestMessage<T>
         this.methodName = ModifiableVariableFactory.safelySetValue(this.methodName, methodName);
     }
 
-    public void setMethodName(AuthenticationMethod authenticationMethod, boolean adjustLengthField) {
+    public void setMethodName(
+            AuthenticationMethod authenticationMethod, boolean adjustLengthField) {
         setMethodName(authenticationMethod.toString(), adjustLengthField);
     }
 }

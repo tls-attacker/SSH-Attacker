@@ -1,11 +1,9 @@
 /**
  * SSH-Attacker - A Modular Penetration Testing Framework for SSH
  *
- * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * <p>Copyright 2014-2021 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.sshattacker.core.protocol.transport.message;
 
@@ -16,12 +14,11 @@ import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.sshattacker.core.constants.*;
 import de.rub.nds.sshattacker.core.protocol.common.Message;
+import de.rub.nds.sshattacker.core.protocol.transport.handler.KeyExchangeInitMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.transport.preparator.KeyExchangeInitMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.transport.serializer.KeyExchangeInitMessageSerializer;
-import de.rub.nds.sshattacker.core.protocol.transport.handler.KeyExchangeInitMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.util.Converter;
-
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -77,8 +74,9 @@ public class KeyExchangeInitMessage extends Message<KeyExchangeInitMessage> {
     }
 
     public void setKeyExchangeAlgorithmsLength(int keyExchangeAlgorithmsLength) {
-        this.keyExchangeAlgorithmsLength = ModifiableVariableFactory.safelySetValue(this.keyExchangeAlgorithmsLength,
-                keyExchangeAlgorithmsLength);
+        this.keyExchangeAlgorithmsLength =
+                ModifiableVariableFactory.safelySetValue(
+                        this.keyExchangeAlgorithmsLength, keyExchangeAlgorithmsLength);
     }
 
     public ModifiableString getKeyExchangeAlgorithms() {
@@ -101,28 +99,38 @@ public class KeyExchangeInitMessage extends Message<KeyExchangeInitMessage> {
         setKeyExchangeAlgorithms(keyExchangeAlgorithms, false);
     }
 
-    public void setKeyExchangeAlgorithms(ModifiableString keyExchangeAlgorithms, boolean adjustLengthField) {
+    public void setKeyExchangeAlgorithms(
+            ModifiableString keyExchangeAlgorithms, boolean adjustLengthField) {
         if (adjustLengthField) {
-            setKeyExchangeAlgorithmsLength(keyExchangeAlgorithms.getValue().getBytes(StandardCharsets.US_ASCII).length);
+            setKeyExchangeAlgorithmsLength(
+                    keyExchangeAlgorithms.getValue().getBytes(StandardCharsets.US_ASCII).length);
         }
         this.keyExchangeAlgorithms = keyExchangeAlgorithms;
     }
 
     public void setKeyExchangeAlgorithms(String keyExchangeAlgorithms, boolean adjustLengthField) {
         if (adjustLengthField) {
-            setKeyExchangeAlgorithmsLength(keyExchangeAlgorithms.getBytes(StandardCharsets.US_ASCII).length);
+            setKeyExchangeAlgorithmsLength(
+                    keyExchangeAlgorithms.getBytes(StandardCharsets.US_ASCII).length);
         }
-        this.keyExchangeAlgorithms = ModifiableVariableFactory.safelySetValue(this.keyExchangeAlgorithms,
-                keyExchangeAlgorithms);
+        this.keyExchangeAlgorithms =
+                ModifiableVariableFactory.safelySetValue(
+                        this.keyExchangeAlgorithms, keyExchangeAlgorithms);
     }
 
-    public void setKeyExchangeAlgorithms(String[] keyExchangeAlgorithms, boolean adjustLengthField) {
-        String nameList = String.join("" + CharConstants.ALGORITHM_SEPARATOR, keyExchangeAlgorithms);
+    public void setKeyExchangeAlgorithms(
+            String[] keyExchangeAlgorithms, boolean adjustLengthField) {
+        String nameList =
+                String.join("" + CharConstants.ALGORITHM_SEPARATOR, keyExchangeAlgorithms);
         setKeyExchangeAlgorithms(nameList, adjustLengthField);
     }
 
-    public void setKeyExchangeAlgorithms(List<KeyExchangeAlgorithm> keyExchangeAlgorithms, boolean adjustLengthField) {
-        String nameList = keyExchangeAlgorithms.stream().map(KeyExchangeAlgorithm::toString).collect(Collectors.joining("" + CharConstants.ALGORITHM_SEPARATOR));
+    public void setKeyExchangeAlgorithms(
+            List<KeyExchangeAlgorithm> keyExchangeAlgorithms, boolean adjustLengthField) {
+        String nameList =
+                keyExchangeAlgorithms.stream()
+                        .map(KeyExchangeAlgorithm::toString)
+                        .collect(Collectors.joining("" + CharConstants.ALGORITHM_SEPARATOR));
         setKeyExchangeAlgorithms(nameList, adjustLengthField);
     }
 
@@ -135,8 +143,9 @@ public class KeyExchangeInitMessage extends Message<KeyExchangeInitMessage> {
     }
 
     public void setServerHostKeyAlgorithmsLength(int serverHostKeyAlgorithmsLength) {
-        this.serverHostKeyAlgorithmsLength = ModifiableVariableFactory.safelySetValue(
-                this.serverHostKeyAlgorithmsLength, serverHostKeyAlgorithmsLength);
+        this.serverHostKeyAlgorithmsLength =
+                ModifiableVariableFactory.safelySetValue(
+                        this.serverHostKeyAlgorithmsLength, serverHostKeyAlgorithmsLength);
     }
 
     public ModifiableString getServerHostKeyAlgorithms() {
@@ -155,32 +164,45 @@ public class KeyExchangeInitMessage extends Message<KeyExchangeInitMessage> {
         setServerHostKeyAlgorithms(serverHostKeyAlgorithms, false);
     }
 
-    public void setServerHostKeyAlgorithms(List<PublicKeyAuthenticationAlgorithm> serverHostKeyAlgorithms) {
+    public void setServerHostKeyAlgorithms(
+            List<PublicKeyAuthenticationAlgorithm> serverHostKeyAlgorithms) {
         setServerHostKeyAlgorithms(serverHostKeyAlgorithms, false);
     }
 
-    public void setServerHostKeyAlgorithms(ModifiableString serverHostKeyAlgorithms, boolean adjustLengthField) {
+    public void setServerHostKeyAlgorithms(
+            ModifiableString serverHostKeyAlgorithms, boolean adjustLengthField) {
         if (adjustLengthField) {
-            setServerHostKeyAlgorithmsLength(serverHostKeyAlgorithms.getValue().getBytes(StandardCharsets.US_ASCII).length);
+            setServerHostKeyAlgorithmsLength(
+                    serverHostKeyAlgorithms.getValue().getBytes(StandardCharsets.US_ASCII).length);
         }
         this.serverHostKeyAlgorithms = serverHostKeyAlgorithms;
     }
 
-    public void setServerHostKeyAlgorithms(String serverHostKeyAlgorithms, boolean adjustLengthField) {
+    public void setServerHostKeyAlgorithms(
+            String serverHostKeyAlgorithms, boolean adjustLengthField) {
         if (adjustLengthField) {
-            setServerHostKeyAlgorithmsLength(serverHostKeyAlgorithms.getBytes(StandardCharsets.US_ASCII).length);
+            setServerHostKeyAlgorithmsLength(
+                    serverHostKeyAlgorithms.getBytes(StandardCharsets.US_ASCII).length);
         }
-        this.serverHostKeyAlgorithms = ModifiableVariableFactory.safelySetValue(this.serverHostKeyAlgorithms,
-                serverHostKeyAlgorithms);
+        this.serverHostKeyAlgorithms =
+                ModifiableVariableFactory.safelySetValue(
+                        this.serverHostKeyAlgorithms, serverHostKeyAlgorithms);
     }
 
-    public void setServerHostKeyAlgorithms(String[] serverHostKeyAlgorithms, boolean adjustLengthField) {
-        String nameList = String.join("" + CharConstants.ALGORITHM_SEPARATOR, serverHostKeyAlgorithms);
+    public void setServerHostKeyAlgorithms(
+            String[] serverHostKeyAlgorithms, boolean adjustLengthField) {
+        String nameList =
+                String.join("" + CharConstants.ALGORITHM_SEPARATOR, serverHostKeyAlgorithms);
         setServerHostKeyAlgorithms(nameList, adjustLengthField);
     }
 
-    public void setServerHostKeyAlgorithms(List<PublicKeyAuthenticationAlgorithm> serverHostKeyAlgorithms, boolean adjustLengthField) {
-        String nameList = serverHostKeyAlgorithms.stream().map(PublicKeyAuthenticationAlgorithm::toString).collect(Collectors.joining("" + CharConstants.ALGORITHM_SEPARATOR));
+    public void setServerHostKeyAlgorithms(
+            List<PublicKeyAuthenticationAlgorithm> serverHostKeyAlgorithms,
+            boolean adjustLengthField) {
+        String nameList =
+                serverHostKeyAlgorithms.stream()
+                        .map(PublicKeyAuthenticationAlgorithm::toString)
+                        .collect(Collectors.joining("" + CharConstants.ALGORITHM_SEPARATOR));
         setServerHostKeyAlgorithms(nameList, adjustLengthField);
     }
 
@@ -188,20 +210,25 @@ public class KeyExchangeInitMessage extends Message<KeyExchangeInitMessage> {
         return encryptionAlgorithmsClientToServerLength;
     }
 
-    public void setEncryptionAlgorithmsClientToServerLength(ModifiableInteger encryptionAlgorithmsClientToServerLength) {
+    public void setEncryptionAlgorithmsClientToServerLength(
+            ModifiableInteger encryptionAlgorithmsClientToServerLength) {
         this.encryptionAlgorithmsClientToServerLength = encryptionAlgorithmsClientToServerLength;
     }
 
-    public void setEncryptionAlgorithmsClientToServerLength(int encryptionAlgorithmsClientToServerLength) {
-        this.encryptionAlgorithmsClientToServerLength = ModifiableVariableFactory.safelySetValue(
-                this.encryptionAlgorithmsClientToServerLength, encryptionAlgorithmsClientToServerLength);
+    public void setEncryptionAlgorithmsClientToServerLength(
+            int encryptionAlgorithmsClientToServerLength) {
+        this.encryptionAlgorithmsClientToServerLength =
+                ModifiableVariableFactory.safelySetValue(
+                        this.encryptionAlgorithmsClientToServerLength,
+                        encryptionAlgorithmsClientToServerLength);
     }
 
     public ModifiableString getEncryptionAlgorithmsClientToServer() {
         return encryptionAlgorithmsClientToServer;
     }
 
-    public void setEncryptionAlgorithmsClientToServer(ModifiableString encryptionAlgorithmsClientToServer) {
+    public void setEncryptionAlgorithmsClientToServer(
+            ModifiableString encryptionAlgorithmsClientToServer) {
         setEncryptionAlgorithmsClientToServer(encryptionAlgorithmsClientToServer, false);
     }
 
@@ -213,37 +240,50 @@ public class KeyExchangeInitMessage extends Message<KeyExchangeInitMessage> {
         setEncryptionAlgorithmsClientToServer(encryptionAlgorithmsClientToServer, false);
     }
 
-    public void setEncryptionAlgorithmsClientToServer(List<EncryptionAlgorithm> encryptionAlgorithmsClientToServer) {
+    public void setEncryptionAlgorithmsClientToServer(
+            List<EncryptionAlgorithm> encryptionAlgorithmsClientToServer) {
         setEncryptionAlgorithmsClientToServer(encryptionAlgorithmsClientToServer, false);
     }
 
-    public void setEncryptionAlgorithmsClientToServer(ModifiableString encryptionAlgorithmsClientToServer,
-            boolean adjustLengthField) {
+    public void setEncryptionAlgorithmsClientToServer(
+            ModifiableString encryptionAlgorithmsClientToServer, boolean adjustLengthField) {
         if (adjustLengthField) {
-            setEncryptionAlgorithmsClientToServerLength(encryptionAlgorithmsClientToServer.getValue().getBytes(
-                    StandardCharsets.US_ASCII).length);
+            setEncryptionAlgorithmsClientToServerLength(
+                    encryptionAlgorithmsClientToServer
+                            .getValue()
+                            .getBytes(StandardCharsets.US_ASCII)
+                            .length);
         }
         this.encryptionAlgorithmsClientToServer = encryptionAlgorithmsClientToServer;
     }
 
-    public void setEncryptionAlgorithmsClientToServer(String encryptionAlgorithmsClientToServer,
-            boolean adjustLengthField) {
+    public void setEncryptionAlgorithmsClientToServer(
+            String encryptionAlgorithmsClientToServer, boolean adjustLengthField) {
         if (adjustLengthField) {
-            setEncryptionAlgorithmsClientToServerLength(encryptionAlgorithmsClientToServer
-                    .getBytes(StandardCharsets.US_ASCII).length);
+            setEncryptionAlgorithmsClientToServerLength(
+                    encryptionAlgorithmsClientToServer.getBytes(StandardCharsets.US_ASCII).length);
         }
-        this.encryptionAlgorithmsClientToServer = ModifiableVariableFactory.safelySetValue(
-                this.encryptionAlgorithmsClientToServer, encryptionAlgorithmsClientToServer);
+        this.encryptionAlgorithmsClientToServer =
+                ModifiableVariableFactory.safelySetValue(
+                        this.encryptionAlgorithmsClientToServer,
+                        encryptionAlgorithmsClientToServer);
     }
 
-    public void setEncryptionAlgorithmsClientToServer(String[] encryptionAlgorithmsClientToServer,
-            boolean adjustLengthField) {
-        String nameList = String.join("" + CharConstants.ALGORITHM_SEPARATOR, encryptionAlgorithmsClientToServer);
+    public void setEncryptionAlgorithmsClientToServer(
+            String[] encryptionAlgorithmsClientToServer, boolean adjustLengthField) {
+        String nameList =
+                String.join(
+                        "" + CharConstants.ALGORITHM_SEPARATOR, encryptionAlgorithmsClientToServer);
         setEncryptionAlgorithmsClientToServer(nameList, adjustLengthField);
     }
 
-    public void setEncryptionAlgorithmsClientToServer(List<EncryptionAlgorithm> encryptionAlgorithmsClientToServer, boolean adjustLengthField) {
-        String nameList = encryptionAlgorithmsClientToServer.stream().map(EncryptionAlgorithm::toString).collect(Collectors.joining("" + CharConstants.ALGORITHM_SEPARATOR));
+    public void setEncryptionAlgorithmsClientToServer(
+            List<EncryptionAlgorithm> encryptionAlgorithmsClientToServer,
+            boolean adjustLengthField) {
+        String nameList =
+                encryptionAlgorithmsClientToServer.stream()
+                        .map(EncryptionAlgorithm::toString)
+                        .collect(Collectors.joining("" + CharConstants.ALGORITHM_SEPARATOR));
         setEncryptionAlgorithmsClientToServer(nameList, adjustLengthField);
     }
 
@@ -251,20 +291,25 @@ public class KeyExchangeInitMessage extends Message<KeyExchangeInitMessage> {
         return encryptionAlgorithmsServerToClientLength;
     }
 
-    public void setEncryptionAlgorithmsServerToClientLength(ModifiableInteger encryptionAlgorithmsServerToClientLength) {
+    public void setEncryptionAlgorithmsServerToClientLength(
+            ModifiableInteger encryptionAlgorithmsServerToClientLength) {
         this.encryptionAlgorithmsServerToClientLength = encryptionAlgorithmsServerToClientLength;
     }
 
-    public void setEncryptionAlgorithmsServerToClientLength(int encryptionAlgorithmsServerToClientLength) {
-        this.encryptionAlgorithmsServerToClientLength = ModifiableVariableFactory.safelySetValue(
-                this.encryptionAlgorithmsServerToClientLength, encryptionAlgorithmsServerToClientLength);
+    public void setEncryptionAlgorithmsServerToClientLength(
+            int encryptionAlgorithmsServerToClientLength) {
+        this.encryptionAlgorithmsServerToClientLength =
+                ModifiableVariableFactory.safelySetValue(
+                        this.encryptionAlgorithmsServerToClientLength,
+                        encryptionAlgorithmsServerToClientLength);
     }
 
     public ModifiableString getEncryptionAlgorithmsServerToClient() {
         return encryptionAlgorithmsServerToClient;
     }
 
-    public void setEncryptionAlgorithmsServerToClient(ModifiableString encryptionAlgorithmsServerToClient) {
+    public void setEncryptionAlgorithmsServerToClient(
+            ModifiableString encryptionAlgorithmsServerToClient) {
         setEncryptionAlgorithmsServerToClient(encryptionAlgorithmsServerToClient, false);
     }
 
@@ -276,37 +321,50 @@ public class KeyExchangeInitMessage extends Message<KeyExchangeInitMessage> {
         setEncryptionAlgorithmsServerToClient(encryptionAlgorithmsServerToClient, false);
     }
 
-    public void setEncryptionAlgorithmsServerToClient(List<EncryptionAlgorithm> encryptionAlgorithmsServerToClient) {
+    public void setEncryptionAlgorithmsServerToClient(
+            List<EncryptionAlgorithm> encryptionAlgorithmsServerToClient) {
         setEncryptionAlgorithmsServerToClient(encryptionAlgorithmsServerToClient, false);
     }
 
-    public void setEncryptionAlgorithmsServerToClient(ModifiableString encryptionAlgorithmsServerToClient,
-            boolean adjustLengthField) {
+    public void setEncryptionAlgorithmsServerToClient(
+            ModifiableString encryptionAlgorithmsServerToClient, boolean adjustLengthField) {
         if (adjustLengthField) {
-            setEncryptionAlgorithmsServerToClientLength(encryptionAlgorithmsServerToClient.getValue().getBytes(
-                    StandardCharsets.US_ASCII).length);
+            setEncryptionAlgorithmsServerToClientLength(
+                    encryptionAlgorithmsServerToClient
+                            .getValue()
+                            .getBytes(StandardCharsets.US_ASCII)
+                            .length);
         }
         this.encryptionAlgorithmsServerToClient = encryptionAlgorithmsServerToClient;
     }
 
-    public void setEncryptionAlgorithmsServerToClient(String encryptionAlgorithmsServerToClient,
-            boolean adjustLengthField) {
+    public void setEncryptionAlgorithmsServerToClient(
+            String encryptionAlgorithmsServerToClient, boolean adjustLengthField) {
         if (adjustLengthField) {
-            setEncryptionAlgorithmsServerToClientLength(encryptionAlgorithmsServerToClient
-                    .getBytes(StandardCharsets.US_ASCII).length);
+            setEncryptionAlgorithmsServerToClientLength(
+                    encryptionAlgorithmsServerToClient.getBytes(StandardCharsets.US_ASCII).length);
         }
-        this.encryptionAlgorithmsServerToClient = ModifiableVariableFactory.safelySetValue(
-                this.encryptionAlgorithmsServerToClient, encryptionAlgorithmsServerToClient);
+        this.encryptionAlgorithmsServerToClient =
+                ModifiableVariableFactory.safelySetValue(
+                        this.encryptionAlgorithmsServerToClient,
+                        encryptionAlgorithmsServerToClient);
     }
 
-    public void setEncryptionAlgorithmsServerToClient(String[] encryptionAlgorithmsServerToClient,
-            boolean adjustLengthField) {
-        String nameList = String.join("" + CharConstants.ALGORITHM_SEPARATOR, encryptionAlgorithmsServerToClient);
+    public void setEncryptionAlgorithmsServerToClient(
+            String[] encryptionAlgorithmsServerToClient, boolean adjustLengthField) {
+        String nameList =
+                String.join(
+                        "" + CharConstants.ALGORITHM_SEPARATOR, encryptionAlgorithmsServerToClient);
         setEncryptionAlgorithmsServerToClient(nameList, adjustLengthField);
     }
 
-    public void setEncryptionAlgorithmsServerToClient(List<EncryptionAlgorithm> encryptionAlgorithmsServerToClient, boolean adjustLengthField) {
-        String nameList = encryptionAlgorithmsServerToClient.stream().map(EncryptionAlgorithm::toString).collect(Collectors.joining("" + CharConstants.ALGORITHM_SEPARATOR));
+    public void setEncryptionAlgorithmsServerToClient(
+            List<EncryptionAlgorithm> encryptionAlgorithmsServerToClient,
+            boolean adjustLengthField) {
+        String nameList =
+                encryptionAlgorithmsServerToClient.stream()
+                        .map(EncryptionAlgorithm::toString)
+                        .collect(Collectors.joining("" + CharConstants.ALGORITHM_SEPARATOR));
         setEncryptionAlgorithmsServerToClient(nameList, adjustLengthField);
     }
 
@@ -314,13 +372,15 @@ public class KeyExchangeInitMessage extends Message<KeyExchangeInitMessage> {
         return macAlgorithmsClientToServerLength;
     }
 
-    public void setMacAlgorithmsClientToServerLength(ModifiableInteger macAlgorithmsClientToServerLength) {
+    public void setMacAlgorithmsClientToServerLength(
+            ModifiableInteger macAlgorithmsClientToServerLength) {
         this.macAlgorithmsClientToServerLength = macAlgorithmsClientToServerLength;
     }
 
     public void setMacAlgorithmsClientToServerLength(int macAlgorithmsClientToServerLength) {
-        this.macAlgorithmsClientToServerLength = ModifiableVariableFactory.safelySetValue(
-                this.macAlgorithmsClientToServerLength, macAlgorithmsClientToServerLength);
+        this.macAlgorithmsClientToServerLength =
+                ModifiableVariableFactory.safelySetValue(
+                        this.macAlgorithmsClientToServerLength, macAlgorithmsClientToServerLength);
     }
 
     public ModifiableString getMacAlgorithmsClientToServer() {
@@ -343,29 +403,42 @@ public class KeyExchangeInitMessage extends Message<KeyExchangeInitMessage> {
         setMacAlgorithmsClientToServer(macAlgorithmsClientToServer, false);
     }
 
-    public void setMacAlgorithmsClientToServer(ModifiableString macAlgorithmsClientToServer, boolean adjustLengthField) {
+    public void setMacAlgorithmsClientToServer(
+            ModifiableString macAlgorithmsClientToServer, boolean adjustLengthField) {
         if (adjustLengthField) {
-            setMacAlgorithmsClientToServerLength(macAlgorithmsClientToServer.getValue().getBytes(
-                    StandardCharsets.US_ASCII).length);
+            setMacAlgorithmsClientToServerLength(
+                    macAlgorithmsClientToServer
+                            .getValue()
+                            .getBytes(StandardCharsets.US_ASCII)
+                            .length);
         }
         this.macAlgorithmsClientToServer = macAlgorithmsClientToServer;
     }
 
-    public void setMacAlgorithmsClientToServer(String macAlgorithmsClientToServer, boolean adjustLengthField) {
+    public void setMacAlgorithmsClientToServer(
+            String macAlgorithmsClientToServer, boolean adjustLengthField) {
         if (adjustLengthField) {
-            setMacAlgorithmsClientToServerLength(macAlgorithmsClientToServer.getBytes(StandardCharsets.US_ASCII).length);
+            setMacAlgorithmsClientToServerLength(
+                    macAlgorithmsClientToServer.getBytes(StandardCharsets.US_ASCII).length);
         }
-        this.macAlgorithmsClientToServer = ModifiableVariableFactory.safelySetValue(this.macAlgorithmsClientToServer,
-                macAlgorithmsClientToServer);
+        this.macAlgorithmsClientToServer =
+                ModifiableVariableFactory.safelySetValue(
+                        this.macAlgorithmsClientToServer, macAlgorithmsClientToServer);
     }
 
-    public void setMacAlgorithmsClientToServer(String[] macAlgorithmsClientToServer, boolean adjustLengthField) {
-        String nameList = String.join("" + CharConstants.ALGORITHM_SEPARATOR, macAlgorithmsClientToServer);
+    public void setMacAlgorithmsClientToServer(
+            String[] macAlgorithmsClientToServer, boolean adjustLengthField) {
+        String nameList =
+                String.join("" + CharConstants.ALGORITHM_SEPARATOR, macAlgorithmsClientToServer);
         setMacAlgorithmsClientToServer(nameList, adjustLengthField);
     }
 
-    public void setMacAlgorithmsClientToServer(List<MacAlgorithm> macAlgorithmsClientToServer, boolean adjustLengthField) {
-        String nameList = macAlgorithmsClientToServer.stream().map(MacAlgorithm::toString).collect(Collectors.joining("" + CharConstants.ALGORITHM_SEPARATOR));
+    public void setMacAlgorithmsClientToServer(
+            List<MacAlgorithm> macAlgorithmsClientToServer, boolean adjustLengthField) {
+        String nameList =
+                macAlgorithmsClientToServer.stream()
+                        .map(MacAlgorithm::toString)
+                        .collect(Collectors.joining("" + CharConstants.ALGORITHM_SEPARATOR));
         setMacAlgorithmsClientToServer(nameList, adjustLengthField);
     }
 
@@ -373,13 +446,15 @@ public class KeyExchangeInitMessage extends Message<KeyExchangeInitMessage> {
         return macAlgorithmsServerToClientLength;
     }
 
-    public void setMacAlgorithmsServerToClientLength(ModifiableInteger macAlgorithmsServerToClientLength) {
+    public void setMacAlgorithmsServerToClientLength(
+            ModifiableInteger macAlgorithmsServerToClientLength) {
         this.macAlgorithmsServerToClientLength = macAlgorithmsServerToClientLength;
     }
 
     public void setMacAlgorithmsServerToClientLength(int macAlgorithmsServerToClientLength) {
-        this.macAlgorithmsServerToClientLength = ModifiableVariableFactory.safelySetValue(
-                this.macAlgorithmsServerToClientLength, macAlgorithmsServerToClientLength);
+        this.macAlgorithmsServerToClientLength =
+                ModifiableVariableFactory.safelySetValue(
+                        this.macAlgorithmsServerToClientLength, macAlgorithmsServerToClientLength);
     }
 
     public ModifiableString getMacAlgorithmsServerToClient() {
@@ -402,29 +477,42 @@ public class KeyExchangeInitMessage extends Message<KeyExchangeInitMessage> {
         setMacAlgorithmsServerToClient(macAlgorithmsServerToClient, false);
     }
 
-    public void setMacAlgorithmsServerToClient(ModifiableString macAlgorithmsServerToClient, boolean adjustLengthField) {
+    public void setMacAlgorithmsServerToClient(
+            ModifiableString macAlgorithmsServerToClient, boolean adjustLengthField) {
         if (adjustLengthField) {
-            setMacAlgorithmsServerToClientLength(macAlgorithmsServerToClient.getValue().getBytes(
-                    StandardCharsets.US_ASCII).length);
+            setMacAlgorithmsServerToClientLength(
+                    macAlgorithmsServerToClient
+                            .getValue()
+                            .getBytes(StandardCharsets.US_ASCII)
+                            .length);
         }
         this.macAlgorithmsServerToClient = macAlgorithmsServerToClient;
     }
 
-    public void setMacAlgorithmsServerToClient(String macAlgorithmsServerToClient, boolean adjustLengthField) {
+    public void setMacAlgorithmsServerToClient(
+            String macAlgorithmsServerToClient, boolean adjustLengthField) {
         if (adjustLengthField) {
-            setMacAlgorithmsServerToClientLength(macAlgorithmsServerToClient.getBytes(StandardCharsets.US_ASCII).length);
+            setMacAlgorithmsServerToClientLength(
+                    macAlgorithmsServerToClient.getBytes(StandardCharsets.US_ASCII).length);
         }
-        this.macAlgorithmsServerToClient = ModifiableVariableFactory.safelySetValue(this.macAlgorithmsServerToClient,
-                macAlgorithmsServerToClient);
+        this.macAlgorithmsServerToClient =
+                ModifiableVariableFactory.safelySetValue(
+                        this.macAlgorithmsServerToClient, macAlgorithmsServerToClient);
     }
 
-    public void setMacAlgorithmsServerToClient(String[] macAlgorithmsServerToClient, boolean adjustLengthField) {
-        String nameList = String.join("" + CharConstants.ALGORITHM_SEPARATOR, macAlgorithmsServerToClient);
+    public void setMacAlgorithmsServerToClient(
+            String[] macAlgorithmsServerToClient, boolean adjustLengthField) {
+        String nameList =
+                String.join("" + CharConstants.ALGORITHM_SEPARATOR, macAlgorithmsServerToClient);
         setMacAlgorithmsServerToClient(nameList, adjustLengthField);
     }
 
-    public void setMacAlgorithmsServerToClient(List<MacAlgorithm> macAlgorithmsServerToClient, boolean adjustLengthField) {
-        String nameList = macAlgorithmsServerToClient.stream().map(MacAlgorithm::toString).collect(Collectors.joining("" + CharConstants.ALGORITHM_SEPARATOR));
+    public void setMacAlgorithmsServerToClient(
+            List<MacAlgorithm> macAlgorithmsServerToClient, boolean adjustLengthField) {
+        String nameList =
+                macAlgorithmsServerToClient.stream()
+                        .map(MacAlgorithm::toString)
+                        .collect(Collectors.joining("" + CharConstants.ALGORITHM_SEPARATOR));
         setMacAlgorithmsServerToClient(nameList, adjustLengthField);
     }
 
@@ -432,20 +520,25 @@ public class KeyExchangeInitMessage extends Message<KeyExchangeInitMessage> {
         return compressionAlgorithmsClientToServerLength;
     }
 
-    public void setCompressionAlgorithmsClientToServerLength(ModifiableInteger compressionAlgorithmsClientToServerLength) {
+    public void setCompressionAlgorithmsClientToServerLength(
+            ModifiableInteger compressionAlgorithmsClientToServerLength) {
         this.compressionAlgorithmsClientToServerLength = compressionAlgorithmsClientToServerLength;
     }
 
-    public void setCompressionAlgorithmsClientToServerLength(int compressionAlgorithmsClientToServerLength) {
-        this.compressionAlgorithmsClientToServerLength = ModifiableVariableFactory.safelySetValue(
-                this.compressionAlgorithmsClientToServerLength, compressionAlgorithmsClientToServerLength);
+    public void setCompressionAlgorithmsClientToServerLength(
+            int compressionAlgorithmsClientToServerLength) {
+        this.compressionAlgorithmsClientToServerLength =
+                ModifiableVariableFactory.safelySetValue(
+                        this.compressionAlgorithmsClientToServerLength,
+                        compressionAlgorithmsClientToServerLength);
     }
 
     public ModifiableString getCompressionAlgorithmsClientToServer() {
         return compressionAlgorithmsClientToServer;
     }
 
-    public void setCompressionAlgorithmsClientToServer(ModifiableString compressionAlgorithmsClientToServer) {
+    public void setCompressionAlgorithmsClientToServer(
+            ModifiableString compressionAlgorithmsClientToServer) {
         setCompressionAlgorithmsClientToServer(compressionAlgorithmsClientToServer, false);
     }
 
@@ -453,41 +546,56 @@ public class KeyExchangeInitMessage extends Message<KeyExchangeInitMessage> {
         setCompressionAlgorithmsClientToServer(compressionAlgorithmsClientToServer, false);
     }
 
-    public void setCompressionAlgorithmsClientToServer(String[] compressionAlgorithmsClientToServer) {
+    public void setCompressionAlgorithmsClientToServer(
+            String[] compressionAlgorithmsClientToServer) {
         setCompressionAlgorithmsClientToServer(compressionAlgorithmsClientToServer, false);
     }
 
-    public void setCompressionAlgorithmsClientToServer(List<CompressionAlgorithm> compressionAlgorithmsClientToServer) {
+    public void setCompressionAlgorithmsClientToServer(
+            List<CompressionAlgorithm> compressionAlgorithmsClientToServer) {
         setCompressionAlgorithmsClientToServer(compressionAlgorithmsClientToServer, false);
     }
 
-    public void setCompressionAlgorithmsClientToServer(ModifiableString compressionAlgorithmsClientToServer,
-            boolean adjustLengthField) {
+    public void setCompressionAlgorithmsClientToServer(
+            ModifiableString compressionAlgorithmsClientToServer, boolean adjustLengthField) {
         if (adjustLengthField) {
-            setCompressionAlgorithmsClientToServerLength(compressionAlgorithmsClientToServer.getValue().getBytes(
-                    StandardCharsets.US_ASCII).length);
+            setCompressionAlgorithmsClientToServerLength(
+                    compressionAlgorithmsClientToServer
+                            .getValue()
+                            .getBytes(StandardCharsets.US_ASCII)
+                            .length);
         }
         this.compressionAlgorithmsClientToServer = compressionAlgorithmsClientToServer;
     }
 
-    public void setCompressionAlgorithmsClientToServer(String compressionAlgorithmsClientToServer,
-            boolean adjustLengthField) {
+    public void setCompressionAlgorithmsClientToServer(
+            String compressionAlgorithmsClientToServer, boolean adjustLengthField) {
         if (adjustLengthField) {
-            setCompressionAlgorithmsClientToServerLength(compressionAlgorithmsClientToServer
-                    .getBytes(StandardCharsets.US_ASCII).length);
+            setCompressionAlgorithmsClientToServerLength(
+                    compressionAlgorithmsClientToServer.getBytes(StandardCharsets.US_ASCII).length);
         }
-        this.compressionAlgorithmsClientToServer = ModifiableVariableFactory.safelySetValue(
-                this.compressionAlgorithmsClientToServer, compressionAlgorithmsClientToServer);
+        this.compressionAlgorithmsClientToServer =
+                ModifiableVariableFactory.safelySetValue(
+                        this.compressionAlgorithmsClientToServer,
+                        compressionAlgorithmsClientToServer);
     }
 
-    public void setCompressionAlgorithmsClientToServer(String[] compressionAlgorithmsClientToServer,
-            boolean adjustLengthField) {
-        String nameList = String.join("" + CharConstants.ALGORITHM_SEPARATOR, compressionAlgorithmsClientToServer);
+    public void setCompressionAlgorithmsClientToServer(
+            String[] compressionAlgorithmsClientToServer, boolean adjustLengthField) {
+        String nameList =
+                String.join(
+                        "" + CharConstants.ALGORITHM_SEPARATOR,
+                        compressionAlgorithmsClientToServer);
         setCompressionAlgorithmsClientToServer(nameList, adjustLengthField);
     }
 
-    public void setCompressionAlgorithmsClientToServer(List<CompressionAlgorithm> compressionAlgorithmsClientToServer, boolean adjustLengthField) {
-        String nameList = compressionAlgorithmsClientToServer.stream().map(CompressionAlgorithm::toString).collect(Collectors.joining("" + CharConstants.ALGORITHM_SEPARATOR));
+    public void setCompressionAlgorithmsClientToServer(
+            List<CompressionAlgorithm> compressionAlgorithmsClientToServer,
+            boolean adjustLengthField) {
+        String nameList =
+                compressionAlgorithmsClientToServer.stream()
+                        .map(CompressionAlgorithm::toString)
+                        .collect(Collectors.joining("" + CharConstants.ALGORITHM_SEPARATOR));
         setCompressionAlgorithmsClientToServer(nameList, adjustLengthField);
     }
 
@@ -495,20 +603,25 @@ public class KeyExchangeInitMessage extends Message<KeyExchangeInitMessage> {
         return compressionAlgorithmsServerToClientLength;
     }
 
-    public void setCompressionAlgorithmsServerToClientLength(ModifiableInteger compressionAlgorithmsServerToClientLength) {
+    public void setCompressionAlgorithmsServerToClientLength(
+            ModifiableInteger compressionAlgorithmsServerToClientLength) {
         this.compressionAlgorithmsServerToClientLength = compressionAlgorithmsServerToClientLength;
     }
 
-    public void setCompressionAlgorithmsServerToClientLength(int compressionAlgorithmsServerToClientLength) {
-        this.compressionAlgorithmsServerToClientLength = ModifiableVariableFactory.safelySetValue(
-                this.compressionAlgorithmsServerToClientLength, compressionAlgorithmsServerToClientLength);
+    public void setCompressionAlgorithmsServerToClientLength(
+            int compressionAlgorithmsServerToClientLength) {
+        this.compressionAlgorithmsServerToClientLength =
+                ModifiableVariableFactory.safelySetValue(
+                        this.compressionAlgorithmsServerToClientLength,
+                        compressionAlgorithmsServerToClientLength);
     }
 
     public ModifiableString getCompressionAlgorithmsServerToClient() {
         return compressionAlgorithmsServerToClient;
     }
 
-    public void setCompressionAlgorithmsServerToClient(ModifiableString compressionAlgorithmsServerToClient) {
+    public void setCompressionAlgorithmsServerToClient(
+            ModifiableString compressionAlgorithmsServerToClient) {
         setCompressionAlgorithmsServerToClient(compressionAlgorithmsServerToClient, false);
     }
 
@@ -516,41 +629,56 @@ public class KeyExchangeInitMessage extends Message<KeyExchangeInitMessage> {
         setCompressionAlgorithmsServerToClient(compressionAlgorithmsServerToClient, false);
     }
 
-    public void setCompressionAlgorithmsServerToClient(String[] compressionAlgorithmsServerToClient) {
+    public void setCompressionAlgorithmsServerToClient(
+            String[] compressionAlgorithmsServerToClient) {
         setCompressionAlgorithmsServerToClient(compressionAlgorithmsServerToClient, false);
     }
 
-    public void setCompressionAlgorithmsServerToClient(List<CompressionAlgorithm> compressionAlgorithmsServerToClient) {
+    public void setCompressionAlgorithmsServerToClient(
+            List<CompressionAlgorithm> compressionAlgorithmsServerToClient) {
         setCompressionAlgorithmsServerToClient(compressionAlgorithmsServerToClient, false);
     }
 
-    public void setCompressionAlgorithmsServerToClient(ModifiableString compressionAlgorithmsServerToClient,
-            boolean adjustLengthField) {
+    public void setCompressionAlgorithmsServerToClient(
+            ModifiableString compressionAlgorithmsServerToClient, boolean adjustLengthField) {
         if (adjustLengthField) {
-            setCompressionAlgorithmsServerToClientLength(compressionAlgorithmsServerToClient.getValue().getBytes(
-                    StandardCharsets.US_ASCII).length);
+            setCompressionAlgorithmsServerToClientLength(
+                    compressionAlgorithmsServerToClient
+                            .getValue()
+                            .getBytes(StandardCharsets.US_ASCII)
+                            .length);
         }
         this.compressionAlgorithmsServerToClient = compressionAlgorithmsServerToClient;
     }
 
-    public void setCompressionAlgorithmsServerToClient(String compressionAlgorithmsServerToClient,
-            boolean adjustLengthField) {
+    public void setCompressionAlgorithmsServerToClient(
+            String compressionAlgorithmsServerToClient, boolean adjustLengthField) {
         if (adjustLengthField) {
-            setCompressionAlgorithmsServerToClientLength(compressionAlgorithmsServerToClient
-                    .getBytes(StandardCharsets.US_ASCII).length);
+            setCompressionAlgorithmsServerToClientLength(
+                    compressionAlgorithmsServerToClient.getBytes(StandardCharsets.US_ASCII).length);
         }
-        this.compressionAlgorithmsServerToClient = ModifiableVariableFactory.safelySetValue(
-                this.compressionAlgorithmsServerToClient, compressionAlgorithmsServerToClient);
+        this.compressionAlgorithmsServerToClient =
+                ModifiableVariableFactory.safelySetValue(
+                        this.compressionAlgorithmsServerToClient,
+                        compressionAlgorithmsServerToClient);
     }
 
-    public void setCompressionAlgorithmsServerToClient(String[] compressionAlgorithmsServerToClient,
-            boolean adjustLengthField) {
-        String nameList = String.join("" + CharConstants.ALGORITHM_SEPARATOR, compressionAlgorithmsServerToClient);
+    public void setCompressionAlgorithmsServerToClient(
+            String[] compressionAlgorithmsServerToClient, boolean adjustLengthField) {
+        String nameList =
+                String.join(
+                        "" + CharConstants.ALGORITHM_SEPARATOR,
+                        compressionAlgorithmsServerToClient);
         setCompressionAlgorithmsServerToClient(nameList, adjustLengthField);
     }
 
-    public void setCompressionAlgorithmsServerToClient(List<CompressionAlgorithm> compressionAlgorithmsServerToClient, boolean adjustLengthField) {
-        String nameList = compressionAlgorithmsServerToClient.stream().map(CompressionAlgorithm::toString).collect(Collectors.joining("" + CharConstants.ALGORITHM_SEPARATOR));
+    public void setCompressionAlgorithmsServerToClient(
+            List<CompressionAlgorithm> compressionAlgorithmsServerToClient,
+            boolean adjustLengthField) {
+        String nameList =
+                compressionAlgorithmsServerToClient.stream()
+                        .map(CompressionAlgorithm::toString)
+                        .collect(Collectors.joining("" + CharConstants.ALGORITHM_SEPARATOR));
         setCompressionAlgorithmsServerToClient(nameList, adjustLengthField);
     }
 
@@ -563,8 +691,9 @@ public class KeyExchangeInitMessage extends Message<KeyExchangeInitMessage> {
     }
 
     public void setLanguagesClientToServerLength(int languagesClientToServerLength) {
-        this.languagesClientToServerLength = ModifiableVariableFactory.safelySetValue(
-                this.languagesClientToServerLength, languagesClientToServerLength);
+        this.languagesClientToServerLength =
+                ModifiableVariableFactory.safelySetValue(
+                        this.languagesClientToServerLength, languagesClientToServerLength);
     }
 
     public ModifiableString getLanguagesClientToServer() {
@@ -583,23 +712,30 @@ public class KeyExchangeInitMessage extends Message<KeyExchangeInitMessage> {
         setLanguagesClientToServer(languagesClientToServer, false);
     }
 
-    public void setLanguagesClientToServer(ModifiableString languagesClientToServer, boolean adjustLengthField) {
+    public void setLanguagesClientToServer(
+            ModifiableString languagesClientToServer, boolean adjustLengthField) {
         if (adjustLengthField) {
-            setLanguagesClientToServerLength(languagesClientToServer.getValue().getBytes(StandardCharsets.US_ASCII).length);
+            setLanguagesClientToServerLength(
+                    languagesClientToServer.getValue().getBytes(StandardCharsets.US_ASCII).length);
         }
         this.languagesClientToServer = languagesClientToServer;
     }
 
-    public void setLanguagesClientToServer(String languagesClientToServer, boolean adjustLengthField) {
+    public void setLanguagesClientToServer(
+            String languagesClientToServer, boolean adjustLengthField) {
         if (adjustLengthField) {
-            setLanguagesClientToServerLength(languagesClientToServer.getBytes(StandardCharsets.US_ASCII).length);
+            setLanguagesClientToServerLength(
+                    languagesClientToServer.getBytes(StandardCharsets.US_ASCII).length);
         }
-        this.languagesClientToServer = ModifiableVariableFactory.safelySetValue(this.languagesClientToServer,
-                languagesClientToServer);
+        this.languagesClientToServer =
+                ModifiableVariableFactory.safelySetValue(
+                        this.languagesClientToServer, languagesClientToServer);
     }
 
-    public void setLanguagesClientToServer(String[] languagesClientToServer, boolean adjustLengthField) {
-        String nameList = String.join("" + CharConstants.ALGORITHM_SEPARATOR, languagesClientToServer);
+    public void setLanguagesClientToServer(
+            String[] languagesClientToServer, boolean adjustLengthField) {
+        String nameList =
+                String.join("" + CharConstants.ALGORITHM_SEPARATOR, languagesClientToServer);
         setLanguagesClientToServer(nameList, adjustLengthField);
     }
 
@@ -612,8 +748,9 @@ public class KeyExchangeInitMessage extends Message<KeyExchangeInitMessage> {
     }
 
     public void setLanguagesServerToClientLength(int languagesServerToClientLength) {
-        this.languagesServerToClientLength = ModifiableVariableFactory.safelySetValue(
-                this.languagesServerToClientLength, languagesServerToClientLength);
+        this.languagesServerToClientLength =
+                ModifiableVariableFactory.safelySetValue(
+                        this.languagesServerToClientLength, languagesServerToClientLength);
     }
 
     public ModifiableString getLanguagesServerToClient() {
@@ -632,23 +769,30 @@ public class KeyExchangeInitMessage extends Message<KeyExchangeInitMessage> {
         setLanguagesServerToClient(languagesServerToClient, false);
     }
 
-    public void setLanguagesServerToClient(ModifiableString languagesServerToClient, boolean adjustLengthField) {
+    public void setLanguagesServerToClient(
+            ModifiableString languagesServerToClient, boolean adjustLengthField) {
         if (adjustLengthField) {
-            setLanguagesServerToClientLength(languagesServerToClient.getValue().getBytes(StandardCharsets.US_ASCII).length);
+            setLanguagesServerToClientLength(
+                    languagesServerToClient.getValue().getBytes(StandardCharsets.US_ASCII).length);
         }
         this.languagesServerToClient = languagesServerToClient;
     }
 
-    public void setLanguagesServerToClient(String languagesServerToClient, boolean adjustLengthField) {
+    public void setLanguagesServerToClient(
+            String languagesServerToClient, boolean adjustLengthField) {
         if (adjustLengthField) {
-            setLanguagesServerToClientLength(languagesServerToClient.getBytes(StandardCharsets.US_ASCII).length);
+            setLanguagesServerToClientLength(
+                    languagesServerToClient.getBytes(StandardCharsets.US_ASCII).length);
         }
-        this.languagesServerToClient = ModifiableVariableFactory.safelySetValue(this.languagesServerToClient,
-                languagesServerToClient);
+        this.languagesServerToClient =
+                ModifiableVariableFactory.safelySetValue(
+                        this.languagesServerToClient, languagesServerToClient);
     }
 
-    public void setLanguagesServerToClient(String[] languagesServerToClient, boolean adjustLengthField) {
-        String nameList = String.join("" + CharConstants.ALGORITHM_SEPARATOR, languagesServerToClient);
+    public void setLanguagesServerToClient(
+            String[] languagesServerToClient, boolean adjustLengthField) {
+        String nameList =
+                String.join("" + CharConstants.ALGORITHM_SEPARATOR, languagesServerToClient);
         setLanguagesServerToClient(nameList, adjustLengthField);
     }
 
@@ -661,13 +805,16 @@ public class KeyExchangeInitMessage extends Message<KeyExchangeInitMessage> {
     }
 
     public void setFirstKeyExchangePacketFollows(byte firstKeyExchangePacketFollows) {
-        this.firstKeyExchangePacketFollows = ModifiableVariableFactory.safelySetValue(
-                this.firstKeyExchangePacketFollows, firstKeyExchangePacketFollows);
+        this.firstKeyExchangePacketFollows =
+                ModifiableVariableFactory.safelySetValue(
+                        this.firstKeyExchangePacketFollows, firstKeyExchangePacketFollows);
     }
 
     public void setFirstKeyExchangePacketFollows(boolean firstKeyExchangePacketFollows) {
-        this.firstKeyExchangePacketFollows = ModifiableVariableFactory.safelySetValue(
-                this.firstKeyExchangePacketFollows, Converter.booleanToByte(firstKeyExchangePacketFollows));
+        this.firstKeyExchangePacketFollows =
+                ModifiableVariableFactory.safelySetValue(
+                        this.firstKeyExchangePacketFollows,
+                        Converter.booleanToByte(firstKeyExchangePacketFollows));
     }
 
     public ModifiableInteger getReserved() {

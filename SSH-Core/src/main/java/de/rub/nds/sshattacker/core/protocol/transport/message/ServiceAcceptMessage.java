@@ -1,11 +1,9 @@
 /**
  * SSH-Attacker - A Modular Penetration Testing Framework for SSH
  *
- * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * <p>Copyright 2014-2021 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.sshattacker.core.protocol.transport.message;
 
@@ -15,11 +13,10 @@ import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
 import de.rub.nds.sshattacker.core.constants.ServiceType;
 import de.rub.nds.sshattacker.core.protocol.common.Message;
+import de.rub.nds.sshattacker.core.protocol.transport.handler.ServiceAcceptMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.transport.preparator.ServiceAcceptMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.transport.serializer.ServiceAcceptMessageSerializer;
-import de.rub.nds.sshattacker.core.protocol.transport.handler.ServiceAcceptMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
-
 import java.nio.charset.StandardCharsets;
 
 public class ServiceAcceptMessage extends Message<ServiceAcceptMessage> {
@@ -40,7 +37,8 @@ public class ServiceAcceptMessage extends Message<ServiceAcceptMessage> {
     }
 
     public void setServiceNameLength(int serviceNameLength) {
-        this.serviceNameLength = ModifiableVariableFactory.safelySetValue(this.serviceNameLength, serviceNameLength);
+        this.serviceNameLength =
+                ModifiableVariableFactory.safelySetValue(this.serviceNameLength, serviceNameLength);
     }
 
     public ModifiableString getServiceName() {

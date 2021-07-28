@@ -1,11 +1,9 @@
 /**
  * SSH-Attacker - A Modular Penetration Testing Framework for SSH
  *
- * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * <p>Copyright 2014-2021 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.sshattacker.core.protocol.transport.parser;
 
@@ -28,12 +26,14 @@ public class DhKeyExchangeReplyMessageParser extends MessageParser<DhKeyExchange
         msg.setHostKeyLength(parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH));
         LOGGER.debug("Host key length: " + msg.getHostKeyLength().getValue());
         msg.setHostKey(parseByteArrayField(msg.getHostKeyLength().getValue()));
-        LOGGER.debug("Host key: " + ArrayConverter.bytesToRawHexString(msg.getHostKey().getValue()));
+        LOGGER.debug(
+                "Host key: " + ArrayConverter.bytesToRawHexString(msg.getHostKey().getValue()));
     }
 
     private void parsePublicKey(DhKeyExchangeReplyMessage msg) {
         msg.setEphemeralPublicKeyLength(parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH));
-        LOGGER.debug("Ephemeral public key length: " + msg.getEphemeralPublicKeyLength().getValue());
+        LOGGER.debug(
+                "Ephemeral public key length: " + msg.getEphemeralPublicKeyLength().getValue());
         msg.setEphemeralPublicKey(parseBigIntField(msg.getEphemeralPublicKeyLength().getValue()));
         LOGGER.debug("Ephemeral public key: " + msg.getEphemeralPublicKey());
     }

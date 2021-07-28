@@ -1,22 +1,19 @@
 /**
  * SSH-Attacker - A Modular Penetration Testing Framework for SSH
  *
- * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * <p>Copyright 2014-2021 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.sshattacker.core.workflow.action;
 
-import de.rub.nds.sshattacker.core.protocol.transport.message.BinaryPacket;
-import de.rub.nds.sshattacker.core.protocol.common.Message;
-import de.rub.nds.sshattacker.core.workflow.action.result.MessageActionResult;
+import de.rub.nds.sshattacker.core.connection.AliasedConnection;
 import de.rub.nds.sshattacker.core.exceptions.WorkflowExecutionException;
+import de.rub.nds.sshattacker.core.protocol.common.Message;
+import de.rub.nds.sshattacker.core.protocol.transport.message.BinaryPacket;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.state.State;
-import de.rub.nds.sshattacker.core.connection.AliasedConnection;
-
+import de.rub.nds.sshattacker.core.workflow.action.result.MessageActionResult;
 import java.util.*;
 import javax.xml.bind.annotation.XmlElement;
 import org.apache.logging.log4j.LogManager;
@@ -28,11 +25,9 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
 
     protected List<Message<?>> expectedMessages = new ArrayList<>();
 
-    @XmlElement
-    protected Boolean earlyCleanShutdown = null;
+    @XmlElement protected Boolean earlyCleanShutdown = null;
 
-    @XmlElement
-    protected Boolean checkOnlyExpected = null;
+    @XmlElement protected Boolean checkOnlyExpected = null;
 
     public ReceiveAction() {
         super(AliasedConnection.DEFAULT_CONNECTION_ALIAS);
@@ -95,7 +90,8 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
         }
 
         LOGGER.debug("Receiving Messages...");
-        MessageActionResult result = receiveMessageHelper.receiveMessages(expectedMessages, sshContext);
+        MessageActionResult result =
+                receiveMessageHelper.receiveMessages(expectedMessages, sshContext);
         binaryPackets = new ArrayList<>(result.getBinaryPacketList());
         messages = new ArrayList<>(result.getMessageList());
         setExecuted(true);
@@ -280,7 +276,6 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
     private void initEmptyLists() {
         if (expectedMessages == null) {
             expectedMessages = new ArrayList<>();
-
         }
     }
 

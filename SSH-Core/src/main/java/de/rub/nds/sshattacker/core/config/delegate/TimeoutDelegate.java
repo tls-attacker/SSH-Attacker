@@ -1,11 +1,9 @@
 /**
  * SSH-Attacker - A Modular Penetration Testing Framework for SSH
  *
- * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * <p>Copyright 2014-2021 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.sshattacker.core.config.delegate;
 
@@ -19,8 +17,7 @@ public class TimeoutDelegate extends Delegate {
     @Parameter(names = "-timeout", description = "Timeout for socket connection")
     private Integer timeout = null;
 
-    public TimeoutDelegate() {
-    }
+    public TimeoutDelegate() {}
 
     public Integer getTimeout() {
         return timeout;
@@ -45,5 +42,4 @@ public class TimeoutDelegate extends Delegate {
         config.getDefaultClientConnection().setTimeout(timeout);
         config.getDefaultServerConnection().setTimeout(timeout);
     }
-
 }

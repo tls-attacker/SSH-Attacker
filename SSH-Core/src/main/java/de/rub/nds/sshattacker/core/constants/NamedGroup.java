@@ -1,11 +1,9 @@
 /**
  * SSH-Attacker - A Modular Penetration Testing Framework for SSH
  *
- * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * <p>Copyright 2014-2021 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.sshattacker.core.constants;
 
@@ -14,12 +12,10 @@ import de.rub.nds.sshattacker.core.crypto.ec.EllipticCurve;
 import java.security.interfaces.ECPrivateKey;
 import java.security.interfaces.ECPublicKey;
 import java.util.*;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public enum NamedGroup {
-
     SECT163K1("sect163k1", 163),
     SECT163R1("sect163r1", 163),
     SECT163R2("sect163r2", 163),
@@ -98,10 +94,20 @@ public enum NamedGroup {
             if (group.isStandardCurve()) {
                 try {
                     EllipticCurve tlsAttackerCurve = CurveFactory.getCurve(group);
-                    if (publicKey.getParams().getGenerator().getAffineX()
-                            .equals(tlsAttackerCurve.getBasePoint().getFieldX().getData())
-                            && publicKey.getParams().getGenerator().getAffineY()
-                                    .equals(tlsAttackerCurve.getBasePoint().getFieldY().getData())) {
+                    if (publicKey
+                                    .getParams()
+                                    .getGenerator()
+                                    .getAffineX()
+                                    .equals(tlsAttackerCurve.getBasePoint().getFieldX().getData())
+                            && publicKey
+                                    .getParams()
+                                    .getGenerator()
+                                    .getAffineY()
+                                    .equals(
+                                            tlsAttackerCurve
+                                                    .getBasePoint()
+                                                    .getFieldY()
+                                                    .getData())) {
                         return group;
                     }
                 } catch (UnsupportedOperationException e) {
@@ -118,10 +124,20 @@ public enum NamedGroup {
             if (group.isStandardCurve()) {
                 try {
                     EllipticCurve tlsAttackerCurve = CurveFactory.getCurve(group);
-                    if (privateKey.getParams().getGenerator().getAffineX()
-                            .equals(tlsAttackerCurve.getBasePoint().getFieldX().getData())
-                            && privateKey.getParams().getGenerator().getAffineY()
-                                    .equals(tlsAttackerCurve.getBasePoint().getFieldY().getData())) {
+                    if (privateKey
+                                    .getParams()
+                                    .getGenerator()
+                                    .getAffineX()
+                                    .equals(tlsAttackerCurve.getBasePoint().getFieldX().getData())
+                            && privateKey
+                                    .getParams()
+                                    .getGenerator()
+                                    .getAffineY()
+                                    .equals(
+                                            tlsAttackerCurve
+                                                    .getBasePoint()
+                                                    .getFieldY()
+                                                    .getData())) {
                         return group;
                     }
                 } catch (UnsupportedOperationException e) {

@@ -1,11 +1,9 @@
 /**
  * SSH-Attacker - A Modular Penetration Testing Framework for SSH
  *
- * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * <p>Copyright 2014-2021 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.sshattacker.core.protocol.transport.preparator;
 
@@ -22,15 +20,17 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class EcdhKeyExchangeInitMessagePreparator extends Preparator<EcdhKeyExchangeInitMessage> {
 
-    public EcdhKeyExchangeInitMessagePreparator(SshContext context, EcdhKeyExchangeInitMessage message) {
+    public EcdhKeyExchangeInitMessagePreparator(
+            SshContext context, EcdhKeyExchangeInitMessage message) {
         super(context, message);
     }
 
     @Override
     public void prepare() {
-        KeyExchangeAlgorithm keyExchangeAlgorithm = context.getKeyExchangeAlgorithm().orElseThrow(PreparationException::new);
+        KeyExchangeAlgorithm keyExchangeAlgorithm =
+                context.getKeyExchangeAlgorithm().orElseThrow(PreparationException::new);
         DhBasedKeyExchange keyExchange;
-        switch(keyExchangeAlgorithm) {
+        switch (keyExchangeAlgorithm) {
             case CURVE448_SHA512:
             case CURVE25519_SHA256:
             case CURVE25519_SHA256_LIBSSH_ORG:
@@ -42,7 +42,8 @@ public class EcdhKeyExchangeInitMessagePreparator extends Preparator<EcdhKeyExch
         }
         keyExchange.generateLocalKeyPair();
         context.setKeyExchangeInstance(keyExchange);
-        EcdhExchangeHash ecdhExchangeHash = EcdhExchangeHash.from(context.getExchangeHashInstance());
+        EcdhExchangeHash ecdhExchangeHash =
+                EcdhExchangeHash.from(context.getExchangeHashInstance());
         ecdhExchangeHash.setClientECDHPublicKey(keyExchange.getLocalKeyPair().getPublic());
         context.setExchangeHashInstance(ecdhExchangeHash);
 

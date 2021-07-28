@@ -1,25 +1,21 @@
 /**
  * SSH-Attacker - A Modular Penetration Testing Framework for SSH
  *
- * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * <p>Copyright 2014-2021 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.sshattacker.core.protocol.serializer;
 
-import de.rub.nds.sshattacker.core.protocol.transport.message.EcdhKeyExchangeInitMessage;
-
-import java.util.stream.Stream;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 import de.rub.nds.sshattacker.core.protocol.parser.EcdhKeyExchangeInitMessageParserTest;
+import de.rub.nds.sshattacker.core.protocol.transport.message.EcdhKeyExchangeInitMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.serializer.EcdhKeyExchangeInitMessageSerializer;
+import java.util.stream.Stream;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 public class EcdhKeyExchangeInitMessageSerializerTest {
     /**
@@ -33,23 +29,21 @@ public class EcdhKeyExchangeInitMessageSerializerTest {
 
     /**
      * Test of EcdhKeyExchangeInitMessageSerializer::serialize method
-     * 
-     * @param expectedBytes
-     *            Expected output bytes of the serialize() call
-     * @param providedPublicKeyLength
-     *            Length of the public key
-     * @param providedPublicKey
-     *            Bytes of the public key
+     *
+     * @param expectedBytes Expected output bytes of the serialize() call
+     * @param providedPublicKeyLength Length of the public key
+     * @param providedPublicKey Bytes of the public key
      */
     @ParameterizedTest
     @MethodSource("provideTestVectors")
-    public void testSerialize(byte[] expectedBytes, int providedPublicKeyLength, byte[] providedPublicKey) {
+    public void testSerialize(
+            byte[] expectedBytes, int providedPublicKeyLength, byte[] providedPublicKey) {
         EcdhKeyExchangeInitMessage msg = new EcdhKeyExchangeInitMessage();
         msg.setPublicKeyLength(providedPublicKeyLength);
         msg.setPublicKey(providedPublicKey);
-        EcdhKeyExchangeInitMessageSerializer serializer = new EcdhKeyExchangeInitMessageSerializer(msg);
+        EcdhKeyExchangeInitMessageSerializer serializer =
+                new EcdhKeyExchangeInitMessageSerializer(msg);
 
         assertArrayEquals(expectedBytes, serializer.serialize());
     }
-
 }

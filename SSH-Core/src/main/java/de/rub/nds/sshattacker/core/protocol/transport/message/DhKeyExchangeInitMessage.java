@@ -1,11 +1,9 @@
 /**
  * SSH-Attacker - A Modular Penetration Testing Framework for SSH
  *
- * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * <p>Copyright 2014-2021 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.sshattacker.core.protocol.transport.message;
 
@@ -16,12 +14,11 @@ import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
 import de.rub.nds.sshattacker.core.exceptions.NotImplementedException;
 import de.rub.nds.sshattacker.core.protocol.common.Handler;
 import de.rub.nds.sshattacker.core.protocol.common.Message;
-import de.rub.nds.sshattacker.core.protocol.transport.preparator.DhKeyExchangeInitMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.common.Preparator;
-import de.rub.nds.sshattacker.core.protocol.transport.serializer.DhKeyExchangeInitMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.common.Serializer;
+import de.rub.nds.sshattacker.core.protocol.transport.preparator.DhKeyExchangeInitMessagePreparator;
+import de.rub.nds.sshattacker.core.protocol.transport.serializer.DhKeyExchangeInitMessageSerializer;
 import de.rub.nds.sshattacker.core.state.SshContext;
-
 import java.math.BigInteger;
 
 public class DhKeyExchangeInitMessage extends Message<DhKeyExchangeInitMessage> {
@@ -42,7 +39,8 @@ public class DhKeyExchangeInitMessage extends Message<DhKeyExchangeInitMessage> 
     }
 
     public void setPublicKeyLength(int publicKeyLength) {
-        this.publicKeyLength = ModifiableVariableFactory.safelySetValue(this.publicKeyLength, publicKeyLength);
+        this.publicKeyLength =
+                ModifiableVariableFactory.safelySetValue(this.publicKeyLength, publicKeyLength);
     }
 
     public ModifiableBigInteger getPublicKey() {

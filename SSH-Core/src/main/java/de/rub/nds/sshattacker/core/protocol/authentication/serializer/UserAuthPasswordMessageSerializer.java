@@ -1,23 +1,21 @@
 /**
  * SSH-Attacker - A Modular Penetration Testing Framework for SSH
  *
- * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * <p>Copyright 2014-2021 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.sshattacker.core.protocol.authentication.serializer;
 
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthPasswordMessage;
 import de.rub.nds.sshattacker.core.util.Converter;
+import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.nio.charset.StandardCharsets;
-
-public class UserAuthPasswordMessageSerializer extends UserAuthRequestMessageSerializer<UserAuthPasswordMessage> {
+public class UserAuthPasswordMessageSerializer
+        extends UserAuthRequestMessageSerializer<UserAuthPasswordMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -26,7 +24,8 @@ public class UserAuthPasswordMessageSerializer extends UserAuthRequestMessageSer
     }
 
     private void serializeChangePassword() {
-        LOGGER.debug("Change password: " + Converter.byteToBoolean(msg.getChangePassword().getValue()));
+        LOGGER.debug(
+                "Change password: " + Converter.byteToBoolean(msg.getChangePassword().getValue()));
         appendByte(msg.getChangePassword().getValue());
     }
 
@@ -53,5 +52,4 @@ public class UserAuthPasswordMessageSerializer extends UserAuthRequestMessageSer
             serializeNewPassword();
         }
     }
-
 }

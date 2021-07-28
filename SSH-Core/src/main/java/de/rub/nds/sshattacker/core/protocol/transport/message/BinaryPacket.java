@@ -1,11 +1,9 @@
 /**
  * SSH-Attacker - A Modular Penetration Testing Framework for SSH
  *
- * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * <p>Copyright 2014-2021 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.sshattacker.core.protocol.transport.message;
 
@@ -24,8 +22,7 @@ public class BinaryPacket extends ProtocolMessage {
     private ModifiableByteArray padding;
     private ModifiableByteArray mac;
 
-    public BinaryPacket() {
-    }
+    public BinaryPacket() {}
 
     public BinaryPacket(ModifiableByteArray payload) {
         this.payload = payload;
@@ -40,7 +37,8 @@ public class BinaryPacket extends ProtocolMessage {
     }
 
     public void setPacketLength(int packetLength) {
-        this.packetLength = ModifiableVariableFactory.safelySetValue(this.packetLength, packetLength);
+        this.packetLength =
+                ModifiableVariableFactory.safelySetValue(this.packetLength, packetLength);
     }
 
     public void setPacketLength(ModifiableInteger packetLength) {
@@ -52,7 +50,8 @@ public class BinaryPacket extends ProtocolMessage {
     }
 
     public void setPaddingLength(byte paddingLength) {
-        this.paddingLength = ModifiableVariableFactory.safelySetValue(this.paddingLength, paddingLength);
+        this.paddingLength =
+                ModifiableVariableFactory.safelySetValue(this.paddingLength, paddingLength);
     }
 
     public void setPaddingLength(ModifiableByte paddingLength) {
@@ -100,8 +99,12 @@ public class BinaryPacket extends ProtocolMessage {
     }
 
     public void computePacketLength() {
-        packetLength = ModifiableVariableFactory.safelySetValue(packetLength,
-                payload.getValue().length + paddingLength.getValue() + BinaryPacketConstants.PADDING_FIELD_LENGTH);
+        packetLength =
+                ModifiableVariableFactory.safelySetValue(
+                        packetLength,
+                        payload.getValue().length
+                                + paddingLength.getValue()
+                                + BinaryPacketConstants.PADDING_FIELD_LENGTH);
     }
 
     public void computePaddingLength(byte blockSize) {
@@ -115,14 +118,21 @@ public class BinaryPacket extends ProtocolMessage {
             blockSize = 8;
         }
 
-        byte excessBytes = (byte) ((payload.getValue().length + BinaryPacketConstants.PADDING_FIELD_LENGTH + (encryptedPacketLength ? BinaryPacketConstants.PACKET_FIELD_LENGTH
-                : 0)) % blockSize);
+        byte excessBytes =
+                (byte)
+                        ((payload.getValue().length
+                                        + BinaryPacketConstants.PADDING_FIELD_LENGTH
+                                        + (encryptedPacketLength
+                                                ? BinaryPacketConstants.PACKET_FIELD_LENGTH
+                                                : 0))
+                                % blockSize);
 
         byte intermediatePaddingLength = (byte) (blockSize - excessBytes);
         if (intermediatePaddingLength < 4) {
             intermediatePaddingLength += blockSize;
         }
-        paddingLength = ModifiableVariableFactory.safelySetValue(paddingLength, intermediatePaddingLength);
+        paddingLength =
+                ModifiableVariableFactory.safelySetValue(paddingLength, intermediatePaddingLength);
     }
 
     @Override

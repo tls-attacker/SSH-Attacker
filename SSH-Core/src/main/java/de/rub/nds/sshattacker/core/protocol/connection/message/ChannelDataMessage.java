@@ -1,11 +1,9 @@
 /**
  * SSH-Attacker - A Modular Penetration Testing Framework for SSH
  *
- * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * <p>Copyright 2014-2021 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.sshattacker.core.protocol.connection.message;
 
@@ -13,9 +11,9 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
+import de.rub.nds.sshattacker.core.protocol.connection.handler.ChannelDataMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.connection.preparator.ChannelDataMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.connection.serializer.ChannelDataMessageSerializer;
-import de.rub.nds.sshattacker.core.protocol.connection.handler.ChannelDataMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class ChannelDataMessage extends ChannelMessage<ChannelDataMessage> {

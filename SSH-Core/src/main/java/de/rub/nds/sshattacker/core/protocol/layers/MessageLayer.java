@@ -1,18 +1,16 @@
 /**
  * SSH-Attacker - A Modular Penetration Testing Framework for SSH
  *
- * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * <p>Copyright 2014-2021 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.sshattacker.core.protocol.layers;
 
-import de.rub.nds.sshattacker.core.protocol.transport.message.BinaryPacket;
 import de.rub.nds.sshattacker.core.protocol.common.Message;
 import de.rub.nds.sshattacker.core.protocol.common.MessageParser;
 import de.rub.nds.sshattacker.core.protocol.common.MessageSerializer;
+import de.rub.nds.sshattacker.core.protocol.transport.message.BinaryPacket;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import java.util.ArrayList;
 import java.util.List;
@@ -42,7 +40,8 @@ public class MessageLayer {
         byte[] payload = MessageSerializer.delegateSerialization(msg);
         packet.setPayload(payload);
         // Compute with minimal block length (assuming no encryption later on)
-        // If the package will be encrypted, padding will be recalculated in CryptoLayer (necessary for ETM support)
+        // If the package will be encrypted, padding will be recalculated in CryptoLayer (necessary
+        // for ETM support)
         packet.computePaddingLength((byte) 8);
         packet.generatePadding();
         packet.computePacketLength();

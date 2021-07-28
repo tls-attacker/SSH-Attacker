@@ -1,11 +1,9 @@
 /**
  * SSH-Attacker - A Modular Penetration Testing Framework for SSH
  *
- * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * <p>Copyright 2014-2021 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.sshattacker.core.protocol.transport.message;
 
@@ -15,12 +13,11 @@ import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
 import de.rub.nds.sshattacker.core.protocol.common.Message;
+import de.rub.nds.sshattacker.core.protocol.transport.handler.DebugMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.transport.preparator.DebugMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.transport.serializer.DebugMessageSerializer;
-import de.rub.nds.sshattacker.core.protocol.transport.handler.DebugMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.util.Converter;
-
 import java.nio.charset.StandardCharsets;
 
 public class DebugMessage extends Message<DebugMessage> {
@@ -44,7 +41,8 @@ public class DebugMessage extends Message<DebugMessage> {
     }
 
     public void setAlwaysDisplay(byte alwaysDisplay) {
-        this.alwaysDisplay = ModifiableVariableFactory.safelySetValue(this.alwaysDisplay, alwaysDisplay);
+        this.alwaysDisplay =
+                ModifiableVariableFactory.safelySetValue(this.alwaysDisplay, alwaysDisplay);
     }
 
     public void setAlwaysDisplay(boolean alwaysDisplay) {
@@ -60,7 +58,8 @@ public class DebugMessage extends Message<DebugMessage> {
     }
 
     public void setMessageLength(int messageLength) {
-        this.messageLength = ModifiableVariableFactory.safelySetValue(this.messageLength, messageLength);
+        this.messageLength =
+                ModifiableVariableFactory.safelySetValue(this.messageLength, messageLength);
     }
 
     public ModifiableString getMessage() {
@@ -98,7 +97,8 @@ public class DebugMessage extends Message<DebugMessage> {
     }
 
     public void setLanguageTagLength(int languageTagLength) {
-        this.languageTagLength = ModifiableVariableFactory.safelySetValue(this.languageTagLength, languageTagLength);
+        this.languageTagLength =
+                ModifiableVariableFactory.safelySetValue(this.languageTagLength, languageTagLength);
     }
 
     public ModifiableString getLanguageTag() {
@@ -141,5 +141,4 @@ public class DebugMessage extends Message<DebugMessage> {
     public DebugMessagePreparator getPreparator(SshContext context) {
         return new DebugMessagePreparator(context, this);
     }
-
 }

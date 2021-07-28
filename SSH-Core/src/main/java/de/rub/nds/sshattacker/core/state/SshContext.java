@@ -1,17 +1,15 @@
 /**
  * SSH-Attacker - A Modular Penetration Testing Framework for SSH
  *
- * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * <p>Copyright 2014-2021 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.sshattacker.core.state;
 
 import de.rub.nds.sshattacker.core.config.Config;
-import de.rub.nds.sshattacker.core.constants.*;
 import de.rub.nds.sshattacker.core.connection.AliasedConnection;
+import de.rub.nds.sshattacker.core.constants.*;
 import de.rub.nds.sshattacker.core.crypto.hash.ExchangeHash;
 import de.rub.nds.sshattacker.core.crypto.kex.KeyExchange;
 import de.rub.nds.sshattacker.core.exceptions.ConfigurationException;
@@ -20,160 +18,93 @@ import de.rub.nds.sshattacker.core.protocol.layers.BinaryPacketLayer;
 import de.rub.nds.sshattacker.core.protocol.layers.CryptoLayer;
 import de.rub.nds.sshattacker.core.protocol.layers.MessageLayer;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import de.rub.nds.tlsattacker.transport.TransportHandlerFactory;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
-
+import de.rub.nds.tlsattacker.transport.TransportHandlerFactory;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
 public class SshContext {
 
-    /**
-     * Static configuration for SSH-Attacker
-     */
+    /** Static configuration for SSH-Attacker */
     private Config config;
+
     private Chooser chooser;
 
-    /**
-     * Connection used to communicate with the remote peer
-     */
+    /** Connection used to communicate with the remote peer */
     private AliasedConnection connection;
+
     private TransportHandler transportHandler;
-    /**
-     * If set to true, an exception was received from the transport handler
-     */
+    /** If set to true, an exception was received from the transport handler */
     private boolean receivedTransportHandlerException = false;
 
-    /**
-     * A layer to serialize binary packets
-     */
+    /** A layer to serialize binary packets */
     private BinaryPacketLayer binaryPacketLayer = new BinaryPacketLayer(this);
-    /**
-     * A layer to serialize messages
-     */
+    /** A layer to serialize messages */
     private MessageLayer messageLayer = new MessageLayer(this);
-    /**
-     * Cryptographic layer implementing encryption and mac for the client to server direction
-     */
+    /** Cryptographic layer implementing encryption and mac for the client to server direction */
     private CryptoLayer cryptoLayerClientToServer;
-    /**
-     * Cryptographic layer implementing encryption and mac for the server to client direction
-     */
+    /** Cryptographic layer implementing encryption and mac for the server to client direction */
     private CryptoLayer cryptoLayerServerToClient;
 
-    /**
-     * Implicit packet sequence number (unsigned)
-     */
+    /** Implicit packet sequence number (unsigned) */
     private int sequenceNumber = 0;
 
     // region Version Exchange
-    /**
-     * Client protocol and software version string starting with the SSH version (SSH-2.0-...)
-     */
+    /** Client protocol and software version string starting with the SSH version (SSH-2.0-...) */
     private String clientVersion;
-    /**
-     * Client comment sent alongside protocol and software version
-     */
+    /** Client comment sent alongside protocol and software version */
     private String clientComment;
-    /**
-     * Server protocol and software version string starting with the SSH version (SSH-2.0-...)
-     */
+    /** Server protocol and software version string starting with the SSH version (SSH-2.0-...) */
     private String serverVersion;
-    /**
-     * Server comment sent alongside protocol and software version
-     */
+    /** Server comment sent alongside protocol and software version */
     private String serverComment;
     // endregion
 
     // region Key Exchange Initialization
-    /**
-     * Client cookie containing 16 random bytes
-     */
+    /** Client cookie containing 16 random bytes */
     private byte[] clientCookie;
-    /**
-     * Server cookie containing 16 random bytes
-     */
+    /** Server cookie containing 16 random bytes */
     private byte[] serverCookie;
-    /**
-     * List of key exchange algorithms supported by the remote peer
-     */
+    /** List of key exchange algorithms supported by the remote peer */
     private List<KeyExchangeAlgorithm> clientSupportedKeyExchangeAlgorithms;
-    /**
-     * List of key exchange algorithms supported by the server
-     */
+    /** List of key exchange algorithms supported by the server */
     private List<KeyExchangeAlgorithm> serverSupportedKeyExchangeAlgorithms;
-    /**
-     * List of host key algorithms supported by the client
-     */
+    /** List of host key algorithms supported by the client */
     private List<PublicKeyAuthenticationAlgorithm> clientSupportedHostKeyAlgorithms;
-    /**
-     * List of host key algorithms supported by the server
-     */
+    /** List of host key algorithms supported by the server */
     private List<PublicKeyAuthenticationAlgorithm> serverSupportedHostKeyAlgorithms;
-    /**
-     * List of encryption algorithms (client to server) supported by the client
-     */
+    /** List of encryption algorithms (client to server) supported by the client */
     private List<EncryptionAlgorithm> clientSupportedCipherAlgorithmsClientToServer;
-    /**
-     * List of encryption algorithms (server to client) supported by the client
-     */
+    /** List of encryption algorithms (server to client) supported by the client */
     private List<EncryptionAlgorithm> clientSupportedCipherAlgorithmsServerToClient;
-    /**
-     * List of encryption algorithms (client to server) supported by the server
-     */
+    /** List of encryption algorithms (client to server) supported by the server */
     private List<EncryptionAlgorithm> serverSupportedCipherAlgorithmsClientToServer;
-    /**
-     * List of encryption algorithms (server to client) supported by the server
-     */
+    /** List of encryption algorithms (server to client) supported by the server */
     private List<EncryptionAlgorithm> serverSupportedCipherAlgorithmsServerToClient;
-    /**
-     * List of MAC algorithms (client to server) supported by the client
-     */
+    /** List of MAC algorithms (client to server) supported by the client */
     private List<MacAlgorithm> clientSupportedMacAlgorithmsClientToServer;
-    /**
-     * List of MAC algorithms (server to client) supported by the client
-     */
+    /** List of MAC algorithms (server to client) supported by the client */
     private List<MacAlgorithm> clientSupportedMacAlgorithmsServerToClient;
-    /**
-     * List of MAC algorithms (client to server) supported by the server
-     */
+    /** List of MAC algorithms (client to server) supported by the server */
     private List<MacAlgorithm> serverSupportedMacAlgorithmsClientToServer;
-    /**
-     * List of MAC algorithms (server to client) supported by the server
-     */
+    /** List of MAC algorithms (server to client) supported by the server */
     private List<MacAlgorithm> serverSupportedMacAlgorithmsServerToClient;
-    /**
-     * List of compression algorithms (client to server) supported by the client
-     */
+    /** List of compression algorithms (client to server) supported by the client */
     private List<CompressionAlgorithm> clientSupportedCompressionAlgorithmsClientToServer;
-    /**
-     * List of compression algorithms (server to client) supported by the client
-     */
+    /** List of compression algorithms (server to client) supported by the client */
     private List<CompressionAlgorithm> clientSupportedCompressionAlgorithmsServerToClient;
-    /**
-     * List of compression algorithms (client to server) supported by the server
-     */
+    /** List of compression algorithms (client to server) supported by the server */
     private List<CompressionAlgorithm> serverSupportedCompressionAlgorithmsClientToServer;
-    /**
-     * List of compression algorithms (server to client) supported by the server
-     */
+    /** List of compression algorithms (server to client) supported by the server */
     private List<CompressionAlgorithm> serverSupportedCompressionAlgorithmsServerToClient;
-    /**
-     * List of languages (client to server) supported by the client
-     */
+    /** List of languages (client to server) supported by the client */
     private List<String> clientSupportedLanguagesClientToServer;
-    /**
-     * List of languages (server to client) supported by the client
-     */
+    /** List of languages (server to client) supported by the client */
     private List<String> clientSupportedLanguagesServerToClient;
-    /**
-     * List of languages (client to server) supported by the server
-     */
+    /** List of languages (client to server) supported by the server */
     private List<String> serverSupportedLanguagesClientToServer;
-    /**
-     * List of languages (server to client) supported by the server
-     */
+    /** List of languages (server to client) supported by the server */
     private List<String> serverSupportedLanguagesServerToClient;
     /**
      * A boolean flag used to indicate that a guessed key exchange paket will be sent by the client
@@ -183,156 +114,99 @@ public class SshContext {
      * A boolean flag used to indicate that a guessed key exchange paket will be sent by the server
      */
     private Boolean serverFirstKeyExchangePacketFollows;
-    /**
-     * Value of the clients' reserved field which may be used for extensions in the future
-     */
+    /** Value of the clients' reserved field which may be used for extensions in the future */
     private Integer clientReserved;
-    /**
-     * Value of the servers' reserved field which may be used for extensions in the future
-     */
+    /** Value of the servers' reserved field which may be used for extensions in the future */
     private Integer serverReserved;
     // endregion
 
     // region Negotiated Parameters
-    /**
-     * Negotiated key exchange algorithm
-     */
+    /** Negotiated key exchange algorithm */
     private KeyExchangeAlgorithm keyExchangeAlgorithm;
-    /**
-     * Negotiated host key algorithm
-     */
+    /** Negotiated host key algorithm */
     private PublicKeyAuthenticationAlgorithm serverHostKeyAlgorithm;
-    /**
-     * Negotiated cipher algorithm (client to server)
-     */
+    /** Negotiated cipher algorithm (client to server) */
     private EncryptionAlgorithm cipherAlgorithmClientToServer;
-    /**
-     * Negotiated cipher algorithm (server to client)
-     */
+    /** Negotiated cipher algorithm (server to client) */
     private EncryptionAlgorithm cipherAlgorithmServerToClient;
-    /**
-     * Negotiated MAC algorithm (client to server)
-     */
+    /** Negotiated MAC algorithm (client to server) */
     private MacAlgorithm macAlgorithmClientToServer;
-    /**
-     * Negotiated MAC algorithm (server to client)
-     */
+    /** Negotiated MAC algorithm (server to client) */
     private MacAlgorithm macAlgorithmServerToClient;
-    /**
-     * Negotiated compression algorithm (client to server)
-     */
+    /** Negotiated compression algorithm (client to server) */
     private CompressionAlgorithm compressionAlgorithmClientToServer;
-    /**
-     * Negotiated compression algorithm (server to client)
-     */
+    /** Negotiated compression algorithm (server to client) */
     private CompressionAlgorithm compressionAlgorithmServerToClient;
     // endregion
 
     // region Key Exchange
     /**
-     * An ongoing or already completed key exchange which can be used to generate a key pair or compute the shared
-     * secret
+     * An ongoing or already completed key exchange which can be used to generate a key pair or
+     * compute the shared secret
      */
     private KeyExchange keyExchangeInstance;
-    /**
-     * Type of the servers' host key
-     */
+    /** Type of the servers' host key */
     private PublicKeyAuthenticationAlgorithm hostKeyType;
-    /**
-     * Host key of the server
-     */
+    /** Host key of the server */
     // TODO: Implement host key as abstract class
     private byte[] serverHostKey;
-    /**
-     * Signature generated by the server to authenticate the key exchange
-     */
+    /** Signature generated by the server to authenticate the key exchange */
     private byte[] keyExchangeSignature;
     // endregion
 
     // region Exchange Hash and Cryptographic Keys
-    /**
-     * Instance of the ExchangeHash class for exchange hash computation
-     */
+    /** Instance of the ExchangeHash class for exchange hash computation */
     private ExchangeHash exchangeHash;
     /**
-     * Unique identifier for this session. This is equal to the first computed exchange hash and never changes
+     * Unique identifier for this session. This is equal to the first computed exchange hash and
+     * never changes
      */
     private byte[] sessionID;
-    /**
-     * Initial IV (client to server) derived from the shared secret during the protocol
-     */
+    /** Initial IV (client to server) derived from the shared secret during the protocol */
     private byte[] initialIvClientToServer;
-    /**
-     * Initial IV (server to client) derived from the shared secret during the protocol
-     */
+    /** Initial IV (server to client) derived from the shared secret during the protocol */
     private byte[] initialIvServerToClient;
-    /**
-     * Encryption key (client to server) derived from the shared secret during the protocol
-     */
+    /** Encryption key (client to server) derived from the shared secret during the protocol */
     private byte[] encryptionKeyClientToServer;
-    /**
-     * Encryption key (server to client) derived from the shared secret during the protocol
-     */
+    /** Encryption key (server to client) derived from the shared secret during the protocol */
     private byte[] encryptionKeyServerToClient;
-    /**
-     * Integrity key (client to server) derived from the shared secret during the protocol
-     */
+    /** Integrity key (client to server) derived from the shared secret during the protocol */
     private byte[] integrityKeyClientToServer;
-    /**
-     * Integrity key (server to client) derived from the shared secret during the protocol
-     */
+    /** Integrity key (server to client) derived from the shared secret during the protocol */
     private byte[] integrityKeyServerToClient;
     // endregion
 
     // region Authentication Protocol
-    /**
-     * Authentication method used to authenticate against the server
-     */
+    /** Authentication method used to authenticate against the server */
     private AuthenticationMethod authenticationMethod;
     // endregion
 
     // region Connection Protocol
     // TODO: Implement connection protocol to support multiplexing
-    /**
-     * Local channel identifier
-     */
+    /** Local channel identifier */
     private Integer localChannel;
-    /**
-     * Remote channel identifier
-     */
+    /** Remote channel identifier */
     private Integer remoteChannel;
     /**
-     * Window size of the channel. The window size defines how many bytes the local peer may send before the remote peer
-     * must send a SSH_MSG_CHANNEL_WINDOW_ADJUST to allow the local peer to send more bytes. Whenever a packet is send,
-     * this number is decremented by the packets length.
+     * Window size of the channel. The window size defines how many bytes the local peer may send
+     * before the remote peer must send a SSH_MSG_CHANNEL_WINDOW_ADJUST to allow the local peer to
+     * send more bytes. Whenever a packet is send, this number is decremented by the packets length.
      */
     private Integer windowSize;
-    /**
-     * Maximum size of a single packet within the channel
-     */
+    /** Maximum size of a single packet within the channel */
     private Integer packetSize;
-    /**
-     * Type of the channel
-     */
+    /** Type of the channel */
     private ChannelType channelType;
     // TODO: Implement channel requests in such a way that allows specification within the XML file
     // endregion
 
-    /**
-     * If set to true, a SSH_MSG_DISCONNECT has been received from the remote peer
-     */
+    /** If set to true, a SSH_MSG_DISCONNECT has been received from the remote peer */
     private boolean receivedDisconnectMessage = false;
-    /**
-     * If set to true, encryption will be enabled for client to server communication
-     */
+    /** If set to true, encryption will be enabled for client to server communication */
     private boolean isClientToServerEncryptionActive = false;
-    /**
-     * If set to true, encryption will be enabled for server to client communication
-     */
+    /** If set to true, encryption will be enabled for server to client communication */
     private boolean isServerToClientEncryptionActive = false;
-    /**
-     * If set to true, a version exchange message was sent by each side
-     */
+    /** If set to true, a version exchange message was sent by each side */
     private boolean versionExchangeCompleted = false;
 
     // region Constructors and Initalization
@@ -353,7 +227,8 @@ public class SshContext {
                     init(config, config.getDefaultServerConnection());
                     break;
                 default:
-                    throw new ConfigurationException("Cannot create connection for unknown running mode '" + mode + "'");
+                    throw new ConfigurationException(
+                            "Cannot create connection for unknown running mode '" + mode + "'");
             }
         }
     }
@@ -426,10 +301,10 @@ public class SshContext {
         } catch (NullPointerException | NumberFormatException ex) {
             throw new ConfigurationException("Invalid values in " + connection.toString(), ex);
         } catch (IOException ex) {
-            throw new TransportHandlerConnectException("Unable to initialize the transport handler with: "
-                    + connection.toString(), ex);
+            throw new TransportHandlerConnectException(
+                    "Unable to initialize the transport handler with: " + connection.toString(),
+                    ex);
         }
-
     }
 
     public BinaryPacketLayer getBinaryPacketLayer() {
@@ -478,7 +353,10 @@ public class SshContext {
 
     public void incrementSequenceNumber(int i) {
         // Java does not support native unsigned integers :(
-        sequenceNumber = (int) ((Integer.toUnsignedLong(sequenceNumber) + Integer.toUnsignedLong(i)) % DataFormatConstants.UNSIGNED_INT_MAX_VALUE);
+        sequenceNumber =
+                (int)
+                        ((Integer.toUnsignedLong(sequenceNumber) + Integer.toUnsignedLong(i))
+                                % DataFormatConstants.UNSIGNED_INT_MAX_VALUE);
     }
 
     // region Getters for Version Exchange Fields
@@ -583,19 +461,23 @@ public class SshContext {
         return Optional.ofNullable(serverSupportedMacAlgorithmsClientToServer);
     }
 
-    public Optional<List<CompressionAlgorithm>> getClientSupportedCompressionAlgorithmsClientToServer() {
+    public Optional<List<CompressionAlgorithm>>
+            getClientSupportedCompressionAlgorithmsClientToServer() {
         return Optional.ofNullable(clientSupportedCompressionAlgorithmsClientToServer);
     }
 
-    public Optional<List<CompressionAlgorithm>> getClientSupportedCompressionAlgorithmsServerToClient() {
+    public Optional<List<CompressionAlgorithm>>
+            getClientSupportedCompressionAlgorithmsServerToClient() {
         return Optional.ofNullable(clientSupportedCompressionAlgorithmsServerToClient);
     }
 
-    public Optional<List<CompressionAlgorithm>> getServerSupportedCompressionAlgorithmsServerToClient() {
+    public Optional<List<CompressionAlgorithm>>
+            getServerSupportedCompressionAlgorithmsServerToClient() {
         return Optional.ofNullable(serverSupportedCompressionAlgorithmsServerToClient);
     }
 
-    public Optional<List<CompressionAlgorithm>> getServerSupportedCompressionAlgorithmsClientToServer() {
+    public Optional<List<CompressionAlgorithm>>
+            getServerSupportedCompressionAlgorithmsClientToServer() {
         return Optional.ofNullable(serverSupportedCompressionAlgorithmsClientToServer);
     }
 
@@ -633,11 +515,13 @@ public class SshContext {
 
     // endregion
     // region Setters for Key Exchange Initialization Fields
-    public void setClientSupportedKeyExchangeAlgorithms(List<KeyExchangeAlgorithm> clientSupportedKeyExchangeAlgorithms) {
+    public void setClientSupportedKeyExchangeAlgorithms(
+            List<KeyExchangeAlgorithm> clientSupportedKeyExchangeAlgorithms) {
         this.clientSupportedKeyExchangeAlgorithms = clientSupportedKeyExchangeAlgorithms;
     }
 
-    public void setServerSupportedKeyExchangeAlgorithms(List<KeyExchangeAlgorithm> serverSupportedKeyExchangeAlgorithms) {
+    public void setServerSupportedKeyExchangeAlgorithms(
+            List<KeyExchangeAlgorithm> serverSupportedKeyExchangeAlgorithms) {
         this.serverSupportedKeyExchangeAlgorithms = serverSupportedKeyExchangeAlgorithms;
     }
 
@@ -653,85 +537,103 @@ public class SshContext {
 
     public void setClientSupportedCipherAlgorithmsClientToServer(
             List<EncryptionAlgorithm> clientSupportedCipherAlgorithmsClientToServer) {
-        this.clientSupportedCipherAlgorithmsClientToServer = clientSupportedCipherAlgorithmsClientToServer;
+        this.clientSupportedCipherAlgorithmsClientToServer =
+                clientSupportedCipherAlgorithmsClientToServer;
     }
 
     public void setClientSupportedCipherAlgorithmsServerToClient(
             List<EncryptionAlgorithm> clientSupportedCipherAlgorithmsServerToClient) {
-        this.clientSupportedCipherAlgorithmsServerToClient = clientSupportedCipherAlgorithmsServerToClient;
+        this.clientSupportedCipherAlgorithmsServerToClient =
+                clientSupportedCipherAlgorithmsServerToClient;
     }
 
     public void setServerSupportedCipherAlgorithmsServerToClient(
             List<EncryptionAlgorithm> serverSupportedCipherAlgorithmsServerToClient) {
-        this.serverSupportedCipherAlgorithmsServerToClient = serverSupportedCipherAlgorithmsServerToClient;
+        this.serverSupportedCipherAlgorithmsServerToClient =
+                serverSupportedCipherAlgorithmsServerToClient;
     }
 
     public void setServerSupportedCipherAlgorithmsClientToServer(
             List<EncryptionAlgorithm> serverSupportedCipherAlgorithmsClientToServer) {
-        this.serverSupportedCipherAlgorithmsClientToServer = serverSupportedCipherAlgorithmsClientToServer;
+        this.serverSupportedCipherAlgorithmsClientToServer =
+                serverSupportedCipherAlgorithmsClientToServer;
     }
 
     public void setClientSupportedMacAlgorithmsClientToServer(
             List<MacAlgorithm> clientSupportedMacAlgorithmsClientToServer) {
-        this.clientSupportedMacAlgorithmsClientToServer = clientSupportedMacAlgorithmsClientToServer;
+        this.clientSupportedMacAlgorithmsClientToServer =
+                clientSupportedMacAlgorithmsClientToServer;
     }
 
     public void setClientSupportedMacAlgorithmsServerToClient(
             List<MacAlgorithm> clientSupportedMacAlgorithmsServerToClient) {
-        this.clientSupportedMacAlgorithmsServerToClient = clientSupportedMacAlgorithmsServerToClient;
+        this.clientSupportedMacAlgorithmsServerToClient =
+                clientSupportedMacAlgorithmsServerToClient;
     }
 
     public void setServerSupportedMacAlgorithmsServerToClient(
             List<MacAlgorithm> serverSupportedMacAlgorithmsServerToClient) {
-        this.serverSupportedMacAlgorithmsServerToClient = serverSupportedMacAlgorithmsServerToClient;
+        this.serverSupportedMacAlgorithmsServerToClient =
+                serverSupportedMacAlgorithmsServerToClient;
     }
 
     public void setServerSupportedMacAlgorithmsClientToServer(
             List<MacAlgorithm> serverSupportedMacAlgorithmsClientToServer) {
-        this.serverSupportedMacAlgorithmsClientToServer = serverSupportedMacAlgorithmsClientToServer;
+        this.serverSupportedMacAlgorithmsClientToServer =
+                serverSupportedMacAlgorithmsClientToServer;
     }
 
     public void setClientSupportedCompressionAlgorithmsClientToServer(
             List<CompressionAlgorithm> clientSupportedCompressionAlgorithmsClientToServer) {
-        this.clientSupportedCompressionAlgorithmsClientToServer = clientSupportedCompressionAlgorithmsClientToServer;
+        this.clientSupportedCompressionAlgorithmsClientToServer =
+                clientSupportedCompressionAlgorithmsClientToServer;
     }
 
     public void setClientSupportedCompressionAlgorithmsServerToClient(
             List<CompressionAlgorithm> clientSupportedCompressionAlgorithmsServerToClient) {
-        this.clientSupportedCompressionAlgorithmsServerToClient = clientSupportedCompressionAlgorithmsServerToClient;
+        this.clientSupportedCompressionAlgorithmsServerToClient =
+                clientSupportedCompressionAlgorithmsServerToClient;
     }
 
     public void setServerSupportedCompressionAlgorithmsServerToClient(
             List<CompressionAlgorithm> serverSupportedCompressionAlgorithmsServerToClient) {
-        this.serverSupportedCompressionAlgorithmsServerToClient = serverSupportedCompressionAlgorithmsServerToClient;
+        this.serverSupportedCompressionAlgorithmsServerToClient =
+                serverSupportedCompressionAlgorithmsServerToClient;
     }
 
     public void setServerSupportedCompressionAlgorithmsClientToServer(
             List<CompressionAlgorithm> serverSupportedCompressionAlgorithmsClientToServer) {
-        this.serverSupportedCompressionAlgorithmsClientToServer = serverSupportedCompressionAlgorithmsClientToServer;
+        this.serverSupportedCompressionAlgorithmsClientToServer =
+                serverSupportedCompressionAlgorithmsClientToServer;
     }
 
-    public void setClientSupportedLanguagesClientToServer(List<String> clientSupportedLanguagesClientToServer) {
+    public void setClientSupportedLanguagesClientToServer(
+            List<String> clientSupportedLanguagesClientToServer) {
         this.clientSupportedLanguagesClientToServer = clientSupportedLanguagesClientToServer;
     }
 
-    public void setClientSupportedLanguagesServerToClient(List<String> clientSupportedLanguagesServerToClient) {
+    public void setClientSupportedLanguagesServerToClient(
+            List<String> clientSupportedLanguagesServerToClient) {
         this.clientSupportedLanguagesServerToClient = clientSupportedLanguagesServerToClient;
     }
 
-    public void setServerSupportedLanguagesServerToClient(List<String> serverSupportedLanguagesServerToClient) {
+    public void setServerSupportedLanguagesServerToClient(
+            List<String> serverSupportedLanguagesServerToClient) {
         this.serverSupportedLanguagesServerToClient = serverSupportedLanguagesServerToClient;
     }
 
-    public void setServerSupportedLanguagesClientToServer(List<String> serverSupportedLanguagesClientToServer) {
+    public void setServerSupportedLanguagesClientToServer(
+            List<String> serverSupportedLanguagesClientToServer) {
         this.serverSupportedLanguagesClientToServer = serverSupportedLanguagesClientToServer;
     }
 
-    public void setClientFirstKeyExchangePacketFollows(boolean clientFirstKeyExchangePacketFollows) {
+    public void setClientFirstKeyExchangePacketFollows(
+            boolean clientFirstKeyExchangePacketFollows) {
         this.clientFirstKeyExchangePacketFollows = clientFirstKeyExchangePacketFollows;
     }
 
-    public void setServerFirstKeyExchangePacketFollows(boolean serverFirstKeyExchangePacketFollows) {
+    public void setServerFirstKeyExchangePacketFollows(
+            boolean serverFirstKeyExchangePacketFollows) {
         this.serverFirstKeyExchangePacketFollows = serverFirstKeyExchangePacketFollows;
     }
 
@@ -788,11 +690,13 @@ public class SshContext {
         this.serverHostKeyAlgorithm = serverHostKeyAlgorithm;
     }
 
-    public void setCipherAlgorithmClientToServer(EncryptionAlgorithm cipherAlgorithmClientToServer) {
+    public void setCipherAlgorithmClientToServer(
+            EncryptionAlgorithm cipherAlgorithmClientToServer) {
         this.cipherAlgorithmClientToServer = cipherAlgorithmClientToServer;
     }
 
-    public void setCipherAlgorithmServerToClient(EncryptionAlgorithm cipherAlgorithmServerToClient) {
+    public void setCipherAlgorithmServerToClient(
+            EncryptionAlgorithm cipherAlgorithmServerToClient) {
         this.cipherAlgorithmServerToClient = cipherAlgorithmServerToClient;
     }
 
@@ -804,11 +708,13 @@ public class SshContext {
         this.macAlgorithmServerToClient = macAlgorithmServerToClient;
     }
 
-    public void setCompressionAlgorithmClientToServer(CompressionAlgorithm compressionAlgorithmClientToServer) {
+    public void setCompressionAlgorithmClientToServer(
+            CompressionAlgorithm compressionAlgorithmClientToServer) {
         this.compressionAlgorithmClientToServer = compressionAlgorithmClientToServer;
     }
 
-    public void setCompressionAlgorithmServerToClient(CompressionAlgorithm compressionAlgorithmServerToClient) {
+    public void setCompressionAlgorithmServerToClient(
+            CompressionAlgorithm compressionAlgorithmServerToClient) {
         this.compressionAlgorithmServerToClient = compressionAlgorithmServerToClient;
     }
 

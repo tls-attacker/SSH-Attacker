@@ -1,16 +1,14 @@
 /**
  * SSH-Attacker - A Modular Penetration Testing Framework for SSH
  *
- * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * <p>Copyright 2014-2021 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.sshattacker.core.workflow.action.result;
 
-import de.rub.nds.sshattacker.core.protocol.transport.message.BinaryPacket;
 import de.rub.nds.sshattacker.core.protocol.common.Message;
+import de.rub.nds.sshattacker.core.protocol.transport.message.BinaryPacket;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -27,9 +25,7 @@ public class MessageActionResult {
         this.messageList = messageList;
     }
 
-    /**
-     * Generates an empty MessageActionResult, that is, a result whose list fields are empty.
-     */
+    /** Generates an empty MessageActionResult, that is, a result whose list fields are empty. */
     public MessageActionResult() {
         this(new LinkedList<>(), new LinkedList<>());
     }
@@ -42,9 +38,7 @@ public class MessageActionResult {
         return messageList;
     }
 
-    /**
-     * Merger this with other results, forming a new result.
-     */
+    /** Merger this with other results, forming a new result. */
     public MessageActionResult merge(MessageActionResult... other) {
         LinkedList<MessageActionResult> results = new LinkedList<>(Collections.singletonList(this));
         results.addAll(Arrays.asList(other));
