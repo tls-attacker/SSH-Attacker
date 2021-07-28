@@ -12,8 +12,6 @@ package de.rub.nds.sshattacker.core.protocol.transport.handler;
 import de.rub.nds.sshattacker.core.protocol.common.Handler;
 import de.rub.nds.sshattacker.core.protocol.transport.message.IgnoreMessage;
 import de.rub.nds.sshattacker.core.state.SshContext;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class IgnoreMessageHandler extends Handler<IgnoreMessage> {
 

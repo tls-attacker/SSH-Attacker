@@ -46,10 +46,9 @@ public class DebugMessageSerializer extends MessageSerializer<DebugMessage> {
     }
 
     @Override
-    protected byte[] serializeMessageSpecificPayload() {
+    protected void serializeMessageSpecificPayload() {
         serializeAlwaysDisplayed();
         serializeMessage();
         serializeLanguageTag();
-        return getAlreadySerialized();
     }
 }

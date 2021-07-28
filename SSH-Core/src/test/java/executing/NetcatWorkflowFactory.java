@@ -39,7 +39,9 @@ public class NetcatWorkflowFactory {
         ReceiveMessageHelper receiveMessageHelper = new ReceiveMessageHelper();
 
         BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
+        // noinspection InfiniteLoopStatement
         while (true) {
+            // noinspection BusyWait
             Thread.sleep(5000);
             receiveMessageHelper.receiveMessages(state.getSshContext());
             String read = in.readLine();

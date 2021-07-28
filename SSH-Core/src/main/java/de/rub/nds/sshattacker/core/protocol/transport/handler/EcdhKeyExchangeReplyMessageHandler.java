@@ -9,19 +9,14 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.handler;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.sshattacker.core.constants.PublicKeyAuthenticationAlgorithm;
 import de.rub.nds.sshattacker.core.crypto.hash.EcdhExchangeHash;
 import de.rub.nds.sshattacker.core.crypto.kex.DhBasedKeyExchange;
 import de.rub.nds.sshattacker.core.exceptions.AdjustmentException;
 import de.rub.nds.sshattacker.core.protocol.common.Handler;
 import de.rub.nds.sshattacker.core.protocol.layers.CryptoLayerFactory;
 import de.rub.nds.sshattacker.core.protocol.transport.message.EcdhKeyExchangeReplyMessage;
-import de.rub.nds.sshattacker.core.util.Converter;
 import de.rub.nds.sshattacker.core.crypto.KeyDerivation;
 import de.rub.nds.sshattacker.core.state.SshContext;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class EcdhKeyExchangeReplyMessageHandler extends Handler<EcdhKeyExchangeReplyMessage> {
 

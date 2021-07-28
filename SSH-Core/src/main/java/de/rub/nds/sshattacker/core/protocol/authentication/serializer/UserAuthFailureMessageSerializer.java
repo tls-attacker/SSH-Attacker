@@ -40,10 +40,9 @@ public class UserAuthFailureMessageSerializer extends MessageSerializer<UserAuth
     }
 
     @Override
-    protected byte[] serializeMessageSpecificPayload() {
+    protected void serializeMessageSpecificPayload() {
         serializePossibleAuthenticationMethods();
         serializePartialSuccess();
-        return getAlreadySerialized();
     }
 
 }

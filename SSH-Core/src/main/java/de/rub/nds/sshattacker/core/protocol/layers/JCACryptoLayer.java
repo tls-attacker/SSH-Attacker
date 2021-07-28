@@ -26,6 +26,7 @@ public class JCACryptoLayer extends CryptoLayer {
     private Cipher decryptCipher;
 
     private Mac mac;
+    @SuppressWarnings("FieldCanBeLocal")
     private Mac verify;
 
     public JCACryptoLayer(EncryptionAlgorithm encryptionAlgorithm, String cipherTransform, Key cipherKey,

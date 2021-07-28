@@ -9,7 +9,6 @@
  */
 package de.rub.nds.sshattacker.core.protocol.serializer;
 
-import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthBannerMessage;
 import de.rub.nds.sshattacker.core.protocol.authentication.serializer.UserAuthBannerMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.parser.UserAuthBannerMessageParserTest;

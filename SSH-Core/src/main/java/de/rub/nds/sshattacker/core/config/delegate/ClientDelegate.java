@@ -44,7 +44,7 @@ public class ClientDelegate extends Delegate {
         if (host == null) {
             // Though host is a required parameter we can get here if
             // we call applyDelegate manually, e.g. in tests.
-            throw new ParameterException("Could not parse provided host: " + host);
+            throw new ParameterException("Could not parse provided host, host is null");
         }
         // Remove any provided protocols
         String[] split = host.split("://");

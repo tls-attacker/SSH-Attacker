@@ -44,10 +44,8 @@ public abstract class Serializer<T> {
     /**
      * This method is responsible to write the appropriate bytes to the output Stream This should be done by calling the
      * different append methods.
-     *
-     * @return The already serialized Bytes
      */
-    protected abstract byte[] serializeBytes();
+    protected abstract void serializeBytes();
 
     /**
      * Adds a byte[] representation of an int to the final byte[]. If the Integer is greater than the specified length

@@ -10,7 +10,6 @@
 package de.rub.nds.sshattacker.core.protocol.serializer;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
 import de.rub.nds.sshattacker.core.protocol.transport.message.DhGexKeyExchangeInitMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.serializer.DhGexKeyExchangeInitMessageSerializer;
 import org.junit.jupiter.params.ParameterizedTest;

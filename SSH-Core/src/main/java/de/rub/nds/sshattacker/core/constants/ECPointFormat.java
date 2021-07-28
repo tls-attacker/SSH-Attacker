@@ -25,11 +25,11 @@ public enum ECPointFormat {
     ANSIX962_COMPRESSED_PRIME((byte) 1),
     ANSIX962_COMPRESSED_CHAR2((byte) 2);
 
-    private byte value;
+    private final byte value;
 
     private static final Map<Byte, ECPointFormat> MAP;
 
-    private ECPointFormat(byte value) {
+    ECPointFormat(byte value) {
         this.value = value;
     }
 
@@ -72,7 +72,7 @@ public enum ECPointFormat {
 
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         ObjectOutputStream os = new ObjectOutputStream(bytes);
-        os.writeObject(pointFormats.toArray(new ECPointFormat[pointFormats.size()]));
+        os.writeObject(pointFormats.toArray(new ECPointFormat[0]));
 
         return bytes.toByteArray();
 
@@ -86,8 +86,7 @@ public enum ECPointFormat {
 
         ByteArrayInputStream in = new ByteArrayInputStream(sourceBytes);
         ObjectInputStream is = new ObjectInputStream(in);
-        ECPointFormat[] formats = (ECPointFormat[]) is.readObject();
 
-        return formats;
+        return (ECPointFormat[]) is.readObject();
     }
 }

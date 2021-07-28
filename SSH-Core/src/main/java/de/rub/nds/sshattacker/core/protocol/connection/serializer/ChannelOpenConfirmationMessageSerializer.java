@@ -38,12 +38,11 @@ public class ChannelOpenConfirmationMessageSerializer extends ChannelMessageSeri
     }
 
     @Override
-    protected byte[] serializeMessageSpecificPayload() {
+    protected void serializeMessageSpecificPayload() {
         super.serializeMessageSpecificPayload();
         serializeSenderChannel();
         serializeWindowSize();
         serializePacketSize();
-        return getAlreadySerialized();
     }
 
 }

@@ -39,11 +39,10 @@ public abstract class ChannelRequestMessageSerializer<T extends ChannelRequestMe
     }
 
     @Override
-    protected byte[] serializeMessageSpecificPayload() {
+    protected void serializeMessageSpecificPayload() {
         super.serializeMessageSpecificPayload();
         serializeRequestType();
         serializeWantReply();
-        return getAlreadySerialized();
     }
 
 }

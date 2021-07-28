@@ -55,13 +55,12 @@ public class BinaryPacketSerializer extends Serializer<BinaryPacket> {
     }
 
     @Override
-    public byte[] serializeBytes() {
+    public void serializeBytes() {
         serializePacketLength();
         serializePaddingLength();
         serializePayload();
         serializePadding();
         serializeMac();
-        return getAlreadySerialized();
     }
 
     public byte[] serializeForEncryption() {

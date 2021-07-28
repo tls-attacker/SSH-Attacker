@@ -140,6 +140,7 @@ public enum NamedGroup {
         return this != ECDH_X25519 && this != ECDH_X448;
     }
 
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public boolean isRFC7748Curve() {
         return this == ECDH_X25519 || this == ECDH_X448;
     }

@@ -29,8 +29,7 @@ public class DhGexKeyExchangeOldRequestMessageSerializer extends MessageSerializ
     }
 
     @Override
-    protected byte[] serializeMessageSpecificPayload() {
+    protected void serializeMessageSpecificPayload() {
         serializePreferredGroupSize();
-        return getAlreadySerialized();
     }
 }

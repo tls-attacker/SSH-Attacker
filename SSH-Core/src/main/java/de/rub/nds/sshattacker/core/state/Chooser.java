@@ -170,14 +170,17 @@ public class Chooser {
 
     // region Key Exchange
     // TODO: Use config and context here
+    @SuppressWarnings("SameReturnValue")
     public int getMinimalDHGroupSize() {
         return 2048;
     }
 
+    @SuppressWarnings("SameReturnValue")
     public int getPreferredDHGroupSize() {
         return 4096;
     }
 
+    @SuppressWarnings("SameReturnValue")
     public int getMaximalDHGroupSize() {
         return 8192;
     }

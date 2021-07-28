@@ -15,8 +15,6 @@ import de.rub.nds.sshattacker.core.protocol.transport.message.UnknownMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.Arrays;
-
 public class UnknownMessageParser extends MessageParser<UnknownMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();

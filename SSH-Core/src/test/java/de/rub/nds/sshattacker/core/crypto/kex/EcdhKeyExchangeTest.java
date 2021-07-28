@@ -18,7 +18,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
-import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.math.BigInteger;
 import java.util.HashMap;
@@ -54,10 +53,8 @@ public class EcdhKeyExchangeTest {
      * Provides test vectors for the testEcdh unit test from KAS_ECC_CDH_PrimitiveTest.txt file
      * 
      * @return A stream of test vectors for the testEcdh unit test
-     * @throws FileNotFoundException
-     *             Thrown if the KAS_ECC_CDH_PrimitiveTest.txt file can not be found
      */
-    public static Stream<Arguments> provideTestVectors() throws FileNotFoundException {
+    public static Stream<Arguments> provideTestVectors() {
         InputStream testVectorFile = EcdhKeyExchangeTest.class.getClassLoader().getResourceAsStream(
                 "KAS_ECC_CDH_PrimitiveTest.txt");
         assert testVectorFile != null;

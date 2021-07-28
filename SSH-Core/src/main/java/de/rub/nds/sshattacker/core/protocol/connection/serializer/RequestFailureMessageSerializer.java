@@ -19,8 +19,7 @@ public class RequestFailureMessageSerializer extends MessageSerializer<RequestFa
     }
 
     @Override
-    protected byte[] serializeMessageSpecificPayload() {
-        return new byte[0];
+    protected void serializeMessageSpecificPayload() {
     }
 
 }

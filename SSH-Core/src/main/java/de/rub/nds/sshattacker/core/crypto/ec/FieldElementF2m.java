@@ -142,8 +142,7 @@ public class FieldElementF2m extends FieldElement implements Serializable {
         }
         // q is the quotient.
         // f is the remainder.
-        BigInteger[] result = { q, f };
-        return result;
+        return new BigInteger[] { q, f };
     }
 
     /**
@@ -160,6 +159,7 @@ public class FieldElementF2m extends FieldElement implements Serializable {
      * Returns (this^2)^exponent)
      * 
      * @param exponent
+     *            An Integer representing the exponent.
      */
     public FieldElementF2m squarePow(int exponent) {
         FieldElement square = this.mult(this);

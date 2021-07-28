@@ -413,7 +413,7 @@ public class SshContext {
         this.receivedTransportHandlerException = receivedTransportHandlerException;
     }
 
-    public void initTransportHandler() throws IOException {
+    public void initTransportHandler() {
         if (transportHandler == null) {
             if (connection == null) {
                 throw new ConfigurationException("Connection end not set");

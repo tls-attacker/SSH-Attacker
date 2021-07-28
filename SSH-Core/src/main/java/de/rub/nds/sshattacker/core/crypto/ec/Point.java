@@ -111,10 +111,7 @@ public class Point implements Serializable {
         if (!Objects.equals(this.fieldX, other.fieldX)) {
             return false;
         }
-        if (!Objects.equals(this.fieldY, other.fieldY)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.fieldY, other.fieldY);
     }
 
     @Override

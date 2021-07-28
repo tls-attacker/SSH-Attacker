@@ -17,8 +17,6 @@ import de.rub.nds.sshattacker.core.exceptions.AdjustmentException;
 import de.rub.nds.sshattacker.core.protocol.common.Handler;
 import de.rub.nds.sshattacker.core.protocol.transport.message.DhGexKeyExchangeGroupMessage;
 import de.rub.nds.sshattacker.core.state.SshContext;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class DhGexKeyExchangeGroupMessageHandler extends Handler<DhGexKeyExchangeGroupMessage> {
 

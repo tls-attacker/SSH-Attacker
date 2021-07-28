@@ -10,7 +10,6 @@
 package de.rub.nds.sshattacker.core.protocol.transport.serializer;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.sshattacker.core.constants.BinaryPacketConstants;
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.common.MessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.transport.message.EcdhKeyExchangeReplyMessage;
@@ -47,10 +46,9 @@ public class EcdhKeyExchangeReplyMessageSerializer extends MessageSerializer<Ecd
     }
 
     @Override
-    public byte[] serializeMessageSpecificPayload() {
+    public void serializeMessageSpecificPayload() {
         serializeHostKey(msg);
         serializePublicKey(msg);
         serializeSignature(msg);
-        return getAlreadySerialized();
     }
 }

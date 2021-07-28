@@ -20,17 +20,17 @@ public class ClientCommandConfig extends SSHDelegateConfig {
     public static final String COMMAND = "client";
 
     @ParametersDelegate
-    private ClientDelegate clientDelegate;
+    private final ClientDelegate clientDelegate;
     @ParametersDelegate
-    private ConfigOutputDelegate configOutputDelegate;
+    private final ConfigOutputDelegate configOutputDelegate;
     @ParametersDelegate
-    private TimeoutDelegate timeoutDelegate;
+    private final TimeoutDelegate timeoutDelegate;
     @ParametersDelegate
-    private WorkflowInputDelegate workflowInputDelegate;
+    private final WorkflowInputDelegate workflowInputDelegate;
     @ParametersDelegate
-    private WorkflowOutputDelegate workflowOutputDelegate;
+    private final WorkflowOutputDelegate workflowOutputDelegate;
     @ParametersDelegate
-    private WorkflowTypeDelegate workflowTypeDelegate;
+    private final WorkflowTypeDelegate workflowTypeDelegate;
 
     public ClientCommandConfig(GeneralDelegate delegate) {
         super(delegate);

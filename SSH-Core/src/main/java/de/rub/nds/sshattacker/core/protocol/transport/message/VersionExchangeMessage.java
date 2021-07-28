@@ -15,7 +15,6 @@
 package de.rub.nds.sshattacker.core.protocol.transport.message;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
-import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.sshattacker.core.constants.CharConstants;
 import de.rub.nds.sshattacker.core.protocol.common.Message;
@@ -23,7 +22,6 @@ import de.rub.nds.sshattacker.core.protocol.transport.preparator.VersionExchange
 import de.rub.nds.sshattacker.core.protocol.transport.serializer.VersionExchangeMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.VersionExchangeMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
-import javax.xml.bind.annotation.XmlRootElement;
 
 public class VersionExchangeMessage extends Message<VersionExchangeMessage> {
 

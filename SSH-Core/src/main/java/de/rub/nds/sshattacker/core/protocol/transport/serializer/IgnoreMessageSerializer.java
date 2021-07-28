@@ -10,7 +10,6 @@
 package de.rub.nds.sshattacker.core.protocol.transport.serializer;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.sshattacker.core.constants.BinaryPacketConstants;
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.common.MessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.transport.message.IgnoreMessage;
@@ -33,8 +32,7 @@ public class IgnoreMessageSerializer extends MessageSerializer<IgnoreMessage> {
     }
 
     @Override
-    protected byte[] serializeMessageSpecificPayload() {
+    protected void serializeMessageSpecificPayload() {
         serializeData();
-        return getAlreadySerialized();
     }
 }

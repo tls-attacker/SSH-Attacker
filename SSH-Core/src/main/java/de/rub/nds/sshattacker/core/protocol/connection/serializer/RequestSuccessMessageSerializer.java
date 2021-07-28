@@ -19,8 +19,6 @@ public class RequestSuccessMessageSerializer extends MessageSerializer<RequestSu
     }
 
     @Override
-    protected byte[] serializeMessageSpecificPayload() {
-        return new byte[0];
+    protected void serializeMessageSpecificPayload() {
     }
-
 }

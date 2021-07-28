@@ -19,8 +19,7 @@ public class UserAuthSuccessMessageSerializer extends MessageSerializer<UserAuth
     }
 
     @Override
-    protected byte[] serializeMessageSpecificPayload() {
-        return new byte[0];
-    }
+    protected void serializeMessageSpecificPayload() {
 
+    }
 }

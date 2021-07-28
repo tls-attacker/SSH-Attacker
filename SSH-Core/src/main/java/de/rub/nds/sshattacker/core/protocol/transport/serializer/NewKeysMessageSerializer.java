@@ -19,7 +19,6 @@ public class NewKeysMessageSerializer extends MessageSerializer<NewKeysMessage> 
     }
 
     @Override
-    protected byte[] serializeMessageSpecificPayload() {
-        return new byte[0];
+    protected void serializeMessageSpecificPayload() {
     }
 }

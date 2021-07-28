@@ -47,10 +47,9 @@ public class DisconnectMessageSerializer extends MessageSerializer<DisconnectMes
     }
 
     @Override
-    protected byte[] serializeMessageSpecificPayload() {
+    protected void serializeMessageSpecificPayload() {
         serializeReasonCode();
         serializeDescription();
         serializeLanguageTag();
-        return getAlreadySerialized();
     }
 }

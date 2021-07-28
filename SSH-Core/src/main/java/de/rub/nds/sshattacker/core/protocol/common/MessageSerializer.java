@@ -25,13 +25,12 @@ public abstract class MessageSerializer<T extends Message<T>> extends Serializer
     }
 
     @Override
-    protected byte[] serializeBytes() {
+    protected void serializeBytes() {
         appendByte(msg.getMessageID().getValue());
         serializeMessageSpecificPayload();
-        return getAlreadySerialized();
     }
 
-    protected abstract byte[] serializeMessageSpecificPayload();
+    protected abstract void serializeMessageSpecificPayload();
 
     public static <T extends Message<T>> byte[] delegateSerialization(Message<T> message) {
         return message.getSerializer().serialize();

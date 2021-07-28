@@ -38,11 +38,10 @@ public class ChannelExtendedDataMessageSerializer extends ChannelMessageSerializ
     }
 
     @Override
-    protected byte[] serializeMessageSpecificPayload() {
+    protected void serializeMessageSpecificPayload() {
         super.serializeMessageSpecificPayload();
         serializeDataTypeCode();
         serializeData();
-        return getAlreadySerialized();
     }
 
 }

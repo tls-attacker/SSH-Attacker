@@ -9,7 +9,6 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.serializer;
 
-import de.rub.nds.sshattacker.core.constants.BinaryPacketConstants;
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.common.MessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.transport.message.DhKeyExchangeInitMessage;
@@ -32,8 +31,7 @@ public class DhKeyExchangeInitMessageSerializer extends MessageSerializer<DhKeyE
     }
 
     @Override
-    public byte[] serializeMessageSpecificPayload() {
+    public void serializeMessageSpecificPayload() {
         serializePublicKey();
-        return getAlreadySerialized();
     }
 }

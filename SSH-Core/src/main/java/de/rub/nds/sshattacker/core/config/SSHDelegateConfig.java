@@ -22,6 +22,7 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
+@SuppressWarnings("ConstantConditions")
 public class SSHDelegateConfig {
 
     private static final Logger LOGGER = LogManager.getLogger();
@@ -32,7 +33,7 @@ public class SSHDelegateConfig {
     private final GeneralDelegate generalDelegate;
 
     @Parameter(names = "-config", description = "This parameter allows you to specify a default SshConfig")
-    private String defaultConfig = null;
+    private final String defaultConfig = null;
 
     public SSHDelegateConfig(GeneralDelegate delegate) {
         delegateList = new LinkedList<>();
@@ -75,7 +76,7 @@ public class SSHDelegateConfig {
     }
 
     public Config createConfig() {
-        Config config = null;
+        Config config;
         if (defaultConfig != null) {
             File configFile = new File(defaultConfig);
             if (configFile.exists()) {

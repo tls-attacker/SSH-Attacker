@@ -28,10 +28,9 @@ public class ChannelWindowAdjustMessageSerializer extends ChannelMessageSerializ
     }
 
     @Override
-    protected byte[] serializeMessageSpecificPayload() {
+    protected void serializeMessageSpecificPayload() {
         super.serializeMessageSpecificPayload();
         serializeBytesToAdd();
-        return getAlreadySerialized();
     }
 
 }

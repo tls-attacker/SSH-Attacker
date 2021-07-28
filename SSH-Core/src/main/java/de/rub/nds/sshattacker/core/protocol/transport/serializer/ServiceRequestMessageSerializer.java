@@ -11,7 +11,6 @@ package de.rub.nds.sshattacker.core.protocol.transport.serializer;
 
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.common.MessageSerializer;
-import de.rub.nds.sshattacker.core.util.Converter;
 import de.rub.nds.sshattacker.core.protocol.transport.message.ServiceRequestMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -34,8 +33,7 @@ public class ServiceRequestMessageSerializer extends MessageSerializer<ServiceRe
     }
 
     @Override
-    protected byte[] serializeMessageSpecificPayload() {
+    protected void serializeMessageSpecificPayload() {
         serializeServiceName();
-        return getAlreadySerialized();
     }
 }

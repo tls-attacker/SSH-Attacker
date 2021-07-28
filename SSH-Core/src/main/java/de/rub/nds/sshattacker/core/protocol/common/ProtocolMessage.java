@@ -27,8 +27,6 @@ public abstract class ProtocolMessage extends ModifiableVariableHolder {
     /**
      * content type
      */
-    // @XmlTransient
-    // protected ProtocolMessageType protocolMessageType;
     @XmlTransient
     protected final boolean GOING_TO_BE_SENT_DEFAULT = true;
 
@@ -86,11 +84,6 @@ public abstract class ProtocolMessage extends ModifiableVariableHolder {
 
     public void setGoingToBeSent(ModifiableBoolean goingToBeSent) {
         this.goingToBeSent = goingToBeSent;
-    }
-
-    @Override
-    public List<ModifiableVariableHolder> getAllModifiableVariableHolders() {
-        return super.getAllModifiableVariableHolders();
     }
 
     @Override

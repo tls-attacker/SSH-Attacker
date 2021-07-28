@@ -10,6 +10,8 @@
 package de.rub.nds.sshattacker.core.crypto.ec;
 
 import java.math.BigInteger;
+import java.util.Objects;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -89,7 +91,7 @@ public class EllipticCurveOverFp extends EllipticCurve {
         }
         FieldElementFp x = (FieldElementFp) p.getFieldX();
         FieldElementFp y = (FieldElementFp) p.getFieldY();
-        if (x.getModulus() != this.getModulus() || y.getModulus() != this.getModulus()) {
+        if (!Objects.equals(x.getModulus(), this.getModulus()) || !Objects.equals(y.getModulus(), this.getModulus())) {
             return false;
         }
 
@@ -224,8 +226,7 @@ public class EllipticCurveOverFp extends EllipticCurve {
                     n = n.add(BigInteger.ONE);
                 }
 
-                BigInteger z = n.modPow(r, p);
-                BigInteger y = z;
+                BigInteger y = n.modPow(r, p);
                 BigInteger s = e;
                 BigInteger x = a.modPow(r.subtract(BigInteger.ONE).divide(new BigInteger("2")), p);
 

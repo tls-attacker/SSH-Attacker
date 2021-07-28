@@ -9,8 +9,6 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.handler;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.sshattacker.core.constants.PublicKeyAuthenticationAlgorithm;
 import de.rub.nds.sshattacker.core.crypto.KeyDerivation;
 import de.rub.nds.sshattacker.core.crypto.hash.DhNamedExchangeHash;
 import de.rub.nds.sshattacker.core.crypto.kex.DhKeyExchange;
@@ -19,9 +17,6 @@ import de.rub.nds.sshattacker.core.protocol.common.Handler;
 import de.rub.nds.sshattacker.core.protocol.layers.CryptoLayerFactory;
 import de.rub.nds.sshattacker.core.protocol.transport.message.DhKeyExchangeReplyMessage;
 import de.rub.nds.sshattacker.core.state.SshContext;
-import de.rub.nds.sshattacker.core.util.Converter;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class DhKeyExchangeReplyMessageHandler extends Handler<DhKeyExchangeReplyMessage> {
 

@@ -33,6 +33,7 @@ public abstract class Filter {
      *
      * @return The type of the filter
      */
+    @SuppressWarnings("SameReturnValue")
     public abstract FilterType getFilterType();
 
     /**

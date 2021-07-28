@@ -48,10 +48,9 @@ public abstract class UserAuthRequestMessageSerializer<T extends UserAuthRequest
     }
 
     @Override
-    protected byte[] serializeMessageSpecificPayload() {
+    protected void serializeMessageSpecificPayload() {
         serializeUserName();
         serializeServiceName();
         serializeMethodName();
-        return getAlreadySerialized();
     }
 }

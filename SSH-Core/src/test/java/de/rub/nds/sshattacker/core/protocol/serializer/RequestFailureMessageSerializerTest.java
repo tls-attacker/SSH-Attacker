@@ -9,7 +9,6 @@
  */
 package de.rub.nds.sshattacker.core.protocol.serializer;
 
-import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
 import de.rub.nds.sshattacker.core.protocol.connection.message.RequestFailureMessage;
 import de.rub.nds.sshattacker.core.protocol.connection.serializer.RequestFailureMessageSerializer;
 import org.junit.jupiter.api.Test;

@@ -51,10 +51,9 @@ public class VersionExchangeMessageSerializer extends Serializer<VersionExchange
     }
 
     @Override
-    protected byte[] serializeBytes() {
+    protected void serializeBytes() {
         serializeVersion();
         serializeComment();
         serializeCRNL();
-        return getAlreadySerialized();
     }
 }

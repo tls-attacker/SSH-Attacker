@@ -29,9 +29,8 @@ public class ChannelMessageSerializer<T extends ChannelMessage<T>> extends Messa
     }
 
     @Override
-    protected byte[] serializeMessageSpecificPayload() {
+    protected void serializeMessageSpecificPayload() {
         serializeRecipientChannel();
-        return getAlreadySerialized();
     }
 
 }

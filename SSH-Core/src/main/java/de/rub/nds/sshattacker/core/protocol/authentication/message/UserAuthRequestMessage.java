@@ -28,7 +28,7 @@ public abstract class UserAuthRequestMessage<T extends UserAuthRequestMessage<T>
     protected ModifiableInteger methodNameLength;
     protected ModifiableString methodName;
 
-    protected UserAuthRequestMessage(AuthenticationMethod authenticationMethod) {
+    protected UserAuthRequestMessage(@SuppressWarnings("SameParameterValue") AuthenticationMethod authenticationMethod) {
         super(MessageIDConstant.SSH_MSG_USERAUTH_REQUEST);
         setMethodName(authenticationMethod, true);
     }

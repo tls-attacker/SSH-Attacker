@@ -19,7 +19,7 @@ public enum ExtendedChannelDataType {
 
     private final int dataTypeCode;
 
-    ExtendedChannelDataType(int dataTypeCode) {
+    ExtendedChannelDataType(@SuppressWarnings("SameParameterValue") int dataTypeCode) {
         this.dataTypeCode = dataTypeCode;
     }
 

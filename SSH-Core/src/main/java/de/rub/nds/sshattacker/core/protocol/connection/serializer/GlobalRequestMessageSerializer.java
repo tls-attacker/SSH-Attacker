@@ -39,9 +39,8 @@ public abstract class GlobalRequestMessageSerializer<T extends GlobalRequestMess
     }
 
     @Override
-    protected byte[] serializeMessageSpecificPayload() {
+    protected void serializeMessageSpecificPayload() {
         serializeRequestName();
         serializeWantReply();
-        return getAlreadySerialized();
     }
 }

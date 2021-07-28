@@ -40,10 +40,9 @@ public class UserAuthBannerMessageSerializer extends MessageSerializer<UserAuthB
     }
 
     @Override
-    protected byte[] serializeMessageSpecificPayload() {
+    protected void serializeMessageSpecificPayload() {
         serializeMessage();
         serializeLanguageTag();
-        return getAlreadySerialized();
     }
 
 }

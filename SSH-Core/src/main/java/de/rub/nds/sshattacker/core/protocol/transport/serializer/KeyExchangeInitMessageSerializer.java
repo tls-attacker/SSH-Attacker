@@ -123,7 +123,7 @@ public class KeyExchangeInitMessageSerializer extends MessageSerializer<KeyExcha
     }
 
     @Override
-    public byte[] serializeMessageSpecificPayload() {
+    public void serializeMessageSpecificPayload() {
         serializeCookie();
         serializeKeyExchangeAlgorithms();
         serializeServerHostKeyAlgorithms();
@@ -137,6 +137,5 @@ public class KeyExchangeInitMessageSerializer extends MessageSerializer<KeyExcha
         serializeLanguagesServerToClient();
         serializeFirstKeyExchangePacketFollows();
         serializeReserved();
-        return getAlreadySerialized();
     }
 }

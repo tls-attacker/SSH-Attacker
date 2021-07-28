@@ -21,7 +21,7 @@ import org.apache.logging.log4j.Logger;
 
 public class BinaryPacketLayer {
 
-    private SshContext context;
+    private final SshContext context;
 
     private static final Logger LOGGER = LogManager.getLogger();
 

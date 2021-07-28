@@ -48,12 +48,11 @@ public class ChannelOpenMessageSerializer extends MessageSerializer<ChannelOpenM
     }
 
     @Override
-    protected byte[] serializeMessageSpecificPayload() {
+    protected void serializeMessageSpecificPayload() {
         serializeChannelType();
         serializeSenderChannel();
         serializeWindowSize();
         serializePacketSize();
-        return getAlreadySerialized();
     }
 
 }

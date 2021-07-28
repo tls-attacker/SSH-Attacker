@@ -73,6 +73,7 @@ public class ContextContainer {
      * Get SSH context with the given alias.
      *
      * @param alias
+     *            The alias of the context to retrieve.
      * @return the context with the given connection end alias
      * @throws ConfigurationException
      *             if there is no SSH context with the given alias

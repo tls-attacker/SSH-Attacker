@@ -90,14 +90,6 @@ public class PointFormatter {
         return stream.toByteArray();
     }
 
-    /**
-     * Tries to read the first N byte[] as a point of the curve of the form x|y. If the byte[] has enough bytes the base
-     * point of the named group is returned
-     *
-     * @param group
-     * @param pointBytes
-     * @return
-     */
     public static Point fromRawFormat(NamedGroup group, byte[] pointBytes) {
         EllipticCurve curve = CurveFactory.getCurve(group);
         int elementLength = ArrayConverter.bigIntegerToByteArray(curve.getModulus()).length;
@@ -109,7 +101,9 @@ public class PointFormatter {
         byte[] coordX = new byte[elementLength];
         byte[] coordY = new byte[elementLength];
         try {
+            // noinspection ResultOfMethodCallIgnored
             inputStream.read(coordX);
+            // noinspection ResultOfMethodCallIgnored
             inputStream.read(coordY);
         } catch (IOException ex) {
             LOGGER.warn("Could not read from byteArrayStream. Returning Basepoint", ex);
@@ -140,6 +134,7 @@ public class PointFormatter {
                         return curve.getBasePoint();
                     }
                     try {
+                        // noinspection ResultOfMethodCallIgnored
                         inputStream.read(coordX);
                     } catch (IOException ex) {
                         LOGGER.warn("Could not read from byteArrayStream. Returning Basepoint", ex);
@@ -160,7 +155,9 @@ public class PointFormatter {
 
                     byte[] coordY = new byte[elementLength];
                     try {
+                        // noinspection ResultOfMethodCallIgnored
                         inputStream.read(coordX);
+                        // noinspection ResultOfMethodCallIgnored
                         inputStream.read(coordY);
                     } catch (IOException ex) {
                         LOGGER.warn("Could not read from byteArrayStream. Returning Basepoint", ex);

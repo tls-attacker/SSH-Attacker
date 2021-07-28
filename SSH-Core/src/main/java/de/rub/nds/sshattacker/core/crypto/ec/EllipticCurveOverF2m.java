@@ -10,6 +10,7 @@
 package de.rub.nds.sshattacker.core.crypto.ec;
 
 import java.math.BigInteger;
+import java.util.Objects;
 import java.util.Random;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -95,7 +96,7 @@ public class EllipticCurveOverF2m extends EllipticCurve {
         }
         FieldElementF2m x = (FieldElementF2m) p.getFieldX();
         FieldElementF2m y = (FieldElementF2m) p.getFieldY();
-        if (x.getModulus() != this.getModulus() || y.getModulus() != this.getModulus()) {
+        if (!Objects.equals(x.getModulus(), this.getModulus()) || !Objects.equals(y.getModulus(), this.getModulus())) {
             return false;
         }
 
@@ -186,7 +187,7 @@ public class EllipticCurveOverF2m extends EllipticCurve {
             FieldElementF2m fieldXInverseSquare = (FieldElementF2m) fieldXInverse.mult(fieldXInverse);
             FieldElementF2m product = (FieldElementF2m) curveB.mult(fieldXInverseSquare);
             FieldElementF2m beta = (FieldElementF2m) fieldX.add(curveA).add(product);
-            FieldElementF2m z = (FieldElementF2m) solveQuadraticEquation(beta);
+            FieldElementF2m z = solveQuadraticEquation(beta);
             if (z == null) {
                 LOGGER.warn("Was unable to create point on curve - using basepoint instead");
                 return this.getBasePoint();

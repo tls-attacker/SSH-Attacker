@@ -45,14 +45,13 @@ public class UserAuthPasswordMessageSerializer extends UserAuthRequestMessageSer
     }
 
     @Override
-    protected byte[] serializeMessageSpecificPayload() {
+    protected void serializeMessageSpecificPayload() {
         super.serializeMessageSpecificPayload();
         serializeChangePassword();
         serializePassword();
         if (Converter.byteToBoolean(msg.getChangePassword().getValue())) {
             serializeNewPassword();
         }
-        return getAlreadySerialized();
     }
 
 }

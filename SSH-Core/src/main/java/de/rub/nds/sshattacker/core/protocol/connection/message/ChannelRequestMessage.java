@@ -25,7 +25,7 @@ public abstract class ChannelRequestMessage<T extends ChannelRequestMessage<T>> 
     private ModifiableString requestType;
     private ModifiableByte wantReply;
 
-    protected ChannelRequestMessage(ChannelRequestType requestType) {
+    protected ChannelRequestMessage(@SuppressWarnings("SameParameterValue") ChannelRequestType requestType) {
         super(MessageIDConstant.SSH_MSG_CHANNEL_REQUEST);
         setRequestType(requestType);
     }

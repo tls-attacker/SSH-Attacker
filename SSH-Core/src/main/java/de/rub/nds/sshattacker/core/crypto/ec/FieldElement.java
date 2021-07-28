@@ -116,10 +116,7 @@ public abstract class FieldElement implements Serializable {
         if (!Objects.equals(this.data, other.data)) {
             return false;
         }
-        if (!Objects.equals(this.modulus, other.modulus)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.modulus, other.modulus);
     }
 
     @Override

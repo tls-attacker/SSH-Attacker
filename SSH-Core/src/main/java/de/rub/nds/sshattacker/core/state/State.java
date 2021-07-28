@@ -303,7 +303,7 @@ public class State {
         }
     }
 
-    private void assertWorkflowTraceNotNull(String operation_name) {
+    private void assertWorkflowTraceNotNull(@SuppressWarnings("SameParameterValue") String operation_name) {
         if (workflowTrace != null) {
             return;
         }

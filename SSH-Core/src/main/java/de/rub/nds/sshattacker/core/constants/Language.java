@@ -14,7 +14,7 @@ public enum Language {
 
     private final String name;
 
-    Language(String name) {
+    Language(@SuppressWarnings("SameParameterValue") String name) {
         this.name = name;
     }
 

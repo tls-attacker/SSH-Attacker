@@ -24,8 +24,7 @@ public class UnimplementedMessageSerializer extends MessageSerializer<Unimplemen
     }
 
     @Override
-    protected byte[] serializeMessageSpecificPayload() {
+    protected void serializeMessageSpecificPayload() {
         serializeSequenceNumber();
-        return getAlreadySerialized();
     }
 }

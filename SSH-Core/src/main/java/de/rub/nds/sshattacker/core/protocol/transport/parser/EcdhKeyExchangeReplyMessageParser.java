@@ -12,7 +12,6 @@ package de.rub.nds.sshattacker.core.protocol.transport.parser;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.BinaryPacketConstants;
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
-import de.rub.nds.sshattacker.core.constants.PublicKeyAuthenticationAlgorithm;
 import de.rub.nds.sshattacker.core.protocol.common.MessageParser;
 import de.rub.nds.sshattacker.core.protocol.transport.message.EcdhKeyExchangeReplyMessage;
 import org.apache.logging.log4j.LogManager;

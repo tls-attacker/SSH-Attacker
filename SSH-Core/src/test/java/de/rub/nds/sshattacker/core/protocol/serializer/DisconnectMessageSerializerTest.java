@@ -10,7 +10,6 @@
 package de.rub.nds.sshattacker.core.protocol.serializer;
 
 import de.rub.nds.sshattacker.core.constants.DisconnectReason;
-import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
 import de.rub.nds.sshattacker.core.protocol.transport.message.DisconnectMessage;
 import de.rub.nds.sshattacker.core.protocol.parser.DisconnectMessageParserTest;
 import de.rub.nds.sshattacker.core.protocol.transport.serializer.DisconnectMessageSerializer;

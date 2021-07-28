@@ -19,7 +19,6 @@ import de.rub.nds.sshattacker.core.state.State;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -40,15 +39,7 @@ public class DefaultWorkflowExecutor extends WorkflowExecutor {
         if (config.getWorkflowExecutorShouldOpen()) {
             for (SshContext ctx : allSshContexts) {
                 AliasedConnection con = ctx.getConnection();
-                try {
-                    ctx.initTransportHandler();
-                } catch (IOException e) {
-                    LOGGER.error("Unable to initialize transportHandler: " + e + "\n"
-                            + Arrays.toString(e.getStackTrace()));
-                    LOGGER.error("Hostname: " + con.getHostname());
-                    LOGGER.error("Port: " + con.getPort());
-
-                }
+                ctx.initTransportHandler();
                 LOGGER.debug("Connection for " + ctx + " initiliazed");
             }
         }
@@ -70,7 +61,7 @@ public class DefaultWorkflowExecutor extends WorkflowExecutor {
             try {
                 action.execute(state);
             } catch (PreparationException | WorkflowExecutionException ex) {
-                throw new WorkflowExecutionException("Problem while executing Action:" + action.toString(), ex);
+                throw new WorkflowExecutionException("Problem while executing Action:" + action, ex);
             }
         }
 

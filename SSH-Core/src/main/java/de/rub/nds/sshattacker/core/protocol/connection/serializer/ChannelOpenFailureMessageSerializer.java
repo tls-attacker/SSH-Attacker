@@ -44,12 +44,11 @@ public class ChannelOpenFailureMessageSerializer extends ChannelMessageSerialize
     }
 
     @Override
-    protected byte[] serializeMessageSpecificPayload() {
+    protected void serializeMessageSpecificPayload() {
         super.serializeMessageSpecificPayload();
         serializeReasonCode();
         serializeReason();
         serializeLanguageTag();
-        return getAlreadySerialized();
     }
 
 }

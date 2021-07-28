@@ -117,6 +117,7 @@ public abstract class AliasedConnection extends Connection implements Aliasable 
         return false;
     }
 
+    @SuppressWarnings("SameReturnValue")
     public String getDefaultConnectionAlias() {
         return DEFAULT_CONNECTION_ALIAS;
     }

@@ -32,9 +32,8 @@ public class ChannelRequestExecMessageSerializer extends ChannelRequestMessageSe
     }
 
     @Override
-    protected byte[] serializeMessageSpecificPayload() {
+    protected void serializeMessageSpecificPayload() {
         super.serializeMessageSpecificPayload();
         serializeCommand();
-        return getAlreadySerialized();
     }
 }

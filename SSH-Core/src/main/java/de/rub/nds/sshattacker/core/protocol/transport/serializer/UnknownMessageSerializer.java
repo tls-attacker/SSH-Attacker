@@ -24,9 +24,8 @@ public class UnknownMessageSerializer extends MessageSerializer<UnknownMessage> 
     }
 
     @Override
-    protected byte[] serializeMessageSpecificPayload() {
+    protected void serializeMessageSpecificPayload() {
         LOGGER.debug("Payload: " + ArrayConverter.bytesToHexString(msg.getPayload()));
         appendBytes(msg.getPayload().getValue());
-        return getAlreadySerialized();
     }
 }
