@@ -46,7 +46,6 @@ public class EcdhKeyExchangeInitMessageSerializerTest {
     @MethodSource("provideTestVectors")
     public void testSerialize(byte[] expectedBytes, int providedPublicKeyLength, byte[] providedPublicKey) {
         EcdhKeyExchangeInitMessage msg = new EcdhKeyExchangeInitMessage();
-        msg.setMessageID(MessageIDConstant.SSH_MSG_KEX_ECDH_INIT.id);
         msg.setPublicKeyLength(providedPublicKeyLength);
         msg.setPublicKey(providedPublicKey);
         EcdhKeyExchangeInitMessageSerializer serializer = new EcdhKeyExchangeInitMessageSerializer(msg);

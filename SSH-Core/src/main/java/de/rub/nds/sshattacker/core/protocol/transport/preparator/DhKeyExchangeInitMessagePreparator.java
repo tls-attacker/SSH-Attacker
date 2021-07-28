@@ -32,8 +32,7 @@ public class DhKeyExchangeInitMessagePreparator extends Preparator<DhKeyExchange
         dhNamedExchangeHash.setClientDHPublicKey(keyExchange.getLocalKeyPair().getPublic());
         context.setExchangeHashInstance(dhNamedExchangeHash);
 
-        message.setMessageID(MessageIDConstant.SSH_MSG_KEXDH_INIT.id);
-        message.setPublicKeyLength(keyExchange.getLocalKeyPair().getPublic().getEncoded().length);
-        message.setPublicKey(keyExchange.getLocalKeyPair().getPublic().getY());
+        message.setMessageID(MessageIDConstant.SSH_MSG_KEXDH_INIT);
+        message.setPublicKey(keyExchange.getLocalKeyPair().getPublic().getY(), true);
     }
 }

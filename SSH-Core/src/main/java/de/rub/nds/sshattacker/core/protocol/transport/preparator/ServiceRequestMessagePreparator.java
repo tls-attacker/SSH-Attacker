@@ -22,8 +22,8 @@ public class ServiceRequestMessagePreparator extends Preparator<ServiceRequestMe
 
     @Override
     public void prepare() {
-        message.setMessageID(MessageIDConstant.SSH_MSG_SERVICE_REQUEST.id);
-        message.setServiceName(context.getConfig().getServiceName());
+        message.setMessageID(MessageIDConstant.SSH_MSG_SERVICE_REQUEST);
+        message.setServiceName(context.getConfig().getServiceName(), true);
     }
 
 }

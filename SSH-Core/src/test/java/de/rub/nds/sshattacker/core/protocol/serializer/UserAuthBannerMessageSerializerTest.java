@@ -45,9 +45,8 @@ public class UserAuthBannerMessageSerializerTest {
     @MethodSource("provideTestVectors")
     public void testSerialize(byte[] expectedBytes, String providedMessage, String providedLanguageTag) {
         UserAuthBannerMessage msg = new UserAuthBannerMessage();
-        msg.setMessageID(MessageIDConstant.SSH_MSG_USERAUTH_BANNER.id);
-        msg.setMessage(providedMessage);
-        msg.setLanguageTag(providedLanguageTag);
+        msg.setMessage(providedMessage, true);
+        msg.setLanguageTag(providedLanguageTag, true);
         UserAuthBannerMessageSerializer serializer = new UserAuthBannerMessageSerializer(msg);
 
         assertArrayEquals(expectedBytes, serializer.serialize());

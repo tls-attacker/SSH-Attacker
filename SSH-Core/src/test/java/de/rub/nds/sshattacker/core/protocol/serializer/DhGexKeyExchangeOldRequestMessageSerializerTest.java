@@ -45,7 +45,6 @@ public class DhGexKeyExchangeOldRequestMessageSerializerTest {
     @MethodSource("provideTestVectors")
     public void testSerialize(byte[] expectedBytes, int providedPreferredGroupSize) {
         DhGexKeyExchangeOldRequestMessage msg = new DhGexKeyExchangeOldRequestMessage();
-        msg.setMessageID(MessageIDConstant.SSH_MSG_KEX_DH_GEX_REQUEST_OLD.id);
         msg.setPreferredGroupSize(providedPreferredGroupSize);
         DhGexKeyExchangeOldRequestMessageSerializer serializer = new DhGexKeyExchangeOldRequestMessageSerializer(msg);
 

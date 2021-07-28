@@ -43,7 +43,6 @@ public class ChannelCloseMessageSerializerTest {
     @MethodSource("provideTestVectors")
     public void testSerialize(byte[] expectedBytes, int providedRecipientChannel) {
         ChannelCloseMessage msg = new ChannelCloseMessage();
-        msg.setMessageID(MessageIDConstant.SSH_MSG_CHANNEL_CLOSE.id);
         msg.setRecipientChannel(providedRecipientChannel);
         ChannelMessageSerializer<ChannelCloseMessage> serializer = new ChannelMessageSerializer<>(msg);
 

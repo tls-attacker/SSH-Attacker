@@ -23,24 +23,12 @@ public class EcdhKeyExchangeReplyMessagePreparator extends Preparator<EcdhKeyExc
 
     @Override
     public void prepare() {
-        message.setMessageID(MessageIDConstant.SSH_MSG_KEX_ECDH_REPLY.id);
+        message.setMessageID(MessageIDConstant.SSH_MSG_KEX_ECDH_REPLY);
 
-        message.setHostKeyLength(Integer.MAX_VALUE);
-        message.setHostKeyType("");
-        message.setHostKeyTypeLength(Integer.MAX_VALUE);
-        message.setHostKeyEcc(new byte[0]);
-        message.setHostKeyEccLength(Integer.MAX_VALUE);
-        message.setExponentLength(Integer.MAX_VALUE);
-        message.setExponent(BigInteger.ZERO);
-        message.setModulus(BigInteger.ZERO);
-        message.setModulusLength(Integer.MAX_VALUE);
-        message.setEphemeralPublicKey(new byte[0]);
-        message.setEphemeralPublicKeyLength(Integer.MAX_VALUE);
-        message.setEccCurveIdentifier("");
-        message.setEccCurveIdentifierLength(Integer.MAX_VALUE);
+        message.setHostKey(new byte[0], true);
+        message.setEphemeralPublicKey(new byte[0], true);
         // TODO implement signature calculation
-        message.setSignature(new byte[0]);
-        message.setSignatureLength(Integer.MAX_VALUE);
+        message.setSignature(new byte[0], true);
     }
 
 }

@@ -51,7 +51,6 @@ public class DhGexKeyExchangeRequestMessageSerializerTest {
     public void testSerialize(byte[] expectedBytes, int providedMinimalGroupSize, int providedPreferredGroupSize,
             int providedMaximalGroupSize) {
         DhGexKeyExchangeRequestMessage msg = new DhGexKeyExchangeRequestMessage();
-        msg.setMessageID(MessageIDConstant.SSH_MSG_KEX_DH_GEX_REQUEST.id);
         msg.setMinimalGroupSize(providedMinimalGroupSize);
         msg.setPreferredGroupSize(providedPreferredGroupSize);
         msg.setMaximalGroupSize(providedMaximalGroupSize);

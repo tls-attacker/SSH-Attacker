@@ -10,10 +10,13 @@
 package de.rub.nds.sshattacker.core.protocol.transport.serializer;
 
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
+import de.rub.nds.sshattacker.core.constants.DisconnectReason;
 import de.rub.nds.sshattacker.core.protocol.common.MessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.transport.message.DisconnectMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.nio.charset.StandardCharsets;
 
 public class DisconnectMessageSerializer extends MessageSerializer<DisconnectMessage> {
 
@@ -24,23 +27,23 @@ public class DisconnectMessageSerializer extends MessageSerializer<DisconnectMes
     }
 
     private void serializeReasonCode() {
-        LOGGER.debug("ReasonCode: " + msg.getReasonCode().getValue());
+        LOGGER.debug("Reason: " + DisconnectReason.fromId(msg.getReasonCode().getValue()) + " (Code: "
+                + msg.getReasonCode().getValue() + ")");
         appendInt(msg.getReasonCode().getValue(), DataFormatConstants.INT32_SIZE);
     }
 
     private void serializeDescription() {
-        int length = msg.getDescription().getValue().length();
-        LOGGER.debug("DescriptionLength: " + length);
-        appendInt(length, DataFormatConstants.STRING_SIZE_LENGTH);
+        LOGGER.debug("Description length: " + msg.getDescriptionLength().getValue());
+        appendInt(msg.getDescriptionLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
         LOGGER.debug("Description: " + msg.getDescription().getValue());
-        appendString(msg.getDescription().getValue());
+        appendString(msg.getDescription().getValue(), StandardCharsets.UTF_8);
     }
 
     private void serializeLanguageTag() {
-        int length = msg.getLanguageTag().getValue().length();
-        appendInt(length, DataFormatConstants.STRING_SIZE_LENGTH);
-        LOGGER.debug("LanguageTag: " + msg.getLanguageTag().getValue());
-        appendString(msg.getLanguageTag().getValue());
+        LOGGER.debug("Language tag length: " + msg.getLanguageTagLength().getValue());
+        appendInt(msg.getLanguageTagLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
+        LOGGER.debug("Language tag: " + msg.getLanguageTag().getValue());
+        appendString(msg.getLanguageTag().getValue(), StandardCharsets.US_ASCII);
     }
 
     @Override
@@ -50,5 +53,4 @@ public class DisconnectMessageSerializer extends MessageSerializer<DisconnectMes
         serializeLanguageTag();
         return getAlreadySerialized();
     }
-
 }

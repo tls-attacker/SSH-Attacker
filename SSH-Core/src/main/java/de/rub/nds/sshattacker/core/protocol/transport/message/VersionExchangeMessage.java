@@ -25,19 +25,13 @@ import de.rub.nds.sshattacker.core.protocol.transport.handler.VersionExchangeMes
 import de.rub.nds.sshattacker.core.state.SshContext;
 import javax.xml.bind.annotation.XmlRootElement;
 
-@XmlRootElement
 public class VersionExchangeMessage extends Message<VersionExchangeMessage> {
 
-    /**
-     * version identifier + optional comment
-     */
-    @ModifiableVariableProperty
     private ModifiableString version;
-
-    @ModifiableVariableProperty
     private ModifiableString comment;
 
     public VersionExchangeMessage() {
+        super();
     }
 
     public ModifiableString getVersion() {
@@ -56,6 +50,10 @@ public class VersionExchangeMessage extends Message<VersionExchangeMessage> {
         return comment;
     }
 
+    public void setComment(ModifiableString comment) {
+        this.comment = comment;
+    }
+
     public void setComment(String comment) {
         this.comment = ModifiableVariableFactory.safelySetValue(this.comment, comment);
     }
@@ -64,15 +62,6 @@ public class VersionExchangeMessage extends Message<VersionExchangeMessage> {
         if (this.comment.getValue().isEmpty())
             return this.version.getValue();
         return this.version.getValue() + CharConstants.VERSION_COMMENT_SEPARATOR + this.comment.getValue();
-    }
-
-    public void setComment(ModifiableString comment) {
-        this.comment = comment;
-    }
-
-    @Override
-    public String toCompactString() {
-        return "VersionExchangeMessage";
     }
 
     @Override

@@ -45,9 +45,8 @@ public class ChannelDataMessageSerializerTest {
     @MethodSource("provideTestVectors")
     public void testSerialize(byte[] expectedBytes, int providedRecipientChannel, byte[] providedPayload) {
         ChannelDataMessage msg = new ChannelDataMessage();
-        msg.setMessageID(MessageIDConstant.SSH_MSG_CHANNEL_DATA.id);
         msg.setRecipientChannel(providedRecipientChannel);
-        msg.setData(providedPayload);
+        msg.setData(providedPayload, true);
         ChannelDataMessageSerializer serializer = new ChannelDataMessageSerializer(msg);
 
         assertArrayEquals(expectedBytes, serializer.serialize());

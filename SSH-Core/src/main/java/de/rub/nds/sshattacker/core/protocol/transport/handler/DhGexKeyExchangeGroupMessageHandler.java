@@ -22,8 +22,6 @@ import org.apache.logging.log4j.Logger;
 
 public class DhGexKeyExchangeGroupMessageHandler extends Handler<DhGexKeyExchangeGroupMessage> {
 
-    private static final Logger LOGGER = LogManager.getLogger();
-
     public DhGexKeyExchangeGroupMessageHandler(SshContext context) {
         super(context);
     }

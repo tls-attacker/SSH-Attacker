@@ -12,6 +12,7 @@ package de.rub.nds.sshattacker.core.protocol.transport.message;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.biginteger.ModifiableBigInteger;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
+import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
 import de.rub.nds.sshattacker.core.exceptions.NotImplementedException;
 import de.rub.nds.sshattacker.core.protocol.common.Message;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.DhGexKeyExchangeGroupMessageHandler;
@@ -28,6 +29,10 @@ public class DhGexKeyExchangeGroupMessage extends Message<DhGexKeyExchangeGroupM
     private ModifiableBigInteger groupModulus;
     private ModifiableInteger groupGeneratorLength;
     private ModifiableBigInteger groupGenerator;
+
+    public DhGexKeyExchangeGroupMessage() {
+        super(MessageIDConstant.SSH_MSG_KEX_DH_GEX_GROUP);
+    }
 
     public ModifiableInteger getGroupModulusLength() {
         return groupModulusLength;
@@ -46,10 +51,24 @@ public class DhGexKeyExchangeGroupMessage extends Message<DhGexKeyExchangeGroupM
     }
 
     public void setGroupModulus(ModifiableBigInteger groupModulus) {
-        this.groupModulus = groupModulus;
+        setGroupModulus(groupModulus, false);
     }
 
     public void setGroupModulus(BigInteger groupModulus) {
+        setGroupModulus(groupModulus, false);
+    }
+
+    public void setGroupModulus(ModifiableBigInteger groupModulus, boolean adjustLengthField) {
+        if (adjustLengthField) {
+            setGroupModulusLength(groupModulus.getValue().toByteArray().length);
+        }
+        this.groupModulus = groupModulus;
+    }
+
+    public void setGroupModulus(BigInteger groupModulus, boolean adjustLengthField) {
+        if (adjustLengthField) {
+            setGroupModulusLength(groupModulus.toByteArray().length);
+        }
         this.groupModulus = ModifiableVariableFactory.safelySetValue(this.groupModulus, groupModulus);
     }
 
@@ -71,10 +90,24 @@ public class DhGexKeyExchangeGroupMessage extends Message<DhGexKeyExchangeGroupM
     }
 
     public void setGroupGenerator(ModifiableBigInteger groupGenerator) {
-        this.groupGenerator = groupGenerator;
+        setGroupGenerator(groupGenerator, false);
     }
 
     public void setGroupGenerator(BigInteger groupGenerator) {
+        setGroupGenerator(groupGenerator, false);
+    }
+
+    public void setGroupGenerator(ModifiableBigInteger groupGenerator, boolean adjustLengthField) {
+        if (adjustLengthField) {
+            setGroupGeneratorLength(groupGenerator.getValue().toByteArray().length);
+        }
+        this.groupGenerator = groupGenerator;
+    }
+
+    public void setGroupGenerator(BigInteger groupGenerator, boolean adjustLengthField) {
+        if (adjustLengthField) {
+            setGroupGeneratorLength(groupGenerator.toByteArray().length);
+        }
         this.groupGenerator = ModifiableVariableFactory.safelySetValue(this.groupGenerator, groupGenerator);
     }
 
@@ -93,10 +126,5 @@ public class DhGexKeyExchangeGroupMessage extends Message<DhGexKeyExchangeGroupM
     public Preparator<DhGexKeyExchangeGroupMessage> getPreparator(SshContext context) {
         // TODO: Implement preparator for DhGexKeyExchangeGroupMessage
         throw new NotImplementedException("DhGexKeyExchangeGroupMessage::getPreparator()");
-    }
-
-    @Override
-    public String toCompactString() {
-        return "DHGexKeyExchangeGroupMessage";
     }
 }

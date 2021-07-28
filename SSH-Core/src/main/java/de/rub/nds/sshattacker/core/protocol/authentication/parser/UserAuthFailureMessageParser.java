@@ -28,8 +28,9 @@ public class UserAuthFailureMessageParser extends MessageParser<UserAuthFailureM
 
     private void parsePossibleAuthenticationMethods(UserAuthFailureMessage msg) {
         msg.setPossibleAuthenticationMethodsLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-        msg.setPossibleAuthenticationMethods(parseByteString(msg.getPossibleAuthenticationMethodsLength().getValue(),
-                StandardCharsets.US_ASCII), false);
+        msg.setPossibleAuthenticationMethods(
+                parseByteString(msg.getPossibleAuthenticationMethodsLength().getValue(), StandardCharsets.US_ASCII),
+                false);
     }
 
     private void parsePartialSuccess(UserAuthFailureMessage msg) {

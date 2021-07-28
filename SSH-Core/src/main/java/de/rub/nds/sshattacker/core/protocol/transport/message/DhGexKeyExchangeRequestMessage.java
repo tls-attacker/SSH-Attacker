@@ -11,6 +11,7 @@ package de.rub.nds.sshattacker.core.protocol.transport.message;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
+import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
 import de.rub.nds.sshattacker.core.exceptions.NotImplementedException;
 import de.rub.nds.sshattacker.core.protocol.common.Handler;
 import de.rub.nds.sshattacker.core.protocol.common.Message;
@@ -25,6 +26,10 @@ public class DhGexKeyExchangeRequestMessage extends Message<DhGexKeyExchangeRequ
     private ModifiableInteger minimalGroupSize;
     private ModifiableInteger preferredGroupSize;
     private ModifiableInteger maximalGroupSize;
+
+    public DhGexKeyExchangeRequestMessage() {
+        super(MessageIDConstant.SSH_MSG_KEX_DH_GEX_REQUEST);
+    }
 
     public ModifiableInteger getMinimalGroupSize() {
         return minimalGroupSize;
@@ -76,10 +81,5 @@ public class DhGexKeyExchangeRequestMessage extends Message<DhGexKeyExchangeRequ
     @Override
     public Preparator<DhGexKeyExchangeRequestMessage> getPreparator(SshContext context) {
         return new DhGexKeyExchangeRequestMessagePreparator(context, this);
-    }
-
-    @Override
-    public String toCompactString() {
-        return "DHGexKeyExchangeRequestMessage";
     }
 }

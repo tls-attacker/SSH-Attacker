@@ -23,5 +23,4 @@ public class NewKeysMessageHandler extends Handler<NewKeysMessage> {
     public void handle(NewKeysMessage msg) {
         // TODO: Handle NewKeysMessage
     }
-
 }

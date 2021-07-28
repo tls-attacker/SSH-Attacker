@@ -23,5 +23,4 @@ public class ServiceAcceptMessageHandler extends Handler<ServiceAcceptMessage> {
     public void handle(ServiceAcceptMessage msg) {
         // TODO: Handle ServiceAcceptMessage
     }
-
 }

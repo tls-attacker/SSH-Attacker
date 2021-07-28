@@ -24,35 +24,30 @@ public class VersionExchangeMessageParser extends Parser<VersionExchangeMessage>
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public VersionExchangeMessageParser(int startposition, byte[] array) {
-        super(startposition, array);
+    public VersionExchangeMessageParser(int startPosition, byte[] array) {
+        super(startPosition, array);
     }
 
     private void parseVersion(VersionExchangeMessage msg) {
         // parse till CR NL (and remove them)
         String result = this.parseStringTill(new byte[] { CharConstants.CARRIAGE_RETURN, CharConstants.NEWLINE })
                 .replace("\r\n", "");
-        if (result.contains(String.valueOf(CharConstants.VERSION_COMMENT_SEPARATOR))) {
-            // contains a comment
-            String[] parts = result.split(String.valueOf(CharConstants.VERSION_COMMENT_SEPARATOR), 2);
-            msg.setVersion(parts[0]);
-            LOGGER.debug("Version: " + parts[0]);
-            if (parts.length >= 2) {
-                msg.setComment(parts[1]);
-                LOGGER.debug("Comment: " + parts[1]);
-            }
+        String[] parts = result.split(String.valueOf(CharConstants.VERSION_COMMENT_SEPARATOR), 2);
+        msg.setVersion(parts[0]);
+        LOGGER.debug("Version: " + parts[0]);
+        if (parts.length == 2) {
+            msg.setComment(parts[1]);
+            LOGGER.debug("Comment: " + parts[1]);
         } else {
-            msg.setVersion(result);
-            LOGGER.debug("Version: " + result);
             msg.setComment("");
-            LOGGER.debug("Comment: null");
+            LOGGER.debug("Comment: [none]");
         }
     }
 
     @Override
     public VersionExchangeMessage parse() {
         VersionExchangeMessage msg = new VersionExchangeMessage();
-        this.parseVersion(msg);
+        parseVersion(msg);
         return msg;
     }
 }

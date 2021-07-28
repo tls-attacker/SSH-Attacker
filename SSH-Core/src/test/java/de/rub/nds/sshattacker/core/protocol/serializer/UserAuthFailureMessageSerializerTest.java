@@ -45,7 +45,6 @@ public class UserAuthFailureMessageSerializerTest {
     @MethodSource("provideTestVectors")
     public void testSerialize(byte[] expectedBytes, String providedAuthenticationMethods, byte providedPartialSuccess) {
         UserAuthFailureMessage msg = new UserAuthFailureMessage();
-        msg.setMessageID(MessageIDConstant.SSH_MSG_USERAUTH_FAILURE.id);
         msg.setPossibleAuthenticationMethods(providedAuthenticationMethods);
         msg.setPartialSuccess(providedPartialSuccess);
         UserAuthFailureMessageSerializer serializer = new UserAuthFailureMessageSerializer(msg);

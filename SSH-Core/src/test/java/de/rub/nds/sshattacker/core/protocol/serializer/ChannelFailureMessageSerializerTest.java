@@ -43,7 +43,6 @@ public class ChannelFailureMessageSerializerTest {
     @MethodSource("provideTestVectors")
     public void testSerialize(byte[] expectedBytes, int providedRecipientChannel) {
         ChannelFailureMessage msg = new ChannelFailureMessage();
-        msg.setMessageID(MessageIDConstant.SSH_MSG_CHANNEL_FAILURE.id);
         msg.setRecipientChannel(providedRecipientChannel);
         ChannelMessageSerializer<ChannelFailureMessage> serializer = new ChannelMessageSerializer<>(msg);
 

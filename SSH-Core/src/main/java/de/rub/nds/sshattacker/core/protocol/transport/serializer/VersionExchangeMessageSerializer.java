@@ -15,6 +15,8 @@ import de.rub.nds.sshattacker.core.protocol.transport.message.VersionExchangeMes
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.nio.charset.StandardCharsets;
+
 public class VersionExchangeMessageSerializer extends Serializer<VersionExchangeMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
@@ -26,21 +28,21 @@ public class VersionExchangeMessageSerializer extends Serializer<VersionExchange
     }
 
     private void serializeVersion() {
-        if (msg.getVersion().getValue().equals("")) {
-            LOGGER.debug("Version: null");
+        if (msg.getVersion().getValue().isEmpty()) {
+            LOGGER.debug("Version: [none]");
         } else {
             LOGGER.debug("Version: " + msg.getVersion().getValue());
-            appendString(msg.getVersion().getValue());
+            appendString(msg.getVersion().getValue(), StandardCharsets.US_ASCII);
         }
     }
 
     private void serializeComment() {
-        if (msg.getComment().getValue().equals("")) {
-            LOGGER.debug("Comment: null");
+        if (msg.getComment().getValue().isEmpty()) {
+            LOGGER.debug("Comment: [none]");
         } else {
             LOGGER.debug("Comment: " + msg.getComment().getValue());
-            appendString(String.valueOf(CharConstants.VERSION_COMMENT_SEPARATOR));
-            appendString(msg.getComment().getValue());
+            appendString(String.valueOf(CharConstants.VERSION_COMMENT_SEPARATOR), StandardCharsets.US_ASCII);
+            appendString(msg.getComment().getValue(), StandardCharsets.US_ASCII);
         }
     }
 

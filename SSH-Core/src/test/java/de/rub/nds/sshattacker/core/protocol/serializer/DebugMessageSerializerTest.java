@@ -45,13 +45,12 @@ public class DebugMessageSerializerTest {
      */
     @ParameterizedTest
     @MethodSource("provideTestVectors")
-    public void testSerialize(byte[] expectedBytes, boolean providedAlwaysDisplay, String providedMessage,
+    public void testSerialize(byte[] expectedBytes, byte providedAlwaysDisplay, String providedMessage,
             String providedLanguageTag) {
         DebugMessage msg = new DebugMessage();
-        msg.setMessageID(MessageIDConstant.SSH_MSG_DEBUG.id);
         msg.setAlwaysDisplay(providedAlwaysDisplay);
-        msg.setMessage(providedMessage);
-        msg.setLanguageTag(providedLanguageTag);
+        msg.setMessage(providedMessage, true);
+        msg.setLanguageTag(providedLanguageTag, true);
         DebugMessageSerializer serializer = new DebugMessageSerializer(msg);
 
         assertArrayEquals(expectedBytes, serializer.serialize());

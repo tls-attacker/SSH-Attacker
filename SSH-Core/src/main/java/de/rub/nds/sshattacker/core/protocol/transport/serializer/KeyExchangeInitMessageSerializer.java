@@ -9,21 +9,21 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.serializer;
 
-import de.rub.nds.sshattacker.core.constants.BinaryPacketConstants;
+import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.common.MessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.transport.message.KeyExchangeInitMessage;
+import de.rub.nds.sshattacker.core.util.Converter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.nio.charset.StandardCharsets;
 
 public class KeyExchangeInitMessageSerializer extends MessageSerializer<KeyExchangeInitMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private final KeyExchangeInitMessage msg;
-
     public KeyExchangeInitMessageSerializer(KeyExchangeInitMessage msg) {
         super(msg);
-        this.msg = msg;
     }
 
     private void serializeCookie() {
@@ -31,146 +31,109 @@ public class KeyExchangeInitMessageSerializer extends MessageSerializer<KeyExcha
         appendBytes(msg.getCookie().getValue());
     }
 
-    private void serializeKeyExchangeAlgorithmsLength() {
-        LOGGER.debug("KeyExchangeAlgorithmsLength: " + msg.getKeyExchangeAlgorithmsLength().getValue());
-        appendInt(msg.getKeyExchangeAlgorithmsLength().getValue(), BinaryPacketConstants.LENGTH_FIELD_LENGTH);
-    }
-
     private void serializeKeyExchangeAlgorithms() {
-        LOGGER.debug("KeyExchangeAlgorithms: " + msg.getKeyExchangeAlgorithms().getValue());
-        appendString(msg.getKeyExchangeAlgorithms().getValue());
-    }
-
-    private void serializeServerHostKeyAlgorithmsLength() {
-        LOGGER.debug("ServerHostKeyAlgorithmsLength: " + msg.getServerHostKeyAlgorithmsLength().getValue());
-        appendInt(msg.getServerHostKeyAlgorithmsLength().getValue(), BinaryPacketConstants.LENGTH_FIELD_LENGTH);
+        LOGGER.debug("Key exchange algorithms: " + msg.getKeyExchangeAlgorithmsLength().getValue());
+        appendInt(msg.getKeyExchangeAlgorithmsLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
+        LOGGER.debug("Key exchange algorithms: " + msg.getKeyExchangeAlgorithms().getValue());
+        appendString(msg.getKeyExchangeAlgorithms().getValue(), StandardCharsets.US_ASCII);
     }
 
     private void serializeServerHostKeyAlgorithms() {
-        LOGGER.debug("ServerHostKeyAlgorithms: " + msg.getServerHostKeyAlgorithms().getValue());
-        appendString(msg.getServerHostKeyAlgorithms().getValue());
-    }
-
-    private void serializeEncryptionAlgorithmsClientToServerLength() {
-        LOGGER.debug("EncryptionAlgorithmsClientToServerLength"
-                + msg.getEncryptionAlgorithmsClientToServerLength().getValue());
-        appendInt(msg.getEncryptionAlgorithmsClientToServerLength().getValue(),
-                BinaryPacketConstants.LENGTH_FIELD_LENGTH);
+        LOGGER.debug("Server host key algorithms: " + msg.getServerHostKeyAlgorithmsLength().getValue());
+        appendInt(msg.getServerHostKeyAlgorithmsLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
+        LOGGER.debug("Server host key algorithms: " + msg.getServerHostKeyAlgorithms().getValue());
+        appendString(msg.getServerHostKeyAlgorithms().getValue(), StandardCharsets.US_ASCII);
     }
 
     private void serializeEncryptionAlgorithmsClientToServer() {
-        LOGGER.debug("EncryptionAlgorithmsClientToServer: " + msg.getEncryptionAlgorithmsClientToServer().getValue());
-        appendString(msg.getEncryptionAlgorithmsClientToServer().getValue());
-    }
-
-    private void serializeEncryptionAlgorithmsServerToClientLength() {
-        LOGGER.debug("EncryptionAlgorithmsServerToClientLength: "
-                + msg.getEncryptionAlgorithmsServerToClientLength().getValue());
-        appendInt(msg.getEncryptionAlgorithmsServerToClientLength().getValue(),
-                BinaryPacketConstants.LENGTH_FIELD_LENGTH);
+        LOGGER.debug("Encryption algorithms length (client to server): "
+                + msg.getEncryptionAlgorithmsClientToServerLength().getValue());
+        appendInt(msg.getEncryptionAlgorithmsClientToServerLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
+        LOGGER.debug("Encryption algorithms (client to server): "
+                + msg.getEncryptionAlgorithmsClientToServer().getValue());
+        appendString(msg.getEncryptionAlgorithmsClientToServer().getValue(), StandardCharsets.US_ASCII);
     }
 
     private void serializeEncryptionAlgorithmsServerToClient() {
-        LOGGER.debug("EncryptionAlgorithmsServerToClient: " + msg.getEncryptionAlgorithmsServerToClient().getValue());
-        appendString(msg.getEncryptionAlgorithmsServerToClient().getValue());
-    }
-
-    private void serializeMacAlgorithmsClientToServerLength() {
-        LOGGER.debug("MacAlgorithmsClientToServerLength: " + msg.getMacAlgorithmsClientToServerLength().getValue());
-        appendInt(msg.getMacAlgorithmsClientToServerLength().getValue(), BinaryPacketConstants.LENGTH_FIELD_LENGTH);
+        LOGGER.debug("Encryption algorithms length (server to client): "
+                + msg.getEncryptionAlgorithmsServerToClientLength().getValue());
+        appendInt(msg.getEncryptionAlgorithmsServerToClientLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
+        LOGGER.debug("Encryption algorithms (server to client): "
+                + msg.getEncryptionAlgorithmsServerToClient().getValue());
+        appendString(msg.getEncryptionAlgorithmsServerToClient().getValue(), StandardCharsets.US_ASCII);
     }
 
     private void serializeMacAlgorithmsClientToServer() {
-        LOGGER.debug("MacAlgorithmsClientToServer: " + msg.getMacAlgorithmsClientToServer().getValue());
-        appendString(msg.getMacAlgorithmsClientToServer().getValue());
-    }
-
-    private void serializeMacAlgorithmsServerToClientLength() {
-        LOGGER.debug("MacAlgorithmsServerToClientLength: " + msg.getMacAlgorithmsServerToClientLength().getValue());
-        appendInt(msg.getMacAlgorithmsServerToClientLength().getValue(), BinaryPacketConstants.LENGTH_FIELD_LENGTH);
+        LOGGER.debug("MAC algorithms length (client to server): "
+                + msg.getMacAlgorithmsClientToServerLength().getValue());
+        appendInt(msg.getMacAlgorithmsClientToServerLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
+        LOGGER.debug("MAC algorithms (client to server): " + msg.getMacAlgorithmsClientToServer().getValue());
+        appendString(msg.getMacAlgorithmsClientToServer().getValue(), StandardCharsets.US_ASCII);
     }
 
     private void serializeMacAlgorithmsServerToClient() {
-        LOGGER.debug("MacAlgorithmsServerToClient: " + msg.getMacAlgorithmsServerToClient().getValue());
-        appendString(msg.getMacAlgorithmsServerToClient().getValue());
-    }
-
-    private void serializeCompressionAlgorithmsClientToServerLength() {
-        LOGGER.debug("CompressionAlgorithmsClientToServerLength: "
-                + msg.getCompressionAlgorithmsClientToServerLength().getValue());
-        appendInt(msg.getCompressionAlgorithmsClientToServerLength().getValue(),
-                BinaryPacketConstants.LENGTH_FIELD_LENGTH);
+        LOGGER.debug("MAC algorithms length (server to client): "
+                + msg.getMacAlgorithmsServerToClientLength().getValue());
+        appendInt(msg.getMacAlgorithmsServerToClientLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
+        LOGGER.debug("MAC algorithms (server to client): " + msg.getMacAlgorithmsServerToClient().getValue());
+        appendString(msg.getMacAlgorithmsServerToClient().getValue(), StandardCharsets.US_ASCII);
     }
 
     private void serializeCompressionAlgorithmsClientToServer() {
-        LOGGER.debug("CompressionAlgorithmsClientToServer: " + msg.getCompressionAlgorithmsClientToServer().getValue());
-        appendString(msg.getCompressionAlgorithmsClientToServer().getValue());
-    }
-
-    private void serializeCompressionAlgorithmsServerToClientLength() {
-        LOGGER.debug("CompressionAlgorithmsServerToClientLength: "
-                + msg.getCompressionAlgorithmsServerToClientLength().getValue());
-        appendInt(msg.getCompressionAlgorithmsServerToClientLength().getValue(),
-                BinaryPacketConstants.LENGTH_FIELD_LENGTH);
+        LOGGER.debug("Compression algorithms length (client to server): "
+                + msg.getCompressionAlgorithmsClientToServerLength().getValue());
+        appendInt(msg.getCompressionAlgorithmsClientToServerLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
+        LOGGER.debug("Compression algorithms (client to server): "
+                + msg.getCompressionAlgorithmsClientToServer().getValue());
+        appendString(msg.getCompressionAlgorithmsClientToServer().getValue(), StandardCharsets.US_ASCII);
     }
 
     private void serializeCompressionAlgorithmsServerToClient() {
-        LOGGER.debug("CompressionAlgorithmsServerToClient: " + msg.getCompressionAlgorithmsServerToClient().getValue());
-        appendString(msg.getCompressionAlgorithmsServerToClient().getValue());
-    }
-
-    private void serializeLanguagesClientToServerLength() {
-        LOGGER.debug("LanguagesClientToServerLength: " + msg.getLanguagesClientToServerLength().getValue());
-        appendInt(msg.getLanguagesClientToServerLength().getValue(), BinaryPacketConstants.LENGTH_FIELD_LENGTH);
+        LOGGER.debug("Compression algorithms length (server to client): "
+                + msg.getCompressionAlgorithmsServerToClientLength().getValue());
+        appendInt(msg.getCompressionAlgorithmsServerToClientLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
+        LOGGER.debug("Compression algorithms (server to client): "
+                + msg.getCompressionAlgorithmsServerToClient().getValue());
+        appendString(msg.getCompressionAlgorithmsServerToClient().getValue(), StandardCharsets.US_ASCII);
     }
 
     private void serializeLanguagesClientToServer() {
-        LOGGER.debug("LanguagesClientToServer: " + msg.getLanguagesClientToServer().getValue());
-        appendString(msg.getLanguagesClientToServer().getValue());
-    }
-
-    private void serializeLanguagesServerToClientLength() {
-        LOGGER.debug("LanguagesServerToClientLength: " + msg.getLanguagesServerToClientLength().getValue());
-        appendInt(msg.getLanguagesServerToClientLength().getValue(), BinaryPacketConstants.LENGTH_FIELD_LENGTH);
+        LOGGER.debug("Languages length (client to server): " + msg.getLanguagesClientToServerLength().getValue());
+        appendInt(msg.getLanguagesClientToServerLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
+        LOGGER.debug("Languages (client to server): " + msg.getLanguagesClientToServer().getValue());
+        appendString(msg.getLanguagesClientToServer().getValue(), StandardCharsets.US_ASCII);
     }
 
     private void serializeLanguagesServerToClient() {
-        LOGGER.debug("LanguagesServerToClient: " + msg.getLanguagesServerToClient().getValue());
-        appendString(msg.getLanguagesServerToClient().getValue());
+        LOGGER.debug("Languages length (server to client): " + msg.getLanguagesServerToClientLength().getValue());
+        appendInt(msg.getLanguagesServerToClientLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
+        LOGGER.debug("Languages (server to client): " + msg.getLanguagesServerToClient().getValue());
+        appendString(msg.getLanguagesServerToClient().getValue(), StandardCharsets.US_ASCII);
     }
 
     private void serializeFirstKeyExchangePacketFollows() {
-        LOGGER.debug("FirstKeyExchangePacketFollows: " + msg.getFirstKeyExchangePacketFollows().getValue());
-        appendByte((byte) (msg.getFirstKeyExchangePacketFollows().getValue() ? 0x01 : 0x00));
+        LOGGER.debug("First key exchange packet follows: "
+                + Converter.byteToBoolean(msg.getFirstKeyExchangePacketFollows().getValue()));
+        appendByte(msg.getFirstKeyExchangePacketFollows().getValue());
     }
 
     private void serializeReserved() {
         LOGGER.debug("Reserved: " + msg.getReserved().getValue());
-        appendInt(msg.getReserved().getValue(), BinaryPacketConstants.LENGTH_FIELD_LENGTH);
+        appendInt(msg.getReserved().getValue(), DataFormatConstants.INT32_SIZE);
     }
 
     @Override
     public byte[] serializeMessageSpecificPayload() {
         serializeCookie();
-        serializeKeyExchangeAlgorithmsLength();
         serializeKeyExchangeAlgorithms();
-        serializeServerHostKeyAlgorithmsLength();
         serializeServerHostKeyAlgorithms();
-        serializeEncryptionAlgorithmsClientToServerLength();
         serializeEncryptionAlgorithmsClientToServer();
-        serializeEncryptionAlgorithmsServerToClientLength();
         serializeEncryptionAlgorithmsServerToClient();
-        serializeMacAlgorithmsClientToServerLength();
         serializeMacAlgorithmsClientToServer();
-        serializeMacAlgorithmsServerToClientLength();
         serializeMacAlgorithmsServerToClient();
-        serializeCompressionAlgorithmsClientToServerLength();
         serializeCompressionAlgorithmsClientToServer();
-        serializeCompressionAlgorithmsServerToClientLength();
         serializeCompressionAlgorithmsServerToClient();
-        serializeLanguagesClientToServerLength();
         serializeLanguagesClientToServer();
-        serializeLanguagesServerToClientLength();
         serializeLanguagesServerToClient();
         serializeFirstKeyExchangePacketFollows();
         serializeReserved();

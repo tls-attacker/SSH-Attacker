@@ -19,11 +19,8 @@ public class DhGexKeyExchangeOldRequestMessageSerializer extends MessageSerializ
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private final DhGexKeyExchangeOldRequestMessage msg;
-
     public DhGexKeyExchangeOldRequestMessageSerializer(DhGexKeyExchangeOldRequestMessage msg) {
         super(msg);
-        this.msg = msg;
     }
 
     private void serializePreferredGroupSize() {

@@ -23,7 +23,6 @@ public class NewKeysMessageSerializerTest {
     @Test
     public void testSerialize() {
         NewKeysMessage msg = new NewKeysMessage();
-        msg.setMessageID(MessageIDConstant.SSH_MSG_NEWKEYS.id);
         assertArrayEquals(new byte[] { 21 }, new NewKeysMessageSerializer(msg).serialize());
     }
 }

@@ -9,32 +9,36 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.parser;
 
-import de.rub.nds.sshattacker.core.constants.BinaryPacketConstants;
+import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.common.MessageParser;
 import de.rub.nds.sshattacker.core.protocol.transport.message.ServiceRequestMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.nio.charset.StandardCharsets;
+
 public class ServiceRequestMessageParser extends MessageParser<ServiceRequestMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public ServiceRequestMessageParser(int startposition, byte[] array) {
-        super(startposition, array);
+    public ServiceRequestMessageParser(int startPosition, byte[] array) {
+        super(startPosition, array);
+    }
+
+    private void parseServiceName(ServiceRequestMessage msg) {
+        msg.setServiceNameLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
+        LOGGER.debug("Service name length: " + msg.getServiceNameLength().getValue());
+        msg.setServiceName(parseByteString(msg.getServiceNameLength().getValue(), StandardCharsets.US_ASCII));
+        LOGGER.debug("Service name: " + msg.getServiceName().getValue());
+    }
+
+    @Override
+    protected void parseMessageSpecificPayload(ServiceRequestMessage msg) {
+        parseServiceName(msg);
     }
 
     @Override
     public ServiceRequestMessage createMessage() {
         return new ServiceRequestMessage();
     }
-
-    @Override
-    protected void parseMessageSpecificPayload(ServiceRequestMessage msg) {
-        int length = parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH);
-        LOGGER.debug("serviceName Length: " + length);
-        String serviceName = parseByteString(length);
-        LOGGER.debug("serviceName: " + serviceName);
-        msg.setServiceName(serviceName);
-    }
-
 }

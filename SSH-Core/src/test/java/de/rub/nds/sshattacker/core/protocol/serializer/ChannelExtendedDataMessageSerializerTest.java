@@ -49,10 +49,9 @@ public class ChannelExtendedDataMessageSerializerTest {
     public void testSerialize(byte[] expectedBytes, int providedRecipientChannel,
             ExtendedChannelDataType providedDataType, byte[] providedPayload) {
         ChannelExtendedDataMessage msg = new ChannelExtendedDataMessage();
-        msg.setMessageID(MessageIDConstant.SSH_MSG_CHANNEL_EXTENDED_DATA.id);
         msg.setRecipientChannel(providedRecipientChannel);
         msg.setDataTypeCode(providedDataType.getDataTypeCode());
-        msg.setData(providedPayload);
+        msg.setData(providedPayload, true);
         ChannelExtendedDataMessageSerializer serializer = new ChannelExtendedDataMessageSerializer(msg);
 
         assertArrayEquals(expectedBytes, serializer.serialize());

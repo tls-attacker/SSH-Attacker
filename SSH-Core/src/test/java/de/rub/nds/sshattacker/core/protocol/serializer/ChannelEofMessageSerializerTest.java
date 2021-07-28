@@ -43,7 +43,6 @@ public class ChannelEofMessageSerializerTest {
     @MethodSource("provideTestVectors")
     public void testSerialize(byte[] expectedBytes, int providedRecipientChannel) {
         ChannelEofMessage msg = new ChannelEofMessage();
-        msg.setMessageID(MessageIDConstant.SSH_MSG_CHANNEL_EOF.id);
         msg.setRecipientChannel(providedRecipientChannel);
         ChannelMessageSerializer<ChannelEofMessage> serializer = new ChannelMessageSerializer<>(msg);
 

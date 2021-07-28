@@ -28,10 +28,11 @@ public class DebugMessageParserTest {
      * @return A stream of test vectors to feed the testParse unit test
      */
     public static Stream<Arguments> provideTestVectors() {
-        return Stream.of(Arguments.of(ArrayConverter.hexStringToByteArray("040000000005446562756700000002454E"), false,
-                "Debug", "EN"), Arguments.of(ArrayConverter.hexStringToByteArray("040100000005446562756700000002454E"),
-                true, "Debug", "EN"), Arguments.of(
-                ArrayConverter.hexStringToByteArray("040100000005446562756700000000"), true, "Debug", ""));
+        return Stream.of(Arguments.of(ArrayConverter.hexStringToByteArray("040000000005446562756700000002454E"),
+                (byte) 0x00, "Debug", "EN"), Arguments.of(
+                ArrayConverter.hexStringToByteArray("040100000005446562756700000002454E"), (byte) 0x01, "Debug", "EN"),
+                Arguments.of(ArrayConverter.hexStringToByteArray("040100000005446562756700000000"), (byte) 0x01,
+                        "Debug", ""));
     }
 
     /**
@@ -48,7 +49,7 @@ public class DebugMessageParserTest {
      */
     @ParameterizedTest
     @MethodSource("provideTestVectors")
-    public void testParse(byte[] providedBytes, boolean expectedAlwaysDisplay, String expectedMessage,
+    public void testParse(byte[] providedBytes, byte expectedAlwaysDisplay, String expectedMessage,
             String expectedLanguageTag) {
         DebugMessageParser parser = new DebugMessageParser(0, providedBytes);
         DebugMessage msg = parser.parse();

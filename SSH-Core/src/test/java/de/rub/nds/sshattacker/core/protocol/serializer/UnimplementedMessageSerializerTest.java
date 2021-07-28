@@ -43,7 +43,6 @@ public class UnimplementedMessageSerializerTest {
     @MethodSource("provideTestVectors")
     public void testSerialize(byte[] expectedBytes, int providedSequenceNumber) {
         UnimplementedMessage msg = new UnimplementedMessage();
-        msg.setMessageID(MessageIDConstant.SSH_MSG_UNIMPLEMENTED.id);
         msg.setSequenceNumber(providedSequenceNumber);
         UnimplementedMessageSerializer serializer = new UnimplementedMessageSerializer(msg);
 

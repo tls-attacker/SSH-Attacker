@@ -20,6 +20,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class UserAuthPasswordMessageSerializerTest {
     /**
@@ -62,10 +63,10 @@ public class UserAuthPasswordMessageSerializerTest {
     public void testSerialize(byte[] expectedBytes, String providedUsername, ServiceType providedServiceType,
             byte providedChangePassword, String providedPassword) {
         UserAuthPasswordMessage msg = new UserAuthPasswordMessage();
-        msg.setUserName(providedUsername);
-        msg.setServiceName(providedServiceType);
+        msg.setUserName(providedUsername, true);
+        msg.setServiceName(providedServiceType, true);
         msg.setChangePassword(providedChangePassword);
-        msg.setPassword(providedPassword);
+        msg.setPassword(providedPassword, true);
         UserAuthPasswordMessageSerializer serializer = new UserAuthPasswordMessageSerializer(msg);
 
         assertArrayEquals(expectedBytes, serializer.serialize());

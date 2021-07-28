@@ -33,7 +33,7 @@ public class DhGexKeyExchangeRequestMessagePreparator extends Preparator<DhGexKe
         dhGexExchangeHash.setMaximalGroupSize(context.getChooser().getMaximalDHGroupSize());
         context.setExchangeHashInstance(dhGexExchangeHash);
 
-        message.setMessageID(MessageIDConstant.SSH_MSG_KEX_DH_GEX_REQUEST.id);
+        message.setMessageID(MessageIDConstant.SSH_MSG_KEX_DH_GEX_REQUEST);
         message.setMinimalGroupSize(context.getChooser().getMinimalDHGroupSize());
         message.setPreferredGroupSize(context.getChooser().getPreferredDHGroupSize());
         message.setMaximalGroupSize(context.getChooser().getMaximalDHGroupSize());

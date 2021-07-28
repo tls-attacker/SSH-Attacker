@@ -26,12 +26,12 @@ public class BinaryPacketSerializer extends Serializer<BinaryPacket> {
     }
 
     private void serializePacketLength() {
-        LOGGER.debug("Packet Length: " + msg.getPacketLength().getValue());
+        LOGGER.debug("Packet length: " + msg.getPacketLength().getValue());
         appendInt(msg.getPacketLength().getValue(), BinaryPacketConstants.LENGTH_FIELD_LENGTH);
     }
 
     private void serializePaddingLength() {
-        LOGGER.debug("Padding Length: " + msg.getPaddingLength().getValue());
+        LOGGER.debug("Padding length: " + msg.getPaddingLength().getValue());
         appendByte(msg.getPaddingLength().getValue());
     }
 
@@ -47,7 +47,7 @@ public class BinaryPacketSerializer extends Serializer<BinaryPacket> {
 
     private void serializeMac() {
         if (msg.getMac() == null) {
-            LOGGER.debug("MAC: none");
+            LOGGER.debug("MAC: [none]");
         } else {
             LOGGER.debug("MAC: " + msg.getMac());
             appendBytes(msg.getMac().getValue());

@@ -25,15 +25,12 @@ import org.apache.logging.log4j.Logger;
 
 public class EcdhKeyExchangeReplyMessageHandler extends Handler<EcdhKeyExchangeReplyMessage> {
 
-    private static final Logger LOGGER = LogManager.getLogger();
-
     public EcdhKeyExchangeReplyMessageHandler(SshContext context) {
         super(context);
     }
 
     @Override
     public void handle(EcdhKeyExchangeReplyMessage message) {
-        context.setHostKeyType(PublicKeyAuthenticationAlgorithm.fromName(message.getHostKeyType().getValue()));
         context.setKeyExchangeSignature(message.getSignature().getValue());
 
         DhBasedKeyExchange keyExchange = (DhBasedKeyExchange) context.getKeyExchangeInstance().orElseThrow(AdjustmentException::new);
@@ -56,21 +53,7 @@ public class EcdhKeyExchangeReplyMessageHandler extends Handler<EcdhKeyExchangeR
     private void handleHostKey(EcdhKeyExchangeReplyMessage message) {
         // TODO: Implement host key types as enumeration
         // TODO: Improve host key handling in separate class
-        if (context.getHostKeyType().orElseThrow(AdjustmentException::new) == PublicKeyAuthenticationAlgorithm.SSH_RSA) {
-            handleRsaHostKey(message);
-        } else {
-            LOGGER.fatal("Unable to handle host key, unsupported host key algorithm: " + context.getHostKeyType().toString());
-            throw new AdjustmentException("Unsupported host key algorithm");
-        }
-    }
-
-    private void handleRsaHostKey(EcdhKeyExchangeReplyMessage message) {
-        context.getExchangeHashInstance().setServerHostKey(ArrayConverter.concatenate(Converter
-                .stringToLengthPrefixedBinaryString(context.getHostKeyType().orElseThrow(AdjustmentException::new).toString()), Converter
-                .bytesToLengthPrefixedBinaryString(ArrayConverter.bigIntegerToByteArray(message.getHostKeyRsaExponent()
-                        .getValue())), Converter.bytesToLengthPrefixedBinaryString(ArrayConverter.concatenate(
-                new byte[] { 0x00 }, // asn1 leading byte
-                ArrayConverter.bigIntegerToByteArray(message.getHostKeyRsaModulus().getValue())))));
+        context.getExchangeHashInstance().setServerHostKey(message.getHostKey().getValue());
     }
 
     private void initializeCryptoLayers() {

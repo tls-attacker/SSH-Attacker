@@ -9,27 +9,33 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.serializer;
 
+import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.common.MessageSerializer;
 import de.rub.nds.sshattacker.core.util.Converter;
 import de.rub.nds.sshattacker.core.protocol.transport.message.ServiceRequestMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.nio.charset.StandardCharsets;
+
 public class ServiceRequestMessageSerializer extends MessageSerializer<ServiceRequestMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
-    private final ServiceRequestMessage msg;
 
     public ServiceRequestMessageSerializer(ServiceRequestMessage msg) {
         super(msg);
-        this.msg = msg;
+    }
+
+    private void serializeServiceName() {
+        LOGGER.debug("Service name length: " + msg.getServiceNameLength().getValue());
+        appendInt(msg.getServiceNameLength().getValue(), DataFormatConstants.INT32_SIZE);
+        LOGGER.debug("Service name: " + msg.getServiceName().getValue());
+        appendString(msg.getServiceName().getValue(), StandardCharsets.US_ASCII);
     }
 
     @Override
     protected byte[] serializeMessageSpecificPayload() {
-        LOGGER.debug("serviceName: " + msg.getServiceName().getValue());
-        appendBytes(Converter.stringToLengthPrefixedBinaryString(msg.getServiceName().getValue()));
+        serializeServiceName();
         return getAlreadySerialized();
     }
-
 }

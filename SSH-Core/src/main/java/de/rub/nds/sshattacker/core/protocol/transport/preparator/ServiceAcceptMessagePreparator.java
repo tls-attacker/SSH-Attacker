@@ -22,8 +22,8 @@ public class ServiceAcceptMessagePreparator extends Preparator<ServiceAcceptMess
 
     @Override
     public void prepare() {
-        message.setMessageID(MessageIDConstant.SSH_MSG_SERVICE_ACCEPT.id);
-        message.setServiceName("");
+        message.setMessageID(MessageIDConstant.SSH_MSG_SERVICE_ACCEPT);
+        message.setServiceName("", true);
     }
 
 }

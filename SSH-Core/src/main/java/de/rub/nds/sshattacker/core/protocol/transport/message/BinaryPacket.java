@@ -14,13 +14,9 @@ import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.sshattacker.core.constants.BinaryPacketConstants;
-import de.rub.nds.sshattacker.core.protocol.common.Message;
-import de.rub.nds.sshattacker.core.protocol.common.Preparator;
-import de.rub.nds.sshattacker.core.protocol.common.Serializer;
-import de.rub.nds.sshattacker.core.protocol.common.Handler;
-import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.protocol.common.*;
 
-public class BinaryPacket extends Message<BinaryPacket> {
+public class BinaryPacket extends ProtocolMessage {
 
     private ModifiableInteger packetLength;
     private ModifiableByte paddingLength;
@@ -130,22 +126,7 @@ public class BinaryPacket extends Message<BinaryPacket> {
     }
 
     @Override
-    public Handler<BinaryPacket> getHandler(SshContext context) {
-        return null;
-    }
-
-    @Override
-    public Serializer<BinaryPacket> getSerializer() {
-        return null;
-    }
-
-    @Override
-    public Preparator<BinaryPacket> getPreparator(SshContext context) {
-        return null;
-    }
-
-    @Override
     public String toCompactString() {
-        return "BinaryPacket";
+        return this.getClass().getSimpleName();
     }
 }

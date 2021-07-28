@@ -9,26 +9,40 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.serializer;
 
+import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.common.MessageSerializer;
 import de.rub.nds.sshattacker.core.util.Converter;
 import de.rub.nds.sshattacker.core.protocol.transport.message.DebugMessage;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import java.nio.charset.StandardCharsets;
 
 public class DebugMessageSerializer extends MessageSerializer<DebugMessage> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public DebugMessageSerializer(DebugMessage msg) {
         super(msg);
     }
 
     private void serializeAlwaysDisplayed() {
-        appendByte((byte) (msg.getAlwaysDisplay().getValue() ? 0x01 : 0x00));
+        LOGGER.debug("Always displayed: " + Converter.byteToBoolean(msg.getAlwaysDisplay().getValue()));
+        appendByte(msg.getAlwaysDisplay().getValue());
     }
 
     private void serializeMessage() {
-        appendBytes(Converter.stringToLengthPrefixedBinaryString(msg.getMessage().getValue()));
+        LOGGER.debug("Message length: " + msg.getMessageLength().getValue());
+        appendInt(msg.getMessageLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
+        LOGGER.debug("Message: " + msg.getMessage().getValue());
+        appendString(msg.getMessage().getValue(), StandardCharsets.UTF_8);
     }
 
     private void serializeLanguageTag() {
-        appendBytes(Converter.stringToLengthPrefixedBinaryString(msg.getLanguageTag().getValue()));
+        LOGGER.debug("Language tag length: " + msg.getLanguageTagLength().getValue());
+        appendInt(msg.getLanguageTagLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
+        LOGGER.debug("Language tag: " + msg.getLanguageTag().getValue());
+        appendString(msg.getLanguageTag().getValue(), StandardCharsets.US_ASCII);
     }
 
     @Override
@@ -38,5 +52,4 @@ public class DebugMessageSerializer extends MessageSerializer<DebugMessage> {
         serializeLanguageTag();
         return getAlreadySerialized();
     }
-
 }

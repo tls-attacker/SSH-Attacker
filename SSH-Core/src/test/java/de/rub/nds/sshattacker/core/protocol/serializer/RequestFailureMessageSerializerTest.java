@@ -23,7 +23,6 @@ public class RequestFailureMessageSerializerTest {
     @Test
     public void testSerialize() {
         RequestFailureMessage msg = new RequestFailureMessage();
-        msg.setMessageID(MessageIDConstant.SSH_MSG_REQUEST_FAILURE.id);
         assertArrayEquals(new byte[] { 82 }, new RequestFailureMessageSerializer(msg).serialize());
     }
 }

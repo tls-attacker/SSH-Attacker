@@ -37,8 +37,8 @@ public class DhGexKeyExchangeReplyMessageParserTest {
                                         + "0000002020b9f89aba2d7da23775b3ce085ff65f4d4b7ccf51ce2d073ef9158d6df1e905000000630000001365636473612d736861322d6e6973747032353600000048000000204e553a825dd144d7ddbd38cbd10a153a8a4ad597bf8da7ef1fe2546c851d6e89"
                                         + "000000205bc4705cdac12213822e61c3b48ab7c84489ef3be0bb94ef524a45664b473856"),
                         104,
-                        0x13,
-                        "ecdsa-sha2-nistp256",
+                        ArrayConverter
+                                .hexStringToByteArray("0000001365636473612d736861322d6e69737470323536000000086e69737470323536000000410435496f94112c3234092471322c26dd21ebfd2da156e5a17dcc5dc98020afedd64ae82e5d4c28251187a2191fe85ae43de9734711c087b784eaa713d5b6e06541"),
                         32,
                         new BigInteger("20b9f89aba2d7da23775b3ce085ff65f4d4b7ccf51ce2d073ef9158d6df1e905", 16),
                         99,
@@ -53,10 +53,8 @@ public class DhGexKeyExchangeReplyMessageParserTest {
      *            Bytes to parse
      * @param expectedHostKeyLength
      *            Expected length of the host key
-     * @param expectedHostKeyTypeLength
-     *            Expected length of the host key type
-     * @param expectedHostKeyType
-     *            Expected host key type
+     * @param expectedHostKey
+     *            Expected bytes of the host key
      * @param expectedPublicKeyLength
      *            Expected length of the remote diffie hellman public key
      * @param expectedPublicKey
@@ -68,16 +66,15 @@ public class DhGexKeyExchangeReplyMessageParserTest {
      */
     @ParameterizedTest
     @MethodSource("provideTestVectors")
-    public void testParse(byte[] providedBytes, int expectedHostKeyLength, int expectedHostKeyTypeLength,
-            String expectedHostKeyType, int expectedPublicKeyLength, BigInteger expectedPublicKey,
-            int expectedSignatureLength, byte[] expectedSignature) {
+    public void testParse(byte[] providedBytes, int expectedHostKeyLength, byte[] expectedHostKey,
+            int expectedPublicKeyLength, BigInteger expectedPublicKey, int expectedSignatureLength,
+            byte[] expectedSignature) {
         DhGexKeyExchangeReplyMessageParser parser = new DhGexKeyExchangeReplyMessageParser(0, providedBytes);
         DhGexKeyExchangeReplyMessage msg = parser.parse();
 
         assertEquals(MessageIDConstant.SSH_MSG_KEX_DH_GEX_REPLY.id, msg.getMessageID().getValue());
         assertEquals(expectedHostKeyLength, msg.getHostKeyLength().getValue().intValue());
-        assertEquals(expectedHostKeyTypeLength, msg.getHostKeyTypeLength().getValue().intValue());
-        assertEquals(expectedHostKeyType, msg.getHostKeyType().getValue());
+        assertArrayEquals(expectedHostKey, msg.getHostKey().getValue());
         // TODO: Add assertions for host key
         assertEquals(expectedPublicKeyLength, msg.getEphemeralPublicKeyLength().getValue().intValue());
         assertEquals(expectedPublicKey, msg.getEphemeralPublicKey().getValue());

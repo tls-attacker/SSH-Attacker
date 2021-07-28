@@ -94,9 +94,8 @@ public class KeyExchangeInitMessageSerializerTest {
             int providedCompressionAlgorithmsCToSLength, String providedCompressionAlgorithmsCToS,
             int providedCompressionAlgorithmsSToCLength, String providedCompressionAlgorithmsSToC,
             int providedLanguagesCToSLength, String providedLanguagesCToS, int providedLanguagesSToCLength,
-            String providedLanguagesSToC, boolean providedFirstKeyExchangePacketFollows, int providedReserved) {
+            String providedLanguagesSToC, byte providedFirstKeyExchangePacketFollows, int providedReserved) {
         KeyExchangeInitMessage msg = new KeyExchangeInitMessage();
-        msg.setMessageID(MessageIDConstant.SSH_MSG_KEXINIT.id);
         msg.setCookie(providedCookie);
         msg.setKeyExchangeAlgorithmsLength(providedKeyExchangeAlgorithmsLength);
         msg.setKeyExchangeAlgorithms(providedKeyExchangeAlgorithms);

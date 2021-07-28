@@ -11,6 +11,7 @@ package de.rub.nds.sshattacker.core.protocol.transport.message;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
+import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
 import de.rub.nds.sshattacker.core.protocol.common.Message;
 import de.rub.nds.sshattacker.core.protocol.transport.preparator.UnimplementedMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.transport.serializer.UnimplementedMessageSerializer;
@@ -20,6 +21,10 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 public class UnimplementedMessage extends Message<UnimplementedMessage> {
 
     private ModifiableInteger sequenceNumber;
+
+    public UnimplementedMessage() {
+        super(MessageIDConstant.SSH_MSG_UNIMPLEMENTED);
+    }
 
     public ModifiableInteger getSequenceNumber() {
         return sequenceNumber;

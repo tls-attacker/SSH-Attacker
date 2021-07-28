@@ -14,6 +14,7 @@ import de.rub.nds.modifiablevariable.biginteger.ModifiableBigInteger;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
+import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
 import de.rub.nds.sshattacker.core.exceptions.NotImplementedException;
 import de.rub.nds.sshattacker.core.protocol.common.Message;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.DhKeyExchangeReplyMessageHandler;
@@ -27,21 +28,19 @@ import java.math.BigInteger;
 public class DhKeyExchangeReplyMessage extends Message<DhKeyExchangeReplyMessage> {
 
     private ModifiableInteger hostKeyLength;
+    private ModifiableByteArray hostKey;
 
-    private ModifiableInteger hostKeyTypeLength;
-    private ModifiableString hostKeyType;
-
-    private ModifiableInteger hostKeyRsaExponentLength;
-    private ModifiableBigInteger hostKeyRsaExponent;
-
-    private ModifiableInteger hostKeyRsaModulusLength;
-    private ModifiableBigInteger hostKeyRsaModulus;
+    // TODO: Interpret host key
 
     private ModifiableInteger ephemeralPublicKeyLength;
     private ModifiableBigInteger ephemeralPublicKey;
 
     private ModifiableInteger signatureLength;
     private ModifiableByteArray signature;
+
+    public DhKeyExchangeReplyMessage() {
+        super(MessageIDConstant.SSH_MSG_KEXDH_REPLY);
+    }
 
     public ModifiableInteger getHostKeyLength() {
         return hostKeyLength;
@@ -55,78 +54,30 @@ public class DhKeyExchangeReplyMessage extends Message<DhKeyExchangeReplyMessage
         this.hostKeyLength = ModifiableVariableFactory.safelySetValue(this.hostKeyLength, hostKeyLength);
     }
 
-    public ModifiableInteger getHostKeyTypeLength() {
-        return hostKeyTypeLength;
+    public ModifiableByteArray getHostKey() {
+        return hostKey;
     }
 
-    public void setHostKeyTypeLength(ModifiableInteger hostKeyTypeLength) {
-        this.hostKeyTypeLength = hostKeyTypeLength;
+    public void setHostKey(ModifiableByteArray hostKey) {
+        setHostKey(hostKey, false);
     }
 
-    public void setHostKeyTypeLength(int hostKeyTypeLength) {
-        this.hostKeyTypeLength = ModifiableVariableFactory.safelySetValue(this.hostKeyTypeLength, hostKeyTypeLength);
+    public void setHostKey(byte[] hostKey) {
+        setHostKey(hostKey, false);
     }
 
-    public ModifiableString getHostKeyType() {
-        return hostKeyType;
+    public void setHostKey(ModifiableByteArray hostKey, boolean adjustLengthField) {
+        if (adjustLengthField) {
+            setHostKeyLength(hostKey.getValue().length);
+        }
+        this.hostKey = hostKey;
     }
 
-    public void setHostKeyType(ModifiableString hostKeyType) {
-        this.hostKeyType = hostKeyType;
-    }
-
-    public void setHostKeyType(String hostKeyType) {
-        this.hostKeyType = ModifiableVariableFactory.safelySetValue(this.hostKeyType, hostKeyType);
-    }
-
-    public ModifiableInteger getHostKeyRsaExponentLength() {
-        return hostKeyRsaExponentLength;
-    }
-
-    public void setHostKeyRsaExponentLength(ModifiableInteger hostKeyRsaExponentLength) {
-        this.hostKeyRsaExponentLength = hostKeyRsaExponentLength;
-    }
-
-    public void setHostKeyRsaExponentLength(int hostKeyRsaExponentLength) {
-        this.hostKeyRsaExponentLength = ModifiableVariableFactory.safelySetValue(this.hostKeyRsaExponentLength,
-                hostKeyRsaExponentLength);
-    }
-
-    public ModifiableBigInteger getHostKeyRsaExponent() {
-        return hostKeyRsaExponent;
-    }
-
-    public void setHostKeyRsaExponent(ModifiableBigInteger hostKeyRsaExponent) {
-        this.hostKeyRsaExponent = hostKeyRsaExponent;
-    }
-
-    public void setHostKeyRsaExponent(BigInteger hostKeyRsaExponent) {
-        this.hostKeyRsaExponent = ModifiableVariableFactory.safelySetValue(this.hostKeyRsaExponent, hostKeyRsaExponent);
-    }
-
-    public ModifiableInteger getHostKeyRsaModulusLength() {
-        return hostKeyRsaModulusLength;
-    }
-
-    public void setHostKeyRsaModulusLength(ModifiableInteger hostKeyRsaModulusLength) {
-        this.hostKeyRsaModulusLength = hostKeyRsaModulusLength;
-    }
-
-    public void setHostKeyRsaModulusLength(int hostKeyRsaModulusLength) {
-        this.hostKeyRsaModulusLength = ModifiableVariableFactory.safelySetValue(this.hostKeyRsaModulusLength,
-                hostKeyRsaModulusLength);
-    }
-
-    public ModifiableBigInteger getHostKeyRsaModulus() {
-        return hostKeyRsaModulus;
-    }
-
-    public void setHostKeyRsaModulus(ModifiableBigInteger hostKeyRsaModulus) {
-        this.hostKeyRsaModulus = hostKeyRsaModulus;
-    }
-
-    public void setHostKeyRsaModulus(BigInteger hostKeyRsaModulus) {
-        this.hostKeyRsaModulus = ModifiableVariableFactory.safelySetValue(this.hostKeyRsaModulus, hostKeyRsaModulus);
+    public void setHostKey(byte[] hostKey, boolean adjustLengthField) {
+        if (adjustLengthField) {
+            setHostKeyLength(hostKey.length);
+        }
+        this.hostKey = ModifiableVariableFactory.safelySetValue(this.hostKey, hostKey);
     }
 
     public ModifiableInteger getEphemeralPublicKeyLength() {
@@ -147,10 +98,24 @@ public class DhKeyExchangeReplyMessage extends Message<DhKeyExchangeReplyMessage
     }
 
     public void setEphemeralPublicKey(ModifiableBigInteger ephemeralPublicKey) {
-        this.ephemeralPublicKey = ephemeralPublicKey;
+        setEphemeralPublicKey(ephemeralPublicKey, false);
     }
 
     public void setEphemeralPublicKey(BigInteger ephemeralPublicKey) {
+        setEphemeralPublicKey(ephemeralPublicKey, false);
+    }
+
+    public void setEphemeralPublicKey(ModifiableBigInteger ephemeralPublicKey, boolean adjustLengthField) {
+        if (adjustLengthField) {
+            setEphemeralPublicKeyLength(ephemeralPublicKey.getValue().toByteArray().length);
+        }
+        this.ephemeralPublicKey = ephemeralPublicKey;
+    }
+
+    public void setEphemeralPublicKey(BigInteger ephemeralPublicKey, boolean adjustLengthField) {
+        if (adjustLengthField) {
+            setEphemeralPublicKeyLength(ephemeralPublicKey.toByteArray().length);
+        }
         this.ephemeralPublicKey = ModifiableVariableFactory.safelySetValue(this.ephemeralPublicKey, ephemeralPublicKey);
     }
 
@@ -171,10 +136,24 @@ public class DhKeyExchangeReplyMessage extends Message<DhKeyExchangeReplyMessage
     }
 
     public void setSignature(ModifiableByteArray signature) {
-        this.signature = signature;
+        setSignature(signature, false);
     }
 
     public void setSignature(byte[] signature) {
+        setSignature(signature, false);
+    }
+
+    public void setSignature(ModifiableByteArray signature, boolean adjustLengthField) {
+        if (adjustLengthField) {
+            setSignatureLength(signature.getValue().length);
+        }
+        this.signature = signature;
+    }
+
+    public void setSignature(byte[] signature, boolean adjustLengthField) {
+        if (adjustLengthField) {
+            setSignatureLength(signature.length);
+        }
         this.signature = ModifiableVariableFactory.safelySetValue(this.signature, signature);
     }
 
@@ -193,10 +172,5 @@ public class DhKeyExchangeReplyMessage extends Message<DhKeyExchangeReplyMessage
     public Preparator<DhKeyExchangeReplyMessage> getPreparator(SshContext context) {
         // TODO: Implement DHKeyExchangeReplyMessagePreparator
         throw new NotImplementedException("DHKeyExchangeReplyMessage::getPreparator");
-    }
-
-    @Override
-    public String toCompactString() {
-        return "DHKeyExchangeReplyMessage";
     }
 }

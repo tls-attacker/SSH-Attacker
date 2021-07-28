@@ -45,7 +45,6 @@ public class ChannelWindowAdjustMessageSerializerTest {
     @MethodSource("provideTestVectors")
     public void testSerialize(byte[] expectedBytes, int providedRecipientChannel, int providedBytesToAdd) {
         ChannelWindowAdjustMessage msg = new ChannelWindowAdjustMessage();
-        msg.setMessageID(MessageIDConstant.SSH_MSG_CHANNEL_WINDOW_ADJUST.id);
         msg.setRecipientChannel(providedRecipientChannel);
         msg.setBytesToAdd(providedBytesToAdd);
         ChannelWindowAdjustMessageSerializer serializer = new ChannelWindowAdjustMessageSerializer(msg);

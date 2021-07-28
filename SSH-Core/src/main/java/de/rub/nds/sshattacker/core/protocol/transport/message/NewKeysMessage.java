@@ -9,6 +9,7 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.message;
 
+import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
 import de.rub.nds.sshattacker.core.protocol.common.Message;
 import de.rub.nds.sshattacker.core.protocol.transport.preparator.NewKeysMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.transport.serializer.NewKeysMessageSerializer;
@@ -18,12 +19,7 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 public class NewKeysMessage extends Message<NewKeysMessage> {
 
     public NewKeysMessage() {
-        super();
-    }
-
-    @Override
-    public String toCompactString() {
-        return "NewKeysMessage";
+        super(MessageIDConstant.SSH_MSG_NEWKEYS);
     }
 
     @Override

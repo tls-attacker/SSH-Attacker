@@ -19,10 +19,13 @@ public class UnimplementedMessageSerializer extends MessageSerializer<Unimplemen
         super(msg);
     }
 
-    @Override
-    protected byte[] serializeMessageSpecificPayload() {
+    private void serializeSequenceNumber() {
         appendInt(msg.getSequenceNumber().getValue(), DataFormatConstants.INT32_SIZE);
-        return getAlreadySerialized();
     }
 
+    @Override
+    protected byte[] serializeMessageSpecificPayload() {
+        serializeSequenceNumber();
+        return getAlreadySerialized();
+    }
 }

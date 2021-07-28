@@ -9,6 +9,7 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.preparator;
 
+import de.rub.nds.sshattacker.core.constants.DisconnectReason;
 import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
 import de.rub.nds.sshattacker.core.protocol.common.Preparator;
 import de.rub.nds.sshattacker.core.protocol.transport.message.DisconnectMessage;
@@ -18,19 +19,17 @@ import org.apache.logging.log4j.Logger;
 
 public class DisconnectMessagePreparator extends Preparator<DisconnectMessage> {
 
-    private static final Logger LOGGER = LogManager.getLogger();
-
     public DisconnectMessagePreparator(SshContext context, DisconnectMessage message) {
         super(context, message);
     }
 
     @Override
     public void prepare() {
+        message.setMessageID(MessageIDConstant.SSH_MSG_DISCONNECT);
         // TODO save values in config
-        message.setMessageID(MessageIDConstant.SSH_MSG_DISCONNECT.id);
-        message.setReasonCode(0);
-        message.setLanguageTag("");
-        message.setDescription("Test");
+        message.setReasonCode(DisconnectReason.SSH_DISCONNECT_PROTOCOL_ERROR);
+        message.setDescription("Test", true);
+        message.setLanguageTag("", true);
     }
 
 }

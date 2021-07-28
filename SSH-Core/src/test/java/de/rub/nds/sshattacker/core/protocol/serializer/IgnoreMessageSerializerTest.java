@@ -43,8 +43,7 @@ public class IgnoreMessageSerializerTest {
     @MethodSource("provideTestVectors")
     public void testSerialize(byte[] expectedBytes, byte[] providedData) {
         IgnoreMessage msg = new IgnoreMessage();
-        msg.setMessageID(MessageIDConstant.SSH_MSG_IGNORE.id);
-        msg.setData(providedData);
+        msg.setData(providedData, true);
         IgnoreMessageSerializer serializer = new IgnoreMessageSerializer(msg);
 
         assertArrayEquals(expectedBytes, serializer.serialize());

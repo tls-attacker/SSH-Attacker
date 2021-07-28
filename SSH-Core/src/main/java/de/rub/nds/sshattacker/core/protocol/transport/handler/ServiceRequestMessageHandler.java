@@ -23,5 +23,4 @@ public class ServiceRequestMessageHandler extends Handler<ServiceRequestMessage>
     public void handle(ServiceRequestMessage msg) {
         // TODO: Handle ServiceRequestMessage
     }
-
 }

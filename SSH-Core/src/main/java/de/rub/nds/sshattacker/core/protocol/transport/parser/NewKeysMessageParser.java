@@ -18,13 +18,12 @@ public class NewKeysMessageParser extends MessageParser<NewKeysMessage> {
         super(startPosition, array);
     }
 
-    public NewKeysMessage createMessage() {
-        return new NewKeysMessage();
+    @Override
+    protected void parseMessageSpecificPayload(NewKeysMessage msg) {
     }
 
     @Override
-    protected void parseMessageSpecificPayload(NewKeysMessage msg) {
-        // only sets messagetype to NewKeysMessage
-        // so this can be void
+    public NewKeysMessage createMessage() {
+        return new NewKeysMessage();
     }
 }

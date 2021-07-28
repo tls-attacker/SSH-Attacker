@@ -17,15 +17,11 @@ import org.apache.logging.log4j.Logger;
 
 public class IgnoreMessageHandler extends Handler<IgnoreMessage> {
 
-    private static final Logger LOGGER = LogManager.getLogger();
-
     public IgnoreMessageHandler(SshContext context) {
         super(context);
     }
 
     @Override
     public void handle(IgnoreMessage msg) {
-        LOGGER.debug("IgnoreMessage retrieved from remote, data: " + msg.getData().getValue());
     }
-
 }

@@ -24,31 +24,23 @@ public class DhGexKeyExchangeGroupMessageParser extends MessageParser<DhGexKeyEx
         super(startPosition, array);
     }
 
-    private void parseGroupModulusLength(DhGexKeyExchangeGroupMessage msg) {
+    private void parseGroupModulus(DhGexKeyExchangeGroupMessage msg) {
         msg.setGroupModulusLength(parseIntField(DataFormatConstants.INT32_SIZE));
         LOGGER.debug("Group modulus length: " + msg.getGroupModulusLength().getValue());
-    }
-
-    private void parseGroupModulus(DhGexKeyExchangeGroupMessage msg) {
         msg.setGroupModulus(parseBigIntField(msg.getGroupModulusLength().getValue()));
         LOGGER.debug("Group modulus: " + ArrayConverter.bytesToRawHexString(msg.getGroupModulus().getByteArray()));
     }
 
-    private void parseGroupGeneratorLength(DhGexKeyExchangeGroupMessage msg) {
+    private void parseGroupGenerator(DhGexKeyExchangeGroupMessage msg) {
         msg.setGroupGeneratorLength(parseIntField(DataFormatConstants.INT32_SIZE));
         LOGGER.debug("Group generator length: " + msg.getGroupGeneratorLength().getValue());
-    }
-
-    private void parseGroupGenerator(DhGexKeyExchangeGroupMessage msg) {
         msg.setGroupGenerator(parseBigIntField(msg.getGroupGeneratorLength().getValue()));
         LOGGER.debug("Group generator: " + ArrayConverter.bytesToRawHexString(msg.getGroupGenerator().getByteArray()));
     }
 
     @Override
     protected void parseMessageSpecificPayload(DhGexKeyExchangeGroupMessage msg) {
-        parseGroupModulusLength(msg);
         parseGroupModulus(msg);
-        parseGroupGeneratorLength(msg);
         parseGroupGenerator(msg);
     }
 

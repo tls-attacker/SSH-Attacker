@@ -44,8 +44,7 @@ public class ServiceAcceptMessageSerializerTest {
     @MethodSource("provideTestVectors")
     public void testSerialize(byte[] expectedBytes, ServiceType providedServiceType) {
         ServiceAcceptMessage msg = new ServiceAcceptMessage();
-        msg.setMessageID(MessageIDConstant.SSH_MSG_SERVICE_ACCEPT.id);
-        msg.setServiceName(providedServiceType.toString());
+        msg.setServiceName(providedServiceType.toString(), true);
         ServiceAcceptMessageSerializer serializer = new ServiceAcceptMessageSerializer(msg);
 
         assertArrayEquals(expectedBytes, serializer.serialize());

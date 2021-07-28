@@ -23,5 +23,4 @@ public class UnimplementedMessageHandler extends Handler<UnimplementedMessage> {
     public void handle(UnimplementedMessage msg) {
         // TODO: Handle UnimplementedMessage
     }
-
 }

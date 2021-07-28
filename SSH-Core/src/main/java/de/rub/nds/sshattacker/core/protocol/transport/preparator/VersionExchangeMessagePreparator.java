@@ -17,8 +17,6 @@ import org.apache.logging.log4j.Logger;
 
 public class VersionExchangeMessagePreparator extends Preparator<VersionExchangeMessage> {
 
-    private static final Logger LOGGER = LogManager.getLogger();
-
     public VersionExchangeMessagePreparator(SshContext context, VersionExchangeMessage message) {
         super(context, message);
     }

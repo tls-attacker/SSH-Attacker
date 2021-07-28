@@ -65,7 +65,6 @@ public class DhKeyExchangeInitMessageSerializerTest {
     @MethodSource("provideTestVectors")
     public void testSerialize(byte[] expectedBytes, int providedPublicKeyLength, BigInteger providedPublicKey) {
         DhKeyExchangeInitMessage msg = new DhKeyExchangeInitMessage();
-        msg.setMessageID(MessageIDConstant.SSH_MSG_KEXDH_INIT.id);
         msg.setPublicKeyLength(providedPublicKeyLength);
         msg.setPublicKey(providedPublicKey);
         DhKeyExchangeInitMessageSerializer serializer = new DhKeyExchangeInitMessageSerializer(msg);

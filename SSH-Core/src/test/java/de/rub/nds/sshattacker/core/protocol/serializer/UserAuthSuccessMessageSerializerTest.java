@@ -23,7 +23,6 @@ public class UserAuthSuccessMessageSerializerTest {
     @Test
     public void testSerialize() {
         UserAuthSuccessMessage msg = new UserAuthSuccessMessage();
-        msg.setMessageID(MessageIDConstant.SSH_MSG_USERAUTH_SUCCESS.id);
         assertArrayEquals(new byte[] { 52 }, new UserAuthSuccessMessageSerializer(msg).serialize());
     }
 }

@@ -36,8 +36,7 @@ public class DhGexKeyExchangeInitMessagePreparator extends Preparator<DhGexKeyEx
             ((DhGexOldExchangeHash) exchangeHash).setClientDHPublicKey(keyExchange.getLocalKeyPair().getPublic());
         }
 
-        message.setMessageID(MessageIDConstant.SSH_MSG_KEX_DH_GEX_INIT.id);
-        message.setPublicKeyLength(keyExchange.getLocalKeyPair().getPublic().getEncoded().length);
-        message.setPublicKey(keyExchange.getLocalKeyPair().getPublic().getY());
+        message.setMessageID(MessageIDConstant.SSH_MSG_KEX_DH_GEX_INIT);
+        message.setPublicKey(keyExchange.getLocalKeyPair().getPublic().getY(), true);
     }
 }

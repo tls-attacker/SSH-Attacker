@@ -38,22 +38,12 @@ public class EcdhKeyExchangeReplyMessageSerializerTest {
      *            Expected output of the serialize() call
      * @param providedHostKeyLength
      *            Length of the host key
-     * @param providedHostKeyTypeLength
-     *            Length of the host key type
-     * @param providedHostKeyType
-     *            Host key type
-     * @param providedEccCurveIdentifierLength
-     *            Length of the ECC curve identifier
-     * @param providedEccCurveIdentifier
-     *            ECC curve identifier
-     * @param providedEccHostKeyLength
-     *            Length of the ECC host key
-     * @param providedEccHostKey
-     *            Bytes of the ECC host key
+     * @param providedHostKey
+     *            Bytes of the host key
      * @param providedPublicKeyLength
-     *            Length of the RSA host key
+     *            Length of the ephemeral ECDH public key
      * @param providedPublicKey
-     *            Bytes of the RSA host key
+     *            Bytes of the ephemeral ECDH public key
      * @param providedSignatureLength
      *            Length of the signature
      * @param providedSignature
@@ -61,21 +51,13 @@ public class EcdhKeyExchangeReplyMessageSerializerTest {
      */
     @ParameterizedTest
     @MethodSource("provideTestVectors")
-    public void testSerialize(byte[] expectedBytes, int providedHostKeyLength, int providedHostKeyTypeLength,
-            String providedHostKeyType, int providedEccCurveIdentifierLength, String providedEccCurveIdentifier,
-            int providedEccHostKeyLength, byte[] providedEccHostKey, int providedPublicKeyLength,
-            byte[] providedPublicKey, int providedSignatureLength, byte[] providedSignature) {
+    public void testSerialize(byte[] expectedBytes, int providedHostKeyLength, byte[] providedHostKey,
+            int providedPublicKeyLength, byte[] providedPublicKey, int providedSignatureLength, byte[] providedSignature) {
         EcdhKeyExchangeReplyMessage msg = new EcdhKeyExchangeReplyMessage();
-        msg.setMessageID(MessageIDConstant.SSH_MSG_KEX_ECDH_REPLY.id);
         msg.setHostKeyLength(providedHostKeyLength);
-        msg.setHostKeyTypeLength(providedHostKeyTypeLength);
-        msg.setHostKeyType(providedHostKeyType);
-        msg.setEccCurveIdentifierLength(providedEccCurveIdentifierLength);
-        msg.setEccCurveIdentifier(providedEccCurveIdentifier);
-        msg.setHostKeyEccLength(providedEccHostKeyLength);
-        msg.setHostKeyEcc(providedEccHostKey);
-        msg.setPublicKeyLength(providedPublicKeyLength);
-        msg.setPublicKey(providedPublicKey);
+        msg.setHostKey(providedHostKey);
+        msg.setEphemeralPublicKeyLength(providedPublicKeyLength);
+        msg.setEphemeralPublicKey(providedPublicKey);
         msg.setSignatureLength(providedSignatureLength);
         msg.setSignature(providedSignature);
         EcdhKeyExchangeReplyMessageSerializer serializer = new EcdhKeyExchangeReplyMessageSerializer(msg);

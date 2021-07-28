@@ -12,6 +12,7 @@ package de.rub.nds.sshattacker.core.protocol.transport.message;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.biginteger.ModifiableBigInteger;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
+import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
 import de.rub.nds.sshattacker.core.exceptions.NotImplementedException;
 import de.rub.nds.sshattacker.core.protocol.common.Handler;
 import de.rub.nds.sshattacker.core.protocol.common.Message;
@@ -27,6 +28,10 @@ public class DhGexKeyExchangeInitMessage extends Message<DhGexKeyExchangeInitMes
 
     private ModifiableInteger publicKeyLength;
     private ModifiableBigInteger publicKey;
+
+    public DhGexKeyExchangeInitMessage() {
+        super(MessageIDConstant.SSH_MSG_KEX_DH_GEX_INIT);
+    }
 
     public ModifiableInteger getPublicKeyLength() {
         return publicKeyLength;
@@ -45,10 +50,24 @@ public class DhGexKeyExchangeInitMessage extends Message<DhGexKeyExchangeInitMes
     }
 
     public void setPublicKey(ModifiableBigInteger publicKey) {
-        this.publicKey = publicKey;
+        setPublicKey(publicKey, false);
     }
 
     public void setPublicKey(BigInteger publicKey) {
+        setPublicKey(publicKey, false);
+    }
+
+    public void setPublicKey(ModifiableBigInteger publicKey, boolean adjustLengthField) {
+        if (adjustLengthField) {
+            setPublicKeyLength(publicKey.getValue().toByteArray().length);
+        }
+        this.publicKey = publicKey;
+    }
+
+    public void setPublicKey(BigInteger publicKey, boolean adjustLengthField) {
+        if (adjustLengthField) {
+            setPublicKeyLength(publicKey.toByteArray().length);
+        }
         this.publicKey = ModifiableVariableFactory.safelySetValue(this.publicKey, publicKey);
     }
 
@@ -66,10 +85,5 @@ public class DhGexKeyExchangeInitMessage extends Message<DhGexKeyExchangeInitMes
     @Override
     public Preparator<DhGexKeyExchangeInitMessage> getPreparator(SshContext context) {
         return new DhGexKeyExchangeInitMessagePreparator(context, this);
-    }
-
-    @Override
-    public String toCompactString() {
-        return "DHGexKeyExchangeInitMessage";
     }
 }

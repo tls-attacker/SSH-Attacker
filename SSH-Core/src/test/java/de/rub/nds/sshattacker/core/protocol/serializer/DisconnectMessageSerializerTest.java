@@ -49,10 +49,9 @@ public class DisconnectMessageSerializerTest {
     public void testSerialize(byte[] expectedBytes, DisconnectReason providedReason, String providedDescription,
             String providedLanguageTag) {
         DisconnectMessage msg = new DisconnectMessage();
-        msg.setMessageID(MessageIDConstant.SSH_MSG_DISCONNECT.id);
-        msg.setReasonCode(providedReason.id);
-        msg.setDescription(providedDescription);
-        msg.setLanguageTag(providedLanguageTag);
+        msg.setReasonCode(providedReason);
+        msg.setDescription(providedDescription, true);
+        msg.setLanguageTag(providedLanguageTag, true);
         DisconnectMessageSerializer serializer = new DisconnectMessageSerializer(msg);
 
         assertArrayEquals(expectedBytes, serializer.serialize());

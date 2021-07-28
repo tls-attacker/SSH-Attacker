@@ -11,6 +11,7 @@ package de.rub.nds.sshattacker.core.protocol.transport.serializer;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.BinaryPacketConstants;
+import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.common.MessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.transport.message.IgnoreMessage;
 import org.apache.logging.log4j.LogManager;
@@ -24,21 +25,16 @@ public class IgnoreMessageSerializer extends MessageSerializer<IgnoreMessage> {
         super(msg);
     }
 
-    private void serializeDataLength() {
-        LOGGER.debug("Data length: " + msg.getData().getValue().length);
-        appendInt(msg.getData().getValue().length, BinaryPacketConstants.LENGTH_FIELD_LENGTH);
-    }
-
     private void serializeData() {
+        LOGGER.debug("Data length: " + msg.getDataLength().getValue());
+        appendInt(msg.getDataLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
         LOGGER.debug("Data: " + ArrayConverter.bytesToRawHexString(msg.getData().getValue()));
         appendBytes(msg.getData().getValue());
     }
 
     @Override
     protected byte[] serializeMessageSpecificPayload() {
-        serializeDataLength();
         serializeData();
         return getAlreadySerialized();
     }
-
 }

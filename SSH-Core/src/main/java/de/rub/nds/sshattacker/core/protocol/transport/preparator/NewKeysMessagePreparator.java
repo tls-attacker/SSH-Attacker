@@ -22,7 +22,7 @@ public class NewKeysMessagePreparator extends Preparator<NewKeysMessage> {
 
     @Override
     public void prepare() {
-        message.setMessageID(MessageIDConstant.SSH_MSG_NEWKEYS.id);
+        message.setMessageID(MessageIDConstant.SSH_MSG_NEWKEYS);
     }
 
 }

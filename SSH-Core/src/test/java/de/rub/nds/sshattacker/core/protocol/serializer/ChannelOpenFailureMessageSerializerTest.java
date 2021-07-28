@@ -50,11 +50,10 @@ public class ChannelOpenFailureMessageSerializerTest {
     public void testSerialize(byte[] expectedBytes, int providedRecipientChannel, int providedReasonCode,
             String providedReason, String providedLanguageTag) {
         ChannelOpenFailureMessage msg = new ChannelOpenFailureMessage();
-        msg.setMessageID(MessageIDConstant.SSH_MSG_CHANNEL_OPEN_FAILURE.id);
         msg.setRecipientChannel(providedRecipientChannel);
         msg.setReasonCode(providedReasonCode);
-        msg.setReason(providedReason);
-        msg.setLanguageTag(providedLanguageTag);
+        msg.setReason(providedReason, true);
+        msg.setLanguageTag(providedLanguageTag, true);
         ChannelOpenFailureMessageSerializer serializer = new ChannelOpenFailureMessageSerializer(msg);
 
         assertArrayEquals(expectedBytes, serializer.serialize());

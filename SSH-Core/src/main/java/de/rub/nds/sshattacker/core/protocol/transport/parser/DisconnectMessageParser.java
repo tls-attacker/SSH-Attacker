@@ -10,41 +10,40 @@
 package de.rub.nds.sshattacker.core.protocol.transport.parser;
 
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
+import de.rub.nds.sshattacker.core.constants.DisconnectReason;
 import de.rub.nds.sshattacker.core.protocol.common.MessageParser;
 import de.rub.nds.sshattacker.core.protocol.transport.message.DisconnectMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.nio.charset.StandardCharsets;
+
 public class DisconnectMessageParser extends MessageParser<DisconnectMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public DisconnectMessageParser(int startposition, byte[] array) {
-        super(startposition, array);
-    }
-
-    @Override
-    public DisconnectMessage createMessage() {
-        return new DisconnectMessage();
+    public DisconnectMessageParser(int startPosition, byte[] array) {
+        super(startPosition, array);
     }
 
     private void parseReasonCode(DisconnectMessage msg) {
         msg.setReasonCode(parseIntField(DataFormatConstants.INT32_SIZE));
-        LOGGER.debug("ReasonCode: " + msg.getReasonCode().getValue());
+        LOGGER.debug("Reason: " + DisconnectReason.fromId(msg.getReasonCode().getValue()).toString() + " (Code: "
+                + msg.getReasonCode().getValue() + ")");
     }
 
     private void parseDescription(DisconnectMessage msg) {
-        int length = parseIntField(DataFormatConstants.INT32_SIZE);
-        LOGGER.debug("DescriptionLength: " + length);
-        msg.setDescription(parseByteString(length));
+        msg.setDescriptionLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
+        LOGGER.debug("Description length: " + msg.getDescriptionLength().getValue());
+        msg.setDescription(parseByteString(msg.getDescriptionLength().getValue(), StandardCharsets.UTF_8));
         LOGGER.debug("Description: " + msg.getDescription().getValue());
     }
 
     private void parseLanguageTag(DisconnectMessage msg) {
-        int length = parseIntField(DataFormatConstants.INT32_SIZE);
-        LOGGER.debug("LanguageTagLength: " + length);
-        msg.setLanguageTag(parseByteString(length));
-        LOGGER.debug("LanguageTag" + msg.getLanguageTag().getValue());
+        msg.setLanguageTagLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
+        LOGGER.debug("Language tag length: " + msg.getLanguageTagLength().getValue());
+        msg.setLanguageTag(parseByteString(msg.getLanguageTagLength().getValue(), StandardCharsets.US_ASCII));
+        LOGGER.debug("Language tag: " + msg.getLanguageTag().getValue());
 
     }
 
@@ -53,7 +52,10 @@ public class DisconnectMessageParser extends MessageParser<DisconnectMessage> {
         parseReasonCode(msg);
         parseDescription(msg);
         parseLanguageTag(msg);
-
     }
 
+    @Override
+    public DisconnectMessage createMessage() {
+        return new DisconnectMessage();
+    }
 }

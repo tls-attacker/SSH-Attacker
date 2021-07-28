@@ -13,6 +13,7 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
+import de.rub.nds.sshattacker.core.exceptions.NotImplementedException;
 import de.rub.nds.sshattacker.core.protocol.common.Message;
 import de.rub.nds.sshattacker.core.protocol.common.Preparator;
 import de.rub.nds.sshattacker.core.protocol.transport.serializer.UnknownMessageSerializer;
@@ -23,22 +24,8 @@ public class UnknownMessage extends Message<UnknownMessage> {
 
     private ModifiableByteArray payload;
 
-    public UnknownMessage(ModifiableByte id, ModifiableByteArray payload) {
-        this.messageID = id;
-        this.payload = payload;
-    }
-
-    public UnknownMessage(byte id, byte[] payload) {
-        this.messageID = ModifiableVariableFactory.safelySetValue(this.messageID, id);
-        this.payload = ModifiableVariableFactory.safelySetValue(this.payload, payload);
-    }
-
     public UnknownMessage() {
-    }
-
-    @Override
-    public String toCompactString() {
-        return "UnknownMessage (" + MessageIDConstant.getNameByID(messageID.getValue()) + ")";
+        super();
     }
 
     public ModifiableByteArray getPayload() {
@@ -54,6 +41,11 @@ public class UnknownMessage extends Message<UnknownMessage> {
     }
 
     @Override
+    public String toCompactString() {
+        return "UnknownMessage (" + MessageIDConstant.getNameByID(messageID.getValue()) + ")";
+    }
+
+    @Override
     public UnknownMessageHandler getHandler(SshContext context) {
         return new UnknownMessageHandler(context);
     }
@@ -65,15 +57,6 @@ public class UnknownMessage extends Message<UnknownMessage> {
 
     @Override
     public Preparator<UnknownMessage> getPreparator(SshContext context) {
-        throw new UnsupportedOperationException("Not supported yet."); // To
-                                                                       // change
-                                                                       // body
-                                                                       // of
-                                                                       // generated
-                                                                       // methods,
-                                                                       // choose
-                                                                       // Tools
-                                                                       // |
-                                                                       // Templates.
+        throw new NotImplementedException("UnknownMessage::getPreparator");
     }
 }

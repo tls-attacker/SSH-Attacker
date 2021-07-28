@@ -9,7 +9,8 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.parser;
 
-import de.rub.nds.sshattacker.core.constants.BinaryPacketConstants;
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.common.MessageParser;
 import de.rub.nds.sshattacker.core.protocol.transport.message.EcdhKeyExchangeInitMessage;
 import org.apache.logging.log4j.LogManager;
@@ -19,23 +20,19 @@ public class EcdhKeyExchangeInitMessageParser extends MessageParser<EcdhKeyExcha
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public EcdhKeyExchangeInitMessageParser(int startposition, byte[] array) {
-        super(startposition, array);
-    }
-
-    private void parsePublicKeyLength(EcdhKeyExchangeInitMessage msg) {
-        msg.setPublicKeyLength(parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH));
-        LOGGER.debug("PublicKeyLength: " + msg.getPublicKeyLength().getValue());
+    public EcdhKeyExchangeInitMessageParser(int startPosition, byte[] array) {
+        super(startPosition, array);
     }
 
     private void parsePublicKey(EcdhKeyExchangeInitMessage msg) {
-        msg.setPublicKey(parseArrayOrTillEnd(msg.getPublicKeyLength().getValue()));
-        LOGGER.debug("PublicKey: " + msg.getPublicKey());
+        msg.setPublicKeyLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
+        LOGGER.debug("Public key length: " + msg.getPublicKeyLength().getValue());
+        msg.setPublicKey(parseByteArrayField(msg.getPublicKeyLength().getValue()));
+        LOGGER.debug("Public key: " + ArrayConverter.bytesToRawHexString(msg.getPublicKey().getValue()));
     }
 
     @Override
     public void parseMessageSpecificPayload(EcdhKeyExchangeInitMessage msg) {
-        parsePublicKeyLength(msg);
         parsePublicKey(msg);
     }
 

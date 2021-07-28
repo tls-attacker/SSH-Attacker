@@ -41,7 +41,6 @@ public class RequestSuccessMessageSerializerTest {
     @MethodSource("provideTestVectors")
     public void testSerialize(byte[] expectedBytes) {
         RequestSuccessMessage msg = new RequestSuccessMessage();
-        msg.setMessageID(MessageIDConstant.SSH_MSG_REQUEST_SUCCESS.id);
         RequestSuccessMessageSerializer serializer = new RequestSuccessMessageSerializer(msg);
 
         assertArrayEquals(expectedBytes, serializer.serialize());

@@ -11,6 +11,8 @@ package de.rub.nds.sshattacker.core.protocol.transport.message;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
+import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
+import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
 import de.rub.nds.sshattacker.core.protocol.common.Message;
 import de.rub.nds.sshattacker.core.protocol.transport.preparator.IgnoreMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.transport.serializer.IgnoreMessageSerializer;
@@ -19,17 +21,48 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class IgnoreMessage extends Message<IgnoreMessage> {
 
+    private ModifiableInteger dataLength;
     private ModifiableByteArray data;
+
+    public IgnoreMessage() {
+        super(MessageIDConstant.SSH_MSG_IGNORE);
+    }
+
+    public ModifiableInteger getDataLength() {
+        return dataLength;
+    }
+
+    public void setDataLength(ModifiableInteger dataLength) {
+        this.dataLength = dataLength;
+    }
+
+    public void setDataLength(int dataLength) {
+        this.dataLength = ModifiableVariableFactory.safelySetValue(this.dataLength, dataLength);
+    }
 
     public ModifiableByteArray getData() {
         return data;
     }
 
     public void setData(ModifiableByteArray data) {
-        this.data = data;
+        setData(data, false);
     }
 
     public void setData(byte[] data) {
+        setData(data, false);
+    }
+
+    public void setData(ModifiableByteArray data, boolean adjustLengthField) {
+        if (adjustLengthField) {
+            setDataLength(data.getValue().length);
+        }
+        this.data = data;
+    }
+
+    public void setData(byte[] data, boolean adjustLengthField) {
+        if (adjustLengthField) {
+            setDataLength(data.length);
+        }
         this.data = ModifiableVariableFactory.safelySetValue(this.data, data);
     }
 
