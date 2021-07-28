@@ -30,31 +30,11 @@ public abstract class UserAuthRequestMessage<T extends UserAuthRequestMessage<T>
 
     protected UserAuthRequestMessage(AuthenticationMethod authenticationMethod) {
         super(MessageIDConstant.SSH_MSG_USERAUTH_REQUEST);
-        setMethodName(authenticationMethod);
+        setMethodName(authenticationMethod, true);
     }
 
     public ModifiableInteger getUserNameLength() {
         return userNameLength;
-    }
-
-    public ModifiableString getUserName() {
-        return userName;
-    }
-
-    public ModifiableInteger getServiceNameLength() {
-        return serviceNameLength;
-    }
-
-    public ModifiableString getServiceName() {
-        return serviceName;
-    }
-
-    public ModifiableInteger getMethodNameLength() {
-        return methodNameLength;
-    }
-
-    public ModifiableString getMethodName() {
-        return methodName;
     }
 
     public void setUserNameLength(ModifiableInteger userNameLength) {
@@ -65,12 +45,16 @@ public abstract class UserAuthRequestMessage<T extends UserAuthRequestMessage<T>
         this.userNameLength = ModifiableVariableFactory.safelySetValue(this.userNameLength, userNameLength);
     }
 
+    public ModifiableString getUserName() {
+        return userName;
+    }
+
     public void setUserName(ModifiableString userName) {
-        setUserName(userName, true);
+        setUserName(userName, false);
     }
 
     public void setUserName(String userName) {
-        setUserName(userName, true);
+        setUserName(userName, false);
     }
 
     public void setUserName(ModifiableString userName, boolean adjustLengthField) {
@@ -87,6 +71,10 @@ public abstract class UserAuthRequestMessage<T extends UserAuthRequestMessage<T>
         this.userName = ModifiableVariableFactory.safelySetValue(this.userName, userName);
     }
 
+    public ModifiableInteger getServiceNameLength() {
+        return serviceNameLength;
+    }
+
     public void setServiceNameLength(ModifiableInteger serviceNameLength) {
         this.serviceNameLength = serviceNameLength;
     }
@@ -95,12 +83,16 @@ public abstract class UserAuthRequestMessage<T extends UserAuthRequestMessage<T>
         this.serviceNameLength = ModifiableVariableFactory.safelySetValue(this.serviceNameLength, serviceNameLength);
     }
 
+    public ModifiableString getServiceName() {
+        return serviceName;
+    }
+
     public void setServiceName(ModifiableString serviceName) {
-        setServiceName(serviceName, true);
+        setServiceName(serviceName, false);
     }
 
     public void setServiceName(String serviceName) {
-        setServiceName(serviceName, true);
+        setServiceName(serviceName, false);
     }
 
     public void setServiceName(ServiceType serviceType) {
@@ -125,6 +117,10 @@ public abstract class UserAuthRequestMessage<T extends UserAuthRequestMessage<T>
         setServiceName(serviceType.toString(), adjustLengthField);
     }
 
+    public ModifiableInteger getMethodNameLength() {
+        return methodNameLength;
+    }
+
     public void setMethodNameLength(ModifiableInteger methodNameLength) {
         this.methodNameLength = methodNameLength;
     }
@@ -133,12 +129,16 @@ public abstract class UserAuthRequestMessage<T extends UserAuthRequestMessage<T>
         this.methodNameLength = ModifiableVariableFactory.safelySetValue(this.methodNameLength, methodNameLength);
     }
 
+    public ModifiableString getMethodName() {
+        return methodName;
+    }
+
     public void setMethodName(ModifiableString methodName) {
-        setMethodName(methodName, true);
+        setMethodName(methodName, false);
     }
 
     public void setMethodName(String methodName) {
-        setMethodName(methodName, true);
+        setMethodName(methodName, false);
     }
 
     public void setMethodName(AuthenticationMethod authenticationMethod) {

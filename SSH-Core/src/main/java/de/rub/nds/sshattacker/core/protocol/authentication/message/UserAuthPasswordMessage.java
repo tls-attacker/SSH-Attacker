@@ -38,22 +38,6 @@ public class UserAuthPasswordMessage extends UserAuthRequestMessage<UserAuthPass
         return changePassword;
     }
 
-    public ModifiableInteger getPasswordLength() {
-        return passwordLength;
-    }
-
-    public ModifiableString getPassword() {
-        return password;
-    }
-
-    public ModifiableInteger getNewPasswordLength() {
-        return newPasswordLength;
-    }
-
-    public ModifiableString getNewPassword() {
-        return newPassword;
-    }
-
     public void setChangePassword(ModifiableByte changePassword) {
         this.changePassword = changePassword;
     }
@@ -66,6 +50,10 @@ public class UserAuthPasswordMessage extends UserAuthRequestMessage<UserAuthPass
         setChangePassword(Converter.booleanToByte(changePassword));
     }
 
+    public ModifiableInteger getPasswordLength() {
+        return passwordLength;
+    }
+
     public void setPasswordLength(ModifiableInteger passwordLength) {
         this.passwordLength = passwordLength;
     }
@@ -74,12 +62,16 @@ public class UserAuthPasswordMessage extends UserAuthRequestMessage<UserAuthPass
         this.passwordLength = ModifiableVariableFactory.safelySetValue(this.passwordLength, passwordLength);
     }
 
+    public ModifiableString getPassword() {
+        return password;
+    }
+
     public void setPassword(ModifiableString password) {
-        setPassword(password, true);
+        setPassword(password, false);
     }
 
     public void setPassword(String password) {
-        setPassword(password, true);
+        setPassword(password, false);
     }
 
     public void setPassword(ModifiableString password, boolean adjustLengthField) {
@@ -96,6 +88,10 @@ public class UserAuthPasswordMessage extends UserAuthRequestMessage<UserAuthPass
         this.password = ModifiableVariableFactory.safelySetValue(this.password, password);
     }
 
+    public ModifiableInteger getNewPasswordLength() {
+        return newPasswordLength;
+    }
+
     public void setNewPasswordLength(ModifiableInteger newPasswordLength) {
         this.newPasswordLength = newPasswordLength;
     }
@@ -104,12 +100,16 @@ public class UserAuthPasswordMessage extends UserAuthRequestMessage<UserAuthPass
         this.newPasswordLength = ModifiableVariableFactory.safelySetValue(this.newPasswordLength, newPasswordLength);
     }
 
+    public ModifiableString getNewPassword() {
+        return newPassword;
+    }
+
     public void setNewPassword(ModifiableString newPassword) {
-        setNewPassword(newPassword, true);
+        setNewPassword(newPassword, false);
     }
 
     public void setNewPassword(String newPassword) {
-        setNewPassword(newPassword, true);
+        setNewPassword(newPassword, false);
     }
 
     public void setNewPassword(ModifiableString newPassword, boolean adjustLengthField) {

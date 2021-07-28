@@ -51,15 +51,15 @@ public class ChannelOpenMessage extends Message<ChannelOpenMessage> {
     }
 
     public void setChannelType(ModifiableString channelType) {
-        setChannelType(channelType, true);
+        setChannelType(channelType, false);
     }
 
     public void setChannelType(String channelType) {
-        setChannelType(channelType, true);
+        setChannelType(channelType, false);
     }
 
     public void setChannelType(ChannelType channelType) {
-        setChannelType(channelType.toString(), true);
+        setChannelType(channelType.toString(), false);
     }
 
     public void setChannelType(ModifiableString channelType, boolean adjustLengthField) {

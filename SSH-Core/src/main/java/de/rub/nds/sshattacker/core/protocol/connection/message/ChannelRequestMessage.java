@@ -47,15 +47,15 @@ public abstract class ChannelRequestMessage<T extends ChannelRequestMessage<T>> 
     }
 
     public void setRequestType(ModifiableString requestType) {
-        setRequestType(requestType, true);
+        setRequestType(requestType, false);
     }
 
     public void setRequestType(String requestType) {
-        setRequestType(requestType, true);
+        setRequestType(requestType, false);
     }
 
     public void setRequestType(ChannelRequestType requestType) {
-        setRequestType(requestType.toString(), true);
+        setRequestType(requestType.toString(), false);
     }
 
     public void setRequestType(ModifiableString requestType, boolean adjustLengthField) {

@@ -61,11 +61,11 @@ public class ChannelOpenFailureMessage extends ChannelMessage<ChannelOpenFailure
     }
 
     public void setReason(ModifiableString reason) {
-        setReason(reason, true);
+        setReason(reason, false);
     }
 
     public void setReason(String reason) {
-        setReason(reason, true);
+        setReason(reason, false);
     }
 
     public void setReason(ModifiableString reason, boolean adjustLengthField) {
@@ -99,11 +99,11 @@ public class ChannelOpenFailureMessage extends ChannelMessage<ChannelOpenFailure
     }
 
     public void setLanguageTag(ModifiableString languageTag) {
-        setLanguageTag(languageTag, true);
+        setLanguageTag(languageTag, false);
     }
 
     public void setLanguageTag(String languageTag) {
-        setLanguageTag(languageTag, true);
+        setLanguageTag(languageTag, false);
     }
 
     public void setLanguageTag(ModifiableString languageTag, boolean adjustLengthField) {

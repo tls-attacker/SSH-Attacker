@@ -36,18 +36,6 @@ public class UserAuthBannerMessage extends Message<UserAuthBannerMessage> {
         return messageLength;
     }
 
-    public ModifiableString getMessage() {
-        return message;
-    }
-
-    public ModifiableInteger getLanguageTagLength() {
-        return languageTagLength;
-    }
-
-    public ModifiableString getLanguageTag() {
-        return languageTag;
-    }
-
     public void setMessageLength(ModifiableInteger messageLength) {
         this.messageLength = messageLength;
     }
@@ -56,12 +44,16 @@ public class UserAuthBannerMessage extends Message<UserAuthBannerMessage> {
         this.messageLength = ModifiableVariableFactory.safelySetValue(this.messageLength, messageLength);
     }
 
+    public ModifiableString getMessage() {
+        return message;
+    }
+
     public void setMessage(ModifiableString message) {
-        setMessage(message, true);
+        setMessage(message, false);
     }
 
     public void setMessage(String message) {
-        setMessage(message, true);
+        setMessage(message, false);
     }
 
     public void setMessage(ModifiableString message, boolean adjustLengthField) {
@@ -78,6 +70,10 @@ public class UserAuthBannerMessage extends Message<UserAuthBannerMessage> {
         this.message = ModifiableVariableFactory.safelySetValue(this.message, message);
     }
 
+    public ModifiableInteger getLanguageTagLength() {
+        return languageTagLength;
+    }
+
     public void setLanguageTagLength(ModifiableInteger languageTagLength) {
         this.languageTagLength = languageTagLength;
     }
@@ -86,12 +82,16 @@ public class UserAuthBannerMessage extends Message<UserAuthBannerMessage> {
         this.languageTagLength = ModifiableVariableFactory.safelySetValue(this.languageTagLength, languageTagLength);
     }
 
+    public ModifiableString getLanguageTag() {
+        return languageTag;
+    }
+
     public void setLanguageTag(ModifiableString languageTag) {
-        setLanguageTag(languageTag, true);
+        setLanguageTag(languageTag, false);
     }
 
     public void setLanguageTag(String languageTag) {
-        setLanguageTag(languageTag, true);
+        setLanguageTag(languageTag, false);
     }
 
     public void setLanguageTag(ModifiableString languageTag, boolean adjustLengthField) {

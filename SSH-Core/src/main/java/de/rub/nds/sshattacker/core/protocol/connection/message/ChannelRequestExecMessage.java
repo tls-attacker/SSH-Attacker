@@ -46,11 +46,11 @@ public class ChannelRequestExecMessage extends ChannelRequestMessage<ChannelRequ
     }
 
     public void setCommand(ModifiableString command) {
-        setCommand(command, true);
+        setCommand(command, false);
     }
 
     public void setCommand(String command) {
-        setCommand(command, true);
+        setCommand(command, false);
     }
 
     public void setCommand(ModifiableString command, boolean adjustLengthField) {

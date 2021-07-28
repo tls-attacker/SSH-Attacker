@@ -47,15 +47,15 @@ public abstract class GlobalRequestMessage<T extends GlobalRequestMessage<T>> ex
     }
 
     public void setRequestName(ModifiableString requestName) {
-        setRequestName(requestName, true);
+        setRequestName(requestName, false);
     }
 
     public void setRequestName(String requestName) {
-        setRequestName(requestName, true);
+        setRequestName(requestName, false);
     }
 
     public void setRequestName(GlobalRequestType requestType) {
-        setRequestName(requestType.toString(), true);
+        setRequestName(requestType.toString(), false);
     }
 
     public void setRequestName(ModifiableString requestName, boolean adjustLengthField) {

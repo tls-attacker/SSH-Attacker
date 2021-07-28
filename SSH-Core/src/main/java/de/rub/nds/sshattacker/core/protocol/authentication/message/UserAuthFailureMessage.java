@@ -13,6 +13,8 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
+import de.rub.nds.sshattacker.core.constants.AuthenticationMethod;
+import de.rub.nds.sshattacker.core.constants.CharConstants;
 import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
 import de.rub.nds.sshattacker.core.protocol.common.Message;
 import de.rub.nds.sshattacker.core.protocol.authentication.preparator.UserAuthFailureMessagePreparator;
@@ -22,6 +24,8 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.util.Converter;
 
 import java.nio.charset.StandardCharsets;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class UserAuthFailureMessage extends Message<UserAuthFailureMessage> {
 
@@ -37,14 +41,6 @@ public class UserAuthFailureMessage extends Message<UserAuthFailureMessage> {
         return possibleAuthenticationMethodsLength;
     }
 
-    public ModifiableString getPossibleAuthenticationMethods() {
-        return possibleAuthenticationMethods;
-    }
-
-    public ModifiableByte getPartialSuccess() {
-        return partialSuccess;
-    }
-
     public void setPossibleAuthenticationMethodsLength(ModifiableInteger possibleAuthenticationMethodsLength) {
         this.possibleAuthenticationMethodsLength = possibleAuthenticationMethodsLength;
     }
@@ -54,12 +50,24 @@ public class UserAuthFailureMessage extends Message<UserAuthFailureMessage> {
                 this.possibleAuthenticationMethodsLength, possibleAuthenticationMethodsLength);
     }
 
+    public ModifiableString getPossibleAuthenticationMethods() {
+        return possibleAuthenticationMethods;
+    }
+
     public void setPossibleAuthenticationMethods(ModifiableString possibleAuthenticationMethods) {
-        setPossibleAuthenticationMethods(possibleAuthenticationMethods, true);
+        setPossibleAuthenticationMethods(possibleAuthenticationMethods, false);
     }
 
     public void setPossibleAuthenticationMethods(String possibleAuthenticationMethods) {
-        setPossibleAuthenticationMethods(possibleAuthenticationMethods, true);
+        setPossibleAuthenticationMethods(possibleAuthenticationMethods, false);
+    }
+
+    public void setPossibleAuthenticationMethods(String[] possibleAuthenticationMethods) {
+        setPossibleAuthenticationMethods(possibleAuthenticationMethods, false);
+    }
+
+    public void setPossibleAuthenticationMethods(List<AuthenticationMethod> possibleAuthenticationMethods) {
+        setPossibleAuthenticationMethods(possibleAuthenticationMethods, false);
     }
 
     public void setPossibleAuthenticationMethods(ModifiableString possibleAuthenticationMethods,
@@ -77,6 +85,20 @@ public class UserAuthFailureMessage extends Message<UserAuthFailureMessage> {
         }
         this.possibleAuthenticationMethods = ModifiableVariableFactory.safelySetValue(
                 this.possibleAuthenticationMethods, possibleAuthenticationMethods);
+    }
+
+    public void setPossibleAuthenticationMethods(String[] possibleAuthenticationMethods, boolean adjustLengthField) {
+        String nameList = String.join("" + CharConstants.ALGORITHM_SEPARATOR, possibleAuthenticationMethods);
+        setPossibleAuthenticationMethods(nameList, adjustLengthField);
+    }
+
+    public void setPossibleAuthenticationMethods(List<AuthenticationMethod> possibleAuthenticationMethods, boolean adjustLengthField) {
+        String nameList = possibleAuthenticationMethods.stream().map(AuthenticationMethod::toString).collect(Collectors.joining("" + CharConstants.ALGORITHM_SEPARATOR));
+        setPossibleAuthenticationMethods(nameList, adjustLengthField);
+    }
+
+    public ModifiableByte getPartialSuccess() {
+        return partialSuccess;
     }
 
     public void setPartialSuccess(ModifiableByte partialSuccess) {

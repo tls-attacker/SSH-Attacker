@@ -62,11 +62,11 @@ public class ChannelExtendedDataMessage extends ChannelMessage<ChannelExtendedDa
     }
 
     public void setData(ModifiableByteArray data) {
-        setData(data, true);
+        setData(data, false);
     }
 
     public void setData(byte[] data) {
-        setData(data, true);
+        setData(data, false);
     }
 
     public void setData(ModifiableByteArray data, boolean adjustLengthField) {
