@@ -118,12 +118,14 @@ public class Config implements Serializable {
     private Boolean enforceSettings = false;
 
     /**
-     * If set to true, preparation exceptions will not be thrown during message preparation. Instead, fields will be filled with dummy data to allow for out of order testing.
+     * If set to true, preparation exceptions will not be thrown during message preparation.
+     * Instead, fields will be filled with dummy data to allow for out of order testing.
      */
     private Boolean avoidPreparationExceptions = false;
 
     /**
-     * If set to true, adjustment exceptions will not be thrown during message handling. Instead, message related adjustments may be skipped depending on the current state.
+     * If set to true, adjustment exceptions will not be thrown during message handling. Instead,
+     * message related adjustments may be skipped depending on the current state.
      */
     private Boolean avoidAdjustmentExceptions = false;
 

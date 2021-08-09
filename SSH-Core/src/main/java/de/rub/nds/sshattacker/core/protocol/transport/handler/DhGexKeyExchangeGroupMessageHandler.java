@@ -11,7 +11,7 @@ import de.rub.nds.sshattacker.core.crypto.hash.DhGexExchangeHash;
 import de.rub.nds.sshattacker.core.crypto.hash.DhGexOldExchangeHash;
 import de.rub.nds.sshattacker.core.crypto.hash.ExchangeHash;
 import de.rub.nds.sshattacker.core.crypto.kex.DhKeyExchange;
-import de.rub.nds.sshattacker.core.exceptions.AdjustmentException;
+import de.rub.nds.sshattacker.core.crypto.kex.KeyExchange;
 import de.rub.nds.sshattacker.core.protocol.common.Handler;
 import de.rub.nds.sshattacker.core.protocol.transport.message.DhGexKeyExchangeGroupMessage;
 import de.rub.nds.sshattacker.core.state.SshContext;
@@ -28,19 +28,28 @@ public class DhGexKeyExchangeGroupMessageHandler extends Handler<DhGexKeyExchang
 
     @Override
     public void handle(DhGexKeyExchangeGroupMessage msg) {
-        if (context.getKeyExchangeInstance().isPresent()) {
-            DhKeyExchange dhKeyExchange = (DhKeyExchange) context.getKeyExchangeInstance().get();
-            dhKeyExchange.setModulus(msg.getGroupModulus().getValue());
-            dhKeyExchange.setGenerator(msg.getGroupGenerator().getValue());
-        } else {
-            String errorMsg = "Key exchange instance is not present, unable to set group modulus and generator for the key exchange instance";
-            if(context.getConfig().getAvoidAdjustmentExceptions()) {
-                LOGGER.warn(errorMsg);
-            } else {
-                throw new AdjustmentException(errorMsg);
-            }
-        }
+        setGroupParametersFromMessage(msg);
+        updateExchangeHashWithGroupParameters(msg);
+    }
 
+    private void setGroupParametersFromMessage(DhGexKeyExchangeGroupMessage msg) {
+        if (context.getKeyExchangeInstance().isPresent()) {
+            KeyExchange keyExchange = context.getKeyExchangeInstance().get();
+            if (keyExchange instanceof DhKeyExchange) {
+                DhKeyExchange dhKeyExchange = (DhKeyExchange) keyExchange;
+                dhKeyExchange.setModulus(msg.getGroupModulus().getValue());
+                dhKeyExchange.setGenerator(msg.getGroupGenerator().getValue());
+            } else {
+                raiseAdjustmentException(
+                        "Key exchange instance is not an DhKeyExchange, unable to set group modulus and generator for the key exchange instance");
+            }
+        } else {
+            raiseAdjustmentException(
+                    "Key exchange instance is not present, unable to set group modulus and generator for the key exchange instance");
+        }
+    }
+
+    private void updateExchangeHashWithGroupParameters(DhGexKeyExchangeGroupMessage msg) {
         ExchangeHash exchangeHash = context.getExchangeHashInstance();
         if (exchangeHash instanceof DhGexExchangeHash) {
             DhGexExchangeHash dhGexExchangeHash = (DhGexExchangeHash) exchangeHash;
@@ -51,12 +60,8 @@ public class DhGexKeyExchangeGroupMessageHandler extends Handler<DhGexKeyExchang
             dhGexOldExchangeHash.setGroupModulus(msg.getGroupModulus().getValue());
             dhGexOldExchangeHash.setGroupGenerator(msg.getGroupGenerator().getValue());
         } else {
-            String errorMsg = "Exchange hash instance is neither DhGexExchangeHash nor DhGexOldExchangeHash or key exchange instance is not present, unable to update exchange hash";
-            if(context.getConfig().getAvoidAdjustmentExceptions()) {
-                LOGGER.warn(errorMsg);
-            } else {
-                throw new AdjustmentException(errorMsg);
-            }
+            raiseAdjustmentException(
+                    "Exchange hash instance is neither DhGexExchangeHash nor DhGexOldExchangeHash, unable to update exchange hash");
         }
     }
 }

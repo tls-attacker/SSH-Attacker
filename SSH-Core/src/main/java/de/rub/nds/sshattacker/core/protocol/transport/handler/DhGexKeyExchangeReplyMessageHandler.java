@@ -12,13 +12,18 @@ import de.rub.nds.sshattacker.core.crypto.hash.DhGexExchangeHash;
 import de.rub.nds.sshattacker.core.crypto.hash.DhGexOldExchangeHash;
 import de.rub.nds.sshattacker.core.crypto.hash.ExchangeHash;
 import de.rub.nds.sshattacker.core.crypto.kex.DhKeyExchange;
-import de.rub.nds.sshattacker.core.exceptions.AdjustmentException;
+import de.rub.nds.sshattacker.core.crypto.kex.KeyExchange;
 import de.rub.nds.sshattacker.core.protocol.common.Handler;
 import de.rub.nds.sshattacker.core.protocol.layers.CryptoLayerFactory;
 import de.rub.nds.sshattacker.core.protocol.transport.message.DhGexKeyExchangeReplyMessage;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import java.util.Optional;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class DhGexKeyExchangeReplyMessageHandler extends Handler<DhGexKeyExchangeReplyMessage> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public DhGexKeyExchangeReplyMessageHandler(SshContext context) {
         super(context);
@@ -27,27 +32,11 @@ public class DhGexKeyExchangeReplyMessageHandler extends Handler<DhGexKeyExchang
     @Override
     public void handle(DhGexKeyExchangeReplyMessage message) {
         context.setKeyExchangeSignature(message.getSignature().getValue());
-
-        DhKeyExchange dhKeyExchange =
-                (DhKeyExchange)
-                        context.getKeyExchangeInstance().orElseThrow(AdjustmentException::new);
-        dhKeyExchange.setRemotePublicKey(message.getEphemeralPublicKey().getValue());
-        dhKeyExchange.computeSharedSecret();
-
         handleHostKey(message);
-        ExchangeHash exchangeHash = context.getExchangeHashInstance();
-        if (exchangeHash instanceof DhGexExchangeHash) {
-            ((DhGexExchangeHash) exchangeHash)
-                    .setServerDHPublicKey(dhKeyExchange.getRemotePublicKey());
-        } else {
-            ((DhGexOldExchangeHash) exchangeHash)
-                    .setServerDHPublicKey(dhKeyExchange.getRemotePublicKey());
-        }
-        exchangeHash.setSharedSecret(dhKeyExchange.getSharedSecret());
-        if (!context.getSessionID().isPresent()) {
-            context.setSessionID(exchangeHash.get());
-        }
-
+        updateExchangeHashWithRemotePublicKey(message);
+        computeSharedSecret(message);
+        updateExchangeHashWithSharedSecret();
+        setSessionId();
         KeyDerivation.deriveKeys(context);
         initializeCryptoLayers();
     }
@@ -55,7 +44,60 @@ public class DhGexKeyExchangeReplyMessageHandler extends Handler<DhGexKeyExchang
     private void handleHostKey(DhGexKeyExchangeReplyMessage message) {
         // TODO: Implement host key types as enumeration
         // TODO: Improve host key handling in separate class
-        context.getExchangeHashInstance().setServerHostKey(message.getHostKey().getValue());
+        if (context.getExchangeHashInstance() != null) {
+            context.getExchangeHashInstance().setServerHostKey(message.getHostKey().getValue());
+        } else {
+            raiseAdjustmentException(
+                    "Exchange hash instance is null, unable to update exchange hash with server host key");
+        }
+    }
+
+    private void updateExchangeHashWithRemotePublicKey(DhGexKeyExchangeReplyMessage message) {
+        ExchangeHash exchangeHash = context.getExchangeHashInstance();
+        if (exchangeHash instanceof DhGexExchangeHash) {
+            ((DhGexExchangeHash) exchangeHash)
+                    .setServerDHPublicKey(message.getEphemeralPublicKey().getValue());
+        } else if (exchangeHash instanceof DhGexOldExchangeHash) {
+            ((DhGexOldExchangeHash) exchangeHash)
+                    .setServerDHPublicKey(message.getEphemeralPublicKey().getValue());
+        } else {
+            raiseAdjustmentException(
+                    "Exchange hash instance is neither DhGexExchangeHash nor DhGexOldExchangeHash or key exchange instance is not present, unable to update exchange hash");
+        }
+    }
+
+    private void computeSharedSecret(DhGexKeyExchangeReplyMessage message) {
+        if (context.getKeyExchangeInstance().isPresent()) {
+            DhKeyExchange dhKeyExchange = (DhKeyExchange) context.getKeyExchangeInstance().get();
+            dhKeyExchange.setRemotePublicKey(message.getEphemeralPublicKey().getValue());
+            dhKeyExchange.computeSharedSecret();
+        } else {
+            raiseAdjustmentException(
+                    "Key exchange instance is not present, unable to set remote public key and compute shared secret");
+        }
+    }
+
+    private void updateExchangeHashWithSharedSecret() {
+        ExchangeHash exchangeHash = context.getExchangeHashInstance();
+        Optional<KeyExchange> keyExchange = context.getKeyExchangeInstance();
+        if (keyExchange.isPresent() && keyExchange.get().isComplete() && exchangeHash != null) {
+            exchangeHash.setSharedSecret(keyExchange.get().getSharedSecret());
+        } else {
+            raiseAdjustmentException(
+                    "Exchange hash instance is null or key exchange instance is either not present or not ready yet, unable to update exchange hash with shared secret");
+        }
+    }
+
+    private void setSessionId() {
+        ExchangeHash exchangeHash = context.getExchangeHashInstance();
+        if (!context.getSessionID().isPresent()) {
+            if (exchangeHash != null && exchangeHash.isReady()) {
+                context.setSessionID(exchangeHash.get());
+            } else {
+                raiseAdjustmentException(
+                        "Exchange hash instance is either null or not ready yet, unable to set session id");
+            }
+        }
     }
 
     private void initializeCryptoLayers() {

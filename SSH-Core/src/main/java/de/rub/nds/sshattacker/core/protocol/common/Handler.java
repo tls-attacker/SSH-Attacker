@@ -7,9 +7,14 @@
  */
 package de.rub.nds.sshattacker.core.protocol.common;
 
+import de.rub.nds.sshattacker.core.exceptions.AdjustmentException;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public abstract class Handler<T> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     protected final SshContext context;
 
@@ -18,4 +23,12 @@ public abstract class Handler<T> {
     }
 
     public abstract void handle(T msg);
+
+    protected void raiseAdjustmentException(String errorMsg) {
+        if (context.getConfig().getAvoidAdjustmentExceptions()) {
+            LOGGER.warn(errorMsg);
+        } else {
+            throw new AdjustmentException(errorMsg);
+        }
+    }
 }
