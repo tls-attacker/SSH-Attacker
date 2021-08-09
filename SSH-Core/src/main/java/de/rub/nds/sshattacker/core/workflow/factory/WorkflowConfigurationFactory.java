@@ -46,24 +46,24 @@ public class WorkflowConfigurationFactory {
 
         switch (workflowTraceType) {
             case FULL:
-                sshActions.add(new SendAction(new ServiceRequestMessage()));
-                sshActions.add(new ReceiveAction());
-                sshActions.add(new SendAction(new UserAuthPasswordMessage()));
-                sshActions.add(new ReceiveAction());
-                sshActions.add(new SendAction(new ChannelOpenMessage()));
-                sshActions.add(new ReceiveAction());
-                sshActions.add(new SendAction(new ChannelRequestExecMessage()));
-                sshActions.add(new ReceiveAction());
+                sshActions.add(new SendAction("client", new ServiceRequestMessage()));
+                sshActions.add(new ReceiveAction("client"));
+                sshActions.add(new SendAction("client", new UserAuthPasswordMessage()));
+                sshActions.add(new ReceiveAction("client"));
+                sshActions.add(new SendAction("client", new ChannelOpenMessage()));
+                sshActions.add(new ReceiveAction("client"));
+                sshActions.add(new SendAction("client", new ChannelRequestExecMessage()));
+                sshActions.add(new ReceiveAction("client"));
                 break;
 
             case KEYEXCHANGE:
-                sshActions.add(new SendAction(new VersionExchangeMessage()));
-                sshActions.add(new ReceiveAction());
-                sshActions.add(new SendAction(new KeyExchangeInitMessage()));
-                sshActions.add(new ReceiveAction());
-                sshActions.add(new SendAction(new EcdhKeyExchangeInitMessage()));
-                sshActions.add(new ReceiveAction());
-                sshActions.add(new SendAction(new NewKeysMessage()));
+                sshActions.add(new SendAction("client", new VersionExchangeMessage()));
+                sshActions.add(new ReceiveAction("client"));
+                sshActions.add(new SendAction("client", new KeyExchangeInitMessage()));
+                sshActions.add(new ReceiveAction("client"));
+                sshActions.add(new SendAction("client", new EcdhKeyExchangeInitMessage()));
+                sshActions.add(new ReceiveAction("client"));
+                sshActions.add(new SendAction("client", new NewKeysMessage()));
                 sshActions.add(new ActivateEncryptionAction());
                 break;
         }
