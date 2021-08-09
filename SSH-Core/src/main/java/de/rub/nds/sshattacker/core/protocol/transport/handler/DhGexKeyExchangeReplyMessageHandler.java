@@ -44,12 +44,7 @@ public class DhGexKeyExchangeReplyMessageHandler extends Handler<DhGexKeyExchang
     private void handleHostKey(DhGexKeyExchangeReplyMessage message) {
         // TODO: Implement host key types as enumeration
         // TODO: Improve host key handling in separate class
-        if (context.getExchangeHashInstance() != null) {
-            context.getExchangeHashInstance().setServerHostKey(message.getHostKey().getValue());
-        } else {
-            raiseAdjustmentException(
-                    "Exchange hash instance is null, unable to update exchange hash with server host key");
-        }
+        context.getExchangeHashInstance().setServerHostKey(message.getHostKey().getValue());
     }
 
     private void updateExchangeHashWithRemotePublicKey(DhGexKeyExchangeReplyMessage message) {
@@ -62,7 +57,7 @@ public class DhGexKeyExchangeReplyMessageHandler extends Handler<DhGexKeyExchang
                     .setServerDHPublicKey(message.getEphemeralPublicKey().getValue());
         } else {
             raiseAdjustmentException(
-                    "Exchange hash instance is neither DhGexExchangeHash nor DhGexOldExchangeHash or key exchange instance is not present, unable to update exchange hash");
+                    "Exchange hash instance is neither DhGexExchangeHash nor DhGexOldExchangeHash, unable to update exchange hash");
         }
     }
 
@@ -78,24 +73,23 @@ public class DhGexKeyExchangeReplyMessageHandler extends Handler<DhGexKeyExchang
     }
 
     private void updateExchangeHashWithSharedSecret() {
-        ExchangeHash exchangeHash = context.getExchangeHashInstance();
         Optional<KeyExchange> keyExchange = context.getKeyExchangeInstance();
-        if (keyExchange.isPresent() && keyExchange.get().isComplete() && exchangeHash != null) {
-            exchangeHash.setSharedSecret(keyExchange.get().getSharedSecret());
+        if (keyExchange.isPresent() && keyExchange.get().isComplete()) {
+            context.getExchangeHashInstance().setSharedSecret(keyExchange.get().getSharedSecret());
         } else {
             raiseAdjustmentException(
-                    "Exchange hash instance is null or key exchange instance is either not present or not ready yet, unable to update exchange hash with shared secret");
+                    "Key exchange instance is either not present or not ready yet, unable to update exchange hash with shared secret");
         }
     }
 
     private void setSessionId() {
         ExchangeHash exchangeHash = context.getExchangeHashInstance();
         if (!context.getSessionID().isPresent()) {
-            if (exchangeHash != null && exchangeHash.isReady()) {
+            if (exchangeHash.isReady()) {
                 context.setSessionID(exchangeHash.get());
             } else {
                 raiseAdjustmentException(
-                        "Exchange hash instance is either null or not ready yet, unable to set session id");
+                        "Exchange hash instance is not ready yet, unable to set session id");
             }
         }
     }
