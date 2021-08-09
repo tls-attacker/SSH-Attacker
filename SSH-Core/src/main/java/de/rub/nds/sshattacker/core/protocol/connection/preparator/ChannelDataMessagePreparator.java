@@ -24,6 +24,6 @@ public class ChannelDataMessagePreparator extends Preparator<ChannelDataMessage>
 
         // TODO dummy values for fuzzing
         message.setRecipientChannel(Integer.MAX_VALUE);
-        message.setData(new byte[0]);
+        message.setData(new byte[0], true);
     }
 }

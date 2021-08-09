@@ -27,7 +27,7 @@ public class ChannelRequestExecMessagePreparator extends Preparator<ChannelReque
         message.setRecipientChannel(
                 context.getRemoteChannel().orElseThrow(PreparationException::new));
         message.setWantReply(context.getConfig().getReplyWanted());
-        message.setRequestType(ChannelRequestType.EXEC);
-        message.setCommand(context.getConfig().getChannelCommand());
+        message.setRequestType(ChannelRequestType.EXEC, true);
+        message.setCommand(context.getConfig().getChannelCommand(), true);
     }
 }

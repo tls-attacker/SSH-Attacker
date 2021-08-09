@@ -23,7 +23,7 @@ public class UserAuthFailureMessagePreparator extends Preparator<UserAuthFailure
         message.setMessageID(MessageIDConstant.SSH_MSG_USERAUTH_FAILURE);
 
         // TODO dummy values for fuzzing
-        message.setPossibleAuthenticationMethods("");
+        message.setPossibleAuthenticationMethods("", true);
         message.setPartialSuccess(true);
     }
 }

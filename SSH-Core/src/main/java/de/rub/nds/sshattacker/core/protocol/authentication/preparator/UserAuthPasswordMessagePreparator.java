@@ -23,10 +23,10 @@ public class UserAuthPasswordMessagePreparator extends Preparator<UserAuthPasswo
     @Override
     public void prepare() {
         message.setMessageID(MessageIDConstant.SSH_MSG_USERAUTH_REQUEST);
-        message.setUserName(context.getConfig().getUsername());
-        message.setServiceName(ServiceType.SSH_CONNECTION);
-        message.setMethodName(AuthenticationMethod.PASSWORD);
+        message.setUserName(context.getConfig().getUsername(), true);
+        message.setServiceName(ServiceType.SSH_CONNECTION, true);
+        message.setMethodName(AuthenticationMethod.PASSWORD, true);
         message.setChangePassword(false);
-        message.setPassword(context.getConfig().getPassword());
+        message.setPassword(context.getConfig().getPassword(), true);
     }
 }

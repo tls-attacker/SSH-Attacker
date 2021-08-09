@@ -26,7 +26,7 @@ public class ChannelOpenFailureMessagePreparator extends Preparator<ChannelOpenF
         // TODO dummy values for fuzzing
         message.setRecipientChannel(Integer.MAX_VALUE);
         message.setReasonCode(Integer.MAX_VALUE);
-        message.setReason("");
-        message.setLanguageTag("");
+        message.setReason("", true);
+        message.setLanguageTag("", true);
     }
 }

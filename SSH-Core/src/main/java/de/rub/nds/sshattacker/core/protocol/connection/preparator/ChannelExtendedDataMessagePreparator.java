@@ -27,6 +27,6 @@ public class ChannelExtendedDataMessagePreparator extends Preparator<ChannelExte
         // TODO dummy values for fuzzing
         message.setRecipientChannel(Integer.MAX_VALUE);
         message.setDataTypeCode(ExtendedChannelDataType.SSH_EXTENDED_DATA_STDERR.getDataTypeCode());
-        message.setData(new byte[0]);
+        message.setData(new byte[0], true);
     }
 }
