@@ -25,10 +25,14 @@ public class DhGexKeyExchangeOldRequestMessagePreparator
 
     @Override
     public void prepare() {
-        DhKeyExchange keyExchange =
-                DhKeyExchange.newInstance(
-                        context.getKeyExchangeAlgorithm().orElseThrow(PreparationException::new));
-        context.setKeyExchangeInstance(keyExchange);
+        if(context.getKeyExchangeAlgorithm().isPresent()) {
+            DhKeyExchange keyExchange =
+                    DhKeyExchange.newInstance(context.getKeyExchangeAlgorithm().get());
+            context.setKeyExchangeInstance(keyExchange);
+        } else {
+            raisePreparationException("Unable to instantiate a new DH key exchange, the negotiated key exchange algorithm is not set");
+        }
+
         DhGexOldExchangeHash dhGexOldExchangeHash =
                 DhGexOldExchangeHash.from(context.getExchangeHashInstance());
         dhGexOldExchangeHash.setPreferredGroupSize(context.getChooser().getPreferredDHGroupSize());
