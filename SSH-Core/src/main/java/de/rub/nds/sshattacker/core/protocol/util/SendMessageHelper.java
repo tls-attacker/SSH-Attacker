@@ -64,7 +64,9 @@ public class SendMessageHelper {
         MessageActionResult result = new MessageActionResult();
         for (Message<?> msg : list) {
             if (msg instanceof VersionExchangeMessage) {
-                result = sendVersionExchangeMessage((VersionExchangeMessage) msg, context);
+                result =
+                        result.merge(
+                                sendVersionExchangeMessage((VersionExchangeMessage) msg, context));
             } else {
                 result = result.merge(sendMessage(msg, context));
             }
