@@ -7,6 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.protocol.common;
 
+import de.rub.nds.sshattacker.core.exceptions.PreparationException;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -27,5 +28,13 @@ public abstract class Preparator<T> {
 
     public T getMessage() {
         return message;
+    }
+
+    protected void raisePreparationException(String errorMsg) {
+        if (context.getConfig().getAvoidPreparationExceptions()) {
+            LOGGER.warn(errorMsg);
+        } else {
+            throw new PreparationException(errorMsg);
+        }
     }
 }
