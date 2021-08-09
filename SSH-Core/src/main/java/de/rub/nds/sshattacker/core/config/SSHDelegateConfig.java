@@ -19,7 +19,6 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-@SuppressWarnings("ConstantConditions")
 public class SSHDelegateConfig {
 
     private static final Logger LOGGER = LogManager.getLogger();
@@ -31,7 +30,7 @@ public class SSHDelegateConfig {
     @Parameter(
             names = "-config",
             description = "This parameter allows you to specify a default SshConfig")
-    private final String defaultConfig = null;
+    private String defaultConfig = null;
 
     public SSHDelegateConfig(GeneralDelegate delegate) {
         delegateList = new LinkedList<>();
