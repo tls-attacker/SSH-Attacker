@@ -240,7 +240,6 @@ public class SshContext {
     public void init(Config config, AliasedConnection connection) {
         this.config = config;
         this.connection = connection;
-        transportHandler = TransportHandlerFactory.createTransportHandler(connection);
         // TODO: this could introduce bugs
         chooser = new Chooser(this);
         exchangeHash = new ExchangeHash(this);

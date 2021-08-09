@@ -36,16 +36,7 @@ public class OutboundConnection extends AliasedConnection {
     }
 
     public OutboundConnection(OutboundConnection other) {
-        this.alias = other.alias;
-        this.hostname = other.hostname;
-        this.ip = other.ip;
-        this.port = other.port;
-        this.proxyDataHostname = other.proxyDataHostname;
-        this.proxyDataPort = other.proxyDataPort;
-        this.proxyControlHostname = other.proxyControlHostname;
-        this.proxyControlPort = other.proxyControlPort;
-        this.timeout = other.timeout;
-        this.transportHandlerType = other.transportHandlerType;
+        super(other);
     }
 
     @Override
@@ -55,31 +46,18 @@ public class OutboundConnection extends AliasedConnection {
 
     @Override
     public String toString() {
-        return "OutboundConnection{"
-                + " alias="
-                + alias
-                + " host="
-                + hostname
-                + " port="
-                + port
-                + " proxyDataHost="
-                + proxyDataHostname
-                + " proxyDataPort="
-                + proxyDataPort
-                + " proxyControlHost="
-                + proxyControlHostname
-                + " proxyControlPort="
-                + proxyControlPort
-                + " type="
-                + transportHandlerType
-                + " timeout="
-                + timeout
-                + "}";
+        StringBuilder sb = new StringBuilder("OutboundConnection{ ");
+        addProperties(sb);
+        sb.append(" }");
+        return sb.toString();
     }
 
     @Override
     public String toCompactString() {
-        return "OutboundConnection[" + alias + ":" + hostname + ":" + port + "]";
+        StringBuilder sb = new StringBuilder("OutboundConnection[ ");
+        addCompactProperties(sb);
+        sb.append(" ]");
+        return sb.toString();
     }
 
     @Override
