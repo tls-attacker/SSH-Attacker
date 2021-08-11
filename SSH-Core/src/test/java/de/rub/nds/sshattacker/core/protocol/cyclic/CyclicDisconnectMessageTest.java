@@ -1,25 +1,22 @@
 /**
  * SSH-Attacker - A Modular Penetration Testing Framework for SSH
  *
- * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * <p>Copyright 2014-2021 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.sshattacker.core.protocol.cyclic;
 
-import de.rub.nds.sshattacker.core.protocol.message.DisconnectMessage;
-import de.rub.nds.sshattacker.core.protocol.parser.DisconnectMessageParser;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+
 import de.rub.nds.sshattacker.core.protocol.parser.DisconnectMessageParserTest;
-import de.rub.nds.sshattacker.core.protocol.serializer.DisconnectMessageSerializer;
+import de.rub.nds.sshattacker.core.protocol.transport.message.DisconnectMessage;
+import de.rub.nds.sshattacker.core.protocol.transport.parser.DisconnectMessageParser;
+import de.rub.nds.sshattacker.core.protocol.transport.serializer.DisconnectMessageSerializer;
+import java.util.stream.Stream;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-
-import java.util.stream.Stream;
-
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 public class CyclicDisconnectMessageTest {
     /**
@@ -35,8 +32,7 @@ public class CyclicDisconnectMessageTest {
     /**
      * Cyclic test for parsing and serializing of DisconnectMessage
      *
-     * @param providedBytes
-     *            Bytes to parse and serialize again
+     * @param providedBytes Bytes to parse and serialize again
      */
     @ParameterizedTest
     @MethodSource("provideTestVectors")

@@ -1,11 +1,9 @@
 /**
  * SSH-Attacker - A Modular Penetration Testing Framework for SSH
  *
- * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * <p>Copyright 2014-2021 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.sshattacker.core.crypto.kex;
 
@@ -14,12 +12,11 @@ import de.rub.nds.sshattacker.core.constants.CryptoConstants;
 import de.rub.nds.sshattacker.core.constants.KeyExchangeAlgorithm;
 import de.rub.nds.sshattacker.core.constants.NamedGroup;
 import de.rub.nds.sshattacker.core.crypto.keys.*;
+import java.math.BigInteger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.math.ec.rfc7748.X25519;
 import org.bouncycastle.math.ec.rfc7748.X448;
-
-import java.math.BigInteger;
 
 public class XCurveEcdhKeyExchange extends DhBasedKeyExchange {
 
@@ -33,7 +30,8 @@ public class XCurveEcdhKeyExchange extends DhBasedKeyExchange {
     public XCurveEcdhKeyExchange(NamedGroup group) {
         super();
         if (!group.isRFC7748Curve()) {
-            throw new IllegalArgumentException("XCurveEcdhKeyExchange does not support named group " + group);
+            throw new IllegalArgumentException(
+                    "XCurveEcdhKeyExchange does not support named group " + group);
         }
         this.group = group;
         precompute();
@@ -58,8 +56,10 @@ public class XCurveEcdhKeyExchange extends DhBasedKeyExchange {
                 group = NamedGroup.ECDH_X448;
                 break;
             default:
-                // TODO: Determine, whether throwing and error or continuing with a predetermined curve is better
-                LOGGER.warn("Initializing a new XEcdhKeyExchange without an RFC7748 ECDH key exchange algorithm negotiated. Falling back to curve25519-sha256.");
+                // TODO: Determine, whether throwing and error or continuing with a predetermined
+                // curve is better
+                LOGGER.warn(
+                        "Initializing a new XEcdhKeyExchange without an RFC7748 ECDH key exchange algorithm negotiated. Falling back to curve25519-sha256.");
                 group = NamedGroup.ECDH_X25519;
                 break;
         }
@@ -118,16 +118,27 @@ public class XCurveEcdhKeyExchange extends DhBasedKeyExchange {
         byte[] sharedBytes;
         if (group == NamedGroup.ECDH_X25519) {
             sharedBytes = new byte[CryptoConstants.X25519_POINT_SIZE];
-            X25519.scalarMult(localKeyPair.getPrivate().getScalar(), 0, remotePublicKey.getCoordinate(), 0,
-                    sharedBytes, 0);
+            X25519.scalarMult(
+                    localKeyPair.getPrivate().getScalar(),
+                    0,
+                    remotePublicKey.getCoordinate(),
+                    0,
+                    sharedBytes,
+                    0);
         } else {
             sharedBytes = new byte[CryptoConstants.X448_POINT_SIZE];
-            X448.scalarMult(localKeyPair.getPrivate().getScalar(), 0, remotePublicKey.getCoordinate(), 0, sharedBytes,
+            X448.scalarMult(
+                    localKeyPair.getPrivate().getScalar(),
+                    0,
+                    remotePublicKey.getCoordinate(),
+                    0,
+                    sharedBytes,
                     0);
         }
         sharedSecret = new BigInteger(sharedBytes);
-        LOGGER.debug("Finished computation of shared secret: "
-                + ArrayConverter.bytesToRawHexString(sharedSecret.toByteArray()));
+        LOGGER.debug(
+                "Finished computation of shared secret: "
+                        + ArrayConverter.bytesToRawHexString(sharedSecret.toByteArray()));
     }
 
     @Override
@@ -139,5 +150,4 @@ public class XCurveEcdhKeyExchange extends DhBasedKeyExchange {
     public XCurveEcPublicKey getRemotePublicKey() {
         return remotePublicKey;
     }
-
 }

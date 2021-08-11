@@ -1,11 +1,9 @@
 /**
  * SSH-Attacker - A Modular Penetration Testing Framework for SSH
  *
- * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * <p>Copyright 2014-2021 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.sshattacker.core.config.converter;
 
@@ -14,17 +12,19 @@ import com.beust.jcommander.ParameterException;
 import java.util.Arrays;
 import org.apache.logging.log4j.Level;
 
-/**
- * Converts a log level string to an Apache log4j Level object (for command line purposes).
- */
+/** Converts a log level string to an Apache log4j Level object (for command line purposes). */
 public class LogLevelConverter implements IStringConverter<Level> {
 
     @Override
     public Level convert(String value) {
         Level l = Level.toLevel(value);
         if (l == null) {
-            throw new ParameterException("Value " + value + " cannot be converted to a log4j level. "
-                    + "Available values are: " + Arrays.toString(Level.values()));
+            throw new ParameterException(
+                    "Value "
+                            + value
+                            + " cannot be converted to a log4j level. "
+                            + "Available values are: "
+                            + Arrays.toString(Level.values()));
         }
 
         return l;

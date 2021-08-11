@@ -1,11 +1,9 @@
 /**
  * SSH-Attacker - A Modular Penetration Testing Framework for SSH
  *
- * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * <p>Copyright 2014-2021 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.sshattacker.core.crypto.hash;
 
@@ -13,7 +11,6 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomDhPublicKey;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.util.Converter;
-
 import java.math.BigInteger;
 
 public class DhNamedExchangeHash extends ExchangeHash {
@@ -59,17 +56,21 @@ public class DhNamedExchangeHash extends ExchangeHash {
 
     @Override
     protected boolean areRequiredInputsMissing() {
-        return super.areRequiredInputsMissing() || clientDHPublicKey == null || serverDHPublicKey == null;
+        return super.areRequiredInputsMissing()
+                || clientDHPublicKey == null
+                || serverDHPublicKey == null;
     }
 
     @Override
     protected byte[] getHashInput() {
-        return ArrayConverter.concatenate(Converter.stringToLengthPrefixedBinaryString(clientVersion),
+        return ArrayConverter.concatenate(
+                Converter.stringToLengthPrefixedBinaryString(clientVersion),
                 Converter.stringToLengthPrefixedBinaryString(serverVersion),
                 Converter.bytesToLengthPrefixedBinaryString(clientKeyExchangeInit),
                 Converter.bytesToLengthPrefixedBinaryString(serverKeyExchangeInit),
                 Converter.bytesToLengthPrefixedBinaryString(serverHostKey),
-                Converter.byteArrayToMpint(clientDHPublicKey), Converter.byteArrayToMpint(serverDHPublicKey),
+                Converter.byteArrayToMpint(clientDHPublicKey),
+                Converter.byteArrayToMpint(serverDHPublicKey),
                 Converter.byteArrayToMpint(sharedSecret));
     }
 
@@ -82,8 +83,10 @@ public class DhNamedExchangeHash extends ExchangeHash {
         dhNamedExchangeHash.setServerHostKey(exchangeHash.serverHostKey);
         dhNamedExchangeHash.setSharedSecret(exchangeHash.sharedSecret);
         if (exchangeHash instanceof DhNamedExchangeHash) {
-            dhNamedExchangeHash.setClientDHPublicKey(((DhNamedExchangeHash) exchangeHash).clientDHPublicKey);
-            dhNamedExchangeHash.setServerDHPublicKey(((DhNamedExchangeHash) exchangeHash).serverDHPublicKey);
+            dhNamedExchangeHash.setClientDHPublicKey(
+                    ((DhNamedExchangeHash) exchangeHash).clientDHPublicKey);
+            dhNamedExchangeHash.setServerDHPublicKey(
+                    ((DhNamedExchangeHash) exchangeHash).serverDHPublicKey);
         }
         return dhNamedExchangeHash;
     }

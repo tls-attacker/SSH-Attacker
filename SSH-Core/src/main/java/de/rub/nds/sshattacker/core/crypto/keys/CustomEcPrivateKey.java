@@ -1,17 +1,14 @@
 /**
  * SSH-Attacker - A Modular Penetration Testing Framework for SSH
  *
- * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * <p>Copyright 2014-2021 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.sshattacker.core.crypto.keys;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.NamedGroup;
-
 import java.math.BigInteger;
 import java.security.AlgorithmParameters;
 import java.security.NoSuchAlgorithmException;
@@ -28,7 +25,8 @@ public class CustomEcPrivateKey implements ECPrivateKey {
 
     public CustomEcPrivateKey(BigInteger privateKey, NamedGroup group) {
         if (!group.isStandardCurve()) {
-            throw new IllegalArgumentException("CustomEcPrivateKey does not support named group " + group);
+            throw new IllegalArgumentException(
+                    "CustomEcPrivateKey does not support named group " + group);
         }
         this.privateKey = privateKey;
         this.group = group;

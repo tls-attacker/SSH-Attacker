@@ -1,11 +1,9 @@
 /**
  * SSH-Attacker - A Modular Penetration Testing Framework for SSH
  *
- * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * <p>Copyright 2014-2021 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.sshattacker.core.config.delegate;
 
@@ -15,19 +13,20 @@ import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.connection.OutboundConnection;
 import de.rub.nds.sshattacker.core.constants.RunningModeType;
 import de.rub.nds.sshattacker.core.exceptions.ConfigurationException;
-import org.bouncycastle.util.IPAddress;
-
 import java.net.*;
+import org.bouncycastle.util.IPAddress;
 
 public class ClientDelegate extends Delegate {
 
-    private final static int DEFAULT_SSH_PORT = 22;
+    private static final int DEFAULT_SSH_PORT = 22;
 
-    @Parameter(names = "-connect", required = true, description = "Who to connect to. Syntax: localhost:22")
+    @Parameter(
+            names = "-connect",
+            required = true,
+            description = "Who to connect to. Syntax: localhost:22")
     private String host = null;
 
-    public ClientDelegate() {
-    }
+    public ClientDelegate() {}
 
     public String getHost() {
         return host;
@@ -44,7 +43,7 @@ public class ClientDelegate extends Delegate {
         if (host == null) {
             // Though host is a required parameter we can get here if
             // we call applyDelegate manually, e.g. in tests.
-            throw new ParameterException("Could not parse provided host: " + host);
+            throw new ParameterException("Could not parse provided host, host is null");
         }
         // Remove any provided protocols
         String[] split = host.split("://");

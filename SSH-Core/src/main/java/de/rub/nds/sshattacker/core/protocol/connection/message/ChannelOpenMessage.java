@@ -1,0 +1,132 @@
+/**
+ * SSH-Attacker - A Modular Penetration Testing Framework for SSH
+ *
+ * <p>Copyright 2014-2021 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ *
+ * <p>Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ */
+package de.rub.nds.sshattacker.core.protocol.connection.message;
+
+import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
+import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
+import de.rub.nds.modifiablevariable.string.ModifiableString;
+import de.rub.nds.sshattacker.core.constants.ChannelType;
+import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
+import de.rub.nds.sshattacker.core.protocol.common.Message;
+import de.rub.nds.sshattacker.core.protocol.connection.handler.ChannelOpenMessageHandler;
+import de.rub.nds.sshattacker.core.protocol.connection.preparator.ChannelOpenMessagePreparator;
+import de.rub.nds.sshattacker.core.protocol.connection.serializer.ChannelOpenMessageSerializer;
+import de.rub.nds.sshattacker.core.state.SshContext;
+import java.nio.charset.StandardCharsets;
+
+public class ChannelOpenMessage extends Message<ChannelOpenMessage> {
+
+    private ModifiableInteger channelTypeLength;
+    private ModifiableString channelType;
+    private ModifiableInteger senderChannel;
+    private ModifiableInteger windowSize;
+    private ModifiableInteger packetSize;
+
+    public ChannelOpenMessage() {
+        super(MessageIDConstant.SSH_MSG_CHANNEL_OPEN);
+    }
+
+    public ModifiableInteger getChannelTypeLength() {
+        return channelTypeLength;
+    }
+
+    public void setChannelTypeLength(ModifiableInteger channelTypeLength) {
+        this.channelTypeLength = channelTypeLength;
+    }
+
+    public void setChannelTypeLength(int channelTypeLength) {
+        this.channelTypeLength =
+                ModifiableVariableFactory.safelySetValue(this.channelTypeLength, channelTypeLength);
+    }
+
+    public ModifiableString getChannelType() {
+        return channelType;
+    }
+
+    public void setChannelType(ModifiableString channelType) {
+        setChannelType(channelType, false);
+    }
+
+    public void setChannelType(String channelType) {
+        setChannelType(channelType, false);
+    }
+
+    public void setChannelType(ChannelType channelType) {
+        setChannelType(channelType.toString(), false);
+    }
+
+    public void setChannelType(ModifiableString channelType, boolean adjustLengthField) {
+        if (adjustLengthField) {
+            setChannelTypeLength(channelType.getValue().getBytes(StandardCharsets.US_ASCII).length);
+        }
+        this.channelType = channelType;
+    }
+
+    public void setChannelType(String channelType, boolean adjustLengthField) {
+        if (adjustLengthField) {
+            setChannelTypeLength(channelType.getBytes(StandardCharsets.US_ASCII).length);
+        }
+        this.channelType = ModifiableVariableFactory.safelySetValue(this.channelType, channelType);
+    }
+
+    public void setChannelType(ChannelType channelType, boolean adjustLengthField) {
+        setChannelType(channelType.toString(), adjustLengthField);
+    }
+
+    public ModifiableInteger getSenderChannel() {
+        return senderChannel;
+    }
+
+    public void setSenderChannel(ModifiableInteger senderChannel) {
+        this.senderChannel = senderChannel;
+    }
+
+    public void setSenderChannel(int senderChannel) {
+        this.senderChannel =
+                ModifiableVariableFactory.safelySetValue(this.senderChannel, senderChannel);
+    }
+
+    public ModifiableInteger getWindowSize() {
+        return windowSize;
+    }
+
+    public void setWindowSize(ModifiableInteger windowSize) {
+        this.windowSize = windowSize;
+    }
+
+    public void setWindowSize(int windowSize) {
+        this.windowSize = ModifiableVariableFactory.safelySetValue(this.windowSize, windowSize);
+    }
+
+    public ModifiableInteger getPacketSize() {
+        return packetSize;
+    }
+
+    public void setPacketSize(ModifiableInteger packetSize) {
+        this.packetSize = packetSize;
+    }
+
+    public void setPacketSize(int packetSize) {
+        this.packetSize = ModifiableVariableFactory.safelySetValue(this.packetSize, packetSize);
+    }
+
+    @Override
+    public ChannelOpenMessageHandler getHandler(SshContext context) {
+        return new ChannelOpenMessageHandler(context);
+    }
+
+    @Override
+    public ChannelOpenMessageSerializer getSerializer() {
+        return new ChannelOpenMessageSerializer(this);
+    }
+
+    @Override
+    public ChannelOpenMessagePreparator getPreparator(SshContext context) {
+        return new ChannelOpenMessagePreparator(context, this);
+    }
+}

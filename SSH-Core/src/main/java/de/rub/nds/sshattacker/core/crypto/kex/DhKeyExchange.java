@@ -1,24 +1,21 @@
 /**
  * SSH-Attacker - A Modular Penetration Testing Framework for SSH
  *
- * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * <p>Copyright 2014-2021 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.sshattacker.core.crypto.kex;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.sshattacker.core.constants.NamedDHGroup;
 import de.rub.nds.sshattacker.core.constants.KeyExchangeAlgorithm;
+import de.rub.nds.sshattacker.core.constants.NamedDHGroup;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomDhPrivateKey;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomDhPublicKey;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomKeyPair;
+import java.math.BigInteger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import java.math.BigInteger;
 
 public class DhKeyExchange extends DhBasedKeyExchange {
 
@@ -66,8 +63,10 @@ public class DhKeyExchange extends DhBasedKeyExchange {
                 group = NamedDHGroup.GROUP18;
                 break;
             default:
-                // TODO: Determine, whether throwing an error or continuing with a predetermined group is better
-                LOGGER.warn("Initializing a new DHKeyExchange without an DH key exchange algorithm negotiated, falling back to group 14");
+                // TODO: Determine, whether throwing an error or continuing with a predetermined
+                // group is better
+                LOGGER.warn(
+                        "Initializing a new DHKeyExchange without an DH key exchange algorithm negotiated, falling back to group 14");
                 group = NamedDHGroup.GROUP14;
                 break;
         }
@@ -115,35 +114,45 @@ public class DhKeyExchange extends DhBasedKeyExchange {
         BigInteger pMinusOne = modulus.subtract(BigInteger.ONE);
         CustomDhPrivateKey privateKey;
         do {
-            privateKey = new CustomDhPrivateKey(modulus, generator,
-                    new BigInteger(privateKeyBitLength, random).mod(modulus));
-        } while (privateKey.getX().equals(BigInteger.ZERO) || privateKey.getX().equals(BigInteger.ONE)
+            privateKey =
+                    new CustomDhPrivateKey(
+                            modulus,
+                            generator,
+                            new BigInteger(privateKeyBitLength, random).mod(modulus));
+        } while (privateKey.getX().equals(BigInteger.ZERO)
+                || privateKey.getX().equals(BigInteger.ONE)
                 || privateKey.getX().equals(pMinusOne));
-        CustomDhPublicKey publicKey = new CustomDhPublicKey(modulus, generator, generator.modPow(privateKey.getX(),
-                modulus));
+        CustomDhPublicKey publicKey =
+                new CustomDhPublicKey(
+                        modulus, generator, generator.modPow(privateKey.getX(), modulus));
         this.localKeyPair = new CustomKeyPair<>(privateKey, publicKey);
     }
 
     @Override
     public void setLocalKeyPair(byte[] privateKeyBytes) {
         BigInteger privateKeyExponent = new BigInteger(privateKeyBytes);
-        CustomDhPrivateKey privateKey = new CustomDhPrivateKey(modulus, generator, privateKeyExponent);
-        CustomDhPublicKey publicKey = new CustomDhPublicKey(modulus, generator, generator.modPow(privateKey.getX(),
-                modulus));
+        CustomDhPrivateKey privateKey =
+                new CustomDhPrivateKey(modulus, generator, privateKeyExponent);
+        CustomDhPublicKey publicKey =
+                new CustomDhPublicKey(
+                        modulus, generator, generator.modPow(privateKey.getX(), modulus));
         this.localKeyPair = new CustomKeyPair<>(privateKey, publicKey);
     }
 
     @Override
     public void setLocalKeyPair(byte[] privateKeyBytes, byte[] publicKeyBytes) {
-        CustomDhPrivateKey privateKey = new CustomDhPrivateKey(modulus, generator, new BigInteger(privateKeyBytes));
-        CustomDhPublicKey publicKey = new CustomDhPublicKey(modulus, generator, new BigInteger(publicKeyBytes));
+        CustomDhPrivateKey privateKey =
+                new CustomDhPrivateKey(modulus, generator, new BigInteger(privateKeyBytes));
+        CustomDhPublicKey publicKey =
+                new CustomDhPublicKey(modulus, generator, new BigInteger(publicKeyBytes));
         this.localKeyPair = new CustomKeyPair<>(privateKey, publicKey);
     }
 
     @Override
     public void computeSharedSecret() {
         sharedSecret = remotePublicKey.getY().modPow(localKeyPair.getPrivate().getX(), modulus);
-        LOGGER.debug("Finished computation of shared secret: "
-                + ArrayConverter.bytesToRawHexString(sharedSecret.toByteArray()));
+        LOGGER.debug(
+                "Finished computation of shared secret: "
+                        + ArrayConverter.bytesToRawHexString(sharedSecret.toByteArray()));
     }
 }

@@ -1,11 +1,9 @@
 /**
  * SSH-Attacker - A Modular Penetration Testing Framework for SSH
  *
- * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * <p>Copyright 2014-2021 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.sshattacker.core.protocol.layers;
 
@@ -13,12 +11,11 @@ import de.rub.nds.sshattacker.core.constants.EncryptionAlgorithm;
 import de.rub.nds.sshattacker.core.constants.MacAlgorithm;
 import de.rub.nds.sshattacker.core.exceptions.NotImplementedException;
 import de.rub.nds.sshattacker.core.state.SshContext;
-
+import java.security.*;
+import java.security.spec.AlgorithmParameterSpec;
 import javax.crypto.Cipher;
 import javax.crypto.Mac;
 import javax.crypto.NoSuchPaddingException;
-import java.security.*;
-import java.security.spec.AlgorithmParameterSpec;
 
 public class JCACryptoLayer extends CryptoLayer {
 
@@ -26,17 +23,26 @@ public class JCACryptoLayer extends CryptoLayer {
     private Cipher decryptCipher;
 
     private Mac mac;
+
+    @SuppressWarnings("FieldCanBeLocal")
     private Mac verify;
 
-    public JCACryptoLayer(EncryptionAlgorithm encryptionAlgorithm, String cipherTransform, Key cipherKey,
-            AlgorithmParameterSpec cipherParams, MacAlgorithm macAlgorithm, String macTransform, Key macKey,
+    public JCACryptoLayer(
+            EncryptionAlgorithm encryptionAlgorithm,
+            String cipherTransform,
+            Key cipherKey,
+            AlgorithmParameterSpec cipherParams,
+            MacAlgorithm macAlgorithm,
+            String macTransform,
+            Key macKey,
             SshContext context) {
         super(encryptionAlgorithm, macAlgorithm, context);
         initCiphers(cipherTransform, cipherKey, cipherParams);
         initMacs(macTransform, macKey);
     }
 
-    private void initCiphers(String cipherTransform, Key cipherKey, AlgorithmParameterSpec cipherParams) {
+    private void initCiphers(
+            String cipherTransform, Key cipherKey, AlgorithmParameterSpec cipherParams) {
         try {
             encryptCipher = Cipher.getInstance(cipherTransform);
             if (cipherParams != null) {

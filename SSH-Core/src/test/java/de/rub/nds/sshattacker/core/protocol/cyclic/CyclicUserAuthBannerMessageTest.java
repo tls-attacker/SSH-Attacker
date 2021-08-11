@@ -1,25 +1,22 @@
 /**
  * SSH-Attacker - A Modular Penetration Testing Framework for SSH
  *
- * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * <p>Copyright 2014-2021 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.sshattacker.core.protocol.cyclic;
 
-import de.rub.nds.sshattacker.core.protocol.message.UserAuthBannerMessage;
-import de.rub.nds.sshattacker.core.protocol.parser.UserAuthBannerMessageParser;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+
+import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthBannerMessage;
+import de.rub.nds.sshattacker.core.protocol.authentication.parser.UserAuthBannerMessageParser;
+import de.rub.nds.sshattacker.core.protocol.authentication.serializer.UserAuthBannerMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.parser.UserAuthBannerMessageParserTest;
-import de.rub.nds.sshattacker.core.protocol.serializer.UserAuthBannerMessageSerializer;
+import java.util.stream.Stream;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-
-import java.util.stream.Stream;
-
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 public class CyclicUserAuthBannerMessageTest {
     /**
@@ -35,8 +32,7 @@ public class CyclicUserAuthBannerMessageTest {
     /**
      * Cyclic test for parsing and serializing of UserAuthBannerMessage
      *
-     * @param providedBytes
-     *            Bytes to parse and serialize again
+     * @param providedBytes Bytes to parse and serialize again
      */
     @ParameterizedTest
     @MethodSource("provideTestVectors")

@@ -1,16 +1,14 @@
 /**
  * SSH-Attacker - A Modular Penetration Testing Framework for SSH
  *
- * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * <p>Copyright 2014-2021 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.sshattacker.core.workflow.action;
 
-import de.rub.nds.sshattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.sshattacker.core.connection.AliasedConnection;
+import de.rub.nds.sshattacker.core.exceptions.ConfigurationException;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Objects;
@@ -20,19 +18,17 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlTransient;
 
 /**
- * SSH Action bound to a single connection/SSH context. This should be the default abstract base class for most actions.
- * Provides automatic fallback to default context alias.
+ * SSH Action bound to a single connection/SSH context. This should be the default abstract base
+ * class for most actions. Provides automatic fallback to default context alias.
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 public abstract class ConnectionBoundAction extends SshAction {
 
     protected String connectionAlias = null;
 
-    @XmlTransient
-    private final Set<String> aliases = new HashSet<>();
+    @XmlTransient private final Set<String> aliases = new HashSet<>();
 
-    public ConnectionBoundAction() {
-    }
+    public ConnectionBoundAction() {}
 
     public ConnectionBoundAction(String alias) {
         this.connectionAlias = alias;
@@ -76,7 +72,8 @@ public abstract class ConnectionBoundAction extends SshAction {
     @Override
     public void assertAliasesSetProperly() throws ConfigurationException {
         if ((connectionAlias == null) || (connectionAlias.isEmpty())) {
-            throw new ConfigurationException("connectionAlias empty or null in " + this.getClass().getSimpleName());
+            throw new ConfigurationException(
+                    "connectionAlias empty or null in " + this.getClass().getSimpleName());
         }
     }
 
@@ -140,5 +137,4 @@ public abstract class ConnectionBoundAction extends SshAction {
         final ConnectionBoundAction other = (ConnectionBoundAction) obj;
         return Objects.equals(this.connectionAlias, other.connectionAlias);
     }
-
 }

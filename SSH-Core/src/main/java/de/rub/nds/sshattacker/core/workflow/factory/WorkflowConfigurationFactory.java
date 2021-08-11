@@ -1,38 +1,33 @@
 /**
  * SSH-Attacker - A Modular Penetration Testing Framework for SSH
  *
- * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * <p>Copyright 2014-2021 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.sshattacker.core.workflow.factory;
 
 import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.constants.RunningModeType;
+import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthPasswordMessage;
+import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelOpenMessage;
+import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelRequestExecMessage;
+import de.rub.nds.sshattacker.core.protocol.transport.message.EcdhKeyExchangeInitMessage;
+import de.rub.nds.sshattacker.core.protocol.transport.message.KeyExchangeInitMessage;
+import de.rub.nds.sshattacker.core.protocol.transport.message.NewKeysMessage;
+import de.rub.nds.sshattacker.core.protocol.transport.message.ServiceRequestMessage;
+import de.rub.nds.sshattacker.core.protocol.transport.message.VersionExchangeMessage;
 import de.rub.nds.sshattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.sshattacker.core.workflow.action.ActivateEncryptionAction;
 import de.rub.nds.sshattacker.core.workflow.action.ReceiveAction;
 import de.rub.nds.sshattacker.core.workflow.action.SendAction;
 import de.rub.nds.sshattacker.core.workflow.action.SshAction;
-import de.rub.nds.sshattacker.core.protocol.message.ChannelOpenMessage;
-import de.rub.nds.sshattacker.core.protocol.message.ChannelRequestMessage;
-import de.rub.nds.sshattacker.core.protocol.message.VersionExchangeMessage;
-import de.rub.nds.sshattacker.core.protocol.message.EcdhKeyExchangeInitMessage;
-import de.rub.nds.sshattacker.core.protocol.message.KeyExchangeInitMessage;
-import de.rub.nds.sshattacker.core.protocol.message.NewKeysMessage;
-import de.rub.nds.sshattacker.core.protocol.message.ServiceRequestMessage;
-import de.rub.nds.sshattacker.core.protocol.message.UserAuthPasswordMessage;
-
 import java.util.LinkedList;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-/**
- * Create a WorkflowTace based on a Config instance.
- */
+/** Create a WorkflowTace based on a Config instance. */
 public class WorkflowConfigurationFactory {
 
     private static final Logger LOGGER = LogManager.getLogger();
@@ -44,7 +39,8 @@ public class WorkflowConfigurationFactory {
         this.config = config;
     }
 
-    public WorkflowTrace createWorkflowTrace(WorkflowTraceType workflowTraceType, RunningModeType runningMode) {
+    public WorkflowTrace createWorkflowTrace(
+            WorkflowTraceType workflowTraceType, RunningModeType runningMode) {
         WorkflowTrace workflow = new WorkflowTrace();
         List<SshAction> sshActions = new LinkedList<>();
 
@@ -56,7 +52,7 @@ public class WorkflowConfigurationFactory {
                 sshActions.add(new ReceiveAction());
                 sshActions.add(new SendAction(new ChannelOpenMessage()));
                 sshActions.add(new ReceiveAction());
-                sshActions.add(new SendAction(new ChannelRequestMessage()));
+                sshActions.add(new SendAction(new ChannelRequestExecMessage()));
                 sshActions.add(new ReceiveAction());
                 break;
 
@@ -70,7 +66,6 @@ public class WorkflowConfigurationFactory {
                 sshActions.add(new SendAction(new NewKeysMessage()));
                 sshActions.add(new ActivateEncryptionAction());
                 break;
-
         }
         workflow.addSshActions(sshActions);
 

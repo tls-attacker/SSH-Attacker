@@ -1,18 +1,16 @@
 /**
  * SSH-Attacker - A Modular Penetration Testing Framework for SSH
  *
- * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * <p>Copyright 2014-2021 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
 package executing;
 
 import de.rub.nds.sshattacker.core.constants.RunningModeType;
-import de.rub.nds.sshattacker.core.protocol.helper.ReceiveMessageHelper;
-import de.rub.nds.sshattacker.core.protocol.helper.SendMessageHelper;
-import de.rub.nds.sshattacker.core.protocol.message.ChannelDataMessage;
+import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelDataMessage;
+import de.rub.nds.sshattacker.core.protocol.util.ReceiveMessageHelper;
+import de.rub.nds.sshattacker.core.protocol.util.SendMessageHelper;
 import de.rub.nds.sshattacker.core.state.State;
 import de.rub.nds.sshattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.sshattacker.core.workflow.executor.DefaultWorkflowExecutor;
@@ -27,8 +25,9 @@ public class NetcatWorkflowFactory {
     public static void main(String[] args) throws Exception {
 
         State state = new State();
-        WorkflowTrace trace = new WorkflowConfigurationFactory(state.getConfig()).createWorkflowTrace(
-                WorkflowTraceType.FULL, RunningModeType.SERVER);
+        WorkflowTrace trace =
+                new WorkflowConfigurationFactory(state.getConfig())
+                        .createWorkflowTrace(WorkflowTraceType.FULL, RunningModeType.SERVER);
 
         state.setWorkflowTrace(trace);
         DefaultWorkflowExecutor executor = new DefaultWorkflowExecutor(state);
@@ -39,11 +38,16 @@ public class NetcatWorkflowFactory {
         ReceiveMessageHelper receiveMessageHelper = new ReceiveMessageHelper();
 
         BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
+        // noinspection InfiniteLoopStatement
         while (true) {
+            // noinspection BusyWait
             Thread.sleep(5000);
             receiveMessageHelper.receiveMessages(state.getSshContext());
             String read = in.readLine();
-            sendMessageHelper.sendMessage(new ChannelDataMessage(0, (read + "\n").getBytes()), state.getSshContext());
+            ChannelDataMessage dataMessage = new ChannelDataMessage();
+            dataMessage.setRecipientChannel(0);
+            dataMessage.setData((read + "\n").getBytes());
+            sendMessageHelper.sendMessage(dataMessage, state.getSshContext());
         }
     }
 }

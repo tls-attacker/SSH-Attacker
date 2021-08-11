@@ -1,11 +1,9 @@
 /**
  * SSH-Attacker - A Modular Penetration Testing Framework for SSH
  *
- * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * <p>Copyright 2014-2021 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.sshattacker.core.crypto.kex;
 
@@ -16,10 +14,9 @@ import de.rub.nds.sshattacker.core.crypto.ec.*;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomEcPrivateKey;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomEcPublicKey;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomKeyPair;
+import java.math.BigInteger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import java.math.BigInteger;
 
 public class EcdhKeyExchange extends DhBasedKeyExchange {
 
@@ -34,7 +31,8 @@ public class EcdhKeyExchange extends DhBasedKeyExchange {
     public EcdhKeyExchange(NamedGroup group) {
         super();
         if (!group.isStandardCurve()) {
-            throw new IllegalArgumentException("EcdhKeyExchange does not support named group " + group);
+            throw new IllegalArgumentException(
+                    "EcdhKeyExchange does not support named group " + group);
         }
         this.group = group;
         this.ellipticCurve = CurveFactory.getCurve(group);
@@ -55,8 +53,10 @@ public class EcdhKeyExchange extends DhBasedKeyExchange {
             default:
                 String[] kexParts = negotiatedKexAlgorithm.name().split("_");
                 if (!kexParts[0].equals("ECDH")) {
-                    // TODO: Determine, whether throwing and error or continuing with a predetermined curve is better
-                    LOGGER.warn("Initializing a new ECDHKeyExchange without an ECDH key exchange algorithm negotiated. Falling back to ecdh-sha2-nistp256.");
+                    // TODO: Determine, whether throwing and error or continuing with a
+                    // predetermined curve is better
+                    LOGGER.warn(
+                            "Initializing a new ECDHKeyExchange without an ECDH key exchange algorithm negotiated. Falling back to ecdh-sha2-nistp256.");
                     group = NamedGroup.SECP256R1;
                 } else {
                     group = NamedGroup.valueOf(kexParts[3]);
@@ -71,8 +71,11 @@ public class EcdhKeyExchange extends DhBasedKeyExchange {
         int privateKeyBitLength = ellipticCurve.getBasePointOrder().bitLength();
         CustomEcPrivateKey privateKey;
         do {
-            privateKey = new CustomEcPrivateKey(new BigInteger(privateKeyBitLength, random).mod(ellipticCurve
-                    .getBasePointOrder()), group);
+            privateKey =
+                    new CustomEcPrivateKey(
+                            new BigInteger(privateKeyBitLength, random)
+                                    .mod(ellipticCurve.getBasePointOrder()),
+                            group);
         } while (privateKey.getS().equals(BigInteger.ZERO));
         Point publicKeyPoint = ellipticCurve.mult(privateKey.getS(), ellipticCurve.getBasePoint());
         CustomEcPublicKey publicKey = new CustomEcPublicKey(publicKeyPoint, group);
@@ -105,12 +108,14 @@ public class EcdhKeyExchange extends DhBasedKeyExchange {
 
     @Override
     public void computeSharedSecret() {
-        Point sharedPoint = ellipticCurve.mult(localKeyPair.getPrivate().getS(), remotePublicKey.getWAsPoint());
+        Point sharedPoint =
+                ellipticCurve.mult(localKeyPair.getPrivate().getS(), remotePublicKey.getWAsPoint());
         // RFC 5656 defines ECDH with cofactor multiplication as the cryptographic primitive
         sharedPoint = ellipticCurve.mult(ellipticCurve.getCofactor(), sharedPoint);
         sharedSecret = sharedPoint.getFieldX().getData();
-        LOGGER.debug("Finished computation of shared secret: "
-                + ArrayConverter.bytesToRawHexString(sharedSecret.toByteArray()));
+        LOGGER.debug(
+                "Finished computation of shared secret: "
+                        + ArrayConverter.bytesToRawHexString(sharedSecret.toByteArray()));
     }
 
     @Override

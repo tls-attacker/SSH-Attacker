@@ -1,11 +1,9 @@
 /**
  * SSH-Attacker - A Modular Penetration Testing Framework for SSH
  *
- * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * <p>Copyright 2014-2021 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.sshattacker.core.state;
 
@@ -33,26 +31,20 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * The central object passed around during program execution. The state initializes and holds the workflow trace, the
- * default configuration and the corresponding SSH contexts.
+ * The central object passed around during program execution. The state initializes and holds the
+ * workflow trace, the default configuration and the corresponding SSH contexts.
  *
- * <p>
- * The concept behind this class is as follows: the state is initialized with the user configured values, that is, via
- * default configuration and a given workflow trace (type). On initialization, the state will create the necessary SSH
- * contexts for workflow execution. These contexts should be considered as dynamic objects, representing SSH
- * connections, calculations and other data exchanged during the SSH actual workflow execution.
- * </p>
+ * <p>The concept behind this class is as follows: the state is initialized with the user configured
+ * values, that is, via default configuration and a given workflow trace (type). On initialization,
+ * the state will create the necessary SSH contexts for workflow execution. These contexts should be
+ * considered as dynamic objects, representing SSH connections, calculations and other data
+ * exchanged during the SSH actual workflow execution.
  *
- * <p>
- * Therefore, there is no public interface for setting SSH contexts manually. They are always automatically created
- * based on the connections defined in the workflow trace.
- * </p>
+ * <p>Therefore, there is no public interface for setting SSH contexts manually. They are always
+ * automatically created based on the connections defined in the workflow trace.
  *
- * <p>
- * Please also have a look at the tests supplied with this class for some initialization examples with expected
- * behavior.
- * </p>
- *
+ * <p>Please also have a look at the tests supplied with this class for some initialization examples
+ * with expected behavior.
  */
 public class State {
 
@@ -62,8 +54,7 @@ public class State {
     private final Config config;
     private RunningModeType runningMode;
 
-    @HoldsModifiableVariable
-    private WorkflowTrace workflowTrace;
+    @HoldsModifiableVariable private WorkflowTrace workflowTrace;
     private WorkflowTrace originalWorkflowTrace;
 
     public State() {
@@ -94,9 +85,7 @@ public class State {
         initState();
     }
 
-    /**
-     * Normalize trace and initialize SSH contexts.
-     */
+    /** Normalize trace and initialize SSH contexts. */
     public final void initState() {
         // Keep a snapshot to restore user defined trace values after filtering.
         if (config.isFiltersKeepUserSettings()) {
@@ -118,10 +107,14 @@ public class State {
 
         if (config.getWorkflowInput() != null) {
             try {
-                trace = WorkflowTraceSerializer.read(new FileInputStream(config.getWorkflowInput()));
+                trace =
+                        WorkflowTraceSerializer.read(
+                                new FileInputStream(config.getWorkflowInput()));
                 LOGGER.debug("Loaded workflow trace from " + config.getWorkflowInput());
             } catch (FileNotFoundException ex) {
-                LOGGER.warn("Could not read workflow trace. File not found: " + config.getWorkflowInput());
+                LOGGER.warn(
+                        "Could not read workflow trace. File not found: "
+                                + config.getWorkflowInput());
                 LOGGER.debug(ex);
             } catch (JAXBException | IOException | XMLStreamException ex) {
                 LOGGER.warn("Could not read workflow trace: " + config.getWorkflowInput());
@@ -152,23 +145,24 @@ public class State {
     }
 
     /**
-     * Replace existing SshContext with new SshContext. This can only be done if existingSshContext.connection equals
-     * newSshContext.connection.
+     * Replace existing SshContext with new SshContext. This can only be done if
+     * existingSshContext.connection equals newSshContext.connection.
      *
-     * @param newSshContext
-     *            The new SshContext to replace the old with
+     * @param newSshContext The new SshContext to replace the old with
      */
     public void replaceSshContext(SshContext newSshContext) {
         contextContainer.replaceSshContext(newSshContext);
     }
 
     /**
-     * Use this convenience method when working with a single context only. It should be used only if there is exactly
-     * one context defined in the state. This would typically be the default context as defined in the config.
+     * Use this convenience method when working with a single context only. It should be used only
+     * if there is exactly one context defined in the state. This would typically be the default
+     * context as defined in the config.
      *
-     * Note: Be careful when changing the context. I.e. if you change it's connection, the state can get out of sync.
+     * <p>Note: Be careful when changing the context. I.e. if you change it's connection, the state
+     * can get out of sync.
      *
-     * TODO: Ideally, this would return a deep copy to prevent State invalidation.
+     * <p>TODO: Ideally, this would return a deep copy to prevent State invalidation.
      *
      * @return the only context known to the state
      */
@@ -177,16 +171,15 @@ public class State {
     }
 
     /**
-     * Get SSH context with given alias. Aliases are the ones assigned to the corresponding connection ends.
+     * Get SSH context with given alias. Aliases are the ones assigned to the corresponding
+     * connection ends.
      *
-     * Note: Be careful when changing the context. I.e. if you change it's connection, the state can get out of sync.
+     * <p>Note: Be careful when changing the context. I.e. if you change it's connection, the state
+     * can get out of sync.
      *
-     * TODO: Ideally, this would return a deep copy to prevent State invalidation.
+     * <p>TODO: Ideally, this would return a deep copy to prevent State invalidation.
      *
-     *
-     * @param alias
-     *            The Alias for which the SshContext should be returned
-     *
+     * @param alias The Alias for which the SshContext should be returned
      * @return the context with the given connection end alias
      */
     public SshContext getSshContext(String alias) {
@@ -236,10 +229,10 @@ public class State {
     }
 
     /**
-     * Return a filtered copy of the given workflow trace. This method does not modify the input trace.
+     * Return a filtered copy of the given workflow trace. This method does not modify the input
+     * trace.
      *
-     * @param trace
-     *            The workflow trace that should be filtered
+     * @param trace The workflow trace that should be filtered
      * @return A filtered copy of the input workflow trace
      */
     private WorkflowTrace getFilteredTraceCopy(WorkflowTrace trace) {
@@ -251,8 +244,7 @@ public class State {
     /**
      * Apply filters to trace in place.
      *
-     * @param trace
-     *            The workflow trace that should be filtered
+     * @param trace The workflow trace that should be filtered
      */
     private void filterTrace(WorkflowTrace trace) {
         List<FilterType> filters = config.getOutputFilters();
@@ -275,9 +267,7 @@ public class State {
         }
     }
 
-    /**
-     * Serialize and write states workflow trace to file.
-     */
+    /** Serialize and write states workflow trace to file. */
     public void storeTrace() {
         assertWorkflowTraceNotNull("storeTrace");
 
@@ -303,7 +293,8 @@ public class State {
         }
     }
 
-    private void assertWorkflowTraceNotNull(String operation_name) {
+    private void assertWorkflowTraceNotNull(
+            @SuppressWarnings("SameParameterValue") String operation_name) {
         if (workflowTrace != null) {
             return;
         }
@@ -318,5 +309,4 @@ public class State {
     public void setWorkflowTrace(WorkflowTrace trace) {
         this.workflowTrace = trace;
     }
-
 }

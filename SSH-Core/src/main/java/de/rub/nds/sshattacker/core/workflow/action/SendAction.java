@@ -1,24 +1,21 @@
 /**
  * SSH-Attacker - A Modular Penetration Testing Framework for SSH
  *
- * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * <p>Copyright 2014-2021 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.sshattacker.core.workflow.action;
 
 import de.rub.nds.modifiablevariable.ModifiableVariable;
 import de.rub.nds.sshattacker.core.connection.AliasedConnection;
-import de.rub.nds.sshattacker.core.workflow.action.result.MessageActionResult;
-import de.rub.nds.sshattacker.core.protocol.ModifiableVariableHolder;
 import de.rub.nds.sshattacker.core.exceptions.WorkflowExecutionException;
-import de.rub.nds.sshattacker.core.protocol.message.BinaryPacket;
-import de.rub.nds.sshattacker.core.protocol.message.Message;
+import de.rub.nds.sshattacker.core.protocol.common.Message;
+import de.rub.nds.sshattacker.core.protocol.common.ModifiableVariableHolder;
+import de.rub.nds.sshattacker.core.protocol.transport.message.BinaryPacket;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.state.State;
-
+import de.rub.nds.sshattacker.core.workflow.action.result.MessageActionResult;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -82,7 +79,8 @@ public class SendAction extends MessageAction implements SendingAction {
             preparedMessages.add(m);
         }
 
-        MessageActionResult result = sendMessageHelper.sendMessages(preparedMessages, binaryPackets, sshContext);
+        MessageActionResult result =
+                sendMessageHelper.sendMessages(preparedMessages, binaryPackets, sshContext);
         messages = result.getMessageList();
         binaryPackets = result.getBinaryPacketList();
         setExecuted(true);
@@ -215,5 +213,4 @@ public class SendAction extends MessageAction implements SendingAction {
 
         return hash;
     }
-
 }

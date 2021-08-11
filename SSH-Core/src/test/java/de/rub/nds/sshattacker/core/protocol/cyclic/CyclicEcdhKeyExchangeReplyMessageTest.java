@@ -1,25 +1,22 @@
 /**
  * SSH-Attacker - A Modular Penetration Testing Framework for SSH
  *
- * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * <p>Copyright 2014-2021 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.sshattacker.core.protocol.cyclic;
 
-import de.rub.nds.sshattacker.core.protocol.message.EcdhKeyExchangeReplyMessage;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+
 import de.rub.nds.sshattacker.core.protocol.parser.EcdhKeyExchangeReplyMessageParserTest;
-import de.rub.nds.sshattacker.core.protocol.serializer.EcdhKeyExchangeReplyMessageSerializer;
-import de.rub.nds.sshattacker.core.protocol.parser.EcdhKeyExchangeReplyMessageParser;
+import de.rub.nds.sshattacker.core.protocol.transport.message.EcdhKeyExchangeReplyMessage;
+import de.rub.nds.sshattacker.core.protocol.transport.parser.EcdhKeyExchangeReplyMessageParser;
+import de.rub.nds.sshattacker.core.protocol.transport.serializer.EcdhKeyExchangeReplyMessageSerializer;
+import java.util.stream.Stream;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-
-import java.util.stream.Stream;
-
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 public class CyclicEcdhKeyExchangeReplyMessageTest {
     /**
@@ -35,13 +32,14 @@ public class CyclicEcdhKeyExchangeReplyMessageTest {
     /**
      * Cyclic test for parsing and serializing of EcdhKeyExchangeReplyMessage
      *
-     * @param providedBytes
-     *            Bytes to parse and serialize again
+     * @param providedBytes Bytes to parse and serialize again
      */
     @ParameterizedTest
     @MethodSource("provideTestVectors")
     public void testCyclic(byte[] providedBytes) {
-        EcdhKeyExchangeReplyMessage msg = new EcdhKeyExchangeReplyMessageParser(0, providedBytes).parse();
-        assertArrayEquals(providedBytes, new EcdhKeyExchangeReplyMessageSerializer(msg).serialize());
+        EcdhKeyExchangeReplyMessage msg =
+                new EcdhKeyExchangeReplyMessageParser(0, providedBytes).parse();
+        assertArrayEquals(
+                providedBytes, new EcdhKeyExchangeReplyMessageSerializer(msg).serialize());
     }
 }

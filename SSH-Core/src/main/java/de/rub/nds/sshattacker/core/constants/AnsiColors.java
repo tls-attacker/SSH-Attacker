@@ -1,18 +1,13 @@
 /**
  * SSH-Attacker - A Modular Penetration Testing Framework for SSH
  *
- * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * <p>Copyright 2014-2021 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.sshattacker.core.constants;
 
-/**
- *
- * @author Robert Merget <robert.merget@rub.de>
- */
+/** @author Robert Merget <robert.merget@rub.de> */
 public class AnsiColors {
 
     public static final String ANSI_RESET = "\u001B[0m";
@@ -36,7 +31,5 @@ public class AnsiColors {
     public static final String ANSI_BOLD = "\033[0;1m";
     public static final String ANSI_UNDERLINE = "\033[4m";
 
-    private AnsiColors() {
-    }
-
+    private AnsiColors() {}
 }

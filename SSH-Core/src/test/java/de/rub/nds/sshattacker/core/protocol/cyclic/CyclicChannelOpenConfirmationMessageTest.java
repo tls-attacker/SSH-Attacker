@@ -1,25 +1,22 @@
 /**
  * SSH-Attacker - A Modular Penetration Testing Framework for SSH
  *
- * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * <p>Copyright 2014-2021 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.sshattacker.core.protocol.cyclic;
 
-import de.rub.nds.sshattacker.core.protocol.message.ChannelOpenConfirmationMessage;
-import de.rub.nds.sshattacker.core.protocol.parser.ChannelOpenConfirmationMessageParser;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+
+import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelOpenConfirmationMessage;
+import de.rub.nds.sshattacker.core.protocol.connection.parser.ChannelOpenConfirmationMessageParser;
+import de.rub.nds.sshattacker.core.protocol.connection.serializer.ChannelOpenConfirmationMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.parser.ChannelOpenConfirmationMessageParserTest;
-import de.rub.nds.sshattacker.core.protocol.serializer.ChannelOpenConfirmationMessageSerializer;
+import java.util.stream.Stream;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-
-import java.util.stream.Stream;
-
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 public class CyclicChannelOpenConfirmationMessageTest {
     /**
@@ -35,13 +32,14 @@ public class CyclicChannelOpenConfirmationMessageTest {
     /**
      * Cyclic test for parsing and serializing of ChannelOpenConfirmationMessages
      *
-     * @param providedBytes
-     *            Bytes to parse and serialize again
+     * @param providedBytes Bytes to parse and serialize again
      */
     @ParameterizedTest
     @MethodSource("provideTestVectors")
     public void testCyclic(byte[] providedBytes) {
-        ChannelOpenConfirmationMessage msg = new ChannelOpenConfirmationMessageParser(0, providedBytes).parse();
-        assertArrayEquals(providedBytes, new ChannelOpenConfirmationMessageSerializer(msg).serialize());
+        ChannelOpenConfirmationMessage msg =
+                new ChannelOpenConfirmationMessageParser(0, providedBytes).parse();
+        assertArrayEquals(
+                providedBytes, new ChannelOpenConfirmationMessageSerializer(msg).serialize());
     }
 }

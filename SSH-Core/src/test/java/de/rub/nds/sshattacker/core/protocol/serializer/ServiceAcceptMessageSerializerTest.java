@@ -1,25 +1,22 @@
 /**
  * SSH-Attacker - A Modular Penetration Testing Framework for SSH
  *
- * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * <p>Copyright 2014-2021 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.sshattacker.core.protocol.serializer;
 
-import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+
 import de.rub.nds.sshattacker.core.constants.ServiceType;
-import de.rub.nds.sshattacker.core.protocol.message.ServiceAcceptMessage;
 import de.rub.nds.sshattacker.core.protocol.parser.ServiceAcceptMessageParserTest;
+import de.rub.nds.sshattacker.core.protocol.transport.message.ServiceAcceptMessage;
+import de.rub.nds.sshattacker.core.protocol.transport.serializer.ServiceAcceptMessageSerializer;
+import java.util.stream.Stream;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-
-import java.util.stream.Stream;
-
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 public class ServiceAcceptMessageSerializerTest {
     /**
@@ -34,17 +31,14 @@ public class ServiceAcceptMessageSerializerTest {
     /**
      * Test of ServiceAcceptMessageSerializer::serialize method
      *
-     * @param expectedBytes
-     *            Expected output bytes of the serialize() call
-     * @param providedServiceType
-     *            Requested service type
+     * @param expectedBytes Expected output bytes of the serialize() call
+     * @param providedServiceType Requested service type
      */
     @ParameterizedTest
     @MethodSource("provideTestVectors")
     public void testSerialize(byte[] expectedBytes, ServiceType providedServiceType) {
         ServiceAcceptMessage msg = new ServiceAcceptMessage();
-        msg.setMessageID(MessageIDConstant.SSH_MSG_SERVICE_ACCEPT.id);
-        msg.setServiceName(providedServiceType.toString());
+        msg.setServiceName(providedServiceType.toString(), true);
         ServiceAcceptMessageSerializer serializer = new ServiceAcceptMessageSerializer(msg);
 
         assertArrayEquals(expectedBytes, serializer.serialize());

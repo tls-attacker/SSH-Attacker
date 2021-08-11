@@ -1,18 +1,16 @@
 /**
  * SSH-Attacker - A Modular Penetration Testing Framework for SSH
  *
- * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * <p>Copyright 2014-2021 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.sshattacker.core.workflow.action;
 
+import de.rub.nds.sshattacker.core.connection.Aliasable;
 import de.rub.nds.sshattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.sshattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.sshattacker.core.state.State;
-import de.rub.nds.sshattacker.core.connection.Aliasable;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.LinkedHashSet;
@@ -34,14 +32,11 @@ public abstract class SshAction implements Serializable, Aliasable {
 
     // Whether the action is executed in a workflow with a single connection
     // or not. Useful to decide which information can be stripped in filter().
-    @XmlTransient
-    private Boolean singleConnectionWorkflow = true;
+    @XmlTransient private Boolean singleConnectionWorkflow = true;
 
-    @XmlTransient
-    private final Set<String> aliases = new LinkedHashSet<>();
+    @XmlTransient private final Set<String> aliases = new LinkedHashSet<>();
 
-    public SshAction() {
-    }
+    public SshAction() {}
 
     public boolean isExecuted() {
         if (executed == null) {
@@ -66,9 +61,7 @@ public abstract class SshAction implements Serializable, Aliasable {
 
     public abstract void reset();
 
-    /**
-     * Add default values and initialize empty fields.
-     */
+    /** Add default values and initialize empty fields. */
     public void normalize() {
         // We don't need any defaults
     }
@@ -76,27 +69,21 @@ public abstract class SshAction implements Serializable, Aliasable {
     /**
      * Add default values from given defaultAction and initialize empty fields.
      *
-     * @param defaultAction
-     *            Not needed / not evaluated
+     * @param defaultAction Not needed / not evaluated
      */
     public void normalize(SshAction defaultAction) {
         // We don't need any defaults
     }
 
-    /**
-     * Filter empty fields and default values.
-     */
-    public void filter() {
-    }
+    /** Filter empty fields and default values. */
+    public void filter() {}
 
     /**
      * Filter empty fields and default values given in defaultAction.
      *
-     * @param defaultAction
-     *            Not needed / not evaluated
+     * @param defaultAction Not needed / not evaluated
      */
-    public void filter(SshAction defaultAction) {
-    }
+    public void filter(SshAction defaultAction) {}
 
     @Override
     public String getFirstAlias() {
@@ -114,8 +101,7 @@ public abstract class SshAction implements Serializable, Aliasable {
     }
 
     @Override
-    public void assertAliasesSetProperly() throws ConfigurationException {
-    }
+    public void assertAliasesSetProperly() throws ConfigurationException {}
 
     @Override
     public Set<String> getAllAliases() {

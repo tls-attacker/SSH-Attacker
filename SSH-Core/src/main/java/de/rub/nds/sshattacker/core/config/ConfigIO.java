@@ -1,11 +1,9 @@
 /**
  * SSH-Attacker - A Modular Penetration Testing Framework for SSH
  *
- * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * <p>Copyright 2014-2021 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.sshattacker.core.config;
 
@@ -23,7 +21,6 @@ import javax.xml.bind.JAXB;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.xpath.XPathExpressionException;
-
 import org.xml.sax.SAXException;
 
 public class ConfigIO {
@@ -42,7 +39,10 @@ public class ConfigIO {
         JAXB.marshal(config, tempStream);
         try {
             os.write(XMLPrettyPrinter.prettyPrintXML(tempStream.toString()).getBytes());
-        } catch (IOException | TransformerException | XPathExpressionException | ParserConfigurationException
+        } catch (IOException
+                | TransformerException
+                | XPathExpressionException
+                | ParserConfigurationException
                 | SAXException ex) {
             throw new RuntimeException("Could not format XML");
         }
@@ -74,6 +74,5 @@ public class ConfigIO {
         return ConfigIO.read(new ByteArrayInputStream(byteArrayOutputStream.toByteArray()));
     }
 
-    private ConfigIO() {
-    }
+    private ConfigIO() {}
 }

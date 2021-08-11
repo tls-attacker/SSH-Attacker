@@ -1,11 +1,9 @@
 /**
  * SSH-Attacker - A Modular Penetration Testing Framework for SSH
  *
- * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * <p>Copyright 2014-2021 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.sshattacker.core.crypto.ec;
 
@@ -16,10 +14,10 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 
 /**
- * Can be used to store elements of a galois field.<br />
- * The attribute data should contain some BigInteger representing the element.<br />
- * The attribute modulus should contain some BigInteger that may be used to identify the field (and for calculations).<br />
- *
+ * Can be used to store elements of a galois field.<br>
+ * The attribute data should contain some BigInteger representing the element.<br>
+ * The attribute modulus should contain some BigInteger that may be used to identify the field (and
+ * for calculations).<br>
  * All arithmetic operations are performed within the laws of the specified field.
  */
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -40,16 +38,14 @@ public abstract class FieldElement implements Serializable {
     /**
      * Returns this + f.
      *
-     * @param f
-     *            An element of the field, which this is an element of.
+     * @param f An element of the field, which this is an element of.
      */
     public abstract FieldElement add(FieldElement f);
 
     /**
-     * Returns this - f. <br />
+     * Returns this - f. <br>
      *
-     * @param f
-     *            An element of the field, which this is an element of.
+     * @param f An element of the field, which this is an element of.
      */
     public FieldElement subtract(FieldElement f) {
         f = f.addInv();
@@ -57,32 +53,26 @@ public abstract class FieldElement implements Serializable {
     }
 
     /**
-     * Returns this * f.<br />
+     * Returns this * f.<br>
      *
-     * @param f
-     *            An element of the field, which this is an element of.
+     * @param f An element of the field, which this is an element of.
      */
     public abstract FieldElement mult(FieldElement f);
 
     /**
-     * Returns this * f^-1.<br />
+     * Returns this * f^-1.<br>
      *
-     * @param f
-     *            An element of the field, which this is an element of.
+     * @param f An element of the field, which this is an element of.
      */
     public FieldElement divide(FieldElement f) {
         f = f.multInv();
         return mult(f);
     }
 
-    /**
-     * Returns -this.
-     */
+    /** Returns -this. */
     public abstract FieldElement addInv();
 
-    /**
-     * Returns this^-1.
-     */
+    /** Returns this^-1. */
     public abstract FieldElement multInv();
 
     public BigInteger getData() {
@@ -116,15 +106,11 @@ public abstract class FieldElement implements Serializable {
         if (!Objects.equals(this.data, other.data)) {
             return false;
         }
-        if (!Objects.equals(this.modulus, other.modulus)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.modulus, other.modulus);
     }
 
     @Override
     public String toString() {
         return this.getData().toString() + " mod " + this.getModulus().toString();
     }
-
 }

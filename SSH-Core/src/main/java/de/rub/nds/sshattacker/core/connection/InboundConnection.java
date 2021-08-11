@@ -1,11 +1,9 @@
 /**
  * SSH-Attacker - A Modular Penetration Testing Framework for SSH
  *
- * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * <p>Copyright 2014-2021 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.sshattacker.core.connection;
 
@@ -15,8 +13,7 @@ public class InboundConnection extends AliasedConnection {
 
     private static final ConnectionEndType LOCAL_CONNECTION_END_TYPE = ConnectionEndType.SERVER;
 
-    public InboundConnection() {
-    }
+    public InboundConnection() {}
 
     public InboundConnection(Integer port) {
         super(port);
@@ -58,9 +55,23 @@ public class InboundConnection extends AliasedConnection {
 
     @Override
     public String toString() {
-        return "InboundConnection{" + " alias=" + alias + " port=" + port + " proxyDataHost=" + proxyDataHostname
-                + " proxyDataPort=" + proxyDataPort + " proxyControlHost=" + proxyControlHostname
-                + " proxyControlPort=" + proxyControlPort + " type=" + transportHandlerType + " timeout=" + timeout
+        return "InboundConnection{"
+                + " alias="
+                + alias
+                + " port="
+                + port
+                + " proxyDataHost="
+                + proxyDataHostname
+                + " proxyDataPort="
+                + proxyDataPort
+                + " proxyControlHost="
+                + proxyControlHostname
+                + " proxyControlPort="
+                + proxyControlPort
+                + " type="
+                + transportHandlerType
+                + " timeout="
+                + timeout
                 + "}";
     }
 

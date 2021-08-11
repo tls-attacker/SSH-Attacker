@@ -1,24 +1,21 @@
 /**
  * SSH-Attacker - A Modular Penetration Testing Framework for SSH
  *
- * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * <p>Copyright 2014-2021 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.sshattacker.core.protocol.serializer;
 
-import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
-import de.rub.nds.sshattacker.core.protocol.message.UserAuthFailureMessage;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+
+import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthFailureMessage;
+import de.rub.nds.sshattacker.core.protocol.authentication.serializer.UserAuthFailureMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.parser.UserAuthFailureMessageParserTest;
+import java.util.stream.Stream;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-
-import java.util.stream.Stream;
-
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 public class UserAuthFailureMessageSerializerTest {
     /**
@@ -33,19 +30,20 @@ public class UserAuthFailureMessageSerializerTest {
     /**
      * Test of UserAuthFailureMessageSerializer::serialize method
      *
-     * @param expectedBytes
-     *            Expected output bytes of the serialize() call
-     * @param providedAuthenticationMethods
-     *            A comma-separated list of authentication methods to continue with
-     * @param providedPartialSuccess
-     *            Indicates whether the request sent by the client was successful or ignored
+     * @param expectedBytes Expected output bytes of the serialize() call
+     * @param providedAuthenticationMethods A comma-separated list of authentication methods to
+     *     continue with
+     * @param providedPartialSuccess Indicates whether the request sent by the client was successful
+     *     or ignored
      */
     @ParameterizedTest
     @MethodSource("provideTestVectors")
-    public void testSerialize(byte[] expectedBytes, String providedAuthenticationMethods, byte providedPartialSuccess) {
+    public void testSerialize(
+            byte[] expectedBytes,
+            String providedAuthenticationMethods,
+            byte providedPartialSuccess) {
         UserAuthFailureMessage msg = new UserAuthFailureMessage();
-        msg.setMessageID(MessageIDConstant.SSH_MSG_USERAUTH_FAILURE.id);
-        msg.setPossibleAuthenticationMethods(providedAuthenticationMethods);
+        msg.setPossibleAuthenticationMethods(providedAuthenticationMethods, true);
         msg.setPartialSuccess(providedPartialSuccess);
         UserAuthFailureMessageSerializer serializer = new UserAuthFailureMessageSerializer(msg);
 

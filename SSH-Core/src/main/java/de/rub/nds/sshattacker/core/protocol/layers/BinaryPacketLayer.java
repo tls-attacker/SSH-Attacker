@@ -1,17 +1,15 @@
 /**
  * SSH-Attacker - A Modular Penetration Testing Framework for SSH
  *
- * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * <p>Copyright 2014-2021 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.sshattacker.core.protocol.layers;
 
-import de.rub.nds.sshattacker.core.protocol.message.BinaryPacket;
-import de.rub.nds.sshattacker.core.protocol.parser.BinaryPacketParser;
-import de.rub.nds.sshattacker.core.protocol.serializer.BinaryPacketSerializer;
+import de.rub.nds.sshattacker.core.protocol.transport.message.BinaryPacket;
+import de.rub.nds.sshattacker.core.protocol.transport.parser.BinaryPacketParser;
+import de.rub.nds.sshattacker.core.protocol.transport.serializer.BinaryPacketSerializer;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -21,7 +19,7 @@ import org.apache.logging.log4j.Logger;
 
 public class BinaryPacketLayer {
 
-    private SshContext context;
+    private final SshContext context;
 
     private static final Logger LOGGER = LogManager.getLogger();
 

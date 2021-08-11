@@ -1,25 +1,22 @@
 /**
  * SSH-Attacker - A Modular Penetration Testing Framework for SSH
  *
- * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * <p>Copyright 2014-2021 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.sshattacker.core.protocol.serializer;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+
 import de.rub.nds.sshattacker.core.constants.DisconnectReason;
-import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
-import de.rub.nds.sshattacker.core.protocol.message.DisconnectMessage;
 import de.rub.nds.sshattacker.core.protocol.parser.DisconnectMessageParserTest;
+import de.rub.nds.sshattacker.core.protocol.transport.message.DisconnectMessage;
+import de.rub.nds.sshattacker.core.protocol.transport.serializer.DisconnectMessageSerializer;
+import java.util.stream.Stream;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-
-import java.util.stream.Stream;
-
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 public class DisconnectMessageSerializerTest {
     /**
@@ -34,24 +31,22 @@ public class DisconnectMessageSerializerTest {
     /**
      * Test of DisconnectMessageSerializer::serialize method
      *
-     * @param expectedBytes
-     *            Expected output bytes of the serialize() call
-     * @param providedReason
-     *            Disconnect reason code
-     * @param providedDescription
-     *            Disconnect reason description
-     * @param providedLanguageTag
-     *            Language tag string
+     * @param expectedBytes Expected output bytes of the serialize() call
+     * @param providedReason Disconnect reason code
+     * @param providedDescription Disconnect reason description
+     * @param providedLanguageTag Language tag string
      */
     @ParameterizedTest
     @MethodSource("provideTestVectors")
-    public void testSerialize(byte[] expectedBytes, DisconnectReason providedReason, String providedDescription,
+    public void testSerialize(
+            byte[] expectedBytes,
+            DisconnectReason providedReason,
+            String providedDescription,
             String providedLanguageTag) {
         DisconnectMessage msg = new DisconnectMessage();
-        msg.setMessageID(MessageIDConstant.SSH_MSG_DISCONNECT.id);
-        msg.setReasonCode(providedReason.id);
-        msg.setDescription(providedDescription);
-        msg.setLanguageTag(providedLanguageTag);
+        msg.setReasonCode(providedReason);
+        msg.setDescription(providedDescription, true);
+        msg.setLanguageTag(providedLanguageTag, true);
         DisconnectMessageSerializer serializer = new DisconnectMessageSerializer(msg);
 
         assertArrayEquals(expectedBytes, serializer.serialize());

@@ -1,11 +1,9 @@
 /**
  * SSH-Attacker - A Modular Penetration Testing Framework for SSH
  *
- * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * <p>Copyright 2014-2021 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.sshattacker.client.main;
 
@@ -40,7 +38,8 @@ public class SshClient {
                 SshClient client = new SshClient();
                 client.startSshClient(sshConfig);
             } catch (Exception E) {
-                LOGGER.error("Encountered an uncaught Exception aborting. See debug for more info.", E);
+                LOGGER.error(
+                        "Encountered an uncaught Exception aborting. See debug for more info.", E);
             }
         } catch (ParameterException E) {
             LOGGER.error("Could not parse provided parameters. " + E.getLocalizedMessage());
@@ -56,7 +55,8 @@ public class SshClient {
         try {
             workflowExecutor.executeWorkflow();
         } catch (WorkflowExecutionException ex) {
-            LOGGER.warn("The SSH protocol flow was not executed completely, follow the debug messages for more information.");
+            LOGGER.warn(
+                    "The SSH protocol flow was not executed completely, follow the debug messages for more information.");
             LOGGER.debug(ex.getLocalizedMessage(), ex);
         }
     }

@@ -1,11 +1,9 @@
 /**
  * SSH-Attacker - A Modular Penetration Testing Framework for SSH
  *
- * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * <p>Copyright 2014-2021 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.sshattacker.core.constants;
 
@@ -20,10 +18,14 @@ public enum GOSTCurve {
     GostR3410_2001_CryptoPro_C(CryptoProObjectIdentifiers.gostR3410_2001_CryptoPro_C),
     GostR3410_2001_CryptoPro_XchA(CryptoProObjectIdentifiers.gostR3410_2001_CryptoPro_XchA),
     GostR3410_2001_CryptoPro_XchB(CryptoProObjectIdentifiers.gostR3410_2001_CryptoPro_XchB),
-    Tc26_Gost_3410_12_256_paramSetA(RosstandartObjectIdentifiers.id_tc26_gost_3410_12_256_paramSetA),
-    Tc26_Gost_3410_12_512_paramSetA(RosstandartObjectIdentifiers.id_tc26_gost_3410_12_512_paramSetA),
-    Tc26_Gost_3410_12_512_paramSetB(RosstandartObjectIdentifiers.id_tc26_gost_3410_12_512_paramSetB),
-    Tc26_Gost_3410_12_512_paramSetC(RosstandartObjectIdentifiers.id_tc26_gost_3410_12_512_paramSetC);
+    Tc26_Gost_3410_12_256_paramSetA(
+            RosstandartObjectIdentifiers.id_tc26_gost_3410_12_256_paramSetA),
+    Tc26_Gost_3410_12_512_paramSetA(
+            RosstandartObjectIdentifiers.id_tc26_gost_3410_12_512_paramSetA),
+    Tc26_Gost_3410_12_512_paramSetB(
+            RosstandartObjectIdentifiers.id_tc26_gost_3410_12_512_paramSetB),
+    Tc26_Gost_3410_12_512_paramSetC(
+            RosstandartObjectIdentifiers.id_tc26_gost_3410_12_512_paramSetC);
 
     private final ASN1ObjectIdentifier identifier;
 
@@ -50,5 +52,4 @@ public enum GOSTCurve {
     public static GOSTCurve fromString(String name) {
         return GOSTCurve.valueOf(name.replace('-', '_'));
     }
-
 }

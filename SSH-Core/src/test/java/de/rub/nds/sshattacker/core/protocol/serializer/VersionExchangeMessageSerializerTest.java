@@ -1,11 +1,9 @@
 /**
  * SSH-Attacker - A Modular Penetration Testing Framework for SSH
  *
- * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * <p>Copyright 2014-2021 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -14,15 +12,15 @@
  */
 package de.rub.nds.sshattacker.core.protocol.serializer;
 
-import de.rub.nds.sshattacker.core.protocol.message.VersionExchangeMessage;
-import java.util.stream.Stream;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 import de.rub.nds.sshattacker.core.protocol.parser.VersionExchangeMessageParserTest;
+import de.rub.nds.sshattacker.core.protocol.transport.message.VersionExchangeMessage;
+import de.rub.nds.sshattacker.core.protocol.transport.serializer.VersionExchangeMessageSerializer;
+import java.util.stream.Stream;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 public class VersionExchangeMessageSerializerTest {
     /**
@@ -36,17 +34,15 @@ public class VersionExchangeMessageSerializerTest {
 
     /**
      * Test of VersionExchangeMessageSerializer::serialize method
-     * 
-     * @param expectedBytes
-     *            Expected output bytes of the serialize() call
-     * @param providedVersion
-     *            Version string
-     * @param providedComment
-     *            Comment string
+     *
+     * @param expectedBytes Expected output bytes of the serialize() call
+     * @param providedVersion Version string
+     * @param providedComment Comment string
      */
     @ParameterizedTest
     @MethodSource("provideTestVectors")
-    public void testSerialize(byte[] expectedBytes, String providedVersion, String providedComment) {
+    public void testSerialize(
+            byte[] expectedBytes, String providedVersion, String providedComment) {
         VersionExchangeMessage msg = new VersionExchangeMessage();
         msg.setVersion(providedVersion);
         msg.setComment(providedComment);

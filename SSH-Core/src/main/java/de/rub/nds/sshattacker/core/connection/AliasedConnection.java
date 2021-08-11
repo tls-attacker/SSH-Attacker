@@ -1,31 +1,40 @@
 /**
  * SSH-Attacker - A Modular Penetration Testing Framework for SSH
  *
- * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * <p>Copyright 2014-2021 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.sshattacker.core.connection;
 
 import de.rub.nds.sshattacker.core.exceptions.ConfigurationException;
+import de.rub.nds.tlsattacker.transport.Connection;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.transport.TransportHandlerType;
-import de.rub.nds.tlsattacker.transport.Connection;
-
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 import javax.xml.bind.annotation.XmlType;
 
-@XmlType(propOrder = { "alias", "ip", "port", "hostname", "proxyDataPort", "proxyDataHostname", "proxyControlPort",
-        "proxyControlHostname", "timeout", "transportHandlerType" })
+@XmlType(
+        propOrder = {
+            "alias",
+            "ip",
+            "port",
+            "hostname",
+            "proxyDataPort",
+            "proxyDataHostname",
+            "proxyControlPort",
+            "proxyControlHostname",
+            "timeout",
+            "transportHandlerType"
+        })
 public abstract class AliasedConnection extends Connection implements Aliasable {
 
     public static final String DEFAULT_CONNECTION_ALIAS = "defaultConnection";
-    public static final TransportHandlerType DEFAULT_TRANSPORT_HANDLER_TYPE = TransportHandlerType.TCP;
+    public static final TransportHandlerType DEFAULT_TRANSPORT_HANDLER_TYPE =
+            TransportHandlerType.TCP;
     public static final Integer DEFAULT_TIMEOUT = 1000;
     public static final String DEFAULT_HOSTNAME = "localhost";
     public static final String DEFAULT_IP = "127.0.0.1";
@@ -78,7 +87,8 @@ public abstract class AliasedConnection extends Connection implements Aliasable 
     @Override
     public void assertAliasesSetProperly() throws ConfigurationException {
         if ((alias == null) || (alias.isEmpty())) {
-            throw new ConfigurationException("Empty or null alias in " + this.getClass().getSimpleName());
+            throw new ConfigurationException(
+                    "Empty or null alias in " + this.getClass().getSimpleName());
         }
     }
 
@@ -117,6 +127,7 @@ public abstract class AliasedConnection extends Connection implements Aliasable 
         return false;
     }
 
+    @SuppressWarnings("SameReturnValue")
     public String getDefaultConnectionAlias() {
         return DEFAULT_CONNECTION_ALIAS;
     }
@@ -179,8 +190,10 @@ public abstract class AliasedConnection extends Connection implements Aliasable 
                 port = DEFAULT_PORT;
             }
             if (port < 0 || port > 65535) {
-                throw new ConfigurationException("Attempt to set default port "
-                        + "failed. Port must be in interval [0,65535], but is " + port);
+                throw new ConfigurationException(
+                        "Attempt to set default port "
+                                + "failed. Port must be in interval [0,65535], but is "
+                                + port);
             }
         }
     }
@@ -193,10 +206,12 @@ public abstract class AliasedConnection extends Connection implements Aliasable 
                 || transportHandlerType == DEFAULT_TRANSPORT_HANDLER_TYPE) {
             transportHandlerType = null;
         }
-        if (Objects.equals(timeout, defaultCon.getTimeout()) || Objects.equals(timeout, DEFAULT_TIMEOUT)) {
+        if (Objects.equals(timeout, defaultCon.getTimeout())
+                || Objects.equals(timeout, DEFAULT_TIMEOUT)) {
             timeout = null;
         }
-        if (hostname.equals(defaultCon.getHostname()) || Objects.equals(hostname, DEFAULT_HOSTNAME)) {
+        if (hostname.equals(defaultCon.getHostname())
+                || Objects.equals(hostname, DEFAULT_HOSTNAME)) {
             hostname = null;
         }
         if (ip.equals(defaultCon.getHostname()) || Objects.equals(ip, DEFAULT_IP)) {

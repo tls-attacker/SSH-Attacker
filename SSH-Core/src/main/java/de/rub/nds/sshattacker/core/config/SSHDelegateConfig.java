@@ -1,11 +1,9 @@
 /**
  * SSH-Attacker - A Modular Penetration Testing Framework for SSH
  *
- * Copyright 2014-2021 Ruhr University Bochum, Paderborn University,
- * and Hackmanit GmbH
+ * <p>Copyright 2014-2021 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
- * Licensed under Apache License 2.0
- * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.sshattacker.core.config;
 
@@ -14,13 +12,12 @@ import com.beust.jcommander.ParameterException;
 import com.beust.jcommander.ParametersDelegate;
 import de.rub.nds.sshattacker.core.config.delegate.Delegate;
 import de.rub.nds.sshattacker.core.config.delegate.GeneralDelegate;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import java.io.File;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class SSHDelegateConfig {
 
@@ -28,10 +25,11 @@ public class SSHDelegateConfig {
 
     private final List<Delegate> delegateList;
 
-    @ParametersDelegate
-    private final GeneralDelegate generalDelegate;
+    @ParametersDelegate private final GeneralDelegate generalDelegate;
 
-    @Parameter(names = "-config", description = "This parameter allows you to specify a default SshConfig")
+    @Parameter(
+            names = "-config",
+            description = "This parameter allows you to specify a default SshConfig")
     private String defaultConfig = null;
 
     public SSHDelegateConfig(GeneralDelegate delegate) {
@@ -75,7 +73,7 @@ public class SSHDelegateConfig {
     }
 
     public Config createConfig() {
-        Config config = null;
+        Config config;
         if (defaultConfig != null) {
             File configFile = new File(defaultConfig);
             if (configFile.exists()) {
