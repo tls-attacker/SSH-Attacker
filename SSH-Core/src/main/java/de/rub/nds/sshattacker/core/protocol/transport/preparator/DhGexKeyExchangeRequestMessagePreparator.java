@@ -33,7 +33,8 @@ public class DhGexKeyExchangeRequestMessagePreparator
                     DhKeyExchange.newInstance(context.getKeyExchangeAlgorithm().get());
             context.setKeyExchangeInstance(keyExchange);
         } else {
-            raisePreparationException("Unable to instantiate a new DH key exchange, the negotiated key exchange algorithm is not set");
+            raisePreparationException(
+                    "Unable to instantiate a new DH key exchange, the negotiated key exchange algorithm is not set");
         }
 
         DhGexExchangeHash dhGexExchangeHash =

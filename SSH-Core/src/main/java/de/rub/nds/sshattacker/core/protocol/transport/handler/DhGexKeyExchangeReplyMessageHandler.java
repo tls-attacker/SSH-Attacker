@@ -13,6 +13,7 @@ import de.rub.nds.sshattacker.core.crypto.hash.DhGexOldExchangeHash;
 import de.rub.nds.sshattacker.core.crypto.hash.ExchangeHash;
 import de.rub.nds.sshattacker.core.crypto.kex.DhKeyExchange;
 import de.rub.nds.sshattacker.core.crypto.kex.KeyExchange;
+import de.rub.nds.sshattacker.core.exceptions.AdjustmentException;
 import de.rub.nds.sshattacker.core.protocol.common.Handler;
 import de.rub.nds.sshattacker.core.protocol.layers.CryptoLayerFactory;
 import de.rub.nds.sshattacker.core.protocol.transport.message.DhGexKeyExchangeReplyMessage;
@@ -65,7 +66,12 @@ public class DhGexKeyExchangeReplyMessageHandler extends Handler<DhGexKeyExchang
         if (context.getKeyExchangeInstance().isPresent()) {
             DhKeyExchange dhKeyExchange = (DhKeyExchange) context.getKeyExchangeInstance().get();
             dhKeyExchange.setRemotePublicKey(message.getEphemeralPublicKey().getValue());
-            dhKeyExchange.computeSharedSecret();
+            if (dhKeyExchange.getLocalKeyPair() != null) {
+                dhKeyExchange.computeSharedSecret();
+            } else {
+                raiseAdjustmentException(
+                        "No local key pair is present, unable to compute shared secret");
+            }
         } else {
             raiseAdjustmentException(
                     "Key exchange instance is not present, unable to set remote public key and compute shared secret");
@@ -85,11 +91,10 @@ public class DhGexKeyExchangeReplyMessageHandler extends Handler<DhGexKeyExchang
     private void setSessionId() {
         ExchangeHash exchangeHash = context.getExchangeHashInstance();
         if (!context.getSessionID().isPresent()) {
-            if (exchangeHash.isReady()) {
+            try {
                 context.setSessionID(exchangeHash.get());
-            } else {
-                raiseAdjustmentException(
-                        "Exchange hash instance is not ready yet, unable to set session id");
+            } catch (AdjustmentException e) {
+                raiseAdjustmentException(e);
             }
         }
     }

@@ -25,10 +25,14 @@ public abstract class Handler<T> {
     public abstract void handle(T msg);
 
     protected void raiseAdjustmentException(String errorMsg) {
+        raiseAdjustmentException(new AdjustmentException(errorMsg));
+    }
+
+    protected void raiseAdjustmentException(AdjustmentException e) {
         if (context.getConfig().getAvoidAdjustmentExceptions()) {
-            LOGGER.warn(errorMsg);
+            LOGGER.warn(e.getMessage());
         } else {
-            throw new AdjustmentException(errorMsg);
+            throw e;
         }
     }
 }

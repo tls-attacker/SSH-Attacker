@@ -105,6 +105,10 @@ public class DhKeyExchange extends DhBasedKeyExchange {
         this.remotePublicKey = new CustomDhPublicKey(modulus, generator, publicKey);
     }
 
+    public boolean areGroupParametersSet() {
+        return modulus != null && generator != null;
+    }
+
     public void generateLocalKeyPair() {
         if (modulus == null || generator == null) {
             throw new RuntimeException(
