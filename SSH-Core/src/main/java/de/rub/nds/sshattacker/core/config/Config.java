@@ -129,6 +129,13 @@ public class Config implements Serializable {
      */
     private Boolean avoidAdjustmentExceptions = false;
 
+    /**
+     * If set to true, sending or receiving a NewKeysMessage automatically
+     * enables the encryption for the corresponding transport direction. If set to false,
+     * encryption must be enabled manually by calling the corresponding methods on the state.
+     */
+    private Boolean enableEncryptionOnNewKeysMessage = true;
+
     public Config() {
 
         defaultClientConnection = new OutboundConnection("client", 65222, "localhost");
@@ -623,4 +630,13 @@ public class Config implements Serializable {
     public void setAvoidPreparationExceptions(Boolean avoidPreparationExceptions) {
         this.avoidPreparationExceptions = avoidPreparationExceptions;
     }
+
+    public Boolean getEnableEncryptionOnNewKeysMessage() {
+        return enableEncryptionOnNewKeysMessage;
+    }
+
+    public void setEnableEncryptionOnNewKeysMessage(Boolean enableEncryptionOnNewKeysMessage) {
+        this.enableEncryptionOnNewKeysMessage = enableEncryptionOnNewKeysMessage;
+    }
+
 }

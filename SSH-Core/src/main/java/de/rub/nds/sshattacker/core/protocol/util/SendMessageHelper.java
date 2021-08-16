@@ -12,6 +12,7 @@ import de.rub.nds.sshattacker.core.protocol.layers.BinaryPacketLayer;
 import de.rub.nds.sshattacker.core.protocol.layers.CryptoLayer;
 import de.rub.nds.sshattacker.core.protocol.layers.MessageLayer;
 import de.rub.nds.sshattacker.core.protocol.transport.message.BinaryPacket;
+import de.rub.nds.sshattacker.core.protocol.transport.message.NewKeysMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.message.VersionExchangeMessage;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.workflow.action.result.MessageActionResult;
@@ -52,6 +53,12 @@ public class SendMessageHelper {
             BinaryPacket binaryPacket = messageLayer.serializeMessage(msg);
             sendBinaryPacket(binaryPacket, context);
             context.incrementSequenceNumber();
+            try {
+                if (msg instanceof NewKeysMessage && context.getConfig().getEnableEncryptionOnNewKeysMessage()) {
+                    context.setClientToServerEncryptionActive(true);
+                }
+            } catch (IllegalArgumentException ignored) {
+            }
             return new MessageActionResult(
                     Collections.singletonList(binaryPacket), Collections.singletonList(msg));
         } catch (IOException e) {
