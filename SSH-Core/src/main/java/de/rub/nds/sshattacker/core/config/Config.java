@@ -130,9 +130,9 @@ public class Config implements Serializable {
     private Boolean avoidAdjustmentExceptions = false;
 
     /**
-     * If set to true, sending or receiving a NewKeysMessage automatically
-     * enables the encryption for the corresponding transport direction. If set to false,
-     * encryption must be enabled manually by calling the corresponding methods on the state.
+     * If set to true, sending or receiving a NewKeysMessage automatically enables the encryption
+     * for the corresponding transport direction. If set to false, encryption must be enabled
+     * manually by calling the corresponding methods on the state.
      */
     private Boolean enableEncryptionOnNewKeysMessage = true;
 
@@ -638,5 +638,4 @@ public class Config implements Serializable {
     public void setEnableEncryptionOnNewKeysMessage(Boolean enableEncryptionOnNewKeysMessage) {
         this.enableEncryptionOnNewKeysMessage = enableEncryptionOnNewKeysMessage;
     }
-
 }

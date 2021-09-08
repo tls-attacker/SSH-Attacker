@@ -54,7 +54,8 @@ public class SendMessageHelper {
             sendBinaryPacket(binaryPacket, context);
             context.incrementSequenceNumber();
             try {
-                if (msg instanceof NewKeysMessage && context.getConfig().getEnableEncryptionOnNewKeysMessage()) {
+                if (msg instanceof NewKeysMessage
+                        && context.getConfig().getEnableEncryptionOnNewKeysMessage()) {
                     context.setClientToServerEncryptionActive(true);
                 }
             } catch (IllegalArgumentException ignored) {
