@@ -42,7 +42,7 @@ public class Config implements Serializable {
     private final String serverComment;
     private final byte[] clientCookie;
     private final byte[] serverCookie;
-    private final List<KeyExchangeAlgorithm> clientSupportedKeyExchangeAlgorithms;
+    private List<KeyExchangeAlgorithm> clientSupportedKeyExchangeAlgorithms;
     private final List<KeyExchangeAlgorithm> serverSupportedKeyExchangeAlgorithms;
     private final List<PublicKeyAuthenticationAlgorithm> clientSupportedHostKeyAlgorithms;
     private final List<PublicKeyAuthenticationAlgorithm> serverSupportedHostKeyAlgorithms;
@@ -149,7 +149,7 @@ public class Config implements Serializable {
 
         clientSupportedKeyExchangeAlgorithms = new LinkedList<>();
         clientSupportedKeyExchangeAlgorithms.add(
-                KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP_EXCHANGE_SHA256);
+                KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP14_SHA256);
         serverSupportedKeyExchangeAlgorithms =
                 new LinkedList<>(clientSupportedKeyExchangeAlgorithms);
 
@@ -281,6 +281,11 @@ public class Config implements Serializable {
 
     public List<KeyExchangeAlgorithm> getClientSupportedKeyExchangeAlgorithms() {
         return clientSupportedKeyExchangeAlgorithms;
+    }
+
+    public void setClientSupportedKeyExchangeAlgorithms(
+            List<KeyExchangeAlgorithm> clientSupportedKeyExchangeAlgorithms) {
+        this.clientSupportedKeyExchangeAlgorithms = clientSupportedKeyExchangeAlgorithms;
     }
 
     public List<KeyExchangeAlgorithm> getServerSupportedKeyExchangeAlgorithms() {
