@@ -7,13 +7,14 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.preparator;
 
+import de.rub.nds.sshattacker.core.constants.KeyExchangeAlgorithm;
 import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
 import de.rub.nds.sshattacker.core.crypto.hash.DhNamedExchangeHash;
 import de.rub.nds.sshattacker.core.crypto.kex.DhKeyExchange;
-import de.rub.nds.sshattacker.core.exceptions.PreparationException;
 import de.rub.nds.sshattacker.core.protocol.common.Preparator;
 import de.rub.nds.sshattacker.core.protocol.transport.message.DhKeyExchangeInitMessage;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import java.util.Optional;
 
 public class DhKeyExchangeInitMessagePreparator extends Preparator<DhKeyExchangeInitMessage> {
 
@@ -24,11 +25,20 @@ public class DhKeyExchangeInitMessagePreparator extends Preparator<DhKeyExchange
 
     @Override
     public void prepare() {
-        DhKeyExchange keyExchange =
-                DhKeyExchange.newInstance(
-                        context.getKeyExchangeAlgorithm().orElseThrow(PreparationException::new));
+        // TODO: Handle default value for key exchange algorithm in Config
+        Optional<KeyExchangeAlgorithm> keyExchangeAlgorithm = context.getKeyExchangeAlgorithm();
+        DhKeyExchange keyExchange;
+        if (keyExchangeAlgorithm.isPresent()) {
+            keyExchange = DhKeyExchange.newInstance(keyExchangeAlgorithm.get());
+        } else {
+            raisePreparationException(
+                    "Key exchange algorithm not negotiate, unable to generate a local key pair");
+            keyExchange =
+                    DhKeyExchange.newInstance(KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP14_SHA256);
+        }
         keyExchange.generateLocalKeyPair();
         context.setKeyExchangeInstance(keyExchange);
+
         DhNamedExchangeHash dhNamedExchangeHash =
                 DhNamedExchangeHash.from(context.getExchangeHashInstance());
         dhNamedExchangeHash.setClientDHPublicKey(keyExchange.getLocalKeyPair().getPublic());
