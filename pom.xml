@@ -28,6 +28,7 @@
     <modules>
         <module>SSH-Core</module>
         <module>SSH-Client</module>
+        <module>SSH-Project-Template</module>
     </modules>
     <dependencies>
         <dependency>
