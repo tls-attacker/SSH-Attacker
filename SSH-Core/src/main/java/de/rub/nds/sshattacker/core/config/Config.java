@@ -114,7 +114,7 @@ public class Config implements Serializable {
 
     private Boolean workflowExecutorShouldClose = true;
 
-    private Boolean resetWorkflowtracesBeforeSaving = true;
+    private Boolean resetWorkflowtracesBeforeSaving = false;
 
     private String configOutput = null;
 
