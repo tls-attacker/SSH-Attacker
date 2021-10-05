@@ -902,6 +902,7 @@ public class SshContext {
 
     public void setClientToServerEncryptionActive(boolean active) {
         if (active && cryptoLayerClientToServer == null) {
+            // TODO: keep going, don't abort. send plaintext instead?
             throw new IllegalArgumentException(
                     "Tried to activate encryption (client to server) without initializing a crypto layer first.");
         }
@@ -910,6 +911,7 @@ public class SshContext {
 
     public void setServerToClientEncryptionActive(boolean active) {
         if (active && cryptoLayerServerToClient == null) {
+            // TODO: keep going, don't abort. send plaintext instead?
             throw new IllegalArgumentException(
                     "Tried to activate encryption (server to client) without initializing a crypto layer first.");
         }

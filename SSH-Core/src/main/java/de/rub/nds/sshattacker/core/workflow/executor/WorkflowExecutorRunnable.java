@@ -37,7 +37,7 @@ public class WorkflowExecutorRunnable implements Runnable {
     public void run() {
         LOGGER.info("Spawning workflow on socket " + socket);
         // Currently, WorkflowTraces cannot be copied with external modules
-        // if they define custome actions. This is because copying relies
+        // if they define custom actions. This is because copying relies
         // on serialization, and actions from other packages are unknown
         // to the WorkflowTrace/JAXB context (sigh).
         // General problem: external actions cannot be serialized.

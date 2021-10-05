@@ -44,6 +44,7 @@ public class WorkflowConfigurationFactory {
         WorkflowTrace workflow = new WorkflowTrace();
         List<SshAction> sshActions = new LinkedList<>();
 
+        // TODO: Define more workflows and fix these ones.
         switch (workflowTraceType) {
             case FULL:
                 sshActions.add(new SendAction(new ServiceRequestMessage()));

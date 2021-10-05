@@ -48,6 +48,7 @@ public class ReceiveMessageHelper {
                     LOGGER.debug("Received Data: ");
                     LOGGER.debug(ArrayConverter.bytesToRawHexString(data));
 
+                    // TODO: WTF?!
                     // Response from server: Invalid SSH identification string.
                     if (Arrays.equals(
                                     data,
@@ -92,7 +93,7 @@ public class ReceiveMessageHelper {
         }
     }
 
-    // TODO dummy method until expectedMessages are used
+    // TODO[important!] dummy method until expectedMessages are used
     public MessageActionResult receiveMessages(
             List<Message<?>> expectedMessages, SshContext context) {
         return receiveMessages(context);
