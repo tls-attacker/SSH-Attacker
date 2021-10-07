@@ -76,6 +76,8 @@ public class SendMessageHelper {
                         result.merge(
                                 sendVersionExchangeMessage((VersionExchangeMessage) msg, context));
             } else {
+                // TODO: Do something smart at receive time to merge?
+                // TODO: Support fragmentation into several binary packets at send time!
                 result = result.merge(sendMessage(msg, context));
             }
         }

@@ -60,6 +60,10 @@ public class DefaultWorkflowExecutor extends WorkflowExecutor {
 
             try {
                 action.execute(state);
+                // TODO: Implement feature to check if message was received as expected.
+                // We should accept unexpected messages to keep going in case something
+                // unexpected happens.
+                // action.isExecutedAsPlanned(...);
             } catch (PreparationException | WorkflowExecutionException ex) {
                 throw new WorkflowExecutionException(
                         "Problem while executing Action:" + action, ex);

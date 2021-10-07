@@ -93,7 +93,7 @@ public class ReceiveMessageHelper {
         }
     }
 
-    // TODO dummy method until expectedMessages are used
+    // TODO[important!] dummy method until expectedMessages are used
     public MessageActionResult receiveMessages(
             List<Message<?>> expectedMessages, SshContext context) {
         return receiveMessages(context);

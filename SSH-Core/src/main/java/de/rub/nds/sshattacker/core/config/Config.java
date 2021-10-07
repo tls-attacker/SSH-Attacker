@@ -18,11 +18,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.lang.reflect.Field;
+import java.security.Security;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 public class Config implements Serializable {
 
@@ -34,6 +36,7 @@ public class Config implements Serializable {
 
     static {
         DEFAULT_CONFIG_CACHE = new ConfigCache(createConfig());
+        Security.addProvider(new BouncyCastleProvider());
     }
 
     private final String clientVersion;
@@ -111,7 +114,7 @@ public class Config implements Serializable {
 
     private Boolean workflowExecutorShouldClose = true;
 
-    private Boolean resetWorkflowtracesBeforeSaving = true;
+    private Boolean resetWorkflowtracesBeforeSaving = false;
 
     private String configOutput = null;
 

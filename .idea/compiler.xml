@@ -8,12 +8,14 @@
         <outputRelativeToContentRoot value="true" />
         <module name="SSH-Client" />
         <module name="SSH-Core" />
+        <module name="SSH-Project-Template" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="SSH-Attacker" target="1.8" />
       <module name="SSH-Client" target="8" />
       <module name="SSH-Core" target="8" />
+      <module name="SSH-Project-Template" target="8" />
     </bytecodeTargetLevel>
   </component>
 </project>
