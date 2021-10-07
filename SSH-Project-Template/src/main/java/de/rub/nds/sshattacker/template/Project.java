@@ -1,12 +1,17 @@
+/**
+ * SSH-Attacker - A Modular Penetration Testing Framework for SSH
+ *
+ * <p>Copyright 2014-2021 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ *
+ * <p>Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ */
 package de.rub.nds.sshattacker.template;
 
 import de.rub.nds.sshattacker.core.config.Config;
-import de.rub.nds.sshattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.sshattacker.core.protocol.transport.message.VersionExchangeMessage;
 import de.rub.nds.sshattacker.core.state.State;
 import de.rub.nds.sshattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.sshattacker.core.workflow.WorkflowTraceUtil;
-import de.rub.nds.sshattacker.core.workflow.action.MessageAction;
 import de.rub.nds.sshattacker.core.workflow.action.ReceiveAction;
 import de.rub.nds.sshattacker.core.workflow.executor.DefaultWorkflowExecutor;
 import de.rub.nds.sshattacker.core.workflow.executor.WorkflowExecutor;
@@ -18,7 +23,7 @@ public class Project {
         config.setWorkflowTraceType(WorkflowTraceType.KEYEXCHANGE);
         config.getDefaultClientConnection().setHostname("localhost");
         config.getDefaultClientConnection().setPort(2222);
-        //config.setUsername("marcus");
+        // config.setUsername("marcus");
         WorkflowTrace trace = new WorkflowTrace();
         trace.addSshAction(new ReceiveAction(new VersionExchangeMessage()));
         State state = new State(config, trace);
