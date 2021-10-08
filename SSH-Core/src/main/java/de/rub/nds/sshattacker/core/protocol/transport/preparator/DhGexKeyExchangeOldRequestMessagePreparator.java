@@ -10,7 +10,6 @@ package de.rub.nds.sshattacker.core.protocol.transport.preparator;
 import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
 import de.rub.nds.sshattacker.core.crypto.hash.DhGexOldExchangeHash;
 import de.rub.nds.sshattacker.core.crypto.kex.DhKeyExchange;
-import de.rub.nds.sshattacker.core.exceptions.PreparationException;
 import de.rub.nds.sshattacker.core.protocol.common.Preparator;
 import de.rub.nds.sshattacker.core.protocol.transport.message.DhGexKeyExchangeOldRequestMessage;
 import de.rub.nds.sshattacker.core.state.SshContext;
@@ -25,10 +24,15 @@ public class DhGexKeyExchangeOldRequestMessagePreparator
 
     @Override
     public void prepare() {
-        DhKeyExchange keyExchange =
-                DhKeyExchange.newInstance(
-                        context.getKeyExchangeAlgorithm().orElseThrow(PreparationException::new));
-        context.setKeyExchangeInstance(keyExchange);
+        if (context.getKeyExchangeAlgorithm().isPresent()) {
+            DhKeyExchange keyExchange =
+                    DhKeyExchange.newInstance(context.getKeyExchangeAlgorithm().get());
+            context.setKeyExchangeInstance(keyExchange);
+        } else {
+            raisePreparationException(
+                    "Unable to instantiate a new DH key exchange, the negotiated key exchange algorithm is not set");
+        }
+
         DhGexOldExchangeHash dhGexOldExchangeHash =
                 DhGexOldExchangeHash.from(context.getExchangeHashInstance());
         dhGexOldExchangeHash.setPreferredGroupSize(context.getChooser().getPreferredDHGroupSize());

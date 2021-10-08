@@ -10,13 +10,16 @@ package de.rub.nds.sshattacker.core.protocol.transport.preparator;
 import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
 import de.rub.nds.sshattacker.core.crypto.hash.DhGexExchangeHash;
 import de.rub.nds.sshattacker.core.crypto.kex.DhKeyExchange;
-import de.rub.nds.sshattacker.core.exceptions.PreparationException;
 import de.rub.nds.sshattacker.core.protocol.common.Preparator;
 import de.rub.nds.sshattacker.core.protocol.transport.message.DhGexKeyExchangeRequestMessage;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class DhGexKeyExchangeRequestMessagePreparator
         extends Preparator<DhGexKeyExchangeRequestMessage> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public DhGexKeyExchangeRequestMessagePreparator(
             SshContext context, DhGexKeyExchangeRequestMessage message) {
@@ -25,10 +28,15 @@ public class DhGexKeyExchangeRequestMessagePreparator
 
     @Override
     public void prepare() {
-        DhKeyExchange keyExchange =
-                DhKeyExchange.newInstance(
-                        context.getKeyExchangeAlgorithm().orElseThrow(PreparationException::new));
-        context.setKeyExchangeInstance(keyExchange);
+        if (context.getKeyExchangeAlgorithm().isPresent()) {
+            DhKeyExchange keyExchange =
+                    DhKeyExchange.newInstance(context.getKeyExchangeAlgorithm().get());
+            context.setKeyExchangeInstance(keyExchange);
+        } else {
+            raisePreparationException(
+                    "Unable to instantiate a new DH key exchange, the negotiated key exchange algorithm is not set");
+        }
+
         DhGexExchangeHash dhGexExchangeHash =
                 DhGexExchangeHash.from(context.getExchangeHashInstance());
         dhGexExchangeHash.setMinimalGroupSize(context.getChooser().getMinimalDHGroupSize());

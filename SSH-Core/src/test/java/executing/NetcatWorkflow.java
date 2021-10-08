@@ -34,47 +34,43 @@ public class NetcatWorkflow {
         State state = new State();
         WorkflowTrace trace = new WorkflowTrace();
 
-        SendAction sendClientInit =
-                new SendAction("defaultConnection", new VersionExchangeMessage());
+        SendAction sendClientInit = new SendAction("client", new VersionExchangeMessage());
         trace.addSshAction(sendClientInit);
-        trace.addSshAction(new ReceiveAction("defaultConnection"));
+        trace.addSshAction(new ReceiveAction("client"));
 
-        SendAction sendKex = new SendAction("defaultConnection", new KeyExchangeInitMessage());
-        ReceiveAction receiveKex = new ReceiveAction("defaultConnection");
+        SendAction sendKex = new SendAction("client", new KeyExchangeInitMessage());
+        ReceiveAction receiveKex = new ReceiveAction("client");
         trace.addSshAction(sendKex);
         trace.addSshAction(receiveKex);
 
         EcdhKeyExchangeInitMessage ecdhInit = new EcdhKeyExchangeInitMessage();
-        SendAction sendEcdhKex = new SendAction("defaultConnection", ecdhInit);
-        ReceiveAction receiveEcdhKex = new ReceiveAction("defaultConnection");
+        SendAction sendEcdhKex = new SendAction("client", ecdhInit);
+        ReceiveAction receiveEcdhKex = new ReceiveAction("client");
         trace.addSshAction(sendEcdhKex);
         trace.addSshAction(receiveEcdhKex);
-        SendAction sendNewKeys = new SendAction("defaultConnection", new NewKeysMessage());
+        SendAction sendNewKeys = new SendAction("client", new NewKeysMessage());
         trace.addSshAction(sendNewKeys);
         trace.addSshAction(new ActivateEncryptionAction());
 
-        SendAction sendServiceRequest =
-                new SendAction("defaultConnection", new ServiceRequestMessage());
-        ReceiveAction receiveServiceRequestResponse = new ReceiveAction("defaultConnection");
+        SendAction sendServiceRequest = new SendAction("client", new ServiceRequestMessage());
+        ReceiveAction receiveServiceRequestResponse = new ReceiveAction("client");
         trace.addSshAction(sendServiceRequest);
         trace.addSshAction(receiveServiceRequestResponse);
 
-        SendAction sendUserauthRequest =
-                new SendAction("defaultConnection", new UserAuthPasswordMessage());
-        ReceiveAction receiveUserauthRequestResponse = new ReceiveAction("defaultConnection");
-        ReceiveAction receiveGlobalRequest = new ReceiveAction("defaultConnection");
+        SendAction sendUserauthRequest = new SendAction("client", new UserAuthPasswordMessage());
+        ReceiveAction receiveUserauthRequestResponse = new ReceiveAction("client");
+        ReceiveAction receiveGlobalRequest = new ReceiveAction("client");
         trace.addSshActions(sendUserauthRequest);
         trace.addSshAction(receiveUserauthRequestResponse);
         trace.addSshAction(receiveGlobalRequest);
 
-        SendAction sendSessionOpen = new SendAction("defaultConnection", new ChannelOpenMessage());
-        ReceiveAction receiveSessionOpen = new ReceiveAction("defaultConnection");
+        SendAction sendSessionOpen = new SendAction("client", new ChannelOpenMessage());
+        ReceiveAction receiveSessionOpen = new ReceiveAction("client");
         trace.addSshAction(sendSessionOpen);
         trace.addSshAction(receiveSessionOpen);
 
-        SendAction sendChannelRequest =
-                new SendAction("defaultConnection", new ChannelRequestExecMessage());
-        ReceiveAction receiveChannelResponse = new ReceiveAction("defaultConnection");
+        SendAction sendChannelRequest = new SendAction("client", new ChannelRequestExecMessage());
+        ReceiveAction receiveChannelResponse = new ReceiveAction("client");
         trace.addSshAction(sendChannelRequest);
         trace.addSshAction(receiveChannelResponse);
 

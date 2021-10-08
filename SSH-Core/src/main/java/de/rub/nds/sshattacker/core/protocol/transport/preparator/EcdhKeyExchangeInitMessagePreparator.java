@@ -13,10 +13,10 @@ import de.rub.nds.sshattacker.core.crypto.hash.EcdhExchangeHash;
 import de.rub.nds.sshattacker.core.crypto.kex.DhBasedKeyExchange;
 import de.rub.nds.sshattacker.core.crypto.kex.EcdhKeyExchange;
 import de.rub.nds.sshattacker.core.crypto.kex.XCurveEcdhKeyExchange;
-import de.rub.nds.sshattacker.core.exceptions.PreparationException;
 import de.rub.nds.sshattacker.core.protocol.common.Preparator;
 import de.rub.nds.sshattacker.core.protocol.transport.message.EcdhKeyExchangeInitMessage;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import java.util.Optional;
 
 public class EcdhKeyExchangeInitMessagePreparator extends Preparator<EcdhKeyExchangeInitMessage> {
 
@@ -27,18 +27,23 @@ public class EcdhKeyExchangeInitMessagePreparator extends Preparator<EcdhKeyExch
 
     @Override
     public void prepare() {
-        KeyExchangeAlgorithm keyExchangeAlgorithm =
-                context.getKeyExchangeAlgorithm().orElseThrow(PreparationException::new);
+        Optional<KeyExchangeAlgorithm> keyExchangeAlgorithm = context.getKeyExchangeAlgorithm();
         DhBasedKeyExchange keyExchange;
-        switch (keyExchangeAlgorithm) {
-            case CURVE448_SHA512:
-            case CURVE25519_SHA256:
-            case CURVE25519_SHA256_LIBSSH_ORG:
-                keyExchange = XCurveEcdhKeyExchange.newInstance(keyExchangeAlgorithm);
-                break;
-            default:
-                keyExchange = EcdhKeyExchange.newInstance(keyExchangeAlgorithm);
-                break;
+        if (keyExchangeAlgorithm.isPresent()) {
+            switch (keyExchangeAlgorithm.get()) {
+                case CURVE448_SHA512:
+                case CURVE25519_SHA256:
+                case CURVE25519_SHA256_LIBSSH_ORG:
+                    keyExchange = XCurveEcdhKeyExchange.newInstance(keyExchangeAlgorithm.get());
+                    break;
+                default:
+                    keyExchange = EcdhKeyExchange.newInstance(keyExchangeAlgorithm.get());
+                    break;
+            }
+        } else {
+            raisePreparationException(
+                    "Key exchange algorithm not negotiate, unable to generate a local key pair");
+            keyExchange = EcdhKeyExchange.newInstance(KeyExchangeAlgorithm.ECDH_SHA2_NISTP256);
         }
         keyExchange.generateLocalKeyPair();
         context.setKeyExchangeInstance(keyExchange);

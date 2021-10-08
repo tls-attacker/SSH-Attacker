@@ -20,8 +20,8 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.workflow.action.result.MessageActionResult;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
@@ -36,60 +36,60 @@ public class ReceiveMessageHelper {
         BinaryPacketLayer binaryPacketLayer = context.getBinaryPacketLayer();
         MessageLayer messageLayer = context.getMessageLayer();
 
-        if (!context.isVersionExchangeComplete()) {
-            MessageActionResult result = receiveVersionExchangeMessage(context);
-            context.setVersionExchangeComplete(true);
-            return result;
-        } else {
-            try {
-                byte[] data = transportHandler.fetchData();
-                if (data.length != 0) {
+        List<BinaryPacket> binaryPackets = new LinkedList<>();
+        List<Message<?>> retrievedMessages = new LinkedList<>();
 
-                    LOGGER.debug("Received Data: ");
-                    LOGGER.debug(ArrayConverter.bytesToRawHexString(data));
-
-                    // TODO: WTF?!
-                    // Response from server: Invalid SSH identification string.
-                    if (Arrays.equals(
-                                    data,
-                                    ArrayConverter.hexStringToByteArray(
-                                            "496E76616C696420535348206964656E74696669636174696F6E20737472696E672E0D0A"))
-                            || Arrays.equals(
-                                    data,
-                                    ArrayConverter.hexStringToByteArray(
-                                            "496E76616C696420535348206964656E74696669636174696F6E20737472696E672E"))) {
-                        LOGGER.debug("Invalid identification string");
-                        return new MessageActionResult(); // TODO implement fitting message
-                    }
-
-                    if ((context.isClient() && context.isServerToClientEncryptionActive())
-                            || (context.isServer() && context.isClientToServerEncryptionActive())) {
-                        CryptoLayer cryptoLayer =
-                                context.isClient()
-                                        ? context.getCryptoLayerServerToClient()
-                                        : context.getCryptoLayerClientToServer();
-                        data = cryptoLayer.decryptBinaryPackets(data);
-                    }
-
-                    try {
-                        List<BinaryPacket> binaryPackets =
-                                binaryPacketLayer.parseBinaryPackets(data);
-                        List<Message<?>> messages = messageLayer.parseMessages(binaryPackets);
-                        messages.forEach(message -> message.handleSelf(context));
-                        return new MessageActionResult(binaryPackets, messages);
-                    } catch (ParserException e) {
-                        BinaryPacket dummyPacket = new BinaryPacket(data);
-                        return new MessageActionResult(
-                                Collections.singletonList(dummyPacket), new LinkedList<>());
-                    }
-                } else {
-                    LOGGER.debug("TransportHandler does not have data.");
-                    return new MessageActionResult();
-                }
-            } catch (IOException e) {
-                LOGGER.debug("Error while receiving Data " + e.getMessage());
+        try {
+            byte[] data = transportHandler.fetchData();
+            LOGGER.trace("Received Data: " + ArrayConverter.bytesToRawHexString(data));
+            // TODO: We assume that if a version exchange message is present, it is the first
+            // message within the data array - this is always true for the happy flow, but for
+            // strange flows this may not hold
+            if (data.length == 0) {
+                LOGGER.debug(
+                        "Tried to retrieve data from the transport handler but no data was available");
                 return new MessageActionResult();
+            } else if (new String(data, StandardCharsets.US_ASCII)
+                    .startsWith("Invalid SSH identification string.")) {
+                // TODO: Implement message for invalid SSH identification string
+                LOGGER.warn(
+                        "The server reported the identification string sent by the SSH-Attacker is invalid");
+                return new MessageActionResult();
+            } else if (new String(data, StandardCharsets.US_ASCII).startsWith("SSH-2.0")) {
+                // Version exchange message retrieved
+                VersionExchangeMessageParser peerVersionParser =
+                        new VersionExchangeMessageParser(0, data);
+                VersionExchangeMessage peerVersion = peerVersionParser.parse();
+                retrievedMessages.add(peerVersion);
+                context.setVersionExchangeComplete(true);
+                // Skip parsed bytes of the data array (other binary packets might be directly
+                // concatenated)
+                data = Arrays.copyOfRange(data, peerVersionParser.getPointer(), data.length);
             }
+
+            // Binary packet retrieved
+            if ((context.isClient() && context.isServerToClientEncryptionActive())
+                    || (context.isServer() && context.isClientToServerEncryptionActive())) {
+                CryptoLayer cryptoLayer =
+                        context.isClient()
+                                ? context.getCryptoLayerServerToClient()
+                                : context.getCryptoLayerClientToServer();
+                data = cryptoLayer.decryptBinaryPackets(data);
+            }
+
+            try {
+                binaryPackets.addAll(binaryPacketLayer.parseBinaryPackets(data));
+                retrievedMessages.addAll(messageLayer.parseMessages(binaryPackets));
+            } catch (ParserException e) {
+                // TODO: Handle ParserException to distinguish invalid data from valid binary
+                // packets
+                binaryPackets.add(new BinaryPacket(data));
+            }
+            retrievedMessages.forEach(message -> message.handleSelf(context));
+            return new MessageActionResult(binaryPackets, retrievedMessages);
+        } catch (IOException e) {
+            LOGGER.debug("Caught an IOException while trying to retrieve incoming messages", e);
+            return new MessageActionResult();
         }
     }
 
@@ -97,20 +97,5 @@ public class ReceiveMessageHelper {
     public MessageActionResult receiveMessages(
             List<Message<?>> expectedMessages, SshContext context) {
         return receiveMessages(context);
-    }
-
-    public MessageActionResult receiveVersionExchangeMessage(SshContext context) {
-        TransportHandler transport = context.getTransportHandler();
-        try {
-            byte[] response = transport.fetchData();
-            VersionExchangeMessage serverVersion =
-                    new VersionExchangeMessageParser(0, response).parse();
-            serverVersion.handleSelf(context);
-            return new MessageActionResult(
-                    new LinkedList<>(), Collections.singletonList(serverVersion));
-        } catch (IOException e) {
-            LOGGER.debug("Error while receiving VersionExchange from remote: " + e.getMessage());
-            return new MessageActionResult();
-        }
     }
 }

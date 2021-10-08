@@ -45,7 +45,7 @@ public class Config implements Serializable {
     private final String serverComment;
     private final byte[] clientCookie;
     private final byte[] serverCookie;
-    private final List<KeyExchangeAlgorithm> clientSupportedKeyExchangeAlgorithms;
+    private List<KeyExchangeAlgorithm> clientSupportedKeyExchangeAlgorithms;
     private final List<KeyExchangeAlgorithm> serverSupportedKeyExchangeAlgorithms;
     private final List<PublicKeyAuthenticationAlgorithm> clientSupportedHostKeyAlgorithms;
     private final List<PublicKeyAuthenticationAlgorithm> serverSupportedHostKeyAlgorithms;
@@ -120,9 +120,28 @@ public class Config implements Serializable {
 
     private Boolean enforceSettings = false;
 
+    /**
+     * If set to true, preparation exceptions will not be thrown during message preparation.
+     * Instead, fields will be filled with dummy data to allow for out of order testing.
+     */
+    private Boolean avoidPreparationExceptions = false;
+
+    /**
+     * If set to true, adjustment exceptions will not be thrown during message handling. Instead,
+     * message related adjustments may be skipped depending on the current state.
+     */
+    private Boolean avoidAdjustmentExceptions = false;
+
+    /**
+     * If set to true, sending or receiving a NewKeysMessage automatically enables the encryption
+     * for the corresponding transport direction. If set to false, encryption must be enabled
+     * manually by calling the corresponding methods on the state.
+     */
+    private Boolean enableEncryptionOnNewKeysMessage = true;
+
     public Config() {
 
-        defaultClientConnection = new OutboundConnection(65222, "localhost");
+        defaultClientConnection = new OutboundConnection("client", 65222, "localhost");
         defaultServerConnection = new InboundConnection("server", 65222, "localhost");
         clientVersion = "SSH-2.0-OpenSSH_7.8";
         clientComment = "";
@@ -133,7 +152,7 @@ public class Config implements Serializable {
 
         clientSupportedKeyExchangeAlgorithms = new LinkedList<>();
         clientSupportedKeyExchangeAlgorithms.add(
-                KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP_EXCHANGE_SHA256);
+                KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP14_SHA256);
         serverSupportedKeyExchangeAlgorithms =
                 new LinkedList<>(clientSupportedKeyExchangeAlgorithms);
 
@@ -265,6 +284,11 @@ public class Config implements Serializable {
 
     public List<KeyExchangeAlgorithm> getClientSupportedKeyExchangeAlgorithms() {
         return clientSupportedKeyExchangeAlgorithms;
+    }
+
+    public void setClientSupportedKeyExchangeAlgorithms(
+            List<KeyExchangeAlgorithm> clientSupportedKeyExchangeAlgorithms) {
+        this.clientSupportedKeyExchangeAlgorithms = clientSupportedKeyExchangeAlgorithms;
     }
 
     public List<KeyExchangeAlgorithm> getServerSupportedKeyExchangeAlgorithms() {
@@ -597,5 +621,29 @@ public class Config implements Serializable {
 
     public void setServiceName(String serviceName) {
         this.serviceName = serviceName;
+    }
+
+    public Boolean getAvoidAdjustmentExceptions() {
+        return avoidAdjustmentExceptions;
+    }
+
+    public void setAvoidAdjustmentExceptions(Boolean avoidAdjustmentExceptions) {
+        this.avoidAdjustmentExceptions = avoidAdjustmentExceptions;
+    }
+
+    public Boolean getAvoidPreparationExceptions() {
+        return avoidPreparationExceptions;
+    }
+
+    public void setAvoidPreparationExceptions(Boolean avoidPreparationExceptions) {
+        this.avoidPreparationExceptions = avoidPreparationExceptions;
+    }
+
+    public Boolean getEnableEncryptionOnNewKeysMessage() {
+        return enableEncryptionOnNewKeysMessage;
+    }
+
+    public void setEnableEncryptionOnNewKeysMessage(Boolean enableEncryptionOnNewKeysMessage) {
+        this.enableEncryptionOnNewKeysMessage = enableEncryptionOnNewKeysMessage;
     }
 }

@@ -28,46 +28,45 @@ import javax.xml.bind.annotation.XmlType;
             "proxyControlPort",
             "proxyControlHostname",
             "timeout",
+            "firstTimeout",
+            "connectionTimeout",
             "transportHandlerType"
         })
 public abstract class AliasedConnection extends Connection implements Aliasable {
 
-    public static final String DEFAULT_CONNECTION_ALIAS = "defaultConnection";
+    public static final String DEFAULT_CONNECTION_ALIAS = "client";
     public static final TransportHandlerType DEFAULT_TRANSPORT_HANDLER_TYPE =
             TransportHandlerType.TCP;
     public static final Integer DEFAULT_TIMEOUT = 1000;
+    public static final Integer DEFAULT_CONNECTION_TIMEOUT = 8000;
+    public static final Integer DEFAULT_FIRST_TIMEOUT = DEFAULT_TIMEOUT;
     public static final String DEFAULT_HOSTNAME = "localhost";
     public static final String DEFAULT_IP = "127.0.0.1";
     public static final Integer DEFAULT_PORT = 65222;
 
     protected String alias = null;
 
-    public AliasedConnection() {
-        this((Integer) null, null);
-    }
+    public AliasedConnection() {}
 
     public AliasedConnection(Integer port) {
-        this(port, null);
+        super(port);
     }
 
     public AliasedConnection(Integer port, String hostname) {
         super(port, hostname);
-        setTimeout(DEFAULT_TIMEOUT);
-        setTransportHandlerType(DEFAULT_TRANSPORT_HANDLER_TYPE);
     }
 
     public AliasedConnection(String alias) {
-        this((Integer) null, null);
         this.alias = alias;
     }
 
     public AliasedConnection(String alias, Integer port) {
-        this(port, null);
+        super(port);
         this.alias = alias;
     }
 
     public AliasedConnection(String alias, Integer port, String hostname) {
-        this(port, hostname);
+        super(port, hostname);
         this.alias = alias;
     }
 
@@ -127,7 +126,6 @@ public abstract class AliasedConnection extends Connection implements Aliasable 
         return false;
     }
 
-    @SuppressWarnings("SameReturnValue")
     public String getDefaultConnectionAlias() {
         return DEFAULT_CONNECTION_ALIAS;
     }
@@ -172,6 +170,18 @@ public abstract class AliasedConnection extends Connection implements Aliasable 
                 timeout = DEFAULT_TIMEOUT;
             }
         }
+        if (firstTimeout == null) {
+            firstTimeout = defaultCon.getFirstTimeout();
+            if (firstTimeout == null) {
+                firstTimeout = DEFAULT_FIRST_TIMEOUT;
+            }
+        }
+        if (connectionTimeout == null) {
+            connectionTimeout = defaultCon.getConnectionTimeout();
+            if (connectionTimeout == null) {
+                connectionTimeout = DEFAULT_CONNECTION_TIMEOUT;
+            }
+        }
         if (hostname == null || hostname.isEmpty()) {
             hostname = defaultCon.getHostname();
             if (hostname == null || hostname.isEmpty()) {
@@ -210,6 +220,10 @@ public abstract class AliasedConnection extends Connection implements Aliasable 
                 || Objects.equals(timeout, DEFAULT_TIMEOUT)) {
             timeout = null;
         }
+        if (Objects.equals(firstTimeout, defaultCon.getTimeout())
+                || Objects.equals(firstTimeout, DEFAULT_FIRST_TIMEOUT)) {
+            firstTimeout = null;
+        }
         if (hostname.equals(defaultCon.getHostname())
                 || Objects.equals(hostname, DEFAULT_HOSTNAME)) {
             hostname = null;
@@ -220,6 +234,18 @@ public abstract class AliasedConnection extends Connection implements Aliasable 
         if (Objects.equals(port, defaultCon.getPort()) || Objects.equals(port, DEFAULT_PORT)) {
             port = null;
         }
+    }
+
+    @Override
+    protected void addProperties(StringBuilder sb) {
+        sb.append("alias=").append(alias).append(" ");
+        super.addProperties(sb);
+    }
+
+    @Override
+    protected void addCompactProperties(StringBuilder sb) {
+        sb.append(alias).append(":");
+        super.addCompactProperties(sb);
     }
 
     public abstract AliasedConnection getCopy();
