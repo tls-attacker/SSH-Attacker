@@ -7,7 +7,6 @@
  */
 package de.rub.nds.sshattacker.core.protocol.layers;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.protocol.common.Message;
 import de.rub.nds.sshattacker.core.protocol.common.MessageParser;
 import de.rub.nds.sshattacker.core.protocol.common.MessageSerializer;
@@ -31,7 +30,8 @@ public class MessageLayer {
         List<Message<?>> returnList = new ArrayList<>();
         for (BinaryPacket packet : list) {
             Message<?> msg = MessageParser.delegateParsing(packet.getPayload().getValue(), context);
-          //  LOGGER.debug("Message Content: " + ArrayConverter.bytesToHexString(msg.getCompleteResultingMessage().getValue()));
+            //  LOGGER.debug("Message Content: " +
+            // ArrayConverter.bytesToHexString(msg.getCompleteResultingMessage().getValue()));
             returnList.add(msg);
         }
         return returnList;
