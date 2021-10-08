@@ -12,10 +12,10 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="SSH-Attacker" target="11" />
-      <module name="SSH-Client" target="11" />
-      <module name="SSH-Core" target="11" />
-      <module name="SSH-Project-Template" target="11" />
+      <module name="SSH-Attacker" target="1.8" />
+      <module name="SSH-Client" target="8" />
+      <module name="SSH-Core" target="8" />
+      <module name="SSH-Project-Template" target="8" />
     </bytecodeTargetLevel>
   </component>
 </project>
