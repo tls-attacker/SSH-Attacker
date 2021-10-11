@@ -64,13 +64,20 @@ public class DhGexKeyExchangeReplyMessageHandler extends Handler<DhGexKeyExchang
 
     private void computeSharedSecret(DhGexKeyExchangeReplyMessage message) {
         if (context.getKeyExchangeInstance().isPresent()) {
-            DhKeyExchange dhKeyExchange = (DhKeyExchange) context.getKeyExchangeInstance().get();
-            dhKeyExchange.setRemotePublicKey(message.getEphemeralPublicKey().getValue());
-            if (dhKeyExchange.getLocalKeyPair() != null) {
-                dhKeyExchange.computeSharedSecret();
+            KeyExchange keyExchange = context.getKeyExchangeInstance().get();
+            if (keyExchange instanceof DhKeyExchange) {
+                DhKeyExchange dhKeyExchange =
+                        (DhKeyExchange) context.getKeyExchangeInstance().get();
+                dhKeyExchange.setRemotePublicKey(message.getEphemeralPublicKey().getValue());
+                if (dhKeyExchange.getLocalKeyPair() != null) {
+                    dhKeyExchange.computeSharedSecret();
+                } else {
+                    raiseAdjustmentException(
+                            "No local key pair is present, unable to compute shared secret");
+                }
             } else {
                 raiseAdjustmentException(
-                        "No local key pair is present, unable to compute shared secret");
+                        "Key exchange is not an instance of DhKeyExchange, unable to set remote public key and compute shared secret");
             }
         } else {
             raiseAdjustmentException(
