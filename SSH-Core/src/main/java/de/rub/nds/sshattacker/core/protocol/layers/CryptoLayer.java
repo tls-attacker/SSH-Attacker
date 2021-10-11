@@ -12,6 +12,7 @@ import de.rub.nds.sshattacker.core.constants.BinaryPacketConstants;
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.constants.EncryptionAlgorithm;
 import de.rub.nds.sshattacker.core.constants.MacAlgorithm;
+import de.rub.nds.sshattacker.core.exceptions.DecryptionException;
 import de.rub.nds.sshattacker.core.protocol.transport.message.BinaryPacket;
 import de.rub.nds.sshattacker.core.protocol.transport.serializer.BinaryPacketSerializer;
 import de.rub.nds.sshattacker.core.state.SshContext;
@@ -106,40 +107,52 @@ public abstract class CryptoLayer {
     }
 
     private byte[] decryptEAM(byte[] encryptedPacket) {
-        byte[] firstBlock =
-                Arrays.copyOfRange(encryptedPacket, 0, encryptionAlgorithm.getBlockSize());
-        byte[] decryptedFirstBlock = decrypt(firstBlock);
-        int packetLength =
-                ArrayConverter.bytesToInt(
-                        Arrays.copyOfRange(
-                                decryptedFirstBlock, 0, BinaryPacketConstants.LENGTH_FIELD_LENGTH));
-        int macStart = BinaryPacketConstants.LENGTH_FIELD_LENGTH + packetLength;
-        int macEnd = macStart + macAlgorithm.getOutputSize();
-        byte[] mac = Arrays.copyOfRange(encryptedPacket, macStart, macEnd);
-        byte[] toDecrypt =
-                Arrays.copyOfRange(encryptedPacket, encryptionAlgorithm.getBlockSize(), macStart);
-        byte[] decrypted = decrypt(toDecrypt);
+        try {
+            byte[] firstBlock =
+                    Arrays.copyOfRange(encryptedPacket, 0, encryptionAlgorithm.getBlockSize());
+            byte[] decryptedFirstBlock = decrypt(firstBlock);
+            int packetLength =
+                    ArrayConverter.bytesToInt(
+                            Arrays.copyOfRange(
+                                    decryptedFirstBlock,
+                                    0,
+                                    BinaryPacketConstants.LENGTH_FIELD_LENGTH));
+            int macStart = BinaryPacketConstants.LENGTH_FIELD_LENGTH + packetLength;
+            int macEnd = macStart + macAlgorithm.getOutputSize();
+            byte[] mac = Arrays.copyOfRange(encryptedPacket, macStart, macEnd);
+            byte[] toDecrypt =
+                    Arrays.copyOfRange(
+                            encryptedPacket, encryptionAlgorithm.getBlockSize(), macStart);
+            byte[] decrypted = decrypt(toDecrypt);
 
-        // TODO: MAC verification
+            // TODO: MAC verification
 
-        return ArrayConverter.concatenate(decryptedFirstBlock, decrypted, mac);
+            return ArrayConverter.concatenate(decryptedFirstBlock, decrypted, mac);
+        } catch (Exception e) {
+            throw new DecryptionException("Unable to decrypt packet using \"Encrypt-and-MAC\"", e);
+        }
     }
 
     private byte[] decryptETM(byte[] encryptedPacket) {
-        byte[] serializedPacketLength =
-                Arrays.copyOfRange(encryptedPacket, 0, BinaryPacketConstants.LENGTH_FIELD_LENGTH);
-        int packetLength = ArrayConverter.bytesToInt(serializedPacketLength);
-        int macStart = BinaryPacketConstants.LENGTH_FIELD_LENGTH + packetLength;
-        int macEnd = macStart + macAlgorithm.getOutputSize();
-        byte[] mac = Arrays.copyOfRange(encryptedPacket, macStart, macEnd);
-        byte[] toDecrypt =
-                Arrays.copyOfRange(
-                        encryptedPacket, BinaryPacketConstants.LENGTH_FIELD_LENGTH, macStart);
-        byte[] decrypted = decrypt(toDecrypt);
+        try {
+            byte[] serializedPacketLength =
+                    Arrays.copyOfRange(
+                            encryptedPacket, 0, BinaryPacketConstants.LENGTH_FIELD_LENGTH);
+            int packetLength = ArrayConverter.bytesToInt(serializedPacketLength);
+            int macStart = BinaryPacketConstants.LENGTH_FIELD_LENGTH + packetLength;
+            int macEnd = macStart + macAlgorithm.getOutputSize();
+            byte[] mac = Arrays.copyOfRange(encryptedPacket, macStart, macEnd);
+            byte[] toDecrypt =
+                    Arrays.copyOfRange(
+                            encryptedPacket, BinaryPacketConstants.LENGTH_FIELD_LENGTH, macStart);
+            byte[] decrypted = decrypt(toDecrypt);
 
-        // TODO: MAC verification
+            // TODO: MAC verification
 
-        return ArrayConverter.concatenate(serializedPacketLength, decrypted, mac);
+            return ArrayConverter.concatenate(serializedPacketLength, decrypted, mac);
+        } catch (Exception e) {
+            throw new DecryptionException("Unable to decrypt packet using \"Encrypt-then-MAC\"", e);
+        }
     }
 
     private byte[] decryptPacket(byte[] encryptedPacket) {

@@ -8,6 +8,7 @@
 package de.rub.nds.sshattacker.core.protocol.util;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.sshattacker.core.exceptions.DecryptionException;
 import de.rub.nds.sshattacker.core.exceptions.ParserException;
 import de.rub.nds.sshattacker.core.protocol.common.Message;
 import de.rub.nds.sshattacker.core.protocol.layers.BinaryPacketLayer;
@@ -74,9 +75,15 @@ public class ReceiveMessageHelper {
                         context.isClient()
                                 ? context.getCryptoLayerServerToClient()
                                 : context.getCryptoLayerClientToServer();
-                data = cryptoLayer.decryptBinaryPackets(data);
+                try {
+                    data = cryptoLayer.decryptBinaryPackets(data);
+                } catch (DecryptionException e) {
+                    // TODO: Handle DecryptionException within CryptoLayer
+                    LOGGER.warn(
+                            "Unable to decrypt received data - assuming binary packets are not encrypted",
+                            e);
+                }
             }
-
             try {
                 binaryPackets.addAll(binaryPacketLayer.parseBinaryPackets(data));
                 retrievedMessages.addAll(messageLayer.parseMessages(binaryPackets));
