@@ -18,6 +18,8 @@ import de.rub.nds.sshattacker.core.protocol.common.Message;
 import de.rub.nds.sshattacker.core.protocol.common.Preparator;
 import de.rub.nds.sshattacker.core.protocol.common.Serializer;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.DhGexKeyExchangeReplyMessageHandler;
+import de.rub.nds.sshattacker.core.protocol.transport.preparator.DhGexKeyExchangeReplyMessagePreparator;
+import de.rub.nds.sshattacker.core.protocol.transport.serializer.DhGexKeyExchangeReplyMessageSerializer;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import java.math.BigInteger;
 
@@ -166,13 +168,11 @@ public class DhGexKeyExchangeReplyMessage extends Message<DhGexKeyExchangeReplyM
 
     @Override
     public Serializer<DhGexKeyExchangeReplyMessage> getSerializer() {
-        // TODO: Implement DhGexKeyExchangeReplyMessageSerializer
-        throw new NotImplementedException("DhGexKeyExchangeReplyMessage::getSerializer");
+        return new DhGexKeyExchangeReplyMessageSerializer(this);
     }
 
     @Override
     public Preparator<DhGexKeyExchangeReplyMessage> getPreparator(SshContext context) {
-        // TODO: Implement DhKeyExchangeReplyMessagePreparator
-        throw new NotImplementedException("DhGexKeyExchangeReplyMessage::getPreparator");
+        return new DhGexKeyExchangeReplyMessagePreparator(context, this);
     }
 }
