@@ -169,7 +169,7 @@
                 <artifactId>spotless-maven-plugin</artifactId>
                 <configuration>
                     <java>
-                        <lineEndings>UNIX</lineEndings>
+                        <lineEndings>GIT_ATTRIBUTES</lineEndings>
                         <trimTrailingWhitespace />
                         <endWithNewline />
                         <removeUnusedImports />
