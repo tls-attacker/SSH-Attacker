@@ -8,6 +8,7 @@
 package de.rub.nds.sshattacker.core.protocol.transport.preparator;
 
 import de.rub.nds.sshattacker.core.constants.KeyExchangeAlgorithm;
+import de.rub.nds.sshattacker.core.constants.KeyExchangeFlowType;
 import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
 import de.rub.nds.sshattacker.core.crypto.hash.DhNamedExchangeHash;
 import de.rub.nds.sshattacker.core.crypto.kex.DhKeyExchange;
@@ -28,11 +29,12 @@ public class DhKeyExchangeInitMessagePreparator extends Preparator<DhKeyExchange
         // TODO: Handle default value for key exchange algorithm in Config
         Optional<KeyExchangeAlgorithm> keyExchangeAlgorithm = context.getKeyExchangeAlgorithm();
         DhKeyExchange keyExchange;
-        if (keyExchangeAlgorithm.isPresent()) {
+        if (keyExchangeAlgorithm.isPresent()
+                && keyExchangeAlgorithm.get().getFlowType() == KeyExchangeFlowType.DIFFIE_HELLMAN) {
             keyExchange = DhKeyExchange.newInstance(keyExchangeAlgorithm.get());
         } else {
             raisePreparationException(
-                    "Key exchange algorithm not negotiate, unable to generate a local key pair");
+                    "Key exchange algorithm not negotiated or unexpected flow type, unable to generate a local key pair");
             keyExchange =
                     DhKeyExchange.newInstance(KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP14_SHA256);
         }
