@@ -18,7 +18,7 @@ public class UserAuthPasswordMessageHandler extends Handler<UserAuthPasswordMess
     }
 
     @Override
-    public void handle(UserAuthPasswordMessage msg) {
+    public void adjustContext(UserAuthPasswordMessage message) {
         // TODO: Handle UserAuthPasswordMessage
     }
 }

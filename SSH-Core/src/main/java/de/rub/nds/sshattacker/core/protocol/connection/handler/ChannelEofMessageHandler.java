@@ -18,7 +18,7 @@ public class ChannelEofMessageHandler extends Handler<ChannelEofMessage> {
     }
 
     @Override
-    public void handle(ChannelEofMessage msg) {
+    public void adjustContext(ChannelEofMessage message) {
         // TODO: Handle ChannelEofMessage
     }
 }

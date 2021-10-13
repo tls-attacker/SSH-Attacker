@@ -22,7 +22,7 @@ public class DisconnectMessageHandler extends Handler<DisconnectMessage> {
     }
 
     @Override
-    public void handle(DisconnectMessage msg) {
+    public void adjustContext(DisconnectMessage message) {
         LOGGER.info("Received DisconnectMessage");
         context.setReceivedDisconnectMessage(true);
     }

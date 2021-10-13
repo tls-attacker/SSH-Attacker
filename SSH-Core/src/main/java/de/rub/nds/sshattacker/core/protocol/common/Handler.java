@@ -12,6 +12,7 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+// TODO: Make this an interface once the raiseAdjustmentException method is no longer required
 public abstract class Handler<T> {
 
     private static final Logger LOGGER = LogManager.getLogger();
@@ -22,12 +23,14 @@ public abstract class Handler<T> {
         this.context = context;
     }
 
-    public abstract void handle(T msg);
+    public abstract void adjustContext(T message);
 
+    // TODO: Remove this workaround once everything is handled over context fields
     protected void raiseAdjustmentException(String errorMsg) {
         raiseAdjustmentException(new AdjustmentException(errorMsg));
     }
 
+    // TODO: Remove this workaround once everything is handled over context fields
     protected void raiseAdjustmentException(AdjustmentException e) {
         if (context.getConfig().getAvoidAdjustmentExceptions()) {
             LOGGER.warn(e.getMessage());

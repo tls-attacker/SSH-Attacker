@@ -18,5 +18,5 @@ public class IgnoreMessageHandler extends Handler<IgnoreMessage> {
     }
 
     @Override
-    public void handle(IgnoreMessage msg) {}
+    public void adjustContext(IgnoreMessage message) {}
 }

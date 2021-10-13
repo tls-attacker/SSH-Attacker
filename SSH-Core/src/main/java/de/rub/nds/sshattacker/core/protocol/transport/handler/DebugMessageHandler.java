@@ -23,13 +23,13 @@ public class DebugMessageHandler extends Handler<DebugMessage> {
     }
 
     @Override
-    public void handle(DebugMessage msg) {
-        if (Converter.byteToBoolean(msg.getAlwaysDisplay().getValue())) {
+    public void adjustContext(DebugMessage message) {
+        if (Converter.byteToBoolean(message.getAlwaysDisplay().getValue())) {
             LOGGER.info(
-                    "DebugMessage retrieved from remote, message: " + msg.getMessage().getValue());
+                    "DebugMessage retrieved from remote, message: " + message.getMessage().getValue());
         } else {
             LOGGER.debug(
-                    "DebugMessage retrieved from remote, message: " + msg.getMessage().getValue());
+                    "DebugMessage retrieved from remote, message: " + message.getMessage().getValue());
         }
     }
 }

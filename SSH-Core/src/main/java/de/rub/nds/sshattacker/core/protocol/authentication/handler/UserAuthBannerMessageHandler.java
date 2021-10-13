@@ -18,7 +18,7 @@ public class UserAuthBannerMessageHandler extends Handler<UserAuthBannerMessage>
     }
 
     @Override
-    public void handle(UserAuthBannerMessage msg) {
+    public void adjustContext(UserAuthBannerMessage message) {
         // TODO: Handle UserAuthBannerMessage
     }
 }

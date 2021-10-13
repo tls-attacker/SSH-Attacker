@@ -18,7 +18,7 @@ public class UserAuthSuccessMessageHandler extends Handler<UserAuthSuccessMessag
     }
 
     @Override
-    public void handle(UserAuthSuccessMessage msg) {
+    public void adjustContext(UserAuthSuccessMessage message) {
         // TODO: Handle UserAuthSuccessMessageHandler
     }
 }

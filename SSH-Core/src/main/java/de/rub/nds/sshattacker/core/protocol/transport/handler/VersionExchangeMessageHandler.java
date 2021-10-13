@@ -18,7 +18,7 @@ public class VersionExchangeMessageHandler extends Handler<VersionExchangeMessag
     }
 
     @Override
-    public void handle(VersionExchangeMessage message) {
+    public void adjustContext(VersionExchangeMessage message) {
         if (context.isClient()) {
             context.setServerVersion(message.getVersion().getValue());
             context.setServerComment(message.getComment().getValue());

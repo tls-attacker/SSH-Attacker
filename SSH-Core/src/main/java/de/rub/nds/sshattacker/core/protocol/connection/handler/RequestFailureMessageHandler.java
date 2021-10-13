@@ -18,7 +18,7 @@ public class RequestFailureMessageHandler extends Handler<RequestFailureMessage>
     }
 
     @Override
-    public void handle(RequestFailureMessage msg) {
+    public void adjustContext(RequestFailureMessage message) {
         // TODO: Handle RequestFailureMessage
     }
 }

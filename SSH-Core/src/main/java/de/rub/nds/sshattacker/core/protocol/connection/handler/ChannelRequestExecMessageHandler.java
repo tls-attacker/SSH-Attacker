@@ -18,7 +18,7 @@ public class ChannelRequestExecMessageHandler extends Handler<ChannelRequestExec
     }
 
     @Override
-    public void handle(ChannelRequestExecMessage msg) {
+    public void adjustContext(ChannelRequestExecMessage message) {
         // TODO: Handle ChannelRequestExecMessage
     }
 }

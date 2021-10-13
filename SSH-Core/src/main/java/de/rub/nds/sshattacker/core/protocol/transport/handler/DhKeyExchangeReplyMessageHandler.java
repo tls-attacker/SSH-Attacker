@@ -26,7 +26,7 @@ public class DhKeyExchangeReplyMessageHandler extends Handler<DhKeyExchangeReply
     }
 
     @Override
-    public void handle(DhKeyExchangeReplyMessage message) {
+    public void adjustContext(DhKeyExchangeReplyMessage message) {
         context.setKeyExchangeSignature(message.getSignature().getValue());
         handleHostKey(message);
         updateExchangeHashWithRemotePublicKey(message);

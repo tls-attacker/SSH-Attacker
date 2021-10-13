@@ -18,7 +18,7 @@ public class ChannelWindowAdjustMessageHandler extends Handler<ChannelWindowAdju
     }
 
     @Override
-    public void handle(ChannelWindowAdjustMessage msg) {
+    public void adjustContext(ChannelWindowAdjustMessage message) {
         // TODO: Handle ChannelWindowAdjustMessageHandler
     }
 }
