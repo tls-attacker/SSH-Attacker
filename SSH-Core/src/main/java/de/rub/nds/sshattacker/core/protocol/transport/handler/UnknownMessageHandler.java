@@ -25,6 +25,7 @@ public class UnknownMessageHandler extends Handler<UnknownMessage> {
     @Override
     public void adjustContext(UnknownMessage message) {
         LOGGER.debug(
-                "Received unknown message:\n" + ArrayConverter.bytesToHexString(message.getPayload()));
+                "Received unknown message:\n"
+                        + ArrayConverter.bytesToHexString(message.getPayload()));
     }
 }

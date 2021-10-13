@@ -22,12 +22,12 @@ public class ChannelOpenConfirmationMessagePreparator
 
     @Override
     public void prepare() {
-        message.setMessageID(MessageIDConstant.SSH_MSG_CHANNEL_OPEN_CONFIRMATION);
+        getObject().setMessageID(MessageIDConstant.SSH_MSG_CHANNEL_OPEN_CONFIRMATION);
         // TODO dummy values for fuzzing
 
-        message.setPacketSize(Integer.MAX_VALUE);
-        message.setRecipientChannel(Integer.MAX_VALUE);
-        message.setSenderChannel(Integer.MAX_VALUE);
-        message.setWindowSize(Integer.MAX_VALUE);
+        getObject().setPacketSize(Integer.MAX_VALUE);
+        getObject().setRecipientChannel(Integer.MAX_VALUE);
+        getObject().setSenderChannel(Integer.MAX_VALUE);
+        getObject().setWindowSize(Integer.MAX_VALUE);
     }
 }

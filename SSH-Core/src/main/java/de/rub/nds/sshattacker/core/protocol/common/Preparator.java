@@ -14,22 +14,23 @@ import org.apache.logging.log4j.Logger;
 
 public abstract class Preparator<T> {
 
-    protected final T message;
+    private final T object;
     protected final SshContext context;
 
     private static final Logger LOGGER = LogManager.getLogger();
 
     public Preparator(SshContext context, T message) {
-        this.message = message;
+        this.object = message;
         this.context = context;
     }
 
     public abstract void prepare();
 
-    public T getMessage() {
-        return message;
+    public T getObject() {
+        return object;
     }
 
+    // TODO: Remove this workaround once everything is prepared over context fields
     protected void raisePreparationException(String errorMsg) {
         if (context.getConfig().getAvoidPreparationExceptions()) {
             LOGGER.warn(errorMsg);

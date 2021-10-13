@@ -21,10 +21,10 @@ public class ChannelWindowAdjustMessagePreparator extends Preparator<ChannelWind
 
     @Override
     public void prepare() {
-        message.setMessageID(MessageIDConstant.SSH_MSG_CHANNEL_WINDOW_ADJUST);
+        getObject().setMessageID(MessageIDConstant.SSH_MSG_CHANNEL_WINDOW_ADJUST);
 
         // TODO dummy values for fuzzing
-        message.setRecipientChannel(Integer.MAX_VALUE);
-        message.setBytesToAdd(Integer.MAX_VALUE);
+        getObject().setRecipientChannel(Integer.MAX_VALUE);
+        getObject().setBytesToAdd(Integer.MAX_VALUE);
     }
 }

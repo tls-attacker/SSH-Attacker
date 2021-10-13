@@ -20,77 +20,111 @@ public class KeyExchangeInitMessagePreparator extends Preparator<KeyExchangeInit
 
     @Override
     public void prepare() {
-        message.setMessageID(MessageIDConstant.SSH_MSG_KEXINIT);
+        getObject().setMessageID(MessageIDConstant.SSH_MSG_KEXINIT);
         if (context.isClient()) {
-            message.setCookie(context.getChooser().getClientCookie());
-            message.setKeyExchangeAlgorithms(
-                    context.getChooser().getClientSupportedKeyExchangeAlgorithms(), true);
-            message.setServerHostKeyAlgorithms(
-                    context.getChooser().getClientSupportedHostKeyAlgorithms(), true);
-            message.setEncryptionAlgorithmsClientToServer(
-                    context.getChooser().getClientSupportedCipherAlgorithmsClientToServer(), true);
-            message.setEncryptionAlgorithmsServerToClient(
-                    context.getChooser().getClientSupportedCipherAlgorithmsServerToClient(), true);
-            message.setMacAlgorithmsClientToServer(
-                    context.getChooser().getClientSupportedMacAlgorithmsClientToServer(), true);
-            message.setMacAlgorithmsServerToClient(
-                    context.getChooser().getClientSupportedMacAlgorithmsServerToClient(), true);
-            message.setCompressionAlgorithmsClientToServer(
-                    context.getChooser().getClientSupportedCompressionAlgorithmsClientToServer(),
-                    true);
-            message.setCompressionAlgorithmsServerToClient(
-                    context.getChooser().getClientSupportedCompressionAlgorithmsServerToClient(),
-                    true);
-            message.setLanguagesClientToServer(
-                    context.getChooser()
-                            .getClientSupportedLanguagesClientToServer()
-                            .toArray(new String[0]),
-                    true);
-            message.setLanguagesServerToClient(
-                    context.getChooser()
-                            .getClientSupportedLanguagesServerToClient()
-                            .toArray(new String[0]),
-                    true);
-            message.setFirstKeyExchangePacketFollows(
-                    context.getChooser().getClientFirstKeyExchangePacketFollows());
-            message.setReserved(context.getChooser().getClientReserved());
+            getObject().setCookie(context.getChooser().getClientCookie());
+            getObject()
+                    .setKeyExchangeAlgorithms(
+                            context.getChooser().getClientSupportedKeyExchangeAlgorithms(), true);
+            getObject()
+                    .setServerHostKeyAlgorithms(
+                            context.getChooser().getClientSupportedHostKeyAlgorithms(), true);
+            getObject()
+                    .setEncryptionAlgorithmsClientToServer(
+                            context.getChooser().getClientSupportedCipherAlgorithmsClientToServer(),
+                            true);
+            getObject()
+                    .setEncryptionAlgorithmsServerToClient(
+                            context.getChooser().getClientSupportedCipherAlgorithmsServerToClient(),
+                            true);
+            getObject()
+                    .setMacAlgorithmsClientToServer(
+                            context.getChooser().getClientSupportedMacAlgorithmsClientToServer(),
+                            true);
+            getObject()
+                    .setMacAlgorithmsServerToClient(
+                            context.getChooser().getClientSupportedMacAlgorithmsServerToClient(),
+                            true);
+            getObject()
+                    .setCompressionAlgorithmsClientToServer(
+                            context.getChooser()
+                                    .getClientSupportedCompressionAlgorithmsClientToServer(),
+                            true);
+            getObject()
+                    .setCompressionAlgorithmsServerToClient(
+                            context.getChooser()
+                                    .getClientSupportedCompressionAlgorithmsServerToClient(),
+                            true);
+            getObject()
+                    .setLanguagesClientToServer(
+                            context.getChooser()
+                                    .getClientSupportedLanguagesClientToServer()
+                                    .toArray(new String[0]),
+                            true);
+            getObject()
+                    .setLanguagesServerToClient(
+                            context.getChooser()
+                                    .getClientSupportedLanguagesServerToClient()
+                                    .toArray(new String[0]),
+                            true);
+            getObject()
+                    .setFirstKeyExchangePacketFollows(
+                            context.getChooser().getClientFirstKeyExchangePacketFollows());
+            getObject().setReserved(context.getChooser().getClientReserved());
 
-            context.getExchangeHashInstance().setClientKeyExchangeInit(message);
+            context.getExchangeHashInstance().setClientKeyExchangeInit(getObject());
         } else {
-            message.setCookie(context.getChooser().getServerCookie());
-            message.setKeyExchangeAlgorithms(
-                    context.getChooser().getServerSupportedKeyExchangeAlgorithms(), true);
-            message.setServerHostKeyAlgorithms(
-                    context.getChooser().getServerSupportedHostKeyAlgorithms(), true);
-            message.setEncryptionAlgorithmsClientToServer(
-                    context.getChooser().getServerSupportedCipherAlgorithmsClientToServer(), true);
-            message.setEncryptionAlgorithmsServerToClient(
-                    context.getChooser().getServerSupportedCipherAlgorithmsServerToClient(), true);
-            message.setMacAlgorithmsClientToServer(
-                    context.getChooser().getServerSupportedMacAlgorithmsClientToServer(), true);
-            message.setMacAlgorithmsServerToClient(
-                    context.getChooser().getServerSupportedMacAlgorithmsServerToClient(), true);
-            message.setCompressionAlgorithmsClientToServer(
-                    context.getChooser().getServerSupportedCompressionAlgorithmsClientToServer(),
-                    true);
-            message.setCompressionAlgorithmsServerToClient(
-                    context.getChooser().getServerSupportedCompressionAlgorithmsServerToClient(),
-                    true);
-            message.setLanguagesClientToServer(
-                    context.getChooser()
-                            .getServerSupportedLanguagesClientToServer()
-                            .toArray(new String[0]),
-                    true);
-            message.setLanguagesServerToClient(
-                    context.getChooser()
-                            .getServerSupportedLanguagesServerToClient()
-                            .toArray(new String[0]),
-                    true);
-            message.setFirstKeyExchangePacketFollows(
-                    context.getChooser().getServerFirstKeyExchangePacketFollows());
-            message.setReserved(context.getChooser().getServerReserved());
+            getObject().setCookie(context.getChooser().getServerCookie());
+            getObject()
+                    .setKeyExchangeAlgorithms(
+                            context.getChooser().getServerSupportedKeyExchangeAlgorithms(), true);
+            getObject()
+                    .setServerHostKeyAlgorithms(
+                            context.getChooser().getServerSupportedHostKeyAlgorithms(), true);
+            getObject()
+                    .setEncryptionAlgorithmsClientToServer(
+                            context.getChooser().getServerSupportedCipherAlgorithmsClientToServer(),
+                            true);
+            getObject()
+                    .setEncryptionAlgorithmsServerToClient(
+                            context.getChooser().getServerSupportedCipherAlgorithmsServerToClient(),
+                            true);
+            getObject()
+                    .setMacAlgorithmsClientToServer(
+                            context.getChooser().getServerSupportedMacAlgorithmsClientToServer(),
+                            true);
+            getObject()
+                    .setMacAlgorithmsServerToClient(
+                            context.getChooser().getServerSupportedMacAlgorithmsServerToClient(),
+                            true);
+            getObject()
+                    .setCompressionAlgorithmsClientToServer(
+                            context.getChooser()
+                                    .getServerSupportedCompressionAlgorithmsClientToServer(),
+                            true);
+            getObject()
+                    .setCompressionAlgorithmsServerToClient(
+                            context.getChooser()
+                                    .getServerSupportedCompressionAlgorithmsServerToClient(),
+                            true);
+            getObject()
+                    .setLanguagesClientToServer(
+                            context.getChooser()
+                                    .getServerSupportedLanguagesClientToServer()
+                                    .toArray(new String[0]),
+                            true);
+            getObject()
+                    .setLanguagesServerToClient(
+                            context.getChooser()
+                                    .getServerSupportedLanguagesServerToClient()
+                                    .toArray(new String[0]),
+                            true);
+            getObject()
+                    .setFirstKeyExchangePacketFollows(
+                            context.getChooser().getServerFirstKeyExchangePacketFollows());
+            getObject().setReserved(context.getChooser().getServerReserved());
 
-            context.getExchangeHashInstance().setServerKeyExchangeInit(message);
+            context.getExchangeHashInstance().setServerKeyExchangeInit(getObject());
         }
     }
 }

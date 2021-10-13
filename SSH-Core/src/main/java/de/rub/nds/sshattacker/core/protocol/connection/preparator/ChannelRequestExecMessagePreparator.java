@@ -23,17 +23,17 @@ public class ChannelRequestExecMessagePreparator extends Preparator<ChannelReque
 
     @Override
     public void prepare() {
-        message.setMessageID(MessageIDConstant.SSH_MSG_CHANNEL_REQUEST);
+        getObject().setMessageID(MessageIDConstant.SSH_MSG_CHANNEL_REQUEST);
         Optional<Integer> remoteChannel = context.getRemoteChannel();
         if (remoteChannel.isPresent()) {
-            message.setRecipientChannel(remoteChannel.get());
+            getObject().setRecipientChannel(remoteChannel.get());
         } else {
             raisePreparationException(
                     "Unable to prepare ChannelRequestExecMessage - No remote channel id set");
-            message.setRecipientChannel(0);
+            getObject().setRecipientChannel(0);
         }
-        message.setWantReply(context.getConfig().getReplyWanted());
-        message.setRequestType(ChannelRequestType.EXEC, true);
-        message.setCommand(context.getConfig().getChannelCommand(), true);
+        getObject().setWantReply(context.getConfig().getReplyWanted());
+        getObject().setRequestType(ChannelRequestType.EXEC, true);
+        getObject().setCommand(context.getConfig().getChannelCommand(), true);
     }
 }

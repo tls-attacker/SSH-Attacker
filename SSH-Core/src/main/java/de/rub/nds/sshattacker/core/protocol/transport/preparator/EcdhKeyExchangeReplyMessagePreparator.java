@@ -21,11 +21,11 @@ public class EcdhKeyExchangeReplyMessagePreparator extends Preparator<EcdhKeyExc
 
     @Override
     public void prepare() {
-        message.setMessageID(MessageIDConstant.SSH_MSG_KEX_ECDH_REPLY);
+        getObject().setMessageID(MessageIDConstant.SSH_MSG_KEX_ECDH_REPLY);
 
-        message.setHostKey(new byte[0], true);
-        message.setEphemeralPublicKey(new byte[0], true);
+        getObject().setHostKey(new byte[0], true);
+        getObject().setEphemeralPublicKey(new byte[0], true);
         // TODO implement signature calculation
-        message.setSignature(new byte[0], true);
+        getObject().setSignature(new byte[0], true);
     }
 }

@@ -38,7 +38,7 @@ public class DhGexKeyExchangeOldRequestMessagePreparator
         dhGexOldExchangeHash.setPreferredGroupSize(context.getChooser().getPreferredDHGroupSize());
         context.setExchangeHashInstance(dhGexOldExchangeHash);
 
-        message.setMessageID(MessageIDConstant.SSH_MSG_KEX_DH_GEX_REQUEST_OLD);
-        message.setPreferredGroupSize(context.getChooser().getPreferredDHGroupSize());
+        getObject().setMessageID(MessageIDConstant.SSH_MSG_KEX_DH_GEX_REQUEST_OLD);
+        getObject().setPreferredGroupSize(context.getChooser().getPreferredDHGroupSize());
     }
 }

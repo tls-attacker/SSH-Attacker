@@ -20,10 +20,10 @@ public class ChannelDataMessagePreparator extends Preparator<ChannelDataMessage>
 
     @Override
     public void prepare() {
-        message.setMessageID(MessageIDConstant.SSH_MSG_CHANNEL_DATA);
+        getObject().setMessageID(MessageIDConstant.SSH_MSG_CHANNEL_DATA);
 
         // TODO dummy values for fuzzing
-        message.setRecipientChannel(Integer.MAX_VALUE);
-        message.setData(new byte[0], true);
+        getObject().setRecipientChannel(Integer.MAX_VALUE);
+        getObject().setData(new byte[0], true);
     }
 }

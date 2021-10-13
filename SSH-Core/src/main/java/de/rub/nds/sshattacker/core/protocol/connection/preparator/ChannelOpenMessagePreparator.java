@@ -20,10 +20,10 @@ public class ChannelOpenMessagePreparator extends Preparator<ChannelOpenMessage>
 
     @Override
     public void prepare() {
-        message.setMessageID(MessageIDConstant.SSH_MSG_CHANNEL_OPEN);
-        message.setSenderChannel(context.getChooser().getLocalChannel());
-        message.setChannelType(context.getChooser().getChannelType().toString(), true);
-        message.setWindowSize(context.getChooser().getWindowSize());
-        message.setPacketSize(context.getChooser().getPacketSize());
+        getObject().setMessageID(MessageIDConstant.SSH_MSG_CHANNEL_OPEN);
+        getObject().setSenderChannel(context.getChooser().getLocalChannel());
+        getObject().setChannelType(context.getChooser().getChannelType().toString(), true);
+        getObject().setWindowSize(context.getChooser().getWindowSize());
+        getObject().setPacketSize(context.getChooser().getPacketSize());
     }
 }

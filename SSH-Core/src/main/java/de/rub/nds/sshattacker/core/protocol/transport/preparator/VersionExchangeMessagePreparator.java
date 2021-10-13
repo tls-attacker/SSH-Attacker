@@ -20,13 +20,13 @@ public class VersionExchangeMessagePreparator extends Preparator<VersionExchange
     @Override
     public void prepare() {
         if (context.isClient()) {
-            message.setVersion(context.getChooser().getClientVersion());
-            message.setComment(context.getChooser().getClientComment());
-            context.getExchangeHashInstance().setClientVersion(message);
+            getObject().setVersion(context.getChooser().getClientVersion());
+            getObject().setComment(context.getChooser().getClientComment());
+            context.getExchangeHashInstance().setClientVersion(getObject());
         } else {
-            message.setVersion(context.getChooser().getServerVersion());
-            message.setComment(context.getChooser().getServerComment());
-            context.getExchangeHashInstance().setServerVersion(message);
+            getObject().setVersion(context.getChooser().getServerVersion());
+            getObject().setComment(context.getChooser().getServerComment());
+            context.getExchangeHashInstance().setServerVersion(getObject());
         }
     }
 }

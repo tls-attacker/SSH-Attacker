@@ -33,7 +33,7 @@ public class DhGexKeyExchangeInitMessagePreparator extends Preparator<DhGexKeyEx
 
     @Override
     public void prepare() {
-        message.setMessageID(MessageIDConstant.SSH_MSG_KEX_DH_GEX_INIT);
+        getObject().setMessageID(MessageIDConstant.SSH_MSG_KEX_DH_GEX_INIT);
 
         Optional<KeyExchange> keyExchange = context.getKeyExchangeInstance();
         if (keyExchange.isPresent()
@@ -41,21 +41,21 @@ public class DhGexKeyExchangeInitMessagePreparator extends Preparator<DhGexKeyEx
                 && ((DhKeyExchange) keyExchange.get()).areGroupParametersSet()) {
             DhKeyExchange dhKeyExchange = (DhKeyExchange) keyExchange.get();
             dhKeyExchange.generateLocalKeyPair();
-            message.setPublicKey(dhKeyExchange.getLocalKeyPair().getPublic().getY(), true);
+            getObject().setPublicKey(dhKeyExchange.getLocalKeyPair().getPublic().getY(), true);
         } else {
             raisePreparationException(
                     "Key exchange instance is either not present, no DhKeyExchange or does not have its group parameters set, unable to generate a local key pair");
             // TODO: Get public key from config if key exchange instance is not set
-            message.setPublicKey(new BigInteger(256, new Random()), true);
+            getObject().setPublicKey(new BigInteger(256, new Random()), true);
         }
 
         ExchangeHash exchangeHash = context.getExchangeHashInstance();
         if (exchangeHash instanceof DhGexExchangeHash) {
             ((DhGexExchangeHash) exchangeHash)
-                    .setClientDHPublicKey(message.getPublicKey().getValue().toByteArray());
+                    .setClientDHPublicKey(getObject().getPublicKey().getValue().toByteArray());
         } else if (exchangeHash instanceof DhGexOldExchangeHash) {
             ((DhGexOldExchangeHash) exchangeHash)
-                    .setClientDHPublicKey(message.getPublicKey().getValue().toByteArray());
+                    .setClientDHPublicKey(getObject().getPublicKey().getValue().toByteArray());
         } else {
             raisePreparationException(
                     "Exchange hash instance is neither DhGexExchangeHash nor DhGexOldExchangeHash or key exchange instance is not present, unable to update exchange hash with local public key");
