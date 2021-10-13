@@ -18,7 +18,7 @@ public class ChannelDataMessageHandler extends Handler<ChannelDataMessage> {
     }
 
     @Override
-    public void handle(ChannelDataMessage msg) {
+    public void adjustContext(ChannelDataMessage message) {
         // TODO: Handle ChannelDataMessage
     }
 }

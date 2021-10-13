@@ -18,7 +18,7 @@ public class UserAuthFailureMessageHandler extends Handler<UserAuthFailureMessag
     }
 
     @Override
-    public void handle(UserAuthFailureMessage msg) {
+    public void adjustContext(UserAuthFailureMessage message) {
         // TODO: Handle UserAuthFailureMessage
     }
 }

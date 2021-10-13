@@ -26,7 +26,7 @@ public class EcdhKeyExchangeReplyMessageHandler extends Handler<EcdhKeyExchangeR
     }
 
     @Override
-    public void handle(EcdhKeyExchangeReplyMessage message) {
+    public void adjustContext(EcdhKeyExchangeReplyMessage message) {
         context.setKeyExchangeSignature(message.getSignature().getValue());
         handleHostKey(message);
         updateExchangeHashWithRemotePublicKey(message);

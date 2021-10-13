@@ -19,7 +19,7 @@ public class NewKeysMessageHandler extends Handler<NewKeysMessage> {
     }
 
     @Override
-    public void handle(NewKeysMessage msg) {
+    public void adjustContext(NewKeysMessage message) {
         try {
             if (context.getConfig().getEnableEncryptionOnNewKeysMessage()) {
                 context.setServerToClientEncryptionActive(true);

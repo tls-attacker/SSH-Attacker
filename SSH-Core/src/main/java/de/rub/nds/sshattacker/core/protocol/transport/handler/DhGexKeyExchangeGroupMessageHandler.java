@@ -27,9 +27,9 @@ public class DhGexKeyExchangeGroupMessageHandler extends Handler<DhGexKeyExchang
     }
 
     @Override
-    public void handle(DhGexKeyExchangeGroupMessage msg) {
-        setGroupParametersFromMessage(msg);
-        updateExchangeHashWithGroupParameters(msg);
+    public void adjustContext(DhGexKeyExchangeGroupMessage message) {
+        setGroupParametersFromMessage(message);
+        updateExchangeHashWithGroupParameters(message);
     }
 
     private void setGroupParametersFromMessage(DhGexKeyExchangeGroupMessage msg) {

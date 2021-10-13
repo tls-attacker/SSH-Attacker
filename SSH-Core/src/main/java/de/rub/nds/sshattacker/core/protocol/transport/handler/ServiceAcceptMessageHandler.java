@@ -18,7 +18,7 @@ public class ServiceAcceptMessageHandler extends Handler<ServiceAcceptMessage> {
     }
 
     @Override
-    public void handle(ServiceAcceptMessage msg) {
+    public void adjustContext(ServiceAcceptMessage message) {
         // TODO: Handle ServiceAcceptMessage
     }
 }

@@ -23,8 +23,8 @@ public class UnknownMessageHandler extends Handler<UnknownMessage> {
     }
 
     @Override
-    public void handle(UnknownMessage msg) {
+    public void adjustContext(UnknownMessage message) {
         LOGGER.debug(
-                "Received unknown message:\n" + ArrayConverter.bytesToHexString(msg.getPayload()));
+                "Received unknown message:\n" + ArrayConverter.bytesToHexString(message.getPayload()));
     }
 }

@@ -47,7 +47,7 @@ public abstract class Message<T extends Message<T>> extends ProtocolMessage {
 
     @SuppressWarnings("unchecked")
     public void handleSelf(SshContext context) {
-        getHandler(context).handle((T) this);
+        getHandler(context).adjustContext((T) this);
     }
 
     public abstract Serializer<T> getSerializer();

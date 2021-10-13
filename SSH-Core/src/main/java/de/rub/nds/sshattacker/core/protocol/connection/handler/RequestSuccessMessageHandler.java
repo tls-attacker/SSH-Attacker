@@ -18,7 +18,7 @@ public class RequestSuccessMessageHandler extends Handler<RequestSuccessMessage>
     }
 
     @Override
-    public void handle(RequestSuccessMessage msg) {
+    public void adjustContext(RequestSuccessMessage message) {
         // TODO: Handle RequestSucessMessage
     }
 }

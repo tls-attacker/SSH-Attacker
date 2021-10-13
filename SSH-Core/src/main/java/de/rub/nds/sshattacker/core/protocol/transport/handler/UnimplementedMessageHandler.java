@@ -18,7 +18,7 @@ public class UnimplementedMessageHandler extends Handler<UnimplementedMessage> {
     }
 
     @Override
-    public void handle(UnimplementedMessage msg) {
+    public void adjustContext(UnimplementedMessage message) {
         // TODO: Handle UnimplementedMessage
     }
 }
