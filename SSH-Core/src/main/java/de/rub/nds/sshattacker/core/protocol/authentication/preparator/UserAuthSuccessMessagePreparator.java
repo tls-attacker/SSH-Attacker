@@ -20,6 +20,6 @@ public class UserAuthSuccessMessagePreparator extends Preparator<UserAuthSuccess
 
     @Override
     public void prepare() {
-        message.setMessageID(MessageIDConstant.SSH_MSG_USERAUTH_SUCCESS);
+        getObject().setMessageID(MessageIDConstant.SSH_MSG_USERAUTH_SUCCESS);
     }
 }

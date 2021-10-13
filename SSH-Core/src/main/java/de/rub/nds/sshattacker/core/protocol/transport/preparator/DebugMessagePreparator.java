@@ -20,10 +20,10 @@ public class DebugMessagePreparator extends Preparator<DebugMessage> {
 
     @Override
     public void prepare() {
-        message.setMessageID(MessageIDConstant.SSH_MSG_DEBUG);
+        getObject().setMessageID(MessageIDConstant.SSH_MSG_DEBUG);
         // TODO dummy values for fuzzing
-        message.setAlwaysDisplay(true);
-        message.setMessage("", true);
-        message.setLanguageTag("", true);
+        getObject().setAlwaysDisplay(true);
+        getObject().setMessage("", true);
+        getObject().setLanguageTag("", true);
     }
 }

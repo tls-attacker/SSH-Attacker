@@ -22,11 +22,11 @@ public class UserAuthPasswordMessagePreparator extends Preparator<UserAuthPasswo
 
     @Override
     public void prepare() {
-        message.setMessageID(MessageIDConstant.SSH_MSG_USERAUTH_REQUEST);
-        message.setUserName(context.getConfig().getUsername(), true);
-        message.setServiceName(ServiceType.SSH_CONNECTION, true);
-        message.setMethodName(AuthenticationMethod.PASSWORD, true);
-        message.setChangePassword(false);
-        message.setPassword(context.getConfig().getPassword(), true);
+        getObject().setMessageID(MessageIDConstant.SSH_MSG_USERAUTH_REQUEST);
+        getObject().setUserName(context.getConfig().getUsername(), true);
+        getObject().setServiceName(ServiceType.SSH_CONNECTION, true);
+        getObject().setMethodName(AuthenticationMethod.PASSWORD, true);
+        getObject().setChangePassword(false);
+        getObject().setPassword(context.getConfig().getPassword(), true);
     }
 }

@@ -21,10 +21,10 @@ public class DisconnectMessagePreparator extends Preparator<DisconnectMessage> {
 
     @Override
     public void prepare() {
-        message.setMessageID(MessageIDConstant.SSH_MSG_DISCONNECT);
+        getObject().setMessageID(MessageIDConstant.SSH_MSG_DISCONNECT);
         // TODO save values in config
-        message.setReasonCode(DisconnectReason.SSH_DISCONNECT_PROTOCOL_ERROR);
-        message.setDescription("Test", true);
-        message.setLanguageTag("", true);
+        getObject().setReasonCode(DisconnectReason.SSH_DISCONNECT_PROTOCOL_ERROR);
+        getObject().setDescription("Test", true);
+        getObject().setLanguageTag("", true);
     }
 }

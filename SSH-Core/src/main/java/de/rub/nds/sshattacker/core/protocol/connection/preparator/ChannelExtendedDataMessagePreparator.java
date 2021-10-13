@@ -22,11 +22,13 @@ public class ChannelExtendedDataMessagePreparator extends Preparator<ChannelExte
 
     @Override
     public void prepare() {
-        message.setMessageID(MessageIDConstant.SSH_MSG_CHANNEL_EXTENDED_DATA);
+        getObject().setMessageID(MessageIDConstant.SSH_MSG_CHANNEL_EXTENDED_DATA);
 
         // TODO dummy values for fuzzing
-        message.setRecipientChannel(Integer.MAX_VALUE);
-        message.setDataTypeCode(ExtendedChannelDataType.SSH_EXTENDED_DATA_STDERR.getDataTypeCode());
-        message.setData(new byte[0], true);
+        getObject().setRecipientChannel(Integer.MAX_VALUE);
+        getObject()
+                .setDataTypeCode(
+                        ExtendedChannelDataType.SSH_EXTENDED_DATA_STDERR.getDataTypeCode());
+        getObject().setData(new byte[0], true);
     }
 }

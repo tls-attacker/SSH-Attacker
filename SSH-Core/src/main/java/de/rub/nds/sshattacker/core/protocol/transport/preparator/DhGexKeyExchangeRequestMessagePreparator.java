@@ -44,9 +44,9 @@ public class DhGexKeyExchangeRequestMessagePreparator
         dhGexExchangeHash.setMaximalGroupSize(context.getChooser().getMaximalDHGroupSize());
         context.setExchangeHashInstance(dhGexExchangeHash);
 
-        message.setMessageID(MessageIDConstant.SSH_MSG_KEX_DH_GEX_REQUEST);
-        message.setMinimalGroupSize(context.getChooser().getMinimalDHGroupSize());
-        message.setPreferredGroupSize(context.getChooser().getPreferredDHGroupSize());
-        message.setMaximalGroupSize(context.getChooser().getMaximalDHGroupSize());
+        getObject().setMessageID(MessageIDConstant.SSH_MSG_KEX_DH_GEX_REQUEST);
+        getObject().setMinimalGroupSize(context.getChooser().getMinimalDHGroupSize());
+        getObject().setPreferredGroupSize(context.getChooser().getPreferredDHGroupSize());
+        getObject().setMaximalGroupSize(context.getChooser().getMaximalDHGroupSize());
     }
 }

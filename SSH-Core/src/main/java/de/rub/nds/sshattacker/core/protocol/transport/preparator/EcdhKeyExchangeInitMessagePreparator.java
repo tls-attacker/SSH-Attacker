@@ -53,7 +53,7 @@ public class EcdhKeyExchangeInitMessagePreparator extends Preparator<EcdhKeyExch
         context.setExchangeHashInstance(ecdhExchangeHash);
 
         byte[] encodedPublicKey = keyExchange.getLocalKeyPair().getPublic().getEncoded();
-        message.setMessageID(MessageIDConstant.SSH_MSG_KEX_ECDH_INIT);
-        message.setPublicKey(encodedPublicKey, true);
+        getObject().setMessageID(MessageIDConstant.SSH_MSG_KEX_ECDH_INIT);
+        getObject().setPublicKey(encodedPublicKey, true);
     }
 }

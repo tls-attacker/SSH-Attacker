@@ -20,10 +20,10 @@ public class UserAuthFailureMessagePreparator extends Preparator<UserAuthFailure
 
     @Override
     public void prepare() {
-        message.setMessageID(MessageIDConstant.SSH_MSG_USERAUTH_FAILURE);
+        getObject().setMessageID(MessageIDConstant.SSH_MSG_USERAUTH_FAILURE);
 
         // TODO dummy values for fuzzing
-        message.setPossibleAuthenticationMethods("", true);
-        message.setPartialSuccess(true);
+        getObject().setPossibleAuthenticationMethods("", true);
+        getObject().setPartialSuccess(true);
     }
 }

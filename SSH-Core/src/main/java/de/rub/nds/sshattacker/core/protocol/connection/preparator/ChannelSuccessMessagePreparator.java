@@ -20,8 +20,8 @@ public class ChannelSuccessMessagePreparator extends Preparator<ChannelSuccessMe
 
     @Override
     public void prepare() {
-        message.setMessageID(MessageIDConstant.SSH_MSG_CHANNEL_SUCCESS);
+        getObject().setMessageID(MessageIDConstant.SSH_MSG_CHANNEL_SUCCESS);
         // TODO: Dummy values for fuzzing
-        message.setRecipientChannel(Integer.MAX_VALUE);
+        getObject().setRecipientChannel(Integer.MAX_VALUE);
     }
 }

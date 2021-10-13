@@ -20,6 +20,6 @@ public class RequestSuccessMessagePreparator extends Preparator<RequestSuccessMe
 
     @Override
     public void prepare() {
-        message.setMessageID(MessageIDConstant.SSH_MSG_REQUEST_SUCCESS);
+        getObject().setMessageID(MessageIDConstant.SSH_MSG_REQUEST_SUCCESS);
     }
 }

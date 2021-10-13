@@ -26,10 +26,12 @@ public class DebugMessageHandler extends Handler<DebugMessage> {
     public void adjustContext(DebugMessage message) {
         if (Converter.byteToBoolean(message.getAlwaysDisplay().getValue())) {
             LOGGER.info(
-                    "DebugMessage retrieved from remote, message: " + message.getMessage().getValue());
+                    "DebugMessage retrieved from remote, message: "
+                            + message.getMessage().getValue());
         } else {
             LOGGER.debug(
-                    "DebugMessage retrieved from remote, message: " + message.getMessage().getValue());
+                    "DebugMessage retrieved from remote, message: "
+                            + message.getMessage().getValue());
         }
     }
 }
