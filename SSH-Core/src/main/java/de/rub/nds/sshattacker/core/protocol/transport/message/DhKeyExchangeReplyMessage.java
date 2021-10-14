@@ -12,17 +12,12 @@ import de.rub.nds.modifiablevariable.biginteger.ModifiableBigInteger;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
-import de.rub.nds.sshattacker.core.protocol.common.Handler;
-import de.rub.nds.sshattacker.core.protocol.common.Message;
-import de.rub.nds.sshattacker.core.protocol.common.Preparator;
-import de.rub.nds.sshattacker.core.protocol.common.Serializer;
+import de.rub.nds.sshattacker.core.protocol.common.*;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.DhKeyExchangeReplyMessageHandler;
-import de.rub.nds.sshattacker.core.protocol.transport.preparator.DhKeyExchangeReplyMessagePreparator;
-import de.rub.nds.sshattacker.core.protocol.transport.serializer.DhKeyExchangeReplyMessageSerializer;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import java.math.BigInteger;
 
-public class DhKeyExchangeReplyMessage extends Message<DhKeyExchangeReplyMessage> {
+public class DhKeyExchangeReplyMessage extends SshMessage<DhKeyExchangeReplyMessage> {
 
     private ModifiableInteger hostKeyLength;
     private ModifiableByteArray hostKey;
@@ -161,17 +156,7 @@ public class DhKeyExchangeReplyMessage extends Message<DhKeyExchangeReplyMessage
     }
 
     @Override
-    public Handler<DhKeyExchangeReplyMessage> getHandler(SshContext context) {
-        return new DhKeyExchangeReplyMessageHandler(context);
-    }
-
-    @Override
-    public Serializer<DhKeyExchangeReplyMessage> getSerializer() {
-        return new DhKeyExchangeReplyMessageSerializer(this);
-    }
-
-    @Override
-    public Preparator<DhKeyExchangeReplyMessage> getPreparator(SshContext context) {
-        return new DhKeyExchangeReplyMessagePreparator(context, this);
+    public DhKeyExchangeReplyMessageHandler getHandler(SshContext context) {
+        return new DhKeyExchangeReplyMessageHandler(context, this);
     }
 }

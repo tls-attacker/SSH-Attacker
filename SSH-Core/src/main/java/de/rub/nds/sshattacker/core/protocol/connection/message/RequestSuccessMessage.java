@@ -8,13 +8,11 @@
 package de.rub.nds.sshattacker.core.protocol.connection.message;
 
 import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
-import de.rub.nds.sshattacker.core.protocol.common.Message;
+import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
 import de.rub.nds.sshattacker.core.protocol.connection.handler.RequestSuccessMessageHandler;
-import de.rub.nds.sshattacker.core.protocol.connection.preparator.RequestSuccessMessagePreparator;
-import de.rub.nds.sshattacker.core.protocol.connection.serializer.RequestSuccessMessageSerializer;
 import de.rub.nds.sshattacker.core.state.SshContext;
 
-public class RequestSuccessMessage extends Message<RequestSuccessMessage> {
+public class RequestSuccessMessage extends SshMessage<RequestSuccessMessage> {
 
     public RequestSuccessMessage() {
         super(MessageIDConstant.SSH_MSG_REQUEST_SUCCESS);
@@ -22,16 +20,6 @@ public class RequestSuccessMessage extends Message<RequestSuccessMessage> {
 
     @Override
     public RequestSuccessMessageHandler getHandler(SshContext context) {
-        return new RequestSuccessMessageHandler(context);
-    }
-
-    @Override
-    public RequestSuccessMessageSerializer getSerializer() {
-        return new RequestSuccessMessageSerializer(this);
-    }
-
-    @Override
-    public RequestSuccessMessagePreparator getPreparator(SshContext context) {
-        return new RequestSuccessMessagePreparator(context, this);
+        return new RequestSuccessMessageHandler(context, this);
     }
 }

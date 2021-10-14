@@ -8,51 +8,54 @@
 package de.rub.nds.sshattacker.core.protocol.transport.parser;
 
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
-import de.rub.nds.sshattacker.core.protocol.common.MessageParser;
+import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 import de.rub.nds.sshattacker.core.protocol.transport.message.DebugMessage;
 import de.rub.nds.sshattacker.core.util.Converter;
 import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class DebugMessageParser extends MessageParser<DebugMessage> {
+public class DebugMessageParser extends SshMessageParser<DebugMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public DebugMessageParser(int startPosition, byte[] array) {
-        super(startPosition, array);
-    }
-
-    private void parseAlwaysDisplay(DebugMessage msg) {
-        msg.setAlwaysDisplay(parseByteField(1));
-        LOGGER.debug(
-                "Always display: " + Converter.byteToBoolean(msg.getAlwaysDisplay().getValue()));
-    }
-
-    private void parseMessage(DebugMessage msg) {
-        msg.setMessageLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-        LOGGER.debug("Message length: " + msg.getMessageLength().getValue());
-        msg.setMessage(parseByteString(msg.getMessageLength().getValue(), StandardCharsets.UTF_8));
-        LOGGER.debug("Message: " + msg.getMessage().getValue());
-    }
-
-    private void parseLanguageTag(DebugMessage msg) {
-        msg.setLanguageTagLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-        LOGGER.debug("Language tag length: " + msg.getLanguageTagLength().getValue());
-        msg.setLanguageTag(
-                parseByteString(msg.getLanguageTagLength().getValue(), StandardCharsets.US_ASCII));
-        LOGGER.debug("Language tag: " + msg.getLanguageTag().getValue());
-    }
-
-    @Override
-    protected void parseMessageSpecificPayload(DebugMessage msg) {
-        parseAlwaysDisplay(msg);
-        parseMessage(msg);
-        parseLanguageTag(msg);
+    public DebugMessageParser(byte[] array, int startPosition) {
+        super(array, startPosition);
     }
 
     @Override
     public DebugMessage createMessage() {
         return new DebugMessage();
+    }
+
+    private void parseAlwaysDisplay() {
+        message.setAlwaysDisplay(parseByteField(1));
+        LOGGER.debug(
+                "Always display: "
+                        + Converter.byteToBoolean(message.getAlwaysDisplay().getValue()));
+    }
+
+    private void parseMessage() {
+        message.setMessageLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
+        LOGGER.debug("Message length: " + message.getMessageLength().getValue());
+        message.setMessage(
+                parseByteString(message.getMessageLength().getValue(), StandardCharsets.UTF_8));
+        LOGGER.debug("Message: " + message.getMessage().getValue());
+    }
+
+    private void parseLanguageTag() {
+        message.setLanguageTagLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
+        LOGGER.debug("Language tag length: " + message.getLanguageTagLength().getValue());
+        message.setLanguageTag(
+                parseByteString(
+                        message.getLanguageTagLength().getValue(), StandardCharsets.US_ASCII));
+        LOGGER.debug("Language tag: " + message.getLanguageTag().getValue());
+    }
+
+    @Override
+    protected void parseMessageSpecificContents() {
+        parseAlwaysDisplay();
+        parseMessage();
+        parseLanguageTag();
     }
 }

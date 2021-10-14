@@ -11,8 +11,6 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
 import de.rub.nds.sshattacker.core.protocol.connection.handler.ChannelOpenConfirmationMessageHandler;
-import de.rub.nds.sshattacker.core.protocol.connection.preparator.ChannelOpenConfirmationMessagePreparator;
-import de.rub.nds.sshattacker.core.protocol.connection.serializer.ChannelOpenConfirmationMessageSerializer;
 import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class ChannelOpenConfirmationMessage extends ChannelMessage<ChannelOpenConfirmationMessage> {
@@ -64,16 +62,6 @@ public class ChannelOpenConfirmationMessage extends ChannelMessage<ChannelOpenCo
 
     @Override
     public ChannelOpenConfirmationMessageHandler getHandler(SshContext context) {
-        return new ChannelOpenConfirmationMessageHandler(context);
-    }
-
-    @Override
-    public ChannelOpenConfirmationMessageSerializer getSerializer() {
-        return new ChannelOpenConfirmationMessageSerializer(this);
-    }
-
-    @Override
-    public ChannelOpenConfirmationMessagePreparator getPreparator(SshContext context) {
-        return new ChannelOpenConfirmationMessagePreparator(context, this);
+        return new ChannelOpenConfirmationMessageHandler(context, this);
     }
 }

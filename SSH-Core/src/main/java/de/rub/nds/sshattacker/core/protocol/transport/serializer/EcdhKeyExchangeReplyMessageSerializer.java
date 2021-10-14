@@ -9,18 +9,18 @@ package de.rub.nds.sshattacker.core.protocol.transport.serializer;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
-import de.rub.nds.sshattacker.core.protocol.common.MessageSerializer;
+import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.transport.message.EcdhKeyExchangeReplyMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class EcdhKeyExchangeReplyMessageSerializer
-        extends MessageSerializer<EcdhKeyExchangeReplyMessage> {
+        extends SshMessageSerializer<EcdhKeyExchangeReplyMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public EcdhKeyExchangeReplyMessageSerializer(EcdhKeyExchangeReplyMessage msg) {
-        super(msg);
+    public EcdhKeyExchangeReplyMessageSerializer(EcdhKeyExchangeReplyMessage message) {
+        super(message);
     }
 
     private void serializeHostKey(EcdhKeyExchangeReplyMessage msg) {
@@ -48,9 +48,9 @@ public class EcdhKeyExchangeReplyMessageSerializer
     }
 
     @Override
-    public void serializeMessageSpecificPayload() {
-        serializeHostKey(msg);
-        serializePublicKey(msg);
-        serializeSignature(msg);
+    public void serializeMessageSpecificContents() {
+        serializeHostKey(message);
+        serializePublicKey(message);
+        serializeSignature(message);
     }
 }

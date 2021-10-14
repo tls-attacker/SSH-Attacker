@@ -8,12 +8,13 @@
 package de.rub.nds.sshattacker.core.protocol.transport.preparator;
 
 import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
-import de.rub.nds.sshattacker.core.protocol.common.Preparator;
+import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.transport.message.DhKeyExchangeReplyMessage;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import java.math.BigInteger;
 
-public class DhKeyExchangeReplyMessagePreparator extends Preparator<DhKeyExchangeReplyMessage> {
+public class DhKeyExchangeReplyMessagePreparator
+        extends SshMessagePreparator<DhKeyExchangeReplyMessage> {
 
     public DhKeyExchangeReplyMessagePreparator(
             SshContext context, DhKeyExchangeReplyMessage message) {
@@ -21,12 +22,12 @@ public class DhKeyExchangeReplyMessagePreparator extends Preparator<DhKeyExchang
     }
 
     @Override
-    public void prepare() {
-        message.setMessageID(MessageIDConstant.SSH_MSG_KEXDH_REPLY);
+    public void prepareMessageSpecificContents() {
+        getObject().setMessageID(MessageIDConstant.SSH_MSG_KEXDH_REPLY);
 
-        message.setHostKey(new byte[0], true);
-        message.setEphemeralPublicKey(BigInteger.ZERO, true);
+        getObject().setHostKey(new byte[0], true);
+        getObject().setEphemeralPublicKey(BigInteger.ZERO, true);
         // TODO: Implement signature calculation
-        message.setSignature(new byte[0], true);
+        getObject().setSignature(new byte[0], true);
     }
 }

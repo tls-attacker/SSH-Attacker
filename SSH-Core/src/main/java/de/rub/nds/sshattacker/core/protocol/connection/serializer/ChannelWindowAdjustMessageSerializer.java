@@ -17,18 +17,18 @@ public class ChannelWindowAdjustMessageSerializer
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public ChannelWindowAdjustMessageSerializer(ChannelWindowAdjustMessage msg) {
-        super(msg);
+    public ChannelWindowAdjustMessageSerializer(ChannelWindowAdjustMessage message) {
+        super(message);
     }
 
     private void serializeBytesToAdd() {
-        LOGGER.debug("Bytes to add: " + msg.getBytesToAdd().getValue());
-        appendInt(msg.getBytesToAdd().getValue(), DataFormatConstants.INT32_SIZE);
+        LOGGER.debug("Bytes to add: " + message.getBytesToAdd().getValue());
+        appendInt(message.getBytesToAdd().getValue(), DataFormatConstants.INT32_SIZE);
     }
 
     @Override
-    protected void serializeMessageSpecificPayload() {
-        super.serializeMessageSpecificPayload();
+    public void serializeMessageSpecificContents() {
+        super.serializeMessageSpecificContents();
         serializeBytesToAdd();
     }
 }

@@ -13,20 +13,29 @@ import de.rub.nds.sshattacker.core.crypto.hash.ExchangeHash;
 import de.rub.nds.sshattacker.core.crypto.kex.EcdhKeyExchange;
 import de.rub.nds.sshattacker.core.crypto.kex.KeyExchange;
 import de.rub.nds.sshattacker.core.exceptions.AdjustmentException;
-import de.rub.nds.sshattacker.core.protocol.common.Handler;
+import de.rub.nds.sshattacker.core.protocol.common.*;
 import de.rub.nds.sshattacker.core.protocol.layers.CryptoLayerFactory;
 import de.rub.nds.sshattacker.core.protocol.transport.message.EcdhKeyExchangeReplyMessage;
+import de.rub.nds.sshattacker.core.protocol.transport.parser.EcdhKeyExchangeReplyMessageParser;
+import de.rub.nds.sshattacker.core.protocol.transport.preparator.EcdhKeyExchangeReplyMessagePreparator;
+import de.rub.nds.sshattacker.core.protocol.transport.serializer.EcdhKeyExchangeReplyMessageSerializer;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import java.util.Optional;
 
-public class EcdhKeyExchangeReplyMessageHandler extends Handler<EcdhKeyExchangeReplyMessage> {
+public class EcdhKeyExchangeReplyMessageHandler
+        extends SshMessageHandler<EcdhKeyExchangeReplyMessage> {
 
     public EcdhKeyExchangeReplyMessageHandler(SshContext context) {
         super(context);
     }
 
+    public EcdhKeyExchangeReplyMessageHandler(
+            SshContext context, EcdhKeyExchangeReplyMessage message) {
+        super(context, message);
+    }
+
     @Override
-    public void adjustContext(EcdhKeyExchangeReplyMessage message) {
+    public void adjustContext() {
         context.setKeyExchangeSignature(message.getSignature().getValue());
         handleHostKey(message);
         updateExchangeHashWithRemotePublicKey(message);
@@ -101,5 +110,20 @@ public class EcdhKeyExchangeReplyMessageHandler extends Handler<EcdhKeyExchangeR
     private void initializeCryptoLayers() {
         context.setCryptoLayerClientToServer(CryptoLayerFactory.getCryptoLayer(true, context));
         context.setCryptoLayerServerToClient(CryptoLayerFactory.getCryptoLayer(false, context));
+    }
+
+    @Override
+    public EcdhKeyExchangeReplyMessageParser getParser(byte[] array, int startPosition) {
+        return new EcdhKeyExchangeReplyMessageParser(array, startPosition);
+    }
+
+    @Override
+    public EcdhKeyExchangeReplyMessagePreparator getPreparator() {
+        return new EcdhKeyExchangeReplyMessagePreparator(context, message);
+    }
+
+    @Override
+    public EcdhKeyExchangeReplyMessageSerializer getSerializer() {
+        return new EcdhKeyExchangeReplyMessageSerializer(message);
     }
 }

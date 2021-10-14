@@ -9,35 +9,36 @@ package de.rub.nds.sshattacker.core.protocol.authentication.serializer;
 
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthBannerMessage;
-import de.rub.nds.sshattacker.core.protocol.common.MessageSerializer;
+import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
 import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class UserAuthBannerMessageSerializer extends MessageSerializer<UserAuthBannerMessage> {
+public class UserAuthBannerMessageSerializer extends SshMessageSerializer<UserAuthBannerMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public UserAuthBannerMessageSerializer(UserAuthBannerMessage msg) {
-        super(msg);
+    public UserAuthBannerMessageSerializer(UserAuthBannerMessage message) {
+        super(message);
     }
 
     private void serializeMessage() {
-        LOGGER.debug("Message length: " + msg.getMessageLength().getValue());
-        appendInt(msg.getMessageLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
-        LOGGER.debug("Message: " + msg.getMessage().getValue());
-        appendString(msg.getMessage().getValue(), StandardCharsets.UTF_8);
+        LOGGER.debug("Message length: " + message.getMessageLength().getValue());
+        appendInt(message.getMessageLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
+        LOGGER.debug("Message: " + message.getMessage().getValue());
+        appendString(message.getMessage().getValue(), StandardCharsets.UTF_8);
     }
 
     private void serializeLanguageTag() {
-        LOGGER.debug("Language tag length: " + msg.getLanguageTagLength().getValue());
-        appendInt(msg.getLanguageTagLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
-        LOGGER.debug("Language tag: " + msg.getLanguageTag().getValue());
-        appendString(msg.getLanguageTag().getValue(), StandardCharsets.US_ASCII);
+        LOGGER.debug("Language tag length: " + message.getLanguageTagLength().getValue());
+        appendInt(
+                message.getLanguageTagLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
+        LOGGER.debug("Language tag: " + message.getLanguageTag().getValue());
+        appendString(message.getLanguageTag().getValue(), StandardCharsets.US_ASCII);
     }
 
     @Override
-    protected void serializeMessageSpecificPayload() {
+    public void serializeMessageSpecificContents() {
         serializeMessage();
         serializeLanguageTag();
     }

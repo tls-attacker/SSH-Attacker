@@ -9,41 +9,43 @@ package de.rub.nds.sshattacker.core.protocol.authentication.serializer;
 
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthFailureMessage;
-import de.rub.nds.sshattacker.core.protocol.common.MessageSerializer;
+import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
 import de.rub.nds.sshattacker.core.util.Converter;
 import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class UserAuthFailureMessageSerializer extends MessageSerializer<UserAuthFailureMessage> {
+public class UserAuthFailureMessageSerializer extends SshMessageSerializer<UserAuthFailureMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public UserAuthFailureMessageSerializer(UserAuthFailureMessage msg) {
-        super(msg);
+    public UserAuthFailureMessageSerializer(UserAuthFailureMessage message) {
+        super(message);
     }
 
     private void serializePossibleAuthenticationMethods() {
         LOGGER.debug(
                 "Possible authentication methods length: "
-                        + msg.getPossibleAuthenticationMethodsLength().getValue());
+                        + message.getPossibleAuthenticationMethodsLength().getValue());
         appendInt(
-                msg.getPossibleAuthenticationMethodsLength().getValue(),
+                message.getPossibleAuthenticationMethodsLength().getValue(),
                 DataFormatConstants.STRING_SIZE_LENGTH);
         LOGGER.debug(
                 "Possible authentication methods: "
-                        + msg.getPossibleAuthenticationMethods().getValue());
-        appendString(msg.getPossibleAuthenticationMethods().getValue(), StandardCharsets.US_ASCII);
+                        + message.getPossibleAuthenticationMethods().getValue());
+        appendString(
+                message.getPossibleAuthenticationMethods().getValue(), StandardCharsets.US_ASCII);
     }
 
     private void serializePartialSuccess() {
         LOGGER.debug(
-                "Partial success: " + Converter.byteToBoolean(msg.getPartialSuccess().getValue()));
-        appendByte(msg.getPartialSuccess().getValue());
+                "Partial success: "
+                        + Converter.byteToBoolean(message.getPartialSuccess().getValue()));
+        appendByte(message.getPartialSuccess().getValue());
     }
 
     @Override
-    protected void serializeMessageSpecificPayload() {
+    public void serializeMessageSpecificContents() {
         serializePossibleAuthenticationMethods();
         serializePartialSuccess();
     }

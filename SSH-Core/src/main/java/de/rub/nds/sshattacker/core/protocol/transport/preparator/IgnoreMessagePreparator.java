@@ -8,20 +8,19 @@
 package de.rub.nds.sshattacker.core.protocol.transport.preparator;
 
 import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
-import de.rub.nds.sshattacker.core.protocol.common.Preparator;
+import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.transport.message.IgnoreMessage;
 import de.rub.nds.sshattacker.core.state.SshContext;
 
-public class IgnoreMessagePreparator extends Preparator<IgnoreMessage> {
+public class IgnoreMessagePreparator extends SshMessagePreparator<IgnoreMessage> {
 
     public IgnoreMessagePreparator(SshContext context, IgnoreMessage message) {
         super(context, message);
     }
 
     @Override
-    public void prepare() {
-        getObject().setMessageID(MessageIDConstant.SSH_MSG_IGNORE.id);
-
+    public void prepareMessageSpecificContents() {
+        getObject().setMessageID(MessageIDConstant.SSH_MSG_IGNORE);
         // TODO dummy values for fuzzing
         getObject().setData(new byte[0], true);
     }

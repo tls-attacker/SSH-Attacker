@@ -11,8 +11,8 @@ import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelEofMessage
 
 public class ChannelEofMessageParser extends ChannelMessageParser<ChannelEofMessage> {
 
-    public ChannelEofMessageParser(int startPosition, byte[] array) {
-        super(startPosition, array);
+    public ChannelEofMessageParser(byte[] array, int startPosition) {
+        super(array, startPosition);
     }
 
     @Override

@@ -11,17 +11,12 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.biginteger.ModifiableBigInteger;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
-import de.rub.nds.sshattacker.core.protocol.common.Handler;
-import de.rub.nds.sshattacker.core.protocol.common.Message;
-import de.rub.nds.sshattacker.core.protocol.common.Preparator;
-import de.rub.nds.sshattacker.core.protocol.common.Serializer;
+import de.rub.nds.sshattacker.core.protocol.common.*;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.DhGexKeyExchangeGroupMessageHandler;
-import de.rub.nds.sshattacker.core.protocol.transport.preparator.DhGexKeyExchangeGroupMessagePreparator;
-import de.rub.nds.sshattacker.core.protocol.transport.serializer.DhGexKeyExchangeGroupMessageSerializer;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import java.math.BigInteger;
 
-public class DhGexKeyExchangeGroupMessage extends Message<DhGexKeyExchangeGroupMessage> {
+public class DhGexKeyExchangeGroupMessage extends SshMessage<DhGexKeyExchangeGroupMessage> {
 
     private ModifiableInteger groupModulusLength;
     private ModifiableBigInteger groupModulus;
@@ -115,17 +110,7 @@ public class DhGexKeyExchangeGroupMessage extends Message<DhGexKeyExchangeGroupM
     }
 
     @Override
-    public Handler<DhGexKeyExchangeGroupMessage> getHandler(SshContext context) {
-        return new DhGexKeyExchangeGroupMessageHandler(context);
-    }
-
-    @Override
-    public Serializer<DhGexKeyExchangeGroupMessage> getSerializer() {
-        return new DhGexKeyExchangeGroupMessageSerializer(this);
-    }
-
-    @Override
-    public Preparator<DhGexKeyExchangeGroupMessage> getPreparator(SshContext context) {
-        return new DhGexKeyExchangeGroupMessagePreparator(context, this);
+    public DhGexKeyExchangeGroupMessageHandler getHandler(SshContext context) {
+        return new DhGexKeyExchangeGroupMessageHandler(context, this);
     }
 }

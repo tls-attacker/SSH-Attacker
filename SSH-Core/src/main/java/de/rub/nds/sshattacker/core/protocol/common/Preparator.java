@@ -22,6 +22,9 @@ public abstract class Preparator<T> {
     public Preparator(SshContext context, T message) {
         this.object = message;
         this.context = context;
+        if (object == null) {
+            throw new PreparationException("Cannot prepare NULL");
+        }
     }
 
     public abstract void prepare();

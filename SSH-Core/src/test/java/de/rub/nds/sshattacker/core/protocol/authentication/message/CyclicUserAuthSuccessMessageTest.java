@@ -9,7 +9,6 @@ package de.rub.nds.sshattacker.core.protocol.authentication.message;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
-import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthSuccessMessage;
 import de.rub.nds.sshattacker.core.protocol.authentication.parser.UserAuthSuccessMessageParser;
 import de.rub.nds.sshattacker.core.protocol.authentication.serializer.UserAuthSuccessMessageSerializer;
 import org.junit.jupiter.api.Test;
@@ -19,7 +18,7 @@ public class CyclicUserAuthSuccessMessageTest {
     @Test
     public void testCyclic() {
         byte[] bytes = new byte[] {52};
-        UserAuthSuccessMessage message = new UserAuthSuccessMessageParser(0, bytes).parse();
+        UserAuthSuccessMessage message = new UserAuthSuccessMessageParser(bytes, 0).parse();
         assertArrayEquals(bytes, new UserAuthSuccessMessageSerializer(message).serialize());
     }
 }

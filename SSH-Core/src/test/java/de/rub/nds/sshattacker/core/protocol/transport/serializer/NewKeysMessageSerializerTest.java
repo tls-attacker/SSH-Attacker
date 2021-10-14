@@ -10,7 +10,6 @@ package de.rub.nds.sshattacker.core.protocol.transport.serializer;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 import de.rub.nds.sshattacker.core.protocol.transport.message.NewKeysMessage;
-import de.rub.nds.sshattacker.core.protocol.transport.serializer.NewKeysMessageSerializer;
 import org.junit.jupiter.api.Test;
 
 public class NewKeysMessageSerializerTest {

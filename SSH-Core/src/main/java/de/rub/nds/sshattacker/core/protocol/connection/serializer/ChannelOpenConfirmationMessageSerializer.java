@@ -17,28 +17,28 @@ public class ChannelOpenConfirmationMessageSerializer
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public ChannelOpenConfirmationMessageSerializer(ChannelOpenConfirmationMessage msg) {
-        super(msg);
+    public ChannelOpenConfirmationMessageSerializer(ChannelOpenConfirmationMessage message) {
+        super(message);
     }
 
     private void serializeSenderChannel() {
-        LOGGER.debug("Sender channel: " + msg.getSenderChannel().getValue());
-        appendInt(msg.getSenderChannel().getValue(), DataFormatConstants.INT32_SIZE);
+        LOGGER.debug("Sender channel: " + message.getSenderChannel().getValue());
+        appendInt(message.getSenderChannel().getValue(), DataFormatConstants.INT32_SIZE);
     }
 
     private void serializeWindowSize() {
-        LOGGER.debug("Initial window size: " + msg.getWindowSize().getValue());
-        appendInt(msg.getWindowSize().getValue(), DataFormatConstants.INT32_SIZE);
+        LOGGER.debug("Initial window size: " + message.getWindowSize().getValue());
+        appendInt(message.getWindowSize().getValue(), DataFormatConstants.INT32_SIZE);
     }
 
     private void serializePacketSize() {
-        LOGGER.debug("Maximum packet size: " + msg.getWindowSize().getValue());
-        appendInt(msg.getPacketSize().getValue(), DataFormatConstants.INT32_SIZE);
+        LOGGER.debug("Maximum packet size: " + message.getWindowSize().getValue());
+        appendInt(message.getPacketSize().getValue(), DataFormatConstants.INT32_SIZE);
     }
 
     @Override
-    protected void serializeMessageSpecificPayload() {
-        super.serializeMessageSpecificPayload();
+    public void serializeMessageSpecificContents() {
+        super.serializeMessageSpecificContents();
         serializeSenderChannel();
         serializeWindowSize();
         serializePacketSize();

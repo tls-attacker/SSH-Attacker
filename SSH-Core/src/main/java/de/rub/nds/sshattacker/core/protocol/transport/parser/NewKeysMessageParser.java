@@ -7,20 +7,20 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.parser;
 
-import de.rub.nds.sshattacker.core.protocol.common.MessageParser;
+import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 import de.rub.nds.sshattacker.core.protocol.transport.message.NewKeysMessage;
 
-public class NewKeysMessageParser extends MessageParser<NewKeysMessage> {
+public class NewKeysMessageParser extends SshMessageParser<NewKeysMessage> {
 
-    public NewKeysMessageParser(int startPosition, byte[] array) {
-        super(startPosition, array);
+    public NewKeysMessageParser(byte[] array, int startPosition) {
+        super(array, startPosition);
     }
-
-    @Override
-    protected void parseMessageSpecificPayload(NewKeysMessage msg) {}
 
     @Override
     public NewKeysMessage createMessage() {
         return new NewKeysMessage();
     }
+
+    @Override
+    protected void parseMessageSpecificContents() {}
 }

@@ -9,9 +9,8 @@ package de.rub.nds.sshattacker.core.protocol.transport.serializer;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
-import de.rub.nds.sshattacker.core.protocol.transport.parser.BinaryPacketParserTest;
 import de.rub.nds.sshattacker.core.protocol.transport.message.BinaryPacket;
-import de.rub.nds.sshattacker.core.protocol.transport.serializer.BinaryPacketSerializer;
+import de.rub.nds.sshattacker.core.protocol.transport.parser.BinaryPacketParserTest;
 import java.util.stream.Stream;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;

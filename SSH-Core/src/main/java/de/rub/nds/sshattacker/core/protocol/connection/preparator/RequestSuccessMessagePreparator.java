@@ -8,18 +8,18 @@
 package de.rub.nds.sshattacker.core.protocol.connection.preparator;
 
 import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
-import de.rub.nds.sshattacker.core.protocol.common.Preparator;
+import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.connection.message.RequestSuccessMessage;
 import de.rub.nds.sshattacker.core.state.SshContext;
 
-public class RequestSuccessMessagePreparator extends Preparator<RequestSuccessMessage> {
+public class RequestSuccessMessagePreparator extends SshMessagePreparator<RequestSuccessMessage> {
 
     public RequestSuccessMessagePreparator(SshContext context, RequestSuccessMessage message) {
         super(context, message);
     }
 
     @Override
-    public void prepare() {
+    public void prepareMessageSpecificContents() {
         getObject().setMessageID(MessageIDConstant.SSH_MSG_REQUEST_SUCCESS);
     }
 }

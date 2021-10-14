@@ -14,7 +14,7 @@ import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.sshattacker.core.constants.BinaryPacketConstants;
 import de.rub.nds.sshattacker.core.protocol.common.*;
 
-public class BinaryPacket extends ProtocolMessage {
+public class BinaryPacket extends ModifiableVariableHolder {
 
     private ModifiableInteger packetLength;
     private ModifiableByte paddingLength;
@@ -133,10 +133,5 @@ public class BinaryPacket extends ProtocolMessage {
         }
         paddingLength =
                 ModifiableVariableFactory.safelySetValue(paddingLength, intermediatePaddingLength);
-    }
-
-    @Override
-    public String toCompactString() {
-        return this.getClass().getSimpleName();
     }
 }

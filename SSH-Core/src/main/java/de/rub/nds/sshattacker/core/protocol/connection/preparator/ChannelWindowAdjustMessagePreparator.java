@@ -8,11 +8,12 @@
 package de.rub.nds.sshattacker.core.protocol.connection.preparator;
 
 import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
-import de.rub.nds.sshattacker.core.protocol.common.Preparator;
+import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelWindowAdjustMessage;
 import de.rub.nds.sshattacker.core.state.SshContext;
 
-public class ChannelWindowAdjustMessagePreparator extends Preparator<ChannelWindowAdjustMessage> {
+public class ChannelWindowAdjustMessagePreparator
+        extends SshMessagePreparator<ChannelWindowAdjustMessage> {
 
     public ChannelWindowAdjustMessagePreparator(
             SshContext context, ChannelWindowAdjustMessage message) {
@@ -20,9 +21,8 @@ public class ChannelWindowAdjustMessagePreparator extends Preparator<ChannelWind
     }
 
     @Override
-    public void prepare() {
+    public void prepareMessageSpecificContents() {
         getObject().setMessageID(MessageIDConstant.SSH_MSG_CHANNEL_WINDOW_ADJUST);
-
         // TODO dummy values for fuzzing
         getObject().setRecipientChannel(Integer.MAX_VALUE);
         getObject().setBytesToAdd(Integer.MAX_VALUE);

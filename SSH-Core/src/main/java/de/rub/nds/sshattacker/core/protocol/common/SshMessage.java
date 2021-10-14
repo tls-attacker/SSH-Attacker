@@ -17,13 +17,11 @@ import javax.xml.bind.annotation.XmlType;
 
 @XmlType(namespace = "ssh-attacker")
 @XmlAccessorType(XmlAccessType.FIELD)
-public abstract class Message<T extends Message<T>> extends ProtocolMessage {
+public abstract class SshMessage<T extends SshMessage<T>> extends ProtocolMessage<T> {
 
     protected ModifiableByte messageID;
 
-    protected Message() {}
-
-    protected Message(MessageIDConstant messageID) {
+    protected SshMessage(MessageIDConstant messageID) {
         setMessageID(messageID);
     }
 
@@ -43,16 +41,8 @@ public abstract class Message<T extends Message<T>> extends ProtocolMessage {
         setMessageID(messageID.id);
     }
 
-    public abstract Handler<T> getHandler(SshContext context);
-
-    @SuppressWarnings("unchecked")
-    public void handleSelf(SshContext context) {
-        getHandler(context).adjustContext((T) this);
-    }
-
-    public abstract Serializer<T> getSerializer();
-
-    public abstract Preparator<T> getPreparator(SshContext context);
+    @Override
+    public abstract SshMessageHandler<T> getHandler(SshContext context);
 
     @Override
     public String toCompactString() {

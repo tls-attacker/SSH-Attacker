@@ -7,9 +7,9 @@
  */
 package de.rub.nds.sshattacker.core.protocol.layers;
 
-import de.rub.nds.sshattacker.core.protocol.common.Message;
-import de.rub.nds.sshattacker.core.protocol.common.MessageParser;
-import de.rub.nds.sshattacker.core.protocol.common.MessageSerializer;
+import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessage;
+import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
+import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 import de.rub.nds.sshattacker.core.protocol.transport.message.BinaryPacket;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import java.util.ArrayList;
@@ -26,10 +26,11 @@ public class MessageLayer {
         this.context = context;
     }
 
-    public List<Message<?>> parseMessages(List<BinaryPacket> list) {
-        List<Message<?>> returnList = new ArrayList<>();
+    public List<ProtocolMessage<?>> parseMessages(List<BinaryPacket> list) {
+        List<ProtocolMessage<?>> returnList = new ArrayList<>();
         for (BinaryPacket packet : list) {
-            Message<?> msg = MessageParser.delegateParsing(packet.getPayload().getValue(), context);
+            ProtocolMessage<?> msg =
+                    SshMessageParser.delegateParsing(packet.getPayload().getValue(), context);
             //  LOGGER.debug("Message Content: " +
             // ArrayConverter.bytesToHexString(msg.getCompleteResultingMessage().getValue()));
             returnList.add(msg);
@@ -37,9 +38,12 @@ public class MessageLayer {
         return returnList;
     }
 
-    public BinaryPacket serializeMessage(Message<?> msg) {
+    public BinaryPacket serializeMessage(ProtocolMessage<?> msg) {
         BinaryPacket packet = new BinaryPacket();
-        byte[] payload = MessageSerializer.delegateSerialization(msg);
+        byte[] payload = new byte[0];
+        if (msg instanceof SshMessage<?>) {
+            payload = msg.getHandler(context).getSerializer().serialize();
+        }
         packet.setPayload(payload);
         // Compute with minimal block length (assuming no encryption later on)
         // If the package will be encrypted, padding will be recalculated in CryptoLayer (necessary
@@ -50,9 +54,9 @@ public class MessageLayer {
         return packet;
     }
 
-    public List<BinaryPacket> serializeMessages(List<Message<?>> list) {
+    public List<BinaryPacket> serializeMessages(List<ProtocolMessage<?>> list) {
         List<BinaryPacket> returnList = new ArrayList<>();
-        for (Message<?> msg : list) {
+        for (ProtocolMessage<?> msg : list) {
             BinaryPacket packet = serializeMessage(msg);
             returnList.add(packet);
         }

@@ -9,10 +9,9 @@ package de.rub.nds.sshattacker.core.protocol.connection.message;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
-import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelExtendedDataMessage;
 import de.rub.nds.sshattacker.core.protocol.connection.parser.ChannelExtendedDataMessageParser;
-import de.rub.nds.sshattacker.core.protocol.connection.serializer.ChannelExtendedDataMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.connection.parser.ChannelExtendedDataMessageParserTest;
+import de.rub.nds.sshattacker.core.protocol.connection.serializer.ChannelExtendedDataMessageSerializer;
 import java.util.stream.Stream;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -38,7 +37,7 @@ public class CyclicChannelExtendedDataMessageTest {
     @MethodSource("provideTestVectors")
     public void testCyclic(byte[] providedBytes) {
         ChannelExtendedDataMessage msg =
-                new ChannelExtendedDataMessageParser(0, providedBytes).parse();
+                new ChannelExtendedDataMessageParser(providedBytes, 0).parse();
         assertArrayEquals(providedBytes, new ChannelExtendedDataMessageSerializer(msg).serialize());
     }
 }

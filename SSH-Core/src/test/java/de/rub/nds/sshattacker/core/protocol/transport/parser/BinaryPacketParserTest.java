@@ -11,7 +11,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.protocol.transport.message.BinaryPacket;
-import de.rub.nds.sshattacker.core.protocol.transport.parser.BinaryPacketParser;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import java.util.stream.Stream;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -91,7 +90,7 @@ public class BinaryPacketParserTest {
             byte[] expectedPayload,
             byte[] expectedPadding,
             byte[] expectedMac) {
-        BinaryPacket msg = new BinaryPacketParser(0, providedBytes, new SshContext()).parse();
+        BinaryPacket msg = new BinaryPacketParser(providedBytes, 0, new SshContext()).parse();
 
         assertEquals(expectedPacketLength, msg.getPacketLength().getValue().intValue());
         assertEquals(expectedPaddingLength, msg.getPaddingLength().getValue().intValue());

@@ -14,9 +14,8 @@ package de.rub.nds.sshattacker.core.protocol.transport.serializer;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
-import de.rub.nds.sshattacker.core.protocol.transport.parser.VersionExchangeMessageParserTest;
 import de.rub.nds.sshattacker.core.protocol.transport.message.VersionExchangeMessage;
-import de.rub.nds.sshattacker.core.protocol.transport.serializer.VersionExchangeMessageSerializer;
+import de.rub.nds.sshattacker.core.protocol.transport.parser.VersionExchangeMessageParserTest;
 import java.util.stream.Stream;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;

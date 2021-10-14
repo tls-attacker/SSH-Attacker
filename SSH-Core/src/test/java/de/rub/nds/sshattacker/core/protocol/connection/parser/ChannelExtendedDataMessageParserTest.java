@@ -14,7 +14,6 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.ExtendedChannelDataType;
 import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelExtendedDataMessage;
-import de.rub.nds.sshattacker.core.protocol.connection.parser.ChannelExtendedDataMessageParser;
 import java.util.stream.Stream;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -62,7 +61,7 @@ public class ChannelExtendedDataMessageParserTest {
             ExtendedChannelDataType expectedDataType,
             byte[] expectedPayload) {
         ChannelExtendedDataMessageParser parser =
-                new ChannelExtendedDataMessageParser(0, providedBytes);
+                new ChannelExtendedDataMessageParser(providedBytes, 0);
         ChannelExtendedDataMessage msg = parser.parse();
 
         assertEquals(

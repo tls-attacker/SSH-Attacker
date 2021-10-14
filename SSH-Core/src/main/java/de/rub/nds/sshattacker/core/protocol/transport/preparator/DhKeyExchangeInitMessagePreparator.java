@@ -12,12 +12,13 @@ import de.rub.nds.sshattacker.core.constants.KeyExchangeFlowType;
 import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
 import de.rub.nds.sshattacker.core.crypto.hash.DhNamedExchangeHash;
 import de.rub.nds.sshattacker.core.crypto.kex.DhKeyExchange;
-import de.rub.nds.sshattacker.core.protocol.common.Preparator;
+import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.transport.message.DhKeyExchangeInitMessage;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import java.util.Optional;
 
-public class DhKeyExchangeInitMessagePreparator extends Preparator<DhKeyExchangeInitMessage> {
+public class DhKeyExchangeInitMessagePreparator
+        extends SshMessagePreparator<DhKeyExchangeInitMessage> {
 
     public DhKeyExchangeInitMessagePreparator(
             SshContext context, DhKeyExchangeInitMessage message) {
@@ -25,7 +26,8 @@ public class DhKeyExchangeInitMessagePreparator extends Preparator<DhKeyExchange
     }
 
     @Override
-    public void prepare() {
+    public void prepareMessageSpecificContents() {
+        getObject().setMessageID(MessageIDConstant.SSH_MSG_KEXDH_INIT);
         // TODO: Handle default value for key exchange algorithm in Config
         Optional<KeyExchangeAlgorithm> keyExchangeAlgorithm = context.getKeyExchangeAlgorithm();
         DhKeyExchange keyExchange;
@@ -46,7 +48,6 @@ public class DhKeyExchangeInitMessagePreparator extends Preparator<DhKeyExchange
         dhNamedExchangeHash.setClientDHPublicKey(keyExchange.getLocalKeyPair().getPublic());
         context.setExchangeHashInstance(dhNamedExchangeHash);
 
-        getObject().setMessageID(MessageIDConstant.SSH_MSG_KEXDH_INIT);
         getObject().setPublicKey(keyExchange.getLocalKeyPair().getPublic().getY(), true);
     }
 }

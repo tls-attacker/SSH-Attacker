@@ -12,8 +12,6 @@ import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.sshattacker.core.constants.ChannelRequestType;
 import de.rub.nds.sshattacker.core.protocol.connection.handler.ChannelRequestExecMessageHandler;
-import de.rub.nds.sshattacker.core.protocol.connection.preparator.ChannelRequestExecMessagePreparator;
-import de.rub.nds.sshattacker.core.protocol.connection.serializer.ChannelRequestExecMessageSerializer;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import java.nio.charset.StandardCharsets;
 
@@ -67,16 +65,6 @@ public class ChannelRequestExecMessage extends ChannelRequestMessage<ChannelRequ
 
     @Override
     public ChannelRequestExecMessageHandler getHandler(SshContext context) {
-        return new ChannelRequestExecMessageHandler(context);
-    }
-
-    @Override
-    public ChannelRequestExecMessageSerializer getSerializer() {
-        return new ChannelRequestExecMessageSerializer(this);
-    }
-
-    @Override
-    public ChannelRequestExecMessagePreparator getPreparator(SshContext context) {
-        return new ChannelRequestExecMessagePreparator(context, this);
+        return new ChannelRequestExecMessageHandler(context, this);
     }
 }

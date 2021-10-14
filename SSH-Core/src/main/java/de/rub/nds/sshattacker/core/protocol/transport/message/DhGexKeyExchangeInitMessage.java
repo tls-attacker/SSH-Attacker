@@ -11,17 +11,12 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.biginteger.ModifiableBigInteger;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
-import de.rub.nds.sshattacker.core.exceptions.NotImplementedException;
-import de.rub.nds.sshattacker.core.protocol.common.Handler;
-import de.rub.nds.sshattacker.core.protocol.common.Message;
-import de.rub.nds.sshattacker.core.protocol.common.Preparator;
-import de.rub.nds.sshattacker.core.protocol.common.Serializer;
-import de.rub.nds.sshattacker.core.protocol.transport.preparator.DhGexKeyExchangeInitMessagePreparator;
-import de.rub.nds.sshattacker.core.protocol.transport.serializer.DhGexKeyExchangeInitMessageSerializer;
+import de.rub.nds.sshattacker.core.protocol.common.*;
+import de.rub.nds.sshattacker.core.protocol.transport.handler.DhGexKeyExchangeInitMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import java.math.BigInteger;
 
-public class DhGexKeyExchangeInitMessage extends Message<DhGexKeyExchangeInitMessage> {
+public class DhGexKeyExchangeInitMessage extends SshMessage<DhGexKeyExchangeInitMessage> {
 
     private ModifiableInteger publicKeyLength;
     private ModifiableBigInteger publicKey;
@@ -70,18 +65,7 @@ public class DhGexKeyExchangeInitMessage extends Message<DhGexKeyExchangeInitMes
     }
 
     @Override
-    public Handler<DhGexKeyExchangeInitMessage> getHandler(SshContext context) {
-        // TODO: Implement DhGexKeyExchangeInitMessage handler
-        throw new NotImplementedException("DhGexKeyExchangeInitMessage::getHandler");
-    }
-
-    @Override
-    public Serializer<DhGexKeyExchangeInitMessage> getSerializer() {
-        return new DhGexKeyExchangeInitMessageSerializer(this);
-    }
-
-    @Override
-    public Preparator<DhGexKeyExchangeInitMessage> getPreparator(SshContext context) {
-        return new DhGexKeyExchangeInitMessagePreparator(context, this);
+    public DhGexKeyExchangeInitMessageHandler getHandler(SshContext context) {
+        return new DhGexKeyExchangeInitMessageHandler(context, this);
     }
 }

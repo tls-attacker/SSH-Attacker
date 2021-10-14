@@ -13,20 +13,27 @@ import de.rub.nds.sshattacker.core.crypto.hash.ExchangeHash;
 import de.rub.nds.sshattacker.core.crypto.kex.DhKeyExchange;
 import de.rub.nds.sshattacker.core.crypto.kex.KeyExchange;
 import de.rub.nds.sshattacker.core.exceptions.AdjustmentException;
-import de.rub.nds.sshattacker.core.protocol.common.Handler;
+import de.rub.nds.sshattacker.core.protocol.common.*;
 import de.rub.nds.sshattacker.core.protocol.layers.CryptoLayerFactory;
 import de.rub.nds.sshattacker.core.protocol.transport.message.DhKeyExchangeReplyMessage;
+import de.rub.nds.sshattacker.core.protocol.transport.parser.DhKeyExchangeReplyMessageParser;
+import de.rub.nds.sshattacker.core.protocol.transport.preparator.DhKeyExchangeReplyMessagePreparator;
+import de.rub.nds.sshattacker.core.protocol.transport.serializer.DhKeyExchangeReplyMessageSerializer;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import java.util.Optional;
 
-public class DhKeyExchangeReplyMessageHandler extends Handler<DhKeyExchangeReplyMessage> {
+public class DhKeyExchangeReplyMessageHandler extends SshMessageHandler<DhKeyExchangeReplyMessage> {
 
     public DhKeyExchangeReplyMessageHandler(SshContext context) {
         super(context);
     }
 
+    public DhKeyExchangeReplyMessageHandler(SshContext context, DhKeyExchangeReplyMessage message) {
+        super(context, message);
+    }
+
     @Override
-    public void adjustContext(DhKeyExchangeReplyMessage message) {
+    public void adjustContext() {
         context.setKeyExchangeSignature(message.getSignature().getValue());
         handleHostKey(message);
         updateExchangeHashWithRemotePublicKey(message);
@@ -100,5 +107,20 @@ public class DhKeyExchangeReplyMessageHandler extends Handler<DhKeyExchangeReply
     private void initializeCryptoLayers() {
         context.setCryptoLayerClientToServer(CryptoLayerFactory.getCryptoLayer(true, context));
         context.setCryptoLayerServerToClient(CryptoLayerFactory.getCryptoLayer(false, context));
+    }
+
+    @Override
+    public DhKeyExchangeReplyMessageParser getParser(byte[] array, int startPosition) {
+        return new DhKeyExchangeReplyMessageParser(array, startPosition);
+    }
+
+    @Override
+    public SshMessagePreparator<DhKeyExchangeReplyMessage> getPreparator() {
+        return new DhKeyExchangeReplyMessagePreparator(context, message);
+    }
+
+    @Override
+    public SshMessageSerializer<DhKeyExchangeReplyMessage> getSerializer() {
+        return new DhKeyExchangeReplyMessageSerializer(message);
     }
 }

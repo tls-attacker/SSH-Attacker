@@ -8,20 +8,19 @@
 package de.rub.nds.sshattacker.core.protocol.connection.preparator;
 
 import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
-import de.rub.nds.sshattacker.core.protocol.common.Preparator;
+import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelEofMessage;
 import de.rub.nds.sshattacker.core.state.SshContext;
 
-public class ChannelEofMessagePreparator extends Preparator<ChannelEofMessage> {
+public class ChannelEofMessagePreparator extends SshMessagePreparator<ChannelEofMessage> {
 
     public ChannelEofMessagePreparator(SshContext context, ChannelEofMessage message) {
         super(context, message);
     }
 
     @Override
-    public void prepare() {
+    public void prepareMessageSpecificContents() {
         getObject().setMessageID(MessageIDConstant.SSH_MSG_CHANNEL_EOF);
-
         // TODO dummy values for fuzzing
         getObject().setRecipientChannel(Integer.MAX_VALUE);
     }

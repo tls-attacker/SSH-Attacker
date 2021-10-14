@@ -7,18 +7,40 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.handler;
 
-import de.rub.nds.sshattacker.core.protocol.common.Handler;
+import de.rub.nds.sshattacker.core.protocol.common.*;
 import de.rub.nds.sshattacker.core.protocol.connection.message.RequestSuccessMessage;
+import de.rub.nds.sshattacker.core.protocol.connection.parser.RequestSuccessMessageParser;
+import de.rub.nds.sshattacker.core.protocol.connection.preparator.RequestSuccessMessagePreparator;
+import de.rub.nds.sshattacker.core.protocol.connection.serializer.RequestSuccessMessageSerializer;
 import de.rub.nds.sshattacker.core.state.SshContext;
 
-public class RequestSuccessMessageHandler extends Handler<RequestSuccessMessage> {
+public class RequestSuccessMessageHandler extends SshMessageHandler<RequestSuccessMessage> {
 
     public RequestSuccessMessageHandler(SshContext context) {
         super(context);
     }
 
+    public RequestSuccessMessageHandler(SshContext context, RequestSuccessMessage message) {
+        super(context, message);
+    }
+
     @Override
-    public void adjustContext(RequestSuccessMessage message) {
+    public void adjustContext() {
         // TODO: Handle RequestSucessMessage
+    }
+
+    @Override
+    public SshMessageParser<RequestSuccessMessage> getParser(byte[] array, int startPosition) {
+        return new RequestSuccessMessageParser(array, startPosition);
+    }
+
+    @Override
+    public SshMessagePreparator<RequestSuccessMessage> getPreparator() {
+        return new RequestSuccessMessagePreparator(context, message);
+    }
+
+    @Override
+    public SshMessageSerializer<RequestSuccessMessage> getSerializer() {
+        return new RequestSuccessMessageSerializer(message);
     }
 }

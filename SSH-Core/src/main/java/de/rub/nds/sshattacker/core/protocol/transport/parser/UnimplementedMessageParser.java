@@ -8,31 +8,31 @@
 package de.rub.nds.sshattacker.core.protocol.transport.parser;
 
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
-import de.rub.nds.sshattacker.core.protocol.common.MessageParser;
+import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 import de.rub.nds.sshattacker.core.protocol.transport.message.UnimplementedMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class UnimplementedMessageParser extends MessageParser<UnimplementedMessage> {
+public class UnimplementedMessageParser extends SshMessageParser<UnimplementedMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public UnimplementedMessageParser(int startPosition, byte[] array) {
-        super(startPosition, array);
+    public UnimplementedMessageParser(byte[] array, int startPosition) {
+        super(array, startPosition);
     }
 
-    private void parseSequenceNumber(UnimplementedMessage msg) {
-        msg.setSequenceNumber(parseIntField(DataFormatConstants.INT32_SIZE));
-        LOGGER.debug("Sequence number: " + msg.getSequenceNumber());
-    }
-
-    @Override
-    protected void parseMessageSpecificPayload(UnimplementedMessage msg) {
-        parseSequenceNumber(msg);
+    private void parseSequenceNumber() {
+        message.setSequenceNumber(parseIntField(DataFormatConstants.INT32_SIZE));
+        LOGGER.debug("Sequence number: " + message.getSequenceNumber());
     }
 
     @Override
     public UnimplementedMessage createMessage() {
         return new UnimplementedMessage();
+    }
+
+    @Override
+    protected void parseMessageSpecificContents() {
+        parseSequenceNumber();
     }
 }

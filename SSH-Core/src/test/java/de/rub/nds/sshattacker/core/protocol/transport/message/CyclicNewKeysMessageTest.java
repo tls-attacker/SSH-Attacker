@@ -9,7 +9,6 @@ package de.rub.nds.sshattacker.core.protocol.transport.message;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
-import de.rub.nds.sshattacker.core.protocol.transport.message.NewKeysMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.parser.NewKeysMessageParser;
 import de.rub.nds.sshattacker.core.protocol.transport.serializer.NewKeysMessageSerializer;
 import org.junit.jupiter.api.Test;
@@ -19,7 +18,7 @@ public class CyclicNewKeysMessageTest {
     @Test
     public void testCyclic() {
         byte[] bytes = new byte[] {21};
-        NewKeysMessage message = new NewKeysMessageParser(0, bytes).parse();
+        NewKeysMessage message = new NewKeysMessageParser(bytes, 0).parse();
         assertArrayEquals(bytes, new NewKeysMessageSerializer(message).serialize());
     }
 }

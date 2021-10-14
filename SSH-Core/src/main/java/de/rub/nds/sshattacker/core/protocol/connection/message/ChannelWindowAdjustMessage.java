@@ -11,8 +11,6 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
 import de.rub.nds.sshattacker.core.protocol.connection.handler.ChannelWindowAdjustMessageHandler;
-import de.rub.nds.sshattacker.core.protocol.connection.preparator.ChannelWindowAdjustMessagePreparator;
-import de.rub.nds.sshattacker.core.protocol.connection.serializer.ChannelWindowAdjustMessageSerializer;
 import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class ChannelWindowAdjustMessage extends ChannelMessage<ChannelWindowAdjustMessage> {
@@ -37,16 +35,6 @@ public class ChannelWindowAdjustMessage extends ChannelMessage<ChannelWindowAdju
 
     @Override
     public ChannelWindowAdjustMessageHandler getHandler(SshContext context) {
-        return new ChannelWindowAdjustMessageHandler(context);
-    }
-
-    @Override
-    public ChannelWindowAdjustMessageSerializer getSerializer() {
-        return new ChannelWindowAdjustMessageSerializer(this);
-    }
-
-    @Override
-    public ChannelWindowAdjustMessagePreparator getPreparator(SshContext context) {
-        return new ChannelWindowAdjustMessagePreparator(context, this);
+        return new ChannelWindowAdjustMessageHandler(context, this);
     }
 }

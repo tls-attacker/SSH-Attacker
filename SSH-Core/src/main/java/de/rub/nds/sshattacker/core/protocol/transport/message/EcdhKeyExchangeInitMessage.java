@@ -11,14 +11,11 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
-import de.rub.nds.sshattacker.core.exceptions.NotImplementedException;
-import de.rub.nds.sshattacker.core.protocol.common.Handler;
-import de.rub.nds.sshattacker.core.protocol.common.Message;
-import de.rub.nds.sshattacker.core.protocol.transport.preparator.EcdhKeyExchangeInitMessagePreparator;
-import de.rub.nds.sshattacker.core.protocol.transport.serializer.EcdhKeyExchangeInitMessageSerializer;
+import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
+import de.rub.nds.sshattacker.core.protocol.transport.handler.EcdhKeyExchangeInitMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 
-public class EcdhKeyExchangeInitMessage extends Message<EcdhKeyExchangeInitMessage> {
+public class EcdhKeyExchangeInitMessage extends SshMessage<EcdhKeyExchangeInitMessage> {
 
     private ModifiableInteger publicKeyLength;
     private ModifiableByteArray publicKey;
@@ -67,17 +64,7 @@ public class EcdhKeyExchangeInitMessage extends Message<EcdhKeyExchangeInitMessa
     }
 
     @Override
-    public Handler<EcdhKeyExchangeInitMessage> getHandler(SshContext context) {
-        throw new NotImplementedException("EcdhKeyExchangeInitMessage::getHandler");
-    }
-
-    @Override
-    public EcdhKeyExchangeInitMessageSerializer getSerializer() {
-        return new EcdhKeyExchangeInitMessageSerializer(this);
-    }
-
-    @Override
-    public EcdhKeyExchangeInitMessagePreparator getPreparator(SshContext context) {
-        return new EcdhKeyExchangeInitMessagePreparator(context, this);
+    public EcdhKeyExchangeInitMessageHandler getHandler(SshContext context) {
+        return new EcdhKeyExchangeInitMessageHandler(context, this);
     }
 }

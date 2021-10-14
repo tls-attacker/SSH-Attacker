@@ -7,13 +7,13 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.parser;
 
-import de.rub.nds.sshattacker.core.protocol.common.MessageParser;
+import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 import de.rub.nds.sshattacker.core.protocol.connection.message.RequestFailureMessage;
 
-public class RequestFailureMessageParser extends MessageParser<RequestFailureMessage> {
+public class RequestFailureMessageParser extends SshMessageParser<RequestFailureMessage> {
 
-    public RequestFailureMessageParser(int startPosition, byte[] array) {
-        super(startPosition, array);
+    public RequestFailureMessageParser(byte[] array, int startPosition) {
+        super(array, startPosition);
     }
 
     @Override
@@ -22,5 +22,5 @@ public class RequestFailureMessageParser extends MessageParser<RequestFailureMes
     }
 
     @Override
-    protected void parseMessageSpecificPayload(RequestFailureMessage msg) {}
+    protected void parseMessageSpecificContents() {}
 }

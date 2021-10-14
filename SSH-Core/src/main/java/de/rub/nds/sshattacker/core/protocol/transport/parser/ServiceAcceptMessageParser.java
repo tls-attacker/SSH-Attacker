@@ -8,31 +8,32 @@
 package de.rub.nds.sshattacker.core.protocol.transport.parser;
 
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
-import de.rub.nds.sshattacker.core.protocol.common.MessageParser;
+import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 import de.rub.nds.sshattacker.core.protocol.transport.message.ServiceAcceptMessage;
 import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class ServiceAcceptMessageParser extends MessageParser<ServiceAcceptMessage> {
+public class ServiceAcceptMessageParser extends SshMessageParser<ServiceAcceptMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public ServiceAcceptMessageParser(int startPosition, byte[] array) {
-        super(startPosition, array);
+    public ServiceAcceptMessageParser(byte[] array, int startPosition) {
+        super(array, startPosition);
     }
 
-    private void parseServiceType(ServiceAcceptMessage msg) {
-        msg.setServiceNameLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-        LOGGER.debug("Service name length: " + msg.getServiceNameLength());
-        msg.setServiceName(
-                parseByteString(msg.getServiceNameLength().getValue(), StandardCharsets.US_ASCII));
-        LOGGER.debug("Service name: " + msg.getServiceName());
+    private void parseServiceType() {
+        message.setServiceNameLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
+        LOGGER.debug("Service name length: " + message.getServiceNameLength());
+        message.setServiceName(
+                parseByteString(
+                        message.getServiceNameLength().getValue(), StandardCharsets.US_ASCII));
+        LOGGER.debug("Service name: " + message.getServiceName());
     }
 
     @Override
-    protected void parseMessageSpecificPayload(ServiceAcceptMessage msg) {
-        parseServiceType(msg);
+    protected void parseMessageSpecificContents() {
+        parseServiceType();
     }
 
     @Override

@@ -12,7 +12,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelOpenFailureMessage;
-import de.rub.nds.sshattacker.core.protocol.connection.parser.ChannelOpenFailureMessageParser;
 import java.util.stream.Stream;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -60,7 +59,7 @@ public class ChannelOpenFailureMessageParserTest {
             String expectedReason,
             String expectedLanguageTag) {
         ChannelOpenFailureMessageParser parser =
-                new ChannelOpenFailureMessageParser(0, providedBytes);
+                new ChannelOpenFailureMessageParser(providedBytes, 0);
         ChannelOpenFailureMessage msg = parser.parse();
 
         assertEquals(

@@ -7,18 +7,19 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.preparator;
 
-import de.rub.nds.sshattacker.core.protocol.common.Preparator;
+import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.transport.message.VersionExchangeMessage;
 import de.rub.nds.sshattacker.core.state.SshContext;
 
-public class VersionExchangeMessagePreparator extends Preparator<VersionExchangeMessage> {
+public class VersionExchangeMessagePreparator
+        extends ProtocolMessagePreparator<VersionExchangeMessage> {
 
     public VersionExchangeMessagePreparator(SshContext context, VersionExchangeMessage message) {
         super(context, message);
     }
 
     @Override
-    public void prepare() {
+    public void prepareProtocolMessageContents() {
         if (context.isClient()) {
             getObject().setVersion(context.getChooser().getClientVersion());
             getObject().setComment(context.getChooser().getClientComment());

@@ -7,7 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.workflow.action.result;
 
-import de.rub.nds.sshattacker.core.protocol.common.Message;
+import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.message.BinaryPacket;
 import java.util.Arrays;
 import java.util.Collections;
@@ -18,9 +18,10 @@ public class MessageActionResult {
 
     private final List<BinaryPacket> binaryPacketList;
 
-    private final List<Message<?>> messageList;
+    private final List<ProtocolMessage<?>> messageList;
 
-    public MessageActionResult(List<BinaryPacket> binaryPacketList, List<Message<?>> messageList) {
+    public MessageActionResult(
+            List<BinaryPacket> binaryPacketList, List<ProtocolMessage<?>> messageList) {
         this.binaryPacketList = binaryPacketList;
         this.messageList = messageList;
     }
@@ -34,7 +35,7 @@ public class MessageActionResult {
         return binaryPacketList;
     }
 
-    public List<Message<?>> getMessageList() {
+    public List<ProtocolMessage<?>> getMessageList() {
         return messageList;
     }
 
@@ -43,7 +44,7 @@ public class MessageActionResult {
         LinkedList<MessageActionResult> results = new LinkedList<>(Collections.singletonList(this));
         results.addAll(Arrays.asList(other));
         List<BinaryPacket> binaryPacketList = new LinkedList<>();
-        List<Message<?>> messageList = new LinkedList<>();
+        List<ProtocolMessage<?>> messageList = new LinkedList<>();
 
         for (MessageActionResult result : results) {
             binaryPacketList.addAll(result.getBinaryPacketList());

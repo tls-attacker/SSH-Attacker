@@ -8,18 +8,18 @@
 package de.rub.nds.sshattacker.core.protocol.transport.preparator;
 
 import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
-import de.rub.nds.sshattacker.core.protocol.common.Preparator;
+import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.transport.message.DebugMessage;
 import de.rub.nds.sshattacker.core.state.SshContext;
 
-public class DebugMessagePreparator extends Preparator<DebugMessage> {
+public class DebugMessagePreparator extends SshMessagePreparator<DebugMessage> {
 
     public DebugMessagePreparator(SshContext context, DebugMessage message) {
         super(context, message);
     }
 
     @Override
-    public void prepare() {
+    public void prepareMessageSpecificContents() {
         getObject().setMessageID(MessageIDConstant.SSH_MSG_DEBUG);
         // TODO dummy values for fuzzing
         getObject().setAlwaysDisplay(true);

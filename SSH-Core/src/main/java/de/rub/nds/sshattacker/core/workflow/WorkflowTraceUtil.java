@@ -8,7 +8,8 @@
 package de.rub.nds.sshattacker.core.workflow;
 
 import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
-import de.rub.nds.sshattacker.core.protocol.common.Message;
+import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessage;
+import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.message.BinaryPacket;
 import de.rub.nds.sshattacker.core.workflow.action.ReceivingAction;
 import de.rub.nds.sshattacker.core.workflow.action.SendingAction;
@@ -21,8 +22,8 @@ public class WorkflowTraceUtil {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public static List<Message<?>> getAllSendMessages(WorkflowTrace trace) {
-        List<Message<?>> sendMessages = new LinkedList<>();
+    public static List<ProtocolMessage<?>> getAllSendMessages(WorkflowTrace trace) {
+        List<ProtocolMessage<?>> sendMessages = new LinkedList<>();
         for (SendingAction action : trace.getSendingActions()) {
             sendMessages.addAll(action.getSendMessages());
         }
@@ -37,8 +38,8 @@ public class WorkflowTraceUtil {
         return sendBinaryPackets;
     }
 
-    public static List<Message<?>> getAllReceivedMessages(WorkflowTrace trace) {
-        List<Message<?>> receivedMessage = new LinkedList<>();
+    public static List<ProtocolMessage<?>> getAllReceivedMessages(WorkflowTrace trace) {
+        List<ProtocolMessage<?>> receivedMessage = new LinkedList<>();
         for (ReceivingAction action : trace.getReceivingActions()) {
             if (action.getReceivedMessages() != null) {
                 receivedMessage.addAll(action.getReceivedMessages());
@@ -47,11 +48,12 @@ public class WorkflowTraceUtil {
         return receivedMessage;
     }
 
-    public static List<Message<?>> getAllReceivedMessages(
+    public static List<ProtocolMessage<?>> getAllReceivedMessages(
             WorkflowTrace trace, MessageIDConstant type) {
-        List<Message<?>> receivedMessage = new LinkedList<>();
-        for (Message<?> message : getAllReceivedMessages(trace)) {
-            if (message.getMessageID().getValue() == type.id) {
+        List<ProtocolMessage<?>> receivedMessage = new LinkedList<>();
+        for (ProtocolMessage<?> message : getAllReceivedMessages(trace)) {
+            if (message instanceof SshMessage<?>
+                    && ((SshMessage<?>) message).getMessageID().getValue() == type.id) {
                 receivedMessage.add(message);
             }
         }

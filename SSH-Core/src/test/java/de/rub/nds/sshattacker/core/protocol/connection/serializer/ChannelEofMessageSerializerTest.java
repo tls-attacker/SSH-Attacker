@@ -10,7 +10,6 @@ package de.rub.nds.sshattacker.core.protocol.connection.serializer;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelEofMessage;
-import de.rub.nds.sshattacker.core.protocol.connection.serializer.ChannelMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.connection.parser.ChannelEofMessageParserTest;
 import java.util.stream.Stream;
 import org.junit.jupiter.params.ParameterizedTest;

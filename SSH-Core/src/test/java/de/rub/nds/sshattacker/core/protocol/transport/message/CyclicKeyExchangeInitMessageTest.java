@@ -9,9 +9,8 @@ package de.rub.nds.sshattacker.core.protocol.transport.message;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
-import de.rub.nds.sshattacker.core.protocol.transport.parser.KeyExchangeInitMessageParserTest;
-import de.rub.nds.sshattacker.core.protocol.transport.message.KeyExchangeInitMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.parser.KeyExchangeInitMessageParser;
+import de.rub.nds.sshattacker.core.protocol.transport.parser.KeyExchangeInitMessageParserTest;
 import de.rub.nds.sshattacker.core.protocol.transport.serializer.KeyExchangeInitMessageSerializer;
 import java.util.stream.Stream;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -37,7 +36,7 @@ public class CyclicKeyExchangeInitMessageTest {
     @ParameterizedTest
     @MethodSource("provideTestVectors")
     public void testCyclic(byte[] providedBytes) {
-        KeyExchangeInitMessage msg = new KeyExchangeInitMessageParser(0, providedBytes).parse();
+        KeyExchangeInitMessage msg = new KeyExchangeInitMessageParser(providedBytes, 0).parse();
         assertArrayEquals(providedBytes, new KeyExchangeInitMessageSerializer(msg).serialize());
     }
 }

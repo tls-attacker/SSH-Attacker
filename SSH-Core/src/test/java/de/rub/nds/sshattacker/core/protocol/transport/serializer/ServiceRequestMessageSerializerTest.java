@@ -10,9 +10,8 @@ package de.rub.nds.sshattacker.core.protocol.transport.serializer;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 import de.rub.nds.sshattacker.core.constants.ServiceType;
-import de.rub.nds.sshattacker.core.protocol.transport.parser.ServiceRequestMessageParserTest;
 import de.rub.nds.sshattacker.core.protocol.transport.message.ServiceRequestMessage;
-import de.rub.nds.sshattacker.core.protocol.transport.serializer.ServiceRequestMessageSerializer;
+import de.rub.nds.sshattacker.core.protocol.transport.parser.ServiceRequestMessageParserTest;
 import java.util.stream.Stream;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;

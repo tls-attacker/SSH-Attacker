@@ -9,18 +9,18 @@ package de.rub.nds.sshattacker.core.protocol.transport.preparator;
 
 import de.rub.nds.sshattacker.core.constants.DisconnectReason;
 import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
-import de.rub.nds.sshattacker.core.protocol.common.Preparator;
+import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.transport.message.DisconnectMessage;
 import de.rub.nds.sshattacker.core.state.SshContext;
 
-public class DisconnectMessagePreparator extends Preparator<DisconnectMessage> {
+public class DisconnectMessagePreparator extends SshMessagePreparator<DisconnectMessage> {
 
     public DisconnectMessagePreparator(SshContext context, DisconnectMessage message) {
         super(context, message);
     }
 
     @Override
-    public void prepare() {
+    public void prepareMessageSpecificContents() {
         getObject().setMessageID(MessageIDConstant.SSH_MSG_DISCONNECT);
         // TODO save values in config
         getObject().setReasonCode(DisconnectReason.SSH_DISCONNECT_PROTOCOL_ERROR);

@@ -9,10 +9,9 @@ package de.rub.nds.sshattacker.core.protocol.authentication.message;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
-import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthFailureMessage;
 import de.rub.nds.sshattacker.core.protocol.authentication.parser.UserAuthFailureMessageParser;
-import de.rub.nds.sshattacker.core.protocol.authentication.serializer.UserAuthFailureMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.authentication.parser.UserAuthFailureMessageParserTest;
+import de.rub.nds.sshattacker.core.protocol.authentication.serializer.UserAuthFailureMessageSerializer;
 import java.util.stream.Stream;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -37,7 +36,7 @@ public class CyclicUserAuthFailureMessageTest {
     @ParameterizedTest
     @MethodSource("provideTestVectors")
     public void testCyclic(byte[] providedBytes) {
-        UserAuthFailureMessage msg = new UserAuthFailureMessageParser(0, providedBytes).parse();
+        UserAuthFailureMessage msg = new UserAuthFailureMessageParser(providedBytes, 0).parse();
         assertArrayEquals(providedBytes, new UserAuthFailureMessageSerializer(msg).serialize());
     }
 }

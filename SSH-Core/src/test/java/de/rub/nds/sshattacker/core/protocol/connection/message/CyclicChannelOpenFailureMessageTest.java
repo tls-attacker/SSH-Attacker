@@ -9,10 +9,9 @@ package de.rub.nds.sshattacker.core.protocol.connection.message;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
-import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelOpenFailureMessage;
 import de.rub.nds.sshattacker.core.protocol.connection.parser.ChannelOpenFailureMessageParser;
-import de.rub.nds.sshattacker.core.protocol.connection.serializer.ChannelOpenFailureMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.connection.parser.ChannelOpenFailureMessageParserTest;
+import de.rub.nds.sshattacker.core.protocol.connection.serializer.ChannelOpenFailureMessageSerializer;
 import java.util.stream.Stream;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -38,7 +37,7 @@ public class CyclicChannelOpenFailureMessageTest {
     @MethodSource("provideTestVectors")
     public void testCyclic(byte[] providedBytes) {
         ChannelOpenFailureMessage msg =
-                new ChannelOpenFailureMessageParser(0, providedBytes).parse();
+                new ChannelOpenFailureMessageParser(providedBytes, 0).parse();
         assertArrayEquals(providedBytes, new ChannelOpenFailureMessageSerializer(msg).serialize());
     }
 }

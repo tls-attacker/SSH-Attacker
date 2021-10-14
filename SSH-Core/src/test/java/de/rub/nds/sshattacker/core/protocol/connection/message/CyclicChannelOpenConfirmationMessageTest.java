@@ -9,10 +9,9 @@ package de.rub.nds.sshattacker.core.protocol.connection.message;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
-import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelOpenConfirmationMessage;
 import de.rub.nds.sshattacker.core.protocol.connection.parser.ChannelOpenConfirmationMessageParser;
-import de.rub.nds.sshattacker.core.protocol.connection.serializer.ChannelOpenConfirmationMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.connection.parser.ChannelOpenConfirmationMessageParserTest;
+import de.rub.nds.sshattacker.core.protocol.connection.serializer.ChannelOpenConfirmationMessageSerializer;
 import java.util.stream.Stream;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -38,7 +37,7 @@ public class CyclicChannelOpenConfirmationMessageTest {
     @MethodSource("provideTestVectors")
     public void testCyclic(byte[] providedBytes) {
         ChannelOpenConfirmationMessage msg =
-                new ChannelOpenConfirmationMessageParser(0, providedBytes).parse();
+                new ChannelOpenConfirmationMessageParser(providedBytes, 0).parse();
         assertArrayEquals(
                 providedBytes, new ChannelOpenConfirmationMessageSerializer(msg).serialize());
     }

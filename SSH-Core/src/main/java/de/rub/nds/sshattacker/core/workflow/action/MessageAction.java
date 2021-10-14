@@ -9,8 +9,8 @@ package de.rub.nds.sshattacker.core.workflow.action;
 
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.*;
-import de.rub.nds.sshattacker.core.protocol.common.Message;
 import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessage;
+import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
 import de.rub.nds.sshattacker.core.protocol.connection.message.*;
 import de.rub.nds.sshattacker.core.protocol.transport.message.*;
 import de.rub.nds.sshattacker.core.protocol.util.ReceiveMessageHelper;
@@ -82,7 +82,7 @@ public abstract class MessageAction extends ConnectionBoundAction {
                         name = "EcdhKeyExchangeReplyMessage"),
                 @XmlElement(type = IgnoreMessage.class, name = "IgnoreMessage"),
                 @XmlElement(type = KeyExchangeInitMessage.class, name = "KeyExchangeInitMessage"),
-                @XmlElement(type = Message.class, name = "Message"),
+                @XmlElement(type = SshMessage.class, name = "Message"),
                 @XmlElement(type = NewKeysMessage.class, name = "NewKeysMessage"),
                 @XmlElement(type = ProtocolMessage.class, name = "ProtocolMessage"),
                 @XmlElement(type = RequestFailureMessage.class, name = "RequestFailureMessage"),
@@ -97,7 +97,7 @@ public abstract class MessageAction extends ConnectionBoundAction {
                 @XmlElement(type = UserAuthSuccessMessage.class, name = "UserAuthSuccessMessage"),
                 @XmlElement(type = VersionExchangeMessage.class, name = "VersionExchangeMessage")
             })
-    protected List<Message<?>> messages = new ArrayList<>();
+    protected List<ProtocolMessage<?>> messages = new ArrayList<>();
 
     @HoldsModifiableVariable @XmlElementWrapper
     protected List<BinaryPacket> binaryPackets = new ArrayList<>();
@@ -111,13 +111,13 @@ public abstract class MessageAction extends ConnectionBoundAction {
         sendMessageHelper = new SendMessageHelper();
     }
 
-    public MessageAction(List<Message<?>> messages) {
+    public MessageAction(List<ProtocolMessage<?>> messages) {
         this.messages = new ArrayList<>(messages);
         receiveMessageHelper = new ReceiveMessageHelper();
         sendMessageHelper = new SendMessageHelper();
     }
 
-    public MessageAction(Message<?>... messages) {
+    public MessageAction(ProtocolMessage<?>... messages) {
         this.messages = new ArrayList<>(Arrays.asList(messages));
         receiveMessageHelper = new ReceiveMessageHelper();
         sendMessageHelper = new SendMessageHelper();
@@ -129,14 +129,14 @@ public abstract class MessageAction extends ConnectionBoundAction {
         sendMessageHelper = new SendMessageHelper();
     }
 
-    public MessageAction(String connectionAlias, List<Message<?>> messages) {
+    public MessageAction(String connectionAlias, List<ProtocolMessage<?>> messages) {
         super(connectionAlias);
         this.messages = new ArrayList<>(messages);
         receiveMessageHelper = new ReceiveMessageHelper();
         sendMessageHelper = new SendMessageHelper();
     }
 
-    public MessageAction(String connectionAlias, Message<?>... messages) {
+    public MessageAction(String connectionAlias, ProtocolMessage<?>... messages) {
         this(connectionAlias, new ArrayList<>(Arrays.asList(messages)));
     }
 
@@ -148,20 +148,20 @@ public abstract class MessageAction extends ConnectionBoundAction {
         this.sendMessageHelper = sendMessageHelper;
     }
 
-    public String getReadableString(Message<?>... messages) {
+    public String getReadableString(ProtocolMessage<?>... messages) {
         return getReadableString(Arrays.asList(messages));
     }
 
-    public String getReadableString(List<Message<?>> messages) {
+    public String getReadableString(List<ProtocolMessage<?>> messages) {
         return getReadableString(messages, false);
     }
 
-    public String getReadableString(List<Message<?>> messages, Boolean verbose) {
+    public String getReadableString(List<ProtocolMessage<?>> messages, Boolean verbose) {
         StringBuilder builder = new StringBuilder();
         if (messages == null) {
             return builder.toString();
         }
-        for (Message<?> message : messages) {
+        for (ProtocolMessage<?> message : messages) {
             if (verbose) {
                 builder.append(message.toString());
             } else {
@@ -175,15 +175,15 @@ public abstract class MessageAction extends ConnectionBoundAction {
         return builder.toString();
     }
 
-    public List<Message<?>> getMessages() {
+    public List<ProtocolMessage<?>> getMessages() {
         return messages;
     }
 
-    public void setMessages(List<Message<?>> messages) {
+    public void setMessages(List<ProtocolMessage<?>> messages) {
         this.messages = messages;
     }
 
-    public void setMessages(Message<?>... messages) {
+    public void setMessages(ProtocolMessage<?>... messages) {
         this.messages = new ArrayList<>(Arrays.asList(messages));
     }
 

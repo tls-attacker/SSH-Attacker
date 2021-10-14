@@ -17,20 +17,20 @@ public class ChannelDataMessageSerializer extends ChannelMessageSerializer<Chann
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public ChannelDataMessageSerializer(ChannelDataMessage msg) {
-        super(msg);
+    public ChannelDataMessageSerializer(ChannelDataMessage message) {
+        super(message);
     }
 
     private void serializeData() {
-        LOGGER.debug("Data length: " + msg.getDataLength().getValue());
-        appendInt(msg.getDataLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
-        LOGGER.debug("Data: " + ArrayConverter.bytesToRawHexString(msg.getData().getValue()));
-        appendBytes(msg.getData().getValue());
+        LOGGER.debug("Data length: " + message.getDataLength().getValue());
+        appendInt(message.getDataLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
+        LOGGER.debug("Data: " + ArrayConverter.bytesToRawHexString(message.getData().getValue()));
+        appendBytes(message.getData().getValue());
     }
 
     @Override
-    protected void serializeMessageSpecificPayload() {
-        super.serializeMessageSpecificPayload();
+    public void serializeMessageSpecificContents() {
+        super.serializeMessageSpecificContents();
         serializeData();
     }
 }

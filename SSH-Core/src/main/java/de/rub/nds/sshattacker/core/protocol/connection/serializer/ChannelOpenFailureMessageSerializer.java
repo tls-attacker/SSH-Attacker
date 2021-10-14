@@ -18,32 +18,33 @@ public class ChannelOpenFailureMessageSerializer
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public ChannelOpenFailureMessageSerializer(ChannelOpenFailureMessage msg) {
-        super(msg);
+    public ChannelOpenFailureMessageSerializer(ChannelOpenFailureMessage message) {
+        super(message);
     }
 
     private void serializeReasonCode() {
-        LOGGER.debug("Reason code: " + msg.getReasonCode().getValue());
-        appendInt(msg.getReasonCode().getValue(), DataFormatConstants.INT32_SIZE);
+        LOGGER.debug("Reason code: " + message.getReasonCode().getValue());
+        appendInt(message.getReasonCode().getValue(), DataFormatConstants.INT32_SIZE);
     }
 
     private void serializeReason() {
-        LOGGER.debug("Reason length: " + msg.getReasonLength().getValue());
-        appendInt(msg.getReasonLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
-        LOGGER.debug("Reason: " + msg.getReason().getValue());
-        appendString(msg.getReason().getValue(), StandardCharsets.UTF_8);
+        LOGGER.debug("Reason length: " + message.getReasonLength().getValue());
+        appendInt(message.getReasonLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
+        LOGGER.debug("Reason: " + message.getReason().getValue());
+        appendString(message.getReason().getValue(), StandardCharsets.UTF_8);
     }
 
     private void serializeLanguageTag() {
-        LOGGER.debug("Language tag length: " + msg.getLanguageTagLength().getValue());
-        appendInt(msg.getLanguageTagLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
-        LOGGER.debug("Language tag: " + msg.getLanguageTag().getValue());
-        appendString(msg.getLanguageTag().getValue(), StandardCharsets.US_ASCII);
+        LOGGER.debug("Language tag length: " + message.getLanguageTagLength().getValue());
+        appendInt(
+                message.getLanguageTagLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
+        LOGGER.debug("Language tag: " + message.getLanguageTag().getValue());
+        appendString(message.getLanguageTag().getValue(), StandardCharsets.US_ASCII);
     }
 
     @Override
-    protected void serializeMessageSpecificPayload() {
-        super.serializeMessageSpecificPayload();
+    public void serializeMessageSpecificContents() {
+        super.serializeMessageSpecificContents();
         serializeReasonCode();
         serializeReason();
         serializeLanguageTag();

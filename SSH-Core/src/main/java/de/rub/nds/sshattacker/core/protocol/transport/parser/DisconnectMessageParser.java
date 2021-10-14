@@ -9,55 +9,56 @@ package de.rub.nds.sshattacker.core.protocol.transport.parser;
 
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.constants.DisconnectReason;
-import de.rub.nds.sshattacker.core.protocol.common.MessageParser;
+import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 import de.rub.nds.sshattacker.core.protocol.transport.message.DisconnectMessage;
 import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class DisconnectMessageParser extends MessageParser<DisconnectMessage> {
+public class DisconnectMessageParser extends SshMessageParser<DisconnectMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public DisconnectMessageParser(int startPosition, byte[] array) {
-        super(startPosition, array);
-    }
-
-    private void parseReasonCode(DisconnectMessage msg) {
-        msg.setReasonCode(parseIntField(DataFormatConstants.INT32_SIZE));
-        LOGGER.debug(
-                "Reason: "
-                        + DisconnectReason.fromId(msg.getReasonCode().getValue()).toString()
-                        + " (Code: "
-                        + msg.getReasonCode().getValue()
-                        + ")");
-    }
-
-    private void parseDescription(DisconnectMessage msg) {
-        msg.setDescriptionLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-        LOGGER.debug("Description length: " + msg.getDescriptionLength().getValue());
-        msg.setDescription(
-                parseByteString(msg.getDescriptionLength().getValue(), StandardCharsets.UTF_8));
-        LOGGER.debug("Description: " + msg.getDescription().getValue());
-    }
-
-    private void parseLanguageTag(DisconnectMessage msg) {
-        msg.setLanguageTagLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-        LOGGER.debug("Language tag length: " + msg.getLanguageTagLength().getValue());
-        msg.setLanguageTag(
-                parseByteString(msg.getLanguageTagLength().getValue(), StandardCharsets.US_ASCII));
-        LOGGER.debug("Language tag: " + msg.getLanguageTag().getValue());
-    }
-
-    @Override
-    protected void parseMessageSpecificPayload(DisconnectMessage msg) {
-        parseReasonCode(msg);
-        parseDescription(msg);
-        parseLanguageTag(msg);
+    public DisconnectMessageParser(byte[] array, int startPosition) {
+        super(array, startPosition);
     }
 
     @Override
     public DisconnectMessage createMessage() {
         return new DisconnectMessage();
+    }
+
+    private void parseReasonCode() {
+        message.setReasonCode(parseIntField(DataFormatConstants.INT32_SIZE));
+        LOGGER.debug(
+                "Reason: "
+                        + DisconnectReason.fromId(message.getReasonCode().getValue()).toString()
+                        + " (Code: "
+                        + message.getReasonCode().getValue()
+                        + ")");
+    }
+
+    private void parseDescription() {
+        message.setDescriptionLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
+        LOGGER.debug("Description length: " + message.getDescriptionLength().getValue());
+        message.setDescription(
+                parseByteString(message.getDescriptionLength().getValue(), StandardCharsets.UTF_8));
+        LOGGER.debug("Description: " + message.getDescription().getValue());
+    }
+
+    private void parseLanguageTag() {
+        message.setLanguageTagLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
+        LOGGER.debug("Language tag length: " + message.getLanguageTagLength().getValue());
+        message.setLanguageTag(
+                parseByteString(
+                        message.getLanguageTagLength().getValue(), StandardCharsets.US_ASCII));
+        LOGGER.debug("Language tag: " + message.getLanguageTag().getValue());
+    }
+
+    @Override
+    protected void parseMessageSpecificContents() {
+        parseReasonCode();
+        parseDescription();
+        parseLanguageTag();
     }
 }

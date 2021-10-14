@@ -15,13 +15,11 @@ package de.rub.nds.sshattacker.core.protocol.transport.message;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.sshattacker.core.constants.CharConstants;
-import de.rub.nds.sshattacker.core.protocol.common.Message;
+import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.VersionExchangeMessageHandler;
-import de.rub.nds.sshattacker.core.protocol.transport.preparator.VersionExchangeMessagePreparator;
-import de.rub.nds.sshattacker.core.protocol.transport.serializer.VersionExchangeMessageSerializer;
 import de.rub.nds.sshattacker.core.state.SshContext;
 
-public class VersionExchangeMessage extends Message<VersionExchangeMessage> {
+public class VersionExchangeMessage extends ProtocolMessage<VersionExchangeMessage> {
 
     private ModifiableString version;
     private ModifiableString comment;
@@ -63,16 +61,11 @@ public class VersionExchangeMessage extends Message<VersionExchangeMessage> {
 
     @Override
     public VersionExchangeMessageHandler getHandler(SshContext context) {
-        return new VersionExchangeMessageHandler(context);
+        return new VersionExchangeMessageHandler(context, this);
     }
 
     @Override
-    public VersionExchangeMessageSerializer getSerializer() {
-        return new VersionExchangeMessageSerializer(this);
-    }
-
-    @Override
-    public VersionExchangeMessagePreparator getPreparator(SshContext context) {
-        return new VersionExchangeMessagePreparator(context, this);
+    public String toCompactString() {
+        return this.getClass().getSimpleName();
     }
 }

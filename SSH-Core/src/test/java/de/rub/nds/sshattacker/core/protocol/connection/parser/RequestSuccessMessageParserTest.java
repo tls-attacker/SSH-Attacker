@@ -12,7 +12,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
 import de.rub.nds.sshattacker.core.protocol.connection.message.RequestSuccessMessage;
-import de.rub.nds.sshattacker.core.protocol.connection.parser.RequestSuccessMessageParser;
 import java.util.stream.Stream;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -36,7 +35,7 @@ public class RequestSuccessMessageParserTest {
     @ParameterizedTest
     @MethodSource("provideTestVectors")
     public void testParse(byte[] providedBytes) {
-        RequestSuccessMessageParser parser = new RequestSuccessMessageParser(0, providedBytes);
+        RequestSuccessMessageParser parser = new RequestSuccessMessageParser(providedBytes, 0);
         RequestSuccessMessage msg = parser.parse();
 
         assertEquals(MessageIDConstant.SSH_MSG_REQUEST_SUCCESS.id, msg.getMessageID().getValue());

@@ -12,7 +12,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelWindowAdjustMessage;
-import de.rub.nds.sshattacker.core.protocol.connection.parser.ChannelWindowAdjustMessageParser;
 import java.util.stream.Stream;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -46,7 +45,7 @@ public class ChannelWindowAdjustMessageParserTest {
     public void testParse(
             byte[] providedBytes, int expectedRecipientChannel, int expectedBytesToAdd) {
         ChannelWindowAdjustMessageParser parser =
-                new ChannelWindowAdjustMessageParser(0, providedBytes);
+                new ChannelWindowAdjustMessageParser(providedBytes, 0);
         ChannelWindowAdjustMessage msg = parser.parse();
 
         assertEquals(

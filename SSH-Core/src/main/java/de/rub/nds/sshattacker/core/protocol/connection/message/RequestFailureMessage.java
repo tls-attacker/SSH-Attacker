@@ -8,13 +8,11 @@
 package de.rub.nds.sshattacker.core.protocol.connection.message;
 
 import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
-import de.rub.nds.sshattacker.core.protocol.common.Message;
+import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
 import de.rub.nds.sshattacker.core.protocol.connection.handler.RequestFailureMessageHandler;
-import de.rub.nds.sshattacker.core.protocol.connection.preparator.RequestFailureMessagePreparator;
-import de.rub.nds.sshattacker.core.protocol.connection.serializer.RequestFailureMessageSerializer;
 import de.rub.nds.sshattacker.core.state.SshContext;
 
-public class RequestFailureMessage extends Message<RequestFailureMessage> {
+public class RequestFailureMessage extends SshMessage<RequestFailureMessage> {
 
     public RequestFailureMessage() {
         super(MessageIDConstant.SSH_MSG_REQUEST_FAILURE);
@@ -22,16 +20,6 @@ public class RequestFailureMessage extends Message<RequestFailureMessage> {
 
     @Override
     public RequestFailureMessageHandler getHandler(SshContext context) {
-        return new RequestFailureMessageHandler(context);
-    }
-
-    @Override
-    public RequestFailureMessageSerializer getSerializer() {
-        return new RequestFailureMessageSerializer(this);
-    }
-
-    @Override
-    public RequestFailureMessagePreparator getPreparator(SshContext context) {
-        return new RequestFailureMessagePreparator(context, this);
+        return new RequestFailureMessageHandler(context, this);
     }
 }

@@ -8,13 +8,11 @@
 package de.rub.nds.sshattacker.core.protocol.transport.message;
 
 import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
-import de.rub.nds.sshattacker.core.protocol.common.Message;
+import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.NewKeysMessageHandler;
-import de.rub.nds.sshattacker.core.protocol.transport.preparator.NewKeysMessagePreparator;
-import de.rub.nds.sshattacker.core.protocol.transport.serializer.NewKeysMessageSerializer;
 import de.rub.nds.sshattacker.core.state.SshContext;
 
-public class NewKeysMessage extends Message<NewKeysMessage> {
+public class NewKeysMessage extends SshMessage<NewKeysMessage> {
 
     public NewKeysMessage() {
         super(MessageIDConstant.SSH_MSG_NEWKEYS);
@@ -22,16 +20,6 @@ public class NewKeysMessage extends Message<NewKeysMessage> {
 
     @Override
     public NewKeysMessageHandler getHandler(SshContext context) {
-        return new NewKeysMessageHandler(context);
-    }
-
-    @Override
-    public NewKeysMessageSerializer getSerializer() {
-        return new NewKeysMessageSerializer(this);
-    }
-
-    @Override
-    public NewKeysMessagePreparator getPreparator(SshContext context) {
-        return new NewKeysMessagePreparator(context, this);
+        return new NewKeysMessageHandler(context, this);
     }
 }

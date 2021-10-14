@@ -19,36 +19,38 @@ public class UserAuthPasswordMessageSerializer
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public UserAuthPasswordMessageSerializer(UserAuthPasswordMessage msg) {
-        super(msg);
+    public UserAuthPasswordMessageSerializer(UserAuthPasswordMessage message) {
+        super(message);
     }
 
     private void serializeChangePassword() {
         LOGGER.debug(
-                "Change password: " + Converter.byteToBoolean(msg.getChangePassword().getValue()));
-        appendByte(msg.getChangePassword().getValue());
+                "Change password: "
+                        + Converter.byteToBoolean(message.getChangePassword().getValue()));
+        appendByte(message.getChangePassword().getValue());
     }
 
     private void serializePassword() {
-        LOGGER.debug("Password length: " + msg.getPasswordLength().getValue());
-        appendInt(msg.getPasswordLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
-        LOGGER.debug("Password: " + msg.getPassword().getValue());
-        appendString(msg.getPassword().getValue(), StandardCharsets.UTF_8);
+        LOGGER.debug("Password length: " + message.getPasswordLength().getValue());
+        appendInt(message.getPasswordLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
+        LOGGER.debug("Password: " + message.getPassword().getValue());
+        appendString(message.getPassword().getValue(), StandardCharsets.UTF_8);
     }
 
     private void serializeNewPassword() {
-        LOGGER.debug("New password length: " + msg.getNewPasswordLength().getValue());
-        appendInt(msg.getNewPasswordLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
-        LOGGER.debug("New password: " + msg.getNewPassword().getValue());
-        appendString(msg.getNewPassword().getValue(), StandardCharsets.UTF_8);
+        LOGGER.debug("New password length: " + message.getNewPasswordLength().getValue());
+        appendInt(
+                message.getNewPasswordLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
+        LOGGER.debug("New password: " + message.getNewPassword().getValue());
+        appendString(message.getNewPassword().getValue(), StandardCharsets.UTF_8);
     }
 
     @Override
-    protected void serializeMessageSpecificPayload() {
-        super.serializeMessageSpecificPayload();
+    public void serializeMessageSpecificContents() {
+        super.serializeMessageSpecificContents();
         serializeChangePassword();
         serializePassword();
-        if (Converter.byteToBoolean(msg.getChangePassword().getValue())) {
+        if (Converter.byteToBoolean(message.getChangePassword().getValue())) {
             serializeNewPassword();
         }
     }

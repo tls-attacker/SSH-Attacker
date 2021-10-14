@@ -7,19 +7,43 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.handler;
 
-import de.rub.nds.sshattacker.core.protocol.common.Handler;
+import de.rub.nds.sshattacker.core.protocol.common.*;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelOpenConfirmationMessage;
+import de.rub.nds.sshattacker.core.protocol.connection.parser.ChannelOpenConfirmationMessageParser;
+import de.rub.nds.sshattacker.core.protocol.connection.preparator.ChannelOpenConfirmationMessagePreparator;
+import de.rub.nds.sshattacker.core.protocol.connection.serializer.ChannelOpenConfirmationMessageSerializer;
 import de.rub.nds.sshattacker.core.state.SshContext;
 
-public class ChannelOpenConfirmationMessageHandler extends Handler<ChannelOpenConfirmationMessage> {
+public class ChannelOpenConfirmationMessageHandler
+        extends SshMessageHandler<ChannelOpenConfirmationMessage> {
 
     public ChannelOpenConfirmationMessageHandler(SshContext context) {
         super(context);
     }
 
+    public ChannelOpenConfirmationMessageHandler(
+            SshContext context, ChannelOpenConfirmationMessage message) {
+        super(context, message);
+    }
+
     @Override
-    public void adjustContext(ChannelOpenConfirmationMessage message) {
+    public void adjustContext() {
         context.setRemoteChannel(message.getSenderChannel().getValue());
         // TODO: Set window and packet size for outgoing packets
+    }
+
+    @Override
+    public ChannelOpenConfirmationMessageParser getParser(byte[] array, int startPosition) {
+        return new ChannelOpenConfirmationMessageParser(array, startPosition);
+    }
+
+    @Override
+    public ChannelOpenConfirmationMessagePreparator getPreparator() {
+        return new ChannelOpenConfirmationMessagePreparator(context, message);
+    }
+
+    @Override
+    public ChannelOpenConfirmationMessageSerializer getSerializer() {
+        return new ChannelOpenConfirmationMessageSerializer(message);
     }
 }

@@ -11,17 +11,18 @@ import de.rub.nds.sshattacker.core.constants.AuthenticationMethod;
 import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
 import de.rub.nds.sshattacker.core.constants.ServiceType;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthPasswordMessage;
-import de.rub.nds.sshattacker.core.protocol.common.Preparator;
+import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.state.SshContext;
 
-public class UserAuthPasswordMessagePreparator extends Preparator<UserAuthPasswordMessage> {
+public class UserAuthPasswordMessagePreparator
+        extends SshMessagePreparator<UserAuthPasswordMessage> {
 
     public UserAuthPasswordMessagePreparator(SshContext context, UserAuthPasswordMessage message) {
         super(context, message);
     }
 
     @Override
-    public void prepare() {
+    public void prepareMessageSpecificContents() {
         getObject().setMessageID(MessageIDConstant.SSH_MSG_USERAUTH_REQUEST);
         getObject().setUserName(context.getConfig().getUsername(), true);
         getObject().setServiceName(ServiceType.SSH_CONNECTION, true);

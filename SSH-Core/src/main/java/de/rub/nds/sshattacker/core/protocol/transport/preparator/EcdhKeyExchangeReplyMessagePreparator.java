@@ -8,11 +8,12 @@
 package de.rub.nds.sshattacker.core.protocol.transport.preparator;
 
 import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
-import de.rub.nds.sshattacker.core.protocol.common.Preparator;
+import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.transport.message.EcdhKeyExchangeReplyMessage;
 import de.rub.nds.sshattacker.core.state.SshContext;
 
-public class EcdhKeyExchangeReplyMessagePreparator extends Preparator<EcdhKeyExchangeReplyMessage> {
+public class EcdhKeyExchangeReplyMessagePreparator
+        extends SshMessagePreparator<EcdhKeyExchangeReplyMessage> {
 
     public EcdhKeyExchangeReplyMessagePreparator(
             SshContext context, EcdhKeyExchangeReplyMessage message) {
@@ -20,9 +21,8 @@ public class EcdhKeyExchangeReplyMessagePreparator extends Preparator<EcdhKeyExc
     }
 
     @Override
-    public void prepare() {
+    public void prepareMessageSpecificContents() {
         getObject().setMessageID(MessageIDConstant.SSH_MSG_KEX_ECDH_REPLY);
-
         getObject().setHostKey(new byte[0], true);
         getObject().setEphemeralPublicKey(new byte[0], true);
         // TODO implement signature calculation

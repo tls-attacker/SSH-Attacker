@@ -8,21 +8,21 @@
 package de.rub.nds.sshattacker.core.protocol.transport.serializer;
 
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
-import de.rub.nds.sshattacker.core.protocol.common.MessageSerializer;
+import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.transport.message.UnimplementedMessage;
 
-public class UnimplementedMessageSerializer extends MessageSerializer<UnimplementedMessage> {
+public class UnimplementedMessageSerializer extends SshMessageSerializer<UnimplementedMessage> {
 
-    public UnimplementedMessageSerializer(UnimplementedMessage msg) {
-        super(msg);
+    public UnimplementedMessageSerializer(UnimplementedMessage message) {
+        super(message);
     }
 
     private void serializeSequenceNumber() {
-        appendInt(msg.getSequenceNumber().getValue(), DataFormatConstants.INT32_SIZE);
+        appendInt(message.getSequenceNumber().getValue(), DataFormatConstants.INT32_SIZE);
     }
 
     @Override
-    protected void serializeMessageSpecificPayload() {
+    public void serializeMessageSpecificContents() {
         serializeSequenceNumber();
     }
 }

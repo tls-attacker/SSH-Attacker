@@ -9,13 +9,13 @@ package de.rub.nds.sshattacker.core.protocol.authentication.parser;
 
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthFailureMessage;
-import de.rub.nds.sshattacker.core.protocol.common.MessageParser;
+import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 import java.nio.charset.StandardCharsets;
 
-public class UserAuthFailureMessageParser extends MessageParser<UserAuthFailureMessage> {
+public class UserAuthFailureMessageParser extends SshMessageParser<UserAuthFailureMessage> {
 
-    public UserAuthFailureMessageParser(int startPosition, byte[] array) {
-        super(startPosition, array);
+    public UserAuthFailureMessageParser(byte[] array, int startPosition) {
+        super(array, startPosition);
     }
 
     @Override
@@ -23,23 +23,23 @@ public class UserAuthFailureMessageParser extends MessageParser<UserAuthFailureM
         return new UserAuthFailureMessage();
     }
 
-    private void parsePossibleAuthenticationMethods(UserAuthFailureMessage msg) {
-        msg.setPossibleAuthenticationMethodsLength(
+    private void parsePossibleAuthenticationMethods() {
+        message.setPossibleAuthenticationMethodsLength(
                 parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-        msg.setPossibleAuthenticationMethods(
+        message.setPossibleAuthenticationMethods(
                 parseByteString(
-                        msg.getPossibleAuthenticationMethodsLength().getValue(),
+                        message.getPossibleAuthenticationMethodsLength().getValue(),
                         StandardCharsets.US_ASCII),
                 false);
     }
 
-    private void parsePartialSuccess(UserAuthFailureMessage msg) {
-        msg.setPartialSuccess(parseByteField(1));
+    private void parsePartialSuccess() {
+        message.setPartialSuccess(parseByteField(1));
     }
 
     @Override
-    protected void parseMessageSpecificPayload(UserAuthFailureMessage msg) {
-        parsePossibleAuthenticationMethods(msg);
-        parsePartialSuccess(msg);
+    protected void parseMessageSpecificContents() {
+        parsePossibleAuthenticationMethods();
+        parsePartialSuccess();
     }
 }

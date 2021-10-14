@@ -7,18 +7,40 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.handler;
 
-import de.rub.nds.sshattacker.core.protocol.common.Handler;
+import de.rub.nds.sshattacker.core.protocol.common.*;
 import de.rub.nds.sshattacker.core.protocol.transport.message.ServiceRequestMessage;
+import de.rub.nds.sshattacker.core.protocol.transport.parser.ServiceRequestMessageParser;
+import de.rub.nds.sshattacker.core.protocol.transport.preparator.ServiceRequestMessagePreparator;
+import de.rub.nds.sshattacker.core.protocol.transport.serializer.ServiceRequestMessageSerializer;
 import de.rub.nds.sshattacker.core.state.SshContext;
 
-public class ServiceRequestMessageHandler extends Handler<ServiceRequestMessage> {
+public class ServiceRequestMessageHandler extends SshMessageHandler<ServiceRequestMessage> {
 
     public ServiceRequestMessageHandler(SshContext context) {
         super(context);
     }
 
+    public ServiceRequestMessageHandler(SshContext context, ServiceRequestMessage message) {
+        super(context, message);
+    }
+
     @Override
-    public void adjustContext(ServiceRequestMessage message) {
+    public void adjustContext() {
         // TODO: Handle ServiceRequestMessage
+    }
+
+    @Override
+    public ServiceRequestMessageParser getParser(byte[] array, int startPosition) {
+        return new ServiceRequestMessageParser(array, startPosition);
+    }
+
+    @Override
+    public ServiceRequestMessagePreparator getPreparator() {
+        return new ServiceRequestMessagePreparator(context, message);
+    }
+
+    @Override
+    public ServiceRequestMessageSerializer getSerializer() {
+        return new ServiceRequestMessageSerializer(message);
     }
 }

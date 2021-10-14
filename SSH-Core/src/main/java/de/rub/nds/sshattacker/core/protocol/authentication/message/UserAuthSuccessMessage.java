@@ -9,12 +9,10 @@ package de.rub.nds.sshattacker.core.protocol.authentication.message;
 
 import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
 import de.rub.nds.sshattacker.core.protocol.authentication.handler.UserAuthSuccessMessageHandler;
-import de.rub.nds.sshattacker.core.protocol.authentication.preparator.UserAuthSuccessMessagePreparator;
-import de.rub.nds.sshattacker.core.protocol.authentication.serializer.UserAuthSuccessMessageSerializer;
-import de.rub.nds.sshattacker.core.protocol.common.Message;
+import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
 import de.rub.nds.sshattacker.core.state.SshContext;
 
-public class UserAuthSuccessMessage extends Message<UserAuthSuccessMessage> {
+public class UserAuthSuccessMessage extends SshMessage<UserAuthSuccessMessage> {
 
     public UserAuthSuccessMessage() {
         super(MessageIDConstant.SSH_MSG_USERAUTH_SUCCESS);
@@ -22,16 +20,6 @@ public class UserAuthSuccessMessage extends Message<UserAuthSuccessMessage> {
 
     @Override
     public UserAuthSuccessMessageHandler getHandler(SshContext context) {
-        return new UserAuthSuccessMessageHandler(context);
-    }
-
-    @Override
-    public UserAuthSuccessMessageSerializer getSerializer() {
-        return new UserAuthSuccessMessageSerializer(this);
-    }
-
-    @Override
-    public UserAuthSuccessMessagePreparator getPreparator(SshContext context) {
-        return new UserAuthSuccessMessagePreparator(context, this);
+        return new UserAuthSuccessMessageHandler(context, this);
     }
 }

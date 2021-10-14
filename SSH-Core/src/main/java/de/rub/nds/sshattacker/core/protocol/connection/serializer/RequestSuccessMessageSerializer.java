@@ -7,15 +7,15 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.serializer;
 
-import de.rub.nds.sshattacker.core.protocol.common.MessageSerializer;
+import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.connection.message.RequestSuccessMessage;
 
-public class RequestSuccessMessageSerializer extends MessageSerializer<RequestSuccessMessage> {
+public class RequestSuccessMessageSerializer extends SshMessageSerializer<RequestSuccessMessage> {
 
-    public RequestSuccessMessageSerializer(RequestSuccessMessage msg) {
-        super(msg);
+    public RequestSuccessMessageSerializer(RequestSuccessMessage message) {
+        super(message);
     }
 
     @Override
-    protected void serializeMessageSpecificPayload() {}
+    public void serializeMessageSpecificContents() {}
 }

@@ -18,8 +18,8 @@ public class ChannelOpenFailureMessageParser
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public ChannelOpenFailureMessageParser(int startPosition, byte[] array) {
-        super(startPosition, array);
+    public ChannelOpenFailureMessageParser(byte[] array, int startPosition) {
+        super(array, startPosition);
     }
 
     @Override
@@ -27,33 +27,35 @@ public class ChannelOpenFailureMessageParser
         return new ChannelOpenFailureMessage();
     }
 
-    private void parseReasonCode(ChannelOpenFailureMessage msg) {
-        msg.setReasonCode(parseIntField(DataFormatConstants.INT32_SIZE));
-        LOGGER.debug("Reason code: " + msg.getReasonCode());
+    private void parseReasonCode() {
+        message.setReasonCode(parseIntField(DataFormatConstants.INT32_SIZE));
+        LOGGER.debug("Reason code: " + message.getReasonCode());
     }
 
-    private void parseReason(ChannelOpenFailureMessage msg) {
-        msg.setReasonLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-        LOGGER.debug("Reason length: " + msg.getReasonLength());
-        msg.setReason(
-                parseByteString(msg.getReasonLength().getValue(), StandardCharsets.UTF_8), false);
-        LOGGER.debug("Reason: " + msg.getReason().getValue());
-    }
-
-    private void parseLanguageTag(ChannelOpenFailureMessage msg) {
-        msg.setLanguageTagLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-        LOGGER.debug("Language tag length: " + msg.getLanguageTagLength().getValue());
-        msg.setLanguageTag(
-                parseByteString(msg.getLanguageTagLength().getValue(), StandardCharsets.US_ASCII),
+    private void parseReason() {
+        message.setReasonLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
+        LOGGER.debug("Reason length: " + message.getReasonLength());
+        message.setReason(
+                parseByteString(message.getReasonLength().getValue(), StandardCharsets.UTF_8),
                 false);
-        LOGGER.debug("Language tag: " + msg.getLanguageTag().getValue());
+        LOGGER.debug("Reason: " + message.getReason().getValue());
+    }
+
+    private void parseLanguageTag() {
+        message.setLanguageTagLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
+        LOGGER.debug("Language tag length: " + message.getLanguageTagLength().getValue());
+        message.setLanguageTag(
+                parseByteString(
+                        message.getLanguageTagLength().getValue(), StandardCharsets.US_ASCII),
+                false);
+        LOGGER.debug("Language tag: " + message.getLanguageTag().getValue());
     }
 
     @Override
-    protected void parseMessageSpecificPayload(ChannelOpenFailureMessage msg) {
-        super.parseMessageSpecificPayload(msg);
-        parseReasonCode(msg);
-        parseReason(msg);
-        parseLanguageTag(msg);
+    protected void parseMessageSpecificContents() {
+        super.parseMessageSpecificContents();
+        parseReasonCode();
+        parseReason();
+        parseLanguageTag();
     }
 }

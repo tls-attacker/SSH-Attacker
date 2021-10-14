@@ -28,7 +28,7 @@ public class BinaryPacketLayer {
     }
 
     public List<BinaryPacket> parseBinaryPackets(byte[] raw) {
-        return new BinaryPacketParser(0, raw, context).parseAll();
+        return BinaryPacketParser.parseAll(raw, context);
     }
 
     public byte[] serializeBinaryPacket(BinaryPacket packet) {

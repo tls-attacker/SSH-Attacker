@@ -7,15 +7,15 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.serializer;
 
-import de.rub.nds.sshattacker.core.protocol.common.MessageSerializer;
+import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.connection.message.RequestFailureMessage;
 
-public class RequestFailureMessageSerializer extends MessageSerializer<RequestFailureMessage> {
+public class RequestFailureMessageSerializer extends SshMessageSerializer<RequestFailureMessage> {
 
-    public RequestFailureMessageSerializer(RequestFailureMessage msg) {
-        super(msg);
+    public RequestFailureMessageSerializer(RequestFailureMessage message) {
+        super(message);
     }
 
     @Override
-    protected void serializeMessageSpecificPayload() {}
+    public void serializeMessageSpecificContents() {}
 }

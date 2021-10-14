@@ -12,13 +12,19 @@ import de.rub.nds.sshattacker.core.crypto.hash.DhGexOldExchangeHash;
 import de.rub.nds.sshattacker.core.crypto.hash.ExchangeHash;
 import de.rub.nds.sshattacker.core.crypto.kex.DhKeyExchange;
 import de.rub.nds.sshattacker.core.crypto.kex.KeyExchange;
-import de.rub.nds.sshattacker.core.protocol.common.Handler;
+import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
+import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
+import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.transport.message.DhGexKeyExchangeGroupMessage;
+import de.rub.nds.sshattacker.core.protocol.transport.parser.DhGexKeyExchangeGroupMessageParser;
+import de.rub.nds.sshattacker.core.protocol.transport.preparator.DhGexKeyExchangeGroupMessagePreparator;
+import de.rub.nds.sshattacker.core.protocol.transport.serializer.DhGexKeyExchangeGroupMessageSerializer;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class DhGexKeyExchangeGroupMessageHandler extends Handler<DhGexKeyExchangeGroupMessage> {
+public class DhGexKeyExchangeGroupMessageHandler
+        extends SshMessageHandler<DhGexKeyExchangeGroupMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -26,8 +32,13 @@ public class DhGexKeyExchangeGroupMessageHandler extends Handler<DhGexKeyExchang
         super(context);
     }
 
+    public DhGexKeyExchangeGroupMessageHandler(
+            SshContext context, DhGexKeyExchangeGroupMessage message) {
+        super(context, message);
+    }
+
     @Override
-    public void adjustContext(DhGexKeyExchangeGroupMessage message) {
+    public void adjustContext() {
         setGroupParametersFromMessage(message);
         updateExchangeHashWithGroupParameters(message);
     }
@@ -63,5 +74,20 @@ public class DhGexKeyExchangeGroupMessageHandler extends Handler<DhGexKeyExchang
             raiseAdjustmentException(
                     "Exchange hash instance is neither DhGexExchangeHash nor DhGexOldExchangeHash, unable to update exchange hash");
         }
+    }
+
+    @Override
+    public DhGexKeyExchangeGroupMessageParser getParser(byte[] array, int startPosition) {
+        return new DhGexKeyExchangeGroupMessageParser(array, startPosition);
+    }
+
+    @Override
+    public SshMessagePreparator<DhGexKeyExchangeGroupMessage> getPreparator() {
+        return new DhGexKeyExchangeGroupMessagePreparator(context, message);
+    }
+
+    @Override
+    public SshMessageSerializer<DhGexKeyExchangeGroupMessage> getSerializer() {
+        return new DhGexKeyExchangeGroupMessageSerializer(message);
     }
 }

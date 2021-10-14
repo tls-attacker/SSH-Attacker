@@ -207,15 +207,15 @@ public class KeyDerivationTest {
 
         EcdhKeyExchangeInitMessage ecdhInit =
                 new EcdhKeyExchangeInitMessageParser(
-                                0,
                                 ArrayConverter.hexStringToByteArray(
-                                        "30000000207ca8902c60338482678b029a7b4484cb69e167922865c1217203dcb8050cd043"))
+                                        "30000000207ca8902c60338482678b029a7b4484cb69e167922865c1217203dcb8050cd043"),
+                                0)
                         .parse();
         EcdhKeyExchangeReplyMessage ecdhReply =
                 new EcdhKeyExchangeReplyMessageParser(
-                                0,
                                 ArrayConverter.hexStringToByteArray(
-                                        "31000000680000001365636473612d736861322d6e69737470323536000000086e69737470323536000000410435496f94112c3234092471322c26dd21ebfd2da156e5a17dcc5dc98020afedd64ae82e5d4c28251187a2191fe85ae43de9734711c087b784eaa713d5b6e065410000002020b9f89aba2d7da23775b3ce085ff65f4d4b7ccf51ce2d073ef9158d6df1e905000000630000001365636473612d736861322d6e6973747032353600000048000000204e553a825dd144d7ddbd38cbd10a153a8a4ad597bf8da7ef1fe2546c851d6e89000000205bc4705cdac12213822e61c3b48ab7c84489ef3be0bb94ef524a45664b473856"))
+                                        "31000000680000001365636473612d736861322d6e69737470323536000000086e69737470323536000000410435496f94112c3234092471322c26dd21ebfd2da156e5a17dcc5dc98020afedd64ae82e5d4c28251187a2191fe85ae43de9734711c087b784eaa713d5b6e065410000002020b9f89aba2d7da23775b3ce085ff65f4d4b7ccf51ce2d073ef9158d6df1e905000000630000001365636473612d736861322d6e6973747032353600000048000000204e553a825dd144d7ddbd38cbd10a153a8a4ad597bf8da7ef1fe2546c851d6e89000000205bc4705cdac12213822e61c3b48ab7c84489ef3be0bb94ef524a45664b473856"),
+                                0)
                         .parse();
 
         byte[] expectedHash =

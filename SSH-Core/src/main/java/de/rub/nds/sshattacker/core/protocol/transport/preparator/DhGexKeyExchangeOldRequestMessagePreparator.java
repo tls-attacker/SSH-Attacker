@@ -10,12 +10,12 @@ package de.rub.nds.sshattacker.core.protocol.transport.preparator;
 import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
 import de.rub.nds.sshattacker.core.crypto.hash.DhGexOldExchangeHash;
 import de.rub.nds.sshattacker.core.crypto.kex.DhKeyExchange;
-import de.rub.nds.sshattacker.core.protocol.common.Preparator;
+import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.transport.message.DhGexKeyExchangeOldRequestMessage;
 import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class DhGexKeyExchangeOldRequestMessagePreparator
-        extends Preparator<DhGexKeyExchangeOldRequestMessage> {
+        extends SshMessagePreparator<DhGexKeyExchangeOldRequestMessage> {
 
     public DhGexKeyExchangeOldRequestMessagePreparator(
             SshContext context, DhGexKeyExchangeOldRequestMessage message) {
@@ -23,7 +23,8 @@ public class DhGexKeyExchangeOldRequestMessagePreparator
     }
 
     @Override
-    public void prepare() {
+    public void prepareMessageSpecificContents() {
+        getObject().setMessageID(MessageIDConstant.SSH_MSG_KEX_DH_GEX_REQUEST_OLD);
         if (context.getKeyExchangeAlgorithm().isPresent()) {
             DhKeyExchange keyExchange =
                     DhKeyExchange.newInstance(context.getKeyExchangeAlgorithm().get());
@@ -38,7 +39,6 @@ public class DhGexKeyExchangeOldRequestMessagePreparator
         dhGexOldExchangeHash.setPreferredGroupSize(context.getChooser().getPreferredDHGroupSize());
         context.setExchangeHashInstance(dhGexOldExchangeHash);
 
-        getObject().setMessageID(MessageIDConstant.SSH_MSG_KEX_DH_GEX_REQUEST_OLD);
         getObject().setPreferredGroupSize(context.getChooser().getPreferredDHGroupSize());
     }
 }

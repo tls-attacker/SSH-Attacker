@@ -19,25 +19,26 @@ public abstract class ChannelRequestMessageSerializer<T extends ChannelRequestMe
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public ChannelRequestMessageSerializer(T msg) {
-        super(msg);
+    public ChannelRequestMessageSerializer(T message) {
+        super(message);
     }
 
     private void serializeRequestType() {
-        LOGGER.debug("Request type length: " + msg.getRequestTypeLength().getValue());
-        appendInt(msg.getRequestTypeLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
-        LOGGER.debug("Request type: " + msg.getRequestType().getValue());
-        appendString(msg.getRequestType().getValue(), StandardCharsets.US_ASCII);
+        LOGGER.debug("Request type length: " + message.getRequestTypeLength().getValue());
+        appendInt(
+                message.getRequestTypeLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
+        LOGGER.debug("Request type: " + message.getRequestType().getValue());
+        appendString(message.getRequestType().getValue(), StandardCharsets.US_ASCII);
     }
 
     private void serializeWantReply() {
-        LOGGER.debug("Want reply: " + Converter.byteToBoolean(msg.getWantReply().getValue()));
-        appendByte(msg.getWantReply().getValue());
+        LOGGER.debug("Want reply: " + Converter.byteToBoolean(message.getWantReply().getValue()));
+        appendByte(message.getWantReply().getValue());
     }
 
     @Override
-    protected void serializeMessageSpecificPayload() {
-        super.serializeMessageSpecificPayload();
+    public void serializeMessageSpecificContents() {
+        super.serializeMessageSpecificContents();
         serializeRequestType();
         serializeWantReply();
     }

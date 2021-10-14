@@ -19,28 +19,29 @@ public abstract class ChannelRequestMessageParser<T extends ChannelRequestMessag
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public ChannelRequestMessageParser(int startPosition, byte[] array) {
-        super(startPosition, array);
+    public ChannelRequestMessageParser(byte[] array, int startPosition) {
+        super(array, startPosition);
     }
 
-    private void parseRequestType(T msg) {
-        msg.setRequestTypeLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-        LOGGER.debug("Request type length: " + msg.getRequestTypeLength().getValue());
-        msg.setRequestType(
-                parseByteString(msg.getRequestTypeLength().getValue(), StandardCharsets.US_ASCII),
+    private void parseRequestType() {
+        message.setRequestTypeLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
+        LOGGER.debug("Request type length: " + message.getRequestTypeLength().getValue());
+        message.setRequestType(
+                parseByteString(
+                        message.getRequestTypeLength().getValue(), StandardCharsets.US_ASCII),
                 false);
-        LOGGER.debug("Request type: " + msg.getRequestType().getValue());
+        LOGGER.debug("Request type: " + message.getRequestType().getValue());
     }
 
-    private void parseWantReply(T msg) {
-        msg.setWantReply(parseByteField(1));
-        LOGGER.debug("Reply wanted: " + Converter.byteToBoolean(msg.getWantReply().getValue()));
+    private void parseWantReply() {
+        message.setWantReply(parseByteField(1));
+        LOGGER.debug("Reply wanted: " + Converter.byteToBoolean(message.getWantReply().getValue()));
     }
 
     @Override
-    protected void parseMessageSpecificPayload(T msg) {
-        super.parseMessageSpecificPayload(msg);
-        parseRequestType(msg);
-        parseWantReply(msg);
+    protected void parseMessageSpecificContents() {
+        super.parseMessageSpecificContents();
+        parseRequestType();
+        parseWantReply();
     }
 }

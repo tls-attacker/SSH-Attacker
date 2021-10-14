@@ -9,48 +9,48 @@ package de.rub.nds.sshattacker.core.protocol.transport.serializer;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
-import de.rub.nds.sshattacker.core.protocol.common.MessageSerializer;
+import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.transport.message.DhGexKeyExchangeReplyMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class DhGexKeyExchangeReplyMessageSerializer
-        extends MessageSerializer<DhGexKeyExchangeReplyMessage> {
+        extends SshMessageSerializer<DhGexKeyExchangeReplyMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public DhGexKeyExchangeReplyMessageSerializer(DhGexKeyExchangeReplyMessage msg) {
-        super(msg);
+    public DhGexKeyExchangeReplyMessageSerializer(DhGexKeyExchangeReplyMessage message) {
+        super(message);
     }
 
-    private void serializeHostKey(DhGexKeyExchangeReplyMessage msg) {
-        appendInt(msg.getHostKeyLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
-        LOGGER.debug("Host key length: " + msg.getHostKeyLength().getValue());
-        appendBytes(msg.getHostKey().getValue());
+    private void serializeHostKey() {
+        appendInt(message.getHostKeyLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
+        LOGGER.debug("Host key length: " + message.getHostKeyLength().getValue());
+        appendBytes(message.getHostKey().getValue());
         LOGGER.debug(
-                "Host key: " + ArrayConverter.bytesToRawHexString(msg.getHostKey().getValue()));
+                "Host key: " + ArrayConverter.bytesToRawHexString(message.getHostKey().getValue()));
     }
 
-    private void serializePublicKey(DhGexKeyExchangeReplyMessage msg) {
+    private void serializePublicKey() {
         appendInt(
-                msg.getEphemeralPublicKeyLength().getValue(),
+                message.getEphemeralPublicKeyLength().getValue(),
                 DataFormatConstants.MPINT_SIZE_LENGTH);
-        LOGGER.debug("Public key length: " + msg.getEphemeralPublicKeyLength().getValue());
-        appendBytes(msg.getEphemeralPublicKey().getValue().toByteArray());
-        LOGGER.debug("Public key: " + msg.getEphemeralPublicKey().getValue());
+        LOGGER.debug("Public key length: " + message.getEphemeralPublicKeyLength().getValue());
+        appendBytes(message.getEphemeralPublicKey().getValue().toByteArray());
+        LOGGER.debug("Public key: " + message.getEphemeralPublicKey().getValue());
     }
 
-    private void serializeSignature(DhGexKeyExchangeReplyMessage msg) {
-        appendInt(msg.getSignatureLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
-        LOGGER.debug("Signature length: " + msg.getSignatureLength().getValue());
-        appendBytes(msg.getSignature().getValue());
-        LOGGER.debug("Signature: " + msg.getSignature());
+    private void serializeSignature() {
+        appendInt(message.getSignatureLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
+        LOGGER.debug("Signature length: " + message.getSignatureLength().getValue());
+        appendBytes(message.getSignature().getValue());
+        LOGGER.debug("Signature: " + message.getSignature());
     }
 
     @Override
-    protected void serializeMessageSpecificPayload() {
-        serializeHostKey(msg);
-        serializePublicKey(msg);
-        serializeSignature(msg);
+    public void serializeMessageSpecificContents() {
+        serializeHostKey();
+        serializePublicKey();
+        serializeSignature();
     }
 }

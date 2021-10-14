@@ -10,7 +10,6 @@ package de.rub.nds.sshattacker.core.protocol.transport.message;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
-
 import java.util.stream.Stream;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;

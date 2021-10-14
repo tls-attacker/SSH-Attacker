@@ -17,8 +17,8 @@ import org.apache.logging.log4j.Logger;
 public class ChannelExtendedDataMessageParser
         extends ChannelMessageParser<ChannelExtendedDataMessage> {
 
-    public ChannelExtendedDataMessageParser(int startPosition, byte[] array) {
-        super(startPosition, array);
+    public ChannelExtendedDataMessageParser(byte[] array, int startPosition) {
+        super(array, startPosition);
     }
 
     private static final Logger LOGGER = LogManager.getLogger();
@@ -28,26 +28,26 @@ public class ChannelExtendedDataMessageParser
         return new ChannelExtendedDataMessage();
     }
 
-    private void parseDataTypeCode(ChannelExtendedDataMessage msg) {
-        msg.setDataTypeCode(parseIntField(DataFormatConstants.INT32_SIZE));
-        LOGGER.debug("Data type code: " + msg.getDataTypeCode().getValue());
+    private void parseDataTypeCode() {
+        message.setDataTypeCode(parseIntField(DataFormatConstants.INT32_SIZE));
+        LOGGER.debug("Data type code: " + message.getDataTypeCode().getValue());
         LOGGER.debug(
                 "Data type: "
                         + ExtendedChannelDataType.fromDataTypeCode(
-                                msg.getDataTypeCode().getValue()));
+                                message.getDataTypeCode().getValue()));
     }
 
-    private void parseData(ChannelExtendedDataMessage msg) {
-        msg.setDataLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-        LOGGER.debug("Data length: " + msg.getDataLength().getValue());
-        msg.setData(parseByteArrayField(msg.getDataLength().getValue()), false);
-        LOGGER.debug("Data: " + ArrayConverter.bytesToRawHexString(msg.getData().getValue()));
+    private void parseData() {
+        message.setDataLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
+        LOGGER.debug("Data length: " + message.getDataLength().getValue());
+        message.setData(parseByteArrayField(message.getDataLength().getValue()), false);
+        LOGGER.debug("Data: " + ArrayConverter.bytesToRawHexString(message.getData().getValue()));
     }
 
     @Override
-    protected void parseMessageSpecificPayload(ChannelExtendedDataMessage msg) {
-        super.parseMessageSpecificPayload(msg);
-        parseDataTypeCode(msg);
-        parseData(msg);
+    protected void parseMessageSpecificContents() {
+        super.parseMessageSpecificContents();
+        parseDataTypeCode();
+        parseData();
     }
 }

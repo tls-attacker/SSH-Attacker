@@ -12,14 +12,12 @@ import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
 import de.rub.nds.sshattacker.core.constants.ServiceType;
-import de.rub.nds.sshattacker.core.protocol.common.Message;
+import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.ServiceRequestMessageHandler;
-import de.rub.nds.sshattacker.core.protocol.transport.preparator.ServiceRequestMessagePreparator;
-import de.rub.nds.sshattacker.core.protocol.transport.serializer.ServiceRequestMessageSerializer;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import java.nio.charset.StandardCharsets;
 
-public class ServiceRequestMessage extends Message<ServiceRequestMessage> {
+public class ServiceRequestMessage extends SshMessage<ServiceRequestMessage> {
 
     private ModifiableInteger serviceNameLength;
     private ModifiableString serviceName;
@@ -77,16 +75,6 @@ public class ServiceRequestMessage extends Message<ServiceRequestMessage> {
 
     @Override
     public ServiceRequestMessageHandler getHandler(SshContext context) {
-        return new ServiceRequestMessageHandler(context);
-    }
-
-    @Override
-    public ServiceRequestMessageSerializer getSerializer() {
-        return new ServiceRequestMessageSerializer(this);
-    }
-
-    @Override
-    public ServiceRequestMessagePreparator getPreparator(SshContext context) {
-        return new ServiceRequestMessagePreparator(context, this);
+        return new ServiceRequestMessageHandler(context, this);
     }
 }

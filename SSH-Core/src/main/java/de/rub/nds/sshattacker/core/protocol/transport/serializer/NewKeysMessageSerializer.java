@@ -7,15 +7,15 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.serializer;
 
-import de.rub.nds.sshattacker.core.protocol.common.MessageSerializer;
+import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.transport.message.NewKeysMessage;
 
-public class NewKeysMessageSerializer extends MessageSerializer<NewKeysMessage> {
+public class NewKeysMessageSerializer extends SshMessageSerializer<NewKeysMessage> {
 
-    public NewKeysMessageSerializer(NewKeysMessage msg) {
-        super(msg);
+    public NewKeysMessageSerializer(NewKeysMessage message) {
+        super(message);
     }
 
     @Override
-    protected void serializeMessageSpecificPayload() {}
+    public void serializeMessageSpecificContents() {}
 }
