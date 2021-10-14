@@ -25,49 +25,50 @@ public class BinaryPacketParser extends Parser<BinaryPacket> {
 
     private static final Logger LOGGER = LogManager.getLogger();
     private final SshContext context;
+    private final BinaryPacket resultingPacket = new BinaryPacket();
 
-    public BinaryPacketParser(int startPosition, byte[] array, SshContext context) {
-        super(startPosition, array);
+    public BinaryPacketParser(byte[] array, int startPosition, SshContext context) {
+        super(array, startPosition);
         this.context = context;
     }
 
-    private void parsePacketLength(BinaryPacket msg) {
+    private void parsePacketLength() {
         ModifiableInteger packetLength =
                 ModifiableVariableFactory.safelySetValue(
                         null, parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH));
         LOGGER.debug("Packet Length: " + packetLength.getValue());
-        msg.setPacketLength(packetLength);
+        resultingPacket.setPacketLength(packetLength);
     }
 
-    private void parsePaddingLength(BinaryPacket msg) {
+    private void parsePaddingLength() {
         ModifiableByte paddingLength =
                 ModifiableVariableFactory.safelySetValue(
                         null, parseByteField(BinaryPacketConstants.PADDING_FIELD_LENGTH));
         LOGGER.debug("Padding Length: " + paddingLength.getValue());
-        msg.setPaddingLength(paddingLength);
+        resultingPacket.setPaddingLength(paddingLength);
     }
 
-    private void parsePayload(BinaryPacket msg) {
+    private void parsePayload() {
         int payloadSize =
-                msg.getPacketLength().getValue()
-                        - msg.getPaddingLength().getValue()
+                resultingPacket.getPacketLength().getValue()
+                        - resultingPacket.getPaddingLength().getValue()
                         - BinaryPacketConstants.PADDING_FIELD_LENGTH;
         LOGGER.debug("Payload Size: " + payloadSize);
         ModifiableByteArray payload =
                 ModifiableVariableFactory.safelySetValue(null, parseByteArrayField(payloadSize));
         LOGGER.debug("Payload: " + payload);
-        msg.setPayload(payload);
+        resultingPacket.setPayload(payload);
     }
 
-    private void parsePadding(BinaryPacket msg) {
+    private void parsePadding() {
         ModifiableByteArray padding =
                 ModifiableVariableFactory.safelySetValue(
-                        null, parseByteArrayField(msg.getPaddingLength().getValue()));
+                        null, parseByteArrayField(resultingPacket.getPaddingLength().getValue()));
         LOGGER.debug("Padding: " + padding);
-        msg.setPadding(padding);
+        resultingPacket.setPadding(padding);
     }
 
-    private void parseMAC(BinaryPacket msg) {
+    private void parseMAC() {
         MacAlgorithm macAlgorithm =
                 (context.isClient()
                                 ? context.getMacAlgorithmServerToClient()
@@ -78,31 +79,38 @@ public class BinaryPacketParser extends Parser<BinaryPacket> {
                 || !context.getKeyExchangeInstance().isPresent()
                 || !context.getKeyExchangeInstance().get().isComplete()) {
             LOGGER.debug("MAC: none");
-            msg.setMac(new byte[] {});
+            resultingPacket.setMac(new byte[] {});
         } else {
             ModifiableByteArray mac =
                     ModifiableVariableFactory.safelySetValue(
                             null, parseArrayOrTillEnd(macAlgorithm.getOutputSize()));
             LOGGER.debug("MAC: " + mac);
-            msg.setMac(mac);
+            resultingPacket.setMac(mac);
         }
     }
 
     @Override
     public BinaryPacket parse() {
-        BinaryPacket msg = new BinaryPacket();
-        parsePacketLength(msg);
-        parsePaddingLength(msg);
-        parsePayload(msg);
-        parsePadding(msg);
-        parseMAC(msg);
-        return msg;
+        parsePacketLength();
+        parsePaddingLength();
+        parsePayload();
+        parsePadding();
+        parseMAC();
+        return resultingPacket;
     }
 
-    public List<BinaryPacket> parseAll() {
+    public static List<BinaryPacket> parseAll(byte[] array, SshContext context) {
         List<BinaryPacket> list = new ArrayList<>();
-        while (getBytesLeft() >= BinaryPacketConstants.LENGTH_FIELD_LENGTH) {
-            list.add(parse());
+        int pointer = 0;
+        while (array.length - pointer > BinaryPacketConstants.LENGTH_FIELD_LENGTH) {
+            BinaryPacket packet = new BinaryPacketParser(array, pointer, context).parse();
+            // Advance pointer to point to the next packet (if any) by adding the packet length to
+            // the pointer
+            pointer +=
+                    BinaryPacketConstants.LENGTH_FIELD_LENGTH
+                            + packet.getPacketLength().getOriginalValue()
+                            + packet.getMac().getOriginalValue().length;
+            list.add(packet);
         }
         return list;
     }

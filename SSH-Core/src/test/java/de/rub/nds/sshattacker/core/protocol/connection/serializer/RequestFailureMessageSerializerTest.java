@@ -10,7 +10,6 @@ package de.rub.nds.sshattacker.core.protocol.connection.serializer;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 import de.rub.nds.sshattacker.core.protocol.connection.message.RequestFailureMessage;
-import de.rub.nds.sshattacker.core.protocol.connection.serializer.RequestFailureMessageSerializer;
 import org.junit.jupiter.api.Test;
 
 public class RequestFailureMessageSerializerTest {

@@ -12,14 +12,12 @@ import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.sshattacker.core.constants.ChannelType;
 import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
-import de.rub.nds.sshattacker.core.protocol.common.Message;
+import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
 import de.rub.nds.sshattacker.core.protocol.connection.handler.ChannelOpenMessageHandler;
-import de.rub.nds.sshattacker.core.protocol.connection.preparator.ChannelOpenMessagePreparator;
-import de.rub.nds.sshattacker.core.protocol.connection.serializer.ChannelOpenMessageSerializer;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import java.nio.charset.StandardCharsets;
 
-public class ChannelOpenMessage extends Message<ChannelOpenMessage> {
+public class ChannelOpenMessage extends SshMessage<ChannelOpenMessage> {
 
     private ModifiableInteger channelTypeLength;
     private ModifiableString channelType;
@@ -117,16 +115,6 @@ public class ChannelOpenMessage extends Message<ChannelOpenMessage> {
 
     @Override
     public ChannelOpenMessageHandler getHandler(SshContext context) {
-        return new ChannelOpenMessageHandler(context);
-    }
-
-    @Override
-    public ChannelOpenMessageSerializer getSerializer() {
-        return new ChannelOpenMessageSerializer(this);
-    }
-
-    @Override
-    public ChannelOpenMessagePreparator getPreparator(SshContext context) {
-        return new ChannelOpenMessagePreparator(context, this);
+        return new ChannelOpenMessageHandler(context, this);
     }
 }

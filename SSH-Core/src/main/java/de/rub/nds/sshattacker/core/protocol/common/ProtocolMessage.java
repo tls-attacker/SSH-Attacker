@@ -11,6 +11,7 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bool.ModifiableBoolean;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
+import de.rub.nds.sshattacker.core.state.SshContext;
 import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Random;
@@ -19,7 +20,8 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlTransient;
 
 @XmlAccessorType(XmlAccessType.FIELD)
-public abstract class ProtocolMessage extends ModifiableVariableHolder {
+public abstract class ProtocolMessage<T extends ProtocolMessage<T>>
+        extends ModifiableVariableHolder {
 
     /** content type */
     @XmlTransient protected final boolean GOING_TO_BE_SENT_DEFAULT = true;
@@ -111,6 +113,8 @@ public abstract class ProtocolMessage extends ModifiableVariableHolder {
         this.adjustContext =
                 ModifiableVariableFactory.safelySetValue(this.adjustContext, adjustContext);
     }
+
+    public abstract ProtocolMessageHandler<T> getHandler(SshContext context);
 
     public abstract String toCompactString();
 }

@@ -12,13 +12,11 @@ import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
 import de.rub.nds.sshattacker.core.protocol.authentication.handler.UserAuthBannerMessageHandler;
-import de.rub.nds.sshattacker.core.protocol.authentication.preparator.UserAuthBannerMessagePreparator;
-import de.rub.nds.sshattacker.core.protocol.authentication.serializer.UserAuthBannerMessageSerializer;
-import de.rub.nds.sshattacker.core.protocol.common.Message;
+import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import java.nio.charset.StandardCharsets;
 
-public class UserAuthBannerMessage extends Message<UserAuthBannerMessage> {
+public class UserAuthBannerMessage extends SshMessage<UserAuthBannerMessage> {
 
     private ModifiableInteger messageLength;
     private ModifiableString message;
@@ -109,16 +107,6 @@ public class UserAuthBannerMessage extends Message<UserAuthBannerMessage> {
 
     @Override
     public UserAuthBannerMessageHandler getHandler(SshContext context) {
-        return new UserAuthBannerMessageHandler(context);
-    }
-
-    @Override
-    public UserAuthBannerMessageSerializer getSerializer() {
-        return new UserAuthBannerMessageSerializer(this);
-    }
-
-    @Override
-    public UserAuthBannerMessagePreparator getPreparator(SshContext context) {
-        return new UserAuthBannerMessagePreparator(context, this);
+        return new UserAuthBannerMessageHandler(context, this);
     }
 }

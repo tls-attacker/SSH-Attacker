@@ -11,13 +11,11 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
-import de.rub.nds.sshattacker.core.protocol.common.Message;
+import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.IgnoreMessageHandler;
-import de.rub.nds.sshattacker.core.protocol.transport.preparator.IgnoreMessagePreparator;
-import de.rub.nds.sshattacker.core.protocol.transport.serializer.IgnoreMessageSerializer;
 import de.rub.nds.sshattacker.core.state.SshContext;
 
-public class IgnoreMessage extends Message<IgnoreMessage> {
+public class IgnoreMessage extends SshMessage<IgnoreMessage> {
 
     private ModifiableInteger dataLength;
     private ModifiableByteArray data;
@@ -66,16 +64,6 @@ public class IgnoreMessage extends Message<IgnoreMessage> {
 
     @Override
     public IgnoreMessageHandler getHandler(SshContext context) {
-        return new IgnoreMessageHandler(context);
-    }
-
-    @Override
-    public IgnoreMessageSerializer getSerializer() {
-        return new IgnoreMessageSerializer(this);
-    }
-
-    @Override
-    public IgnoreMessagePreparator getPreparator(SshContext context) {
-        return new IgnoreMessagePreparator(context, this);
+        return new IgnoreMessageHandler(context, this);
     }
 }

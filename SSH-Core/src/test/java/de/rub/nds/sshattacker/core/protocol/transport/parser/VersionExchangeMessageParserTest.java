@@ -11,7 +11,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.protocol.transport.message.VersionExchangeMessage;
-import de.rub.nds.sshattacker.core.protocol.transport.parser.VersionExchangeMessageParser;
 import java.util.stream.Stream;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -47,7 +46,7 @@ public class VersionExchangeMessageParserTest {
     @ParameterizedTest
     @MethodSource("provideTestVectors")
     public void testParse(byte[] providedBytes, String expectedVersion, String expectedComment) {
-        VersionExchangeMessageParser parser = new VersionExchangeMessageParser(0, providedBytes);
+        VersionExchangeMessageParser parser = new VersionExchangeMessageParser(providedBytes, 0);
         VersionExchangeMessage msg = parser.parse();
 
         assertEquals(expectedVersion, msg.getVersion().getValue());

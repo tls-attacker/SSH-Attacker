@@ -11,14 +11,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
 import de.rub.nds.sshattacker.core.protocol.transport.message.NewKeysMessage;
-import de.rub.nds.sshattacker.core.protocol.transport.parser.NewKeysMessageParser;
 import org.junit.jupiter.api.Test;
 
 public class NewKeysMessageParserTest {
     /** Test of NewKeysMessageParser::parse method */
     @Test
     public void testParse() {
-        NewKeysMessage msg = new NewKeysMessageParser(0, new byte[] {21}).parse();
+        NewKeysMessage msg = new NewKeysMessageParser(new byte[] {21}, 0).parse();
         assertEquals(MessageIDConstant.SSH_MSG_NEWKEYS.id, msg.getMessageID().getValue());
     }
 }

@@ -9,33 +9,33 @@ package de.rub.nds.sshattacker.core.protocol.transport.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
-import de.rub.nds.sshattacker.core.protocol.common.MessageParser;
+import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 import de.rub.nds.sshattacker.core.protocol.transport.message.IgnoreMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class IgnoreMessageParser extends MessageParser<IgnoreMessage> {
+public class IgnoreMessageParser extends SshMessageParser<IgnoreMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public IgnoreMessageParser(int startPosition, byte[] array) {
-        super(startPosition, array);
-    }
-
-    private void parseData(IgnoreMessage msg) {
-        msg.setDataLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-        LOGGER.debug("Data length: " + msg.getDataLength().getValue());
-        msg.setData(parseByteArrayField(msg.getDataLength().getValue()));
-        LOGGER.debug("Data: " + ArrayConverter.bytesToRawHexString(msg.getData().getValue()));
-    }
-
-    @Override
-    protected void parseMessageSpecificPayload(IgnoreMessage msg) {
-        parseData(msg);
+    public IgnoreMessageParser(byte[] array, int startPosition) {
+        super(array, startPosition);
     }
 
     @Override
     public IgnoreMessage createMessage() {
         return new IgnoreMessage();
+    }
+
+    private void parseData() {
+        message.setDataLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
+        LOGGER.debug("Data length: " + message.getDataLength().getValue());
+        message.setData(parseByteArrayField(message.getDataLength().getValue()));
+        LOGGER.debug("Data: " + ArrayConverter.bytesToRawHexString(message.getData().getValue()));
+    }
+
+    @Override
+    protected void parseMessageSpecificContents() {
+        parseData();
     }
 }

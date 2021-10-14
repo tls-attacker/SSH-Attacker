@@ -10,7 +10,6 @@ package de.rub.nds.sshattacker.core.protocol.authentication.serializer;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthFailureMessage;
-import de.rub.nds.sshattacker.core.protocol.authentication.serializer.UserAuthFailureMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.authentication.parser.UserAuthFailureMessageParserTest;
 import java.util.stream.Stream;
 import org.junit.jupiter.params.ParameterizedTest;

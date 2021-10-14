@@ -10,9 +10,9 @@ package de.rub.nds.sshattacker.core.protocol.connection.message;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
-import de.rub.nds.sshattacker.core.protocol.common.Message;
+import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
 
-public abstract class ChannelMessage<T extends ChannelMessage<T>> extends Message<T> {
+public abstract class ChannelMessage<T extends ChannelMessage<T>> extends SshMessage<T> {
 
     protected ModifiableInteger recipientChannel;
 

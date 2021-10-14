@@ -10,7 +10,7 @@ package de.rub.nds.sshattacker.core.protocol.util;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.exceptions.DecryptionException;
 import de.rub.nds.sshattacker.core.exceptions.ParserException;
-import de.rub.nds.sshattacker.core.protocol.common.Message;
+import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessage;
 import de.rub.nds.sshattacker.core.protocol.layers.BinaryPacketLayer;
 import de.rub.nds.sshattacker.core.protocol.layers.CryptoLayer;
 import de.rub.nds.sshattacker.core.protocol.layers.MessageLayer;
@@ -38,7 +38,7 @@ public class ReceiveMessageHelper {
         MessageLayer messageLayer = context.getMessageLayer();
 
         List<BinaryPacket> binaryPackets = new LinkedList<>();
-        List<Message<?>> retrievedMessages = new LinkedList<>();
+        List<ProtocolMessage<?>> retrievedMessages = new LinkedList<>();
 
         try {
             byte[] data = transportHandler.fetchData();
@@ -59,7 +59,7 @@ public class ReceiveMessageHelper {
             } else if (new String(data, StandardCharsets.US_ASCII).startsWith("SSH-2.0")) {
                 // Version exchange message retrieved
                 VersionExchangeMessageParser peerVersionParser =
-                        new VersionExchangeMessageParser(0, data);
+                        new VersionExchangeMessageParser(data, 0);
                 VersionExchangeMessage peerVersion = peerVersionParser.parse();
                 retrievedMessages.add(peerVersion);
                 context.setVersionExchangeComplete(true);
@@ -92,7 +92,7 @@ public class ReceiveMessageHelper {
                 // packets
                 binaryPackets.add(new BinaryPacket(data));
             }
-            retrievedMessages.forEach(message -> message.handleSelf(context));
+            retrievedMessages.forEach(message -> message.getHandler(context).adjustContext());
             return new MessageActionResult(binaryPackets, retrievedMessages);
         } catch (IOException e) {
             LOGGER.debug("Caught an IOException while trying to retrieve incoming messages", e);
@@ -102,7 +102,7 @@ public class ReceiveMessageHelper {
 
     // TODO[important!] dummy method until expectedMessages are used
     public MessageActionResult receiveMessages(
-            List<Message<?>> expectedMessages, SshContext context) {
+            List<ProtocolMessage<?>> expectedMessages, SshContext context) {
         return receiveMessages(context);
     }
 }

@@ -8,26 +8,26 @@
 package de.rub.nds.sshattacker.core.protocol.connection.serializer;
 
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
-import de.rub.nds.sshattacker.core.protocol.common.MessageSerializer;
+import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class ChannelMessageSerializer<T extends ChannelMessage<T>> extends MessageSerializer<T> {
+public class ChannelMessageSerializer<T extends ChannelMessage<T>> extends SshMessageSerializer<T> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public ChannelMessageSerializer(T msg) {
-        super(msg);
+    public ChannelMessageSerializer(T message) {
+        super(message);
     }
 
     private void serializeRecipientChannel() {
-        LOGGER.debug("Recipient channel: " + msg.getRecipientChannel().getValue());
-        appendInt(msg.getRecipientChannel().getValue(), DataFormatConstants.INT32_SIZE);
+        LOGGER.debug("Recipient channel: " + message.getRecipientChannel().getValue());
+        appendInt(message.getRecipientChannel().getValue(), DataFormatConstants.INT32_SIZE);
     }
 
     @Override
-    protected void serializeMessageSpecificPayload() {
+    public void serializeMessageSpecificContents() {
         serializeRecipientChannel();
     }
 }

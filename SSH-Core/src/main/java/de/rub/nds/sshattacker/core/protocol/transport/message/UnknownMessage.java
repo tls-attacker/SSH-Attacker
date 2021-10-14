@@ -10,19 +10,16 @@ package de.rub.nds.sshattacker.core.protocol.transport.message;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
-import de.rub.nds.sshattacker.core.exceptions.NotImplementedException;
-import de.rub.nds.sshattacker.core.protocol.common.Message;
-import de.rub.nds.sshattacker.core.protocol.common.Preparator;
+import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.UnknownMessageHandler;
-import de.rub.nds.sshattacker.core.protocol.transport.serializer.UnknownMessageSerializer;
 import de.rub.nds.sshattacker.core.state.SshContext;
 
-public class UnknownMessage extends Message<UnknownMessage> {
+public class UnknownMessage extends SshMessage<UnknownMessage> {
 
     private ModifiableByteArray payload;
 
     public UnknownMessage() {
-        super();
+        super(MessageIDConstant.UNKNOWN);
     }
 
     public ModifiableByteArray getPayload() {
@@ -44,16 +41,6 @@ public class UnknownMessage extends Message<UnknownMessage> {
 
     @Override
     public UnknownMessageHandler getHandler(SshContext context) {
-        return new UnknownMessageHandler(context);
-    }
-
-    @Override
-    public UnknownMessageSerializer getSerializer() {
-        return new UnknownMessageSerializer(this);
-    }
-
-    @Override
-    public Preparator<UnknownMessage> getPreparator(SshContext context) {
-        throw new NotImplementedException("UnknownMessage::getPreparator");
+        return new UnknownMessageHandler(context, this);
     }
 }

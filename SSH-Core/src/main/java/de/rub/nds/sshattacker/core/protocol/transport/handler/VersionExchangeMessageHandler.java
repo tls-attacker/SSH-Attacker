@@ -7,18 +7,25 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.handler;
 
-import de.rub.nds.sshattacker.core.protocol.common.Handler;
+import de.rub.nds.sshattacker.core.protocol.common.*;
 import de.rub.nds.sshattacker.core.protocol.transport.message.VersionExchangeMessage;
+import de.rub.nds.sshattacker.core.protocol.transport.parser.VersionExchangeMessageParser;
+import de.rub.nds.sshattacker.core.protocol.transport.preparator.VersionExchangeMessagePreparator;
+import de.rub.nds.sshattacker.core.protocol.transport.serializer.VersionExchangeMessageSerializer;
 import de.rub.nds.sshattacker.core.state.SshContext;
 
-public class VersionExchangeMessageHandler extends Handler<VersionExchangeMessage> {
+public class VersionExchangeMessageHandler extends ProtocolMessageHandler<VersionExchangeMessage> {
 
     public VersionExchangeMessageHandler(SshContext context) {
         super(context);
     }
 
+    public VersionExchangeMessageHandler(SshContext context, VersionExchangeMessage message) {
+        super(context, message);
+    }
+
     @Override
-    public void adjustContext(VersionExchangeMessage message) {
+    public void adjustContext() {
         if (context.isClient()) {
             context.setServerVersion(message.getVersion().getValue());
             context.setServerComment(message.getComment().getValue());
@@ -28,5 +35,20 @@ public class VersionExchangeMessageHandler extends Handler<VersionExchangeMessag
             context.setClientComment(message.getComment().getValue());
             context.getExchangeHashInstance().setClientVersion(message);
         }
+    }
+
+    @Override
+    public VersionExchangeMessageParser getParser(byte[] array, int startPosition) {
+        return new VersionExchangeMessageParser(array, startPosition);
+    }
+
+    @Override
+    public VersionExchangeMessagePreparator getPreparator() {
+        return new VersionExchangeMessagePreparator(context, message);
+    }
+
+    @Override
+    public VersionExchangeMessageSerializer getSerializer() {
+        return new VersionExchangeMessageSerializer(message);
     }
 }

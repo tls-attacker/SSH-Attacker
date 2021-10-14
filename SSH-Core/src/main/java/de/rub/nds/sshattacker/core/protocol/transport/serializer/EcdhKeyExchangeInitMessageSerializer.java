@@ -9,30 +9,31 @@ package de.rub.nds.sshattacker.core.protocol.transport.serializer;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
-import de.rub.nds.sshattacker.core.protocol.common.MessageSerializer;
+import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.transport.message.EcdhKeyExchangeInitMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class EcdhKeyExchangeInitMessageSerializer
-        extends MessageSerializer<EcdhKeyExchangeInitMessage> {
+        extends SshMessageSerializer<EcdhKeyExchangeInitMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public EcdhKeyExchangeInitMessageSerializer(EcdhKeyExchangeInitMessage msg) {
-        super(msg);
+    public EcdhKeyExchangeInitMessageSerializer(EcdhKeyExchangeInitMessage message) {
+        super(message);
     }
 
     private void serializePublicKey() {
-        LOGGER.debug("Public key length: " + msg.getPublicKeyLength().getValue());
-        appendInt(msg.getPublicKeyLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
+        LOGGER.debug("Public key length: " + message.getPublicKeyLength().getValue());
+        appendInt(message.getPublicKeyLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
         LOGGER.debug(
-                "Public key: " + ArrayConverter.bytesToRawHexString(msg.getPublicKey().getValue()));
-        appendBytes(msg.getPublicKey().getValue());
+                "Public key: "
+                        + ArrayConverter.bytesToRawHexString(message.getPublicKey().getValue()));
+        appendBytes(message.getPublicKey().getValue());
     }
 
     @Override
-    public void serializeMessageSpecificPayload() {
+    public void serializeMessageSpecificContents() {
         serializePublicKey();
     }
 }

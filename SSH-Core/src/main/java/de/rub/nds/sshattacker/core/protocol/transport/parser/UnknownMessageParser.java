@@ -8,17 +8,17 @@
 package de.rub.nds.sshattacker.core.protocol.transport.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.sshattacker.core.protocol.common.MessageParser;
+import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 import de.rub.nds.sshattacker.core.protocol.transport.message.UnknownMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class UnknownMessageParser extends MessageParser<UnknownMessage> {
+public class UnknownMessageParser extends SshMessageParser<UnknownMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public UnknownMessageParser(int startPosition, byte[] array) {
-        super(startPosition, array);
+    public UnknownMessageParser(byte[] array, int startPosition) {
+        super(array, startPosition);
     }
 
     @Override
@@ -27,8 +27,9 @@ public class UnknownMessageParser extends MessageParser<UnknownMessage> {
     }
 
     @Override
-    protected void parseMessageSpecificPayload(UnknownMessage msg) {
-        msg.setPayload(parseArrayOrTillEnd(-1));
-        LOGGER.debug("Payload: " + ArrayConverter.bytesToRawHexString(msg.getPayload().getValue()));
+    protected void parseMessageSpecificContents() {
+        message.setPayload(parseArrayOrTillEnd(-1));
+        LOGGER.debug(
+                "Payload: " + ArrayConverter.bytesToRawHexString(message.getPayload().getValue()));
     }
 }

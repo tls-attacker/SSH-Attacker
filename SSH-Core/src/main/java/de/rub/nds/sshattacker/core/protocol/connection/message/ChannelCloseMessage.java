@@ -9,8 +9,6 @@ package de.rub.nds.sshattacker.core.protocol.connection.message;
 
 import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
 import de.rub.nds.sshattacker.core.protocol.connection.handler.ChannelCloseMessageHandler;
-import de.rub.nds.sshattacker.core.protocol.connection.preparator.ChannelCloseMessagePreparator;
-import de.rub.nds.sshattacker.core.protocol.connection.serializer.ChannelMessageSerializer;
 import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class ChannelCloseMessage extends ChannelMessage<ChannelCloseMessage> {
@@ -21,16 +19,6 @@ public class ChannelCloseMessage extends ChannelMessage<ChannelCloseMessage> {
 
     @Override
     public ChannelCloseMessageHandler getHandler(SshContext context) {
-        return new ChannelCloseMessageHandler(context);
-    }
-
-    @Override
-    public ChannelMessageSerializer<ChannelCloseMessage> getSerializer() {
-        return new ChannelMessageSerializer<>(this);
-    }
-
-    @Override
-    public ChannelCloseMessagePreparator getPreparator(SshContext context) {
-        return new ChannelCloseMessagePreparator(context, this);
+        return new ChannelCloseMessageHandler(context, this);
     }
 }

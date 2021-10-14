@@ -12,18 +12,12 @@ import de.rub.nds.modifiablevariable.biginteger.ModifiableBigInteger;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
-import de.rub.nds.sshattacker.core.exceptions.NotImplementedException;
-import de.rub.nds.sshattacker.core.protocol.common.Handler;
-import de.rub.nds.sshattacker.core.protocol.common.Message;
-import de.rub.nds.sshattacker.core.protocol.common.Preparator;
-import de.rub.nds.sshattacker.core.protocol.common.Serializer;
+import de.rub.nds.sshattacker.core.protocol.common.*;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.DhGexKeyExchangeReplyMessageHandler;
-import de.rub.nds.sshattacker.core.protocol.transport.preparator.DhGexKeyExchangeReplyMessagePreparator;
-import de.rub.nds.sshattacker.core.protocol.transport.serializer.DhGexKeyExchangeReplyMessageSerializer;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import java.math.BigInteger;
 
-public class DhGexKeyExchangeReplyMessage extends Message<DhGexKeyExchangeReplyMessage> {
+public class DhGexKeyExchangeReplyMessage extends SshMessage<DhGexKeyExchangeReplyMessage> {
 
     private ModifiableInteger hostKeyLength;
     private ModifiableByteArray hostKey;
@@ -162,17 +156,7 @@ public class DhGexKeyExchangeReplyMessage extends Message<DhGexKeyExchangeReplyM
     }
 
     @Override
-    public Handler<DhGexKeyExchangeReplyMessage> getHandler(SshContext context) {
-        return new DhGexKeyExchangeReplyMessageHandler(context);
-    }
-
-    @Override
-    public Serializer<DhGexKeyExchangeReplyMessage> getSerializer() {
-        return new DhGexKeyExchangeReplyMessageSerializer(this);
-    }
-
-    @Override
-    public Preparator<DhGexKeyExchangeReplyMessage> getPreparator(SshContext context) {
-        return new DhGexKeyExchangeReplyMessagePreparator(context, this);
+    public DhGexKeyExchangeReplyMessageHandler getHandler(SshContext context) {
+        return new DhGexKeyExchangeReplyMessageHandler(context, this);
     }
 }

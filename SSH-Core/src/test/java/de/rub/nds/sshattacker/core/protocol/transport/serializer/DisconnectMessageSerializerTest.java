@@ -10,9 +10,8 @@ package de.rub.nds.sshattacker.core.protocol.transport.serializer;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 import de.rub.nds.sshattacker.core.constants.DisconnectReason;
-import de.rub.nds.sshattacker.core.protocol.transport.parser.DisconnectMessageParserTest;
 import de.rub.nds.sshattacker.core.protocol.transport.message.DisconnectMessage;
-import de.rub.nds.sshattacker.core.protocol.transport.serializer.DisconnectMessageSerializer;
+import de.rub.nds.sshattacker.core.protocol.transport.parser.DisconnectMessageParserTest;
 import java.util.stream.Stream;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;

@@ -8,18 +8,25 @@
 package de.rub.nds.sshattacker.core.protocol.transport.handler;
 
 import de.rub.nds.sshattacker.core.exceptions.AdjustmentException;
-import de.rub.nds.sshattacker.core.protocol.common.Handler;
+import de.rub.nds.sshattacker.core.protocol.common.*;
 import de.rub.nds.sshattacker.core.protocol.transport.message.NewKeysMessage;
+import de.rub.nds.sshattacker.core.protocol.transport.parser.NewKeysMessageParser;
+import de.rub.nds.sshattacker.core.protocol.transport.preparator.NewKeysMessagePreparator;
+import de.rub.nds.sshattacker.core.protocol.transport.serializer.NewKeysMessageSerializer;
 import de.rub.nds.sshattacker.core.state.SshContext;
 
-public class NewKeysMessageHandler extends Handler<NewKeysMessage> {
+public class NewKeysMessageHandler extends SshMessageHandler<NewKeysMessage> {
 
     public NewKeysMessageHandler(SshContext context) {
         super(context);
     }
 
+    public NewKeysMessageHandler(SshContext context, NewKeysMessage message) {
+        super(context, message);
+    }
+
     @Override
-    public void adjustContext(NewKeysMessage message) {
+    public void adjustContext() {
         try {
             if (context.getConfig().getEnableEncryptionOnNewKeysMessage()) {
                 context.setServerToClientEncryptionActive(true);
@@ -27,5 +34,20 @@ public class NewKeysMessageHandler extends Handler<NewKeysMessage> {
         } catch (IllegalArgumentException e) {
             raiseAdjustmentException(new AdjustmentException(e));
         }
+    }
+
+    @Override
+    public NewKeysMessageParser getParser(byte[] array, int startPosition) {
+        return new NewKeysMessageParser(array, startPosition);
+    }
+
+    @Override
+    public NewKeysMessagePreparator getPreparator() {
+        return new NewKeysMessagePreparator(context, message);
+    }
+
+    @Override
+    public NewKeysMessageSerializer getSerializer() {
+        return new NewKeysMessageSerializer(message);
     }
 }

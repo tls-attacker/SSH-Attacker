@@ -13,41 +13,44 @@
 package de.rub.nds.sshattacker.core.protocol.transport.parser;
 
 import de.rub.nds.sshattacker.core.constants.CharConstants;
-import de.rub.nds.sshattacker.core.protocol.common.Parser;
+import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessageParser;
 import de.rub.nds.sshattacker.core.protocol.transport.message.VersionExchangeMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class VersionExchangeMessageParser extends Parser<VersionExchangeMessage> {
+public class VersionExchangeMessageParser extends ProtocolMessageParser<VersionExchangeMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public VersionExchangeMessageParser(int startPosition, byte[] array) {
-        super(startPosition, array);
+    public VersionExchangeMessageParser(byte[] array, int startPosition) {
+        super(array, startPosition);
     }
 
-    private void parseVersion(VersionExchangeMessage msg) {
+    @Override
+    protected VersionExchangeMessage createMessage() {
+        return new VersionExchangeMessage();
+    }
+
+    private void parseVersion() {
         // parse till CR NL (and remove them)
         String result =
                 this.parseStringTill(
                                 new byte[] {CharConstants.CARRIAGE_RETURN, CharConstants.NEWLINE})
                         .replace("\r\n", "");
         String[] parts = result.split(String.valueOf(CharConstants.VERSION_COMMENT_SEPARATOR), 2);
-        msg.setVersion(parts[0]);
+        message.setVersion(parts[0]);
         LOGGER.debug("Version: " + parts[0]);
         if (parts.length == 2) {
-            msg.setComment(parts[1]);
+            message.setComment(parts[1]);
             LOGGER.debug("Comment: " + parts[1]);
         } else {
-            msg.setComment("");
+            message.setComment("");
             LOGGER.debug("Comment: [none]");
         }
     }
 
     @Override
-    public VersionExchangeMessage parse() {
-        VersionExchangeMessage msg = new VersionExchangeMessage();
-        parseVersion(msg);
-        return msg;
+    public void parseProtocolMessageContents() {
+        parseVersion();
     }
 }

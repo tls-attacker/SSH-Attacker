@@ -11,8 +11,8 @@ import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelSuccessMes
 
 public class ChannelSuccessMessageParser extends ChannelMessageParser<ChannelSuccessMessage> {
 
-    public ChannelSuccessMessageParser(int startPosition, byte[] array) {
-        super(startPosition, array);
+    public ChannelSuccessMessageParser(byte[] array, int startPosition) {
+        super(array, startPosition);
     }
 
     @Override

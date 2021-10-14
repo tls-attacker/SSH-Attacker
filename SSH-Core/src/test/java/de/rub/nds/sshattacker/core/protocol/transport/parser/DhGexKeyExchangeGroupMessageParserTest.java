@@ -13,7 +13,6 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
 import de.rub.nds.sshattacker.core.constants.NamedDHGroup;
 import de.rub.nds.sshattacker.core.protocol.transport.message.DhGexKeyExchangeGroupMessage;
-import de.rub.nds.sshattacker.core.protocol.transport.parser.DhGexKeyExchangeGroupMessageParser;
 import java.math.BigInteger;
 import java.util.stream.Stream;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -59,7 +58,7 @@ public class DhGexKeyExchangeGroupMessageParserTest {
             BigInteger expectedGroupModulus,
             BigInteger expectedGroupGenerator) {
         DhGexKeyExchangeGroupMessageParser parser =
-                new DhGexKeyExchangeGroupMessageParser(0, providedBytes);
+                new DhGexKeyExchangeGroupMessageParser(providedBytes, 0);
         DhGexKeyExchangeGroupMessage msg = parser.parse();
 
         assertEquals(MessageIDConstant.SSH_MSG_KEX_DH_GEX_GROUP.id, msg.getMessageID().getValue());

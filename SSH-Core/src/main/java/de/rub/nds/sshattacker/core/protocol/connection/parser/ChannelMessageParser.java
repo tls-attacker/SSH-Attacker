@@ -8,26 +8,27 @@
 package de.rub.nds.sshattacker.core.protocol.connection.parser;
 
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
-import de.rub.nds.sshattacker.core.protocol.common.MessageParser;
+import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public abstract class ChannelMessageParser<T extends ChannelMessage<T>> extends MessageParser<T> {
+public abstract class ChannelMessageParser<T extends ChannelMessage<T>>
+        extends SshMessageParser<T> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public ChannelMessageParser(int startPosition, byte[] array) {
-        super(startPosition, array);
+    public ChannelMessageParser(byte[] array, int startPosition) {
+        super(array, startPosition);
     }
 
-    private void parseRecipientChannel(T msg) {
-        msg.setRecipientChannel(parseIntField(DataFormatConstants.INT32_SIZE));
-        LOGGER.debug("Recipient channel: " + msg.getRecipientChannel().getValue());
+    private void parseRecipientChannel() {
+        message.setRecipientChannel(parseIntField(DataFormatConstants.INT32_SIZE));
+        LOGGER.debug("Recipient channel: " + message.getRecipientChannel().getValue());
     }
 
     @Override
-    protected void parseMessageSpecificPayload(T msg) {
-        parseRecipientChannel(msg);
+    protected void parseMessageSpecificContents() {
+        parseRecipientChannel();
     }
 }

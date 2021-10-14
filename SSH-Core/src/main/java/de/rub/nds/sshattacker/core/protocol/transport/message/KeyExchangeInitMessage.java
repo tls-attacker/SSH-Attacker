@@ -13,17 +13,15 @@ import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.sshattacker.core.constants.*;
-import de.rub.nds.sshattacker.core.protocol.common.Message;
+import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.KeyExchangeInitMessageHandler;
-import de.rub.nds.sshattacker.core.protocol.transport.preparator.KeyExchangeInitMessagePreparator;
-import de.rub.nds.sshattacker.core.protocol.transport.serializer.KeyExchangeInitMessageSerializer;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.util.Converter;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class KeyExchangeInitMessage extends Message<KeyExchangeInitMessage> {
+public class KeyExchangeInitMessage extends SshMessage<KeyExchangeInitMessage> {
 
     private ModifiableByteArray cookie;
     private ModifiableInteger keyExchangeAlgorithmsLength;
@@ -831,16 +829,6 @@ public class KeyExchangeInitMessage extends Message<KeyExchangeInitMessage> {
 
     @Override
     public KeyExchangeInitMessageHandler getHandler(SshContext context) {
-        return new KeyExchangeInitMessageHandler(context);
-    }
-
-    @Override
-    public KeyExchangeInitMessageSerializer getSerializer() {
-        return new KeyExchangeInitMessageSerializer(this);
-    }
-
-    @Override
-    public KeyExchangeInitMessagePreparator getPreparator(SshContext context) {
-        return new KeyExchangeInitMessagePreparator(context, this);
+        return new KeyExchangeInitMessageHandler(context, this);
     }
 }

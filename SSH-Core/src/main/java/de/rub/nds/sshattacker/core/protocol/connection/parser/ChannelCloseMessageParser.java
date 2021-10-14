@@ -11,8 +11,8 @@ import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelCloseMessa
 
 public class ChannelCloseMessageParser extends ChannelMessageParser<ChannelCloseMessage> {
 
-    public ChannelCloseMessageParser(int startPosition, byte[] array) {
-        super(startPosition, array);
+    public ChannelCloseMessageParser(byte[] array, int startPosition) {
+        super(array, startPosition);
     }
 
     @Override

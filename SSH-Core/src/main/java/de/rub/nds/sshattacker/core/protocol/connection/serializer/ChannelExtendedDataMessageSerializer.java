@@ -19,29 +19,29 @@ public class ChannelExtendedDataMessageSerializer
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public ChannelExtendedDataMessageSerializer(ChannelExtendedDataMessage msg) {
-        super(msg);
+    public ChannelExtendedDataMessageSerializer(ChannelExtendedDataMessage message) {
+        super(message);
     }
 
     private void serializeDataTypeCode() {
-        LOGGER.debug("Data type code: " + msg.getDataTypeCode().getValue());
+        LOGGER.debug("Data type code: " + message.getDataTypeCode().getValue());
         LOGGER.debug(
                 "Data type: "
                         + ExtendedChannelDataType.fromDataTypeCode(
-                                msg.getDataTypeCode().getValue()));
-        appendInt(msg.getDataTypeCode().getValue(), DataFormatConstants.INT32_SIZE);
+                                message.getDataTypeCode().getValue()));
+        appendInt(message.getDataTypeCode().getValue(), DataFormatConstants.INT32_SIZE);
     }
 
     private void serializeData() {
-        LOGGER.debug("Data length: " + msg.getDataLength().getValue());
-        appendInt(msg.getDataLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
-        LOGGER.debug("Data: " + ArrayConverter.bytesToRawHexString(msg.getData().getValue()));
-        appendBytes(msg.getData().getValue());
+        LOGGER.debug("Data length: " + message.getDataLength().getValue());
+        appendInt(message.getDataLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
+        LOGGER.debug("Data: " + ArrayConverter.bytesToRawHexString(message.getData().getValue()));
+        appendBytes(message.getData().getValue());
     }
 
     @Override
-    protected void serializeMessageSpecificPayload() {
-        super.serializeMessageSpecificPayload();
+    public void serializeMessageSpecificContents() {
+        super.serializeMessageSpecificContents();
         serializeDataTypeCode();
         serializeData();
     }

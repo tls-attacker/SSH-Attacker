@@ -7,18 +7,40 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.handler;
 
-import de.rub.nds.sshattacker.core.protocol.common.Handler;
+import de.rub.nds.sshattacker.core.protocol.common.*;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelOpenFailureMessage;
+import de.rub.nds.sshattacker.core.protocol.connection.parser.ChannelOpenFailureMessageParser;
+import de.rub.nds.sshattacker.core.protocol.connection.preparator.ChannelOpenFailureMessagePreparator;
+import de.rub.nds.sshattacker.core.protocol.connection.serializer.ChannelOpenFailureMessageSerializer;
 import de.rub.nds.sshattacker.core.state.SshContext;
 
-public class ChannelOpenFailureMessageHandler extends Handler<ChannelOpenFailureMessage> {
+public class ChannelOpenFailureMessageHandler extends SshMessageHandler<ChannelOpenFailureMessage> {
 
     public ChannelOpenFailureMessageHandler(SshContext context) {
         super(context);
     }
 
+    public ChannelOpenFailureMessageHandler(SshContext context, ChannelOpenFailureMessage message) {
+        super(context, message);
+    }
+
     @Override
-    public void adjustContext(ChannelOpenFailureMessage message) {
+    public void adjustContext() {
         // TODO: Handle ChannelOpenFailureMessage
+    }
+
+    @Override
+    public ChannelOpenFailureMessageParser getParser(byte[] array, int startPosition) {
+        return new ChannelOpenFailureMessageParser(array, startPosition);
+    }
+
+    @Override
+    public ChannelOpenFailureMessagePreparator getPreparator() {
+        return new ChannelOpenFailureMessagePreparator(context, message);
+    }
+
+    @Override
+    public ChannelOpenFailureMessageSerializer getSerializer() {
+        return new ChannelOpenFailureMessageSerializer(message);
     }
 }

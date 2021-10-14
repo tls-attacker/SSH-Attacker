@@ -8,27 +8,27 @@
 package de.rub.nds.sshattacker.core.protocol.transport.serializer;
 
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
-import de.rub.nds.sshattacker.core.protocol.common.MessageSerializer;
+import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.transport.message.DhGexKeyExchangeOldRequestMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class DhGexKeyExchangeOldRequestMessageSerializer
-        extends MessageSerializer<DhGexKeyExchangeOldRequestMessage> {
+        extends SshMessageSerializer<DhGexKeyExchangeOldRequestMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public DhGexKeyExchangeOldRequestMessageSerializer(DhGexKeyExchangeOldRequestMessage msg) {
-        super(msg);
+    public DhGexKeyExchangeOldRequestMessageSerializer(DhGexKeyExchangeOldRequestMessage message) {
+        super(message);
     }
 
     private void serializePreferredGroupSize() {
-        LOGGER.debug("Preferred group size: " + msg.getPreferredGroupSize().getValue());
-        appendInt(msg.getPreferredGroupSize().getValue(), DataFormatConstants.INT32_SIZE);
+        LOGGER.debug("Preferred group size: " + message.getPreferredGroupSize().getValue());
+        appendInt(message.getPreferredGroupSize().getValue(), DataFormatConstants.INT32_SIZE);
     }
 
     @Override
-    protected void serializeMessageSpecificPayload() {
+    public void serializeMessageSpecificContents() {
         serializePreferredGroupSize();
     }
 }

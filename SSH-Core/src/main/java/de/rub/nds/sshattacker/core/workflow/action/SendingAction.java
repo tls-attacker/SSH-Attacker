@@ -7,13 +7,13 @@
  */
 package de.rub.nds.sshattacker.core.workflow.action;
 
-import de.rub.nds.sshattacker.core.protocol.common.Message;
+import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.message.BinaryPacket;
 import java.util.List;
 
 public interface SendingAction {
 
-    List<Message<?>> getSendMessages();
+    List<ProtocolMessage<?>> getSendMessages();
 
     List<BinaryPacket> getSendBinaryPackets();
 }

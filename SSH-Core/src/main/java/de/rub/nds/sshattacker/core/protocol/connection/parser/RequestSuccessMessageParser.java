@@ -7,13 +7,13 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.parser;
 
-import de.rub.nds.sshattacker.core.protocol.common.MessageParser;
+import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 import de.rub.nds.sshattacker.core.protocol.connection.message.RequestSuccessMessage;
 
-public class RequestSuccessMessageParser extends MessageParser<RequestSuccessMessage> {
+public class RequestSuccessMessageParser extends SshMessageParser<RequestSuccessMessage> {
 
-    public RequestSuccessMessageParser(int startPosition, byte[] array) {
-        super(startPosition, array);
+    public RequestSuccessMessageParser(byte[] array, int startPosition) {
+        super(array, startPosition);
     }
 
     @Override
@@ -22,5 +22,5 @@ public class RequestSuccessMessageParser extends MessageParser<RequestSuccessMes
     }
 
     @Override
-    protected void parseMessageSpecificPayload(RequestSuccessMessage msg) {}
+    protected void parseMessageSpecificContents() {}
 }

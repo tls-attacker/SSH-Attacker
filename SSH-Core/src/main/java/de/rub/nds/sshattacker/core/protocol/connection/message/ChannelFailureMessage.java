@@ -9,8 +9,6 @@ package de.rub.nds.sshattacker.core.protocol.connection.message;
 
 import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
 import de.rub.nds.sshattacker.core.protocol.connection.handler.ChannelFailureMessageHandler;
-import de.rub.nds.sshattacker.core.protocol.connection.preparator.ChannelFailureMessagePreparator;
-import de.rub.nds.sshattacker.core.protocol.connection.serializer.ChannelMessageSerializer;
 import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class ChannelFailureMessage extends ChannelMessage<ChannelFailureMessage> {
@@ -21,16 +19,6 @@ public class ChannelFailureMessage extends ChannelMessage<ChannelFailureMessage>
 
     @Override
     public ChannelFailureMessageHandler getHandler(SshContext context) {
-        return new ChannelFailureMessageHandler(context);
-    }
-
-    @Override
-    public ChannelMessageSerializer<ChannelFailureMessage> getSerializer() {
-        return new ChannelMessageSerializer<>(this);
-    }
-
-    @Override
-    public ChannelFailureMessagePreparator getPreparator(SshContext context) {
-        return new ChannelFailureMessagePreparator(context, this);
+        return new ChannelFailureMessageHandler(context, this);
     }
 }

@@ -9,10 +9,9 @@ package de.rub.nds.sshattacker.core.protocol.connection.message;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
-import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelWindowAdjustMessage;
 import de.rub.nds.sshattacker.core.protocol.connection.parser.ChannelWindowAdjustMessageParser;
-import de.rub.nds.sshattacker.core.protocol.connection.serializer.ChannelWindowAdjustMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.connection.parser.ChannelWindowAdjustMessageParserTest;
+import de.rub.nds.sshattacker.core.protocol.connection.serializer.ChannelWindowAdjustMessageSerializer;
 import java.util.stream.Stream;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -38,7 +37,7 @@ public class CyclicChannelWindowAdjustMessageTest {
     @MethodSource("provideTestVectors")
     public void testCyclic(byte[] providedBytes) {
         ChannelWindowAdjustMessage msg =
-                new ChannelWindowAdjustMessageParser(0, providedBytes).parse();
+                new ChannelWindowAdjustMessageParser(providedBytes, 0).parse();
         assertArrayEquals(providedBytes, new ChannelWindowAdjustMessageSerializer(msg).serialize());
     }
 }

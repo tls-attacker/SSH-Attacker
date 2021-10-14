@@ -8,11 +8,12 @@
 package de.rub.nds.sshattacker.core.protocol.connection.preparator;
 
 import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
-import de.rub.nds.sshattacker.core.protocol.common.Preparator;
+import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelOpenFailureMessage;
 import de.rub.nds.sshattacker.core.state.SshContext;
 
-public class ChannelOpenFailureMessagePreparator extends Preparator<ChannelOpenFailureMessage> {
+public class ChannelOpenFailureMessagePreparator
+        extends SshMessagePreparator<ChannelOpenFailureMessage> {
 
     public ChannelOpenFailureMessagePreparator(
             SshContext context, ChannelOpenFailureMessage message) {
@@ -20,9 +21,8 @@ public class ChannelOpenFailureMessagePreparator extends Preparator<ChannelOpenF
     }
 
     @Override
-    public void prepare() {
-        getObject().setMessageID(MessageIDConstant.SSH_MSG_CHANNEL_FAILURE);
-
+    public void prepareMessageSpecificContents() {
+        getObject().setMessageID(MessageIDConstant.SSH_MSG_CHANNEL_OPEN_FAILURE);
         // TODO dummy values for fuzzing
         getObject().setRecipientChannel(Integer.MAX_VALUE);
         getObject().setReasonCode(Integer.MAX_VALUE);

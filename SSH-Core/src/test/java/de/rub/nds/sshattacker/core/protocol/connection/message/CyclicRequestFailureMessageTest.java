@@ -9,7 +9,6 @@ package de.rub.nds.sshattacker.core.protocol.connection.message;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
-import de.rub.nds.sshattacker.core.protocol.connection.message.RequestFailureMessage;
 import de.rub.nds.sshattacker.core.protocol.connection.parser.RequestFailureMessageParser;
 import de.rub.nds.sshattacker.core.protocol.connection.serializer.RequestFailureMessageSerializer;
 import org.junit.jupiter.api.Test;
@@ -19,7 +18,7 @@ public class CyclicRequestFailureMessageTest {
     @Test
     public void testCyclic() {
         byte[] bytes = new byte[] {82};
-        RequestFailureMessage message = new RequestFailureMessageParser(0, bytes).parse();
+        RequestFailureMessage message = new RequestFailureMessageParser(bytes, 0).parse();
         assertArrayEquals(bytes, new RequestFailureMessageSerializer(message).serialize());
     }
 }

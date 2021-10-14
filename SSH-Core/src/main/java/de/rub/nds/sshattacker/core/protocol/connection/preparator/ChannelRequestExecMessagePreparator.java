@@ -9,12 +9,13 @@ package de.rub.nds.sshattacker.core.protocol.connection.preparator;
 
 import de.rub.nds.sshattacker.core.constants.ChannelRequestType;
 import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
-import de.rub.nds.sshattacker.core.protocol.common.Preparator;
+import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelRequestExecMessage;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import java.util.Optional;
 
-public class ChannelRequestExecMessagePreparator extends Preparator<ChannelRequestExecMessage> {
+public class ChannelRequestExecMessagePreparator
+        extends SshMessagePreparator<ChannelRequestExecMessage> {
 
     public ChannelRequestExecMessagePreparator(
             SshContext context, ChannelRequestExecMessage message) {
@@ -22,7 +23,7 @@ public class ChannelRequestExecMessagePreparator extends Preparator<ChannelReque
     }
 
     @Override
-    public void prepare() {
+    public void prepareMessageSpecificContents() {
         getObject().setMessageID(MessageIDConstant.SSH_MSG_CHANNEL_REQUEST);
         Optional<Integer> remoteChannel = context.getRemoteChannel();
         if (remoteChannel.isPresent()) {

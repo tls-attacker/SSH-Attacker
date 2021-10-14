@@ -14,15 +14,19 @@ import de.rub.nds.sshattacker.core.crypto.hash.ExchangeHash;
 import de.rub.nds.sshattacker.core.crypto.kex.DhKeyExchange;
 import de.rub.nds.sshattacker.core.crypto.kex.KeyExchange;
 import de.rub.nds.sshattacker.core.exceptions.AdjustmentException;
-import de.rub.nds.sshattacker.core.protocol.common.Handler;
+import de.rub.nds.sshattacker.core.protocol.common.*;
 import de.rub.nds.sshattacker.core.protocol.layers.CryptoLayerFactory;
 import de.rub.nds.sshattacker.core.protocol.transport.message.DhGexKeyExchangeReplyMessage;
+import de.rub.nds.sshattacker.core.protocol.transport.parser.DhGexKeyExchangeReplyMessageParser;
+import de.rub.nds.sshattacker.core.protocol.transport.preparator.DhGexKeyExchangeReplyMessagePreparator;
+import de.rub.nds.sshattacker.core.protocol.transport.serializer.DhGexKeyExchangeReplyMessageSerializer;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import java.util.Optional;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class DhGexKeyExchangeReplyMessageHandler extends Handler<DhGexKeyExchangeReplyMessage> {
+public class DhGexKeyExchangeReplyMessageHandler
+        extends SshMessageHandler<DhGexKeyExchangeReplyMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -30,25 +34,30 @@ public class DhGexKeyExchangeReplyMessageHandler extends Handler<DhGexKeyExchang
         super(context);
     }
 
+    public DhGexKeyExchangeReplyMessageHandler(
+            SshContext context, DhGexKeyExchangeReplyMessage message) {
+        super(context, message);
+    }
+
     @Override
-    public void adjustContext(DhGexKeyExchangeReplyMessage message) {
+    public void adjustContext() {
         context.setKeyExchangeSignature(message.getSignature().getValue());
-        handleHostKey(message);
-        updateExchangeHashWithRemotePublicKey(message);
-        computeSharedSecret(message);
+        handleHostKey();
+        updateExchangeHashWithRemotePublicKey();
+        computeSharedSecret();
         updateExchangeHashWithSharedSecret();
         setSessionId();
         KeyDerivation.deriveKeys(context);
         initializeCryptoLayers();
     }
 
-    private void handleHostKey(DhGexKeyExchangeReplyMessage message) {
+    private void handleHostKey() {
         // TODO: Implement host key types as enumeration
         // TODO: Improve host key handling in separate class
         context.getExchangeHashInstance().setServerHostKey(message.getHostKey().getValue());
     }
 
-    private void updateExchangeHashWithRemotePublicKey(DhGexKeyExchangeReplyMessage message) {
+    private void updateExchangeHashWithRemotePublicKey() {
         ExchangeHash exchangeHash = context.getExchangeHashInstance();
         if (exchangeHash instanceof DhGexExchangeHash) {
             ((DhGexExchangeHash) exchangeHash)
@@ -62,7 +71,7 @@ public class DhGexKeyExchangeReplyMessageHandler extends Handler<DhGexKeyExchang
         }
     }
 
-    private void computeSharedSecret(DhGexKeyExchangeReplyMessage message) {
+    private void computeSharedSecret() {
         if (context.getKeyExchangeInstance().isPresent()) {
             KeyExchange keyExchange = context.getKeyExchangeInstance().get();
             if (keyExchange instanceof DhKeyExchange) {
@@ -109,5 +118,20 @@ public class DhGexKeyExchangeReplyMessageHandler extends Handler<DhGexKeyExchang
     private void initializeCryptoLayers() {
         context.setCryptoLayerClientToServer(CryptoLayerFactory.getCryptoLayer(true, context));
         context.setCryptoLayerServerToClient(CryptoLayerFactory.getCryptoLayer(false, context));
+    }
+
+    @Override
+    public DhGexKeyExchangeReplyMessageParser getParser(byte[] array, int startPosition) {
+        return new DhGexKeyExchangeReplyMessageParser(array, startPosition);
+    }
+
+    @Override
+    public DhGexKeyExchangeReplyMessagePreparator getPreparator() {
+        return new DhGexKeyExchangeReplyMessagePreparator(context, message);
+    }
+
+    @Override
+    public DhGexKeyExchangeReplyMessageSerializer getSerializer() {
+        return new DhGexKeyExchangeReplyMessageSerializer(message);
     }
 }

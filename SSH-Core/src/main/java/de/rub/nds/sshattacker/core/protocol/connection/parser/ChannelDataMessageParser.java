@@ -17,8 +17,8 @@ public class ChannelDataMessageParser extends ChannelMessageParser<ChannelDataMe
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public ChannelDataMessageParser(int startPosition, byte[] array) {
-        super(startPosition, array);
+    public ChannelDataMessageParser(byte[] array, int startPosition) {
+        super(array, startPosition);
     }
 
     @Override
@@ -26,16 +26,16 @@ public class ChannelDataMessageParser extends ChannelMessageParser<ChannelDataMe
         return new ChannelDataMessage();
     }
 
-    private void parseData(ChannelDataMessage msg) {
-        msg.setDataLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-        LOGGER.debug("Data length: " + msg.getDataLength().getValue());
-        msg.setData(parseByteArrayField(msg.getDataLength().getValue()), false);
-        LOGGER.debug("Data: " + ArrayConverter.bytesToRawHexString(msg.getData().getValue()));
+    private void parseData() {
+        message.setDataLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
+        LOGGER.debug("Data length: " + message.getDataLength().getValue());
+        message.setData(parseByteArrayField(message.getDataLength().getValue()), false);
+        LOGGER.debug("Data: " + ArrayConverter.bytesToRawHexString(message.getData().getValue()));
     }
 
     @Override
-    protected void parseMessageSpecificPayload(ChannelDataMessage msg) {
-        super.parseMessageSpecificPayload(msg);
-        parseData(msg);
+    protected void parseMessageSpecificContents() {
+        super.parseMessageSpecificContents();
+        parseData();
     }
 }

@@ -7,7 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.protocol.util;
 
-import de.rub.nds.sshattacker.core.protocol.common.Message;
+import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessage;
 import de.rub.nds.sshattacker.core.protocol.layers.BinaryPacketLayer;
 import de.rub.nds.sshattacker.core.protocol.layers.CryptoLayer;
 import de.rub.nds.sshattacker.core.protocol.layers.MessageLayer;
@@ -46,7 +46,7 @@ public class SendMessageHelper {
         transportHandler.sendData(data);
     }
 
-    public MessageActionResult sendMessage(Message<?> msg, SshContext context) {
+    public MessageActionResult sendMessage(ProtocolMessage<?> msg, SshContext context) {
         MessageLayer messageLayer = context.getMessageLayer();
 
         try {
@@ -68,9 +68,9 @@ public class SendMessageHelper {
         }
     }
 
-    public MessageActionResult sendMessages(List<Message<?>> list, SshContext context) {
+    public MessageActionResult sendMessages(List<ProtocolMessage<?>> list, SshContext context) {
         MessageActionResult result = new MessageActionResult();
-        for (Message<?> msg : list) {
+        for (ProtocolMessage<?> msg : list) {
             if (msg instanceof VersionExchangeMessage) {
                 result =
                         result.merge(
@@ -86,7 +86,9 @@ public class SendMessageHelper {
 
     // TODO dummy
     public MessageActionResult sendMessages(
-            List<Message<?>> messageList, List<BinaryPacket> binaryPackets, SshContext context) {
+            List<ProtocolMessage<?>> messageList,
+            List<BinaryPacket> binaryPackets,
+            SshContext context) {
         return sendMessages(messageList, context);
     }
 
@@ -94,7 +96,7 @@ public class SendMessageHelper {
             VersionExchangeMessage msg, SshContext context) {
         TransportHandler transport = context.getTransportHandler();
         try {
-            transport.sendData(msg.getSerializer().serialize());
+            transport.sendData(msg.getHandler(context).getSerializer().serialize());
         } catch (IOException e) {
             LOGGER.debug("Error while sending VersionExchangeMessage to remote: " + e.getMessage());
         }

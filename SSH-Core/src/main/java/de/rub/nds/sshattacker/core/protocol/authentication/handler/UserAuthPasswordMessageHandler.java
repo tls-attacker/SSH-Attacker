@@ -7,18 +7,40 @@
  */
 package de.rub.nds.sshattacker.core.protocol.authentication.handler;
 
+import de.rub.nds.sshattacker.core.exceptions.NotImplementedException;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthPasswordMessage;
-import de.rub.nds.sshattacker.core.protocol.common.Handler;
+import de.rub.nds.sshattacker.core.protocol.authentication.preparator.UserAuthPasswordMessagePreparator;
+import de.rub.nds.sshattacker.core.protocol.authentication.serializer.UserAuthPasswordMessageSerializer;
+import de.rub.nds.sshattacker.core.protocol.common.*;
 import de.rub.nds.sshattacker.core.state.SshContext;
 
-public class UserAuthPasswordMessageHandler extends Handler<UserAuthPasswordMessage> {
+public class UserAuthPasswordMessageHandler extends SshMessageHandler<UserAuthPasswordMessage> {
 
     public UserAuthPasswordMessageHandler(SshContext context) {
         super(context);
     }
 
+    public UserAuthPasswordMessageHandler(SshContext context, UserAuthPasswordMessage message) {
+        super(context, message);
+    }
+
     @Override
-    public void adjustContext(UserAuthPasswordMessage message) {
+    public void adjustContext() {
         // TODO: Handle UserAuthPasswordMessage
+    }
+
+    @Override
+    public SshMessageParser<UserAuthPasswordMessage> getParser(byte[] array, int startPosition) {
+        throw new NotImplementedException("UserAuthPasswordMessageHandler::getParser");
+    }
+
+    @Override
+    public UserAuthPasswordMessagePreparator getPreparator() {
+        return new UserAuthPasswordMessagePreparator(context, message);
+    }
+
+    @Override
+    public UserAuthPasswordMessageSerializer getSerializer() {
+        return new UserAuthPasswordMessageSerializer(message);
     }
 }

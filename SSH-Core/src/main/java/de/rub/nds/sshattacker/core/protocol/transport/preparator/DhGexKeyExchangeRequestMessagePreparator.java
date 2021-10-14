@@ -10,14 +10,14 @@ package de.rub.nds.sshattacker.core.protocol.transport.preparator;
 import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
 import de.rub.nds.sshattacker.core.crypto.hash.DhGexExchangeHash;
 import de.rub.nds.sshattacker.core.crypto.kex.DhKeyExchange;
-import de.rub.nds.sshattacker.core.protocol.common.Preparator;
+import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.transport.message.DhGexKeyExchangeRequestMessage;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class DhGexKeyExchangeRequestMessagePreparator
-        extends Preparator<DhGexKeyExchangeRequestMessage> {
+        extends SshMessagePreparator<DhGexKeyExchangeRequestMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -27,7 +27,8 @@ public class DhGexKeyExchangeRequestMessagePreparator
     }
 
     @Override
-    public void prepare() {
+    public void prepareMessageSpecificContents() {
+        getObject().setMessageID(MessageIDConstant.SSH_MSG_KEX_DH_GEX_REQUEST);
         if (context.getKeyExchangeAlgorithm().isPresent()) {
             DhKeyExchange keyExchange =
                     DhKeyExchange.newInstance(context.getKeyExchangeAlgorithm().get());
@@ -44,7 +45,6 @@ public class DhGexKeyExchangeRequestMessagePreparator
         dhGexExchangeHash.setMaximalGroupSize(context.getChooser().getMaximalDHGroupSize());
         context.setExchangeHashInstance(dhGexExchangeHash);
 
-        getObject().setMessageID(MessageIDConstant.SSH_MSG_KEX_DH_GEX_REQUEST);
         getObject().setMinimalGroupSize(context.getChooser().getMinimalDHGroupSize());
         getObject().setPreferredGroupSize(context.getChooser().getPreferredDHGroupSize());
         getObject().setMaximalGroupSize(context.getChooser().getMaximalDHGroupSize());

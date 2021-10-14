@@ -9,12 +9,12 @@ package de.rub.nds.sshattacker.core.protocol.transport.preparator;
 
 import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
 import de.rub.nds.sshattacker.core.constants.NamedDHGroup;
-import de.rub.nds.sshattacker.core.protocol.common.Preparator;
+import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.transport.message.DhGexKeyExchangeGroupMessage;
 import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class DhGexKeyExchangeGroupMessagePreparator
-        extends Preparator<DhGexKeyExchangeGroupMessage> {
+        extends SshMessagePreparator<DhGexKeyExchangeGroupMessage> {
 
     public DhGexKeyExchangeGroupMessagePreparator(
             SshContext context, DhGexKeyExchangeGroupMessage message) {
@@ -22,11 +22,11 @@ public class DhGexKeyExchangeGroupMessagePreparator
     }
 
     @Override
-    public void prepare() {
-        message.setMessageID(MessageIDConstant.SSH_MSG_KEX_DH_GEX_GROUP);
+    public void prepareMessageSpecificContents() {
+        getObject().setMessageID(MessageIDConstant.SSH_MSG_KEX_DH_GEX_GROUP);
 
         // TODO: Pay respect to clients' request
-        message.setGroupGenerator(NamedDHGroup.GROUP14.getGenerator(), true);
-        message.setGroupModulus(NamedDHGroup.GROUP14.getModulus(), true);
+        getObject().setGroupGenerator(NamedDHGroup.GROUP14.getGenerator(), true);
+        getObject().setGroupModulus(NamedDHGroup.GROUP14.getModulus(), true);
     }
 }

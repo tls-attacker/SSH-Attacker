@@ -17,8 +17,8 @@ public class ChannelOpenConfirmationMessageParser
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public ChannelOpenConfirmationMessageParser(int startPosition, byte[] array) {
-        super(startPosition, array);
+    public ChannelOpenConfirmationMessageParser(byte[] array, int startPosition) {
+        super(array, startPosition);
     }
 
     @Override
@@ -26,26 +26,26 @@ public class ChannelOpenConfirmationMessageParser
         return new ChannelOpenConfirmationMessage();
     }
 
-    private void parseSenderChannel(ChannelOpenConfirmationMessage msg) {
-        msg.setSenderChannel(parseIntField(DataFormatConstants.INT32_SIZE));
-        LOGGER.debug("Sender channel: " + msg.getSenderChannel().getValue());
+    private void parseSenderChannel() {
+        message.setSenderChannel(parseIntField(DataFormatConstants.INT32_SIZE));
+        LOGGER.debug("Sender channel: " + message.getSenderChannel().getValue());
     }
 
-    private void parseWindowSize(ChannelOpenConfirmationMessage msg) {
-        msg.setWindowSize(parseIntField(DataFormatConstants.INT32_SIZE));
-        LOGGER.debug("Initial window size: " + msg.getWindowSize().getValue());
+    private void parseWindowSize() {
+        message.setWindowSize(parseIntField(DataFormatConstants.INT32_SIZE));
+        LOGGER.debug("Initial window size: " + message.getWindowSize().getValue());
     }
 
-    private void parsePacketSize(ChannelOpenConfirmationMessage msg) {
-        msg.setPacketSize(parseIntField(DataFormatConstants.INT32_SIZE));
-        LOGGER.debug("Maximum packet size: " + msg.getPacketSize().getValue());
+    private void parsePacketSize() {
+        message.setPacketSize(parseIntField(DataFormatConstants.INT32_SIZE));
+        LOGGER.debug("Maximum packet size: " + message.getPacketSize().getValue());
     }
 
     @Override
-    protected void parseMessageSpecificPayload(ChannelOpenConfirmationMessage msg) {
-        super.parseMessageSpecificPayload(msg);
-        parseSenderChannel(msg);
-        parseWindowSize(msg);
-        parsePacketSize(msg);
+    protected void parseMessageSpecificContents() {
+        super.parseMessageSpecificContents();
+        parseSenderChannel();
+        parseWindowSize();
+        parsePacketSize();
     }
 }

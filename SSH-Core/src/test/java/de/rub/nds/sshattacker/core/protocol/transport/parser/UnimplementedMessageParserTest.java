@@ -12,7 +12,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
 import de.rub.nds.sshattacker.core.protocol.transport.message.UnimplementedMessage;
-import de.rub.nds.sshattacker.core.protocol.transport.parser.UnimplementedMessageParser;
 import java.util.stream.Stream;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -42,7 +41,7 @@ public class UnimplementedMessageParserTest {
     @ParameterizedTest
     @MethodSource("provideTestVectors")
     public void testParse(byte[] providedBytes, int expectedSequenceNumber) {
-        UnimplementedMessageParser parser = new UnimplementedMessageParser(0, providedBytes);
+        UnimplementedMessageParser parser = new UnimplementedMessageParser(providedBytes, 0);
         UnimplementedMessage msg = parser.parse();
 
         assertEquals(MessageIDConstant.SSH_MSG_UNIMPLEMENTED.id, msg.getMessageID().getValue());

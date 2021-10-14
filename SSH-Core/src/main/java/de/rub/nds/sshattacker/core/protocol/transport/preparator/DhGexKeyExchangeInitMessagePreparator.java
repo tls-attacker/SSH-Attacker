@@ -13,7 +13,7 @@ import de.rub.nds.sshattacker.core.crypto.hash.DhGexOldExchangeHash;
 import de.rub.nds.sshattacker.core.crypto.hash.ExchangeHash;
 import de.rub.nds.sshattacker.core.crypto.kex.DhKeyExchange;
 import de.rub.nds.sshattacker.core.crypto.kex.KeyExchange;
-import de.rub.nds.sshattacker.core.protocol.common.Preparator;
+import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.transport.message.DhGexKeyExchangeInitMessage;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import java.math.BigInteger;
@@ -22,7 +22,8 @@ import java.util.Random;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class DhGexKeyExchangeInitMessagePreparator extends Preparator<DhGexKeyExchangeInitMessage> {
+public class DhGexKeyExchangeInitMessagePreparator
+        extends SshMessagePreparator<DhGexKeyExchangeInitMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -32,9 +33,8 @@ public class DhGexKeyExchangeInitMessagePreparator extends Preparator<DhGexKeyEx
     }
 
     @Override
-    public void prepare() {
+    public void prepareMessageSpecificContents() {
         getObject().setMessageID(MessageIDConstant.SSH_MSG_KEX_DH_GEX_INIT);
-
         Optional<KeyExchange> keyExchange = context.getKeyExchangeInstance();
         if (keyExchange.isPresent()
                 && keyExchange.get() instanceof DhKeyExchange

@@ -11,13 +11,11 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
-import de.rub.nds.sshattacker.core.protocol.common.Message;
+import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.EcdhKeyExchangeReplyMessageHandler;
-import de.rub.nds.sshattacker.core.protocol.transport.preparator.EcdhKeyExchangeReplyMessagePreparator;
-import de.rub.nds.sshattacker.core.protocol.transport.serializer.EcdhKeyExchangeReplyMessageSerializer;
 import de.rub.nds.sshattacker.core.state.SshContext;
 
-public class EcdhKeyExchangeReplyMessage extends Message<EcdhKeyExchangeReplyMessage> {
+public class EcdhKeyExchangeReplyMessage extends SshMessage<EcdhKeyExchangeReplyMessage> {
 
     private ModifiableInteger hostKeyLength;
     private ModifiableByteArray hostKey;
@@ -157,16 +155,6 @@ public class EcdhKeyExchangeReplyMessage extends Message<EcdhKeyExchangeReplyMes
 
     @Override
     public EcdhKeyExchangeReplyMessageHandler getHandler(SshContext context) {
-        return new EcdhKeyExchangeReplyMessageHandler(context);
-    }
-
-    @Override
-    public EcdhKeyExchangeReplyMessageSerializer getSerializer() {
-        return new EcdhKeyExchangeReplyMessageSerializer(this);
-    }
-
-    @Override
-    public EcdhKeyExchangeReplyMessagePreparator getPreparator(SshContext context) {
-        return new EcdhKeyExchangeReplyMessagePreparator(context, this);
+        return new EcdhKeyExchangeReplyMessageHandler(context, this);
     }
 }

@@ -18,20 +18,20 @@ public class ChannelRequestExecMessageSerializer
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public ChannelRequestExecMessageSerializer(ChannelRequestExecMessage msg) {
-        super(msg);
+    public ChannelRequestExecMessageSerializer(ChannelRequestExecMessage message) {
+        super(message);
     }
 
     private void serializeCommand() {
-        LOGGER.debug("Command length: " + msg.getCommandLength().getValue());
-        appendInt(msg.getCommandLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
-        LOGGER.debug("Command: " + msg.getCommand().getValue());
-        appendString(msg.getCommand().getValue(), StandardCharsets.UTF_8);
+        LOGGER.debug("Command length: " + message.getCommandLength().getValue());
+        appendInt(message.getCommandLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
+        LOGGER.debug("Command: " + message.getCommand().getValue());
+        appendString(message.getCommand().getValue(), StandardCharsets.UTF_8);
     }
 
     @Override
-    protected void serializeMessageSpecificPayload() {
-        super.serializeMessageSpecificPayload();
+    public void serializeMessageSpecificContents() {
+        super.serializeMessageSpecificContents();
         serializeCommand();
     }
 }

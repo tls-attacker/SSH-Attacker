@@ -9,9 +9,8 @@ package de.rub.nds.sshattacker.core.protocol.transport.message;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
-import de.rub.nds.sshattacker.core.protocol.transport.parser.DebugMessageParserTest;
-import de.rub.nds.sshattacker.core.protocol.transport.message.DebugMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.parser.DebugMessageParser;
+import de.rub.nds.sshattacker.core.protocol.transport.parser.DebugMessageParserTest;
 import de.rub.nds.sshattacker.core.protocol.transport.serializer.DebugMessageSerializer;
 import java.util.stream.Stream;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -37,7 +36,7 @@ public class CyclicDebugMessageTest {
     @ParameterizedTest
     @MethodSource("provideTestVectors")
     public void testCyclic(byte[] providedBytes) {
-        DebugMessage msg = new DebugMessageParser(0, providedBytes).parse();
+        DebugMessage msg = new DebugMessageParser(providedBytes, 0).parse();
         assertArrayEquals(providedBytes, new DebugMessageSerializer(msg).serialize());
     }
 }

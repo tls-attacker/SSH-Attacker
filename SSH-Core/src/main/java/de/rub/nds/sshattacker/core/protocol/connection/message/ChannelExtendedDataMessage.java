@@ -13,8 +13,6 @@ import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.sshattacker.core.constants.ExtendedChannelDataType;
 import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
 import de.rub.nds.sshattacker.core.protocol.connection.handler.ChannelExtendedDataMessageHandler;
-import de.rub.nds.sshattacker.core.protocol.connection.preparator.ChannelExtendedDataMessagePreparator;
-import de.rub.nds.sshattacker.core.protocol.connection.serializer.ChannelExtendedDataMessageSerializer;
 import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class ChannelExtendedDataMessage extends ChannelMessage<ChannelExtendedDataMessage> {
@@ -84,16 +82,6 @@ public class ChannelExtendedDataMessage extends ChannelMessage<ChannelExtendedDa
 
     @Override
     public ChannelExtendedDataMessageHandler getHandler(SshContext context) {
-        return new ChannelExtendedDataMessageHandler(context);
-    }
-
-    @Override
-    public ChannelExtendedDataMessageSerializer getSerializer() {
-        return new ChannelExtendedDataMessageSerializer(this);
-    }
-
-    @Override
-    public ChannelExtendedDataMessagePreparator getPreparator(SshContext context) {
-        return new ChannelExtendedDataMessagePreparator(context, this);
+        return new ChannelExtendedDataMessageHandler(context, this);
     }
 }

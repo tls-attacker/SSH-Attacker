@@ -13,12 +13,13 @@ import de.rub.nds.sshattacker.core.crypto.hash.EcdhExchangeHash;
 import de.rub.nds.sshattacker.core.crypto.kex.DhBasedKeyExchange;
 import de.rub.nds.sshattacker.core.crypto.kex.EcdhKeyExchange;
 import de.rub.nds.sshattacker.core.crypto.kex.XCurveEcdhKeyExchange;
-import de.rub.nds.sshattacker.core.protocol.common.Preparator;
+import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.transport.message.EcdhKeyExchangeInitMessage;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import java.util.Optional;
 
-public class EcdhKeyExchangeInitMessagePreparator extends Preparator<EcdhKeyExchangeInitMessage> {
+public class EcdhKeyExchangeInitMessagePreparator
+        extends SshMessagePreparator<EcdhKeyExchangeInitMessage> {
 
     public EcdhKeyExchangeInitMessagePreparator(
             SshContext context, EcdhKeyExchangeInitMessage message) {
@@ -26,7 +27,8 @@ public class EcdhKeyExchangeInitMessagePreparator extends Preparator<EcdhKeyExch
     }
 
     @Override
-    public void prepare() {
+    public void prepareMessageSpecificContents() {
+        getObject().setMessageID(MessageIDConstant.SSH_MSG_KEX_ECDH_INIT);
         Optional<KeyExchangeAlgorithm> keyExchangeAlgorithm = context.getKeyExchangeAlgorithm();
         DhBasedKeyExchange keyExchange;
         if (keyExchangeAlgorithm.isPresent()) {
@@ -53,7 +55,6 @@ public class EcdhKeyExchangeInitMessagePreparator extends Preparator<EcdhKeyExch
         context.setExchangeHashInstance(ecdhExchangeHash);
 
         byte[] encodedPublicKey = keyExchange.getLocalKeyPair().getPublic().getEncoded();
-        getObject().setMessageID(MessageIDConstant.SSH_MSG_KEX_ECDH_INIT);
         getObject().setPublicKey(encodedPublicKey, true);
     }
 }

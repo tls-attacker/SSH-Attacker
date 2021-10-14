@@ -12,14 +12,12 @@ import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
 import de.rub.nds.sshattacker.core.constants.ServiceType;
-import de.rub.nds.sshattacker.core.protocol.common.Message;
+import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.ServiceAcceptMessageHandler;
-import de.rub.nds.sshattacker.core.protocol.transport.preparator.ServiceAcceptMessagePreparator;
-import de.rub.nds.sshattacker.core.protocol.transport.serializer.ServiceAcceptMessageSerializer;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import java.nio.charset.StandardCharsets;
 
-public class ServiceAcceptMessage extends Message<ServiceAcceptMessage> {
+public class ServiceAcceptMessage extends SshMessage<ServiceAcceptMessage> {
 
     private ModifiableInteger serviceNameLength;
     private ModifiableString serviceName;
@@ -77,16 +75,6 @@ public class ServiceAcceptMessage extends Message<ServiceAcceptMessage> {
 
     @Override
     public ServiceAcceptMessageHandler getHandler(SshContext context) {
-        return new ServiceAcceptMessageHandler(context);
-    }
-
-    @Override
-    public ServiceAcceptMessageSerializer getSerializer() {
-        return new ServiceAcceptMessageSerializer(this);
-    }
-
-    @Override
-    public ServiceAcceptMessagePreparator getPreparator(SshContext context) {
-        return new ServiceAcceptMessagePreparator(context, this);
+        return new ServiceAcceptMessageHandler(context, this);
     }
 }

@@ -36,14 +36,14 @@ public abstract class Parser<T> {
     /**
      * Constructor for the Parser
      *
-     * @param startposition Position in the array from which the Parser should start working
+     * @param startPosition Position in the array from which the Parser should start working
      * @param array Array that should be parsed
      */
-    public Parser(int startposition, byte[] array) {
-        this.startPoint = startposition;
-        this.pointer = startposition;
+    public Parser(byte[] array, int startPosition) {
+        this.startPoint = startPosition;
+        this.pointer = startPosition;
         this.array = array;
-        if (startposition > array.length) {
+        if (startPosition > array.length) {
             throw new ParserException(
                     "Cannot creater parser beyond pointer. Pointer:"
                             + pointer

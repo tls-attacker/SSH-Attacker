@@ -9,9 +9,8 @@ package de.rub.nds.sshattacker.core.protocol.transport.message;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
-import de.rub.nds.sshattacker.core.protocol.transport.parser.IgnoreMessageParserTest;
-import de.rub.nds.sshattacker.core.protocol.transport.message.IgnoreMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.parser.IgnoreMessageParser;
+import de.rub.nds.sshattacker.core.protocol.transport.parser.IgnoreMessageParserTest;
 import de.rub.nds.sshattacker.core.protocol.transport.serializer.IgnoreMessageSerializer;
 import java.util.stream.Stream;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -37,7 +36,7 @@ public class CyclicIgnoreMessageTest {
     @ParameterizedTest
     @MethodSource("provideTestVectors")
     public void testCyclic(byte[] providedBytes) {
-        IgnoreMessage msg = new IgnoreMessageParser(0, providedBytes).parse();
+        IgnoreMessage msg = new IgnoreMessageParser(providedBytes, 0).parse();
         assertArrayEquals(providedBytes, new IgnoreMessageSerializer(msg).serialize());
     }
 }

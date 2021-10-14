@@ -10,8 +10,8 @@ package de.rub.nds.sshattacker.core.workflow.action;
 import de.rub.nds.modifiablevariable.ModifiableVariable;
 import de.rub.nds.sshattacker.core.connection.AliasedConnection;
 import de.rub.nds.sshattacker.core.exceptions.WorkflowExecutionException;
-import de.rub.nds.sshattacker.core.protocol.common.Message;
 import de.rub.nds.sshattacker.core.protocol.common.ModifiableVariableHolder;
+import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.message.BinaryPacket;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.state.State;
@@ -33,15 +33,15 @@ public class SendAction extends MessageAction implements SendingAction {
         super();
     }
 
-    public SendAction(List<Message<?>> messages) {
+    public SendAction(List<ProtocolMessage<?>> messages) {
         super(AliasedConnection.DEFAULT_CONNECTION_ALIAS, messages);
     }
 
-    public SendAction(Message<?>... messages) {
+    public SendAction(ProtocolMessage<?>... messages) {
         this(AliasedConnection.DEFAULT_CONNECTION_ALIAS, new ArrayList<>(Arrays.asList(messages)));
     }
 
-    public SendAction(Message<?> message) {
+    public SendAction(ProtocolMessage<?> message) {
         this(AliasedConnection.DEFAULT_CONNECTION_ALIAS, message);
     }
 
@@ -49,11 +49,11 @@ public class SendAction extends MessageAction implements SendingAction {
         super(connectionAlias);
     }
 
-    public SendAction(String connectionAlias, List<Message<?>> messages) {
+    public SendAction(String connectionAlias, List<ProtocolMessage<?>> messages) {
         super(connectionAlias, messages);
     }
 
-    public SendAction(String connectionAlias, Message<?>... messages) {
+    public SendAction(String connectionAlias, ProtocolMessage<?>... messages) {
         super(connectionAlias, new ArrayList<>(Arrays.asList(messages)));
     }
 
@@ -73,9 +73,9 @@ public class SendAction extends MessageAction implements SendingAction {
         }
 
         // TODO is this a copy?
-        List<Message<?>> preparedMessages = new LinkedList<>();
-        for (Message<?> m : messages) {
-            m.getPreparator(sshContext).prepare();
+        List<ProtocolMessage<?>> preparedMessages = new LinkedList<>();
+        for (ProtocolMessage<?> m : messages) {
+            m.getHandler(state.getSshContext()).getPreparator().prepare();
             preparedMessages.add(m);
         }
 
@@ -96,7 +96,7 @@ public class SendAction extends MessageAction implements SendingAction {
         }
         sb.append("\tMessages:");
         if (messages != null) {
-            for (Message<?> message : messages) {
+            for (ProtocolMessage<?> message : messages) {
                 sb.append(message.toCompactString());
                 sb.append(", ");
             }
@@ -112,7 +112,7 @@ public class SendAction extends MessageAction implements SendingAction {
         StringBuilder sb = new StringBuilder(super.toCompactString());
         if ((messages != null) && (!messages.isEmpty())) {
             sb.append(" (");
-            for (Message<?> message : messages) {
+            for (ProtocolMessage<?> message : messages) {
                 sb.append(message.toCompactString());
                 sb.append(",");
             }
@@ -137,7 +137,7 @@ public class SendAction extends MessageAction implements SendingAction {
     public void reset() {
         List<ModifiableVariableHolder> holders = new LinkedList<>();
         if (messages != null) {
-            for (Message<?> message : messages) {
+            for (ProtocolMessage<?> message : messages) {
                 holders.addAll(message.getAllModifiableVariableHolders());
             }
         }
@@ -175,7 +175,7 @@ public class SendAction extends MessageAction implements SendingAction {
     }
 
     @Override
-    public List<Message<?>> getSendMessages() {
+    public List<ProtocolMessage<?>> getSendMessages() {
         return messages;
     }
 

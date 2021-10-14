@@ -8,21 +8,28 @@
 package de.rub.nds.sshattacker.core.protocol.transport.handler;
 
 import de.rub.nds.sshattacker.core.constants.*;
-import de.rub.nds.sshattacker.core.protocol.common.Handler;
+import de.rub.nds.sshattacker.core.protocol.common.*;
 import de.rub.nds.sshattacker.core.protocol.transport.message.KeyExchangeInitMessage;
+import de.rub.nds.sshattacker.core.protocol.transport.parser.KeyExchangeInitMessageParser;
+import de.rub.nds.sshattacker.core.protocol.transport.preparator.KeyExchangeInitMessagePreparator;
+import de.rub.nds.sshattacker.core.protocol.transport.serializer.KeyExchangeInitMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.util.AlgorithmPicker;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.util.Converter;
 import java.util.Arrays;
 
-public class KeyExchangeInitMessageHandler extends Handler<KeyExchangeInitMessage> {
+public class KeyExchangeInitMessageHandler extends SshMessageHandler<KeyExchangeInitMessage> {
 
     public KeyExchangeInitMessageHandler(SshContext context) {
         super(context);
     }
 
+    public KeyExchangeInitMessageHandler(SshContext context, KeyExchangeInitMessage message) {
+        super(context, message);
+    }
+
     @Override
-    public void adjustContext(KeyExchangeInitMessage message) {
+    public void adjustContext() {
         if (context.isClient()) {
             context.setServerCookie(message.getCookie().getValue());
             context.setServerSupportedKeyExchangeAlgorithms(
@@ -186,5 +193,20 @@ public class KeyExchangeInitMessageHandler extends Handler<KeyExchangeInitMessag
                                             .getServerSupportedCompressionAlgorithmsServerToClient())
                             .orElse(null));
         }
+    }
+
+    @Override
+    public KeyExchangeInitMessageParser getParser(byte[] array, int startPosition) {
+        return new KeyExchangeInitMessageParser(array, startPosition);
+    }
+
+    @Override
+    public KeyExchangeInitMessagePreparator getPreparator() {
+        return new KeyExchangeInitMessagePreparator(context, message);
+    }
+
+    @Override
+    public KeyExchangeInitMessageSerializer getSerializer() {
+        return new KeyExchangeInitMessageSerializer(message);
     }
 }

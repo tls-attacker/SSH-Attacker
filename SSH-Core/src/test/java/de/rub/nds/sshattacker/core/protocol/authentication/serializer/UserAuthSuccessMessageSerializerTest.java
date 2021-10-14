@@ -10,7 +10,6 @@ package de.rub.nds.sshattacker.core.protocol.authentication.serializer;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthSuccessMessage;
-import de.rub.nds.sshattacker.core.protocol.authentication.serializer.UserAuthSuccessMessageSerializer;
 import org.junit.jupiter.api.Test;
 
 public class UserAuthSuccessMessageSerializerTest {

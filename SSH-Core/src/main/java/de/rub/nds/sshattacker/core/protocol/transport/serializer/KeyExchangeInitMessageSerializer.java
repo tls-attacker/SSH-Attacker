@@ -8,166 +8,175 @@
 package de.rub.nds.sshattacker.core.protocol.transport.serializer;
 
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
-import de.rub.nds.sshattacker.core.protocol.common.MessageSerializer;
+import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.transport.message.KeyExchangeInitMessage;
 import de.rub.nds.sshattacker.core.util.Converter;
 import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class KeyExchangeInitMessageSerializer extends MessageSerializer<KeyExchangeInitMessage> {
+public class KeyExchangeInitMessageSerializer extends SshMessageSerializer<KeyExchangeInitMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public KeyExchangeInitMessageSerializer(KeyExchangeInitMessage msg) {
-        super(msg);
+    public KeyExchangeInitMessageSerializer(KeyExchangeInitMessage message) {
+        super(message);
     }
 
     private void serializeCookie() {
-        LOGGER.debug("Cookie: " + msg.getCookie());
-        appendBytes(msg.getCookie().getValue());
+        LOGGER.debug("Cookie: " + message.getCookie());
+        appendBytes(message.getCookie().getValue());
     }
 
     private void serializeKeyExchangeAlgorithms() {
-        LOGGER.debug("Key exchange algorithms: " + msg.getKeyExchangeAlgorithmsLength().getValue());
+        LOGGER.debug(
+                "Key exchange algorithms: " + message.getKeyExchangeAlgorithmsLength().getValue());
         appendInt(
-                msg.getKeyExchangeAlgorithmsLength().getValue(),
+                message.getKeyExchangeAlgorithmsLength().getValue(),
                 DataFormatConstants.STRING_SIZE_LENGTH);
-        LOGGER.debug("Key exchange algorithms: " + msg.getKeyExchangeAlgorithms().getValue());
-        appendString(msg.getKeyExchangeAlgorithms().getValue(), StandardCharsets.US_ASCII);
+        LOGGER.debug("Key exchange algorithms: " + message.getKeyExchangeAlgorithms().getValue());
+        appendString(message.getKeyExchangeAlgorithms().getValue(), StandardCharsets.US_ASCII);
     }
 
     private void serializeServerHostKeyAlgorithms() {
         LOGGER.debug(
-                "Server host key algorithms: " + msg.getServerHostKeyAlgorithmsLength().getValue());
+                "Server host key algorithms: "
+                        + message.getServerHostKeyAlgorithmsLength().getValue());
         appendInt(
-                msg.getServerHostKeyAlgorithmsLength().getValue(),
+                message.getServerHostKeyAlgorithmsLength().getValue(),
                 DataFormatConstants.STRING_SIZE_LENGTH);
-        LOGGER.debug("Server host key algorithms: " + msg.getServerHostKeyAlgorithms().getValue());
-        appendString(msg.getServerHostKeyAlgorithms().getValue(), StandardCharsets.US_ASCII);
+        LOGGER.debug(
+                "Server host key algorithms: " + message.getServerHostKeyAlgorithms().getValue());
+        appendString(message.getServerHostKeyAlgorithms().getValue(), StandardCharsets.US_ASCII);
     }
 
     private void serializeEncryptionAlgorithmsClientToServer() {
         LOGGER.debug(
                 "Encryption algorithms length (client to server): "
-                        + msg.getEncryptionAlgorithmsClientToServerLength().getValue());
+                        + message.getEncryptionAlgorithmsClientToServerLength().getValue());
         appendInt(
-                msg.getEncryptionAlgorithmsClientToServerLength().getValue(),
+                message.getEncryptionAlgorithmsClientToServerLength().getValue(),
                 DataFormatConstants.STRING_SIZE_LENGTH);
         LOGGER.debug(
                 "Encryption algorithms (client to server): "
-                        + msg.getEncryptionAlgorithmsClientToServer().getValue());
+                        + message.getEncryptionAlgorithmsClientToServer().getValue());
         appendString(
-                msg.getEncryptionAlgorithmsClientToServer().getValue(), StandardCharsets.US_ASCII);
+                message.getEncryptionAlgorithmsClientToServer().getValue(),
+                StandardCharsets.US_ASCII);
     }
 
     private void serializeEncryptionAlgorithmsServerToClient() {
         LOGGER.debug(
                 "Encryption algorithms length (server to client): "
-                        + msg.getEncryptionAlgorithmsServerToClientLength().getValue());
+                        + message.getEncryptionAlgorithmsServerToClientLength().getValue());
         appendInt(
-                msg.getEncryptionAlgorithmsServerToClientLength().getValue(),
+                message.getEncryptionAlgorithmsServerToClientLength().getValue(),
                 DataFormatConstants.STRING_SIZE_LENGTH);
         LOGGER.debug(
                 "Encryption algorithms (server to client): "
-                        + msg.getEncryptionAlgorithmsServerToClient().getValue());
+                        + message.getEncryptionAlgorithmsServerToClient().getValue());
         appendString(
-                msg.getEncryptionAlgorithmsServerToClient().getValue(), StandardCharsets.US_ASCII);
+                message.getEncryptionAlgorithmsServerToClient().getValue(),
+                StandardCharsets.US_ASCII);
     }
 
     private void serializeMacAlgorithmsClientToServer() {
         LOGGER.debug(
                 "MAC algorithms length (client to server): "
-                        + msg.getMacAlgorithmsClientToServerLength().getValue());
+                        + message.getMacAlgorithmsClientToServerLength().getValue());
         appendInt(
-                msg.getMacAlgorithmsClientToServerLength().getValue(),
+                message.getMacAlgorithmsClientToServerLength().getValue(),
                 DataFormatConstants.STRING_SIZE_LENGTH);
         LOGGER.debug(
                 "MAC algorithms (client to server): "
-                        + msg.getMacAlgorithmsClientToServer().getValue());
-        appendString(msg.getMacAlgorithmsClientToServer().getValue(), StandardCharsets.US_ASCII);
+                        + message.getMacAlgorithmsClientToServer().getValue());
+        appendString(
+                message.getMacAlgorithmsClientToServer().getValue(), StandardCharsets.US_ASCII);
     }
 
     private void serializeMacAlgorithmsServerToClient() {
         LOGGER.debug(
                 "MAC algorithms length (server to client): "
-                        + msg.getMacAlgorithmsServerToClientLength().getValue());
+                        + message.getMacAlgorithmsServerToClientLength().getValue());
         appendInt(
-                msg.getMacAlgorithmsServerToClientLength().getValue(),
+                message.getMacAlgorithmsServerToClientLength().getValue(),
                 DataFormatConstants.STRING_SIZE_LENGTH);
         LOGGER.debug(
                 "MAC algorithms (server to client): "
-                        + msg.getMacAlgorithmsServerToClient().getValue());
-        appendString(msg.getMacAlgorithmsServerToClient().getValue(), StandardCharsets.US_ASCII);
+                        + message.getMacAlgorithmsServerToClient().getValue());
+        appendString(
+                message.getMacAlgorithmsServerToClient().getValue(), StandardCharsets.US_ASCII);
     }
 
     private void serializeCompressionAlgorithmsClientToServer() {
         LOGGER.debug(
                 "Compression algorithms length (client to server): "
-                        + msg.getCompressionAlgorithmsClientToServerLength().getValue());
+                        + message.getCompressionAlgorithmsClientToServerLength().getValue());
         appendInt(
-                msg.getCompressionAlgorithmsClientToServerLength().getValue(),
+                message.getCompressionAlgorithmsClientToServerLength().getValue(),
                 DataFormatConstants.STRING_SIZE_LENGTH);
         LOGGER.debug(
                 "Compression algorithms (client to server): "
-                        + msg.getCompressionAlgorithmsClientToServer().getValue());
+                        + message.getCompressionAlgorithmsClientToServer().getValue());
         appendString(
-                msg.getCompressionAlgorithmsClientToServer().getValue(), StandardCharsets.US_ASCII);
+                message.getCompressionAlgorithmsClientToServer().getValue(),
+                StandardCharsets.US_ASCII);
     }
 
     private void serializeCompressionAlgorithmsServerToClient() {
         LOGGER.debug(
                 "Compression algorithms length (server to client): "
-                        + msg.getCompressionAlgorithmsServerToClientLength().getValue());
+                        + message.getCompressionAlgorithmsServerToClientLength().getValue());
         appendInt(
-                msg.getCompressionAlgorithmsServerToClientLength().getValue(),
+                message.getCompressionAlgorithmsServerToClientLength().getValue(),
                 DataFormatConstants.STRING_SIZE_LENGTH);
         LOGGER.debug(
                 "Compression algorithms (server to client): "
-                        + msg.getCompressionAlgorithmsServerToClient().getValue());
+                        + message.getCompressionAlgorithmsServerToClient().getValue());
         appendString(
-                msg.getCompressionAlgorithmsServerToClient().getValue(), StandardCharsets.US_ASCII);
+                message.getCompressionAlgorithmsServerToClient().getValue(),
+                StandardCharsets.US_ASCII);
     }
 
     private void serializeLanguagesClientToServer() {
         LOGGER.debug(
                 "Languages length (client to server): "
-                        + msg.getLanguagesClientToServerLength().getValue());
+                        + message.getLanguagesClientToServerLength().getValue());
         appendInt(
-                msg.getLanguagesClientToServerLength().getValue(),
+                message.getLanguagesClientToServerLength().getValue(),
                 DataFormatConstants.STRING_SIZE_LENGTH);
         LOGGER.debug(
-                "Languages (client to server): " + msg.getLanguagesClientToServer().getValue());
-        appendString(msg.getLanguagesClientToServer().getValue(), StandardCharsets.US_ASCII);
+                "Languages (client to server): " + message.getLanguagesClientToServer().getValue());
+        appendString(message.getLanguagesClientToServer().getValue(), StandardCharsets.US_ASCII);
     }
 
     private void serializeLanguagesServerToClient() {
         LOGGER.debug(
                 "Languages length (server to client): "
-                        + msg.getLanguagesServerToClientLength().getValue());
+                        + message.getLanguagesServerToClientLength().getValue());
         appendInt(
-                msg.getLanguagesServerToClientLength().getValue(),
+                message.getLanguagesServerToClientLength().getValue(),
                 DataFormatConstants.STRING_SIZE_LENGTH);
         LOGGER.debug(
-                "Languages (server to client): " + msg.getLanguagesServerToClient().getValue());
-        appendString(msg.getLanguagesServerToClient().getValue(), StandardCharsets.US_ASCII);
+                "Languages (server to client): " + message.getLanguagesServerToClient().getValue());
+        appendString(message.getLanguagesServerToClient().getValue(), StandardCharsets.US_ASCII);
     }
 
     private void serializeFirstKeyExchangePacketFollows() {
         LOGGER.debug(
                 "First key exchange packet follows: "
                         + Converter.byteToBoolean(
-                                msg.getFirstKeyExchangePacketFollows().getValue()));
-        appendByte(msg.getFirstKeyExchangePacketFollows().getValue());
+                                message.getFirstKeyExchangePacketFollows().getValue()));
+        appendByte(message.getFirstKeyExchangePacketFollows().getValue());
     }
 
     private void serializeReserved() {
-        LOGGER.debug("Reserved: " + msg.getReserved().getValue());
-        appendInt(msg.getReserved().getValue(), DataFormatConstants.INT32_SIZE);
+        LOGGER.debug("Reserved: " + message.getReserved().getValue());
+        appendInt(message.getReserved().getValue(), DataFormatConstants.INT32_SIZE);
     }
 
     @Override
-    public void serializeMessageSpecificPayload() {
+    public void serializeMessageSpecificContents() {
         serializeCookie();
         serializeKeyExchangeAlgorithms();
         serializeServerHostKeyAlgorithms();

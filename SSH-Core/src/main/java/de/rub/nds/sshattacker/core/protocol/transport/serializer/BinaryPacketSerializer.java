@@ -17,38 +17,38 @@ public class BinaryPacketSerializer extends Serializer<BinaryPacket> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private final BinaryPacket msg;
+    private final BinaryPacket message;
 
-    public BinaryPacketSerializer(BinaryPacket msg) {
-        this.msg = msg;
+    public BinaryPacketSerializer(BinaryPacket message) {
+        this.message = message;
     }
 
     private void serializePacketLength() {
-        LOGGER.debug("Packet length: " + msg.getPacketLength().getValue());
-        appendInt(msg.getPacketLength().getValue(), BinaryPacketConstants.LENGTH_FIELD_LENGTH);
+        LOGGER.debug("Packet length: " + message.getPacketLength().getValue());
+        appendInt(message.getPacketLength().getValue(), BinaryPacketConstants.LENGTH_FIELD_LENGTH);
     }
 
     private void serializePaddingLength() {
-        LOGGER.debug("Padding length: " + msg.getPaddingLength().getValue());
-        appendByte(msg.getPaddingLength().getValue());
+        LOGGER.debug("Padding length: " + message.getPaddingLength().getValue());
+        appendByte(message.getPaddingLength().getValue());
     }
 
     private void serializePayload() {
-        LOGGER.debug("Payload: " + msg.getPayload());
-        appendBytes(msg.getPayload().getValue());
+        LOGGER.debug("Payload: " + message.getPayload());
+        appendBytes(message.getPayload().getValue());
     }
 
     private void serializePadding() {
-        LOGGER.debug("Padding: " + msg.getPadding());
-        appendBytes(msg.getPadding().getValue());
+        LOGGER.debug("Padding: " + message.getPadding());
+        appendBytes(message.getPadding().getValue());
     }
 
     private void serializeMac() {
-        if (msg.getMac() == null) {
+        if (message.getMac() == null) {
             LOGGER.debug("MAC: [none]");
         } else {
-            LOGGER.debug("MAC: " + msg.getMac());
-            appendBytes(msg.getMac().getValue());
+            LOGGER.debug("MAC: " + message.getMac());
+            appendBytes(message.getMac().getValue());
         }
     }
 

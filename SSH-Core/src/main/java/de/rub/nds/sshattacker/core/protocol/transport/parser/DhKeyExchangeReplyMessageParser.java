@@ -9,51 +9,53 @@ package de.rub.nds.sshattacker.core.protocol.transport.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.BinaryPacketConstants;
-import de.rub.nds.sshattacker.core.protocol.common.MessageParser;
+import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 import de.rub.nds.sshattacker.core.protocol.transport.message.DhKeyExchangeReplyMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class DhKeyExchangeReplyMessageParser extends MessageParser<DhKeyExchangeReplyMessage> {
+public class DhKeyExchangeReplyMessageParser extends SshMessageParser<DhKeyExchangeReplyMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public DhKeyExchangeReplyMessageParser(int startPosition, byte[] array) {
-        super(startPosition, array);
-    }
-
-    private void parseHostKey(DhKeyExchangeReplyMessage msg) {
-        msg.setHostKeyLength(parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH));
-        LOGGER.debug("Host key length: " + msg.getHostKeyLength().getValue());
-        msg.setHostKey(parseByteArrayField(msg.getHostKeyLength().getValue()));
-        LOGGER.debug(
-                "Host key: " + ArrayConverter.bytesToRawHexString(msg.getHostKey().getValue()));
-    }
-
-    private void parsePublicKey(DhKeyExchangeReplyMessage msg) {
-        msg.setEphemeralPublicKeyLength(parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH));
-        LOGGER.debug(
-                "Ephemeral public key length: " + msg.getEphemeralPublicKeyLength().getValue());
-        msg.setEphemeralPublicKey(parseBigIntField(msg.getEphemeralPublicKeyLength().getValue()));
-        LOGGER.debug("Ephemeral public key: " + msg.getEphemeralPublicKey());
-    }
-
-    private void parseSignature(DhKeyExchangeReplyMessage msg) {
-        msg.setSignatureLength(parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH));
-        LOGGER.debug("Signature length: " + msg.getSignatureLength().getValue());
-        msg.setSignature(parseByteArrayField(msg.getSignatureLength().getValue()));
-        LOGGER.debug("Signature: " + msg.getSignature());
-    }
-
-    @Override
-    protected void parseMessageSpecificPayload(DhKeyExchangeReplyMessage msg) {
-        parseHostKey(msg);
-        parsePublicKey(msg);
-        parseSignature(msg);
+    public DhKeyExchangeReplyMessageParser(byte[] array, int startPosition) {
+        super(array, startPosition);
     }
 
     @Override
     public DhKeyExchangeReplyMessage createMessage() {
         return new DhKeyExchangeReplyMessage();
+    }
+
+    private void parseHostKey() {
+        message.setHostKeyLength(parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH));
+        LOGGER.debug("Host key length: " + message.getHostKeyLength().getValue());
+        message.setHostKey(parseByteArrayField(message.getHostKeyLength().getValue()));
+        LOGGER.debug(
+                "Host key: " + ArrayConverter.bytesToRawHexString(message.getHostKey().getValue()));
+    }
+
+    private void parsePublicKey() {
+        message.setEphemeralPublicKeyLength(
+                parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH));
+        LOGGER.debug(
+                "Ephemeral public key length: " + message.getEphemeralPublicKeyLength().getValue());
+        message.setEphemeralPublicKey(
+                parseBigIntField(message.getEphemeralPublicKeyLength().getValue()));
+        LOGGER.debug("Ephemeral public key: " + message.getEphemeralPublicKey());
+    }
+
+    private void parseSignature() {
+        message.setSignatureLength(parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH));
+        LOGGER.debug("Signature length: " + message.getSignatureLength().getValue());
+        message.setSignature(parseByteArrayField(message.getSignatureLength().getValue()));
+        LOGGER.debug("Signature: " + message.getSignature());
+    }
+
+    @Override
+    protected void parseMessageSpecificContents() {
+        parseHostKey();
+        parsePublicKey();
+        parseSignature();
     }
 }

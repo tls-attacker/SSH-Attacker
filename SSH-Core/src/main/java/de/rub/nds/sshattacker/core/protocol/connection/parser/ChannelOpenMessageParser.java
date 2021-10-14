@@ -8,18 +8,18 @@
 package de.rub.nds.sshattacker.core.protocol.connection.parser;
 
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
-import de.rub.nds.sshattacker.core.protocol.common.MessageParser;
+import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelOpenMessage;
 import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class ChannelOpenMessageParser extends MessageParser<ChannelOpenMessage> {
+public class ChannelOpenMessageParser extends SshMessageParser<ChannelOpenMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public ChannelOpenMessageParser(int startPosition, byte[] array) {
-        super(startPosition, array);
+    public ChannelOpenMessageParser(byte[] array, int startPosition) {
+        super(array, startPosition);
     }
 
     @Override
@@ -27,35 +27,36 @@ public class ChannelOpenMessageParser extends MessageParser<ChannelOpenMessage> 
         return new ChannelOpenMessage();
     }
 
-    public void parseChannelType(ChannelOpenMessage msg) {
-        msg.setChannelTypeLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-        LOGGER.debug("Channel type length: " + msg.getChannelTypeLength().getValue());
-        msg.setChannelType(
-                parseByteString(msg.getChannelTypeLength().getValue(), StandardCharsets.US_ASCII),
+    public void parseChannelType() {
+        message.setChannelTypeLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
+        LOGGER.debug("Channel type length: " + message.getChannelTypeLength().getValue());
+        message.setChannelType(
+                parseByteString(
+                        message.getChannelTypeLength().getValue(), StandardCharsets.US_ASCII),
                 false);
-        LOGGER.debug("Channel type: " + msg.getChannelType().getValue());
+        LOGGER.debug("Channel type: " + message.getChannelType().getValue());
     }
 
-    public void parseSenderChannel(ChannelOpenMessage msg) {
-        msg.setSenderChannel(parseIntField(DataFormatConstants.INT32_SIZE));
-        LOGGER.debug("Sender channel: " + msg.getSenderChannel().getValue());
+    public void parseSenderChannel() {
+        message.setSenderChannel(parseIntField(DataFormatConstants.INT32_SIZE));
+        LOGGER.debug("Sender channel: " + message.getSenderChannel().getValue());
     }
 
-    public void parseWindowSize(ChannelOpenMessage msg) {
-        msg.setWindowSize(parseIntField(DataFormatConstants.INT32_SIZE));
-        LOGGER.debug("Initial window size: " + msg.getWindowSize().getValue());
+    public void parseWindowSize() {
+        message.setWindowSize(parseIntField(DataFormatConstants.INT32_SIZE));
+        LOGGER.debug("Initial window size: " + message.getWindowSize().getValue());
     }
 
-    public void parsePacketSize(ChannelOpenMessage msg) {
-        msg.setPacketSize(parseIntField(DataFormatConstants.INT32_SIZE));
-        LOGGER.debug("Maximum packet size: " + msg.getPacketSize().getValue());
+    public void parsePacketSize() {
+        message.setPacketSize(parseIntField(DataFormatConstants.INT32_SIZE));
+        LOGGER.debug("Maximum packet size: " + message.getPacketSize().getValue());
     }
 
     @Override
-    protected void parseMessageSpecificPayload(ChannelOpenMessage msg) {
-        parseChannelType(msg);
-        parseSenderChannel(msg);
-        parseWindowSize(msg);
-        parsePacketSize(msg);
+    protected void parseMessageSpecificContents() {
+        parseChannelType();
+        parseSenderChannel();
+        parseWindowSize();
+        parsePacketSize();
     }
 }

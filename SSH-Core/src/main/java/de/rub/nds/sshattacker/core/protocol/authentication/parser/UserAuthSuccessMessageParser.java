@@ -8,12 +8,12 @@
 package de.rub.nds.sshattacker.core.protocol.authentication.parser;
 
 import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthSuccessMessage;
-import de.rub.nds.sshattacker.core.protocol.common.MessageParser;
+import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 
-public class UserAuthSuccessMessageParser extends MessageParser<UserAuthSuccessMessage> {
+public class UserAuthSuccessMessageParser extends SshMessageParser<UserAuthSuccessMessage> {
 
-    public UserAuthSuccessMessageParser(int startPosition, byte[] array) {
-        super(startPosition, array);
+    public UserAuthSuccessMessageParser(byte[] array, int startPosition) {
+        super(array, startPosition);
     }
 
     @Override
@@ -22,5 +22,5 @@ public class UserAuthSuccessMessageParser extends MessageParser<UserAuthSuccessM
     }
 
     @Override
-    protected void parseMessageSpecificPayload(UserAuthSuccessMessage msg) {}
+    protected void parseMessageSpecificContents() {}
 }

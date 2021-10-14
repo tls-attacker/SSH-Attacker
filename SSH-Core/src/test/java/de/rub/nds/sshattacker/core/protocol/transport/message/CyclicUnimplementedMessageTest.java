@@ -9,9 +9,8 @@ package de.rub.nds.sshattacker.core.protocol.transport.message;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
-import de.rub.nds.sshattacker.core.protocol.transport.parser.UnimplementedMessageParserTest;
-import de.rub.nds.sshattacker.core.protocol.transport.message.UnimplementedMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.parser.UnimplementedMessageParser;
+import de.rub.nds.sshattacker.core.protocol.transport.parser.UnimplementedMessageParserTest;
 import de.rub.nds.sshattacker.core.protocol.transport.serializer.UnimplementedMessageSerializer;
 import java.util.stream.Stream;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -37,7 +36,7 @@ public class CyclicUnimplementedMessageTest {
     @ParameterizedTest
     @MethodSource("provideTestVectors")
     public void testCyclic(byte[] providedBytes) {
-        UnimplementedMessage msg = new UnimplementedMessageParser(0, providedBytes).parse();
+        UnimplementedMessage msg = new UnimplementedMessageParser(providedBytes, 0).parse();
         assertArrayEquals(providedBytes, new UnimplementedMessageSerializer(msg).serialize());
     }
 }

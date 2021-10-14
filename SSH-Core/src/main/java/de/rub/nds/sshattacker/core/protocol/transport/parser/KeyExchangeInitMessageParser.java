@@ -9,198 +9,203 @@ package de.rub.nds.sshattacker.core.protocol.transport.parser;
 
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.constants.KeyExchangeInitConstants;
-import de.rub.nds.sshattacker.core.protocol.common.MessageParser;
+import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 import de.rub.nds.sshattacker.core.protocol.transport.message.KeyExchangeInitMessage;
 import de.rub.nds.sshattacker.core.util.Converter;
 import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class KeyExchangeInitMessageParser extends MessageParser<KeyExchangeInitMessage> {
+public class KeyExchangeInitMessageParser extends SshMessageParser<KeyExchangeInitMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public KeyExchangeInitMessageParser(int startPosition, byte[] array) {
-        super(startPosition, array);
-    }
-
-    private void parseCookie(KeyExchangeInitMessage msg) {
-        msg.setCookie(parseByteArrayField(KeyExchangeInitConstants.COOKIE_LENGTH));
-        LOGGER.debug("Cookie: " + msg.getCookie());
-    }
-
-    private void parseKeyExchangeAlgorithms(KeyExchangeInitMessage msg) {
-        msg.setKeyExchangeAlgorithmsLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-        LOGGER.debug(
-                "Key exchange algorithms length: "
-                        + msg.getKeyExchangeAlgorithmsLength().getValue());
-        msg.setKeyExchangeAlgorithms(
-                parseByteString(
-                        msg.getKeyExchangeAlgorithmsLength().getValue(),
-                        StandardCharsets.US_ASCII));
-        LOGGER.debug("Key exchange algorithms: " + msg.getKeyExchangeAlgorithms().getValue());
-    }
-
-    private void parseServerHostKeyAlgorithms(KeyExchangeInitMessage msg) {
-        msg.setServerHostKeyAlgorithmsLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-        LOGGER.debug(
-                "Server host key algorithms length: "
-                        + msg.getServerHostKeyAlgorithmsLength().getValue());
-        msg.setServerHostKeyAlgorithms(
-                parseByteString(
-                        msg.getServerHostKeyAlgorithmsLength().getValue(),
-                        StandardCharsets.US_ASCII));
-        LOGGER.debug("Server host key algorithms: " + msg.getServerHostKeyAlgorithms().getValue());
-    }
-
-    private void parseEncryptionAlgorithmsClientToServer(KeyExchangeInitMessage msg) {
-        msg.setEncryptionAlgorithmsClientToServerLength(
-                parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-        LOGGER.debug(
-                "Encryption algorithms length (client to server): "
-                        + msg.getEncryptionAlgorithmsClientToServerLength().getValue());
-        msg.setEncryptionAlgorithmsClientToServer(
-                parseByteString(
-                        msg.getEncryptionAlgorithmsClientToServerLength().getValue(),
-                        StandardCharsets.US_ASCII));
-        LOGGER.debug(
-                "Encryption algorithms (client to server): "
-                        + msg.getEncryptionAlgorithmsClientToServer().getValue());
-    }
-
-    private void parseEncryptionAlgorithmsServerToClient(KeyExchangeInitMessage msg) {
-        msg.setEncryptionAlgorithmsServerToClientLength(
-                parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-        LOGGER.debug(
-                "Encryption algorithms length (server to client): "
-                        + msg.getEncryptionAlgorithmsServerToClientLength().getValue());
-        msg.setEncryptionAlgorithmsServerToClient(
-                parseByteString(
-                        msg.getEncryptionAlgorithmsServerToClientLength().getValue(),
-                        StandardCharsets.US_ASCII));
-        LOGGER.debug(
-                "Encryption algorithms (server to client): "
-                        + msg.getEncryptionAlgorithmsServerToClient().getValue());
-    }
-
-    private void parseMacAlgorithmsClientToServer(KeyExchangeInitMessage msg) {
-        msg.setMacAlgorithmsClientToServerLength(
-                parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-        LOGGER.debug(
-                "MAC algorithms length (client to server): "
-                        + msg.getMacAlgorithmsClientToServerLength().getValue());
-        msg.setMacAlgorithmsClientToServer(
-                parseByteString(
-                        msg.getMacAlgorithmsClientToServerLength().getValue(),
-                        StandardCharsets.US_ASCII));
-        LOGGER.debug(
-                "MAC algorithms (client to server): "
-                        + msg.getMacAlgorithmsClientToServer().getValue());
-    }
-
-    private void parseMacAlgorithmsServerToClient(KeyExchangeInitMessage msg) {
-        msg.setMacAlgorithmsServerToClientLength(
-                parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-        LOGGER.debug(
-                "MAC algorithms length (server to client): "
-                        + msg.getMacAlgorithmsServerToClientLength().getValue());
-        msg.setMacAlgorithmsServerToClient(
-                parseByteString(
-                        msg.getMacAlgorithmsServerToClientLength().getValue(),
-                        StandardCharsets.US_ASCII));
-        LOGGER.debug(
-                "MAC algorithms (server to client): "
-                        + msg.getMacAlgorithmsServerToClient().getValue());
-    }
-
-    private void parseCompressionAlgorithmsClientToServer(KeyExchangeInitMessage msg) {
-        msg.setCompressionAlgorithmsClientToServerLength(
-                parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-        LOGGER.debug(
-                "Compression algorithms length (client to server): "
-                        + msg.getCompressionAlgorithmsClientToServerLength().getValue());
-        msg.setCompressionAlgorithmsClientToServer(
-                parseByteString(
-                        msg.getCompressionAlgorithmsClientToServerLength().getValue(),
-                        StandardCharsets.US_ASCII));
-        LOGGER.debug(
-                "Compression algorithms (client to server): "
-                        + msg.getCompressionAlgorithmsClientToServer().getValue());
-    }
-
-    private void parseCompressionAlgorithmsServerToClient(KeyExchangeInitMessage msg) {
-        msg.setCompressionAlgorithmsServerToClientLength(
-                parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-        LOGGER.debug(
-                "Compression algorithms length (server to client): "
-                        + msg.getCompressionAlgorithmsServerToClientLength().getValue());
-        msg.setCompressionAlgorithmsServerToClient(
-                parseByteString(
-                        msg.getCompressionAlgorithmsServerToClientLength().getValue(),
-                        StandardCharsets.US_ASCII));
-        LOGGER.debug(
-                "Compression algorithms (server to client): "
-                        + msg.getCompressionAlgorithmsServerToClient().getValue());
-    }
-
-    private void parseLanguagesClientToServer(KeyExchangeInitMessage msg) {
-        msg.setLanguagesClientToServerLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-        LOGGER.debug(
-                "Languages length (client to server): "
-                        + msg.getLanguagesClientToServerLength().getValue());
-        msg.setLanguagesClientToServer(
-                parseByteString(
-                        msg.getLanguagesClientToServerLength().getValue(),
-                        StandardCharsets.US_ASCII));
-        LOGGER.debug(
-                "Languages (client to server): " + msg.getLanguagesClientToServer().getValue());
-    }
-
-    private void parseLanguagesServerToClient(KeyExchangeInitMessage msg) {
-        msg.setLanguagesServerToClientLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-        LOGGER.debug(
-                "Languages length (server to client): "
-                        + msg.getLanguagesServerToClientLength().getValue());
-        msg.setLanguagesServerToClient(
-                parseByteString(
-                        msg.getLanguagesServerToClientLength().getValue(),
-                        StandardCharsets.US_ASCII));
-        LOGGER.debug(
-                "Languages (server to client): " + msg.getLanguagesServerToClient().getValue());
-    }
-
-    private void parseFirstKeyExchangePacketFollows(KeyExchangeInitMessage msg) {
-        msg.setFirstKeyExchangePacketFollows(parseByteField(1));
-        LOGGER.debug(
-                "First key exchange packet follows: "
-                        + Converter.byteToBoolean(
-                                msg.getFirstKeyExchangePacketFollows().getValue()));
-    }
-
-    private void parseReserved(KeyExchangeInitMessage msg) {
-        msg.setReserved(parseIntField(DataFormatConstants.INT32_SIZE));
-        LOGGER.debug("Reserved: " + msg.getReserved().getValue());
-    }
-
-    @Override
-    public void parseMessageSpecificPayload(KeyExchangeInitMessage msg) {
-        parseCookie(msg);
-        parseKeyExchangeAlgorithms(msg);
-        parseServerHostKeyAlgorithms(msg);
-        parseEncryptionAlgorithmsClientToServer(msg);
-        parseEncryptionAlgorithmsServerToClient(msg);
-        parseMacAlgorithmsClientToServer(msg);
-        parseMacAlgorithmsServerToClient(msg);
-        parseCompressionAlgorithmsClientToServer(msg);
-        parseCompressionAlgorithmsServerToClient(msg);
-        parseLanguagesClientToServer(msg);
-        parseLanguagesServerToClient(msg);
-        parseFirstKeyExchangePacketFollows(msg);
-        parseReserved(msg);
+    public KeyExchangeInitMessageParser(byte[] array, int startPosition) {
+        super(array, startPosition);
     }
 
     @Override
     public KeyExchangeInitMessage createMessage() {
         return new KeyExchangeInitMessage();
+    }
+
+    private void parseCookie() {
+        message.setCookie(parseByteArrayField(KeyExchangeInitConstants.COOKIE_LENGTH));
+        LOGGER.debug("Cookie: " + message.getCookie());
+    }
+
+    private void parseKeyExchangeAlgorithms() {
+        message.setKeyExchangeAlgorithmsLength(
+                parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
+        LOGGER.debug(
+                "Key exchange algorithms length: "
+                        + message.getKeyExchangeAlgorithmsLength().getValue());
+        message.setKeyExchangeAlgorithms(
+                parseByteString(
+                        message.getKeyExchangeAlgorithmsLength().getValue(),
+                        StandardCharsets.US_ASCII));
+        LOGGER.debug("Key exchange algorithms: " + message.getKeyExchangeAlgorithms().getValue());
+    }
+
+    private void parseServerHostKeyAlgorithms() {
+        message.setServerHostKeyAlgorithmsLength(
+                parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
+        LOGGER.debug(
+                "Server host key algorithms length: "
+                        + message.getServerHostKeyAlgorithmsLength().getValue());
+        message.setServerHostKeyAlgorithms(
+                parseByteString(
+                        message.getServerHostKeyAlgorithmsLength().getValue(),
+                        StandardCharsets.US_ASCII));
+        LOGGER.debug(
+                "Server host key algorithms: " + message.getServerHostKeyAlgorithms().getValue());
+    }
+
+    private void parseEncryptionAlgorithmsClientToServer() {
+        message.setEncryptionAlgorithmsClientToServerLength(
+                parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
+        LOGGER.debug(
+                "Encryption algorithms length (client to server): "
+                        + message.getEncryptionAlgorithmsClientToServerLength().getValue());
+        message.setEncryptionAlgorithmsClientToServer(
+                parseByteString(
+                        message.getEncryptionAlgorithmsClientToServerLength().getValue(),
+                        StandardCharsets.US_ASCII));
+        LOGGER.debug(
+                "Encryption algorithms (client to server): "
+                        + message.getEncryptionAlgorithmsClientToServer().getValue());
+    }
+
+    private void parseEncryptionAlgorithmsServerToClient() {
+        message.setEncryptionAlgorithmsServerToClientLength(
+                parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
+        LOGGER.debug(
+                "Encryption algorithms length (server to client): "
+                        + message.getEncryptionAlgorithmsServerToClientLength().getValue());
+        message.setEncryptionAlgorithmsServerToClient(
+                parseByteString(
+                        message.getEncryptionAlgorithmsServerToClientLength().getValue(),
+                        StandardCharsets.US_ASCII));
+        LOGGER.debug(
+                "Encryption algorithms (server to client): "
+                        + message.getEncryptionAlgorithmsServerToClient().getValue());
+    }
+
+    private void parseMacAlgorithmsClientToServer() {
+        message.setMacAlgorithmsClientToServerLength(
+                parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
+        LOGGER.debug(
+                "MAC algorithms length (client to server): "
+                        + message.getMacAlgorithmsClientToServerLength().getValue());
+        message.setMacAlgorithmsClientToServer(
+                parseByteString(
+                        message.getMacAlgorithmsClientToServerLength().getValue(),
+                        StandardCharsets.US_ASCII));
+        LOGGER.debug(
+                "MAC algorithms (client to server): "
+                        + message.getMacAlgorithmsClientToServer().getValue());
+    }
+
+    private void parseMacAlgorithmsServerToClient() {
+        message.setMacAlgorithmsServerToClientLength(
+                parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
+        LOGGER.debug(
+                "MAC algorithms length (server to client): "
+                        + message.getMacAlgorithmsServerToClientLength().getValue());
+        message.setMacAlgorithmsServerToClient(
+                parseByteString(
+                        message.getMacAlgorithmsServerToClientLength().getValue(),
+                        StandardCharsets.US_ASCII));
+        LOGGER.debug(
+                "MAC algorithms (server to client): "
+                        + message.getMacAlgorithmsServerToClient().getValue());
+    }
+
+    private void parseCompressionAlgorithmsClientToServer() {
+        message.setCompressionAlgorithmsClientToServerLength(
+                parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
+        LOGGER.debug(
+                "Compression algorithms length (client to server): "
+                        + message.getCompressionAlgorithmsClientToServerLength().getValue());
+        message.setCompressionAlgorithmsClientToServer(
+                parseByteString(
+                        message.getCompressionAlgorithmsClientToServerLength().getValue(),
+                        StandardCharsets.US_ASCII));
+        LOGGER.debug(
+                "Compression algorithms (client to server): "
+                        + message.getCompressionAlgorithmsClientToServer().getValue());
+    }
+
+    private void parseCompressionAlgorithmsServerToClient() {
+        message.setCompressionAlgorithmsServerToClientLength(
+                parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
+        LOGGER.debug(
+                "Compression algorithms length (server to client): "
+                        + message.getCompressionAlgorithmsServerToClientLength().getValue());
+        message.setCompressionAlgorithmsServerToClient(
+                parseByteString(
+                        message.getCompressionAlgorithmsServerToClientLength().getValue(),
+                        StandardCharsets.US_ASCII));
+        LOGGER.debug(
+                "Compression algorithms (server to client): "
+                        + message.getCompressionAlgorithmsServerToClient().getValue());
+    }
+
+    private void parseLanguagesClientToServer() {
+        message.setLanguagesClientToServerLength(
+                parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
+        LOGGER.debug(
+                "Languages length (client to server): "
+                        + message.getLanguagesClientToServerLength().getValue());
+        message.setLanguagesClientToServer(
+                parseByteString(
+                        message.getLanguagesClientToServerLength().getValue(),
+                        StandardCharsets.US_ASCII));
+        LOGGER.debug(
+                "Languages (client to server): " + message.getLanguagesClientToServer().getValue());
+    }
+
+    private void parseLanguagesServerToClient() {
+        message.setLanguagesServerToClientLength(
+                parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
+        LOGGER.debug(
+                "Languages length (server to client): "
+                        + message.getLanguagesServerToClientLength().getValue());
+        message.setLanguagesServerToClient(
+                parseByteString(
+                        message.getLanguagesServerToClientLength().getValue(),
+                        StandardCharsets.US_ASCII));
+        LOGGER.debug(
+                "Languages (server to client): " + message.getLanguagesServerToClient().getValue());
+    }
+
+    private void parseFirstKeyExchangePacketFollows() {
+        message.setFirstKeyExchangePacketFollows(parseByteField(1));
+        LOGGER.debug(
+                "First key exchange packet follows: "
+                        + Converter.byteToBoolean(
+                                message.getFirstKeyExchangePacketFollows().getValue()));
+    }
+
+    private void parseReserved() {
+        message.setReserved(parseIntField(DataFormatConstants.INT32_SIZE));
+        LOGGER.debug("Reserved: " + message.getReserved().getValue());
+    }
+
+    @Override
+    public void parseMessageSpecificContents() {
+        parseCookie();
+        parseKeyExchangeAlgorithms();
+        parseServerHostKeyAlgorithms();
+        parseEncryptionAlgorithmsClientToServer();
+        parseEncryptionAlgorithmsServerToClient();
+        parseMacAlgorithmsClientToServer();
+        parseMacAlgorithmsServerToClient();
+        parseCompressionAlgorithmsClientToServer();
+        parseCompressionAlgorithmsServerToClient();
+        parseLanguagesClientToServer();
+        parseLanguagesServerToClient();
+        parseFirstKeyExchangePacketFollows();
+        parseReserved();
     }
 }

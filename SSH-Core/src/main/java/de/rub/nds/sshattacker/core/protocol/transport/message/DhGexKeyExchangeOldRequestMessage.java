@@ -10,16 +10,12 @@ package de.rub.nds.sshattacker.core.protocol.transport.message;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
-import de.rub.nds.sshattacker.core.exceptions.NotImplementedException;
-import de.rub.nds.sshattacker.core.protocol.common.Handler;
-import de.rub.nds.sshattacker.core.protocol.common.Message;
-import de.rub.nds.sshattacker.core.protocol.common.Preparator;
-import de.rub.nds.sshattacker.core.protocol.common.Serializer;
-import de.rub.nds.sshattacker.core.protocol.transport.preparator.DhGexKeyExchangeOldRequestMessagePreparator;
-import de.rub.nds.sshattacker.core.protocol.transport.serializer.DhGexKeyExchangeOldRequestMessageSerializer;
+import de.rub.nds.sshattacker.core.protocol.common.*;
+import de.rub.nds.sshattacker.core.protocol.transport.handler.DhGexKeyExchangeOldRequestMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 
-public class DhGexKeyExchangeOldRequestMessage extends Message<DhGexKeyExchangeOldRequestMessage> {
+public class DhGexKeyExchangeOldRequestMessage
+        extends SshMessage<DhGexKeyExchangeOldRequestMessage> {
 
     private ModifiableInteger preferredGroupSize;
 
@@ -42,18 +38,7 @@ public class DhGexKeyExchangeOldRequestMessage extends Message<DhGexKeyExchangeO
     }
 
     @Override
-    public Handler<DhGexKeyExchangeOldRequestMessage> getHandler(SshContext context) {
-        // TODO: Implement handler for DhGexKeyExchangeRequestMessage
-        throw new NotImplementedException("DhGexKeyExchangeRequestMessage::getHandler");
-    }
-
-    @Override
-    public Serializer<DhGexKeyExchangeOldRequestMessage> getSerializer() {
-        return new DhGexKeyExchangeOldRequestMessageSerializer(this);
-    }
-
-    @Override
-    public Preparator<DhGexKeyExchangeOldRequestMessage> getPreparator(SshContext context) {
-        return new DhGexKeyExchangeOldRequestMessagePreparator(context, this);
+    public DhGexKeyExchangeOldRequestMessageHandler getHandler(SshContext context) {
+        return new DhGexKeyExchangeOldRequestMessageHandler(context, this);
     }
 }

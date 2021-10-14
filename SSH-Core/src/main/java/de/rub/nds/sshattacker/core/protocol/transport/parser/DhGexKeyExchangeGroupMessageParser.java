@@ -9,47 +9,48 @@ package de.rub.nds.sshattacker.core.protocol.transport.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
-import de.rub.nds.sshattacker.core.protocol.common.MessageParser;
+import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 import de.rub.nds.sshattacker.core.protocol.transport.message.DhGexKeyExchangeGroupMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class DhGexKeyExchangeGroupMessageParser
-        extends MessageParser<DhGexKeyExchangeGroupMessage> {
+        extends SshMessageParser<DhGexKeyExchangeGroupMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public DhGexKeyExchangeGroupMessageParser(int startPosition, byte[] array) {
-        super(startPosition, array);
-    }
-
-    private void parseGroupModulus(DhGexKeyExchangeGroupMessage msg) {
-        msg.setGroupModulusLength(parseIntField(DataFormatConstants.INT32_SIZE));
-        LOGGER.debug("Group modulus length: " + msg.getGroupModulusLength().getValue());
-        msg.setGroupModulus(parseBigIntField(msg.getGroupModulusLength().getValue()));
-        LOGGER.debug(
-                "Group modulus: "
-                        + ArrayConverter.bytesToRawHexString(msg.getGroupModulus().getByteArray()));
-    }
-
-    private void parseGroupGenerator(DhGexKeyExchangeGroupMessage msg) {
-        msg.setGroupGeneratorLength(parseIntField(DataFormatConstants.INT32_SIZE));
-        LOGGER.debug("Group generator length: " + msg.getGroupGeneratorLength().getValue());
-        msg.setGroupGenerator(parseBigIntField(msg.getGroupGeneratorLength().getValue()));
-        LOGGER.debug(
-                "Group generator: "
-                        + ArrayConverter.bytesToRawHexString(
-                                msg.getGroupGenerator().getByteArray()));
-    }
-
-    @Override
-    protected void parseMessageSpecificPayload(DhGexKeyExchangeGroupMessage msg) {
-        parseGroupModulus(msg);
-        parseGroupGenerator(msg);
+    public DhGexKeyExchangeGroupMessageParser(byte[] array, int startPosition) {
+        super(array, startPosition);
     }
 
     @Override
     public DhGexKeyExchangeGroupMessage createMessage() {
         return new DhGexKeyExchangeGroupMessage();
+    }
+
+    private void parseGroupModulus() {
+        message.setGroupModulusLength(parseIntField(DataFormatConstants.INT32_SIZE));
+        LOGGER.debug("Group modulus length: " + message.getGroupModulusLength().getValue());
+        message.setGroupModulus(parseBigIntField(message.getGroupModulusLength().getValue()));
+        LOGGER.debug(
+                "Group modulus: "
+                        + ArrayConverter.bytesToRawHexString(
+                                message.getGroupModulus().getByteArray()));
+    }
+
+    private void parseGroupGenerator() {
+        message.setGroupGeneratorLength(parseIntField(DataFormatConstants.INT32_SIZE));
+        LOGGER.debug("Group generator length: " + message.getGroupGeneratorLength().getValue());
+        message.setGroupGenerator(parseBigIntField(message.getGroupGeneratorLength().getValue()));
+        LOGGER.debug(
+                "Group generator: "
+                        + ArrayConverter.bytesToRawHexString(
+                                message.getGroupGenerator().getByteArray()));
+    }
+
+    @Override
+    protected void parseMessageSpecificContents() {
+        parseGroupModulus();
+        parseGroupGenerator();
     }
 }

@@ -8,7 +8,6 @@
 package de.rub.nds.sshattacker.core.workflow.action;
 
 import de.rub.nds.sshattacker.core.exceptions.WorkflowExecutionException;
-import de.rub.nds.sshattacker.core.protocol.common.Message;
 import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.message.BinaryPacket;
 import de.rub.nds.sshattacker.core.state.SshContext;
@@ -29,11 +28,11 @@ public class GenericReceiveAction extends MessageAction implements ReceivingActi
         super();
     }
 
-    public GenericReceiveAction(List<Message<?>> messages) {
+    public GenericReceiveAction(List<ProtocolMessage<?>> messages) {
         super(messages);
     }
 
-    public GenericReceiveAction(Message<?>... messages) {
+    public GenericReceiveAction(ProtocolMessage<?>... messages) {
         this(new ArrayList<>(Arrays.asList(messages)));
     }
 
@@ -41,11 +40,11 @@ public class GenericReceiveAction extends MessageAction implements ReceivingActi
         super(connectionAlias);
     }
 
-    public GenericReceiveAction(String connectionAlias, List<Message<?>> messages) {
+    public GenericReceiveAction(String connectionAlias, List<ProtocolMessage<?>> messages) {
         super(connectionAlias, messages);
     }
 
-    public GenericReceiveAction(String connectionAlias, Message<?>... messages) {
+    public GenericReceiveAction(String connectionAlias, ProtocolMessage<?>... messages) {
         super(connectionAlias, new ArrayList<>(Arrays.asList(messages)));
     }
 
@@ -69,7 +68,7 @@ public class GenericReceiveAction extends MessageAction implements ReceivingActi
     public String toString() {
         StringBuilder sb = new StringBuilder("Receive Action:\n");
         sb.append("\tActual:");
-        for (ProtocolMessage message : messages) {
+        for (ProtocolMessage<?> message : messages) {
             sb.append(message.toCompactString());
             sb.append(", ");
         }
@@ -89,7 +88,7 @@ public class GenericReceiveAction extends MessageAction implements ReceivingActi
     }
 
     @Override
-    public List<Message<?>> getReceivedMessages() {
+    public List<ProtocolMessage<?>> getReceivedMessages() {
         return messages;
     }
 

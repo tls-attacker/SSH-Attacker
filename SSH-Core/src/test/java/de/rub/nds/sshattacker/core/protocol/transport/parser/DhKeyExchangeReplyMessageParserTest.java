@@ -13,7 +13,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
 import de.rub.nds.sshattacker.core.protocol.transport.message.DhKeyExchangeReplyMessage;
-import de.rub.nds.sshattacker.core.protocol.transport.parser.DhKeyExchangeReplyMessageParser;
 import java.math.BigInteger;
 import java.util.stream.Stream;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -67,7 +66,7 @@ public class DhKeyExchangeReplyMessageParserTest {
             int expectedSignatureLength,
             byte[] expectedSignature) {
         DhKeyExchangeReplyMessageParser parser =
-                new DhKeyExchangeReplyMessageParser(0, providedBytes);
+                new DhKeyExchangeReplyMessageParser(providedBytes, 0);
         DhKeyExchangeReplyMessage msg = parser.parse();
 
         assertEquals(MessageIDConstant.SSH_MSG_KEXDH_REPLY.id, msg.getMessageID().getValue());

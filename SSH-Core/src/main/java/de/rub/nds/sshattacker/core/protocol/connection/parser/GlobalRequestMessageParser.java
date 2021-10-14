@@ -8,37 +8,37 @@
 package de.rub.nds.sshattacker.core.protocol.connection.parser;
 
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
-import de.rub.nds.sshattacker.core.protocol.common.MessageParser;
+import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 import de.rub.nds.sshattacker.core.protocol.connection.message.GlobalRequestMessage;
 import de.rub.nds.sshattacker.core.util.Converter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public abstract class GlobalRequestMessageParser<T extends GlobalRequestMessage<T>>
-        extends MessageParser<T> {
+        extends SshMessageParser<T> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public GlobalRequestMessageParser(int startPosition, byte[] array) {
-        super(startPosition, array);
+    public GlobalRequestMessageParser(byte[] array, int startPosition) {
+        super(array, startPosition);
     }
 
-    private void parseRequestName(T msg) {
-        msg.setRequestNameLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-        LOGGER.debug("Request name length: " + msg.getRequestNameLength().getValue());
-        msg.setRequestName(
+    private void parseRequestName() {
+        message.setRequestNameLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
+        LOGGER.debug("Request name length: " + message.getRequestNameLength().getValue());
+        message.setRequestName(
                 parseByteString(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH)), false);
-        LOGGER.debug("Request name: " + msg.getRequestName().getValue());
+        LOGGER.debug("Request name: " + message.getRequestName().getValue());
     }
 
-    private void parseWantReply(T msg) {
-        msg.setWantReply(parseByteField(1));
-        LOGGER.debug("Want reply: " + Converter.byteToBoolean(msg.getWantReply().getValue()));
+    private void parseWantReply() {
+        message.setWantReply(parseByteField(1));
+        LOGGER.debug("Want reply: " + Converter.byteToBoolean(message.getWantReply().getValue()));
     }
 
     @Override
-    protected void parseMessageSpecificPayload(T msg) {
-        parseRequestName(msg);
-        parseWantReply(msg);
+    protected void parseMessageSpecificContents() {
+        parseRequestName();
+        parseWantReply();
     }
 }
