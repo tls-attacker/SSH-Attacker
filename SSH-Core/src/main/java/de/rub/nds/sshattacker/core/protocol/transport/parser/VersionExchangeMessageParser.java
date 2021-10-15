@@ -29,9 +29,9 @@ public class VersionExchangeMessageParser extends ProtocolMessageParser<VersionE
     private void parseVersion() {
         // parse till CR NL (and remove them)
         String result =
-                this.parseStringTill(
-                                new byte[] {CharConstants.CARRIAGE_RETURN, CharConstants.NEWLINE})
-                        .replace("\r\n", "");
+                this.parseStringTill(new byte[] {CharConstants.NEWLINE})
+                        .replace("\r", "")
+                        .replace("\n", "");
         String[] parts = result.split(String.valueOf(CharConstants.VERSION_COMMENT_SEPARATOR), 2);
         message.setVersion(parts[0]);
         LOGGER.debug("Version: " + parts[0]);
