@@ -108,7 +108,7 @@ public class State {
         if (config.getWorkflowInput() != null) {
             try {
                 trace =
-                        WorkflowTraceSerializer.read(
+                        WorkflowTraceSerializer.insecureRead(
                                 new FileInputStream(config.getWorkflowInput()));
                 LOGGER.debug("Loaded workflow trace from " + config.getWorkflowInput());
             } catch (FileNotFoundException ex) {
