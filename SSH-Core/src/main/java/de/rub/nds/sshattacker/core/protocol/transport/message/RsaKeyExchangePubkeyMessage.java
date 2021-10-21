@@ -1,0 +1,99 @@
+package de.rub.nds.sshattacker.core.protocol.transport.message;
+
+import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
+import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
+import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
+import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
+import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
+import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
+import de.rub.nds.sshattacker.core.state.SshContext;
+
+public class RsaKeyExchangePubkeyMessage extends SshMessage<RsaKeyExchangePubkeyMessage> {
+
+    private ModifiableInteger hostKeyLength;
+    private ModifiableByteArray hostKey;
+
+    private ModifiableInteger transientPubkeyLength;
+    private ModifiableByteArray transientPubkey;
+
+    public RsaKeyExchangePubkeyMessage() {
+        super(MessageIDConstant.SSH_MSG_KEXRSA_PUBKEY);
+    }
+
+    // Host Key (K_S) Methods
+    public ModifiableInteger getHostKeyLength() {
+        return hostKeyLength;
+    }
+
+    public void setHostKeyLength(ModifiableInteger hostKeyLength) {
+        this.hostKeyLength = hostKeyLength;
+    }
+
+    public void setHostKeyLength(int hostKeyLength) {
+        this.hostKeyLength =
+                ModifiableVariableFactory.safelySetValue(this.hostKeyLength, hostKeyLength);
+    }
+
+    public ModifiableByteArray getHostKey() {
+        return hostKey;
+    }
+
+    public void setHostKey(byte[] hostKey) {
+        setHostKey(hostKey, false);
+    }
+
+    public void setHostKey(ModifiableByteArray hostkey, boolean adjustLengthField) {
+        if (adjustLengthField) {
+            setHostKeyLength(hostkey.getValue().length);
+        }
+        this.hostKey = hostkey;
+    }
+
+    public void setHostKey(byte[] hostKey, boolean adjustLengthField) {
+        if (adjustLengthField) {
+            setHostKeyLength(hostKey.length);
+        }
+        this.hostKey = ModifiableVariableFactory.safelySetValue(this.hostKey, hostKey);
+    }
+
+    // Transient Public Key (K_T) Methods
+    public ModifiableInteger getTransientPubkeyLength() {
+        return transientPubkeyLength;
+    }
+
+    public void setTransientPubkeyLength(ModifiableInteger transientPubkeyLength) {
+        this.transientPubkeyLength = transientPubkeyLength;
+    }
+
+    public void setTransientPubkeyLength(int transientPubkeyLength) {
+        this.hostKeyLength =
+                ModifiableVariableFactory.safelySetValue(this.transientPubkeyLength, transientPubkeyLength);
+    }
+
+    public ModifiableByteArray getTransientPubkey() {
+        return transientPubkey;
+    }
+
+    public void setTransientPubkey(byte[] transientPubkey) {
+        setHostKey(transientPubkey, false);
+    }
+
+    public void setTransientPubkey(ModifiableByteArray transientPubkey, boolean adjustLengthField) {
+        if (adjustLengthField) {
+            setHostKeyLength(transientPubkey.getValue().length);
+        }
+        this.transientPubkey = transientPubkey;
+    }
+
+    public void setTransientPubkey(byte[] transientPubkey, boolean adjustLengthField) {
+        if (adjustLengthField) {
+            setHostKeyLength(transientPubkey.length);
+        }
+        this.hostKey = ModifiableVariableFactory.safelySetValue(this.transientPubkey, transientPubkey);
+    }
+
+    @Override
+    public SshMessageHandler<RsaKeyExchangePubkeyMessage> getHandler(SshContext context) {
+        return null;
+    }
+}
