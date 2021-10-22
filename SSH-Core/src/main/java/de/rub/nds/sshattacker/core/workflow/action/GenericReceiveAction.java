@@ -12,7 +12,7 @@ import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.message.BinaryPacket;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.state.State;
-import de.rub.nds.sshattacker.core.workflow.action.result.MessageActionResult;
+import de.rub.nds.sshattacker.core.workflow.action.executor.MessageActionResult;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;

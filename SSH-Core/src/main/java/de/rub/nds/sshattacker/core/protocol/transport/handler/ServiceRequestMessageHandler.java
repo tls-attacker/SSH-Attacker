@@ -36,7 +36,7 @@ public class ServiceRequestMessageHandler extends SshMessageHandler<ServiceReque
 
     @Override
     public ServiceRequestMessagePreparator getPreparator() {
-        return new ServiceRequestMessagePreparator(context, message);
+        return new ServiceRequestMessagePreparator(context.getChooser(), message);
     }
 
     @Override

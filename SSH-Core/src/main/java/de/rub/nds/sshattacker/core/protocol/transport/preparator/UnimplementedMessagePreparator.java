@@ -10,12 +10,12 @@ package de.rub.nds.sshattacker.core.protocol.transport.preparator;
 import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.transport.message.UnimplementedMessage;
-import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class UnimplementedMessagePreparator extends SshMessagePreparator<UnimplementedMessage> {
 
-    public UnimplementedMessagePreparator(SshContext context, UnimplementedMessage message) {
-        super(context, message);
+    public UnimplementedMessagePreparator(Chooser chooser, UnimplementedMessage message) {
+        super(chooser, message);
     }
 
     @Override

@@ -10,12 +10,12 @@ package de.rub.nds.sshattacker.core.protocol.transport.preparator;
 import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.transport.message.ServiceAcceptMessage;
-import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class ServiceAcceptMessagePreparator extends SshMessagePreparator<ServiceAcceptMessage> {
 
-    public ServiceAcceptMessagePreparator(SshContext context, ServiceAcceptMessage message) {
-        super(context, message);
+    public ServiceAcceptMessagePreparator(Chooser chooser, ServiceAcceptMessage message) {
+        super(chooser, message);
     }
 
     @Override

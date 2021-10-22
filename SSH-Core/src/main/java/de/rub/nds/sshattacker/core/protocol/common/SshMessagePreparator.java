@@ -7,13 +7,13 @@
  */
 package de.rub.nds.sshattacker.core.protocol.common;
 
-import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public abstract class SshMessagePreparator<T extends SshMessage<T>>
         extends ProtocolMessagePreparator<T> {
 
-    public SshMessagePreparator(SshContext context, T message) {
-        super(context, message);
+    public SshMessagePreparator(Chooser chooser, T message) {
+        super(chooser, message);
     }
 
     @Override

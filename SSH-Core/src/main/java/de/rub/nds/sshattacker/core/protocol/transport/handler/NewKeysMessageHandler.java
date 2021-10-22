@@ -43,7 +43,7 @@ public class NewKeysMessageHandler extends SshMessageHandler<NewKeysMessage> {
 
     @Override
     public NewKeysMessagePreparator getPreparator() {
-        return new NewKeysMessagePreparator(context, message);
+        return new NewKeysMessagePreparator(context.getChooser(), message);
     }
 
     @Override

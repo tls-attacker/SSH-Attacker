@@ -36,7 +36,7 @@ public class ChannelRequestExecMessageHandler extends SshMessageHandler<ChannelR
 
     @Override
     public ChannelRequestExecMessagePreparator getPreparator() {
-        return new ChannelRequestExecMessagePreparator(context, message);
+        return new ChannelRequestExecMessagePreparator(context.getChooser(), message);
     }
 
     @Override

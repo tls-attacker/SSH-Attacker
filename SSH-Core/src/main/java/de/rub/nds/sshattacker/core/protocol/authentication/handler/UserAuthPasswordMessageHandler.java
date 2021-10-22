@@ -36,7 +36,7 @@ public class UserAuthPasswordMessageHandler extends SshMessageHandler<UserAuthPa
 
     @Override
     public UserAuthPasswordMessagePreparator getPreparator() {
-        return new UserAuthPasswordMessagePreparator(context, message);
+        return new UserAuthPasswordMessagePreparator(context.getChooser(), message);
     }
 
     @Override

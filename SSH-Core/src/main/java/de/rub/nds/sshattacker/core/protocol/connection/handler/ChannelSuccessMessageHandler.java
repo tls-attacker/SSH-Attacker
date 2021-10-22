@@ -36,7 +36,7 @@ public class ChannelSuccessMessageHandler extends SshMessageHandler<ChannelSucce
 
     @Override
     public SshMessagePreparator<ChannelSuccessMessage> getPreparator() {
-        return new ChannelSuccessMessagePreparator(context, message);
+        return new ChannelSuccessMessagePreparator(context.getChooser(), message);
     }
 
     @Override

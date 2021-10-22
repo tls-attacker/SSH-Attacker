@@ -119,7 +119,7 @@ public class EcdhKeyExchangeReplyMessageHandler
 
     @Override
     public EcdhKeyExchangeReplyMessagePreparator getPreparator() {
-        return new EcdhKeyExchangeReplyMessagePreparator(context, message);
+        return new EcdhKeyExchangeReplyMessagePreparator(context.getChooser(), message);
     }
 
     @Override

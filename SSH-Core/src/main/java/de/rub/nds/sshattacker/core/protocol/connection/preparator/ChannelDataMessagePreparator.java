@@ -10,12 +10,12 @@ package de.rub.nds.sshattacker.core.protocol.connection.preparator;
 import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelDataMessage;
-import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class ChannelDataMessagePreparator extends SshMessagePreparator<ChannelDataMessage> {
 
-    public ChannelDataMessagePreparator(SshContext context, ChannelDataMessage message) {
-        super(context, message);
+    public ChannelDataMessagePreparator(Chooser chooser, ChannelDataMessage message) {
+        super(chooser, message);
     }
 
     @Override

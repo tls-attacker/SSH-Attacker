@@ -10,7 +10,7 @@ package de.rub.nds.sshattacker.core.protocol.transport.preparator;
 import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.transport.message.DhGexKeyExchangeReplyMessage;
-import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import java.math.BigInteger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -21,8 +21,8 @@ public class DhGexKeyExchangeReplyMessagePreparator
     private static final Logger LOGGER = LogManager.getLogger();
 
     public DhGexKeyExchangeReplyMessagePreparator(
-            SshContext context, DhGexKeyExchangeReplyMessage message) {
-        super(context, message);
+            Chooser chooser, DhGexKeyExchangeReplyMessage message) {
+        super(chooser, message);
     }
 
     @Override

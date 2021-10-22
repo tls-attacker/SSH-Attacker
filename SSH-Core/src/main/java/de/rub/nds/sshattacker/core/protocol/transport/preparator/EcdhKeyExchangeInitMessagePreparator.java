@@ -15,21 +15,22 @@ import de.rub.nds.sshattacker.core.crypto.kex.EcdhKeyExchange;
 import de.rub.nds.sshattacker.core.crypto.kex.XCurveEcdhKeyExchange;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.transport.message.EcdhKeyExchangeInitMessage;
-import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import java.util.Optional;
 
 public class EcdhKeyExchangeInitMessagePreparator
         extends SshMessagePreparator<EcdhKeyExchangeInitMessage> {
 
     public EcdhKeyExchangeInitMessagePreparator(
-            SshContext context, EcdhKeyExchangeInitMessage message) {
-        super(context, message);
+            Chooser chooser, EcdhKeyExchangeInitMessage message) {
+        super(chooser, message);
     }
 
     @Override
     public void prepareMessageSpecificContents() {
         getObject().setMessageID(MessageIDConstant.SSH_MSG_KEX_ECDH_INIT);
-        Optional<KeyExchangeAlgorithm> keyExchangeAlgorithm = context.getKeyExchangeAlgorithm();
+        Optional<KeyExchangeAlgorithm> keyExchangeAlgorithm =
+                chooser.getContext().getKeyExchangeAlgorithm();
         DhBasedKeyExchange keyExchange;
         if (keyExchangeAlgorithm.isPresent()) {
             switch (keyExchangeAlgorithm.get()) {
@@ -48,11 +49,11 @@ public class EcdhKeyExchangeInitMessagePreparator
             keyExchange = EcdhKeyExchange.newInstance(KeyExchangeAlgorithm.ECDH_SHA2_NISTP256);
         }
         keyExchange.generateLocalKeyPair();
-        context.setKeyExchangeInstance(keyExchange);
+        chooser.getContext().setKeyExchangeInstance(keyExchange);
         EcdhExchangeHash ecdhExchangeHash =
-                EcdhExchangeHash.from(context.getExchangeHashInstance());
+                EcdhExchangeHash.from(chooser.getContext().getExchangeHashInstance());
         ecdhExchangeHash.setClientECDHPublicKey(keyExchange.getLocalKeyPair().getPublic());
-        context.setExchangeHashInstance(ecdhExchangeHash);
+        chooser.getContext().setExchangeHashInstance(ecdhExchangeHash);
 
         byte[] encodedPublicKey = keyExchange.getLocalKeyPair().getPublic().getEncoded();
         getObject().setPublicKey(encodedPublicKey, true);

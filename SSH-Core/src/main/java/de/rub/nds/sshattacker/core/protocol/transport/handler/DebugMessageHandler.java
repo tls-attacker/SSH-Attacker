@@ -49,7 +49,7 @@ public class DebugMessageHandler extends SshMessageHandler<DebugMessage> {
 
     @Override
     public DebugMessagePreparator getPreparator() {
-        return new DebugMessagePreparator(context, message);
+        return new DebugMessagePreparator(context.getChooser(), message);
     }
 
     @Override

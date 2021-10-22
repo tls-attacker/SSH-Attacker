@@ -44,7 +44,7 @@ public class DhGexKeyExchangeRequestMessageHandler
 
     @Override
     public DhGexKeyExchangeRequestMessagePreparator getPreparator() {
-        return new DhGexKeyExchangeRequestMessagePreparator(context, message);
+        return new DhGexKeyExchangeRequestMessagePreparator(context.getChooser(), message);
     }
 
     @Override

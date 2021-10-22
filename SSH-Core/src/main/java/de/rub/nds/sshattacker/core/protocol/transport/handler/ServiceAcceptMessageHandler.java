@@ -36,7 +36,7 @@ public class ServiceAcceptMessageHandler extends SshMessageHandler<ServiceAccept
 
     @Override
     public ServiceAcceptMessagePreparator getPreparator() {
-        return new ServiceAcceptMessagePreparator(context, message);
+        return new ServiceAcceptMessagePreparator(context.getChooser(), message);
     }
 
     @Override

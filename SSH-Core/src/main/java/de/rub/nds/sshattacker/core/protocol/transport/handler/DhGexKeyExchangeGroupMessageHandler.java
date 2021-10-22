@@ -83,7 +83,7 @@ public class DhGexKeyExchangeGroupMessageHandler
 
     @Override
     public SshMessagePreparator<DhGexKeyExchangeGroupMessage> getPreparator() {
-        return new DhGexKeyExchangeGroupMessagePreparator(context, message);
+        return new DhGexKeyExchangeGroupMessagePreparator(context.getChooser(), message);
     }
 
     @Override

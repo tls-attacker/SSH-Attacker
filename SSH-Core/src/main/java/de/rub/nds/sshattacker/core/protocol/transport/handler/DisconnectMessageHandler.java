@@ -41,7 +41,7 @@ public class DisconnectMessageHandler extends SshMessageHandler<DisconnectMessag
 
     @Override
     public DisconnectMessagePreparator getPreparator() {
-        return new DisconnectMessagePreparator(context, message);
+        return new DisconnectMessagePreparator(context.getChooser(), message);
     }
 
     @Override

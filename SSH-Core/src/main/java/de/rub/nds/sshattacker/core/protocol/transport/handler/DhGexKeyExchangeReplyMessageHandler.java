@@ -127,7 +127,7 @@ public class DhGexKeyExchangeReplyMessageHandler
 
     @Override
     public DhGexKeyExchangeReplyMessagePreparator getPreparator() {
-        return new DhGexKeyExchangeReplyMessagePreparator(context, message);
+        return new DhGexKeyExchangeReplyMessagePreparator(context.getChooser(), message);
     }
 
     @Override

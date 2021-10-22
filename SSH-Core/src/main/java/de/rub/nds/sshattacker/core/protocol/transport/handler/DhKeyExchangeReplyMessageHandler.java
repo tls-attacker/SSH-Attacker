@@ -116,7 +116,7 @@ public class DhKeyExchangeReplyMessageHandler extends SshMessageHandler<DhKeyExc
 
     @Override
     public SshMessagePreparator<DhKeyExchangeReplyMessage> getPreparator() {
-        return new DhKeyExchangeReplyMessagePreparator(context, message);
+        return new DhKeyExchangeReplyMessagePreparator(context.getChooser(), message);
     }
 
     @Override

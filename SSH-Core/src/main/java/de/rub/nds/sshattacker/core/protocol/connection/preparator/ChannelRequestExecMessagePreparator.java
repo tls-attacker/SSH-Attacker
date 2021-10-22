@@ -11,21 +11,20 @@ import de.rub.nds.sshattacker.core.constants.ChannelRequestType;
 import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelRequestExecMessage;
-import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import java.util.Optional;
 
 public class ChannelRequestExecMessagePreparator
         extends SshMessagePreparator<ChannelRequestExecMessage> {
 
-    public ChannelRequestExecMessagePreparator(
-            SshContext context, ChannelRequestExecMessage message) {
-        super(context, message);
+    public ChannelRequestExecMessagePreparator(Chooser chooser, ChannelRequestExecMessage message) {
+        super(chooser, message);
     }
 
     @Override
     public void prepareMessageSpecificContents() {
         getObject().setMessageID(MessageIDConstant.SSH_MSG_CHANNEL_REQUEST);
-        Optional<Integer> remoteChannel = context.getRemoteChannel();
+        Optional<Integer> remoteChannel = chooser.getContext().getRemoteChannel();
         if (remoteChannel.isPresent()) {
             getObject().setRecipientChannel(remoteChannel.get());
         } else {
@@ -33,8 +32,8 @@ public class ChannelRequestExecMessagePreparator
                     "Unable to prepare ChannelRequestExecMessage - No remote channel id set");
             getObject().setRecipientChannel(0);
         }
-        getObject().setWantReply(context.getConfig().getReplyWanted());
+        getObject().setWantReply(chooser.getConfig().getReplyWanted());
         getObject().setRequestType(ChannelRequestType.EXEC, true);
-        getObject().setCommand(context.getConfig().getChannelCommand(), true);
+        getObject().setCommand(chooser.getConfig().getChannelCommand(), true);
     }
 }

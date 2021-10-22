@@ -10,12 +10,12 @@ package de.rub.nds.sshattacker.core.protocol.connection.preparator;
 import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelCloseMessage;
-import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class ChannelCloseMessagePreparator extends SshMessagePreparator<ChannelCloseMessage> {
 
-    public ChannelCloseMessagePreparator(SshContext context, ChannelCloseMessage message) {
-        super(context, message);
+    public ChannelCloseMessagePreparator(Chooser chooser, ChannelCloseMessage message) {
+        super(chooser, message);
     }
 
     @Override

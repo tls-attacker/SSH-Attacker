@@ -10,20 +10,20 @@ package de.rub.nds.sshattacker.core.protocol.connection.preparator;
 import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelOpenMessage;
-import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class ChannelOpenMessagePreparator extends SshMessagePreparator<ChannelOpenMessage> {
 
-    public ChannelOpenMessagePreparator(SshContext context, ChannelOpenMessage message) {
-        super(context, message);
+    public ChannelOpenMessagePreparator(Chooser chooser, ChannelOpenMessage message) {
+        super(chooser, message);
     }
 
     @Override
     public void prepareMessageSpecificContents() {
         getObject().setMessageID(MessageIDConstant.SSH_MSG_CHANNEL_OPEN);
-        getObject().setSenderChannel(context.getChooser().getLocalChannel());
-        getObject().setChannelType(context.getChooser().getChannelType().toString(), true);
-        getObject().setWindowSize(context.getChooser().getWindowSize());
-        getObject().setPacketSize(context.getChooser().getPacketSize());
+        getObject().setSenderChannel(chooser.getLocalChannel());
+        getObject().setChannelType(chooser.getChannelType().toString(), true);
+        getObject().setWindowSize(chooser.getWindowSize());
+        getObject().setPacketSize(chooser.getPacketSize());
     }
 }

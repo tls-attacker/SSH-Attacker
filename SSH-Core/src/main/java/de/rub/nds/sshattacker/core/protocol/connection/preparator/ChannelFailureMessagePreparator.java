@@ -10,12 +10,12 @@ package de.rub.nds.sshattacker.core.protocol.connection.preparator;
 import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelFailureMessage;
-import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class ChannelFailureMessagePreparator extends SshMessagePreparator<ChannelFailureMessage> {
 
-    public ChannelFailureMessagePreparator(SshContext context, ChannelFailureMessage message) {
-        super(context, message);
+    public ChannelFailureMessagePreparator(Chooser chooser, ChannelFailureMessage message) {
+        super(chooser, message);
     }
 
     @Override

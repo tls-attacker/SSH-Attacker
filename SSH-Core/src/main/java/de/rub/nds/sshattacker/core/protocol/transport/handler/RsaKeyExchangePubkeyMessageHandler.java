@@ -42,7 +42,7 @@ public class RsaKeyExchangePubkeyMessageHandler
 
     @Override
     public SshMessagePreparator<RsaKeyExchangePubkeyMessage> getPreparator() {
-        return new RsaKeyExchangePubkeyMessagePreparator(context, message);
+        return new RsaKeyExchangePubkeyMessagePreparator(context.getChooser(), message);
     }
 
     @Override

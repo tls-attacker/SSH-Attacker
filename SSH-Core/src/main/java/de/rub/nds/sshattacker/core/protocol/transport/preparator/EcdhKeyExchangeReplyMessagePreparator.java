@@ -10,14 +10,14 @@ package de.rub.nds.sshattacker.core.protocol.transport.preparator;
 import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.transport.message.EcdhKeyExchangeReplyMessage;
-import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class EcdhKeyExchangeReplyMessagePreparator
         extends SshMessagePreparator<EcdhKeyExchangeReplyMessage> {
 
     public EcdhKeyExchangeReplyMessagePreparator(
-            SshContext context, EcdhKeyExchangeReplyMessage message) {
-        super(context, message);
+            Chooser chooser, EcdhKeyExchangeReplyMessage message) {
+        super(chooser, message);
     }
 
     @Override

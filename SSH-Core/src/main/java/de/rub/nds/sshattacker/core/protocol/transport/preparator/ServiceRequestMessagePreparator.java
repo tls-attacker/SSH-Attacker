@@ -10,17 +10,17 @@ package de.rub.nds.sshattacker.core.protocol.transport.preparator;
 import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.transport.message.ServiceRequestMessage;
-import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class ServiceRequestMessagePreparator extends SshMessagePreparator<ServiceRequestMessage> {
 
-    public ServiceRequestMessagePreparator(SshContext context, ServiceRequestMessage message) {
-        super(context, message);
+    public ServiceRequestMessagePreparator(Chooser chooser, ServiceRequestMessage message) {
+        super(chooser, message);
     }
 
     @Override
     public void prepareMessageSpecificContents() {
         getObject().setMessageID(MessageIDConstant.SSH_MSG_SERVICE_REQUEST);
-        getObject().setServiceName(context.getConfig().getServiceName(), true);
+        getObject().setServiceName(chooser.getConfig().getServiceName(), true);
     }
 }

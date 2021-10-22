@@ -8,20 +8,20 @@
 package de.rub.nds.sshattacker.core.protocol.common;
 
 import de.rub.nds.sshattacker.core.exceptions.PreparationException;
-import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public abstract class Preparator<T> {
 
     private final T object;
-    protected final SshContext context;
+    protected final Chooser chooser;
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public Preparator(SshContext context, T message) {
+    public Preparator(Chooser chooser, T message) {
         this.object = message;
-        this.context = context;
+        this.chooser = chooser;
         if (object == null) {
             throw new PreparationException("Cannot prepare NULL");
         }
@@ -35,7 +35,7 @@ public abstract class Preparator<T> {
 
     // TODO: Remove this workaround once everything is prepared over context fields
     protected void raisePreparationException(String errorMsg) {
-        if (context.getConfig().getAvoidPreparationExceptions()) {
+        if (chooser.getConfig().getAvoidPreparationExceptions()) {
             LOGGER.warn(errorMsg);
         } else {
             throw new PreparationException(errorMsg);

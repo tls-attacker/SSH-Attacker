@@ -9,11 +9,11 @@ package executing;
 
 import de.rub.nds.sshattacker.core.constants.RunningModeType;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelDataMessage;
-import de.rub.nds.sshattacker.core.protocol.util.ReceiveMessageHelper;
-import de.rub.nds.sshattacker.core.protocol.util.SendMessageHelper;
 import de.rub.nds.sshattacker.core.state.State;
+import de.rub.nds.sshattacker.core.workflow.DefaultWorkflowExecutor;
 import de.rub.nds.sshattacker.core.workflow.WorkflowTrace;
-import de.rub.nds.sshattacker.core.workflow.executor.DefaultWorkflowExecutor;
+import de.rub.nds.sshattacker.core.workflow.action.executor.ReceiveMessageHelper;
+import de.rub.nds.sshattacker.core.workflow.action.executor.SendMessageHelper;
 import de.rub.nds.sshattacker.core.workflow.factory.WorkflowConfigurationFactory;
 import de.rub.nds.sshattacker.core.workflow.factory.WorkflowTraceType;
 import java.io.BufferedReader;

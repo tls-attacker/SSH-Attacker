@@ -10,12 +10,12 @@ package de.rub.nds.sshattacker.core.protocol.transport.preparator;
 import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.transport.message.NewKeysMessage;
-import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class NewKeysMessagePreparator extends SshMessagePreparator<NewKeysMessage> {
 
-    public NewKeysMessagePreparator(SshContext context, NewKeysMessage message) {
-        super(context, message);
+    public NewKeysMessagePreparator(Chooser chooser, NewKeysMessage message) {
+        super(chooser, message);
     }
 
     @Override

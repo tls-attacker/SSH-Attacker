@@ -36,7 +36,7 @@ public class ChannelFailureMessageHandler extends SshMessageHandler<ChannelFailu
 
     @Override
     public ChannelFailureMessagePreparator getPreparator() {
-        return new ChannelFailureMessagePreparator(context, message);
+        return new ChannelFailureMessagePreparator(context.getChooser(), message);
     }
 
     @Override
