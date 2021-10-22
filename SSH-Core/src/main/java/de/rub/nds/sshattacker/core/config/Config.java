@@ -161,7 +161,7 @@ public class Config implements Serializable {
         serverSupportedHostKeyAlgorithms = new LinkedList<>(clientSupportedHostKeyAlgorithms);
 
         clientSupportedCipherAlgorithmsClientToServer = new LinkedList<>();
-        clientSupportedCipherAlgorithmsClientToServer.add(EncryptionAlgorithm.AES128_CBC);
+        clientSupportedCipherAlgorithmsClientToServer.add(EncryptionAlgorithm.AES128_CTR);
         clientSupportedCipherAlgorithmsServerToClient =
                 new LinkedList<>(clientSupportedCipherAlgorithmsClientToServer);
         serverSupportedCipherAlgorithmsClientToServer =
@@ -170,7 +170,7 @@ public class Config implements Serializable {
                 new LinkedList<>(clientSupportedCipherAlgorithmsClientToServer);
 
         clientSupportedMacAlgorithmsClientToServer = new LinkedList<>();
-        clientSupportedMacAlgorithmsClientToServer.add(MacAlgorithm.HMAC_SHA1);
+        clientSupportedMacAlgorithmsClientToServer.add(MacAlgorithm.HMAC_SHA2_512_ETM_OPENSSH_COM);
         clientSupportedMacAlgorithmsServerToClient =
                 new LinkedList<>(clientSupportedMacAlgorithmsClientToServer);
         serverSupportedMacAlgorithmsServerToClient =

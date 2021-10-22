@@ -103,7 +103,13 @@ public enum PublicKeyAuthenticationAlgorithm {
     ECDSA_SHA2_NISTP256_CERT_V01_OPENSSH_COM("ecdsa-sha2-nistp256-cert-v01@openssh.com"),
     ECDSA_SHA2_NISTP384_CERT_V01_OPENSSH_COM("ecdsa-sha2-nistp384-cert-v01@openssh.com"),
     ECDSA_SHA2_NISTP521_CERT_V01_OPENSSH_COM("ecdsa-sha2-nistp521-cert-v01@openssh.com"),
-    SSH_ED25519_CERT_V01_OPENSSH_COM("ssh-ed25519-cert-v01@openssh.com");
+    SSH_ED25519_CERT_V01_OPENSSH_COM("ssh-ed25519-cert-v01@openssh.com"),
+    // [ SSH.COM ]
+    SSH_RSA_SHA224_SSH_COM("ssh-rsa-sha224@ssh.com"),
+    SSH_RSA_SHA256_SSH_COM("ssh-rsa-sha256@ssh.com"),
+    SSH_RSA_SHA384_SSH_COM("ssh-rsa-sha384@ssh.com"),
+    SSH_RSA_SHA512_SSH_COM("ssh-rsa-sha512@ssh.com");
+
 
     private final String name;
 
