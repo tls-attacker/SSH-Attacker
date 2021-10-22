@@ -10,14 +10,14 @@ package de.rub.nds.sshattacker.core.protocol.connection.preparator;
 import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelWindowAdjustMessage;
-import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class ChannelWindowAdjustMessagePreparator
         extends SshMessagePreparator<ChannelWindowAdjustMessage> {
 
     public ChannelWindowAdjustMessagePreparator(
-            SshContext context, ChannelWindowAdjustMessage message) {
-        super(context, message);
+            Chooser chooser, ChannelWindowAdjustMessage message) {
+        super(chooser, message);
     }
 
     @Override

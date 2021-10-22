@@ -15,14 +15,14 @@ import de.rub.nds.sshattacker.core.protocol.transport.message.KeyExchangeInitMes
 import de.rub.nds.sshattacker.core.protocol.transport.message.NewKeysMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.message.ServiceRequestMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.message.VersionExchangeMessage;
-import de.rub.nds.sshattacker.core.protocol.util.ReceiveMessageHelper;
-import de.rub.nds.sshattacker.core.protocol.util.SendMessageHelper;
 import de.rub.nds.sshattacker.core.state.State;
+import de.rub.nds.sshattacker.core.workflow.DefaultWorkflowExecutor;
 import de.rub.nds.sshattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.sshattacker.core.workflow.action.ActivateEncryptionAction;
 import de.rub.nds.sshattacker.core.workflow.action.ReceiveAction;
 import de.rub.nds.sshattacker.core.workflow.action.SendAction;
-import de.rub.nds.sshattacker.core.workflow.executor.DefaultWorkflowExecutor;
+import de.rub.nds.sshattacker.core.workflow.action.executor.ReceiveMessageHelper;
+import de.rub.nds.sshattacker.core.workflow.action.executor.SendMessageHelper;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 

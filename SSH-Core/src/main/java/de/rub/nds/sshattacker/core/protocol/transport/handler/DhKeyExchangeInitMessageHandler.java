@@ -41,7 +41,7 @@ public class DhKeyExchangeInitMessageHandler extends SshMessageHandler<DhKeyExch
 
     @Override
     public DhKeyExchangeInitMessagePreparator getPreparator() {
-        return new DhKeyExchangeInitMessagePreparator(context, message);
+        return new DhKeyExchangeInitMessagePreparator(context.getChooser(), message);
     }
 
     @Override

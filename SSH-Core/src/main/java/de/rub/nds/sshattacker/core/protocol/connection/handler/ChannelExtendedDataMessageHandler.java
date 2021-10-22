@@ -38,7 +38,7 @@ public class ChannelExtendedDataMessageHandler
 
     @Override
     public ChannelExtendedDataMessagePreparator getPreparator() {
-        return new ChannelExtendedDataMessagePreparator(context, message);
+        return new ChannelExtendedDataMessagePreparator(context.getChooser(), message);
     }
 
     @Override

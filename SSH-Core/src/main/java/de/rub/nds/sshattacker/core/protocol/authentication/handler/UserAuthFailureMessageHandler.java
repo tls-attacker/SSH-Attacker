@@ -36,7 +36,7 @@ public class UserAuthFailureMessageHandler extends SshMessageHandler<UserAuthFai
 
     @Override
     public UserAuthFailureMessagePreparator getPreparator() {
-        return new UserAuthFailureMessagePreparator(context, message);
+        return new UserAuthFailureMessagePreparator(context.getChooser(), message);
     }
 
     @Override

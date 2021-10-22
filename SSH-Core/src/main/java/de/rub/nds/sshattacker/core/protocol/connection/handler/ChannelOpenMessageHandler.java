@@ -36,7 +36,7 @@ public class ChannelOpenMessageHandler extends SshMessageHandler<ChannelOpenMess
 
     @Override
     public ChannelOpenMessagePreparator getPreparator() {
-        return new ChannelOpenMessagePreparator(context, message);
+        return new ChannelOpenMessagePreparator(context.getChooser(), message);
     }
 
     @Override

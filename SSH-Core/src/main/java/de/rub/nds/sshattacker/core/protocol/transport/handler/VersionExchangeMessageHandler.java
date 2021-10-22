@@ -44,7 +44,7 @@ public class VersionExchangeMessageHandler extends ProtocolMessageHandler<Versio
 
     @Override
     public VersionExchangeMessagePreparator getPreparator() {
-        return new VersionExchangeMessagePreparator(context, message);
+        return new VersionExchangeMessagePreparator(context.getChooser(), message);
     }
 
     @Override

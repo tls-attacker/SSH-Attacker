@@ -10,14 +10,14 @@ package de.rub.nds.sshattacker.core.protocol.transport.preparator;
 import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.transport.message.RsaKeyExchangePubkeyMessage;
-import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class RsaKeyExchangePubkeyMessagePreparator
         extends SshMessagePreparator<RsaKeyExchangePubkeyMessage> {
 
     public RsaKeyExchangePubkeyMessagePreparator(
-            SshContext context, RsaKeyExchangePubkeyMessage message) {
-        super(context, message);
+            Chooser chooser, RsaKeyExchangePubkeyMessage message) {
+        super(chooser, message);
     }
 
     @Override

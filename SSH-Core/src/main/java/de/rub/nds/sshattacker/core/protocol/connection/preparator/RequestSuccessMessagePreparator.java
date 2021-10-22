@@ -10,12 +10,12 @@ package de.rub.nds.sshattacker.core.protocol.connection.preparator;
 import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.connection.message.RequestSuccessMessage;
-import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class RequestSuccessMessagePreparator extends SshMessagePreparator<RequestSuccessMessage> {
 
-    public RequestSuccessMessagePreparator(SshContext context, RequestSuccessMessage message) {
-        super(context, message);
+    public RequestSuccessMessagePreparator(Chooser chooser, RequestSuccessMessage message) {
+        super(chooser, message);
     }
 
     @Override

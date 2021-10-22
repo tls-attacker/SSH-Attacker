@@ -11,14 +11,14 @@ import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
 import de.rub.nds.sshattacker.core.constants.NamedDHGroup;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.transport.message.DhGexKeyExchangeGroupMessage;
-import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class DhGexKeyExchangeGroupMessagePreparator
         extends SshMessagePreparator<DhGexKeyExchangeGroupMessage> {
 
     public DhGexKeyExchangeGroupMessagePreparator(
-            SshContext context, DhGexKeyExchangeGroupMessage message) {
-        super(context, message);
+            Chooser chooser, DhGexKeyExchangeGroupMessage message) {
+        super(chooser, message);
     }
 
     @Override

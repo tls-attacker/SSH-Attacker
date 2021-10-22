@@ -10,121 +10,101 @@ package de.rub.nds.sshattacker.core.protocol.transport.preparator;
 import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.transport.message.KeyExchangeInitMessage;
-import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class KeyExchangeInitMessagePreparator extends SshMessagePreparator<KeyExchangeInitMessage> {
 
-    public KeyExchangeInitMessagePreparator(SshContext context, KeyExchangeInitMessage message) {
-        super(context, message);
+    public KeyExchangeInitMessagePreparator(Chooser chooser, KeyExchangeInitMessage message) {
+        super(chooser, message);
     }
 
     @Override
     public void prepareMessageSpecificContents() {
         getObject().setMessageID(MessageIDConstant.SSH_MSG_KEXINIT);
-        if (context.isClient()) {
-            getObject().setCookie(context.getChooser().getClientCookie());
+        if (chooser.getContext().isClient()) {
+            getObject().setCookie(chooser.getClientCookie());
             getObject()
                     .setKeyExchangeAlgorithms(
-                            context.getChooser().getClientSupportedKeyExchangeAlgorithms(), true);
+                            chooser.getClientSupportedKeyExchangeAlgorithms(), true);
             getObject()
                     .setServerHostKeyAlgorithms(
-                            context.getChooser().getClientSupportedHostKeyAlgorithms(), true);
+                            chooser.getClientSupportedHostKeyAlgorithms(), true);
             getObject()
                     .setEncryptionAlgorithmsClientToServer(
-                            context.getChooser().getClientSupportedCipherAlgorithmsClientToServer(),
-                            true);
+                            chooser.getClientSupportedCipherAlgorithmsClientToServer(), true);
             getObject()
                     .setEncryptionAlgorithmsServerToClient(
-                            context.getChooser().getClientSupportedCipherAlgorithmsServerToClient(),
-                            true);
+                            chooser.getClientSupportedCipherAlgorithmsServerToClient(), true);
             getObject()
                     .setMacAlgorithmsClientToServer(
-                            context.getChooser().getClientSupportedMacAlgorithmsClientToServer(),
-                            true);
+                            chooser.getClientSupportedMacAlgorithmsClientToServer(), true);
             getObject()
                     .setMacAlgorithmsServerToClient(
-                            context.getChooser().getClientSupportedMacAlgorithmsServerToClient(),
-                            true);
+                            chooser.getClientSupportedMacAlgorithmsServerToClient(), true);
             getObject()
                     .setCompressionAlgorithmsClientToServer(
-                            context.getChooser()
-                                    .getClientSupportedCompressionAlgorithmsClientToServer(),
-                            true);
+                            chooser.getClientSupportedCompressionAlgorithmsClientToServer(), true);
             getObject()
                     .setCompressionAlgorithmsServerToClient(
-                            context.getChooser()
-                                    .getClientSupportedCompressionAlgorithmsServerToClient(),
-                            true);
+                            chooser.getClientSupportedCompressionAlgorithmsServerToClient(), true);
             getObject()
                     .setLanguagesClientToServer(
-                            context.getChooser()
-                                    .getClientSupportedLanguagesClientToServer()
+                            chooser.getClientSupportedLanguagesClientToServer()
                                     .toArray(new String[0]),
                             true);
             getObject()
                     .setLanguagesServerToClient(
-                            context.getChooser()
-                                    .getClientSupportedLanguagesServerToClient()
+                            chooser.getClientSupportedLanguagesServerToClient()
                                     .toArray(new String[0]),
                             true);
             getObject()
                     .setFirstKeyExchangePacketFollows(
-                            context.getChooser().getClientFirstKeyExchangePacketFollows());
-            getObject().setReserved(context.getChooser().getClientReserved());
+                            chooser.getClientFirstKeyExchangePacketFollows());
+            getObject().setReserved(chooser.getClientReserved());
 
-            context.getExchangeHashInstance().setClientKeyExchangeInit(getObject());
+            chooser.getContext().getExchangeHashInstance().setClientKeyExchangeInit(getObject());
         } else {
-            getObject().setCookie(context.getChooser().getServerCookie());
+            getObject().setCookie(chooser.getServerCookie());
             getObject()
                     .setKeyExchangeAlgorithms(
-                            context.getChooser().getServerSupportedKeyExchangeAlgorithms(), true);
+                            chooser.getServerSupportedKeyExchangeAlgorithms(), true);
             getObject()
                     .setServerHostKeyAlgorithms(
-                            context.getChooser().getServerSupportedHostKeyAlgorithms(), true);
+                            chooser.getServerSupportedHostKeyAlgorithms(), true);
             getObject()
                     .setEncryptionAlgorithmsClientToServer(
-                            context.getChooser().getServerSupportedCipherAlgorithmsClientToServer(),
-                            true);
+                            chooser.getServerSupportedCipherAlgorithmsClientToServer(), true);
             getObject()
                     .setEncryptionAlgorithmsServerToClient(
-                            context.getChooser().getServerSupportedCipherAlgorithmsServerToClient(),
-                            true);
+                            chooser.getServerSupportedCipherAlgorithmsServerToClient(), true);
             getObject()
                     .setMacAlgorithmsClientToServer(
-                            context.getChooser().getServerSupportedMacAlgorithmsClientToServer(),
-                            true);
+                            chooser.getServerSupportedMacAlgorithmsClientToServer(), true);
             getObject()
                     .setMacAlgorithmsServerToClient(
-                            context.getChooser().getServerSupportedMacAlgorithmsServerToClient(),
-                            true);
+                            chooser.getServerSupportedMacAlgorithmsServerToClient(), true);
             getObject()
                     .setCompressionAlgorithmsClientToServer(
-                            context.getChooser()
-                                    .getServerSupportedCompressionAlgorithmsClientToServer(),
-                            true);
+                            chooser.getServerSupportedCompressionAlgorithmsClientToServer(), true);
             getObject()
                     .setCompressionAlgorithmsServerToClient(
-                            context.getChooser()
-                                    .getServerSupportedCompressionAlgorithmsServerToClient(),
-                            true);
+                            chooser.getServerSupportedCompressionAlgorithmsServerToClient(), true);
             getObject()
                     .setLanguagesClientToServer(
-                            context.getChooser()
-                                    .getServerSupportedLanguagesClientToServer()
+                            chooser.getServerSupportedLanguagesClientToServer()
                                     .toArray(new String[0]),
                             true);
             getObject()
                     .setLanguagesServerToClient(
-                            context.getChooser()
-                                    .getServerSupportedLanguagesServerToClient()
+                            chooser.getServerSupportedLanguagesServerToClient()
                                     .toArray(new String[0]),
                             true);
             getObject()
                     .setFirstKeyExchangePacketFollows(
-                            context.getChooser().getServerFirstKeyExchangePacketFollows());
-            getObject().setReserved(context.getChooser().getServerReserved());
+                            chooser.getServerFirstKeyExchangePacketFollows());
+            getObject().setReserved(chooser.getServerReserved());
 
-            context.getExchangeHashInstance().setServerKeyExchangeInit(getObject());
+            chooser.getContext().getExchangeHashInstance().setServerKeyExchangeInit(getObject());
         }
     }
 }

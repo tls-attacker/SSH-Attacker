@@ -10,11 +10,11 @@ package de.rub.nds.sshattacker.template;
 import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.protocol.transport.message.VersionExchangeMessage;
 import de.rub.nds.sshattacker.core.state.State;
+import de.rub.nds.sshattacker.core.workflow.DefaultWorkflowExecutor;
+import de.rub.nds.sshattacker.core.workflow.WorkflowExecutor;
 import de.rub.nds.sshattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.sshattacker.core.workflow.WorkflowTraceUtil;
 import de.rub.nds.sshattacker.core.workflow.action.ReceiveAction;
-import de.rub.nds.sshattacker.core.workflow.executor.DefaultWorkflowExecutor;
-import de.rub.nds.sshattacker.core.workflow.executor.WorkflowExecutor;
 import de.rub.nds.sshattacker.core.workflow.factory.WorkflowTraceType;
 
 public class Project {

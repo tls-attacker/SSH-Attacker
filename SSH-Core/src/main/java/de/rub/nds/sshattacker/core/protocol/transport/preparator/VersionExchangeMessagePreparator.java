@@ -9,29 +9,29 @@ package de.rub.nds.sshattacker.core.protocol.transport.preparator;
 
 import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.transport.message.VersionExchangeMessage;
-import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class VersionExchangeMessagePreparator
         extends ProtocolMessagePreparator<VersionExchangeMessage> {
 
-    public VersionExchangeMessagePreparator(SshContext context, VersionExchangeMessage message) {
-        super(context, message);
+    public VersionExchangeMessagePreparator(Chooser chooser, VersionExchangeMessage message) {
+        super(chooser, message);
     }
 
     @Override
     public void prepareProtocolMessageContents() {
-        if (context.isClient()) {
-            getObject().setVersion(context.getChooser().getClientVersion());
-            getObject().setComment(context.getChooser().getClientComment());
+        if (chooser.getContext().isClient()) {
+            getObject().setVersion(chooser.getClientVersion());
+            getObject().setComment(chooser.getClientComment());
             // TODO: Use chooser here
             getObject().setEndOfMessageSequence("\r\n");
-            context.getExchangeHashInstance().setClientVersion(getObject());
+            chooser.getContext().getExchangeHashInstance().setClientVersion(getObject());
         } else {
-            getObject().setVersion(context.getChooser().getServerVersion());
-            getObject().setComment(context.getChooser().getServerComment());
+            getObject().setVersion(chooser.getServerVersion());
+            getObject().setComment(chooser.getServerComment());
             // TODO: Use chooser here
             getObject().setEndOfMessageSequence("\r\n");
-            context.getExchangeHashInstance().setServerVersion(getObject());
+            chooser.getContext().getExchangeHashInstance().setServerVersion(getObject());
         }
     }
 }

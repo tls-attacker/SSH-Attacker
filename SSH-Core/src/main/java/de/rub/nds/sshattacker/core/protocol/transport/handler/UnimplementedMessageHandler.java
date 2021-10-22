@@ -36,7 +36,7 @@ public class UnimplementedMessageHandler extends SshMessageHandler<Unimplemented
 
     @Override
     public UnimplementedMessagePreparator getPreparator() {
-        return new UnimplementedMessagePreparator(context, message);
+        return new UnimplementedMessagePreparator(context.getChooser(), message);
     }
 
     @Override

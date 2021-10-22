@@ -36,7 +36,7 @@ public class UserAuthSuccessMessageHandler extends SshMessageHandler<UserAuthSuc
 
     @Override
     public UserAuthSuccessMessagePreparator getPreparator() {
-        return new UserAuthSuccessMessagePreparator(context, message);
+        return new UserAuthSuccessMessagePreparator(context.getChooser(), message);
     }
 
     @Override

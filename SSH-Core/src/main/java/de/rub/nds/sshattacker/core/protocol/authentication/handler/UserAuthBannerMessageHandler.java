@@ -36,7 +36,7 @@ public class UserAuthBannerMessageHandler extends SshMessageHandler<UserAuthBann
 
     @Override
     public UserAuthBannerMessagePreparator getPreparator() {
-        return new UserAuthBannerMessagePreparator(context, message);
+        return new UserAuthBannerMessagePreparator(context.getChooser(), message);
     }
 
     @Override

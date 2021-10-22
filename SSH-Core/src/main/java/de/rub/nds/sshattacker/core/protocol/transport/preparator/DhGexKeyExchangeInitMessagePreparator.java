@@ -15,7 +15,7 @@ import de.rub.nds.sshattacker.core.crypto.kex.DhKeyExchange;
 import de.rub.nds.sshattacker.core.crypto.kex.KeyExchange;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.transport.message.DhGexKeyExchangeInitMessage;
-import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import java.math.BigInteger;
 import java.util.Optional;
 import java.util.Random;
@@ -28,14 +28,14 @@ public class DhGexKeyExchangeInitMessagePreparator
     private static final Logger LOGGER = LogManager.getLogger();
 
     public DhGexKeyExchangeInitMessagePreparator(
-            SshContext context, DhGexKeyExchangeInitMessage message) {
-        super(context, message);
+            Chooser chooser, DhGexKeyExchangeInitMessage message) {
+        super(chooser, message);
     }
 
     @Override
     public void prepareMessageSpecificContents() {
         getObject().setMessageID(MessageIDConstant.SSH_MSG_KEX_DH_GEX_INIT);
-        Optional<KeyExchange> keyExchange = context.getKeyExchangeInstance();
+        Optional<KeyExchange> keyExchange = chooser.getContext().getKeyExchangeInstance();
         if (keyExchange.isPresent()
                 && keyExchange.get() instanceof DhKeyExchange
                 && ((DhKeyExchange) keyExchange.get()).areGroupParametersSet()) {
@@ -49,7 +49,7 @@ public class DhGexKeyExchangeInitMessagePreparator
             getObject().setPublicKey(new BigInteger(256, new Random()), true);
         }
 
-        ExchangeHash exchangeHash = context.getExchangeHashInstance();
+        ExchangeHash exchangeHash = chooser.getContext().getExchangeHashInstance();
         if (exchangeHash instanceof DhGexExchangeHash) {
             ((DhGexExchangeHash) exchangeHash)
                     .setClientDHPublicKey(getObject().getPublicKey().getValue().toByteArray());

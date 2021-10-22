@@ -230,6 +230,8 @@ public class Config implements Serializable {
      */
     private Boolean enableEncryptionOnNewKeysMessage = true;
 
+    private ChooserType chooserType = ChooserType.DEFAULT;
+
     public Config() {
 
         defaultClientConnection = new OutboundConnection("client", 65222, "localhost");
@@ -736,5 +738,13 @@ public class Config implements Serializable {
 
     public void setEnableEncryptionOnNewKeysMessage(Boolean enableEncryptionOnNewKeysMessage) {
         this.enableEncryptionOnNewKeysMessage = enableEncryptionOnNewKeysMessage;
+    }
+
+    public ChooserType getChooserType() {
+        return chooserType;
+    }
+
+    public void setChooserType(ChooserType chooserType) {
+        this.chooserType = chooserType;
     }
 }

@@ -17,6 +17,8 @@ import de.rub.nds.sshattacker.core.exceptions.TransportHandlerConnectException;
 import de.rub.nds.sshattacker.core.protocol.layers.BinaryPacketLayer;
 import de.rub.nds.sshattacker.core.protocol.layers.CryptoLayer;
 import de.rub.nds.sshattacker.core.protocol.layers.MessageLayer;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
+import de.rub.nds.sshattacker.core.workflow.chooser.ChooserFactory;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import de.rub.nds.tlsattacker.transport.TransportHandlerFactory;
@@ -240,8 +242,6 @@ public class SshContext {
     public void init(Config config, AliasedConnection connection) {
         this.config = config;
         this.connection = connection;
-        // TODO: this could introduce bugs
-        chooser = new Chooser(this);
         exchangeHash = new ExchangeHash(this);
     }
 
@@ -251,16 +251,11 @@ public class SshContext {
         return config;
     }
 
-    public void setConfig(Config config) {
-        this.config = config;
-    }
-
     public Chooser getChooser() {
+        if (chooser == null) {
+            chooser = ChooserFactory.getChooser(config.getChooserType(), this, config);
+        }
         return chooser;
-    }
-
-    public void setChooser(Chooser chooser) {
-        this.chooser = chooser;
     }
 
     public AliasedConnection getConnection() {

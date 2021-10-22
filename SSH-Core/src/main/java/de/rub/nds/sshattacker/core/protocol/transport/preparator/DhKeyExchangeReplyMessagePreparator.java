@@ -10,15 +10,14 @@ package de.rub.nds.sshattacker.core.protocol.transport.preparator;
 import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.transport.message.DhKeyExchangeReplyMessage;
-import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import java.math.BigInteger;
 
 public class DhKeyExchangeReplyMessagePreparator
         extends SshMessagePreparator<DhKeyExchangeReplyMessage> {
 
-    public DhKeyExchangeReplyMessagePreparator(
-            SshContext context, DhKeyExchangeReplyMessage message) {
-        super(context, message);
+    public DhKeyExchangeReplyMessagePreparator(Chooser chooser, DhKeyExchangeReplyMessage message) {
+        super(chooser, message);
     }
 
     @Override

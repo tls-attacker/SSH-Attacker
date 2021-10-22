@@ -38,7 +38,7 @@ public class ChannelWindowAdjustMessageHandler
 
     @Override
     public ChannelWindowAdjustMessagePreparator getPreparator() {
-        return new ChannelWindowAdjustMessagePreparator(context, message);
+        return new ChannelWindowAdjustMessagePreparator(context.getChooser(), message);
     }
 
     @Override

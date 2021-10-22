@@ -39,7 +39,7 @@ public class ChannelOpenConfirmationMessageHandler
 
     @Override
     public ChannelOpenConfirmationMessagePreparator getPreparator() {
-        return new ChannelOpenConfirmationMessagePreparator(context, message);
+        return new ChannelOpenConfirmationMessagePreparator(context.getChooser(), message);
     }
 
     @Override

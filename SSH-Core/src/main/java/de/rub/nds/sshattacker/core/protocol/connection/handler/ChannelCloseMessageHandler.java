@@ -36,7 +36,7 @@ public class ChannelCloseMessageHandler extends SshMessageHandler<ChannelCloseMe
 
     @Override
     public ChannelCloseMessagePreparator getPreparator() {
-        return new ChannelCloseMessagePreparator(context, message);
+        return new ChannelCloseMessagePreparator(context.getChooser(), message);
     }
 
     @Override

@@ -202,7 +202,7 @@ public class KeyExchangeInitMessageHandler extends SshMessageHandler<KeyExchange
 
     @Override
     public KeyExchangeInitMessagePreparator getPreparator() {
-        return new KeyExchangeInitMessagePreparator(context, message);
+        return new KeyExchangeInitMessagePreparator(context.getChooser(), message);
     }
 
     @Override

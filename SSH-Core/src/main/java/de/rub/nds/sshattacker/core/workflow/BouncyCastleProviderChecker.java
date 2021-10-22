@@ -5,7 +5,7 @@
  *
  * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
-package de.rub.nds.sshattacker.core.workflow.executor;
+package de.rub.nds.sshattacker.core.workflow;
 
 import java.security.Provider;
 import java.security.Security;

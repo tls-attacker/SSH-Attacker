@@ -12,33 +12,33 @@ import de.rub.nds.sshattacker.core.crypto.hash.DhGexOldExchangeHash;
 import de.rub.nds.sshattacker.core.crypto.kex.DhKeyExchange;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.transport.message.DhGexKeyExchangeOldRequestMessage;
-import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class DhGexKeyExchangeOldRequestMessagePreparator
         extends SshMessagePreparator<DhGexKeyExchangeOldRequestMessage> {
 
     public DhGexKeyExchangeOldRequestMessagePreparator(
-            SshContext context, DhGexKeyExchangeOldRequestMessage message) {
-        super(context, message);
+            Chooser chooser, DhGexKeyExchangeOldRequestMessage message) {
+        super(chooser, message);
     }
 
     @Override
     public void prepareMessageSpecificContents() {
         getObject().setMessageID(MessageIDConstant.SSH_MSG_KEX_DH_GEX_REQUEST_OLD);
-        if (context.getKeyExchangeAlgorithm().isPresent()) {
+        if (chooser.getContext().getKeyExchangeAlgorithm().isPresent()) {
             DhKeyExchange keyExchange =
-                    DhKeyExchange.newInstance(context.getKeyExchangeAlgorithm().get());
-            context.setKeyExchangeInstance(keyExchange);
+                    DhKeyExchange.newInstance(chooser.getContext().getKeyExchangeAlgorithm().get());
+            chooser.getContext().setKeyExchangeInstance(keyExchange);
         } else {
             raisePreparationException(
                     "Unable to instantiate a new DH key exchange, the negotiated key exchange algorithm is not set");
         }
 
         DhGexOldExchangeHash dhGexOldExchangeHash =
-                DhGexOldExchangeHash.from(context.getExchangeHashInstance());
-        dhGexOldExchangeHash.setPreferredGroupSize(context.getChooser().getPreferredDHGroupSize());
-        context.setExchangeHashInstance(dhGexOldExchangeHash);
+                DhGexOldExchangeHash.from(chooser.getContext().getExchangeHashInstance());
+        dhGexOldExchangeHash.setPreferredGroupSize(chooser.getPreferredDHGroupSize());
+        chooser.getContext().setExchangeHashInstance(dhGexOldExchangeHash);
 
-        getObject().setPreferredGroupSize(context.getChooser().getPreferredDHGroupSize());
+        getObject().setPreferredGroupSize(chooser.getPreferredDHGroupSize());
     }
 }

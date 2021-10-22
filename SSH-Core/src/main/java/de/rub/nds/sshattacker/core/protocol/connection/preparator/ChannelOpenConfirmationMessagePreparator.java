@@ -10,14 +10,14 @@ package de.rub.nds.sshattacker.core.protocol.connection.preparator;
 import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelOpenConfirmationMessage;
-import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class ChannelOpenConfirmationMessagePreparator
         extends SshMessagePreparator<ChannelOpenConfirmationMessage> {
 
     public ChannelOpenConfirmationMessagePreparator(
-            SshContext context, ChannelOpenConfirmationMessage message) {
-        super(context, message);
+            Chooser chooser, ChannelOpenConfirmationMessage message) {
+        super(chooser, message);
     }
 
     @Override

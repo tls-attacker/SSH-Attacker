@@ -42,7 +42,7 @@ public class EcdhKeyExchangeInitMessageHandler
 
     @Override
     public EcdhKeyExchangeInitMessagePreparator getPreparator() {
-        return new EcdhKeyExchangeInitMessagePreparator(context, message);
+        return new EcdhKeyExchangeInitMessagePreparator(context.getChooser(), message);
     }
 
     @Override

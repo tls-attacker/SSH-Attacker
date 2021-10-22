@@ -10,12 +10,12 @@ package de.rub.nds.sshattacker.core.protocol.transport.preparator;
 import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.transport.message.IgnoreMessage;
-import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class IgnoreMessagePreparator extends SshMessagePreparator<IgnoreMessage> {
 
-    public IgnoreMessagePreparator(SshContext context, IgnoreMessage message) {
-        super(context, message);
+    public IgnoreMessagePreparator(Chooser chooser, IgnoreMessage message) {
+        super(chooser, message);
     }
 
     @Override

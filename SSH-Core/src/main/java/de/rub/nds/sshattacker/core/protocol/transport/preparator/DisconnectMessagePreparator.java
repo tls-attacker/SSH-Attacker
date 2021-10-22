@@ -11,12 +11,12 @@ import de.rub.nds.sshattacker.core.constants.DisconnectReason;
 import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.transport.message.DisconnectMessage;
-import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class DisconnectMessagePreparator extends SshMessagePreparator<DisconnectMessage> {
 
-    public DisconnectMessagePreparator(SshContext context, DisconnectMessage message) {
-        super(context, message);
+    public DisconnectMessagePreparator(Chooser chooser, DisconnectMessage message) {
+        super(chooser, message);
     }
 
     @Override

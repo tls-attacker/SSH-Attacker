@@ -36,7 +36,7 @@ public class RequestFailureMessageHandler extends SshMessageHandler<RequestFailu
 
     @Override
     public RequestFailureMessagePreparator getPreparator() {
-        return new RequestFailureMessagePreparator(context, message);
+        return new RequestFailureMessagePreparator(context.getChooser(), message);
     }
 
     @Override

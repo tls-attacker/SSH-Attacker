@@ -11,14 +11,14 @@ import de.rub.nds.sshattacker.core.constants.ExtendedChannelDataType;
 import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelExtendedDataMessage;
-import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class ChannelExtendedDataMessagePreparator
         extends SshMessagePreparator<ChannelExtendedDataMessage> {
 
     public ChannelExtendedDataMessagePreparator(
-            SshContext context, ChannelExtendedDataMessage message) {
-        super(context, message);
+            Chooser chooser, ChannelExtendedDataMessage message) {
+        super(chooser, message);
     }
 
     @Override

@@ -36,7 +36,7 @@ public class RequestSuccessMessageHandler extends SshMessageHandler<RequestSucce
 
     @Override
     public SshMessagePreparator<RequestSuccessMessage> getPreparator() {
-        return new RequestSuccessMessagePreparator(context, message);
+        return new RequestSuccessMessagePreparator(context.getChooser(), message);
     }
 
     @Override

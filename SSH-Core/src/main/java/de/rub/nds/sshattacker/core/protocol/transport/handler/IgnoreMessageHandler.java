@@ -34,7 +34,7 @@ public class IgnoreMessageHandler extends SshMessageHandler<IgnoreMessage> {
 
     @Override
     public IgnoreMessagePreparator getPreparator() {
-        return new IgnoreMessagePreparator(context, message);
+        return new IgnoreMessagePreparator(context.getChooser(), message);
     }
 
     @Override
