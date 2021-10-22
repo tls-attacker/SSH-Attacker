@@ -7,8 +7,8 @@
  */
 package de.rub.nds.sshattacker.core.protocol.common;
 
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 import de.rub.nds.sshattacker.core.constants.KeyExchangeAlgorithm;
 import de.rub.nds.sshattacker.core.crypto.hash.DhGexExchangeHash;
@@ -25,6 +25,7 @@ import java.security.Security;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Stream;
+
 import org.apache.commons.lang3.SerializationException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -51,22 +52,18 @@ public class CyclicParserSerializerTest {
     @TestFactory
     public Stream<DynamicTest> generateCyclicDefaultConstructorPairsDynamicTests() {
         Set<Class<? extends ProtocolMessage>> excludedClasses = new HashSet<>();
-        // Exclude UnknownMessage as it is not a standardized protocol message (it is only used when
-        // a message could not be parsed successfully)
+        // Exclude UnknownMessage as it is not a standardized protocol message (it is only used when a message could not be parsed successfully)
         excludedClasses.add(UnknownMessage.class);
 
         return new Reflections("de.rub.nds.sshattacker.core.protocol")
-                .getSubTypesOf(ProtocolMessage.class).stream()
-                        .filter(messageClass -> !Modifier.isAbstract(messageClass.getModifiers()))
-                        .filter(messageClass -> !excludedClasses.contains(messageClass))
-                        .map(
-                                messageClass ->
-                                        DynamicTest.dynamicTest(
-                                                "CyclicDefaultConstructorPairsTest{"
-                                                        + messageClass.getSimpleName()
-                                                        + "}",
-                                                new CyclicDefaultConstructorPairsTest(
-                                                        messageClass)));
+                .getSubTypesOf(ProtocolMessage.class)
+                .stream()
+                .filter(messageClass -> !Modifier.isAbstract(messageClass.getModifiers()))
+                .filter(messageClass -> !excludedClasses.contains(messageClass))
+                .map(messageClass -> DynamicTest.dynamicTest(
+                        "CyclicDefaultConstructorPairsTest{" + messageClass.getSimpleName() + "}",
+                        new CyclicDefaultConstructorPairsTest(messageClass)
+                ));
     }
 
     private static class CyclicDefaultConstructorPairsTest implements Executable {
@@ -90,10 +87,7 @@ public class CyclicParserSerializerTest {
                 if (someMessageConstructor != null) {
                     message = (ProtocolMessage) someMessageConstructor.newInstance();
                 } else {
-                    fail(
-                            "Subclass '"
-                                    + messageClassName
-                                    + "' does not have a default constructor.");
+                    fail("Subclass '" + messageClassName + "' does not have a default constructor.");
                 }
             } catch (SecurityException
                     | InstantiationException
@@ -101,10 +95,7 @@ public class CyclicParserSerializerTest {
                     | IllegalArgumentException
                     | InvocationTargetException e) {
                 LOGGER.fatal(e);
-                fail(
-                        "Unable to construct message instance for subclass '"
-                                + messageClassName
-                                + "'");
+                fail("Unable to construct message instance for subclass '" + messageClassName + "'");
             }
 
             // Create a fresh SshContext and set the key exchange algorithm if necessary
@@ -115,17 +106,10 @@ public class CyclicParserSerializerTest {
                 message.getHandler(context).getPreparator().prepare();
             } catch (PreparationException e) {
                 LOGGER.fatal(e);
-                fail(
-                        "Caught a PreparationException while preparing message of class '"
-                                + messageClassName
-                                + "'");
+                fail("Caught a PreparationException while preparing message of class '" + messageClassName + "'");
             } catch (NotImplementedException e) {
                 LOGGER.error(e);
-                throw new TestAbortedException(
-                        "Unable to prepare message of class '"
-                                + messageClassName
-                                + "' - handler or preparator not implemented",
-                        e);
+                throw new TestAbortedException("Unable to prepare message of class '" + messageClassName + "' - handler or preparator not implemented", e);
             }
 
             // Serialize message into a byte array
@@ -134,17 +118,10 @@ public class CyclicParserSerializerTest {
                 serializedMessage = message.getHandler(context).getSerializer().serialize();
             } catch (SerializationException e) {
                 LOGGER.fatal(e);
-                fail(
-                        "Caught a SerializationException while serializing message of class '"
-                                + messageClassName
-                                + "'");
+                fail("Caught a SerializationException while serializing message of class '" + messageClassName + "'");
             } catch (NotImplementedException e) {
                 LOGGER.fatal(e);
-                throw new TestAbortedException(
-                        "Unable to serialize message of class '"
-                                + messageClassName
-                                + "' - serializer not implemented",
-                        e);
+                throw new TestAbortedException("Unable to serialize message of class '" + messageClassName + "' - serializer not implemented", e);
             }
 
             // Parse the serialized message back into a new instance
@@ -153,39 +130,24 @@ public class CyclicParserSerializerTest {
                 parsedMessage = message.getHandler(context).getParser(serializedMessage, 0).parse();
             } catch (ParserException e) {
                 LOGGER.fatal(e);
-                fail(
-                        "Caught a ParserException while parsing message of class '"
-                                + messageClassName
-                                + "'");
+                fail("Caught a ParserException while parsing message of class '" + messageClassName + "'");
             } catch (NotImplementedException e) {
                 LOGGER.fatal(e);
-                throw new TestAbortedException(
-                        "Unable to parse message of class '"
-                                + messageClassName
-                                + "' - parser not implemented",
-                        e);
+                throw new TestAbortedException("Unable to parse message of class '" + messageClassName + "' - parser not implemented", e);
             }
 
-            // Serializing the parsedMessage again should result in the same bytes as
-            // serializedMessage
+            // Serializing the parsedMessage again should result in the same bytes as serializedMessage
             // This validates the order parse -> serialize
             try {
-                assertArrayEquals(
-                        serializedMessage,
-                        parsedMessage.getHandler(context).getSerializer().serialize());
+                assertArrayEquals(serializedMessage, parsedMessage.getHandler(context).getSerializer().serialize());
             } catch (SerializationException e) {
                 LOGGER.fatal(e);
-                fail(
-                        "Caught a SerializationException during the second serialization of class '"
-                                + messageClassName
-                                + "'");
+                fail("Caught a SerializationException during the second serialization of class '" + messageClassName + "'");
             }
 
-            // TODO: Implement equals() / hashCode() for all message classes and uncomment the
-            // following two assertions
+            // TODO: Implement equals() / hashCode() for all message classes and uncomment the following two assertions
             // On the other hand message should equal parsedMessage
-            // This validates the order serialize -> parse as well as the equals() / hashCode()
-            // methods on the class
+            // This validates the order serialize -> parse as well as the equals() / hashCode() methods on the class
             // assertEquals(message, parsedMessage);
             // assertEquals(message.hashCode(), parsedMessage.hashCode());
         }
@@ -193,29 +155,25 @@ public class CyclicParserSerializerTest {
         private SshContext getSshContext() {
             SshContext context = new SshContext();
 
-            // For now we need to set the key exchange algorithm accordingly whenever we prepare a
-            // message of the key exchange
+            // For now we need to set the key exchange algorithm accordingly whenever we prepare a message of the key exchange
             // TODO: Remove once preparation from config is implemented
             if (messageClass == EcdhKeyExchangeInitMessage.class) {
                 context.setKeyExchangeAlgorithm(KeyExchangeAlgorithm.ECDH_SHA2_NISTP256);
-            } else if (messageClass == DhGexKeyExchangeOldRequestMessage.class
-                    || messageClass == DhGexKeyExchangeRequestMessage.class
-                    || messageClass == DhGexKeyExchangeInitMessage.class) {
-                context.setKeyExchangeAlgorithm(
-                        KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP_EXCHANGE_SHA256);
+            } else if (
+                messageClass == DhGexKeyExchangeOldRequestMessage.class ||
+                messageClass == DhGexKeyExchangeRequestMessage.class ||
+                messageClass == DhGexKeyExchangeInitMessage.class
+            ) {
+                context.setKeyExchangeAlgorithm(KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP_EXCHANGE_SHA256);
             } else if (messageClass == DhKeyExchangeInitMessage.class) {
                 context.setKeyExchangeAlgorithm(KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP14_SHA256);
             }
 
             // TODO: Remove once preparation from config is implemented
             if (messageClass == DhGexKeyExchangeInitMessage.class) {
-                context.setExchangeHashInstance(
-                        DhGexExchangeHash.from(context.getExchangeHashInstance()));
-                // Even though it is a DH GEX message use a named group to prevent exceptions due to
-                // a missing group
-                DhKeyExchange kex =
-                        DhKeyExchange.newInstance(
-                                KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP14_SHA256);
+                context.setExchangeHashInstance(DhGexExchangeHash.from(context.getExchangeHashInstance()));
+                // Even though it is a DH GEX message use a named group to prevent exceptions due to a missing group
+                DhKeyExchange kex = DhKeyExchange.newInstance(KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP14_SHA256);
                 kex.generateLocalKeyPair();
                 context.setKeyExchangeInstance(kex);
             }
