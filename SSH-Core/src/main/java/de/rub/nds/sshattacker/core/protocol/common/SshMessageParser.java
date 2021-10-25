@@ -54,6 +54,8 @@ public abstract class SshMessageParser<T extends SshMessage<T>> extends Protocol
                     return new DhGexKeyExchangeGroupMessageParser(raw, 0).parse();
                 case SSH_MSG_KEX_DH_GEX_REPLY:
                     return new DhGexKeyExchangeReplyMessageParser(raw, 0).parse();
+                case SSH_MSG_KEXRSA_PUBKEY:
+                    return new RsaKeyExchangePubkeyMessageParser(raw, 0).parse();
                 case SSH_MSG_NEWKEYS:
                     return new NewKeysMessageParser(raw, 0).parse();
                 case SSH_MSG_SERVICE_REQUEST:

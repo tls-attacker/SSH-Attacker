@@ -6,6 +6,7 @@ import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
+import de.rub.nds.sshattacker.core.protocol.transport.handler.RsaKeyExchangePubkeyMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class RsaKeyExchangePubkeyMessage extends SshMessage<RsaKeyExchangePubkeyMessage> {
@@ -66,7 +67,7 @@ public class RsaKeyExchangePubkeyMessage extends SshMessage<RsaKeyExchangePubkey
     }
 
     public void setTransientPubkeyLength(int transientPubkeyLength) {
-        this.hostKeyLength =
+        this.transientPubkeyLength =
                 ModifiableVariableFactory.safelySetValue(this.transientPubkeyLength, transientPubkeyLength);
     }
 
@@ -75,25 +76,25 @@ public class RsaKeyExchangePubkeyMessage extends SshMessage<RsaKeyExchangePubkey
     }
 
     public void setTransientPubkey(byte[] transientPubkey) {
-        setHostKey(transientPubkey, false);
+        setTransientPubkey(transientPubkey, false);
     }
 
     public void setTransientPubkey(ModifiableByteArray transientPubkey, boolean adjustLengthField) {
         if (adjustLengthField) {
-            setHostKeyLength(transientPubkey.getValue().length);
+            setTransientPubkeyLength(transientPubkey.getValue().length);
         }
         this.transientPubkey = transientPubkey;
     }
 
     public void setTransientPubkey(byte[] transientPubkey, boolean adjustLengthField) {
         if (adjustLengthField) {
-            setHostKeyLength(transientPubkey.length);
+            setTransientPubkeyLength(transientPubkey.length);
         }
-        this.hostKey = ModifiableVariableFactory.safelySetValue(this.transientPubkey, transientPubkey);
+        this.transientPubkey = ModifiableVariableFactory.safelySetValue(this.transientPubkey, transientPubkey);
     }
 
     @Override
     public SshMessageHandler<RsaKeyExchangePubkeyMessage> getHandler(SshContext context) {
-        return null;
+        return new RsaKeyExchangePubkeyMessageHandler(context, this);
     }
 }
