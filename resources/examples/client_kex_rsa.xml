@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<workflowTrace>
+    <Send>
+        <messages>
+            <VersionExchangeMessage/>
+        </messages>
+    </Send>
+    <Receive/>
+    <Send>
+        <messages>
+            <KeyExchangeInitMessage/>
+        </messages>
+    </Send>
+    <Receive/>
+    <Receive/>
+</workflowTrace>
