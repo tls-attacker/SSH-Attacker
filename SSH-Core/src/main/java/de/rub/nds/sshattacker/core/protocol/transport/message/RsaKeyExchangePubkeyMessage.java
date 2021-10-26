@@ -1,6 +1,7 @@
 package de.rub.nds.sshattacker.core.protocol.transport.message;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
+import de.rub.nds.modifiablevariable.biginteger.ModifiableBigInteger;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
@@ -8,6 +9,9 @@ import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.RsaKeyExchangePubkeyMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.util.RsaPublicKey;
+import de.rub.nds.sshattacker.core.util.RsaPublicKeyParser;
+
 
 public class RsaKeyExchangePubkeyMessage extends SshMessage<RsaKeyExchangePubkeyMessage> {
 
@@ -16,6 +20,8 @@ public class RsaKeyExchangePubkeyMessage extends SshMessage<RsaKeyExchangePubkey
 
     private ModifiableInteger transientPubkeyLength;
     private ModifiableByteArray transientPubkey;
+
+    private RsaPublicKey publicKey;
 
     public RsaKeyExchangePubkeyMessage() {
         super(MessageIDConstant.SSH_MSG_KEXRSA_PUBKEY);
@@ -84,6 +90,7 @@ public class RsaKeyExchangePubkeyMessage extends SshMessage<RsaKeyExchangePubkey
             setTransientPubkeyLength(transientPubkey.getValue().length);
         }
         this.transientPubkey = transientPubkey;
+        parsePublicKey();
     }
 
     public void setTransientPubkey(byte[] transientPubkey, boolean adjustLengthField) {
@@ -91,6 +98,20 @@ public class RsaKeyExchangePubkeyMessage extends SshMessage<RsaKeyExchangePubkey
             setTransientPubkeyLength(transientPubkey.length);
         }
         this.transientPubkey = ModifiableVariableFactory.safelySetValue(this.transientPubkey, transientPubkey);
+        parsePublicKey();
+    }
+
+    private void parsePublicKey() {
+        RsaPublicKeyParser parser = new RsaPublicKeyParser(this.transientPubkey.getValue(), 0);
+        this.publicKey = parser.parse();
+    }
+
+    public ModifiableBigInteger getExponent() {
+        return this.publicKey.getE();
+    }
+
+    public ModifiableBigInteger getModulus() {
+        return this.publicKey.getN();
     }
 
     @Override
