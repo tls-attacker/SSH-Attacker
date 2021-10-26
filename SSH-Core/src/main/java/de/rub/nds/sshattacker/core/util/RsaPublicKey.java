@@ -2,41 +2,80 @@ package de.rub.nds.sshattacker.core.util;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.biginteger.ModifiableBigInteger;
+import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
+import de.rub.nds.sshattacker.core.protocol.common.ModifiableVariableHolder;
 
 import java.math.BigInteger;
 import java.util.Arrays;
+import java.util.List;
 
-public class RsaPublicKey {
-    private ModifiableBigInteger n;
-    private ModifiableBigInteger e;
+public class RsaPublicKey extends ModifiableVariableHolder {
+    private ModifiableInteger modulusLength;
+    private ModifiableBigInteger modulus;
+
+    private ModifiableInteger exponentLength;
+    private ModifiableBigInteger exponent;
 
 
     public RsaPublicKey() {
     }
 
-    public ModifiableBigInteger getN() {
-        return n;
+    // Modulus
+    public ModifiableInteger getModulusLength() {
+        return modulusLength;
     }
 
-    public void setN(byte[] nBytes) {
+    public void setModulusLength(int modulusLength) {
+        this.modulusLength = ModifiableVariableFactory.safelySetValue(this.modulusLength, modulusLength);
+    }
+
+    public void setModulusLength(ModifiableInteger modulusLength) {
+        this.modulusLength = modulusLength;
+    }
+
+    public ModifiableBigInteger getModulus() {
+        return modulus;
+    }
+
+    public void setModulus(byte[] nBytes) {
         BigInteger nNew = new BigInteger(Arrays.toString(nBytes), 16);
-        this.n = ModifiableVariableFactory.safelySetValue(this.n, nNew);
+        this.modulus = ModifiableVariableFactory.safelySetValue(this.modulus, nNew);
     }
 
     public void setN(BigInteger n) {
-        this.n = ModifiableVariableFactory.safelySetValue(this.n, n);
+        this.modulus = ModifiableVariableFactory.safelySetValue(this.modulus, n);
     }
 
-    public ModifiableBigInteger getE() {
-        return e;
+    // Exponent
+    public ModifiableInteger getExponentLength() {
+        return exponentLength;
     }
 
-    public void setE(byte[] eBytes) {
+    public void setExponentLength(int exponentLength) {
+        this.exponentLength = ModifiableVariableFactory.safelySetValue(this.exponentLength, exponentLength);
+    }
+
+    public void setExponentLength(ModifiableInteger exponentLength) {
+        this.exponentLength = exponentLength;
+    }
+
+    public ModifiableBigInteger getExponent() {
+        return exponent;
+    }
+
+    public void setExponent(byte[] eBytes) {
         BigInteger eNew = new BigInteger(Arrays.toString(eBytes), 16);
-        this.e = ModifiableVariableFactory.safelySetValue(this.e, eNew);
+        this.exponent = ModifiableVariableFactory.safelySetValue(this.exponent, eNew);
     }
 
     public void setE(BigInteger e) {
-        this.e = ModifiableVariableFactory.safelySetValue(this.e, e);
+        this.exponent = ModifiableVariableFactory.safelySetValue(this.exponent, e);
+    }
+
+    @Override
+    public List<ModifiableVariableHolder> getAllModifiableVariableHolders() {
+        List<ModifiableVariableHolder> holders = super.getAllModifiableVariableHolders();
+        holders.add(this);
+        return holders;
     }
 }

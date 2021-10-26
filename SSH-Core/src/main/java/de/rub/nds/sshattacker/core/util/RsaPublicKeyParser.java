@@ -24,18 +24,20 @@ public class RsaPublicKeyParser extends Parser<RsaPublicKey> {
 
         if(!keytype.equals("ssh-rsa")) {
             LOGGER.debug("Tried to parse key as rsa key, but type was: " + keytype);
+        } else {
+            publicKey.setExponentLength(parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH));
+            LOGGER.debug("Exponent length: " + publicKey.getExponentLength().getValue());
+            publicKey.setE(parseBigIntField(publicKey.getExponentLength().getValue()));
+            LOGGER.debug("Exponent: " + publicKey.getExponent().getValue());
+
+            publicKey.setModulusLength(parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH));
+            LOGGER.debug("Modulus length: " + publicKey.getModulusLength().getValue());
+            publicKey.setN(parseBigIntField(publicKey.getModulusLength().getValue()));
+            LOGGER.debug("Modulus: " + publicKey.getModulus().getValue());
+
+            return publicKey;
         }
 
-        int eLength = parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH);
-        LOGGER.debug("Exponent length: " + eLength);
-        publicKey.setE(parseBigIntField(eLength));
-        LOGGER.debug("Exponent: " + publicKey.getE().getValue());
-
-        int nLength = parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH);
-        LOGGER.debug("Modulus length: " + nLength);
-        publicKey.setN(parseBigIntField(nLength));
-        LOGGER.debug("Modulus: " + publicKey.getN().getValue());
-
-        return publicKey;
+        return null;
     }
 }

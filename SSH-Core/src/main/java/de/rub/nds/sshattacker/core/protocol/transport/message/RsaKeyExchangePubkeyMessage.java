@@ -107,11 +107,11 @@ public class RsaKeyExchangePubkeyMessage extends SshMessage<RsaKeyExchangePubkey
     }
 
     public ModifiableBigInteger getExponent() {
-        return this.publicKey.getE();
+        return this.publicKey.getExponent();
     }
 
     public ModifiableBigInteger getModulus() {
-        return this.publicKey.getN();
+        return this.publicKey.getModulus();
     }
 
     @Override
