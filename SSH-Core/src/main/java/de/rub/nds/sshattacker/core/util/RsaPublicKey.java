@@ -71,11 +71,4 @@ public class RsaPublicKey extends ModifiableVariableHolder {
     public void setE(BigInteger e) {
         this.exponent = ModifiableVariableFactory.safelySetValue(this.exponent, e);
     }
-
-    @Override
-    public List<ModifiableVariableHolder> getAllModifiableVariableHolders() {
-        List<ModifiableVariableHolder> holders = super.getAllModifiableVariableHolders();
-        holders.add(this);
-        return holders;
-    }
 }
