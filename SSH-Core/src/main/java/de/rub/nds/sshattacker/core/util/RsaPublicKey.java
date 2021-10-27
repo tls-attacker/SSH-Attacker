@@ -7,7 +7,6 @@ import de.rub.nds.sshattacker.core.protocol.common.ModifiableVariableHolder;
 
 import java.math.BigInteger;
 import java.util.Arrays;
-import java.util.List;
 
 public class RsaPublicKey extends ModifiableVariableHolder {
     private ModifiableInteger modulusLength;
