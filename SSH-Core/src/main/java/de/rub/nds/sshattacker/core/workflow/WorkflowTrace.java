@@ -1,9 +1,9 @@
-/**
+/*
  * SSH-Attacker - A Modular Penetration Testing Framework for SSH
  *
- * <p>Copyright 2014-2021 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
- * <p>Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.sshattacker.core.workflow;
 
@@ -61,7 +61,7 @@ public class WorkflowTrace implements Serializable {
             String origTraceStr = WorkflowTraceSerializer.write(orig);
             InputStream is =
                     new ByteArrayInputStream(origTraceStr.getBytes(StandardCharsets.UTF_8.name()));
-            copy = WorkflowTraceSerializer.read(is);
+            copy = WorkflowTraceSerializer.insecureRead(is);
         } catch (JAXBException | IOException | XMLStreamException ex) {
             throw new ConfigurationException("Could not copy workflow trace: " + ex);
         }

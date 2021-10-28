@@ -1,13 +1,14 @@
-/**
+/*
  * SSH-Attacker - A Modular Penetration Testing Framework for SSH
  *
- * <p>Copyright 2014-2021 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
- * <p>Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.sshattacker.core.config;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.UnformattedByteArrayAdapter;
 import de.rub.nds.sshattacker.core.connection.InboundConnection;
 import de.rub.nds.sshattacker.core.connection.OutboundConnection;
 import de.rub.nds.sshattacker.core.constants.*;
@@ -22,10 +23,15 @@ import java.security.Security;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import javax.xml.bind.annotation.*;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
+@XmlRootElement(name = "config")
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(propOrder = {})
 public class Config implements Serializable {
 
     private static final Logger LOGGER = LogManager.getLogger();
@@ -40,50 +46,135 @@ public class Config implements Serializable {
     }
 
     private final String clientVersion;
+
     private final String clientComment;
+
     private final String serverVersion;
+
     private final String serverComment;
+
+    @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private final byte[] clientCookie;
+
+    @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private final byte[] serverCookie;
+
+    @XmlElement(name = "clientSupportedKeyExchangeAlgorithm")
+    @XmlElementWrapper
     private List<KeyExchangeAlgorithm> clientSupportedKeyExchangeAlgorithms;
+
+    @XmlElement(name = "serverSupportedKeyExchangeAlgorithm")
+    @XmlElementWrapper
     private final List<KeyExchangeAlgorithm> serverSupportedKeyExchangeAlgorithms;
+
+    @XmlElement(name = "clientSupportedHostKeyAlgorithm")
+    @XmlElementWrapper
     private final List<PublicKeyAuthenticationAlgorithm> clientSupportedHostKeyAlgorithms;
+
+    @XmlElement(name = "serverSupportedHostKeyAlgorithm")
+    @XmlElementWrapper
     private final List<PublicKeyAuthenticationAlgorithm> serverSupportedHostKeyAlgorithms;
+
+    @XmlElement(name = "clientSupportedCipherAlgorithmClientToServer")
+    @XmlElementWrapper
     private final List<EncryptionAlgorithm> clientSupportedCipherAlgorithmsClientToServer;
+
+    @XmlElement(name = "clientSupportedCipherAlgorithmServerToClient")
+    @XmlElementWrapper
     private final List<EncryptionAlgorithm> clientSupportedCipherAlgorithmsServerToClient;
+
+    @XmlElement(name = "serverSupportedCipherAlgorithmServerToClient")
+    @XmlElementWrapper
     private final List<EncryptionAlgorithm> serverSupportedCipherAlgorithmsServerToClient;
+
+    @XmlElement(name = "serverSupportedCipherAlgorithmClientToServer")
+    @XmlElementWrapper
     private final List<EncryptionAlgorithm> serverSupportedCipherAlgorithmsClientToServer;
+
+    @XmlElement(name = "clientSupportedMacAlgorithmClientToServer")
+    @XmlElementWrapper
     private final List<MacAlgorithm> clientSupportedMacAlgorithmsClientToServer;
+
+    @XmlElement(name = "clientSupportedMacAlgorithmServerToClient")
+    @XmlElementWrapper
     private final List<MacAlgorithm> clientSupportedMacAlgorithmsServerToClient;
+
+    @XmlElement(name = "serverSupportedMacAlgorithmServerToClient")
+    @XmlElementWrapper
     private final List<MacAlgorithm> serverSupportedMacAlgorithmsServerToClient;
+
+    @XmlElement(name = "serverSupportedMacAlgorithmClientToServer")
+    @XmlElementWrapper
     private final List<MacAlgorithm> serverSupportedMacAlgorithmsClientToServer;
+
+    @XmlElement(name = "clientSupportedCompressionAlgorithmClientToServer")
+    @XmlElementWrapper
     private final List<CompressionAlgorithm> clientSupportedCompressionAlgorithmsClientToServer;
+
+    @XmlElement(name = "clientSupportedCompressionAlgorithmServerToClient")
+    @XmlElementWrapper
     private final List<CompressionAlgorithm> clientSupportedCompressionAlgorithmsServerToClient;
+
+    @XmlElement(name = "serverSupportedCompressionAlgorithmServerToClient")
+    @XmlElementWrapper
     private final List<CompressionAlgorithm> serverSupportedCompressionAlgorithmsServerToClient;
+
+    @XmlElement(name = "serverSupportedCompressionAlgorithmClientToServer")
+    @XmlElementWrapper
     private final List<CompressionAlgorithm> serverSupportedCompressionAlgorithmsClientToServer;
+
+    @XmlElement(name = "clientSupportedLanguageClientToServer")
+    @XmlElementWrapper
     private final List<String> clientSupportedLanguagesClientToServer;
+
+    @XmlElement(name = "clientSupportedLanguageServerToClient")
+    @XmlElementWrapper
     private final List<String> clientSupportedLanguagesServerToClient;
+
+    @XmlElement(name = "serverSupportedLanguageServerToClient")
+    @XmlElementWrapper
     private final List<String> serverSupportedLanguagesServerToClient;
+
+    @XmlElement(name = "serverSupportedLanguageClientToServer")
+    @XmlElementWrapper
     private final List<String> serverSupportedLanguagesClientToServer;
+
     private final boolean clientFirstKeyExchangePacketFollows;
+
     private final boolean serverFirstKeyExchangePacketFollows;
+
     private final int clientReserved;
+
     private final int serverReserved;
 
+    @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] clientEcdhPublicKey;
+
+    @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] serverEcdhPublicKey;
 
     private AuthenticationMethod authenticationMethod;
+
     private String serviceName;
+
     private String username;
+
     private String password;
+
     private int localChannel;
+
     private int remoteChannel;
+
     private int windowSize;
+
     private int packetSize;
+
     private ChannelType channelType;
+
     private ChannelRequestType channelRequestType;
+
     private String channelCommand;
+
     private byte replyWanted;
 
     /** Default Connection to use when running as Client */
