@@ -28,12 +28,14 @@ public class VersionExchangeMessageParserTest {
                         ArrayConverter.hexStringToByteArray(
                                 "5353482d322e302d4f70656e5353485f372e380d0a"),
                         "SSH-2.0-OpenSSH_7.8",
-                        ""),
+                        "",
+                        "\r\n"),
                 Arguments.of(
                         ArrayConverter.hexStringToByteArray(
                                 "5353482d322e302d6c69627373685f302e372e300d0a"),
                         "SSH-2.0-libssh_0.7.0",
-                        ""));
+                        "",
+                        "\r\n"));
     }
 
     /**
@@ -45,11 +47,16 @@ public class VersionExchangeMessageParserTest {
      */
     @ParameterizedTest
     @MethodSource("provideTestVectors")
-    public void testParse(byte[] providedBytes, String expectedVersion, String expectedComment) {
+    public void testParse(
+            byte[] providedBytes,
+            String expectedVersion,
+            String expectedComment,
+            String expectedEndOfMessageSequence) {
         VersionExchangeMessageParser parser = new VersionExchangeMessageParser(providedBytes, 0);
         VersionExchangeMessage msg = parser.parse();
 
         assertEquals(expectedVersion, msg.getVersion().getValue());
         assertEquals(expectedComment, msg.getComment().getValue());
+        assertEquals(expectedEndOfMessageSequence, msg.getEndOfMessageSequence().getValue());
     }
 }

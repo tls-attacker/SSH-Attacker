@@ -44,14 +44,20 @@ public class VersionExchangeMessageSerializer
         }
     }
 
-    private void serializeCRNL() {
-        appendBytes(new byte[] {CharConstants.CARRIAGE_RETURN, CharConstants.NEWLINE});
+    private void serializeEndOfMessageSequence() {
+        LOGGER.debug(
+                "End of Line Sequence: "
+                        + message.getEndOfMessageSequence()
+                                .getValue()
+                                .replace("\r", "[CR]")
+                                .replace("\n", "[NL]"));
+        appendString(message.getEndOfMessageSequence().getValue(), StandardCharsets.US_ASCII);
     }
 
     @Override
     protected void serializeProtocolMessageContents() {
         serializeVersion();
         serializeComment();
-        serializeCRNL();
+        serializeEndOfMessageSequence();
     }
 }

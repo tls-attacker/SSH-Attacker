@@ -18,6 +18,7 @@ public class VersionExchangeMessage extends ProtocolMessage<VersionExchangeMessa
 
     private ModifiableString version;
     private ModifiableString comment;
+    private ModifiableString endOfMessageSequence;
 
     public VersionExchangeMessage() {
         super();
@@ -52,6 +53,20 @@ public class VersionExchangeMessage extends ProtocolMessage<VersionExchangeMessa
         return this.version.getValue()
                 + CharConstants.VERSION_COMMENT_SEPARATOR
                 + this.comment.getValue();
+    }
+
+    public ModifiableString getEndOfMessageSequence() {
+        return endOfMessageSequence;
+    }
+
+    public void setEndOfMessageSequence(ModifiableString endOfMessageSequence) {
+        this.endOfMessageSequence = endOfMessageSequence;
+    }
+
+    public void setEndOfMessageSequence(String endOfMessageSequence) {
+        this.endOfMessageSequence =
+                ModifiableVariableFactory.safelySetValue(
+                        this.endOfMessageSequence, endOfMessageSequence);
     }
 
     @Override

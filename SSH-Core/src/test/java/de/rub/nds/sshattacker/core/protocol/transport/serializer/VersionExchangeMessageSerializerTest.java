@@ -36,10 +36,14 @@ public class VersionExchangeMessageSerializerTest {
     @ParameterizedTest
     @MethodSource("provideTestVectors")
     public void testSerialize(
-            byte[] expectedBytes, String providedVersion, String providedComment) {
+            byte[] expectedBytes,
+            String providedVersion,
+            String providedComment,
+            String providedEndOfMessagSequence) {
         VersionExchangeMessage msg = new VersionExchangeMessage();
         msg.setVersion(providedVersion);
         msg.setComment(providedComment);
+        msg.setEndOfMessageSequence("\r\n");
         VersionExchangeMessageSerializer serializer = new VersionExchangeMessageSerializer(msg);
 
         assertArrayEquals(expectedBytes, serializer.serialize());
