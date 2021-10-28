@@ -110,7 +110,6 @@ public enum PublicKeyAuthenticationAlgorithm {
     SSH_RSA_SHA384_SSH_COM("ssh-rsa-sha384@ssh.com"),
     SSH_RSA_SHA512_SSH_COM("ssh-rsa-sha512@ssh.com");
 
-
     private final String name;
 
     public static final Map<String, PublicKeyAuthenticationAlgorithm> map;
