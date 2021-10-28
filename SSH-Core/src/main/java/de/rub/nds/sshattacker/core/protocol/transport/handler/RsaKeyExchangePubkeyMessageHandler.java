@@ -1,5 +1,6 @@
 package de.rub.nds.sshattacker.core.protocol.transport.handler;
 
+import de.rub.nds.sshattacker.core.exceptions.NotImplementedException;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
@@ -37,6 +38,6 @@ public class RsaKeyExchangePubkeyMessageHandler extends SshMessageHandler<RsaKey
     @Override
     public SshMessageSerializer<RsaKeyExchangePubkeyMessage> getSerializer() {
         //TODO: Implement Serializer
-        return null;
+        throw new NotImplementedException("RsaKeyExchangePubkeyMessageHandler::getSerializer()");
     }
 }
