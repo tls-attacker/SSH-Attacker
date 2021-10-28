@@ -1,10 +1,16 @@
+/*
+ * SSH-Attacker - A Modular Penetration Testing Framework for SSH
+ *
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ *
+ * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ */
 package de.rub.nds.sshattacker.core.util;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.biginteger.ModifiableBigInteger;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.sshattacker.core.protocol.common.ModifiableVariableHolder;
-
 import java.math.BigInteger;
 import java.util.Arrays;
 
@@ -15,9 +21,7 @@ public class RsaPublicKey extends ModifiableVariableHolder {
     private ModifiableInteger exponentLength;
     private ModifiableBigInteger exponent;
 
-
-    public RsaPublicKey() {
-    }
+    public RsaPublicKey() {}
 
     // Modulus
     public ModifiableInteger getModulusLength() {
@@ -25,7 +29,8 @@ public class RsaPublicKey extends ModifiableVariableHolder {
     }
 
     public void setModulusLength(int modulusLength) {
-        this.modulusLength = ModifiableVariableFactory.safelySetValue(this.modulusLength, modulusLength);
+        this.modulusLength =
+                ModifiableVariableFactory.safelySetValue(this.modulusLength, modulusLength);
     }
 
     public void setModulusLength(ModifiableInteger modulusLength) {
@@ -51,7 +56,8 @@ public class RsaPublicKey extends ModifiableVariableHolder {
     }
 
     public void setExponentLength(int exponentLength) {
-        this.exponentLength = ModifiableVariableFactory.safelySetValue(this.exponentLength, exponentLength);
+        this.exponentLength =
+                ModifiableVariableFactory.safelySetValue(this.exponentLength, exponentLength);
     }
 
     public void setExponentLength(ModifiableInteger exponentLength) {

@@ -18,14 +18,13 @@ import de.rub.nds.sshattacker.core.protocol.connection.message.*;
 import de.rub.nds.sshattacker.core.protocol.transport.message.*;
 import de.rub.nds.sshattacker.core.protocol.util.ReceiveMessageHelper;
 import de.rub.nds.sshattacker.core.protocol.util.SendMessageHelper;
-
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlTransient;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 public abstract class MessageAction extends ConnectionBoundAction {
 
@@ -91,7 +90,9 @@ public abstract class MessageAction extends ConnectionBoundAction {
                 @XmlElement(type = ProtocolMessage.class, name = "ProtocolMessage"),
                 @XmlElement(type = RequestFailureMessage.class, name = "RequestFailureMessage"),
                 @XmlElement(type = RequestSuccessMessage.class, name = "RequestSuccessMessage"),
-                @XmlElement(type = RsaKeyExchangePubkeyMessage.class, name = "RsaKeyExchangePubkeyMessage"),
+                @XmlElement(
+                        type = RsaKeyExchangePubkeyMessage.class,
+                        name = "RsaKeyExchangePubkeyMessage"),
                 @XmlElement(type = ServiceAcceptMessage.class, name = "ServiceAcceptMessage"),
                 @XmlElement(type = ServiceRequestMessage.class, name = "ServiceRequestMessage"),
                 @XmlElement(type = UnimplementedMessage.class, name = "UnimplementedMessage"),

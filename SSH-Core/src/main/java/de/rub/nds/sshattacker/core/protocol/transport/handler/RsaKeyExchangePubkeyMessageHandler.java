@@ -1,3 +1,10 @@
+/*
+ * SSH-Attacker - A Modular Penetration Testing Framework for SSH
+ *
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ *
+ * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ */
 package de.rub.nds.sshattacker.core.protocol.transport.handler;
 
 import de.rub.nds.sshattacker.core.exceptions.NotImplementedException;
@@ -10,23 +17,26 @@ import de.rub.nds.sshattacker.core.protocol.transport.parser.RsaKeyExchangePubke
 import de.rub.nds.sshattacker.core.protocol.transport.preparator.RsaKeyExchangePubkeyMessagePreparator;
 import de.rub.nds.sshattacker.core.state.SshContext;
 
-public class RsaKeyExchangePubkeyMessageHandler extends SshMessageHandler<RsaKeyExchangePubkeyMessage> {
+public class RsaKeyExchangePubkeyMessageHandler
+        extends SshMessageHandler<RsaKeyExchangePubkeyMessage> {
 
     public RsaKeyExchangePubkeyMessageHandler(SshContext context) {
         super(context);
     }
 
-    public RsaKeyExchangePubkeyMessageHandler(SshContext context, RsaKeyExchangePubkeyMessage message) {
+    public RsaKeyExchangePubkeyMessageHandler(
+            SshContext context, RsaKeyExchangePubkeyMessage message) {
         super(context, message);
     }
 
     @Override
     public void adjustContext() {
-        //TODO: Handle RsaKeyExchangePubkeyMessage
+        // TODO: Handle RsaKeyExchangePubkeyMessage
     }
 
     @Override
-    public SshMessageParser<RsaKeyExchangePubkeyMessage> getParser(byte[] array, int startPosition) {
+    public SshMessageParser<RsaKeyExchangePubkeyMessage> getParser(
+            byte[] array, int startPosition) {
         return new RsaKeyExchangePubkeyMessageParser(array, startPosition);
     }
 
@@ -37,7 +47,7 @@ public class RsaKeyExchangePubkeyMessageHandler extends SshMessageHandler<RsaKey
 
     @Override
     public SshMessageSerializer<RsaKeyExchangePubkeyMessage> getSerializer() {
-        //TODO: Implement Serializer
+        // TODO: Implement Serializer
         throw new NotImplementedException("RsaKeyExchangePubkeyMessageHandler::getSerializer()");
     }
 }
