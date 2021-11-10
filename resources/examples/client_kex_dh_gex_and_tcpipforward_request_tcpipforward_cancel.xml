@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<workflowTrace>
+    <Send>
+        <messages>
+            <VersionExchangeMessage/>
+        </messages>
+    </Send>
+    <Receive/>
+    <Send>
+        <messages>
+            <KeyExchangeInitMessage/>
+        </messages>
+    </Send>
+    <Receive/>
+    <Send>
+        <messages>
+            <DhKeyExchangeInitMessage/>
+        </messages>
+    </Send>
+    <Receive/>
+    <Send>
+        <messages>
+            <NewKeysMessage/>
+        </messages>
+    </Send>
+    <ActivateEncryption/>
+    <Send>
+        <messages>
+            <ServiceRequestMessage />
+        </messages>
+    </Send>
+    <Receive />
+    <Send>
+        <messages>
+            <UserAuthPasswordMessage />
+        </messages>
+    </Send>
+    <Receive />
+    <Send>
+        <messages>
+            <TcpIpForwardRequestMessage />
+        </messages>
+    </Send>
+    <Receive />
+    <Send>
+        <messages>
+            <TcpIpForwardCancelMessage />
+        </messages>
+    </Send>
+    <Receive />
+</workflowTrace>
