@@ -10,7 +10,6 @@ package de.rub.nds.sshattacker.core.workflow.action;
 import de.rub.nds.sshattacker.core.connection.AliasedConnection;
 import de.rub.nds.sshattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessage;
-import de.rub.nds.sshattacker.core.protocol.transport.message.BinaryPacket;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.state.State;
 import de.rub.nds.sshattacker.core.workflow.action.executor.MessageActionResult;
@@ -83,7 +82,7 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
 
     @Override
     public void execute(State state) throws WorkflowExecutionException {
-        SshContext sshContext = state.getSshContext(getConnectionAlias());
+        SshContext context = state.getSshContext(getConnectionAlias());
 
         if (isExecuted()) {
             throw new WorkflowExecutionException("Action already executed!");
@@ -91,9 +90,8 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
 
         LOGGER.debug("Receiving Messages...");
         MessageActionResult result =
-                receiveMessageHelper.receiveMessages(expectedMessages, sshContext);
-        binaryPackets = new ArrayList<>(result.getBinaryPacketList());
-        messages = new ArrayList<>(result.getMessageList());
+                receiveMessageHelper.receiveMessages(context, expectedMessages);
+        setReceivedMessages(result.getMessageList());
         setExecuted(true);
 
         String expected = getReadableString(expectedMessages);
@@ -180,10 +178,6 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
         this.messages = receivedMessages;
     }
 
-    void setReceivedRecords(List<BinaryPacket> receivedRecords) {
-        this.binaryPackets = receivedRecords;
-    }
-
     public void setExpectedMessages(List<ProtocolMessage<?>> expectedMessages) {
         this.expectedMessages = expectedMessages;
     }
@@ -195,7 +189,6 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
     @Override
     public void reset() {
         messages = null;
-        binaryPackets = null;
         setExecuted(null);
     }
 
@@ -205,42 +198,18 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
     }
 
     @Override
-    public List<BinaryPacket> getReceivedBinaryPackets() {
-        return binaryPackets;
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        ReceiveAction that = (ReceiveAction) o;
+        return Objects.equals(expectedMessages, that.expectedMessages)
+                && Objects.equals(messages, that.messages);
     }
 
     @Override
     public int hashCode() {
-        int hash = super.hashCode();
-        hash = 67 * hash + Objects.hashCode(this.expectedMessages);
-        hash = 67 * hash + Objects.hashCode(this.messages);
-        hash = 67 * hash + Objects.hashCode(this.binaryPackets);
-
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final ReceiveAction other = (ReceiveAction) obj;
-        if (!Objects.equals(this.expectedMessages, other.expectedMessages)) {
-            return false;
-        }
-        if (!Objects.equals(this.messages, other.messages)) {
-            return false;
-        }
-        if (!Objects.equals(this.binaryPackets, other.binaryPackets)) {
-            return false;
-        }
-        return super.equals(obj);
+        return Objects.hash(super.hashCode(), expectedMessages, messages);
     }
 
     @Override

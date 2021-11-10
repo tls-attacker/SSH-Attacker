@@ -105,12 +105,9 @@ public abstract class MessageAction extends ConnectionBoundAction {
             })
     protected List<ProtocolMessage<?>> messages = new ArrayList<>();
 
-    @HoldsModifiableVariable @XmlElementWrapper
-    protected List<BinaryPacket> binaryPackets = new ArrayList<>();
+    @XmlTransient protected final ReceiveMessageHelper receiveMessageHelper;
 
-    @XmlTransient protected ReceiveMessageHelper receiveMessageHelper;
-
-    @XmlTransient protected SendMessageHelper sendMessageHelper;
+    @XmlTransient protected final SendMessageHelper sendMessageHelper;
 
     public MessageAction() {
         receiveMessageHelper = new ReceiveMessageHelper();
@@ -124,7 +121,7 @@ public abstract class MessageAction extends ConnectionBoundAction {
     }
 
     public MessageAction(ProtocolMessage<?>... messages) {
-        this.messages = new ArrayList<>(Arrays.asList(messages));
+        this.messages = Arrays.asList(messages);
         receiveMessageHelper = new ReceiveMessageHelper();
         sendMessageHelper = new SendMessageHelper();
     }
@@ -143,15 +140,7 @@ public abstract class MessageAction extends ConnectionBoundAction {
     }
 
     public MessageAction(String connectionAlias, ProtocolMessage<?>... messages) {
-        this(connectionAlias, new ArrayList<>(Arrays.asList(messages)));
-    }
-
-    public void setReceiveMessageHelper(ReceiveMessageHelper receiveMessageHelper) {
-        this.receiveMessageHelper = receiveMessageHelper;
-    }
-
-    public void setSendMessageHelper(SendMessageHelper sendMessageHelper) {
-        this.sendMessageHelper = sendMessageHelper;
+        this(connectionAlias, Arrays.asList(messages));
     }
 
     public String getReadableString(ProtocolMessage<?>... messages) {
@@ -179,34 +168,6 @@ public abstract class MessageAction extends ConnectionBoundAction {
             builder.append(", ");
         }
         return builder.toString();
-    }
-
-    public List<ProtocolMessage<?>> getMessages() {
-        return messages;
-    }
-
-    public void setMessages(List<ProtocolMessage<?>> messages) {
-        this.messages = messages;
-    }
-
-    public void setMessages(ProtocolMessage<?>... messages) {
-        this.messages = new ArrayList<>(Arrays.asList(messages));
-    }
-
-    public List<BinaryPacket> getBinaryPackets() {
-        return binaryPackets;
-    }
-
-    public void setBinaryPackets(List<BinaryPacket> binaryPackets) {
-        this.binaryPackets = binaryPackets;
-    }
-
-    public void setRecords(BinaryPacket... binaryPackets) {
-        this.binaryPackets = new ArrayList<>(Arrays.asList(binaryPackets));
-    }
-
-    public void clearRecords() {
-        this.binaryPackets = null;
     }
 
     @Override
@@ -237,17 +198,11 @@ public abstract class MessageAction extends ConnectionBoundAction {
         if (messages == null || messages.isEmpty()) {
             messages = null;
         }
-        if (binaryPackets == null || binaryPackets.isEmpty()) {
-            binaryPackets = null;
-        }
     }
 
     private void initEmptyLists() {
         if (messages == null) {
             messages = new ArrayList<>();
-        }
-        if (binaryPackets == null) {
-            binaryPackets = new ArrayList<>();
         }
     }
 }

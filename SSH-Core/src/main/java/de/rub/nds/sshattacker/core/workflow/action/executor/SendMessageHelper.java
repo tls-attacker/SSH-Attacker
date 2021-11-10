@@ -7,19 +7,22 @@
  */
 package de.rub.nds.sshattacker.core.workflow.action.executor;
 
+import de.rub.nds.sshattacker.core.constants.EncryptionAlgorithm;
+import de.rub.nds.sshattacker.core.constants.MacAlgorithm;
+import de.rub.nds.sshattacker.core.crypto.packet.cipher.PacketCipherFactory;
+import de.rub.nds.sshattacker.core.crypto.packet.keys.KeySet;
+import de.rub.nds.sshattacker.core.crypto.packet.keys.KeySetGenerator;
+import de.rub.nds.sshattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessage;
-import de.rub.nds.sshattacker.core.protocol.layers.BinaryPacketLayer;
-import de.rub.nds.sshattacker.core.protocol.layers.CryptoLayer;
-import de.rub.nds.sshattacker.core.protocol.layers.MessageLayer;
-import de.rub.nds.sshattacker.core.protocol.transport.message.BinaryPacket;
+import de.rub.nds.sshattacker.core.protocol.common.layer.MessageLayer;
+import de.rub.nds.sshattacker.core.protocol.packet.AbstractPacket;
+import de.rub.nds.sshattacker.core.protocol.packet.layer.AbstractPacketLayer;
 import de.rub.nds.sshattacker.core.protocol.transport.message.NewKeysMessage;
-import de.rub.nds.sshattacker.core.protocol.transport.message.VersionExchangeMessage;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import java.io.IOException;
 import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.stream.Stream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -27,79 +30,53 @@ public class SendMessageHelper {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public void sendBinaryPacket(BinaryPacket bp, SshContext context) throws IOException {
-        BinaryPacketLayer binaryPacketLayer = context.getBinaryPacketLayer();
+    public void sendPacket(SshContext context, AbstractPacket packet) throws IOException {
+        AbstractPacketLayer packetLayer = context.getPacketLayer();
         TransportHandler transportHandler = context.getTransportHandler();
-
-        byte[] data;
-        if ((context.isClient() && context.isClientToServerEncryptionActive())
-                || (context.isServer() && context.isServerToClientEncryptionActive())) {
-            CryptoLayer cryptoLayer =
-                    context.isClient()
-                            ? context.getCryptoLayerClientToServer()
-                            : context.getCryptoLayerServerToClient();
-            data = cryptoLayer.encryptPacket(bp);
-        } else {
-            data = binaryPacketLayer.serializeBinaryPacket(bp);
-        }
-        transportHandler.sendData(data);
+        transportHandler.sendData(packetLayer.preparePacket(packet));
     }
 
-    public MessageActionResult sendMessage(ProtocolMessage<?> msg, SshContext context) {
+    public MessageActionResult sendMessage(SshContext context, ProtocolMessage<?> message) {
         MessageLayer messageLayer = context.getMessageLayer();
-
         try {
-            BinaryPacket binaryPacket = messageLayer.serializeMessage(msg);
-            sendBinaryPacket(binaryPacket, context);
-            context.incrementSequenceNumber();
+            AbstractPacket packet = messageLayer.serialize(message);
+            sendPacket(context, packet);
             try {
-                if (msg instanceof NewKeysMessage
+                if (message instanceof NewKeysMessage
                         && context.getConfig().getEnableEncryptionOnNewKeysMessage()) {
-                    context.setClientToServerEncryptionActive(true);
+                    KeySet keySet = KeySetGenerator.generateKeySet(context);
+                    EncryptionAlgorithm outEnc =
+                            context.isClient()
+                                    ? context.getCipherAlgorithmClientToServer()
+                                            .orElseThrow(WorkflowExecutionException::new)
+                                    : context.getCipherAlgorithmServerToClient()
+                                            .orElseThrow(WorkflowExecutionException::new);
+                    MacAlgorithm outMac =
+                            context.isClient()
+                                    ? context.getMacAlgorithmClientToServer()
+                                            .orElseThrow(WorkflowExecutionException::new)
+                                    : context.getMacAlgorithmServerToClient()
+                                            .orElseThrow(WorkflowExecutionException::new);
+                    context.getPacketLayer()
+                            .updateEncryptionCipher(
+                                    PacketCipherFactory.getPacketCipher(
+                                            context, keySet, outEnc, outMac));
                 }
             } catch (IllegalArgumentException ignored) {
             }
             return new MessageActionResult(
-                    Collections.singletonList(binaryPacket), Collections.singletonList(msg));
+                    Collections.singletonList(packet), Collections.singletonList(message));
         } catch (IOException e) {
             LOGGER.warn("Error while sending packet: " + e.getMessage());
             return new MessageActionResult();
         }
     }
 
-    public MessageActionResult sendMessages(List<ProtocolMessage<?>> list, SshContext context) {
-        MessageActionResult result = new MessageActionResult();
-        for (ProtocolMessage<?> msg : list) {
-            if (msg instanceof VersionExchangeMessage) {
-                result =
-                        result.merge(
-                                sendVersionExchangeMessage((VersionExchangeMessage) msg, context));
-            } else {
-                // TODO: Do something smart at receive time to merge?
-                // TODO: Support fragmentation into several binary packets at send time!
-                result = result.merge(sendMessage(msg, context));
-            }
-        }
-        return result;
-    }
-
-    // TODO dummy
     public MessageActionResult sendMessages(
-            List<ProtocolMessage<?>> messageList,
-            List<BinaryPacket> binaryPackets,
-            SshContext context) {
-        return sendMessages(messageList, context);
-    }
-
-    public MessageActionResult sendVersionExchangeMessage(
-            VersionExchangeMessage msg, SshContext context) {
-        TransportHandler transport = context.getTransportHandler();
-        try {
-            transport.sendData(msg.getHandler(context).getSerializer().serialize());
-        } catch (IOException e) {
-            LOGGER.debug("Error while sending VersionExchangeMessage to remote: " + e.getMessage());
-        }
-
-        return new MessageActionResult(new LinkedList<>(), Collections.singletonList(msg));
+            SshContext context, Stream<ProtocolMessage<?>> messageStream) {
+        return messageStream
+                .map(message -> sendMessage(context, message))
+                .reduce(MessageActionResult::merge)
+                .orElse(new MessageActionResult());
     }
 }

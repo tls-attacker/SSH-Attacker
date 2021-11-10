@@ -12,12 +12,9 @@ import de.rub.nds.sshattacker.core.connection.AliasedConnection;
 import de.rub.nds.sshattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.sshattacker.core.protocol.common.ModifiableVariableHolder;
 import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessage;
-import de.rub.nds.sshattacker.core.protocol.transport.message.BinaryPacket;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.state.State;
-import de.rub.nds.sshattacker.core.workflow.action.executor.MessageActionResult;
 import java.lang.reflect.Field;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -38,7 +35,7 @@ public class SendAction extends MessageAction implements SendingAction {
     }
 
     public SendAction(ProtocolMessage<?>... messages) {
-        this(AliasedConnection.DEFAULT_CONNECTION_ALIAS, new ArrayList<>(Arrays.asList(messages)));
+        this(AliasedConnection.DEFAULT_CONNECTION_ALIAS, Arrays.asList(messages));
     }
 
     public SendAction(ProtocolMessage<?> message) {
@@ -54,12 +51,12 @@ public class SendAction extends MessageAction implements SendingAction {
     }
 
     public SendAction(String connectionAlias, ProtocolMessage<?>... messages) {
-        super(connectionAlias, new ArrayList<>(Arrays.asList(messages)));
+        super(connectionAlias, Arrays.asList(messages));
     }
 
     @Override
     public void execute(State state) throws WorkflowExecutionException {
-        SshContext sshContext = state.getSshContext(connectionAlias);
+        SshContext context = state.getSshContext(connectionAlias);
 
         if (isExecuted()) {
             throw new WorkflowExecutionException("Action already executed!");
@@ -72,17 +69,8 @@ public class SendAction extends MessageAction implements SendingAction {
             LOGGER.info("Sending messages (" + connectionAlias + "): " + sending);
         }
 
-        // TODO is this a copy?
-        List<ProtocolMessage<?>> preparedMessages = new LinkedList<>();
-        for (ProtocolMessage<?> m : messages) {
-            m.getHandler(state.getSshContext()).getPreparator().prepare();
-            preparedMessages.add(m);
-        }
-
-        MessageActionResult result =
-                sendMessageHelper.sendMessages(preparedMessages, binaryPackets, sshContext);
-        messages = result.getMessageList();
-        binaryPackets = result.getBinaryPacketList();
+        messages.forEach(message -> message.getHandler(context).getPreparator().prepare());
+        sendMessageHelper.sendMessages(context, messages.stream());
         setExecuted(true);
     }
 
@@ -129,21 +117,11 @@ public class SendAction extends MessageAction implements SendingAction {
     }
 
     @Override
-    public void setBinaryPackets(List<BinaryPacket> records) {
-        this.binaryPackets = records;
-    }
-
-    @Override
     public void reset() {
         List<ModifiableVariableHolder> holders = new LinkedList<>();
         if (messages != null) {
             for (ProtocolMessage<?> message : messages) {
                 holders.addAll(message.getAllModifiableVariableHolders());
-            }
-        }
-        if (getBinaryPackets() != null) {
-            for (BinaryPacket binaryPacket : getBinaryPackets()) {
-                holders.addAll(binaryPacket.getAllModifiableVariableHolders());
             }
         }
         for (ModifiableVariableHolder holder : holders) {
@@ -180,37 +158,16 @@ public class SendAction extends MessageAction implements SendingAction {
     }
 
     @Override
-    public List<BinaryPacket> getSendBinaryPackets() {
-        return binaryPackets;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final SendAction other = (SendAction) obj;
-        if (!Objects.equals(this.messages, other.messages)) {
-            return false;
-        }
-        if (!Objects.equals(this.binaryPackets, other.binaryPackets)) {
-            return false;
-        }
-        return super.equals(obj);
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        SendAction that = (SendAction) o;
+        return Objects.equals(messages, that.messages);
     }
 
     @Override
     public int hashCode() {
-        int hash = super.hashCode();
-        hash = 67 * hash + Objects.hashCode(this.messages);
-        hash = 67 * hash + Objects.hashCode(this.binaryPackets);
-
-        return hash;
+        return Objects.hash(super.hashCode(), messages);
     }
 }

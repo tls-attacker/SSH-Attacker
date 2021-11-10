@@ -7,15 +7,52 @@
  */
 package de.rub.nds.sshattacker.core.workflow.action;
 
+import de.rub.nds.sshattacker.core.constants.EncryptionAlgorithm;
+import de.rub.nds.sshattacker.core.constants.MacAlgorithm;
+import de.rub.nds.sshattacker.core.crypto.packet.cipher.PacketCipherFactory;
+import de.rub.nds.sshattacker.core.crypto.packet.keys.KeySet;
+import de.rub.nds.sshattacker.core.crypto.packet.keys.KeySetGenerator;
 import de.rub.nds.sshattacker.core.exceptions.WorkflowExecutionException;
+import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.state.State;
 
 public class ActivateEncryptionAction extends ConnectionBoundAction {
 
     @Override
     public void execute(State state) throws WorkflowExecutionException {
-        state.getSshContext().setClientToServerEncryptionActive(true);
-        state.getSshContext().setServerToClientEncryptionActive(true);
+        SshContext context = state.getSshContext(getConnectionAlias());
+        KeySet keySet = KeySetGenerator.generateKeySet(context);
+        EncryptionAlgorithm outEnc =
+                context.isClient()
+                        ? context.getCipherAlgorithmClientToServer()
+                                .orElseThrow(WorkflowExecutionException::new)
+                        : context.getCipherAlgorithmServerToClient()
+                                .orElseThrow(WorkflowExecutionException::new);
+        EncryptionAlgorithm inEnc =
+                context.isClient()
+                        ? context.getCipherAlgorithmServerToClient()
+                                .orElseThrow(WorkflowExecutionException::new)
+                        : context.getCipherAlgorithmClientToServer()
+                                .orElseThrow(WorkflowExecutionException::new);
+        MacAlgorithm outMac =
+                context.isClient()
+                        ? context.getMacAlgorithmClientToServer()
+                                .orElseThrow(WorkflowExecutionException::new)
+                        : context.getMacAlgorithmServerToClient()
+                                .orElseThrow(WorkflowExecutionException::new);
+        MacAlgorithm inMac =
+                context.isClient()
+                        ? context.getMacAlgorithmServerToClient()
+                                .orElseThrow(WorkflowExecutionException::new)
+                        : context.getMacAlgorithmClientToServer()
+                                .orElseThrow(WorkflowExecutionException::new);
+
+        context.getPacketLayer()
+                .updateEncryptionCipher(
+                        PacketCipherFactory.getPacketCipher(context, keySet, outEnc, outMac));
+        context.getPacketLayer()
+                .updateDecryptionCipher(
+                        PacketCipherFactory.getPacketCipher(context, keySet, inEnc, inMac));
     }
 
     @Override

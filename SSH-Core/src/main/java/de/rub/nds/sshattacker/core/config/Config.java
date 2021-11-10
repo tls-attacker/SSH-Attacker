@@ -228,7 +228,7 @@ public class Config implements Serializable {
      * for the corresponding transport direction. If set to false, encryption must be enabled
      * manually by calling the corresponding methods on the state.
      */
-    private Boolean enableEncryptionOnNewKeysMessage = true;
+    private Boolean enableEncryptionOnNewKeysMessage = false;
 
     private ChooserType chooserType = ChooserType.DEFAULT;
 
@@ -244,8 +244,7 @@ public class Config implements Serializable {
         serverCookie = ArrayConverter.hexStringToByteArray("00000000000000000000000000000000");
 
         clientSupportedKeyExchangeAlgorithms = new LinkedList<>();
-        clientSupportedKeyExchangeAlgorithms.add(
-                KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP14_SHA256);
+        clientSupportedKeyExchangeAlgorithms.add(KeyExchangeAlgorithm.ECDH_SHA2_NISTP256);
         serverSupportedKeyExchangeAlgorithms =
                 new LinkedList<>(clientSupportedKeyExchangeAlgorithms);
 
@@ -254,7 +253,8 @@ public class Config implements Serializable {
         serverSupportedHostKeyAlgorithms = new LinkedList<>(clientSupportedHostKeyAlgorithms);
 
         clientSupportedCipherAlgorithmsClientToServer = new LinkedList<>();
-        clientSupportedCipherAlgorithmsClientToServer.add(EncryptionAlgorithm.AES128_CBC);
+        clientSupportedCipherAlgorithmsClientToServer.add(
+                EncryptionAlgorithm.AES128_CBC);
         clientSupportedCipherAlgorithmsServerToClient =
                 new LinkedList<>(clientSupportedCipherAlgorithmsClientToServer);
         serverSupportedCipherAlgorithmsClientToServer =
@@ -263,7 +263,7 @@ public class Config implements Serializable {
                 new LinkedList<>(clientSupportedCipherAlgorithmsClientToServer);
 
         clientSupportedMacAlgorithmsClientToServer = new LinkedList<>();
-        clientSupportedMacAlgorithmsClientToServer.add(MacAlgorithm.HMAC_SHA1);
+        clientSupportedMacAlgorithmsClientToServer.add(MacAlgorithm.HMAC_SHA2_256_ETM_OPENSSH_COM);
         clientSupportedMacAlgorithmsServerToClient =
                 new LinkedList<>(clientSupportedMacAlgorithmsClientToServer);
         serverSupportedMacAlgorithmsServerToClient =
@@ -307,7 +307,7 @@ public class Config implements Serializable {
         channelCommand = "nc -l -p 13370";
         replyWanted = 0;
 
-        workflowTraceType = WorkflowTraceType.FULL;
+        workflowTraceType = null;
         outputFilters = new ArrayList<>();
         outputFilters.add(FilterType.DEFAULT);
         applyFiltersInPlace = false;

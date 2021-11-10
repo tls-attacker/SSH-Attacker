@@ -10,13 +10,14 @@ package de.rub.nds.sshattacker.core.state;
 import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.connection.AliasedConnection;
 import de.rub.nds.sshattacker.core.constants.*;
+import de.rub.nds.sshattacker.core.constants.PacketLayerType;
 import de.rub.nds.sshattacker.core.crypto.hash.ExchangeHash;
 import de.rub.nds.sshattacker.core.crypto.kex.KeyExchange;
 import de.rub.nds.sshattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.sshattacker.core.exceptions.TransportHandlerConnectException;
-import de.rub.nds.sshattacker.core.protocol.layers.BinaryPacketLayer;
-import de.rub.nds.sshattacker.core.protocol.layers.CryptoLayer;
-import de.rub.nds.sshattacker.core.protocol.layers.MessageLayer;
+import de.rub.nds.sshattacker.core.protocol.common.layer.MessageLayer;
+import de.rub.nds.sshattacker.core.protocol.packet.layer.AbstractPacketLayer;
+import de.rub.nds.sshattacker.core.protocol.packet.layer.PacketLayerFactory;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.sshattacker.core.workflow.chooser.ChooserFactory;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
@@ -40,17 +41,23 @@ public class SshContext {
     /** If set to true, an exception was received from the transport handler */
     private boolean receivedTransportHandlerException = false;
 
-    /** A layer to serialize binary packets */
-    private BinaryPacketLayer binaryPacketLayer = new BinaryPacketLayer(this);
+    /** The currently active packet layer type */
+    private PacketLayerType packetLayerType;
+    /** A layer to serialize packets */
+    private AbstractPacketLayer packetLayer;
     /** A layer to serialize messages */
     private MessageLayer messageLayer = new MessageLayer(this);
-    /** Cryptographic layer implementing encryption and mac for the client to server direction */
-    private CryptoLayer cryptoLayerClientToServer;
-    /** Cryptographic layer implementing encryption and mac for the server to client direction */
-    private CryptoLayer cryptoLayerServerToClient;
 
-    /** Implicit packet sequence number (unsigned) */
-    private int sequenceNumber = 0;
+    /**
+     * Sequence number used to generate MAC when sending packages. The sequence number is unsigned,
+     * initialized to 0 and wraps around at 2^32.
+     */
+    private Integer writeSequenceNumber;
+    /**
+     * Sequence number used to verify the MAC of received packages. The sequence number is unsigned,
+     * initialized to 0 and wraps around at 2^32.
+     */
+    private Integer readSequenceNumber;
 
     // region Version Exchange
     /** Client protocol and software version string starting with the SSH version (SSH-2.0-...) */
@@ -204,10 +211,6 @@ public class SshContext {
 
     /** If set to true, a SSH_MSG_DISCONNECT has been received from the remote peer */
     private boolean receivedDisconnectMessage = false;
-    /** If set to true, encryption will be enabled for client to server communication */
-    private boolean isClientToServerEncryptionActive = false;
-    /** If set to true, encryption will be enabled for server to client communication */
-    private boolean isServerToClientEncryptionActive = false;
     /** If set to true, a version exchange message was sent by each side */
     private boolean versionExchangeCompleted = false;
 
@@ -243,6 +246,12 @@ public class SshContext {
         this.config = config;
         this.connection = connection;
         exchangeHash = new ExchangeHash(this);
+
+        // TODO: Initial packet layer type from config
+        packetLayerType = PacketLayerType.BLOB;
+        packetLayer = PacketLayerFactory.getPacketLayer(packetLayerType, this);
+        writeSequenceNumber = 0;
+        readSequenceNumber = 0;
     }
 
     // endregion
@@ -301,12 +310,20 @@ public class SshContext {
         }
     }
 
-    public BinaryPacketLayer getBinaryPacketLayer() {
-        return binaryPacketLayer;
+    public PacketLayerType getPacketLayerType() {
+        return packetLayerType;
     }
 
-    public void setBinaryPacketLayer(BinaryPacketLayer binaryPacketLayer) {
-        this.binaryPacketLayer = binaryPacketLayer;
+    public void setPacketLayerType(PacketLayerType packetLayerType) {
+        this.packetLayerType = packetLayerType;
+    }
+
+    public AbstractPacketLayer getPacketLayer() {
+        return packetLayer;
+    }
+
+    public void setPacketLayer(AbstractPacketLayer packetLayer) {
+        this.packetLayer = packetLayer;
     }
 
     public MessageLayer getMessageLayer() {
@@ -317,41 +334,48 @@ public class SshContext {
         this.messageLayer = messageLayer;
     }
 
-    public CryptoLayer getCryptoLayerClientToServer() {
-        return cryptoLayerClientToServer;
+    // region Getters and Setters for Sequence Numbers
+    public int getWriteSequenceNumber() {
+        return writeSequenceNumber;
     }
 
-    public void setCryptoLayerClientToServer(CryptoLayer cryptoLayerClientToServer) {
-        this.cryptoLayerClientToServer = cryptoLayerClientToServer;
+    public void setWriteSequenceNumber(int writeSequenceNumber) {
+        this.writeSequenceNumber = writeSequenceNumber;
     }
 
-    public CryptoLayer getCryptoLayerServerToClient() {
-        return cryptoLayerServerToClient;
+    public void incrementWriteSequenceNumber() {
+        incrementWriteSequenceNumber(1);
     }
 
-    public void setCryptoLayerServerToClient(CryptoLayer cryptoLayerServerToClient) {
-        this.cryptoLayerServerToClient = cryptoLayerServerToClient;
-    }
-
-    public int getSequenceNumber() {
-        return sequenceNumber;
-    }
-
-    public void setSequenceNumber(int sequenceNumber) {
-        this.sequenceNumber = sequenceNumber;
-    }
-
-    public void incrementSequenceNumber() {
-        incrementSequenceNumber(1);
-    }
-
-    public void incrementSequenceNumber(int i) {
+    public void incrementWriteSequenceNumber(int i) {
         // Java does not support native unsigned integers :(
-        sequenceNumber =
+        writeSequenceNumber =
                 (int)
-                        ((Integer.toUnsignedLong(sequenceNumber) + Integer.toUnsignedLong(i))
+                        ((Integer.toUnsignedLong(writeSequenceNumber) + Integer.toUnsignedLong(i))
                                 % DataFormatConstants.UNSIGNED_INT_MAX_VALUE);
     }
+
+    public int getReadSequenceNumber() {
+        return readSequenceNumber;
+    }
+
+    public void setReadSequenceNumber(int readSequenceNumber) {
+        this.readSequenceNumber = readSequenceNumber;
+    }
+
+    public void incrementReadSequenceNumber() {
+        incrementReadSequenceNumber(1);
+    }
+
+    public void incrementReadSequenceNumber(int i) {
+        // Java does not support native unsigned integers :(
+        readSequenceNumber =
+                (int)
+                        ((Integer.toUnsignedLong(readSequenceNumber) + Integer.toUnsignedLong(i))
+                                % DataFormatConstants.UNSIGNED_INT_MAX_VALUE);
+    }
+
+    // endregion
 
     // region Getters for Version Exchange Fields
     public Optional<String> getClientVersion() {
@@ -884,32 +908,6 @@ public class SshContext {
 
     public void setReceivedDisconnectMessage(Boolean receivedDisconnectMessage) {
         this.receivedDisconnectMessage = receivedDisconnectMessage;
-    }
-
-    public boolean isClientToServerEncryptionActive() {
-        return isClientToServerEncryptionActive;
-    }
-
-    public boolean isServerToClientEncryptionActive() {
-        return isServerToClientEncryptionActive;
-    }
-
-    public void setClientToServerEncryptionActive(boolean active) {
-        if (active && cryptoLayerClientToServer == null) {
-            // TODO: keep going, don't abort. send plaintext instead?
-            throw new IllegalArgumentException(
-                    "Tried to activate encryption (client to server) without initializing a crypto layer first.");
-        }
-        this.isClientToServerEncryptionActive = active;
-    }
-
-    public void setServerToClientEncryptionActive(boolean active) {
-        if (active && cryptoLayerServerToClient == null) {
-            // TODO: keep going, don't abort. send plaintext instead?
-            throw new IllegalArgumentException(
-                    "Tried to activate encryption (server to client) without initializing a crypto layer first.");
-        }
-        this.isServerToClientEncryptionActive = active;
     }
 
     public boolean isVersionExchangeComplete() {
