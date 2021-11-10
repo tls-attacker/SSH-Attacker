@@ -7,14 +7,12 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.handler;
 
-import de.rub.nds.sshattacker.core.crypto.KeyDerivation;
 import de.rub.nds.sshattacker.core.crypto.hash.DhNamedExchangeHash;
 import de.rub.nds.sshattacker.core.crypto.hash.ExchangeHash;
 import de.rub.nds.sshattacker.core.crypto.kex.DhKeyExchange;
 import de.rub.nds.sshattacker.core.crypto.kex.KeyExchange;
 import de.rub.nds.sshattacker.core.exceptions.AdjustmentException;
 import de.rub.nds.sshattacker.core.protocol.common.*;
-import de.rub.nds.sshattacker.core.protocol.layers.CryptoLayerFactory;
 import de.rub.nds.sshattacker.core.protocol.transport.message.DhKeyExchangeReplyMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.parser.DhKeyExchangeReplyMessageParser;
 import de.rub.nds.sshattacker.core.protocol.transport.preparator.DhKeyExchangeReplyMessagePreparator;
@@ -40,8 +38,6 @@ public class DhKeyExchangeReplyMessageHandler extends SshMessageHandler<DhKeyExc
         computeSharedSecret(message);
         updateExchangeHashWithSharedSecret();
         setSessionId();
-        KeyDerivation.deriveKeys(context);
-        initializeCryptoLayers();
     }
 
     private void handleHostKey(DhKeyExchangeReplyMessage message) {
@@ -102,11 +98,6 @@ public class DhKeyExchangeReplyMessageHandler extends SshMessageHandler<DhKeyExc
                 raiseAdjustmentException(e);
             }
         }
-    }
-
-    private void initializeCryptoLayers() {
-        context.setCryptoLayerClientToServer(CryptoLayerFactory.getCryptoLayer(true, context));
-        context.setCryptoLayerServerToClient(CryptoLayerFactory.getCryptoLayer(false, context));
     }
 
     @Override

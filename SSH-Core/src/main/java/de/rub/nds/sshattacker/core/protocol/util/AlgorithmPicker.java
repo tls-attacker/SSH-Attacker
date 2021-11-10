@@ -20,7 +20,7 @@ public class AlgorithmPicker {
     public static <T> Optional<T> pickAlgorithm(List<T> left, List<T> right) {
         List<T> intersection = left.stream().filter(right::contains).collect(Collectors.toList());
         if (intersection.isEmpty()) {
-            LOGGER.debug("No intersection between " + left + "and " + right);
+            LOGGER.warn("No intersection between " + left + " and " + right);
             return Optional.empty();
         }
         return Optional.of(intersection.get(0));

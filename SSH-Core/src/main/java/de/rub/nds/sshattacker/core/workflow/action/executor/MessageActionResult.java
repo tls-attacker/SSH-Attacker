@@ -8,7 +8,7 @@
 package de.rub.nds.sshattacker.core.workflow.action.executor;
 
 import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessage;
-import de.rub.nds.sshattacker.core.protocol.transport.message.BinaryPacket;
+import de.rub.nds.sshattacker.core.protocol.packet.AbstractPacket;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -16,13 +16,13 @@ import java.util.List;
 
 public class MessageActionResult {
 
-    private final List<BinaryPacket> binaryPacketList;
+    private final List<AbstractPacket> packetList;
 
     private final List<ProtocolMessage<?>> messageList;
 
     public MessageActionResult(
-            List<BinaryPacket> binaryPacketList, List<ProtocolMessage<?>> messageList) {
-        this.binaryPacketList = binaryPacketList;
+            List<AbstractPacket> packetList, List<ProtocolMessage<?>> messageList) {
+        this.packetList = packetList;
         this.messageList = messageList;
     }
 
@@ -31,8 +31,8 @@ public class MessageActionResult {
         this(new LinkedList<>(), new LinkedList<>());
     }
 
-    public List<BinaryPacket> getBinaryPacketList() {
-        return binaryPacketList;
+    public List<AbstractPacket> getPacketList() {
+        return packetList;
     }
 
     public List<ProtocolMessage<?>> getMessageList() {
@@ -43,14 +43,14 @@ public class MessageActionResult {
     public MessageActionResult merge(MessageActionResult... other) {
         LinkedList<MessageActionResult> results = new LinkedList<>(Collections.singletonList(this));
         results.addAll(Arrays.asList(other));
-        List<BinaryPacket> binaryPacketList = new LinkedList<>();
+        List<AbstractPacket> packetList = new LinkedList<>();
         List<ProtocolMessage<?>> messageList = new LinkedList<>();
 
         for (MessageActionResult result : results) {
-            binaryPacketList.addAll(result.getBinaryPacketList());
+            packetList.addAll(result.getPacketList());
             messageList.addAll(result.getMessageList());
         }
 
-        return new MessageActionResult(binaryPacketList, messageList);
+        return new MessageActionResult(packetList, messageList);
     }
 }

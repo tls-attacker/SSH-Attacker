@@ -10,7 +10,6 @@ package de.rub.nds.sshattacker.core.workflow;
 import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
 import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessage;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
-import de.rub.nds.sshattacker.core.protocol.transport.message.BinaryPacket;
 import de.rub.nds.sshattacker.core.workflow.action.ReceivingAction;
 import de.rub.nds.sshattacker.core.workflow.action.SendingAction;
 import java.util.LinkedList;
@@ -28,14 +27,6 @@ public class WorkflowTraceUtil {
             sendMessages.addAll(action.getSendMessages());
         }
         return sendMessages;
-    }
-
-    public static List<BinaryPacket> getAllSendBinaryPackets(WorkflowTrace trace) {
-        List<BinaryPacket> sendBinaryPackets = new LinkedList<>();
-        for (SendingAction action : trace.getSendingActions()) {
-            sendBinaryPackets.addAll(action.getSendBinaryPackets());
-        }
-        return sendBinaryPackets;
     }
 
     public static List<ProtocolMessage<?>> getAllReceivedMessages(WorkflowTrace trace) {

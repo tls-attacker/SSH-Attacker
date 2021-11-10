@@ -7,7 +7,13 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.handler;
 
+import de.rub.nds.sshattacker.core.constants.EncryptionAlgorithm;
+import de.rub.nds.sshattacker.core.constants.MacAlgorithm;
+import de.rub.nds.sshattacker.core.crypto.packet.cipher.PacketCipherFactory;
+import de.rub.nds.sshattacker.core.crypto.packet.keys.KeySet;
+import de.rub.nds.sshattacker.core.crypto.packet.keys.KeySetGenerator;
 import de.rub.nds.sshattacker.core.exceptions.AdjustmentException;
+import de.rub.nds.sshattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.sshattacker.core.protocol.common.*;
 import de.rub.nds.sshattacker.core.protocol.transport.message.NewKeysMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.parser.NewKeysMessageParser;
@@ -29,7 +35,22 @@ public class NewKeysMessageHandler extends SshMessageHandler<NewKeysMessage> {
     public void adjustContext() {
         try {
             if (context.getConfig().getEnableEncryptionOnNewKeysMessage()) {
-                context.setServerToClientEncryptionActive(true);
+                KeySet keySet = KeySetGenerator.generateKeySet(context);
+                EncryptionAlgorithm inEnc =
+                        context.isClient()
+                                ? context.getCipherAlgorithmServerToClient()
+                                        .orElseThrow(WorkflowExecutionException::new)
+                                : context.getCipherAlgorithmClientToServer()
+                                        .orElseThrow(WorkflowExecutionException::new);
+                MacAlgorithm inMac =
+                        context.isClient()
+                                ? context.getMacAlgorithmServerToClient()
+                                        .orElseThrow(WorkflowExecutionException::new)
+                                : context.getMacAlgorithmClientToServer()
+                                        .orElseThrow(WorkflowExecutionException::new);
+                context.getPacketLayer()
+                        .updateDecryptionCipher(
+                                PacketCipherFactory.getPacketCipher(context, keySet, inEnc, inMac));
             }
         } catch (IllegalArgumentException e) {
             raiseAdjustmentException(new AdjustmentException(e));
