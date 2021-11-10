@@ -10,6 +10,7 @@ package de.rub.nds.sshattacker.core.crypto.mac;
 import de.rub.nds.sshattacker.core.constants.MacAlgorithm;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
@@ -31,7 +32,13 @@ public class JavaMac implements WrappedMac {
 
     @Override
     public byte[] calculate(byte[] data) {
-        return mac.doFinal(data);
+        byte[] output = mac.doFinal(data);
+
+        // Support for truncated MACs like hmac-sha1-96
+        if (output.length > algorithm.getOutputSize()) {
+            output = Arrays.copyOfRange(output, 0, algorithm.getOutputSize());
+        }
+        return output;
     }
 
     @Override
