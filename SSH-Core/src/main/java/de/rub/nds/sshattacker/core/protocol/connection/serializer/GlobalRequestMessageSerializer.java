@@ -24,7 +24,7 @@ public abstract class GlobalRequestMessageSerializer<T extends GlobalRequestMess
         super(message);
     }
 
-    private void serializeRequestName() {
+    protected void serializeRequestName() {
         LOGGER.debug("Request name length: " + message.getRequestNameLength().getValue());
         appendInt(
                 message.getRequestNameLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
@@ -32,7 +32,7 @@ public abstract class GlobalRequestMessageSerializer<T extends GlobalRequestMess
         appendString(message.getRequestName().getValue(), StandardCharsets.US_ASCII);
     }
 
-    private void serializeWantReply() {
+    protected void serializeWantReply() {
         LOGGER.debug("Want reply: " + Converter.byteToBoolean(message.getWantReply().getValue()));
         appendByte(message.getWantReply().getValue());
     }
