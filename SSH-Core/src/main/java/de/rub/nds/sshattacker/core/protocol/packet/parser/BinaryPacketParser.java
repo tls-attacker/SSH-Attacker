@@ -95,19 +95,17 @@ public class BinaryPacketParser extends AbstractPacketParser<BinaryPacket> {
             byte[] firstBlock =
                     parseByteArrayField(
                             activeDecryptCipher.getEncryptionAlgorithm().getBlockSize());
-            computations.setPlainPacketBytes(firstBlock);
             setPointer(pointer);
+            byte[] decryptedBlock = activeDecryptCipher.getDecryptCipher().decrypt(firstBlock);
+            computations.setPlainPacketBytes(decryptedBlock);
+            computations.setPlainPacketBytesFirstBlockOnly(true);
 
-            byte[] decryptedBlock =
-                    activeDecryptCipher
-                            .getDecryptCipher()
-                            .decrypt(computations.getIv().getValue(), firstBlock);
             int packetLength =
                     ArrayConverter.bytesToInt(
                             Arrays.copyOfRange(
                                     decryptedBlock, 0, BinaryPacketConstants.LENGTH_FIELD_LENGTH));
-
             binaryPacket.setLength(packetLength);
+
             computations.setCiphertext(
                     parseByteArrayField(
                             BinaryPacketConstants.LENGTH_FIELD_LENGTH
