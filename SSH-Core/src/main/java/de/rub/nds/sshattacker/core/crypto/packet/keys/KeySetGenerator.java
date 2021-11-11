@@ -36,7 +36,7 @@ public class KeySetGenerator {
                         sessionId,
                         context.getCipherAlgorithmClientToServer()
                                 .orElseThrow(AdjustmentException::new)
-                                .getBlockSize(),
+                                .getIVSize(),
                         hashAlgorithm));
         keySet.setServerWriteInitialIV(
                 KeyDerivation.deriveKey(
@@ -46,7 +46,7 @@ public class KeySetGenerator {
                         sessionId,
                         context.getCipherAlgorithmServerToClient()
                                 .orElseThrow(AdjustmentException::new)
-                                .getBlockSize(),
+                                .getIVSize(),
                         hashAlgorithm));
         keySet.setClientWriteEncryptionKey(
                 KeyDerivation.deriveKey(

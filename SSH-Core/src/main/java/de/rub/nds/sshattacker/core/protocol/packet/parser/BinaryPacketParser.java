@@ -10,6 +10,7 @@ package de.rub.nds.sshattacker.core.protocol.packet.parser;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.BinaryPacketConstants;
 import de.rub.nds.sshattacker.core.constants.EncryptionAlgorithm;
+import de.rub.nds.sshattacker.core.constants.EncryptionAlgorithmType;
 import de.rub.nds.sshattacker.core.crypto.packet.cipher.PacketCipher;
 import de.rub.nds.sshattacker.core.exceptions.CryptoException;
 import de.rub.nds.sshattacker.core.protocol.packet.BinaryPacket;
@@ -82,8 +83,9 @@ public class BinaryPacketParser extends AbstractPacketParser<BinaryPacket> {
         binaryPacket.prepareComputations();
         PacketCryptoComputations computations = binaryPacket.getComputations();
 
-        if (activeDecryptCipher.isEncryptThenMac()) {
-            LOGGER.debug("Parsing encrypt-then-mac BinaryPacket");
+        if (activeDecryptCipher.getEncryptionAlgorithm().getType()
+                == EncryptionAlgorithmType.AEAD || activeDecryptCipher.isEncryptThenMac()) {
+            LOGGER.debug("Parsing encrypt-then-mac / AEAD BinaryPacket");
 
             binaryPacket.setLength(parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH));
             computations.setCiphertext(parseByteArrayField(binaryPacket.getLength().getValue()));
@@ -112,8 +114,15 @@ public class BinaryPacketParser extends AbstractPacketParser<BinaryPacket> {
                                     + binaryPacket.getLength().getValue()));
         }
 
-        computations.setMac(
-                parseByteArrayField(activeDecryptCipher.getMacAlgorithm().getOutputSize()));
+        if (activeDecryptCipher.getEncryptionAlgorithm().getType()
+                == EncryptionAlgorithmType.AEAD) {
+            computations.setMac(
+                    parseByteArrayField(
+                            activeDecryptCipher.getEncryptionAlgorithm().getAuthTagSize()));
+        } else {
+            computations.setMac(
+                    parseByteArrayField(activeDecryptCipher.getMacAlgorithm().getOutputSize()));
+        }
         binaryPacket.setCompletePacketBytes(getAlreadyParsed());
 
         LOGGER.debug("Packet length: {}", binaryPacket.getLength().getValue());

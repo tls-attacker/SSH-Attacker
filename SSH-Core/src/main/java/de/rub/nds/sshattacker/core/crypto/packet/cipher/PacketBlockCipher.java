@@ -60,7 +60,7 @@ public class PacketBlockCipher extends PacketCipher {
     @Override
     public void encrypt(BinaryPacket packet) throws CryptoException {
         if (packet.getComputations() == null) {
-            LOGGER.warn("Record computations are not prepared.");
+            LOGGER.warn("Packet computations are not prepared.");
             packet.prepareComputations();
         }
         LOGGER.debug("Encrypting binary packet:");

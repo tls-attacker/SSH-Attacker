@@ -27,6 +27,8 @@ public class PacketCipherFactory {
         try {
             if (encryptionAlgorithm.getType() == EncryptionAlgorithmType.BLOCK) {
                 return new PacketBlockCipher(context, keySet, encryptionAlgorithm, macAlgorithm);
+            } else if (encryptionAlgorithm.getType() == EncryptionAlgorithmType.AEAD) {
+                return new PacketAEADCipher(context, keySet, encryptionAlgorithm);
             } else if (encryptionAlgorithm == EncryptionAlgorithm.NONE) {
                 return getNoneCipher(context);
             }
