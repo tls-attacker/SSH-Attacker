@@ -5,7 +5,7 @@
  *
  * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
-package de.rub.nds.sshattacker.core.protocol.connection.serializer;
+package de.rub.nds.sshattacker.core.protocol.connection.parser;
 
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.connection.message.TcpIpForwardMessage;
@@ -13,33 +13,33 @@ import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public abstract class TcpIpForwardMessageSerializer<T extends TcpIpForwardMessage<T>>
-        extends GlobalRequestMessageSerializer<T> {
+public abstract class TcpIpForwardMessageParser<T extends TcpIpForwardMessage<T>>
+        extends GlobalRequestMessageParser<T> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public TcpIpForwardMessageSerializer(T message) {
-        super(message);
+    public TcpIpForwardMessageParser(byte[] array, int startPosition) {
+        super(array, startPosition);
     }
 
-    private void serializeIPAddressToBind() {
+    private void parseIPAddressToBind() {
+        message.setIPAddressToBindLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
         LOGGER.debug("IP address to bind length: " + message.getIPAddressToBindLength().getValue());
-        appendInt(
-                message.getIPAddressToBindLength().getValue(),
-                DataFormatConstants.STRING_SIZE_LENGTH);
+        message.setIPAddressToBind(
+                parseByteString(
+                        message.getIPAddressToBindLength().getValue(), StandardCharsets.US_ASCII));
         LOGGER.debug("IP address to bind: " + message.getIPAddressToBind().getValue());
-        appendString(message.getIPAddressToBind().getValue(), StandardCharsets.US_ASCII);
     }
 
-    private void serializePortToBind() {
+    private void parsePortToBind() {
+        message.setPortToBind(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
         LOGGER.debug("Port to bind: " + message.getPortToBind().getValue());
-        appendInt(message.getPortToBind().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
     }
 
     @Override
-    public void serializeMessageSpecificContents() {
-        super.serializeMessageSpecificContents();
-        serializeIPAddressToBind();
-        serializePortToBind();
+    protected void parseMessageSpecificContents() {
+        super.parseMessageSpecificContents();
+        parseIPAddressToBind();
+        parsePortToBind();
     }
 }

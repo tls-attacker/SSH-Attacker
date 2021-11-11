@@ -9,8 +9,9 @@ package de.rub.nds.sshattacker.core.protocol.connection.serializer;
 
 import de.rub.nds.sshattacker.core.protocol.connection.message.TcpIpForwardCancelMessage;
 
-public class TcpIpForwardCancelMessageSerializer extends TcpIpForwardMessageSerializer<TcpIpForwardCancelMessage> {
-    
+public class TcpIpForwardCancelMessageSerializer
+        extends TcpIpForwardMessageSerializer<TcpIpForwardCancelMessage> {
+
     public TcpIpForwardCancelMessageSerializer(TcpIpForwardCancelMessage message) {
         super(message);
     }

@@ -14,13 +14,13 @@ import de.rub.nds.sshattacker.core.constants.GlobalRequestType;
 import java.nio.charset.StandardCharsets;
 
 public abstract class TcpIpForwardMessage<T extends TcpIpForwardMessage<T>>
-         extends GlobalRequestMessage<T> {
+        extends GlobalRequestMessage<T> {
 
     private ModifiableInteger IPAddressToBindLength;
     private ModifiableString IPAddressToBind;
     private ModifiableInteger portToBind;
 
-    protected TcpIpForwardMessage(GlobalRequestType requestType){
+    protected TcpIpForwardMessage(GlobalRequestType requestType) {
         super(requestType);
     }
 
@@ -33,12 +33,14 @@ public abstract class TcpIpForwardMessage<T extends TcpIpForwardMessage<T>>
     }
 
     public void setIPAddressToBind(String IPAddressToBind) {
-        this.IPAddressToBind = ModifiableVariableFactory.safelySetValue(this.IPAddressToBind, IPAddressToBind);
+        this.IPAddressToBind =
+                ModifiableVariableFactory.safelySetValue(this.IPAddressToBind, IPAddressToBind);
     }
 
     public void setIPAddressToBind(ModifiableString IPAddressToBind, boolean adjustLengthField) {
         if (adjustLengthField) {
-            setIPAddressToBindLength(IPAddressToBind.getValue().getBytes(StandardCharsets.US_ASCII).length);
+            setIPAddressToBindLength(
+                    IPAddressToBind.getValue().getBytes(StandardCharsets.US_ASCII).length);
         }
         this.IPAddressToBind = IPAddressToBind;
     }
@@ -47,7 +49,8 @@ public abstract class TcpIpForwardMessage<T extends TcpIpForwardMessage<T>>
         if (adjustLengthField) {
             setIPAddressToBindLength(IPAddressToBind.getBytes(StandardCharsets.US_ASCII).length);
         }
-        this.IPAddressToBind = ModifiableVariableFactory.safelySetValue(this.IPAddressToBind, IPAddressToBind);
+        this.IPAddressToBind =
+                ModifiableVariableFactory.safelySetValue(this.IPAddressToBind, IPAddressToBind);
     }
 
     public ModifiableInteger getIPAddressToBindLength() {
@@ -60,7 +63,8 @@ public abstract class TcpIpForwardMessage<T extends TcpIpForwardMessage<T>>
 
     public void setIPAddressToBindLength(int IPAddressToBindLength) {
         this.IPAddressToBindLength =
-                ModifiableVariableFactory.safelySetValue(this.IPAddressToBindLength, IPAddressToBindLength);
+                ModifiableVariableFactory.safelySetValue(
+                        this.IPAddressToBindLength, IPAddressToBindLength);
     }
 
     public ModifiableInteger getPortToBind() {

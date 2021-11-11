@@ -7,15 +7,17 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.preparator;
 
-import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.constants.GlobalRequestType;
 import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
+import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.connection.message.TcpIpForwardRequestMessage;
 import de.rub.nds.sshattacker.core.state.SshContext;
 
-public class TcpIpForwardRequestMessagePreparator extends SshMessagePreparator<TcpIpForwardRequestMessage> {
-    
-    public TcpIpForwardRequestMessagePreparator(SshContext context, TcpIpForwardRequestMessage message) {
+public class TcpIpForwardRequestMessagePreparator
+        extends SshMessagePreparator<TcpIpForwardRequestMessage> {
+
+    public TcpIpForwardRequestMessagePreparator(
+            SshContext context, TcpIpForwardRequestMessage message) {
         super(context, message);
     }
 
