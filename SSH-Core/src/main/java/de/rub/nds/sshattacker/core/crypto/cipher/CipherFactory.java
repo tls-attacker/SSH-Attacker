@@ -56,14 +56,7 @@ public class CipherFactory {
                     // No IV / tag length required
                     return new JavaCipher(
                             encryptionAlgorithm, keySet.getReadEncryptionKey(connectionEndType));
-                } else if (encryptionAlgorithm.getType() == EncryptionAlgorithmType.AEAD) {
-                    // IV and tag length required
-                    return new JavaCipher(
-                            encryptionAlgorithm,
-                            keySet.getReadEncryptionKey(connectionEndType),
-                            keySet.getReadIv(connectionEndType));
                 } else {
-                    // IV only
                     return new JavaCipher(
                             encryptionAlgorithm,
                             keySet.getReadEncryptionKey(connectionEndType),

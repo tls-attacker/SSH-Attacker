@@ -7,13 +7,16 @@
  */
 package de.rub.nds.sshattacker.core.crypto.cipher;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.EncryptionAlgorithm;
 import de.rub.nds.sshattacker.core.constants.EncryptionAlgorithmFamily;
 import de.rub.nds.sshattacker.core.constants.EncryptionAlgorithmType;
 import de.rub.nds.sshattacker.core.exceptions.CryptoException;
+import java.math.BigInteger;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
 import javax.crypto.*;
 import javax.crypto.spec.GCMParameterSpec;
 import javax.crypto.spec.IvParameterSpec;
@@ -24,7 +27,6 @@ class JavaCipher implements EncryptionCipher, DecryptionCipher {
     private final EncryptionAlgorithm algorithm;
 
     private byte[] iv;
-    private final Integer tagLength;
     private final byte[] key;
 
     private Cipher encryptCipher;
@@ -35,15 +37,9 @@ class JavaCipher implements EncryptionCipher, DecryptionCipher {
     }
 
     public JavaCipher(EncryptionAlgorithm algorithm, byte[] key, byte[] iv) throws CryptoException {
-        this(algorithm, key, iv, null);
-    }
-
-    public JavaCipher(EncryptionAlgorithm algorithm, byte[] key, byte[] iv, Integer tagLength)
-            throws CryptoException {
         this.algorithm = algorithm;
         this.key = key;
         this.iv = iv;
-        this.tagLength = tagLength;
         initCiphers();
     }
 
@@ -56,19 +52,17 @@ class JavaCipher implements EncryptionCipher, DecryptionCipher {
                             + algorithm
                             + ")");
         }
-        if (iv != null && iv.length != algorithm.getBlockSize()) {
+        if (iv == null && algorithm.getType() != EncryptionAlgorithmType.STREAM) {
+            throw new CryptoException(
+                    "Could not initialize JavaCipher. Missing an IV while the encryption algorithm requires one.");
+        }
+        if (iv != null && iv.length != algorithm.getIVSize()) {
             throw new CryptoException(
                     "Could not initialize JavaCipher. Make sure the provided IV length (provided: "
                             + iv.length
                             + ") matches the block size of the algorithm (provided: "
                             + algorithm
                             + ")");
-        }
-        if (((iv == null || tagLength == null)
-                        && algorithm.getType() == EncryptionAlgorithmType.AEAD)
-                || (tagLength != null && algorithm.getType() != EncryptionAlgorithmType.AEAD)) {
-            throw new CryptoException(
-                    "Could not initialize JavaCipher. Got a tagLength on a non-AEAD cipher or vise versa.");
         }
 
         try {
@@ -77,15 +71,14 @@ class JavaCipher implements EncryptionCipher, DecryptionCipher {
             encryptCipher = Cipher.getInstance(algorithm.getJavaName());
             decryptCipher = Cipher.getInstance(algorithm.getJavaName());
             if (algorithm.getType() == EncryptionAlgorithmType.AEAD) {
-                //noinspection ConstantConditions
                 encryptCipher.init(
                         Cipher.ENCRYPT_MODE,
                         new SecretKeySpec(key, keySpecAlgorithm),
-                        new GCMParameterSpec(tagLength, iv));
+                        new GCMParameterSpec(algorithm.getAuthTagSize() * 8, iv));
                 decryptCipher.init(
                         Cipher.DECRYPT_MODE,
                         new SecretKeySpec(key, keySpecAlgorithm),
-                        new GCMParameterSpec(tagLength, iv));
+                        new GCMParameterSpec(algorithm.getAuthTagSize() * 8, iv));
             } else if (algorithm.getType() == EncryptionAlgorithmType.BLOCK) {
                 encryptCipher.init(
                         Cipher.ENCRYPT_MODE,
@@ -132,11 +125,14 @@ class JavaCipher implements EncryptionCipher, DecryptionCipher {
                             + algorithm.getType());
         }
         encryptCipher.updateAAD(additionalAuthenticatedData);
+        byte[] output;
         try {
-            return encryptCipher.doFinal(data);
+            output = encryptCipher.doFinal(data);
         } catch (IllegalStateException | IllegalBlockSizeException | BadPaddingException e) {
             throw new CryptoException("Could not encrypt data with " + algorithm.getJavaName(), e);
         }
+        incrementInvocationCounter();
+        return output;
     }
 
     @Override
@@ -155,18 +151,22 @@ class JavaCipher implements EncryptionCipher, DecryptionCipher {
 
     @Override
     public byte[] decrypt(byte[] encryptedData, byte[] additionalAuthenticatedData)
-            throws CryptoException {
+            throws CryptoException, AEADBadTagException {
         if (algorithm.getType() != EncryptionAlgorithmType.AEAD) {
             throw new CryptoException(
                     "Provided additional authenticated data with a cipher of type "
                             + algorithm.getType());
         }
         decryptCipher.updateAAD(additionalAuthenticatedData);
+        byte[] output;
         try {
-            return decryptCipher.doFinal(encryptedData);
+            output = decryptCipher.doFinal(encryptedData);
         } catch (IllegalStateException | IllegalBlockSizeException | BadPaddingException e) {
             throw new CryptoException("Could not decrypt data with " + algorithm.getJavaName(), e);
         }
+
+        incrementInvocationCounter();
+        return output;
     }
 
     public EncryptionAlgorithm getAlgorithm() {
@@ -182,5 +182,14 @@ class JavaCipher implements EncryptionCipher, DecryptionCipher {
     public void setIV(byte[] iv) throws CryptoException {
         this.iv = iv;
         initCiphers();
+    }
+
+    private void incrementInvocationCounter() throws CryptoException {
+        byte[] fixed = Arrays.copyOfRange(iv, 0, 4);
+        byte[] invocationCounter = Arrays.copyOfRange(iv, 4, 12);
+        // TODO: Fix ArrayConverter.bytesToLong() implementation and handle invocation counter as
+        // long
+        invocationCounter = new BigInteger(invocationCounter).add(BigInteger.ONE).toByteArray();
+        setIV(ArrayConverter.concatenate(fixed, invocationCounter));
     }
 }

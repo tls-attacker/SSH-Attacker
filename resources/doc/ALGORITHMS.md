@@ -30,6 +30,10 @@
 - `aes128-ctr`
 - `aes192-ctr`
 - `aes256-ctr`
+- `AEAD_AES_128_GCM`
+- `AEAD_AES_256_GCM`
+- `aes128-gcm@openssh.com`
+- `aes256-gcm@openssh.com`
 
 ---
 ## Supported MAC Algorithms
@@ -46,6 +50,8 @@
 - `hmac-sha512-etm@openssh.com`
 - `hmac-md5-etm@openssh.com`
 - `hmac-md5-96-etm@openssh.com`
+- `AEAD_AES_128_GCM`
+- `AEAD_AES_256_GCM`
 ---
 ## Supported Host Key Algorithms
 

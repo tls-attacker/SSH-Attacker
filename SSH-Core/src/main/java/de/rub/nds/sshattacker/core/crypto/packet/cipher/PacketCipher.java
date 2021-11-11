@@ -9,6 +9,7 @@ package de.rub.nds.sshattacker.core.crypto.packet.cipher;
 
 import de.rub.nds.sshattacker.core.constants.BinaryPacketConstants;
 import de.rub.nds.sshattacker.core.constants.EncryptionAlgorithm;
+import de.rub.nds.sshattacker.core.constants.EncryptionAlgorithmType;
 import de.rub.nds.sshattacker.core.constants.MacAlgorithm;
 import de.rub.nds.sshattacker.core.crypto.cipher.DecryptionCipher;
 import de.rub.nds.sshattacker.core.crypto.cipher.EncryptionCipher;
@@ -28,7 +29,7 @@ public abstract class PacketCipher {
     protected final KeySet keySet;
     /** The encryption algorithm to use. */
     protected final EncryptionAlgorithm encryptionAlgorithm;
-    /** The MAC algorithm to use. This may be ignored if using an AEAD encryption algorithm. */
+    /** The MAC algorithm to use. This may be null if using an AEAD encryption algorithm. */
     protected final MacAlgorithm macAlgorithm;
 
     public PacketCipher(
@@ -79,7 +80,7 @@ public abstract class PacketCipher {
     }
 
     public Boolean isEncryptThenMac() {
-        return macAlgorithm.isEncryptThenMacAlgorithm();
+        return macAlgorithm != null && macAlgorithm.isEncryptThenMacAlgorithm();
     }
 
     protected ConnectionEndType getLocalConnectionEndType() {
@@ -108,6 +109,8 @@ public abstract class PacketCipher {
                 (packet.getPayload().getValue().length
                                 + BinaryPacketConstants.PADDING_FIELD_LENGTH
                                 + (isEncryptThenMac()
+                                                || encryptionAlgorithm.getType()
+                                                        == EncryptionAlgorithmType.AEAD
                                         ? 0
                                         : BinaryPacketConstants.PACKET_FIELD_LENGTH))
                         % effectiveBlockSize;

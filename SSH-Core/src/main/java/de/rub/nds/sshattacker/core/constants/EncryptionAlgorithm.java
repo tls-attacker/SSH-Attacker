@@ -70,14 +70,28 @@ public enum EncryptionAlgorithm {
     IDEA_CTR("idea-ctr", EncryptionAlgorithmType.BLOCK, 16, 8, "IDEA/CBC/NoPadding"),
     CAST128_CTR("cast128-ctr", EncryptionAlgorithmType.BLOCK, 16, 8, "CAST5/CBC/NoPadding"),
     // [ RFC 5647 ]
-    AEAD_AES_128_GCM("AEAD_AES_128_GCM", EncryptionAlgorithmType.AEAD, 16, 8, "AES/GCM/NoPadding"),
-    AEAD_AES_256_GCM("AEAD_AES_256_GCM", EncryptionAlgorithmType.AEAD, 32, 8, "AES/GCM/NoPadding"),
+    AEAD_AES_128_GCM(
+            "AEAD_AES_128_GCM", EncryptionAlgorithmType.AEAD, 16, 8, 12, 16, "AES/GCM/NoPadding"),
+    AEAD_AES_256_GCM(
+            "AEAD_AES_256_GCM", EncryptionAlgorithmType.AEAD, 32, 8, 12, 16, "AES/GCM/NoPadding"),
     // Vendor extensions
     // [ OpenSSH ]
     AES128_GCM_OPENSSH_COM(
-            "aes128-gcm@openssh.com", EncryptionAlgorithmType.AEAD, 16, 16, "AES/GCM/NoPadding"),
+            "aes128-gcm@openssh.com",
+            EncryptionAlgorithmType.AEAD,
+            16,
+            16,
+            12,
+            16,
+            "AES/GCM/NoPadding"),
     AES256_GCM_OPENSSH_COM(
-            "aes256-gcm@openssh.com", EncryptionAlgorithmType.AEAD, 32, 16, "AES/GCM/NoPadding"),
+            "aes256-gcm@openssh.com",
+            EncryptionAlgorithmType.AEAD,
+            32,
+            16,
+            12,
+            16,
+            "AES/GCM/NoPadding"),
     // blockSize = 0 as ChaCha20 is a stream cipher, the output is used as a
     // keystream
     CHACHA20_POLY1305_OPENSSH_COM(
@@ -85,6 +99,8 @@ public enum EncryptionAlgorithm {
             EncryptionAlgorithmType.AEAD,
             64,
             0,
+            12,
+            16,
             "ChaCha20-Poly1305"),
     // [ Lysator Academic Computer Society ]
     RIJNDAEL_CBC_LYSATOR_LIU_SE( // a.k.a. aes256-cbc
@@ -98,10 +114,12 @@ public enum EncryptionAlgorithm {
     private final EncryptionAlgorithmType type;
     private final int keySize;
     private final int blockSize;
+    private final int ivSize;
+    private final int authTagSize;
     private final String javaName;
 
     EncryptionAlgorithm(String name, EncryptionAlgorithmType type, int keySize, int blockSize) {
-        this(name, type, keySize, blockSize, null);
+        this(name, type, keySize, blockSize, blockSize, 0, null);
     }
 
     EncryptionAlgorithm(
@@ -110,10 +128,23 @@ public enum EncryptionAlgorithm {
             int keySize,
             int blockSize,
             String javaName) {
+        this(name, type, keySize, blockSize, blockSize, 0, javaName);
+    }
+
+    EncryptionAlgorithm(
+            String name,
+            EncryptionAlgorithmType type,
+            int keySize,
+            int blockSize,
+            int ivSize,
+            int authTagSize,
+            String javaName) {
         this.name = name;
         this.type = type;
         this.keySize = keySize;
         this.blockSize = blockSize;
+        this.ivSize = ivSize;
+        this.authTagSize = authTagSize;
         this.javaName = javaName;
     }
 
@@ -128,6 +159,14 @@ public enum EncryptionAlgorithm {
 
     public int getBlockSize() {
         return blockSize;
+    }
+
+    public int getIVSize() {
+        return ivSize;
+    }
+
+    public int getAuthTagSize() {
+        return authTagSize;
     }
 
     public EncryptionAlgorithmType getType() {

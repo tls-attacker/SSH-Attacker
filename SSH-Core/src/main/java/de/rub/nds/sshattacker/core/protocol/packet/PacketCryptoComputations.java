@@ -23,7 +23,7 @@ public class PacketCryptoComputations extends ModifiableVariableHolder {
     /** The key used for the MAC */
     private ModifiableByteArray integrityKey;
 
-    /** The MAC value of the packet */
+    /** The MAC / authentication tag value of the packet */
     private ModifiableByteArray mac;
 
     /** The length of the padding */
@@ -45,6 +45,9 @@ public class PacketCryptoComputations extends ModifiableVariableHolder {
 
     /** The bytes which are going to be passed to the MAC function */
     private ModifiableByteArray authenticatedPacketBytes;
+
+    /** Only used with AEAD ciphers - contains the AAD of this packet */
+    private ModifiableByteArray additionalAuthenticatedData;
 
     /** The initialization vector used for encryption and decryption of this packet */
     private ModifiableByteArray iv;
@@ -173,15 +176,29 @@ public class PacketCryptoComputations extends ModifiableVariableHolder {
                         this.authenticatedPacketBytes, authenticatedPacketBytes);
     }
 
-    public ModifiableByteArray getIv() {
+    public ModifiableByteArray getAdditionalAuthenticatedData() {
+        return additionalAuthenticatedData;
+    }
+
+    public void setAdditionalAuthenticatedData(ModifiableByteArray additionalAuthenticatedData) {
+        this.additionalAuthenticatedData = additionalAuthenticatedData;
+    }
+
+    public void setAdditionalAuthenticatedData(byte[] additionalAuthenticatedData) {
+        this.additionalAuthenticatedData =
+                ModifiableVariableFactory.safelySetValue(
+                        this.additionalAuthenticatedData, additionalAuthenticatedData);
+    }
+
+    public ModifiableByteArray getIV() {
         return iv;
     }
 
-    public void setIv(ModifiableByteArray iv) {
+    public void setIV(ModifiableByteArray iv) {
         this.iv = iv;
     }
 
-    public void setIv(byte[] iv) {
+    public void setIV(byte[] iv) {
         this.iv = ModifiableVariableFactory.safelySetValue(this.iv, iv);
     }
 

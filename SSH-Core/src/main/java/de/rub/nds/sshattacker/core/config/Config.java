@@ -254,7 +254,7 @@ public class Config implements Serializable {
 
         clientSupportedCipherAlgorithmsClientToServer = new LinkedList<>();
         clientSupportedCipherAlgorithmsClientToServer.add(
-                EncryptionAlgorithm.AES128_CBC);
+                EncryptionAlgorithm.AES256_GCM_OPENSSH_COM);
         clientSupportedCipherAlgorithmsServerToClient =
                 new LinkedList<>(clientSupportedCipherAlgorithmsClientToServer);
         serverSupportedCipherAlgorithmsClientToServer =
