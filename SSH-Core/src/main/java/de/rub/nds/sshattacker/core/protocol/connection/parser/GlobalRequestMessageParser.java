@@ -11,6 +11,7 @@ import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 import de.rub.nds.sshattacker.core.protocol.connection.message.GlobalRequestMessage;
 import de.rub.nds.sshattacker.core.util.Converter;
+import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -27,7 +28,9 @@ public abstract class GlobalRequestMessageParser<T extends GlobalRequestMessage<
         message.setRequestNameLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
         LOGGER.debug("Request name length: " + message.getRequestNameLength().getValue());
         message.setRequestName(
-                parseByteString(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH)), false);
+                parseByteString(
+                        message.getRequestNameLength().getValue(), StandardCharsets.US_ASCII),
+                false);
         LOGGER.debug("Request name: " + message.getRequestName().getValue());
     }
 

@@ -102,8 +102,12 @@ public abstract class MessageAction extends ConnectionBoundAction {
                 @XmlElement(type = UserAuthPasswordMessage.class, name = "UserAuthPasswordMessage"),
                 @XmlElement(type = UserAuthSuccessMessage.class, name = "UserAuthSuccessMessage"),
                 @XmlElement(type = VersionExchangeMessage.class, name = "VersionExchangeMessage"),
-                @XmlElement(type = TcpIpForwardRequestMessage.class, name = "TcpIpForwardRequestMessage"),
-                @XmlElement(type = TcpIpForwardCancelMessage.class, name = "TcpIpForwardCancelMessage")
+                @XmlElement(
+                        type = TcpIpForwardRequestMessage.class,
+                        name = "TcpIpForwardRequestMessage"),
+                @XmlElement(
+                        type = TcpIpForwardCancelMessage.class,
+                        name = "TcpIpForwardCancelMessage")
             })
     protected List<ProtocolMessage<?>> messages = new ArrayList<>();
 

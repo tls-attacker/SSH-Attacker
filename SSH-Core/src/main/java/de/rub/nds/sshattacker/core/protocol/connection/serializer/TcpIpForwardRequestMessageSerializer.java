@@ -9,8 +9,9 @@ package de.rub.nds.sshattacker.core.protocol.connection.serializer;
 
 import de.rub.nds.sshattacker.core.protocol.connection.message.TcpIpForwardRequestMessage;
 
-public class TcpIpForwardRequestMessageSerializer extends TcpIpForwardMessageSerializer<TcpIpForwardRequestMessage> {
-    
+public class TcpIpForwardRequestMessageSerializer
+        extends TcpIpForwardMessageSerializer<TcpIpForwardRequestMessage> {
+
     public TcpIpForwardRequestMessageSerializer(TcpIpForwardRequestMessage message) {
         super(message);
     }

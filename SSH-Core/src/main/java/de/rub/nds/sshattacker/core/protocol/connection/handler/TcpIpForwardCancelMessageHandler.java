@@ -1,7 +1,13 @@
+/*
+ * SSH-Attacker - A Modular Penetration Testing Framework for SSH
+ *
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ *
+ * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ */
 package de.rub.nds.sshattacker.core.protocol.connection.handler;
 
 import de.rub.nds.sshattacker.core.protocol.common.*;
-
 import de.rub.nds.sshattacker.core.protocol.connection.message.TcpIpForwardCancelMessage;
 import de.rub.nds.sshattacker.core.protocol.connection.parser.TcpIpForwardCancelMessageParser;
 import de.rub.nds.sshattacker.core.protocol.connection.preparator.TcpIpForwardCancelMessagePreparator;
@@ -9,7 +15,7 @@ import de.rub.nds.sshattacker.core.protocol.connection.serializer.TcpIpForwardCa
 import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class TcpIpForwardCancelMessageHandler extends SshMessageHandler<TcpIpForwardCancelMessage> {
-    
+
     public TcpIpForwardCancelMessageHandler(SshContext context) {
         super(context);
     }
@@ -19,8 +25,7 @@ public class TcpIpForwardCancelMessageHandler extends SshMessageHandler<TcpIpFor
     }
 
     @Override
-    public void adjustContext() {
-    }
+    public void adjustContext() {}
 
     @Override
     public SshMessageParser<TcpIpForwardCancelMessage> getParser(byte[] array, int startPosition) {

@@ -7,13 +7,13 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.message;
 
-import de.rub.nds.sshattacker.core.protocol.connection.handler.TcpIpForwardRequestMessageHandler;
 import de.rub.nds.sshattacker.core.constants.GlobalRequestType;
+import de.rub.nds.sshattacker.core.protocol.connection.handler.TcpIpForwardRequestMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class TcpIpForwardRequestMessage extends TcpIpForwardMessage<TcpIpForwardRequestMessage> {
 
-    public TcpIpForwardRequestMessage(){
+    public TcpIpForwardRequestMessage() {
         super(GlobalRequestType.TCPIP_FORWARD);
     }
 

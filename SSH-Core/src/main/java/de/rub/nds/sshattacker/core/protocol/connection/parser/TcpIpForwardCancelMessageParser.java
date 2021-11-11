@@ -9,8 +9,9 @@ package de.rub.nds.sshattacker.core.protocol.connection.parser;
 
 import de.rub.nds.sshattacker.core.protocol.connection.message.TcpIpForwardCancelMessage;
 
-public class TcpIpForwardCancelMessageParser extends GlobalRequestMessageParser<TcpIpForwardCancelMessage>{
-    
+public class TcpIpForwardCancelMessageParser
+        extends TcpIpForwardMessageParser<TcpIpForwardCancelMessage> {
+
     public TcpIpForwardCancelMessageParser(byte[] array, int startPosition) {
         super(array, startPosition);
     }
@@ -18,5 +19,10 @@ public class TcpIpForwardCancelMessageParser extends GlobalRequestMessageParser<
     @Override
     public TcpIpForwardCancelMessage createMessage() {
         return new TcpIpForwardCancelMessage();
+    }
+
+    @Override
+    protected void parseMessageSpecificContents() {
+        super.parseMessageSpecificContents();
     }
 }

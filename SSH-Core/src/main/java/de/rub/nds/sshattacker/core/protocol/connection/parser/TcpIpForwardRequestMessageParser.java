@@ -9,8 +9,9 @@ package de.rub.nds.sshattacker.core.protocol.connection.parser;
 
 import de.rub.nds.sshattacker.core.protocol.connection.message.TcpIpForwardRequestMessage;
 
-public class TcpIpForwardRequestMessageParser extends GlobalRequestMessageParser<TcpIpForwardRequestMessage>{
-    
+public class TcpIpForwardRequestMessageParser
+        extends TcpIpForwardMessageParser<TcpIpForwardRequestMessage> {
+
     public TcpIpForwardRequestMessageParser(byte[] array, int startPosition) {
         super(array, startPosition);
     }
