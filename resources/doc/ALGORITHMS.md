@@ -20,25 +20,17 @@
 - `curve25519-sha256@libssh.org`
 - `curve448-sha512`
 ---
-## Supported Cipher Algorithms
+## Supported Encryption Algorithms
 
 - `3des-cbc`
-- `aes256-cbc`
-- `aes192-cbc`
 - `aes128-cbc`
-- `aes256-ctr`
-- `aes192-ctr`
+- `aes192-cbc`
+- `aes256-cbc`
+- `rijndael-cbc@lysator.liu.se`
 - `aes128-ctr`
+- `aes192-ctr`
+- `aes256-ctr`
 
-**Untested**:
-
-- `arcfour`
-- `arcfour128`
-- `arcfour256`
-- `blowfish-cbc`
-- `blowfish-ctr`
-- `des-cbc`
-- `3des-ctr`
 ---
 ## Supported MAC Algorithms
 
@@ -46,10 +38,14 @@
 - `hmac-sha1-96`
 - `hmac-sha256`
 - `hmac-sha512`
+- `hmac-md5`
+- `hmac-md5-96`
 - `hmac-sha1-etm@openssh.com`
 - `hmac-sha1-96-etm@openssh.com`
 - `hmac-sha256-etm@openssh.com`
 - `hmac-sha512-etm@openssh.com`
+- `hmac-md5-etm@openssh.com`
+- `hmac-md5-96-etm@openssh.com`
 ---
 ## Supported Host Key Algorithms
 
