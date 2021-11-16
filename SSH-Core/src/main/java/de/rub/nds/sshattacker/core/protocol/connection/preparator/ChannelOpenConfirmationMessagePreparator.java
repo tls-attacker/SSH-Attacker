@@ -25,8 +25,8 @@ public class ChannelOpenConfirmationMessagePreparator
         getObject().setMessageID(MessageIDConstant.SSH_MSG_CHANNEL_OPEN_CONFIRMATION);
         // TODO dummy values for fuzzing
         getObject().setPacketSize(Integer.MAX_VALUE);
-        getObject().setRecipientChannel(Integer.MAX_VALUE);
-        getObject().setSenderChannel(Integer.MAX_VALUE);
-        getObject().setWindowSize(Integer.MAX_VALUE);
+        getObject().setRecipientChannel(context.getChooser().getRemoteChannel());
+        getObject().setSenderChannel(context.getChooser().getLocalChannel());
+        getObject().setWindowSize(context.getChooser().getWindowSize());
     }
 }

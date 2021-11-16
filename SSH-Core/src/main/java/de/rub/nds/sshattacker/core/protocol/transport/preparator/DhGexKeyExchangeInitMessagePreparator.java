@@ -16,7 +16,6 @@ import de.rub.nds.sshattacker.core.crypto.kex.KeyExchange;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.transport.message.DhGexKeyExchangeInitMessage;
 import de.rub.nds.sshattacker.core.state.SshContext;
-import java.math.BigInteger;
 import java.util.Optional;
 import java.util.Random;
 import org.apache.logging.log4j.LogManager;
@@ -36,19 +35,38 @@ public class DhGexKeyExchangeInitMessagePreparator
     public void prepareMessageSpecificContents() {
         getObject().setMessageID(MessageIDConstant.SSH_MSG_KEX_DH_GEX_INIT);
         Optional<KeyExchange> keyExchange = context.getKeyExchangeInstance();
-        if (keyExchange.isPresent()
-                && keyExchange.get() instanceof DhKeyExchange
-                && ((DhKeyExchange) keyExchange.get()).areGroupParametersSet()) {
+        if (keyExchange.isPresent() && keyExchange.get() instanceof DhKeyExchange) {
             DhKeyExchange dhKeyExchange = (DhKeyExchange) keyExchange.get();
+            if (!(dhKeyExchange.areGroupParametersSet())) {
+                dhKeyExchange.setModulus(
+                        context.getConfig().getDefaultDHGexKeyExchangeGroup().getModulus());
+                dhKeyExchange.setGenerator(
+                        context.getConfig().getDefaultDHGexKeyExchangeGroup().getGenerator());
+            }
+            ;
             dhKeyExchange.generateLocalKeyPair();
             getObject().setPublicKey(dhKeyExchange.getLocalKeyPair().getPublic().getY(), true);
         } else {
-            raisePreparationException(
-                    "Key exchange instance is either not present, no DhKeyExchange or does not have its group parameters set, unable to generate a local key pair");
-            // TODO: Get public key from config if key exchange instance is not set
-            getObject().setPublicKey(new BigInteger(256, new Random()), true);
+            // ToDo Maybe implement and raise new "missingContextContents" Exception
+            DhKeyExchange dhKeyExchange =
+                    (DhKeyExchange)
+                            DhKeyExchange.newInstance(
+                                    (context.getChooser()
+                                            .getRandomKeyExchangeAlgorithm(
+                                                    new Random(),
+                                                    context.getChooser()
+                                                            .getAllSupportedDH_DHGEKeyExchange())));
+            if (!(dhKeyExchange.areGroupParametersSet())) {
+                dhKeyExchange.setModulus(
+                        context.getConfig().getDefaultDHGexKeyExchangeGroup().getModulus());
+                dhKeyExchange.setGenerator(
+                        context.getConfig().getDefaultDHGexKeyExchangeGroup().getGenerator());
+            }
+            ;
+            dhKeyExchange.generateLocalKeyPair();
+            getObject().setPublicKey(dhKeyExchange.getLocalKeyPair().getPublic().getY(), true);
+            context.setKeyExchangeInstance(dhKeyExchange);
         }
-
         ExchangeHash exchangeHash = context.getExchangeHashInstance();
         if (exchangeHash instanceof DhGexExchangeHash) {
             ((DhGexExchangeHash) exchangeHash)
@@ -57,8 +75,14 @@ public class DhGexKeyExchangeInitMessagePreparator
             ((DhGexOldExchangeHash) exchangeHash)
                     .setClientDHPublicKey(getObject().getPublicKey().getValue().toByteArray());
         } else {
-            raisePreparationException(
-                    "Exchange hash instance is neither DhGexExchangeHash nor DhGexOldExchangeHash or key exchange instance is not present, unable to update exchange hash with local public key");
+            // throw "missingContextContents" Exception "Exchange hash instance is neither
+            // DhGexExchangeHash nor DhGexOldExchangeHash or key exchange instance is not present,
+            // unable to update exchange hash with local public key");
+            context.setExchangeHashInstance(
+                    DhGexExchangeHash.from(context.getExchangeHashInstance()));
+            ExchangeHash dhexchangeHash = context.getExchangeHashInstance();
+            ((DhGexExchangeHash) dhexchangeHash)
+                    .setClientDHPublicKey(getObject().getPublicKey().getValue().toByteArray());
         }
     }
 }

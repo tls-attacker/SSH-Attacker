@@ -22,6 +22,6 @@ public class ChannelCloseMessagePreparator extends SshMessagePreparator<ChannelC
     public void prepareMessageSpecificContents() {
         getObject().setMessageID(MessageIDConstant.SSH_MSG_CHANNEL_CLOSE);
         // TODO dummy values for fuzzing
-        getObject().setRecipientChannel(Integer.MAX_VALUE);
+        getObject().setRecipientChannel(context.getChooser().getRemoteChannel());
     }
 }

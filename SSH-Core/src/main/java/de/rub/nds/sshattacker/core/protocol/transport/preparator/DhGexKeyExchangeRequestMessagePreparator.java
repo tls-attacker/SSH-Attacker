@@ -13,6 +13,7 @@ import de.rub.nds.sshattacker.core.crypto.kex.DhKeyExchange;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.transport.message.DhGexKeyExchangeRequestMessage;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import java.util.Random;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -30,12 +31,21 @@ public class DhGexKeyExchangeRequestMessagePreparator
     public void prepareMessageSpecificContents() {
         getObject().setMessageID(MessageIDConstant.SSH_MSG_KEX_DH_GEX_REQUEST);
         if (context.getKeyExchangeAlgorithm().isPresent()) {
-            DhKeyExchange keyExchange =
+            DhKeyExchange dhkeyExchange =
                     DhKeyExchange.newInstance(context.getKeyExchangeAlgorithm().get());
-            context.setKeyExchangeInstance(keyExchange);
+            context.setKeyExchangeInstance(dhkeyExchange);
         } else {
-            raisePreparationException(
-                    "Unable to instantiate a new DH key exchange, the negotiated key exchange algorithm is not set");
+            // Maybe raise new "missingContextContents" Exception "Unable to instantiate a new DH
+            // key exchange, the negotiated key exchange algorithm is not set");
+            DhKeyExchange dhKeyExchange =
+                    (DhKeyExchange)
+                            DhKeyExchange.newInstance(
+                                    (context.getChooser()
+                                            .getRandomKeyExchangeAlgorithm(
+                                                    new Random(),
+                                                    context.getChooser()
+                                                            .getAllSupportedDH_DHGEKeyExchange())));
+            context.setKeyExchangeInstance(dhKeyExchange);
         }
 
         DhGexExchangeHash dhGexExchangeHash =

@@ -24,7 +24,7 @@ public class ChannelWindowAdjustMessagePreparator
     public void prepareMessageSpecificContents() {
         getObject().setMessageID(MessageIDConstant.SSH_MSG_CHANNEL_WINDOW_ADJUST);
         // TODO dummy values for fuzzing
-        getObject().setRecipientChannel(Integer.MAX_VALUE);
+        getObject().setRecipientChannel(context.getChooser().getRemoteChannel());
         getObject().setBytesToAdd(Integer.MAX_VALUE);
     }
 }

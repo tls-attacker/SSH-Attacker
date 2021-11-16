@@ -43,9 +43,11 @@ public class EcdhKeyExchangeInitMessagePreparator
                     break;
             }
         } else {
-            raisePreparationException(
-                    "Key exchange algorithm not negotiate, unable to generate a local key pair");
-            keyExchange = EcdhKeyExchange.newInstance(KeyExchangeAlgorithm.ECDH_SHA2_NISTP256);
+            // Maybe raise new "missingContextContents" Exception "Key exchange algorithm not
+            // negotiate, unable to generate a local key pair");
+            keyExchange =
+                    EcdhKeyExchange.newInstance(
+                            context.getConfig().getDefaultEcdhKeyExchangeAlgortihm());
         }
         keyExchange.generateLocalKeyPair();
         context.setKeyExchangeInstance(keyExchange);
