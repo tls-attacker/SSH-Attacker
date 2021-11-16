@@ -10,9 +10,7 @@ package de.rub.nds.sshattacker.core.protocol.common;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
-import de.rub.nds.sshattacker.core.constants.KeyExchangeAlgorithm;
-import de.rub.nds.sshattacker.core.crypto.hash.DhGexExchangeHash;
-import de.rub.nds.sshattacker.core.crypto.kex.DhKeyExchange;
+import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.exceptions.NotImplementedException;
 import de.rub.nds.sshattacker.core.exceptions.ParserException;
 import de.rub.nds.sshattacker.core.exceptions.PreparationException;
@@ -46,15 +44,13 @@ public class CyclicParserSerializerTest {
         Security.addProvider(new BouncyCastleProvider());
     }
 
-    // TODO: Implement testParserSerializerPairs once messages can be prepared from config
-
     @TestFactory
     public Stream<DynamicTest> generateCyclicDefaultConstructorPairsDynamicTests() {
         Set<Class<? extends ProtocolMessage>> excludedClasses = new HashSet<>();
         // Exclude UnknownMessage as it is not a standardized protocol message (it is only used when
         // a message could not be parsed successfully)
         excludedClasses.add(UnknownMessage.class);
-
+        this.testClass();
         return new Reflections("de.rub.nds.sshattacker.core.protocol")
                 .getSubTypesOf(ProtocolMessage.class).stream()
                         .filter(messageClass -> !Modifier.isAbstract(messageClass.getModifiers()))
@@ -67,6 +63,26 @@ public class CyclicParserSerializerTest {
                                                         + "}",
                                                 new CyclicDefaultConstructorPairsTest(
                                                         messageClass)));
+    }
+
+    public void testClass() {
+        CyclicParserSerializerTest cp = new CyclicParserSerializerTest();
+        Set<Class<? extends ProtocolMessage>> reflect =
+                new Reflections("de.rub.nds.sshattacker.core.protocol")
+                        .getSubTypesOf(ProtocolMessage.class);
+        for (Class c : reflect) {
+            this.testMissingClassConstructor(c);
+        }
+    }
+
+    public void testMissingClassConstructor(Class someClass) {
+        for (Constructor c : someClass.getConstructors()) {
+            if (c.getParameterCount() == 1) {
+                if (c.getParameterTypes()[0].equals(Config.class)) {
+                    java.lang.System.out.println(someClass + "   True");
+                }
+            }
+        }
     }
 
     private static class CyclicDefaultConstructorPairsTest implements Executable {
@@ -107,15 +123,15 @@ public class CyclicParserSerializerTest {
                                 + "'");
             }
 
-            // Create a fresh SshContext and set the key exchange algorithm if necessary
-            SshContext context = getSshContext();
+            // Create a fresh SshContext
+            SshContext context = new SshContext();
 
             // Prepare the message given the fresh context
             try {
                 message.getHandler(context).getPreparator().prepare();
             } catch (PreparationException e) {
                 LOGGER.fatal(e);
-                fail(
+                throw new PreparationException(
                         "Caught a PreparationException while preparing message of class '"
                                 + messageClassName
                                 + "'");
@@ -190,50 +206,15 @@ public class CyclicParserSerializerTest {
             // assertEquals(message.hashCode(), parsedMessage.hashCode());
         }
 
-        private SshContext getSshContext() {
-            SshContext context = new SshContext();
-
-            // For now we need to set the key exchange algorithm accordingly whenever we prepare a
-            // message of the key exchange
-            // TODO: Remove once preparation from config is implemented
-            if (messageClass == EcdhKeyExchangeInitMessage.class) {
-                context.setKeyExchangeAlgorithm(KeyExchangeAlgorithm.ECDH_SHA2_NISTP256);
-            } else if (messageClass == DhGexKeyExchangeOldRequestMessage.class
-                    || messageClass == DhGexKeyExchangeRequestMessage.class
-                    || messageClass == DhGexKeyExchangeInitMessage.class) {
-                context.setKeyExchangeAlgorithm(
-                        KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP_EXCHANGE_SHA256);
-            } else if (messageClass == DhKeyExchangeInitMessage.class) {
-                context.setKeyExchangeAlgorithm(KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP14_SHA256);
+        private static Constructor<?> getDefaultMessageConstructor(Class<?> someClass) {
+            for (Constructor<?> c : someClass.getDeclaredConstructors()) {
+                if (c.getParameterCount() == 0) {
+                    return c;
+                }
             }
-
-            // TODO: Remove once preparation from config is implemented
-            if (messageClass == DhGexKeyExchangeInitMessage.class) {
-                context.setExchangeHashInstance(
-                        DhGexExchangeHash.from(context.getExchangeHashInstance()));
-                // Even though it is a DH GEX message use a named group to prevent exceptions due to
-                // a missing group
-                DhKeyExchange kex =
-                        DhKeyExchange.newInstance(
-                                KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP14_SHA256);
-                kex.generateLocalKeyPair();
-                context.setKeyExchangeInstance(kex);
-            }
-
-            // TODO: Remove once preparation from config is implemented
-            context.setRemoteChannel(0);
-
-            return context;
+            LOGGER.warn(
+                    "Unable to find default constructor for class: " + someClass.getSimpleName());
+            return null;
         }
-    }
-
-    private static Constructor<?> getDefaultMessageConstructor(Class<?> someClass) {
-        for (Constructor<?> c : someClass.getDeclaredConstructors()) {
-            if (c.getParameterCount() == 0) {
-                return c;
-            }
-        }
-        LOGGER.warn("Unable to find default constructor for class: " + someClass.getSimpleName());
-        return null;
     }
 }

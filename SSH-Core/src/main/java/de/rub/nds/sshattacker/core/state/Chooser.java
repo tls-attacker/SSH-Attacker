@@ -10,6 +10,8 @@ package de.rub.nds.sshattacker.core.state;
 import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.constants.*;
 import java.util.List;
+import java.util.Random;
+import java.util.stream.Collectors;
 
 public class Chooser {
 
@@ -36,6 +38,10 @@ public class Chooser {
 
     public String getServerComment() {
         return context.getServerComment().orElse(config.getServerComment());
+    }
+
+    public String getEndofMessageSequence() {
+        return context.getEndofMessageSequence().orElse(config.getEndOfMessageSequence());
     }
 
     // endregion
@@ -186,12 +192,40 @@ public class Chooser {
         return 8192;
     }
 
+    public List<KeyExchangeAlgorithm> getAllSupportedDHKeyExchange() {
+        return config.getClientSupportedKeyExchangeAlgorithms().stream()
+                .filter(
+                        keyExchangeAlgorithm ->
+                                keyExchangeAlgorithm.getFlowType()
+                                        == KeyExchangeFlowType.DIFFIE_HELLMAN)
+                .collect(Collectors.toList());
+    }
+
+    public List<KeyExchangeAlgorithm> getAllSupportedDH_DHGEKeyExchange() {
+        return config.getClientSupportedKeyExchangeAlgorithms().stream()
+                .filter(
+                        keyExchangeAlgorithm ->
+                                keyExchangeAlgorithm.getFlowType()
+                                                == KeyExchangeFlowType.DIFFIE_HELLMAN
+                                        || keyExchangeAlgorithm.getFlowType()
+                                                == KeyExchangeFlowType
+                                                        .DIFFIE_HELLMAN_GROUP_EXCHANGE)
+                .collect(Collectors.toList());
+    }
+
+    public KeyExchangeAlgorithm getRandomKeyExchangeAlgorithm(
+            Random random, List<KeyExchangeAlgorithm> possibleKeyExchangeAlgorithms) {
+        int randomField = random.nextInt(possibleKeyExchangeAlgorithms.size());
+        return possibleKeyExchangeAlgorithms.get(randomField);
+    }
+
     // endregion
 
     public AuthenticationMethod getAuthenticationMethod() {
         return context.getAuthenticationMethod().orElse(config.getAuthenticationMethod());
     }
 
+    // region connection
     public int getLocalChannel() {
         return context.getLocalChannel().orElse(config.getLocalChannel());
     }
@@ -207,4 +241,14 @@ public class Chooser {
     public int getPacketSize() {
         return context.getPacketSize().orElse(config.getPacketSize());
     }
+
+    public int getRemoteChannel() {
+        return context.getRemoteChannel().orElse(config.getRemoteChannel());
+    }
+
+    // endregion
+
+    // region transport
+
+    // endregion
 }

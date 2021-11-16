@@ -25,7 +25,7 @@ public class ChannelExtendedDataMessagePreparator
     public void prepareMessageSpecificContents() {
         getObject().setMessageID(MessageIDConstant.SSH_MSG_CHANNEL_EXTENDED_DATA);
         // TODO dummy values for fuzzing
-        getObject().setRecipientChannel(Integer.MAX_VALUE);
+        getObject().setRecipientChannel(context.getChooser().getRemoteChannel());
         getObject()
                 .setDataTypeCode(
                         ExtendedChannelDataType.SSH_EXTENDED_DATA_STDERR.getDataTypeCode());
