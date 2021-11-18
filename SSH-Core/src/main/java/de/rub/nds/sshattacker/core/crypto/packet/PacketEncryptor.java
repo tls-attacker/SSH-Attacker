@@ -32,8 +32,10 @@ public class PacketEncryptor extends AbstractPacketEncryptor {
 
     @Override
     public void encrypt(BinaryPacket packet) {
-        LOGGER.debug("Encrypting binary packet");
         PacketCipher packetCipher = getPacketMostRecentCipher();
+        LOGGER.debug(
+                "Encrypting binary packet using cipher: {}",
+                packetCipher.getClass().getSimpleName());
         try {
             packet.setSequenceNumber(context.getWriteSequenceNumber());
             packetCipher.encrypt(packet);
@@ -49,8 +51,19 @@ public class PacketEncryptor extends AbstractPacketEncryptor {
     }
 
     @Override
-    public void encrypt(BlobPacket object) {
-        // TODO: Implement encryption of blob packets
-        LOGGER.debug("Encryption of blob packets not implemented - not doing anything");
+    public void encrypt(BlobPacket packet) {
+        PacketCipher packetCipher = getPacketMostRecentCipher();
+        LOGGER.debug(
+                "Encrypting blob packet using cipher: {}", packetCipher.getClass().getSimpleName());
+        try {
+            packetCipher.encrypt(packet);
+        } catch (CryptoException e) {
+            LOGGER.warn("Could not encrypt blob packet. Using NoneCipher", e);
+            try {
+                noneCipher.encrypt(packet);
+            } catch (CryptoException ex) {
+                LOGGER.error("Could not encrypt with NoneCipher", ex);
+            }
+        }
     }
 }

@@ -20,7 +20,7 @@ public class PacketLayerFactory {
                 return new BlobPacketLayer(context);
             default:
                 throw new UnsupportedOperationException(
-                        "Packet layer type '" + type.name() + "' not supported!");
+                        "Packet layer type '" + type + "' not supported!");
         }
     }
 

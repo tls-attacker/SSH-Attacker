@@ -15,6 +15,7 @@ import de.rub.nds.sshattacker.core.crypto.cipher.CipherFactory;
 import de.rub.nds.sshattacker.core.crypto.packet.keys.KeySet;
 import de.rub.nds.sshattacker.core.exceptions.CryptoException;
 import de.rub.nds.sshattacker.core.protocol.packet.BinaryPacket;
+import de.rub.nds.sshattacker.core.protocol.packet.BlobPacket;
 import de.rub.nds.sshattacker.core.protocol.packet.PacketCryptoComputations;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import java.util.Arrays;
@@ -45,24 +46,20 @@ public class PacketAEADCipher extends PacketCipher {
             LOGGER.warn("Packet computations are not prepared.");
             packet.prepareComputations();
         }
-        LOGGER.debug("Encrypting binary packet:");
         PacketCryptoComputations computations = packet.getComputations();
 
         computations.setEncryptionKey(keySet.getWriteEncryptionKey(getLocalConnectionEndType()));
 
-        computations.setPaddingLength(calculatePaddingLength(packet));
-        computations.setPadding(calculatePadding(computations.getPaddingLength().getValue()));
-        LOGGER.debug(
-                "Padding: "
-                        + ArrayConverter.bytesToHexString(computations.getPadding().getValue()));
+        packet.setPaddingLength(calculatePaddingLength(packet));
+        packet.setPadding(calculatePadding(packet.getPaddingLength().getValue()));
         packet.setLength(calculatePacketLength(packet));
 
         // AEAD encryption
         computations.setPlainPacketBytes(
                 ArrayConverter.concatenate(
-                        new byte[] {computations.getPaddingLength().getValue()},
+                        new byte[] {packet.getPaddingLength().getValue()},
                         packet.getPayload().getValue(),
-                        computations.getPadding().getValue()));
+                        packet.getPadding().getValue()));
         computations.setAdditionalAuthenticatedData(
                 packet.getLength().getByteArray(BinaryPacketConstants.PACKET_FIELD_LENGTH));
         byte[] authenticatedCiphertext =
@@ -79,8 +76,8 @@ public class PacketAEADCipher extends PacketCipher {
                         authenticatedCiphertext,
                         authenticatedCiphertext.length - encryptionAlgorithm.getAuthTagSize(),
                         authenticatedCiphertext.length);
-        computations.setCiphertext(ciphertext);
-        computations.setMac(authTag);
+        packet.setCiphertext(ciphertext);
+        packet.setMac(authTag);
         computations.setEncryptedPacketFields(
                 Stream.of(
                                 BinaryPacketField.PADDING_LENGTH,
@@ -93,12 +90,16 @@ public class PacketAEADCipher extends PacketCipher {
     }
 
     @Override
+    public void encrypt(BlobPacket packet) throws CryptoException {
+        packet.setCiphertext(encryptCipher.encrypt(packet.getPayload().getValue(), new byte[0]));
+    }
+
+    @Override
     public void decrypt(BinaryPacket packet) throws CryptoException {
         if (packet.getComputations() == null) {
             LOGGER.warn("Packet computations are not prepared.");
             packet.prepareComputations();
         }
-        LOGGER.debug("Decrypting binary packet:");
         PacketCryptoComputations computations = packet.getComputations();
 
         computations.setEncryptionKey(keySet.getReadEncryptionKey(getLocalConnectionEndType()));
@@ -109,8 +110,7 @@ public class PacketAEADCipher extends PacketCipher {
             computations.setPlainPacketBytes(
                     decryptCipher.decrypt(
                             ArrayConverter.concatenate(
-                                    computations.getCiphertext().getValue(),
-                                    computations.getMac().getValue()),
+                                    packet.getCiphertext().getValue(), packet.getMac().getValue()),
                             computations.getAdditionalAuthenticatedData().getValue()));
         } catch (AEADBadTagException e) {
             LOGGER.warn(
@@ -128,18 +128,21 @@ public class PacketAEADCipher extends PacketCipher {
 
         DecryptionParser parser =
                 new DecryptionParser(computations.getPlainPacketBytes().getValue(), 0);
-        computations.setPaddingLength(
-                parser.parseByteField(BinaryPacketConstants.PADDING_FIELD_LENGTH));
+        packet.setPaddingLength(parser.parseByteField(BinaryPacketConstants.PADDING_FIELD_LENGTH));
         packet.setPayload(
                 parser.parseByteArrayField(
                         packet.getLength().getValue()
-                                - computations.getPaddingLength().getValue()
+                                - packet.getPaddingLength().getValue()
                                 - BinaryPacketConstants.PADDING_FIELD_LENGTH));
-        computations.setPadding(
-                parser.parseByteArrayField(computations.getPaddingLength().getValue()));
+        packet.setPadding(parser.parseByteArrayField(packet.getPaddingLength().getValue()));
 
         // We got here, so the tag is valid
         computations.setMacValid(true);
-        computations.setPaddingValid(isPaddingValid(computations.getPadding().getOriginalValue()));
+        computations.setPaddingValid(isPaddingValid(packet.getPadding().getOriginalValue()));
+    }
+
+    @Override
+    public void decrypt(BlobPacket packet) throws CryptoException {
+        packet.setPayload(decryptCipher.decrypt(packet.getCiphertext().getValue()));
     }
 }

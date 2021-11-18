@@ -7,13 +7,16 @@
  */
 package de.rub.nds.sshattacker.core.crypto.packet.cipher;
 
+import de.rub.nds.sshattacker.core.constants.BinaryPacketField;
 import de.rub.nds.sshattacker.core.constants.EncryptionAlgorithm;
 import de.rub.nds.sshattacker.core.constants.MacAlgorithm;
 import de.rub.nds.sshattacker.core.exceptions.CryptoException;
 import de.rub.nds.sshattacker.core.protocol.packet.BinaryPacket;
+import de.rub.nds.sshattacker.core.protocol.packet.BlobPacket;
 import de.rub.nds.sshattacker.core.protocol.packet.PacketCryptoComputations;
 import de.rub.nds.sshattacker.core.state.SshContext;
-import java.util.Collections;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -30,37 +33,44 @@ public class PacketNoneCipher extends PacketCipher {
 
     @Override
     public void encrypt(BinaryPacket packet) throws CryptoException {
-        LOGGER.debug("Encrypting binary packet using cipher: (none cipher)");
         packet.prepareComputations();
         PacketCryptoComputations computations = packet.getComputations();
-        // Encryption (empty byte arrays)
-        computations.setEncryptedPacketFields(Collections.emptySet());
-        computations.setPlainPacketBytes(new byte[0]);
-        computations.setCiphertext(new byte[0]);
+        // Encryption (copy payload)
+        computations.setEncryptedPacketFields(
+                Stream.of(BinaryPacketField.PAYLOAD).collect(Collectors.toSet()));
+        packet.setCiphertext(packet.getPayload().getValue());
         // Padding
-        computations.setPaddingLength(calculatePaddingLength(packet));
-        computations.setPadding(calculatePadding(computations.getPaddingLength().getValue()));
+        packet.setPaddingLength(calculatePaddingLength(packet));
+        packet.setPadding(calculatePadding(packet.getPaddingLength().getValue()));
         // Packet length field
         packet.setLength(calculatePacketLength(packet));
         // Integrity protection (empty byte arrays)
-        computations.setAuthenticatedPacketBytes(new byte[0]);
-        computations.setMac(new byte[0]);
+        packet.setMac(new byte[0]);
         computations.setMacValid(true);
         computations.setPaddingValid(true);
     }
 
     @Override
+    public void encrypt(BlobPacket packet) throws CryptoException {
+        packet.setCiphertext(packet.getPayload().getValue());
+    }
+
+    @Override
     public void decrypt(BinaryPacket packet) throws CryptoException {
-        LOGGER.debug("Decrypting binary packets using cipher: (none cipher)");
         packet.prepareComputations();
         PacketCryptoComputations computations = packet.getComputations();
         // Decryption (empty byte arrays)
-        packet.getComputations().setEncryptedPacketFields(Collections.emptySet());
-        packet.getComputations().setPlainPacketBytes(new byte[0]);
-        packet.getComputations().setCiphertext(new byte[0]);
+        computations.setEncryptedPacketFields(
+                Stream.of(BinaryPacketField.PAYLOAD).collect(Collectors.toSet()));
+        packet.setPayload(packet.getCiphertext().getValue());
         // Padding (already set by the BinaryPacketParser)
         // Integrity protection (already set by the BinaryPacketParser)
-        computations.setMacValid(computations.getMac().getValue().length == 0);
-        computations.setPaddingValid(isPaddingValid(computations.getPadding().getValue()));
+        computations.setMacValid(packet.getMac().getValue().length == 0);
+        computations.setPaddingValid(isPaddingValid(packet.getPadding().getValue()));
+    }
+
+    @Override
+    public void decrypt(BlobPacket packet) throws CryptoException {
+        packet.setPayload(packet.getCiphertext().getValue());
     }
 }

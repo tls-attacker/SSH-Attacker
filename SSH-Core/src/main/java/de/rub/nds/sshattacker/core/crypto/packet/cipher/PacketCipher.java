@@ -17,6 +17,7 @@ import de.rub.nds.sshattacker.core.crypto.packet.keys.KeySet;
 import de.rub.nds.sshattacker.core.exceptions.CryptoException;
 import de.rub.nds.sshattacker.core.protocol.common.Parser;
 import de.rub.nds.sshattacker.core.protocol.packet.BinaryPacket;
+import de.rub.nds.sshattacker.core.protocol.packet.BlobPacket;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 
@@ -52,12 +53,28 @@ public abstract class PacketCipher {
     public abstract void encrypt(BinaryPacket packet) throws CryptoException;
 
     /**
+     * Encrypts the provided packet using this PacketCipher instance.
+     *
+     * @param packet The packet to encrypt
+     * @throws CryptoException Thrown whenever something crypto-related fatally fails
+     */
+    public abstract void encrypt(BlobPacket packet) throws CryptoException;
+
+    /**
      * Decrypts the provided packet using this PacketCipher instance.
      *
      * @param packet The packet to encrypt
      * @throws CryptoException Thrown whenever something crypto-related fatally fails
      */
     public abstract void decrypt(BinaryPacket packet) throws CryptoException;
+
+    /**
+     * Decrypts the provided packet using this PacketCipher instance.
+     *
+     * @param packet The packet to encrypt
+     * @throws CryptoException Thrown whenever something crypto-related fatally fails
+     */
+    public abstract void decrypt(BlobPacket packet) throws CryptoException;
 
     public DecryptionCipher getDecryptCipher() {
         return decryptCipher;
@@ -90,7 +107,7 @@ public abstract class PacketCipher {
     protected int calculatePacketLength(BinaryPacket packet) {
         return BinaryPacketConstants.PADDING_FIELD_LENGTH
                 + packet.getPayload().getValue().length
-                + packet.getComputations().getPaddingLength().getValue();
+                + packet.getPaddingLength().getValue();
     }
 
     protected byte[] calculatePadding(int paddingLength) {
