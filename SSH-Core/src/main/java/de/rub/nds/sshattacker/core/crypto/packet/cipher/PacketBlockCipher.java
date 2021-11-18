@@ -15,6 +15,7 @@ import de.rub.nds.sshattacker.core.crypto.mac.WrappedMac;
 import de.rub.nds.sshattacker.core.crypto.packet.keys.KeySet;
 import de.rub.nds.sshattacker.core.exceptions.CryptoException;
 import de.rub.nds.sshattacker.core.protocol.packet.BinaryPacket;
+import de.rub.nds.sshattacker.core.protocol.packet.BlobPacket;
 import de.rub.nds.sshattacker.core.protocol.packet.PacketCryptoComputations;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import java.security.NoSuchAlgorithmException;
@@ -63,27 +64,23 @@ public class PacketBlockCipher extends PacketCipher {
             LOGGER.warn("Packet computations are not prepared.");
             packet.prepareComputations();
         }
-        LOGGER.debug("Encrypting binary packet:");
         PacketCryptoComputations computations = packet.getComputations();
 
         computations.setEncryptionKey(keySet.getWriteEncryptionKey(getLocalConnectionEndType()));
         computations.setIntegrityKey(keySet.getWriteIntegrityKey(getLocalConnectionEndType()));
 
-        computations.setPaddingLength(calculatePaddingLength(packet));
-        computations.setPadding(calculatePadding(computations.getPaddingLength().getValue()));
-        LOGGER.debug(
-                "Padding: "
-                        + ArrayConverter.bytesToHexString(computations.getPadding().getValue()));
+        packet.setPaddingLength(calculatePaddingLength(packet));
+        packet.setPadding(calculatePadding(packet.getPaddingLength().getValue()));
         packet.setLength(calculatePacketLength(packet));
 
         if (isEncryptThenMac()) {
             // Encryption
             computations.setPlainPacketBytes(
                     ArrayConverter.concatenate(
-                            new byte[] {computations.getPaddingLength().getValue()},
+                            new byte[] {packet.getPaddingLength().getValue()},
                             packet.getPayload().getValue(),
-                            computations.getPadding().getValue()));
-            computations.setCiphertext(
+                            packet.getPadding().getValue()));
+            packet.setCiphertext(
                     encryptCipher.encrypt(computations.getPlainPacketBytes().getValue()));
             computations.setEncryptedPacketFields(
                     Stream.of(
@@ -100,17 +97,17 @@ public class PacketBlockCipher extends PacketCipher {
                                     DataFormatConstants.INT32_SIZE),
                             packet.getLength()
                                     .getByteArray(BinaryPacketConstants.PACKET_FIELD_LENGTH),
-                            computations.getCiphertext().getValue()));
+                            packet.getCiphertext().getValue()));
         } else {
             // Encryption
             computations.setPlainPacketBytes(
                     ArrayConverter.concatenate(
                             packet.getLength()
                                     .getByteArray(BinaryPacketConstants.PACKET_FIELD_LENGTH),
-                            new byte[] {computations.getPaddingLength().getValue()},
+                            new byte[] {packet.getPaddingLength().getValue()},
                             packet.getPayload().getValue(),
-                            computations.getPadding().getValue()));
-            computations.setCiphertext(
+                            packet.getPadding().getValue()));
+            packet.setCiphertext(
                     encryptCipher.encrypt(computations.getPlainPacketBytes().getValue()));
             computations.setEncryptedPacketFields(
                     Stream.of(
@@ -128,15 +125,19 @@ public class PacketBlockCipher extends PacketCipher {
                                     DataFormatConstants.INT32_SIZE),
                             packet.getLength()
                                     .getByteArray(BinaryPacketConstants.PACKET_FIELD_LENGTH),
-                            new byte[] {computations.getPaddingLength().getValue()},
+                            new byte[] {packet.getPaddingLength().getValue()},
                             packet.getPayload().getValue(),
-                            computations.getPadding().getValue()));
+                            packet.getPadding().getValue()));
         }
 
-        computations.setMac(
-                writeMac.calculate(computations.getAuthenticatedPacketBytes().getValue()));
+        packet.setMac(writeMac.calculate(computations.getAuthenticatedPacketBytes().getValue()));
         computations.setPaddingValid(true);
         computations.setMacValid(true);
+    }
+
+    @Override
+    public void encrypt(BlobPacket packet) throws CryptoException {
+        packet.setCiphertext(encryptCipher.encrypt(packet.getPayload().getValue(), new byte[0]));
     }
 
     @Override
@@ -145,7 +146,6 @@ public class PacketBlockCipher extends PacketCipher {
             LOGGER.warn("Packet computations are not prepared.");
             packet.prepareComputations();
         }
-        LOGGER.debug("Decrypting binary packet");
         PacketCryptoComputations computations = packet.getComputations();
 
         computations.setEncryptionKey(keySet.getReadEncryptionKey(getLocalConnectionEndType()));
@@ -156,7 +156,7 @@ public class PacketBlockCipher extends PacketCipher {
             // The first block has already been decrypted by the parser - only decrypt the remaining
             // blocks (if any)
             byte[] firstBlock = computations.getPlainPacketBytes().getOriginalValue();
-            byte[] ciphertext = computations.getCiphertext().getValue();
+            byte[] ciphertext = packet.getCiphertext().getValue();
             byte[] remainingBlocks =
                     decryptCipher.decrypt(
                             Arrays.copyOfRange(
@@ -165,25 +165,22 @@ public class PacketBlockCipher extends PacketCipher {
                                     ciphertext.length));
             computations.setPlainPacketBytes(
                     ArrayConverter.concatenate(firstBlock, remainingBlocks));
-            computations.setPlainPacketBytesFirstBlockOnly(false);
         } else {
             computations.setPlainPacketBytes(
-                    decryptCipher.decrypt(computations.getCiphertext().getValue()));
+                    decryptCipher.decrypt(packet.getCiphertext().getValue()));
         }
 
         DecryptionParser parser =
                 new DecryptionParser(
                         computations.getPlainPacketBytes().getValue(),
                         isEncryptThenMac() ? 0 : BinaryPacketConstants.PACKET_FIELD_LENGTH);
-        computations.setPaddingLength(
-                parser.parseByteField(BinaryPacketConstants.PADDING_FIELD_LENGTH));
+        packet.setPaddingLength(parser.parseByteField(BinaryPacketConstants.PADDING_FIELD_LENGTH));
         packet.setPayload(
                 parser.parseByteArrayField(
                         packet.getLength().getValue()
-                                - computations.getPaddingLength().getValue()
+                                - packet.getPaddingLength().getValue()
                                 - BinaryPacketConstants.PADDING_FIELD_LENGTH));
-        computations.setPadding(
-                parser.parseByteArrayField(computations.getPaddingLength().getValue()));
+        packet.setPadding(parser.parseByteArrayField(packet.getPaddingLength().getValue()));
 
         if (isEncryptThenMac()) {
             computations.setEncryptedPacketFields(
@@ -200,7 +197,7 @@ public class PacketBlockCipher extends PacketCipher {
                                     DataFormatConstants.INT32_SIZE),
                             packet.getLength()
                                     .getByteArray(BinaryPacketConstants.PACKET_FIELD_LENGTH),
-                            computations.getCiphertext().getValue()));
+                            packet.getCiphertext().getValue()));
         } else {
             computations.setEncryptedPacketFields(
                     Stream.of(
@@ -217,14 +214,19 @@ public class PacketBlockCipher extends PacketCipher {
                                     DataFormatConstants.INT32_SIZE),
                             packet.getLength()
                                     .getByteArray(BinaryPacketConstants.PACKET_FIELD_LENGTH),
-                            new byte[] {computations.getPaddingLength().getValue()},
+                            new byte[] {packet.getPaddingLength().getValue()},
                             packet.getPayload().getValue(),
-                            computations.getPadding().getValue()));
+                            packet.getPadding().getValue()));
         }
 
         // Verify MAC and padding
         byte[] shouldMac = readMac.calculate(computations.getAuthenticatedPacketBytes().getValue());
-        computations.setMacValid(Arrays.equals(shouldMac, computations.getMac().getValue()));
-        computations.setPaddingValid(isPaddingValid(computations.getPadding().getOriginalValue()));
+        computations.setMacValid(Arrays.equals(shouldMac, packet.getMac().getValue()));
+        computations.setPaddingValid(isPaddingValid(packet.getPadding().getOriginalValue()));
+    }
+
+    @Override
+    public void decrypt(BlobPacket packet) throws CryptoException {
+        packet.setPayload(decryptCipher.decrypt(packet.getCiphertext().getValue()));
     }
 }

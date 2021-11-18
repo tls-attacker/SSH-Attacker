@@ -9,7 +9,6 @@ package de.rub.nds.sshattacker.core.protocol.packet;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
-import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.sshattacker.core.constants.BinaryPacketField;
 import de.rub.nds.sshattacker.core.protocol.common.ModifiableVariableHolder;
 import java.util.Objects;
@@ -22,15 +21,6 @@ public class PacketCryptoComputations extends ModifiableVariableHolder {
 
     /** The key used for the MAC */
     private ModifiableByteArray integrityKey;
-
-    /** The MAC / authentication tag value of the packet */
-    private ModifiableByteArray mac;
-
-    /** The length of the padding */
-    private ModifiableByte paddingLength;
-
-    /** The whole padding */
-    private ModifiableByteArray padding;
 
     /** Set to true whenever the plainPacketBytes field only contains the first decrypted block */
     private boolean plainPacketBytesFirstBlockOnly = false;
@@ -52,20 +42,14 @@ public class PacketCryptoComputations extends ModifiableVariableHolder {
     /** The initialization vector used for encryption and decryption of this packet */
     private ModifiableByteArray iv;
 
-    /** The pure ciphertext part of the packet. The output from the negotiated cipher */
-    private ModifiableByteArray ciphertext;
-
     /** The set of binary packet fields covered by the encryption */
     private Set<BinaryPacketField> encryptedPacketFields;
 
-    /** The authentication tag of the packet if using GCM cipher suites */
-    private ModifiableByteArray authenticationTag;
+    /** A flag indicating whether the padding is considered valid */
+    private Boolean paddingValid;
 
-    private Boolean paddingValid = null;
-
-    private Boolean macValid = null;
-
-    private Boolean authenticationTagValid = null;
+    /** A flag indicating whether the mac is considered valid */
+    private Boolean macValid;
 
     public PacketCryptoComputations() {}
 
@@ -76,7 +60,6 @@ public class PacketCryptoComputations extends ModifiableVariableHolder {
         plainPacketBytesFirstBlockOnly = false;
         paddingValid = null;
         macValid = null;
-        authenticationTagValid = null;
     }
 
     public ModifiableByteArray getEncryptionKey() {
@@ -104,49 +87,8 @@ public class PacketCryptoComputations extends ModifiableVariableHolder {
         this.integrityKey = ModifiableVariableFactory.safelySetValue(this.integrityKey, macKey);
     }
 
-    public ModifiableByteArray getMac() {
-        return mac;
-    }
-
-    public void setMac(ModifiableByteArray mac) {
-        this.mac = mac;
-    }
-
-    public void setMac(byte[] mac) {
-        this.mac = ModifiableVariableFactory.safelySetValue(this.mac, mac);
-    }
-
-    public ModifiableByte getPaddingLength() {
-        return paddingLength;
-    }
-
-    public void setPaddingLength(ModifiableByte paddingLength) {
-        this.paddingLength = paddingLength;
-    }
-
-    public void setPaddingLength(byte paddingLength) {
-        this.paddingLength =
-                ModifiableVariableFactory.safelySetValue(this.paddingLength, paddingLength);
-    }
-
-    public ModifiableByteArray getPadding() {
-        return padding;
-    }
-
-    public void setPadding(ModifiableByteArray padding) {
-        this.padding = padding;
-    }
-
-    public void setPadding(byte[] padding) {
-        this.padding = ModifiableVariableFactory.safelySetValue(this.padding, padding);
-    }
-
     public boolean isPlainPacketBytesFirstBlockOnly() {
         return plainPacketBytesFirstBlockOnly;
-    }
-
-    public void setPlainPacketBytesFirstBlockOnly(boolean plainPacketBytesFirstBlockOnly) {
-        this.plainPacketBytesFirstBlockOnly = plainPacketBytesFirstBlockOnly;
     }
 
     public ModifiableByteArray getPlainPacketBytes() {
@@ -154,12 +96,22 @@ public class PacketCryptoComputations extends ModifiableVariableHolder {
     }
 
     public void setPlainPacketBytes(ModifiableByteArray plainPacketBytes) {
+        this.setPlainPacketBytes(plainPacketBytes, false);
+    }
+
+    public void setPlainPacketBytes(ModifiableByteArray plainPacketBytes, boolean firstBlockOnly) {
         this.plainPacketBytes = plainPacketBytes;
+        this.plainPacketBytesFirstBlockOnly = firstBlockOnly;
     }
 
     public void setPlainPacketBytes(byte[] plainPacketBytes) {
+        this.setPlainPacketBytes(plainPacketBytes, false);
+    }
+
+    public void setPlainPacketBytes(byte[] plainPacketBytes, boolean firstBlockOnly) {
         this.plainPacketBytes =
                 ModifiableVariableFactory.safelySetValue(this.plainPacketBytes, plainPacketBytes);
+        this.plainPacketBytesFirstBlockOnly = firstBlockOnly;
     }
 
     public ModifiableByteArray getAuthenticatedPacketBytes() {
@@ -190,28 +142,16 @@ public class PacketCryptoComputations extends ModifiableVariableHolder {
                         this.additionalAuthenticatedData, additionalAuthenticatedData);
     }
 
-    public ModifiableByteArray getIV() {
+    public ModifiableByteArray getIv() {
         return iv;
     }
 
-    public void setIV(ModifiableByteArray iv) {
+    public void setIv(ModifiableByteArray iv) {
         this.iv = iv;
     }
 
-    public void setIV(byte[] iv) {
+    public void setIv(byte[] iv) {
         this.iv = ModifiableVariableFactory.safelySetValue(this.iv, iv);
-    }
-
-    public ModifiableByteArray getCiphertext() {
-        return ciphertext;
-    }
-
-    public void setCiphertext(ModifiableByteArray ciphertext) {
-        this.ciphertext = ciphertext;
-    }
-
-    public void setCiphertext(byte[] ciphertext) {
-        this.ciphertext = ModifiableVariableFactory.safelySetValue(this.ciphertext, ciphertext);
     }
 
     public Set<BinaryPacketField> getEncryptedPacketFields() {
@@ -222,24 +162,11 @@ public class PacketCryptoComputations extends ModifiableVariableHolder {
         this.encryptedPacketFields = encryptedPacketFields;
     }
 
-    public ModifiableByteArray getAuthenticationTag() {
-        return authenticationTag;
-    }
-
-    public void setAuthenticationTag(ModifiableByteArray authenticationTag) {
-        this.authenticationTag = authenticationTag;
-    }
-
-    public void setAuthenticationTag(byte[] authenticationTag) {
-        this.authenticationTag =
-                ModifiableVariableFactory.safelySetValue(this.authenticationTag, authenticationTag);
-    }
-
     public Boolean getPaddingValid() {
         return paddingValid;
     }
 
-    public void setPaddingValid(Boolean paddingValid) {
+    public void setPaddingValid(boolean paddingValid) {
         this.paddingValid = paddingValid;
     }
 
@@ -247,16 +174,8 @@ public class PacketCryptoComputations extends ModifiableVariableHolder {
         return macValid;
     }
 
-    public void setMacValid(Boolean macValid) {
+    public void setMacValid(boolean macValid) {
         this.macValid = macValid;
-    }
-
-    public Boolean getAuthenticationTagValid() {
-        return authenticationTagValid;
-    }
-
-    public void setAuthenticationTagValid(Boolean authenticationTagValid) {
-        this.authenticationTagValid = authenticationTagValid;
     }
 
     @Override
@@ -266,19 +185,13 @@ public class PacketCryptoComputations extends ModifiableVariableHolder {
         PacketCryptoComputations that = (PacketCryptoComputations) o;
         return Objects.equals(encryptionKey, that.encryptionKey)
                 && Objects.equals(integrityKey, that.integrityKey)
-                && Objects.equals(mac, that.mac)
-                && Objects.equals(paddingLength, that.paddingLength)
-                && Objects.equals(padding, that.padding)
                 && Objects.equals(
                         plainPacketBytesFirstBlockOnly, that.plainPacketBytesFirstBlockOnly)
                 && Objects.equals(plainPacketBytes, that.plainPacketBytes)
                 && Objects.equals(authenticatedPacketBytes, that.authenticatedPacketBytes)
-                && Objects.equals(ciphertext, that.ciphertext)
                 && Objects.equals(encryptedPacketFields, that.encryptedPacketFields)
-                && Objects.equals(authenticationTag, that.authenticationTag)
                 && Objects.equals(paddingValid, that.paddingValid)
-                && Objects.equals(macValid, that.macValid)
-                && Objects.equals(authenticationTagValid, that.authenticationTagValid);
+                && Objects.equals(macValid, that.macValid);
     }
 
     @Override
@@ -286,17 +199,11 @@ public class PacketCryptoComputations extends ModifiableVariableHolder {
         return Objects.hash(
                 encryptionKey,
                 integrityKey,
-                mac,
-                paddingLength,
-                padding,
                 plainPacketBytesFirstBlockOnly,
                 plainPacketBytes,
                 authenticatedPacketBytes,
-                ciphertext,
                 encryptedPacketFields,
-                authenticationTag,
                 paddingValid,
-                macValid,
-                authenticationTagValid);
+                macValid);
     }
 }

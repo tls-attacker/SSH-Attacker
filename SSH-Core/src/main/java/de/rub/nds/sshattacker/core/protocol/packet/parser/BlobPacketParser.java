@@ -22,12 +22,16 @@ public class BlobPacketParser extends AbstractPacketParser<BlobPacket> {
 
     @Override
     public BlobPacket parse() {
-        LOGGER.debug("Parsing BlobPacket");
+        LOGGER.debug("Parsing BlobPacket from serialized bytes:");
+
         BlobPacket packet = new BlobPacket();
-        packet.setPayload(parseByteArrayField(getBytesLeft()));
-        LOGGER.debug(
-                "Payload: {}", ArrayConverter.bytesToHexString(packet.getPayload().getValue()));
+        packet.setCiphertext(parseByteArrayField(getBytesLeft()));
         packet.setCompletePacketBytes(getAlreadyParsed());
+
+        LOGGER.debug(
+                "Complete packet bytes: {}",
+                ArrayConverter.bytesToHexString(packet.getCompletePacketBytes().getValue()));
+
         return packet;
     }
 }

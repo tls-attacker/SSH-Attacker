@@ -9,7 +9,9 @@ package de.rub.nds.sshattacker.core.protocol.packet;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
+import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
+import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.sshattacker.core.crypto.packet.AbstractPacketEncryptor;
 import de.rub.nds.sshattacker.core.crypto.packet.cipher.PacketCipher;
 import de.rub.nds.sshattacker.core.protocol.common.ModifiableVariableHolder;
@@ -28,6 +30,18 @@ public class BinaryPacket extends AbstractPacket {
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
     private ModifiableInteger length;
 
+    /** The length of the padding. Must be at least 4 bytes and at most 255 bytes to be valid. */
+    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
+    private ModifiableByte paddingLength;
+
+    /** The padding bytes of the packet. */
+    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PADDING)
+    private ModifiableByteArray padding;
+
+    /** The MAC (or authentication tag if AEAD encryption is used) of the packet. */
+    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.HMAC)
+    private ModifiableByteArray mac;
+
     /**
      * The implicit sequence number of this packet which is used in MAC computations as well as
      * SSH_MSG_UNIMPLEMENTED.
@@ -35,10 +49,7 @@ public class BinaryPacket extends AbstractPacket {
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.COUNT)
     private ModifiableInteger sequenceNumber;
 
-    /**
-     * A holder instance for all crypto related fields. This includes padding, keys, mac,
-     * ciphertext, ...
-     */
+    /** A holder instance for all temporary fields used during crypto computations. */
     private PacketCryptoComputations computations;
 
     public BinaryPacket() {}
@@ -53,6 +64,43 @@ public class BinaryPacket extends AbstractPacket {
 
     public void setLength(int length) {
         this.length = ModifiableVariableFactory.safelySetValue(this.length, length);
+    }
+
+    public ModifiableByte getPaddingLength() {
+        return paddingLength;
+    }
+
+    public void setPaddingLength(ModifiableByte paddingLength) {
+        this.paddingLength = paddingLength;
+    }
+
+    public void setPaddingLength(byte paddingLength) {
+        this.paddingLength =
+                ModifiableVariableFactory.safelySetValue(this.paddingLength, paddingLength);
+    }
+
+    public ModifiableByteArray getPadding() {
+        return padding;
+    }
+
+    public void setPadding(ModifiableByteArray padding) {
+        this.padding = padding;
+    }
+
+    public void setPadding(byte[] padding) {
+        this.padding = ModifiableVariableFactory.safelySetValue(this.padding, padding);
+    }
+
+    public ModifiableByteArray getMac() {
+        return mac;
+    }
+
+    public void setMac(ModifiableByteArray mac) {
+        this.mac = mac;
+    }
+
+    public void setMac(byte[] mac) {
+        this.mac = ModifiableVariableFactory.safelySetValue(this.mac, mac);
     }
 
     public ModifiableInteger getSequenceNumber() {

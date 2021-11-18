@@ -28,6 +28,13 @@ public abstract class AbstractPacket extends ModifiableVariableHolder {
     private ModifiableByteArray completePacketBytes;
 
     /**
+     * The encrypted contents of the packet. If no encryption (NONE) is used, this field contains
+     * the unencrypted payload.
+     */
+    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.CIPHERTEXT)
+    private ModifiableByteArray ciphertext;
+
+    /**
      * The useful contents of the packet. If compression has been negotiated, this field is
      * compressed. Initially, compression MUST be "none".
      */
@@ -48,6 +55,18 @@ public abstract class AbstractPacket extends ModifiableVariableHolder {
         this.completePacketBytes =
                 ModifiableVariableFactory.safelySetValue(
                         this.completePacketBytes, completePacketBytes);
+    }
+
+    public ModifiableByteArray getCiphertext() {
+        return ciphertext;
+    }
+
+    public void setCiphertext(ModifiableByteArray ciphertext) {
+        this.ciphertext = ciphertext;
+    }
+
+    public void setCiphertext(byte[] ciphertext) {
+        this.ciphertext = ModifiableVariableFactory.safelySetValue(this.ciphertext, ciphertext);
     }
 
     public ModifiableByteArray getPayload() {

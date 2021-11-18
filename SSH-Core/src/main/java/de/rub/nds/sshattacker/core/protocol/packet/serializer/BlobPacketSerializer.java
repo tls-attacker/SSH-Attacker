@@ -25,8 +25,10 @@ public class BlobPacketSerializer extends AbstractPacketSerializer<BlobPacket> {
     @Override
     protected void serializeBytes() {
         LOGGER.debug("Serializing BlobPacket");
-        appendBytes(packet.getPayload().getValue());
-        LOGGER.debug("Payload: " + ArrayConverter.bytesToHexString(packet.getPayload().getValue()));
+        appendBytes(packet.getCiphertext().getValue());
+        LOGGER.debug(
+                "Ciphertext: "
+                        + ArrayConverter.bytesToHexString(packet.getCiphertext().getValue()));
 
         packet.setCompletePacketBytes(getAlreadySerialized());
     }
