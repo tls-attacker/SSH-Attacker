@@ -172,7 +172,7 @@
                             <spacesPerTab>4</spacesPerTab>
                         </indent>
                         <googleJavaFormat>
-                            <version>1.7</version>
+                            <version>1.12.0</version>
                             <style>AOSP</style>
                         </googleJavaFormat>
                         <licenseHeader>
