@@ -6,6 +6,7 @@
         </messages>
     </Send>
     <Receive/>
+    <ChangePacketLayer to="BINARY_PACKET" />
     <Send>
         <messages>
             <KeyExchangeInitMessage/>

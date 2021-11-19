@@ -11,14 +11,13 @@ import de.rub.nds.sshattacker.core.constants.GlobalRequestType;
 import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.connection.message.TcpIpForwardCancelMessage;
-import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class TcpIpForwardCancelMessagePreparator
         extends SshMessagePreparator<TcpIpForwardCancelMessage> {
 
-    public TcpIpForwardCancelMessagePreparator(
-            SshContext context, TcpIpForwardCancelMessage message) {
-        super(context, message);
+    public TcpIpForwardCancelMessagePreparator(Chooser chooser, TcpIpForwardCancelMessage message) {
+        super(chooser, message);
     }
 
     @Override

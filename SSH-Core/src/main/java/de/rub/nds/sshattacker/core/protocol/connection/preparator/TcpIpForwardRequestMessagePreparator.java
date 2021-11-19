@@ -11,14 +11,14 @@ import de.rub.nds.sshattacker.core.constants.GlobalRequestType;
 import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.connection.message.TcpIpForwardRequestMessage;
-import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class TcpIpForwardRequestMessagePreparator
         extends SshMessagePreparator<TcpIpForwardRequestMessage> {
 
     public TcpIpForwardRequestMessagePreparator(
-            SshContext context, TcpIpForwardRequestMessage message) {
-        super(context, message);
+            Chooser chooser, TcpIpForwardRequestMessage message) {
+        super(chooser, message);
     }
 
     @Override

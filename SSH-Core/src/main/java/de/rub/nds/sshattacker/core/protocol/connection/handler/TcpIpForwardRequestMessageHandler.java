@@ -36,7 +36,7 @@ public class TcpIpForwardRequestMessageHandler
 
     @Override
     public SshMessagePreparator<TcpIpForwardRequestMessage> getPreparator() {
-        return new TcpIpForwardRequestMessagePreparator(context, message);
+        return new TcpIpForwardRequestMessagePreparator(context.getChooser(), message);
     }
 
     @Override

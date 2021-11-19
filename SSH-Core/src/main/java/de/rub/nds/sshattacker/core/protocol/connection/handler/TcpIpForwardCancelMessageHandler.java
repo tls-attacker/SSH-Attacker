@@ -34,7 +34,7 @@ public class TcpIpForwardCancelMessageHandler extends SshMessageHandler<TcpIpFor
 
     @Override
     public SshMessagePreparator<TcpIpForwardCancelMessage> getPreparator() {
-        return new TcpIpForwardCancelMessagePreparator(context, message);
+        return new TcpIpForwardCancelMessagePreparator(context.getChooser(), message);
     }
 
     @Override
