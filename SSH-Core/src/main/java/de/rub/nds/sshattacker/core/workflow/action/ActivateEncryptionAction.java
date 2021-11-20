@@ -9,9 +9,9 @@ package de.rub.nds.sshattacker.core.workflow.action;
 
 import de.rub.nds.sshattacker.core.constants.EncryptionAlgorithm;
 import de.rub.nds.sshattacker.core.constants.MacAlgorithm;
-import de.rub.nds.sshattacker.core.crypto.packet.cipher.PacketCipherFactory;
-import de.rub.nds.sshattacker.core.crypto.packet.keys.KeySet;
-import de.rub.nds.sshattacker.core.crypto.packet.keys.KeySetGenerator;
+import de.rub.nds.sshattacker.core.packet.cipher.PacketCipherFactory;
+import de.rub.nds.sshattacker.core.packet.cipher.keys.KeySet;
+import de.rub.nds.sshattacker.core.packet.cipher.keys.KeySetGenerator;
 import de.rub.nds.sshattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.state.State;

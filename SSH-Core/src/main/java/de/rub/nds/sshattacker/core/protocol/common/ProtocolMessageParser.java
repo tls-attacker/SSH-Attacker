@@ -14,8 +14,8 @@ import de.rub.nds.sshattacker.core.protocol.authentication.parser.UserAuthBanner
 import de.rub.nds.sshattacker.core.protocol.authentication.parser.UserAuthFailureMessageParser;
 import de.rub.nds.sshattacker.core.protocol.authentication.parser.UserAuthSuccessMessageParser;
 import de.rub.nds.sshattacker.core.protocol.connection.parser.*;
-import de.rub.nds.sshattacker.core.protocol.packet.AbstractPacket;
-import de.rub.nds.sshattacker.core.protocol.packet.BlobPacket;
+import de.rub.nds.sshattacker.core.packet.AbstractPacket;
+import de.rub.nds.sshattacker.core.packet.BlobPacket;
 import de.rub.nds.sshattacker.core.protocol.transport.parser.*;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import java.nio.charset.StandardCharsets;

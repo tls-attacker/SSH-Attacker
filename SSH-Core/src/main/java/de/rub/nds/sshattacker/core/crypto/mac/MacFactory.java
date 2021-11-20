@@ -8,7 +8,7 @@
 package de.rub.nds.sshattacker.core.crypto.mac;
 
 import de.rub.nds.sshattacker.core.constants.MacAlgorithm;
-import de.rub.nds.sshattacker.core.crypto.packet.keys.KeySet;
+import de.rub.nds.sshattacker.core.packet.cipher.keys.KeySet;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.security.NoSuchAlgorithmException;
 
