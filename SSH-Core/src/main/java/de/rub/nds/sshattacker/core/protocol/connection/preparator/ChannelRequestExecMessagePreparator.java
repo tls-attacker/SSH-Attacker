@@ -12,7 +12,6 @@ import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelRequestExecMessage;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
-import java.util.Optional;
 
 public class ChannelRequestExecMessagePreparator
         extends SshMessagePreparator<ChannelRequestExecMessage> {
@@ -24,14 +23,7 @@ public class ChannelRequestExecMessagePreparator
     @Override
     public void prepareMessageSpecificContents() {
         getObject().setMessageID(MessageIDConstant.SSH_MSG_CHANNEL_REQUEST);
-        Optional<Integer> remoteChannel = chooser.getContext().getRemoteChannel();
-        if (remoteChannel.isPresent()) {
-            getObject().setRecipientChannel(remoteChannel.get());
-        } else {
-            raisePreparationException(
-                    "Unable to prepare ChannelRequestExecMessage - No remote channel id set");
-            getObject().setRecipientChannel(0);
-        }
+        getObject().setRecipientChannel(chooser.getRemoteChannel());
         getObject().setWantReply(chooser.getConfig().getReplyWanted());
         getObject().setRequestType(ChannelRequestType.EXEC, true);
         getObject().setCommand(chooser.getConfig().getChannelCommand(), true);

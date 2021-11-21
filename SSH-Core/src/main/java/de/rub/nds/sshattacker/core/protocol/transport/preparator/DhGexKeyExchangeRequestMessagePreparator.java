@@ -13,6 +13,7 @@ import de.rub.nds.sshattacker.core.crypto.kex.DhKeyExchange;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.transport.message.DhGexKeyExchangeRequestMessage;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
+import java.util.Random;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -34,8 +35,15 @@ public class DhGexKeyExchangeRequestMessagePreparator
                     DhKeyExchange.newInstance(chooser.getContext().getKeyExchangeAlgorithm().get());
             chooser.getContext().setKeyExchangeInstance(keyExchange);
         } else {
-            raisePreparationException(
-                    "Unable to instantiate a new DH key exchange, the negotiated key exchange algorithm is not set");
+            // Maybe raise new "missingContextContents" Exception "Unable to instantiate a new DH
+            // key exchange, the negotiated key exchange algorithm is not set");
+            DhKeyExchange dhKeyExchange =
+                    (DhKeyExchange)
+                            DhKeyExchange.newInstance(
+                                    (chooser.getRandomKeyExchangeAlgorithm(
+                                            new Random(),
+                                            chooser.getAllSupportedDH_DHGEKeyExchange())));
+            chooser.getContext().setKeyExchangeInstance(dhKeyExchange);
         }
 
         DhGexExchangeHash dhGexExchangeHash =

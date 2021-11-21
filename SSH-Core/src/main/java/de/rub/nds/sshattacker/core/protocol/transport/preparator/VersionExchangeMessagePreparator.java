@@ -24,13 +24,13 @@ public class VersionExchangeMessagePreparator
             getObject().setVersion(chooser.getClientVersion());
             getObject().setComment(chooser.getClientComment());
             // TODO: Use chooser here
-            getObject().setEndOfMessageSequence("\r\n");
+            getObject().setEndOfMessageSequence(chooser.getEndOfMessageSequence());
             chooser.getContext().getExchangeHashInstance().setClientVersion(getObject());
         } else {
             getObject().setVersion(chooser.getServerVersion());
             getObject().setComment(chooser.getServerComment());
             // TODO: Use chooser here
-            getObject().setEndOfMessageSequence("\r\n");
+            getObject().setEndOfMessageSequence(chooser.getEndOfMessageSequence());
             chooser.getContext().getExchangeHashInstance().setServerVersion(getObject());
         }
     }

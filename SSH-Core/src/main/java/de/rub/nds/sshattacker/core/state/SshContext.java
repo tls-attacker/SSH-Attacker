@@ -68,6 +68,9 @@ public class SshContext {
     private String serverVersion;
     /** Server comment sent alongside protocol and software version */
     private String serverComment;
+    /** Defines the end of the VersionExchangeMessage */
+    private String endofMessageSequence;
+
     // endregion
 
     // region Key Exchange Initialization
@@ -402,6 +405,10 @@ public class SshContext {
         return Optional.ofNullable(serverCookie);
     }
 
+    public Optional<String> getEndofMessageSequence() {
+        return Optional.ofNullable(endofMessageSequence);
+    }
+
     // endregion
     // region Setters for Version Exchange Fields
     public void setClientVersion(String clientVersion) {
@@ -428,6 +435,9 @@ public class SshContext {
         this.serverCookie = serverCookie;
     }
 
+    public void setEndofMessageSequence(String endMessageSequence) {
+        this.endofMessageSequence = endMessageSequence;
+    }
     // endregion
 
     // region Getters for Key Exchange Initialization Fields
@@ -899,7 +909,6 @@ public class SshContext {
     public void setChannelType(ChannelType channelType) {
         this.channelType = channelType;
     }
-
     // endregion
 
     public boolean getReceivedDisconnectMessage() {

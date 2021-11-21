@@ -22,6 +22,6 @@ public class ChannelEofMessagePreparator extends SshMessagePreparator<ChannelEof
     public void prepareMessageSpecificContents() {
         getObject().setMessageID(MessageIDConstant.SSH_MSG_CHANNEL_EOF);
         // TODO dummy values for fuzzing
-        getObject().setRecipientChannel(Integer.MAX_VALUE);
+        getObject().setRecipientChannel(chooser.getRemoteChannel());
     }
 }
