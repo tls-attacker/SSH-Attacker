@@ -108,7 +108,14 @@ public enum EncryptionAlgorithm {
             EncryptionAlgorithmType.BLOCK,
             32,
             16,
-            "AES/CBC/NoPadding");
+            "AES/CBC/NoPadding"),
+    // [ SSH.COM ]
+    SEED_CBC_SSH_COM(
+            "seed-cbc@ssh.com",
+            EncryptionAlgorithmType.BLOCK,
+            16,
+            16,
+            "SEED/CBC/NoPadding");
 
     private final String name;
     private final EncryptionAlgorithmType type;
