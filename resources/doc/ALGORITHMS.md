@@ -60,3 +60,5 @@
 ## Supported Compression Algorithms
 
 - `none`
+- `zlib`
+- `zlib@openssh.com`
