@@ -87,7 +87,34 @@ public enum KeyExchangeAlgorithm {
     // Vendor extensions
     // [ LibSSH ]
     CURVE25519_SHA256_LIBSSH_ORG(
-            KeyExchangeFlowType.ECDH, "curve25519-sha256@libssh.org", "SHA-256");
+            KeyExchangeFlowType.ECDH, "curve25519-sha256@libssh.org", "SHA-256"),
+    // [ SSH.COM ]
+    DIFFIE_HELLMAN_GROUP_EXCHANGE_SHA224_SSH_COM(
+            KeyExchangeFlowType.DIFFIE_HELLMAN_GROUP_EXCHANGE,
+            "diffie-hellman-group-exchange-sha224@ssh.com",
+            "SHA-224"),
+    DIFFIE_HELLMAN_GROUP_EXCHANGE_SHA384_SSH_COM(
+            KeyExchangeFlowType.DIFFIE_HELLMAN_GROUP_EXCHANGE,
+            "diffie-hellman-group-exchange-sha384@ssh.com",
+            "SHA-384"),
+    DIFFIE_HELLMAN_GROUP_EXCHANGE_SHA512_SSH_COM(
+            KeyExchangeFlowType.DIFFIE_HELLMAN_GROUP_EXCHANGE,
+            "diffie-hellman-group-exchange-sha512@ssh.com",
+            "SHA-512"),
+    DIFFIE_HELLMAN_GROUP14_SHA224_SSH_COM(
+            KeyExchangeFlowType.DIFFIE_HELLMAN, "diffie-hellman-group14-sha224@ssh.com", "SHA-224"),
+    DIFFIE_HELLMAN_GROUP14_SHA256_SSH_COM(
+            KeyExchangeFlowType.DIFFIE_HELLMAN, "diffie-hellman-group14-sha256@ssh.com", "SHA-256"),
+    DIFFIE_HELLMAN_GROUP15_SHA256_SSH_COM(
+            KeyExchangeFlowType.DIFFIE_HELLMAN, "diffie-hellman-group15-sha256@ssh.com", "SHA-256"),
+    DIFFIE_HELLMAN_GROUP15_SHA384_SSH_COM(
+            KeyExchangeFlowType.DIFFIE_HELLMAN, "diffie-hellman-group15-sha384@ssh.com", "SHA-384"),
+    DIFFIE_HELLMAN_GROUP16_SHA384_SSH_COM(
+            KeyExchangeFlowType.DIFFIE_HELLMAN, "diffie-hellman-group16-sha384@ssh.com", "SHA-384"),
+    DIFFIE_HELLMAN_GROUP16_SHA512_SSH_COM(
+            KeyExchangeFlowType.DIFFIE_HELLMAN, "diffie-hellman-group16-sha512@ssh.com", "SHA-512"),
+    DIFFIE_HELLMAN_GROUP18_SHA512_SSH_COM(
+            KeyExchangeFlowType.DIFFIE_HELLMAN, "diffie-hellman-group18-sha512@ssh.com", "SHA-512");
 
     private final String name;
     private final String digest;
