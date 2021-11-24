@@ -13,8 +13,10 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.CharConstants;
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import java.nio.charset.StandardCharsets;
-import java.util.LinkedList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -54,28 +56,19 @@ public class Converter {
         return builder.toString();
     }
 
-    public static <T extends Enum<T>> List<T> stringToAlgorithms(
-            String string, Class<T> algoClass) {
-        String[] splitted = string.split(String.valueOf(CharConstants.ALGORITHM_SEPARATOR));
-        List<T> list = new LinkedList<>();
-        for (String rawAlgo : splitted) {
-            T algo = Enum.valueOf(algoClass, toEnumName(rawAlgo).toUpperCase());
-            list.add(algo);
-        }
-        return list;
-    }
-
-    private static String toEnumName(String input) {
-        // TODO: This method will fail to parse named elliptic curve algorithms
-        String result =
-                input.replace('-', '_')
-                        .replace('.', '_')
-                        .replace('@', '_')
-                        .replace("3des", "TRIPLE_DES");
-        if (result.equals("")) {
-            return "none";
-        }
-        return result;
+    public static <T extends Enum<T>> List<T> nameListToEnumValues(
+            String string, Class<T> enumClass) {
+        return Arrays.stream(string.split(String.valueOf(CharConstants.ALGORITHM_SEPARATOR)))
+                .map(
+                        algorithmName ->
+                                Arrays.stream(enumClass.getEnumConstants())
+                                        .filter(
+                                                enumValue ->
+                                                        enumValue.toString().equals(algorithmName))
+                                        .findFirst()
+                                        .orElse(null))
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
     }
 
     public static byte[] byteArrayToMpint(byte[] input) {
@@ -98,13 +91,6 @@ public class Converter {
         return ArrayConverter.concatenate(
                 ArrayConverter.intToBytes(input.length, DataFormatConstants.STRING_SIZE_LENGTH),
                 input);
-    }
-
-    public static byte[] bytesToBytesWithSignByte(byte[] input) {
-        if ((input[0] & 0x80) >> 7 == 1) {
-            return ArrayConverter.concatenate(new byte[] {0x00}, input);
-        }
-        return input;
     }
 
     public static byte booleanToByte(boolean value) {
