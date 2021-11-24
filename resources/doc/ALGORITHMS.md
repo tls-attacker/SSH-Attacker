@@ -33,10 +33,13 @@
 ## Supported Encryption Algorithms
 
 - `3des-cbc`
+- `blowfish-cbc`
 - `aes128-cbc`
 - `aes192-cbc`
 - `aes256-cbc`
 - `rijndael-cbc@lysator.liu.se`
+- `cast128-cbc`
+- `seed-cbc@ssh.com`
 - `aes128-ctr`
 - `aes192-ctr`
 - `aes256-ctr`
