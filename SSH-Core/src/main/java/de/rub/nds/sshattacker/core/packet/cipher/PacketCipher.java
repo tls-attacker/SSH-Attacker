@@ -13,11 +13,11 @@ import de.rub.nds.sshattacker.core.constants.EncryptionAlgorithmType;
 import de.rub.nds.sshattacker.core.constants.MacAlgorithm;
 import de.rub.nds.sshattacker.core.crypto.cipher.DecryptionCipher;
 import de.rub.nds.sshattacker.core.crypto.cipher.EncryptionCipher;
-import de.rub.nds.sshattacker.core.packet.cipher.keys.KeySet;
 import de.rub.nds.sshattacker.core.exceptions.CryptoException;
-import de.rub.nds.sshattacker.core.protocol.common.Parser;
 import de.rub.nds.sshattacker.core.packet.BinaryPacket;
 import de.rub.nds.sshattacker.core.packet.BlobPacket;
+import de.rub.nds.sshattacker.core.packet.cipher.keys.KeySet;
+import de.rub.nds.sshattacker.core.protocol.common.Parser;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 
@@ -106,7 +106,7 @@ public abstract class PacketCipher {
 
     protected int calculatePacketLength(BinaryPacket packet) {
         return BinaryPacketConstants.PADDING_FIELD_LENGTH
-                + packet.getPayload().getValue().length
+                + packet.getCompressedPayload().getValue().length
                 + packet.getPaddingLength().getValue();
     }
 
@@ -123,7 +123,7 @@ public abstract class PacketCipher {
         }
 
         int excessBytes =
-                (packet.getPayload().getValue().length
+                (packet.getCompressedPayload().getValue().length
                                 + BinaryPacketConstants.PADDING_FIELD_LENGTH
                                 + (isEncryptThenMac()
                                                 || encryptionAlgorithm.getType()

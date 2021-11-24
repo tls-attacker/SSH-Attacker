@@ -7,15 +7,18 @@
  */
 package de.rub.nds.sshattacker.core.packet.layer;
 
+import de.rub.nds.sshattacker.core.constants.CompressionAlgorithm;
+import de.rub.nds.sshattacker.core.exceptions.CryptoException;
+import de.rub.nds.sshattacker.core.exceptions.ParserException;
+import de.rub.nds.sshattacker.core.packet.AbstractPacket;
+import de.rub.nds.sshattacker.core.packet.cipher.PacketCipher;
+import de.rub.nds.sshattacker.core.packet.cipher.PacketCipherFactory;
+import de.rub.nds.sshattacker.core.packet.compressor.PacketCompressor;
+import de.rub.nds.sshattacker.core.packet.compressor.PacketDecompressor;
 import de.rub.nds.sshattacker.core.packet.crypto.AbstractPacketDecryptor;
 import de.rub.nds.sshattacker.core.packet.crypto.AbstractPacketEncryptor;
 import de.rub.nds.sshattacker.core.packet.crypto.PacketDecryptor;
 import de.rub.nds.sshattacker.core.packet.crypto.PacketEncryptor;
-import de.rub.nds.sshattacker.core.packet.cipher.PacketCipher;
-import de.rub.nds.sshattacker.core.packet.cipher.PacketCipherFactory;
-import de.rub.nds.sshattacker.core.exceptions.CryptoException;
-import de.rub.nds.sshattacker.core.exceptions.ParserException;
-import de.rub.nds.sshattacker.core.packet.AbstractPacket;
 import de.rub.nds.sshattacker.core.packet.preparator.AbstractPacketPreparator;
 import de.rub.nds.sshattacker.core.packet.serializer.AbstractPacketSerializer;
 import de.rub.nds.sshattacker.core.state.SshContext;
@@ -32,6 +35,9 @@ public abstract class AbstractPacketLayer {
     private final AbstractPacketDecryptor decryptor;
     private final AbstractPacketEncryptor encryptor;
 
+    private final PacketCompressor compressor;
+    private final PacketDecompressor decompressor;
+
     private int writeEpoch = 0;
     private int readEpoch = 0;
 
@@ -39,6 +45,8 @@ public abstract class AbstractPacketLayer {
         this.context = context;
         encryptor = new PacketEncryptor(PacketCipherFactory.getNoneCipher(context), context);
         decryptor = new PacketDecryptor(PacketCipherFactory.getNoneCipher(context), context);
+        compressor = new PacketCompressor();
+        decompressor = new PacketDecompressor();
     }
 
     /**
@@ -67,13 +75,25 @@ public abstract class AbstractPacketLayer {
         getDecryptor().decrypt(packet);
     }
 
+    protected void decompressPacket(AbstractPacket packet) {
+        getDecompressor().decompress(packet);
+    }
+
     public byte[] preparePacket(AbstractPacket packet) {
         AbstractPacketPreparator<? extends AbstractPacket> preparator =
-                packet.getPacketPreparator(context.getChooser(), getEncryptor());
+                packet.getPacketPreparator(context.getChooser(), getEncryptor(), getCompressor());
         preparator.prepare();
         AbstractPacketSerializer<? extends AbstractPacket> serializer =
                 packet.getPacketSerializer();
         return serializer.serialize();
+    }
+
+    public void updateCompressionAlgorithm(CompressionAlgorithm algorithm) {
+        compressor.setCompressionAlgorithm(algorithm);
+    }
+
+    public void updateDecompressionAlgorithm(CompressionAlgorithm algorithm) {
+        decompressor.setCompressionAlgorithm(algorithm);
     }
 
     public void updateEncryptionCipher(PacketCipher encryptionCipher) {
@@ -116,6 +136,14 @@ public abstract class AbstractPacketLayer {
 
     public AbstractPacketDecryptor getDecryptor() {
         return decryptor;
+    }
+
+    public PacketCompressor getCompressor() {
+        return compressor;
+    }
+
+    public PacketDecompressor getDecompressor() {
+        return decompressor;
     }
 
     public void increaseWriteEpoch() {

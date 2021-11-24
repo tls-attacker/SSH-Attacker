@@ -12,11 +12,11 @@ import de.rub.nds.sshattacker.core.constants.BinaryPacketConstants;
 import de.rub.nds.sshattacker.core.constants.BinaryPacketField;
 import de.rub.nds.sshattacker.core.constants.EncryptionAlgorithm;
 import de.rub.nds.sshattacker.core.crypto.cipher.CipherFactory;
-import de.rub.nds.sshattacker.core.packet.cipher.keys.KeySet;
 import de.rub.nds.sshattacker.core.exceptions.CryptoException;
 import de.rub.nds.sshattacker.core.packet.BinaryPacket;
 import de.rub.nds.sshattacker.core.packet.BlobPacket;
 import de.rub.nds.sshattacker.core.packet.PacketCryptoComputations;
+import de.rub.nds.sshattacker.core.packet.cipher.keys.KeySet;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import java.util.Arrays;
 import java.util.stream.Collectors;
@@ -58,7 +58,7 @@ public class PacketAEADCipher extends PacketCipher {
         computations.setPlainPacketBytes(
                 ArrayConverter.concatenate(
                         new byte[] {packet.getPaddingLength().getValue()},
-                        packet.getPayload().getValue(),
+                        packet.getCompressedPayload().getValue(),
                         packet.getPadding().getValue()));
         computations.setAdditionalAuthenticatedData(
                 packet.getLength().getByteArray(BinaryPacketConstants.PACKET_FIELD_LENGTH));
@@ -91,7 +91,8 @@ public class PacketAEADCipher extends PacketCipher {
 
     @Override
     public void encrypt(BlobPacket packet) throws CryptoException {
-        packet.setCiphertext(encryptCipher.encrypt(packet.getPayload().getValue(), new byte[0]));
+        packet.setCiphertext(
+                encryptCipher.encrypt(packet.getCompressedPayload().getValue(), new byte[0]));
     }
 
     @Override
@@ -129,7 +130,7 @@ public class PacketAEADCipher extends PacketCipher {
         DecryptionParser parser =
                 new DecryptionParser(computations.getPlainPacketBytes().getValue(), 0);
         packet.setPaddingLength(parser.parseByteField(BinaryPacketConstants.PADDING_FIELD_LENGTH));
-        packet.setPayload(
+        packet.setCompressedPayload(
                 parser.parseByteArrayField(
                         packet.getLength().getValue()
                                 - packet.getPaddingLength().getValue()
@@ -143,6 +144,6 @@ public class PacketAEADCipher extends PacketCipher {
 
     @Override
     public void decrypt(BlobPacket packet) throws CryptoException {
-        packet.setPayload(decryptCipher.decrypt(packet.getCiphertext().getValue()));
+        packet.setCompressedPayload(decryptCipher.decrypt(packet.getCiphertext().getValue()));
     }
 }

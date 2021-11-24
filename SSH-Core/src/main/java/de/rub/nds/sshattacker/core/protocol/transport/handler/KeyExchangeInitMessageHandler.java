@@ -56,14 +56,14 @@ public class KeyExchangeInitMessageHandler extends SshMessageHandler<KeyExchange
                     Converter.stringToAlgorithms(
                             message.getMacAlgorithmsServerToClient().getValue(),
                             MacAlgorithm.class));
-            context.setServerSupportedCompressionAlgorithmsClientToServer(
+            context.setServerSupportedCompressionMethodsClientToServer(
                     Converter.stringToAlgorithms(
-                            message.getCompressionAlgorithmsClientToServer().getValue(),
-                            CompressionAlgorithm.class));
-            context.setServerSupportedCompressionAlgorithmsServerToClient(
+                            message.getCompressionMethodsClientToServer().getValue(),
+                            CompressionMethod.class));
+            context.setServerSupportedCompressionMethodsServerToClient(
                     Converter.stringToAlgorithms(
-                            message.getCompressionAlgorithmsServerToClient().getValue(),
-                            CompressionAlgorithm.class));
+                            message.getCompressionMethodsServerToClient().getValue(),
+                            CompressionMethod.class));
             context.setServerSupportedLanguagesClientToServer(
                     Arrays.asList(
                             message.getLanguagesClientToServer()
@@ -103,14 +103,14 @@ public class KeyExchangeInitMessageHandler extends SshMessageHandler<KeyExchange
                     Converter.stringToAlgorithms(
                             message.getMacAlgorithmsServerToClient().getValue(),
                             MacAlgorithm.class));
-            context.setClientSupportedCompressionAlgorithmsClientToServer(
+            context.setClientSupportedCompressionMethodsClientToServer(
                     Converter.stringToAlgorithms(
-                            message.getCompressionAlgorithmsClientToServer().getValue(),
-                            CompressionAlgorithm.class));
-            context.setClientSupportedCompressionAlgorithmsServerToClient(
+                            message.getCompressionMethodsClientToServer().getValue(),
+                            CompressionMethod.class));
+            context.setClientSupportedCompressionMethodsServerToClient(
                     Converter.stringToAlgorithms(
-                            message.getCompressionAlgorithmsServerToClient().getValue(),
-                            CompressionAlgorithm.class));
+                            message.getCompressionMethodsServerToClient().getValue(),
+                            CompressionMethod.class));
             context.setClientSupportedLanguagesClientToServer(
                     Arrays.asList(
                             message.getLanguagesClientToServer()
@@ -177,20 +177,20 @@ public class KeyExchangeInitMessageHandler extends SshMessageHandler<KeyExchange
                                             .getServerSupportedMacAlgorithmsServerToClient())
                             .orElse(null));
 
-            context.setCompressionAlgorithmClientToServer(
+            context.setCompressionMethodClientToServer(
                     AlgorithmPicker.pickAlgorithm(
                                     context.getChooser()
-                                            .getClientSupportedCompressionAlgorithmsClientToServer(),
+                                            .getClientSupportedCompressionMethodsClientToServer(),
                                     context.getChooser()
-                                            .getServerSupportedCompressionAlgorithmsClientToServer())
+                                            .getServerSupportedCompressionMethodsClientToServer())
                             .orElse(null));
 
-            context.setCompressionAlgorithmServerToClient(
+            context.setCompressionMethodServerToClient(
                     AlgorithmPicker.pickAlgorithm(
                                     context.getChooser()
-                                            .getClientSupportedCompressionAlgorithmsServerToClient(),
+                                            .getClientSupportedCompressionMethodsServerToClient(),
                                     context.getChooser()
-                                            .getServerSupportedCompressionAlgorithmsServerToClient())
+                                            .getServerSupportedCompressionMethodsServerToClient())
                             .orElse(null));
         }
     }

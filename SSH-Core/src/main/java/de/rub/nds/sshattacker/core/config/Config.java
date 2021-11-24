@@ -107,21 +107,21 @@ public class Config implements Serializable {
     @XmlElementWrapper
     private final List<MacAlgorithm> serverSupportedMacAlgorithmsClientToServer;
 
-    @XmlElement(name = "clientSupportedCompressionAlgorithmClientToServer")
+    @XmlElement(name = "clientSupportedCompressionMethodClientToServer")
     @XmlElementWrapper
-    private final List<CompressionAlgorithm> clientSupportedCompressionAlgorithmsClientToServer;
+    private final List<CompressionMethod> clientSupportedCompressionMethodsClientToServer;
 
-    @XmlElement(name = "clientSupportedCompressionAlgorithmServerToClient")
+    @XmlElement(name = "clientSupportedCompressionMethodServerToClient")
     @XmlElementWrapper
-    private final List<CompressionAlgorithm> clientSupportedCompressionAlgorithmsServerToClient;
+    private final List<CompressionMethod> clientSupportedCompressionMethodsServerToClient;
 
-    @XmlElement(name = "serverSupportedCompressionAlgorithmServerToClient")
+    @XmlElement(name = "serverSupportedCompressionMethodServerToClient")
     @XmlElementWrapper
-    private final List<CompressionAlgorithm> serverSupportedCompressionAlgorithmsServerToClient;
+    private final List<CompressionMethod> serverSupportedCompressionMethodsServerToClient;
 
-    @XmlElement(name = "serverSupportedCompressionAlgorithmClientToServer")
+    @XmlElement(name = "serverSupportedCompressionMethodClientToServer")
     @XmlElementWrapper
-    private final List<CompressionAlgorithm> serverSupportedCompressionAlgorithmsClientToServer;
+    private final List<CompressionMethod> serverSupportedCompressionMethodsClientToServer;
 
     @XmlElement(name = "clientSupportedLanguageClientToServer")
     @XmlElementWrapper
@@ -271,14 +271,16 @@ public class Config implements Serializable {
         serverSupportedMacAlgorithmsClientToServer =
                 new LinkedList<>(clientSupportedMacAlgorithmsClientToServer);
 
-        clientSupportedCompressionAlgorithmsClientToServer = new LinkedList<>();
-        clientSupportedCompressionAlgorithmsClientToServer.add(CompressionAlgorithm.NONE);
-        clientSupportedCompressionAlgorithmsServerToClient =
-                new LinkedList<>(clientSupportedCompressionAlgorithmsClientToServer);
-        serverSupportedCompressionAlgorithmsServerToClient =
-                new LinkedList<>(clientSupportedCompressionAlgorithmsClientToServer);
-        serverSupportedCompressionAlgorithmsClientToServer =
-                new LinkedList<>(clientSupportedCompressionAlgorithmsClientToServer);
+        clientSupportedCompressionMethodsClientToServer = new LinkedList<>();
+        clientSupportedCompressionMethodsClientToServer.add(CompressionMethod.NONE);
+        clientSupportedCompressionMethodsClientToServer.add(CompressionMethod.ZLIB_OPENSSH_COM);
+        clientSupportedCompressionMethodsClientToServer.add(CompressionMethod.ZLIB);
+        clientSupportedCompressionMethodsServerToClient =
+                new LinkedList<>(clientSupportedCompressionMethodsClientToServer);
+        serverSupportedCompressionMethodsServerToClient =
+                new LinkedList<>(clientSupportedCompressionMethodsClientToServer);
+        serverSupportedCompressionMethodsClientToServer =
+                new LinkedList<>(clientSupportedCompressionMethodsClientToServer);
 
         clientSupportedLanguagesClientToServer = new LinkedList<>();
         clientSupportedLanguagesServerToClient =
@@ -428,20 +430,20 @@ public class Config implements Serializable {
         return serverSupportedMacAlgorithmsClientToServer;
     }
 
-    public List<CompressionAlgorithm> getClientSupportedCompressionAlgorithmsClientToServer() {
-        return clientSupportedCompressionAlgorithmsClientToServer;
+    public List<CompressionMethod> getClientSupportedCompressionMethodsClientToServer() {
+        return clientSupportedCompressionMethodsClientToServer;
     }
 
-    public List<CompressionAlgorithm> getClientSupportedCompressionAlgorithmsServerToClient() {
-        return clientSupportedCompressionAlgorithmsServerToClient;
+    public List<CompressionMethod> getClientSupportedCompressionMethodsServerToClient() {
+        return clientSupportedCompressionMethodsServerToClient;
     }
 
-    public List<CompressionAlgorithm> getServerSupportedCompressionAlgorithmsServerToClient() {
-        return serverSupportedCompressionAlgorithmsServerToClient;
+    public List<CompressionMethod> getServerSupportedCompressionMethodsServerToClient() {
+        return serverSupportedCompressionMethodsServerToClient;
     }
 
-    public List<CompressionAlgorithm> getServerSupportedCompressionAlgorithmsClientToServer() {
-        return serverSupportedCompressionAlgorithmsClientToServer;
+    public List<CompressionMethod> getServerSupportedCompressionMethodsClientToServer() {
+        return serverSupportedCompressionMethodsClientToServer;
     }
 
     public List<String> getClientSupportedLanguagesClientToServer() {

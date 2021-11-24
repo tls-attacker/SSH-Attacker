@@ -121,34 +121,34 @@ public class KeyExchangeInitMessageParser extends SshMessageParser<KeyExchangeIn
                         + message.getMacAlgorithmsServerToClient().getValue());
     }
 
-    private void parseCompressionAlgorithmsClientToServer() {
-        message.setCompressionAlgorithmsClientToServerLength(
+    private void parseCompressionMethodsClientToServer() {
+        message.setCompressionMethodsClientToServerLength(
                 parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
         LOGGER.debug(
                 "Compression algorithms length (client to server): "
-                        + message.getCompressionAlgorithmsClientToServerLength().getValue());
-        message.setCompressionAlgorithmsClientToServer(
+                        + message.getCompressionMethodsClientToServerLength().getValue());
+        message.setCompressionMethodsClientToServer(
                 parseByteString(
-                        message.getCompressionAlgorithmsClientToServerLength().getValue(),
+                        message.getCompressionMethodsClientToServerLength().getValue(),
                         StandardCharsets.US_ASCII));
         LOGGER.debug(
                 "Compression algorithms (client to server): "
-                        + message.getCompressionAlgorithmsClientToServer().getValue());
+                        + message.getCompressionMethodsClientToServer().getValue());
     }
 
-    private void parseCompressionAlgorithmsServerToClient() {
-        message.setCompressionAlgorithmsServerToClientLength(
+    private void parseCompressionMethodsServerToClient() {
+        message.setCompressionMethodsServerToClientLength(
                 parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
         LOGGER.debug(
                 "Compression algorithms length (server to client): "
-                        + message.getCompressionAlgorithmsServerToClientLength().getValue());
-        message.setCompressionAlgorithmsServerToClient(
+                        + message.getCompressionMethodsServerToClientLength().getValue());
+        message.setCompressionMethodsServerToClient(
                 parseByteString(
-                        message.getCompressionAlgorithmsServerToClientLength().getValue(),
+                        message.getCompressionMethodsServerToClientLength().getValue(),
                         StandardCharsets.US_ASCII));
         LOGGER.debug(
                 "Compression algorithms (server to client): "
-                        + message.getCompressionAlgorithmsServerToClient().getValue());
+                        + message.getCompressionMethodsServerToClient().getValue());
     }
 
     private void parseLanguagesClientToServer() {
@@ -201,8 +201,8 @@ public class KeyExchangeInitMessageParser extends SshMessageParser<KeyExchangeIn
         parseEncryptionAlgorithmsServerToClient();
         parseMacAlgorithmsClientToServer();
         parseMacAlgorithmsServerToClient();
-        parseCompressionAlgorithmsClientToServer();
-        parseCompressionAlgorithmsServerToClient();
+        parseCompressionMethodsClientToServer();
+        parseCompressionMethodsServerToClient();
         parseLanguagesClientToServer();
         parseLanguagesServerToClient();
         parseFirstKeyExchangePacketFollows();

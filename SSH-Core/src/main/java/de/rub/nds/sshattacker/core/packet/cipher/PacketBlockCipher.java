@@ -12,11 +12,11 @@ import de.rub.nds.sshattacker.core.constants.*;
 import de.rub.nds.sshattacker.core.crypto.cipher.CipherFactory;
 import de.rub.nds.sshattacker.core.crypto.mac.MacFactory;
 import de.rub.nds.sshattacker.core.crypto.mac.WrappedMac;
-import de.rub.nds.sshattacker.core.packet.cipher.keys.KeySet;
 import de.rub.nds.sshattacker.core.exceptions.CryptoException;
 import de.rub.nds.sshattacker.core.packet.BinaryPacket;
 import de.rub.nds.sshattacker.core.packet.BlobPacket;
 import de.rub.nds.sshattacker.core.packet.PacketCryptoComputations;
+import de.rub.nds.sshattacker.core.packet.cipher.keys.KeySet;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
@@ -78,7 +78,7 @@ public class PacketBlockCipher extends PacketCipher {
             computations.setPlainPacketBytes(
                     ArrayConverter.concatenate(
                             new byte[] {packet.getPaddingLength().getValue()},
-                            packet.getPayload().getValue(),
+                            packet.getCompressedPayload().getValue(),
                             packet.getPadding().getValue()));
             packet.setCiphertext(
                     encryptCipher.encrypt(computations.getPlainPacketBytes().getValue()));
@@ -105,7 +105,7 @@ public class PacketBlockCipher extends PacketCipher {
                             packet.getLength()
                                     .getByteArray(BinaryPacketConstants.PACKET_FIELD_LENGTH),
                             new byte[] {packet.getPaddingLength().getValue()},
-                            packet.getPayload().getValue(),
+                            packet.getCompressedPayload().getValue(),
                             packet.getPadding().getValue()));
             packet.setCiphertext(
                     encryptCipher.encrypt(computations.getPlainPacketBytes().getValue()));
@@ -126,7 +126,7 @@ public class PacketBlockCipher extends PacketCipher {
                             packet.getLength()
                                     .getByteArray(BinaryPacketConstants.PACKET_FIELD_LENGTH),
                             new byte[] {packet.getPaddingLength().getValue()},
-                            packet.getPayload().getValue(),
+                            packet.getCompressedPayload().getValue(),
                             packet.getPadding().getValue()));
         }
 
@@ -137,7 +137,8 @@ public class PacketBlockCipher extends PacketCipher {
 
     @Override
     public void encrypt(BlobPacket packet) throws CryptoException {
-        packet.setCiphertext(encryptCipher.encrypt(packet.getPayload().getValue(), new byte[0]));
+        packet.setCiphertext(
+                encryptCipher.encrypt(packet.getCompressedPayload().getValue(), new byte[0]));
     }
 
     @Override
@@ -175,7 +176,7 @@ public class PacketBlockCipher extends PacketCipher {
                         computations.getPlainPacketBytes().getValue(),
                         isEncryptThenMac() ? 0 : BinaryPacketConstants.PACKET_FIELD_LENGTH);
         packet.setPaddingLength(parser.parseByteField(BinaryPacketConstants.PADDING_FIELD_LENGTH));
-        packet.setPayload(
+        packet.setCompressedPayload(
                 parser.parseByteArrayField(
                         packet.getLength().getValue()
                                 - packet.getPaddingLength().getValue()
@@ -215,7 +216,7 @@ public class PacketBlockCipher extends PacketCipher {
                             packet.getLength()
                                     .getByteArray(BinaryPacketConstants.PACKET_FIELD_LENGTH),
                             new byte[] {packet.getPaddingLength().getValue()},
-                            packet.getPayload().getValue(),
+                            packet.getCompressedPayload().getValue(),
                             packet.getPadding().getValue()));
         }
 
@@ -227,6 +228,6 @@ public class PacketBlockCipher extends PacketCipher {
 
     @Override
     public void decrypt(BlobPacket packet) throws CryptoException {
-        packet.setPayload(decryptCipher.decrypt(packet.getCiphertext().getValue()));
+        packet.setCompressedPayload(decryptCipher.decrypt(packet.getCiphertext().getValue()));
     }
 }

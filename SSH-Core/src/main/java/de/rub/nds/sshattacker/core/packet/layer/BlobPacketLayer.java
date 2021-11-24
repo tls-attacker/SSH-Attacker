@@ -31,6 +31,7 @@ public class BlobPacketLayer extends AbstractPacketLayer {
             BlobPacketParser parser = new BlobPacketParser(rawBytes, 0);
             BlobPacket packet = parser.parse();
             decryptPacket(packet);
+            decompressPacket(packet);
             packetStreamBuilder.add(packet);
             return packetStreamBuilder.build();
         } catch (ParserException e) {
@@ -45,6 +46,7 @@ public class BlobPacketLayer extends AbstractPacketLayer {
             BlobPacketParser parser = new BlobPacketParser(rawBytes, 0);
             BlobPacket packet = parser.parse();
             decryptPacket(packet);
+            decompressPacket(packet);
             packetStreamBuilder.add(packet);
         } catch (ParserException e) {
             LOGGER.warn("Could not parse provided data as blob packet, dropping remaining bytes");

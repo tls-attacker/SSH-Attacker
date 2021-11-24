@@ -15,9 +15,9 @@ import de.rub.nds.sshattacker.core.crypto.hash.ExchangeHash;
 import de.rub.nds.sshattacker.core.crypto.kex.KeyExchange;
 import de.rub.nds.sshattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.sshattacker.core.exceptions.TransportHandlerConnectException;
-import de.rub.nds.sshattacker.core.protocol.common.layer.MessageLayer;
 import de.rub.nds.sshattacker.core.packet.layer.AbstractPacketLayer;
 import de.rub.nds.sshattacker.core.packet.layer.PacketLayerFactory;
+import de.rub.nds.sshattacker.core.protocol.common.layer.MessageLayer;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.sshattacker.core.workflow.chooser.ChooserFactory;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
@@ -100,13 +100,13 @@ public class SshContext {
     /** List of MAC algorithms (server to client) supported by the server */
     private List<MacAlgorithm> serverSupportedMacAlgorithmsServerToClient;
     /** List of compression algorithms (client to server) supported by the client */
-    private List<CompressionAlgorithm> clientSupportedCompressionAlgorithmsClientToServer;
+    private List<CompressionMethod> clientSupportedCompressionMethodsClientToServer;
     /** List of compression algorithms (server to client) supported by the client */
-    private List<CompressionAlgorithm> clientSupportedCompressionAlgorithmsServerToClient;
+    private List<CompressionMethod> clientSupportedCompressionMethodsServerToClient;
     /** List of compression algorithms (client to server) supported by the server */
-    private List<CompressionAlgorithm> serverSupportedCompressionAlgorithmsClientToServer;
+    private List<CompressionMethod> serverSupportedCompressionMethodsClientToServer;
     /** List of compression algorithms (server to client) supported by the server */
-    private List<CompressionAlgorithm> serverSupportedCompressionAlgorithmsServerToClient;
+    private List<CompressionMethod> serverSupportedCompressionMethodsServerToClient;
     /** List of languages (client to server) supported by the client */
     private List<String> clientSupportedLanguagesClientToServer;
     /** List of languages (server to client) supported by the client */
@@ -143,9 +143,9 @@ public class SshContext {
     /** Negotiated MAC algorithm (server to client) */
     private MacAlgorithm macAlgorithmServerToClient;
     /** Negotiated compression algorithm (client to server) */
-    private CompressionAlgorithm compressionAlgorithmClientToServer;
+    private CompressionMethod compressionMethodClientToServer;
     /** Negotiated compression algorithm (server to client) */
-    private CompressionAlgorithm compressionAlgorithmServerToClient;
+    private CompressionMethod compressionMethodServerToClient;
     // endregion
 
     // region Key Exchange
@@ -479,24 +479,20 @@ public class SshContext {
         return Optional.ofNullable(serverSupportedMacAlgorithmsClientToServer);
     }
 
-    public Optional<List<CompressionAlgorithm>>
-            getClientSupportedCompressionAlgorithmsClientToServer() {
-        return Optional.ofNullable(clientSupportedCompressionAlgorithmsClientToServer);
+    public Optional<List<CompressionMethod>> getClientSupportedCompressionMethodsClientToServer() {
+        return Optional.ofNullable(clientSupportedCompressionMethodsClientToServer);
     }
 
-    public Optional<List<CompressionAlgorithm>>
-            getClientSupportedCompressionAlgorithmsServerToClient() {
-        return Optional.ofNullable(clientSupportedCompressionAlgorithmsServerToClient);
+    public Optional<List<CompressionMethod>> getClientSupportedCompressionMethodsServerToClient() {
+        return Optional.ofNullable(clientSupportedCompressionMethodsServerToClient);
     }
 
-    public Optional<List<CompressionAlgorithm>>
-            getServerSupportedCompressionAlgorithmsServerToClient() {
-        return Optional.ofNullable(serverSupportedCompressionAlgorithmsServerToClient);
+    public Optional<List<CompressionMethod>> getServerSupportedCompressionMethodsServerToClient() {
+        return Optional.ofNullable(serverSupportedCompressionMethodsServerToClient);
     }
 
-    public Optional<List<CompressionAlgorithm>>
-            getServerSupportedCompressionAlgorithmsClientToServer() {
-        return Optional.ofNullable(serverSupportedCompressionAlgorithmsClientToServer);
+    public Optional<List<CompressionMethod>> getServerSupportedCompressionMethodsClientToServer() {
+        return Optional.ofNullable(serverSupportedCompressionMethodsClientToServer);
     }
 
     public Optional<List<String>> getClientSupportedLanguagesClientToServer() {
@@ -601,28 +597,28 @@ public class SshContext {
                 serverSupportedMacAlgorithmsClientToServer;
     }
 
-    public void setClientSupportedCompressionAlgorithmsClientToServer(
-            List<CompressionAlgorithm> clientSupportedCompressionAlgorithmsClientToServer) {
-        this.clientSupportedCompressionAlgorithmsClientToServer =
-                clientSupportedCompressionAlgorithmsClientToServer;
+    public void setClientSupportedCompressionMethodsClientToServer(
+            List<CompressionMethod> clientSupportedCompressionMethodsClientToServer) {
+        this.clientSupportedCompressionMethodsClientToServer =
+                clientSupportedCompressionMethodsClientToServer;
     }
 
-    public void setClientSupportedCompressionAlgorithmsServerToClient(
-            List<CompressionAlgorithm> clientSupportedCompressionAlgorithmsServerToClient) {
-        this.clientSupportedCompressionAlgorithmsServerToClient =
-                clientSupportedCompressionAlgorithmsServerToClient;
+    public void setClientSupportedCompressionMethodsServerToClient(
+            List<CompressionMethod> clientSupportedCompressionMethodsServerToClient) {
+        this.clientSupportedCompressionMethodsServerToClient =
+                clientSupportedCompressionMethodsServerToClient;
     }
 
-    public void setServerSupportedCompressionAlgorithmsServerToClient(
-            List<CompressionAlgorithm> serverSupportedCompressionAlgorithmsServerToClient) {
-        this.serverSupportedCompressionAlgorithmsServerToClient =
-                serverSupportedCompressionAlgorithmsServerToClient;
+    public void setServerSupportedCompressionMethodsServerToClient(
+            List<CompressionMethod> serverSupportedCompressionMethodsServerToClient) {
+        this.serverSupportedCompressionMethodsServerToClient =
+                serverSupportedCompressionMethodsServerToClient;
     }
 
-    public void setServerSupportedCompressionAlgorithmsClientToServer(
-            List<CompressionAlgorithm> serverSupportedCompressionAlgorithmsClientToServer) {
-        this.serverSupportedCompressionAlgorithmsClientToServer =
-                serverSupportedCompressionAlgorithmsClientToServer;
+    public void setServerSupportedCompressionMethodsClientToServer(
+            List<CompressionMethod> serverSupportedCompressionMethodsClientToServer) {
+        this.serverSupportedCompressionMethodsClientToServer =
+                serverSupportedCompressionMethodsClientToServer;
     }
 
     public void setClientSupportedLanguagesClientToServer(
@@ -690,12 +686,12 @@ public class SshContext {
         return Optional.ofNullable(macAlgorithmServerToClient);
     }
 
-    public Optional<CompressionAlgorithm> getCompressionAlgorithmClientToServer() {
-        return Optional.ofNullable(compressionAlgorithmClientToServer);
+    public Optional<CompressionMethod> getCompressionMethodClientToServer() {
+        return Optional.ofNullable(compressionMethodClientToServer);
     }
 
-    public Optional<CompressionAlgorithm> getCompressionAlgorithmServerToClient() {
-        return Optional.ofNullable(compressionAlgorithmServerToClient);
+    public Optional<CompressionMethod> getCompressionMethodServerToClient() {
+        return Optional.ofNullable(compressionMethodServerToClient);
     }
 
     // endregion
@@ -726,14 +722,14 @@ public class SshContext {
         this.macAlgorithmServerToClient = macAlgorithmServerToClient;
     }
 
-    public void setCompressionAlgorithmClientToServer(
-            CompressionAlgorithm compressionAlgorithmClientToServer) {
-        this.compressionAlgorithmClientToServer = compressionAlgorithmClientToServer;
+    public void setCompressionMethodClientToServer(
+            CompressionMethod compressionMethodClientToServer) {
+        this.compressionMethodClientToServer = compressionMethodClientToServer;
     }
 
-    public void setCompressionAlgorithmServerToClient(
-            CompressionAlgorithm compressionAlgorithmServerToClient) {
-        this.compressionAlgorithmServerToClient = compressionAlgorithmServerToClient;
+    public void setCompressionMethodServerToClient(
+            CompressionMethod compressionMethodServerToClient) {
+        this.compressionMethodServerToClient = compressionMethodServerToClient;
     }
 
     // endregion

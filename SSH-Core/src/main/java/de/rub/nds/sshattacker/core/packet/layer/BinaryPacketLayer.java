@@ -36,6 +36,7 @@ public class BinaryPacketLayer extends AbstractPacketLayer {
                         new BinaryPacketParser(rawBytes, dataPointer, getDecryptorCipher());
                 BinaryPacket packet = parser.parse();
                 decryptPacket(packet);
+                decompressPacket(packet);
                 packetStreamBuilder.add(packet);
                 dataPointer = parser.getPointer();
             } catch (ParserException e) {
@@ -56,6 +57,7 @@ public class BinaryPacketLayer extends AbstractPacketLayer {
                         new BinaryPacketParser(rawBytes, dataPointer, getDecryptorCipher());
                 BinaryPacket packet = parser.parse();
                 decryptPacket(packet);
+                decompressPacket(packet);
                 packetStreamBuilder.add(packet);
                 dataPointer = parser.getPointer();
             } catch (ParserException e) {
@@ -65,6 +67,7 @@ public class BinaryPacketLayer extends AbstractPacketLayer {
                     BlobPacketParser parser = new BlobPacketParser(rawBytes, dataPointer);
                     BlobPacket packet = parser.parse();
                     decryptPacket(packet);
+                    decompressPacket(packet);
                     packetStreamBuilder.add(packet);
                     dataPointer = parser.getPointer();
                 } catch (ParserException ex) {

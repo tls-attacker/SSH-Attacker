@@ -7,6 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.protocol.authentication.handler;
 
+import de.rub.nds.sshattacker.core.constants.CompressionMethod;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthSuccessMessage;
 import de.rub.nds.sshattacker.core.protocol.authentication.parser.UserAuthSuccessMessageParser;
 import de.rub.nds.sshattacker.core.protocol.authentication.preparator.UserAuthSuccessMessagePreparator;
@@ -26,7 +27,23 @@ public class UserAuthSuccessMessageHandler extends SshMessageHandler<UserAuthSuc
 
     @Override
     public void adjustContext() {
-        // TODO: Handle UserAuthSuccessMessageHandler
+        // Enable delayed compression if negotiated
+        activateCompression();
+    }
+
+    private void activateCompression() {
+        if (context.getCompressionMethodClientToServer().orElse(CompressionMethod.NONE)
+                == CompressionMethod.ZLIB_OPENSSH_COM) {
+            context.getPacketLayer()
+                    .updateCompressionAlgorithm(
+                            context.getCompressionMethodClientToServer().get().getAlgorithm());
+        }
+        if (context.getCompressionMethodServerToClient().orElse(CompressionMethod.NONE)
+                == CompressionMethod.ZLIB_OPENSSH_COM) {
+            context.getPacketLayer()
+                    .updateDecompressionAlgorithm(
+                            context.getCompressionMethodServerToClient().get().getAlgorithm());
+        }
     }
 
     @Override

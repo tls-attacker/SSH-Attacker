@@ -12,12 +12,13 @@ import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
-import de.rub.nds.sshattacker.core.packet.crypto.AbstractPacketEncryptor;
 import de.rub.nds.sshattacker.core.packet.cipher.PacketCipher;
-import de.rub.nds.sshattacker.core.protocol.common.ModifiableVariableHolder;
+import de.rub.nds.sshattacker.core.packet.compressor.PacketCompressor;
+import de.rub.nds.sshattacker.core.packet.crypto.AbstractPacketEncryptor;
 import de.rub.nds.sshattacker.core.packet.parser.BinaryPacketParser;
 import de.rub.nds.sshattacker.core.packet.preparator.BinaryPacketPreparator;
 import de.rub.nds.sshattacker.core.packet.serializer.BinaryPacketSerializer;
+import de.rub.nds.sshattacker.core.protocol.common.ModifiableVariableHolder;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import java.util.List;
 import java.util.Objects;
@@ -118,8 +119,8 @@ public class BinaryPacket extends AbstractPacket {
 
     @Override
     public BinaryPacketPreparator getPacketPreparator(
-            Chooser chooser, AbstractPacketEncryptor encryptor) {
-        return new BinaryPacketPreparator(chooser, this, encryptor);
+            Chooser chooser, AbstractPacketEncryptor encryptor, PacketCompressor compressor) {
+        return new BinaryPacketPreparator(chooser, this, encryptor, compressor);
     }
 
     @Override

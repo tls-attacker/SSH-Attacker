@@ -75,17 +75,13 @@ public abstract class Chooser {
 
     public abstract List<MacAlgorithm> getServerSupportedMacAlgorithmsClientToServer();
 
-    public abstract List<CompressionAlgorithm>
-            getClientSupportedCompressionAlgorithmsClientToServer();
+    public abstract List<CompressionMethod> getClientSupportedCompressionMethodsClientToServer();
 
-    public abstract List<CompressionAlgorithm>
-            getClientSupportedCompressionAlgorithmsServerToClient();
+    public abstract List<CompressionMethod> getClientSupportedCompressionMethodsServerToClient();
 
-    public abstract List<CompressionAlgorithm>
-            getServerSupportedCompressionAlgorithmsServerToClient();
+    public abstract List<CompressionMethod> getServerSupportedCompressionMethodsServerToClient();
 
-    public abstract List<CompressionAlgorithm>
-            getServerSupportedCompressionAlgorithmsClientToServer();
+    public abstract List<CompressionMethod> getServerSupportedCompressionMethodsClientToServer();
 
     public abstract List<String> getClientSupportedLanguagesClientToServer();
 

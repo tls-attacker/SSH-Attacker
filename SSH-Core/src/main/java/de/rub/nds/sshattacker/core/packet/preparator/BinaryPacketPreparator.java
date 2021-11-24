@@ -7,8 +7,9 @@
  */
 package de.rub.nds.sshattacker.core.packet.preparator;
 
-import de.rub.nds.sshattacker.core.packet.crypto.AbstractPacketEncryptor;
 import de.rub.nds.sshattacker.core.packet.BinaryPacket;
+import de.rub.nds.sshattacker.core.packet.compressor.PacketCompressor;
+import de.rub.nds.sshattacker.core.packet.crypto.AbstractPacketEncryptor;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -19,22 +20,25 @@ public class BinaryPacketPreparator extends AbstractPacketPreparator<BinaryPacke
 
     private final BinaryPacket binaryPacket;
     private final AbstractPacketEncryptor encryptor;
+    private final PacketCompressor compressor;
 
     public BinaryPacketPreparator(
-            Chooser chooser, BinaryPacket binaryPacket, AbstractPacketEncryptor encryptor) {
+            Chooser chooser,
+            BinaryPacket binaryPacket,
+            AbstractPacketEncryptor encryptor,
+            PacketCompressor compressor) {
         super(chooser, binaryPacket);
         this.binaryPacket = binaryPacket;
         this.encryptor = encryptor;
+        this.compressor = compressor;
     }
 
     @Override
     public void prepare() {
-        LOGGER.debug("Preparing binary packet");
+        LOGGER.debug("Preparing binary packet computations");
         binaryPacket.prepareComputations();
-        encrypt();
-    }
-
-    public void encrypt() {
+        LOGGER.debug("Compressing binary packet");
+        compressor.compress(binaryPacket);
         LOGGER.debug("Encrypting binary packet");
         encryptor.encrypt(binaryPacket);
     }

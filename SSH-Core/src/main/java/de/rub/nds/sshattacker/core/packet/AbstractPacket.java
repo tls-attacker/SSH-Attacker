@@ -10,12 +10,13 @@ package de.rub.nds.sshattacker.core.packet;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
-import de.rub.nds.sshattacker.core.packet.crypto.AbstractPacketEncryptor;
 import de.rub.nds.sshattacker.core.packet.cipher.PacketCipher;
-import de.rub.nds.sshattacker.core.protocol.common.ModifiableVariableHolder;
+import de.rub.nds.sshattacker.core.packet.compressor.PacketCompressor;
+import de.rub.nds.sshattacker.core.packet.crypto.AbstractPacketEncryptor;
 import de.rub.nds.sshattacker.core.packet.parser.AbstractPacketParser;
 import de.rub.nds.sshattacker.core.packet.preparator.AbstractPacketPreparator;
 import de.rub.nds.sshattacker.core.packet.serializer.AbstractPacketSerializer;
+import de.rub.nds.sshattacker.core.protocol.common.ModifiableVariableHolder;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public abstract class AbstractPacket extends ModifiableVariableHolder {
@@ -34,10 +35,11 @@ public abstract class AbstractPacket extends ModifiableVariableHolder {
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.CIPHERTEXT)
     private ModifiableByteArray ciphertext;
 
-    /**
-     * The useful contents of the packet. If compression has been negotiated, this field is
-     * compressed. Initially, compression MUST be "none".
-     */
+    /** The compressed payload of this packet. */
+    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PLAIN_PROTOCOL_MESSAGE)
+    private ModifiableByteArray compressedPayload;
+
+    /** The useful contents of the packet. */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PLAIN_PROTOCOL_MESSAGE)
     private ModifiableByteArray payload;
 
@@ -69,6 +71,19 @@ public abstract class AbstractPacket extends ModifiableVariableHolder {
         this.ciphertext = ModifiableVariableFactory.safelySetValue(this.ciphertext, ciphertext);
     }
 
+    public ModifiableByteArray getCompressedPayload() {
+        return compressedPayload;
+    }
+
+    public void setCompressedPayload(ModifiableByteArray compressedPayload) {
+        this.compressedPayload = compressedPayload;
+    }
+
+    public void setCompressedPayload(byte[] compressedPayload) {
+        this.compressedPayload =
+                ModifiableVariableFactory.safelySetValue(this.compressedPayload, compressedPayload);
+    }
+
     public ModifiableByteArray getPayload() {
         return payload;
     }
@@ -82,7 +97,7 @@ public abstract class AbstractPacket extends ModifiableVariableHolder {
     }
 
     public abstract AbstractPacketPreparator<? extends AbstractPacket> getPacketPreparator(
-            Chooser chooser, AbstractPacketEncryptor encryptor);
+            Chooser chooser, AbstractPacketEncryptor encryptor, PacketCompressor compressor);
 
     public abstract AbstractPacketParser<? extends AbstractPacket> getPacketParser(
             byte[] array, int startPosition, PacketCipher activeDecryptCipher);

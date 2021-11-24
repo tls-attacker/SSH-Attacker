@@ -38,7 +38,7 @@ public class PacketNoneCipher extends PacketCipher {
         // Encryption (copy payload)
         computations.setEncryptedPacketFields(
                 Stream.of(BinaryPacketField.PAYLOAD).collect(Collectors.toSet()));
-        packet.setCiphertext(packet.getPayload().getValue());
+        packet.setCiphertext(packet.getCompressedPayload().getValue());
         // Padding
         packet.setPaddingLength(calculatePaddingLength(packet));
         packet.setPadding(calculatePadding(packet.getPaddingLength().getValue()));
@@ -52,7 +52,7 @@ public class PacketNoneCipher extends PacketCipher {
 
     @Override
     public void encrypt(BlobPacket packet) throws CryptoException {
-        packet.setCiphertext(packet.getPayload().getValue());
+        packet.setCiphertext(packet.getCompressedPayload().getValue());
     }
 
     @Override
@@ -62,7 +62,7 @@ public class PacketNoneCipher extends PacketCipher {
         // Decryption (empty byte arrays)
         computations.setEncryptedPacketFields(
                 Stream.of(BinaryPacketField.PAYLOAD).collect(Collectors.toSet()));
-        packet.setPayload(packet.getCiphertext().getValue());
+        packet.setCompressedPayload(packet.getCiphertext().getValue());
         // Padding (already set by the BinaryPacketParser)
         // Integrity protection (already set by the BinaryPacketParser)
         computations.setMacValid(packet.getMac().getValue().length == 0);
@@ -71,6 +71,6 @@ public class PacketNoneCipher extends PacketCipher {
 
     @Override
     public void decrypt(BlobPacket packet) throws CryptoException {
-        packet.setPayload(packet.getCiphertext().getValue());
+        packet.setCompressedPayload(packet.getCiphertext().getValue());
     }
 }

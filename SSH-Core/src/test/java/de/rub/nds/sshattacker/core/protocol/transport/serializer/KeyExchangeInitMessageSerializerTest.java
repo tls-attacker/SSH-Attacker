@@ -45,12 +45,12 @@ public class KeyExchangeInitMessageSerializerTest {
      * @param providedMacAlgorithmsCToS MAC algorithm list (client to server)
      * @param providedMacAlgorithmsSToCLength Length of the MAC algorithm list (server to client)
      * @param providedMacAlgorithmsSToC MAC algorithm list (server to client)
-     * @param providedCompressionAlgorithmsCToSLength Length of the compression algorithm list
-     *     (client to server)
-     * @param providedCompressionAlgorithmsCToS Compression algorithm list (client to server)
-     * @param providedCompressionAlgorithmsSToCLength Length of the compression algorithm list
-     *     (server to client)
-     * @param providedCompressionAlgorithmsSToC Compression algorithm list (server to client)
+     * @param providedCompressionMethodsCToSLength Length of the compression algorithm list (client
+     *     to server)
+     * @param providedCompressionMethodsCToS Compression algorithm list (client to server)
+     * @param providedCompressionMethodsSToCLength Length of the compression algorithm list (server
+     *     to client)
+     * @param providedCompressionMethodsSToC Compression algorithm list (server to client)
      * @param providedLanguagesCToSLength Length of the language list (client to server)
      * @param providedLanguagesCToS Language list (client to server)
      * @param providedLanguagesSToCLength Length of the language list (server to client)
@@ -75,10 +75,10 @@ public class KeyExchangeInitMessageSerializerTest {
             String providedMacAlgorithmsCToS,
             int providedMacAlgorithmsSToCLength,
             String providedMacAlgorithmsSToC,
-            int providedCompressionAlgorithmsCToSLength,
-            String providedCompressionAlgorithmsCToS,
-            int providedCompressionAlgorithmsSToCLength,
-            String providedCompressionAlgorithmsSToC,
+            int providedCompressionMethodsCToSLength,
+            String providedCompressionMethodsCToS,
+            int providedCompressionMethodsSToCLength,
+            String providedCompressionMethodsSToC,
             int providedLanguagesCToSLength,
             String providedLanguagesCToS,
             int providedLanguagesSToCLength,
@@ -99,10 +99,10 @@ public class KeyExchangeInitMessageSerializerTest {
         msg.setMacAlgorithmsClientToServer(providedMacAlgorithmsCToS);
         msg.setMacAlgorithmsServerToClientLength(providedMacAlgorithmsSToCLength);
         msg.setMacAlgorithmsServerToClient(providedMacAlgorithmsSToC);
-        msg.setCompressionAlgorithmsClientToServerLength(providedCompressionAlgorithmsCToSLength);
-        msg.setCompressionAlgorithmsClientToServer(providedCompressionAlgorithmsCToS);
-        msg.setCompressionAlgorithmsServerToClientLength(providedCompressionAlgorithmsSToCLength);
-        msg.setCompressionAlgorithmsServerToClient(providedCompressionAlgorithmsSToC);
+        msg.setCompressionMethodsClientToServerLength(providedCompressionMethodsCToSLength);
+        msg.setCompressionMethodsClientToServer(providedCompressionMethodsCToS);
+        msg.setCompressionMethodsServerToClientLength(providedCompressionMethodsSToCLength);
+        msg.setCompressionMethodsServerToClient(providedCompressionMethodsSToC);
         msg.setLanguagesClientToServerLength(providedLanguagesCToSLength);
         msg.setLanguagesClientToServer(providedLanguagesCToS);
         msg.setLanguagesServerToClientLength(providedLanguagesSToCLength);

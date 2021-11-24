@@ -7,8 +7,9 @@
  */
 package de.rub.nds.sshattacker.core.packet;
 
-import de.rub.nds.sshattacker.core.packet.crypto.AbstractPacketEncryptor;
 import de.rub.nds.sshattacker.core.packet.cipher.PacketCipher;
+import de.rub.nds.sshattacker.core.packet.compressor.PacketCompressor;
+import de.rub.nds.sshattacker.core.packet.crypto.AbstractPacketEncryptor;
 import de.rub.nds.sshattacker.core.packet.parser.BlobPacketParser;
 import de.rub.nds.sshattacker.core.packet.preparator.BlobPacketPreparator;
 import de.rub.nds.sshattacker.core.packet.serializer.BlobPacketSerializer;
@@ -17,8 +18,8 @@ import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 public class BlobPacket extends AbstractPacket {
     @Override
     public BlobPacketPreparator getPacketPreparator(
-            Chooser chooser, AbstractPacketEncryptor encryptor) {
-        return new BlobPacketPreparator(chooser, this, encryptor);
+            Chooser chooser, AbstractPacketEncryptor encryptor, PacketCompressor compressor) {
+        return new BlobPacketPreparator(chooser, this, encryptor, compressor);
     }
 
     @Override
