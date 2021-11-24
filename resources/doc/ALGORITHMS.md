@@ -4,14 +4,24 @@
 ## Supported Key Exchange Algorithms
 
 - `diffie-hellman-group-exchange-sha1`
+- `diffie-hellman-group-exchange-sha224@ssh.com`
 - `diffie-hellman-group-exchange-sha256`
+- `diffie-hellman-group-exchange-sha384@ssh.com`
+- `diffie-hellman-group-exchange-sha512@ssh.com`
 - `diffie-hellman-group1-sha1`
 - `diffie-hellman-group14-sha1`
+- `diffie-hellman-group14-sha224@ssh.com`
 - `diffie-hellman-group14-sha256`
+- `diffie-hellman-group14-sha256@ssh.com`
+- `diffie-hellman-group15-sha256@ssh.com`
+- `diffie-hellman-group15-sha384@ssh.com`
 - `diffie-hellman-group15-sha512`
+- `diffie-hellman-group16-sha384@ssh.com`
 - `diffie-hellman-group16-sha512`
+- `diffie-hellman-group16-sha512@ssh.com`
 - `diffie-hellman-group17-sha512`
 - `diffie-hellman-group18-sha512`
+- `diffie-hellman-group18-sha512@ssh.com`
 - `ecdh-sha2-nistp256`
 - `ecdh-sha2-nistp384`
 - `ecdh-sha2-nistp521`

@@ -32,148 +32,23 @@ public enum MessageIDConstant {
     // 22 - 29 unassigned (algorithm negotiation)
     // 30 - 49 reserved (key exchange method specific)
     // [ RFC 4419 ]
-    SSH_MSG_KEX_DH_GEX_REQUEST_OLD(
-            (byte) 30,
-            new KeyExchangeAlgorithm[] {
-                KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP_EXCHANGE_SHA1,
-                KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP_EXCHANGE_SHA256
-            }),
-    SSH_MSG_KEX_DH_GEX_REQUEST(
-            (byte) 34,
-            new KeyExchangeAlgorithm[] {
-                KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP_EXCHANGE_SHA1,
-                KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP_EXCHANGE_SHA256
-            }),
-    SSH_MSG_KEX_DH_GEX_GROUP(
-            (byte) 31,
-            new KeyExchangeAlgorithm[] {
-                KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP_EXCHANGE_SHA1,
-                KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP_EXCHANGE_SHA256
-            }),
-    SSH_MSG_KEX_DH_GEX_INIT(
-            (byte) 32,
-            new KeyExchangeAlgorithm[] {
-                KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP_EXCHANGE_SHA1,
-                KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP_EXCHANGE_SHA256
-            }),
-    SSH_MSG_KEX_DH_GEX_REPLY(
-            (byte) 33,
-            new KeyExchangeAlgorithm[] {
-                KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP_EXCHANGE_SHA1,
-                KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP_EXCHANGE_SHA256
-            }),
+    SSH_MSG_KEX_DH_GEX_REQUEST_OLD((byte) 30, KeyExchangeFlowType.DIFFIE_HELLMAN_GROUP_EXCHANGE),
+    SSH_MSG_KEX_DH_GEX_REQUEST((byte) 34, KeyExchangeFlowType.DIFFIE_HELLMAN_GROUP_EXCHANGE),
+    SSH_MSG_KEX_DH_GEX_GROUP((byte) 31, KeyExchangeFlowType.DIFFIE_HELLMAN_GROUP_EXCHANGE),
+    SSH_MSG_KEX_DH_GEX_INIT((byte) 32, KeyExchangeFlowType.DIFFIE_HELLMAN_GROUP_EXCHANGE),
+    SSH_MSG_KEX_DH_GEX_REPLY((byte) 33, KeyExchangeFlowType.DIFFIE_HELLMAN_GROUP_EXCHANGE),
     // [ RFC 4253 ]
-    SSH_MSG_KEXDH_INIT(
-            (byte) 30,
-            new KeyExchangeAlgorithm[] {
-                KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP1_SHA1,
-                KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP14_SHA1,
-                KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP14_SHA256,
-                KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP15_SHA512,
-                KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP16_SHA512,
-                KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP17_SHA512,
-                KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP18_SHA512
-            }),
-    SSH_MSG_KEXDH_REPLY(
-            (byte) 31,
-            new KeyExchangeAlgorithm[] {
-                KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP1_SHA1,
-                KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP14_SHA1,
-                KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP14_SHA256,
-                KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP15_SHA512,
-                KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP16_SHA512,
-                KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP17_SHA512,
-                KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP18_SHA512
-            }),
+    SSH_MSG_KEXDH_INIT((byte) 30, KeyExchangeFlowType.DIFFIE_HELLMAN),
+    SSH_MSG_KEXDH_REPLY((byte) 31, KeyExchangeFlowType.DIFFIE_HELLMAN),
     // [ RFC 5656 ]
-    SSH_MSG_KEX_ECDH_INIT(
-            (byte) 30,
-            new KeyExchangeAlgorithm[] {
-                KeyExchangeAlgorithm.ECDH_SHA2_SECP160K1,
-                KeyExchangeAlgorithm.ECDH_SHA2_SECP160R1,
-                KeyExchangeAlgorithm.ECDH_SHA2_SECP160R2,
-                KeyExchangeAlgorithm.ECDH_SHA2_SECP192K1,
-                KeyExchangeAlgorithm.ECDH_SHA2_SECP192R1,
-                KeyExchangeAlgorithm.ECDH_SHA2_SECP224K1,
-                KeyExchangeAlgorithm.ECDH_SHA2_SECP224R1,
-                KeyExchangeAlgorithm.ECDH_SHA2_SECP256K1,
-                KeyExchangeAlgorithm.ECDH_SHA2_NISTP256,
-                KeyExchangeAlgorithm.ECDH_SHA2_NISTP384,
-                KeyExchangeAlgorithm.ECDH_SHA2_NISTP521,
-                KeyExchangeAlgorithm.ECDH_SHA2_SECT163K1,
-                KeyExchangeAlgorithm.ECDH_SHA2_SECT163R1,
-                KeyExchangeAlgorithm.ECDH_SHA2_SECT163R2,
-                KeyExchangeAlgorithm.ECDH_SHA2_SECT193R1,
-                KeyExchangeAlgorithm.ECDH_SHA2_SECT193R2,
-                KeyExchangeAlgorithm.ECDH_SHA2_SECT233K1,
-                KeyExchangeAlgorithm.ECDH_SHA2_SECT233R1,
-                KeyExchangeAlgorithm.ECDH_SHA2_SECT239K1,
-                KeyExchangeAlgorithm.ECDH_SHA2_SECT283K1,
-                KeyExchangeAlgorithm.ECDH_SHA2_SECT283R1,
-                KeyExchangeAlgorithm.ECDH_SHA2_SECT409K1,
-                KeyExchangeAlgorithm.ECDH_SHA2_SECT409R1,
-                KeyExchangeAlgorithm.ECDH_SHA2_SECT571K1,
-                KeyExchangeAlgorithm.ECDH_SHA2_SECT571R1,
-                KeyExchangeAlgorithm.ECDH_SHA2_BRAINPOOLP256R1,
-                KeyExchangeAlgorithm.ECDH_SHA2_BRAINPOOLP384R1,
-                KeyExchangeAlgorithm.ECDH_SHA2_BRAINPOOLP512R1,
-                KeyExchangeAlgorithm.CURVE25519_SHA256,
-                KeyExchangeAlgorithm.CURVE448_SHA512,
-                KeyExchangeAlgorithm.CURVE25519_SHA256_LIBSSH_ORG
-            }),
-    SSH_MSG_KEX_ECDH_REPLY(
-            (byte) 31,
-            new KeyExchangeAlgorithm[] {
-                KeyExchangeAlgorithm.ECDH_SHA2_SECP160K1,
-                KeyExchangeAlgorithm.ECDH_SHA2_SECP160R1,
-                KeyExchangeAlgorithm.ECDH_SHA2_SECP160R2,
-                KeyExchangeAlgorithm.ECDH_SHA2_SECP192K1,
-                KeyExchangeAlgorithm.ECDH_SHA2_SECP192R1,
-                KeyExchangeAlgorithm.ECDH_SHA2_SECP224K1,
-                KeyExchangeAlgorithm.ECDH_SHA2_SECP224R1,
-                KeyExchangeAlgorithm.ECDH_SHA2_SECP256K1,
-                KeyExchangeAlgorithm.ECDH_SHA2_NISTP256,
-                KeyExchangeAlgorithm.ECDH_SHA2_NISTP384,
-                KeyExchangeAlgorithm.ECDH_SHA2_NISTP521,
-                KeyExchangeAlgorithm.ECDH_SHA2_SECT163K1,
-                KeyExchangeAlgorithm.ECDH_SHA2_SECT163R1,
-                KeyExchangeAlgorithm.ECDH_SHA2_SECT163R2,
-                KeyExchangeAlgorithm.ECDH_SHA2_SECT193R1,
-                KeyExchangeAlgorithm.ECDH_SHA2_SECT193R2,
-                KeyExchangeAlgorithm.ECDH_SHA2_SECT233K1,
-                KeyExchangeAlgorithm.ECDH_SHA2_SECT233R1,
-                KeyExchangeAlgorithm.ECDH_SHA2_SECT239K1,
-                KeyExchangeAlgorithm.ECDH_SHA2_SECT283K1,
-                KeyExchangeAlgorithm.ECDH_SHA2_SECT283R1,
-                KeyExchangeAlgorithm.ECDH_SHA2_SECT409K1,
-                KeyExchangeAlgorithm.ECDH_SHA2_SECT409R1,
-                KeyExchangeAlgorithm.ECDH_SHA2_SECT571K1,
-                KeyExchangeAlgorithm.ECDH_SHA2_SECT571R1,
-                KeyExchangeAlgorithm.ECDH_SHA2_BRAINPOOLP256R1,
-                KeyExchangeAlgorithm.ECDH_SHA2_BRAINPOOLP384R1,
-                KeyExchangeAlgorithm.ECDH_SHA2_BRAINPOOLP512R1,
-                KeyExchangeAlgorithm.CURVE25519_SHA256,
-                KeyExchangeAlgorithm.CURVE448_SHA512,
-                KeyExchangeAlgorithm.CURVE25519_SHA256_LIBSSH_ORG
-            }),
-    SSH_MSG_ECMQV_INIT((byte) 30, KeyExchangeAlgorithm.ECMQV_SHA2),
-    SSH_MSG_ECMQV_REPLY((byte) 31, KeyExchangeAlgorithm.ECMQV_SHA2),
+    SSH_MSG_KEX_ECDH_INIT((byte) 30, KeyExchangeFlowType.ECDH),
+    SSH_MSG_KEX_ECDH_REPLY((byte) 31, KeyExchangeFlowType.ECDH),
+    SSH_MSG_ECMQV_INIT((byte) 30, KeyExchangeFlowType.ECMQV),
+    SSH_MSG_ECMQV_REPLY((byte) 31, KeyExchangeFlowType.ECMQV),
     // [ RFC 4432 ]
-    SSH_MSG_KEXRSA_PUBKEY(
-            (byte) 30,
-            new KeyExchangeAlgorithm[] {
-                KeyExchangeAlgorithm.RSA1024_SHA1, KeyExchangeAlgorithm.RSA2048_SHA256
-            }),
-    SSH_MSG_KEXRSA_SECRET(
-            (byte) 31,
-            new KeyExchangeAlgorithm[] {
-                KeyExchangeAlgorithm.RSA1024_SHA1, KeyExchangeAlgorithm.RSA2048_SHA256
-            }),
-    SSH_MSG_KEXRSA_DONE(
-            (byte) 32,
-            new KeyExchangeAlgorithm[] {
-                KeyExchangeAlgorithm.RSA1024_SHA1, KeyExchangeAlgorithm.RSA2048_SHA256
-            }),
+    SSH_MSG_KEXRSA_PUBKEY((byte) 30, KeyExchangeFlowType.RSA),
+    SSH_MSG_KEXRSA_SECRET((byte) 31, KeyExchangeFlowType.RSA),
+    SSH_MSG_KEXRSA_DONE((byte) 32, KeyExchangeFlowType.RSA),
     // [ RFC 4462 ]
     // TODO: Add specificTo on GSS messages
     SSH_MSG_KEXGSS_INIT((byte) 30),
@@ -299,7 +174,7 @@ public enum MessageIDConstant {
             }
             KeyExchangeAlgorithm kexInContext = context.getKeyExchangeAlgorithm().get();
             for (MessageIDConstant candidate : idList) {
-                if (Arrays.asList(candidate.specificTo).contains(kexInContext)) {
+                if (Arrays.asList(candidate.specificTo).contains(kexInContext.getFlowType())) {
                     return candidate;
                 }
             }

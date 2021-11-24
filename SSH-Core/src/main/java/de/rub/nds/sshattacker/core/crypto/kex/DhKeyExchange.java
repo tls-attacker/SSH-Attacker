@@ -42,24 +42,34 @@ public class DhKeyExchange extends DhBasedKeyExchange {
         switch (negotiatedKexAlgorithm) {
             case DIFFIE_HELLMAN_GROUP_EXCHANGE_SHA1:
             case DIFFIE_HELLMAN_GROUP_EXCHANGE_SHA256:
+            case DIFFIE_HELLMAN_GROUP_EXCHANGE_SHA224_SSH_COM:
+            case DIFFIE_HELLMAN_GROUP_EXCHANGE_SHA384_SSH_COM:
+            case DIFFIE_HELLMAN_GROUP_EXCHANGE_SHA512_SSH_COM:
                 return new DhKeyExchange();
             case DIFFIE_HELLMAN_GROUP1_SHA1:
                 group = NamedDHGroup.GROUP1;
                 break;
             case DIFFIE_HELLMAN_GROUP14_SHA1:
             case DIFFIE_HELLMAN_GROUP14_SHA256:
+            case DIFFIE_HELLMAN_GROUP14_SHA224_SSH_COM:
+            case DIFFIE_HELLMAN_GROUP14_SHA256_SSH_COM:
                 group = NamedDHGroup.GROUP14;
                 break;
             case DIFFIE_HELLMAN_GROUP15_SHA512:
+            case DIFFIE_HELLMAN_GROUP15_SHA256_SSH_COM:
+            case DIFFIE_HELLMAN_GROUP15_SHA384_SSH_COM:
                 group = NamedDHGroup.GROUP15;
                 break;
             case DIFFIE_HELLMAN_GROUP16_SHA512:
+            case DIFFIE_HELLMAN_GROUP16_SHA384_SSH_COM:
+            case DIFFIE_HELLMAN_GROUP16_SHA512_SSH_COM:
                 group = NamedDHGroup.GROUP16;
                 break;
             case DIFFIE_HELLMAN_GROUP17_SHA512:
                 group = NamedDHGroup.GROUP17;
                 break;
             case DIFFIE_HELLMAN_GROUP18_SHA512:
+            case DIFFIE_HELLMAN_GROUP18_SHA512_SSH_COM:
                 group = NamedDHGroup.GROUP18;
                 break;
             default:
