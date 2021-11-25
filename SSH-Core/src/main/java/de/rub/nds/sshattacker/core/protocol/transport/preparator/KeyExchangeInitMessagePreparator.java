@@ -42,11 +42,11 @@ public class KeyExchangeInitMessagePreparator extends SshMessagePreparator<KeyEx
                     .setMacAlgorithmsServerToClient(
                             chooser.getClientSupportedMacAlgorithmsServerToClient(), true);
             getObject()
-                    .setCompressionAlgorithmsClientToServer(
-                            chooser.getClientSupportedCompressionAlgorithmsClientToServer(), true);
+                    .setCompressionMethodsClientToServer(
+                            chooser.getClientSupportedCompressionMethodsClientToServer(), true);
             getObject()
-                    .setCompressionAlgorithmsServerToClient(
-                            chooser.getClientSupportedCompressionAlgorithmsServerToClient(), true);
+                    .setCompressionMethodsServerToClient(
+                            chooser.getClientSupportedCompressionMethodsServerToClient(), true);
             getObject()
                     .setLanguagesClientToServer(
                             chooser.getClientSupportedLanguagesClientToServer()
@@ -84,11 +84,11 @@ public class KeyExchangeInitMessagePreparator extends SshMessagePreparator<KeyEx
                     .setMacAlgorithmsServerToClient(
                             chooser.getServerSupportedMacAlgorithmsServerToClient(), true);
             getObject()
-                    .setCompressionAlgorithmsClientToServer(
-                            chooser.getServerSupportedCompressionAlgorithmsClientToServer(), true);
+                    .setCompressionMethodsClientToServer(
+                            chooser.getServerSupportedCompressionMethodsClientToServer(), true);
             getObject()
-                    .setCompressionAlgorithmsServerToClient(
-                            chooser.getServerSupportedCompressionAlgorithmsServerToClient(), true);
+                    .setCompressionMethodsServerToClient(
+                            chooser.getServerSupportedCompressionMethodsServerToClient(), true);
             getObject()
                     .setLanguagesClientToServer(
                             chooser.getServerSupportedLanguagesClientToServer()

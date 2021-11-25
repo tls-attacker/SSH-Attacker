@@ -131,27 +131,27 @@ public class DefaultChooser extends Chooser {
     }
 
     @Override
-    public List<CompressionAlgorithm> getClientSupportedCompressionAlgorithmsClientToServer() {
-        return context.getClientSupportedCompressionAlgorithmsClientToServer()
-                .orElse(config.getClientSupportedCompressionAlgorithmsClientToServer());
+    public List<CompressionMethod> getClientSupportedCompressionMethodsClientToServer() {
+        return context.getClientSupportedCompressionMethodsClientToServer()
+                .orElse(config.getClientSupportedCompressionMethodsClientToServer());
     }
 
     @Override
-    public List<CompressionAlgorithm> getClientSupportedCompressionAlgorithmsServerToClient() {
-        return context.getClientSupportedCompressionAlgorithmsServerToClient()
-                .orElse(config.getClientSupportedCompressionAlgorithmsServerToClient());
+    public List<CompressionMethod> getClientSupportedCompressionMethodsServerToClient() {
+        return context.getClientSupportedCompressionMethodsServerToClient()
+                .orElse(config.getClientSupportedCompressionMethodsServerToClient());
     }
 
     @Override
-    public List<CompressionAlgorithm> getServerSupportedCompressionAlgorithmsServerToClient() {
-        return context.getServerSupportedCompressionAlgorithmsServerToClient()
-                .orElse(config.getServerSupportedCompressionAlgorithmsServerToClient());
+    public List<CompressionMethod> getServerSupportedCompressionMethodsServerToClient() {
+        return context.getServerSupportedCompressionMethodsServerToClient()
+                .orElse(config.getServerSupportedCompressionMethodsServerToClient());
     }
 
     @Override
-    public List<CompressionAlgorithm> getServerSupportedCompressionAlgorithmsClientToServer() {
-        return context.getServerSupportedCompressionAlgorithmsClientToServer()
-                .orElse(config.getServerSupportedCompressionAlgorithmsClientToServer());
+    public List<CompressionMethod> getServerSupportedCompressionMethodsClientToServer() {
+        return context.getServerSupportedCompressionMethodsClientToServer()
+                .orElse(config.getServerSupportedCompressionMethodsClientToServer());
     }
 
     @Override
