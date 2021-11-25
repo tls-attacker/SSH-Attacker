@@ -7,9 +7,9 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.handler;
 
-import de.rub.nds.sshattacker.core.exceptions.NotImplementedException;
 import de.rub.nds.sshattacker.core.protocol.common.*;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelRequestExecMessage;
+import de.rub.nds.sshattacker.core.protocol.connection.parser.ChannelRequestExecMessageParser;
 import de.rub.nds.sshattacker.core.protocol.connection.preparator.ChannelRequestExecMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.connection.serializer.ChannelRequestExecMessageSerializer;
 import de.rub.nds.sshattacker.core.state.SshContext;
@@ -31,7 +31,7 @@ public class ChannelRequestExecMessageHandler extends SshMessageHandler<ChannelR
 
     @Override
     public SshMessageParser<ChannelRequestExecMessage> getParser(byte[] array, int startPosition) {
-        throw new NotImplementedException("ChannelRequestExecMessageHandler::getParser");
+        return new ChannelRequestExecMessageParser(array, startPosition);
     }
 
     @Override
