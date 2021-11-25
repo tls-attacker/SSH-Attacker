@@ -25,7 +25,7 @@ public class UserAuthPasswordMessagePreparator
         getObject().setMessageID(MessageIDConstant.SSH_MSG_USERAUTH_REQUEST);
         getObject().setUserName(chooser.getConfig().getUsername(), true);
         getObject().setServiceName(ServiceType.SSH_CONNECTION, true);
-        getObject().setMethodName(chooser.getAuthenticationMethod());
+        getObject().setMethodName(chooser.getAuthenticationMethod(), true);
         getObject().setChangePassword(false);
         getObject().setPassword(chooser.getConfig().getPassword(), true);
     }
