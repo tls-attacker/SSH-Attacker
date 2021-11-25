@@ -29,7 +29,7 @@ public class DeflateCompression extends Compression {
 
     private void init() {
         deflater.init(JZlib.Z_DEFAULT_COMPRESSION);
-        deflater.init(JZlib.Z_DEFAULT_COMPRESSION);
+        inflater.init();
     }
 
     public byte[] compress(byte[] data) {
