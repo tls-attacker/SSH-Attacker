@@ -16,6 +16,7 @@ import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.transport.message.DhKeyExchangeInitMessage;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import java.util.Optional;
+import java.util.Random;
 
 public class DhKeyExchangeInitMessagePreparator
         extends SshMessagePreparator<DhKeyExchangeInitMessage> {
@@ -27,7 +28,6 @@ public class DhKeyExchangeInitMessagePreparator
     @Override
     public void prepareMessageSpecificContents() {
         getObject().setMessageID(MessageIDConstant.SSH_MSG_KEXDH_INIT);
-        // TODO: Handle default value for key exchange algorithm in Config
         Optional<KeyExchangeAlgorithm> keyExchangeAlgorithm =
                 chooser.getContext().getKeyExchangeAlgorithm();
         DhKeyExchange keyExchange;
@@ -35,11 +35,21 @@ public class DhKeyExchangeInitMessagePreparator
                 && keyExchangeAlgorithm.get().getFlowType() == KeyExchangeFlowType.DIFFIE_HELLMAN) {
             keyExchange = DhKeyExchange.newInstance(keyExchangeAlgorithm.get());
         } else {
-            raisePreparationException(
-                    "Key exchange algorithm not negotiated or unexpected flow type, unable to generate a local key pair");
+            // Maybe raise new "missingContextContents" Exception "Key exchange algorithm not
+            // negotiated or unexpected flow type, unable to generate a local key pair");
             keyExchange =
-                    DhKeyExchange.newInstance(KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP14_SHA256);
+                    (DhKeyExchange)
+                            DhKeyExchange.newInstance(
+                                    (chooser.getRandomKeyExchangeAlgorithm(
+                                            new Random(), chooser.getAllSupportedDHKeyExchange())));
         }
+        if (!(keyExchange.areGroupParametersSet())) {
+            keyExchange.setModulus(
+                    chooser.getConfig().getDefaultDHGexKeyExchangeGroup().getModulus());
+            keyExchange.setGenerator(
+                    chooser.getConfig().getDefaultDHGexKeyExchangeGroup().getGenerator());
+        }
+        ;
         keyExchange.generateLocalKeyPair();
         chooser.getContext().setKeyExchangeInstance(keyExchange);
 

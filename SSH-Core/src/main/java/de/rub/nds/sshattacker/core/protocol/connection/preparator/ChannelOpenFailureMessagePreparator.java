@@ -23,7 +23,7 @@ public class ChannelOpenFailureMessagePreparator
     public void prepareMessageSpecificContents() {
         getObject().setMessageID(MessageIDConstant.SSH_MSG_CHANNEL_OPEN_FAILURE);
         // TODO dummy values for fuzzing
-        getObject().setRecipientChannel(Integer.MAX_VALUE);
+        getObject().setRecipientChannel(chooser.getRemoteChannel());
         getObject().setReasonCode(Integer.MAX_VALUE);
         getObject().setReason("", true);
         getObject().setLanguageTag("", true);

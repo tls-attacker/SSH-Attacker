@@ -7,7 +7,6 @@
  */
 package de.rub.nds.sshattacker.core.protocol.authentication.preparator;
 
-import de.rub.nds.sshattacker.core.constants.AuthenticationMethod;
 import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
 import de.rub.nds.sshattacker.core.constants.ServiceType;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthPasswordMessage;
@@ -26,7 +25,7 @@ public class UserAuthPasswordMessagePreparator
         getObject().setMessageID(MessageIDConstant.SSH_MSG_USERAUTH_REQUEST);
         getObject().setUserName(chooser.getConfig().getUsername(), true);
         getObject().setServiceName(ServiceType.SSH_CONNECTION, true);
-        getObject().setMethodName(AuthenticationMethod.PASSWORD, true);
+        getObject().setMethodName(chooser.getAuthenticationMethod());
         getObject().setChangePassword(false);
         getObject().setPassword(chooser.getConfig().getPassword(), true);
     }

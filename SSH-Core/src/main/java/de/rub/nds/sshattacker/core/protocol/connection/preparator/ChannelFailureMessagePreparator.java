@@ -22,6 +22,6 @@ public class ChannelFailureMessagePreparator extends SshMessagePreparator<Channe
     public void prepareMessageSpecificContents() {
         getObject().setMessageID(MessageIDConstant.SSH_MSG_CHANNEL_FAILURE);
         // TODO: Dummy values for fuzzing
-        getObject().setRecipientChannel(Integer.MAX_VALUE);
+        getObject().setRecipientChannel(chooser.getRemoteChannel());
     }
 }

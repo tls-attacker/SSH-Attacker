@@ -11,6 +11,8 @@ import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.constants.*;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import java.util.List;
+import java.util.Random;
+import java.util.stream.Collectors;
 
 public class DefaultChooser extends Chooser {
     public DefaultChooser(SshContext context, Config config) {
@@ -36,6 +38,11 @@ public class DefaultChooser extends Chooser {
     @Override
     public String getServerComment() {
         return context.getServerComment().orElse(config.getServerComment());
+    }
+
+    @Override
+    public String getEndOfMessageSequence() {
+        return context.getEndofMessageSequence().orElse(config.getEndOfMessageSequence());
     }
 
     // endregion
@@ -215,13 +222,43 @@ public class DefaultChooser extends Chooser {
         return 8192;
     }
 
+    @Override
+    public List<KeyExchangeAlgorithm> getAllSupportedDHKeyExchange() {
+        return config.getClientSupportedKeyExchangeAlgorithms().stream()
+                .filter(
+                        keyExchangeAlgorithm ->
+                                keyExchangeAlgorithm.getFlowType()
+                                        == KeyExchangeFlowType.DIFFIE_HELLMAN)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<KeyExchangeAlgorithm> getAllSupportedDH_DHGEKeyExchange() {
+        return config.getClientSupportedKeyExchangeAlgorithms().stream()
+                .filter(
+                        keyExchangeAlgorithm ->
+                                keyExchangeAlgorithm.getFlowType()
+                                                == KeyExchangeFlowType.DIFFIE_HELLMAN
+                                        || keyExchangeAlgorithm.getFlowType()
+                                                == KeyExchangeFlowType
+                                                        .DIFFIE_HELLMAN_GROUP_EXCHANGE)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public KeyExchangeAlgorithm getRandomKeyExchangeAlgorithm(
+            Random random, List<KeyExchangeAlgorithm> possibleKeyExchangeAlgorithms) {
+        int randomField = random.nextInt(possibleKeyExchangeAlgorithms.size());
+        return possibleKeyExchangeAlgorithms.get(randomField);
+    }
+
     // endregion
 
     @Override
     public AuthenticationMethod getAuthenticationMethod() {
         return context.getAuthenticationMethod().orElse(config.getAuthenticationMethod());
     }
-
+    // region connection
     @Override
     public int getLocalChannel() {
         return context.getLocalChannel().orElse(config.getLocalChannel());
@@ -241,4 +278,11 @@ public class DefaultChooser extends Chooser {
     public int getPacketSize() {
         return context.getPacketSize().orElse(config.getPacketSize());
     }
+
+    @Override
+    public int getRemoteChannel() {
+        return context.getRemoteChannel().orElse(config.getRemoteChannel());
+    }
+
+    // endregion
 }
