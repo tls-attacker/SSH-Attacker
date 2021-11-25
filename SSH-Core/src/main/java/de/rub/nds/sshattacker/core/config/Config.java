@@ -20,9 +20,8 @@ import java.io.InputStream;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.security.Security;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 import javax.xml.bind.annotation.*;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import org.apache.logging.log4j.LogManager;
@@ -58,6 +57,8 @@ public class Config implements Serializable {
 
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private final byte[] serverCookie;
+
+    private String endOfMessageSequence;
 
     @XmlElement(name = "clientSupportedKeyExchangeAlgorithm")
     @XmlElementWrapper
@@ -232,6 +233,10 @@ public class Config implements Serializable {
 
     private ChooserType chooserType = ChooserType.DEFAULT;
 
+    private NamedDHGroup defaultDHGexKeyExchangeGroup;
+
+    private KeyExchangeAlgorithm defaultEcdhKeyExchangeAlgortihm;
+
     public Config() {
 
         defaultClientConnection = new OutboundConnection("client", 65222, "localhost");
@@ -242,9 +247,10 @@ public class Config implements Serializable {
         serverComment = clientComment;
         clientCookie = ArrayConverter.hexStringToByteArray("00000000000000000000000000000000");
         serverCookie = ArrayConverter.hexStringToByteArray("00000000000000000000000000000000");
+        endOfMessageSequence = "\r\n";
 
-        clientSupportedKeyExchangeAlgorithms = new LinkedList<>();
-        clientSupportedKeyExchangeAlgorithms.add(KeyExchangeAlgorithm.ECDH_SHA2_NISTP256);
+        clientSupportedKeyExchangeAlgorithms =
+                EnumSet.allOf(KeyExchangeAlgorithm.class).stream().collect(Collectors.toList());
         serverSupportedKeyExchangeAlgorithms =
                 new LinkedList<>(clientSupportedKeyExchangeAlgorithms);
 
@@ -292,6 +298,9 @@ public class Config implements Serializable {
 
         clientFirstKeyExchangePacketFollows = false;
         serverFirstKeyExchangePacketFollows = false;
+
+        defaultDHGexKeyExchangeGroup = NamedDHGroup.GROUP14;
+        defaultEcdhKeyExchangeAlgortihm = KeyExchangeAlgorithm.ECDH_SHA2_NISTP256;
 
         clientReserved = 0;
         serverReserved = 0;
@@ -375,6 +384,10 @@ public class Config implements Serializable {
 
     public byte[] getServerCookie() {
         return serverCookie;
+    }
+
+    public String getEndOfMessageSequence() {
+        return endOfMessageSequence;
     }
 
     public List<KeyExchangeAlgorithm> getClientSupportedKeyExchangeAlgorithms() {
@@ -748,5 +761,13 @@ public class Config implements Serializable {
 
     public void setChooserType(ChooserType chooserType) {
         this.chooserType = chooserType;
+    }
+
+    public NamedDHGroup getDefaultDHGexKeyExchangeGroup() {
+        return defaultDHGexKeyExchangeGroup;
+    }
+
+    public KeyExchangeAlgorithm getDefaultEcdhKeyExchangeAlgortihm() {
+        return defaultEcdhKeyExchangeAlgortihm;
     }
 }

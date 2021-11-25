@@ -33,35 +33,35 @@ public class KeyExchangeInitMessageHandler extends SshMessageHandler<KeyExchange
         if (context.isClient()) {
             context.setServerCookie(message.getCookie().getValue());
             context.setServerSupportedKeyExchangeAlgorithms(
-                    Converter.stringToAlgorithms(
+                    Converter.nameListToEnumValues(
                             message.getKeyExchangeAlgorithms().getValue(),
                             KeyExchangeAlgorithm.class));
             context.setServerSupportedHostKeyAlgorithms(
-                    Converter.stringToAlgorithms(
+                    Converter.nameListToEnumValues(
                             message.getServerHostKeyAlgorithms().getValue(),
                             PublicKeyAuthenticationAlgorithm.class));
             context.setServerSupportedCipherAlgorithmsClientToServer(
-                    Converter.stringToAlgorithms(
+                    Converter.nameListToEnumValues(
                             message.getEncryptionAlgorithmsClientToServer().getValue(),
                             EncryptionAlgorithm.class));
             context.setServerSupportedCipherAlgorithmsServerToClient(
-                    Converter.stringToAlgorithms(
+                    Converter.nameListToEnumValues(
                             message.getEncryptionAlgorithmsServerToClient().getValue(),
                             EncryptionAlgorithm.class));
             context.setServerSupportedMacAlgorithmsClientToServer(
-                    Converter.stringToAlgorithms(
+                    Converter.nameListToEnumValues(
                             message.getMacAlgorithmsClientToServer().getValue(),
                             MacAlgorithm.class));
             context.setServerSupportedMacAlgorithmsServerToClient(
-                    Converter.stringToAlgorithms(
+                    Converter.nameListToEnumValues(
                             message.getMacAlgorithmsServerToClient().getValue(),
                             MacAlgorithm.class));
             context.setServerSupportedCompressionMethodsClientToServer(
-                    Converter.stringToAlgorithms(
+                    Converter.nameListToEnumValues(
                             message.getCompressionMethodsClientToServer().getValue(),
                             CompressionMethod.class));
             context.setServerSupportedCompressionMethodsServerToClient(
-                    Converter.stringToAlgorithms(
+                    Converter.nameListToEnumValues(
                             message.getCompressionMethodsServerToClient().getValue(),
                             CompressionMethod.class));
             context.setServerSupportedLanguagesClientToServer(
@@ -80,35 +80,35 @@ public class KeyExchangeInitMessageHandler extends SshMessageHandler<KeyExchange
         } else {
             context.setClientCookie(message.getCookie().getValue());
             context.setClientSupportedKeyExchangeAlgorithms(
-                    Converter.stringToAlgorithms(
+                    Converter.nameListToEnumValues(
                             message.getKeyExchangeAlgorithms().getValue(),
                             KeyExchangeAlgorithm.class));
             context.setClientSupportedHostKeyAlgorithms(
-                    Converter.stringToAlgorithms(
+                    Converter.nameListToEnumValues(
                             message.getServerHostKeyAlgorithms().getValue(),
                             PublicKeyAuthenticationAlgorithm.class));
             context.setClientSupportedCipherAlgorithmsClientToServer(
-                    Converter.stringToAlgorithms(
+                    Converter.nameListToEnumValues(
                             message.getEncryptionAlgorithmsClientToServer().getValue(),
                             EncryptionAlgorithm.class));
             context.setClientSupportedCipherAlgorithmsServerToClient(
-                    Converter.stringToAlgorithms(
+                    Converter.nameListToEnumValues(
                             message.getEncryptionAlgorithmsServerToClient().getValue(),
                             EncryptionAlgorithm.class));
             context.setClientSupportedMacAlgorithmsClientToServer(
-                    Converter.stringToAlgorithms(
+                    Converter.nameListToEnumValues(
                             message.getMacAlgorithmsClientToServer().getValue(),
                             MacAlgorithm.class));
             context.setClientSupportedMacAlgorithmsServerToClient(
-                    Converter.stringToAlgorithms(
+                    Converter.nameListToEnumValues(
                             message.getMacAlgorithmsServerToClient().getValue(),
                             MacAlgorithm.class));
             context.setClientSupportedCompressionMethodsClientToServer(
-                    Converter.stringToAlgorithms(
+                    Converter.nameListToEnumValues(
                             message.getCompressionMethodsClientToServer().getValue(),
                             CompressionMethod.class));
             context.setClientSupportedCompressionMethodsServerToClient(
-                    Converter.stringToAlgorithms(
+                    Converter.nameListToEnumValues(
                             message.getCompressionMethodsServerToClient().getValue(),
                             CompressionMethod.class));
             context.setClientSupportedLanguagesClientToServer(
