@@ -14,6 +14,7 @@ public enum EncryptionAlgorithm {
      * - https://cvsweb.openbsd.org/src/usr.bin/ssh/PROTOCOL?annotate=HEAD
      * - https://cvsweb.openbsd.org/src/usr.bin/ssh/PROTOCOL.chacha20poly1305?annotate=HEAD
      * - https://www.lysator.liu.se/rijndael/
+     * - https://datatracker.ietf.org/doc/html/draft-kanno-secsh-camellia-02
      */
     // [ RFC 4253 ]
     TRIPLE_DES_CBC("3des-cbc", EncryptionAlgorithmType.BLOCK, 24, 8, "DESede/CBC/NoPadding"),
@@ -36,9 +37,7 @@ public enum EncryptionAlgorithm {
     SERPENT128_CBC(
             "serpent128-cbc", EncryptionAlgorithmType.BLOCK, 16, 16, "Serpent/CBC/NoPadding"),
     // arcfour was deprecated in [ RFC 8758 ]
-    // blockSize = 0 as arcfour is a stream cipher, the output is used as a
-    // keystream
-    ARCFOUR("arcfour", EncryptionAlgorithmType.STREAM, 16, 0, "RC4"),
+    ARCFOUR("arcfour", EncryptionAlgorithmType.STREAM, 16, 1, "RC4"),
     IDEA_CBC("idea-cbc", EncryptionAlgorithmType.BLOCK, 16, 8, "IDEA/CBC/NoPadding"),
     CAST128_CBC("cast128-cbc", EncryptionAlgorithmType.BLOCK, 16, 8, "CAST5/CBC/NoPadding"),
     NONE("none", EncryptionAlgorithmType.STREAM, 0, 1),
@@ -92,16 +91,21 @@ public enum EncryptionAlgorithm {
             12,
             16,
             "AES/GCM/NoPadding"),
-    // blockSize = 0 as ChaCha20 is a stream cipher, the output is used as a
-    // keystream
     CHACHA20_POLY1305_OPENSSH_COM(
             "chacha20-poly1305@openssh.com",
             EncryptionAlgorithmType.AEAD,
             64,
-            0,
+            1,
             12,
             16,
             "ChaCha20-Poly1305"),
+    // [ OpenSSH Suggestions ]
+    CAMELLIA128_CBC_OPENSSH_ORG("camellia128-cbc@openssh.org", EncryptionAlgorithmType.BLOCK, 16, 16, "Camellia/CBC/NoPadding"),
+    CAMELLIA192_CBC_OPENSSH_ORG("camellia192-cbc@openssh.org", EncryptionAlgorithmType.BLOCK, 24, 16, "Camellia/CBC/NoPadding"),
+    CAMELLIA256_CBC_OPENSSH_ORG("camellia256-cbc@openssh.org", EncryptionAlgorithmType.BLOCK, 32, 16, "Camellia/CBC/NoPadding"),
+    CAMELLIA128_CTR_OPENSSH_ORG("camellia128-ctr@openssh.org", EncryptionAlgorithmType.BLOCK, 16, 16, "Camellia/CTR/NoPadding"),
+    CAMELLIA192_CTR_OPENSSH_ORG("camellia192-ctr@openssh.org", EncryptionAlgorithmType.BLOCK, 24, 16, "Camellia/CTR/NoPadding"),
+    CAMELLIA256_CTR_OPENSSH_ORG("camellia256-ctr@openssh.org", EncryptionAlgorithmType.BLOCK, 32, 16, "Camellia/CTR/NoPadding"),
     // [ Lysator Academic Computer Society ]
     RIJNDAEL_CBC_LYSATOR_LIU_SE( // a.k.a. aes256-cbc
             "rijndael-cbc@lysator.liu.se",
@@ -111,7 +115,21 @@ public enum EncryptionAlgorithm {
             "AES/CBC/NoPadding"),
     // [ SSH.COM ]
     SEED_CBC_SSH_COM(
-            "seed-cbc@ssh.com", EncryptionAlgorithmType.BLOCK, 16, 16, "SEED/CBC/NoPadding");
+            "seed-cbc@ssh.com", EncryptionAlgorithmType.BLOCK, 16, 16, "SEED/CBC/NoPadding"),
+    // [ libassh ]
+    SERPENT128_GCM_LIBASSH_ORG("serpent128-gcm@libassh.org", EncryptionAlgorithmType.AEAD, 16, 16, 12, 16, "Serpent/GCM/NoPadding"),
+    SERPENT256_GCM_LIBASSH_ORG("serpent256-gcm@libassh.org", EncryptionAlgorithmType.AEAD, 32, 16, 12, 16, "Serpent/GCM/NoPadding"),
+    TWOFISH128_GCM_LIBASSH_ORG("twofish128-gcm@libassh.org", EncryptionAlgorithmType.AEAD, 16, 16, 12, 16, "Twofish/GCM/NoPadding"),
+    TWOFISH256_GCM_LIBASSH_ORG("twofish256-gcm@libassh.org", EncryptionAlgorithmType.AEAD, 32, 16, 12, 16, "Twofish/GCM/NoPadding"),
+    // Algorithms not registered with the IANA
+    CAMELLIA128_CBC("camellia128-cbc", EncryptionAlgorithmType.BLOCK, 16, 16, "Camellia/CBC/NoPadding"),
+    CAMELLIA192_CBC("camellia192-cbc", EncryptionAlgorithmType.BLOCK, 24, 16, "Camellia/CBC/NoPadding"),
+    CAMELLIA256_CBC("camellia256-cbc", EncryptionAlgorithmType.BLOCK, 32, 16, "Camellia/CBC/NoPadding"),
+    CAMELLIA128_CTR("camellia128-ctr", EncryptionAlgorithmType.BLOCK, 16, 16, "Camellia/CTR/NoPadding"),
+    CAMELLIA192_CTR("camellia192-ctr", EncryptionAlgorithmType.BLOCK, 24, 16, "Camellia/CTR/NoPadding"),
+    CAMELLIA256_CTR("camellia256-ctr", EncryptionAlgorithmType.BLOCK, 32, 16, "Camellia/CTR/NoPadding"),
+    AEAD_CAMELLIA_128_GCM("AEAD_CAMELLIA_128_GCM", EncryptionAlgorithmType.AEAD, 16, 16, 12, 16, "Camellia/GCM/NoPadding"),
+    AEAD_CAMELLIA_256_GCM("AEAD_CAMELLIA_256_GCM", EncryptionAlgorithmType.AEAD, 32, 16, 12, 16, "Camellia/GCM/NoPadding");
 
     private final String name;
     private final EncryptionAlgorithmType type;
