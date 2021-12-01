@@ -146,4 +146,9 @@ public class PacketAEADCipher extends PacketCipher {
     public void decrypt(BlobPacket packet) throws CryptoException {
         packet.setCompressedPayload(decryptCipher.decrypt(packet.getCiphertext().getValue()));
     }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "[Cipher: " + encryptionAlgorithm + "]";
+    }
 }

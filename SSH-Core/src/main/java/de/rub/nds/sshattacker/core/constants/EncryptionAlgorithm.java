@@ -41,14 +41,14 @@ public enum EncryptionAlgorithm {
     ARCFOUR("arcfour", EncryptionAlgorithmType.STREAM, 16, 0, "RC4"),
     IDEA_CBC("idea-cbc", EncryptionAlgorithmType.BLOCK, 16, 8, "IDEA/CBC/NoPadding"),
     CAST128_CBC("cast128-cbc", EncryptionAlgorithmType.BLOCK, 16, 8, "CAST5/CBC/NoPadding"),
-    NONE("none", EncryptionAlgorithmType.STREAM, 0, 0),
+    NONE("none", EncryptionAlgorithmType.STREAM, 0, 1),
     // [ FIPS-46-3 ]
     // des-cbc is deprecated
     DES_CBC("des-cbc", EncryptionAlgorithmType.BLOCK, 8, 8, "DES/CBC/NoPadding"),
     // [ RFC 4345 ]
     // arcfour128 and arcfour256 were deprecated in [ RFC 8758 ]
-    ARCFOUR128("arcfour128", EncryptionAlgorithmType.STREAM, 16, 0, "RC4"),
-    ARCFOUR256("arcfour256", EncryptionAlgorithmType.STREAM, 32, 0, "RC4"),
+    ARCFOUR128("arcfour128", EncryptionAlgorithmType.STREAM, 16, 1, "RC4"),
+    ARCFOUR256("arcfour256", EncryptionAlgorithmType.STREAM, 32, 1, "RC4"),
     // [ RFC 4344 ]
     AES128_CTR("aes128-ctr", EncryptionAlgorithmType.BLOCK, 16, 16, "AES/CTR/NoPadding"),
     AES192_CTR("aes192-ctr", EncryptionAlgorithmType.BLOCK, 24, 16, "AES/CTR/NoPadding"),
@@ -111,11 +111,7 @@ public enum EncryptionAlgorithm {
             "AES/CBC/NoPadding"),
     // [ SSH.COM ]
     SEED_CBC_SSH_COM(
-            "seed-cbc@ssh.com",
-            EncryptionAlgorithmType.BLOCK,
-            16,
-            16,
-            "SEED/CBC/NoPadding");
+            "seed-cbc@ssh.com", EncryptionAlgorithmType.BLOCK, 16, 16, "SEED/CBC/NoPadding");
 
     private final String name;
     private final EncryptionAlgorithmType type;
@@ -182,5 +178,15 @@ public enum EncryptionAlgorithm {
 
     public String getJavaName() {
         return javaName;
+    }
+
+    public int getKeystreamInitialDiscardLength() {
+        if (this == EncryptionAlgorithm.ARCFOUR128 || this == EncryptionAlgorithm.ARCFOUR256) {
+            // ARCFOUR128 and ARCFOUR256 skip the first 1536 bytes of the RC4 keystream before
+            // starting encryption / decryption
+            // ref. RFC 4345 Section 4
+            return 1536;
+        }
+        return 0;
     }
 }

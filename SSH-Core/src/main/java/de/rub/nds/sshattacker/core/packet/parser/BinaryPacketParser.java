@@ -16,7 +16,6 @@ import de.rub.nds.sshattacker.core.packet.BinaryPacket;
 import de.rub.nds.sshattacker.core.packet.PacketCryptoComputations;
 import de.rub.nds.sshattacker.core.packet.cipher.PacketCipher;
 import java.util.Arrays;
-import java.util.Collections;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -34,83 +33,53 @@ public class BinaryPacketParser extends AbstractPacketParser<BinaryPacket> {
     @Override
     public BinaryPacket parse() {
         LOGGER.debug("Parsing BinaryPacket from serialized bytes:");
-        if (activeDecryptCipher.getEncryptionAlgorithm() == EncryptionAlgorithm.NONE) {
-            return parseUnencryptedPacket();
-        } else {
-            try {
-                return parseEncryptedPacket();
-            } catch (CryptoException e) {
-                LOGGER.warn("Caught a CryptoException while parsing an encrypted binary packet", e);
-                return null;
+        try {
+            BinaryPacket binaryPacket = new BinaryPacket();
+            if (activeDecryptCipher.getEncryptionAlgorithm().getType()
+                    == EncryptionAlgorithmType.AEAD) {
+                LOGGER.debug("Packet structure: AEAD");
+                parseAEADPacket(binaryPacket);
+            } else if (activeDecryptCipher.isEncryptThenMac()) {
+                LOGGER.debug("Packet structure: Encrypt-then-MAC");
+                parseETMPacket(binaryPacket);
+            } else {
+                LOGGER.debug("Packet structure: Encrypt-and-MAC");
+                parseEAMPacket(binaryPacket);
             }
+            binaryPacket.setCompletePacketBytes(getAlreadyParsed());
+
+            LOGGER.trace(
+                    "Complete packet bytes: {}",
+                    ArrayConverter.bytesToHexString(
+                            binaryPacket.getCompletePacketBytes().getValue()));
+            LOGGER.debug("Packet length: {}", binaryPacket.getLength().getValue());
+            if (activeDecryptCipher.getEncryptionAlgorithm() == EncryptionAlgorithm.NONE) {
+                LOGGER.debug(
+                        "Packet bytes: {}",
+                        ArrayConverter.bytesToHexString(binaryPacket.getCiphertext().getValue()));
+            } else {
+                LOGGER.debug(
+                        "Encrypted packet bytes: {}",
+                        ArrayConverter.bytesToHexString(binaryPacket.getCiphertext().getValue()));
+            }
+
+            if (activeDecryptCipher.getEncryptionAlgorithm().getType()
+                    == EncryptionAlgorithmType.AEAD) {
+                LOGGER.debug(
+                        "Authentication tag: {}",
+                        ArrayConverter.bytesToHexString(binaryPacket.getMac()));
+            } else {
+                if (binaryPacket.getMac().getValue().length > 0) {
+                    LOGGER.debug("MAC: {}", ArrayConverter.bytesToHexString(binaryPacket.getMac()));
+                } else {
+                    LOGGER.debug("MAC: [empty]");
+                }
+            }
+            return binaryPacket;
+        } catch (CryptoException e) {
+            LOGGER.warn("Caught a CryptoException while parsing an encrypted binary packet", e);
+            return null;
         }
-    }
-
-    private BinaryPacket parseUnencryptedPacket() {
-        LOGGER.debug("Binary packet structure: Unencrypted");
-        BinaryPacket binaryPacket = new BinaryPacket();
-
-        // No packet fields are encrypted
-        binaryPacket.prepareComputations();
-        PacketCryptoComputations computations = binaryPacket.getComputations();
-        computations.setEncryptedPacketFields(Collections.emptySet());
-
-        // Parse the binary packet
-        binaryPacket.setLength(parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH));
-        binaryPacket.setPaddingLength(parseByteField(BinaryPacketConstants.PADDING_FIELD_LENGTH));
-        binaryPacket.setCiphertext(
-                parseByteArrayField(
-                        binaryPacket.getLength().getValue()
-                                - binaryPacket.getPaddingLength().getValue()
-                                - BinaryPacketConstants.PADDING_FIELD_LENGTH));
-        binaryPacket.setPadding(parseByteArrayField(binaryPacket.getPaddingLength().getValue()));
-        binaryPacket.setMac(
-                parseByteArrayField(activeDecryptCipher.getMacAlgorithm().getOutputSize()));
-        binaryPacket.setCompletePacketBytes(getAlreadyParsed());
-
-        LOGGER.trace(
-                "Complete packet bytes: {}",
-                ArrayConverter.bytesToHexString(binaryPacket.getCompletePacketBytes().getValue()));
-        LOGGER.debug("Packet length: {}", binaryPacket.getLength().getValue());
-        LOGGER.debug("Padding length: {}", binaryPacket.getPaddingLength().getValue());
-        LOGGER.debug("Payload: {}", ArrayConverter.bytesToHexString(binaryPacket.getCiphertext()));
-        LOGGER.debug("Padding: {}", ArrayConverter.bytesToHexString(binaryPacket.getPadding()));
-        LOGGER.debug("MAC: {}", ArrayConverter.bytesToHexString(binaryPacket.getMac()));
-
-        return binaryPacket;
-    }
-
-    private BinaryPacket parseEncryptedPacket() throws CryptoException {
-        BinaryPacket binaryPacket = new BinaryPacket();
-        if (activeDecryptCipher.getEncryptionAlgorithm().getType()
-                == EncryptionAlgorithmType.AEAD) {
-            LOGGER.debug("Packet structure: AEAD");
-            parseAEADPacket(binaryPacket);
-        } else if (activeDecryptCipher.isEncryptThenMac()) {
-            LOGGER.debug("Packet structure: Encrypt-then-MAC");
-            parseETMPacket(binaryPacket);
-        } else {
-            LOGGER.debug("Packet structure: Encrypt-and-MAC");
-            parseEAMPacket(binaryPacket);
-        }
-        binaryPacket.setCompletePacketBytes(getAlreadyParsed());
-
-        LOGGER.trace(
-                "Complete packet bytes: {}",
-                ArrayConverter.bytesToHexString(binaryPacket.getCompletePacketBytes().getValue()));
-        LOGGER.debug("Packet length: {}", binaryPacket.getLength().getValue());
-        LOGGER.debug(
-                "Encrypted packet bytes: {}",
-                ArrayConverter.bytesToHexString(binaryPacket.getCiphertext().getValue()));
-        if (activeDecryptCipher.getEncryptionAlgorithm().getType()
-                == EncryptionAlgorithmType.AEAD) {
-            LOGGER.debug(
-                    "Authentication tag: {}",
-                    ArrayConverter.bytesToHexString(binaryPacket.getMac()));
-        } else {
-            LOGGER.debug("MAC: {}", ArrayConverter.bytesToHexString(binaryPacket.getMac()));
-        }
-        return binaryPacket;
     }
 
     private void parseAEADPacket(BinaryPacket binaryPacket) {
@@ -148,16 +117,23 @@ public class BinaryPacketParser extends AbstractPacketParser<BinaryPacket> {
          *  byte[m] mac             ; m = length of mac output
          */
         int pointer = getPointer();
-        byte[] firstBlock =
-                parseByteArrayField(activeDecryptCipher.getEncryptionAlgorithm().getBlockSize());
+        int blockSize = activeDecryptCipher.getEncryptionAlgorithm().getBlockSize();
+        int decryptedByteCount = 0;
+        // Loop required for stream cipher support (effective block length is 1 in this case)
+        byte[] firstBlock = new byte[0];
+        do {
+            byte[] block = parseByteArrayField(blockSize);
+            byte[] decryptedBlock = activeDecryptCipher.getDecryptCipher().decrypt(block);
+            firstBlock = ArrayConverter.concatenate(firstBlock, decryptedBlock);
+            decryptedByteCount += blockSize;
+        } while (decryptedByteCount < BinaryPacketConstants.LENGTH_FIELD_LENGTH);
         setPointer(pointer);
-        byte[] decryptedBlock = activeDecryptCipher.getDecryptCipher().decrypt(firstBlock);
-        computations.setPlainPacketBytes(decryptedBlock, true);
+        computations.setPlainPacketBytes(firstBlock, true);
 
         binaryPacket.setLength(
                 ArrayConverter.bytesToInt(
                         Arrays.copyOfRange(
-                                decryptedBlock, 0, BinaryPacketConstants.LENGTH_FIELD_LENGTH)));
+                                firstBlock, 0, BinaryPacketConstants.LENGTH_FIELD_LENGTH)));
         binaryPacket.setCiphertext(
                 parseByteArrayField(
                         BinaryPacketConstants.LENGTH_FIELD_LENGTH

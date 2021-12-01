@@ -47,6 +47,10 @@
 - `AEAD_AES_256_GCM`
 - `aes128-gcm@openssh.com`
 - `aes256-gcm@openssh.com`
+- `arcfour`
+- `arcfour128`
+- `arcfour256`
+- `none`
 
 ---
 ## Supported MAC Algorithms
@@ -65,6 +69,7 @@
 - `hmac-md5-96-etm@openssh.com`
 - `AEAD_AES_128_GCM`
 - `AEAD_AES_256_GCM`
+- `none`
 ---
 ## Supported Host Key Algorithms
 
