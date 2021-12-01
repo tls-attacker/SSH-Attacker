@@ -25,7 +25,7 @@ import java.util.stream.Stream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class PacketBlockCipher extends PacketCipher {
+public class PacketMacedCipher extends PacketCipher {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -34,7 +34,7 @@ public class PacketBlockCipher extends PacketCipher {
     /** MAC instance for macing outgoing packets. */
     private final WrappedMac writeMac;
 
-    public PacketBlockCipher(
+    public PacketMacedCipher(
             SshContext context,
             KeySet keySet,
             EncryptionAlgorithm encryptionAlgorithm,
@@ -66,8 +66,11 @@ public class PacketBlockCipher extends PacketCipher {
         }
         PacketCryptoComputations computations = packet.getComputations();
 
-        computations.setEncryptionKey(keySet.getWriteEncryptionKey(getLocalConnectionEndType()));
-        computations.setIntegrityKey(keySet.getWriteIntegrityKey(getLocalConnectionEndType()));
+        if (keySet != null) {
+            computations.setEncryptionKey(
+                    keySet.getWriteEncryptionKey(getLocalConnectionEndType()));
+            computations.setIntegrityKey(keySet.getWriteIntegrityKey(getLocalConnectionEndType()));
+        }
 
         packet.setPaddingLength(calculatePaddingLength(packet));
         packet.setPadding(calculatePadding(packet.getPaddingLength().getValue()));
@@ -149,8 +152,10 @@ public class PacketBlockCipher extends PacketCipher {
         }
         PacketCryptoComputations computations = packet.getComputations();
 
-        computations.setEncryptionKey(keySet.getReadEncryptionKey(getLocalConnectionEndType()));
-        computations.setIntegrityKey(keySet.getReadIntegrityKey(getLocalConnectionEndType()));
+        if (keySet != null) {
+            computations.setEncryptionKey(keySet.getReadEncryptionKey(getLocalConnectionEndType()));
+            computations.setIntegrityKey(keySet.getReadIntegrityKey(getLocalConnectionEndType()));
+        }
 
         // Decryption
         if (computations.isPlainPacketBytesFirstBlockOnly()) {
@@ -160,10 +165,7 @@ public class PacketBlockCipher extends PacketCipher {
             byte[] ciphertext = packet.getCiphertext().getValue();
             byte[] remainingBlocks =
                     decryptCipher.decrypt(
-                            Arrays.copyOfRange(
-                                    ciphertext,
-                                    encryptionAlgorithm.getBlockSize(),
-                                    ciphertext.length));
+                            Arrays.copyOfRange(ciphertext, firstBlock.length, ciphertext.length));
             computations.setPlainPacketBytes(
                     ArrayConverter.concatenate(firstBlock, remainingBlocks));
         } else {
@@ -229,5 +231,15 @@ public class PacketBlockCipher extends PacketCipher {
     @Override
     public void decrypt(BlobPacket packet) throws CryptoException {
         packet.setCompressedPayload(decryptCipher.decrypt(packet.getCiphertext().getValue()));
+    }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName()
+                + "[Cipher: "
+                + encryptionAlgorithm
+                + ", MAC: "
+                + macAlgorithm
+                + "]";
     }
 }

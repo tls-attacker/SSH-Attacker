@@ -12,7 +12,6 @@ import de.rub.nds.sshattacker.core.packet.BinaryPacket;
 import de.rub.nds.sshattacker.core.packet.BlobPacket;
 import de.rub.nds.sshattacker.core.packet.cipher.PacketCipher;
 import de.rub.nds.sshattacker.core.packet.cipher.PacketCipherFactory;
-import de.rub.nds.sshattacker.core.packet.cipher.PacketNoneCipher;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -22,7 +21,7 @@ public class PacketEncryptor extends AbstractPacketEncryptor {
     private static final Logger LOGGER = LogManager.getLogger();
 
     private final SshContext context;
-    private final PacketNoneCipher noneCipher;
+    private final PacketCipher noneCipher;
 
     public PacketEncryptor(PacketCipher packetCipher, SshContext context) {
         super(packetCipher);
@@ -33,18 +32,16 @@ public class PacketEncryptor extends AbstractPacketEncryptor {
     @Override
     public void encrypt(BinaryPacket packet) {
         PacketCipher packetCipher = getPacketMostRecentCipher();
-        LOGGER.debug(
-                "Encrypting binary packet using cipher: {}",
-                packetCipher.getClass().getSimpleName());
+        LOGGER.debug("Encrypting binary packet using packet cipher: {}", packetCipher);
         try {
             packet.setSequenceNumber(context.getWriteSequenceNumber());
             packetCipher.encrypt(packet);
         } catch (CryptoException e) {
-            LOGGER.warn("Could not encrypt binary packet. Using NoneCipher", e);
+            LOGGER.warn("Could not encrypt binary packet. Using " + noneCipher, e);
             try {
                 noneCipher.encrypt(packet);
             } catch (CryptoException ex) {
-                LOGGER.error("Could not encrypt with NoneCipher", ex);
+                LOGGER.error("Could not encrypt with " + noneCipher, ex);
             }
         }
         context.incrementWriteSequenceNumber();
@@ -53,16 +50,15 @@ public class PacketEncryptor extends AbstractPacketEncryptor {
     @Override
     public void encrypt(BlobPacket packet) {
         PacketCipher packetCipher = getPacketMostRecentCipher();
-        LOGGER.debug(
-                "Encrypting blob packet using cipher: {}", packetCipher.getClass().getSimpleName());
+        LOGGER.debug("Encrypting blob packet using packet cipher: {}", packetCipher);
         try {
             packetCipher.encrypt(packet);
         } catch (CryptoException e) {
-            LOGGER.warn("Could not encrypt blob packet. Using NoneCipher", e);
+            LOGGER.warn("Could not encrypt blob packet. Using " + noneCipher, e);
             try {
                 noneCipher.encrypt(packet);
             } catch (CryptoException ex) {
-                LOGGER.error("Could not encrypt with NoneCipher", ex);
+                LOGGER.error("Could not encrypt with " + noneCipher, ex);
             }
         }
     }

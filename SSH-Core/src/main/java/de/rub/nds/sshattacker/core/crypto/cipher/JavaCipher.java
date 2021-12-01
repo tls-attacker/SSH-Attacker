@@ -93,6 +93,13 @@ class JavaCipher implements EncryptionCipher, DecryptionCipher {
                 decryptCipher.init(Cipher.DECRYPT_MODE, new SecretKeySpec(key, keySpecAlgorithm));
             }
 
+            // This branch is used to take care of ARCFOUR128 and ARCFOUR256 which skip the first
+            // 1536 bytes of their keystream
+            int keystreamDiscardLength = algorithm.getKeystreamInitialDiscardLength();
+            if (keystreamDiscardLength > 0) {
+                encryptCipher.update(new byte[keystreamDiscardLength]);
+                decryptCipher.update(new byte[keystreamDiscardLength]);
+            }
         } catch (NoSuchAlgorithmException
                 | NoSuchPaddingException
                 | InvalidAlgorithmParameterException

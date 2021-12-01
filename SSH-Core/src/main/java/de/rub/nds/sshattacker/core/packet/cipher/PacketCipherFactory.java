@@ -25,15 +25,11 @@ public class PacketCipherFactory {
             EncryptionAlgorithm encryptionAlgorithm,
             MacAlgorithm macAlgorithm) {
         try {
-            if (encryptionAlgorithm.getType() == EncryptionAlgorithmType.BLOCK) {
-                return new PacketBlockCipher(context, keySet, encryptionAlgorithm, macAlgorithm);
-            } else if (encryptionAlgorithm.getType() == EncryptionAlgorithmType.AEAD) {
+            if (encryptionAlgorithm.getType() == EncryptionAlgorithmType.AEAD) {
                 return new PacketAEADCipher(context, keySet, encryptionAlgorithm);
-            } else if (encryptionAlgorithm == EncryptionAlgorithm.NONE) {
-                return getNoneCipher(context);
+            } else {
+                return new PacketMacedCipher(context, keySet, encryptionAlgorithm, macAlgorithm);
             }
-            LOGGER.warn("Unsupported cipher type: " + encryptionAlgorithm.getType());
-            return getNoneCipher(context);
         } catch (Exception e) {
             LOGGER.debug(
                     "Could not PacketCipher from the current context! Creating none Cipher", e);
@@ -41,7 +37,7 @@ public class PacketCipherFactory {
         }
     }
 
-    public static PacketNoneCipher getNoneCipher(SshContext context) {
-        return new PacketNoneCipher(context, EncryptionAlgorithm.NONE, MacAlgorithm.NONE);
+    public static PacketCipher getNoneCipher(SshContext context) {
+        return new PacketMacedCipher(context, null, EncryptionAlgorithm.NONE, MacAlgorithm.NONE);
     }
 }
