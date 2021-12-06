@@ -7,6 +7,8 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.handler;
 
+import de.rub.nds.sshattacker.core.crypto.hash.ExchangeHash;
+import de.rub.nds.sshattacker.core.crypto.hash.RsaExchangeHash;
 import de.rub.nds.sshattacker.core.exceptions.NotImplementedException;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
@@ -31,7 +33,24 @@ public class RsaKeyExchangePubkeyMessageHandler
 
     @Override
     public void adjustContext() {
-        // TODO: Handle RsaKeyExchangePubkeyMessage
+        handleHostKey();
+        updateExchangeHashWithTransientPubkey();
+    }
+
+    private void handleHostKey(){
+        // TODO: Implement host key types as enumeration
+        // TODO: Improve host key handling in separate class
+        context.getExchangeHashInstance().setServerHostKey(message.getHostKey().getValue());
+    }
+
+    private void updateExchangeHashWithTransientPubkey(){
+        ExchangeHash exchangeHash = context.getExchangeHashInstance();
+        if (exchangeHash instanceof RsaExchangeHash) {
+            ((RsaExchangeHash) exchangeHash).setTransientKey(message.getTransientPubkey().getValue());
+        } else {
+            raiseAdjustmentException(
+                    "Exchange hash instance is not an RsaExchangeHash, unable to update exchange hash");
+        }
     }
 
     @Override
