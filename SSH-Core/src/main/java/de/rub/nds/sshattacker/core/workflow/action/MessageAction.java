@@ -93,6 +93,7 @@ public abstract class MessageAction extends ConnectionBoundAction {
                 @XmlElement(
                         type = RsaKeyExchangePubkeyMessage.class,
                         name = "RsaKeyExchangePubkeyMessage"),
+                @XmlElement(type = RsaKeyExchangeSecretMessage.class, name = "RsaKeyExchangeSecretMessage"),
                 @XmlElement(type = ServiceAcceptMessage.class, name = "ServiceAcceptMessage"),
                 @XmlElement(type = ServiceRequestMessage.class, name = "ServiceRequestMessage"),
                 @XmlElement(type = UnimplementedMessage.class, name = "UnimplementedMessage"),

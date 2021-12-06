@@ -23,6 +23,6 @@ public class RsaKeyExchangePubkeyMessagePreparator
     @Override
     public void prepareMessageSpecificContents() {
         getObject().setMessageID(MessageIDConstant.SSH_MSG_KEXRSA_PUBKEY);
-        // TODO
+        // TODO: Prepare Contents (transient public key,...)
     }
 }
