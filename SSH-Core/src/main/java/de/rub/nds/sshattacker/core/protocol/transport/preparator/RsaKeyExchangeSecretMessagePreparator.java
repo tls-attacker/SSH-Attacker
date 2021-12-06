@@ -7,22 +7,18 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.preparator;
 
-import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
-import de.rub.nds.sshattacker.core.protocol.transport.message.RsaKeyExchangePubkeyMessage;
+import de.rub.nds.sshattacker.core.protocol.transport.message.RsaKeyExchangeSecretMessage;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
-public class RsaKeyExchangePubkeyMessagePreparator
-        extends SshMessagePreparator<RsaKeyExchangePubkeyMessage> {
+public class RsaKeyExchangeSecretMessagePreparator extends SshMessagePreparator<RsaKeyExchangeSecretMessage> {
 
-    public RsaKeyExchangePubkeyMessagePreparator(
-            Chooser chooser, RsaKeyExchangePubkeyMessage message) {
+    public RsaKeyExchangeSecretMessagePreparator(Chooser chooser, RsaKeyExchangeSecretMessage message) {
         super(chooser, message);
     }
 
     @Override
     public void prepareMessageSpecificContents() {
-        getObject().setMessageID(MessageIDConstant.SSH_MSG_KEXRSA_PUBKEY);
-        // TODO: Prepare Contents (transient public key,...)
+        //TODO: Prepare Secret
     }
 }
