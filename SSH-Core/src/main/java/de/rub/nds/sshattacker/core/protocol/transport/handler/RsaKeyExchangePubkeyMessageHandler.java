@@ -33,6 +33,11 @@ public class RsaKeyExchangePubkeyMessageHandler
 
     @Override
     public void adjustContext() {
+        if(context.getKeyExchangeAlgorithm().isPresent()) {
+            //TODO: Create RsaKeyExchangeObject
+        }
+        RsaExchangeHash rsaExchangeHash = RsaExchangeHash.from(context.getExchangeHashInstance());
+        context.setExchangeHashInstance(rsaExchangeHash);
         handleHostKey();
         updateExchangeHashWithTransientPubkey();
     }
