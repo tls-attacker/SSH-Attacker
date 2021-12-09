@@ -14,13 +14,18 @@ public class NoneCipher implements EncryptionCipher, DecryptionCipher {
     public NoneCipher() {}
 
     @Override
-    public byte[] encrypt(byte[] data) {
-        return data;
+    public byte[] encrypt(byte[] plainData) {
+        return plainData;
     }
 
     @Override
-    public byte[] encrypt(byte[] data, byte[] additionalEncryptedData) {
-        return data;
+    public byte[] encrypt(byte[] plainData, byte[] iv) {
+        return plainData;
+    }
+
+    @Override
+    public byte[] encrypt(byte[] plainData, byte[] iv, byte[] additionalEncryptedData) {
+        return plainData;
     }
 
     @Override
@@ -29,7 +34,12 @@ public class NoneCipher implements EncryptionCipher, DecryptionCipher {
     }
 
     @Override
-    public byte[] decrypt(byte[] encryptedData, byte[] additionalEncryptedData) {
+    public byte[] decrypt(byte[] encryptedData, byte[] iv) {
+        return encryptedData;
+    }
+
+    @Override
+    public byte[] decrypt(byte[] encryptedData, byte[] iv, byte[] additionalAuthenticatedData) {
         return encryptedData;
     }
 
@@ -37,12 +47,4 @@ public class NoneCipher implements EncryptionCipher, DecryptionCipher {
     public EncryptionAlgorithm getAlgorithm() {
         return EncryptionAlgorithm.NONE;
     }
-
-    @Override
-    public byte[] getIV() {
-        return null;
-    }
-
-    @Override
-    public void setIV(byte[] iv) {}
 }

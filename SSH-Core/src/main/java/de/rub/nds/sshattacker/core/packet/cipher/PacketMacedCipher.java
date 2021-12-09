@@ -13,11 +13,13 @@ import de.rub.nds.sshattacker.core.crypto.cipher.CipherFactory;
 import de.rub.nds.sshattacker.core.crypto.mac.MacFactory;
 import de.rub.nds.sshattacker.core.crypto.mac.WrappedMac;
 import de.rub.nds.sshattacker.core.exceptions.CryptoException;
+import de.rub.nds.sshattacker.core.packet.AbstractPacket;
 import de.rub.nds.sshattacker.core.packet.BinaryPacket;
 import de.rub.nds.sshattacker.core.packet.BlobPacket;
 import de.rub.nds.sshattacker.core.packet.PacketCryptoComputations;
 import de.rub.nds.sshattacker.core.packet.cipher.keys.KeySet;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import java.math.BigInteger;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.stream.Collectors;
@@ -33,6 +35,17 @@ public class PacketMacedCipher extends PacketCipher {
     private final WrappedMac readMac;
     /** MAC instance for macing outgoing packets. */
     private final WrappedMac writeMac;
+
+    /**
+     * IV for the next packet encryption. Might be null if the encryption algorithm does not use an
+     * IV.
+     */
+    private byte[] nextEncryptionIv;
+    /**
+     * IV for the next packet decryption. Might be null if the encryption algorithm does not use an
+     * IV.
+     */
+    private byte[] nextDecryptionIv;
 
     public PacketMacedCipher(
             SshContext context,
@@ -55,6 +68,12 @@ public class PacketMacedCipher extends PacketCipher {
                             + encryptionAlgorithm.name()
                             + " | "
                             + macAlgorithm.name());
+        }
+
+        if (encryptionAlgorithm.getIVSize() > 0) {
+            // Encryption algorithm does use an IV
+            nextEncryptionIv = keySet.getWriteIv(getLocalConnectionEndType());
+            nextDecryptionIv = keySet.getReadIv(getLocalConnectionEndType());
         }
     }
 
@@ -83,8 +102,7 @@ public class PacketMacedCipher extends PacketCipher {
                             new byte[] {packet.getPaddingLength().getValue()},
                             packet.getCompressedPayload().getValue(),
                             packet.getPadding().getValue()));
-            packet.setCiphertext(
-                    encryptCipher.encrypt(computations.getPlainPacketBytes().getValue()));
+            encryptInner(packet);
             computations.setEncryptedPacketFields(
                     Stream.of(
                                     BinaryPacketField.PADDING_LENGTH,
@@ -110,8 +128,7 @@ public class PacketMacedCipher extends PacketCipher {
                             new byte[] {packet.getPaddingLength().getValue()},
                             packet.getCompressedPayload().getValue(),
                             packet.getPadding().getValue()));
-            packet.setCiphertext(
-                    encryptCipher.encrypt(computations.getPlainPacketBytes().getValue()));
+            encryptInner(packet);
             computations.setEncryptedPacketFields(
                     Stream.of(
                                     BinaryPacketField.PACKET_LENGTH,
@@ -140,8 +157,31 @@ public class PacketMacedCipher extends PacketCipher {
 
     @Override
     public void encrypt(BlobPacket packet) throws CryptoException {
-        packet.setCiphertext(
-                encryptCipher.encrypt(packet.getCompressedPayload().getValue(), new byte[0]));
+        encryptInner(packet);
+    }
+
+    private void encryptInner(AbstractPacket packet) throws CryptoException {
+        byte[] plainData;
+        if (packet instanceof BinaryPacket) {
+            plainData = ((BinaryPacket) packet).getComputations().getPlainPacketBytes().getValue();
+        } else {
+            plainData = packet.getCompressedPayload().getValue();
+        }
+
+        if (encryptionAlgorithm.getIVSize() > 0) {
+            byte[] iv = nextEncryptionIv;
+            if (packet instanceof BinaryPacket) {
+                // Apply modifications to IV (if any)
+                PacketCryptoComputations computations = ((BinaryPacket) packet).getComputations();
+                computations.setIv(iv);
+                iv = computations.getIv().getValue();
+            }
+            packet.setCiphertext(encryptCipher.encrypt(plainData, iv));
+            nextEncryptionIv =
+                    extractNextIv(nextEncryptionIv, packet.getCiphertext().getOriginalValue());
+        } else {
+            packet.setCiphertext(encryptCipher.encrypt(plainData));
+        }
     }
 
     @Override
@@ -157,21 +197,7 @@ public class PacketMacedCipher extends PacketCipher {
             computations.setIntegrityKey(keySet.getReadIntegrityKey(getLocalConnectionEndType()));
         }
 
-        // Decryption
-        if (computations.isPlainPacketBytesFirstBlockOnly()) {
-            // The first block has already been decrypted by the parser - only decrypt the remaining
-            // blocks (if any)
-            byte[] firstBlock = computations.getPlainPacketBytes().getOriginalValue();
-            byte[] ciphertext = packet.getCiphertext().getValue();
-            byte[] remainingBlocks =
-                    decryptCipher.decrypt(
-                            Arrays.copyOfRange(ciphertext, firstBlock.length, ciphertext.length));
-            computations.setPlainPacketBytes(
-                    ArrayConverter.concatenate(firstBlock, remainingBlocks));
-        } else {
-            computations.setPlainPacketBytes(
-                    decryptCipher.decrypt(packet.getCiphertext().getValue()));
-        }
+        decryptInner(packet);
 
         DecryptionParser parser =
                 new DecryptionParser(
@@ -230,7 +256,94 @@ public class PacketMacedCipher extends PacketCipher {
 
     @Override
     public void decrypt(BlobPacket packet) throws CryptoException {
-        packet.setCompressedPayload(decryptCipher.decrypt(packet.getCiphertext().getValue()));
+        decryptInner(packet);
+    }
+
+    private void decryptInner(AbstractPacket packet) throws CryptoException {
+        byte[] plainData;
+        if (packet instanceof BinaryPacket) {
+            PacketCryptoComputations computations = ((BinaryPacket) packet).getComputations();
+            if (computations.isPlainPacketBytesFirstBlockOnly()) {
+                byte[] firstBlock = computations.getPlainPacketBytes().getOriginalValue();
+                byte[] ciphertext = packet.getCiphertext().getValue();
+                byte[] remainingBlocks;
+                if (encryptionAlgorithm.getIVSize() > 0) {
+                    computations.setIv(nextDecryptionIv);
+                    byte[] remainingBlocksIv =
+                            extractNextIv(
+                                    nextDecryptionIv,
+                                    Arrays.copyOfRange(
+                                            packet.getCiphertext().getValue(),
+                                            0,
+                                            firstBlock.length));
+                    remainingBlocks =
+                            decryptCipher.decrypt(
+                                    Arrays.copyOfRange(
+                                            ciphertext, firstBlock.length, ciphertext.length),
+                                    remainingBlocksIv);
+                } else {
+                    remainingBlocks =
+                            decryptCipher.decrypt(
+                                    Arrays.copyOfRange(
+                                            ciphertext, firstBlock.length, ciphertext.length));
+                }
+                plainData = ArrayConverter.concatenate(firstBlock, remainingBlocks);
+            } else {
+                if (encryptionAlgorithm.getIVSize() > 0) {
+                    computations.setIv(nextDecryptionIv);
+                    plainData =
+                            decryptCipher.decrypt(
+                                    packet.getCiphertext().getValue(),
+                                    computations.getIv().getValue());
+                } else {
+                    plainData = decryptCipher.decrypt(packet.getCiphertext().getValue());
+                }
+            }
+            computations.setPlainPacketBytes(plainData);
+        } else {
+            if (encryptionAlgorithm.getIVSize() > 0) {
+                plainData =
+                        decryptCipher.decrypt(packet.getCiphertext().getValue(), nextDecryptionIv);
+            } else {
+                plainData = decryptCipher.decrypt(packet.getCiphertext().getValue());
+            }
+            packet.setCompressedPayload(plainData);
+        }
+        // Set the IV for the next packet if the encryption algorithm incorporates one
+        if (encryptionAlgorithm.getIVSize() > 0) {
+            nextDecryptionIv = extractNextIv(nextDecryptionIv, packet.getCiphertext().getValue());
+        }
+    }
+
+    private byte[] extractNextIv(byte[] iv, byte[] ct) {
+        switch (encryptionAlgorithm.getMode()) {
+            case CBC:
+                return Arrays.copyOfRange(
+                        ct, ct.length - encryptionAlgorithm.getBlockSize(), ct.length);
+            case CTR:
+                BigInteger ctr = new BigInteger(iv);
+                int ctBlocks = ct.length / encryptionAlgorithm.getBlockSize();
+                ctr = ctr.add(BigInteger.valueOf(ctBlocks));
+                // Ugly wrap mechanic as Java does not support unsigned
+                if (ctr.compareTo(
+                                BigInteger.ONE.shiftLeft(
+                                        8 * encryptionAlgorithm.getBlockSize() - 1))
+                        >= 0) {
+                    ctr =
+                            ctr.subtract(
+                                    BigInteger.ONE.shiftLeft(
+                                            8 * encryptionAlgorithm.getBlockSize()));
+                }
+                return ctr.toByteArray();
+            default:
+                throw new UnsupportedOperationException(
+                        "Unable to extract initialization vector for mode: "
+                                + encryptionAlgorithm.getMode());
+        }
+    }
+
+    public byte[] getNextDecryptionIv() {
+        return nextDecryptionIv;
     }
 
     @Override

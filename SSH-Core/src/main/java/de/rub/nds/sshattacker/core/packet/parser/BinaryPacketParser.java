@@ -15,6 +15,7 @@ import de.rub.nds.sshattacker.core.exceptions.CryptoException;
 import de.rub.nds.sshattacker.core.packet.BinaryPacket;
 import de.rub.nds.sshattacker.core.packet.PacketCryptoComputations;
 import de.rub.nds.sshattacker.core.packet.cipher.PacketCipher;
+import de.rub.nds.sshattacker.core.packet.cipher.PacketMacedCipher;
 import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -123,7 +124,18 @@ public class BinaryPacketParser extends AbstractPacketParser<BinaryPacket> {
         byte[] firstBlock = new byte[0];
         do {
             byte[] block = parseByteArrayField(blockSize);
-            byte[] decryptedBlock = activeDecryptCipher.getDecryptCipher().decrypt(block);
+            byte[] decryptedBlock;
+            if (activeDecryptCipher.getEncryptionAlgorithm().getIVSize() > 0) {
+                decryptedBlock =
+                        activeDecryptCipher
+                                .getDecryptCipher()
+                                .decrypt(
+                                        block,
+                                        ((PacketMacedCipher) activeDecryptCipher)
+                                                .getNextDecryptionIv());
+            } else {
+                decryptedBlock = activeDecryptCipher.getDecryptCipher().decrypt(block);
+            }
             firstBlock = ArrayConverter.concatenate(firstBlock, decryptedBlock);
             decryptedByteCount += blockSize;
         } while (decryptedByteCount < BinaryPacketConstants.LENGTH_FIELD_LENGTH);
