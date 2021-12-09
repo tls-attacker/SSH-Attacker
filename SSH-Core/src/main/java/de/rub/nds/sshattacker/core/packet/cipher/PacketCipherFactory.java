@@ -8,7 +8,7 @@
 package de.rub.nds.sshattacker.core.packet.cipher;
 
 import de.rub.nds.sshattacker.core.constants.EncryptionAlgorithm;
-import de.rub.nds.sshattacker.core.constants.EncryptionAlgorithmType;
+import de.rub.nds.sshattacker.core.constants.EncryptionMode;
 import de.rub.nds.sshattacker.core.constants.MacAlgorithm;
 import de.rub.nds.sshattacker.core.packet.cipher.keys.KeySet;
 import de.rub.nds.sshattacker.core.state.SshContext;
@@ -25,8 +25,8 @@ public class PacketCipherFactory {
             EncryptionAlgorithm encryptionAlgorithm,
             MacAlgorithm macAlgorithm) {
         try {
-            if (encryptionAlgorithm.getType() == EncryptionAlgorithmType.AEAD) {
-                return new PacketAEADCipher(context, keySet, encryptionAlgorithm);
+            if (encryptionAlgorithm.getMode() == EncryptionMode.GCM) {
+                return new PacketGCMCipher(context, keySet, encryptionAlgorithm);
             } else {
                 return new PacketMacedCipher(context, keySet, encryptionAlgorithm, macAlgorithm);
             }

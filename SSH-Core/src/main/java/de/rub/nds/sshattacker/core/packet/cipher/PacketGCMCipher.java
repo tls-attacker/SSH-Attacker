@@ -18,6 +18,7 @@ import de.rub.nds.sshattacker.core.packet.BlobPacket;
 import de.rub.nds.sshattacker.core.packet.PacketCryptoComputations;
 import de.rub.nds.sshattacker.core.packet.cipher.keys.KeySet;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.util.Converter;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -25,11 +26,18 @@ import javax.crypto.AEADBadTagException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class PacketAEADCipher extends PacketCipher {
+public class PacketGCMCipher extends PacketCipher {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public PacketAEADCipher(
+    // IV fixed fields
+    private final byte[] ivFixedEncryption;
+    private final byte[] ivFixedDecryption;
+    // IV invocation counter fields
+    private long ivCtrEncryption;
+    private long ivCtrDecryption;
+
+    public PacketGCMCipher(
             SshContext context, KeySet keySet, EncryptionAlgorithm encryptionAlgorithm) {
         super(context, keySet, encryptionAlgorithm, null);
         encryptCipher =
@@ -38,6 +46,15 @@ public class PacketAEADCipher extends PacketCipher {
         decryptCipher =
                 CipherFactory.getDecryptionCipher(
                         encryptionAlgorithm, keySet, getLocalConnectionEndType());
+        ivFixedEncryption =
+                Arrays.copyOfRange(keySet.getWriteIv(getLocalConnectionEndType()), 0, 4);
+        ivFixedDecryption = Arrays.copyOfRange(keySet.getReadIv(getLocalConnectionEndType()), 0, 4);
+        ivCtrEncryption =
+                Converter.byteArrayToLong(
+                        Arrays.copyOfRange(keySet.getWriteIv(getLocalConnectionEndType()), 4, 12));
+        ivCtrDecryption =
+                Converter.byteArrayToLong(
+                        Arrays.copyOfRange(keySet.getReadIv(getLocalConnectionEndType()), 4, 12));
     }
 
     @Override
@@ -60,11 +77,15 @@ public class PacketAEADCipher extends PacketCipher {
                         new byte[] {packet.getPaddingLength().getValue()},
                         packet.getCompressedPayload().getValue(),
                         packet.getPadding().getValue()));
+        computations.setIv(
+                ArrayConverter.concatenate(
+                        ivFixedEncryption, ArrayConverter.longToUint64Bytes(ivCtrEncryption)));
         computations.setAdditionalAuthenticatedData(
                 packet.getLength().getByteArray(BinaryPacketConstants.PACKET_FIELD_LENGTH));
         byte[] authenticatedCiphertext =
                 encryptCipher.encrypt(
                         computations.getPlainPacketBytes().getValue(),
+                        computations.getIv().getValue(),
                         computations.getAdditionalAuthenticatedData().getValue());
         byte[] ciphertext =
                 Arrays.copyOfRange(
@@ -87,12 +108,17 @@ public class PacketAEADCipher extends PacketCipher {
 
         computations.setPaddingValid(true);
         computations.setMacValid(true);
+        ivCtrEncryption++;
     }
 
     @Override
     public void encrypt(BlobPacket packet) throws CryptoException {
+        byte[] iv =
+                ArrayConverter.concatenate(
+                        ivFixedEncryption, ArrayConverter.longToUint64Bytes(ivCtrEncryption));
         packet.setCiphertext(
-                encryptCipher.encrypt(packet.getCompressedPayload().getValue(), new byte[0]));
+                encryptCipher.encrypt(packet.getCompressedPayload().getValue(), iv, new byte[0]));
+        ivCtrEncryption++;
     }
 
     @Override
@@ -105,6 +131,9 @@ public class PacketAEADCipher extends PacketCipher {
 
         computations.setEncryptionKey(keySet.getReadEncryptionKey(getLocalConnectionEndType()));
 
+        computations.setIv(
+                ArrayConverter.concatenate(
+                        ivFixedDecryption, ArrayConverter.longToUint64Bytes(ivCtrDecryption)));
         computations.setAdditionalAuthenticatedData(
                 packet.getLength().getByteArray(BinaryPacketConstants.PACKET_FIELD_LENGTH));
         try {
@@ -112,12 +141,14 @@ public class PacketAEADCipher extends PacketCipher {
                     decryptCipher.decrypt(
                             ArrayConverter.concatenate(
                                     packet.getCiphertext().getValue(), packet.getMac().getValue()),
+                            computations.getIv().getValue(),
                             computations.getAdditionalAuthenticatedData().getValue()));
         } catch (AEADBadTagException e) {
             LOGGER.warn(
                     "Caught an AEADBadTagException while decrypting the binary packet - returning the packet without decryption",
                     e);
             computations.setMacValid(false);
+            ivCtrDecryption++;
             return;
         }
         computations.setEncryptedPacketFields(
@@ -140,11 +171,23 @@ public class PacketAEADCipher extends PacketCipher {
         // We got here, so the tag is valid
         computations.setMacValid(true);
         computations.setPaddingValid(isPaddingValid(packet.getPadding().getOriginalValue()));
+        ivCtrDecryption++;
     }
 
     @Override
     public void decrypt(BlobPacket packet) throws CryptoException {
-        packet.setCompressedPayload(decryptCipher.decrypt(packet.getCiphertext().getValue()));
+        byte[] iv =
+                ArrayConverter.concatenate(
+                        ivFixedEncryption, ArrayConverter.longToUint64Bytes(ivCtrEncryption));
+        try {
+            packet.setCompressedPayload(
+                    decryptCipher.decrypt(packet.getCiphertext().getValue(), iv, new byte[0]));
+        } catch (AEADBadTagException e) {
+            LOGGER.warn(
+                    "Caught an AEADBadTagException while decrypting the blob packet - returning the packet without decryption",
+                    e);
+        }
+        ivCtrDecryption++;
     }
 
     @Override

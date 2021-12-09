@@ -16,12 +16,10 @@ public interface DecryptionCipher {
 
     byte[] decrypt(byte[] encryptedData) throws CryptoException;
 
-    byte[] decrypt(byte[] encryptedData, byte[] additionalAuthenticatedData)
+    byte[] decrypt(byte[] encryptedData, byte[] iv) throws CryptoException;
+
+    byte[] decrypt(byte[] encryptedData, byte[] iv, byte[] additionalAuthenticatedData)
             throws CryptoException, AEADBadTagException;
 
     EncryptionAlgorithm getAlgorithm();
-
-    byte[] getIV();
-
-    void setIV(byte[] iv) throws CryptoException;
 }

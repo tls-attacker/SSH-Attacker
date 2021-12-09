@@ -9,7 +9,6 @@ package de.rub.nds.sshattacker.core.crypto.cipher;
 
 import de.rub.nds.sshattacker.core.constants.EncryptionAlgorithm;
 import de.rub.nds.sshattacker.core.constants.EncryptionAlgorithmType;
-import de.rub.nds.sshattacker.core.exceptions.CryptoException;
 import de.rub.nds.sshattacker.core.packet.cipher.keys.KeySet;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import org.apache.logging.log4j.LogManager;
@@ -23,20 +22,13 @@ public class CipherFactory {
             EncryptionAlgorithm encryptionAlgorithm,
             KeySet keySet,
             ConnectionEndType connectionEndType) {
-        if (encryptionAlgorithm.getJavaName() != null) {
-            try {
-                return new JavaCipher(
-                        encryptionAlgorithm,
-                        keySet.getWriteEncryptionKey(connectionEndType),
-                        keySet.getWriteIv(connectionEndType));
-            } catch (CryptoException e) {
-                LOGGER.warn(
-                        "Caught a CryptoException while instantiating JavaCipher - Using NoneCipher!",
-                        e);
-                return new NoneCipher();
-            }
-        } else if (encryptionAlgorithm == EncryptionAlgorithm.NONE) {
+        if (encryptionAlgorithm == EncryptionAlgorithm.NONE) {
             return new NoneCipher();
+        } else if (encryptionAlgorithm.getJavaName() != null) {
+            return new JavaCipher(
+                    encryptionAlgorithm,
+                    keySet.getWriteEncryptionKey(connectionEndType),
+                    encryptionAlgorithm.getType() == EncryptionAlgorithmType.STREAM);
         } else {
             LOGGER.warn(
                     "Encryption algorithm '"
@@ -50,26 +42,13 @@ public class CipherFactory {
             EncryptionAlgorithm encryptionAlgorithm,
             KeySet keySet,
             ConnectionEndType connectionEndType) {
-        if (encryptionAlgorithm.getJavaName() != null) {
-            try {
-                if (encryptionAlgorithm.getType() == EncryptionAlgorithmType.STREAM) {
-                    // No IV / tag length required
-                    return new JavaCipher(
-                            encryptionAlgorithm, keySet.getReadEncryptionKey(connectionEndType));
-                } else {
-                    return new JavaCipher(
-                            encryptionAlgorithm,
-                            keySet.getReadEncryptionKey(connectionEndType),
-                            keySet.getReadIv(connectionEndType));
-                }
-            } catch (CryptoException e) {
-                LOGGER.warn(
-                        "Caught a CryptoException while instantiating JavaCipher - Using NoneCipher!",
-                        e);
-                return new NoneCipher();
-            }
-        } else if (encryptionAlgorithm == EncryptionAlgorithm.NONE) {
+        if (encryptionAlgorithm == EncryptionAlgorithm.NONE) {
             return new NoneCipher();
+        } else if (encryptionAlgorithm.getJavaName() != null) {
+            return new JavaCipher(
+                    encryptionAlgorithm,
+                    keySet.getReadEncryptionKey(connectionEndType),
+                    encryptionAlgorithm.getType() == EncryptionAlgorithmType.STREAM);
         } else {
             LOGGER.warn(
                     "Encryption algorithm '"
