@@ -47,14 +47,24 @@ public class RsaKeyExchangePubkeyMessageHandler
 
             KeyExchangeAlgorithm keyExchangeAlgorithm = context.getKeyExchangeAlgorithm().get();
 
-            if(keyExchangeAlgorithm.equals(KeyExchangeAlgorithm.RSA1024_SHA1)
-                    || keyExchangeAlgorithm.equals(KeyExchangeAlgorithm.RSA2048_SHA256)) {
+            if(keyExchangeAlgorithm.equals(KeyExchangeAlgorithm.RSA1024_SHA1) ||
+                    keyExchangeAlgorithm.equals(KeyExchangeAlgorithm.RSA2048_SHA256)) {
                 RsaKeyExchange rsaKeyExchange = new RsaKeyExchange();
                 rsaKeyExchange.setPublicKey(message.getPublicKey());
+
+                if(keyExchangeAlgorithm.equals(KeyExchangeAlgorithm.RSA2048_SHA256)) {
+                    rsaKeyExchange.setHashLength(256);
+                } else {
+                    rsaKeyExchange.setHashLength(128);
+                }
+                rsaKeyExchange.setModulusLength(message.getPublicKey().getModulusLength().getValue() * 8);
+                context.setKeyExchangeInstance(rsaKeyExchange);
+
             } else {
                 raiseAdjustmentException("Unable to instantiate a new RSA key exchange, " +
                         "the negotiated key exchange algorithm is: " + keyExchangeAlgorithm);
             }
+
         } else {
             raiseAdjustmentException("Unable to instantiate a new RSA key exchange, " +
                     "the negotiated key exchange algorithm is not set");
