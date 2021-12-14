@@ -57,6 +57,8 @@
 
 - `ssh-rsa`
 ---
-## Supported Compression Algorithms
+## Supported Compression Methods
 
 - `none`
+- `zlib`
+- `zlib@openssh.com`

@@ -36,10 +36,10 @@ public class KeyExchangeInitMessage extends SshMessage<KeyExchangeInitMessage> {
     private ModifiableString macAlgorithmsClientToServer;
     private ModifiableInteger macAlgorithmsServerToClientLength;
     private ModifiableString macAlgorithmsServerToClient;
-    private ModifiableInteger compressionAlgorithmsClientToServerLength;
-    private ModifiableString compressionAlgorithmsClientToServer;
-    private ModifiableInteger compressionAlgorithmsServerToClientLength;
-    private ModifiableString compressionAlgorithmsServerToClient;
+    private ModifiableInteger compressionMethodsClientToServerLength;
+    private ModifiableString compressionMethodsClientToServer;
+    private ModifiableInteger compressionMethodsServerToClientLength;
+    private ModifiableString compressionMethodsServerToClient;
     private ModifiableInteger languagesClientToServerLength;
     private ModifiableString languagesClientToServer;
     private ModifiableInteger languagesServerToClientLength;
@@ -514,170 +514,162 @@ public class KeyExchangeInitMessage extends SshMessage<KeyExchangeInitMessage> {
         setMacAlgorithmsServerToClient(nameList, adjustLengthField);
     }
 
-    public ModifiableInteger getCompressionAlgorithmsClientToServerLength() {
-        return compressionAlgorithmsClientToServerLength;
+    public ModifiableInteger getCompressionMethodsClientToServerLength() {
+        return compressionMethodsClientToServerLength;
     }
 
-    public void setCompressionAlgorithmsClientToServerLength(
-            ModifiableInteger compressionAlgorithmsClientToServerLength) {
-        this.compressionAlgorithmsClientToServerLength = compressionAlgorithmsClientToServerLength;
+    public void setCompressionMethodsClientToServerLength(
+            ModifiableInteger compressionMethodsClientToServerLength) {
+        this.compressionMethodsClientToServerLength = compressionMethodsClientToServerLength;
     }
 
-    public void setCompressionAlgorithmsClientToServerLength(
-            int compressionAlgorithmsClientToServerLength) {
-        this.compressionAlgorithmsClientToServerLength =
+    public void setCompressionMethodsClientToServerLength(
+            int compressionMethodsClientToServerLength) {
+        this.compressionMethodsClientToServerLength =
                 ModifiableVariableFactory.safelySetValue(
-                        this.compressionAlgorithmsClientToServerLength,
-                        compressionAlgorithmsClientToServerLength);
+                        this.compressionMethodsClientToServerLength,
+                        compressionMethodsClientToServerLength);
     }
 
-    public ModifiableString getCompressionAlgorithmsClientToServer() {
-        return compressionAlgorithmsClientToServer;
+    public ModifiableString getCompressionMethodsClientToServer() {
+        return compressionMethodsClientToServer;
     }
 
-    public void setCompressionAlgorithmsClientToServer(
-            ModifiableString compressionAlgorithmsClientToServer) {
-        setCompressionAlgorithmsClientToServer(compressionAlgorithmsClientToServer, false);
+    public void setCompressionMethodsClientToServer(
+            ModifiableString compressionMethodsClientToServer) {
+        setCompressionMethodsClientToServer(compressionMethodsClientToServer, false);
     }
 
-    public void setCompressionAlgorithmsClientToServer(String compressionAlgorithmsClientToServer) {
-        setCompressionAlgorithmsClientToServer(compressionAlgorithmsClientToServer, false);
+    public void setCompressionMethodsClientToServer(String compressionMethodsClientToServer) {
+        setCompressionMethodsClientToServer(compressionMethodsClientToServer, false);
     }
 
-    public void setCompressionAlgorithmsClientToServer(
-            String[] compressionAlgorithmsClientToServer) {
-        setCompressionAlgorithmsClientToServer(compressionAlgorithmsClientToServer, false);
+    public void setCompressionMethodsClientToServer(String[] compressionMethodsClientToServer) {
+        setCompressionMethodsClientToServer(compressionMethodsClientToServer, false);
     }
 
-    public void setCompressionAlgorithmsClientToServer(
-            List<CompressionAlgorithm> compressionAlgorithmsClientToServer) {
-        setCompressionAlgorithmsClientToServer(compressionAlgorithmsClientToServer, false);
+    public void setCompressionMethodsClientToServer(
+            List<CompressionMethod> compressionMethodsClientToServer) {
+        setCompressionMethodsClientToServer(compressionMethodsClientToServer, false);
     }
 
-    public void setCompressionAlgorithmsClientToServer(
-            ModifiableString compressionAlgorithmsClientToServer, boolean adjustLengthField) {
+    public void setCompressionMethodsClientToServer(
+            ModifiableString compressionMethodsClientToServer, boolean adjustLengthField) {
         if (adjustLengthField) {
-            setCompressionAlgorithmsClientToServerLength(
-                    compressionAlgorithmsClientToServer
+            setCompressionMethodsClientToServerLength(
+                    compressionMethodsClientToServer
                             .getValue()
                             .getBytes(StandardCharsets.US_ASCII)
                             .length);
         }
-        this.compressionAlgorithmsClientToServer = compressionAlgorithmsClientToServer;
+        this.compressionMethodsClientToServer = compressionMethodsClientToServer;
     }
 
-    public void setCompressionAlgorithmsClientToServer(
-            String compressionAlgorithmsClientToServer, boolean adjustLengthField) {
+    public void setCompressionMethodsClientToServer(
+            String compressionMethodsClientToServer, boolean adjustLengthField) {
         if (adjustLengthField) {
-            setCompressionAlgorithmsClientToServerLength(
-                    compressionAlgorithmsClientToServer.getBytes(StandardCharsets.US_ASCII).length);
+            setCompressionMethodsClientToServerLength(
+                    compressionMethodsClientToServer.getBytes(StandardCharsets.US_ASCII).length);
         }
-        this.compressionAlgorithmsClientToServer =
+        this.compressionMethodsClientToServer =
                 ModifiableVariableFactory.safelySetValue(
-                        this.compressionAlgorithmsClientToServer,
-                        compressionAlgorithmsClientToServer);
+                        this.compressionMethodsClientToServer, compressionMethodsClientToServer);
     }
 
-    public void setCompressionAlgorithmsClientToServer(
-            String[] compressionAlgorithmsClientToServer, boolean adjustLengthField) {
+    public void setCompressionMethodsClientToServer(
+            String[] compressionMethodsClientToServer, boolean adjustLengthField) {
         String nameList =
                 String.join(
-                        "" + CharConstants.ALGORITHM_SEPARATOR,
-                        compressionAlgorithmsClientToServer);
-        setCompressionAlgorithmsClientToServer(nameList, adjustLengthField);
+                        "" + CharConstants.ALGORITHM_SEPARATOR, compressionMethodsClientToServer);
+        setCompressionMethodsClientToServer(nameList, adjustLengthField);
     }
 
-    public void setCompressionAlgorithmsClientToServer(
-            List<CompressionAlgorithm> compressionAlgorithmsClientToServer,
-            boolean adjustLengthField) {
+    public void setCompressionMethodsClientToServer(
+            List<CompressionMethod> compressionMethodsClientToServer, boolean adjustLengthField) {
         String nameList =
-                compressionAlgorithmsClientToServer.stream()
-                        .map(CompressionAlgorithm::toString)
+                compressionMethodsClientToServer.stream()
+                        .map(CompressionMethod::toString)
                         .collect(Collectors.joining("" + CharConstants.ALGORITHM_SEPARATOR));
-        setCompressionAlgorithmsClientToServer(nameList, adjustLengthField);
+        setCompressionMethodsClientToServer(nameList, adjustLengthField);
     }
 
-    public ModifiableInteger getCompressionAlgorithmsServerToClientLength() {
-        return compressionAlgorithmsServerToClientLength;
+    public ModifiableInteger getCompressionMethodsServerToClientLength() {
+        return compressionMethodsServerToClientLength;
     }
 
-    public void setCompressionAlgorithmsServerToClientLength(
-            ModifiableInteger compressionAlgorithmsServerToClientLength) {
-        this.compressionAlgorithmsServerToClientLength = compressionAlgorithmsServerToClientLength;
+    public void setCompressionMethodsServerToClientLength(
+            ModifiableInteger compressionMethodsServerToClientLength) {
+        this.compressionMethodsServerToClientLength = compressionMethodsServerToClientLength;
     }
 
-    public void setCompressionAlgorithmsServerToClientLength(
-            int compressionAlgorithmsServerToClientLength) {
-        this.compressionAlgorithmsServerToClientLength =
+    public void setCompressionMethodsServerToClientLength(
+            int compressionMethodsServerToClientLength) {
+        this.compressionMethodsServerToClientLength =
                 ModifiableVariableFactory.safelySetValue(
-                        this.compressionAlgorithmsServerToClientLength,
-                        compressionAlgorithmsServerToClientLength);
+                        this.compressionMethodsServerToClientLength,
+                        compressionMethodsServerToClientLength);
     }
 
-    public ModifiableString getCompressionAlgorithmsServerToClient() {
-        return compressionAlgorithmsServerToClient;
+    public ModifiableString getCompressionMethodsServerToClient() {
+        return compressionMethodsServerToClient;
     }
 
-    public void setCompressionAlgorithmsServerToClient(
-            ModifiableString compressionAlgorithmsServerToClient) {
-        setCompressionAlgorithmsServerToClient(compressionAlgorithmsServerToClient, false);
+    public void setCompressionMethodsServerToClient(
+            ModifiableString compressionMethodsServerToClient) {
+        setCompressionMethodsServerToClient(compressionMethodsServerToClient, false);
     }
 
-    public void setCompressionAlgorithmsServerToClient(String compressionAlgorithmsServerToClient) {
-        setCompressionAlgorithmsServerToClient(compressionAlgorithmsServerToClient, false);
+    public void setCompressionMethodsServerToClient(String compressionMethodsServerToClient) {
+        setCompressionMethodsServerToClient(compressionMethodsServerToClient, false);
     }
 
-    public void setCompressionAlgorithmsServerToClient(
-            String[] compressionAlgorithmsServerToClient) {
-        setCompressionAlgorithmsServerToClient(compressionAlgorithmsServerToClient, false);
+    public void setCompressionMethodsServerToClient(String[] compressionMethodsServerToClient) {
+        setCompressionMethodsServerToClient(compressionMethodsServerToClient, false);
     }
 
-    public void setCompressionAlgorithmsServerToClient(
-            List<CompressionAlgorithm> compressionAlgorithmsServerToClient) {
-        setCompressionAlgorithmsServerToClient(compressionAlgorithmsServerToClient, false);
+    public void setCompressionMethodsServerToClient(
+            List<CompressionMethod> compressionMethodsServerToClient) {
+        setCompressionMethodsServerToClient(compressionMethodsServerToClient, false);
     }
 
-    public void setCompressionAlgorithmsServerToClient(
-            ModifiableString compressionAlgorithmsServerToClient, boolean adjustLengthField) {
+    public void setCompressionMethodsServerToClient(
+            ModifiableString compressionMethodsServerToClient, boolean adjustLengthField) {
         if (adjustLengthField) {
-            setCompressionAlgorithmsServerToClientLength(
-                    compressionAlgorithmsServerToClient
+            setCompressionMethodsServerToClientLength(
+                    compressionMethodsServerToClient
                             .getValue()
                             .getBytes(StandardCharsets.US_ASCII)
                             .length);
         }
-        this.compressionAlgorithmsServerToClient = compressionAlgorithmsServerToClient;
+        this.compressionMethodsServerToClient = compressionMethodsServerToClient;
     }
 
-    public void setCompressionAlgorithmsServerToClient(
-            String compressionAlgorithmsServerToClient, boolean adjustLengthField) {
+    public void setCompressionMethodsServerToClient(
+            String compressionMethodsServerToClient, boolean adjustLengthField) {
         if (adjustLengthField) {
-            setCompressionAlgorithmsServerToClientLength(
-                    compressionAlgorithmsServerToClient.getBytes(StandardCharsets.US_ASCII).length);
+            setCompressionMethodsServerToClientLength(
+                    compressionMethodsServerToClient.getBytes(StandardCharsets.US_ASCII).length);
         }
-        this.compressionAlgorithmsServerToClient =
+        this.compressionMethodsServerToClient =
                 ModifiableVariableFactory.safelySetValue(
-                        this.compressionAlgorithmsServerToClient,
-                        compressionAlgorithmsServerToClient);
+                        this.compressionMethodsServerToClient, compressionMethodsServerToClient);
     }
 
-    public void setCompressionAlgorithmsServerToClient(
-            String[] compressionAlgorithmsServerToClient, boolean adjustLengthField) {
+    public void setCompressionMethodsServerToClient(
+            String[] compressionMethodsServerToClient, boolean adjustLengthField) {
         String nameList =
                 String.join(
-                        "" + CharConstants.ALGORITHM_SEPARATOR,
-                        compressionAlgorithmsServerToClient);
-        setCompressionAlgorithmsServerToClient(nameList, adjustLengthField);
+                        "" + CharConstants.ALGORITHM_SEPARATOR, compressionMethodsServerToClient);
+        setCompressionMethodsServerToClient(nameList, adjustLengthField);
     }
 
-    public void setCompressionAlgorithmsServerToClient(
-            List<CompressionAlgorithm> compressionAlgorithmsServerToClient,
-            boolean adjustLengthField) {
+    public void setCompressionMethodsServerToClient(
+            List<CompressionMethod> compressionMethodsServerToClient, boolean adjustLengthField) {
         String nameList =
-                compressionAlgorithmsServerToClient.stream()
-                        .map(CompressionAlgorithm::toString)
+                compressionMethodsServerToClient.stream()
+                        .map(CompressionMethod::toString)
                         .collect(Collectors.joining("" + CharConstants.ALGORITHM_SEPARATOR));
-        setCompressionAlgorithmsServerToClient(nameList, adjustLengthField);
+        setCompressionMethodsServerToClient(nameList, adjustLengthField);
     }
 
     public ModifiableInteger getLanguagesClientToServerLength() {

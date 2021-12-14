@@ -7,8 +7,8 @@
  */
 package de.rub.nds.sshattacker.core.protocol.authentication.handler;
 
-import de.rub.nds.sshattacker.core.exceptions.NotImplementedException;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthPasswordMessage;
+import de.rub.nds.sshattacker.core.protocol.authentication.parser.UserAuthPasswordMessageParser;
 import de.rub.nds.sshattacker.core.protocol.authentication.preparator.UserAuthPasswordMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.authentication.serializer.UserAuthPasswordMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.common.*;
@@ -31,7 +31,7 @@ public class UserAuthPasswordMessageHandler extends SshMessageHandler<UserAuthPa
 
     @Override
     public SshMessageParser<UserAuthPasswordMessage> getParser(byte[] array, int startPosition) {
-        throw new NotImplementedException("UserAuthPasswordMessageHandler::getParser");
+        return new UserAuthPasswordMessageParser(array, startPosition);
     }
 
     @Override

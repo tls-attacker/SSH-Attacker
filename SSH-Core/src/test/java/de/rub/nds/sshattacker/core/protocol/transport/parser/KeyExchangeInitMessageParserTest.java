@@ -100,14 +100,12 @@ public class KeyExchangeInitMessageParserTest {
      * @param expectedMacAlgorithmsSToCLength Expected length of the MAC algorithm list (server to
      *     client)
      * @param expectedMacAlgorithmsSToC Expected MAC algorithm list (server to client)
-     * @param expectedCompressionAlgorithmsCToSLength Expected length of the compression algorithm
-     *     list (client to server)
-     * @param expectedCompressionAlgorithmsCToS Expected compression algorithm list (client to
-     *     server)
-     * @param expectedCompressionAlgorithmsSToCLength Expected length of the compression algorithm
-     *     list (server to client)
-     * @param expectedCompressionAlgorithmsSToC Expected compression algorithm list (server to
-     *     client)
+     * @param expectedCompressionMethodsCToSLength Expected length of the compression algorithm list
+     *     (client to server)
+     * @param expectedCompressionMethodsCToS Expected compression algorithm list (client to server)
+     * @param expectedCompressionMethodsSToCLength Expected length of the compression algorithm list
+     *     (server to client)
+     * @param expectedCompressionMethodsSToC Expected compression algorithm list (server to client)
      * @param expectedLanguagesCToSLength Expected length of the list of languages (client to
      *     server)
      * @param expectedLanguagesCToS Expected list of languages (client to server)
@@ -135,10 +133,10 @@ public class KeyExchangeInitMessageParserTest {
             String expectedMacAlgorithmsCToS,
             int expectedMacAlgorithmsSToCLength,
             String expectedMacAlgorithmsSToC,
-            int expectedCompressionAlgorithmsCToSLength,
-            String expectedCompressionAlgorithmsCToS,
-            int expectedCompressionAlgorithmsSToCLength,
-            String expectedCompressionAlgorithmsSToC,
+            int expectedCompressionMethodsCToSLength,
+            String expectedCompressionMethodsCToS,
+            int expectedCompressionMethodsSToCLength,
+            String expectedCompressionMethodsSToC,
             int expectedLanguagesCToSLength,
             String expectedLanguagesCToS,
             int expectedLanguagesSToCLength,
@@ -178,17 +176,17 @@ public class KeyExchangeInitMessageParserTest {
                 msg.getMacAlgorithmsServerToClientLength().getValue().intValue());
         assertEquals(expectedMacAlgorithmsSToC, msg.getMacAlgorithmsServerToClient().getValue());
         assertEquals(
-                expectedCompressionAlgorithmsCToSLength,
-                msg.getCompressionAlgorithmsClientToServerLength().getValue().intValue());
+                expectedCompressionMethodsCToSLength,
+                msg.getCompressionMethodsClientToServerLength().getValue().intValue());
         assertEquals(
-                expectedCompressionAlgorithmsCToS,
-                msg.getCompressionAlgorithmsClientToServer().getValue());
+                expectedCompressionMethodsCToS,
+                msg.getCompressionMethodsClientToServer().getValue());
         assertEquals(
-                expectedCompressionAlgorithmsSToCLength,
-                msg.getCompressionAlgorithmsServerToClientLength().getValue().intValue());
+                expectedCompressionMethodsSToCLength,
+                msg.getCompressionMethodsServerToClientLength().getValue().intValue());
         assertEquals(
-                expectedCompressionAlgorithmsSToC,
-                msg.getCompressionAlgorithmsServerToClient().getValue());
+                expectedCompressionMethodsSToC,
+                msg.getCompressionMethodsServerToClient().getValue());
         assertEquals(
                 expectedLanguagesCToSLength,
                 msg.getLanguagesClientToServerLength().getValue().intValue());

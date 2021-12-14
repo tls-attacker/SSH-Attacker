@@ -11,6 +11,7 @@ import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.constants.*;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import java.util.List;
+import java.util.Random;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -44,6 +45,7 @@ public abstract class Chooser {
 
     public abstract String getServerComment();
 
+    public abstract String getEndOfMessageSequence();
     // endregion
 
     // region Key Exchange Initialization
@@ -75,17 +77,13 @@ public abstract class Chooser {
 
     public abstract List<MacAlgorithm> getServerSupportedMacAlgorithmsClientToServer();
 
-    public abstract List<CompressionAlgorithm>
-            getClientSupportedCompressionAlgorithmsClientToServer();
+    public abstract List<CompressionMethod> getClientSupportedCompressionMethodsClientToServer();
 
-    public abstract List<CompressionAlgorithm>
-            getClientSupportedCompressionAlgorithmsServerToClient();
+    public abstract List<CompressionMethod> getClientSupportedCompressionMethodsServerToClient();
 
-    public abstract List<CompressionAlgorithm>
-            getServerSupportedCompressionAlgorithmsServerToClient();
+    public abstract List<CompressionMethod> getServerSupportedCompressionMethodsServerToClient();
 
-    public abstract List<CompressionAlgorithm>
-            getServerSupportedCompressionAlgorithmsClientToServer();
+    public abstract List<CompressionMethod> getServerSupportedCompressionMethodsClientToServer();
 
     public abstract List<String> getClientSupportedLanguagesClientToServer();
 
@@ -116,6 +114,13 @@ public abstract class Chooser {
     @SuppressWarnings("SameReturnValue")
     public abstract int getMaximalDHGroupSize();
 
+    public abstract List<KeyExchangeAlgorithm> getAllSupportedDHKeyExchange();
+
+    public abstract List<KeyExchangeAlgorithm> getAllSupportedDH_DHGEKeyExchange();
+
+    public abstract KeyExchangeAlgorithm getRandomKeyExchangeAlgorithm(
+            Random random, List<KeyExchangeAlgorithm> possibleKeyExchangeAlgorithms);
+
     // endregion
 
     public abstract AuthenticationMethod getAuthenticationMethod();
@@ -127,4 +132,6 @@ public abstract class Chooser {
     public abstract int getWindowSize();
 
     public abstract int getPacketSize();
+
+    public abstract int getRemoteChannel();
 }

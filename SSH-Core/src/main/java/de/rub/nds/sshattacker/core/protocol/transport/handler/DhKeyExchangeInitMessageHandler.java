@@ -7,10 +7,10 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.handler;
 
-import de.rub.nds.sshattacker.core.exceptions.NotImplementedException;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 import de.rub.nds.sshattacker.core.protocol.transport.message.DhKeyExchangeInitMessage;
+import de.rub.nds.sshattacker.core.protocol.transport.parser.DhKeyExchangeInitMessageParser;
 import de.rub.nds.sshattacker.core.protocol.transport.preparator.DhKeyExchangeInitMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.transport.serializer.DhKeyExchangeInitMessageSerializer;
 import de.rub.nds.sshattacker.core.state.SshContext;
@@ -36,7 +36,7 @@ public class DhKeyExchangeInitMessageHandler extends SshMessageHandler<DhKeyExch
 
     @Override
     public SshMessageParser<DhKeyExchangeInitMessage> getParser(byte[] array, int startPosition) {
-        throw new NotImplementedException("DhKeyExchangeInitMessage::getParser");
+        return new DhKeyExchangeInitMessageParser(array, startPosition);
     }
 
     @Override

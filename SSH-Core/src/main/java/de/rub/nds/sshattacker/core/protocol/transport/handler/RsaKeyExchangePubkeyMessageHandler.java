@@ -18,7 +18,7 @@ import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.transport.message.RsaKeyExchangePubkeyMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.parser.RsaKeyExchangePubkeyMessageParser;
-import de.rub.nds.sshattacker.core.protocol.transport.preparator.RsaKeyExchangePubkeyMessagePreparator;
+import de.rub.nds.sshattacker.core.protocol.transport.serializer.RsaKeyExchangePubkeyMessageSerializer;
 import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class RsaKeyExchangePubkeyMessageHandler
@@ -95,12 +95,13 @@ public class RsaKeyExchangePubkeyMessageHandler
 
     @Override
     public SshMessagePreparator<RsaKeyExchangePubkeyMessage> getPreparator() {
-        return new RsaKeyExchangePubkeyMessagePreparator(context.getChooser(), message);
+        throw new NotImplementedException("RsaKeyExchangePubkeyMessage Preperator is missing!");
+        // return new RsaKeyExchangePubkeyMessagePreparator(context.getChooser(), message);
     }
 
     @Override
     public SshMessageSerializer<RsaKeyExchangePubkeyMessage> getSerializer() {
         // TODO: Implement Serializer
-        throw new NotImplementedException("RsaKeyExchangePubkeyMessageHandler::getSerializer()");
+        return new RsaKeyExchangePubkeyMessageSerializer(message);
     }
 }
