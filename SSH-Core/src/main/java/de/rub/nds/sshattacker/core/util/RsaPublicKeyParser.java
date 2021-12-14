@@ -32,13 +32,13 @@ public class RsaPublicKeyParser extends Parser<RsaPublicKey> {
         } else {
             publicKey.setExponentLength(parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH));
             LOGGER.debug("Exponent length: " + publicKey.getExponentLength().getValue());
-            publicKey.setE(parseBigIntField(publicKey.getExponentLength().getValue()));
+            publicKey.setExponent(parseBigIntField(publicKey.getExponentLength().getValue()));
             LOGGER.debug("Exponent: " + publicKey.getExponent().getValue());
 
             publicKey.setModulusLength(parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH));
             LOGGER.debug("Modulus length: " + publicKey.getModulusLength().getValue());
-            publicKey.setN(parseBigIntField(publicKey.getModulusLength().getValue()));
-            LOGGER.debug("Modulus: " + publicKey.getModulus().getValue());
+            publicKey.setModulus(parseBigIntField(publicKey.getModulusLength().getValue()));
+            LOGGER.debug("Modulus: " + publicKey.getModifiableModulus().getValue());
 
             return publicKey;
         }

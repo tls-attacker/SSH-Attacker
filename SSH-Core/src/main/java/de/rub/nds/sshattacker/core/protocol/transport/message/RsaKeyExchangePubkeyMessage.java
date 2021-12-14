@@ -116,12 +116,16 @@ public class RsaKeyExchangePubkeyMessage extends SshMessage<RsaKeyExchangePubkey
         this.publicKey = parser.parse();
     }
 
+    public RsaPublicKey getPublicKey() {
+        return publicKey;
+    }
+
     public ModifiableBigInteger getExponent() {
         return this.publicKey.getExponent();
     }
 
     public ModifiableBigInteger getModulus() {
-        return this.publicKey.getModulus();
+        return this.publicKey.getModifiableModulus();
     }
 
     @Override

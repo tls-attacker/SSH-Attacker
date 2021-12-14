@@ -11,10 +11,12 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.biginteger.ModifiableBigInteger;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.sshattacker.core.protocol.common.ModifiableVariableHolder;
+
 import java.math.BigInteger;
+import java.security.interfaces.RSAPublicKey;
 import java.util.Arrays;
 
-public class RsaPublicKey extends ModifiableVariableHolder {
+public class RsaPublicKey extends ModifiableVariableHolder implements RSAPublicKey {
     private ModifiableInteger modulusLength;
     private ModifiableBigInteger modulus;
 
@@ -37,17 +39,22 @@ public class RsaPublicKey extends ModifiableVariableHolder {
         this.modulusLength = modulusLength;
     }
 
-    public ModifiableBigInteger getModulus() {
+    public ModifiableBigInteger getModifiableModulus() {
         return modulus;
     }
 
-    public void setModulus(byte[] nBytes) {
-        BigInteger nNew = new BigInteger(Arrays.toString(nBytes), 16);
-        this.modulus = ModifiableVariableFactory.safelySetValue(this.modulus, nNew);
+    @Override
+    public BigInteger getModulus() {
+        return modulus.getValue();
     }
 
-    public void setN(BigInteger n) {
-        this.modulus = ModifiableVariableFactory.safelySetValue(this.modulus, n);
+    public void setModulus(byte[] nBytes) {
+        BigInteger newModulus = new BigInteger(Arrays.toString(nBytes), 16);
+        this.modulus = ModifiableVariableFactory.safelySetValue(this.modulus, newModulus);
+    }
+
+    public void setModulus(BigInteger modulus) {
+        this.modulus = ModifiableVariableFactory.safelySetValue(this.modulus, modulus);
     }
 
     // Exponent
@@ -68,12 +75,33 @@ public class RsaPublicKey extends ModifiableVariableHolder {
         return exponent;
     }
 
-    public void setExponent(byte[] eBytes) {
-        BigInteger eNew = new BigInteger(Arrays.toString(eBytes), 16);
-        this.exponent = ModifiableVariableFactory.safelySetValue(this.exponent, eNew);
+    @Override
+    public BigInteger getPublicExponent() {
+        return exponent.getValue();
     }
 
-    public void setE(BigInteger e) {
-        this.exponent = ModifiableVariableFactory.safelySetValue(this.exponent, e);
+    public void setExponent(byte[] eBytes) {
+        BigInteger newExponent = new BigInteger(Arrays.toString(eBytes), 16);
+        this.exponent = ModifiableVariableFactory.safelySetValue(this.exponent, newExponent);
+    }
+
+    public void setExponent(BigInteger exponent) {
+        this.exponent = ModifiableVariableFactory.safelySetValue(this.exponent, exponent);
+    }
+
+    // Interface methods
+    @Override
+    public byte[] getEncoded() {
+        return null;
+    }
+
+    @Override
+    public String getAlgorithm() {
+        return "RSA";
+    }
+
+    @Override
+    public String getFormat() {
+        return null;
     }
 }
