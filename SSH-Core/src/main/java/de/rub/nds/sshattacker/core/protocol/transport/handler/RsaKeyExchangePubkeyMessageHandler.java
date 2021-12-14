@@ -50,8 +50,7 @@ public class RsaKeyExchangePubkeyMessageHandler
             if(keyExchangeAlgorithm.equals(KeyExchangeAlgorithm.RSA1024_SHA1)
                     || keyExchangeAlgorithm.equals(KeyExchangeAlgorithm.RSA2048_SHA256)) {
                 RsaKeyExchange rsaKeyExchange = new RsaKeyExchange();
-                rsaKeyExchange.setExponent(message.getExponent().getValue());
-                rsaKeyExchange.setModulus(message.getModulus().getValue());
+                rsaKeyExchange.setPublicKey(message.getPublicKey());
             } else {
                 raiseAdjustmentException("Unable to instantiate a new RSA key exchange, " +
                         "the negotiated key exchange algorithm is: " + keyExchangeAlgorithm);

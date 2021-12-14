@@ -1,11 +1,12 @@
 package de.rub.nds.sshattacker.core.crypto.kex;
 
+import de.rub.nds.sshattacker.core.util.RsaPublicKey;
+
 import java.math.BigInteger;
 
 public class RsaKeyExchange extends KeyExchange {
 
-    private BigInteger exponent;
-    private BigInteger modulus;
+    private RsaPublicKey publicKey;
 
     @Override
     public void computeSharedSecret() {
@@ -14,20 +15,20 @@ public class RsaKeyExchange extends KeyExchange {
         sharedSecret = new BigInteger(randomBytes);
     }
 
-    public BigInteger getExponent(){
-        return exponent;
+    public void setPublicKey(RsaPublicKey publicKey) {
+        this.publicKey = publicKey;
     }
 
-    public void setExponent(BigInteger exponent){
-        this.exponent = exponent;
+    public RsaPublicKey getPublicKey() {
+        return publicKey;
+    }
+
+    public BigInteger getExponent(){
+        return publicKey.getPublicExponent();
     }
 
     public BigInteger getModulus(){
-        return modulus;
-    }
-
-    public void setModulus(BigInteger modulus){
-        this.modulus = modulus;
+        return publicKey.getModulus();
     }
 
     public void setSharedSecret(BigInteger sharedSecret){
