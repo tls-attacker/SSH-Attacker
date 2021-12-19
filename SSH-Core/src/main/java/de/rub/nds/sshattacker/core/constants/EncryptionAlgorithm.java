@@ -257,7 +257,7 @@ public enum EncryptionAlgorithm {
     AES256_GCM_OPENSSH_COM(
             "aes256-gcm@openssh.com",
             EncryptionAlgorithmType.AEAD,
-            null,
+            EncryptionMode.GCM,
             32,
             16,
             12,
