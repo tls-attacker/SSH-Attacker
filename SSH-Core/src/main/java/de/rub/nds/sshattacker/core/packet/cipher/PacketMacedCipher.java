@@ -169,6 +169,7 @@ public class PacketMacedCipher extends PacketCipher {
         }
 
         if (encryptionAlgorithm.getIVSize() > 0) {
+            // Encryption with IV
             byte[] iv = nextEncryptionIv;
             if (packet instanceof BinaryPacket) {
                 // Apply modifications to IV (if any)
@@ -180,6 +181,7 @@ public class PacketMacedCipher extends PacketCipher {
             nextEncryptionIv =
                     extractNextIv(nextEncryptionIv, packet.getCiphertext().getOriginalValue());
         } else {
+            // Encryption without IV
             packet.setCiphertext(encryptCipher.encrypt(plainData));
         }
     }
@@ -268,6 +270,7 @@ public class PacketMacedCipher extends PacketCipher {
                 byte[] ciphertext = packet.getCiphertext().getValue();
                 byte[] remainingBlocks;
                 if (encryptionAlgorithm.getIVSize() > 0) {
+                    // Case 1a: Binary packet / First block decrypted / Cipher with IV
                     computations.setIv(nextDecryptionIv);
                     byte[] remainingBlocksIv =
                             extractNextIv(
@@ -282,6 +285,7 @@ public class PacketMacedCipher extends PacketCipher {
                                             ciphertext, firstBlock.length, ciphertext.length),
                                     remainingBlocksIv);
                 } else {
+                    // Case 1b: Binary packet / First block decrypted / Cipher without IV
                     remainingBlocks =
                             decryptCipher.decrypt(
                                     Arrays.copyOfRange(
@@ -290,21 +294,25 @@ public class PacketMacedCipher extends PacketCipher {
                 plainData = ArrayConverter.concatenate(firstBlock, remainingBlocks);
             } else {
                 if (encryptionAlgorithm.getIVSize() > 0) {
+                    // Case 2a: Binary packet / First block not decrypted / Cipher with IV
                     computations.setIv(nextDecryptionIv);
                     plainData =
                             decryptCipher.decrypt(
                                     packet.getCiphertext().getValue(),
                                     computations.getIv().getValue());
                 } else {
+                    // Case 2b: Binary packet / First block not decrypted / Cipher without IV
                     plainData = decryptCipher.decrypt(packet.getCiphertext().getValue());
                 }
             }
             computations.setPlainPacketBytes(plainData);
         } else {
             if (encryptionAlgorithm.getIVSize() > 0) {
+                // Case 3a: Blob packet / Cipher with IV
                 plainData =
                         decryptCipher.decrypt(packet.getCiphertext().getValue(), nextDecryptionIv);
             } else {
+                // Case 3b: Blob packet / Cipher without IV
                 plainData = decryptCipher.decrypt(packet.getCiphertext().getValue());
             }
             packet.setCompressedPayload(plainData);
@@ -318,23 +326,23 @@ public class PacketMacedCipher extends PacketCipher {
     private byte[] extractNextIv(byte[] iv, byte[] ct) {
         switch (encryptionAlgorithm.getMode()) {
             case CBC:
+                // Next IV in CBC mode is the last block of the current ciphertext
                 return Arrays.copyOfRange(
                         ct, ct.length - encryptionAlgorithm.getBlockSize(), ct.length);
             case CTR:
-                BigInteger ctr = new BigInteger(iv);
+                // Next IV in CTR mode is the old counter / iv incremented by the number of blocks
+                // of the ciphertext
+                BigInteger ctr = new BigInteger(1, iv);
                 int ctBlocks = ct.length / encryptionAlgorithm.getBlockSize();
                 ctr = ctr.add(BigInteger.valueOf(ctBlocks));
-                // Ugly wrap mechanic as Java does not support unsigned
-                if (ctr.compareTo(
+                // Wrap around if the counter would exceed the length of the iv
+                // This is rather unlikely to occur even once, but this is the OpenSSL behavior when
+                // overflowing
+                ctr =
+                        ctr.mod(
                                 BigInteger.ONE.shiftLeft(
-                                        8 * encryptionAlgorithm.getBlockSize() - 1))
-                        >= 0) {
-                    ctr =
-                            ctr.subtract(
-                                    BigInteger.ONE.shiftLeft(
-                                            8 * encryptionAlgorithm.getBlockSize()));
-                }
-                return ctr.toByteArray();
+                                        Byte.SIZE * encryptionAlgorithm.getIVSize()));
+                return ArrayConverter.bigIntegerToByteArray(ctr);
             default:
                 throw new UnsupportedOperationException(
                         "Unable to extract initialization vector for mode: "
