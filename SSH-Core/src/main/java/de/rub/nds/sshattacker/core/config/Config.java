@@ -9,6 +9,7 @@ package de.rub.nds.sshattacker.core.config;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.modifiablevariable.util.UnformattedByteArrayAdapter;
+import de.rub.nds.sshattacker.core.connection.Channel;
 import de.rub.nds.sshattacker.core.connection.InboundConnection;
 import de.rub.nds.sshattacker.core.connection.OutboundConnection;
 import de.rub.nds.sshattacker.core.constants.*;
@@ -163,19 +164,11 @@ public class Config implements Serializable {
 
     private String password;
 
-    private int localChannel;
-
-    private int remoteChannel;
-
-    private int windowSize;
-
-    private int packetSize;
-
-    private ChannelType channelType;
-
     private ChannelRequestType channelRequestType;
 
     private String channelCommand;
+
+    private Channel defaultChannel;
 
     private byte replyWanted;
 
@@ -255,8 +248,7 @@ public class Config implements Serializable {
         endOfMessageSequence = "\r\n";
 
         clientSupportedKeyExchangeAlgorithms = new LinkedList<>();
-        clientSupportedKeyExchangeAlgorithms.add(
-                KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP14_SHA256);
+        // clientSupportedKeyExchangeAlgorithms.add(KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP14_SHA256);
         clientSupportedKeyExchangeAlgorithms.add(
                 KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP_EXCHANGE_SHA256);
         clientSupportedKeyExchangeAlgorithms.add(KeyExchangeAlgorithm.ECDH_SHA2_NISTP256);
@@ -333,14 +325,18 @@ public class Config implements Serializable {
         serviceName = "ssh-userauth";
         username = "sshattacker";
         password = "bydahirsch";
-        localChannel = 1337;
-        remoteChannel = 0;
-        windowSize = Integer.MAX_VALUE;
-        packetSize = Integer.MAX_VALUE;
-        channelType = ChannelType.SESSION;
-        channelRequestType = ChannelRequestType.EXEC;
-        channelCommand = "nc -l -p 13370";
+        defaultChannel =
+                new Channel(
+                        ChannelType.SESSION,
+                        1337,
+                        Integer.MAX_VALUE,
+                        Integer.MAX_VALUE,
+                        0,
+                        Integer.MAX_VALUE,
+                        Integer.MAX_VALUE,
+                        true);
         replyWanted = 0;
+        channelCommand = "nc -l -p 13370";
 
         workflowTraceType = null;
         outputFilters = new ArrayList<>();
@@ -555,38 +551,6 @@ public class Config implements Serializable {
         this.password = password;
     }
 
-    public int getLocalChannel() {
-        return localChannel;
-    }
-
-    public void setLocalChannel(int localChannel) {
-        this.localChannel = localChannel;
-    }
-
-    public int getWindowSize() {
-        return windowSize;
-    }
-
-    public void setWindowSize(int windowSize) {
-        this.windowSize = windowSize;
-    }
-
-    public int getPacketSize() {
-        return packetSize;
-    }
-
-    public void setPacketSize(int packetSize) {
-        this.packetSize = packetSize;
-    }
-
-    public ChannelType getChannelType() {
-        return channelType;
-    }
-
-    public void setChannelType(ChannelType channelType) {
-        this.channelType = channelType;
-    }
-
     public String getChannelCommand() {
         return channelCommand;
     }
@@ -633,14 +597,6 @@ public class Config implements Serializable {
 
     public void setChannelRequestType(ChannelRequestType channelRequestType) {
         this.channelRequestType = channelRequestType;
-    }
-
-    public int getRemoteChannel() {
-        return remoteChannel;
-    }
-
-    public void setRemoteChannel(int remoteChannel) {
-        this.remoteChannel = remoteChannel;
     }
 
     public Boolean isFiltersKeepUserSettings() {
@@ -801,5 +757,13 @@ public class Config implements Serializable {
 
     public RsaPublicKey getDefaultRsaPublicKey() {
         return defaultRsaPublicKey;
+    }
+
+    public Channel getDefaultChannel() {
+        return defaultChannel;
+    }
+
+    public void setDefaultChannel(Channel defaultChannel) {
+        this.defaultChannel = defaultChannel;
     }
 }

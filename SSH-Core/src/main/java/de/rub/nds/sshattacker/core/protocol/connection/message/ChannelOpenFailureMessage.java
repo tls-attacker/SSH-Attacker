@@ -27,6 +27,10 @@ public class ChannelOpenFailureMessage extends ChannelMessage<ChannelOpenFailure
         super(MessageIDConstant.SSH_MSG_CHANNEL_OPEN_FAILURE);
     }
 
+    public ChannelOpenFailureMessage(Integer senderChannel) {
+        super(MessageIDConstant.SSH_MSG_CHANNEL_OPEN_FAILURE, senderChannel);
+    }
+
     public ModifiableInteger getReasonCode() {
         return reasonCode;
     }

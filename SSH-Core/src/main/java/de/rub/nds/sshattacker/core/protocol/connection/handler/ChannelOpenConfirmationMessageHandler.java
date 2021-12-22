@@ -7,6 +7,8 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.handler;
 
+import de.rub.nds.sshattacker.core.connection.Channel;
+import de.rub.nds.sshattacker.core.exceptions.MissingChannelException;
 import de.rub.nds.sshattacker.core.protocol.common.*;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelOpenConfirmationMessage;
 import de.rub.nds.sshattacker.core.protocol.connection.parser.ChannelOpenConfirmationMessageParser;
@@ -28,8 +30,22 @@ public class ChannelOpenConfirmationMessageHandler
 
     @Override
     public void adjustContext() {
-        context.setRemoteChannel(message.getSenderChannel().getValue());
-        // TODO: Set window and packet size for outgoing packets
+        // ToDo Handle ChannelOpenConfirmation
+        Channel channel = context.getChannels().get(message.getRecipientChannel().getValue());
+        if (channel == null) {
+            throw new MissingChannelException(
+                    "Can't find the required channel of the received message!");
+        } else {
+            channel.setRemoteChannel(message.getModSenderChannel());
+            channel.setRemotePacketSize(message.getPacketSize());
+            channel.setRemoteWindowSize(message.getWindowSize());
+            channel.setOpen(true);
+            LOGGER.debug(channel.toString());
+            Channel.getLocal_remote()
+                    .put(
+                            message.getRecipientChannel().getValue(),
+                            message.getModSenderChannel().getValue());
+        }
     }
 
     @Override

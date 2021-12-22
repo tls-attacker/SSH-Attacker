@@ -45,7 +45,7 @@ public class ChannelOpenConfirmationMessageSerializerTest {
             int providedMaximumPacketSize) {
         ChannelOpenConfirmationMessage msg = new ChannelOpenConfirmationMessage();
         msg.setRecipientChannel(providedRecipientChannel);
-        msg.setSenderChannel(providedSenderChannel);
+        msg.setModSenderChannel(providedSenderChannel);
         msg.setWindowSize(providedInitialWindowSize);
         msg.setPacketSize(providedMaximumPacketSize);
         ChannelOpenConfirmationMessageSerializer serializer =

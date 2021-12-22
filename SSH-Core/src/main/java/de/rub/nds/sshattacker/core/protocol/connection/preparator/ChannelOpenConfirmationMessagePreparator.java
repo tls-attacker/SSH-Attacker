@@ -7,7 +7,10 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.preparator;
 
+import de.rub.nds.sshattacker.core.connection.Channel;
 import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
+import de.rub.nds.sshattacker.core.exceptions.MissingChannelException;
+import de.rub.nds.sshattacker.core.exceptions.PreparationException;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelOpenConfirmationMessage;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
@@ -24,9 +27,48 @@ public class ChannelOpenConfirmationMessagePreparator
     public void prepareMessageSpecificContents() {
         getObject().setMessageID(MessageIDConstant.SSH_MSG_CHANNEL_OPEN_CONFIRMATION);
         // TODO dummy values for fuzzing
-        getObject().setPacketSize(Integer.MAX_VALUE);
-        getObject().setRecipientChannel(chooser.getRemoteChannel());
-        getObject().setSenderChannel(chooser.getLocalChannel());
-        getObject().setWindowSize(chooser.getWindowSize());
+        // set transfered value to ModSenderChannel or fallback to config
+        if (getObject().getModSenderChannel() == null
+                || getObject().getModSenderChannel().getValue() == null) {
+            if (getObject().getSenderChannel() != null) {
+                getObject().setModSenderChannel(getObject().getSenderChannel());
+            } else {
+                throw new PreparationException("Sender channel required to send the message!");
+            }
+        }
+        // set transfered value to WindowSize or fallback to config
+        if (getObject().getWindowSize() == null || getObject().getWindowSize().getValue() == null) {
+            if (getObject().getTransferWindowSize() != null) {
+                getObject().setWindowSize(getObject().getTransferWindowSize());
+            } else {
+                getObject()
+                        .setWindowSize(
+                                chooser.getConfig().getDefaultChannel().getlocalWindowSize());
+            }
+        }
+        // set transfered value to PacketSize or fallback to config
+        if (getObject().getPacketSize() == null || getObject().getPacketSize().getValue() == null) {
+            if (getObject().getTransferPacketSize() != null) {
+                getObject().setPacketSize(getObject().getTransferPacketSize());
+            } else {
+                getObject()
+                        .setPacketSize(
+                                chooser.getConfig().getDefaultChannel().getlocalPacketSize());
+            }
+        }
+        Channel channel =
+                chooser.getContext()
+                        .getChannels()
+                        .get(getObject().getModSenderChannel().getValue());
+        if (channel == null) {
+            throw new MissingChannelException("Can't find the required channel!");
+        } else {
+            getObject()
+                    .setRecipientChannel(
+                            Channel.getLocal_remote()
+                                    .get(getObject().getModSenderChannel().getValue()));
+            channel.setRemoteChannel(getObject().getRecipientChannel());
+            channel.setOpen(true);
+        }
     }
 }

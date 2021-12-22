@@ -38,8 +38,8 @@ public class ChannelOpenMessageParser extends SshMessageParser<ChannelOpenMessag
     }
 
     public void parseSenderChannel() {
-        message.setSenderChannel(parseIntField(DataFormatConstants.INT32_SIZE));
-        LOGGER.debug("Sender channel: " + message.getSenderChannel().getValue());
+        message.setModSenderChannel(parseIntField(DataFormatConstants.INT32_SIZE));
+        LOGGER.debug("Sender channel: " + message.getModSenderChannel().getValue());
     }
 
     public void parseWindowSize() {

@@ -46,7 +46,7 @@ public class ChannelOpenMessageSerializerTest {
             int providedMaximumPacketSize) {
         ChannelOpenMessage msg = new ChannelOpenMessage();
         msg.setChannelType(providedChannelType.toString(), true);
-        msg.setSenderChannel(providedSenderChannel);
+        msg.setModSenderChannel(providedSenderChannel);
         msg.setWindowSize(providedInitialWindowSize);
         msg.setPacketSize(providedMaximumPacketSize);
         ChannelOpenMessageSerializer serializer = new ChannelOpenMessageSerializer(msg);

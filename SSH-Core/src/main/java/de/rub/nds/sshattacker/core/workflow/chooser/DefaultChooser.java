@@ -257,31 +257,4 @@ public class DefaultChooser extends Chooser {
     public AuthenticationMethod getAuthenticationMethod() {
         return context.getAuthenticationMethod().orElse(config.getAuthenticationMethod());
     }
-    // region connection
-    @Override
-    public int getLocalChannel() {
-        return context.getLocalChannel().orElse(config.getLocalChannel());
-    }
-
-    @Override
-    public ChannelType getChannelType() {
-        return context.getChannelType().orElse(config.getChannelType());
-    }
-
-    @Override
-    public int getWindowSize() {
-        return context.getWindowSize().orElse(config.getWindowSize());
-    }
-
-    @Override
-    public int getPacketSize() {
-        return context.getPacketSize().orElse(config.getPacketSize());
-    }
-
-    @Override
-    public int getRemoteChannel() {
-        return context.getRemoteChannel().orElse(config.getRemoteChannel());
-    }
-
-    // endregion
 }

@@ -29,6 +29,13 @@ public abstract class ChannelRequestMessage<T extends ChannelRequestMessage<T>>
         setRequestType(requestType);
     }
 
+    protected ChannelRequestMessage(
+            @SuppressWarnings("SameParameterValue") ChannelRequestType requestType,
+            Integer senderChannel) {
+        super(MessageIDConstant.SSH_MSG_CHANNEL_REQUEST, senderChannel);
+        setRequestType(requestType);
+    }
+
     public ModifiableInteger getRequestTypeLength() {
         return requestTypeLength;
     }

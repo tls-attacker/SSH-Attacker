@@ -15,25 +15,38 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class ChannelOpenConfirmationMessage extends ChannelMessage<ChannelOpenConfirmationMessage> {
 
-    private ModifiableInteger senderChannel;
+    private ModifiableInteger modSenderChannel;
     private ModifiableInteger windowSize;
+    private Integer transferWindowSize;
     private ModifiableInteger packetSize;
+    private Integer transferPacketSize;
 
     public ChannelOpenConfirmationMessage() {
         super(MessageIDConstant.SSH_MSG_CHANNEL_OPEN_CONFIRMATION);
     }
 
-    public ModifiableInteger getSenderChannel() {
-        return senderChannel;
+    public ChannelOpenConfirmationMessage(Integer senderChannel) {
+        super(MessageIDConstant.SSH_MSG_CHANNEL_OPEN_CONFIRMATION, senderChannel);
     }
 
-    public void setSenderChannel(ModifiableInteger senderChannel) {
-        this.senderChannel = senderChannel;
+    public ChannelOpenConfirmationMessage(
+            Integer senderChannel, Integer windowSize, Integer packetSize) {
+        super(MessageIDConstant.SSH_MSG_CHANNEL_OPEN_CONFIRMATION, senderChannel);
+        setTransferWindowSize(windowSize);
+        setTransferPacketSize(packetSize);
     }
 
-    public void setSenderChannel(int senderChannel) {
-        this.senderChannel =
-                ModifiableVariableFactory.safelySetValue(this.senderChannel, senderChannel);
+    public ModifiableInteger getModSenderChannel() {
+        return modSenderChannel;
+    }
+
+    public void setModSenderChannel(ModifiableInteger modSenderChannel) {
+        this.modSenderChannel = modSenderChannel;
+    }
+
+    public void setModSenderChannel(int modSenderChannel) {
+        this.modSenderChannel =
+                ModifiableVariableFactory.safelySetValue(this.modSenderChannel, modSenderChannel);
     }
 
     public ModifiableInteger getWindowSize() {
@@ -58,6 +71,22 @@ public class ChannelOpenConfirmationMessage extends ChannelMessage<ChannelOpenCo
 
     public void setPacketSize(int packetSize) {
         this.packetSize = ModifiableVariableFactory.safelySetValue(this.packetSize, packetSize);
+    }
+
+    public Integer getTransferPacketSize() {
+        return transferPacketSize;
+    }
+
+    public void setTransferPacketSize(Integer transferPacketSize) {
+        this.transferPacketSize = transferPacketSize;
+    }
+
+    public Integer getTransferWindowSize() {
+        return transferWindowSize;
+    }
+
+    public void setTransferWindowSize(Integer transferWindowSize) {
+        this.transferWindowSize = transferWindowSize;
     }
 
     @Override

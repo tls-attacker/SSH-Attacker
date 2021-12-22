@@ -9,10 +9,7 @@ package de.rub.nds.sshattacker.core.workflow.factory;
 
 import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.connection.AliasedConnection;
-import de.rub.nds.sshattacker.core.constants.KeyExchangeAlgorithm;
-import de.rub.nds.sshattacker.core.constants.KeyExchangeFlowType;
-import de.rub.nds.sshattacker.core.constants.PacketLayerType;
-import de.rub.nds.sshattacker.core.constants.RunningModeType;
+import de.rub.nds.sshattacker.core.constants.*;
 import de.rub.nds.sshattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthPasswordMessage;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthSuccessMessage;
@@ -267,13 +264,12 @@ public class WorkflowConfigurationFactory {
 
     public List<SshAction> createConnectionProtocolActions() {
         List<SshAction> sshActions = new LinkedList<>();
-        sshActions.add(new ReceiveAction());
         sshActions.add(
                 MessageActionFactory.createAction(
                         config,
                         getConnection(),
                         ConnectionEndType.CLIENT,
-                        new ChannelOpenMessage()));
+                        new ChannelOpenMessage(1337, "session", 10000, 10000)));
         sshActions.add(
                 MessageActionFactory.createAction(
                         config,
@@ -285,13 +281,62 @@ public class WorkflowConfigurationFactory {
                         config,
                         getConnection(),
                         ConnectionEndType.CLIENT,
-                        new ChannelRequestExecMessage()));
+                        new ChannelOpenMessage(1338, "session", 10000, 10000)));
+        sshActions.add(
+                MessageActionFactory.createAction(
+                        config,
+                        getConnection(),
+                        ConnectionEndType.SERVER,
+                        new ChannelOpenConfirmationMessage()));
+        sshActions.add(
+                MessageActionFactory.createAction(
+                        config,
+                        getConnection(),
+                        ConnectionEndType.CLIENT,
+                        new ChannelRequestExecMessage(1337, "nc -l -p 13370")));
         sshActions.add(
                 MessageActionFactory.createAction(
                         config,
                         getConnection(),
                         ConnectionEndType.SERVER,
                         new ChannelWindowAdjustMessage()));
+        sshActions.add(
+                MessageActionFactory.createAction(
+                        config,
+                        getConnection(),
+                        ConnectionEndType.CLIENT,
+                        new ChannelWindowAdjustMessage(1337)));
+        sshActions.add(
+                MessageActionFactory.createAction(
+                        config,
+                        getConnection(),
+                        ConnectionEndType.CLIENT,
+                        new ChannelEofMessage(1337)));
+        sshActions.add(
+                MessageActionFactory.createAction(
+                        config,
+                        getConnection(),
+                        ConnectionEndType.CLIENT,
+                        new ChannelDataMessage(1337)));
+        sshActions.add(
+                MessageActionFactory.createAction(
+                        config,
+                        getConnection(),
+                        ConnectionEndType.CLIENT,
+                        new ChannelExtendedDataMessage(1337)));
+        sshActions.add(
+                MessageActionFactory.createAction(
+                        config,
+                        getConnection(),
+                        ConnectionEndType.CLIENT,
+                        new ChannelCloseMessage(1337)));
+        sshActions.add(
+                MessageActionFactory.createAction(
+                        config,
+                        getConnection(),
+                        ConnectionEndType.SERVER,
+                        new ChannelCloseMessage()));
+
         return sshActions;
     }
 }
