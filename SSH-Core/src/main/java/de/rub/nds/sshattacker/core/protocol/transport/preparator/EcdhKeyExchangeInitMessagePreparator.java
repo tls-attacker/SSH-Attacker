@@ -8,6 +8,7 @@
 package de.rub.nds.sshattacker.core.protocol.transport.preparator;
 
 import de.rub.nds.sshattacker.core.constants.KeyExchangeAlgorithm;
+import de.rub.nds.sshattacker.core.constants.KeyExchangeFlowType;
 import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
 import de.rub.nds.sshattacker.core.crypto.hash.EcdhExchangeHash;
 import de.rub.nds.sshattacker.core.crypto.kex.DhBasedKeyExchange;
@@ -32,7 +33,8 @@ public class EcdhKeyExchangeInitMessagePreparator
         Optional<KeyExchangeAlgorithm> keyExchangeAlgorithm =
                 chooser.getContext().getKeyExchangeAlgorithm();
         DhBasedKeyExchange keyExchange;
-        if (keyExchangeAlgorithm.isPresent()) {
+        if (keyExchangeAlgorithm.isPresent()
+                && keyExchangeAlgorithm.get().getFlowType() == KeyExchangeFlowType.ECDH) {
             switch (keyExchangeAlgorithm.get()) {
                 case CURVE448_SHA512:
                 case CURVE25519_SHA256:
@@ -44,8 +46,6 @@ public class EcdhKeyExchangeInitMessagePreparator
                     break;
             }
         } else {
-            // Maybe raise new "missingContextContents" Exception "Key exchange algorithm not
-            // negotiate, unable to generate a local key pair");
             keyExchange =
                     EcdhKeyExchange.newInstance(
                             chooser.getConfig().getDefaultEcdhKeyExchangeAlgortihm());
