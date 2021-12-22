@@ -39,6 +39,10 @@ public class RequestFailureMessageHandler extends SshMessageHandler<RequestFailu
         return new RequestFailureMessagePreparator(context.getChooser(), message);
     }
 
+    public RequestFailureMessagePreparator getChannelPreparator(Integer senderChannel) {
+        return new RequestFailureMessagePreparator(context.getChooser(), message, senderChannel);
+    }
+
     @Override
     public RequestFailureMessageSerializer getSerializer() {
         return new RequestFailureMessageSerializer(message);

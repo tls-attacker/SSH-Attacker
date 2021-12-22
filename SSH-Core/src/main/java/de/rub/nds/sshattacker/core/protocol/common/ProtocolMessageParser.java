@@ -128,7 +128,6 @@ public abstract class ProtocolMessageParser<T extends ProtocolMessage<T>> extend
                     return new UserAuthFailureMessageParser(raw, 0).parse();
                 case SSH_MSG_USERAUTH_SUCCESS:
                     return new UserAuthSuccessMessageParser(raw, 0).parse();
-
                 default:
                     LOGGER.debug(
                             "Received unimplemented Message "

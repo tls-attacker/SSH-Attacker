@@ -44,13 +44,13 @@
     </Send>
     <Receive />
     <Receive />
-    <Send>
+    <Send channel="0">
         <messages>
             <ChannelOpenMessage />
         </messages>
     </Send>
     <Receive/>
-    <Send>
+    <Send channel="0">
         <messages>
             <ChannelRequestExecMessage />
         </messages>

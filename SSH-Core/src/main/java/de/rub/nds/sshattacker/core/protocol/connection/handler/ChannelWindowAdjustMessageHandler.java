@@ -7,12 +7,15 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.handler;
 
+import de.rub.nds.sshattacker.core.connection.Channel;
+import de.rub.nds.sshattacker.core.exceptions.MissingChannelException;
 import de.rub.nds.sshattacker.core.protocol.common.*;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelWindowAdjustMessage;
 import de.rub.nds.sshattacker.core.protocol.connection.parser.ChannelWindowAdjustMessageParser;
 import de.rub.nds.sshattacker.core.protocol.connection.preparator.ChannelWindowAdjustMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.connection.serializer.ChannelWindowAdjustMessageSerializer;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.action.MessageAction;
 
 public class ChannelWindowAdjustMessageHandler
         extends SshMessageHandler<ChannelWindowAdjustMessage> {
@@ -29,6 +32,17 @@ public class ChannelWindowAdjustMessageHandler
     @Override
     public void adjustContext() {
         // TODO: Handle ChannelWindowAdjustMessageHandler
+        Channel channel = MessageAction.getChannels().get(message.getRecipientChannel().getValue());
+        if (channel == null) {
+            throw new MissingChannelException(
+                    "Can't find the required channel of the received message!");
+        } else if (channel.isOpen().getValue()) {
+            channel.setRemoteWindowSize(
+                    channel.getlocalWindowSize().getValue() + message.getBytesToAdd().getValue());
+            LOGGER.debug(channel.toString());
+        } else {
+            throw new MissingChannelException("Required channel is closed!");
+        }
     }
 
     @Override
@@ -39,6 +53,12 @@ public class ChannelWindowAdjustMessageHandler
     @Override
     public ChannelWindowAdjustMessagePreparator getPreparator() {
         return new ChannelWindowAdjustMessagePreparator(context.getChooser(), message);
+    }
+
+    @Override
+    public ChannelWindowAdjustMessagePreparator getChannelPreparator(Integer senderChannel) {
+        return new ChannelWindowAdjustMessagePreparator(
+                context.getChooser(), message, senderChannel);
     }
 
     @Override

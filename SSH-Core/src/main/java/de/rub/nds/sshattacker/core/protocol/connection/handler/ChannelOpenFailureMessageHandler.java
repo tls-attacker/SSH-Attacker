@@ -7,12 +7,15 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.handler;
 
+import de.rub.nds.sshattacker.core.connection.Channel;
+import de.rub.nds.sshattacker.core.exceptions.MissingChannelException;
 import de.rub.nds.sshattacker.core.protocol.common.*;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelOpenFailureMessage;
 import de.rub.nds.sshattacker.core.protocol.connection.parser.ChannelOpenFailureMessageParser;
 import de.rub.nds.sshattacker.core.protocol.connection.preparator.ChannelOpenFailureMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.connection.serializer.ChannelOpenFailureMessageSerializer;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.action.MessageAction;
 
 public class ChannelOpenFailureMessageHandler extends SshMessageHandler<ChannelOpenFailureMessage> {
 
@@ -27,6 +30,13 @@ public class ChannelOpenFailureMessageHandler extends SshMessageHandler<ChannelO
     @Override
     public void adjustContext() {
         // TODO: Handle ChannelOpenFailureMessage
+        Channel channel = MessageAction.getChannels().get(message.getRecipientChannel().getValue());
+        if (channel == null) {
+            throw new MissingChannelException(
+                    "Can't find the required channel of the received message!");
+        } else {
+            channel.setOpen(false);
+        }
     }
 
     @Override
@@ -37,6 +47,12 @@ public class ChannelOpenFailureMessageHandler extends SshMessageHandler<ChannelO
     @Override
     public ChannelOpenFailureMessagePreparator getPreparator() {
         return new ChannelOpenFailureMessagePreparator(context.getChooser(), message);
+    }
+
+    @Override
+    public ChannelOpenFailureMessagePreparator getChannelPreparator(Integer senderChannel) {
+        return new ChannelOpenFailureMessagePreparator(
+                context.getChooser(), message, senderChannel);
     }
 
     @Override

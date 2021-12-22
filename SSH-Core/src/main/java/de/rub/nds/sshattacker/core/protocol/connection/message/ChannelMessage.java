@@ -16,6 +16,8 @@ public abstract class ChannelMessage<T extends ChannelMessage<T>> extends SshMes
 
     protected ModifiableInteger recipientChannel;
 
+    protected ModifiableInteger senderChannel;
+
     protected ChannelMessage(MessageIDConstant messageID) {
         super(messageID);
     }
@@ -31,5 +33,18 @@ public abstract class ChannelMessage<T extends ChannelMessage<T>> extends SshMes
     public void setRecipientChannel(int recipientChannel) {
         this.recipientChannel =
                 ModifiableVariableFactory.safelySetValue(this.recipientChannel, recipientChannel);
+    }
+
+    public ModifiableInteger getSenderChannel() {
+        return senderChannel;
+    }
+
+    public void setSenderChannel(ModifiableInteger senderChannel) {
+        this.senderChannel = senderChannel;
+    }
+
+    public void setSenderChannel(int senderChannel) {
+        this.senderChannel =
+                ModifiableVariableFactory.safelySetValue(this.senderChannel, senderChannel);
     }
 }

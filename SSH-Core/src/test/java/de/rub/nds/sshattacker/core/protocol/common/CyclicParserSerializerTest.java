@@ -10,11 +10,15 @@ package de.rub.nds.sshattacker.core.protocol.common;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
+import de.rub.nds.sshattacker.core.connection.Channel;
 import de.rub.nds.sshattacker.core.exceptions.NotImplementedException;
 import de.rub.nds.sshattacker.core.exceptions.ParserException;
 import de.rub.nds.sshattacker.core.exceptions.PreparationException;
+import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelMessage;
+import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelOpenMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.message.*;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.action.SendAction;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
@@ -104,9 +108,28 @@ public class CyclicParserSerializerTest {
             // Create a fresh SshContext
             SshContext context = new SshContext();
 
+            // Create the channel setup
+            Channel defaultChannel = context.getConfig().getDefaultChannel();
+            Channel.getLocal_remote()
+                    .put(
+                            defaultChannel.getLocalChannel().getValue(),
+                            defaultChannel.getRemoteChannel().getValue());
+            SendAction.getChannels()
+                    .put(defaultChannel.getLocalChannel().getValue(), defaultChannel);
             // Prepare the message given the fresh context
             try {
-                message.getHandler(context).getPreparator().prepare();
+                if (ChannelMessage.class.isInstance(message)) {
+                    message.getHandler(context)
+                            .getChannelPreparator(defaultChannel.getLocalChannel().getValue())
+                            .prepare();
+                } else if (message.getClass() == ChannelOpenMessage.class) {
+                    defaultChannel.setOpen(false);
+                    message.getHandler(context)
+                            .getChannelPreparator(defaultChannel.getLocalChannel().getValue())
+                            .prepare();
+                } else {
+                    message.getHandler(context).getPreparator().prepare();
+                }
             } catch (PreparationException e) {
                 LOGGER.fatal(e);
                 fail(

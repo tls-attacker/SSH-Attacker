@@ -7,9 +7,13 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.preparator;
 
+import de.rub.nds.sshattacker.core.connection.Channel;
 import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
+import de.rub.nds.sshattacker.core.exceptions.MissingChannelException;
+import de.rub.nds.sshattacker.core.exceptions.PreparationException;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelSuccessMessage;
+import de.rub.nds.sshattacker.core.workflow.action.MessageAction;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class ChannelSuccessMessagePreparator extends SshMessagePreparator<ChannelSuccessMessage> {
@@ -18,10 +22,30 @@ public class ChannelSuccessMessagePreparator extends SshMessagePreparator<Channe
         super(chooser, message);
     }
 
+    public ChannelSuccessMessagePreparator(
+            Chooser chooser, ChannelSuccessMessage message, Integer senderChannel) {
+        super(chooser, message);
+        getObject().setSenderChannel(senderChannel);
+    }
+
     @Override
     public void prepareMessageSpecificContents() {
         getObject().setMessageID(MessageIDConstant.SSH_MSG_CHANNEL_SUCCESS);
         // TODO: Dummy values for fuzzing
-        getObject().setRecipientChannel(chooser.getRemoteChannel());
+        if (getObject().getSenderChannel() == null) {
+            throw new PreparationException("Sender channel required to send the message!");
+        }
+        Channel channel =
+                MessageAction.getChannels().get(getObject().getSenderChannel().getValue());
+        if (channel == null) {
+            throw new MissingChannelException("Can't find the required channel!");
+        } else if (channel.isOpen().getValue()) {
+            getObject()
+                    .setRecipientChannel(
+                            Channel.getLocal_remote()
+                                    .get(getObject().getSenderChannel().getValue()));
+        } else {
+            throw new MissingChannelException("Required channel is closed!");
+        }
     }
 }

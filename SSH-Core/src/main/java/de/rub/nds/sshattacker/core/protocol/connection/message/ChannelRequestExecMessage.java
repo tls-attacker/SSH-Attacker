@@ -24,6 +24,11 @@ public class ChannelRequestExecMessage extends ChannelRequestMessage<ChannelRequ
         super(ChannelRequestType.EXEC);
     }
 
+    public ChannelRequestExecMessage(String command) {
+        super(ChannelRequestType.EXEC);
+        setCommand(command, true);
+    }
+
     public ModifiableInteger getCommandLength() {
         return commandLength;
     }

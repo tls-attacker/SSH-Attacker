@@ -8,23 +8,26 @@
 package de.rub.nds.sshattacker.core.workflow.action;
 
 import de.rub.nds.modifiablevariable.ModifiableVariable;
+import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.connection.AliasedConnection;
 import de.rub.nds.sshattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.sshattacker.core.protocol.common.ModifiableVariableHolder;
 import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessage;
+import de.rub.nds.sshattacker.core.protocol.connection.message.*;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.state.State;
 import java.lang.reflect.Field;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
+import javax.xml.bind.annotation.XmlAttribute;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class SendAction extends MessageAction implements SendingAction {
 
     private static final Logger LOGGER = LogManager.getLogger();
+
+    @XmlAttribute(name = "channel")
+    protected Integer senderChannel = null;
 
     public SendAction() {
         super();
@@ -54,6 +57,42 @@ public class SendAction extends MessageAction implements SendingAction {
         super(connectionAlias, Arrays.asList(messages));
     }
 
+    public SendAction(Integer senderChannel) {
+        super();
+        this.senderChannel = senderChannel;
+    }
+
+    public SendAction(List<ProtocolMessage<?>> messages, Integer senderChannel) {
+        super(AliasedConnection.DEFAULT_CONNECTION_ALIAS, messages);
+        this.senderChannel = senderChannel;
+    }
+
+    public SendAction(Integer senderChannel, ProtocolMessage<?>... messages) {
+        this(AliasedConnection.DEFAULT_CONNECTION_ALIAS, Arrays.asList(messages));
+        this.senderChannel = senderChannel;
+    }
+
+    public SendAction(ProtocolMessage<?> message, Integer senderChannel) {
+        this(AliasedConnection.DEFAULT_CONNECTION_ALIAS, message);
+    }
+
+    public SendAction(String connectionAlias, Integer senderChannel) {
+        super(connectionAlias);
+        this.senderChannel = senderChannel;
+    }
+
+    public SendAction(
+            String connectionAlias, List<ProtocolMessage<?>> messages, Integer senderChannel) {
+        super(connectionAlias, messages);
+        this.senderChannel = senderChannel;
+    }
+
+    public SendAction(
+            String connectionAlias, Integer senderChannel, ProtocolMessage<?>... messages) {
+        super(connectionAlias, Arrays.asList(messages));
+        this.senderChannel = senderChannel;
+    }
+
     @Override
     public void execute(State state) throws WorkflowExecutionException {
         SshContext context = state.getSshContext(connectionAlias);
@@ -69,7 +108,19 @@ public class SendAction extends MessageAction implements SendingAction {
             LOGGER.info("Sending messages (" + connectionAlias + "): " + sending);
         }
 
-        messages.forEach(message -> message.getHandler(context).getPreparator().prepare());
+        for (ProtocolMessage<?> message : messages) {
+            if (senderChannel != null) {
+                if (ChannelMessage.class.isInstance(message)
+                        || message.getClass() == ChannelOpenMessage.class) {
+                    message.getHandler(context).getChannelPreparator(senderChannel).prepare();
+                } else {
+                    LOGGER.warn("No channel support given on this message layer!");
+                    message.getHandler(context).getPreparator().prepare();
+                }
+            } else {
+                message.getHandler(context).getPreparator().prepare();
+            }
+        }
         sendMessageHelper.sendMessages(context, messages.stream());
         setExecuted(true);
     }
@@ -120,8 +171,13 @@ public class SendAction extends MessageAction implements SendingAction {
     public void reset() {
         List<ModifiableVariableHolder> holders = new LinkedList<>();
         if (messages != null) {
+            Config config = new Config();
+            List<Class> skipResetClasses = config.getSkipResetClasses();
+
             for (ProtocolMessage<?> message : messages) {
-                holders.addAll(message.getAllModifiableVariableHolders());
+                if (!skipResetClasses.contains(message.getClass())) {
+                    holders.addAll(message.getAllModifiableVariableHolders());
+                }
             }
         }
         for (ModifiableVariableHolder holder : holders) {

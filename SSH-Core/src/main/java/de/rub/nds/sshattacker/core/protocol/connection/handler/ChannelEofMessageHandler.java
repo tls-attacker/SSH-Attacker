@@ -39,6 +39,10 @@ public class ChannelEofMessageHandler extends SshMessageHandler<ChannelEofMessag
         return new ChannelEofMessagePreparator(context.getChooser(), message);
     }
 
+    public ChannelEofMessagePreparator getChannelPreparator(Integer senderChannel) {
+        return new ChannelEofMessagePreparator(context.getChooser(), message, senderChannel);
+    }
+
     @Override
     public ChannelMessageSerializer<ChannelEofMessage> getSerializer() {
         return new ChannelMessageSerializer<>(message);

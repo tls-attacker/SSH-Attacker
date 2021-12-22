@@ -27,6 +27,15 @@ public class ChannelOpenMessageHandler extends SshMessageHandler<ChannelOpenMess
     @Override
     public void adjustContext() {
         // TODO: Handle ChannelOpenMessage
+        /* ToDO implement system of own channel management for running as server
+        Channel channel =
+                new Channel(
+                        ChannelType.getByString(message.getChannelType().getValue()),
+
+                        message.getWindowSize(),
+                        message.getPacketSize(),
+                        false);
+                        */
     }
 
     @Override
@@ -37,6 +46,10 @@ public class ChannelOpenMessageHandler extends SshMessageHandler<ChannelOpenMess
     @Override
     public ChannelOpenMessagePreparator getPreparator() {
         return new ChannelOpenMessagePreparator(context.getChooser(), message);
+    }
+
+    public ChannelOpenMessagePreparator getChannelPreparator(Integer senderChannel) {
+        return new ChannelOpenMessagePreparator(context.getChooser(), message, senderChannel);
     }
 
     @Override

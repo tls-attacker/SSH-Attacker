@@ -29,6 +29,13 @@ public class ChannelOpenMessage extends SshMessage<ChannelOpenMessage> {
         super(MessageIDConstant.SSH_MSG_CHANNEL_OPEN);
     }
 
+    public ChannelOpenMessage(String channelType, Integer windowSize, Integer packetSize) {
+        super(MessageIDConstant.SSH_MSG_CHANNEL_OPEN);
+        setChannelType(channelType, true);
+        setWindowSize(windowSize);
+        setPacketSize(packetSize);
+    }
+
     public ModifiableInteger getChannelTypeLength() {
         return channelTypeLength;
     }

@@ -38,6 +38,10 @@ public abstract class ProtocolMessageHandler<T extends ProtocolMessage<T>> imple
     @Override
     public abstract ProtocolMessageSerializer<T> getSerializer();
 
+    public ProtocolMessagePreparator<T> getChannelPreparator(Integer senderChannel) {
+        return null;
+    }
+
     // TODO: Remove this workaround once everything is handled over context fields
     protected void raiseAdjustmentException(String errorMsg) {
         raiseAdjustmentException(new AdjustmentException(errorMsg));

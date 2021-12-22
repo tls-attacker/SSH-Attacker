@@ -23,6 +23,12 @@ public class ChannelOpenConfirmationMessage extends ChannelMessage<ChannelOpenCo
         super(MessageIDConstant.SSH_MSG_CHANNEL_OPEN_CONFIRMATION);
     }
 
+    public ChannelOpenConfirmationMessage(Integer windowSize, Integer packetSize) {
+        super(MessageIDConstant.SSH_MSG_CHANNEL_OPEN_CONFIRMATION);
+        setWindowSize(windowSize);
+        setPacketSize(packetSize);
+    }
+
     public ModifiableInteger getSenderChannel() {
         return senderChannel;
     }

@@ -21,6 +21,11 @@ public class ChannelWindowAdjustMessage extends ChannelMessage<ChannelWindowAdju
         super(MessageIDConstant.SSH_MSG_CHANNEL_WINDOW_ADJUST);
     }
 
+    public ChannelWindowAdjustMessage(Integer bytesToAdd) {
+        super(MessageIDConstant.SSH_MSG_CHANNEL_WINDOW_ADJUST);
+        setBytesToAdd(bytesToAdd);
+    }
+
     public ModifiableInteger getBytesToAdd() {
         return bytesToAdd;
     }

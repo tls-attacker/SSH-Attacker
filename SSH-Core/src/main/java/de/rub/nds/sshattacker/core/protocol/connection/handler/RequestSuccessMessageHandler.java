@@ -39,6 +39,10 @@ public class RequestSuccessMessageHandler extends SshMessageHandler<RequestSucce
         return new RequestSuccessMessagePreparator(context.getChooser(), message);
     }
 
+    public SshMessagePreparator<RequestSuccessMessage> getChannelPreparator(Integer senderChannel) {
+        return new RequestSuccessMessagePreparator(context.getChooser(), message, senderChannel);
+    }
+
     @Override
     public SshMessageSerializer<RequestSuccessMessage> getSerializer() {
         return new RequestSuccessMessageSerializer(message);

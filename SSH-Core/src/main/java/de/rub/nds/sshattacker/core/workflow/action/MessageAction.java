@@ -8,6 +8,7 @@
 package de.rub.nds.sshattacker.core.workflow.action;
 
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
+import de.rub.nds.sshattacker.core.connection.Channel;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthBannerMessage;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthFailureMessage;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthPasswordMessage;
@@ -20,6 +21,7 @@ import de.rub.nds.sshattacker.core.workflow.action.executor.ReceiveMessageHelper
 import de.rub.nds.sshattacker.core.workflow.action.executor.SendMessageHelper;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
@@ -110,6 +112,8 @@ public abstract class MessageAction extends ConnectionBoundAction {
                         name = "TcpIpForwardCancelMessage")
             })
     protected List<ProtocolMessage<?>> messages = new ArrayList<>();
+
+    private static HashMap<Integer, Channel> channels = new HashMap<>();
 
     @XmlTransient protected final ReceiveMessageHelper receiveMessageHelper;
 
@@ -210,5 +214,9 @@ public abstract class MessageAction extends ConnectionBoundAction {
         if (messages == null) {
             messages = new ArrayList<>();
         }
+    }
+
+    public static HashMap<Integer, Channel> getChannels() {
+        return channels;
     }
 }

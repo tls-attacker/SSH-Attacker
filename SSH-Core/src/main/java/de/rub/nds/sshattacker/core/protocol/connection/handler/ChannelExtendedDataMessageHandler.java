@@ -41,6 +41,11 @@ public class ChannelExtendedDataMessageHandler
         return new ChannelExtendedDataMessagePreparator(context.getChooser(), message);
     }
 
+    public ChannelExtendedDataMessagePreparator getChannelPreparator(Integer senderChannel) {
+        return new ChannelExtendedDataMessagePreparator(
+                context.getChooser(), message, senderChannel);
+    }
+
     @Override
     public ChannelExtendedDataMessageSerializer getSerializer() {
         return new ChannelExtendedDataMessageSerializer(message);

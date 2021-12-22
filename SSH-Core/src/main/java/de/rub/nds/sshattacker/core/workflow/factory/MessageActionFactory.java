@@ -35,11 +35,41 @@ public class MessageActionFactory {
     public static MessageAction createAction(
             Config config,
             AliasedConnection connection,
+            ConnectionEndType sendingConnectionEndType,
+            Integer senderChannel,
+            ProtocolMessage<?>... protocolMessages) {
+        return createAction(
+                config,
+                connection,
+                sendingConnectionEndType,
+                new ArrayList<>(Arrays.asList(protocolMessages)),
+                senderChannel);
+    }
+
+    public static MessageAction createAction(
+            Config config,
+            AliasedConnection connection,
             ConnectionEndType sendingConnectionEnd,
             List<ProtocolMessage<?>> protocolMessages) {
         MessageAction action;
         if (connection.getLocalConnectionEndType() == sendingConnectionEnd) {
             action = new SendAction(protocolMessages);
+        } else {
+            action = new ReceiveAction(protocolMessages);
+        }
+        action.setConnectionAlias(connection.getAlias());
+        return action;
+    }
+
+    public static MessageAction createAction(
+            Config config,
+            AliasedConnection connection,
+            ConnectionEndType sendingConnectionEnd,
+            List<ProtocolMessage<?>> protocolMessages,
+            Integer senderChannel) {
+        MessageAction action;
+        if (connection.getLocalConnectionEndType() == sendingConnectionEnd) {
+            action = new SendAction(protocolMessages, senderChannel);
         } else {
             action = new ReceiveAction(protocolMessages);
         }
