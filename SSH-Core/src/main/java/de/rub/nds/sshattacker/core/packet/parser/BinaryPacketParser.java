@@ -8,12 +8,11 @@
 package de.rub.nds.sshattacker.core.packet.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.sshattacker.core.constants.BinaryPacketConstants;
-import de.rub.nds.sshattacker.core.constants.EncryptionAlgorithm;
-import de.rub.nds.sshattacker.core.constants.EncryptionAlgorithmType;
+import de.rub.nds.sshattacker.core.constants.*;
 import de.rub.nds.sshattacker.core.exceptions.CryptoException;
 import de.rub.nds.sshattacker.core.packet.BinaryPacket;
 import de.rub.nds.sshattacker.core.packet.PacketCryptoComputations;
+import de.rub.nds.sshattacker.core.packet.cipher.PacketChaCha20Poly1305Cipher;
 import de.rub.nds.sshattacker.core.packet.cipher.PacketCipher;
 import de.rub.nds.sshattacker.core.packet.cipher.PacketMacedCipher;
 import java.util.Arrays;
@@ -25,10 +24,17 @@ public class BinaryPacketParser extends AbstractPacketParser<BinaryPacket> {
     private static final Logger LOGGER = LogManager.getLogger();
 
     private final PacketCipher activeDecryptCipher;
+    /**
+     * The sequence number of the packet to parse. Required to successfully decrypt the packet
+     * length in case of chacha20-poly1305.
+     */
+    private final int sequenceNumber;
 
-    public BinaryPacketParser(byte[] array, int startPosition, PacketCipher activeDecryptCipher) {
+    public BinaryPacketParser(
+            byte[] array, int startPosition, PacketCipher activeDecryptCipher, int sequenceNumber) {
         super(array, startPosition);
         this.activeDecryptCipher = activeDecryptCipher;
+        this.sequenceNumber = sequenceNumber;
     }
 
     @Override
@@ -36,7 +42,11 @@ public class BinaryPacketParser extends AbstractPacketParser<BinaryPacket> {
         LOGGER.debug("Parsing BinaryPacket from serialized bytes:");
         try {
             BinaryPacket binaryPacket = new BinaryPacket();
-            if (activeDecryptCipher.getEncryptionAlgorithm().getType()
+            if (activeDecryptCipher.getEncryptionAlgorithm()
+                    == EncryptionAlgorithm.CHACHA20_POLY1305_OPENSSH_COM) {
+                LOGGER.debug("Packet structure: ChaCha20-Poly1305");
+                parseChaCha20Poly1305Packet(binaryPacket);
+            } else if (activeDecryptCipher.getEncryptionAlgorithm().getType()
                     == EncryptionAlgorithmType.AEAD) {
                 LOGGER.debug("Packet structure: AEAD");
                 parseAEADPacket(binaryPacket);
@@ -64,8 +74,7 @@ public class BinaryPacketParser extends AbstractPacketParser<BinaryPacket> {
                         ArrayConverter.bytesToHexString(binaryPacket.getCiphertext().getValue()));
             }
 
-            if (activeDecryptCipher.getEncryptionAlgorithm().getType()
-                    == EncryptionAlgorithmType.AEAD) {
+            if (activeDecryptCipher.getEncryptionAlgorithm().getMode() == EncryptionMode.GCM) {
                 LOGGER.debug(
                         "Authentication tag: {}",
                         ArrayConverter.bytesToHexString(binaryPacket.getMac()));
@@ -96,6 +105,33 @@ public class BinaryPacketParser extends AbstractPacketParser<BinaryPacket> {
                 parseByteArrayField(activeDecryptCipher.getEncryptionAlgorithm().getAuthTagSize()));
     }
 
+    private void parseChaCha20Poly1305Packet(BinaryPacket binaryPacket) throws CryptoException {
+        PacketChaCha20Poly1305Cipher activeDecryptCipher =
+                (PacketChaCha20Poly1305Cipher) this.activeDecryptCipher;
+        /*
+         * Encrypted ChaCha20Poly1305 packet structure:
+         * byte[4] encrypted_packet_length
+         * byte[n] ciphertext               ; n = packet_length
+         * byte[16] mac
+         */
+        byte[] encryptedPacketLength =
+                parseByteArrayField(BinaryPacketConstants.LENGTH_FIELD_LENGTH);
+        byte[] decryptedPacketLength =
+                activeDecryptCipher
+                        .getHeaderDecryptCipher()
+                        .decrypt(
+                                encryptedPacketLength,
+                                ArrayConverter.intToBytes(
+                                        this.sequenceNumber, DataFormatConstants.INT64_SIZE));
+        binaryPacket.setLength(ArrayConverter.bytesToInt(decryptedPacketLength));
+        binaryPacket.setCiphertext(
+                ArrayConverter.concatenate(
+                        encryptedPacketLength,
+                        parseByteArrayField(binaryPacket.getLength().getValue())));
+        binaryPacket.setMac(
+                parseByteArrayField(activeDecryptCipher.getEncryptionAlgorithm().getAuthTagSize()));
+    }
+
     private void parseETMPacket(BinaryPacket binaryPacket) {
         /*
          * Encrypted encrypt-then-mac packet structure:
@@ -112,6 +148,8 @@ public class BinaryPacketParser extends AbstractPacketParser<BinaryPacket> {
     private void parseEAMPacket(BinaryPacket binaryPacket) throws CryptoException {
         binaryPacket.prepareComputations();
         PacketCryptoComputations computations = binaryPacket.getComputations();
+        // This cast is safe due to EAM being exclusively used with PacketMacedCipher
+        PacketMacedCipher activeDecryptCipher = (PacketMacedCipher) this.activeDecryptCipher;
         /*
          * Encrypted encrypt-and-mac packet structure:
          *  byte[n] ciphertext      ; n = 4 + packet_length (decryption of first block required)
@@ -129,10 +167,7 @@ public class BinaryPacketParser extends AbstractPacketParser<BinaryPacket> {
                 decryptedBlock =
                         activeDecryptCipher
                                 .getDecryptCipher()
-                                .decrypt(
-                                        block,
-                                        ((PacketMacedCipher) activeDecryptCipher)
-                                                .getNextDecryptionIv());
+                                .decrypt(block, activeDecryptCipher.getNextDecryptionIv());
             } else {
                 decryptedBlock = activeDecryptCipher.getDecryptCipher().decrypt(block);
             }

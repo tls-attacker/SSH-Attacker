@@ -22,12 +22,25 @@ public class CipherFactory {
             EncryptionAlgorithm encryptionAlgorithm,
             KeySet keySet,
             ConnectionEndType connectionEndType) {
+        return getEncryptionCipher(
+                encryptionAlgorithm,
+                keySet != null ? keySet.getWriteEncryptionKey(connectionEndType) : null,
+                true);
+    }
+
+    public static EncryptionCipher getEncryptionCipher(
+            EncryptionAlgorithm encryptionAlgorithm, byte[] key, boolean mainCipher) {
         if (encryptionAlgorithm == EncryptionAlgorithm.NONE) {
             return new NoneCipher();
+        } else if (mainCipher
+                && encryptionAlgorithm == EncryptionAlgorithm.CHACHA20_POLY1305_OPENSSH_COM) {
+            // If mainCipher is not set, the factory will return a JavaCipher wrapping a ChaCha20
+            // instance used for header encryption / decryption
+            return new ChaCha20Poly1305Cipher(key);
         } else if (encryptionAlgorithm.getJavaName() != null) {
             return new JavaCipher(
                     encryptionAlgorithm,
-                    keySet.getWriteEncryptionKey(connectionEndType),
+                    key,
                     encryptionAlgorithm.getType() == EncryptionAlgorithmType.STREAM);
         } else {
             LOGGER.warn(
@@ -42,12 +55,23 @@ public class CipherFactory {
             EncryptionAlgorithm encryptionAlgorithm,
             KeySet keySet,
             ConnectionEndType connectionEndType) {
+        return getDecryptionCipher(
+                encryptionAlgorithm,
+                keySet != null ? keySet.getReadEncryptionKey(connectionEndType) : null,
+                true);
+    }
+
+    public static DecryptionCipher getDecryptionCipher(
+            EncryptionAlgorithm encryptionAlgorithm, byte[] key, boolean mainCipher) {
         if (encryptionAlgorithm == EncryptionAlgorithm.NONE) {
             return new NoneCipher();
+        } else if (mainCipher
+                && encryptionAlgorithm == EncryptionAlgorithm.CHACHA20_POLY1305_OPENSSH_COM) {
+            return new ChaCha20Poly1305Cipher(key);
         } else if (encryptionAlgorithm.getJavaName() != null) {
             return new JavaCipher(
                     encryptionAlgorithm,
-                    keySet.getReadEncryptionKey(connectionEndType),
+                    key,
                     encryptionAlgorithm.getType() == EncryptionAlgorithmType.STREAM);
         } else {
             LOGGER.warn(

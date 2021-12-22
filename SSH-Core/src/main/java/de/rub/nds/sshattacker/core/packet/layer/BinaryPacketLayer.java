@@ -33,7 +33,11 @@ public class BinaryPacketLayer extends AbstractPacketLayer {
         while (dataPointer != rawBytes.length) {
             try {
                 BinaryPacketParser parser =
-                        new BinaryPacketParser(rawBytes, dataPointer, getDecryptorCipher());
+                        new BinaryPacketParser(
+                                rawBytes,
+                                dataPointer,
+                                getDecryptorCipher(),
+                                context.getReadSequenceNumber());
                 BinaryPacket packet = parser.parse();
                 decryptPacket(packet);
                 decompressPacket(packet);
@@ -54,7 +58,11 @@ public class BinaryPacketLayer extends AbstractPacketLayer {
         while (dataPointer != rawBytes.length) {
             try {
                 BinaryPacketParser parser =
-                        new BinaryPacketParser(rawBytes, dataPointer, getDecryptorCipher());
+                        new BinaryPacketParser(
+                                rawBytes,
+                                dataPointer,
+                                getDecryptorCipher(),
+                                context.getReadSequenceNumber());
                 BinaryPacket packet = parser.parse();
                 decryptPacket(packet);
                 decompressPacket(packet);
