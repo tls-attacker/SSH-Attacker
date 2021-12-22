@@ -21,7 +21,6 @@ import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.security.Security;
 import java.util.*;
-import java.util.stream.Collectors;
 import javax.xml.bind.annotation.*;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import org.apache.logging.log4j.LogManager;
@@ -249,8 +248,11 @@ public class Config implements Serializable {
         serverCookie = ArrayConverter.hexStringToByteArray("00000000000000000000000000000000");
         endOfMessageSequence = "\r\n";
 
-        clientSupportedKeyExchangeAlgorithms =
-                EnumSet.allOf(KeyExchangeAlgorithm.class).stream().collect(Collectors.toList());
+        clientSupportedKeyExchangeAlgorithms = new LinkedList<>();
+        //clientSupportedKeyExchangeAlgorithms.add(KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP14_SHA256);
+        //clientSupportedKeyExchangeAlgorithms.add(KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP_EXCHANGE_SHA256);
+        clientSupportedKeyExchangeAlgorithms.add(KeyExchangeAlgorithm.ECDH_SHA2_NISTP256);
+
         serverSupportedKeyExchangeAlgorithms =
                 new LinkedList<>(clientSupportedKeyExchangeAlgorithms);
 
