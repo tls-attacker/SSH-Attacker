@@ -98,7 +98,7 @@ public class CyclicParserSerializerTest {
                     fail(
                             "Subclass '"
                                     + messageClassName
-                                    + "' does not have a default constructor.");
+                                    + "' does not have the needed constructor.");
                 } else if (someMessageConstructor.getParameterCount() == 0) {
                     message = (ProtocolMessage) someMessageConstructor.newInstance();
                 } else {

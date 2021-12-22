@@ -162,7 +162,7 @@ public class ChannelOpenMessage extends SshMessage<ChannelOpenMessage> {
         return transferPacketSize;
     }
 
-    public void setTransferPacketSize(Integer transferPacketSize) {
+    public void setTransferPacketSize(int transferPacketSize) {
         this.transferPacketSize = transferPacketSize;
     }
 
@@ -170,7 +170,7 @@ public class ChannelOpenMessage extends SshMessage<ChannelOpenMessage> {
         return transferWindowSize;
     }
 
-    public void setTransferWindowSize(Integer transferWindowSize) {
+    public void setTransferWindowSize(int transferWindowSize) {
         this.transferWindowSize = transferWindowSize;
     }
 

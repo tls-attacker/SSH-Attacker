@@ -8,9 +8,6 @@
 package de.rub.nds.sshattacker.core.protocol.connection.handler;
 
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.connection.message.NoMoreSessionsMessage;
 import de.rub.nds.sshattacker.core.protocol.connection.parser.NoMoreSessionsMessageParser;
 import de.rub.nds.sshattacker.core.protocol.connection.preparator.NoMoreSessionsMessagePreparator;
@@ -31,17 +28,17 @@ public class NoMoreSessionsMessageHandler extends SshMessageHandler<NoMoreSessio
     public void adjustContext() {}
 
     @Override
-    public SshMessageParser<NoMoreSessionsMessage> getParser(byte[] array, int startPosition) {
+    public NoMoreSessionsMessageParser getParser(byte[] array, int startPosition) {
         return new NoMoreSessionsMessageParser(array, startPosition);
     }
 
     @Override
-    public SshMessagePreparator<NoMoreSessionsMessage> getPreparator() {
+    public NoMoreSessionsMessagePreparator getPreparator() {
         return new NoMoreSessionsMessagePreparator(context.getChooser(), message);
     }
 
     @Override
-    public SshMessageSerializer<NoMoreSessionsMessage> getSerializer() {
+    public NoMoreSessionsMessageSerializer getSerializer() {
         return new NoMoreSessionsMessageSerializer(message);
     }
 }

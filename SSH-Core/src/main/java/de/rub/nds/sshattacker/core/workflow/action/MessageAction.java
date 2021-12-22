@@ -113,7 +113,23 @@ public abstract class MessageAction extends ConnectionBoundAction {
                         name = "TcpIpForwardRequestMessage"),
                 @XmlElement(
                         type = TcpIpForwardCancelMessage.class,
-                        name = "TcpIpForwardCancelMessage")
+                        name = "TcpIpForwardCancelMessage"),
+                @XmlElement(
+                        type = ChannelRequestEnvMessage.class,
+                        name = "ChannelRequestEnvMessage"),
+                @XmlElement(
+                        type = ChannelRequestShellMessage.class,
+                        name = "ChannelRequestShellMessage"),
+                @XmlElement(
+                        type = ChannelRequestSignalMessage.class,
+                        name = "ChannelRequestSignalMessage"),
+                @XmlElement(
+                        type = ChannelRequestExitSignalMessage.class,
+                        name = "ChannelRequestExitSignalMessage"),
+                @XmlElement(
+                        type = ChannelRequestExitStatusMessage.class,
+                        name = "ChannelRequestExitStatusMessage"),
+                @XmlElement(type = NoMoreSessionsMessage.class, name = "NoMoreSessionsMessage")
             })
     protected List<ProtocolMessage<?>> messages = new ArrayList<>();
 

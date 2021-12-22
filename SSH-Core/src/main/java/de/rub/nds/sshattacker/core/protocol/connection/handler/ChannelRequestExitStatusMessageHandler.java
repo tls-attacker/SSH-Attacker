@@ -1,0 +1,46 @@
+/*
+ * SSH-Attacker - A Modular Penetration Testing Framework for SSH
+ *
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ *
+ * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ */
+package de.rub.nds.sshattacker.core.protocol.connection.handler;
+
+import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
+import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelRequestExitStatusMessage;
+import de.rub.nds.sshattacker.core.protocol.connection.parser.ChannelRequestExitStatusMessageParser;
+import de.rub.nds.sshattacker.core.protocol.connection.preparator.ChannelRequestExitStatusMessagePreperator;
+import de.rub.nds.sshattacker.core.protocol.connection.serializer.ChannelRequestExitStatusMessageSerializer;
+import de.rub.nds.sshattacker.core.state.SshContext;
+
+public class ChannelRequestExitStatusMessageHandler
+        extends SshMessageHandler<ChannelRequestExitStatusMessage> {
+
+    public ChannelRequestExitStatusMessageHandler(SshContext context) {
+        super(context);
+    }
+
+    public ChannelRequestExitStatusMessageHandler(
+            SshContext context, ChannelRequestExitStatusMessage message) {
+        super(context, message);
+    }
+
+    @Override
+    public ChannelRequestExitStatusMessageParser getParser(byte[] array, int startPosition) {
+        return new ChannelRequestExitStatusMessageParser(array, startPosition);
+    }
+
+    @Override
+    public ChannelRequestExitStatusMessagePreperator getPreparator() {
+        return new ChannelRequestExitStatusMessagePreperator(context.getChooser(), message);
+    }
+
+    @Override
+    public ChannelRequestExitStatusMessageSerializer getSerializer() {
+        return new ChannelRequestExitStatusMessageSerializer(message);
+    }
+
+    @Override
+    public void adjustContext() {}
+}

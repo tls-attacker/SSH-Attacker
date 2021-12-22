@@ -1,0 +1,64 @@
+/*
+ * SSH-Attacker - A Modular Penetration Testing Framework for SSH
+ *
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ *
+ * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ */
+package de.rub.nds.sshattacker.core.protocol.connection.preparator;
+
+import de.rub.nds.sshattacker.core.connection.Channel;
+import de.rub.nds.sshattacker.core.constants.ChannelRequestType;
+import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
+import de.rub.nds.sshattacker.core.exceptions.MissingChannelException;
+import de.rub.nds.sshattacker.core.exceptions.PreparationException;
+import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
+import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelRequestEnvMessage;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
+
+public class ChannelRequestEnvMessagePreperator
+        extends SshMessagePreparator<ChannelRequestEnvMessage> {
+
+    public ChannelRequestEnvMessagePreperator(Chooser chooser, ChannelRequestEnvMessage message) {
+        super(chooser, message);
+    }
+
+    @Override
+    public void prepareMessageSpecificContents() {
+        getObject().setMessageID(MessageIDConstant.SSH_MSG_CHANNEL_REQUEST);
+        if (getObject().getSenderChannel() == null) {
+            throw new PreparationException("Sender channel required to send the message!");
+        }
+        Channel channel = chooser.getContext().getChannels().get(getObject().getSenderChannel());
+        if (channel == null) {
+            throw new MissingChannelException("Can't find the required channel!");
+        } else if (channel.isOpen().getValue()) {
+            getObject()
+                    .setRecipientChannel(
+                            Channel.getLocal_remote().get(getObject().getSenderChannel()));
+            // ToDo give wantReply to constructor and don't generalize
+            getObject().setWantReply(chooser.getConfig().getReplyWanted());
+            getObject().setRequestType(ChannelRequestType.ENV, true);
+            // set transfered value to variableName and variableValue or fallback to config
+            if (getObject().getVariableName() == null
+                    || getObject().getVariableName().getValue() == null
+                            && getObject().getVariableValue() == null
+                    || getObject().getVariableValue().getValue() == null) {
+                if (getObject().getTransferVariableName() != null) {
+                    getObject().setVariableName(getObject().getTransferVariableName(), true);
+                } else {
+                    getObject().setVariableName(chooser.getConfig().getDefaultVariableName(), true);
+                }
+
+                if (getObject().getTransferVariableValue() != null) {
+                    getObject().setVariableValue(getObject().getTransferVariableValue(), true);
+                } else {
+                    getObject()
+                            .setVariableValue(chooser.getConfig().getDefaultVariableValue(), true);
+                }
+            }
+        } else {
+            throw new MissingChannelException("Required channel is closed!");
+        }
+    }
+}

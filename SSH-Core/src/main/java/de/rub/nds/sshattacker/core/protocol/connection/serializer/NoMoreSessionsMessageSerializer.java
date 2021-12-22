@@ -7,15 +7,12 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.serializer;
 
-import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.connection.message.NoMoreSessionsMessage;
 
-public class NoMoreSessionsMessageSerializer extends SshMessageSerializer<NoMoreSessionsMessage> {
+public class NoMoreSessionsMessageSerializer
+        extends GlobalRequestMessageSerializer<NoMoreSessionsMessage> {
 
     public NoMoreSessionsMessageSerializer(NoMoreSessionsMessage message) {
         super(message);
     }
-
-    @Override
-    public void serializeMessageSpecificContents() {}
 }
