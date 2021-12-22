@@ -25,7 +25,9 @@ public class PacketCipherFactory {
             EncryptionAlgorithm encryptionAlgorithm,
             MacAlgorithm macAlgorithm) {
         try {
-            if (encryptionAlgorithm.getMode() == EncryptionMode.GCM) {
+            if (encryptionAlgorithm == EncryptionAlgorithm.CHACHA20_POLY1305_OPENSSH_COM) {
+                return new PacketChaCha20Poly1305Cipher(context, keySet);
+            } else if (encryptionAlgorithm.getMode() == EncryptionMode.GCM) {
                 return new PacketGCMCipher(context, keySet, encryptionAlgorithm);
             } else {
                 return new PacketMacedCipher(context, keySet, encryptionAlgorithm, macAlgorithm);

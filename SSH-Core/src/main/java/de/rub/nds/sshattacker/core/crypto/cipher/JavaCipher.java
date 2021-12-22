@@ -89,7 +89,7 @@ class JavaCipher implements EncryptionCipher, DecryptionCipher {
     }
 
     @Override
-    public byte[] encrypt(byte[] plainData, byte[] iv, byte[] additionAuthenticatedData)
+    public byte[] encrypt(byte[] plainData, byte[] iv, byte[] additionalAuthenticatedData)
             throws CryptoException {
         GCMParameterSpec encryptIv = new GCMParameterSpec(algorithm.getAuthTagSize() * 8, iv);
         try {
@@ -97,7 +97,7 @@ class JavaCipher implements EncryptionCipher, DecryptionCipher {
             String keySpecAlgorithm =
                     EncryptionAlgorithmFamily.getFamilyForAlgorithm(algorithm).getJavaName();
             cipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(key, keySpecAlgorithm), encryptIv);
-            cipher.updateAAD(additionAuthenticatedData);
+            cipher.updateAAD(additionalAuthenticatedData);
             return cipher.doFinal(plainData);
         } catch (IllegalStateException
                 | IllegalBlockSizeException

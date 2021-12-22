@@ -10,6 +10,8 @@ package de.rub.nds.sshattacker.core.packet.cipher;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.*;
 import de.rub.nds.sshattacker.core.crypto.cipher.CipherFactory;
+import de.rub.nds.sshattacker.core.crypto.cipher.DecryptionCipher;
+import de.rub.nds.sshattacker.core.crypto.cipher.EncryptionCipher;
 import de.rub.nds.sshattacker.core.crypto.mac.MacFactory;
 import de.rub.nds.sshattacker.core.crypto.mac.WrappedMac;
 import de.rub.nds.sshattacker.core.exceptions.CryptoException;
@@ -31,19 +33,21 @@ public class PacketMacedCipher extends PacketCipher {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
+    /** Cipher for encryption of outgoing packets. */
+    private final EncryptionCipher encryptCipher;
+    /** Cipher for decryption of incoming packets. */
+    private final DecryptionCipher decryptCipher;
     /** MAC for verification of incoming packets. */
     private final WrappedMac readMac;
     /** MAC instance for macing outgoing packets. */
     private final WrappedMac writeMac;
 
     /**
-     * IV for the next packet encryption. Might be null if the encryption algorithm does not use an
-     * IV.
+     * Next IV for packet encryption. Might be null if the encryption algorithm does not use an IV.
      */
     private byte[] nextEncryptionIv;
     /**
-     * IV for the next packet decryption. Might be null if the encryption algorithm does not use an
-     * IV.
+     * Next IV for packet decryption. Might be null if the encryption algorithm does not use an IV.
      */
     private byte[] nextDecryptionIv;
 
@@ -350,8 +354,28 @@ public class PacketMacedCipher extends PacketCipher {
         }
     }
 
+    public byte[] getNextEncryptionIv() {
+        return nextEncryptionIv;
+    }
+
     public byte[] getNextDecryptionIv() {
         return nextDecryptionIv;
+    }
+
+    public EncryptionCipher getEncryptCipher() {
+        return encryptCipher;
+    }
+
+    public DecryptionCipher getDecryptCipher() {
+        return decryptCipher;
+    }
+
+    public WrappedMac getReadMac() {
+        return readMac;
+    }
+
+    public WrappedMac getWriteMac() {
+        return writeMac;
     }
 
     @Override

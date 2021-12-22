@@ -125,8 +125,8 @@ public class BinaryPacket extends AbstractPacket {
 
     @Override
     public BinaryPacketParser getPacketParser(
-            byte[] array, int startPosition, PacketCipher activeDecryptCipher) {
-        return new BinaryPacketParser(array, startPosition, activeDecryptCipher);
+            byte[] array, int startPosition, PacketCipher activeDecryptCipher, int sequenceNumber) {
+        return new BinaryPacketParser(array, startPosition, activeDecryptCipher, sequenceNumber);
     }
 
     @Override

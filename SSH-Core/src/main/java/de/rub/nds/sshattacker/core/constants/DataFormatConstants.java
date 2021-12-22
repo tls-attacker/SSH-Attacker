@@ -12,5 +12,6 @@ public class DataFormatConstants {
     public static final int MPINT_SIZE_LENGTH = 4;
     public static final int STRING_SIZE_LENGTH = 4;
     public static final int INT32_SIZE = 4;
+    public static final int INT64_SIZE = 8;
     public static final long UNSIGNED_INT_MAX_VALUE = 0xFFFFFFFFL;
 }

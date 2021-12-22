@@ -271,7 +271,8 @@ public enum EncryptionAlgorithm {
             1,
             12,
             16,
-            "ChaCha20-Poly1305"),
+            // Note: This is the java name for the packet length cipher
+            "ChaCha"),
     // [ OpenSSH Suggestions ]
     CAMELLIA128_CBC_OPENSSH_ORG(
             "camellia128-cbc@openssh.org",

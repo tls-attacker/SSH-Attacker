@@ -11,8 +11,6 @@ import de.rub.nds.sshattacker.core.constants.BinaryPacketConstants;
 import de.rub.nds.sshattacker.core.constants.EncryptionAlgorithm;
 import de.rub.nds.sshattacker.core.constants.EncryptionAlgorithmType;
 import de.rub.nds.sshattacker.core.constants.MacAlgorithm;
-import de.rub.nds.sshattacker.core.crypto.cipher.DecryptionCipher;
-import de.rub.nds.sshattacker.core.crypto.cipher.EncryptionCipher;
 import de.rub.nds.sshattacker.core.exceptions.CryptoException;
 import de.rub.nds.sshattacker.core.packet.BinaryPacket;
 import de.rub.nds.sshattacker.core.packet.BlobPacket;
@@ -23,8 +21,7 @@ import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 
 public abstract class PacketCipher {
 
-    protected DecryptionCipher decryptCipher;
-    protected EncryptionCipher encryptCipher;
+    /** The SSH context this packet cipher is used in. */
     protected final SshContext context;
     /** The key set used by the cipher. */
     protected final KeySet keySet;
@@ -75,14 +72,6 @@ public abstract class PacketCipher {
      * @throws CryptoException Thrown whenever something crypto-related fatally fails
      */
     public abstract void decrypt(BlobPacket packet) throws CryptoException;
-
-    public DecryptionCipher getDecryptCipher() {
-        return decryptCipher;
-    }
-
-    public EncryptionCipher getEncryptCipher() {
-        return encryptCipher;
-    }
 
     public EncryptionAlgorithm getEncryptionAlgorithm() {
         return encryptionAlgorithm;

@@ -16,7 +16,7 @@ public interface EncryptionCipher {
 
     byte[] encrypt(byte[] plainData, byte[] iv) throws CryptoException;
 
-    byte[] encrypt(byte[] plainData, byte[] iv, byte[] additionAuthenticatedData)
+    byte[] encrypt(byte[] plainData, byte[] iv, byte[] additionalAuthenticatedData)
             throws CryptoException;
 
     EncryptionAlgorithm getAlgorithm();
