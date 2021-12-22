@@ -17,6 +17,10 @@ public class ChannelFailureMessage extends ChannelMessage<ChannelFailureMessage>
         super(MessageIDConstant.SSH_MSG_CHANNEL_FAILURE);
     }
 
+    public ChannelFailureMessage(Integer senderChannel) {
+        super(MessageIDConstant.SSH_MSG_CHANNEL_FAILURE, senderChannel);
+    }
+
     @Override
     public ChannelFailureMessageHandler getHandler(SshContext context) {
         return new ChannelFailureMessageHandler(context, this);

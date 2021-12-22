@@ -7,6 +7,8 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.handler;
 
+import de.rub.nds.sshattacker.core.connection.Channel;
+import de.rub.nds.sshattacker.core.exceptions.MissingChannelException;
 import de.rub.nds.sshattacker.core.protocol.common.*;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelCloseMessage;
 import de.rub.nds.sshattacker.core.protocol.connection.parser.ChannelCloseMessageParser;
@@ -27,6 +29,19 @@ public class ChannelCloseMessageHandler extends SshMessageHandler<ChannelCloseMe
     @Override
     public void adjustContext() {
         // TODO: Handle ChannelCloseMessage
+        Channel channel = context.getChannels().get(message.getRecipientChannel().getValue());
+        if (channel == null) {
+            throw new MissingChannelException(
+                    "Can't find the required channel of the received message!");
+        } else if (channel.isOpen().getValue()) {
+            if (channel.getFirstCloseMessage().getValue()) {
+                channel.setOpen(false);
+            } else {
+                channel.setFirstCloseMessage(true);
+            }
+        } else {
+            throw new MissingChannelException("Required channel is closed!");
+        }
     }
 
     @Override

@@ -9,6 +9,7 @@ package de.rub.nds.sshattacker.core.state;
 
 import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.connection.AliasedConnection;
+import de.rub.nds.sshattacker.core.connection.Channel;
 import de.rub.nds.sshattacker.core.constants.*;
 import de.rub.nds.sshattacker.core.constants.PacketLayerType;
 import de.rub.nds.sshattacker.core.crypto.hash.ExchangeHash;
@@ -24,6 +25,7 @@ import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import de.rub.nds.tlsattacker.transport.TransportHandlerFactory;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
@@ -194,21 +196,7 @@ public class SshContext {
     // endregion
 
     // region Connection Protocol
-    // TODO: Implement connection protocol to support multiplexing
-    /** Local channel identifier */
-    private Integer localChannel;
-    /** Remote channel identifier */
-    private Integer remoteChannel;
-    /**
-     * Window size of the channel. The window size defines how many bytes the local peer may send
-     * before the remote peer must send a SSH_MSG_CHANNEL_WINDOW_ADJUST to allow the local peer to
-     * send more bytes. Whenever a packet is send, this number is decremented by the packets length.
-     */
-    private Integer windowSize;
-    /** Maximum size of a single packet within the channel */
-    private Integer packetSize;
-    /** Type of the channel */
-    private ChannelType channelType;
+    private HashMap<Integer, Channel> channels = new HashMap<>();
     // TODO: Implement channel requests in such a way that allows specification within the XML file
     // endregion
 
@@ -863,47 +851,9 @@ public class SshContext {
 
     // endregion
 
-    // region Getters for Connection Protocol Fields
-    public Optional<Integer> getLocalChannel() {
-        return Optional.ofNullable(localChannel);
-    }
-
-    public Optional<Integer> getRemoteChannel() {
-        return Optional.ofNullable(remoteChannel);
-    }
-
-    public Optional<Integer> getWindowSize() {
-        return Optional.ofNullable(windowSize);
-    }
-
-    public Optional<Integer> getPacketSize() {
-        return Optional.ofNullable(packetSize);
-    }
-
-    public Optional<ChannelType> getChannelType() {
-        return Optional.ofNullable(channelType);
-    }
-
-    // endregion
-    // region Setters for Connection Protocol Fields
-    public void setLocalChannel(int localChannel) {
-        this.localChannel = localChannel;
-    }
-
-    public void setRemoteChannel(int remoteChannel) {
-        this.remoteChannel = remoteChannel;
-    }
-
-    public void setWindowSize(int windowSize) {
-        this.windowSize = windowSize;
-    }
-
-    public void setPacketSize(int packetSize) {
-        this.packetSize = packetSize;
-    }
-
-    public void setChannelType(ChannelType channelType) {
-        this.channelType = channelType;
+    // region for Connection Protocol Fields
+    public HashMap<Integer, Channel> getChannels() {
+        return channels;
     }
     // endregion
 

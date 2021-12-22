@@ -22,8 +22,8 @@ public class ChannelOpenConfirmationMessageSerializer
     }
 
     private void serializeSenderChannel() {
-        LOGGER.debug("Sender channel: " + message.getSenderChannel().getValue());
-        appendInt(message.getSenderChannel().getValue(), DataFormatConstants.INT32_SIZE);
+        LOGGER.debug("Sender channel: " + message.getModSenderChannel().getValue());
+        appendInt(message.getModSenderChannel().getValue(), DataFormatConstants.INT32_SIZE);
     }
 
     private void serializeWindowSize() {

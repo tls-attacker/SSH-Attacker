@@ -16,9 +16,19 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 public class ChannelWindowAdjustMessage extends ChannelMessage<ChannelWindowAdjustMessage> {
 
     private ModifiableInteger bytesToAdd;
+    private Integer transferBytesToAdd;
 
     public ChannelWindowAdjustMessage() {
         super(MessageIDConstant.SSH_MSG_CHANNEL_WINDOW_ADJUST);
+    }
+
+    public ChannelWindowAdjustMessage(Integer senderChannel) {
+        super(MessageIDConstant.SSH_MSG_CHANNEL_WINDOW_ADJUST, senderChannel);
+    }
+
+    public ChannelWindowAdjustMessage(Integer senderChannel, Integer bytesToAdd) {
+        super(MessageIDConstant.SSH_MSG_CHANNEL_WINDOW_ADJUST, senderChannel);
+        setTransferBytesToAdd(bytesToAdd);
     }
 
     public ModifiableInteger getBytesToAdd() {
@@ -31,6 +41,14 @@ public class ChannelWindowAdjustMessage extends ChannelMessage<ChannelWindowAdju
 
     public void setBytesToAdd(int bytesToAdd) {
         this.bytesToAdd = ModifiableVariableFactory.safelySetValue(this.bytesToAdd, bytesToAdd);
+    }
+
+    public Integer getTransferBytesToAdd() {
+        return transferBytesToAdd;
+    }
+
+    public void setTransferBytesToAdd(Integer transferBytesToAdd) {
+        this.transferBytesToAdd = transferBytesToAdd;
     }
 
     @Override

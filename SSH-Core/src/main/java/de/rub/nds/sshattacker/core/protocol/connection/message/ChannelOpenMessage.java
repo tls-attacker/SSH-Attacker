@@ -16,17 +16,50 @@ import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
 import de.rub.nds.sshattacker.core.protocol.connection.handler.ChannelOpenMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import java.nio.charset.StandardCharsets;
+import javax.xml.bind.annotation.XmlAttribute;
 
 public class ChannelOpenMessage extends SshMessage<ChannelOpenMessage> {
 
     private ModifiableInteger channelTypeLength;
     private ModifiableString channelType;
-    private ModifiableInteger senderChannel;
+    private String transferChannelType;
     private ModifiableInteger windowSize;
+    private Integer transferWindowSize;
     private ModifiableInteger packetSize;
+    private Integer transferPacketSize;
+    private ModifiableInteger modSenderChannel;
+
+    @XmlAttribute(name = "channel")
+    private Integer senderChannel;
 
     public ChannelOpenMessage() {
         super(MessageIDConstant.SSH_MSG_CHANNEL_OPEN);
+    }
+
+    public ChannelOpenMessage(Integer senderChannel) {
+        super(MessageIDConstant.SSH_MSG_CHANNEL_OPEN);
+        setSenderChannel(senderChannel);
+    }
+
+    public ChannelOpenMessage(
+            Integer senderChannel, String channelType, Integer windowSize, Integer packetSize) {
+        super(MessageIDConstant.SSH_MSG_CHANNEL_OPEN);
+        setSenderChannel(senderChannel);
+        setTransferChannelType(channelType);
+        setTransferWindowSize(windowSize);
+        setTransferPacketSize(packetSize);
+    }
+
+    public ChannelOpenMessage(
+            Integer senderChannel,
+            ChannelType channelType,
+            Integer windowSize,
+            Integer packetSize) {
+        super(MessageIDConstant.SSH_MSG_CHANNEL_OPEN);
+        setSenderChannel(senderChannel);
+        setTransferChannelType(channelType);
+        setTransferWindowSize(windowSize);
+        setTransferPacketSize(packetSize);
     }
 
     public ModifiableInteger getChannelTypeLength() {
@@ -76,17 +109,29 @@ public class ChannelOpenMessage extends SshMessage<ChannelOpenMessage> {
         setChannelType(channelType.toString(), adjustLengthField);
     }
 
-    public ModifiableInteger getSenderChannel() {
-        return senderChannel;
+    public String getTransferChannelType() {
+        return transferChannelType;
     }
 
-    public void setSenderChannel(ModifiableInteger senderChannel) {
-        this.senderChannel = senderChannel;
+    public void setTransferChannelType(String transferChannelType) {
+        this.transferChannelType = transferChannelType;
     }
 
-    public void setSenderChannel(int senderChannel) {
-        this.senderChannel =
-                ModifiableVariableFactory.safelySetValue(this.senderChannel, senderChannel);
+    public void setTransferChannelType(ChannelType transferChannelType) {
+        setTransferChannelType(channelType.toString());
+    }
+
+    public ModifiableInteger getModSenderChannel() {
+        return modSenderChannel;
+    }
+
+    public void setModSenderChannel(ModifiableInteger modSenderChannel) {
+        this.modSenderChannel = modSenderChannel;
+    }
+
+    public void setModSenderChannel(int modSenderChannel) {
+        this.modSenderChannel =
+                ModifiableVariableFactory.safelySetValue(this.modSenderChannel, modSenderChannel);
     }
 
     public ModifiableInteger getWindowSize() {
@@ -111,6 +156,30 @@ public class ChannelOpenMessage extends SshMessage<ChannelOpenMessage> {
 
     public void setPacketSize(int packetSize) {
         this.packetSize = ModifiableVariableFactory.safelySetValue(this.packetSize, packetSize);
+    }
+
+    public Integer getTransferPacketSize() {
+        return transferPacketSize;
+    }
+
+    public void setTransferPacketSize(Integer transferPacketSize) {
+        this.transferPacketSize = transferPacketSize;
+    }
+
+    public Integer getTransferWindowSize() {
+        return transferWindowSize;
+    }
+
+    public void setTransferWindowSize(Integer transferWindowSize) {
+        this.transferWindowSize = transferWindowSize;
+    }
+
+    public Integer getSenderChannel() {
+        return senderChannel;
+    }
+
+    public void setSenderChannel(int senderChannel) {
+        this.senderChannel = senderChannel;
     }
 
     @Override

@@ -34,4 +34,13 @@ public enum ChannelType {
     public String toString() {
         return name;
     }
+
+    public static ChannelType getByString(String name) {
+        for (ChannelType channelType : ChannelType.values()) {
+            if (channelType.name.equals(name)) {
+                return channelType;
+            }
+        }
+        return null;
+    }
 }

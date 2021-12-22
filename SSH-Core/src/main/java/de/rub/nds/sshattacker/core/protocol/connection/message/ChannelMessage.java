@@ -11,13 +11,22 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
+import javax.xml.bind.annotation.XmlAttribute;
 
 public abstract class ChannelMessage<T extends ChannelMessage<T>> extends SshMessage<T> {
 
     protected ModifiableInteger recipientChannel;
 
+    @XmlAttribute(name = "channel")
+    protected Integer senderChannel;
+
     protected ChannelMessage(MessageIDConstant messageID) {
         super(messageID);
+    }
+
+    protected ChannelMessage(MessageIDConstant messageID, Integer senderChannel) {
+        super(messageID);
+        this.setSenderChannel(senderChannel);
     }
 
     public ModifiableInteger getRecipientChannel() {
@@ -31,5 +40,13 @@ public abstract class ChannelMessage<T extends ChannelMessage<T>> extends SshMes
     public void setRecipientChannel(int recipientChannel) {
         this.recipientChannel =
                 ModifiableVariableFactory.safelySetValue(this.recipientChannel, recipientChannel);
+    }
+
+    public Integer getSenderChannel() {
+        return senderChannel;
+    }
+
+    public void setSenderChannel(int senderChannel) {
+        this.senderChannel = senderChannel;
     }
 }

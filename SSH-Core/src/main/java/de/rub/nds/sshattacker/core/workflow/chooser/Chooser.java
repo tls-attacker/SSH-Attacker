@@ -119,14 +119,4 @@ public abstract class Chooser {
     // endregion
 
     public abstract AuthenticationMethod getAuthenticationMethod();
-
-    public abstract int getLocalChannel();
-
-    public abstract ChannelType getChannelType();
-
-    public abstract int getWindowSize();
-
-    public abstract int getPacketSize();
-
-    public abstract int getRemoteChannel();
 }

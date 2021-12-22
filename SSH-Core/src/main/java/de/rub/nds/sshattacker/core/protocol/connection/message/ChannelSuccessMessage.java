@@ -17,6 +17,10 @@ public class ChannelSuccessMessage extends ChannelMessage<ChannelSuccessMessage>
         super(MessageIDConstant.SSH_MSG_CHANNEL_SUCCESS);
     }
 
+    public ChannelSuccessMessage(Integer senderChannel) {
+        super(MessageIDConstant.SSH_MSG_CHANNEL_SUCCESS, senderChannel);
+    }
+
     @Override
     public ChannelSuccessMessageHandler getHandler(SshContext context) {
         return new ChannelSuccessMessageHandler(context, this);
