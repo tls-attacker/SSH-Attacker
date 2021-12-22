@@ -9,10 +9,11 @@ package de.rub.nds.sshattacker.core.workflow.chooser;
 
 import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.constants.*;
+import de.rub.nds.sshattacker.core.crypto.kex.DhKeyExchange;
+import de.rub.nds.sshattacker.core.crypto.kex.KeyExchange;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import java.util.List;
-import java.util.Random;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
 public class DefaultChooser extends Chooser {
     public DefaultChooser(SshContext context, Config config) {
@@ -223,33 +224,15 @@ public class DefaultChooser extends Chooser {
     }
 
     @Override
-    public List<KeyExchangeAlgorithm> getAllSupportedDHKeyExchange() {
-        return config.getClientSupportedKeyExchangeAlgorithms().stream()
-                .filter(
-                        keyExchangeAlgorithm ->
-                                keyExchangeAlgorithm.getFlowType()
-                                        == KeyExchangeFlowType.DIFFIE_HELLMAN)
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    public List<KeyExchangeAlgorithm> getAllSupportedDH_DHGEKeyExchange() {
-        return config.getClientSupportedKeyExchangeAlgorithms().stream()
-                .filter(
-                        keyExchangeAlgorithm ->
-                                keyExchangeAlgorithm.getFlowType()
-                                                == KeyExchangeFlowType.DIFFIE_HELLMAN
-                                        || keyExchangeAlgorithm.getFlowType()
-                                                == KeyExchangeFlowType
-                                                        .DIFFIE_HELLMAN_GROUP_EXCHANGE)
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    public KeyExchangeAlgorithm getRandomKeyExchangeAlgorithm(
-            Random random, List<KeyExchangeAlgorithm> possibleKeyExchangeAlgorithms) {
-        int randomField = random.nextInt(possibleKeyExchangeAlgorithms.size());
-        return possibleKeyExchangeAlgorithms.get(randomField);
+    public DhKeyExchange getDHGexKeyExchange() {
+        Optional<KeyExchange> keyExchange = context.getKeyExchangeInstance();
+        if (keyExchange.isPresent()
+                && keyExchange.get() instanceof DhKeyExchange
+                && ((DhKeyExchange) keyExchange.get()).areGroupParametersSet()) {
+            return (DhKeyExchange) keyExchange.get();
+        } else {
+            return new DhKeyExchange(config.getDefaultDHGexKeyExchangeGroup());
+        }
     }
 
     // endregion
