@@ -14,4 +14,10 @@
     </Send>
     <Receive/>
     <Receive/>
+    <Send>
+        <messages>
+            <RsaKeyExchangeSecretMessage/>
+        </messages>
+    </Send>
+    <Receive/>
 </workflowTrace>
