@@ -16,6 +16,7 @@ import de.rub.nds.sshattacker.core.protocol.authentication.parser.UserAuthBanner
 import de.rub.nds.sshattacker.core.protocol.authentication.parser.UserAuthFailureMessageParser;
 import de.rub.nds.sshattacker.core.protocol.authentication.parser.UserAuthSuccessMessageParser;
 import de.rub.nds.sshattacker.core.protocol.connection.parser.*;
+import de.rub.nds.sshattacker.core.protocol.transport.message.RsaKeyExchangeDoneMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.parser.*;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import java.nio.charset.StandardCharsets;
@@ -80,6 +81,8 @@ public abstract class ProtocolMessageParser<T extends ProtocolMessage<T>> extend
                     return new DhGexKeyExchangeGroupMessageParser(raw, 0).parse();
                 case SSH_MSG_KEX_DH_GEX_REPLY:
                     return new DhGexKeyExchangeReplyMessageParser(raw, 0).parse();
+                case SSH_MSG_KEXRSA_DONE:
+                    return new RsaKeyExchangeDoneMessageParser(raw, 0).parse();
                 case SSH_MSG_KEXRSA_PUBKEY:
                     return new RsaKeyExchangePubkeyMessageParser(raw, 0).parse();
                 case SSH_MSG_NEWKEYS:

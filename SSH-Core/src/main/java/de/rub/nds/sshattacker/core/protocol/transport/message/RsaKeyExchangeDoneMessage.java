@@ -13,6 +13,7 @@ import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
+import de.rub.nds.sshattacker.core.protocol.transport.handler.RsaKeyExchangeDoneMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class RsaKeyExchangeDoneMessage extends SshMessage<RsaKeyExchangeDoneMessage> {
@@ -52,6 +53,6 @@ public class RsaKeyExchangeDoneMessage extends SshMessage<RsaKeyExchangeDoneMess
 
     @Override
     public SshMessageHandler<RsaKeyExchangeDoneMessage> getHandler(SshContext context) {
-        return null;
+        return new RsaKeyExchangeDoneMessageHandler(context, this);
     }
 }
