@@ -7,6 +7,8 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.handler;
 
+import de.rub.nds.sshattacker.core.crypto.hash.ExchangeHash;
+import de.rub.nds.sshattacker.core.exceptions.AdjustmentException;
 import de.rub.nds.sshattacker.core.exceptions.NotImplementedException;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
@@ -28,7 +30,20 @@ public class RsaKeyExchangeDoneMessageHandler extends SshMessageHandler<RsaKeyEx
 
     @Override
     public void adjustContext() {
-        //TODO: Handle message
+        context.setKeyExchangeSignature(message.getSignature().getValue());
+        //TODO: validate signature
+        setSessionId();
+    }
+
+    private void setSessionId() {
+        ExchangeHash exchangeHash = context.getExchangeHashInstance();
+        if (context.getSessionID().isEmpty()) {
+            try {
+                context.setSessionID(exchangeHash.get());
+            } catch (AdjustmentException e) {
+                raiseAdjustmentException(e);
+            }
+        }
     }
 
     @Override
