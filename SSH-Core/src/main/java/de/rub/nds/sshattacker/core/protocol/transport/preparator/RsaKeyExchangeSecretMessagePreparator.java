@@ -22,7 +22,6 @@ import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.math.BigInteger;
 
 public class RsaKeyExchangeSecretMessagePreparator extends SshMessagePreparator<RsaKeyExchangeSecretMessage> {
     public RsaKeyExchangeSecretMessagePreparator(Chooser chooser, RsaKeyExchangeSecretMessage message) {
@@ -41,10 +40,9 @@ public class RsaKeyExchangeSecretMessagePreparator extends SshMessagePreparator<
             if(keyExchange instanceof RsaKeyExchange) {
                 keyExchange.computeSharedSecret();
                 message.setSecret(keyExchange.getSharedSecret().toByteArray(), true);
-
                 // Note: data to be encrypted consists of length field + secret (see RFC 4432)
                 byte[] encryptedSecret = prepareEncryptedSecret(prepareData(message), keyExchangeAlg, (RsaKeyExchange) keyExchange);
-                
+
                 message.setEncryptedSecret(encryptedSecret, true);
                 updateExchangeHashWithSecrets(message);
 

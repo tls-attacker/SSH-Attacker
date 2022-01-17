@@ -24,7 +24,7 @@ public class RsaKeyExchangeSecretMessageSerializer extends SshMessageSerializer<
     }
 
     private void serializeEncryptedSecret(){
-        LOGGER.debug("Secret length: " + message.getSecretLength());
+        LOGGER.debug("Secret length: " + message.getSecretLength().getValue());
         LOGGER.debug("Secret: " + Arrays.toString(message.getSecret().getValue()));
 
         LOGGER.debug("Encrypted secret length: " + message.getEncryptedSecretLength().getValue());

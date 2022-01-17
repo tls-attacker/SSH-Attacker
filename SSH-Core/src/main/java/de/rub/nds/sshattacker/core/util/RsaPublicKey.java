@@ -54,6 +54,15 @@ public class RsaPublicKey extends ModifiableVariableHolder implements RSAPublicK
     }
 
     public void setModulus(BigInteger modulus) {
+        this.setModulus(modulus, false);
+    }
+
+    public void setModulus(BigInteger modulus, boolean adjustLengthField) {
+        if (adjustLengthField) {
+            double bitLength = modulus.bitLength();
+            int byteLength = (int) Math.ceil(bitLength/8);
+            setModulusLength(byteLength);
+        }
         this.modulus = ModifiableVariableFactory.safelySetValue(this.modulus, modulus);
     }
 
