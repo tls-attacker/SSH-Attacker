@@ -20,4 +20,36 @@
         </messages>
     </Send>
     <Receive/>
+    <Receive/>
+    <Send>
+        <messages>
+            <NewKeysMessage/>
+        </messages>
+    </Send>
+    <ActivateEncryption/>
+    <Send>
+        <messages>
+            <ServiceRequestMessage />
+        </messages>
+    </Send>
+    <Receive />
+    <Send>
+        <messages>
+            <UserAuthPasswordMessage />
+        </messages>
+    </Send>
+    <Receive />
+    <Receive />
+    <Send>
+        <messages>
+            <ChannelOpenMessage />
+        </messages>
+    </Send>
+    <Receive/>
+    <Send>
+        <messages>
+            <ChannelRequestExecMessage />
+        </messages>
+    </Send>
+    <Receive />
 </workflowTrace>
