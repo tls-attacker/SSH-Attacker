@@ -37,9 +37,9 @@ public class RsaPublicKeyParser extends Parser<RsaPublicKey> {
 
             publicKey.setModulusLength(parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH));
             LOGGER.debug("Modulus length: " + publicKey.getModulusLength().getValue());
-            publicKey.setModulus(parseBigIntField(publicKey.getModulusLength().getValue()));
+            // Length should be adjusted, in case the modulus starts with 00 byte(s)
+            publicKey.setModulus(parseBigIntField(publicKey.getModulusLength().getValue()), true);
             LOGGER.debug("Modulus: " + publicKey.getModifiableModulus().getValue());
-
             return publicKey;
         }
 
