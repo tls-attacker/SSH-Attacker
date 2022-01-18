@@ -8,6 +8,7 @@
 package de.rub.nds.sshattacker.core.util;
 
 import de.rub.nds.sshattacker.core.constants.BinaryPacketConstants;
+import de.rub.nds.sshattacker.core.crypto.keys.RsaPublicKey;
 import de.rub.nds.sshattacker.core.protocol.common.Parser;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
