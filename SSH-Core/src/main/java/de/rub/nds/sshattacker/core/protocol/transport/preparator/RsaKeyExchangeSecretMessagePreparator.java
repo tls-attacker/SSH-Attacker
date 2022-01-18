@@ -22,6 +22,7 @@ import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.nio.ByteBuffer;
 
 public class RsaKeyExchangeSecretMessagePreparator extends SshMessagePreparator<RsaKeyExchangeSecretMessage> {
     public RsaKeyExchangeSecretMessagePreparator(Chooser chooser, RsaKeyExchangeSecretMessage message) {
@@ -38,13 +39,13 @@ public class RsaKeyExchangeSecretMessagePreparator extends SshMessagePreparator<
             KeyExchangeAlgorithm keyExchangeAlg = chooser.getContext().getKeyExchangeAlgorithm().get();
 
             if(keyExchange instanceof RsaKeyExchange) {
+                RsaKeyExchange rsaKeyExchange = (RsaKeyExchange) keyExchange;
                 keyExchange.computeSharedSecret();
-                message.setSecret(keyExchange.getSharedSecret().toByteArray(), true);
                 // Note: data to be encrypted consists of length field + secret (see RFC 4432)
-                byte[] encryptedSecret = prepareEncryptedSecret(prepareData(message), keyExchangeAlg, (RsaKeyExchange) keyExchange);
+                byte[] encryptedSecret = prepareEncryptedSecret(prepareData(rsaKeyExchange), keyExchangeAlg, rsaKeyExchange);
 
                 message.setEncryptedSecret(encryptedSecret, true);
-                updateExchangeHashWithSecrets(message);
+                updateExchangeHashWithSecrets(message, rsaKeyExchange);
 
             } else {
                 raisePreparationException("Cannot prepare secret message, " +
@@ -55,11 +56,13 @@ public class RsaKeyExchangeSecretMessagePreparator extends SshMessagePreparator<
         }
     }
 
-    private byte[] prepareData(RsaKeyExchangeSecretMessage message) {
+    private byte[] prepareData(RsaKeyExchange keyExchange) {
         ByteArrayOutputStream dataStream = new ByteArrayOutputStream();
         try {
-            dataStream.write(message.getSecretLength().getByteArray(DataFormatConstants.MPINT_SIZE_LENGTH));
-            dataStream.write(message.getSecret().getValue());
+            byte[] secret = keyExchange.getSharedSecret().toByteArray();
+            byte[] secretLength = ByteBuffer.allocate(DataFormatConstants.MPINT_SIZE_LENGTH).putInt(secret.length).array();
+            dataStream.write(secretLength);
+            dataStream.write(secret);
         } catch (IOException e) {
             raisePreparationException("Secret could not be converted to bytes. Error: " + e.getMessage());
         }
@@ -76,13 +79,13 @@ public class RsaKeyExchangeSecretMessagePreparator extends SshMessagePreparator<
         }
     }
 
-    private void updateExchangeHashWithSecrets(RsaKeyExchangeSecretMessage message) {
+    private void updateExchangeHashWithSecrets(RsaKeyExchangeSecretMessage message, RsaKeyExchange keyExchange) {
         ExchangeHash exchangeHash = chooser.getContext().getExchangeHashInstance();
 
         if (exchangeHash instanceof RsaExchangeHash) {
             RsaExchangeHash rsaExchangeHash = (RsaExchangeHash) exchangeHash;
             rsaExchangeHash.setEncryptedSecret(message.getEncryptedSecret().getValue());
-            rsaExchangeHash.setSharedSecret(message.getSecret().getValue());
+            rsaExchangeHash.setSharedSecret(keyExchange.getSharedSecret());
         } else {
             raisePreparationException("Cannot prepare secret message, " +
                     "exchange hash instance is not RSA, instead: " + exchangeHash.getClass());
