@@ -21,14 +21,10 @@ public class RsaKeyExchangeSecretMessage extends SshMessage<RsaKeyExchangeSecret
     private ModifiableInteger encryptedSecretLength;
     private ModifiableByteArray encryptedSecret;
 
-    private ModifiableInteger secretLength;
-    private ModifiableByteArray secret;
-
     public RsaKeyExchangeSecretMessage() {
         super(MessageIDConstant.SSH_MSG_KEXRSA_SECRET);
     }
 
-    // Encrypted Secret Methods
     public ModifiableInteger getEncryptedSecretLength() {
         return encryptedSecretLength;
     }

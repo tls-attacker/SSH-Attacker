@@ -19,12 +19,17 @@ import de.rub.nds.sshattacker.core.exceptions.CryptoException;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.transport.message.RsaKeyExchangeSecretMessage;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
 public class RsaKeyExchangeSecretMessagePreparator extends SshMessagePreparator<RsaKeyExchangeSecretMessage> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
+
     public RsaKeyExchangeSecretMessagePreparator(Chooser chooser, RsaKeyExchangeSecretMessage message) {
         super(chooser, message);
     }
@@ -41,6 +46,7 @@ public class RsaKeyExchangeSecretMessagePreparator extends SshMessagePreparator<
             if(keyExchange instanceof RsaKeyExchange) {
                 RsaKeyExchange rsaKeyExchange = (RsaKeyExchange) keyExchange;
                 keyExchange.computeSharedSecret();
+                LOGGER.debug("Shared secret: " + keyExchange.getSharedSecret());
                 // Note: data to be encrypted consists of length field + secret (see RFC 4432)
                 byte[] encryptedSecret = prepareEncryptedSecret(prepareData(rsaKeyExchange), keyExchangeAlg, rsaKeyExchange);
 
