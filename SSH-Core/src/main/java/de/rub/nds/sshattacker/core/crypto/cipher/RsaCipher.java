@@ -9,7 +9,7 @@ package de.rub.nds.sshattacker.core.crypto.cipher;
 
 import de.rub.nds.sshattacker.core.constants.KeyExchangeAlgorithm;
 import de.rub.nds.sshattacker.core.exceptions.CryptoException;
-import de.rub.nds.sshattacker.core.util.RsaPublicKey;
+import de.rub.nds.sshattacker.core.crypto.keys.RsaPublicKey;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -21,7 +21,6 @@ import javax.crypto.spec.OAEPParameterSpec;
 import javax.crypto.spec.PSource;
 import java.security.*;
 import java.security.spec.MGF1ParameterSpec;
-import java.util.Arrays;
 
 
 public class RsaCipher {

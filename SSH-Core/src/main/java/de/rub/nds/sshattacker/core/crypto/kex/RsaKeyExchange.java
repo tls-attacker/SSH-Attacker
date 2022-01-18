@@ -1,6 +1,6 @@
 package de.rub.nds.sshattacker.core.crypto.kex;
 
-import de.rub.nds.sshattacker.core.util.RsaPublicKey;
+import de.rub.nds.sshattacker.core.crypto.keys.RsaPublicKey;
 
 import java.math.BigInteger;
 

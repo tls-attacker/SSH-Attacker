@@ -5,7 +5,7 @@
  *
  * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
-package de.rub.nds.sshattacker.core.util;
+package de.rub.nds.sshattacker.core.crypto.keys;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.biginteger.ModifiableBigInteger;

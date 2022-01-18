@@ -17,7 +17,7 @@ import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.RsaKeyExchangePubkeyMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
-import de.rub.nds.sshattacker.core.util.RsaPublicKey;
+import de.rub.nds.sshattacker.core.crypto.keys.RsaPublicKey;
 import de.rub.nds.sshattacker.core.util.RsaPublicKeyParser;
 import java.util.List;
 
