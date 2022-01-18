@@ -19,10 +19,9 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.OAEPParameterSpec;
 import javax.crypto.spec.PSource;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
+import java.security.*;
 import java.security.spec.MGF1ParameterSpec;
+import java.util.Arrays;
 
 
 public class RsaCipher {
@@ -34,6 +33,8 @@ public class RsaCipher {
     private RsaPublicKey rsaPublicKey;
 
     private Cipher encryptionCipher;
+
+    private Signature verificationSignature;
 
     public RsaCipher(KeyExchangeAlgorithm keyExchangeAlgorithm, RsaPublicKey rsaPublicKey) {
         this.keyExchangeAlgorithm = keyExchangeAlgorithm;
@@ -65,19 +66,31 @@ public class RsaCipher {
         }
     }
 
+    public boolean verifySignature(byte[] data, byte[] signature) throws CryptoException {
+        try {
+            verificationSignature.update(data);
+            return verificationSignature.verify(signature);
+        } catch (SignatureException e) {
+            throw new CryptoException("Signature verification with RSA failed.", e);
+        }
+    }
+
     private void prepareCiphers() {
         String cipherInstanceName;
+        String signatureInstanceName;
         String hashFunctionName;
         String maskGenerationFunctionName;
 
         switch (keyExchangeAlgorithm) {
             case RSA1024_SHA1:
                 cipherInstanceName = "RSA/ECB/OAEPWithSHA-1AndMGF1Padding";
+                signatureInstanceName = "SHA1withRSA";
                 hashFunctionName = "SHA-1";
                 maskGenerationFunctionName = "MGF1";
                 break;
             case RSA2048_SHA256:
                 cipherInstanceName = "RSA/ECB/OAEPWithSHA-256AndMGF1Padding";
+                signatureInstanceName = "SHA256withRSA";
                 hashFunctionName = "SHA-256";
                 maskGenerationFunctionName = "MGF1";
                 break;
@@ -87,6 +100,7 @@ public class RsaCipher {
 
         if (rsaPublicKey != null) {
             prepareEncryptionCipher(cipherInstanceName, hashFunctionName, maskGenerationFunctionName);
+            prepareVerificationSignature(signatureInstanceName);
         } else {
             LOGGER.warn("Could not create encryption cipher, because the RSA public key is not set.");
         }
@@ -101,6 +115,17 @@ public class RsaCipher {
             cipher.init(Cipher.ENCRYPT_MODE, rsaPublicKey, spec);
             encryptionCipher = cipher;
         } catch (NoSuchPaddingException | NoSuchAlgorithmException | InvalidKeyException | InvalidAlgorithmParameterException e) {
+            LOGGER.error("RSA Encryption Cipher creation failed with error: " + e);
+        }
+    }
+
+    private void prepareVerificationSignature(String instanceName) {
+        try {
+            Signature signature;
+            signature = Signature.getInstance(instanceName);
+            signature.initVerify(rsaPublicKey);
+            verificationSignature = signature;
+        } catch (NoSuchAlgorithmException | InvalidKeyException e) {
             LOGGER.error("RSA Encryption Cipher creation failed with error: " + e);
         }
     }
