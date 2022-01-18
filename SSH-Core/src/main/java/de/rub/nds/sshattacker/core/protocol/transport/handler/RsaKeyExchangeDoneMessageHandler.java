@@ -40,32 +40,8 @@ public class RsaKeyExchangeDoneMessageHandler extends SshMessageHandler<RsaKeyEx
     @Override
     public void adjustContext() {
         context.setKeyExchangeSignature(message.getSignature().getValue());
-        verifyExchangeHash(message);
+        //TODO: Verify Signature (Note that the type of signature depends on the host key)
         setSessionId();
-    }
-
-    private void verifyExchangeHash(RsaKeyExchangeDoneMessage message) {
-        if (context.getKeyExchangeInstance().isPresent() && context.getKeyExchangeInstance().get() instanceof RsaKeyExchange) {
-            RsaKeyExchange keyExchange = (RsaKeyExchange) context.getKeyExchangeInstance().get();
-
-            if (context.getKeyExchangeAlgorithm().isPresent() && context.getExchangeHashInstance() instanceof RsaExchangeHash) {
-                KeyExchangeAlgorithm keyExchangeAlgorithm = context.getKeyExchangeAlgorithm().get();
-
-                RsaCipher rsaCipher = new RsaCipher(keyExchangeAlgorithm, keyExchange.getPublicKey());
-                boolean signatureIsCorrect;
-                try {
-                    signatureIsCorrect = rsaCipher.verifySignature(context.getExchangeHashInstance().get(), message.getSignature().getValue());
-                } catch (CryptoException e) {
-                    LOGGER.error(e);
-                    signatureIsCorrect = false;
-                }
-
-                if(!signatureIsCorrect) {
-                    LOGGER.warn("RSA key exchange failed because of an incorrect signature in the Done message.");
-                    //TODO: Abort key exchange
-                }
-            }
-        }
     }
 
     private void setSessionId() {
