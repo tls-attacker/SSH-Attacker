@@ -24,7 +24,7 @@ public class RsaKeyExchangeSecretMessage extends SshMessage<RsaKeyExchangeSecret
     private ModifiableInteger secretLength;
     private ModifiableByteArray secret;
 
-    protected RsaKeyExchangeSecretMessage() {
+    public RsaKeyExchangeSecretMessage() {
         super(MessageIDConstant.SSH_MSG_KEXRSA_SECRET);
     }
 
@@ -62,42 +62,6 @@ public class RsaKeyExchangeSecretMessage extends SshMessage<RsaKeyExchangeSecret
             setEncryptedSecretLength(encryptedSecret.length);
         }
         this.encryptedSecret = ModifiableVariableFactory.safelySetValue(this.encryptedSecret, encryptedSecret);
-    }
-
-    // Plaintext Secret Methods
-    public ModifiableInteger getSecretLength() {
-        return secretLength;
-    }
-
-    public void setSecretLength(ModifiableInteger secretLength) {
-        this.secretLength = secretLength;
-    }
-
-    public void setSecretLength(int secretLength) {
-        this.secretLength =
-                ModifiableVariableFactory.safelySetValue(this.secretLength, secretLength);
-    }
-
-    public ModifiableByteArray getSecret() {
-        return secret;
-    }
-
-    public void setSecret(byte[] secret) {
-        setSecret(secret, false);
-    }
-
-    public void setSecret(ModifiableByteArray secret, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setSecretLength(secret.getValue().length);
-        }
-        this.secret = secret;
-    }
-
-    public void setSecret(byte[] secret, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setSecretLength(secret.length);
-        }
-        this.secret = ModifiableVariableFactory.safelySetValue(this.secret, secret);
     }
 
     @Override
