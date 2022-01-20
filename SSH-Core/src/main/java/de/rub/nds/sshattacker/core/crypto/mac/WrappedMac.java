@@ -11,7 +11,7 @@ import de.rub.nds.sshattacker.core.constants.MacAlgorithm;
 
 public interface WrappedMac {
 
-    byte[] calculate(byte[] data);
+    byte[] calculate(int sequenceNumber, byte[] unencryptedPacket);
 
     MacAlgorithm getAlgorithm();
 }

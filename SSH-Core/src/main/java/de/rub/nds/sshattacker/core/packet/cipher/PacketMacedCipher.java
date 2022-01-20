@@ -117,9 +117,6 @@ public class PacketMacedCipher extends PacketCipher {
             // Integrity protection
             computations.setAuthenticatedPacketBytes(
                     ArrayConverter.concatenate(
-                            ArrayConverter.intToBytes(
-                                    packet.getSequenceNumber().getValue(),
-                                    DataFormatConstants.INT32_SIZE),
                             packet.getLength()
                                     .getByteArray(BinaryPacketConstants.PACKET_FIELD_LENGTH),
                             packet.getCiphertext().getValue()));
@@ -144,9 +141,6 @@ public class PacketMacedCipher extends PacketCipher {
             // Integrity protection
             computations.setAuthenticatedPacketBytes(
                     ArrayConverter.concatenate(
-                            ArrayConverter.intToBytes(
-                                    packet.getSequenceNumber().getValue(),
-                                    DataFormatConstants.INT32_SIZE),
                             packet.getLength()
                                     .getByteArray(BinaryPacketConstants.PACKET_FIELD_LENGTH),
                             new byte[] {packet.getPaddingLength().getValue()},
@@ -154,7 +148,10 @@ public class PacketMacedCipher extends PacketCipher {
                             packet.getPadding().getValue()));
         }
 
-        packet.setMac(writeMac.calculate(computations.getAuthenticatedPacketBytes().getValue()));
+        packet.setMac(
+                writeMac.calculate(
+                        packet.getSequenceNumber().getValue(),
+                        computations.getAuthenticatedPacketBytes().getValue()));
         computations.setPaddingValid(true);
         computations.setMacValid(true);
     }
@@ -227,9 +224,6 @@ public class PacketMacedCipher extends PacketCipher {
 
             computations.setAuthenticatedPacketBytes(
                     ArrayConverter.concatenate(
-                            ArrayConverter.intToBytes(
-                                    packet.getSequenceNumber().getValue(),
-                                    DataFormatConstants.INT32_SIZE),
                             packet.getLength()
                                     .getByteArray(BinaryPacketConstants.PACKET_FIELD_LENGTH),
                             packet.getCiphertext().getValue()));
@@ -244,9 +238,6 @@ public class PacketMacedCipher extends PacketCipher {
 
             computations.setAuthenticatedPacketBytes(
                     ArrayConverter.concatenate(
-                            ArrayConverter.intToBytes(
-                                    packet.getSequenceNumber().getValue(),
-                                    DataFormatConstants.INT32_SIZE),
                             packet.getLength()
                                     .getByteArray(BinaryPacketConstants.PACKET_FIELD_LENGTH),
                             new byte[] {packet.getPaddingLength().getValue()},
@@ -255,7 +246,10 @@ public class PacketMacedCipher extends PacketCipher {
         }
 
         // Verify MAC and padding
-        byte[] shouldMac = readMac.calculate(computations.getAuthenticatedPacketBytes().getValue());
+        byte[] shouldMac =
+                readMac.calculate(
+                        packet.getSequenceNumber().getValue(),
+                        computations.getAuthenticatedPacketBytes().getValue());
         computations.setMacValid(Arrays.equals(shouldMac, packet.getMac().getValue()));
         computations.setPaddingValid(isPaddingValid(packet.getPadding().getOriginalValue()));
     }
