@@ -67,6 +67,8 @@
 - `hmac-sha1-96-etm@openssh.com`
 - `hmac-sha{256|512}`
 - `hmac-sha{256|512}-etm@openssh.com`
+- `umac-{32|64|96|128}@openssh.com`
+- `umac-{32|64|96|128}-etm@openssh.com`
 - `none`
 ---
 ## Supported Host Key Algorithms
