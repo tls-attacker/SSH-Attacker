@@ -35,6 +35,8 @@ public class MacFactory {
             throws NoSuchAlgorithmException {
         if (algorithm.getJavaName() != null) {
             return new JavaMac(algorithm, key);
+        } else if (algorithm.toString().startsWith("umac")) {
+            return new UMac(algorithm, key);
         } else if (algorithm == MacAlgorithm.NONE) {
             return new NoneMac();
         }

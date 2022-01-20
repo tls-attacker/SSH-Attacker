@@ -7,6 +7,8 @@
  */
 package de.rub.nds.sshattacker.core.crypto.mac;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.constants.MacAlgorithm;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -14,7 +16,7 @@ import java.util.Arrays;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
-public class JavaMac implements WrappedMac {
+class JavaMac implements WrappedMac {
 
     private final MacAlgorithm algorithm;
 
@@ -31,8 +33,12 @@ public class JavaMac implements WrappedMac {
     }
 
     @Override
-    public byte[] calculate(byte[] data) {
-        byte[] output = mac.doFinal(data);
+    public byte[] calculate(int sequenceNumber, byte[] unencryptedPacket) {
+        byte[] macInput =
+                ArrayConverter.concatenate(
+                        ArrayConverter.intToBytes(sequenceNumber, DataFormatConstants.INT32_SIZE),
+                        unencryptedPacket);
+        byte[] output = mac.doFinal(macInput);
 
         // Support for truncated MACs like hmac-sha1-96
         if (output.length > algorithm.getOutputSize()) {

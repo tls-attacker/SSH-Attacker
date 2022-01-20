@@ -19,7 +19,7 @@ import org.bouncycastle.crypto.macs.Poly1305;
 import org.bouncycastle.crypto.params.KeyParameter;
 import org.bouncycastle.crypto.params.ParametersWithIV;
 
-public class ChaCha20Poly1305Cipher implements EncryptionCipher, DecryptionCipher {
+class ChaCha20Poly1305Cipher implements EncryptionCipher, DecryptionCipher {
 
     private static final Logger LOGGER = LogManager.getLogger();
     private static final int TAG_LENGTH = 16;

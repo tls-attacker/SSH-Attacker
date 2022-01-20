@@ -9,12 +9,12 @@ package de.rub.nds.sshattacker.core.crypto.mac;
 
 import de.rub.nds.sshattacker.core.constants.MacAlgorithm;
 
-public class NoneMac implements WrappedMac {
+class NoneMac implements WrappedMac {
 
     public NoneMac() {}
 
     @Override
-    public byte[] calculate(byte[] data) {
+    public byte[] calculate(int sequenceNumber, byte[] unencryptedPacket) {
         return new byte[0];
     }
 

@@ -9,7 +9,7 @@ package de.rub.nds.sshattacker.core.crypto.cipher;
 
 import de.rub.nds.sshattacker.core.constants.EncryptionAlgorithm;
 
-public class NoneCipher implements EncryptionCipher, DecryptionCipher {
+class NoneCipher implements EncryptionCipher, DecryptionCipher {
 
     public NoneCipher() {}
 
