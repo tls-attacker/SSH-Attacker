@@ -36,14 +36,12 @@ public class DefaultWorkflowExecutor extends WorkflowExecutor {
 
         if (config.getWorkflowExecutorShouldOpen()) {
             for (SshContext ctx : allSshContexts) {
-                AliasedConnection con = ctx.getConnection();
                 ctx.initTransportHandler();
-                LOGGER.debug("Connection for " + ctx + " initiliazed");
+                LOGGER.debug("Connection for " + ctx + " initialized");
             }
         }
 
         state.getWorkflowTrace().reset();
-        int numSshContexts = allSshContexts.size();
         List<SshAction> sshActions = state.getWorkflowTrace().getSshActions();
         for (SshAction action : sshActions) {
 
