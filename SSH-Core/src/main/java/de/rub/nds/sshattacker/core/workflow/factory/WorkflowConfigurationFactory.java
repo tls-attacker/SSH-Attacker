@@ -51,9 +51,11 @@ public class WorkflowConfigurationFactory {
             case FULL:
                 return createFullWorkflowTrace();
             case DYNAMIC_KEYEXCHANGE:
-                // TODO Implement dynamic workflow
+                return createDynamicKeyExchangeWorkflowTrace();
             case DYNAMIC_AUTHPASSWORD:
+                return createDynamicAuthenticationPasswordWorkflowTrace();
             case DYNAMIC_FULL:
+                return createDynamicFullWorkflowTrace();
             default:
                 throw new ConfigurationException(
                         "Unknown WorkflowTraceType" + workflowTraceType.name());
@@ -62,13 +64,9 @@ public class WorkflowConfigurationFactory {
 
     private AliasedConnection getConnection() {
         AliasedConnection con = null;
-        // ToDo because of implementation in WorkflowNormalizer, change after runningModeDelegate is
-        // implemented
-        if (null == mode) {
-            mode = RunningModeType.CLIENT;
-        }
+
         if (mode == null) {
-            throw new ConfigurationException("Running mode not set, can't configure workflow");
+            mode = config.getDefaultRunningMode();
         } else {
             switch (mode) {
                 case CLIENT:
@@ -94,7 +92,14 @@ public class WorkflowConfigurationFactory {
                                 config.getClientSupportedKeyExchangeAlgorithms(),
                                 config.getServerSupportedKeyExchangeAlgorithms())
                         .orElse(null);
-        workflow.addSshActions(this.createKeyExchangeActions(choosenAlgorithm));
+        workflow.addSshActions(this.createKeyExchangeActions(choosenAlgorithm, null));
+        return workflow;
+    }
+
+    public WorkflowTrace createDynamicKeyExchangeWorkflowTrace() {
+        WorkflowTrace workflow = startKeyExchangeWorkflowTrace();
+        workflow.addSshAction(
+                new DynamicKeyExchangeAction(AliasedConnection.DEFAULT_CONNECTION_ALIAS));
         return workflow;
     }
 
@@ -104,8 +109,20 @@ public class WorkflowConfigurationFactory {
         return workflow;
     }
 
+    public WorkflowTrace createDynamicAuthenticationPasswordWorkflowTrace() {
+        WorkflowTrace workflow = createDynamicKeyExchangeWorkflowTrace();
+        workflow.addSshActions(createAuthPasswordActions());
+        return workflow;
+    }
+
     public WorkflowTrace createFullWorkflowTrace() {
         WorkflowTrace workflow = createAuthenticationPasswordWorkflowTrace();
+        workflow.addSshActions(createConnectionProtocolActions());
+        return workflow;
+    }
+
+    public WorkflowTrace createDynamicFullWorkflowTrace() {
+        WorkflowTrace workflow = createDynamicAuthenticationPasswordWorkflowTrace();
         workflow.addSshActions(createConnectionProtocolActions());
         return workflow;
     }
@@ -141,93 +158,82 @@ public class WorkflowConfigurationFactory {
         return workflow;
     }
 
-    public List<SshAction> createKeyExchangeActions(KeyExchangeAlgorithm choosenAlgorithm) {
+    public List<SshAction> createKeyExchangeActions(
+            KeyExchangeAlgorithm choosenAlgorithm, AliasedConnection con) {
         List<SshAction> sshActions = new LinkedList<>();
         KeyExchangeFlowType choosenKeyExchangeFlowType = choosenAlgorithm.getFlowType();
+        if (con == null) {
+            con = getConnection();
+        }
         switch (choosenKeyExchangeFlowType) {
             case DIFFIE_HELLMAN:
                 sshActions.add(
                         MessageActionFactory.createAction(
                                 config,
-                                getConnection(),
+                                con,
                                 ConnectionEndType.CLIENT,
                                 new DhKeyExchangeInitMessage()));
-                List<ProtocolMessage<?>> DhReplyandNewKeysMessage =
-                        new ArrayList<ProtocolMessage<?>>();
+                List<ProtocolMessage<?>> DhReplyandNewKeysMessage = new ArrayList<>();
                 DhReplyandNewKeysMessage.add(new DhKeyExchangeReplyMessage());
                 DhReplyandNewKeysMessage.add(new NewKeysMessage());
                 sshActions.add(
                         MessageActionFactory.createAction(
-                                config,
-                                getConnection(),
-                                ConnectionEndType.SERVER,
-                                DhReplyandNewKeysMessage));
+                                config, con, ConnectionEndType.SERVER, DhReplyandNewKeysMessage));
                 sshActions.add(
                         MessageActionFactory.createAction(
-                                config,
-                                getConnection(),
-                                ConnectionEndType.CLIENT,
-                                new NewKeysMessage()));
+                                config, con, ConnectionEndType.CLIENT, new NewKeysMessage()));
                 break;
             case DIFFIE_HELLMAN_GROUP_EXCHANGE:
                 sshActions.add(
                         MessageActionFactory.createAction(
                                 config,
-                                getConnection(),
+                                con,
                                 ConnectionEndType.CLIENT,
                                 new DhGexKeyExchangeRequestMessage()));
                 sshActions.add(
                         MessageActionFactory.createAction(
                                 config,
-                                getConnection(),
+                                con,
                                 ConnectionEndType.SERVER,
                                 new DhGexKeyExchangeGroupMessage()));
                 sshActions.add(
                         MessageActionFactory.createAction(
                                 config,
-                                getConnection(),
+                                con,
                                 ConnectionEndType.CLIENT,
                                 new DhGexKeyExchangeInitMessage()));
-                List<ProtocolMessage<?>> DhGexReplyandNewKeysMessage =
-                        new ArrayList<ProtocolMessage<?>>();
+                List<ProtocolMessage<?>> DhGexReplyandNewKeysMessage = new ArrayList<>();
                 DhGexReplyandNewKeysMessage.add(new DhGexKeyExchangeReplyMessage());
                 DhGexReplyandNewKeysMessage.add(new NewKeysMessage());
                 sshActions.add(
                         MessageActionFactory.createAction(
                                 config,
-                                getConnection(),
+                                con,
                                 ConnectionEndType.SERVER,
                                 DhGexReplyandNewKeysMessage));
                 sshActions.add(
                         MessageActionFactory.createAction(
-                                config,
-                                getConnection(),
-                                ConnectionEndType.CLIENT,
-                                new NewKeysMessage()));
+                                config, con, ConnectionEndType.CLIENT, new NewKeysMessage()));
                 break;
             case ECDH:
                 sshActions.add(
                         MessageActionFactory.createAction(
                                 config,
-                                getConnection(),
+                                con,
                                 ConnectionEndType.CLIENT,
                                 new EcdhKeyExchangeInitMessage()));
-                List<ProtocolMessage<?>> EcdhReplyandNewKeysMessage =
-                        new ArrayList<ProtocolMessage<?>>();
+                List<ProtocolMessage<?>> EcdhReplyandNewKeysMessage = new ArrayList<>();
                 EcdhReplyandNewKeysMessage.add(new EcdhKeyExchangeReplyMessage());
                 EcdhReplyandNewKeysMessage.add(new NewKeysMessage());
                 sshActions.add(
                         MessageActionFactory.createAction(
-                                config,
-                                getConnection(),
-                                ConnectionEndType.SERVER,
-                                EcdhReplyandNewKeysMessage));
+                                config, con, ConnectionEndType.SERVER, EcdhReplyandNewKeysMessage));
                 sshActions.add(
                         MessageActionFactory.createAction(
-                                config,
-                                getConnection(),
-                                ConnectionEndType.CLIENT,
-                                new NewKeysMessage()));
+                                config, con, ConnectionEndType.CLIENT, new NewKeysMessage()));
+                break;
+            default:
+                break;
         }
         return sshActions;
     }
