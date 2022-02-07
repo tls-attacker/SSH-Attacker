@@ -12,13 +12,12 @@ import de.rub.nds.sshattacker.core.exceptions.CryptoException;
 
 public interface EncryptionCipher {
 
-    byte[] encrypt(byte[] data) throws CryptoException;
+    byte[] encrypt(byte[] plainData) throws CryptoException;
 
-    byte[] encrypt(byte[] data, byte[] additionalAuthenticatedData) throws CryptoException;
+    byte[] encrypt(byte[] plainData, byte[] iv) throws CryptoException;
+
+    byte[] encrypt(byte[] plainData, byte[] iv, byte[] additionalAuthenticatedData)
+            throws CryptoException;
 
     EncryptionAlgorithm getAlgorithm();
-
-    byte[] getIV();
-
-    void setIV(byte[] iv) throws CryptoException;
 }

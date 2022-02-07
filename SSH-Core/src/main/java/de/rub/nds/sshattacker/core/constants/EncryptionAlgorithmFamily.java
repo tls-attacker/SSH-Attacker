@@ -21,6 +21,7 @@ public enum EncryptionAlgorithmFamily {
     IDEA("IDEA"),
     CAST128("CAST5"),
     DES("DES"),
+    SEED("SEED"),
     CHACHA20_POLY1305("ChaCha20-Poly1305");
 
     private static final Logger LOGGER = LogManager.getLogger();
@@ -84,6 +85,8 @@ public enum EncryptionAlgorithmFamily {
                 return CAST128;
             case DES_CBC:
                 return DES;
+            case SEED_CBC_SSH_COM:
+                return SEED;
             case CHACHA20_POLY1305_OPENSSH_COM:
                 return CHACHA20_POLY1305;
             default:

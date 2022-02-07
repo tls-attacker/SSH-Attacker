@@ -8,7 +8,7 @@
 package de.rub.nds.sshattacker.core.packet.cipher;
 
 import de.rub.nds.sshattacker.core.constants.EncryptionAlgorithm;
-import de.rub.nds.sshattacker.core.constants.EncryptionAlgorithmType;
+import de.rub.nds.sshattacker.core.constants.EncryptionMode;
 import de.rub.nds.sshattacker.core.constants.MacAlgorithm;
 import de.rub.nds.sshattacker.core.packet.cipher.keys.KeySet;
 import de.rub.nds.sshattacker.core.state.SshContext;
@@ -25,15 +25,13 @@ public class PacketCipherFactory {
             EncryptionAlgorithm encryptionAlgorithm,
             MacAlgorithm macAlgorithm) {
         try {
-            if (encryptionAlgorithm.getType() == EncryptionAlgorithmType.BLOCK) {
-                return new PacketBlockCipher(context, keySet, encryptionAlgorithm, macAlgorithm);
-            } else if (encryptionAlgorithm.getType() == EncryptionAlgorithmType.AEAD) {
-                return new PacketAEADCipher(context, keySet, encryptionAlgorithm);
-            } else if (encryptionAlgorithm == EncryptionAlgorithm.NONE) {
-                return getNoneCipher(context);
+            if (encryptionAlgorithm == EncryptionAlgorithm.CHACHA20_POLY1305_OPENSSH_COM) {
+                return new PacketChaCha20Poly1305Cipher(context, keySet);
+            } else if (encryptionAlgorithm.getMode() == EncryptionMode.GCM) {
+                return new PacketGCMCipher(context, keySet, encryptionAlgorithm);
+            } else {
+                return new PacketMacedCipher(context, keySet, encryptionAlgorithm, macAlgorithm);
             }
-            LOGGER.warn("Unsupported cipher type: " + encryptionAlgorithm.getType());
-            return getNoneCipher(context);
         } catch (Exception e) {
             LOGGER.debug(
                     "Could not PacketCipher from the current context! Creating none Cipher", e);
@@ -41,7 +39,7 @@ public class PacketCipherFactory {
         }
     }
 
-    public static PacketNoneCipher getNoneCipher(SshContext context) {
-        return new PacketNoneCipher(context, EncryptionAlgorithm.NONE, MacAlgorithm.NONE);
+    public static PacketCipher getNoneCipher(SshContext context) {
+        return new PacketMacedCipher(context, null, EncryptionAlgorithm.NONE, MacAlgorithm.NONE);
     }
 }

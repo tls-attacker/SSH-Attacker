@@ -100,7 +100,7 @@ public abstract class AbstractPacket extends ModifiableVariableHolder {
             Chooser chooser, AbstractPacketEncryptor encryptor, PacketCompressor compressor);
 
     public abstract AbstractPacketParser<? extends AbstractPacket> getPacketParser(
-            byte[] array, int startPosition, PacketCipher activeDecryptCipher);
+            byte[] array, int startPosition, PacketCipher activeDecryptCipher, int sequenceNumber);
 
     public abstract AbstractPacketSerializer<? extends AbstractPacket> getPacketSerializer();
 

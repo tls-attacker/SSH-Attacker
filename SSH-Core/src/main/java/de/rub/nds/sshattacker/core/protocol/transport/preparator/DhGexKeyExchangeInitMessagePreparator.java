@@ -17,7 +17,6 @@ import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.transport.message.DhGexKeyExchangeInitMessage;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import java.util.Optional;
-import java.util.Random;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -35,37 +34,10 @@ public class DhGexKeyExchangeInitMessagePreparator
     public void prepareMessageSpecificContents() {
         getObject().setMessageID(MessageIDConstant.SSH_MSG_KEX_DH_GEX_INIT);
         Optional<KeyExchange> keyExchange = chooser.getContext().getKeyExchangeInstance();
-        if (keyExchange.isPresent() && keyExchange.get() instanceof DhKeyExchange) {
-            DhKeyExchange dhKeyExchange = (DhKeyExchange) keyExchange.get();
-            if (!(dhKeyExchange.areGroupParametersSet())) {
-                dhKeyExchange.setModulus(
-                        chooser.getConfig().getDefaultDHGexKeyExchangeGroup().getModulus());
-                dhKeyExchange.setGenerator(
-                        chooser.getConfig().getDefaultDHGexKeyExchangeGroup().getGenerator());
-            }
-            ;
-            dhKeyExchange.generateLocalKeyPair();
-            getObject().setPublicKey(dhKeyExchange.getLocalKeyPair().getPublic().getY(), true);
-        } else {
-            // ToDo Maybe implement and raise new "missingContextContents" Exception
-            DhKeyExchange dhKeyExchange =
-                    (DhKeyExchange)
-                            DhKeyExchange.newInstance(
-                                    (chooser.getRandomKeyExchangeAlgorithm(
-                                            new Random(),
-                                            chooser.getAllSupportedDH_DHGEKeyExchange())));
-            if (!(dhKeyExchange.areGroupParametersSet())) {
-                dhKeyExchange.setModulus(
-                        chooser.getConfig().getDefaultDHGexKeyExchangeGroup().getModulus());
-                dhKeyExchange.setGenerator(
-                        chooser.getConfig().getDefaultDHGexKeyExchangeGroup().getGenerator());
-            }
-            ;
-            dhKeyExchange.generateLocalKeyPair();
-            getObject().setPublicKey(dhKeyExchange.getLocalKeyPair().getPublic().getY(), true);
-            chooser.getContext().setKeyExchangeInstance(dhKeyExchange);
-        }
-
+        DhKeyExchange dhKeyExchange = chooser.getDHGexKeyExchange();
+        dhKeyExchange.generateLocalKeyPair();
+        getObject().setPublicKey(dhKeyExchange.getLocalKeyPair().getPublic().getY(), true);
+        chooser.getContext().setKeyExchangeInstance(dhKeyExchange);
         ExchangeHash exchangeHash = chooser.getContext().getExchangeHashInstance();
         if (exchangeHash instanceof DhGexExchangeHash) {
             ((DhGexExchangeHash) exchangeHash)
@@ -74,9 +46,6 @@ public class DhGexKeyExchangeInitMessagePreparator
             ((DhGexOldExchangeHash) exchangeHash)
                     .setClientDHPublicKey(getObject().getPublicKey().getValue().toByteArray());
         } else {
-            // throw "missingContextContents" Exception "Exchange hash instance is neither
-            // DhGexExchangeHash nor DhGexOldExchangeHash or key exchange instance is not present,
-            // unable to update exchange hash with local public key");
             chooser.getContext()
                     .setExchangeHashInstance(
                             DhGexExchangeHash.from(chooser.getContext().getExchangeHashInstance()));

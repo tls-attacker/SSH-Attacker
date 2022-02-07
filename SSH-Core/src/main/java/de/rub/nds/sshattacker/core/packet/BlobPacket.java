@@ -24,7 +24,7 @@ public class BlobPacket extends AbstractPacket {
 
     @Override
     public BlobPacketParser getPacketParser(
-            byte[] array, int startPosition, PacketCipher activeDecryptCipher) {
+            byte[] array, int startPosition, PacketCipher activeDecryptCipher, int sequenceNumber) {
         return new BlobPacketParser(array, startPosition);
     }
 

@@ -24,6 +24,7 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
+import javax.xml.bind.util.JAXBSource;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -88,23 +89,17 @@ public class WorkflowTraceSerializer {
     public static void write(OutputStream outputStream, WorkflowTrace workflowTrace)
             throws JAXBException, IOException {
         context = getJAXBContext();
-        Marshaller m = context.createMarshaller();
-        m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-        try (ByteArrayOutputStream tempStream = new ByteArrayOutputStream()) {
-
-            StringWriter stringWriter = new StringWriter();
-
-            m.marshal(workflowTrace, stringWriter);
+        try (ByteArrayOutputStream xmlOutputStream = new ByteArrayOutputStream()) {
             // circumvent the max indentation of 8 of the JAXB marshaller
             Transformer transformer = TransformerFactory.newInstance().newTransformer();
-            transformer.setOutputProperty("omit-xml-declaration", "yes");
+            transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
             transformer.setOutputProperty(OutputKeys.INDENT, "yes");
             transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
             transformer.transform(
-                    new StreamSource(new StringReader(stringWriter.toString())),
-                    new StreamResult(tempStream));
+                    new JAXBSource(context, workflowTrace),
+                    new StreamResult(xmlOutputStream));
 
-            String xml_text = tempStream.toString();
+            String xml_text = xmlOutputStream.toString();
             // and we modify all line separators to the system dependant line separator
             xml_text = xml_text.replaceAll("\r?\n", System.lineSeparator());
             outputStream.write(xml_text.getBytes());

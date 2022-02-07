@@ -9,7 +9,6 @@ package de.rub.nds.sshattacker.core.crypto.cipher;
 
 import de.rub.nds.sshattacker.core.constants.EncryptionAlgorithm;
 import de.rub.nds.sshattacker.core.constants.EncryptionAlgorithmType;
-import de.rub.nds.sshattacker.core.exceptions.CryptoException;
 import de.rub.nds.sshattacker.core.packet.cipher.keys.KeySet;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import org.apache.logging.log4j.LogManager;
@@ -23,20 +22,26 @@ public class CipherFactory {
             EncryptionAlgorithm encryptionAlgorithm,
             KeySet keySet,
             ConnectionEndType connectionEndType) {
-        if (encryptionAlgorithm.getJavaName() != null) {
-            try {
-                return new JavaCipher(
-                        encryptionAlgorithm,
-                        keySet.getWriteEncryptionKey(connectionEndType),
-                        keySet.getWriteIv(connectionEndType));
-            } catch (CryptoException e) {
-                LOGGER.warn(
-                        "Caught a CryptoException while instantiating JavaCipher - Using NoneCipher!",
-                        e);
-                return new NoneCipher();
-            }
-        } else if (encryptionAlgorithm == EncryptionAlgorithm.NONE) {
+        return getEncryptionCipher(
+                encryptionAlgorithm,
+                keySet != null ? keySet.getWriteEncryptionKey(connectionEndType) : null,
+                true);
+    }
+
+    public static EncryptionCipher getEncryptionCipher(
+            EncryptionAlgorithm encryptionAlgorithm, byte[] key, boolean mainCipher) {
+        if (encryptionAlgorithm == EncryptionAlgorithm.NONE) {
             return new NoneCipher();
+        } else if (mainCipher
+                && encryptionAlgorithm == EncryptionAlgorithm.CHACHA20_POLY1305_OPENSSH_COM) {
+            // If mainCipher is not set, the factory will return a JavaCipher wrapping a ChaCha20
+            // instance used for header encryption / decryption
+            return new ChaCha20Poly1305Cipher(key);
+        } else if (encryptionAlgorithm.getJavaName() != null) {
+            return new JavaCipher(
+                    encryptionAlgorithm,
+                    key,
+                    encryptionAlgorithm.getType() == EncryptionAlgorithmType.STREAM);
         } else {
             LOGGER.warn(
                     "Encryption algorithm '"
@@ -50,26 +55,24 @@ public class CipherFactory {
             EncryptionAlgorithm encryptionAlgorithm,
             KeySet keySet,
             ConnectionEndType connectionEndType) {
-        if (encryptionAlgorithm.getJavaName() != null) {
-            try {
-                if (encryptionAlgorithm.getType() == EncryptionAlgorithmType.STREAM) {
-                    // No IV / tag length required
-                    return new JavaCipher(
-                            encryptionAlgorithm, keySet.getReadEncryptionKey(connectionEndType));
-                } else {
-                    return new JavaCipher(
-                            encryptionAlgorithm,
-                            keySet.getReadEncryptionKey(connectionEndType),
-                            keySet.getReadIv(connectionEndType));
-                }
-            } catch (CryptoException e) {
-                LOGGER.warn(
-                        "Caught a CryptoException while instantiating JavaCipher - Using NoneCipher!",
-                        e);
-                return new NoneCipher();
-            }
-        } else if (encryptionAlgorithm == EncryptionAlgorithm.NONE) {
+        return getDecryptionCipher(
+                encryptionAlgorithm,
+                keySet != null ? keySet.getReadEncryptionKey(connectionEndType) : null,
+                true);
+    }
+
+    public static DecryptionCipher getDecryptionCipher(
+            EncryptionAlgorithm encryptionAlgorithm, byte[] key, boolean mainCipher) {
+        if (encryptionAlgorithm == EncryptionAlgorithm.NONE) {
             return new NoneCipher();
+        } else if (mainCipher
+                && encryptionAlgorithm == EncryptionAlgorithm.CHACHA20_POLY1305_OPENSSH_COM) {
+            return new ChaCha20Poly1305Cipher(key);
+        } else if (encryptionAlgorithm.getJavaName() != null) {
+            return new JavaCipher(
+                    encryptionAlgorithm,
+                    key,
+                    encryptionAlgorithm.getType() == EncryptionAlgorithmType.STREAM);
         } else {
             LOGGER.warn(
                     "Encryption algorithm '"

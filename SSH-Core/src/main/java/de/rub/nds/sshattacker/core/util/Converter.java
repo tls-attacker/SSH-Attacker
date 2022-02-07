@@ -100,4 +100,14 @@ public class Converter {
     public static boolean byteToBoolean(byte value) {
         return value != (byte) 0x00;
     }
+
+    // TODO: Replace by ArrayConverter.bytesToLong() as soon as fixed
+    public static long byteArrayToLong(byte[] value) {
+        long result = 0;
+        for (int i = 0; i < Long.BYTES && i < value.length; i++) {
+            result <<= Byte.SIZE;
+            result |= (value[i] & 0xFF);
+        }
+        return result;
+    }
 }

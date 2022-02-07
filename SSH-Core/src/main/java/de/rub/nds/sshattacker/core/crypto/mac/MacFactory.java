@@ -16,12 +16,18 @@ public class MacFactory {
     public static WrappedMac getWriteMac(
             MacAlgorithm algorithm, KeySet keySet, ConnectionEndType connectionEndType)
             throws NoSuchAlgorithmException {
+        if (algorithm == MacAlgorithm.NONE) {
+            return new NoneMac();
+        }
         return getMac(algorithm, keySet.getWriteIntegrityKey(connectionEndType));
     }
 
     public static WrappedMac getReadMac(
             MacAlgorithm algorithm, KeySet keySet, ConnectionEndType connectionEndType)
             throws NoSuchAlgorithmException {
+        if (algorithm == MacAlgorithm.NONE) {
+            return new NoneMac();
+        }
         return getMac(algorithm, keySet.getReadIntegrityKey(connectionEndType));
     }
 
@@ -29,6 +35,10 @@ public class MacFactory {
             throws NoSuchAlgorithmException {
         if (algorithm.getJavaName() != null) {
             return new JavaMac(algorithm, key);
+        } else if (algorithm.toString().startsWith("umac")) {
+            return new UMac(algorithm, key);
+        } else if (algorithm == MacAlgorithm.NONE) {
+            return new NoneMac();
         }
         throw new NoSuchAlgorithmException("MAC algorithm '" + algorithm + "' is not supported!");
     }
