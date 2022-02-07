@@ -7,6 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.handler;
 
+import de.rub.nds.sshattacker.core.exceptions.NotImplementedException;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
@@ -34,7 +35,7 @@ public class RsaKeyExchangeSecretMessageHandler extends SshMessageHandler<RsaKey
     @Override
     public SshMessageParser<RsaKeyExchangeSecretMessage> getParser(byte[] array, int startPosition) {
         //TODO: Implement Parser
-        return null;
+        throw new NotImplementedException("RsaKeyExchangeSecretMessage Parser is missing!");
     }
 
     @Override

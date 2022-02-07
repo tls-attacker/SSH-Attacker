@@ -11,6 +11,7 @@ import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.constants.*;
 import de.rub.nds.sshattacker.core.crypto.kex.DhKeyExchange;
 import de.rub.nds.sshattacker.core.crypto.kex.KeyExchange;
+import de.rub.nds.sshattacker.core.crypto.kex.RsaKeyExchange;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import java.util.List;
 import java.util.Optional;
@@ -232,6 +233,35 @@ public class DefaultChooser extends Chooser {
             return (DhKeyExchange) keyExchange.get();
         } else {
             return new DhKeyExchange(config.getDefaultDHGexKeyExchangeGroup());
+        }
+    }
+
+    @Override
+    public RsaKeyExchange getRsaKeyExchange() {
+        Optional<KeyExchange> keyExchange = context.getKeyExchangeInstance();
+        if (keyExchange.isPresent()
+                && keyExchange.get() instanceof RsaKeyExchange
+                && ((RsaKeyExchange) keyExchange.get()).areParametersSet()) {
+            return (RsaKeyExchange) keyExchange.get();
+        } else {
+            // Create default RsaKeyExchange from config
+            int hashLength;
+            // Default hash length depends on default key exchange algorithm in config
+            switch (config.getDefaultRsaKeyExchangeAlgorithm()) {
+                case RSA2048_SHA256:
+                    hashLength = 256;
+                    break;
+                case RSA1024_SHA1:
+                    hashLength = 128;
+                    break;
+                default:
+                    // Should never occur
+                    hashLength = 0;
+                    break;
+            }
+            RsaKeyExchange rsaKeyExchange = new RsaKeyExchange(config.getDefaultRsaPublicKey());
+            rsaKeyExchange.setHashLength(hashLength);
+            return rsaKeyExchange;
         }
     }
 

@@ -25,6 +25,11 @@ public class RsaPublicKey extends ModifiableVariableHolder implements RSAPublicK
 
     public RsaPublicKey() {}
 
+    public RsaPublicKey(BigInteger exponent, BigInteger modulus) {
+        this.setExponent(exponent, true);
+        this.setModulus(modulus, true);
+    }
+
     // Modulus
     public ModifiableInteger getModulusLength() {
         return modulusLength;
@@ -61,7 +66,7 @@ public class RsaPublicKey extends ModifiableVariableHolder implements RSAPublicK
         if (adjustLengthField) {
             double bitLength = modulus.bitLength();
             int byteLength = (int) Math.ceil(bitLength/8);
-            setModulusLength(byteLength);
+            this.setModulusLength(byteLength);
         }
         this.modulus = ModifiableVariableFactory.safelySetValue(this.modulus, modulus);
     }
@@ -95,6 +100,15 @@ public class RsaPublicKey extends ModifiableVariableHolder implements RSAPublicK
     }
 
     public void setExponent(BigInteger exponent) {
+        this.setExponent(exponent, false);
+    }
+
+    public void setExponent(BigInteger exponent, boolean adjustLengthField) {
+        if (adjustLengthField) {
+            double bitLength = exponent.bitLength();
+            int byteLength = (int) Math.ceil(bitLength/8);
+            this.setExponentLength(byteLength);
+        }
         this.exponent = ModifiableVariableFactory.safelySetValue(this.exponent, exponent);
     }
 
