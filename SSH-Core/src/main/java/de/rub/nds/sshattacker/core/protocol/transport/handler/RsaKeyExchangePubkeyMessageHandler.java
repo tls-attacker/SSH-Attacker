@@ -57,7 +57,6 @@ public class RsaKeyExchangePubkeyMessageHandler
                 } else {
                     rsaKeyExchange.setHashLength(128);
                 }
-                rsaKeyExchange.setModulusLength(message.getPublicKey().getModulusLength().getValue() * 8);
                 context.setKeyExchangeInstance(rsaKeyExchange);
 
             } else {

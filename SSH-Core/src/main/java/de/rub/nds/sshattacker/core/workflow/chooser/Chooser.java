@@ -10,6 +10,7 @@ package de.rub.nds.sshattacker.core.workflow.chooser;
 import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.constants.*;
 import de.rub.nds.sshattacker.core.crypto.kex.DhKeyExchange;
+import de.rub.nds.sshattacker.core.crypto.kex.RsaKeyExchange;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
@@ -115,6 +116,8 @@ public abstract class Chooser {
     public abstract int getMaximalDHGroupSize();
 
     public abstract DhKeyExchange getDHGexKeyExchange();
+
+    public abstract RsaKeyExchange getRsaKeyExchange();
 
     // endregion
 

@@ -38,28 +38,21 @@ public class RsaKeyExchangeSecretMessagePreparator extends SshMessagePreparator<
     public void prepareMessageSpecificContents() {
         RsaKeyExchangeSecretMessage message = getObject();
         message.setMessageID(MessageIDConstant.SSH_MSG_KEXRSA_SECRET);
-
-        if(chooser.getContext().getKeyExchangeInstance().isPresent() && chooser.getContext().getKeyExchangeAlgorithm().isPresent()) {
-            KeyExchange keyExchange = chooser.getContext().getKeyExchangeInstance().get();
-            KeyExchangeAlgorithm keyExchangeAlg = chooser.getContext().getKeyExchangeAlgorithm().get();
-
-            if(keyExchange instanceof RsaKeyExchange) {
-                RsaKeyExchange rsaKeyExchange = (RsaKeyExchange) keyExchange;
-                keyExchange.computeSharedSecret();
-                LOGGER.debug("Shared secret: " + keyExchange.getSharedSecret());
-                // Note: data to be encrypted consists of length field + secret (see RFC 4432)
-                byte[] encryptedSecret = prepareEncryptedSecret(prepareData(rsaKeyExchange), keyExchangeAlg, rsaKeyExchange);
-
-                message.setEncryptedSecret(encryptedSecret, true);
-                updateExchangeHashWithSecrets(message, rsaKeyExchange);
-
-            } else {
-                raisePreparationException("Cannot prepare secret message, " +
-                        "key exchange instance is not RSA, but: " + keyExchange.getClass());
-            }
+        RsaKeyExchange keyExchange = chooser.getRsaKeyExchange();
+        KeyExchangeAlgorithm keyExchangeAlg;
+        if (chooser.getContext().getKeyExchangeAlgorithm().isPresent()) {
+            keyExchangeAlg = chooser.getContext().getKeyExchangeAlgorithm().get();
         } else {
-            raisePreparationException("Cannot prepare secret message, key exchange instance or algorithm is missing.");
+            keyExchangeAlg = chooser.getConfig().getDefaultRsaKeyExchangeAlgorithm();
         }
+
+        keyExchange.computeSharedSecret();
+        LOGGER.debug("Shared secret: " + keyExchange.getSharedSecret());
+        // Note: data to be encrypted consists of length field + secret (see RFC 4432)
+        byte[] encryptedSecret = prepareEncryptedSecret(prepareData(keyExchange), keyExchangeAlg, keyExchange);
+
+        message.setEncryptedSecret(encryptedSecret, true);
+        updateExchangeHashWithSecrets(message, keyExchange);
     }
 
     private byte[] prepareData(RsaKeyExchange keyExchange) {
@@ -88,13 +81,13 @@ public class RsaKeyExchangeSecretMessagePreparator extends SshMessagePreparator<
     private void updateExchangeHashWithSecrets(RsaKeyExchangeSecretMessage message, RsaKeyExchange keyExchange) {
         ExchangeHash exchangeHash = chooser.getContext().getExchangeHashInstance();
 
+        RsaExchangeHash rsaExchangeHash;
         if (exchangeHash instanceof RsaExchangeHash) {
-            RsaExchangeHash rsaExchangeHash = (RsaExchangeHash) exchangeHash;
-            rsaExchangeHash.setEncryptedSecret(message.getEncryptedSecret().getValue());
-            rsaExchangeHash.setSharedSecret(keyExchange.getSharedSecret());
+            rsaExchangeHash = (RsaExchangeHash) exchangeHash;
         } else {
-            raisePreparationException("Cannot prepare secret message, " +
-                    "exchange hash instance is not RSA, instead: " + exchangeHash.getClass());
+            rsaExchangeHash = RsaExchangeHash.from(exchangeHash);
         }
+        rsaExchangeHash.setEncryptedSecret(message.getEncryptedSecret().getValue());
+        rsaExchangeHash.setSharedSecret(keyExchange.getSharedSecret());
     }
 }

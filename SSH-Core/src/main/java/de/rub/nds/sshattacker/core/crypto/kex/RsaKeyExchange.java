@@ -8,16 +8,21 @@ public class RsaKeyExchange extends KeyExchange {
 
     private RsaPublicKey publicKey;
 
-    // KLEN in RFC 4432 (in bits)
-    private int modulusLength;
-
     // HLEN in RFC 4432 (in bits)
     private int hashLength;
+
+    public RsaKeyExchange() {
+
+    }
+
+    public RsaKeyExchange(RsaPublicKey publicKey) {
+        this.publicKey = publicKey;
+    }
 
     @Override
     public void computeSharedSecret() {
         // Calculation of maximum number of bits taken from RFC 4432
-        int maximumBits = (modulusLength - 2 * hashLength - 49);
+        int maximumBits = (getModulusLengthInBits() - 2 * hashLength - 49);
         sharedSecret = new BigInteger(maximumBits, random);
     }
 
@@ -45,18 +50,15 @@ public class RsaKeyExchange extends KeyExchange {
         this.hashLength = hashLength;
     }
 
-    public int getModulusLength() {
-        return modulusLength;
-    }
-
-    /**
-     * @param modulusLength length of the RSA modulus in bits
-     */
-    public void setModulusLength(int modulusLength) {
-        this.modulusLength = modulusLength;
+    private int getModulusLengthInBits() {
+        return this.publicKey.getModulusLength().getValue() * 8;
     }
 
     public void setSharedSecret(BigInteger sharedSecret){
         this.sharedSecret = sharedSecret;
+    }
+
+    public boolean areParametersSet() {
+        return publicKey != null && hashLength != 0;
     }
 }
