@@ -31,7 +31,7 @@ public class JavaSignature implements VerificationSignature, SigningSignature {
             signature.update(data);
             return signature.verify(signatureBytes);
         } catch (NoSuchAlgorithmException | InvalidKeyException | SignatureException e) {
-            throw new CryptoException("Encountered exception during verification.", e);
+            throw new CryptoException("Encountered exception during verification: " + e.getMessage());
         }
 
     }

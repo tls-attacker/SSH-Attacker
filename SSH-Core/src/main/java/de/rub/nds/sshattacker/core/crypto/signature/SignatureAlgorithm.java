@@ -3,13 +3,13 @@ package de.rub.nds.sshattacker.core.crypto.signature;
 public enum SignatureAlgorithm {
 
     /*
-     * Sources:
-     * Default Algorithms https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/security/Signature.html
+     * Source for Java Signature Algorithms
+     * https://docs.oracle.com/javase/9/docs/specs/security/standard-names.html#signature-algorithms
      */
-    SHA1_WITH_DSA("SHA1_WITH_DSA", "SHA1withDSA"),
-    SHA256_WITH_DSA("SHA256_WITH_DSA", "SHA256withDSA"),
-    SHA1_WITH_RSA("SHA1_WITH_RSA","SHA1withRSA"),
-    SHA256_WITH_RSA("SHA256_WITH_RSA", "SHA256withRSA");
+    SSH_RSA("ssh-rsa", "SHA1WithRSA"),
+    RSA_SHA2_256("rsa-sha2-256", "SHA256WithRSA"),
+    RSA_SHA2_512("rsa-sha2-512", "SHA512WithRSA"),
+    UNKNOWN("UNKNOWN", "UNKNOWN");
 
 
     private final String name;
@@ -31,5 +31,19 @@ public enum SignatureAlgorithm {
 
     public String getJavaName() {
         return javaName;
+    }
+
+    /**
+     * Tries to convert a String to a SignatureAlgorithm
+     * @param name String to be converted to SignatureAlgorithm
+     * @return Corresponding SignatureAlgorithm or UNKNOWN if none was found
+     */
+    public static SignatureAlgorithm getSignatureAlgorithm(String name) {
+        for (SignatureAlgorithm signatureAlgorithm : values()) {
+            if (signatureAlgorithm.getName().equalsIgnoreCase(name)) {
+                return signatureAlgorithm;
+            }
+        }
+        return UNKNOWN;
     }
 }

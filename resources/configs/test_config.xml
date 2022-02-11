@@ -6,6 +6,10 @@
     <channelCommand>nc -l -p 13370</channelCommand>
     <channelRequestType>EXEC</channelRequestType>
     <channelType>SESSION</channelType>
+    <clientSupportedHostKeyAlgorithms>
+        <clientSupportedHostKeyAlgorithm>RSA_SHA2_512</clientSupportedHostKeyAlgorithm>
+        <clientSupportedHostKeyAlgorithm>SSH_RSA</clientSupportedHostKeyAlgorithm>
+    </clientSupportedHostKeyAlgorithms>
     <clientSupportedKeyExchangeAlgorithms>
         <clientSupportedKeyExchangeAlgorithm>RSA2048_SHA256</clientSupportedKeyExchangeAlgorithm>
     </clientSupportedKeyExchangeAlgorithms>
