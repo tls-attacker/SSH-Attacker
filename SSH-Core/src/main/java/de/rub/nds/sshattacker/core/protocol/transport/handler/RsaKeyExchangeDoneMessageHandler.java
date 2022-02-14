@@ -7,6 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.handler;
 
+import de.rub.nds.sshattacker.core.constants.PublicKeyAuthenticationAlgorithm;
 import de.rub.nds.sshattacker.core.crypto.hash.ExchangeHash;
 import de.rub.nds.sshattacker.core.crypto.keys.RsaPublicKey;
 import de.rub.nds.sshattacker.core.crypto.signature.JavaSignature;
@@ -26,6 +27,8 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.util.RsaPublicKeyParser;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.util.Optional;
 
 public class RsaKeyExchangeDoneMessageHandler extends SshMessageHandler<RsaKeyExchangeDoneMessage> {
 
@@ -48,20 +51,26 @@ public class RsaKeyExchangeDoneMessageHandler extends SshMessageHandler<RsaKeyEx
 
     private void verifySignature() {
         ExchangeHash exchangeHash = context.getExchangeHashInstance();
-        //TODO: This should be a parser for any public key, not just RSA
-        RsaPublicKey publicKey = new RsaPublicKeyParser(exchangeHash.getServerHostKey(),0).parse();
+        Optional<PublicKeyAuthenticationAlgorithm> algorithm = context.getServerHostKeyAlgorithm();
+        Optional<byte[]> hostKeyBytes = context.getServerHostKey();
 
-        RawSignature signature = new SignatureParser(message.getSignature().getValue(), 0).parse();
-        JavaSignature javaSignature = SignatureFactory.getVerificationSignature(signature.getSignatureAlgorithm(), publicKey);
+        if(algorithm.isPresent() && hostKeyBytes.isPresent()) {
+            RawSignature signature = new SignatureParser(message.getSignature().getValue(), 0).parse();
+            JavaSignature javaSignature = SignatureFactory.getVerificationSignatureForHostKey(
+                    signature.getSignatureAlgorithm(), hostKeyBytes.get(), algorithm.get());
 
-        try {
-            if(javaSignature.verify(exchangeHash.get(), signature.getSignatureBytes())) {
-                LOGGER.debug("Signature verification was successful.");
-            } else {
-                LOGGER.debug("Signature verification failed: Signature was invalid");
+            try {
+                if (javaSignature.verify(exchangeHash.get(), signature.getSignatureBytes())) {
+                    LOGGER.debug("Signature verification was successful");
+                } else {
+                    LOGGER.debug("Signature verification failed: Signature was invalid");
+                }
+            } catch (CryptoException | NotImplementedException e) {
+                // Catch not implemented exception in case the host key parser is not yet implemented.
+                LOGGER.debug("Signature verification failed because an error occurred. " + e.getMessage());
             }
-        } catch (CryptoException e) {
-            LOGGER.debug("Signature verification failed because an error occurred. " + e.getMessage());
+        } else {
+            LOGGER.debug("Signature could not be verified, because host key algorithm or host key bytes are missing");
         }
     }
 

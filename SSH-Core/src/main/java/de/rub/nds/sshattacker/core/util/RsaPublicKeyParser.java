@@ -1,7 +1,7 @@
 /*
  * SSH-Attacker - A Modular Penetration Testing Framework for SSH
  *
- * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
@@ -45,7 +45,7 @@ public class RsaPublicKeyParser extends Parser<RsaPublicKey> {
             LOGGER.debug("Modulus: " + publicKey.getModifiableModulus().getValue());
             return publicKey;
         } else {
-            LOGGER.debug("Tried to parse RSA public key, but encountered unknown keytype: " + keytype);
+            LOGGER.debug("Tried to parse RSA public key, but encountered unknown key-type: " + keytype);
             return null;
         }
     }
