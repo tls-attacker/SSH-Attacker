@@ -25,7 +25,7 @@ public class SignatureFactory {
 
     public static JavaSignature getSigningSignature(
             SignatureAlgorithm signatureAlgorithm,
-            CustomKeyPair<? extends PrivateKey, ? extends  PublicKey> keyPair
+            CustomKeyPair<? extends PrivateKey, ? extends PublicKey> keyPair
     ) {
         return new JavaSignature(signatureAlgorithm, keyPair.getPrivate());
     }
@@ -40,7 +40,7 @@ public class SignatureFactory {
 
     public static JavaSignature getVerificationSignature(
             SignatureAlgorithm signatureAlgorithm,
-            CustomKeyPair<? extends PrivateKey, ? extends  PublicKey> keyPair
+            CustomKeyPair<? extends PrivateKey, ? extends PublicKey> keyPair
     ) {
         return new JavaSignature(signatureAlgorithm, keyPair.getPublic());
     }
