@@ -1,7 +1,7 @@
 /*
  * SSH-Attacker - A Modular Penetration Testing Framework for SSH
  *
- * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
@@ -20,7 +20,6 @@ import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessage;
 import de.rub.nds.sshattacker.core.protocol.connection.message.*;
 import de.rub.nds.sshattacker.core.protocol.transport.message.*;
 import de.rub.nds.sshattacker.core.protocol.util.AlgorithmPicker;
-import de.rub.nds.sshattacker.core.state.State;
 import de.rub.nds.sshattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.sshattacker.core.workflow.action.*;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
@@ -55,15 +54,13 @@ public class WorkflowConfigurationFactory {
             case FULL:
                 return createFullWorkflowTrace();
             case DYNAMIC_KEYEXCHANGE:
-                //TODO Implement dynamic workflow
+                // TODO Implement dynamic workflow
             case DYNAMIC_AUTHPASSWORD:
             case DYNAMIC_FULL:
             default:
                 throw new ConfigurationException(
                         "Unknown WorkflowTraceType" + workflowTraceType.name());
         }
-
-
     }
 
     private AliasedConnection getConnection() {
