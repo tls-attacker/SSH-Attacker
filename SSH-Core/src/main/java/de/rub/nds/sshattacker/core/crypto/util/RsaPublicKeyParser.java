@@ -1,11 +1,11 @@
 /*
  * SSH-Attacker - A Modular Penetration Testing Framework for SSH
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
-package de.rub.nds.sshattacker.core.util;
+package de.rub.nds.sshattacker.core.crypto.util;
 
 import de.rub.nds.sshattacker.core.constants.BinaryPacketConstants;
 import de.rub.nds.sshattacker.core.constants.PublicKeyAuthenticationAlgorithm;
@@ -14,10 +14,7 @@ import de.rub.nds.sshattacker.core.protocol.common.Parser;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-/**
- * Parser class to parse an RSA public key.
- * Currently only supports ssh-rsa public keys
- */
+/** Parser class to parse an RSA public key. Currently only supports ssh-rsa public keys */
 public class RsaPublicKeyParser extends Parser<RsaPublicKey> {
 
     private static final Logger LOGGER = LogManager.getLogger();
@@ -45,7 +42,8 @@ public class RsaPublicKeyParser extends Parser<RsaPublicKey> {
             LOGGER.debug("Modulus: " + publicKey.getModifiableModulus().getValue());
             return publicKey;
         } else {
-            LOGGER.debug("Tried to parse RSA public key, but encountered unknown key-type: " + keytype);
+            LOGGER.debug(
+                    "Tried to parse RSA public key, but encountered unknown key-type: " + keytype);
             return null;
         }
     }

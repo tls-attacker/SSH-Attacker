@@ -1,7 +1,7 @@
 /*
  * SSH-Attacker - A Modular Penetration Testing Framework for SSH
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
@@ -9,10 +9,9 @@ package de.rub.nds.sshattacker.core.crypto.signature;
 
 import de.rub.nds.sshattacker.core.constants.BinaryPacketConstants;
 import de.rub.nds.sshattacker.core.protocol.common.Parser;
+import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import java.util.Arrays;
 
 /** Parser class to parse a signature */
 public class SignatureParser extends Parser<RawSignature> {
@@ -33,7 +32,9 @@ public class SignatureParser extends Parser<RawSignature> {
         // Try to convert the signature type to get the corresponding signature algorithm
         SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.getSignatureAlgorithm(sigtype);
         signature.setSignatureAlgorithm(signatureAlgorithm);
-        LOGGER.debug("Corresponding signature algorithm: " + signature.getSignatureAlgorithm().getJavaName());
+        LOGGER.debug(
+                "Corresponding signature algorithm: "
+                        + signature.getSignatureAlgorithm().getJavaName());
 
         signature.setSignatureLength(parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH));
         LOGGER.debug("Signature length: " + signature.getSignatureLength());

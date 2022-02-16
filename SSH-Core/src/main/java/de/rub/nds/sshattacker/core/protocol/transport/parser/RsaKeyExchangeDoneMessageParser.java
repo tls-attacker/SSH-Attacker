@@ -33,10 +33,8 @@ public class RsaKeyExchangeDoneMessageParser extends SshMessageParser<RsaKeyExch
 
     private void parseSignature() {
         message.setSignatureLength(parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH));
-        LOGGER.debug(
-                "Signature length: " + message.getSignatureLength().getValue());
-        message.setSignature(
-                parseByteArrayField(message.getSignatureLength().getValue()));
+        LOGGER.debug("Signature length: " + message.getSignatureLength().getValue());
+        message.setSignature(parseByteArrayField(message.getSignatureLength().getValue()));
         LOGGER.debug("Signature: " + message.getSignature());
     }
 }

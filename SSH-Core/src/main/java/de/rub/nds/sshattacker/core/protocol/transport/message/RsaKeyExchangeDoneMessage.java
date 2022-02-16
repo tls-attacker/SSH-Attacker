@@ -1,7 +1,7 @@
 /*
  * SSH-Attacker - A Modular Penetration Testing Framework for SSH
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
@@ -25,20 +25,21 @@ public class RsaKeyExchangeDoneMessage extends SshMessage<RsaKeyExchangeDoneMess
         super(MessageIDConstant.SSH_MSG_KEXRSA_DONE);
     }
 
-    //Signature length methods
+    // Signature length methods
     public ModifiableInteger getSignatureLength() {
         return signatureLength;
     }
 
-    public void setSignatureLength(ModifiableInteger signatureLength){
+    public void setSignatureLength(ModifiableInteger signatureLength) {
         this.signatureLength = signatureLength;
     }
 
-    public void setSignatureLength(int signatureLength){
-        this.signatureLength = ModifiableVariableFactory.safelySetValue(this.signatureLength, signatureLength);
+    public void setSignatureLength(int signatureLength) {
+        this.signatureLength =
+                ModifiableVariableFactory.safelySetValue(this.signatureLength, signatureLength);
     }
 
-    //Signature methods
+    // Signature methods
     public ModifiableByteArray getSignature() {
         return signature;
     }

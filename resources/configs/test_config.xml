@@ -11,6 +11,7 @@
         <clientSupportedHostKeyAlgorithm>SSH_RSA</clientSupportedHostKeyAlgorithm>
     </clientSupportedHostKeyAlgorithms>
     <clientSupportedKeyExchangeAlgorithms>
+        <clientSupportedKeyExchangeAlgorithm>DIFFIE_HELLMAN_GROUP14_SHA256</clientSupportedKeyExchangeAlgorithm>
         <clientSupportedKeyExchangeAlgorithm>RSA2048_SHA256</clientSupportedKeyExchangeAlgorithm>
     </clientSupportedKeyExchangeAlgorithms>
     <clientSupportedCipherAlgorithmsClientToServer>

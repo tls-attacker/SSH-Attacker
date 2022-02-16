@@ -1,14 +1,13 @@
 /*
  * SSH-Attacker - A Modular Penetration Testing Framework for SSH
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.sshattacker.core.crypto.signature;
 
 import de.rub.nds.sshattacker.core.exceptions.CryptoException;
-
 import java.security.*;
 
 public class JavaSignature implements VerificationSignature, SigningSignature {
@@ -17,8 +16,7 @@ public class JavaSignature implements VerificationSignature, SigningSignature {
     private final Key key;
     private Signature signature;
 
-
-    public JavaSignature(SignatureAlgorithm algorithm, Key key){
+    public JavaSignature(SignatureAlgorithm algorithm, Key key) {
         this.algorithm = algorithm;
         this.key = key;
     }
@@ -31,16 +29,17 @@ public class JavaSignature implements VerificationSignature, SigningSignature {
                 if (key instanceof PublicKey) {
                     signature.initVerify((PublicKey) key);
                 } else {
-                    throw new CryptoException("Tried to initialize Signature for verification, " +
-                            "but provided key is not a public key");
+                    throw new CryptoException(
+                            "Tried to initialize Signature for verification, "
+                                    + "but provided key is not a public key");
                 }
             }
             signature.update(data);
             return signature.verify(signatureBytes);
         } catch (NoSuchAlgorithmException | InvalidKeyException | SignatureException e) {
-            throw new CryptoException("Encountered exception during verification: " + e.getMessage());
+            throw new CryptoException(
+                    "Encountered exception during verification: " + e.getMessage());
         }
-
     }
 
     @Override
@@ -51,8 +50,9 @@ public class JavaSignature implements VerificationSignature, SigningSignature {
                 if (key instanceof PrivateKey) {
                     signature.initSign((PrivateKey) key);
                 } else {
-                    throw new CryptoException("Tried to initialize Signature for signing, " +
-                            "but provided key is not a private key");
+                    throw new CryptoException(
+                            "Tried to initialize Signature for signing, "
+                                    + "but provided key is not a private key");
                 }
             }
             signature.update(data);

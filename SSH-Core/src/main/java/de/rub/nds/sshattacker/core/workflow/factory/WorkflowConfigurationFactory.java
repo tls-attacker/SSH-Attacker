@@ -20,7 +20,6 @@ import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessage;
 import de.rub.nds.sshattacker.core.protocol.connection.message.*;
 import de.rub.nds.sshattacker.core.protocol.transport.message.*;
 import de.rub.nds.sshattacker.core.protocol.util.AlgorithmPicker;
-import de.rub.nds.sshattacker.core.state.State;
 import de.rub.nds.sshattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.sshattacker.core.workflow.action.*;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
@@ -55,15 +54,13 @@ public class WorkflowConfigurationFactory {
             case FULL:
                 return createFullWorkflowTrace();
             case DYNAMIC_KEYEXCHANGE:
-                //TODO Implement dynamic workflow
+                // TODO Implement dynamic workflow
             case DYNAMIC_AUTHPASSWORD:
             case DYNAMIC_FULL:
             default:
                 throw new ConfigurationException(
                         "Unknown WorkflowTraceType" + workflowTraceType.name());
         }
-
-
     }
 
     private AliasedConnection getConnection() {

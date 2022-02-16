@@ -1,7 +1,7 @@
 /*
  * SSH-Attacker - A Modular Penetration Testing Framework for SSH
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
@@ -9,7 +9,6 @@ package de.rub.nds.sshattacker.core.protocol.transport.handler;
 
 import de.rub.nds.sshattacker.core.constants.PublicKeyAuthenticationAlgorithm;
 import de.rub.nds.sshattacker.core.crypto.hash.ExchangeHash;
-import de.rub.nds.sshattacker.core.crypto.keys.RsaPublicKey;
 import de.rub.nds.sshattacker.core.crypto.signature.JavaSignature;
 import de.rub.nds.sshattacker.core.crypto.signature.RawSignature;
 import de.rub.nds.sshattacker.core.crypto.signature.SignatureFactory;
@@ -24,11 +23,9 @@ import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.transport.message.RsaKeyExchangeDoneMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.parser.RsaKeyExchangeDoneMessageParser;
 import de.rub.nds.sshattacker.core.state.SshContext;
-import de.rub.nds.sshattacker.core.util.RsaPublicKeyParser;
+import java.util.Optional;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import java.util.Optional;
 
 public class RsaKeyExchangeDoneMessageHandler extends SshMessageHandler<RsaKeyExchangeDoneMessage> {
 
@@ -54,10 +51,12 @@ public class RsaKeyExchangeDoneMessageHandler extends SshMessageHandler<RsaKeyEx
         Optional<PublicKeyAuthenticationAlgorithm> algorithm = context.getServerHostKeyAlgorithm();
         Optional<byte[]> hostKeyBytes = context.getServerHostKey();
 
-        if(algorithm.isPresent() && hostKeyBytes.isPresent()) {
-            RawSignature signature = new SignatureParser(message.getSignature().getValue(), 0).parse();
-            JavaSignature javaSignature = SignatureFactory.getVerificationSignatureForHostKey(
-                    signature.getSignatureAlgorithm(), hostKeyBytes.get(), algorithm.get());
+        if (algorithm.isPresent() && hostKeyBytes.isPresent()) {
+            RawSignature signature =
+                    new SignatureParser(message.getSignature().getValue(), 0).parse();
+            JavaSignature javaSignature =
+                    SignatureFactory.getVerificationSignatureForHostKey(
+                            signature.getSignatureAlgorithm(), hostKeyBytes.get(), algorithm.get());
 
             try {
                 if (javaSignature.verify(exchangeHash.get(), signature.getSignatureBytes())) {
@@ -66,11 +65,15 @@ public class RsaKeyExchangeDoneMessageHandler extends SshMessageHandler<RsaKeyEx
                     LOGGER.debug("Signature verification failed: Signature was invalid");
                 }
             } catch (CryptoException | NotImplementedException e) {
-                // Catch not implemented exception in case the host key parser is not yet implemented.
-                LOGGER.debug("Signature verification failed because an error occurred. " + e.getMessage());
+                // Catch not implemented exception in case the host key parser is not yet
+                // implemented.
+                LOGGER.debug(
+                        "Signature verification failed because an error occurred. "
+                                + e.getMessage());
             }
         } else {
-            LOGGER.debug("Signature could not be verified, because host key algorithm or host key bytes are missing");
+            LOGGER.debug(
+                    "Signature could not be verified, because host key algorithm or host key bytes are missing");
         }
     }
 
