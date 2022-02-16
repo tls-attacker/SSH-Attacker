@@ -13,24 +13,24 @@ import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
 import de.rub.nds.sshattacker.core.crypto.cipher.RsaCipher;
 import de.rub.nds.sshattacker.core.crypto.hash.ExchangeHash;
 import de.rub.nds.sshattacker.core.crypto.hash.RsaExchangeHash;
-import de.rub.nds.sshattacker.core.crypto.kex.KeyExchange;
 import de.rub.nds.sshattacker.core.crypto.kex.RsaKeyExchange;
 import de.rub.nds.sshattacker.core.exceptions.CryptoException;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.transport.message.RsaKeyExchangeSecretMessage;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-public class RsaKeyExchangeSecretMessagePreparator extends SshMessagePreparator<RsaKeyExchangeSecretMessage> {
+public class RsaKeyExchangeSecretMessagePreparator
+        extends SshMessagePreparator<RsaKeyExchangeSecretMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public RsaKeyExchangeSecretMessagePreparator(Chooser chooser, RsaKeyExchangeSecretMessage message) {
+    public RsaKeyExchangeSecretMessagePreparator(
+            Chooser chooser, RsaKeyExchangeSecretMessage message) {
         super(chooser, message);
     }
 
@@ -49,7 +49,8 @@ public class RsaKeyExchangeSecretMessagePreparator extends SshMessagePreparator<
         keyExchange.computeSharedSecret();
         LOGGER.debug("Shared secret: " + keyExchange.getSharedSecret());
         // Note: data to be encrypted consists of length field + secret (see RFC 4432)
-        byte[] encryptedSecret = prepareEncryptedSecret(prepareData(keyExchange), keyExchangeAlg, keyExchange);
+        byte[] encryptedSecret =
+                prepareEncryptedSecret(prepareData(keyExchange), keyExchangeAlg, keyExchange);
 
         message.setEncryptedSecret(encryptedSecret, true);
         updateExchangeHashWithSecrets(message, keyExchange);
@@ -59,16 +60,21 @@ public class RsaKeyExchangeSecretMessagePreparator extends SshMessagePreparator<
         ByteArrayOutputStream dataStream = new ByteArrayOutputStream();
         try {
             byte[] secret = keyExchange.getSharedSecret().toByteArray();
-            byte[] secretLength = ByteBuffer.allocate(DataFormatConstants.MPINT_SIZE_LENGTH).putInt(secret.length).array();
+            byte[] secretLength =
+                    ByteBuffer.allocate(DataFormatConstants.MPINT_SIZE_LENGTH)
+                            .putInt(secret.length)
+                            .array();
             dataStream.write(secretLength);
             dataStream.write(secret);
         } catch (IOException e) {
-            raisePreparationException("Secret could not be converted to bytes. Error: " + e.getMessage());
+            raisePreparationException(
+                    "Secret could not be converted to bytes. Error: " + e.getMessage());
         }
         return dataStream.toByteArray();
     }
-    
-    private byte[] prepareEncryptedSecret(byte[] secret, KeyExchangeAlgorithm keyExchangeAlg, RsaKeyExchange keyExchange) {
+
+    private byte[] prepareEncryptedSecret(
+            byte[] secret, KeyExchangeAlgorithm keyExchangeAlg, RsaKeyExchange keyExchange) {
         RsaCipher rsaCipher = new RsaCipher(keyExchangeAlg, keyExchange.getPublicKey());
         try {
             return rsaCipher.encrypt(secret);
@@ -78,7 +84,8 @@ public class RsaKeyExchangeSecretMessagePreparator extends SshMessagePreparator<
         }
     }
 
-    private void updateExchangeHashWithSecrets(RsaKeyExchangeSecretMessage message, RsaKeyExchange keyExchange) {
+    private void updateExchangeHashWithSecrets(
+            RsaKeyExchangeSecretMessage message, RsaKeyExchange keyExchange) {
         ExchangeHash exchangeHash = chooser.getContext().getExchangeHashInstance();
 
         RsaExchangeHash rsaExchangeHash;

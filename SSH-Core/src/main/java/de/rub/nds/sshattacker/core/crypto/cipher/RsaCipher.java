@@ -1,27 +1,25 @@
 /*
  * SSH-Attacker - A Modular Penetration Testing Framework for SSH
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.sshattacker.core.crypto.cipher;
 
 import de.rub.nds.sshattacker.core.constants.KeyExchangeAlgorithm;
-import de.rub.nds.sshattacker.core.exceptions.CryptoException;
 import de.rub.nds.sshattacker.core.crypto.keys.RsaPublicKey;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
+import de.rub.nds.sshattacker.core.exceptions.CryptoException;
+import java.security.*;
+import java.security.spec.MGF1ParameterSpec;
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.OAEPParameterSpec;
 import javax.crypto.spec.PSource;
-import java.security.*;
-import java.security.spec.MGF1ParameterSpec;
-
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class RsaCipher {
 
@@ -94,26 +92,37 @@ public class RsaCipher {
                 maskGenerationFunctionName = "MGF1";
                 break;
             default:
-                throw new IllegalStateException("Unexpected value for key exchange: " + keyExchangeAlgorithm);
+                throw new IllegalStateException(
+                        "Unexpected value for key exchange: " + keyExchangeAlgorithm);
         }
 
         if (rsaPublicKey != null) {
-            prepareEncryptionCipher(cipherInstanceName, hashFunctionName, maskGenerationFunctionName);
+            prepareEncryptionCipher(
+                    cipherInstanceName, hashFunctionName, maskGenerationFunctionName);
             prepareVerificationSignature(signatureInstanceName);
         } else {
-            LOGGER.warn("Could not create encryption cipher, because the RSA public key is not set.");
+            LOGGER.warn(
+                    "Could not create encryption cipher, because the RSA public key is not set.");
         }
     }
 
-    private void prepareEncryptionCipher(String instanceName, String hashFunction, String maskGenerationFunction) {
+    private void prepareEncryptionCipher(
+            String instanceName, String hashFunction, String maskGenerationFunction) {
         try {
             Cipher cipher;
             cipher = Cipher.getInstance(instanceName);
-            OAEPParameterSpec spec = new OAEPParameterSpec(hashFunction, maskGenerationFunction,
-                    new MGF1ParameterSpec(hashFunction), PSource.PSpecified.DEFAULT);
+            OAEPParameterSpec spec =
+                    new OAEPParameterSpec(
+                            hashFunction,
+                            maskGenerationFunction,
+                            new MGF1ParameterSpec(hashFunction),
+                            PSource.PSpecified.DEFAULT);
             cipher.init(Cipher.ENCRYPT_MODE, rsaPublicKey, spec);
             encryptionCipher = cipher;
-        } catch (NoSuchPaddingException | NoSuchAlgorithmException | InvalidKeyException | InvalidAlgorithmParameterException e) {
+        } catch (NoSuchPaddingException
+                | NoSuchAlgorithmException
+                | InvalidKeyException
+                | InvalidAlgorithmParameterException e) {
             LOGGER.error("RSA Encryption Cipher creation failed with error: " + e);
         }
     }

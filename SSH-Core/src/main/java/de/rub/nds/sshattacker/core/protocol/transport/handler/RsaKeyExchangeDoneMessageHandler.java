@@ -1,7 +1,7 @@
 /*
  * SSH-Attacker - A Modular Penetration Testing Framework for SSH
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
@@ -35,7 +35,7 @@ public class RsaKeyExchangeDoneMessageHandler extends SshMessageHandler<RsaKeyEx
     @Override
     public void adjustContext() {
         context.setKeyExchangeSignature(message.getSignature().getValue());
-        //TODO: Verify Signature (Note that the type of signature depends on the host key)
+        // TODO: Verify Signature (Note that the type of signature depends on the host key)
         setSessionId();
     }
 

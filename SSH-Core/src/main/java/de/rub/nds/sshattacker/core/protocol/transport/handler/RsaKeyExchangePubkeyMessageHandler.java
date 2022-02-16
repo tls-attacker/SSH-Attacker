@@ -42,17 +42,17 @@ public class RsaKeyExchangePubkeyMessageHandler
         updateExchangeHashWithTransientPubkey(message);
     }
 
-    private void createKeyExchangeFromMessage(RsaKeyExchangePubkeyMessage message){
-        if(context.getKeyExchangeAlgorithm().isPresent()) {
+    private void createKeyExchangeFromMessage(RsaKeyExchangePubkeyMessage message) {
+        if (context.getKeyExchangeAlgorithm().isPresent()) {
 
             KeyExchangeAlgorithm keyExchangeAlgorithm = context.getKeyExchangeAlgorithm().get();
 
-            if(keyExchangeAlgorithm.equals(KeyExchangeAlgorithm.RSA1024_SHA1) ||
-                    keyExchangeAlgorithm.equals(KeyExchangeAlgorithm.RSA2048_SHA256)) {
+            if (keyExchangeAlgorithm.equals(KeyExchangeAlgorithm.RSA1024_SHA1)
+                    || keyExchangeAlgorithm.equals(KeyExchangeAlgorithm.RSA2048_SHA256)) {
                 RsaKeyExchange rsaKeyExchange = new RsaKeyExchange();
                 rsaKeyExchange.setPublicKey(message.getPublicKey());
 
-                if(keyExchangeAlgorithm.equals(KeyExchangeAlgorithm.RSA2048_SHA256)) {
+                if (keyExchangeAlgorithm.equals(KeyExchangeAlgorithm.RSA2048_SHA256)) {
                     rsaKeyExchange.setHashLength(256);
                 } else {
                     rsaKeyExchange.setHashLength(128);
@@ -60,26 +60,30 @@ public class RsaKeyExchangePubkeyMessageHandler
                 context.setKeyExchangeInstance(rsaKeyExchange);
 
             } else {
-                raiseAdjustmentException("Unable to instantiate a new RSA key exchange, " +
-                        "the negotiated key exchange algorithm is: " + keyExchangeAlgorithm);
+                raiseAdjustmentException(
+                        "Unable to instantiate a new RSA key exchange, "
+                                + "the negotiated key exchange algorithm is: "
+                                + keyExchangeAlgorithm);
             }
 
         } else {
-            raiseAdjustmentException("Unable to instantiate a new RSA key exchange, " +
-                    "the negotiated key exchange algorithm is not set");
+            raiseAdjustmentException(
+                    "Unable to instantiate a new RSA key exchange, "
+                            + "the negotiated key exchange algorithm is not set");
         }
     }
 
-    private void handleHostKey(RsaKeyExchangePubkeyMessage message){
+    private void handleHostKey(RsaKeyExchangePubkeyMessage message) {
         // TODO: Implement host key types as enumeration
         // TODO: Improve host key handling in separate class
         context.getExchangeHashInstance().setServerHostKey(message.getHostKey().getValue());
     }
 
-    private void updateExchangeHashWithTransientPubkey(RsaKeyExchangePubkeyMessage message){
+    private void updateExchangeHashWithTransientPubkey(RsaKeyExchangePubkeyMessage message) {
         ExchangeHash exchangeHash = context.getExchangeHashInstance();
         if (exchangeHash instanceof RsaExchangeHash) {
-            ((RsaExchangeHash) exchangeHash).setTransientKey(message.getTransientPubkey().getValue());
+            ((RsaExchangeHash) exchangeHash)
+                    .setTransientKey(message.getTransientPubkey().getValue());
         } else {
             raiseAdjustmentException(
                     "Exchange hash instance is not an RsaExchangeHash, unable to update exchange hash");
