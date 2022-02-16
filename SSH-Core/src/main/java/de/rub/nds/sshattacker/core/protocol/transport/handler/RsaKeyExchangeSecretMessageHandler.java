@@ -17,24 +17,27 @@ import de.rub.nds.sshattacker.core.protocol.transport.preparator.RsaKeyExchangeS
 import de.rub.nds.sshattacker.core.protocol.transport.serializer.RsaKeyExchangeSecretMessageSerializer;
 import de.rub.nds.sshattacker.core.state.SshContext;
 
-public class RsaKeyExchangeSecretMessageHandler extends SshMessageHandler<RsaKeyExchangeSecretMessage> {
+public class RsaKeyExchangeSecretMessageHandler
+        extends SshMessageHandler<RsaKeyExchangeSecretMessage> {
 
     public RsaKeyExchangeSecretMessageHandler(SshContext context) {
         super(context);
     }
 
-    public RsaKeyExchangeSecretMessageHandler(SshContext context, RsaKeyExchangeSecretMessage message){
-        super(context,message);
+    public RsaKeyExchangeSecretMessageHandler(
+            SshContext context, RsaKeyExchangeSecretMessage message) {
+        super(context, message);
     }
 
     @Override
     public void adjustContext() {
-        //TODO: Handle RsaKeyExchangeSecretMessage
+        // TODO: Handle RsaKeyExchangeSecretMessage
     }
 
     @Override
-    public SshMessageParser<RsaKeyExchangeSecretMessage> getParser(byte[] array, int startPosition) {
-        //TODO: Implement Parser
+    public SshMessageParser<RsaKeyExchangeSecretMessage> getParser(
+            byte[] array, int startPosition) {
+        // TODO: Implement Parser
         throw new NotImplementedException("RsaKeyExchangeSecretMessage Parser is missing!");
     }
 

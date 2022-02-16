@@ -35,7 +35,8 @@ public class RsaKeyExchangeSecretMessage extends SshMessage<RsaKeyExchangeSecret
 
     public void setEncryptedSecretLength(int encryptedSecretLength) {
         this.encryptedSecretLength =
-                ModifiableVariableFactory.safelySetValue(this.encryptedSecretLength, encryptedSecretLength);
+                ModifiableVariableFactory.safelySetValue(
+                        this.encryptedSecretLength, encryptedSecretLength);
     }
 
     public ModifiableByteArray getEncryptedSecret() {
@@ -57,7 +58,8 @@ public class RsaKeyExchangeSecretMessage extends SshMessage<RsaKeyExchangeSecret
         if (adjustLengthField) {
             setEncryptedSecretLength(encryptedSecret.length);
         }
-        this.encryptedSecret = ModifiableVariableFactory.safelySetValue(this.encryptedSecret, encryptedSecret);
+        this.encryptedSecret =
+                ModifiableVariableFactory.safelySetValue(this.encryptedSecret, encryptedSecret);
     }
 
     @Override

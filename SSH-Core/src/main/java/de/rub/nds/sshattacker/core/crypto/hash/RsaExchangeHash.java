@@ -38,9 +38,7 @@ public class RsaExchangeHash extends ExchangeHash {
 
     @Override
     protected boolean areRequiredInputsMissing() {
-        return super.areRequiredInputsMissing()
-                || encryptedSecret == null
-                || transientKey == null;
+        return super.areRequiredInputsMissing() || encryptedSecret == null || transientKey == null;
     }
 
     @Override
@@ -65,10 +63,8 @@ public class RsaExchangeHash extends ExchangeHash {
         rsaExchangeHash.setServerHostKey(exchangeHash.serverHostKey);
         rsaExchangeHash.setSharedSecret(exchangeHash.sharedSecret);
         if (exchangeHash instanceof RsaExchangeHash) {
-            rsaExchangeHash.setEncryptedSecret(
-                    ((RsaExchangeHash) exchangeHash).encryptedSecret);
-            rsaExchangeHash.setTransientKey(
-                    ((RsaExchangeHash) exchangeHash).transientKey);
+            rsaExchangeHash.setEncryptedSecret(((RsaExchangeHash) exchangeHash).encryptedSecret);
+            rsaExchangeHash.setTransientKey(((RsaExchangeHash) exchangeHash).transientKey);
         }
         return rsaExchangeHash;
     }

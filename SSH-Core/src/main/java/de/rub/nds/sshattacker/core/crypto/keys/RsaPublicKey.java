@@ -11,7 +11,6 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.biginteger.ModifiableBigInteger;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.sshattacker.core.protocol.common.ModifiableVariableHolder;
-
 import java.math.BigInteger;
 import java.security.interfaces.RSAPublicKey;
 import java.util.Arrays;
@@ -65,7 +64,7 @@ public class RsaPublicKey extends ModifiableVariableHolder implements RSAPublicK
     public void setModulus(BigInteger modulus, boolean adjustLengthField) {
         if (adjustLengthField) {
             double bitLength = modulus.bitLength();
-            int byteLength = (int) Math.ceil(bitLength/8);
+            int byteLength = (int) Math.ceil(bitLength / 8);
             this.setModulusLength(byteLength);
         }
         this.modulus = ModifiableVariableFactory.safelySetValue(this.modulus, modulus);
@@ -106,7 +105,7 @@ public class RsaPublicKey extends ModifiableVariableHolder implements RSAPublicK
     public void setExponent(BigInteger exponent, boolean adjustLengthField) {
         if (adjustLengthField) {
             double bitLength = exponent.bitLength();
-            int byteLength = (int) Math.ceil(bitLength/8);
+            int byteLength = (int) Math.ceil(bitLength / 8);
             this.setExponentLength(byteLength);
         }
         this.exponent = ModifiableVariableFactory.safelySetValue(this.exponent, exponent);
