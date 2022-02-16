@@ -42,7 +42,9 @@ public class SignatureFactory {
             byte[] hostKeyBytes,
             PublicKeyAuthenticationAlgorithm algorithm) {
         PublicKey publicKey =
-                HostKeyParserFactory.getParserForHostKeyAlgorithm(algorithm, hostKeyBytes).parse();
+                HostKeyParserFactory.getParserForPublicKeyAuthenticationAlgorithm(
+                                algorithm, hostKeyBytes)
+                        .parse();
         return getVerificationSignature(signatureAlgorithm, publicKey);
     }
 

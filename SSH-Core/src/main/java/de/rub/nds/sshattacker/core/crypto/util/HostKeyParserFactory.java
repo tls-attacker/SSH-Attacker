@@ -14,7 +14,7 @@ import java.security.PublicKey;
 
 public class HostKeyParserFactory {
 
-    public static Parser<? extends PublicKey> getParserForHostKeyAlgorithm(
+    public static Parser<? extends PublicKey> getParserForPublicKeyAuthenticationAlgorithm(
             PublicKeyAuthenticationAlgorithm algorithm, byte[] hostKeyBytes) {
         switch (algorithm) {
             case SSH_RSA:
