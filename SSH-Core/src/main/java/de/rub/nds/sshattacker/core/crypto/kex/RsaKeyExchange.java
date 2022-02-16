@@ -7,6 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.crypto.kex;
 
+import de.rub.nds.sshattacker.core.constants.KeyExchangeAlgorithm;
 import de.rub.nds.sshattacker.core.crypto.keys.RsaPublicKey;
 import java.math.BigInteger;
 
@@ -52,6 +53,20 @@ public class RsaKeyExchange extends KeyExchange {
 
     public void setHashLength(int hashLength) {
         this.hashLength = hashLength;
+    }
+
+    public void setHashLength(KeyExchangeAlgorithm keyExchangeAlgorithm) {
+        switch (keyExchangeAlgorithm) {
+            case RSA1024_SHA1:
+                setHashLength(128);
+                break;
+            case RSA2048_SHA256:
+                setHashLength(256);
+                break;
+            default:
+                setHashLength(0);
+                break;
+        }
     }
 
     private int getModulusLengthInBits() {

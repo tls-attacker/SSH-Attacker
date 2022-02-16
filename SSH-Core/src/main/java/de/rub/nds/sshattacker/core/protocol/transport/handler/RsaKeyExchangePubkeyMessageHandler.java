@@ -52,11 +52,7 @@ public class RsaKeyExchangePubkeyMessageHandler
                 RsaKeyExchange rsaKeyExchange = new RsaKeyExchange();
                 rsaKeyExchange.setPublicKey(message.getPublicKey());
 
-                if (keyExchangeAlgorithm.equals(KeyExchangeAlgorithm.RSA2048_SHA256)) {
-                    rsaKeyExchange.setHashLength(256);
-                } else {
-                    rsaKeyExchange.setHashLength(128);
-                }
+                rsaKeyExchange.setHashLength(keyExchangeAlgorithm);
                 context.setKeyExchangeInstance(rsaKeyExchange);
 
             } else {
