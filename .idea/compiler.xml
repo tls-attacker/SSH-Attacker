@@ -9,6 +9,7 @@
         <module name="SSH-Core" />
         <module name="SSH-Project-Template" />
         <module name="SSH-Client" />
+        <module name="SSH-Server" />
         <module name="Attacks" />
       </profile>
     </annotationProcessing>
@@ -18,6 +19,7 @@
       <module name="SSH-Client" target="11" />
       <module name="SSH-Core" target="11" />
       <module name="SSH-Project-Template" target="11" />
+      <module name="SSH-Server" target="11" />
     </bytecodeTargetLevel>
   </component>
 </project>
