@@ -10,7 +10,8 @@ package de.rub.nds.sshattacker.core.protocol.transport.preparator;
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.constants.KeyExchangeAlgorithm;
 import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
-import de.rub.nds.sshattacker.core.crypto.cipher.RsaCipher;
+import de.rub.nds.sshattacker.core.crypto.cipher.CipherFactory;
+import de.rub.nds.sshattacker.core.crypto.cipher.EncryptionCipher;
 import de.rub.nds.sshattacker.core.crypto.hash.ExchangeHash;
 import de.rub.nds.sshattacker.core.crypto.hash.RsaExchangeHash;
 import de.rub.nds.sshattacker.core.crypto.kex.RsaKeyExchange;
@@ -41,9 +42,24 @@ public class RsaKeyExchangeSecretMessagePreparator
         RsaKeyExchange keyExchange = chooser.getRsaKeyExchange();
         KeyExchangeAlgorithm keyExchangeAlg;
         if (chooser.getContext().getKeyExchangeAlgorithm().isPresent()) {
-            keyExchangeAlg = chooser.getContext().getKeyExchangeAlgorithm().get();
+            KeyExchangeAlgorithm negotiatedKeyExchangeAlgorithm =
+                    chooser.getContext().getKeyExchangeAlgorithm().get();
+
+            if (negotiatedKeyExchangeAlgorithm.equals(KeyExchangeAlgorithm.RSA1024_SHA1)
+                    || negotiatedKeyExchangeAlgorithm.equals(KeyExchangeAlgorithm.RSA2048_SHA256)) {
+                keyExchangeAlg = chooser.getContext().getKeyExchangeAlgorithm().get();
+            } else {
+                keyExchangeAlg = chooser.getConfig().getDefaultRsaKeyExchangeAlgorithm();
+                LOGGER.warn(
+                        String.format(
+                                "Negotiated key exchange algorithm was not an RSA key exchange, but %s. Falling back to default: %s",
+                                negotiatedKeyExchangeAlgorithm, keyExchangeAlg));
+            }
         } else {
             keyExchangeAlg = chooser.getConfig().getDefaultRsaKeyExchangeAlgorithm();
+            LOGGER.warn(
+                    "No key exchange algorithm was set, falling back to default: "
+                            + keyExchangeAlg);
         }
 
         keyExchange.computeSharedSecret();
@@ -75,9 +91,10 @@ public class RsaKeyExchangeSecretMessagePreparator
 
     private byte[] prepareEncryptedSecret(
             byte[] secret, KeyExchangeAlgorithm keyExchangeAlg, RsaKeyExchange keyExchange) {
-        RsaCipher rsaCipher = new RsaCipher(keyExchangeAlg, keyExchange.getPublicKey());
+        EncryptionCipher cipher =
+                CipherFactory.getEncryptionCipher(keyExchangeAlg, keyExchange.getPublicKey());
         try {
-            return rsaCipher.encrypt(secret);
+            return cipher.encrypt(secret);
         } catch (CryptoException e) {
             raisePreparationException(e.getMessage());
             return new byte[0];
