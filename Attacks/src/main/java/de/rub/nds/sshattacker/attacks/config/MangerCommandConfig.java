@@ -23,7 +23,7 @@ public class MangerCommandConfig extends AttackConfig {
     /**
      *
      */
-    public static final String ATTACK_COMMAND = "bleichenbacher";
+    public static final String ATTACK_COMMAND = "manger";
 
     @ParametersDelegate
     private ClientDelegate clientDelegate;

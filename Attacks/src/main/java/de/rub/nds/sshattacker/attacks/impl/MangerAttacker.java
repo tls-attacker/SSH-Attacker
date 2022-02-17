@@ -9,6 +9,7 @@
 package de.rub.nds.sshattacker.attacks.impl;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.sshattacker.attacks.KeyFetcher;
 import de.rub.nds.sshattacker.attacks.ParallelExecutor;
 import de.rub.nds.sshattacker.attacks.config.MangerCommandConfig;
 import de.rub.nds.sshattacker.attacks.exception.AttackFailedException;
@@ -49,7 +50,7 @@ public class MangerAttacker extends Attacker<MangerCommandConfig> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private final Config tlsConfig;
+    private final Config sshConfig;
 
     private boolean increasingTimeout = true;
 
@@ -68,25 +69,25 @@ public class MangerAttacker extends Attacker<MangerCommandConfig> {
 
     /**
      *
-     * @param bleichenbacherConfig
+     * @param mangerConfig
      * @param baseConfig
      */
-    public MangerAttacker(MangerCommandConfig bleichenbacherConfig, Config baseConfig) {
-        super(bleichenbacherConfig, baseConfig);
-        tlsConfig = getSshConfig();
+    public MangerAttacker(MangerCommandConfig mangerConfig, Config baseConfig) {
+        super(mangerConfig, baseConfig);
+        sshConfig = getSshConfig();
         executor = new ParallelExecutor(1, 3);
     }
 
     /**
      *
-     * @param bleichenbacherConfig
+     * @param mangerConfig
      * @param baseConfig
      * @param executor
      */
-    public MangerAttacker(MangerCommandConfig bleichenbacherConfig, Config baseConfig,
+    public MangerAttacker(MangerCommandConfig mangerConfig, Config baseConfig,
                           ParallelExecutor executor) {
-        super(bleichenbacherConfig, baseConfig);
-        tlsConfig = getSshConfig();
+        super(mangerConfig, baseConfig);
+        sshConfig = getSshConfig();
         this.executor = executor;
     }
 
@@ -143,7 +144,7 @@ public class MangerAttacker extends Attacker<MangerCommandConfig> {
         List<SshTask> taskList = new LinkedList<>();
         List<FingerprintTaskVectorPair> stateVectorPairList = new LinkedList<>();
         for (Pkcs1Vector vector : Pkcs1VectorGenerator.generatePkcs1Vectors(publicKey, 256)) {
-            State state = new State(tlsConfig, MangerWorkflowGenerator.generateWorkflow(tlsConfig, vector.getEncryptedValue()));
+            State state = new State(sshConfig, MangerWorkflowGenerator.generateWorkflow(sshConfig, vector.getEncryptedValue()));
             FingerPrintTask fingerPrintTask = new FingerPrintTask(state, additionalTimeout, increasingTimeout,
                 executor.getReexecutions(), additionalTcpTimeout);
             taskList.add(fingerPrintTask);
@@ -202,13 +203,13 @@ public class MangerAttacker extends Attacker<MangerCommandConfig> {
     }
 
     public RSAPublicKey getServerPublicKey() {
-        //RSAPublicKey publicKey = (RSAPublicKey) CertificateFetcher.fetchServerPublicKey(tlsConfig);
-        RSAPublicKey publicKey = null;
+        RSAPublicKey publicKey = KeyFetcher.fetchRsaTransientKey(sshConfig);
         if (publicKey == null) {
             LOGGER.info("Could not retrieve PublicKey from Server - is the Server running?");
             return null;
         }
-        LOGGER.info("Fetched the following server public key: " + publicKey);
+        LOGGER.info(String.format("Fetched server public key with exponent %s and modulus: %s",
+                publicKey.getPublicExponent().toString(16), publicKey.getModulus().toString(16)));
         return publicKey;
     }
 
@@ -246,7 +247,7 @@ public class MangerAttacker extends Attacker<MangerCommandConfig> {
 
     private ResponseFingerprint extractValidFingerprint(RSAPublicKey publicKey) {
         Pkcs1Vector vector = Pkcs1VectorGenerator.generateCorrectPkcs1Vector(publicKey, 256);
-        State state = new State(tlsConfig, MangerWorkflowGenerator.generateWorkflow(tlsConfig, vector.getEncryptedValue()));
+        State state = new State(sshConfig, MangerWorkflowGenerator.generateWorkflow(sshConfig, vector.getEncryptedValue()));
         FingerPrintTask fingerPrintTask = new FingerPrintTask(state, additionalTimeout, increasingTimeout,
             executor.getReexecutions(), additionalTcpTimeout);
         FingerprintTaskVectorPair stateVectorPair = new FingerprintTaskVectorPair(fingerPrintTask, vector);

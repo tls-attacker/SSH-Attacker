@@ -13,5 +13,6 @@ public enum WorkflowTraceType {
     AUTHPASSWORD,
     DYNAMIC_AUTHPASSWORD,
     FULL,
-    DYNAMIC_FULL
+    DYNAMIC_FULL,
+    START_KEYEXCHANGE
 }
