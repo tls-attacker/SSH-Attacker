@@ -12,6 +12,7 @@ import de.rub.nds.modifiablevariable.util.UnformattedByteArrayAdapter;
 import de.rub.nds.sshattacker.core.connection.InboundConnection;
 import de.rub.nds.sshattacker.core.connection.OutboundConnection;
 import de.rub.nds.sshattacker.core.constants.*;
+import de.rub.nds.sshattacker.core.crypto.keys.RsaPublicKey;
 import de.rub.nds.sshattacker.core.workflow.factory.WorkflowTraceType;
 import de.rub.nds.sshattacker.core.workflow.filter.FilterType;
 import java.io.File;
@@ -19,6 +20,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.lang.reflect.Field;
+import java.math.BigInteger;
 import java.security.Security;
 import java.util.*;
 import javax.xml.bind.annotation.*;
@@ -236,6 +238,10 @@ public class Config implements Serializable {
 
     private KeyExchangeAlgorithm defaultEcdhKeyExchangeAlgortihm;
 
+    private KeyExchangeAlgorithm defaultRsaKeyExchangeAlgorithm;
+
+    private RsaPublicKey defaultRsaPublicKey;
+
     public Config() {
 
         defaultClientConnection = new OutboundConnection("client", 65222, "localhost");
@@ -305,6 +311,20 @@ public class Config implements Serializable {
 
         defaultDHGexKeyExchangeGroup = NamedDHGroup.GROUP14;
         defaultEcdhKeyExchangeAlgortihm = KeyExchangeAlgorithm.ECDH_SHA2_NISTP256;
+
+        defaultRsaKeyExchangeAlgorithm = KeyExchangeAlgorithm.RSA2048_SHA256;
+        defaultRsaPublicKey =
+                new RsaPublicKey(
+                        new BigInteger("01001", 16),
+                        new BigInteger(
+                                "00FD786F7BB51AC8B619430613F84251BEDEF47216786EE72025D02DC6E4FF923193E63DE937"
+                                        + "986925263360EBAF68990C73CA78B99EC24822FDB923461AD6925A4AD4EBAD370DA5B8AD9D9A4AD0E3E4240"
+                                        + "43B7705D55DC52429D3DDD9F9F2E3DC618BF87C3519F5BB7C908C4B76CB72D366C5E32077E38DEF1780845B"
+                                        + "C950DFDF82C02CAFC1A8EE3535E491F33A8DC45EF515B56E305BC4BC124857D6662DB2C532840383F10C8EE"
+                                        + "CA47029FC31143ACA4DE26C905E1291F778A6FBC0BDB219F775B33F3114C2ED1B64CC8E19ABC10530589677"
+                                        + "8F7F686F82713E9198B19F70FF73674603B839B90ECE883D81DFB32DA3F9363A3207A639523F90EEE730B49F"
+                                        + "65",
+                                16));
 
         clientReserved = 0;
         serverReserved = 0;
@@ -773,5 +793,13 @@ public class Config implements Serializable {
 
     public KeyExchangeAlgorithm getDefaultEcdhKeyExchangeAlgortihm() {
         return defaultEcdhKeyExchangeAlgortihm;
+    }
+
+    public KeyExchangeAlgorithm getDefaultRsaKeyExchangeAlgorithm() {
+        return defaultRsaKeyExchangeAlgorithm;
+    }
+
+    public RsaPublicKey getDefaultRsaPublicKey() {
+        return defaultRsaPublicKey;
     }
 }

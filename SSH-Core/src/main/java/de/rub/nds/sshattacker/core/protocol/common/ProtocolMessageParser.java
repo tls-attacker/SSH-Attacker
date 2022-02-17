@@ -80,6 +80,8 @@ public abstract class ProtocolMessageParser<T extends ProtocolMessage<T>> extend
                     return new DhGexKeyExchangeGroupMessageParser(raw, 0).parse();
                 case SSH_MSG_KEX_DH_GEX_REPLY:
                     return new DhGexKeyExchangeReplyMessageParser(raw, 0).parse();
+                case SSH_MSG_KEXRSA_DONE:
+                    return new RsaKeyExchangeDoneMessageParser(raw, 0).parse();
                 case SSH_MSG_KEXRSA_PUBKEY:
                     return new RsaKeyExchangePubkeyMessageParser(raw, 0).parse();
                 case SSH_MSG_NEWKEYS:
