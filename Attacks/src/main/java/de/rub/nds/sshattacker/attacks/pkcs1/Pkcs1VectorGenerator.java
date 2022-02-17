@@ -8,26 +8,23 @@
 
 package de.rub.nds.sshattacker.attacks.pkcs1;
 
-import com.google.common.primitives.Bytes;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.sshattacker.attacks.pkcs1.util.OaepConverter;
 import de.rub.nds.sshattacker.core.constants.Bits;
 import de.rub.nds.sshattacker.core.exceptions.ConfigurationException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.bouncycastle.pqc.math.linearalgebra.BigEndianConversions;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import java.security.InvalidKeyException;
-import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.interfaces.RSAPublicKey;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Random;
 
 /**
  *
@@ -121,7 +118,7 @@ public class Pkcs1VectorGenerator {
      */
     private static byte[] getPaddedKey(int rsaKeyLength, byte[] sharedSecret) {
         try {
-            return doOaepEncoding(sharedSecret, "SHA-256", rsaKeyLength);
+            return OaepConverter.doOaepEncoding(sharedSecret, "SHA-256", rsaKeyLength);
         } catch (NoSuchAlgorithmException e) {
             LOGGER.debug("Encoding error", e);
             return new byte[rsaKeyLength];
@@ -141,181 +138,5 @@ public class Pkcs1VectorGenerator {
      * No instantiation needed, only one static method used
      */
     private Pkcs1VectorGenerator() {
-    }
-
-    /**
-     * Encodes message using OAEP with digest hashInstance for a key of length keyLen
-     * @param message Message to be encoded
-     * @param hashInstance Name of hash to be used
-     * @param keyLen Length of the public key
-     * @return Encoded message
-     * @throws NoSuchAlgorithmException if hashInstance does not exist
-     */
-    public static byte[] doOaepEncoding(byte[] message, String hashInstance, int keyLen) throws NoSuchAlgorithmException {
-
-        byte[] result = new byte[keyLen];
-
-        MessageDigest hash = MessageDigest.getInstance(hashInstance);
-        int hashLen = hash.getDigestLength();
-
-        // Step a: Generate label hash
-        byte[] lHash;
-        lHash = hash.digest(new byte[0]);
-
-        // Step b: Generate padding string
-        byte[] padding = new byte[keyLen - message.length - 2 * hashLen - 2];
-        Arrays.fill(padding, (byte) 0);
-
-        // Step c: Create data block
-        byte[] dataBlock = new byte[keyLen - hashLen - 1];
-        int index = 0;
-        System.arraycopy(lHash, 0, dataBlock, index, lHash.length); // Start with label hash
-        index += lHash.length;
-        System.arraycopy(padding, 0, dataBlock, index, padding.length); // Add padding string
-        index += padding.length;
-        dataBlock[index] = (byte) 1; // Set separating 01
-        index += 1;
-        System.arraycopy(message, 0, dataBlock, index, message.length); // Finish by adding message
-
-        // Step d: Generate random octet string seed of length hashLen
-        byte[] seed = new byte[hashLen];
-        new Random().nextBytes(seed);
-
-        // Step e: Generate data block mask
-        byte[] dataBlockMask = mgf1(seed, keyLen - hashLen - 1, hashInstance);
-
-        // Step f: Mask data block
-        byte[] maskedDataBlock = xor(dataBlock, dataBlockMask);
-
-        // Step g: Generate seed mask
-        byte[] seedMask = mgf1(maskedDataBlock, hashLen, hashInstance);
-
-        // Step h: Mask seed
-        byte[] maskedSeed = xor(seed, seedMask);
-
-        // Step i: Create result message
-        result[0] = (byte) 0; // First byte is 00
-        System.arraycopy(maskedSeed, 0, result, 1, maskedSeed.length);
-        System.arraycopy(maskedDataBlock, 0, result, maskedSeed.length + 1, maskedDataBlock.length);
-
-        LOGGER.debug("Encoded message: " + Arrays.toString(result));
-        return result;
-    }
-
-    /**
-     * Decodes message using OAEP with digest hashInstance for a key of length keyLen
-     * @param encodedMessage Message to be decoded
-     * @param hashInstance Name of hash to be used
-     * @param keyLen Length of the public key
-     * @return Decoded message
-     * @throws NoSuchAlgorithmException if hashInstance does not exist
-     */
-    public static byte[] doOaepDecoding(byte[] encodedMessage, String hashInstance, int keyLen) throws NoSuchAlgorithmException {
-        // Prepare message digest
-        MessageDigest hash = MessageDigest.getInstance(hashInstance);
-        int hashLen = hash.getDigestLength();
-
-        // Step a: label hash
-        byte[] lHash;
-        lHash = hash.digest(new byte[0]);
-
-        // Step b: Separating the message
-        byte y = encodedMessage[0];
-        byte[] maskedSeed = Arrays.copyOfRange(
-                encodedMessage,
-                1,
-                encodedMessage.length - (keyLen - hashLen - 1));
-        byte[] maskedDataBlock = Arrays.copyOfRange(
-                encodedMessage,
-                encodedMessage.length - (keyLen - hashLen - 1) ,
-                encodedMessage.length);
-
-        // Step c: Seed mask
-        byte[] seedMask = mgf1(maskedDataBlock, hashLen, hashInstance);
-
-        // Step d: Get seed
-        byte[] seed = xor(maskedSeed, seedMask);
-
-        // Step e: Get data block mask
-        byte[] dataBlockMask = mgf1(seed, keyLen - hashLen - 1, hashInstance);
-
-        // Step f: Get data block:
-        byte[] dataBlock = xor(maskedDataBlock, dataBlockMask);
-
-        // Step g: Separate dataBlock
-        byte[] lhashPrime = Arrays.copyOfRange(dataBlock, 0, hashLen);
-        byte[] paddedMessage = Arrays.copyOfRange(dataBlock, hashLen, dataBlock.length);
-
-        byte[] separator = new byte[1];
-        separator[0] = (byte) 1;
-        int indexOfSeparator = Bytes.indexOf(paddedMessage, separator);
-        if (indexOfSeparator == -1) {
-            throw new IndexOutOfBoundsException("Could not find separator in padded message");
-        }
-
-        byte[] padding = Arrays.copyOfRange(paddedMessage, 0, indexOfSeparator);
-        byte[] message = Arrays.copyOfRange(paddedMessage, indexOfSeparator + 1, paddedMessage.length);
-
-        LOGGER.debug("Retrieved message: " + Arrays.toString(message));
-        return message;
-    }
-
-    /**
-     *
-     * @param seed Seed for the mask generation
-     * @param maskLen Desired mask length in bytes
-     * @param digestName Name of the digest to be used
-     * @return generated mask
-     */
-    public static byte[] mgf1(byte[] seed, int maskLen, String digestName) throws NoSuchAlgorithmException {
-
-        MessageDigest digest = MessageDigest.getInstance(digestName);
-        int hashLen = digest.getDigestLength();
-        // Step 1: Check length
-
-        // Step 2: Initialize result T
-        int maxIterations = (int) Math.ceil((double) maskLen / hashLen);
-        byte[] result = new byte[maxIterations * hashLen];
-
-        // Step 3: Iteratively create result
-        for (int counter = 0; counter < maxIterations; counter++) {
-
-            // Step a: Convert counter using I2OSP
-            byte[] counterBytes = new byte[4];
-            BigEndianConversions.I2OSP(counter, counterBytes, 0);
-
-            // Step b: Concatenate hash of seed and counterBytes with intermediate result
-            byte[] digestInput = new byte[seed.length + 4];
-            System.arraycopy(seed, 0, digestInput, 0, seed.length);
-            System.arraycopy(counterBytes, 0, digestInput, seed.length, counterBytes.length);
-            byte[] digestOutput = digest.digest(digestInput);
-            System.arraycopy(digestOutput, 0, result, counter * hashLen, hashLen);
-        }
-
-        // Result are first maskLen bytes
-        return Arrays.copyOfRange(result, 0, maskLen);
-    }
-
-    /**
-     * XORs two byte arrays
-     * @param left First array
-     * @param right Second array
-     * @return Result of XOR operation
-     */
-    public static byte[] xor(byte[] left, byte[] right) {
-        if (left == null || right == null)
-            return null;
-        if (left.length > right.length) {
-            byte[] swap = left;
-            left = right;
-            right = swap;
-        }
-
-        // left.length is now <= right.length
-        byte[] out = Arrays.copyOf(right, right.length);
-        for (int i = 0; i < left.length; i++) {
-            out[i] = (byte) ((left[i] & 0xFF) ^ (right[i] & 0xFF));
-        }
-        return out;
     }
 }
