@@ -69,7 +69,7 @@ public class OaepConverter {
         result.put(maskedSeed);
         result.put(maskedDataBlock);
 
-        LOGGER.debug("Encoded message: " + Arrays.toString(result.array()));
+        //LOGGER.debug("Encoded message: " + Arrays.toString(result.array()));
         return result.array();
     }
 
@@ -126,7 +126,7 @@ public class OaepConverter {
         byte[] padding = Arrays.copyOfRange(paddedMessage, 0, indexOfSeparator);
         byte[] message = Arrays.copyOfRange(paddedMessage, indexOfSeparator + 1, paddedMessage.length);
 
-        LOGGER.debug("Retrieved message: " + Arrays.toString(message));
+        //LOGGER.debug("Retrieved message: " + Arrays.toString(message));
         return message;
     }
 

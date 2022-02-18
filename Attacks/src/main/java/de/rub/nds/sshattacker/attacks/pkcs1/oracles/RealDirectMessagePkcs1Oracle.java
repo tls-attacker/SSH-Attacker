@@ -44,7 +44,7 @@ public class RealDirectMessagePkcs1Oracle extends Pkcs1Oracle {
 
     /**
      *
-     * @param pubKey The server's host key
+     * @param pubKey The transient public key
      * @param config Config
      * @param validResponseContent ResponseFingerprint of a valid response
      * @param invalidResponseContent ResponseFingerprint of an invalid repsonse
@@ -62,10 +62,10 @@ public class RealDirectMessagePkcs1Oracle extends Pkcs1Oracle {
     public boolean checkPKCSConformity(final byte[] msg) {
         // we are initializing a new connection in every loop step, since most
         // of the known servers close the connection after an invalid handshake
-        Config tlsConfig = config;
-        tlsConfig.setWorkflowExecutorShouldClose(false);
-        WorkflowTrace trace = MangerWorkflowGenerator.generateWorkflow(tlsConfig, msg);
-        State state = new State(tlsConfig, trace);
+        Config sshConfig = config;
+        sshConfig.setWorkflowExecutorShouldClose(false);
+        WorkflowTrace trace = MangerWorkflowGenerator.generateWorkflow(sshConfig, msg);
+        State state = new State(sshConfig, trace);
         WorkflowExecutor workflowExecutor =  new DefaultWorkflowExecutor(state);
         // TODO: Check this WorkflowExecutorFactory.createWorkflowExecutor(state.getConfig().getWorkflowExecutorType(), state);
 

@@ -12,9 +12,11 @@ import de.rub.nds.modifiablevariable.bytearray.ByteArrayModificationFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.constants.RunningModeType;
+import de.rub.nds.sshattacker.core.protocol.transport.message.RsaKeyExchangePubkeyMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.message.RsaKeyExchangeSecretMessage;
 import de.rub.nds.sshattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.sshattacker.core.workflow.action.ReceiveAction;
+import de.rub.nds.sshattacker.core.workflow.action.SendAction;
 import de.rub.nds.sshattacker.core.workflow.factory.WorkflowConfigurationFactory;
 import de.rub.nds.sshattacker.core.workflow.factory.WorkflowTraceType;
 
@@ -30,11 +32,13 @@ public class MangerWorkflowGenerator {
      */
     public static WorkflowTrace generateWorkflow(Config sshConfig, byte[] encryptedSecretMessage) {
         WorkflowTrace trace = new WorkflowConfigurationFactory(sshConfig)
-            .createWorkflowTrace(WorkflowTraceType.DYNAMIC_KEYEXCHANGE, RunningModeType.CLIENT);
+            .createWorkflowTrace(WorkflowTraceType.START_KEYEXCHANGE, RunningModeType.CLIENT);
+        trace.addSshAction(new ReceiveAction(new RsaKeyExchangePubkeyMessage()));
         RsaKeyExchangeSecretMessage secretMessage = new RsaKeyExchangeSecretMessage();
         ModifiableByteArray encryptedSecret = new ModifiableByteArray();
         encryptedSecret.setModification(ByteArrayModificationFactory.explicitValue(encryptedSecretMessage));
         secretMessage.setEncryptedSecret(encryptedSecret, true);
+        trace.addSshAction(new SendAction(secretMessage));
         trace.addSshAction(new ReceiveAction());
         return trace;
     }

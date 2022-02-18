@@ -152,6 +152,10 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
             return false;
         }
 
+        if (expectedMessages.size() == 0 && messages.size() > 0) {
+            return true;
+        }
+
         if (checkOnlyExpected != null && checkOnlyExpected) {
             if (expectedMessages.size() > messages.size()) {
                 return false;

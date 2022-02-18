@@ -41,6 +41,7 @@ public class ChangePacketLayerAction extends ConnectionBoundAction {
         SshContext context = state.getSshContext(getConnectionAlias());
         context.setPacketLayerType(packetLayerType);
         context.setPacketLayer(PacketLayerFactory.getPacketLayer(packetLayerType, context));
+        setExecuted(true);
     }
 
     @Override

@@ -100,7 +100,7 @@ public class MangerAttacker extends Attacker<MangerCommandConfig> {
         CONSOLE
             .info("A server is considered vulnerable to this attack if it responds differently to the test vectors.");
         CONSOLE.info("A server is considered secure if it always responds the same way.");
-        EqualityError referenceError = null;
+        EqualityError referenceError;
         fullResponseMap = new LinkedList<>();
         try {
             for (int i = 0; i < config.getNumberOfIterations(); i++) {
@@ -143,35 +143,30 @@ public class MangerAttacker extends Attacker<MangerCommandConfig> {
         }
         List<SshTask> taskList = new LinkedList<>();
         List<FingerprintTaskVectorPair> stateVectorPairList = new LinkedList<>();
+
+        //TODO: hash length is dependent on key exchange algorithm
         for (Pkcs1Vector vector : Pkcs1VectorGenerator.generatePkcs1Vectors(publicKey, 256)) {
+
             State state = new State(sshConfig, MangerWorkflowGenerator.generateWorkflow(sshConfig, vector.getEncryptedValue()));
+
             FingerPrintTask fingerPrintTask = new FingerPrintTask(state, additionalTimeout, increasingTimeout,
                 executor.getReexecutions(), additionalTcpTimeout);
+
             taskList.add(fingerPrintTask);
             stateVectorPairList.add(new FingerprintTaskVectorPair(fingerPrintTask, vector));
         }
         List<VectorResponse> tempResponseVectorList = new LinkedList<>();
         executor.bulkExecuteTasks(taskList);
         for (FingerprintTaskVectorPair pair : stateVectorPairList) {
-            ResponseFingerprint fingerprint = null;
+            ResponseFingerprint fingerprint;
             if (pair.getFingerPrintTask().isHasError()) {
                 erroneousScans = true;
-                LOGGER.warn("Could not extract fingerprint for " + pair.toString());
+                LOGGER.warn("Could not extract fingerprint for " + pair);
             } else {
                 fingerprint = pair.getFingerPrintTask().getFingerprint();
                 tempResponseVectorList.add(new VectorResponse(pair.getVector(), fingerprint));
             }
         }
-        // Check that the public key sent by the server is actually the public key used to generate the vectors. This is
-        // currently a limitation of our script as the attack vectors are generated statically and not dynamically. We
-        // will adjust this in future versions.
-        /*for (FingerprintTaskVectorPair pair : stateVectorPairList) {
-            if (pair.getFingerPrintTask().getState().getSshContext().getServerRSAModulus() != null && !pair
-                .getFingerPrintTask().getState().getSshContext().getServerRSAModulus().equals(publicKey.getModulus())) {
-                throw new OracleUnstableException(
-                    "Server sent us a different publickey during the scan. Aborting test");
-            }
-        }*/
         return tempResponseVectorList;
     }
 
@@ -215,9 +210,9 @@ public class MangerAttacker extends Attacker<MangerCommandConfig> {
 
     @Override
     public void executeAttack() {
-
+        //TODO: make attack work
         if (!isVulnerable()) {
-            LOGGER.warn("The server is not vulnerable to the Bleichenbacher attack");
+            LOGGER.warn("The server is not vulnerable to Manger's attack");
             return;
         }
         RSAPublicKey publicKey = getServerPublicKey();
@@ -228,18 +223,18 @@ public class MangerAttacker extends Attacker<MangerCommandConfig> {
 
         if (config.getEncryptedSecret() == null) {
             throw new ConfigurationException(
-                "You have to set the encrypted premaster secret you are " + "going to decrypt");
+                "The encrypted secret must be set to be decrypted.");
         }
 
         LOGGER.info("Fetched the following server public key: " + publicKey);
-        byte[] pms = ArrayConverter.hexStringToByteArray(config.getEncryptedSecret());
-        if ((pms.length * Bits.IN_A_BYTE) != publicKey.getModulus().bitLength()) {
-            throw new ConfigurationException("The length of the encrypted premaster secret you have "
-                + "is not equal to the server public key length. Have you selected the correct value?");
+        byte[] encryptedSecret = ArrayConverter.hexStringToByteArray(config.getEncryptedSecret());
+        if ((encryptedSecret.length * Bits.IN_A_BYTE) != publicKey.getModulus().bitLength()) {
+            throw new ConfigurationException("The length of the encrypted secret "
+                + "is not equal to the public key length. Have you selected the correct value?");
         }
         RealDirectMessagePkcs1Oracle oracle = new RealDirectMessagePkcs1Oracle(publicKey, getSshConfig(),
             extractValidFingerprint(publicKey), null);
-        Manger attacker = new Manger(pms, oracle);
+        Manger attacker = new Manger(encryptedSecret, oracle);
         attacker.attack();
         BigInteger solution = attacker.getSolution();
         CONSOLE.info(solution.toString(16));
@@ -254,7 +249,7 @@ public class MangerAttacker extends Attacker<MangerCommandConfig> {
         executor.bulkExecuteTasks(fingerPrintTask);
         ResponseFingerprint fingerprint = null;
         if (stateVectorPair.getFingerPrintTask().isHasError()) {
-            LOGGER.warn("Could not extract fingerprint for " + stateVectorPair.toString());
+            LOGGER.warn("Could not extract fingerprint for " + stateVectorPair);
         } else {
             fingerprint = fingerPrintTask.getFingerprint();
         }
