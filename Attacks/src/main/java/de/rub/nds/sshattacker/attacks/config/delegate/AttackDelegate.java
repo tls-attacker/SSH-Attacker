@@ -1,11 +1,10 @@
 /*
  * SSH-Attacker - A Modular Penetration Testing Framework for SSH
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
-
 package de.rub.nds.sshattacker.attacks.config.delegate;
 
 import com.beust.jcommander.Parameter;
@@ -13,20 +12,18 @@ import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.config.delegate.Delegate;
 import de.rub.nds.sshattacker.core.exceptions.ConfigurationException;
 
-/**
- * A Delegate which can be used by Attacks if they implement also an exploitation functionality
- */
+/** A Delegate which can be used by Attacks if they implement also an exploitation functionality */
 public class AttackDelegate extends Delegate {
 
-    @Parameter(names = { "-executeAttack", "-execute_attack" },
-        description = "If this value is set the Attack is not only Tested, but also " + "executed (WARNING)")
+    @Parameter(
+            names = {"-executeAttack", "-execute_attack"},
+            description =
+                    "If this value is set the Attack is not only Tested, but also "
+                            + "executed (WARNING)")
     private boolean executeAttack = false;
 
-    /**
-     * Default Constructor
-     */
-    public AttackDelegate() {
-    }
+    /** Default Constructor */
+    public AttackDelegate() {}
 
     /**
      * Returns true if an attack should be executed
@@ -49,13 +46,9 @@ public class AttackDelegate extends Delegate {
     /**
      * Does nothing
      *
-     * @param  config
-     *                                Ignored
-     * @throws ConfigurationException
-     *                                Never thrown
+     * @param config Ignored
+     * @throws ConfigurationException Never thrown
      */
     @Override
-    public void applyDelegate(Config config) throws ConfigurationException {
-    }
-
+    public void applyDelegate(Config config) throws ConfigurationException {}
 }

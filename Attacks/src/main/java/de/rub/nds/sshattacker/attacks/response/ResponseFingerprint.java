@@ -1,42 +1,33 @@
 /*
  * SSH-Attacker - A Modular Penetration Testing Framework for SSH
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
-
 package de.rub.nds.sshattacker.attacks.response;
 
 import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessage;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.message.DisconnectMessage;
 import de.rub.nds.tlsattacker.transport.socket.SocketState;
-
+import java.util.List;
+import java.util.Objects;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElementRef;
 import javax.xml.bind.annotation.XmlElementWrapper;
-import java.util.List;
-import java.util.Objects;
 
-/**
- *
- *
- */
+/** */
 @XmlAccessorType(XmlAccessType.FIELD)
 public class ResponseFingerprint {
-    @XmlElementWrapper
-    @XmlElementRef
-    private List<ProtocolMessage<?>> messageList;
+    @XmlElementWrapper @XmlElementRef private List<ProtocolMessage<?>> messageList;
 
     private SocketState socketState;
 
-    public ResponseFingerprint() {
-    }
+    public ResponseFingerprint() {}
 
     /**
-     *
      * @param messageList
      * @param socketState
      */
@@ -45,26 +36,17 @@ public class ResponseFingerprint {
         this.socketState = socketState;
     }
 
-    /**
-     *
-     * @return
-     */
+    /** @return */
     public SocketState getSocketState() {
         return socketState;
     }
 
-    /**
-     *
-     * @return
-     */
+    /** @return */
     public List<ProtocolMessage<?>> getMessageList() {
         return messageList;
     }
 
-    /**
-     *
-     * @return
-     */
+    /** @return */
     @Override
     public String toString() {
 
@@ -73,8 +55,7 @@ public class ResponseFingerprint {
             messages.append(someMessage.toCompactString()).append(",");
         }
 
-        return "ResponseFingerprint[ Messages=[" + messages
-            + "], SocketState=" + socketState + ']';
+        return "ResponseFingerprint[ Messages=[" + messages + "], SocketState=" + socketState + ']';
     }
 
     public String toCompactString() {
@@ -126,9 +107,9 @@ public class ResponseFingerprint {
     }
 
     /**
-     * Overrides the built-in hashCode() function. toString().hashCode() assures same hashes for responses with
-     * essentially the same content but differences in their record bytes.
-     * 
+     * Overrides the built-in hashCode() function. toString().hashCode() assures same hashes for
+     * responses with essentially the same content but differences in their record bytes.
+     *
      * @return The hash of the string representation
      */
     @Override
@@ -138,27 +119,27 @@ public class ResponseFingerprint {
 
     /**
      * Returns whether two ResponseFingerprints are equal using the {@link FingerPrintChecker}.
-     * 
-     * @param  obj
-     *             ResponseFingerprint to compare this one to
-     * @return     True, if both ResponseFingerprints are equal
+     *
+     * @param obj ResponseFingerprint to compare this one to
+     * @return True, if both ResponseFingerprints are equal
      */
     @Override
     public boolean equals(Object obj) {
         if (!(obj instanceof ResponseFingerprint)) {
             return false;
         }
-        EqualityError equalityError = FingerPrintChecker.checkEquality(this, (ResponseFingerprint) obj);
+        EqualityError equalityError =
+                FingerPrintChecker.checkEquality(this, (ResponseFingerprint) obj);
         return equalityError == EqualityError.NONE;
     }
 
     /**
-     *
-     * @param  fingerprint
+     * @param fingerprint
      * @return
      */
     public boolean areCompatible(ResponseFingerprint fingerprint) {
-        if (socketState != SocketState.TIMEOUT && fingerprint.getSocketState() != SocketState.TIMEOUT) {
+        if (socketState != SocketState.TIMEOUT
+                && fingerprint.getSocketState() != SocketState.TIMEOUT) {
             if (fingerprint.getSocketState() != socketState) {
                 return false;
             }
@@ -175,10 +156,10 @@ public class ResponseFingerprint {
             }
         }
         return true;
-
     }
 
-    private boolean checkMessagesAreRoughlyEqual(ProtocolMessage<?> messageOne, ProtocolMessage<?> messageTwo) {
+    private boolean checkMessagesAreRoughlyEqual(
+            ProtocolMessage<?> messageOne, ProtocolMessage<?> messageTwo) {
         if (!messageOne.getClass().equals(messageTwo.getClass())) {
             return false;
         }
@@ -186,11 +167,11 @@ public class ResponseFingerprint {
             // Both are disconnects
             DisconnectMessage disconnectOne = (DisconnectMessage) messageOne;
             DisconnectMessage disconnectTwo = (DisconnectMessage) messageTwo;
-            return Objects.equals(disconnectOne.getDescription().getValue(), disconnectTwo.getDescription().getValue());
+            return Objects.equals(
+                    disconnectOne.getDescription().getValue(),
+                    disconnectTwo.getDescription().getValue());
         }
         // nothing more to check?
         return true;
-
     }
-
 }

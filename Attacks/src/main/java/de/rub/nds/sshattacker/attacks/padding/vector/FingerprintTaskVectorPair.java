@@ -1,11 +1,10 @@
 /*
  * SSH-Attacker - A Modular Penetration Testing Framework for SSH
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
-
 package de.rub.nds.sshattacker.attacks.padding.vector;
 
 import de.rub.nds.sshattacker.attacks.general.Vector;
@@ -32,7 +31,11 @@ public class FingerprintTaskVectorPair<T extends Vector> {
 
     @Override
     public String toString() {
-        return "FingerprintTaskVectorPair{" + "fingerPrintTask=" + fingerPrintTask + ", vector=" + vector + '}';
+        return "FingerprintTaskVectorPair{"
+                + "fingerPrintTask="
+                + fingerPrintTask
+                + ", vector="
+                + vector
+                + '}';
     }
-
 }

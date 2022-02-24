@@ -1,22 +1,17 @@
 /*
  * SSH-Attacker - A Modular Penetration Testing Framework for SSH
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
-
 package de.rub.nds.sshattacker.attacks.pkcs1;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.attacks.general.Vector;
-
 import java.util.Arrays;
 
-/**
- *
- *
- */
+/** */
 public class Pkcs1Vector implements Vector {
 
     private String name;
@@ -25,11 +20,9 @@ public class Pkcs1Vector implements Vector {
 
     private byte[] encryptedValue;
 
-    private Pkcs1Vector() {
-    }
+    private Pkcs1Vector() {}
 
     /**
-     *
      * @param name
      * @param value
      */
@@ -42,34 +35,22 @@ public class Pkcs1Vector implements Vector {
         this.name = name;
     }
 
-    /**
-     *
-     * @return
-     */
+    /** @return */
     public byte[] getPlainValue() {
         return plainValue;
     }
 
-    /**
-     *
-     * @param plainValue
-     */
+    /** @param plainValue */
     public void setPlainValue(byte[] plainValue) {
         this.plainValue = plainValue;
     }
 
-    /**
-     *
-     * @return
-     */
+    /** @return */
     public byte[] getEncryptedValue() {
         return encryptedValue;
     }
 
-    /**
-     *
-     * @param encryptedValue
-     */
+    /** @param encryptedValue */
     public void setEncryptedValue(byte[] encryptedValue) {
         this.encryptedValue = encryptedValue;
     }
@@ -110,7 +91,13 @@ public class Pkcs1Vector implements Vector {
 
     @Override
     public String toString() {
-        return "" + name + "{" + "plainValue=" + ArrayConverter.bytesToHexString(plainValue) + ", encryptedValue="
-            + ArrayConverter.bytesToHexString(encryptedValue) + '}';
+        return ""
+                + name
+                + "{"
+                + "plainValue="
+                + ArrayConverter.bytesToHexString(plainValue)
+                + ", encryptedValue="
+                + ArrayConverter.bytesToHexString(encryptedValue)
+                + '}';
     }
 }

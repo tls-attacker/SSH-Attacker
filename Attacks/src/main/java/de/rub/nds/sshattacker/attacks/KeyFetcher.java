@@ -1,3 +1,10 @@
+/*
+ * SSH-Attacker - A Modular Penetration Testing Framework for SSH
+ *
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ *
+ * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ */
 package de.rub.nds.sshattacker.attacks;
 
 import de.rub.nds.sshattacker.core.config.Config;
@@ -11,12 +18,11 @@ import de.rub.nds.sshattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.sshattacker.core.workflow.action.ReceiveAction;
 import de.rub.nds.sshattacker.core.workflow.factory.WorkflowConfigurationFactory;
 import de.rub.nds.sshattacker.core.workflow.factory.WorkflowTraceType;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import java.io.IOException;
 import java.security.interfaces.RSAPublicKey;
 import java.util.List;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class KeyFetcher {
 
@@ -24,7 +30,9 @@ public class KeyFetcher {
 
     public static RSAPublicKey fetchRsaTransientKey(Config config) {
         WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(config);
-        WorkflowTrace trace = factory.createWorkflowTrace(WorkflowTraceType.START_KEYEXCHANGE, RunningModeType.CLIENT);
+        WorkflowTrace trace =
+                factory.createWorkflowTrace(
+                        WorkflowTraceType.START_KEYEXCHANGE, RunningModeType.CLIENT);
 
         ReceiveAction receiveAction = new ReceiveAction(new RsaKeyExchangePubkeyMessage());
         trace.addSshAction(receiveAction);
@@ -46,12 +54,12 @@ public class KeyFetcher {
 
         List<ProtocolMessage<?>> receivedMessages = receiveAction.getReceivedMessages();
 
-        if (receivedMessages.size() > 0 && receivedMessages.get(0) instanceof RsaKeyExchangePubkeyMessage) {
+        if (receivedMessages.size() > 0
+                && receivedMessages.get(0) instanceof RsaKeyExchangePubkeyMessage) {
             return ((RsaKeyExchangePubkeyMessage) receivedMessages.get(0)).getPublicKey();
         } else {
             LOGGER.warn("Could not fetch server's RSA host key, did not receive PubkeyMessage.");
             return null;
         }
-
     }
 }

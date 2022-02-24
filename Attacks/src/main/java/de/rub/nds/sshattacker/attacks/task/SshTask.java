@@ -1,22 +1,20 @@
 /*
  * SSH-Attacker - A Modular Penetration Testing Framework for SSH
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
-
 package de.rub.nds.sshattacker.attacks.task;
 
 import de.rub.nds.sshattacker.core.exceptions.TransportHandlerConnectException;
 import de.rub.nds.sshattacker.core.state.State;
 import de.rub.nds.sshattacker.core.workflow.DefaultWorkflowExecutor;
 import de.rub.nds.sshattacker.core.workflow.WorkflowExecutor;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import java.util.concurrent.Callable;
 import java.util.function.Function;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public abstract class SshTask implements ITask, Callable<ITask> {
 
@@ -47,8 +45,11 @@ public abstract class SshTask implements ITask, Callable<ITask> {
         this.additionalTcpTimeout = 5000;
     }
 
-    public SshTask(int reexecutions, long additionalSleepTime, boolean increasingSleepTimes,
-                   long additionalTcpTimeout) {
+    public SshTask(
+            int reexecutions,
+            long additionalSleepTime,
+            boolean increasingSleepTimes,
+            long additionalTcpTimeout) {
         this.reexecutions = reexecutions;
         this.additionalSleepTime = additionalSleepTime;
         this.increasingSleepTimes = increasingSleepTimes;
@@ -69,7 +70,8 @@ public abstract class SshTask implements ITask, Callable<ITask> {
                     hasError = false;
                     break;
                 } else {
-                    LOGGER.debug("Could not execute task correctly. Increasing Timeout and reexecuting");
+                    LOGGER.debug(
+                            "Could not execute task correctly. Increasing Timeout and reexecuting");
                     if (increasingSleepTimes) {
                         sleepTime += additionalSleepTime;
                     }
@@ -122,7 +124,8 @@ public abstract class SshTask implements ITask, Callable<ITask> {
         return beforeTransportPreInitCallback;
     }
 
-    public void setBeforeTransportPreInitCallback(Function<State, Integer> beforeTransportPreInitCallback) {
+    public void setBeforeTransportPreInitCallback(
+            Function<State, Integer> beforeTransportPreInitCallback) {
         this.beforeTransportPreInitCallback = beforeTransportPreInitCallback;
     }
 
@@ -130,7 +133,8 @@ public abstract class SshTask implements ITask, Callable<ITask> {
         return beforeTransportInitCallback;
     }
 
-    public void setBeforeTransportInitCallback(Function<State, Integer> beforeTransportInitCallback) {
+    public void setBeforeTransportInitCallback(
+            Function<State, Integer> beforeTransportInitCallback) {
         this.beforeTransportInitCallback = beforeTransportInitCallback;
     }
 
@@ -152,7 +156,7 @@ public abstract class SshTask implements ITask, Callable<ITask> {
 
     public WorkflowExecutor getExecutor(State state) {
         WorkflowExecutor executor = new DefaultWorkflowExecutor(state);
-            /*WorkflowExecutorFactory.createWorkflowExecutor(state.getConfig().getWorkflowExecutorType(), state);
+        /*WorkflowExecutorFactory.createWorkflowExecutor(state.getConfig().getWorkflowExecutorType(), state);
         if (beforeTransportPreInitCallback != null && executor.getBeforeTransportPreInitCallback() == null) {
             executor.setBeforeTransportPreInitCallback(beforeTransportPreInitCallback);
         }

@@ -1,19 +1,17 @@
 /*
  * SSH-Attacker - A Modular Penetration Testing Framework for SSH
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
-
 package de.rub.nds.sshattacker.attacks.pkcs1.oracles;
 
 import de.rub.nds.sshattacker.attacks.pkcs1.OracleException;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import java.security.PublicKey;
 import java.security.interfaces.RSAPublicKey;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Oracle template for Bleichenbacher/Manger attack.
@@ -22,46 +20,34 @@ import java.security.interfaces.RSAPublicKey;
  */
 public abstract class Pkcs1Oracle {
 
-    /**
-     * logger
-     */
+    /** logger */
     private static final Logger LOGGER = LogManager.getLogger();
 
     /*
      * number of queries issued to oracle
      */
-    /**
-     *
-     */
+    /** */
     protected long numberOfQueries;
     /*
      * block size of the encryption algorithm
      */
 
-    /**
-     *
-     */
+    /** */
     protected int blockSize;
     /*
      * public key of the oracle
      */
 
-    /**
-     *
-     */
+    /** */
     protected RSAPublicKey publicKey;
     /*
      * a boolean value indicating if the oracle is a plaintext oracle (oracle used for testing purposes) or a real
      * oracle needing to decrypt each ciphertext.
      */
 
-    /**
-     *
-     */
+    /** */
     protected boolean isPlaintextOracle = false;
-    /**
-     * oracle type according to the Crypto'12 paper
-     */
+    /** oracle type according to the Crypto'12 paper */
     protected OracleType oracleType = null;
 
     /**
@@ -94,9 +80,8 @@ public abstract class Pkcs1Oracle {
     /**
      * Checks for PKCS conformity - 00 maskedSeed maskedDataBlock
      *
-     * @param  msg
-     *             Encrypted message to check for conformity
-     * @return     True if PKCS conforming, else false
+     * @param msg Encrypted message to check for conformity
+     * @return True if PKCS conforming, else false
      */
     public abstract boolean checkPKCSConformity(final byte[] msg) throws OracleException;
 
@@ -118,20 +103,14 @@ public abstract class Pkcs1Oracle {
         return oracleType;
     }
 
-    /**
-     *
-     */
+    /** */
     public void resetNumberOfQueries() {
         this.numberOfQueries = 0;
     }
 
-    /**
-     * MANGER_0x00 checks only the first byte is equal to 0x00
-     */
+    /** MANGER_0x00 checks only the first byte is equal to 0x00 */
     public enum OracleType {
-        /**
-         *
-         */
+        /** */
         MANGER_0x00
     }
 }

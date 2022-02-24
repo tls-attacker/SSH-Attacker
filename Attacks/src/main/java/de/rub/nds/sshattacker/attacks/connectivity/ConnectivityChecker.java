@@ -1,11 +1,10 @@
 /*
  * SSH-Attacker - A Modular Penetration Testing Framework for SSH
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
-
 package de.rub.nds.sshattacker.attacks.connectivity;
 
 import de.rub.nds.sshattacker.core.config.Config;
@@ -23,24 +22,18 @@ import de.rub.nds.tlsattacker.transport.Connection;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import de.rub.nds.tlsattacker.transport.TransportHandlerFactory;
 import de.rub.nds.tlsattacker.transport.TransportHandlerType;
+import java.io.IOException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.IOException;
-
-/**
- *
- */
+/** */
 public class ConnectivityChecker {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
     private final Connection connection;
 
-    /**
-     *
-     * @param connection
-     */
+    /** @param connection */
     public ConnectivityChecker(Connection connection) {
         this.connection = connection;
         if (connection instanceof AliasedConnection) {
@@ -48,10 +41,7 @@ public class ConnectivityChecker {
         }
     }
 
-    /**
-     *
-     * @return
-     */
+    /** @return */
     public boolean isConnectable() {
         if (connection.getTransportHandlerType() == null) {
             connection.setTransportHandlerType(TransportHandlerType.TCP);
@@ -80,13 +70,14 @@ public class ConnectivityChecker {
 
     public boolean speaksSsh(Config config) {
         WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(config);
-        WorkflowTrace trace = factory.createWorkflowTrace(WorkflowTraceType.KEYEXCHANGE, RunningModeType.CLIENT);
+        WorkflowTrace trace =
+                factory.createWorkflowTrace(WorkflowTraceType.KEYEXCHANGE, RunningModeType.CLIENT);
         trace.removeSshAction(trace.getSshActions().size() - 1);
         ReceiveAction receiveAction = new ReceiveAction(new VersionExchangeMessage());
         trace.addSshAction(receiveAction);
         State state = new State(config, trace);
         WorkflowExecutor executor = new DefaultWorkflowExecutor(state);
-            //WorkflowExecutorFactory.createWorkflowExecutor(state.getConfig().getWorkflowExecutorType(), state);
+        // WorkflowExecutorFactory.createWorkflowExecutor(state.getConfig().getWorkflowExecutorType(), state);
         executor.executeWorkflow();
         if (receiveAction.getReceivedMessages().size() > 0) {
             return receiveAction.getReceivedMessages().get(0) instanceof VersionExchangeMessage;

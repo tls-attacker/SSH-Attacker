@@ -1,21 +1,19 @@
 /*
  * SSH-Attacker - A Modular Penetration Testing Framework for SSH
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
-
 package de.rub.nds.sshattacker.attacks.task;
 
 import de.rub.nds.sshattacker.attacks.response.ResponseExtractor;
 import de.rub.nds.sshattacker.attacks.response.ResponseFingerprint;
 import de.rub.nds.sshattacker.core.state.State;
 import de.rub.nds.sshattacker.core.workflow.WorkflowExecutor;
+import java.io.IOException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import java.io.IOException;
 
 public class FingerPrintTask extends SshTask {
 
@@ -30,8 +28,12 @@ public class FingerPrintTask extends SshTask {
         this.state = state;
     }
 
-    public FingerPrintTask(State state, long additionalTimeout, boolean increasingTimeout, int reexecutions,
-        long additionalTcpTimeout) {
+    public FingerPrintTask(
+            State state,
+            long additionalTimeout,
+            boolean increasingTimeout,
+            int reexecutions,
+            long additionalTcpTimeout) {
         super(reexecutions, additionalTimeout, increasingTimeout, additionalTcpTimeout);
         this.state = state;
     }

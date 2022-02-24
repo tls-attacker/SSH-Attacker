@@ -1,19 +1,26 @@
+/*
+ * SSH-Attacker - A Modular Penetration Testing Framework for SSH
+ *
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ *
+ * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ */
 package de.rub.nds.sshattacker.attacks.pkcs1.util;
 
 import com.google.common.primitives.Bytes;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.bouncycastle.pqc.math.linearalgebra.BigEndianConversions;
-
 import java.nio.ByteBuffer;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.Random;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.bouncycastle.pqc.math.linearalgebra.BigEndianConversions;
 
 /**
- * Utility class for performing raw OAEP encoding/decoding of messages according to PKCS#1 (RFC 8017)
- * It implements OAEP encoding and decoding, mask generation function MGF1 and xor for byte arrays
+ * Utility class for performing raw OAEP encoding/decoding of messages according to PKCS#1 (RFC
+ * 8017) It implements OAEP encoding and decoding, mask generation function MGF1 and xor for byte
+ * arrays
  */
 public class OaepConverter {
 
@@ -21,13 +28,15 @@ public class OaepConverter {
 
     /**
      * Encodes message using OAEP with digest hashInstance for a key of length keyLen
+     *
      * @param message Message to be encoded
      * @param hashInstance Name of hash to be used
      * @param keyLen Length of the public key
      * @return Encoded message
      * @throws NoSuchAlgorithmException if hashInstance does not exist
      */
-    public static byte[] doOaepEncoding(byte[] message, String hashInstance, int keyLen) throws NoSuchAlgorithmException {
+    public static byte[] doOaepEncoding(byte[] message, String hashInstance, int keyLen)
+            throws NoSuchAlgorithmException {
 
         ByteBuffer result = ByteBuffer.allocate(keyLen);
 
@@ -69,19 +78,21 @@ public class OaepConverter {
         result.put(maskedSeed);
         result.put(maskedDataBlock);
 
-        //LOGGER.debug("Encoded message: " + Arrays.toString(result.array()));
+        // LOGGER.debug("Encoded message: " + Arrays.toString(result.array()));
         return result.array();
     }
 
     /**
      * Decodes message using OAEP with digest hashInstance for a key of length keyLen
+     *
      * @param encodedMessage Message to be decoded
      * @param hashInstance Name of hash to be used
      * @param keyLen Length of the public key
      * @return Decoded message
      * @throws NoSuchAlgorithmException if hashInstance does not exist
      */
-    public static byte[] doOaepDecoding(byte[] encodedMessage, String hashInstance, int keyLen) throws NoSuchAlgorithmException {
+    public static byte[] doOaepDecoding(byte[] encodedMessage, String hashInstance, int keyLen)
+            throws NoSuchAlgorithmException {
         // Prepare message digest
         MessageDigest hash = MessageDigest.getInstance(hashInstance);
         int hashLen = hash.getDigestLength();
@@ -91,14 +102,14 @@ public class OaepConverter {
 
         // Step b: Separating the message
         byte y = encodedMessage[0];
-        byte[] maskedSeed = Arrays.copyOfRange(
-                encodedMessage,
-                1,
-                encodedMessage.length - (keyLen - hashLen - 1));
-        byte[] maskedDataBlock = Arrays.copyOfRange(
-                encodedMessage,
-                encodedMessage.length - (keyLen - hashLen - 1) ,
-                encodedMessage.length);
+        byte[] maskedSeed =
+                Arrays.copyOfRange(
+                        encodedMessage, 1, encodedMessage.length - (keyLen - hashLen - 1));
+        byte[] maskedDataBlock =
+                Arrays.copyOfRange(
+                        encodedMessage,
+                        encodedMessage.length - (keyLen - hashLen - 1),
+                        encodedMessage.length);
 
         // Step c: Seed mask
         byte[] seedMask = mgf1(maskedDataBlock, hashLen, hashInstance);
@@ -124,20 +135,21 @@ public class OaepConverter {
         }
 
         byte[] padding = Arrays.copyOfRange(paddedMessage, 0, indexOfSeparator);
-        byte[] message = Arrays.copyOfRange(paddedMessage, indexOfSeparator + 1, paddedMessage.length);
+        byte[] message =
+                Arrays.copyOfRange(paddedMessage, indexOfSeparator + 1, paddedMessage.length);
 
-        //LOGGER.debug("Retrieved message: " + Arrays.toString(message));
+        // LOGGER.debug("Retrieved message: " + Arrays.toString(message));
         return message;
     }
 
     /**
-     *
      * @param seed Seed for the mask generation
      * @param maskLen Desired mask length in bytes
      * @param digestName Name of the digest to be used
      * @return generated mask
      */
-    public static byte[] mgf1(byte[] seed, int maskLen, String digestName) throws NoSuchAlgorithmException {
+    public static byte[] mgf1(byte[] seed, int maskLen, String digestName)
+            throws NoSuchAlgorithmException {
 
         MessageDigest digest = MessageDigest.getInstance(digestName);
         int hashLen = digest.getDigestLength();
@@ -168,13 +180,13 @@ public class OaepConverter {
 
     /**
      * XORs two byte arrays
+     *
      * @param left First array
      * @param right Second array
      * @return Result of XOR operation
      */
     public static byte[] xor(byte[] left, byte[] right) {
-        if (left == null || right == null)
-            return null;
+        if (left == null || right == null) return null;
         if (left.length > right.length) {
             byte[] swap = left;
             left = right;
@@ -188,5 +200,4 @@ public class OaepConverter {
         }
         return out;
     }
-
 }

@@ -1,31 +1,26 @@
 /*
  * SSH-Attacker - A Modular Penetration Testing Framework for SSH
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
-
 package de.rub.nds.sshattacker.attacks;
 
 import de.rub.nds.sshattacker.attacks.task.ITask;
 import de.rub.nds.sshattacker.attacks.task.SshTask;
 import de.rub.nds.sshattacker.attacks.task.StateExecutionTask;
 import de.rub.nds.sshattacker.core.state.State;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.*;
 import java.util.function.Function;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-/**
- *
- *
- */
+/** */
 public class ParallelExecutor {
 
     private static final Logger LOGGER = LogManager.getLogger();
@@ -60,26 +55,40 @@ public class ParallelExecutor {
     }
 
     public ParallelExecutor(int size, int reexecutions) {
-        this(size, reexecutions,
-            new ThreadPoolExecutor(size, size, 10, TimeUnit.DAYS, new LinkedBlockingDeque<Runnable>()));
+        this(
+                size,
+                reexecutions,
+                new ThreadPoolExecutor(
+                        size, size, 10, TimeUnit.DAYS, new LinkedBlockingDeque<Runnable>()));
     }
 
     public ParallelExecutor(int size, int reexecutions, ThreadFactory factory) {
-        this(size, reexecutions,
-            new ThreadPoolExecutor(size, size, 5, TimeUnit.MINUTES, new LinkedBlockingDeque<Runnable>(), factory));
+        this(
+                size,
+                reexecutions,
+                new ThreadPoolExecutor(
+                        size,
+                        size,
+                        5,
+                        TimeUnit.MINUTES,
+                        new LinkedBlockingDeque<Runnable>(),
+                        factory));
     }
 
     private Future<ITask> addTask(SshTask task) {
         if (executorService.isShutdown()) {
             throw new RuntimeException("Cannot add Tasks to already shutdown executor");
         }
-        if (defaultBeforeTransportPreInitCallback != null && task.getBeforeTransportPreInitCallback() == null) {
+        if (defaultBeforeTransportPreInitCallback != null
+                && task.getBeforeTransportPreInitCallback() == null) {
             task.setBeforeTransportPreInitCallback(defaultBeforeTransportPreInitCallback);
         }
-        if (defaultBeforeTransportInitCallback != null && task.getBeforeTransportInitCallback() == null) {
+        if (defaultBeforeTransportInitCallback != null
+                && task.getBeforeTransportInitCallback() == null) {
             task.setBeforeTransportInitCallback(defaultBeforeTransportInitCallback);
         }
-        if (defaultAfterTransportInitCallback != null && task.getAfterTransportInitCallback() == null) {
+        if (defaultAfterTransportInitCallback != null
+                && task.getAfterTransportInitCallback() == null) {
             task.setAfterTransportInitCallback(defaultAfterTransportInitCallback);
         }
         if (defaultAfterExecutionCallback != null && task.getAfterExecutionCallback() == null) {
@@ -140,14 +149,13 @@ public class ParallelExecutor {
     }
 
     /**
-     * Creates a new thread monitoring the executorService. If the time since the last {@link SshTask} was finished
-     * exceeds the timeout, the function assiged to {@link ParallelExecutor#timeoutAction } is executed. The
-     * {@link ParallelExecutor#timeoutAction } function can, for example, try to restart the client/server, so that the
-     * remaining {@link SshTask}s can be finished.
+     * Creates a new thread monitoring the executorService. If the time since the last {@link
+     * SshTask} was finished exceeds the timeout, the function assiged to {@link
+     * ParallelExecutor#timeoutAction } is executed. The {@link ParallelExecutor#timeoutAction }
+     * function can, for example, try to restart the client/server, so that the remaining {@link
+     * SshTask}s can be finished.
      *
-     * @param timeout
-     *                The timeout in milliseconds
-     *
+     * @param timeout The timeout in milliseconds
      */
     public void armTimeoutAction(int timeout) {
         if (timeoutAction == null) {
@@ -155,9 +163,11 @@ public class ParallelExecutor {
             return;
         }
 
-        new Thread(() -> {
-            monitorExecution(timeout);
-        }).start();
+        new Thread(
+                        () -> {
+                            monitorExecution(timeout);
+                        })
+                .start();
     }
 
     private void monitorExecution(int timeout) {
@@ -173,7 +183,8 @@ public class ParallelExecutor {
                 try {
                     int exitCode = timeoutAction.call();
                     if (exitCode != 0) {
-                        throw new RuntimeException("TimeoutAction did terminate with code " + exitCode);
+                        throw new RuntimeException(
+                                "TimeoutAction did terminate with code " + exitCode);
                     }
                     timeoutTime = System.currentTimeMillis() + timeout;
                 } catch (Exception e) {
@@ -199,8 +210,8 @@ public class ParallelExecutor {
         return defaultBeforeTransportPreInitCallback;
     }
 
-    public void
-        setDefaultBeforeTransportPreInitCallback(Function<State, Integer> defaultBeforeTransportPreInitCallback) {
+    public void setDefaultBeforeTransportPreInitCallback(
+            Function<State, Integer> defaultBeforeTransportPreInitCallback) {
         this.defaultBeforeTransportPreInitCallback = defaultBeforeTransportPreInitCallback;
     }
 
@@ -208,7 +219,8 @@ public class ParallelExecutor {
         return defaultBeforeTransportInitCallback;
     }
 
-    public void setDefaultBeforeTransportInitCallback(Function<State, Integer> defaultBeforeTransportInitCallback) {
+    public void setDefaultBeforeTransportInitCallback(
+            Function<State, Integer> defaultBeforeTransportInitCallback) {
         this.defaultBeforeTransportInitCallback = defaultBeforeTransportInitCallback;
     }
 
@@ -216,7 +228,8 @@ public class ParallelExecutor {
         return defaultAfterTransportInitCallback;
     }
 
-    public void setDefaultAfterTransportInitCallback(Function<State, Integer> defaultAfterTransportInitCallback) {
+    public void setDefaultAfterTransportInitCallback(
+            Function<State, Integer> defaultAfterTransportInitCallback) {
         this.defaultAfterTransportInitCallback = defaultAfterTransportInitCallback;
     }
 
@@ -224,8 +237,8 @@ public class ParallelExecutor {
         return defaultAfterExecutionCallback;
     }
 
-    public void setDefaultAfterExecutionCallback(Function<State, Integer> defaultAfterExecutionCallback) {
+    public void setDefaultAfterExecutionCallback(
+            Function<State, Integer> defaultAfterExecutionCallback) {
         this.defaultAfterExecutionCallback = defaultAfterExecutionCallback;
     }
-
 }
