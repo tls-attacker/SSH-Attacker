@@ -13,9 +13,15 @@ public enum SignatureAlgorithm {
      * Source for Java Signature Algorithms
      * https://docs.oracle.com/javase/9/docs/specs/security/standard-names.html#signature-algorithms
      */
+    // [ RFC 4253 ]
     SSH_RSA("ssh-rsa", "SHA1WithRSA"),
+    SSH_DSS("ssh-dss", "SHA1WithDSA"),
+
+    // [ RFC 8332 ]
     RSA_SHA2_256("rsa-sha2-256", "SHA256WithRSA"),
     RSA_SHA2_512("rsa-sha2-512", "SHA512WithRSA"),
+
+    // Fallback
     UNKNOWN("UNKNOWN", "UNKNOWN");
 
     private final String name;

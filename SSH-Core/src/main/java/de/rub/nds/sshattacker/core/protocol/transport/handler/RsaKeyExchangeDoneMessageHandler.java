@@ -65,8 +65,7 @@ public class RsaKeyExchangeDoneMessageHandler extends SshMessageHandler<RsaKeyEx
                     LOGGER.debug("Signature verification failed: Signature was invalid");
                 }
             } catch (CryptoException | NotImplementedException e) {
-                // Catch not implemented exception in case the host key parser is not yet
-                // implemented.
+                // Catch NotImplementedException in case the host key parser is not yet implemented
                 LOGGER.debug(
                         "Signature verification failed because an error occurred. "
                                 + e.getMessage());

@@ -40,10 +40,10 @@ public class SignatureFactory {
     public static JavaSignature getVerificationSignatureForHostKey(
             SignatureAlgorithm signatureAlgorithm,
             byte[] hostKeyBytes,
-            PublicKeyAuthenticationAlgorithm algorithm) {
+            PublicKeyAuthenticationAlgorithm hostKeyAlgorithm) {
         PublicKey publicKey =
                 HostKeyParserFactory.getParserForPublicKeyAuthenticationAlgorithm(
-                                algorithm, hostKeyBytes)
+                                hostKeyAlgorithm, hostKeyBytes)
                         .parse();
         return getVerificationSignature(signatureAlgorithm, publicKey);
     }
