@@ -1,7 +1,7 @@
 /*
  * SSH-Attacker - A Modular Penetration Testing Framework for SSH
  *
- * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
@@ -12,8 +12,16 @@ import de.rub.nds.sshattacker.core.exceptions.NotImplementedException;
 import de.rub.nds.sshattacker.core.protocol.common.Parser;
 import java.security.PublicKey;
 
+/** Utility class for host key parsing */
 public class HostKeyParserFactory {
 
+    /**
+     * Creates a parser for a certain host key algorithm
+     *
+     * @param algorithm The host key algorithm
+     * @param hostKeyBytes Encoded host key
+     * @return Parser for the given algorithm
+     */
     public static Parser<? extends PublicKey> getParserForPublicKeyAuthenticationAlgorithm(
             PublicKeyAuthenticationAlgorithm algorithm, byte[] hostKeyBytes) {
         switch (algorithm) {

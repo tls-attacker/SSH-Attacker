@@ -1,7 +1,7 @@
 /*
  * SSH-Attacker - A Modular Penetration Testing Framework for SSH
  *
- * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
@@ -58,7 +58,7 @@ public class RsaKeyExchange extends KeyExchange {
     public void setHashLength(KeyExchangeAlgorithm keyExchangeAlgorithm) {
         switch (keyExchangeAlgorithm) {
             case RSA1024_SHA1:
-                setHashLength(128);
+                setHashLength(160);
                 break;
             case RSA2048_SHA256:
                 setHashLength(256);

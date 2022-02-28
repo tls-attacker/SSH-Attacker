@@ -1,7 +1,7 @@
 /*
  * SSH-Attacker - A Modular Penetration Testing Framework for SSH
  *
- * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
@@ -65,8 +65,7 @@ public class RsaKeyExchangeDoneMessageHandler extends SshMessageHandler<RsaKeyEx
                     LOGGER.debug("Signature verification failed: Signature was invalid");
                 }
             } catch (CryptoException | NotImplementedException e) {
-                // Catch not implemented exception in case the host key parser is not yet
-                // implemented.
+                // Catch NotImplementedException in case the host key parser is not yet implemented
                 LOGGER.debug(
                         "Signature verification failed because an error occurred. "
                                 + e.getMessage());
