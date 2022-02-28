@@ -1,7 +1,7 @@
 /*
  * SSH-Attacker - A Modular Penetration Testing Framework for SSH
  *
- * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
@@ -26,8 +26,8 @@ public class MangerCommandConfig extends AttackConfig {
 
     @Parameter(
             names = "-kex_algorithm",
-            description = "The key exchange algorithm that should be used: rsa2048_sha256 or rsa1024_sha1"
-    )
+            description =
+                    "The key exchange algorithm that should be used: rsa2048_sha256 or rsa1024_sha1")
     private String kexAlgorithm;
 
     @Parameter(

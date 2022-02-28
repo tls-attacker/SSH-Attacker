@@ -1,21 +1,20 @@
 /*
  * SSH-Attacker - A Modular Penetration Testing Framework for SSH
  *
- * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.sshattacker.attacks.pkcs1;
 
+import static de.rub.nds.tlsattacker.util.ConsoleLogger.CONSOLE;
+
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.attacks.pkcs1.oracles.Pkcs1Oracle;
 import de.rub.nds.tlsattacker.util.MathHelper;
+import java.math.BigInteger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import java.math.BigInteger;
-
-import static de.rub.nds.tlsattacker.util.ConsoleLogger.CONSOLE;
 
 /**
  * Manger algorithm according to https://www.iacr.org/archive/crypto2001/21390229.pdf Original
@@ -80,7 +79,6 @@ public class Manger extends Pkcs1Attack {
                 break;
             }
         }
-
 
         CONSOLE.debug("Step 2");
         // f2 = int(intfloordiv(N+B,B)*f1/2)
