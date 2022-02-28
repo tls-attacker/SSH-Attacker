@@ -25,6 +25,12 @@ public class MangerCommandConfig extends AttackConfig {
     @ParametersDelegate private AttackDelegate attackDelegate;
 
     @Parameter(
+            names = "-kex_algorithm",
+            description = "The key exchange algorithm that should be used: rsa2048_sha256 or rsa1024_sha1"
+    )
+    private String kexAlgorithm;
+
+    @Parameter(
             names = "-encrypted_secret",
             description =
                     "Encrypted secret from the RSA client "
@@ -63,6 +69,10 @@ public class MangerCommandConfig extends AttackConfig {
     /** @return */
     public String getEncryptedSecret() {
         return encryptedSecret;
+    }
+
+    public String getKexAlgorithm() {
+        return kexAlgorithm;
     }
 
     public int getNumberOfIterations() {

