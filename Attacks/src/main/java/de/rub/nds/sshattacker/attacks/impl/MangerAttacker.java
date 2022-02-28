@@ -276,7 +276,7 @@ public class MangerAttacker extends Attacker<MangerCommandConfig> {
 
     private ResponseFingerprint extractValidFingerprint(RSAPublicKey publicKey) {
         // TODO: hashLength depends on negotiated key exchange alg.
-        Pkcs1Vector vector = Pkcs1VectorGenerator.generateCorrectPkcs1Vector(publicKey, 256);
+        Pkcs1Vector vector = Pkcs1VectorGenerator.generateCorrectFirstBytePkcs1Vector(publicKey, 256);
         State state =
                 new State(
                         sshConfig,

@@ -30,6 +30,52 @@ public class Pkcs1VectorGenerator {
     private static final Logger LOGGER = LogManager.getLogger();
 
     /**
+     * Generates an encrypted Pkcs1 Vector with correct first byte, but another error so decoding will fail
+     * @param publicKey Public key for encyrption
+     * @param hashLength Bit length of the hash function
+     * @return Pkcs1 Vector with correct first byte but incorrect second byte
+     */
+    public static Pkcs1Vector generateCorrectFirstBytePkcs1Vector(RSAPublicKey publicKey, int hashLength) {
+        Pkcs1Vector encryptedVector =
+                generatePlainCorrectFirstBytePkcs1Vector(publicKey.getModulus().bitLength(), hashLength);
+        try {
+            Cipher rsa = Cipher.getInstance("RSA/NONE/NoPadding");
+            LOGGER.debug("Provider: " + rsa.getProvider());
+            rsa.init(Cipher.ENCRYPT_MODE, publicKey);
+            // encrypt padded key
+            byte[] encrypted = rsa.doFinal(encryptedVector.getPlainValue());
+            encryptedVector.setEncryptedValue(encrypted);
+            return encryptedVector;
+        } catch (BadPaddingException
+                | IllegalBlockSizeException
+                | InvalidKeyException
+                | NoSuchAlgorithmException
+                | NoSuchPaddingException ex) {
+            throw new ConfigurationException(
+                    "The PKCS#1 attack vectors could not be generated.", ex);
+        }
+    }
+
+    /**
+     * Generates a plain Pkcs1 Vector with correct first byte, but another error so decoding will fail
+     * @param publicKeyBitLength Bit length of the transient public key
+     * @param hashLength Bit length of the hash function
+     * @return
+     */
+    public static Pkcs1Vector generatePlainCorrectFirstBytePkcs1Vector(int publicKeyBitLength, int hashLength) {
+        int sharedSecretByteLength = (publicKeyBitLength - 2 * hashLength - 49) / Bits.IN_A_BYTE;
+        byte[] keyBytes = new byte[sharedSecretByteLength];
+        Arrays.fill(keyBytes, (byte) 42);
+        int publicKeyByteLength = publicKeyBitLength / Bits.IN_A_BYTE;
+
+        return new Pkcs1Vector(
+                "Wrong second byte but correct first byte (XORed with 0xFF)",
+                getSecretWrongSecondByte(publicKeyByteLength, keyBytes)
+        );
+    }
+
+
+    /**
      * Generates different encrypted PKCS1 vectors
      *
      * @param publicKey The RSA public key
@@ -59,31 +105,6 @@ public class Pkcs1VectorGenerator {
     }
 
     /**
-     * @param publicKey RSA public key
-     * @return Correctly padded message
-     */
-    public static Pkcs1Vector generateCorrectPkcs1Vector(RSAPublicKey publicKey, int hashLength) {
-        Pkcs1Vector encryptedVector =
-                getPlainCorrect(publicKey.getModulus().bitLength(), hashLength);
-        try {
-            Cipher rsa = Cipher.getInstance("RSA/NONE/NoPadding");
-            LOGGER.debug("Provider: " + rsa.getProvider());
-            rsa.init(Cipher.ENCRYPT_MODE, publicKey);
-            // encrypt padded key
-            byte[] encrypted = rsa.doFinal(encryptedVector.getPlainValue());
-            encryptedVector.setEncryptedValue(encrypted);
-            return encryptedVector;
-        } catch (BadPaddingException
-                | IllegalBlockSizeException
-                | InvalidKeyException
-                | NoSuchAlgorithmException
-                | NoSuchPaddingException ex) {
-            throw new ConfigurationException(
-                    "The PKCS#1 attack vectors could not be generated.", ex);
-        }
-    }
-
-    /**
      * Generates different plain PKCS1 vectors
      *
      * @param publicKeyBitLength The length of the public key in bits
@@ -99,25 +120,12 @@ public class Pkcs1VectorGenerator {
 
         // create plain padded keys
         List<Pkcs1Vector> pkcs1Vectors = new LinkedList<>();
+        pkcs1Vectors.add(generatePlainCorrectFirstBytePkcs1Vector(publicKeyBitLength, hashLength));
         pkcs1Vectors.add(
                 new Pkcs1Vector(
-                        "Wrong first byte (0x00 set to 0x01)",
-                        getSecret_WrongFirstByte(publicKeyByteLength, keyBytes)));
-        pkcs1Vectors.add(
-                new Pkcs1Vector(
-                        "Wrong second byte but correct first byte (XORed with 0xFF)",
-                        getSecretWrongSecondByte(publicKeyByteLength, keyBytes)));
+                        "Wrong first byte (set to 01 instead of 00)",
+                        getSecretWrongFirstByte(publicKeyByteLength, keyBytes)));
         return pkcs1Vectors;
-    }
-
-    private static Pkcs1Vector getPlainCorrect(int publicKeyBitLength, int hashLength) {
-        int sharedSecretByteLength = (publicKeyBitLength - 2 * hashLength - 49) / Bits.IN_A_BYTE;
-        byte[] keyBytes = new byte[sharedSecretByteLength];
-        Arrays.fill(keyBytes, (byte) 42);
-        int publicKeyByteLength = publicKeyBitLength / Bits.IN_A_BYTE;
-        return new Pkcs1Vector(
-                "Correctly formatted PKCS#1 Secret message",
-                getPaddedSecret(publicKeyByteLength, keyBytes));
     }
 
     /**
@@ -128,6 +136,7 @@ public class Pkcs1VectorGenerator {
      * @return padded secret
      */
     private static byte[] getPaddedSecret(int rsaKeyLength, byte[] sharedSecret) {
+        //TODO: Hash depends on key exchange instance
         try {
             return OaepConverter.doOaepEncoding(sharedSecret, "SHA-256", rsaKeyLength);
         } catch (NoSuchAlgorithmException e) {
@@ -136,7 +145,7 @@ public class Pkcs1VectorGenerator {
         }
     }
 
-    private static byte[] getSecret_WrongFirstByte(int rsaKeyLength, byte[] sharedSecret) {
+    private static byte[] getSecretWrongFirstByte(int rsaKeyLength, byte[] sharedSecret) {
         byte[] paddedSecret = getPaddedSecret(rsaKeyLength, sharedSecret);
         paddedSecret[0] = (byte) 1;
         LOGGER.debug(

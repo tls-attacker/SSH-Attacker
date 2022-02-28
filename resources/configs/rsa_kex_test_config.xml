@@ -11,8 +11,8 @@
         <clientSupportedHostKeyAlgorithm>SSH_RSA</clientSupportedHostKeyAlgorithm>
     </clientSupportedHostKeyAlgorithms>
     <clientSupportedKeyExchangeAlgorithms>
-        <clientSupportedKeyExchangeAlgorithm>RSA2048_SHA256</clientSupportedKeyExchangeAlgorithm>
         <clientSupportedKeyExchangeAlgorithm>RSA1024_SHA1</clientSupportedKeyExchangeAlgorithm>
+        <clientSupportedKeyExchangeAlgorithm>RSA2048_SHA256</clientSupportedKeyExchangeAlgorithm>
     </clientSupportedKeyExchangeAlgorithms>
     <clientSupportedCipherAlgorithmsClientToServer>
         <clientSupportedCipherAlgorithmClientToServer>AES128_CTR</clientSupportedCipherAlgorithmClientToServer>
