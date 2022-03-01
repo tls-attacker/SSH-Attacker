@@ -13,8 +13,6 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.Random;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.bouncycastle.pqc.math.linearalgebra.BigEndianConversions;
 
 /**
@@ -24,14 +22,12 @@ import org.bouncycastle.pqc.math.linearalgebra.BigEndianConversions;
  */
 public class OaepConverter {
 
-    private static final Logger LOGGER = LogManager.getLogger();
-
     /**
      * Encodes message using OAEP with digest hashInstance for a key of length keyLen
      *
      * @param message Message to be encoded
      * @param hashInstance Name of hash to be used
-     * @param keyLen Length of the public key
+     * @param keyLen Length of the public key in bytes
      * @return Encoded message
      * @throws NoSuchAlgorithmException if hashInstance does not exist
      */
@@ -78,7 +74,6 @@ public class OaepConverter {
         result.put(maskedSeed);
         result.put(maskedDataBlock);
 
-        // LOGGER.debug("Encoded message: " + Arrays.toString(result.array()));
         return result.array();
     }
 
@@ -87,7 +82,7 @@ public class OaepConverter {
      *
      * @param encodedMessage Message to be decoded
      * @param hashInstance Name of hash to be used
-     * @param keyLen Length of the public key
+     * @param keyLen Length of the public key in bytes
      * @return Decoded message
      * @throws NoSuchAlgorithmException if hashInstance does not exist
      */
@@ -135,11 +130,8 @@ public class OaepConverter {
         }
 
         byte[] padding = Arrays.copyOfRange(paddedMessage, 0, indexOfSeparator);
-        byte[] message =
-                Arrays.copyOfRange(paddedMessage, indexOfSeparator + 1, paddedMessage.length);
 
-        // LOGGER.debug("Retrieved message: " + Arrays.toString(message));
-        return message;
+        return Arrays.copyOfRange(paddedMessage, indexOfSeparator + 1, paddedMessage.length);
     }
 
     /**

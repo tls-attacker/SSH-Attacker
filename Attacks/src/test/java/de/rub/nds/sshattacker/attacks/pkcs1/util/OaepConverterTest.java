@@ -9,9 +9,20 @@ package de.rub.nds.sshattacker.attacks.pkcs1.util;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import de.rub.nds.sshattacker.core.constants.KeyExchangeAlgorithm;
+import de.rub.nds.sshattacker.core.crypto.cipher.CipherFactory;
+import de.rub.nds.sshattacker.core.crypto.cipher.DecryptionCipher;
+import de.rub.nds.sshattacker.core.crypto.cipher.EncryptionCipher;
+import de.rub.nds.sshattacker.core.exceptions.CryptoException;
 import java.math.BigInteger;
+import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
-import java.security.NoSuchAlgorithmException;
+import java.security.*;
+import javax.crypto.BadPaddingException;
+import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.junit.jupiter.api.Test;
 
 public class OaepConverterTest {
@@ -56,6 +67,86 @@ public class OaepConverterTest {
             assertArrayEquals(message, result);
         } catch (NoSuchAlgorithmException e) {
             fail("Test failed because hash alg does not exist.");
+        }
+    }
+
+    @Test
+    public void encryptionTest() {
+        byte[] message = new byte[1];
+        message[0] = (byte) 42;
+
+        try {
+            // Generate RSA key pair
+            KeyPairGenerator kpg = KeyPairGenerator.getInstance("RSA");
+            kpg.initialize(2048);
+            KeyPair kp = kpg.generateKeyPair();
+
+            // Encode and perform raw encryption
+            Security.addProvider(new BouncyCastleProvider());
+            byte[] encodedMessage = OaepConverter.doOaepEncoding(message, "SHA-256", 256);
+            Cipher rawCipher = Cipher.getInstance("RSA/NONE/NoPadding");
+            rawCipher.init(Cipher.ENCRYPT_MODE, kp.getPublic());
+            byte[] encryptedMessage = rawCipher.doFinal(encodedMessage);
+
+            // Do decryption using OAEP Cipher
+            DecryptionCipher oaepCipher =
+                    CipherFactory.getDecryptionCipher(
+                            KeyExchangeAlgorithm.RSA2048_SHA256, kp.getPrivate());
+            byte[] result = oaepCipher.decrypt(encryptedMessage);
+
+            assertArrayEquals(message, result);
+        } catch (NoSuchPaddingException
+                | NoSuchAlgorithmException
+                | InvalidKeyException
+                | IllegalBlockSizeException
+                | BadPaddingException
+                | CryptoException e) {
+            fail("Test failed because an error occurred: " + e.getMessage());
+        }
+    }
+
+    @Test
+    public void decryptionTest() {
+        byte[] message = new byte[1];
+        message[0] = (byte) 42;
+
+        try {
+            // Generate RSA key pair
+            KeyPairGenerator kpg = KeyPairGenerator.getInstance("RSA");
+            kpg.initialize(2048);
+            KeyPair kp = kpg.generateKeyPair();
+
+            // Do encryption using OAEP Cipher
+            EncryptionCipher oaepCipher =
+                    CipherFactory.getEncryptionCipher(
+                            KeyExchangeAlgorithm.RSA2048_SHA256, kp.getPublic());
+            byte[] encryptedMessage = oaepCipher.encrypt(message);
+
+            // Do raw decrypt
+            Security.addProvider(new BouncyCastleProvider());
+            Cipher rawCipher = Cipher.getInstance("RSA/NONE/NoPadding");
+            rawCipher.init(Cipher.DECRYPT_MODE, kp.getPrivate());
+            byte[] encodedMessage = rawCipher.doFinal(encryptedMessage);
+
+            // Add a 00 byte in the beginning, as the raw RSA cipher will ignore this and return a
+            // 255 byte array,
+            // if the decryption works correctly, which it should as none of the tested classes are
+            // used up to now
+            ByteBuffer buffer = ByteBuffer.allocate(256);
+            buffer.put((byte) 0);
+            buffer.put(encodedMessage);
+
+            // Perform the decoding
+            byte[] result = OaepConverter.doOaepDecoding(buffer.array(), "SHA-256", 256);
+
+            assertArrayEquals(message, result);
+        } catch (NoSuchPaddingException
+                | NoSuchAlgorithmException
+                | InvalidKeyException
+                | IllegalBlockSizeException
+                | BadPaddingException
+                | CryptoException e) {
+            fail("Test failed because an error occurred: " + e.getMessage());
         }
     }
 }
