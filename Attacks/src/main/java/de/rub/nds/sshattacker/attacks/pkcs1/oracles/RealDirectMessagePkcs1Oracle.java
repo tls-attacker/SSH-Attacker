@@ -64,8 +64,6 @@ public class RealDirectMessagePkcs1Oracle extends Pkcs1Oracle {
         WorkflowTrace trace = MangerWorkflowGenerator.generateWorkflow(sshConfig, msg);
         State state = new State(sshConfig, trace);
         WorkflowExecutor workflowExecutor = new DefaultWorkflowExecutor(state);
-        // TODO: Check this
-        // WorkflowExecutorFactory.createWorkflowExecutor(state.getConfig().getWorkflowExecutorType(), state);
 
         numberOfQueries++;
         if (numberOfQueries % 1000 == 0) {

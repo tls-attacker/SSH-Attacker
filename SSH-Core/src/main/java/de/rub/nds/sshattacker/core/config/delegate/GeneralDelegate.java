@@ -65,8 +65,7 @@ public class GeneralDelegate extends Delegate {
         if (isDebug()) {
             Configurator.setAllLevels("de.rub.nds.sshattacker", Level.DEBUG);
         } else if (quiet) {
-            Configurator.setAllLevels("de.rub.nds.sshattacker", Level.WARN);
-            Configurator.setAllLevels("de.rub.nds.modifiablevariable", Level.WARN);
+            Configurator.setAllLevels("de.rub.nds.sshattacker", Level.OFF);
         }
         LOGGER.debug("Using the following security providers");
         for (Provider p : Security.getProviders()) {

@@ -20,9 +20,9 @@ public class MangerCommandConfig extends AttackConfig {
     /** */
     public static final String ATTACK_COMMAND = "manger";
 
-    @ParametersDelegate private ClientDelegate clientDelegate;
+    @ParametersDelegate private final ClientDelegate clientDelegate;
 
-    @ParametersDelegate private AttackDelegate attackDelegate;
+    @ParametersDelegate private final AttackDelegate attackDelegate;
 
     @Parameter(
             names = "-kex_algorithm",
@@ -38,10 +38,22 @@ public class MangerCommandConfig extends AttackConfig {
                             + "exchange secret message, right click on the \"Encrypted Secret\" value and copy this value as a Hex Stream.")
     private String encryptedSecret;
 
+    @Parameter(
+            names = "-mock",
+            description =
+                    "If attack should be run against the MockOracle, which does not require a server")
+    private boolean isMockAttack;
+
+    @Parameter(
+            names = "-mock_key_files",
+            description =
+                    "Name of the PKCS#8 encoded file that contains the private key used for the mock oracle. "
+                            + "Ensure that the public key file has the same name, but ends in .pub.")
+    private String mockKeyFileName;
+
     /** How many rescans should be done */
     private int numberOfIterations = 3;
 
-    /** @param delegate */
     public MangerCommandConfig(GeneralDelegate delegate) {
         super(delegate);
         clientDelegate = new ClientDelegate();
@@ -50,7 +62,6 @@ public class MangerCommandConfig extends AttackConfig {
         addDelegate(attackDelegate);
     }
 
-    /** @return */
     @Override
     public Config createConfig() {
         Config config = super.createConfig();
@@ -60,19 +71,25 @@ public class MangerCommandConfig extends AttackConfig {
         return config;
     }
 
-    /** @return */
     @Override
     public boolean isExecuteAttack() {
         return attackDelegate.isExecuteAttack();
     }
 
-    /** @return */
     public String getEncryptedSecret() {
         return encryptedSecret;
     }
 
     public String getKexAlgorithm() {
         return kexAlgorithm;
+    }
+
+    public boolean isMockAttack() {
+        return isMockAttack;
+    }
+
+    public String getMockKeyFileName() {
+        return mockKeyFileName;
     }
 
     public int getNumberOfIterations() {
