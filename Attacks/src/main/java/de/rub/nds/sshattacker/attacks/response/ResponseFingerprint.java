@@ -28,25 +28,22 @@ public class ResponseFingerprint {
     public ResponseFingerprint() {}
 
     /**
-     * @param messageList
-     * @param socketState
+     * @param messageList List of protocol messages
+     * @param socketState Socket state
      */
     public ResponseFingerprint(List<ProtocolMessage<?>> messageList, SocketState socketState) {
         this.messageList = messageList;
         this.socketState = socketState;
     }
 
-    /** @return */
     public SocketState getSocketState() {
         return socketState;
     }
 
-    /** @return */
     public List<ProtocolMessage<?>> getMessageList() {
         return messageList;
     }
 
-    /** @return */
     @Override
     public String toString() {
 
@@ -134,8 +131,8 @@ public class ResponseFingerprint {
     }
 
     /**
-     * @param fingerprint
-     * @return
+     * @param fingerprint The fingerprint to be compared to
+     * @return If this fingerprint and the other fingerprint are compatible
      */
     public boolean areCompatible(ResponseFingerprint fingerprint) {
         if (socketState != SocketState.TIMEOUT

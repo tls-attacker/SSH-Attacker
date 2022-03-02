@@ -13,42 +13,19 @@ import java.security.interfaces.RSAPublicKey;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-/**
- * Oracle template for Bleichenbacher/Manger attack.
- *
- * @version 0.1 Jun 12, 2012
- */
+/** Oracle template for Manger like attacks. */
 public abstract class Pkcs1Oracle {
 
-    /** logger */
     private static final Logger LOGGER = LogManager.getLogger();
 
-    /*
-     * number of queries issued to oracle
-     */
-    /** */
     protected long numberOfQueries;
-    /*
-     * block size of the encryption algorithm
-     */
 
-    /** */
     protected int blockSize;
-    /*
-     * public key of the oracle
-     */
 
-    /** */
     protected RSAPublicKey publicKey;
-    /*
-     * a boolean value indicating if the oracle is a plaintext oracle (oracle used for testing purposes) or a real
-     * oracle needing to decrypt each ciphertext.
-     */
 
-    /** */
+    /** Indicates if the oracle accepts plaintext (for testing) or if it is a real oracle */
     protected boolean isPlaintextOracle = false;
-    /** oracle type according to the Crypto'12 paper */
-    protected OracleType oracleType = null;
 
     /**
      * Gets the blocksize of the encryption algorithm.
@@ -94,23 +71,8 @@ public abstract class Pkcs1Oracle {
         return isPlaintextOracle;
     }
 
-    /**
-     * Returns the oracle type
-     *
-     * @return
-     */
-    public OracleType getOracleType() {
-        return oracleType;
-    }
-
     /** */
     public void resetNumberOfQueries() {
         this.numberOfQueries = 0;
-    }
-
-    /** MANGER_0x00 checks only the first byte is equal to 0x00 */
-    public enum OracleType {
-        /** */
-        MANGER_0x00
     }
 }

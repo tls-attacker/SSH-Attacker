@@ -28,7 +28,6 @@ public class Main {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    /** @param args */
     public static void main(String[] args) {
         GeneralDelegate generalDelegate = new GeneralAttackDelegate();
         Builder builder = JCommander.newBuilder().addObject(generalDelegate);

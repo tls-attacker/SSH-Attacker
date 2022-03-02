@@ -59,7 +59,7 @@ public class ParallelExecutor {
                 size,
                 reexecutions,
                 new ThreadPoolExecutor(
-                        size, size, 10, TimeUnit.DAYS, new LinkedBlockingDeque<Runnable>()));
+                        size, size, 10, TimeUnit.DAYS, new LinkedBlockingDeque<>()));
     }
 
     public ParallelExecutor(int size, int reexecutions, ThreadFactory factory) {
@@ -71,7 +71,7 @@ public class ParallelExecutor {
                         size,
                         5,
                         TimeUnit.MINUTES,
-                        new LinkedBlockingDeque<Runnable>(),
+                        new LinkedBlockingDeque<>(),
                         factory));
     }
 
@@ -102,11 +102,11 @@ public class ParallelExecutor {
     }
 
     public void bulkExecuteStateTasks(Iterable<State> stateList) {
-        List<Future> futureList = new LinkedList<>();
+        List<Future<?>> futureList = new LinkedList<>();
         for (State state : stateList) {
             futureList.add(addStateTask(state));
         }
-        for (Future future : futureList) {
+        for (Future<?> future : futureList) {
             try {
                 future.get();
             } catch (InterruptedException | ExecutionException ex) {
@@ -121,7 +121,7 @@ public class ParallelExecutor {
 
     public List<ITask> bulkExecuteTasks(Iterable<SshTask> taskList) {
         List<Future<ITask>> futureList = new LinkedList<>();
-        List<ITask> resultList = new ArrayList<>(futureList.size());
+        List<ITask> resultList = new ArrayList<>(0);
         for (SshTask tlStask : taskList) {
             futureList.add(addTask(tlStask));
         }
@@ -164,9 +164,7 @@ public class ParallelExecutor {
         }
 
         new Thread(
-                        () -> {
-                            monitorExecution(timeout);
-                        })
+                        () -> monitorExecution(timeout))
                 .start();
     }
 

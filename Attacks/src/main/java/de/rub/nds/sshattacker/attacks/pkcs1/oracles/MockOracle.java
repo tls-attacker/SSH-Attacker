@@ -21,6 +21,10 @@ import javax.crypto.NoSuchPaddingException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+/**
+ * A mock Manger oracle that used a private key to decrypt the messages and answers if the message
+ * is PKCS1 conform
+ */
 public class MockOracle extends Pkcs1Oracle {
 
     private static final Logger LOGGER = LogManager.getLogger();

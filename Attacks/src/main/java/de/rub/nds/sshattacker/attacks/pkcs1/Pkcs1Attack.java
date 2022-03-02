@@ -42,8 +42,8 @@ public class Pkcs1Attack {
     protected BigInteger bigB;
 
     /**
-     * @param msg
-     * @param pkcsOracle
+     * @param msg The message that should be decrypted with the attack
+     * @param pkcsOracle The oracle to be queried
      */
     public Pkcs1Attack(byte[] msg, Pkcs1Oracle pkcsOracle) {
         this.encryptedMsg = msg.clone();
@@ -87,9 +87,9 @@ public class Pkcs1Attack {
     }
 
     /**
-     * @param message
-     * @param si
-     * @return
+     * @param message Message to query the oracle with
+     * @param si The si value to multiply the message with
+     * @return The return value of the oracle (true/false)
      */
     protected boolean queryOracle(BigInteger message, BigInteger si) {
         byte[] msg = prepareMsg(message, si);
@@ -98,15 +98,14 @@ public class Pkcs1Attack {
     }
 
     /**
-     * @param message
-     * @return
+     * @param message Message to query the oracle with
+     * @return The return value of the oracle (true/false)
      */
     protected boolean queryOracle(BigInteger message) {
         byte[] msg = ArrayConverter.bigIntegerToByteArray(message, blockSize, true);
         return oracle.checkPKCSConformity(msg);
     }
 
-    /** @return */
     public BigInteger getSolution() {
         return solution;
     }

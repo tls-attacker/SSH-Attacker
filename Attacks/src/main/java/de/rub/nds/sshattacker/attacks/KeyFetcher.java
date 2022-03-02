@@ -24,6 +24,7 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+/** Utility class to fetch the transient public key from an SSH RSA key exchange */
 public class KeyFetcher {
 
     private static final Logger LOGGER = LogManager.getLogger();

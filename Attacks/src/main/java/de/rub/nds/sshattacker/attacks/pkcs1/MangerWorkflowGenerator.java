@@ -23,21 +23,22 @@ import de.rub.nds.sshattacker.core.workflow.factory.WorkflowTraceType;
 public class MangerWorkflowGenerator {
 
     /**
-     * @param sshConfig
-     * @param encryptedSecretMessage
-     * @return
+     * @param sshConfig SSH config to be used to generate the workflows
+     * @param encryptedSecret Encrypted secret to be set in the key exchange's secret message
+     * @return A workflow that performs an SSH handshake with RSA key exchange up to the secret
+     *     message + messages received after that message
      */
-    public static WorkflowTrace generateWorkflow(Config sshConfig, byte[] encryptedSecretMessage) {
+    public static WorkflowTrace generateWorkflow(Config sshConfig, byte[] encryptedSecret) {
         WorkflowTrace trace =
                 new WorkflowConfigurationFactory(sshConfig)
                         .createWorkflowTrace(
                                 WorkflowTraceType.START_KEYEXCHANGE, RunningModeType.CLIENT);
         trace.addSshAction(new ReceiveAction(new RsaKeyExchangePubkeyMessage()));
         RsaKeyExchangeSecretMessage secretMessage = new RsaKeyExchangeSecretMessage();
-        ModifiableByteArray encryptedSecret = new ModifiableByteArray();
-        encryptedSecret.setModification(
-                ByteArrayModificationFactory.explicitValue(encryptedSecretMessage));
-        secretMessage.setEncryptedSecret(encryptedSecret, true);
+        ModifiableByteArray encryptedSecretArray = new ModifiableByteArray();
+        encryptedSecretArray.setModification(
+                ByteArrayModificationFactory.explicitValue(encryptedSecret));
+        secretMessage.setEncryptedSecret(encryptedSecretArray, true);
         trace.addSshAction(new SendAction(secretMessage));
         trace.addSshAction(new ReceiveAction());
         return trace;

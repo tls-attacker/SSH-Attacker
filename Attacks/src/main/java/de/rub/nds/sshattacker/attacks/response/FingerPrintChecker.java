@@ -11,9 +11,10 @@ package de.rub.nds.sshattacker.attacks.response;
 public class FingerPrintChecker {
 
     /**
-     * @param fingerprint1
-     * @param fingerprint2
-     * @return
+     * @param fingerprint1 First fingerprint
+     * @param fingerprint2 Second fingerprint
+     * @return An equality error that describes the difference between the fingerprints or
+     *     EqualityError.NONE, if no error occurred
      */
     public static EqualityError checkEquality(
             ResponseFingerprint fingerprint1, ResponseFingerprint fingerprint2) {

@@ -20,20 +20,16 @@ public abstract class AttackConfig extends SSHDelegateConfig {
                     "If set to true the Attacker will not check if the " + "target is reachable.")
     private boolean skipConnectionCheck = false;
 
-    /** @param delegate */
     public AttackConfig(GeneralDelegate delegate) {
         super(delegate);
     }
 
-    /** @return */
     public abstract boolean isExecuteAttack();
 
-    /** @return */
     public boolean isSkipConnectionCheck() {
         return skipConnectionCheck;
     }
 
-    /** @param skipConnectionCheck */
     public void setSkipConnectionCheck(boolean skipConnectionCheck) {
         this.skipConnectionCheck = skipConnectionCheck;
     }

@@ -11,15 +11,10 @@ package de.rub.nds.sshattacker.attacks.response;
 public class EqualityErrorTranslator {
 
     /**
-     * @param error
-     * @param fingerprint1
-     * @param fingerprint2
-     * @return
+     * @param error The equality error to be translated
+     * @return A human-readable message that describes the equality error
      */
-    public static String translation(
-            EqualityError error,
-            ResponseFingerprint fingerprint1,
-            ResponseFingerprint fingerprint2) {
+    public static String translation(EqualityError error) {
         StringBuilder builder = new StringBuilder();
         switch (error) {
             case MESSAGE_CLASS:
@@ -40,7 +35,7 @@ public class EqualityErrorTranslator {
                 builder.append("The server responded with different message contents");
                 break;
             default:
-                builder.append(error.toString());
+                builder.append(error);
         }
         return builder.toString();
     }

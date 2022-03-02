@@ -23,8 +23,8 @@ public class Pkcs1Vector implements Vector {
     private Pkcs1Vector() {}
 
     /**
-     * @param name
-     * @param value
+     * @param name A String that describes the content of this vector
+     * @param value Plain value
      */
     public Pkcs1Vector(String name, byte[] value) {
         this.name = name;
@@ -35,22 +35,18 @@ public class Pkcs1Vector implements Vector {
         this.name = name;
     }
 
-    /** @return */
     public byte[] getPlainValue() {
         return plainValue;
     }
 
-    /** @param plainValue */
     public void setPlainValue(byte[] plainValue) {
         this.plainValue = plainValue;
     }
 
-    /** @return */
     public byte[] getEncryptedValue() {
         return encryptedValue;
     }
 
-    /** @param encryptedValue */
     public void setEncryptedValue(byte[] encryptedValue) {
         this.encryptedValue = encryptedValue;
     }

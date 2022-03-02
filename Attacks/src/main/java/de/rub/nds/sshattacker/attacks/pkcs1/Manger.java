@@ -30,8 +30,8 @@ public class Manger extends Pkcs1Attack {
     private volatile boolean interrupted = false;
 
     /**
-     * @param msg
-     * @param pkcsOracle
+     * @param msg Encrypted secret message
+     * @param pkcsOracle The oracle to be queried
      */
     public Manger(byte[] msg, Pkcs1Oracle pkcsOracle) {
         super(msg, pkcsOracle);
@@ -43,7 +43,7 @@ public class Manger extends Pkcs1Attack {
         LOGGER.debug("b: {}", ArrayConverter.bytesToHexString(bigB.toByteArray()));
     }
 
-    /** @throws OracleException */
+    /** @throws OracleException If an error with the oracle occurs */
     public void attack() throws OracleException {
         BigInteger cc;
 
@@ -130,12 +130,12 @@ public class Manger extends Pkcs1Attack {
         }
     }
 
-    /** @return */
+    /** @return If attack was interrupted */
     public boolean isInterrupted() {
         return interrupted;
     }
 
-    /** @param interrupted */
+    /** @param interrupted Set to true to interrupt attack */
     public void setInterrupted(boolean interrupted) {
         this.interrupted = interrupted;
     }

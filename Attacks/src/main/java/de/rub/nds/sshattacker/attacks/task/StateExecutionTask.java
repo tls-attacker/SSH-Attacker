@@ -24,9 +24,6 @@ public class StateExecutionTask extends SshTask {
     public boolean execute() {
         WorkflowExecutor executor = getExecutor(state);
         executor.executeWorkflow();
-        /*if (state.getSshContext().isReceivedTransportHandlerException()) {
-            throw new RuntimeException("TransportHandler exception received.");
-        }*/
         return true;
     }
 

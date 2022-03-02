@@ -26,14 +26,12 @@ import java.io.IOException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-/** */
 public class ConnectivityChecker {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
     private final Connection connection;
 
-    /** @param connection */
     public ConnectivityChecker(Connection connection) {
         this.connection = connection;
         if (connection instanceof AliasedConnection) {
@@ -41,7 +39,7 @@ public class ConnectivityChecker {
         }
     }
 
-    /** @return */
+    /** @return True if the server can be connected to */
     public boolean isConnectable() {
         if (connection.getTransportHandlerType() == null) {
             connection.setTransportHandlerType(TransportHandlerType.TCP);
@@ -77,7 +75,6 @@ public class ConnectivityChecker {
         trace.addSshAction(receiveAction);
         State state = new State(config, trace);
         WorkflowExecutor executor = new DefaultWorkflowExecutor(state);
-        // WorkflowExecutorFactory.createWorkflowExecutor(state.getConfig().getWorkflowExecutorType(), state);
         executor.executeWorkflow();
         if (receiveAction.getReceivedMessages().size() > 0) {
             return receiveAction.getReceivedMessages().get(0) instanceof VersionExchangeMessage;

@@ -10,7 +10,6 @@ package de.rub.nds.sshattacker.attacks.exception;
 /** */
 public class OracleUnstableException extends RuntimeException {
 
-    /** @param string */
     public OracleUnstableException(String string) {
         super(string);
     }

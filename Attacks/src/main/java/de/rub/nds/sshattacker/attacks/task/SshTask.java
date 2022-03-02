@@ -155,20 +155,6 @@ public abstract class SshTask implements ITask, Callable<ITask> {
     }
 
     public WorkflowExecutor getExecutor(State state) {
-        WorkflowExecutor executor = new DefaultWorkflowExecutor(state);
-        /*WorkflowExecutorFactory.createWorkflowExecutor(state.getConfig().getWorkflowExecutorType(), state);
-        if (beforeTransportPreInitCallback != null && executor.getBeforeTransportPreInitCallback() == null) {
-            executor.setBeforeTransportPreInitCallback(beforeTransportPreInitCallback);
-        }
-        if (beforeTransportInitCallback != null && executor.getBeforeTransportInitCallback() == null) {
-            executor.setBeforeTransportInitCallback(beforeTransportInitCallback);
-        }
-        if (afterTransportInitCallback != null && executor.getAfterTransportInitCallback() == null) {
-            executor.setAfterTransportInitCallback(afterTransportInitCallback);
-        }
-        if (afterExecutionCallback != null && executor.getAfterExecutionCallback() == null) {
-            executor.setAfterExecutionCallback(afterExecutionCallback);
-        }*/
-        return executor;
+        return new DefaultWorkflowExecutor(state);
     }
 }

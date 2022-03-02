@@ -26,8 +26,8 @@ public abstract class Attacker<AttConfigT extends AttackConfig> {
     private final Config baseConfig;
 
     /**
-     * @param config
-     * @param baseConfig
+     * @param config Attack specific config
+     * @param baseConfig Base SSH config
      */
     public Attacker(AttConfigT config, Config baseConfig) {
         this.config = config;
@@ -46,7 +46,7 @@ public abstract class Attacker<AttConfigT extends AttackConfig> {
         executeAttack();
     }
 
-    /** @return */
+    /** @return True if server is vulnerable to the attack */
     public Boolean checkVulnerability() {
         LOGGER.debug("Checking: " + this.getClass().getSimpleName());
         if (!config.isSkipConnectionCheck()) {
@@ -63,15 +63,13 @@ public abstract class Attacker<AttConfigT extends AttackConfig> {
     /** Executes a given attack. */
     protected abstract void executeAttack();
 
-    /** @return */
+    /** @return True if the server is vulnerable to the attack */
     protected abstract Boolean isVulnerable();
 
-    /** @return */
     public AttConfigT getConfig() {
         return config;
     }
 
-    /** @return */
     public Config getSshConfig() {
         if (!config.hasDifferentConfig() && baseConfig == null) {
             return config.createConfig();
@@ -80,12 +78,11 @@ public abstract class Attacker<AttConfigT extends AttackConfig> {
         }
     }
 
-    /** @return */
     public Config getBaseConfig() {
         return baseConfig /*.createCopy()*/;
     }
 
-    /** @return */
+    /** @return True if the server can be connected to */
     protected Boolean canConnect() {
         Config tlsConfig = config.createConfig();
         ConnectivityChecker checker =

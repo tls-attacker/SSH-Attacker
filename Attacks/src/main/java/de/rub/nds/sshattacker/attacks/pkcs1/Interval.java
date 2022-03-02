@@ -9,11 +9,7 @@ package de.rub.nds.sshattacker.attacks.pkcs1;
 
 import java.math.BigInteger;
 
-/**
- * M interval as mentioned in the Bleichenbacher paper.
- *
- * @version 0.1 May 24, 2012
- */
+/** M interval as mentioned in the Bleichenbacher paper. */
 public class Interval {
 
     /** */
@@ -23,8 +19,8 @@ public class Interval {
     public BigInteger upper;
 
     /**
-     * @param a
-     * @param b
+     * @param a Start of interval
+     * @param b End of interval
      */
     public Interval(BigInteger a, BigInteger b) {
         this.lower = a;

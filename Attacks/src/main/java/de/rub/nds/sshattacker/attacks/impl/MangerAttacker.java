@@ -162,7 +162,7 @@ public class MangerAttacker extends Attacker<MangerCommandConfig> {
                     "Found no behavior difference within the responses. The server is very likely not vulnerable.");
         }
 
-        CONSOLE.info(EqualityErrorTranslator.translation(referenceError, null, null));
+        CONSOLE.info(EqualityErrorTranslator.translation(referenceError));
         if (referenceError != EqualityError.NONE
                 || LOGGER.getLevel().isMoreSpecificThan(Level.INFO)) {
             LOGGER.debug("-------------(Not Grouped)-----------------");

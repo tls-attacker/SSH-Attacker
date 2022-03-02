@@ -26,7 +26,7 @@ import java.security.interfaces.RSAPublicKey;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-/** */
+/** An oracle that communicates with a real server to check PKCS conformity */
 public class RealDirectMessagePkcs1Oracle extends Pkcs1Oracle {
 
     private static final Logger LOGGER = LogManager.getLogger();

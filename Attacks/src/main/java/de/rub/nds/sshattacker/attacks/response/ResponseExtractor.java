@@ -23,9 +23,9 @@ public class ResponseExtractor {
     private static final Logger LOGGER = LogManager.getLogger();
 
     /**
-     * @param state
-     * @param action
-     * @return
+     * @param state SSH state
+     * @param action Action containing the server's answer
+     * @return A response fingerprint with the messages received by action
      */
     public static ResponseFingerprint getFingerprint(State state, ReceivingAction action) {
         List<ProtocolMessage<?>> messageList = action.getReceivedMessages();
@@ -34,8 +34,8 @@ public class ResponseExtractor {
     }
 
     /**
-     * @param state
-     * @return
+     * @param state SSH state
+     * @return Response fingerprint containing the state's last receiving action
      */
     public static ResponseFingerprint getFingerprint(State state) {
         ReceivingAction action = state.getWorkflowTrace().getLastReceivingAction();
