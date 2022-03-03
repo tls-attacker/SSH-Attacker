@@ -18,12 +18,11 @@ import de.rub.nds.sshattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.sshattacker.core.workflow.action.ReceiveAction;
 import de.rub.nds.sshattacker.core.workflow.factory.WorkflowConfigurationFactory;
 import de.rub.nds.sshattacker.core.workflow.factory.WorkflowTraceType;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import java.io.IOException;
 import java.security.interfaces.RSAPublicKey;
 import java.util.List;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /** Utility class to fetch the transient public key from an SSH RSA key exchange */
 public class KeyFetcher {

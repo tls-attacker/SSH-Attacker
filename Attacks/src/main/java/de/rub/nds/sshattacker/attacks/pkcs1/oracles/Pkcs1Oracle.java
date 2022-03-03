@@ -8,11 +8,10 @@
 package de.rub.nds.sshattacker.attacks.pkcs1.oracles;
 
 import de.rub.nds.sshattacker.attacks.pkcs1.OracleException;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import java.security.PublicKey;
 import java.security.interfaces.RSAPublicKey;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /** Oracle template for Manger like attacks. */
 public abstract class Pkcs1Oracle {

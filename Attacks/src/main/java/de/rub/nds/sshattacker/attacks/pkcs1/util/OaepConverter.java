@@ -7,14 +7,16 @@
  */
 package de.rub.nds.sshattacker.attacks.pkcs1.util;
 
-import com.google.common.primitives.Bytes;
-import org.bouncycastle.pqc.math.linearalgebra.BigEndianConversions;
+import static de.rub.nds.tlsattacker.util.ConsoleLogger.CONSOLE;
 
+import com.google.common.primitives.Bytes;
+import java.math.BigInteger;
 import java.nio.ByteBuffer;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.Random;
+import org.bouncycastle.pqc.math.linearalgebra.BigEndianConversions;
 
 /**
  * Utility class for performing raw OAEP encoding/decoding of messages according to PKCS#1 (RFC
@@ -192,5 +194,30 @@ public class OaepConverter {
             out[i] = (byte) ((left[i] & 0xFF) ^ (right[i] & 0xFF));
         }
         return out;
+    }
+
+    /** Decodes the solution of a Manger attack */
+    public static BigInteger decodeSolution(
+            BigInteger solution, String hashInstance, int publicKeyByteLength) {
+        try {
+            // Decode solution
+            byte[] solutionBytes = solution.toByteArray();
+
+            byte[] result =
+                    OaepConverter.doOaepDecoding(solutionBytes, hashInstance, publicKeyByteLength);
+
+            CONSOLE.debug("Secret with length field as byte array: " + Arrays.toString(result));
+            CONSOLE.debug("Secret with length field: " + new BigInteger(result));
+
+            // Cut off length field to get secret as decimal number
+            ByteBuffer secretBuffer = ByteBuffer.wrap(result);
+            secretBuffer.position(4);
+            byte[] secretBytes = new byte[result.length - 4];
+            secretBuffer.get(secretBytes);
+            return new BigInteger(secretBytes);
+        } catch (NoSuchAlgorithmException e) {
+            CONSOLE.error("Could not decode solution.", e);
+            return BigInteger.ZERO;
+        }
     }
 }

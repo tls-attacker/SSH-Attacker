@@ -7,6 +7,8 @@
  */
 package de.rub.nds.sshattacker.attacks.pkcs1.oracles;
 
+import static de.rub.nds.tlsattacker.util.ConsoleLogger.CONSOLE;
+
 import de.rub.nds.sshattacker.attacks.pkcs1.MangerWorkflowGenerator;
 import de.rub.nds.sshattacker.attacks.response.EqualityError;
 import de.rub.nds.sshattacker.attacks.response.FingerPrintChecker;
@@ -20,14 +22,11 @@ import de.rub.nds.sshattacker.core.workflow.DefaultWorkflowExecutor;
 import de.rub.nds.sshattacker.core.workflow.WorkflowExecutor;
 import de.rub.nds.sshattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.util.MathHelper;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import java.io.IOException;
 import java.security.PublicKey;
 import java.security.interfaces.RSAPublicKey;
-
-import static de.rub.nds.tlsattacker.util.ConsoleLogger.CONSOLE;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /** An oracle that communicates with a real server to check PKCS conformity */
 public class RealDirectMessagePkcs1Oracle extends Pkcs1Oracle {

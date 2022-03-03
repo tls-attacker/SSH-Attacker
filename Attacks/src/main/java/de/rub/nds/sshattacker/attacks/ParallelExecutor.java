@@ -11,15 +11,14 @@ import de.rub.nds.sshattacker.attacks.task.ITask;
 import de.rub.nds.sshattacker.attacks.task.SshTask;
 import de.rub.nds.sshattacker.attacks.task.StateExecutionTask;
 import de.rub.nds.sshattacker.core.state.State;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.*;
 import java.util.function.Function;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /** */
 public class ParallelExecutor {

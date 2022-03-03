@@ -38,19 +38,6 @@ public class MangerCommandConfig extends AttackConfig {
                             + "exchange secret message, right click on the \"Encrypted Secret\" value and copy this value as a Hex Stream.")
     private String encryptedSecret;
 
-    @Parameter(
-            names = "-mock",
-            description =
-                    "If attack should be run against the MockOracle, which does not require a server")
-    private boolean isMockAttack;
-
-    @Parameter(
-            names = "-mock_key_files",
-            description =
-                    "Name of the PKCS#8 encoded file that contains the private key used for the mock oracle. "
-                            + "Ensure that the public key file has the same name, but ends in .pub.")
-    private String mockKeyFileName;
-
     /** How many rescans should be done */
     private int numberOfIterations = 3;
 
@@ -82,14 +69,6 @@ public class MangerCommandConfig extends AttackConfig {
 
     public String getKexAlgorithm() {
         return kexAlgorithm;
-    }
-
-    public boolean isMockAttack() {
-        return isMockAttack;
-    }
-
-    public String getMockKeyFileName() {
-        return mockKeyFileName;
     }
 
     public int getNumberOfIterations() {
