@@ -10,9 +10,10 @@ package de.rub.nds.sshattacker.attacks.pkcs1;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.attacks.pkcs1.oracles.Pkcs1Oracle;
 import de.rub.nds.tlsattacker.util.MathHelper;
-import java.math.BigInteger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.math.BigInteger;
 
 /**
  * Manger algorithm according to https://www.iacr.org/archive/crypto2001/21390229.pdf Original
@@ -77,6 +78,8 @@ public class Manger extends Pkcs1Attack {
             }
         }
 
+        LOGGER.debug("f1: " + f1);
+
         LOGGER.debug("Step 2");
         // f2 = int(intfloordiv(N+B,B)*f1/2)
         BigInteger tmp = MathHelper.intFloorDiv(publicKey.getModulus().add(bigB), bigB);
@@ -89,6 +92,8 @@ public class Manger extends Pkcs1Attack {
                 break;
             }
         }
+
+        LOGGER.debug("f2: " + f2);
 
         LOGGER.debug("Step 3");
         BigInteger mmin = MathHelper.intCeilDiv(publicKey.getModulus(), f2);

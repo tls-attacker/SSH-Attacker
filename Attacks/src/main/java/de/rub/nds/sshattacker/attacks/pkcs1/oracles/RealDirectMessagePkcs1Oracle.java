@@ -20,11 +20,14 @@ import de.rub.nds.sshattacker.core.workflow.DefaultWorkflowExecutor;
 import de.rub.nds.sshattacker.core.workflow.WorkflowExecutor;
 import de.rub.nds.sshattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.util.MathHelper;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.io.IOException;
 import java.security.PublicKey;
 import java.security.interfaces.RSAPublicKey;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+
+import static de.rub.nds.tlsattacker.util.ConsoleLogger.CONSOLE;
 
 /** An oracle that communicates with a real server to check PKCS conformity */
 public class RealDirectMessagePkcs1Oracle extends Pkcs1Oracle {
@@ -36,6 +39,8 @@ public class RealDirectMessagePkcs1Oracle extends Pkcs1Oracle {
     private final ResponseFingerprint validResponseContent;
 
     private final ResponseFingerprint invalidResponseContent;
+
+    private final int maxAttempts;
 
     /**
      * @param pubKey The transient public key
@@ -53,10 +58,36 @@ public class RealDirectMessagePkcs1Oracle extends Pkcs1Oracle {
         this.validResponseContent = validResponseContent;
         this.invalidResponseContent = invalidResponseContent;
         this.config = config;
+        this.maxAttempts = 10;
+    }
+
+    /**
+     * @param pubKey The transient public key
+     * @param config Config
+     * @param validResponseContent ResponseFingerprint of a valid response
+     * @param invalidResponseContent ResponseFingerprint of an invalid response
+     * @param maxAttempts Number of times the oracle should repeat the query on a workflow exception
+     */
+    public RealDirectMessagePkcs1Oracle(
+            PublicKey pubKey,
+            Config config,
+            ResponseFingerprint validResponseContent,
+            ResponseFingerprint invalidResponseContent,
+            int maxAttempts) {
+        this.publicKey = (RSAPublicKey) pubKey;
+        this.blockSize = MathHelper.intCeilDiv(publicKey.getModulus().bitLength(), Bits.IN_A_BYTE);
+        this.validResponseContent = validResponseContent;
+        this.invalidResponseContent = invalidResponseContent;
+        this.config = config;
+        this.maxAttempts = maxAttempts;
     }
 
     @Override
     public boolean checkPKCSConformity(final byte[] msg) {
+        return checkPKCSConformity(msg, 0);
+    }
+
+    private boolean checkPKCSConformity(final byte[] msg, int currentAttempt) {
         // we are initializing a new connection in every loop step, since most
         // of the known servers close the connection after an invalid handshake
         Config sshConfig = config;
@@ -66,15 +97,20 @@ public class RealDirectMessagePkcs1Oracle extends Pkcs1Oracle {
         WorkflowExecutor workflowExecutor = new DefaultWorkflowExecutor(state);
 
         numberOfQueries++;
-        if (numberOfQueries % 1000 == 0) {
-            LOGGER.info("Number of queries so far: {}", numberOfQueries);
+        if (numberOfQueries % 250 == 0) {
+            CONSOLE.info("Number of queries so far: {}", numberOfQueries);
         }
 
         boolean conform = false;
         try {
             workflowExecutor.executeWorkflow();
+            if (!trace.executedAsPlanned()) {
+                // Something did not execute as planned, the result may be either way
+                throw new WorkflowExecutionException("Workflow did not execute as planned!");
+            }
             ResponseFingerprint fingerprint = getFingerprint(state);
             clearConnections(state);
+
             if (fingerprint != null) {
                 if (validResponseContent != null) {
                     conform =
@@ -88,7 +124,11 @@ public class RealDirectMessagePkcs1Oracle extends Pkcs1Oracle {
             }
 
         } catch (WorkflowExecutionException e) {
-            LOGGER.debug(e.getLocalizedMessage(), e);
+            // If workflow execution failed, retry
+            LOGGER.debug("Exception during workflow execution:" + e.getLocalizedMessage(), e);
+            if (currentAttempt < maxAttempts) {
+                return checkPKCSConformity(msg, currentAttempt + 1);
+            }
         }
         return conform;
     }

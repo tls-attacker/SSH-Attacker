@@ -7,8 +7,6 @@
  */
 package de.rub.nds.sshattacker.attacks.impl;
 
-import static de.rub.nds.tlsattacker.util.ConsoleLogger.CONSOLE;
-
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.attacks.KeyFetcher;
 import de.rub.nds.sshattacker.attacks.ParallelExecutor;
@@ -33,6 +31,12 @@ import de.rub.nds.sshattacker.core.constants.Bits;
 import de.rub.nds.sshattacker.core.constants.KeyExchangeAlgorithm;
 import de.rub.nds.sshattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.sshattacker.core.state.State;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.bouncycastle.util.io.pem.PemReader;
+
+import javax.crypto.NoSuchPaddingException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
@@ -47,11 +51,8 @@ import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.*;
-import javax.crypto.NoSuchPaddingException;
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.bouncycastle.util.io.pem.PemReader;
+
+import static de.rub.nds.tlsattacker.util.ConsoleLogger.CONSOLE;
 
 /**
  * Sends differently formatted PKCS#1 v2.x messages to the SSH server and observes the server

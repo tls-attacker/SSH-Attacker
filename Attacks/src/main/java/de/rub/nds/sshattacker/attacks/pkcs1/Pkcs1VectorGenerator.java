@@ -11,18 +11,19 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.attacks.pkcs1.util.OaepConverter;
 import de.rub.nds.sshattacker.core.constants.Bits;
 import de.rub.nds.sshattacker.core.exceptions.ConfigurationException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import javax.crypto.BadPaddingException;
+import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.interfaces.RSAPublicKey;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
-import javax.crypto.BadPaddingException;
-import javax.crypto.Cipher;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /** */
 public class Pkcs1VectorGenerator {
@@ -67,7 +68,7 @@ public class Pkcs1VectorGenerator {
      *
      * @param publicKeyBitLength Bit length of the transient public key
      * @param hashLength Bit length of the hash function
-     * @return
+     * @return A PKCS1 v2.x vector with starting 00 byte but incorrect second byte
      */
     public static Pkcs1Vector generatePlainCorrectFirstBytePkcs1Vector(
             int publicKeyBitLength, int hashLength, String hashInstance) {

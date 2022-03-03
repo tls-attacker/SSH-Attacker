@@ -10,16 +10,17 @@ package de.rub.nds.sshattacker.attacks.pkcs1.oracles;
 import de.rub.nds.sshattacker.attacks.pkcs1.OracleException;
 import de.rub.nds.sshattacker.core.constants.Bits;
 import de.rub.nds.tlsattacker.util.MathHelper;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-import java.security.interfaces.RSAPrivateKey;
-import java.security.interfaces.RSAPublicKey;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.interfaces.RSAPrivateKey;
+import java.security.interfaces.RSAPublicKey;
 
 /**
  * A mock Manger oracle that used a private key to decrypt the messages and answers if the message

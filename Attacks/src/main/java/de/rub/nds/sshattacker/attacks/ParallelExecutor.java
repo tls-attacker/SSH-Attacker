@@ -11,14 +11,15 @@ import de.rub.nds.sshattacker.attacks.task.ITask;
 import de.rub.nds.sshattacker.attacks.task.SshTask;
 import de.rub.nds.sshattacker.attacks.task.StateExecutionTask;
 import de.rub.nds.sshattacker.core.state.State;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.*;
 import java.util.function.Function;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /** */
 public class ParallelExecutor {
@@ -58,8 +59,7 @@ public class ParallelExecutor {
         this(
                 size,
                 reexecutions,
-                new ThreadPoolExecutor(
-                        size, size, 10, TimeUnit.DAYS, new LinkedBlockingDeque<>()));
+                new ThreadPoolExecutor(size, size, 10, TimeUnit.DAYS, new LinkedBlockingDeque<>()));
     }
 
     public ParallelExecutor(int size, int reexecutions, ThreadFactory factory) {
@@ -67,12 +67,7 @@ public class ParallelExecutor {
                 size,
                 reexecutions,
                 new ThreadPoolExecutor(
-                        size,
-                        size,
-                        5,
-                        TimeUnit.MINUTES,
-                        new LinkedBlockingDeque<>(),
-                        factory));
+                        size, size, 5, TimeUnit.MINUTES, new LinkedBlockingDeque<>(), factory));
     }
 
     private Future<ITask> addTask(SshTask task) {
@@ -163,9 +158,7 @@ public class ParallelExecutor {
             return;
         }
 
-        new Thread(
-                        () -> monitorExecution(timeout))
-                .start();
+        new Thread(() -> monitorExecution(timeout)).start();
     }
 
     private void monitorExecution(int timeout) {

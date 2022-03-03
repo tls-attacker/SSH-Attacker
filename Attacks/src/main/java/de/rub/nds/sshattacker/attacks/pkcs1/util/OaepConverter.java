@@ -8,12 +8,13 @@
 package de.rub.nds.sshattacker.attacks.pkcs1.util;
 
 import com.google.common.primitives.Bytes;
+import org.bouncycastle.pqc.math.linearalgebra.BigEndianConversions;
+
 import java.nio.ByteBuffer;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.Random;
-import org.bouncycastle.pqc.math.linearalgebra.BigEndianConversions;
 
 /**
  * Utility class for performing raw OAEP encoding/decoding of messages according to PKCS#1 (RFC

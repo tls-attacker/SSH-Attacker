@@ -9,8 +9,10 @@ package de.rub.nds.sshattacker.attacks.config.delegate;
 
 import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.config.delegate.GeneralDelegate;
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.config.Configurator;
 
 /** A special GeneralDelegate which allows Attacks to add additional Parameters. */
 public class GeneralAttackDelegate extends GeneralDelegate {
@@ -28,5 +30,9 @@ public class GeneralAttackDelegate extends GeneralDelegate {
     @Override
     public void applyDelegate(Config config) {
         super.applyDelegate(config);
+        if (isQuiet()) {
+            Configurator.setAllLevels("de.rub.nds.tlsattacker.transport", Level.OFF);
+            Configurator.setAllLevels("de.rub.nds.modifiablevariable", Level.OFF);
+        }
     }
 }

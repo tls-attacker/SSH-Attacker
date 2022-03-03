@@ -7,8 +7,6 @@
  */
 package de.rub.nds.sshattacker.attacks;
 
-import static de.rub.nds.tlsattacker.util.ConsoleLogger.CONSOLE;
-
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.JCommander.Builder;
 import com.beust.jcommander.ParameterException;
@@ -19,9 +17,12 @@ import de.rub.nds.sshattacker.attacks.impl.MangerAttacker;
 import de.rub.nds.sshattacker.core.config.SSHDelegateConfig;
 import de.rub.nds.sshattacker.core.config.delegate.GeneralDelegate;
 import de.rub.nds.sshattacker.core.exceptions.ConfigurationException;
-import java.util.Objects;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.util.Objects;
+
+import static de.rub.nds.tlsattacker.util.ConsoleLogger.CONSOLE;
 
 /** */
 public class Main {
