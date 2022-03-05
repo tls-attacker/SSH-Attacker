@@ -1,7 +1,7 @@
 /*
  * SSH-Attacker - A Modular Penetration Testing Framework for SSH
  *
- * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
@@ -93,6 +93,12 @@ public abstract class MessageAction extends ConnectionBoundAction {
                 @XmlElement(
                         type = RsaKeyExchangePubkeyMessage.class,
                         name = "RsaKeyExchangePubkeyMessage"),
+                @XmlElement(
+                        type = RsaKeyExchangeSecretMessage.class,
+                        name = "RsaKeyExchangeSecretMessage"),
+                @XmlElement(
+                        type = RsaKeyExchangeDoneMessage.class,
+                        name = "RsaKeyExchangeDoneMessage"),
                 @XmlElement(type = ServiceAcceptMessage.class, name = "ServiceAcceptMessage"),
                 @XmlElement(type = ServiceRequestMessage.class, name = "ServiceRequestMessage"),
                 @XmlElement(type = UnimplementedMessage.class, name = "UnimplementedMessage"),

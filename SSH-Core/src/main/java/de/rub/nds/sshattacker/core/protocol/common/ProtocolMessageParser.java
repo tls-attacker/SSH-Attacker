@@ -1,7 +1,7 @@
 /*
  * SSH-Attacker - A Modular Penetration Testing Framework for SSH
  *
- * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
@@ -80,6 +80,8 @@ public abstract class ProtocolMessageParser<T extends ProtocolMessage<T>> extend
                     return new DhGexKeyExchangeGroupMessageParser(raw, 0).parse();
                 case SSH_MSG_KEX_DH_GEX_REPLY:
                     return new DhGexKeyExchangeReplyMessageParser(raw, 0).parse();
+                case SSH_MSG_KEXRSA_DONE:
+                    return new RsaKeyExchangeDoneMessageParser(raw, 0).parse();
                 case SSH_MSG_KEXRSA_PUBKEY:
                     return new RsaKeyExchangePubkeyMessageParser(raw, 0).parse();
                 case SSH_MSG_NEWKEYS:

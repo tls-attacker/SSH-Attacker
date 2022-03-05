@@ -1,7 +1,7 @@
 /*
  * SSH-Attacker - A Modular Penetration Testing Framework for SSH
  *
- * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
@@ -10,6 +10,7 @@ package de.rub.nds.sshattacker.core.workflow.chooser;
 import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.constants.*;
 import de.rub.nds.sshattacker.core.crypto.kex.DhKeyExchange;
+import de.rub.nds.sshattacker.core.crypto.kex.RsaKeyExchange;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
@@ -115,6 +116,8 @@ public abstract class Chooser {
     public abstract int getMaximalDHGroupSize();
 
     public abstract DhKeyExchange getDHGexKeyExchange();
+
+    public abstract RsaKeyExchange getRsaKeyExchange();
 
     // endregion
 
