@@ -1,13 +1,14 @@
 /*
  * SSH-Attacker - A Modular Penetration Testing Framework for SSH
  *
- * Copyright 2014-2021 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
-package de.rub.nds.sshattacker.core.util;
+package de.rub.nds.sshattacker.core.crypto.util;
 
 import de.rub.nds.sshattacker.core.constants.BinaryPacketConstants;
+import de.rub.nds.sshattacker.core.crypto.keys.RsaPublicKey;
 import de.rub.nds.sshattacker.core.protocol.common.Parser;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -32,14 +33,14 @@ public class RsaPublicKeyParser extends Parser<RsaPublicKey> {
         } else {
             publicKey.setExponentLength(parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH));
             LOGGER.debug("Exponent length: " + publicKey.getExponentLength().getValue());
-            publicKey.setE(parseBigIntField(publicKey.getExponentLength().getValue()));
+            publicKey.setExponent(parseBigIntField(publicKey.getExponentLength().getValue()));
             LOGGER.debug("Exponent: " + publicKey.getExponent().getValue());
 
             publicKey.setModulusLength(parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH));
             LOGGER.debug("Modulus length: " + publicKey.getModulusLength().getValue());
-            publicKey.setN(parseBigIntField(publicKey.getModulusLength().getValue()));
-            LOGGER.debug("Modulus: " + publicKey.getModulus().getValue());
-
+            // Length should be adjusted, in case the modulus starts with 00 byte(s)
+            publicKey.setModulus(parseBigIntField(publicKey.getModulusLength().getValue()), true);
+            LOGGER.debug("Modulus: " + publicKey.getModifiableModulus().getValue());
             return publicKey;
         }
 
