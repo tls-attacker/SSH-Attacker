@@ -10,12 +10,14 @@ package de.rub.nds.sshattacker.attacks.connectivity;
 import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.connection.AliasedConnection;
 import de.rub.nds.sshattacker.core.constants.RunningModeType;
+import de.rub.nds.sshattacker.core.protocol.transport.message.KeyExchangeInitMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.message.VersionExchangeMessage;
 import de.rub.nds.sshattacker.core.state.State;
 import de.rub.nds.sshattacker.core.workflow.DefaultWorkflowExecutor;
 import de.rub.nds.sshattacker.core.workflow.WorkflowExecutor;
 import de.rub.nds.sshattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.sshattacker.core.workflow.action.ReceiveAction;
+import de.rub.nds.sshattacker.core.workflow.action.SendAction;
 import de.rub.nds.sshattacker.core.workflow.factory.WorkflowConfigurationFactory;
 import de.rub.nds.sshattacker.core.workflow.factory.WorkflowTraceType;
 import de.rub.nds.tlsattacker.transport.Connection;
@@ -69,15 +71,16 @@ public class ConnectivityChecker {
     public boolean speaksSsh(Config config) {
         WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(config);
         WorkflowTrace trace =
-                factory.createWorkflowTrace(WorkflowTraceType.KEYEXCHANGE, RunningModeType.CLIENT);
-        trace.removeSshAction(trace.getSshActions().size() - 1);
+                factory.createWorkflowTrace(
+                        WorkflowTraceType.START_KEYEXCHANGE, RunningModeType.CLIENT);
+        SendAction sendAction = new SendAction(new VersionExchangeMessage());
         ReceiveAction receiveAction = new ReceiveAction(new VersionExchangeMessage());
-        trace.addSshAction(receiveAction);
+        trace.setSshActions(sendAction, receiveAction);
         State state = new State(config, trace);
         WorkflowExecutor executor = new DefaultWorkflowExecutor(state);
         executor.executeWorkflow();
         if (receiveAction.getReceivedMessages().size() > 0) {
-            return receiveAction.getReceivedMessages().get(0) instanceof VersionExchangeMessage;
+            return receiveAction.getReceivedMessages().get(0) instanceof KeyExchangeInitMessage;
         } else {
             return false;
         }
