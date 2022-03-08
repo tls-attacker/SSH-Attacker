@@ -128,10 +128,9 @@ public class OaepConverterTest {
             rawCipher.init(Cipher.DECRYPT_MODE, kp.getPrivate());
             byte[] encodedMessage = rawCipher.doFinal(encryptedMessage);
 
-            // Add a 00 byte in the beginning, as the raw RSA cipher will ignore this and return a
-            // 255 byte array,
-            // if the decryption works correctly, which it should as none of the tested classes are
-            // used up to now
+            /* Add a 00 byte in the beginning, as the raw RSA cipher will return a byte array with length 255,
+             * if decryption works as expected. As none of the tested classes have been used up until now,
+             * this should work as expected. */
             ByteBuffer buffer = ByteBuffer.allocate(256);
             buffer.put((byte) 0);
             buffer.put(encodedMessage);
