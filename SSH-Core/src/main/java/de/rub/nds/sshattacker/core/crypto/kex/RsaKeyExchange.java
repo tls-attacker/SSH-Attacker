@@ -58,7 +58,7 @@ public class RsaKeyExchange extends KeyExchange {
     public void setHashLength(KeyExchangeAlgorithm keyExchangeAlgorithm) {
         switch (keyExchangeAlgorithm) {
             case RSA1024_SHA1:
-                setHashLength(128);
+                setHashLength(160);
                 break;
             case RSA2048_SHA256:
                 setHashLength(256);

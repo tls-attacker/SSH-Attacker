@@ -131,6 +131,10 @@ public enum PublicKeyAuthenticationAlgorithm {
         return name;
     }
 
+    public String getName() {
+        return name;
+    }
+
     public static PublicKeyAuthenticationAlgorithm fromName(String name) {
         return map.get(name);
     }

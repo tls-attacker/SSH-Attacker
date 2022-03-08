@@ -73,6 +73,7 @@ public class RsaKeyExchangePubkeyMessageHandler
         // TODO: Implement host key types as enumeration
         // TODO: Improve host key handling in separate class
         context.getExchangeHashInstance().setServerHostKey(message.getHostKey().getValue());
+        context.setServerHostKey(message.getHostKey().getValue());
     }
 
     private void updateExchangeHashWithTransientPubkey(RsaKeyExchangePubkeyMessage message) {

@@ -11,7 +11,7 @@
         <clientSupportedHostKeyAlgorithm>SSH_RSA</clientSupportedHostKeyAlgorithm>
     </clientSupportedHostKeyAlgorithms>
     <clientSupportedKeyExchangeAlgorithms>
-        <clientSupportedKeyExchangeAlgorithm>DIFFIE_HELLMAN_GROUP14_SHA256</clientSupportedKeyExchangeAlgorithm>
+        <clientSupportedKeyExchangeAlgorithm>RSA1024_SHA1</clientSupportedKeyExchangeAlgorithm>
         <clientSupportedKeyExchangeAlgorithm>RSA2048_SHA256</clientSupportedKeyExchangeAlgorithm>
     </clientSupportedKeyExchangeAlgorithms>
     <clientSupportedCipherAlgorithmsClientToServer>
@@ -55,6 +55,6 @@
     <windowSize>2147483647</windowSize>
     <workflowExecutorShouldClose>true</workflowExecutorShouldClose>
     <workflowExecutorShouldOpen>true</workflowExecutorShouldOpen>
-    <workflowInput>resources/examples/test.xml</workflowInput>
-    <workflowTraceType>FULL</workflowTraceType>
+    <workflowInput>resources/examples/client_kex_rsa.xml</workflowInput>
+    <workflowTraceType>START_KEYEXCHANGE</workflowTraceType>
 </config>
