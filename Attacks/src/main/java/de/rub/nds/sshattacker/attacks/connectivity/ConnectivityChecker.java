@@ -10,7 +10,6 @@ package de.rub.nds.sshattacker.attacks.connectivity;
 import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.connection.AliasedConnection;
 import de.rub.nds.sshattacker.core.constants.RunningModeType;
-import de.rub.nds.sshattacker.core.protocol.transport.message.KeyExchangeInitMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.message.VersionExchangeMessage;
 import de.rub.nds.sshattacker.core.state.State;
 import de.rub.nds.sshattacker.core.workflow.DefaultWorkflowExecutor;
@@ -68,19 +67,19 @@ public class ConnectivityChecker {
         }
     }
 
+    /** @return true, if the server speaks SSH */
     public boolean speaksSsh(Config config) {
         WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(config);
         WorkflowTrace trace =
                 factory.createWorkflowTrace(
                         WorkflowTraceType.START_KEYEXCHANGE, RunningModeType.CLIENT);
-        SendAction sendAction = new SendAction(new VersionExchangeMessage());
         ReceiveAction receiveAction = new ReceiveAction(new VersionExchangeMessage());
-        trace.setSshActions(sendAction, receiveAction);
+        trace.setSshActions(new SendAction(new VersionExchangeMessage()), receiveAction);
         State state = new State(config, trace);
         WorkflowExecutor executor = new DefaultWorkflowExecutor(state);
         executor.executeWorkflow();
         if (receiveAction.getReceivedMessages().size() > 0) {
-            return receiveAction.getReceivedMessages().get(0) instanceof KeyExchangeInitMessage;
+            return receiveAction.getReceivedMessages().get(0) instanceof VersionExchangeMessage;
         } else {
             return false;
         }
