@@ -17,6 +17,10 @@ public class ChannelCloseMessage extends ChannelMessage<ChannelCloseMessage> {
         super(MessageIDConstant.SSH_MSG_CHANNEL_CLOSE);
     }
 
+    public ChannelCloseMessage(Integer senderChannel) {
+        super(MessageIDConstant.SSH_MSG_CHANNEL_CLOSE, senderChannel);
+    }
+
     @Override
     public ChannelCloseMessageHandler getHandler(SshContext context) {
         return new ChannelCloseMessageHandler(context, this);

@@ -25,6 +25,10 @@ public class ChannelExtendedDataMessage extends ChannelMessage<ChannelExtendedDa
         super(MessageIDConstant.SSH_MSG_CHANNEL_EXTENDED_DATA);
     }
 
+    public ChannelExtendedDataMessage(Integer senderChannel) {
+        super(MessageIDConstant.SSH_MSG_CHANNEL_EXTENDED_DATA, senderChannel);
+    }
+
     public ModifiableInteger getDataTypeCode() {
         return dataTypeCode;
     }

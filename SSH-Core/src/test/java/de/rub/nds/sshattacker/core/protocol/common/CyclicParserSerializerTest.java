@@ -10,17 +10,20 @@ package de.rub.nds.sshattacker.core.protocol.common;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
+import de.rub.nds.sshattacker.core.connection.Channel;
 import de.rub.nds.sshattacker.core.exceptions.NotImplementedException;
 import de.rub.nds.sshattacker.core.exceptions.ParserException;
 import de.rub.nds.sshattacker.core.exceptions.PreparationException;
+import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelMessage;
+import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelOpenMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.message.*;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
+import java.lang.reflect.Parameter;
 import java.security.Security;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Stream;
 import org.apache.commons.lang3.SerializationException;
 import org.apache.logging.log4j.LogManager;
@@ -79,15 +82,33 @@ public class CyclicParserSerializerTest {
 
             // Construct a new instance of the message class to test
             ProtocolMessage message = null;
+            // Create a fresh SshContext
+            SshContext context = new SshContext();
             try {
-                Constructor someMessageConstructor = getDefaultMessageConstructor(messageClass);
-                if (someMessageConstructor != null) {
-                    message = (ProtocolMessage) someMessageConstructor.newInstance();
+                Constructor someMessageConstructor;
+
+                if (messageClass.getSuperclass() == ChannelMessage.class
+                        || messageClass.getSuperclass().getSuperclass() == ChannelMessage.class
+                        || messageClass == ChannelOpenMessage.class) {
+                    someMessageConstructor = getChannelMessageConstructor(messageClass);
                 } else {
+                    someMessageConstructor = getDefaultMessageConstructor(messageClass);
+                }
+                if (someMessageConstructor == null) {
                     fail(
                             "Subclass '"
                                     + messageClassName
                                     + "' does not have a default constructor.");
+                } else if (someMessageConstructor.getParameterCount() == 0) {
+                    message = (ProtocolMessage) someMessageConstructor.newInstance();
+                } else {
+                    message =
+                            (ProtocolMessage)
+                                    someMessageConstructor.newInstance(
+                                            context.getConfig()
+                                                    .getDefaultChannel()
+                                                    .getLocalChannel()
+                                                    .getValue());
                 }
             } catch (SecurityException
                     | InstantiationException
@@ -100,10 +121,17 @@ public class CyclicParserSerializerTest {
                                 + messageClassName
                                 + "'");
             }
-
-            // Create a fresh SshContext
-            SshContext context = new SshContext();
-
+            // prepare specific Channel requirements for sending Channel messages
+            if (messageClass.getSuperclass() == ChannelMessage.class
+                    || messageClass.getSuperclass().getSuperclass() == ChannelMessage.class) {
+                Channel defaultChannel = context.getConfig().getDefaultChannel();
+                Channel.getLocal_remote()
+                        .put(
+                                defaultChannel.getLocalChannel().getValue(),
+                                defaultChannel.getRemoteChannel().getValue());
+                context.getChannels()
+                        .put(defaultChannel.getLocalChannel().getValue(), defaultChannel);
+            }
             // Prepare the message given the fresh context
             try {
                 message.getHandler(context).getPreparator().prepare();
@@ -192,6 +220,21 @@ public class CyclicParserSerializerTest {
             }
             LOGGER.warn(
                     "Unable to find default constructor for class: " + someClass.getSimpleName());
+            return null;
+        }
+
+        private static Constructor<?> getChannelMessageConstructor(Class<?> someClass) {
+            for (Constructor<?> c : someClass.getDeclaredConstructors()) {
+                if (c.getParameterCount() == 1) {
+                    for (Parameter p : c.getParameters()) {
+                        if (p.getType() == Integer.class) {
+                            return c;
+                        }
+                    }
+                }
+            }
+            LOGGER.warn(
+                    "Unable to find channel constructor for class: " + someClass.getSimpleName());
             return null;
         }
     }

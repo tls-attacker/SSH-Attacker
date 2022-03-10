@@ -17,6 +17,10 @@ public class ChannelEofMessage extends ChannelMessage<ChannelEofMessage> {
         super(MessageIDConstant.SSH_MSG_CHANNEL_EOF);
     }
 
+    public ChannelEofMessage(Integer senderChannel) {
+        super(MessageIDConstant.SSH_MSG_CHANNEL_EOF, senderChannel);
+    }
+
     @Override
     public ChannelEofMessageHandler getHandler(SshContext context) {
         return new ChannelEofMessageHandler(context, this);

@@ -27,6 +27,7 @@ public class ChannelOpenMessageHandler extends SshMessageHandler<ChannelOpenMess
     @Override
     public void adjustContext() {
         // TODO: Handle ChannelOpenMessage
+        // ToDO implement system of own channel management for running as server
     }
 
     @Override

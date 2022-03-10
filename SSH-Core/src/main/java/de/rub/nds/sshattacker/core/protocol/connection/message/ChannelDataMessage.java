@@ -23,6 +23,10 @@ public class ChannelDataMessage extends ChannelMessage<ChannelDataMessage> {
         super(MessageIDConstant.SSH_MSG_CHANNEL_DATA);
     }
 
+    public ChannelDataMessage(Integer senderChannel) {
+        super(MessageIDConstant.SSH_MSG_CHANNEL_DATA, senderChannel);
+    }
+
     public ModifiableInteger getDataLength() {
         return dataLength;
     }
