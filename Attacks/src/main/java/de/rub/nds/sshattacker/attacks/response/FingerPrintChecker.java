@@ -7,7 +7,7 @@
  */
 package de.rub.nds.sshattacker.attacks.response;
 
-/** */
+/** Compares two fingerprints */
 public class FingerPrintChecker {
 
     /**

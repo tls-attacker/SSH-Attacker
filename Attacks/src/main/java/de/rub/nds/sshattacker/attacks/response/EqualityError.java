@@ -7,17 +7,17 @@
  */
 package de.rub.nds.sshattacker.attacks.response;
 
-/** */
+/** Represents errors that can occur when comparing Fingerprints */
 public enum EqualityError {
 
-    /** */
+    /** No error */
     NONE,
-    /** */
+    /** Different socket state */
     SOCKET_STATE,
-    /** */
+    /** Number of messages is not equal */
     MESSAGE_COUNT,
-    /** */
+    /** Different messages */
     MESSAGE_CLASS,
-    /** */
+    /** Same message class, but different content */
     MESSAGE_CONTENT
 }

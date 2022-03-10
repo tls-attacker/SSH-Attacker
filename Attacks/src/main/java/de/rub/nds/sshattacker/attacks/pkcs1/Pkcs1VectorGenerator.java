@@ -24,7 +24,7 @@ import javax.crypto.NoSuchPaddingException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-/** */
+/** Generates Pkcs1 attack vectors */
 public class Pkcs1VectorGenerator {
 
     private static final Logger LOGGER = LogManager.getLogger();
@@ -33,7 +33,7 @@ public class Pkcs1VectorGenerator {
      * Generates an encrypted Pkcs1 Vector with correct first byte, but another error so decoding
      * will fail
      *
-     * @param publicKey Public key for encyrption
+     * @param publicKey Public key for encryption
      * @param hashLength Bit length of the hash function
      * @param hashInstance Hash function to be used
      * @return Pkcs1 Vector with correct first byte but incorrect second byte
@@ -139,13 +139,13 @@ public class Pkcs1VectorGenerator {
     }
 
     /**
-     * Generates a validly padded message
+     * Generates a validly encoded message
      *
      * @param rsaKeyLength RSA key length in bytes
      * @param sharedSecret Shared secret to be padded
      * @return padded secret
      */
-    private static byte[] getPaddedSecret(
+    private static byte[] getEncodedSecret(
             int rsaKeyLength, byte[] sharedSecret, String hashInstance) {
         try {
             return OaepConverter.doOaepEncoding(sharedSecret, hashInstance, rsaKeyLength);
@@ -155,9 +155,10 @@ public class Pkcs1VectorGenerator {
         }
     }
 
+    /** Generates an OAEP encoded secret with first byte set to 01 instead of 00 */
     private static byte[] getSecretWrongFirstByte(
             int rsaKeyLength, byte[] sharedSecret, String hashInstance) {
-        byte[] paddedSecret = getPaddedSecret(rsaKeyLength, sharedSecret, hashInstance);
+        byte[] paddedSecret = getEncodedSecret(rsaKeyLength, sharedSecret, hashInstance);
         paddedSecret[0] = (byte) 1;
         LOGGER.debug(
                 "Generated a PKCS1 padded message with a wrong first byte: {}",
@@ -165,9 +166,10 @@ public class Pkcs1VectorGenerator {
         return paddedSecret;
     }
 
+    /** Generates an OAEP encoded secret with negated second byte (XORed with 0xFF) */
     private static byte[] getSecretWrongSecondByte(
             int rsaKeyLength, byte[] sharedSecret, String hashInstance) {
-        byte[] paddedSecret = getPaddedSecret(rsaKeyLength, sharedSecret, hashInstance);
+        byte[] paddedSecret = getEncodedSecret(rsaKeyLength, sharedSecret, hashInstance);
         paddedSecret[1] = (byte) (paddedSecret[1] ^ (byte) 255);
         LOGGER.debug(
                 "Generated a PKCS1 padded message with a wrong second byte: {}",

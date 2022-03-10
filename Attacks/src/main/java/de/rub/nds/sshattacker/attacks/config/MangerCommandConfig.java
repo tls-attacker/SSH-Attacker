@@ -14,10 +14,10 @@ import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.config.delegate.ClientDelegate;
 import de.rub.nds.sshattacker.core.config.delegate.GeneralDelegate;
 
-/** */
+/** Config for Manger's attack */
 public class MangerCommandConfig extends AttackConfig {
 
-    /** */
+    /** Command line parameter to call the attack */
     public static final String ATTACK_COMMAND = "manger";
 
     @ParametersDelegate private final ClientDelegate clientDelegate;

@@ -17,7 +17,7 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-/** */
+/** Extracts a server's response to an attack vector */
 public class ResponseExtractor {
 
     private static final Logger LOGGER = LogManager.getLogger();

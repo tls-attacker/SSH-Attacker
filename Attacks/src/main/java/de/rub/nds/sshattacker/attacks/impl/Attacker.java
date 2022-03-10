@@ -15,12 +15,15 @@ import de.rub.nds.sshattacker.core.config.Config;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-/** @param <AttConfigT> */
+/**
+ * Base class for Attacks that enables starting the attack/checking for the vulnerability.
+ *
+ * @param <AttConfigT> The Attack Config Type
+ */
 public abstract class Attacker<AttConfigT extends AttackConfig> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    /** */
     protected AttConfigT config;
 
     private final Config baseConfig;
@@ -34,7 +37,7 @@ public abstract class Attacker<AttConfigT extends AttackConfig> {
         this.baseConfig = baseConfig;
     }
 
-    /** */
+    /** Starts the attack after doing a connection check, if it is not disabled. */
     public void attack() {
         LOGGER.debug("Attacking with: " + this.getClass().getSimpleName());
         if (!config.isSkipConnectionCheck()) {
@@ -76,10 +79,6 @@ public abstract class Attacker<AttConfigT extends AttackConfig> {
         } else {
             return config.createConfig(baseConfig);
         }
-    }
-
-    public Config getBaseConfig() {
-        return baseConfig /*.createCopy()*/;
     }
 
     /** @return True if the server can be connected to */

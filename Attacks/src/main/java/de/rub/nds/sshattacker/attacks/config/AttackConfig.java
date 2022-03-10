@@ -11,7 +11,10 @@ import com.beust.jcommander.Parameter;
 import de.rub.nds.sshattacker.core.config.SSHDelegateConfig;
 import de.rub.nds.sshattacker.core.config.delegate.GeneralDelegate;
 
-/** */
+/**
+ * Base Config for attacks that can be extended to support additional configuration options All
+ * attacks should define an attack command to be executable.
+ */
 public abstract class AttackConfig extends SSHDelegateConfig {
 
     @Parameter(

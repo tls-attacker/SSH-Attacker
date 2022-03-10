@@ -5,7 +5,7 @@
  *
  * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
-package de.rub.nds.sshattacker.attacks;
+package de.rub.nds.sshattacker.attacks.general;
 
 import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.constants.RunningModeType;
@@ -24,11 +24,12 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-/** Utility class to fetch the transient public key from an SSH RSA key exchange */
+/** Utility class to fetch public keys from SSH servers */
 public class KeyFetcher {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
+    /** Fetches the transient public key from an RSA key-exchange */
     public static RSAPublicKey fetchRsaTransientKey(Config config) {
         WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(config);
         WorkflowTrace trace =

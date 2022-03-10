@@ -10,11 +10,10 @@ package de.rub.nds.sshattacker.attacks.impl;
 import static de.rub.nds.tlsattacker.util.ConsoleLogger.CONSOLE;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.sshattacker.attacks.KeyFetcher;
-import de.rub.nds.sshattacker.attacks.ParallelExecutor;
 import de.rub.nds.sshattacker.attacks.config.MangerCommandConfig;
-import de.rub.nds.sshattacker.attacks.exception.AttackFailedException;
 import de.rub.nds.sshattacker.attacks.exception.OracleUnstableException;
+import de.rub.nds.sshattacker.attacks.general.KeyFetcher;
+import de.rub.nds.sshattacker.attacks.general.ParallelExecutor;
 import de.rub.nds.sshattacker.attacks.general.Vector;
 import de.rub.nds.sshattacker.attacks.padding.VectorResponse;
 import de.rub.nds.sshattacker.attacks.padding.vector.FingerprintTaskVectorPair;
@@ -136,15 +135,12 @@ public class MangerAttacker extends Attacker<MangerCommandConfig> {
 
         EqualityError referenceError;
         fullResponseMap = new LinkedList<>();
-        try {
-            for (int i = 0; i < config.getNumberOfIterations(); i++) {
-                List<VectorResponse> responseMap = createVectorResponseList();
-                this.fullResponseMap.addAll(responseMap);
-            }
-        } catch (AttackFailedException e) {
-            CONSOLE.info(e.getMessage());
-            return null;
+
+        for (int i = 0; i < config.getNumberOfIterations(); i++) {
+            List<VectorResponse> responseMap = createVectorResponseList();
+            this.fullResponseMap.addAll(responseMap);
         }
+
         referenceError = getEqualityError(fullResponseMap);
         if (referenceError != EqualityError.NONE) {
             CONSOLE.info(
@@ -242,7 +238,8 @@ public class MangerAttacker extends Attacker<MangerCommandConfig> {
     }
 
     /**
-     * Fetches the transient public key from a key exchange. It may not be static.
+     * Fetches the transient public key from a key exchange. Note that multiple calls to this method
+     * when connected to the same server can yield different keys.
      *
      * @return Transient public key
      */

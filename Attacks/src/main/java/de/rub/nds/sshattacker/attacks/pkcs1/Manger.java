@@ -24,7 +24,6 @@ public class Manger extends Pkcs1Attack {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    /** */
     protected Interval result;
 
     private volatile boolean interrupted = false;

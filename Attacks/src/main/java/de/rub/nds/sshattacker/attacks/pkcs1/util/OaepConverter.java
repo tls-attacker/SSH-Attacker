@@ -28,6 +28,8 @@ public class OaepConverter {
     /**
      * Encodes message using OAEP with digest hashInstance for a key of length keyLen
      *
+     * @see <a href="https://datatracker.ietf.org/doc/html/rfc8017#section-7.1.1">RFC 8017 Section
+     *     7.1.1 Step 2</a>
      * @param message Message to be encoded
      * @param hashInstance Name of hash to be used
      * @param keyLen Length of the public key in bytes
@@ -81,8 +83,10 @@ public class OaepConverter {
     }
 
     /**
-     * Decodes message using OAEP with digest hashInstance for a key of length keyLen
+     * Decodes message using OAEP with digest hashInstance for a key of length keyLen.
      *
+     * @see <a href="https://datatracker.ietf.org/doc/html/rfc8017#section-7.1.2">RFC 8017 Section
+     *     7.1.2 Step 3</a>
      * @param encodedMessage Message to be decoded
      * @param hashInstance Name of hash to be used
      * @param keyLen Length of the public key in bytes
@@ -138,6 +142,10 @@ public class OaepConverter {
     }
 
     /**
+     * Implements mask generation function MGF1.
+     *
+     * @see <a href="https://datatracker.ietf.org/doc/html/rfc8017#appendix-B.2.1">RFC 8017 Appendix
+     *     B.2.1</a>
      * @param seed Seed for the mask generation
      * @param maskLen Desired mask length in bytes
      * @param digestName Name of the digest to be used
@@ -178,7 +186,7 @@ public class OaepConverter {
      *
      * @param left First array
      * @param right Second array
-     * @return Result of XOR operation
+     * @return Result of the XOR operation as a byte[]
      */
     public static byte[] xor(byte[] left, byte[] right) {
         if (left == null || right == null) return null;
@@ -196,7 +204,14 @@ public class OaepConverter {
         return out;
     }
 
-    /** Decodes the solution of a Manger attack */
+    /**
+     * Decodes the solution of a Manger attack
+     *
+     * @param solution The solution to the attack, i.e. the encoded shared secret.
+     * @param hashInstance The hash function. For SSH, this should either be 'SHA-1' or 'SHA-256',
+     *     depending on the key exchange method.
+     * @param publicKeyByteLength The length of the public key's modulus in bytes.
+     */
     public static BigInteger decodeSolution(
             BigInteger solution, String hashInstance, int publicKeyByteLength) {
         try {

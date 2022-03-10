@@ -13,7 +13,7 @@ import java.security.interfaces.RSAPublicKey;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-/** Oracle template for Manger like attacks. */
+/** Oracle template for Bleichenbacher/Manger like attacks. */
 public abstract class Pkcs1Oracle {
 
     private static final Logger LOGGER = LogManager.getLogger();

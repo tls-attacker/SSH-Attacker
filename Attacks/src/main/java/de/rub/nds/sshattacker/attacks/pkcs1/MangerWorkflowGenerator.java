@@ -19,14 +19,14 @@ import de.rub.nds.sshattacker.core.workflow.action.SendAction;
 import de.rub.nds.sshattacker.core.workflow.factory.WorkflowConfigurationFactory;
 import de.rub.nds.sshattacker.core.workflow.factory.WorkflowTraceType;
 
-/** */
+/** Utility class for generating attack workflows for Manger style attacks */
 public class MangerWorkflowGenerator {
 
     /**
      * @param sshConfig SSH config to be used to generate the workflows
      * @param encryptedSecret Encrypted secret to be set in the key exchange's secret message
      * @return A workflow that performs an SSH handshake with RSA key exchange up to the secret
-     *     message + messages received after that message
+     *     message + messages received after the secret message
      */
     public static WorkflowTrace generateWorkflow(Config sshConfig, byte[] encryptedSecret) {
         WorkflowTrace trace =

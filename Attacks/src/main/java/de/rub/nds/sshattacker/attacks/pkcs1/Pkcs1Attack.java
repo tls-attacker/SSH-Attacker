@@ -14,31 +14,24 @@ import java.security.interfaces.RSAPublicKey;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-/** */
+/** Base class for Pkcs1 attacks */
 public class Pkcs1Attack {
 
     /** Initialize the log4j LOGGER. */
     private static final Logger LOGGER = LogManager.getLogger();
 
-    /** */
     protected final Pkcs1Oracle oracle;
 
-    /** */
     protected final byte[] encryptedMsg;
 
-    /** */
     protected final RSAPublicKey publicKey;
 
-    /** */
     protected BigInteger c0;
 
-    /** */
     protected final int blockSize;
 
-    /** */
     protected BigInteger solution;
 
-    /** */
     protected BigInteger bigB;
 
     /**

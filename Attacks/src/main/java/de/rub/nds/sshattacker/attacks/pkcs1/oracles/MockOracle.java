@@ -7,7 +7,6 @@
  */
 package de.rub.nds.sshattacker.attacks.pkcs1.oracles;
 
-import de.rub.nds.sshattacker.attacks.pkcs1.OracleException;
 import de.rub.nds.sshattacker.core.constants.Bits;
 import de.rub.nds.tlsattacker.util.MathHelper;
 import java.security.InvalidKeyException;
@@ -44,7 +43,7 @@ public class MockOracle extends Pkcs1Oracle {
     }
 
     @Override
-    public boolean checkPKCSConformity(byte[] msg) throws OracleException {
+    public boolean checkPKCSConformity(byte[] msg) {
         if (isPlaintextOracle) {
             return msg[0] == (byte) 0;
         } else {

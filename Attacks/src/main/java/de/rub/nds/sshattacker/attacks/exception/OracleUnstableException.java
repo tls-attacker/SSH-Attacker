@@ -7,7 +7,10 @@
  */
 package de.rub.nds.sshattacker.attacks.exception;
 
-/** */
+/**
+ * This exception is thrown when the oracle is unstable, f.e., when a server can no longer be
+ * connected to for some Reason
+ */
 public class OracleUnstableException extends RuntimeException {
 
     public OracleUnstableException(String string) {

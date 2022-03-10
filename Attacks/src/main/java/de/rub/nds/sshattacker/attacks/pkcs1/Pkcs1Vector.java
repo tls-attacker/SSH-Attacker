@@ -11,7 +11,10 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.attacks.general.Vector;
 import java.util.Arrays;
 
-/** */
+/**
+ * Attack vector for Pkcs1 attacks. The attack vectors can be named and hold plain and encrypted
+ * values
+ */
 public class Pkcs1Vector implements Vector {
 
     private String name;

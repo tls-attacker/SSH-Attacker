@@ -23,7 +23,6 @@ import java.util.Objects;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-/** */
 public class Main {
 
     private static final Logger LOGGER = LogManager.getLogger();
@@ -61,6 +60,7 @@ public class Main {
 
         Attacker<? extends SSHDelegateConfig> attacker = null;
 
+        // Insert new attack commands here
         switch (jc.getParsedCommand()) {
             case MangerCommandConfig.ATTACK_COMMAND:
                 attacker = new MangerAttacker(mangerTest, mangerTest.createConfig());

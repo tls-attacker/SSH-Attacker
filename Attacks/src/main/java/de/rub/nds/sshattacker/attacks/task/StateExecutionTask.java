@@ -10,7 +10,10 @@ package de.rub.nds.sshattacker.attacks.task;
 import de.rub.nds.sshattacker.core.state.State;
 import de.rub.nds.sshattacker.core.workflow.WorkflowExecutor;
 
-/** Do not use this Task if you want to rely on the socket state */
+/**
+ * Simply executes a given workflow without any checks (e.g. if workflow was executed as planned).
+ * Do not use this Task if you want to rely on the socket state
+ */
 public class StateExecutionTask extends SshTask {
 
     private final State state;

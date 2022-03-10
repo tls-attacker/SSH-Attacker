@@ -42,7 +42,7 @@ public class RealDirectMessagePkcs1Oracle extends Pkcs1Oracle {
     private final int maxAttempts;
 
     /**
-     * @param pubKey The transient public key
+     * @param pubKey The public key
      * @param config Config
      * @param validResponseContent ResponseFingerprint of a valid response
      * @param invalidResponseContent ResponseFingerprint of an invalid repsonse
@@ -61,7 +61,7 @@ public class RealDirectMessagePkcs1Oracle extends Pkcs1Oracle {
     }
 
     /**
-     * @param pubKey The transient public key
+     * @param pubKey The public key
      * @param config Config
      * @param validResponseContent ResponseFingerprint of a valid response
      * @param invalidResponseContent ResponseFingerprint of an invalid response
@@ -123,7 +123,7 @@ public class RealDirectMessagePkcs1Oracle extends Pkcs1Oracle {
             }
 
         } catch (WorkflowExecutionException e) {
-            // If workflow execution failed, retry
+            // If workflow execution failed, retry. This might be because a packet got lost
             LOGGER.debug("Exception during workflow execution:" + e.getLocalizedMessage(), e);
             if (currentAttempt < maxAttempts) {
                 return checkPKCSConformity(msg, currentAttempt + 1);

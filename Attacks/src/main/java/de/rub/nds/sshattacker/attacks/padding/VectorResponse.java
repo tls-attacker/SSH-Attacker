@@ -10,6 +10,7 @@ package de.rub.nds.sshattacker.attacks.padding;
 import de.rub.nds.sshattacker.attacks.general.Vector;
 import de.rub.nds.sshattacker.attacks.response.ResponseFingerprint;
 
+/** Combines a vector with the server's response to it */
 public class VectorResponse {
 
     private final ResponseFingerprint fingerprint;

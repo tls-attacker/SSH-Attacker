@@ -7,6 +7,10 @@
  */
 package de.rub.nds.sshattacker.attacks.task;
 
+/**
+ * Interface for Tasks. Tasks can be executed and return true/false if the execution was
+ * successful/failed
+ */
 public interface ITask {
 
     boolean execute();

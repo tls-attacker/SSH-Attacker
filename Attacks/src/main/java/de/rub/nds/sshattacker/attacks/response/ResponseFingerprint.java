@@ -18,7 +18,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElementRef;
 import javax.xml.bind.annotation.XmlElementWrapper;
 
-/** */
+/** Represents a server's response to an attack vector */
 @XmlAccessorType(XmlAccessType.FIELD)
 public class ResponseFingerprint {
     @XmlElementWrapper @XmlElementRef private List<ProtocolMessage<?>> messageList;

@@ -27,6 +27,7 @@ import java.io.IOException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+/** Utility class for checking if a server is online and supports SSH */
 public class ConnectivityChecker {
 
     private static final Logger LOGGER = LogManager.getLogger();

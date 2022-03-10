@@ -10,6 +10,11 @@ package de.rub.nds.sshattacker.attacks.padding.vector;
 import de.rub.nds.sshattacker.attacks.general.Vector;
 import de.rub.nds.sshattacker.attacks.task.FingerPrintTask;
 
+/**
+ * Combines a FingerprintTask with an attack vector
+ *
+ * @param <T> The type of the attack vector
+ */
 public class FingerprintTaskVectorPair<T extends Vector> {
 
     private final FingerPrintTask fingerPrintTask;

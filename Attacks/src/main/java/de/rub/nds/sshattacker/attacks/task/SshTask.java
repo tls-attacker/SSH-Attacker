@@ -16,6 +16,7 @@ import java.util.function.Function;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+/** Base class for SSH tasks */
 public abstract class SshTask implements ITask, Callable<ITask> {
 
     private static final Logger LOGGER = LogManager.getLogger();

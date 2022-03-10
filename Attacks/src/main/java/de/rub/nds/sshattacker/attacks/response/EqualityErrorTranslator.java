@@ -7,7 +7,7 @@
  */
 package de.rub.nds.sshattacker.attacks.response;
 
-/** */
+/** Translates equality errors into human-readable form */
 public class EqualityErrorTranslator {
 
     /**
