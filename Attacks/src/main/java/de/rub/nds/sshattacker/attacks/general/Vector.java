@@ -5,14 +5,11 @@
  *
  * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
-package de.rub.nds.sshattacker.core.workflow.factory;
+package de.rub.nds.sshattacker.attacks.general;
 
-public enum WorkflowTraceType {
-    KEYEXCHANGE,
-    DYNAMIC_KEYEXCHANGE,
-    AUTHPASSWORD,
-    DYNAMIC_AUTHPASSWORD,
-    FULL,
-    DYNAMIC_FULL,
-    START_KEYEXCHANGE
+public interface Vector {
+    @Override
+    boolean equals(Object vector);
+
+    String getName();
 }

@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/Attacks/Attacks.iml" filepath="$PROJECT_DIR$/Attacks/Attacks.iml" />
       <module fileurl="file://$PROJECT_DIR$/SSH-Attacker.iml" filepath="$PROJECT_DIR$/SSH-Attacker.iml" />
       <module fileurl="file://$PROJECT_DIR$/SSH-Client/SSH-Client.iml" filepath="$PROJECT_DIR$/SSH-Client/SSH-Client.iml" />
       <module fileurl="file://$PROJECT_DIR$/SSH-Core/SSH-Core.iml" filepath="$PROJECT_DIR$/SSH-Core/SSH-Core.iml" />

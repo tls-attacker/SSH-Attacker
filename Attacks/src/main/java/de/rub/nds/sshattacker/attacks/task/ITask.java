@@ -5,14 +5,13 @@
  *
  * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
-package de.rub.nds.sshattacker.core.workflow.factory;
+package de.rub.nds.sshattacker.attacks.task;
 
-public enum WorkflowTraceType {
-    KEYEXCHANGE,
-    DYNAMIC_KEYEXCHANGE,
-    AUTHPASSWORD,
-    DYNAMIC_AUTHPASSWORD,
-    FULL,
-    DYNAMIC_FULL,
-    START_KEYEXCHANGE
+/**
+ * Interface for Tasks. Tasks can be executed and return true/false if the execution was
+ * successful/failed
+ */
+public interface ITask {
+
+    boolean execute();
 }

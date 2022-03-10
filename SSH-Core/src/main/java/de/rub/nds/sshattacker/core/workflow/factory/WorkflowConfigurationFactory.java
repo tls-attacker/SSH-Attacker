@@ -50,6 +50,8 @@ public class WorkflowConfigurationFactory {
                 return createAuthenticationPasswordWorkflowTrace();
             case FULL:
                 return createFullWorkflowTrace();
+            case START_KEYEXCHANGE:
+                return startKeyExchangeWorkflowTrace();
             case DYNAMIC_KEYEXCHANGE:
                 return createDynamicKeyExchangeWorkflowTrace();
             case DYNAMIC_AUTHPASSWORD:
