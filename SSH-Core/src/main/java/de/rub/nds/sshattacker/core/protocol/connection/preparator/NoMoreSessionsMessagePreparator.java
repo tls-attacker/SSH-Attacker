@@ -22,7 +22,7 @@ public class NoMoreSessionsMessagePreparator extends SshMessagePreparator<NoMore
     @Override
     public void prepareMessageSpecificContents() {
         getObject().setMessageID(MessageIDConstant.SSH_MSG_GLOBAL_REQUEST);
-        getObject().setRequestName(GlobalRequestType.NO_MORE_SESSIONS_OPENSSH_COM);
+        getObject().setRequestName(GlobalRequestType.NO_MORE_SESSIONS_OPENSSH_COM, true);
         getObject().setWantReply(chooser.getConfig().getReplyWanted());
     }
 }

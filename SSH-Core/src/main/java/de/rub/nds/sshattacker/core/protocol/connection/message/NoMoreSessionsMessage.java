@@ -7,14 +7,11 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.message;
 
-import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.sshattacker.core.constants.GlobalRequestType;
 import de.rub.nds.sshattacker.core.protocol.connection.handler.NoMoreSessionsMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class NoMoreSessionsMessage extends GlobalRequestMessage<NoMoreSessionsMessage> {
-
-    private ModifiableByte wantReply;
 
     public NoMoreSessionsMessage() {
         super(GlobalRequestType.NO_MORE_SESSIONS_OPENSSH_COM);

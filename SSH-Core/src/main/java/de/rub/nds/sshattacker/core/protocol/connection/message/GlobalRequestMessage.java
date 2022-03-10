@@ -25,7 +25,7 @@ public abstract class GlobalRequestMessage<T extends GlobalRequestMessage<T>>
 
     protected GlobalRequestMessage(GlobalRequestType requestType) {
         super(MessageIDConstant.SSH_MSG_GLOBAL_REQUEST);
-        setRequestName(requestType);
+        setRequestName(requestType, true);
     }
 
     public ModifiableInteger getRequestNameLength() {

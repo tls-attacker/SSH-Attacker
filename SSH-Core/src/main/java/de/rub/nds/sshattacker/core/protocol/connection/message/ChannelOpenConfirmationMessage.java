@@ -17,9 +17,9 @@ public class ChannelOpenConfirmationMessage extends ChannelMessage<ChannelOpenCo
 
     private ModifiableInteger modSenderChannel;
     private ModifiableInteger windowSize;
-    private Integer transferWindowSize;
+    private int transferWindowSize;
     private ModifiableInteger packetSize;
-    private Integer transferPacketSize;
+    private int transferPacketSize;
 
     public ChannelOpenConfirmationMessage() {
         super(MessageIDConstant.SSH_MSG_CHANNEL_OPEN_CONFIRMATION);
@@ -29,8 +29,7 @@ public class ChannelOpenConfirmationMessage extends ChannelMessage<ChannelOpenCo
         super(MessageIDConstant.SSH_MSG_CHANNEL_OPEN_CONFIRMATION, senderChannel);
     }
 
-    public ChannelOpenConfirmationMessage(
-            Integer senderChannel, Integer windowSize, Integer packetSize) {
+    public ChannelOpenConfirmationMessage(int senderChannel, int windowSize, int packetSize) {
         super(MessageIDConstant.SSH_MSG_CHANNEL_OPEN_CONFIRMATION, senderChannel);
         setTransferWindowSize(windowSize);
         setTransferPacketSize(packetSize);
@@ -77,7 +76,7 @@ public class ChannelOpenConfirmationMessage extends ChannelMessage<ChannelOpenCo
         return transferPacketSize;
     }
 
-    public void setTransferPacketSize(Integer transferPacketSize) {
+    public void setTransferPacketSize(int transferPacketSize) {
         this.transferPacketSize = transferPacketSize;
     }
 
@@ -85,7 +84,7 @@ public class ChannelOpenConfirmationMessage extends ChannelMessage<ChannelOpenCo
         return transferWindowSize;
     }
 
-    public void setTransferWindowSize(Integer transferWindowSize) {
+    public void setTransferWindowSize(int transferWindowSize) {
         this.transferWindowSize = transferWindowSize;
     }
 

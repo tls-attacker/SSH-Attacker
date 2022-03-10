@@ -22,14 +22,14 @@ public class ChannelRequestExecMessageParser
     }
 
     @Override
-    protected ChannelRequestExecMessage createMessage() {
+    public ChannelRequestExecMessage createMessage() {
         return new ChannelRequestExecMessage();
     }
 
     public void parseCommand() {
         message.setCommandLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
         LOGGER.debug("Command length: " + message.getCommandLength().getValue());
-        message.setCommand(parseByteString(message.getCommandLength().getValue()));
+        message.setCommand(parseByteString(message.getCommandLength().getValue()), false);
         LOGGER.debug("Command: " + message.getCommand().getValue());
     }
 

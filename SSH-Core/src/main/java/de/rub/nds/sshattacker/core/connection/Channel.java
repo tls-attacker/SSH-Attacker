@@ -34,6 +34,8 @@ public class Channel implements Serializable {
 
     private static HashMap<Integer, Integer> local_remote = new HashMap<>();
 
+    public Channel() {}
+
     public Channel(
             ChannelType channelType,
             ModifiableInteger localChannel,

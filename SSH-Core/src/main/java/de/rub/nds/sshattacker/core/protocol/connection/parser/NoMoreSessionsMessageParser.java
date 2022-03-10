@@ -7,10 +7,9 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.parser;
 
-import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 import de.rub.nds.sshattacker.core.protocol.connection.message.NoMoreSessionsMessage;
 
-public class NoMoreSessionsMessageParser extends SshMessageParser<NoMoreSessionsMessage> {
+public class NoMoreSessionsMessageParser extends GlobalRequestMessageParser<NoMoreSessionsMessage> {
 
     public NoMoreSessionsMessageParser(byte[] array, int startPosition) {
         super(array, startPosition);
@@ -22,5 +21,7 @@ public class NoMoreSessionsMessageParser extends SshMessageParser<NoMoreSessions
     }
 
     @Override
-    protected void parseMessageSpecificContents() {}
+    protected void parseMessageSpecificContents() {
+        super.parseMessageSpecificContents();
+    }
 }

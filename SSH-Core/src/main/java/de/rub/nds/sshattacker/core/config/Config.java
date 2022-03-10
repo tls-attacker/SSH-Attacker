@@ -172,6 +172,12 @@ public class Config implements Serializable {
 
     private byte replyWanted;
 
+    private String defaultVariableName;
+
+    private String defaultVariableValue;
+
+    private SignalType defaultSignalType;
+
     /** Default Connection to use when running as Client */
     private OutboundConnection defaultClientConnection;
 
@@ -248,7 +254,7 @@ public class Config implements Serializable {
         endOfMessageSequence = "\r\n";
 
         clientSupportedKeyExchangeAlgorithms = new LinkedList<>();
-        // clientSupportedKeyExchangeAlgorithms.add(KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP14_SHA256);
+        clientSupportedKeyExchangeAlgorithms.add(KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP14_SHA256);
         clientSupportedKeyExchangeAlgorithms.add(
                 KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP_EXCHANGE_SHA256);
         clientSupportedKeyExchangeAlgorithms.add(KeyExchangeAlgorithm.ECDH_SHA2_NISTP256);
@@ -337,6 +343,9 @@ public class Config implements Serializable {
                         true);
         replyWanted = 0;
         channelCommand = "nc -l -p 13370";
+        defaultVariableName = "PATH";
+        defaultVariableValue = "usr/local/bin";
+        defaultSignalType = SignalType.SIGINT;
 
         workflowTraceType = null;
         outputFilters = new ArrayList<>();
@@ -751,6 +760,14 @@ public class Config implements Serializable {
         return defaultEcdhKeyExchangeAlgortihm;
     }
 
+    public Channel getDefaultChannel() {
+        return defaultChannel;
+    }
+
+    public void setDefaultChannel(Channel defaultChannel) {
+        this.defaultChannel = defaultChannel;
+    }
+
     public KeyExchangeAlgorithm getDefaultRsaKeyExchangeAlgorithm() {
         return defaultRsaKeyExchangeAlgorithm;
     }
@@ -759,11 +776,27 @@ public class Config implements Serializable {
         return defaultRsaPublicKey;
     }
 
-    public Channel getDefaultChannel() {
-        return defaultChannel;
+    public String getDefaultVariableValue() {
+        return defaultVariableValue;
     }
 
-    public void setDefaultChannel(Channel defaultChannel) {
-        this.defaultChannel = defaultChannel;
+    public void setDefaultVariableValue(String defaultVariableValue) {
+        this.defaultVariableValue = defaultVariableValue;
+    }
+
+    public SignalType getDefaultSignalType() {
+        return defaultSignalType;
+    }
+
+    public void setDefaultSignalType(SignalType defaultSignalType) {
+        this.defaultSignalType = defaultSignalType;
+    }
+
+    public String getDefaultVariableName() {
+        return defaultVariableName;
+    }
+
+    public void setDefaultVariableName(String defaultVariableName) {
+        this.defaultVariableName = defaultVariableName;
     }
 }

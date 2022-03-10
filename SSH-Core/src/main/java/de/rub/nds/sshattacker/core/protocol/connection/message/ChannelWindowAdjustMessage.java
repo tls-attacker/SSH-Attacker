@@ -47,7 +47,7 @@ public class ChannelWindowAdjustMessage extends ChannelMessage<ChannelWindowAdju
         return transferBytesToAdd;
     }
 
-    public void setTransferBytesToAdd(Integer transferBytesToAdd) {
+    public void setTransferBytesToAdd(int transferBytesToAdd) {
         this.transferBytesToAdd = transferBytesToAdd;
     }
 
