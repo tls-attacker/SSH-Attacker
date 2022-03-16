@@ -8,6 +8,7 @@
 package de.rub.nds.sshattacker.core.crypto.signature;
 
 import de.rub.nds.sshattacker.core.constants.BinaryPacketConstants;
+import de.rub.nds.sshattacker.core.constants.PublicKeyAlgorithm;
 import de.rub.nds.sshattacker.core.protocol.common.Parser;
 import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
@@ -30,7 +31,7 @@ public class SignatureParser extends Parser<RawSignature> {
         LOGGER.debug("Signature Type: " + sigtype);
 
         // Try to convert the signature type to get the corresponding signature algorithm
-        SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.getSignatureAlgorithm(sigtype);
+        PublicKeyAlgorithm signatureAlgorithm = PublicKeyAlgorithm.fromName(sigtype);
         signature.setSignatureAlgorithm(signatureAlgorithm);
         LOGGER.debug(
                 "Corresponding signature algorithm: "

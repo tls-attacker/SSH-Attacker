@@ -15,21 +15,21 @@ import java.math.BigInteger;
 import java.security.interfaces.RSAPublicKey;
 import java.util.Arrays;
 
-public class RsaPublicKey extends ModifiableVariableHolder implements RSAPublicKey {
+public class CustomRsaPublicKey extends ModifiableVariableHolder implements RSAPublicKey {
+
     private ModifiableInteger modulusLength;
     private ModifiableBigInteger modulus;
 
-    private ModifiableInteger exponentLength;
-    private ModifiableBigInteger exponent;
+    private ModifiableInteger publicExponentLength;
+    private ModifiableBigInteger publicExponent;
 
-    public RsaPublicKey() {}
+    public CustomRsaPublicKey() {}
 
-    public RsaPublicKey(BigInteger exponent, BigInteger modulus) {
-        this.setExponent(exponent, true);
+    public CustomRsaPublicKey(BigInteger publicExponent, BigInteger modulus) {
+        this.setPublicExponent(publicExponent, true);
         this.setModulus(modulus, true);
     }
 
-    // Modulus
     public ModifiableInteger getModulusLength() {
         return modulusLength;
     }
@@ -45,11 +45,6 @@ public class RsaPublicKey extends ModifiableVariableHolder implements RSAPublicK
 
     public ModifiableBigInteger getModifiableModulus() {
         return modulus;
-    }
-
-    @Override
-    public BigInteger getModulus() {
-        return modulus.getValue();
     }
 
     public void setModulus(byte[] nBytes) {
@@ -70,48 +65,54 @@ public class RsaPublicKey extends ModifiableVariableHolder implements RSAPublicK
         this.modulus = ModifiableVariableFactory.safelySetValue(this.modulus, modulus);
     }
 
-    // Exponent
-    public ModifiableInteger getExponentLength() {
-        return exponentLength;
+    public ModifiableInteger getPublicExponentLength() {
+        return publicExponentLength;
     }
 
-    public void setExponentLength(int exponentLength) {
-        this.exponentLength =
-                ModifiableVariableFactory.safelySetValue(this.exponentLength, exponentLength);
+    public void setPublicExponentLength(int exponentLength) {
+        this.publicExponentLength =
+                ModifiableVariableFactory.safelySetValue(this.publicExponentLength, exponentLength);
     }
 
-    public void setExponentLength(ModifiableInteger exponentLength) {
-        this.exponentLength = exponentLength;
+    public void setPublicExponentLength(ModifiableInteger exponentLength) {
+        this.publicExponentLength = exponentLength;
     }
 
-    public ModifiableBigInteger getExponent() {
-        return exponent;
+    public ModifiableBigInteger getModifiablePublicExponent() {
+        return publicExponent;
     }
 
-    @Override
-    public BigInteger getPublicExponent() {
-        return exponent.getValue();
-    }
-
-    public void setExponent(byte[] eBytes) {
+    public void setPublicExponent(byte[] eBytes) {
         BigInteger newExponent = new BigInteger(Arrays.toString(eBytes), 16);
-        this.exponent = ModifiableVariableFactory.safelySetValue(this.exponent, newExponent);
+        this.publicExponent =
+                ModifiableVariableFactory.safelySetValue(this.publicExponent, newExponent);
     }
 
-    public void setExponent(BigInteger exponent) {
-        this.setExponent(exponent, false);
+    public void setPublicExponent(BigInteger exponent) {
+        this.setPublicExponent(exponent, false);
     }
 
-    public void setExponent(BigInteger exponent, boolean adjustLengthField) {
+    public void setPublicExponent(BigInteger exponent, boolean adjustLengthField) {
         if (adjustLengthField) {
             double bitLength = exponent.bitLength();
             int byteLength = (int) Math.ceil(bitLength / 8);
-            this.setExponentLength(byteLength);
+            this.setPublicExponentLength(byteLength);
         }
-        this.exponent = ModifiableVariableFactory.safelySetValue(this.exponent, exponent);
+        this.publicExponent =
+                ModifiableVariableFactory.safelySetValue(this.publicExponent, exponent);
     }
 
     // Interface methods
+    @Override
+    public BigInteger getPublicExponent() {
+        return publicExponent.getValue();
+    }
+
+    @Override
+    public BigInteger getModulus() {
+        return modulus.getValue();
+    }
+
     @Override
     public byte[] getEncoded() {
         return null;

@@ -162,8 +162,7 @@ public class KeyExchangeInitMessage extends SshMessage<KeyExchangeInitMessage> {
         setServerHostKeyAlgorithms(serverHostKeyAlgorithms, false);
     }
 
-    public void setServerHostKeyAlgorithms(
-            List<PublicKeyAuthenticationAlgorithm> serverHostKeyAlgorithms) {
+    public void setServerHostKeyAlgorithms(List<PublicKeyAlgorithm> serverHostKeyAlgorithms) {
         setServerHostKeyAlgorithms(serverHostKeyAlgorithms, false);
     }
 
@@ -195,11 +194,10 @@ public class KeyExchangeInitMessage extends SshMessage<KeyExchangeInitMessage> {
     }
 
     public void setServerHostKeyAlgorithms(
-            List<PublicKeyAuthenticationAlgorithm> serverHostKeyAlgorithms,
-            boolean adjustLengthField) {
+            List<PublicKeyAlgorithm> serverHostKeyAlgorithms, boolean adjustLengthField) {
         String nameList =
                 serverHostKeyAlgorithms.stream()
-                        .map(PublicKeyAuthenticationAlgorithm::toString)
+                        .map(PublicKeyAlgorithm::toString)
                         .collect(Collectors.joining("" + CharConstants.ALGORITHM_SEPARATOR));
         setServerHostKeyAlgorithms(nameList, adjustLengthField);
     }

@@ -10,10 +10,7 @@ package de.rub.nds.sshattacker.core.constants;
 import java.util.Map;
 import java.util.TreeMap;
 
-/**
- * These values are also used for PubkeyAcceptedKeyTypes HostbasedAcceptedKeyTypes HostKeyAlgorithms
- */
-public enum PublicKeyAuthenticationAlgorithm {
+public enum PublicKeyFormat {
     /*
      * Sources:
      * - https://www.iana.org/assignments/ssh-parameters/ssh-parameters.xhtml#ssh-parameters-19
@@ -27,9 +24,6 @@ public enum PublicKeyAuthenticationAlgorithm {
     SPKI_SIGN_DSS("spki-sign-dss"),
     PGP_SIGN_RSA("pgp-sign-rsa"),
     PGP_SIGN_DSS("pgp-sign-dss"),
-    // [ RFC 8332 ]
-    RSA_SHA2_256("rsa-sha2-256"),
-    RSA_SHA2_512("rsa-sha2-512"),
     // [ RFC 4462 ]
     NULL("null"),
     // [ RFC 5656 ]
@@ -103,26 +97,20 @@ public enum PublicKeyAuthenticationAlgorithm {
     ECDSA_SHA2_NISTP256_CERT_V01_OPENSSH_COM("ecdsa-sha2-nistp256-cert-v01@openssh.com"),
     ECDSA_SHA2_NISTP384_CERT_V01_OPENSSH_COM("ecdsa-sha2-nistp384-cert-v01@openssh.com"),
     ECDSA_SHA2_NISTP521_CERT_V01_OPENSSH_COM("ecdsa-sha2-nistp521-cert-v01@openssh.com"),
-    SSH_ED25519_CERT_V01_OPENSSH_COM("ssh-ed25519-cert-v01@openssh.com"),
-    // [ SSH.COM ]
-    SSH_RSA_SHA224_SSH_COM("ssh-rsa-sha224@ssh.com"),
-    SSH_RSA_SHA256_SSH_COM("ssh-rsa-sha256@ssh.com"),
-    SSH_RSA_SHA384_SSH_COM("ssh-rsa-sha384@ssh.com"),
-    SSH_RSA_SHA512_SSH_COM("ssh-rsa-sha512@ssh.com");
+    SSH_ED25519_CERT_V01_OPENSSH_COM("ssh-ed25519-cert-v01@openssh.com");
 
     private final String name;
 
-    public static final Map<String, PublicKeyAuthenticationAlgorithm> map;
+    public static final Map<String, PublicKeyFormat> map;
 
     static {
         map = new TreeMap<>();
-        for (PublicKeyAuthenticationAlgorithm algorithm :
-                PublicKeyAuthenticationAlgorithm.values()) {
-            map.put(algorithm.name, algorithm);
+        for (PublicKeyFormat format : PublicKeyFormat.values()) {
+            map.put(format.name, format);
         }
     }
 
-    PublicKeyAuthenticationAlgorithm(String name) {
+    PublicKeyFormat(String name) {
         this.name = name;
     }
 
@@ -135,7 +123,7 @@ public enum PublicKeyAuthenticationAlgorithm {
         return name;
     }
 
-    public static PublicKeyAuthenticationAlgorithm fromName(String name) {
+    public static PublicKeyFormat fromName(String name) {
         return map.get(name);
     }
 }

@@ -85,9 +85,9 @@ public class SshContext {
     /** List of key exchange algorithms supported by the server */
     private List<KeyExchangeAlgorithm> serverSupportedKeyExchangeAlgorithms;
     /** List of host key algorithms supported by the client */
-    private List<PublicKeyAuthenticationAlgorithm> clientSupportedHostKeyAlgorithms;
+    private List<PublicKeyAlgorithm> clientSupportedHostKeyAlgorithms;
     /** List of host key algorithms supported by the server */
-    private List<PublicKeyAuthenticationAlgorithm> serverSupportedHostKeyAlgorithms;
+    private List<PublicKeyAlgorithm> serverSupportedHostKeyAlgorithms;
     /** List of encryption algorithms (client to server) supported by the client */
     private List<EncryptionAlgorithm> clientSupportedCipherAlgorithmsClientToServer;
     /** List of encryption algorithms (server to client) supported by the client */
@@ -138,7 +138,7 @@ public class SshContext {
     /** Negotiated key exchange algorithm */
     private KeyExchangeAlgorithm keyExchangeAlgorithm;
     /** Negotiated host key algorithm */
-    private PublicKeyAuthenticationAlgorithm serverHostKeyAlgorithm;
+    private PublicKeyAlgorithm serverHostKeyAlgorithm;
     /** Negotiated cipher algorithm (client to server) */
     private EncryptionAlgorithm cipherAlgorithmClientToServer;
     /** Negotiated cipher algorithm (server to client) */
@@ -160,7 +160,7 @@ public class SshContext {
      */
     private KeyExchange keyExchangeInstance;
     /** Type of the servers' host key */
-    private PublicKeyAuthenticationAlgorithm hostKeyType;
+    private PublicKeyAlgorithm hostKeyType;
     /** Host key of the server */
     // TODO: Implement host key as abstract class
     private byte[] serverHostKey;
@@ -437,11 +437,11 @@ public class SshContext {
         return Optional.ofNullable(serverSupportedKeyExchangeAlgorithms);
     }
 
-    public Optional<List<PublicKeyAuthenticationAlgorithm>> getClientSupportedHostKeyAlgorithms() {
+    public Optional<List<PublicKeyAlgorithm>> getClientSupportedHostKeyAlgorithms() {
         return Optional.ofNullable(clientSupportedHostKeyAlgorithms);
     }
 
-    public Optional<List<PublicKeyAuthenticationAlgorithm>> getServerSupportedHostKeyAlgorithms() {
+    public Optional<List<PublicKeyAlgorithm>> getServerSupportedHostKeyAlgorithms() {
         return Optional.ofNullable(serverSupportedHostKeyAlgorithms);
     }
 
@@ -538,12 +538,12 @@ public class SshContext {
     }
 
     public void setClientSupportedHostKeyAlgorithms(
-            List<PublicKeyAuthenticationAlgorithm> clientSupportedHostKeyAlgorithms) {
+            List<PublicKeyAlgorithm> clientSupportedHostKeyAlgorithms) {
         this.clientSupportedHostKeyAlgorithms = clientSupportedHostKeyAlgorithms;
     }
 
     public void setServerSupportedHostKeyAlgorithms(
-            List<PublicKeyAuthenticationAlgorithm> serverSupportedHostKeyAlgorithms) {
+            List<PublicKeyAlgorithm> serverSupportedHostKeyAlgorithms) {
         this.serverSupportedHostKeyAlgorithms = serverSupportedHostKeyAlgorithms;
     }
 
@@ -664,7 +664,7 @@ public class SshContext {
         return Optional.ofNullable(keyExchangeAlgorithm);
     }
 
-    public Optional<PublicKeyAuthenticationAlgorithm> getServerHostKeyAlgorithm() {
+    public Optional<PublicKeyAlgorithm> getServerHostKeyAlgorithm() {
         return Optional.ofNullable(serverHostKeyAlgorithm);
     }
 
@@ -698,7 +698,7 @@ public class SshContext {
         this.keyExchangeAlgorithm = keyExchangeAlgorithm;
     }
 
-    public void setServerHostKeyAlgorithm(PublicKeyAuthenticationAlgorithm serverHostKeyAlgorithm) {
+    public void setServerHostKeyAlgorithm(PublicKeyAlgorithm serverHostKeyAlgorithm) {
         this.serverHostKeyAlgorithm = serverHostKeyAlgorithm;
     }
 
@@ -737,7 +737,7 @@ public class SshContext {
         return Optional.ofNullable(keyExchangeInstance);
     }
 
-    public Optional<PublicKeyAuthenticationAlgorithm> getHostKeyType() {
+    public Optional<PublicKeyAlgorithm> getHostKeyType() {
         return Optional.ofNullable(hostKeyType);
     }
 
@@ -755,7 +755,7 @@ public class SshContext {
         this.keyExchangeInstance = keyExchangeInstance;
     }
 
-    public void setHostKeyType(PublicKeyAuthenticationAlgorithm hostKeyType) {
+    public void setHostKeyType(PublicKeyAlgorithm hostKeyType) {
         this.hostKeyType = hostKeyType;
     }
 

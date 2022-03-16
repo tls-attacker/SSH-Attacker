@@ -13,7 +13,7 @@ import de.rub.nds.sshattacker.core.connection.Channel;
 import de.rub.nds.sshattacker.core.connection.InboundConnection;
 import de.rub.nds.sshattacker.core.connection.OutboundConnection;
 import de.rub.nds.sshattacker.core.constants.*;
-import de.rub.nds.sshattacker.core.crypto.keys.RsaPublicKey;
+import de.rub.nds.sshattacker.core.crypto.keys.*;
 import de.rub.nds.sshattacker.core.workflow.factory.WorkflowTraceType;
 import de.rub.nds.sshattacker.core.workflow.filter.FilterType;
 import java.io.File;
@@ -60,7 +60,7 @@ public class Config implements Serializable {
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private final byte[] serverCookie;
 
-    private String endOfMessageSequence;
+    private final String endOfMessageSequence;
 
     @XmlElement(name = "clientSupportedKeyExchangeAlgorithm")
     @XmlElementWrapper
@@ -72,11 +72,11 @@ public class Config implements Serializable {
 
     @XmlElement(name = "clientSupportedHostKeyAlgorithm")
     @XmlElementWrapper
-    private final List<PublicKeyAuthenticationAlgorithm> clientSupportedHostKeyAlgorithms;
+    private final List<PublicKeyAlgorithm> clientSupportedHostKeyAlgorithms;
 
     @XmlElement(name = "serverSupportedHostKeyAlgorithm")
     @XmlElementWrapper
-    private final List<PublicKeyAuthenticationAlgorithm> serverSupportedHostKeyAlgorithms;
+    private final List<PublicKeyAlgorithm> serverSupportedHostKeyAlgorithms;
 
     @XmlElement(name = "clientSupportedCipherAlgorithmClientToServer")
     @XmlElementWrapper
@@ -150,11 +150,23 @@ public class Config implements Serializable {
 
     private final int serverReserved;
 
+    @XmlElement(name = "hostKeys")
+    @XmlElementWrapper
+    private final List<HostKey> serverHostKeys;
+
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] clientEcdhPublicKey;
 
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] serverEcdhPublicKey;
+
+    private final NamedDHGroup defaultDHGexKeyExchangeGroup;
+
+    private final KeyExchangeAlgorithm defaultEcdhKeyExchangeAlgortihm;
+
+    private final KeyExchangeAlgorithm defaultRsaKeyExchangeAlgorithm;
+
+    private final CustomRsaPublicKey rsaKeyExchangeTransientPublicKey;
 
     private AuthenticationMethod authenticationMethod;
 
@@ -233,14 +245,6 @@ public class Config implements Serializable {
 
     private ChooserType chooserType = ChooserType.DEFAULT;
 
-    private NamedDHGroup defaultDHGexKeyExchangeGroup;
-
-    private KeyExchangeAlgorithm defaultEcdhKeyExchangeAlgortihm;
-
-    private KeyExchangeAlgorithm defaultRsaKeyExchangeAlgorithm;
-
-    private RsaPublicKey defaultRsaPublicKey;
-
     public Config() {
 
         defaultClientConnection = new OutboundConnection("client", 65222, "localhost");
@@ -254,17 +258,20 @@ public class Config implements Serializable {
         endOfMessageSequence = "\r\n";
 
         clientSupportedKeyExchangeAlgorithms = new LinkedList<>();
-        clientSupportedKeyExchangeAlgorithms.add(
-                KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP14_SHA256);
-        clientSupportedKeyExchangeAlgorithms.add(
-                KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP_EXCHANGE_SHA256);
+        // clientSupportedKeyExchangeAlgorithms.add(
+        //        KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP14_SHA256);
+        // clientSupportedKeyExchangeAlgorithms.add(
+        //        KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP_EXCHANGE_SHA256);
         clientSupportedKeyExchangeAlgorithms.add(KeyExchangeAlgorithm.ECDH_SHA2_NISTP256);
 
         serverSupportedKeyExchangeAlgorithms =
                 new LinkedList<>(clientSupportedKeyExchangeAlgorithms);
 
         clientSupportedHostKeyAlgorithms = new LinkedList<>();
-        clientSupportedHostKeyAlgorithms.add(PublicKeyAuthenticationAlgorithm.SSH_RSA);
+        clientSupportedHostKeyAlgorithms.add(PublicKeyAlgorithm.RSA_SHA2_512);
+        clientSupportedHostKeyAlgorithms.add(PublicKeyAlgorithm.RSA_SHA2_256);
+        clientSupportedHostKeyAlgorithms.add(PublicKeyAlgorithm.SSH_RSA);
+        clientSupportedHostKeyAlgorithms.add(PublicKeyAlgorithm.SSH_DSS);
         serverSupportedHostKeyAlgorithms = new LinkedList<>(clientSupportedHostKeyAlgorithms);
 
         clientSupportedCipherAlgorithmsClientToServer = new LinkedList<>();
@@ -312,8 +319,8 @@ public class Config implements Serializable {
         defaultEcdhKeyExchangeAlgortihm = KeyExchangeAlgorithm.ECDH_SHA2_NISTP256;
 
         defaultRsaKeyExchangeAlgorithm = KeyExchangeAlgorithm.RSA2048_SHA256;
-        defaultRsaPublicKey =
-                new RsaPublicKey(
+        rsaKeyExchangeTransientPublicKey =
+                new CustomRsaPublicKey(
                         new BigInteger("01001", 16),
                         new BigInteger(
                                 "00FD786F7BB51AC8B619430613F84251BEDEF47216786EE72025D02DC6E4FF923193E63DE937"
@@ -324,6 +331,101 @@ public class Config implements Serializable {
                                         + "8F7F686F82713E9198B19F70FF73674603B839B90ECE883D81DFB32DA3F9363A3207A639523F90EEE730B49F"
                                         + "65",
                                 16));
+
+        // An OpenSSL generated 2048 bit RSA keypair is currently being used as the default host key
+        serverHostKeys = new ArrayList<>();
+        serverHostKeys.add(
+                new HostKey(
+                        PublicKeyAlgorithm.SSH_RSA,
+                        new CustomKeyPair<>(
+                                new CustomRsaPrivateKey(
+                                        new BigInteger(
+                                                "7AAB5898AEE7C451A2A90B9DE04EC947656FAB69460FF68E1E278EA1841D"
+                                                        + "A22B39CA4A4FA7CEA1B8EDCB7224C38A1659D1226D2E07AF9A7C62A305AC"
+                                                        + "9DEC042FBC290443B23E24C64765DE1AD58777A522BF102B1BCC5536D794"
+                                                        + "62BCBE6DB8E91CD9CF6F98F62E5031BFAA9E51C93ED900579A39C26CBB64"
+                                                        + "CF7E6F998513E20B4B2A4DD36D4F6F074A0FDB04232FA6EDAB89A1B32BA5"
+                                                        + "2214696BDA66C4518A73F92807DD088AB11263519885A0CD6A42B6D9EAE9"
+                                                        + "EBD13241EDC4EB7205AE838A5EF7AE280D36410057B38ED05CEBA75F92AC"
+                                                        + "DF40226164BB3A0C4312B65A8C2FBA85CDB7CC5F77F53C45F64409AFC460"
+                                                        + "210C8EE4DAB818F009172387ED00E141",
+                                                16),
+                                        new BigInteger(
+                                                "00D9F6BFFAB8BC79C6E9AB6C3D4593F561CC93B41A70B9A750045ED0AC09"
+                                                        + "6EF4A6A8C7B2AAA4F44459481319AE956934BF9D5C5AD7C004ADE0B81E43"
+                                                        + "75FD1DF8797DF6F3CA130ED8A2A9B6E94467A05D97A0F8380A4CBB75FC5E"
+                                                        + "5C303433B61750063D3801D5C90658ACAEE140B09F95A0FD8886EFAE16EA"
+                                                        + "B779DF82E6A12C1BE011FECB417C788B72C42948AB54CCE1E8119CFB78E1"
+                                                        + "3B06090CEBF6D3806854FE09F03B20BA92505058EC64C44F0B4DA0BAE71D"
+                                                        + "52EDA11AB67F4B54D9FCEFE1FACEB520D595FFA33502FB91423EBD972F26"
+                                                        + "150715CB0E648F715E6E5E8FC9D8FA55E9DE0652CF85D7928B235486F54A"
+                                                        + "3F3EE64B04888B898864B08200A9E22909",
+                                                16)),
+                                new CustomRsaPublicKey(
+                                        new BigInteger("010001", 16),
+                                        new BigInteger(
+                                                "00D9F6BFFAB8BC79C6E9AB6C3D4593F561CC93B41A70B9A750045ED0AC09"
+                                                        + "6EF4A6A8C7B2AAA4F44459481319AE956934BF9D5C5AD7C004ADE0B81E43"
+                                                        + "75FD1DF8797DF6F3CA130ED8A2A9B6E94467A05D97A0F8380A4CBB75FC5E"
+                                                        + "5C303433B61750063D3801D5C90658ACAEE140B09F95A0FD8886EFAE16EA"
+                                                        + "B779DF82E6A12C1BE011FECB417C788B72C42948AB54CCE1E8119CFB78E1"
+                                                        + "3B06090CEBF6D3806854FE09F03B20BA92505058EC64C44F0B4DA0BAE71D"
+                                                        + "52EDA11AB67F4B54D9FCEFE1FACEB520D595FFA33502FB91423EBD972F26"
+                                                        + "150715CB0E648F715E6E5E8FC9D8FA55E9DE0652CF85D7928B235486F54A"
+                                                        + "3F3EE64B04888B898864B08200A9E22909",
+                                                16)))));
+        serverHostKeys.add(
+                new HostKey(PublicKeyAlgorithm.RSA_SHA2_256, serverHostKeys.get(0).getKeyPair()));
+        serverHostKeys.add(
+                new HostKey(PublicKeyAlgorithm.RSA_SHA2_512, serverHostKeys.get(0).getKeyPair()));
+        // SSH enforces the use of 1024 / 160 bit DSA keys as per RFC 4253 Sec. 6.6
+        serverHostKeys.add(
+                new HostKey(
+                        PublicKeyAlgorithm.SSH_DSS,
+                        new CustomKeyPair<>(
+                                new CustomDsaPrivateKey(
+                                        new BigInteger(
+                                                "008BD081A858028A729F0C04E0788C06BC5B2EA8B880A203986C90E92D20"
+                                                        + "322670248A305A3217737BF0256EFFD53CC512993F137A4F64162AF4F3E6"
+                                                        + "AA64D348343C86D1B3D18CAE017A48FD2FFA56A9DFC70D18BE8958938768"
+                                                        + "995AFD952719DE2066B0A7E3D90948D4E0437BD1A5C94F1A1FBBADDCEA3A"
+                                                        + "338E96A4CACCF4A855",
+                                                16),
+                                        new BigInteger(
+                                                "00B971EBD0321EEC38C15E01FD9C773CCA23E66879", 16),
+                                        new BigInteger(
+                                                "259DC09E04AD1818271F3E676B17A98B6F7B1D08B43B51FAEF06D2C9F921"
+                                                        + "0667ED3C14ABEBEE372D1F325C11C0304AE8B9BAC8914619CA05165BAE2B"
+                                                        + "E49BAD5DD8ECB8129CDDD2941D6DDF53C7D53A5FB9D88B58F362034CA6A1"
+                                                        + "3929D28942D0054FFA4166D3DDDE0B2FE2E4A0342A827DEF6B6FECDB0614"
+                                                        + "8ED403D3FC9C4C79",
+                                                16),
+                                        new BigInteger(
+                                                "7C6B4E2B32192EFC09B7CB12D85CBB4141EF7348", 16)),
+                                new CustomDsaPublicKey(
+                                        new BigInteger(
+                                                "008BD081A858028A729F0C04E0788C06BC5B2EA8B880A203986C90E92D20"
+                                                        + "322670248A305A3217737BF0256EFFD53CC512993F137A4F64162AF4F3E6"
+                                                        + "AA64D348343C86D1B3D18CAE017A48FD2FFA56A9DFC70D18BE8958938768"
+                                                        + "995AFD952719DE2066B0A7E3D90948D4E0437BD1A5C94F1A1FBBADDCEA3A"
+                                                        + "338E96A4CACCF4A855",
+                                                16),
+                                        new BigInteger(
+                                                "00B971EBD0321EEC38C15E01FD9C773CCA23E66879", 16),
+                                        new BigInteger(
+                                                "259DC09E04AD1818271F3E676B17A98B6F7B1D08B43B51FAEF06D2C9F921"
+                                                        + "0667ED3C14ABEBEE372D1F325C11C0304AE8B9BAC8914619CA05165BAE2B"
+                                                        + "E49BAD5DD8ECB8129CDDD2941D6DDF53C7D53A5FB9D88B58F362034CA6A1"
+                                                        + "3929D28942D0054FFA4166D3DDDE0B2FE2E4A0342A827DEF6B6FECDB0614"
+                                                        + "8ED403D3FC9C4C79",
+                                                16),
+                                        new BigInteger(
+                                                "1433495B5BB346BEB6A783DA2ADF1C5CFE946146E4A461B2A658CEC29DA2"
+                                                        + "1496A6D69119026059D0C2557D535E664A0F10B4DB006601D8848EA6B92F"
+                                                        + "C6313B03103C9C3C6F0ED55CB46EEC8B0FE0007D2411F46676A8761DADAA"
+                                                        + "171351322D29487E9AE8738C354DD04FFEACA50503AFEC8F0610A679FF81"
+                                                        + "6EFD9B162F152BDA",
+                                                16)))));
 
         clientReserved = 0;
         serverReserved = 0;
@@ -433,11 +535,11 @@ public class Config implements Serializable {
         return serverSupportedKeyExchangeAlgorithms;
     }
 
-    public List<PublicKeyAuthenticationAlgorithm> getClientSupportedHostKeyAlgorithms() {
+    public List<PublicKeyAlgorithm> getClientSupportedHostKeyAlgorithms() {
         return clientSupportedHostKeyAlgorithms;
     }
 
-    public List<PublicKeyAuthenticationAlgorithm> getServerSupportedHostKeyAlgorithms() {
+    public List<PublicKeyAlgorithm> getServerSupportedHostKeyAlgorithms() {
         return serverSupportedHostKeyAlgorithms;
     }
 
@@ -773,8 +875,12 @@ public class Config implements Serializable {
         return defaultRsaKeyExchangeAlgorithm;
     }
 
-    public RsaPublicKey getDefaultRsaPublicKey() {
-        return defaultRsaPublicKey;
+    public CustomRsaPublicKey getRsaKeyExchangeTransientPublicKey() {
+        return rsaKeyExchangeTransientPublicKey;
+    }
+
+    public List<HostKey> getServerHostKeys() {
+        return serverHostKeys;
     }
 
     public String getDefaultVariableValue() {

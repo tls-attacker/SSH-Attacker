@@ -7,10 +7,13 @@
  */
 package de.rub.nds.sshattacker.core.crypto.keys;
 
+import de.rub.nds.sshattacker.core.protocol.common.ModifiableVariableHolder;
 import java.security.PrivateKey;
 import java.security.PublicKey;
+import java.util.List;
 
-public class CustomKeyPair<PRIVATE extends PrivateKey, PUBLIC extends PublicKey> {
+public class CustomKeyPair<PRIVATE extends PrivateKey, PUBLIC extends PublicKey>
+        extends ModifiableVariableHolder {
 
     private final PRIVATE privateKey;
     private final PUBLIC publicKey;
@@ -26,5 +29,17 @@ public class CustomKeyPair<PRIVATE extends PrivateKey, PUBLIC extends PublicKey>
 
     public PUBLIC getPublic() {
         return publicKey;
+    }
+
+    @Override
+    public List<ModifiableVariableHolder> getAllModifiableVariableHolders() {
+        List<ModifiableVariableHolder> holders = super.getAllModifiableVariableHolders();
+        if (privateKey instanceof ModifiableVariableHolder) {
+            holders.add((ModifiableVariableHolder) privateKey);
+        }
+        if (publicKey instanceof ModifiableVariableHolder) {
+            holders.add((ModifiableVariableHolder) publicKey);
+        }
+        return holders;
     }
 }

@@ -7,20 +7,22 @@
  */
 package de.rub.nds.sshattacker.core.crypto.signature;
 
+import de.rub.nds.sshattacker.core.constants.PublicKeyAlgorithm;
+
 public class RawSignature {
 
-    private SignatureAlgorithm signatureAlgorithm;
+    private PublicKeyAlgorithm signatureAlgorithm;
 
     private int signatureLength;
     private byte[] signatureBytes;
 
     public RawSignature() {}
 
-    public SignatureAlgorithm getSignatureAlgorithm() {
+    public PublicKeyAlgorithm getSignatureAlgorithm() {
         return signatureAlgorithm;
     }
 
-    public void setSignatureAlgorithm(SignatureAlgorithm algorithm) {
+    public void setSignatureAlgorithm(PublicKeyAlgorithm algorithm) {
         this.signatureAlgorithm = algorithm;
     }
 

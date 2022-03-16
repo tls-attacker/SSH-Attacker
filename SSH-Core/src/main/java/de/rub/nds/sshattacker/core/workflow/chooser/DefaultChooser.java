@@ -12,11 +12,17 @@ import de.rub.nds.sshattacker.core.constants.*;
 import de.rub.nds.sshattacker.core.crypto.kex.DhKeyExchange;
 import de.rub.nds.sshattacker.core.crypto.kex.KeyExchange;
 import de.rub.nds.sshattacker.core.crypto.kex.RsaKeyExchange;
+import de.rub.nds.sshattacker.core.crypto.keys.HostKey;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import java.util.List;
 import java.util.Optional;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class DefaultChooser extends Chooser {
+
+    private static final Logger LOGGER = LogManager.getLogger();
+
     public DefaultChooser(SshContext context, Config config) {
         super(context, config);
     }
@@ -73,13 +79,13 @@ public class DefaultChooser extends Chooser {
     }
 
     @Override
-    public List<PublicKeyAuthenticationAlgorithm> getClientSupportedHostKeyAlgorithms() {
+    public List<PublicKeyAlgorithm> getClientSupportedHostKeyAlgorithms() {
         return context.getClientSupportedHostKeyAlgorithms()
                 .orElse(config.getClientSupportedHostKeyAlgorithms());
     }
 
     @Override
-    public List<PublicKeyAuthenticationAlgorithm> getServerSupportedHostKeyAlgorithms() {
+    public List<PublicKeyAlgorithm> getServerSupportedHostKeyAlgorithms() {
         return context.getServerSupportedHostKeyAlgorithms()
                 .orElse(config.getServerSupportedHostKeyAlgorithms());
     }
@@ -205,6 +211,34 @@ public class DefaultChooser extends Chooser {
     // endregion
 
     // region Key Exchange
+    @Override
+    public HostKey getNegotiatedServerHostKey() {
+        Optional<PublicKeyAlgorithm> negotiatedServerHostKeyAlgorithm =
+                context.getServerHostKeyAlgorithm();
+        HostKey fallback = config.getServerHostKeys().get(0);
+        if (negotiatedServerHostKeyAlgorithm.isEmpty()) {
+            LOGGER.warn(
+                    "No server host key algorithm was negotiated, defaulting to the first server host key ("
+                            + fallback.getPublicKeyAlgorithm()
+                            + ")");
+            return fallback;
+        }
+        // Find the first configured host key whose algorithm matches the negotiated server host key
+        // algorithm
+        return config.getServerHostKeys().stream()
+                .filter(hk -> hk.getPublicKeyAlgorithm() == negotiatedServerHostKeyAlgorithm.get())
+                .findFirst()
+                .orElseGet(
+                        () -> {
+                            LOGGER.warn(
+                                    "No server host key matching the negotiated algorithm '"
+                                            + "' was found in the config, defaulting to the first server host key ("
+                                            + fallback.getPublicKeyAlgorithm()
+                                            + ")");
+                            return fallback;
+                        });
+    }
+
     // TODO: Use config and context here
     @SuppressWarnings("SameReturnValue")
     @Override
@@ -245,7 +279,8 @@ public class DefaultChooser extends Chooser {
             return (RsaKeyExchange) keyExchange.get();
         } else {
             // Create default RsaKeyExchange from config
-            RsaKeyExchange rsaKeyExchange = new RsaKeyExchange(config.getDefaultRsaPublicKey());
+            RsaKeyExchange rsaKeyExchange =
+                    new RsaKeyExchange(config.getRsaKeyExchangeTransientPublicKey());
             rsaKeyExchange.setHashLength(config.getDefaultRsaKeyExchangeAlgorithm());
             return rsaKeyExchange;
         }

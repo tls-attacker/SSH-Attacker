@@ -11,6 +11,7 @@ import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.constants.*;
 import de.rub.nds.sshattacker.core.crypto.kex.DhKeyExchange;
 import de.rub.nds.sshattacker.core.crypto.kex.RsaKeyExchange;
+import de.rub.nds.sshattacker.core.crypto.keys.HostKey;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
@@ -58,9 +59,9 @@ public abstract class Chooser {
 
     public abstract List<KeyExchangeAlgorithm> getServerSupportedKeyExchangeAlgorithms();
 
-    public abstract List<PublicKeyAuthenticationAlgorithm> getClientSupportedHostKeyAlgorithms();
+    public abstract List<PublicKeyAlgorithm> getClientSupportedHostKeyAlgorithms();
 
-    public abstract List<PublicKeyAuthenticationAlgorithm> getServerSupportedHostKeyAlgorithms();
+    public abstract List<PublicKeyAlgorithm> getServerSupportedHostKeyAlgorithms();
 
     public abstract List<EncryptionAlgorithm> getClientSupportedCipherAlgorithmsClientToServer();
 
@@ -105,6 +106,8 @@ public abstract class Chooser {
     // endregion
 
     // region Key Exchange
+    public abstract HostKey getNegotiatedServerHostKey();
+
     // TODO: Use config and context here
     @SuppressWarnings("SameReturnValue")
     public abstract int getMinimalDHGroupSize();

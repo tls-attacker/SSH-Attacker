@@ -39,7 +39,7 @@ public class KeyExchangeInitMessageHandler extends SshMessageHandler<KeyExchange
             context.setServerSupportedHostKeyAlgorithms(
                     Converter.nameListToEnumValues(
                             message.getServerHostKeyAlgorithms().getValue(),
-                            PublicKeyAuthenticationAlgorithm.class));
+                            PublicKeyAlgorithm.class));
             context.setServerSupportedCipherAlgorithmsClientToServer(
                     Converter.nameListToEnumValues(
                             message.getEncryptionAlgorithmsClientToServer().getValue(),
@@ -86,7 +86,7 @@ public class KeyExchangeInitMessageHandler extends SshMessageHandler<KeyExchange
             context.setClientSupportedHostKeyAlgorithms(
                     Converter.nameListToEnumValues(
                             message.getServerHostKeyAlgorithms().getValue(),
-                            PublicKeyAuthenticationAlgorithm.class));
+                            PublicKeyAlgorithm.class));
             context.setClientSupportedCipherAlgorithmsClientToServer(
                     Converter.nameListToEnumValues(
                             message.getEncryptionAlgorithmsClientToServer().getValue(),

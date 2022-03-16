@@ -12,8 +12,9 @@ import de.rub.nds.modifiablevariable.biginteger.ModifiableBigInteger;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
-import de.rub.nds.sshattacker.core.crypto.keys.RsaPublicKey;
-import de.rub.nds.sshattacker.core.crypto.util.RsaPublicKeyParser;
+import de.rub.nds.sshattacker.core.constants.PublicKeyFormat;
+import de.rub.nds.sshattacker.core.crypto.keys.CustomRsaPublicKey;
+import de.rub.nds.sshattacker.core.crypto.util.PublicKeyHelper;
 import de.rub.nds.sshattacker.core.protocol.common.ModifiableVariableHolder;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
@@ -29,7 +30,7 @@ public class RsaKeyExchangePubkeyMessage extends SshMessage<RsaKeyExchangePubkey
     private ModifiableInteger transientPubkeyLength;
     private ModifiableByteArray transientPubkey;
 
-    private RsaPublicKey publicKey;
+    private CustomRsaPublicKey publicKey;
 
     public RsaKeyExchangePubkeyMessage() {
         super(MessageIDConstant.SSH_MSG_KEXRSA_PUBKEY);
@@ -112,16 +113,18 @@ public class RsaKeyExchangePubkeyMessage extends SshMessage<RsaKeyExchangePubkey
     }
 
     private void parsePublicKey() {
-        RsaPublicKeyParser parser = new RsaPublicKeyParser(this.transientPubkey.getValue(), 0);
-        this.publicKey = parser.parse();
+        this.publicKey =
+                (CustomRsaPublicKey)
+                        PublicKeyHelper.parse(
+                                PublicKeyFormat.SSH_RSA, this.transientPubkey.getValue());
     }
 
-    public RsaPublicKey getPublicKey() {
+    public CustomRsaPublicKey getPublicKey() {
         return publicKey;
     }
 
     public ModifiableBigInteger getExponent() {
-        return this.publicKey.getExponent();
+        return this.publicKey.getModifiablePublicExponent();
     }
 
     public ModifiableBigInteger getModulus() {

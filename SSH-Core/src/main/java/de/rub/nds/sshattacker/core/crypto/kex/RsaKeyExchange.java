@@ -8,19 +8,19 @@
 package de.rub.nds.sshattacker.core.crypto.kex;
 
 import de.rub.nds.sshattacker.core.constants.KeyExchangeAlgorithm;
-import de.rub.nds.sshattacker.core.crypto.keys.RsaPublicKey;
+import de.rub.nds.sshattacker.core.crypto.keys.CustomRsaPublicKey;
 import java.math.BigInteger;
 
 public class RsaKeyExchange extends KeyExchange {
 
-    private RsaPublicKey publicKey;
+    private CustomRsaPublicKey publicKey;
 
     // HLEN in RFC 4432 (in bits)
     private int hashLength;
 
     public RsaKeyExchange() {}
 
-    public RsaKeyExchange(RsaPublicKey publicKey) {
+    public RsaKeyExchange(CustomRsaPublicKey publicKey) {
         this.publicKey = publicKey;
     }
 
@@ -31,11 +31,11 @@ public class RsaKeyExchange extends KeyExchange {
         sharedSecret = new BigInteger(maximumBits, random);
     }
 
-    public void setPublicKey(RsaPublicKey publicKey) {
+    public void setPublicKey(CustomRsaPublicKey publicKey) {
         this.publicKey = publicKey;
     }
 
-    public RsaPublicKey getPublicKey() {
+    public CustomRsaPublicKey getPublicKey() {
         return publicKey;
     }
 

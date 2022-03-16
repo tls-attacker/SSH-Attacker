@@ -7,12 +7,9 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.handler;
 
-import de.rub.nds.sshattacker.core.constants.PublicKeyAuthenticationAlgorithm;
+import de.rub.nds.sshattacker.core.constants.PublicKeyAlgorithm;
 import de.rub.nds.sshattacker.core.crypto.hash.ExchangeHash;
-import de.rub.nds.sshattacker.core.crypto.signature.JavaSignature;
-import de.rub.nds.sshattacker.core.crypto.signature.RawSignature;
-import de.rub.nds.sshattacker.core.crypto.signature.SignatureFactory;
-import de.rub.nds.sshattacker.core.crypto.signature.SignatureParser;
+import de.rub.nds.sshattacker.core.crypto.signature.*;
 import de.rub.nds.sshattacker.core.exceptions.AdjustmentException;
 import de.rub.nds.sshattacker.core.exceptions.CryptoException;
 import de.rub.nds.sshattacker.core.exceptions.NotImplementedException;
@@ -23,6 +20,7 @@ import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.transport.message.RsaKeyExchangeDoneMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.parser.RsaKeyExchangeDoneMessageParser;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import java.security.NoSuchAlgorithmException;
 import java.util.Optional;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -48,31 +46,36 @@ public class RsaKeyExchangeDoneMessageHandler extends SshMessageHandler<RsaKeyEx
 
     private void verifySignature() {
         ExchangeHash exchangeHash = context.getExchangeHashInstance();
-        Optional<PublicKeyAuthenticationAlgorithm> algorithm = context.getServerHostKeyAlgorithm();
+        Optional<PublicKeyAlgorithm> hostKeyAlgorithm = context.getServerHostKeyAlgorithm();
         Optional<byte[]> hostKeyBytes = context.getServerHostKey();
 
-        if (algorithm.isPresent() && hostKeyBytes.isPresent()) {
+        if (hostKeyAlgorithm.isPresent() && hostKeyBytes.isPresent()) {
             RawSignature signature =
                     new SignatureParser(message.getSignature().getValue(), 0).parse();
-            JavaSignature javaSignature =
-                    SignatureFactory.getVerificationSignatureForHostKey(
-                            signature.getSignatureAlgorithm(), hostKeyBytes.get(), algorithm.get());
-
             try {
-                if (javaSignature.verify(exchangeHash.get(), signature.getSignatureBytes())) {
-                    LOGGER.debug("Signature verification was successful");
+                VerifyingSignature verifyingSignature =
+                        SignatureFactory.getVerifyingSignature(
+                                hostKeyAlgorithm.get(), hostKeyBytes.get());
+                if (verifyingSignature.verify(exchangeHash.get(), signature.getSignatureBytes())) {
+                    LOGGER.info(
+                            "Key exchange signature verification successful: Signature is valid.");
                 } else {
-                    LOGGER.debug("Signature verification failed: Signature was invalid");
+                    LOGGER.warn(
+                            "Key exchange signature verification failed: Signature is invalid - continuing anyway.");
                 }
-            } catch (CryptoException | NotImplementedException e) {
-                // Catch NotImplementedException in case the host key parser is not yet implemented
-                LOGGER.debug(
-                        "Signature verification failed because an error occurred. "
-                                + e.getMessage());
+            } catch (NoSuchAlgorithmException e) {
+                LOGGER.error(
+                        "Key exchange signature verification failed: Unknown or unsupported public key algorithm used.");
+                LOGGER.debug(e);
+            } catch (CryptoException e) {
+                LOGGER.error(
+                        "Key exchange signature verification failed: Unexpected cryptographic error - see debug for more details.");
+                LOGGER.debug(e);
             }
         } else {
-            LOGGER.debug(
-                    "Signature could not be verified, because host key algorithm or host key bytes are missing");
+            // TODO: Fallback to Config
+            LOGGER.error(
+                    "Key exchange signature verification failed: Host key algorithm not negotiated or host key bytes are missing.");
         }
     }
 
