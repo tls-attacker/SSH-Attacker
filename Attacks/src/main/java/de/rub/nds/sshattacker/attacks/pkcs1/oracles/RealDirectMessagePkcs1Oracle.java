@@ -143,7 +143,9 @@ public class RealDirectMessagePkcs1Oracle extends Pkcs1Oracle {
 
     private void clearConnections(State state) {
         try {
-            state.getSshContext().getTransportHandler().closeConnection();
+            if (!state.getSshContext().getTransportHandler().isClosed()) {
+                state.getSshContext().getTransportHandler().closeConnection();
+            }
         } catch (IOException ex) {
             LOGGER.debug(ex);
         }

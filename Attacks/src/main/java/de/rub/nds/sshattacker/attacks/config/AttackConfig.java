@@ -8,8 +8,10 @@
 package de.rub.nds.sshattacker.attacks.config;
 
 import com.beust.jcommander.Parameter;
+import com.beust.jcommander.ParametersDelegate;
 import de.rub.nds.sshattacker.core.config.SshDelegateConfig;
 import de.rub.nds.sshattacker.core.config.delegate.GeneralDelegate;
+import de.rub.nds.sshattacker.core.config.delegate.TimeoutDelegate;
 
 /**
  * Base Config for attacks that can be extended to support additional configuration options All
@@ -23,8 +25,12 @@ public abstract class AttackConfig extends SshDelegateConfig {
                     "If set to true the Attacker will not check if the " + "target is reachable.")
     private boolean skipConnectionCheck = false;
 
+    @ParametersDelegate private final TimeoutDelegate timeoutDelegate;
+
     public AttackConfig(GeneralDelegate delegate) {
         super(delegate);
+        this.timeoutDelegate = new TimeoutDelegate();
+        addDelegate(timeoutDelegate);
     }
 
     public abstract boolean isExecuteAttack();

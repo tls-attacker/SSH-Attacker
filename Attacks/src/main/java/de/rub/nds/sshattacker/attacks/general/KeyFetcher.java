@@ -31,6 +31,14 @@ public class KeyFetcher {
 
     /** Fetches the transient public key from an RSA key-exchange */
     public static RSAPublicKey fetchRsaTransientKey(Config config) {
+        return fetchRsaTransientKey(config, 0, 5);
+    }
+
+    public static RSAPublicKey fetchRsaTransientKey(Config config, int maxAttempts) {
+        return fetchRsaTransientKey(config, 0, maxAttempts);
+    }
+
+    private static RSAPublicKey fetchRsaTransientKey(Config config, int attempt, int maxAttempts) {
         WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(config);
         WorkflowTrace trace =
                 factory.createWorkflowTrace(
@@ -40,7 +48,6 @@ public class KeyFetcher {
         trace.addSshAction(receiveAction);
 
         State state = new State(config, trace);
-
         WorkflowExecutor workflowExecutor = new DefaultWorkflowExecutor(state);
         try {
             workflowExecutor.executeWorkflow();
@@ -48,10 +55,18 @@ public class KeyFetcher {
             if (!state.getSshContext().getTransportHandler().isClosed()) {
                 state.getSshContext().getTransportHandler().closeConnection();
             }
-
         } catch (IOException e) {
-            LOGGER.warn("Could not fetch server's RSA host key.");
-            LOGGER.debug(e);
+            if (attempt < maxAttempts) {
+                LOGGER.debug(
+                        String.format(
+                                "Encountered IOException on socket in attempt %d, retrying...",
+                                attempt));
+                return fetchRsaTransientKey(config, attempt + 1, maxAttempts);
+            } else {
+                LOGGER.warn("Could not fetch server's RSA host key, encountered IOException");
+                LOGGER.debug(e);
+                return null;
+            }
         }
 
         List<ProtocolMessage<?>> receivedMessages = receiveAction.getReceivedMessages();
@@ -63,8 +78,17 @@ public class KeyFetcher {
                             .getTransientPublicKey()
                             .getPublicKey();
         } else {
-            LOGGER.warn("Could not fetch server's RSA host key, did not receive PubkeyMessage.");
-            return null;
+            if (attempt < maxAttempts) {
+                LOGGER.debug(
+                        String.format(
+                                "Did not receive PubkeyMessage in attempt %d, retrying...",
+                                attempt));
+                return fetchRsaTransientKey(config, attempt + 1, maxAttempts);
+            } else {
+                LOGGER.warn(
+                        "Could not fetch server's RSA host key, did not receive PubkeyMessage.");
+                return null;
+            }
         }
     }
 }

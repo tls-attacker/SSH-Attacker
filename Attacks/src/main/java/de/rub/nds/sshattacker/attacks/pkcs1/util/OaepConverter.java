@@ -33,10 +33,11 @@ public class OaepConverter {
      * @param message Message to be encoded
      * @param hashInstance Name of hash to be used
      * @param keyLen Length of the public key in bytes
+     * @param sSeed Seed for the randomness in OAEP encoding
      * @return Encoded message
      * @throws NoSuchAlgorithmException if hashInstance does not exist
      */
-    public static byte[] doOaepEncoding(byte[] message, String hashInstance, int keyLen)
+    public static byte[] doOaepEncoding(byte[] message, String hashInstance, int keyLen, long sSeed)
             throws NoSuchAlgorithmException {
 
         ByteBuffer result = ByteBuffer.allocate(keyLen);
@@ -60,7 +61,7 @@ public class OaepConverter {
 
         // Step d: Generate random octet string seed of length hashLen
         byte[] seed = new byte[hashLen];
-        new Random().nextBytes(seed);
+        new Random(sSeed).nextBytes(seed);
 
         // Step e: Generate data block mask
         byte[] dataBlockMask = mgf1(seed, keyLen - hashLen - 1, hashInstance);

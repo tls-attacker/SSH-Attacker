@@ -19,6 +19,8 @@ public class Pkcs1Vector implements Vector {
 
     private String name;
 
+    private String shortName;
+
     private byte[] plainValue;
 
     private byte[] encryptedValue;
@@ -27,15 +29,31 @@ public class Pkcs1Vector implements Vector {
 
     /**
      * @param name A String that describes the content of this vector
+     * @param shortName Short name of the vector
      * @param value Plain value
      */
-    public Pkcs1Vector(String name, byte[] value) {
+    public Pkcs1Vector(String name, String shortName, byte[] value) {
         this.name = name;
+        this.shortName = shortName;
         this.plainValue = value;
+    }
+
+    @Override
+    public String getName() {
+        return name;
     }
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    @Override
+    public String getShortName() {
+        return shortName;
+    }
+
+    public void setShortName(String shortName) {
+        this.shortName = shortName;
     }
 
     public byte[] getPlainValue() {
@@ -52,11 +70,6 @@ public class Pkcs1Vector implements Vector {
 
     public void setEncryptedValue(byte[] encryptedValue) {
         this.encryptedValue = encryptedValue;
-    }
-
-    @Override
-    public String getName() {
-        return name;
     }
 
     @Override
