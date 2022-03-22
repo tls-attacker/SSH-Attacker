@@ -110,7 +110,7 @@ public class XCurveEcdhKeyExchange extends AbstractEcdhKeyExchange {
                     sharedBytes,
                     0);
         }
-        sharedSecret = new BigInteger(sharedBytes);
+        sharedSecret = new BigInteger(1, sharedBytes);
         LOGGER.debug(
                 "Finished computation of shared secret: "
                         + ArrayConverter.bytesToRawHexString(sharedSecret.toByteArray()));
