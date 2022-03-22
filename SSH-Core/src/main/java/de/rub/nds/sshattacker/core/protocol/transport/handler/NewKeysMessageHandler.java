@@ -10,8 +10,7 @@ package de.rub.nds.sshattacker.core.protocol.transport.handler;
 import de.rub.nds.sshattacker.core.constants.CompressionMethod;
 import de.rub.nds.sshattacker.core.constants.EncryptionAlgorithm;
 import de.rub.nds.sshattacker.core.constants.MacAlgorithm;
-import de.rub.nds.sshattacker.core.exceptions.AdjustmentException;
-import de.rub.nds.sshattacker.core.exceptions.WorkflowExecutionException;
+import de.rub.nds.sshattacker.core.packet.cipher.PacketCipher;
 import de.rub.nds.sshattacker.core.packet.cipher.PacketCipherFactory;
 import de.rub.nds.sshattacker.core.packet.cipher.keys.KeySet;
 import de.rub.nds.sshattacker.core.packet.cipher.keys.KeySetGenerator;
@@ -21,8 +20,10 @@ import de.rub.nds.sshattacker.core.protocol.transport.parser.NewKeysMessageParse
 import de.rub.nds.sshattacker.core.protocol.transport.preparator.NewKeysMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.transport.serializer.NewKeysMessageSerializer;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
-public class NewKeysMessageHandler extends SshMessageHandler<NewKeysMessage> {
+public class NewKeysMessageHandler extends SshMessageHandler<NewKeysMessage>
+        implements MessageSentHandler {
 
     public NewKeysMessageHandler(SshContext context) {
         super(context);
@@ -34,38 +35,58 @@ public class NewKeysMessageHandler extends SshMessageHandler<NewKeysMessage> {
 
     @Override
     public void adjustContext() {
+        if (context.getConfig().getEnableEncryptionOnNewKeysMessage()) {
+            adjustEncryptionForDirection(true);
+        }
+        adjustCompressionForDirection(true);
+    }
+
+    @Override
+    public void adjustContextAfterMessageSent() {
+        if (context.getConfig().getEnableEncryptionOnNewKeysMessage()) {
+            adjustEncryptionForDirection(false);
+        }
+        adjustCompressionForDirection(false);
+    }
+
+    private void adjustEncryptionForDirection(boolean receive) {
+        Chooser chooser = context.getChooser();
+        KeySet keySet = KeySetGenerator.generateKeySet(context);
+        EncryptionAlgorithm encryptionAlgorithm =
+                receive
+                        ? chooser.getReceiveEncryptionAlgorithm()
+                        : chooser.getSendEncryptionAlgorithm();
+        MacAlgorithm macAlgorithm =
+                receive ? chooser.getReceiveMacAlgorithm() : chooser.getSendMacAlgorithm();
         try {
-            if (context.getConfig().getEnableEncryptionOnNewKeysMessage()) {
-                KeySet keySet = KeySetGenerator.generateKeySet(context);
-                EncryptionAlgorithm inEnc =
-                        context.isClient()
-                                ? context.getCipherAlgorithmServerToClient()
-                                        .orElseThrow(WorkflowExecutionException::new)
-                                : context.getCipherAlgorithmClientToServer()
-                                        .orElseThrow(WorkflowExecutionException::new);
-                MacAlgorithm inMac =
-                        context.isClient()
-                                ? context.getMacAlgorithmServerToClient()
-                                        .orElseThrow(WorkflowExecutionException::new)
-                                : context.getMacAlgorithmClientToServer()
-                                        .orElseThrow(WorkflowExecutionException::new);
-                context.getPacketLayer()
-                        .updateDecryptionCipher(
-                                PacketCipherFactory.getPacketCipher(context, keySet, inEnc, inMac));
+            PacketCipher packetCipher =
+                    PacketCipherFactory.getPacketCipher(
+                            context, keySet, encryptionAlgorithm, macAlgorithm);
+            if (receive) {
+                context.getPacketLayer().updateDecryptionCipher(packetCipher);
+            } else {
+                context.getPacketLayer().updateEncryptionCipher(packetCipher);
             }
         } catch (IllegalArgumentException e) {
-            raiseAdjustmentException(new AdjustmentException(e));
+            LOGGER.warn(
+                    "Caught an exception while trying to update the active {} cipher after handling a new keys message - workflow will continue with old cipher",
+                    receive ? "decryption" : "encryption");
+            LOGGER.debug(e);
         }
+    }
 
-        // Enable decompression of further messages if negotiated
-        CompressionMethod decompressionMethod =
-                (context.isClient()
-                                ? context.getCompressionMethodServerToClient()
-                                : context.getCompressionMethodClientToServer())
-                        .orElse(CompressionMethod.NONE);
-        if (decompressionMethod == CompressionMethod.ZLIB) {
-            context.getPacketLayer()
-                    .updateDecompressionAlgorithm(decompressionMethod.getAlgorithm());
+    private void adjustCompressionForDirection(boolean receive) {
+        Chooser chooser = context.getChooser();
+        CompressionMethod method =
+                receive
+                        ? chooser.getReceiveCompressionMethod()
+                        : chooser.getSendCompressionMethod();
+        if (method == CompressionMethod.ZLIB) {
+            if (receive) {
+                context.getPacketLayer().updateDecompressionAlgorithm(method.getAlgorithm());
+            } else {
+                context.getPacketLayer().updateCompressionAlgorithm(method.getAlgorithm());
+            }
         }
     }
 

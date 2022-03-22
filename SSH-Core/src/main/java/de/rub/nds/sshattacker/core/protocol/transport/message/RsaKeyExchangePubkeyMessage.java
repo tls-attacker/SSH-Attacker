@@ -8,29 +8,26 @@
 package de.rub.nds.sshattacker.core.protocol.transport.message;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
-import de.rub.nds.modifiablevariable.biginteger.ModifiableBigInteger;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
 import de.rub.nds.sshattacker.core.constants.PublicKeyFormat;
-import de.rub.nds.sshattacker.core.crypto.keys.CustomRsaPublicKey;
+import de.rub.nds.sshattacker.core.crypto.keys.SshPublicKey;
 import de.rub.nds.sshattacker.core.crypto.util.PublicKeyHelper;
-import de.rub.nds.sshattacker.core.protocol.common.ModifiableVariableHolder;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.RsaKeyExchangePubkeyMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
-import java.util.List;
+import java.math.BigInteger;
+import java.security.interfaces.RSAPublicKey;
 
 public class RsaKeyExchangePubkeyMessage extends SshMessage<RsaKeyExchangePubkeyMessage> {
 
     private ModifiableInteger hostKeyLength;
     private ModifiableByteArray hostKey;
 
-    private ModifiableInteger transientPubkeyLength;
-    private ModifiableByteArray transientPubkey;
-
-    private CustomRsaPublicKey publicKey;
+    private ModifiableInteger transientPublicKeyLength;
+    private ModifiableByteArray transientPublicKey;
 
     public RsaKeyExchangePubkeyMessage() {
         super(MessageIDConstant.SSH_MSG_KEXRSA_PUBKEY);
@@ -73,73 +70,62 @@ public class RsaKeyExchangePubkeyMessage extends SshMessage<RsaKeyExchangePubkey
     }
 
     // Transient Public Key (K_T) Methods
-    public ModifiableInteger getTransientPubkeyLength() {
-        return transientPubkeyLength;
+    public ModifiableInteger getTransientPublicKeyLength() {
+        return transientPublicKeyLength;
     }
 
-    public void setTransientPubkeyLength(ModifiableInteger transientPubkeyLength) {
-        this.transientPubkeyLength = transientPubkeyLength;
+    public void setTransientPublicKeyLength(ModifiableInteger transientPublicKeyLength) {
+        this.transientPublicKeyLength = transientPublicKeyLength;
     }
 
-    public void setTransientPubkeyLength(int transientPubkeyLength) {
-        this.transientPubkeyLength =
+    public void setTransientPublicKeyLength(int transientPublicKeyLength) {
+        this.transientPublicKeyLength =
                 ModifiableVariableFactory.safelySetValue(
-                        this.transientPubkeyLength, transientPubkeyLength);
+                        this.transientPublicKeyLength, transientPublicKeyLength);
     }
 
-    public ModifiableByteArray getTransientPubkey() {
-        return transientPubkey;
+    public ModifiableByteArray getTransientPublicKey() {
+        return transientPublicKey;
     }
 
-    public void setTransientPubkey(byte[] transientPubkey) {
-        setTransientPubkey(transientPubkey, false);
+    public void setTransientPublicKey(byte[] transientPublicKey) {
+        setTransientPublicKey(transientPublicKey, false);
     }
 
-    public void setTransientPubkey(ModifiableByteArray transientPubkey, boolean adjustLengthField) {
+    public void setTransientPublicKey(
+            ModifiableByteArray transientPublicKey, boolean adjustLengthField) {
         if (adjustLengthField) {
-            setTransientPubkeyLength(transientPubkey.getValue().length);
+            setTransientPublicKeyLength(transientPublicKey.getValue().length);
         }
-        this.transientPubkey = transientPubkey;
-        parsePublicKey();
+        this.transientPublicKey = transientPublicKey;
     }
 
-    public void setTransientPubkey(byte[] transientPubkey, boolean adjustLengthField) {
+    public void setTransientPublicKey(byte[] transientPublicKey, boolean adjustLengthField) {
         if (adjustLengthField) {
-            setTransientPubkeyLength(transientPubkey.length);
+            setTransientPublicKeyLength(transientPublicKey.length);
         }
-        this.transientPubkey =
-                ModifiableVariableFactory.safelySetValue(this.transientPubkey, transientPubkey);
-        parsePublicKey();
+        this.transientPublicKey =
+                ModifiableVariableFactory.safelySetValue(
+                        this.transientPublicKey, transientPublicKey);
     }
 
-    private void parsePublicKey() {
-        this.publicKey =
-                (CustomRsaPublicKey)
-                        PublicKeyHelper.parse(
-                                PublicKeyFormat.SSH_RSA, this.transientPubkey.getValue());
+    @SuppressWarnings("unchecked")
+    public SshPublicKey<RSAPublicKey, ?> getPublicKey() {
+        // Parse just-in-time to allow for modifications to the transient public key to take effect
+        return (SshPublicKey<RSAPublicKey, ?>)
+                PublicKeyHelper.parse(PublicKeyFormat.SSH_RSA, this.transientPublicKey.getValue());
     }
 
-    public CustomRsaPublicKey getPublicKey() {
-        return publicKey;
+    public BigInteger getModulus() {
+        return ((RSAPublicKey) getPublicKey().getPublicKey()).getModulus();
     }
 
-    public ModifiableBigInteger getExponent() {
-        return this.publicKey.getModifiablePublicExponent();
-    }
-
-    public ModifiableBigInteger getModulus() {
-        return this.publicKey.getModifiableModulus();
+    public BigInteger getPublicExponent() {
+        return ((RSAPublicKey) getPublicKey().getPublicKey()).getPublicExponent();
     }
 
     @Override
     public SshMessageHandler<RsaKeyExchangePubkeyMessage> getHandler(SshContext context) {
         return new RsaKeyExchangePubkeyMessageHandler(context, this);
-    }
-
-    @Override
-    public List<ModifiableVariableHolder> getAllModifiableVariableHolders() {
-        List<ModifiableVariableHolder> holders = super.getAllModifiableVariableHolders();
-        holders.add(publicKey);
-        return holders;
     }
 }

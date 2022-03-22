@@ -8,20 +8,51 @@
 package de.rub.nds.sshattacker.core.crypto.kex;
 
 import de.rub.nds.sshattacker.core.constants.KeyExchangeAlgorithm;
-import de.rub.nds.sshattacker.core.crypto.keys.CustomRsaPublicKey;
+import de.rub.nds.sshattacker.core.state.SshContext;
 import java.math.BigInteger;
+import java.security.interfaces.RSAPublicKey;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class RsaKeyExchange extends KeyExchange {
 
-    private CustomRsaPublicKey publicKey;
+    private static final Logger LOGGER = LogManager.getLogger();
+
+    private RSAPublicKey publicKey;
 
     // HLEN in RFC 4432 (in bits)
     private int hashLength;
 
-    public RsaKeyExchange() {}
+    protected RsaKeyExchange() {}
 
-    public RsaKeyExchange(CustomRsaPublicKey publicKey) {
-        this.publicKey = publicKey;
+    protected RsaKeyExchange(int hashLength) {
+        this.hashLength = hashLength;
+    }
+
+    public static RsaKeyExchange newInstance(
+            SshContext context, KeyExchangeAlgorithm negotiatedKexAlgorithm) {
+        if (negotiatedKexAlgorithm == null) {
+            return new RsaKeyExchange();
+        }
+        int hashLength;
+        switch (negotiatedKexAlgorithm) {
+            case RSA1024_SHA1:
+                hashLength = 160;
+                break;
+            case RSA2048_SHA256:
+                hashLength = 256;
+                break;
+            default:
+                LOGGER.warn(
+                        "Initializing a new RsaKeyExchange without an RSA key exchange algorithm negotiated, falling back to default algorithm");
+                hashLength =
+                        context.getConfig().getDefaultRsaKeyExchangeAlgorithm()
+                                        == KeyExchangeAlgorithm.RSA1024_SHA1
+                                ? 160
+                                : 256;
+                break;
+        }
+        return new RsaKeyExchange(hashLength);
     }
 
     @Override
@@ -31,11 +62,11 @@ public class RsaKeyExchange extends KeyExchange {
         sharedSecret = new BigInteger(maximumBits, random);
     }
 
-    public void setPublicKey(CustomRsaPublicKey publicKey) {
+    public void setPublicKey(RSAPublicKey publicKey) {
         this.publicKey = publicKey;
     }
 
-    public CustomRsaPublicKey getPublicKey() {
+    public RSAPublicKey getPublicKey() {
         return publicKey;
     }
 
@@ -55,22 +86,8 @@ public class RsaKeyExchange extends KeyExchange {
         this.hashLength = hashLength;
     }
 
-    public void setHashLength(KeyExchangeAlgorithm keyExchangeAlgorithm) {
-        switch (keyExchangeAlgorithm) {
-            case RSA1024_SHA1:
-                setHashLength(160);
-                break;
-            case RSA2048_SHA256:
-                setHashLength(256);
-                break;
-            default:
-                setHashLength(0);
-                break;
-        }
-    }
-
     private int getModulusLengthInBits() {
-        return this.publicKey.getModulusLength().getValue() * 8;
+        return publicKey.getModulus().bitLength();
     }
 
     public void setSharedSecret(BigInteger sharedSecret) {

@@ -8,10 +8,13 @@
 package de.rub.nds.sshattacker.core.crypto.util;
 
 import de.rub.nds.sshattacker.core.constants.PublicKeyFormat;
-import de.rub.nds.sshattacker.core.crypto.keys.HostKey;
+import de.rub.nds.sshattacker.core.crypto.keys.CustomEcPublicKey;
+import de.rub.nds.sshattacker.core.crypto.keys.SshPublicKey;
 import de.rub.nds.sshattacker.core.crypto.keys.parser.DsaPublicKeyParser;
+import de.rub.nds.sshattacker.core.crypto.keys.parser.EcdsaPublicKeyParser;
 import de.rub.nds.sshattacker.core.crypto.keys.parser.RsaPublicKeyParser;
 import de.rub.nds.sshattacker.core.crypto.keys.serializer.DsaPublicKeySerializer;
+import de.rub.nds.sshattacker.core.crypto.keys.serializer.EcdsaPublicKeySerializer;
 import de.rub.nds.sshattacker.core.crypto.keys.serializer.RsaPublicKeySerializer;
 import de.rub.nds.sshattacker.core.exceptions.NotImplementedException;
 import java.security.PublicKey;
@@ -25,6 +28,8 @@ public final class PublicKeyHelper {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
+    private PublicKeyHelper() {}
+
     /**
      * Parses the given encoded public key bytes using the specified key format.
      *
@@ -34,12 +39,42 @@ public final class PublicKeyHelper {
      * @throws NotImplementedException Thrown whenever support for the specified key format has not
      *     yet been implemented.
      */
-    public static PublicKey parse(PublicKeyFormat keyFormat, byte[] encodedPublicKeyBytes) {
+    public static SshPublicKey<?, ?> parse(
+            PublicKeyFormat keyFormat, byte[] encodedPublicKeyBytes) {
         switch (keyFormat) {
             case SSH_RSA:
                 return new RsaPublicKeyParser(encodedPublicKeyBytes, 0).parse();
             case SSH_DSS:
                 return new DsaPublicKeyParser(encodedPublicKeyBytes, 0).parse();
+            case ECDSA_SHA2_SECP160K1:
+            case ECDSA_SHA2_SECP160R1:
+            case ECDSA_SHA2_SECP160R2:
+            case ECDSA_SHA2_SECP192K1:
+            case ECDSA_SHA2_SECP192R1:
+            case ECDSA_SHA2_SECP224K1:
+            case ECDSA_SHA2_SECP224R1:
+            case ECDSA_SHA2_SECP256K1:
+            case ECDSA_SHA2_NISTP256:
+            case ECDSA_SHA2_NISTP384:
+            case ECDSA_SHA2_NISTP521:
+            case ECDSA_SHA2_SECT163K1:
+            case ECDSA_SHA2_SECT163R1:
+            case ECDSA_SHA2_SECT163R2:
+            case ECDSA_SHA2_SECT193R1:
+            case ECDSA_SHA2_SECT193R2:
+            case ECDSA_SHA2_SECT233K1:
+            case ECDSA_SHA2_SECT233R1:
+            case ECDSA_SHA2_SECT239K1:
+            case ECDSA_SHA2_SECT283K1:
+            case ECDSA_SHA2_SECT283R1:
+            case ECDSA_SHA2_SECT409K1:
+            case ECDSA_SHA2_SECT409R1:
+            case ECDSA_SHA2_SECT571K1:
+            case ECDSA_SHA2_SECT571R1:
+            case ECDSA_SHA2_BRAINPOOL_P256R1:
+            case ECDSA_SHA2_BRAINPOOL_P384R1:
+            case ECDSA_SHA2_BRAINPOOL_P512R1:
+                return new EcdsaPublicKeyParser(encodedPublicKeyBytes, 0).parse();
             default:
                 throw new NotImplementedException(
                         "Parser for public key format " + keyFormat + " is not yet implemented.");
@@ -54,8 +89,8 @@ public final class PublicKeyHelper {
      * @throws NotImplementedException Thrown whenever support for the key format has not yet been
      *     implemented.
      */
-    public static byte[] encode(HostKey hostKey) {
-        return encode(hostKey.getPublicKeyAlgorithm().getKeyFormat(), hostKey.getPublicKey());
+    public static byte[] encode(SshPublicKey<?, ?> hostKey) {
+        return encode(hostKey.getPublicKeyFormat(), hostKey.getPublicKey());
     }
 
     /**
@@ -75,6 +110,35 @@ public final class PublicKeyHelper {
                     return new RsaPublicKeySerializer((RSAPublicKey) publicKey).serialize();
                 case SSH_DSS:
                     return new DsaPublicKeySerializer((DSAPublicKey) publicKey).serialize();
+                case ECDSA_SHA2_SECP160K1:
+                case ECDSA_SHA2_SECP160R1:
+                case ECDSA_SHA2_SECP160R2:
+                case ECDSA_SHA2_SECP192K1:
+                case ECDSA_SHA2_SECP192R1:
+                case ECDSA_SHA2_SECP224K1:
+                case ECDSA_SHA2_SECP224R1:
+                case ECDSA_SHA2_SECP256K1:
+                case ECDSA_SHA2_NISTP256:
+                case ECDSA_SHA2_NISTP384:
+                case ECDSA_SHA2_NISTP521:
+                case ECDSA_SHA2_SECT163K1:
+                case ECDSA_SHA2_SECT163R1:
+                case ECDSA_SHA2_SECT163R2:
+                case ECDSA_SHA2_SECT193R1:
+                case ECDSA_SHA2_SECT193R2:
+                case ECDSA_SHA2_SECT233K1:
+                case ECDSA_SHA2_SECT233R1:
+                case ECDSA_SHA2_SECT239K1:
+                case ECDSA_SHA2_SECT283K1:
+                case ECDSA_SHA2_SECT283R1:
+                case ECDSA_SHA2_SECT409K1:
+                case ECDSA_SHA2_SECT409R1:
+                case ECDSA_SHA2_SECT571K1:
+                case ECDSA_SHA2_SECT571R1:
+                case ECDSA_SHA2_BRAINPOOL_P256R1:
+                case ECDSA_SHA2_BRAINPOOL_P384R1:
+                case ECDSA_SHA2_BRAINPOOL_P512R1:
+                    return new EcdsaPublicKeySerializer((CustomEcPublicKey) publicKey).serialize();
                 default:
                     throw new NotImplementedException(
                             "Serializer for public key format "

@@ -10,13 +10,16 @@ package de.rub.nds.sshattacker.core.crypto.keys.parser;
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.constants.PublicKeyFormat;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomDsaPublicKey;
+import de.rub.nds.sshattacker.core.crypto.keys.SshPublicKey;
 import de.rub.nds.sshattacker.core.protocol.common.Parser;
 import java.nio.charset.StandardCharsets;
+import java.security.interfaces.DSAPrivateKey;
+import java.security.interfaces.DSAPublicKey;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /** Parser class to parse an DSA public key in the ssh-dss format. */
-public class DsaPublicKeyParser extends Parser<CustomDsaPublicKey> {
+public class DsaPublicKeyParser extends Parser<SshPublicKey<DSAPublicKey, DSAPrivateKey>> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -25,7 +28,7 @@ public class DsaPublicKeyParser extends Parser<CustomDsaPublicKey> {
     }
 
     @Override
-    public CustomDsaPublicKey parse() {
+    public SshPublicKey<DSAPublicKey, DSAPrivateKey> parse() {
         CustomDsaPublicKey publicKey = new CustomDsaPublicKey();
         // The ssh-dss format specified the ssh-dss to be part of the encoded key
         int formatLength = parseIntField(DataFormatConstants.STRING_SIZE_LENGTH);
@@ -45,6 +48,6 @@ public class DsaPublicKeyParser extends Parser<CustomDsaPublicKey> {
         publicKey.setYLength(parseIntField(DataFormatConstants.MPINT_SIZE_LENGTH));
         publicKey.setY(parseBigIntField(publicKey.getYLength().getValue()));
 
-        return publicKey;
+        return new SshPublicKey<>(PublicKeyFormat.SSH_DSS, publicKey);
     }
 }

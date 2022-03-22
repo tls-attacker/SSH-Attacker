@@ -7,15 +7,11 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.preparator;
 
-import de.rub.nds.sshattacker.core.constants.KeyExchangeAlgorithm;
-import de.rub.nds.sshattacker.core.constants.KeyExchangeFlowType;
 import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
-import de.rub.nds.sshattacker.core.crypto.hash.DhNamedExchangeHash;
 import de.rub.nds.sshattacker.core.crypto.kex.DhKeyExchange;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.transport.message.DhKeyExchangeInitMessage;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
-import java.util.Optional;
 
 public class DhKeyExchangeInitMessagePreparator
         extends SshMessagePreparator<DhKeyExchangeInitMessage> {
@@ -27,22 +23,11 @@ public class DhKeyExchangeInitMessagePreparator
     @Override
     public void prepareMessageSpecificContents() {
         getObject().setMessageID(MessageIDConstant.SSH_MSG_KEXDH_INIT);
-        Optional<KeyExchangeAlgorithm> keyExchangeAlgorithm =
-                chooser.getContext().getKeyExchangeAlgorithm();
-        DhKeyExchange keyExchange;
-        if (keyExchangeAlgorithm.isPresent()
-                && keyExchangeAlgorithm.get().getFlowType() == KeyExchangeFlowType.DIFFIE_HELLMAN) {
-            keyExchange = DhKeyExchange.newInstance(keyExchangeAlgorithm.get());
-        } else {
-            keyExchange = chooser.getDHGexKeyExchange();
-        }
+        DhKeyExchange keyExchange = chooser.getDhKeyExchange();
         keyExchange.generateLocalKeyPair();
-        chooser.getContext().setKeyExchangeInstance(keyExchange);
-
-        DhNamedExchangeHash dhNamedExchangeHash =
-                DhNamedExchangeHash.from(chooser.getContext().getExchangeHashInstance());
-        dhNamedExchangeHash.setClientDHPublicKey(keyExchange.getLocalKeyPair().getPublic());
-        chooser.getContext().setExchangeHashInstance(dhNamedExchangeHash);
+        chooser.getContext()
+                .getExchangeHashInputHolder()
+                .setDhClientPublicKey(keyExchange.getLocalKeyPair().getPublic().getY());
 
         getObject().setPublicKey(keyExchange.getLocalKeyPair().getPublic().getY(), true);
     }

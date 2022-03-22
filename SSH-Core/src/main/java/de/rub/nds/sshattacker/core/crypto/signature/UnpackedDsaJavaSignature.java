@@ -58,7 +58,7 @@ public class UnpackedDsaJavaSignature extends JavaSignature {
             ASN1Integer r = ASN1Integer.getInstance(sequence.getObjectAt(0));
             ASN1Integer s = ASN1Integer.getInstance(sequence.getObjectAt(1));
             // r and s are unsigned (no leading zero byte allowed), therefore use ArrayConverter
-            // rather than .toByteArray()
+            // rather than .toByteArray() to strip the sign byte
             return ArrayConverter.concatenate(
                     ArrayConverter.bigIntegerToByteArray(r.getPositiveValue()),
                     ArrayConverter.bigIntegerToByteArray(s.getPositiveValue()));

@@ -10,12 +10,15 @@ package de.rub.nds.sshattacker.core.crypto.keys.parser;
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.constants.PublicKeyFormat;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomRsaPublicKey;
+import de.rub.nds.sshattacker.core.crypto.keys.SshPublicKey;
 import de.rub.nds.sshattacker.core.protocol.common.Parser;
+import java.security.interfaces.RSAPrivateKey;
+import java.security.interfaces.RSAPublicKey;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /** Parser class to parse an RSA public key in the ssh-rsa format. */
-public class RsaPublicKeyParser extends Parser<CustomRsaPublicKey> {
+public class RsaPublicKeyParser extends Parser<SshPublicKey<RSAPublicKey, RSAPrivateKey>> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -24,7 +27,7 @@ public class RsaPublicKeyParser extends Parser<CustomRsaPublicKey> {
     }
 
     @Override
-    public CustomRsaPublicKey parse() {
+    public SshPublicKey<RSAPublicKey, RSAPrivateKey> parse() {
         CustomRsaPublicKey publicKey = new CustomRsaPublicKey();
         // The ssh-rsa format specifies the ssh-rsa to be part of the key
         int formatLength = parseIntField(DataFormatConstants.INT32_SIZE);
@@ -43,6 +46,6 @@ public class RsaPublicKeyParser extends Parser<CustomRsaPublicKey> {
         // Length should be adjusted, in case the modulus starts with 00 byte(s)
         publicKey.setModulus(parseBigIntField(publicKey.getModulusLength().getValue()), true);
 
-        return publicKey;
+        return new SshPublicKey<>(PublicKeyFormat.SSH_RSA, publicKey);
     }
 }

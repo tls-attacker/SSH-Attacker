@@ -97,7 +97,11 @@ public enum PublicKeyFormat {
     ECDSA_SHA2_NISTP256_CERT_V01_OPENSSH_COM("ecdsa-sha2-nistp256-cert-v01@openssh.com"),
     ECDSA_SHA2_NISTP384_CERT_V01_OPENSSH_COM("ecdsa-sha2-nistp384-cert-v01@openssh.com"),
     ECDSA_SHA2_NISTP521_CERT_V01_OPENSSH_COM("ecdsa-sha2-nistp521-cert-v01@openssh.com"),
-    SSH_ED25519_CERT_V01_OPENSSH_COM("ssh-ed25519-cert-v01@openssh.com");
+    SSH_ED25519_CERT_V01_OPENSSH_COM("ssh-ed25519-cert-v01@openssh.com"),
+    SK_ECDSA_SHA2_NISTP256_OPENSSH_COM("sk-ecdsa-sha2-nistp256@openssh.com"),
+    SK_SSH_ED25519_OPENSSH_COM("sk-ssh-ed25519@openssh.com"),
+    SK_ECDSA_SHA2_NISTP256_CERT_V01_OPENSSH_COM("sk-ecdsa-sha2-nistp256-cert-v01@openssh.com"),
+    SK_SSH_ED25519_CERT_V01_OPENSSH_COM("sk-ssh-ed25519-cert-v01@openssh.com");
 
     private final String name;
 

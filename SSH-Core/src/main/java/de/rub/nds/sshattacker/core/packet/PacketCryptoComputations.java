@@ -70,9 +70,9 @@ public class PacketCryptoComputations extends ModifiableVariableHolder {
         this.encryptionKey = encryptionKey;
     }
 
-    public void setEncryptionKey(byte[] cipherKey) {
+    public void setEncryptionKey(byte[] encryptionKey) {
         this.encryptionKey =
-                ModifiableVariableFactory.safelySetValue(this.encryptionKey, cipherKey);
+                ModifiableVariableFactory.safelySetValue(this.encryptionKey, encryptionKey);
     }
 
     public ModifiableByteArray getIntegrityKey() {

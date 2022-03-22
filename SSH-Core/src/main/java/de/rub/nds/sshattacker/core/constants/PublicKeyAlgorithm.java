@@ -142,6 +142,10 @@ public enum PublicKeyAlgorithm {
     // [ OpenSSH ]
     SSH_RSA_CERT_V01_OPENSSH_COM(
             "ssh-rsa-cert-v01@openssh.com", PublicKeyFormat.SSH_RSA_CERT_V01_OPENSSH_COM),
+    RSA_SHA2_256_CERT_V01_OPENSSH_COM(
+            "rsa-sha2-256-cert-v01@openssh.com", PublicKeyFormat.SSH_RSA_CERT_V01_OPENSSH_COM),
+    RSA_SHA2_512_CERT_V01_OPENSSH_COM(
+            "rsa-sha2-512-cert-v01@openssh.com", PublicKeyFormat.SSH_RSA_CERT_V01_OPENSSH_COM),
     SSH_DSS_CERT_V01_OPENSSH_COM(
             "ssh-dss-cert-v01@openssh.com", PublicKeyFormat.SSH_DSS_CERT_V01_OPENSSH_COM),
     ECDSA_SHA2_NISTP256_CERT_V01_OPENSSH_COM(
@@ -155,6 +159,17 @@ public enum PublicKeyAlgorithm {
             PublicKeyFormat.ECDSA_SHA2_NISTP521_CERT_V01_OPENSSH_COM),
     SSH_ED25519_CERT_V01_OPENSSH_COM(
             "ssh-ed25519-cert-v01@openssh.com", PublicKeyFormat.SSH_ED25519_CERT_V01_OPENSSH_COM),
+    SK_ECDSA_SHA2_NISTP256_OPENSSH_COM(
+            "sk-ecdsa-sha2-nistp256@openssh.com",
+            PublicKeyFormat.SK_ECDSA_SHA2_NISTP256_OPENSSH_COM),
+    SK_ECDSA_SHA2_NISTP256_CERT_V01_OPENSSH_COM(
+            "sk-ecdsa-sha2-nistp256-cert-v01@openssh.com",
+            PublicKeyFormat.SK_ECDSA_SHA2_NISTP256_CERT_V01_OPENSSH_COM),
+    SK_SSH_ED25519_OPENSSH_COM(
+            "sk-ssh-ed25519@openssh.com", PublicKeyFormat.SK_SSH_ED25519_OPENSSH_COM),
+    SK_SSH_ED25519_CERT_V01_OPENSSH_COM(
+            "sk-ssh-ed25519-cert-v01@openssh.com",
+            PublicKeyFormat.SK_SSH_ED25519_CERT_V01_OPENSSH_COM),
     // [ SSH.COM ]
     SSH_RSA_SHA224_SSH_COM(
             "ssh-rsa-sha224@ssh.com", PublicKeyFormat.SSH_RSA, SignatureEncoding.SSH_RSA),

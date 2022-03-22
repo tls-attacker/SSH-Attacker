@@ -35,12 +35,13 @@ public class RsaKeyExchangePubkeyMessageParser
     }
 
     private void parseTransientPublicKey() {
-        message.setTransientPubkeyLength(parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH));
+        message.setTransientPublicKeyLength(
+                parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH));
         LOGGER.debug(
-                "Transient public key length: " + message.getTransientPubkeyLength().getValue());
-        message.setTransientPubkey(
-                parseByteArrayField(message.getTransientPubkeyLength().getValue()));
-        LOGGER.debug("Transient public key: " + message.getTransientPubkey());
+                "Transient public key length: " + message.getTransientPublicKeyLength().getValue());
+        message.setTransientPublicKey(
+                parseByteArrayField(message.getTransientPublicKeyLength().getValue()));
+        LOGGER.debug("Transient public key: " + message.getTransientPublicKey());
     }
 
     @Override

@@ -49,8 +49,8 @@ public class RsaKeyExchangePubkeyMessageParserTest {
      * @param providedBytes Bytes to parse
      * @param expectedHostKeyLength Expected length of the host key
      * @param expectedHostKey Expected bytes of the host key
-     * @param expectedTransientPubkeyLength Expected length of the transient public key
-     * @param expectedTransientPubkey Expected bytes of the transient public key
+     * @param expectedTransientPublicKeyLength Expected length of the transient public key
+     * @param expectedTransientPublicKey Expected bytes of the transient public key
      */
     @ParameterizedTest
     @MethodSource("provideTestVectors")
@@ -58,8 +58,8 @@ public class RsaKeyExchangePubkeyMessageParserTest {
             byte[] providedBytes,
             int expectedHostKeyLength,
             byte[] expectedHostKey,
-            int expectedTransientPubkeyLength,
-            byte[] expectedTransientPubkey,
+            int expectedTransientPublicKeyLength,
+            byte[] expectedTransientPublicKey,
             BigInteger exponent,
             BigInteger modulus) {
         RsaKeyExchangePubkeyMessageParser parser =
@@ -70,10 +70,10 @@ public class RsaKeyExchangePubkeyMessageParserTest {
         assertEquals(expectedHostKeyLength, msg.getHostKeyLength().getValue().intValue());
         assertArrayEquals(expectedHostKey, msg.getHostKey().getValue());
         assertEquals(
-                expectedTransientPubkeyLength,
-                msg.getTransientPubkeyLength().getValue().intValue());
-        assertArrayEquals(expectedTransientPubkey, msg.getTransientPubkey().getValue());
-        assertEquals(exponent, msg.getExponent().getValue());
-        assertEquals(modulus, msg.getModulus().getValue());
+                expectedTransientPublicKeyLength,
+                msg.getTransientPublicKeyLength().getValue().intValue());
+        assertArrayEquals(expectedTransientPublicKey, msg.getTransientPublicKey().getValue());
+        assertEquals(exponent, msg.getPublicExponent());
+        assertEquals(modulus, msg.getModulus());
     }
 }

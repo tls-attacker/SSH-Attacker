@@ -13,6 +13,7 @@ import de.rub.nds.sshattacker.core.constants.NamedDHGroup;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomDhPrivateKey;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomDhPublicKey;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomKeyPair;
+import de.rub.nds.sshattacker.core.state.SshContext;
 import java.math.BigInteger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -27,17 +28,21 @@ public class DhKeyExchange extends DhBasedKeyExchange {
     private CustomKeyPair<CustomDhPrivateKey, CustomDhPublicKey> localKeyPair;
     private CustomDhPublicKey remotePublicKey;
 
-    public DhKeyExchange() {
+    protected DhKeyExchange() {
         super();
     }
 
-    public DhKeyExchange(NamedDHGroup group) {
+    protected DhKeyExchange(NamedDHGroup group) {
         super();
         this.modulus = group.getModulus();
         this.generator = group.getGenerator();
     }
 
-    public static DhKeyExchange newInstance(KeyExchangeAlgorithm negotiatedKexAlgorithm) {
+    public static DhKeyExchange newInstance(
+            SshContext context, KeyExchangeAlgorithm negotiatedKexAlgorithm) {
+        if (negotiatedKexAlgorithm == null) {
+            return new DhKeyExchange(context.getConfig().getDefaultDhKeyExchangeGroup());
+        }
         NamedDHGroup group;
         switch (negotiatedKexAlgorithm) {
             case DIFFIE_HELLMAN_GROUP_EXCHANGE_SHA1:
@@ -73,11 +78,9 @@ public class DhKeyExchange extends DhBasedKeyExchange {
                 group = NamedDHGroup.GROUP18;
                 break;
             default:
-                // TODO: Determine, whether throwing an error or continuing with a predetermined
-                // group is better
                 LOGGER.warn(
-                        "Initializing a new DHKeyExchange without an DH key exchange algorithm negotiated, falling back to group 14");
-                group = NamedDHGroup.GROUP14;
+                        "Initializing a new DHKeyExchange without an DH key exchange algorithm negotiated, falling back to default group");
+                group = context.getConfig().getDefaultDhKeyExchangeGroup();
                 break;
         }
         return new DhKeyExchange(group);

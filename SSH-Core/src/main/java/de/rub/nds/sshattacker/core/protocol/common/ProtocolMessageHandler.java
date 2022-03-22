@@ -7,7 +7,6 @@
  */
 package de.rub.nds.sshattacker.core.protocol.common;
 
-import de.rub.nds.sshattacker.core.exceptions.AdjustmentException;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -37,18 +36,4 @@ public abstract class ProtocolMessageHandler<T extends ProtocolMessage<T>> imple
 
     @Override
     public abstract ProtocolMessageSerializer<T> getSerializer();
-
-    // TODO: Remove this workaround once everything is handled over context fields
-    protected void raiseAdjustmentException(String errorMsg) {
-        raiseAdjustmentException(new AdjustmentException(errorMsg));
-    }
-
-    // TODO: Remove this workaround once everything is handled over context fields
-    protected void raiseAdjustmentException(AdjustmentException e) {
-        if (context.getConfig().getAvoidAdjustmentExceptions()) {
-            LOGGER.warn(e.getMessage());
-        } else {
-            throw e;
-        }
-    }
 }

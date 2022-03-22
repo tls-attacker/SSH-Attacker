@@ -8,7 +8,6 @@
 package de.rub.nds.sshattacker.core.crypto.kex;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.sshattacker.core.constants.KeyExchangeAlgorithm;
 import de.rub.nds.sshattacker.core.constants.NamedGroup;
 import de.rub.nds.sshattacker.core.crypto.ec.*;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomEcPrivateKey;
@@ -18,52 +17,22 @@ import java.math.BigInteger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class EcdhKeyExchange extends DhBasedKeyExchange {
+public class EcdhKeyExchange extends AbstractEcdhKeyExchange {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private final NamedGroup group;
     private final EllipticCurve ellipticCurve;
 
     private CustomKeyPair<CustomEcPrivateKey, CustomEcPublicKey> localKeyPair;
     private CustomEcPublicKey remotePublicKey;
 
-    public EcdhKeyExchange(NamedGroup group) {
-        super();
+    protected EcdhKeyExchange(NamedGroup group) {
+        super(group);
         if (!group.isStandardCurve()) {
             throw new IllegalArgumentException(
                     "EcdhKeyExchange does not support named group " + group);
         }
-        this.group = group;
         this.ellipticCurve = CurveFactory.getCurve(group);
-    }
-
-    public static EcdhKeyExchange newInstance(KeyExchangeAlgorithm negotiatedKexAlgorithm) {
-        NamedGroup group;
-        switch (negotiatedKexAlgorithm) {
-            case ECDH_SHA2_NISTP256:
-                group = NamedGroup.SECP256R1;
-                break;
-            case ECDH_SHA2_NISTP384:
-                group = NamedGroup.SECP384R1;
-                break;
-            case ECDH_SHA2_NISTP521:
-                group = NamedGroup.SECP521R1;
-                break;
-            default:
-                String[] kexParts = negotiatedKexAlgorithm.name().split("_");
-                if (!kexParts[0].equals("ECDH")) {
-                    // TODO: Determine, whether throwing and error or continuing with a
-                    // predetermined curve is better
-                    LOGGER.warn(
-                            "Initializing a new ECDHKeyExchange without an ECDH key exchange algorithm negotiated. Falling back to ecdh-sha2-nistp256.");
-                    group = NamedGroup.SECP256R1;
-                } else {
-                    group = NamedGroup.valueOf(kexParts[3]);
-                }
-                break;
-        }
-        return new EcdhKeyExchange(group);
     }
 
     @Override

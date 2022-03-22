@@ -9,84 +9,73 @@ package de.rub.nds.sshattacker.core.packet.cipher.keys;
 
 import de.rub.nds.sshattacker.core.constants.KeyDerivationLabels;
 import de.rub.nds.sshattacker.core.crypto.KeyDerivation;
-import de.rub.nds.sshattacker.core.crypto.kex.KeyExchange;
-import de.rub.nds.sshattacker.core.exceptions.AdjustmentException;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
+import java.math.BigInteger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class KeySetGenerator {
+public final class KeySetGenerator {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
+    private KeySetGenerator() {}
+
     public static KeySet generateKeySet(SshContext context) {
         KeySet keySet = new KeySet();
-        String hashAlgorithm =
-                context.getKeyExchangeAlgorithm().orElseThrow(AdjustmentException::new).getDigest();
-        KeyExchange keyExchange =
-                context.getKeyExchangeInstance().orElseThrow(AdjustmentException::new);
-        byte[] exchangeHash = context.getExchangeHashInstance().get();
-        byte[] sessionId = context.getSessionID().orElseThrow(AdjustmentException::new);
+        Chooser chooser = context.getChooser();
+        String hashAlgorithm = chooser.getKeyExchangeAlgorithm().getDigest();
+        BigInteger sharedSecret = context.getSharedSecret().orElse(BigInteger.ZERO);
+        byte[] exchangeHash = context.getExchangeHash().orElse(new byte[0]);
+        byte[] sessionId = context.getSessionID().orElse(new byte[0]);
 
         keySet.setClientWriteInitialIV(
                 KeyDerivation.deriveKey(
-                        keyExchange.getSharedSecret(),
+                        sharedSecret,
                         exchangeHash,
                         KeyDerivationLabels.INITIAL_IV_CLIENT_TO_SERVER,
                         sessionId,
-                        context.getCipherAlgorithmClientToServer()
-                                .orElseThrow(AdjustmentException::new)
-                                .getIVSize(),
+                        chooser.getEncryptionAlgorithmClientToServer().getIVSize(),
                         hashAlgorithm));
         keySet.setServerWriteInitialIV(
                 KeyDerivation.deriveKey(
-                        keyExchange.getSharedSecret(),
+                        sharedSecret,
                         exchangeHash,
                         KeyDerivationLabels.INITIAL_IV_SERVER_TO_CLIENT,
                         sessionId,
-                        context.getCipherAlgorithmServerToClient()
-                                .orElseThrow(AdjustmentException::new)
-                                .getIVSize(),
+                        chooser.getEncryptionAlgorithmServerToClient().getIVSize(),
                         hashAlgorithm));
         keySet.setClientWriteEncryptionKey(
                 KeyDerivation.deriveKey(
-                        keyExchange.getSharedSecret(),
+                        sharedSecret,
                         exchangeHash,
                         KeyDerivationLabels.ENCRYPTION_KEY_CLIENT_TO_SERVER,
                         sessionId,
-                        context.getCipherAlgorithmClientToServer()
-                                .orElseThrow(AdjustmentException::new)
-                                .getKeySize(),
+                        chooser.getEncryptionAlgorithmClientToServer().getKeySize(),
                         hashAlgorithm));
         keySet.setServerWriteEncryptionKey(
                 KeyDerivation.deriveKey(
-                        keyExchange.getSharedSecret(),
+                        sharedSecret,
                         exchangeHash,
                         KeyDerivationLabels.ENCRYPTION_KEY_SERVER_TO_CLIENT,
                         sessionId,
-                        context.getCipherAlgorithmServerToClient()
-                                .orElseThrow(AdjustmentException::new)
-                                .getKeySize(),
+                        chooser.getEncryptionAlgorithmServerToClient().getKeySize(),
                         hashAlgorithm));
         keySet.setClientWriteIntegrityKey(
                 KeyDerivation.deriveKey(
-                        keyExchange.getSharedSecret(),
+                        sharedSecret,
                         exchangeHash,
                         KeyDerivationLabels.INTEGRITY_KEY_CLIENT_TO_SERVER,
                         sessionId,
-                        context.getMacAlgorithmClientToServer()
-                                .orElseThrow(AdjustmentException::new)
-                                .getKeySize(),
+                        chooser.getMacAlgorithmClientToServer().getKeySize(),
                         hashAlgorithm));
         keySet.setServerWriteIntegrityKey(
                 KeyDerivation.deriveKey(
-                        keyExchange.getSharedSecret(),
+                        sharedSecret,
                         exchangeHash,
                         KeyDerivationLabels.INTEGRITY_KEY_SERVER_TO_CLIENT,
                         sessionId,
-                        context.getMacAlgorithmServerToClient()
-                                .orElseThrow(AdjustmentException::new)
-                                .getKeySize(),
+                        chooser.getMacAlgorithmServerToClient().getKeySize(),
                         hashAlgorithm));
 
         LOGGER.info(keySet);

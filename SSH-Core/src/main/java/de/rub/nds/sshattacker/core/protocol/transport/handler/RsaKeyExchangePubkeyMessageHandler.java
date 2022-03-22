@@ -7,10 +7,8 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.handler;
 
-import de.rub.nds.sshattacker.core.constants.KeyExchangeAlgorithm;
-import de.rub.nds.sshattacker.core.crypto.hash.ExchangeHash;
-import de.rub.nds.sshattacker.core.crypto.hash.RsaExchangeHash;
-import de.rub.nds.sshattacker.core.crypto.kex.RsaKeyExchange;
+import de.rub.nds.sshattacker.core.crypto.keys.SshPublicKey;
+import de.rub.nds.sshattacker.core.crypto.util.PublicKeyHelper;
 import de.rub.nds.sshattacker.core.exceptions.NotImplementedException;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
@@ -20,6 +18,7 @@ import de.rub.nds.sshattacker.core.protocol.transport.message.RsaKeyExchangePubk
 import de.rub.nds.sshattacker.core.protocol.transport.parser.RsaKeyExchangePubkeyMessageParser;
 import de.rub.nds.sshattacker.core.protocol.transport.serializer.RsaKeyExchangePubkeyMessageSerializer;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import java.security.interfaces.RSAPublicKey;
 
 public class RsaKeyExchangePubkeyMessageHandler
         extends SshMessageHandler<RsaKeyExchangePubkeyMessage> {
@@ -36,55 +35,27 @@ public class RsaKeyExchangePubkeyMessageHandler
     @Override
     public void adjustContext() {
         handleHostKey(message);
-        createKeyExchangeFromMessage(message);
-        RsaExchangeHash rsaExchangeHash = RsaExchangeHash.from(context.getExchangeHashInstance());
-        context.setExchangeHashInstance(rsaExchangeHash);
-        updateExchangeHashWithTransientPubkey(message);
+        setTransientPublicKey(message);
+        updateExchangeHashWithTransientPublicKey(message);
     }
 
-    private void createKeyExchangeFromMessage(RsaKeyExchangePubkeyMessage message) {
-        if (context.getKeyExchangeAlgorithm().isPresent()) {
-
-            KeyExchangeAlgorithm keyExchangeAlgorithm = context.getKeyExchangeAlgorithm().get();
-
-            if (keyExchangeAlgorithm.equals(KeyExchangeAlgorithm.RSA1024_SHA1)
-                    || keyExchangeAlgorithm.equals(KeyExchangeAlgorithm.RSA2048_SHA256)) {
-                RsaKeyExchange rsaKeyExchange = new RsaKeyExchange();
-                rsaKeyExchange.setPublicKey(message.getPublicKey());
-
-                rsaKeyExchange.setHashLength(keyExchangeAlgorithm);
-                context.setKeyExchangeInstance(rsaKeyExchange);
-
-            } else {
-                raiseAdjustmentException(
-                        "Unable to instantiate a new RSA key exchange, "
-                                + "the negotiated key exchange algorithm is: "
-                                + keyExchangeAlgorithm);
-            }
-
-        } else {
-            raiseAdjustmentException(
-                    "Unable to instantiate a new RSA key exchange, "
-                            + "the negotiated key exchange algorithm is not set");
-        }
+    private void setTransientPublicKey(RsaKeyExchangePubkeyMessage message) {
+        context.getChooser()
+                .getRsaKeyExchange()
+                .setPublicKey((RSAPublicKey) message.getPublicKey().getPublicKey());
     }
 
     private void handleHostKey(RsaKeyExchangePubkeyMessage message) {
-        // TODO: Implement host key types as enumeration
-        // TODO: Improve host key handling in separate class
-        context.getExchangeHashInstance().setServerHostKey(message.getHostKey().getValue());
-        context.setServerHostKey(message.getHostKey().getValue());
+        SshPublicKey<?, ?> hostKey =
+                PublicKeyHelper.parse(
+                        context.getChooser().getServerHostKeyAlgorithm().getKeyFormat(),
+                        message.getHostKey().getValue());
+        context.setServerHostKey(hostKey);
+        context.getExchangeHashInputHolder().setServerHostKey(hostKey);
     }
 
-    private void updateExchangeHashWithTransientPubkey(RsaKeyExchangePubkeyMessage message) {
-        ExchangeHash exchangeHash = context.getExchangeHashInstance();
-        if (exchangeHash instanceof RsaExchangeHash) {
-            ((RsaExchangeHash) exchangeHash)
-                    .setTransientKey(message.getTransientPubkey().getValue());
-        } else {
-            raiseAdjustmentException(
-                    "Exchange hash instance is not an RsaExchangeHash, unable to update exchange hash");
-        }
+    private void updateExchangeHashWithTransientPublicKey(RsaKeyExchangePubkeyMessage message) {
+        context.getExchangeHashInputHolder().setRsaTransientKey(message.getPublicKey());
     }
 
     @Override

@@ -40,11 +40,11 @@ public class KeyExchangeInitMessageHandler extends SshMessageHandler<KeyExchange
                     Converter.nameListToEnumValues(
                             message.getServerHostKeyAlgorithms().getValue(),
                             PublicKeyAlgorithm.class));
-            context.setServerSupportedCipherAlgorithmsClientToServer(
+            context.setServerSupportedEncryptionAlgorithmsClientToServer(
                     Converter.nameListToEnumValues(
                             message.getEncryptionAlgorithmsClientToServer().getValue(),
                             EncryptionAlgorithm.class));
-            context.setServerSupportedCipherAlgorithmsServerToClient(
+            context.setServerSupportedEncryptionAlgorithmsServerToClient(
                     Converter.nameListToEnumValues(
                             message.getEncryptionAlgorithmsServerToClient().getValue(),
                             EncryptionAlgorithm.class));
@@ -76,7 +76,7 @@ public class KeyExchangeInitMessageHandler extends SshMessageHandler<KeyExchange
                                     .split("" + CharConstants.ALGORITHM_SEPARATOR)));
             context.setServerReserved(message.getReserved().getValue());
 
-            context.getExchangeHashInstance().setServerKeyExchangeInit(message);
+            context.getExchangeHashInputHolder().setServerKeyExchangeInit(message);
         } else {
             context.setClientCookie(message.getCookie().getValue());
             context.setClientSupportedKeyExchangeAlgorithms(
@@ -87,11 +87,11 @@ public class KeyExchangeInitMessageHandler extends SshMessageHandler<KeyExchange
                     Converter.nameListToEnumValues(
                             message.getServerHostKeyAlgorithms().getValue(),
                             PublicKeyAlgorithm.class));
-            context.setClientSupportedCipherAlgorithmsClientToServer(
+            context.setClientSupportedEncryptionAlgorithmsClientToServer(
                     Converter.nameListToEnumValues(
                             message.getEncryptionAlgorithmsClientToServer().getValue(),
                             EncryptionAlgorithm.class));
-            context.setClientSupportedCipherAlgorithmsServerToClient(
+            context.setClientSupportedEncryptionAlgorithmsServerToClient(
                     Converter.nameListToEnumValues(
                             message.getEncryptionAlgorithmsServerToClient().getValue(),
                             EncryptionAlgorithm.class));
@@ -123,7 +123,7 @@ public class KeyExchangeInitMessageHandler extends SshMessageHandler<KeyExchange
                                     .split("" + CharConstants.ALGORITHM_SEPARATOR)));
             context.setClientReserved(message.getReserved().getValue());
 
-            context.getExchangeHashInstance().setClientKeyExchangeInit(message);
+            context.getExchangeHashInputHolder().setClientKeyExchangeInit(message);
         }
 
         pickAlgorithms();
@@ -139,20 +139,20 @@ public class KeyExchangeInitMessageHandler extends SshMessageHandler<KeyExchange
                                     context.getChooser().getServerSupportedKeyExchangeAlgorithms())
                             .orElse(null));
 
-            context.setCipherAlgorithmClientToServer(
+            context.setEncryptionAlgorithmClientToServer(
                     AlgorithmPicker.pickAlgorithm(
                                     context.getChooser()
-                                            .getClientSupportedCipherAlgorithmsClientToServer(),
+                                            .getClientSupportedEncryptionAlgorithmsClientToServer(),
                                     context.getChooser()
-                                            .getServerSupportedCipherAlgorithmsClientToServer())
+                                            .getServerSupportedEncryptionAlgorithmsClientToServer())
                             .orElse(null));
 
-            context.setCipherAlgorithmServerToClient(
+            context.setEncryptionAlgorithmServerToClient(
                     AlgorithmPicker.pickAlgorithm(
                                     context.getChooser()
-                                            .getClientSupportedCipherAlgorithmsServerToClient(),
+                                            .getClientSupportedEncryptionAlgorithmsServerToClient(),
                                     context.getChooser()
-                                            .getServerSupportedCipherAlgorithmsServerToClient())
+                                            .getServerSupportedEncryptionAlgorithmsServerToClient())
                             .orElse(null));
 
             context.setServerHostKeyAlgorithm(

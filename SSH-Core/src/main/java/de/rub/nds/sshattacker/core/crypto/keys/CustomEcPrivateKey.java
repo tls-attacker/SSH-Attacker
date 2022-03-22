@@ -20,7 +20,6 @@ import java.security.spec.InvalidParameterSpecException;
 public class CustomEcPrivateKey implements ECPrivateKey {
 
     private final BigInteger privateKey;
-
     private final NamedGroup group;
 
     public CustomEcPrivateKey(BigInteger privateKey, NamedGroup group) {
@@ -30,6 +29,10 @@ public class CustomEcPrivateKey implements ECPrivateKey {
         }
         this.privateKey = privateKey;
         this.group = group;
+    }
+
+    public NamedGroup getGroup() {
+        return group;
     }
 
     @Override

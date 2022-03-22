@@ -9,7 +9,6 @@ package de.rub.nds.sshattacker.core.crypto.kex;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.CryptoConstants;
-import de.rub.nds.sshattacker.core.constants.KeyExchangeAlgorithm;
 import de.rub.nds.sshattacker.core.constants.NamedGroup;
 import de.rub.nds.sshattacker.core.crypto.keys.*;
 import java.math.BigInteger;
@@ -18,22 +17,19 @@ import org.apache.logging.log4j.Logger;
 import org.bouncycastle.math.ec.rfc7748.X25519;
 import org.bouncycastle.math.ec.rfc7748.X448;
 
-public class XCurveEcdhKeyExchange extends DhBasedKeyExchange {
+public class XCurveEcdhKeyExchange extends AbstractEcdhKeyExchange {
 
     private static final Logger LOGGER = LogManager.getLogger();
-
-    private final NamedGroup group;
 
     private CustomKeyPair<XCurveEcPrivateKey, XCurveEcPublicKey> localKeyPair;
     private XCurveEcPublicKey remotePublicKey;
 
     public XCurveEcdhKeyExchange(NamedGroup group) {
-        super();
+        super(group);
         if (!group.isRFC7748Curve()) {
             throw new IllegalArgumentException(
                     "XCurveEcdhKeyExchange does not support named group " + group);
         }
-        this.group = group;
         precompute();
     }
 
@@ -43,27 +39,6 @@ public class XCurveEcdhKeyExchange extends DhBasedKeyExchange {
         } else {
             X448.precompute();
         }
-    }
-
-    public static XCurveEcdhKeyExchange newInstance(KeyExchangeAlgorithm negotiatedKexAlgorithm) {
-        NamedGroup group;
-        switch (negotiatedKexAlgorithm) {
-            case CURVE25519_SHA256:
-            case CURVE25519_SHA256_LIBSSH_ORG:
-                group = NamedGroup.ECDH_X25519;
-                break;
-            case CURVE448_SHA512:
-                group = NamedGroup.ECDH_X448;
-                break;
-            default:
-                // TODO: Determine, whether throwing and error or continuing with a predetermined
-                // curve is better
-                LOGGER.warn(
-                        "Initializing a new XEcdhKeyExchange without an RFC7748 ECDH key exchange algorithm negotiated. Falling back to curve25519-sha256.");
-                group = NamedGroup.ECDH_X25519;
-                break;
-        }
-        return new XCurveEcdhKeyExchange(group);
     }
 
     @Override

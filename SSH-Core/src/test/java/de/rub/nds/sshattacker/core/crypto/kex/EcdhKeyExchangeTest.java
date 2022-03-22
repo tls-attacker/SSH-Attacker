@@ -120,10 +120,10 @@ public class EcdhKeyExchangeTest {
         keyExchange.setLocalKeyPair(providedPrivateKeyA.toByteArray());
         assertEquals(
                 expectedPublicKeyXA,
-                keyExchange.getLocalKeyPair().getPublic().publicKey.getFieldX().getData());
+                keyExchange.getLocalKeyPair().getPublic().getWAsPoint().getFieldX().getData());
         assertEquals(
                 expectedPublicKeyYA,
-                keyExchange.getLocalKeyPair().getPublic().publicKey.getFieldY().getData());
+                keyExchange.getLocalKeyPair().getPublic().getWAsPoint().getFieldY().getData());
         Point publicKeyB =
                 CurveFactory.getCurve(group).getPoint(providedPublicKeyXB, providedPublicKeyYB);
         keyExchange.setRemotePublicKey(

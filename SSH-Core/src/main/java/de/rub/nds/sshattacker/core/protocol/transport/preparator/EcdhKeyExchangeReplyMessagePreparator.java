@@ -9,25 +9,26 @@ package de.rub.nds.sshattacker.core.protocol.transport.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.*;
-import de.rub.nds.sshattacker.core.crypto.hash.EcdhExchangeHash;
 import de.rub.nds.sshattacker.core.crypto.hash.ExchangeHash;
-import de.rub.nds.sshattacker.core.crypto.kex.EcdhKeyExchange;
-import de.rub.nds.sshattacker.core.crypto.kex.KeyExchange;
-import de.rub.nds.sshattacker.core.crypto.keys.HostKey;
+import de.rub.nds.sshattacker.core.crypto.kex.*;
+import de.rub.nds.sshattacker.core.crypto.keys.SshPublicKey;
 import de.rub.nds.sshattacker.core.crypto.signature.SignatureFactory;
 import de.rub.nds.sshattacker.core.crypto.signature.SigningSignature;
 import de.rub.nds.sshattacker.core.crypto.util.PublicKeyHelper;
-import de.rub.nds.sshattacker.core.exceptions.AdjustmentException;
 import de.rub.nds.sshattacker.core.exceptions.CryptoException;
+import de.rub.nds.sshattacker.core.exceptions.MissingExchangeHashInputException;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.transport.message.EcdhKeyExchangeReplyMessage;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import java.nio.charset.StandardCharsets;
-import java.security.NoSuchAlgorithmException;
 import java.util.Optional;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class EcdhKeyExchangeReplyMessagePreparator
         extends SshMessagePreparator<EcdhKeyExchangeReplyMessage> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public EcdhKeyExchangeReplyMessagePreparator(
             Chooser chooser, EcdhKeyExchangeReplyMessage message) {
@@ -40,72 +41,78 @@ public class EcdhKeyExchangeReplyMessagePreparator
         prepareHostKey();
         prepareEphemeralPublicKey();
         updateExchangeHashWithSharedSecret();
+        computeExchangeHash();
         prepareSignature();
         setSessionId();
     }
 
     private void prepareHostKey() {
-        HostKey serverHostKey = chooser.getNegotiatedServerHostKey();
-        byte[] encodedServerHostKey = PublicKeyHelper.encode(serverHostKey);
-        getObject().setHostKey(encodedServerHostKey, true);
-        chooser.getContext().getExchangeHashInstance().setServerHostKey(encodedServerHostKey);
+        SshPublicKey<?, ?> serverHostKey = chooser.getNegotiatedServerHostKey();
+        chooser.getContext().setServerHostKey(serverHostKey);
+        chooser.getContext().getExchangeHashInputHolder().setServerHostKey(serverHostKey);
+        getObject().setHostKey(PublicKeyHelper.encode(serverHostKey), true);
     }
 
     private void prepareEphemeralPublicKey() {
-        if (chooser.getContext().getKeyExchangeInstance().isPresent()) {
-            KeyExchange keyExchange = chooser.getContext().getKeyExchangeInstance().get();
-            if (keyExchange instanceof EcdhKeyExchange) {
-                EcdhKeyExchange ecdhKeyExchange = (EcdhKeyExchange) keyExchange;
-                ecdhKeyExchange.generateLocalKeyPair();
-                getObject()
-                        .setEphemeralPublicKey(
-                                ecdhKeyExchange.getLocalKeyPair().getPublic().getEncoded(), true);
-                // Compute shared secret if remote public key is available
-                if (ecdhKeyExchange.getRemotePublicKey() != null) {
-                    ecdhKeyExchange.computeSharedSecret();
-                } else {
-                    raisePreparationException(
-                            "No remote public key is present, unable to compute shared secret");
-                }
-                // Update exchange hash with local public key
-                ExchangeHash exchangeHash = chooser.getContext().getExchangeHashInstance();
-                if (exchangeHash instanceof EcdhExchangeHash) {
-                    ((EcdhExchangeHash) exchangeHash)
-                            .setServerECDHPublicKey(ecdhKeyExchange.getLocalKeyPair().getPublic());
-                } else {
-                    raisePreparationException(
-                            "Exchange hash instance is not an instance of EcdhExchangeHash, unable to update exchange hash");
-                }
-            } else {
-                raisePreparationException(
-                        "Key exchange is not an instance of EcdhKeyExchange, unable to generate local keypair and compute shared secret");
-            }
+        AbstractEcdhKeyExchange keyExchange = chooser.getEcdhKeyExchange();
+        keyExchange.generateLocalKeyPair();
+        getObject()
+                .setEphemeralPublicKey(
+                        keyExchange.getLocalKeyPair().getPublic().getEncoded(), true);
+        // Compute shared secret if remote public key is available
+        if (keyExchange.getRemotePublicKey() != null) {
+            keyExchange.computeSharedSecret();
+            chooser.getContext().setSharedSecret(keyExchange.getSharedSecret());
         } else {
-            raisePreparationException(
-                    "Key exchange instance is not present, unable to generate local keypair and compute shared secret");
+            LOGGER.warn(
+                    "Unable to compute shared secret in ECDH key exchange reply message, no remote public key is present");
         }
+        // Update exchange hash with local public key
+        chooser.getContext()
+                .getExchangeHashInputHolder()
+                .setEcdhServerPublicKey(keyExchange.getLocalKeyPair().getPublic().getEncoded());
     }
 
     private void updateExchangeHashWithSharedSecret() {
-        Optional<KeyExchange> keyExchange = chooser.getContext().getKeyExchangeInstance();
-        if (keyExchange.isPresent() && keyExchange.get().isComplete()) {
+        AbstractEcdhKeyExchange keyExchange = chooser.getEcdhKeyExchange();
+        if (keyExchange.isComplete()) {
             chooser.getContext()
-                    .getExchangeHashInstance()
-                    .setSharedSecret(keyExchange.get().getSharedSecret());
+                    .getExchangeHashInputHolder()
+                    .setSharedSecret(keyExchange.getSharedSecret());
         } else {
-            raisePreparationException(
-                    "Key exchange instance is either not present or not ready yet, unable to update exchange hash with shared secret");
+            LOGGER.warn(
+                    "Unable to set shared secret in exchange hash, key exchange is still ongoing");
+        }
+    }
+
+    private void computeExchangeHash() {
+        try {
+            chooser.getContext()
+                    .setExchangeHash(
+                            ExchangeHash.computeEcdhHash(
+                                    chooser.getKeyExchangeAlgorithm(),
+                                    chooser.getContext().getExchangeHashInputHolder()));
+        } catch (MissingExchangeHashInputException e) {
+            LOGGER.warn(
+                    "Failed to compute exchange hash and update context, some inputs for exchange hash computation are missing");
+            LOGGER.debug(e);
+        } catch (CryptoException e) {
+            LOGGER.error(
+                    "Unexpected cryptographic exception occurred during exchange hash computation");
+            LOGGER.debug(e);
         }
     }
 
     private void prepareSignature() {
-        HostKey serverHostKey = chooser.getNegotiatedServerHostKey();
-        ExchangeHash exchangeHash = chooser.getContext().getExchangeHashInstance();
+        SshPublicKey<?, ?> serverHostKey = chooser.getNegotiatedServerHostKey();
+        Optional<byte[]> exchangeHash = chooser.getContext().getExchangeHash();
         SigningSignature signingSignature;
         try {
-            signingSignature = SignatureFactory.getSigningSignature(serverHostKey);
+            signingSignature =
+                    SignatureFactory.getSigningSignature(
+                            chooser.getServerHostKeyAlgorithm(), serverHostKey);
             SignatureEncoding signatureEncoding =
-                    serverHostKey.getPublicKeyAlgorithm().getSignatureEncoding();
+                    chooser.getServerHostKeyAlgorithm().getSignatureEncoding();
             byte[] encodedSignature =
                     ArrayConverter.intToBytes(
                             signatureEncoding.getName().length(),
@@ -114,7 +121,7 @@ public class EcdhKeyExchangeReplyMessagePreparator
                     ArrayConverter.concatenate(
                             encodedSignature,
                             signatureEncoding.getName().getBytes(StandardCharsets.US_ASCII));
-            byte[] rawSignature = signingSignature.sign(exchangeHash.get());
+            byte[] rawSignature = signingSignature.sign(exchangeHash.orElse(new byte[0]));
             encodedSignature =
                     ArrayConverter.concatenate(
                             encodedSignature,
@@ -122,23 +129,22 @@ public class EcdhKeyExchangeReplyMessagePreparator
                                     rawSignature.length, DataFormatConstants.STRING_SIZE_LENGTH));
             encodedSignature = ArrayConverter.concatenate(encodedSignature, rawSignature);
             getObject().setSignature(encodedSignature, true);
-        } catch (NoSuchAlgorithmException e) {
-            raisePreparationException(
-                    "Unsupported host key algorithm used during signature generation");
         } catch (CryptoException e) {
-            raisePreparationException(
-                    "Unexpected CryptoException caught during signature generation");
+            LOGGER.error(
+                    "An unexpected cryptographic exception occurred during signature generation, workflow will continue but signature is left blank");
+            LOGGER.debug(e);
+            getObject().setSignature(new byte[0], true);
         }
     }
 
     private void setSessionId() {
-        ExchangeHash exchangeHash = chooser.getContext().getExchangeHashInstance();
-        if (chooser.getContext().getSessionID().isEmpty()) {
-            try {
+        Optional<byte[]> exchangeHash = chooser.getContext().getExchangeHash();
+        if (exchangeHash.isPresent()) {
+            if (chooser.getContext().getSessionID().isEmpty()) {
                 chooser.getContext().setSessionID(exchangeHash.get());
-            } catch (AdjustmentException e) {
-                raisePreparationException(e.getMessage());
             }
+        } else {
+            LOGGER.warn("Exchange hash in context is empty, unable to set session id in context");
         }
     }
 }

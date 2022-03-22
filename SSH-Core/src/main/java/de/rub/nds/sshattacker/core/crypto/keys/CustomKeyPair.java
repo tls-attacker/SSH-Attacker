@@ -12,6 +12,7 @@ import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.util.List;
 
+/** This class represents a key pair consisting of a public and private key. */
 public class CustomKeyPair<PRIVATE extends PrivateKey, PUBLIC extends PublicKey>
         extends ModifiableVariableHolder {
 
@@ -19,6 +20,10 @@ public class CustomKeyPair<PRIVATE extends PrivateKey, PUBLIC extends PublicKey>
     private final PUBLIC publicKey;
 
     public CustomKeyPair(PRIVATE privateKey, PUBLIC publicKey) {
+        if (privateKey == null || publicKey == null) {
+            throw new IllegalArgumentException(
+                    "Unable to construct key pair with its public key being null");
+        }
         this.privateKey = privateKey;
         this.publicKey = publicKey;
     }

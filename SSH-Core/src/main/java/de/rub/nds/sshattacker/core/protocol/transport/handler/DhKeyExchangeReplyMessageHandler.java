@@ -7,11 +7,13 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.handler;
 
-import de.rub.nds.sshattacker.core.crypto.hash.DhNamedExchangeHash;
 import de.rub.nds.sshattacker.core.crypto.hash.ExchangeHash;
 import de.rub.nds.sshattacker.core.crypto.kex.DhKeyExchange;
 import de.rub.nds.sshattacker.core.crypto.kex.KeyExchange;
-import de.rub.nds.sshattacker.core.exceptions.AdjustmentException;
+import de.rub.nds.sshattacker.core.crypto.keys.SshPublicKey;
+import de.rub.nds.sshattacker.core.crypto.util.PublicKeyHelper;
+import de.rub.nds.sshattacker.core.exceptions.CryptoException;
+import de.rub.nds.sshattacker.core.exceptions.MissingExchangeHashInputException;
 import de.rub.nds.sshattacker.core.protocol.common.*;
 import de.rub.nds.sshattacker.core.protocol.transport.message.DhKeyExchangeReplyMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.parser.DhKeyExchangeReplyMessageParser;
@@ -32,71 +34,75 @@ public class DhKeyExchangeReplyMessageHandler extends SshMessageHandler<DhKeyExc
 
     @Override
     public void adjustContext() {
-        context.setKeyExchangeSignature(message.getSignature().getValue());
+        context.setServerExchangeHashSignature(message.getSignature().getValue());
         handleHostKey(message);
         updateExchangeHashWithRemotePublicKey(message);
         computeSharedSecret(message);
         updateExchangeHashWithSharedSecret();
+        computeExchangeHash();
         setSessionId();
     }
 
     private void handleHostKey(DhKeyExchangeReplyMessage message) {
-        // TODO: Implement host key types as enumeration
-        // TODO: Improve host key handling in separate class
-        context.getExchangeHashInstance().setServerHostKey(message.getHostKey().getValue());
+        SshPublicKey<?, ?> hostKey =
+                PublicKeyHelper.parse(
+                        context.getChooser().getServerHostKeyAlgorithm().getKeyFormat(),
+                        message.getHostKey().getValue());
+        context.setServerHostKey(hostKey);
+        context.getExchangeHashInputHolder().setServerHostKey(hostKey);
     }
 
     private void updateExchangeHashWithRemotePublicKey(DhKeyExchangeReplyMessage message) {
-        ExchangeHash exchangeHash = context.getExchangeHashInstance();
-        if (exchangeHash instanceof DhNamedExchangeHash) {
-            ((DhNamedExchangeHash) exchangeHash)
-                    .setServerDHPublicKey(message.getEphemeralPublicKey().getValue());
-        } else {
-            raiseAdjustmentException(
-                    "Exchange hash instance is not an instance of DhNamedExchangeHash, unable to update exchange hash");
-        }
+        context.getExchangeHashInputHolder()
+                .setDhServerPublicKey(message.getEphemeralPublicKey().getValue());
     }
 
     private void computeSharedSecret(DhKeyExchangeReplyMessage message) {
-        if (context.getKeyExchangeInstance().isPresent()) {
-            KeyExchange keyExchange = context.getKeyExchangeInstance().get();
-            if (keyExchange instanceof DhKeyExchange) {
-                DhKeyExchange dhKeyExchange = (DhKeyExchange) keyExchange;
-                dhKeyExchange.setRemotePublicKey(message.getEphemeralPublicKey().getValue());
-                if (dhKeyExchange.getLocalKeyPair() != null) {
-                    dhKeyExchange.computeSharedSecret();
-                } else {
-                    raiseAdjustmentException(
-                            "No local key pair is present, unable to compute shared secret");
-                }
-            } else {
-                raiseAdjustmentException(
-                        "Key exchange is not an instance of DhKeyExchange, unable to set remote public key and compute shared secret");
-            }
+        DhKeyExchange keyExchange = context.getChooser().getDhKeyExchange();
+        keyExchange.setRemotePublicKey(message.getEphemeralPublicKey().getValue());
+        if (keyExchange.getLocalKeyPair() != null) {
+            keyExchange.computeSharedSecret();
+            context.setSharedSecret(keyExchange.getSharedSecret());
         } else {
-            raiseAdjustmentException(
-                    "Key exchange instance is not present, unable to set remote public key and compute shared secret");
+            LOGGER.warn("No local key pair is present, unable to compute shared secret");
         }
     }
 
     private void updateExchangeHashWithSharedSecret() {
-        Optional<KeyExchange> keyExchange = context.getKeyExchangeInstance();
-        if (keyExchange.isPresent() && keyExchange.get().isComplete()) {
-            context.getExchangeHashInstance().setSharedSecret(keyExchange.get().getSharedSecret());
+        KeyExchange keyExchange = context.getChooser().getDhKeyExchange();
+        if (keyExchange.isComplete()) {
+            context.getExchangeHashInputHolder().setSharedSecret(keyExchange.getSharedSecret());
         } else {
-            raiseAdjustmentException(
-                    "Key exchange instance is either not present or not ready yet, unable to update exchange hash with shared secret");
+            LOGGER.warn(
+                    "Key exchange instance is not ready yet, unable to update exchange hash with shared secret");
+        }
+    }
+
+    private void computeExchangeHash() {
+        try {
+            context.setExchangeHash(
+                    ExchangeHash.computeDhHash(
+                            context.getChooser().getKeyExchangeAlgorithm(),
+                            context.getExchangeHashInputHolder()));
+        } catch (MissingExchangeHashInputException e) {
+            LOGGER.warn(
+                    "Failed to compute exchange hash and update context, some inputs for exchange hash computation are missing");
+            LOGGER.debug(e);
+        } catch (CryptoException e) {
+            LOGGER.error(
+                    "Unexpected cryptographic exception occurred during exchange hash computation");
+            LOGGER.debug(e);
         }
     }
 
     private void setSessionId() {
-        ExchangeHash exchangeHash = context.getExchangeHashInstance();
-        if (!context.getSessionID().isPresent()) {
-            try {
+        Optional<byte[]> exchangeHash = context.getExchangeHash();
+        if (exchangeHash.isPresent()) {
+            if (context.getSessionID().isEmpty()) {
                 context.setSessionID(exchangeHash.get());
-            } catch (AdjustmentException e) {
-                raiseAdjustmentException(e);
             }
+        } else {
+            LOGGER.warn("Exchange hash in context is empty, unable to set session id in context");
         }
     }
 

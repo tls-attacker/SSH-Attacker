@@ -58,7 +58,10 @@ public class KeyFetcher {
 
         if (receivedMessages.size() > 0
                 && receivedMessages.get(0) instanceof RsaKeyExchangePubkeyMessage) {
-            return ((RsaKeyExchangePubkeyMessage) receivedMessages.get(0)).getPublicKey();
+            return (RSAPublicKey)
+                    ((RsaKeyExchangePubkeyMessage) receivedMessages.get(0))
+                            .getPublicKey()
+                            .getPublicKey();
         } else {
             LOGGER.warn("Could not fetch server's RSA host key, did not receive PubkeyMessage.");
             return null;

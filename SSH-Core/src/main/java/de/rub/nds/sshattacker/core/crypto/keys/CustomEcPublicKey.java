@@ -21,9 +21,8 @@ import java.security.spec.InvalidParameterSpecException;
 
 public class CustomEcPublicKey implements ECPublicKey {
 
-    public Point publicKey;
-
-    public NamedGroup group;
+    private final Point publicKey;
+    private final NamedGroup group;
 
     public CustomEcPublicKey(Point publicKey, NamedGroup group) {
         if (!group.isStandardCurve()) {
@@ -32,6 +31,10 @@ public class CustomEcPublicKey implements ECPublicKey {
         }
         this.publicKey = publicKey;
         this.group = group;
+    }
+
+    public NamedGroup getGroup() {
+        return group;
     }
 
     public Point getWAsPoint() {

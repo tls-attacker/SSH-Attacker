@@ -12,8 +12,9 @@ import de.rub.nds.sshattacker.core.connection.AliasedConnection;
 import de.rub.nds.sshattacker.core.connection.Channel;
 import de.rub.nds.sshattacker.core.constants.*;
 import de.rub.nds.sshattacker.core.constants.PacketLayerType;
-import de.rub.nds.sshattacker.core.crypto.hash.ExchangeHash;
-import de.rub.nds.sshattacker.core.crypto.kex.KeyExchange;
+import de.rub.nds.sshattacker.core.crypto.hash.ExchangeHashInputHolder;
+import de.rub.nds.sshattacker.core.crypto.kex.*;
+import de.rub.nds.sshattacker.core.crypto.keys.SshPublicKey;
 import de.rub.nds.sshattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.sshattacker.core.exceptions.TransportHandlerConnectException;
 import de.rub.nds.sshattacker.core.packet.layer.AbstractPacketLayer;
@@ -25,6 +26,7 @@ import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import de.rub.nds.tlsattacker.transport.TransportHandlerFactory;
 import java.io.IOException;
+import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
@@ -66,12 +68,14 @@ public class SshContext {
     private String clientVersion;
     /** Client comment sent alongside protocol and software version */
     private String clientComment;
+    /** End-of-message sequence of the clients' VersionExchangeMessage */
+    private String clientEndOfMessageSequence;
     /** Server protocol and software version string starting with the SSH version (SSH-2.0-...) */
     private String serverVersion;
     /** Server comment sent alongside protocol and software version */
     private String serverComment;
-    /** Defines the end of the VersionExchangeMessage */
-    private String endofMessageSequence;
+    /** End-of-message sequence of the servers' VersionExchangeMessage */
+    private String serverEndOfMessageSequence;
 
     // endregion
 
@@ -89,13 +93,13 @@ public class SshContext {
     /** List of host key algorithms supported by the server */
     private List<PublicKeyAlgorithm> serverSupportedHostKeyAlgorithms;
     /** List of encryption algorithms (client to server) supported by the client */
-    private List<EncryptionAlgorithm> clientSupportedCipherAlgorithmsClientToServer;
+    private List<EncryptionAlgorithm> clientSupportedEncryptionAlgorithmsClientToServer;
     /** List of encryption algorithms (server to client) supported by the client */
-    private List<EncryptionAlgorithm> clientSupportedCipherAlgorithmsServerToClient;
+    private List<EncryptionAlgorithm> clientSupportedEncryptionAlgorithmsServerToClient;
     /** List of encryption algorithms (client to server) supported by the server */
-    private List<EncryptionAlgorithm> serverSupportedCipherAlgorithmsClientToServer;
+    private List<EncryptionAlgorithm> serverSupportedEncryptionAlgorithmsClientToServer;
     /** List of encryption algorithms (server to client) supported by the server */
-    private List<EncryptionAlgorithm> serverSupportedCipherAlgorithmsServerToClient;
+    private List<EncryptionAlgorithm> serverSupportedEncryptionAlgorithmsServerToClient;
     /** List of MAC algorithms (client to server) supported by the client */
     private List<MacAlgorithm> clientSupportedMacAlgorithmsClientToServer;
     /** List of MAC algorithms (server to client) supported by the client */
@@ -139,10 +143,10 @@ public class SshContext {
     private KeyExchangeAlgorithm keyExchangeAlgorithm;
     /** Negotiated host key algorithm */
     private PublicKeyAlgorithm serverHostKeyAlgorithm;
-    /** Negotiated cipher algorithm (client to server) */
-    private EncryptionAlgorithm cipherAlgorithmClientToServer;
-    /** Negotiated cipher algorithm (server to client) */
-    private EncryptionAlgorithm cipherAlgorithmServerToClient;
+    /** Negotiated encryption algorithm (client to server) */
+    private EncryptionAlgorithm encryptionAlgorithmClientToServer;
+    /** Negotiated encryption algorithm (server to client) */
+    private EncryptionAlgorithm encryptionAlgorithmServerToClient;
     /** Negotiated MAC algorithm (client to server) */
     private MacAlgorithm macAlgorithmClientToServer;
     /** Negotiated MAC algorithm (server to client) */
@@ -154,28 +158,33 @@ public class SshContext {
     // endregion
 
     // region Key Exchange
-    /**
-     * An ongoing or already completed key exchange which can be used to generate a key pair or
-     * compute the shared secret
-     */
-    private KeyExchange keyExchangeInstance;
-    /** Type of the servers' host key */
-    private PublicKeyAlgorithm hostKeyType;
+    /** Key exchange instance for static DH key exchange method(s) */
+    private DhKeyExchange dhKeyExchangeInstance;
+    /** Key exchange instance for DH key exchange method(s) with group exchange */
+    private DhKeyExchange dhGexKeyExchangeInstance;
+    /** Key exchange instance for ECDH key exchange method(s) (incl. X curve ECDH) */
+    private AbstractEcdhKeyExchange ecdhKeyExchangeInstance;
+    /** Key exchange instance for RSA key exchange method(s) */
+    private RsaKeyExchange rsaKeyExchangeInstance;
+
     /** Host key of the server */
-    // TODO: Implement host key as abstract class
-    private byte[] serverHostKey;
-    /** Signature generated by the server to authenticate the key exchange */
-    private byte[] keyExchangeSignature;
+    private SshPublicKey<?, ?> serverHostKey;
+    /** Signature generated by the server over the exchange hash to authenticate the key exchange */
+    private byte[] serverExchangeHashSignature;
     // endregion
 
     // region Exchange Hash and Cryptographic Keys
-    /** Instance of the ExchangeHash class for exchange hash computation */
-    private ExchangeHash exchangeHash;
+    /** Holder instance for the exchange hash input values */
+    private ExchangeHashInputHolder exchangeHashInputHolder;
+    /** Exchange hash of the most recent key exchange */
+    private byte[] exchangeHash;
     /**
      * Unique identifier for this session. This is equal to the first computed exchange hash and
      * never changes
      */
     private byte[] sessionID;
+    /** The shared secret established by the negotiated key exchange method */
+    private BigInteger sharedSecret;
     /** Initial IV (client to server) derived from the shared secret during the protocol */
     private byte[] initialIvClientToServer;
     /** Initial IV (server to client) derived from the shared secret during the protocol */
@@ -190,13 +199,8 @@ public class SshContext {
     private byte[] integrityKeyServerToClient;
     // endregion
 
-    // region Authentication Protocol
-    /** Authentication method used to authenticate against the server */
-    private AuthenticationMethod authenticationMethod;
-    // endregion
-
     // region Connection Protocol
-    private HashMap<Integer, Channel> channels = new HashMap<>();
+    private final HashMap<Integer, Channel> channels = new HashMap<>();
     // TODO: Implement channel requests in such a way that allows specification within the XML file
     // endregion
 
@@ -236,7 +240,7 @@ public class SshContext {
     public void init(Config config, AliasedConnection connection) {
         this.config = config;
         this.connection = connection;
-        exchangeHash = new ExchangeHash(this);
+        exchangeHashInputHolder = new ExchangeHashInputHolder();
 
         // TODO: Initial packet layer type from config
         packetLayerType = PacketLayerType.BLOB;
@@ -377,6 +381,10 @@ public class SshContext {
         return Optional.ofNullable(clientComment);
     }
 
+    public Optional<String> getClientEndOfMessageSequence() {
+        return Optional.ofNullable(clientEndOfMessageSequence);
+    }
+
     public Optional<String> getServerVersion() {
         return Optional.ofNullable(serverVersion);
     }
@@ -385,16 +393,8 @@ public class SshContext {
         return Optional.ofNullable(serverComment);
     }
 
-    public Optional<byte[]> getClientCookie() {
-        return Optional.ofNullable(clientCookie);
-    }
-
-    public Optional<byte[]> getServerCookie() {
-        return Optional.ofNullable(serverCookie);
-    }
-
-    public Optional<String> getEndofMessageSequence() {
-        return Optional.ofNullable(endofMessageSequence);
+    public Optional<String> getServerEndOfMessageSequence() {
+        return Optional.ofNullable(serverEndOfMessageSequence);
     }
 
     // endregion
@@ -407,6 +407,10 @@ public class SshContext {
         this.clientComment = clientComment;
     }
 
+    public void setClientEndOfMessageSequence(String clientEndOfMessageSequence) {
+        this.clientEndOfMessageSequence = clientEndOfMessageSequence;
+    }
+
     public void setServerVersion(String serverVersion) {
         this.serverVersion = serverVersion;
     }
@@ -415,20 +419,20 @@ public class SshContext {
         this.serverComment = serverComment;
     }
 
-    public void setClientCookie(byte[] clientCookie) {
-        this.clientCookie = clientCookie;
-    }
-
-    public void setServerCookie(byte[] serverCookie) {
-        this.serverCookie = serverCookie;
-    }
-
-    public void setEndofMessageSequence(String endMessageSequence) {
-        this.endofMessageSequence = endMessageSequence;
+    public void setServerEndOfMessageSequence(String serverEndOfMessageSequence) {
+        this.serverEndOfMessageSequence = serverEndOfMessageSequence;
     }
     // endregion
 
     // region Getters for Key Exchange Initialization Fields
+    public Optional<byte[]> getClientCookie() {
+        return Optional.ofNullable(clientCookie);
+    }
+
+    public Optional<byte[]> getServerCookie() {
+        return Optional.ofNullable(serverCookie);
+    }
+
     public Optional<List<KeyExchangeAlgorithm>> getClientSupportedKeyExchangeAlgorithms() {
         return Optional.ofNullable(clientSupportedKeyExchangeAlgorithms);
     }
@@ -445,20 +449,24 @@ public class SshContext {
         return Optional.ofNullable(serverSupportedHostKeyAlgorithms);
     }
 
-    public Optional<List<EncryptionAlgorithm>> getClientSupportedCipherAlgorithmsClientToServer() {
-        return Optional.ofNullable(clientSupportedCipherAlgorithmsClientToServer);
+    public Optional<List<EncryptionAlgorithm>>
+            getClientSupportedEncryptionAlgorithmsClientToServer() {
+        return Optional.ofNullable(clientSupportedEncryptionAlgorithmsClientToServer);
     }
 
-    public Optional<List<EncryptionAlgorithm>> getClientSupportedCipherAlgorithmsServerToClient() {
-        return Optional.ofNullable(clientSupportedCipherAlgorithmsServerToClient);
+    public Optional<List<EncryptionAlgorithm>>
+            getClientSupportedEncryptionAlgorithmsServerToClient() {
+        return Optional.ofNullable(clientSupportedEncryptionAlgorithmsServerToClient);
     }
 
-    public Optional<List<EncryptionAlgorithm>> getServerSupportedCipherAlgorithmsServerToClient() {
-        return Optional.ofNullable(serverSupportedCipherAlgorithmsServerToClient);
+    public Optional<List<EncryptionAlgorithm>>
+            getServerSupportedEncryptionAlgorithmsServerToClient() {
+        return Optional.ofNullable(serverSupportedEncryptionAlgorithmsServerToClient);
     }
 
-    public Optional<List<EncryptionAlgorithm>> getServerSupportedCipherAlgorithmsClientToServer() {
-        return Optional.ofNullable(serverSupportedCipherAlgorithmsClientToServer);
+    public Optional<List<EncryptionAlgorithm>>
+            getServerSupportedEncryptionAlgorithmsClientToServer() {
+        return Optional.ofNullable(serverSupportedEncryptionAlgorithmsClientToServer);
     }
 
     public Optional<List<MacAlgorithm>> getClientSupportedMacAlgorithmsClientToServer() {
@@ -527,6 +535,14 @@ public class SshContext {
 
     // endregion
     // region Setters for Key Exchange Initialization Fields
+    public void setClientCookie(byte[] clientCookie) {
+        this.clientCookie = clientCookie;
+    }
+
+    public void setServerCookie(byte[] serverCookie) {
+        this.serverCookie = serverCookie;
+    }
+
     public void setClientSupportedKeyExchangeAlgorithms(
             List<KeyExchangeAlgorithm> clientSupportedKeyExchangeAlgorithms) {
         this.clientSupportedKeyExchangeAlgorithms = clientSupportedKeyExchangeAlgorithms;
@@ -547,28 +563,28 @@ public class SshContext {
         this.serverSupportedHostKeyAlgorithms = serverSupportedHostKeyAlgorithms;
     }
 
-    public void setClientSupportedCipherAlgorithmsClientToServer(
-            List<EncryptionAlgorithm> clientSupportedCipherAlgorithmsClientToServer) {
-        this.clientSupportedCipherAlgorithmsClientToServer =
-                clientSupportedCipherAlgorithmsClientToServer;
+    public void setClientSupportedEncryptionAlgorithmsClientToServer(
+            List<EncryptionAlgorithm> clientSupportedEncryptionAlgorithmsClientToServer) {
+        this.clientSupportedEncryptionAlgorithmsClientToServer =
+                clientSupportedEncryptionAlgorithmsClientToServer;
     }
 
-    public void setClientSupportedCipherAlgorithmsServerToClient(
-            List<EncryptionAlgorithm> clientSupportedCipherAlgorithmsServerToClient) {
-        this.clientSupportedCipherAlgorithmsServerToClient =
-                clientSupportedCipherAlgorithmsServerToClient;
+    public void setClientSupportedEncryptionAlgorithmsServerToClient(
+            List<EncryptionAlgorithm> clientSupportedEncryptionAlgorithmsServerToClient) {
+        this.clientSupportedEncryptionAlgorithmsServerToClient =
+                clientSupportedEncryptionAlgorithmsServerToClient;
     }
 
-    public void setServerSupportedCipherAlgorithmsServerToClient(
-            List<EncryptionAlgorithm> serverSupportedCipherAlgorithmsServerToClient) {
-        this.serverSupportedCipherAlgorithmsServerToClient =
-                serverSupportedCipherAlgorithmsServerToClient;
+    public void setServerSupportedEncryptionAlgorithmsServerToClient(
+            List<EncryptionAlgorithm> serverSupportedEncryptionAlgorithmsServerToClient) {
+        this.serverSupportedEncryptionAlgorithmsServerToClient =
+                serverSupportedEncryptionAlgorithmsServerToClient;
     }
 
-    public void setServerSupportedCipherAlgorithmsClientToServer(
-            List<EncryptionAlgorithm> serverSupportedCipherAlgorithmsClientToServer) {
-        this.serverSupportedCipherAlgorithmsClientToServer =
-                serverSupportedCipherAlgorithmsClientToServer;
+    public void setServerSupportedEncryptionAlgorithmsClientToServer(
+            List<EncryptionAlgorithm> serverSupportedEncryptionAlgorithmsClientToServer) {
+        this.serverSupportedEncryptionAlgorithmsClientToServer =
+                serverSupportedEncryptionAlgorithmsClientToServer;
     }
 
     public void setClientSupportedMacAlgorithmsClientToServer(
@@ -668,12 +684,12 @@ public class SshContext {
         return Optional.ofNullable(serverHostKeyAlgorithm);
     }
 
-    public Optional<EncryptionAlgorithm> getCipherAlgorithmClientToServer() {
-        return Optional.ofNullable(cipherAlgorithmClientToServer);
+    public Optional<EncryptionAlgorithm> getEncryptionAlgorithmClientToServer() {
+        return Optional.ofNullable(encryptionAlgorithmClientToServer);
     }
 
-    public Optional<EncryptionAlgorithm> getCipherAlgorithmServerToClient() {
-        return Optional.ofNullable(cipherAlgorithmServerToClient);
+    public Optional<EncryptionAlgorithm> getEncryptionAlgorithmServerToClient() {
+        return Optional.ofNullable(encryptionAlgorithmServerToClient);
     }
 
     public Optional<MacAlgorithm> getMacAlgorithmClientToServer() {
@@ -702,14 +718,14 @@ public class SshContext {
         this.serverHostKeyAlgorithm = serverHostKeyAlgorithm;
     }
 
-    public void setCipherAlgorithmClientToServer(
-            EncryptionAlgorithm cipherAlgorithmClientToServer) {
-        this.cipherAlgorithmClientToServer = cipherAlgorithmClientToServer;
+    public void setEncryptionAlgorithmClientToServer(
+            EncryptionAlgorithm encryptionAlgorithmClientToServer) {
+        this.encryptionAlgorithmClientToServer = encryptionAlgorithmClientToServer;
     }
 
-    public void setCipherAlgorithmServerToClient(
-            EncryptionAlgorithm cipherAlgorithmServerToClient) {
-        this.cipherAlgorithmServerToClient = cipherAlgorithmServerToClient;
+    public void setEncryptionAlgorithmServerToClient(
+            EncryptionAlgorithm encryptionAlgorithmServerToClient) {
+        this.encryptionAlgorithmServerToClient = encryptionAlgorithmServerToClient;
     }
 
     public void setMacAlgorithmClientToServer(MacAlgorithm macAlgorithmClientToServer) {
@@ -733,49 +749,73 @@ public class SshContext {
     // endregion
 
     // region Getters for Key Exchange Fields
-    public Optional<KeyExchange> getKeyExchangeInstance() {
-        return Optional.ofNullable(keyExchangeInstance);
+    public Optional<DhKeyExchange> getDhKeyExchangeInstance() {
+        return Optional.ofNullable(dhKeyExchangeInstance);
     }
 
-    public Optional<PublicKeyAlgorithm> getHostKeyType() {
-        return Optional.ofNullable(hostKeyType);
+    public Optional<DhKeyExchange> getDhGexKeyExchangeInstance() {
+        return Optional.ofNullable(dhGexKeyExchangeInstance);
     }
 
-    public Optional<byte[]> getServerHostKey() {
+    public Optional<AbstractEcdhKeyExchange> getEcdhKeyExchangeInstance() {
+        return Optional.ofNullable(ecdhKeyExchangeInstance);
+    }
+
+    public Optional<RsaKeyExchange> getRsaKeyExchangeInstance() {
+        return Optional.ofNullable(rsaKeyExchangeInstance);
+    }
+
+    public Optional<SshPublicKey<?, ?>> getServerHostKey() {
         return Optional.ofNullable(serverHostKey);
     }
 
-    public Optional<byte[]> getKeyExchangeSignature() {
-        return Optional.ofNullable(keyExchangeSignature);
+    public Optional<byte[]> getServerExchangeHashSignature() {
+        return Optional.ofNullable(serverExchangeHashSignature);
     }
 
     // endregion
     // region Setters for Key Exchange Fields
-    public void setKeyExchangeInstance(KeyExchange keyExchangeInstance) {
-        this.keyExchangeInstance = keyExchangeInstance;
+    public void setDhKeyExchangeInstance(DhKeyExchange dhKeyExchangeInstance) {
+        this.dhKeyExchangeInstance = dhKeyExchangeInstance;
     }
 
-    public void setHostKeyType(PublicKeyAlgorithm hostKeyType) {
-        this.hostKeyType = hostKeyType;
+    public void setDhGexKeyExchangeInstance(DhKeyExchange dhGexKeyExchangeInstance) {
+        this.dhGexKeyExchangeInstance = dhGexKeyExchangeInstance;
     }
 
-    public void setServerHostKey(byte[] serverHostKey) {
+    public void setEcdhKeyExchangeInstance(AbstractEcdhKeyExchange ecdhKeyExchangeInstance) {
+        this.ecdhKeyExchangeInstance = ecdhKeyExchangeInstance;
+    }
+
+    public void setRsaKeyExchangeInstance(RsaKeyExchange rsaKeyExchangeInstance) {
+        this.rsaKeyExchangeInstance = rsaKeyExchangeInstance;
+    }
+
+    public void setServerHostKey(SshPublicKey<?, ?> serverHostKey) {
         this.serverHostKey = serverHostKey;
     }
 
-    public void setKeyExchangeSignature(byte[] keyExchangeSignature) {
-        this.keyExchangeSignature = keyExchangeSignature;
+    public void setServerExchangeHashSignature(byte[] serverExchangeHashSignature) {
+        this.serverExchangeHashSignature = serverExchangeHashSignature;
     }
 
     // endregion
 
     // region Getters for Exchange Hash and Cryptographic Keys
-    public ExchangeHash getExchangeHashInstance() {
-        return exchangeHash;
+    public ExchangeHashInputHolder getExchangeHashInputHolder() {
+        return exchangeHashInputHolder;
+    }
+
+    public Optional<byte[]> getExchangeHash() {
+        return Optional.ofNullable(exchangeHash);
     }
 
     public Optional<byte[]> getSessionID() {
         return Optional.ofNullable(sessionID);
+    }
+
+    public Optional<BigInteger> getSharedSecret() {
+        return Optional.ofNullable(sharedSecret);
     }
 
     public Optional<byte[]> getInitialIvClientToServer() {
@@ -804,12 +844,16 @@ public class SshContext {
 
     // endregion
     // region Setters for Exchange Hash and Cryptographic Keys
-    public void setExchangeHashInstance(ExchangeHash exchangeHash) {
+    public void setExchangeHash(byte[] exchangeHash) {
         this.exchangeHash = exchangeHash;
     }
 
     public void setSessionID(byte[] sessionID) {
         this.sessionID = sessionID;
+    }
+
+    public void setSharedSecret(BigInteger sharedSecret) {
+        this.sharedSecret = sharedSecret;
     }
 
     public void setInitialIvClientToServer(byte[] initialIvClientToServer) {
@@ -834,19 +878,6 @@ public class SshContext {
 
     public void setIntegrityKeyServerToClient(byte[] integrityKeyServerToClient) {
         this.integrityKeyServerToClient = integrityKeyServerToClient;
-    }
-
-    // endregion
-
-    // region Getters for Authentication Protocol Fields
-    public Optional<AuthenticationMethod> getAuthenticationMethod() {
-        return Optional.ofNullable(authenticationMethod);
-    }
-
-    // endregion
-    // region Setters for Authentication Protocol Fields
-    public void setAuthenticationMethod(AuthenticationMethod authenticationMethod) {
-        this.authenticationMethod = authenticationMethod;
     }
 
     // endregion

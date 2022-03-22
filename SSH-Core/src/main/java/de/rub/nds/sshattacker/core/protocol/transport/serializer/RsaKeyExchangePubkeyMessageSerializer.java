@@ -27,8 +27,8 @@ public class RsaKeyExchangePubkeyMessageSerializer
     }
 
     public void serializeTransientPublicKey() {
-        LOGGER.debug("Transient public key: " + message.getTransientPubkey().getValue());
-        appendBytes(message.getTransientPubkey().getValue());
+        LOGGER.debug("Transient public key: " + message.getTransientPublicKey());
+        appendBytes(message.getTransientPublicKey().getValue());
     }
 
     @Override

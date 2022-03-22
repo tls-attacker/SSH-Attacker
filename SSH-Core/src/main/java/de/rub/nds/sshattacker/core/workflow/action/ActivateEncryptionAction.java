@@ -15,41 +15,24 @@ import de.rub.nds.sshattacker.core.packet.cipher.keys.KeySet;
 import de.rub.nds.sshattacker.core.packet.cipher.keys.KeySetGenerator;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.state.State;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class ActivateEncryptionAction extends ConnectionBoundAction {
 
     @Override
     public void execute(State state) throws WorkflowExecutionException {
         SshContext context = state.getSshContext(getConnectionAlias());
+        Chooser chooser = context.getChooser();
         KeySet keySet = KeySetGenerator.generateKeySet(context);
-        EncryptionAlgorithm outEnc =
-                context.isClient()
-                        ? context.getCipherAlgorithmClientToServer()
-                                .orElseThrow(WorkflowExecutionException::new)
-                        : context.getCipherAlgorithmServerToClient()
-                                .orElseThrow(WorkflowExecutionException::new);
-        EncryptionAlgorithm inEnc =
-                context.isClient()
-                        ? context.getCipherAlgorithmServerToClient()
-                                .orElseThrow(WorkflowExecutionException::new)
-                        : context.getCipherAlgorithmClientToServer()
-                                .orElseThrow(WorkflowExecutionException::new);
-        MacAlgorithm outMac =
-                context.isClient()
-                        ? context.getMacAlgorithmClientToServer()
-                                .orElseThrow(WorkflowExecutionException::new)
-                        : context.getMacAlgorithmServerToClient()
-                                .orElseThrow(WorkflowExecutionException::new);
-        MacAlgorithm inMac =
-                context.isClient()
-                        ? context.getMacAlgorithmServerToClient()
-                                .orElseThrow(WorkflowExecutionException::new)
-                        : context.getMacAlgorithmClientToServer()
-                                .orElseThrow(WorkflowExecutionException::new);
 
+        EncryptionAlgorithm outEnc = chooser.getSendEncryptionAlgorithm();
+        MacAlgorithm outMac = chooser.getSendMacAlgorithm();
         context.getPacketLayer()
                 .updateEncryptionCipher(
                         PacketCipherFactory.getPacketCipher(context, keySet, outEnc, outMac));
+
+        EncryptionAlgorithm inEnc = chooser.getReceiveEncryptionAlgorithm();
+        MacAlgorithm inMac = chooser.getReceiveMacAlgorithm();
         context.getPacketLayer()
                 .updateDecryptionCipher(
                         PacketCipherFactory.getPacketCipher(context, keySet, inEnc, inMac));
