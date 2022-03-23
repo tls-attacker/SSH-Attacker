@@ -9,16 +9,16 @@ package de.rub.nds.sshattacker.core.crypto.keys.serializer;
 
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.constants.PublicKeyFormat;
+import de.rub.nds.sshattacker.core.crypto.keys.CustomRsaPublicKey;
 import de.rub.nds.sshattacker.core.protocol.common.Serializer;
 import java.nio.charset.StandardCharsets;
-import java.security.interfaces.RSAPublicKey;
 
 /** Serializer class to encode an RSA public key to the ssh-rsa format. */
-public class RsaPublicKeySerializer extends Serializer<RSAPublicKey> {
+public class RsaPublicKeySerializer extends Serializer<CustomRsaPublicKey> {
 
-    private final RSAPublicKey publicKey;
+    private final CustomRsaPublicKey publicKey;
 
-    public RsaPublicKeySerializer(RSAPublicKey publicKey) {
+    public RsaPublicKeySerializer(CustomRsaPublicKey publicKey) {
         this.publicKey = publicKey;
     }
 

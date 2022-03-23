@@ -7,14 +7,29 @@
  */
 package de.rub.nds.sshattacker.core.crypto.keys;
 
+import de.rub.nds.modifiablevariable.util.UnformattedByteArrayAdapter;
 import de.rub.nds.sshattacker.core.constants.CryptoConstants;
 import de.rub.nds.sshattacker.core.constants.NamedGroup;
-import java.security.PublicKey;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-public class XCurveEcPublicKey implements PublicKey {
+/**
+ * A serializable elliptic curve public key for X curves (Curve 25519 and Curve 448) used in the
+ * X25519 / X448 key exchange.
+ */
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
+public class XCurveEcPublicKey extends CustomPublicKey {
 
-    private final NamedGroup group;
-    private final byte[] coordinate;
+    private NamedGroup group;
+
+    @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
+    private byte[] coordinate;
+
+    @SuppressWarnings("unused")
+    public XCurveEcPublicKey() {}
 
     public XCurveEcPublicKey(byte[] coordinate, NamedGroup group) {
         if (!group.isRFC7748Curve()) {
@@ -32,12 +47,20 @@ public class XCurveEcPublicKey implements PublicKey {
         this.coordinate = coordinate;
     }
 
+    public NamedGroup getGroup() {
+        return group;
+    }
+
+    public void setGroup(NamedGroup group) {
+        this.group = group;
+    }
+
     public byte[] getCoordinate() {
         return coordinate;
     }
 
-    public NamedGroup getGroup() {
-        return group;
+    public void setCoordinate(byte[] coordinate) {
+        this.coordinate = coordinate;
     }
 
     @Override
@@ -47,7 +70,7 @@ public class XCurveEcPublicKey implements PublicKey {
 
     @Override
     public String getFormat() {
-        return "None";
+        return "Octet";
     }
 
     @Override

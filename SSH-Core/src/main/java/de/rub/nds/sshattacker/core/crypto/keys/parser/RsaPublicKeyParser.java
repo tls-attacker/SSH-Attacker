@@ -9,16 +9,16 @@ package de.rub.nds.sshattacker.core.crypto.keys.parser;
 
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.constants.PublicKeyFormat;
+import de.rub.nds.sshattacker.core.crypto.keys.CustomRsaPrivateKey;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomRsaPublicKey;
 import de.rub.nds.sshattacker.core.crypto.keys.SshPublicKey;
 import de.rub.nds.sshattacker.core.protocol.common.Parser;
-import java.security.interfaces.RSAPrivateKey;
-import java.security.interfaces.RSAPublicKey;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /** Parser class to parse an RSA public key in the ssh-rsa format. */
-public class RsaPublicKeyParser extends Parser<SshPublicKey<RSAPublicKey, RSAPrivateKey>> {
+public class RsaPublicKeyParser
+        extends Parser<SshPublicKey<CustomRsaPublicKey, CustomRsaPrivateKey>> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -27,7 +27,7 @@ public class RsaPublicKeyParser extends Parser<SshPublicKey<RSAPublicKey, RSAPri
     }
 
     @Override
-    public SshPublicKey<RSAPublicKey, RSAPrivateKey> parse() {
+    public SshPublicKey<CustomRsaPublicKey, CustomRsaPrivateKey> parse() {
         CustomRsaPublicKey publicKey = new CustomRsaPublicKey();
         // The ssh-rsa format specifies the ssh-rsa to be part of the key
         int formatLength = parseIntField(DataFormatConstants.INT32_SIZE);
@@ -38,13 +38,11 @@ public class RsaPublicKeyParser extends Parser<SshPublicKey<RSAPublicKey, RSAPri
                             + format
                             + "'. Parsing will continue but may not yield the expected results.");
         }
-        publicKey.setPublicExponentLength(parseIntField(DataFormatConstants.INT32_SIZE));
-        publicKey.setPublicExponent(
-                parseBigIntField(publicKey.getPublicExponentLength().getValue()));
+        int publicExponentLength = parseIntField(DataFormatConstants.INT32_SIZE);
+        publicKey.setPublicExponent(parseBigIntField(publicExponentLength));
 
-        publicKey.setModulusLength(parseIntField(DataFormatConstants.INT32_SIZE));
-        // Length should be adjusted, in case the modulus starts with 00 byte(s)
-        publicKey.setModulus(parseBigIntField(publicKey.getModulusLength().getValue()), true);
+        int modulusLength = parseIntField(DataFormatConstants.INT32_SIZE);
+        publicKey.setModulus(parseBigIntField(modulusLength));
 
         return new SshPublicKey<>(PublicKeyFormat.SSH_RSA, publicKey);
     }

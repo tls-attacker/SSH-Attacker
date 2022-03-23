@@ -16,43 +16,57 @@ import java.security.interfaces.ECPrivateKey;
 import java.security.spec.ECGenParameterSpec;
 import java.security.spec.ECParameterSpec;
 import java.security.spec.InvalidParameterSpecException;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
 
-public class CustomEcPrivateKey implements ECPrivateKey {
+/**
+ * A serializable elliptic curve private key used in various EC-based algorithms like ECDH and
+ * ECDSA.
+ */
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
+public class CustomEcPrivateKey extends CustomPrivateKey implements ECPrivateKey {
 
-    private final BigInteger privateKey;
-    private final NamedGroup group;
+    private NamedGroup group;
+    private BigInteger privateKey;
+
+    @SuppressWarnings("unused")
+    private CustomEcPrivateKey() {}
 
     public CustomEcPrivateKey(BigInteger privateKey, NamedGroup group) {
         if (!group.isStandardCurve()) {
             throw new IllegalArgumentException(
                     "CustomEcPrivateKey does not support named group " + group);
         }
-        this.privateKey = privateKey;
         this.group = group;
+        this.privateKey = privateKey;
     }
 
     public NamedGroup getGroup() {
         return group;
     }
 
-    @Override
-    public BigInteger getS() {
+    public void setGroup(NamedGroup group) {
+        this.group = group;
+    }
+
+    public BigInteger getPrivateKey() {
         return privateKey;
     }
 
-    @Override
-    public String getAlgorithm() {
-        return "EC";
+    public void setPrivateKey(BigInteger privateKey) {
+        this.privateKey = privateKey;
     }
 
-    @Override
-    public String getFormat() {
-        return "None";
+    public CustomEcPrivateKey parse(byte[] encoded, NamedGroup group) {
+        return new CustomEcPrivateKey(new BigInteger(1, encoded), group);
     }
 
+    // Interface methods
     @Override
-    public byte[] getEncoded() {
-        return ArrayConverter.bigIntegerToByteArray(privateKey);
+    public BigInteger getS() {
+        return privateKey;
     }
 
     @Override
@@ -66,7 +80,18 @@ public class CustomEcPrivateKey implements ECPrivateKey {
         }
     }
 
-    public CustomEcPrivateKey parse(byte[] encoded, NamedGroup group) {
-        return new CustomEcPrivateKey(new BigInteger(encoded), group);
+    @Override
+    public String getAlgorithm() {
+        return "EC";
+    }
+
+    @Override
+    public String getFormat() {
+        return "Octet";
+    }
+
+    @Override
+    public byte[] getEncoded() {
+        return ArrayConverter.bigIntegerToByteArray(privateKey);
     }
 }

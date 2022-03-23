@@ -9,17 +9,17 @@ package de.rub.nds.sshattacker.core.crypto.keys.parser;
 
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.constants.PublicKeyFormat;
+import de.rub.nds.sshattacker.core.crypto.keys.CustomDsaPrivateKey;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomDsaPublicKey;
 import de.rub.nds.sshattacker.core.crypto.keys.SshPublicKey;
 import de.rub.nds.sshattacker.core.protocol.common.Parser;
 import java.nio.charset.StandardCharsets;
-import java.security.interfaces.DSAPrivateKey;
-import java.security.interfaces.DSAPublicKey;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /** Parser class to parse an DSA public key in the ssh-dss format. */
-public class DsaPublicKeyParser extends Parser<SshPublicKey<DSAPublicKey, DSAPrivateKey>> {
+public class DsaPublicKeyParser
+        extends Parser<SshPublicKey<CustomDsaPublicKey, CustomDsaPrivateKey>> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -28,7 +28,7 @@ public class DsaPublicKeyParser extends Parser<SshPublicKey<DSAPublicKey, DSAPri
     }
 
     @Override
-    public SshPublicKey<DSAPublicKey, DSAPrivateKey> parse() {
+    public SshPublicKey<CustomDsaPublicKey, CustomDsaPrivateKey> parse() {
         CustomDsaPublicKey publicKey = new CustomDsaPublicKey();
         // The ssh-dss format specified the ssh-dss to be part of the encoded key
         int formatLength = parseIntField(DataFormatConstants.STRING_SIZE_LENGTH);
@@ -39,14 +39,14 @@ public class DsaPublicKeyParser extends Parser<SshPublicKey<DSAPublicKey, DSAPri
                             + format
                             + "'. Parsing will continue but may not yield the expected results.");
         }
-        publicKey.setPLength(parseIntField(DataFormatConstants.MPINT_SIZE_LENGTH));
-        publicKey.setP(parseBigIntField(publicKey.getPLength().getValue()));
-        publicKey.setQLength(parseIntField(DataFormatConstants.MPINT_SIZE_LENGTH));
-        publicKey.setQ(parseBigIntField(publicKey.getQLength().getValue()));
-        publicKey.setGLength(parseIntField(DataFormatConstants.MPINT_SIZE_LENGTH));
-        publicKey.setG(parseBigIntField(publicKey.getGLength().getValue()));
-        publicKey.setYLength(parseIntField(DataFormatConstants.MPINT_SIZE_LENGTH));
-        publicKey.setY(parseBigIntField(publicKey.getYLength().getValue()));
+        int pLength = parseIntField(DataFormatConstants.MPINT_SIZE_LENGTH);
+        publicKey.setP(parseBigIntField(pLength));
+        int qLength = parseIntField(DataFormatConstants.MPINT_SIZE_LENGTH);
+        publicKey.setQ(parseBigIntField(qLength));
+        int gLength = parseIntField(DataFormatConstants.MPINT_SIZE_LENGTH);
+        publicKey.setG(parseBigIntField(gLength));
+        int yLength = parseIntField(DataFormatConstants.MPINT_SIZE_LENGTH);
+        publicKey.setY(parseBigIntField(yLength));
 
         return new SshPublicKey<>(PublicKeyFormat.SSH_DSS, publicKey);
     }

@@ -12,6 +12,7 @@ import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
 import de.rub.nds.sshattacker.core.constants.PublicKeyFormat;
+import de.rub.nds.sshattacker.core.crypto.keys.CustomRsaPublicKey;
 import de.rub.nds.sshattacker.core.crypto.keys.SshPublicKey;
 import de.rub.nds.sshattacker.core.crypto.util.PublicKeyHelper;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
@@ -110,9 +111,9 @@ public class RsaKeyExchangePubkeyMessage extends SshMessage<RsaKeyExchangePubkey
     }
 
     @SuppressWarnings("unchecked")
-    public SshPublicKey<RSAPublicKey, ?> getPublicKey() {
+    public SshPublicKey<CustomRsaPublicKey, ?> getPublicKey() {
         // Parse just-in-time to allow for modifications to the transient public key to take effect
-        return (SshPublicKey<RSAPublicKey, ?>)
+        return (SshPublicKey<CustomRsaPublicKey, ?>)
                 PublicKeyHelper.parse(PublicKeyFormat.SSH_RSA, this.transientPublicKey.getValue());
     }
 

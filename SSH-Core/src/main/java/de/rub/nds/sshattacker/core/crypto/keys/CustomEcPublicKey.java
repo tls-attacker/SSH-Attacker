@@ -18,11 +18,22 @@ import java.security.spec.ECGenParameterSpec;
 import java.security.spec.ECParameterSpec;
 import java.security.spec.ECPoint;
 import java.security.spec.InvalidParameterSpecException;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
 
-public class CustomEcPublicKey implements ECPublicKey {
+/**
+ * A serializable elliptic curve public key used in various EC-based algorithms like ECDH and ECDSA.
+ */
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
+public class CustomEcPublicKey extends CustomPublicKey implements ECPublicKey {
 
-    private final Point publicKey;
-    private final NamedGroup group;
+    private Point publicKey;
+    private NamedGroup group;
+
+    @SuppressWarnings("unused")
+    public CustomEcPublicKey() {}
 
     public CustomEcPublicKey(Point publicKey, NamedGroup group) {
         if (!group.isStandardCurve()) {
@@ -37,6 +48,10 @@ public class CustomEcPublicKey implements ECPublicKey {
         return group;
     }
 
+    public void setGroup(NamedGroup group) {
+        this.group = group;
+    }
+
     public Point getWAsPoint() {
         return publicKey;
     }
@@ -46,6 +61,10 @@ public class CustomEcPublicKey implements ECPublicKey {
         return new ECPoint(publicKey.getFieldX().getData(), publicKey.getFieldY().getData());
     }
 
+    public void setW(Point w) {
+        this.publicKey = w;
+    }
+
     @Override
     public String getAlgorithm() {
         return "EC";
@@ -53,7 +72,7 @@ public class CustomEcPublicKey implements ECPublicKey {
 
     @Override
     public String getFormat() {
-        return "None";
+        return "Octet";
     }
 
     @Override

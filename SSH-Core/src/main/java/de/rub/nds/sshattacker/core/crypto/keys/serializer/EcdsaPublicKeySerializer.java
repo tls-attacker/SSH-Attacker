@@ -10,14 +10,12 @@ package de.rub.nds.sshattacker.core.crypto.keys.serializer;
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.constants.ECPointFormat;
 import de.rub.nds.sshattacker.core.crypto.ec.PointFormatter;
-import de.rub.nds.sshattacker.core.crypto.keys.CustomEcPrivateKey;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomEcPublicKey;
-import de.rub.nds.sshattacker.core.crypto.keys.SshPublicKey;
 import de.rub.nds.sshattacker.core.protocol.common.Serializer;
 import java.nio.charset.StandardCharsets;
 
-public class EcdsaPublicKeySerializer
-        extends Serializer<SshPublicKey<CustomEcPublicKey, CustomEcPrivateKey>> {
+/** Serializer class to encode an ECDSA public key to the ecdsa-sha2-* format */
+public class EcdsaPublicKeySerializer extends Serializer<CustomEcPublicKey> {
 
     private final CustomEcPublicKey publicKey;
 

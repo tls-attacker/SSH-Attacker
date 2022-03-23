@@ -7,84 +7,49 @@
  */
 package de.rub.nds.sshattacker.core.crypto.keys;
 
-import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
-import de.rub.nds.modifiablevariable.biginteger.ModifiableBigInteger;
-import de.rub.nds.sshattacker.core.protocol.common.ModifiableVariableHolder;
 import java.math.BigInteger;
 import java.security.interfaces.RSAPrivateKey;
-import java.util.Arrays;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
 
-public class CustomRsaPrivateKey extends ModifiableVariableHolder implements RSAPrivateKey {
+/** A serializable RSA private key used in RSA encryption and signatures. */
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
+public class CustomRsaPrivateKey extends CustomPrivateKey implements RSAPrivateKey {
 
-    private ModifiableBigInteger privateExponent;
-    private ModifiableBigInteger modulus;
+    private BigInteger modulus;
+    private BigInteger privateExponent;
 
-    public CustomRsaPrivateKey() {}
+    @SuppressWarnings("unused")
+    private CustomRsaPrivateKey() {}
 
     public CustomRsaPrivateKey(BigInteger privateExponent, BigInteger modulus) {
-        setPrivateExponent(privateExponent);
-        setModulus(modulus);
-    }
-
-    public ModifiableBigInteger getModifiableModulus() {
-        return modulus;
-    }
-
-    public void setModulus(byte[] nBytes) {
-        BigInteger newModulus = new BigInteger(Arrays.toString(nBytes), 16);
-        this.modulus = ModifiableVariableFactory.safelySetValue(this.modulus, newModulus);
-    }
-
-    public void setModulus(BigInteger modulus) {
-        this.modulus = ModifiableVariableFactory.safelySetValue(this.modulus, modulus);
-    }
-
-    public void setModulus(ModifiableBigInteger modulus) {
         this.modulus = modulus;
-    }
-
-    public ModifiableBigInteger getModifiablePrivateExponent() {
-        return privateExponent;
-    }
-
-    public void setPrivateExponent(byte[] dBytes) {
-        BigInteger newExponent = new BigInteger(Arrays.toString(dBytes), 16);
-        this.privateExponent =
-                ModifiableVariableFactory.safelySetValue(this.privateExponent, newExponent);
-    }
-
-    public void setPrivateExponent(BigInteger exponent) {
-        this.privateExponent =
-                ModifiableVariableFactory.safelySetValue(this.privateExponent, exponent);
-    }
-
-    public void setPrivateExponent(ModifiableBigInteger exponent) {
-        this.privateExponent = exponent;
-    }
-
-    // Interface methods
-    @Override
-    public BigInteger getPrivateExponent() {
-        return privateExponent.getValue();
+        this.privateExponent = privateExponent;
     }
 
     @Override
     public BigInteger getModulus() {
-        return modulus.getValue();
+        return modulus;
     }
 
+    public void setModulus(BigInteger modulus) {
+        this.modulus = modulus;
+    }
+
+    @Override
+    public BigInteger getPrivateExponent() {
+        return privateExponent;
+    }
+
+    public void setPrivateExponent(BigInteger privateExponent) {
+        this.privateExponent = privateExponent;
+    }
+
+    // Interface methods
     @Override
     public String getAlgorithm() {
         return "RSA";
-    }
-
-    @Override
-    public String getFormat() {
-        return null;
-    }
-
-    @Override
-    public byte[] getEncoded() {
-        return null;
     }
 }

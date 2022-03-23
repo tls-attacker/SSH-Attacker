@@ -7,11 +7,11 @@
  */
 package de.rub.nds.sshattacker.core.crypto.hash;
 
+import de.rub.nds.sshattacker.core.crypto.keys.CustomRsaPublicKey;
 import de.rub.nds.sshattacker.core.crypto.keys.SshPublicKey;
 import de.rub.nds.sshattacker.core.protocol.transport.message.KeyExchangeInitMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.message.VersionExchangeMessage;
 import java.math.BigInteger;
-import java.security.interfaces.RSAPublicKey;
 import java.util.Optional;
 
 /** A holder class to store all required values for exchange hash computation. */
@@ -47,7 +47,7 @@ public final class ExchangeHashInputHolder {
     // endregion
 
     // region RSA exchange hash fields
-    private SshPublicKey<RSAPublicKey, ?> rsaTransientKey;
+    private SshPublicKey<CustomRsaPublicKey, ?> rsaTransientKey;
     private byte[] rsaEncryptedSecret;
     // endregion
 
@@ -196,11 +196,11 @@ public final class ExchangeHashInputHolder {
     // endregion
 
     // region Getters / setters RSA exchange hash fields
-    public Optional<SshPublicKey<RSAPublicKey, ?>> getRsaTransientKey() {
+    public Optional<SshPublicKey<CustomRsaPublicKey, ?>> getRsaTransientKey() {
         return Optional.ofNullable(rsaTransientKey);
     }
 
-    public void setRsaTransientKey(SshPublicKey<RSAPublicKey, ?> rsaTransientKey) {
+    public void setRsaTransientKey(SshPublicKey<CustomRsaPublicKey, ?> rsaTransientKey) {
         this.rsaTransientKey = rsaTransientKey;
     }
 

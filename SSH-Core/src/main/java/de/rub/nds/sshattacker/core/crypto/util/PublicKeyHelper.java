@@ -8,7 +8,9 @@
 package de.rub.nds.sshattacker.core.crypto.util;
 
 import de.rub.nds.sshattacker.core.constants.PublicKeyFormat;
+import de.rub.nds.sshattacker.core.crypto.keys.CustomDsaPublicKey;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomEcPublicKey;
+import de.rub.nds.sshattacker.core.crypto.keys.CustomRsaPublicKey;
 import de.rub.nds.sshattacker.core.crypto.keys.SshPublicKey;
 import de.rub.nds.sshattacker.core.crypto.keys.parser.DsaPublicKeyParser;
 import de.rub.nds.sshattacker.core.crypto.keys.parser.EcdsaPublicKeyParser;
@@ -18,8 +20,6 @@ import de.rub.nds.sshattacker.core.crypto.keys.serializer.EcdsaPublicKeySerializ
 import de.rub.nds.sshattacker.core.crypto.keys.serializer.RsaPublicKeySerializer;
 import de.rub.nds.sshattacker.core.exceptions.NotImplementedException;
 import java.security.PublicKey;
-import java.security.interfaces.DSAPublicKey;
-import java.security.interfaces.RSAPublicKey;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -107,9 +107,9 @@ public final class PublicKeyHelper {
         try {
             switch (keyFormat) {
                 case SSH_RSA:
-                    return new RsaPublicKeySerializer((RSAPublicKey) publicKey).serialize();
+                    return new RsaPublicKeySerializer((CustomRsaPublicKey) publicKey).serialize();
                 case SSH_DSS:
-                    return new DsaPublicKeySerializer((DSAPublicKey) publicKey).serialize();
+                    return new DsaPublicKeySerializer((CustomDsaPublicKey) publicKey).serialize();
                 case ECDSA_SHA2_SECP160K1:
                 case ECDSA_SHA2_SECP160R1:
                 case ECDSA_SHA2_SECP160R2:

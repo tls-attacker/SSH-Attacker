@@ -11,12 +11,24 @@ import de.rub.nds.sshattacker.core.constants.NamedDHGroup;
 import java.math.BigInteger;
 import javax.crypto.interfaces.DHPrivateKey;
 import javax.crypto.spec.DHParameterSpec;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
 
-public class CustomDhPrivateKey implements DHPrivateKey {
+/** A serializable diffie-hellman private key used in the DH key exchange. */
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
+public class CustomDhPrivateKey extends CustomPrivateKey implements DHPrivateKey {
 
-    private final BigInteger privateKey;
-    private final BigInteger modulus;
-    private final BigInteger generator;
+    // Group parameters
+    private BigInteger modulus;
+    private BigInteger generator;
+
+    // Private key
+    private BigInteger privateKey;
+
+    @SuppressWarnings("unused")
+    private CustomDhPrivateKey() {}
 
     public CustomDhPrivateKey(NamedDHGroup group, BigInteger privateKey) {
         this(group.getModulus(), group.getGenerator(), privateKey);
@@ -28,9 +40,39 @@ public class CustomDhPrivateKey implements DHPrivateKey {
         this.privateKey = privateKey;
     }
 
+    public BigInteger getModulus() {
+        return modulus;
+    }
+
+    public void setModulus(BigInteger modulus) {
+        this.modulus = modulus;
+    }
+
+    public BigInteger getGenerator() {
+        return generator;
+    }
+
+    public void setGenerator(BigInteger generator) {
+        this.generator = generator;
+    }
+
+    public BigInteger getPrivateKey() {
+        return privateKey;
+    }
+
+    public void setPrivateKey(BigInteger privateKey) {
+        this.privateKey = privateKey;
+    }
+
+    // Interface methods
     @Override
     public BigInteger getX() {
         return privateKey;
+    }
+
+    @Override
+    public DHParameterSpec getParams() {
+        return new DHParameterSpec(modulus, generator);
     }
 
     @Override
@@ -46,18 +88,5 @@ public class CustomDhPrivateKey implements DHPrivateKey {
     @Override
     public byte[] getEncoded() {
         return privateKey.toByteArray();
-    }
-
-    @Override
-    public DHParameterSpec getParams() {
-        return new DHParameterSpec(modulus, generator);
-    }
-
-    public BigInteger getModulus() {
-        return modulus;
-    }
-
-    public BigInteger getGenerator() {
-        return generator;
     }
 }

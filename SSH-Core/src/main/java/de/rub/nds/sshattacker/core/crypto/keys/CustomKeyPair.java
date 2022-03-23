@@ -7,17 +7,37 @@
  */
 package de.rub.nds.sshattacker.core.crypto.keys;
 
-import de.rub.nds.sshattacker.core.protocol.common.ModifiableVariableHolder;
-import java.security.PrivateKey;
-import java.security.PublicKey;
-import java.util.List;
+import java.io.Serializable;
+import javax.xml.bind.annotation.*;
 
-/** This class represents a key pair consisting of a public and private key. */
-public class CustomKeyPair<PRIVATE extends PrivateKey, PUBLIC extends PublicKey>
-        extends ModifiableVariableHolder {
+/** This serializable class represents a key pair consisting of a public and private key. */
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
+public class CustomKeyPair<PRIVATE extends CustomPrivateKey, PUBLIC extends CustomPublicKey>
+        implements Serializable {
 
-    private final PRIVATE privateKey;
-    private final PUBLIC publicKey;
+    @XmlElements(
+            value = {
+                @XmlElement(name = "dhPrivateKey", type = CustomDhPrivateKey.class),
+                @XmlElement(name = "dsaPrivateKey", type = CustomDsaPrivateKey.class),
+                @XmlElement(name = "ecPrivateKey", type = CustomEcPrivateKey.class),
+                @XmlElement(name = "rsaPrivateKey", type = CustomRsaPrivateKey.class),
+                @XmlElement(name = "xCurvePrivateKey", type = XCurveEcPrivateKey.class)
+            })
+    private PRIVATE privateKey;
+
+    @XmlElements(
+            value = {
+                @XmlElement(name = "dhPublicKey", type = CustomDhPublicKey.class),
+                @XmlElement(name = "dsaPublicKey", type = CustomDsaPublicKey.class),
+                @XmlElement(name = "ecPublicKey", type = CustomEcPublicKey.class),
+                @XmlElement(name = "rsaPublicKey", type = CustomRsaPublicKey.class),
+                @XmlElement(name = "xCurvePublicKey", type = XCurveEcPublicKey.class)
+            })
+    private PUBLIC publicKey;
+
+    @SuppressWarnings("unused")
+    private CustomKeyPair() {}
 
     public CustomKeyPair(PRIVATE privateKey, PUBLIC publicKey) {
         if (privateKey == null || publicKey == null) {
@@ -34,17 +54,5 @@ public class CustomKeyPair<PRIVATE extends PrivateKey, PUBLIC extends PublicKey>
 
     public PUBLIC getPublic() {
         return publicKey;
-    }
-
-    @Override
-    public List<ModifiableVariableHolder> getAllModifiableVariableHolders() {
-        List<ModifiableVariableHolder> holders = super.getAllModifiableVariableHolders();
-        if (privateKey instanceof ModifiableVariableHolder) {
-            holders.add((ModifiableVariableHolder) privateKey);
-        }
-        if (publicKey instanceof ModifiableVariableHolder) {
-            holders.add((ModifiableVariableHolder) publicKey);
-        }
-        return holders;
     }
 }

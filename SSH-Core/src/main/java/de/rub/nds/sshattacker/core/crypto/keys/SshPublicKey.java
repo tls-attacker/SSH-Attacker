@@ -8,22 +8,45 @@
 package de.rub.nds.sshattacker.core.crypto.keys;
 
 import de.rub.nds.sshattacker.core.constants.PublicKeyFormat;
-import de.rub.nds.sshattacker.core.protocol.common.ModifiableVariableHolder;
+import java.io.Serializable;
 import java.security.PrivateKey;
 import java.security.PublicKey;
-import java.util.List;
 import java.util.Optional;
+import javax.xml.bind.annotation.*;
 
 /**
  * This class represents a public key with its corresponding public key algorithm as used throughout
  * the SSH protocol. A corresponding private key may be present in case of a local key.
  */
-public class SshPublicKey<PUBLIC extends PublicKey, PRIVATE extends PrivateKey>
-        extends ModifiableVariableHolder {
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
+public class SshPublicKey<PUBLIC extends CustomPublicKey, PRIVATE extends CustomPrivateKey>
+        implements Serializable {
 
-    private final PublicKeyFormat publicKeyAlgorithm;
-    private final PUBLIC publicKey;
-    private final PRIVATE privateKey;
+    private PublicKeyFormat publicKeyAlgorithm;
+
+    @XmlElements(
+            value = {
+                @XmlElement(name = "dhPublicKey", type = CustomDhPublicKey.class),
+                @XmlElement(name = "dsaPublicKey", type = CustomDsaPublicKey.class),
+                @XmlElement(name = "ecPublicKey", type = CustomEcPublicKey.class),
+                @XmlElement(name = "rsaPublicKey", type = CustomRsaPublicKey.class),
+                @XmlElement(name = "xCurvePublicKey", type = XCurveEcPublicKey.class)
+            })
+    private PUBLIC publicKey;
+
+    @XmlElements(
+            value = {
+                @XmlElement(name = "dhPrivateKey", type = CustomDhPrivateKey.class),
+                @XmlElement(name = "dsaPrivateKey", type = CustomDsaPrivateKey.class),
+                @XmlElement(name = "ecPrivateKey", type = CustomEcPrivateKey.class),
+                @XmlElement(name = "rsaPrivateKey", type = CustomRsaPrivateKey.class),
+                @XmlElement(name = "xCurvePrivateKey", type = XCurveEcPrivateKey.class)
+            })
+    private PRIVATE privateKey;
+
+    @SuppressWarnings("unused")
+    private SshPublicKey() {}
 
     public SshPublicKey(PublicKeyFormat publicKeyFormat, CustomKeyPair<PRIVATE, PUBLIC> keyPair) {
         this(publicKeyFormat, keyPair.getPublic(), keyPair.getPrivate());
@@ -53,17 +76,5 @@ public class SshPublicKey<PUBLIC extends PublicKey, PRIVATE extends PrivateKey>
 
     public Optional<PrivateKey> getPrivateKey() {
         return Optional.ofNullable(privateKey);
-    }
-
-    @Override
-    public List<ModifiableVariableHolder> getAllModifiableVariableHolders() {
-        List<ModifiableVariableHolder> holders = super.getAllModifiableVariableHolders();
-        if (publicKey instanceof ModifiableVariableHolder) {
-            holders.add((ModifiableVariableHolder) publicKey);
-        }
-        if (privateKey instanceof ModifiableVariableHolder) {
-            holders.add((ModifiableVariableHolder) privateKey);
-        }
-        return holders;
     }
 }

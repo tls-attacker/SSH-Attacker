@@ -153,7 +153,7 @@ public class Config implements Serializable {
 
     private final int serverReserved;
 
-    @XmlElement(name = "hostKey")
+    @XmlElement(name = "serverHostKey")
     @XmlElementWrapper
     private final List<SshPublicKey<?, ?>> serverHostKeys;
 
