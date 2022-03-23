@@ -41,37 +41,146 @@ public enum PublicKeyAlgorithm {
     // [ RFC 4462 ]
     NULL("null", PublicKeyFormat.NULL),
     // [ RFC 5656 ]
-    ECDSA_SHA2_SECP160K1("ecdsa-sha2-1.3.132.0.9", PublicKeyFormat.ECDSA_SHA2_SECP160K1),
-    ECDSA_SHA2_SECP160R1("ecdsa-sha2-1.3.132.0.8", PublicKeyFormat.ECDSA_SHA2_SECP160R1),
-    ECDSA_SHA2_SECP160R2("ecdsa-sha2-1.3.132.0.30", PublicKeyFormat.ECDSA_SHA2_SECP160R2),
-    ECDSA_SHA2_SECP192K1("ecdsa-sha2-1.3.132.0.31", PublicKeyFormat.ECDSA_SHA2_SECP192K1),
-    ECDSA_SHA2_SECP192R1("ecdsa-sha2-1.2.840.10045.3.1.1", PublicKeyFormat.ECDSA_SHA2_SECP192R1),
-    ECDSA_SHA2_SECP224K1("ecdsa-sha2-1.3.132.0.32", PublicKeyFormat.ECDSA_SHA2_SECP224K1),
-    ECDSA_SHA2_SECP224R1("ecdsa-sha2-1.3.132.0.33", PublicKeyFormat.ECDSA_SHA2_SECP224R1),
-    ECDSA_SHA2_SECP256K1("ecdsa-sha2-1.3.132.0.10", PublicKeyFormat.ECDSA_SHA2_SECP256K1),
-    ECDSA_SHA2_NISTP256("ecdsa-sha2-nistp256", PublicKeyFormat.ECDSA_SHA2_NISTP256),
-    ECDSA_SHA2_NISTP384("ecdsa-sha2-nistp384", PublicKeyFormat.ECDSA_SHA2_NISTP384),
-    ECDSA_SHA2_NISTP521("ecdsa-sha2-nistp521", PublicKeyFormat.ECDSA_SHA2_NISTP521),
-    ECDSA_SHA2_SECT163K1("ecdsa-sha2-1.3.132.0.1", PublicKeyFormat.ECDSA_SHA2_SECT163K1),
-    ECDSA_SHA2_SECT163R1("ecdsa-sha2-1.3.132.0.2", PublicKeyFormat.ECDSA_SHA2_SECT163R1),
-    ECDSA_SHA2_SECT163R2("ecdsa-sha2-1.3.132.0.15", PublicKeyFormat.ECDSA_SHA2_SECT163R2),
-    ECDSA_SHA2_SECT193R1("ecdsa-sha2-1.3.132.0.24", PublicKeyFormat.ECDSA_SHA2_SECT193R1),
-    ECDSA_SHA2_SECT193R2("ecdsa-sha2-1.3.132.0.25", PublicKeyFormat.ECDSA_SHA2_SECT193R2),
-    ECDSA_SHA2_SECT233K1("ecdsa-sha2-1.3.132.0.26", PublicKeyFormat.ECDSA_SHA2_SECT233K1),
-    ECDSA_SHA2_SECT233R1("ecdsa-sha2-1.3.132.0.27", PublicKeyFormat.ECDSA_SHA2_SECT233R1),
-    ECDSA_SHA2_SECT239K1("ecdsa-sha2-1.3.132.0.3", PublicKeyFormat.ECDSA_SHA2_SECT239K1),
-    ECDSA_SHA2_SECT283K1("ecdsa-sha2-1.3.132.0.16", PublicKeyFormat.ECDSA_SHA2_SECT283K1),
-    ECDSA_SHA2_SECT283R1("ecdsa-sha2-1.3.132.0.17", PublicKeyFormat.ECDSA_SHA2_SECT283R1),
-    ECDSA_SHA2_SECT409K1("ecdsa-sha2-1.3.132.0.36", PublicKeyFormat.ECDSA_SHA2_SECT409K1),
-    ECDSA_SHA2_SECT409R1("ecdsa-sha2-1.3.132.0.37", PublicKeyFormat.ECDSA_SHA2_SECT409R1),
-    ECDSA_SHA2_SECT571K1("ecdsa-sha2-1.3.132.0.38", PublicKeyFormat.ECDSA_SHA2_SECT571K1),
-    ECDSA_SHA2_SECT571R1("ecdsa-sha2-1.3.132.0.39", PublicKeyFormat.ECDSA_SHA2_SECT571R1),
+    ECDSA_SHA2_SECP160K1(
+            "ecdsa-sha2-1.3.132.0.9",
+            PublicKeyFormat.ECDSA_SHA2_SECP160K1,
+            SignatureEncoding.ECDSA_SHA2_SECP160K1,
+            "SHA256withECDSA"),
+    ECDSA_SHA2_SECP160R1(
+            "ecdsa-sha2-1.3.132.0.8",
+            PublicKeyFormat.ECDSA_SHA2_SECP160R1,
+            SignatureEncoding.ECDSA_SHA2_SECP160R1,
+            "SHA256withECDSA"),
+    ECDSA_SHA2_SECP160R2(
+            "ecdsa-sha2-1.3.132.0.30",
+            PublicKeyFormat.ECDSA_SHA2_SECP160R2,
+            SignatureEncoding.ECDSA_SHA2_SECP160R2,
+            "SHA256withECDSA"),
+    ECDSA_SHA2_SECP192K1(
+            "ecdsa-sha2-1.3.132.0.31",
+            PublicKeyFormat.ECDSA_SHA2_SECP192K1,
+            SignatureEncoding.ECDSA_SHA2_SECP192K1,
+            "SHA256withECDSA"),
+    ECDSA_SHA2_SECP192R1(
+            "ecdsa-sha2-1.2.840.10045.3.1.1",
+            PublicKeyFormat.ECDSA_SHA2_SECP192R1,
+            SignatureEncoding.ECDSA_SHA2_SECP192R1,
+            "SHA256withECDSA"),
+    ECDSA_SHA2_SECP224K1(
+            "ecdsa-sha2-1.3.132.0.32",
+            PublicKeyFormat.ECDSA_SHA2_SECP224K1,
+            SignatureEncoding.ECDSA_SHA2_SECP224K1,
+            "SHA256withECDSA"),
+    ECDSA_SHA2_SECP224R1(
+            "ecdsa-sha2-1.3.132.0.33",
+            PublicKeyFormat.ECDSA_SHA2_SECP224R1,
+            SignatureEncoding.ECDSA_SHA2_SECP224R1,
+            "SHA256withECDSA"),
+    ECDSA_SHA2_SECP256K1(
+            "ecdsa-sha2-1.3.132.0.10",
+            PublicKeyFormat.ECDSA_SHA2_SECP256K1,
+            SignatureEncoding.ECDSA_SHA2_SECP256K1,
+            "SHA256withECDSA"),
+    ECDSA_SHA2_NISTP256(
+            "ecdsa-sha2-nistp256",
+            PublicKeyFormat.ECDSA_SHA2_NISTP256,
+            SignatureEncoding.ECDSA_SHA2_NISTP256,
+            "SHA256withECDSA"),
+    ECDSA_SHA2_NISTP384(
+            "ecdsa-sha2-nistp384",
+            PublicKeyFormat.ECDSA_SHA2_NISTP384,
+            SignatureEncoding.ECDSA_SHA2_NISTP384,
+            "SHA384withECDSA"),
+    ECDSA_SHA2_NISTP521(
+            "ecdsa-sha2-nistp521",
+            PublicKeyFormat.ECDSA_SHA2_NISTP521,
+            SignatureEncoding.ECDSA_SHA2_NISTP521,
+            "SHA512withECDSA"),
+    ECDSA_SHA2_SECT163K1(
+            "ecdsa-sha2-1.3.132.0.1",
+            PublicKeyFormat.ECDSA_SHA2_SECT163K1,
+            SignatureEncoding.ECDSA_SHA2_SECT163K1,
+            "SHA256withECDSA"),
+    ECDSA_SHA2_SECT163R1(
+            "ecdsa-sha2-1.3.132.0.2",
+            PublicKeyFormat.ECDSA_SHA2_SECT163R1,
+            SignatureEncoding.ECDSA_SHA2_SECT163R1,
+            "SHA256withECDSA"),
+    ECDSA_SHA2_SECT163R2(
+            "ecdsa-sha2-1.3.132.0.15",
+            PublicKeyFormat.ECDSA_SHA2_SECT163R2,
+            SignatureEncoding.ECDSA_SHA2_SECT163R2,
+            "SHA256withECDSA"),
+    ECDSA_SHA2_SECT193R1(
+            "ecdsa-sha2-1.3.132.0.24",
+            PublicKeyFormat.ECDSA_SHA2_SECT193R1,
+            SignatureEncoding.ECDSA_SHA2_SECT193R1,
+            "SHA256withECDSA"),
+    ECDSA_SHA2_SECT193R2(
+            "ecdsa-sha2-1.3.132.0.25",
+            PublicKeyFormat.ECDSA_SHA2_SECT193R2,
+            SignatureEncoding.ECDSA_SHA2_SECT193R2,
+            "SHA256withECDSA"),
+    ECDSA_SHA2_SECT233K1(
+            "ecdsa-sha2-1.3.132.0.26",
+            PublicKeyFormat.ECDSA_SHA2_SECT233K1,
+            SignatureEncoding.ECDSA_SHA2_SECT233K1,
+            "SHA256withECDSA"),
+    ECDSA_SHA2_SECT233R1(
+            "ecdsa-sha2-1.3.132.0.27",
+            PublicKeyFormat.ECDSA_SHA2_SECT233R1,
+            SignatureEncoding.ECDSA_SHA2_SECT233R1,
+            "SHA256withECDSA"),
+    ECDSA_SHA2_SECT239K1(
+            "ecdsa-sha2-1.3.132.0.3",
+            PublicKeyFormat.ECDSA_SHA2_SECT239K1,
+            SignatureEncoding.ECDSA_SHA2_SECT239K1,
+            "SHA256withECDSA"),
+    ECDSA_SHA2_SECT283K1(
+            "ecdsa-sha2-1.3.132.0.16",
+            PublicKeyFormat.ECDSA_SHA2_SECT283K1,
+            SignatureEncoding.ECDSA_SHA2_SECT283K1,
+            "SHA384withECDSA"),
+    ECDSA_SHA2_SECT283R1(
+            "ecdsa-sha2-1.3.132.0.17",
+            PublicKeyFormat.ECDSA_SHA2_SECT283R1,
+            SignatureEncoding.ECDSA_SHA2_SECT283R1,
+            "SHA384withECDSA"),
+    ECDSA_SHA2_SECT409K1(
+            "ecdsa-sha2-1.3.132.0.36",
+            PublicKeyFormat.ECDSA_SHA2_SECT409K1,
+            SignatureEncoding.ECDSA_SHA2_SECT409K1,
+            "SHA512withECDSA"),
+    ECDSA_SHA2_SECT409R1(
+            "ecdsa-sha2-1.3.132.0.37",
+            PublicKeyFormat.ECDSA_SHA2_SECT409R1,
+            SignatureEncoding.ECDSA_SHA2_SECT409R1,
+            "SHA512withECDSA"),
+    ECDSA_SHA2_SECT571K1(
+            "ecdsa-sha2-1.3.132.0.38",
+            PublicKeyFormat.ECDSA_SHA2_SECT571K1,
+            SignatureEncoding.ECDSA_SHA2_SECT571K1,
+            "SHA512withECDSA"),
+    ECDSA_SHA2_SECT571R1(
+            "ecdsa-sha2-1.3.132.0.39",
+            PublicKeyFormat.ECDSA_SHA2_SECT571R1,
+            SignatureEncoding.ECDSA_SHA2_SECT571R1,
+            "SHA512withECDSA"),
     ECDSA_SHA2_BRAINPOOL_P256R1(
-            "ecdsa-sha2-1.3.36.3.3.2.8.1.1.7", PublicKeyFormat.ECDSA_SHA2_BRAINPOOL_P256R1),
+            "ecdsa-sha2-1.3.36.3.3.2.8.1.1.7",
+            PublicKeyFormat.ECDSA_SHA2_BRAINPOOL_P256R1,
+            SignatureEncoding.ECDSA_SHA2_BRAINPOOL_P256R1,
+            "SHA256withECDSA"),
     ECDSA_SHA2_BRAINPOOL_P384R1(
-            "ecdsa-sha2-1.3.36.3.3.2.8.1.1.11", PublicKeyFormat.ECDSA_SHA2_BRAINPOOL_P384R1),
+            "ecdsa-sha2-1.3.36.3.3.2.8.1.1.11",
+            PublicKeyFormat.ECDSA_SHA2_BRAINPOOL_P384R1,
+            SignatureEncoding.ECDSA_SHA2_BRAINPOOL_P384R1,
+            "SHA384withECDSA"),
     ECDSA_SHA2_BRAINPOOL_P512R1(
-            "ecdsa-sha2-1.3.36.3.3.2.8.1.1.13", PublicKeyFormat.ECDSA_SHA2_BRAINPOOL_P512R1),
+            "ecdsa-sha2-1.3.36.3.3.2.8.1.1.13",
+            PublicKeyFormat.ECDSA_SHA2_BRAINPOOL_P512R1,
+            SignatureEncoding.ECDSA_SHA2_BRAINPOOL_P512R1,
+            "SHA512withECDSA"),
     // [ RFC 6187 ]
     X509V3_SSH_DSS("x509v3-ssh-dss", PublicKeyFormat.X509V3_SSH_DSS),
     X509V3_SSH_RSA("x509v3-ssh-rsa", PublicKeyFormat.X509V3_SSH_RSA),
@@ -136,8 +245,9 @@ public enum PublicKeyAlgorithm {
             "x509v3-ecdsa-sha2-1.3.36.3.3.2.8.1.1.13",
             PublicKeyFormat.X509V3_ECDSA_SHA2_BRAINPOOL_P512R1),
     // [ RFC 8709 ]
-    SSH_ED25519("ssh-ed25519", PublicKeyFormat.SSH_ED25519),
-    SSH_ED448("ssh-ed448", PublicKeyFormat.SSH_ED448),
+    SSH_ED25519(
+            "ssh-ed25519", PublicKeyFormat.SSH_ED25519, SignatureEncoding.SSH_ED25519, "Ed25519"),
+    SSH_ED448("ssh-ed448", PublicKeyFormat.SSH_ED448, SignatureEncoding.SSH_ED448, "Ed448"),
     // Vendor extensions
     // [ OpenSSH ]
     SSH_RSA_CERT_V01_OPENSSH_COM(
@@ -172,13 +282,13 @@ public enum PublicKeyAlgorithm {
             PublicKeyFormat.SK_SSH_ED25519_CERT_V01_OPENSSH_COM),
     // [ SSH.COM ]
     SSH_RSA_SHA224_SSH_COM(
-            "ssh-rsa-sha224@ssh.com", PublicKeyFormat.SSH_RSA, SignatureEncoding.SSH_RSA),
+            "ssh-rsa-sha224@ssh.com", PublicKeyFormat.SSH_RSA, SignatureEncoding.SSH_RSA, "SHA224withRSA"),
     SSH_RSA_SHA256_SSH_COM(
-            "ssh-rsa-sha256@ssh.com", PublicKeyFormat.SSH_RSA, SignatureEncoding.SSH_RSA),
+            "ssh-rsa-sha256@ssh.com", PublicKeyFormat.SSH_RSA, SignatureEncoding.SSH_RSA, "SHA256withRSA"),
     SSH_RSA_SHA384_SSH_COM(
-            "ssh-rsa-sha384@ssh.com", PublicKeyFormat.SSH_RSA, SignatureEncoding.SSH_RSA),
+            "ssh-rsa-sha384@ssh.com", PublicKeyFormat.SSH_RSA, SignatureEncoding.SSH_RSA, "SHA384withRSA"),
     SSH_RSA_SHA512_SSH_COM(
-            "ssh-rsa-sha512@ssh.com", PublicKeyFormat.SSH_RSA, SignatureEncoding.SSH_RSA);
+            "ssh-rsa-sha512@ssh.com", PublicKeyFormat.SSH_RSA, SignatureEncoding.SSH_RSA, "SHA512withRSA");
 
     private final String name;
     private final PublicKeyFormat keyFormat;

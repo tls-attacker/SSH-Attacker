@@ -34,7 +34,7 @@ public class XCurveEcdhKeyExchange extends AbstractEcdhKeyExchange {
     }
 
     private void precompute() {
-        if (group == NamedGroup.ECDH_X25519) {
+        if (group == NamedGroup.CURVE25519) {
             X25519.precompute();
         } else {
             X448.precompute();
@@ -45,7 +45,7 @@ public class XCurveEcdhKeyExchange extends AbstractEcdhKeyExchange {
     public void generateLocalKeyPair() {
         byte[] privateKeyBytes;
         byte[] publicKeyBytes;
-        if (group == NamedGroup.ECDH_X25519) {
+        if (group == NamedGroup.CURVE25519) {
             privateKeyBytes = new byte[CryptoConstants.X25519_POINT_SIZE];
             X25519.generatePrivateKey(random, privateKeyBytes);
             publicKeyBytes = new byte[CryptoConstants.X25519_POINT_SIZE];
@@ -64,7 +64,7 @@ public class XCurveEcdhKeyExchange extends AbstractEcdhKeyExchange {
     @Override
     public void setLocalKeyPair(byte[] privateKeyBytes) {
         byte[] publicKeyBytes;
-        if (group == NamedGroup.ECDH_X25519) {
+        if (group == NamedGroup.CURVE25519) {
             publicKeyBytes = new byte[CryptoConstants.X25519_POINT_SIZE];
             X25519.generatePublicKey(privateKeyBytes, 0, publicKeyBytes, 0);
         } else {
@@ -91,7 +91,7 @@ public class XCurveEcdhKeyExchange extends AbstractEcdhKeyExchange {
     @Override
     public void computeSharedSecret() {
         byte[] sharedBytes;
-        if (group == NamedGroup.ECDH_X25519) {
+        if (group == NamedGroup.CURVE25519) {
             sharedBytes = new byte[CryptoConstants.X25519_POINT_SIZE];
             X25519.scalarMult(
                     localKeyPair.getPrivate().getScalar(),

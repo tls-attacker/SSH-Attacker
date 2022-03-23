@@ -44,8 +44,8 @@ public enum NamedGroup {
     BRAINPOOLP256R1("1.3.36.3.3.2.8.1.1.7", "brainpoolp256r1", 256),
     BRAINPOOLP384R1("1.3.36.3.3.2.8.1.1.11", "brainpoolp384r1", 384),
     BRAINPOOLP512R1("1.3.36.3.3.2.8.1.1.13", "brainpoolp512r1", 512),
-    ECDH_X25519(null, "ecdh_X25519", 256),
-    ECDH_X448(null, "ecdh_X448", 448);
+    CURVE25519(null, null, 256),
+    CURVE448(null, null, 448);
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -154,12 +154,12 @@ public enum NamedGroup {
     }
 
     public boolean isStandardCurve() {
-        return this != ECDH_X25519 && this != ECDH_X448;
+        return this != CURVE25519 && this != CURVE448;
     }
 
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public boolean isRFC7748Curve() {
-        return this == ECDH_X25519 || this == ECDH_X448;
+        return this == CURVE25519 || this == CURVE448;
     }
 
     public static List<NamedGroup> getImplemented() {
@@ -189,8 +189,8 @@ public enum NamedGroup {
         list.add(SECT409R1);
         list.add(SECT571K1);
         list.add(SECT571R1);
-        list.add(ECDH_X25519);
-        list.add(ECDH_X448);
+        list.add(CURVE25519);
+        list.add(CURVE448);
         list.add(BRAINPOOLP256R1);
         list.add(BRAINPOOLP384R1);
         list.add(BRAINPOOLP512R1);

@@ -11,6 +11,8 @@ import de.rub.nds.sshattacker.core.constants.PublicKeyAlgorithm;
 import de.rub.nds.sshattacker.core.constants.SignatureEncoding;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomKeyPair;
 import de.rub.nds.sshattacker.core.crypto.keys.SshPublicKey;
+import de.rub.nds.sshattacker.core.crypto.keys.XCurveEcPrivateKey;
+import de.rub.nds.sshattacker.core.crypto.keys.XCurveEcPublicKey;
 import de.rub.nds.sshattacker.core.crypto.util.PublicKeyHelper;
 import de.rub.nds.sshattacker.core.exceptions.CryptoException;
 import de.rub.nds.sshattacker.core.exceptions.NotImplementedException;
@@ -42,7 +44,13 @@ public class SignatureFactory {
             PublicKeyAlgorithm algorithm, PrivateKey privateKey) {
         if (algorithm.getSignatureEncoding() == SignatureEncoding.SSH_DSS) {
             return new UnpackedDsaJavaSignature(algorithm, privateKey);
+        } else if (algorithm.getName().startsWith("ecdsa-sha2-")) {
+            return new UnpackedEcdsaJavaSignature(algorithm, privateKey);
         } else if (algorithm.getJavaName() != null) {
+            // Keys for Curve25519 and Curve448 require conversion to a JCA-compatible key
+            if (privateKey instanceof XCurveEcPrivateKey) {
+                privateKey = ((XCurveEcPrivateKey) privateKey).toEdDsaKey();
+            }
             return new JavaSignature(algorithm, privateKey);
         }
         throw new NotImplementedException(
@@ -68,7 +76,13 @@ public class SignatureFactory {
             PublicKeyAlgorithm algorithm, PublicKey publicKey) {
         if (algorithm.getSignatureEncoding() == SignatureEncoding.SSH_DSS) {
             return new UnpackedDsaJavaSignature(algorithm, publicKey);
+        } else if (algorithm.getName().startsWith("ECDSA_SHA2_")) {
+            return new UnpackedEcdsaJavaSignature(algorithm, publicKey);
         } else if (algorithm.getJavaName() != null) {
+            // Keys for Curve25519 and Curve448 require conversion to a JCA-compatible key
+            if (publicKey instanceof XCurveEcPublicKey) {
+                publicKey = ((XCurveEcPublicKey) publicKey).toEdDsaKey();
+            }
             return new JavaSignature(algorithm, publicKey);
         }
         throw new NotImplementedException(

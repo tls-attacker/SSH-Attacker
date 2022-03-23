@@ -8,16 +8,15 @@
 package de.rub.nds.sshattacker.core.crypto.util;
 
 import de.rub.nds.sshattacker.core.constants.PublicKeyFormat;
-import de.rub.nds.sshattacker.core.crypto.keys.CustomDsaPublicKey;
-import de.rub.nds.sshattacker.core.crypto.keys.CustomEcPublicKey;
-import de.rub.nds.sshattacker.core.crypto.keys.CustomRsaPublicKey;
-import de.rub.nds.sshattacker.core.crypto.keys.SshPublicKey;
+import de.rub.nds.sshattacker.core.crypto.keys.*;
 import de.rub.nds.sshattacker.core.crypto.keys.parser.DsaPublicKeyParser;
 import de.rub.nds.sshattacker.core.crypto.keys.parser.EcdsaPublicKeyParser;
 import de.rub.nds.sshattacker.core.crypto.keys.parser.RsaPublicKeyParser;
+import de.rub.nds.sshattacker.core.crypto.keys.parser.XCurvePublicKeyParser;
 import de.rub.nds.sshattacker.core.crypto.keys.serializer.DsaPublicKeySerializer;
 import de.rub.nds.sshattacker.core.crypto.keys.serializer.EcdsaPublicKeySerializer;
 import de.rub.nds.sshattacker.core.crypto.keys.serializer.RsaPublicKeySerializer;
+import de.rub.nds.sshattacker.core.crypto.keys.serializer.XCurvePublicKeySerializer;
 import de.rub.nds.sshattacker.core.exceptions.NotImplementedException;
 import java.security.PublicKey;
 import org.apache.logging.log4j.LogManager;
@@ -75,6 +74,9 @@ public final class PublicKeyHelper {
             case ECDSA_SHA2_BRAINPOOL_P384R1:
             case ECDSA_SHA2_BRAINPOOL_P512R1:
                 return new EcdsaPublicKeyParser(encodedPublicKeyBytes, 0).parse();
+            case SSH_ED25519:
+            case SSH_ED448:
+                return new XCurvePublicKeyParser(encodedPublicKeyBytes, 0).parse();
             default:
                 throw new NotImplementedException(
                         "Parser for public key format " + keyFormat + " is not yet implemented.");
@@ -139,6 +141,9 @@ public final class PublicKeyHelper {
                 case ECDSA_SHA2_BRAINPOOL_P384R1:
                 case ECDSA_SHA2_BRAINPOOL_P512R1:
                     return new EcdsaPublicKeySerializer((CustomEcPublicKey) publicKey).serialize();
+                case SSH_ED25519:
+                case SSH_ED448:
+                    return new XCurvePublicKeySerializer((XCurveEcPublicKey) publicKey).serialize();
                 default:
                     throw new NotImplementedException(
                             "Serializer for public key format "

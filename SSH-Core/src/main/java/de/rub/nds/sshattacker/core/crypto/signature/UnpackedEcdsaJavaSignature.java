@@ -8,8 +8,9 @@
 package de.rub.nds.sshattacker.core.crypto.signature;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.constants.PublicKeyAlgorithm;
-import de.rub.nds.sshattacker.core.constants.SignatureEncoding;
+import de.rub.nds.sshattacker.core.util.Converter;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.math.BigInteger;
@@ -20,20 +21,19 @@ import org.apache.logging.log4j.Logger;
 import org.bouncycastle.asn1.*;
 
 /**
- * This class extends the JavaSignature for the DSA signature encoding by unpacking the signature
+ * This class extends the JavaSignature for the ECDSA signature encoding by unpacking the signature
  * output / packing the input. This is necessary as BouncyCastle returns the signature as an ASN.1
- * sequence while the RFC requires both signature parts (r, s) to be "160-bit integers, without
- * lengths or padding, unsigned, and in network byte order".
+ * sequence while the RFC requires both signature parts (r, s) to be encoded as mpint.
  */
-public class UnpackedDsaJavaSignature extends UnpackedJavaSignature {
+public class UnpackedEcdsaJavaSignature extends UnpackedJavaSignature {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public UnpackedDsaJavaSignature(PublicKeyAlgorithm algorithm, Key key) {
+    public UnpackedEcdsaJavaSignature(PublicKeyAlgorithm algorithm, Key key) {
         super(algorithm, key);
-        if (algorithm.getSignatureEncoding() != SignatureEncoding.SSH_DSS) {
+        if (!algorithm.getSignatureEncoding().getName().startsWith("ecdsa-sha2-")) {
             throw new IllegalArgumentException(
-                    "UnpackedDsaSignature class does only support signature algorithms with ssh-dss encoding, but got "
+                    "UnpackedEcdsaSignature class does only support signature algorithms with ecdsa-sha2-* encoding, but got "
                             + algorithm
                             + " with encoding "
                             + algorithm.getSignatureEncoding());
@@ -47,14 +47,12 @@ public class UnpackedDsaJavaSignature extends UnpackedJavaSignature {
             ASN1Sequence sequence = ASN1Sequence.getInstance(input.readObject());
             ASN1Integer r = ASN1Integer.getInstance(sequence.getObjectAt(0));
             ASN1Integer s = ASN1Integer.getInstance(sequence.getObjectAt(1));
-            // r and s are unsigned (no leading zero byte allowed), therefore use ArrayConverter
-            // rather than .toByteArray() to strip the sign byte
             return ArrayConverter.concatenate(
-                    ArrayConverter.bigIntegerToByteArray(r.getPositiveValue()),
-                    ArrayConverter.bigIntegerToByteArray(s.getPositiveValue()));
+                    Converter.bigIntegerToMpint(r.getPositiveValue()),
+                    Converter.bigIntegerToMpint(s.getPositiveValue()));
         } catch (IOException e) {
             LOGGER.error(
-                    "Caught an IOException while unpacking DSA signature from ASN.1 structure, returning an empty signature instead",
+                    "Caught an IOException while unpacking ECDSA signature from ASN.1 structure, returning an empty signature instead",
                     e);
             return new byte[0];
         }
@@ -62,16 +60,15 @@ public class UnpackedDsaJavaSignature extends UnpackedJavaSignature {
 
     @Override
     protected byte[] packSignature(byte[] unpackedSignature) {
-        BigInteger r =
-                new BigInteger(
-                        1, Arrays.copyOfRange(unpackedSignature, 0, unpackedSignature.length / 2));
-        BigInteger s =
-                new BigInteger(
-                        1,
-                        Arrays.copyOfRange(
-                                unpackedSignature,
-                                unpackedSignature.length / 2,
-                                unpackedSignature.length));
+        int rStart = DataFormatConstants.MPINT_SIZE_LENGTH;
+        int rLength = ArrayConverter.bytesToInt(Arrays.copyOfRange(unpackedSignature, 0, rStart));
+        int rEnd = rStart + rLength;
+        BigInteger r = new BigInteger(Arrays.copyOfRange(unpackedSignature, rStart, rEnd));
+        int sStart = rEnd + DataFormatConstants.MPINT_SIZE_LENGTH;
+        int sLength =
+                ArrayConverter.bytesToInt(Arrays.copyOfRange(unpackedSignature, rEnd, sStart));
+        int sEnd = sStart + sLength;
+        BigInteger s = new BigInteger(Arrays.copyOfRange(unpackedSignature, sStart, sEnd));
         ASN1Integer packedR = new ASN1Integer(r);
         ASN1Integer packedS = new ASN1Integer(s);
         DERSequence sequence = new DERSequence(new ASN1Encodable[] {packedR, packedS});
@@ -82,7 +79,7 @@ public class UnpackedDsaJavaSignature extends UnpackedJavaSignature {
             return packedSignatureOutput.toByteArray();
         } catch (IOException e) {
             LOGGER.error(
-                    "Caught an IOException while packing DSA signature into ASN.1 structure, returning an empty signature instead",
+                    "Caught an IOException while packing ECDSA signature into ASN.1 structure, returning an empty signature instead",
                     e);
             return new byte[0];
         }

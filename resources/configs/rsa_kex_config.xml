@@ -171,6 +171,80 @@
                 <x>710307844775435492750701971700158010530791912264</x>
             </dsaPrivateKey>
         </serverHostKey>
+        <serverHostKey>
+            <publicKeyAlgorithm>ECDSA_SHA2_NISTP256</publicKeyAlgorithm>
+            <ecPublicKey>
+                <publicKey>
+                    <xFieldElementFp>
+                        <data>66335975596201130382553289200090639082725578159290065732893148466371198963191</data>
+                        <modulus>115792089210356248762697446949407573530086143415290314195533631308867097853951</modulus>
+                    </xFieldElementFp>
+                    <yFieldElementFp>
+                        <data>92540588172495398420536855592847238685935850439344635870189430281888811737575</data>
+                        <modulus>115792089210356248762697446949407573530086143415290314195533631308867097853951</modulus>
+                    </yFieldElementFp>
+                    <infinity>false</infinity>
+                </publicKey>
+                <group>SECP256R1</group>
+            </ecPublicKey>
+            <ecPrivateKey>
+                <group>SECP256R1</group>
+                <privateKey>64154511171343329754910734163504631070465777822792923856132503828410544857551</privateKey>
+            </ecPrivateKey>
+        </serverHostKey>
+        <serverHostKey>
+            <publicKeyAlgorithm>ECDSA_SHA2_NISTP384</publicKeyAlgorithm>
+            <ecPublicKey>
+                <publicKey>
+                    <xFieldElementFp>
+                        <data>15547976273652820427642563196261894070822162879869507626923148557502479461209592911775322323971216924815316293092711</data>
+                        <modulus>39402006196394479212279040100143613805079739270465446667948293404245721771496870329047266088258938001861606973112319</modulus>
+                    </xFieldElementFp>
+                    <yFieldElementFp>
+                        <data>9695946106659142922418282376577230248622147552218990306996815920012731853225776072796651490378566902277011730309814</data>
+                        <modulus>39402006196394479212279040100143613805079739270465446667948293404245721771496870329047266088258938001861606973112319</modulus>
+                    </yFieldElementFp>
+                    <infinity>false</infinity>
+                </publicKey>
+                <group>SECP384R1</group>
+            </ecPublicKey>
+            <ecPrivateKey>
+                <group>SECP384R1</group>
+                <privateKey>36050726511265987414250148771380356164170835387112645048215030017475896013479718274286368845356254798796678895751832</privateKey>
+            </ecPrivateKey>
+        </serverHostKey>
+        <serverHostKey>
+            <publicKeyAlgorithm>ECDSA_SHA2_NISTP521</publicKeyAlgorithm>
+            <ecPublicKey>
+                <publicKey>
+                    <xFieldElementFp>
+                        <data>2272559051340524279790488770624793351473757740122720704346984101484432119416663185784832778561915819189634414709979676395724191545952512458565372912770377128</data>
+                        <modulus>6864797660130609714981900799081393217269435300143305409394463459185543183397656052122559640661454554977296311391480858037121987999716643812574028291115057151</modulus>
+                    </xFieldElementFp>
+                    <yFieldElementFp>
+                        <data>2354087517331274393064533972495562079424182398212131835340828544248608109019232344912476476215748854805193904997976381059622624405178964936930669634675699173</data>
+                        <modulus>6864797660130609714981900799081393217269435300143305409394463459185543183397656052122559640661454554977296311391480858037121987999716643812574028291115057151</modulus>
+                    </yFieldElementFp>
+                    <infinity>false</infinity>
+                </publicKey>
+                <group>SECP521R1</group>
+            </ecPublicKey>
+            <ecPrivateKey>
+                <group>SECP521R1</group>
+                <privateKey>4654291931739978218004099797848549769245786863808395337139032242514913193695116632475208935193748995885860258303221363853541516297085693002196207490064657106</privateKey>
+            </ecPrivateKey>
+        </serverHostKey>
+        <serverHostKey>
+            <publicKeyAlgorithm>SSH_ED25519</publicKeyAlgorithm>
+            <xCurvePublicKey>
+                <group>CURVE25519</group>
+                <coordinate>13 E3 59 1C C0 D1 BA E5 15 EC 44 FD 3F A0 17 84 E2 10 31 65 EC CF E9 39 D9 1A 61 9F 46 DB ED 70</coordinate>
+            </xCurvePublicKey>
+            <xCurvePrivateKey>
+                <group>CURVE25519</group>
+                <scalar>09 2E 82 9D E5 36 BE 8F 7D 74 E7 A3 C6 CD 90 EA 6E AD DD EE B2 E5 0D 86 17 EB DD 13 2B 53 66 9B</scalar>
+            </xCurvePrivateKey>
+        </serverHostKey>
     </serverHostKeys>
     <dhGexMinimalGroupSize>2048</dhGexMinimalGroupSize>
     <dhGexPreferredGroupSize>4096</dhGexPreferredGroupSize>

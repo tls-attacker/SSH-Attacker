@@ -13,6 +13,7 @@ import de.rub.nds.sshattacker.core.crypto.keys.CustomRsaPrivateKey;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomRsaPublicKey;
 import de.rub.nds.sshattacker.core.crypto.keys.SshPublicKey;
 import de.rub.nds.sshattacker.core.protocol.common.Parser;
+import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -31,7 +32,7 @@ public class RsaPublicKeyParser
         CustomRsaPublicKey publicKey = new CustomRsaPublicKey();
         // The ssh-rsa format specifies the ssh-rsa to be part of the key
         int formatLength = parseIntField(DataFormatConstants.INT32_SIZE);
-        String format = parseByteString(formatLength);
+        String format = parseByteString(formatLength, StandardCharsets.US_ASCII);
         if (!format.equals(PublicKeyFormat.SSH_RSA.getName())) {
             LOGGER.warn(
                     "Trying to parse RSA public key, but encountered unexpected public key format '"

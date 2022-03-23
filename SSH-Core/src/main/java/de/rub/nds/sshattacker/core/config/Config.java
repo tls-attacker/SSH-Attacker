@@ -13,6 +13,7 @@ import de.rub.nds.sshattacker.core.connection.Channel;
 import de.rub.nds.sshattacker.core.connection.InboundConnection;
 import de.rub.nds.sshattacker.core.connection.OutboundConnection;
 import de.rub.nds.sshattacker.core.constants.*;
+import de.rub.nds.sshattacker.core.crypto.ec.PointFormatter;
 import de.rub.nds.sshattacker.core.crypto.keys.*;
 import de.rub.nds.sshattacker.core.workflow.factory.WorkflowTraceType;
 import de.rub.nds.sshattacker.core.workflow.filter.FilterType;
@@ -383,6 +384,7 @@ public class Config implements Serializable {
                                 16));
 
         // An OpenSSL generated 2048 bit RSA keypair is currently being used as the default host key
+        // TODO: Load host keys from file to reduce length of Config class
         serverHostKeys = new ArrayList<>();
         serverHostKeys.add(
                 new SshPublicKey<>(
@@ -467,6 +469,71 @@ public class Config implements Serializable {
                                                 + "8ED403D3FC9C4C79",
                                         16),
                                 new BigInteger("7C6B4E2B32192EFC09B7CB12D85CBB4141EF7348", 16))));
+        serverHostKeys.add(
+                new SshPublicKey<>(
+                        PublicKeyFormat.ECDSA_SHA2_NISTP256,
+                        new CustomEcPublicKey(
+                                PointFormatter.formatFromByteArray(
+                                        NamedGroup.SECP256R1,
+                                        ArrayConverter.hexStringToByteArray(
+                                                "0492A8D4E6EECBED47D0AACD15D714FB619D6F3941028874B99117CF8EAE"
+                                                        + "BBCDF7CC981DE460635590F3AB5AE6F7DF0A12E6E0DE951DEAE3D2C48EC3"
+                                                        + "4C237C61E7")),
+                                NamedGroup.SECP256R1),
+                        new CustomEcPrivateKey(
+                                new BigInteger(
+                                        "8DD62AA24F982B18446E3ECC7E50F8EB976610750242BA637C949F4C8FD6A1CF",
+                                        16),
+                                NamedGroup.SECP256R1)));
+        serverHostKeys.add(
+                new SshPublicKey<>(
+                        PublicKeyFormat.ECDSA_SHA2_NISTP384,
+                        new CustomEcPublicKey(
+                                PointFormatter.formatFromByteArray(
+                                        NamedGroup.SECP384R1,
+                                        ArrayConverter.hexStringToByteArray(
+                                                "04650469DB4E282660E0DCB23197D10EE935BA038B8B62890EB098420211"
+                                                        + "C38D5E4E737FF2A0DC53E1B8A55C65B2BD85673EFEEEE9CE4727374D2E2D"
+                                                        + "E8EEA6B8AB146245C8627E2346C76944AEB1C0BDCE1B267773F6ED08473A"
+                                                        + "DE8B6F5687A2B6")),
+                                NamedGroup.SECP384R1),
+                        new CustomEcPrivateKey(
+                                new BigInteger(
+                                        "EA39EE919D73A1FE8F8FBFC8807E7ED36BE3D89FBC1F35619B04E825E8E8"
+                                                + "07E994348EE8095467499AE15F73FE0FD298",
+                                        16),
+                                NamedGroup.SECP384R1)));
+        serverHostKeys.add(
+                new SshPublicKey<>(
+                        PublicKeyFormat.ECDSA_SHA2_NISTP521,
+                        new CustomEcPublicKey(
+                                PointFormatter.formatFromByteArray(
+                                        NamedGroup.SECP521R1,
+                                        ArrayConverter.hexStringToByteArray(
+                                                "0400A97EC5412F12C6CCAEDF2F288041146015FBCE1B939F017039D63280"
+                                                        + "9B170C1E51B5AFE19127F97146C0556A70E44D179B76DA98C39ACF418F98"
+                                                        + "95F7E8483665A800AF936C1864E14340ABE09860281D9A015E0C78A540F1"
+                                                        + "6CB36DD0275C9AF61A2A41F6AE6447ECCFCA1788878B7A249B195424BED8"
+                                                        + "CD881C0C3C5CEB051D64366DE5")),
+                                NamedGroup.SECP521R1),
+                        new CustomEcPrivateKey(
+                                new BigInteger(
+                                        "015B220911DD64BD8793BC5429093B7AE8E2B4F462751D553CE48E09D72E"
+                                                + "9981F4EF80334B981D6558C6498BFB4B6E1973BF60BF568C624934F1EF2B"
+                                                + "8561C67B2AD2",
+                                        16),
+                                NamedGroup.SECP521R1)));
+        serverHostKeys.add(
+                new SshPublicKey<>(
+                        PublicKeyFormat.SSH_ED25519,
+                        new XCurveEcPublicKey(
+                                ArrayConverter.hexStringToByteArray(
+                                        "13E3591CC0D1BAE515EC44FD3FA01784E2103165ECCFE939D91A619F46DBED70"),
+                                NamedGroup.CURVE25519),
+                        new XCurveEcPrivateKey(
+                                ArrayConverter.hexStringToByteArray(
+                                        "092E829DE536BE8F7D74E7A3C6CD90EA6EADDDEEB2E50D8617EBDD132B53669B"),
+                                NamedGroup.CURVE25519)));
 
         clientReserved = 0;
         serverReserved = 0;

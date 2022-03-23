@@ -29,7 +29,7 @@ public class PointFormatter {
         }
         int elementLength =
                 ArrayConverter.bigIntegerToByteArray(point.getFieldX().getModulus()).length;
-        if (group != NamedGroup.ECDH_X448 && group != NamedGroup.ECDH_X25519) {
+        if (group != NamedGroup.CURVE448 && group != NamedGroup.CURVE25519) {
             switch (format) {
                 case UNCOMPRESSED:
                     stream.write(0x04);
@@ -129,7 +129,7 @@ public class PointFormatter {
             LOGGER.warn("Could not parse point. Point is empty. Returning Basepoint");
             return curve.getBasePoint();
         }
-        if (group != NamedGroup.ECDH_X448 && group != NamedGroup.ECDH_X25519) {
+        if (group != NamedGroup.CURVE448 && group != NamedGroup.CURVE25519) {
             int pointFormat = inputStream.read();
             byte[] coordX = new byte[elementLength];
             switch (pointFormat) {
