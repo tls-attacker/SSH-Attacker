@@ -75,6 +75,8 @@ public abstract class ProtocolMessageParser<T extends ProtocolMessage<T>> extend
                     return new EcdhKeyExchangeInitMessageParser(raw, 0).parse();
                 case SSH_MSG_KEX_ECDH_REPLY:
                     return new EcdhKeyExchangeReplyMessageParser(raw, 0).parse();
+                case SSH_MSG_KEXDH_INIT:
+                    return new DhKeyExchangeInitMessageParser(raw, 0).parse();
                 case SSH_MSG_KEXDH_REPLY:
                     return new DhKeyExchangeReplyMessageParser(raw, 0).parse();
                 case SSH_MSG_KEX_DH_GEX_GROUP:

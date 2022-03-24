@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<workflowTrace>
+    <Receive>
+        <connectionAlias>server</connectionAlias>
+    </Receive>
+    <Send>
+        <connectionAlias>server</connectionAlias>
+        <messages>
+            <VersionExchangeMessage />
+        </messages>
+    </Send>
+    <ChangePacketLayer to="BINARY_PACKET">
+        <connectionAlias>server</connectionAlias>
+    </ChangePacketLayer>
+    <Receive>
+        <connectionAlias>server</connectionAlias>
+    </Receive>
+    <Send>
+        <connectionAlias>server</connectionAlias>
+        <messages>
+            <KeyExchangeInitMessage />
+        </messages>
+    </Send>
+    <Receive>
+        <connectionAlias>server</connectionAlias>
+    </Receive>
+    <Send>
+        <connectionAlias>server</connectionAlias>
+        <messages>
+            <DhKeyExchangeReplyMessage />
+            <NewKeysMessage />
+        </messages>
+    </Send>
+    <Receive>
+        <connectionAlias>server</connectionAlias>
+    </Receive>
+    <ActivateEncryption>
+        <connectionAlias>server</connectionAlias>
+    </ActivateEncryption>
+    <Receive>
+        <connectionAlias>server</connectionAlias>
+    </Receive>
+    <Send>
+        <connectionAlias>server</connectionAlias>
+        <messages>
+            <ServiceAcceptMessage />
+        </messages>
+    </Send>
+</workflowTrace>

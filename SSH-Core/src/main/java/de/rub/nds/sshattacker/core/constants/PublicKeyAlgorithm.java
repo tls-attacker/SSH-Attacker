@@ -282,13 +282,25 @@ public enum PublicKeyAlgorithm {
             PublicKeyFormat.SK_SSH_ED25519_CERT_V01_OPENSSH_COM),
     // [ SSH.COM ]
     SSH_RSA_SHA224_SSH_COM(
-            "ssh-rsa-sha224@ssh.com", PublicKeyFormat.SSH_RSA, SignatureEncoding.SSH_RSA, "SHA224withRSA"),
+            "ssh-rsa-sha224@ssh.com",
+            PublicKeyFormat.SSH_RSA,
+            SignatureEncoding.SSH_RSA,
+            "SHA224withRSA"),
     SSH_RSA_SHA256_SSH_COM(
-            "ssh-rsa-sha256@ssh.com", PublicKeyFormat.SSH_RSA, SignatureEncoding.SSH_RSA, "SHA256withRSA"),
+            "ssh-rsa-sha256@ssh.com",
+            PublicKeyFormat.SSH_RSA,
+            SignatureEncoding.SSH_RSA,
+            "SHA256withRSA"),
     SSH_RSA_SHA384_SSH_COM(
-            "ssh-rsa-sha384@ssh.com", PublicKeyFormat.SSH_RSA, SignatureEncoding.SSH_RSA, "SHA384withRSA"),
+            "ssh-rsa-sha384@ssh.com",
+            PublicKeyFormat.SSH_RSA,
+            SignatureEncoding.SSH_RSA,
+            "SHA384withRSA"),
     SSH_RSA_SHA512_SSH_COM(
-            "ssh-rsa-sha512@ssh.com", PublicKeyFormat.SSH_RSA, SignatureEncoding.SSH_RSA, "SHA512withRSA");
+            "ssh-rsa-sha512@ssh.com",
+            PublicKeyFormat.SSH_RSA,
+            SignatureEncoding.SSH_RSA,
+            "SHA512withRSA");
 
     private final String name;
     private final PublicKeyFormat keyFormat;
