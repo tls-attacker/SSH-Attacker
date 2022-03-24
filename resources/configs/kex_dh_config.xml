@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<config>
+    <clientSupportedKeyExchangeAlgorithms>
+        <clientSupportedKeyExchangeAlgorithm>DIFFIE_HELLMAN_GROUP18_SHA512</clientSupportedKeyExchangeAlgorithm>
+        <clientSupportedKeyExchangeAlgorithm>DIFFIE_HELLMAN_GROUP17_SHA512</clientSupportedKeyExchangeAlgorithm>
+        <clientSupportedKeyExchangeAlgorithm>DIFFIE_HELLMAN_GROUP16_SHA512</clientSupportedKeyExchangeAlgorithm>
+        <clientSupportedKeyExchangeAlgorithm>DIFFIE_HELLMAN_GROUP15_SHA512</clientSupportedKeyExchangeAlgorithm>
+        <clientSupportedKeyExchangeAlgorithm>DIFFIE_HELLMAN_GROUP14_SHA256</clientSupportedKeyExchangeAlgorithm>
+        <clientSupportedKeyExchangeAlgorithm>DIFFIE_HELLMAN_GROUP14_SHA1</clientSupportedKeyExchangeAlgorithm>
+        <clientSupportedKeyExchangeAlgorithm>DIFFIE_HELLMAN_GROUP1_SHA1</clientSupportedKeyExchangeAlgorithm>
+    </clientSupportedKeyExchangeAlgorithms>
+    <serverSupportedKeyExchangeAlgorithms>
+        <serverSupportedKeyExchangeAlgorithm>DIFFIE_HELLMAN_GROUP18_SHA512</serverSupportedKeyExchangeAlgorithm>
+        <serverSupportedKeyExchangeAlgorithm>DIFFIE_HELLMAN_GROUP17_SHA512</serverSupportedKeyExchangeAlgorithm>
+        <serverSupportedKeyExchangeAlgorithm>DIFFIE_HELLMAN_GROUP16_SHA512</serverSupportedKeyExchangeAlgorithm>
+        <serverSupportedKeyExchangeAlgorithm>DIFFIE_HELLMAN_GROUP15_SHA512</serverSupportedKeyExchangeAlgorithm>
+        <serverSupportedKeyExchangeAlgorithm>DIFFIE_HELLMAN_GROUP14_SHA256</serverSupportedKeyExchangeAlgorithm>
+        <serverSupportedKeyExchangeAlgorithm>DIFFIE_HELLMAN_GROUP14_SHA1</serverSupportedKeyExchangeAlgorithm>
+        <serverSupportedKeyExchangeAlgorithm>DIFFIE_HELLMAN_GROUP1_SHA1</serverSupportedKeyExchangeAlgorithm>
+    </serverSupportedKeyExchangeAlgorithms>
+</config>
