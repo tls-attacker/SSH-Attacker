@@ -21,6 +21,7 @@ import de.rub.nds.sshattacker.core.protocol.transport.preparator.NewKeysMessageP
 import de.rub.nds.sshattacker.core.protocol.transport.serializer.NewKeysMessageSerializer;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
+import java.util.Optional;
 
 public class NewKeysMessageHandler extends SshMessageHandler<NewKeysMessage>
         implements MessageSentHandler {
@@ -51,17 +52,23 @@ public class NewKeysMessageHandler extends SshMessageHandler<NewKeysMessage>
 
     private void adjustEncryptionForDirection(boolean receive) {
         Chooser chooser = context.getChooser();
-        KeySet keySet = KeySetGenerator.generateKeySet(context);
+        Optional<KeySet> keySet = context.getKeySet();
         EncryptionAlgorithm encryptionAlgorithm =
                 receive
                         ? chooser.getReceiveEncryptionAlgorithm()
                         : chooser.getSendEncryptionAlgorithm();
         MacAlgorithm macAlgorithm =
                 receive ? chooser.getReceiveMacAlgorithm() : chooser.getSendMacAlgorithm();
+        if (keySet.isEmpty()) {
+            LOGGER.warn(
+                    "Unable to update the active {} cipher after handling a new keys message because key set is missing - workflow will continue with old cipher",
+                    receive ? "decryption" : "encryption");
+            return;
+        }
         try {
             PacketCipher packetCipher =
                     PacketCipherFactory.getPacketCipher(
-                            context, keySet, encryptionAlgorithm, macAlgorithm);
+                            context, keySet.get(), encryptionAlgorithm, macAlgorithm);
             if (receive) {
                 context.getPacketLayer().updateDecryptionCipher(packetCipher);
             } else {

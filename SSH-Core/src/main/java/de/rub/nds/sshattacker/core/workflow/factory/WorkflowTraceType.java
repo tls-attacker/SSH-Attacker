@@ -8,11 +8,12 @@
 package de.rub.nds.sshattacker.core.workflow.factory;
 
 public enum WorkflowTraceType {
-    KEYEXCHANGE,
-    DYNAMIC_KEYEXCHANGE,
-    AUTHPASSWORD,
-    DYNAMIC_AUTHPASSWORD,
-    FULL,
-    DYNAMIC_FULL,
-    START_KEYEXCHANGE
+    KEX_INIT_ONLY,
+    KEX_DH,
+    KEX_ECDH,
+    KEX_DH_GEX,
+    KEX_RSA,
+    KEX_DYNAMIC,
+    AUTH_PASSWORD,
+    FULL
 }

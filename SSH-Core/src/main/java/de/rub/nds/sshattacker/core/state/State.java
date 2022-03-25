@@ -94,7 +94,6 @@ public class State {
 
         WorkflowTraceNormalizer normalizer = new WorkflowTraceNormalizer();
         normalizer.normalize(workflowTrace, config, runningMode);
-        workflowTrace.setDirty(false);
 
         for (AliasedConnection con : workflowTrace.getConnections()) {
             SshContext ctx = new SshContext(config, con);

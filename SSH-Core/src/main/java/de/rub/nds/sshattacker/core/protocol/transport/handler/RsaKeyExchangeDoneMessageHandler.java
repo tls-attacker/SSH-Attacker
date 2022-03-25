@@ -14,6 +14,8 @@ import de.rub.nds.sshattacker.core.crypto.signature.*;
 import de.rub.nds.sshattacker.core.exceptions.CryptoException;
 import de.rub.nds.sshattacker.core.exceptions.MissingExchangeHashInputException;
 import de.rub.nds.sshattacker.core.exceptions.NotImplementedException;
+import de.rub.nds.sshattacker.core.packet.cipher.keys.KeySet;
+import de.rub.nds.sshattacker.core.packet.cipher.keys.KeySetGenerator;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
@@ -43,6 +45,7 @@ public class RsaKeyExchangeDoneMessageHandler extends SshMessageHandler<RsaKeyEx
         computeExchangeHash();
         verifySignature();
         setSessionId();
+        generateKeySet();
     }
 
     private void verifySignature() {
@@ -99,6 +102,11 @@ public class RsaKeyExchangeDoneMessageHandler extends SshMessageHandler<RsaKeyEx
         } else {
             LOGGER.warn("Exchange hash in context is empty, unable to set session id in context");
         }
+    }
+
+    private void generateKeySet() {
+        KeySet keySet = KeySetGenerator.generateKeySet(context);
+        context.setKeySet(keySet);
     }
 
     @Override

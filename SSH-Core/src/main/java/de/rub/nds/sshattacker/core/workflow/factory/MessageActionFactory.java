@@ -18,22 +18,21 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class MessageActionFactory {
+public final class MessageActionFactory {
+
+    private MessageActionFactory() { }
 
     public static MessageAction createAction(
-            Config config,
             AliasedConnection connection,
             ConnectionEndType sendingConnectionEndType,
             ProtocolMessage<?>... protocolMessages) {
         return createAction(
-                config,
                 connection,
                 sendingConnectionEndType,
                 new ArrayList<>(Arrays.asList(protocolMessages)));
     }
 
     public static MessageAction createAction(
-            Config config,
             AliasedConnection connection,
             ConnectionEndType sendingConnectionEnd,
             List<ProtocolMessage<?>> protocolMessages) {
@@ -46,6 +45,4 @@ public class MessageActionFactory {
         action.setConnectionAlias(connection.getAlias());
         return action;
     }
-
-    private MessageActionFactory() {}
 }

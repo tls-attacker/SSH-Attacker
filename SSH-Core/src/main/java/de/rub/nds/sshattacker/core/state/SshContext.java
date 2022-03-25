@@ -11,12 +11,14 @@ import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.connection.AliasedConnection;
 import de.rub.nds.sshattacker.core.connection.Channel;
 import de.rub.nds.sshattacker.core.constants.*;
-import de.rub.nds.sshattacker.core.constants.PacketLayerType;
 import de.rub.nds.sshattacker.core.crypto.hash.ExchangeHashInputHolder;
-import de.rub.nds.sshattacker.core.crypto.kex.*;
+import de.rub.nds.sshattacker.core.crypto.kex.AbstractEcdhKeyExchange;
+import de.rub.nds.sshattacker.core.crypto.kex.DhKeyExchange;
+import de.rub.nds.sshattacker.core.crypto.kex.RsaKeyExchange;
 import de.rub.nds.sshattacker.core.crypto.keys.SshPublicKey;
 import de.rub.nds.sshattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.sshattacker.core.exceptions.TransportHandlerConnectException;
+import de.rub.nds.sshattacker.core.packet.cipher.keys.KeySet;
 import de.rub.nds.sshattacker.core.packet.layer.AbstractPacketLayer;
 import de.rub.nds.sshattacker.core.packet.layer.PacketLayerFactory;
 import de.rub.nds.sshattacker.core.protocol.common.layer.MessageLayer;
@@ -25,6 +27,7 @@ import de.rub.nds.sshattacker.core.workflow.chooser.ChooserFactory;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import de.rub.nds.tlsattacker.transport.TransportHandlerFactory;
+
 import java.io.IOException;
 import java.math.BigInteger;
 import java.util.HashMap;
@@ -185,18 +188,8 @@ public class SshContext {
     private byte[] sessionID;
     /** The shared secret established by the negotiated key exchange method */
     private BigInteger sharedSecret;
-    /** Initial IV (client to server) derived from the shared secret during the protocol */
-    private byte[] initialIvClientToServer;
-    /** Initial IV (server to client) derived from the shared secret during the protocol */
-    private byte[] initialIvServerToClient;
-    /** Encryption key (client to server) derived from the shared secret during the protocol */
-    private byte[] encryptionKeyClientToServer;
-    /** Encryption key (server to client) derived from the shared secret during the protocol */
-    private byte[] encryptionKeyServerToClient;
-    /** Integrity key (client to server) derived from the shared secret during the protocol */
-    private byte[] integrityKeyClientToServer;
-    /** Integrity key (server to client) derived from the shared secret during the protocol */
-    private byte[] integrityKeyServerToClient;
+    /** The key set derived from the shared secret, the exchange hash, and the session ID */
+    private KeySet keySet;
     // endregion
 
     // region Connection Protocol
@@ -818,30 +811,9 @@ public class SshContext {
         return Optional.ofNullable(sharedSecret);
     }
 
-    public Optional<byte[]> getInitialIvClientToServer() {
-        return Optional.ofNullable(initialIvClientToServer);
+    public Optional<KeySet> getKeySet() {
+        return Optional.ofNullable(keySet);
     }
-
-    public Optional<byte[]> getInitialIvServerToClient() {
-        return Optional.ofNullable(initialIvServerToClient);
-    }
-
-    public Optional<byte[]> getEncryptionKeyClientToServer() {
-        return Optional.ofNullable(encryptionKeyClientToServer);
-    }
-
-    public Optional<byte[]> getEncryptionKeyServerToClient() {
-        return Optional.ofNullable(encryptionKeyServerToClient);
-    }
-
-    public Optional<byte[]> getIntegrityKeyClientToServer() {
-        return Optional.ofNullable(integrityKeyClientToServer);
-    }
-
-    public Optional<byte[]> getIntegrityKeyServerToClient() {
-        return Optional.ofNullable(integrityKeyServerToClient);
-    }
-
     // endregion
     // region Setters for Exchange Hash and Cryptographic Keys
     public void setExchangeHash(byte[] exchangeHash) {
@@ -856,30 +828,9 @@ public class SshContext {
         this.sharedSecret = sharedSecret;
     }
 
-    public void setInitialIvClientToServer(byte[] initialIvClientToServer) {
-        this.initialIvClientToServer = initialIvClientToServer;
+    public void setKeySet(KeySet transportKeySet) {
+        this.keySet = transportKeySet;
     }
-
-    public void setInitialIvServerToClient(byte[] initialIvServerToClient) {
-        this.initialIvServerToClient = initialIvServerToClient;
-    }
-
-    public void setEncryptionKeyClientToServer(byte[] encryptionKeyClientToServer) {
-        this.encryptionKeyClientToServer = encryptionKeyClientToServer;
-    }
-
-    public void setEncryptionKeyServerToClient(byte[] encryptionKeyServerToClient) {
-        this.encryptionKeyServerToClient = encryptionKeyServerToClient;
-    }
-
-    public void setIntegrityKeyClientToServer(byte[] integrityKeyClientToServer) {
-        this.integrityKeyClientToServer = integrityKeyClientToServer;
-    }
-
-    public void setIntegrityKeyServerToClient(byte[] integrityKeyServerToClient) {
-        this.integrityKeyServerToClient = integrityKeyServerToClient;
-    }
-
     // endregion
 
     // region for Connection Protocol Fields

@@ -14,6 +14,8 @@ import de.rub.nds.sshattacker.core.crypto.keys.SshPublicKey;
 import de.rub.nds.sshattacker.core.crypto.util.PublicKeyHelper;
 import de.rub.nds.sshattacker.core.exceptions.CryptoException;
 import de.rub.nds.sshattacker.core.exceptions.MissingExchangeHashInputException;
+import de.rub.nds.sshattacker.core.packet.cipher.keys.KeySet;
+import de.rub.nds.sshattacker.core.packet.cipher.keys.KeySetGenerator;
 import de.rub.nds.sshattacker.core.protocol.common.*;
 import de.rub.nds.sshattacker.core.protocol.transport.message.DhGexKeyExchangeReplyMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.parser.DhGexKeyExchangeReplyMessageParser;
@@ -47,6 +49,7 @@ public class DhGexKeyExchangeReplyMessageHandler
         updateExchangeHashWithSharedSecret();
         computeExchangeHash();
         setSessionId();
+        generateKeySet();
     }
 
     private void handleHostKey() {
@@ -110,6 +113,11 @@ public class DhGexKeyExchangeReplyMessageHandler
         } else {
             LOGGER.warn("Exchange hash in context is empty, unable to set session id in context");
         }
+    }
+
+    private void generateKeySet() {
+        KeySet keySet = KeySetGenerator.generateKeySet(context);
+        context.setKeySet(keySet);
     }
 
     @Override

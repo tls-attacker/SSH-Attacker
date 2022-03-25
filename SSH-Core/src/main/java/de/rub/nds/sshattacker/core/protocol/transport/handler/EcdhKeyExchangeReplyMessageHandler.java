@@ -14,6 +14,8 @@ import de.rub.nds.sshattacker.core.crypto.keys.SshPublicKey;
 import de.rub.nds.sshattacker.core.crypto.util.PublicKeyHelper;
 import de.rub.nds.sshattacker.core.exceptions.CryptoException;
 import de.rub.nds.sshattacker.core.exceptions.MissingExchangeHashInputException;
+import de.rub.nds.sshattacker.core.packet.cipher.keys.KeySet;
+import de.rub.nds.sshattacker.core.packet.cipher.keys.KeySetGenerator;
 import de.rub.nds.sshattacker.core.protocol.common.*;
 import de.rub.nds.sshattacker.core.protocol.transport.message.EcdhKeyExchangeReplyMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.parser.EcdhKeyExchangeReplyMessageParser;
@@ -43,6 +45,7 @@ public class EcdhKeyExchangeReplyMessageHandler
         updateExchangeHashWithSharedSecret();
         computeExchangeHash();
         setSessionId();
+        generateKeySet();
     }
 
     private void handleHostKey(EcdhKeyExchangeReplyMessage message) {
@@ -106,6 +109,11 @@ public class EcdhKeyExchangeReplyMessageHandler
         } else {
             LOGGER.warn("Exchange hash in context is empty, unable to set session id in context");
         }
+    }
+
+    private void generateKeySet() {
+        KeySet keySet = KeySetGenerator.generateKeySet(context);
+        context.setKeySet(keySet);
     }
 
     @Override

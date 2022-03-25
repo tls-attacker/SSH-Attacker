@@ -102,10 +102,6 @@ public class WorkflowTrace implements Serializable {
     private String name = null;
     private String description = null;
 
-    // A dirty flag used to determine if the WorkflowTrace is well defined or
-    // not.
-    @XmlTransient private boolean dirty = true;
-
     public WorkflowTrace() {
         this.sshActions = new LinkedList<>();
     }
@@ -133,7 +129,6 @@ public class WorkflowTrace implements Serializable {
     }
 
     public void addSshAction(SshAction action) {
-        dirty = true;
         sshActions.add(action);
     }
 
@@ -148,17 +143,14 @@ public class WorkflowTrace implements Serializable {
     }
 
     public void addSshAction(int position, SshAction action) {
-        dirty = true;
         sshActions.add(position, action);
     }
 
     public SshAction removeSshAction(int index) {
-        dirty = true;
         return sshActions.remove(index);
     }
 
     public void setSshActions(List<SshAction> sshActions) {
-        dirty = true;
         this.sshActions = sshActions;
     }
 
@@ -178,7 +170,6 @@ public class WorkflowTrace implements Serializable {
      * @param connections new connection to use with this workflow trace
      */
     public void setConnections(List<AliasedConnection> connections) {
-        dirty = true;
         this.connections = connections;
     }
 
@@ -190,7 +181,6 @@ public class WorkflowTrace implements Serializable {
      * @param connection new connection to add to the workflow trace
      */
     public void addConnection(AliasedConnection connection) {
-        dirty = true;
         this.connections.add(connection);
     }
 
@@ -347,13 +337,5 @@ public class WorkflowTrace implements Serializable {
             }
         }
         return true;
-    }
-
-    public boolean isDirty() {
-        return dirty;
-    }
-
-    public void setDirty(boolean dirty) {
-        this.dirty = dirty;
     }
 }

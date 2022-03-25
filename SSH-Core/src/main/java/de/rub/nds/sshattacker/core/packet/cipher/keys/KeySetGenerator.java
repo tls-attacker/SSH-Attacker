@@ -29,7 +29,7 @@ public final class KeySetGenerator {
         byte[] exchangeHash = context.getExchangeHash().orElse(new byte[0]);
         byte[] sessionId = context.getSessionID().orElse(new byte[0]);
 
-        keySet.setClientWriteInitialIV(
+        keySet.setClientWriteInitialIv(
                 KeyDerivation.deriveKey(
                         sharedSecret,
                         exchangeHash,
@@ -37,7 +37,7 @@ public final class KeySetGenerator {
                         sessionId,
                         chooser.getEncryptionAlgorithmClientToServer().getIVSize(),
                         hashAlgorithm));
-        keySet.setServerWriteInitialIV(
+        keySet.setServerWriteInitialIv(
                 KeyDerivation.deriveKey(
                         sharedSecret,
                         exchangeHash,

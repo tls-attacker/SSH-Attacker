@@ -168,11 +168,7 @@ public enum MessageIDConstant {
             throw new ParserException("Unable to parse message with unknown id");
         }
         if (id >= (byte) 30 && id <= (byte) 49) {
-            if (!context.getKeyExchangeAlgorithm().isPresent()) {
-                throw new ParserException(
-                        "Unable to parse key exchange specific message id without negotiating one first");
-            }
-            KeyExchangeAlgorithm kexInContext = context.getKeyExchangeAlgorithm().get();
+            KeyExchangeAlgorithm kexInContext = context.getChooser().getKeyExchangeAlgorithm();
             for (MessageIDConstant candidate : idList) {
                 if (Arrays.asList(candidate.specificTo).contains(kexInContext.getFlowType())) {
                     return candidate;

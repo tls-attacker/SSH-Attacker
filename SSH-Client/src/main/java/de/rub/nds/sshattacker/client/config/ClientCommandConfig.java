@@ -43,9 +43,8 @@ public class ClientCommandConfig extends SSHDelegateConfig {
     @Override
     public Config createConfig() {
         Config config = super.createConfig();
-
         if (config.getWorkflowTraceType() == null) {
-            config.setWorkflowTraceType(WorkflowTraceType.KEYEXCHANGE);
+            config.setWorkflowTraceType(WorkflowTraceType.KEX_DYNAMIC);
         }
         return config;
     }

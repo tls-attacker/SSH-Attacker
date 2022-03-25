@@ -8,6 +8,7 @@
 package de.rub.nds.sshattacker.core.protocol.transport.preparator;
 
 import de.rub.nds.sshattacker.core.constants.KeyExchangeAlgorithm;
+import de.rub.nds.sshattacker.core.constants.KeyExchangeFlowType;
 import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
 import de.rub.nds.sshattacker.core.crypto.cipher.CipherFactory;
 import de.rub.nds.sshattacker.core.crypto.cipher.EncryptionCipher;
@@ -36,26 +37,17 @@ public class RsaKeyExchangeSecretMessagePreparator
         RsaKeyExchangeSecretMessage message = getObject();
         message.setMessageID(MessageIDConstant.SSH_MSG_KEXRSA_SECRET);
         RsaKeyExchange keyExchange = chooser.getRsaKeyExchange();
-        KeyExchangeAlgorithm keyExchangeAlg;
-        if (chooser.getContext().getKeyExchangeAlgorithm().isPresent()) {
-            KeyExchangeAlgorithm negotiatedKeyExchangeAlgorithm =
-                    chooser.getContext().getKeyExchangeAlgorithm().get();
 
-            if (negotiatedKeyExchangeAlgorithm.equals(KeyExchangeAlgorithm.RSA1024_SHA1)
-                    || negotiatedKeyExchangeAlgorithm.equals(KeyExchangeAlgorithm.RSA2048_SHA256)) {
-                keyExchangeAlg = chooser.getContext().getKeyExchangeAlgorithm().get();
-            } else {
-                keyExchangeAlg = chooser.getConfig().getDefaultRsaKeyExchangeAlgorithm();
-                LOGGER.warn(
-                        String.format(
-                                "Negotiated key exchange algorithm was not an RSA key exchange, but %s. Falling back to default: %s",
-                                negotiatedKeyExchangeAlgorithm, keyExchangeAlg));
-            }
+        KeyExchangeAlgorithm keyExchangeAlgorithm;
+        KeyExchangeAlgorithm negotiatedKeyExchangeAlgorithm = chooser.getKeyExchangeAlgorithm();
+        if (negotiatedKeyExchangeAlgorithm.getFlowType() == KeyExchangeFlowType.RSA) {
+            keyExchangeAlgorithm = chooser.getKeyExchangeAlgorithm();
         } else {
-            keyExchangeAlg = chooser.getConfig().getDefaultRsaKeyExchangeAlgorithm();
+            keyExchangeAlgorithm = chooser.getConfig().getDefaultRsaKeyExchangeAlgorithm();
             LOGGER.warn(
-                    "No key exchange algorithm was set, falling back to default: "
-                            + keyExchangeAlg);
+                    String.format(
+                            "Negotiated key exchange algorithm was not an RSA key exchange, but %s. Falling back to default: %s",
+                            negotiatedKeyExchangeAlgorithm, keyExchangeAlgorithm));
         }
 
         keyExchange.computeSharedSecret();
@@ -65,7 +57,7 @@ public class RsaKeyExchangeSecretMessagePreparator
         byte[] encryptedSecret =
                 encryptSecret(
                         Converter.bigIntegerToMpint(keyExchange.getSharedSecret()),
-                        keyExchangeAlg,
+                        keyExchangeAlgorithm,
                         keyExchange);
 
         message.setEncryptedSecret(encryptedSecret, true);
