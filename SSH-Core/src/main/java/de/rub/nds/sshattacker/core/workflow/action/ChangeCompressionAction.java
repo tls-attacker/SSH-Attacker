@@ -15,10 +15,6 @@ import de.rub.nds.sshattacker.core.state.State;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlRootElement;
-
 public class ChangeCompressionAction extends ConnectionBoundAction {
 
     private static final Logger LOGGER = LogManager.getLogger();
@@ -26,7 +22,9 @@ public class ChangeCompressionAction extends ConnectionBoundAction {
     private CompressionAlgorithm previousAlgorithm;
     private CompressionAlgorithm targetAlgorithm;
 
-    public ChangeCompressionAction() { super(AliasedConnection.DEFAULT_CONNECTION_ALIAS); }
+    public ChangeCompressionAction() {
+        super(AliasedConnection.DEFAULT_CONNECTION_ALIAS);
+    }
 
     public ChangeCompressionAction(String connectionAlias) {
         super(connectionAlias);

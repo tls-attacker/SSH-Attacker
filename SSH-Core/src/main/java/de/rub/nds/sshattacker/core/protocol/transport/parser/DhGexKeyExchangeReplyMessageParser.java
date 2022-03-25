@@ -7,7 +7,6 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.parser;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.BinaryPacketConstants;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 import de.rub.nds.sshattacker.core.protocol.transport.message.DhGexKeyExchangeReplyMessage;
@@ -32,8 +31,7 @@ public class DhGexKeyExchangeReplyMessageParser
         message.setHostKeyLength(parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH));
         LOGGER.debug("Host key length: " + message.getHostKeyLength().getValue());
         message.setHostKey(parseByteArrayField(message.getHostKeyLength().getValue()));
-        LOGGER.debug(
-                "Host key: " + ArrayConverter.bytesToRawHexString(message.getHostKey().getValue()));
+        LOGGER.debug("Host key: " + message.getHostKey());
     }
 
     private void parsePublicKey() {
@@ -50,7 +48,7 @@ public class DhGexKeyExchangeReplyMessageParser
         message.setSignatureLength(parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH));
         LOGGER.debug("Signature length: " + message.getSignatureLength().getValue());
         message.setSignature(parseByteArrayField(message.getSignatureLength().getValue()));
-        LOGGER.debug("Signature: " + message.getSignature().getValue());
+        LOGGER.debug("Signature: " + message.getSignature());
     }
 
     @Override

@@ -33,7 +33,11 @@ public class DhGexKeyExchangeInitMessageHandler
 
     @Override
     public void adjustContext() {
-        // TODO: Handle DhGexKeyExchangeInitMessage
+        context.getChooser()
+                .getDhGexKeyExchange()
+                .setRemotePublicKey(message.getPublicKey().getValue());
+        context.getExchangeHashInputHolder()
+                .setDhGexClientPublicKey(message.getPublicKey().getValue());
     }
 
     @Override

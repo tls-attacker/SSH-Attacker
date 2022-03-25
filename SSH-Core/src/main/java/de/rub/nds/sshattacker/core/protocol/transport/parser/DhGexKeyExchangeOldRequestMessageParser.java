@@ -27,13 +27,13 @@ public class DhGexKeyExchangeOldRequestMessageParser
         return new DhGexKeyExchangeOldRequestMessage();
     }
 
-    public void parsePreferedGroupSize() {
+    public void parsePreferredGroupSize() {
         message.setPreferredGroupSize(parseIntField(DataFormatConstants.INT32_SIZE));
-        LOGGER.debug("Prefered group size: " + message.getPreferredGroupSize().getValue());
+        LOGGER.debug("Preferred group size: {} bits", message.getPreferredGroupSize().getValue());
     }
 
     @Override
     protected void parseMessageSpecificContents() {
-        parsePreferedGroupSize();
+        parsePreferredGroupSize();
     }
 }

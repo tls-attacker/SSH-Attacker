@@ -33,7 +33,18 @@ public class DhGexKeyExchangeOldRequestMessageHandler
 
     @Override
     public void adjustContext() {
-        // TODO: Handle DhGexKeyExchangeOldRequestMessage
+        updateContextWithPreferredGroupSize();
+        updateExchangeHashWithPreferredGroupSize();
+        context.setOldGroupRequestReceived(true);
+    }
+
+    private void updateContextWithPreferredGroupSize() {
+        context.setPreferredDhGroupSize(message.getPreferredGroupSize().getValue());
+    }
+
+    private void updateExchangeHashWithPreferredGroupSize() {
+        context.getExchangeHashInputHolder()
+                .setDhGexPreferredGroupSize(message.getPreferredGroupSize().getValue());
     }
 
     @Override

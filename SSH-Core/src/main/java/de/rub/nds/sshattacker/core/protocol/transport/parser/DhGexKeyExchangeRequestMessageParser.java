@@ -29,23 +29,24 @@ public class DhGexKeyExchangeRequestMessageParser
 
     public void parseMinimalGroupSize() {
         message.setMinimalGroupSize((parseIntField(DataFormatConstants.INT32_SIZE)));
-        LOGGER.debug("Minimal group size: " + message.getMinimalGroupSize().getValue());
+        LOGGER.debug("Minimal DH group size: {} bits", message.getMinimalGroupSize().getValue());
     }
 
-    public void parsePreferedGroupSize() {
+    public void parsePreferredGroupSize() {
         message.setPreferredGroupSize(parseIntField(DataFormatConstants.INT32_SIZE));
-        LOGGER.debug("Prefered group size: " + message.getPreferredGroupSize().getValue());
+        LOGGER.debug(
+                "Preferred DH group size: {} bits", message.getPreferredGroupSize().getValue());
     }
 
     public void parseMaximalGroupSize() {
         message.setMaximalGroupSize(parseIntField(DataFormatConstants.INT32_SIZE));
-        LOGGER.debug("Maximal group size" + message.getMaximalGroupSize().getValue());
+        LOGGER.debug("Maximal DH group size: {} bits", message.getMaximalGroupSize().getValue());
     }
 
     @Override
     protected void parseMessageSpecificContents() {
         parseMinimalGroupSize();
-        parsePreferedGroupSize();
+        parsePreferredGroupSize();
         parseMaximalGroupSize();
     }
 }

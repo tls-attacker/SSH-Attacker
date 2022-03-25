@@ -40,7 +40,8 @@ public class WorkflowConfigurationFactory {
             case KEX_DH:
                 return createKeyExchangeWorkflowTrace(KeyExchangeFlowType.DIFFIE_HELLMAN);
             case KEX_DH_GEX:
-                return createKeyExchangeWorkflowTrace(KeyExchangeFlowType.DIFFIE_HELLMAN_GROUP_EXCHANGE);
+                return createKeyExchangeWorkflowTrace(
+                        KeyExchangeFlowType.DIFFIE_HELLMAN_GROUP_EXCHANGE);
             case KEX_ECDH:
                 return createKeyExchangeWorkflowTrace(KeyExchangeFlowType.ECDH);
             case KEX_RSA:
@@ -53,7 +54,8 @@ public class WorkflowConfigurationFactory {
                 return createFullWorkflowTrace();
             default:
                 throw new ConfigurationException(
-                        "Unable to create workflow trace - Unknown WorkflowTraceType: " + workflowTraceType.name());
+                        "Unable to create workflow trace - Unknown WorkflowTraceType: "
+                                + workflowTraceType.name());
         }
     }
 
@@ -112,38 +114,25 @@ public class WorkflowConfigurationFactory {
         AliasedConnection connection = getDefaultConnection();
         workflow.addSshActions(
                 MessageActionFactory.createAction(
-                        connection,
-                        ConnectionEndType.CLIENT,
-                        new VersionExchangeMessage()),
+                        connection, ConnectionEndType.CLIENT, new VersionExchangeMessage()),
                 MessageActionFactory.createAction(
-                        connection,
-                        ConnectionEndType.SERVER,
-                        new VersionExchangeMessage()),
+                        connection, ConnectionEndType.SERVER, new VersionExchangeMessage()),
                 new ChangePacketLayerAction(connection.getAlias(), PacketLayerType.BINARY_PACKET),
                 MessageActionFactory.createAction(
-                        connection,
-                        ConnectionEndType.CLIENT,
-                        new KeyExchangeInitMessage()),
+                        connection, ConnectionEndType.CLIENT, new KeyExchangeInitMessage()),
                 MessageActionFactory.createAction(
-                        connection,
-                        ConnectionEndType.SERVER,
-                        new KeyExchangeInitMessage()));
+                        connection, ConnectionEndType.SERVER, new KeyExchangeInitMessage()));
     }
 
     private void addTransportProtocolActions(WorkflowTrace workflow) {
         AliasedConnection connection = getDefaultConnection();
         addTransportProtocolInitActions(workflow);
-        workflow.addSshActions(
-                new DynamicKeyExchangeAction(connection.getAlias()));
+        workflow.addSshActions(new DynamicKeyExchangeAction(connection.getAlias()));
         workflow.addSshActions(
                 MessageActionFactory.createAction(
-                        connection,
-                        ConnectionEndType.CLIENT,
-                        new ServiceRequestMessage()),
+                        connection, ConnectionEndType.CLIENT, new ServiceRequestMessage()),
                 MessageActionFactory.createAction(
-                        connection,
-                        ConnectionEndType.SERVER,
-                        new ServiceAcceptMessage()));
+                        connection, ConnectionEndType.SERVER, new ServiceAcceptMessage()));
     }
 
     private void addTransportProtocolActions(KeyExchangeFlowType flowType, WorkflowTrace workflow) {
@@ -152,16 +141,13 @@ public class WorkflowConfigurationFactory {
         workflow.addSshActions(createKeyExchangeActions(flowType, connection));
         workflow.addSshActions(
                 MessageActionFactory.createAction(
-                        connection,
-                        ConnectionEndType.CLIENT,
-                        new ServiceRequestMessage()),
+                        connection, ConnectionEndType.CLIENT, new ServiceRequestMessage()),
                 MessageActionFactory.createAction(
-                        connection,
-                        ConnectionEndType.SERVER,
-                        new ServiceAcceptMessage()));
+                        connection, ConnectionEndType.SERVER, new ServiceAcceptMessage()));
     }
 
-    public List<SshAction> createKeyExchangeActions(KeyExchangeFlowType flowType, AliasedConnection connection) {
+    public List<SshAction> createKeyExchangeActions(
+            KeyExchangeFlowType flowType, AliasedConnection connection) {
         List<SshAction> sshActions = new ArrayList<>();
         switch (flowType) {
             case DIFFIE_HELLMAN:
@@ -228,18 +214,16 @@ public class WorkflowConfigurationFactory {
                                 new RsaKeyExchangeDoneMessage()));
                 break;
             default:
-                throw new ConfigurationException("Unable to add key exchange actions to workflow trace - unknown or unsupported key exchange flow type: " + flowType);
+                throw new ConfigurationException(
+                        "Unable to add key exchange actions to workflow trace - unknown or unsupported key exchange flow type: "
+                                + flowType);
         }
         sshActions.add(
                 MessageActionFactory.createAction(
-                        connection,
-                        ConnectionEndType.CLIENT,
-                        new NewKeysMessage()));
+                        connection, ConnectionEndType.CLIENT, new NewKeysMessage()));
         sshActions.add(
                 MessageActionFactory.createAction(
-                        connection,
-                        ConnectionEndType.SERVER,
-                        new NewKeysMessage()));
+                        connection, ConnectionEndType.SERVER, new NewKeysMessage()));
         sshActions.add(new ActivateEncryptionAction(connection.getAlias()));
         return sshActions;
     }
@@ -248,7 +232,8 @@ public class WorkflowConfigurationFactory {
         this.addAuthenticationProtocolActions(AuthenticationMethod.PASSWORD, workflow);
     }
 
-    private void addAuthenticationProtocolActions(AuthenticationMethod method, WorkflowTrace workflow) {
+    private void addAuthenticationProtocolActions(
+            AuthenticationMethod method, WorkflowTrace workflow) {
         AliasedConnection connection = getDefaultConnection();
         //noinspection SwitchStatementWithTooFewBranches
         switch (method) {
@@ -264,7 +249,9 @@ public class WorkflowConfigurationFactory {
                                 new UserAuthSuccessMessage()));
                 break;
             default:
-                throw new ConfigurationException("Unable to add authentication actions to workflow trace - unknown or unsupported authentication method: " + method);
+                throw new ConfigurationException(
+                        "Unable to add authentication actions to workflow trace - unknown or unsupported authentication method: "
+                                + method);
         }
     }
 
@@ -276,48 +263,30 @@ public class WorkflowConfigurationFactory {
                         ConnectionEndType.CLIENT,
                         new ChannelOpenMessage(1337, "session", 10000, 10000)),
                 MessageActionFactory.createAction(
-                        connection,
-                        ConnectionEndType.SERVER,
-                        new ChannelOpenConfirmationMessage()),
+                        connection, ConnectionEndType.SERVER, new ChannelOpenConfirmationMessage()),
                 MessageActionFactory.createAction(
                         connection,
                         ConnectionEndType.CLIENT,
                         new ChannelOpenMessage(1338, "session", 10000, 10000)),
                 MessageActionFactory.createAction(
-                        connection,
-                        ConnectionEndType.SERVER,
-                        new ChannelOpenConfirmationMessage()),
+                        connection, ConnectionEndType.SERVER, new ChannelOpenConfirmationMessage()),
                 MessageActionFactory.createAction(
                         connection,
                         ConnectionEndType.CLIENT,
                         new ChannelRequestExecMessage(1337, "nc -l -p 13370")),
                 MessageActionFactory.createAction(
-                        connection,
-                        ConnectionEndType.SERVER,
-                        new ChannelWindowAdjustMessage()),
+                        connection, ConnectionEndType.SERVER, new ChannelWindowAdjustMessage()),
                 MessageActionFactory.createAction(
-                        connection,
-                        ConnectionEndType.CLIENT,
-                        new ChannelWindowAdjustMessage(1337)),
+                        connection, ConnectionEndType.CLIENT, new ChannelWindowAdjustMessage(1337)),
                 MessageActionFactory.createAction(
-                        connection,
-                        ConnectionEndType.CLIENT,
-                        new ChannelEofMessage(1337)),
+                        connection, ConnectionEndType.CLIENT, new ChannelEofMessage(1337)),
                 MessageActionFactory.createAction(
-                        connection,
-                        ConnectionEndType.CLIENT,
-                        new ChannelDataMessage(1337)),
+                        connection, ConnectionEndType.CLIENT, new ChannelDataMessage(1337)),
                 MessageActionFactory.createAction(
-                        connection,
-                        ConnectionEndType.CLIENT,
-                        new ChannelExtendedDataMessage(1337)),
+                        connection, ConnectionEndType.CLIENT, new ChannelExtendedDataMessage(1337)),
                 MessageActionFactory.createAction(
-                        connection,
-                        ConnectionEndType.CLIENT,
-                        new ChannelCloseMessage(1337)),
+                        connection, ConnectionEndType.CLIENT, new ChannelCloseMessage(1337)),
                 MessageActionFactory.createAction(
-                        connection,
-                        ConnectionEndType.SERVER,
-                        new ChannelCloseMessage()));
+                        connection, ConnectionEndType.SERVER, new ChannelCloseMessage()));
     }
 }

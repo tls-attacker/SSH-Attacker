@@ -122,7 +122,10 @@ public class State {
         } else if (config.getWorkflowTraceType() != null) {
             WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(config);
             trace = factory.createWorkflowTrace(config.getWorkflowTraceType(), runningMode);
-            LOGGER.debug("Created new " + config.getWorkflowTraceType() + " workflow trace");
+            LOGGER.debug(
+                    "Created new {} workflow trace for configured running mode {}",
+                    config.getWorkflowTraceType(),
+                    runningMode);
         }
 
         if (trace == null) {

@@ -45,7 +45,7 @@ public class DefaultWorkflowExecutor extends WorkflowExecutor {
         for (SshAction action : sshActions) {
 
             if ((state.getConfig().getStopActionsAfterDisconnect()
-                    && isReceivedDisconnectMessage())) {
+                    && isDisconnectMessageReceived())) {
                 LOGGER.debug(
                         "Skipping all Actions, received Disconnect, StopActionsAfterDisconnect active");
                 break;
@@ -90,9 +90,9 @@ public class DefaultWorkflowExecutor extends WorkflowExecutor {
         }
     }
 
-    private boolean isReceivedDisconnectMessage() {
+    private boolean isDisconnectMessageReceived() {
         for (SshContext ctx : state.getAllSshContexts()) {
-            if (ctx.getReceivedDisconnectMessage()) {
+            if (ctx.isDisconnectMessageReceived()) {
                 return true;
             }
         }

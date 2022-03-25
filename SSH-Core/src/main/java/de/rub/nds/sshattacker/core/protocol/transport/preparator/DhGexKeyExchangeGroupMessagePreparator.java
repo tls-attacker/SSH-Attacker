@@ -8,7 +8,8 @@
 package de.rub.nds.sshattacker.core.protocol.transport.preparator;
 
 import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
-import de.rub.nds.sshattacker.core.constants.NamedDHGroup;
+import de.rub.nds.sshattacker.core.crypto.hash.ExchangeHashInputHolder;
+import de.rub.nds.sshattacker.core.crypto.kex.DhKeyExchange;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.transport.message.DhGexKeyExchangeGroupMessage;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
@@ -24,9 +25,33 @@ public class DhGexKeyExchangeGroupMessagePreparator
     @Override
     public void prepareMessageSpecificContents() {
         getObject().setMessageID(MessageIDConstant.SSH_MSG_KEX_DH_GEX_GROUP);
+        selectGroupParameters();
+        updateExchangeHashWithGroupParameters();
+        prepareGroupParameters();
+    }
 
-        // TODO: Pay respect to clients' request
-        getObject().setGroupGenerator(NamedDHGroup.GROUP14.getGenerator(), true);
-        getObject().setGroupModulus(NamedDHGroup.GROUP14.getModulus(), true);
+    private void selectGroupParameters() {
+        DhKeyExchange keyExchange = chooser.getDhGexKeyExchange();
+        if (chooser.getContext().isOldGroupRequestReceived()) {
+            keyExchange.selectGroup(chooser.getPreferredDhGroupSize());
+        } else {
+            keyExchange.selectGroup(
+                    chooser.getMinimalDhGroupSize(),
+                    chooser.getPreferredDhGroupSize(),
+                    chooser.getMaximalDhGroupSize());
+        }
+    }
+
+    private void updateExchangeHashWithGroupParameters() {
+        DhKeyExchange keyExchange = chooser.getDhGexKeyExchange();
+        ExchangeHashInputHolder inputHolder = chooser.getContext().getExchangeHashInputHolder();
+        inputHolder.setDhGexGroupGenerator(keyExchange.getGenerator());
+        inputHolder.setDhGexGroupModulus(keyExchange.getModulus());
+    }
+
+    private void prepareGroupParameters() {
+        DhKeyExchange keyExchange = chooser.getDhGexKeyExchange();
+        getObject().setGroupGenerator(keyExchange.getGenerator(), true);
+        getObject().setGroupModulus(keyExchange.getModulus(), true);
     }
 }

@@ -15,6 +15,8 @@ import de.rub.nds.sshattacker.core.crypto.keys.CustomDhPublicKey;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomKeyPair;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import java.math.BigInteger;
+import java.util.Arrays;
+import java.util.Comparator;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -171,5 +173,61 @@ public class DhKeyExchange extends DhBasedKeyExchange {
         LOGGER.debug(
                 "Finished computation of shared secret: "
                         + ArrayConverter.bytesToRawHexString(sharedSecret.toByteArray()));
+    }
+
+    public void selectGroup(int preferredGroupSize) {
+        /*
+         * Minimal group size taken from RFC 4419 Section 3:
+         *   "In all cases, the size of the returned group SHOULD be at least 1024 bits."
+         */
+        this.selectGroup(1024, preferredGroupSize, Integer.MAX_VALUE);
+    }
+
+    public void selectGroup(int minimalGroupSize, int preferredGroupSize, int maximumGroupSize) {
+        /*
+         * Group selection based on the process described in RFC 4419:
+         *
+         *   The server should return the smallest group it knows that is larger
+         *   than the size the client requested.  If the server does not know a
+         *   group that is larger than the client request, then it SHOULD return
+         *   the largest group it knows.  In all cases, the size of the returned
+         *   group SHOULD be at least 1024 bits.
+         */
+        NamedDHGroup selectedGroup =
+                Arrays.stream(NamedDHGroup.values())
+                        .sorted(Comparator.comparingInt(group -> group.getModulus().bitLength()))
+                        .filter(
+                                (candidate) ->
+                                        candidate.getModulus().bitLength() - preferredGroupSize
+                                                >= 0)
+                        .findFirst()
+                        .orElseGet(
+                                () ->
+                                        Arrays.stream(NamedDHGroup.values())
+                                                .max(
+                                                        Comparator.comparingInt(
+                                                                group ->
+                                                                        group.getModulus()
+                                                                                .bitLength()))
+                                                .orElseThrow());
+        if (selectedGroup.getModulus().bitLength() > maximumGroupSize) {
+            LOGGER.info(
+                    "DH GEX key exchange could not satisfy group size constraints reported by the remote peer: {} exceeds maximum group size of {} bits",
+                    selectedGroup,
+                    maximumGroupSize);
+        }
+        if (selectedGroup.getModulus().bitLength() < minimalGroupSize) {
+            LOGGER.info(
+                    "DH GEX key exchange could not satisfy group size constraints reported by the remote peer: {} falls behind minimal group size of {} bits",
+                    selectedGroup,
+                    minimalGroupSize);
+        }
+        LOGGER.info(
+                "Selected DH group {} for key exchange, group size: {} bits (selected based on the preferred group size of {} bits)",
+                selectedGroup,
+                selectedGroup.getModulus().bitLength(),
+                preferredGroupSize);
+        this.setModulus(selectedGroup.getModulus());
+        this.setGenerator(selectedGroup.getGenerator());
     }
 }

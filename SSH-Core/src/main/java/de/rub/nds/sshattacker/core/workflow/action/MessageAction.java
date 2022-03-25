@@ -184,10 +184,10 @@ public abstract class MessageAction extends ConnectionBoundAction {
     }
 
     public String getReadableString(List<ProtocolMessage<?>> messages, Boolean verbose) {
-        StringBuilder builder = new StringBuilder();
-        if (messages == null) {
-            return builder.toString();
+        if (messages == null || messages.isEmpty()) {
+            return "";
         }
+        StringBuilder builder = new StringBuilder();
         for (ProtocolMessage<?> message : messages) {
             if (verbose) {
                 builder.append(message.toString());
@@ -199,7 +199,7 @@ public abstract class MessageAction extends ConnectionBoundAction {
             }
             builder.append(", ");
         }
-        return builder.toString();
+        return builder.deleteCharAt(builder.lastIndexOf(", ")).toString();
     }
 
     @Override

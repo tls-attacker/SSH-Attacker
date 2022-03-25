@@ -778,7 +778,7 @@ public class DefaultChooser extends Chooser {
                 .orElseGet(
                         () -> {
                             KeyExchangeAlgorithm negotiatedAlgorithm =
-                                    context.getKeyExchangeAlgorithm().orElse(null);
+                                    context.getChooser().getKeyExchangeAlgorithm();
                             DhKeyExchange freshKeyExchange =
                                     DhKeyExchange.newInstance(context, negotiatedAlgorithm);
                             context.setDhGexKeyExchangeInstance(freshKeyExchange);
@@ -872,39 +872,33 @@ public class DefaultChooser extends Chooser {
     }
 
     /**
-     * Retrieves the minimal group size of the requested DH group during group exchange. Currently,
-     * this method retrieves the config value without checking the context first (as of now group
-     * exchange is only implemented for SSH-Attacker running in client mode).
+     * Retrieves the minimal group size of the requested DH group during group exchange.
      *
      * @return The minimal acceptable DH group size in bits
      */
     @Override
     public Integer getMinimalDhGroupSize() {
-        return config.getDhGexMinimalGroupSize();
+        return context.getMinimalDhGroupSize().orElse(config.getDhGexMinimalGroupSize());
     }
 
     /**
      * Retrieves the preferred group size of the requested DH group during group exchange.
-     * Currently, this method retrieves the config value without checking the context first (as of
-     * now, group exchange is only implemented for SSH-Attacker running in client mode).
      *
      * @return The preferred size in bits of an acceptable DH group
      */
     @Override
     public Integer getPreferredDhGroupSize() {
-        return config.getDhGexPreferredGroupSize();
+        return context.getPreferredDhGroupSize().orElse(config.getDhGexPreferredGroupSize());
     }
 
     /**
-     * Retrieves the maximal group size of the requested DH group during group exchange. Currently,
-     * this method retrieves the config value without checking the context first (as of now, group
-     * exchange is only implemented for SSH-Attacker running in client mode).
+     * Retrieves the maximal group size of the requested DH group during group exchange.
      *
      * @return The maximal acceptable DH group size in bits
      */
     @Override
     public Integer getMaximalDhGroupSize() {
-        return config.getDhGexMaximalGroupSize();
+        return context.getMaximalDhGroupSize().orElse(config.getDhGexMaximalGroupSize());
     }
     // endregion
 

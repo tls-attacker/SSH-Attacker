@@ -7,7 +7,6 @@
  */
 package de.rub.nds.sshattacker.core.workflow.factory;
 
-import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.connection.AliasedConnection;
 import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessage;
 import de.rub.nds.sshattacker.core.workflow.action.MessageAction;
@@ -20,7 +19,7 @@ import java.util.List;
 
 public final class MessageActionFactory {
 
-    private MessageActionFactory() { }
+    private MessageActionFactory() {}
 
     public static MessageAction createAction(
             AliasedConnection connection,

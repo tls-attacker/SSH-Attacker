@@ -47,7 +47,7 @@ public abstract class ProtocolMessageParser<T extends ProtocolMessage<T>> extend
     private void setCompleteResultingMessage() {
         message.setCompleteResultingMessage(getAlreadyParsed());
         LOGGER.trace(
-                "CompleteResultMessage: "
+                "Complete message bytes parsed: "
                         + ArrayConverter.bytesToHexString(
                                 message.getCompleteResultingMessage().getValue()));
     }
@@ -79,8 +79,14 @@ public abstract class ProtocolMessageParser<T extends ProtocolMessage<T>> extend
                     return new DhKeyExchangeInitMessageParser(raw, 0).parse();
                 case SSH_MSG_KEXDH_REPLY:
                     return new DhKeyExchangeReplyMessageParser(raw, 0).parse();
+                case SSH_MSG_KEX_DH_GEX_REQUEST_OLD:
+                    return new DhGexKeyExchangeOldRequestMessageParser(raw, 0).parse();
+                case SSH_MSG_KEX_DH_GEX_REQUEST:
+                    return new DhGexKeyExchangeRequestMessageParser(raw, 0).parse();
                 case SSH_MSG_KEX_DH_GEX_GROUP:
                     return new DhGexKeyExchangeGroupMessageParser(raw, 0).parse();
+                case SSH_MSG_KEX_DH_GEX_INIT:
+                    return new DhGexKeyExchangeInitMessageParser(raw, 0).parse();
                 case SSH_MSG_KEX_DH_GEX_REPLY:
                     return new DhGexKeyExchangeReplyMessageParser(raw, 0).parse();
                 case SSH_MSG_KEXRSA_DONE:
