@@ -7,12 +7,15 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.handler;
 
-import de.rub.nds.sshattacker.core.exceptions.NotImplementedException;
+import de.rub.nds.sshattacker.core.crypto.hash.ExchangeHashInputHolder;
+import de.rub.nds.sshattacker.core.crypto.kex.RsaKeyExchange;
+import de.rub.nds.sshattacker.core.exceptions.CryptoException;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.transport.message.RsaKeyExchangeSecretMessage;
+import de.rub.nds.sshattacker.core.protocol.transport.parser.RsaKeyExchangeSecretMessageParser;
 import de.rub.nds.sshattacker.core.protocol.transport.preparator.RsaKeyExchangeSecretMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.transport.serializer.RsaKeyExchangeSecretMessageSerializer;
 import de.rub.nds.sshattacker.core.state.SshContext;
@@ -31,14 +34,38 @@ public class RsaKeyExchangeSecretMessageHandler
 
     @Override
     public void adjustContext() {
-        // TODO: Handle RsaKeyExchangeSecretMessage
+        decryptSharedSecret();
+        updateExchangeHashWithSecrets();
+    }
+
+    private void decryptSharedSecret() {
+        RsaKeyExchange keyExchange = context.getChooser().getRsaKeyExchange();
+        try {
+            keyExchange.decryptSharedSecret(message.getEncryptedSecret().getValue());
+            context.setSharedSecret(keyExchange.getSharedSecret());
+        } catch (CryptoException e) {
+            LOGGER.warn(
+                    "Decryption of shared secret failed, unable to set shared secret in context");
+            LOGGER.debug(e);
+        }
+    }
+
+    private void updateExchangeHashWithSecrets() {
+        RsaKeyExchange keyExchange = context.getChooser().getRsaKeyExchange();
+        ExchangeHashInputHolder inputHolder = context.getExchangeHashInputHolder();
+        inputHolder.setRsaEncryptedSecret(message.getEncryptedSecret().getValue());
+        if (keyExchange.isComplete()) {
+            inputHolder.setSharedSecret(keyExchange.getSharedSecret());
+        } else {
+            LOGGER.warn(
+                    "Unable to set shared secret in exchange hash, key exchange is still ongoing");
+        }
     }
 
     @Override
     public SshMessageParser<RsaKeyExchangeSecretMessage> getParser(
             byte[] array, int startPosition) {
-        // TODO: Implement Parser
-        throw new NotImplementedException("RsaKeyExchangeSecretMessage Parser is missing!");
+        return new RsaKeyExchangeSecretMessageParser(array, startPosition);
     }
 
     @Override

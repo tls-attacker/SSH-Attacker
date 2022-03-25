@@ -34,9 +34,9 @@ public class EcdhKeyExchangeInitMessageHandler
     public void adjustContext() {
         context.getChooser()
                 .getEcdhKeyExchange()
-                .setRemotePublicKey(message.getPublicKey().getValue());
+                .setRemotePublicKey(message.getEphemeralPublicKey().getValue());
         context.getExchangeHashInputHolder()
-                .setEcdhClientPublicKey(message.getPublicKey().getValue());
+                .setEcdhClientPublicKey(message.getEphemeralPublicKey().getValue());
     }
 
     @Override

@@ -24,6 +24,11 @@ public class CustomRsaPublicKey extends CustomPublicKey implements RSAPublicKey 
     @SuppressWarnings("unused")
     public CustomRsaPublicKey() {}
 
+    public CustomRsaPublicKey(RSAPublicKey publicKey) {
+        this.modulus = publicKey.getModulus();
+        this.publicExponent = publicKey.getPublicExponent();
+    }
+
     public CustomRsaPublicKey(BigInteger publicExponent, BigInteger modulus) {
         this.modulus = modulus;
         this.publicExponent = publicExponent;

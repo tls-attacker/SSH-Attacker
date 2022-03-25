@@ -27,26 +27,27 @@ public class RsaKeyExchangePubkeyMessageParser
         return new RsaKeyExchangePubkeyMessage();
     }
 
-    private void parseHostKey() {
-        message.setHostKeyLength(parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH));
-        LOGGER.debug("Host key length: " + message.getHostKeyLength().getValue());
-        message.setHostKey(parseByteArrayField(message.getHostKeyLength().getValue()));
-        LOGGER.debug("Host key: " + message.getHostKey());
+    private void parseHostKeyBytes() {
+        message.setHostKeyBytesLength(parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH));
+        LOGGER.debug("Host key bytes length: " + message.getHostKeyBytesLength().getValue());
+        message.setHostKeyBytes(parseByteArrayField(message.getHostKeyBytesLength().getValue()));
+        LOGGER.debug("Host key bytes: " + message.getHostKeyBytes());
     }
 
     private void parseTransientPublicKey() {
-        message.setTransientPublicKeyLength(
+        message.setTransientPublicKeyBytesLength(
                 parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH));
         LOGGER.debug(
-                "Transient public key length: " + message.getTransientPublicKeyLength().getValue());
-        message.setTransientPublicKey(
-                parseByteArrayField(message.getTransientPublicKeyLength().getValue()));
-        LOGGER.debug("Transient public key: " + message.getTransientPublicKey());
+                "Transient public key length: "
+                        + message.getTransientPublicKeyBytesLength().getValue());
+        message.setTransientPublicKeyBytes(
+                parseByteArrayField(message.getTransientPublicKeyBytesLength().getValue()));
+        LOGGER.debug("Transient public key: " + message.getTransientPublicKeyBytes());
     }
 
     @Override
     protected void parseMessageSpecificContents() {
-        parseHostKey();
+        parseHostKeyBytes();
         parseTransientPublicKey();
     }
 }

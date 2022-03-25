@@ -250,7 +250,7 @@ public class KeyDerivationTest {
                         PublicKeyFormat.ECDSA_SHA2_NISTP256,
                         ArrayConverter.hexStringToByteArray(
                                 "0000001365636473612d736861322d6e69737470323536000000086e69737470323536000000410435496f94112c3234092471322c26dd21ebfd2da156e5a17dcc5dc98020afedd64ae82e5d4c28251187a2191fe85ae43de9734711c087b784eaa713d5b6e06541")));
-        inputHolder.setEcdhClientPublicKey(ecdhInit.getPublicKey().getValue());
+        inputHolder.setEcdhClientPublicKey(ecdhInit.getEphemeralPublicKey().getValue());
         inputHolder.setEcdhServerPublicKey(ecdhReply.getEphemeralPublicKey().getValue());
         inputHolder.setSharedSecret(
                 new BigInteger(

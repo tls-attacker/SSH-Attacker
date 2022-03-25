@@ -30,16 +30,18 @@ public class EcdhKeyExchangeInitMessageSerializerTest {
      * Test of EcdhKeyExchangeInitMessageSerializer::serialize method
      *
      * @param expectedBytes Expected output bytes of the serialize() call
-     * @param providedPublicKeyLength Length of the public key
-     * @param providedPublicKey Bytes of the public key
+     * @param providedEphemeralPublicKeyLength Length of the public key
+     * @param providedEphemeralPublicKey Bytes of the public key
      */
     @ParameterizedTest
     @MethodSource("provideTestVectors")
     public void testSerialize(
-            byte[] expectedBytes, int providedPublicKeyLength, byte[] providedPublicKey) {
+            byte[] expectedBytes,
+            int providedEphemeralPublicKeyLength,
+            byte[] providedEphemeralPublicKey) {
         EcdhKeyExchangeInitMessage msg = new EcdhKeyExchangeInitMessage();
-        msg.setPublicKeyLength(providedPublicKeyLength);
-        msg.setPublicKey(providedPublicKey);
+        msg.setEphemeralPublicKeyLength(providedEphemeralPublicKeyLength);
+        msg.setEphemeralPublicKey(providedEphemeralPublicKey);
         EcdhKeyExchangeInitMessageSerializer serializer =
                 new EcdhKeyExchangeInitMessageSerializer(msg);
 

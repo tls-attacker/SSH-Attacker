@@ -7,10 +7,27 @@
  */
 package de.rub.nds.sshattacker.core.crypto.kex;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.constants.KeyExchangeAlgorithm;
+import de.rub.nds.sshattacker.core.constants.KeyExchangeFlowType;
+import de.rub.nds.sshattacker.core.constants.PublicKeyFormat;
+import de.rub.nds.sshattacker.core.crypto.cipher.CipherFactory;
+import de.rub.nds.sshattacker.core.crypto.cipher.DecryptionCipher;
+import de.rub.nds.sshattacker.core.crypto.cipher.EncryptionCipher;
+import de.rub.nds.sshattacker.core.crypto.keys.CustomRsaPrivateKey;
+import de.rub.nds.sshattacker.core.crypto.keys.CustomRsaPublicKey;
+import de.rub.nds.sshattacker.core.crypto.keys.SshPublicKey;
+import de.rub.nds.sshattacker.core.exceptions.CryptoException;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.util.Converter;
 import java.math.BigInteger;
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
+import java.security.NoSuchAlgorithmException;
+import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
+import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -18,41 +35,42 @@ public class RsaKeyExchange extends KeyExchange {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private RSAPublicKey publicKey;
+    private SshPublicKey<CustomRsaPublicKey, CustomRsaPrivateKey> transientKey;
+
+    private final KeyExchangeAlgorithm algorithm;
 
     // HLEN in RFC 4432 (in bits)
     private int hashLength;
 
-    protected RsaKeyExchange() {}
+    private int transientKeyLength;
 
-    protected RsaKeyExchange(int hashLength) {
-        this.hashLength = hashLength;
-    }
-
-    public static RsaKeyExchange newInstance(
-            SshContext context, KeyExchangeAlgorithm negotiatedKexAlgorithm) {
-        if (negotiatedKexAlgorithm == null) {
-            return new RsaKeyExchange();
-        }
-        int hashLength;
-        switch (negotiatedKexAlgorithm) {
+    private RsaKeyExchange(KeyExchangeAlgorithm algorithm) {
+        this.algorithm = algorithm;
+        switch (algorithm) {
             case RSA1024_SHA1:
-                hashLength = 160;
+                this.hashLength = 160;
+                this.transientKeyLength = 1024;
                 break;
             case RSA2048_SHA256:
-                hashLength = 256;
+                this.hashLength = 256;
+                this.transientKeyLength = 2048;
                 break;
             default:
-                LOGGER.warn(
-                        "Initializing a new RsaKeyExchange without an RSA key exchange algorithm negotiated, falling back to default algorithm");
-                hashLength =
-                        context.getConfig().getDefaultRsaKeyExchangeAlgorithm()
-                                        == KeyExchangeAlgorithm.RSA1024_SHA1
-                                ? 160
-                                : 256;
-                break;
+                throw new IllegalArgumentException(
+                        "Unable to create a new RSA key exchange instance - provided algorithm is not of flow type RSA");
         }
-        return new RsaKeyExchange(hashLength);
+    }
+
+    public static RsaKeyExchange newInstance(SshContext context, KeyExchangeAlgorithm algorithm) {
+        if (algorithm == null || algorithm.getFlowType() != KeyExchangeFlowType.RSA) {
+            algorithm = context.getConfig().getDefaultRsaKeyExchangeAlgorithm();
+        }
+        if (algorithm.getFlowType() != KeyExchangeFlowType.RSA) {
+            LOGGER.error(
+                    "Unable to create a new RSA key exchange instance - neither negotiated nor RSA fallback key exchange algorithm are of flow type RSA");
+            return null;
+        }
+        return new RsaKeyExchange(algorithm);
     }
 
     @Override
@@ -62,20 +80,78 @@ public class RsaKeyExchange extends KeyExchange {
         sharedSecret = new BigInteger(maximumBits, random);
     }
 
-    public void setPublicKey(RSAPublicKey publicKey) {
-        this.publicKey = publicKey;
+    public byte[] encryptSharedSecret() {
+        EncryptionCipher cipher =
+                CipherFactory.getEncryptionCipher(algorithm, transientKey.getPublicKey());
+        try {
+            // Shared secret is encrypted as a mpint (which includes an explicit length field)
+            byte[] sharedSecretMpint = Converter.bigIntegerToMpint(sharedSecret);
+            return cipher.encrypt(sharedSecretMpint);
+        } catch (CryptoException e) {
+            LOGGER.error("Unexpected cryptographic exception occurred while encrypting the secret");
+            LOGGER.debug(e);
+            return new byte[0];
+        }
     }
 
-    public RSAPublicKey getPublicKey() {
-        return publicKey;
+    public void decryptSharedSecret(byte[] encryptedSharedSecret) throws CryptoException {
+        if (transientKey.getPrivateKey().isEmpty()) {
+            throw new CryptoException("Unable to decrypt shared secret - no private key present");
+        }
+        DecryptionCipher cipher =
+                CipherFactory.getDecryptionCipher(algorithm, transientKey.getPrivateKey().get());
+        try {
+            byte[] decryptedSecretMpint = cipher.decrypt(encryptedSharedSecret);
+            int sharedSecretLength =
+                    ArrayConverter.bytesToInt(
+                            Arrays.copyOfRange(
+                                    decryptedSecretMpint,
+                                    0,
+                                    DataFormatConstants.MPINT_SIZE_LENGTH));
+            this.sharedSecret =
+                    new BigInteger(
+                            Arrays.copyOfRange(
+                                    decryptedSecretMpint,
+                                    DataFormatConstants.MPINT_SIZE_LENGTH,
+                                    DataFormatConstants.MPINT_SIZE_LENGTH + sharedSecretLength));
+        } catch (CryptoException e) {
+            LOGGER.error(
+                    "Unexpected cryptographic exception occurred while decrypting the shared secret");
+            LOGGER.debug(e);
+            throw e;
+        }
+    }
+
+    public void setTransientKey(
+            SshPublicKey<CustomRsaPublicKey, CustomRsaPrivateKey> transientKey) {
+        this.transientKey = transientKey;
+    }
+
+    public SshPublicKey<CustomRsaPublicKey, CustomRsaPrivateKey> getTransientKey() {
+        return transientKey;
+    }
+
+    public void generateTransientKey() throws CryptoException {
+        try {
+            KeyPairGenerator keyGen = KeyPairGenerator.getInstance("RSA");
+            keyGen.initialize(transientKeyLength);
+            KeyPair key = keyGen.generateKeyPair();
+            CustomRsaPublicKey publicKey = new CustomRsaPublicKey((RSAPublicKey) key.getPublic());
+            CustomRsaPrivateKey privateKey =
+                    new CustomRsaPrivateKey((RSAPrivateKey) key.getPrivate());
+            this.transientKey = new SshPublicKey<>(PublicKeyFormat.SSH_RSA, publicKey, privateKey);
+        } catch (NoSuchAlgorithmException e) {
+            throw new CryptoException(
+                    "Unable to generate RSA transient key - RSA key pair generator is not available");
+        }
     }
 
     public BigInteger getExponent() {
-        return publicKey.getPublicExponent();
+        return transientKey.getPublicKey().getPublicExponent();
     }
 
     public BigInteger getModulus() {
-        return publicKey.getModulus();
+        return transientKey.getPublicKey().getModulus();
     }
 
     public int getHashLength() {
@@ -86,8 +162,21 @@ public class RsaKeyExchange extends KeyExchange {
         this.hashLength = hashLength;
     }
 
+    public int getTransientKeyLength() {
+        return transientKeyLength;
+    }
+
+    public void setTransientKeyLength(int transientKeyLength) {
+        this.transientKeyLength = transientKeyLength;
+    }
+
     private int getModulusLengthInBits() {
-        return publicKey.getModulus().bitLength();
+        if (transientKey != null) {
+            return transientKey.getPublicKey().getModulus().bitLength();
+        } else {
+            // Fallback to default transient key length in case no actual transient key is present
+            return transientKeyLength;
+        }
     }
 
     public void setSharedSecret(BigInteger sharedSecret) {
@@ -95,6 +184,6 @@ public class RsaKeyExchange extends KeyExchange {
     }
 
     public boolean areParametersSet() {
-        return publicKey != null && hashLength != 0;
+        return transientKey != null && hashLength != 0;
     }
 }

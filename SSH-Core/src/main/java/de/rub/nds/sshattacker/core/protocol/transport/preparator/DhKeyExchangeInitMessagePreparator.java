@@ -29,6 +29,6 @@ public class DhKeyExchangeInitMessagePreparator
                 .getExchangeHashInputHolder()
                 .setDhClientPublicKey(keyExchange.getLocalKeyPair().getPublic().getY());
 
-        getObject().setPublicKey(keyExchange.getLocalKeyPair().getPublic().getY(), true);
+        getObject().setEphemeralPublicKey(keyExchange.getLocalKeyPair().getPublic().getY(), true);
     }
 }

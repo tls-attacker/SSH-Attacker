@@ -7,6 +7,8 @@
  */
 package de.rub.nds.sshattacker.core.crypto.util;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.constants.PublicKeyFormat;
 import de.rub.nds.sshattacker.core.crypto.keys.*;
 import de.rub.nds.sshattacker.core.crypto.keys.parser.DsaPublicKeyParser;
@@ -18,7 +20,9 @@ import de.rub.nds.sshattacker.core.crypto.keys.serializer.EcdsaPublicKeySerializ
 import de.rub.nds.sshattacker.core.crypto.keys.serializer.RsaPublicKeySerializer;
 import de.rub.nds.sshattacker.core.crypto.keys.serializer.XCurvePublicKeySerializer;
 import de.rub.nds.sshattacker.core.exceptions.NotImplementedException;
+import java.nio.charset.StandardCharsets;
 import java.security.PublicKey;
+import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -28,6 +32,32 @@ public final class PublicKeyHelper {
     private static final Logger LOGGER = LogManager.getLogger();
 
     private PublicKeyHelper() {}
+
+    /**
+     * Parses the given encoded public key bytes. Instead of an explicit key format, the key format
+     * will be directly extracted from the public key bytes. Note that this behavior may lead to
+     * unexpected errors and does not conform with RFC 4253.
+     *
+     * @param encodedPublicKeyBytes Encoded public key in some SSH public key format
+     * @return The parsed public key
+     * @throws NotImplementedException Thrown whenever support for the extracted key format has not
+     *     yet been implemented.
+     */
+    public static SshPublicKey<?, ?> parse(byte[] encodedPublicKeyBytes) {
+        int keyFormatLength =
+                ArrayConverter.bytesToInt(
+                        Arrays.copyOfRange(
+                                encodedPublicKeyBytes, 0, DataFormatConstants.STRING_SIZE_LENGTH));
+        String keyFormatName =
+                new String(
+                        Arrays.copyOfRange(
+                                encodedPublicKeyBytes,
+                                DataFormatConstants.STRING_SIZE_LENGTH,
+                                DataFormatConstants.STRING_SIZE_LENGTH
+                                        + encodedPublicKeyBytes.length),
+                        StandardCharsets.US_ASCII);
+        return parse(PublicKeyFormat.fromName(keyFormatName), encodedPublicKeyBytes);
+    }
 
     /**
      * Parses the given encoded public key bytes using the specified key format.

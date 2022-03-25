@@ -18,50 +18,54 @@ import java.math.BigInteger;
 
 public class DhKeyExchangeInitMessage extends SshMessage<DhKeyExchangeInitMessage> {
 
-    private ModifiableInteger publicKeyLength;
-    private ModifiableBigInteger publicKey;
+    private ModifiableInteger ephemeralPublicKeyLength;
+    private ModifiableBigInteger ephemeralPublicKey;
 
     public DhKeyExchangeInitMessage() {
         super(MessageIDConstant.SSH_MSG_KEXDH_INIT);
     }
 
-    public ModifiableInteger getPublicKeyLength() {
-        return publicKeyLength;
+    public ModifiableInteger getEphemeralPublicKeyLength() {
+        return ephemeralPublicKeyLength;
     }
 
-    public void setPublicKeyLength(ModifiableInteger publicKeyLength) {
-        this.publicKeyLength = publicKeyLength;
+    public void setEphemeralPublicKeyLength(ModifiableInteger ephemeralPublicKeyLength) {
+        this.ephemeralPublicKeyLength = ephemeralPublicKeyLength;
     }
 
-    public void setPublicKeyLength(int publicKeyLength) {
-        this.publicKeyLength =
-                ModifiableVariableFactory.safelySetValue(this.publicKeyLength, publicKeyLength);
+    public void setEphemeralPublicKeyLength(int publicKeyLength) {
+        this.ephemeralPublicKeyLength =
+                ModifiableVariableFactory.safelySetValue(
+                        this.ephemeralPublicKeyLength, publicKeyLength);
     }
 
-    public ModifiableBigInteger getPublicKey() {
-        return publicKey;
+    public ModifiableBigInteger getEphemeralPublicKey() {
+        return ephemeralPublicKey;
     }
 
-    public void setPublicKey(ModifiableBigInteger publicKey) {
-        setPublicKey(publicKey, false);
+    public void setEphemeralPublicKey(ModifiableBigInteger ephemeralPublicKey) {
+        setEphemeralPublicKey(ephemeralPublicKey, false);
     }
 
-    public void setPublicKey(BigInteger publicKey) {
-        setPublicKey(publicKey, false);
+    public void setEphemeralPublicKey(BigInteger ephemeralPublicKey) {
+        setEphemeralPublicKey(ephemeralPublicKey, false);
     }
 
-    public void setPublicKey(ModifiableBigInteger publicKey, boolean adjustLengthField) {
+    public void setEphemeralPublicKey(
+            ModifiableBigInteger ephemeralPublicKey, boolean adjustLengthField) {
         if (adjustLengthField) {
-            setPublicKeyLength(publicKey.getValue().toByteArray().length);
+            setEphemeralPublicKeyLength(ephemeralPublicKey.getValue().toByteArray().length);
         }
-        this.publicKey = publicKey;
+        this.ephemeralPublicKey = ephemeralPublicKey;
     }
 
-    public void setPublicKey(BigInteger publicKey, boolean adjustLengthField) {
+    public void setEphemeralPublicKey(BigInteger ephemeralPublicKey, boolean adjustLengthField) {
         if (adjustLengthField) {
-            setPublicKeyLength(publicKey.toByteArray().length);
+            setEphemeralPublicKeyLength(ephemeralPublicKey.toByteArray().length);
         }
-        this.publicKey = ModifiableVariableFactory.safelySetValue(this.publicKey, publicKey);
+        this.ephemeralPublicKey =
+                ModifiableVariableFactory.safelySetValue(
+                        this.ephemeralPublicKey, ephemeralPublicKey);
     }
 
     @Override

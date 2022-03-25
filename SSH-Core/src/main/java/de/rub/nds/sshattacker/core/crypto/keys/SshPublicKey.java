@@ -9,8 +9,6 @@ package de.rub.nds.sshattacker.core.crypto.keys;
 
 import de.rub.nds.sshattacker.core.constants.PublicKeyFormat;
 import java.io.Serializable;
-import java.security.PrivateKey;
-import java.security.PublicKey;
 import java.util.Optional;
 import javax.xml.bind.annotation.*;
 
@@ -70,11 +68,11 @@ public class SshPublicKey<PUBLIC extends CustomPublicKey, PRIVATE extends Custom
         return publicKeyAlgorithm;
     }
 
-    public PublicKey getPublicKey() {
+    public PUBLIC getPublicKey() {
         return publicKey;
     }
 
-    public Optional<PrivateKey> getPrivateKey() {
+    public Optional<PRIVATE> getPrivateKey() {
         return Optional.ofNullable(privateKey);
     }
 }

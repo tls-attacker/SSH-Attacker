@@ -35,9 +35,9 @@ public class DhGexKeyExchangeInitMessageHandler
     public void adjustContext() {
         context.getChooser()
                 .getDhGexKeyExchange()
-                .setRemotePublicKey(message.getPublicKey().getValue());
+                .setRemotePublicKey(message.getEphemeralPublicKey().getValue());
         context.getExchangeHashInputHolder()
-                .setDhGexClientPublicKey(message.getPublicKey().getValue());
+                .setDhGexClientPublicKey(message.getEphemeralPublicKey().getValue());
     }
 
     @Override

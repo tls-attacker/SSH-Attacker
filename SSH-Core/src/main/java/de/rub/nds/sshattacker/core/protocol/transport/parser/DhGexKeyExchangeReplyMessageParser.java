@@ -27,21 +27,23 @@ public class DhGexKeyExchangeReplyMessageParser
         return new DhGexKeyExchangeReplyMessage();
     }
 
-    private void parseHostKey() {
-        message.setHostKeyLength(parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH));
-        LOGGER.debug("Host key length: " + message.getHostKeyLength().getValue());
-        message.setHostKey(parseByteArrayField(message.getHostKeyLength().getValue()));
-        LOGGER.debug("Host key: " + message.getHostKey());
+    private void parseHostKeyBytes() {
+        message.setHostKeyBytesLength(parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH));
+        LOGGER.debug("Host key bytes length: " + message.getHostKeyBytesLength().getValue());
+        message.setHostKeyBytes(parseByteArrayField(message.getHostKeyBytesLength().getValue()));
+        LOGGER.debug("Host key bytes: " + message.getHostKeyBytes());
     }
 
-    private void parsePublicKey() {
+    private void parseEphemeralPublicKey() {
         message.setEphemeralPublicKeyLength(
                 parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH));
         LOGGER.debug(
-                "Ephemeral public key length: " + message.getEphemeralPublicKeyLength().getValue());
+                "Ephemeral public key (server) length: "
+                        + message.getEphemeralPublicKeyLength().getValue());
         message.setEphemeralPublicKey(
                 parseBigIntField(message.getEphemeralPublicKeyLength().getValue()));
-        LOGGER.debug("Ephemeral public key: " + message.getEphemeralPublicKey().getValue());
+        LOGGER.debug(
+                "Ephemeral public key (server): " + message.getEphemeralPublicKey().getValue());
     }
 
     private void parseSignature() {
@@ -53,8 +55,8 @@ public class DhGexKeyExchangeReplyMessageParser
 
     @Override
     protected void parseMessageSpecificContents() {
-        parseHostKey();
-        parsePublicKey();
+        parseHostKeyBytes();
+        parseEphemeralPublicKey();
         parseSignature();
     }
 }

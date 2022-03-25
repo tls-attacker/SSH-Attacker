@@ -43,7 +43,7 @@ public class DhKeyExchangeReplyMessagePreparator
     @Override
     public void prepareMessageSpecificContents() {
         getObject().setMessageID(MessageIDConstant.SSH_MSG_KEXDH_REPLY);
-        prepareHostKey();
+        prepareHostKeyBytes();
         prepareEphemeralPublicKey();
         updateExchangeHashWithSharedSecret();
         computeExchangeHash();
@@ -52,11 +52,11 @@ public class DhKeyExchangeReplyMessagePreparator
         generateKeySet();
     }
 
-    private void prepareHostKey() {
+    private void prepareHostKeyBytes() {
         SshPublicKey<?, ?> serverHostKey = chooser.getNegotiatedServerHostKey();
         chooser.getContext().setServerHostKey(serverHostKey);
         chooser.getContext().getExchangeHashInputHolder().setServerHostKey(serverHostKey);
-        getObject().setHostKey(PublicKeyHelper.encode(serverHostKey), true);
+        getObject().setHostKeyBytes(PublicKeyHelper.encode(serverHostKey), true);
     }
 
     private void prepareEphemeralPublicKey() {

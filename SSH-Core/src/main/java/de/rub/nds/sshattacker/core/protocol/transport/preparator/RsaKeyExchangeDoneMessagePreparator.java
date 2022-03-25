@@ -8,91 +8,48 @@
 package de.rub.nds.sshattacker.core.protocol.transport.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.sshattacker.core.constants.*;
+import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
+import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
+import de.rub.nds.sshattacker.core.constants.SignatureEncoding;
 import de.rub.nds.sshattacker.core.crypto.hash.ExchangeHash;
-import de.rub.nds.sshattacker.core.crypto.kex.*;
 import de.rub.nds.sshattacker.core.crypto.keys.SshPublicKey;
 import de.rub.nds.sshattacker.core.crypto.signature.SignatureFactory;
 import de.rub.nds.sshattacker.core.crypto.signature.SigningSignature;
-import de.rub.nds.sshattacker.core.crypto.util.PublicKeyHelper;
 import de.rub.nds.sshattacker.core.exceptions.CryptoException;
 import de.rub.nds.sshattacker.core.exceptions.MissingExchangeHashInputException;
 import de.rub.nds.sshattacker.core.packet.cipher.keys.KeySet;
 import de.rub.nds.sshattacker.core.packet.cipher.keys.KeySetGenerator;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
-import de.rub.nds.sshattacker.core.protocol.transport.message.EcdhKeyExchangeReplyMessage;
+import de.rub.nds.sshattacker.core.protocol.transport.message.RsaKeyExchangeDoneMessage;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class EcdhKeyExchangeReplyMessagePreparator
-        extends SshMessagePreparator<EcdhKeyExchangeReplyMessage> {
+public class RsaKeyExchangeDoneMessagePreparator
+        extends SshMessagePreparator<RsaKeyExchangeDoneMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public EcdhKeyExchangeReplyMessagePreparator(
-            Chooser chooser, EcdhKeyExchangeReplyMessage message) {
+    public RsaKeyExchangeDoneMessagePreparator(Chooser chooser, RsaKeyExchangeDoneMessage message) {
         super(chooser, message);
     }
 
     @Override
     public void prepareMessageSpecificContents() {
-        getObject().setMessageID(MessageIDConstant.SSH_MSG_KEX_ECDH_REPLY);
-        prepareHostKeyBytes();
-        prepareEphemeralPublicKey();
-        updateExchangeHashWithSharedSecret();
+        getObject().setMessageID(MessageIDConstant.SSH_MSG_KEXRSA_DONE);
         computeExchangeHash();
         prepareSignature();
         setSessionId();
         generateKeySet();
     }
 
-    private void prepareHostKeyBytes() {
-        SshPublicKey<?, ?> serverHostKey = chooser.getNegotiatedServerHostKey();
-        chooser.getContext().setServerHostKey(serverHostKey);
-        chooser.getContext().getExchangeHashInputHolder().setServerHostKey(serverHostKey);
-        getObject().setHostKeyBytes(PublicKeyHelper.encode(serverHostKey), true);
-    }
-
-    private void prepareEphemeralPublicKey() {
-        AbstractEcdhKeyExchange keyExchange = chooser.getEcdhKeyExchange();
-        keyExchange.generateLocalKeyPair();
-        getObject()
-                .setEphemeralPublicKey(
-                        keyExchange.getLocalKeyPair().getPublic().getEncoded(), true);
-        // Compute shared secret if remote public key is available
-        if (keyExchange.getRemotePublicKey() != null) {
-            keyExchange.computeSharedSecret();
-            chooser.getContext().setSharedSecret(keyExchange.getSharedSecret());
-        } else {
-            LOGGER.warn(
-                    "Unable to compute shared secret in ECDH key exchange reply message, no remote public key is present");
-        }
-        // Update exchange hash with local public key
-        chooser.getContext()
-                .getExchangeHashInputHolder()
-                .setEcdhServerPublicKey(keyExchange.getLocalKeyPair().getPublic().getEncoded());
-    }
-
-    private void updateExchangeHashWithSharedSecret() {
-        AbstractEcdhKeyExchange keyExchange = chooser.getEcdhKeyExchange();
-        if (keyExchange.isComplete()) {
-            chooser.getContext()
-                    .getExchangeHashInputHolder()
-                    .setSharedSecret(keyExchange.getSharedSecret());
-        } else {
-            LOGGER.warn(
-                    "Unable to set shared secret in exchange hash, key exchange is still ongoing");
-        }
-    }
-
     private void computeExchangeHash() {
         try {
             chooser.getContext()
                     .setExchangeHash(
-                            ExchangeHash.computeEcdhHash(
+                            ExchangeHash.computeRsaHash(
                                     chooser.getKeyExchangeAlgorithm(),
                                     chooser.getContext().getExchangeHashInputHolder()));
         } catch (MissingExchangeHashInputException e) {

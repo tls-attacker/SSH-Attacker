@@ -9,16 +9,15 @@ package de.rub.nds.sshattacker.core.protocol.transport.handler;
 
 import de.rub.nds.sshattacker.core.crypto.keys.SshPublicKey;
 import de.rub.nds.sshattacker.core.crypto.util.PublicKeyHelper;
-import de.rub.nds.sshattacker.core.exceptions.NotImplementedException;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.transport.message.RsaKeyExchangePubkeyMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.parser.RsaKeyExchangePubkeyMessageParser;
+import de.rub.nds.sshattacker.core.protocol.transport.preparator.RsaKeyExchangePubkeyMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.transport.serializer.RsaKeyExchangePubkeyMessageSerializer;
 import de.rub.nds.sshattacker.core.state.SshContext;
-import java.security.interfaces.RSAPublicKey;
 
 public class RsaKeyExchangePubkeyMessageHandler
         extends SshMessageHandler<RsaKeyExchangePubkeyMessage> {
@@ -40,22 +39,20 @@ public class RsaKeyExchangePubkeyMessageHandler
     }
 
     private void setTransientPublicKey(RsaKeyExchangePubkeyMessage message) {
-        context.getChooser()
-                .getRsaKeyExchange()
-                .setPublicKey((RSAPublicKey) message.getPublicKey().getPublicKey());
+        context.getChooser().getRsaKeyExchange().setTransientKey(message.getTransientPublicKey());
     }
 
     private void handleHostKey(RsaKeyExchangePubkeyMessage message) {
         SshPublicKey<?, ?> hostKey =
                 PublicKeyHelper.parse(
                         context.getChooser().getServerHostKeyAlgorithm().getKeyFormat(),
-                        message.getHostKey().getValue());
+                        message.getHostKeyBytes().getValue());
         context.setServerHostKey(hostKey);
         context.getExchangeHashInputHolder().setServerHostKey(hostKey);
     }
 
     private void updateExchangeHashWithTransientPublicKey(RsaKeyExchangePubkeyMessage message) {
-        context.getExchangeHashInputHolder().setRsaTransientKey(message.getPublicKey());
+        context.getExchangeHashInputHolder().setRsaTransientKey(message.getTransientPublicKey());
     }
 
     @Override
@@ -66,8 +63,7 @@ public class RsaKeyExchangePubkeyMessageHandler
 
     @Override
     public SshMessagePreparator<RsaKeyExchangePubkeyMessage> getPreparator() {
-        throw new NotImplementedException("RsaKeyExchangePubkeyMessage Preperator is missing!");
-        // return new RsaKeyExchangePubkeyMessagePreparator(context.getChooser(), message);
+        return new RsaKeyExchangePubkeyMessagePreparator(context.getChooser(), message);
     }
 
     @Override

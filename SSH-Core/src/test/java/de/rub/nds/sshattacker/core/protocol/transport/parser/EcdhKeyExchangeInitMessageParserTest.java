@@ -38,19 +38,23 @@ public class EcdhKeyExchangeInitMessageParserTest {
      * Test of EcdhKeyExchangeInitMessageParser::parse method
      *
      * @param providedBytes Bytes to parse
-     * @param expectedPublicKeyLength Expected length of the public key
-     * @param expectedPublicKey Expected bytes of the public key
+     * @param expectedEphemeralPublicKeyLength Expected length of the public key
+     * @param expectedEphemeralPublicKey Expected bytes of the public key
      */
     @ParameterizedTest
     @MethodSource("provideTestVectors")
     public void testParse(
-            byte[] providedBytes, int expectedPublicKeyLength, byte[] expectedPublicKey) {
+            byte[] providedBytes,
+            int expectedEphemeralPublicKeyLength,
+            byte[] expectedEphemeralPublicKey) {
         EcdhKeyExchangeInitMessageParser parser =
                 new EcdhKeyExchangeInitMessageParser(providedBytes, 0);
         EcdhKeyExchangeInitMessage msg = parser.parse();
 
         assertEquals(MessageIDConstant.SSH_MSG_KEX_ECDH_INIT.id, msg.getMessageID().getValue());
-        assertEquals(expectedPublicKeyLength, msg.getPublicKeyLength().getValue().intValue());
-        assertArrayEquals(expectedPublicKey, msg.getPublicKey().getValue());
+        assertEquals(
+                expectedEphemeralPublicKeyLength,
+                msg.getEphemeralPublicKeyLength().getValue().intValue());
+        assertArrayEquals(expectedEphemeralPublicKey, msg.getEphemeralPublicKey().getValue());
     }
 }

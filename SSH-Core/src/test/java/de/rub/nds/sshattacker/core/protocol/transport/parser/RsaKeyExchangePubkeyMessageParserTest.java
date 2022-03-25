@@ -47,8 +47,8 @@ public class RsaKeyExchangePubkeyMessageParserTest {
      * Test of RsaKeyExchangePubkeyMessageParser::parse method
      *
      * @param providedBytes Bytes to parse
-     * @param expectedHostKeyLength Expected length of the host key
-     * @param expectedHostKey Expected bytes of the host key
+     * @param expectedHostKeyBytesLength Expected length of the host key
+     * @param expectedHostKeyBytes Expected bytes of the host key
      * @param expectedTransientPublicKeyLength Expected length of the transient public key
      * @param expectedTransientPublicKey Expected bytes of the transient public key
      */
@@ -56,8 +56,8 @@ public class RsaKeyExchangePubkeyMessageParserTest {
     @MethodSource("provideTestVectors")
     public void testParse(
             byte[] providedBytes,
-            int expectedHostKeyLength,
-            byte[] expectedHostKey,
+            int expectedHostKeyBytesLength,
+            byte[] expectedHostKeyBytes,
             int expectedTransientPublicKeyLength,
             byte[] expectedTransientPublicKey,
             BigInteger exponent,
@@ -67,12 +67,12 @@ public class RsaKeyExchangePubkeyMessageParserTest {
         RsaKeyExchangePubkeyMessage msg = parser.parse();
 
         assertEquals(MessageIDConstant.SSH_MSG_KEXRSA_PUBKEY.id, msg.getMessageID().getValue());
-        assertEquals(expectedHostKeyLength, msg.getHostKeyLength().getValue().intValue());
-        assertArrayEquals(expectedHostKey, msg.getHostKey().getValue());
+        assertEquals(expectedHostKeyBytesLength, msg.getHostKeyBytesLength().getValue().intValue());
+        assertArrayEquals(expectedHostKeyBytes, msg.getHostKeyBytes().getValue());
         assertEquals(
                 expectedTransientPublicKeyLength,
-                msg.getTransientPublicKeyLength().getValue().intValue());
-        assertArrayEquals(expectedTransientPublicKey, msg.getTransientPublicKey().getValue());
+                msg.getTransientPublicKeyBytesLength().getValue().intValue());
+        assertArrayEquals(expectedTransientPublicKey, msg.getTransientPublicKeyBytes().getValue());
         assertEquals(exponent, msg.getPublicExponent());
         assertEquals(modulus, msg.getModulus());
     }

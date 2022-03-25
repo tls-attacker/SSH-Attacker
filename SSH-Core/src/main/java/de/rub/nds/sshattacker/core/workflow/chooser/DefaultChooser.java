@@ -757,7 +757,7 @@ public class DefaultChooser extends Chooser {
                 .orElseGet(
                         () -> {
                             KeyExchangeAlgorithm negotiatedAlgorithm =
-                                    context.getKeyExchangeAlgorithm().orElse(null);
+                                    this.getKeyExchangeAlgorithm();
                             DhKeyExchange freshKeyExchange =
                                     DhKeyExchange.newInstance(context, negotiatedAlgorithm);
                             context.setDhKeyExchangeInstance(freshKeyExchange);
@@ -778,7 +778,7 @@ public class DefaultChooser extends Chooser {
                 .orElseGet(
                         () -> {
                             KeyExchangeAlgorithm negotiatedAlgorithm =
-                                    context.getChooser().getKeyExchangeAlgorithm();
+                                    this.getKeyExchangeAlgorithm();
                             DhKeyExchange freshKeyExchange =
                                     DhKeyExchange.newInstance(context, negotiatedAlgorithm);
                             context.setDhGexKeyExchangeInstance(freshKeyExchange);
@@ -799,7 +799,7 @@ public class DefaultChooser extends Chooser {
                 .orElseGet(
                         () -> {
                             KeyExchangeAlgorithm negotiatedAlgorithm =
-                                    context.getKeyExchangeAlgorithm().orElse(null);
+                                    this.getKeyExchangeAlgorithm();
                             AbstractEcdhKeyExchange freshKeyExchange =
                                     AbstractEcdhKeyExchange.newInstance(
                                             context, negotiatedAlgorithm);
@@ -821,11 +821,13 @@ public class DefaultChooser extends Chooser {
                 .orElseGet(
                         () -> {
                             KeyExchangeAlgorithm negotiatedAlgorithm =
-                                    context.getKeyExchangeAlgorithm().orElse(null);
+                                    this.getKeyExchangeAlgorithm();
                             RsaKeyExchange freshKeyExchange =
                                     RsaKeyExchange.newInstance(context, negotiatedAlgorithm);
-                            freshKeyExchange.setPublicKey(
-                                    config.getRsaKeyExchangeTransientPublicKey());
+                            assert freshKeyExchange != null;
+                            // Set transient key to ensure its presence
+                            freshKeyExchange.setTransientKey(
+                                    config.getFallbackRsaTransientPublicKey());
                             context.setRsaKeyExchangeInstance(freshKeyExchange);
                             return freshKeyExchange;
                         });

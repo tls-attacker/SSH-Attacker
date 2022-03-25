@@ -44,7 +44,7 @@ public class DhGexKeyExchangeReplyMessagePreparator
     @Override
     public void prepareMessageSpecificContents() {
         getObject().setMessageID(MessageIDConstant.SSH_MSG_KEX_DH_GEX_REPLY);
-        prepareHostKey();
+        prepareHostKeyBytes();
         prepareEphemeralPublicKey();
         updateExchangeHashWithSharedSecret();
         computeExchangeHash();
@@ -53,11 +53,11 @@ public class DhGexKeyExchangeReplyMessagePreparator
         generateKeySet();
     }
 
-    private void prepareHostKey() {
+    private void prepareHostKeyBytes() {
         SshPublicKey<?, ?> serverHostKey = chooser.getNegotiatedServerHostKey();
         chooser.getContext().setServerHostKey(serverHostKey);
         chooser.getContext().getExchangeHashInputHolder().setServerHostKey(serverHostKey);
-        getObject().setHostKey(PublicKeyHelper.encode(serverHostKey), true);
+        getObject().setHostKeyBytes(PublicKeyHelper.encode(serverHostKey), true);
     }
 
     private void prepareEphemeralPublicKey() {

@@ -33,9 +33,9 @@ public class DhKeyExchangeInitMessageHandler extends SshMessageHandler<DhKeyExch
     public void adjustContext() {
         context.getChooser()
                 .getDhKeyExchange()
-                .setRemotePublicKey(message.getPublicKey().getValue());
+                .setRemotePublicKey(message.getEphemeralPublicKey().getValue());
         context.getExchangeHashInputHolder()
-                .setDhClientPublicKey(message.getPublicKey().getValue());
+                .setDhClientPublicKey(message.getEphemeralPublicKey().getValue());
     }
 
     @Override

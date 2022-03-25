@@ -25,7 +25,6 @@ public class RsaKeyExchangeDoneMessage extends SshMessage<RsaKeyExchangeDoneMess
         super(MessageIDConstant.SSH_MSG_KEXRSA_DONE);
     }
 
-    // Signature length methods
     public ModifiableInteger getSignatureLength() {
         return signatureLength;
     }
@@ -39,16 +38,29 @@ public class RsaKeyExchangeDoneMessage extends SshMessage<RsaKeyExchangeDoneMess
                 ModifiableVariableFactory.safelySetValue(this.signatureLength, signatureLength);
     }
 
-    // Signature methods
     public ModifiableByteArray getSignature() {
         return signature;
     }
 
     public void setSignature(ModifiableByteArray signature) {
-        this.signature = signature;
+        this.setSignature(signature, false);
     }
 
     public void setSignature(byte[] signature) {
+        this.setSignature(signature, false);
+    }
+
+    public void setSignature(ModifiableByteArray signature, boolean adjustLengthField) {
+        if (adjustLengthField) {
+            this.setSignatureLength(signature.getValue().length);
+        }
+        this.signature = signature;
+    }
+
+    public void setSignature(byte[] signature, boolean adjustLengthField) {
+        if (adjustLengthField) {
+            this.setSignatureLength(signature.length);
+        }
         this.signature = ModifiableVariableFactory.safelySetValue(this.signature, signature);
     }
 

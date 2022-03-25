@@ -60,7 +60,7 @@ public class KeyFetcher {
                 && receivedMessages.get(0) instanceof RsaKeyExchangePubkeyMessage) {
             return (RSAPublicKey)
                     ((RsaKeyExchangePubkeyMessage) receivedMessages.get(0))
-                            .getPublicKey()
+                            .getTransientPublicKey()
                             .getPublicKey();
         } else {
             LOGGER.warn("Could not fetch server's RSA host key, did not receive PubkeyMessage.");

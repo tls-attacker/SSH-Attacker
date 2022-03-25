@@ -31,8 +31,8 @@ public class DhGexKeyExchangeInitMessagePreparator
         getObject().setMessageID(MessageIDConstant.SSH_MSG_KEX_DH_GEX_INIT);
         DhKeyExchange keyExchange = chooser.getDhGexKeyExchange();
         keyExchange.generateLocalKeyPair();
-        getObject().setPublicKey(keyExchange.getLocalKeyPair().getPublic().getY(), true);
+        getObject().setEphemeralPublicKey(keyExchange.getLocalKeyPair().getPublic().getY(), true);
         ExchangeHashInputHolder exchangeHash = chooser.getContext().getExchangeHashInputHolder();
-        exchangeHash.setDhGexClientPublicKey(getObject().getPublicKey().getValue());
+        exchangeHash.setDhGexClientPublicKey(getObject().getEphemeralPublicKey().getValue());
     }
 }

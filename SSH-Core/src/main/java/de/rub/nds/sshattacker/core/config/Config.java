@@ -170,7 +170,8 @@ public class Config implements Serializable {
 
     private final KeyExchangeAlgorithm defaultRsaKeyExchangeAlgorithm;
 
-    private final CustomRsaPublicKey rsaKeyExchangeTransientPublicKey;
+    private final SshPublicKey<CustomRsaPublicKey, CustomRsaPrivateKey>
+            fallbackRsaTransientPublicKey;
 
     private AuthenticationMethod authenticationMethod;
 
@@ -370,18 +371,45 @@ public class Config implements Serializable {
         defaultEcdhKeyExchangeGroup = NamedGroup.SECP256R1;
 
         defaultRsaKeyExchangeAlgorithm = KeyExchangeAlgorithm.RSA2048_SHA256;
-        rsaKeyExchangeTransientPublicKey =
-                new CustomRsaPublicKey(
-                        new BigInteger("01001", 16),
-                        new BigInteger(
-                                "00FD786F7BB51AC8B619430613F84251BEDEF47216786EE72025D02DC6E4FF923193E63DE937"
-                                        + "986925263360EBAF68990C73CA78B99EC24822FDB923461AD6925A4AD4EBAD370DA5B8AD9D9A4AD0E3E4240"
-                                        + "43B7705D55DC52429D3DDD9F9F2E3DC618BF87C3519F5BB7C908C4B76CB72D366C5E32077E38DEF1780845B"
-                                        + "C950DFDF82C02CAFC1A8EE3535E491F33A8DC45EF515B56E305BC4BC124857D6662DB2C532840383F10C8EE"
-                                        + "CA47029FC31143ACA4DE26C905E1291F778A6FBC0BDB219F775B33F3114C2ED1B64CC8E19ABC10530589677"
-                                        + "8F7F686F82713E9198B19F70FF73674603B839B90ECE883D81DFB32DA3F9363A3207A639523F90EEE730B49F"
-                                        + "65",
-                                16));
+        fallbackRsaTransientPublicKey =
+                new SshPublicKey<>(
+                        PublicKeyFormat.SSH_RSA,
+                        new CustomRsaPublicKey(
+                                new BigInteger("10001", 16),
+                                new BigInteger(
+                                        "00EB617D71223FF5D286DBC136905B348783D4B540EFA9E00C7B1F605049"
+                                                + "7C6739FBAB3F5D5F2C9A86682D148701E9E04D58D31716C9C88BC0DD85BC"
+                                                + "170969A27709AF332C79453FC5B99231C3D6410B0A6119EAEE6D09AB59CF"
+                                                + "4EC425BE8A86C10BBA30902B7916D2E51AE5C2CA66E9650431DD3B98878E"
+                                                + "EA8A207F4336005157021F7FA4D6DBD54D64B5B974CE3FA4D135C5FD7893"
+                                                + "B8A6EAC0C1AC9D98144947C22E7D0E7E18F4F02C0E448D1AE9596BCE0A2E"
+                                                + "F417F693C914FAF24F716D0567ED48BAA5161727743A8431EB4E3CB65417"
+                                                + "B835926AC528BAA02343B0E784C297E0C19C17FB9E8A778F9EC805AC4AAC"
+                                                + "AA24AE34B96A3189D83FB6EC38C1D3EBFB",
+                                        16)),
+                        new CustomRsaPrivateKey(
+                                new BigInteger(
+                                        "00C15941BBCF108F1332680D9C8E93FCE05C703BBB6DA33341CD5986BA2C"
+                                                + "C31DE04954F025F8EA20BCCB924C4C624C054E43EA920ACC120A8A90ED2C"
+                                                + "06185B477354E72FB8169DC5B6DBAAB56A52F2F6E8BDBE9676E7E68B74A8"
+                                                + "8FE11BC81AEE7A60F1BEB68E9F571A41CC08742BE2C15193528A924BC6FE"
+                                                + "A4B675DF540C65D2697D31E533007B310D7E728D2E6DB06256A93F178200"
+                                                + "CED6AD5A59B40224A3373C3875539368971A32D27B48697D4FFE61ED7084"
+                                                + "7CA1D935392EA540C938072667BA9C9737A695C20CFCF578A1FF61DD9C43"
+                                                + "7666D97D5A986A3E786601498C3342A7C7307F7D8E6300436A7681AA9558"
+                                                + "9DF5A4479FAF232B83B9A19CB59833ECC1",
+                                        16),
+                                new BigInteger(
+                                        "00EB617D71223FF5D286DBC136905B348783D4B540EFA9E00C7B1F605049"
+                                                + "7C6739FBAB3F5D5F2C9A86682D148701E9E04D58D31716C9C88BC0DD85BC"
+                                                + "170969A27709AF332C79453FC5B99231C3D6410B0A6119EAEE6D09AB59CF"
+                                                + "4EC425BE8A86C10BBA30902B7916D2E51AE5C2CA66E9650431DD3B98878E"
+                                                + "EA8A207F4336005157021F7FA4D6DBD54D64B5B974CE3FA4D135C5FD7893"
+                                                + "B8A6EAC0C1AC9D98144947C22E7D0E7E18F4F02C0E448D1AE9596BCE0A2E"
+                                                + "F417F693C914FAF24F716D0567ED48BAA5161727743A8431EB4E3CB65417"
+                                                + "B835926AC528BAA02343B0E784C297E0C19C17FB9E8A778F9EC805AC4AAC"
+                                                + "AA24AE34B96A3189D83FB6EC38C1D3EBFB",
+                                        16)));
 
         // An OpenSSL generated 2048 bit RSA keypair is currently being used as the default host key
         // TODO: Load host keys from file to reduce length of Config class
@@ -759,8 +787,9 @@ public class Config implements Serializable {
         return defaultRsaKeyExchangeAlgorithm;
     }
 
-    public CustomRsaPublicKey getRsaKeyExchangeTransientPublicKey() {
-        return rsaKeyExchangeTransientPublicKey;
+    public SshPublicKey<CustomRsaPublicKey, CustomRsaPrivateKey>
+            getFallbackRsaTransientPublicKey() {
+        return fallbackRsaTransientPublicKey;
     }
 
     public List<SshPublicKey<?, ?>> getServerHostKeys() {

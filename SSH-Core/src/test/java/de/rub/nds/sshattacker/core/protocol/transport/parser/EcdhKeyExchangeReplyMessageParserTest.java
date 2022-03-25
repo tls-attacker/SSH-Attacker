@@ -44,10 +44,10 @@ public class EcdhKeyExchangeReplyMessageParserTest {
      * Test of EcdhKeyExchangeReplyMessageParser::parse method
      *
      * @param providedBytes Bytes to parse
-     * @param expectedHostKeyLength Expected length of the host key
-     * @param expectedHostKey Expected bytes of the host key
-     * @param expectedPublicKeyLength Expected length of the remote ECDH public key
-     * @param expectedPublicKey Expected bytes of the remote ECDH public key
+     * @param expectedHostKeyBytesLength Expected length of the host key
+     * @param expectedHostKeyBytes Expected bytes of the host key
+     * @param expectedEphemeralPublicKeyLength Expected length of the remote ECDH public key
+     * @param expectedEphemeralPublicKey Expected bytes of the remote ECDH public key
      * @param expectedSignatureLength Expected length of the signature
      * @param expectedSignature Expected bytes of the signature
      */
@@ -55,10 +55,10 @@ public class EcdhKeyExchangeReplyMessageParserTest {
     @MethodSource("provideTestVectors")
     public void testParse(
             byte[] providedBytes,
-            int expectedHostKeyLength,
-            byte[] expectedHostKey,
-            int expectedPublicKeyLength,
-            byte[] expectedPublicKey,
+            int expectedHostKeyBytesLength,
+            byte[] expectedHostKeyBytes,
+            int expectedEphemeralPublicKeyLength,
+            byte[] expectedEphemeralPublicKey,
             int expectedSignatureLength,
             byte[] expectedSignature) {
         EcdhKeyExchangeReplyMessageParser parser =
@@ -66,11 +66,12 @@ public class EcdhKeyExchangeReplyMessageParserTest {
         EcdhKeyExchangeReplyMessage msg = parser.parse();
 
         assertEquals(MessageIDConstant.SSH_MSG_KEX_ECDH_REPLY.id, msg.getMessageID().getValue());
-        assertEquals(expectedHostKeyLength, msg.getHostKeyLength().getValue().intValue());
-        assertArrayEquals(expectedHostKey, msg.getHostKey().getValue());
+        assertEquals(expectedHostKeyBytesLength, msg.getHostKeyBytesLength().getValue().intValue());
+        assertArrayEquals(expectedHostKeyBytes, msg.getHostKeyBytes().getValue());
         assertEquals(
-                expectedPublicKeyLength, msg.getEphemeralPublicKeyLength().getValue().intValue());
-        assertArrayEquals(expectedPublicKey, msg.getEphemeralPublicKey().getValue());
+                expectedEphemeralPublicKeyLength,
+                msg.getEphemeralPublicKeyLength().getValue().intValue());
+        assertArrayEquals(expectedEphemeralPublicKey, msg.getEphemeralPublicKey().getValue());
         assertEquals(expectedSignatureLength, msg.getSignatureLength().getValue().intValue());
         assertArrayEquals(expectedSignature, msg.getSignature().getValue());
     }

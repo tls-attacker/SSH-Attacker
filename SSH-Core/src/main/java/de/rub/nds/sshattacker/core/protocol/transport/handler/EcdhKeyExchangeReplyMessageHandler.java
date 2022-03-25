@@ -52,7 +52,7 @@ public class EcdhKeyExchangeReplyMessageHandler
         SshPublicKey<?, ?> hostKey =
                 PublicKeyHelper.parse(
                         context.getChooser().getServerHostKeyAlgorithm().getKeyFormat(),
-                        message.getHostKey().getValue());
+                        message.getHostKeyBytes().getValue());
         context.setServerHostKey(hostKey);
         context.getExchangeHashInputHolder().setServerHostKey(hostKey);
     }

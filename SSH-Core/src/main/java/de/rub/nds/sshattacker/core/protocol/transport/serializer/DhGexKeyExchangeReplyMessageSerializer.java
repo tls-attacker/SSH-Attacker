@@ -23,21 +23,26 @@ public class DhGexKeyExchangeReplyMessageSerializer
         super(message);
     }
 
-    private void serializeHostKey() {
-        appendInt(message.getHostKeyLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
-        LOGGER.debug("Host key length: " + message.getHostKeyLength().getValue());
-        appendBytes(message.getHostKey().getValue());
+    private void serializeHostKeyBytes() {
+        appendInt(
+                message.getHostKeyBytesLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
+        LOGGER.debug("Host key bytes length: " + message.getHostKeyBytesLength().getValue());
+        appendBytes(message.getHostKeyBytes().getValue());
         LOGGER.debug(
-                "Host key: " + ArrayConverter.bytesToRawHexString(message.getHostKey().getValue()));
+                "Host key bytes: "
+                        + ArrayConverter.bytesToRawHexString(message.getHostKeyBytes().getValue()));
     }
 
-    private void serializePublicKey() {
+    private void serializeEphemeralPublicKey() {
         appendInt(
                 message.getEphemeralPublicKeyLength().getValue(),
                 DataFormatConstants.MPINT_SIZE_LENGTH);
-        LOGGER.debug("Public key length: " + message.getEphemeralPublicKeyLength().getValue());
+        LOGGER.debug(
+                "Ephemeral public key (server) length: "
+                        + message.getEphemeralPublicKeyLength().getValue());
         appendBytes(message.getEphemeralPublicKey().getValue().toByteArray());
-        LOGGER.debug("Public key: " + message.getEphemeralPublicKey().getValue());
+        LOGGER.debug(
+                "Ephemeral public key (server): " + message.getEphemeralPublicKey().getValue());
     }
 
     private void serializeSignature() {
@@ -49,8 +54,8 @@ public class DhGexKeyExchangeReplyMessageSerializer
 
     @Override
     public void serializeMessageSpecificContents() {
-        serializeHostKey();
-        serializePublicKey();
+        serializeHostKeyBytes();
+        serializeEphemeralPublicKey();
         serializeSignature();
     }
 }

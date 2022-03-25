@@ -13,7 +13,6 @@ import de.rub.nds.sshattacker.core.crypto.keys.SshPublicKey;
 import de.rub.nds.sshattacker.core.crypto.signature.*;
 import de.rub.nds.sshattacker.core.exceptions.CryptoException;
 import de.rub.nds.sshattacker.core.exceptions.MissingExchangeHashInputException;
-import de.rub.nds.sshattacker.core.exceptions.NotImplementedException;
 import de.rub.nds.sshattacker.core.packet.cipher.keys.KeySet;
 import de.rub.nds.sshattacker.core.packet.cipher.keys.KeySetGenerator;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
@@ -22,6 +21,8 @@ import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.transport.message.RsaKeyExchangeDoneMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.parser.RsaKeyExchangeDoneMessageParser;
+import de.rub.nds.sshattacker.core.protocol.transport.preparator.RsaKeyExchangeDoneMessagePreparator;
+import de.rub.nds.sshattacker.core.protocol.transport.serializer.RsaKeyExchangeDoneMessageSerializer;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import java.util.Optional;
 import org.apache.logging.log4j.LogManager;
@@ -116,13 +117,11 @@ public class RsaKeyExchangeDoneMessageHandler extends SshMessageHandler<RsaKeyEx
 
     @Override
     public SshMessagePreparator<RsaKeyExchangeDoneMessage> getPreparator() {
-        // TODO: Implement Preparator
-        throw new NotImplementedException("RsaKeyExchangeDoneMessage Preparator is missing!");
+        return new RsaKeyExchangeDoneMessagePreparator(context.getChooser(), message);
     }
 
     @Override
     public SshMessageSerializer<RsaKeyExchangeDoneMessage> getSerializer() {
-        // TODO: Implement Serializer
-        throw new NotImplementedException("RsaKeyExchangeDoneMessage Serializer is missing!");
+        return new RsaKeyExchangeDoneMessageSerializer(message);
     }
 }
