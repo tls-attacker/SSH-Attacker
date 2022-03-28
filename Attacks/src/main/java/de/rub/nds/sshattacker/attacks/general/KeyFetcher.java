@@ -34,7 +34,7 @@ public class KeyFetcher {
         WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(config);
         WorkflowTrace trace =
                 factory.createWorkflowTrace(
-                        WorkflowTraceType.START_KEYEXCHANGE, RunningModeType.CLIENT);
+                        WorkflowTraceType.KEX_INIT_ONLY, RunningModeType.CLIENT);
 
         ReceiveAction receiveAction = new ReceiveAction(new RsaKeyExchangePubkeyMessage());
         trace.addSshAction(receiveAction);

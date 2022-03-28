@@ -13,6 +13,7 @@ import de.rub.nds.sshattacker.core.crypto.ec.*;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomEcPrivateKey;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomEcPublicKey;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomKeyPair;
+import de.rub.nds.sshattacker.core.exceptions.CryptoException;
 import java.math.BigInteger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -76,7 +77,11 @@ public class EcdhKeyExchange extends AbstractEcdhKeyExchange {
     }
 
     @Override
-    public void computeSharedSecret() {
+    public void computeSharedSecret() throws CryptoException {
+        if (localKeyPair == null || remotePublicKey == null) {
+            throw new CryptoException(
+                    "Unable to compute shared secret - either local key pair or remote public key is null");
+        }
         Point sharedPoint =
                 ellipticCurve.mult(localKeyPair.getPrivate().getS(), remotePublicKey.getWAsPoint());
         // RFC 5656 defines ECDH with cofactor multiplication as the cryptographic primitive

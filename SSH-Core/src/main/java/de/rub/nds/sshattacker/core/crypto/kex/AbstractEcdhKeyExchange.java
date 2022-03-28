@@ -8,6 +8,7 @@
 package de.rub.nds.sshattacker.core.crypto.kex;
 
 import de.rub.nds.sshattacker.core.constants.KeyExchangeAlgorithm;
+import de.rub.nds.sshattacker.core.constants.KeyExchangeFlowType;
 import de.rub.nds.sshattacker.core.constants.NamedGroup;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import org.apache.logging.log4j.LogManager;
@@ -24,12 +25,15 @@ public abstract class AbstractEcdhKeyExchange extends DhBasedKeyExchange {
     }
 
     public static AbstractEcdhKeyExchange newInstance(
-            SshContext context, KeyExchangeAlgorithm negotiatedKexAlgorithm) {
-        if (negotiatedKexAlgorithm == null) {
-            return new EcdhKeyExchange(context.getConfig().getDefaultEcdhKeyExchangeGroup());
+            SshContext context, KeyExchangeAlgorithm algorithm) {
+        if (algorithm == null || algorithm.getFlowType() != KeyExchangeFlowType.ECDH) {
+            algorithm = context.getConfig().getDefaultEcdhKeyExchangeAlgorithm();
+            LOGGER.warn(
+                    "Trying to instantiate a new ECDH or X curve ECDH key exchange without a matching key exchange algorithm negotiated, falling back to "
+                            + algorithm);
         }
         NamedGroup group;
-        switch (negotiatedKexAlgorithm) {
+        switch (algorithm) {
             case CURVE25519_SHA256:
             case CURVE25519_SHA256_LIBSSH_ORG:
                 return new XCurveEcdhKeyExchange(NamedGroup.CURVE25519);
@@ -45,14 +49,8 @@ public abstract class AbstractEcdhKeyExchange extends DhBasedKeyExchange {
                 group = NamedGroup.SECP521R1;
                 break;
             default:
-                String[] kexParts = negotiatedKexAlgorithm.name().split("_");
-                if (!kexParts[0].equals("ECDH")) {
-                    LOGGER.warn(
-                            "Initializing a new ECDHKeyExchange without an ECDH key exchange algorithm negotiated. Falling back to ecdh-sha2-nistp256.");
-                    group = context.getConfig().getDefaultEcdhKeyExchangeGroup();
-                } else {
-                    group = NamedGroup.valueOf(kexParts[3]);
-                }
+                String[] kexParts = algorithm.name().split("_");
+                group = NamedGroup.valueOf(kexParts[3]);
                 break;
         }
         return new EcdhKeyExchange(group);

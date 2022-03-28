@@ -164,9 +164,9 @@ public class Config implements Serializable {
 
     private final Integer dhGexMaximalGroupSize;
 
-    private final NamedDHGroup defaultDhKeyExchangeGroup;
+    private final KeyExchangeAlgorithm defaultDhKeyExchangeAlgorithm;
 
-    private final NamedGroup defaultEcdhKeyExchangeGroup;
+    private final KeyExchangeAlgorithm defaultEcdhKeyExchangeAlgorithm;
 
     private final KeyExchangeAlgorithm defaultRsaKeyExchangeAlgorithm;
 
@@ -367,10 +367,10 @@ public class Config implements Serializable {
         dhGexPreferredGroupSize = 4096;
         dhGexMaximalGroupSize = 8192;
 
-        defaultDhKeyExchangeGroup = NamedDHGroup.GROUP14;
-        defaultEcdhKeyExchangeGroup = NamedGroup.SECP256R1;
-
+        defaultDhKeyExchangeAlgorithm = KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP14_SHA256;
+        defaultEcdhKeyExchangeAlgorithm = KeyExchangeAlgorithm.ECDH_SHA2_NISTP256;
         defaultRsaKeyExchangeAlgorithm = KeyExchangeAlgorithm.RSA2048_SHA256;
+
         fallbackRsaTransientPublicKey =
                 new SshPublicKey<>(
                         PublicKeyFormat.SSH_RSA,
@@ -775,12 +775,12 @@ public class Config implements Serializable {
         return dhGexMaximalGroupSize;
     }
 
-    public NamedDHGroup getDefaultDhKeyExchangeGroup() {
-        return defaultDhKeyExchangeGroup;
+    public KeyExchangeAlgorithm getDefaultDhKeyExchangeAlgorithm() {
+        return defaultDhKeyExchangeAlgorithm;
     }
 
-    public NamedGroup getDefaultEcdhKeyExchangeGroup() {
-        return defaultEcdhKeyExchangeGroup;
+    public KeyExchangeAlgorithm getDefaultEcdhKeyExchangeAlgorithm() {
+        return defaultEcdhKeyExchangeAlgorithm;
     }
 
     public KeyExchangeAlgorithm getDefaultRsaKeyExchangeAlgorithm() {

@@ -23,7 +23,8 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 import java.math.BigInteger;
 import java.security.interfaces.RSAPublicKey;
 
-public class RsaKeyExchangePubkeyMessage extends SshMessage<RsaKeyExchangePubkeyMessage> {
+public class RsaKeyExchangePubkeyMessage extends SshMessage<RsaKeyExchangePubkeyMessage>
+        implements HostKeyMessage {
 
     private ModifiableInteger hostKeyBytesLength;
     private ModifiableByteArray hostKeyBytes;
@@ -36,36 +37,44 @@ public class RsaKeyExchangePubkeyMessage extends SshMessage<RsaKeyExchangePubkey
     }
 
     // Host Key (K_S) Methods
+    @Override
     public ModifiableInteger getHostKeyBytesLength() {
         return hostKeyBytesLength;
     }
 
+    @Override
     public void setHostKeyBytesLength(ModifiableInteger hostKeyBytesLength) {
         this.hostKeyBytesLength = hostKeyBytesLength;
     }
 
+    @Override
     public void setHostKeyBytesLength(int hostKeyBytesLength) {
         this.hostKeyBytesLength =
                 ModifiableVariableFactory.safelySetValue(
                         this.hostKeyBytesLength, hostKeyBytesLength);
     }
 
+    @Override
     public ModifiableByteArray getHostKeyBytes() {
         return hostKeyBytes;
     }
 
+    @Override
     public SshPublicKey<?, ?> getHostKey() {
         return PublicKeyHelper.parse(hostKeyBytes.getValue());
     }
 
+    @Override
     public void setHostKeyBytes(ModifiableByteArray hostKeyBytes) {
         this.setHostKeyBytes(hostKeyBytes, false);
     }
 
+    @Override
     public void setHostKeyBytes(byte[] hostKeyBytes) {
         this.setHostKeyBytes(hostKeyBytes, false);
     }
 
+    @Override
     public void setHostKeyBytes(ModifiableByteArray hostKeyBytes, boolean adjustLengthField) {
         if (adjustLengthField) {
             setHostKeyBytesLength(hostKeyBytes.getValue().length);
@@ -73,6 +82,7 @@ public class RsaKeyExchangePubkeyMessage extends SshMessage<RsaKeyExchangePubkey
         this.hostKeyBytes = hostKeyBytes;
     }
 
+    @Override
     public void setHostKeyBytes(byte[] hostKeyBytes, boolean adjustLengthField) {
         if (adjustLengthField) {
             setHostKeyBytesLength(hostKeyBytes.length);

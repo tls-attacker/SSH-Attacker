@@ -77,7 +77,7 @@ public class ConnectivityChecker {
         WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(config);
         WorkflowTrace trace =
                 factory.createWorkflowTrace(
-                        WorkflowTraceType.START_KEYEXCHANGE, RunningModeType.CLIENT);
+                        WorkflowTraceType.KEX_INIT_ONLY, RunningModeType.CLIENT);
         ReceiveAction receiveAction = new ReceiveAction(new VersionExchangeMessage());
         trace.setSshActions(new SendAction(new VersionExchangeMessage()), receiveAction);
         State state = new State(config, trace);

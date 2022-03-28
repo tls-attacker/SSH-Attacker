@@ -7,8 +7,6 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.handler;
 
-import de.rub.nds.sshattacker.core.crypto.keys.SshPublicKey;
-import de.rub.nds.sshattacker.core.crypto.util.PublicKeyHelper;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
@@ -17,6 +15,7 @@ import de.rub.nds.sshattacker.core.protocol.transport.message.RsaKeyExchangePubk
 import de.rub.nds.sshattacker.core.protocol.transport.parser.RsaKeyExchangePubkeyMessageParser;
 import de.rub.nds.sshattacker.core.protocol.transport.preparator.RsaKeyExchangePubkeyMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.transport.serializer.RsaKeyExchangePubkeyMessageSerializer;
+import de.rub.nds.sshattacker.core.protocol.util.KeyExchangeUtil;
 import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class RsaKeyExchangePubkeyMessageHandler
@@ -33,25 +32,12 @@ public class RsaKeyExchangePubkeyMessageHandler
 
     @Override
     public void adjustContext() {
-        handleHostKey(message);
-        setTransientPublicKey(message);
-        updateExchangeHashWithTransientPublicKey(message);
+        KeyExchangeUtil.handleHostKeyMessage(context, message);
+        updateContextWithTransientPublicKey(message);
     }
 
-    private void setTransientPublicKey(RsaKeyExchangePubkeyMessage message) {
+    private void updateContextWithTransientPublicKey(RsaKeyExchangePubkeyMessage message) {
         context.getChooser().getRsaKeyExchange().setTransientKey(message.getTransientPublicKey());
-    }
-
-    private void handleHostKey(RsaKeyExchangePubkeyMessage message) {
-        SshPublicKey<?, ?> hostKey =
-                PublicKeyHelper.parse(
-                        context.getChooser().getServerHostKeyAlgorithm().getKeyFormat(),
-                        message.getHostKeyBytes().getValue());
-        context.setServerHostKey(hostKey);
-        context.getExchangeHashInputHolder().setServerHostKey(hostKey);
-    }
-
-    private void updateExchangeHashWithTransientPublicKey(RsaKeyExchangePubkeyMessage message) {
         context.getExchangeHashInputHolder().setRsaTransientKey(message.getTransientPublicKey());
     }
 

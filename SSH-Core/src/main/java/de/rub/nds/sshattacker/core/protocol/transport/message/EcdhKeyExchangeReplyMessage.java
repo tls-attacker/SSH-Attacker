@@ -17,7 +17,8 @@ import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.EcdhKeyExchangeReplyMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 
-public class EcdhKeyExchangeReplyMessage extends SshMessage<EcdhKeyExchangeReplyMessage> {
+public class EcdhKeyExchangeReplyMessage extends SshMessage<EcdhKeyExchangeReplyMessage>
+        implements HostKeyMessage, ExchangeHashSignatureMessage {
 
     private ModifiableInteger hostKeyBytesLength;
     private ModifiableByteArray hostKeyBytes;
@@ -32,36 +33,44 @@ public class EcdhKeyExchangeReplyMessage extends SshMessage<EcdhKeyExchangeReply
         super(MessageIDConstant.SSH_MSG_KEX_ECDH_REPLY);
     }
 
+    @Override
     public ModifiableInteger getHostKeyBytesLength() {
         return hostKeyBytesLength;
     }
 
+    @Override
     public void setHostKeyBytesLength(ModifiableInteger hostKeyBytesLength) {
         this.hostKeyBytesLength = hostKeyBytesLength;
     }
 
+    @Override
     public void setHostKeyBytesLength(int hostKeyBytesLength) {
         this.hostKeyBytesLength =
                 ModifiableVariableFactory.safelySetValue(
                         this.hostKeyBytesLength, hostKeyBytesLength);
     }
 
+    @Override
     public ModifiableByteArray getHostKeyBytes() {
         return hostKeyBytes;
     }
 
+    @Override
     public SshPublicKey<?, ?> getHostKey() {
         return PublicKeyHelper.parse(this.hostKeyBytes.getValue());
     }
 
+    @Override
     public void setHostKeyBytes(ModifiableByteArray hostKeyBytes) {
         setHostKeyBytes(hostKeyBytes, false);
     }
 
+    @Override
     public void setHostKeyBytes(byte[] hostKeyBytes) {
         setHostKeyBytes(hostKeyBytes, false);
     }
 
+    @Override
     public void setHostKeyBytes(ModifiableByteArray hostKeyBytes, boolean adjustLengthField) {
         if (adjustLengthField) {
             setHostKeyBytesLength(hostKeyBytes.getValue().length);
@@ -69,6 +78,7 @@ public class EcdhKeyExchangeReplyMessage extends SshMessage<EcdhKeyExchangeReply
         this.hostKeyBytes = hostKeyBytes;
     }
 
+    @Override
     public void setHostKeyBytes(byte[] hostKeyBytes, boolean adjustLengthField) {
         if (adjustLengthField) {
             setHostKeyBytesLength(hostKeyBytes.length);
@@ -120,31 +130,38 @@ public class EcdhKeyExchangeReplyMessage extends SshMessage<EcdhKeyExchangeReply
                         this.ephemeralPublicKey, ephemeralPublicKey);
     }
 
+    @Override
     public ModifiableInteger getSignatureLength() {
         return signatureLength;
     }
 
+    @Override
     public void setSignatureLength(ModifiableInteger signatureLength) {
         this.signatureLength = signatureLength;
     }
 
+    @Override
     public void setSignatureLength(int signatureLength) {
         this.signatureLength =
                 ModifiableVariableFactory.safelySetValue(this.signatureLength, signatureLength);
     }
 
+    @Override
     public ModifiableByteArray getSignature() {
         return signature;
     }
 
+    @Override
     public void setSignature(ModifiableByteArray signature) {
         setSignature(signature, false);
     }
 
+    @Override
     public void setSignature(byte[] signature) {
         setSignature(signature, false);
     }
 
+    @Override
     public void setSignature(ModifiableByteArray signature, boolean adjustLengthField) {
         if (adjustLengthField) {
             setSignatureLength(signature.getValue().length);
@@ -152,6 +169,7 @@ public class EcdhKeyExchangeReplyMessage extends SshMessage<EcdhKeyExchangeReply
         this.signature = signature;
     }
 
+    @Override
     public void setSignature(byte[] signature, boolean adjustLengthField) {
         if (adjustLengthField) {
             setSignatureLength(signature.length);

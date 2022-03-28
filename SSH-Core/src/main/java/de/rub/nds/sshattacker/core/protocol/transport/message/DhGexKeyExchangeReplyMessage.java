@@ -19,7 +19,8 @@ import de.rub.nds.sshattacker.core.protocol.transport.handler.DhGexKeyExchangeRe
 import de.rub.nds.sshattacker.core.state.SshContext;
 import java.math.BigInteger;
 
-public class DhGexKeyExchangeReplyMessage extends SshMessage<DhGexKeyExchangeReplyMessage> {
+public class DhGexKeyExchangeReplyMessage extends SshMessage<DhGexKeyExchangeReplyMessage>
+        implements HostKeyMessage, ExchangeHashSignatureMessage {
 
     private ModifiableInteger hostKeyBytesLength;
     private ModifiableByteArray hostKeyBytes;
@@ -34,36 +35,44 @@ public class DhGexKeyExchangeReplyMessage extends SshMessage<DhGexKeyExchangeRep
         super(MessageIDConstant.SSH_MSG_KEX_DH_GEX_REPLY);
     }
 
+    @Override
     public ModifiableInteger getHostKeyBytesLength() {
         return hostKeyBytesLength;
     }
 
+    @Override
     public void setHostKeyBytesLength(ModifiableInteger hostKeyBytesLength) {
         this.hostKeyBytesLength = hostKeyBytesLength;
     }
 
+    @Override
     public void setHostKeyBytesLength(int hostKeyBytesLength) {
         this.hostKeyBytesLength =
                 ModifiableVariableFactory.safelySetValue(
                         this.hostKeyBytesLength, hostKeyBytesLength);
     }
 
+    @Override
     public ModifiableByteArray getHostKeyBytes() {
         return hostKeyBytes;
     }
 
+    @Override
     public SshPublicKey<?, ?> getHostKey() {
         return PublicKeyHelper.parse(hostKeyBytes.getValue());
     }
 
+    @Override
     public void setHostKeyBytes(ModifiableByteArray hostKeyBytes) {
         setHostKeyBytes(hostKeyBytes, false);
     }
 
+    @Override
     public void setHostKeyBytes(byte[] hostKeyBytes) {
         setHostKeyBytes(hostKeyBytes, false);
     }
 
+    @Override
     public void setHostKeyBytes(ModifiableByteArray hostKeyBytes, boolean adjustLengthField) {
         if (adjustLengthField) {
             setHostKeyBytesLength(hostKeyBytes.getValue().length);
@@ -71,6 +80,7 @@ public class DhGexKeyExchangeReplyMessage extends SshMessage<DhGexKeyExchangeRep
         this.hostKeyBytes = hostKeyBytes;
     }
 
+    @Override
     public void setHostKeyBytes(byte[] hostKeyBytes, boolean adjustLengthField) {
         if (adjustLengthField) {
             setHostKeyBytesLength(hostKeyBytes.length);
@@ -122,31 +132,38 @@ public class DhGexKeyExchangeReplyMessage extends SshMessage<DhGexKeyExchangeRep
                         this.ephemeralPublicKey, ephemeralPublicKey);
     }
 
+    @Override
     public ModifiableInteger getSignatureLength() {
         return signatureLength;
     }
 
+    @Override
     public void setSignatureLength(ModifiableInteger signatureLength) {
         this.signatureLength = signatureLength;
     }
 
+    @Override
     public void setSignatureLength(int signatureLength) {
         this.signatureLength =
                 ModifiableVariableFactory.safelySetValue(this.signatureLength, signatureLength);
     }
 
+    @Override
     public ModifiableByteArray getSignature() {
         return signature;
     }
 
+    @Override
     public void setSignature(ModifiableByteArray signature) {
         setSignature(signature, false);
     }
 
+    @Override
     public void setSignature(byte[] signature) {
         setSignature(signature, false);
     }
 
+    @Override
     public void setSignature(ModifiableByteArray signature, boolean adjustLengthField) {
         if (adjustLengthField) {
             setSignatureLength(signature.getValue().length);
@@ -154,6 +171,7 @@ public class DhGexKeyExchangeReplyMessage extends SshMessage<DhGexKeyExchangeRep
         this.signature = signature;
     }
 
+    @Override
     public void setSignature(byte[] signature, boolean adjustLengthField) {
         if (adjustLengthField) {
             setSignatureLength(signature.length);

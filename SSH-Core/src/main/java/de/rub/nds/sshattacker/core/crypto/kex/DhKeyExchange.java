@@ -9,10 +9,13 @@ package de.rub.nds.sshattacker.core.crypto.kex;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.KeyExchangeAlgorithm;
+import de.rub.nds.sshattacker.core.constants.KeyExchangeFlowType;
 import de.rub.nds.sshattacker.core.constants.NamedDHGroup;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomDhPrivateKey;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomDhPublicKey;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomKeyPair;
+import de.rub.nds.sshattacker.core.exceptions.CryptoException;
+import de.rub.nds.sshattacker.core.exceptions.NotImplementedException;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import java.math.BigInteger;
 import java.util.Arrays;
@@ -40,13 +43,18 @@ public class DhKeyExchange extends DhBasedKeyExchange {
         this.generator = group.getGenerator();
     }
 
-    public static DhKeyExchange newInstance(
-            SshContext context, KeyExchangeAlgorithm negotiatedKexAlgorithm) {
-        if (negotiatedKexAlgorithm == null) {
-            return new DhKeyExchange(context.getConfig().getDefaultDhKeyExchangeGroup());
+    public static DhKeyExchange newInstance(SshContext context, KeyExchangeAlgorithm algorithm) {
+        if (algorithm == null
+                || (algorithm.getFlowType() != KeyExchangeFlowType.DIFFIE_HELLMAN
+                        && algorithm.getFlowType()
+                                != KeyExchangeFlowType.DIFFIE_HELLMAN_GROUP_EXCHANGE)) {
+            algorithm = context.getConfig().getDefaultDhKeyExchangeAlgorithm();
+            LOGGER.warn(
+                    "Trying to instantiate a new DH or DH GEX key exchange without a matching key exchange algorithm negotiated, falling back to "
+                            + algorithm);
         }
         NamedDHGroup group;
-        switch (negotiatedKexAlgorithm) {
+        switch (algorithm) {
             case DIFFIE_HELLMAN_GROUP_EXCHANGE_SHA1:
             case DIFFIE_HELLMAN_GROUP_EXCHANGE_SHA256:
             case DIFFIE_HELLMAN_GROUP_EXCHANGE_SHA224_SSH_COM:
@@ -80,10 +88,10 @@ public class DhKeyExchange extends DhBasedKeyExchange {
                 group = NamedDHGroup.GROUP18;
                 break;
             default:
-                LOGGER.warn(
-                        "Initializing a new DHKeyExchange without an DH key exchange algorithm negotiated, falling back to default group");
-                group = context.getConfig().getDefaultDhKeyExchangeGroup();
-                break;
+                throw new NotImplementedException(
+                        "Unable to create a new DH key exchange instance, key exchange algorithm "
+                                + algorithm
+                                + " is not yet implemented.");
         }
         return new DhKeyExchange(group);
     }
@@ -168,7 +176,11 @@ public class DhKeyExchange extends DhBasedKeyExchange {
     }
 
     @Override
-    public void computeSharedSecret() {
+    public void computeSharedSecret() throws CryptoException {
+        if (localKeyPair == null || remotePublicKey == null) {
+            throw new CryptoException(
+                    "Unable to compute shared secret - either local key pair or remote public key is null");
+        }
         sharedSecret = remotePublicKey.getY().modPow(localKeyPair.getPrivate().getX(), modulus);
         LOGGER.debug(
                 "Finished computation of shared secret: "

@@ -14,7 +14,9 @@ import de.rub.nds.sshattacker.core.constants.KeyExchangeFlowType;
 import de.rub.nds.sshattacker.core.crypto.util.PublicKeyHelper;
 import de.rub.nds.sshattacker.core.exceptions.CryptoException;
 import de.rub.nds.sshattacker.core.exceptions.MissingExchangeHashInputException;
+import de.rub.nds.sshattacker.core.exceptions.NotImplementedException;
 import de.rub.nds.sshattacker.core.protocol.transport.serializer.KeyExchangeInitMessageSerializer;
+import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.util.Converter;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -23,11 +25,52 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.Configurator;
 
+/**
+ * A utility class to perform exchange hash computations based on an ExchangeHashInputHolder
+ * instance.
+ */
 public final class ExchangeHash {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
     private ExchangeHash() {}
+
+    /**
+     * Computes the exchange hash for the given algorithm with the ExchangeHashInputHolder instance
+     * present in the context.
+     *
+     * @param context SSH context containing the ExchangeHashInputHolder instance
+     * @param algorithm Algorithm to compute the exchange hash for
+     * @return The computed exchange hash bytes
+     * @throws CryptoException Thrown whenever something went wrong during exchange hash
+     *     computation.
+     * @throws MissingExchangeHashInputException Thrown whenever required inputs to compute the hash
+     *     are missing.
+     * @throws NotImplementedException Thrown whenever hash computation for the given algorithm is
+     *     not yet implemented.
+     */
+    public static byte[] computeHash(SshContext context, KeyExchangeAlgorithm algorithm)
+            throws CryptoException {
+        switch (algorithm.getFlowType()) {
+            case DIFFIE_HELLMAN:
+                return computeDhHash(algorithm, context.getExchangeHashInputHolder());
+            case DIFFIE_HELLMAN_GROUP_EXCHANGE:
+                if (context.isOldGroupRequestReceived()) {
+                    return computeOldDhGexHash(algorithm, context.getExchangeHashInputHolder());
+                } else {
+                    return computeDhGexHash(algorithm, context.getExchangeHashInputHolder());
+                }
+            case ECDH:
+                return computeEcdhHash(algorithm, context.getExchangeHashInputHolder());
+            case RSA:
+                return computeRsaHash(algorithm, context.getExchangeHashInputHolder());
+            default:
+                throw new NotImplementedException(
+                        "Unable to compute exchange hash, hash computation for flow type "
+                                + algorithm.getFlowType()
+                                + " not implemented.");
+        }
+    }
 
     public static byte[] computeDhHash(
             KeyExchangeAlgorithm algorithm, ExchangeHashInputHolder inputHolder)

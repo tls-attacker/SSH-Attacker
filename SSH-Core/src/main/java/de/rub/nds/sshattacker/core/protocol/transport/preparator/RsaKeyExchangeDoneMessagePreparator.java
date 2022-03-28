@@ -7,30 +7,14 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.preparator;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
-import de.rub.nds.sshattacker.core.constants.SignatureEncoding;
-import de.rub.nds.sshattacker.core.crypto.hash.ExchangeHash;
-import de.rub.nds.sshattacker.core.crypto.keys.SshPublicKey;
-import de.rub.nds.sshattacker.core.crypto.signature.SignatureFactory;
-import de.rub.nds.sshattacker.core.crypto.signature.SigningSignature;
-import de.rub.nds.sshattacker.core.exceptions.CryptoException;
-import de.rub.nds.sshattacker.core.exceptions.MissingExchangeHashInputException;
-import de.rub.nds.sshattacker.core.packet.cipher.keys.KeySet;
-import de.rub.nds.sshattacker.core.packet.cipher.keys.KeySetGenerator;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.transport.message.RsaKeyExchangeDoneMessage;
+import de.rub.nds.sshattacker.core.protocol.util.KeyExchangeUtil;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
-import java.nio.charset.StandardCharsets;
-import java.util.Optional;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class RsaKeyExchangeDoneMessagePreparator
         extends SshMessagePreparator<RsaKeyExchangeDoneMessage> {
-
-    private static final Logger LOGGER = LogManager.getLogger();
 
     public RsaKeyExchangeDoneMessagePreparator(Chooser chooser, RsaKeyExchangeDoneMessage message) {
         super(chooser, message);
@@ -39,77 +23,9 @@ public class RsaKeyExchangeDoneMessagePreparator
     @Override
     public void prepareMessageSpecificContents() {
         getObject().setMessageID(MessageIDConstant.SSH_MSG_KEXRSA_DONE);
-        computeExchangeHash();
-        prepareSignature();
-        setSessionId();
-        generateKeySet();
-    }
-
-    private void computeExchangeHash() {
-        try {
-            chooser.getContext()
-                    .setExchangeHash(
-                            ExchangeHash.computeRsaHash(
-                                    chooser.getKeyExchangeAlgorithm(),
-                                    chooser.getContext().getExchangeHashInputHolder()));
-        } catch (MissingExchangeHashInputException e) {
-            LOGGER.warn(
-                    "Failed to compute exchange hash and update context, some inputs for exchange hash computation are missing");
-            LOGGER.debug(e);
-        } catch (CryptoException e) {
-            LOGGER.error(
-                    "Unexpected cryptographic exception occurred during exchange hash computation");
-            LOGGER.debug(e);
-        }
-    }
-
-    private void prepareSignature() {
-        SshPublicKey<?, ?> serverHostKey = chooser.getNegotiatedServerHostKey();
-        Optional<byte[]> exchangeHash = chooser.getContext().getExchangeHash();
-        SigningSignature signingSignature;
-        try {
-            signingSignature =
-                    SignatureFactory.getSigningSignature(
-                            chooser.getServerHostKeyAlgorithm(), serverHostKey);
-            SignatureEncoding signatureEncoding =
-                    chooser.getServerHostKeyAlgorithm().getSignatureEncoding();
-            byte[] encodedSignature =
-                    ArrayConverter.intToBytes(
-                            signatureEncoding.getName().length(),
-                            DataFormatConstants.STRING_SIZE_LENGTH);
-            encodedSignature =
-                    ArrayConverter.concatenate(
-                            encodedSignature,
-                            signatureEncoding.getName().getBytes(StandardCharsets.US_ASCII));
-            byte[] rawSignature = signingSignature.sign(exchangeHash.orElse(new byte[0]));
-            encodedSignature =
-                    ArrayConverter.concatenate(
-                            encodedSignature,
-                            ArrayConverter.intToBytes(
-                                    rawSignature.length, DataFormatConstants.STRING_SIZE_LENGTH));
-            encodedSignature = ArrayConverter.concatenate(encodedSignature, rawSignature);
-            getObject().setSignature(encodedSignature, true);
-        } catch (CryptoException e) {
-            LOGGER.error(
-                    "An unexpected cryptographic exception occurred during signature generation, workflow will continue but signature is left blank");
-            LOGGER.debug(e);
-            getObject().setSignature(new byte[0], true);
-        }
-    }
-
-    private void setSessionId() {
-        Optional<byte[]> exchangeHash = chooser.getContext().getExchangeHash();
-        if (exchangeHash.isPresent()) {
-            if (chooser.getContext().getSessionID().isEmpty()) {
-                chooser.getContext().setSessionID(exchangeHash.get());
-            }
-        } else {
-            LOGGER.warn("Exchange hash in context is empty, unable to set session id in context");
-        }
-    }
-
-    private void generateKeySet() {
-        KeySet keySet = KeySetGenerator.generateKeySet(chooser.getContext());
-        chooser.getContext().setKeySet(keySet);
+        KeyExchangeUtil.computeExchangeHash(chooser.getContext());
+        KeyExchangeUtil.prepareExchangeHashSignatureMessage(chooser.getContext(), getObject());
+        KeyExchangeUtil.setSessionId(chooser.getContext());
+        KeyExchangeUtil.generateKeySet(chooser.getContext());
     }
 }

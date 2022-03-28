@@ -11,6 +11,7 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.CryptoConstants;
 import de.rub.nds.sshattacker.core.constants.NamedGroup;
 import de.rub.nds.sshattacker.core.crypto.keys.*;
+import de.rub.nds.sshattacker.core.exceptions.CryptoException;
 import java.math.BigInteger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -89,7 +90,11 @@ public class XCurveEcdhKeyExchange extends AbstractEcdhKeyExchange {
     }
 
     @Override
-    public void computeSharedSecret() {
+    public void computeSharedSecret() throws CryptoException {
+        if (localKeyPair == null || remotePublicKey == null) {
+            throw new CryptoException(
+                    "Unable to compute shared secret - either local key pair or remote public key is null");
+        }
         byte[] sharedBytes;
         if (group == NamedGroup.CURVE25519) {
             sharedBytes = new byte[CryptoConstants.X25519_POINT_SIZE];

@@ -7,6 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.crypto.kex;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import de.rub.nds.sshattacker.core.constants.ECPointFormat;
@@ -128,7 +129,7 @@ public class EcdhKeyExchangeTest {
                 CurveFactory.getCurve(group).getPoint(providedPublicKeyXB, providedPublicKeyYB);
         keyExchange.setRemotePublicKey(
                 PointFormatter.formatToByteArray(group, publicKeyB, ECPointFormat.UNCOMPRESSED));
-        keyExchange.computeSharedSecret();
+        assertDoesNotThrow(keyExchange::computeSharedSecret);
         assertEquals(expectedSharedSecret, keyExchange.getSharedSecret());
     }
 }

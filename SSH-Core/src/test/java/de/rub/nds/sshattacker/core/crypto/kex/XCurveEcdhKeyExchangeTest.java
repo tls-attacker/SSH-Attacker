@@ -8,6 +8,7 @@
 package de.rub.nds.sshattacker.core.crypto.kex;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -48,8 +49,8 @@ public class XCurveEcdhKeyExchangeTest {
 
         keyExchangeOnASite.setRemotePublicKey(expectedPublicKeyB);
         keyExchangeOnBSite.setRemotePublicKey(expectedPublicKeyA);
-        keyExchangeOnASite.computeSharedSecret();
-        keyExchangeOnBSite.computeSharedSecret();
+        assertDoesNotThrow(keyExchangeOnASite::computeSharedSecret);
+        assertDoesNotThrow(keyExchangeOnBSite::computeSharedSecret);
 
         assertTrue(keyExchangeOnASite.isComplete());
         assertTrue(keyExchangeOnBSite.isComplete());
@@ -87,8 +88,8 @@ public class XCurveEcdhKeyExchangeTest {
 
         keyExchangeOnASite.setRemotePublicKey(expectedPublicKeyB);
         keyExchangeOnBSite.setRemotePublicKey(expectedPublicKeyA);
-        keyExchangeOnASite.computeSharedSecret();
-        keyExchangeOnBSite.computeSharedSecret();
+        assertDoesNotThrow(keyExchangeOnASite::computeSharedSecret);
+        assertDoesNotThrow(keyExchangeOnBSite::computeSharedSecret);
 
         assertTrue(keyExchangeOnASite.isComplete());
         assertTrue(keyExchangeOnBSite.isComplete());

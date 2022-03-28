@@ -64,11 +64,9 @@ public class RsaKeyExchange extends KeyExchange {
     public static RsaKeyExchange newInstance(SshContext context, KeyExchangeAlgorithm algorithm) {
         if (algorithm == null || algorithm.getFlowType() != KeyExchangeFlowType.RSA) {
             algorithm = context.getConfig().getDefaultRsaKeyExchangeAlgorithm();
-        }
-        if (algorithm.getFlowType() != KeyExchangeFlowType.RSA) {
-            LOGGER.error(
-                    "Unable to create a new RSA key exchange instance - neither negotiated nor RSA fallback key exchange algorithm are of flow type RSA");
-            return null;
+            LOGGER.warn(
+                    "Trying to instantiate a new RSA key exchange without a matching key exchange algorithm negotiated, falling back to "
+                            + algorithm);
         }
         return new RsaKeyExchange(algorithm);
     }
