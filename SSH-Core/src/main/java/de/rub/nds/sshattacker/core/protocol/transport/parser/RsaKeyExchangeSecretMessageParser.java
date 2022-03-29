@@ -18,6 +18,10 @@ public class RsaKeyExchangeSecretMessageParser
 
     private static final Logger LOGGER = LogManager.getLogger();
 
+    public RsaKeyExchangeSecretMessageParser(byte[] array) {
+        super(array);
+    }
+
     public RsaKeyExchangeSecretMessageParser(byte[] array, int startPosition) {
         super(array, startPosition);
     }

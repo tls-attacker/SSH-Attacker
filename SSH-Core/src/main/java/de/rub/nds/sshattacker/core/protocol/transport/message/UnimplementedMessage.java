@@ -16,11 +16,9 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class UnimplementedMessage extends SshMessage<UnimplementedMessage> {
 
-    private ModifiableInteger sequenceNumber;
+    public static final MessageIdConstant ID = MessageIdConstant.SSH_MSG_UNIMPLEMENTED;
 
-    public UnimplementedMessage() {
-        super(MessageIdConstant.SSH_MSG_UNIMPLEMENTED);
-    }
+    private ModifiableInteger sequenceNumber;
 
     public ModifiableInteger getSequenceNumber() {
         return sequenceNumber;

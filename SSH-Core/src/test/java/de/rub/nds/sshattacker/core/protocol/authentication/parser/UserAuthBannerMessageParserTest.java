@@ -49,7 +49,7 @@ public class UserAuthBannerMessageParserTest {
     @MethodSource("provideTestVectors")
     public void testParse(
             byte[] providedBytes, String expectedMessage, String expectedLanguageTag) {
-        UserAuthBannerMessageParser parser = new UserAuthBannerMessageParser(providedBytes, 0);
+        UserAuthBannerMessageParser parser = new UserAuthBannerMessageParser(providedBytes);
         UserAuthBannerMessage msg = parser.parse();
 
         assertEquals(

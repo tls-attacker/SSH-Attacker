@@ -45,8 +45,7 @@ public class RsaKeyExchangeDoneMessageParserTest {
     @MethodSource("provideTestVectors")
     public void testParse(
             byte[] providedBytes, int expectedSignatureLength, byte[] expectedSignature) {
-        RsaKeyExchangeDoneMessageParser parser =
-                new RsaKeyExchangeDoneMessageParser(providedBytes, 0);
+        RsaKeyExchangeDoneMessageParser parser = new RsaKeyExchangeDoneMessageParser(providedBytes);
         RsaKeyExchangeDoneMessage msg = parser.parse();
 
         assertEquals(MessageIdConstant.SSH_MSG_KEXRSA_DONE.getId(), msg.getMessageId().getValue());

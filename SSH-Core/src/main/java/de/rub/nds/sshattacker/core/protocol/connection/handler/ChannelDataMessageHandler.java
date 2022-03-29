@@ -30,6 +30,11 @@ public class ChannelDataMessageHandler extends SshMessageHandler<ChannelDataMess
     }
 
     @Override
+    public ChannelDataMessageParser getParser(byte[] array) {
+        return new ChannelDataMessageParser(array);
+    }
+
+    @Override
     public ChannelDataMessageParser getParser(byte[] array, int startPosition) {
         return new ChannelDataMessageParser(array, startPosition);
     }

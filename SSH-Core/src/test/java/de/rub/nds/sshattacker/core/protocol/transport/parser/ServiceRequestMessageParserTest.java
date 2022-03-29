@@ -44,7 +44,7 @@ public class ServiceRequestMessageParserTest {
     @ParameterizedTest
     @MethodSource("provideTestVectors")
     public void testParse(byte[] providedBytes, ServiceType expectedServiceType) {
-        ServiceRequestMessageParser parser = new ServiceRequestMessageParser(providedBytes, 0);
+        ServiceRequestMessageParser parser = new ServiceRequestMessageParser(providedBytes);
         ServiceRequestMessage msg = parser.parse();
 
         assertEquals(

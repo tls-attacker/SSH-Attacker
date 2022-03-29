@@ -30,6 +30,11 @@ public class TcpIpForwardRequestMessageHandler
     public void adjustContext() {}
 
     @Override
+    public SshMessageParser<TcpIpForwardRequestMessage> getParser(byte[] array) {
+        return new TcpIpForwardRequestMessageParser(array);
+    }
+
+    @Override
     public SshMessageParser<TcpIpForwardRequestMessage> getParser(byte[] array, int startPosition) {
         return new TcpIpForwardRequestMessageParser(array, startPosition);
     }

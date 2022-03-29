@@ -38,6 +38,11 @@ public class VersionExchangeMessageHandler extends ProtocolMessageHandler<Versio
     }
 
     @Override
+    public VersionExchangeMessageParser getParser(byte[] array) {
+        return new VersionExchangeMessageParser(array);
+    }
+
+    @Override
     public VersionExchangeMessageParser getParser(byte[] array, int startPosition) {
         return new VersionExchangeMessageParser(array, startPosition);
     }

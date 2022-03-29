@@ -43,6 +43,11 @@ public class DebugMessageHandler extends SshMessageHandler<DebugMessage> {
     }
 
     @Override
+    public DebugMessageParser getParser(byte[] array) {
+        return new DebugMessageParser(array);
+    }
+
+    @Override
     public DebugMessageParser getParser(byte[] array, int startPosition) {
         return new DebugMessageParser(array, startPosition);
     }

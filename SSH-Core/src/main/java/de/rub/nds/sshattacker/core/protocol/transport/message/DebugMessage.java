@@ -20,15 +20,13 @@ import java.nio.charset.StandardCharsets;
 
 public class DebugMessage extends SshMessage<DebugMessage> {
 
+    public static final MessageIdConstant ID = MessageIdConstant.SSH_MSG_DEBUG;
+
     private ModifiableByte alwaysDisplay;
     private ModifiableInteger messageLength;
     private ModifiableString message;
     private ModifiableInteger languageTagLength;
     private ModifiableString languageTag;
-
-    public DebugMessage() {
-        super(MessageIdConstant.SSH_MSG_DEBUG);
-    }
 
     public ModifiableByte getAlwaysDisplay() {
         return alwaysDisplay;

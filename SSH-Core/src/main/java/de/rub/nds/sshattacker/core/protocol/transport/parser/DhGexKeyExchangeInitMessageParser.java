@@ -18,6 +18,10 @@ public class DhGexKeyExchangeInitMessageParser
 
     private static final Logger LOGGER = LogManager.getLogger();
 
+    public DhGexKeyExchangeInitMessageParser(byte[] array) {
+        super(array);
+    }
+
     public DhGexKeyExchangeInitMessageParser(byte[] array, int startPosition) {
         super(array, startPosition);
     }

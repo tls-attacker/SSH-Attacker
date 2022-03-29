@@ -17,6 +17,10 @@ public class ChannelOpenConfirmationMessageParser
 
     private static final Logger LOGGER = LogManager.getLogger();
 
+    public ChannelOpenConfirmationMessageParser(byte[] array) {
+        super(array);
+    }
+
     public ChannelOpenConfirmationMessageParser(byte[] array, int startPosition) {
         super(array, startPosition);
     }

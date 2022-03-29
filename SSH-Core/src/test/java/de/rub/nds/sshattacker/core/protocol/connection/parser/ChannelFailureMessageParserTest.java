@@ -38,7 +38,7 @@ public class ChannelFailureMessageParserTest {
     @ParameterizedTest
     @MethodSource("provideTestVectors")
     public void testParse(byte[] providedBytes, int expectedRecipientChannel) {
-        ChannelFailureMessageParser parser = new ChannelFailureMessageParser(providedBytes, 0);
+        ChannelFailureMessageParser parser = new ChannelFailureMessageParser(providedBytes);
         ChannelFailureMessage msg = parser.parse();
 
         assertEquals(

@@ -35,6 +35,11 @@ public class DisconnectMessageHandler extends SshMessageHandler<DisconnectMessag
     }
 
     @Override
+    public DisconnectMessageParser getParser(byte[] array) {
+        return new DisconnectMessageParser(array);
+    }
+
+    @Override
     public DisconnectMessageParser getParser(byte[] array, int startPosition) {
         return new DisconnectMessageParser(array, startPosition);
     }

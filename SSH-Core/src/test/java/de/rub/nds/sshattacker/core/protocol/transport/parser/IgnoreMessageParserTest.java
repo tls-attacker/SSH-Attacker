@@ -43,7 +43,7 @@ public class IgnoreMessageParserTest {
     @ParameterizedTest
     @MethodSource("provideTestVectors")
     public void testParse(byte[] providedBytes, byte[] expectedData) {
-        IgnoreMessageParser parser = new IgnoreMessageParser(providedBytes, 0);
+        IgnoreMessageParser parser = new IgnoreMessageParser(providedBytes);
         IgnoreMessage msg = parser.parse();
 
         assertEquals(MessageIdConstant.SSH_MSG_IGNORE.getId(), msg.getMessageId().getValue());

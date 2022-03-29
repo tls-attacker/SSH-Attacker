@@ -97,6 +97,11 @@ public class NewKeysMessageHandler extends SshMessageHandler<NewKeysMessage>
     }
 
     @Override
+    public NewKeysMessageParser getParser(byte[] array) {
+        return new NewKeysMessageParser(array);
+    }
+
+    @Override
     public NewKeysMessageParser getParser(byte[] array, int startPosition) {
         return new NewKeysMessageParser(array, startPosition);
     }

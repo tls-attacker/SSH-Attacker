@@ -41,7 +41,7 @@ public class UnimplementedMessageParserTest {
     @ParameterizedTest
     @MethodSource("provideTestVectors")
     public void testParse(byte[] providedBytes, int expectedSequenceNumber) {
-        UnimplementedMessageParser parser = new UnimplementedMessageParser(providedBytes, 0);
+        UnimplementedMessageParser parser = new UnimplementedMessageParser(providedBytes);
         UnimplementedMessage msg = parser.parse();
 
         assertEquals(

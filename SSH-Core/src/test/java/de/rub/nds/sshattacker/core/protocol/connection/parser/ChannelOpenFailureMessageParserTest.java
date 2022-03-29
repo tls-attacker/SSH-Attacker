@@ -58,8 +58,7 @@ public class ChannelOpenFailureMessageParserTest {
             int expectedReasonCode,
             String expectedReason,
             String expectedLanguageTag) {
-        ChannelOpenFailureMessageParser parser =
-                new ChannelOpenFailureMessageParser(providedBytes, 0);
+        ChannelOpenFailureMessageParser parser = new ChannelOpenFailureMessageParser(providedBytes);
         ChannelOpenFailureMessage msg = parser.parse();
 
         assertEquals(

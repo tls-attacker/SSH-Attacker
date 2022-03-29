@@ -28,6 +28,11 @@ public class IgnoreMessageHandler extends SshMessageHandler<IgnoreMessage> {
     public void adjustContext() {}
 
     @Override
+    public IgnoreMessageParser getParser(byte[] array) {
+        return new IgnoreMessageParser(array);
+    }
+
+    @Override
     public IgnoreMessageParser getParser(byte[] array, int startPosition) {
         return new IgnoreMessageParser(array, startPosition);
     }

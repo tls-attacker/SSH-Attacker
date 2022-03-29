@@ -38,7 +38,7 @@ public class ChannelCloseMessageParserTest {
     @ParameterizedTest
     @MethodSource("provideTestVectors")
     public void testParse(byte[] providedBytes, int expectedRecipientChannel) {
-        ChannelCloseMessageParser parser = new ChannelCloseMessageParser(providedBytes, 0);
+        ChannelCloseMessageParser parser = new ChannelCloseMessageParser(providedBytes);
         ChannelCloseMessage msg = parser.parse();
 
         assertEquals(

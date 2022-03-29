@@ -13,12 +13,12 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class ChannelCloseMessage extends ChannelMessage<ChannelCloseMessage> {
 
-    public ChannelCloseMessage() {
-        super(MessageIdConstant.SSH_MSG_CHANNEL_CLOSE);
-    }
+    public static final MessageIdConstant ID = MessageIdConstant.SSH_MSG_CHANNEL_CLOSE;
+
+    public ChannelCloseMessage() {}
 
     public ChannelCloseMessage(Integer senderChannel) {
-        super(MessageIdConstant.SSH_MSG_CHANNEL_CLOSE, senderChannel);
+        super(senderChannel);
     }
 
     @Override

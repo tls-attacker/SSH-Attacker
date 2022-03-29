@@ -45,6 +45,11 @@ public class ChannelWindowAdjustMessageHandler
     }
 
     @Override
+    public ChannelWindowAdjustMessageParser getParser(byte[] array) {
+        return new ChannelWindowAdjustMessageParser(array);
+    }
+
+    @Override
     public ChannelWindowAdjustMessageParser getParser(byte[] array, int startPosition) {
         return new ChannelWindowAdjustMessageParser(array, startPosition);
     }

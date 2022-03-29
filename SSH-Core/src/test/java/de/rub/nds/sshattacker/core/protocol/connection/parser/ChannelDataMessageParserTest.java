@@ -51,7 +51,7 @@ public class ChannelDataMessageParserTest {
     @MethodSource("provideTestVectors")
     public void testParse(
             byte[] providedBytes, int expectedRecipientChannel, byte[] expectedPayload) {
-        ChannelDataMessageParser parser = new ChannelDataMessageParser(providedBytes, 0);
+        ChannelDataMessageParser parser = new ChannelDataMessageParser(providedBytes);
         ChannelDataMessage msg = parser.parse();
 
         assertEquals(MessageIdConstant.SSH_MSG_CHANNEL_DATA.getId(), msg.getMessageId().getValue());

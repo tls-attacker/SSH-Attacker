@@ -39,6 +39,11 @@ public class DhKeyExchangeInitMessageHandler extends SshMessageHandler<DhKeyExch
     }
 
     @Override
+    public SshMessageParser<DhKeyExchangeInitMessage> getParser(byte[] array) {
+        return new DhKeyExchangeInitMessageParser(array);
+    }
+
+    @Override
     public SshMessageParser<DhKeyExchangeInitMessage> getParser(byte[] array, int startPosition) {
         return new DhKeyExchangeInitMessageParser(array, startPosition);
     }

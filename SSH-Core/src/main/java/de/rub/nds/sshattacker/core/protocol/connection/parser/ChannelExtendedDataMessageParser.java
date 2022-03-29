@@ -17,6 +17,10 @@ import org.apache.logging.log4j.Logger;
 public class ChannelExtendedDataMessageParser
         extends ChannelMessageParser<ChannelExtendedDataMessage> {
 
+    public ChannelExtendedDataMessageParser(byte[] array) {
+        super(array);
+    }
+
     public ChannelExtendedDataMessageParser(byte[] array, int startPosition) {
         super(array, startPosition);
     }

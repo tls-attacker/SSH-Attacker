@@ -49,6 +49,11 @@ public class DhGexKeyExchangeGroupMessageHandler
     }
 
     @Override
+    public DhGexKeyExchangeGroupMessageParser getParser(byte[] array) {
+        return new DhGexKeyExchangeGroupMessageParser(array);
+    }
+
+    @Override
     public DhGexKeyExchangeGroupMessageParser getParser(byte[] array, int startPosition) {
         return new DhGexKeyExchangeGroupMessageParser(array, startPosition);
     }

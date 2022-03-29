@@ -56,7 +56,7 @@ public class UserAuthFailureMessageParserTest {
             byte[] providedBytes,
             String expectedAuthenticationMethods,
             byte expectedPartialSuccess) {
-        UserAuthFailureMessageParser parser = new UserAuthFailureMessageParser(providedBytes, 0);
+        UserAuthFailureMessageParser parser = new UserAuthFailureMessageParser(providedBytes);
         UserAuthFailureMessage msg = parser.parse();
 
         assertEquals(

@@ -18,6 +18,10 @@ public class ChannelOpenMessageParser extends SshMessageParser<ChannelOpenMessag
 
     private static final Logger LOGGER = LogManager.getLogger();
 
+    public ChannelOpenMessageParser(byte[] array) {
+        super(array);
+    }
+
     public ChannelOpenMessageParser(byte[] array, int startPosition) {
         super(array, startPosition);
     }

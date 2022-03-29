@@ -35,7 +35,7 @@ public class RequestSuccessMessageParserTest {
     @ParameterizedTest
     @MethodSource("provideTestVectors")
     public void testParse(byte[] providedBytes) {
-        RequestSuccessMessageParser parser = new RequestSuccessMessageParser(providedBytes, 0);
+        RequestSuccessMessageParser parser = new RequestSuccessMessageParser(providedBytes);
         RequestSuccessMessage msg = parser.parse();
 
         assertEquals(

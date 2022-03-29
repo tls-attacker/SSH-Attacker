@@ -14,9 +14,7 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class UserAuthSuccessMessage extends SshMessage<UserAuthSuccessMessage> {
 
-    public UserAuthSuccessMessage() {
-        super(MessageIdConstant.SSH_MSG_USERAUTH_SUCCESS);
-    }
+    public static final MessageIdConstant ID = MessageIdConstant.SSH_MSG_USERAUTH_SUCCESS;
 
     @Override
     public UserAuthSuccessMessageHandler getHandler(SshContext context) {

@@ -7,7 +7,6 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.preparator;
 
-import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.crypto.kex.DhKeyExchange;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.transport.message.DhKeyExchangeInitMessage;
@@ -22,7 +21,6 @@ public class DhKeyExchangeInitMessagePreparator
 
     @Override
     public void prepareMessageSpecificContents() {
-        getObject().setMessageId(MessageIdConstant.SSH_MSG_KEXDH_INIT);
         DhKeyExchange keyExchange = chooser.getDhKeyExchange();
         keyExchange.generateLocalKeyPair();
         chooser.getContext()

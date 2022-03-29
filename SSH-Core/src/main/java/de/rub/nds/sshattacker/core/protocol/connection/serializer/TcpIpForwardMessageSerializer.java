@@ -23,12 +23,12 @@ public abstract class TcpIpForwardMessageSerializer<T extends TcpIpForwardMessag
     }
 
     private void serializeIPAddressToBind() {
-        LOGGER.debug("IP address to bind length: " + message.getIPAddressToBindLength().getValue());
+        LOGGER.debug("IP address to bind length: " + message.getIpAddressToBindLength().getValue());
         appendInt(
-                message.getIPAddressToBindLength().getValue(),
+                message.getIpAddressToBindLength().getValue(),
                 DataFormatConstants.STRING_SIZE_LENGTH);
-        LOGGER.debug("IP address to bind: " + message.getIPAddressToBind().getValue());
-        appendString(message.getIPAddressToBind().getValue(), StandardCharsets.US_ASCII);
+        LOGGER.debug("IP address to bind: " + message.getIpAddressToBind().getValue());
+        appendString(message.getIpAddressToBind().getValue(), StandardCharsets.US_ASCII);
     }
 
     private void serializePortToBind() {

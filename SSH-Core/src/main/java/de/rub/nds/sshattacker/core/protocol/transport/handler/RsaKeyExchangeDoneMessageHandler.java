@@ -38,6 +38,11 @@ public class RsaKeyExchangeDoneMessageHandler extends SshMessageHandler<RsaKeyEx
     }
 
     @Override
+    public SshMessageParser<RsaKeyExchangeDoneMessage> getParser(byte[] array) {
+        return new RsaKeyExchangeDoneMessageParser(array);
+    }
+
+    @Override
     public SshMessageParser<RsaKeyExchangeDoneMessage> getParser(byte[] array, int startPosition) {
         return new RsaKeyExchangeDoneMessageParser(array, startPosition);
     }

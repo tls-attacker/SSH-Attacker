@@ -30,6 +30,11 @@ public class RequestSuccessMessageHandler extends SshMessageHandler<RequestSucce
     }
 
     @Override
+    public SshMessageParser<RequestSuccessMessage> getParser(byte[] array) {
+        return new RequestSuccessMessageParser(array);
+    }
+
+    @Override
     public SshMessageParser<RequestSuccessMessage> getParser(byte[] array, int startPosition) {
         return new RequestSuccessMessageParser(array, startPosition);
     }

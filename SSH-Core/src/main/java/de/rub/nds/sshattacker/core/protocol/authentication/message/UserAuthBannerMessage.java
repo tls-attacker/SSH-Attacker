@@ -18,14 +18,12 @@ import java.nio.charset.StandardCharsets;
 
 public class UserAuthBannerMessage extends SshMessage<UserAuthBannerMessage> {
 
+    public static final MessageIdConstant ID = MessageIdConstant.SSH_MSG_USERAUTH_BANNER;
+
     private ModifiableInteger messageLength;
     private ModifiableString message;
     private ModifiableInteger languageTagLength;
     private ModifiableString languageTag;
-
-    public UserAuthBannerMessage() {
-        super(MessageIdConstant.SSH_MSG_USERAUTH_BANNER);
-    }
 
     public ModifiableInteger getMessageLength() {
         return messageLength;

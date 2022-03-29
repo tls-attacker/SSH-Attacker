@@ -61,7 +61,7 @@ public class ChannelExtendedDataMessageParserTest {
             ExtendedChannelDataType expectedDataType,
             byte[] expectedPayload) {
         ChannelExtendedDataMessageParser parser =
-                new ChannelExtendedDataMessageParser(providedBytes, 0);
+                new ChannelExtendedDataMessageParser(providedBytes);
         ChannelExtendedDataMessage msg = parser.parse();
 
         assertEquals(

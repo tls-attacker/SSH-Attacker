@@ -52,7 +52,7 @@ public class VersionExchangeMessageParserTest {
             String expectedVersion,
             String expectedComment,
             String expectedEndOfMessageSequence) {
-        VersionExchangeMessageParser parser = new VersionExchangeMessageParser(providedBytes, 0);
+        VersionExchangeMessageParser parser = new VersionExchangeMessageParser(providedBytes);
         VersionExchangeMessage msg = parser.parse();
 
         assertEquals(expectedVersion, msg.getVersion().getValue());

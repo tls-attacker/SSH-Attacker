@@ -11,6 +11,10 @@ import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelFailureMes
 
 public class ChannelFailureMessageParser extends ChannelMessageParser<ChannelFailureMessage> {
 
+    public ChannelFailureMessageParser(byte[] array) {
+        super(array);
+    }
+
     public ChannelFailureMessageParser(byte[] array, int startPosition) {
         super(array, startPosition);
     }

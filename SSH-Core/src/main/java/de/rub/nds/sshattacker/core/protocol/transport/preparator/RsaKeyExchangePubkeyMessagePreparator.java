@@ -7,7 +7,6 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.preparator;
 
-import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.crypto.kex.RsaKeyExchange;
 import de.rub.nds.sshattacker.core.crypto.util.PublicKeyHelper;
 import de.rub.nds.sshattacker.core.exceptions.CryptoException;
@@ -30,7 +29,6 @@ public class RsaKeyExchangePubkeyMessagePreparator
 
     @Override
     public void prepareMessageSpecificContents() {
-        getObject().setMessageId(MessageIdConstant.SSH_MSG_KEXRSA_PUBKEY);
         KeyExchangeUtil.prepareHostKeyMessage(chooser.getContext(), getObject());
         prepareTransientPublicKey();
     }

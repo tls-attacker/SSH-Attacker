@@ -14,6 +14,10 @@ import java.nio.charset.StandardCharsets;
 
 public class UserAuthFailureMessageParser extends SshMessageParser<UserAuthFailureMessage> {
 
+    public UserAuthFailureMessageParser(byte[] array) {
+        super(array);
+    }
+
     public UserAuthFailureMessageParser(byte[] array, int startPosition) {
         super(array, startPosition);
     }

@@ -31,6 +31,11 @@ public class ChannelOpenMessageHandler extends SshMessageHandler<ChannelOpenMess
     }
 
     @Override
+    public ChannelOpenMessageParser getParser(byte[] array) {
+        return new ChannelOpenMessageParser(array);
+    }
+
+    @Override
     public ChannelOpenMessageParser getParser(byte[] array, int startPosition) {
         return new ChannelOpenMessageParser(array, startPosition);
     }

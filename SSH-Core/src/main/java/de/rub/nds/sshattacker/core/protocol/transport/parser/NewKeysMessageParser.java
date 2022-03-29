@@ -12,6 +12,10 @@ import de.rub.nds.sshattacker.core.protocol.transport.message.NewKeysMessage;
 
 public class NewKeysMessageParser extends SshMessageParser<NewKeysMessage> {
 
+    public NewKeysMessageParser(byte[] array) {
+        super(array);
+    }
+
     public NewKeysMessageParser(byte[] array, int startPosition) {
         super(array, startPosition);
     }

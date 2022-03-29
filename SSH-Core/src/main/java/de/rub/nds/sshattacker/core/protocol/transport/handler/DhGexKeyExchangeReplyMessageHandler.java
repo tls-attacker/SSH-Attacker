@@ -47,6 +47,11 @@ public class DhGexKeyExchangeReplyMessageHandler
     }
 
     @Override
+    public DhGexKeyExchangeReplyMessageParser getParser(byte[] array) {
+        return new DhGexKeyExchangeReplyMessageParser(array);
+    }
+
+    @Override
     public DhGexKeyExchangeReplyMessageParser getParser(byte[] array, int startPosition) {
         return new DhGexKeyExchangeReplyMessageParser(array, startPosition);
     }

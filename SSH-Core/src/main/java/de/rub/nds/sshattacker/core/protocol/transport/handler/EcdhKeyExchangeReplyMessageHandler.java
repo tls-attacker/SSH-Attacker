@@ -47,6 +47,11 @@ public class EcdhKeyExchangeReplyMessageHandler
     }
 
     @Override
+    public EcdhKeyExchangeReplyMessageParser getParser(byte[] array) {
+        return new EcdhKeyExchangeReplyMessageParser(array);
+    }
+
+    @Override
     public EcdhKeyExchangeReplyMessageParser getParser(byte[] array, int startPosition) {
         return new EcdhKeyExchangeReplyMessageParser(array, startPosition);
     }

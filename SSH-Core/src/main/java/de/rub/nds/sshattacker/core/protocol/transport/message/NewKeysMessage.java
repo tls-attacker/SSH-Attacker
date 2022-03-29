@@ -14,9 +14,7 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class NewKeysMessage extends SshMessage<NewKeysMessage> {
 
-    public NewKeysMessage() {
-        super(MessageIdConstant.SSH_MSG_NEWKEYS);
-    }
+    public static final MessageIdConstant ID = MessageIdConstant.SSH_MSG_NEWKEYS;
 
     @Override
     public NewKeysMessageHandler getHandler(SshContext context) {

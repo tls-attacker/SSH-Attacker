@@ -67,7 +67,7 @@ public class DhGexKeyExchangeReplyMessageParserTest {
             int expectedSignatureLength,
             byte[] expectedSignature) {
         DhGexKeyExchangeReplyMessageParser parser =
-                new DhGexKeyExchangeReplyMessageParser(providedBytes, 0);
+                new DhGexKeyExchangeReplyMessageParser(providedBytes);
         DhGexKeyExchangeReplyMessage msg = parser.parse();
 
         assertEquals(

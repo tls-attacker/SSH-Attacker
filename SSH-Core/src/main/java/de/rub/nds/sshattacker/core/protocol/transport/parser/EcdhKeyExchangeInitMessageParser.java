@@ -18,6 +18,10 @@ public class EcdhKeyExchangeInitMessageParser extends SshMessageParser<EcdhKeyEx
 
     private static final Logger LOGGER = LogManager.getLogger();
 
+    public EcdhKeyExchangeInitMessageParser(byte[] array) {
+        super(array);
+    }
+
     public EcdhKeyExchangeInitMessageParser(byte[] array, int startPosition) {
         super(array, startPosition);
     }

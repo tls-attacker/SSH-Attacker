@@ -196,6 +196,11 @@ public class KeyExchangeInitMessageHandler extends SshMessageHandler<KeyExchange
     }
 
     @Override
+    public KeyExchangeInitMessageParser getParser(byte[] array) {
+        return new KeyExchangeInitMessageParser(array);
+    }
+
+    @Override
     public KeyExchangeInitMessageParser getParser(byte[] array, int startPosition) {
         return new KeyExchangeInitMessageParser(array, startPosition);
     }

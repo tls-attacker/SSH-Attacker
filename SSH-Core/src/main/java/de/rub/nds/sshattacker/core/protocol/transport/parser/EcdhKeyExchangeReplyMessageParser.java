@@ -20,6 +20,10 @@ public class EcdhKeyExchangeReplyMessageParser
 
     private static final Logger LOGGER = LogManager.getLogger();
 
+    public EcdhKeyExchangeReplyMessageParser(byte[] array) {
+        super(array);
+    }
+
     public EcdhKeyExchangeReplyMessageParser(byte[] array, int startPosition) {
         super(array, startPosition);
     }

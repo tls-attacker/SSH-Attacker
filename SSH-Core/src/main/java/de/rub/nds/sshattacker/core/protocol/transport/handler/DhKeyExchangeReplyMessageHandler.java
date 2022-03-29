@@ -45,6 +45,11 @@ public class DhKeyExchangeReplyMessageHandler extends SshMessageHandler<DhKeyExc
     }
 
     @Override
+    public DhKeyExchangeReplyMessageParser getParser(byte[] array) {
+        return new DhKeyExchangeReplyMessageParser(array);
+    }
+
+    @Override
     public DhKeyExchangeReplyMessageParser getParser(byte[] array, int startPosition) {
         return new DhKeyExchangeReplyMessageParser(array, startPosition);
     }

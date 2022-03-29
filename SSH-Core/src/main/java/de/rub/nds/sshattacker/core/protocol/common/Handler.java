@@ -9,7 +9,9 @@ package de.rub.nds.sshattacker.core.protocol.common;
 
 public interface Handler<T> {
 
-    Parser<T> getParser(byte[] message, int startPosition);
+    Parser<T> getParser(byte[] array);
+
+    Parser<T> getParser(byte[] array, int startPosition);
 
     Preparator<T> getPreparator();
 

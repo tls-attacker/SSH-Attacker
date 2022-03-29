@@ -63,7 +63,7 @@ public class ChannelOpenConfirmationMessageParserTest {
             int expectedInitialWindowSize,
             int expectedMaximumPacketSize) {
         ChannelOpenConfirmationMessageParser parser =
-                new ChannelOpenConfirmationMessageParser(providedBytes, 0);
+                new ChannelOpenConfirmationMessageParser(providedBytes);
         ChannelOpenConfirmationMessage msg = parser.parse();
 
         assertEquals(

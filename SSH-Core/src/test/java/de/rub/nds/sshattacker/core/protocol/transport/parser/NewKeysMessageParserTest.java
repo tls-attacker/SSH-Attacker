@@ -17,7 +17,7 @@ public class NewKeysMessageParserTest {
     /** Test of NewKeysMessageParser::parse method */
     @Test
     public void testParse() {
-        NewKeysMessage msg = new NewKeysMessageParser(new byte[] {21}, 0).parse();
+        NewKeysMessage msg = new NewKeysMessageParser(new byte[] {21}).parse();
         assertEquals(MessageIdConstant.SSH_MSG_NEWKEYS.getId(), msg.getMessageId().getValue());
     }
 }

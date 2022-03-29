@@ -18,14 +18,12 @@ import java.math.BigInteger;
 
 public class DhGexKeyExchangeGroupMessage extends SshMessage<DhGexKeyExchangeGroupMessage> {
 
+    public static final MessageIdConstant ID = MessageIdConstant.SSH_MSG_KEX_DH_GEX_GROUP;
+
     private ModifiableInteger groupModulusLength;
     private ModifiableBigInteger groupModulus;
     private ModifiableInteger groupGeneratorLength;
     private ModifiableBigInteger groupGenerator;
-
-    public DhGexKeyExchangeGroupMessage() {
-        super(MessageIdConstant.SSH_MSG_KEX_DH_GEX_GROUP);
-    }
 
     public ModifiableInteger getGroupModulusLength() {
         return groupModulusLength;

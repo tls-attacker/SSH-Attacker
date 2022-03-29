@@ -24,13 +24,11 @@ import java.util.stream.Collectors;
 
 public class UserAuthFailureMessage extends SshMessage<UserAuthFailureMessage> {
 
+    public static final MessageIdConstant ID = MessageIdConstant.SSH_MSG_USERAUTH_FAILURE;
+
     private ModifiableInteger possibleAuthenticationMethodsLength;
     private ModifiableString possibleAuthenticationMethods;
     private ModifiableByte partialSuccess;
-
-    public UserAuthFailureMessage() {
-        super(MessageIdConstant.SSH_MSG_USERAUTH_FAILURE);
-    }
 
     public ModifiableInteger getPossibleAuthenticationMethodsLength() {
         return possibleAuthenticationMethodsLength;

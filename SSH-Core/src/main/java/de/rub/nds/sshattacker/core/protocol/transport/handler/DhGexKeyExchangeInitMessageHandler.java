@@ -41,6 +41,11 @@ public class DhGexKeyExchangeInitMessageHandler
     }
 
     @Override
+    public SshMessageParser<DhGexKeyExchangeInitMessage> getParser(byte[] array) {
+        return new DhGexKeyExchangeInitMessageParser(array);
+    }
+
+    @Override
     public SshMessageParser<DhGexKeyExchangeInitMessage> getParser(
             byte[] array, int startPosition) {
         return new DhGexKeyExchangeInitMessageParser(array, startPosition);

@@ -30,6 +30,11 @@ public class ChannelSuccessMessageHandler extends SshMessageHandler<ChannelSucce
     }
 
     @Override
+    public SshMessageParser<ChannelSuccessMessage> getParser(byte[] array) {
+        return new ChannelSuccessMessageParser(array);
+    }
+
+    @Override
     public SshMessageParser<ChannelSuccessMessage> getParser(byte[] array, int startPosition) {
         return new ChannelSuccessMessageParser(array, startPosition);
     }

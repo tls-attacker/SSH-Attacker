@@ -17,12 +17,10 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class IgnoreMessage extends SshMessage<IgnoreMessage> {
 
+    public static final MessageIdConstant ID = MessageIdConstant.SSH_MSG_IGNORE;
+
     private ModifiableInteger dataLength;
     private ModifiableByteArray data;
-
-    public IgnoreMessage() {
-        super(MessageIdConstant.SSH_MSG_IGNORE);
-    }
 
     public ModifiableInteger getDataLength() {
         return dataLength;

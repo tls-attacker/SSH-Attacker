@@ -7,7 +7,6 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.preparator;
 
-import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.crypto.kex.AbstractEcdhKeyExchange;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.transport.message.EcdhKeyExchangeInitMessage;
@@ -23,7 +22,6 @@ public class EcdhKeyExchangeInitMessagePreparator
 
     @Override
     public void prepareMessageSpecificContents() {
-        getObject().setMessageId(MessageIdConstant.SSH_MSG_KEX_ECDH_INIT);
         AbstractEcdhKeyExchange keyExchange = chooser.getEcdhKeyExchange();
         keyExchange.generateLocalKeyPair();
         byte[] encodedPublicKey = keyExchange.getLocalKeyPair().getPublic().getEncoded();

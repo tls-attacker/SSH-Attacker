@@ -32,6 +32,11 @@ public class ChannelExtendedDataMessageHandler
     }
 
     @Override
+    public ChannelExtendedDataMessageParser getParser(byte[] array) {
+        return new ChannelExtendedDataMessageParser(array);
+    }
+
+    @Override
     public ChannelExtendedDataMessageParser getParser(byte[] array, int startPosition) {
         return new ChannelExtendedDataMessageParser(array, startPosition);
     }

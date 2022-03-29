@@ -63,7 +63,7 @@ public class RsaKeyExchangePubkeyMessageParserTest {
             BigInteger exponent,
             BigInteger modulus) {
         RsaKeyExchangePubkeyMessageParser parser =
-                new RsaKeyExchangePubkeyMessageParser(providedBytes, 0);
+                new RsaKeyExchangePubkeyMessageParser(providedBytes);
         RsaKeyExchangePubkeyMessage msg = parser.parse();
 
         assertEquals(

@@ -30,6 +30,11 @@ public class ChannelRequestExitSignalMessageHandler
     public void adjustContext() {}
 
     @Override
+    public ChannelRequestExitSignalMessageParser getParser(byte[] array) {
+        return new ChannelRequestExitSignalMessageParser(array);
+    }
+
+    @Override
     public ChannelRequestExitSignalMessageParser getParser(byte[] array, int startPosition) {
         return new ChannelRequestExitSignalMessageParser(array, startPosition);
     }

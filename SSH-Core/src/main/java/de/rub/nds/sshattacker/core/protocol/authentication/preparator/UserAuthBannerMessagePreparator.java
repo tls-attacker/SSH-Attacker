@@ -7,7 +7,6 @@
  */
 package de.rub.nds.sshattacker.core.protocol.authentication.preparator;
 
-import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthBannerMessage;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
@@ -20,7 +19,6 @@ public class UserAuthBannerMessagePreparator extends SshMessagePreparator<UserAu
 
     @Override
     public void prepareMessageSpecificContents() {
-        getObject().setMessageId(MessageIdConstant.SSH_MSG_USERAUTH_BANNER);
         // TODO dummy values for fuzzing
         getObject().setMessage("", true);
         getObject().setLanguageTag("", true);

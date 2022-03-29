@@ -17,7 +17,7 @@ public class UserAuthSuccessMessageParserTest {
     /** Test of UserAuthSuccessMessageParser::parse method */
     @Test
     public void testParse() {
-        UserAuthSuccessMessage msg = new UserAuthSuccessMessageParser(new byte[] {52}, 0).parse();
+        UserAuthSuccessMessage msg = new UserAuthSuccessMessageParser(new byte[] {52}).parse();
         assertEquals(
                 MessageIdConstant.SSH_MSG_USERAUTH_SUCCESS.getId(), msg.getMessageId().getValue());
     }

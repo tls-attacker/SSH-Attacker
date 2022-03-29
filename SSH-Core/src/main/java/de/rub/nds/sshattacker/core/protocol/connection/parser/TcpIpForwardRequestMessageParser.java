@@ -12,6 +12,10 @@ import de.rub.nds.sshattacker.core.protocol.connection.message.TcpIpForwardReque
 public class TcpIpForwardRequestMessageParser
         extends TcpIpForwardMessageParser<TcpIpForwardRequestMessage> {
 
+    public TcpIpForwardRequestMessageParser(byte[] array) {
+        super(array);
+    }
+
     public TcpIpForwardRequestMessageParser(byte[] array, int startPosition) {
         super(array, startPosition);
     }

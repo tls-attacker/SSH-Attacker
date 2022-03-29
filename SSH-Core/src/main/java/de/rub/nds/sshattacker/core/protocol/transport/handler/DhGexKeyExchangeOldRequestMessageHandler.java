@@ -40,6 +40,11 @@ public class DhGexKeyExchangeOldRequestMessageHandler
     }
 
     @Override
+    public SshMessageParser<DhGexKeyExchangeOldRequestMessage> getParser(byte[] array) {
+        return new DhGexKeyExchangeOldRequestMessageParser(array);
+    }
+
+    @Override
     public SshMessageParser<DhGexKeyExchangeOldRequestMessage> getParser(
             byte[] array, int startPosition) {
         return new DhGexKeyExchangeOldRequestMessageParser(array, startPosition);

@@ -17,6 +17,10 @@ public class UnimplementedMessageParser extends SshMessageParser<UnimplementedMe
 
     private static final Logger LOGGER = LogManager.getLogger();
 
+    public UnimplementedMessageParser(byte[] array) {
+        super(array);
+    }
+
     public UnimplementedMessageParser(byte[] array, int startPosition) {
         super(array, startPosition);
     }

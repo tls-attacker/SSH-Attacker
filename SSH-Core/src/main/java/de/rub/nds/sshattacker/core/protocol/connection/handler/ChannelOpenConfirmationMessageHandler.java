@@ -49,6 +49,11 @@ public class ChannelOpenConfirmationMessageHandler
     }
 
     @Override
+    public ChannelOpenConfirmationMessageParser getParser(byte[] array) {
+        return new ChannelOpenConfirmationMessageParser(array);
+    }
+
+    @Override
     public ChannelOpenConfirmationMessageParser getParser(byte[] array, int startPosition) {
         return new ChannelOpenConfirmationMessageParser(array, startPosition);
     }

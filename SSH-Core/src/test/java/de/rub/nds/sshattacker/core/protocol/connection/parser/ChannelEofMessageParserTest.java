@@ -38,7 +38,7 @@ public class ChannelEofMessageParserTest {
     @ParameterizedTest
     @MethodSource("provideTestVectors")
     public void testParse(byte[] providedBytes, int expectedRecipientChannel) {
-        ChannelEofMessageParser parser = new ChannelEofMessageParser(providedBytes, 0);
+        ChannelEofMessageParser parser = new ChannelEofMessageParser(providedBytes);
         ChannelEofMessage msg = parser.parse();
 
         assertEquals(MessageIdConstant.SSH_MSG_CHANNEL_EOF.getId(), msg.getMessageId().getValue());

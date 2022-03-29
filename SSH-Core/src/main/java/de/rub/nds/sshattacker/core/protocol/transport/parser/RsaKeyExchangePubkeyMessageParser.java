@@ -18,6 +18,10 @@ public class RsaKeyExchangePubkeyMessageParser
 
     private static final Logger LOGGER = LogManager.getLogger();
 
+    public RsaKeyExchangePubkeyMessageParser(byte[] array) {
+        super(array);
+    }
+
     public RsaKeyExchangePubkeyMessageParser(byte[] array, int startPosition) {
         super(array, startPosition);
     }

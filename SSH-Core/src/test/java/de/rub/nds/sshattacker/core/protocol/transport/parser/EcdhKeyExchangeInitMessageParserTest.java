@@ -48,7 +48,7 @@ public class EcdhKeyExchangeInitMessageParserTest {
             int expectedEphemeralPublicKeyLength,
             byte[] expectedEphemeralPublicKey) {
         EcdhKeyExchangeInitMessageParser parser =
-                new EcdhKeyExchangeInitMessageParser(providedBytes, 0);
+                new EcdhKeyExchangeInitMessageParser(providedBytes);
         EcdhKeyExchangeInitMessage msg = parser.parse();
 
         assertEquals(

@@ -18,6 +18,10 @@ public class ChannelRequestExitSignalMessageParser
 
     private static final Logger LOGGER = LogManager.getLogger();
 
+    public ChannelRequestExitSignalMessageParser(byte[] array) {
+        super(array);
+    }
+
     public ChannelRequestExitSignalMessageParser(byte[] array, int startPosition) {
         super(array, startPosition);
     }

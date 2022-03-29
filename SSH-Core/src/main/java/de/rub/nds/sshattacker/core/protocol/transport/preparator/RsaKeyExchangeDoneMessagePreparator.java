@@ -7,7 +7,6 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.preparator;
 
-import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.transport.message.RsaKeyExchangeDoneMessage;
 import de.rub.nds.sshattacker.core.protocol.util.KeyExchangeUtil;
@@ -22,7 +21,6 @@ public class RsaKeyExchangeDoneMessagePreparator
 
     @Override
     public void prepareMessageSpecificContents() {
-        getObject().setMessageId(MessageIdConstant.SSH_MSG_KEXRSA_DONE);
         KeyExchangeUtil.computeExchangeHash(chooser.getContext());
         KeyExchangeUtil.prepareExchangeHashSignatureMessage(chooser.getContext(), getObject());
         KeyExchangeUtil.setSessionId(chooser.getContext());

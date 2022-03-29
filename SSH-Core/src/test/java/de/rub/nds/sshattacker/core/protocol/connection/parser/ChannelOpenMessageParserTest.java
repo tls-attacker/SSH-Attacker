@@ -66,7 +66,7 @@ public class ChannelOpenMessageParserTest {
             int expectedSenderChannel,
             int expectedInitialWindowSize,
             int expectedMaximumPacketSize) {
-        ChannelOpenMessageParser parser = new ChannelOpenMessageParser(providedBytes, 0);
+        ChannelOpenMessageParser parser = new ChannelOpenMessageParser(providedBytes);
         ChannelOpenMessage msg = parser.parse();
 
         assertEquals(MessageIdConstant.SSH_MSG_CHANNEL_OPEN.getId(), msg.getMessageId().getValue());

@@ -12,6 +12,10 @@ import de.rub.nds.sshattacker.core.protocol.connection.message.TcpIpForwardCance
 public class TcpIpForwardCancelMessageParser
         extends TcpIpForwardMessageParser<TcpIpForwardCancelMessage> {
 
+    public TcpIpForwardCancelMessageParser(byte[] array) {
+        super(array);
+    }
+
     public TcpIpForwardCancelMessageParser(byte[] array, int startPosition) {
         super(array, startPosition);
     }

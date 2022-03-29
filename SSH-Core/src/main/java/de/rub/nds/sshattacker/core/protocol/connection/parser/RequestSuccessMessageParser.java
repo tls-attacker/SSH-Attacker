@@ -12,6 +12,10 @@ import de.rub.nds.sshattacker.core.protocol.connection.message.RequestSuccessMes
 
 public class RequestSuccessMessageParser extends SshMessageParser<RequestSuccessMessage> {
 
+    public RequestSuccessMessageParser(byte[] array) {
+        super(array);
+    }
+
     public RequestSuccessMessageParser(byte[] array, int startPosition) {
         super(array, startPosition);
     }

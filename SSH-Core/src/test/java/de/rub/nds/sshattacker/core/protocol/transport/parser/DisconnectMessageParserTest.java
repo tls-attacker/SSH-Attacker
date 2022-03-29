@@ -61,7 +61,7 @@ public class DisconnectMessageParserTest {
             DisconnectReason expectedDisconnectReason,
             String expectedDescription,
             String expectedLanguageTag) {
-        DisconnectMessageParser parser = new DisconnectMessageParser(providedBytes, 0);
+        DisconnectMessageParser parser = new DisconnectMessageParser(providedBytes);
         DisconnectMessage msg = parser.parse();
 
         assertEquals(MessageIdConstant.SSH_MSG_DISCONNECT.getId(), msg.getMessageId().getValue());

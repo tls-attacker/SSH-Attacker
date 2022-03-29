@@ -19,12 +19,13 @@ import java.nio.charset.StandardCharsets;
 public abstract class GlobalRequestMessage<T extends GlobalRequestMessage<T>>
         extends SshMessage<T> {
 
+    public static final MessageIdConstant ID = MessageIdConstant.SSH_MSG_GLOBAL_REQUEST;
+
     private ModifiableInteger requestNameLength;
     private ModifiableString requestName;
     private ModifiableByte wantReply;
 
     protected GlobalRequestMessage(GlobalRequestType requestType) {
-        super(MessageIdConstant.SSH_MSG_GLOBAL_REQUEST);
         setRequestName(requestType, true);
     }
 

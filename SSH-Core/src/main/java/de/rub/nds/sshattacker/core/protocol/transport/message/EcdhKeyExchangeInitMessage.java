@@ -17,12 +17,10 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class EcdhKeyExchangeInitMessage extends SshMessage<EcdhKeyExchangeInitMessage> {
 
+    public static final MessageIdConstant ID = MessageIdConstant.SSH_MSG_KEX_ECDH_INIT;
+
     private ModifiableInteger ephemeralPublicKeyLength;
     private ModifiableByteArray ephemeralPublicKey;
-
-    public EcdhKeyExchangeInitMessage() {
-        super(MessageIdConstant.SSH_MSG_KEX_ECDH_INIT);
-    }
 
     public ModifiableInteger getEphemeralPublicKeyLength() {
         return ephemeralPublicKeyLength;

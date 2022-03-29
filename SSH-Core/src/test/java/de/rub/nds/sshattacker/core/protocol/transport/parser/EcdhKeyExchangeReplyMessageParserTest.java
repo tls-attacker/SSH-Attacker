@@ -62,7 +62,7 @@ public class EcdhKeyExchangeReplyMessageParserTest {
             int expectedSignatureLength,
             byte[] expectedSignature) {
         EcdhKeyExchangeReplyMessageParser parser =
-                new EcdhKeyExchangeReplyMessageParser(providedBytes, 0);
+                new EcdhKeyExchangeReplyMessageParser(providedBytes);
         EcdhKeyExchangeReplyMessage msg = parser.parse();
 
         assertEquals(

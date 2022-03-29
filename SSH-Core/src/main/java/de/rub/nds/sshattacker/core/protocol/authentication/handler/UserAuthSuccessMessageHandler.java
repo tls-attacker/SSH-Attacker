@@ -54,6 +54,11 @@ public class UserAuthSuccessMessageHandler extends SshMessageHandler<UserAuthSuc
     }
 
     @Override
+    public UserAuthSuccessMessageParser getParser(byte[] array) {
+        return new UserAuthSuccessMessageParser(array);
+    }
+
+    @Override
     public UserAuthSuccessMessageParser getParser(byte[] array, int startPosition) {
         return new UserAuthSuccessMessageParser(array, startPosition);
     }

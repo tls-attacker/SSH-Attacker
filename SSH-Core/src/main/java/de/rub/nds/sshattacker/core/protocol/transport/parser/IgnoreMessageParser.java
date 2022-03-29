@@ -18,6 +18,10 @@ public class IgnoreMessageParser extends SshMessageParser<IgnoreMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
+    public IgnoreMessageParser(byte[] array) {
+        super(array);
+    }
+
     public IgnoreMessageParser(byte[] array, int startPosition) {
         super(array, startPosition);
     }

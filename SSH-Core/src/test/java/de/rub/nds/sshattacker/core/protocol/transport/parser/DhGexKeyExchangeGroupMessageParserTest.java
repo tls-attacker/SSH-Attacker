@@ -58,7 +58,7 @@ public class DhGexKeyExchangeGroupMessageParserTest {
             BigInteger expectedGroupModulus,
             BigInteger expectedGroupGenerator) {
         DhGexKeyExchangeGroupMessageParser parser =
-                new DhGexKeyExchangeGroupMessageParser(providedBytes, 0);
+                new DhGexKeyExchangeGroupMessageParser(providedBytes);
         DhGexKeyExchangeGroupMessage msg = parser.parse();
 
         assertEquals(

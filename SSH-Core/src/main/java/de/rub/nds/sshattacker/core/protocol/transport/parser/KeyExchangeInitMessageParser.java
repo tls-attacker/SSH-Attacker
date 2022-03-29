@@ -20,6 +20,10 @@ public class KeyExchangeInitMessageParser extends SshMessageParser<KeyExchangeIn
 
     private static final Logger LOGGER = LogManager.getLogger();
 
+    public KeyExchangeInitMessageParser(byte[] array) {
+        super(array);
+    }
+
     public KeyExchangeInitMessageParser(byte[] array, int startPosition) {
         super(array, startPosition);
     }

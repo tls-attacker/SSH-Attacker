@@ -18,6 +18,10 @@ public class ChannelOpenFailureMessageParser
 
     private static final Logger LOGGER = LogManager.getLogger();
 
+    public ChannelOpenFailureMessageParser(byte[] array) {
+        super(array);
+    }
+
     public ChannelOpenFailureMessageParser(byte[] array, int startPosition) {
         super(array, startPosition);
     }

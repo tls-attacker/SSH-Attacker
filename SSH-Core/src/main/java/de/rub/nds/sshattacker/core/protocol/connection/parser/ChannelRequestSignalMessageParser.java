@@ -17,6 +17,10 @@ public class ChannelRequestSignalMessageParser
 
     private static final Logger LOGGER = LogManager.getLogger();
 
+    public ChannelRequestSignalMessageParser(byte[] array) {
+        super(array);
+    }
+
     public ChannelRequestSignalMessageParser(byte[] array, Integer startPosition) {
         super(array, startPosition);
     }

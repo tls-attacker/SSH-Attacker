@@ -30,6 +30,11 @@ public class UserAuthFailureMessageHandler extends SshMessageHandler<UserAuthFai
     }
 
     @Override
+    public UserAuthFailureMessageParser getParser(byte[] array) {
+        return new UserAuthFailureMessageParser(array);
+    }
+
+    @Override
     public UserAuthFailureMessageParser getParser(byte[] array, int startPosition) {
         return new UserAuthFailureMessageParser(array, startPosition);
     }

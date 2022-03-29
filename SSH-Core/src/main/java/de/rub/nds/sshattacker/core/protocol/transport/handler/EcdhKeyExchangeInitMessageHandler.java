@@ -40,6 +40,11 @@ public class EcdhKeyExchangeInitMessageHandler
     }
 
     @Override
+    public EcdhKeyExchangeInitMessageParser getParser(byte[] array) {
+        return new EcdhKeyExchangeInitMessageParser(array);
+    }
+
+    @Override
     public EcdhKeyExchangeInitMessageParser getParser(byte[] array, int startPosition) {
         return new EcdhKeyExchangeInitMessageParser(array, startPosition);
     }

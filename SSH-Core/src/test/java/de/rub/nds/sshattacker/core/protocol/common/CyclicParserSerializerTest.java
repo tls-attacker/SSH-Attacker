@@ -172,7 +172,7 @@ public class CyclicParserSerializerTest {
             // Parse the serialized message back into a new instance
             ProtocolMessage parsedMessage = null;
             try {
-                parsedMessage = message.getHandler(context).getParser(serializedMessage, 0).parse();
+                parsedMessage = message.getHandler(context).getParser(serializedMessage).parse();
             } catch (ParserException e) {
                 LOGGER.fatal(e);
                 fail(

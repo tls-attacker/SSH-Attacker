@@ -30,6 +30,11 @@ public class ChannelRequestSignalMessageHandler
     public void adjustContext() {}
 
     @Override
+    public ChannelRequestSignalMessageParser getParser(byte[] array) {
+        return new ChannelRequestSignalMessageParser(array);
+    }
+
+    @Override
     public ChannelRequestSignalMessageParser getParser(byte[] array, int startPosition) {
         return new ChannelRequestSignalMessageParser(array, startPosition);
     }

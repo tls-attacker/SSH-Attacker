@@ -38,7 +38,7 @@ public class ChannelSuccessMessageParserTest {
     @ParameterizedTest
     @MethodSource("provideTestVectors")
     public void testParse(byte[] providedBytes, int expectedRecipientChannel) {
-        ChannelSuccessMessageParser parser = new ChannelSuccessMessageParser(providedBytes, 0);
+        ChannelSuccessMessageParser parser = new ChannelSuccessMessageParser(providedBytes);
         ChannelSuccessMessage msg = parser.parse();
 
         assertEquals(

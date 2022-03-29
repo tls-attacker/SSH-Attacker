@@ -9,4 +9,5 @@ package de.rub.nds.sshattacker.core.constants;
 
 public class SshMessageConstants {
     public static final int MESSAGE_ID_LENGTH = 1;
+    public static final String CLASS_ID_FIELD = "ID";
 }

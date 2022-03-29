@@ -27,6 +27,11 @@ public class ChannelRequestExitStatusMessageHandler
     }
 
     @Override
+    public ChannelRequestExitStatusMessageParser getParser(byte[] array) {
+        return new ChannelRequestExitStatusMessageParser(array);
+    }
+
+    @Override
     public ChannelRequestExitStatusMessageParser getParser(byte[] array, int startPosition) {
         return new ChannelRequestExitStatusMessageParser(array, startPosition);
     }

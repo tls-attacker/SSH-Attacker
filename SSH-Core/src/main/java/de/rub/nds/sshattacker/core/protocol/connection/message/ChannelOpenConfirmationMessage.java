@@ -15,22 +15,22 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class ChannelOpenConfirmationMessage extends ChannelMessage<ChannelOpenConfirmationMessage> {
 
+    public static final MessageIdConstant ID = MessageIdConstant.SSH_MSG_CHANNEL_OPEN_CONFIRMATION;
+
     private ModifiableInteger modSenderChannel;
     private ModifiableInteger windowSize;
     private int transferWindowSize;
     private ModifiableInteger packetSize;
     private int transferPacketSize;
 
-    public ChannelOpenConfirmationMessage() {
-        super(MessageIdConstant.SSH_MSG_CHANNEL_OPEN_CONFIRMATION);
-    }
+    public ChannelOpenConfirmationMessage() {}
 
     public ChannelOpenConfirmationMessage(Integer senderChannel) {
-        super(MessageIdConstant.SSH_MSG_CHANNEL_OPEN_CONFIRMATION, senderChannel);
+        super(senderChannel);
     }
 
     public ChannelOpenConfirmationMessage(int senderChannel, int windowSize, int packetSize) {
-        super(MessageIdConstant.SSH_MSG_CHANNEL_OPEN_CONFIRMATION, senderChannel);
+        super(senderChannel);
         setTransferWindowSize(windowSize);
         setTransferPacketSize(packetSize);
     }

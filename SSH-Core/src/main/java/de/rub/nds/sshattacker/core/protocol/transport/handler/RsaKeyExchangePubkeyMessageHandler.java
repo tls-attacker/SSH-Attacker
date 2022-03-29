@@ -42,6 +42,11 @@ public class RsaKeyExchangePubkeyMessageHandler
     }
 
     @Override
+    public SshMessageParser<RsaKeyExchangePubkeyMessage> getParser(byte[] array) {
+        return new RsaKeyExchangePubkeyMessageParser(array);
+    }
+
+    @Override
     public SshMessageParser<RsaKeyExchangePubkeyMessage> getParser(
             byte[] array, int startPosition) {
         return new RsaKeyExchangePubkeyMessageParser(array, startPosition);

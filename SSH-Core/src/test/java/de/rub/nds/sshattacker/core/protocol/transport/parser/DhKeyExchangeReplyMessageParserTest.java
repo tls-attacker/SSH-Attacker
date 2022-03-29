@@ -66,8 +66,7 @@ public class DhKeyExchangeReplyMessageParserTest {
             BigInteger expectedEphemeralPublicKey,
             int expectedSignatureLength,
             byte[] expectedSignature) {
-        DhKeyExchangeReplyMessageParser parser =
-                new DhKeyExchangeReplyMessageParser(providedBytes, 0);
+        DhKeyExchangeReplyMessageParser parser = new DhKeyExchangeReplyMessageParser(providedBytes);
         DhKeyExchangeReplyMessage msg = parser.parse();
 
         assertEquals(MessageIdConstant.SSH_MSG_KEXDH_REPLY.getId(), msg.getMessageId().getValue());

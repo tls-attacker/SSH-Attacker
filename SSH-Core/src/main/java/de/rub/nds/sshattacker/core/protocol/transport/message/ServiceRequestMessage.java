@@ -19,12 +19,10 @@ import java.nio.charset.StandardCharsets;
 
 public class ServiceRequestMessage extends SshMessage<ServiceRequestMessage> {
 
+    public static final MessageIdConstant ID = MessageIdConstant.SSH_MSG_SERVICE_REQUEST;
+
     private ModifiableInteger serviceNameLength;
     private ModifiableString serviceName;
-
-    public ServiceRequestMessage() {
-        super(MessageIdConstant.SSH_MSG_SERVICE_REQUEST);
-    }
 
     public ModifiableInteger getServiceNameLength() {
         return serviceNameLength;

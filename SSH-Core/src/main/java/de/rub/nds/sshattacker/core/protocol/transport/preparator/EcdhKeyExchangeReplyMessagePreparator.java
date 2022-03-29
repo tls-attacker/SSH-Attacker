@@ -24,7 +24,6 @@ public class EcdhKeyExchangeReplyMessagePreparator
 
     @Override
     public void prepareMessageSpecificContents() {
-        getObject().setMessageId(MessageIdConstant.SSH_MSG_KEX_ECDH_REPLY);
         KeyExchangeUtil.prepareHostKeyMessage(chooser.getContext(), getObject());
         prepareEphemeralPublicKey();
         KeyExchangeUtil.computeSharedSecret(chooser.getContext(), chooser.getEcdhKeyExchange());

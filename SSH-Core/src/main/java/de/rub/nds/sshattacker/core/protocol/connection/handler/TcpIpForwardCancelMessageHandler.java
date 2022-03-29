@@ -28,6 +28,11 @@ public class TcpIpForwardCancelMessageHandler extends SshMessageHandler<TcpIpFor
     public void adjustContext() {}
 
     @Override
+    public SshMessageParser<TcpIpForwardCancelMessage> getParser(byte[] array) {
+        return new TcpIpForwardCancelMessageParser(array);
+    }
+
+    @Override
     public SshMessageParser<TcpIpForwardCancelMessage> getParser(byte[] array, int startPosition) {
         return new TcpIpForwardCancelMessageParser(array, startPosition);
     }

@@ -57,7 +57,7 @@ public class DebugMessageParserTest {
             byte expectedAlwaysDisplay,
             String expectedMessage,
             String expectedLanguageTag) {
-        DebugMessageParser parser = new DebugMessageParser(providedBytes, 0);
+        DebugMessageParser parser = new DebugMessageParser(providedBytes);
         DebugMessage msg = parser.parse();
 
         assertEquals(MessageIdConstant.SSH_MSG_DEBUG.getId(), msg.getMessageId().getValue());

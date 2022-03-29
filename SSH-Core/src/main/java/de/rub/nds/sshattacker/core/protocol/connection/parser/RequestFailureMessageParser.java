@@ -12,6 +12,10 @@ import de.rub.nds.sshattacker.core.protocol.connection.message.RequestFailureMes
 
 public class RequestFailureMessageParser extends SshMessageParser<RequestFailureMessage> {
 
+    public RequestFailureMessageParser(byte[] array) {
+        super(array);
+    }
+
     public RequestFailureMessageParser(byte[] array, int startPosition) {
         super(array, startPosition);
     }

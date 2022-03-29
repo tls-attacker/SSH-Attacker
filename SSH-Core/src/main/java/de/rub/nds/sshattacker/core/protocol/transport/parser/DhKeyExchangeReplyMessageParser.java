@@ -18,6 +18,10 @@ public class DhKeyExchangeReplyMessageParser extends SshMessageParser<DhKeyExcha
 
     private static final Logger LOGGER = LogManager.getLogger();
 
+    public DhKeyExchangeReplyMessageParser(byte[] array) {
+        super(array);
+    }
+
     public DhKeyExchangeReplyMessageParser(byte[] array, int startPosition) {
         super(array, startPosition);
     }

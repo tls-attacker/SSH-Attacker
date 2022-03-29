@@ -7,7 +7,6 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.preparator;
 
-import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.transport.message.UnimplementedMessage;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
@@ -20,7 +19,6 @@ public class UnimplementedMessagePreparator extends SshMessagePreparator<Unimple
 
     @Override
     public void prepareMessageSpecificContents() {
-        getObject().setMessageId(MessageIdConstant.SSH_MSG_UNIMPLEMENTED);
         // TODO dummy values for fuzzing
         getObject().setSequenceNumber(Integer.MAX_VALUE);
     }

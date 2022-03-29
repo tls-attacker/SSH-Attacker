@@ -63,6 +63,11 @@ public class RsaKeyExchangeSecretMessageHandler
     }
 
     @Override
+    public SshMessageParser<RsaKeyExchangeSecretMessage> getParser(byte[] array) {
+        return new RsaKeyExchangeSecretMessageParser(array);
+    }
+
+    @Override
     public SshMessageParser<RsaKeyExchangeSecretMessage> getParser(
             byte[] array, int startPosition) {
         return new RsaKeyExchangeSecretMessageParser(array, startPosition);

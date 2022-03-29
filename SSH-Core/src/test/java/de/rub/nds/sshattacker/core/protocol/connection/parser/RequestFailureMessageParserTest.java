@@ -17,7 +17,7 @@ public class RequestFailureMessageParserTest {
     /** Test of RequestFailureMessageParser::parse method */
     @Test
     public void testParse() {
-        RequestFailureMessage msg = new RequestFailureMessageParser(new byte[] {82}, 0).parse();
+        RequestFailureMessage msg = new RequestFailureMessageParser(new byte[] {82}).parse();
         assertEquals(
                 MessageIdConstant.SSH_MSG_REQUEST_FAILURE.getId(), msg.getMessageId().getValue());
     }

@@ -36,6 +36,15 @@ public abstract class Parser<T> {
     /**
      * Constructor for the Parser
      *
+     * @param array Array that should be parsed
+     */
+    public Parser(byte[] array) {
+        this(array, 0);
+    }
+
+    /**
+     * Constructor for the Parser
+     *
      * @param startPosition Position in the array from which the Parser should start working
      * @param array Array that should be parsed
      */
