@@ -8,7 +8,7 @@
 package de.rub.nds.sshattacker.core.crypto.keys.serializer;
 
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
-import de.rub.nds.sshattacker.core.constants.NamedGroup;
+import de.rub.nds.sshattacker.core.constants.NamedEcGroup;
 import de.rub.nds.sshattacker.core.constants.PublicKeyFormat;
 import de.rub.nds.sshattacker.core.crypto.keys.XCurveEcPublicKey;
 import de.rub.nds.sshattacker.core.protocol.common.Serializer;
@@ -30,7 +30,7 @@ public class XCurvePublicKeySerializer extends Serializer<XCurveEcPublicKey> {
          *   string    key
          */
         PublicKeyFormat format;
-        if (publicKey.getGroup() == NamedGroup.CURVE25519) {
+        if (publicKey.getGroup() == NamedEcGroup.CURVE25519) {
             format = PublicKeyFormat.SSH_ED25519;
         } else {
             format = PublicKeyFormat.SSH_ED448;

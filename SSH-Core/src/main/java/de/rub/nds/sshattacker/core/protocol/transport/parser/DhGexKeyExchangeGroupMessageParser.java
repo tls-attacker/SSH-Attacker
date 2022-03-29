@@ -29,7 +29,7 @@ public class DhGexKeyExchangeGroupMessageParser
     }
 
     private void parseGroupModulus() {
-        message.setGroupModulusLength(parseIntField(DataFormatConstants.INT32_SIZE));
+        message.setGroupModulusLength(parseIntField(DataFormatConstants.UINT32_SIZE));
         LOGGER.debug("Group modulus length: " + message.getGroupModulusLength().getValue());
         message.setGroupModulus(parseBigIntField(message.getGroupModulusLength().getValue()));
         LOGGER.debug(
@@ -39,7 +39,7 @@ public class DhGexKeyExchangeGroupMessageParser
     }
 
     private void parseGroupGenerator() {
-        message.setGroupGeneratorLength(parseIntField(DataFormatConstants.INT32_SIZE));
+        message.setGroupGeneratorLength(parseIntField(DataFormatConstants.UINT32_SIZE));
         LOGGER.debug("Group generator length: " + message.getGroupGeneratorLength().getValue());
         message.setGroupGenerator(parseBigIntField(message.getGroupGeneratorLength().getValue()));
         LOGGER.debug(

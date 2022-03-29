@@ -9,7 +9,7 @@ package de.rub.nds.sshattacker.core.protocol.connection.message;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
-import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
+import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.protocol.connection.handler.ChannelOpenConfirmationMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 
@@ -22,15 +22,15 @@ public class ChannelOpenConfirmationMessage extends ChannelMessage<ChannelOpenCo
     private int transferPacketSize;
 
     public ChannelOpenConfirmationMessage() {
-        super(MessageIDConstant.SSH_MSG_CHANNEL_OPEN_CONFIRMATION);
+        super(MessageIdConstant.SSH_MSG_CHANNEL_OPEN_CONFIRMATION);
     }
 
     public ChannelOpenConfirmationMessage(Integer senderChannel) {
-        super(MessageIDConstant.SSH_MSG_CHANNEL_OPEN_CONFIRMATION, senderChannel);
+        super(MessageIdConstant.SSH_MSG_CHANNEL_OPEN_CONFIRMATION, senderChannel);
     }
 
     public ChannelOpenConfirmationMessage(int senderChannel, int windowSize, int packetSize) {
-        super(MessageIDConstant.SSH_MSG_CHANNEL_OPEN_CONFIRMATION, senderChannel);
+        super(MessageIdConstant.SSH_MSG_CHANNEL_OPEN_CONFIRMATION, senderChannel);
         setTransferWindowSize(windowSize);
         setTransferPacketSize(packetSize);
     }

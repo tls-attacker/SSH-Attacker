@@ -27,7 +27,7 @@ public class DhKeyExchangeInitMessageParser extends SshMessageParser<DhKeyExchan
     }
 
     public void parseEphemeralPublicKey() {
-        message.setEphemeralPublicKeyLength(parseIntField(DataFormatConstants.INT32_SIZE));
+        message.setEphemeralPublicKeyLength(parseIntField(DataFormatConstants.UINT32_SIZE));
         LOGGER.debug(
                 "Ephemeral public key (client) length: " + message.getEphemeralPublicKeyLength());
         message.setEphemeralPublicKey(

@@ -7,7 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.preparator;
 
-import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
+import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.transport.message.KeyExchangeInitMessage;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
@@ -20,7 +20,7 @@ public class KeyExchangeInitMessagePreparator extends SshMessagePreparator<KeyEx
 
     @Override
     public void prepareMessageSpecificContents() {
-        getObject().setMessageID(MessageIDConstant.SSH_MSG_KEXINIT);
+        getObject().setMessageId(MessageIdConstant.SSH_MSG_KEXINIT);
         if (chooser.getContext().isClient()) {
             getObject().setCookie(chooser.getClientCookie());
             getObject()

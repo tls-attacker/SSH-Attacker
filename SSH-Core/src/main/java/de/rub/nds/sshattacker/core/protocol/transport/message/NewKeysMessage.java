@@ -7,7 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.message;
 
-import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
+import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.NewKeysMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
@@ -15,7 +15,7 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 public class NewKeysMessage extends SshMessage<NewKeysMessage> {
 
     public NewKeysMessage() {
-        super(MessageIDConstant.SSH_MSG_NEWKEYS);
+        super(MessageIdConstant.SSH_MSG_NEWKEYS);
     }
 
     @Override

@@ -9,7 +9,7 @@ package de.rub.nds.sshattacker.core.protocol.connection.message;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
-import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
+import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
 import javax.xml.bind.annotation.XmlAttribute;
 
@@ -20,11 +20,11 @@ public abstract class ChannelMessage<T extends ChannelMessage<T>> extends SshMes
     @XmlAttribute(name = "channel")
     protected Integer senderChannel;
 
-    protected ChannelMessage(MessageIDConstant messageID) {
+    protected ChannelMessage(MessageIdConstant messageID) {
         super(messageID);
     }
 
-    protected ChannelMessage(MessageIDConstant messageID, Integer senderChannel) {
+    protected ChannelMessage(MessageIdConstant messageID, Integer senderChannel) {
         super(messageID);
         this.setSenderChannel(senderChannel);
     }

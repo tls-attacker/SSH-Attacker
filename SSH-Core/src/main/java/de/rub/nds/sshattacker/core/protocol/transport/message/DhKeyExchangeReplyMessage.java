@@ -11,7 +11,7 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.biginteger.ModifiableBigInteger;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
-import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
+import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.crypto.keys.SshPublicKey;
 import de.rub.nds.sshattacker.core.crypto.util.PublicKeyHelper;
 import de.rub.nds.sshattacker.core.protocol.common.*;
@@ -32,7 +32,7 @@ public class DhKeyExchangeReplyMessage extends SshMessage<DhKeyExchangeReplyMess
     private ModifiableByteArray signature;
 
     public DhKeyExchangeReplyMessage() {
-        super(MessageIDConstant.SSH_MSG_KEXDH_REPLY);
+        super(MessageIdConstant.SSH_MSG_KEXDH_REPLY);
     }
 
     @Override

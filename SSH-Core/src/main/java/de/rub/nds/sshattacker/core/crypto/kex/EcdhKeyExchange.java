@@ -8,7 +8,7 @@
 package de.rub.nds.sshattacker.core.crypto.kex;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.sshattacker.core.constants.NamedGroup;
+import de.rub.nds.sshattacker.core.constants.NamedEcGroup;
 import de.rub.nds.sshattacker.core.crypto.ec.*;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomEcPrivateKey;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomEcPublicKey;
@@ -27,9 +27,9 @@ public class EcdhKeyExchange extends AbstractEcdhKeyExchange {
     private CustomKeyPair<CustomEcPrivateKey, CustomEcPublicKey> localKeyPair;
     private CustomEcPublicKey remotePublicKey;
 
-    protected EcdhKeyExchange(NamedGroup group) {
+    protected EcdhKeyExchange(NamedEcGroup group) {
         super(group);
-        if (!group.isStandardCurve()) {
+        if (group.isRFC7748Curve()) {
             throw new IllegalArgumentException(
                     "EcdhKeyExchange does not support named group " + group);
         }

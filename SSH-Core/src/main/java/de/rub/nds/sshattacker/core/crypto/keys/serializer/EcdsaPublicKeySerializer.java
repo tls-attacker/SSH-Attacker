@@ -8,7 +8,7 @@
 package de.rub.nds.sshattacker.core.crypto.keys.serializer;
 
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
-import de.rub.nds.sshattacker.core.constants.ECPointFormat;
+import de.rub.nds.sshattacker.core.constants.EcPointFormat;
 import de.rub.nds.sshattacker.core.crypto.ec.PointFormatter;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomEcPublicKey;
 import de.rub.nds.sshattacker.core.protocol.common.Serializer;
@@ -47,7 +47,7 @@ public class EcdsaPublicKeySerializer extends Serializer<CustomEcPublicKey> {
         appendString(publicKey.getGroup().getIdentifier(), StandardCharsets.US_ASCII);
         byte[] encodedQ =
                 PointFormatter.formatToByteArray(
-                        publicKey.getGroup(), publicKey.getWAsPoint(), ECPointFormat.UNCOMPRESSED);
+                        publicKey.getGroup(), publicKey.getWAsPoint(), EcPointFormat.UNCOMPRESSED);
         appendInt(encodedQ.length, DataFormatConstants.STRING_SIZE_LENGTH);
         appendBytes(encodedQ);
     }

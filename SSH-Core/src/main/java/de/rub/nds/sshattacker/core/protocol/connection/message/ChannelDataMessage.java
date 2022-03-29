@@ -10,7 +10,7 @@ package de.rub.nds.sshattacker.core.protocol.connection.message;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
-import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
+import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.protocol.connection.handler.ChannelDataMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 
@@ -20,11 +20,11 @@ public class ChannelDataMessage extends ChannelMessage<ChannelDataMessage> {
     private ModifiableByteArray data;
 
     public ChannelDataMessage() {
-        super(MessageIDConstant.SSH_MSG_CHANNEL_DATA);
+        super(MessageIdConstant.SSH_MSG_CHANNEL_DATA);
     }
 
     public ChannelDataMessage(Integer senderChannel) {
-        super(MessageIDConstant.SSH_MSG_CHANNEL_DATA, senderChannel);
+        super(MessageIdConstant.SSH_MSG_CHANNEL_DATA, senderChannel);
     }
 
     public ModifiableInteger getDataLength() {

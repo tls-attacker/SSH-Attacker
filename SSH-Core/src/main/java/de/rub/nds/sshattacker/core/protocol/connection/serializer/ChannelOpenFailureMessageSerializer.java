@@ -24,7 +24,7 @@ public class ChannelOpenFailureMessageSerializer
 
     private void serializeReasonCode() {
         LOGGER.debug("Reason code: " + message.getReasonCode().getValue());
-        appendInt(message.getReasonCode().getValue(), DataFormatConstants.INT32_SIZE);
+        appendInt(message.getReasonCode().getValue(), DataFormatConstants.UINT32_SIZE);
     }
 
     private void serializeReason() {

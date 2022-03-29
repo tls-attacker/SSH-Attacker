@@ -7,7 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.preparator;
 
-import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
+import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.transport.message.DhGexKeyExchangeOldRequestMessage;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
@@ -22,7 +22,7 @@ public class DhGexKeyExchangeOldRequestMessagePreparator
 
     @Override
     public void prepareMessageSpecificContents() {
-        getObject().setMessageID(MessageIDConstant.SSH_MSG_KEX_DH_GEX_REQUEST_OLD);
+        getObject().setMessageId(MessageIdConstant.SSH_MSG_KEX_DH_GEX_REQUEST_OLD);
         chooser.getContext()
                 .getExchangeHashInputHolder()
                 .setDhGexPreferredGroupSize(chooser.getPreferredDhGroupSize());

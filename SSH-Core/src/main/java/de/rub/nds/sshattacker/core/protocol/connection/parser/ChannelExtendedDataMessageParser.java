@@ -29,7 +29,7 @@ public class ChannelExtendedDataMessageParser
     }
 
     private void parseDataTypeCode() {
-        message.setDataTypeCode(parseIntField(DataFormatConstants.INT32_SIZE));
+        message.setDataTypeCode(parseIntField(DataFormatConstants.UINT32_SIZE));
         LOGGER.debug("Data type code: " + message.getDataTypeCode().getValue());
         LOGGER.debug(
                 "Data type: "

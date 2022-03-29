@@ -9,11 +9,11 @@ package de.rub.nds.sshattacker.client.config;
 
 import com.beust.jcommander.ParametersDelegate;
 import de.rub.nds.sshattacker.core.config.Config;
-import de.rub.nds.sshattacker.core.config.SSHDelegateConfig;
+import de.rub.nds.sshattacker.core.config.SshDelegateConfig;
 import de.rub.nds.sshattacker.core.config.delegate.*;
 import de.rub.nds.sshattacker.core.workflow.factory.WorkflowTraceType;
 
-public class ClientCommandConfig extends SSHDelegateConfig {
+public class ClientCommandConfig extends SshDelegateConfig {
 
     public static final String COMMAND = "client";
 

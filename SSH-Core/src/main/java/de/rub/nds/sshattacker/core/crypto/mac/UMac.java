@@ -53,7 +53,7 @@ class UMac implements WrappedMac {
         return UMAC(
                 key,
                 unencryptedPacket,
-                ArrayConverter.intToBytes(sequenceNumber, DataFormatConstants.INT64_SIZE),
+                ArrayConverter.intToBytes(sequenceNumber, DataFormatConstants.UINT64_SIZE),
                 algorithm.getOutputSize());
     }
 

@@ -7,7 +7,6 @@
  */
 package de.rub.nds.sshattacker.attacks.pkcs1.oracles;
 
-import de.rub.nds.sshattacker.core.constants.Bits;
 import de.rub.nds.tlsattacker.util.MathHelper;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -35,7 +34,7 @@ public class MockOracle extends Pkcs1Oracle {
             throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException {
         this.publicKey = publicKey;
         this.privateKey = privateKey;
-        this.blockSize = MathHelper.intCeilDiv(publicKey.getModulus().bitLength(), Bits.IN_A_BYTE);
+        this.blockSize = MathHelper.intCeilDiv(publicKey.getModulus().bitLength(), Byte.SIZE);
 
         // Init cipher
         this.cipher = Cipher.getInstance("RSA/NONE/NoPadding");
@@ -53,7 +52,7 @@ public class MockOracle extends Pkcs1Oracle {
                 // Cipher decrypts message and automatically cuts off starting 00 bytes.
                 // Correct messages therefore should consist of fewer bytes than the length of the
                 // public key
-                int pKeyLen = privateKey.getModulus().bitLength() / Bits.IN_A_BYTE;
+                int pKeyLen = privateKey.getModulus().bitLength() / Byte.SIZE;
                 return decryptedMessage.length != pKeyLen;
 
             } catch (IllegalBlockSizeException | BadPaddingException e) {

@@ -23,7 +23,7 @@ public class ChannelWindowAdjustMessageSerializer
 
     private void serializeBytesToAdd() {
         LOGGER.debug("Bytes to add: " + message.getBytesToAdd().getValue());
-        appendInt(message.getBytesToAdd().getValue(), DataFormatConstants.INT32_SIZE);
+        appendInt(message.getBytesToAdd().getValue(), DataFormatConstants.UINT32_SIZE);
     }
 
     @Override

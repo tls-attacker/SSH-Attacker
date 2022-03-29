@@ -16,7 +16,7 @@ import de.rub.nds.sshattacker.attacks.config.MangerCommandConfig;
 import de.rub.nds.sshattacker.attacks.config.delegate.GeneralAttackDelegate;
 import de.rub.nds.sshattacker.attacks.impl.Attacker;
 import de.rub.nds.sshattacker.attacks.impl.MangerAttacker;
-import de.rub.nds.sshattacker.core.config.SSHDelegateConfig;
+import de.rub.nds.sshattacker.core.config.SshDelegateConfig;
 import de.rub.nds.sshattacker.core.config.delegate.GeneralDelegate;
 import de.rub.nds.sshattacker.core.exceptions.ConfigurationException;
 import java.util.Objects;
@@ -58,7 +58,7 @@ public class Main {
             return;
         }
 
-        Attacker<? extends SSHDelegateConfig> attacker = null;
+        Attacker<? extends SshDelegateConfig> attacker = null;
 
         // Insert new attack commands here
         switch (jc.getParsedCommand()) {

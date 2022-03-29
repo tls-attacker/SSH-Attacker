@@ -7,7 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.protocol.authentication.preparator;
 
-import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
+import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthSuccessMessage;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
@@ -20,6 +20,6 @@ public class UserAuthSuccessMessagePreparator extends SshMessagePreparator<UserA
 
     @Override
     public void prepareMessageSpecificContents() {
-        getObject().setMessageID(MessageIDConstant.SSH_MSG_USERAUTH_SUCCESS);
+        getObject().setMessageId(MessageIdConstant.SSH_MSG_USERAUTH_SUCCESS);
     }
 }

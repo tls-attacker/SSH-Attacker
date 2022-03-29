@@ -10,7 +10,7 @@ package de.rub.nds.sshattacker.core.protocol.transport.message;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
-import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
+import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.RsaKeyExchangeDoneMessageHandler;
@@ -23,7 +23,7 @@ public class RsaKeyExchangeDoneMessage extends SshMessage<RsaKeyExchangeDoneMess
     private ModifiableByteArray signature;
 
     public RsaKeyExchangeDoneMessage() {
-        super(MessageIDConstant.SSH_MSG_KEXRSA_DONE);
+        super(MessageIdConstant.SSH_MSG_KEXRSA_DONE);
     }
 
     @Override

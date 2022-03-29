@@ -188,7 +188,7 @@ public class KeyExchangeInitMessageParser extends SshMessageParser<KeyExchangeIn
     }
 
     private void parseReserved() {
-        message.setReserved(parseIntField(DataFormatConstants.INT32_SIZE));
+        message.setReserved(parseIntField(DataFormatConstants.UINT32_SIZE));
         LOGGER.debug("Reserved: " + message.getReserved().getValue());
     }
 

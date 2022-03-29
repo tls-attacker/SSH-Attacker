@@ -10,7 +10,7 @@ package de.rub.nds.sshattacker.core.protocol.transport.message;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
-import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
+import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.RsaKeyExchangeSecretMessageHandler;
@@ -22,7 +22,7 @@ public class RsaKeyExchangeSecretMessage extends SshMessage<RsaKeyExchangeSecret
     private ModifiableByteArray encryptedSecret;
 
     public RsaKeyExchangeSecretMessage() {
-        super(MessageIDConstant.SSH_MSG_KEXRSA_SECRET);
+        super(MessageIdConstant.SSH_MSG_KEXRSA_SECRET);
     }
 
     public ModifiableInteger getEncryptedSecretLength() {

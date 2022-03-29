@@ -9,7 +9,7 @@ package de.rub.nds.sshattacker.core.protocol.connection.preparator;
 
 import de.rub.nds.sshattacker.core.connection.Channel;
 import de.rub.nds.sshattacker.core.constants.ChannelType;
-import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
+import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.exceptions.PreparationException;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelOpenMessage;
@@ -27,7 +27,7 @@ public class ChannelOpenMessagePreparator extends SshMessagePreparator<ChannelOp
 
     @Override
     public void prepareMessageSpecificContents() {
-        getObject().setMessageID(MessageIDConstant.SSH_MSG_CHANNEL_OPEN);
+        getObject().setMessageId(MessageIdConstant.SSH_MSG_CHANNEL_OPEN);
         // set transfered value to ChannelType or fallback o config
         if (getObject().getChannelType() == null
                 || getObject().getChannelType().getValue() == null) {

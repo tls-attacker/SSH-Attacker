@@ -11,7 +11,7 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.sshattacker.core.constants.ChannelType;
-import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
+import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
 import de.rub.nds.sshattacker.core.protocol.connection.handler.ChannelOpenMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
@@ -33,17 +33,17 @@ public class ChannelOpenMessage extends SshMessage<ChannelOpenMessage> {
     private Integer senderChannel;
 
     public ChannelOpenMessage() {
-        super(MessageIDConstant.SSH_MSG_CHANNEL_OPEN);
+        super(MessageIdConstant.SSH_MSG_CHANNEL_OPEN);
     }
 
     public ChannelOpenMessage(Integer senderChannel) {
-        super(MessageIDConstant.SSH_MSG_CHANNEL_OPEN);
+        super(MessageIdConstant.SSH_MSG_CHANNEL_OPEN);
         setSenderChannel(senderChannel);
     }
 
     public ChannelOpenMessage(
             Integer senderChannel, String channelType, Integer windowSize, Integer packetSize) {
-        super(MessageIDConstant.SSH_MSG_CHANNEL_OPEN);
+        super(MessageIdConstant.SSH_MSG_CHANNEL_OPEN);
         setSenderChannel(senderChannel);
         setTransferChannelType(channelType);
         setTransferWindowSize(windowSize);
@@ -55,7 +55,7 @@ public class ChannelOpenMessage extends SshMessage<ChannelOpenMessage> {
             ChannelType channelType,
             Integer windowSize,
             Integer packetSize) {
-        super(MessageIDConstant.SSH_MSG_CHANNEL_OPEN);
+        super(MessageIdConstant.SSH_MSG_CHANNEL_OPEN);
         setSenderChannel(senderChannel);
         setTransferChannelType(channelType);
         setTransferWindowSize(windowSize);

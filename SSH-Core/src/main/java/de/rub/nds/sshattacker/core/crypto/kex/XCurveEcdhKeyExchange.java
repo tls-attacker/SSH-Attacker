@@ -9,7 +9,7 @@ package de.rub.nds.sshattacker.core.crypto.kex;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.CryptoConstants;
-import de.rub.nds.sshattacker.core.constants.NamedGroup;
+import de.rub.nds.sshattacker.core.constants.NamedEcGroup;
 import de.rub.nds.sshattacker.core.crypto.keys.*;
 import de.rub.nds.sshattacker.core.exceptions.CryptoException;
 import java.math.BigInteger;
@@ -25,7 +25,7 @@ public class XCurveEcdhKeyExchange extends AbstractEcdhKeyExchange {
     private CustomKeyPair<XCurveEcPrivateKey, XCurveEcPublicKey> localKeyPair;
     private XCurveEcPublicKey remotePublicKey;
 
-    public XCurveEcdhKeyExchange(NamedGroup group) {
+    public XCurveEcdhKeyExchange(NamedEcGroup group) {
         super(group);
         if (!group.isRFC7748Curve()) {
             throw new IllegalArgumentException(
@@ -35,7 +35,7 @@ public class XCurveEcdhKeyExchange extends AbstractEcdhKeyExchange {
     }
 
     private void precompute() {
-        if (group == NamedGroup.CURVE25519) {
+        if (group == NamedEcGroup.CURVE25519) {
             X25519.precompute();
         } else {
             X448.precompute();
@@ -46,7 +46,7 @@ public class XCurveEcdhKeyExchange extends AbstractEcdhKeyExchange {
     public void generateLocalKeyPair() {
         byte[] privateKeyBytes;
         byte[] publicKeyBytes;
-        if (group == NamedGroup.CURVE25519) {
+        if (group == NamedEcGroup.CURVE25519) {
             privateKeyBytes = new byte[CryptoConstants.X25519_POINT_SIZE];
             X25519.generatePrivateKey(random, privateKeyBytes);
             publicKeyBytes = new byte[CryptoConstants.X25519_POINT_SIZE];
@@ -65,7 +65,7 @@ public class XCurveEcdhKeyExchange extends AbstractEcdhKeyExchange {
     @Override
     public void setLocalKeyPair(byte[] privateKeyBytes) {
         byte[] publicKeyBytes;
-        if (group == NamedGroup.CURVE25519) {
+        if (group == NamedEcGroup.CURVE25519) {
             publicKeyBytes = new byte[CryptoConstants.X25519_POINT_SIZE];
             X25519.generatePublicKey(privateKeyBytes, 0, publicKeyBytes, 0);
         } else {
@@ -96,7 +96,7 @@ public class XCurveEcdhKeyExchange extends AbstractEcdhKeyExchange {
                     "Unable to compute shared secret - either local key pair or remote public key is null");
         }
         byte[] sharedBytes;
-        if (group == NamedGroup.CURVE25519) {
+        if (group == NamedEcGroup.CURVE25519) {
             sharedBytes = new byte[CryptoConstants.X25519_POINT_SIZE];
             X25519.scalarMult(
                     localKeyPair.getPrivate().getScalar(),

@@ -9,7 +9,6 @@ package de.rub.nds.sshattacker.attacks.pkcs1;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.attacks.pkcs1.util.OaepConverter;
-import de.rub.nds.sshattacker.core.constants.Bits;
 import de.rub.nds.sshattacker.core.exceptions.ConfigurationException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -71,10 +70,10 @@ public class Pkcs1VectorGenerator {
      */
     public static Pkcs1Vector generatePlainCorrectFirstBytePkcs1Vector(
             int publicKeyBitLength, int hashLength, String hashInstance) {
-        int sharedSecretByteLength = (publicKeyBitLength - 2 * hashLength - 49) / Bits.IN_A_BYTE;
+        int sharedSecretByteLength = (publicKeyBitLength - 2 * hashLength - 49) / Byte.SIZE;
         byte[] keyBytes = new byte[sharedSecretByteLength];
         Arrays.fill(keyBytes, (byte) 42);
-        int publicKeyByteLength = publicKeyBitLength / Bits.IN_A_BYTE;
+        int publicKeyByteLength = publicKeyBitLength / Byte.SIZE;
 
         return new Pkcs1Vector(
                 "Wrong second byte but correct first byte (XORed with 0xFF)",
@@ -121,10 +120,10 @@ public class Pkcs1VectorGenerator {
      */
     public static List<Pkcs1Vector> generatePlainPkcs1Vectors(
             int publicKeyBitLength, int hashLength, String hashInstance) {
-        int sharedSecretByteLength = (publicKeyBitLength - 2 * hashLength - 49) / Bits.IN_A_BYTE;
+        int sharedSecretByteLength = (publicKeyBitLength - 2 * hashLength - 49) / Byte.SIZE;
         byte[] keyBytes = new byte[sharedSecretByteLength];
         Arrays.fill(keyBytes, (byte) 42);
-        int publicKeyByteLength = publicKeyBitLength / Bits.IN_A_BYTE;
+        int publicKeyByteLength = publicKeyBitLength / Byte.SIZE;
 
         // create plain padded keys
         List<Pkcs1Vector> pkcs1Vectors = new LinkedList<>();

@@ -28,7 +28,7 @@ public class ChannelOpenFailureMessageParser
     }
 
     private void parseReasonCode() {
-        message.setReasonCode(parseIntField(DataFormatConstants.INT32_SIZE));
+        message.setReasonCode(parseIntField(DataFormatConstants.UINT32_SIZE));
         LOGGER.debug("Reason code: " + message.getReasonCode());
     }
 

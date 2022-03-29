@@ -10,7 +10,7 @@ package de.rub.nds.sshattacker.core.protocol.transport.message;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
-import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
+import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.constants.ServiceType;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.ServiceRequestMessageHandler;
@@ -23,7 +23,7 @@ public class ServiceRequestMessage extends SshMessage<ServiceRequestMessage> {
     private ModifiableString serviceName;
 
     public ServiceRequestMessage() {
-        super(MessageIDConstant.SSH_MSG_SERVICE_REQUEST);
+        super(MessageIdConstant.SSH_MSG_SERVICE_REQUEST);
     }
 
     public ModifiableInteger getServiceNameLength() {

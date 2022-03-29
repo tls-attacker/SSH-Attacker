@@ -9,7 +9,7 @@ package de.rub.nds.sshattacker.core.protocol.connection.message;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
-import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
+import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.protocol.connection.handler.ChannelWindowAdjustMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 
@@ -19,15 +19,15 @@ public class ChannelWindowAdjustMessage extends ChannelMessage<ChannelWindowAdju
     private Integer transferBytesToAdd;
 
     public ChannelWindowAdjustMessage() {
-        super(MessageIDConstant.SSH_MSG_CHANNEL_WINDOW_ADJUST);
+        super(MessageIdConstant.SSH_MSG_CHANNEL_WINDOW_ADJUST);
     }
 
     public ChannelWindowAdjustMessage(Integer senderChannel) {
-        super(MessageIDConstant.SSH_MSG_CHANNEL_WINDOW_ADJUST, senderChannel);
+        super(MessageIdConstant.SSH_MSG_CHANNEL_WINDOW_ADJUST, senderChannel);
     }
 
     public ChannelWindowAdjustMessage(Integer senderChannel, Integer bytesToAdd) {
-        super(MessageIDConstant.SSH_MSG_CHANNEL_WINDOW_ADJUST, senderChannel);
+        super(MessageIdConstant.SSH_MSG_CHANNEL_WINDOW_ADJUST, senderChannel);
         setTransferBytesToAdd(bytesToAdd);
     }
 

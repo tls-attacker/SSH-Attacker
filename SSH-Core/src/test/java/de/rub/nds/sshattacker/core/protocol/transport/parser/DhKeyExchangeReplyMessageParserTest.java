@@ -11,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
+import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.protocol.transport.message.DhKeyExchangeReplyMessage;
 import java.math.BigInteger;
 import java.util.stream.Stream;
@@ -70,7 +70,7 @@ public class DhKeyExchangeReplyMessageParserTest {
                 new DhKeyExchangeReplyMessageParser(providedBytes, 0);
         DhKeyExchangeReplyMessage msg = parser.parse();
 
-        assertEquals(MessageIDConstant.SSH_MSG_KEXDH_REPLY.id, msg.getMessageID().getValue());
+        assertEquals(MessageIdConstant.SSH_MSG_KEXDH_REPLY.getId(), msg.getMessageId().getValue());
         assertEquals(expectedHostKeyBytesLength, msg.getHostKeyBytesLength().getValue().intValue());
         assertArrayEquals(expectedHostKeyBytes, msg.getHostKeyBytes().getValue());
         // TODO: Add assertions for host key

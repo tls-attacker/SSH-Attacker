@@ -19,7 +19,7 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class SSHDelegateConfig {
+public class SshDelegateConfig {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -32,7 +32,7 @@ public class SSHDelegateConfig {
             description = "This parameter allows you to specify a default SshConfig")
     private String defaultConfig = null;
 
-    public SSHDelegateConfig(GeneralDelegate delegate) {
+    public SshDelegateConfig(GeneralDelegate delegate) {
         delegateList = new LinkedList<>();
         this.generalDelegate = delegate;
         if (delegate != null) {

@@ -8,7 +8,7 @@
 package de.rub.nds.sshattacker.core.crypto.keys;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.sshattacker.core.constants.NamedGroup;
+import de.rub.nds.sshattacker.core.constants.NamedEcGroup;
 import java.math.BigInteger;
 import java.security.AlgorithmParameters;
 import java.security.NoSuchAlgorithmException;
@@ -28,14 +28,14 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class CustomEcPrivateKey extends CustomPrivateKey implements ECPrivateKey {
 
-    private NamedGroup group;
+    private NamedEcGroup group;
     private BigInteger privateKey;
 
     @SuppressWarnings("unused")
     private CustomEcPrivateKey() {}
 
-    public CustomEcPrivateKey(BigInteger privateKey, NamedGroup group) {
-        if (!group.isStandardCurve()) {
+    public CustomEcPrivateKey(BigInteger privateKey, NamedEcGroup group) {
+        if (group.isRFC7748Curve()) {
             throw new IllegalArgumentException(
                     "CustomEcPrivateKey does not support named group " + group);
         }
@@ -43,11 +43,11 @@ public class CustomEcPrivateKey extends CustomPrivateKey implements ECPrivateKey
         this.privateKey = privateKey;
     }
 
-    public NamedGroup getGroup() {
+    public NamedEcGroup getGroup() {
         return group;
     }
 
-    public void setGroup(NamedGroup group) {
+    public void setGroup(NamedEcGroup group) {
         this.group = group;
     }
 
@@ -59,7 +59,7 @@ public class CustomEcPrivateKey extends CustomPrivateKey implements ECPrivateKey
         this.privateKey = privateKey;
     }
 
-    public CustomEcPrivateKey parse(byte[] encoded, NamedGroup group) {
+    public CustomEcPrivateKey parse(byte[] encoded, NamedEcGroup group) {
         return new CustomEcPrivateKey(new BigInteger(1, encoded), group);
     }
 

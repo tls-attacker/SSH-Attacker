@@ -10,7 +10,7 @@ package de.rub.nds.sshattacker.core.crypto.kex;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.KeyExchangeAlgorithm;
 import de.rub.nds.sshattacker.core.constants.KeyExchangeFlowType;
-import de.rub.nds.sshattacker.core.constants.NamedDHGroup;
+import de.rub.nds.sshattacker.core.constants.NamedDhGroup;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomDhPrivateKey;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomDhPublicKey;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomKeyPair;
@@ -37,7 +37,7 @@ public class DhKeyExchange extends DhBasedKeyExchange {
         super();
     }
 
-    protected DhKeyExchange(NamedDHGroup group) {
+    protected DhKeyExchange(NamedDhGroup group) {
         super();
         this.modulus = group.getModulus();
         this.generator = group.getGenerator();
@@ -53,7 +53,7 @@ public class DhKeyExchange extends DhBasedKeyExchange {
                     "Trying to instantiate a new DH or DH GEX key exchange without a matching key exchange algorithm negotiated, falling back to "
                             + algorithm);
         }
-        NamedDHGroup group;
+        NamedDhGroup group;
         switch (algorithm) {
             case DIFFIE_HELLMAN_GROUP_EXCHANGE_SHA1:
             case DIFFIE_HELLMAN_GROUP_EXCHANGE_SHA256:
@@ -62,30 +62,30 @@ public class DhKeyExchange extends DhBasedKeyExchange {
             case DIFFIE_HELLMAN_GROUP_EXCHANGE_SHA512_SSH_COM:
                 return new DhKeyExchange();
             case DIFFIE_HELLMAN_GROUP1_SHA1:
-                group = NamedDHGroup.GROUP1;
+                group = NamedDhGroup.GROUP1;
                 break;
             case DIFFIE_HELLMAN_GROUP14_SHA1:
             case DIFFIE_HELLMAN_GROUP14_SHA256:
             case DIFFIE_HELLMAN_GROUP14_SHA224_SSH_COM:
             case DIFFIE_HELLMAN_GROUP14_SHA256_SSH_COM:
-                group = NamedDHGroup.GROUP14;
+                group = NamedDhGroup.GROUP14;
                 break;
             case DIFFIE_HELLMAN_GROUP15_SHA512:
             case DIFFIE_HELLMAN_GROUP15_SHA256_SSH_COM:
             case DIFFIE_HELLMAN_GROUP15_SHA384_SSH_COM:
-                group = NamedDHGroup.GROUP15;
+                group = NamedDhGroup.GROUP15;
                 break;
             case DIFFIE_HELLMAN_GROUP16_SHA512:
             case DIFFIE_HELLMAN_GROUP16_SHA384_SSH_COM:
             case DIFFIE_HELLMAN_GROUP16_SHA512_SSH_COM:
-                group = NamedDHGroup.GROUP16;
+                group = NamedDhGroup.GROUP16;
                 break;
             case DIFFIE_HELLMAN_GROUP17_SHA512:
-                group = NamedDHGroup.GROUP17;
+                group = NamedDhGroup.GROUP17;
                 break;
             case DIFFIE_HELLMAN_GROUP18_SHA512:
             case DIFFIE_HELLMAN_GROUP18_SHA512_SSH_COM:
-                group = NamedDHGroup.GROUP18;
+                group = NamedDhGroup.GROUP18;
                 break;
             default:
                 throw new NotImplementedException(
@@ -205,8 +205,8 @@ public class DhKeyExchange extends DhBasedKeyExchange {
          *   the largest group it knows.  In all cases, the size of the returned
          *   group SHOULD be at least 1024 bits.
          */
-        NamedDHGroup selectedGroup =
-                Arrays.stream(NamedDHGroup.values())
+        NamedDhGroup selectedGroup =
+                Arrays.stream(NamedDhGroup.values())
                         .sorted(Comparator.comparingInt(group -> group.getModulus().bitLength()))
                         .filter(
                                 (candidate) ->
@@ -215,7 +215,7 @@ public class DhKeyExchange extends DhBasedKeyExchange {
                         .findFirst()
                         .orElseGet(
                                 () ->
-                                        Arrays.stream(NamedDHGroup.values())
+                                        Arrays.stream(NamedDhGroup.values())
                                                 .max(
                                                         Comparator.comparingInt(
                                                                 group ->

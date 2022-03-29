@@ -31,7 +31,7 @@ public class RsaPublicKeyParser
     public SshPublicKey<CustomRsaPublicKey, CustomRsaPrivateKey> parse() {
         CustomRsaPublicKey publicKey = new CustomRsaPublicKey();
         // The ssh-rsa format specifies the ssh-rsa to be part of the key
-        int formatLength = parseIntField(DataFormatConstants.INT32_SIZE);
+        int formatLength = parseIntField(DataFormatConstants.UINT32_SIZE);
         String format = parseByteString(formatLength, StandardCharsets.US_ASCII);
         if (!format.equals(PublicKeyFormat.SSH_RSA.getName())) {
             LOGGER.warn(
@@ -39,10 +39,10 @@ public class RsaPublicKeyParser
                             + format
                             + "'. Parsing will continue but may not yield the expected results.");
         }
-        int publicExponentLength = parseIntField(DataFormatConstants.INT32_SIZE);
+        int publicExponentLength = parseIntField(DataFormatConstants.UINT32_SIZE);
         publicKey.setPublicExponent(parseBigIntField(publicExponentLength));
 
-        int modulusLength = parseIntField(DataFormatConstants.INT32_SIZE);
+        int modulusLength = parseIntField(DataFormatConstants.UINT32_SIZE);
         publicKey.setModulus(parseBigIntField(modulusLength));
 
         return new SshPublicKey<>(PublicKeyFormat.SSH_RSA, publicKey);

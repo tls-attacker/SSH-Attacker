@@ -8,7 +8,7 @@
 package de.rub.nds.sshattacker.core.protocol.connection.preparator;
 
 import de.rub.nds.sshattacker.core.constants.GlobalRequestType;
-import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
+import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.connection.message.NoMoreSessionsMessage;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
@@ -21,7 +21,7 @@ public class NoMoreSessionsMessagePreparator extends SshMessagePreparator<NoMore
 
     @Override
     public void prepareMessageSpecificContents() {
-        getObject().setMessageID(MessageIDConstant.SSH_MSG_GLOBAL_REQUEST);
+        getObject().setMessageId(MessageIdConstant.SSH_MSG_GLOBAL_REQUEST);
         getObject().setRequestName(GlobalRequestType.NO_MORE_SESSIONS_OPENSSH_COM, true);
         getObject().setWantReply(chooser.getConfig().getReplyWanted());
     }

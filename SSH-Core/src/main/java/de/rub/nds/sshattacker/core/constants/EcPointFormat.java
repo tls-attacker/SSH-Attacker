@@ -7,11 +7,18 @@
  */
 package de.rub.nds.sshattacker.core.constants;
 
-public class DataFormatConstants {
+public enum EcPointFormat {
+    UNCOMPRESSED((byte) 0),
+    ANSIX962_COMPRESSED_PRIME((byte) 1),
+    ANSIX962_COMPRESSED_CHAR2((byte) 2);
 
-    public static final int MPINT_SIZE_LENGTH = 4;
-    public static final int STRING_SIZE_LENGTH = 4;
-    public static final int UINT32_SIZE = 4;
-    public static final int UINT64_SIZE = 8;
-    public static final long UNSIGNED_INT_MAX_VALUE = 0xFFFFFFFFL;
+    private final byte value;
+
+    EcPointFormat(byte value) {
+        this.value = value;
+    }
+
+    public byte getValue() {
+        return value;
+    }
 }

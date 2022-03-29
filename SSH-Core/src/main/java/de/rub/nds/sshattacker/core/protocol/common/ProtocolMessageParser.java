@@ -8,7 +8,7 @@
 package de.rub.nds.sshattacker.core.protocol.common;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
+import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.exceptions.ParserException;
 import de.rub.nds.sshattacker.core.packet.AbstractPacket;
 import de.rub.nds.sshattacker.core.packet.BlobPacket;
@@ -68,7 +68,7 @@ public abstract class ProtocolMessageParser<T extends ProtocolMessage<T>> extend
                 }
             }
 
-            switch (MessageIDConstant.fromId(raw[0], context)) {
+            switch (MessageIdConstant.fromId(raw[0], context)) {
                 case SSH_MSG_KEXINIT:
                     return new KeyExchangeInitMessageParser(raw, 0).parse();
                 case SSH_MSG_KEX_ECDH_INIT:
@@ -147,7 +147,7 @@ public abstract class ProtocolMessageParser<T extends ProtocolMessage<T>> extend
                 default:
                     LOGGER.debug(
                             "Received unimplemented Message "
-                                    + MessageIDConstant.getNameByID(raw[0])
+                                    + MessageIdConstant.getNameById(raw[0])
                                     + " ("
                                     + raw[0]
                                     + ")");
@@ -182,7 +182,7 @@ public abstract class ProtocolMessageParser<T extends ProtocolMessage<T>> extend
             default:
                 LOGGER.debug(
                         "Received unimplemented message request type "
-                                + MessageIDConstant.getNameByID(raw[0])
+                                + MessageIdConstant.getNameById(raw[0])
                                 + ":"
                                 + channelRequestType);
                 return new UnknownMessageParser(raw, 0).parse();
@@ -211,7 +211,7 @@ public abstract class ProtocolMessageParser<T extends ProtocolMessage<T>> extend
             default:
                 LOGGER.debug(
                         "Received unimplemented message request type "
-                                + MessageIDConstant.getNameByID(raw[0])
+                                + MessageIdConstant.getNameById(raw[0])
                                 + ":"
                                 + globalRequestType);
                 return new UnknownMessageParser(raw, 0).parse();

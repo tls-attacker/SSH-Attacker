@@ -18,7 +18,7 @@ public class UnimplementedMessageSerializer extends SshMessageSerializer<Unimple
     }
 
     private void serializeSequenceNumber() {
-        appendInt(message.getSequenceNumber().getValue(), DataFormatConstants.INT32_SIZE);
+        appendInt(message.getSequenceNumber().getValue(), DataFormatConstants.UINT32_SIZE);
     }
 
     @Override

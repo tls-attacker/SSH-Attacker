@@ -9,7 +9,7 @@ package de.rub.nds.sshattacker.core.protocol.connection.preparator;
 
 import de.rub.nds.sshattacker.core.connection.Channel;
 import de.rub.nds.sshattacker.core.constants.ChannelRequestType;
-import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
+import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.constants.SignalType;
 import de.rub.nds.sshattacker.core.exceptions.MissingChannelException;
 import de.rub.nds.sshattacker.core.exceptions.PreparationException;
@@ -27,7 +27,7 @@ public class ChannelRequestSignalMessagePreperator
 
     @Override
     public void prepareMessageSpecificContents() {
-        getObject().setMessageID(MessageIDConstant.SSH_MSG_CHANNEL_REQUEST);
+        getObject().setMessageId(MessageIdConstant.SSH_MSG_CHANNEL_REQUEST);
         if (getObject().getSenderChannel() == null) {
             throw new PreparationException("Sender channel required to send the message!");
         }

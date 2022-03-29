@@ -10,7 +10,7 @@ package de.rub.nds.sshattacker.core.protocol.transport.parser;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
+import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.protocol.transport.message.UnimplementedMessage;
 import java.util.stream.Stream;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -44,7 +44,8 @@ public class UnimplementedMessageParserTest {
         UnimplementedMessageParser parser = new UnimplementedMessageParser(providedBytes, 0);
         UnimplementedMessage msg = parser.parse();
 
-        assertEquals(MessageIDConstant.SSH_MSG_UNIMPLEMENTED.id, msg.getMessageID().getValue());
+        assertEquals(
+                MessageIdConstant.SSH_MSG_UNIMPLEMENTED.getId(), msg.getMessageId().getValue());
         assertEquals(expectedSequenceNumber, msg.getSequenceNumber().getValue());
     }
 }

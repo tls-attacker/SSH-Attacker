@@ -7,8 +7,8 @@
  */
 package de.rub.nds.sshattacker.core.crypto.keys;
 
-import de.rub.nds.sshattacker.core.constants.ECPointFormat;
-import de.rub.nds.sshattacker.core.constants.NamedGroup;
+import de.rub.nds.sshattacker.core.constants.EcPointFormat;
+import de.rub.nds.sshattacker.core.constants.NamedEcGroup;
 import de.rub.nds.sshattacker.core.crypto.ec.Point;
 import de.rub.nds.sshattacker.core.crypto.ec.PointFormatter;
 import java.security.AlgorithmParameters;
@@ -30,13 +30,13 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class CustomEcPublicKey extends CustomPublicKey implements ECPublicKey {
 
     private Point publicKey;
-    private NamedGroup group;
+    private NamedEcGroup group;
 
     @SuppressWarnings("unused")
     public CustomEcPublicKey() {}
 
-    public CustomEcPublicKey(Point publicKey, NamedGroup group) {
-        if (!group.isStandardCurve()) {
+    public CustomEcPublicKey(Point publicKey, NamedEcGroup group) {
+        if (group.isRFC7748Curve()) {
             throw new IllegalArgumentException(
                     "CustomEcPublicKey does not support named group " + group);
         }
@@ -44,11 +44,11 @@ public class CustomEcPublicKey extends CustomPublicKey implements ECPublicKey {
         this.group = group;
     }
 
-    public NamedGroup getGroup() {
+    public NamedEcGroup getGroup() {
         return group;
     }
 
-    public void setGroup(NamedGroup group) {
+    public void setGroup(NamedEcGroup group) {
         this.group = group;
     }
 
@@ -77,7 +77,7 @@ public class CustomEcPublicKey extends CustomPublicKey implements ECPublicKey {
 
     @Override
     public byte[] getEncoded() {
-        return PointFormatter.formatToByteArray(group, publicKey, ECPointFormat.UNCOMPRESSED);
+        return PointFormatter.formatToByteArray(group, publicKey, EcPointFormat.UNCOMPRESSED);
     }
 
     @Override
@@ -91,7 +91,7 @@ public class CustomEcPublicKey extends CustomPublicKey implements ECPublicKey {
         }
     }
 
-    public static CustomEcPublicKey parse(byte[] encoded, NamedGroup group) {
+    public static CustomEcPublicKey parse(byte[] encoded, NamedEcGroup group) {
         return new CustomEcPublicKey(PointFormatter.formatFromByteArray(group, encoded), group);
     }
 }

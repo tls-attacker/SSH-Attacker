@@ -11,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
+import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.protocol.transport.message.IgnoreMessage;
 import java.util.stream.Stream;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -46,7 +46,7 @@ public class IgnoreMessageParserTest {
         IgnoreMessageParser parser = new IgnoreMessageParser(providedBytes, 0);
         IgnoreMessage msg = parser.parse();
 
-        assertEquals(MessageIDConstant.SSH_MSG_IGNORE.id, msg.getMessageID().getValue());
+        assertEquals(MessageIdConstant.SSH_MSG_IGNORE.getId(), msg.getMessageId().getValue());
         assertArrayEquals(expectedData, msg.getData().getValue());
     }
 }

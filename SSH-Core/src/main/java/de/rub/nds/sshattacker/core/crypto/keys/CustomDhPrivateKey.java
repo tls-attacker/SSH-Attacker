@@ -7,7 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.crypto.keys;
 
-import de.rub.nds.sshattacker.core.constants.NamedDHGroup;
+import de.rub.nds.sshattacker.core.constants.NamedDhGroup;
 import java.math.BigInteger;
 import javax.crypto.interfaces.DHPrivateKey;
 import javax.crypto.spec.DHParameterSpec;
@@ -30,7 +30,7 @@ public class CustomDhPrivateKey extends CustomPrivateKey implements DHPrivateKey
     @SuppressWarnings("unused")
     private CustomDhPrivateKey() {}
 
-    public CustomDhPrivateKey(NamedDHGroup group, BigInteger privateKey) {
+    public CustomDhPrivateKey(NamedDhGroup group, BigInteger privateKey) {
         this(group.getModulus(), group.getGenerator(), privateKey);
     }
 

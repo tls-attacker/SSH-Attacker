@@ -8,7 +8,7 @@
 package de.rub.nds.sshattacker.core.crypto.keys.parser;
 
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
-import de.rub.nds.sshattacker.core.constants.NamedGroup;
+import de.rub.nds.sshattacker.core.constants.NamedEcGroup;
 import de.rub.nds.sshattacker.core.constants.PublicKeyFormat;
 import de.rub.nds.sshattacker.core.crypto.ec.Point;
 import de.rub.nds.sshattacker.core.crypto.ec.PointFormatter;
@@ -32,7 +32,7 @@ public class EcdsaPublicKeyParser
 
     @Override
     public SshPublicKey<CustomEcPublicKey, CustomEcPrivateKey> parse() {
-        int formatNameLength = parseIntField(DataFormatConstants.INT32_SIZE);
+        int formatNameLength = parseIntField(DataFormatConstants.UINT32_SIZE);
         String formatName = parseByteString(formatNameLength, StandardCharsets.US_ASCII);
         if (!formatName.startsWith("ecdsa-sha2-")) {
             LOGGER.warn(
@@ -41,12 +41,12 @@ public class EcdsaPublicKeyParser
                             + "'. Parsing will continue but may not yield the expected results.");
         }
 
-        int curveIdentifierLength = parseIntField(DataFormatConstants.INT32_SIZE);
+        int curveIdentifierLength = parseIntField(DataFormatConstants.UINT32_SIZE);
         String curveIdentifier = parseByteString(curveIdentifierLength, StandardCharsets.US_ASCII);
-        NamedGroup group = NamedGroup.fromIdentifier(curveIdentifier);
+        NamedEcGroup group = NamedEcGroup.fromIdentifier(curveIdentifier);
         assert group != null;
 
-        int publicKeyLength = parseIntField(DataFormatConstants.INT32_SIZE);
+        int publicKeyLength = parseIntField(DataFormatConstants.UINT32_SIZE);
         Point publicKeyPoint =
                 PointFormatter.formatFromByteArray(group, parseByteArrayField(publicKeyLength));
         CustomEcPublicKey publicKey = new CustomEcPublicKey(publicKeyPoint, group);

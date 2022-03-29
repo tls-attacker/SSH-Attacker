@@ -11,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.DisconnectReason;
-import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
+import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.protocol.transport.message.DisconnectMessage;
 import java.util.stream.Stream;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -64,8 +64,8 @@ public class DisconnectMessageParserTest {
         DisconnectMessageParser parser = new DisconnectMessageParser(providedBytes, 0);
         DisconnectMessage msg = parser.parse();
 
-        assertEquals(MessageIDConstant.SSH_MSG_DISCONNECT.id, msg.getMessageID().getValue());
-        assertEquals(expectedDisconnectReason.id, msg.getReasonCode().getValue());
+        assertEquals(MessageIdConstant.SSH_MSG_DISCONNECT.getId(), msg.getMessageId().getValue());
+        assertEquals(expectedDisconnectReason.getId(), msg.getReasonCode().getValue());
         assertEquals(expectedDescription, msg.getDescription().getValue());
         assertEquals(expectedLanguageTag, msg.getLanguageTag().getValue());
     }

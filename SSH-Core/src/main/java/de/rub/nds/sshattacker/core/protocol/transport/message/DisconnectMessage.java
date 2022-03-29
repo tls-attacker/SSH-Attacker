@@ -11,7 +11,7 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.sshattacker.core.constants.DisconnectReason;
-import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
+import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.DisconnectMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
@@ -26,7 +26,7 @@ public class DisconnectMessage extends SshMessage<DisconnectMessage> {
     private ModifiableString languageTag;
 
     public DisconnectMessage() {
-        super(MessageIDConstant.SSH_MSG_DISCONNECT);
+        super(MessageIdConstant.SSH_MSG_DISCONNECT);
     }
 
     public ModifiableInteger getReasonCode() {
@@ -42,7 +42,7 @@ public class DisconnectMessage extends SshMessage<DisconnectMessage> {
     }
 
     public void setReasonCode(DisconnectReason reason) {
-        setReasonCode(reason.id);
+        setReasonCode(reason.getId());
     }
 
     public ModifiableInteger getDescriptionLength() {

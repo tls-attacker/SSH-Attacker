@@ -9,7 +9,7 @@ package de.rub.nds.sshattacker.core.protocol.transport.message;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
-import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
+import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.protocol.common.*;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.DhGexKeyExchangeRequestMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
@@ -21,7 +21,7 @@ public class DhGexKeyExchangeRequestMessage extends SshMessage<DhGexKeyExchangeR
     private ModifiableInteger maximalGroupSize;
 
     public DhGexKeyExchangeRequestMessage() {
-        super(MessageIDConstant.SSH_MSG_KEX_DH_GEX_REQUEST);
+        super(MessageIdConstant.SSH_MSG_KEX_DH_GEX_REQUEST);
     }
 
     public ModifiableInteger getMinimalGroupSize() {

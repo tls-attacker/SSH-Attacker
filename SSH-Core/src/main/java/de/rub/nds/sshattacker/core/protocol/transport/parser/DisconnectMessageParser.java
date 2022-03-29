@@ -29,7 +29,7 @@ public class DisconnectMessageParser extends SshMessageParser<DisconnectMessage>
     }
 
     private void parseReasonCode() {
-        message.setReasonCode(parseIntField(DataFormatConstants.INT32_SIZE));
+        message.setReasonCode(parseIntField(DataFormatConstants.UINT32_SIZE));
         LOGGER.debug(
                 "Reason: "
                         + DisconnectReason.fromId(message.getReasonCode().getValue()).toString()

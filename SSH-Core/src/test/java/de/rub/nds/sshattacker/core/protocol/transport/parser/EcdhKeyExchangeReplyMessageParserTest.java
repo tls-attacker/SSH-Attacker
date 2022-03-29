@@ -11,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
+import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.protocol.transport.message.EcdhKeyExchangeReplyMessage;
 import java.util.stream.Stream;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -65,7 +65,8 @@ public class EcdhKeyExchangeReplyMessageParserTest {
                 new EcdhKeyExchangeReplyMessageParser(providedBytes, 0);
         EcdhKeyExchangeReplyMessage msg = parser.parse();
 
-        assertEquals(MessageIDConstant.SSH_MSG_KEX_ECDH_REPLY.id, msg.getMessageID().getValue());
+        assertEquals(
+                MessageIdConstant.SSH_MSG_KEX_ECDH_REPLY.getId(), msg.getMessageId().getValue());
         assertEquals(expectedHostKeyBytesLength, msg.getHostKeyBytesLength().getValue().intValue());
         assertArrayEquals(expectedHostKeyBytes, msg.getHostKeyBytes().getValue());
         assertEquals(

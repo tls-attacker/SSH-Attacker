@@ -7,7 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.preparator;
 
-import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
+import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.transport.message.RsaKeyExchangeSecretMessage;
 import de.rub.nds.sshattacker.core.protocol.util.KeyExchangeUtil;
@@ -23,7 +23,7 @@ public class RsaKeyExchangeSecretMessagePreparator
 
     @Override
     public void prepareMessageSpecificContents() {
-        getObject().setMessageID(MessageIDConstant.SSH_MSG_KEXRSA_SECRET);
+        getObject().setMessageId(MessageIdConstant.SSH_MSG_KEXRSA_SECRET);
         KeyExchangeUtil.computeSharedSecret(chooser.getContext(), chooser.getRsaKeyExchange());
         prepareEncryptedSecret();
     }

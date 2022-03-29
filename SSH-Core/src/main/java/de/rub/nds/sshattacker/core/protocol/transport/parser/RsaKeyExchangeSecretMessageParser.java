@@ -28,7 +28,7 @@ public class RsaKeyExchangeSecretMessageParser
     }
 
     private void parseEncryptedSecret() {
-        message.setEncryptedSecretLength(parseIntField(DataFormatConstants.INT32_SIZE));
+        message.setEncryptedSecretLength(parseIntField(DataFormatConstants.UINT32_SIZE));
         LOGGER.debug("Encrypted secret length: {}", message.getEncryptedSecretLength().getValue());
         message.setEncryptedSecret(
                 parseByteArrayField(message.getEncryptedSecretLength().getValue()));

@@ -11,7 +11,7 @@ import de.rub.nds.sshattacker.core.exceptions.ParserException;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import java.util.*;
 
-public enum MessageIDConstant {
+public enum MessageIdConstant {
     /*
      * Sources:
      *  - https://www.iana.org/assignments/ssh-parameters/ssh-parameters.xhtml#ssh-parameters-1
@@ -135,41 +135,45 @@ public enum MessageIDConstant {
     // 192 - 255 reserved for private use (local extensions)
     UNKNOWN((byte) 255);
 
-    public final byte id;
-    public final Enum<?>[] specificTo;
+    private final byte id;
+    private final Enum<?>[] specificTo;
 
-    public static final Map<Byte, List<MessageIDConstant>> map;
+    public static final Map<Byte, List<MessageIdConstant>> map;
 
     static {
         map = new TreeMap<>();
-        for (MessageIDConstant constant : MessageIDConstant.values()) {
+        for (MessageIdConstant constant : MessageIdConstant.values()) {
             map.putIfAbsent(constant.id, new LinkedList<>());
             map.get(constant.id).add(constant);
         }
     }
 
-    MessageIDConstant(byte id) {
+    MessageIdConstant(byte id) {
         this.id = id;
         this.specificTo = new Enum<?>[] {};
     }
 
-    MessageIDConstant(byte id, Enum<?>... specificTo) {
+    MessageIdConstant(byte id, Enum<?>... specificTo) {
         this.id = id;
         this.specificTo = specificTo;
     }
 
-    public static String getNameByID(byte id) {
+    public byte getId() {
+        return id;
+    }
+
+    public static String getNameById(byte id) {
         return map.get(id).toString();
     }
 
-    public static MessageIDConstant fromId(byte id, SshContext context) {
-        List<MessageIDConstant> idList = map.get(id);
+    public static MessageIdConstant fromId(byte id, SshContext context) {
+        List<MessageIdConstant> idList = map.get(id);
         if (idList == null) {
             throw new ParserException("Unable to parse message with unknown id");
         }
         if (id >= (byte) 30 && id <= (byte) 49) {
             KeyExchangeAlgorithm kexInContext = context.getChooser().getKeyExchangeAlgorithm();
-            for (MessageIDConstant candidate : idList) {
+            for (MessageIdConstant candidate : idList) {
                 if (Arrays.asList(candidate.specificTo).contains(kexInContext.getFlowType())) {
                     return candidate;
                 }
@@ -183,7 +187,7 @@ public enum MessageIDConstant {
                 throw new ParserException(
                         "Unable to parse user authentication specific message id without selecting one first");
             }
-            for (MessageIDConstant candidate : idList) {
+            for (MessageIdConstant candidate : idList) {
                 if (Arrays.asList(candidate.specificTo).contains(methodInContext)) {
                     return candidate;
                 }

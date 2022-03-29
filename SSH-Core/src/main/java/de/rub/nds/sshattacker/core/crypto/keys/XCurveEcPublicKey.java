@@ -9,7 +9,7 @@ package de.rub.nds.sshattacker.core.crypto.keys;
 
 import de.rub.nds.modifiablevariable.util.UnformattedByteArrayAdapter;
 import de.rub.nds.sshattacker.core.constants.CryptoConstants;
-import de.rub.nds.sshattacker.core.constants.NamedGroup;
+import de.rub.nds.sshattacker.core.constants.NamedEcGroup;
 import java.io.IOException;
 import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
@@ -32,7 +32,7 @@ import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class XCurveEcPublicKey extends CustomPublicKey {
 
-    private NamedGroup group;
+    private NamedEcGroup group;
 
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] coordinate;
@@ -40,14 +40,14 @@ public class XCurveEcPublicKey extends CustomPublicKey {
     @SuppressWarnings("unused")
     public XCurveEcPublicKey() {}
 
-    public XCurveEcPublicKey(byte[] coordinate, NamedGroup group) {
+    public XCurveEcPublicKey(byte[] coordinate, NamedEcGroup group) {
         if (!group.isRFC7748Curve()) {
             throw new IllegalArgumentException(
                     "XCurveEcPublicKey does not support named group " + group);
         }
-        if ((group == NamedGroup.CURVE25519
+        if ((group == NamedEcGroup.CURVE25519
                         && coordinate.length != CryptoConstants.X25519_POINT_SIZE)
-                || group == NamedGroup.CURVE448
+                || group == NamedEcGroup.CURVE448
                         && coordinate.length != CryptoConstants.X448_POINT_SIZE) {
             throw new IllegalArgumentException(
                     "Tried to instantiate a new XCurveEcPublicKey with a mismatching coordinate length");
@@ -56,11 +56,11 @@ public class XCurveEcPublicKey extends CustomPublicKey {
         this.coordinate = coordinate;
     }
 
-    public NamedGroup getGroup() {
+    public NamedEcGroup getGroup() {
         return group;
     }
 
-    public void setGroup(NamedGroup group) {
+    public void setGroup(NamedEcGroup group) {
         this.group = group;
     }
 
@@ -76,7 +76,7 @@ public class XCurveEcPublicKey extends CustomPublicKey {
         try {
             KeyFactory keyFactory;
             SubjectPublicKeyInfo publicKeyInfo;
-            if (group == NamedGroup.CURVE25519) {
+            if (group == NamedEcGroup.CURVE25519) {
                 keyFactory = KeyFactory.getInstance("Ed25519");
                 publicKeyInfo =
                         new SubjectPublicKeyInfo(

@@ -9,7 +9,7 @@ package de.rub.nds.sshattacker.core.protocol.authentication.parser;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
+import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthSuccessMessage;
 import org.junit.jupiter.api.Test;
 
@@ -18,6 +18,7 @@ public class UserAuthSuccessMessageParserTest {
     @Test
     public void testParse() {
         UserAuthSuccessMessage msg = new UserAuthSuccessMessageParser(new byte[] {52}, 0).parse();
-        assertEquals(MessageIDConstant.SSH_MSG_USERAUTH_SUCCESS.id, msg.getMessageID().getValue());
+        assertEquals(
+                MessageIdConstant.SSH_MSG_USERAUTH_SUCCESS.getId(), msg.getMessageId().getValue());
     }
 }

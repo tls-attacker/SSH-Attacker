@@ -9,7 +9,7 @@ package de.rub.nds.sshattacker.core.constants;
 
 import java.math.BigInteger;
 
-public enum NamedDHGroup {
+public enum NamedDhGroup {
 
     // [ RFC 2409 ] - Second Oakley Group (denoted GROUP1 even it is the second group)
     GROUP1(
@@ -167,7 +167,7 @@ public enum NamedDHGroup {
     private final BigInteger generator;
     private final BigInteger modulus;
 
-    NamedDHGroup(BigInteger generator, BigInteger modulus) {
+    NamedDhGroup(BigInteger generator, BigInteger modulus) {
         this.generator = generator;
         this.modulus = modulus;
     }

@@ -281,13 +281,13 @@ public final class ExchangeHash {
                 prepareCommonPrefixHashInput(inputHolder),
                 ArrayConverter.intToBytes(
                         inputHolder.getDhGexMinimalGroupSize().get(),
-                        DataFormatConstants.INT32_SIZE),
+                        DataFormatConstants.UINT32_SIZE),
                 ArrayConverter.intToBytes(
                         inputHolder.getDhGexPreferredGroupSize().get(),
-                        DataFormatConstants.INT32_SIZE),
+                        DataFormatConstants.UINT32_SIZE),
                 ArrayConverter.intToBytes(
                         inputHolder.getDhGexMaximalGroupSize().get(),
-                        DataFormatConstants.INT32_SIZE),
+                        DataFormatConstants.UINT32_SIZE),
                 Converter.bigIntegerToMpint(inputHolder.getDhGexGroupModulus().get()),
                 Converter.bigIntegerToMpint(inputHolder.getDhGexGroupGenerator().get()),
                 Converter.bigIntegerToMpint(inputHolder.getDhGexClientPublicKey().get()),
@@ -330,7 +330,7 @@ public final class ExchangeHash {
                 prepareCommonPrefixHashInput(inputHolder),
                 ArrayConverter.intToBytes(
                         inputHolder.getDhGexPreferredGroupSize().get(),
-                        DataFormatConstants.INT32_SIZE),
+                        DataFormatConstants.UINT32_SIZE),
                 Converter.bigIntegerToMpint(inputHolder.getDhGexGroupModulus().get()),
                 Converter.bigIntegerToMpint(inputHolder.getDhGexGroupGenerator().get()),
                 Converter.bigIntegerToMpint(inputHolder.getDhGexClientPublicKey().get()),

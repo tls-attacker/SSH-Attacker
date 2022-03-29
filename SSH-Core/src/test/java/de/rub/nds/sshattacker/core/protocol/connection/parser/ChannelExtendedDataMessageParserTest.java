@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.ExtendedChannelDataType;
-import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
+import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelExtendedDataMessage;
 import java.util.stream.Stream;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -65,7 +65,8 @@ public class ChannelExtendedDataMessageParserTest {
         ChannelExtendedDataMessage msg = parser.parse();
 
         assertEquals(
-                MessageIDConstant.SSH_MSG_CHANNEL_EXTENDED_DATA.id, msg.getMessageID().getValue());
+                MessageIdConstant.SSH_MSG_CHANNEL_EXTENDED_DATA.getId(),
+                msg.getMessageId().getValue());
         assertEquals(expectedRecipientChannel, msg.getRecipientChannel().getValue());
         assertEquals(expectedDataType.getDataTypeCode(), msg.getDataTypeCode().getValue());
         assertArrayEquals(expectedPayload, msg.getData().getValue());

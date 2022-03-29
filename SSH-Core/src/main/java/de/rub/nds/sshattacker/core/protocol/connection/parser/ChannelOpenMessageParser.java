@@ -38,17 +38,17 @@ public class ChannelOpenMessageParser extends SshMessageParser<ChannelOpenMessag
     }
 
     public void parseSenderChannel() {
-        message.setModSenderChannel(parseIntField(DataFormatConstants.INT32_SIZE));
+        message.setModSenderChannel(parseIntField(DataFormatConstants.UINT32_SIZE));
         LOGGER.debug("Sender channel: " + message.getModSenderChannel().getValue());
     }
 
     public void parseWindowSize() {
-        message.setWindowSize(parseIntField(DataFormatConstants.INT32_SIZE));
+        message.setWindowSize(parseIntField(DataFormatConstants.UINT32_SIZE));
         LOGGER.debug("Initial window size: " + message.getWindowSize().getValue());
     }
 
     public void parsePacketSize() {
-        message.setPacketSize(parseIntField(DataFormatConstants.INT32_SIZE));
+        message.setPacketSize(parseIntField(DataFormatConstants.UINT32_SIZE));
         LOGGER.debug("Maximum packet size: " + message.getPacketSize().getValue());
     }
 

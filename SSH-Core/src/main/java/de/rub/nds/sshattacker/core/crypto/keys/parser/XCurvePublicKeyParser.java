@@ -8,7 +8,7 @@
 package de.rub.nds.sshattacker.core.crypto.keys.parser;
 
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
-import de.rub.nds.sshattacker.core.constants.NamedGroup;
+import de.rub.nds.sshattacker.core.constants.NamedEcGroup;
 import de.rub.nds.sshattacker.core.constants.PublicKeyFormat;
 import de.rub.nds.sshattacker.core.crypto.keys.SshPublicKey;
 import de.rub.nds.sshattacker.core.crypto.keys.XCurveEcPrivateKey;
@@ -29,22 +29,22 @@ public class XCurvePublicKeyParser
 
     @Override
     public SshPublicKey<XCurveEcPublicKey, XCurveEcPrivateKey> parse() {
-        int formatLength = parseIntField(DataFormatConstants.INT32_SIZE);
+        int formatLength = parseIntField(DataFormatConstants.UINT32_SIZE);
         String format = parseByteString(formatLength, StandardCharsets.US_ASCII);
-        NamedGroup group;
+        NamedEcGroup group;
         if (format.equals(PublicKeyFormat.SSH_ED25519.getName())) {
-            group = NamedGroup.CURVE25519;
+            group = NamedEcGroup.CURVE25519;
         } else if (format.equals(PublicKeyFormat.SSH_ED448.getName())) {
-            group = NamedGroup.CURVE448;
+            group = NamedEcGroup.CURVE448;
         } else {
             LOGGER.warn(
                     "Trying to parse X curve public key, but encountered unexpected public key format '"
                             + format
                             + "'. Parsing will continue as Curve22519 but may not yield the expected results.");
-            group = NamedGroup.CURVE25519;
+            group = NamedEcGroup.CURVE25519;
         }
 
-        int publicKeyLength = parseIntField(DataFormatConstants.INT32_SIZE);
+        int publicKeyLength = parseIntField(DataFormatConstants.UINT32_SIZE);
         byte[] publicKeyBytes = parseByteArrayField(publicKeyLength);
         XCurveEcPublicKey publicKey = new XCurveEcPublicKey(publicKeyBytes, group);
 
