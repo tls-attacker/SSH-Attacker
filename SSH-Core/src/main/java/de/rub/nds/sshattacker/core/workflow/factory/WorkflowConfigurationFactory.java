@@ -160,14 +160,16 @@ public class WorkflowConfigurationFactory {
                         MessageActionFactory.createAction(
                                 connection,
                                 ConnectionEndType.SERVER,
-                                new DhKeyExchangeReplyMessage()));
+                                new DhKeyExchangeReplyMessage(),
+                                new NewKeysMessage()));
                 break;
             case DIFFIE_HELLMAN_GROUP_EXCHANGE:
                 sshActions.add(
                         MessageActionFactory.createAction(
                                 connection,
                                 ConnectionEndType.CLIENT,
-                                new DhGexKeyExchangeRequestMessage()));
+                                new DhGexKeyExchangeRequestMessage(),
+                                new NewKeysMessage()));
                 sshActions.add(
                         MessageActionFactory.createAction(
                                 connection,
@@ -182,7 +184,8 @@ public class WorkflowConfigurationFactory {
                         MessageActionFactory.createAction(
                                 connection,
                                 ConnectionEndType.SERVER,
-                                new DhGexKeyExchangeReplyMessage()));
+                                new DhGexKeyExchangeReplyMessage(),
+                                new NewKeysMessage()));
                 break;
             case ECDH:
                 sshActions.add(
@@ -194,7 +197,8 @@ public class WorkflowConfigurationFactory {
                         MessageActionFactory.createAction(
                                 connection,
                                 ConnectionEndType.SERVER,
-                                new EcdhKeyExchangeReplyMessage()));
+                                new EcdhKeyExchangeReplyMessage(),
+                                new NewKeysMessage()));
                 break;
             case RSA:
                 sshActions.add(
@@ -211,7 +215,8 @@ public class WorkflowConfigurationFactory {
                         MessageActionFactory.createAction(
                                 connection,
                                 ConnectionEndType.SERVER,
-                                new RsaKeyExchangeDoneMessage()));
+                                new RsaKeyExchangeDoneMessage(),
+                                new NewKeysMessage()));
                 break;
             default:
                 throw new ConfigurationException(
@@ -221,9 +226,6 @@ public class WorkflowConfigurationFactory {
         sshActions.add(
                 MessageActionFactory.createAction(
                         connection, ConnectionEndType.CLIENT, new NewKeysMessage()));
-        sshActions.add(
-                MessageActionFactory.createAction(
-                        connection, ConnectionEndType.SERVER, new NewKeysMessage()));
         sshActions.add(new ActivateEncryptionAction(connection.getAlias()));
         return sshActions;
     }

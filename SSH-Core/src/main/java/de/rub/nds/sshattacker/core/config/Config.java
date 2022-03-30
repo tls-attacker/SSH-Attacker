@@ -203,6 +203,24 @@ public class Config implements Serializable {
 
     private RunningModeType defaultRunningMode = RunningModeType.CLIENT;
 
+    /**
+     * If set to true, SSH-Attacker will not try to continue receiving when all expected messages
+     * were received
+     */
+    private Boolean quickReceive = true;
+
+    /**
+     * The maximum number of bytes to receive in a single receive action. Defaults to 2^24 bytes,
+     * RFC 4253 requires each SSH implementation to be able to handle binary packets with a length
+     * of at least 35000 bytes.
+     */
+    private Integer receiveMaximumBytes = 16777216;
+
+    /**
+     * If set to true, receive actions will stop receiving whenever a DisconnectMessage was received
+     */
+    private Boolean stopReceivingAfterDisconnect = false;
+
     private Boolean filtersKeepUserSettings = true;
 
     private String workflowInput = null;
@@ -858,6 +876,30 @@ public class Config implements Serializable {
 
     public void setDefaultRunningMode(RunningModeType defaultRunningMode) {
         this.defaultRunningMode = defaultRunningMode;
+    }
+
+    public Boolean isQuickReceive() {
+        return quickReceive;
+    }
+
+    public void setQuickReceive(boolean quickReceive) {
+        this.quickReceive = quickReceive;
+    }
+
+    public Integer getReceiveMaximumBytes() {
+        return receiveMaximumBytes;
+    }
+
+    public void setReceiveMaximumBytes(int receiveMaximumBytes) {
+        this.receiveMaximumBytes = receiveMaximumBytes;
+    }
+
+    public Boolean isStopReceivingAfterDisconnect() {
+        return stopReceivingAfterDisconnect;
+    }
+
+    public void setStopReceivingAfterDisconnect(boolean stopReceivingAfterDisconnect) {
+        this.stopReceivingAfterDisconnect = stopReceivingAfterDisconnect;
     }
 
     public ChannelRequestType getChannelRequestType() {

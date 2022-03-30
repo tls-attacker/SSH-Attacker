@@ -7,10 +7,10 @@
  */
 package de.rub.nds.sshattacker.core.crypto.signature;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.BinaryPacketConstants;
 import de.rub.nds.sshattacker.core.constants.PublicKeyAlgorithm;
 import de.rub.nds.sshattacker.core.protocol.common.Parser;
-import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -40,7 +40,9 @@ public class SignatureParser extends Parser<RawSignature> {
         signature.setSignatureLength(parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH));
         LOGGER.debug("Signature length: " + signature.getSignatureLength());
         signature.setSignatureBytes(parseByteArrayField(signature.getSignatureLength()));
-        LOGGER.debug("Signature bytes: " + Arrays.toString(signature.getSignatureBytes()));
+        LOGGER.debug(
+                "Signature bytes: "
+                        + ArrayConverter.bytesToHexString(signature.getSignatureBytes()));
         return signature;
     }
 }
