@@ -254,7 +254,8 @@ public class Config implements Serializable {
         endOfMessageSequence = "\r\n";
 
         clientSupportedKeyExchangeAlgorithms = new LinkedList<>();
-        clientSupportedKeyExchangeAlgorithms.add(KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP14_SHA256);
+        clientSupportedKeyExchangeAlgorithms.add(
+                KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP14_SHA256);
         clientSupportedKeyExchangeAlgorithms.add(
                 KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP_EXCHANGE_SHA256);
         clientSupportedKeyExchangeAlgorithms.add(KeyExchangeAlgorithm.ECDH_SHA2_NISTP256);

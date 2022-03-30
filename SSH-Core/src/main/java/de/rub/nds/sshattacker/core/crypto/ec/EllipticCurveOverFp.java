@@ -185,12 +185,16 @@ public class EllipticCurveOverFp extends EllipticCurve {
         }
     }
 
-    /** @return the a */
+    /**
+     * @return the a
+     */
     public FieldElementFp getFieldA() {
         return fieldA;
     }
 
-    /** @return the b */
+    /**
+     * @return the b
+     */
     public FieldElementFp getFieldB() {
         return fieldB;
     }

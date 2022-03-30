@@ -12,7 +12,7 @@
         <dependency>
             <groupId>de.rub.nds.tlsattacker</groupId>
             <artifactId>Transport</artifactId>
-            <version>3.7.1</version>
+            <version>3.7.3</version>
         </dependency>
         <dependency>
             <groupId>com.jcraft</groupId>
@@ -27,7 +27,7 @@
                 <!-- Build an executable JAR -->
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
-                <version>3.2.0</version>
+                <version>3.2.2</version>
                 <configuration>
                     <archive>
                         <manifest>

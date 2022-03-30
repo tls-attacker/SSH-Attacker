@@ -49,7 +49,9 @@ public abstract class Attacker<AttConfigT extends AttackConfig> {
         executeAttack();
     }
 
-    /** @return True if server is vulnerable to the attack */
+    /**
+     * @return True if server is vulnerable to the attack
+     */
     public Boolean checkVulnerability() {
         LOGGER.debug("Checking: " + this.getClass().getSimpleName());
         if (!config.isSkipConnectionCheck()) {
@@ -66,7 +68,9 @@ public abstract class Attacker<AttConfigT extends AttackConfig> {
     /** Executes a given attack. */
     protected abstract void executeAttack();
 
-    /** @return True if the server is vulnerable to the attack */
+    /**
+     * @return True if the server is vulnerable to the attack
+     */
     protected abstract Boolean isVulnerable();
 
     public AttConfigT getConfig() {
@@ -81,7 +85,9 @@ public abstract class Attacker<AttConfigT extends AttackConfig> {
         }
     }
 
-    /** @return True if the server can be connected to */
+    /**
+     * @return True if the server can be connected to
+     */
     protected Boolean canConnect() {
         Config tlsConfig = config.createConfig();
         ConnectivityChecker checker =
