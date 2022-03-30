@@ -41,7 +41,9 @@ public class ConnectivityChecker {
         }
     }
 
-    /** @return True if the server can be connected to */
+    /**
+     * @return True if the server can be connected to
+     */
     public boolean isConnectable() {
         if (connection.getTransportHandlerType() == null) {
             connection.setTransportHandlerType(TransportHandlerType.TCP);
@@ -68,7 +70,9 @@ public class ConnectivityChecker {
         }
     }
 
-    /** @return true, if the server speaks SSH */
+    /**
+     * @return true, if the server speaks SSH
+     */
     public boolean speaksSsh(Config config) {
         WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(config);
         WorkflowTrace trace =

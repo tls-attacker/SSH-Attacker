@@ -118,7 +118,9 @@ public class MangerAttacker extends Attacker<MangerCommandConfig> {
         CONSOLE.info("Set key exchange algorithm to: " + keyExchangeAlgorithm);
     }
 
-    /** @return If the server is vulnerable to Manger's attack or not */
+    /**
+     * @return If the server is vulnerable to Manger's attack or not
+     */
     @Override
     public Boolean isVulnerable() {
         CONSOLE.info(
@@ -163,7 +165,9 @@ public class MangerAttacker extends Attacker<MangerCommandConfig> {
         return referenceError != EqualityError.NONE;
     }
 
-    /** @return Response vector list */
+    /**
+     * @return Response vector list
+     */
     public List<VectorResponse> createVectorResponseList() {
         RSAPublicKey publicKey = getServerPublicKey();
         if (publicKey == null) {

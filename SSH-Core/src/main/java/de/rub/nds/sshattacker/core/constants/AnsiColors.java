@@ -7,7 +7,9 @@
  */
 package de.rub.nds.sshattacker.core.constants;
 
-/** @author Robert Merget <robert.merget@rub.de> */
+/**
+ * @author Robert Merget <robert.merget@rub.de>
+ */
 public class AnsiColors {
 
     public static final String ANSI_RESET = "\u001B[0m";

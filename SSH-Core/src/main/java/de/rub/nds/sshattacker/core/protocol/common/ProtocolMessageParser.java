@@ -20,7 +20,6 @@ import de.rub.nds.sshattacker.core.protocol.transport.parser.*;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -133,7 +132,7 @@ public abstract class ProtocolMessageParser<T extends ProtocolMessage<T>> extend
                 case SSH_MSG_CHANNEL_REQUEST:
                     return getChannelRequestMessageParsing(raw);
                 case SSH_MSG_GLOBAL_REQUEST:
-                    return  getGlobalRequestMessageParsing(raw);
+                    return getGlobalRequestMessageParsing(raw);
 
                 default:
                     LOGGER.debug(
@@ -150,55 +149,61 @@ public abstract class ProtocolMessageParser<T extends ProtocolMessage<T>> extend
         }
     }
 
-    public static ProtocolMessage<?> getChannelRequestMessageParsing(byte [] raw){
-        int channelRequestTypeLength=ArrayConverter.bytesToInt(Arrays.copyOfRange(raw,5,9));
-        String channelRequestType= new String(Arrays.copyOfRange(raw,9, 9+channelRequestTypeLength), StandardCharsets.US_ASCII);
+    public static ProtocolMessage<?> getChannelRequestMessageParsing(byte[] raw) {
+        int channelRequestTypeLength = ArrayConverter.bytesToInt(Arrays.copyOfRange(raw, 5, 9));
+        String channelRequestType =
+                new String(
+                        Arrays.copyOfRange(raw, 9, 9 + channelRequestTypeLength),
+                        StandardCharsets.US_ASCII);
         LOGGER.debug(channelRequestType);
-        switch(channelRequestType){
+        switch (channelRequestType) {
             case "env":
-                return new ChannelRequestEnvMessageParser(raw,0).parse();
+                return new ChannelRequestEnvMessageParser(raw, 0).parse();
             case "shell":
-                return new ChannelRequestShellMessageParser(raw,0).parse();
+                return new ChannelRequestShellMessageParser(raw, 0).parse();
             case "exec":
-                return new ChannelRequestExecMessageParser(raw,0).parse();
+                return new ChannelRequestExecMessageParser(raw, 0).parse();
             case "signal":
-                return new ChannelRequestSignalMessageParser(raw,0).parse();
+                return new ChannelRequestSignalMessageParser(raw, 0).parse();
             case "exit-status":
-                return new ChannelRequestExitStatusMessageParser(raw,0).parse();
+                return new ChannelRequestExitStatusMessageParser(raw, 0).parse();
             case "exit-signal":
-                return new ChannelRequestExitSignalMessageParser(raw,0).parse();
+                return new ChannelRequestExitSignalMessageParser(raw, 0).parse();
             default:
                 LOGGER.debug(
                         "Received unimplemented message request type "
-                                + MessageIDConstant.getNameByID(raw[0])+
-                                ":" +
-                                channelRequestType);
+                                + MessageIDConstant.getNameByID(raw[0])
+                                + ":"
+                                + channelRequestType);
                 return new UnknownMessageParser(raw, 0).parse();
         }
     }
 
-    public static ProtocolMessage<?> getGlobalRequestMessageParsing(byte [] raw){
-        int globalRequestTypeLength=ArrayConverter.bytesToInt(Arrays.copyOfRange(raw,1,5));
-        String globalRequestType= new String(Arrays.copyOfRange(raw,5, 5+globalRequestTypeLength), StandardCharsets.US_ASCII);
+    public static ProtocolMessage<?> getGlobalRequestMessageParsing(byte[] raw) {
+        int globalRequestTypeLength = ArrayConverter.bytesToInt(Arrays.copyOfRange(raw, 1, 5));
+        String globalRequestType =
+                new String(
+                        Arrays.copyOfRange(raw, 5, 5 + globalRequestTypeLength),
+                        StandardCharsets.US_ASCII);
         /*
-    STREAMLOCAL_FORWARD_OPENSSH_COM("streamlocal-forward@openssh.com"),
-    CANCEL_STREAMLOCAL_FORWARD_OPENSSH_COM("cancel-streamlocal-forward@openssh.com"),
-    HOSTKEYS_00_OPENSSH_COM("hostkeys-00@openssh.com"),
-    HOSTKEYS_PROVE_00_OPENSSH_COM("hostkeys-prove-00@openssh.com");*/
-        switch(globalRequestType){
+        STREAMLOCAL_FORWARD_OPENSSH_COM("streamlocal-forward@openssh.com"),
+        CANCEL_STREAMLOCAL_FORWARD_OPENSSH_COM("cancel-streamlocal-forward@openssh.com"),
+        HOSTKEYS_00_OPENSSH_COM("hostkeys-00@openssh.com"),
+        HOSTKEYS_PROVE_00_OPENSSH_COM("hostkeys-prove-00@openssh.com");*/
+        switch (globalRequestType) {
             case "tcpip-forward":
-                return new TcpIpForwardRequestMessageParser(raw,0).parse();
+                return new TcpIpForwardRequestMessageParser(raw, 0).parse();
             case "cancel-tcpip-forward":
                 return new TcpIpForwardCancelMessageParser(raw, 0).parse();
             case "no-more-session@openssh.com":
-                return new NoMoreSessionsMessageParser(raw,0).parse();
+                return new NoMoreSessionsMessageParser(raw, 0).parse();
 
             default:
                 LOGGER.debug(
                         "Received unimplemented message request type "
-                                + MessageIDConstant.getNameByID(raw[0])+
-                                ":" +
-                                globalRequestType);
+                                + MessageIDConstant.getNameByID(raw[0])
+                                + ":"
+                                + globalRequestType);
                 return new UnknownMessageParser(raw, 0).parse();
         }
     }
