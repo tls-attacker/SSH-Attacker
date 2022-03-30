@@ -46,7 +46,7 @@ public abstract class ProtocolMessageParser<T extends ProtocolMessage<T>> extend
 
     private void setCompleteResultingMessage() {
         message.setCompleteResultingMessage(getAlreadyParsed());
-        LOGGER.debug(
+        LOGGER.trace(
                 "CompleteResultMessage: "
                         + ArrayConverter.bytesToHexString(
                                 message.getCompleteResultingMessage().getValue()));
