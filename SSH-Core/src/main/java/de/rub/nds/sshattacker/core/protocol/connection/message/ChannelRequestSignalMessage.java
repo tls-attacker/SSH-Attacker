@@ -19,9 +19,9 @@ import java.nio.charset.StandardCharsets;
 public class ChannelRequestSignalMessage
         extends ChannelRequestMessage<ChannelRequestSignalMessage> {
 
-    ModifiableInteger signalNameLength;
-    ModifiableString signalName;
-    String transferSignalName;
+    private ModifiableInteger signalNameLength;
+    private ModifiableString signalName;
+    private String transferSignalName;
 
     public ChannelRequestSignalMessage() {
         super(ChannelRequestType.SIGNAL);

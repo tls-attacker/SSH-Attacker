@@ -19,13 +19,13 @@ import java.nio.charset.StandardCharsets;
 
 public class ChannelRequestExitSignalMessage
         extends ChannelRequestMessage<ChannelRequestExitSignalMessage> {
-    ModifiableInteger signalNameLength;
-    ModifiableString signalName;
-    ModifiableBoolean coreDump;
-    ModifiableInteger errorMessageLength;
-    ModifiableString errorMessage;
-    ModifiableInteger languageTagLength;
-    ModifiableString languageTag;
+    private ModifiableInteger signalNameLength;
+    private ModifiableString signalName;
+    private ModifiableBoolean coreDump;
+    private ModifiableInteger errorMessageLength;
+    private ModifiableString errorMessage;
+    private ModifiableInteger languageTagLength;
+    private ModifiableString languageTag;
 
     public ChannelRequestExitSignalMessage() {
         super(ChannelRequestType.EXIT_SIGNAL);

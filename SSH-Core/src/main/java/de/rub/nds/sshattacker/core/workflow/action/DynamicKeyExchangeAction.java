@@ -41,10 +41,16 @@ public class DynamicKeyExchangeAction extends MessageAction {
         SshContext context = state.getSshContext(connectionAlias);
         WorkflowConfigurationFactory factory =
                 new WorkflowConfigurationFactory(context.getConfig());
-        KeyExchangeAlgorithm keyExchangeAlgorithm = context.getChooser().getKeyExchangeAlgorithm();
+        KeyExchangeAlgorithm choosenKeyExchangeAlgortihm;
+        if (context.getKeyExchangeAlgorithm().isPresent()) {
+            choosenKeyExchangeAlgortihm = context.getKeyExchangeAlgorithm().get();
+        } else {
+            throw new WorkflowExecutionException(
+                    "Missing choosen KeyExchangeAlgorithm, required for DynamicKeyExchangeAction. Some failure in KeyExchangeInit handling!");
+        }
         sshActions =
                 factory.createKeyExchangeActions(
-                        keyExchangeAlgorithm.getFlowType(), context.getConnection());
+                        choosenKeyExchangeAlgortihm.getFlowType(), context.getConnection());
         sshActions.forEach(sshAction -> sshAction.execute(state));
     }
 
@@ -62,7 +68,7 @@ public class DynamicKeyExchangeAction extends MessageAction {
             sb.append(sshAction.toString());
             sb.append("\n");
         }
-        return sb.toString();
+        return super.toString();
     }
 
     @Override

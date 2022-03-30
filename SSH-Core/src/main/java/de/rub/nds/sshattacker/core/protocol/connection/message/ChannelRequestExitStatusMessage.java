@@ -15,7 +15,7 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class ChannelRequestExitStatusMessage
         extends ChannelRequestMessage<ChannelRequestExitStatusMessage> {
-    ModifiableInteger exitStatus;
+    private ModifiableInteger exitStatus;
 
     public ChannelRequestExitStatusMessage() {
         super(ChannelRequestType.EXIT_STATUS);

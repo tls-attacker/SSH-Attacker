@@ -17,12 +17,12 @@ import java.nio.charset.StandardCharsets;
 
 public class ChannelRequestEnvMessage extends ChannelRequestMessage<ChannelRequestEnvMessage> {
 
-    ModifiableString variableName;
-    String transferVariableName;
-    ModifiableInteger variableNameLength;
-    ModifiableString variableValue;
-    String transferVariableValue;
-    ModifiableInteger variableValueLength;
+    private ModifiableString variableName;
+    private String transferVariableName;
+    private ModifiableInteger variableNameLength;
+    private ModifiableString variableValue;
+    private String transferVariableValue;
+    private ModifiableInteger variableValueLength;
 
     public ChannelRequestEnvMessage() {
         super(ChannelRequestType.ENV);
