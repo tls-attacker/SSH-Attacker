@@ -13,13 +13,17 @@
         </messages>
     </Send>
     <Receive/>
-    <Receive/>
     <Send>
         <messages>
-            <RsaKeyExchangeSecretMessage/>
+            <DhGexKeyExchangeRequestMessage/>
         </messages>
     </Send>
     <Receive/>
+    <Send>
+        <messages>
+            <DhGexKeyExchangeInitMessage/>
+        </messages>
+    </Send>
     <Receive/>
     <Send>
         <messages>

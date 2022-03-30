@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<config>
+    <clientSupportedKeyExchangeAlgorithms>
+        <clientSupportedKeyExchangeAlgorithm>RSA2048_SHA256</clientSupportedKeyExchangeAlgorithm>
+        <clientSupportedKeyExchangeAlgorithm>RSA1024_SHA1</clientSupportedKeyExchangeAlgorithm>
+    </clientSupportedKeyExchangeAlgorithms>
+    <serverSupportedKeyExchangeAlgorithms>
+        <serverSupportedKeyExchangeAlgorithm>RSA2048_SHA256</serverSupportedKeyExchangeAlgorithm>
+        <serverSupportedKeyExchangeAlgorithm>RSA1024_SHA1</serverSupportedKeyExchangeAlgorithm>
+    </serverSupportedKeyExchangeAlgorithms>
+</config>

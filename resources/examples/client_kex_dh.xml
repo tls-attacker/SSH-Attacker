@@ -13,13 +13,11 @@
         </messages>
     </Send>
     <Receive/>
-    <Receive/>
     <Send>
         <messages>
-            <RsaKeyExchangeSecretMessage/>
+            <DhKeyExchangeInitMessage/>
         </messages>
     </Send>
-    <Receive/>
     <Receive/>
     <Send>
         <messages>
