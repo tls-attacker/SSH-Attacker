@@ -119,8 +119,14 @@ public class ReceiveMessageHelper {
                 parsePackets(context, receivedBytes).collect(Collectors.toList());
         List<ProtocolMessage<?>> parsedMessages =
                 retrievedPackets.stream()
-                        .map(context.getMessageLayer()::parse)
-                        .peek(message -> message.getHandler(context).adjustContext())
+                        .map(
+                                packet -> {
+                                    // Parse and handle each message one after another
+                                    ProtocolMessage<?> message =
+                                            context.getMessageLayer().parse(packet);
+                                    message.getHandler(context).adjustContext();
+                                    return message;
+                                })
                         .collect(Collectors.toList());
         return new MessageActionResult(retrievedPackets, parsedMessages);
     }

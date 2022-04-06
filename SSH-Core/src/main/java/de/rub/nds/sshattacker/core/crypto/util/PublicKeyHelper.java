@@ -53,23 +53,9 @@ public final class PublicKeyHelper {
                         Arrays.copyOfRange(
                                 encodedPublicKeyBytes,
                                 DataFormatConstants.STRING_SIZE_LENGTH,
-                                DataFormatConstants.STRING_SIZE_LENGTH
-                                        + encodedPublicKeyBytes.length),
+                                DataFormatConstants.STRING_SIZE_LENGTH + keyFormatLength),
                         StandardCharsets.US_ASCII);
-        return parse(PublicKeyFormat.fromName(keyFormatName), encodedPublicKeyBytes);
-    }
-
-    /**
-     * Parses the given encoded public key bytes using the specified key format.
-     *
-     * @param keyFormat The public key format (must be explicitly known as per RFC 4253 Sec. 6.6)
-     * @param encodedPublicKeyBytes Encoded public key in the specified format
-     * @return The parsed public key
-     * @throws NotImplementedException Thrown whenever support for the specified key format has not
-     *     yet been implemented.
-     */
-    public static SshPublicKey<?, ?> parse(
-            PublicKeyFormat keyFormat, byte[] encodedPublicKeyBytes) {
+        PublicKeyFormat keyFormat = PublicKeyFormat.fromName(keyFormatName);
         switch (keyFormat) {
             case SSH_RSA:
                 return new RsaPublicKeyParser(encodedPublicKeyBytes, 0).parse();
@@ -111,6 +97,28 @@ public final class PublicKeyHelper {
                 throw new NotImplementedException(
                         "Parser for public key format " + keyFormat + " is not yet implemented.");
         }
+    }
+
+    /**
+     * Parses the given encoded public key bytes using the specified key format.
+     *
+     * @param expectedKeyFormat The public key format (must be explicitly known as per RFC 4253 Sec.
+     *     6.6)
+     * @param encodedPublicKeyBytes Encoded public key in the specified format
+     * @return The parsed public key
+     * @throws NotImplementedException Thrown whenever support for the specified key format has not
+     *     yet been implemented.
+     */
+    public static SshPublicKey<?, ?> parse(
+            PublicKeyFormat expectedKeyFormat, byte[] encodedPublicKeyBytes) {
+        SshPublicKey<?, ?> publicKey = parse(encodedPublicKeyBytes);
+        if (publicKey.getPublicKeyFormat() != expectedKeyFormat) {
+            LOGGER.warn(
+                    "Expected public key of format '{}', but got '{}'. Continuing anyway.",
+                    expectedKeyFormat,
+                    publicKey.getPublicKeyFormat());
+        }
+        return publicKey;
     }
 
     /**
