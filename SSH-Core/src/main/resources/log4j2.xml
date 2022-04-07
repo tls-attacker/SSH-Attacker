@@ -9,6 +9,9 @@
         <Logger name="de.rub.nds" level="debug" additivity="false">
             <AppenderRef ref="Console"/>
         </Logger>
+        <Logger name="DirectLogger" level="info" additivity="false">
+            <AppenderRef ref="Console"/>
+        </Logger>
         <Root level="error">
             <AppenderRef ref="Console"/>
         </Root>
