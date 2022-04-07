@@ -18,6 +18,10 @@ public class DhGexKeyExchangeRequestMessageParser
 
     private static final Logger LOGGER = LogManager.getLogger();
 
+    public DhGexKeyExchangeRequestMessageParser(byte[] array) {
+        super(array);
+    }
+
     public DhGexKeyExchangeRequestMessageParser(byte[] array, int startPosition) {
         super(array, startPosition);
     }
@@ -28,24 +32,25 @@ public class DhGexKeyExchangeRequestMessageParser
     }
 
     public void parseMinimalGroupSize() {
-        message.setMinimalGroupSize((parseIntField(DataFormatConstants.INT32_SIZE)));
-        LOGGER.debug("Minimal group size: " + message.getMinimalGroupSize().getValue());
+        message.setMinimalGroupSize((parseIntField(DataFormatConstants.UINT32_SIZE)));
+        LOGGER.debug("Minimal DH group size: {} bits", message.getMinimalGroupSize().getValue());
     }
 
-    public void parsePreferedGroupSize() {
-        message.setPreferredGroupSize(parseIntField(DataFormatConstants.INT32_SIZE));
-        LOGGER.debug("Prefered group size: " + message.getPreferredGroupSize().getValue());
+    public void parsePreferredGroupSize() {
+        message.setPreferredGroupSize(parseIntField(DataFormatConstants.UINT32_SIZE));
+        LOGGER.debug(
+                "Preferred DH group size: {} bits", message.getPreferredGroupSize().getValue());
     }
 
     public void parseMaximalGroupSize() {
-        message.setMaximalGroupSize(parseIntField(DataFormatConstants.INT32_SIZE));
-        LOGGER.debug("Maximal group size" + message.getMaximalGroupSize().getValue());
+        message.setMaximalGroupSize(parseIntField(DataFormatConstants.UINT32_SIZE));
+        LOGGER.debug("Maximal DH group size: {} bits", message.getMaximalGroupSize().getValue());
     }
 
     @Override
     protected void parseMessageSpecificContents() {
         parseMinimalGroupSize();
-        parsePreferedGroupSize();
+        parsePreferredGroupSize();
         parseMaximalGroupSize();
     }
 }

@@ -30,7 +30,7 @@ public class DisconnectMessageSerializer extends SshMessageSerializer<Disconnect
                         + " (Code: "
                         + message.getReasonCode().getValue()
                         + ")");
-        appendInt(message.getReasonCode().getValue(), DataFormatConstants.INT32_SIZE);
+        appendInt(message.getReasonCode().getValue(), DataFormatConstants.UINT32_SIZE);
     }
 
     private void serializeDescription() {

@@ -14,8 +14,10 @@ import de.rub.nds.sshattacker.core.protocol.authentication.preparator.UserAuthSu
 import de.rub.nds.sshattacker.core.protocol.authentication.serializer.UserAuthSuccessMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.common.*;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
-public class UserAuthSuccessMessageHandler extends SshMessageHandler<UserAuthSuccessMessage> {
+public class UserAuthSuccessMessageHandler extends SshMessageHandler<UserAuthSuccessMessage>
+        implements MessageSentHandler {
 
     public UserAuthSuccessMessageHandler(SshContext context) {
         super(context);
@@ -31,19 +33,29 @@ public class UserAuthSuccessMessageHandler extends SshMessageHandler<UserAuthSuc
         activateCompression();
     }
 
+    @Override
+    public void adjustContextAfterMessageSent() {
+        // Enable delayed compression if negotiated
+        activateCompression();
+    }
+
     private void activateCompression() {
-        if (context.getCompressionMethodClientToServer().orElse(CompressionMethod.NONE)
-                == CompressionMethod.ZLIB_OPENSSH_COM) {
+        Chooser chooser = context.getChooser();
+        if (chooser.getCompressionMethodClientToServer() == CompressionMethod.ZLIB_OPENSSH_COM) {
             context.getPacketLayer()
                     .updateCompressionAlgorithm(
-                            context.getCompressionMethodClientToServer().get().getAlgorithm());
+                            chooser.getCompressionMethodClientToServer().getAlgorithm());
         }
-        if (context.getCompressionMethodServerToClient().orElse(CompressionMethod.NONE)
-                == CompressionMethod.ZLIB_OPENSSH_COM) {
+        if (chooser.getCompressionMethodServerToClient() == CompressionMethod.ZLIB_OPENSSH_COM) {
             context.getPacketLayer()
                     .updateDecompressionAlgorithm(
-                            context.getCompressionMethodServerToClient().get().getAlgorithm());
+                            chooser.getCompressionMethodServerToClient().getAlgorithm());
         }
+    }
+
+    @Override
+    public UserAuthSuccessMessageParser getParser(byte[] array) {
+        return new UserAuthSuccessMessageParser(array);
     }
 
     @Override

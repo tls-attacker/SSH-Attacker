@@ -7,18 +7,18 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.message;
 
-import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
+import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.protocol.connection.handler.ChannelCloseMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class ChannelCloseMessage extends ChannelMessage<ChannelCloseMessage> {
 
-    public ChannelCloseMessage() {
-        super(MessageIDConstant.SSH_MSG_CHANNEL_CLOSE);
-    }
+    public static final MessageIdConstant ID = MessageIdConstant.SSH_MSG_CHANNEL_CLOSE;
+
+    public ChannelCloseMessage() {}
 
     public ChannelCloseMessage(Integer senderChannel) {
-        super(MessageIDConstant.SSH_MSG_CHANNEL_CLOSE, senderChannel);
+        super(senderChannel);
     }
 
     @Override

@@ -8,10 +8,11 @@
 package de.rub.nds.sshattacker.core.crypto.kex;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.sshattacker.core.constants.NamedGroup;
+import de.rub.nds.sshattacker.core.constants.NamedEcGroup;
 import org.junit.jupiter.api.Test;
 
 public class XCurveEcdhKeyExchangeTest {
@@ -38,9 +39,9 @@ public class XCurveEcdhKeyExchangeTest {
                         "4a5d9d5ba4ce2de1728e3bf480350f25e07e21c947d19e3376f09b3c1e161742");
 
         XCurveEcdhKeyExchange keyExchangeOnASite =
-                new XCurveEcdhKeyExchange(NamedGroup.ECDH_X25519);
+                new XCurveEcdhKeyExchange(NamedEcGroup.CURVE25519);
         XCurveEcdhKeyExchange keyExchangeOnBSite =
-                new XCurveEcdhKeyExchange(NamedGroup.ECDH_X25519);
+                new XCurveEcdhKeyExchange(NamedEcGroup.CURVE25519);
         keyExchangeOnASite.setLocalKeyPair(privateKeyA);
         keyExchangeOnBSite.setLocalKeyPair(privateKeyB);
         assertArrayEquals(
@@ -50,8 +51,8 @@ public class XCurveEcdhKeyExchangeTest {
 
         keyExchangeOnASite.setRemotePublicKey(expectedPublicKeyB);
         keyExchangeOnBSite.setRemotePublicKey(expectedPublicKeyA);
-        keyExchangeOnASite.computeSharedSecret();
-        keyExchangeOnBSite.computeSharedSecret();
+        assertDoesNotThrow(keyExchangeOnASite::computeSharedSecret);
+        assertDoesNotThrow(keyExchangeOnBSite::computeSharedSecret);
 
         assertTrue(keyExchangeOnASite.isComplete());
         assertTrue(keyExchangeOnBSite.isComplete());
@@ -78,8 +79,8 @@ public class XCurveEcdhKeyExchangeTest {
                 ArrayConverter.hexStringToByteArray(
                         "07fff4181ac6cc95ec1c16a94a0f74d12da232ce40a77552281d282bb60c0b56fd2464c335543936521c24403085d59a449a5037514a879d");
 
-        XCurveEcdhKeyExchange keyExchangeOnASite = new XCurveEcdhKeyExchange(NamedGroup.ECDH_X448);
-        XCurveEcdhKeyExchange keyExchangeOnBSite = new XCurveEcdhKeyExchange(NamedGroup.ECDH_X448);
+        XCurveEcdhKeyExchange keyExchangeOnASite = new XCurveEcdhKeyExchange(NamedEcGroup.CURVE448);
+        XCurveEcdhKeyExchange keyExchangeOnBSite = new XCurveEcdhKeyExchange(NamedEcGroup.CURVE448);
         keyExchangeOnASite.setLocalKeyPair(privateKeyA);
         keyExchangeOnBSite.setLocalKeyPair(privateKeyB);
         assertArrayEquals(
@@ -89,8 +90,8 @@ public class XCurveEcdhKeyExchangeTest {
 
         keyExchangeOnASite.setRemotePublicKey(expectedPublicKeyB);
         keyExchangeOnBSite.setRemotePublicKey(expectedPublicKeyA);
-        keyExchangeOnASite.computeSharedSecret();
-        keyExchangeOnBSite.computeSharedSecret();
+        assertDoesNotThrow(keyExchangeOnASite::computeSharedSecret);
+        assertDoesNotThrow(keyExchangeOnBSite::computeSharedSecret);
 
         assertTrue(keyExchangeOnASite.isComplete());
         assertTrue(keyExchangeOnBSite.isComplete());

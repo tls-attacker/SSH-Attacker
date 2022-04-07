@@ -32,7 +32,16 @@ public class EcdhKeyExchangeInitMessageHandler
 
     @Override
     public void adjustContext() {
-        // TODO: Handle EcdhKeyExchangeInitMessage
+        context.getChooser()
+                .getEcdhKeyExchange()
+                .setRemotePublicKey(message.getEphemeralPublicKey().getValue());
+        context.getExchangeHashInputHolder()
+                .setEcdhClientPublicKey(message.getEphemeralPublicKey().getValue());
+    }
+
+    @Override
+    public EcdhKeyExchangeInitMessageParser getParser(byte[] array) {
+        return new EcdhKeyExchangeInitMessageParser(array);
     }
 
     @Override

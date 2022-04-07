@@ -7,7 +7,6 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.parser;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.BinaryPacketConstants;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 import de.rub.nds.sshattacker.core.protocol.transport.message.DhGexKeyExchangeReplyMessage;
@@ -19,6 +18,10 @@ public class DhGexKeyExchangeReplyMessageParser
 
     private static final Logger LOGGER = LogManager.getLogger();
 
+    public DhGexKeyExchangeReplyMessageParser(byte[] array) {
+        super(array);
+    }
+
     public DhGexKeyExchangeReplyMessageParser(byte[] array, int startPosition) {
         super(array, startPosition);
     }
@@ -28,35 +31,36 @@ public class DhGexKeyExchangeReplyMessageParser
         return new DhGexKeyExchangeReplyMessage();
     }
 
-    private void parseHostKey() {
-        message.setHostKeyLength(parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH));
-        LOGGER.debug("Host key length: " + message.getHostKeyLength().getValue());
-        message.setHostKey(parseByteArrayField(message.getHostKeyLength().getValue()));
-        LOGGER.debug(
-                "Host key: " + ArrayConverter.bytesToRawHexString(message.getHostKey().getValue()));
+    private void parseHostKeyBytes() {
+        message.setHostKeyBytesLength(parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH));
+        LOGGER.debug("Host key bytes length: " + message.getHostKeyBytesLength().getValue());
+        message.setHostKeyBytes(parseByteArrayField(message.getHostKeyBytesLength().getValue()));
+        LOGGER.debug("Host key bytes: " + message.getHostKeyBytes());
     }
 
-    private void parsePublicKey() {
+    private void parseEphemeralPublicKey() {
         message.setEphemeralPublicKeyLength(
                 parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH));
         LOGGER.debug(
-                "Ephemeral public key length: " + message.getEphemeralPublicKeyLength().getValue());
+                "Ephemeral public key (server) length: "
+                        + message.getEphemeralPublicKeyLength().getValue());
         message.setEphemeralPublicKey(
                 parseBigIntField(message.getEphemeralPublicKeyLength().getValue()));
-        LOGGER.debug("Ephemeral public key: " + message.getEphemeralPublicKey().getValue());
+        LOGGER.debug(
+                "Ephemeral public key (server): " + message.getEphemeralPublicKey().getValue());
     }
 
     private void parseSignature() {
         message.setSignatureLength(parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH));
         LOGGER.debug("Signature length: " + message.getSignatureLength().getValue());
         message.setSignature(parseByteArrayField(message.getSignatureLength().getValue()));
-        LOGGER.debug("Signature: " + message.getSignature().getValue());
+        LOGGER.debug("Signature: " + message.getSignature());
     }
 
     @Override
     protected void parseMessageSpecificContents() {
-        parseHostKey();
-        parsePublicKey();
+        parseHostKeyBytes();
+        parseEphemeralPublicKey();
         parseSignature();
     }
 }

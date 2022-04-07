@@ -11,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
+import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.protocol.transport.message.EcdhKeyExchangeReplyMessage;
 import java.util.stream.Stream;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -44,10 +44,10 @@ public class EcdhKeyExchangeReplyMessageParserTest {
      * Test of EcdhKeyExchangeReplyMessageParser::parse method
      *
      * @param providedBytes Bytes to parse
-     * @param expectedHostKeyLength Expected length of the host key
-     * @param expectedHostKey Expected bytes of the host key
-     * @param expectedPublicKeyLength Expected length of the remote ECDH public key
-     * @param expectedPublicKey Expected bytes of the remote ECDH public key
+     * @param expectedHostKeyBytesLength Expected length of the host key
+     * @param expectedHostKeyBytes Expected bytes of the host key
+     * @param expectedEphemeralPublicKeyLength Expected length of the remote ECDH public key
+     * @param expectedEphemeralPublicKey Expected bytes of the remote ECDH public key
      * @param expectedSignatureLength Expected length of the signature
      * @param expectedSignature Expected bytes of the signature
      */
@@ -55,22 +55,24 @@ public class EcdhKeyExchangeReplyMessageParserTest {
     @MethodSource("provideTestVectors")
     public void testParse(
             byte[] providedBytes,
-            int expectedHostKeyLength,
-            byte[] expectedHostKey,
-            int expectedPublicKeyLength,
-            byte[] expectedPublicKey,
+            int expectedHostKeyBytesLength,
+            byte[] expectedHostKeyBytes,
+            int expectedEphemeralPublicKeyLength,
+            byte[] expectedEphemeralPublicKey,
             int expectedSignatureLength,
             byte[] expectedSignature) {
         EcdhKeyExchangeReplyMessageParser parser =
-                new EcdhKeyExchangeReplyMessageParser(providedBytes, 0);
+                new EcdhKeyExchangeReplyMessageParser(providedBytes);
         EcdhKeyExchangeReplyMessage msg = parser.parse();
 
-        assertEquals(MessageIDConstant.SSH_MSG_KEX_ECDH_REPLY.id, msg.getMessageID().getValue());
-        assertEquals(expectedHostKeyLength, msg.getHostKeyLength().getValue().intValue());
-        assertArrayEquals(expectedHostKey, msg.getHostKey().getValue());
         assertEquals(
-                expectedPublicKeyLength, msg.getEphemeralPublicKeyLength().getValue().intValue());
-        assertArrayEquals(expectedPublicKey, msg.getEphemeralPublicKey().getValue());
+                MessageIdConstant.SSH_MSG_KEX_ECDH_REPLY.getId(), msg.getMessageId().getValue());
+        assertEquals(expectedHostKeyBytesLength, msg.getHostKeyBytesLength().getValue().intValue());
+        assertArrayEquals(expectedHostKeyBytes, msg.getHostKeyBytes().getValue());
+        assertEquals(
+                expectedEphemeralPublicKeyLength,
+                msg.getEphemeralPublicKeyLength().getValue().intValue());
+        assertArrayEquals(expectedEphemeralPublicKey, msg.getEphemeralPublicKey().getValue());
         assertEquals(expectedSignatureLength, msg.getSignatureLength().getValue().intValue());
         assertArrayEquals(expectedSignature, msg.getSignature().getValue());
     }

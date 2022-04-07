@@ -17,6 +17,10 @@ public class ChannelOpenConfirmationMessageParser
 
     private static final Logger LOGGER = LogManager.getLogger();
 
+    public ChannelOpenConfirmationMessageParser(byte[] array) {
+        super(array);
+    }
+
     public ChannelOpenConfirmationMessageParser(byte[] array, int startPosition) {
         super(array, startPosition);
     }
@@ -27,17 +31,17 @@ public class ChannelOpenConfirmationMessageParser
     }
 
     private void parseSenderChannel() {
-        message.setModSenderChannel(parseIntField(DataFormatConstants.INT32_SIZE));
+        message.setModSenderChannel(parseIntField(DataFormatConstants.UINT32_SIZE));
         LOGGER.debug("Sender channel: " + message.getModSenderChannel().getValue());
     }
 
     private void parseWindowSize() {
-        message.setWindowSize(parseIntField(DataFormatConstants.INT32_SIZE));
+        message.setWindowSize(parseIntField(DataFormatConstants.UINT32_SIZE));
         LOGGER.debug("Initial window size: " + message.getWindowSize().getValue());
     }
 
     private void parsePacketSize() {
-        message.setPacketSize(parseIntField(DataFormatConstants.INT32_SIZE));
+        message.setPacketSize(parseIntField(DataFormatConstants.UINT32_SIZE));
         LOGGER.debug("Maximum packet size: " + message.getPacketSize().getValue());
     }
 

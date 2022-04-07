@@ -143,7 +143,7 @@ public class KeyExchangeInitMessageParserTest {
             String expectedLanguagesSToC,
             byte expectedFirstKeyExchangePacketFollows,
             int expectedReserved) {
-        KeyExchangeInitMessageParser parser = new KeyExchangeInitMessageParser(providedBytes, 0);
+        KeyExchangeInitMessageParser parser = new KeyExchangeInitMessageParser(providedBytes);
         KeyExchangeInitMessage msg = parser.parse();
 
         assertArrayEquals(expectedCookie, msg.getCookie().getValue());

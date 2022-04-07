@@ -45,6 +45,11 @@ public class ChannelCloseMessageHandler extends SshMessageHandler<ChannelCloseMe
     }
 
     @Override
+    public ChannelCloseMessageParser getParser(byte[] array) {
+        return new ChannelCloseMessageParser(array);
+    }
+
+    @Override
     public ChannelCloseMessageParser getParser(byte[] array, int startPosition) {
         return new ChannelCloseMessageParser(array, startPosition);
     }

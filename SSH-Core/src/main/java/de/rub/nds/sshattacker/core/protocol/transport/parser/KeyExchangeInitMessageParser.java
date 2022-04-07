@@ -20,6 +20,10 @@ public class KeyExchangeInitMessageParser extends SshMessageParser<KeyExchangeIn
 
     private static final Logger LOGGER = LogManager.getLogger();
 
+    public KeyExchangeInitMessageParser(byte[] array) {
+        super(array);
+    }
+
     public KeyExchangeInitMessageParser(byte[] array, int startPosition) {
         super(array, startPosition);
     }
@@ -188,7 +192,7 @@ public class KeyExchangeInitMessageParser extends SshMessageParser<KeyExchangeIn
     }
 
     private void parseReserved() {
-        message.setReserved(parseIntField(DataFormatConstants.INT32_SIZE));
+        message.setReserved(parseIntField(DataFormatConstants.UINT32_SIZE));
         LOGGER.debug("Reserved: " + message.getReserved().getValue());
     }
 

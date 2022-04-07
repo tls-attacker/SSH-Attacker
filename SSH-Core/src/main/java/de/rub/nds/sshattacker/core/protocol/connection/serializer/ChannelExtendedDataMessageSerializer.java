@@ -29,7 +29,7 @@ public class ChannelExtendedDataMessageSerializer
                 "Data type: "
                         + ExtendedChannelDataType.fromDataTypeCode(
                                 message.getDataTypeCode().getValue()));
-        appendInt(message.getDataTypeCode().getValue(), DataFormatConstants.INT32_SIZE);
+        appendInt(message.getDataTypeCode().getValue(), DataFormatConstants.UINT32_SIZE);
     }
 
     private void serializeData() {

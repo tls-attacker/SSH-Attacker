@@ -7,6 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.workflow.action;
 
+import de.rub.nds.sshattacker.core.connection.AliasedConnection;
 import de.rub.nds.sshattacker.core.constants.CompressionAlgorithm;
 import de.rub.nds.sshattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.sshattacker.core.state.SshContext;
@@ -21,12 +22,23 @@ public class ChangeCompressionAction extends ConnectionBoundAction {
     private CompressionAlgorithm previousAlgorithm;
     private CompressionAlgorithm targetAlgorithm;
 
+    public ChangeCompressionAction() {
+        super(AliasedConnection.DEFAULT_CONNECTION_ALIAS);
+    }
+
+    public ChangeCompressionAction(String connectionAlias) {
+        super(connectionAlias);
+    }
+
     public ChangeCompressionAction(CompressionAlgorithm targetAlgorithm) {
-        super();
+        super(AliasedConnection.DEFAULT_CONNECTION_ALIAS);
         this.targetAlgorithm = targetAlgorithm;
     }
 
-    public ChangeCompressionAction() {}
+    public ChangeCompressionAction(String connectionAlias, CompressionAlgorithm targetAlgorithm) {
+        super(connectionAlias);
+        this.targetAlgorithm = targetAlgorithm;
+    }
 
     public void setTargetAlgorithm(CompressionAlgorithm targetAlgorithm) {
         this.targetAlgorithm = targetAlgorithm;

@@ -14,6 +14,10 @@ import java.nio.charset.StandardCharsets;
 
 public class UserAuthBannerMessageParser extends SshMessageParser<UserAuthBannerMessage> {
 
+    public UserAuthBannerMessageParser(byte[] array) {
+        super(array);
+    }
+
     public UserAuthBannerMessageParser(byte[] array, int startPosition) {
         super(array, startPosition);
     }

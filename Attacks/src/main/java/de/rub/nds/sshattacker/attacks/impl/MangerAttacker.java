@@ -30,7 +30,6 @@ import de.rub.nds.sshattacker.attacks.response.ResponseFingerprint;
 import de.rub.nds.sshattacker.attacks.task.FingerPrintTask;
 import de.rub.nds.sshattacker.attacks.task.SshTask;
 import de.rub.nds.sshattacker.core.config.Config;
-import de.rub.nds.sshattacker.core.constants.Bits;
 import de.rub.nds.sshattacker.core.constants.KeyExchangeAlgorithm;
 import de.rub.nds.sshattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.sshattacker.core.state.State;
@@ -301,7 +300,7 @@ public class MangerAttacker extends Attacker<MangerCommandConfig> {
                         publicKey.getPublicExponent().toString(16),
                         publicKey.getModulus().toString(16)));
         byte[] encryptedSecret = ArrayConverter.hexStringToByteArray(config.getEncryptedSecret());
-        if ((encryptedSecret.length * Bits.IN_A_BYTE) != publicKey.getModulus().bitLength()) {
+        if ((encryptedSecret.length * Byte.SIZE) != publicKey.getModulus().bitLength()) {
             throw new ConfigurationException(
                     "The length of the encrypted secret "
                             + "is not equal to the public key length. Have you selected the correct value?");
@@ -317,7 +316,7 @@ public class MangerAttacker extends Attacker<MangerCommandConfig> {
                         solution,
                         getHashInstance(),
                         ((RSAPublicKey) oracle.getPublicKey()).getModulus().bitLength()
-                                / Bits.IN_A_BYTE);
+                                / Byte.SIZE);
 
         CONSOLE.info("Encoded Solution: " + solution);
         CONSOLE.info("Decoded Secret: " + secret);

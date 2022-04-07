@@ -17,6 +17,10 @@ public class ChannelRequestExitStatusMessageParser
 
     private static final Logger LOGGER = LogManager.getLogger();
 
+    public ChannelRequestExitStatusMessageParser(byte[] array) {
+        super(array);
+    }
+
     public ChannelRequestExitStatusMessageParser(byte[] array, int startPosition) {
         super(array, startPosition);
     }
@@ -27,7 +31,7 @@ public class ChannelRequestExitStatusMessageParser
     }
 
     public void parseExitStatus() {
-        message.setExitStatus(parseIntField(DataFormatConstants.INT32_SIZE));
+        message.setExitStatus(parseIntField(DataFormatConstants.UINT32_SIZE));
         LOGGER.debug("Exit status: " + message.getExitStatus().getValue());
     }
 

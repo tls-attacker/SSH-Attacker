@@ -7,18 +7,18 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.message;
 
-import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
+import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.protocol.connection.handler.ChannelSuccessMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class ChannelSuccessMessage extends ChannelMessage<ChannelSuccessMessage> {
 
-    public ChannelSuccessMessage() {
-        super(MessageIDConstant.SSH_MSG_CHANNEL_SUCCESS);
-    }
+    public static final MessageIdConstant ID = MessageIdConstant.SSH_MSG_CHANNEL_SUCCESS;
+
+    public ChannelSuccessMessage() {}
 
     public ChannelSuccessMessage(Integer senderChannel) {
-        super(MessageIDConstant.SSH_MSG_CHANNEL_SUCCESS, senderChannel);
+        super(senderChannel);
     }
 
     @Override

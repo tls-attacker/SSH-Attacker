@@ -30,6 +30,11 @@ public class ServiceAcceptMessageHandler extends SshMessageHandler<ServiceAccept
     }
 
     @Override
+    public ServiceAcceptMessageParser getParser(byte[] array) {
+        return new ServiceAcceptMessageParser(array);
+    }
+
+    @Override
     public ServiceAcceptMessageParser getParser(byte[] array, int startPosition) {
         return new ServiceAcceptMessageParser(array, startPosition);
     }

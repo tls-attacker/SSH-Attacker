@@ -13,7 +13,7 @@ import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.sshattacker.core.constants.AuthenticationMethod;
 import de.rub.nds.sshattacker.core.constants.CharConstants;
-import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
+import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.protocol.authentication.handler.UserAuthFailureMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
 import de.rub.nds.sshattacker.core.state.SshContext;
@@ -24,13 +24,11 @@ import java.util.stream.Collectors;
 
 public class UserAuthFailureMessage extends SshMessage<UserAuthFailureMessage> {
 
+    public static final MessageIdConstant ID = MessageIdConstant.SSH_MSG_USERAUTH_FAILURE;
+
     private ModifiableInteger possibleAuthenticationMethodsLength;
     private ModifiableString possibleAuthenticationMethods;
     private ModifiableByte partialSuccess;
-
-    public UserAuthFailureMessage() {
-        super(MessageIDConstant.SSH_MSG_USERAUTH_FAILURE);
-    }
 
     public ModifiableInteger getPossibleAuthenticationMethodsLength() {
         return possibleAuthenticationMethodsLength;

@@ -7,12 +7,21 @@
  */
 package de.rub.nds.sshattacker.core.workflow.action;
 
+import de.rub.nds.sshattacker.core.connection.AliasedConnection;
 import de.rub.nds.sshattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.sshattacker.core.packet.cipher.PacketCipherFactory;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.state.State;
 
 public class DeactivateEncryptionAction extends ConnectionBoundAction {
+
+    public DeactivateEncryptionAction() {
+        super(AliasedConnection.DEFAULT_CONNECTION_ALIAS);
+    }
+
+    public DeactivateEncryptionAction(String connectionAlias) {
+        super(connectionAlias);
+    }
 
     @Override
     public void execute(State state) throws WorkflowExecutionException {

@@ -10,7 +10,7 @@ package de.rub.nds.sshattacker.core.protocol.transport.message;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
-import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
+import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.constants.ServiceType;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.ServiceAcceptMessageHandler;
@@ -19,12 +19,10 @@ import java.nio.charset.StandardCharsets;
 
 public class ServiceAcceptMessage extends SshMessage<ServiceAcceptMessage> {
 
+    public static final MessageIdConstant ID = MessageIdConstant.SSH_MSG_SERVICE_ACCEPT;
+
     private ModifiableInteger serviceNameLength;
     private ModifiableString serviceName;
-
-    public ServiceAcceptMessage() {
-        super(MessageIDConstant.SSH_MSG_SERVICE_ACCEPT);
-    }
 
     public ModifiableInteger getServiceNameLength() {
         return serviceNameLength;

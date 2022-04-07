@@ -20,7 +20,7 @@ import de.rub.nds.sshattacker.core.workflow.factory.WorkflowTraceType;
 public class Project {
     public static void main(String[] args) {
         Config config = new Config();
-        config.setWorkflowTraceType(WorkflowTraceType.KEYEXCHANGE);
+        config.setWorkflowTraceType(WorkflowTraceType.KEX_DYNAMIC);
         config.getDefaultClientConnection().setHostname("localhost");
         config.getDefaultClientConnection().setPort(2222);
         // config.setUsername("marcus");

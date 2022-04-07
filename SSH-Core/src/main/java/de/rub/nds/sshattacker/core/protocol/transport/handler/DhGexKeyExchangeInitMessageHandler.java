@@ -33,7 +33,16 @@ public class DhGexKeyExchangeInitMessageHandler
 
     @Override
     public void adjustContext() {
-        // TODO: Handle DhGexKeyExchangeInitMessage
+        context.getChooser()
+                .getDhGexKeyExchange()
+                .setRemotePublicKey(message.getEphemeralPublicKey().getValue());
+        context.getExchangeHashInputHolder()
+                .setDhGexClientPublicKey(message.getEphemeralPublicKey().getValue());
+    }
+
+    @Override
+    public SshMessageParser<DhGexKeyExchangeInitMessage> getParser(byte[] array) {
+        return new DhGexKeyExchangeInitMessageParser(array);
     }
 
     @Override

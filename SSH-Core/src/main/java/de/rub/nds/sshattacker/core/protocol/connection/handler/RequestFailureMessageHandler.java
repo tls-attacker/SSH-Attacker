@@ -30,6 +30,11 @@ public class RequestFailureMessageHandler extends SshMessageHandler<RequestFailu
     }
 
     @Override
+    public RequestFailureMessageParser getParser(byte[] array) {
+        return new RequestFailureMessageParser(array);
+    }
+
+    @Override
     public RequestFailureMessageParser getParser(byte[] array, int startPosition) {
         return new RequestFailureMessageParser(array, startPosition);
     }

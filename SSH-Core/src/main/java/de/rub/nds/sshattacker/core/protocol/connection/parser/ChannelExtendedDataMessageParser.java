@@ -17,6 +17,10 @@ import org.apache.logging.log4j.Logger;
 public class ChannelExtendedDataMessageParser
         extends ChannelMessageParser<ChannelExtendedDataMessage> {
 
+    public ChannelExtendedDataMessageParser(byte[] array) {
+        super(array);
+    }
+
     public ChannelExtendedDataMessageParser(byte[] array, int startPosition) {
         super(array, startPosition);
     }
@@ -29,7 +33,7 @@ public class ChannelExtendedDataMessageParser
     }
 
     private void parseDataTypeCode() {
-        message.setDataTypeCode(parseIntField(DataFormatConstants.INT32_SIZE));
+        message.setDataTypeCode(parseIntField(DataFormatConstants.UINT32_SIZE));
         LOGGER.debug("Data type code: " + message.getDataTypeCode().getValue());
         LOGGER.debug(
                 "Data type: "

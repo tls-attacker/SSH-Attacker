@@ -28,7 +28,7 @@ public class KeyDerivation {
             byte[] sessionID,
             int outputLen,
             String hashFunction) {
-        byte[] serializedSharedSecret = Converter.byteArrayToMpint(sharedSecret.toByteArray());
+        byte[] serializedSharedSecret = Converter.bigIntegerToMpint(sharedSecret);
         try {
             MessageDigest md = MessageDigest.getInstance(hashFunction);
             ByteArrayOutputStream outStream = new ByteArrayOutputStream();

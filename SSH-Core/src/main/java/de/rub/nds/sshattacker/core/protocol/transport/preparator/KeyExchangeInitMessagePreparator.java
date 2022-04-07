@@ -7,7 +7,6 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.preparator;
 
-import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.transport.message.KeyExchangeInitMessage;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
@@ -20,7 +19,6 @@ public class KeyExchangeInitMessagePreparator extends SshMessagePreparator<KeyEx
 
     @Override
     public void prepareMessageSpecificContents() {
-        getObject().setMessageID(MessageIDConstant.SSH_MSG_KEXINIT);
         if (chooser.getContext().isClient()) {
             getObject().setCookie(chooser.getClientCookie());
             getObject()
@@ -31,10 +29,10 @@ public class KeyExchangeInitMessagePreparator extends SshMessagePreparator<KeyEx
                             chooser.getClientSupportedHostKeyAlgorithms(), true);
             getObject()
                     .setEncryptionAlgorithmsClientToServer(
-                            chooser.getClientSupportedCipherAlgorithmsClientToServer(), true);
+                            chooser.getClientSupportedEncryptionAlgorithmsClientToServer(), true);
             getObject()
                     .setEncryptionAlgorithmsServerToClient(
-                            chooser.getClientSupportedCipherAlgorithmsServerToClient(), true);
+                            chooser.getClientSupportedEncryptionAlgorithmsServerToClient(), true);
             getObject()
                     .setMacAlgorithmsClientToServer(
                             chooser.getClientSupportedMacAlgorithmsClientToServer(), true);
@@ -62,7 +60,7 @@ public class KeyExchangeInitMessagePreparator extends SshMessagePreparator<KeyEx
                             chooser.getClientFirstKeyExchangePacketFollows());
             getObject().setReserved(chooser.getClientReserved());
 
-            chooser.getContext().getExchangeHashInstance().setClientKeyExchangeInit(getObject());
+            chooser.getContext().getExchangeHashInputHolder().setClientKeyExchangeInit(getObject());
         } else {
             getObject().setCookie(chooser.getServerCookie());
             getObject()
@@ -73,10 +71,10 @@ public class KeyExchangeInitMessagePreparator extends SshMessagePreparator<KeyEx
                             chooser.getServerSupportedHostKeyAlgorithms(), true);
             getObject()
                     .setEncryptionAlgorithmsClientToServer(
-                            chooser.getServerSupportedCipherAlgorithmsClientToServer(), true);
+                            chooser.getServerSupportedEncryptionAlgorithmsClientToServer(), true);
             getObject()
                     .setEncryptionAlgorithmsServerToClient(
-                            chooser.getServerSupportedCipherAlgorithmsServerToClient(), true);
+                            chooser.getServerSupportedEncryptionAlgorithmsServerToClient(), true);
             getObject()
                     .setMacAlgorithmsClientToServer(
                             chooser.getServerSupportedMacAlgorithmsClientToServer(), true);
@@ -104,7 +102,7 @@ public class KeyExchangeInitMessagePreparator extends SshMessagePreparator<KeyEx
                             chooser.getServerFirstKeyExchangePacketFollows());
             getObject().setReserved(chooser.getServerReserved());
 
-            chooser.getContext().getExchangeHashInstance().setServerKeyExchangeInit(getObject());
+            chooser.getContext().getExchangeHashInputHolder().setServerKeyExchangeInit(getObject());
         }
     }
 }

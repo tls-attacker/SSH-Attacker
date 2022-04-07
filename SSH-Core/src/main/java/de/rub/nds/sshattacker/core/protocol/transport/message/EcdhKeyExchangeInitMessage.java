@@ -10,57 +10,59 @@ package de.rub.nds.sshattacker.core.protocol.transport.message;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
-import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
+import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.EcdhKeyExchangeInitMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class EcdhKeyExchangeInitMessage extends SshMessage<EcdhKeyExchangeInitMessage> {
 
-    private ModifiableInteger publicKeyLength;
-    private ModifiableByteArray publicKey;
+    public static final MessageIdConstant ID = MessageIdConstant.SSH_MSG_KEX_ECDH_INIT;
 
-    public EcdhKeyExchangeInitMessage() {
-        super(MessageIDConstant.SSH_MSG_KEX_ECDH_INIT);
+    private ModifiableInteger ephemeralPublicKeyLength;
+    private ModifiableByteArray ephemeralPublicKey;
+
+    public ModifiableInteger getEphemeralPublicKeyLength() {
+        return ephemeralPublicKeyLength;
     }
 
-    public ModifiableInteger getPublicKeyLength() {
-        return publicKeyLength;
+    public void setEphemeralPublicKeyLength(ModifiableInteger ephemeralPublicKeyLength) {
+        this.ephemeralPublicKeyLength = ephemeralPublicKeyLength;
     }
 
-    public void setPublicKeyLength(ModifiableInteger publicKeyLength) {
-        this.publicKeyLength = publicKeyLength;
+    public void setEphemeralPublicKeyLength(int ephemeralPublicKeyLength) {
+        this.ephemeralPublicKeyLength =
+                ModifiableVariableFactory.safelySetValue(
+                        this.ephemeralPublicKeyLength, ephemeralPublicKeyLength);
     }
 
-    public void setPublicKeyLength(int publicKeyLength) {
-        this.publicKeyLength =
-                ModifiableVariableFactory.safelySetValue(this.publicKeyLength, publicKeyLength);
+    public ModifiableByteArray getEphemeralPublicKey() {
+        return ephemeralPublicKey;
     }
 
-    public ModifiableByteArray getPublicKey() {
-        return publicKey;
+    public void setEphemeralPublicKey(ModifiableByteArray ephemeralPublicKey) {
+        setEphemeralPublicKey(ephemeralPublicKey, false);
     }
 
-    public void setPublicKey(ModifiableByteArray publicKey) {
-        setPublicKey(publicKey, false);
+    public void setEphemeralPublicKey(byte[] ephemeralPublicKey) {
+        setEphemeralPublicKey(ephemeralPublicKey, false);
     }
 
-    public void setPublicKey(byte[] publicKey) {
-        setPublicKey(publicKey, false);
-    }
-
-    public void setPublicKey(ModifiableByteArray publicKey, boolean adjustLengthField) {
+    public void setEphemeralPublicKey(
+            ModifiableByteArray ephemeralPublicKey, boolean adjustLengthField) {
         if (adjustLengthField) {
-            setPublicKeyLength(publicKey.getValue().length);
+            setEphemeralPublicKeyLength(ephemeralPublicKey.getValue().length);
         }
-        this.publicKey = publicKey;
+        this.ephemeralPublicKey = ephemeralPublicKey;
     }
 
-    public void setPublicKey(byte[] publicKey, boolean adjustLengthField) {
+    public void setEphemeralPublicKey(byte[] ephemeralPublicKey, boolean adjustLengthField) {
         if (adjustLengthField) {
-            setPublicKeyLength(publicKey.length);
+            setEphemeralPublicKeyLength(ephemeralPublicKey.length);
         }
-        this.publicKey = ModifiableVariableFactory.safelySetValue(this.publicKey, publicKey);
+        this.ephemeralPublicKey =
+                ModifiableVariableFactory.safelySetValue(
+                        this.ephemeralPublicKey, ephemeralPublicKey);
     }
 
     @Override

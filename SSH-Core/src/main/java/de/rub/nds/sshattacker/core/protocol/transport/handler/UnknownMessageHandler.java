@@ -37,6 +37,11 @@ public class UnknownMessageHandler extends SshMessageHandler<UnknownMessage> {
     }
 
     @Override
+    public UnknownMessageParser getParser(byte[] array) {
+        return new UnknownMessageParser(array);
+    }
+
+    @Override
     public UnknownMessageParser getParser(byte[] array, int startPosition) {
         return new UnknownMessageParser(array, startPosition);
     }

@@ -8,62 +8,32 @@
 package de.rub.nds.sshattacker.core.crypto.kex;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.sshattacker.core.constants.KeyExchangeAlgorithm;
-import de.rub.nds.sshattacker.core.constants.NamedGroup;
+import de.rub.nds.sshattacker.core.constants.NamedEcGroup;
 import de.rub.nds.sshattacker.core.crypto.ec.*;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomEcPrivateKey;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomEcPublicKey;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomKeyPair;
+import de.rub.nds.sshattacker.core.exceptions.CryptoException;
 import java.math.BigInteger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class EcdhKeyExchange extends DhBasedKeyExchange {
+public class EcdhKeyExchange extends AbstractEcdhKeyExchange {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private final NamedGroup group;
     private final EllipticCurve ellipticCurve;
 
     private CustomKeyPair<CustomEcPrivateKey, CustomEcPublicKey> localKeyPair;
     private CustomEcPublicKey remotePublicKey;
 
-    public EcdhKeyExchange(NamedGroup group) {
-        super();
-        if (!group.isStandardCurve()) {
+    protected EcdhKeyExchange(NamedEcGroup group) {
+        super(group);
+        if (group.isRFC7748Curve()) {
             throw new IllegalArgumentException(
                     "EcdhKeyExchange does not support named group " + group);
         }
-        this.group = group;
         this.ellipticCurve = CurveFactory.getCurve(group);
-    }
-
-    public static EcdhKeyExchange newInstance(KeyExchangeAlgorithm negotiatedKexAlgorithm) {
-        NamedGroup group;
-        switch (negotiatedKexAlgorithm) {
-            case ECDH_SHA2_NISTP256:
-                group = NamedGroup.SECP256R1;
-                break;
-            case ECDH_SHA2_NISTP384:
-                group = NamedGroup.SECP384R1;
-                break;
-            case ECDH_SHA2_NISTP521:
-                group = NamedGroup.SECP521R1;
-                break;
-            default:
-                String[] kexParts = negotiatedKexAlgorithm.name().split("_");
-                if (!kexParts[0].equals("ECDH")) {
-                    // TODO: Determine, whether throwing and error or continuing with a
-                    // predetermined curve is better
-                    LOGGER.warn(
-                            "Initializing a new ECDHKeyExchange without an ECDH key exchange algorithm negotiated. Falling back to ecdh-sha2-nistp256.");
-                    group = NamedGroup.SECP256R1;
-                } else {
-                    group = NamedGroup.valueOf(kexParts[3]);
-                }
-                break;
-        }
-        return new EcdhKeyExchange(group);
     }
 
     @Override
@@ -107,7 +77,11 @@ public class EcdhKeyExchange extends DhBasedKeyExchange {
     }
 
     @Override
-    public void computeSharedSecret() {
+    public void computeSharedSecret() throws CryptoException {
+        if (localKeyPair == null || remotePublicKey == null) {
+            throw new CryptoException(
+                    "Unable to compute shared secret - either local key pair or remote public key is null");
+        }
         Point sharedPoint =
                 ellipticCurve.mult(localKeyPair.getPrivate().getS(), remotePublicKey.getWAsPoint());
         // RFC 5656 defines ECDH with cofactor multiplication as the cryptographic primitive

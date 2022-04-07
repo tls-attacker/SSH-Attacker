@@ -11,6 +11,10 @@ import de.rub.nds.sshattacker.core.protocol.connection.message.NoMoreSessionsMes
 
 public class NoMoreSessionsMessageParser extends GlobalRequestMessageParser<NoMoreSessionsMessage> {
 
+    public NoMoreSessionsMessageParser(byte[] array) {
+        super(array);
+    }
+
     public NoMoreSessionsMessageParser(byte[] array, int startPosition) {
         super(array, startPosition);
     }

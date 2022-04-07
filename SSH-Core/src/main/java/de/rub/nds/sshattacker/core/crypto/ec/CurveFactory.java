@@ -7,7 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.crypto.ec;
 
-import de.rub.nds.sshattacker.core.constants.NamedGroup;
+import de.rub.nds.sshattacker.core.constants.NamedEcGroup;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -20,7 +20,7 @@ public class CurveFactory {
      * @param name The name of the curve, that should be returned.
      * @return EllipticCurve for the provided NamedGroup
      */
-    public static EllipticCurve getCurve(NamedGroup name) {
+    public static EllipticCurve getCurve(NamedEcGroup name) {
         switch (name) {
             case BRAINPOOLP256R1:
                 return new EllipticCurveBrainpoolP256R1();

@@ -9,36 +9,65 @@ package de.rub.nds.sshattacker.core.protocol.common;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
-import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
+import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
+import de.rub.nds.sshattacker.core.constants.SshMessageConstants;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 @XmlType(namespace = "ssh-attacker")
 @XmlAccessorType(XmlAccessType.FIELD)
 public abstract class SshMessage<T extends SshMessage<T>> extends ProtocolMessage<T> {
 
-    protected ModifiableByte messageID;
+    private static final Logger LOGGER = LogManager.getLogger();
 
-    protected SshMessage(MessageIDConstant messageID) {
-        setMessageID(messageID);
+    protected ModifiableByte messageId;
+
+    protected SshMessage() {
+        try {
+            MessageIdConstant messageId =
+                    (MessageIdConstant)
+                            this.getClass().getField(SshMessageConstants.CLASS_ID_FIELD).get(null);
+            this.setMessageId(messageId);
+        } catch (NoSuchFieldException e) {
+            LOGGER.fatal(
+                    "Unable to instantiate SSH message of type {}, no ID field found - make sure this class or one of its super classes offers a static ID field containing the corresponding message id constant",
+                    this.toCompactString());
+            LOGGER.debug(e);
+            throw new RuntimeException(e);
+        } catch (IllegalAccessException e) {
+            LOGGER.fatal(
+                    "Unable to instantiate SSH message of type {}, unable to access ID field - make sure it is static and publicly available",
+                    this.toCompactString());
+            LOGGER.debug(e);
+            throw new RuntimeException(e);
+        } catch (ClassCastException e) {
+            LOGGER.fatal(
+                    "Unable to instantiate SSH message of type {}, unable to cast ID field to {} - make sure the type of the ID field is correct",
+                    this.toCompactString(),
+                    MessageIdConstant.class.getSimpleName());
+            LOGGER.debug(e);
+            throw new RuntimeException(e);
+        }
     }
 
-    public ModifiableByte getMessageID() {
-        return messageID;
+    public ModifiableByte getMessageId() {
+        return messageId;
     }
 
-    public void setMessageID(ModifiableByte messageID) {
-        this.messageID = messageID;
+    public void setMessageId(ModifiableByte messageId) {
+        this.messageId = messageId;
     }
 
-    public void setMessageID(byte messageID) {
-        this.messageID = ModifiableVariableFactory.safelySetValue(this.messageID, messageID);
+    public void setMessageId(byte messageId) {
+        this.messageId = ModifiableVariableFactory.safelySetValue(this.messageId, messageId);
     }
 
-    public void setMessageID(MessageIDConstant messageID) {
-        setMessageID(messageID.id);
+    public void setMessageId(MessageIdConstant messageId) {
+        setMessageId(messageId.getId());
     }
 
     @Override

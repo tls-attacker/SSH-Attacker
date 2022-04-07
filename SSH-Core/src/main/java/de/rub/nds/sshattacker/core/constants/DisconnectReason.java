@@ -32,7 +32,7 @@ public enum DisconnectReason {
     SSH_DISCONNECT_NO_MORE_AUTH_METHODS_AVAILABLE(14),
     SSH_DISCONNECT_ILLEGAL_USER_NAME(15);
 
-    public final int id;
+    private final int id;
 
     public static final Map<Integer, DisconnectReason> map;
 
@@ -47,8 +47,8 @@ public enum DisconnectReason {
         this.id = id;
     }
 
-    public static String getNameByID(int id) {
-        return map.get(id).toString();
+    public int getId() {
+        return id;
     }
 
     public static DisconnectReason fromId(int id) {

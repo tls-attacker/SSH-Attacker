@@ -30,6 +30,11 @@ public class ChannelEofMessageHandler extends SshMessageHandler<ChannelEofMessag
     }
 
     @Override
+    public ChannelEofMessageParser getParser(byte[] array) {
+        return new ChannelEofMessageParser(array);
+    }
+
+    @Override
     public ChannelEofMessageParser getParser(byte[] array, int startPosition) {
         return new ChannelEofMessageParser(array, startPosition);
     }

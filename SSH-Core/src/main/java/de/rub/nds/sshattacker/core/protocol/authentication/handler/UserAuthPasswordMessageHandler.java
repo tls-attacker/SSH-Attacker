@@ -30,6 +30,11 @@ public class UserAuthPasswordMessageHandler extends SshMessageHandler<UserAuthPa
     }
 
     @Override
+    public SshMessageParser<UserAuthPasswordMessage> getParser(byte[] array) {
+        return new UserAuthPasswordMessageParser(array);
+    }
+
+    @Override
     public SshMessageParser<UserAuthPasswordMessage> getParser(byte[] array, int startPosition) {
         return new UserAuthPasswordMessageParser(array, startPosition);
     }

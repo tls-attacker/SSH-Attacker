@@ -30,14 +30,13 @@ public class DefaultWorkflowExecutor extends WorkflowExecutor {
 
     @Override
     public void executeWorkflow() throws WorkflowExecutionException {
-
-        List<SshContext> allSshContexts = state.getAllSshContexts();
-
         if (config.getWorkflowExecutorShouldOpen()) {
-            for (SshContext ctx : allSshContexts) {
-                ctx.initTransportHandler();
-                LOGGER.debug("Connection for " + ctx + " initialized");
-            }
+            state.getAllSshContexts()
+                    .forEach(
+                            ctx -> {
+                                ctx.initTransportHandler();
+                                LOGGER.debug("Connection for " + ctx + " initialized");
+                            });
         }
 
         state.getWorkflowTrace().reset();
@@ -45,14 +44,14 @@ public class DefaultWorkflowExecutor extends WorkflowExecutor {
         for (SshAction action : sshActions) {
 
             if ((state.getConfig().getStopActionsAfterDisconnect()
-                    && isReceivedDisconnectMessage())) {
+                    && isDisconnectMessageReceived())) {
                 LOGGER.debug(
-                        "Skipping all Actions, received Disconnect, StopActionsAfterDisconnect active");
+                        "Received a DisconnectMessage, skipping all further actions because StopActionsAfterDisconnect is active");
                 break;
             }
             if ((state.getConfig().getStopActionsAfterIOException() && isIoException())) {
                 LOGGER.debug(
-                        "Skipping all Actions, received IO Exception, StopActionsAfterIOException active");
+                        "Received an IOException, skipping all further actions because StopActionsAfterIOException is active");
                 break;
             }
 
@@ -64,25 +63,26 @@ public class DefaultWorkflowExecutor extends WorkflowExecutor {
                 // action.isExecutedAsPlanned(...);
             } catch (PreparationException | WorkflowExecutionException ex) {
                 throw new WorkflowExecutionException(
-                        "Problem while executing Action:" + action, ex);
+                        "Problem while executing action: " + action, ex);
             }
         }
 
         if (state.getConfig().getWorkflowExecutorShouldClose()) {
-            for (SshContext ctx : state.getAllSshContexts()) {
-                try {
-                    ctx.getTransportHandler().closeConnection();
-                } catch (IOException ex) {
-                    LOGGER.warn("Could not close connection for context " + ctx);
-                    LOGGER.debug(ex);
-                }
-            }
+            state.getAllSshContexts()
+                    .forEach(
+                            ctx -> {
+                                try {
+                                    ctx.getTransportHandler().closeConnection();
+                                } catch (IOException ex) {
+                                    LOGGER.warn("Could not close connection for context " + ctx);
+                                    LOGGER.debug(ex);
+                                }
+                            });
         }
 
         if (state.getConfig().getResetWorkflowtracesBeforeSaving()) {
             state.getWorkflowTrace().reset();
         }
-
         state.storeTrace();
 
         if (config.getConfigOutput() != null) {
@@ -90,21 +90,12 @@ public class DefaultWorkflowExecutor extends WorkflowExecutor {
         }
     }
 
-    private boolean isReceivedDisconnectMessage() {
-        for (SshContext ctx : state.getAllSshContexts()) {
-            if (ctx.getReceivedDisconnectMessage()) {
-                return true;
-            }
-        }
-        return false;
+    private boolean isDisconnectMessageReceived() {
+        return state.getAllSshContexts().stream().anyMatch(SshContext::isDisconnectMessageReceived);
     }
 
     private boolean isIoException() {
-        for (SshContext ctx : state.getAllSshContexts()) {
-            if (ctx.hasReceivedTransportHandlerException()) {
-                return true;
-            }
-        }
-        return false;
+        return state.getAllSshContexts().stream()
+                .anyMatch(SshContext::hasReceivedTransportHandlerException);
     }
 }

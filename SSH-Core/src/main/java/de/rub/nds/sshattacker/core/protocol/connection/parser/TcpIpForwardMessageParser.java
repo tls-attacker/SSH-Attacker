@@ -18,17 +18,21 @@ public abstract class TcpIpForwardMessageParser<T extends TcpIpForwardMessage<T>
 
     private static final Logger LOGGER = LogManager.getLogger();
 
+    public TcpIpForwardMessageParser(byte[] array) {
+        super(array);
+    }
+
     public TcpIpForwardMessageParser(byte[] array, int startPosition) {
         super(array, startPosition);
     }
 
     private void parseIPAddressToBind() {
-        message.setIPAddressToBindLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-        LOGGER.debug("IP address to bind length: " + message.getIPAddressToBindLength().getValue());
-        message.setIPAddressToBind(
+        message.setIpAddressToBindLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
+        LOGGER.debug("IP address to bind length: " + message.getIpAddressToBindLength().getValue());
+        message.setIpAddressToBind(
                 parseByteString(
-                        message.getIPAddressToBindLength().getValue(), StandardCharsets.US_ASCII));
-        LOGGER.debug("IP address to bind: " + message.getIPAddressToBind().getValue());
+                        message.getIpAddressToBindLength().getValue(), StandardCharsets.US_ASCII));
+        LOGGER.debug("IP address to bind: " + message.getIpAddressToBind().getValue());
     }
 
     private void parsePortToBind() {

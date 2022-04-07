@@ -14,7 +14,6 @@ import static org.junit.jupiter.api.Assertions.fail;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.attacks.pkcs1.oracles.MockOracle;
 import de.rub.nds.sshattacker.attacks.pkcs1.util.OaepConverter;
-import de.rub.nds.sshattacker.core.constants.Bits;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
@@ -90,7 +89,7 @@ public class MangerTest {
                             solution,
                             "SHA-1",
                             ((RSAPublicKey) oracle.getPublicKey()).getModulus().bitLength()
-                                    / Bits.IN_A_BYTE);
+                                    / Byte.SIZE);
 
             CONSOLE.info("Encoded Solution: " + solution);
             CONSOLE.info("Decoded Secret: " + secret);

@@ -11,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
+import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.protocol.transport.message.RsaKeyExchangePubkeyMessage;
 import java.math.BigInteger;
 import java.util.stream.Stream;
@@ -47,33 +47,34 @@ public class RsaKeyExchangePubkeyMessageParserTest {
      * Test of RsaKeyExchangePubkeyMessageParser::parse method
      *
      * @param providedBytes Bytes to parse
-     * @param expectedHostKeyLength Expected length of the host key
-     * @param expectedHostKey Expected bytes of the host key
-     * @param expectedTransientPubkeyLength Expected length of the transient public key
-     * @param expectedTransientPubkey Expected bytes of the transient public key
+     * @param expectedHostKeyBytesLength Expected length of the host key
+     * @param expectedHostKeyBytes Expected bytes of the host key
+     * @param expectedTransientPublicKeyLength Expected length of the transient public key
+     * @param expectedTransientPublicKey Expected bytes of the transient public key
      */
     @ParameterizedTest
     @MethodSource("provideTestVectors")
     public void testParse(
             byte[] providedBytes,
-            int expectedHostKeyLength,
-            byte[] expectedHostKey,
-            int expectedTransientPubkeyLength,
-            byte[] expectedTransientPubkey,
+            int expectedHostKeyBytesLength,
+            byte[] expectedHostKeyBytes,
+            int expectedTransientPublicKeyLength,
+            byte[] expectedTransientPublicKey,
             BigInteger exponent,
             BigInteger modulus) {
         RsaKeyExchangePubkeyMessageParser parser =
-                new RsaKeyExchangePubkeyMessageParser(providedBytes, 0);
+                new RsaKeyExchangePubkeyMessageParser(providedBytes);
         RsaKeyExchangePubkeyMessage msg = parser.parse();
 
-        assertEquals(MessageIDConstant.SSH_MSG_KEXRSA_PUBKEY.id, msg.getMessageID().getValue());
-        assertEquals(expectedHostKeyLength, msg.getHostKeyLength().getValue().intValue());
-        assertArrayEquals(expectedHostKey, msg.getHostKey().getValue());
         assertEquals(
-                expectedTransientPubkeyLength,
-                msg.getTransientPubkeyLength().getValue().intValue());
-        assertArrayEquals(expectedTransientPubkey, msg.getTransientPubkey().getValue());
-        assertEquals(exponent, msg.getExponent().getValue());
-        assertEquals(modulus, msg.getModulus().getValue());
+                MessageIdConstant.SSH_MSG_KEXRSA_PUBKEY.getId(), msg.getMessageId().getValue());
+        assertEquals(expectedHostKeyBytesLength, msg.getHostKeyBytesLength().getValue().intValue());
+        assertArrayEquals(expectedHostKeyBytes, msg.getHostKeyBytes().getValue());
+        assertEquals(
+                expectedTransientPublicKeyLength,
+                msg.getTransientPublicKeyBytesLength().getValue().intValue());
+        assertArrayEquals(expectedTransientPublicKey, msg.getTransientPublicKeyBytes().getValue());
+        assertEquals(exponent, msg.getPublicExponent());
+        assertEquals(modulus, msg.getModulus());
     }
 }

@@ -8,8 +8,8 @@
 package de.rub.nds.sshattacker.core.crypto.ec;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.sshattacker.core.constants.ECPointFormat;
-import de.rub.nds.sshattacker.core.constants.NamedGroup;
+import de.rub.nds.sshattacker.core.constants.EcPointFormat;
+import de.rub.nds.sshattacker.core.constants.NamedEcGroup;
 import de.rub.nds.sshattacker.core.exceptions.PreparationException;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -22,14 +22,14 @@ public class PointFormatter {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public static byte[] formatToByteArray(NamedGroup group, Point point, ECPointFormat format) {
+    public static byte[] formatToByteArray(NamedEcGroup group, Point point, EcPointFormat format) {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         if (point.isAtInfinity()) {
             return new byte[1];
         }
         int elementLength =
                 ArrayConverter.bigIntegerToByteArray(point.getFieldX().getModulus()).length;
-        if (group != NamedGroup.ECDH_X448 && group != NamedGroup.ECDH_X25519) {
+        if (group != NamedEcGroup.CURVE448 && group != NamedEcGroup.CURVE25519) {
             switch (format) {
                 case UNCOMPRESSED:
                     stream.write(0x04);
@@ -99,7 +99,7 @@ public class PointFormatter {
         return stream.toByteArray();
     }
 
-    public static Point fromRawFormat(NamedGroup group, byte[] pointBytes) {
+    public static Point fromRawFormat(NamedEcGroup group, byte[] pointBytes) {
         EllipticCurve curve = CurveFactory.getCurve(group);
         int elementLength = ArrayConverter.bigIntegerToByteArray(curve.getModulus()).length;
         if (pointBytes.length < elementLength * 2) {
@@ -121,7 +121,7 @@ public class PointFormatter {
         return curve.getPoint(new BigInteger(1, coordX), new BigInteger(1, coordY));
     }
 
-    public static Point formatFromByteArray(NamedGroup group, byte[] compressedPoint) {
+    public static Point formatFromByteArray(NamedEcGroup group, byte[] compressedPoint) {
         ByteArrayInputStream inputStream = new ByteArrayInputStream(compressedPoint);
         EllipticCurve curve = CurveFactory.getCurve(group);
         int elementLength = ArrayConverter.bigIntegerToByteArray(curve.getModulus()).length;
@@ -129,7 +129,7 @@ public class PointFormatter {
             LOGGER.warn("Could not parse point. Point is empty. Returning Basepoint");
             return curve.getBasePoint();
         }
-        if (group != NamedGroup.ECDH_X448 && group != NamedGroup.ECDH_X25519) {
+        if (group != NamedEcGroup.CURVE448 && group != NamedEcGroup.CURVE25519) {
             int pointFormat = inputStream.read();
             byte[] coordX = new byte[elementLength];
             switch (pointFormat) {

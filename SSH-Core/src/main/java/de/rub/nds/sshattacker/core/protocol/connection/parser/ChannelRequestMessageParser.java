@@ -19,6 +19,10 @@ public abstract class ChannelRequestMessageParser<T extends ChannelRequestMessag
 
     private static final Logger LOGGER = LogManager.getLogger();
 
+    public ChannelRequestMessageParser(byte[] array) {
+        super(array);
+    }
+
     public ChannelRequestMessageParser(byte[] array, int startPosition) {
         super(array, startPosition);
     }

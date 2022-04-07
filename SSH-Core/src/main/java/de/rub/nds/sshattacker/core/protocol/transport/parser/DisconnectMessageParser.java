@@ -19,6 +19,10 @@ public class DisconnectMessageParser extends SshMessageParser<DisconnectMessage>
 
     private static final Logger LOGGER = LogManager.getLogger();
 
+    public DisconnectMessageParser(byte[] array) {
+        super(array);
+    }
+
     public DisconnectMessageParser(byte[] array, int startPosition) {
         super(array, startPosition);
     }
@@ -29,7 +33,7 @@ public class DisconnectMessageParser extends SshMessageParser<DisconnectMessage>
     }
 
     private void parseReasonCode() {
-        message.setReasonCode(parseIntField(DataFormatConstants.INT32_SIZE));
+        message.setReasonCode(parseIntField(DataFormatConstants.UINT32_SIZE));
         LOGGER.debug(
                 "Reason: "
                         + DisconnectReason.fromId(message.getReasonCode().getValue()).toString()

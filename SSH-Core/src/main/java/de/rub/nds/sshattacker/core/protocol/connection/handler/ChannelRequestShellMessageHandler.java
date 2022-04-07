@@ -30,6 +30,11 @@ public class ChannelRequestShellMessageHandler
     public void adjustContext() {}
 
     @Override
+    public ChannelRequestShellMessageParser getParser(byte[] array) {
+        return new ChannelRequestShellMessageParser(array);
+    }
+
+    @Override
     public ChannelRequestShellMessageParser getParser(byte[] array, int startPosition) {
         return new ChannelRequestShellMessageParser(array, startPosition);
     }

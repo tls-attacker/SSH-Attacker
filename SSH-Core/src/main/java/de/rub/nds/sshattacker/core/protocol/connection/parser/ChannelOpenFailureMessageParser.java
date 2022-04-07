@@ -18,6 +18,10 @@ public class ChannelOpenFailureMessageParser
 
     private static final Logger LOGGER = LogManager.getLogger();
 
+    public ChannelOpenFailureMessageParser(byte[] array) {
+        super(array);
+    }
+
     public ChannelOpenFailureMessageParser(byte[] array, int startPosition) {
         super(array, startPosition);
     }
@@ -28,7 +32,7 @@ public class ChannelOpenFailureMessageParser
     }
 
     private void parseReasonCode() {
-        message.setReasonCode(parseIntField(DataFormatConstants.INT32_SIZE));
+        message.setReasonCode(parseIntField(DataFormatConstants.UINT32_SIZE));
         LOGGER.debug("Reason code: " + message.getReasonCode());
     }
 

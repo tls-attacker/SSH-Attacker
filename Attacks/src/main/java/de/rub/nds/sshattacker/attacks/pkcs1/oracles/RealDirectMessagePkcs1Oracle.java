@@ -15,7 +15,6 @@ import de.rub.nds.sshattacker.attacks.response.FingerPrintChecker;
 import de.rub.nds.sshattacker.attacks.response.ResponseExtractor;
 import de.rub.nds.sshattacker.attacks.response.ResponseFingerprint;
 import de.rub.nds.sshattacker.core.config.Config;
-import de.rub.nds.sshattacker.core.constants.Bits;
 import de.rub.nds.sshattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.sshattacker.core.state.State;
 import de.rub.nds.sshattacker.core.workflow.DefaultWorkflowExecutor;
@@ -53,7 +52,7 @@ public class RealDirectMessagePkcs1Oracle extends Pkcs1Oracle {
             ResponseFingerprint validResponseContent,
             ResponseFingerprint invalidResponseContent) {
         this.publicKey = (RSAPublicKey) pubKey;
-        this.blockSize = MathHelper.intCeilDiv(publicKey.getModulus().bitLength(), Bits.IN_A_BYTE);
+        this.blockSize = MathHelper.intCeilDiv(publicKey.getModulus().bitLength(), Byte.SIZE);
         this.validResponseContent = validResponseContent;
         this.invalidResponseContent = invalidResponseContent;
         this.config = config;
@@ -74,7 +73,7 @@ public class RealDirectMessagePkcs1Oracle extends Pkcs1Oracle {
             ResponseFingerprint invalidResponseContent,
             int maxAttempts) {
         this.publicKey = (RSAPublicKey) pubKey;
-        this.blockSize = MathHelper.intCeilDiv(publicKey.getModulus().bitLength(), Bits.IN_A_BYTE);
+        this.blockSize = MathHelper.intCeilDiv(publicKey.getModulus().bitLength(), Byte.SIZE);
         this.validResponseContent = validResponseContent;
         this.invalidResponseContent = invalidResponseContent;
         this.config = config;

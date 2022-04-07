@@ -7,9 +7,9 @@
  */
 package de.rub.nds.sshattacker.attacks.general;
 
-import de.rub.nds.sshattacker.attacks.task.ITask;
 import de.rub.nds.sshattacker.attacks.task.SshTask;
 import de.rub.nds.sshattacker.attacks.task.StateExecutionTask;
+import de.rub.nds.sshattacker.attacks.task.Task;
 import de.rub.nds.sshattacker.core.state.State;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -69,7 +69,7 @@ public class ParallelExecutor {
                         size, size, 5, TimeUnit.MINUTES, new LinkedBlockingDeque<>(), factory));
     }
 
-    private Future<ITask> addTask(SshTask task) {
+    private Future<Task> addTask(SshTask task) {
         if (executorService.isShutdown()) {
             throw new RuntimeException("Cannot add Tasks to already shutdown executor");
         }
@@ -91,7 +91,7 @@ public class ParallelExecutor {
         return executorService.submit(task);
     }
 
-    private Future<ITask> addStateTask(State state) {
+    private Future<Task> addStateTask(State state) {
         return addTask(new StateExecutionTask(state, reexecutions));
     }
 
@@ -113,13 +113,13 @@ public class ParallelExecutor {
         this.bulkExecuteStateTasks(new ArrayList<>(Arrays.asList(states)));
     }
 
-    public List<ITask> bulkExecuteTasks(Iterable<SshTask> taskList) {
-        List<Future<ITask>> futureList = new LinkedList<>();
-        List<ITask> resultList = new ArrayList<>(0);
+    public List<Task> bulkExecuteTasks(Iterable<SshTask> taskList) {
+        List<Future<Task>> futureList = new LinkedList<>();
+        List<Task> resultList = new ArrayList<>(0);
         for (SshTask tlStask : taskList) {
             futureList.add(addTask(tlStask));
         }
-        for (Future<ITask> future : futureList) {
+        for (Future<Task> future : futureList) {
             try {
                 resultList.add(future.get());
             } catch (InterruptedException | ExecutionException ex) {
@@ -129,7 +129,7 @@ public class ParallelExecutor {
         return resultList;
     }
 
-    public List<ITask> bulkExecuteTasks(SshTask... tasks) {
+    public List<Task> bulkExecuteTasks(SshTask... tasks) {
         return this.bulkExecuteTasks(new ArrayList<>(Arrays.asList(tasks)));
     }
 

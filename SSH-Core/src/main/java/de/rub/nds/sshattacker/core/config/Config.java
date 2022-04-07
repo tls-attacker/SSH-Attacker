@@ -13,7 +13,8 @@ import de.rub.nds.sshattacker.core.connection.Channel;
 import de.rub.nds.sshattacker.core.connection.InboundConnection;
 import de.rub.nds.sshattacker.core.connection.OutboundConnection;
 import de.rub.nds.sshattacker.core.constants.*;
-import de.rub.nds.sshattacker.core.crypto.keys.RsaPublicKey;
+import de.rub.nds.sshattacker.core.crypto.ec.PointFormatter;
+import de.rub.nds.sshattacker.core.crypto.keys.*;
 import de.rub.nds.sshattacker.core.workflow.factory.WorkflowTraceType;
 import de.rub.nds.sshattacker.core.workflow.filter.FilterType;
 import java.io.File;
@@ -24,6 +25,7 @@ import java.lang.reflect.Field;
 import java.math.BigInteger;
 import java.security.Security;
 import java.util.*;
+import java.util.stream.Collectors;
 import javax.xml.bind.annotation.*;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import org.apache.logging.log4j.LogManager;
@@ -50,17 +52,19 @@ public class Config implements Serializable {
 
     private final String clientComment;
 
+    private final String clientEndOfMessageSequence;
+
     private final String serverVersion;
 
     private final String serverComment;
+
+    private final String serverEndOfMessageSequence;
 
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private final byte[] clientCookie;
 
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private final byte[] serverCookie;
-
-    private String endOfMessageSequence;
 
     @XmlElement(name = "clientSupportedKeyExchangeAlgorithm")
     @XmlElementWrapper
@@ -72,27 +76,27 @@ public class Config implements Serializable {
 
     @XmlElement(name = "clientSupportedHostKeyAlgorithm")
     @XmlElementWrapper
-    private final List<PublicKeyAuthenticationAlgorithm> clientSupportedHostKeyAlgorithms;
+    private final List<PublicKeyAlgorithm> clientSupportedHostKeyAlgorithms;
 
     @XmlElement(name = "serverSupportedHostKeyAlgorithm")
     @XmlElementWrapper
-    private final List<PublicKeyAuthenticationAlgorithm> serverSupportedHostKeyAlgorithms;
+    private final List<PublicKeyAlgorithm> serverSupportedHostKeyAlgorithms;
 
-    @XmlElement(name = "clientSupportedCipherAlgorithmClientToServer")
+    @XmlElement(name = "clientSupportedEncryptionAlgorithmClientToServer")
     @XmlElementWrapper
-    private final List<EncryptionAlgorithm> clientSupportedCipherAlgorithmsClientToServer;
+    private final List<EncryptionAlgorithm> clientSupportedEncryptionAlgorithmsClientToServer;
 
-    @XmlElement(name = "clientSupportedCipherAlgorithmServerToClient")
+    @XmlElement(name = "clientSupportedEncryptionAlgorithmServerToClient")
     @XmlElementWrapper
-    private final List<EncryptionAlgorithm> clientSupportedCipherAlgorithmsServerToClient;
+    private final List<EncryptionAlgorithm> clientSupportedEncryptionAlgorithmsServerToClient;
 
-    @XmlElement(name = "serverSupportedCipherAlgorithmServerToClient")
+    @XmlElement(name = "serverSupportedEncryptionAlgorithmServerToClient")
     @XmlElementWrapper
-    private final List<EncryptionAlgorithm> serverSupportedCipherAlgorithmsServerToClient;
+    private final List<EncryptionAlgorithm> serverSupportedEncryptionAlgorithmsServerToClient;
 
-    @XmlElement(name = "serverSupportedCipherAlgorithmClientToServer")
+    @XmlElement(name = "serverSupportedEncryptionAlgorithmClientToServer")
     @XmlElementWrapper
-    private final List<EncryptionAlgorithm> serverSupportedCipherAlgorithmsClientToServer;
+    private final List<EncryptionAlgorithm> serverSupportedEncryptionAlgorithmsClientToServer;
 
     @XmlElement(name = "clientSupportedMacAlgorithmClientToServer")
     @XmlElementWrapper
@@ -150,11 +154,24 @@ public class Config implements Serializable {
 
     private final int serverReserved;
 
-    @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
-    private byte[] clientEcdhPublicKey;
+    @XmlElement(name = "serverHostKey")
+    @XmlElementWrapper
+    private final List<SshPublicKey<?, ?>> serverHostKeys;
 
-    @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
-    private byte[] serverEcdhPublicKey;
+    private final Integer dhGexMinimalGroupSize;
+
+    private final Integer dhGexPreferredGroupSize;
+
+    private final Integer dhGexMaximalGroupSize;
+
+    private final KeyExchangeAlgorithm defaultDhKeyExchangeAlgorithm;
+
+    private final KeyExchangeAlgorithm defaultEcdhKeyExchangeAlgorithm;
+
+    private final KeyExchangeAlgorithm defaultRsaKeyExchangeAlgorithm;
+
+    private final SshPublicKey<CustomRsaPublicKey, CustomRsaPrivateKey>
+            fallbackRsaTransientPublicKey;
 
     private AuthenticationMethod authenticationMethod;
 
@@ -186,6 +203,24 @@ public class Config implements Serializable {
 
     private RunningModeType defaultRunningMode = RunningModeType.CLIENT;
 
+    /**
+     * If set to true, SSH-Attacker will not try to continue receiving when all expected messages
+     * were received
+     */
+    private Boolean quickReceive = true;
+
+    /**
+     * The maximum number of bytes to receive in a single receive action. Defaults to 2^24 bytes,
+     * RFC 4253 requires each SSH implementation to be able to handle binary packets with a length
+     * of at least 35000 bytes.
+     */
+    private Integer receiveMaximumBytes = 16777216;
+
+    /**
+     * If set to true, receive actions will stop receiving whenever a DisconnectMessage was received
+     */
+    private Boolean stopReceivingAfterDisconnect = false;
+
     private Boolean filtersKeepUserSettings = true;
 
     private String workflowInput = null;
@@ -213,18 +248,6 @@ public class Config implements Serializable {
     private Boolean enforceSettings = false;
 
     /**
-     * If set to true, preparation exceptions will not be thrown during message preparation.
-     * Instead, fields will be filled with dummy data to allow for out of order testing.
-     */
-    private Boolean avoidPreparationExceptions = false;
-
-    /**
-     * If set to true, adjustment exceptions will not be thrown during message handling. Instead,
-     * message related adjustments may be skipped depending on the current state.
-     */
-    private Boolean avoidAdjustmentExceptions = false;
-
-    /**
      * If set to true, sending or receiving a NewKeysMessage automatically enables the encryption
      * for the corresponding transport direction. If set to false, encryption must be enabled
      * manually by calling the corresponding methods on the state.
@@ -233,52 +256,98 @@ public class Config implements Serializable {
 
     private ChooserType chooserType = ChooserType.DEFAULT;
 
-    private NamedDHGroup defaultDHGexKeyExchangeGroup;
-
-    private KeyExchangeAlgorithm defaultEcdhKeyExchangeAlgortihm;
-
-    private KeyExchangeAlgorithm defaultRsaKeyExchangeAlgorithm;
-
-    private RsaPublicKey defaultRsaPublicKey;
-
     public Config() {
 
         defaultClientConnection = new OutboundConnection("client", 65222, "localhost");
         defaultServerConnection = new InboundConnection("server", 65222, "localhost");
-        clientVersion = "SSH-2.0-OpenSSH_7.8";
+
+        clientVersion = "SSH-2.0-OpenSSH_8.2p1";
         clientComment = "";
         serverVersion = clientVersion;
         serverComment = clientComment;
+        clientEndOfMessageSequence = "\r\n";
+        serverEndOfMessageSequence = "\r\n";
+
         clientCookie = ArrayConverter.hexStringToByteArray("00000000000000000000000000000000");
         serverCookie = ArrayConverter.hexStringToByteArray("00000000000000000000000000000000");
-        endOfMessageSequence = "\r\n";
 
-        clientSupportedKeyExchangeAlgorithms = new LinkedList<>();
-        clientSupportedKeyExchangeAlgorithms.add(
-                KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP14_SHA256);
-        clientSupportedKeyExchangeAlgorithms.add(
-                KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP_EXCHANGE_SHA256);
-        clientSupportedKeyExchangeAlgorithms.add(KeyExchangeAlgorithm.ECDH_SHA2_NISTP256);
-
+        // Default values for cryptographic parameters are taken from OpenSSH 8.2p1
+        clientSupportedKeyExchangeAlgorithms =
+                Arrays.stream(
+                                new KeyExchangeAlgorithm[] {
+                                    KeyExchangeAlgorithm.CURVE25519_SHA256,
+                                    KeyExchangeAlgorithm.CURVE25519_SHA256_LIBSSH_ORG,
+                                    KeyExchangeAlgorithm.ECDH_SHA2_NISTP256,
+                                    KeyExchangeAlgorithm.ECDH_SHA2_NISTP384,
+                                    KeyExchangeAlgorithm.ECDH_SHA2_NISTP521,
+                                    KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP_EXCHANGE_SHA256,
+                                    KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP16_SHA512,
+                                    KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP18_SHA512,
+                                    KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP14_SHA256
+                                })
+                        .collect(Collectors.toCollection(LinkedList::new));
         serverSupportedKeyExchangeAlgorithms =
                 new LinkedList<>(clientSupportedKeyExchangeAlgorithms);
 
-        clientSupportedHostKeyAlgorithms = new LinkedList<>();
-        clientSupportedHostKeyAlgorithms.add(PublicKeyAuthenticationAlgorithm.SSH_RSA);
+        // We don't support CERT_V01 or SK (U2F) host keys (yet), only listed for completeness
+        clientSupportedHostKeyAlgorithms =
+                Arrays.stream(
+                                new PublicKeyAlgorithm[] {
+                                    // PublicKeyAlgorithm.ECDSA_SHA2_NISTP256_CERT_V01_OPENSSH_COM,
+                                    // PublicKeyAlgorithm.ECDSA_SHA2_NISTP384_CERT_V01_OPENSSH_COM,
+                                    // PublicKeyAlgorithm.ECDSA_SHA2_NISTP521_CERT_V01_OPENSSH_COM,
+                                    // PublicKeyAlgorithm.SK_ECDSA_SHA2_NISTP256_CERT_V01_OPENSSH_COM,
+                                    // PublicKeyAlgorithm.SSH_ED25519_CERT_V01_OPENSSH_COM,
+                                    // PublicKeyAlgorithm.SK_SSH_ED25519_CERT_V01_OPENSSH_COM,
+                                    // PublicKeyAlgorithm.RSA_SHA2_512_CERT_V01_OPENSSH_COM,
+                                    // PublicKeyAlgorithm.RSA_SHA2_256_CERT_V01_OPENSSH_COM,
+                                    // PublicKeyAlgorithm.SSH_RSA_CERT_V01_OPENSSH_COM,
+                                    PublicKeyAlgorithm.ECDSA_SHA2_NISTP256,
+                                    PublicKeyAlgorithm.ECDSA_SHA2_NISTP384,
+                                    PublicKeyAlgorithm.ECDSA_SHA2_NISTP521,
+                                    // PublicKeyAlgorithm.SK_ECDSA_SHA2_NISTP256_OPENSSH_COM,
+                                    PublicKeyAlgorithm.SSH_ED25519,
+                                    // PublicKeyAlgorithm.SK_SSH_ED25519_OPENSSH_COM,
+                                    PublicKeyAlgorithm.RSA_SHA2_512,
+                                    PublicKeyAlgorithm.RSA_SHA2_256,
+                                    PublicKeyAlgorithm.SSH_RSA
+                                })
+                        .collect(Collectors.toCollection(LinkedList::new));
         serverSupportedHostKeyAlgorithms = new LinkedList<>(clientSupportedHostKeyAlgorithms);
 
-        clientSupportedCipherAlgorithmsClientToServer = new LinkedList<>();
-        clientSupportedCipherAlgorithmsClientToServer.add(
-                EncryptionAlgorithm.AES256_GCM_OPENSSH_COM);
-        clientSupportedCipherAlgorithmsServerToClient =
-                new LinkedList<>(clientSupportedCipherAlgorithmsClientToServer);
-        serverSupportedCipherAlgorithmsClientToServer =
-                new LinkedList<>(clientSupportedCipherAlgorithmsClientToServer);
-        serverSupportedCipherAlgorithmsServerToClient =
-                new LinkedList<>(clientSupportedCipherAlgorithmsClientToServer);
+        clientSupportedEncryptionAlgorithmsClientToServer =
+                Arrays.stream(
+                                new EncryptionAlgorithm[] {
+                                    EncryptionAlgorithm.CHACHA20_POLY1305_OPENSSH_COM,
+                                    EncryptionAlgorithm.AES128_CTR,
+                                    EncryptionAlgorithm.AES192_CTR,
+                                    EncryptionAlgorithm.AES256_CTR,
+                                    EncryptionAlgorithm.AES128_GCM_OPENSSH_COM,
+                                    EncryptionAlgorithm.AES256_GCM_OPENSSH_COM
+                                })
+                        .collect(Collectors.toCollection(LinkedList::new));
+        clientSupportedEncryptionAlgorithmsServerToClient =
+                new LinkedList<>(clientSupportedEncryptionAlgorithmsClientToServer);
+        serverSupportedEncryptionAlgorithmsClientToServer =
+                new LinkedList<>(clientSupportedEncryptionAlgorithmsClientToServer);
+        serverSupportedEncryptionAlgorithmsServerToClient =
+                new LinkedList<>(clientSupportedEncryptionAlgorithmsClientToServer);
 
-        clientSupportedMacAlgorithmsClientToServer = new LinkedList<>();
-        clientSupportedMacAlgorithmsClientToServer.add(MacAlgorithm.HMAC_SHA2_256_ETM_OPENSSH_COM);
+        clientSupportedMacAlgorithmsClientToServer =
+                Arrays.stream(
+                                new MacAlgorithm[] {
+                                    MacAlgorithm.UMAC_64_ETM_OPENSSH_COM,
+                                    MacAlgorithm.UMAC_128_ETM_OPENSSH_COM,
+                                    MacAlgorithm.HMAC_SHA2_256_ETM_OPENSSH_COM,
+                                    MacAlgorithm.HMAC_SHA2_512_ETM_OPENSSH_COM,
+                                    MacAlgorithm.HMAC_SHA1_ETM_OPENSSH_COM,
+                                    MacAlgorithm.UMAC_64_OPENSSH_COM,
+                                    MacAlgorithm.UMAC_128_OPENSSH_COM,
+                                    MacAlgorithm.HMAC_SHA2_256,
+                                    MacAlgorithm.HMAC_SHA2_512,
+                                    MacAlgorithm.HMAC_SHA1
+                                })
+                        .collect(Collectors.toCollection(LinkedList::new));
         clientSupportedMacAlgorithmsServerToClient =
                 new LinkedList<>(clientSupportedMacAlgorithmsClientToServer);
         serverSupportedMacAlgorithmsServerToClient =
@@ -286,10 +355,14 @@ public class Config implements Serializable {
         serverSupportedMacAlgorithmsClientToServer =
                 new LinkedList<>(clientSupportedMacAlgorithmsClientToServer);
 
-        clientSupportedCompressionMethodsClientToServer = new LinkedList<>();
-        clientSupportedCompressionMethodsClientToServer.add(CompressionMethod.NONE);
-        clientSupportedCompressionMethodsClientToServer.add(CompressionMethod.ZLIB_OPENSSH_COM);
-        clientSupportedCompressionMethodsClientToServer.add(CompressionMethod.ZLIB);
+        clientSupportedCompressionMethodsClientToServer =
+                Arrays.stream(
+                                new CompressionMethod[] {
+                                    CompressionMethod.NONE,
+                                    CompressionMethod.ZLIB_OPENSSH_COM,
+                                    CompressionMethod.ZLIB
+                                })
+                        .collect(Collectors.toCollection(LinkedList::new));
         clientSupportedCompressionMethodsServerToClient =
                 new LinkedList<>(clientSupportedCompressionMethodsClientToServer);
         serverSupportedCompressionMethodsServerToClient =
@@ -308,22 +381,205 @@ public class Config implements Serializable {
         clientFirstKeyExchangePacketFollows = false;
         serverFirstKeyExchangePacketFollows = false;
 
-        defaultDHGexKeyExchangeGroup = NamedDHGroup.GROUP14;
-        defaultEcdhKeyExchangeAlgortihm = KeyExchangeAlgorithm.ECDH_SHA2_NISTP256;
+        dhGexMinimalGroupSize = 2048;
+        dhGexPreferredGroupSize = 4096;
+        dhGexMaximalGroupSize = 8192;
 
+        defaultDhKeyExchangeAlgorithm = KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP14_SHA256;
+        defaultEcdhKeyExchangeAlgorithm = KeyExchangeAlgorithm.ECDH_SHA2_NISTP256;
         defaultRsaKeyExchangeAlgorithm = KeyExchangeAlgorithm.RSA2048_SHA256;
-        defaultRsaPublicKey =
-                new RsaPublicKey(
-                        new BigInteger("01001", 16),
-                        new BigInteger(
-                                "00FD786F7BB51AC8B619430613F84251BEDEF47216786EE72025D02DC6E4FF923193E63DE937"
-                                        + "986925263360EBAF68990C73CA78B99EC24822FDB923461AD6925A4AD4EBAD370DA5B8AD9D9A4AD0E3E4240"
-                                        + "43B7705D55DC52429D3DDD9F9F2E3DC618BF87C3519F5BB7C908C4B76CB72D366C5E32077E38DEF1780845B"
-                                        + "C950DFDF82C02CAFC1A8EE3535E491F33A8DC45EF515B56E305BC4BC124857D6662DB2C532840383F10C8EE"
-                                        + "CA47029FC31143ACA4DE26C905E1291F778A6FBC0BDB219F775B33F3114C2ED1B64CC8E19ABC10530589677"
-                                        + "8F7F686F82713E9198B19F70FF73674603B839B90ECE883D81DFB32DA3F9363A3207A639523F90EEE730B49F"
-                                        + "65",
-                                16));
+
+        fallbackRsaTransientPublicKey =
+                new SshPublicKey<>(
+                        PublicKeyFormat.SSH_RSA,
+                        new CustomRsaPublicKey(
+                                new BigInteger("10001", 16),
+                                new BigInteger(
+                                        "00EB617D71223FF5D286DBC136905B348783D4B540EFA9E00C7B1F605049"
+                                                + "7C6739FBAB3F5D5F2C9A86682D148701E9E04D58D31716C9C88BC0DD85BC"
+                                                + "170969A27709AF332C79453FC5B99231C3D6410B0A6119EAEE6D09AB59CF"
+                                                + "4EC425BE8A86C10BBA30902B7916D2E51AE5C2CA66E9650431DD3B98878E"
+                                                + "EA8A207F4336005157021F7FA4D6DBD54D64B5B974CE3FA4D135C5FD7893"
+                                                + "B8A6EAC0C1AC9D98144947C22E7D0E7E18F4F02C0E448D1AE9596BCE0A2E"
+                                                + "F417F693C914FAF24F716D0567ED48BAA5161727743A8431EB4E3CB65417"
+                                                + "B835926AC528BAA02343B0E784C297E0C19C17FB9E8A778F9EC805AC4AAC"
+                                                + "AA24AE34B96A3189D83FB6EC38C1D3EBFB",
+                                        16)),
+                        new CustomRsaPrivateKey(
+                                new BigInteger(
+                                        "00C15941BBCF108F1332680D9C8E93FCE05C703BBB6DA33341CD5986BA2C"
+                                                + "C31DE04954F025F8EA20BCCB924C4C624C054E43EA920ACC120A8A90ED2C"
+                                                + "06185B477354E72FB8169DC5B6DBAAB56A52F2F6E8BDBE9676E7E68B74A8"
+                                                + "8FE11BC81AEE7A60F1BEB68E9F571A41CC08742BE2C15193528A924BC6FE"
+                                                + "A4B675DF540C65D2697D31E533007B310D7E728D2E6DB06256A93F178200"
+                                                + "CED6AD5A59B40224A3373C3875539368971A32D27B48697D4FFE61ED7084"
+                                                + "7CA1D935392EA540C938072667BA9C9737A695C20CFCF578A1FF61DD9C43"
+                                                + "7666D97D5A986A3E786601498C3342A7C7307F7D8E6300436A7681AA9558"
+                                                + "9DF5A4479FAF232B83B9A19CB59833ECC1",
+                                        16),
+                                new BigInteger(
+                                        "00EB617D71223FF5D286DBC136905B348783D4B540EFA9E00C7B1F605049"
+                                                + "7C6739FBAB3F5D5F2C9A86682D148701E9E04D58D31716C9C88BC0DD85BC"
+                                                + "170969A27709AF332C79453FC5B99231C3D6410B0A6119EAEE6D09AB59CF"
+                                                + "4EC425BE8A86C10BBA30902B7916D2E51AE5C2CA66E9650431DD3B98878E"
+                                                + "EA8A207F4336005157021F7FA4D6DBD54D64B5B974CE3FA4D135C5FD7893"
+                                                + "B8A6EAC0C1AC9D98144947C22E7D0E7E18F4F02C0E448D1AE9596BCE0A2E"
+                                                + "F417F693C914FAF24F716D0567ED48BAA5161727743A8431EB4E3CB65417"
+                                                + "B835926AC528BAA02343B0E784C297E0C19C17FB9E8A778F9EC805AC4AAC"
+                                                + "AA24AE34B96A3189D83FB6EC38C1D3EBFB",
+                                        16)));
+
+        // An OpenSSL generated 2048 bit RSA keypair is currently being used as the default host key
+        // TODO: Load host keys from file to reduce length of Config class
+        serverHostKeys = new ArrayList<>();
+        serverHostKeys.add(
+                new SshPublicKey<>(
+                        PublicKeyFormat.SSH_RSA,
+                        new CustomRsaPublicKey(
+                                new BigInteger("010001", 16),
+                                new BigInteger(
+                                        "00D9F6BFFAB8BC79C6E9AB6C3D4593F561CC93B41A70B9A750045ED0AC09"
+                                                + "6EF4A6A8C7B2AAA4F44459481319AE956934BF9D5C5AD7C004ADE0B81E43"
+                                                + "75FD1DF8797DF6F3CA130ED8A2A9B6E94467A05D97A0F8380A4CBB75FC5E"
+                                                + "5C303433B61750063D3801D5C90658ACAEE140B09F95A0FD8886EFAE16EA"
+                                                + "B779DF82E6A12C1BE011FECB417C788B72C42948AB54CCE1E8119CFB78E1"
+                                                + "3B06090CEBF6D3806854FE09F03B20BA92505058EC64C44F0B4DA0BAE71D"
+                                                + "52EDA11AB67F4B54D9FCEFE1FACEB520D595FFA33502FB91423EBD972F26"
+                                                + "150715CB0E648F715E6E5E8FC9D8FA55E9DE0652CF85D7928B235486F54A"
+                                                + "3F3EE64B04888B898864B08200A9E22909",
+                                        16)),
+                        new CustomRsaPrivateKey(
+                                new BigInteger(
+                                        "7AAB5898AEE7C451A2A90B9DE04EC947656FAB69460FF68E1E278EA1841D"
+                                                + "A22B39CA4A4FA7CEA1B8EDCB7224C38A1659D1226D2E07AF9A7C62A305AC"
+                                                + "9DEC042FBC290443B23E24C64765DE1AD58777A522BF102B1BCC5536D794"
+                                                + "62BCBE6DB8E91CD9CF6F98F62E5031BFAA9E51C93ED900579A39C26CBB64"
+                                                + "CF7E6F998513E20B4B2A4DD36D4F6F074A0FDB04232FA6EDAB89A1B32BA5"
+                                                + "2214696BDA66C4518A73F92807DD088AB11263519885A0CD6A42B6D9EAE9"
+                                                + "EBD13241EDC4EB7205AE838A5EF7AE280D36410057B38ED05CEBA75F92AC"
+                                                + "DF40226164BB3A0C4312B65A8C2FBA85CDB7CC5F77F53C45F64409AFC460"
+                                                + "210C8EE4DAB818F009172387ED00E141",
+                                        16),
+                                new BigInteger(
+                                        "00D9F6BFFAB8BC79C6E9AB6C3D4593F561CC93B41A70B9A750045ED0AC09"
+                                                + "6EF4A6A8C7B2AAA4F44459481319AE956934BF9D5C5AD7C004ADE0B81E43"
+                                                + "75FD1DF8797DF6F3CA130ED8A2A9B6E94467A05D97A0F8380A4CBB75FC5E"
+                                                + "5C303433B61750063D3801D5C90658ACAEE140B09F95A0FD8886EFAE16EA"
+                                                + "B779DF82E6A12C1BE011FECB417C788B72C42948AB54CCE1E8119CFB78E1"
+                                                + "3B06090CEBF6D3806854FE09F03B20BA92505058EC64C44F0B4DA0BAE71D"
+                                                + "52EDA11AB67F4B54D9FCEFE1FACEB520D595FFA33502FB91423EBD972F26"
+                                                + "150715CB0E648F715E6E5E8FC9D8FA55E9DE0652CF85D7928B235486F54A"
+                                                + "3F3EE64B04888B898864B08200A9E22909",
+                                        16))));
+        // SSH enforces the use of 1024 / 160 bit DSA keys as per RFC 4253 Sec. 6.6
+        serverHostKeys.add(
+                new SshPublicKey<>(
+                        PublicKeyFormat.SSH_DSS,
+                        new CustomDsaPublicKey(
+                                new BigInteger(
+                                        "008BD081A858028A729F0C04E0788C06BC5B2EA8B880A203986C90E92D20"
+                                                + "322670248A305A3217737BF0256EFFD53CC512993F137A4F64162AF4F3E6"
+                                                + "AA64D348343C86D1B3D18CAE017A48FD2FFA56A9DFC70D18BE8958938768"
+                                                + "995AFD952719DE2066B0A7E3D90948D4E0437BD1A5C94F1A1FBBADDCEA3A"
+                                                + "338E96A4CACCF4A855",
+                                        16),
+                                new BigInteger("00B971EBD0321EEC38C15E01FD9C773CCA23E66879", 16),
+                                new BigInteger(
+                                        "259DC09E04AD1818271F3E676B17A98B6F7B1D08B43B51FAEF06D2C9F921"
+                                                + "0667ED3C14ABEBEE372D1F325C11C0304AE8B9BAC8914619CA05165BAE2B"
+                                                + "E49BAD5DD8ECB8129CDDD2941D6DDF53C7D53A5FB9D88B58F362034CA6A1"
+                                                + "3929D28942D0054FFA4166D3DDDE0B2FE2E4A0342A827DEF6B6FECDB0614"
+                                                + "8ED403D3FC9C4C79",
+                                        16),
+                                new BigInteger(
+                                        "1433495B5BB346BEB6A783DA2ADF1C5CFE946146E4A461B2A658CEC29DA2"
+                                                + "1496A6D69119026059D0C2557D535E664A0F10B4DB006601D8848EA6B92F"
+                                                + "C6313B03103C9C3C6F0ED55CB46EEC8B0FE0007D2411F46676A8761DADAA"
+                                                + "171351322D29487E9AE8738C354DD04FFEACA50503AFEC8F0610A679FF81"
+                                                + "6EFD9B162F152BDA",
+                                        16)),
+                        new CustomDsaPrivateKey(
+                                new BigInteger(
+                                        "008BD081A858028A729F0C04E0788C06BC5B2EA8B880A203986C90E92D20"
+                                                + "322670248A305A3217737BF0256EFFD53CC512993F137A4F64162AF4F3E6"
+                                                + "AA64D348343C86D1B3D18CAE017A48FD2FFA56A9DFC70D18BE8958938768"
+                                                + "995AFD952719DE2066B0A7E3D90948D4E0437BD1A5C94F1A1FBBADDCEA3A"
+                                                + "338E96A4CACCF4A855",
+                                        16),
+                                new BigInteger("00B971EBD0321EEC38C15E01FD9C773CCA23E66879", 16),
+                                new BigInteger(
+                                        "259DC09E04AD1818271F3E676B17A98B6F7B1D08B43B51FAEF06D2C9F921"
+                                                + "0667ED3C14ABEBEE372D1F325C11C0304AE8B9BAC8914619CA05165BAE2B"
+                                                + "E49BAD5DD8ECB8129CDDD2941D6DDF53C7D53A5FB9D88B58F362034CA6A1"
+                                                + "3929D28942D0054FFA4166D3DDDE0B2FE2E4A0342A827DEF6B6FECDB0614"
+                                                + "8ED403D3FC9C4C79",
+                                        16),
+                                new BigInteger("7C6B4E2B32192EFC09B7CB12D85CBB4141EF7348", 16))));
+        serverHostKeys.add(
+                new SshPublicKey<>(
+                        PublicKeyFormat.ECDSA_SHA2_NISTP256,
+                        new CustomEcPublicKey(
+                                PointFormatter.formatFromByteArray(
+                                        NamedEcGroup.SECP256R1,
+                                        ArrayConverter.hexStringToByteArray(
+                                                "0492A8D4E6EECBED47D0AACD15D714FB619D6F3941028874B99117CF8EAE"
+                                                        + "BBCDF7CC981DE460635590F3AB5AE6F7DF0A12E6E0DE951DEAE3D2C48EC3"
+                                                        + "4C237C61E7")),
+                                NamedEcGroup.SECP256R1),
+                        new CustomEcPrivateKey(
+                                new BigInteger(
+                                        "8DD62AA24F982B18446E3ECC7E50F8EB976610750242BA637C949F4C8FD6A1CF",
+                                        16),
+                                NamedEcGroup.SECP256R1)));
+        serverHostKeys.add(
+                new SshPublicKey<>(
+                        PublicKeyFormat.ECDSA_SHA2_NISTP384,
+                        new CustomEcPublicKey(
+                                PointFormatter.formatFromByteArray(
+                                        NamedEcGroup.SECP384R1,
+                                        ArrayConverter.hexStringToByteArray(
+                                                "04650469DB4E282660E0DCB23197D10EE935BA038B8B62890EB098420211"
+                                                        + "C38D5E4E737FF2A0DC53E1B8A55C65B2BD85673EFEEEE9CE4727374D2E2D"
+                                                        + "E8EEA6B8AB146245C8627E2346C76944AEB1C0BDCE1B267773F6ED08473A"
+                                                        + "DE8B6F5687A2B6")),
+                                NamedEcGroup.SECP384R1),
+                        new CustomEcPrivateKey(
+                                new BigInteger(
+                                        "EA39EE919D73A1FE8F8FBFC8807E7ED36BE3D89FBC1F35619B04E825E8E8"
+                                                + "07E994348EE8095467499AE15F73FE0FD298",
+                                        16),
+                                NamedEcGroup.SECP384R1)));
+        serverHostKeys.add(
+                new SshPublicKey<>(
+                        PublicKeyFormat.ECDSA_SHA2_NISTP521,
+                        new CustomEcPublicKey(
+                                PointFormatter.formatFromByteArray(
+                                        NamedEcGroup.SECP521R1,
+                                        ArrayConverter.hexStringToByteArray(
+                                                "0400A97EC5412F12C6CCAEDF2F288041146015FBCE1B939F017039D63280"
+                                                        + "9B170C1E51B5AFE19127F97146C0556A70E44D179B76DA98C39ACF418F98"
+                                                        + "95F7E8483665A800AF936C1864E14340ABE09860281D9A015E0C78A540F1"
+                                                        + "6CB36DD0275C9AF61A2A41F6AE6447ECCFCA1788878B7A249B195424BED8"
+                                                        + "CD881C0C3C5CEB051D64366DE5")),
+                                NamedEcGroup.SECP521R1),
+                        new CustomEcPrivateKey(
+                                new BigInteger(
+                                        "015B220911DD64BD8793BC5429093B7AE8E2B4F462751D553CE48E09D72E"
+                                                + "9981F4EF80334B981D6558C6498BFB4B6E1973BF60BF568C624934F1EF2B"
+                                                + "8561C67B2AD2",
+                                        16),
+                                NamedEcGroup.SECP521R1)));
+        serverHostKeys.add(
+                new SshPublicKey<>(
+                        PublicKeyFormat.SSH_ED25519,
+                        new XCurveEcPublicKey(
+                                ArrayConverter.hexStringToByteArray(
+                                        "13E3591CC0D1BAE515EC44FD3FA01784E2103165ECCFE939D91A619F46DBED70"),
+                                NamedEcGroup.CURVE25519),
+                        new XCurveEcPrivateKey(
+                                ArrayConverter.hexStringToByteArray(
+                                        "092E829DE536BE8F7D74E7A3C6CD90EA6EADDDEEB2E50D8617EBDD132B53669B"),
+                                NamedEcGroup.CURVE25519)));
 
         clientReserved = 0;
         serverReserved = 0;
@@ -416,8 +672,12 @@ public class Config implements Serializable {
         return serverCookie;
     }
 
-    public String getEndOfMessageSequence() {
-        return endOfMessageSequence;
+    public String getClientEndOfMessageSequence() {
+        return clientEndOfMessageSequence;
+    }
+
+    public String getServerEndOfMessageSequence() {
+        return serverEndOfMessageSequence;
     }
 
     public List<KeyExchangeAlgorithm> getClientSupportedKeyExchangeAlgorithms() {
@@ -433,28 +693,28 @@ public class Config implements Serializable {
         return serverSupportedKeyExchangeAlgorithms;
     }
 
-    public List<PublicKeyAuthenticationAlgorithm> getClientSupportedHostKeyAlgorithms() {
+    public List<PublicKeyAlgorithm> getClientSupportedHostKeyAlgorithms() {
         return clientSupportedHostKeyAlgorithms;
     }
 
-    public List<PublicKeyAuthenticationAlgorithm> getServerSupportedHostKeyAlgorithms() {
+    public List<PublicKeyAlgorithm> getServerSupportedHostKeyAlgorithms() {
         return serverSupportedHostKeyAlgorithms;
     }
 
-    public List<EncryptionAlgorithm> getClientSupportedCipherAlgorithmsClientToServer() {
-        return clientSupportedCipherAlgorithmsClientToServer;
+    public List<EncryptionAlgorithm> getClientSupportedEncryptionAlgorithmsClientToServer() {
+        return clientSupportedEncryptionAlgorithmsClientToServer;
     }
 
-    public List<EncryptionAlgorithm> getClientSupportedCipherAlgorithmsServerToClient() {
-        return clientSupportedCipherAlgorithmsServerToClient;
+    public List<EncryptionAlgorithm> getClientSupportedEncryptionAlgorithmsServerToClient() {
+        return clientSupportedEncryptionAlgorithmsServerToClient;
     }
 
-    public List<EncryptionAlgorithm> getServerSupportedCipherAlgorithmsServerToClient() {
-        return serverSupportedCipherAlgorithmsServerToClient;
+    public List<EncryptionAlgorithm> getServerSupportedEncryptionAlgorithmsServerToClient() {
+        return serverSupportedEncryptionAlgorithmsServerToClient;
     }
 
-    public List<EncryptionAlgorithm> getServerSupportedCipherAlgorithmsClientToServer() {
-        return serverSupportedCipherAlgorithmsClientToServer;
+    public List<EncryptionAlgorithm> getServerSupportedEncryptionAlgorithmsClientToServer() {
+        return serverSupportedEncryptionAlgorithmsClientToServer;
     }
 
     public List<MacAlgorithm> getClientSupportedMacAlgorithmsClientToServer() {
@@ -521,20 +781,37 @@ public class Config implements Serializable {
         return serverReserved;
     }
 
-    public byte[] getClientEcdhPublicKey() {
-        return clientEcdhPublicKey;
+    public Integer getDhGexMinimalGroupSize() {
+        return dhGexMinimalGroupSize;
     }
 
-    public void setClientEcdhPublicKey(byte[] clientEcdhPublicKey) {
-        this.clientEcdhPublicKey = clientEcdhPublicKey;
+    public Integer getDhGexPreferredGroupSize() {
+        return dhGexPreferredGroupSize;
     }
 
-    public byte[] getServerEcdhPublicKey() {
-        return serverEcdhPublicKey;
+    public Integer getDhGexMaximalGroupSize() {
+        return dhGexMaximalGroupSize;
     }
 
-    public void setServerEcdhPublicKey(byte[] serverEcdhPublicKey) {
-        this.serverEcdhPublicKey = serverEcdhPublicKey;
+    public KeyExchangeAlgorithm getDefaultDhKeyExchangeAlgorithm() {
+        return defaultDhKeyExchangeAlgorithm;
+    }
+
+    public KeyExchangeAlgorithm getDefaultEcdhKeyExchangeAlgorithm() {
+        return defaultEcdhKeyExchangeAlgorithm;
+    }
+
+    public KeyExchangeAlgorithm getDefaultRsaKeyExchangeAlgorithm() {
+        return defaultRsaKeyExchangeAlgorithm;
+    }
+
+    public SshPublicKey<CustomRsaPublicKey, CustomRsaPrivateKey>
+            getFallbackRsaTransientPublicKey() {
+        return fallbackRsaTransientPublicKey;
+    }
+
+    public List<SshPublicKey<?, ?>> getServerHostKeys() {
+        return serverHostKeys;
     }
 
     public AuthenticationMethod getAuthenticationMethod() {
@@ -599,6 +876,30 @@ public class Config implements Serializable {
 
     public void setDefaultRunningMode(RunningModeType defaultRunningMode) {
         this.defaultRunningMode = defaultRunningMode;
+    }
+
+    public Boolean isQuickReceive() {
+        return quickReceive;
+    }
+
+    public void setQuickReceive(boolean quickReceive) {
+        this.quickReceive = quickReceive;
+    }
+
+    public Integer getReceiveMaximumBytes() {
+        return receiveMaximumBytes;
+    }
+
+    public void setReceiveMaximumBytes(int receiveMaximumBytes) {
+        this.receiveMaximumBytes = receiveMaximumBytes;
+    }
+
+    public Boolean isStopReceivingAfterDisconnect() {
+        return stopReceivingAfterDisconnect;
+    }
+
+    public void setStopReceivingAfterDisconnect(boolean stopReceivingAfterDisconnect) {
+        this.stopReceivingAfterDisconnect = stopReceivingAfterDisconnect;
     }
 
     public ChannelRequestType getChannelRequestType() {
@@ -721,22 +1022,6 @@ public class Config implements Serializable {
         this.serviceName = serviceName;
     }
 
-    public Boolean getAvoidAdjustmentExceptions() {
-        return avoidAdjustmentExceptions;
-    }
-
-    public void setAvoidAdjustmentExceptions(Boolean avoidAdjustmentExceptions) {
-        this.avoidAdjustmentExceptions = avoidAdjustmentExceptions;
-    }
-
-    public Boolean getAvoidPreparationExceptions() {
-        return avoidPreparationExceptions;
-    }
-
-    public void setAvoidPreparationExceptions(Boolean avoidPreparationExceptions) {
-        this.avoidPreparationExceptions = avoidPreparationExceptions;
-    }
-
     public Boolean getEnableEncryptionOnNewKeysMessage() {
         return enableEncryptionOnNewKeysMessage;
     }
@@ -753,28 +1038,12 @@ public class Config implements Serializable {
         this.chooserType = chooserType;
     }
 
-    public NamedDHGroup getDefaultDHGexKeyExchangeGroup() {
-        return defaultDHGexKeyExchangeGroup;
-    }
-
-    public KeyExchangeAlgorithm getDefaultEcdhKeyExchangeAlgortihm() {
-        return defaultEcdhKeyExchangeAlgortihm;
-    }
-
     public Channel getDefaultChannel() {
         return defaultChannel;
     }
 
     public void setDefaultChannel(Channel defaultChannel) {
         this.defaultChannel = defaultChannel;
-    }
-
-    public KeyExchangeAlgorithm getDefaultRsaKeyExchangeAlgorithm() {
-        return defaultRsaKeyExchangeAlgorithm;
-    }
-
-    public RsaPublicKey getDefaultRsaPublicKey() {
-        return defaultRsaPublicKey;
     }
 
     public String getDefaultVariableValue() {

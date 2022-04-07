@@ -18,6 +18,10 @@ public class ServiceRequestMessageParser extends SshMessageParser<ServiceRequest
 
     private static final Logger LOGGER = LogManager.getLogger();
 
+    public ServiceRequestMessageParser(byte[] array) {
+        super(array);
+    }
+
     public ServiceRequestMessageParser(byte[] array, int startPosition) {
         super(array, startPosition);
     }

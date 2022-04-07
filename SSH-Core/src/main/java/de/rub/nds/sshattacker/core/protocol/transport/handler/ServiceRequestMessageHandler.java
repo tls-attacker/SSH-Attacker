@@ -30,6 +30,11 @@ public class ServiceRequestMessageHandler extends SshMessageHandler<ServiceReque
     }
 
     @Override
+    public ServiceRequestMessageParser getParser(byte[] array) {
+        return new ServiceRequestMessageParser(array);
+    }
+
+    @Override
     public ServiceRequestMessageParser getParser(byte[] array, int startPosition) {
         return new ServiceRequestMessageParser(array, startPosition);
     }

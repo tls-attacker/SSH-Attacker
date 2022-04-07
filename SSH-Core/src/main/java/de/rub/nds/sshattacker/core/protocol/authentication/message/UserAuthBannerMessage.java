@@ -10,7 +10,7 @@ package de.rub.nds.sshattacker.core.protocol.authentication.message;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
-import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
+import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.protocol.authentication.handler.UserAuthBannerMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
 import de.rub.nds.sshattacker.core.state.SshContext;
@@ -18,14 +18,12 @@ import java.nio.charset.StandardCharsets;
 
 public class UserAuthBannerMessage extends SshMessage<UserAuthBannerMessage> {
 
+    public static final MessageIdConstant ID = MessageIdConstant.SSH_MSG_USERAUTH_BANNER;
+
     private ModifiableInteger messageLength;
     private ModifiableString message;
     private ModifiableInteger languageTagLength;
     private ModifiableString languageTag;
-
-    public UserAuthBannerMessage() {
-        super(MessageIDConstant.SSH_MSG_USERAUTH_BANNER);
-    }
 
     public ModifiableInteger getMessageLength() {
         return messageLength;

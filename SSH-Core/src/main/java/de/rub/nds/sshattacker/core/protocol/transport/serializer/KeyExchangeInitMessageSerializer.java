@@ -172,7 +172,7 @@ public class KeyExchangeInitMessageSerializer extends SshMessageSerializer<KeyEx
 
     private void serializeReserved() {
         LOGGER.debug("Reserved: " + message.getReserved().getValue());
-        appendInt(message.getReserved().getValue(), DataFormatConstants.INT32_SIZE);
+        appendInt(message.getReserved().getValue(), DataFormatConstants.UINT32_SIZE);
     }
 
     @Override

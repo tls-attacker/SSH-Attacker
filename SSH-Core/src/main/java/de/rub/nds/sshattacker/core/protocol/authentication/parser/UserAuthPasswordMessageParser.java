@@ -18,6 +18,10 @@ public class UserAuthPasswordMessageParser extends SshMessageParser<UserAuthPass
 
     private static final Logger LOGGER = LogManager.getLogger();
 
+    public UserAuthPasswordMessageParser(byte[] array) {
+        super(array);
+    }
+
     public UserAuthPasswordMessageParser(byte[] array, int startPosition) {
         super(array, startPosition);
     }

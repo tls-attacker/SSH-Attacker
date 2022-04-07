@@ -30,6 +30,11 @@ public class ChannelRequestExecMessageHandler extends SshMessageHandler<ChannelR
     }
 
     @Override
+    public SshMessageParser<ChannelRequestExecMessage> getParser(byte[] array) {
+        return new ChannelRequestExecMessageParser(array);
+    }
+
+    @Override
     public SshMessageParser<ChannelRequestExecMessage> getParser(byte[] array, int startPosition) {
         return new ChannelRequestExecMessageParser(array, startPosition);
     }

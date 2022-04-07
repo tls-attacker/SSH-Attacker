@@ -9,11 +9,17 @@ package de.rub.nds.sshattacker.core.crypto.kex;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.KeyExchangeAlgorithm;
-import de.rub.nds.sshattacker.core.constants.NamedDHGroup;
+import de.rub.nds.sshattacker.core.constants.KeyExchangeFlowType;
+import de.rub.nds.sshattacker.core.constants.NamedDhGroup;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomDhPrivateKey;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomDhPublicKey;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomKeyPair;
+import de.rub.nds.sshattacker.core.exceptions.CryptoException;
+import de.rub.nds.sshattacker.core.exceptions.NotImplementedException;
+import de.rub.nds.sshattacker.core.state.SshContext;
 import java.math.BigInteger;
+import java.util.Arrays;
+import java.util.Comparator;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -27,19 +33,28 @@ public class DhKeyExchange extends DhBasedKeyExchange {
     private CustomKeyPair<CustomDhPrivateKey, CustomDhPublicKey> localKeyPair;
     private CustomDhPublicKey remotePublicKey;
 
-    public DhKeyExchange() {
+    protected DhKeyExchange() {
         super();
     }
 
-    public DhKeyExchange(NamedDHGroup group) {
+    protected DhKeyExchange(NamedDhGroup group) {
         super();
         this.modulus = group.getModulus();
         this.generator = group.getGenerator();
     }
 
-    public static DhKeyExchange newInstance(KeyExchangeAlgorithm negotiatedKexAlgorithm) {
-        NamedDHGroup group;
-        switch (negotiatedKexAlgorithm) {
+    public static DhKeyExchange newInstance(SshContext context, KeyExchangeAlgorithm algorithm) {
+        if (algorithm == null
+                || (algorithm.getFlowType() != KeyExchangeFlowType.DIFFIE_HELLMAN
+                        && algorithm.getFlowType()
+                                != KeyExchangeFlowType.DIFFIE_HELLMAN_GROUP_EXCHANGE)) {
+            algorithm = context.getConfig().getDefaultDhKeyExchangeAlgorithm();
+            LOGGER.warn(
+                    "Trying to instantiate a new DH or DH GEX key exchange without a matching key exchange algorithm negotiated, falling back to "
+                            + algorithm);
+        }
+        NamedDhGroup group;
+        switch (algorithm) {
             case DIFFIE_HELLMAN_GROUP_EXCHANGE_SHA1:
             case DIFFIE_HELLMAN_GROUP_EXCHANGE_SHA256:
             case DIFFIE_HELLMAN_GROUP_EXCHANGE_SHA224_SSH_COM:
@@ -47,38 +62,36 @@ public class DhKeyExchange extends DhBasedKeyExchange {
             case DIFFIE_HELLMAN_GROUP_EXCHANGE_SHA512_SSH_COM:
                 return new DhKeyExchange();
             case DIFFIE_HELLMAN_GROUP1_SHA1:
-                group = NamedDHGroup.GROUP1;
+                group = NamedDhGroup.GROUP1;
                 break;
             case DIFFIE_HELLMAN_GROUP14_SHA1:
             case DIFFIE_HELLMAN_GROUP14_SHA256:
             case DIFFIE_HELLMAN_GROUP14_SHA224_SSH_COM:
             case DIFFIE_HELLMAN_GROUP14_SHA256_SSH_COM:
-                group = NamedDHGroup.GROUP14;
+                group = NamedDhGroup.GROUP14;
                 break;
             case DIFFIE_HELLMAN_GROUP15_SHA512:
             case DIFFIE_HELLMAN_GROUP15_SHA256_SSH_COM:
             case DIFFIE_HELLMAN_GROUP15_SHA384_SSH_COM:
-                group = NamedDHGroup.GROUP15;
+                group = NamedDhGroup.GROUP15;
                 break;
             case DIFFIE_HELLMAN_GROUP16_SHA512:
             case DIFFIE_HELLMAN_GROUP16_SHA384_SSH_COM:
             case DIFFIE_HELLMAN_GROUP16_SHA512_SSH_COM:
-                group = NamedDHGroup.GROUP16;
+                group = NamedDhGroup.GROUP16;
                 break;
             case DIFFIE_HELLMAN_GROUP17_SHA512:
-                group = NamedDHGroup.GROUP17;
+                group = NamedDhGroup.GROUP17;
                 break;
             case DIFFIE_HELLMAN_GROUP18_SHA512:
             case DIFFIE_HELLMAN_GROUP18_SHA512_SSH_COM:
-                group = NamedDHGroup.GROUP18;
+                group = NamedDhGroup.GROUP18;
                 break;
             default:
-                // TODO: Determine, whether throwing an error or continuing with a predetermined
-                // group is better
-                LOGGER.warn(
-                        "Initializing a new DHKeyExchange without an DH key exchange algorithm negotiated, falling back to group 14");
-                group = NamedDHGroup.GROUP14;
-                break;
+                throw new NotImplementedException(
+                        "Unable to create a new DH key exchange instance, key exchange algorithm "
+                                + algorithm
+                                + " is not yet implemented.");
         }
         return new DhKeyExchange(group);
     }
@@ -163,10 +176,70 @@ public class DhKeyExchange extends DhBasedKeyExchange {
     }
 
     @Override
-    public void computeSharedSecret() {
+    public void computeSharedSecret() throws CryptoException {
+        if (localKeyPair == null || remotePublicKey == null) {
+            throw new CryptoException(
+                    "Unable to compute shared secret - either local key pair or remote public key is null");
+        }
         sharedSecret = remotePublicKey.getY().modPow(localKeyPair.getPrivate().getX(), modulus);
         LOGGER.debug(
                 "Finished computation of shared secret: "
                         + ArrayConverter.bytesToRawHexString(sharedSecret.toByteArray()));
+    }
+
+    public void selectGroup(int preferredGroupSize) {
+        /*
+         * Minimal group size taken from RFC 4419 Section 3:
+         *   "In all cases, the size of the returned group SHOULD be at least 1024 bits."
+         */
+        this.selectGroup(1024, preferredGroupSize, Integer.MAX_VALUE);
+    }
+
+    public void selectGroup(int minimalGroupSize, int preferredGroupSize, int maximumGroupSize) {
+        /*
+         * Group selection based on the process described in RFC 4419:
+         *
+         *   The server should return the smallest group it knows that is larger
+         *   than the size the client requested.  If the server does not know a
+         *   group that is larger than the client request, then it SHOULD return
+         *   the largest group it knows.  In all cases, the size of the returned
+         *   group SHOULD be at least 1024 bits.
+         */
+        NamedDhGroup selectedGroup =
+                Arrays.stream(NamedDhGroup.values())
+                        .sorted(Comparator.comparingInt(group -> group.getModulus().bitLength()))
+                        .filter(
+                                (candidate) ->
+                                        candidate.getModulus().bitLength() - preferredGroupSize
+                                                >= 0)
+                        .findFirst()
+                        .orElseGet(
+                                () ->
+                                        Arrays.stream(NamedDhGroup.values())
+                                                .max(
+                                                        Comparator.comparingInt(
+                                                                group ->
+                                                                        group.getModulus()
+                                                                                .bitLength()))
+                                                .orElseThrow());
+        if (selectedGroup.getModulus().bitLength() > maximumGroupSize) {
+            LOGGER.info(
+                    "DH GEX key exchange could not satisfy group size constraints reported by the remote peer: {} exceeds maximum group size of {} bits",
+                    selectedGroup,
+                    maximumGroupSize);
+        }
+        if (selectedGroup.getModulus().bitLength() < minimalGroupSize) {
+            LOGGER.info(
+                    "DH GEX key exchange could not satisfy group size constraints reported by the remote peer: {} falls behind minimal group size of {} bits",
+                    selectedGroup,
+                    minimalGroupSize);
+        }
+        LOGGER.info(
+                "Selected DH group {} for key exchange, group size: {} bits (selected based on the preferred group size of {} bits)",
+                selectedGroup,
+                selectedGroup.getModulus().bitLength(),
+                preferredGroupSize);
+        this.setModulus(selectedGroup.getModulus());
+        this.setGenerator(selectedGroup.getGenerator());
     }
 }

@@ -12,17 +12,14 @@ import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.CharConstants;
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
+import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class Converter {
-
-    private static final Logger LOGGER = LogManager.getLogger();
 
     public static <T extends Enum<T>> ModifiableString listOfAlgorithmsToModifiableString(
             List<T> list) {
@@ -69,6 +66,13 @@ public class Converter {
                                         .orElse(null))
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
+    }
+
+    public static byte[] bigIntegerToMpint(BigInteger input) {
+        byte[] value = input.toByteArray();
+        byte[] length =
+                ArrayConverter.intToBytes(value.length, DataFormatConstants.MPINT_SIZE_LENGTH);
+        return ArrayConverter.concatenate(length, value);
     }
 
     public static byte[] byteArrayToMpint(byte[] input) {

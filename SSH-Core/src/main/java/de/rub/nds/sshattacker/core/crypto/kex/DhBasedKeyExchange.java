@@ -13,7 +13,7 @@ import java.security.PublicKey;
 
 public abstract class DhBasedKeyExchange extends KeyExchange {
 
-    public DhBasedKeyExchange() {
+    protected DhBasedKeyExchange() {
         super();
     }
 

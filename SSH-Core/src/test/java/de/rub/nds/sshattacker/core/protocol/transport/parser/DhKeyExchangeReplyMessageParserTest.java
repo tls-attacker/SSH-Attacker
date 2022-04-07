@@ -11,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
+import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.protocol.transport.message.DhKeyExchangeReplyMessage;
 import java.math.BigInteger;
 import java.util.stream.Stream;
@@ -48,10 +48,11 @@ public class DhKeyExchangeReplyMessageParserTest {
      * Test of DhKeyExchangeReplyMessageParser::parse method
      *
      * @param providedBytes Bytes to parse
-     * @param expectedHostKeyLength Expected length of the host key
-     * @param expectedHostKey Expected bytes of the host key
-     * @param expectedPublicKeyLength Expected length of the remote diffie hellman public key
-     * @param expectedPublicKey Expected bytes of the remote diffie hellman public key
+     * @param expectedHostKeyBytesLength Expected length of the host key
+     * @param expectedHostKeyBytes Expected bytes of the host key
+     * @param expectedEphemeralPublicKeyLength Expected length of the remote diffie hellman public
+     *     key
+     * @param expectedEphemeralPublicKey Expected bytes of the remote diffie hellman public key
      * @param expectedSignatureLength Expected length of the signature
      * @param expectedSignature Expected bytes of the signature
      */
@@ -59,23 +60,23 @@ public class DhKeyExchangeReplyMessageParserTest {
     @MethodSource("provideTestVectors")
     public void testParse(
             byte[] providedBytes,
-            int expectedHostKeyLength,
-            byte[] expectedHostKey,
-            int expectedPublicKeyLength,
-            BigInteger expectedPublicKey,
+            int expectedHostKeyBytesLength,
+            byte[] expectedHostKeyBytes,
+            int expectedEphemeralPublicKeyLength,
+            BigInteger expectedEphemeralPublicKey,
             int expectedSignatureLength,
             byte[] expectedSignature) {
-        DhKeyExchangeReplyMessageParser parser =
-                new DhKeyExchangeReplyMessageParser(providedBytes, 0);
+        DhKeyExchangeReplyMessageParser parser = new DhKeyExchangeReplyMessageParser(providedBytes);
         DhKeyExchangeReplyMessage msg = parser.parse();
 
-        assertEquals(MessageIDConstant.SSH_MSG_KEXDH_REPLY.id, msg.getMessageID().getValue());
-        assertEquals(expectedHostKeyLength, msg.getHostKeyLength().getValue().intValue());
-        assertArrayEquals(expectedHostKey, msg.getHostKey().getValue());
+        assertEquals(MessageIdConstant.SSH_MSG_KEXDH_REPLY.getId(), msg.getMessageId().getValue());
+        assertEquals(expectedHostKeyBytesLength, msg.getHostKeyBytesLength().getValue().intValue());
+        assertArrayEquals(expectedHostKeyBytes, msg.getHostKeyBytes().getValue());
         // TODO: Add assertions for host key
         assertEquals(
-                expectedPublicKeyLength, msg.getEphemeralPublicKeyLength().getValue().intValue());
-        assertEquals(expectedPublicKey, msg.getEphemeralPublicKey().getValue());
+                expectedEphemeralPublicKeyLength,
+                msg.getEphemeralPublicKeyLength().getValue().intValue());
+        assertEquals(expectedEphemeralPublicKey, msg.getEphemeralPublicKey().getValue());
         assertEquals(expectedSignatureLength, msg.getSignatureLength().getValue().intValue());
         assertArrayEquals(expectedSignature, msg.getSignature().getValue());
     }

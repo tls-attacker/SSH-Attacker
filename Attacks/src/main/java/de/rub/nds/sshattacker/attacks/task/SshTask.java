@@ -17,7 +17,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /** Base class for SSH tasks */
-public abstract class SshTask implements ITask, Callable<ITask> {
+public abstract class SshTask implements Task, Callable<Task> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -58,7 +58,7 @@ public abstract class SshTask implements ITask, Callable<ITask> {
     }
 
     @Override
-    public ITask call() {
+    public Task call() {
         Throwable exception = null;
         long sleepTime = 0;
         for (int i = 0; i < reexecutions + 1; i++) {

@@ -29,12 +29,17 @@ public class VersionExchangeMessageHandler extends ProtocolMessageHandler<Versio
         if (context.isClient()) {
             context.setServerVersion(message.getVersion().getValue());
             context.setServerComment(message.getComment().getValue());
-            context.getExchangeHashInstance().setServerVersion(message);
+            context.getExchangeHashInputHolder().setServerVersion(message);
         } else {
             context.setClientVersion(message.getVersion().getValue());
             context.setClientComment(message.getComment().getValue());
-            context.getExchangeHashInstance().setClientVersion(message);
+            context.getExchangeHashInputHolder().setClientVersion(message);
         }
+    }
+
+    @Override
+    public VersionExchangeMessageParser getParser(byte[] array) {
+        return new VersionExchangeMessageParser(array);
     }
 
     @Override

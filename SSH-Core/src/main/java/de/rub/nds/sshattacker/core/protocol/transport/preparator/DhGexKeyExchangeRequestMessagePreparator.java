@@ -7,8 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.preparator;
 
-import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
-import de.rub.nds.sshattacker.core.crypto.hash.DhGexExchangeHash;
+import de.rub.nds.sshattacker.core.crypto.hash.ExchangeHashInputHolder;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.transport.message.DhGexKeyExchangeRequestMessage;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
@@ -27,17 +26,13 @@ public class DhGexKeyExchangeRequestMessagePreparator
 
     @Override
     public void prepareMessageSpecificContents() {
-        getObject().setMessageID(MessageIDConstant.SSH_MSG_KEX_DH_GEX_REQUEST);
-        chooser.getContext().setKeyExchangeInstance(chooser.getDHGexKeyExchange());
-        DhGexExchangeHash dhGexExchangeHash =
-                DhGexExchangeHash.from(chooser.getContext().getExchangeHashInstance());
-        dhGexExchangeHash.setMinimalGroupSize(chooser.getMinimalDHGroupSize());
-        dhGexExchangeHash.setPreferredGroupSize(chooser.getPreferredDHGroupSize());
-        dhGexExchangeHash.setMaximalGroupSize(chooser.getMaximalDHGroupSize());
-        chooser.getContext().setExchangeHashInstance(dhGexExchangeHash);
+        ExchangeHashInputHolder inputHolder = chooser.getContext().getExchangeHashInputHolder();
+        inputHolder.setDhGexMinimalGroupSize(chooser.getMinimalDhGroupSize());
+        inputHolder.setDhGexPreferredGroupSize(chooser.getPreferredDhGroupSize());
+        inputHolder.setDhGexMaximalGroupSize(chooser.getMaximalDhGroupSize());
 
-        getObject().setMinimalGroupSize(chooser.getMinimalDHGroupSize());
-        getObject().setPreferredGroupSize(chooser.getPreferredDHGroupSize());
-        getObject().setMaximalGroupSize(chooser.getMaximalDHGroupSize());
+        getObject().setMinimalGroupSize(chooser.getMinimalDhGroupSize());
+        getObject().setPreferredGroupSize(chooser.getPreferredDhGroupSize());
+        getObject().setMaximalGroupSize(chooser.getMaximalDhGroupSize());
     }
 }

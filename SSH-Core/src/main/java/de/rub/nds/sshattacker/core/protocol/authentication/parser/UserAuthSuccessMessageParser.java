@@ -12,6 +12,10 @@ import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 
 public class UserAuthSuccessMessageParser extends SshMessageParser<UserAuthSuccessMessage> {
 
+    public UserAuthSuccessMessageParser(byte[] array) {
+        super(array);
+    }
+
     public UserAuthSuccessMessageParser(byte[] array, int startPosition) {
         super(array, startPosition);
     }

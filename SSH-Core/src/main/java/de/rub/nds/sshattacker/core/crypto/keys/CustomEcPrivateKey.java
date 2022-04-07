@@ -8,7 +8,7 @@
 package de.rub.nds.sshattacker.core.crypto.keys;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.sshattacker.core.constants.NamedGroup;
+import de.rub.nds.sshattacker.core.constants.NamedEcGroup;
 import java.math.BigInteger;
 import java.security.AlgorithmParameters;
 import java.security.NoSuchAlgorithmException;
@@ -16,40 +16,57 @@ import java.security.interfaces.ECPrivateKey;
 import java.security.spec.ECGenParameterSpec;
 import java.security.spec.ECParameterSpec;
 import java.security.spec.InvalidParameterSpecException;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
 
-public class CustomEcPrivateKey implements ECPrivateKey {
+/**
+ * A serializable elliptic curve private key used in various EC-based algorithms like ECDH and
+ * ECDSA.
+ */
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
+public class CustomEcPrivateKey extends CustomPrivateKey implements ECPrivateKey {
 
-    private final BigInteger privateKey;
+    private NamedEcGroup group;
+    private BigInteger privateKey;
 
-    private final NamedGroup group;
+    @SuppressWarnings("unused")
+    private CustomEcPrivateKey() {}
 
-    public CustomEcPrivateKey(BigInteger privateKey, NamedGroup group) {
-        if (!group.isStandardCurve()) {
+    public CustomEcPrivateKey(BigInteger privateKey, NamedEcGroup group) {
+        if (group.isRFC7748Curve()) {
             throw new IllegalArgumentException(
                     "CustomEcPrivateKey does not support named group " + group);
         }
+        this.group = group;
         this.privateKey = privateKey;
+    }
+
+    public NamedEcGroup getGroup() {
+        return group;
+    }
+
+    public void setGroup(NamedEcGroup group) {
         this.group = group;
     }
 
-    @Override
-    public BigInteger getS() {
+    public BigInteger getPrivateKey() {
         return privateKey;
     }
 
-    @Override
-    public String getAlgorithm() {
-        return "EC";
+    public void setPrivateKey(BigInteger privateKey) {
+        this.privateKey = privateKey;
     }
 
-    @Override
-    public String getFormat() {
-        return "None";
+    public CustomEcPrivateKey parse(byte[] encoded, NamedEcGroup group) {
+        return new CustomEcPrivateKey(new BigInteger(1, encoded), group);
     }
 
+    // Interface methods
     @Override
-    public byte[] getEncoded() {
-        return ArrayConverter.bigIntegerToByteArray(privateKey);
+    public BigInteger getS() {
+        return privateKey;
     }
 
     @Override
@@ -63,7 +80,18 @@ public class CustomEcPrivateKey implements ECPrivateKey {
         }
     }
 
-    public CustomEcPrivateKey parse(byte[] encoded, NamedGroup group) {
-        return new CustomEcPrivateKey(new BigInteger(encoded), group);
+    @Override
+    public String getAlgorithm() {
+        return "EC";
+    }
+
+    @Override
+    public String getFormat() {
+        return "Octet";
+    }
+
+    @Override
+    public byte[] getEncoded() {
+        return ArrayConverter.bigIntegerToByteArray(privateKey);
     }
 }

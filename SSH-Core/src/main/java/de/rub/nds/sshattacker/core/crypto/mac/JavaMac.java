@@ -36,7 +36,7 @@ class JavaMac implements WrappedMac {
     public byte[] calculate(int sequenceNumber, byte[] unencryptedPacket) {
         byte[] macInput =
                 ArrayConverter.concatenate(
-                        ArrayConverter.intToBytes(sequenceNumber, DataFormatConstants.INT32_SIZE),
+                        ArrayConverter.intToBytes(sequenceNumber, DataFormatConstants.UINT32_SIZE),
                         unencryptedPacket);
         byte[] output = mac.doFinal(macInput);
 

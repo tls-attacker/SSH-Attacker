@@ -28,6 +28,11 @@ public class NoMoreSessionsMessageHandler extends SshMessageHandler<NoMoreSessio
     public void adjustContext() {}
 
     @Override
+    public NoMoreSessionsMessageParser getParser(byte[] array) {
+        return new NoMoreSessionsMessageParser(array);
+    }
+
+    @Override
     public NoMoreSessionsMessageParser getParser(byte[] array, int startPosition) {
         return new NoMoreSessionsMessageParser(array, startPosition);
     }

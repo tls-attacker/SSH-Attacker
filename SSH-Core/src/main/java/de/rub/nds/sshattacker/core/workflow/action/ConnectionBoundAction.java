@@ -28,7 +28,7 @@ public abstract class ConnectionBoundAction extends SshAction {
 
     @XmlTransient private final Set<String> aliases = new HashSet<>();
 
-    public ConnectionBoundAction() {}
+    private ConnectionBoundAction() {}
 
     public ConnectionBoundAction(String alias) {
         this.connectionAlias = alias;

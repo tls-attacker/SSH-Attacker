@@ -17,6 +17,10 @@ public class UnknownMessageParser extends SshMessageParser<UnknownMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
+    public UnknownMessageParser(byte[] array) {
+        super(array);
+    }
+
     public UnknownMessageParser(byte[] array, int startPosition) {
         super(array, startPosition);
     }

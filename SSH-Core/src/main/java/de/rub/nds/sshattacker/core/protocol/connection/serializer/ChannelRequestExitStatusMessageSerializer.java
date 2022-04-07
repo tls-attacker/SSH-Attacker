@@ -23,7 +23,7 @@ public class ChannelRequestExitStatusMessageSerializer
 
     public void serializeExitStatus() {
         LOGGER.debug("Exit status: " + message.getExitStatus().getValue());
-        appendInt(message.getExitStatus().getValue(), DataFormatConstants.INT32_SIZE);
+        appendInt(message.getExitStatus().getValue(), DataFormatConstants.UINT32_SIZE);
     }
 
     @Override

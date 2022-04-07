@@ -30,6 +30,11 @@ public class UserAuthBannerMessageHandler extends SshMessageHandler<UserAuthBann
     }
 
     @Override
+    public UserAuthBannerMessageParser getParser(byte[] array) {
+        return new UserAuthBannerMessageParser(array);
+    }
+
+    @Override
     public UserAuthBannerMessageParser getParser(byte[] array, int startPosition) {
         return new UserAuthBannerMessageParser(array, startPosition);
     }

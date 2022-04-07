@@ -7,18 +7,14 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.preparator;
 
-import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
+import de.rub.nds.sshattacker.core.crypto.kex.DhKeyExchange;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.transport.message.DhGexKeyExchangeReplyMessage;
+import de.rub.nds.sshattacker.core.protocol.util.KeyExchangeUtil;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
-import java.math.BigInteger;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class DhGexKeyExchangeReplyMessagePreparator
         extends SshMessagePreparator<DhGexKeyExchangeReplyMessage> {
-
-    private static final Logger LOGGER = LogManager.getLogger();
 
     public DhGexKeyExchangeReplyMessagePreparator(
             Chooser chooser, DhGexKeyExchangeReplyMessage message) {
@@ -27,11 +23,24 @@ public class DhGexKeyExchangeReplyMessagePreparator
 
     @Override
     public void prepareMessageSpecificContents() {
-        getObject().setMessageID(MessageIDConstant.SSH_MSG_KEX_DH_GEX_REPLY);
-
-        getObject().setHostKey(new byte[0], true);
-        getObject().setEphemeralPublicKey(BigInteger.ZERO, true);
-        // TODO: Implement signature calculation
-        getObject().setSignature(new byte[0], true);
+        KeyExchangeUtil.prepareHostKeyMessage(chooser.getContext(), getObject());
+        prepareEphemeralPublicKey();
+        KeyExchangeUtil.computeSharedSecret(chooser.getContext(), chooser.getDhGexKeyExchange());
+        KeyExchangeUtil.computeExchangeHash(chooser.getContext());
+        KeyExchangeUtil.prepareExchangeHashSignatureMessage(chooser.getContext(), getObject());
+        KeyExchangeUtil.setSessionId(chooser.getContext());
+        KeyExchangeUtil.generateKeySet(chooser.getContext());
     }
+
+    private void prepareEphemeralPublicKey() {
+        DhKeyExchange keyExchange = chooser.getDhGexKeyExchange();
+        keyExchange.generateLocalKeyPair();
+        getObject().setEphemeralPublicKey(keyExchange.getLocalKeyPair().getPublic().getY(), true);
+        // Update exchange hash with local public key
+        chooser.getContext()
+                .getExchangeHashInputHolder()
+                .setDhGexServerPublicKey(keyExchange.getLocalKeyPair().getPublic().getY());
+    }
+
+    private void prepareSignature() {}
 }

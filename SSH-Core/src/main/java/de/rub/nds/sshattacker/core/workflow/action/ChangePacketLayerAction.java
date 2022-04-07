@@ -20,7 +20,9 @@ public class ChangePacketLayerAction extends ConnectionBoundAction {
     @XmlAttribute(name = "to")
     protected PacketLayerType packetLayerType = null;
 
-    protected ChangePacketLayerAction() {}
+    private ChangePacketLayerAction() {
+        super(AliasedConnection.DEFAULT_CONNECTION_ALIAS);
+    }
 
     public ChangePacketLayerAction(PacketLayerType packetLayerType) {
         super(AliasedConnection.DEFAULT_CONNECTION_ALIAS);

@@ -18,6 +18,10 @@ public class DhGexKeyExchangeOldRequestMessageParser
 
     private static final Logger LOGGER = LogManager.getLogger();
 
+    public DhGexKeyExchangeOldRequestMessageParser(byte[] array) {
+        super(array);
+    }
+
     public DhGexKeyExchangeOldRequestMessageParser(byte[] array, int startPosition) {
         super(array, startPosition);
     }
@@ -27,13 +31,13 @@ public class DhGexKeyExchangeOldRequestMessageParser
         return new DhGexKeyExchangeOldRequestMessage();
     }
 
-    public void parsePreferedGroupSize() {
-        message.setPreferredGroupSize(parseIntField(DataFormatConstants.INT32_SIZE));
-        LOGGER.debug("Prefered group size: " + message.getPreferredGroupSize().getValue());
+    public void parsePreferredGroupSize() {
+        message.setPreferredGroupSize(parseIntField(DataFormatConstants.UINT32_SIZE));
+        LOGGER.debug("Preferred group size: {} bits", message.getPreferredGroupSize().getValue());
     }
 
     @Override
     protected void parseMessageSpecificContents() {
-        parsePreferedGroupSize();
+        parsePreferredGroupSize();
     }
 }

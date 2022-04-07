@@ -7,7 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.workflow;
 
-import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
+import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessage;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
 import de.rub.nds.sshattacker.core.workflow.action.ReceivingAction;
@@ -40,11 +40,11 @@ public class WorkflowTraceUtil {
     }
 
     public static List<ProtocolMessage<?>> getAllReceivedMessages(
-            WorkflowTrace trace, MessageIDConstant type) {
+            WorkflowTrace trace, MessageIdConstant type) {
         List<ProtocolMessage<?>> receivedMessage = new LinkedList<>();
         for (ProtocolMessage<?> message : getAllReceivedMessages(trace)) {
             if (message instanceof SshMessage<?>
-                    && ((SshMessage<?>) message).getMessageID().getValue() == type.id) {
+                    && ((SshMessage<?>) message).getMessageId().getValue() == type.getId()) {
                 receivedMessage.add(message);
             }
         }

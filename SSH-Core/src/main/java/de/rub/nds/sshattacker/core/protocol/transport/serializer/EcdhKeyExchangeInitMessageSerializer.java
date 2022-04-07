@@ -23,17 +23,22 @@ public class EcdhKeyExchangeInitMessageSerializer
         super(message);
     }
 
-    private void serializePublicKey() {
-        LOGGER.debug("Public key length: " + message.getPublicKeyLength().getValue());
-        appendInt(message.getPublicKeyLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
+    private void serializeEphemeralPublicKey() {
         LOGGER.debug(
-                "Public key: "
-                        + ArrayConverter.bytesToRawHexString(message.getPublicKey().getValue()));
-        appendBytes(message.getPublicKey().getValue());
+                "Ephemeral public key (client) length: "
+                        + message.getEphemeralPublicKeyLength().getValue());
+        appendInt(
+                message.getEphemeralPublicKeyLength().getValue(),
+                DataFormatConstants.STRING_SIZE_LENGTH);
+        LOGGER.debug(
+                "Ephemeral public key (client): "
+                        + ArrayConverter.bytesToRawHexString(
+                                message.getEphemeralPublicKey().getValue()));
+        appendBytes(message.getEphemeralPublicKey().getValue());
     }
 
     @Override
     public void serializeMessageSpecificContents() {
-        serializePublicKey();
+        serializeEphemeralPublicKey();
     }
 }

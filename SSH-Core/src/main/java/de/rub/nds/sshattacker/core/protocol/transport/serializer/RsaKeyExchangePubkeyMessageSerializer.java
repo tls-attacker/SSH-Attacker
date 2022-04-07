@@ -7,6 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.serializer;
 
+import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.transport.message.RsaKeyExchangePubkeyMessage;
 import org.apache.logging.log4j.LogManager;
@@ -21,19 +22,26 @@ public class RsaKeyExchangePubkeyMessageSerializer
         super(message);
     }
 
-    public void serializeHostKey() {
-        LOGGER.debug("Host key: " + message.getHostKey());
-        appendBytes(message.getHostKey().getValue());
+    public void serializeHostKeyBytes() {
+        LOGGER.debug("Host key bytes length: " + message.getHostKeyBytesLength().getValue());
+        appendInt(
+                message.getHostKeyBytesLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
+        LOGGER.debug("Host key bytes: " + message.getHostKeyBytes());
+        appendBytes(message.getHostKeyBytes().getValue());
     }
 
     public void serializeTransientPublicKey() {
-        LOGGER.debug("Transient public key: " + message.getTransientPubkey().getValue());
-        appendBytes(message.getTransientPubkey().getValue());
+        LOGGER.debug("Transient public key length: " + message.getTransientPublicKeyBytesLength());
+        appendInt(
+                message.getTransientPublicKeyBytesLength().getValue(),
+                DataFormatConstants.STRING_SIZE_LENGTH);
+        LOGGER.debug("Transient public key: " + message.getTransientPublicKeyBytes());
+        appendBytes(message.getTransientPublicKeyBytes().getValue());
     }
 
     @Override
     public void serializeMessageSpecificContents() {
-        serializeHostKey();
+        serializeHostKeyBytes();
         serializeTransientPublicKey();
     }
 }

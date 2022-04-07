@@ -9,18 +9,16 @@ package de.rub.nds.sshattacker.core.protocol.transport.message;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
-import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
+import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.UnknownMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class UnknownMessage extends SshMessage<UnknownMessage> {
 
-    private ModifiableByteArray payload;
+    public static final MessageIdConstant ID = MessageIdConstant.UNKNOWN;
 
-    public UnknownMessage() {
-        super(MessageIDConstant.UNKNOWN);
-    }
+    private ModifiableByteArray payload;
 
     public ModifiableByteArray getPayload() {
         return payload;
@@ -36,7 +34,7 @@ public class UnknownMessage extends SshMessage<UnknownMessage> {
 
     @Override
     public String toCompactString() {
-        return "UnknownMessage (" + MessageIDConstant.getNameByID(messageID.getValue()) + ")";
+        return "UnknownMessage (" + MessageIdConstant.getNameById(messageId.getValue()) + ")";
     }
 
     @Override

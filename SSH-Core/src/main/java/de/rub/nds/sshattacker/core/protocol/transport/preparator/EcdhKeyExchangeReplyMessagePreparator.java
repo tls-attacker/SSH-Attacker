@@ -7,9 +7,11 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.preparator;
 
-import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
+import de.rub.nds.sshattacker.core.constants.*;
+import de.rub.nds.sshattacker.core.crypto.kex.*;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.transport.message.EcdhKeyExchangeReplyMessage;
+import de.rub.nds.sshattacker.core.protocol.util.KeyExchangeUtil;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class EcdhKeyExchangeReplyMessagePreparator
@@ -22,10 +24,24 @@ public class EcdhKeyExchangeReplyMessagePreparator
 
     @Override
     public void prepareMessageSpecificContents() {
-        getObject().setMessageID(MessageIDConstant.SSH_MSG_KEX_ECDH_REPLY);
-        getObject().setHostKey(new byte[0], true);
-        getObject().setEphemeralPublicKey(new byte[0], true);
-        // TODO implement signature calculation
-        getObject().setSignature(new byte[0], true);
+        KeyExchangeUtil.prepareHostKeyMessage(chooser.getContext(), getObject());
+        prepareEphemeralPublicKey();
+        KeyExchangeUtil.computeSharedSecret(chooser.getContext(), chooser.getEcdhKeyExchange());
+        KeyExchangeUtil.computeExchangeHash(chooser.getContext());
+        KeyExchangeUtil.prepareExchangeHashSignatureMessage(chooser.getContext(), getObject());
+        KeyExchangeUtil.setSessionId(chooser.getContext());
+        KeyExchangeUtil.generateKeySet(chooser.getContext());
+    }
+
+    private void prepareEphemeralPublicKey() {
+        AbstractEcdhKeyExchange keyExchange = chooser.getEcdhKeyExchange();
+        keyExchange.generateLocalKeyPair();
+        getObject()
+                .setEphemeralPublicKey(
+                        keyExchange.getLocalKeyPair().getPublic().getEncoded(), true);
+        // Update exchange hash with local public key
+        chooser.getContext()
+                .getExchangeHashInputHolder()
+                .setEcdhServerPublicKey(keyExchange.getLocalKeyPair().getPublic().getEncoded());
     }
 }

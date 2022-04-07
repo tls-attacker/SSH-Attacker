@@ -23,21 +23,24 @@ public class EcdhKeyExchangeReplyMessageSerializer
         super(message);
     }
 
-    private void serializeHostKey(EcdhKeyExchangeReplyMessage msg) {
-        appendInt(msg.getHostKeyLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
-        LOGGER.debug("Host key length: " + msg.getHostKeyLength().getValue());
-        appendBytes(msg.getHostKey().getValue());
+    private void serializeHostKeyBytes(EcdhKeyExchangeReplyMessage msg) {
+        appendInt(msg.getHostKeyBytesLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
+        LOGGER.debug("Host key bytes length: " + msg.getHostKeyBytesLength().getValue());
+        appendBytes(msg.getHostKeyBytes().getValue());
         LOGGER.debug(
-                "Host key: " + ArrayConverter.bytesToRawHexString(msg.getHostKey().getValue()));
+                "Host key bytes: "
+                        + ArrayConverter.bytesToRawHexString(msg.getHostKeyBytes().getValue()));
     }
 
-    private void serializePublicKey(EcdhKeyExchangeReplyMessage msg) {
+    private void serializeEphemeralPublicKey(EcdhKeyExchangeReplyMessage msg) {
         appendInt(
                 msg.getEphemeralPublicKeyLength().getValue(),
                 DataFormatConstants.STRING_SIZE_LENGTH);
-        LOGGER.debug("Public key length: " + msg.getEphemeralPublicKeyLength().getValue());
+        LOGGER.debug(
+                "Ephemeral public key (server) length: "
+                        + msg.getEphemeralPublicKeyLength().getValue());
         appendBytes(msg.getEphemeralPublicKey().getValue());
-        LOGGER.debug("Public key: " + msg.getEphemeralPublicKey());
+        LOGGER.debug("Ephemeral public key (server): " + msg.getEphemeralPublicKey());
     }
 
     private void serializeSignature(EcdhKeyExchangeReplyMessage msg) {
@@ -49,8 +52,8 @@ public class EcdhKeyExchangeReplyMessageSerializer
 
     @Override
     public void serializeMessageSpecificContents() {
-        serializeHostKey(message);
-        serializePublicKey(message);
+        serializeHostKeyBytes(message);
+        serializeEphemeralPublicKey(message);
         serializeSignature(message);
     }
 }

@@ -7,11 +7,11 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.preparator;
 
-import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
+import de.rub.nds.sshattacker.core.crypto.kex.DhKeyExchange;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.transport.message.DhKeyExchangeReplyMessage;
+import de.rub.nds.sshattacker.core.protocol.util.KeyExchangeUtil;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
-import java.math.BigInteger;
 
 public class DhKeyExchangeReplyMessagePreparator
         extends SshMessagePreparator<DhKeyExchangeReplyMessage> {
@@ -22,11 +22,22 @@ public class DhKeyExchangeReplyMessagePreparator
 
     @Override
     public void prepareMessageSpecificContents() {
-        getObject().setMessageID(MessageIDConstant.SSH_MSG_KEXDH_REPLY);
+        KeyExchangeUtil.prepareHostKeyMessage(chooser.getContext(), getObject());
+        prepareEphemeralPublicKey();
+        KeyExchangeUtil.computeSharedSecret(chooser.getContext(), chooser.getDhKeyExchange());
+        KeyExchangeUtil.computeExchangeHash(chooser.getContext());
+        KeyExchangeUtil.prepareExchangeHashSignatureMessage(chooser.getContext(), getObject());
+        KeyExchangeUtil.setSessionId(chooser.getContext());
+        KeyExchangeUtil.generateKeySet(chooser.getContext());
+    }
 
-        getObject().setHostKey(new byte[0], true);
-        getObject().setEphemeralPublicKey(BigInteger.ZERO, true);
-        // TODO: Implement signature calculation
-        getObject().setSignature(new byte[0], true);
+    private void prepareEphemeralPublicKey() {
+        DhKeyExchange keyExchange = chooser.getDhKeyExchange();
+        keyExchange.generateLocalKeyPair();
+        getObject().setEphemeralPublicKey(keyExchange.getLocalKeyPair().getPublic().getY(), true);
+        // Update exchange hash with local public key
+        chooser.getContext()
+                .getExchangeHashInputHolder()
+                .setDhServerPublicKey(keyExchange.getLocalKeyPair().getPublic().getY());
     }
 }

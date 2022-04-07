@@ -17,12 +17,16 @@ public class UnimplementedMessageParser extends SshMessageParser<UnimplementedMe
 
     private static final Logger LOGGER = LogManager.getLogger();
 
+    public UnimplementedMessageParser(byte[] array) {
+        super(array);
+    }
+
     public UnimplementedMessageParser(byte[] array, int startPosition) {
         super(array, startPosition);
     }
 
     private void parseSequenceNumber() {
-        message.setSequenceNumber(parseIntField(DataFormatConstants.INT32_SIZE));
+        message.setSequenceNumber(parseIntField(DataFormatConstants.UINT32_SIZE));
         LOGGER.debug("Sequence number: " + message.getSequenceNumber());
     }
 

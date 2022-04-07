@@ -8,6 +8,7 @@
 package de.rub.nds.sshattacker.core.workflow.action;
 
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
+import de.rub.nds.sshattacker.core.connection.AliasedConnection;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthBannerMessage;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthFailureMessage;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthPasswordMessage;
@@ -138,17 +139,20 @@ public abstract class MessageAction extends ConnectionBoundAction {
     @XmlTransient protected final SendMessageHelper sendMessageHelper;
 
     public MessageAction() {
+        super(AliasedConnection.DEFAULT_CONNECTION_ALIAS);
         receiveMessageHelper = new ReceiveMessageHelper();
         sendMessageHelper = new SendMessageHelper();
     }
 
     public MessageAction(List<ProtocolMessage<?>> messages) {
+        super(AliasedConnection.DEFAULT_CONNECTION_ALIAS);
         this.messages = new ArrayList<>(messages);
         receiveMessageHelper = new ReceiveMessageHelper();
         sendMessageHelper = new SendMessageHelper();
     }
 
     public MessageAction(ProtocolMessage<?>... messages) {
+        super(AliasedConnection.DEFAULT_CONNECTION_ALIAS);
         this.messages = Arrays.asList(messages);
         receiveMessageHelper = new ReceiveMessageHelper();
         sendMessageHelper = new SendMessageHelper();
@@ -180,10 +184,10 @@ public abstract class MessageAction extends ConnectionBoundAction {
     }
 
     public String getReadableString(List<ProtocolMessage<?>> messages, Boolean verbose) {
-        StringBuilder builder = new StringBuilder();
-        if (messages == null) {
-            return builder.toString();
+        if (messages == null || messages.isEmpty()) {
+            return "";
         }
+        StringBuilder builder = new StringBuilder();
         for (ProtocolMessage<?> message : messages) {
             if (verbose) {
                 builder.append(message.toString());
@@ -195,7 +199,7 @@ public abstract class MessageAction extends ConnectionBoundAction {
             }
             builder.append(", ");
         }
-        return builder.toString();
+        return builder.deleteCharAt(builder.lastIndexOf(", ")).toString();
     }
 
     @Override

@@ -7,10 +7,11 @@
  */
 package de.rub.nds.sshattacker.core.crypto.kex;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import de.rub.nds.sshattacker.core.constants.ECPointFormat;
-import de.rub.nds.sshattacker.core.constants.NamedGroup;
+import de.rub.nds.sshattacker.core.constants.EcPointFormat;
+import de.rub.nds.sshattacker.core.constants.NamedEcGroup;
 import de.rub.nds.sshattacker.core.crypto.ec.CurveFactory;
 import de.rub.nds.sshattacker.core.crypto.ec.Point;
 import de.rub.nds.sshattacker.core.crypto.ec.PointFormatter;
@@ -26,25 +27,25 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 public class EcdhKeyExchangeTest {
 
-    public static final Map<String, NamedGroup> nistNameToNamedGroup;
+    public static final Map<String, NamedEcGroup> nistNameToNamedGroup;
 
     static {
         nistNameToNamedGroup = new HashMap<>();
-        nistNameToNamedGroup.put("P-192", NamedGroup.SECP192R1);
-        nistNameToNamedGroup.put("P-224", NamedGroup.SECP224R1);
-        nistNameToNamedGroup.put("P-256", NamedGroup.SECP256R1);
-        nistNameToNamedGroup.put("P-384", NamedGroup.SECP384R1);
-        nistNameToNamedGroup.put("P-521", NamedGroup.SECP521R1);
-        nistNameToNamedGroup.put("K-163", NamedGroup.SECT163K1);
-        nistNameToNamedGroup.put("K-233", NamedGroup.SECT233K1);
-        nistNameToNamedGroup.put("K-283", NamedGroup.SECT283K1);
-        nistNameToNamedGroup.put("K-409", NamedGroup.SECT409K1);
-        nistNameToNamedGroup.put("K-571", NamedGroup.SECT571K1);
-        nistNameToNamedGroup.put("B-163", NamedGroup.SECT163R2);
-        nistNameToNamedGroup.put("B-233", NamedGroup.SECT233R1);
-        nistNameToNamedGroup.put("B-283", NamedGroup.SECT283R1);
-        nistNameToNamedGroup.put("B-409", NamedGroup.SECT409R1);
-        nistNameToNamedGroup.put("B-571", NamedGroup.SECT571R1);
+        nistNameToNamedGroup.put("P-192", NamedEcGroup.SECP192R1);
+        nistNameToNamedGroup.put("P-224", NamedEcGroup.SECP224R1);
+        nistNameToNamedGroup.put("P-256", NamedEcGroup.SECP256R1);
+        nistNameToNamedGroup.put("P-384", NamedEcGroup.SECP384R1);
+        nistNameToNamedGroup.put("P-521", NamedEcGroup.SECP521R1);
+        nistNameToNamedGroup.put("K-163", NamedEcGroup.SECT163K1);
+        nistNameToNamedGroup.put("K-233", NamedEcGroup.SECT233K1);
+        nistNameToNamedGroup.put("K-283", NamedEcGroup.SECT283K1);
+        nistNameToNamedGroup.put("K-409", NamedEcGroup.SECT409K1);
+        nistNameToNamedGroup.put("K-571", NamedEcGroup.SECT571K1);
+        nistNameToNamedGroup.put("B-163", NamedEcGroup.SECT163R2);
+        nistNameToNamedGroup.put("B-233", NamedEcGroup.SECT233R1);
+        nistNameToNamedGroup.put("B-283", NamedEcGroup.SECT283R1);
+        nistNameToNamedGroup.put("B-409", NamedEcGroup.SECT409R1);
+        nistNameToNamedGroup.put("B-571", NamedEcGroup.SECT571R1);
     }
 
     /**
@@ -60,7 +61,7 @@ public class EcdhKeyExchangeTest {
         assert testVectorFile != null;
         Scanner reader = new Scanner(testVectorFile);
         Stream.Builder<Arguments> argumentsBuilder = Stream.builder();
-        NamedGroup currentGroup = null;
+        NamedEcGroup currentGroup = null;
         String line;
         while (reader.hasNextLine()) {
             line = reader.nextLine();
@@ -115,20 +116,20 @@ public class EcdhKeyExchangeTest {
             BigInteger providedPublicKeyXB,
             BigInteger providedPublicKeyYB,
             BigInteger expectedSharedSecret,
-            NamedGroup group) {
+            NamedEcGroup group) {
         EcdhKeyExchange keyExchange = new EcdhKeyExchange(group);
         keyExchange.setLocalKeyPair(providedPrivateKeyA.toByteArray());
         assertEquals(
                 expectedPublicKeyXA,
-                keyExchange.getLocalKeyPair().getPublic().publicKey.getFieldX().getData());
+                keyExchange.getLocalKeyPair().getPublic().getWAsPoint().getFieldX().getData());
         assertEquals(
                 expectedPublicKeyYA,
-                keyExchange.getLocalKeyPair().getPublic().publicKey.getFieldY().getData());
+                keyExchange.getLocalKeyPair().getPublic().getWAsPoint().getFieldY().getData());
         Point publicKeyB =
                 CurveFactory.getCurve(group).getPoint(providedPublicKeyXB, providedPublicKeyYB);
         keyExchange.setRemotePublicKey(
-                PointFormatter.formatToByteArray(group, publicKeyB, ECPointFormat.UNCOMPRESSED));
-        keyExchange.computeSharedSecret();
+                PointFormatter.formatToByteArray(group, publicKeyB, EcPointFormat.UNCOMPRESSED));
+        assertDoesNotThrow(keyExchange::computeSharedSecret);
         assertEquals(expectedSharedSecret, keyExchange.getSharedSecret());
     }
 }

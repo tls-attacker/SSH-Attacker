@@ -7,16 +7,17 @@
  */
 package de.rub.nds.sshattacker.core.crypto.signature;
 
+import de.rub.nds.sshattacker.core.constants.PublicKeyAlgorithm;
 import de.rub.nds.sshattacker.core.exceptions.CryptoException;
 import java.security.*;
 
-public class JavaSignature implements VerificationSignature, SigningSignature {
+public class JavaSignature implements VerifyingSignature, SigningSignature {
 
-    private final SignatureAlgorithm algorithm;
+    private final PublicKeyAlgorithm algorithm;
     private final Key key;
     private Signature signature;
 
-    public JavaSignature(SignatureAlgorithm algorithm, Key key) {
+    public JavaSignature(PublicKeyAlgorithm algorithm, Key key) {
         this.algorithm = algorithm;
         this.key = key;
     }
@@ -63,7 +64,7 @@ public class JavaSignature implements VerificationSignature, SigningSignature {
     }
 
     @Override
-    public SignatureAlgorithm getAlgorithm() {
+    public PublicKeyAlgorithm getAlgorithm() {
         return algorithm;
     }
 }

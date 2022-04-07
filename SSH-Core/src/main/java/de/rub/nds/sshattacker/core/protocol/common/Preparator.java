@@ -32,13 +32,4 @@ public abstract class Preparator<T> {
     public T getObject() {
         return object;
     }
-
-    // TODO: Remove this workaround once everything is prepared over context fields
-    protected void raisePreparationException(String errorMsg) {
-        if (chooser.getConfig().getAvoidPreparationExceptions()) {
-            LOGGER.warn(errorMsg);
-        } else {
-            throw new PreparationException(errorMsg);
-        }
-    }
 }

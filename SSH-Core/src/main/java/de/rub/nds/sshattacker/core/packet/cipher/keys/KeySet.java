@@ -9,11 +9,16 @@ package de.rub.nds.sshattacker.core.packet.cipher.keys;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
 
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
 public class KeySet {
 
-    private byte[] clientWriteInitialIV;
-    private byte[] serverWriteInitialIV;
+    private byte[] clientWriteInitialIv;
+    private byte[] serverWriteInitialIv;
     private byte[] clientWriteEncryptionKey;
     private byte[] serverWriteEncryptionKey;
     private byte[] clientWriteIntegrityKey;
@@ -21,20 +26,20 @@ public class KeySet {
 
     public KeySet() {}
 
-    public byte[] getClientWriteInitialIV() {
-        return clientWriteInitialIV;
+    public byte[] getClientWriteInitialIv() {
+        return clientWriteInitialIv;
     }
 
-    public void setClientWriteInitialIV(byte[] clientWriteInitialIV) {
-        this.clientWriteInitialIV = clientWriteInitialIV;
+    public void setClientWriteInitialIv(byte[] clientWriteInitialIv) {
+        this.clientWriteInitialIv = clientWriteInitialIv;
     }
 
-    public byte[] getServerWriteInitialIV() {
-        return serverWriteInitialIV;
+    public byte[] getServerWriteInitialIv() {
+        return serverWriteInitialIv;
     }
 
-    public void setServerWriteInitialIV(byte[] serverWriteInitialIV) {
-        this.serverWriteInitialIV = serverWriteInitialIV;
+    public void setServerWriteInitialIv(byte[] serverWriteInitialIv) {
+        this.serverWriteInitialIv = serverWriteInitialIv;
     }
 
     public byte[] getClientWriteEncryptionKey() {
@@ -71,17 +76,17 @@ public class KeySet {
 
     public byte[] getWriteIv(ConnectionEndType connectionEndType) {
         if (connectionEndType == ConnectionEndType.CLIENT) {
-            return clientWriteInitialIV;
+            return clientWriteInitialIv;
         } else {
-            return serverWriteInitialIV;
+            return serverWriteInitialIv;
         }
     }
 
     public byte[] getReadIv(ConnectionEndType connectionEndType) {
         if (connectionEndType == ConnectionEndType.CLIENT) {
-            return serverWriteInitialIV;
+            return serverWriteInitialIv;
         } else {
-            return clientWriteInitialIV;
+            return clientWriteInitialIv;
         }
     }
 
@@ -120,10 +125,10 @@ public class KeySet {
     @Override
     public String toString() {
         return "Initial IV (client to server): "
-                + ArrayConverter.bytesToRawHexString(clientWriteInitialIV)
+                + ArrayConverter.bytesToRawHexString(clientWriteInitialIv)
                 + "\n"
                 + "Initial IV (server to client): "
-                + ArrayConverter.bytesToRawHexString(serverWriteInitialIV)
+                + ArrayConverter.bytesToRawHexString(serverWriteInitialIv)
                 + "\n"
                 + "Encryption key (client to server): "
                 + ArrayConverter.bytesToRawHexString(clientWriteEncryptionKey)

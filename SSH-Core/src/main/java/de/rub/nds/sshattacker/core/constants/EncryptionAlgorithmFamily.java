@@ -7,9 +7,6 @@
  */
 package de.rub.nds.sshattacker.core.constants;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 public enum EncryptionAlgorithmFamily {
     NONE(null),
     DES_EDE("DESede"),
@@ -23,8 +20,6 @@ public enum EncryptionAlgorithmFamily {
     DES("DES"),
     SEED("SEED"),
     CHACHA20_POLY1305("ChaCha20-Poly1305");
-
-    private static final Logger LOGGER = LogManager.getLogger();
 
     private final String javaName;
 

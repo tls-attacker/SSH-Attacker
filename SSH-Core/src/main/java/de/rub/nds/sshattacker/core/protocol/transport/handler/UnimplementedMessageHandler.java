@@ -30,6 +30,11 @@ public class UnimplementedMessageHandler extends SshMessageHandler<Unimplemented
     }
 
     @Override
+    public UnimplementedMessageParser getParser(byte[] array) {
+        return new UnimplementedMessageParser(array);
+    }
+
+    @Override
     public UnimplementedMessageParser getParser(byte[] array, int startPosition) {
         return new UnimplementedMessageParser(array, startPosition);
     }

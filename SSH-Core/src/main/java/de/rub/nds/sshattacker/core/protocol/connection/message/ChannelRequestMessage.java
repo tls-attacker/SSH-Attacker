@@ -12,12 +12,14 @@ import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.sshattacker.core.constants.ChannelRequestType;
-import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
+import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.util.Converter;
 import java.nio.charset.StandardCharsets;
 
 public abstract class ChannelRequestMessage<T extends ChannelRequestMessage<T>>
         extends ChannelMessage<T> {
+
+    public static final MessageIdConstant ID = MessageIdConstant.SSH_MSG_CHANNEL_REQUEST;
 
     private ModifiableInteger requestTypeLength;
     private ModifiableString requestType;
@@ -25,14 +27,13 @@ public abstract class ChannelRequestMessage<T extends ChannelRequestMessage<T>>
 
     protected ChannelRequestMessage(
             @SuppressWarnings("SameParameterValue") ChannelRequestType requestType) {
-        super(MessageIDConstant.SSH_MSG_CHANNEL_REQUEST);
         setRequestType(requestType);
     }
 
     protected ChannelRequestMessage(
             @SuppressWarnings("SameParameterValue") ChannelRequestType requestType,
             Integer senderChannel) {
-        super(MessageIDConstant.SSH_MSG_CHANNEL_REQUEST, senderChannel);
+        super(senderChannel);
         setRequestType(requestType);
     }
 

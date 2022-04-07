@@ -32,7 +32,7 @@ public class MangerWorkflowGenerator {
         WorkflowTrace trace =
                 new WorkflowConfigurationFactory(sshConfig)
                         .createWorkflowTrace(
-                                WorkflowTraceType.START_KEYEXCHANGE, RunningModeType.CLIENT);
+                                WorkflowTraceType.KEX_INIT_ONLY, RunningModeType.CLIENT);
         trace.addSshAction(new ReceiveAction(new RsaKeyExchangePubkeyMessage()));
         RsaKeyExchangeSecretMessage secretMessage = new RsaKeyExchangeSecretMessage();
         ModifiableByteArray encryptedSecretArray = new ModifiableByteArray();

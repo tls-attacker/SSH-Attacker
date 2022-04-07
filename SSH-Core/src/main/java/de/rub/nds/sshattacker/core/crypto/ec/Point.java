@@ -7,7 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.crypto.ec;
 
-import de.rub.nds.sshattacker.core.constants.NamedGroup;
+import de.rub.nds.sshattacker.core.constants.NamedEcGroup;
 import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.Objects;
@@ -27,7 +27,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Point implements Serializable {
-    public static Point createPoint(BigInteger x, BigInteger y, NamedGroup group) {
+    public static Point createPoint(BigInteger x, BigInteger y, NamedEcGroup group) {
         EllipticCurve curve = CurveFactory.getCurve(group);
         return curve.getPoint(x, y);
     }

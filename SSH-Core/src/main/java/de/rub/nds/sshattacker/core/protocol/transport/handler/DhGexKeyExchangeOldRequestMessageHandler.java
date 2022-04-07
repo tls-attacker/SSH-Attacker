@@ -14,13 +14,9 @@ import de.rub.nds.sshattacker.core.protocol.transport.parser.DhGexKeyExchangeOld
 import de.rub.nds.sshattacker.core.protocol.transport.preparator.DhGexKeyExchangeOldRequestMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.transport.serializer.DhGexKeyExchangeOldRequestMessageSerializer;
 import de.rub.nds.sshattacker.core.state.SshContext;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class DhGexKeyExchangeOldRequestMessageHandler
         extends SshMessageHandler<DhGexKeyExchangeOldRequestMessage> {
-
-    private static final Logger LOGGER = LogManager.getLogger();
 
     public DhGexKeyExchangeOldRequestMessageHandler(SshContext context) {
         super(context);
@@ -33,7 +29,19 @@ public class DhGexKeyExchangeOldRequestMessageHandler
 
     @Override
     public void adjustContext() {
-        // TODO: Handle DhGexKeyExchangeOldRequestMessage
+        updateContextWithPreferredGroupSize();
+        context.setOldGroupRequestReceived(true);
+    }
+
+    private void updateContextWithPreferredGroupSize() {
+        context.setPreferredDhGroupSize(message.getPreferredGroupSize().getValue());
+        context.getExchangeHashInputHolder()
+                .setDhGexPreferredGroupSize(message.getPreferredGroupSize().getValue());
+    }
+
+    @Override
+    public SshMessageParser<DhGexKeyExchangeOldRequestMessage> getParser(byte[] array) {
+        return new DhGexKeyExchangeOldRequestMessageParser(array);
     }
 
     @Override

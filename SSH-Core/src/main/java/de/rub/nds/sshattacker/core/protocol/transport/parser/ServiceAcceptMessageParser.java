@@ -18,6 +18,10 @@ public class ServiceAcceptMessageParser extends SshMessageParser<ServiceAcceptMe
 
     private static final Logger LOGGER = LogManager.getLogger();
 
+    public ServiceAcceptMessageParser(byte[] array) {
+        super(array);
+    }
+
     public ServiceAcceptMessageParser(byte[] array, int startPosition) {
         super(array, startPosition);
     }

@@ -30,6 +30,11 @@ public class ChannelFailureMessageHandler extends SshMessageHandler<ChannelFailu
     }
 
     @Override
+    public ChannelFailureMessageParser getParser(byte[] array) {
+        return new ChannelFailureMessageParser(array);
+    }
+
+    @Override
     public ChannelFailureMessageParser getParser(byte[] array, int startPosition) {
         return new ChannelFailureMessageParser(array, startPosition);
     }

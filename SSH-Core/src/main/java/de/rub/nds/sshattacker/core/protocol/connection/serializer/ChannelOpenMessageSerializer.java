@@ -32,17 +32,17 @@ public class ChannelOpenMessageSerializer extends SshMessageSerializer<ChannelOp
 
     private void serializeSenderChannel() {
         LOGGER.debug("Sender channel: " + message.getModSenderChannel().getValue());
-        appendInt(message.getModSenderChannel().getValue(), DataFormatConstants.INT32_SIZE);
+        appendInt(message.getModSenderChannel().getValue(), DataFormatConstants.UINT32_SIZE);
     }
 
     private void serializeWindowSize() {
         LOGGER.debug("Initial window size: " + message.getWindowSize().getValue());
-        appendInt(message.getWindowSize().getValue(), DataFormatConstants.INT32_SIZE);
+        appendInt(message.getWindowSize().getValue(), DataFormatConstants.UINT32_SIZE);
     }
 
     private void serializePacketSize() {
         LOGGER.debug("Maximum packet size: " + message.getWindowSize().getValue());
-        appendInt(message.getPacketSize().getValue(), DataFormatConstants.INT32_SIZE);
+        appendInt(message.getPacketSize().getValue(), DataFormatConstants.UINT32_SIZE);
     }
 
     @Override

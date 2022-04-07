@@ -17,6 +17,10 @@ public class DhKeyExchangeInitMessageParser extends SshMessageParser<DhKeyExchan
 
     private static final Logger LOGGER = LogManager.getLogger();
 
+    public DhKeyExchangeInitMessageParser(byte[] array) {
+        super(array);
+    }
+
     public DhKeyExchangeInitMessageParser(byte[] array, int startPosition) {
         super(array, startPosition);
     }
@@ -26,15 +30,18 @@ public class DhKeyExchangeInitMessageParser extends SshMessageParser<DhKeyExchan
         return new DhKeyExchangeInitMessage();
     }
 
-    public void parsePublicKey() {
-        message.setPublicKeyLength(parseIntField(DataFormatConstants.INT32_SIZE));
-        LOGGER.debug("Public key length: " + message.getPublicKeyLength());
-        message.setPublicKey(parseBigIntField(message.getPublicKeyLength().getValue()));
-        LOGGER.debug("Public key: " + message.getPublicKey().getValue());
+    public void parseEphemeralPublicKey() {
+        message.setEphemeralPublicKeyLength(parseIntField(DataFormatConstants.UINT32_SIZE));
+        LOGGER.debug(
+                "Ephemeral public key (client) length: " + message.getEphemeralPublicKeyLength());
+        message.setEphemeralPublicKey(
+                parseBigIntField(message.getEphemeralPublicKeyLength().getValue()));
+        LOGGER.debug(
+                "Ephemeral public key (client): " + message.getEphemeralPublicKey().getValue());
     }
 
     @Override
     protected void parseMessageSpecificContents() {
-        parsePublicKey();
+        parseEphemeralPublicKey();
     }
 }

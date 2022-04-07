@@ -17,6 +17,10 @@ public class ChannelDataMessageParser extends ChannelMessageParser<ChannelDataMe
 
     private static final Logger LOGGER = LogManager.getLogger();
 
+    public ChannelDataMessageParser(byte[] array) {
+        super(array);
+    }
+
     public ChannelDataMessageParser(byte[] array, int startPosition) {
         super(array, startPosition);
     }

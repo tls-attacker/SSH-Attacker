@@ -74,6 +74,16 @@
 ## Supported Host Key Algorithms
 
 - `ssh-rsa`
+- `ssh-dss`
+- `rsa-sha2-{256|256}`
+- `ecdsa-sha2-nistp256`
+- `ecdsa-sha2-nistp384`
+- `ecdsa-sha2-nistp521`
+- `ecdsa-sha2-*` (where * is a secp, sect or Brainpool curves' OID)
+- `ssh-ed25519`
+- `ssh-ed448`
+- `ssh-rsa-sha{224|256|384|512}@ssh.com`
+
 ---
 ## Supported Compression Methods
 

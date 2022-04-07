@@ -10,19 +10,17 @@ package de.rub.nds.sshattacker.core.protocol.transport.message;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
-import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
+import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.IgnoreMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class IgnoreMessage extends SshMessage<IgnoreMessage> {
 
+    public static final MessageIdConstant ID = MessageIdConstant.SSH_MSG_IGNORE;
+
     private ModifiableInteger dataLength;
     private ModifiableByteArray data;
-
-    public IgnoreMessage() {
-        super(MessageIDConstant.SSH_MSG_IGNORE);
-    }
 
     public ModifiableInteger getDataLength() {
         return dataLength;

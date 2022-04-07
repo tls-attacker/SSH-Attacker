@@ -52,15 +52,17 @@ public class DhKeyExchangeInitMessageSerializerTest {
      * Test of DhKeyExchangeInitMessageSerializer::serialize method
      *
      * @param expectedBytes Expected output bytes of the serialize() call
-     * @param providedPublicKey Local public key for the diffie hellman key exchange
+     * @param providedEphemeralPublicKey Local public key for the diffie hellman key exchange
      */
     @ParameterizedTest
     @MethodSource("provideTestVectors")
     public void testSerialize(
-            byte[] expectedBytes, int providedPublicKeyLength, BigInteger providedPublicKey) {
+            byte[] expectedBytes,
+            int providedEphemeralPublicKeyLength,
+            BigInteger providedEphemeralPublicKey) {
         DhKeyExchangeInitMessage msg = new DhKeyExchangeInitMessage();
-        msg.setPublicKeyLength(providedPublicKeyLength);
-        msg.setPublicKey(providedPublicKey);
+        msg.setEphemeralPublicKeyLength(providedEphemeralPublicKeyLength);
+        msg.setEphemeralPublicKey(providedEphemeralPublicKey);
         DhKeyExchangeInitMessageSerializer serializer = new DhKeyExchangeInitMessageSerializer(msg);
 
         assertArrayEquals(expectedBytes, serializer.serialize());

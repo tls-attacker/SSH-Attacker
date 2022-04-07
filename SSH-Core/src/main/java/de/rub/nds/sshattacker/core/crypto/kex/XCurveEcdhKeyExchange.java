@@ -9,68 +9,44 @@ package de.rub.nds.sshattacker.core.crypto.kex;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.CryptoConstants;
-import de.rub.nds.sshattacker.core.constants.KeyExchangeAlgorithm;
-import de.rub.nds.sshattacker.core.constants.NamedGroup;
+import de.rub.nds.sshattacker.core.constants.NamedEcGroup;
 import de.rub.nds.sshattacker.core.crypto.keys.*;
+import de.rub.nds.sshattacker.core.exceptions.CryptoException;
 import java.math.BigInteger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.math.ec.rfc7748.X25519;
 import org.bouncycastle.math.ec.rfc7748.X448;
 
-public class XCurveEcdhKeyExchange extends DhBasedKeyExchange {
+public class XCurveEcdhKeyExchange extends AbstractEcdhKeyExchange {
 
     private static final Logger LOGGER = LogManager.getLogger();
-
-    private final NamedGroup group;
 
     private CustomKeyPair<XCurveEcPrivateKey, XCurveEcPublicKey> localKeyPair;
     private XCurveEcPublicKey remotePublicKey;
 
-    public XCurveEcdhKeyExchange(NamedGroup group) {
-        super();
+    public XCurveEcdhKeyExchange(NamedEcGroup group) {
+        super(group);
         if (!group.isRFC7748Curve()) {
             throw new IllegalArgumentException(
                     "XCurveEcdhKeyExchange does not support named group " + group);
         }
-        this.group = group;
         precompute();
     }
 
     private void precompute() {
-        if (group == NamedGroup.ECDH_X25519) {
+        if (group == NamedEcGroup.CURVE25519) {
             X25519.precompute();
         } else {
             X448.precompute();
         }
     }
 
-    public static XCurveEcdhKeyExchange newInstance(KeyExchangeAlgorithm negotiatedKexAlgorithm) {
-        NamedGroup group;
-        switch (negotiatedKexAlgorithm) {
-            case CURVE25519_SHA256:
-            case CURVE25519_SHA256_LIBSSH_ORG:
-                group = NamedGroup.ECDH_X25519;
-                break;
-            case CURVE448_SHA512:
-                group = NamedGroup.ECDH_X448;
-                break;
-            default:
-                // TODO: Determine, whether throwing and error or continuing with a predetermined
-                // curve is better
-                LOGGER.warn(
-                        "Initializing a new XEcdhKeyExchange without an RFC7748 ECDH key exchange algorithm negotiated. Falling back to curve25519-sha256.");
-                group = NamedGroup.ECDH_X25519;
-                break;
-        }
-        return new XCurveEcdhKeyExchange(group);
-    }
-
     @Override
     public void generateLocalKeyPair() {
         byte[] privateKeyBytes;
         byte[] publicKeyBytes;
-        if (group == NamedGroup.ECDH_X25519) {
+        if (group == NamedEcGroup.CURVE25519) {
             privateKeyBytes = new byte[CryptoConstants.X25519_POINT_SIZE];
             X25519.generatePrivateKey(random, privateKeyBytes);
             publicKeyBytes = new byte[CryptoConstants.X25519_POINT_SIZE];
@@ -89,7 +65,7 @@ public class XCurveEcdhKeyExchange extends DhBasedKeyExchange {
     @Override
     public void setLocalKeyPair(byte[] privateKeyBytes) {
         byte[] publicKeyBytes;
-        if (group == NamedGroup.ECDH_X25519) {
+        if (group == NamedEcGroup.CURVE25519) {
             publicKeyBytes = new byte[CryptoConstants.X25519_POINT_SIZE];
             X25519.generatePublicKey(privateKeyBytes, 0, publicKeyBytes, 0);
         } else {
@@ -114,9 +90,13 @@ public class XCurveEcdhKeyExchange extends DhBasedKeyExchange {
     }
 
     @Override
-    public void computeSharedSecret() {
+    public void computeSharedSecret() throws CryptoException {
+        if (localKeyPair == null || remotePublicKey == null) {
+            throw new CryptoException(
+                    "Unable to compute shared secret - either local key pair or remote public key is null");
+        }
         byte[] sharedBytes;
-        if (group == NamedGroup.ECDH_X25519) {
+        if (group == NamedEcGroup.CURVE25519) {
             sharedBytes = new byte[CryptoConstants.X25519_POINT_SIZE];
             X25519.scalarMult(
                     localKeyPair.getPrivate().getScalar(),
@@ -135,7 +115,7 @@ public class XCurveEcdhKeyExchange extends DhBasedKeyExchange {
                     sharedBytes,
                     0);
         }
-        sharedSecret = new BigInteger(sharedBytes);
+        sharedSecret = new BigInteger(1, sharedBytes);
         LOGGER.debug(
                 "Finished computation of shared secret: "
                         + ArrayConverter.bytesToRawHexString(sharedSecret.toByteArray()));

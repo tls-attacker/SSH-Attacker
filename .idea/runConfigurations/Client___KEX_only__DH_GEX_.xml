@@ -4,7 +4,7 @@
     <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
     <option name="MAIN_CLASS_NAME" value="de.rub.nds.sshattacker.client.main.SshClient" />
     <module name="SSH-Client" />
-    <option name="PROGRAM_PARAMETERS" value="-connect localhost:65222 -config resources/configs/kex_dh_gex_config.xml -workflow_input resources/examples/client_kex_dh_gex.xml" />
+    <option name="PROGRAM_PARAMETERS" value="-connect localhost:65222 -config resources/configs/kex_dh_gex_config.xml -workflow_trace_type KEX_DH_GEX" />
     <method v="2">
       <option name="Maven.BeforeRunTask" enabled="true" file="$PROJECT_DIR$/pom.xml" goal="spotless:apply" />
       <option name="Make" enabled="true" />

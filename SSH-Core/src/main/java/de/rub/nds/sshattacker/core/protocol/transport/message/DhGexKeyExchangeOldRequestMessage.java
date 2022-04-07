@@ -9,7 +9,7 @@ package de.rub.nds.sshattacker.core.protocol.transport.message;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
-import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
+import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.protocol.common.*;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.DhGexKeyExchangeOldRequestMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
@@ -17,11 +17,9 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 public class DhGexKeyExchangeOldRequestMessage
         extends SshMessage<DhGexKeyExchangeOldRequestMessage> {
 
-    private ModifiableInteger preferredGroupSize;
+    public static final MessageIdConstant ID = MessageIdConstant.SSH_MSG_KEX_DH_GEX_REQUEST_OLD;
 
-    public DhGexKeyExchangeOldRequestMessage() {
-        super(MessageIDConstant.SSH_MSG_KEX_DH_GEX_REQUEST_OLD);
-    }
+    private ModifiableInteger preferredGroupSize;
 
     public ModifiableInteger getPreferredGroupSize() {
         return preferredGroupSize;

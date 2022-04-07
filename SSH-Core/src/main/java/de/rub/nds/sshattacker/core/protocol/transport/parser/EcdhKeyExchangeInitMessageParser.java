@@ -18,6 +18,10 @@ public class EcdhKeyExchangeInitMessageParser extends SshMessageParser<EcdhKeyEx
 
     private static final Logger LOGGER = LogManager.getLogger();
 
+    public EcdhKeyExchangeInitMessageParser(byte[] array) {
+        super(array);
+    }
+
     public EcdhKeyExchangeInitMessageParser(byte[] array, int startPosition) {
         super(array, startPosition);
     }
@@ -27,17 +31,21 @@ public class EcdhKeyExchangeInitMessageParser extends SshMessageParser<EcdhKeyEx
         return new EcdhKeyExchangeInitMessage();
     }
 
-    private void parsePublicKey() {
-        message.setPublicKeyLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-        LOGGER.debug("Public key length: " + message.getPublicKeyLength().getValue());
-        message.setPublicKey(parseByteArrayField(message.getPublicKeyLength().getValue()));
+    private void parseEphemeralPublicKey() {
+        message.setEphemeralPublicKeyLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
         LOGGER.debug(
-                "Public key: "
-                        + ArrayConverter.bytesToRawHexString(message.getPublicKey().getValue()));
+                "Ephemeral public key (client) length: "
+                        + message.getEphemeralPublicKeyLength().getValue());
+        message.setEphemeralPublicKey(
+                parseByteArrayField(message.getEphemeralPublicKeyLength().getValue()));
+        LOGGER.debug(
+                "Ephemeral public key (client): "
+                        + ArrayConverter.bytesToRawHexString(
+                                message.getEphemeralPublicKey().getValue()));
     }
 
     @Override
     public void parseMessageSpecificContents() {
-        parsePublicKey();
+        parseEphemeralPublicKey();
     }
 }

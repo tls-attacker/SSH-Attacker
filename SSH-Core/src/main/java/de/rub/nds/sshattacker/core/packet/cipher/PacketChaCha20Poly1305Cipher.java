@@ -92,7 +92,8 @@ public class PacketChaCha20Poly1305Cipher extends PacketCipher {
         PacketCryptoComputations computations = packet.getComputations();
 
         computations.setEncryptionKey(keySet.getWriteEncryptionKey(getLocalConnectionEndType()));
-        computations.setIv(packet.getSequenceNumber().getByteArray(DataFormatConstants.INT64_SIZE));
+        computations.setIv(
+                packet.getSequenceNumber().getByteArray(DataFormatConstants.UINT64_SIZE));
 
         packet.setPaddingLength(calculatePaddingLength(packet));
         packet.setPadding(calculatePadding(packet.getPaddingLength().getValue()));
@@ -145,7 +146,7 @@ public class PacketChaCha20Poly1305Cipher extends PacketCipher {
     public void encrypt(BlobPacket packet) throws CryptoException {
         byte[] iv =
                 ArrayConverter.intToBytes(
-                        context.getWriteSequenceNumber(), DataFormatConstants.INT64_SIZE);
+                        context.getWriteSequenceNumber(), DataFormatConstants.UINT64_SIZE);
         packet.setCiphertext(
                 mainEncryptCipher.encrypt(
                         packet.getCompressedPayload().getValue(), iv, new byte[0]));
@@ -160,7 +161,8 @@ public class PacketChaCha20Poly1305Cipher extends PacketCipher {
         PacketCryptoComputations computations = packet.getComputations();
 
         computations.setEncryptionKey(keySet.getReadEncryptionKey(getLocalConnectionEndType()));
-        computations.setIv(packet.getSequenceNumber().getByteArray(DataFormatConstants.INT64_SIZE));
+        computations.setIv(
+                packet.getSequenceNumber().getByteArray(DataFormatConstants.UINT64_SIZE));
         computations.setAdditionalAuthenticatedData(
                 Arrays.copyOfRange(
                         packet.getCiphertext().getValue(),
@@ -214,7 +216,7 @@ public class PacketChaCha20Poly1305Cipher extends PacketCipher {
     public void decrypt(BlobPacket packet) throws CryptoException {
         byte[] iv =
                 ArrayConverter.intToBytes(
-                        context.getReadSequenceNumber(), DataFormatConstants.INT64_SIZE);
+                        context.getReadSequenceNumber(), DataFormatConstants.UINT64_SIZE);
         try {
             packet.setCompressedPayload(
                     mainDecryptCipher.decrypt(packet.getCiphertext().getValue(), iv, new byte[0]));

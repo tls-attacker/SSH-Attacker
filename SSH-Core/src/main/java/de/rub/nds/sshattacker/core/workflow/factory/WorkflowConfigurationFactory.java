@@ -13,27 +13,19 @@ import de.rub.nds.sshattacker.core.constants.*;
 import de.rub.nds.sshattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthPasswordMessage;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthSuccessMessage;
-import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessage;
 import de.rub.nds.sshattacker.core.protocol.connection.message.*;
 import de.rub.nds.sshattacker.core.protocol.transport.message.*;
-import de.rub.nds.sshattacker.core.protocol.util.AlgorithmPicker;
 import de.rub.nds.sshattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.sshattacker.core.workflow.action.*;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /** Create a WorkflowTace based on a Config instance. */
 public class WorkflowConfigurationFactory {
 
-    private static final Logger LOGGER = LogManager.getLogger();
-
     protected final Config config;
     private RunningModeType mode;
-    private WorkflowTraceType workflowTraceType;
 
     public WorkflowConfigurationFactory(Config config) {
         this.config = config;
@@ -41,42 +33,41 @@ public class WorkflowConfigurationFactory {
 
     public WorkflowTrace createWorkflowTrace(
             WorkflowTraceType workflowTraceType, RunningModeType runningMode) {
-        this.workflowTraceType = workflowTraceType;
         this.mode = runningMode;
         switch (workflowTraceType) {
-            case KEYEXCHANGE:
-                return createKeyExchangeWorkflowTrace();
-            case AUTHPASSWORD:
-                return createAuthenticationPasswordWorkflowTrace();
+            case KEX_INIT_ONLY:
+                return createInitKeyExchangeWorkflowTrace();
+            case KEX_DH:
+                return createKeyExchangeWorkflowTrace(KeyExchangeFlowType.DIFFIE_HELLMAN);
+            case KEX_DH_GEX:
+                return createKeyExchangeWorkflowTrace(
+                        KeyExchangeFlowType.DIFFIE_HELLMAN_GROUP_EXCHANGE);
+            case KEX_ECDH:
+                return createKeyExchangeWorkflowTrace(KeyExchangeFlowType.ECDH);
+            case KEX_RSA:
+                return createKeyExchangeWorkflowTrace(KeyExchangeFlowType.RSA);
+            case KEX_DYNAMIC:
+                return createDynamicKeyExchangeWorkflowTrace();
+            case AUTH_PASSWORD:
+                return createAuthenticationWorkflowTrace(AuthenticationMethod.PASSWORD);
             case FULL:
                 return createFullWorkflowTrace();
-            case START_KEYEXCHANGE:
-                return startKeyExchangeWorkflowTrace();
-            case DYNAMIC_KEYEXCHANGE:
-                return createDynamicKeyExchangeWorkflowTrace();
-            case DYNAMIC_AUTHPASSWORD:
-                return createDynamicAuthenticationPasswordWorkflowTrace();
-            case DYNAMIC_FULL:
-                return createDynamicFullWorkflowTrace();
             default:
                 throw new ConfigurationException(
-                        "Unknown WorkflowTraceType" + workflowTraceType.name());
+                        "Unable to create workflow trace - Unknown WorkflowTraceType: "
+                                + workflowTraceType.name());
         }
     }
 
-    private AliasedConnection getConnection() {
-        AliasedConnection con = null;
-
+    private AliasedConnection getDefaultConnection() {
         if (mode == null) {
-            mode = config.getDefaultRunningMode();
+            throw new ConfigurationException("Running mode not set, can't configure workflow");
         } else {
             switch (mode) {
                 case CLIENT:
-                    con = config.getDefaultClientConnection().getCopy();
-                    break;
+                    return config.getDefaultClientConnection();
                 case SERVER:
-                    con = config.getDefaultServerConnection().getCopy();
-                    break;
+                    return config.getDefaultServerConnection();
                 default:
                     throw new ConfigurationException(
                             "This workflow can only be configured for"
@@ -84,267 +75,220 @@ public class WorkflowConfigurationFactory {
                                     + mode);
             }
         }
-        return con;
     }
 
-    public WorkflowTrace createKeyExchangeWorkflowTrace() {
-        WorkflowTrace workflow = startKeyExchangeWorkflowTrace();
-        KeyExchangeAlgorithm choosenAlgorithm =
-                AlgorithmPicker.pickAlgorithm(
-                                config.getClientSupportedKeyExchangeAlgorithms(),
-                                config.getServerSupportedKeyExchangeAlgorithms())
-                        .orElse(null);
-        workflow.addSshActions(this.createKeyExchangeActions(choosenAlgorithm, null));
+    public WorkflowTrace createInitKeyExchangeWorkflowTrace() {
+        WorkflowTrace workflow = new WorkflowTrace();
+        addTransportProtocolInitActions(workflow);
+        return workflow;
+    }
+
+    public WorkflowTrace createKeyExchangeWorkflowTrace(KeyExchangeFlowType flowType) {
+        WorkflowTrace workflow = new WorkflowTrace();
+        addTransportProtocolActions(flowType, workflow);
         return workflow;
     }
 
     public WorkflowTrace createDynamicKeyExchangeWorkflowTrace() {
-        WorkflowTrace workflow = startKeyExchangeWorkflowTrace();
-        workflow.addSshAction(
-                new DynamicKeyExchangeAction(AliasedConnection.DEFAULT_CONNECTION_ALIAS));
+        WorkflowTrace workflow = new WorkflowTrace();
+        addTransportProtocolActions(workflow);
         return workflow;
     }
 
-    public WorkflowTrace createAuthenticationPasswordWorkflowTrace() {
-        WorkflowTrace workflow = createKeyExchangeWorkflowTrace();
-        workflow.addSshActions(createAuthPasswordActions());
-        return workflow;
-    }
-
-    public WorkflowTrace createDynamicAuthenticationPasswordWorkflowTrace() {
-        WorkflowTrace workflow = createDynamicKeyExchangeWorkflowTrace();
-        workflow.addSshActions(createAuthPasswordActions());
+    public WorkflowTrace createAuthenticationWorkflowTrace(AuthenticationMethod method) {
+        WorkflowTrace workflow = new WorkflowTrace();
+        addTransportProtocolActions(workflow);
+        addAuthenticationProtocolActions(method, workflow);
         return workflow;
     }
 
     public WorkflowTrace createFullWorkflowTrace() {
-        WorkflowTrace workflow = createAuthenticationPasswordWorkflowTrace();
-        workflow.addSshActions(createConnectionProtocolActions());
-        return workflow;
-    }
-
-    public WorkflowTrace createDynamicFullWorkflowTrace() {
-        WorkflowTrace workflow = createDynamicAuthenticationPasswordWorkflowTrace();
-        workflow.addSshActions(createConnectionProtocolActions());
-        return workflow;
-    }
-
-    public WorkflowTrace startKeyExchangeWorkflowTrace() {
         WorkflowTrace workflow = new WorkflowTrace();
-        workflow.setDirty(true);
-        workflow.addSshAction(
-                MessageActionFactory.createAction(
-                        config,
-                        getConnection(),
-                        ConnectionEndType.CLIENT,
-                        new VersionExchangeMessage()));
-        workflow.addSshAction(
-                MessageActionFactory.createAction(
-                        config,
-                        getConnection(),
-                        ConnectionEndType.SERVER,
-                        new VersionExchangeMessage()));
-        workflow.addSshAction(new ChangePacketLayerAction(PacketLayerType.BINARY_PACKET));
-        workflow.addSshAction(
-                MessageActionFactory.createAction(
-                        config,
-                        getConnection(),
-                        ConnectionEndType.CLIENT,
-                        new KeyExchangeInitMessage()));
-        workflow.addSshAction(
-                MessageActionFactory.createAction(
-                        config,
-                        getConnection(),
-                        ConnectionEndType.SERVER,
-                        new KeyExchangeInitMessage()));
+        addTransportProtocolActions(workflow);
+        addAuthenticationProtocolActions(workflow);
+        addConnectionProtocolActions(workflow);
         return workflow;
+    }
+
+    private void addTransportProtocolInitActions(WorkflowTrace workflow) {
+        AliasedConnection connection = getDefaultConnection();
+        workflow.addSshActions(
+                MessageActionFactory.createAction(
+                        connection, ConnectionEndType.CLIENT, new VersionExchangeMessage()),
+                MessageActionFactory.createAction(
+                        connection, ConnectionEndType.SERVER, new VersionExchangeMessage()),
+                new ChangePacketLayerAction(connection.getAlias(), PacketLayerType.BINARY_PACKET),
+                MessageActionFactory.createAction(
+                        connection, ConnectionEndType.CLIENT, new KeyExchangeInitMessage()),
+                MessageActionFactory.createAction(
+                        connection, ConnectionEndType.SERVER, new KeyExchangeInitMessage()));
+    }
+
+    private void addTransportProtocolActions(WorkflowTrace workflow) {
+        AliasedConnection connection = getDefaultConnection();
+        addTransportProtocolInitActions(workflow);
+        workflow.addSshActions(new DynamicKeyExchangeAction(connection.getAlias()));
+        workflow.addSshActions(
+                MessageActionFactory.createAction(
+                        connection, ConnectionEndType.CLIENT, new ServiceRequestMessage()),
+                MessageActionFactory.createAction(
+                        connection, ConnectionEndType.SERVER, new ServiceAcceptMessage()));
+    }
+
+    private void addTransportProtocolActions(KeyExchangeFlowType flowType, WorkflowTrace workflow) {
+        AliasedConnection connection = getDefaultConnection();
+        addTransportProtocolInitActions(workflow);
+        workflow.addSshActions(createKeyExchangeActions(flowType, connection));
+        workflow.addSshActions(
+                MessageActionFactory.createAction(
+                        connection, ConnectionEndType.CLIENT, new ServiceRequestMessage()),
+                MessageActionFactory.createAction(
+                        connection, ConnectionEndType.SERVER, new ServiceAcceptMessage()));
     }
 
     public List<SshAction> createKeyExchangeActions(
-            KeyExchangeAlgorithm choosenAlgorithm, AliasedConnection con) {
-        List<SshAction> sshActions = new LinkedList<>();
-        KeyExchangeFlowType choosenKeyExchangeFlowType = choosenAlgorithm.getFlowType();
-        if (con == null) {
-            con = getConnection();
-        }
-        switch (choosenKeyExchangeFlowType) {
+            KeyExchangeFlowType flowType, AliasedConnection connection) {
+        List<SshAction> sshActions = new ArrayList<>();
+        switch (flowType) {
             case DIFFIE_HELLMAN:
                 sshActions.add(
                         MessageActionFactory.createAction(
-                                config,
-                                con,
+                                connection,
                                 ConnectionEndType.CLIENT,
                                 new DhKeyExchangeInitMessage()));
-                List<ProtocolMessage<?>> DhReplyandNewKeysMessage = new ArrayList<>();
-                DhReplyandNewKeysMessage.add(new DhKeyExchangeReplyMessage());
-                DhReplyandNewKeysMessage.add(new NewKeysMessage());
                 sshActions.add(
                         MessageActionFactory.createAction(
-                                config, con, ConnectionEndType.SERVER, DhReplyandNewKeysMessage));
-                sshActions.add(
-                        MessageActionFactory.createAction(
-                                config, con, ConnectionEndType.CLIENT, new NewKeysMessage()));
+                                connection,
+                                ConnectionEndType.SERVER,
+                                new DhKeyExchangeReplyMessage(),
+                                new NewKeysMessage()));
                 break;
             case DIFFIE_HELLMAN_GROUP_EXCHANGE:
                 sshActions.add(
                         MessageActionFactory.createAction(
-                                config,
-                                con,
+                                connection,
                                 ConnectionEndType.CLIENT,
-                                new DhGexKeyExchangeRequestMessage()));
+                                new DhGexKeyExchangeRequestMessage(),
+                                new NewKeysMessage()));
                 sshActions.add(
                         MessageActionFactory.createAction(
-                                config,
-                                con,
+                                connection,
                                 ConnectionEndType.SERVER,
                                 new DhGexKeyExchangeGroupMessage()));
                 sshActions.add(
                         MessageActionFactory.createAction(
-                                config,
-                                con,
+                                connection,
                                 ConnectionEndType.CLIENT,
                                 new DhGexKeyExchangeInitMessage()));
-                List<ProtocolMessage<?>> DhGexReplyandNewKeysMessage = new ArrayList<>();
-                DhGexReplyandNewKeysMessage.add(new DhGexKeyExchangeReplyMessage());
-                DhGexReplyandNewKeysMessage.add(new NewKeysMessage());
                 sshActions.add(
                         MessageActionFactory.createAction(
-                                config,
-                                con,
+                                connection,
                                 ConnectionEndType.SERVER,
-                                DhGexReplyandNewKeysMessage));
-                sshActions.add(
-                        MessageActionFactory.createAction(
-                                config, con, ConnectionEndType.CLIENT, new NewKeysMessage()));
+                                new DhGexKeyExchangeReplyMessage(),
+                                new NewKeysMessage()));
                 break;
             case ECDH:
                 sshActions.add(
                         MessageActionFactory.createAction(
-                                config,
-                                con,
+                                connection,
                                 ConnectionEndType.CLIENT,
                                 new EcdhKeyExchangeInitMessage()));
-                List<ProtocolMessage<?>> EcdhReplyandNewKeysMessage = new ArrayList<>();
-                EcdhReplyandNewKeysMessage.add(new EcdhKeyExchangeReplyMessage());
-                EcdhReplyandNewKeysMessage.add(new NewKeysMessage());
                 sshActions.add(
                         MessageActionFactory.createAction(
-                                config, con, ConnectionEndType.SERVER, EcdhReplyandNewKeysMessage));
+                                connection,
+                                ConnectionEndType.SERVER,
+                                new EcdhKeyExchangeReplyMessage(),
+                                new NewKeysMessage()));
+                break;
+            case RSA:
                 sshActions.add(
                         MessageActionFactory.createAction(
-                                config, con, ConnectionEndType.CLIENT, new NewKeysMessage()));
+                                connection,
+                                ConnectionEndType.SERVER,
+                                new RsaKeyExchangePubkeyMessage()));
+                sshActions.add(
+                        MessageActionFactory.createAction(
+                                connection,
+                                ConnectionEndType.CLIENT,
+                                new RsaKeyExchangeSecretMessage()));
+                sshActions.add(
+                        MessageActionFactory.createAction(
+                                connection,
+                                ConnectionEndType.SERVER,
+                                new RsaKeyExchangeDoneMessage(),
+                                new NewKeysMessage()));
                 break;
             default:
-                break;
+                throw new ConfigurationException(
+                        "Unable to add key exchange actions to workflow trace - unknown or unsupported key exchange flow type: "
+                                + flowType);
         }
+        sshActions.add(
+                MessageActionFactory.createAction(
+                        connection, ConnectionEndType.CLIENT, new NewKeysMessage()));
+        sshActions.add(new ActivateEncryptionAction(connection.getAlias()));
         return sshActions;
     }
 
-    public List<SshAction> createAuthPasswordActions() {
-        List<SshAction> sshActions = new LinkedList<>();
-        sshActions.add(new ActivateEncryptionAction());
-        sshActions.add(
-                MessageActionFactory.createAction(
-                        config,
-                        getConnection(),
-                        ConnectionEndType.CLIENT,
-                        new ServiceRequestMessage()));
-        sshActions.add(
-                MessageActionFactory.createAction(
-                        config,
-                        getConnection(),
-                        ConnectionEndType.SERVER,
-                        new ServiceAcceptMessage()));
-        sshActions.add(
-                MessageActionFactory.createAction(
-                        config,
-                        getConnection(),
-                        ConnectionEndType.CLIENT,
-                        new UserAuthPasswordMessage()));
-        sshActions.add(
-                MessageActionFactory.createAction(
-                        config,
-                        getConnection(),
-                        ConnectionEndType.SERVER,
-                        new UserAuthSuccessMessage()));
-        return sshActions;
+    private void addAuthenticationProtocolActions(WorkflowTrace workflow) {
+        this.addAuthenticationProtocolActions(AuthenticationMethod.PASSWORD, workflow);
     }
 
-    public List<SshAction> createConnectionProtocolActions() {
-        List<SshAction> sshActions = new LinkedList<>();
-        sshActions.add(
-                MessageActionFactory.createAction(
-                        config,
-                        getConnection(),
-                        ConnectionEndType.CLIENT,
-                        new ChannelOpenMessage(1337, "session", 10000, 10000)));
-        sshActions.add(
-                MessageActionFactory.createAction(
-                        config,
-                        getConnection(),
-                        ConnectionEndType.SERVER,
-                        new ChannelOpenConfirmationMessage()));
-        sshActions.add(
-                MessageActionFactory.createAction(
-                        config,
-                        getConnection(),
-                        ConnectionEndType.CLIENT,
-                        new ChannelOpenMessage(1338, "session", 10000, 10000)));
-        sshActions.add(
-                MessageActionFactory.createAction(
-                        config,
-                        getConnection(),
-                        ConnectionEndType.SERVER,
-                        new ChannelOpenConfirmationMessage()));
-        sshActions.add(
-                MessageActionFactory.createAction(
-                        config,
-                        getConnection(),
-                        ConnectionEndType.CLIENT,
-                        new ChannelRequestExecMessage(1337, "nc -l -p 13370")));
-        sshActions.add(
-                MessageActionFactory.createAction(
-                        config,
-                        getConnection(),
-                        ConnectionEndType.SERVER,
-                        new ChannelWindowAdjustMessage()));
-        sshActions.add(
-                MessageActionFactory.createAction(
-                        config,
-                        getConnection(),
-                        ConnectionEndType.CLIENT,
-                        new ChannelWindowAdjustMessage(1337)));
-        sshActions.add(
-                MessageActionFactory.createAction(
-                        config,
-                        getConnection(),
-                        ConnectionEndType.CLIENT,
-                        new ChannelEofMessage(1337)));
-        sshActions.add(
-                MessageActionFactory.createAction(
-                        config,
-                        getConnection(),
-                        ConnectionEndType.CLIENT,
-                        new ChannelDataMessage(1337)));
-        sshActions.add(
-                MessageActionFactory.createAction(
-                        config,
-                        getConnection(),
-                        ConnectionEndType.CLIENT,
-                        new ChannelExtendedDataMessage(1337)));
-        sshActions.add(
-                MessageActionFactory.createAction(
-                        config,
-                        getConnection(),
-                        ConnectionEndType.CLIENT,
-                        new ChannelCloseMessage(1337)));
-        sshActions.add(
-                MessageActionFactory.createAction(
-                        config,
-                        getConnection(),
-                        ConnectionEndType.SERVER,
-                        new ChannelCloseMessage()));
+    private void addAuthenticationProtocolActions(
+            AuthenticationMethod method, WorkflowTrace workflow) {
+        AliasedConnection connection = getDefaultConnection();
+        //noinspection SwitchStatementWithTooFewBranches
+        switch (method) {
+            case PASSWORD:
+                workflow.addSshActions(
+                        MessageActionFactory.createAction(
+                                connection,
+                                ConnectionEndType.CLIENT,
+                                new UserAuthPasswordMessage()),
+                        MessageActionFactory.createAction(
+                                connection,
+                                ConnectionEndType.SERVER,
+                                new UserAuthSuccessMessage()));
+                break;
+            default:
+                throw new ConfigurationException(
+                        "Unable to add authentication actions to workflow trace - unknown or unsupported authentication method: "
+                                + method);
+        }
+    }
 
-        return sshActions;
+    private void addConnectionProtocolActions(WorkflowTrace workflow) {
+        AliasedConnection connection = getDefaultConnection();
+        workflow.addSshActions(
+                MessageActionFactory.createAction(
+                        connection,
+                        ConnectionEndType.CLIENT,
+                        new ChannelOpenMessage(1337, "session", 10000, 10000)),
+                MessageActionFactory.createAction(
+                        connection, ConnectionEndType.SERVER, new ChannelOpenConfirmationMessage()),
+                MessageActionFactory.createAction(
+                        connection,
+                        ConnectionEndType.CLIENT,
+                        new ChannelOpenMessage(1338, "session", 10000, 10000)),
+                MessageActionFactory.createAction(
+                        connection, ConnectionEndType.SERVER, new ChannelOpenConfirmationMessage()),
+                MessageActionFactory.createAction(
+                        connection,
+                        ConnectionEndType.CLIENT,
+                        new ChannelRequestExecMessage(1337, "nc -l -p 13370")),
+                MessageActionFactory.createAction(
+                        connection, ConnectionEndType.SERVER, new ChannelWindowAdjustMessage()),
+                MessageActionFactory.createAction(
+                        connection, ConnectionEndType.CLIENT, new ChannelWindowAdjustMessage(1337)),
+                MessageActionFactory.createAction(
+                        connection, ConnectionEndType.CLIENT, new ChannelEofMessage(1337)),
+                MessageActionFactory.createAction(
+                        connection, ConnectionEndType.CLIENT, new ChannelDataMessage(1337)),
+                MessageActionFactory.createAction(
+                        connection, ConnectionEndType.CLIENT, new ChannelExtendedDataMessage(1337)),
+                MessageActionFactory.createAction(
+                        connection, ConnectionEndType.CLIENT, new ChannelCloseMessage(1337)),
+                MessageActionFactory.createAction(
+                        connection, ConnectionEndType.SERVER, new ChannelCloseMessage()));
     }
 }

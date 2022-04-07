@@ -7,52 +7,53 @@
  */
 package de.rub.nds.sshattacker.core.workflow.action;
 
+import de.rub.nds.sshattacker.core.connection.AliasedConnection;
 import de.rub.nds.sshattacker.core.constants.EncryptionAlgorithm;
 import de.rub.nds.sshattacker.core.constants.MacAlgorithm;
 import de.rub.nds.sshattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.sshattacker.core.packet.cipher.PacketCipherFactory;
 import de.rub.nds.sshattacker.core.packet.cipher.keys.KeySet;
-import de.rub.nds.sshattacker.core.packet.cipher.keys.KeySetGenerator;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.state.State;
+import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
+import java.util.Optional;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class ActivateEncryptionAction extends ConnectionBoundAction {
+
+    private static final Logger LOGGER = LogManager.getLogger();
+
+    public ActivateEncryptionAction() {
+        super(AliasedConnection.DEFAULT_CONNECTION_ALIAS);
+    }
+
+    public ActivateEncryptionAction(String connectionAlias) {
+        super(connectionAlias);
+    }
 
     @Override
     public void execute(State state) throws WorkflowExecutionException {
         SshContext context = state.getSshContext(getConnectionAlias());
-        KeySet keySet = KeySetGenerator.generateKeySet(context);
-        EncryptionAlgorithm outEnc =
-                context.isClient()
-                        ? context.getCipherAlgorithmClientToServer()
-                                .orElseThrow(WorkflowExecutionException::new)
-                        : context.getCipherAlgorithmServerToClient()
-                                .orElseThrow(WorkflowExecutionException::new);
-        EncryptionAlgorithm inEnc =
-                context.isClient()
-                        ? context.getCipherAlgorithmServerToClient()
-                                .orElseThrow(WorkflowExecutionException::new)
-                        : context.getCipherAlgorithmClientToServer()
-                                .orElseThrow(WorkflowExecutionException::new);
-        MacAlgorithm outMac =
-                context.isClient()
-                        ? context.getMacAlgorithmClientToServer()
-                                .orElseThrow(WorkflowExecutionException::new)
-                        : context.getMacAlgorithmServerToClient()
-                                .orElseThrow(WorkflowExecutionException::new);
-        MacAlgorithm inMac =
-                context.isClient()
-                        ? context.getMacAlgorithmServerToClient()
-                                .orElseThrow(WorkflowExecutionException::new)
-                        : context.getMacAlgorithmClientToServer()
-                                .orElseThrow(WorkflowExecutionException::new);
+        Chooser chooser = context.getChooser();
+        Optional<KeySet> keySet = context.getKeySet();
+        if (keySet.isEmpty()) {
+            LOGGER.error(
+                    "Unable to activate encryption, there is no key set available in the context");
+            return;
+        }
 
+        EncryptionAlgorithm outEnc = chooser.getSendEncryptionAlgorithm();
+        MacAlgorithm outMac = chooser.getSendMacAlgorithm();
         context.getPacketLayer()
                 .updateEncryptionCipher(
-                        PacketCipherFactory.getPacketCipher(context, keySet, outEnc, outMac));
+                        PacketCipherFactory.getPacketCipher(context, keySet.get(), outEnc, outMac));
+
+        EncryptionAlgorithm inEnc = chooser.getReceiveEncryptionAlgorithm();
+        MacAlgorithm inMac = chooser.getReceiveMacAlgorithm();
         context.getPacketLayer()
                 .updateDecryptionCipher(
-                        PacketCipherFactory.getPacketCipher(context, keySet, inEnc, inMac));
+                        PacketCipherFactory.getPacketCipher(context, keySet.get(), inEnc, inMac));
     }
 
     @Override

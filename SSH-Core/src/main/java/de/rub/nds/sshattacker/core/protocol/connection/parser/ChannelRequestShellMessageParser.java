@@ -12,6 +12,10 @@ import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelRequestShe
 public class ChannelRequestShellMessageParser
         extends ChannelRequestMessageParser<ChannelRequestShellMessage> {
 
+    public ChannelRequestShellMessageParser(byte[] array) {
+        super(array);
+    }
+
     public ChannelRequestShellMessageParser(byte[] array, int startPosition) {
         super(array, startPosition);
     }

@@ -10,45 +10,64 @@ package de.rub.nds.sshattacker.core.protocol.transport.message;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
-import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
+import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.RsaKeyExchangeDoneMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 
-public class RsaKeyExchangeDoneMessage extends SshMessage<RsaKeyExchangeDoneMessage> {
+public class RsaKeyExchangeDoneMessage extends SshMessage<RsaKeyExchangeDoneMessage>
+        implements ExchangeHashSignatureMessage {
+
+    public static final MessageIdConstant ID = MessageIdConstant.SSH_MSG_KEXRSA_DONE;
 
     private ModifiableInteger signatureLength;
     private ModifiableByteArray signature;
 
-    public RsaKeyExchangeDoneMessage() {
-        super(MessageIDConstant.SSH_MSG_KEXRSA_DONE);
-    }
-
-    // Signature length methods
+    @Override
     public ModifiableInteger getSignatureLength() {
         return signatureLength;
     }
 
+    @Override
     public void setSignatureLength(ModifiableInteger signatureLength) {
         this.signatureLength = signatureLength;
     }
 
+    @Override
     public void setSignatureLength(int signatureLength) {
         this.signatureLength =
                 ModifiableVariableFactory.safelySetValue(this.signatureLength, signatureLength);
     }
 
-    // Signature methods
+    @Override
     public ModifiableByteArray getSignature() {
         return signature;
     }
 
+    @Override
     public void setSignature(ModifiableByteArray signature) {
+        this.setSignature(signature, false);
+    }
+
+    @Override
+    public void setSignature(byte[] signature) {
+        this.setSignature(signature, false);
+    }
+
+    @Override
+    public void setSignature(ModifiableByteArray signature, boolean adjustLengthField) {
+        if (adjustLengthField) {
+            this.setSignatureLength(signature.getValue().length);
+        }
         this.signature = signature;
     }
 
-    public void setSignature(byte[] signature) {
+    @Override
+    public void setSignature(byte[] signature, boolean adjustLengthField) {
+        if (adjustLengthField) {
+            this.setSignatureLength(signature.length);
+        }
         this.signature = ModifiableVariableFactory.safelySetValue(this.signature, signature);
     }
 

@@ -12,19 +12,20 @@ import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.sshattacker.core.constants.GlobalRequestType;
-import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
+import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
 import java.nio.charset.StandardCharsets;
 
 public abstract class GlobalRequestMessage<T extends GlobalRequestMessage<T>>
         extends SshMessage<T> {
 
+    public static final MessageIdConstant ID = MessageIdConstant.SSH_MSG_GLOBAL_REQUEST;
+
     private ModifiableInteger requestNameLength;
     private ModifiableString requestName;
     private ModifiableByte wantReply;
 
     protected GlobalRequestMessage(GlobalRequestType requestType) {
-        super(MessageIDConstant.SSH_MSG_GLOBAL_REQUEST);
         setRequestName(requestType, true);
     }
 

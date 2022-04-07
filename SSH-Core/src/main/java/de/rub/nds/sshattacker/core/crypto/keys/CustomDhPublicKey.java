@@ -7,18 +7,30 @@
  */
 package de.rub.nds.sshattacker.core.crypto.keys;
 
-import de.rub.nds.sshattacker.core.constants.NamedDHGroup;
+import de.rub.nds.sshattacker.core.constants.NamedDhGroup;
 import java.math.BigInteger;
 import javax.crypto.interfaces.DHPublicKey;
 import javax.crypto.spec.DHParameterSpec;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
 
-public class CustomDhPublicKey implements DHPublicKey {
+/** A serializable diffie-hellman public key used in the DH key exchange. */
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
+public class CustomDhPublicKey extends CustomPublicKey implements DHPublicKey {
 
-    private final BigInteger modulus;
-    private final BigInteger generator;
-    private final BigInteger publicKey;
+    // Group parameters
+    private BigInteger modulus;
+    private BigInteger generator;
 
-    public CustomDhPublicKey(NamedDHGroup group, BigInteger publicKey) {
+    // Public key
+    private BigInteger publicKey;
+
+    @SuppressWarnings("unused")
+    public CustomDhPublicKey() {}
+
+    public CustomDhPublicKey(NamedDhGroup group, BigInteger publicKey) {
         this(group.getModulus(), group.getGenerator(), publicKey);
     }
 
@@ -28,9 +40,39 @@ public class CustomDhPublicKey implements DHPublicKey {
         this.publicKey = publicKey;
     }
 
+    public BigInteger getModulus() {
+        return modulus;
+    }
+
+    public void setModulus(BigInteger modulus) {
+        this.modulus = modulus;
+    }
+
+    public BigInteger getGenerator() {
+        return generator;
+    }
+
+    public void setGenerator(BigInteger generator) {
+        this.generator = generator;
+    }
+
+    public BigInteger getPublicKey() {
+        return publicKey;
+    }
+
+    public void setPublicKey(BigInteger publicKey) {
+        this.publicKey = publicKey;
+    }
+
+    // Interface methods
     @Override
     public BigInteger getY() {
         return publicKey;
+    }
+
+    @Override
+    public DHParameterSpec getParams() {
+        return new DHParameterSpec(modulus, generator);
     }
 
     @Override
@@ -46,18 +88,5 @@ public class CustomDhPublicKey implements DHPublicKey {
     @Override
     public byte[] getEncoded() {
         return publicKey.toByteArray();
-    }
-
-    @Override
-    public DHParameterSpec getParams() {
-        return new DHParameterSpec(modulus, generator);
-    }
-
-    public BigInteger getModulus() {
-        return modulus;
-    }
-
-    public BigInteger getGenerator() {
-        return generator;
     }
 }

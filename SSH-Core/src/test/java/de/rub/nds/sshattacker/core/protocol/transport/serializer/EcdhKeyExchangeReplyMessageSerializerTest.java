@@ -30,10 +30,10 @@ public class EcdhKeyExchangeReplyMessageSerializerTest {
      * Test of EcdhKeyExchangeReplyMessageSerializer::serialize method
      *
      * @param expectedBytes Expected output of the serialize() call
-     * @param providedHostKeyLength Length of the host key
-     * @param providedHostKey Bytes of the host key
-     * @param providedPublicKeyLength Length of the ephemeral ECDH public key
-     * @param providedPublicKey Bytes of the ephemeral ECDH public key
+     * @param providedHostKeyBytesLength Length of the host key
+     * @param providedHostKeyBytes Bytes of the host key
+     * @param providedEphemeralPublicKeyLength Length of the ephemeral ECDH public key
+     * @param providedEphemeralPublicKey Bytes of the ephemeral ECDH public key
      * @param providedSignatureLength Length of the signature
      * @param providedSignature Bytes of the signature
      */
@@ -41,17 +41,17 @@ public class EcdhKeyExchangeReplyMessageSerializerTest {
     @MethodSource("provideTestVectors")
     public void testSerialize(
             byte[] expectedBytes,
-            int providedHostKeyLength,
-            byte[] providedHostKey,
-            int providedPublicKeyLength,
-            byte[] providedPublicKey,
+            int providedHostKeyBytesLength,
+            byte[] providedHostKeyBytes,
+            int providedEphemeralPublicKeyLength,
+            byte[] providedEphemeralPublicKey,
             int providedSignatureLength,
             byte[] providedSignature) {
         EcdhKeyExchangeReplyMessage msg = new EcdhKeyExchangeReplyMessage();
-        msg.setHostKeyLength(providedHostKeyLength);
-        msg.setHostKey(providedHostKey);
-        msg.setEphemeralPublicKeyLength(providedPublicKeyLength);
-        msg.setEphemeralPublicKey(providedPublicKey);
+        msg.setHostKeyBytesLength(providedHostKeyBytesLength);
+        msg.setHostKeyBytes(providedHostKeyBytes);
+        msg.setEphemeralPublicKeyLength(providedEphemeralPublicKeyLength);
+        msg.setEphemeralPublicKey(providedEphemeralPublicKey);
         msg.setSignatureLength(providedSignatureLength);
         msg.setSignature(providedSignature);
         EcdhKeyExchangeReplyMessageSerializer serializer =

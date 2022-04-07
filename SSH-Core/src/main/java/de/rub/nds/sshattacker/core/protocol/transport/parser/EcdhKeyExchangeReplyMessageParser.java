@@ -20,6 +20,10 @@ public class EcdhKeyExchangeReplyMessageParser
 
     private static final Logger LOGGER = LogManager.getLogger();
 
+    public EcdhKeyExchangeReplyMessageParser(byte[] array) {
+        super(array);
+    }
+
     public EcdhKeyExchangeReplyMessageParser(byte[] array, int startPosition) {
         super(array, startPosition);
     }
@@ -29,21 +33,24 @@ public class EcdhKeyExchangeReplyMessageParser
         return new EcdhKeyExchangeReplyMessage();
     }
 
-    private void parseHostKey() {
-        message.setHostKeyLength(parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH));
-        LOGGER.debug("Host key length: " + message.getHostKeyLength().getValue());
-        message.setHostKey(parseByteArrayField(message.getHostKeyLength().getValue()));
+    private void parseHostKeyBytes() {
+        message.setHostKeyBytesLength(parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH));
+        LOGGER.debug("Host key bytes length: " + message.getHostKeyBytesLength().getValue());
+        message.setHostKeyBytes(parseByteArrayField(message.getHostKeyBytesLength().getValue()));
         LOGGER.debug(
-                "Host key: " + ArrayConverter.bytesToRawHexString(message.getHostKey().getValue()));
+                "Host key bytes: "
+                        + ArrayConverter.bytesToRawHexString(message.getHostKeyBytes().getValue()));
     }
 
-    private void parsePublicKey() {
+    private void parseEphemeralPublicKey() {
         message.setEphemeralPublicKeyLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-        LOGGER.debug("Public key length: " + message.getEphemeralPublicKeyLength().getValue());
+        LOGGER.debug(
+                "Ephemeral public key (server) length: "
+                        + message.getEphemeralPublicKeyLength().getValue());
         message.setEphemeralPublicKey(
                 parseByteArrayField(message.getEphemeralPublicKeyLength().getValue()));
         LOGGER.debug(
-                "Public key: "
+                "Ephemeral public key (server): "
                         + ArrayConverter.bytesToRawHexString(
                                 message.getEphemeralPublicKey().getValue()));
     }
@@ -59,8 +66,8 @@ public class EcdhKeyExchangeReplyMessageParser
 
     @Override
     public void parseMessageSpecificContents() {
-        parseHostKey();
-        parsePublicKey();
+        parseHostKeyBytes();
+        parseEphemeralPublicKey();
         parseSignature();
     }
 }

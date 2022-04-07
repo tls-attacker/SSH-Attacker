@@ -28,6 +28,11 @@ public class ChannelRequestEnvMessageHandler extends SshMessageHandler<ChannelRe
     public void adjustContext() {}
 
     @Override
+    public ChannelRequestEnvMessageParser getParser(byte[] array) {
+        return new ChannelRequestEnvMessageParser(array);
+    }
+
+    @Override
     public ChannelRequestEnvMessageParser getParser(byte[] array, int startPosition) {
         return new ChannelRequestEnvMessageParser(array, startPosition);
     }

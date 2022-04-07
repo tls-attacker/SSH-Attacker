@@ -34,7 +34,7 @@ public class KeyFetcher {
         WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(config);
         WorkflowTrace trace =
                 factory.createWorkflowTrace(
-                        WorkflowTraceType.START_KEYEXCHANGE, RunningModeType.CLIENT);
+                        WorkflowTraceType.KEX_INIT_ONLY, RunningModeType.CLIENT);
 
         ReceiveAction receiveAction = new ReceiveAction(new RsaKeyExchangePubkeyMessage());
         trace.addSshAction(receiveAction);
@@ -58,7 +58,10 @@ public class KeyFetcher {
 
         if (receivedMessages.size() > 0
                 && receivedMessages.get(0) instanceof RsaKeyExchangePubkeyMessage) {
-            return ((RsaKeyExchangePubkeyMessage) receivedMessages.get(0)).getPublicKey();
+            return (RSAPublicKey)
+                    ((RsaKeyExchangePubkeyMessage) receivedMessages.get(0))
+                            .getTransientPublicKey()
+                            .getPublicKey();
         } else {
             LOGGER.warn("Could not fetch server's RSA host key, did not receive PubkeyMessage.");
             return null;

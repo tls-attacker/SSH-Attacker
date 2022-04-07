@@ -10,7 +10,7 @@ package de.rub.nds.sshattacker.core.protocol.transport.message;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.biginteger.ModifiableBigInteger;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
-import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
+import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.protocol.common.*;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.DhGexKeyExchangeGroupMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
@@ -18,14 +18,12 @@ import java.math.BigInteger;
 
 public class DhGexKeyExchangeGroupMessage extends SshMessage<DhGexKeyExchangeGroupMessage> {
 
+    public static final MessageIdConstant ID = MessageIdConstant.SSH_MSG_KEX_DH_GEX_GROUP;
+
     private ModifiableInteger groupModulusLength;
     private ModifiableBigInteger groupModulus;
     private ModifiableInteger groupGeneratorLength;
     private ModifiableBigInteger groupGenerator;
-
-    public DhGexKeyExchangeGroupMessage() {
-        super(MessageIDConstant.SSH_MSG_KEX_DH_GEX_GROUP);
-    }
 
     public ModifiableInteger getGroupModulusLength() {
         return groupModulusLength;

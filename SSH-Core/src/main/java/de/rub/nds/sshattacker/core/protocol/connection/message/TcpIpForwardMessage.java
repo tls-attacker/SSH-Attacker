@@ -16,55 +16,55 @@ import java.nio.charset.StandardCharsets;
 public abstract class TcpIpForwardMessage<T extends TcpIpForwardMessage<T>>
         extends GlobalRequestMessage<T> {
 
-    private ModifiableInteger IPAddressToBindLength;
-    private ModifiableString IPAddressToBind;
+    private ModifiableInteger ipAddressToBindLength;
+    private ModifiableString ipAddressToBind;
     private ModifiableInteger portToBind;
 
     protected TcpIpForwardMessage(GlobalRequestType requestType) {
         super(requestType);
     }
 
-    public ModifiableString getIPAddressToBind() {
-        return IPAddressToBind;
+    public ModifiableString getIpAddressToBind() {
+        return ipAddressToBind;
     }
 
-    public void setIPAddressToBind(ModifiableString IPAddressToBind) {
-        this.IPAddressToBind = IPAddressToBind;
+    public void setIpAddressToBind(ModifiableString ipAddressToBind) {
+        this.ipAddressToBind = ipAddressToBind;
     }
 
-    public void setIPAddressToBind(String IPAddressToBind) {
-        this.IPAddressToBind =
-                ModifiableVariableFactory.safelySetValue(this.IPAddressToBind, IPAddressToBind);
+    public void setIpAddressToBind(String ipAddressToBind) {
+        this.ipAddressToBind =
+                ModifiableVariableFactory.safelySetValue(this.ipAddressToBind, ipAddressToBind);
     }
 
-    public void setIPAddressToBind(ModifiableString IPAddressToBind, boolean adjustLengthField) {
+    public void setIpAddressToBind(ModifiableString ipAddressToBind, boolean adjustLengthField) {
         if (adjustLengthField) {
-            setIPAddressToBindLength(
-                    IPAddressToBind.getValue().getBytes(StandardCharsets.US_ASCII).length);
+            setIpAddressToBindLength(
+                    ipAddressToBind.getValue().getBytes(StandardCharsets.US_ASCII).length);
         }
-        this.IPAddressToBind = IPAddressToBind;
+        this.ipAddressToBind = ipAddressToBind;
     }
 
-    public void setIPAddressToBind(String IPAddressToBind, boolean adjustLengthField) {
+    public void setIpAddressToBind(String ipAddressToBind, boolean adjustLengthField) {
         if (adjustLengthField) {
-            setIPAddressToBindLength(IPAddressToBind.getBytes(StandardCharsets.US_ASCII).length);
+            setIpAddressToBindLength(ipAddressToBind.getBytes(StandardCharsets.US_ASCII).length);
         }
-        this.IPAddressToBind =
-                ModifiableVariableFactory.safelySetValue(this.IPAddressToBind, IPAddressToBind);
+        this.ipAddressToBind =
+                ModifiableVariableFactory.safelySetValue(this.ipAddressToBind, ipAddressToBind);
     }
 
-    public ModifiableInteger getIPAddressToBindLength() {
-        return IPAddressToBindLength;
+    public ModifiableInteger getIpAddressToBindLength() {
+        return ipAddressToBindLength;
     }
 
-    public void setIPAddressToBindLength(ModifiableInteger IPAddressToBindLength) {
-        this.IPAddressToBindLength = IPAddressToBindLength;
+    public void setIpAddressToBindLength(ModifiableInteger ipAddressToBindLength) {
+        this.ipAddressToBindLength = ipAddressToBindLength;
     }
 
-    public void setIPAddressToBindLength(int IPAddressToBindLength) {
-        this.IPAddressToBindLength =
+    public void setIpAddressToBindLength(int ipAddressToBindLength) {
+        this.ipAddressToBindLength =
                 ModifiableVariableFactory.safelySetValue(
-                        this.IPAddressToBindLength, IPAddressToBindLength);
+                        this.ipAddressToBindLength, ipAddressToBindLength);
     }
 
     public ModifiableInteger getPortToBind() {

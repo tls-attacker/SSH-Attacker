@@ -7,18 +7,18 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.message;
 
-import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
+import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.protocol.connection.handler.ChannelEofMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class ChannelEofMessage extends ChannelMessage<ChannelEofMessage> {
 
-    public ChannelEofMessage() {
-        super(MessageIDConstant.SSH_MSG_CHANNEL_EOF);
-    }
+    public static final MessageIdConstant ID = MessageIdConstant.SSH_MSG_CHANNEL_EOF;
+
+    public ChannelEofMessage() {}
 
     public ChannelEofMessage(Integer senderChannel) {
-        super(MessageIDConstant.SSH_MSG_CHANNEL_EOF, senderChannel);
+        super(senderChannel);
     }
 
     @Override

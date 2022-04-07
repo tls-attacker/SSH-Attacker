@@ -22,15 +22,20 @@ public class DhGexKeyExchangeInitMessageSerializer
         super(message);
     }
 
-    private void serializePublicKey() {
-        LOGGER.debug("Public key length: " + message.getPublicKeyLength().getValue());
-        appendInt(message.getPublicKeyLength().getValue(), DataFormatConstants.MPINT_SIZE_LENGTH);
-        LOGGER.debug("Public key: " + message.getPublicKey().getValue());
-        appendBytes(message.getPublicKey().getValue().toByteArray());
+    private void serializeEphemeralPublicKey() {
+        LOGGER.debug(
+                "Ephemeral public key (client) length: "
+                        + message.getEphemeralPublicKeyLength().getValue());
+        appendInt(
+                message.getEphemeralPublicKeyLength().getValue(),
+                DataFormatConstants.MPINT_SIZE_LENGTH);
+        LOGGER.debug(
+                "Ephemeral public key (client): " + message.getEphemeralPublicKey().getValue());
+        appendBytes(message.getEphemeralPublicKey().getValue().toByteArray());
     }
 
     @Override
     public void serializeMessageSpecificContents() {
-        serializePublicKey();
+        serializeEphemeralPublicKey();
     }
 }

@@ -8,7 +8,7 @@
 package de.rub.nds.sshattacker.core.protocol.common;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
+import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.exceptions.ParserException;
 import de.rub.nds.sshattacker.core.packet.AbstractPacket;
 import de.rub.nds.sshattacker.core.packet.BlobPacket;
@@ -29,6 +29,10 @@ public abstract class ProtocolMessageParser<T extends ProtocolMessage<T>> extend
 
     protected final T message = createMessage();
 
+    public ProtocolMessageParser(byte[] array) {
+        super(array);
+    }
+
     public ProtocolMessageParser(byte[] array, int startPosition) {
         super(array, startPosition);
     }
@@ -47,7 +51,7 @@ public abstract class ProtocolMessageParser<T extends ProtocolMessage<T>> extend
     private void setCompleteResultingMessage() {
         message.setCompleteResultingMessage(getAlreadyParsed());
         LOGGER.trace(
-                "CompleteResultMessage: "
+                "Complete message bytes parsed: "
                         + ArrayConverter.bytesToHexString(
                                 message.getCompleteResultingMessage().getValue()));
     }
@@ -59,7 +63,7 @@ public abstract class ProtocolMessageParser<T extends ProtocolMessage<T>> extend
                 String rawText =
                         new String(packet.getPayload().getValue(), StandardCharsets.US_ASCII);
                 if (rawText.startsWith("SSH-2.0")) {
-                    return new VersionExchangeMessageParser(raw, 0).parse();
+                    return new VersionExchangeMessageParser(raw).parse();
                 } else if (rawText.startsWith("Invalid SSH identification string.")) {
                     LOGGER.warn(
                             "The server reported the identification string sent by the SSH-Attacker is invalid");
@@ -68,67 +72,77 @@ public abstract class ProtocolMessageParser<T extends ProtocolMessage<T>> extend
                 }
             }
 
-            switch (MessageIDConstant.fromId(raw[0], context)) {
+            switch (MessageIdConstant.fromId(raw[0], context)) {
                 case SSH_MSG_KEXINIT:
-                    return new KeyExchangeInitMessageParser(raw, 0).parse();
+                    return new KeyExchangeInitMessageParser(raw).parse();
                 case SSH_MSG_KEX_ECDH_INIT:
-                    return new EcdhKeyExchangeInitMessageParser(raw, 0).parse();
+                    return new EcdhKeyExchangeInitMessageParser(raw).parse();
                 case SSH_MSG_KEX_ECDH_REPLY:
-                    return new EcdhKeyExchangeReplyMessageParser(raw, 0).parse();
+                    return new EcdhKeyExchangeReplyMessageParser(raw).parse();
+                case SSH_MSG_KEXDH_INIT:
+                    return new DhKeyExchangeInitMessageParser(raw).parse();
                 case SSH_MSG_KEXDH_REPLY:
-                    return new DhKeyExchangeReplyMessageParser(raw, 0).parse();
+                    return new DhKeyExchangeReplyMessageParser(raw).parse();
+                case SSH_MSG_KEX_DH_GEX_REQUEST_OLD:
+                    return new DhGexKeyExchangeOldRequestMessageParser(raw).parse();
+                case SSH_MSG_KEX_DH_GEX_REQUEST:
+                    return new DhGexKeyExchangeRequestMessageParser(raw).parse();
                 case SSH_MSG_KEX_DH_GEX_GROUP:
-                    return new DhGexKeyExchangeGroupMessageParser(raw, 0).parse();
+                    return new DhGexKeyExchangeGroupMessageParser(raw).parse();
+                case SSH_MSG_KEX_DH_GEX_INIT:
+                    return new DhGexKeyExchangeInitMessageParser(raw).parse();
                 case SSH_MSG_KEX_DH_GEX_REPLY:
-                    return new DhGexKeyExchangeReplyMessageParser(raw, 0).parse();
-                case SSH_MSG_KEXRSA_DONE:
-                    return new RsaKeyExchangeDoneMessageParser(raw, 0).parse();
+                    return new DhGexKeyExchangeReplyMessageParser(raw).parse();
                 case SSH_MSG_KEXRSA_PUBKEY:
-                    return new RsaKeyExchangePubkeyMessageParser(raw, 0).parse();
+                    return new RsaKeyExchangePubkeyMessageParser(raw).parse();
+                case SSH_MSG_KEXRSA_SECRET:
+                    return new RsaKeyExchangeSecretMessageParser(raw).parse();
+                case SSH_MSG_KEXRSA_DONE:
+                    return new RsaKeyExchangeDoneMessageParser(raw).parse();
                 case SSH_MSG_NEWKEYS:
-                    return new NewKeysMessageParser(raw, 0).parse();
+                    return new NewKeysMessageParser(raw).parse();
                 case SSH_MSG_SERVICE_REQUEST:
-                    return new ServiceRequestMessageParser(raw, 0).parse();
+                    return new ServiceRequestMessageParser(raw).parse();
                 case SSH_MSG_SERVICE_ACCEPT:
-                    return new ServiceAcceptMessageParser(raw, 0).parse();
+                    return new ServiceAcceptMessageParser(raw).parse();
                 case SSH_MSG_CHANNEL_OPEN_CONFIRMATION:
-                    return new ChannelOpenConfirmationMessageParser(raw, 0).parse();
+                    return new ChannelOpenConfirmationMessageParser(raw).parse();
                 case SSH_MSG_CHANNEL_DATA:
-                    return new ChannelDataMessageParser(raw, 0).parse();
+                    return new ChannelDataMessageParser(raw).parse();
                 case SSH_MSG_CHANNEL_CLOSE:
-                    return new ChannelCloseMessageParser(raw, 0).parse();
+                    return new ChannelCloseMessageParser(raw).parse();
                 case SSH_MSG_CHANNEL_EOF:
-                    return new ChannelEofMessageParser(raw, 0).parse();
+                    return new ChannelEofMessageParser(raw).parse();
                 case SSH_MSG_CHANNEL_EXTENDED_DATA:
-                    return new ChannelExtendedDataMessageParser(raw, 0).parse();
+                    return new ChannelExtendedDataMessageParser(raw).parse();
                 case SSH_MSG_CHANNEL_FAILURE:
-                    return new ChannelFailureMessageParser(raw, 0).parse();
+                    return new ChannelFailureMessageParser(raw).parse();
                 case SSH_MSG_CHANNEL_OPEN_FAILURE:
-                    return new ChannelOpenFailureMessageParser(raw, 0).parse();
+                    return new ChannelOpenFailureMessageParser(raw).parse();
                 case SSH_MSG_CHANNEL_OPEN:
-                    return new ChannelOpenMessageParser(raw, 0).parse();
+                    return new ChannelOpenMessageParser(raw).parse();
                 case SSH_MSG_CHANNEL_SUCCESS:
-                    return new ChannelSuccessMessageParser(raw, 0).parse();
+                    return new ChannelSuccessMessageParser(raw).parse();
                 case SSH_MSG_CHANNEL_WINDOW_ADJUST:
-                    return new ChannelWindowAdjustMessageParser(raw, 0).parse();
+                    return new ChannelWindowAdjustMessageParser(raw).parse();
                 case SSH_MSG_DEBUG:
-                    return new DebugMessageParser(raw, 0).parse();
+                    return new DebugMessageParser(raw).parse();
                 case SSH_MSG_DISCONNECT:
-                    return new DisconnectMessageParser(raw, 0).parse();
+                    return new DisconnectMessageParser(raw).parse();
                 case SSH_MSG_IGNORE:
-                    return new IgnoreMessageParser(raw, 0).parse();
+                    return new IgnoreMessageParser(raw).parse();
                 case SSH_MSG_REQUEST_FAILURE:
-                    return new RequestFailureMessageParser(raw, 0).parse();
+                    return new RequestFailureMessageParser(raw).parse();
                 case SSH_MSG_REQUEST_SUCCESS:
-                    return new RequestSuccessMessageParser(raw, 0).parse();
+                    return new RequestSuccessMessageParser(raw).parse();
                 case SSH_MSG_UNIMPLEMENTED:
-                    return new UnimplementedMessageParser(raw, 0).parse();
+                    return new UnimplementedMessageParser(raw).parse();
                 case SSH_MSG_USERAUTH_BANNER:
-                    return new UserAuthBannerMessageParser(raw, 0).parse();
+                    return new UserAuthBannerMessageParser(raw).parse();
                 case SSH_MSG_USERAUTH_FAILURE:
-                    return new UserAuthFailureMessageParser(raw, 0).parse();
+                    return new UserAuthFailureMessageParser(raw).parse();
                 case SSH_MSG_USERAUTH_SUCCESS:
-                    return new UserAuthSuccessMessageParser(raw, 0).parse();
+                    return new UserAuthSuccessMessageParser(raw).parse();
                 case SSH_MSG_CHANNEL_REQUEST:
                     return getChannelRequestMessageParsing(raw);
                 case SSH_MSG_GLOBAL_REQUEST:
@@ -137,15 +151,15 @@ public abstract class ProtocolMessageParser<T extends ProtocolMessage<T>> extend
                 default:
                     LOGGER.debug(
                             "Received unimplemented Message "
-                                    + MessageIDConstant.getNameByID(raw[0])
+                                    + MessageIdConstant.getNameById(raw[0])
                                     + " ("
                                     + raw[0]
                                     + ")");
-                    return new UnknownMessageParser(raw, 0).parse();
+                    return new UnknownMessageParser(raw).parse();
             }
         } catch (ParserException e) {
             LOGGER.debug("Error while Parsing, now parsing as UnknownMessage");
-            return new UnknownMessageParser(raw, 0).parse();
+            return new UnknownMessageParser(raw).parse();
         }
     }
 
@@ -158,24 +172,24 @@ public abstract class ProtocolMessageParser<T extends ProtocolMessage<T>> extend
         LOGGER.debug(channelRequestType);
         switch (channelRequestType) {
             case "env":
-                return new ChannelRequestEnvMessageParser(raw, 0).parse();
+                return new ChannelRequestEnvMessageParser(raw).parse();
             case "shell":
-                return new ChannelRequestShellMessageParser(raw, 0).parse();
+                return new ChannelRequestShellMessageParser(raw).parse();
             case "exec":
-                return new ChannelRequestExecMessageParser(raw, 0).parse();
+                return new ChannelRequestExecMessageParser(raw).parse();
             case "signal":
-                return new ChannelRequestSignalMessageParser(raw, 0).parse();
+                return new ChannelRequestSignalMessageParser(raw).parse();
             case "exit-status":
-                return new ChannelRequestExitStatusMessageParser(raw, 0).parse();
+                return new ChannelRequestExitStatusMessageParser(raw).parse();
             case "exit-signal":
-                return new ChannelRequestExitSignalMessageParser(raw, 0).parse();
+                return new ChannelRequestExitSignalMessageParser(raw).parse();
             default:
                 LOGGER.debug(
                         "Received unimplemented message request type "
-                                + MessageIDConstant.getNameByID(raw[0])
+                                + MessageIdConstant.getNameById(raw[0])
                                 + ":"
                                 + channelRequestType);
-                return new UnknownMessageParser(raw, 0).parse();
+                return new UnknownMessageParser(raw).parse();
         }
     }
 
@@ -192,19 +206,19 @@ public abstract class ProtocolMessageParser<T extends ProtocolMessage<T>> extend
         HOSTKEYS_PROVE_00_OPENSSH_COM("hostkeys-prove-00@openssh.com");*/
         switch (globalRequestType) {
             case "tcpip-forward":
-                return new TcpIpForwardRequestMessageParser(raw, 0).parse();
+                return new TcpIpForwardRequestMessageParser(raw).parse();
             case "cancel-tcpip-forward":
-                return new TcpIpForwardCancelMessageParser(raw, 0).parse();
+                return new TcpIpForwardCancelMessageParser(raw).parse();
             case "no-more-session@openssh.com":
-                return new NoMoreSessionsMessageParser(raw, 0).parse();
+                return new NoMoreSessionsMessageParser(raw).parse();
 
             default:
                 LOGGER.debug(
                         "Received unimplemented message request type "
-                                + MessageIDConstant.getNameByID(raw[0])
+                                + MessageIdConstant.getNameById(raw[0])
                                 + ":"
                                 + globalRequestType);
-                return new UnknownMessageParser(raw, 0).parse();
+                return new UnknownMessageParser(raw).parse();
         }
     }
 }

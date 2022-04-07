@@ -23,15 +23,13 @@ public class VersionExchangeMessagePreparator
         if (chooser.getContext().isClient()) {
             getObject().setVersion(chooser.getClientVersion());
             getObject().setComment(chooser.getClientComment());
-            // TODO: Use chooser here
-            getObject().setEndOfMessageSequence(chooser.getEndOfMessageSequence());
-            chooser.getContext().getExchangeHashInstance().setClientVersion(getObject());
+            getObject().setEndOfMessageSequence(chooser.getClientEndOfMessageSequence());
+            chooser.getContext().getExchangeHashInputHolder().setClientVersion(getObject());
         } else {
             getObject().setVersion(chooser.getServerVersion());
             getObject().setComment(chooser.getServerComment());
-            // TODO: Use chooser here
-            getObject().setEndOfMessageSequence(chooser.getEndOfMessageSequence());
-            chooser.getContext().getExchangeHashInstance().setServerVersion(getObject());
+            getObject().setEndOfMessageSequence(chooser.getServerEndOfMessageSequence());
+            chooser.getContext().getExchangeHashInputHolder().setServerVersion(getObject());
         }
     }
 }

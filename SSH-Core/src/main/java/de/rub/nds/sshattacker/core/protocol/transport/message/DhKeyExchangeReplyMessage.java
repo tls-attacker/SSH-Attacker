@@ -11,18 +11,21 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.biginteger.ModifiableBigInteger;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
-import de.rub.nds.sshattacker.core.constants.MessageIDConstant;
+import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
+import de.rub.nds.sshattacker.core.crypto.keys.SshPublicKey;
+import de.rub.nds.sshattacker.core.crypto.util.PublicKeyHelper;
 import de.rub.nds.sshattacker.core.protocol.common.*;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.DhKeyExchangeReplyMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import java.math.BigInteger;
 
-public class DhKeyExchangeReplyMessage extends SshMessage<DhKeyExchangeReplyMessage> {
+public class DhKeyExchangeReplyMessage extends SshMessage<DhKeyExchangeReplyMessage>
+        implements HostKeyMessage, ExchangeHashSignatureMessage {
 
-    private ModifiableInteger hostKeyLength;
-    private ModifiableByteArray hostKey;
+    public static final MessageIdConstant ID = MessageIdConstant.SSH_MSG_KEXDH_REPLY;
 
-    // TODO: Interpret host key
+    private ModifiableInteger hostKeyBytesLength;
+    private ModifiableByteArray hostKeyBytes;
 
     private ModifiableInteger ephemeralPublicKeyLength;
     private ModifiableBigInteger ephemeralPublicKey;
@@ -30,47 +33,57 @@ public class DhKeyExchangeReplyMessage extends SshMessage<DhKeyExchangeReplyMess
     private ModifiableInteger signatureLength;
     private ModifiableByteArray signature;
 
-    public DhKeyExchangeReplyMessage() {
-        super(MessageIDConstant.SSH_MSG_KEXDH_REPLY);
+    @Override
+    public ModifiableInteger getHostKeyBytesLength() {
+        return hostKeyBytesLength;
     }
 
-    public ModifiableInteger getHostKeyLength() {
-        return hostKeyLength;
+    @Override
+    public void setHostKeyBytesLength(ModifiableInteger hostKeyBytesLength) {
+        this.hostKeyBytesLength = hostKeyBytesLength;
     }
 
-    public void setHostKeyLength(ModifiableInteger hostKeyLength) {
-        this.hostKeyLength = hostKeyLength;
+    @Override
+    public void setHostKeyBytesLength(int hostKeyBytesLength) {
+        this.hostKeyBytesLength =
+                ModifiableVariableFactory.safelySetValue(
+                        this.hostKeyBytesLength, hostKeyBytesLength);
     }
 
-    public void setHostKeyLength(int hostKeyLength) {
-        this.hostKeyLength =
-                ModifiableVariableFactory.safelySetValue(this.hostKeyLength, hostKeyLength);
+    @Override
+    public ModifiableByteArray getHostKeyBytes() {
+        return hostKeyBytes;
     }
 
-    public ModifiableByteArray getHostKey() {
-        return hostKey;
+    @Override
+    public SshPublicKey<?, ?> getHostKey() {
+        return PublicKeyHelper.parse(hostKeyBytes.getValue());
     }
 
-    public void setHostKey(ModifiableByteArray hostKey) {
-        setHostKey(hostKey, false);
+    @Override
+    public void setHostKeyBytes(ModifiableByteArray hostKeyBytes) {
+        setHostKeyBytes(hostKeyBytes, false);
     }
 
-    public void setHostKey(byte[] hostKey) {
-        setHostKey(hostKey, false);
+    @Override
+    public void setHostKeyBytes(byte[] hostKeyBytes) {
+        setHostKeyBytes(hostKeyBytes, false);
     }
 
-    public void setHostKey(ModifiableByteArray hostKey, boolean adjustLengthField) {
+    @Override
+    public void setHostKeyBytes(ModifiableByteArray hostKeyBytes, boolean adjustLengthField) {
         if (adjustLengthField) {
-            setHostKeyLength(hostKey.getValue().length);
+            setHostKeyBytesLength(hostKeyBytes.getValue().length);
         }
-        this.hostKey = hostKey;
+        this.hostKeyBytes = hostKeyBytes;
     }
 
-    public void setHostKey(byte[] hostKey, boolean adjustLengthField) {
+    @Override
+    public void setHostKeyBytes(byte[] hostKey, boolean adjustLengthField) {
         if (adjustLengthField) {
-            setHostKeyLength(hostKey.length);
+            setHostKeyBytesLength(hostKey.length);
         }
-        this.hostKey = ModifiableVariableFactory.safelySetValue(this.hostKey, hostKey);
+        this.hostKeyBytes = ModifiableVariableFactory.safelySetValue(this.hostKeyBytes, hostKey);
     }
 
     public ModifiableInteger getEphemeralPublicKeyLength() {
@@ -116,31 +129,38 @@ public class DhKeyExchangeReplyMessage extends SshMessage<DhKeyExchangeReplyMess
                         this.ephemeralPublicKey, ephemeralPublicKey);
     }
 
+    @Override
     public ModifiableInteger getSignatureLength() {
         return signatureLength;
     }
 
+    @Override
     public void setSignatureLength(ModifiableInteger signatureLength) {
         this.signatureLength = signatureLength;
     }
 
+    @Override
     public void setSignatureLength(int signatureLength) {
         this.signatureLength =
                 ModifiableVariableFactory.safelySetValue(this.signatureLength, signatureLength);
     }
 
+    @Override
     public ModifiableByteArray getSignature() {
         return signature;
     }
 
+    @Override
     public void setSignature(ModifiableByteArray signature) {
         setSignature(signature, false);
     }
 
+    @Override
     public void setSignature(byte[] signature) {
         setSignature(signature, false);
     }
 
+    @Override
     public void setSignature(ModifiableByteArray signature, boolean adjustLengthField) {
         if (adjustLengthField) {
             setSignatureLength(signature.getValue().length);
@@ -148,6 +168,7 @@ public class DhKeyExchangeReplyMessage extends SshMessage<DhKeyExchangeReplyMess
         this.signature = signature;
     }
 
+    @Override
     public void setSignature(byte[] signature, boolean adjustLengthField) {
         if (adjustLengthField) {
             setSignatureLength(signature.length);
