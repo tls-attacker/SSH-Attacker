@@ -2,51 +2,64 @@
 <workflowTrace>
     <Send>
         <messages>
-            <VersionExchangeMessage/>
+            <VersionExchange />
         </messages>
     </Send>
-    <Receive/>
+    <Receive>
+        <expectedMessages>
+            <VersionExchange />
+        </expectedMessages>
+    </Receive>
     <ChangePacketLayer to="BINARY_PACKET" />
     <Send>
         <messages>
-            <KeyExchangeInitMessage/>
+            <KeyExchangeInit />
         </messages>
     </Send>
-    <Receive/>
+    <Receive>
+        <expectedMessages>
+            <KeyExchangeInit />
+        </expectedMessages>
+    </Receive>
+    <DynamicKeyExchange />
     <Send>
         <messages>
-            <DhKeyExchangeInitMessage/>
+            <ServiceRequest />
         </messages>
     </Send>
-    <Receive/>
+    <Receive>
+        <expectedMessages>
+            <ServiceAccept />
+        </expectedMessages>
+    </Receive>
     <Send>
         <messages>
-            <NewKeysMessage/>
+            <UserAuthPassword />
         </messages>
     </Send>
-    <ActivateEncryption/>
+    <Receive>
+        <expectedMessages>
+            <UserAuthSuccess />
+        </expectedMessages>
+    </Receive>
     <Send>
         <messages>
-            <ServiceRequestMessage />
+            <TcpIpForwardRequest />
         </messages>
     </Send>
-    <Receive />
+    <Receive>
+        <expectedMessages>
+            <RequestSuccess />
+        </expectedMessages>
+    </Receive>
     <Send>
         <messages>
-            <UserAuthPasswordMessage />
+            <TcpIpForwardCancel />
         </messages>
     </Send>
-    <Receive />
-    <Send>
-        <messages>
-            <TcpIpForwardRequestMessage />
-        </messages>
-    </Send>
-    <Receive />
-    <Send>
-        <messages>
-            <TcpIpForwardCancelMessage />
-        </messages>
-    </Send>
-    <Receive />
+    <Receive>
+        <expectedMessages>
+            <RequestSuccess />
+        </expectedMessages>
+    </Receive>
 </workflowTrace>
