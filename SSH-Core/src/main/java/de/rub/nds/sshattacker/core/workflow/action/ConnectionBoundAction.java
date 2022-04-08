@@ -15,6 +15,7 @@ import java.util.Objects;
 import java.util.Set;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlTransient;
 
 /**
@@ -24,6 +25,7 @@ import javax.xml.bind.annotation.XmlTransient;
 @XmlAccessorType(XmlAccessType.FIELD)
 public abstract class ConnectionBoundAction extends SshAction {
 
+    @XmlAttribute(name = "onConnection")
     protected String connectionAlias = null;
 
     @XmlTransient private final Set<String> aliases = new HashSet<>();
