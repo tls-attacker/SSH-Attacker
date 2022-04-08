@@ -15,7 +15,7 @@ import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
 import java.security.spec.InvalidKeySpecException;
-import java.security.spec.PKCS8EncodedKeySpec;
+import java.security.spec.X509EncodedKeySpec;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -89,8 +89,7 @@ public class XCurveEcPublicKey extends CustomPublicKey {
                                 new AlgorithmIdentifier(EdECObjectIdentifiers.id_Ed448),
                                 coordinate);
             }
-            PKCS8EncodedKeySpec encodedKeySpec =
-                    new PKCS8EncodedKeySpec(publicKeyInfo.getEncoded());
+            X509EncodedKeySpec encodedKeySpec = new X509EncodedKeySpec(publicKeyInfo.getEncoded());
             return keyFactory.generatePublic(encodedKeySpec);
         } catch (NoSuchAlgorithmException | InvalidKeySpecException | IOException e) {
             return null;
