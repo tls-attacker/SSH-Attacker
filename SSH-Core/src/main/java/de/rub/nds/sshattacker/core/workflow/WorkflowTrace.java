@@ -92,9 +92,7 @@ public class WorkflowTrace implements Serializable {
                 @XmlElement(type = DeactivateEncryptionAction.class, name = "DeactivateEncryption"),
                 @XmlElement(type = ChangePacketLayerAction.class, name = "ChangePacketLayer"),
                 @XmlElement(type = ChangeCompressionAction.class, name = "ChangeCompression"),
-                @XmlElement(
-                        type = DynamicKeyExchangeAction.class,
-                        name = "DynamicKeyExchangeAction")
+                @XmlElement(type = DynamicKeyExchangeAction.class, name = "DynamicKeyExchange")
             })
     private List<SshAction> sshActions = new ArrayList<>();
 

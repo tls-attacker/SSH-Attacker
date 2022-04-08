@@ -14,7 +14,6 @@ import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthFailu
 import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthPasswordMessage;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthSuccessMessage;
 import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessage;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
 import de.rub.nds.sshattacker.core.protocol.connection.message.*;
 import de.rub.nds.sshattacker.core.protocol.transport.message.*;
 import de.rub.nds.sshattacker.core.workflow.action.executor.ReceiveMessageHelper;
@@ -33,104 +32,81 @@ public abstract class MessageAction extends ConnectionBoundAction {
     @XmlElementWrapper
     @XmlElements(
             value = {
-                @XmlElement(type = ChannelDataMessage.class, name = "ChannelDataMessage"),
-                @XmlElement(type = ChannelCloseMessage.class, name = "ChannelCloseMessage"),
-                @XmlElement(type = ChannelDataMessage.class, name = "ChannelDataMessage"),
-                @XmlElement(type = ChannelEofMessage.class, name = "ChannelEofMessage"),
-                @XmlElement(
-                        type = ChannelExtendedDataMessage.class,
-                        name = "ChannelExtendedDataMessage"),
-                @XmlElement(type = ChannelFailureMessage.class, name = "ChannelFailureMessage"),
-                @XmlElement(
-                        type = ChannelOpenConfirmationMessage.class,
-                        name = "ChannelOpenConfirmationMessage"),
-                @XmlElement(
-                        type = ChannelOpenFailureMessage.class,
-                        name = "ChannelOpenFailureMessage"),
-                @XmlElement(type = ChannelOpenMessage.class, name = "ChannelOpenMessage"),
-                @XmlElement(
-                        type = ChannelRequestExecMessage.class,
-                        name = "ChannelRequestExecMessage"),
-                @XmlElement(type = ChannelSuccessMessage.class, name = "ChannelSuccessMessage"),
-                @XmlElement(
-                        type = ChannelWindowAdjustMessage.class,
-                        name = "ChannelWindowAdjustMessage"),
+                // Transport Layer Protocol Messages
                 @XmlElement(type = DebugMessage.class, name = "DebugMessage"),
                 @XmlElement(
                         type = DhGexKeyExchangeGroupMessage.class,
-                        name = "DhGexKeyExchangeGroupMessage"),
+                        name = "DhGexKeyExchangeGroup"),
                 @XmlElement(
                         type = DhGexKeyExchangeInitMessage.class,
-                        name = "DhGexKeyExchangeInitMessage"),
+                        name = "DhGexKeyExchangeInit"),
                 @XmlElement(
                         type = DhGexKeyExchangeOldRequestMessage.class,
-                        name = "DhGexKeyExchangeOldRequestMessage"),
+                        name = "DhGexKeyExchangeOldRequest"),
                 @XmlElement(
                         type = DhGexKeyExchangeReplyMessage.class,
-                        name = "DhGexKeyExchangeReplyMessage"),
+                        name = "DhGexKeyExchangeReply"),
                 @XmlElement(
                         type = DhGexKeyExchangeRequestMessage.class,
-                        name = "DhGexKeyExchangeRequestMessage"),
-                @XmlElement(
-                        type = DhKeyExchangeInitMessage.class,
-                        name = "DhKeyExchangeInitMessage"),
-                @XmlElement(
-                        type = DhKeyExchangeReplyMessage.class,
-                        name = "DhKeyExchangeReplyMessage"),
+                        name = "DhGexKeyExchangeRequest"),
+                @XmlElement(type = DhKeyExchangeInitMessage.class, name = "DhKeyExchangeInit"),
+                @XmlElement(type = DhKeyExchangeReplyMessage.class, name = "DhKeyExchangeReply"),
                 @XmlElement(type = DisconnectMessage.class, name = "DisconnectMessage"),
-                @XmlElement(
-                        type = EcdhKeyExchangeInitMessage.class,
-                        name = "EcdhKeyExchangeInitMessage"),
+                @XmlElement(type = EcdhKeyExchangeInitMessage.class, name = "EcdhKeyExchangeInit"),
                 @XmlElement(
                         type = EcdhKeyExchangeReplyMessage.class,
-                        name = "EcdhKeyExchangeReplyMessage"),
+                        name = "EcdhKeyExchangeReply"),
                 @XmlElement(type = IgnoreMessage.class, name = "IgnoreMessage"),
-                @XmlElement(type = KeyExchangeInitMessage.class, name = "KeyExchangeInitMessage"),
-                @XmlElement(type = SshMessage.class, name = "Message"),
-                @XmlElement(type = NewKeysMessage.class, name = "NewKeysMessage"),
-                @XmlElement(type = ProtocolMessage.class, name = "ProtocolMessage"),
-                @XmlElement(type = RequestFailureMessage.class, name = "RequestFailureMessage"),
-                @XmlElement(type = RequestSuccessMessage.class, name = "RequestSuccessMessage"),
+                @XmlElement(type = KeyExchangeInitMessage.class, name = "KeyExchangeInit"),
+                @XmlElement(type = NewKeysMessage.class, name = "NewKeys"),
+                @XmlElement(type = RsaKeyExchangeDoneMessage.class, name = "RsaKeyExchangeDone"),
                 @XmlElement(
                         type = RsaKeyExchangePubkeyMessage.class,
-                        name = "RsaKeyExchangePubkeyMessage"),
+                        name = "RsaKeyExchangePubkey"),
                 @XmlElement(
                         type = RsaKeyExchangeSecretMessage.class,
-                        name = "RsaKeyExchangeSecretMessage"),
-                @XmlElement(
-                        type = RsaKeyExchangeDoneMessage.class,
-                        name = "RsaKeyExchangeDoneMessage"),
-                @XmlElement(type = ServiceAcceptMessage.class, name = "ServiceAcceptMessage"),
-                @XmlElement(type = ServiceRequestMessage.class, name = "ServiceRequestMessage"),
+                        name = "RsaKeyExchangeSecret"),
+                @XmlElement(type = ServiceAcceptMessage.class, name = "ServiceAccept"),
+                @XmlElement(type = ServiceRequestMessage.class, name = "ServiceRequest"),
                 @XmlElement(type = UnimplementedMessage.class, name = "UnimplementedMessage"),
-                @XmlElement(type = UnknownMessage.class, name = "UnknownMessage"),
-                @XmlElement(type = UserAuthBannerMessage.class, name = "UserAuthBannerMessage"),
-                @XmlElement(type = UserAuthFailureMessage.class, name = "UserAuthFailureMessage"),
-                @XmlElement(type = UserAuthPasswordMessage.class, name = "UserAuthPasswordMessage"),
-                @XmlElement(type = UserAuthSuccessMessage.class, name = "UserAuthSuccessMessage"),
-                @XmlElement(type = VersionExchangeMessage.class, name = "VersionExchangeMessage"),
+                @XmlElement(type = VersionExchangeMessage.class, name = "VersionExchange"),
+                // Authentication Layer Protocol Messages
+                @XmlElement(type = UserAuthBannerMessage.class, name = "UserAuthBanner"),
+                @XmlElement(type = UserAuthFailureMessage.class, name = "UserAuthFailure"),
+                @XmlElement(type = UserAuthPasswordMessage.class, name = "UserAuthPassword"),
+                @XmlElement(type = UserAuthSuccessMessage.class, name = "UserAuthSuccess"),
+                // Connection Layer Protocol Messages
+                @XmlElement(type = ChannelCloseMessage.class, name = "ChannelClose"),
+                @XmlElement(type = ChannelDataMessage.class, name = "ChannelData"),
+                @XmlElement(type = ChannelEofMessage.class, name = "ChannelEof"),
+                @XmlElement(type = ChannelExtendedDataMessage.class, name = "ChannelExtendedData"),
+                @XmlElement(type = ChannelFailureMessage.class, name = "ChannelFailure"),
                 @XmlElement(
-                        type = TcpIpForwardRequestMessage.class,
-                        name = "TcpIpForwardRequestMessage"),
-                @XmlElement(
-                        type = TcpIpForwardCancelMessage.class,
-                        name = "TcpIpForwardCancelMessage"),
-                @XmlElement(
-                        type = ChannelRequestEnvMessage.class,
-                        name = "ChannelRequestEnvMessage"),
-                @XmlElement(
-                        type = ChannelRequestShellMessage.class,
-                        name = "ChannelRequestShellMessage"),
-                @XmlElement(
-                        type = ChannelRequestSignalMessage.class,
-                        name = "ChannelRequestSignalMessage"),
+                        type = ChannelOpenConfirmationMessage.class,
+                        name = "ChannelOpenConfirmation"),
+                @XmlElement(type = ChannelOpenFailureMessage.class, name = "ChannelOpenFailure"),
+                @XmlElement(type = ChannelOpenMessage.class, name = "ChannelOpen"),
+                @XmlElement(type = ChannelRequestEnvMessage.class, name = "ChannelRequestEnv"),
+                @XmlElement(type = ChannelRequestExecMessage.class, name = "ChannelRequestExec"),
                 @XmlElement(
                         type = ChannelRequestExitSignalMessage.class,
-                        name = "ChannelRequestExitSignalMessage"),
+                        name = "ChannelRequestExitSignal"),
                 @XmlElement(
                         type = ChannelRequestExitStatusMessage.class,
-                        name = "ChannelRequestExitStatusMessage"),
-                @XmlElement(type = NoMoreSessionsMessage.class, name = "NoMoreSessionsMessage")
+                        name = "ChannelRequestExitStatus"),
+                @XmlElement(type = ChannelRequestShellMessage.class, name = "ChannelRequestShell"),
+                @XmlElement(
+                        type = ChannelRequestSignalMessage.class,
+                        name = "ChannelRequestSignal"),
+                @XmlElement(type = ChannelSuccessMessage.class, name = "ChannelSuccess"),
+                @XmlElement(type = ChannelWindowAdjustMessage.class, name = "ChannelWindowAdjust"),
+                @XmlElement(type = NoMoreSessionsMessage.class, name = "NoMoreSessions"),
+                @XmlElement(type = RequestFailureMessage.class, name = "RequestFailure"),
+                @XmlElement(type = RequestSuccessMessage.class, name = "RequestSuccess"),
+                @XmlElement(type = TcpIpForwardCancelMessage.class, name = "TcpIpForwardCancel"),
+                @XmlElement(type = TcpIpForwardRequestMessage.class, name = "TcpIpForwardRequest"),
+                // Other
+                @XmlElement(type = UnknownMessage.class, name = "UnknownMessage")
             })
     protected List<ProtocolMessage<?>> messages = new ArrayList<>();
 
