@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<workflowTrace>
+    <Send onConnection="server">
+        <messages>
+            <VersionExchange />
+        </messages>
+    </Send>
+    <Receive onConnection="server">
+        <expectedMessages>
+            <VersionExchange />
+        </expectedMessages>
+    </Receive>
+    <ChangePacketLayer to="BINARY_PACKET" onConnection="server" />
+    <Send onConnection="server">
+        <messages>
+            <KeyExchangeInit />
+        </messages>
+    </Send>
+    <Receive onConnection="server">
+        <expectedMessages>
+            <KeyExchangeInit />
+        </expectedMessages>
+    </Receive>
+    <DynamicKeyExchange onConnection="server" />
+    <Receive onConnection="server">
+        <expectedMessages>
+            <ServiceRequest />
+        </expectedMessages>
+    </Receive>
+    <Send onConnection="server">
+        <messages>
+            <ServiceAccept />
+        </messages>
+    </Send>
+    <Receive onConnection="server">
+    </Receive>
+    <Send onConnection="server">
+        <messages>
+            <UserAuthSuccess />
+        </messages>
+    </Send>
+    <Send onConnection="server">
+        <messages>
+            <KeyExchangeInit />
+        </messages>
+    </Send>
+    <Receive onConnection="server">
+        <expectedMessages>
+            <KeyExchangeInit />
+        </expectedMessages>
+    </Receive>
+    <DynamicKeyExchange onConnection="server" />
+    <Send onConnection="server">
+        <messages>
+            <DisconnectMessage />
+        </messages>
+    </Send>
+</workflowTrace>
