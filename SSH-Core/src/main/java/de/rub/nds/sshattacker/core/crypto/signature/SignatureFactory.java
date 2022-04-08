@@ -76,7 +76,7 @@ public class SignatureFactory {
             PublicKeyAlgorithm algorithm, PublicKey publicKey) {
         if (algorithm.getSignatureEncoding() == SignatureEncoding.SSH_DSS) {
             return new UnpackedDsaJavaSignature(algorithm, publicKey);
-        } else if (algorithm.getName().startsWith("ECDSA_SHA2_")) {
+        } else if (algorithm.getName().startsWith("ecdsa-sha2-")) {
             return new UnpackedEcdsaJavaSignature(algorithm, publicKey);
         } else if (algorithm.getJavaName() != null) {
             // Keys for Curve25519 and Curve448 require conversion to a JCA-compatible key
