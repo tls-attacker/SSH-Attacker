@@ -7,10 +7,10 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.preparator;
 
-import de.rub.nds.sshattacker.core.connection.Channel;
 import de.rub.nds.sshattacker.core.exceptions.MissingChannelException;
 import de.rub.nds.sshattacker.core.exceptions.PreparationException;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
+import de.rub.nds.sshattacker.core.protocol.connection.Channel;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelWindowAdjustMessage;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import org.apache.logging.log4j.LogManager;
@@ -39,20 +39,10 @@ public class ChannelWindowAdjustMessagePreparator
             getObject()
                     .setRecipientChannel(
                             Channel.getLocal_remote().get(getObject().getSenderChannel()));
-            if (getObject().getBytesToAdd() == null
-                    || getObject().getBytesToAdd().getValue() == null) {
-                if (getObject().getTransferBytesToAdd() != null) {
-                    getObject().setBytesToAdd(getObject().getTransferBytesToAdd());
-                } else {
-                    getObject()
-                            .setBytesToAdd(
-                                    chooser.getConfig()
-                                                    .getDefaultChannel()
-                                                    .getlocalWindowSize()
-                                                    .getValue()
-                                            - channel.getlocalWindowSize().getValue());
-                }
-            }
+            getObject()
+                    .setBytesToAdd(
+                            chooser.getConfig().getDefaultChannel().getlocalWindowSize().getValue()
+                                    - channel.getlocalWindowSize().getValue());
             channel.setLocalWindowSize(
                     channel.getlocalWindowSize().getValue()
                             + getObject().getBytesToAdd().getValue());

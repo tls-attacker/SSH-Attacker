@@ -111,8 +111,7 @@ public class ChannelRequestPtyMessage extends ChannelRequestMessage<ChannelReque
     }
 
     public void setWidthPixels(int widthPixels) {
-        this.widthPixels =
-                ModifiableVariableFactory.safelySetValue(this.widthPixels, widthPixels);
+        this.widthPixels = ModifiableVariableFactory.safelySetValue(this.widthPixels, widthPixels);
     }
 
     public ModifiableInteger getHeightPixels() {

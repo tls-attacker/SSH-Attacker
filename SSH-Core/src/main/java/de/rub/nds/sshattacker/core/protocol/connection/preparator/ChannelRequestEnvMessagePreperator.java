@@ -7,11 +7,11 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.preparator;
 
-import de.rub.nds.sshattacker.core.connection.Channel;
 import de.rub.nds.sshattacker.core.constants.ChannelRequestType;
 import de.rub.nds.sshattacker.core.exceptions.MissingChannelException;
 import de.rub.nds.sshattacker.core.exceptions.PreparationException;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
+import de.rub.nds.sshattacker.core.protocol.connection.Channel;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelRequestEnvMessage;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
@@ -37,24 +37,8 @@ public class ChannelRequestEnvMessagePreperator
             // ToDo give wantReply to constructor and don't generalize
             getObject().setWantReply(chooser.getConfig().getReplyWanted());
             getObject().setRequestType(ChannelRequestType.ENV, true);
-            // set transfered value to variableName and variableValue or fallback to config
-            if (getObject().getVariableName() == null
-                    || getObject().getVariableName().getValue() == null
-                            && getObject().getVariableValue() == null
-                    || getObject().getVariableValue().getValue() == null) {
-                if (getObject().getTransferVariableName() != null) {
-                    getObject().setVariableName(getObject().getTransferVariableName(), true);
-                } else {
-                    getObject().setVariableName(chooser.getConfig().getDefaultVariableName(), true);
-                }
-
-                if (getObject().getTransferVariableValue() != null) {
-                    getObject().setVariableValue(getObject().getTransferVariableValue(), true);
-                } else {
-                    getObject()
-                            .setVariableValue(chooser.getConfig().getDefaultVariableValue(), true);
-                }
-            }
+            getObject().setVariableName(chooser.getConfig().getDefaultVariableName(), true);
+            getObject().setVariableValue(chooser.getConfig().getDefaultVariableValue(), true);
         } else {
             throw new MissingChannelException("Required channel is closed!");
         }

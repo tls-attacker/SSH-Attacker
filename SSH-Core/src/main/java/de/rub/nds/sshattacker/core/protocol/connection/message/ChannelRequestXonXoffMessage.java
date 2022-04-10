@@ -18,7 +18,6 @@ public class ChannelRequestXonXoffMessage
         extends ChannelRequestMessage<ChannelRequestXonXoffMessage> {
 
     private ModifiableByte clientFlowControl;
-    private Byte transferClientFlowControl;
 
     public ChannelRequestXonXoffMessage() {
         super(ChannelRequestType.XON_XOFF);
@@ -26,11 +25,6 @@ public class ChannelRequestXonXoffMessage
 
     public ChannelRequestXonXoffMessage(Integer senderChannel) {
         super(ChannelRequestType.XON_XOFF, senderChannel);
-    }
-
-    public ChannelRequestXonXoffMessage(Integer senderChannel, byte transferClientFlowControl) {
-        super(ChannelRequestType.XON_XOFF, senderChannel);
-        setTransferClientFlowControl(transferClientFlowControl);
     }
 
     public ModifiableByte getClientFlowControl() {
@@ -48,18 +42,6 @@ public class ChannelRequestXonXoffMessage
 
     public void setClientFlowControl(boolean clientFlowControl) {
         setClientFlowControl(Converter.booleanToByte(clientFlowControl));
-    }
-
-    public Byte getTransferClientFlowControl() {
-        return transferClientFlowControl;
-    }
-
-    public void setTransferClientFlowControl(byte transferClientFlowControl) {
-        this.transferClientFlowControl = transferClientFlowControl;
-    }
-
-    public void setTransferClientFlowControl(boolean transferClientFlowControl) {
-        setTransferClientFlowControl(Converter.booleanToByte(transferClientFlowControl));
     }
 
     @Override

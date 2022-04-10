@@ -7,10 +7,10 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.preparator;
 
-import de.rub.nds.sshattacker.core.connection.Channel;
 import de.rub.nds.sshattacker.core.constants.ChannelType;
 import de.rub.nds.sshattacker.core.exceptions.PreparationException;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
+import de.rub.nds.sshattacker.core.protocol.connection.Channel;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelOpenMessage;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import org.apache.logging.log4j.LogManager;
@@ -26,18 +26,6 @@ public class ChannelOpenMessagePreparator extends SshMessagePreparator<ChannelOp
 
     @Override
     public void prepareMessageSpecificContents() {
-        // set transfered value to ChannelType or fallback o config
-        if (getObject().getChannelType() == null
-                || getObject().getChannelType().getValue() == null) {
-            if (getObject().getTransferChannelType() != null) {
-                getObject().setChannelType(getObject().getTransferChannelType(), true);
-            } else {
-                getObject()
-                        .setChannelType(
-                                chooser.getConfig().getDefaultChannel().getChannelType().toString(),
-                                true);
-            }
-        }
         // set transfered value to ModSenderChannel or fallback to config
         if (getObject().getModSenderChannel() == null
                 || getObject().getModSenderChannel().getValue() == null) {
@@ -47,27 +35,9 @@ public class ChannelOpenMessagePreparator extends SshMessagePreparator<ChannelOp
                 throw new PreparationException("Sender channel required to send the message!");
             }
         }
-        // set transfered value to WindowSize or fallback to config
-        if (getObject().getWindowSize() == null || getObject().getWindowSize().getValue() == null) {
-            if (getObject().getTransferWindowSize() != null) {
-                getObject().setWindowSize(getObject().getTransferWindowSize());
-            } else {
-                getObject()
-                        .setWindowSize(
-                                chooser.getConfig().getDefaultChannel().getlocalWindowSize());
-            }
-        }
-        // set transfered value to PacketSize or fallback to config
-        if (getObject().getPacketSize() == null || getObject().getPacketSize().getValue() == null) {
-            if (getObject().getTransferPacketSize() != null) {
-                getObject().setPacketSize(getObject().getTransferPacketSize());
-            } else {
-                getObject()
-                        .setPacketSize(
-                                chooser.getConfig().getDefaultChannel().getlocalPacketSize());
-            }
-        }
-
+        getObject().setChannelType(chooser.getConfig().getDefaultChannel().getChannelType(), true);
+        getObject().setWindowSize(chooser.getConfig().getDefaultChannel().getlocalWindowSize());
+        getObject().setPacketSize(chooser.getConfig().getDefaultChannel().getlocalPacketSize());
         Channel channel =
                 chooser.getContext()
                         .getChannels()

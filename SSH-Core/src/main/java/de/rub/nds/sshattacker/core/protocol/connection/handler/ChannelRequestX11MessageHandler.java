@@ -28,7 +28,6 @@ public class ChannelRequestX11MessageHandler extends SshMessageHandler<ChannelRe
         return new ChannelRequestX11MessageParser(array);
     }
 
-
     @Override
     public ChannelRequestX11MessageParser getParser(byte[] array, int startPosition) {
         return new ChannelRequestX11MessageParser(array, startPosition);

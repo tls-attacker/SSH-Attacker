@@ -16,7 +16,6 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 public class ChannelRequestBreakMessage extends ChannelRequestMessage<ChannelRequestBreakMessage> {
 
     private ModifiableInteger breakLength;
-    private int transferBreakLength;
 
     public ChannelRequestBreakMessage() {
         super(ChannelRequestType.BREAK);
@@ -24,11 +23,6 @@ public class ChannelRequestBreakMessage extends ChannelRequestMessage<ChannelReq
 
     public ChannelRequestBreakMessage(Integer senderChannel) {
         super(ChannelRequestType.BREAK, senderChannel);
-    }
-
-    public ChannelRequestBreakMessage(Integer senderChannel, int transferBreakLength) {
-        super(ChannelRequestType.BREAK, senderChannel);
-        setTransferBreakLength(transferBreakLength);
     }
 
     public ModifiableInteger getBreakLength() {
@@ -41,14 +35,6 @@ public class ChannelRequestBreakMessage extends ChannelRequestMessage<ChannelReq
 
     public void setBreakLength(int breakLength) {
         this.breakLength = ModifiableVariableFactory.safelySetValue(this.breakLength, breakLength);
-    }
-
-    public Integer getTransferBreakLength() {
-        return transferBreakLength;
-    }
-
-    public void setTransferBreakLength(int transferBreakLength) {
-        this.transferBreakLength = transferBreakLength;
     }
 
     @Override

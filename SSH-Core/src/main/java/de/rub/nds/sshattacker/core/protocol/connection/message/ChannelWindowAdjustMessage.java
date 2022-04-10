@@ -18,17 +18,11 @@ public class ChannelWindowAdjustMessage extends ChannelMessage<ChannelWindowAdju
     public static final MessageIdConstant ID = MessageIdConstant.SSH_MSG_CHANNEL_WINDOW_ADJUST;
 
     private ModifiableInteger bytesToAdd;
-    private Integer transferBytesToAdd;
 
     public ChannelWindowAdjustMessage() {}
 
     public ChannelWindowAdjustMessage(Integer senderChannel) {
         super(senderChannel);
-    }
-
-    public ChannelWindowAdjustMessage(Integer senderChannel, Integer bytesToAdd) {
-        super(senderChannel);
-        setTransferBytesToAdd(bytesToAdd);
     }
 
     public ModifiableInteger getBytesToAdd() {
@@ -41,14 +35,6 @@ public class ChannelWindowAdjustMessage extends ChannelMessage<ChannelWindowAdju
 
     public void setBytesToAdd(int bytesToAdd) {
         this.bytesToAdd = ModifiableVariableFactory.safelySetValue(this.bytesToAdd, bytesToAdd);
-    }
-
-    public Integer getTransferBytesToAdd() {
-        return transferBytesToAdd;
-    }
-
-    public void setTransferBytesToAdd(int transferBytesToAdd) {
-        this.transferBytesToAdd = transferBytesToAdd;
     }
 
     @Override

@@ -7,11 +7,11 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.preparator;
 
-import de.rub.nds.sshattacker.core.connection.Channel;
 import de.rub.nds.sshattacker.core.constants.ChannelRequestType;
 import de.rub.nds.sshattacker.core.exceptions.MissingChannelException;
 import de.rub.nds.sshattacker.core.exceptions.PreparationException;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
+import de.rub.nds.sshattacker.core.protocol.connection.Channel;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelRequestExecMessage;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
@@ -35,14 +35,6 @@ public class ChannelRequestExecMessagePreparator
                     .setRecipientChannel(
                             Channel.getLocal_remote().get(getObject().getSenderChannel()));
             getObject().setWantReply(chooser.getConfig().getReplyWanted());
-            // set transfered value to Command or fallback to config
-            if (getObject().getCommand() == null || getObject().getCommand().getValue() == null) {
-                if (getObject().getTransferCommand() != null) {
-                    getObject().setCommand(getObject().getTransferCommand(), true);
-                } else {
-                    getObject().setCommand(chooser.getConfig().getChannelCommand(), true);
-                }
-            }
             getObject().setRequestType(ChannelRequestType.EXEC, true);
         } else {
             throw new MissingChannelException("Required channel is closed!");

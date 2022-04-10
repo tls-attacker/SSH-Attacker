@@ -19,20 +19,12 @@ public class ChannelOpenConfirmationMessage extends ChannelMessage<ChannelOpenCo
 
     private ModifiableInteger modSenderChannel;
     private ModifiableInteger windowSize;
-    private int transferWindowSize;
     private ModifiableInteger packetSize;
-    private int transferPacketSize;
 
     public ChannelOpenConfirmationMessage() {}
 
     public ChannelOpenConfirmationMessage(Integer senderChannel) {
         super(senderChannel);
-    }
-
-    public ChannelOpenConfirmationMessage(int senderChannel, int windowSize, int packetSize) {
-        super(senderChannel);
-        setTransferWindowSize(windowSize);
-        setTransferPacketSize(packetSize);
     }
 
     public ModifiableInteger getModSenderChannel() {
@@ -70,22 +62,6 @@ public class ChannelOpenConfirmationMessage extends ChannelMessage<ChannelOpenCo
 
     public void setPacketSize(int packetSize) {
         this.packetSize = ModifiableVariableFactory.safelySetValue(this.packetSize, packetSize);
-    }
-
-    public Integer getTransferPacketSize() {
-        return transferPacketSize;
-    }
-
-    public void setTransferPacketSize(int transferPacketSize) {
-        this.transferPacketSize = transferPacketSize;
-    }
-
-    public Integer getTransferWindowSize() {
-        return transferWindowSize;
-    }
-
-    public void setTransferWindowSize(int transferWindowSize) {
-        this.transferWindowSize = transferWindowSize;
     }
 
     @Override

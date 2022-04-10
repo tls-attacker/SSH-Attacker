@@ -7,11 +7,11 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.preparator;
 
-import de.rub.nds.sshattacker.core.connection.Channel;
 import de.rub.nds.sshattacker.core.constants.ChannelRequestType;
 import de.rub.nds.sshattacker.core.exceptions.MissingChannelException;
 import de.rub.nds.sshattacker.core.exceptions.PreparationException;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
+import de.rub.nds.sshattacker.core.protocol.connection.Channel;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelRequestSubsystemMessage;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
@@ -37,16 +37,7 @@ public class ChannelRequestSubsystemMessagePreparator
                             Channel.getLocal_remote().get(getObject().getSenderChannel()));
             getObject().setWantReply(chooser.getConfig().getReplyWanted());
             getObject().setRequestType(ChannelRequestType.SUBSYSTEM, true);
-            // set transfered value to subsystem name or fallback to config
-            if (getObject().getSubsystemName() == null
-                    || getObject().getSubsystemName().getValue() == null) {
-                if (getObject().getTransferSubsystemName() != null) {
-                    getObject().setSubsystemName(getObject().getTransferSubsystemName(), true);
-                } else {
-                    getObject()
-                            .setSubsystemName(chooser.getConfig().getDefaultSubsystemName(), true);
-                }
-            }
+            getObject().setSubsystemName(chooser.getConfig().getDefaultSubsystemName(), true);
         } else {
             throw new MissingChannelException("Required channel is closed!");
         }

@@ -7,10 +7,10 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.preparator;
 
-import de.rub.nds.sshattacker.core.connection.Channel;
 import de.rub.nds.sshattacker.core.exceptions.MissingChannelException;
 import de.rub.nds.sshattacker.core.exceptions.PreparationException;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
+import de.rub.nds.sshattacker.core.protocol.connection.Channel;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelOpenConfirmationMessage;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
@@ -34,26 +34,8 @@ public class ChannelOpenConfirmationMessagePreparator
                 throw new PreparationException("Sender channel required to send the message!");
             }
         }
-        // set transfered value to WindowSize or fallback to config
-        if (getObject().getWindowSize() == null || getObject().getWindowSize().getValue() == null) {
-            if (getObject().getTransferWindowSize() != null) {
-                getObject().setWindowSize(getObject().getTransferWindowSize());
-            } else {
-                getObject()
-                        .setWindowSize(
-                                chooser.getConfig().getDefaultChannel().getlocalWindowSize());
-            }
-        }
-        // set transfered value to PacketSize or fallback to config
-        if (getObject().getPacketSize() == null || getObject().getPacketSize().getValue() == null) {
-            if (getObject().getTransferPacketSize() != null) {
-                getObject().setPacketSize(getObject().getTransferPacketSize());
-            } else {
-                getObject()
-                        .setPacketSize(
-                                chooser.getConfig().getDefaultChannel().getlocalPacketSize());
-            }
-        }
+        getObject().setPacketSize(chooser.getConfig().getDefaultChannel().getlocalPacketSize());
+        getObject().setWindowSize(chooser.getConfig().getDefaultChannel().getlocalWindowSize());
         Channel channel =
                 chooser.getContext()
                         .getChannels()

@@ -20,7 +20,6 @@ public class ChannelRequestSubsystemMessage
 
     private ModifiableInteger subsystemNameLength;
     private ModifiableString subsystemName;
-    private String transferSubsystemName;
 
     public ChannelRequestSubsystemMessage() {
         super(ChannelRequestType.SUBSYSTEM);
@@ -28,11 +27,6 @@ public class ChannelRequestSubsystemMessage
 
     public ChannelRequestSubsystemMessage(Integer senderChannel) {
         super(ChannelRequestType.SUBSYSTEM, senderChannel);
-    }
-
-    public ChannelRequestSubsystemMessage(Integer senderChannel, String transferSubsystemName) {
-        super(ChannelRequestType.SUBSYSTEM, senderChannel);
-        setTransferSubsystemName(transferSubsystemName);
     }
 
     public ModifiableInteger getSubsystemNameLength() {
@@ -76,14 +70,6 @@ public class ChannelRequestSubsystemMessage
         }
         this.subsystemName =
                 ModifiableVariableFactory.safelySetValue(this.subsystemName, subsystemName);
-    }
-
-    public String getTransferSubsystemName() {
-        return transferSubsystemName;
-    }
-
-    public void setTransferSubsystemName(String transferSubsystemName) {
-        this.transferSubsystemName = transferSubsystemName;
     }
 
     @Override

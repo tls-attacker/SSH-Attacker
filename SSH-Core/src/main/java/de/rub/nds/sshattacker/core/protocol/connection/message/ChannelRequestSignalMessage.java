@@ -21,7 +21,6 @@ public class ChannelRequestSignalMessage
 
     private ModifiableInteger signalNameLength;
     private ModifiableString signalName;
-    private String transferSignalName;
 
     public ChannelRequestSignalMessage() {
         super(ChannelRequestType.SIGNAL);
@@ -85,17 +84,5 @@ public class ChannelRequestSignalMessage
 
     public void setSignalName(SignalType signalName, boolean adjustLengthField) {
         setSignalName(signalName.toString(), adjustLengthField);
-    }
-
-    public String getTransferSignalName() {
-        return transferSignalName;
-    }
-
-    public void setTransferSignalName(String transferSignalName) {
-        this.transferSignalName = transferSignalName;
-    }
-
-    public void setTransferSignalName(SignalType signalType) {
-        setTransferSignalName(signalType.toString());
     }
 }

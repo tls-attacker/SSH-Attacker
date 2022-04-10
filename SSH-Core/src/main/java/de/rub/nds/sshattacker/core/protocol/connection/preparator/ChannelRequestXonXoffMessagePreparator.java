@@ -7,11 +7,11 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.preparator;
 
-import de.rub.nds.sshattacker.core.connection.Channel;
 import de.rub.nds.sshattacker.core.constants.ChannelRequestType;
 import de.rub.nds.sshattacker.core.exceptions.MissingChannelException;
 import de.rub.nds.sshattacker.core.exceptions.PreparationException;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
+import de.rub.nds.sshattacker.core.protocol.connection.Channel;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelRequestXonXoffMessage;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
@@ -37,15 +37,7 @@ public class ChannelRequestXonXoffMessagePreparator
                             Channel.getLocal_remote().get(getObject().getSenderChannel()));
             getObject().setWantReply(chooser.getConfig().getReplyWanted());
             getObject().setRequestType(ChannelRequestType.XON_XOFF, true);
-            // set transfered value to clientFlowControl or fallback to config
-            if (getObject().getClientFlowControl() == null
-                    || getObject().getClientFlowControl().getValue() == null) {
-                if (getObject().getTransferClientFlowControl() != null) {
-                    getObject().setClientFlowControl(getObject().getTransferClientFlowControl());
-                } else {
-                    getObject().setClientFlowControl(chooser.getConfig().getClientFlowControl());
-                }
-            }
+            getObject().setClientFlowControl(chooser.getConfig().getClientFlowControl());
         } else {
             throw new MissingChannelException("Required channel is closed!");
         }

@@ -21,7 +21,6 @@ public class ChannelRequestSubsystemMessageParser
         super(array);
     }
 
-
     public ChannelRequestSubsystemMessageParser(byte[] array, int startPosition) {
         super(array, startPosition);
     }

@@ -21,7 +21,6 @@ public class ChannelRequestPtyMessageParser
         super(array);
     }
 
-
     public ChannelRequestPtyMessageParser(byte[] array, int startPosition) {
         super(array, startPosition);
     }
