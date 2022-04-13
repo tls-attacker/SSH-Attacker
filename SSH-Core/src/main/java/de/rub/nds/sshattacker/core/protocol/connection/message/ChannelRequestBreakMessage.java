@@ -1,0 +1,58 @@
+/*
+ * SSH-Attacker - A Modular Penetration Testing Framework for SSH
+ *
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ *
+ * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ */
+package de.rub.nds.sshattacker.core.protocol.connection.message;
+
+import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
+import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
+import de.rub.nds.sshattacker.core.constants.ChannelRequestType;
+import de.rub.nds.sshattacker.core.protocol.connection.handler.ChannelRequestBreakMessageHandler;
+import de.rub.nds.sshattacker.core.state.SshContext;
+
+public class ChannelRequestBreakMessage extends ChannelRequestMessage<ChannelRequestBreakMessage> {
+
+    private ModifiableInteger breakLength;
+    private int transferBreakLength;
+
+    public ChannelRequestBreakMessage() {
+        super(ChannelRequestType.BREAK);
+    }
+
+    public ChannelRequestBreakMessage(Integer senderChannel) {
+        super(ChannelRequestType.BREAK, senderChannel);
+    }
+
+    public ChannelRequestBreakMessage(Integer senderChannel, int transferBreakLength) {
+        super(ChannelRequestType.BREAK, senderChannel);
+        setTransferBreakLength(transferBreakLength);
+    }
+
+    public ModifiableInteger getBreakLength() {
+        return breakLength;
+    }
+
+    public void setBreakLength(ModifiableInteger breakLength) {
+        this.breakLength = breakLength;
+    }
+
+    public void setBreakLength(int breakLength) {
+        this.breakLength = ModifiableVariableFactory.safelySetValue(this.breakLength, breakLength);
+    }
+
+    public Integer getTransferBreakLength() {
+        return transferBreakLength;
+    }
+
+    public void setTransferBreakLength(int transferBreakLength) {
+        this.transferBreakLength = transferBreakLength;
+    }
+
+    @Override
+    public ChannelRequestBreakMessageHandler getHandler(SshContext context) {
+        return new ChannelRequestBreakMessageHandler(context, this);
+    }
+}
