@@ -7,15 +7,17 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.preparator;
 
-import de.rub.nds.sshattacker.core.exceptions.MissingChannelException;
-import de.rub.nds.sshattacker.core.exceptions.PreparationException;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.connection.Channel;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelOpenConfirmationMessage;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class ChannelOpenConfirmationMessagePreparator
         extends SshMessagePreparator<ChannelOpenConfirmationMessage> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public ChannelOpenConfirmationMessagePreparator(
             Chooser chooser, ChannelOpenConfirmationMessage message) {
@@ -30,25 +32,20 @@ public class ChannelOpenConfirmationMessagePreparator
                 || getObject().getModSenderChannel().getValue() == null) {
             if (getObject().getSenderChannel() != null) {
                 getObject().setModSenderChannel(getObject().getSenderChannel());
-            } else {
-                throw new PreparationException("Sender channel required to send the message!");
             }
         }
-        getObject().setPacketSize(chooser.getConfig().getDefaultChannel().getlocalPacketSize());
-        getObject().setWindowSize(chooser.getConfig().getDefaultChannel().getlocalWindowSize());
         Channel channel =
                 chooser.getContext()
                         .getChannels()
                         .get(getObject().getModSenderChannel().getValue());
         if (channel == null) {
-            throw new MissingChannelException("Can't find the required channel!");
-        } else {
-            getObject()
-                    .setRecipientChannel(
-                            Channel.getLocal_remote()
-                                    .get(getObject().getModSenderChannel().getValue()));
-            channel.setRemoteChannel(getObject().getRecipientChannel());
-            channel.setOpen(true);
+            channel = chooser.getConfig().getDefaultChannel();
         }
+        getObject().setPacketSize(chooser.getConfig().getDefaultChannel().getlocalPacketSize());
+        getObject().setWindowSize(chooser.getConfig().getDefaultChannel().getlocalWindowSize());
+
+        getObject().setRecipientChannel(channel.getRemoteChannel());
+        channel.setRemoteChannel(getObject().getRecipientChannel());
+        channel.setOpen(true);
     }
 }

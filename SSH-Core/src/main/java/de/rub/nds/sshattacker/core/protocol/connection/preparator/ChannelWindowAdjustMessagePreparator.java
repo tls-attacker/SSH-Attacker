@@ -7,8 +7,6 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.preparator;
 
-import de.rub.nds.sshattacker.core.exceptions.MissingChannelException;
-import de.rub.nds.sshattacker.core.exceptions.PreparationException;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.connection.Channel;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelWindowAdjustMessage;
@@ -29,26 +27,24 @@ public class ChannelWindowAdjustMessagePreparator
     @Override
     public void prepareMessageSpecificContents() {
         // TODO dummy values for fuzzing
-        if (getObject().getSenderChannel() == null) {
-            throw new PreparationException("Sender channel required to send the message!");
+        Channel channel = null;
+        if (getObject().getSenderChannel() != null) {
+            channel = chooser.getContext().getChannels().get(getObject().getSenderChannel());
         }
-        Channel channel = chooser.getContext().getChannels().get(getObject().getSenderChannel());
+
         if (channel == null) {
-            throw new MissingChannelException("Can't find the required channel!");
-        } else if (channel.isOpen().getValue()) {
-            getObject()
-                    .setRecipientChannel(
-                            Channel.getLocal_remote().get(getObject().getSenderChannel()));
-            getObject()
-                    .setBytesToAdd(
-                            chooser.getConfig().getDefaultChannel().getlocalWindowSize().getValue()
-                                    - channel.getlocalWindowSize().getValue());
-            channel.setLocalWindowSize(
-                    channel.getlocalWindowSize().getValue()
-                            + getObject().getBytesToAdd().getValue());
-            LOGGER.debug(channel.toString());
-        } else {
-            throw new MissingChannelException("Required channel is closed!");
+            channel = chooser.getConfig().getDefaultChannel();
         }
+        if (!channel.isOpen().getValue()) {
+            LOGGER.info("The required channel is closed, still sending the message!");
+        }
+        getObject().setRecipientChannel(channel.getRemoteChannel());
+        getObject()
+                .setBytesToAdd(
+                        chooser.getConfig().getDefaultChannel().getlocalWindowSize().getValue()
+                                - channel.getlocalWindowSize().getValue());
+        channel.setLocalWindowSize(
+                channel.getlocalWindowSize().getValue() + getObject().getBytesToAdd().getValue());
+        LOGGER.debug(channel.toString());
     }
 }

@@ -613,7 +613,7 @@ public class Config implements Serializable {
                         0,
                         Integer.MAX_VALUE,
                         Integer.MAX_VALUE,
-                        true);
+                        false);
         replyWanted = 0;
         channelCommand = "nc -l -p 13370";
         defaultVariableName = "PATH";

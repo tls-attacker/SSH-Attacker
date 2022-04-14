@@ -8,7 +8,6 @@
 package de.rub.nds.sshattacker.core.protocol.connection.preparator;
 
 import de.rub.nds.sshattacker.core.constants.ChannelType;
-import de.rub.nds.sshattacker.core.exceptions.PreparationException;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.connection.Channel;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelOpenMessage;
@@ -31,30 +30,41 @@ public class ChannelOpenMessagePreparator extends SshMessagePreparator<ChannelOp
                 || getObject().getModSenderChannel().getValue() == null) {
             if (getObject().getSenderChannel() != null) {
                 getObject().setModSenderChannel(getObject().getSenderChannel());
+
             } else {
-                throw new PreparationException("Sender channel required to send the message!");
+                getObject()
+                        .setModSenderChannel(
+                                chooser.getConfig().getDefaultChannel().getLocalChannel());
+                chooser.getContext()
+                        .getChannels()
+                        .put(
+                                getObject().getModSenderChannel().getValue(),
+                                chooser.getConfig().getDefaultChannel());
             }
         }
-        getObject().setChannelType(chooser.getConfig().getDefaultChannel().getChannelType(), true);
-        getObject().setWindowSize(chooser.getConfig().getDefaultChannel().getlocalWindowSize());
-        getObject().setPacketSize(chooser.getConfig().getDefaultChannel().getlocalPacketSize());
         Channel channel =
                 chooser.getContext()
                         .getChannels()
                         .get(getObject().getModSenderChannel().getValue());
+
+        getObject().setChannelType(chooser.getConfig().getDefaultChannel().getChannelType(), true);
+        getObject().setWindowSize(chooser.getConfig().getDefaultChannel().getlocalWindowSize());
+        getObject().setPacketSize(chooser.getConfig().getDefaultChannel().getlocalPacketSize());
+
         if (channel != null) {
             if (channel.isOpen().getValue()) {
-                throw new PreparationException(
-                        "Channel of the belonging ChannelOpenMessage is already open!");
-            } else {
-                channel.setChannelType(
-                        ChannelType.getByString(getObject().getChannelType().getValue()));
-                channel.setlocalWindowSize(getObject().getWindowSize());
-                channel.setRemotePacketSize(getObject().getPacketSize());
-                chooser.getContext()
-                        .getChannels()
-                        .put(getObject().getModSenderChannel().getValue(), channel);
+                LOGGER.info(
+                        "Channel of the belonging ChannelOpenMessage is already open, changing channel "
+                                + "details and sending ChannelOpenMessage again!");
             }
+            channel.setChannelType(
+                    ChannelType.getByString(getObject().getChannelType().getValue()));
+            channel.setlocalWindowSize(getObject().getWindowSize());
+            channel.setRemotePacketSize(getObject().getPacketSize());
+            chooser.getContext()
+                    .getChannels()
+                    .put(getObject().getModSenderChannel().getValue(), channel);
+
         } else {
             Channel newChannel =
                     new Channel(

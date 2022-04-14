@@ -8,15 +8,17 @@
 package de.rub.nds.sshattacker.core.protocol.connection.preparator;
 
 import de.rub.nds.sshattacker.core.constants.ChannelRequestType;
-import de.rub.nds.sshattacker.core.exceptions.MissingChannelException;
-import de.rub.nds.sshattacker.core.exceptions.PreparationException;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.connection.Channel;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelRequestSubsystemMessage;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class ChannelRequestSubsystemMessagePreparator
         extends SshMessagePreparator<ChannelRequestSubsystemMessage> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public ChannelRequestSubsystemMessagePreparator(
             Chooser chooser, ChannelRequestSubsystemMessage message) {
@@ -25,21 +27,20 @@ public class ChannelRequestSubsystemMessagePreparator
 
     @Override
     public void prepareMessageSpecificContents() {
-        if (getObject().getSenderChannel() == null) {
-            throw new PreparationException("Sender channel required to send the message!");
+        Channel channel = null;
+        if (getObject().getSenderChannel() != null) {
+            channel = chooser.getContext().getChannels().get(getObject().getSenderChannel());
         }
-        Channel channel = chooser.getContext().getChannels().get(getObject().getSenderChannel());
+
         if (channel == null) {
-            throw new MissingChannelException("Can't find the required channel!");
-        } else if (channel.isOpen().getValue()) {
-            getObject()
-                    .setRecipientChannel(
-                            Channel.getLocal_remote().get(getObject().getSenderChannel()));
-            getObject().setWantReply(chooser.getConfig().getReplyWanted());
-            getObject().setRequestType(ChannelRequestType.SUBSYSTEM, true);
-            getObject().setSubsystemName(chooser.getConfig().getDefaultSubsystemName(), true);
-        } else {
-            throw new MissingChannelException("Required channel is closed!");
+            channel = chooser.getConfig().getDefaultChannel();
         }
+        if (!channel.isOpen().getValue()) {
+            LOGGER.info("The required channel is closed, still sending the message!");
+        }
+        getObject().setRecipientChannel(channel.getRemoteChannel());
+        getObject().setWantReply(chooser.getConfig().getReplyWanted());
+        getObject().setRequestType(ChannelRequestType.SUBSYSTEM, true);
+        getObject().setSubsystemName(chooser.getConfig().getDefaultSubsystemName(), true);
     }
 }
