@@ -9,12 +9,12 @@ package de.rub.nds.sshattacker.core.config;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.modifiablevariable.util.UnformattedByteArrayAdapter;
-import de.rub.nds.sshattacker.core.connection.Channel;
 import de.rub.nds.sshattacker.core.connection.InboundConnection;
 import de.rub.nds.sshattacker.core.connection.OutboundConnection;
 import de.rub.nds.sshattacker.core.constants.*;
 import de.rub.nds.sshattacker.core.crypto.ec.PointFormatter;
 import de.rub.nds.sshattacker.core.crypto.keys.*;
+import de.rub.nds.sshattacker.core.protocol.connection.Channel;
 import de.rub.nds.sshattacker.core.workflow.factory.WorkflowTraceType;
 import de.rub.nds.sshattacker.core.workflow.filter.FilterType;
 import java.io.File;
@@ -194,6 +194,22 @@ public class Config implements Serializable {
     private String defaultVariableValue;
 
     private SignalType defaultSignalType;
+
+    private byte clientFlowControl;
+
+    private int defaultTerminalWidthPixels;
+
+    private int defaultTerminalWidthColumns;
+
+    private int defaultTerminalHeightRows;
+
+    private int defaultTerminalHeightPixels;
+
+    private String defaultTermEnvVariable;
+
+    private String defaultSubsystemName;
+
+    private int defaultBreakLength;
 
     /** Default Connection to use when running as Client */
     private OutboundConnection defaultClientConnection;
@@ -597,12 +613,20 @@ public class Config implements Serializable {
                         0,
                         Integer.MAX_VALUE,
                         Integer.MAX_VALUE,
-                        true);
+                        false);
         replyWanted = 0;
         channelCommand = "nc -l -p 13370";
         defaultVariableName = "PATH";
         defaultVariableValue = "usr/local/bin";
         defaultSignalType = SignalType.SIGINT;
+        clientFlowControl = 0;
+        defaultTerminalWidthColumns = 80;
+        defaultTerminalHeightRows = 24;
+        defaultTerminalWidthPixels = 640;
+        defaultTerminalHeightPixels = 480;
+        defaultTermEnvVariable = "vt100";
+        defaultSubsystemName = "sftp";
+        defaultBreakLength = 600;
 
         workflowTraceType = null;
         outputFilters = new ArrayList<>();
@@ -1068,5 +1092,69 @@ public class Config implements Serializable {
 
     public void setDefaultVariableName(String defaultVariableName) {
         this.defaultVariableName = defaultVariableName;
+    }
+
+    public byte getClientFlowControl() {
+        return clientFlowControl;
+    }
+
+    public void setClientFlowControl(byte clientFlowControl) {
+        this.clientFlowControl = clientFlowControl;
+    }
+
+    public int getDefaultTerminalWidthPixels() {
+        return defaultTerminalWidthPixels;
+    }
+
+    public void setDefaultTerminalWidthPixels(int defaultTerminalWidthPixels) {
+        this.defaultTerminalWidthPixels = defaultTerminalWidthPixels;
+    }
+
+    public int getDefaultTerminalWidthColumns() {
+        return defaultTerminalWidthColumns;
+    }
+
+    public void setDefaultTerminalWidthColumns(int defaultTerminalWidthColumns) {
+        this.defaultTerminalWidthColumns = defaultTerminalWidthColumns;
+    }
+
+    public int getDefaultTerminalHeightRows() {
+        return defaultTerminalHeightRows;
+    }
+
+    public void setDefaultTerminalHeightRows(int defaultTerminalHeightRows) {
+        this.defaultTerminalHeightRows = defaultTerminalHeightRows;
+    }
+
+    public int getDefaultTerminalHeightPixels() {
+        return defaultTerminalHeightPixels;
+    }
+
+    public void setDefaultTerminalHeightPixels(int defaultTerminalHeightPixels) {
+        this.defaultTerminalHeightPixels = defaultTerminalHeightPixels;
+    }
+
+    public String getDefaultTermEnvVariable() {
+        return defaultTermEnvVariable;
+    }
+
+    public void setDefaultTermEnvVariable(String defaultTermEnvVariable) {
+        this.defaultTermEnvVariable = defaultTermEnvVariable;
+    }
+
+    public String getDefaultSubsystemName() {
+        return defaultSubsystemName;
+    }
+
+    public void setDefaultSubsystemName(String defaultSubsystemName) {
+        this.defaultSubsystemName = defaultSubsystemName;
+    }
+
+    public int getDefaultBreakLength() {
+        return defaultBreakLength;
+    }
+
+    public void setDefaultBreakLength(int defaultBreakLength) {
+        this.defaultBreakLength = defaultBreakLength;
     }
 }

@@ -17,12 +17,10 @@ import java.nio.charset.StandardCharsets;
 
 public class ChannelRequestEnvMessage extends ChannelRequestMessage<ChannelRequestEnvMessage> {
 
-    ModifiableString variableName;
-    String transferVariableName;
-    ModifiableInteger variableNameLength;
-    ModifiableString variableValue;
-    String transferVariableValue;
-    ModifiableInteger variableValueLength;
+    private ModifiableString variableName;
+    private ModifiableInteger variableNameLength;
+    private ModifiableString variableValue;
+    private ModifiableInteger variableValueLength;
 
     public ChannelRequestEnvMessage() {
         super(ChannelRequestType.ENV);
@@ -30,13 +28,6 @@ public class ChannelRequestEnvMessage extends ChannelRequestMessage<ChannelReque
 
     public ChannelRequestEnvMessage(Integer senderChannel) {
         super(ChannelRequestType.ENV, senderChannel);
-    }
-
-    public ChannelRequestEnvMessage(
-            Integer senderChannel, String variableName, String variableValue) {
-        super(ChannelRequestType.ENV, senderChannel);
-        setTransferVariableName(variableName);
-        setTransferVariableValue(variableValue);
     }
 
     public ModifiableString getVariableName() {
@@ -122,22 +113,6 @@ public class ChannelRequestEnvMessage extends ChannelRequestMessage<ChannelReque
         this.variableValueLength =
                 ModifiableVariableFactory.safelySetValue(
                         this.variableValueLength, variableValueLength);
-    }
-
-    public String getTransferVariableName() {
-        return transferVariableName;
-    }
-
-    public void setTransferVariableName(String transferVariableName) {
-        this.transferVariableName = transferVariableName;
-    }
-
-    public String getTransferVariableValue() {
-        return transferVariableValue;
-    }
-
-    public void setTransferVariableValue(String transferVariableValue) {
-        this.transferVariableValue = transferVariableValue;
     }
 
     @Override

@@ -10,10 +10,10 @@ package de.rub.nds.sshattacker.core.protocol.common;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
-import de.rub.nds.sshattacker.core.connection.Channel;
 import de.rub.nds.sshattacker.core.exceptions.NotImplementedException;
 import de.rub.nds.sshattacker.core.exceptions.ParserException;
 import de.rub.nds.sshattacker.core.exceptions.PreparationException;
+import de.rub.nds.sshattacker.core.protocol.connection.Channel;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelMessage;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelOpenMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.message.*;
@@ -131,6 +131,7 @@ public class CyclicParserSerializerTest {
                                 defaultChannel.getRemoteChannel().getValue());
                 context.getChannels()
                         .put(defaultChannel.getLocalChannel().getValue(), defaultChannel);
+                defaultChannel.setOpen(true);
             }
             // Prepare the message given the fresh context
             try {

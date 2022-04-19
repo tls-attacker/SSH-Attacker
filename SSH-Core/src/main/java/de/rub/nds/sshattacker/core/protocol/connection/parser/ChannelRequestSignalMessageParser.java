@@ -26,7 +26,7 @@ public class ChannelRequestSignalMessageParser
     }
 
     @Override
-    protected ChannelRequestSignalMessage createMessage() {
+    public ChannelRequestSignalMessage createMessage() {
         return new ChannelRequestSignalMessage();
     }
 

@@ -26,7 +26,7 @@ public class ChannelRequestExitStatusMessageParser
     }
 
     @Override
-    protected ChannelRequestExitStatusMessage createMessage() {
+    public ChannelRequestExitStatusMessage createMessage() {
         return new ChannelRequestExitStatusMessage();
     }
 

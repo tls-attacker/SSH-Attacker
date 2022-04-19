@@ -24,11 +24,8 @@ public class ChannelOpenMessage extends SshMessage<ChannelOpenMessage> {
 
     private ModifiableInteger channelTypeLength;
     private ModifiableString channelType;
-    private String transferChannelType;
     private ModifiableInteger windowSize;
-    private Integer transferWindowSize;
     private ModifiableInteger packetSize;
-    private Integer transferPacketSize;
     private ModifiableInteger modSenderChannel;
 
     @XmlAttribute(name = "channel")
@@ -39,27 +36,6 @@ public class ChannelOpenMessage extends SshMessage<ChannelOpenMessage> {
     public ChannelOpenMessage(Integer senderChannel) {
         super();
         setSenderChannel(senderChannel);
-    }
-
-    public ChannelOpenMessage(
-            Integer senderChannel, String channelType, Integer windowSize, Integer packetSize) {
-        super();
-        setSenderChannel(senderChannel);
-        setTransferChannelType(channelType);
-        setTransferWindowSize(windowSize);
-        setTransferPacketSize(packetSize);
-    }
-
-    public ChannelOpenMessage(
-            Integer senderChannel,
-            ChannelType channelType,
-            Integer windowSize,
-            Integer packetSize) {
-        super();
-        setSenderChannel(senderChannel);
-        setTransferChannelType(channelType);
-        setTransferWindowSize(windowSize);
-        setTransferPacketSize(packetSize);
     }
 
     public ModifiableInteger getChannelTypeLength() {
@@ -109,18 +85,6 @@ public class ChannelOpenMessage extends SshMessage<ChannelOpenMessage> {
         setChannelType(channelType.toString(), adjustLengthField);
     }
 
-    public String getTransferChannelType() {
-        return transferChannelType;
-    }
-
-    public void setTransferChannelType(String transferChannelType) {
-        this.transferChannelType = transferChannelType;
-    }
-
-    public void setTransferChannelType(ChannelType transferChannelType) {
-        setTransferChannelType(channelType.toString());
-    }
-
     public ModifiableInteger getModSenderChannel() {
         return modSenderChannel;
     }
@@ -156,22 +120,6 @@ public class ChannelOpenMessage extends SshMessage<ChannelOpenMessage> {
 
     public void setPacketSize(int packetSize) {
         this.packetSize = ModifiableVariableFactory.safelySetValue(this.packetSize, packetSize);
-    }
-
-    public Integer getTransferPacketSize() {
-        return transferPacketSize;
-    }
-
-    public void setTransferPacketSize(int transferPacketSize) {
-        this.transferPacketSize = transferPacketSize;
-    }
-
-    public Integer getTransferWindowSize() {
-        return transferWindowSize;
-    }
-
-    public void setTransferWindowSize(int transferWindowSize) {
-        this.transferWindowSize = transferWindowSize;
     }
 
     public Integer getSenderChannel() {

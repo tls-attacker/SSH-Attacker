@@ -19,9 +19,8 @@ import java.nio.charset.StandardCharsets;
 public class ChannelRequestSignalMessage
         extends ChannelRequestMessage<ChannelRequestSignalMessage> {
 
-    ModifiableInteger signalNameLength;
-    ModifiableString signalName;
-    String transferSignalName;
+    private ModifiableInteger signalNameLength;
+    private ModifiableString signalName;
 
     public ChannelRequestSignalMessage() {
         super(ChannelRequestType.SIGNAL);
@@ -85,17 +84,5 @@ public class ChannelRequestSignalMessage
 
     public void setSignalName(SignalType signalName, boolean adjustLengthField) {
         setSignalName(signalName.toString(), adjustLengthField);
-    }
-
-    public String getTransferSignalName() {
-        return transferSignalName;
-    }
-
-    public void setTransferSignalName(String transferSignalName) {
-        this.transferSignalName = transferSignalName;
-    }
-
-    public void setTransferSignalName(SignalType signalType) {
-        setTransferSignalName(signalType.toString());
     }
 }

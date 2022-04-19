@@ -261,21 +261,15 @@ public class WorkflowConfigurationFactory {
         AliasedConnection connection = getDefaultConnection();
         workflow.addSshActions(
                 MessageActionFactory.createAction(
-                        connection,
-                        ConnectionEndType.CLIENT,
-                        new ChannelOpenMessage(1337, "session", 10000, 10000)),
+                        connection, ConnectionEndType.CLIENT, new ChannelOpenMessage(1337)),
                 MessageActionFactory.createAction(
                         connection, ConnectionEndType.SERVER, new ChannelOpenConfirmationMessage()),
                 MessageActionFactory.createAction(
-                        connection,
-                        ConnectionEndType.CLIENT,
-                        new ChannelOpenMessage(1338, "session", 10000, 10000)),
+                        connection, ConnectionEndType.CLIENT, new ChannelOpenMessage(1338)),
                 MessageActionFactory.createAction(
                         connection, ConnectionEndType.SERVER, new ChannelOpenConfirmationMessage()),
                 MessageActionFactory.createAction(
-                        connection,
-                        ConnectionEndType.CLIENT,
-                        new ChannelRequestExecMessage(1337, "nc -l -p 13370")),
+                        connection, ConnectionEndType.CLIENT, new ChannelRequestExecMessage(1337)),
                 MessageActionFactory.createAction(
                         connection, ConnectionEndType.SERVER, new ChannelWindowAdjustMessage()),
                 MessageActionFactory.createAction(

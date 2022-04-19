@@ -19,7 +19,6 @@ public class ChannelRequestExecMessage extends ChannelRequestMessage<ChannelRequ
 
     private ModifiableInteger commandLength;
     private ModifiableString command;
-    private String transferCommand;
 
     public ChannelRequestExecMessage() {
         super(ChannelRequestType.EXEC);
@@ -27,11 +26,6 @@ public class ChannelRequestExecMessage extends ChannelRequestMessage<ChannelRequ
 
     public ChannelRequestExecMessage(Integer senderChannel) {
         super(ChannelRequestType.EXEC, senderChannel);
-    }
-
-    public ChannelRequestExecMessage(Integer senderChannel, String command) {
-        super(ChannelRequestType.EXEC, senderChannel);
-        setTransferCommand(command);
     }
 
     public ModifiableInteger getCommandLength() {
@@ -71,14 +65,6 @@ public class ChannelRequestExecMessage extends ChannelRequestMessage<ChannelRequ
             setCommandLength(command.getBytes(StandardCharsets.UTF_8).length);
         }
         this.command = ModifiableVariableFactory.safelySetValue(this.command, command);
-    }
-
-    public String getTransferCommand() {
-        return transferCommand;
-    }
-
-    public void setTransferCommand(String transferCommand) {
-        this.transferCommand = transferCommand;
     }
 
     @Override
