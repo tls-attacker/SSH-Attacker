@@ -268,7 +268,7 @@ public class Config implements Serializable {
      * for the corresponding transport direction. If set to false, encryption must be enabled
      * manually by calling the corresponding methods on the state.
      */
-    private Boolean enableEncryptionOnNewKeysMessage = false;
+    private Boolean enableEncryptionOnNewKeysMessage = true;
 
     private ChooserType chooserType = ChooserType.DEFAULT;
 

@@ -163,7 +163,11 @@ public enum MessageIdConstant {
     }
 
     public static String getNameById(byte id) {
-        return map.get(id).toString();
+        if (map.containsKey(id)) {
+            return map.get(id).toString();
+        } else {
+            return String.format("0x%02X", id);
+        }
     }
 
     public static MessageIdConstant fromId(byte id, SshContext context) {
