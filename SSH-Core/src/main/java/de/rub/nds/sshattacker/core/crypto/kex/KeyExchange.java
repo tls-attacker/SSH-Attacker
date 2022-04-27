@@ -7,7 +7,6 @@
  */
 package de.rub.nds.sshattacker.core.crypto.kex;
 
-import de.rub.nds.sshattacker.core.exceptions.CryptoException;
 import java.math.BigInteger;
 import java.security.SecureRandom;
 
@@ -19,8 +18,6 @@ public abstract class KeyExchange {
     protected KeyExchange() {
         this.random = new SecureRandom();
     }
-
-    public abstract void computeSharedSecret() throws CryptoException;
 
     public boolean isComplete() {
         return sharedSecret != null;
