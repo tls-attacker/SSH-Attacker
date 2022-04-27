@@ -14,6 +14,7 @@ import de.rub.nds.sshattacker.core.packet.AbstractPacket;
 import de.rub.nds.sshattacker.core.packet.BlobPacket;
 import de.rub.nds.sshattacker.core.protocol.authentication.parser.UserAuthBannerMessageParser;
 import de.rub.nds.sshattacker.core.protocol.authentication.parser.UserAuthFailureMessageParser;
+import de.rub.nds.sshattacker.core.protocol.authentication.parser.UserAuthInfoRequestMessageParser;
 import de.rub.nds.sshattacker.core.protocol.authentication.parser.UserAuthSuccessMessageParser;
 import de.rub.nds.sshattacker.core.protocol.connection.parser.*;
 import de.rub.nds.sshattacker.core.protocol.transport.parser.*;
@@ -71,7 +72,11 @@ public abstract class ProtocolMessageParser<T extends ProtocolMessage<T>> extend
                     return null;
                 }
             }
-
+            /*ToDo check multiplying of MessageId=60 in MessageIdConstant and implement a parsing function for UserAuthInfoRequest
+             *  similar to parsing of channel request message*/
+            if (raw[0] == 60) {
+                return new UserAuthInfoRequestMessageParser(raw).parse();
+            }
             switch (MessageIdConstant.fromId(raw[0], context)) {
                 case SSH_MSG_KEXINIT:
                     return new KeyExchangeInitMessageParser(raw).parse();
@@ -147,6 +152,8 @@ public abstract class ProtocolMessageParser<T extends ProtocolMessage<T>> extend
                     return getChannelRequestMessageParsing(raw);
                 case SSH_MSG_GLOBAL_REQUEST:
                     return getGlobalRequestMessageParsing(raw);
+                case SSH_MSG_USERAUTH_INFO_REQUEST:
+                    return new UserAuthInfoRequestMessageParser(raw).parse();
 
                 default:
                     LOGGER.debug(

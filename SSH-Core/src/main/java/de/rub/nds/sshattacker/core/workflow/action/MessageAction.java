@@ -9,10 +9,7 @@ package de.rub.nds.sshattacker.core.workflow.action;
 
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.sshattacker.core.connection.AliasedConnection;
-import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthBannerMessage;
-import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthFailureMessage;
-import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthPasswordMessage;
-import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthSuccessMessage;
+import de.rub.nds.sshattacker.core.protocol.authentication.message.*;
 import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessage;
 import de.rub.nds.sshattacker.core.protocol.connection.message.*;
 import de.rub.nds.sshattacker.core.protocol.transport.message.*;
@@ -106,7 +103,16 @@ public abstract class MessageAction extends ConnectionBoundAction {
                 @XmlElement(type = TcpIpForwardCancelMessage.class, name = "TcpIpForwardCancel"),
                 @XmlElement(type = TcpIpForwardRequestMessage.class, name = "TcpIpForwardRequest"),
                 // Other
-                @XmlElement(type = UnknownMessage.class, name = "UnknownMessage")
+                @XmlElement(type = UnknownMessage.class, name = "UnknownMessage"),
+                @XmlElement(
+                        type = UserAuthKeyboardInteractiveMessage.class,
+                        name = "UserAuthKeyboardInteractive"),
+                @XmlElement(
+                        type = UserAuthInfoRequestMessage.class,
+                        name = "UserAuthInfoRequestMessage"),
+                @XmlElement(
+                        type = UserAuthInfoResponseMessage.class,
+                        name = "UserAuthInfoResponseMessage"),
             })
     protected List<ProtocolMessage<?>> messages = new ArrayList<>();
 
