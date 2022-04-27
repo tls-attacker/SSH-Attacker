@@ -31,7 +31,7 @@ import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class RsaKeyExchange extends KeyExchange {
+public class RsaKeyExchange extends KeyEncapsulation {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -72,12 +72,13 @@ public class RsaKeyExchange extends KeyExchange {
     }
 
     @Override
-    public void computeSharedSecret() {
+    public void generateSharedSecret() {
         // Calculation of maximum number of bits taken from RFC 4432
         int maximumBits = (getModulusLengthInBits() - 2 * hashLength - 49);
         sharedSecret = new BigInteger(maximumBits, random);
     }
 
+    @Override
     public byte[] encryptSharedSecret() {
         EncryptionCipher cipher =
                 CipherFactory.getEncryptionCipher(algorithm, transientKey.getPublicKey());
@@ -92,6 +93,7 @@ public class RsaKeyExchange extends KeyExchange {
         }
     }
 
+    @Override
     public void decryptSharedSecret(byte[] encryptedSharedSecret) throws CryptoException {
         if (transientKey.getPrivateKey().isEmpty()) {
             throw new CryptoException("Unable to decrypt shared secret - no private key present");
