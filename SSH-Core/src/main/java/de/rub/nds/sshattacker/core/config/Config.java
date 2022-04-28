@@ -57,27 +57,27 @@ public class Config implements Serializable {
 
     // region VersionExchange
     /** Client protocol and software version string starting with the SSH version (SSH-2.0-...) */
-    private final String clientVersion;
+    private String clientVersion;
     /** Client comment sent alongside protocol and software version */
-    private final String clientComment;
+    private String clientComment;
     /** End-of-message sequence of the clients' VersionExchangeMessage */
-    private final String clientEndOfMessageSequence;
+    private String clientEndOfMessageSequence;
     /** Server protocol and software version string starting with the SSH version (SSH-2.0-...) */
-    private final String serverVersion;
+    private String serverVersion;
     /** Server comment sent alongside protocol and software version */
-    private final String serverComment;
+    private String serverComment;
     /** End-of-message sequence of the servers' VersionExchangeMessage */
-    private final String serverEndOfMessageSequence;
+    private String serverEndOfMessageSequence;
     // endregion
 
     // region Pre-KeyExchange
     /** Client cookie containing 16 random bytes */
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
-    private final byte[] clientCookie;
+    private byte[] clientCookie;
 
     /** Server cookie containing 16 random bytes */
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
-    private final byte[] serverCookie;
+    private byte[] serverCookie;
 
     /** List of key exchange algorithms supported by the remote peer */
     @XmlElement(name = "clientSupportedKeyExchangeAlgorithm")
@@ -87,113 +87,113 @@ public class Config implements Serializable {
     /** List of key exchange algorithms supported by the server */
     @XmlElement(name = "serverSupportedKeyExchangeAlgorithm")
     @XmlElementWrapper
-    private final List<KeyExchangeAlgorithm> serverSupportedKeyExchangeAlgorithms;
+    private List<KeyExchangeAlgorithm> serverSupportedKeyExchangeAlgorithms;
 
     /** List of host key algorithms supported by the client */
     @XmlElement(name = "clientSupportedHostKeyAlgorithm")
     @XmlElementWrapper
-    private final List<PublicKeyAlgorithm> clientSupportedHostKeyAlgorithms;
+    private List<PublicKeyAlgorithm> clientSupportedHostKeyAlgorithms;
 
     /** List of host key algorithms supported by the server */
     @XmlElement(name = "serverSupportedHostKeyAlgorithm")
     @XmlElementWrapper
-    private final List<PublicKeyAlgorithm> serverSupportedHostKeyAlgorithms;
+    private List<PublicKeyAlgorithm> serverSupportedHostKeyAlgorithms;
 
     /** List of encryption algorithms (client to server) supported by the client */
     @XmlElement(name = "clientSupportedEncryptionAlgorithmClientToServer")
     @XmlElementWrapper
-    private final List<EncryptionAlgorithm> clientSupportedEncryptionAlgorithmsClientToServer;
+    private List<EncryptionAlgorithm> clientSupportedEncryptionAlgorithmsClientToServer;
 
     /** List of encryption algorithms (server to client) supported by the client */
     @XmlElement(name = "clientSupportedEncryptionAlgorithmServerToClient")
     @XmlElementWrapper
-    private final List<EncryptionAlgorithm> clientSupportedEncryptionAlgorithmsServerToClient;
+    private List<EncryptionAlgorithm> clientSupportedEncryptionAlgorithmsServerToClient;
 
     /** List of encryption algorithms (client to server) supported by the server */
     @XmlElement(name = "serverSupportedEncryptionAlgorithmServerToClient")
     @XmlElementWrapper
-    private final List<EncryptionAlgorithm> serverSupportedEncryptionAlgorithmsServerToClient;
+    private List<EncryptionAlgorithm> serverSupportedEncryptionAlgorithmsServerToClient;
 
     /** List of encryption algorithms (server to client) supported by the server */
     @XmlElement(name = "serverSupportedEncryptionAlgorithmClientToServer")
     @XmlElementWrapper
-    private final List<EncryptionAlgorithm> serverSupportedEncryptionAlgorithmsClientToServer;
+    private List<EncryptionAlgorithm> serverSupportedEncryptionAlgorithmsClientToServer;
 
     /** List of MAC algorithms (client to server) supported by the client */
     @XmlElement(name = "clientSupportedMacAlgorithmClientToServer")
     @XmlElementWrapper
-    private final List<MacAlgorithm> clientSupportedMacAlgorithmsClientToServer;
+    private List<MacAlgorithm> clientSupportedMacAlgorithmsClientToServer;
 
     /** List of MAC algorithms (server to client) supported by the client */
     @XmlElement(name = "clientSupportedMacAlgorithmServerToClient")
     @XmlElementWrapper
-    private final List<MacAlgorithm> clientSupportedMacAlgorithmsServerToClient;
+    private List<MacAlgorithm> clientSupportedMacAlgorithmsServerToClient;
 
     /** List of MAC algorithms (client to server) supported by the server */
     @XmlElement(name = "serverSupportedMacAlgorithmServerToClient")
     @XmlElementWrapper
-    private final List<MacAlgorithm> serverSupportedMacAlgorithmsServerToClient;
+    private List<MacAlgorithm> serverSupportedMacAlgorithmsServerToClient;
 
     /** List of MAC algorithms (server to client) supported by the server */
     @XmlElement(name = "serverSupportedMacAlgorithmClientToServer")
     @XmlElementWrapper
-    private final List<MacAlgorithm> serverSupportedMacAlgorithmsClientToServer;
+    private List<MacAlgorithm> serverSupportedMacAlgorithmsClientToServer;
 
     /** List of compression algorithms (client to server) supported by the client */
     @XmlElement(name = "clientSupportedCompressionMethodClientToServer")
     @XmlElementWrapper
-    private final List<CompressionMethod> clientSupportedCompressionMethodsClientToServer;
+    private List<CompressionMethod> clientSupportedCompressionMethodsClientToServer;
 
     /** List of compression algorithms (server to client) supported by the client */
     @XmlElement(name = "clientSupportedCompressionMethodServerToClient")
     @XmlElementWrapper
-    private final List<CompressionMethod> clientSupportedCompressionMethodsServerToClient;
+    private List<CompressionMethod> clientSupportedCompressionMethodsServerToClient;
 
     /** List of compression algorithms (client to server) supported by the server */
     @XmlElement(name = "serverSupportedCompressionMethodServerToClient")
     @XmlElementWrapper
-    private final List<CompressionMethod> serverSupportedCompressionMethodsServerToClient;
+    private List<CompressionMethod> serverSupportedCompressionMethodsServerToClient;
 
     /** List of compression algorithms (server to client) supported by the server */
     @XmlElement(name = "serverSupportedCompressionMethodClientToServer")
     @XmlElementWrapper
-    private final List<CompressionMethod> serverSupportedCompressionMethodsClientToServer;
+    private List<CompressionMethod> serverSupportedCompressionMethodsClientToServer;
 
     /** List of languages (client to server) supported by the client */
     @XmlElement(name = "clientSupportedLanguageClientToServer")
     @XmlElementWrapper
-    private final List<String> clientSupportedLanguagesClientToServer;
+    private List<String> clientSupportedLanguagesClientToServer;
 
     /** List of languages (server to client) supported by the client */
     @XmlElement(name = "clientSupportedLanguageServerToClient")
     @XmlElementWrapper
-    private final List<String> clientSupportedLanguagesServerToClient;
+    private List<String> clientSupportedLanguagesServerToClient;
 
     /** List of languages (client to server) supported by the server */
     @XmlElement(name = "serverSupportedLanguageServerToClient")
     @XmlElementWrapper
-    private final List<String> serverSupportedLanguagesServerToClient;
+    private List<String> serverSupportedLanguagesServerToClient;
 
     /** List of languages (server to client) supported by the server */
     @XmlElement(name = "serverSupportedLanguageClientToServer")
     @XmlElementWrapper
-    private final List<String> serverSupportedLanguagesClientToServer;
+    private List<String> serverSupportedLanguagesClientToServer;
 
     /**
      * A boolean flag used to indicate that a guessed key exchange paket will be sent by the client
      */
-    private final boolean clientFirstKeyExchangePacketFollows;
+    private boolean clientFirstKeyExchangePacketFollows;
 
     /**
      * A boolean flag used to indicate that a guessed key exchange paket will be sent by the server
      */
-    private final boolean serverFirstKeyExchangePacketFollows;
+    private boolean serverFirstKeyExchangePacketFollows;
 
     /** Value of the clients' reserved field which may be used for extensions in the future */
-    private final int clientReserved;
+    private int clientReserved;
 
     /** Value of the servers' reserved field which may be used for extensions in the future */
-    private final int serverReserved;
+    private int serverReserved;
     // endregion
 
     // region KeyExchange
@@ -201,29 +201,29 @@ public class Config implements Serializable {
      * Fallback of minimal acceptable DH group size as reported in the SSH_MSG_KEX_DH_GEX_REQUEST
      * message
      */
-    private final Integer dhGexMinimalGroupSize;
+    private Integer dhGexMinimalGroupSize;
     /** Fallback of preferred DH group size as reported in the SSH_MSG_KEX_DH_GEX_REQUEST message */
-    private final Integer dhGexPreferredGroupSize;
+    private Integer dhGexPreferredGroupSize;
     /**
      * Fallback of maximal acceptable DH group size as reported in the SSH_MSG_KEX_DH_GEX_REQUEST
      * message
      */
-    private final Integer dhGexMaximalGroupSize;
+    private Integer dhGexMaximalGroupSize;
     /**
      * Default DH key exchange algorithm, which is used if a new DH or DH Gex key exchange is
      * instantiated with without a matching key exchange algorithm negotiated.
      */
-    private final KeyExchangeAlgorithm defaultDhKeyExchangeAlgorithm;
+    private KeyExchangeAlgorithm defaultDhKeyExchangeAlgorithm;
     /**
      * Default ECDH key exchange algorithm, which is used if a new ECDH or X curve ECDH key exchange
      * is instantiated without a matching key exchange algorithm negotiated.
      */
-    private final KeyExchangeAlgorithm defaultEcdhKeyExchangeAlgorithm;
+    private KeyExchangeAlgorithm defaultEcdhKeyExchangeAlgorithm;
     /**
      * Default RSA key exchange algorithm, which is used if a new RSA key exchange is instantiated
      * without a matching key exchange algorithm negotiated.
      */
-    private final KeyExchangeAlgorithm defaultRsaKeyExchangeAlgorithm;
+    private KeyExchangeAlgorithm defaultRsaKeyExchangeAlgorithm;
     /**
      * If set to true, sending or receiving a NewKeysMessage automatically enables the encryption
      * for the corresponding transport direction. If set to false, encryption must be enabled
@@ -860,6 +860,32 @@ public class Config implements Serializable {
         return serverEndOfMessageSequence;
     }
     // endregion
+    // region Setters for VersionExchange
+    public void setClientVersion(String clientVersion) {
+        this.clientVersion = clientVersion;
+    }
+
+    public void setClientComment(String clientComment) {
+        this.clientComment = clientComment;
+    }
+
+    public void setClientEndOfMessageSequence(String clientEndOfMessageSequence) {
+        this.clientEndOfMessageSequence = clientEndOfMessageSequence;
+    }
+
+    public void setServerVersion(String serverVersion) {
+        this.serverVersion = serverVersion;
+    }
+
+    public void setServerComment(String serverComment) {
+        this.serverComment = serverComment;
+    }
+
+    public void setServerEndOfMessageSequence(String serverEndOfMessageSequence) {
+        this.serverEndOfMessageSequence = serverEndOfMessageSequence;
+    }
+
+    // endregion
 
     // region Getters for Pre-KeyExchange
     public List<KeyExchangeAlgorithm> getClientSupportedKeyExchangeAlgorithms() {
@@ -964,6 +990,142 @@ public class Config implements Serializable {
     }
 
     // endregion
+    // region Setters for Pre-KeyExchange
+
+    public void setClientCookie(byte[] clientCookie) {
+        this.clientCookie = clientCookie;
+    }
+
+    public void setServerCookie(byte[] serverCookie) {
+        this.serverCookie = serverCookie;
+    }
+
+    public void setServerSupportedKeyExchangeAlgorithms(
+            List<KeyExchangeAlgorithm> serverSupportedKeyExchangeAlgorithms) {
+        this.serverSupportedKeyExchangeAlgorithms = serverSupportedKeyExchangeAlgorithms;
+    }
+
+    public void setClientSupportedHostKeyAlgorithms(
+            List<PublicKeyAlgorithm> clientSupportedHostKeyAlgorithms) {
+        this.clientSupportedHostKeyAlgorithms = clientSupportedHostKeyAlgorithms;
+    }
+
+    public void setServerSupportedHostKeyAlgorithms(
+            List<PublicKeyAlgorithm> serverSupportedHostKeyAlgorithms) {
+        this.serverSupportedHostKeyAlgorithms = serverSupportedHostKeyAlgorithms;
+    }
+
+    public void setClientSupportedEncryptionAlgorithmsClientToServer(
+            List<EncryptionAlgorithm> clientSupportedEncryptionAlgorithmsClientToServer) {
+        this.clientSupportedEncryptionAlgorithmsClientToServer =
+                clientSupportedEncryptionAlgorithmsClientToServer;
+    }
+
+    public void setClientSupportedEncryptionAlgorithmsServerToClient(
+            List<EncryptionAlgorithm> clientSupportedEncryptionAlgorithmsServerToClient) {
+        this.clientSupportedEncryptionAlgorithmsServerToClient =
+                clientSupportedEncryptionAlgorithmsServerToClient;
+    }
+
+    public void setServerSupportedEncryptionAlgorithmsServerToClient(
+            List<EncryptionAlgorithm> serverSupportedEncryptionAlgorithmsServerToClient) {
+        this.serverSupportedEncryptionAlgorithmsServerToClient =
+                serverSupportedEncryptionAlgorithmsServerToClient;
+    }
+
+    public void setServerSupportedEncryptionAlgorithmsClientToServer(
+            List<EncryptionAlgorithm> serverSupportedEncryptionAlgorithmsClientToServer) {
+        this.serverSupportedEncryptionAlgorithmsClientToServer =
+                serverSupportedEncryptionAlgorithmsClientToServer;
+    }
+
+    public void setClientSupportedMacAlgorithmsClientToServer(
+            List<MacAlgorithm> clientSupportedMacAlgorithmsClientToServer) {
+        this.clientSupportedMacAlgorithmsClientToServer =
+                clientSupportedMacAlgorithmsClientToServer;
+    }
+
+    public void setClientSupportedMacAlgorithmsServerToClient(
+            List<MacAlgorithm> clientSupportedMacAlgorithmsServerToClient) {
+        this.clientSupportedMacAlgorithmsServerToClient =
+                clientSupportedMacAlgorithmsServerToClient;
+    }
+
+    public void setServerSupportedMacAlgorithmsServerToClient(
+            List<MacAlgorithm> serverSupportedMacAlgorithmsServerToClient) {
+        this.serverSupportedMacAlgorithmsServerToClient =
+                serverSupportedMacAlgorithmsServerToClient;
+    }
+
+    public void setServerSupportedMacAlgorithmsClientToServer(
+            List<MacAlgorithm> serverSupportedMacAlgorithmsClientToServer) {
+        this.serverSupportedMacAlgorithmsClientToServer =
+                serverSupportedMacAlgorithmsClientToServer;
+    }
+
+    public void setClientSupportedCompressionMethodsClientToServer(
+            List<CompressionMethod> clientSupportedCompressionMethodsClientToServer) {
+        this.clientSupportedCompressionMethodsClientToServer =
+                clientSupportedCompressionMethodsClientToServer;
+    }
+
+    public void setClientSupportedCompressionMethodsServerToClient(
+            List<CompressionMethod> clientSupportedCompressionMethodsServerToClient) {
+        this.clientSupportedCompressionMethodsServerToClient =
+                clientSupportedCompressionMethodsServerToClient;
+    }
+
+    public void setServerSupportedCompressionMethodsServerToClient(
+            List<CompressionMethod> serverSupportedCompressionMethodsServerToClient) {
+        this.serverSupportedCompressionMethodsServerToClient =
+                serverSupportedCompressionMethodsServerToClient;
+    }
+
+    public void setServerSupportedCompressionMethodsClientToServer(
+            List<CompressionMethod> serverSupportedCompressionMethodsClientToServer) {
+        this.serverSupportedCompressionMethodsClientToServer =
+                serverSupportedCompressionMethodsClientToServer;
+    }
+
+    public void setClientSupportedLanguagesClientToServer(
+            List<String> clientSupportedLanguagesClientToServer) {
+        this.clientSupportedLanguagesClientToServer = clientSupportedLanguagesClientToServer;
+    }
+
+    public void setClientSupportedLanguagesServerToClient(
+            List<String> clientSupportedLanguagesServerToClient) {
+        this.clientSupportedLanguagesServerToClient = clientSupportedLanguagesServerToClient;
+    }
+
+    public void setServerSupportedLanguagesServerToClient(
+            List<String> serverSupportedLanguagesServerToClient) {
+        this.serverSupportedLanguagesServerToClient = serverSupportedLanguagesServerToClient;
+    }
+
+    public void setServerSupportedLanguagesClientToServer(
+            List<String> serverSupportedLanguagesClientToServer) {
+        this.serverSupportedLanguagesClientToServer = serverSupportedLanguagesClientToServer;
+    }
+
+    public void setClientFirstKeyExchangePacketFollows(
+            boolean clientFirstKeyExchangePacketFollows) {
+        this.clientFirstKeyExchangePacketFollows = clientFirstKeyExchangePacketFollows;
+    }
+
+    public void setServerFirstKeyExchangePacketFollows(
+            boolean serverFirstKeyExchangePacketFollows) {
+        this.serverFirstKeyExchangePacketFollows = serverFirstKeyExchangePacketFollows;
+    }
+
+    public void setClientReserved(int clientReserved) {
+        this.clientReserved = clientReserved;
+    }
+
+    public void setServerReserved(int serverReserved) {
+        this.serverReserved = serverReserved;
+    }
+
+    // endregion
 
     // region Getters for KeyExchange
     public Integer getDhGexMinimalGroupSize() {
@@ -1008,6 +1170,33 @@ public class Config implements Serializable {
     }
     // endregion
     // region Setters for KeyExchange
+    public void setDhGexMinimalGroupSize(Integer dhGexMinimalGroupSize) {
+        this.dhGexMinimalGroupSize = dhGexMinimalGroupSize;
+    }
+
+    public void setDhGexPreferredGroupSize(Integer dhGexPreferredGroupSize) {
+        this.dhGexPreferredGroupSize = dhGexPreferredGroupSize;
+    }
+
+    public void setDhGexMaximalGroupSize(Integer dhGexMaximalGroupSize) {
+        this.dhGexMaximalGroupSize = dhGexMaximalGroupSize;
+    }
+
+    public void setDefaultDhKeyExchangeAlgorithm(
+            KeyExchangeAlgorithm defaultDhKeyExchangeAlgorithm) {
+        this.defaultDhKeyExchangeAlgorithm = defaultDhKeyExchangeAlgorithm;
+    }
+
+    public void setDefaultEcdhKeyExchangeAlgorithm(
+            KeyExchangeAlgorithm defaultEcdhKeyExchangeAlgorithm) {
+        this.defaultEcdhKeyExchangeAlgorithm = defaultEcdhKeyExchangeAlgorithm;
+    }
+
+    public void setDefaultRsaKeyExchangeAlgorithm(
+            KeyExchangeAlgorithm defaultRsaKeyExchangeAlgorithm) {
+        this.defaultRsaKeyExchangeAlgorithm = defaultRsaKeyExchangeAlgorithm;
+    }
+
     public void setEnableEncryptionOnNewKeysMessage(Boolean enableEncryptionOnNewKeysMessage) {
         this.enableEncryptionOnNewKeysMessage = enableEncryptionOnNewKeysMessage;
     }
