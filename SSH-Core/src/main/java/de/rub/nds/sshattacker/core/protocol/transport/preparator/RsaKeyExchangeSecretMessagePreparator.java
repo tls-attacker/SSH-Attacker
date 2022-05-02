@@ -22,7 +22,7 @@ public class RsaKeyExchangeSecretMessagePreparator
 
     @Override
     public void prepareMessageSpecificContents() {
-        KeyExchangeUtil.computeSharedSecret(chooser.getContext(), chooser.getRsaKeyExchange());
+        KeyExchangeUtil.generateSharedSecret(chooser.getContext(), chooser.getRsaKeyExchange());
         prepareEncryptedSecret();
     }
 

@@ -12,7 +12,8 @@ import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.constants.PublicKeyAlgorithm;
 import de.rub.nds.sshattacker.core.constants.SignatureEncoding;
 import de.rub.nds.sshattacker.core.crypto.hash.ExchangeHash;
-import de.rub.nds.sshattacker.core.crypto.kex.KeyExchange;
+import de.rub.nds.sshattacker.core.crypto.kex.KeyAgreement;
+import de.rub.nds.sshattacker.core.crypto.kex.KeyEncapsulation;
 import de.rub.nds.sshattacker.core.crypto.keys.SshPublicKey;
 import de.rub.nds.sshattacker.core.crypto.signature.*;
 import de.rub.nds.sshattacker.core.crypto.util.PublicKeyHelper;
@@ -177,20 +178,34 @@ public final class KeyExchangeUtil {
     }
 
     /**
-     * Computes the shared secret and updates the context and exchange hash input accordingly.
+     * Computes the shared secret and updates the context and exchange hash input accordingly. Used
+     * for KeyAgreement Schemes.
      *
      * @param context SSH context to update
-     * @param keyExchange Key exchange instance for shared secret computation
+     * @param keyAgreement Key exchange instance for shared secret computation
      */
-    public static void computeSharedSecret(SshContext context, KeyExchange keyExchange) {
+    public static void computeSharedSecret(SshContext context, KeyAgreement keyAgreement) {
         try {
-            keyExchange.computeSharedSecret();
-            context.setSharedSecret(keyExchange.getSharedSecret());
-            context.getExchangeHashInputHolder().setSharedSecret(keyExchange.getSharedSecret());
+            keyAgreement.computeSharedSecret();
+            context.setSharedSecret(keyAgreement.getSharedSecret());
+            context.getExchangeHashInputHolder().setSharedSecret(keyAgreement.getSharedSecret());
         } catch (CryptoException e) {
             LOGGER.warn("Key exchange instance is not ready yet, unable to compute shared secret");
             LOGGER.debug(e);
         }
+    }
+
+    /**
+     * Generates the shared secret and updates the context and exchange hash input accordingly. Used
+     * for KeyEncapsulation Schemes.
+     *
+     * @param context SSH context to update
+     * @param keyEncapsulation Key exchange instance for shared secret generation
+     */
+    public static void generateSharedSecret(SshContext context, KeyEncapsulation keyEncapsulation) {
+        keyEncapsulation.generateSharedSecret();
+        context.setSharedSecret(keyEncapsulation.getSharedSecret());
+        context.getExchangeHashInputHolder().setSharedSecret(keyEncapsulation.getSharedSecret());
     }
 
     /**
