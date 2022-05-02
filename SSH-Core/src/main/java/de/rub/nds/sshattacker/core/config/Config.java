@@ -48,177 +48,320 @@ public class Config implements Serializable {
         Security.addProvider(new BouncyCastleProvider());
     }
 
-    private final String clientVersion;
+    /** Default Connection to use when running as Client */
+    private OutboundConnection defaultClientConnection;
+    /** Default Connection to use when running as Server */
+    private InboundConnection defaultServerConnection;
+    /** The default running mode, when running the SSH-Attacker */
+    private RunningModeType defaultRunningMode = RunningModeType.CLIENT;
 
-    private final String clientComment;
+    // region VersionExchange
+    /** Client protocol and software version string starting with the SSH version (SSH-2.0-...) */
+    private String clientVersion;
+    /** Client comment sent alongside protocol and software version */
+    private String clientComment;
+    /** End-of-message sequence of the clients' VersionExchangeMessage */
+    private String clientEndOfMessageSequence;
+    /** Server protocol and software version string starting with the SSH version (SSH-2.0-...) */
+    private String serverVersion;
+    /** Server comment sent alongside protocol and software version */
+    private String serverComment;
+    /** End-of-message sequence of the servers' VersionExchangeMessage */
+    private String serverEndOfMessageSequence;
+    // endregion
 
-    private final String clientEndOfMessageSequence;
-
-    private final String serverVersion;
-
-    private final String serverComment;
-
-    private final String serverEndOfMessageSequence;
-
+    // region Pre-KeyExchange
+    /** Client cookie containing 16 random bytes */
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
-    private final byte[] clientCookie;
+    private byte[] clientCookie;
 
+    /** Server cookie containing 16 random bytes */
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
-    private final byte[] serverCookie;
+    private byte[] serverCookie;
 
+    /** List of key exchange algorithms supported by the remote peer */
     @XmlElement(name = "clientSupportedKeyExchangeAlgorithm")
     @XmlElementWrapper
     private List<KeyExchangeAlgorithm> clientSupportedKeyExchangeAlgorithms;
 
+    /** List of key exchange algorithms supported by the server */
     @XmlElement(name = "serverSupportedKeyExchangeAlgorithm")
     @XmlElementWrapper
-    private final List<KeyExchangeAlgorithm> serverSupportedKeyExchangeAlgorithms;
+    private List<KeyExchangeAlgorithm> serverSupportedKeyExchangeAlgorithms;
 
+    /** List of host key algorithms supported by the client */
     @XmlElement(name = "clientSupportedHostKeyAlgorithm")
     @XmlElementWrapper
-    private final List<PublicKeyAlgorithm> clientSupportedHostKeyAlgorithms;
+    private List<PublicKeyAlgorithm> clientSupportedHostKeyAlgorithms;
 
+    /** List of host key algorithms supported by the server */
     @XmlElement(name = "serverSupportedHostKeyAlgorithm")
     @XmlElementWrapper
-    private final List<PublicKeyAlgorithm> serverSupportedHostKeyAlgorithms;
+    private List<PublicKeyAlgorithm> serverSupportedHostKeyAlgorithms;
 
+    /** List of encryption algorithms (client to server) supported by the client */
     @XmlElement(name = "clientSupportedEncryptionAlgorithmClientToServer")
     @XmlElementWrapper
-    private final List<EncryptionAlgorithm> clientSupportedEncryptionAlgorithmsClientToServer;
+    private List<EncryptionAlgorithm> clientSupportedEncryptionAlgorithmsClientToServer;
 
+    /** List of encryption algorithms (server to client) supported by the client */
     @XmlElement(name = "clientSupportedEncryptionAlgorithmServerToClient")
     @XmlElementWrapper
-    private final List<EncryptionAlgorithm> clientSupportedEncryptionAlgorithmsServerToClient;
+    private List<EncryptionAlgorithm> clientSupportedEncryptionAlgorithmsServerToClient;
 
+    /** List of encryption algorithms (client to server) supported by the server */
     @XmlElement(name = "serverSupportedEncryptionAlgorithmServerToClient")
     @XmlElementWrapper
-    private final List<EncryptionAlgorithm> serverSupportedEncryptionAlgorithmsServerToClient;
+    private List<EncryptionAlgorithm> serverSupportedEncryptionAlgorithmsServerToClient;
 
+    /** List of encryption algorithms (server to client) supported by the server */
     @XmlElement(name = "serverSupportedEncryptionAlgorithmClientToServer")
     @XmlElementWrapper
-    private final List<EncryptionAlgorithm> serverSupportedEncryptionAlgorithmsClientToServer;
+    private List<EncryptionAlgorithm> serverSupportedEncryptionAlgorithmsClientToServer;
 
+    /** List of MAC algorithms (client to server) supported by the client */
     @XmlElement(name = "clientSupportedMacAlgorithmClientToServer")
     @XmlElementWrapper
-    private final List<MacAlgorithm> clientSupportedMacAlgorithmsClientToServer;
+    private List<MacAlgorithm> clientSupportedMacAlgorithmsClientToServer;
 
+    /** List of MAC algorithms (server to client) supported by the client */
     @XmlElement(name = "clientSupportedMacAlgorithmServerToClient")
     @XmlElementWrapper
-    private final List<MacAlgorithm> clientSupportedMacAlgorithmsServerToClient;
+    private List<MacAlgorithm> clientSupportedMacAlgorithmsServerToClient;
 
+    /** List of MAC algorithms (client to server) supported by the server */
     @XmlElement(name = "serverSupportedMacAlgorithmServerToClient")
     @XmlElementWrapper
-    private final List<MacAlgorithm> serverSupportedMacAlgorithmsServerToClient;
+    private List<MacAlgorithm> serverSupportedMacAlgorithmsServerToClient;
 
+    /** List of MAC algorithms (server to client) supported by the server */
     @XmlElement(name = "serverSupportedMacAlgorithmClientToServer")
     @XmlElementWrapper
-    private final List<MacAlgorithm> serverSupportedMacAlgorithmsClientToServer;
+    private List<MacAlgorithm> serverSupportedMacAlgorithmsClientToServer;
 
+    /** List of compression algorithms (client to server) supported by the client */
     @XmlElement(name = "clientSupportedCompressionMethodClientToServer")
     @XmlElementWrapper
-    private final List<CompressionMethod> clientSupportedCompressionMethodsClientToServer;
+    private List<CompressionMethod> clientSupportedCompressionMethodsClientToServer;
 
+    /** List of compression algorithms (server to client) supported by the client */
     @XmlElement(name = "clientSupportedCompressionMethodServerToClient")
     @XmlElementWrapper
-    private final List<CompressionMethod> clientSupportedCompressionMethodsServerToClient;
+    private List<CompressionMethod> clientSupportedCompressionMethodsServerToClient;
 
+    /** List of compression algorithms (client to server) supported by the server */
     @XmlElement(name = "serverSupportedCompressionMethodServerToClient")
     @XmlElementWrapper
-    private final List<CompressionMethod> serverSupportedCompressionMethodsServerToClient;
+    private List<CompressionMethod> serverSupportedCompressionMethodsServerToClient;
 
+    /** List of compression algorithms (server to client) supported by the server */
     @XmlElement(name = "serverSupportedCompressionMethodClientToServer")
     @XmlElementWrapper
-    private final List<CompressionMethod> serverSupportedCompressionMethodsClientToServer;
+    private List<CompressionMethod> serverSupportedCompressionMethodsClientToServer;
 
+    /** List of languages (client to server) supported by the client */
     @XmlElement(name = "clientSupportedLanguageClientToServer")
     @XmlElementWrapper
-    private final List<String> clientSupportedLanguagesClientToServer;
+    private List<String> clientSupportedLanguagesClientToServer;
 
+    /** List of languages (server to client) supported by the client */
     @XmlElement(name = "clientSupportedLanguageServerToClient")
     @XmlElementWrapper
-    private final List<String> clientSupportedLanguagesServerToClient;
+    private List<String> clientSupportedLanguagesServerToClient;
 
+    /** List of languages (client to server) supported by the server */
     @XmlElement(name = "serverSupportedLanguageServerToClient")
     @XmlElementWrapper
-    private final List<String> serverSupportedLanguagesServerToClient;
+    private List<String> serverSupportedLanguagesServerToClient;
 
+    /** List of languages (server to client) supported by the server */
     @XmlElement(name = "serverSupportedLanguageClientToServer")
     @XmlElementWrapper
-    private final List<String> serverSupportedLanguagesClientToServer;
+    private List<String> serverSupportedLanguagesClientToServer;
 
-    private final boolean clientFirstKeyExchangePacketFollows;
+    /**
+     * A boolean flag used to indicate that a guessed key exchange paket will be sent by the client
+     */
+    private boolean clientFirstKeyExchangePacketFollows;
 
-    private final boolean serverFirstKeyExchangePacketFollows;
+    /**
+     * A boolean flag used to indicate that a guessed key exchange paket will be sent by the server
+     */
+    private boolean serverFirstKeyExchangePacketFollows;
 
-    private final int clientReserved;
+    /** Value of the clients' reserved field which may be used for extensions in the future */
+    private int clientReserved;
 
-    private final int serverReserved;
+    /** Value of the servers' reserved field which may be used for extensions in the future */
+    private int serverReserved;
+    // endregion
 
+    // region KeyExchange
+    /**
+     * Fallback of minimal acceptable DH group size as reported in the SSH_MSG_KEX_DH_GEX_REQUEST
+     * message
+     */
+    private Integer dhGexMinimalGroupSize;
+    /** Fallback of preferred DH group size as reported in the SSH_MSG_KEX_DH_GEX_REQUEST message */
+    private Integer dhGexPreferredGroupSize;
+    /**
+     * Fallback of maximal acceptable DH group size as reported in the SSH_MSG_KEX_DH_GEX_REQUEST
+     * message
+     */
+    private Integer dhGexMaximalGroupSize;
+    /**
+     * Default DH key exchange algorithm, which is used if a new DH or DH Gex key exchange is
+     * instantiated with without a matching key exchange algorithm negotiated.
+     */
+    private KeyExchangeAlgorithm defaultDhKeyExchangeAlgorithm;
+    /**
+     * Default ECDH key exchange algorithm, which is used if a new ECDH or X curve ECDH key exchange
+     * is instantiated without a matching key exchange algorithm negotiated.
+     */
+    private KeyExchangeAlgorithm defaultEcdhKeyExchangeAlgorithm;
+    /**
+     * Default RSA key exchange algorithm, which is used if a new RSA key exchange is instantiated
+     * without a matching key exchange algorithm negotiated.
+     */
+    private KeyExchangeAlgorithm defaultRsaKeyExchangeAlgorithm;
+    /**
+     * If set to true, sending or receiving a NewKeysMessage automatically enables the encryption
+     * for the corresponding transport direction. If set to false, encryption must be enabled
+     * manually by calling the corresponding methods on the state.
+     */
+    private Boolean enableEncryptionOnNewKeysMessage = true;
+    /**
+     * If enforceSettings is true, the algorithms are expected to be already set in the SshContext,
+     * when picking the algorithms
+     */
+    private Boolean enforceSettings = false;
+
+    /** Host key of the server */
     @XmlElement(name = "serverHostKey")
     @XmlElementWrapper
     private final List<SshPublicKey<?, ?>> serverHostKeys;
 
-    private final Integer dhGexMinimalGroupSize;
-
-    private final Integer dhGexPreferredGroupSize;
-
-    private final Integer dhGexMaximalGroupSize;
-
-    private final KeyExchangeAlgorithm defaultDhKeyExchangeAlgorithm;
-
-    private final KeyExchangeAlgorithm defaultEcdhKeyExchangeAlgorithm;
-
-    private final KeyExchangeAlgorithm defaultRsaKeyExchangeAlgorithm;
-
+    /**
+     * RSA transient key used to encrypt the shared secret K. This may be a transient key generated
+     * solely for this SSH connection, or it may be re-used for several connections.
+     */
     private final SshPublicKey<CustomRsaPublicKey, CustomRsaPrivateKey>
             fallbackRsaTransientPublicKey;
+    // endregion
 
+    // region Authentication
+    /**
+     * The method, which should be used to authenticate to the server as reported in the
+     * SSH_MSG_USERAUTH_REQUEST message.
+     */
     private AuthenticationMethod authenticationMethod;
-
+    /** The service name defines the service to start after authentication */
     private String serviceName;
-
+    /** The username used for authentication method password */
     private String username;
-
+    /** The password used for authentication method password */
     private String password;
+    // endregion
 
-    private ChannelRequestType channelRequestType;
-
+    // region Channel
+    /** Fallback for command of ChannelRequestExecMessage */
     private String channelCommand;
-
+    /** Default channel used for */
     private Channel defaultChannel;
-
+    /**
+     * Fallback for the wantReply field of messages extending the SSH_MSG_GLOBAL_REQUEST or
+     * SSH_MSG_CHANNEL_REQUEST messages
+     */
     private byte replyWanted;
-
+    /**
+     * Fallback for variableName of ChannelRequestEnvMessage, to change server-allowed environment
+     * variables
+     */
     private String defaultVariableName;
-
+    /**
+     * Fallback for variableValue of ChannelRequestEnvMessage, to change server-allowed environment
+     * variables
+     */
     private String defaultVariableValue;
-
-    private SignalType defaultSignalType;
-
+    /**
+     * Default value for the ChannelRequestXonXoffMessage, which is used by the server to inform the
+     * client, when it can or cannot perform client flow control.
+     */
     private byte clientFlowControl;
-
+    /**
+     * Default terminal width in pixels, if a pseudo terminal is requested or changed
+     * (ChannelRequestPty/ChannelRequestWindowChangeMessage)
+     */
     private int defaultTerminalWidthPixels;
-
+    /**
+     * Default terminal width in colums, if a pseudo terminal is requested or changed
+     * (ChannelRequestPty/ChannelRequestWindowChangeMessage)
+     */
     private int defaultTerminalWidthColumns;
-
+    /**
+     * Default terminal height in rows, if a pseudo terminal is requested or changed
+     * (ChannelRequestPty/ChannelRequestWindowChangeMessage)
+     */
     private int defaultTerminalHeightRows;
-
+    /**
+     * Default terminal height in pixels, if a pseudo terminal is requested or used
+     * (ChannelRequestPty/ChannelRequestWindowChangeMessage)
+     */
     private int defaultTerminalHeightPixels;
-
+    /**
+     * Default value of TERM environment variable, to specify the terminal handling of a requested
+     * pseudo terminal(pty-req)
+     */
     private String defaultTermEnvVariable;
-
+    /** Default name of a predefined subsysten, which should be executed on the remote */
     private String defaultSubsystemName;
-
+    /**
+     * The default break length, which is requested when a break operation is performed, by sending
+     * ChannelRequestBreakMessage
+     */
     private int defaultBreakLength;
+    // endregion
 
-    /** Default Connection to use when running as Client */
-    private OutboundConnection defaultClientConnection;
+    // region Workflow settings
+    /** The path to load workflow trace from. The workflow trace must be stored in a XML-File. */
+    private String workflowInput = null;
+    /**
+     * The type of workflow trace, that should be executed by the Ssh client or server. The workflow
+     * configuration factory uses the type to create the belonging workflow trace.
+     */
+    private WorkflowTraceType workflowTraceType;
+    /**
+     * List of filter types, that should be applied on the workflow(or copy) before saving the
+     * trace.
+     */
+    private List<FilterType> outputFilters;
+    /** The path to save the workflow trace as output */
+    private String workflowOutput = null;
+    /**
+     * Defines if the output filters should be applied on the workflowTrace or on a fresh workflow
+     * trace copy.
+     */
+    private Boolean applyFiltersInPlace;
+    /** Perform some additional steps after filtering, for example restoring user defined values. */
+    private Boolean filtersKeepUserSettings = true;
+    /** Defines, if the workflow trace should be executed or not */
+    private Boolean workflowExecutorShouldOpen = true;
+    /** Defines, whether the SSH-Attacker should stop after a disconnect or not */
+    private Boolean stopActionsAfterDisconnect = true;
+    /** Defines, whether the SSH-Attacker should stop after a IO exception or not */
+    private Boolean stopActionsAfterIOException = true;
+    /**
+     * Defines, if the used connections of the SSH-Attacker should be closed, after executing the
+     * workflow
+     */
+    private Boolean workflowExecutorShouldClose = true;
+    /**
+     * Defines if the workflow trace should be resetted before saving, by resetting all SshActions.
+     */
+    private Boolean resetWorkflowtracesBeforeSaving = false;
+    // endregion
 
-    /** Default Connection to use when running as Server */
-    private InboundConnection defaultServerConnection;
-
-    private RunningModeType defaultRunningMode = RunningModeType.CLIENT;
-
+    // region ReceiveAction
     /**
      * If set to true, SSH-Attacker will not try to continue receiving when all expected messages
      * were received
@@ -237,53 +380,30 @@ public class Config implements Serializable {
      */
     private Boolean stopReceivingAfterDisconnect = false;
 
-    private Boolean filtersKeepUserSettings = true;
+    // endregion
 
-    private String workflowInput = null;
-
-    private WorkflowTraceType workflowTraceType;
-
-    private List<FilterType> outputFilters;
-
-    private String workflowOutput = null;
-
-    private Boolean applyFiltersInPlace;
-
-    private Boolean workflowExecutorShouldOpen = true;
-
-    private Boolean stopActionsAfterDisconnect = true;
-
-    private Boolean stopActionsAfterIOException = true;
-
-    private Boolean workflowExecutorShouldClose = true;
-
-    private Boolean resetWorkflowtracesBeforeSaving = false;
-
+    /** The path to save the Config as file. */
     private String configOutput = null;
 
-    private Boolean enforceSettings = false;
-
-    /**
-     * If set to true, sending or receiving a NewKeysMessage automatically enables the encryption
-     * for the corresponding transport direction. If set to false, encryption must be enabled
-     * manually by calling the corresponding methods on the state.
-     */
-    private Boolean enableEncryptionOnNewKeysMessage = true;
-
+    /** Fallback for type of chooser, to initialize the chooser in the SshContext */
     private ChooserType chooserType = ChooserType.DEFAULT;
 
+    // region Constructors and Initialization
     public Config() {
 
         defaultClientConnection = new OutboundConnection("client", 65222, "localhost");
         defaultServerConnection = new InboundConnection("server", 65222, "localhost");
 
+        // region VersionExchange initialization
         clientVersion = "SSH-2.0-OpenSSH_8.2p1";
         clientComment = "";
         serverVersion = clientVersion;
         serverComment = clientComment;
         clientEndOfMessageSequence = "\r\n";
         serverEndOfMessageSequence = "\r\n";
+        // endregion
 
+        // region Pre-KeyExchange initialization
         clientCookie = ArrayConverter.hexStringToByteArray("00000000000000000000000000000000");
         serverCookie = ArrayConverter.hexStringToByteArray("00000000000000000000000000000000");
 
@@ -396,7 +516,11 @@ public class Config implements Serializable {
 
         clientFirstKeyExchangePacketFollows = false;
         serverFirstKeyExchangePacketFollows = false;
+        clientReserved = 0;
+        serverReserved = 0;
+        // endregion
 
+        // region KeyExchange initialization
         dhGexMinimalGroupSize = 2048;
         dhGexPreferredGroupSize = 4096;
         dhGexMaximalGroupSize = 8192;
@@ -404,46 +528,6 @@ public class Config implements Serializable {
         defaultDhKeyExchangeAlgorithm = KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP14_SHA256;
         defaultEcdhKeyExchangeAlgorithm = KeyExchangeAlgorithm.ECDH_SHA2_NISTP256;
         defaultRsaKeyExchangeAlgorithm = KeyExchangeAlgorithm.RSA2048_SHA256;
-
-        fallbackRsaTransientPublicKey =
-                new SshPublicKey<>(
-                        PublicKeyFormat.SSH_RSA,
-                        new CustomRsaPublicKey(
-                                new BigInteger("10001", 16),
-                                new BigInteger(
-                                        "00EB617D71223FF5D286DBC136905B348783D4B540EFA9E00C7B1F605049"
-                                                + "7C6739FBAB3F5D5F2C9A86682D148701E9E04D58D31716C9C88BC0DD85BC"
-                                                + "170969A27709AF332C79453FC5B99231C3D6410B0A6119EAEE6D09AB59CF"
-                                                + "4EC425BE8A86C10BBA30902B7916D2E51AE5C2CA66E9650431DD3B98878E"
-                                                + "EA8A207F4336005157021F7FA4D6DBD54D64B5B974CE3FA4D135C5FD7893"
-                                                + "B8A6EAC0C1AC9D98144947C22E7D0E7E18F4F02C0E448D1AE9596BCE0A2E"
-                                                + "F417F693C914FAF24F716D0567ED48BAA5161727743A8431EB4E3CB65417"
-                                                + "B835926AC528BAA02343B0E784C297E0C19C17FB9E8A778F9EC805AC4AAC"
-                                                + "AA24AE34B96A3189D83FB6EC38C1D3EBFB",
-                                        16)),
-                        new CustomRsaPrivateKey(
-                                new BigInteger(
-                                        "00C15941BBCF108F1332680D9C8E93FCE05C703BBB6DA33341CD5986BA2C"
-                                                + "C31DE04954F025F8EA20BCCB924C4C624C054E43EA920ACC120A8A90ED2C"
-                                                + "06185B477354E72FB8169DC5B6DBAAB56A52F2F6E8BDBE9676E7E68B74A8"
-                                                + "8FE11BC81AEE7A60F1BEB68E9F571A41CC08742BE2C15193528A924BC6FE"
-                                                + "A4B675DF540C65D2697D31E533007B310D7E728D2E6DB06256A93F178200"
-                                                + "CED6AD5A59B40224A3373C3875539368971A32D27B48697D4FFE61ED7084"
-                                                + "7CA1D935392EA540C938072667BA9C9737A695C20CFCF578A1FF61DD9C43"
-                                                + "7666D97D5A986A3E786601498C3342A7C7307F7D8E6300436A7681AA9558"
-                                                + "9DF5A4479FAF232B83B9A19CB59833ECC1",
-                                        16),
-                                new BigInteger(
-                                        "00EB617D71223FF5D286DBC136905B348783D4B540EFA9E00C7B1F605049"
-                                                + "7C6739FBAB3F5D5F2C9A86682D148701E9E04D58D31716C9C88BC0DD85BC"
-                                                + "170969A27709AF332C79453FC5B99231C3D6410B0A6119EAEE6D09AB59CF"
-                                                + "4EC425BE8A86C10BBA30902B7916D2E51AE5C2CA66E9650431DD3B98878E"
-                                                + "EA8A207F4336005157021F7FA4D6DBD54D64B5B974CE3FA4D135C5FD7893"
-                                                + "B8A6EAC0C1AC9D98144947C22E7D0E7E18F4F02C0E448D1AE9596BCE0A2E"
-                                                + "F417F693C914FAF24F716D0567ED48BAA5161727743A8431EB4E3CB65417"
-                                                + "B835926AC528BAA02343B0E784C297E0C19C17FB9E8A778F9EC805AC4AAC"
-                                                + "AA24AE34B96A3189D83FB6EC38C1D3EBFB",
-                                        16)));
 
         // An OpenSSL generated 2048 bit RSA keypair is currently being used as the default host key
         // TODO: Load host keys from file to reduce length of Config class
@@ -597,13 +681,55 @@ public class Config implements Serializable {
                                         "092E829DE536BE8F7D74E7A3C6CD90EA6EADDDEEB2E50D8617EBDD132B53669B"),
                                 NamedEcGroup.CURVE25519)));
 
-        clientReserved = 0;
-        serverReserved = 0;
+        fallbackRsaTransientPublicKey =
+                new SshPublicKey<>(
+                        PublicKeyFormat.SSH_RSA,
+                        new CustomRsaPublicKey(
+                                new BigInteger("10001", 16),
+                                new BigInteger(
+                                        "00EB617D71223FF5D286DBC136905B348783D4B540EFA9E00C7B1F605049"
+                                                + "7C6739FBAB3F5D5F2C9A86682D148701E9E04D58D31716C9C88BC0DD85BC"
+                                                + "170969A27709AF332C79453FC5B99231C3D6410B0A6119EAEE6D09AB59CF"
+                                                + "4EC425BE8A86C10BBA30902B7916D2E51AE5C2CA66E9650431DD3B98878E"
+                                                + "EA8A207F4336005157021F7FA4D6DBD54D64B5B974CE3FA4D135C5FD7893"
+                                                + "B8A6EAC0C1AC9D98144947C22E7D0E7E18F4F02C0E448D1AE9596BCE0A2E"
+                                                + "F417F693C914FAF24F716D0567ED48BAA5161727743A8431EB4E3CB65417"
+                                                + "B835926AC528BAA02343B0E784C297E0C19C17FB9E8A778F9EC805AC4AAC"
+                                                + "AA24AE34B96A3189D83FB6EC38C1D3EBFB",
+                                        16)),
+                        new CustomRsaPrivateKey(
+                                new BigInteger(
+                                        "00C15941BBCF108F1332680D9C8E93FCE05C703BBB6DA33341CD5986BA2C"
+                                                + "C31DE04954F025F8EA20BCCB924C4C624C054E43EA920ACC120A8A90ED2C"
+                                                + "06185B477354E72FB8169DC5B6DBAAB56A52F2F6E8BDBE9676E7E68B74A8"
+                                                + "8FE11BC81AEE7A60F1BEB68E9F571A41CC08742BE2C15193528A924BC6FE"
+                                                + "A4B675DF540C65D2697D31E533007B310D7E728D2E6DB06256A93F178200"
+                                                + "CED6AD5A59B40224A3373C3875539368971A32D27B48697D4FFE61ED7084"
+                                                + "7CA1D935392EA540C938072667BA9C9737A695C20CFCF578A1FF61DD9C43"
+                                                + "7666D97D5A986A3E786601498C3342A7C7307F7D8E6300436A7681AA9558"
+                                                + "9DF5A4479FAF232B83B9A19CB59833ECC1",
+                                        16),
+                                new BigInteger(
+                                        "00EB617D71223FF5D286DBC136905B348783D4B540EFA9E00C7B1F605049"
+                                                + "7C6739FBAB3F5D5F2C9A86682D148701E9E04D58D31716C9C88BC0DD85BC"
+                                                + "170969A27709AF332C79453FC5B99231C3D6410B0A6119EAEE6D09AB59CF"
+                                                + "4EC425BE8A86C10BBA30902B7916D2E51AE5C2CA66E9650431DD3B98878E"
+                                                + "EA8A207F4336005157021F7FA4D6DBD54D64B5B974CE3FA4D135C5FD7893"
+                                                + "B8A6EAC0C1AC9D98144947C22E7D0E7E18F4F02C0E448D1AE9596BCE0A2E"
+                                                + "F417F693C914FAF24F716D0567ED48BAA5161727743A8431EB4E3CB65417"
+                                                + "B835926AC528BAA02343B0E784C297E0C19C17FB9E8A778F9EC805AC4AAC"
+                                                + "AA24AE34B96A3189D83FB6EC38C1D3EBFB",
+                                        16)));
+        // endregion
 
+        // region Authentication initialization
         authenticationMethod = AuthenticationMethod.PASSWORD;
         serviceName = "ssh-userauth";
         username = "sshattacker";
         password = "bydahirsch";
+        // endregion
+
+        // region Channel initialization
         defaultChannel =
                 new Channel(
                         ChannelType.SESSION,
@@ -618,7 +744,6 @@ public class Config implements Serializable {
         channelCommand = "nc -l -p 13370";
         defaultVariableName = "PATH";
         defaultVariableValue = "usr/local/bin";
-        defaultSignalType = SignalType.SIGINT;
         clientFlowControl = 0;
         defaultTerminalWidthColumns = 80;
         defaultTerminalHeightRows = 24;
@@ -627,13 +752,18 @@ public class Config implements Serializable {
         defaultTermEnvVariable = "vt100";
         defaultSubsystemName = "sftp";
         defaultBreakLength = 600;
+        // endregion
 
+        // region Workflow settings initialization
         workflowTraceType = null;
         outputFilters = new ArrayList<>();
         outputFilters.add(FilterType.DEFAULT);
         applyFiltersInPlace = false;
+        // endregion
     }
+    // endregion
 
+    // region createConfig
     public static Config createConfig() {
         if (DEFAULT_CONFIG_CACHE != null) {
             return DEFAULT_CONFIG_CACHE.getCachedCopy();
@@ -671,7 +801,33 @@ public class Config implements Serializable {
         }
         return c;
     }
+    // endregion
 
+    public OutboundConnection getDefaultClientConnection() {
+        return defaultClientConnection;
+    }
+
+    public void setDefaultClientConnection(OutboundConnection defaultClientConnection) {
+        this.defaultClientConnection = defaultClientConnection;
+    }
+
+    public InboundConnection getDefaultServerConnection() {
+        return defaultServerConnection;
+    }
+
+    public void setDefaultServerConnection(InboundConnection defaultServerConnection) {
+        this.defaultServerConnection = defaultServerConnection;
+    }
+
+    public RunningModeType getDefaultRunningMode() {
+        return defaultRunningMode;
+    }
+
+    public void setDefaultRunningMode(RunningModeType defaultRunningMode) {
+        this.defaultRunningMode = defaultRunningMode;
+    }
+
+    // region Getters for VersionExchange
     public String getClientVersion() {
         return clientVersion;
     }
@@ -703,7 +859,35 @@ public class Config implements Serializable {
     public String getServerEndOfMessageSequence() {
         return serverEndOfMessageSequence;
     }
+    // endregion
+    // region Setters for VersionExchange
+    public void setClientVersion(String clientVersion) {
+        this.clientVersion = clientVersion;
+    }
 
+    public void setClientComment(String clientComment) {
+        this.clientComment = clientComment;
+    }
+
+    public void setClientEndOfMessageSequence(String clientEndOfMessageSequence) {
+        this.clientEndOfMessageSequence = clientEndOfMessageSequence;
+    }
+
+    public void setServerVersion(String serverVersion) {
+        this.serverVersion = serverVersion;
+    }
+
+    public void setServerComment(String serverComment) {
+        this.serverComment = serverComment;
+    }
+
+    public void setServerEndOfMessageSequence(String serverEndOfMessageSequence) {
+        this.serverEndOfMessageSequence = serverEndOfMessageSequence;
+    }
+
+    // endregion
+
+    // region Getters for Pre-KeyExchange
     public List<KeyExchangeAlgorithm> getClientSupportedKeyExchangeAlgorithms() {
         return clientSupportedKeyExchangeAlgorithms;
     }
@@ -805,6 +989,145 @@ public class Config implements Serializable {
         return serverReserved;
     }
 
+    // endregion
+    // region Setters for Pre-KeyExchange
+
+    public void setClientCookie(byte[] clientCookie) {
+        this.clientCookie = clientCookie;
+    }
+
+    public void setServerCookie(byte[] serverCookie) {
+        this.serverCookie = serverCookie;
+    }
+
+    public void setServerSupportedKeyExchangeAlgorithms(
+            List<KeyExchangeAlgorithm> serverSupportedKeyExchangeAlgorithms) {
+        this.serverSupportedKeyExchangeAlgorithms = serverSupportedKeyExchangeAlgorithms;
+    }
+
+    public void setClientSupportedHostKeyAlgorithms(
+            List<PublicKeyAlgorithm> clientSupportedHostKeyAlgorithms) {
+        this.clientSupportedHostKeyAlgorithms = clientSupportedHostKeyAlgorithms;
+    }
+
+    public void setServerSupportedHostKeyAlgorithms(
+            List<PublicKeyAlgorithm> serverSupportedHostKeyAlgorithms) {
+        this.serverSupportedHostKeyAlgorithms = serverSupportedHostKeyAlgorithms;
+    }
+
+    public void setClientSupportedEncryptionAlgorithmsClientToServer(
+            List<EncryptionAlgorithm> clientSupportedEncryptionAlgorithmsClientToServer) {
+        this.clientSupportedEncryptionAlgorithmsClientToServer =
+                clientSupportedEncryptionAlgorithmsClientToServer;
+    }
+
+    public void setClientSupportedEncryptionAlgorithmsServerToClient(
+            List<EncryptionAlgorithm> clientSupportedEncryptionAlgorithmsServerToClient) {
+        this.clientSupportedEncryptionAlgorithmsServerToClient =
+                clientSupportedEncryptionAlgorithmsServerToClient;
+    }
+
+    public void setServerSupportedEncryptionAlgorithmsServerToClient(
+            List<EncryptionAlgorithm> serverSupportedEncryptionAlgorithmsServerToClient) {
+        this.serverSupportedEncryptionAlgorithmsServerToClient =
+                serverSupportedEncryptionAlgorithmsServerToClient;
+    }
+
+    public void setServerSupportedEncryptionAlgorithmsClientToServer(
+            List<EncryptionAlgorithm> serverSupportedEncryptionAlgorithmsClientToServer) {
+        this.serverSupportedEncryptionAlgorithmsClientToServer =
+                serverSupportedEncryptionAlgorithmsClientToServer;
+    }
+
+    public void setClientSupportedMacAlgorithmsClientToServer(
+            List<MacAlgorithm> clientSupportedMacAlgorithmsClientToServer) {
+        this.clientSupportedMacAlgorithmsClientToServer =
+                clientSupportedMacAlgorithmsClientToServer;
+    }
+
+    public void setClientSupportedMacAlgorithmsServerToClient(
+            List<MacAlgorithm> clientSupportedMacAlgorithmsServerToClient) {
+        this.clientSupportedMacAlgorithmsServerToClient =
+                clientSupportedMacAlgorithmsServerToClient;
+    }
+
+    public void setServerSupportedMacAlgorithmsServerToClient(
+            List<MacAlgorithm> serverSupportedMacAlgorithmsServerToClient) {
+        this.serverSupportedMacAlgorithmsServerToClient =
+                serverSupportedMacAlgorithmsServerToClient;
+    }
+
+    public void setServerSupportedMacAlgorithmsClientToServer(
+            List<MacAlgorithm> serverSupportedMacAlgorithmsClientToServer) {
+        this.serverSupportedMacAlgorithmsClientToServer =
+                serverSupportedMacAlgorithmsClientToServer;
+    }
+
+    public void setClientSupportedCompressionMethodsClientToServer(
+            List<CompressionMethod> clientSupportedCompressionMethodsClientToServer) {
+        this.clientSupportedCompressionMethodsClientToServer =
+                clientSupportedCompressionMethodsClientToServer;
+    }
+
+    public void setClientSupportedCompressionMethodsServerToClient(
+            List<CompressionMethod> clientSupportedCompressionMethodsServerToClient) {
+        this.clientSupportedCompressionMethodsServerToClient =
+                clientSupportedCompressionMethodsServerToClient;
+    }
+
+    public void setServerSupportedCompressionMethodsServerToClient(
+            List<CompressionMethod> serverSupportedCompressionMethodsServerToClient) {
+        this.serverSupportedCompressionMethodsServerToClient =
+                serverSupportedCompressionMethodsServerToClient;
+    }
+
+    public void setServerSupportedCompressionMethodsClientToServer(
+            List<CompressionMethod> serverSupportedCompressionMethodsClientToServer) {
+        this.serverSupportedCompressionMethodsClientToServer =
+                serverSupportedCompressionMethodsClientToServer;
+    }
+
+    public void setClientSupportedLanguagesClientToServer(
+            List<String> clientSupportedLanguagesClientToServer) {
+        this.clientSupportedLanguagesClientToServer = clientSupportedLanguagesClientToServer;
+    }
+
+    public void setClientSupportedLanguagesServerToClient(
+            List<String> clientSupportedLanguagesServerToClient) {
+        this.clientSupportedLanguagesServerToClient = clientSupportedLanguagesServerToClient;
+    }
+
+    public void setServerSupportedLanguagesServerToClient(
+            List<String> serverSupportedLanguagesServerToClient) {
+        this.serverSupportedLanguagesServerToClient = serverSupportedLanguagesServerToClient;
+    }
+
+    public void setServerSupportedLanguagesClientToServer(
+            List<String> serverSupportedLanguagesClientToServer) {
+        this.serverSupportedLanguagesClientToServer = serverSupportedLanguagesClientToServer;
+    }
+
+    public void setClientFirstKeyExchangePacketFollows(
+            boolean clientFirstKeyExchangePacketFollows) {
+        this.clientFirstKeyExchangePacketFollows = clientFirstKeyExchangePacketFollows;
+    }
+
+    public void setServerFirstKeyExchangePacketFollows(
+            boolean serverFirstKeyExchangePacketFollows) {
+        this.serverFirstKeyExchangePacketFollows = serverFirstKeyExchangePacketFollows;
+    }
+
+    public void setClientReserved(int clientReserved) {
+        this.clientReserved = clientReserved;
+    }
+
+    public void setServerReserved(int serverReserved) {
+        this.serverReserved = serverReserved;
+    }
+
+    // endregion
+
+    // region Getters for KeyExchange
     public Integer getDhGexMinimalGroupSize() {
         return dhGexMinimalGroupSize;
     }
@@ -829,6 +1152,14 @@ public class Config implements Serializable {
         return defaultRsaKeyExchangeAlgorithm;
     }
 
+    public Boolean getEnableEncryptionOnNewKeysMessage() {
+        return enableEncryptionOnNewKeysMessage;
+    }
+
+    public Boolean getEnforceSettings() {
+        return enforceSettings;
+    }
+
     public SshPublicKey<CustomRsaPublicKey, CustomRsaPrivateKey>
             getFallbackRsaTransientPublicKey() {
         return fallbackRsaTransientPublicKey;
@@ -837,113 +1168,191 @@ public class Config implements Serializable {
     public List<SshPublicKey<?, ?>> getServerHostKeys() {
         return serverHostKeys;
     }
-
-    public AuthenticationMethod getAuthenticationMethod() {
-        return authenticationMethod;
+    // endregion
+    // region Setters for KeyExchange
+    public void setDhGexMinimalGroupSize(Integer dhGexMinimalGroupSize) {
+        this.dhGexMinimalGroupSize = dhGexMinimalGroupSize;
     }
 
-    public void setAuthenticationMethod(AuthenticationMethod authenticationMethod) {
-        this.authenticationMethod = authenticationMethod;
+    public void setDhGexPreferredGroupSize(Integer dhGexPreferredGroupSize) {
+        this.dhGexPreferredGroupSize = dhGexPreferredGroupSize;
+    }
+
+    public void setDhGexMaximalGroupSize(Integer dhGexMaximalGroupSize) {
+        this.dhGexMaximalGroupSize = dhGexMaximalGroupSize;
+    }
+
+    public void setDefaultDhKeyExchangeAlgorithm(
+            KeyExchangeAlgorithm defaultDhKeyExchangeAlgorithm) {
+        this.defaultDhKeyExchangeAlgorithm = defaultDhKeyExchangeAlgorithm;
+    }
+
+    public void setDefaultEcdhKeyExchangeAlgorithm(
+            KeyExchangeAlgorithm defaultEcdhKeyExchangeAlgorithm) {
+        this.defaultEcdhKeyExchangeAlgorithm = defaultEcdhKeyExchangeAlgorithm;
+    }
+
+    public void setDefaultRsaKeyExchangeAlgorithm(
+            KeyExchangeAlgorithm defaultRsaKeyExchangeAlgorithm) {
+        this.defaultRsaKeyExchangeAlgorithm = defaultRsaKeyExchangeAlgorithm;
+    }
+
+    public void setEnableEncryptionOnNewKeysMessage(Boolean enableEncryptionOnNewKeysMessage) {
+        this.enableEncryptionOnNewKeysMessage = enableEncryptionOnNewKeysMessage;
+    }
+
+    public void setEnforceSettings(Boolean enforceSettings) {
+        this.enforceSettings = enforceSettings;
+    }
+    // endregion
+
+    // region Getters for Authentification
+    public AuthenticationMethod getAuthenticationMethod() {
+        return authenticationMethod;
     }
 
     public String getUsername() {
         return username;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
     public String getPassword() {
         return password;
+    }
+
+    public String getServiceName() {
+        return serviceName;
+    }
+    // endregion
+    // region Setters for Authentification
+    public void setAuthenticationMethod(AuthenticationMethod authenticationMethod) {
+        this.authenticationMethod = authenticationMethod;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public void setPassword(String password) {
         this.password = password;
     }
 
+    public void setServiceName(String serviceName) {
+        this.serviceName = serviceName;
+    }
+    // endregion
+
+    // region Getters for Channel
     public String getChannelCommand() {
         return channelCommand;
-    }
-
-    public void setChannelCommand(String channelCommand) {
-        this.channelCommand = channelCommand;
     }
 
     public byte getReplyWanted() {
         return replyWanted;
     }
 
+    public Channel getDefaultChannel() {
+        return defaultChannel;
+    }
+
+    public String getDefaultVariableValue() {
+        return defaultVariableValue;
+    }
+
+    public String getDefaultVariableName() {
+        return defaultVariableName;
+    }
+
+    public byte getClientFlowControl() {
+        return clientFlowControl;
+    }
+
+    public int getDefaultTerminalWidthPixels() {
+        return defaultTerminalWidthPixels;
+    }
+
+    public int getDefaultTerminalWidthColumns() {
+        return defaultTerminalWidthColumns;
+    }
+
+    public int getDefaultTerminalHeightRows() {
+        return defaultTerminalHeightRows;
+    }
+
+    public int getDefaultTerminalHeightPixels() {
+        return defaultTerminalHeightPixels;
+    }
+
+    public String getDefaultTermEnvVariable() {
+        return defaultTermEnvVariable;
+    }
+
+    public String getDefaultSubsystemName() {
+        return defaultSubsystemName;
+    }
+
+    public int getDefaultBreakLength() {
+        return defaultBreakLength;
+    }
+
+    // endregion
+    // region Setters for Channel
+    public void setChannelCommand(String channelCommand) {
+        this.channelCommand = channelCommand;
+    }
+
     public void setReplyWanted(byte replyWanted) {
         this.replyWanted = replyWanted;
     }
 
-    public OutboundConnection getDefaultClientConnection() {
-        return defaultClientConnection;
+    public void setDefaultChannel(Channel defaultChannel) {
+        this.defaultChannel = defaultChannel;
     }
 
-    public void setDefaultClientConnection(OutboundConnection defaultClientConnection) {
-        this.defaultClientConnection = defaultClientConnection;
+    public void setDefaultVariableValue(String defaultVariableValue) {
+        this.defaultVariableValue = defaultVariableValue;
     }
 
-    public InboundConnection getDefaultServerConnection() {
-        return defaultServerConnection;
+    public void setDefaultVariableName(String defaultVariableName) {
+        this.defaultVariableName = defaultVariableName;
     }
 
-    public void setDefaultServerConnection(InboundConnection defaultServerConnection) {
-        this.defaultServerConnection = defaultServerConnection;
+    public void setClientFlowControl(byte clientFlowControl) {
+        this.clientFlowControl = clientFlowControl;
     }
 
-    public RunningModeType getDefaultRunningMode() {
-        return defaultRunningMode;
+    public void setDefaultTerminalWidthPixels(int defaultTerminalWidthPixels) {
+        this.defaultTerminalWidthPixels = defaultTerminalWidthPixels;
     }
 
-    public void setDefaultRunningMode(RunningModeType defaultRunningMode) {
-        this.defaultRunningMode = defaultRunningMode;
+    public void setDefaultTerminalWidthColumns(int defaultTerminalWidthColumns) {
+        this.defaultTerminalWidthColumns = defaultTerminalWidthColumns;
     }
 
-    public Boolean isQuickReceive() {
-        return quickReceive;
+    public void setDefaultTerminalHeightRows(int defaultTerminalHeightRows) {
+        this.defaultTerminalHeightRows = defaultTerminalHeightRows;
     }
 
-    public void setQuickReceive(boolean quickReceive) {
-        this.quickReceive = quickReceive;
+    public void setDefaultTerminalHeightPixels(int defaultTerminalHeightPixels) {
+        this.defaultTerminalHeightPixels = defaultTerminalHeightPixels;
     }
 
-    public Integer getReceiveMaximumBytes() {
-        return receiveMaximumBytes;
+    public void setDefaultTermEnvVariable(String defaultTermEnvVariable) {
+        this.defaultTermEnvVariable = defaultTermEnvVariable;
     }
 
-    public void setReceiveMaximumBytes(int receiveMaximumBytes) {
-        this.receiveMaximumBytes = receiveMaximumBytes;
+    public void setDefaultSubsystemName(String defaultSubsystemName) {
+        this.defaultSubsystemName = defaultSubsystemName;
     }
 
-    public Boolean isStopReceivingAfterDisconnect() {
-        return stopReceivingAfterDisconnect;
+    public void setDefaultBreakLength(int defaultBreakLength) {
+        this.defaultBreakLength = defaultBreakLength;
     }
 
-    public void setStopReceivingAfterDisconnect(boolean stopReceivingAfterDisconnect) {
-        this.stopReceivingAfterDisconnect = stopReceivingAfterDisconnect;
-    }
+    // endregion
 
-    public ChannelRequestType getChannelRequestType() {
-        return channelRequestType;
-    }
-
-    public void setChannelRequestType(ChannelRequestType channelRequestType) {
-        this.channelRequestType = channelRequestType;
-    }
-
+    // region Getters for Workflow settings
     public Boolean isFiltersKeepUserSettings() {
         return filtersKeepUserSettings;
-    }
-
-    public void setFiltersKeepUserSettings(Boolean filtersKeepUserSettings) {
-        this.filtersKeepUserSettings = filtersKeepUserSettings;
-    }
-
-    public void setWorkflowInput(String workflowInput) {
-        this.workflowInput = workflowInput;
     }
 
     public String getWorkflowInput() {
@@ -954,73 +1363,113 @@ public class Config implements Serializable {
         return workflowTraceType;
     }
 
-    public void setWorkflowTraceType(WorkflowTraceType workflowTraceType) {
-        this.workflowTraceType = workflowTraceType;
-    }
-
     public List<FilterType> getOutputFilters() {
         return outputFilters;
-    }
-
-    public void setOutputFilters(List<FilterType> outputFilters) {
-        this.outputFilters = outputFilters;
     }
 
     public String getWorkflowOutput() {
         return workflowOutput;
     }
 
-    public void setWorkflowOutput(String workflowOutput) {
-        this.workflowOutput = workflowOutput;
-    }
-
     public Boolean isApplyFiltersInPlace() {
         return applyFiltersInPlace;
-    }
-
-    public void setApplyFiltersInPlace(Boolean applyFiltersInPlace) {
-        this.applyFiltersInPlace = applyFiltersInPlace;
     }
 
     public Boolean getWorkflowExecutorShouldOpen() {
         return workflowExecutorShouldOpen;
     }
 
-    public void setWorkflowExecutorShouldOpen(Boolean workflowExecutorShouldOpen) {
-        this.workflowExecutorShouldOpen = workflowExecutorShouldOpen;
-    }
-
     public Boolean getStopActionsAfterDisconnect() {
         return stopActionsAfterDisconnect;
-    }
-
-    public void setStopActionsAfterDisconnect(Boolean stopActionsAfterDisconnect) {
-        this.stopActionsAfterDisconnect = stopActionsAfterDisconnect;
     }
 
     public Boolean getStopActionsAfterIOException() {
         return stopActionsAfterIOException;
     }
 
-    public void setStopActionsAfterIOException(Boolean stopActionsAfterIOException) {
-        this.stopActionsAfterIOException = stopActionsAfterIOException;
-    }
-
     public Boolean getWorkflowExecutorShouldClose() {
         return workflowExecutorShouldClose;
-    }
-
-    public void setWorkflowExecutorShouldClose(Boolean workflowExecutorShouldClose) {
-        this.workflowExecutorShouldClose = workflowExecutorShouldClose;
     }
 
     public Boolean getResetWorkflowtracesBeforeSaving() {
         return resetWorkflowtracesBeforeSaving;
     }
 
+    // endregion
+    // region Setters for Workflow settings
+
+    public void setFiltersKeepUserSettings(Boolean filtersKeepUserSettings) {
+        this.filtersKeepUserSettings = filtersKeepUserSettings;
+    }
+
+    public void setWorkflowInput(String workflowInput) {
+        this.workflowInput = workflowInput;
+    }
+
+    public void setWorkflowTraceType(WorkflowTraceType workflowTraceType) {
+        this.workflowTraceType = workflowTraceType;
+    }
+
+    public void setOutputFilters(List<FilterType> outputFilters) {
+        this.outputFilters = outputFilters;
+    }
+
+    public void setWorkflowOutput(String workflowOutput) {
+        this.workflowOutput = workflowOutput;
+    }
+
+    public void setApplyFiltersInPlace(Boolean applyFiltersInPlace) {
+        this.applyFiltersInPlace = applyFiltersInPlace;
+    }
+
+    public void setWorkflowExecutorShouldOpen(Boolean workflowExecutorShouldOpen) {
+        this.workflowExecutorShouldOpen = workflowExecutorShouldOpen;
+    }
+
+    public void setStopActionsAfterDisconnect(Boolean stopActionsAfterDisconnect) {
+        this.stopActionsAfterDisconnect = stopActionsAfterDisconnect;
+    }
+
+    public void setStopActionsAfterIOException(Boolean stopActionsAfterIOException) {
+        this.stopActionsAfterIOException = stopActionsAfterIOException;
+    }
+
+    public void setWorkflowExecutorShouldClose(Boolean workflowExecutorShouldClose) {
+        this.workflowExecutorShouldClose = workflowExecutorShouldClose;
+    }
+
     public void setResetWorkflowtracesBeforeSaving(Boolean resetWorkflowtracesBeforeSaving) {
         this.resetWorkflowtracesBeforeSaving = resetWorkflowtracesBeforeSaving;
     }
+    // endregion
+
+    // region Getters for ReceiveAction
+    public Boolean isQuickReceive() {
+        return quickReceive;
+    }
+
+    public Integer getReceiveMaximumBytes() {
+        return receiveMaximumBytes;
+    }
+
+    public Boolean isStopReceivingAfterDisconnect() {
+        return stopReceivingAfterDisconnect;
+    }
+
+    // endregion
+    // region Setters for ReceiveAction
+    public void setQuickReceive(boolean quickReceive) {
+        this.quickReceive = quickReceive;
+    }
+
+    public void setReceiveMaximumBytes(int receiveMaximumBytes) {
+        this.receiveMaximumBytes = receiveMaximumBytes;
+    }
+
+    public void setStopReceivingAfterDisconnect(boolean stopReceivingAfterDisconnect) {
+        this.stopReceivingAfterDisconnect = stopReceivingAfterDisconnect;
+    }
+    // endregion
 
     public String getConfigOutput() {
         return configOutput;
@@ -1030,131 +1479,11 @@ public class Config implements Serializable {
         this.configOutput = configOutput;
     }
 
-    public Boolean getEnforceSettings() {
-        return enforceSettings;
-    }
-
-    public void setEnforceSettings(Boolean enforceSettings) {
-        this.enforceSettings = enforceSettings;
-    }
-
-    public String getServiceName() {
-        return serviceName;
-    }
-
-    public void setServiceName(String serviceName) {
-        this.serviceName = serviceName;
-    }
-
-    public Boolean getEnableEncryptionOnNewKeysMessage() {
-        return enableEncryptionOnNewKeysMessage;
-    }
-
-    public void setEnableEncryptionOnNewKeysMessage(Boolean enableEncryptionOnNewKeysMessage) {
-        this.enableEncryptionOnNewKeysMessage = enableEncryptionOnNewKeysMessage;
-    }
-
     public ChooserType getChooserType() {
         return chooserType;
     }
 
     public void setChooserType(ChooserType chooserType) {
         this.chooserType = chooserType;
-    }
-
-    public Channel getDefaultChannel() {
-        return defaultChannel;
-    }
-
-    public void setDefaultChannel(Channel defaultChannel) {
-        this.defaultChannel = defaultChannel;
-    }
-
-    public String getDefaultVariableValue() {
-        return defaultVariableValue;
-    }
-
-    public void setDefaultVariableValue(String defaultVariableValue) {
-        this.defaultVariableValue = defaultVariableValue;
-    }
-
-    public SignalType getDefaultSignalType() {
-        return defaultSignalType;
-    }
-
-    public void setDefaultSignalType(SignalType defaultSignalType) {
-        this.defaultSignalType = defaultSignalType;
-    }
-
-    public String getDefaultVariableName() {
-        return defaultVariableName;
-    }
-
-    public void setDefaultVariableName(String defaultVariableName) {
-        this.defaultVariableName = defaultVariableName;
-    }
-
-    public byte getClientFlowControl() {
-        return clientFlowControl;
-    }
-
-    public void setClientFlowControl(byte clientFlowControl) {
-        this.clientFlowControl = clientFlowControl;
-    }
-
-    public int getDefaultTerminalWidthPixels() {
-        return defaultTerminalWidthPixels;
-    }
-
-    public void setDefaultTerminalWidthPixels(int defaultTerminalWidthPixels) {
-        this.defaultTerminalWidthPixels = defaultTerminalWidthPixels;
-    }
-
-    public int getDefaultTerminalWidthColumns() {
-        return defaultTerminalWidthColumns;
-    }
-
-    public void setDefaultTerminalWidthColumns(int defaultTerminalWidthColumns) {
-        this.defaultTerminalWidthColumns = defaultTerminalWidthColumns;
-    }
-
-    public int getDefaultTerminalHeightRows() {
-        return defaultTerminalHeightRows;
-    }
-
-    public void setDefaultTerminalHeightRows(int defaultTerminalHeightRows) {
-        this.defaultTerminalHeightRows = defaultTerminalHeightRows;
-    }
-
-    public int getDefaultTerminalHeightPixels() {
-        return defaultTerminalHeightPixels;
-    }
-
-    public void setDefaultTerminalHeightPixels(int defaultTerminalHeightPixels) {
-        this.defaultTerminalHeightPixels = defaultTerminalHeightPixels;
-    }
-
-    public String getDefaultTermEnvVariable() {
-        return defaultTermEnvVariable;
-    }
-
-    public void setDefaultTermEnvVariable(String defaultTermEnvVariable) {
-        this.defaultTermEnvVariable = defaultTermEnvVariable;
-    }
-
-    public String getDefaultSubsystemName() {
-        return defaultSubsystemName;
-    }
-
-    public void setDefaultSubsystemName(String defaultSubsystemName) {
-        this.defaultSubsystemName = defaultSubsystemName;
-    }
-
-    public int getDefaultBreakLength() {
-        return defaultBreakLength;
-    }
-
-    public void setDefaultBreakLength(int defaultBreakLength) {
-        this.defaultBreakLength = defaultBreakLength;
     }
 }
