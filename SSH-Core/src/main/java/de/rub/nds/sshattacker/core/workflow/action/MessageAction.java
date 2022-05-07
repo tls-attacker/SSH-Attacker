@@ -111,6 +111,7 @@ public abstract class MessageAction extends ConnectionBoundAction {
                 @XmlElement(
                         type = UserAuthInfoResponseMessage.class,
                         name = "UserAuthInfoResponse"),
+                @XmlElement(type = UserAuthHostbasedMessage.class, name = "UserAuthHostbased")
             })
     protected List<ProtocolMessage<?>> messages = new ArrayList<>();
 
