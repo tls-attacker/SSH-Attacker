@@ -77,6 +77,7 @@ public abstract class MessageAction extends ConnectionBoundAction {
                 @XmlElement(
                         type = UserAuthKeyboardInteractiveMessage.class,
                         name = "UserAuthKeyboardInteractive"),
+                @XmlElement(type = UserAuthHostbasedMessage.class, name = "UserAuthHostbased"),
                 @XmlElement(type = UserAuthPasswordMessage.class, name = "UserAuthPassword"),
                 @XmlElement(type = UserAuthPkOkMessage.class, name = "UserAuthPkOk"),
                 @XmlElement(type = UserAuthPubkeyMessage.class, name = "UserAuthPubkey"),
@@ -92,7 +93,6 @@ public abstract class MessageAction extends ConnectionBoundAction {
                         name = "ChannelOpenConfirmation"),
                 @XmlElement(type = ChannelOpenFailureMessage.class, name = "ChannelOpenFailure"),
                 @XmlElement(type = ChannelOpenMessage.class, name = "ChannelOpen"),
-                @XmlElement(type = ChannelRequestBreakMessage.class, name = "ChannelRequestBreak"),
                 @XmlElement(type = ChannelRequestEnvMessage.class, name = "ChannelRequestEnv"),
                 @XmlElement(type = ChannelRequestExecMessage.class, name = "ChannelRequestExec"),
                 @XmlElement(
@@ -124,7 +124,6 @@ public abstract class MessageAction extends ConnectionBoundAction {
                 @XmlElement(type = TcpIpForwardCancelMessage.class, name = "TcpIpForwardCancel"),
                 @XmlElement(type = TcpIpForwardRequestMessage.class, name = "TcpIpForwardRequest"),
                 // Other
-                @XmlElement(type = UnknownMessage.class, name = "UnknownMessage"),
             })
     protected List<ProtocolMessage<?>> messages = new ArrayList<>();
 
