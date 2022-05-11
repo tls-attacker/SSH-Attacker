@@ -12,10 +12,7 @@ import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.exceptions.ParserException;
 import de.rub.nds.sshattacker.core.packet.AbstractPacket;
 import de.rub.nds.sshattacker.core.packet.BlobPacket;
-import de.rub.nds.sshattacker.core.protocol.authentication.parser.UserAuthBannerMessageParser;
-import de.rub.nds.sshattacker.core.protocol.authentication.parser.UserAuthFailureMessageParser;
-import de.rub.nds.sshattacker.core.protocol.authentication.parser.UserAuthInfoRequestMessageParser;
-import de.rub.nds.sshattacker.core.protocol.authentication.parser.UserAuthSuccessMessageParser;
+import de.rub.nds.sshattacker.core.protocol.authentication.parser.*;
 import de.rub.nds.sshattacker.core.protocol.connection.parser.*;
 import de.rub.nds.sshattacker.core.protocol.transport.parser.*;
 import de.rub.nds.sshattacker.core.state.SshContext;
@@ -72,11 +69,7 @@ public abstract class ProtocolMessageParser<T extends ProtocolMessage<T>> extend
                     return null;
                 }
             }
-            /*ToDo check multiplying of MessageId=60 in MessageIdConstant and implement a parsing function for UserAuthInfoRequest
-             *  similar to parsing of channel request message*/
-            if (raw[0] == 60) {
-                return new UserAuthInfoRequestMessageParser(raw).parse();
-            }
+
             switch (MessageIdConstant.fromId(raw[0], context)) {
                 case SSH_MSG_KEXINIT:
                     return new KeyExchangeInitMessageParser(raw).parse();
@@ -154,7 +147,8 @@ public abstract class ProtocolMessageParser<T extends ProtocolMessage<T>> extend
                     return getGlobalRequestMessageParsing(raw);
                 case SSH_MSG_USERAUTH_INFO_REQUEST:
                     return new UserAuthInfoRequestMessageParser(raw).parse();
-
+                case SSH_MSG_USERAUTH_INFO_RESPONSE:
+                    return new UserAuthInfoResponseMessageParser(raw).parse();
                 default:
                     LOGGER.debug(
                             "Received unimplemented Message "

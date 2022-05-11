@@ -232,7 +232,7 @@ public class WorkflowConfigurationFactory {
     }
 
     private void addAuthenticationProtocolActions(WorkflowTrace workflow) {
-        this.addAuthenticationProtocolActions(AuthenticationMethod.KEYBOARD_INTERACTIVE, workflow);
+        this.addAuthenticationProtocolActions(config.getAuthenticationMethod(), workflow);
     }
 
     private void addAuthenticationProtocolActions(

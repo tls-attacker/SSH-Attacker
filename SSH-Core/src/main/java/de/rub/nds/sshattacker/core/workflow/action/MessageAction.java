@@ -107,12 +107,10 @@ public abstract class MessageAction extends ConnectionBoundAction {
                 @XmlElement(
                         type = UserAuthKeyboardInteractiveMessage.class,
                         name = "UserAuthKeyboardInteractive"),
-                @XmlElement(
-                        type = UserAuthInfoRequestMessage.class,
-                        name = "UserAuthInfoRequestMessage"),
+                @XmlElement(type = UserAuthInfoRequestMessage.class, name = "UserAuthInfoRequest"),
                 @XmlElement(
                         type = UserAuthInfoResponseMessage.class,
-                        name = "UserAuthInfoResponseMessage"),
+                        name = "UserAuthInfoResponse"),
             })
     protected List<ProtocolMessage<?>> messages = new ArrayList<>();
 
