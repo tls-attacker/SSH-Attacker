@@ -36,15 +36,10 @@ public class MangerCommandConfig extends AttackConfig {
     @Parameter(
             names = "-encrypted_secret",
             description =
-                    "Encrypted secret from the RSA client "
-                            + "key exchange message. You can retrieve this message from the Wireshark traffic. Find the RSA key "
-                            + "exchange secret message, right click on the \"Encrypted Secret\" value and copy this value as a Hex Stream.")
+                    "Encrypted secret from the SSH_MSG_KEXRSA_SECRET "
+                            + " message. You can retrieve this message from the Wireshark traffic. Find the"
+                            + " secret message, right click on the \"Encrypted Secret\" value and copy this value as a Hex Stream.")
     private String encryptedSecret;
-
-    @Parameter(
-            names = "-skip_reuse_check",
-            description = "If the check for transient public key re-use should be skipped")
-    private boolean skipReuseCheck = false;
 
     /** How many rescans should be done */
     private int numberOfIterations = 3;
@@ -99,13 +94,5 @@ public class MangerCommandConfig extends AttackConfig {
 
     public void setNumberOfIterations(int mapListDepth) {
         this.numberOfIterations = mapListDepth;
-    }
-
-    public boolean isSkipReuseCheck() {
-        return skipReuseCheck;
-    }
-
-    public void setSkipReuseCheck(boolean skipReuseCheck) {
-        this.skipReuseCheck = skipReuseCheck;
     }
 }

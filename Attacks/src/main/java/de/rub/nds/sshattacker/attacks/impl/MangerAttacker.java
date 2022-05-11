@@ -67,8 +67,6 @@ public class MangerAttacker extends Attacker<MangerCommandConfig> {
 
     private KeyExchangeAlgorithm keyExchangeAlgorithm;
 
-    private Boolean reusesTransientPublicKey;
-
     /**
      * @param mangerConfig Manger attack config
      * @param baseConfig Base config
@@ -101,35 +99,56 @@ public class MangerAttacker extends Attacker<MangerCommandConfig> {
                         + "responds differently to the test vectors.");
         CONSOLE.info(
                 "A server is considered secure if it does not reuse the host key or"
-                        + " reuses it but always responds in the same way.");
+                        + " if it does not have Manger's oracle.");
 
         RSAPublicKey publicKey = getServerPublicKey();
         if (publicKey == null) {
             LOGGER.fatal("Could not retrieve PublicKey from Server - is the Server running?");
             throw new OracleUnstableException("Fatal Extraction error");
         }
-        if (!config.isSkipReuseCheck() && !isTransientKeyReused(publicKey)) {
-            CONSOLE.info("Server does not reuse the host key, it should be safe.");
-            this.reusesTransientPublicKey = false;
-            return false;
+
+        boolean reusesTransientPublicKey;
+        if (!isTransientKeyReused(publicKey)) {
+            CONSOLE.info("Server does not reuse the transient public key, it should be safe.");
+            reusesTransientPublicKey = false;
+        } else {
+            CONSOLE.info("Server reuses transient public key.");
+            reusesTransientPublicKey = true;
         }
 
-        this.reusesTransientPublicKey = true;
+        return hasOracle() & reusesTransientPublicKey;
+    }
+
+    /**
+     * Checks if the server has Manger's oracle without checking if it reuses the transient public
+     * key
+     *
+     * @return If the server has Manger's oracle or not
+     */
+    public boolean hasOracle() {
+        CONSOLE.info(
+                "A server has Manger's Oracle if it responds differently to the test vectors.");
+
+        RSAPublicKey publicKey = getServerPublicKey();
+        if (publicKey == null) {
+            LOGGER.fatal("Could not retrieve PublicKey from Server - is the Server running?");
+            throw new OracleUnstableException("Fatal Extraction error");
+        }
 
         EqualityError referenceError;
         fullResponseMap = new LinkedList<>();
         for (int i = 0; i < config.getNumberOfIterations(); i++) {
-            List<VectorResponse> responseMap = createVectorResponseList(publicKey);
+            List<VectorResponse> responseMap = createVectorResponseList(publicKey, true);
             this.fullResponseMap.addAll(responseMap);
         }
 
         referenceError = getEqualityError(fullResponseMap);
         if (referenceError != EqualityError.NONE) {
             CONSOLE.info(
-                    "Found a behavior difference within the responses. The server could be vulnerable.");
+                    "Found a behavior difference within the responses. The server has Manger's oracle.");
         } else {
             CONSOLE.info(
-                    "Found no behavior difference within the responses. The server is very likely not vulnerable.");
+                    "Found no behavior difference within the responses. The server is very likely to not have Manger's oracle.");
         }
 
         CONSOLE.info(EqualityErrorTranslator.translation(referenceError));
@@ -148,19 +167,37 @@ public class MangerAttacker extends Attacker<MangerCommandConfig> {
     /**
      * @return Response vector list
      */
-    private List<VectorResponse> createVectorResponseList(RSAPublicKey publicKey) {
+    private List<VectorResponse> createVectorResponseList(RSAPublicKey publicKey, boolean plain) {
         List<SshTask> taskList = new LinkedList<>();
         List<FingerprintTaskVectorPair<?>> stateVectorPairList = new LinkedList<>();
 
-        for (Pkcs1Vector vector :
-                Pkcs1VectorGenerator.generatePkcs1Vectors(
-                        publicKey, getHashLength(), getHashInstance())) {
+        List<Pkcs1Vector> vectors;
+        if (plain) {
+            vectors =
+                    Pkcs1VectorGenerator.generatePlainPkcs1Vectors(
+                            publicKey.getModulus().bitLength(), getHashLength(), getHashInstance());
+        } else {
+            vectors =
+                    Pkcs1VectorGenerator.generatePkcs1Vectors(
+                            publicKey, getHashLength(), getHashInstance());
+        }
 
-            State state =
-                    new State(
-                            sshConfig,
-                            MangerWorkflowGenerator.generateWorkflow(
-                                    sshConfig, vector.getEncryptedValue()));
+        for (Pkcs1Vector vector : vectors) {
+
+            State state;
+            if (plain) {
+                state =
+                        new State(
+                                sshConfig,
+                                MangerWorkflowGenerator.generateDynamicWorkflow(
+                                        sshConfig, vector.getPlainValue()));
+            } else {
+                state =
+                        new State(
+                                sshConfig,
+                                MangerWorkflowGenerator.generateWorkflow(
+                                        sshConfig, vector.getEncryptedValue()));
+            }
 
             FingerPrintTask fingerPrintTask =
                     new FingerPrintTask(
@@ -421,9 +458,5 @@ public class MangerAttacker extends Attacker<MangerCommandConfig> {
 
     public void setAdditionalTcpTimeout(long additionalTcpTimeout) {
         this.additionalTcpTimeout = additionalTcpTimeout;
-    }
-
-    public boolean getReusesTransientPublicKey() {
-        return reusesTransientPublicKey;
     }
 }
