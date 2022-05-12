@@ -8,6 +8,7 @@
 package de.rub.nds.sshattacker.core.workflow.action.executor;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.sshattacker.core.constants.CharConstants;
 import de.rub.nds.sshattacker.core.exceptions.CryptoException;
 import de.rub.nds.sshattacker.core.exceptions.ParserException;
 import de.rub.nds.sshattacker.core.packet.AbstractPacket;
@@ -84,7 +85,17 @@ public class ReceiveMessageHelper {
      * @throws IOException Thrown by the underlying transport handler if receiving failed
      */
     private byte[] receiveBytes(SshContext context) throws IOException {
-        return context.getTransportHandler().fetchData();
+        if (context.isReceiveAsciiModeEnabled()) {
+            byte[] receiveBuffer = new byte[0];
+            byte[] readByte;
+            do {
+                readByte = context.getTransportHandler().fetchData(1);
+                receiveBuffer = ArrayConverter.concatenate(receiveBuffer, readByte);
+            } while (readByte.length > 0 && readByte[0] != CharConstants.NEWLINE);
+            return receiveBuffer;
+        } else {
+            return context.getTransportHandler().fetchData();
+        }
     }
 
     /**
