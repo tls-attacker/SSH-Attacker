@@ -51,6 +51,11 @@ public class SshContext {
     private PacketLayerType packetLayerType;
     /** A layer to serialize packets */
     private AbstractPacketLayer packetLayer;
+    /**
+     * If set to true, receive actions will read the incoming byte stream on a per line basis (each
+     * line is terminated by LF).
+     */
+    private Boolean receiveAsciiModeEnabled;
     /** A layer to serialize messages */
     private MessageLayer messageLayer = new MessageLayer(this);
 
@@ -249,6 +254,7 @@ public class SshContext {
         // TODO: Initial packet layer type from config
         packetLayerType = PacketLayerType.BLOB;
         packetLayer = PacketLayerFactory.getPacketLayer(packetLayerType, this);
+        receiveAsciiModeEnabled = true;
         writeSequenceNumber = 0;
         readSequenceNumber = 0;
     }
@@ -323,6 +329,14 @@ public class SshContext {
 
     public void setPacketLayer(AbstractPacketLayer packetLayer) {
         this.packetLayer = packetLayer;
+    }
+
+    public Boolean isReceiveAsciiModeEnabled() {
+        return receiveAsciiModeEnabled;
+    }
+
+    public void setReceiveAsciiModeEnabled(boolean receiveAsciiModeEnabled) {
+        this.receiveAsciiModeEnabled = receiveAsciiModeEnabled;
     }
 
     public MessageLayer getMessageLayer() {
