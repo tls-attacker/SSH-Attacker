@@ -264,7 +264,10 @@ public class Config implements Serializable {
     private String password;
     /** The List of responses used for UserAuthInfoResponseMessage */
     private List preConfiguredAuthResponses = new ArrayList();
-
+    /** The public key used for authentication method publickey */
+    private String pubkey;
+    /** The public key algorithm name used for authentication method publickey */
+    private String pubkeyAlgName;
     // endregion
 
     // region Channel
@@ -1234,6 +1237,10 @@ public class Config implements Serializable {
         return preConfiguredAuthResponses;
     }
 
+    public String getPubkey() { return pubkey; }
+
+    public String getPubkeyAlgName() { return pubkeyAlgName; }
+
     // endregion
     // region Setters for Authentification
     public void setAuthenticationMethod(AuthenticationMethod authenticationMethod) {
@@ -1255,6 +1262,10 @@ public class Config implements Serializable {
     public void setPreConfiguredAuthResponses(List preConfiguredAuthResponses) {
         this.preConfiguredAuthResponses = preConfiguredAuthResponses;
     }
+
+    public void setPubkey(String pubkey) { this.pubkey = pubkey; }
+
+    public void setPubkeyAlgName(String pubkeyAlgName) { this.pubkeyAlgName = pubkeyAlgName; }
 
     // endregion
 
