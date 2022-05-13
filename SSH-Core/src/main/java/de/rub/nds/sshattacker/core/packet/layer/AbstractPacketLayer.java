@@ -22,7 +22,6 @@ import de.rub.nds.sshattacker.core.packet.crypto.PacketEncryptor;
 import de.rub.nds.sshattacker.core.packet.preparator.AbstractPacketPreparator;
 import de.rub.nds.sshattacker.core.packet.serializer.AbstractPacketSerializer;
 import de.rub.nds.sshattacker.core.state.SshContext;
-import java.util.stream.Stream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -50,25 +49,30 @@ public abstract class AbstractPacketLayer {
     }
 
     /**
-     * Tries to parse rawBytes into AbstractPackets. Due to the nature of SSH encryption, this does
-     * include decryption of the packet. If this is not possible a Parser Exception or Crypto
-     * Exception is thrown.
+     * Tries to parse a single packet from rawBytes at startPosition. Due to the nature of SSH
+     * encryption, this does include decryption of the packet. If this is not possible a Parser
+     * Exception or Crypto Exception is thrown.
      *
      * @param rawBytes Bytes to parse
-     * @return List of parsed packets
+     * @param startPosition Start position for parsing
+     * @return Parse result of the packet layer containing the total number of bytes parsed as well
+     *     as the parsed packet
      * @throws ParserException Thrown whenever parsing the provided bytes fails
      */
-    public abstract Stream<AbstractPacket> parsePackets(byte[] rawBytes)
+    public abstract PacketLayerParseResult parsePacket(byte[] rawBytes, int startPosition)
             throws ParserException, CryptoException;
 
     /**
-     * Tries to parse rawBytes into AbstractPackets. Due to the nature of SSH encryption, this does
-     * include decryption of the packet. Exception which might occur are handled.
+     * Tries to parse a single packet from rawBytes at startPosition. Due to the nature of SSH
+     * encryption, this does include decryption of the packet. Exception which might occur are
+     * handled.
      *
      * @param rawBytes Bytes to parse
-     * @return List of parsed packets
+     * @param startPosition Start position for parsing
+     * @return Parse result of the packet layer containing the total number of bytes parsed as well
+     *     as the parsed packet
      */
-    public abstract Stream<AbstractPacket> parsePacketsSoftly(byte[] rawBytes);
+    public abstract PacketLayerParseResult parsePacketSoftly(byte[] rawBytes, int startPosition);
 
     protected void decryptPacket(AbstractPacket packet) {
         packet.prepareComputations();
