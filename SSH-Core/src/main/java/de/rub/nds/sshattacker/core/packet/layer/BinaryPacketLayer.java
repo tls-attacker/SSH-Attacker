@@ -14,7 +14,6 @@ import de.rub.nds.sshattacker.core.packet.BlobPacket;
 import de.rub.nds.sshattacker.core.packet.parser.BinaryPacketParser;
 import de.rub.nds.sshattacker.core.packet.parser.BlobPacketParser;
 import de.rub.nds.sshattacker.core.state.SshContext;
-import java.util.stream.Stream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -27,66 +26,53 @@ public class BinaryPacketLayer extends AbstractPacketLayer {
     }
 
     @Override
-    public Stream<AbstractPacket> parsePackets(byte[] rawBytes) throws ParserException {
-        Stream.Builder<AbstractPacket> packetStreamBuilder = Stream.builder();
-        int dataPointer = 0;
-        while (dataPointer != rawBytes.length) {
-            try {
-                BinaryPacketParser parser =
-                        new BinaryPacketParser(
-                                rawBytes,
-                                dataPointer,
-                                getDecryptorCipher(),
-                                context.getReadSequenceNumber());
-                BinaryPacket packet = parser.parse();
-                decryptPacket(packet);
-                decompressPacket(packet);
-                packetStreamBuilder.add(packet);
-                dataPointer = parser.getPointer();
-            } catch (ParserException e) {
-                throw new ParserException("Could not parse provided data as binary packet", e);
-            }
+    public PacketLayerParseResult parsePacket(byte[] rawBytes, int startPosition)
+            throws ParserException {
+        try {
+            BinaryPacketParser parser =
+                    new BinaryPacketParser(
+                            rawBytes,
+                            startPosition,
+                            getDecryptorCipher(),
+                            context.getReadSequenceNumber());
+            BinaryPacket packet = parser.parse();
+            decryptPacket(packet);
+            decompressPacket(packet);
+            return new PacketLayerParseResult(packet, parser.getPointer() - startPosition);
+        } catch (ParserException e) {
+            throw new ParserException("Could not parse provided data as binary packet", e);
         }
-
-        return packetStreamBuilder.build();
     }
 
     @Override
-    public Stream<AbstractPacket> parsePacketsSoftly(byte[] rawBytes) {
-        Stream.Builder<AbstractPacket> packetStreamBuilder = Stream.builder();
-        int dataPointer = 0;
-        while (dataPointer != rawBytes.length) {
+    public PacketLayerParseResult parsePacketSoftly(byte[] rawBytes, int startPosition) {
+        try {
+            BinaryPacketParser parser =
+                    new BinaryPacketParser(
+                            rawBytes,
+                            startPosition,
+                            getDecryptorCipher(),
+                            context.getReadSequenceNumber());
+            BinaryPacket packet = parser.parse();
+            decryptPacket(packet);
+            decompressPacket(packet);
+            return new PacketLayerParseResult(packet, parser.getPointer() - startPosition, true);
+        } catch (ParserException e) {
+            LOGGER.debug("Could not parse binary packet, parsing as blob");
+            LOGGER.trace(e);
             try {
-                BinaryPacketParser parser =
-                        new BinaryPacketParser(
-                                rawBytes,
-                                dataPointer,
-                                getDecryptorCipher(),
-                                context.getReadSequenceNumber());
-                BinaryPacket packet = parser.parse();
+                BlobPacketParser parser = new BlobPacketParser(rawBytes, startPosition);
+                BlobPacket packet = parser.parse();
                 decryptPacket(packet);
                 decompressPacket(packet);
-                packetStreamBuilder.add(packet);
-                dataPointer = parser.getPointer();
-            } catch (ParserException e) {
-                LOGGER.debug("Could not parse binary packet, parsing as blob");
-                LOGGER.trace(e);
-                try {
-                    BlobPacketParser parser = new BlobPacketParser(rawBytes, dataPointer);
-                    BlobPacket packet = parser.parse();
-                    decryptPacket(packet);
-                    decompressPacket(packet);
-                    packetStreamBuilder.add(packet);
-                    dataPointer = parser.getPointer();
-                } catch (ParserException ex) {
-                    LOGGER.warn("Could not parse data as blob packet, dropping remaining bytes");
-                    LOGGER.trace(ex);
-                    break;
-                }
+                return new PacketLayerParseResult(
+                        packet, parser.getPointer() - startPosition, true);
+            } catch (ParserException ex) {
+                LOGGER.warn("Could not parse data as blob packet, dropping remaining bytes");
+                LOGGER.trace(ex);
+                return new PacketLayerParseResult(null, rawBytes.length - startPosition, true);
             }
         }
-
-        return packetStreamBuilder.build();
     }
 
     @Override
