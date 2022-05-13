@@ -18,6 +18,7 @@ import java.math.BigInteger;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.security.*;
+import java.util.Random;
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
@@ -62,7 +63,8 @@ public class OaepConverterTest {
         byte[] message = new byte[1];
         message[0] = (byte) 42;
         try {
-            byte[] bytes = OaepConverter.doOaepEncoding(message, "SHA-256", 256);
+            byte[] bytes =
+                    OaepConverter.doOaepEncoding(message, "SHA-256", 256, new Random().nextLong());
             byte[] result = OaepConverter.doOaepDecoding(bytes, "SHA-256", 256);
             assertArrayEquals(message, result);
         } catch (NoSuchAlgorithmException e) {
@@ -83,7 +85,8 @@ public class OaepConverterTest {
 
             // Encode and perform raw encryption
             Security.addProvider(new BouncyCastleProvider());
-            byte[] encodedMessage = OaepConverter.doOaepEncoding(message, "SHA-256", 256);
+            byte[] encodedMessage =
+                    OaepConverter.doOaepEncoding(message, "SHA-256", 256, new Random().nextLong());
             Cipher rawCipher = Cipher.getInstance("RSA/NONE/NoPadding");
             rawCipher.init(Cipher.ENCRYPT_MODE, kp.getPublic());
             byte[] encryptedMessage = rawCipher.doFinal(encodedMessage);

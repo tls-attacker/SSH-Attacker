@@ -35,10 +35,7 @@ import de.rub.nds.sshattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.sshattacker.core.state.State;
 import java.math.BigInteger;
 import java.security.interfaces.RSAPublicKey;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -75,10 +72,7 @@ public class MangerAttacker extends Attacker<MangerCommandConfig> {
      * @param baseConfig Base config
      */
     public MangerAttacker(MangerCommandConfig mangerConfig, Config baseConfig) {
-        super(mangerConfig, baseConfig);
-        sshConfig = getSshConfig();
-        setKeyExchangeAlgorithm();
-        executor = new ParallelExecutor(1, 3);
+        this(mangerConfig, baseConfig, new ParallelExecutor(1, 3));
     }
 
     /**
@@ -91,30 +85,8 @@ public class MangerAttacker extends Attacker<MangerCommandConfig> {
         super(mangerConfig, baseConfig);
         sshConfig = getSshConfig();
         setKeyExchangeAlgorithm();
+        fullResponseMap = new ArrayList<>();
         this.executor = executor;
-    }
-
-    private void setKeyExchangeAlgorithm() {
-        if (config.getKexAlgorithm() == null) {
-            throw new ConfigurationException("The key exchange algorithm must be set.");
-        } else {
-            if (config.getKexAlgorithm().equals("rsa2048_sha256")) {
-                keyExchangeAlgorithm = KeyExchangeAlgorithm.RSA2048_SHA256;
-
-            } else if (config.getKexAlgorithm().equals("rsa1024_sha1")) {
-                keyExchangeAlgorithm = KeyExchangeAlgorithm.RSA1024_SHA1;
-            } else {
-                throw new ConfigurationException(
-                        "Unknown key exchange algorithm, did you mistype it? "
-                                + "Options are rsa2048_sha256 and rsa1024_sha1");
-            }
-        }
-
-        // Set only supported key exchange algorithm to the one specified by the user
-        sshConfig.setClientSupportedKeyExchangeAlgorithms(
-                new ArrayList<>(Collections.singleton(keyExchangeAlgorithm)));
-
-        CONSOLE.info("Set key exchange algorithm to: " + keyExchangeAlgorithm);
     }
 
     /**
@@ -127,28 +99,56 @@ public class MangerAttacker extends Attacker<MangerCommandConfig> {
                         + "responds differently to the test vectors.");
         CONSOLE.info(
                 "A server is considered secure if it does not reuse the host key or"
-                        + " reuses it but always responds in the same way.");
+                        + " if it does not have Manger's oracle.");
 
-        if (!isTransientKeyReused()) {
-            CONSOLE.info("Server does not reuse the host key, it should be safe.");
-            return false;
+        RSAPublicKey publicKey = getServerPublicKey();
+        if (publicKey == null) {
+            LOGGER.fatal("Could not retrieve PublicKey from Server - is the Server running?");
+            throw new OracleUnstableException("Fatal Extraction error");
+        }
+
+        boolean reusesTransientPublicKey;
+        if (!isTransientKeyReused(publicKey)) {
+            CONSOLE.info("Server does not reuse the transient public key, it should be safe.");
+            reusesTransientPublicKey = false;
+        } else {
+            CONSOLE.info("Server reuses transient public key.");
+            reusesTransientPublicKey = true;
+        }
+
+        return hasOracle() & reusesTransientPublicKey;
+    }
+
+    /**
+     * Checks if the server has Manger's oracle without checking if it reuses the transient public
+     * key
+     *
+     * @return If the server has Manger's oracle or not
+     */
+    public boolean hasOracle() {
+        CONSOLE.info(
+                "A server has Manger's Oracle if it responds differently to the test vectors.");
+
+        RSAPublicKey publicKey = getServerPublicKey();
+        if (publicKey == null) {
+            LOGGER.fatal("Could not retrieve PublicKey from Server - is the Server running?");
+            throw new OracleUnstableException("Fatal Extraction error");
         }
 
         EqualityError referenceError;
         fullResponseMap = new LinkedList<>();
-
         for (int i = 0; i < config.getNumberOfIterations(); i++) {
-            List<VectorResponse> responseMap = createVectorResponseList();
+            List<VectorResponse> responseMap = createVectorResponseList(publicKey, true);
             this.fullResponseMap.addAll(responseMap);
         }
 
         referenceError = getEqualityError(fullResponseMap);
         if (referenceError != EqualityError.NONE) {
             CONSOLE.info(
-                    "Found a behavior difference within the responses. The server could be vulnerable.");
+                    "Found a behavior difference within the responses. The server has Manger's oracle.");
         } else {
             CONSOLE.info(
-                    "Found no behavior difference within the responses. The server is very likely not vulnerable.");
+                    "Found no behavior difference within the responses. The server is very likely to not have Manger's oracle.");
         }
 
         CONSOLE.info(EqualityErrorTranslator.translation(referenceError));
@@ -167,25 +167,37 @@ public class MangerAttacker extends Attacker<MangerCommandConfig> {
     /**
      * @return Response vector list
      */
-    public List<VectorResponse> createVectorResponseList() {
-        RSAPublicKey publicKey = getServerPublicKey();
-        if (publicKey == null) {
-            LOGGER.fatal("Could not retrieve PublicKey from Server - is the Server running?");
-            throw new OracleUnstableException("Fatal Extraction error");
-        }
-
+    private List<VectorResponse> createVectorResponseList(RSAPublicKey publicKey, boolean plain) {
         List<SshTask> taskList = new LinkedList<>();
         List<FingerprintTaskVectorPair<?>> stateVectorPairList = new LinkedList<>();
 
-        for (Pkcs1Vector vector :
-                Pkcs1VectorGenerator.generatePkcs1Vectors(
-                        publicKey, getHashLength(), getHashInstance())) {
+        List<Pkcs1Vector> vectors;
+        if (plain) {
+            vectors =
+                    Pkcs1VectorGenerator.generatePlainPkcs1Vectors(
+                            publicKey.getModulus().bitLength(), getHashLength(), getHashInstance());
+        } else {
+            vectors =
+                    Pkcs1VectorGenerator.generatePkcs1Vectors(
+                            publicKey, getHashLength(), getHashInstance());
+        }
 
-            State state =
-                    new State(
-                            sshConfig,
-                            MangerWorkflowGenerator.generateWorkflow(
-                                    sshConfig, vector.getEncryptedValue()));
+        for (Pkcs1Vector vector : vectors) {
+
+            State state;
+            if (plain) {
+                state =
+                        new State(
+                                sshConfig,
+                                MangerWorkflowGenerator.generateDynamicWorkflow(
+                                        sshConfig, vector.getPlainValue()));
+            } else {
+                state =
+                        new State(
+                                sshConfig,
+                                MangerWorkflowGenerator.generateWorkflow(
+                                        sshConfig, vector.getEncryptedValue()));
+            }
 
             FingerPrintTask fingerPrintTask =
                     new FingerPrintTask(
@@ -246,7 +258,7 @@ public class MangerAttacker extends Attacker<MangerCommandConfig> {
      *
      * @return Transient public key
      */
-    public RSAPublicKey getServerPublicKey() {
+    private RSAPublicKey getServerPublicKey() {
         RSAPublicKey publicKey = KeyFetcher.fetchRsaTransientKey(sshConfig);
         if (publicKey == null) {
             LOGGER.info("Could not retrieve PublicKey from Server - is the Server running?");
@@ -260,17 +272,33 @@ public class MangerAttacker extends Attacker<MangerCommandConfig> {
         return publicKey;
     }
 
+    /** Checks if the server re-uses its RSA transient public key */
     public boolean isTransientKeyReused() {
         RSAPublicKey transientKey1 = getServerPublicKey();
         RSAPublicKey transientKey2 = getServerPublicKey();
-
         if (transientKey1 == null || transientKey2 == null) {
-            LOGGER.fatal("Could not retrieve PublicKey from Server - is the Server running?");
+            LOGGER.fatal("Could not retrieve server transient public key, is the server running?");
             throw new OracleUnstableException("Fatal Extraction error");
         } else {
-            return transientKey1.getPublicExponent().equals(transientKey2.getPublicExponent())
-                    && transientKey1.getModulus().equals(transientKey2.getModulus());
+            return comparePublicKeys(transientKey1, transientKey2);
         }
+    }
+
+    /** Checks if the server re-uses its RSA transient public key */
+    private boolean isTransientKeyReused(RSAPublicKey transientKey1) {
+        RSAPublicKey transientKey2 = getServerPublicKey();
+        if (transientKey1 == null || transientKey2 == null) {
+            LOGGER.fatal("Could not retrieve server transient public key, is the server running?");
+            throw new OracleUnstableException("Fatal Extraction error");
+        } else {
+            return comparePublicKeys(transientKey1, transientKey2);
+        }
+    }
+
+    /** Compares moduli and public exponents of public keys to check if they are equal */
+    private boolean comparePublicKeys(RSAPublicKey transientKey1, RSAPublicKey transientKey2) {
+        return transientKey1.getPublicExponent().equals(transientKey2.getPublicExponent())
+                && transientKey1.getModulus().equals(transientKey2.getModulus());
     }
 
     @Override
@@ -351,6 +379,51 @@ public class MangerAttacker extends Attacker<MangerCommandConfig> {
         return fingerprint;
     }
 
+    private int getHashLength() {
+        switch (keyExchangeAlgorithm) {
+            case RSA2048_SHA256:
+                return 256;
+            case RSA1024_SHA1:
+                return 160;
+            default:
+                return 0;
+        }
+    }
+
+    private String getHashInstance() {
+        switch (keyExchangeAlgorithm) {
+            case RSA2048_SHA256:
+                return "SHA-256";
+            case RSA1024_SHA1:
+                return "SHA-1";
+            default:
+                return "";
+        }
+    }
+
+    private void setKeyExchangeAlgorithm() {
+        if (config.getKexAlgorithm() == null) {
+            throw new ConfigurationException("The key exchange algorithm must be set.");
+        } else {
+            if (config.getKexAlgorithm().equals("rsa2048-sha256")) {
+                keyExchangeAlgorithm = KeyExchangeAlgorithm.RSA2048_SHA256;
+
+            } else if (config.getKexAlgorithm().equals("rsa1024-sha1")) {
+                keyExchangeAlgorithm = KeyExchangeAlgorithm.RSA1024_SHA1;
+            } else {
+                throw new ConfigurationException(
+                        "Unknown key exchange algorithm, did you mistype it? "
+                                + "Options are rsa2048-sha256 and rsa1024-sha1");
+            }
+        }
+
+        // Set only supported key exchange algorithm to the one specified by the user
+        sshConfig.setClientSupportedKeyExchangeAlgorithms(
+                new ArrayList<>(Collections.singleton(keyExchangeAlgorithm)));
+
+        CONSOLE.info("Set key exchange algorithm to: " + keyExchangeAlgorithm);
+    }
+
     public EqualityError getResultError() {
         return resultError;
     }
@@ -385,27 +458,5 @@ public class MangerAttacker extends Attacker<MangerCommandConfig> {
 
     public void setAdditionalTcpTimeout(long additionalTcpTimeout) {
         this.additionalTcpTimeout = additionalTcpTimeout;
-    }
-
-    private int getHashLength() {
-        switch (keyExchangeAlgorithm) {
-            case RSA2048_SHA256:
-                return 256;
-            case RSA1024_SHA1:
-                return 160;
-            default:
-                return 0;
-        }
-    }
-
-    private String getHashInstance() {
-        switch (keyExchangeAlgorithm) {
-            case RSA2048_SHA256:
-                return "SHA-256";
-            case RSA1024_SHA1:
-                return "SHA-1";
-            default:
-                return "";
-        }
     }
 }

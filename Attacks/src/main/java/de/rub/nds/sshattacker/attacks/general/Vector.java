@@ -12,4 +12,6 @@ public interface Vector {
     boolean equals(Object vector);
 
     String getName();
+
+    String getShortName();
 }

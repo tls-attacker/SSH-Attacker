@@ -77,6 +77,7 @@ public class Pkcs1VectorGenerator {
 
         return new Pkcs1Vector(
                 "Wrong second byte but correct first byte (XORed with 0xFF)",
+                "Second byte flipped",
                 getSecretWrongSecondByte(publicKeyByteLength, keyBytes, hashInstance));
     }
 
@@ -133,6 +134,7 @@ public class Pkcs1VectorGenerator {
         pkcs1Vectors.add(
                 new Pkcs1Vector(
                         "Wrong first byte (set to 01 instead of 00)",
+                        "First byte not 00",
                         getSecretWrongFirstByte(publicKeyByteLength, keyBytes, hashInstance)));
         return pkcs1Vectors;
     }
@@ -147,7 +149,7 @@ public class Pkcs1VectorGenerator {
     private static byte[] getEncodedSecret(
             int rsaKeyLength, byte[] sharedSecret, String hashInstance) {
         try {
-            return OaepConverter.doOaepEncoding(sharedSecret, hashInstance, rsaKeyLength);
+            return OaepConverter.doOaepEncoding(sharedSecret, hashInstance, rsaKeyLength, 0);
         } catch (NoSuchAlgorithmException e) {
             LOGGER.debug("Encoding error", e);
             return new byte[rsaKeyLength];

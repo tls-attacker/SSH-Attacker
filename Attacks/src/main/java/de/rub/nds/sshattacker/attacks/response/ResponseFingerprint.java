@@ -72,8 +72,7 @@ public class ResponseFingerprint {
             }
 
             SshMessage<?> message = (SshMessage<?>) msg;
-            resultString.append(message.getClass().getName()).append("}");
-            resultString.append(" ");
+            resultString.append("{").append(message.getClass().getSimpleName()).append("} ");
         }
         resultString.append(" ");
         if (socketState != null) {
