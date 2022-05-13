@@ -226,7 +226,6 @@ public class WorkflowConfigurationFactory {
         sshActions.add(
                 MessageActionFactory.createAction(
                         connection, ConnectionEndType.CLIENT, new NewKeysMessage()));
-        sshActions.add(new ActivateEncryptionAction(connection.getAlias()));
         return sshActions;
     }
 
