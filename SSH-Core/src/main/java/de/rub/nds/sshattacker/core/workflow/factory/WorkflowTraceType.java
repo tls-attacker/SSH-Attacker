@@ -15,5 +15,6 @@ public enum WorkflowTraceType {
     KEX_RSA,
     KEX_DYNAMIC,
     AUTH_PASSWORD,
+    AUTH_KEYBOARD_INTERACTIVE,
     FULL
 }

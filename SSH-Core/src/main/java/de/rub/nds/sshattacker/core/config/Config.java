@@ -14,6 +14,7 @@ import de.rub.nds.sshattacker.core.connection.OutboundConnection;
 import de.rub.nds.sshattacker.core.constants.*;
 import de.rub.nds.sshattacker.core.crypto.ec.PointFormatter;
 import de.rub.nds.sshattacker.core.crypto.keys.*;
+import de.rub.nds.sshattacker.core.protocol.authentication.AuthenticationResponse;
 import de.rub.nds.sshattacker.core.protocol.connection.Channel;
 import de.rub.nds.sshattacker.core.workflow.factory.WorkflowTraceType;
 import de.rub.nds.sshattacker.core.workflow.filter.FilterType;
@@ -261,6 +262,9 @@ public class Config implements Serializable {
     private String username;
     /** The password used for authentication method password */
     private String password;
+    /** The List of responses used for UserAuthInfoResponseMessage */
+    private List preConfiguredAuthResponses = new ArrayList();
+
     // endregion
 
     // region Channel
@@ -727,6 +731,9 @@ public class Config implements Serializable {
         serviceName = "ssh-userauth";
         username = "sshattacker";
         password = "bydahirsch";
+
+        preConfiguredAuthResponses.add(List.of(new AuthenticationResponse("bydahirsch", false)));
+        preConfiguredAuthResponses.add(List.of(new AuthenticationResponse(false)));
         // endregion
 
         // region Channel initialization
@@ -1222,6 +1229,11 @@ public class Config implements Serializable {
     public String getServiceName() {
         return serviceName;
     }
+
+    public List getPreConfiguredAuthResponses() {
+        return preConfiguredAuthResponses;
+    }
+
     // endregion
     // region Setters for Authentification
     public void setAuthenticationMethod(AuthenticationMethod authenticationMethod) {
@@ -1239,6 +1251,11 @@ public class Config implements Serializable {
     public void setServiceName(String serviceName) {
         this.serviceName = serviceName;
     }
+
+    public void setPreConfiguredAuthResponses(List preConfiguredAuthResponses) {
+        this.preConfiguredAuthResponses = preConfiguredAuthResponses;
+    }
+
     // endregion
 
     // region Getters for Channel

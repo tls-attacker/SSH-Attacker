@@ -11,8 +11,7 @@ import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.connection.AliasedConnection;
 import de.rub.nds.sshattacker.core.constants.*;
 import de.rub.nds.sshattacker.core.exceptions.ConfigurationException;
-import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthPasswordMessage;
-import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthSuccessMessage;
+import de.rub.nds.sshattacker.core.protocol.authentication.message.*;
 import de.rub.nds.sshattacker.core.protocol.connection.message.*;
 import de.rub.nds.sshattacker.core.protocol.transport.message.*;
 import de.rub.nds.sshattacker.core.workflow.WorkflowTrace;
@@ -50,6 +49,8 @@ public class WorkflowConfigurationFactory {
                 return createDynamicKeyExchangeWorkflowTrace();
             case AUTH_PASSWORD:
                 return createAuthenticationWorkflowTrace(AuthenticationMethod.PASSWORD);
+            case AUTH_KEYBOARD_INTERACTIVE:
+                return createAuthenticationWorkflowTrace(AuthenticationMethod.KEYBOARD_INTERACTIVE);
             case FULL:
                 return createFullWorkflowTrace();
             default:
@@ -231,7 +232,7 @@ public class WorkflowConfigurationFactory {
     }
 
     private void addAuthenticationProtocolActions(WorkflowTrace workflow) {
-        this.addAuthenticationProtocolActions(AuthenticationMethod.PASSWORD, workflow);
+        this.addAuthenticationProtocolActions(config.getAuthenticationMethod(), workflow);
     }
 
     private void addAuthenticationProtocolActions(
@@ -248,6 +249,33 @@ public class WorkflowConfigurationFactory {
                         MessageActionFactory.createAction(
                                 connection,
                                 ConnectionEndType.SERVER,
+                                new UserAuthSuccessMessage()));
+                break;
+            case KEYBOARD_INTERACTIVE:
+                workflow.addSshActions(
+                        MessageActionFactory.createAction(
+                                connection,
+                                ConnectionEndType.CLIENT,
+                                new UserAuthKeyboardInteractiveMessage()),
+                        MessageActionFactory.createAction(
+                                connection,
+                                ConnectionEndType.SERVER,
+                                new UserAuthInfoRequestMessage()),
+                        MessageActionFactory.createAction(
+                                connection,
+                                ConnectionEndType.CLIENT,
+                                new UserAuthInfoResponseMessage()),
+                        MessageActionFactory.createAction(
+                                connection,
+                                ConnectionEndType.SERVER,
+                                new UserAuthInfoRequestMessage()),
+                        MessageActionFactory.createAction(
+                                connection,
+                                ConnectionEndType.CLIENT,
+                                new UserAuthInfoResponseMessage()),
+                        MessageActionFactory.createAction(
+                                connection,
+                                ConnectionEndType.CLIENT,
                                 new UserAuthSuccessMessage()));
                 break;
             default:

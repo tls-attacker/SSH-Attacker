@@ -9,12 +9,13 @@ package de.rub.nds.sshattacker.core.protocol.authentication.parser;
 
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthPasswordMessage;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
+import de.rub.nds.sshattacker.core.util.Converter;
 import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class UserAuthPasswordMessageParser extends SshMessageParser<UserAuthPasswordMessage> {
+public class UserAuthPasswordMessageParser
+        extends UserAuthRequestMessageParser<UserAuthPasswordMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -31,23 +32,6 @@ public class UserAuthPasswordMessageParser extends SshMessageParser<UserAuthPass
         return new UserAuthPasswordMessage();
     }
 
-    private void parseUserName() {
-        message.setUserNameLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-        LOGGER.debug("Username length: " + message.getUserNameLength().getValue());
-        message.setUserName(
-                parseByteString(message.getUserNameLength().getValue(), StandardCharsets.US_ASCII));
-        LOGGER.debug("Username: " + message.getUserName().getValue());
-    }
-
-    private void parseServiceName() {
-        message.setServiceNameLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-        LOGGER.debug("Servicename length: " + message.getServiceNameLength().getValue());
-        message.setServiceName(
-                parseByteString(
-                        message.getServiceNameLength().getValue(), StandardCharsets.US_ASCII));
-        LOGGER.debug("Servicename: " + message.getServiceName().getValue());
-    }
-
     private void parseChangePassword() {
         message.setChangePassword(parseByteField(1));
         LOGGER.debug("Change password: " + message.getChangePassword().getValue());
@@ -61,17 +45,21 @@ public class UserAuthPasswordMessageParser extends SshMessageParser<UserAuthPass
         LOGGER.debug("Password: " + message.getPassword().getValue());
     }
 
+    private void parseNewPassword() {
+        message.setNewPasswordLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
+        LOGGER.debug("New password length: " + message.getNewPasswordLength().getValue());
+        message.setNewPassword(
+                parseByteString(message.getNewPasswordLength().getValue(), StandardCharsets.UTF_8));
+        LOGGER.debug("New password: " + message.getNewPassword().getValue());
+    }
+
     @Override
     protected void parseMessageSpecificContents() {
-        parseUserName();
-        parseServiceName();
-        // String "password" has no usage
-        LOGGER.debug(
-                parseByteString(
-                                parseIntField(DataFormatConstants.STRING_SIZE_LENGTH),
-                                StandardCharsets.US_ASCII)
-                        .toString());
+        super.parseMessageSpecificContents();
         parseChangePassword();
         parsePassword();
+        if (Converter.byteToBoolean(message.getChangePassword().getValue())) {
+            parseNewPassword();
+        }
     }
 }

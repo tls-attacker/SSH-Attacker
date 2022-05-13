@@ -1,0 +1,84 @@
+/*
+ * SSH-Attacker - A Modular Penetration Testing Framework for SSH
+ *
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ *
+ * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ */
+package de.rub.nds.sshattacker.core.protocol.authentication.parser;
+
+import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
+import de.rub.nds.sshattacker.core.protocol.authentication.AuthenticationPrompt;
+import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthInfoRequestMessage;
+import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
+import de.rub.nds.sshattacker.core.util.Converter;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+public class UserAuthInfoRequestMessageParser extends SshMessageParser<UserAuthInfoRequestMessage> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
+
+    public UserAuthInfoRequestMessageParser(byte[] array) {
+        super(array);
+    }
+
+    public UserAuthInfoRequestMessageParser(byte[] array, int startPosition) {
+        super(array, startPosition);
+    }
+
+    @Override
+    protected UserAuthInfoRequestMessage createMessage() {
+        return new UserAuthInfoRequestMessage();
+    }
+
+    private void parseUserName() {
+        message.setUserNameLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
+        LOGGER.debug("User name length: " + message.getUserNameLength().getValue());
+        message.setUserName(parseByteString(message.getUserNameLength().getValue()));
+        LOGGER.debug("User name: " + message.getUserName().getValue());
+    }
+
+    private void parseInstruction() {
+        message.setInstructionLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
+        LOGGER.debug("Instruction length: " + message.getInstructionLength().getValue());
+        message.setInstruction(parseByteString(message.getInstructionLength().getValue()));
+        LOGGER.debug("Instruction: " + message.getInstruction().getValue());
+    }
+
+    private void parseLanguageTag() {
+        message.setLanguageTagLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
+        LOGGER.debug("Language tag length: " + message.getLanguageTagLength().getValue());
+        message.setLanguageTag(parseByteString(message.getLanguageTagLength().getValue()));
+        LOGGER.debug("Language tag: " + message.getLanguageTag().getValue());
+    }
+
+    private void parsePrompts() {
+        message.setNumPrompts(parseIntField(DataFormatConstants.UINT32_SIZE));
+        LOGGER.debug("Number of prompts: " + message.getNumPrompts().getValue());
+
+        for (int i = 0; i < message.getNumPrompts().getValue(); i++) {
+            AuthenticationPrompt temp = new AuthenticationPrompt();
+            temp.setPromptLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
+            LOGGER.debug("Prompt[" + i + "] length: " + temp.getPromptLength().getValue());
+            temp.setPrompt(parseByteString(temp.getPromptLength().getValue()));
+            LOGGER.debug("Prompt[" + i + "]: " + temp.getPrompt().getValue());
+            temp.setEcho(parseByteField(1));
+            LOGGER.debug(
+                    "Prompt["
+                            + i
+                            + "] wants echo:"
+                            + Converter.byteToBoolean(temp.getEcho().getValue()));
+
+            message.getPrompts().add(temp);
+        }
+    }
+
+    @Override
+    protected void parseMessageSpecificContents() {
+        parseUserName();
+        parseInstruction();
+        parseLanguageTag();
+        parsePrompts();
+    }
+}

@@ -12,9 +12,7 @@ import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.exceptions.ParserException;
 import de.rub.nds.sshattacker.core.packet.AbstractPacket;
 import de.rub.nds.sshattacker.core.packet.BlobPacket;
-import de.rub.nds.sshattacker.core.protocol.authentication.parser.UserAuthBannerMessageParser;
-import de.rub.nds.sshattacker.core.protocol.authentication.parser.UserAuthFailureMessageParser;
-import de.rub.nds.sshattacker.core.protocol.authentication.parser.UserAuthSuccessMessageParser;
+import de.rub.nds.sshattacker.core.protocol.authentication.parser.*;
 import de.rub.nds.sshattacker.core.protocol.connection.parser.*;
 import de.rub.nds.sshattacker.core.protocol.transport.parser.*;
 import de.rub.nds.sshattacker.core.state.SshContext;
@@ -147,7 +145,10 @@ public abstract class ProtocolMessageParser<T extends ProtocolMessage<T>> extend
                     return getChannelRequestMessageParsing(raw);
                 case SSH_MSG_GLOBAL_REQUEST:
                     return getGlobalRequestMessageParsing(raw);
-
+                case SSH_MSG_USERAUTH_INFO_REQUEST:
+                    return new UserAuthInfoRequestMessageParser(raw).parse();
+                case SSH_MSG_USERAUTH_INFO_RESPONSE:
+                    return new UserAuthInfoResponseMessageParser(raw).parse();
                 default:
                     LOGGER.debug(
                             "Received unimplemented Message "
