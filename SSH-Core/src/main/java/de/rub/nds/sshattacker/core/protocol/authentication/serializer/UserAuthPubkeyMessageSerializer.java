@@ -24,20 +24,20 @@ public class UserAuthPubkeyMessageSerializer extends UserAuthRequestMessageSeria
         LOGGER.debug("Pubkey algorithm name length: " + message.getPubkeyAlgNameLength().getValue());
         appendInt(message.getPubkeyAlgNameLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
         LOGGER.debug("Pubkey algorithm name: " + message.getPubkeyAlgName().getValue());
-        appendString(message.getPubkeyAlgName().getValue(), StandardCharsets.UTF_8);
+        appendString(message.getPubkeyAlgName().getValue(), StandardCharsets.US_ASCII);
     }
     private void serializePubkey() {
         LOGGER.debug("Pubkey length: " + message.getPubkeyLength().getValue());
         appendInt(message.getPubkeyLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
         LOGGER.debug("Pubkey: " + message.getPubkey().getValue());
-        appendString(message.getPubkey().getValue(), StandardCharsets.UTF_8);
+        appendString(message.getPubkey().getValue(), StandardCharsets.US_ASCII);
     }
 
     private void serializeSignature() {
-        LOGGER.debug("Signature length; " + message.getSignatureLength().getValue());
+        LOGGER.debug("Signature length: " + message.getSignatureLength().getValue());
         appendInt(message.getSignatureLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
         LOGGER.debug("Signature: " + message.getSignature().getValue());
-        appendString(message.getSignature().getValue(), StandardCharsets.UTF_8);
+        appendString(message.getSignature().getValue(), StandardCharsets.US_ASCII);
     }
 
     @Override

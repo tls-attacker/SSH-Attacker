@@ -49,7 +49,6 @@ public class UserAuthPubkeyMessageParser extends UserAuthRequestMessageParser<Us
         LOGGER.debug("Signature length: " + message.getSignatureLength().getValue());
         message.setSignature(parseByteString(message.getSignatureLength().getValue(), StandardCharsets.US_ASCII));
         LOGGER.debug("Signature: " + message.getSignature().getValue());
-
     }
 
     @Override

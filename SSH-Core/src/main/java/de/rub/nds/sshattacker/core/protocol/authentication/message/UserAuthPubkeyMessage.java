@@ -33,25 +33,16 @@ public class UserAuthPubkeyMessage extends UserAuthRequestMessage<UserAuthPubkey
         return pubkeyLength;
     }
 
-    public void setPubkeyAlgNameLength(int pubkeyAlgNameLength) {
-        this.pubkeyAlgNameLength = ModifiableVariableFactory.safelySetValue(this.pubkeyAlgNameLength, pubkeyAlgNameLength);
-    }
-
-    public ModifiableInteger getPubkeyAlgNameLength() {
-        return pubkeyAlgNameLength;
-    }
-
-
     public void setPubkey(ModifiableString pubkey, boolean adjustLengthField) {
         if (adjustLengthField) {
-            setPubkeyLength(pubkey.getValue().getBytes(StandardCharsets.UTF_8).length);
+            setPubkeyLength(pubkey.getValue().getBytes(StandardCharsets.US_ASCII).length);
         }
         this.pubkey = pubkey;
     }
 
     public void setPubkey(String pubkey, boolean adjustLengthField) {
         if (adjustLengthField) {
-            setPubkeyLength(pubkey.getBytes(StandardCharsets.UTF_8).length);
+            setPubkeyLength(pubkey.getBytes(StandardCharsets.US_ASCII).length);
         }
         this.pubkey = ModifiableVariableFactory.safelySetValue(this.pubkey, pubkey);
     }
@@ -67,16 +58,25 @@ public class UserAuthPubkeyMessage extends UserAuthRequestMessage<UserAuthPubkey
     public ModifiableString getPubkey() {
         return pubkey;
     }
+
+    public void setPubkeyAlgNameLength(int pubkeyAlgNameLength) {
+        this.pubkeyAlgNameLength = ModifiableVariableFactory.safelySetValue(this.pubkeyAlgNameLength, pubkeyAlgNameLength);
+    }
+
+    public ModifiableInteger getPubkeyAlgNameLength() {
+        return pubkeyAlgNameLength;
+    }
+
     public void setPubkeyAlgName(ModifiableString pubkeyAlgName, boolean adjustLengthField) {
         if (adjustLengthField) {
-            setPubkeyAlgNameLength(pubkeyAlgName.getValue().getBytes(StandardCharsets.UTF_8).length);
+            setPubkeyAlgNameLength(pubkeyAlgName.getValue().getBytes(StandardCharsets.US_ASCII).length);
         }
         this.pubkeyAlgName = pubkeyAlgName;
     }
 
     public void setPubkeyAlgName(String pubkeyAlgName, boolean adjustLengthField) {
         if (adjustLengthField) {
-            setPubkeyAlgNameLength(pubkeyAlgName.getBytes(StandardCharsets.UTF_8).length);
+            setPubkeyAlgNameLength(pubkeyAlgName.getBytes(StandardCharsets.US_ASCII).length);
         }
         this.pubkeyAlgName = ModifiableVariableFactory.safelySetValue(this.pubkeyAlgName, pubkeyAlgName);
     }
@@ -88,12 +88,9 @@ public class UserAuthPubkeyMessage extends UserAuthRequestMessage<UserAuthPubkey
     public void setPubkeyAlgName(String pubkeyAlgName) {
         setPubkeyAlgName(pubkeyAlgName, false);
     }
+
     public ModifiableString getPubkeyAlgName() {
         return pubkeyAlgName;
-    }
-
-    public ModifiableByte getUseSignature() {
-        return useSignature;
     }
 
     public void setUseSignature(ModifiableByte useSignature) {
@@ -108,6 +105,10 @@ public class UserAuthPubkeyMessage extends UserAuthRequestMessage<UserAuthPubkey
         setUseSignature(Converter.booleanToByte(useSignature));
     }
 
+    public ModifiableByte getUseSignature() {
+        return useSignature;
+    }
+
     public void setSignatureLength(int signatureLength) {
         this.signatureLength = ModifiableVariableFactory.safelySetValue(this.signatureLength, signatureLength);
     }
@@ -118,14 +119,14 @@ public class UserAuthPubkeyMessage extends UserAuthRequestMessage<UserAuthPubkey
 
     public void setSignature(ModifiableString signature, boolean adjustLengthField) {
         if (adjustLengthField) {
-            setSignatureLength(signature.getValue().getBytes(StandardCharsets.UTF_8).length);
+            setSignatureLength(signature.getValue().getBytes(StandardCharsets.US_ASCII).length);
         }
         this.signature = signature;
     }
 
     public void setSignature(String signature, boolean adjustLengthField) {
         if (adjustLengthField) {
-            setSignatureLength(signature.getBytes(StandardCharsets.UTF_8).length);
+            setSignatureLength(signature.getBytes(StandardCharsets.US_ASCII).length);
         }
         this.signature = ModifiableVariableFactory.safelySetValue(this.signature, signature);
     }
@@ -138,9 +139,7 @@ public class UserAuthPubkeyMessage extends UserAuthRequestMessage<UserAuthPubkey
         setSignature(signature, false);
     }
 
-    public ModifiableString getSignature() {
-        return this.signature;
-    }
+    public ModifiableString getSignature() { return signature; }
 
     @Override
     public UserAuthPubkeyMessageHandler getHandler(SshContext context) {
