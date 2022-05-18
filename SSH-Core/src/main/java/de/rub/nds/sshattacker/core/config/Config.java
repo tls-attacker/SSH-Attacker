@@ -24,6 +24,7 @@ import java.io.InputStream;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
 import java.security.Security;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -265,7 +266,7 @@ public class Config implements Serializable {
     /** The List of responses used for UserAuthInfoResponseMessage */
     private List preConfiguredAuthResponses = new ArrayList();
     /** The public key used for authentication method publickey */
-    private String pubkey;
+    private byte[] pubkey;
     /** The public key algorithm name used for authentication method publickey */
     private String pubkeyAlgName;
     // endregion
@@ -1237,7 +1238,7 @@ public class Config implements Serializable {
         return preConfiguredAuthResponses;
     }
 
-    public String getPubkey() { return pubkey; }
+    public byte[] getPubkey() { return pubkey; }
 
     public String getPubkeyAlgName() { return pubkeyAlgName; }
 
@@ -1263,10 +1264,9 @@ public class Config implements Serializable {
         this.preConfiguredAuthResponses = preConfiguredAuthResponses;
     }
 
-    public void setPubkey(String pubkey) { this.pubkey = pubkey; }
-
-    public void setPubkeyAlgName(String pubkeyAlgName) { this.pubkeyAlgName = pubkeyAlgName; }
-
+    public void setPubkey(String pubkey) {
+        this.pubkey = Base64.getDecoder().decode(pubkey.getBytes(StandardCharsets.US_ASCII));
+    }
     // endregion
 
     // region Getters for Channel
