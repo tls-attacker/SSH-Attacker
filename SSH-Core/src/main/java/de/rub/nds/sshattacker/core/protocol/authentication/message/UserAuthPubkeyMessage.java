@@ -1,6 +1,7 @@
 package de.rub.nds.sshattacker.core.protocol.authentication.message;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
+import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
@@ -14,7 +15,7 @@ import java.nio.charset.StandardCharsets;
 public class UserAuthPubkeyMessage extends UserAuthRequestMessage<UserAuthPubkeyMessage>{
 
     private ModifiableInteger pubkeyLength;
-    private ModifiableString pubkey;
+    private ModifiableByteArray pubkey;
     private ModifiableInteger pubkeyAlgNameLength;
     private ModifiableString pubkeyAlgName;
     private ModifiableByte useSignature;
@@ -33,29 +34,29 @@ public class UserAuthPubkeyMessage extends UserAuthRequestMessage<UserAuthPubkey
         return pubkeyLength;
     }
 
-    public void setPubkey(ModifiableString pubkey, boolean adjustLengthField) {
+    public void setPubkey(ModifiableByteArray pubkey, boolean adjustLengthField) {
         if (adjustLengthField) {
-            setPubkeyLength(pubkey.getValue().getBytes(StandardCharsets.US_ASCII).length);
+            setPubkeyLength(pubkey.getValue().length);
         }
         this.pubkey = pubkey;
     }
 
-    public void setPubkey(String pubkey, boolean adjustLengthField) {
+    public void setPubkey(byte[] pubkey, boolean adjustLengthField) {
         if (adjustLengthField) {
-            setPubkeyLength(pubkey.getBytes(StandardCharsets.US_ASCII).length);
+            setPubkeyLength(pubkey.length);
         }
         this.pubkey = ModifiableVariableFactory.safelySetValue(this.pubkey, pubkey);
     }
 
-    public void setPubkey(ModifiableString pubkey) {
+    public void setPubkey(ModifiableByteArray pubkey) {
         setPubkey(pubkey, false);
     }
 
-    public void setPubkey(String pubkey) {
+    public void setPubkey(byte[] pubkey) {
         setPubkey(pubkey, false);
     }
 
-    public ModifiableString getPubkey() {
+    public ModifiableByteArray getPubkey() {
         return pubkey;
     }
 

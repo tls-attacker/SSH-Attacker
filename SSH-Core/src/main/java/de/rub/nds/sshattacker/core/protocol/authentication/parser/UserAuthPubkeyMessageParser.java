@@ -28,8 +28,8 @@ public class UserAuthPubkeyMessageParser extends UserAuthRequestMessageParser<Us
     private void parsePubkey() {
         message.setPubkeyLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
         LOGGER.debug("Pubkey length: " + message.getPubkeyLength().getValue());
-        message.setPubkey(parseByteString(message.getPubkeyLength().getValue(), StandardCharsets.US_ASCII));
-        LOGGER.debug("Pubkey: " + message.getPubkey().getValue());
+        message.setPubkey(parseByteArrayField(message.getPubkeyLength().getValue()));
+        LOGGER.debug("Pubkey: " + new String(message.getPubkey().getValue()));
     }
 
     private void parsePubkeyAlgName() {

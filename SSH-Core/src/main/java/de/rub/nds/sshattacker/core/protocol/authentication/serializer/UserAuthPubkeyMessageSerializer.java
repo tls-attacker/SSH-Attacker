@@ -29,8 +29,8 @@ public class UserAuthPubkeyMessageSerializer extends UserAuthRequestMessageSeria
     private void serializePubkey() {
         LOGGER.debug("Pubkey length: " + message.getPubkeyLength().getValue());
         appendInt(message.getPubkeyLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
-        LOGGER.debug("Pubkey: " + message.getPubkey().getValue());
-        appendString(message.getPubkey().getValue(), StandardCharsets.US_ASCII);
+        LOGGER.debug("Pubkey: " + new String(message.getPubkey().getValue()));
+        appendBytes(message.getPubkey().getValue());
     }
 
     private void serializeSignature() {
