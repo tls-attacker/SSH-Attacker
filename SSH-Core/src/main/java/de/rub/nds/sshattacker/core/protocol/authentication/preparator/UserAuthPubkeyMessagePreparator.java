@@ -1,6 +1,7 @@
 package de.rub.nds.sshattacker.core.protocol.authentication.preparator;
 
 import de.rub.nds.sshattacker.core.constants.AuthenticationMethod;
+import de.rub.nds.sshattacker.core.constants.PublicKeyFormat;
 import de.rub.nds.sshattacker.core.constants.ServiceType;
 import de.rub.nds.sshattacker.core.crypto.keys.SshPublicKey;
 import de.rub.nds.sshattacker.core.crypto.util.PublicKeyHelper;
@@ -20,8 +21,9 @@ public class UserAuthPubkeyMessagePreparator extends SshMessagePreparator<UserAu
         getObject().setServiceName(ServiceType.SSH_CONNECTION, true);
         getObject().setMethodName(AuthenticationMethod.PUBLICKEY, true);
         getObject().setUseSignature(false);
-        SshPublicKey<?,?> pk = PublicKeyHelper.parse(chooser.getConfig().getPubkey());
+        SshPublicKey<?, ?> pk = chooser.getConfig().getUserKeys().get(0);
         getObject().setPubkeyAlgName(pk.getPublicKeyFormat().getName(), true);
         getObject().setPubkey(PublicKeyHelper.encode(pk), true);
+
     }
 }
