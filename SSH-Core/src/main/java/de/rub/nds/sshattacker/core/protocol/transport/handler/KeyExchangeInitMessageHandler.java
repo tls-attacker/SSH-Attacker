@@ -155,7 +155,7 @@ public class KeyExchangeInitMessageHandler extends SshMessageHandler<KeyExchange
                                             .getServerSupportedEncryptionAlgorithmsServerToClient())
                             .orElse(null));
 
-            context.setServerHostKeyAlgorithm(
+            context.setHostKeyAlgorithm(
                     AlgorithmPicker.pickAlgorithm(
                                     context.getChooser().getClientSupportedHostKeyAlgorithms(),
                                     context.getChooser().getServerSupportedHostKeyAlgorithms())

@@ -39,10 +39,8 @@ public class UserAuthHostbasedMessagePreperator
         getObject().setUserName(chooser.getConfig().getUsername(), true);
         getObject().setServiceName(ServiceType.SSH_CONNECTION, true);
         getObject().setMethodName(AuthenticationMethod.HOST_BASED, true);
-        getObject().setPubKeyAlgorithm(chooser.getServerHostKeyAlgorithm().toString(), true);
-        getObject()
-                .setHostKeyBytes(
-                        PublicKeyHelper.encode(chooser.getNegotiatedServerHostKey()), true);
+        getObject().setPubKeyAlgorithm(chooser.getHostKeyAlgorithm().toString(), true);
+        getObject().setHostKeyBytes(PublicKeyHelper.encode(chooser.getNegotiatedHostKey()), true);
         Optional<String> hostName =
                 Optional.ofNullable(chooser.getContext().getConnection().getIp());
         getObject().setHostName(hostName.orElse(AliasedConnection.DEFAULT_IP), true);
@@ -80,7 +78,7 @@ public class UserAuthHostbasedMessagePreperator
         try {
             signingSignature =
                     SignatureFactory.getSigningSignature(
-                            publicKeyAlgorithm, chooser.getNegotiatedServerHostKey());
+                            publicKeyAlgorithm, chooser.getNegotiatedHostKey());
             SignatureEncoding signatureEncoding = publicKeyAlgorithm.getSignatureEncoding();
             ByteArrayOutputStream signatureOutput = new ByteArrayOutputStream();
             signatureOutput.write(

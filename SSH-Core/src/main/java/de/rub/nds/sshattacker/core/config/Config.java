@@ -237,10 +237,10 @@ public class Config implements Serializable {
      */
     private Boolean enforceSettings = false;
 
-    /** Host key of the server */
-    @XmlElement(name = "serverHostKey")
+    /** Host key */
+    @XmlElement(name = "hostKey")
     @XmlElementWrapper
-    private final List<SshPublicKey<?, ?>> serverHostKeys;
+    private final List<SshPublicKey<?, ?>> hostKeys;
 
     /**
      * RSA transient key used to encrypt the shared secret K. This may be a transient key generated
@@ -535,8 +535,8 @@ public class Config implements Serializable {
 
         // An OpenSSL generated 2048 bit RSA keypair is currently being used as the default host key
         // TODO: Load host keys from file to reduce length of Config class
-        serverHostKeys = new ArrayList<>();
-        serverHostKeys.add(
+        hostKeys = new ArrayList<>();
+        hostKeys.add(
                 new SshPublicKey<>(
                         PublicKeyFormat.SSH_RSA,
                         new CustomRsaPublicKey(
@@ -576,7 +576,7 @@ public class Config implements Serializable {
                                                 + "3F3EE64B04888B898864B08200A9E22909",
                                         16))));
         // SSH enforces the use of 1024 / 160 bit DSA keys as per RFC 4253 Sec. 6.6
-        serverHostKeys.add(
+        hostKeys.add(
                 new SshPublicKey<>(
                         PublicKeyFormat.SSH_DSS,
                         new CustomDsaPublicKey(
@@ -619,7 +619,7 @@ public class Config implements Serializable {
                                                 + "8ED403D3FC9C4C79",
                                         16),
                                 new BigInteger("7C6B4E2B32192EFC09B7CB12D85CBB4141EF7348", 16))));
-        serverHostKeys.add(
+        hostKeys.add(
                 new SshPublicKey<>(
                         PublicKeyFormat.ECDSA_SHA2_NISTP256,
                         new CustomEcPublicKey(
@@ -635,7 +635,7 @@ public class Config implements Serializable {
                                         "8DD62AA24F982B18446E3ECC7E50F8EB976610750242BA637C949F4C8FD6A1CF",
                                         16),
                                 NamedEcGroup.SECP256R1)));
-        serverHostKeys.add(
+        hostKeys.add(
                 new SshPublicKey<>(
                         PublicKeyFormat.ECDSA_SHA2_NISTP384,
                         new CustomEcPublicKey(
@@ -653,7 +653,7 @@ public class Config implements Serializable {
                                                 + "07E994348EE8095467499AE15F73FE0FD298",
                                         16),
                                 NamedEcGroup.SECP384R1)));
-        serverHostKeys.add(
+        hostKeys.add(
                 new SshPublicKey<>(
                         PublicKeyFormat.ECDSA_SHA2_NISTP521,
                         new CustomEcPublicKey(
@@ -673,7 +673,7 @@ public class Config implements Serializable {
                                                 + "8561C67B2AD2",
                                         16),
                                 NamedEcGroup.SECP521R1)));
-        serverHostKeys.add(
+        hostKeys.add(
                 new SshPublicKey<>(
                         PublicKeyFormat.SSH_ED25519,
                         new XCurveEcPublicKey(
@@ -1172,8 +1172,8 @@ public class Config implements Serializable {
         return fallbackRsaTransientPublicKey;
     }
 
-    public List<SshPublicKey<?, ?>> getServerHostKeys() {
-        return serverHostKeys;
+    public List<SshPublicKey<?, ?>> getHostKeys() {
+        return hostKeys;
     }
     // endregion
     // region Setters for KeyExchange

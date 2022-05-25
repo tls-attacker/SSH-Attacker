@@ -52,8 +52,8 @@ public final class KeyExchangeUtil {
      * @param message Message to prepare
      */
     public static void prepareHostKeyMessage(SshContext context, HostKeyMessage message) {
-        SshPublicKey<?, ?> serverHostKey = context.getChooser().getNegotiatedServerHostKey();
-        context.setServerHostKey(serverHostKey);
+        SshPublicKey<?, ?> serverHostKey = context.getChooser().getNegotiatedHostKey();
+        context.setHostKey(serverHostKey);
         context.getExchangeHashInputHolder().setServerHostKey(serverHostKey);
         message.setHostKeyBytes(PublicKeyHelper.encode(serverHostKey), true);
     }
@@ -67,9 +67,9 @@ public final class KeyExchangeUtil {
     public static void handleHostKeyMessage(SshContext context, HostKeyMessage message) {
         SshPublicKey<?, ?> hostKey =
                 PublicKeyHelper.parse(
-                        context.getChooser().getServerHostKeyAlgorithm().getKeyFormat(),
+                        context.getChooser().getHostKeyAlgorithm().getKeyFormat(),
                         message.getHostKeyBytes().getValue());
-        context.setServerHostKey(hostKey);
+        context.setHostKey(hostKey);
         context.getExchangeHashInputHolder().setServerHostKey(hostKey);
     }
 
@@ -83,15 +83,15 @@ public final class KeyExchangeUtil {
      */
     public static void prepareExchangeHashSignatureMessage(
             SshContext context, ExchangeHashSignatureMessage message) {
-        SshPublicKey<?, ?> serverHostKey = context.getChooser().getNegotiatedServerHostKey();
+        SshPublicKey<?, ?> serverHostKey = context.getChooser().getNegotiatedHostKey();
         Optional<byte[]> exchangeHash = context.getExchangeHash();
         SigningSignature signingSignature;
         try {
             signingSignature =
                     SignatureFactory.getSigningSignature(
-                            context.getChooser().getServerHostKeyAlgorithm(), serverHostKey);
+                            context.getChooser().getHostKeyAlgorithm(), serverHostKey);
             SignatureEncoding signatureEncoding =
-                    context.getChooser().getServerHostKeyAlgorithm().getSignatureEncoding();
+                    context.getChooser().getHostKeyAlgorithm().getSignatureEncoding();
             ByteArrayOutputStream signatureOutput = new ByteArrayOutputStream();
             signatureOutput.write(
                     ArrayConverter.intToBytes(
@@ -146,8 +146,8 @@ public final class KeyExchangeUtil {
      */
     private static void verifySignature(SshContext context, ExchangeHashSignatureMessage message) {
         byte[] exchangeHash = context.getExchangeHash().orElse(new byte[0]);
-        PublicKeyAlgorithm hostKeyAlgorithm = context.getChooser().getServerHostKeyAlgorithm();
-        Optional<SshPublicKey<?, ?>> hostKey = context.getServerHostKey();
+        PublicKeyAlgorithm hostKeyAlgorithm = context.getChooser().getHostKeyAlgorithm();
+        Optional<SshPublicKey<?, ?>> hostKey = context.getHostKey();
         if (hostKey.isPresent()) {
             RawSignature signature =
                     new SignatureParser(message.getSignature().getValue(), 0).parse();
