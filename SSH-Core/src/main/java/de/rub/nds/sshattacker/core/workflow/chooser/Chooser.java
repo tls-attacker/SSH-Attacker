@@ -114,7 +114,7 @@ public abstract class Chooser {
     // region Negotiated Parameters
     public abstract KeyExchangeAlgorithm getKeyExchangeAlgorithm();
 
-    public abstract PublicKeyAlgorithm getServerHostKeyAlgorithm();
+    public abstract PublicKeyAlgorithm getHostKeyAlgorithm();
 
     /**
      * Returns the encryption algorithm for outgoing packets (send). Internally, this either calls
@@ -216,7 +216,7 @@ public abstract class Chooser {
 
     public abstract RsaKeyExchange getRsaKeyExchange();
 
-    public abstract SshPublicKey<?, ?> getNegotiatedServerHostKey();
+    public abstract SshPublicKey<?, ?> getNegotiatedHostKey();
 
     public abstract Integer getMinimalDhGroupSize();
 
