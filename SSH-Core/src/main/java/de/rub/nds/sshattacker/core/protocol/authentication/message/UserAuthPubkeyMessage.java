@@ -20,7 +20,7 @@ public class UserAuthPubkeyMessage extends UserAuthRequestMessage<UserAuthPubkey
     private ModifiableString pubkeyAlgName;
     private ModifiableByte useSignature;
     private ModifiableInteger signatureLength;
-    private ModifiableString signature;
+    private ModifiableByteArray signature;
 
     public UserAuthPubkeyMessage() {
         super(AuthenticationMethod.PUBLICKEY);
@@ -118,29 +118,29 @@ public class UserAuthPubkeyMessage extends UserAuthRequestMessage<UserAuthPubkey
         return this.signatureLength;
     }
 
-    public void setSignature(ModifiableString signature, boolean adjustLengthField) {
+    public void setSignature(ModifiableByteArray signature, boolean adjustLengthField) {
         if (adjustLengthField) {
-            setSignatureLength(signature.getValue().getBytes(StandardCharsets.US_ASCII).length);
+            setSignatureLength(signature.getValue().length);
         }
         this.signature = signature;
     }
 
-    public void setSignature(String signature, boolean adjustLengthField) {
+    public void setSignature(byte[] signature, boolean adjustLengthField) {
         if (adjustLengthField) {
-            setSignatureLength(signature.getBytes(StandardCharsets.US_ASCII).length);
+            setSignatureLength(signature.length);
         }
         this.signature = ModifiableVariableFactory.safelySetValue(this.signature, signature);
     }
 
-    public void setSignature(ModifiableString signature) {
+    public void setSignature(ModifiableByteArray signature) {
         setSignature(signature, false);
     }
 
-    public void setSignature(String signature) {
+    public void setSignature(byte[] signature) {
         setSignature(signature, false);
     }
 
-    public ModifiableString getSignature() { return signature; }
+    public ModifiableByteArray getSignature() { return signature; }
 
     @Override
     public UserAuthPubkeyMessageHandler getHandler(SshContext context) {
