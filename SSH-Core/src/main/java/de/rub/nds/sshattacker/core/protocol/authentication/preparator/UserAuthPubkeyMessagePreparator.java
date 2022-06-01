@@ -72,7 +72,7 @@ public class UserAuthPubkeyMessagePreparator extends SshMessagePreparator<UserAu
                     .fromName(pk.getPublicKeyFormat().getName()), pk).sign(signatureOutput.toByteArray());
         } catch (IOException e) {
             LOGGER.error(
-                    "An unexpected IOException occured during signature generation, workflow will continue but " +
+                    "An unexpected IOException occurred during signature generation, workflow will continue but " +
                             "signature is left blank");
             LOGGER.debug(e);
             return new byte[0];
@@ -107,7 +107,7 @@ public class UserAuthPubkeyMessagePreparator extends SshMessagePreparator<UserAu
             return encodedSignatureOutput.toByteArray();
         } catch (IOException e) {
             LOGGER.error(
-                    "An unexpected IOException occured during signature generation, workflow will continue but " +
+                    "An unexpected IOException occurred during signature generation, workflow will continue but " +
                             "signature is left blank");
             LOGGER.debug(e);
             return new byte[0];
@@ -119,7 +119,7 @@ public class UserAuthPubkeyMessagePreparator extends SshMessagePreparator<UserAu
         getObject().setUserName(chooser.getConfig().getUsername(), true);
         getObject().setServiceName(ServiceType.SSH_CONNECTION, true);
         getObject().setMethodName(AuthenticationMethod.PUBLICKEY, true);
-        getObject().setUseSignature(true);
+        getObject().setUseSignature(chooser.getConfig().getUseSignature());
         SshPublicKey<?, ?> pk = chooser.getConfig().getUserKeys().get(0);
         getObject().setPubkeyAlgName(pk.getPublicKeyFormat().getName(), true);
         getObject().setPubkey(PublicKeyHelper.encode(pk), true);
