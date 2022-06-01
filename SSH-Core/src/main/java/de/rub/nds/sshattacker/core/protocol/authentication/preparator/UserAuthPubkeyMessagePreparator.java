@@ -17,6 +17,7 @@ import org.apache.logging.log4j.Logger;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.nio.charset.StandardCharsets;
 
 public class UserAuthPubkeyMessagePreparator extends SshMessagePreparator<UserAuthPubkeyMessage> {
@@ -47,13 +48,25 @@ public class UserAuthPubkeyMessagePreparator extends SshMessagePreparator<UserAu
         // use signature should always be 'true'
         try {
             ByteArrayOutputStream signatureOutput = new ByteArrayOutputStream();
+            signatureOutput.write(ArrayConverter.intToBytes(chooser.getContext().getSessionID().orElse(new byte[0]).length,
+                    DataFormatConstants.STRING_SIZE_LENGTH));
             signatureOutput.write(chooser.getContext().getSessionID().orElse(new byte[0]));
             signatureOutput.write(getObject().getMessageId().getValue());
+            signatureOutput.write(ArrayConverter.intToBytes(getObject().getUserNameLength().getValue(),
+                    DataFormatConstants.STRING_SIZE_LENGTH));
             signatureOutput.write(getObject().getUserName().getValue().getBytes(StandardCharsets.UTF_8));
+            signatureOutput.write(ArrayConverter.intToBytes(getObject().getServiceNameLength().getValue(),
+                    DataFormatConstants.STRING_SIZE_LENGTH));
             signatureOutput.write(getObject().getServiceName().getValue().getBytes(StandardCharsets.US_ASCII));
+            signatureOutput.write(ArrayConverter.intToBytes("publickey".getBytes(StandardCharsets.US_ASCII).length,
+                    DataFormatConstants.STRING_SIZE_LENGTH));
             signatureOutput.write("publickey".getBytes(StandardCharsets.US_ASCII));
             signatureOutput.write(getObject().getUseSignature().getValue());
+            signatureOutput.write(ArrayConverter.intToBytes(getObject().getPubkeyAlgNameLength().getValue(),
+                    DataFormatConstants.STRING_SIZE_LENGTH));
             signatureOutput.write(getObject().getPubkeyAlgName().getValue().getBytes(StandardCharsets.US_ASCII));
+            signatureOutput.write(ArrayConverter.intToBytes(getObject().getPubkeyLength().getValue(),
+                    DataFormatConstants.STRING_SIZE_LENGTH));
             signatureOutput.write(getObject().getPubkey().getValue());
             return SignatureFactory.getSigningSignature(PublicKeyAlgorithm
                     .fromName(pk.getPublicKeyFormat().getName()), pk).sign(signatureOutput.toByteArray());
