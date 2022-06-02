@@ -10,10 +10,7 @@ package de.rub.nds.sshattacker.core.workflow.action;
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.sshattacker.core.connection.AliasedConnection;
 import de.rub.nds.sshattacker.core.exceptions.WorkflowExecutionException;
-import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthBannerMessage;
-import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthFailureMessage;
-import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthPasswordMessage;
-import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthSuccessMessage;
+import de.rub.nds.sshattacker.core.protocol.authentication.message.*;
 import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessage;
 import de.rub.nds.sshattacker.core.protocol.connection.message.*;
 import de.rub.nds.sshattacker.core.protocol.transport.message.*;
@@ -76,7 +73,16 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
                 // Authentication Layer Protocol Messages
                 @XmlElement(type = UserAuthBannerMessage.class, name = "UserAuthBanner"),
                 @XmlElement(type = UserAuthFailureMessage.class, name = "UserAuthFailure"),
+                @XmlElement(type = UserAuthInfoRequestMessage.class, name = "UserAuthInfoRequest"),
+                @XmlElement(
+                        type = UserAuthInfoResponseMessage.class,
+                        name = "UserAuthInfoResponse"),
+                @XmlElement(
+                        type = UserAuthKeyboardInteractiveMessage.class,
+                        name = "UserAuthKeyboardInteractive"),
                 @XmlElement(type = UserAuthPasswordMessage.class, name = "UserAuthPassword"),
+                @XmlElement(type = UserAuthPkOkMessage.class, name = "UserAuthPkOk"),
+                @XmlElement(type = UserAuthPubkeyMessage.class, name = "UserAuthPubkey"),
                 @XmlElement(type = UserAuthSuccessMessage.class, name = "UserAuthSuccess"),
                 // Connection Layer Protocol Messages
                 @XmlElement(type = ChannelCloseMessage.class, name = "ChannelClose"),
@@ -89,6 +95,7 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
                         name = "ChannelOpenConfirmation"),
                 @XmlElement(type = ChannelOpenFailureMessage.class, name = "ChannelOpenFailure"),
                 @XmlElement(type = ChannelOpenMessage.class, name = "ChannelOpen"),
+                @XmlElement(type = ChannelRequestBreakMessage.class, name = "ChannelRequestBreak"),
                 @XmlElement(type = ChannelRequestEnvMessage.class, name = "ChannelRequestEnv"),
                 @XmlElement(type = ChannelRequestExecMessage.class, name = "ChannelRequestExec"),
                 @XmlElement(
@@ -97,10 +104,21 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
                 @XmlElement(
                         type = ChannelRequestExitStatusMessage.class,
                         name = "ChannelRequestExitStatus"),
+                @XmlElement(type = ChannelRequestPtyMessage.class, name = "ChannelRequestPty"),
                 @XmlElement(type = ChannelRequestShellMessage.class, name = "ChannelRequestShell"),
                 @XmlElement(
                         type = ChannelRequestSignalMessage.class,
                         name = "ChannelRequestSignal"),
+                @XmlElement(
+                        type = ChannelRequestSubsystemMessage.class,
+                        name = "ChannelRequestSubsystem"),
+                @XmlElement(
+                        type = ChannelRequestWindowChangeMessage.class,
+                        name = "ChannelRequestWindowChange"),
+                @XmlElement(type = ChannelRequestX11Message.class, name = "ChannelRequestX11"),
+                @XmlElement(
+                        type = ChannelRequestXonXoffMessage.class,
+                        name = "ChannelRequestXonXoff"),
                 @XmlElement(type = ChannelSuccessMessage.class, name = "ChannelSuccess"),
                 @XmlElement(type = ChannelWindowAdjustMessage.class, name = "ChannelWindowAdjust"),
                 @XmlElement(type = NoMoreSessionsMessage.class, name = "NoMoreSessions"),
@@ -109,7 +127,7 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
                 @XmlElement(type = TcpIpForwardCancelMessage.class, name = "TcpIpForwardCancel"),
                 @XmlElement(type = TcpIpForwardRequestMessage.class, name = "TcpIpForwardRequest"),
                 // Other
-                @XmlElement(type = UnknownMessage.class, name = "UnknownMessage")
+                @XmlElement(type = UnknownMessage.class, name = "UnknownMessage"),
             })
     protected List<ProtocolMessage<?>> expectedMessages = new ArrayList<>();
 

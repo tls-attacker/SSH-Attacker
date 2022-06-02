@@ -49,6 +49,8 @@ public class WorkflowConfigurationFactory {
                 return createDynamicKeyExchangeWorkflowTrace();
             case AUTH_PASSWORD:
                 return createAuthenticationWorkflowTrace(AuthenticationMethod.PASSWORD);
+            case AUTH_PUBLICKEY:
+                return createAuthenticationWorkflowTrace(AuthenticationMethod.PUBLICKEY);
             case AUTH_KEYBOARD_INTERACTIVE:
                 return createAuthenticationWorkflowTrace(AuthenticationMethod.KEYBOARD_INTERACTIVE);
             case FULL:
@@ -238,7 +240,6 @@ public class WorkflowConfigurationFactory {
     private void addAuthenticationProtocolActions(
             AuthenticationMethod method, WorkflowTrace workflow) {
         AliasedConnection connection = getDefaultConnection();
-        //noinspection SwitchStatementWithTooFewBranches
         switch (method) {
             case PASSWORD:
                 workflow.addSshActions(
@@ -246,6 +247,15 @@ public class WorkflowConfigurationFactory {
                                 connection,
                                 ConnectionEndType.CLIENT,
                                 new UserAuthPasswordMessage()),
+                        MessageActionFactory.createAction(
+                                connection,
+                                ConnectionEndType.SERVER,
+                                new UserAuthSuccessMessage()));
+                break;
+            case PUBLICKEY:
+                workflow.addSshActions(
+                        MessageActionFactory.createAction(
+                                connection, ConnectionEndType.CLIENT, new UserAuthPubkeyMessage()),
                         MessageActionFactory.createAction(
                                 connection,
                                 ConnectionEndType.SERVER,

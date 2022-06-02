@@ -70,7 +70,16 @@ public abstract class MessageAction extends ConnectionBoundAction {
                 // Authentication Layer Protocol Messages
                 @XmlElement(type = UserAuthBannerMessage.class, name = "UserAuthBanner"),
                 @XmlElement(type = UserAuthFailureMessage.class, name = "UserAuthFailure"),
+                @XmlElement(type = UserAuthInfoRequestMessage.class, name = "UserAuthInfoRequest"),
+                @XmlElement(
+                        type = UserAuthInfoResponseMessage.class,
+                        name = "UserAuthInfoResponse"),
+                @XmlElement(
+                        type = UserAuthKeyboardInteractiveMessage.class,
+                        name = "UserAuthKeyboardInteractive"),
                 @XmlElement(type = UserAuthPasswordMessage.class, name = "UserAuthPassword"),
+                @XmlElement(type = UserAuthPkOkMessage.class, name = "UserAuthPkOk"),
+                @XmlElement(type = UserAuthPubkeyMessage.class, name = "UserAuthPubkey"),
                 @XmlElement(type = UserAuthSuccessMessage.class, name = "UserAuthSuccess"),
                 // Connection Layer Protocol Messages
                 @XmlElement(type = ChannelCloseMessage.class, name = "ChannelClose"),
@@ -83,6 +92,7 @@ public abstract class MessageAction extends ConnectionBoundAction {
                         name = "ChannelOpenConfirmation"),
                 @XmlElement(type = ChannelOpenFailureMessage.class, name = "ChannelOpenFailure"),
                 @XmlElement(type = ChannelOpenMessage.class, name = "ChannelOpen"),
+                @XmlElement(type = ChannelRequestBreakMessage.class, name = "ChannelRequestBreak"),
                 @XmlElement(type = ChannelRequestEnvMessage.class, name = "ChannelRequestEnv"),
                 @XmlElement(type = ChannelRequestExecMessage.class, name = "ChannelRequestExec"),
                 @XmlElement(
@@ -91,10 +101,21 @@ public abstract class MessageAction extends ConnectionBoundAction {
                 @XmlElement(
                         type = ChannelRequestExitStatusMessage.class,
                         name = "ChannelRequestExitStatus"),
+                @XmlElement(type = ChannelRequestPtyMessage.class, name = "ChannelRequestPty"),
                 @XmlElement(type = ChannelRequestShellMessage.class, name = "ChannelRequestShell"),
                 @XmlElement(
                         type = ChannelRequestSignalMessage.class,
                         name = "ChannelRequestSignal"),
+                @XmlElement(
+                        type = ChannelRequestSubsystemMessage.class,
+                        name = "ChannelRequestSubsystem"),
+                @XmlElement(
+                        type = ChannelRequestWindowChangeMessage.class,
+                        name = "ChannelRequestWindowChange"),
+                @XmlElement(type = ChannelRequestX11Message.class, name = "ChannelRequestX11"),
+                @XmlElement(
+                        type = ChannelRequestXonXoffMessage.class,
+                        name = "ChannelRequestXonXoff"),
                 @XmlElement(type = ChannelSuccessMessage.class, name = "ChannelSuccess"),
                 @XmlElement(type = ChannelWindowAdjustMessage.class, name = "ChannelWindowAdjust"),
                 @XmlElement(type = NoMoreSessionsMessage.class, name = "NoMoreSessions"),
@@ -104,13 +125,6 @@ public abstract class MessageAction extends ConnectionBoundAction {
                 @XmlElement(type = TcpIpForwardRequestMessage.class, name = "TcpIpForwardRequest"),
                 // Other
                 @XmlElement(type = UnknownMessage.class, name = "UnknownMessage"),
-                @XmlElement(
-                        type = UserAuthKeyboardInteractiveMessage.class,
-                        name = "UserAuthKeyboardInteractive"),
-                @XmlElement(type = UserAuthInfoRequestMessage.class, name = "UserAuthInfoRequest"),
-                @XmlElement(
-                        type = UserAuthInfoResponseMessage.class,
-                        name = "UserAuthInfoResponse"),
             })
     protected List<ProtocolMessage<?>> messages = new ArrayList<>();
 
