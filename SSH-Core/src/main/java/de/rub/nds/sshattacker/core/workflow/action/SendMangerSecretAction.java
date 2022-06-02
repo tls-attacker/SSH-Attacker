@@ -33,6 +33,20 @@ public class SendMangerSecretAction extends SendAction {
 
     private final byte[] encodedSecret;
 
+    /** Creates the action using the default connection alias */
+    public SendMangerSecretAction() {
+        this(new byte[0]);
+    }
+
+    /**
+     * Creates the action using a custom connection alias
+     *
+     * @param connectionAlias The custom connection alias
+     */
+    public SendMangerSecretAction(String connectionAlias) {
+        this(new byte[0], connectionAlias);
+    }
+
     /**
      * Creates the action using the default connection alias
      *
@@ -44,7 +58,7 @@ public class SendMangerSecretAction extends SendAction {
     }
 
     /**
-     * Creates teh action using a custom connection alias
+     * Creates the action using a custom connection alias
      *
      * @param encodedSecret The OAEP encoded shared secret
      * @param connectionAlias The custom connection alias
