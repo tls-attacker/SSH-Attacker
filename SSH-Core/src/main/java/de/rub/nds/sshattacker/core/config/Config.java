@@ -266,7 +266,10 @@ public class Config implements Serializable {
     private List preConfiguredAuthResponses = new ArrayList();
     /** The List of user keys for public key authentication */
     private final List<SshPublicKey<?, ?>> userKeys;
-    /** The boolean if actual authentication or public key probing should be performed, TRUE = actual authentication */
+    /**
+     * The boolean if actual authentication or public key probing should be performed, TRUE = actual
+     * authentication
+     */
     private boolean useSignature;
     // endregion
 
@@ -740,7 +743,8 @@ public class Config implements Serializable {
         preConfiguredAuthResponses.add(List.of(new AuthenticationResponse(false)));
 
         // sshkey generated with "openssl ecparam -name secp521r1 -genkey -out key.pem"
-        // pubkey for authorized_keys file on host generated with "ssh-keygen -y -f key.pem > key.pub"
+        // pubkey for authorized_keys file on host generated with "ssh-keygen -y -f key.pem >
+        // key.pub"
         userKeys = new ArrayList<>();
         userKeys.add(
                 new SshPublicKey<>(
@@ -750,15 +754,15 @@ public class Config implements Serializable {
                                         NamedEcGroup.SECP521R1,
                                         ArrayConverter.hexStringToByteArray(
                                                 "0400c94546ca3a758e2be7700c6710dbc193db62b511b51c2e5ae09e92"
-                                                + "723527078bfc97d7cfe0b30adec350905d4c3b2f798b88d57ca1a4cc8600ff"
-                                                + "a9568b50b8553400ce85433ffb71641153d690d1c253c8ca395daa9100a547"
-                                                + "f42a0ca8aee4711bcc750294fd6719bb6348d0b92c51d00b7a12ba0646433d"
-                                                +"2f56677b4540ddf89a5da5")),
+                                                        + "723527078bfc97d7cfe0b30adec350905d4c3b2f798b88d57ca1a4cc8600ff"
+                                                        + "a9568b50b8553400ce85433ffb71641153d690d1c253c8ca395daa9100a547"
+                                                        + "f42a0ca8aee4711bcc750294fd6719bb6348d0b92c51d00b7a12ba0646433d"
+                                                        + "2f56677b4540ddf89a5da5")),
                                 NamedEcGroup.SECP521R1),
                         new CustomEcPrivateKey(
                                 new BigInteger(
                                         "000bf5ef2fdec03bfa6cf0e2c5ee58c8bcfe0d1b41920792151f2c51b0aa621743b6"
-                                        + "13056155bd51bde866f92b3e9bcfed230381b3dab5100a03c5965538c6f1c30a9",
+                                                + "13056155bd51bde866f92b3e9bcfed230381b3dab5100a03c5965538c6f1c30a9",
                                         16),
                                 NamedEcGroup.SECP521R1)));
         // endregion
@@ -1261,9 +1265,13 @@ public class Config implements Serializable {
         return preConfiguredAuthResponses;
     }
 
-    public List<SshPublicKey<?, ?>> getUserKeys() { return userKeys; }
+    public List<SshPublicKey<?, ?>> getUserKeys() {
+        return userKeys;
+    }
 
-    public boolean getUseSignature() { return useSignature; }
+    public boolean getUseSignature() {
+        return useSignature;
+    }
     // endregion
     // region Setters for Authentification
     public void setAuthenticationMethod(AuthenticationMethod authenticationMethod) {
@@ -1286,7 +1294,9 @@ public class Config implements Serializable {
         this.preConfiguredAuthResponses = preConfiguredAuthResponses;
     }
 
-    public void setUseSignature(boolean useSignature) { this.useSignature = useSignature; }
+    public void setUseSignature(boolean useSignature) {
+        this.useSignature = useSignature;
+    }
     // endregion
 
     // region Getters for Channel

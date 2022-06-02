@@ -1,3 +1,10 @@
+/*
+ * SSH-Attacker - A Modular Penetration Testing Framework for SSH
+ *
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ *
+ * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ */
 package de.rub.nds.sshattacker.core.protocol.authentication.message;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
@@ -9,7 +16,6 @@ import de.rub.nds.sshattacker.core.constants.AuthenticationMethod;
 import de.rub.nds.sshattacker.core.protocol.authentication.handler.UserAuthPubkeyMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.util.Converter;
-
 import java.nio.charset.StandardCharsets;
 
 public class UserAuthPubkeyMessage extends UserAuthRequestMessage<UserAuthPubkeyMessage> {
@@ -27,7 +33,8 @@ public class UserAuthPubkeyMessage extends UserAuthRequestMessage<UserAuthPubkey
     }
 
     public void setPubkeyLength(int pubkeyLength) {
-        this.pubkeyLength = ModifiableVariableFactory.safelySetValue(this.pubkeyLength, pubkeyLength);
+        this.pubkeyLength =
+                ModifiableVariableFactory.safelySetValue(this.pubkeyLength, pubkeyLength);
     }
 
     public ModifiableInteger getPubkeyLength() {
@@ -61,8 +68,9 @@ public class UserAuthPubkeyMessage extends UserAuthRequestMessage<UserAuthPubkey
     }
 
     public void setPubkeyAlgNameLength(int pubkeyAlgNameLength) {
-        this.pubkeyAlgNameLength = ModifiableVariableFactory.safelySetValue(this.pubkeyAlgNameLength,
-                pubkeyAlgNameLength);
+        this.pubkeyAlgNameLength =
+                ModifiableVariableFactory.safelySetValue(
+                        this.pubkeyAlgNameLength, pubkeyAlgNameLength);
     }
 
     public ModifiableInteger getPubkeyAlgNameLength() {
@@ -71,7 +79,8 @@ public class UserAuthPubkeyMessage extends UserAuthRequestMessage<UserAuthPubkey
 
     public void setPubkeyAlgName(ModifiableString pubkeyAlgName, boolean adjustLengthField) {
         if (adjustLengthField) {
-            setPubkeyAlgNameLength(pubkeyAlgName.getValue().getBytes(StandardCharsets.US_ASCII).length);
+            setPubkeyAlgNameLength(
+                    pubkeyAlgName.getValue().getBytes(StandardCharsets.US_ASCII).length);
         }
         this.pubkeyAlgName = pubkeyAlgName;
     }
@@ -80,7 +89,8 @@ public class UserAuthPubkeyMessage extends UserAuthRequestMessage<UserAuthPubkey
         if (adjustLengthField) {
             setPubkeyAlgNameLength(pubkeyAlgName.getBytes(StandardCharsets.US_ASCII).length);
         }
-        this.pubkeyAlgName = ModifiableVariableFactory.safelySetValue(this.pubkeyAlgName, pubkeyAlgName);
+        this.pubkeyAlgName =
+                ModifiableVariableFactory.safelySetValue(this.pubkeyAlgName, pubkeyAlgName);
     }
 
     public void setPubkeyAlgName(ModifiableString pubkeyAlgName) {
@@ -100,7 +110,8 @@ public class UserAuthPubkeyMessage extends UserAuthRequestMessage<UserAuthPubkey
     }
 
     public void setUseSignature(byte useSignature) {
-        this.useSignature = ModifiableVariableFactory.safelySetValue(this.useSignature, useSignature);
+        this.useSignature =
+                ModifiableVariableFactory.safelySetValue(this.useSignature, useSignature);
     }
 
     public void setUseSignature(boolean useSignature) {
@@ -112,7 +123,8 @@ public class UserAuthPubkeyMessage extends UserAuthRequestMessage<UserAuthPubkey
     }
 
     public void setSignatureLength(int signatureLength) {
-        this.signatureLength = ModifiableVariableFactory.safelySetValue(this.signatureLength, signatureLength);
+        this.signatureLength =
+                ModifiableVariableFactory.safelySetValue(this.signatureLength, signatureLength);
     }
 
     public ModifiableInteger getSignatureLength() {
@@ -141,7 +153,9 @@ public class UserAuthPubkeyMessage extends UserAuthRequestMessage<UserAuthPubkey
         setSignature(signature, false);
     }
 
-    public ModifiableByteArray getSignature() { return signature; }
+    public ModifiableByteArray getSignature() {
+        return signature;
+    }
 
     @Override
     public UserAuthPubkeyMessageHandler getHandler(SshContext context) {

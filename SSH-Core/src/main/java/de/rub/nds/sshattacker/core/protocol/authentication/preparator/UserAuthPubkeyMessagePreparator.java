@@ -1,3 +1,10 @@
+/*
+ * SSH-Attacker - A Modular Penetration Testing Framework for SSH
+ *
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ *
+ * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ */
 package de.rub.nds.sshattacker.core.protocol.authentication.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -12,12 +19,11 @@ import de.rub.nds.sshattacker.core.exceptions.CryptoException;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthPubkeyMessage;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class UserAuthPubkeyMessagePreparator extends SshMessagePreparator<UserAuthPubkeyMessage> {
 
@@ -47,42 +53,57 @@ public class UserAuthPubkeyMessagePreparator extends SshMessagePreparator<UserAu
         // use signature should always be 'true'
         try {
             ByteArrayOutputStream signatureOutput = new ByteArrayOutputStream();
-            signatureOutput.write(ArrayConverter.intToBytes(chooser.getContext().getSessionID().orElse(new byte[0]).length,
-                    DataFormatConstants.STRING_SIZE_LENGTH));
+            signatureOutput.write(
+                    ArrayConverter.intToBytes(
+                            chooser.getContext().getSessionID().orElse(new byte[0]).length,
+                            DataFormatConstants.STRING_SIZE_LENGTH));
             signatureOutput.write(chooser.getContext().getSessionID().orElse(new byte[0]));
             signatureOutput.write(getObject().getMessageId().getValue());
-            signatureOutput.write(ArrayConverter.intToBytes(getObject().getUserNameLength().getValue(),
-                    DataFormatConstants.STRING_SIZE_LENGTH));
-            signatureOutput.write(getObject().getUserName().getValue().getBytes(StandardCharsets.UTF_8));
-            signatureOutput.write(ArrayConverter.intToBytes(getObject().getServiceNameLength().getValue(),
-                    DataFormatConstants.STRING_SIZE_LENGTH));
-            signatureOutput.write(getObject().getServiceName().getValue().getBytes(StandardCharsets.US_ASCII));
-            signatureOutput.write(ArrayConverter.intToBytes("publickey".getBytes(StandardCharsets.US_ASCII).length,
-                    DataFormatConstants.STRING_SIZE_LENGTH));
+            signatureOutput.write(
+                    ArrayConverter.intToBytes(
+                            getObject().getUserNameLength().getValue(),
+                            DataFormatConstants.STRING_SIZE_LENGTH));
+            signatureOutput.write(
+                    getObject().getUserName().getValue().getBytes(StandardCharsets.UTF_8));
+            signatureOutput.write(
+                    ArrayConverter.intToBytes(
+                            getObject().getServiceNameLength().getValue(),
+                            DataFormatConstants.STRING_SIZE_LENGTH));
+            signatureOutput.write(
+                    getObject().getServiceName().getValue().getBytes(StandardCharsets.US_ASCII));
+            signatureOutput.write(
+                    ArrayConverter.intToBytes(
+                            "publickey".getBytes(StandardCharsets.US_ASCII).length,
+                            DataFormatConstants.STRING_SIZE_LENGTH));
             signatureOutput.write("publickey".getBytes(StandardCharsets.US_ASCII));
             signatureOutput.write(getObject().getUseSignature().getValue());
-            signatureOutput.write(ArrayConverter.intToBytes(getObject().getPubkeyAlgNameLength().getValue(),
-                    DataFormatConstants.STRING_SIZE_LENGTH));
-            signatureOutput.write(getObject().getPubkeyAlgName().getValue().getBytes(StandardCharsets.US_ASCII));
-            signatureOutput.write(ArrayConverter.intToBytes(getObject().getPubkeyLength().getValue(),
-                    DataFormatConstants.STRING_SIZE_LENGTH));
+            signatureOutput.write(
+                    ArrayConverter.intToBytes(
+                            getObject().getPubkeyAlgNameLength().getValue(),
+                            DataFormatConstants.STRING_SIZE_LENGTH));
+            signatureOutput.write(
+                    getObject().getPubkeyAlgName().getValue().getBytes(StandardCharsets.US_ASCII));
+            signatureOutput.write(
+                    ArrayConverter.intToBytes(
+                            getObject().getPubkeyLength().getValue(),
+                            DataFormatConstants.STRING_SIZE_LENGTH));
             signatureOutput.write(getObject().getPubkey().getValue());
-            return SignatureFactory.getSigningSignature(PublicKeyAlgorithm
-                    .fromName(pk.getPublicKeyFormat().getName()), pk).sign(signatureOutput.toByteArray());
+            return SignatureFactory.getSigningSignature(
+                            PublicKeyAlgorithm.fromName(pk.getPublicKeyFormat().getName()), pk)
+                    .sign(signatureOutput.toByteArray());
         } catch (IOException e) {
             LOGGER.error(
-                    "An unexpected IOException occurred during signature generation, workflow will continue but " +
-                            "signature is left blank");
+                    "An unexpected IOException occurred during signature generation, workflow will continue but "
+                            + "signature is left blank");
             LOGGER.debug(e);
             return new byte[0];
         } catch (CryptoException e) {
             LOGGER.error(
-                    "An unexpected cryptographic exception occurred during signature generation, workflow will " +
-                            "continue but signature is left blank");
+                    "An unexpected cryptographic exception occurred during signature generation, workflow will "
+                            + "continue but signature is left blank");
             LOGGER.debug(e);
             return new byte[0];
         }
-
     }
 
     /* RFC 5656
@@ -96,18 +117,23 @@ public class UserAuthPubkeyMessagePreparator extends SshMessagePreparator<UserAu
             ByteArrayOutputStream encodedSignatureOutput = new ByteArrayOutputStream();
             encodedSignatureOutput.write(
                     ArrayConverter.intToBytes(
-                            getObject().getPubkeyAlgName().getValue().getBytes(StandardCharsets.US_ASCII).length,
+                            getObject()
+                                    .getPubkeyAlgName()
+                                    .getValue()
+                                    .getBytes(StandardCharsets.US_ASCII)
+                                    .length,
                             DataFormatConstants.STRING_SIZE_LENGTH));
-            encodedSignatureOutput.write(getObject().getPubkeyAlgName().getValue().getBytes(StandardCharsets
-                    .US_ASCII));
-            encodedSignatureOutput.write(ArrayConverter.intToBytes(signatureBlob.length,
-                    DataFormatConstants.STRING_SIZE_LENGTH));
+            encodedSignatureOutput.write(
+                    getObject().getPubkeyAlgName().getValue().getBytes(StandardCharsets.US_ASCII));
+            encodedSignatureOutput.write(
+                    ArrayConverter.intToBytes(
+                            signatureBlob.length, DataFormatConstants.STRING_SIZE_LENGTH));
             encodedSignatureOutput.write(signatureBlob);
             return encodedSignatureOutput.toByteArray();
         } catch (IOException e) {
             LOGGER.error(
-                    "An unexpected IOException occurred during signature generation, workflow will continue but " +
-                            "signature is left blank");
+                    "An unexpected IOException occurred during signature generation, workflow will continue but "
+                            + "signature is left blank");
             LOGGER.debug(e);
             return new byte[0];
         }
