@@ -144,7 +144,7 @@ public class UserAuthPubkeyMessagePreparator extends SshMessagePreparator<UserAu
         getObject().setUserName(chooser.getConfig().getUsername(), true);
         getObject().setServiceName(ServiceType.SSH_CONNECTION, true);
         getObject().setMethodName(AuthenticationMethod.PUBLICKEY, true);
-        getObject().setUseSignature(chooser.getConfig().getUseSignature());
+        getObject().setUseSignature(true);
         SshPublicKey<?, ?> pk = chooser.getConfig().getUserKeys().get(0);
         getObject().setPubkeyAlgName(pk.getPublicKeyFormat().getName(), true);
         getObject().setPubkey(PublicKeyHelper.encode(pk), true);

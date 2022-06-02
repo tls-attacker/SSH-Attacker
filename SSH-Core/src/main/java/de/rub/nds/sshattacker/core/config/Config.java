@@ -266,11 +266,6 @@ public class Config implements Serializable {
     private List preConfiguredAuthResponses = new ArrayList();
     /** The List of user keys for public key authentication */
     private final List<SshPublicKey<?, ?>> userKeys;
-    /**
-     * The boolean if actual authentication or public key probing should be performed, TRUE = actual
-     * authentication
-     */
-    private boolean useSignature;
     // endregion
 
     // region Channel
@@ -737,7 +732,6 @@ public class Config implements Serializable {
         serviceName = "ssh-userauth";
         username = "sshattacker";
         password = "bydahirsch";
-        useSignature = true;
 
         preConfiguredAuthResponses.add(List.of(new AuthenticationResponse("bydahirsch", false)));
         preConfiguredAuthResponses.add(List.of(new AuthenticationResponse(false)));
@@ -1268,10 +1262,6 @@ public class Config implements Serializable {
     public List<SshPublicKey<?, ?>> getUserKeys() {
         return userKeys;
     }
-
-    public boolean getUseSignature() {
-        return useSignature;
-    }
     // endregion
     // region Setters for Authentification
     public void setAuthenticationMethod(AuthenticationMethod authenticationMethod) {
@@ -1292,10 +1282,6 @@ public class Config implements Serializable {
 
     public void setPreConfiguredAuthResponses(List preConfiguredAuthResponses) {
         this.preConfiguredAuthResponses = preConfiguredAuthResponses;
-    }
-
-    public void setUseSignature(boolean useSignature) {
-        this.useSignature = useSignature;
     }
     // endregion
 
