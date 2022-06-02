@@ -4,7 +4,7 @@ import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthPkOkM
 import de.rub.nds.sshattacker.core.protocol.authentication.parser.UserAuthPkOkMessageParser;
 import de.rub.nds.sshattacker.core.protocol.authentication.preparator.UserAuthPkOkMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.authentication.serializer.UserAuthPkOkMessageSerializer;
-import de.rub.nds.sshattacker.core.protocol.common.*;
+import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class UserAuthPkOkMessageHandler extends SshMessageHandler<UserAuthPkOkMessage> {

@@ -5,6 +5,7 @@ import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthPubke
 import de.rub.nds.sshattacker.core.util.Converter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
 import java.nio.charset.StandardCharsets;
 
 public class UserAuthPubkeyMessageSerializer extends UserAuthRequestMessageSerializer<UserAuthPubkeyMessage> {
@@ -26,6 +27,7 @@ public class UserAuthPubkeyMessageSerializer extends UserAuthRequestMessageSeria
         LOGGER.debug("Pubkey algorithm name: " + message.getPubkeyAlgName().getValue());
         appendString(message.getPubkeyAlgName().getValue(), StandardCharsets.US_ASCII);
     }
+
     private void serializePubkey() {
         LOGGER.debug("Pubkey length: " + message.getPubkeyLength().getValue());
         appendInt(message.getPubkeyLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);

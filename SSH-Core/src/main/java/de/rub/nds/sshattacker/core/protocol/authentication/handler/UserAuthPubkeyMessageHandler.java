@@ -18,7 +18,7 @@ public class UserAuthPubkeyMessageHandler extends SshMessageHandler<UserAuthPubk
     }
 
     @Override
-    public void adjustContext() {}
+    public void adjustContext() { }
 
     @Override
     public UserAuthPubkeyMessageParser getParser(byte[] array) {

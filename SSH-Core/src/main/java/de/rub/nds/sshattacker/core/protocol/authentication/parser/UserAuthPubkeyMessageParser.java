@@ -35,7 +35,8 @@ public class UserAuthPubkeyMessageParser extends UserAuthRequestMessageParser<Us
     private void parsePubkeyAlgName() {
         message.setPubkeyAlgNameLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
         LOGGER.debug("Pubkey algorithm name length: " + message.getPubkeyAlgNameLength().getValue());
-        message.setPubkeyAlgName(parseByteString(message.getPubkeyAlgNameLength().getValue(), StandardCharsets.US_ASCII));
+        message.setPubkeyAlgName(parseByteString(message.getPubkeyAlgNameLength().getValue(),
+                StandardCharsets.US_ASCII));
         LOGGER.debug("Pubkey algorithm name: " + message.getPubkeyAlgName().getValue());
     }
 

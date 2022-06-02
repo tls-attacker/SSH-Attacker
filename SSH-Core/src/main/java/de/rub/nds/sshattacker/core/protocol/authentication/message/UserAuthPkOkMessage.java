@@ -49,7 +49,7 @@ public class UserAuthPkOkMessage extends SshMessage<UserAuthPkOkMessage> {
 
     public ModifiableInteger getPubkeyLength() { return pubkeyLength; }
 
-    public void setPubkeyLength(int pubkeyLength){
+    public void setPubkeyLength(int pubkeyLength) {
         this.pubkeyLength = ModifiableVariableFactory.safelySetValue(this.pubkeyLength, pubkeyLength);
     }
 

@@ -12,7 +12,7 @@ import de.rub.nds.sshattacker.core.util.Converter;
 
 import java.nio.charset.StandardCharsets;
 
-public class UserAuthPubkeyMessage extends UserAuthRequestMessage<UserAuthPubkeyMessage>{
+public class UserAuthPubkeyMessage extends UserAuthRequestMessage<UserAuthPubkeyMessage> {
 
     private ModifiableInteger pubkeyLength;
     private ModifiableByteArray pubkey;
@@ -26,7 +26,7 @@ public class UserAuthPubkeyMessage extends UserAuthRequestMessage<UserAuthPubkey
         super(AuthenticationMethod.PUBLICKEY);
     }
 
-    public void setPubkeyLength(int pubkeyLength){
+    public void setPubkeyLength(int pubkeyLength) {
         this.pubkeyLength = ModifiableVariableFactory.safelySetValue(this.pubkeyLength, pubkeyLength);
     }
 
@@ -61,7 +61,8 @@ public class UserAuthPubkeyMessage extends UserAuthRequestMessage<UserAuthPubkey
     }
 
     public void setPubkeyAlgNameLength(int pubkeyAlgNameLength) {
-        this.pubkeyAlgNameLength = ModifiableVariableFactory.safelySetValue(this.pubkeyAlgNameLength, pubkeyAlgNameLength);
+        this.pubkeyAlgNameLength = ModifiableVariableFactory.safelySetValue(this.pubkeyAlgNameLength,
+                pubkeyAlgNameLength);
     }
 
     public ModifiableInteger getPubkeyAlgNameLength() {
