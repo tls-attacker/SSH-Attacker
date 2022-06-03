@@ -89,7 +89,7 @@
                                         <destFileName>${project.build.finalName}.${project.packaging}</destFileName>
                                     </artifactItem>
                                 </artifactItems>
-                                <outputDirectory>${project.parent.basedir}/apps</outputDirectory>
+                                <outputDirectory>${maven.multiModuleProjectDirectory}/apps</outputDirectory>
                             </configuration>
                         </execution>
                         <execution>
@@ -99,7 +99,7 @@
                                 <goal>copy-dependencies</goal>
                             </goals>
                             <configuration>
-                                <outputDirectory>${project.parent.basedir}/apps/lib</outputDirectory>
+                                <outputDirectory>${maven.multiModuleProjectDirectory}/apps/lib</outputDirectory>
                                 <!--Ensures only runnable dependencies are included-->
                                 <includeScope>compile</includeScope>
                             </configuration>
