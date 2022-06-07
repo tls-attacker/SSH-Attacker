@@ -74,6 +74,7 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
                 @XmlElement(type = UserAuthBannerMessage.class, name = "UserAuthBanner"),
                 @XmlElement(type = UserAuthFailureMessage.class, name = "UserAuthFailure"),
                 @XmlElement(type = UserAuthInfoRequestMessage.class, name = "UserAuthInfoRequest"),
+                @XmlElement(type = UserAuthHostbasedMessage.class, name = "UserAuthHostbased"),
                 @XmlElement(
                         type = UserAuthInfoResponseMessage.class,
                         name = "UserAuthInfoResponse"),
