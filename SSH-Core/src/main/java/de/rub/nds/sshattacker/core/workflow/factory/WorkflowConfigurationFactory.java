@@ -285,7 +285,18 @@ public class WorkflowConfigurationFactory {
                                 new UserAuthInfoResponseMessage()),
                         MessageActionFactory.createAction(
                                 connection,
+                                ConnectionEndType.SERVER,
+                                new UserAuthSuccessMessage()));
+                break;
+            case HOST_BASED:
+                workflow.addSshActions(
+                        MessageActionFactory.createAction(
+                                connection,
                                 ConnectionEndType.CLIENT,
+                                new UserAuthHostbasedMessage()),
+                        MessageActionFactory.createAction(
+                                connection,
+                                ConnectionEndType.SERVER,
                                 new UserAuthSuccessMessage()));
                 break;
             default:

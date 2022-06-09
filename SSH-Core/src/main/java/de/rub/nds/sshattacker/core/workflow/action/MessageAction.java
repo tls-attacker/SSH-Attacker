@@ -77,6 +77,7 @@ public abstract class MessageAction extends ConnectionBoundAction {
                 @XmlElement(
                         type = UserAuthKeyboardInteractiveMessage.class,
                         name = "UserAuthKeyboardInteractive"),
+                @XmlElement(type = UserAuthHostbasedMessage.class, name = "UserAuthHostbased"),
                 @XmlElement(type = UserAuthPasswordMessage.class, name = "UserAuthPassword"),
                 @XmlElement(type = UserAuthPkOkMessage.class, name = "UserAuthPkOk"),
                 @XmlElement(type = UserAuthPubkeyMessage.class, name = "UserAuthPubkey"),

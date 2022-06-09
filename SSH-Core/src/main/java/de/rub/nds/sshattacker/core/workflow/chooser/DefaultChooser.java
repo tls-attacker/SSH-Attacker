@@ -523,8 +523,8 @@ public class DefaultChooser extends Chooser {
      * @return The negotiated host key algorithm
      */
     @Override
-    public PublicKeyAlgorithm getServerHostKeyAlgorithm() {
-        return context.getServerHostKeyAlgorithm()
+    public PublicKeyAlgorithm getHostKeyAlgorithm() {
+        return context.getHostKeyAlgorithm()
                 .orElseGet(
                         () -> {
                             PublicKeyAlgorithm negotiatedAlgorithm =
@@ -539,7 +539,7 @@ public class DefaultChooser extends Chooser {
                                                             : this
                                                                     .getServerSupportedHostKeyAlgorithms()
                                                                     .get(0));
-                            context.setServerHostKeyAlgorithm(negotiatedAlgorithm);
+                            context.setHostKeyAlgorithm(negotiatedAlgorithm);
                             return negotiatedAlgorithm;
                         });
     }
@@ -843,11 +843,10 @@ public class DefaultChooser extends Chooser {
      *     configured, the first key in the list of host keys will be returned as fallback.
      */
     @Override
-    public SshPublicKey<?, ?> getNegotiatedServerHostKey() {
-        Optional<PublicKeyAlgorithm> negotiatedServerHostKeyAlgorithm =
-                context.getServerHostKeyAlgorithm();
-        SshPublicKey<?, ?> fallback = config.getServerHostKeys().get(0);
-        if (negotiatedServerHostKeyAlgorithm.isEmpty()) {
+    public SshPublicKey<?, ?> getNegotiatedHostKey() {
+        Optional<PublicKeyAlgorithm> negotiatedHostKeyAlgorithm = context.getHostKeyAlgorithm();
+        SshPublicKey<?, ?> fallback = config.getHostKeys().get(0);
+        if (negotiatedHostKeyAlgorithm.isEmpty()) {
             LOGGER.warn(
                     "No server host key algorithm was negotiated, defaulting to the first server host key ("
                             + fallback
@@ -856,11 +855,11 @@ public class DefaultChooser extends Chooser {
         }
         // Find the first configured host key whose format matches the negotiated server host key
         // format
-        return config.getServerHostKeys().stream()
+        return config.getHostKeys().stream()
                 .filter(
                         hk ->
                                 hk.getPublicKeyFormat()
-                                        == negotiatedServerHostKeyAlgorithm.get().getKeyFormat())
+                                        == negotiatedHostKeyAlgorithm.get().getKeyFormat())
                 .findFirst()
                 .orElseGet(
                         () -> {
