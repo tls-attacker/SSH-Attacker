@@ -38,7 +38,7 @@ public class UserAuthHostbasedMessageHandler extends SshMessageHandler<UserAuthH
     }
 
     public void checkSignature() {
-        if (message.getHostKeyBytes().getValue() != null) {
+        if (message.getHostKeyBytes() != null && message.getHostKeyBytes().getValue() != null) {
             PublicKeyAlgorithm hostKeyAlgorithm =
                     PublicKeyAlgorithm.fromName(message.getPubKeyAlgorithm().getValue());
             SshPublicKey<?, ?> hostKey =
@@ -71,7 +71,7 @@ public class UserAuthHostbasedMessageHandler extends SshMessageHandler<UserAuthH
         return ArrayConverter.concatenate(
                 Converter.bytesToLengthPrefixedBinaryString(
                         context.getSessionID().orElse(new byte[] {})),
-                new byte[] {message.getMessageId().getValue().byteValue()},
+                new byte[] {message.getMessageId().getValue()},
                 Converter.stringToLengthPrefixedBinaryString(message.getUserName().getValue()),
                 Converter.stringToLengthPrefixedBinaryString(message.getServiceName().getValue()),
                 Converter.stringToLengthPrefixedBinaryString(message.getMethodName().getValue()),
