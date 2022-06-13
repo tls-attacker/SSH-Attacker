@@ -213,6 +213,9 @@ public class SshContext {
     /** If set to true, a version exchange message was sent by each side */
     private boolean versionExchangeCompleted = false;
 
+    // Quick hack to fix Version-followed-by-KEXINIT problem.
+    public byte[] pendingData = null;
+
     // region Constructors and Initalization
     public SshContext() {
         this(Config.createConfig());

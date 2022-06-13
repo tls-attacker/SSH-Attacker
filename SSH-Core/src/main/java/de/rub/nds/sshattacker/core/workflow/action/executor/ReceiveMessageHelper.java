@@ -8,6 +8,7 @@
 package de.rub.nds.sshattacker.core.workflow.action.executor;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.sshattacker.core.constants.PacketLayerType;
 import de.rub.nds.sshattacker.core.exceptions.CryptoException;
 import de.rub.nds.sshattacker.core.exceptions.ParserException;
 import de.rub.nds.sshattacker.core.packet.AbstractPacket;
@@ -20,6 +21,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -84,7 +87,28 @@ public class ReceiveMessageHelper {
      * @throws IOException Thrown by the underlying transport handler if receiving failed
      */
     private byte[] receiveBytes(SshContext context) throws IOException {
-        return context.getTransportHandler().fetchData();
+        byte[] data;
+
+        if (context.pendingData != null) {
+            data = context.pendingData;
+            context.pendingData = null;
+        } else {
+            data = context.getTransportHandler().fetchData();
+        }
+        LOGGER.trace("Received Data: " + ArrayConverter.bytesToRawHexString(data));
+
+        // Quick hack to deal with Version followed by KEXINIT.
+        if (context.getPacketLayerType() == PacketLayerType.BLOB) {
+            int pos = ArrayUtils.indexOf(data, (byte) '\n');
+            if (pos != -1 && pos != data.length - 1) {
+                byte[] newData = new byte[pos + 1];
+                context.pendingData = new byte[data.length - pos - 1];
+                System.arraycopy(data, 0, newData, 0, pos + 1);
+                System.arraycopy(data, pos + 1, context.pendingData, 0, data.length - pos - 1);
+                data = newData;
+            }
+        }
+        return data;
     }
 
     /**
