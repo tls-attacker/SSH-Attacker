@@ -44,7 +44,7 @@ public class RsaKeyExchange extends KeyEncapsulation {
 
     private int transientKeyLength;
 
-    private RsaKeyExchange(KeyExchangeAlgorithm algorithm) {
+    protected RsaKeyExchange(KeyExchangeAlgorithm algorithm) {
         this.algorithm = algorithm;
         switch (algorithm) {
             case RSA1024_SHA1:
