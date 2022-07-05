@@ -1,9 +1,29 @@
+#NIST OAEP SHA1 vectors
+#found: https://github.com/pyca/cryptography/blob/main/vectors/cryptography_vectors/asymmetric/RSA/pkcs-1v2-1d2-vec/oaep-vect.txt
+Test vectors for RSA-OAEP
+=========================
 
-# RSA OAEP SHA2 vectors built for https:
-//github.com/pyca/cryptography
-# # Derived from the NIST OAEP SHA1 vectors.
-# # Verified against the Bouncy Castle OAEP SHA2 implementation
-#============================================================================
+This file contains test vectors for the RSA-OAEP encryption
+scheme as defined in PKCS #1 v2.0. 10 RSA keys of different
+sizes have been generated. For each key, 6 random messages of
+length between 1 and 64 octets have been RSA-OAEP encrypted
+via a random seed of length 20 octets. The digest algorithm is
+SHA-1, while the mask generation function is MGF1 as defined
+in PKCS #1 v2.0 with SHA-1 as the underlying hash function.
+
+Key lengths:
+
+Key  1: 1024 bits
+Key  2: 1025 bits
+Key  3: 1026 bits
+Key  4: 1027 bits
+Key  5: 1028 bits
+Key  6: 1029 bits
+Key  7: 1030 bits
+Key  8: 1031 bits
+Key  9: 1536 bits
+Key 10: 2048 bits
+============================================================================
 # Example 1:
  A 1024-bit RSA key pair
 # -----------------------------------

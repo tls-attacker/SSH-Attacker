@@ -7,18 +7,16 @@
  */
 package de.rub.nds.sshattacker.core.crypto.kex;
 
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.KeyExchangeAlgorithm;
 import de.rub.nds.sshattacker.core.constants.PublicKeyFormat;
-import de.rub.nds.sshattacker.core.crypto.cipher.CipherFactory;
-import de.rub.nds.sshattacker.core.crypto.cipher.DecryptionCipher;
-import de.rub.nds.sshattacker.core.crypto.cipher.EncryptionCipher;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomRsaPrivateKey;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomRsaPublicKey;
 import de.rub.nds.sshattacker.core.crypto.keys.SshPublicKey;
 import de.rub.nds.sshattacker.core.exceptions.CryptoException;
+import de.rub.nds.sshattacker.core.state.SshContext;
 import java.io.InputStream;
 import java.math.BigInteger;
 import java.util.Scanner;
@@ -31,15 +29,15 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 public class RsaKeyExchangeTest {
-
     private static final Logger LOGGER = LogManager.getLogger();
 
     /**
-     * Provides test vectors for the rsa key exchange (testRsaDecryption/testRsaEncryption) unit
-     * test from RSA-OAEP-SHA1.txt and RSA-OAEP-SHA256.txt file
+     * Provides test vectors for the RsaKeyExchange according to the SSH
+     * computations(testRsaKeyExchangeDecryption/ testRsaKeyExchangeEncryption) unit test from
+     * rsa1024-sha1-TestVectors-KAS.txt and rsa1024-sha1-TestVectors-KAS.txt
      *
      * @param file name to load the test vectors from
-     * @return A stream of test vectors for the Rsa key exchange unit test
+     * @return A stream of test vectors for the RsaKeyExchange unit test
      */
     public static Stream<Arguments> provideTestVectors(String file) {
         InputStream testVectorFile =
@@ -50,202 +48,212 @@ public class RsaKeyExchangeTest {
         String line;
 
         KeyExchangeAlgorithm keyExchangeAlgorithm = null;
-        if (file.equals("RSA-OAEP-SHA1.txt")) {
+        if (file.equals("rsa1024-sha1-TestVectors-KAS.txt")) {
             keyExchangeAlgorithm = KeyExchangeAlgorithm.RSA1024_SHA1;
-        } else if (file.equals("RSA-OAEP-SHA256.txt")) {
+        } else if (file.equals("rsa2048-sha256-TestVectors-KAS.txt")) {
             keyExchangeAlgorithm = KeyExchangeAlgorithm.RSA2048_SHA256;
         }
         BigInteger pub_modulus = null,
                 pub_exponent = null,
                 priv_modulus = null,
-                priv_exponent = null;
-        byte[] plaintext, ciphertext;
+                priv_exponent = null,
+                sharedSecret = null;
+        byte[] ciphertext;
 
         while (reader.hasNextLine()) {
             line = reader.nextLine();
+            if (line.startsWith("Public key")) {
+                reader.nextLine();
+                line = reader.nextLine();
+                pub_exponent = new BigInteger(line, 16);
 
-            if (line.startsWith("# Example")) {
+                reader.nextLine();
+                line = reader.nextLine();
+                pub_modulus = new BigInteger(line, 16);
+            }
 
-                while (reader.hasNextLine()) {
-                    line = reader.nextLine();
-                    if (line.startsWith("# Public key")) {
-                        reader.nextLine();
-                        line = reader.nextLine();
-                        pub_modulus = new BigInteger(line, 16);
+            if (line.startsWith("Private key")) {
+                reader.nextLine();
+                line = reader.nextLine();
+                priv_exponent = new BigInteger(line, 16);
 
-                        reader.nextLine();
-                        line = reader.nextLine();
-                        pub_exponent = new BigInteger(line, 16);
-                    }
+                reader.nextLine();
+                line = reader.nextLine();
+                priv_modulus = new BigInteger(line, 16);
+                // prime1, prime2, prime_exp1, prime_exp2, coefficient
+            }
 
-                    if (line.startsWith("# Private key")) {
-                        reader.nextLine();
-                        line = reader.nextLine();
-                        priv_modulus = new BigInteger(line, 16);
-
-                        reader.nextLine();
-                        reader.nextLine();
-                        reader.nextLine();
-                        line = reader.nextLine();
-                        priv_exponent = new BigInteger(line, 16);
-
-                        // prime1, prime2, prime_exp1, prime_exp2, coefficient
-                    }
-
-                    if (line.startsWith("# OAEP Example")) {
-                        reader.nextLine();
-                        line = reader.nextLine();
-                        plaintext = DatatypeConverter.parseHexBinary(line);
-                        line = reader.nextLine();
-                        if (line.startsWith("# Seed")) {
-                            reader.nextLine();
-                            reader.nextLine();
-                        }
-                        line = reader.nextLine();
-                        ciphertext = DatatypeConverter.parseHexBinary(line);
-                        argumentsBuilder.add(
-                                Arguments.of(
-                                        keyExchangeAlgorithm,
-                                        pub_exponent,
-                                        pub_modulus,
-                                        priv_exponent,
-                                        priv_modulus,
-                                        plaintext,
-                                        ciphertext));
-                    }
-
-                    if (line.startsWith("# =============================================")) break;
-                }
+            if (line.startsWith("Example")) {
+                reader.nextLine();
+                line = reader.nextLine();
+                sharedSecret = new BigInteger(line, 16);
+                reader.nextLine();
+                line = reader.nextLine();
+                ciphertext = DatatypeConverter.parseHexBinary(line);
+                argumentsBuilder.add(
+                        Arguments.of(
+                                keyExchangeAlgorithm,
+                                pub_exponent,
+                                pub_modulus,
+                                priv_exponent,
+                                priv_modulus,
+                                sharedSecret,
+                                ciphertext));
             }
         }
         return argumentsBuilder.build();
     }
 
     /**
-     * Provides test vectors for the rsa key exchange (testRsaDecryption/testRsaEncryption) unit
-     * test from RSA-OAEP-SHA1.txt file
+     * Provides test vectors for the RsaKeyExchange
+     * (testRsaKeyExchangeDecryption/testRsaKeyExchangeEncryption) unit test from
+     * rsa1024-sha1-TestVectors-KAS.txt file
      *
-     * @return A stream of test vectors for the Rsa key exchange unit test
+     * @return A stream of test vectors for the RsaKeyExchange unit test
      */
     public static Stream<Arguments> provideTestVectorsSha1() {
-        return provideTestVectors("RSA-OAEP-SHA1.txt");
+        return provideTestVectors("rsa1024-sha1-TestVectors-KAS.txt");
     }
 
     /**
-     * Provides test vectors for the rsa key exchange (testRsaDecryption/testRsaEncryption) unit
-     * test from RSA-OAEP-SHA256.txt file
+     * Provides test vectors for the RsaKeyExchange
+     * (testRsaKeyExchangeDecryption/testRsaKeyExchangeEncryption) unit test from
+     * rsa2048-sha256-TestVectors-KAS.txt file
      *
-     * @return A stream of test vectors for the Rsa key exchange unit test
+     * @return A stream of test vectors for the RsaKeyExchange unit test
      */
     public static Stream<Arguments> provideTestVectorsSha256() {
-        return provideTestVectors("RSA-OAEP-SHA256.txt");
+        return provideTestVectors("rsa2048-sha256-TestVectors-KAS.txt");
     }
 
     /**
-     * Tests the RSA-OAEP decryption by computing the plaintext from the provided ciphertext. Thus
-     * the method test the class OaepCipher.java and the DecryptionCipher picking of CipherFactory,
-     * which are used in the RsaKeyExchange. Normal RsaKeyExchange class testing can not be
-     * fulfilled with these test vectors, because they are not generated in the mpint format used in
-     * the Ssh protocol.
+     * Tests the rsa key exchange decryption by computing the shared secret from the given
+     * ciphertext, according to the mpint computations standarized in SSH. Thus the method tests the
+     * class RsaKeyExchange.java and all underlying classes used for the decryption.
      *
-     * @param keyExchangeAlgorithm the used rsa key exchange algorithm
+     * @param keyExchangeAlgorithm used rsa key exchange algorithm
      * @param pub_key_exponent public key exponent
-     * @param pub_key_modulus public key modulus
+     * @param pub_key_modulus modulus of public key
      * @param priv_key_exponent private key exponent
-     * @param priv_key_modulus private key modulus
-     * @param plaintext the expected plaintext
-     * @param ciphertext provided ciphertext
+     * @param priv_key_modulus modulus of private key
+     * @param sharedSecret the expected shared secret
+     * @param ciphertext ciphertext
      */
-    @ParameterizedTest
+    @ParameterizedTest(name = "Algorithm: {0}, Private key: {3}")
     @MethodSource({"provideTestVectorsSha1", "provideTestVectorsSha256"})
-    public void testRsaDecryption(
+    public void testRsaKeyExchangeDecryption(
             KeyExchangeAlgorithm keyExchangeAlgorithm,
             BigInteger pub_key_exponent,
             BigInteger pub_key_modulus,
             BigInteger priv_key_exponent,
             BigInteger priv_key_modulus,
-            byte[] plaintext,
+            BigInteger sharedSecret,
             byte[] ciphertext) {
-        RsaKeyExchange keyExchange = new RsaKeyExchange(keyExchangeAlgorithm);
+        RsaKeyExchange rsaKeyExchange =
+                RsaKeyExchange.newInstance(new SshContext(), keyExchangeAlgorithm);
         CustomRsaPublicKey publicKey = new CustomRsaPublicKey(pub_key_exponent, pub_key_modulus);
         CustomRsaPrivateKey privateKey =
                 new CustomRsaPrivateKey(priv_key_exponent, priv_key_modulus);
         SshPublicKey<CustomRsaPublicKey, CustomRsaPrivateKey> keypair =
                 new SshPublicKey<>(PublicKeyFormat.SSH_RSA, publicKey, privateKey);
-        keyExchange.setTransientKey(keypair);
-        DecryptionCipher cipher =
-                CipherFactory.getDecryptionCipher(
-                        keyExchangeAlgorithm, keyExchange.getTransientKey().getPrivateKey().get());
-        byte[] computedPlaintext = null;
+        rsaKeyExchange.setTransientKey(keypair);
+        rsaKeyExchange.setTransientKeyLength(keypair.getPublicKey().getModulus().bitLength());
+
+        assertTrue(rsaKeyExchange.areParametersSet());
+
+        assertEquals(pub_key_exponent, rsaKeyExchange.getExponent());
+        assertEquals(pub_key_modulus, rsaKeyExchange.getModulus());
+        assertEquals(pub_key_modulus.bitLength(), rsaKeyExchange.getTransientKeyLength());
+        assertEquals(keypair, rsaKeyExchange.getTransientKey());
+        assertEquals(pub_key_modulus.bitLength(), rsaKeyExchange.getTransientKeyLength());
+
+        if (keyExchangeAlgorithm == KeyExchangeAlgorithm.RSA1024_SHA1) {
+            assertEquals(160, rsaKeyExchange.getHashLength());
+        }
+        if (keyExchangeAlgorithm == KeyExchangeAlgorithm.RSA2048_SHA256) {
+            assertEquals(256, rsaKeyExchange.getHashLength());
+        }
+
         try {
-            computedPlaintext = cipher.decrypt(ciphertext);
+            rsaKeyExchange.decryptSharedSecret(ciphertext);
         } catch (CryptoException e) {
             LOGGER.error(e);
         }
-        assertArrayEquals(plaintext, computedPlaintext);
+        assertEquals(sharedSecret, rsaKeyExchange.getSharedSecret());
         LOGGER.debug(
-                "Computed plaintext: " + ArrayConverter.bytesToRawHexString(computedPlaintext));
-        LOGGER.debug("Expected plaintext: " + ArrayConverter.bytesToRawHexString(plaintext));
+                "Computed shared secret: "
+                        + ArrayConverter.bytesToRawHexString(
+                                rsaKeyExchange.getSharedSecret().toByteArray()));
+        LOGGER.debug(
+                "Expected shared secret: "
+                        + ArrayConverter.bytesToRawHexString(sharedSecret.toByteArray()));
     }
 
     /**
-     * Tests the RSA-OAEP encryption by computing the ciphertext from the given plaintext and
-     * decrypting it again. If testRsaDecryption is working the right way, this method verifies the
-     * encryption. Thus the method test the class OaepCipher.java and the EncryptionCipher picking
-     * of CipherFactory, which are used in the RsaKeyExchange. Normal RsaKeyExchange class testing
-     * can not be fulfilled with these test vectors, because they are not generated in the mpint
-     * format used in the Ssh protocol.
+     * Tests the rsa key exchange encryption by computing the ciphertext from the given plaintext
+     * and decrypting it again, according to the mpint computations standarized in SSH. If
+     * testRsaKeyexchangeDecryption is working the right way, this method verifies the encryption
+     * method of RsaKeyExchange. Thus the method test the class RsaKeyExchange.java and all
+     * underlying classes.
      *
-     * @param keyExchangeAlgorithm the used rsa key exchange algorithm
+     * @param keyExchangeAlgorithm used rs key exchange algorithm
      * @param pub_key_exponent public key exponent
-     * @param pub_key_modulus public key modulus
-     * @param priv_key_exponent private key exponent
-     * @param priv_key_modulus private key modulus
-     * @param plaintext the expected plaintext
-     * @param ciphertext provided ciphertext
+     * @param pub_key_modulus the modulus of public key
+     * @param priv_key_exponent private key expontent
+     * @param priv_key_modulus modulus of private key
+     * @param sharedSecret the shared secret to be encrypted
+     * @param ciphertext cipher
      */
-    @ParameterizedTest
+    @ParameterizedTest(name = "Algorithm: {0}, Public key: {1}")
     @MethodSource({"provideTestVectorsSha1", "provideTestVectorsSha256"})
-    public void testRsaEncryption(
+    public void testRsaKeyExchangeEncryption(
             KeyExchangeAlgorithm keyExchangeAlgorithm,
             BigInteger pub_key_exponent,
             BigInteger pub_key_modulus,
             BigInteger priv_key_exponent,
             BigInteger priv_key_modulus,
-            byte[] plaintext,
+            BigInteger sharedSecret,
             byte[] ciphertext) {
-        RsaKeyExchange keyExchange = new RsaKeyExchange(keyExchangeAlgorithm);
+        RsaKeyExchange rsaKeyExchange =
+                RsaKeyExchange.newInstance(new SshContext(), keyExchangeAlgorithm);
         CustomRsaPublicKey publicKey = new CustomRsaPublicKey(pub_key_exponent, pub_key_modulus);
         CustomRsaPrivateKey privateKey =
                 new CustomRsaPrivateKey(priv_key_exponent, priv_key_modulus);
         SshPublicKey<CustomRsaPublicKey, CustomRsaPrivateKey> keypair =
                 new SshPublicKey<>(PublicKeyFormat.SSH_RSA, publicKey, privateKey);
-        keyExchange.setTransientKey(keypair);
-        // Test class OaepCipher.java and the DecryptionCipher picking of CipherFactory
-        EncryptionCipher encCipher =
-                CipherFactory.getEncryptionCipher(
-                        keyExchangeAlgorithm, keyExchange.getTransientKey().getPublicKey());
-        byte[] computedCiphertext = null;
-        try {
-            computedCiphertext = encCipher.encrypt(plaintext);
-        } catch (CryptoException e) {
-            LOGGER.error(e);
-        }
-        LOGGER.debug("Computed cipher: " + ArrayConverter.bytesToRawHexString(computedCiphertext));
+        rsaKeyExchange.setTransientKey(keypair);
+        rsaKeyExchange.setTransientKeyLength(keypair.getPublicKey().getModulus().bitLength());
 
-        DecryptionCipher decCipher =
-                CipherFactory.getDecryptionCipher(
-                        keyExchangeAlgorithm, keyExchange.getTransientKey().getPrivateKey().get());
-        byte[] computedPlaintext = null;
+        assertTrue(rsaKeyExchange.areParametersSet());
+
+        assertEquals(pub_key_exponent, rsaKeyExchange.getExponent());
+        assertEquals(pub_key_modulus, rsaKeyExchange.getModulus());
+        assertEquals(keypair, rsaKeyExchange.getTransientKey());
+        assertEquals(pub_key_modulus.bitLength(), rsaKeyExchange.getTransientKeyLength());
+
+        if (keyExchangeAlgorithm == KeyExchangeAlgorithm.RSA1024_SHA1) {
+            assertEquals(160, rsaKeyExchange.getHashLength());
+        }
+        if (keyExchangeAlgorithm == KeyExchangeAlgorithm.RSA2048_SHA256) {
+            assertEquals(256, rsaKeyExchange.getHashLength());
+        }
+
+        rsaKeyExchange.setSharedSecret(sharedSecret);
+        byte[] cipher = rsaKeyExchange.encryptSharedSecret();
+        LOGGER.debug("Computed cipher: " + ArrayConverter.bytesToRawHexString(cipher));
+
         try {
-            computedPlaintext = decCipher.decrypt(computedCiphertext);
+            rsaKeyExchange.decryptSharedSecret(cipher);
         } catch (CryptoException e) {
             LOGGER.error(e);
         }
-        LOGGER.debug("Expected plain: " + ArrayConverter.bytesToRawHexString(plaintext));
-        LOGGER.debug("Computed plain: " + ArrayConverter.bytesToRawHexString(computedPlaintext));
-        assertArrayEquals(plaintext, computedPlaintext);
+        LOGGER.debug(
+                "Expected shared secret: "
+                        + ArrayConverter.bytesToRawHexString(sharedSecret.toByteArray()));
+        LOGGER.debug(
+                "Computed shared secret: "
+                        + ArrayConverter.bytesToRawHexString(
+                                rsaKeyExchange.getSharedSecret().toByteArray()));
+        assertEquals(sharedSecret, rsaKeyExchange.getSharedSecret());
     }
-
-    // ToDo test the sharedSecret<-->mpint computations with generated vectors
 }
