@@ -20,18 +20,32 @@ public class ChangePacketLayerAction extends ConnectionBoundAction {
     @XmlAttribute(name = "to")
     protected PacketLayerType packetLayerType = null;
 
+    protected Boolean enableAsciiMode = false;
+
     private ChangePacketLayerAction() {
         super(AliasedConnection.DEFAULT_CONNECTION_ALIAS);
     }
 
     public ChangePacketLayerAction(PacketLayerType packetLayerType) {
-        super(AliasedConnection.DEFAULT_CONNECTION_ALIAS);
-        this.packetLayerType = packetLayerType;
+        this(
+                AliasedConnection.DEFAULT_CONNECTION_ALIAS,
+                packetLayerType,
+                packetLayerType == PacketLayerType.BLOB);
+    }
+
+    public ChangePacketLayerAction(PacketLayerType packetLayerType, boolean enableAsciiMode) {
+        this(AliasedConnection.DEFAULT_CONNECTION_ALIAS, packetLayerType, enableAsciiMode);
     }
 
     public ChangePacketLayerAction(String connectionAlias, PacketLayerType packetLayerType) {
+        this(connectionAlias, packetLayerType, packetLayerType == PacketLayerType.BLOB);
+    }
+
+    public ChangePacketLayerAction(
+            String connectionAlias, PacketLayerType packetLayerType, boolean enableAsciiMode) {
         super(connectionAlias);
         this.packetLayerType = packetLayerType;
+        this.enableAsciiMode = enableAsciiMode;
     }
 
     @Override
@@ -43,6 +57,7 @@ public class ChangePacketLayerAction extends ConnectionBoundAction {
         SshContext context = state.getSshContext(getConnectionAlias());
         context.setPacketLayerType(packetLayerType);
         context.setPacketLayer(PacketLayerFactory.getPacketLayer(packetLayerType, context));
+        context.setReceiveAsciiModeEnabled(enableAsciiMode);
         setExecuted(true);
     }
 

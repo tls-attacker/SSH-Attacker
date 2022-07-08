@@ -8,11 +8,9 @@
 package de.rub.nds.sshattacker.core.packet.layer;
 
 import de.rub.nds.sshattacker.core.exceptions.ParserException;
-import de.rub.nds.sshattacker.core.packet.AbstractPacket;
 import de.rub.nds.sshattacker.core.packet.BlobPacket;
 import de.rub.nds.sshattacker.core.packet.parser.BlobPacketParser;
 import de.rub.nds.sshattacker.core.state.SshContext;
-import java.util.stream.Stream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -25,32 +23,30 @@ public class BlobPacketLayer extends AbstractPacketLayer {
     }
 
     @Override
-    public Stream<AbstractPacket> parsePackets(byte[] rawBytes) throws ParserException {
-        Stream.Builder<AbstractPacket> packetStreamBuilder = Stream.builder();
+    public PacketLayerParseResult parsePacket(byte[] rawBytes, int startPosition)
+            throws ParserException {
         try {
-            BlobPacketParser parser = new BlobPacketParser(rawBytes, 0);
+            BlobPacketParser parser = new BlobPacketParser(rawBytes, startPosition);
             BlobPacket packet = parser.parse();
             decryptPacket(packet);
             decompressPacket(packet);
-            packetStreamBuilder.add(packet);
-            return packetStreamBuilder.build();
+            return new PacketLayerParseResult(packet, parser.getPointer() - startPosition);
         } catch (ParserException e) {
             throw new ParserException("Could not parse provided data as blob packet", e);
         }
     }
 
     @Override
-    public Stream<AbstractPacket> parsePacketsSoftly(byte[] rawBytes) {
-        Stream.Builder<AbstractPacket> packetStreamBuilder = Stream.builder();
+    public PacketLayerParseResult parsePacketSoftly(byte[] rawBytes, int startPosition) {
         try {
-            BlobPacketParser parser = new BlobPacketParser(rawBytes, 0);
+            BlobPacketParser parser = new BlobPacketParser(rawBytes, startPosition);
             BlobPacket packet = parser.parse();
             decryptPacket(packet);
             decompressPacket(packet);
-            packetStreamBuilder.add(packet);
+            return new PacketLayerParseResult(packet, parser.getPointer() - startPosition, true);
         } catch (ParserException e) {
             LOGGER.warn("Could not parse provided data as blob packet, dropping remaining bytes");
+            return new PacketLayerParseResult(null, rawBytes.length - startPosition, true);
         }
-        return packetStreamBuilder.build();
     }
 }
