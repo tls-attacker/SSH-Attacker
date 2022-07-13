@@ -9,7 +9,6 @@ package de.rub.nds.sshattacker.core.crypto.cipher;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.KeyExchangeAlgorithm;
 import de.rub.nds.sshattacker.core.constants.PublicKeyFormat;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomRsaPrivateKey;
@@ -165,9 +164,6 @@ public class OaepCipherTest {
             LOGGER.error(e);
         }
         assertArrayEquals(plaintext, computedPlaintext);
-        LOGGER.debug(
-                "Computed plaintext: " + ArrayConverter.bytesToRawHexString(computedPlaintext));
-        LOGGER.debug("Expected plaintext: " + ArrayConverter.bytesToRawHexString(plaintext));
     }
 
     /**
@@ -207,8 +203,6 @@ public class OaepCipherTest {
         } catch (CryptoException e) {
             LOGGER.error(e);
         }
-        LOGGER.debug("Computed cipher: " + ArrayConverter.bytesToRawHexString(computedCiphertext));
-
         DecryptionCipher decCipher =
                 CipherFactory.getDecryptionCipher(
                         keyExchangeAlgorithm, keypair.getPrivateKey().get());
@@ -218,8 +212,6 @@ public class OaepCipherTest {
         } catch (CryptoException e) {
             LOGGER.error(e);
         }
-        LOGGER.debug("Expected plain: " + ArrayConverter.bytesToRawHexString(plaintext));
-        LOGGER.debug("Computed plain: " + ArrayConverter.bytesToRawHexString(computedPlaintext));
         assertArrayEquals(plaintext, computedPlaintext);
     }
 }

@@ -27,7 +27,6 @@ import org.junit.jupiter.params.provider.MethodSource;
 public class JavaCipherTest {
 
     private static final Logger LOGGER = LogManager.getLogger();
-
     public static String[] aesCbcTestVectorFileNames = {
         "CBCGFSbox128.rsp",
         "CBCGFSbox192.rsp",
@@ -282,14 +281,10 @@ public class JavaCipherTest {
             byte[] plaintext,
             byte[] ciphertext) {
         int keyLength = key.length;
-        LOGGER.debug(encryptionAlgorithm.toString());
-        LOGGER.debug("Key length in bytes: " + keyLength);
         JavaCipher cipher = new JavaCipher(encryptionAlgorithm, key, true);
         assertEquals(cipher.getAlgorithm(), encryptionAlgorithm);
         try {
             byte[] encText = cipher.encrypt(plaintext);
-            LOGGER.debug("Expected ciphertext: " + DatatypeConverter.printHexBinary(ciphertext));
-            LOGGER.debug("Computed ciphertext: " + DatatypeConverter.printHexBinary(encText));
             assertArrayEquals(ciphertext, encText);
         } catch (CryptoException e) {
             LOGGER.error(e);
@@ -313,13 +308,10 @@ public class JavaCipherTest {
             byte[] plaintext,
             byte[] ciphertext) {
         int keyLength = key.length;
-        LOGGER.debug("Key length in bytes: " + keyLength);
         JavaCipher cipher = new JavaCipher(encryptionAlgorithm, key, true);
         assertEquals(cipher.getAlgorithm(), encryptionAlgorithm);
         try {
             byte[] decText = cipher.decrypt(ciphertext);
-            LOGGER.debug("Expected plaintext: " + DatatypeConverter.printHexBinary(plaintext));
-            LOGGER.debug("Computed plaintext: " + DatatypeConverter.printHexBinary(decText));
             assertArrayEquals(plaintext, decText);
         } catch (CryptoException e) {
             LOGGER.error(e);
@@ -348,17 +340,12 @@ public class JavaCipherTest {
             byte[] plaintext,
             byte[] ciphertext) {
         int keyLength = key.length;
-        LOGGER.debug("Key length in bytes: " + keyLength);
         JavaCipher cipher = new JavaCipher(encryptionAlgorithm, key, true);
         assertEquals(cipher.getAlgorithm(), encryptionAlgorithm);
         switch (testingMode) {
             case 'e':
                 try {
                     byte[] encText = cipher.encrypt(plaintext, iv);
-                    LOGGER.debug(
-                            "Expected ciphertext: " + DatatypeConverter.printHexBinary(ciphertext));
-                    LOGGER.debug(
-                            "Computed ciphertext: " + DatatypeConverter.printHexBinary(encText));
                     assertArrayEquals(ciphertext, encText);
                 } catch (CryptoException e) {
                     LOGGER.error(e);
@@ -367,10 +354,6 @@ public class JavaCipherTest {
             case 'd':
                 try {
                     byte[] decText = cipher.decrypt(ciphertext, iv);
-                    LOGGER.debug(
-                            "Expected plaintext: " + DatatypeConverter.printHexBinary(plaintext));
-                    LOGGER.debug(
-                            "Computed plaintext: " + DatatypeConverter.printHexBinary(decText));
                     assertArrayEquals(plaintext, decText);
                 } catch (CryptoException e) {
                     LOGGER.error(e);
@@ -401,20 +384,13 @@ public class JavaCipherTest {
             byte[] aad,
             byte[] ciphertext,
             byte[] tag) {
-        int keyLength = key.length;
-        LOGGER.debug("Key length in bytes: " + keyLength);
         JavaCipher cipher = new JavaCipher(encryptionAlgorithm, key, true);
         assertEquals(cipher.getAlgorithm(), encryptionAlgorithm);
         try {
             byte[] fullEncText = cipher.encrypt(plaintext, iv, aad);
-            LOGGER.debug("Expected tag: " + DatatypeConverter.printHexBinary(tag));
-            LOGGER.debug("Expected ciphertext: " + DatatypeConverter.printHexBinary(ciphertext));
-
             byte[] computedCiphertext = Arrays.copyOfRange(fullEncText, 0, fullEncText.length - 16);
             byte[] computedTag =
                     Arrays.copyOfRange(fullEncText, fullEncText.length - 16, fullEncText.length);
-            LOGGER.debug("Computed tag: " + DatatypeConverter.printHexBinary(computedTag));
-            LOGGER.debug("Computed ciphertext: " + DatatypeConverter.printHexBinary(fullEncText));
             assertArrayEquals(tag, computedTag);
             assertArrayEquals(ciphertext, computedCiphertext);
         } catch (CryptoException e) {
@@ -447,8 +423,6 @@ public class JavaCipherTest {
             byte[] ciphertext,
             byte[] tag,
             boolean decryptable) {
-        int keyLength = key.length;
-        LOGGER.debug("Key length in bytes: " + keyLength);
         JavaCipher cipher = new JavaCipher(encryptionAlgorithm, key, true);
         assertEquals(cipher.getAlgorithm(), encryptionAlgorithm);
 
@@ -462,9 +436,7 @@ public class JavaCipherTest {
         byte[] fullCiphertext = outputStream.toByteArray();
 
         try {
-            LOGGER.debug("Expected ciphertext: " + DatatypeConverter.printHexBinary(ciphertext));
             byte[] decText = cipher.decrypt(fullCiphertext, iv, aad);
-            LOGGER.debug("Expected tag: " + DatatypeConverter.printHexBinary(fullCiphertext));
             assertArrayEquals(plaintext, decText);
         } catch (CryptoException e) {
             if (!decryptable) {

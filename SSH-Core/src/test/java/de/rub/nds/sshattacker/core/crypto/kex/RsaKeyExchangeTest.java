@@ -9,7 +9,6 @@ package de.rub.nds.sshattacker.core.crypto.kex;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.KeyExchangeAlgorithm;
 import de.rub.nds.sshattacker.core.constants.PublicKeyFormat;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomRsaPrivateKey;
@@ -180,13 +179,6 @@ public class RsaKeyExchangeTest {
             LOGGER.error(e);
         }
         assertEquals(sharedSecret, rsaKeyExchange.getSharedSecret());
-        LOGGER.debug(
-                "Computed shared secret: "
-                        + ArrayConverter.bytesToRawHexString(
-                                rsaKeyExchange.getSharedSecret().toByteArray()));
-        LOGGER.debug(
-                "Expected shared secret: "
-                        + ArrayConverter.bytesToRawHexString(sharedSecret.toByteArray()));
     }
 
     /**
@@ -240,20 +232,11 @@ public class RsaKeyExchangeTest {
 
         rsaKeyExchange.setSharedSecret(sharedSecret);
         byte[] cipher = rsaKeyExchange.encryptSharedSecret();
-        LOGGER.debug("Computed cipher: " + ArrayConverter.bytesToRawHexString(cipher));
-
         try {
             rsaKeyExchange.decryptSharedSecret(cipher);
         } catch (CryptoException e) {
             LOGGER.error(e);
         }
-        LOGGER.debug(
-                "Expected shared secret: "
-                        + ArrayConverter.bytesToRawHexString(sharedSecret.toByteArray()));
-        LOGGER.debug(
-                "Computed shared secret: "
-                        + ArrayConverter.bytesToRawHexString(
-                                rsaKeyExchange.getSharedSecret().toByteArray()));
         assertEquals(sharedSecret, rsaKeyExchange.getSharedSecret());
     }
 }
