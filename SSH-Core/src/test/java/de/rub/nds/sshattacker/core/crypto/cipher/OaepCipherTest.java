@@ -7,8 +7,9 @@
  */
 package de.rub.nds.sshattacker.core.crypto.cipher;
 
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.KeyExchangeAlgorithm;
 import de.rub.nds.sshattacker.core.constants.PublicKeyFormat;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomRsaPrivateKey;
@@ -19,9 +20,11 @@ import java.io.InputStream;
 import java.math.BigInteger;
 import java.util.Scanner;
 import java.util.stream.Stream;
+import javax.crypto.BadPaddingException;
 import javax.xml.bind.DatatypeConverter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -149,14 +152,10 @@ public class OaepCipherTest {
             BigInteger priv_key_modulus,
             byte[] plaintext,
             byte[] ciphertext) {
-        CustomRsaPublicKey publicKey = new CustomRsaPublicKey(pub_key_exponent, pub_key_modulus);
         CustomRsaPrivateKey privateKey =
                 new CustomRsaPrivateKey(priv_key_exponent, priv_key_modulus);
-        SshPublicKey<CustomRsaPublicKey, CustomRsaPrivateKey> keypair =
-                new SshPublicKey<>(PublicKeyFormat.SSH_RSA, publicKey, privateKey);
         DecryptionCipher cipher =
-                CipherFactory.getDecryptionCipher(
-                        keyExchangeAlgorithm, keypair.getPrivateKey().get());
+                CipherFactory.getDecryptionCipher(keyExchangeAlgorithm, privateKey);
         byte[] computedPlaintext = null;
         try {
             computedPlaintext = cipher.decrypt(ciphertext);
@@ -213,5 +212,46 @@ public class OaepCipherTest {
             LOGGER.error(e);
         }
         assertArrayEquals(plaintext, computedPlaintext);
+    }
+
+    @Test
+    public void exceptionTesting() {
+        byte[] modulus =
+                ArrayConverter.hexStringToByteArray(
+                        "a8b3b284af8eb50b387034a860f146c4919f318763cd6c5598c8ae4811a1e0abc4c7e0b082d693a5e7fced675cf4668512772c0cbc64a742c6c630f533c8cc72f62ae833c40bf25842e984bb78bdbf97c0107d55bdb662f5c4e0fab9845cb5148ef7392dd3aaff93ae1e6b667bb3d4247616d4f5ba10d4cfd226de88d39f16fb");
+        byte[] pub_exp = ArrayConverter.hexStringToByteArray("010001");
+        byte[] priv_exp =
+                ArrayConverter.hexStringToByteArray(
+                        "53339cfdb79fc8466a655c7316aca85c55fd8f6dd898fdaf119517ef4f52e8fd8e258df93fee180fa0e4ab29693cd83b152a553d4ac4d1812b8b9fa5af0e7f55fe7304df41570926f3311f15c4d65a732c483116ee3d3d2d0af3549ad9bf7cbfb78ad884f84d5beb04724dc7369b31def37d0cf539e9cfcdd3de653729ead5d1");
+        byte[] cipher =
+                ArrayConverter.hexStringToByteArray(
+                        "354fe67b4a126d5d35fe36c777791a3f7ba13def484e2d3908aff722fad468fb21696de95d0be911c2d3174f8afcc201035f7b6d8e69402de5451618c21a535fa9d7bfc5b8dd9fc243f8cf927db31322d6e881eaa91a996170e657a05a266426d98c88003f8477c1227094a0d9fa1e8c4024309ce1ecccb5210035d47ac72e8a");
+        byte[] plain = ArrayConverter.hexStringToByteArray("6628194e12073db0");
+        CustomRsaPublicKey publicKey =
+                new CustomRsaPublicKey(new BigInteger(pub_exp), new BigInteger(modulus));
+        CustomRsaPrivateKey privateKey =
+                new CustomRsaPrivateKey(new BigInteger(priv_exp), new BigInteger(modulus));
+        SshPublicKey<CustomRsaPublicKey, CustomRsaPrivateKey> keypair =
+                new SshPublicKey<>(PublicKeyFormat.SSH_RSA, publicKey, privateKey);
+        DecryptionCipher decCipher =
+                CipherFactory.getDecryptionCipher(KeyExchangeAlgorithm.RSA1024_SHA1, privateKey);
+        EncryptionCipher encCipher =
+                CipherFactory.getEncryptionCipher(
+                        KeyExchangeAlgorithm.RSA1024_SHA1, keypair.getPublicKey());
+        assertThrows(
+                UnsupportedOperationException.class, () -> encCipher.encrypt(plain, new byte[10]));
+        assertThrows(
+                UnsupportedOperationException.class,
+                () -> encCipher.encrypt(plain, new byte[10], new byte[10]));
+        assertThrows(
+                UnsupportedOperationException.class, () -> decCipher.decrypt(cipher, new byte[10]));
+        assertThrows(
+                UnsupportedOperationException.class,
+                () -> decCipher.decrypt(cipher, new byte[10], new byte[10]));
+        OaepCipher oaepCipher =
+                new OaepCipher(privateKey, "RSA/ECB/OAEPWithSHA-1AndMGF1Padding", "SHA-1", "MGF1");
+        assertThrows(CryptoException.class, () -> oaepCipher.decrypt(plain));
+        Throwable exception = assertThrows(CryptoException.class, () -> oaepCipher.encrypt(plain));
+        assertEquals(BadPaddingException.class, exception.getCause().getClass());
     }
 }

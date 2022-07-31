@@ -23,6 +23,7 @@ import javax.xml.bind.DatatypeConverter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -130,6 +131,9 @@ public class ChaCha20Poly1305CipherTest {
         DecryptionCipher mainDecryptCipher =
                 new ChaCha20Poly1305Cipher(
                         Arrays.copyOfRange(key, 0, CryptoConstants.CHACHA20_KEY_SIZE));
+        assertEquals(
+                EncryptionAlgorithm.CHACHA20_POLY1305_OPENSSH_COM,
+                mainDecryptCipher.getAlgorithm());
         byte[] encryptedLengthField = Arrays.copyOfRange(ciphertext, 0, 4);
         byte[] lengthField = new byte[0];
         byte[] computedPlaintext = new byte[0];
@@ -147,5 +151,32 @@ public class ChaCha20Poly1305CipherTest {
         }
         assertEquals(ArrayConverter.bytesToInt(lengthField), plaintext.length);
         assertArrayEquals(plaintext, computedPlaintext);
+    }
+
+    @Test
+    public void exceptionTesting() {
+        EncryptionCipher encryptCipher =
+                new ChaCha20Poly1305Cipher(
+                        ArrayConverter.hexStringToByteArray("0dd74c845517a3012ff8aa678e05159c"));
+        DecryptionCipher decryptCipher =
+                new ChaCha20Poly1305Cipher(
+                        ArrayConverter.hexStringToByteArray(
+                                "c6d10362f5cae608df6e33cc124bcae2263884db63f481ab94e48b1e197f81ba"));
+        byte[] cipher =
+                ArrayConverter.hexStringToByteArray(
+                        "ed203aedf35f3caad64e86b8a4e63043182ca70795219770f1bbacbe3e266b6c289a0d8e52b10e1072488502c759eeb86a64f81b5ee5b74a08c971c5c248a40d2856a6ad");
+        byte[] plain = ArrayConverter.hexStringToByteArray("d1a4309d");
+        byte[] iv = ArrayConverter.hexStringToByteArray("a32f476b");
+        assertThrows(UnsupportedOperationException.class, () -> encryptCipher.encrypt(plain));
+        assertThrows(UnsupportedOperationException.class, () -> encryptCipher.encrypt(plain, iv));
+        assertThrows(UnsupportedOperationException.class, () -> decryptCipher.decrypt(cipher));
+        assertThrows(UnsupportedOperationException.class, () -> decryptCipher.decrypt(cipher, iv));
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> decryptCipher.decrypt(cipher, iv, new byte[16]));
+        byte[] newIv = ArrayConverter.hexStringToByteArray("a32f476ba32f476b");
+        assertThrows(
+                AEADBadTagException.class,
+                () -> decryptCipher.decrypt(cipher, newIv, new byte[16]));
     }
 }
