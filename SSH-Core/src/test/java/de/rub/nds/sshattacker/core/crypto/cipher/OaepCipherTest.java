@@ -7,6 +7,8 @@
  */
 package de.rub.nds.sshattacker.core.crypto.cipher;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.KeyExchangeAlgorithm;
 import de.rub.nds.sshattacker.core.constants.PublicKeyFormat;
@@ -14,21 +16,18 @@ import de.rub.nds.sshattacker.core.crypto.keys.CustomRsaPrivateKey;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomRsaPublicKey;
 import de.rub.nds.sshattacker.core.crypto.keys.SshPublicKey;
 import de.rub.nds.sshattacker.core.exceptions.CryptoException;
+import java.io.InputStream;
+import java.math.BigInteger;
+import java.util.Scanner;
+import java.util.stream.Stream;
+import javax.crypto.BadPaddingException;
+import javax.xml.bind.DatatypeConverter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-
-import javax.crypto.BadPaddingException;
-import javax.xml.bind.DatatypeConverter;
-import java.io.InputStream;
-import java.math.BigInteger;
-import java.util.Scanner;
-import java.util.stream.Stream;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 public class OaepCipherTest {
 

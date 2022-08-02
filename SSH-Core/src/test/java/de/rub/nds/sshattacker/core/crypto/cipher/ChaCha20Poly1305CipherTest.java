@@ -7,10 +7,21 @@
  */
 package de.rub.nds.sshattacker.core.crypto.cipher;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.CryptoConstants;
 import de.rub.nds.sshattacker.core.constants.EncryptionAlgorithm;
 import de.rub.nds.sshattacker.core.exceptions.CryptoException;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.security.Security;
+import java.util.Arrays;
+import java.util.Scanner;
+import java.util.stream.Stream;
+import javax.crypto.AEADBadTagException;
+import javax.xml.bind.DatatypeConverter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
@@ -19,16 +30,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-
-import javax.crypto.AEADBadTagException;
-import javax.xml.bind.DatatypeConverter;
-import java.io.InputStream;
-import java.security.Security;
-import java.util.Arrays;
-import java.util.Scanner;
-import java.util.stream.Stream;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 public class ChaCha20Poly1305CipherTest {
 
@@ -59,8 +60,10 @@ public class ChaCha20Poly1305CipherTest {
                 line = reader.nextLine();
                 byte[] ciphertext = DatatypeConverter.parseHexBinary(line.split(" = ")[1]);
                 line = reader.nextLine();
+                byte[] aad = DatatypeConverter.parseHexBinary(line.split(" = ")[1]);
+                line = reader.nextLine();
                 byte[] mac = DatatypeConverter.parseHexBinary(line.split(" = ")[1]);
-                argumentsBuilder.add(Arguments.of(key, iv, plaintext, ciphertext, mac));
+                argumentsBuilder.add(Arguments.of(key, iv, plaintext, ciphertext, aad, mac));
             }
         }
         return argumentsBuilder.build();
@@ -79,35 +82,18 @@ public class ChaCha20Poly1305CipherTest {
     @ParameterizedTest(name = "Key:{0}")
     @MethodSource("provideChacha20Poly1305Vectors")
     public void testEncrypt(
-            byte[] key, byte[] iv, byte[] plaintext, byte[] ciphertext, byte[] mac) {
-        EncryptionCipher headerEncryptCipher =
-                new JavaCipher(
-                        EncryptionAlgorithm.CHACHA20_POLY1305_OPENSSH_COM,
-                        Arrays.copyOfRange(
-                                key,
-                                CryptoConstants.CHACHA20_KEY_SIZE,
-                                2 * CryptoConstants.CHACHA20_KEY_SIZE),
-                        true);
+            byte[] key, byte[] iv, byte[] plaintext, byte[] ciphertext, byte[] aad, byte[] mac)
+            throws CryptoException {
         EncryptionCipher mainEncryptCipher =
                 new ChaCha20Poly1305Cipher(
                         Arrays.copyOfRange(key, 0, CryptoConstants.CHACHA20_KEY_SIZE));
-
-        byte[] encryptedLengthField = new byte[0], fullCiphertext = new byte[0];
-        try {
-            encryptedLengthField =
-                    headerEncryptCipher.encrypt(ArrayConverter.intToBytes(plaintext.length, 4), iv);
-            fullCiphertext = mainEncryptCipher.encrypt(plaintext, iv, encryptedLengthField);
-        } catch (CryptoException e) {
-            e.printStackTrace();
-        }
+        byte[] fullCiphertext = mainEncryptCipher.encrypt(plaintext, iv, aad);
         byte[] computedCiphertext =
                 Arrays.copyOfRange(fullCiphertext, 0, fullCiphertext.length - 16);
         byte[] computedMac =
                 Arrays.copyOfRange(
                         fullCiphertext, fullCiphertext.length - 16, fullCiphertext.length);
-
-        assertArrayEquals(Arrays.copyOfRange(ciphertext, 0, 4), encryptedLengthField);
-        assertArrayEquals(Arrays.copyOfRange(ciphertext, 4, ciphertext.length), computedCiphertext);
+        assertArrayEquals(ciphertext, computedCiphertext);
         assertArrayEquals(mac, computedMac);
     }
 
@@ -124,42 +110,29 @@ public class ChaCha20Poly1305CipherTest {
     @ParameterizedTest(name = "Key:{0}")
     @MethodSource("provideChacha20Poly1305Vectors")
     public void testDecrypt(
-            byte[] key, byte[] iv, byte[] plaintext, byte[] ciphertext, byte[] mac) {
-        DecryptionCipher headerDecryptCipher =
-                new JavaCipher(
-                        EncryptionAlgorithm.CHACHA20_POLY1305_OPENSSH_COM,
-                        Arrays.copyOfRange(
-                                key,
-                                CryptoConstants.CHACHA20_KEY_SIZE,
-                                2 * CryptoConstants.CHACHA20_KEY_SIZE),
-                        true);
+            byte[] key, byte[] iv, byte[] plaintext, byte[] ciphertext, byte[] aad, byte[] mac)
+            throws CryptoException, AEADBadTagException {
         DecryptionCipher mainDecryptCipher =
                 new ChaCha20Poly1305Cipher(
                         Arrays.copyOfRange(key, 0, CryptoConstants.CHACHA20_KEY_SIZE));
         assertEquals(
                 EncryptionAlgorithm.CHACHA20_POLY1305_OPENSSH_COM,
                 mainDecryptCipher.getAlgorithm());
-        byte[] encryptedLengthField = Arrays.copyOfRange(ciphertext, 0, 4);
-        byte[] lengthField = new byte[0];
-        byte[] computedPlaintext = new byte[0];
-
-        byte[] authenticatedCiphertext =
-                ArrayConverter.concatenate(
-                        Arrays.copyOfRange(ciphertext, 4, ciphertext.length), mac);
-
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         try {
-            lengthField = headerDecryptCipher.decrypt(encryptedLengthField, iv);
-            computedPlaintext =
-                    mainDecryptCipher.decrypt(authenticatedCiphertext, iv, encryptedLengthField);
-        } catch (CryptoException | AEADBadTagException e) {
-            e.printStackTrace();
+            outputStream.write(ciphertext);
+            outputStream.write(mac);
+        } catch (IOException e) {
+            LOGGER.debug("Failure occured adding the ciphertext and tag together: " + e);
         }
-        assertEquals(ArrayConverter.bytesToInt(lengthField), plaintext.length);
+        byte[] fullCiphertext = outputStream.toByteArray();
+        byte[] computedPlaintext = mainDecryptCipher.decrypt(fullCiphertext, iv, aad);
         assertArrayEquals(plaintext, computedPlaintext);
     }
 
     @Test
     public void exceptionTesting() {
+        LOGGER.info("Exception testing: ");
         EncryptionCipher encryptCipher =
                 new ChaCha20Poly1305Cipher(
                         ArrayConverter.hexStringToByteArray("0dd74c845517a3012ff8aa678e05159c"));
