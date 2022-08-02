@@ -17,18 +17,19 @@ import java.nio.charset.StandardCharsets;
 
 public class ChannelOpenFailureMessage extends ChannelMessage<ChannelOpenFailureMessage> {
 
-    public static final MessageIdConstant ID = MessageIdConstant.SSH_MSG_CHANNEL_OPEN_FAILURE;
-
     private ModifiableInteger reasonCode;
     private ModifiableInteger reasonLength;
     private ModifiableString reason;
     private ModifiableInteger languageTagLength;
     private ModifiableString languageTag;
 
-    public ChannelOpenFailureMessage() {}
+    public ChannelOpenFailureMessage() {
+        super(MessageIdConstant.SSH_MSG_CHANNEL_OPEN_FAILURE);
+    }
 
     public ChannelOpenFailureMessage(Integer senderChannel) {
-        super(senderChannel);
+        this();
+        this.setSenderChannel(senderChannel);
     }
 
     public ModifiableInteger getReasonCode() {

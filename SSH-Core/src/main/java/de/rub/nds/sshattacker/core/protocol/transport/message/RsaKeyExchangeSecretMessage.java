@@ -18,10 +18,12 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class RsaKeyExchangeSecretMessage extends SshMessage<RsaKeyExchangeSecretMessage> {
 
-    public static final MessageIdConstant ID = MessageIdConstant.SSH_MSG_KEXRSA_SECRET;
-
     private ModifiableInteger encryptedSecretLength;
     private ModifiableByteArray encryptedSecret;
+
+    public RsaKeyExchangeSecretMessage() {
+        super(MessageIdConstant.SSH_MSG_KEXRSA_SECRET);
+    }
 
     public ModifiableInteger getEncryptedSecretLength() {
         return encryptedSecretLength;

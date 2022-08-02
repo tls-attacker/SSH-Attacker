@@ -19,13 +19,15 @@ import java.nio.charset.StandardCharsets;
 
 public class DisconnectMessage extends SshMessage<DisconnectMessage> {
 
-    public static final MessageIdConstant ID = MessageIdConstant.SSH_MSG_DISCONNECT;
-
     private ModifiableInteger reasonCode;
     private ModifiableInteger descriptionLength;
     private ModifiableString description;
     private ModifiableInteger languageTagLength;
     private ModifiableString languageTag;
+
+    public DisconnectMessage() {
+        super(MessageIdConstant.SSH_MSG_DISCONNECT);
+    }
 
     public ModifiableInteger getReasonCode() {
         return reasonCode;

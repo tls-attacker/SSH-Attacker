@@ -19,10 +19,12 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 public class RsaKeyExchangeDoneMessage extends SshMessage<RsaKeyExchangeDoneMessage>
         implements ExchangeHashSignatureMessage {
 
-    public static final MessageIdConstant ID = MessageIdConstant.SSH_MSG_KEXRSA_DONE;
-
     private ModifiableInteger signatureLength;
     private ModifiableByteArray signature;
+
+    public RsaKeyExchangeDoneMessage() {
+        super(MessageIdConstant.SSH_MSG_KEXRSA_DONE);
+    }
 
     @Override
     public ModifiableInteger getSignatureLength() {

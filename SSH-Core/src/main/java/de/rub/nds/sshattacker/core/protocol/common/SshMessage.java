@@ -10,7 +10,6 @@ package de.rub.nds.sshattacker.core.protocol.common;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
-import de.rub.nds.sshattacker.core.constants.SshMessageConstants;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -26,32 +25,12 @@ public abstract class SshMessage<T extends SshMessage<T>> extends ProtocolMessag
 
     protected ModifiableByte messageId;
 
-    protected SshMessage() {
-        try {
-            MessageIdConstant messageId =
-                    (MessageIdConstant)
-                            this.getClass().getField(SshMessageConstants.CLASS_ID_FIELD).get(null);
-            this.setMessageId(messageId);
-        } catch (NoSuchFieldException e) {
-            LOGGER.fatal(
-                    "Unable to instantiate SSH message of type {}, no ID field found - make sure this class or one of its super classes offers a static ID field containing the corresponding message id constant",
-                    this.toCompactString());
-            LOGGER.debug(e);
-            throw new RuntimeException(e);
-        } catch (IllegalAccessException e) {
-            LOGGER.fatal(
-                    "Unable to instantiate SSH message of type {}, unable to access ID field - make sure it is static and publicly available",
-                    this.toCompactString());
-            LOGGER.debug(e);
-            throw new RuntimeException(e);
-        } catch (ClassCastException e) {
-            LOGGER.fatal(
-                    "Unable to instantiate SSH message of type {}, unable to cast ID field to {} - make sure the type of the ID field is correct",
-                    this.toCompactString(),
-                    MessageIdConstant.class.getSimpleName());
-            LOGGER.debug(e);
-            throw new RuntimeException(e);
-        }
+    protected SshMessage(byte messageId) {
+        this.setMessageId(messageId);
+    }
+
+    protected SshMessage(MessageIdConstant messageId) {
+        this(messageId.getId());
     }
 
     public ModifiableByte getMessageId() {

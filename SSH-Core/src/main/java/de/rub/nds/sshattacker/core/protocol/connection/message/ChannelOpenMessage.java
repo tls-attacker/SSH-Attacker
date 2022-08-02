@@ -20,8 +20,6 @@ import javax.xml.bind.annotation.XmlAttribute;
 
 public class ChannelOpenMessage extends SshMessage<ChannelOpenMessage> {
 
-    public static final MessageIdConstant ID = MessageIdConstant.SSH_MSG_CHANNEL_OPEN;
-
     private ModifiableInteger channelTypeLength;
     private ModifiableString channelType;
     private ModifiableInteger windowSize;
@@ -31,11 +29,13 @@ public class ChannelOpenMessage extends SshMessage<ChannelOpenMessage> {
     @XmlAttribute(name = "channel")
     private Integer senderChannel;
 
-    public ChannelOpenMessage() {}
+    public ChannelOpenMessage() {
+        super(MessageIdConstant.SSH_MSG_CHANNEL_OPEN);
+    }
 
     public ChannelOpenMessage(Integer senderChannel) {
-        super();
-        setSenderChannel(senderChannel);
+        this();
+        this.setSenderChannel(senderChannel);
     }
 
     public ModifiableInteger getChannelTypeLength() {

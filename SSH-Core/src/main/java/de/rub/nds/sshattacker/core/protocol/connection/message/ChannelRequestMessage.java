@@ -19,22 +19,21 @@ import java.nio.charset.StandardCharsets;
 public abstract class ChannelRequestMessage<T extends ChannelRequestMessage<T>>
         extends ChannelMessage<T> {
 
-    public static final MessageIdConstant ID = MessageIdConstant.SSH_MSG_CHANNEL_REQUEST;
-
     private ModifiableInteger requestTypeLength;
     private ModifiableString requestType;
     private ModifiableByte wantReply;
 
     protected ChannelRequestMessage(
             @SuppressWarnings("SameParameterValue") ChannelRequestType requestType) {
+        super(MessageIdConstant.SSH_MSG_CHANNEL_REQUEST);
         setRequestType(requestType);
     }
 
     protected ChannelRequestMessage(
             @SuppressWarnings("SameParameterValue") ChannelRequestType requestType,
             Integer senderChannel) {
-        super(senderChannel);
-        setRequestType(requestType);
+        this(requestType);
+        this.setSenderChannel(senderChannel);
     }
 
     public ModifiableInteger getRequestTypeLength() {

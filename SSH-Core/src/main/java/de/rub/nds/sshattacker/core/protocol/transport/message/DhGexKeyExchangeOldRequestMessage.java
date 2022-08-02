@@ -17,9 +17,11 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 public class DhGexKeyExchangeOldRequestMessage
         extends SshMessage<DhGexKeyExchangeOldRequestMessage> {
 
-    public static final MessageIdConstant ID = MessageIdConstant.SSH_MSG_KEX_DH_GEX_REQUEST_OLD;
-
     private ModifiableInteger preferredGroupSize;
+
+    public DhGexKeyExchangeOldRequestMessage() {
+        super(MessageIdConstant.SSH_MSG_KEX_DH_GEX_REQUEST_OLD);
+    }
 
     public ModifiableInteger getPreferredGroupSize() {
         return preferredGroupSize;

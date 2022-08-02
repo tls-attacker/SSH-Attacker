@@ -16,11 +16,13 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class DhGexKeyExchangeRequestMessage extends SshMessage<DhGexKeyExchangeRequestMessage> {
 
-    public static final MessageIdConstant ID = MessageIdConstant.SSH_MSG_KEX_DH_GEX_REQUEST;
-
     private ModifiableInteger minimalGroupSize;
     private ModifiableInteger preferredGroupSize;
     private ModifiableInteger maximalGroupSize;
+
+    public DhGexKeyExchangeRequestMessage() {
+        super(MessageIdConstant.SSH_MSG_KEX_DH_GEX_REQUEST);
+    }
 
     public ModifiableInteger getMinimalGroupSize() {
         return minimalGroupSize;

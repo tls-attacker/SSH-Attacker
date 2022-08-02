@@ -22,8 +22,6 @@ import java.math.BigInteger;
 public class DhGexKeyExchangeReplyMessage extends SshMessage<DhGexKeyExchangeReplyMessage>
         implements HostKeyMessage, ExchangeHashSignatureMessage {
 
-    public static final MessageIdConstant ID = MessageIdConstant.SSH_MSG_KEX_DH_GEX_REPLY;
-
     private ModifiableInteger hostKeyBytesLength;
     private ModifiableByteArray hostKeyBytes;
 
@@ -32,6 +30,10 @@ public class DhGexKeyExchangeReplyMessage extends SshMessage<DhGexKeyExchangeRep
 
     private ModifiableInteger signatureLength;
     private ModifiableByteArray signature;
+
+    public DhGexKeyExchangeReplyMessage() {
+        super(MessageIdConstant.SSH_MSG_KEX_DH_GEX_REPLY);
+    }
 
     @Override
     public ModifiableInteger getHostKeyBytesLength() {

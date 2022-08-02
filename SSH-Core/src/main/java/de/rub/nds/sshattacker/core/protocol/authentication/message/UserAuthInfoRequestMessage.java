@@ -21,7 +21,6 @@ import java.util.List;
 
 public class UserAuthInfoRequestMessage extends SshMessage<UserAuthInfoRequestMessage> {
 
-    public static final MessageIdConstant ID = MessageIdConstant.SSH_MSG_USERAUTH_INFO_REQUEST;
     private ModifiableInteger userNameLength;
     private ModifiableString userName;
     private ModifiableInteger instructionLength;
@@ -32,7 +31,7 @@ public class UserAuthInfoRequestMessage extends SshMessage<UserAuthInfoRequestMe
     private List<AuthenticationPrompt> prompts = new ArrayList<AuthenticationPrompt>();
 
     public UserAuthInfoRequestMessage() {
-        super();
+        super(MessageIdConstant.SSH_MSG_USERAUTH_INFO_REQUEST);
     }
 
     public ModifiableInteger getUserNameLength() {

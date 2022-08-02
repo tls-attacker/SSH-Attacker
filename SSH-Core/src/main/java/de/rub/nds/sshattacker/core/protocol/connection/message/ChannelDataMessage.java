@@ -16,15 +16,16 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class ChannelDataMessage extends ChannelMessage<ChannelDataMessage> {
 
-    public static final MessageIdConstant ID = MessageIdConstant.SSH_MSG_CHANNEL_DATA;
-
     private ModifiableInteger dataLength;
     private ModifiableByteArray data;
 
-    public ChannelDataMessage() {}
+    public ChannelDataMessage() {
+        super(MessageIdConstant.SSH_MSG_CHANNEL_DATA);
+    }
 
     public ChannelDataMessage(Integer senderChannel) {
-        super(senderChannel);
+        this();
+        this.setSenderChannel(senderChannel);
     }
 
     public ModifiableInteger getDataLength() {

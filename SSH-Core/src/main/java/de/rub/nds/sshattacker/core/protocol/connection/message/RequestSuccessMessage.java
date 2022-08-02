@@ -13,12 +13,13 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class RequestSuccessMessage extends ChannelMessage<RequestSuccessMessage> {
 
-    public static final MessageIdConstant ID = MessageIdConstant.SSH_MSG_REQUEST_SUCCESS;
-
-    public RequestSuccessMessage() {}
+    public RequestSuccessMessage() {
+        super(MessageIdConstant.SSH_MSG_REQUEST_SUCCESS);
+    }
 
     public RequestSuccessMessage(Integer senderChannel) {
-        super(senderChannel);
+        this();
+        this.setSenderChannel(senderChannel);
     }
 
     @Override

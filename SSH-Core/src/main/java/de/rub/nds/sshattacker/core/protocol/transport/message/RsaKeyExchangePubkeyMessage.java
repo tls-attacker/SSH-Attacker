@@ -26,13 +26,15 @@ import java.security.interfaces.RSAPublicKey;
 public class RsaKeyExchangePubkeyMessage extends SshMessage<RsaKeyExchangePubkeyMessage>
         implements HostKeyMessage {
 
-    public static final MessageIdConstant ID = MessageIdConstant.SSH_MSG_KEXRSA_PUBKEY;
-
     private ModifiableInteger hostKeyBytesLength;
     private ModifiableByteArray hostKeyBytes;
 
     private ModifiableInteger transientPublicKeyBytesLength;
     private ModifiableByteArray transientPublicKeyBytes;
+
+    public RsaKeyExchangePubkeyMessage() {
+        super(MessageIdConstant.SSH_MSG_KEXRSA_PUBKEY);
+    }
 
     // Host Key (K_S) Methods
     @Override

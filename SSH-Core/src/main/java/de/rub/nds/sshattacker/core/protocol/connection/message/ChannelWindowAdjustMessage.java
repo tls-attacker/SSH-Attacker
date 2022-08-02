@@ -15,14 +15,15 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class ChannelWindowAdjustMessage extends ChannelMessage<ChannelWindowAdjustMessage> {
 
-    public static final MessageIdConstant ID = MessageIdConstant.SSH_MSG_CHANNEL_WINDOW_ADJUST;
-
     private ModifiableInteger bytesToAdd;
 
-    public ChannelWindowAdjustMessage() {}
+    public ChannelWindowAdjustMessage() {
+        super(MessageIdConstant.SSH_MSG_CHANNEL_WINDOW_ADJUST);
+    }
 
     public ChannelWindowAdjustMessage(Integer senderChannel) {
-        super(senderChannel);
+        this();
+        this.setSenderChannel(senderChannel);
     }
 
     public ModifiableInteger getBytesToAdd() {

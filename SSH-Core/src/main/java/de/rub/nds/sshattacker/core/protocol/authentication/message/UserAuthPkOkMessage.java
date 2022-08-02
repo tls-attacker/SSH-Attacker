@@ -18,11 +18,14 @@ import java.nio.charset.StandardCharsets;
 
 public class UserAuthPkOkMessage extends SshMessage<UserAuthPkOkMessage> {
 
-    public static final MessageIdConstant ID = MessageIdConstant.SSH_MSG_USERAUTH_PK_OK;
     private ModifiableInteger pubkeyAlgNameLength;
     private ModifiableString pubkeyAlgName;
     private ModifiableInteger pubkeyLength;
     private ModifiableString pubkey;
+
+    public UserAuthPkOkMessage() {
+        super(MessageIdConstant.SSH_MSG_USERAUTH_PK_OK);
+    }
 
     public ModifiableInteger getPubkeyAlgNameLength() {
         return pubkeyAlgNameLength;

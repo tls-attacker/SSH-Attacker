@@ -20,8 +20,6 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 public class EcdhKeyExchangeReplyMessage extends SshMessage<EcdhKeyExchangeReplyMessage>
         implements HostKeyMessage, ExchangeHashSignatureMessage {
 
-    public static final MessageIdConstant ID = MessageIdConstant.SSH_MSG_KEX_ECDH_REPLY;
-
     private ModifiableInteger hostKeyBytesLength;
     private ModifiableByteArray hostKeyBytes;
 
@@ -30,6 +28,10 @@ public class EcdhKeyExchangeReplyMessage extends SshMessage<EcdhKeyExchangeReply
 
     private ModifiableInteger signatureLength;
     private ModifiableByteArray signature;
+
+    public EcdhKeyExchangeReplyMessage() {
+        super(MessageIdConstant.SSH_MSG_KEX_ECDH_REPLY);
+    }
 
     @Override
     public ModifiableInteger getHostKeyBytesLength() {

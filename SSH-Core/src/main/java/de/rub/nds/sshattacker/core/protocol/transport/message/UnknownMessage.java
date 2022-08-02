@@ -16,9 +16,11 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class UnknownMessage extends SshMessage<UnknownMessage> {
 
-    public static final MessageIdConstant ID = MessageIdConstant.UNKNOWN;
-
     private ModifiableByteArray payload;
+
+    public UnknownMessage() {
+        super(MessageIdConstant.UNKNOWN);
+    }
 
     public ModifiableByteArray getPayload() {
         return payload;

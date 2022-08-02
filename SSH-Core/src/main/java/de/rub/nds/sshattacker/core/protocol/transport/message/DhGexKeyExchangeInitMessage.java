@@ -18,10 +18,12 @@ import java.math.BigInteger;
 
 public class DhGexKeyExchangeInitMessage extends SshMessage<DhGexKeyExchangeInitMessage> {
 
-    public static final MessageIdConstant ID = MessageIdConstant.SSH_MSG_KEX_DH_GEX_INIT;
-
     private ModifiableInteger ephemeralPublicKeyLength;
     private ModifiableBigInteger ephemeralPublicKey;
+
+    public DhGexKeyExchangeInitMessage() {
+        super(MessageIdConstant.SSH_MSG_KEX_DH_GEX_INIT);
+    }
 
     public ModifiableInteger getEphemeralPublicKeyLength() {
         return ephemeralPublicKeyLength;

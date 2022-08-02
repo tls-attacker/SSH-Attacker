@@ -17,16 +17,17 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class ChannelExtendedDataMessage extends ChannelMessage<ChannelExtendedDataMessage> {
 
-    public static final MessageIdConstant ID = MessageIdConstant.SSH_MSG_CHANNEL_EXTENDED_DATA;
-
     private ModifiableInteger dataTypeCode;
     private ModifiableInteger dataLength;
     private ModifiableByteArray data;
 
-    public ChannelExtendedDataMessage() {}
+    public ChannelExtendedDataMessage() {
+        super(MessageIdConstant.SSH_MSG_CHANNEL_EXTENDED_DATA);
+    }
 
     public ChannelExtendedDataMessage(Integer senderChannel) {
-        super(senderChannel);
+        this();
+        this.setSenderChannel(senderChannel);
     }
 
     public ModifiableInteger getDataTypeCode() {

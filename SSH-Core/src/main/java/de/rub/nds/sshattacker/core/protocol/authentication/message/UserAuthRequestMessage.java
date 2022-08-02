@@ -19,8 +19,6 @@ import java.nio.charset.StandardCharsets;
 public abstract class UserAuthRequestMessage<T extends UserAuthRequestMessage<T>>
         extends SshMessage<T> {
 
-    public static final MessageIdConstant ID = MessageIdConstant.SSH_MSG_USERAUTH_REQUEST;
-
     protected ModifiableInteger userNameLength;
     protected ModifiableString userName;
     protected ModifiableInteger serviceNameLength;
@@ -30,6 +28,7 @@ public abstract class UserAuthRequestMessage<T extends UserAuthRequestMessage<T>
 
     protected UserAuthRequestMessage(
             @SuppressWarnings("SameParameterValue") AuthenticationMethod authenticationMethod) {
+        super(MessageIdConstant.SSH_MSG_USERAUTH_REQUEST);
         setMethodName(authenticationMethod, true);
     }
 

@@ -13,12 +13,13 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class ChannelEofMessage extends ChannelMessage<ChannelEofMessage> {
 
-    public static final MessageIdConstant ID = MessageIdConstant.SSH_MSG_CHANNEL_EOF;
-
-    public ChannelEofMessage() {}
+    public ChannelEofMessage() {
+        super(MessageIdConstant.SSH_MSG_CHANNEL_EOF);
+    }
 
     public ChannelEofMessage(Integer senderChannel) {
-        super(senderChannel);
+        this();
+        this.setSenderChannel(senderChannel);
     }
 
     @Override

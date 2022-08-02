@@ -19,12 +19,11 @@ import java.util.List;
 
 public class UserAuthInfoResponseMessage extends SshMessage<UserAuthInfoResponseMessage> {
 
-    public static final MessageIdConstant ID = MessageIdConstant.SSH_MSG_USERAUTH_INFO_RESPONSE;
     private ModifiableInteger numResponses;
     private List<AuthenticationResponse> responses = new ArrayList<AuthenticationResponse>();
 
     public UserAuthInfoResponseMessage() {
-        super();
+        super(MessageIdConstant.SSH_MSG_USERAUTH_INFO_RESPONSE);
     }
 
     public ModifiableInteger getNumResponses() {

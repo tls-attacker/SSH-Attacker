@@ -13,12 +13,13 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class ChannelFailureMessage extends ChannelMessage<ChannelFailureMessage> {
 
-    public static final MessageIdConstant ID = MessageIdConstant.SSH_MSG_CHANNEL_FAILURE;
-
-    public ChannelFailureMessage() {}
+    public ChannelFailureMessage() {
+        super(MessageIdConstant.SSH_MSG_CHANNEL_FAILURE);
+    }
 
     public ChannelFailureMessage(Integer senderChannel) {
-        super(senderChannel);
+        this();
+        this.setSenderChannel(senderChannel);
     }
 
     @Override
