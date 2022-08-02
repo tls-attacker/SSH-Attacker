@@ -7,30 +7,37 @@
  */
 package de.rub.nds.sshattacker.core.crypto.cipher;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.CryptoConstants;
 import de.rub.nds.sshattacker.core.constants.EncryptionAlgorithm;
 import de.rub.nds.sshattacker.core.exceptions.CryptoException;
-import java.io.InputStream;
-import java.security.Security;
-import java.util.Arrays;
-import java.util.Scanner;
-import java.util.stream.Stream;
-import javax.crypto.AEADBadTagException;
-import javax.xml.bind.DatatypeConverter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
+import javax.crypto.AEADBadTagException;
+import javax.xml.bind.DatatypeConverter;
+import java.io.InputStream;
+import java.security.Security;
+import java.util.Arrays;
+import java.util.Scanner;
+import java.util.stream.Stream;
+
+import static org.junit.jupiter.api.Assertions.*;
+
 public class ChaCha20Poly1305CipherTest {
 
     private static final Logger LOGGER = LogManager.getLogger();
+
+    @BeforeAll
+    public static void init() {
+        Security.addProvider(new BouncyCastleProvider());
+    }
 
     public static Stream<Arguments> provideChacha20Poly1305Vectors() {
         InputStream testVectorFile =
@@ -73,7 +80,6 @@ public class ChaCha20Poly1305CipherTest {
     @MethodSource("provideChacha20Poly1305Vectors")
     public void testEncrypt(
             byte[] key, byte[] iv, byte[] plaintext, byte[] ciphertext, byte[] mac) {
-        Security.addProvider(new BouncyCastleProvider());
         EncryptionCipher headerEncryptCipher =
                 new JavaCipher(
                         EncryptionAlgorithm.CHACHA20_POLY1305_OPENSSH_COM,
@@ -119,7 +125,6 @@ public class ChaCha20Poly1305CipherTest {
     @MethodSource("provideChacha20Poly1305Vectors")
     public void testDecrypt(
             byte[] key, byte[] iv, byte[] plaintext, byte[] ciphertext, byte[] mac) {
-        Security.addProvider(new BouncyCastleProvider());
         DecryptionCipher headerDecryptCipher =
                 new JavaCipher(
                         EncryptionAlgorithm.CHACHA20_POLY1305_OPENSSH_COM,

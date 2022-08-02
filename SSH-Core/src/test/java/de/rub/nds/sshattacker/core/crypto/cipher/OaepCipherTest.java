@@ -7,8 +7,6 @@
  */
 package de.rub.nds.sshattacker.core.crypto.cipher;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.KeyExchangeAlgorithm;
 import de.rub.nds.sshattacker.core.constants.PublicKeyFormat;
@@ -16,18 +14,21 @@ import de.rub.nds.sshattacker.core.crypto.keys.CustomRsaPrivateKey;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomRsaPublicKey;
 import de.rub.nds.sshattacker.core.crypto.keys.SshPublicKey;
 import de.rub.nds.sshattacker.core.exceptions.CryptoException;
-import java.io.InputStream;
-import java.math.BigInteger;
-import java.util.Scanner;
-import java.util.stream.Stream;
-import javax.crypto.BadPaddingException;
-import javax.xml.bind.DatatypeConverter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+
+import javax.crypto.BadPaddingException;
+import javax.xml.bind.DatatypeConverter;
+import java.io.InputStream;
+import java.math.BigInteger;
+import java.util.Scanner;
+import java.util.stream.Stream;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class OaepCipherTest {
 
@@ -151,17 +152,13 @@ public class OaepCipherTest {
             BigInteger priv_key_exponent,
             BigInteger priv_key_modulus,
             byte[] plaintext,
-            byte[] ciphertext) {
+            byte[] ciphertext)
+            throws CryptoException {
         CustomRsaPrivateKey privateKey =
                 new CustomRsaPrivateKey(priv_key_exponent, priv_key_modulus);
         DecryptionCipher cipher =
                 CipherFactory.getDecryptionCipher(keyExchangeAlgorithm, privateKey);
-        byte[] computedPlaintext = null;
-        try {
-            computedPlaintext = cipher.decrypt(ciphertext);
-        } catch (CryptoException e) {
-            LOGGER.error(e);
-        }
+        byte[] computedPlaintext = cipher.decrypt(ciphertext);
         assertArrayEquals(plaintext, computedPlaintext);
     }
 
@@ -188,7 +185,8 @@ public class OaepCipherTest {
             BigInteger priv_key_exponent,
             BigInteger priv_key_modulus,
             byte[] plaintext,
-            byte[] ciphertext) {
+            byte[] ciphertext)
+            throws CryptoException {
         CustomRsaPublicKey publicKey = new CustomRsaPublicKey(pub_key_exponent, pub_key_modulus);
         CustomRsaPrivateKey privateKey =
                 new CustomRsaPrivateKey(priv_key_exponent, priv_key_modulus);
@@ -196,26 +194,17 @@ public class OaepCipherTest {
                 new SshPublicKey<>(PublicKeyFormat.SSH_RSA, publicKey, privateKey);
         EncryptionCipher encCipher =
                 CipherFactory.getEncryptionCipher(keyExchangeAlgorithm, keypair.getPublicKey());
-        byte[] computedCiphertext = null;
-        try {
-            computedCiphertext = encCipher.encrypt(plaintext);
-        } catch (CryptoException e) {
-            LOGGER.error(e);
-        }
+        byte[] computedCiphertext = encCipher.encrypt(plaintext);
         DecryptionCipher decCipher =
                 CipherFactory.getDecryptionCipher(
                         keyExchangeAlgorithm, keypair.getPrivateKey().get());
-        byte[] computedPlaintext = null;
-        try {
-            computedPlaintext = decCipher.decrypt(computedCiphertext);
-        } catch (CryptoException e) {
-            LOGGER.error(e);
-        }
+        byte[] computedPlaintext = decCipher.decrypt(computedCiphertext);
         assertArrayEquals(plaintext, computedPlaintext);
     }
 
     @Test
     public void exceptionTesting() {
+        LOGGER.info("Exception testing: ");
         byte[] modulus =
                 ArrayConverter.hexStringToByteArray(
                         "a8b3b284af8eb50b387034a860f146c4919f318763cd6c5598c8ae4811a1e0abc4c7e0b082d693a5e7fced675cf4668512772c0cbc64a742c6c630f533c8cc72f62ae833c40bf25842e984bb78bdbf97c0107d55bdb662f5c4e0fab9845cb5148ef7392dd3aaff93ae1e6b667bb3d4247616d4f5ba10d4cfd226de88d39f16fb");

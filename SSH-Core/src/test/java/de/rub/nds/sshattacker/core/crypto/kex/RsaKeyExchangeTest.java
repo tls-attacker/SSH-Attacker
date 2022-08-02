@@ -149,7 +149,8 @@ public class RsaKeyExchangeTest {
             BigInteger priv_key_exponent,
             BigInteger priv_key_modulus,
             BigInteger sharedSecret,
-            byte[] ciphertext) {
+            byte[] ciphertext)
+            throws CryptoException {
         RsaKeyExchange rsaKeyExchange =
                 RsaKeyExchange.newInstance(new SshContext(), keyExchangeAlgorithm);
         CustomRsaPublicKey publicKey = new CustomRsaPublicKey(pub_key_exponent, pub_key_modulus);
@@ -174,12 +175,7 @@ public class RsaKeyExchangeTest {
         if (keyExchangeAlgorithm == KeyExchangeAlgorithm.RSA2048_SHA256) {
             assertEquals(256, rsaKeyExchange.getHashLength());
         }
-
-        try {
-            rsaKeyExchange.decryptSharedSecret(ciphertext);
-        } catch (CryptoException e) {
-            LOGGER.error(e);
-        }
+        rsaKeyExchange.decryptSharedSecret(ciphertext);
         assertEquals(sharedSecret, rsaKeyExchange.getSharedSecret());
     }
 
@@ -207,7 +203,8 @@ public class RsaKeyExchangeTest {
             BigInteger priv_key_exponent,
             BigInteger priv_key_modulus,
             BigInteger sharedSecret,
-            byte[] ciphertext) {
+            byte[] ciphertext)
+            throws CryptoException {
         RsaKeyExchange rsaKeyExchange =
                 RsaKeyExchange.newInstance(new SshContext(), keyExchangeAlgorithm);
         CustomRsaPublicKey publicKey = new CustomRsaPublicKey(pub_key_exponent, pub_key_modulus);
@@ -234,16 +231,13 @@ public class RsaKeyExchangeTest {
 
         rsaKeyExchange.setSharedSecret(sharedSecret);
         byte[] cipher = rsaKeyExchange.encryptSharedSecret();
-        try {
-            rsaKeyExchange.decryptSharedSecret(cipher);
-        } catch (CryptoException e) {
-            LOGGER.error(e);
-        }
+        rsaKeyExchange.decryptSharedSecret(cipher);
         assertEquals(sharedSecret, rsaKeyExchange.getSharedSecret());
     }
 
     @Test
     public void exceptionTesting() {
+        LOGGER.info("Exception testing: ");
         BigInteger modulus =
                 new BigInteger(
                         "a8b3b284af8eb50b387034a860f146c4919f318763cd6c5598c8ae4811a1e0abc4c7e0b082d693a5e7fced675cf4668512772c0cbc64a742c6c630f533c8cc72f62ae833c40bf25842e984bb78bdbf97c0107d55bdb662f5c4e0fab9845cb5148ef7392dd3aaff93ae1e6b667bb3d4247616d4f5ba10d4cfd226de88d39f16fb",
@@ -287,6 +281,6 @@ public class RsaKeyExchangeTest {
 
         rsaKeyExchange.setHashLength(120);
         rsaKeyExchange.generateSharedSecret();
-        assertThrows(NullPointerException.class, () -> rsaKeyExchange.encryptSharedSecret());
+        assertThrows(NullPointerException.class, rsaKeyExchange::encryptSharedSecret);
     }
 }

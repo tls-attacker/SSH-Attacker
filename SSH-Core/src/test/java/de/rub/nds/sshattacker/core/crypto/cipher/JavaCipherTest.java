@@ -93,11 +93,11 @@ public class JavaCipherTest {
                             .getResourceAsStream("./AESAVS/" + testVectorName);
             assert testVectorFile != null;
             reader = new Scanner(testVectorFile);
-            char testingMode = 'e';
+            boolean encrypt = true;
             while (reader.hasNextLine()) {
                 line = reader.nextLine();
                 if (line.startsWith("[DECRYPT]")) {
-                    testingMode = 'd';
+                    encrypt = false;
                 }
 
                 if (line.startsWith("# Key Length : ")) {
@@ -123,7 +123,7 @@ public class JavaCipherTest {
                     line = reader.nextLine();
                     byte[] plaintext;
                     byte[] ciphertext;
-                    if (testingMode == 'e') {
+                    if (encrypt) {
                         plaintext = DatatypeConverter.parseHexBinary(line.split(" = ")[1]);
                         line = reader.nextLine();
                         ciphertext = DatatypeConverter.parseHexBinary(line.split(" = ")[1]);
@@ -134,12 +134,7 @@ public class JavaCipherTest {
                     }
                     argumentsBuilder.add(
                             Arguments.of(
-                                    encryptionAlgorithm,
-                                    testingMode,
-                                    key,
-                                    iv,
-                                    plaintext,
-                                    ciphertext));
+                                    encryptionAlgorithm, encrypt, key, iv, plaintext, ciphertext));
                 }
             }
         }
@@ -279,16 +274,13 @@ public class JavaCipherTest {
             EncryptionAlgorithm encryptionAlgorithm,
             byte[] key,
             byte[] plaintext,
-            byte[] ciphertext) {
+            byte[] ciphertext)
+            throws CryptoException {
         int keyLength = key.length;
         JavaCipher cipher = new JavaCipher(encryptionAlgorithm, key, true);
         assertEquals(cipher.getAlgorithm(), encryptionAlgorithm);
-        try {
-            byte[] encText = cipher.encrypt(plaintext);
-            assertArrayEquals(ciphertext, encText);
-        } catch (CryptoException e) {
-            LOGGER.error(e);
-        }
+        byte[] encText = cipher.encrypt(plaintext);
+        assertArrayEquals(ciphertext, encText);
     }
 
     /**
@@ -306,16 +298,13 @@ public class JavaCipherTest {
             EncryptionAlgorithm encryptionAlgorithm,
             byte[] key,
             byte[] plaintext,
-            byte[] ciphertext) {
+            byte[] ciphertext)
+            throws CryptoException {
         int keyLength = key.length;
         JavaCipher cipher = new JavaCipher(encryptionAlgorithm, key, true);
         assertEquals(cipher.getAlgorithm(), encryptionAlgorithm);
-        try {
-            byte[] decText = cipher.decrypt(ciphertext);
-            assertArrayEquals(plaintext, decText);
-        } catch (CryptoException e) {
-            LOGGER.error(e);
-        }
+        byte[] decText = cipher.decrypt(ciphertext);
+        assertArrayEquals(plaintext, decText);
     }
 
     /**
@@ -334,31 +323,21 @@ public class JavaCipherTest {
     @MethodSource("provideAesTestVectors")
     void testEncryption_DecryptionBlockCipher(
             EncryptionAlgorithm encryptionAlgorithm,
-            char testingMode,
+            boolean testingMode,
             byte[] key,
             byte[] iv,
             byte[] plaintext,
-            byte[] ciphertext) {
+            byte[] ciphertext)
+            throws CryptoException {
         int keyLength = key.length;
         JavaCipher cipher = new JavaCipher(encryptionAlgorithm, key, true);
         assertEquals(cipher.getAlgorithm(), encryptionAlgorithm);
-        switch (testingMode) {
-            case 'e':
-                try {
-                    byte[] encText = cipher.encrypt(plaintext, iv);
-                    assertArrayEquals(ciphertext, encText);
-                } catch (CryptoException e) {
-                    LOGGER.error(e);
-                }
-                break;
-            case 'd':
-                try {
-                    byte[] decText = cipher.decrypt(ciphertext, iv);
-                    assertArrayEquals(plaintext, decText);
-                } catch (CryptoException e) {
-                    LOGGER.error(e);
-                }
-                break;
+        if (testingMode) {
+            byte[] encText = cipher.encrypt(plaintext, iv);
+            assertArrayEquals(ciphertext, encText);
+        } else {
+            byte[] decText = cipher.decrypt(ciphertext, iv);
+            assertArrayEquals(plaintext, decText);
         }
     }
 
@@ -383,19 +362,16 @@ public class JavaCipherTest {
             byte[] plaintext,
             byte[] aad,
             byte[] ciphertext,
-            byte[] tag) {
+            byte[] tag)
+            throws CryptoException {
         JavaCipher cipher = new JavaCipher(encryptionAlgorithm, key, true);
         assertEquals(cipher.getAlgorithm(), encryptionAlgorithm);
-        try {
-            byte[] fullEncText = cipher.encrypt(plaintext, iv, aad);
-            byte[] computedCiphertext = Arrays.copyOfRange(fullEncText, 0, fullEncText.length - 16);
-            byte[] computedTag =
-                    Arrays.copyOfRange(fullEncText, fullEncText.length - 16, fullEncText.length);
-            assertArrayEquals(tag, computedTag);
-            assertArrayEquals(ciphertext, computedCiphertext);
-        } catch (CryptoException e) {
-            LOGGER.error(e);
-        }
+        byte[] fullEncText = cipher.encrypt(plaintext, iv, aad);
+        byte[] computedCiphertext = Arrays.copyOfRange(fullEncText, 0, fullEncText.length - 16);
+        byte[] computedTag =
+                Arrays.copyOfRange(fullEncText, fullEncText.length - 16, fullEncText.length);
+        assertArrayEquals(tag, computedTag);
+        assertArrayEquals(ciphertext, computedCiphertext);
     }
 
     /**
@@ -422,28 +398,27 @@ public class JavaCipherTest {
             byte[] aad,
             byte[] ciphertext,
             byte[] tag,
-            boolean decryptable) {
+            boolean decryptable)
+            throws CryptoException {
         JavaCipher cipher = new JavaCipher(encryptionAlgorithm, key, true);
         assertEquals(cipher.getAlgorithm(), encryptionAlgorithm);
-
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         try {
             outputStream.write(ciphertext);
             outputStream.write(tag);
         } catch (IOException e) {
-            LOGGER.debug(e);
+            LOGGER.debug("Failure occured adding the ciphertext and tag together: " + e);
         }
         byte[] fullCiphertext = outputStream.toByteArray();
 
-        try {
+        if (!decryptable) {
+            Throwable e =
+                    assertThrows(
+                            CryptoException.class, () -> cipher.decrypt(fullCiphertext, iv, aad));
+            LOGGER.debug("CryptoException was thrown right: " + e.getCause().toString());
+        } else {
             byte[] decText = cipher.decrypt(fullCiphertext, iv, aad);
             assertArrayEquals(plaintext, decText);
-        } catch (CryptoException e) {
-            if (!decryptable) {
-                LOGGER.debug("CryptoException was thrown right: " + e.getCause().toString());
-            } else {
-                LOGGER.error(e);
-            }
         }
     }
 }
