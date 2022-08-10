@@ -7,18 +7,16 @@
  */
 package de.rub.nds.sshattacker.core.crypto.ec;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.EcPointFormat;
 import de.rub.nds.sshattacker.core.constants.NamedEcGroup;
-import org.junit.jupiter.api.Test;
-
 import java.math.BigInteger;
 import java.util.Random;
-
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import org.junit.jupiter.api.Test;
 
 public class PointFormatterTest {
-    /** Test of formatToByteArray method, of class PointFormatter. */
     @Test
     public void cyclicTest() {
         for (int i = 0; i < 100; i++) {
