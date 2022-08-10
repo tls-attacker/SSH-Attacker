@@ -7,18 +7,15 @@
  */
 package de.rub.nds.sshattacker.core.crypto.ec;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 import de.rub.nds.sshattacker.core.constants.NamedEcGroup;
 import java.math.BigInteger;
 import java.util.Random;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /** Testing EllipticCurve, CurveFactory, EllipticCurveOverFp and EllipticCurveOverF2m */
 public class EllipticCurveTest {
@@ -31,7 +28,7 @@ public class EllipticCurveTest {
     private Random rnd;
     private Point inf;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         this.rnd = new Random();
         this.inf = new Point();
@@ -72,7 +69,7 @@ public class EllipticCurveTest {
     }
 
     private void testCurveParameters(EllipticCurve curve, Point basePoint) {
-        assertEquals(true, curve.isOnCurve(basePoint));
+        assertTrue(curve.isOnCurve(basePoint));
 
         // Constructing a point, that is not on the curve, to ensure that the
         // first test was no false positive.
@@ -81,7 +78,7 @@ public class EllipticCurveTest {
         BigInteger wrongX = x.add(BigInteger.ONE);
         Point wrongPoint = curve.getPoint(wrongX, y);
 
-        assertEquals(false, curve.isOnCurve(wrongPoint));
+        assertFalse(curve.isOnCurve(wrongPoint));
     }
 
     private void testCurveGroupLaws(
