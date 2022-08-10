@@ -15,11 +15,11 @@ import de.rub.nds.sshattacker.core.protocol.transport.handler.UnknownMessageHand
 import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class UnknownMessage extends SshMessage<UnknownMessage> {
-
     private ModifiableByteArray payload;
 
     public UnknownMessage() {
         super(MessageIdConstant.UNKNOWN);
+        this.setPayload(new byte[] {});
     }
 
     public ModifiableByteArray getPayload() {
