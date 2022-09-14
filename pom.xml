@@ -31,6 +31,7 @@
         <module>SSH-Project-Template</module>
         <module>SSH-Server</module>
         <module>Attacks</module>
+        <module>SSH-Mitm</module>
     </modules>
     <dependencies>
         <dependency>
