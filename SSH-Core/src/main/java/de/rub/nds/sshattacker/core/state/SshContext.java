@@ -70,6 +70,13 @@ public class SshContext {
      */
     private Integer readSequenceNumber;
 
+    /**
+     * If set to false, messages are handled as a server connection. handleAsClient is used to allow
+     * handling messages as a different connection end type than the connection end type of the
+     * fixed connection in the context. This is needed in the handling of mitm/proxy messages.
+     */
+    private boolean handleAsClient;
+
     // region Version Exchange
     /** Client protocol and software version string starting with the SSH version (SSH-2.0-...) */
     private String clientVersion;
@@ -257,6 +264,8 @@ public class SshContext {
         receiveAsciiModeEnabled = true;
         writeSequenceNumber = 0;
         readSequenceNumber = 0;
+        handleAsClient = (connection.getLocalConnectionEndType() == ConnectionEndType.CLIENT);
+
     }
 
     // endregion
@@ -924,5 +933,13 @@ public class SshContext {
 
     public boolean isServer() {
         return connection.getLocalConnectionEndType() == ConnectionEndType.SERVER;
+    }
+
+    public boolean isHandleAsClient() {
+        return handleAsClient;
+    }
+
+    public void setHandleAsClient(boolean handleAsClient) {
+        this.handleAsClient = handleAsClient;
     }
 }

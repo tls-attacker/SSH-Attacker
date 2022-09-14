@@ -30,7 +30,7 @@ public class KeyExchangeInitMessageHandler extends SshMessageHandler<KeyExchange
 
     @Override
     public void adjustContext() {
-        if (context.isClient()) {
+        if (context.isHandleAsClient()) {
             context.setServerCookie(message.getCookie().getValue());
             context.setServerSupportedKeyExchangeAlgorithms(
                     Converter.nameListToEnumValues(

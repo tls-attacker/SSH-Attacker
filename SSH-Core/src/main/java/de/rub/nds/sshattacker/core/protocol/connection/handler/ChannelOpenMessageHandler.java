@@ -7,7 +7,9 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.handler;
 
+import de.rub.nds.sshattacker.core.constants.ChannelType;
 import de.rub.nds.sshattacker.core.protocol.common.*;
+import de.rub.nds.sshattacker.core.protocol.connection.Channel;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelOpenMessage;
 import de.rub.nds.sshattacker.core.protocol.connection.parser.ChannelOpenMessageParser;
 import de.rub.nds.sshattacker.core.protocol.connection.preparator.ChannelOpenMessagePreparator;
@@ -28,6 +30,14 @@ public class ChannelOpenMessageHandler extends SshMessageHandler<ChannelOpenMess
     public void adjustContext() {
         // TODO: Handle ChannelOpenMessage
         // ToDO implement system of own channel management for running as server
+        Channel channel = context.getConfig().getDefaultChannel();
+        channel.setChannelType(ChannelType.getByString(message.getChannelType().getValue()));
+        channel.setRemoteWindowSize(message.getWindowSize());
+        channel.setRemotePacketSize(message.getPacketSize());
+        channel.setOpen(true);
+        context.getChannels().put(message.getModSenderChannel().getValue(), channel);
+        Channel.getLocal_remote()
+                .put(channel.getLocalChannel().getValue(), message.getSenderChannel());
     }
 
     @Override

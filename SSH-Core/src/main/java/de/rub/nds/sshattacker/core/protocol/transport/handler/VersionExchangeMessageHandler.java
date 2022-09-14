@@ -26,7 +26,7 @@ public class VersionExchangeMessageHandler extends ProtocolMessageHandler<Versio
 
     @Override
     public void adjustContext() {
-        if (context.isClient()) {
+        if (context.isHandleAsClient()) {
             context.setServerVersion(message.getVersion().getValue());
             context.setServerComment(message.getComment().getValue());
             context.getExchangeHashInputHolder().setServerVersion(message);
