@@ -17,5 +17,6 @@ public enum WorkflowTraceType {
     AUTH_PASSWORD,
     AUTH_KEYBOARD_INTERACTIVE,
     AUTH_PUBLICKEY,
-    FULL
+    FULL,
+    MITM
 }
