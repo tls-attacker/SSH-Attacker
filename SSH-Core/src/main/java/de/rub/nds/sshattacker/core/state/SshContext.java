@@ -265,7 +265,6 @@ public class SshContext {
         writeSequenceNumber = 0;
         readSequenceNumber = 0;
         handleAsClient = (connection.getLocalConnectionEndType() == ConnectionEndType.CLIENT);
-
     }
 
     // endregion
