@@ -6,6 +6,7 @@
       <module fileurl="file://$PROJECT_DIR$/SSH-Attacker.iml" filepath="$PROJECT_DIR$/SSH-Attacker.iml" />
       <module fileurl="file://$PROJECT_DIR$/SSH-Client/SSH-Client.iml" filepath="$PROJECT_DIR$/SSH-Client/SSH-Client.iml" />
       <module fileurl="file://$PROJECT_DIR$/SSH-Core/SSH-Core.iml" filepath="$PROJECT_DIR$/SSH-Core/SSH-Core.iml" />
+      <module fileurl="file://$PROJECT_DIR$/SSH-Mitm/SSH-Mitm.iml" filepath="$PROJECT_DIR$/SSH-Mitm/SSH-Mitm.iml" />
       <module fileurl="file://$PROJECT_DIR$/SSH-Project-Template/SSH-Project-Template.iml" filepath="$PROJECT_DIR$/SSH-Project-Template/SSH-Project-Template.iml" />
       <module fileurl="file://$PROJECT_DIR$/SSH-Server/SSH-Server.iml" filepath="$PROJECT_DIR$/SSH-Server/SSH-Server.iml" />
     </modules>

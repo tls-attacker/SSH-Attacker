@@ -84,7 +84,7 @@ public class ReceiveMessageHelper {
      * @return An array of bytes received from the transport handler
      * @throws IOException Thrown by the underlying transport handler if receiving failed
      */
-    private byte[] receiveBytes(SshContext context) throws IOException {
+    public byte[] receiveBytes(SshContext context) throws IOException {
         if (context.isReceiveAsciiModeEnabled()) {
             byte[] receiveBuffer = new byte[0];
             byte[] readByte;
@@ -122,7 +122,7 @@ public class ReceiveMessageHelper {
      * @param receivedBytes Received bytes to handle
      * @return A MessageActionResult containing the parsed packets and messages
      */
-    private MessageActionResult handleReceivedBytes(SshContext context, byte[] receivedBytes) {
+    public MessageActionResult handleReceivedBytes(SshContext context, byte[] receivedBytes) {
         if (receivedBytes.length == 0) {
             return new MessageActionResult();
         }
