@@ -33,6 +33,8 @@ public abstract class UserAuthRequestMessage<T extends UserAuthRequestMessage<T>
         setMethodName(authenticationMethod, true);
     }
 
+    protected UserAuthRequestMessage() {}
+
     public ModifiableInteger getUserNameLength() {
         return userNameLength;
     }

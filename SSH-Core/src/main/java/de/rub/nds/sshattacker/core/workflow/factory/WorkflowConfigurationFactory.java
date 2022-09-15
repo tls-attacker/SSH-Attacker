@@ -56,6 +56,8 @@ public class WorkflowConfigurationFactory {
                 return createKeyExchangeWorkflowTrace(KeyExchangeFlowType.RSA);
             case KEX_DYNAMIC:
                 return createDynamicKeyExchangeWorkflowTrace();
+            case AUTH_NONE:
+                return createAuthenticationWorkflowTrace(AuthenticationMethod.NONE);
             case AUTH_PASSWORD:
                 return createAuthenticationWorkflowTrace(AuthenticationMethod.PASSWORD);
             case AUTH_PUBLICKEY:
@@ -282,6 +284,15 @@ public class WorkflowConfigurationFactory {
             AuthenticationMethod method, WorkflowTrace workflow) {
         AliasedConnection connection = getDefaultConnection();
         switch (method) {
+            case NONE:
+                workflow.addSshActions(
+                        SshActionFactory.createMessageAction(
+                                connection, ConnectionEndType.CLIENT, new UserAuthNoneMessage()),
+                        SshActionFactory.createMessageAction(
+                                connection,
+                                ConnectionEndType.SERVER,
+                                new UserAuthSuccessMessage()));
+                break;
             case PASSWORD:
                 workflow.addSshActions(
                         SshActionFactory.createMessageAction(

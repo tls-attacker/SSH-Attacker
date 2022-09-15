@@ -12,6 +12,7 @@ import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.exceptions.ParserException;
 import de.rub.nds.sshattacker.core.packet.AbstractPacket;
 import de.rub.nds.sshattacker.core.packet.BlobPacket;
+import de.rub.nds.sshattacker.core.protocol.authentication.message.*;
 import de.rub.nds.sshattacker.core.protocol.authentication.parser.*;
 import de.rub.nds.sshattacker.core.protocol.connection.parser.*;
 import de.rub.nds.sshattacker.core.protocol.transport.parser.*;
@@ -135,6 +136,8 @@ public abstract class ProtocolMessageParser<T extends ProtocolMessage<T>> extend
                     return new RequestSuccessMessageParser(raw).parse();
                 case SSH_MSG_UNIMPLEMENTED:
                     return new UnimplementedMessageParser(raw).parse();
+                case SSH_MSG_USERAUTH_REQUEST:
+                    return getUserAuthRequestMessageParsing(raw);
                 case SSH_MSG_USERAUTH_BANNER:
                     return new UserAuthBannerMessageParser(raw).parse();
                 case SSH_MSG_USERAUTH_FAILURE:
@@ -161,6 +164,28 @@ public abstract class ProtocolMessageParser<T extends ProtocolMessage<T>> extend
         } catch (ParserException e) {
             LOGGER.debug("Error while Parsing, now parsing as UnknownMessage");
             return new UnknownMessageParser(raw).parse();
+        }
+    }
+
+    private static ProtocolMessage<?> getUserAuthRequestMessageParsing(byte[] raw) {
+        UserAuthUnknownMessage message = new UserAuthUnknownMessageParser(raw).parse();
+        switch (message.getMethodName().getValue()) {
+            case "none":
+                return new UserAuthNoneMessageParser(raw).parse();
+            case "password":
+                return new UserAuthPasswordMessageParser(raw).parse();
+            case "publickey":
+                return new UserAuthPubkeyMessageParser(raw).parse();
+            case "hostbased":
+                return new UserAuthHostbasedMessageParser(raw).parse();
+            case "keyboard-interactive":
+                return new UserAuthKeyboardInteractiveMessageParser(raw).parse();
+            case "gssapi-with-mic":
+            case "gssapi-keyex":
+            case "gssapi":
+            case "external-keyx":
+            default:
+                return message;
         }
     }
 
