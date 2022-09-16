@@ -56,6 +56,7 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
                 @XmlElement(
                         type = EcdhKeyExchangeReplyMessage.class,
                         name = "EcdhKeyExchangeReply"),
+                @XmlElement(type = ExtensionInfoMessage.class, name = "ExtensionInfo"),
                 @XmlElement(type = IgnoreMessage.class, name = "IgnoreMessage"),
                 @XmlElement(type = KeyExchangeInitMessage.class, name = "KeyExchangeInit"),
                 @XmlElement(type = NewKeysMessage.class, name = "NewKeys"),
