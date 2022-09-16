@@ -15,7 +15,7 @@ import de.rub.nds.sshattacker.core.crypto.util.PublicKeyHelper;
 import de.rub.nds.sshattacker.core.exceptions.CryptoException;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthHostbasedMessage;
 import de.rub.nds.sshattacker.core.protocol.authentication.parser.UserAuthHostbasedMessageParser;
-import de.rub.nds.sshattacker.core.protocol.authentication.preparator.UserAuthHostbasedMessagePreperator;
+import de.rub.nds.sshattacker.core.protocol.authentication.preparator.UserAuthHostbasedMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.authentication.serializer.UserAuthHostbasedMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
@@ -94,8 +94,8 @@ public class UserAuthHostbasedMessageHandler extends SshMessageHandler<UserAuthH
     }
 
     @Override
-    public UserAuthHostbasedMessagePreperator getPreparator() {
-        return new UserAuthHostbasedMessagePreperator(context.getChooser(), message);
+    public UserAuthHostbasedMessagePreparator getPreparator() {
+        return new UserAuthHostbasedMessagePreparator(context.getChooser(), message);
     }
 
     @Override

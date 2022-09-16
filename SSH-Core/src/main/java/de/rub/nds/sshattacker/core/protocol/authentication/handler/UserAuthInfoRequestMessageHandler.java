@@ -9,7 +9,7 @@ package de.rub.nds.sshattacker.core.protocol.authentication.handler;
 
 import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthInfoRequestMessage;
 import de.rub.nds.sshattacker.core.protocol.authentication.parser.UserAuthInfoRequestMessageParser;
-import de.rub.nds.sshattacker.core.protocol.authentication.preparator.UserAuthInfoRequestMessagePreperator;
+import de.rub.nds.sshattacker.core.protocol.authentication.preparator.UserAuthInfoRequestMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.authentication.serializer.UserAuthInfoRequestMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
@@ -40,8 +40,8 @@ public class UserAuthInfoRequestMessageHandler
     }
 
     @Override
-    public UserAuthInfoRequestMessagePreperator getPreparator() {
-        return new UserAuthInfoRequestMessagePreperator(context.getChooser(), message);
+    public UserAuthInfoRequestMessagePreparator getPreparator() {
+        return new UserAuthInfoRequestMessagePreparator(context.getChooser(), message);
     }
 
     @Override

@@ -10,7 +10,7 @@ package de.rub.nds.sshattacker.core.protocol.connection.handler;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelRequestShellMessage;
 import de.rub.nds.sshattacker.core.protocol.connection.parser.ChannelRequestShellMessageParser;
-import de.rub.nds.sshattacker.core.protocol.connection.preparator.ChannelRequestShellMessagePreperator;
+import de.rub.nds.sshattacker.core.protocol.connection.preparator.ChannelRequestShellMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.connection.serializer.ChannelRequestShellMessageSerializer;
 import de.rub.nds.sshattacker.core.state.SshContext;
 
@@ -40,8 +40,8 @@ public class ChannelRequestShellMessageHandler
     }
 
     @Override
-    public ChannelRequestShellMessagePreperator getPreparator() {
-        return new ChannelRequestShellMessagePreperator(context.getChooser(), message);
+    public ChannelRequestShellMessagePreparator getPreparator() {
+        return new ChannelRequestShellMessagePreparator(context.getChooser(), message);
     }
 
     @Override

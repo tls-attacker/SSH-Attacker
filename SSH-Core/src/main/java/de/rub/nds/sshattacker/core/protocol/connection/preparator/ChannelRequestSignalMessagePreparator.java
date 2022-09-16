@@ -8,20 +8,21 @@
 package de.rub.nds.sshattacker.core.protocol.connection.preparator;
 
 import de.rub.nds.sshattacker.core.constants.ChannelRequestType;
+import de.rub.nds.sshattacker.core.constants.SignalType;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.connection.Channel;
-import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelRequestExitStatusMessage;
+import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelRequestSignalMessage;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class ChannelRequestExitStatusMessagePreperator
-        extends SshMessagePreparator<ChannelRequestExitStatusMessage> {
+public class ChannelRequestSignalMessagePreparator
+        extends SshMessagePreparator<ChannelRequestSignalMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public ChannelRequestExitStatusMessagePreperator(
-            Chooser chooser, ChannelRequestExitStatusMessage message) {
+    public ChannelRequestSignalMessagePreparator(
+            Chooser chooser, ChannelRequestSignalMessage message) {
         super(chooser, message);
     }
 
@@ -35,14 +36,13 @@ public class ChannelRequestExitStatusMessagePreperator
         if (channel == null) {
             channel = chooser.getConfig().getDefaultChannel();
         }
+
         if (!channel.isOpen().getValue()) {
             LOGGER.info("The required channel is closed, still sending the message!");
         }
         getObject().setRecipientChannel(channel.getRemoteChannel());
-        getObject()
-                .setRecipientChannel(Channel.getLocal_remote().get(getObject().getSenderChannel()));
         getObject().setWantReply((byte) 0);
-        getObject().setRequestType(ChannelRequestType.EXIT_STATUS, true);
-        getObject().setExitStatus(1);
+        getObject().setRequestType(ChannelRequestType.SIGNAL, true);
+        getObject().setSignalName(SignalType.SIGINT, true);
     }
 }

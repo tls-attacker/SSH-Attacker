@@ -8,21 +8,20 @@
 package de.rub.nds.sshattacker.core.protocol.connection.preparator;
 
 import de.rub.nds.sshattacker.core.constants.ChannelRequestType;
-import de.rub.nds.sshattacker.core.constants.SignalType;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.connection.Channel;
-import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelRequestExitSignalMessage;
+import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelRequestExitStatusMessage;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class ChannelRequestExitSignalMessagePreperator
-        extends SshMessagePreparator<ChannelRequestExitSignalMessage> {
+public class ChannelRequestExitStatusMessagePreparator
+        extends SshMessagePreparator<ChannelRequestExitStatusMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public ChannelRequestExitSignalMessagePreperator(
-            Chooser chooser, ChannelRequestExitSignalMessage message) {
+    public ChannelRequestExitStatusMessagePreparator(
+            Chooser chooser, ChannelRequestExitStatusMessage message) {
         super(chooser, message);
     }
 
@@ -40,11 +39,10 @@ public class ChannelRequestExitSignalMessagePreperator
             LOGGER.info("The required channel is closed, still sending the message!");
         }
         getObject().setRecipientChannel(channel.getRemoteChannel());
+        getObject()
+                .setRecipientChannel(Channel.getLocal_remote().get(getObject().getSenderChannel()));
         getObject().setWantReply((byte) 0);
-        getObject().setRequestType(ChannelRequestType.SIGNAL, true);
-        getObject().setSignalName(SignalType.SIGINT, true);
-        getObject().setCoreDump(false);
-        getObject().setErrorMessage("", true);
-        getObject().setLanguageTag("", true);
+        getObject().setRequestType(ChannelRequestType.EXIT_STATUS, true);
+        getObject().setExitStatus(1);
     }
 }

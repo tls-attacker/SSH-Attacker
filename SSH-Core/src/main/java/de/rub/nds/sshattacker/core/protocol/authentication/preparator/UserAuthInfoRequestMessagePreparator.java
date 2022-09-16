@@ -11,10 +11,10 @@ import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthInfoR
 import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
-public class UserAuthInfoRequestMessagePreperator
+public class UserAuthInfoRequestMessagePreparator
         extends SshMessagePreparator<UserAuthInfoRequestMessage> {
 
-    public UserAuthInfoRequestMessagePreperator(
+    public UserAuthInfoRequestMessagePreparator(
             Chooser chooser, UserAuthInfoRequestMessage message) {
         super(chooser, message);
     }

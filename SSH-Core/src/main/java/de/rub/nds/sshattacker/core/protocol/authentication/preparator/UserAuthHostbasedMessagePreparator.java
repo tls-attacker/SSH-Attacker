@@ -25,12 +25,12 @@ import java.util.Optional;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class UserAuthHostbasedMessagePreperator
+public class UserAuthHostbasedMessagePreparator
         extends SshMessagePreparator<UserAuthHostbasedMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public UserAuthHostbasedMessagePreperator(Chooser chooser, UserAuthHostbasedMessage message) {
+    public UserAuthHostbasedMessagePreparator(Chooser chooser, UserAuthHostbasedMessage message) {
         super(chooser, message);
     }
 
@@ -53,7 +53,7 @@ public class UserAuthHostbasedMessagePreperator
         return ArrayConverter.concatenate(
                 Converter.bytesToLengthPrefixedBinaryString(
                         chooser.getContext().getSessionID().orElse(new byte[] {})),
-                new byte[] {getObject().getMessageId().getValue().byteValue()},
+                new byte[] {getObject().getMessageId().getValue()},
                 Converter.stringToLengthPrefixedBinaryString(getObject().getUserName().getValue()),
                 Converter.stringToLengthPrefixedBinaryString(
                         getObject().getServiceName().getValue()),

@@ -8,21 +8,19 @@
 package de.rub.nds.sshattacker.core.protocol.connection.preparator;
 
 import de.rub.nds.sshattacker.core.constants.ChannelRequestType;
-import de.rub.nds.sshattacker.core.constants.SignalType;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.connection.Channel;
-import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelRequestSignalMessage;
+import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelRequestEnvMessage;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class ChannelRequestSignalMessagePreperator
-        extends SshMessagePreparator<ChannelRequestSignalMessage> {
+public class ChannelRequestEnvMessagePreparator
+        extends SshMessagePreparator<ChannelRequestEnvMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public ChannelRequestSignalMessagePreperator(
-            Chooser chooser, ChannelRequestSignalMessage message) {
+    public ChannelRequestEnvMessagePreparator(Chooser chooser, ChannelRequestEnvMessage message) {
         super(chooser, message);
     }
 
@@ -36,13 +34,13 @@ public class ChannelRequestSignalMessagePreperator
         if (channel == null) {
             channel = chooser.getConfig().getDefaultChannel();
         }
-
         if (!channel.isOpen().getValue()) {
             LOGGER.info("The required channel is closed, still sending the message!");
         }
         getObject().setRecipientChannel(channel.getRemoteChannel());
-        getObject().setWantReply((byte) 0);
-        getObject().setRequestType(ChannelRequestType.SIGNAL, true);
-        getObject().setSignalName(SignalType.SIGINT, true);
+        getObject().setWantReply(chooser.getConfig().getReplyWanted());
+        getObject().setRequestType(ChannelRequestType.ENV, true);
+        getObject().setVariableName(chooser.getConfig().getDefaultVariableName(), true);
+        getObject().setVariableValue(chooser.getConfig().getDefaultVariableValue(), true);
     }
 }

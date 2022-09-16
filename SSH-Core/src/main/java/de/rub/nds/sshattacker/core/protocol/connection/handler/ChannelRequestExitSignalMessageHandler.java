@@ -10,7 +10,7 @@ package de.rub.nds.sshattacker.core.protocol.connection.handler;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelRequestExitSignalMessage;
 import de.rub.nds.sshattacker.core.protocol.connection.parser.ChannelRequestExitSignalMessageParser;
-import de.rub.nds.sshattacker.core.protocol.connection.preparator.ChannelRequestExitSignalMessagePreperator;
+import de.rub.nds.sshattacker.core.protocol.connection.preparator.ChannelRequestExitSignalMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.connection.serializer.ChannelRequestExitSignalMessageSerializer;
 import de.rub.nds.sshattacker.core.state.SshContext;
 
@@ -40,8 +40,8 @@ public class ChannelRequestExitSignalMessageHandler
     }
 
     @Override
-    public ChannelRequestExitSignalMessagePreperator getPreparator() {
-        return new ChannelRequestExitSignalMessagePreperator(context.getChooser(), message);
+    public ChannelRequestExitSignalMessagePreparator getPreparator() {
+        return new ChannelRequestExitSignalMessagePreparator(context.getChooser(), message);
     }
 
     @Override
