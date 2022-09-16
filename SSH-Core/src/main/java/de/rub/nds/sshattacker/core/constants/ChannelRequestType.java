@@ -29,6 +29,7 @@ public enum ChannelRequestType {
     BREAK("break"),
     // Vendor extensions
     // [ OpenSSH ]
+    AUTH_AGENT_REQ_OPENSSH_COM("auth-agent-req@openssh.com"),
     EOW_OPENSSH_COM("eow@openssh.com");
 
     private final String name;

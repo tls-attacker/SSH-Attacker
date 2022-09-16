@@ -216,6 +216,8 @@ public abstract class ProtocolMessageParser<T extends ProtocolMessage<T>> extend
                 return new ChannelRequestExitStatusMessageParser(raw).parse();
             case "exit-signal":
                 return new ChannelRequestExitSignalMessageParser(raw).parse();
+            case "auth-agent-req@openssh.com":
+                return new ChannelRequestAuthAgentMessageParser(raw).parse();
             default:
                 LOGGER.debug(
                         "Received unimplemented message request type "
