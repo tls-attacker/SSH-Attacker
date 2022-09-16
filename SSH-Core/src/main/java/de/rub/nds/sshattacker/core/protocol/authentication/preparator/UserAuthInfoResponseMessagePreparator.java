@@ -11,7 +11,6 @@ import de.rub.nds.sshattacker.core.protocol.authentication.AuthenticationRespons
 import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthInfoResponseMessage;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
-import java.util.List;
 
 public class UserAuthInfoResponseMessagePreparator
         extends SshMessagePreparator<UserAuthInfoResponseMessage> {
@@ -23,17 +22,16 @@ public class UserAuthInfoResponseMessagePreparator
 
     @Override
     public void prepareMessageSpecificContents() {
-        getObject().setNumResponses(0);
+        getObject().setResponseEntryCount(0);
         for (int i = 0; i < chooser.getConfig().getPreConfiguredAuthResponses().size(); i++) {
-            List<AuthenticationResponse> authenticationResponseList =
-                    (List<AuthenticationResponse>)
-                            chooser.getConfig().getPreConfiguredAuthResponses().get(i);
-            if (authenticationResponseList.get(0).isExecuted()) {
+            AuthenticationResponse authenticationResponse =
+                    chooser.getConfig().getPreConfiguredAuthResponses().get(i);
+            if (authenticationResponse.get(0).isExecuted()) {
                 i++;
             } else {
-                getObject().setResponses(authenticationResponseList);
-                getObject().setNumResponses(authenticationResponseList.size());
-                authenticationResponseList.get(0).setExecuted(true);
+                getObject().setResponse(authenticationResponse);
+                getObject().setResponseEntryCount(authenticationResponse.size());
+                authenticationResponse.get(0).setExecuted(true);
                 break;
             }
         }

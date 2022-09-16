@@ -47,22 +47,22 @@ public class UserAuthInfoRequestMessageSerializer
         appendString(message.getLanguageTag().getValue());
     }
 
-    private void serializePrompts() {
-        LOGGER.debug("Number of promts: " + message.getNumPrompts().getValue());
-        appendInt(message.getNumPrompts().getValue(), DataFormatConstants.UINT32_SIZE);
+    private void serializePrompt() {
+        LOGGER.debug("Number of prompt entries: " + message.getPromptEntryCount().getValue());
+        appendInt(message.getPromptEntryCount().getValue(), DataFormatConstants.UINT32_SIZE);
 
-        for (int i = 0; i < message.getNumPrompts().getValue(); i++) {
-            AuthenticationPrompt temp = message.getPrompts().get(i);
-            LOGGER.debug("Prompt[" + i + "] length: " + temp.getPromptLength().getValue());
-            appendInt(temp.getPromptLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
-            LOGGER.debug("Prompt[" + i + "] : " + temp.getPrompt());
-            appendString(temp.getPrompt().getValue());
+        for (int i = 0; i < message.getPromptEntryCount().getValue(); i++) {
+            AuthenticationPrompt.PromptEntry entry = message.getPrompt().get(i);
+            LOGGER.debug("Prompt entry [" + i + "] length: " + entry.getPromptLength().getValue());
+            appendInt(entry.getPromptLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
+            LOGGER.debug("Prompt entry [" + i + "] : " + entry.getPrompt());
+            appendString(entry.getPrompt().getValue());
             LOGGER.debug(
-                    "Prompt["
+                    "Prompt entry ["
                             + i
                             + "] wants echo: "
-                            + Converter.byteToBoolean(temp.getEcho().getValue()));
-            appendByte(temp.getEcho().getValue());
+                            + Converter.byteToBoolean(entry.getEcho().getValue()));
+            appendByte(entry.getEcho().getValue());
         }
     }
 
@@ -71,6 +71,6 @@ public class UserAuthInfoRequestMessageSerializer
         serializeUserName();
         serializeInstruction();
         serializeLanguageTag();
-        serializePrompts();
+        serializePrompt();
     }
 }

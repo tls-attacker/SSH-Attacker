@@ -263,8 +263,12 @@ public class Config implements Serializable {
     /** The password used for authentication method password */
     private String password;
     /** The List of responses used for UserAuthInfoResponseMessage */
-    private List preConfiguredAuthResponses = new ArrayList();
+    @XmlElement(name = "preConfiguredAuthResponse")
+    @XmlElementWrapper
+    private List<AuthenticationResponse> preConfiguredAuthResponses;
     /** The List of user keys for public key authentication */
+    @XmlElement(name = "userKey")
+    @XmlElementWrapper
     private final List<SshPublicKey<?, ?>> userKeys;
     // endregion
 
@@ -339,6 +343,8 @@ public class Config implements Serializable {
      * List of filter types, that should be applied on the workflow(or copy) before saving the
      * trace.
      */
+    @XmlElement(name = "outputFilter")
+    @XmlElementWrapper
     private List<FilterType> outputFilters;
     /** The path to save the workflow trace as output */
     private String workflowOutput = null;
@@ -733,8 +739,14 @@ public class Config implements Serializable {
         username = "sshattacker";
         password = "bydahirsch";
 
-        preConfiguredAuthResponses.add(List.of(new AuthenticationResponse("bydahirsch", false)));
-        preConfiguredAuthResponses.add(List.of(new AuthenticationResponse(false)));
+        preConfiguredAuthResponses = new LinkedList<>();
+        AuthenticationResponse preConfiguredAuthResponse1 = new AuthenticationResponse();
+        preConfiguredAuthResponse1.add(
+                new AuthenticationResponse.ResponseEntry("bydahirsch", false));
+        preConfiguredAuthResponses.add(preConfiguredAuthResponse1);
+        AuthenticationResponse preConfiguredAuthResponse2 = new AuthenticationResponse();
+        preConfiguredAuthResponse2.add(new AuthenticationResponse.ResponseEntry(false));
+        preConfiguredAuthResponses.add(preConfiguredAuthResponse2);
 
         // sshkey generated with "openssl ecparam -name secp521r1 -genkey -out key.pem"
         // pubkey for authorized_keys file on host generated with "ssh-keygen -y -f key.pem >
@@ -1255,7 +1267,7 @@ public class Config implements Serializable {
         return serviceName;
     }
 
-    public List getPreConfiguredAuthResponses() {
+    public List<AuthenticationResponse> getPreConfiguredAuthResponses() {
         return preConfiguredAuthResponses;
     }
 
@@ -1280,7 +1292,8 @@ public class Config implements Serializable {
         this.serviceName = serviceName;
     }
 
-    public void setPreConfiguredAuthResponses(List preConfiguredAuthResponses) {
+    public void setPreConfiguredAuthResponses(
+            List<AuthenticationResponse> preConfiguredAuthResponses) {
         this.preConfiguredAuthResponses = preConfiguredAuthResponses;
     }
     // endregion
