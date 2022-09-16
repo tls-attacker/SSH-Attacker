@@ -25,6 +25,8 @@ public abstract class ChannelRequestMessage<T extends ChannelRequestMessage<T>>
     private ModifiableString requestType;
     private ModifiableByte wantReply;
 
+    protected ChannelRequestMessage() {}
+
     protected ChannelRequestMessage(
             @SuppressWarnings("SameParameterValue") ChannelRequestType requestType) {
         setRequestType(requestType);

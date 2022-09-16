@@ -7,6 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.parser;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelRequestPtyMessage;
 import org.apache.logging.log4j.LogManager;
@@ -66,8 +67,11 @@ public class ChannelRequestPtyMessageParser
                 "Encoded terminal modes length: "
                         + message.getEncodedTerminalModesLength().getValue());
         message.setEncodedTerminalModes(
-                parseByteString(message.getEncodedTerminalModesLength().getValue()));
-        LOGGER.debug("Encoded terminal modes: " + message.getEncodedTerminalModes().getValue());
+                parseByteArrayField(message.getEncodedTerminalModesLength().getValue()));
+        LOGGER.debug(
+                "Encoded terminal modes: "
+                        + ArrayConverter.bytesToHexString(
+                                message.getEncodedTerminalModes().getValue()));
     }
 
     @Override

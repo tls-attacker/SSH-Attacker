@@ -14,6 +14,7 @@ import de.rub.nds.sshattacker.core.packet.AbstractPacket;
 import de.rub.nds.sshattacker.core.packet.BlobPacket;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.*;
 import de.rub.nds.sshattacker.core.protocol.authentication.parser.*;
+import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelRequestUnknownMessage;
 import de.rub.nds.sshattacker.core.protocol.connection.parser.*;
 import de.rub.nds.sshattacker.core.protocol.transport.parser.*;
 import de.rub.nds.sshattacker.core.state.SshContext;
@@ -190,19 +191,25 @@ public abstract class ProtocolMessageParser<T extends ProtocolMessage<T>> extend
     }
 
     public static ProtocolMessage<?> getChannelRequestMessageParsing(byte[] raw) {
-        int channelRequestTypeLength = ArrayConverter.bytesToInt(Arrays.copyOfRange(raw, 5, 9));
-        String channelRequestType =
-                new String(
-                        Arrays.copyOfRange(raw, 9, 9 + channelRequestTypeLength),
-                        StandardCharsets.US_ASCII);
-        LOGGER.debug(channelRequestType);
-        switch (channelRequestType) {
+        ChannelRequestUnknownMessage message = new ChannelRequestUnknownMessageParser(raw).parse();
+        String requestType = message.getRequestType().getValue();
+        switch (requestType) {
+            case "pty-req":
+                return new ChannelRequestPtyMessageParser(raw).parse();
+            case "x11-req":
+                return new ChannelRequestX11MessageParser(raw).parse();
             case "env":
                 return new ChannelRequestEnvMessageParser(raw).parse();
             case "shell":
                 return new ChannelRequestShellMessageParser(raw).parse();
             case "exec":
                 return new ChannelRequestExecMessageParser(raw).parse();
+            case "subsystem":
+                return new ChannelRequestSubsystemMessageParser(raw).parse();
+            case "window-change":
+                return new ChannelRequestWindowChangeMessageParser(raw).parse();
+            case "xon-off":
+                return new ChannelRequestXonXoffMessageParser(raw).parse();
             case "signal":
                 return new ChannelRequestSignalMessageParser(raw).parse();
             case "exit-status":
@@ -214,8 +221,8 @@ public abstract class ProtocolMessageParser<T extends ProtocolMessage<T>> extend
                         "Received unimplemented message request type "
                                 + MessageIdConstant.getNameById(raw[0])
                                 + ":"
-                                + channelRequestType);
-                return new UnknownMessageParser(raw).parse();
+                                + requestType);
+                return message;
         }
     }
 

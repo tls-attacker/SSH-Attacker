@@ -7,20 +7,20 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.preparator;
 
-import de.rub.nds.sshattacker.core.constants.ChannelRequestType;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.connection.Channel;
-import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelRequestPtyMessage;
+import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelRequestUnknownMessage;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class ChannelRequestPtyMessagePreparator
-        extends SshMessagePreparator<ChannelRequestPtyMessage> {
+public class ChannelRequestUnknownMessagePreparator
+        extends SshMessagePreparator<ChannelRequestUnknownMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public ChannelRequestPtyMessagePreparator(Chooser chooser, ChannelRequestPtyMessage message) {
+    public ChannelRequestUnknownMessagePreparator(
+            Chooser chooser, ChannelRequestUnknownMessage message) {
         super(chooser, message);
     }
 
@@ -39,12 +39,7 @@ public class ChannelRequestPtyMessagePreparator
         }
         getObject().setRecipientChannel(channel.getRemoteChannel());
         getObject().setWantReply(chooser.getConfig().getReplyWanted());
-        getObject().setTermEnvVariable(chooser.getConfig().getDefaultTermEnvVariable(), true);
-        getObject().setRequestType(ChannelRequestType.PTY_REQ, true);
-        getObject().setWidthCharacters(chooser.getConfig().getDefaultTerminalWidthColumns());
-        getObject().setHeightRows(chooser.getConfig().getDefaultTerminalHeightRows());
-        getObject().setWidthPixels(chooser.getConfig().getDefaultTerminalWidthPixels());
-        getObject().setHeightPixels(chooser.getConfig().getDefaultTerminalHeightPixels());
-        getObject().setEncodedTerminalModes(new byte[0], true);
+        getObject().setRequestType("", true);
+        getObject().setTypeSpecificData(new byte[0]);
     }
 }

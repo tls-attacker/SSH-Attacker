@@ -8,6 +8,7 @@
 package de.rub.nds.sshattacker.core.protocol.connection.message;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
+import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.sshattacker.core.constants.ChannelRequestType;
@@ -24,7 +25,7 @@ public class ChannelRequestPtyMessage extends ChannelRequestMessage<ChannelReque
     private ModifiableInteger widthPixels;
     private ModifiableInteger heightPixels;
     private ModifiableInteger encodedTerminalModesLength;
-    private ModifiableString encodedTerminalModes;
+    private ModifiableByteArray encodedTerminalModes;
 
     public ChannelRequestPtyMessage() {
         super(ChannelRequestType.PTY_REQ);
@@ -141,33 +142,31 @@ public class ChannelRequestPtyMessage extends ChannelRequestMessage<ChannelReque
                         this.encodedTerminalModesLength, encodedTerminalModesLength);
     }
 
-    public ModifiableString getEncodedTerminalModes() {
+    public ModifiableByteArray getEncodedTerminalModes() {
         return encodedTerminalModes;
     }
 
-    public void setEncodedTerminalModes(ModifiableString encodedTerminalModes) {
+    public void setEncodedTerminalModes(ModifiableByteArray encodedTerminalModes) {
         this.encodedTerminalModes = encodedTerminalModes;
     }
 
-    public void setEncodedTerminalModes(String encodedTerminalModes) {
+    public void setEncodedTerminalModes(byte[] encodedTerminalModes) {
         this.encodedTerminalModes =
                 ModifiableVariableFactory.safelySetValue(
                         this.encodedTerminalModes, encodedTerminalModes);
     }
 
     public void setEncodedTerminalModes(
-            ModifiableString encodedTerminalModes, boolean adjustLengthField) {
+            ModifiableByteArray encodedTerminalModes, boolean adjustLengthField) {
         if (adjustLengthField) {
-            setEncodedTerminalModesLength(
-                    encodedTerminalModes.getValue().getBytes(StandardCharsets.US_ASCII).length);
+            setEncodedTerminalModesLength(encodedTerminalModes.getValue().length);
         }
         this.encodedTerminalModes = encodedTerminalModes;
     }
 
-    public void setEncodedTerminalModes(String encodedTerminalModes, boolean adjustLengthField) {
+    public void setEncodedTerminalModes(byte[] encodedTerminalModes, boolean adjustLengthField) {
         if (adjustLengthField) {
-            setEncodedTerminalModesLength(
-                    encodedTerminalModes.getBytes(StandardCharsets.US_ASCII).length);
+            setEncodedTerminalModesLength(encodedTerminalModes.length);
         }
         this.encodedTerminalModes =
                 ModifiableVariableFactory.safelySetValue(

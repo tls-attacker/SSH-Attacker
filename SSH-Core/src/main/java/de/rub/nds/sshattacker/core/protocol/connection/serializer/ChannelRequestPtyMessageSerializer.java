@@ -7,6 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.serializer;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelRequestPtyMessage;
 import java.nio.charset.StandardCharsets;
@@ -54,12 +55,16 @@ public class ChannelRequestPtyMessageSerializer
 
     public void serializeEncodedTerminalModes() {
         LOGGER.debug(
-                "Encoded terminal modes length: " + message.getEncodedTerminalModes().getValue());
+                "Encoded terminal modes length: "
+                        + message.getEncodedTerminalModesLength().getValue());
         appendInt(
                 message.getEncodedTerminalModesLength().getValue(),
                 DataFormatConstants.STRING_SIZE_LENGTH);
-        LOGGER.debug("Endcoded terminal modes: " + message.getEncodedTerminalModes().getValue());
-        appendString(message.getEncodedTerminalModes().getValue(), StandardCharsets.UTF_8);
+        LOGGER.debug(
+                "Endcoded terminal modes: "
+                        + ArrayConverter.bytesToHexString(
+                                message.getEncodedTerminalModes().getValue()));
+        appendBytes(message.getEncodedTerminalModes().getValue());
     }
 
     @Override
