@@ -18,5 +18,8 @@ public class ExtensionInfoMessagePreparator extends SshMessagePreparator<Extensi
     }
 
     @Override
-    public void prepareMessageSpecificContents() {}
+    public void prepareMessageSpecificContents() {
+        // TODO: Maybe include some extensions by default?
+        getObject().setExtensionCount(0);
+    }
 }
