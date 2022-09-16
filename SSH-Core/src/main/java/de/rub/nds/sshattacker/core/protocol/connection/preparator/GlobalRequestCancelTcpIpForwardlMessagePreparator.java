@@ -9,18 +9,22 @@ package de.rub.nds.sshattacker.core.protocol.connection.preparator;
 
 import de.rub.nds.sshattacker.core.constants.GlobalRequestType;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
-import de.rub.nds.sshattacker.core.protocol.connection.message.NoMoreSessionsMessage;
+import de.rub.nds.sshattacker.core.protocol.connection.message.GlobalRequestCancelTcpIpForwardMessage;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
-public class NoMoreSessionsMessagePreparator extends SshMessagePreparator<NoMoreSessionsMessage> {
+public class GlobalRequestCancelTcpIpForwardlMessagePreparator
+        extends SshMessagePreparator<GlobalRequestCancelTcpIpForwardMessage> {
 
-    public NoMoreSessionsMessagePreparator(Chooser chooser, NoMoreSessionsMessage message) {
+    public GlobalRequestCancelTcpIpForwardlMessagePreparator(
+            Chooser chooser, GlobalRequestCancelTcpIpForwardMessage message) {
         super(chooser, message);
     }
 
     @Override
     public void prepareMessageSpecificContents() {
-        getObject().setRequestName(GlobalRequestType.NO_MORE_SESSIONS_OPENSSH_COM, true);
-        getObject().setWantReply(chooser.getConfig().getReplyWanted());
+        getObject().setRequestName(GlobalRequestType.CANCEL_TCPIP_FORWARD, true);
+        getObject().setWantReply((byte) 1);
+        getObject().setIpAddressToBind("127.0.0.1", true);
+        getObject().setPortToBind(22);
     }
 }

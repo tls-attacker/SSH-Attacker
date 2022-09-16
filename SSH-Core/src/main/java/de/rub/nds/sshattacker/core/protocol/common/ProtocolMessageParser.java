@@ -15,11 +15,11 @@ import de.rub.nds.sshattacker.core.packet.BlobPacket;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.*;
 import de.rub.nds.sshattacker.core.protocol.authentication.parser.*;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelRequestUnknownMessage;
+import de.rub.nds.sshattacker.core.protocol.connection.message.GlobalRequestUnknownMessage;
 import de.rub.nds.sshattacker.core.protocol.connection.parser.*;
 import de.rub.nds.sshattacker.core.protocol.transport.parser.*;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -227,31 +227,29 @@ public abstract class ProtocolMessageParser<T extends ProtocolMessage<T>> extend
     }
 
     public static ProtocolMessage<?> getGlobalRequestMessageParsing(byte[] raw) {
-        int globalRequestTypeLength = ArrayConverter.bytesToInt(Arrays.copyOfRange(raw, 1, 5));
-        String globalRequestType =
-                new String(
-                        Arrays.copyOfRange(raw, 5, 5 + globalRequestTypeLength),
-                        StandardCharsets.US_ASCII);
+        GlobalRequestUnknownMessage message = new GlobalRequestUnknownMessageParser(raw).parse();
+        String globalRequestType = message.getRequestName().getValue();
         /*
+        auth-agent-req@openssh.com,
         STREAMLOCAL_FORWARD_OPENSSH_COM("streamlocal-forward@openssh.com"),
         CANCEL_STREAMLOCAL_FORWARD_OPENSSH_COM("cancel-streamlocal-forward@openssh.com"),
         HOSTKEYS_00_OPENSSH_COM("hostkeys-00@openssh.com"),
         HOSTKEYS_PROVE_00_OPENSSH_COM("hostkeys-prove-00@openssh.com");*/
         switch (globalRequestType) {
             case "tcpip-forward":
-                return new TcpIpForwardRequestMessageParser(raw).parse();
+                return new GlobalRequestTcpIpForwardMessageParser(raw).parse();
             case "cancel-tcpip-forward":
-                return new TcpIpForwardCancelMessageParser(raw).parse();
-            case "no-more-session@openssh.com":
-                return new NoMoreSessionsMessageParser(raw).parse();
+                return new GlobalRequestCancelTcpIpForwardMessageParser(raw).parse();
+            case "no-more-sessions@openssh.com":
+                return new GlobalRequestNoMoreSessionsMessageParser(raw).parse();
 
             default:
                 LOGGER.debug(
-                        "Received unimplemented message request type "
+                        "Received unimplemented global request type "
                                 + MessageIdConstant.getNameById(raw[0])
                                 + ":"
                                 + globalRequestType);
-                return new UnknownMessageParser(raw).parse();
+                return message;
         }
     }
 }

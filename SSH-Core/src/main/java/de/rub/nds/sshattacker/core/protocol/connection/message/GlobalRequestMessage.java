@@ -25,6 +25,8 @@ public abstract class GlobalRequestMessage<T extends GlobalRequestMessage<T>>
     private ModifiableString requestName;
     private ModifiableByte wantReply;
 
+    protected GlobalRequestMessage() {}
+
     protected GlobalRequestMessage(GlobalRequestType requestType) {
         setRequestName(requestType, true);
     }

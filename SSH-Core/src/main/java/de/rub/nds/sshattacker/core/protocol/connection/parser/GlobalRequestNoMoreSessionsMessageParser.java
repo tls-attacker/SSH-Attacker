@@ -7,21 +7,22 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.parser;
 
-import de.rub.nds.sshattacker.core.protocol.connection.message.NoMoreSessionsMessage;
+import de.rub.nds.sshattacker.core.protocol.connection.message.GlobalRequestNoMoreSessionsMessage;
 
-public class NoMoreSessionsMessageParser extends GlobalRequestMessageParser<NoMoreSessionsMessage> {
+public class GlobalRequestNoMoreSessionsMessageParser
+        extends GlobalRequestMessageParser<GlobalRequestNoMoreSessionsMessage> {
 
-    public NoMoreSessionsMessageParser(byte[] array) {
+    public GlobalRequestNoMoreSessionsMessageParser(byte[] array) {
         super(array);
     }
 
-    public NoMoreSessionsMessageParser(byte[] array, int startPosition) {
+    public GlobalRequestNoMoreSessionsMessageParser(byte[] array, int startPosition) {
         super(array, startPosition);
     }
 
     @Override
-    public NoMoreSessionsMessage createMessage() {
-        return new NoMoreSessionsMessage();
+    public GlobalRequestNoMoreSessionsMessage createMessage() {
+        return new GlobalRequestNoMoreSessionsMessage();
     }
 
     @Override

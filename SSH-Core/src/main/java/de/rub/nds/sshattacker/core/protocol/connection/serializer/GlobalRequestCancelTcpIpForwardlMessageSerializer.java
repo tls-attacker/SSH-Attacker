@@ -8,17 +8,18 @@
 package de.rub.nds.sshattacker.core.protocol.connection.serializer;
 
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
-import de.rub.nds.sshattacker.core.protocol.connection.message.TcpIpForwardMessage;
+import de.rub.nds.sshattacker.core.protocol.connection.message.GlobalRequestCancelTcpIpForwardMessage;
 import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public abstract class TcpIpForwardMessageSerializer<T extends TcpIpForwardMessage<T>>
-        extends GlobalRequestMessageSerializer<T> {
+public class GlobalRequestCancelTcpIpForwardlMessageSerializer
+        extends GlobalRequestMessageSerializer<GlobalRequestCancelTcpIpForwardMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public TcpIpForwardMessageSerializer(T message) {
+    public GlobalRequestCancelTcpIpForwardlMessageSerializer(
+            GlobalRequestCancelTcpIpForwardMessage message) {
         super(message);
     }
 

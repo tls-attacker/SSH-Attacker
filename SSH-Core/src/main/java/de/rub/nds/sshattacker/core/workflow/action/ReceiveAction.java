@@ -122,11 +122,17 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
                         name = "ChannelRequestXonXoff"),
                 @XmlElement(type = ChannelSuccessMessage.class, name = "ChannelSuccess"),
                 @XmlElement(type = ChannelWindowAdjustMessage.class, name = "ChannelWindowAdjust"),
-                @XmlElement(type = NoMoreSessionsMessage.class, name = "NoMoreSessions"),
+                @XmlElement(
+                        type = GlobalRequestNoMoreSessionsMessage.class,
+                        name = "NoMoreSessions"),
                 @XmlElement(type = RequestFailureMessage.class, name = "RequestFailure"),
                 @XmlElement(type = RequestSuccessMessage.class, name = "RequestSuccess"),
-                @XmlElement(type = TcpIpForwardCancelMessage.class, name = "TcpIpForwardCancel"),
-                @XmlElement(type = TcpIpForwardRequestMessage.class, name = "TcpIpForwardRequest"),
+                @XmlElement(
+                        type = GlobalRequestCancelTcpIpForwardMessage.class,
+                        name = "TcpIpForwardCancel"),
+                @XmlElement(
+                        type = GlobalRequestTcpIpForwardMessage.class,
+                        name = "TcpIpForwardRequest"),
                 // Other
                 @XmlElement(type = UnknownMessage.class, name = "UnknownMessage"),
             })

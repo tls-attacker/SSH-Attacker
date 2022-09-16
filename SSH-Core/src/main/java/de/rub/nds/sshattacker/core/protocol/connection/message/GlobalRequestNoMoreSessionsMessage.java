@@ -8,17 +8,18 @@
 package de.rub.nds.sshattacker.core.protocol.connection.message;
 
 import de.rub.nds.sshattacker.core.constants.GlobalRequestType;
-import de.rub.nds.sshattacker.core.protocol.connection.handler.NoMoreSessionsMessageHandler;
+import de.rub.nds.sshattacker.core.protocol.connection.handler.GlobalRequestNoMoreSessionsMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 
-public class NoMoreSessionsMessage extends GlobalRequestMessage<NoMoreSessionsMessage> {
+public class GlobalRequestNoMoreSessionsMessage
+        extends GlobalRequestMessage<GlobalRequestNoMoreSessionsMessage> {
 
-    public NoMoreSessionsMessage() {
+    public GlobalRequestNoMoreSessionsMessage() {
         super(GlobalRequestType.NO_MORE_SESSIONS_OPENSSH_COM);
     }
 
     @Override
-    public NoMoreSessionsMessageHandler getHandler(SshContext context) {
-        return new NoMoreSessionsMessageHandler(context, this);
+    public GlobalRequestNoMoreSessionsMessageHandler getHandler(SshContext context) {
+        return new GlobalRequestNoMoreSessionsMessageHandler(context, this);
     }
 }

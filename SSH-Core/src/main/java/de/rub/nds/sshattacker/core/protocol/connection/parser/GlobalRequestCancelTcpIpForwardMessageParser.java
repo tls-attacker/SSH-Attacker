@@ -8,21 +8,21 @@
 package de.rub.nds.sshattacker.core.protocol.connection.parser;
 
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
-import de.rub.nds.sshattacker.core.protocol.connection.message.TcpIpForwardMessage;
+import de.rub.nds.sshattacker.core.protocol.connection.message.GlobalRequestCancelTcpIpForwardMessage;
 import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public abstract class TcpIpForwardMessageParser<T extends TcpIpForwardMessage<T>>
-        extends GlobalRequestMessageParser<T> {
+public class GlobalRequestCancelTcpIpForwardMessageParser
+        extends GlobalRequestMessageParser<GlobalRequestCancelTcpIpForwardMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public TcpIpForwardMessageParser(byte[] array) {
+    public GlobalRequestCancelTcpIpForwardMessageParser(byte[] array) {
         super(array);
     }
 
-    public TcpIpForwardMessageParser(byte[] array, int startPosition) {
+    public GlobalRequestCancelTcpIpForwardMessageParser(byte[] array, int startPosition) {
         super(array, startPosition);
     }
 
@@ -38,6 +38,11 @@ public abstract class TcpIpForwardMessageParser<T extends TcpIpForwardMessage<T>
     private void parsePortToBind() {
         message.setPortToBind(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
         LOGGER.debug("Port to bind: " + message.getPortToBind().getValue());
+    }
+
+    @Override
+    public GlobalRequestCancelTcpIpForwardMessage createMessage() {
+        return new GlobalRequestCancelTcpIpForwardMessage();
     }
 
     @Override

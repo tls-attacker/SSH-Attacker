@@ -9,14 +9,14 @@ package de.rub.nds.sshattacker.core.protocol.connection.preparator;
 
 import de.rub.nds.sshattacker.core.constants.GlobalRequestType;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
-import de.rub.nds.sshattacker.core.protocol.connection.message.TcpIpForwardRequestMessage;
+import de.rub.nds.sshattacker.core.protocol.connection.message.GlobalRequestTcpIpForwardMessage;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
-public class TcpIpForwardRequestMessagePreparator
-        extends SshMessagePreparator<TcpIpForwardRequestMessage> {
+public class GlobalRequestTcpIpForwardMessagePreparator
+        extends SshMessagePreparator<GlobalRequestTcpIpForwardMessage> {
 
-    public TcpIpForwardRequestMessagePreparator(
-            Chooser chooser, TcpIpForwardRequestMessage message) {
+    public GlobalRequestTcpIpForwardMessagePreparator(
+            Chooser chooser, GlobalRequestTcpIpForwardMessage message) {
         super(chooser, message);
     }
 
