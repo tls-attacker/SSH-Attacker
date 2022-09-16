@@ -53,24 +53,24 @@ public class UserAuthInfoRequestMessageParser extends SshMessageParser<UserAuthI
         LOGGER.debug("Language tag: " + message.getLanguageTag().getValue());
     }
 
-    private void parsePrompts() {
-        message.setNumPrompts(parseIntField(DataFormatConstants.UINT32_SIZE));
-        LOGGER.debug("Number of prompts: " + message.getNumPrompts().getValue());
+    private void parsePromptEntries() {
+        message.setPromptEntryCount(parseIntField(DataFormatConstants.UINT32_SIZE));
+        LOGGER.debug("Number of prompt entries: " + message.getPromptEntryCount().getValue());
 
-        for (int i = 0; i < message.getNumPrompts().getValue(); i++) {
-            AuthenticationPrompt temp = new AuthenticationPrompt();
-            temp.setPromptLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-            LOGGER.debug("Prompt[" + i + "] length: " + temp.getPromptLength().getValue());
-            temp.setPrompt(parseByteString(temp.getPromptLength().getValue()));
-            LOGGER.debug("Prompt[" + i + "]: " + temp.getPrompt().getValue());
-            temp.setEcho(parseByteField(1));
+        for (int i = 0; i < message.getPromptEntryCount().getValue(); i++) {
+            AuthenticationPrompt.PromptEntry entry = new AuthenticationPrompt.PromptEntry();
+            entry.setPromptLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
+            LOGGER.debug("Prompt entry [" + i + "] length: " + entry.getPromptLength().getValue());
+            entry.setPrompt(parseByteString(entry.getPromptLength().getValue()));
+            LOGGER.debug("Prompt entry [" + i + "]: " + entry.getPrompt().getValue());
+            entry.setEcho(parseByteField(1));
             LOGGER.debug(
-                    "Prompt["
+                    "Prompt entry ["
                             + i
                             + "] wants echo:"
-                            + Converter.byteToBoolean(temp.getEcho().getValue()));
+                            + Converter.byteToBoolean(entry.getEcho().getValue()));
 
-            message.getPrompts().add(temp);
+            message.getPrompt().add(entry);
         }
     }
 
@@ -79,6 +79,6 @@ public class UserAuthInfoRequestMessageParser extends SshMessageParser<UserAuthI
         parseUserName();
         parseInstruction();
         parseLanguageTag();
-        parsePrompts();
+        parsePromptEntries();
     }
 }

@@ -23,21 +23,22 @@ public class UserAuthInfoResponseMessageSerializer
         super(message);
     }
 
-    private void serializeResponses() {
-        LOGGER.debug("Number of responses: " + message.getNumResponses().getValue());
-        appendInt(message.getNumResponses().getValue(), DataFormatConstants.UINT32_SIZE);
+    private void serializeResponse() {
+        LOGGER.debug("Number of response entries: " + message.getResponseEntryCount().getValue());
+        appendInt(message.getResponseEntryCount().getValue(), DataFormatConstants.UINT32_SIZE);
 
-        for (int i = 0; i < message.getNumResponses().getValue(); i++) {
-            AuthenticationResponse temp = message.getResponses().get(i);
-            LOGGER.debug("Response[" + i + "] length: " + temp.getResponseLength().getValue());
-            appendInt(temp.getResponseLength().getValue(), DataFormatConstants.UINT32_SIZE);
-            LOGGER.debug("Response[" + i + "]: " + temp.getResponse().getValue());
-            appendString(temp.getResponse().getValue(), StandardCharsets.UTF_8);
+        for (int i = 0; i < message.getResponseEntryCount().getValue(); i++) {
+            AuthenticationResponse.ResponseEntry entry = message.getResponse().get(i);
+            LOGGER.debug(
+                    "Response entry [" + i + "] length: " + entry.getResponseLength().getValue());
+            appendInt(entry.getResponseLength().getValue(), DataFormatConstants.UINT32_SIZE);
+            LOGGER.debug("Response entry [" + i + "]: " + entry.getResponse().getValue());
+            appendString(entry.getResponse().getValue(), StandardCharsets.UTF_8);
         }
     }
 
     @Override
     public void serializeMessageSpecificContents() {
-        serializeResponses();
+        serializeResponse();
     }
 }

@@ -32,21 +32,22 @@ public class UserAuthInfoResponseMessageParser
         return new UserAuthInfoResponseMessage();
     }
 
-    private void parseResponses() {
-        message.setNumResponses(parseIntField(DataFormatConstants.UINT32_SIZE));
-        LOGGER.debug("Number of responses: " + message.getNumResponses().getValue());
-        for (int i = 0; i < message.getNumResponses().getValue(); i++) {
-            AuthenticationResponse temp = new AuthenticationResponse();
-            temp.setResponseLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-            LOGGER.debug("Response[" + i + "] length: " + temp.getResponseLength().getValue());
-            temp.setResponse(parseByteString(temp.getResponseLength().getValue()));
-            LOGGER.debug("Response[" + i + "]: " + temp.getResponse().getValue());
-            message.getResponses().add(temp);
+    private void parseResponseEntries() {
+        message.setResponseEntryCount(parseIntField(DataFormatConstants.UINT32_SIZE));
+        LOGGER.debug("Number of response entries: " + message.getResponseEntryCount().getValue());
+        for (int i = 0; i < message.getResponseEntryCount().getValue(); i++) {
+            AuthenticationResponse.ResponseEntry entry = new AuthenticationResponse.ResponseEntry();
+            entry.setResponseLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
+            LOGGER.debug(
+                    "Response entry [" + i + "] length: " + entry.getResponseLength().getValue());
+            entry.setResponse(parseByteString(entry.getResponseLength().getValue()));
+            LOGGER.debug("Response entry [" + i + "]: " + entry.getResponse().getValue());
+            message.getResponse().add(entry);
         }
     }
 
     @Override
     protected void parseMessageSpecificContents() {
-        parseResponses();
+        parseResponseEntries();
     }
 }

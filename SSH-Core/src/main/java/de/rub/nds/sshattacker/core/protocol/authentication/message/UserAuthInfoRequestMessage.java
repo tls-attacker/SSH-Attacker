@@ -16,8 +16,6 @@ import de.rub.nds.sshattacker.core.protocol.authentication.handler.UserAuthInfoR
 import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
 
 public class UserAuthInfoRequestMessage extends SshMessage<UserAuthInfoRequestMessage> {
 
@@ -28,8 +26,8 @@ public class UserAuthInfoRequestMessage extends SshMessage<UserAuthInfoRequestMe
     private ModifiableString instruction;
     private ModifiableInteger languageTagLength;
     private ModifiableString languageTag;
-    private ModifiableInteger numPrompts;
-    private List<AuthenticationPrompt> prompts = new ArrayList<AuthenticationPrompt>();
+    private ModifiableInteger promptEntryCount;
+    private AuthenticationPrompt prompt = new AuthenticationPrompt();
 
     public UserAuthInfoRequestMessage() {
         super();
@@ -152,24 +150,25 @@ public class UserAuthInfoRequestMessage extends SshMessage<UserAuthInfoRequestMe
         this.languageTag = ModifiableVariableFactory.safelySetValue(this.languageTag, languageTag);
     }
 
-    public ModifiableInteger getNumPrompts() {
-        return numPrompts;
+    public ModifiableInteger getPromptEntryCount() {
+        return promptEntryCount;
     }
 
-    public void setNumPrompts(ModifiableInteger numPrompts) {
-        this.numPrompts = numPrompts;
+    public void setPromptEntryCount(ModifiableInteger promptEntryCount) {
+        this.promptEntryCount = promptEntryCount;
     }
 
-    public void setNumPrompts(int numPrompts) {
-        this.numPrompts = ModifiableVariableFactory.safelySetValue(this.numPrompts, numPrompts);
+    public void setPromptEntryCount(int promptEntryCount) {
+        this.promptEntryCount =
+                ModifiableVariableFactory.safelySetValue(this.promptEntryCount, promptEntryCount);
     }
 
-    public List<AuthenticationPrompt> getPrompts() {
-        return prompts;
+    public AuthenticationPrompt getPrompt() {
+        return prompt;
     }
 
-    public void setPrompts(List<AuthenticationPrompt> prompts) {
-        this.prompts = prompts;
+    public void setPrompt(AuthenticationPrompt prompt) {
+        this.prompt = prompt;
     }
 
     @Override

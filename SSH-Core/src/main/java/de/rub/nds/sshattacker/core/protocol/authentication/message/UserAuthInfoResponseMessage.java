@@ -14,38 +14,37 @@ import de.rub.nds.sshattacker.core.protocol.authentication.AuthenticationRespons
 import de.rub.nds.sshattacker.core.protocol.authentication.handler.UserAuthInfoResponseMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
 import de.rub.nds.sshattacker.core.state.SshContext;
-import java.util.ArrayList;
-import java.util.List;
 
 public class UserAuthInfoResponseMessage extends SshMessage<UserAuthInfoResponseMessage> {
 
     public static final MessageIdConstant ID = MessageIdConstant.SSH_MSG_USERAUTH_INFO_RESPONSE;
-    private ModifiableInteger numResponses;
-    private List<AuthenticationResponse> responses = new ArrayList<AuthenticationResponse>();
+    private ModifiableInteger responseEntryCount;
+    private AuthenticationResponse response = new AuthenticationResponse();
 
     public UserAuthInfoResponseMessage() {
         super();
     }
 
-    public ModifiableInteger getNumResponses() {
-        return numResponses;
+    public ModifiableInteger getResponseEntryCount() {
+        return responseEntryCount;
     }
 
-    public void setNumResponses(ModifiableInteger numResponses) {
-        this.numResponses = numResponses;
+    public void setResponseEntryCount(ModifiableInteger responseEntryCount) {
+        this.responseEntryCount = responseEntryCount;
     }
 
-    public void setNumResponses(int numResponses) {
-        this.numResponses =
-                ModifiableVariableFactory.safelySetValue(this.numResponses, numResponses);
+    public void setResponseEntryCount(int responseEntryCount) {
+        this.responseEntryCount =
+                ModifiableVariableFactory.safelySetValue(
+                        this.responseEntryCount, responseEntryCount);
     }
 
-    public List<AuthenticationResponse> getResponses() {
-        return responses;
+    public AuthenticationResponse getResponse() {
+        return response;
     }
 
-    public void setResponses(List<AuthenticationResponse> responses) {
-        this.responses = responses;
+    public void setResponse(AuthenticationResponse response) {
+        this.response = response;
     }
 
     @Override
