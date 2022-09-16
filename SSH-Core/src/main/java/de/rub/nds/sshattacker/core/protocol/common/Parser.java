@@ -242,6 +242,15 @@ public abstract class Parser<T> {
     }
 
     /**
+     * Returns the array which is being parsed by this parser instance
+     *
+     * @return Array to parse
+     */
+    protected byte[] getArray() {
+        return array;
+    }
+
+    /**
      * Returns a byte[] of the already parsed bytes.
      *
      * @return Array of the already parsed bytes.

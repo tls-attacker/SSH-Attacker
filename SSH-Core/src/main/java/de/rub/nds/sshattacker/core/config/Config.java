@@ -430,11 +430,25 @@ public class Config implements Serializable {
                                     KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP_EXCHANGE_SHA256,
                                     KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP16_SHA512,
                                     KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP18_SHA512,
-                                    KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP14_SHA256
+                                    KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP14_SHA256,
+                                    KeyExchangeAlgorithm.EXT_INFO_C
                                 })
                         .collect(Collectors.toCollection(LinkedList::new));
         serverSupportedKeyExchangeAlgorithms =
-                new LinkedList<>(clientSupportedKeyExchangeAlgorithms);
+                Arrays.stream(
+                                new KeyExchangeAlgorithm[] {
+                                    KeyExchangeAlgorithm.CURVE25519_SHA256,
+                                    KeyExchangeAlgorithm.CURVE25519_SHA256_LIBSSH_ORG,
+                                    KeyExchangeAlgorithm.ECDH_SHA2_NISTP256,
+                                    KeyExchangeAlgorithm.ECDH_SHA2_NISTP384,
+                                    KeyExchangeAlgorithm.ECDH_SHA2_NISTP521,
+                                    KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP_EXCHANGE_SHA256,
+                                    KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP16_SHA512,
+                                    KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP18_SHA512,
+                                    KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP14_SHA256,
+                                    KeyExchangeAlgorithm.EXT_INFO_S
+                                })
+                        .collect(Collectors.toCollection(LinkedList::new));
 
         // We don't support CERT_V01 or SK (U2F) host keys (yet), only listed for completeness
         clientSupportedHostKeyAlgorithms =

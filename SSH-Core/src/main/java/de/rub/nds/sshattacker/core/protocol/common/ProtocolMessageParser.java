@@ -101,6 +101,8 @@ public abstract class ProtocolMessageParser<T extends ProtocolMessage<T>> extend
                     return new RsaKeyExchangeDoneMessageParser(raw).parse();
                 case SSH_MSG_NEWKEYS:
                     return new NewKeysMessageParser(raw).parse();
+                case SSH_MSG_EXT_INFO:
+                    return new ExtensionInfoMessageParser(raw).parse();
                 case SSH_MSG_SERVICE_REQUEST:
                     return new ServiceRequestMessageParser(raw).parse();
                 case SSH_MSG_SERVICE_ACCEPT:
