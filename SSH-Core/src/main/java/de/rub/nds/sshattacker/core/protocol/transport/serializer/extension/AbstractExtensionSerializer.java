@@ -14,7 +14,7 @@ import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public abstract class AbstractExtensionSerializer<E extends AbstractExtension>
+public abstract class AbstractExtensionSerializer<E extends AbstractExtension<E>>
         extends Serializer<E> {
 
     private static final Logger LOGGER = LogManager.getLogger();

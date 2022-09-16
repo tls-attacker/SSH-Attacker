@@ -12,7 +12,7 @@ import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.extension.UnknownExtensionHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 
-public class UnknownExtension extends AbstractExtension {
+public class UnknownExtension extends AbstractExtension<UnknownExtension> {
 
     private ModifiableByteArray value;
 

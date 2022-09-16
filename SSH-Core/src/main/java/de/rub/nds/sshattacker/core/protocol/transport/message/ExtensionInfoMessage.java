@@ -9,7 +9,6 @@ package de.rub.nds.sshattacker.core.protocol.transport.message;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
-import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.ExtensionInfoMessageHandler;
@@ -20,11 +19,9 @@ import java.util.List;
 
 public class ExtensionInfoMessage extends SshMessage<ExtensionInfoMessage> {
 
-    public static final MessageIdConstant ID = MessageIdConstant.SSH_MSG_EXT_INFO;
-
     private ModifiableInteger extensionCount;
 
-    private List<AbstractExtension> extensions = new ArrayList<>();
+    private List<AbstractExtension<?>> extensions = new ArrayList<>();
 
     public ModifiableInteger getExtensionCount() {
         return extensionCount;
@@ -39,15 +36,15 @@ public class ExtensionInfoMessage extends SshMessage<ExtensionInfoMessage> {
                 ModifiableVariableFactory.safelySetValue(this.extensionCount, extensionCount);
     }
 
-    public List<AbstractExtension> getExtensions() {
+    public List<AbstractExtension<?>> getExtensions() {
         return extensions;
     }
 
-    public void setExtensions(List<AbstractExtension> extensions) {
+    public void setExtensions(List<AbstractExtension<?>> extensions) {
         this.extensions = extensions;
     }
 
-    public void addExtension(AbstractExtension extension) {
+    public void addExtension(AbstractExtension<?> extension) {
         this.extensions.add(extension);
     }
 

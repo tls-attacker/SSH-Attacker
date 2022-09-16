@@ -13,7 +13,6 @@ import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.sshattacker.core.constants.CharConstants;
 import de.rub.nds.sshattacker.core.constants.CompressionMethod;
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
-import de.rub.nds.sshattacker.core.constants.Extension;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.extension.DelayCompressionExtensionHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import java.nio.charset.StandardCharsets;
@@ -29,10 +28,6 @@ public class DelayCompressionExtension extends AbstractExtension<DelayCompressio
     private ModifiableInteger compressionMethodsServerToClientLength;
 
     private ModifiableString compressionMethodsServerToClient;
-
-    public DelayCompressionExtension() {
-        super(Extension.DELAY_COMPRESSION);
-    }
 
     public ModifiableInteger getCompressionMethodsClientToServerLength() {
         return compressionMethodsClientToServerLength;

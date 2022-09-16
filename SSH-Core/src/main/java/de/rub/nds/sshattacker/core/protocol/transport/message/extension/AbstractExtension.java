@@ -10,7 +10,6 @@ package de.rub.nds.sshattacker.core.protocol.transport.message.extension;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
-import de.rub.nds.sshattacker.core.constants.Extension;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.extension.AbstractExtensionHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import java.nio.charset.StandardCharsets;
@@ -22,12 +21,6 @@ public abstract class AbstractExtension<E extends AbstractExtension<E>> {
     protected ModifiableString name;
 
     protected ModifiableInteger valueLength;
-
-    protected AbstractExtension() {}
-
-    protected AbstractExtension(Extension extension) {
-        this.setName(extension.getName(), true);
-    }
 
     public ModifiableInteger getNameLength() {
         return nameLength;

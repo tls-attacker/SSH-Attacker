@@ -7,6 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.preparator;
 
+import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.transport.message.ExtensionInfoMessage;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
@@ -14,9 +15,12 @@ import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 public class ExtensionInfoMessagePreparator extends SshMessagePreparator<ExtensionInfoMessage> {
 
     public ExtensionInfoMessagePreparator(Chooser chooser, ExtensionInfoMessage message) {
-        super(chooser, message);
+        super(chooser, message, MessageIdConstant.SSH_MSG_EXT_INFO);
     }
 
     @Override
-    public void prepareMessageSpecificContents() {}
+    public void prepareMessageSpecificContents() {
+        // TODO: Maybe include some extensions by default?
+        getObject().setExtensionCount(0);
+    }
 }

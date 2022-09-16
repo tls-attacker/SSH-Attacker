@@ -7,6 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.serializer;
 
+import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.transport.message.ExtensionInfoMessage;
 
@@ -17,6 +18,7 @@ public class ExtensionInfoMessageSerializer extends SshMessageSerializer<Extensi
 
     @Override
     public void serializeMessageSpecificContents() {
-        // TODO: Implement serializer
+        appendInt(message.getExtensionCount().getValue(), DataFormatConstants.UINT32_SIZE);
+        // TODO: Add serialization for each individual extension
     }
 }
