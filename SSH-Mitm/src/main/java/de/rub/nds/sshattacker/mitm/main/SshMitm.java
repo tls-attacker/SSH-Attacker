@@ -11,16 +11,23 @@ import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
 import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.config.delegate.GeneralDelegate;
+import de.rub.nds.sshattacker.core.connection.AliasedConnection;
 import de.rub.nds.sshattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.sshattacker.core.exceptions.WorkflowExecutionException;
+import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.state.State;
 import de.rub.nds.sshattacker.core.workflow.DefaultWorkflowExecutor;
 import de.rub.nds.sshattacker.core.workflow.WorkflowExecutor;
 import de.rub.nds.sshattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.sshattacker.core.workflow.WorkflowTraceSerializer;
+import de.rub.nds.sshattacker.core.workflow.action.SshAction;
+import de.rub.nds.sshattacker.core.workflow.factory.SshActionFactory;
 import de.rub.nds.sshattacker.mitm.config.MitmCommandConfig;
 import java.io.File;
 import java.io.FileInputStream;
+
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import de.rub.nds.tlsattacker.transport.TransportHandler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -55,6 +62,8 @@ public class SshMitm implements Runnable {
 
         try {
             Config config = cmdConfig.createConfig();
+            config.setWorkflowExecutorShouldClose(false);
+
             WorkflowTrace trace = null;
             if (cmdConfig.getWorkflowInput() != null) {
                 LOGGER.debug("Reading workflow trace from " + cmdConfig.getWorkflowInput());
@@ -63,6 +72,39 @@ public class SshMitm implements Runnable {
                                 new FileInputStream(cmdConfig.getWorkflowInput()));
             }
             State state = executeMitmWorkflow(config, trace);
+
+            // From here, we simply repeat the two forward actions from the workflow.
+            AliasedConnection inboundConnection = config.getDefaultServerConnection();
+            AliasedConnection outboundConnection = config.getDefaultClientConnection();
+            SshContext inboundContext = state.getSshContext(inboundConnection.getAlias());
+            SshContext outboundContext = state.getSshContext(outboundConnection.getAlias());
+            TransportHandler inboundTransportHandler = inboundContext.getTransportHandler();
+            TransportHandler outboundTransportHandler = outboundContext.getTransportHandler();
+            inboundTransportHandler.setTimeout(100);
+            outboundTransportHandler.setTimeout(100);
+            SshAction clientAction = SshActionFactory.createProxyFilterMessagesAction(inboundConnection, outboundConnection, ConnectionEndType.CLIENT);
+            SshAction serverAction = SshActionFactory.createProxyFilterMessagesAction(inboundConnection, outboundConnection, ConnectionEndType.SERVER);
+
+            int maxCount = 1000;
+            while (maxCount > 0) {
+                clientAction.execute(state);
+                clientAction.reset();
+                if (inboundTransportHandler.isClosed() || inboundContext.isDisconnectMessageReceived()) {
+                    // instead of breaking, close the client side of the server connection.
+                    break;
+                }
+                serverAction.execute(state);
+                serverAction.reset();
+                if (outboundTransportHandler.isClosed() || outboundContext.isDisconnectMessageReceived()) {
+                    // instead of breaking, close the server side of the client connection.
+                    break;
+                }
+
+
+                maxCount = maxCount - 1;
+            }
+
+            // state.storeTrace();
             if (cmdConfig.getWorkflowOutput() != null) {
                 trace = state.getWorkflowTrace();
                 LOGGER.debug("Writing workflow trace to " + cmdConfig.getWorkflowOutput());
@@ -70,7 +112,7 @@ public class SshMitm implements Runnable {
             }
         } catch (WorkflowExecutionException wee) {
             LOGGER.error(
-                    "The TLS protocol flow was not executed completely. "
+                    "The SSH protocol flow was not executed completely. "
                             + wee.getLocalizedMessage()
                             + " - See debug messages for more details.");
             LOGGER.error(wee.getLocalizedMessage());

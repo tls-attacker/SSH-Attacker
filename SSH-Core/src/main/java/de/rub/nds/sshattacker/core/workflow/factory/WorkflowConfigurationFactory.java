@@ -431,45 +431,14 @@ public class WorkflowConfigurationFactory {
                         outboundConnection,
                         ConnectionEndType.CLIENT,
                         new UserAuthPasswordMessage()));
+
+        // The following is run in a loop in SSH-MITM.
         workflow.addSshActions(
                 SshActionFactory.createProxyFilterMessagesAction(
                         inboundConnection, outboundConnection, ConnectionEndType.SERVER));
         workflow.addSshActions(
                 SshActionFactory.createProxyFilterMessagesAction(
                         inboundConnection, outboundConnection, ConnectionEndType.CLIENT));
-        workflow.addSshActions(
-                SshActionFactory.createProxyFilterMessagesAction(
-                        inboundConnection, outboundConnection, ConnectionEndType.SERVER));
-        workflow.addSshActions(
-                SshActionFactory.createProxyFilterMessagesAction(
-                        inboundConnection, outboundConnection, ConnectionEndType.CLIENT));
-        workflow.addSshActions(
-                SshActionFactory.createProxyFilterMessagesAction(
-                        inboundConnection, outboundConnection, ConnectionEndType.SERVER));
-        workflow.addSshActions(
-                SshActionFactory.createProxyFilterMessagesAction(
-                        inboundConnection, outboundConnection, ConnectionEndType.CLIENT));
-        workflow.addSshActions(
-                SshActionFactory.createProxyFilterMessagesAction(
-                        inboundConnection, outboundConnection, ConnectionEndType.SERVER));
-        workflow.addSshActions(
-                SshActionFactory.createProxyFilterMessagesAction(
-                        inboundConnection, outboundConnection, ConnectionEndType.CLIENT));
-        workflow.addSshActions(
-                SshActionFactory.createProxyFilterMessagesAction(
-                        inboundConnection, outboundConnection, ConnectionEndType.SERVER));
-        workflow.addSshActions(
-                SshActionFactory.createProxyFilterMessagesAction(
-                        inboundConnection, outboundConnection, ConnectionEndType.CLIENT));
-        workflow.addSshActions(
-                SshActionFactory.createProxyFilterMessagesAction(
-                        inboundConnection, outboundConnection, ConnectionEndType.SERVER));
-        workflow.addSshActions(
-                SshActionFactory.createProxyFilterMessagesAction(
-                        inboundConnection, outboundConnection, ConnectionEndType.CLIENT));
-        workflow.addSshActions(
-                SshActionFactory.createProxyFilterMessagesAction(
-                        inboundConnection, outboundConnection, ConnectionEndType.SERVER));
 
         return workflow;
     }
