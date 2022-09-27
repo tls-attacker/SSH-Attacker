@@ -15,8 +15,8 @@ import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
 import de.rub.nds.sshattacker.core.protocol.connection.handler.ChannelOpenMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import jakarta.xml.bind.annotation.XmlAttribute;
 import java.nio.charset.StandardCharsets;
-import javax.xml.bind.annotation.XmlAttribute;
 
 public class ChannelOpenMessage extends SshMessage<ChannelOpenMessage> {
 

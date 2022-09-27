@@ -8,7 +8,6 @@
         <outputRelativeToContentRoot value="true" />
         <module name="SSH-Mitm" />
         <module name="SSH-Core" />
-        <module name="SSH-Project-Template" />
         <module name="SSH-Server" />
         <module name="SSH-Client" />
         <module name="Attacks" />
