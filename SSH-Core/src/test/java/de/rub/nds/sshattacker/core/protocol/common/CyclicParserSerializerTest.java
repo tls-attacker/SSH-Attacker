@@ -29,7 +29,7 @@ import org.apache.commons.lang3.SerializationException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.TestFactory;
 import org.junit.jupiter.api.function.Executable;
@@ -41,8 +41,8 @@ public class CyclicParserSerializerTest {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    @Before
-    public void setUp() {
+    @BeforeAll
+    public static void setUpClass() {
         Security.addProvider(new BouncyCastleProvider());
     }
 
