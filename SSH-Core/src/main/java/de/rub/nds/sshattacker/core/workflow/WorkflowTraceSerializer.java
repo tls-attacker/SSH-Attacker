@@ -7,6 +7,10 @@
  */
 package de.rub.nds.sshattacker.core.workflow;
 
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBException;
+import jakarta.xml.bind.Unmarshaller;
+import jakarta.xml.bind.util.JAXBSource;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -15,13 +19,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
-import javax.xml.bind.util.JAXBSource;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -73,7 +74,7 @@ public class WorkflowTraceSerializer {
     public static String write(WorkflowTrace trace) throws JAXBException, IOException {
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         WorkflowTraceSerializer.write(bos, trace);
-        return bos.toString("UTF-8");
+        return bos.toString(StandardCharsets.UTF_8);
     }
 
     /**
@@ -94,10 +95,10 @@ public class WorkflowTraceSerializer {
             transformer.transform(
                     new JAXBSource(context, workflowTrace), new StreamResult(xmlOutputStream));
 
-            String xml_text = xmlOutputStream.toString();
+            String xmlText = xmlOutputStream.toString();
             // and we modify all line separators to the system dependant line separator
-            xml_text = xml_text.replaceAll("\r?\n", System.lineSeparator());
-            outputStream.write(xml_text.getBytes());
+            xmlText = xmlText.replaceAll("\r?\n", System.lineSeparator());
+            outputStream.write(xmlText.getBytes());
         } catch (TransformerException E) {
             LOGGER.debug(E.getStackTrace());
         }
@@ -156,80 +157,6 @@ public class WorkflowTraceSerializer {
     }
 
     // TODO: Implement schema validation
-    /*/**
-     * @param  inputStream
-     *                            The InputStream from which the Parameter should be read. Does perform schema
-     *                            validation
-     * @return                    The deserialized WorkflowTrace
-     * @throws JAXBException
-     *                            JAXBException if the JAXB reports a problem
-     * @throws IOException
-     *                            If something goes wrong while writing to the stream
-     * @throws XMLStreamException
-     *                            If there is a Problem with the XML Stream
-     *
-    public static WorkflowTrace secureRead(InputStream inputStream)
-            throws JAXBException, IOException, XMLStreamException {
-        try {
-            context = getJAXBContext();
-            Unmarshaller unmarshaller = context.createUnmarshaller();
-
-            unmarshaller.setEventHandler(new ValidationEventHandler() {
-                @Override
-                public boolean handleEvent(ValidationEvent event) {
-                    // raise an Exception also on Warnings
-                    return false;
-                }
-            });
-
-            String xsd_source = WorkflowTraceSchemaGenerator.AccumulatingSchemaOutputResolver.mapSystemIds();
-            XMLInputFactory xif = XMLInputFactory.newFactory();
-            xif.setProperty(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, false);
-            xif.setProperty(XMLInputFactory.SUPPORT_DTD, false);
-            XMLStreamReader xsr = xif.createXMLStreamReader(inputStream);
-            SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-            Schema workflowTraceSchema =
-                    sf.newSchema(new StreamSource(WorkflowTraceSerializer.class.getResourceAsStream("/" + xsd_source)));
-            workflowTraceSchema.newValidator();
-            unmarshaller.setSchema(workflowTraceSchema);
-            WorkflowTrace wt = (WorkflowTrace) unmarshaller.unmarshal(xsr);
-            inputStream.close();
-            return wt;
-        } catch (SAXException ex) {
-            throw new RuntimeException(ex);
-        }
-    }*/
-
-    /*/**
-     * Reads a folder. Does perform schema validation.
-     *
-     * @param  f
-     * @return
-     *
-    public static List<WorkflowTrace> secureReadFolder(File f) {
-        if (f.isDirectory()) {
-            ArrayList<WorkflowTrace> list = new ArrayList<>();
-            for (File file : f.listFiles()) {
-                if (file.getName().startsWith(".")) {
-                    // We ignore the .gitignore File
-                    continue;
-                }
-                WorkflowTrace trace;
-                try {
-                    trace = WorkflowTraceSerializer.secureRead(new FileInputStream(file));
-                    trace.setName(file.getAbsolutePath());
-                    list.add(trace);
-                } catch (JAXBException | IOException | XMLStreamException ex) {
-                    LOGGER.warn("Could not read " + file.getAbsolutePath() + " from Folder.");
-                    LOGGER.debug(ex.getLocalizedMessage(), ex);
-                }
-            }
-            return list;
-        } else {
-            throw new IllegalArgumentException("Cannot read Folder, because its not a Folder");
-        }
-
-    }*/
 
     private WorkflowTraceSerializer() {}
 }

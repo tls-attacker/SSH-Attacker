@@ -7,11 +7,11 @@
  */
 package de.rub.nds.sshattacker.core.crypto.ec;
 
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
 import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.Objects;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
 
 /**
  * Can be used to store elements of a galois field.<br>

@@ -29,7 +29,7 @@ import org.apache.commons.lang3.SerializationException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.TestFactory;
 import org.junit.jupiter.api.function.Executable;
@@ -41,8 +41,8 @@ public class CyclicParserSerializerTest {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    @Before
-    public void setUp() {
+    @BeforeAll
+    public static void setUpClass() {
         Security.addProvider(new BouncyCastleProvider());
     }
 
@@ -125,7 +125,7 @@ public class CyclicParserSerializerTest {
             if (messageClass.getSuperclass() == ChannelMessage.class
                     || messageClass.getSuperclass().getSuperclass() == ChannelMessage.class) {
                 Channel defaultChannel = context.getConfig().getDefaultChannel();
-                Channel.getLocal_remote()
+                Channel.getChannelAssociations()
                         .put(
                                 defaultChannel.getLocalChannel().getValue(),
                                 defaultChannel.getRemoteChannel().getValue());
@@ -204,13 +204,7 @@ public class CyclicParserSerializerTest {
                                 + "'");
             }
 
-            // TODO: Implement equals() / hashCode() for all message classes and uncomment the
-            // following two assertions
-            // On the other hand message should equal parsedMessage
-            // This validates the order serialize -> parse as well as the equals() / hashCode()
-            // methods on the class
-            // assertEquals(message, parsedMessage);
-            // assertEquals(message.hashCode(), parsedMessage.hashCode());
+            // TODO: Implement equals() / hashCode() for all message classes
         }
 
         private static Constructor<?> getDefaultMessageConstructor(Class<?> someClass) {

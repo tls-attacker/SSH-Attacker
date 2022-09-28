@@ -11,11 +11,11 @@ import de.rub.nds.sshattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.transport.Connection;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.transport.TransportHandlerType;
+import jakarta.xml.bind.annotation.XmlType;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
-import javax.xml.bind.annotation.XmlType;
 
 @XmlType(
         propOrder = {
@@ -30,7 +30,8 @@ import javax.xml.bind.annotation.XmlType;
             "timeout",
             "firstTimeout",
             "connectionTimeout",
-            "transportHandlerType"
+            "transportHandlerType",
+            "sourcePort"
         })
 public abstract class AliasedConnection extends Connection implements Aliasable {
 

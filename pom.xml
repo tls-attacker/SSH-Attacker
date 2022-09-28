@@ -1,14 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+
     <groupId>de.rub.nds.sshattacker</groupId>
-    <artifactId>SSH-Attacker</artifactId>
-    <version>0.1</version>
+    <artifactId>ssh-attacker</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
-    <inceptionYear>2015</inceptionYear>
+
     <name>SSH-Attacker</name>
-    <url>https://github.com/RUB-NDS/SSH-Attacker</url>
-    <description>SSH-Attacker is a Java-based framework for analyzing SSH libraries. It is developed by the Ruhr University Bochum (http://nds.rub.de/), the Paderborn University, and the Hackmanit GmbH (http://hackmanit.de/).</description>
+    <description>SSH-Attacker is a Java-based framework for analyzing SSH libraries. It is developed by the Ruhr University Bochum (https://informatik.rub.de/nds/), the Paderborn University (https://cs.uni-paderborn.de/en/syssec/), and the Hackmanit GmbH (https://hackmanit.de/).</description>
+    <url>https://github.com/tls-attacker/SSH-Attacker</url>
+    <inceptionYear>2015</inceptionYear>
 
     <licenses>
         <license>
@@ -18,32 +20,62 @@
         </license>
     </licenses>
 
-    <!-- Information to version control system -->
+    <distributionManagement>
+        <snapshotRepository>
+            <id>rub-nexus</id>
+            <name>SSH-Attacker Internal Repository</name>
+            <url>https://hydrogen.cloud.nds.rub.de/nexus/repository/maven-snapshots/</url>
+        </snapshotRepository>
+        <repository>
+            <id>ossrh</id>
+            <url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        </repository>
+    </distributionManagement>
+
+    <developers>
+        <developer>
+            <id>lambdafu</id>
+            <name>Marcus Brinkmann</name>
+            <email>marcus.brinkmann@rub.de</email>
+            <url>https://github.com/lambdafu/</url>
+            <organization>NDS</organization>
+            <organizationUrl>https://informatik.rub.de/nds/</organizationUrl>
+        </developer>
+        <developer>
+            <id>TrueSkrillor</id>
+            <name>Fabian Bäumer</name>
+            <email>fabian.baeumer@rub.de</email>
+            <url>https://github.com/TrueSkrillor/</url>
+            <organization>NDS</organization>
+            <organizationUrl>https://informatik.rub.de/nds/</organizationUrl>
+        </developer>
+    </developers>
+
     <scm>
-        <connection>scm:git:git://github.com/RUB-NDS/SSH-Attacker.git</connection>
-        <developerConnection>scm:git:ssh://github.com/RUB_NDS/SSH-Attacker.git</developerConnection>
-        <url>https://github.com/RUB-NDS/SSH-Attacker/tree/master</url>
+        <connection>scm:git:https://github.com/tls-attacker/SSH-Attacker.git</connection>
+        <developerConnection>scm:git:ssh://git@github.com/tls-attacker/SSH-Attacker.git</developerConnection>
+        <url>https://github.com/tls-attacker/SSH-Attacker</url>
     </scm>
 
     <modules>
         <module>SSH-Core</module>
         <module>SSH-Client</module>
-        <module>SSH-Project-Template</module>
         <module>SSH-Server</module>
         <module>Attacks</module>
         <module>SSH-Mitm</module>
     </modules>
+
     <dependencies>
+        <!-- scope: compile -->
         <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter</artifactId>
-            <version>5.8.2</version>
-            <scope>test</scope>
+            <groupId>de.rub.nds</groupId>
+            <artifactId>ModifiableVariable</artifactId>
+            <version>3.6.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.bouncycastle</groupId>
             <artifactId>bcprov-jdk15on</artifactId>
-            <version>1.70</version>
+            <version>1.64</version>
         </dependency>
         <dependency>
             <groupId>com.beust</groupId>
@@ -53,22 +85,145 @@
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-core</artifactId>
-            <version>2.17.2</version>
+            <version>2.19.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-api</artifactId>
+            <version>2.19.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jaxb</groupId>
+            <artifactId>jaxb-runtime</artifactId>
+            <version>4.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>jakarta.xml.bind</groupId>
+            <artifactId>jakarta.xml.bind-api</artifactId>
+            <version>4.0.0</version>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
             <version>3.12.0</version>
         </dependency>
+        <!-- scope: test -->
         <dependency>
-            <groupId>de.rub.nds</groupId>
-            <artifactId>ModifiableVariable</artifactId>
-            <version>3.4.0</version>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>5.9.0</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
+
     <build>
         <pluginManagement>
             <plugins>
+                <!--################## clean lifecycle plugins ##################-->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-clean-plugin</artifactId>
+                    <version>3.2.0</version>
+                </plugin>
+                <!--################# default lifecycle plugins #################-->
+                <!-- Plugin to record unit test coverage -->
+                <plugin>
+                    <groupId>org.jacoco</groupId>
+                    <artifactId>jacoco-maven-plugin</artifactId>
+                    <version>0.8.8</version>
+                </plugin>
+                <!-- Plugin to copy project resources to output directory -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-resources-plugin</artifactId>
+                    <version>3.3.0</version>
+                </plugin>
+                <!-- Plugin to compile source files -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>3.10.1</version>
+                    <configuration>
+                        <source>${maven.compiler.source}</source>
+                        <target>${maven.compiler.target}</target>
+                    </configuration>
+                </plugin>
+                <!-- Plugin to execute unit tests -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>3.0.0-M7</version>
+                    <configuration>
+                        <trimStackTrace>false</trimStackTrace>
+                        <includes>
+                            <include>**/*.java</include>
+                        </includes>
+                        <!-- Allow parallel execution of unit tests (execution in series within test classes) -->
+                        <parallel>classes</parallel>
+                        <!-- Can be adjusted depending on the local system, 3 should be a fair default value -->
+                        <forkCount>3</forkCount>
+                        <reuseForks>true</reuseForks>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <id>default-test</id>
+                            <configuration>
+                                <excludedGroups>SlowTest,IntegrationTest</excludedGroups>
+                            </configuration>
+                        </execution>
+                        <execution>
+                            <id>run-slow-unit-tests</id>
+                            <phase>integration-test</phase>
+                            <goals>
+                                <goal>test</goal>
+                            </goals>
+                            <configuration>
+                                <groups>SlowTest</groups>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+                <!-- Plugin to build jar file -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-jar-plugin</artifactId>
+                    <version>3.3.0</version>
+                </plugin>
+                <!-- Plugin to compile javadoc -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-javadoc-plugin</artifactId>
+                    <version>3.4.1</version>
+                    <configuration>
+                        <source>${maven.compiler.source}</source>
+                        <javadocExecutable>
+                            ${java.home}/bin/javadoc
+                        </javadocExecutable>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <id>attach-javadocs</id>
+                            <goals>
+                                <goal>jar</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+                <!-- Pack source files to jar archive -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-source-plugin</artifactId>
+                    <version>3.2.1</version>
+                    <executions>
+                        <execution>
+                            <id>attach-sources</id>
+                            <goals>
+                                <goal>jar-no-fork</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+                <!-- Plugin to copy artifacts to apps folder -->
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-dependency-plugin</artifactId>
@@ -90,6 +245,7 @@
                                         <destFileName>${project.build.finalName}.${project.packaging}</destFileName>
                                     </artifactItem>
                                 </artifactItems>
+                                <!--suppress UnresolvedMavenProperty -->
                                 <outputDirectory>${maven.multiModuleProjectDirectory}/apps</outputDirectory>
                             </configuration>
                         </execution>
@@ -100,6 +256,7 @@
                                 <goal>copy-dependencies</goal>
                             </goals>
                             <configuration>
+                                <!--suppress UnresolvedMavenProperty -->
                                 <outputDirectory>${maven.multiModuleProjectDirectory}/apps/lib</outputDirectory>
                                 <!--Ensures only runnable dependencies are included-->
                                 <includeScope>compile</includeScope>
@@ -107,63 +264,109 @@
                         </execution>
                     </executions>
                 </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-surefire-plugin</artifactId>
-                    <version>3.0.0-M5</version>
-                    <configuration>
-                        <trimStackTrace>false</trimStackTrace>
-                        <includes>
-                            <include>**/*.java</include>
-                        </includes>
-                    </configuration>
-                </plugin>
+                <!-- Plugin to execute integration tests -->
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-failsafe-plugin</artifactId>
-                    <version>3.0.0-M5</version>
+                    <version>3.0.0-M7</version>
                     <configuration>
                         <!-- By default, the Failsafe plugin excludes various files. We have to override that. -->
-                        <excludes>
-                            <exclude>**/*.java</exclude>
-                        </excludes>
+                        <includes>
+                            <include>**/*.java</include>
+                        </includes>
+                        <!-- Integration tests and slow tests are started -->
+                        <groups>IntegrationTest</groups>
                     </configuration>
                     <executions>
                         <execution>
+                            <id>run-integration-tests</id>
+                            <phase>integration-test</phase>
                             <goals>
                                 <goal>integration-test</goal>
+                            </goals>
+                        </execution>
+                        <execution>
+                            <id>verify-integration-tests</id>
+                            <phase>verify</phase>
+                            <goals>
                                 <goal>verify</goal>
                             </goals>
                         </execution>
                     </executions>
                 </plugin>
-                <!-- Specify Java Version -->
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-compiler-plugin</artifactId>
-                    <version>3.10.1</version>
-                </plugin>
-                <!-- Format the Code -->
-                <plugin>
-                    <groupId>com.diffplug.spotless</groupId>
-                    <artifactId>spotless-maven-plugin</artifactId>
-                    <version>2.21.0</version>
-                </plugin>
-                <plugin>
-                    <artifactId>maven-project-info-reports-plugin</artifactId>
-                    <version>3.2.2</version>
-                </plugin>
             </plugins>
         </pluginManagement>
         <plugins>
+            <!--################## clean lifecycle plugins ##################-->
             <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>versions-maven-plugin</artifactId>
-                <version>2.10.0</version>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-clean-plugin</artifactId>
+                <version>3.2.0</version>
+                <executions>
+                    <execution>
+                        <id>default-clean</id>
+                        <goals>
+                            <goal>clean</goal>
+                        </goals>
+                        <inherited>false</inherited>
+                        <configuration>
+                            <filesets>
+                                <fileset>
+                                    <!--suppress UnresolvedMavenProperty -->
+                                    <directory>${maven.multiModuleProjectDirectory}/apps</directory>
+                                </fileset>
+                            </filesets>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>clean-apps-folder</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>clean</goal>
+                        </goals>
+                        <inherited>false</inherited>
+                        <configuration>
+                            <excludeDefaultDirectories>true</excludeDefaultDirectories>
+                            <filesets>
+                                <fileset>
+                                    <!--suppress UnresolvedMavenProperty -->
+                                    <directory>${maven.multiModuleProjectDirectory}/apps</directory>
+                                </fileset>
+                            </filesets>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
+            <!--################# default lifecycle plugins #################-->
+            <!-- Enforce maven and java version -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <version>3.1.0</version>
+                <executions>
+                    <execution>
+                        <id>enforce-versions</id>
+                        <goals>
+                            <goal>enforce</goal>
+                        </goals>
+                        <configuration>
+                            <rules>
+                                <requireMavenVersion>
+                                    <version>3.6</version>
+                                </requireMavenVersion>
+                                <requireJavaVersion>
+                                    <version>${maven.compiler.source}</version>
+                                </requireJavaVersion>
+                            </rules>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <!-- Formatting -->
             <plugin>
                 <groupId>com.diffplug.spotless</groupId>
                 <artifactId>spotless-maven-plugin</artifactId>
+                <version>2.27.0</version>
                 <configuration>
                     <java>
                         <lineEndings>GIT_ATTRIBUTES</lineEndings>
@@ -179,7 +382,8 @@
                             <style>AOSP</style>
                         </googleJavaFormat>
                         <licenseHeader>
-                            <file>${main.basedir}/license_header_plain.txt</file>
+                            <!--suppress UnresolvedMavenProperty -->
+                            <file>${maven.multiModuleProjectDirectory}/license_header_plain.txt</file>
                         </licenseHeader>
                     </java>
                 </configuration>
@@ -192,67 +396,94 @@
                     </execution>
                 </executions>
             </plugin>
+            <!-- Sign artifacts -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-enforcer-plugin</artifactId>
-                <version>3.0.0</version>
+                <artifactId>maven-gpg-plugin</artifactId>
+                <version>3.0.1</version>
                 <executions>
                     <execution>
-                        <id>default-cli</id>
+                        <id>sign-artifacts</id>
                         <goals>
-                            <goal>enforce</goal>
+                            <goal>sign</goal>
                         </goals>
-                        <configuration>
-                            <rules>
-                                <requireMavenVersion>
-                                    <version>3.3.9</version>
-                                </requireMavenVersion>
-                                <requireJavaVersion>
-                                    <version>11</version>
-                                </requireJavaVersion>
-                            </rules>
-                        </configuration>
                     </execution>
                 </executions>
+                <configuration>
+                    <skip>${skip.signature}</skip>
+                </configuration>
+            </plugin>
+            <!-- Install module to local Maven repository -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-install-plugin</artifactId>
+                <version>3.0.1</version>
+            </plugin>
+            <!-- Artifact deployment to OSSRH -->
+            <plugin>
+                <groupId>org.sonatype.plugins</groupId>
+                <artifactId>nexus-staging-maven-plugin</artifactId>
+                <version>1.6.13</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <serverId>ossrh</serverId>
+                    <nexusUrl>https://s01.oss.sonatype.org/</nexusUrl>
+                    <!-- deploy with the following command: mvn nexus-staging:release -->
+                    <autoReleaseAfterClose>false</autoReleaseAfterClose>
+                </configuration>
+            </plugin>
+            <!--################## site lifecycle plugins ###################-->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-site-plugin</artifactId>
+                <version>4.0.0-M3</version>
+            </plugin>
+            <!--############ plugins without lifecycle bindings #############-->
+            <!-- Dependency version management -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>versions-maven-plugin</artifactId>
+                <version>2.12.0</version>
+            </plugin>
+        </plugins>
+    </build>
+
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>com.github.spotbugs</groupId>
+                <artifactId>spotbugs-maven-plugin</artifactId>
+                <version>4.7.2.0</version>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-source-plugin</artifactId>
-                <version>3.2.1</version>
-                <executions>
-                    <execution>
-                        <id>attach-sources</id>
-                        <goals>
-                            <goal>jar-no-fork</goal>
-                        </goals>
-                    </execution>
-                </executions>
+                <artifactId>maven-pmd-plugin</artifactId>
+                <version>3.19.0</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jxr-plugin</artifactId>
+                <version>3.3.0</version>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
-                <version>3.3.2</version>
-                <executions>
-                    <execution>
-                        <id>attach-javadocs</id>
-                        <phase>deploy</phase>
-                        <goals>
-                            <goal>jar</goal>
-                        </goals>
-                        <configuration>
-                            <doclint>none</doclint>
-                        </configuration>
-                    </execution>
-                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-deploy-plugin</artifactId>
             </plugin>
         </plugins>
-    </build>
+    </reporting>
+
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
-        <licenseOwner>Ruhr University Bochum, Paderborn University, Hackmanit GmbH</licenseOwner>
         <main.basedir>${project.basedir}</main.basedir>
+        <!-- We redefine the signature generation process, which is enabled by default,
+        but cannot be performed by typical users. Enable it using -Dskip.signature=false -->
+        <skip.signature>true</skip.signature>
     </properties>
 </project>

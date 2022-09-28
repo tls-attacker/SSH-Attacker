@@ -16,12 +16,12 @@ import de.rub.nds.sshattacker.core.crypto.keys.CustomRsaPrivateKey;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomRsaPublicKey;
 import de.rub.nds.sshattacker.core.crypto.keys.SshPublicKey;
 import de.rub.nds.sshattacker.core.exceptions.CryptoException;
+import jakarta.xml.bind.DatatypeConverter;
 import java.io.InputStream;
 import java.math.BigInteger;
 import java.util.Scanner;
 import java.util.stream.Stream;
 import javax.crypto.BadPaddingException;
-import javax.xml.bind.DatatypeConverter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.Test;
@@ -53,10 +53,10 @@ public class OaepCipherTest {
         } else if (file.equals("RSA-OAEP-SHA256.txt")) {
             keyExchangeAlgorithm = KeyExchangeAlgorithm.RSA2048_SHA256;
         }
-        BigInteger pub_modulus = null,
-                pub_exponent = null,
-                priv_modulus = null,
-                priv_exponent = null;
+        BigInteger publicModulus = null,
+                publicExponent = null,
+                privateModulus = null,
+                privateExponent = null;
         byte[] plaintext, ciphertext;
 
         while (reader.hasNextLine()) {
@@ -64,23 +64,23 @@ public class OaepCipherTest {
             if (line.startsWith("# Public key")) {
                 reader.nextLine();
                 line = reader.nextLine();
-                pub_modulus = new BigInteger(line, 16);
+                publicModulus = new BigInteger(line, 16);
 
                 reader.nextLine();
                 line = reader.nextLine();
-                pub_exponent = new BigInteger(line, 16);
+                publicExponent = new BigInteger(line, 16);
             }
 
             if (line.startsWith("# Private key")) {
                 reader.nextLine();
                 line = reader.nextLine();
-                priv_modulus = new BigInteger(line, 16);
+                privateModulus = new BigInteger(line, 16);
 
                 reader.nextLine();
                 reader.nextLine();
                 reader.nextLine();
                 line = reader.nextLine();
-                priv_exponent = new BigInteger(line, 16);
+                privateExponent = new BigInteger(line, 16);
                 // prime1, prime2, prime_exp1, prime_exp2, coefficient
             }
 
@@ -98,10 +98,10 @@ public class OaepCipherTest {
                 argumentsBuilder.add(
                         Arguments.of(
                                 keyExchangeAlgorithm,
-                                pub_exponent,
-                                pub_modulus,
-                                priv_exponent,
-                                priv_modulus,
+                                publicExponent,
+                                publicModulus,
+                                privateExponent,
+                                privateModulus,
                                 plaintext,
                                 ciphertext));
             }
@@ -135,10 +135,10 @@ public class OaepCipherTest {
      * which are used in the RsaKeyExchange.
      *
      * @param keyExchangeAlgorithm the used rsa oaep algorithm
-     * @param pub_key_exponent public key exponent
-     * @param pub_key_modulus public key modulus
-     * @param priv_key_exponent private key exponent
-     * @param priv_key_modulus private key modulus
+     * @param publicKeyExponent public key exponent
+     * @param publicKeyModulus public key modulus
+     * @param privateKeyExponent private key exponent
+     * @param privateKeyModulus private key modulus
      * @param plaintext the expected plaintext
      * @param ciphertext provided ciphertext
      */
@@ -146,15 +146,15 @@ public class OaepCipherTest {
     @MethodSource({"provideTestVectorsSha1", "provideTestVectorsSha256"})
     public void testRsaOaepDecryption(
             KeyExchangeAlgorithm keyExchangeAlgorithm,
-            BigInteger pub_key_exponent,
-            BigInteger pub_key_modulus,
-            BigInteger priv_key_exponent,
-            BigInteger priv_key_modulus,
+            BigInteger publicKeyExponent,
+            BigInteger publicKeyModulus,
+            BigInteger privateKeyExponent,
+            BigInteger privateKeyModulus,
             byte[] plaintext,
             byte[] ciphertext)
             throws CryptoException {
         CustomRsaPrivateKey privateKey =
-                new CustomRsaPrivateKey(priv_key_exponent, priv_key_modulus);
+                new CustomRsaPrivateKey(privateKeyExponent, privateKeyModulus);
         DecryptionCipher cipher =
                 CipherFactory.getDecryptionCipher(keyExchangeAlgorithm, privateKey);
         byte[] computedPlaintext = cipher.decrypt(ciphertext);
@@ -168,10 +168,10 @@ public class OaepCipherTest {
      * EncryptionCipher picking of CipherFactory, which are used in the RsaKeyExchange.
      *
      * @param keyExchangeAlgorithm the used rsa oaep algorithm
-     * @param pub_key_exponent public key exponent
-     * @param pub_key_modulus public key modulus
-     * @param priv_key_exponent private key exponent
-     * @param priv_key_modulus private key modulus
+     * @param publicKeyExponent public key exponent
+     * @param publicKeyModulus public key modulus
+     * @param privateKeyExponent private key exponent
+     * @param privateKeyModulus private key modulus
      * @param plaintext the expected plaintext
      * @param ciphertext provided ciphertext
      */
@@ -179,16 +179,16 @@ public class OaepCipherTest {
     @MethodSource({"provideTestVectorsSha1", "provideTestVectorsSha256"})
     public void testRsaOaepEncryption(
             KeyExchangeAlgorithm keyExchangeAlgorithm,
-            BigInteger pub_key_exponent,
-            BigInteger pub_key_modulus,
-            BigInteger priv_key_exponent,
-            BigInteger priv_key_modulus,
+            BigInteger publicKeyExponent,
+            BigInteger publicKeyModulus,
+            BigInteger privateKeyExponent,
+            BigInteger privateKeyModulus,
             byte[] plaintext,
             byte[] ciphertext)
             throws CryptoException {
-        CustomRsaPublicKey publicKey = new CustomRsaPublicKey(pub_key_exponent, pub_key_modulus);
+        CustomRsaPublicKey publicKey = new CustomRsaPublicKey(publicKeyExponent, publicKeyModulus);
         CustomRsaPrivateKey privateKey =
-                new CustomRsaPrivateKey(priv_key_exponent, priv_key_modulus);
+                new CustomRsaPrivateKey(privateKeyExponent, privateKeyModulus);
         SshPublicKey<CustomRsaPublicKey, CustomRsaPrivateKey> keypair =
                 new SshPublicKey<>(PublicKeyFormat.SSH_RSA, publicKey, privateKey);
         EncryptionCipher encCipher =
@@ -207,8 +207,8 @@ public class OaepCipherTest {
         byte[] modulus =
                 ArrayConverter.hexStringToByteArray(
                         "a8b3b284af8eb50b387034a860f146c4919f318763cd6c5598c8ae4811a1e0abc4c7e0b082d693a5e7fced675cf4668512772c0cbc64a742c6c630f533c8cc72f62ae833c40bf25842e984bb78bdbf97c0107d55bdb662f5c4e0fab9845cb5148ef7392dd3aaff93ae1e6b667bb3d4247616d4f5ba10d4cfd226de88d39f16fb");
-        byte[] pub_exp = ArrayConverter.hexStringToByteArray("010001");
-        byte[] priv_exp =
+        byte[] publicExponent = ArrayConverter.hexStringToByteArray("010001");
+        byte[] privateExponent =
                 ArrayConverter.hexStringToByteArray(
                         "53339cfdb79fc8466a655c7316aca85c55fd8f6dd898fdaf119517ef4f52e8fd8e258df93fee180fa0e4ab29693cd83b152a553d4ac4d1812b8b9fa5af0e7f55fe7304df41570926f3311f15c4d65a732c483116ee3d3d2d0af3549ad9bf7cbfb78ad884f84d5beb04724dc7369b31def37d0cf539e9cfcdd3de653729ead5d1");
         byte[] cipher =
@@ -216,9 +216,9 @@ public class OaepCipherTest {
                         "354fe67b4a126d5d35fe36c777791a3f7ba13def484e2d3908aff722fad468fb21696de95d0be911c2d3174f8afcc201035f7b6d8e69402de5451618c21a535fa9d7bfc5b8dd9fc243f8cf927db31322d6e881eaa91a996170e657a05a266426d98c88003f8477c1227094a0d9fa1e8c4024309ce1ecccb5210035d47ac72e8a");
         byte[] plain = ArrayConverter.hexStringToByteArray("6628194e12073db0");
         CustomRsaPublicKey publicKey =
-                new CustomRsaPublicKey(new BigInteger(pub_exp), new BigInteger(modulus));
+                new CustomRsaPublicKey(new BigInteger(publicExponent), new BigInteger(modulus));
         CustomRsaPrivateKey privateKey =
-                new CustomRsaPrivateKey(new BigInteger(priv_exp), new BigInteger(modulus));
+                new CustomRsaPrivateKey(new BigInteger(privateExponent), new BigInteger(modulus));
         SshPublicKey<CustomRsaPublicKey, CustomRsaPrivateKey> keypair =
                 new SshPublicKey<>(PublicKeyFormat.SSH_RSA, publicKey, privateKey);
         DecryptionCipher decCipher =

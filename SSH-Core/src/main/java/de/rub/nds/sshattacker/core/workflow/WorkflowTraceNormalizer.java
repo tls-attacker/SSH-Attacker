@@ -17,6 +17,7 @@ import de.rub.nds.sshattacker.core.workflow.action.GeneralAction;
 import de.rub.nds.sshattacker.core.workflow.action.SshAction;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -176,7 +177,7 @@ public class WorkflowTraceNormalizer {
                         "Workflow trace not well defined. " + e.getLocalizedMessage());
             }
 
-            if (!knownAliases.containsAll(action.getAllAliases())) {
+            if (!new HashSet<>(knownAliases).containsAll(action.getAllAliases())) {
                 throw new ConfigurationException(
                         "Workflow trace not well defined. "
                                 + "Trace has action with reference to unknown connection alias, action: "

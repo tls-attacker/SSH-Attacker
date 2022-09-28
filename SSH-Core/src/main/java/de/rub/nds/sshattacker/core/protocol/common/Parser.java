@@ -172,7 +172,7 @@ public abstract class Parser<T> {
             byte b = parseByteField(1);
             stream.write(b);
             if (b == endSequence) {
-                return new String(stream.toByteArray(), StandardCharsets.UTF_8);
+                return stream.toString(StandardCharsets.UTF_8);
             }
         }
     }
@@ -196,7 +196,7 @@ public abstract class Parser<T> {
                 endSequencePosition = 0;
             }
             if (endSequencePosition == endSequence.length) {
-                return new String(stream.toByteArray(), StandardCharsets.UTF_8);
+                return stream.toString(StandardCharsets.UTF_8);
             }
         }
     }

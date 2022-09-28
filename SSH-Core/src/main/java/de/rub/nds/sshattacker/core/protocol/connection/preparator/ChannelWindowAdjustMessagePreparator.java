@@ -41,10 +41,10 @@ public class ChannelWindowAdjustMessagePreparator
         getObject().setRecipientChannel(channel.getRemoteChannel());
         getObject()
                 .setBytesToAdd(
-                        chooser.getConfig().getDefaultChannel().getlocalWindowSize().getValue()
-                                - channel.getlocalWindowSize().getValue());
+                        chooser.getConfig().getDefaultChannel().getLocalWindowSize().getValue()
+                                - channel.getLocalWindowSize().getValue());
         channel.setLocalWindowSize(
-                channel.getlocalWindowSize().getValue() + getObject().getBytesToAdd().getValue());
+                channel.getLocalWindowSize().getValue() + getObject().getBytesToAdd().getValue());
         LOGGER.debug(channel.toString());
     }
 }

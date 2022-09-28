@@ -7,11 +7,11 @@
  */
 package de.rub.nds.sshattacker.core.crypto.keys;
 
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlRootElement;
 import java.math.BigInteger;
 import java.security.interfaces.RSAPublicKey;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlRootElement;
 
 /** A serializable RSA public key used in RSA encryption and signatures. */
 @XmlRootElement

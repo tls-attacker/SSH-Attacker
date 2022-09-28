@@ -73,10 +73,9 @@ public class KeyFetcher {
 
         if (receivedMessages.size() > 0
                 && receivedMessages.get(0) instanceof RsaKeyExchangePubkeyMessage) {
-            return (RSAPublicKey)
-                    ((RsaKeyExchangePubkeyMessage) receivedMessages.get(0))
-                            .getTransientPublicKey()
-                            .getPublicKey();
+            return ((RsaKeyExchangePubkeyMessage) receivedMessages.get(0))
+                    .getTransientPublicKey()
+                    .getPublicKey();
         } else {
             if (attempt < maxAttempts) {
                 LOGGER.debug(

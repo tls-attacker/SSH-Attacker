@@ -7,8 +7,8 @@
  */
 package de.rub.nds.sshattacker.core.crypto.keys;
 
+import jakarta.xml.bind.annotation.*;
 import java.io.Serializable;
-import javax.xml.bind.annotation.*;
 
 /** This serializable class represents a key pair consisting of a public and private key. */
 @XmlRootElement

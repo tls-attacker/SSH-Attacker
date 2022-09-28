@@ -41,7 +41,7 @@ public class ChannelOpenConfirmationMessageHandler
             channel.setRemoteWindowSize(message.getWindowSize());
             channel.setOpen(true);
             LOGGER.debug(channel.toString());
-            Channel.getLocal_remote()
+            Channel.getChannelAssociations()
                     .put(
                             message.getRecipientChannel().getValue(),
                             message.getModSenderChannel().getValue());

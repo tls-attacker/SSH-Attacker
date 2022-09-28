@@ -37,7 +37,7 @@ public class ChannelWindowAdjustMessageHandler
                     "Can't find the required channel of the received message!");
         } else if (channel.isOpen().getValue()) {
             channel.setRemoteWindowSize(
-                    channel.getlocalWindowSize().getValue() + message.getBytesToAdd().getValue());
+                    channel.getLocalWindowSize().getValue() + message.getBytesToAdd().getValue());
             LOGGER.debug(channel.toString());
         } else {
             throw new MissingChannelException("Required channel is closed!");

@@ -36,7 +36,7 @@ public class ChannelOpenMessageHandler extends SshMessageHandler<ChannelOpenMess
         channel.setRemotePacketSize(message.getPacketSize());
         channel.setOpen(true);
         context.getChannels().put(message.getModSenderChannel().getValue(), channel);
-        Channel.getLocal_remote()
+        Channel.getChannelAssociations()
                 .put(channel.getLocalChannel().getValue(), message.getSenderChannel());
     }
 

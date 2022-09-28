@@ -8,6 +8,10 @@
 package de.rub.nds.sshattacker.core.config;
 
 import de.rub.nds.sshattacker.core.config.filter.ConfigDisplayFilter;
+import jakarta.xml.bind.JAXB;
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBException;
+import jakarta.xml.bind.Unmarshaller;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -18,10 +22,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
-import javax.xml.bind.JAXB;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -113,18 +113,10 @@ public class ConfigIO {
         }
         try {
             // TODO: Implement schema validation
-            // String xsd_source =
-            // ConfigSchemaGenerator.AccumulatingSchemaOutputResolver.mapSystemIds();
             XMLInputFactory xif = XMLInputFactory.newFactory();
             xif.setProperty(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, false);
             xif.setProperty(XMLInputFactory.SUPPORT_DTD, false);
             XMLStreamReader xsr = xif.createXMLStreamReader(stream);
-            // SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-            // Schema configSchema =
-            //        sf.newSchema(new
-            // StreamSource(WorkflowTraceSerializer.class.getResourceAsStream("/" + xsd_source)));
-            // configSchema.newValidator();
-            // unmarshaller.setSchema(configSchema);
             return (Config) unmarshaller.unmarshal(xsr);
         } catch (XMLStreamException | JAXBException e) {
             throw new RuntimeException(e);

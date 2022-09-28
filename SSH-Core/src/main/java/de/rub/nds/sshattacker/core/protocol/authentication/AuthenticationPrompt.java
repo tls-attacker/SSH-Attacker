@@ -12,10 +12,10 @@ import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.sshattacker.core.util.Converter;
+import jakarta.xml.bind.annotation.*;
 import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
-import javax.xml.bind.annotation.*;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 @XmlRootElement

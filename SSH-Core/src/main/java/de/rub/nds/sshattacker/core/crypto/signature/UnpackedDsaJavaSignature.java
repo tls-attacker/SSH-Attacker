@@ -42,8 +42,7 @@ public class UnpackedDsaJavaSignature extends UnpackedJavaSignature {
 
     @Override
     protected byte[] unpackSignature(byte[] packedSignature) {
-        ASN1InputStream input = new ASN1InputStream(packedSignature);
-        try {
+        try (ASN1InputStream input = new ASN1InputStream(packedSignature)) {
             ASN1Sequence sequence = ASN1Sequence.getInstance(input.readObject());
             ASN1Integer r = ASN1Integer.getInstance(sequence.getObjectAt(0));
             ASN1Integer s = ASN1Integer.getInstance(sequence.getObjectAt(1));

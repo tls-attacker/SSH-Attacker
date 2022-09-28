@@ -17,11 +17,11 @@ import de.rub.nds.sshattacker.core.crypto.keys.CustomRsaPublicKey;
 import de.rub.nds.sshattacker.core.crypto.keys.SshPublicKey;
 import de.rub.nds.sshattacker.core.exceptions.CryptoException;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import jakarta.xml.bind.DatatypeConverter;
 import java.io.InputStream;
 import java.math.BigInteger;
 import java.util.Scanner;
 import java.util.stream.Stream;
-import javax.xml.bind.DatatypeConverter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.Test;
@@ -54,11 +54,11 @@ public class RsaKeyExchangeTest {
         } else if (file.equals("rsa2048-sha256-TestVectors-KAS.txt")) {
             keyExchangeAlgorithm = KeyExchangeAlgorithm.RSA2048_SHA256;
         }
-        BigInteger pub_modulus = null,
-                pub_exponent = null,
-                priv_modulus = null,
-                priv_exponent = null,
-                sharedSecret = null;
+        BigInteger publicModulus = null,
+                publicExponent = null,
+                privateModulus = null,
+                privateExponent = null,
+                sharedSecret;
         byte[] ciphertext;
 
         while (reader.hasNextLine()) {
@@ -66,21 +66,21 @@ public class RsaKeyExchangeTest {
             if (line.startsWith("Public key")) {
                 reader.nextLine();
                 line = reader.nextLine();
-                pub_exponent = new BigInteger(line, 16);
+                publicExponent = new BigInteger(line, 16);
 
                 reader.nextLine();
                 line = reader.nextLine();
-                pub_modulus = new BigInteger(line, 16);
+                publicModulus = new BigInteger(line, 16);
             }
 
             if (line.startsWith("Private key")) {
                 reader.nextLine();
                 line = reader.nextLine();
-                priv_exponent = new BigInteger(line, 16);
+                privateExponent = new BigInteger(line, 16);
 
                 reader.nextLine();
                 line = reader.nextLine();
-                priv_modulus = new BigInteger(line, 16);
+                privateModulus = new BigInteger(line, 16);
                 // prime1, prime2, prime_exp1, prime_exp2, coefficient
             }
 
@@ -94,10 +94,10 @@ public class RsaKeyExchangeTest {
                 argumentsBuilder.add(
                         Arguments.of(
                                 keyExchangeAlgorithm,
-                                pub_exponent,
-                                pub_modulus,
-                                priv_exponent,
-                                priv_modulus,
+                                publicExponent,
+                                publicModulus,
+                                privateExponent,
+                                privateModulus,
                                 sharedSecret,
                                 ciphertext));
             }
@@ -133,10 +133,10 @@ public class RsaKeyExchangeTest {
      * class RsaKeyExchange.java and all underlying classes used for the decryption.
      *
      * @param keyExchangeAlgorithm used rsa key exchange algorithm
-     * @param pub_key_exponent public key exponent
-     * @param pub_key_modulus modulus of public key
-     * @param priv_key_exponent private key exponent
-     * @param priv_key_modulus modulus of private key
+     * @param publicKeyExponent public key exponent
+     * @param publicKeyModulus modulus of public key
+     * @param privateKeyExponent private key exponent
+     * @param privateKeyModulus modulus of private key
      * @param sharedSecret the expected shared secret
      * @param ciphertext ciphertext
      */
@@ -144,18 +144,18 @@ public class RsaKeyExchangeTest {
     @MethodSource({"provideTestVectorsSha1", "provideTestVectorsSha256"})
     public void testRsaKeyExchangeDecryption(
             KeyExchangeAlgorithm keyExchangeAlgorithm,
-            BigInteger pub_key_exponent,
-            BigInteger pub_key_modulus,
-            BigInteger priv_key_exponent,
-            BigInteger priv_key_modulus,
+            BigInteger publicKeyExponent,
+            BigInteger publicKeyModulus,
+            BigInteger privateKeyExponent,
+            BigInteger privateKeyModulus,
             BigInteger sharedSecret,
             byte[] ciphertext)
             throws CryptoException {
         RsaKeyExchange rsaKeyExchange =
                 RsaKeyExchange.newInstance(new SshContext(), keyExchangeAlgorithm);
-        CustomRsaPublicKey publicKey = new CustomRsaPublicKey(pub_key_exponent, pub_key_modulus);
+        CustomRsaPublicKey publicKey = new CustomRsaPublicKey(publicKeyExponent, publicKeyModulus);
         CustomRsaPrivateKey privateKey =
-                new CustomRsaPrivateKey(priv_key_exponent, priv_key_modulus);
+                new CustomRsaPrivateKey(privateKeyExponent, privateKeyModulus);
         SshPublicKey<CustomRsaPublicKey, CustomRsaPrivateKey> keypair =
                 new SshPublicKey<>(PublicKeyFormat.SSH_RSA, publicKey, privateKey);
         rsaKeyExchange.setTransientKey(keypair);
@@ -163,11 +163,11 @@ public class RsaKeyExchangeTest {
 
         assertTrue(rsaKeyExchange.areParametersSet());
 
-        assertEquals(pub_key_exponent, rsaKeyExchange.getExponent());
-        assertEquals(pub_key_modulus, rsaKeyExchange.getModulus());
-        assertEquals(pub_key_modulus.bitLength(), rsaKeyExchange.getTransientKeyLength());
+        assertEquals(publicKeyExponent, rsaKeyExchange.getExponent());
+        assertEquals(publicKeyModulus, rsaKeyExchange.getModulus());
+        assertEquals(publicKeyModulus.bitLength(), rsaKeyExchange.getTransientKeyLength());
         assertEquals(keypair, rsaKeyExchange.getTransientKey());
-        assertEquals(pub_key_modulus.bitLength(), rsaKeyExchange.getTransientKeyLength());
+        assertEquals(publicKeyModulus.bitLength(), rsaKeyExchange.getTransientKeyLength());
 
         if (keyExchangeAlgorithm == KeyExchangeAlgorithm.RSA1024_SHA1) {
             assertEquals(160, rsaKeyExchange.getHashLength());
@@ -187,10 +187,10 @@ public class RsaKeyExchangeTest {
      * underlying classes.
      *
      * @param keyExchangeAlgorithm used rs key exchange algorithm
-     * @param pub_key_exponent public key exponent
-     * @param pub_key_modulus the modulus of public key
-     * @param priv_key_exponent private key expontent
-     * @param priv_key_modulus modulus of private key
+     * @param publicKeyExponent public key exponent
+     * @param publicKeyModulus the modulus of public key
+     * @param privateKeyExponent private key expontent
+     * @param privateKeyModulus modulus of private key
      * @param sharedSecret the shared secret to be encrypted
      * @param ciphertext cipher
      */
@@ -198,18 +198,18 @@ public class RsaKeyExchangeTest {
     @MethodSource({"provideTestVectorsSha1", "provideTestVectorsSha256"})
     public void testRsaKeyExchangeEncryption(
             KeyExchangeAlgorithm keyExchangeAlgorithm,
-            BigInteger pub_key_exponent,
-            BigInteger pub_key_modulus,
-            BigInteger priv_key_exponent,
-            BigInteger priv_key_modulus,
+            BigInteger publicKeyExponent,
+            BigInteger publicKeyModulus,
+            BigInteger privateKeyExponent,
+            BigInteger privateKeyModulus,
             BigInteger sharedSecret,
             byte[] ciphertext)
             throws CryptoException {
         RsaKeyExchange rsaKeyExchange =
                 RsaKeyExchange.newInstance(new SshContext(), keyExchangeAlgorithm);
-        CustomRsaPublicKey publicKey = new CustomRsaPublicKey(pub_key_exponent, pub_key_modulus);
+        CustomRsaPublicKey publicKey = new CustomRsaPublicKey(publicKeyExponent, publicKeyModulus);
         CustomRsaPrivateKey privateKey =
-                new CustomRsaPrivateKey(priv_key_exponent, priv_key_modulus);
+                new CustomRsaPrivateKey(privateKeyExponent, privateKeyModulus);
         SshPublicKey<CustomRsaPublicKey, CustomRsaPrivateKey> keypair =
                 new SshPublicKey<>(PublicKeyFormat.SSH_RSA, publicKey, privateKey);
         rsaKeyExchange.setTransientKey(keypair);
@@ -217,10 +217,10 @@ public class RsaKeyExchangeTest {
 
         assertTrue(rsaKeyExchange.areParametersSet());
 
-        assertEquals(pub_key_exponent, rsaKeyExchange.getExponent());
-        assertEquals(pub_key_modulus, rsaKeyExchange.getModulus());
+        assertEquals(publicKeyExponent, rsaKeyExchange.getExponent());
+        assertEquals(publicKeyModulus, rsaKeyExchange.getModulus());
         assertEquals(keypair, rsaKeyExchange.getTransientKey());
-        assertEquals(pub_key_modulus.bitLength(), rsaKeyExchange.getTransientKeyLength());
+        assertEquals(publicKeyModulus.bitLength(), rsaKeyExchange.getTransientKeyLength());
 
         if (keyExchangeAlgorithm == KeyExchangeAlgorithm.RSA1024_SHA1) {
             assertEquals(160, rsaKeyExchange.getHashLength());
@@ -242,8 +242,8 @@ public class RsaKeyExchangeTest {
                 new BigInteger(
                         "a8b3b284af8eb50b387034a860f146c4919f318763cd6c5598c8ae4811a1e0abc4c7e0b082d693a5e7fced675cf4668512772c0cbc64a742c6c630f533c8cc72f62ae833c40bf25842e984bb78bdbf97c0107d55bdb662f5c4e0fab9845cb5148ef7392dd3aaff93ae1e6b667bb3d4247616d4f5ba10d4cfd226de88d39f16fb",
                         16);
-        BigInteger priv_exp = new BigInteger("010001", 16);
-        BigInteger pub_exp =
+        BigInteger privateExponent = new BigInteger("010001", 16);
+        BigInteger publicExponent =
                 new BigInteger(
                         "53339cfdb79fc8466a655c7316aca85c55fd8f6dd898fdaf119517ef4f52e8fd8e258df93fee180fa0e4ab29693cd83b152a553d4ac4d1812b8b9fa5af0e7f55fe7304df41570926f3311f15c4d65a732c483116ee3d3d2d0af3549ad9bf7cbfb78ad884f84d5beb04724dc7369b31def37d0cf539e9cfcdd3de653729ead5d1",
                         16);
@@ -259,8 +259,8 @@ public class RsaKeyExchangeTest {
 
         RsaKeyExchange rsaKeyExchange =
                 RsaKeyExchange.newInstance(new SshContext(), KeyExchangeAlgorithm.RSA1024_SHA1);
-        CustomRsaPublicKey publicKey = new CustomRsaPublicKey(pub_exp, modulus);
-        CustomRsaPrivateKey privateKey = new CustomRsaPrivateKey(priv_exp, modulus);
+        CustomRsaPublicKey publicKey = new CustomRsaPublicKey(publicExponent, modulus);
+        CustomRsaPrivateKey privateKey = new CustomRsaPrivateKey(privateExponent, modulus);
         SshPublicKey<CustomRsaPublicKey, CustomRsaPrivateKey> keypair =
                 new SshPublicKey<>(PublicKeyFormat.SSH_RSA, publicKey);
         rsaKeyExchange.setTransientKey(keypair);

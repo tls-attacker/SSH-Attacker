@@ -18,12 +18,12 @@ import de.rub.nds.sshattacker.core.state.State;
 import de.rub.nds.sshattacker.core.workflow.action.executor.ReceiveMessageHelper;
 import de.rub.nds.sshattacker.core.workflow.action.executor.SendMessageHelper;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlElementRef;
+import jakarta.xml.bind.annotation.XmlElementWrapper;
+import jakarta.xml.bind.annotation.XmlTransient;
 import java.io.IOException;
 import java.util.*;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementRef;
-import javax.xml.bind.annotation.XmlElementWrapper;
-import javax.xml.bind.annotation.XmlTransient;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -162,7 +162,7 @@ public class ForwardMessagesAction extends SshAction implements ReceivingAction,
     /**
      * Apply the contents of the messages to the given TLS context.
      *
-     * @param ctx
+     * @param ctx SSH context
      */
     protected void applyMessages(SshContext ctx) {
         changeSshContextHandling(ctx);
@@ -198,7 +198,7 @@ public class ForwardMessagesAction extends SshAction implements ReceivingAction,
         if (expectedMessages != null && !expectedMessages.isEmpty()) {
             expectedEmpty = false;
         }
-        if (actualEmpty == expectedEmpty) {
+        if (actualEmpty && expectedEmpty) {
             return true;
         }
         if (actualEmpty != expectedEmpty) {
@@ -248,7 +248,7 @@ public class ForwardMessagesAction extends SshAction implements ReceivingAction,
     }
 
     public void setMessages(ProtocolMessage<?>... messages) {
-        this.messages = new ArrayList(Arrays.asList(messages));
+        this.messages = new ArrayList<>(Arrays.asList(messages));
     }
 
     @Override

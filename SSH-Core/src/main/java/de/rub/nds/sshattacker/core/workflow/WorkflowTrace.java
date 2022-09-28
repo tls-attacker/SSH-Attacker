@@ -13,6 +13,12 @@ import de.rub.nds.sshattacker.core.connection.InboundConnection;
 import de.rub.nds.sshattacker.core.connection.OutboundConnection;
 import de.rub.nds.sshattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.sshattacker.core.workflow.action.*;
+import jakarta.xml.bind.JAXBException;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlElements;
+import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -23,12 +29,6 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElements;
-import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.stream.XMLStreamException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -59,7 +59,7 @@ public class WorkflowTrace implements Serializable {
         try {
             String origTraceStr = WorkflowTraceSerializer.write(orig);
             InputStream is =
-                    new ByteArrayInputStream(origTraceStr.getBytes(StandardCharsets.UTF_8.name()));
+                    new ByteArrayInputStream(origTraceStr.getBytes(StandardCharsets.UTF_8));
             copy = WorkflowTraceSerializer.insecureRead(is);
         } catch (JAXBException | IOException | XMLStreamException ex) {
             throw new ConfigurationException("Could not copy workflow trace: " + ex);

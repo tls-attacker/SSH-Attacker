@@ -824,7 +824,6 @@ public class DefaultChooser extends Chooser {
                                     this.getKeyExchangeAlgorithm();
                             RsaKeyExchange freshKeyExchange =
                                     RsaKeyExchange.newInstance(context, negotiatedAlgorithm);
-                            assert freshKeyExchange != null;
                             // Set transient key to ensure its presence
                             freshKeyExchange.setTransientKey(
                                     config.getFallbackRsaTransientPublicKey());

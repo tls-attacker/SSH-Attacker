@@ -48,7 +48,7 @@ public class ChannelOpenMessagePreparator extends SshMessagePreparator<ChannelOp
                         .get(getObject().getModSenderChannel().getValue());
 
         getObject().setChannelType(chooser.getConfig().getDefaultChannel().getChannelType(), true);
-        getObject().setWindowSize(chooser.getConfig().getDefaultChannel().getlocalWindowSize());
+        getObject().setWindowSize(chooser.getConfig().getDefaultChannel().getLocalWindowSize());
         getObject().setPacketSize(chooser.getConfig().getDefaultChannel().getlocalPacketSize());
 
         if (channel != null) {
@@ -59,7 +59,7 @@ public class ChannelOpenMessagePreparator extends SshMessagePreparator<ChannelOp
             }
             channel.setChannelType(
                     ChannelType.getByString(getObject().getChannelType().getValue()));
-            channel.setlocalWindowSize(getObject().getWindowSize());
+            channel.setLocalWindowSize(getObject().getWindowSize());
             channel.setRemotePacketSize(getObject().getPacketSize());
             chooser.getContext()
                     .getChannels()

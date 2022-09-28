@@ -32,7 +32,7 @@ public class Channel implements Serializable {
     private ModifiableBoolean open;
     private ModifiableBoolean firstCloseMessage;
 
-    private static HashMap<Integer, Integer> local_remote = new HashMap<>();
+    private static final HashMap<Integer, Integer> channelAssociations = new HashMap<>();
 
     public Channel() {}
 
@@ -103,11 +103,11 @@ public class Channel implements Serializable {
         this.open = ModifiableVariableFactory.safelySetValue(this.open, open);
     }
 
-    public ModifiableInteger getlocalWindowSize() {
+    public ModifiableInteger getLocalWindowSize() {
         return localWindowSize;
     }
 
-    public void setlocalWindowSize(ModifiableInteger localWindowSize) {
+    public void setLocalWindowSize(ModifiableInteger localWindowSize) {
         this.localWindowSize = localWindowSize;
     }
 
@@ -216,7 +216,7 @@ public class Channel implements Serializable {
                 + '}';
     }
 
-    public static HashMap<Integer, Integer> getLocal_remote() {
-        return local_remote;
+    public static HashMap<Integer, Integer> getChannelAssociations() {
+        return channelAssociations;
     }
 }

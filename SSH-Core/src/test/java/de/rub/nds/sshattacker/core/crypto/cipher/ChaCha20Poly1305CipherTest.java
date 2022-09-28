@@ -13,6 +13,7 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.CryptoConstants;
 import de.rub.nds.sshattacker.core.constants.EncryptionAlgorithm;
 import de.rub.nds.sshattacker.core.exceptions.CryptoException;
+import jakarta.xml.bind.DatatypeConverter;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -21,7 +22,6 @@ import java.util.Arrays;
 import java.util.Scanner;
 import java.util.stream.Stream;
 import javax.crypto.AEADBadTagException;
-import javax.xml.bind.DatatypeConverter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
@@ -70,8 +70,8 @@ public class ChaCha20Poly1305CipherTest {
     }
 
     /**
-     * Tests the encryption of ChaCha20Poly1305Vectors as described in
-     * https://datatracker.ietf.org/doc/html/draft-josefsson-ssh-chacha20-poly1305-openssh-00
+     * Tests the encryption of ChaCha20Poly1305Vectors as described in <a
+     * href="https://datatracker.ietf.org/doc/html/draft-josefsson-ssh-chacha20-poly1305-openssh-00">draft-josefsson-ssh-chacha20-poly1305-openssh-00</a>
      *
      * @param key the used 512bit key, building K_2 and K_1
      * @param iv an initial vector, in case of chacha20-poly1305@openssh.com the sequence number
@@ -98,8 +98,8 @@ public class ChaCha20Poly1305CipherTest {
     }
 
     /**
-     * Tests the decryption of ChaCha20Poly1305Vectors as described in
-     * https://datatracker.ietf.org/doc/html/draft-josefsson-ssh-chacha20-poly1305-openssh-00
+     * Tests the decryption of ChaCha20Poly1305Vectors as described in <a
+     * href="https://datatracker.ietf.org/doc/html/draft-josefsson-ssh-chacha20-poly1305-openssh-00">draft-josefsson-ssh-chacha20-poly1305-openssh-00</a>
      *
      * @param key the used 512bit key, building K_2 and K_1
      * @param iv an initial vector, in case of chacha20-poly1305@openssh.com the sequence number

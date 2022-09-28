@@ -9,6 +9,9 @@ package de.rub.nds.sshattacker.core.crypto.keys;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.NamedEcGroup;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlRootElement;
 import java.math.BigInteger;
 import java.security.AlgorithmParameters;
 import java.security.NoSuchAlgorithmException;
@@ -16,9 +19,6 @@ import java.security.interfaces.ECPrivateKey;
 import java.security.spec.ECGenParameterSpec;
 import java.security.spec.ECParameterSpec;
 import java.security.spec.InvalidParameterSpecException;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * A serializable elliptic curve private key used in various EC-based algorithms like ECDH and
