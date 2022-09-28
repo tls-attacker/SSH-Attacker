@@ -7,8 +7,6 @@
  */
 package de.rub.nds.sshattacker.core.constants;
 
-import java.util.*;
-
 public enum NamedEcGroup {
     SECT163K1("1.3.132.0.1", "sect163k1", 163),
     SECT163R1("1.3.132.0.2", "sect163r1", 163),

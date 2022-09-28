@@ -296,14 +296,14 @@ public class State {
     }
 
     private void assertWorkflowTraceNotNull(
-            @SuppressWarnings("SameParameterValue") String operation_name) {
+            @SuppressWarnings("SameParameterValue") String operationName) {
         if (workflowTrace != null) {
             return;
         }
 
         StringBuilder err = new StringBuilder("No workflow trace loaded.");
-        if (operation_name != null && !operation_name.isEmpty()) {
-            err.append(" Operation ").append(operation_name).append(" not permitted");
+        if (operationName != null && !operationName.isEmpty()) {
+            err.append(" Operation ").append(operationName).append(" not permitted");
         }
         throw new ConfigurationException(err.toString());
     }

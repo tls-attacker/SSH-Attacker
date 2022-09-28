@@ -90,13 +90,20 @@ public class MitmDelegate extends Delegate {
             case 1:
                 inboundConnection.setHostname("0.0.0.0");
                 inboundConnection.setPort(parsePort(parsedPort[0]));
-                inboundConnection.setAlias(inboundConnection.getHostname() + ":" + inboundConnection.getPort().toString());
+                inboundConnection.setAlias(
+                        inboundConnection.getHostname()
+                                + ":"
+                                + inboundConnection.getPort().toString());
                 break;
             case 2:
-                LOGGER.warn("Hostname ignored because ServerTcpTransportHandler does not support bind address.");
+                LOGGER.warn(
+                        "Hostname ignored because ServerTcpTransportHandler does not support bind address.");
                 inboundConnection.setHostname("0.0.0.0");
                 inboundConnection.setPort(parsePort(parsedPort[1]));
-                inboundConnection.setAlias(inboundConnection.getHostname() + ":" + inboundConnection.getPort().toString());
+                inboundConnection.setAlias(
+                        inboundConnection.getHostname()
+                                + ":"
+                                + inboundConnection.getPort().toString());
                 break;
             default:
                 throw new ConfigurationException(

@@ -55,6 +55,7 @@ public class ResponseExtractor {
         List<Class<ProtocolMessage<?>>> classList = new LinkedList<>();
         if (action.getReceivedMessages() != null) {
             for (ProtocolMessage<?> message : action.getReceivedMessages()) {
+                //noinspection unchecked
                 classList.add((Class<ProtocolMessage<?>>) message.getClass());
             }
         }

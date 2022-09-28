@@ -321,7 +321,7 @@ public class JavaCipherTest {
      */
     @ParameterizedTest(name = "Algorithm: {0}, TestingMode: {1}, Key: {2}")
     @MethodSource("provideAesTestVectors")
-    void testEncryption_DecryptionBlockCipher(
+    void testEncryptionDecryptionBlockCipher(
             EncryptionAlgorithm encryptionAlgorithm,
             boolean testingMode,
             byte[] key,

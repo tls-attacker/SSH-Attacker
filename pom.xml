@@ -8,7 +8,7 @@
     <packaging>pom</packaging>
 
     <name>SSH-Attacker</name>
-    <description>SSH-Attacker is a Java-based framework for analyzing SSH libraries. It is developed by the Ruhr University Bochum (http://informatik.rub.de/nds/), the Paderborn University (https://cs.uni-paderborn.de/en/syssec/), and the Hackmanit GmbH (http://hackmanit.de/).</description>
+    <description>SSH-Attacker is a Java-based framework for analyzing SSH libraries. It is developed by the Ruhr University Bochum (https://informatik.rub.de/nds/), the Paderborn University (https://cs.uni-paderborn.de/en/syssec/), and the Hackmanit GmbH (https://hackmanit.de/).</description>
     <url>https://github.com/tls-attacker/SSH-Attacker</url>
     <inceptionYear>2015</inceptionYear>
 

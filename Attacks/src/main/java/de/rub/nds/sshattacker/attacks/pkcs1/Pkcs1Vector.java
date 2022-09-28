@@ -95,10 +95,7 @@ public class Pkcs1Vector implements Vector {
         if (!Arrays.equals(this.plainValue, other.plainValue)) {
             return false;
         }
-        if (!Arrays.equals(this.encryptedValue, other.encryptedValue)) {
-            return false;
-        }
-        return true;
+        return Arrays.equals(this.encryptedValue, other.encryptedValue);
     }
 
     @Override

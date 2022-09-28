@@ -23,11 +23,10 @@ import de.rub.nds.sshattacker.core.workflow.WorkflowTraceSerializer;
 import de.rub.nds.sshattacker.core.workflow.action.SshAction;
 import de.rub.nds.sshattacker.core.workflow.factory.SshActionFactory;
 import de.rub.nds.sshattacker.mitm.config.MitmCommandConfig;
-import java.io.File;
-import java.io.FileInputStream;
-
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
+import java.io.File;
+import java.io.FileInputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -82,24 +81,29 @@ public class SshMitm implements Runnable {
             TransportHandler outboundTransportHandler = outboundContext.getTransportHandler();
             inboundTransportHandler.setTimeout(100);
             outboundTransportHandler.setTimeout(100);
-            SshAction clientAction = SshActionFactory.createProxyFilterMessagesAction(inboundConnection, outboundConnection, ConnectionEndType.CLIENT);
-            SshAction serverAction = SshActionFactory.createProxyFilterMessagesAction(inboundConnection, outboundConnection, ConnectionEndType.SERVER);
+            SshAction clientAction =
+                    SshActionFactory.createProxyFilterMessagesAction(
+                            inboundConnection, outboundConnection, ConnectionEndType.CLIENT);
+            SshAction serverAction =
+                    SshActionFactory.createProxyFilterMessagesAction(
+                            inboundConnection, outboundConnection, ConnectionEndType.SERVER);
 
             int maxCount = 1000;
             while (maxCount > 0) {
                 clientAction.execute(state);
                 clientAction.reset();
-                if (inboundTransportHandler.isClosed() || inboundContext.isDisconnectMessageReceived()) {
+                if (inboundTransportHandler.isClosed()
+                        || inboundContext.isDisconnectMessageReceived()) {
                     // instead of breaking, close the client side of the server connection.
                     break;
                 }
                 serverAction.execute(state);
                 serverAction.reset();
-                if (outboundTransportHandler.isClosed() || outboundContext.isDisconnectMessageReceived()) {
+                if (outboundTransportHandler.isClosed()
+                        || outboundContext.isDisconnectMessageReceived()) {
                     // instead of breaking, close the server side of the client connection.
                     break;
                 }
-
 
                 maxCount = maxCount - 1;
             }

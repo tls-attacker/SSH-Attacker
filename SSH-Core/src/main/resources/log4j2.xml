@@ -2,7 +2,7 @@
 <Configuration xmlns="http://logging.apache.org/log4j/2.0/config">
     <Appenders>
         <Console name="Console" target="SYSTEM_OUT">
-            <PatternLayout pattern="%highlight{%d{HH:mm:ss.SSS} [%t] %-5level %logger{-4} - %replace{%msg}{\r?\n}{&#x0A;  }%n}{FATAL=Bright Red,ERROR=Red,WARN=Yellow,INFO=Blue,DEBUG=Normal,TRACE=Dim White}" disableAnsi="false"/>
+            <PatternLayout pattern="%highlight{%d{HH:mm:ss.SSS} [%t] %-5level %logger{-4} - %replace{%msg}{\r?\n}{&#x0A;  }%n}{FATAL=Bright Red,ERROR=Red,WARN=Yellow,INFO=Blue,DEBUG=Normal,TRACE=Dim White}" />
         </Console>
     </Appenders>
     <Loggers>

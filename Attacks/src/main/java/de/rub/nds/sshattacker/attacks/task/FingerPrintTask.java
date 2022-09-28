@@ -49,10 +49,6 @@ public class FingerPrintTask extends SshTask {
                 return false;
             }
             fingerprint = ResponseExtractor.getFingerprint(state);
-
-            if (fingerprint == null) {
-                return false;
-            }
             return true;
         } finally {
             try {

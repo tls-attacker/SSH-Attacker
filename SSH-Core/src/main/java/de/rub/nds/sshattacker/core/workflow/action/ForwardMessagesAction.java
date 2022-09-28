@@ -162,7 +162,7 @@ public class ForwardMessagesAction extends SshAction implements ReceivingAction,
     /**
      * Apply the contents of the messages to the given TLS context.
      *
-     * @param ctx
+     * @param ctx SSH context
      */
     protected void applyMessages(SshContext ctx) {
         changeSshContextHandling(ctx);
@@ -198,7 +198,7 @@ public class ForwardMessagesAction extends SshAction implements ReceivingAction,
         if (expectedMessages != null && !expectedMessages.isEmpty()) {
             expectedEmpty = false;
         }
-        if (actualEmpty == expectedEmpty) {
+        if (actualEmpty && expectedEmpty) {
             return true;
         }
         if (actualEmpty != expectedEmpty) {
@@ -248,7 +248,7 @@ public class ForwardMessagesAction extends SshAction implements ReceivingAction,
     }
 
     public void setMessages(ProtocolMessage<?>... messages) {
-        this.messages = new ArrayList(Arrays.asList(messages));
+        this.messages = new ArrayList<>(Arrays.asList(messages));
     }
 
     @Override

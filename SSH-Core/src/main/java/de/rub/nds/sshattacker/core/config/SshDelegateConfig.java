@@ -27,6 +27,7 @@ public class SshDelegateConfig {
 
     @ParametersDelegate private final GeneralDelegate generalDelegate;
 
+    @SuppressWarnings("FieldMayBeFinal")
     @Parameter(
             names = "-config",
             description = "This parameter allows you to specify a default SshConfig")

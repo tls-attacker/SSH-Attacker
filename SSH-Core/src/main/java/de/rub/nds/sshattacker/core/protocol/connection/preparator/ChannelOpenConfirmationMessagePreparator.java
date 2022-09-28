@@ -42,7 +42,7 @@ public class ChannelOpenConfirmationMessagePreparator
             channel = chooser.getConfig().getDefaultChannel();
         }
         getObject().setPacketSize(chooser.getConfig().getDefaultChannel().getlocalPacketSize());
-        getObject().setWindowSize(chooser.getConfig().getDefaultChannel().getlocalWindowSize());
+        getObject().setWindowSize(chooser.getConfig().getDefaultChannel().getLocalWindowSize());
 
         getObject().setRecipientChannel(channel.getRemoteChannel());
         channel.setRemoteChannel(getObject().getRecipientChannel());

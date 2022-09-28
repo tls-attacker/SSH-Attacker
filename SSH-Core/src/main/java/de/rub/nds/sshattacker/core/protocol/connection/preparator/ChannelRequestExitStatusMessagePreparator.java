@@ -40,7 +40,8 @@ public class ChannelRequestExitStatusMessagePreparator
         }
         getObject().setRecipientChannel(channel.getRemoteChannel());
         getObject()
-                .setRecipientChannel(Channel.getLocal_remote().get(getObject().getSenderChannel()));
+                .setRecipientChannel(
+                        Channel.getChannelAssociations().get(getObject().getSenderChannel()));
         getObject().setWantReply((byte) 0);
         getObject().setRequestType(ChannelRequestType.EXIT_STATUS, true);
         getObject().setExitStatus(1);
