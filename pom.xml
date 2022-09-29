@@ -383,7 +383,7 @@
                         </googleJavaFormat>
                         <licenseHeader>
                             <!--suppress UnresolvedMavenProperty -->
-                            <file>${maven.multiModuleProjectDirectory}/license_header_plain.txt</file>
+                            <file>${main.basedir}/license_header_plain.txt</file>
                         </licenseHeader>
                     </java>
                 </configuration>
