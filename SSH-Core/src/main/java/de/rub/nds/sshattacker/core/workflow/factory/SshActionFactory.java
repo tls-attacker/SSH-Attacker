@@ -47,8 +47,8 @@ public final class SshActionFactory {
      * outboundConnection stays the same in the whole workflow. In this case the ConnectionEndType
      * specifies, from which party the message should be received to be forwarded.
      *
-     * @param inboundConnection fixed inboundConnection(client-->proxy/mitm)
-     * @param outboundConnection fixed outboundConnection(proxy/mitm-->server)
+     * @param inboundConnection fixed inboundConnection (client to proxy/mitm)
+     * @param outboundConnection fixed outboundConnection (proxy/mitm to server)
      * @param sendingConnectionEndType specifies on which connection the messages are received
      * @param protocolMessages messages to be sent
      * @return ForwardAction with the provided inputs
@@ -70,8 +70,8 @@ public final class SshActionFactory {
      * outboundConnection stays the same in the whole workflow. In this case the ConnectionEndType
      * specifies, from which party the message should be received to be forwarded.
      *
-     * @param inboundConnection fixed inboundConnection(client-->proxy/mitm)
-     * @param outboundConnection fixed outboundConnection(proxy/mitm-->server)
+     * @param inboundConnection fixed inboundConnection (client to proxy/mitm)
+     * @param outboundConnection fixed outboundConnection (proxy/mitm to server)
      * @param sendingConnectionEnd specifies on which connection the messages are received
      * @param protocolMessages messages to be sent
      * @return ForwardAction with the provided inputs
