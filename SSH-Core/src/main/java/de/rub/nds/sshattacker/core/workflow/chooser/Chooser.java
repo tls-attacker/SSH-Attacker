@@ -13,7 +13,10 @@ import de.rub.nds.sshattacker.core.crypto.kex.AbstractEcdhKeyExchange;
 import de.rub.nds.sshattacker.core.crypto.kex.DhKeyExchange;
 import de.rub.nds.sshattacker.core.crypto.kex.RsaKeyExchange;
 import de.rub.nds.sshattacker.core.crypto.keys.SshPublicKey;
+import de.rub.nds.sshattacker.core.protocol.transport.message.Extension;
 import de.rub.nds.sshattacker.core.state.SshContext;
+
+import java.util.ArrayList;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -226,4 +229,51 @@ public abstract class Chooser {
     // endregion
 
     public abstract AuthenticationMethod getAuthenticationMethod();
+
+    // region for SSH Extension Negotiation
+
+    // CLIENT:
+    private int numberExtensionsOfClient;
+
+    private ArrayList<Extension> extensionsOfClient;
+
+    public void setNumberExtensionsOfClient(int count) {
+        this.numberExtensionsOfClient = count;
+    }
+
+    public int getNumberExtensionsOfClient() {
+        return this.numberExtensionsOfClient;
+    }
+
+    public void setExtensionsOfClient(ArrayList<Extension> list) {
+        this.extensionsOfClient = list;
+    }
+
+    public ArrayList<Extension> getExtensionsOfClient() {
+        return this.extensionsOfClient;
+    }
+
+    // SERVER:
+    private int numberExtensionsOfServer;
+
+    private ArrayList<Extension> extensionsOfServer;
+
+    public void setNumberExtensionsOfServer(int count) {
+        this.numberExtensionsOfServer = count;
+    }
+
+    public int getNumberExtensionsOfServer() {
+        return this.numberExtensionsOfServer;
+    }
+
+    public void setExtensionsOfServer(ArrayList<Extension> list) {
+        this.extensionsOfServer = list;
+    }
+
+    public ArrayList<Extension> getExtensionsOfServer() {
+        return this.extensionsOfServer;
+    }
+
+    // endregion
+
 }

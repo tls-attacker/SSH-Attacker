@@ -13,6 +13,7 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.CharConstants;
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import java.math.BigInteger;
+import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
@@ -114,4 +115,32 @@ public class Converter {
         }
         return result;
     }
+
+    public static int byteArrayToInt(byte[] value) {
+        return new BigInteger(value).intValue();
+    }
+
+    public static byte[] intToByteArray(int value) {
+        ByteBuffer byteBuffer = ByteBuffer.allocate(DataFormatConstants.UINT32_SIZE);
+        byteBuffer.putInt(value);
+        return byteBuffer.array();
+    }
+
+    public static String byteArrayToString(byte[] value) {
+        return new String(value, StandardCharsets.US_ASCII);
+    }
+
+    public static ModifiableString byteArrayToModifiableString(byte[] value) {
+        String s = byteArrayToString(value);
+        ModifiableString ms = new ModifiableString();
+        ms.setOriginalValue(s);
+        return ms;
+    }
+
+    public static ModifiableString stringToModifiableString(String s) {
+        ModifiableString ms = new ModifiableString();
+        ms.setOriginalValue(s);
+        return ms;
+    }
+
 }

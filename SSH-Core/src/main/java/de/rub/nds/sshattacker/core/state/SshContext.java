@@ -22,6 +22,7 @@ import de.rub.nds.sshattacker.core.packet.layer.AbstractPacketLayer;
 import de.rub.nds.sshattacker.core.packet.layer.PacketLayerFactory;
 import de.rub.nds.sshattacker.core.protocol.common.layer.MessageLayer;
 import de.rub.nds.sshattacker.core.protocol.connection.Channel;
+import de.rub.nds.sshattacker.core.protocol.transport.message.Extension;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.sshattacker.core.workflow.chooser.ChooserFactory;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
@@ -29,6 +30,7 @@ import de.rub.nds.tlsattacker.transport.TransportHandler;
 import de.rub.nds.tlsattacker.transport.TransportHandlerFactory;
 import java.io.IOException;
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
@@ -941,4 +943,51 @@ public class SshContext {
     public void setHandleAsClient(boolean handleAsClient) {
         this.handleAsClient = handleAsClient;
     }
+
+    // region for SSH Extension Negotiation
+
+    // CLIENT:
+    private int numberExtensionsOfClient;
+
+    private ArrayList<Extension> extensionsOfClient;
+
+    public void setNumberExtensionsOfClient(int count) {
+        this.numberExtensionsOfClient = count;
+    }
+
+    public int getNumberExtensionsOfClient() {
+        return this.numberExtensionsOfClient;
+    }
+
+    public void setExtensionsOfClient(ArrayList<Extension> list) {
+        this.extensionsOfClient = list;
+    }
+
+    public ArrayList<Extension> getExtensionsOfClient() {
+        return this.extensionsOfClient;
+    }
+
+    // SERVER:
+    private int numberExtensionsOfServer;
+
+    private ArrayList<Extension> extensionsOfServer;
+
+    public void setNumberExtensionsOfServer(int count) {
+        this.numberExtensionsOfServer = count;
+    }
+
+    public int getNumberExtensionsOfServer() {
+        return this.numberExtensionsOfServer;
+    }
+
+    public void setExtensionsOfServer(ArrayList<Extension> list) {
+        this.extensionsOfServer = list;
+    }
+
+    public ArrayList<Extension> getExtensionsOfServer() {
+        return this.extensionsOfServer;
+    }
+
+    // endregion
+
 }
