@@ -175,18 +175,33 @@
                                     </goals>
                                 </execution>
                                 <execution>
+                                    <id>jacoco-merge</id>
+                                    <phase>post-integration-test</phase>
+                                    <goals>
+                                        <goal>merge</goal>
+                                    </goals>
+                                    <configuration>
+                                        <destFile>${project.build.outputDirectory}/jacoco.merged.exec</destFile>
+                                        <fileSets>
+                                            <fileSet>
+                                                <directory>${project.build.directory}</directory>
+                                                <includes>
+                                                    <include>jacoco.exec</include>
+                                                    <include>jacoco-it.exec</include>
+                                                </includes>
+                                            </fileSet>
+                                        </fileSets>
+                                    </configuration>
+                                </execution>
+                                <execution>
                                     <id>jacoco-report</id>
-                                    <phase>prepare-package</phase>
+                                    <phase>verify</phase>
                                     <goals>
                                         <goal>report</goal>
                                     </goals>
-                                </execution>
-                                <execution>
-                                    <id>jacoco-report-it</id>
-                                    <phase>post-integration-test</phase>
-                                    <goals>
-                                        <goal>report-integration</goal>
-                                    </goals>
+                                    <configuration>
+                                        <dataFile>${project.build.outputDirectory}/jacoco.merged.exec</dataFile>
+                                    </configuration>
                                 </execution>
                             </executions>
                         </plugin>
