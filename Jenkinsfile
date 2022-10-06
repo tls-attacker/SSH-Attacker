@@ -41,7 +41,7 @@ pipeline {
         stage('Unit Tests') {
             steps {
                 withMaven(jdk: env.JDK_TOOL_NAME, maven: env.MAVEN_TOOL_NAME) {
-                    sh 'mvn -Dskip.failsafe.tests=true verify'
+                    sh 'mvn -D"excludedGroups=IntegrationTest" -D"surefire.includes=**/*.java" -D"parallel=3" resources:testResources compiler:testCompile jacoco:prepare-agent surefire:test jacoco:report'
                 }
             }
 
@@ -50,14 +50,14 @@ pipeline {
                     junit testResults: '**/target/surefire-reports/TEST-*.xml'
                 }
                 success {
-                    publishCoverage adapters: [jacoco(mergeToOneReport: true, path: '**/target/site/jacoco/jacoco.xml')], tag: 'SSH-Attacker'
+                    publishCoverage adapters: [jacoco('**/target/site/jacoco/jacoco.xml')]
                 }
             }
         }
         stage('Integration Tests') {
             steps {
                 withMaven(jdk: env.JDK_TOOL_NAME, maven: env.MAVEN_TOOL_NAME) {
-                    sh 'mvn -Dskip.surefire.tests=true verify'
+                    sh 'mvn -D"failsafe.includes=**/*.java" -D"groups=IntegrationTest" jacoco:prepare-agent-integration failsafe:integration-test jacoco:report-integration failsafe:verify'
                 }
             }
 
@@ -66,7 +66,7 @@ pipeline {
                     junit testResults: '**/target/failsafe-reports/TEST-*.xml', allowEmptyResults: true
                 }
                 success {
-                    publishCoverage adapters: [jacoco(mergeToOneReport: true, path: '**/target/site/jacoco-it/jacoco.xml')], tag: 'SSH-Attacker'
+                    publishCoverage adapters: [jacoco('**/target/site/jacoco-it/jacoco.xml')]
                 }
             }
         }
