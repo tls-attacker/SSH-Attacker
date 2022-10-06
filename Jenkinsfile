@@ -41,7 +41,7 @@ pipeline {
         stage('Unit Tests') {
             steps {
                 withMaven(jdk: env.JDK_TOOL_NAME, maven: env.MAVEN_TOOL_NAME) {
-                    sh 'mvn -P coverage -Dskip.failsafe.tests=true test jacoco:report'
+                    sh 'mvn -P coverage -Dskip.failsafe.tests=true test'
                 }
             }
 
