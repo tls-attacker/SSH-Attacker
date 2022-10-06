@@ -49,9 +49,6 @@ pipeline {
                 always {
                     junit testResults: '**/target/surefire-reports/TEST-*.xml'
                 }
-                success {
-                    publishCoverage adapters: [jacoco('**/target/site/jacoco/jacoco.xml')], tag: 'SSH-Attacker'
-                }
             }
         }
         stage('Integration Tests') {
@@ -66,7 +63,7 @@ pipeline {
                     junit testResults: '**/target/failsafe-reports/TEST-*.xml', allowEmptyResults: true
                 }
                 success {
-                    publishCoverage adapters: [jacoco('**/target/site/jacoco-it/jacoco.xml')], tag: 'SSH-Attacker'
+                    publishCoverage adapters: [jacoco(mergeToOneReport: true, path: '**/target/site/jacoco*/jacoco.xml')]
                 }
             }
         }
