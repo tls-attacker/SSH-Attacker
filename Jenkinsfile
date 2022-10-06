@@ -1,8 +1,10 @@
 pipeline {
     agent any
 
-    def jdkName = 'JDK 11'
-    def mvnName = 'Maven 3.8.6'
+    environment {
+        JDK_TOOL_NAME = 'JDK 11'
+        MAVEN_TOOL_NAME = 'Maven 3.8.6'
+    }
 
     options {
         skipStagesAfterUnstable()
@@ -11,28 +13,28 @@ pipeline {
     stages {
         stage('Clean') {
             steps {
-                withMaven(jdk: jdkName, maven: mvnName) {
+                withMaven(jdk: env.JDK_TOOL_NAME, maven: env.MAVEN_TOOL_NAME) {
                     sh 'mvn clean'
                 }
             }
         }
         stage('Format Check') {
             steps {
-                withMaven(jdk: jdkName, maven: mvnName) {
+                withMaven(jdk: env.JDK_TOOL_NAME, maven: env.MAVEN_TOOL_NAME) {
                     sh 'mvn spotless:check'
                 }
             }
         }
         stage('Build') {
             steps {
-                withMaven(jdk: jdkName, maven: mvnName) {
+                withMaven(jdk: env.JDK_TOOL_NAME, maven: env.MAVEN_TOOL_NAME) {
                     sh 'mvn compile'
                 }
             }
         }
         stage('Unit Tests') {
             steps {
-                withMaven(jdk: jdkName, maven: mvnName) {
+                withMaven(jdk: env.JDK_TOOL_NAME, maven: env.MAVEN_TOOL_NAME) {
                     sh 'mvn test jacoco:report'
                 }
             }
@@ -46,7 +48,7 @@ pipeline {
         }
         stage('Integration Tests') {
             steps {
-                withMaven(jdk: jdkName, maven: mvnName) {
+                withMaven(jdk: env.JDK_TOOL_NAME, maven: env.MAVEN_TOOL_NAME) {
                     sh 'mvn -Dmaven.test.failure.ignore=true failsafe:integration-test'
                 }
             }
@@ -56,7 +58,7 @@ pipeline {
                 branch 'main'
             }
             steps {
-                withMaven(jdk: jdkName, maven: mvnName) {
+                withMaven(jdk: env.JDK_TOOL_NAME, maven: env.MAVEN_TOOL_NAME) {
                     // Tests were already executed separately, so disable tests within this step
                     sh 'mvn -DskipTests=true install'
                 }
