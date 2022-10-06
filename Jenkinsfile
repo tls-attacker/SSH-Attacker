@@ -41,7 +41,7 @@ pipeline {
         stage('Unit Tests') {
             steps {
                 withMaven(jdk: env.JDK_TOOL_NAME, maven: env.MAVEN_TOOL_NAME) {
-                    sh 'mvn -D"excludedGroups=IntegrationTest" -D"surefire.includes=**/*.java" -D"parallel=3" resources:testResources compiler:testCompile jacoco:prepare-agent surefire:test jacoco:report'
+                    sh 'mvn -P coverage -Dskip.failsafe.tests=true test jacoco:report'
                 }
             }
 
@@ -57,7 +57,7 @@ pipeline {
         stage('Integration Tests') {
             steps {
                 withMaven(jdk: env.JDK_TOOL_NAME, maven: env.MAVEN_TOOL_NAME) {
-                    sh 'mvn -D"failsafe.includes=**/*.java" -D"groups=IntegrationTest" jacoco:prepare-agent-integration failsafe:integration-test jacoco:report-integration failsafe:verify'
+                    sh 'mvn -P coverage -Dskip.surefire.tests=true verify'
                 }
             }
 

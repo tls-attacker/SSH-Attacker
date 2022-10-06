@@ -116,6 +116,86 @@
         </dependency>
     </dependencies>
 
+    <profiles>
+        <profile>
+            <id>delayed-slow-tests</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <build>
+                <pluginManagement>
+                    <plugins>
+                        <!-- Configure Surefire to run SlowTests during integration-test phase to speed up the build process -->
+                        <plugin>
+                            <groupId>org.apache.maven.plugins</groupId>
+                            <artifactId>maven-surefire-plugin</artifactId>
+                            <executions>
+                                <execution>
+                                    <id>default-test</id>
+                                    <configuration>
+                                        <excludedGroups>SlowTest,IntegrationTest</excludedGroups>
+                                    </configuration>
+                                </execution>
+                                <execution>
+                                    <id>run-slow-unit-tests</id>
+                                    <phase>integration-test</phase>
+                                    <goals>
+                                        <goal>test</goal>
+                                    </goals>
+                                    <configuration>
+                                        <groups>SlowTest</groups>
+                                    </configuration>
+                                </execution>
+                            </executions>
+                        </plugin>
+                    </plugins>
+                </pluginManagement>
+            </build>
+        </profile>
+        <profile>
+            <id>coverage</id>
+            <build>
+                <pluginManagement>
+                    <plugins>
+                        <!-- Configure JaCoCo to run during unit and integration tests -->
+                        <plugin>
+                            <groupId>org.jacoco</groupId>
+                            <artifactId>jacoco-maven-plugin</artifactId>
+                            <executions>
+                                <execution>
+                                    <id>jacoco-prepare-agent</id>
+                                    <goals>
+                                        <goal>prepare-agent</goal>
+                                    </goals>
+                                </execution>
+                                <execution>
+                                    <id>jacoco-prepare-agent-it</id>
+                                    <goals>
+                                        <goal>prepare-agent-integration</goal>
+                                    </goals>
+                                </execution>
+                                <execution>
+                                    <id>jacoco-report</id>
+                                    <phase>prepare-package</phase>
+                                    <goals>
+                                        <goal>report</goal>
+                                    </goals>
+                                </execution>
+                                <execution>
+                                    <id>jacoco-report-it</id>
+                                    <phase>post-integration-test</phase>
+                                    <goals>
+                                        <goal>report-integration</goal>
+                                    </goals>
+                                </execution>
+                            </executions>
+                        </plugin>
+                    </plugins>
+                </pluginManagement>
+            </build>
+        </profile>
+    </profiles>
+
     <build>
         <pluginManagement>
             <plugins>
@@ -163,25 +243,10 @@
                         <!-- Can be adjusted depending on the local system, 3 should be a fair default value -->
                         <forkCount>3</forkCount>
                         <reuseForks>true</reuseForks>
+                        <!-- By default we include all but integration tests during surefire execution -->
+                        <excludedGroups>IntegrationTest</excludedGroups>
+                        <skipTests>${skip.surefire.tests}</skipTests>
                     </configuration>
-                    <executions>
-                        <execution>
-                            <id>default-test</id>
-                            <configuration>
-                                <excludedGroups>SlowTest,IntegrationTest</excludedGroups>
-                            </configuration>
-                        </execution>
-                        <execution>
-                            <id>run-slow-unit-tests</id>
-                            <phase>integration-test</phase>
-                            <goals>
-                                <goal>test</goal>
-                            </goals>
-                            <configuration>
-                                <groups>SlowTest</groups>
-                            </configuration>
-                        </execution>
-                    </executions>
                 </plugin>
                 <!-- Plugin to build jar file -->
                 <plugin>
@@ -276,6 +341,7 @@
                         </includes>
                         <!-- Integration tests and slow tests are started -->
                         <groups>IntegrationTest</groups>
+                        <skipITs>${skip.failsafe.tests}</skipITs>
                     </configuration>
                     <executions>
                         <execution>
@@ -485,5 +551,9 @@
         <!-- We redefine the signature generation process, which is enabled by default,
         but cannot be performed by typical users. Enable it using -Dskip.signature=false -->
         <skip.signature>true</skip.signature>
+        <!-- The following variables are required for Jenkins CI -->
+        <skipTests>false</skipTests>
+        <skip.surefire.tests>${skipTests}</skip.surefire.tests>
+        <skip.failsafe.tests>${skipTests}</skip.failsafe.tests>
     </properties>
 </project>
