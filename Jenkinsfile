@@ -63,7 +63,7 @@ pipeline {
                     junit testResults: '**/target/failsafe-reports/TEST-*.xml', allowEmptyResults: true
                 }
                 success {
-                    publishCoverage adapters: [jacoco(mergeToOneReport: true, path: '**/target/site/jacoco*/jacoco.xml')]
+                    publishCoverage adapters: [jacoco(mergeToOneReport: true, path: '**/target/site/**/jacoco.xml')]
                 }
             }
         }
