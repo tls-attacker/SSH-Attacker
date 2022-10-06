@@ -28,28 +28,45 @@ pipeline {
         stage('Build') {
             steps {
                 withMaven(jdk: env.JDK_TOOL_NAME, maven: env.MAVEN_TOOL_NAME) {
-                    sh 'mvn compile'
+                    sh 'mvn -DskipTests=true package'
+                }
+            }
+
+            post {
+                success {
+                    archiveArtifacts artifacts: '**/target/*.jar'
                 }
             }
         }
         stage('Unit Tests') {
             steps {
                 withMaven(jdk: env.JDK_TOOL_NAME, maven: env.MAVEN_TOOL_NAME) {
-                    sh 'mvn test jacoco:report'
+                    sh 'mvn -Dskip.failsafe.tests=true verify'
                 }
             }
 
             post {
-                success {
+                always {
                     junit testResults: '**/target/surefire-reports/TEST-*.xml'
-                    publishCoverage adapters: [jacoco('**/target/site/jacoco/jacoco.xml')]
+                }
+                success {
+                    publishCoverage adapters: [jacoco(mergeToOneReport: true, '**/target/site/jacoco/jacoco.xml')], tag: 'SSH-Attacker'
                 }
             }
         }
         stage('Integration Tests') {
             steps {
                 withMaven(jdk: env.JDK_TOOL_NAME, maven: env.MAVEN_TOOL_NAME) {
-                    sh 'mvn -Dmaven.test.failure.ignore=true failsafe:integration-test'
+                    sh 'mvn -Dskip.surefire.tests=true verify'
+                }
+            }
+
+            post {
+                always {
+                    junit testResults: '**/target/failsafe-reports/TEST-*.xml', allowEmptyResults: true
+                }
+                success {
+                    publishCoverage adapters: [jacoco(mergeToOneReport: true, '**/target/site/jacoco-it/jacoco.xml')], tag: 'SSH-Attacker'
                 }
             }
         }
@@ -61,12 +78,6 @@ pipeline {
                 withMaven(jdk: env.JDK_TOOL_NAME, maven: env.MAVEN_TOOL_NAME) {
                     // Tests were already executed separately, so disable tests within this step
                     sh 'mvn -DskipTests=true install'
-                }
-            }
-
-            post {
-                success {
-                    archiveArtifacts artifacts: '**/target/*.jar'
                 }
             }
         }

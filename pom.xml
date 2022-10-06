@@ -131,6 +131,34 @@
                     <groupId>org.jacoco</groupId>
                     <artifactId>jacoco-maven-plugin</artifactId>
                     <version>0.8.8</version>
+                    <executions>
+                        <execution>
+                            <id>jacoco-initialize</id>
+                            <goals>
+                                <goal>prepare-agent</goal>
+                            </goals>
+                        </execution>
+                        <execution>
+                            <id>jacoco-initialize-it</id>
+                            <goals>
+                                <goal>prepare-agent-integration</goal>
+                            </goals>
+                        </execution>
+                        <execution>
+                            <id>jacoco-report</id>
+                            <phase>prepare-package</phase>
+                            <goals>
+                                <goal>report</goal>
+                            </goals>
+                        </execution>
+                        <execution>
+                            <id>jacoco-report-it</id>
+                            <phase>post-integration-test</phase>
+                            <goals>
+                                <goal>report-integration</goal>
+                            </goals>
+                        </execution>
+                    </executions>
                 </plugin>
                 <!-- Plugin to copy project resources to output directory -->
                 <plugin>
@@ -158,30 +186,15 @@
                         <includes>
                             <include>**/*.java</include>
                         </includes>
+                        <excludedGroups>IntegrationTest</excludedGroups>
                         <!-- Allow parallel execution of unit tests (execution in series within test classes) -->
                         <parallel>classes</parallel>
                         <!-- Can be adjusted depending on the local system, 3 should be a fair default value -->
                         <forkCount>3</forkCount>
                         <reuseForks>true</reuseForks>
+                        <!-- Skip tests if flag is set -->
+                        <skipTests>${skip.surefire.tests}</skipTests>
                     </configuration>
-                    <executions>
-                        <execution>
-                            <id>default-test</id>
-                            <configuration>
-                                <excludedGroups>SlowTest,IntegrationTest</excludedGroups>
-                            </configuration>
-                        </execution>
-                        <execution>
-                            <id>run-slow-unit-tests</id>
-                            <phase>integration-test</phase>
-                            <goals>
-                                <goal>test</goal>
-                            </goals>
-                            <configuration>
-                                <groups>SlowTest</groups>
-                            </configuration>
-                        </execution>
-                    </executions>
                 </plugin>
                 <!-- Plugin to build jar file -->
                 <plugin>
@@ -274,8 +287,9 @@
                         <includes>
                             <include>**/*.java</include>
                         </includes>
-                        <!-- Integration tests and slow tests are started -->
+                        <!-- Integration tests are started -->
                         <groups>IntegrationTest</groups>
+                        <skipITs>${skip.failsafe.tests}</skipITs>
                     </configuration>
                     <executions>
                         <execution>
@@ -485,5 +499,9 @@
         <!-- We redefine the signature generation process, which is enabled by default,
         but cannot be performed by typical users. Enable it using -Dskip.signature=false -->
         <skip.signature>true</skip.signature>
+        <!-- The following tests allow for selective test skips (required for CI) -->
+        <skipTests>false</skipTests>
+        <skip.surefire.tests>${skipTests}</skip.surefire.tests>
+        <skip.failsafe.tests>${skipTests}</skip.failsafe.tests>
     </properties>
 </project>
