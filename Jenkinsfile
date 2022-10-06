@@ -9,28 +9,28 @@ pipeline {
         stage('Clean') {
             steps {
                 withMaven jdk: 'JDK 11', maven: 'Maven 3.8.6' {
-                    sh "mvn clean"
+                    sh 'mvn clean'
                 }
             }
         }
         stage('Format Check') {
             steps {
                 withMaven jdk: 'JDK 11', maven: 'Maven 3.8.6' {
-                    sh "mvn spotless:check"
+                    sh 'mvn spotless:check'
                 }
             }
         }
         stage('Build') {
             steps {
                 withMaven jdk: 'JDK 11', maven: 'Maven 3.8.6' {
-                    sh "mvn compile"
+                    sh 'mvn compile'
                 }
             }
         }
         stage('Unit Tests') {
             steps {
                 withMaven jdk: 'JDK 11', maven: 'Maven 3.8.6' {
-                    sh "mvn test jacoco:report"
+                    sh 'mvn test jacoco:report'
                 }
             }
 
@@ -44,18 +44,18 @@ pipeline {
         stage('Integration Tests') {
             steps {
                 withMaven jdk: 'JDK 11', maven: 'Maven 3.8.6' {
-                    sh "mvn -Dmaven.test.failure.ignore=true failsafe:integration-test"
+                    sh 'mvn -Dmaven.test.failure.ignore=true failsafe:integration-test'
                 }
             }
         }
         stage('Deploy to internal Nexus Repository') {
             when {
-                branch: 'main'
+                branch 'main'
             }
             steps {
                 withMaven jdk: 'JDK 11', maven: 'Maven 3.8.6' {
                     // Tests were already executed separately, so disable tests within this step
-                    sh "mvn -DskipTests=true install"
+                    sh 'mvn -DskipTests=true install'
                 }
             }
 
