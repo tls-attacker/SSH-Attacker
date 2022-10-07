@@ -8,6 +8,7 @@ pipeline {
 
     options {
         skipStagesAfterUnstable()
+        disableConcurrentBuilds abortPrevious: true
     }
 
     stages {
@@ -15,6 +16,16 @@ pipeline {
             steps {
                 withMaven(jdk: env.JDK_TOOL_NAME, maven: env.MAVEN_TOOL_NAME) {
                     sh 'mvn clean'
+                }
+            }
+        }
+        stage('Format Check') {
+            options {
+                timeout(activity: true, time: 60, unit: 'SECONDS')
+            }
+            steps {
+                withMaven(jdk: env.JDK_TOOL_NAME, maven: env.MAVEN_TOOL_NAME) {
+                    sh 'mvn spotless:check'
                 }
             }
         }
@@ -35,12 +46,19 @@ pipeline {
             }
         }
         stage('Code Analysis') {
+            when {
+                anyOf {
+                    branch 'main'
+                    tag 'v*'
+                    changeRequest()
+                }
+            }
             options {
                 timeout(activity: true, time: 120, unit: 'SECONDS')
             }
             steps {
                 withMaven(jdk: env.JDK_TOOL_NAME, maven: env.MAVEN_TOOL_NAME) {
-                    sh 'mvn pmd:pmd pmd:cpd spotbugs:spotbugs spotless:check'
+                    sh 'mvn pmd:pmd pmd:cpd spotbugs:spotbugs'
                 }
             }
             post {
@@ -50,6 +68,13 @@ pipeline {
             }
         }
         stage('Unit Tests') {
+            when {
+                anyOf {
+                    branch 'main'
+                    tag 'v*'
+                    changeRequest()
+                }
+            }
             options {
                 timeout(activity: true, time: 120, unit: 'SECONDS')
             }
@@ -65,6 +90,13 @@ pipeline {
             }
         }
         stage('Integration Tests') {
+            when {
+                anyOf {
+                    branch 'main'
+                    tag 'v*'
+                    changeRequest()
+                }
+            }
             options {
                 timeout(activity: true, time: 120, unit: 'SECONDS')
             }
