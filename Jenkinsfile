@@ -18,14 +18,10 @@ pipeline {
                 }
             }
         }
-        stage('Format Check') {
-            steps {
-                withMaven(jdk: env.JDK_TOOL_NAME, maven: env.MAVEN_TOOL_NAME) {
-                    sh 'mvn spotless:check'
-                }
-            }
-        }
         stage('Build') {
+            options {
+                timeout(activity: true, time: 120, unit: 'SECONDS')
+            }
             steps {
                 withMaven(jdk: env.JDK_TOOL_NAME, maven: env.MAVEN_TOOL_NAME) {
                     sh 'mvn -DskipTests=true package'
@@ -38,13 +34,30 @@ pipeline {
                 }
             }
         }
+        stage('Code Analysis') {
+            options {
+                timeout(activity: true, time: 120, unit: 'SECONDS')
+            }
+            steps {
+                withMaven(jdk: env.JDK_TOOL_NAME, maven: env.MAVEN_TOOL_NAME) {
+                    sh 'mvn spotless:check pmd:pmd pmd:cpd spotbugs:spotbugs '
+                }
+            }
+            post {
+                recordIssues enabledForFailure: true, tool: spotBugs()
+                recordIssues enabledForFailure: true, tool: cpd(pattern: '**/target/cpd.xml')
+                recordIssues enabledForFailure: true, tool: pmdParser(pattern: '**/target/pmd.xml')
+            }
+        }
         stage('Unit Tests') {
+            options {
+                timeout(activity: true, time: 120, unit: 'SECONDS')
+            }
             steps {
                 withMaven(jdk: env.JDK_TOOL_NAME, maven: env.MAVEN_TOOL_NAME) {
                     sh 'mvn -P coverage -Dskip.failsafe.tests=true test'
                 }
             }
-
             post {
                 always {
                     junit testResults: '**/target/surefire-reports/TEST-*.xml'
@@ -52,12 +65,14 @@ pipeline {
             }
         }
         stage('Integration Tests') {
+            options {
+                timeout(activity: true, time: 120, unit: 'SECONDS')
+            }
             steps {
                 withMaven(jdk: env.JDK_TOOL_NAME, maven: env.MAVEN_TOOL_NAME) {
                     sh 'mvn -P coverage -Dskip.surefire.tests=true verify'
                 }
             }
-
             post {
                 always {
                     junit testResults: '**/target/failsafe-reports/TEST-*.xml', allowEmptyResults: true
@@ -69,7 +84,10 @@ pipeline {
         }
         stage('Deploy to Internal Nexus Repository') {
             when {
-                branch 'main'
+                anyOf {
+                    branch 'main'
+                    tag 'v*'
+                }
             }
             steps {
                 withMaven(jdk: env.JDK_TOOL_NAME, maven: env.MAVEN_TOOL_NAME) {
@@ -82,7 +100,6 @@ pipeline {
     post {
         always {
             recordIssues enabledForFailure: true, tools: [mavenConsole(), java(), javaDoc()]
-            // TODO: Record issues from checkstyle (for TLS-Attacker), spotbugs, pmd, cpd, ...
         }
     }
 }
