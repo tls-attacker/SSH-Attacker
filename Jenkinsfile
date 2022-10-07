@@ -40,13 +40,15 @@ pipeline {
             }
             steps {
                 withMaven(jdk: env.JDK_TOOL_NAME, maven: env.MAVEN_TOOL_NAME) {
-                    sh 'mvn spotless:check pmd:pmd pmd:cpd spotbugs:spotbugs '
+                    sh 'mvn pmd:pmd pmd:cpd spotbugs:spotbugs spotless:check'
                 }
             }
             post {
-                recordIssues enabledForFailure: true, tool: spotBugs()
-                recordIssues enabledForFailure: true, tool: cpd(pattern: '**/target/cpd.xml')
-                recordIssues enabledForFailure: true, tool: pmdParser(pattern: '**/target/pmd.xml')
+                always {
+                    recordIssues enabledForFailure: true, tool: spotBugs()
+                    recordIssues enabledForFailure: true, tool: cpd(pattern: '**/target/cpd.xml')
+                    recordIssues enabledForFailure: true, tool: pmdParser(pattern: '**/target/pmd.xml')
+                }
             }
         }
         stage('Unit Tests') {
