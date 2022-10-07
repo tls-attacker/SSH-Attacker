@@ -78,5 +78,11 @@ pipeline {
                 }
             }
         }
+        post {
+            always {
+                recordIssues enabledForFailure: true, tools: [mavenConsole(), java(), javaDoc()]
+                // TODO: Record issues from checkstyle (for TLS-Attacker), spotbugs, pmd, cpd, ...
+            }
+        }
     }
 }
