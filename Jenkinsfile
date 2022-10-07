@@ -19,6 +19,16 @@ pipeline {
                 }
             }
         }
+        stage('Format Check') {
+            options {
+                timeout(activity: true, time: 60, unit: 'SECONDS')
+            }
+            steps {
+                withMaven(jdk: env.JDK_TOOL_NAME, maven: env.MAVEN_TOOL_NAME) {
+                    sh 'mvn spotless:check'
+                }
+            }
+        }
         stage('Build') {
             options {
                 timeout(activity: true, time: 120, unit: 'SECONDS')
@@ -41,7 +51,7 @@ pipeline {
             }
             steps {
                 withMaven(jdk: env.JDK_TOOL_NAME, maven: env.MAVEN_TOOL_NAME) {
-                    sh 'mvn pmd:pmd pmd:cpd spotbugs:spotbugs spotless:check'
+                    sh 'mvn pmd:pmd pmd:cpd spotbugs:spotbugs'
                 }
             }
             post {
