@@ -8,6 +8,7 @@ pipeline {
 
     options {
         skipStagesAfterUnstable()
+        disableConcurrentBuilds abortPrevious: true
     }
 
     stages {
