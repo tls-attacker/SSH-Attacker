@@ -45,9 +45,7 @@ pipeline {
             }
             post {
                 always {
-                    recordIssues enabledForFailure: true, tool: spotBugs()
-                    recordIssues enabledForFailure: true, tool: cpd(pattern: '**/target/cpd.xml')
-                    recordIssues enabledForFailure: true, tool: pmdParser(pattern: '**/target/pmd.xml')
+                    recordIssues enabledForFailure: true, tools: [spotBugs(), cpd(pattern: '**/target/cpd.xml'), pmdParser(pattern: '**/target/pmd.xml')]
                 }
             }
         }
