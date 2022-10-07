@@ -18,14 +18,12 @@ import de.rub.nds.sshattacker.core.state.State;
 import de.rub.nds.sshattacker.core.workflow.action.executor.ReceiveMessageHelper;
 import de.rub.nds.sshattacker.core.workflow.action.executor.SendMessageHelper;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
-import jakarta.xml.bind.annotation.XmlElement;
-import jakarta.xml.bind.annotation.XmlElementRef;
-import jakarta.xml.bind.annotation.XmlElementWrapper;
-import jakarta.xml.bind.annotation.XmlTransient;
+import jakarta.xml.bind.annotation.*;
 import java.io.IOException;
 import java.util.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.ThreadContext;
 
 public class ForwardMessagesAction extends SshAction implements ReceivingAction, SendingAction {
     private static final Logger LOGGER = LogManager.getLogger();
@@ -41,20 +39,20 @@ public class ForwardMessagesAction extends SshAction implements ReceivingAction,
     /** If you want true here, use the more verbose ForwardMessagesWithPrepareAction. */
     @XmlTransient protected Boolean withPrepare = false;
 
-    @HoldsModifiableVariable @XmlElementWrapper @XmlElementRef
-    protected List<ProtocolMessage<?>> receivedMessages;
+    @HoldsModifiableVariable @XmlElementWrapper protected List<ProtocolMessage<?>> receivedMessages;
 
-    @XmlElementWrapper @HoldsModifiableVariable @XmlElementRef
-    protected List<ProtocolMessage<?>> messages;
+    @XmlTransient protected List<ProtocolMessage<?>> messages;
 
-    @HoldsModifiableVariable @XmlElementWrapper @XmlElementRef
-    protected List<ProtocolMessage<?>> sendMessages;
+    @HoldsModifiableVariable @XmlElementWrapper protected List<ProtocolMessage<?>> sendMessages;
 
     @XmlTransient protected ReceiveMessageHelper receiveMessageHelper;
 
     @XmlTransient protected SendMessageHelper sendMessageHelper;
 
-    private byte[] receivedBytes;
+    @XmlAttribute(name = "onConnection")
+    protected String forwardedConnectionAlias = null;
+
+    @XmlTransient private byte[] receivedBytes;
 
     public ForwardMessagesAction() {
         this.receiveMessageHelper = new ReceiveMessageHelper();
@@ -74,6 +72,7 @@ public class ForwardMessagesAction extends SshAction implements ReceivingAction,
         this.forwardToAlias = forwardToAlias;
         this.receiveMessageHelper = receiveMessageHelper;
         this.sendMessageHelper = new SendMessageHelper();
+        forwardedConnectionAlias = receiveFromAlias + " to " + forwardToAlias;
     }
 
     public ForwardMessagesAction(
@@ -83,11 +82,20 @@ public class ForwardMessagesAction extends SshAction implements ReceivingAction,
         this.forwardToAlias = forwardToAlias;
         this.receiveMessageHelper = new ReceiveMessageHelper();
         this.sendMessageHelper = new SendMessageHelper();
+        forwardedConnectionAlias = receiveFromAlias + " to " + forwardToAlias;
     }
 
     public ForwardMessagesAction(
             String receiveFromAlias, String forwardToAlias, ProtocolMessage<?>... messages) {
         this(receiveFromAlias, forwardToAlias, new ArrayList<>(Arrays.asList(messages)));
+    }
+
+    public void initLoggingSide(SshContext context) {
+        if (context.isClient()) {
+            ThreadContext.put("side", "Client");
+        } else if (context.isServer()) {
+            ThreadContext.put("side", "Server");
+        }
     }
 
     public void setReceiveFromAlias(String receiveFromAlias) {
@@ -103,12 +111,10 @@ public class ForwardMessagesAction extends SshAction implements ReceivingAction,
         if (isExecuted()) {
             throw new WorkflowExecutionException("Action already executed!");
         }
-
         assertAliasesSetProperly();
-
         SshContext receiveFromCtx = state.getSshContext(receiveFromAlias);
+        initLoggingSide(receiveFromCtx);
         SshContext forwardToCtx = state.getSshContext(forwardToAlias);
-
         receiveMessages(receiveFromCtx);
         forwardMessages(forwardToCtx);
         handleReceivedMessages(receiveFromCtx);
@@ -162,7 +168,7 @@ public class ForwardMessagesAction extends SshAction implements ReceivingAction,
     /**
      * Apply the contents of the messages to the given TLS context.
      *
-     * @param ctx SSH context
+     * @param ctx
      */
     protected void applyMessages(SshContext ctx) {
         changeSshContextHandling(ctx);
@@ -198,7 +204,7 @@ public class ForwardMessagesAction extends SshAction implements ReceivingAction,
         if (expectedMessages != null && !expectedMessages.isEmpty()) {
             expectedEmpty = false;
         }
-        if (actualEmpty && expectedEmpty) {
+        if (actualEmpty == expectedEmpty) {
             return true;
         }
         if (actualEmpty != expectedEmpty) {
@@ -248,7 +254,7 @@ public class ForwardMessagesAction extends SshAction implements ReceivingAction,
     }
 
     public void setMessages(ProtocolMessage<?>... messages) {
-        this.messages = new ArrayList<>(Arrays.asList(messages));
+        this.messages = new ArrayList(Arrays.asList(messages));
     }
 
     @Override

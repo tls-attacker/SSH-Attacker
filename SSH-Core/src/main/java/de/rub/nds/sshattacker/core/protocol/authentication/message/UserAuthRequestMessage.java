@@ -14,8 +14,19 @@ import de.rub.nds.sshattacker.core.constants.AuthenticationMethod;
 import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.constants.ServiceType;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlSeeAlso;
 import java.nio.charset.StandardCharsets;
 
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlSeeAlso({
+    UserAuthNoneMessage.class,
+    UserAuthPasswordMessage.class,
+    UserAuthPubkeyMessage.class,
+    UserAuthHostbasedMessage.class,
+    UserAuthKeyboardInteractiveMessage.class
+})
 public abstract class UserAuthRequestMessage<T extends UserAuthRequestMessage<T>>
         extends SshMessage<T> {
 

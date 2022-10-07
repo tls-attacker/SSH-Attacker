@@ -14,21 +14,13 @@ import de.rub.nds.sshattacker.core.connection.OutboundConnection;
 import de.rub.nds.sshattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.sshattacker.core.workflow.action.*;
 import jakarta.xml.bind.JAXBException;
-import jakarta.xml.bind.annotation.XmlAccessType;
-import jakarta.xml.bind.annotation.XmlAccessorType;
-import jakarta.xml.bind.annotation.XmlElement;
-import jakarta.xml.bind.annotation.XmlElements;
-import jakarta.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.*;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import javax.xml.stream.XMLStreamException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -59,7 +51,7 @@ public class WorkflowTrace implements Serializable {
         try {
             String origTraceStr = WorkflowTraceSerializer.write(orig);
             InputStream is =
-                    new ByteArrayInputStream(origTraceStr.getBytes(StandardCharsets.UTF_8));
+                    new ByteArrayInputStream(origTraceStr.getBytes(StandardCharsets.UTF_8.name()));
             copy = WorkflowTraceSerializer.insecureRead(is);
         } catch (JAXBException | IOException | XMLStreamException ex) {
             throw new ConfigurationException("Could not copy workflow trace: " + ex);
@@ -93,7 +85,9 @@ public class WorkflowTrace implements Serializable {
                 @XmlElement(type = ChangePacketLayerAction.class, name = "ChangePacketLayer"),
                 @XmlElement(type = ChangeCompressionAction.class, name = "ChangeCompression"),
                 @XmlElement(type = DynamicKeyExchangeAction.class, name = "DynamicKeyExchange"),
-                @XmlElement(type = SendMangerSecretAction.class, name = "SendMangerSecret")
+                @XmlElement(type = SendMangerSecretAction.class, name = "SendMangerSecret"),
+                @XmlElement(type = ForwardMessagesAction.class, name = "ForwardMessages"),
+                @XmlElement(type = ProxyFilterMessagesAction.class, name = "ProxyFilterMessages")
             })
     private List<SshAction> sshActions = new ArrayList<>();
 

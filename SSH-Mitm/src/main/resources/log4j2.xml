@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Configuration name="Config" xmlns="http://logging.apache.org/log4j/2.0/config" >
+    <Appenders>
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="">
+                <ScriptPatternSelector defaultPattern="%highlight{%d{HH:mm:ss.SSS} [%t] %-5level %logger{-4} - %replace{%msg}{\r?\n}{&#x0A;  }%n}{FATAL=Bright Red,ERROR=Red,WARN=Yellow,INFO=Blue,DEBUG=Normal,TRACE=Dim White}">
+                    <Script language="javascript"><![CDATA[
+                            var result;
+                            //couldn't find the right return type of getContextData, work around with String
+                            var ctxData= new String(logEvent.getContextData());
+                            var arr= ctxData.split("=");
+                            var arr1= arr[1].split("}");
+                            arr1[0];
+                            ]]>
+                    </Script>
+                        <PatternMatch key="Client" pattern="%highlight{$${ctx:side} %d{HH:mm:ss.SSS} [%t] %-5level %logger{-4} - %replace{%msg}{\r?\n}{&#x0A;  }%n}{FATAL=Bright Red,ERROR=Red,WARN=Cyan,INFO=Bright Blue,DEBUG=blue,TRACE=Dim White}"/>
+                        <PatternMatch key="Server" pattern="%highlight{$${ctx:side} %d{HH:mm:ss.SSS} [%t] %-5level %logger{-4} - %replace{%msg}{\r?\n}{&#x0A;  }%n}{FATAL=Bright Red, ERROR=Red, WARN=Yellow, INFO=Bright Green, DEBUG=Green, TRACE=Dim White}"/>
+                </ScriptPatternSelector></PatternLayout>
+        </Console>
+    </Appenders>
+    <Loggers>
+        <Logger name="de.rub.nds" level="debug" additivity="false">
+            <AppenderRef ref="Console"/>
+        </Logger>
+        <Logger name="DirectLogger" level="info" additivity="false">
+            <AppenderRef ref="Console"/>
+        </Logger>
+        <Root level="error">
+            <AppenderRef ref="Console"/>
+        </Root>
+    </Loggers>
+</Configuration>

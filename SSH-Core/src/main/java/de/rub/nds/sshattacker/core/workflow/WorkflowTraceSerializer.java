@@ -59,7 +59,7 @@ public class WorkflowTraceSerializer {
      */
     public static void write(File file, WorkflowTrace trace)
             throws FileNotFoundException, JAXBException, IOException {
-        FileOutputStream fos = new FileOutputStream(file);
+        FileOutputStream fos = new FileOutputStream(file, true);
         WorkflowTraceSerializer.write(fos, trace);
     }
 
