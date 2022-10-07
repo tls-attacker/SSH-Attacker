@@ -46,6 +46,13 @@ pipeline {
             }
         }
         stage('Code Analysis') {
+            when {
+                anyOf {
+                    branch 'main'
+                    tag 'v*'
+                    changeRequest()
+                }
+            }
             options {
                 timeout(activity: true, time: 120, unit: 'SECONDS')
             }
@@ -61,6 +68,13 @@ pipeline {
             }
         }
         stage('Unit Tests') {
+            when {
+                anyOf {
+                    branch 'main'
+                    tag 'v*'
+                    changeRequest()
+                }
+            }
             options {
                 timeout(activity: true, time: 120, unit: 'SECONDS')
             }
@@ -76,6 +90,13 @@ pipeline {
             }
         }
         stage('Integration Tests') {
+            when {
+                anyOf {
+                    branch 'main'
+                    tag 'v*'
+                    changeRequest()
+                }
+            }
             options {
                 timeout(activity: true, time: 120, unit: 'SECONDS')
             }
