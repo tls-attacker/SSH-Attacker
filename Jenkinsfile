@@ -67,14 +67,14 @@ pipeline {
                 }
             }
         }
-        stage('Deploy to internal Nexus Repository') {
+        stage('Deploy to Internal Nexus Repository') {
             when {
                 branch 'main'
             }
             steps {
                 withMaven(jdk: env.JDK_TOOL_NAME, maven: env.MAVEN_TOOL_NAME) {
                     // Tests were already executed separately, so disable tests within this step
-                    sh 'mvn -DskipTests=true install'
+                    sh 'mvn -DskipTests=true deploy'
                 }
             }
         }
