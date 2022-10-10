@@ -25,6 +25,7 @@
     </dependencies>
 
     <build>
+        <finalName>SSH-Client</finalName>
         <plugins>
             <!--################## clean lifecycle plugins ##################-->
             <plugin>
