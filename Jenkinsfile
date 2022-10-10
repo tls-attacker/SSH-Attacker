@@ -4,7 +4,6 @@ pipeline {
     environment {
         JDK_TOOL_NAME = 'JDK 11'
         MAVEN_TOOL_NAME = 'Maven 3.8.6'
-        MAVEN_LOCAL_REPO = '.repository'
     }
 
     options {
@@ -15,7 +14,7 @@ pipeline {
     stages {
         stage('Clean') {
             steps {
-                withMaven(jdk: env.JDK_TOOL_NAME, maven: env.MAVEN_TOOL_NAME, mavenLocalRepo: env.MAVEN_LOCAL_REPO) {
+                withMaven(jdk: env.JDK_TOOL_NAME, maven: env.MAVEN_TOOL_NAME) {
                     sh 'mvn clean'
                 }
             }
@@ -25,7 +24,7 @@ pipeline {
                 timeout(activity: true, time: 60, unit: 'SECONDS')
             }
             steps {
-                withMaven(jdk: env.JDK_TOOL_NAME, maven: env.MAVEN_TOOL_NAME, mavenLocalRepo: env.MAVEN_LOCAL_REPO) {
+                withMaven(jdk: env.JDK_TOOL_NAME, maven: env.MAVEN_TOOL_NAME) {
                     sh 'mvn spotless:check'
                 }
             }
@@ -35,8 +34,8 @@ pipeline {
                 timeout(activity: true, time: 120, unit: 'SECONDS')
             }
             steps {
-                withMaven(jdk: env.JDK_TOOL_NAME, maven: env.MAVEN_TOOL_NAME, mavenLocalRepo: env.MAVEN_LOCAL_REPO) {
-                    sh 'mvn -DskipTests=true install'
+                withMaven(jdk: env.JDK_TOOL_NAME, maven: env.MAVEN_TOOL_NAME) {
+                    sh 'mvn -DskipTests=true package'
                 }
             }
 
@@ -58,8 +57,9 @@ pipeline {
                 timeout(activity: true, time: 120, unit: 'SECONDS')
             }
             steps {
-                withMaven(jdk: env.JDK_TOOL_NAME, maven: env.MAVEN_TOOL_NAME, mavenLocalRepo: env.MAVEN_LOCAL_REPO) {
-                    sh 'mvn pmd:pmd pmd:cpd spotbugs:spotbugs'
+                withMaven(jdk: env.JDK_TOOL_NAME, maven: env.MAVEN_TOOL_NAME) {
+                    // `package` goal is required here to load modules in reactor and avoid dependency resolve conflicts
+                    sh 'mvn package pmd:pmd pmd:cpd spotbugs:spotbugs'
                 }
             }
             post {
@@ -80,7 +80,7 @@ pipeline {
                 timeout(activity: true, time: 120, unit: 'SECONDS')
             }
             steps {
-                withMaven(jdk: env.JDK_TOOL_NAME, maven: env.MAVEN_TOOL_NAME, mavenLocalRepo: env.MAVEN_LOCAL_REPO) {
+                withMaven(jdk: env.JDK_TOOL_NAME, maven: env.MAVEN_TOOL_NAME) {
                     sh 'mvn -P coverage -Dskip.failsafe.tests=true test'
                 }
             }
@@ -102,7 +102,7 @@ pipeline {
                 timeout(activity: true, time: 120, unit: 'SECONDS')
             }
             steps {
-                withMaven(jdk: env.JDK_TOOL_NAME, maven: env.MAVEN_TOOL_NAME, mavenLocalRepo: env.MAVEN_LOCAL_REPO) {
+                withMaven(jdk: env.JDK_TOOL_NAME, maven: env.MAVEN_TOOL_NAME) {
                     sh 'mvn -P coverage -Dskip.surefire.tests=true verify'
                 }
             }
@@ -123,7 +123,7 @@ pipeline {
                 }
             }
             steps {
-                withMaven(jdk: env.JDK_TOOL_NAME, maven: env.MAVEN_TOOL_NAME, mavenLocalRepo: env.MAVEN_LOCAL_REPO) {
+                withMaven(jdk: env.JDK_TOOL_NAME, maven: env.MAVEN_TOOL_NAME) {
                     // Tests were already executed separately, so disable tests within this step
                     sh 'mvn -DskipTests=true deploy'
                 }
