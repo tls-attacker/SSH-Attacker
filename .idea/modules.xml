@@ -2,12 +2,12 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/Attacks/Attacks.iml" filepath="$PROJECT_DIR$/Attacks/Attacks.iml" />
-      <module fileurl="file://$PROJECT_DIR$/SSH-Attacker.iml" filepath="$PROJECT_DIR$/SSH-Attacker.iml" />
-      <module fileurl="file://$PROJECT_DIR$/SSH-Client/SSH-Client.iml" filepath="$PROJECT_DIR$/SSH-Client/SSH-Client.iml" />
-      <module fileurl="file://$PROJECT_DIR$/SSH-Core/SSH-Core.iml" filepath="$PROJECT_DIR$/SSH-Core/SSH-Core.iml" />
-      <module fileurl="file://$PROJECT_DIR$/SSH-Mitm/SSH-Mitm.iml" filepath="$PROJECT_DIR$/SSH-Mitm/SSH-Mitm.iml" />
-      <module fileurl="file://$PROJECT_DIR$/SSH-Server/SSH-Server.iml" filepath="$PROJECT_DIR$/SSH-Server/SSH-Server.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Attacks/attacks.iml" filepath="$PROJECT_DIR$/Attacks/attacks.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ssh-attacker.iml" filepath="$PROJECT_DIR$/ssh-attacker.iml" />
+      <module fileurl="file://$PROJECT_DIR$/SSH-Client/ssh-client.iml" filepath="$PROJECT_DIR$/SSH-Client/ssh-client.iml" />
+      <module fileurl="file://$PROJECT_DIR$/SSH-Core/ssh-core.iml" filepath="$PROJECT_DIR$/SSH-Core/ssh-core.iml" />
+      <module fileurl="file://$PROJECT_DIR$/SSH-Mitm/ssh-mitm.iml" filepath="$PROJECT_DIR$/SSH-Mitm/ssh-mitm.iml" />
+      <module fileurl="file://$PROJECT_DIR$/SSH-Server/ssh-server.iml" filepath="$PROJECT_DIR$/SSH-Server/ssh-server.iml" />
     </modules>
   </component>
 </project>

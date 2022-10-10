@@ -46,6 +46,7 @@
     </profiles>
 
     <build>
+        <finalName>Attacks</finalName>
         <plugins>
             <!--################## clean lifecycle plugins ##################-->
             <plugin>
