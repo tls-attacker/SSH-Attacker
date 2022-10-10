@@ -2,21 +2,25 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>de.rub.nds.sshattacker</groupId>
+        <groupId>de.rub.nds.ssh.attacker</groupId>
         <artifactId>ssh-attacker</artifactId>
         <version>1.0.0-SNAPSHOT</version>
     </parent>
 
     <name>SSH-Core</name>
     <artifactId>ssh-core</artifactId>
-    <packaging>jar</packaging>
+
+    <scm>
+        <connection>scm:git:https://github.com/tls-attacker/SSH-Attacker.git</connection>
+        <developerConnection>scm:git:ssh://git@github.com/tls-attacker/SSH-Attacker.git</developerConnection>
+        <url>https://github.com/tls-attacker/SSH-Attacker</url>
+    </scm>
 
     <dependencies>
         <!-- scope: compile -->
         <dependency>
-            <groupId>de.rub.nds.tlsattacker</groupId>
-            <artifactId>Transport</artifactId>
-            <version>3.9.1-SNAPSHOT</version>
+            <groupId>de.rub.nds.tls.attacker</groupId>
+            <artifactId>transport</artifactId>
         </dependency>
         <dependency>
             <groupId>com.jcraft</groupId>
@@ -27,7 +31,6 @@
         <dependency>
             <groupId>org.reflections</groupId>
             <artifactId>reflections</artifactId>
-            <version>0.10.2</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -110,6 +113,7 @@
     </reporting>
 
     <properties>
+        <!--suppress UnresolvedMavenProperty -->
         <main.basedir>${project.parent.basedir}</main.basedir>
     </properties>
 </project>
