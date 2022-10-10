@@ -1,3 +1,10 @@
+/*
+ * SSH-Attacker - A Modular Penetration Testing Framework for SSH
+ *
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ *
+ * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ */
 package de.rub.nds.sshattacker.core.protocol.transport.serializer;
 
 import de.rub.nds.modifiablevariable.string.ModifiableString;
@@ -5,12 +12,11 @@ import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.transport.message.Extension;
 import de.rub.nds.sshattacker.core.protocol.transport.message.ExtensionInfoMessage;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /* Class for serializing an SSH_MSG_EXT_INFO message
 
@@ -25,7 +31,6 @@ import java.util.ArrayList;
 */
 
 public class ExtensionInfoMessageSerializer extends SshMessageSerializer<ExtensionInfoMessage> {
-
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -44,7 +49,7 @@ public class ExtensionInfoMessageSerializer extends SshMessageSerializer<Extensi
         int numberExtensions = new BigInteger(message.getNumberExtensions().getValue()).intValue();
         ArrayList<Extension> extensions = message.getExtensions();
 
-        for(int i = 0; i < numberExtensions; i++) {
+        for (int i = 0; i < numberExtensions; i++) {
             Extension extension = extensions.get(i);
             ModifiableString extensionName = extension.getExtensionName();
             ModifiableString extensionValue = extension.getExtensionValue();
@@ -53,18 +58,15 @@ public class ExtensionInfoMessageSerializer extends SshMessageSerializer<Extensi
             appendInt(extension.getExtensionNameLengthInBytes(), DataFormatConstants.UINT32_SIZE);
             appendString(extensionName.getValue(), StandardCharsets.US_ASCII);
 
-            //append 4 byte unsigned integer length followed by extensionValue
+            // append 4 byte unsigned integer length followed by extensionValue
             appendInt(extension.getExtensionValueLengthInBytes(), DataFormatConstants.UINT32_SIZE);
             appendString(extensionValue.getValue(), StandardCharsets.US_ASCII);
         }
     }
-
-
 
     @Override
     public void serializeMessageSpecificContents() {
         serializeNumberExtension();
         serializeExtensions();
     }
-
 }

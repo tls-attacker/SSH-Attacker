@@ -1,3 +1,10 @@
+/*
+ * SSH-Attacker - A Modular Penetration Testing Framework for SSH
+ *
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ *
+ * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ */
 package de.rub.nds.sshattacker.core.protocol.transport.message;
 
 import de.rub.nds.modifiablevariable.string.ModifiableString;
@@ -24,5 +31,4 @@ public class ServerSigAlgsExtension extends Extension {
     public ServerSigAlgsExtension(ModifiableString value) {
         super(Converter.stringToModifiableString(ExtensionNameConstants.SERVER_SIG_ALGS), value);
     }
-
 }
