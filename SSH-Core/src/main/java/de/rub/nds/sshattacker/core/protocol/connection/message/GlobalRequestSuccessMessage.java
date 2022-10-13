@@ -8,21 +8,21 @@
 package de.rub.nds.sshattacker.core.protocol.connection.message;
 
 import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
-import de.rub.nds.sshattacker.core.protocol.connection.handler.RequestSuccessMessageHandler;
+import de.rub.nds.sshattacker.core.protocol.connection.handler.GlobalRequestSuccessMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 
-public class RequestSuccessMessage extends ChannelMessage<RequestSuccessMessage> {
+public class GlobalRequestSuccessMessage extends ChannelMessage<GlobalRequestSuccessMessage> {
 
     public static final MessageIdConstant ID = MessageIdConstant.SSH_MSG_REQUEST_SUCCESS;
 
-    public RequestSuccessMessage() {}
+    public GlobalRequestSuccessMessage() {}
 
-    public RequestSuccessMessage(Integer senderChannel) {
+    public GlobalRequestSuccessMessage(Integer senderChannel) {
         super(senderChannel);
     }
 
     @Override
-    public RequestSuccessMessageHandler getHandler(SshContext context) {
-        return new RequestSuccessMessageHandler(context, this);
+    public GlobalRequestSuccessMessageHandler getHandler(SshContext context) {
+        return new GlobalRequestSuccessMessageHandler(context, this);
     }
 }

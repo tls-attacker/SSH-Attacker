@@ -8,21 +8,22 @@
 package de.rub.nds.sshattacker.core.protocol.connection.parser;
 
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
-import de.rub.nds.sshattacker.core.protocol.connection.message.RequestFailureMessage;
+import de.rub.nds.sshattacker.core.protocol.connection.message.GlobalRequestFailureMessage;
 
-public class RequestFailureMessageParser extends SshMessageParser<RequestFailureMessage> {
+public class GlobalRequestFailureMessageParser
+        extends SshMessageParser<GlobalRequestFailureMessage> {
 
-    public RequestFailureMessageParser(byte[] array) {
+    public GlobalRequestFailureMessageParser(byte[] array) {
         super(array);
     }
 
-    public RequestFailureMessageParser(byte[] array, int startPosition) {
+    public GlobalRequestFailureMessageParser(byte[] array, int startPosition) {
         super(array, startPosition);
     }
 
     @Override
-    public RequestFailureMessage createMessage() {
-        return new RequestFailureMessage();
+    public GlobalRequestFailureMessage createMessage() {
+        return new GlobalRequestFailureMessage();
     }
 
     @Override

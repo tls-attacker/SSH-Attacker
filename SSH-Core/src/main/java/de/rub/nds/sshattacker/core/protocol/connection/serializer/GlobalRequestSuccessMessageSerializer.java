@@ -8,11 +8,12 @@
 package de.rub.nds.sshattacker.core.protocol.connection.serializer;
 
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
-import de.rub.nds.sshattacker.core.protocol.connection.message.RequestSuccessMessage;
+import de.rub.nds.sshattacker.core.protocol.connection.message.GlobalRequestSuccessMessage;
 
-public class RequestSuccessMessageSerializer extends SshMessageSerializer<RequestSuccessMessage> {
+public class GlobalRequestSuccessMessageSerializer
+        extends SshMessageSerializer<GlobalRequestSuccessMessage> {
 
-    public RequestSuccessMessageSerializer(RequestSuccessMessage message) {
+    public GlobalRequestSuccessMessageSerializer(GlobalRequestSuccessMessage message) {
         super(message);
     }
 

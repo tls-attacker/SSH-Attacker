@@ -9,16 +9,18 @@ package de.rub.nds.sshattacker.core.protocol.connection.preparator;
 
 import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.connection.Channel;
-import de.rub.nds.sshattacker.core.protocol.connection.message.RequestSuccessMessage;
+import de.rub.nds.sshattacker.core.protocol.connection.message.GlobalRequestSuccessMessage;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class RequestSuccessMessagePreparator extends SshMessagePreparator<RequestSuccessMessage> {
+public class GlobalRequestSuccessMessagePreparator
+        extends SshMessagePreparator<GlobalRequestSuccessMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public RequestSuccessMessagePreparator(Chooser chooser, RequestSuccessMessage message) {
+    public GlobalRequestSuccessMessagePreparator(
+            Chooser chooser, GlobalRequestSuccessMessage message) {
         super(chooser, message);
     }
 

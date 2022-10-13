@@ -9,16 +9,18 @@ package de.rub.nds.sshattacker.core.protocol.connection.preparator;
 
 import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.connection.Channel;
-import de.rub.nds.sshattacker.core.protocol.connection.message.RequestFailureMessage;
+import de.rub.nds.sshattacker.core.protocol.connection.message.GlobalRequestFailureMessage;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class RequestFailureMessagePreparator extends SshMessagePreparator<RequestFailureMessage> {
+public class GlobalRequestFailureMessagePreparator
+        extends SshMessagePreparator<GlobalRequestFailureMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public RequestFailureMessagePreparator(Chooser chooser, RequestFailureMessage message) {
+    public GlobalRequestFailureMessagePreparator(
+            Chooser chooser, GlobalRequestFailureMessage message) {
         super(chooser, message);
     }
 
