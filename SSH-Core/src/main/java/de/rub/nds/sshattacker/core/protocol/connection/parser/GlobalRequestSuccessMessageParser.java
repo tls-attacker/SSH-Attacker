@@ -8,21 +8,22 @@
 package de.rub.nds.sshattacker.core.protocol.connection.parser;
 
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
-import de.rub.nds.sshattacker.core.protocol.connection.message.RequestSuccessMessage;
+import de.rub.nds.sshattacker.core.protocol.connection.message.GlobalRequestSuccessMessage;
 
-public class RequestSuccessMessageParser extends SshMessageParser<RequestSuccessMessage> {
+public class GlobalRequestSuccessMessageParser
+        extends SshMessageParser<GlobalRequestSuccessMessage> {
 
-    public RequestSuccessMessageParser(byte[] array) {
+    public GlobalRequestSuccessMessageParser(byte[] array) {
         super(array);
     }
 
-    public RequestSuccessMessageParser(byte[] array, int startPosition) {
+    public GlobalRequestSuccessMessageParser(byte[] array, int startPosition) {
         super(array, startPosition);
     }
 
     @Override
-    public RequestSuccessMessage createMessage() {
-        return new RequestSuccessMessage();
+    public GlobalRequestSuccessMessage createMessage() {
+        return new GlobalRequestSuccessMessage();
     }
 
     @Override

@@ -8,11 +8,12 @@
 package de.rub.nds.sshattacker.core.protocol.connection.serializer;
 
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
-import de.rub.nds.sshattacker.core.protocol.connection.message.RequestFailureMessage;
+import de.rub.nds.sshattacker.core.protocol.connection.message.GlobalRequestFailureMessage;
 
-public class RequestFailureMessageSerializer extends SshMessageSerializer<RequestFailureMessage> {
+public class GlobalRequestFailureMessageSerializer
+        extends SshMessageSerializer<GlobalRequestFailureMessage> {
 
-    public RequestFailureMessageSerializer(RequestFailureMessage message) {
+    public GlobalRequestFailureMessageSerializer(GlobalRequestFailureMessage message) {
         super(message);
     }
 

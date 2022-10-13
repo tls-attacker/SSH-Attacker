@@ -132,9 +132,9 @@ public abstract class ProtocolMessageParser<T extends ProtocolMessage<T>> extend
                 case SSH_MSG_IGNORE:
                     return new IgnoreMessageParser(raw).parse();
                 case SSH_MSG_REQUEST_FAILURE:
-                    return new RequestFailureMessageParser(raw).parse();
+                    return new GlobalRequestFailureMessageParser(raw).parse();
                 case SSH_MSG_REQUEST_SUCCESS:
-                    return new RequestSuccessMessageParser(raw).parse();
+                    return new GlobalRequestSuccessMessageParser(raw).parse();
                 case SSH_MSG_UNIMPLEMENTED:
                     return new UnimplementedMessageParser(raw).parse();
                 case SSH_MSG_USERAUTH_REQUEST:

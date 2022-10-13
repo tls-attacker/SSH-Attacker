@@ -9,21 +9,21 @@ package de.rub.nds.sshattacker.core.protocol.connection.serializer;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
-import de.rub.nds.sshattacker.core.protocol.connection.message.RequestSuccessMessage;
-import de.rub.nds.sshattacker.core.protocol.connection.parser.RequestSuccessMessageParserTest;
+import de.rub.nds.sshattacker.core.protocol.connection.message.GlobalRequestSuccessMessage;
+import de.rub.nds.sshattacker.core.protocol.connection.parser.GlobalGlobalRequestSuccessMessageParserTest;
 import java.util.stream.Stream;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
-public class RequestSuccessMessageSerializerTest {
+public class GlobalGlobalRequestSuccessMessageSerializerTest {
     /**
      * Provides a stream of test vectors for the RequestSuccessMessageSerializer class
      *
      * @return A stream of test vectors to feed the testSerialize unit test
      */
     public static Stream<Arguments> provideTestVectors() {
-        return RequestSuccessMessageParserTest.provideTestVectors();
+        return GlobalGlobalRequestSuccessMessageParserTest.provideTestVectors();
     }
 
     /**
@@ -34,8 +34,9 @@ public class RequestSuccessMessageSerializerTest {
     @ParameterizedTest
     @MethodSource("provideTestVectors")
     public void testSerialize(byte[] expectedBytes) {
-        RequestSuccessMessage msg = new RequestSuccessMessage();
-        RequestSuccessMessageSerializer serializer = new RequestSuccessMessageSerializer(msg);
+        GlobalRequestSuccessMessage msg = new GlobalRequestSuccessMessage();
+        GlobalRequestSuccessMessageSerializer serializer =
+                new GlobalRequestSuccessMessageSerializer(msg);
 
         assertArrayEquals(expectedBytes, serializer.serialize());
     }
