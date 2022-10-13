@@ -7,16 +7,18 @@
  */
 package de.rub.nds.sshattacker.core.workflow.action;
 
-import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.sshattacker.core.exceptions.WorkflowExecutionException;
+import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthHostbasedMessage;
+import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthPubkeyMessage;
+import de.rub.nds.sshattacker.core.protocol.authentication.preparator.UserAuthHostbasedMessagePreparator;
+import de.rub.nds.sshattacker.core.protocol.authentication.preparator.UserAuthPubkeyMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessage;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.state.State;
 import de.rub.nds.sshattacker.core.workflow.action.executor.MessageActionResult;
 import de.rub.nds.sshattacker.core.workflow.action.executor.ReceiveMessageHelper;
 import de.rub.nds.sshattacker.core.workflow.action.executor.SendMessageHelper;
-import jakarta.xml.bind.annotation.XmlElementRef;
-import jakarta.xml.bind.annotation.XmlElementWrapper;
+import jakarta.xml.bind.annotation.XmlTransient;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -25,8 +27,9 @@ public class ProxyFilterMessagesAction extends ForwardMessagesAction {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    @XmlElementWrapper @HoldsModifiableVariable @XmlElementRef
-    protected List<ProtocolMessage<?>> filteredMessages;
+    // because sendMessages will contain filteredMessages, when storing the workflow trace, so it
+    // would just make reading the trace more complicated
+    @XmlTransient protected List<ProtocolMessage<?>> filteredMessages;
 
     public ProxyFilterMessagesAction() {
         this.receiveMessageHelper = new ReceiveMessageHelper();
@@ -65,10 +68,11 @@ public class ProxyFilterMessagesAction extends ForwardMessagesAction {
 
         SshContext receiveFromCtx = state.getSshContext(receiveFromAlias);
         SshContext forwardToCtx = state.getSshContext(forwardToAlias);
+        initLoggingSide(receiveFromCtx);
 
         receiveMessages(receiveFromCtx);
         handleReceivedMessages(receiveFromCtx);
-        filterMessages(receiveFromCtx);
+        filterMessages(receiveFromCtx, forwardToCtx);
         forwardMessages(forwardToCtx);
         applyMessages(forwardToCtx);
     }
@@ -90,7 +94,32 @@ public class ProxyFilterMessagesAction extends ForwardMessagesAction {
         setExecuted(true);
     }
 
-    public void filterMessages(SshContext receiveFromCtx) {
+    public void filterMessages(SshContext receiveFromCtx, SshContext forwardToCtx) {
         filteredMessages = receivedMessages;
+        for (int i = 0; i < filteredMessages.size(); i++) {
+            if (filteredMessages.get(i).getClass() == UserAuthPubkeyMessage.class) {
+                filteredMessages.set(i, filterUserAuthPubkeyMessage(forwardToCtx));
+            }
+            if (filteredMessages.get(i).getClass() == UserAuthHostbasedMessage.class) {
+                filteredMessages.set(i, filterUserAuthHostbasedMessage(forwardToCtx));
+            }
+        }
+    }
+
+    public UserAuthPubkeyMessage filterUserAuthPubkeyMessage(SshContext forwardToCtx) {
+        UserAuthPubkeyMessage newPubkeyMessage = new UserAuthPubkeyMessage();
+        UserAuthPubkeyMessagePreparator forwardContextPreparator =
+                new UserAuthPubkeyMessagePreparator(forwardToCtx.getChooser(), newPubkeyMessage);
+        forwardContextPreparator.prepare();
+        return newPubkeyMessage;
+    }
+
+    public UserAuthHostbasedMessage filterUserAuthHostbasedMessage(SshContext forwardToCtx) {
+        UserAuthHostbasedMessage newHostbasedMessage = new UserAuthHostbasedMessage();
+        UserAuthHostbasedMessagePreparator forwardContextPreparator =
+                new UserAuthHostbasedMessagePreparator(
+                        forwardToCtx.getChooser(), newHostbasedMessage);
+        forwardContextPreparator.prepare();
+        return newHostbasedMessage;
     }
 }

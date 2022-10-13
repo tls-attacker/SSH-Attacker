@@ -61,6 +61,8 @@ public class MitmDelegate extends Delegate {
     public void applyDelegate(Config config) {
 
         config.setDefaultRunningMode(RunningModeType.MITM);
+        // ToDo implement filters for Mitm workflowtrace
+        config.setOutputFilters(null);
 
         if (inboundConnectionStr != null) {
             setInboundConnection(config);

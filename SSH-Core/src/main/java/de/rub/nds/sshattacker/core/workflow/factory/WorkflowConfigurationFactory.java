@@ -425,12 +425,6 @@ public class WorkflowConfigurationFactory {
                         outboundConnection,
                         ConnectionEndType.SERVER,
                         new ServiceAcceptMessage()));
-        workflow.addSshActions(
-                SshActionFactory.createProxyFilterMessagesAction(
-                        inboundConnection,
-                        outboundConnection,
-                        ConnectionEndType.CLIENT,
-                        new UserAuthPasswordMessage()));
 
         // The following is run in a loop in SSH-MITM.
         workflow.addSshActions(

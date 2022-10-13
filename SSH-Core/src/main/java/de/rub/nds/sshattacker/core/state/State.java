@@ -57,6 +57,8 @@ public class State {
     @HoldsModifiableVariable private WorkflowTrace workflowTrace;
     private WorkflowTrace originalWorkflowTrace;
 
+    public String workflowOutputName;
+
     public State() {
         this(new Config());
     }
@@ -276,9 +278,12 @@ public class State {
         Random random = new Random();
         if (config.getWorkflowOutput() != null && !config.getWorkflowOutput().isEmpty()) {
             try {
-                File f = new File(config.getWorkflowOutput());
+                workflowOutputName = config.getWorkflowOutput();
+
+                File f = new File(workflowOutputName);
                 if (f.isDirectory()) {
-                    f = new File(config.getWorkflowOutput() + "trace-" + random.nextInt());
+                    workflowOutputName = config.getWorkflowOutput() + "trace-" + random.nextInt();
+                    f = new File(workflowOutputName);
                 }
                 WorkflowTrace filteredTrace;
                 if (config.isApplyFiltersInPlace()) {
@@ -310,5 +315,9 @@ public class State {
 
     public void setWorkflowTrace(WorkflowTrace trace) {
         this.workflowTrace = trace;
+    }
+
+    public String getWorkflowOutputName() {
+        return workflowOutputName;
     }
 }
