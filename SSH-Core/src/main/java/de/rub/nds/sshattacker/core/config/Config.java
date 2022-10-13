@@ -737,12 +737,11 @@ public class Config implements Serializable {
         authenticationMethod = AuthenticationMethod.PASSWORD;
         serviceName = "ssh-userauth";
         username = "sshattacker";
-        password = "bydahirsch";
+        password = "secret";
 
         preConfiguredAuthResponses = new LinkedList<>();
         AuthenticationResponse preConfiguredAuthResponse1 = new AuthenticationResponse();
-        preConfiguredAuthResponse1.add(
-                new AuthenticationResponse.ResponseEntry("bydahirsch", false));
+        preConfiguredAuthResponse1.add(new AuthenticationResponse.ResponseEntry(password, false));
         preConfiguredAuthResponses.add(preConfiguredAuthResponse1);
         AuthenticationResponse preConfiguredAuthResponse2 = new AuthenticationResponse();
         preConfiguredAuthResponse2.add(new AuthenticationResponse.ResponseEntry(false));
