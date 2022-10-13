@@ -40,7 +40,8 @@ public class ChannelCloseMessageHandler extends SshMessageHandler<ChannelCloseMe
                 channel.setFirstCloseMessage(true);
             }
         } else {
-            throw new MissingChannelException("Required channel is closed!");
+            LOGGER.warn("Required channel is closed!");
+            // throw new MissingChannelException("Required channel is closed!");
         }
     }
 

@@ -20,15 +20,12 @@ import de.rub.nds.sshattacker.core.workflow.DefaultWorkflowExecutor;
 import de.rub.nds.sshattacker.core.workflow.WorkflowExecutor;
 import de.rub.nds.sshattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.sshattacker.core.workflow.WorkflowTraceSerializer;
-import de.rub.nds.sshattacker.core.workflow.action.SshAction;
+import de.rub.nds.sshattacker.core.workflow.action.ProxyFilterMessagesAction;
 import de.rub.nds.sshattacker.core.workflow.factory.SshActionFactory;
 import de.rub.nds.sshattacker.mitm.config.MitmCommandConfig;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
-import jakarta.xml.bind.JAXBException;
 import java.io.*;
-import java.util.LinkedList;
-import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -83,41 +80,48 @@ public class SshMitm implements Runnable {
             TransportHandler outboundTransportHandler = outboundContext.getTransportHandler();
             inboundTransportHandler.setTimeout(100);
             outboundTransportHandler.setTimeout(100);
-            List<SshAction> actionHolder = new LinkedList<>();
-            SshAction clientAction =
-                    SshActionFactory.createProxyFilterMessagesAction(
-                            inboundConnection, outboundConnection, ConnectionEndType.CLIENT);
-            SshAction serverAction =
-                    SshActionFactory.createProxyFilterMessagesAction(
-                            inboundConnection, outboundConnection, ConnectionEndType.SERVER);
-            actionHolder.add(clientAction);
-            actionHolder.add(serverAction);
 
             int maxCount = 1000;
             while (maxCount > 0) {
+                boolean newMessages = false;
+                ProxyFilterMessagesAction clientAction =
+                        (ProxyFilterMessagesAction)
+                                SshActionFactory.createProxyFilterMessagesAction(
+                                        inboundConnection,
+                                        outboundConnection,
+                                        ConnectionEndType.CLIENT);
+                ProxyFilterMessagesAction serverAction =
+                        (ProxyFilterMessagesAction)
+                                SshActionFactory.createProxyFilterMessagesAction(
+                                        inboundConnection,
+                                        outboundConnection,
+                                        ConnectionEndType.SERVER);
+
                 clientAction.execute(state);
+                if (clientAction.getReceivedMessages().size() > 0) {
+                    state.getWorkflowTrace().addSshAction(clientAction);
+                    newMessages = true;
+                }
                 if (inboundTransportHandler.isClosed()
                         || inboundContext.isDisconnectMessageReceived()) {
                     // instead of breaking, close the client side of the server connection.
                     break;
                 }
                 serverAction.execute(state);
+                if (serverAction.getReceivedMessages().size() > 0) {
+                    state.getWorkflowTrace().addSshAction(serverAction);
+                    newMessages = true;
+                }
                 if (outboundTransportHandler.isClosed()
                         || outboundContext.isDisconnectMessageReceived()) {
                     // instead of breaking, close the server side of the client connection.
                     break;
                 }
-                storeActionsInOutput(state.getWorkflowOutputName(), actionHolder);
-                clientAction.reset();
-                serverAction.reset();
-                maxCount = maxCount - 1;
+                if (newMessages) {
+                    maxCount = maxCount - 1;
+                }
             }
-
-            if (cmdConfig.getWorkflowOutput() != null) {
-                trace = state.getWorkflowTrace();
-                LOGGER.debug("Writing workflow trace to " + cmdConfig.getWorkflowOutput());
-                WorkflowTraceSerializer.write(new File(cmdConfig.getWorkflowOutput()), trace);
-            }
+            state.storeTrace();
         } catch (WorkflowExecutionException wee) {
             LOGGER.error(
                     "The SSH protocol flow was not executed completely. "
@@ -139,22 +143,6 @@ public class SshMitm implements Runnable {
             throw pe;
         } catch (Exception E) {
             LOGGER.error(E);
-        }
-    }
-
-    public void storeActionsInOutput(String workflowOuput, List<SshAction> sshActions) {
-        WorkflowTrace toStore = new WorkflowTrace();
-        toStore.setSshActions(sshActions);
-
-        if (workflowOuput != null) {
-            try {
-                File f = new File(workflowOuput);
-
-                WorkflowTraceSerializer.write(f, toStore);
-            } catch (JAXBException | IOException ex) {
-                LOGGER.info("Could not serialize WorkflowTrace.");
-                LOGGER.debug(ex);
-            }
         }
     }
 
