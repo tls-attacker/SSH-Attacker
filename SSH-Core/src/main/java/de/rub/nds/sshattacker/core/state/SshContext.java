@@ -313,6 +313,7 @@ public class SshContext {
         }
 
         try {
+            transportHandler.preInitialize();
             transportHandler.initialize();
         } catch (NullPointerException | NumberFormatException ex) {
             throw new ConfigurationException("Invalid values in " + connection.toString(), ex);
