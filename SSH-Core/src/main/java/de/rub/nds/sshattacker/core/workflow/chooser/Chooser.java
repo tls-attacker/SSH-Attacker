@@ -94,13 +94,13 @@ public abstract class Chooser {
 
     public abstract List<CompressionMethod> getServerSupportedCompressionMethodsClientToServer();
 
-    public abstract List<String> getClientSupportedLanguagesClientToServer();
+    public abstract List<Language> getClientSupportedLanguagesClientToServer();
 
-    public abstract List<String> getClientSupportedLanguagesServerToClient();
+    public abstract List<Language> getClientSupportedLanguagesServerToClient();
 
-    public abstract List<String> getServerSupportedLanguagesServerToClient();
+    public abstract List<Language> getServerSupportedLanguagesServerToClient();
 
-    public abstract List<String> getServerSupportedLanguagesClientToServer();
+    public abstract List<Language> getServerSupportedLanguagesClientToServer();
 
     public abstract boolean getClientFirstKeyExchangePacketFollows();
 
