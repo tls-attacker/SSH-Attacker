@@ -32,7 +32,10 @@ public class UnknownMessage extends SshMessage<UnknownMessage> {
 
     @Override
     public String toCompactString() {
-        return "UnknownMessage (" + MessageIdConstant.getNameById(messageId.getValue()) + ")";
+        if (messageId != null && messageId.getValue() != null) {
+            return "UnknownMessage (" + MessageIdConstant.getNameById(messageId.getValue()) + ")";
+        }
+        return "UnknownMessage (no id set)";
     }
 
     @Override
