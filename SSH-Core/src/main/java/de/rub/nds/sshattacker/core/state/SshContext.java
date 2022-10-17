@@ -941,4 +941,79 @@ public class SshContext {
     public void setHandleAsClient(boolean handleAsClient) {
         this.handleAsClient = handleAsClient;
     }
+
+    // region for SSH Extension Negotiation
+
+    private ModifiableInteger numberExtensionsOfClient;
+
+    private ModifiableInteger numberExtensionsOfServer;
+
+    private List<Extension> extensionsOfClient;
+
+    private List<Extension> extensionsOfServer;
+
+    // region Getters
+
+    // CLIENT:
+
+    public ModifiableInteger getNumberExtensionsOfClient() {
+        return this.numberExtensionsOfClient;
+    }
+
+    public List<Extension> getExtensionsOfClient() {
+        return this.extensionsOfClient;
+    }
+
+    // SERVER:
+
+    public ModifiableInteger getNumberExtensionsOfServer() {
+        return this.numberExtensionsOfServer;
+    }
+
+    public List<Extension> getExtensionsOfServer() {
+        return this.extensionsOfServer;
+    }
+
+    // region Setters
+
+    // CLIENT:
+
+    public void setNumberExtensionsOfClient(ModifiableInteger count) {
+        this.numberExtensionsOfClient = count;
+    }
+
+    public void setNumberExtensionsOfClient(int count) {
+        this.numberExtensionsOfClient =
+                ModifiableVariableFactory.safelySetValue(this.numberExtensionsOfClient, count);
+    }
+
+    public void setExtensionsOfClient(List<Extension> extensions) {
+        this.extensionsOfClient = extensions;
+    }
+
+    public void addExtensionOfClient(Extension extension) {
+        this.extensionsOfClient.add(extension);
+    }
+
+    // SERVER
+
+    public void setNumberExtensionsOfServer(ModifiableInteger count) {
+        this.numberExtensionsOfServer = count;
+    }
+
+    public void setNumberExtensionsOfServer(int count) {
+        this.numberExtensionsOfServer =
+                ModifiableVariableFactory.safelySetValue(this.numberExtensionsOfServer, count);
+    }
+
+    public void setExtensionsOfServer(List<Extension> extensions) {
+        this.extensionsOfServer = extensions;
+    }
+
+    public void addExtensionOfServer(Extension extension) {
+        this.extensionsOfServer.add(extension);
+    }
+
+    // endregion
+
 }
