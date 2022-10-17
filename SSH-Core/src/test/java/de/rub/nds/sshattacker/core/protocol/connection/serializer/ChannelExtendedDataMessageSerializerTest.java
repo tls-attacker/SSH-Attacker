@@ -10,6 +10,7 @@ package de.rub.nds.sshattacker.core.protocol.connection.serializer;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 import de.rub.nds.sshattacker.core.constants.ExtendedChannelDataType;
+import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelExtendedDataMessage;
 import de.rub.nds.sshattacker.core.protocol.connection.parser.ChannelExtendedDataMessageParserTest;
 import java.util.stream.Stream;
@@ -43,6 +44,7 @@ public class ChannelExtendedDataMessageSerializerTest {
             ExtendedChannelDataType providedDataType,
             byte[] providedPayload) {
         ChannelExtendedDataMessage msg = new ChannelExtendedDataMessage();
+        msg.setMessageId(MessageIdConstant.SSH_MSG_CHANNEL_EXTENDED_DATA);
         msg.setRecipientChannelId(providedRecipientChannelId);
         msg.setDataTypeCode(providedDataType.getDataTypeCode());
         msg.setData(providedPayload, true);

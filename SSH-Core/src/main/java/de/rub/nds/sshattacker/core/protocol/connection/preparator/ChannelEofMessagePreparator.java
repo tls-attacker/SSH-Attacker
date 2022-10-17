@@ -8,16 +8,15 @@
 package de.rub.nds.sshattacker.core.protocol.connection.preparator;
 
 import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelEofMessage;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
-public class ChannelEofMessagePreparator extends SshMessagePreparator<ChannelEofMessage> {
+public class ChannelEofMessagePreparator extends ChannelMessagePreparator<ChannelEofMessage> {
 
     public ChannelEofMessagePreparator(Chooser chooser, ChannelEofMessage message) {
         super(chooser, message, MessageIdConstant.SSH_MSG_CHANNEL_EOF);
     }
 
     @Override
-    public void prepareMessageSpecificContents() {}
+    protected void prepareChannelMessageSpecificContents() {}
 }

@@ -9,6 +9,7 @@ package de.rub.nds.sshattacker.core.protocol.transport.serializer;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
+import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.protocol.transport.message.KeyExchangeInitMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.parser.KeyExchangeInitMessageParserTest;
 import java.util.stream.Stream;
@@ -86,6 +87,7 @@ public class KeyExchangeInitMessageSerializerTest {
             byte providedFirstKeyExchangePacketFollows,
             int providedReserved) {
         KeyExchangeInitMessage msg = new KeyExchangeInitMessage();
+        msg.setMessageId(MessageIdConstant.SSH_MSG_KEXINIT);
         msg.setCookie(providedCookie);
         msg.setKeyExchangeAlgorithmsLength(providedKeyExchangeAlgorithmsLength);
         msg.setKeyExchangeAlgorithms(providedKeyExchangeAlgorithms);

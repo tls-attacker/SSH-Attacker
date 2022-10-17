@@ -9,6 +9,7 @@ package de.rub.nds.sshattacker.core.protocol.transport.serializer;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
+import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.constants.ServiceType;
 import de.rub.nds.sshattacker.core.protocol.transport.message.ServiceRequestMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.parser.ServiceRequestMessageParserTest;
@@ -37,6 +38,7 @@ public class ServiceRequestMessageSerializerTest {
     @MethodSource("provideTestVectors")
     public void testSerialize(byte[] expectedBytes, ServiceType providedServiceType) {
         ServiceRequestMessage msg = new ServiceRequestMessage();
+        msg.setMessageId(MessageIdConstant.SSH_MSG_SERVICE_REQUEST);
         msg.setServiceName(providedServiceType.toString(), true);
         ServiceRequestMessageSerializer serializer = new ServiceRequestMessageSerializer(msg);
 

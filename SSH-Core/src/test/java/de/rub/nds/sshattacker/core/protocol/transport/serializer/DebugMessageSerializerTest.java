@@ -9,6 +9,7 @@ package de.rub.nds.sshattacker.core.protocol.transport.serializer;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
+import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.protocol.transport.message.DebugMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.parser.DebugMessageParserTest;
 import java.util.stream.Stream;
@@ -42,6 +43,7 @@ public class DebugMessageSerializerTest {
             String providedMessage,
             String providedLanguageTag) {
         DebugMessage msg = new DebugMessage();
+        msg.setMessageId(MessageIdConstant.SSH_MSG_DEBUG);
         msg.setAlwaysDisplay(providedAlwaysDisplay);
         msg.setMessage(providedMessage, true);
         msg.setLanguageTag(providedLanguageTag, true);

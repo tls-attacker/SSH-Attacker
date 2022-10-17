@@ -9,6 +9,7 @@ package de.rub.nds.sshattacker.core.protocol.connection.serializer;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
+import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelSuccessMessage;
 import de.rub.nds.sshattacker.core.protocol.connection.parser.ChannelSuccessMessageParserTest;
 import java.util.stream.Stream;
@@ -36,6 +37,7 @@ public class ChannelSuccessMessageSerializerTest {
     @MethodSource("provideTestVectors")
     public void testSerialize(byte[] expectedBytes, int providedRecipientChannelId) {
         ChannelSuccessMessage msg = new ChannelSuccessMessage();
+        msg.setMessageId(MessageIdConstant.SSH_MSG_CHANNEL_SUCCESS);
         msg.setRecipientChannelId(providedRecipientChannelId);
         ChannelMessageSerializer<ChannelSuccessMessage> serializer =
                 new ChannelMessageSerializer<>(msg);

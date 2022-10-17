@@ -9,6 +9,7 @@ package de.rub.nds.sshattacker.core.protocol.authentication.serializer;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
+import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthFailureMessage;
 import de.rub.nds.sshattacker.core.protocol.authentication.parser.UserAuthFailureMessageParserTest;
 import java.util.stream.Stream;
@@ -42,6 +43,7 @@ public class UserAuthFailureMessageSerializerTest {
             String providedAuthenticationMethods,
             byte providedPartialSuccess) {
         UserAuthFailureMessage msg = new UserAuthFailureMessage();
+        msg.setMessageId(MessageIdConstant.SSH_MSG_USERAUTH_FAILURE);
         msg.setPossibleAuthenticationMethods(providedAuthenticationMethods, true);
         msg.setPartialSuccess(providedPartialSuccess);
         UserAuthFailureMessageSerializer serializer = new UserAuthFailureMessageSerializer(msg);

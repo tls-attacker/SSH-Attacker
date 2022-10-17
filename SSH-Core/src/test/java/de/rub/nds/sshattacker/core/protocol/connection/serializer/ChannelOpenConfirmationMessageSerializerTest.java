@@ -9,6 +9,7 @@ package de.rub.nds.sshattacker.core.protocol.connection.serializer;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
+import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelOpenConfirmationMessage;
 import de.rub.nds.sshattacker.core.protocol.connection.parser.ChannelOpenConfirmationMessageParserTest;
 import java.util.stream.Stream;
@@ -44,6 +45,7 @@ public class ChannelOpenConfirmationMessageSerializerTest {
             int providedInitialWindowSize,
             int providedMaximumPacketSize) {
         ChannelOpenConfirmationMessage msg = new ChannelOpenConfirmationMessage();
+        msg.setMessageId(MessageIdConstant.SSH_MSG_CHANNEL_OPEN_CONFIRMATION);
         msg.setRecipientChannelId(providedRecipientChannelId);
         msg.setSenderChannelId(providedSenderChannelId);
         msg.setWindowSize(providedInitialWindowSize);

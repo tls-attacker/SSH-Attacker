@@ -9,12 +9,11 @@ package de.rub.nds.sshattacker.core.protocol.connection.preparator;
 
 import de.rub.nds.sshattacker.core.constants.ExtendedChannelDataType;
 import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelExtendedDataMessage;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class ChannelExtendedDataMessagePreparator
-        extends SshMessagePreparator<ChannelExtendedDataMessage> {
+        extends ChannelMessagePreparator<ChannelExtendedDataMessage> {
 
     public ChannelExtendedDataMessagePreparator(
             Chooser chooser, ChannelExtendedDataMessage message) {
@@ -22,7 +21,7 @@ public class ChannelExtendedDataMessagePreparator
     }
 
     @Override
-    public void prepareMessageSpecificContents() {
+    protected void prepareChannelMessageSpecificContents() {
         // TODO dummy values for fuzzing
         getObject()
                 .setDataTypeCode(

@@ -9,6 +9,7 @@ package de.rub.nds.sshattacker.core.protocol.connection.serializer;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
+import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelWindowAdjustMessage;
 import de.rub.nds.sshattacker.core.protocol.connection.parser.ChannelWindowAdjustMessageParserTest;
 import java.util.stream.Stream;
@@ -38,6 +39,7 @@ public class ChannelWindowAdjustMessageSerializerTest {
     public void testSerialize(
             byte[] expectedBytes, int providedRecipientChannelId, int providedBytesToAdd) {
         ChannelWindowAdjustMessage msg = new ChannelWindowAdjustMessage();
+        msg.setMessageId(MessageIdConstant.SSH_MSG_CHANNEL_WINDOW_ADJUST);
         msg.setRecipientChannelId(providedRecipientChannelId);
         msg.setBytesToAdd(providedBytesToAdd);
         ChannelWindowAdjustMessageSerializer serializer =

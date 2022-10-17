@@ -9,6 +9,7 @@ package de.rub.nds.sshattacker.core.protocol.transport.serializer;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
+import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.protocol.transport.message.UnimplementedMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.parser.UnimplementedMessageParserTest;
 import java.util.stream.Stream;
@@ -36,6 +37,7 @@ public class UnimplementedMessageSerializerTest {
     @MethodSource("provideTestVectors")
     public void testSerialize(byte[] expectedBytes, int providedSequenceNumber) {
         UnimplementedMessage msg = new UnimplementedMessage();
+        msg.setMessageId(MessageIdConstant.SSH_MSG_UNIMPLEMENTED);
         msg.setSequenceNumber(providedSequenceNumber);
         UnimplementedMessageSerializer serializer = new UnimplementedMessageSerializer(msg);
 

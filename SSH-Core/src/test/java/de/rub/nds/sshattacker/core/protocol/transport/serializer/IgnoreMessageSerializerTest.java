@@ -9,6 +9,7 @@ package de.rub.nds.sshattacker.core.protocol.transport.serializer;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
+import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.protocol.transport.message.IgnoreMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.parser.IgnoreMessageParserTest;
 import java.util.stream.Stream;
@@ -36,6 +37,7 @@ public class IgnoreMessageSerializerTest {
     @MethodSource("provideTestVectors")
     public void testSerialize(byte[] expectedBytes, byte[] providedData) {
         IgnoreMessage msg = new IgnoreMessage();
+        msg.setMessageId(MessageIdConstant.SSH_MSG_IGNORE);
         msg.setData(providedData, true);
         IgnoreMessageSerializer serializer = new IgnoreMessageSerializer(msg);
 

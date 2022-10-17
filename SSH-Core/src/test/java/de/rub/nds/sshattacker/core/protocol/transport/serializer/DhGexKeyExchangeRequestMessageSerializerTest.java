@@ -10,6 +10,7 @@ package de.rub.nds.sshattacker.core.protocol.transport.serializer;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.protocol.transport.message.DhGexKeyExchangeRequestMessage;
 import java.util.stream.Stream;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -60,6 +61,7 @@ public class DhGexKeyExchangeRequestMessageSerializerTest {
             int providedPreferredGroupSize,
             int providedMaximalGroupSize) {
         DhGexKeyExchangeRequestMessage msg = new DhGexKeyExchangeRequestMessage();
+        msg.setMessageId(MessageIdConstant.SSH_MSG_KEX_DH_GEX_REQUEST);
         msg.setMinimalGroupSize(providedMinimalGroupSize);
         msg.setPreferredGroupSize(providedPreferredGroupSize);
         msg.setMaximalGroupSize(providedMaximalGroupSize);
