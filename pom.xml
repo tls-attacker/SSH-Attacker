@@ -4,7 +4,7 @@
     <parent>
         <groupId>de.rub.nds</groupId>
         <artifactId>protocol-toolkit-bom</artifactId>
-        <version>1.1.0</version>
+        <version>1.2.0</version>
     </parent>
 
     <groupId>de.rub.nds.ssh.attacker</groupId>
@@ -44,23 +44,40 @@
         </developer>
     </developers>
 
+    <modules>
+        <module>Attacks</module>
+        <module>SSH-Client</module>
+        <module>SSH-Core</module>
+        <module>SSH-Mitm</module>
+        <module>SSH-Server</module>
+    </modules>
+
     <scm>
         <connection>scm:git:https://github.com/tls-attacker/SSH-Attacker.git</connection>
         <developerConnection>scm:git:ssh://git@github.com/tls-attacker/SSH-Attacker.git</developerConnection>
         <url>https://github.com/tls-attacker/SSH-Attacker</url>
     </scm>
 
-    <modules>
-        <module>SSH-Core</module>
-        <module>SSH-Client</module>
-        <module>SSH-Server</module>
-        <module>Attacks</module>
-        <module>SSH-Mitm</module>
-    </modules>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
+        <main.basedir>${project.basedir}</main.basedir>
+        <!-- The following variables are required for Jenkins CI -->
+        <skipTests>false</skipTests>
+        <skip.surefire.tests>${skipTests}</skip.surefire.tests>
+        <skip.failsafe.tests>${skipTests}</skip.failsafe.tests>
+    </properties>
 
     <!-- Override dependency versions from BOM for all submodules to match parent version -->
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>de.rub.nds.ssh.attacker</groupId>
+                <artifactId>attacks</artifactId>
+                <version>${project.version}</version>
+            </dependency>
             <dependency>
                 <groupId>de.rub.nds.ssh.attacker</groupId>
                 <artifactId>ssh-attacker</artifactId>
@@ -69,22 +86,12 @@
             </dependency>
             <dependency>
                 <groupId>de.rub.nds.ssh.attacker</groupId>
-                <artifactId>ssh-core</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>de.rub.nds.ssh.attacker</groupId>
-                <artifactId>attacks</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>de.rub.nds.ssh.attacker</groupId>
                 <artifactId>ssh-client</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>de.rub.nds.ssh.attacker</groupId>
-                <artifactId>ssh-server</artifactId>
+                <artifactId>ssh-core</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -92,34 +99,23 @@
                 <artifactId>ssh-mitm</artifactId>
                 <version>${project.version}</version>
             </dependency>
+            <dependency>
+                <groupId>de.rub.nds.ssh.attacker</groupId>
+                <artifactId>ssh-server</artifactId>
+                <version>${project.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
     <dependencies>
-        <!-- scope: compile -->
-        <dependency>
-            <groupId>de.rub.nds</groupId>
-            <artifactId>modifiable-variable</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.bouncycastle</groupId>
-            <artifactId>bcprov-jdk15on</artifactId>
-        </dependency>
         <dependency>
             <groupId>com.beust</groupId>
             <artifactId>jcommander</artifactId>
         </dependency>
+        <!-- scope: compile -->
         <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.glassfish.jaxb</groupId>
-            <artifactId>jaxb-runtime</artifactId>
+            <groupId>de.rub.nds</groupId>
+            <artifactId>modifiable-variable</artifactId>
         </dependency>
         <dependency>
             <groupId>jakarta.xml.bind</groupId>
@@ -129,6 +125,22 @@
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcprov-jdk15on</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jaxb</groupId>
+            <artifactId>jaxb-runtime</artifactId>
+        </dependency>
         <!-- scope: test -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
@@ -137,120 +149,10 @@
         </dependency>
     </dependencies>
 
-    <profiles>
-        <profile>
-            <id>delayed-slow-tests</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-            <build>
-                <pluginManagement>
-                    <plugins>
-                        <!-- Configure Surefire to run SlowTests during integration-test phase to speed up the build process -->
-                        <plugin>
-                            <groupId>org.apache.maven.plugins</groupId>
-                            <artifactId>maven-surefire-plugin</artifactId>
-                            <executions>
-                                <execution>
-                                    <id>default-test</id>
-                                    <configuration>
-                                        <excludedGroups>SlowTest,IntegrationTest</excludedGroups>
-                                    </configuration>
-                                </execution>
-                                <execution>
-                                    <id>run-slow-unit-tests</id>
-                                    <phase>integration-test</phase>
-                                    <goals>
-                                        <goal>test</goal>
-                                    </goals>
-                                    <configuration>
-                                        <groups>SlowTest</groups>
-                                    </configuration>
-                                </execution>
-                            </executions>
-                        </plugin>
-                    </plugins>
-                </pluginManagement>
-            </build>
-        </profile>
-        <profile>
-            <id>coverage</id>
-            <build>
-                <pluginManagement>
-                    <plugins>
-                        <!-- Configure JaCoCo to run during unit and integration tests -->
-                        <plugin>
-                            <groupId>org.jacoco</groupId>
-                            <artifactId>jacoco-maven-plugin</artifactId>
-                            <executions>
-                                <execution>
-                                    <id>jacoco-prepare-agent</id>
-                                    <goals>
-                                        <goal>prepare-agent</goal>
-                                    </goals>
-                                </execution>
-                                <execution>
-                                    <id>jacoco-prepare-agent-it</id>
-                                    <goals>
-                                        <goal>prepare-agent-integration</goal>
-                                    </goals>
-                                </execution>
-                                <execution>
-                                    <id>jacoco-merge</id>
-                                    <phase>post-integration-test</phase>
-                                    <goals>
-                                        <goal>merge</goal>
-                                    </goals>
-                                    <configuration>
-                                        <destFile>${project.build.outputDirectory}/jacoco.merged.exec</destFile>
-                                        <fileSets>
-                                            <fileSet>
-                                                <directory>${project.build.directory}</directory>
-                                                <includes>
-                                                    <include>jacoco.exec</include>
-                                                    <include>jacoco-it.exec</include>
-                                                </includes>
-                                            </fileSet>
-                                        </fileSets>
-                                    </configuration>
-                                </execution>
-                                <execution>
-                                    <id>jacoco-report</id>
-                                    <phase>verify</phase>
-                                    <goals>
-                                        <goal>report</goal>
-                                    </goals>
-                                    <configuration>
-                                        <dataFile>${project.build.outputDirectory}/jacoco.merged.exec</dataFile>
-                                    </configuration>
-                                </execution>
-                            </executions>
-                        </plugin>
-                    </plugins>
-                </pluginManagement>
-            </build>
-        </profile>
-    </profiles>
-
     <build>
         <pluginManagement>
             <plugins>
-                <!--################## clean lifecycle plugins ##################-->
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-clean-plugin</artifactId>
-                </plugin>
                 <!--################# default lifecycle plugins #################-->
-                <!-- Plugin to record unit test coverage -->
-                <plugin>
-                    <groupId>org.jacoco</groupId>
-                    <artifactId>jacoco-maven-plugin</artifactId>
-                </plugin>
-                <!-- Plugin to copy project resources to output directory -->
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-resources-plugin</artifactId>
-                </plugin>
                 <!-- Plugin to compile source files -->
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -279,20 +181,13 @@
                         <skipTests>${skip.surefire.tests}</skipTests>
                     </configuration>
                 </plugin>
-                <!-- Plugin to build jar file -->
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-jar-plugin</artifactId>
-                </plugin>
                 <!-- Plugin to compile javadoc -->
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-javadoc-plugin</artifactId>
                     <configuration>
                         <source>${maven.compiler.source}</source>
-                        <javadocExecutable>
-                            ${java.home}/bin/javadoc
-                        </javadocExecutable>
+                        <javadocExecutable>${java.home}/bin/javadoc</javadocExecutable>
                     </configuration>
                     <executions>
                         <execution>
@@ -323,10 +218,10 @@
                     <executions>
                         <execution>
                             <id>copy</id>
-                            <phase>package</phase>
                             <goals>
                                 <goal>copy</goal>
                             </goals>
+                            <phase>package</phase>
                             <configuration>
                                 <artifactItems>
                                     <artifactItem>
@@ -343,10 +238,10 @@
                         </execution>
                         <execution>
                             <id>copy-dependencies</id>
-                            <phase>package</phase>
                             <goals>
                                 <goal>copy-dependencies</goal>
                             </goals>
+                            <phase>package</phase>
                             <configuration>
                                 <!--suppress UnresolvedMavenProperty -->
                                 <outputDirectory>${maven.multiModuleProjectDirectory}/apps/lib</outputDirectory>
@@ -372,17 +267,17 @@
                     <executions>
                         <execution>
                             <id>run-integration-tests</id>
-                            <phase>integration-test</phase>
                             <goals>
                                 <goal>integration-test</goal>
                             </goals>
+                            <phase>integration-test</phase>
                         </execution>
                         <execution>
                             <id>verify-integration-tests</id>
-                            <phase>verify</phase>
                             <goals>
                                 <goal>verify</goal>
                             </goals>
+                            <phase>verify</phase>
                         </execution>
                     </executions>
                 </plugin>
@@ -411,10 +306,10 @@
                     </execution>
                     <execution>
                         <id>clean-apps-folder</id>
-                        <phase>prepare-package</phase>
                         <goals>
                             <goal>clean</goal>
                         </goals>
+                        <phase>prepare-package</phase>
                         <inherited>false</inherited>
                         <configuration>
                             <excludeDefaultDirectories>true</excludeDefaultDirectories>
@@ -452,14 +347,6 @@
                         </licenseHeader>
                     </java>
                 </configuration>
-                <executions>
-                    <execution>
-                        <phase>process-sources</phase>
-                        <goals>
-                            <goal>apply</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
             <!-- Flatten pom.xml before install / deploy phases -->
             <plugin>
@@ -470,18 +357,18 @@
                 </configuration>
                 <executions>
                     <execution>
-                        <id>flatten</id>
-                        <phase>process-resources</phase>
-                        <goals>
-                            <goal>flatten</goal>
-                        </goals>
-                    </execution>
-                    <execution>
                         <id>flatten-clean</id>
-                        <phase>clean</phase>
                         <goals>
                             <goal>clean</goal>
                         </goals>
+                        <phase>clean</phase>
+                    </execution>
+                    <execution>
+                        <id>flatten</id>
+                        <goals>
+                            <goal>flatten</goal>
+                        </goals>
+                        <phase>process-resources</phase>
                     </execution>
                 </executions>
             </plugin>
@@ -531,15 +418,98 @@
         </plugins>
     </reporting>
 
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <maven.compiler.source>11</maven.compiler.source>
-        <maven.compiler.target>11</maven.compiler.target>
-        <main.basedir>${project.basedir}</main.basedir>
-        <!-- The following variables are required for Jenkins CI -->
-        <skipTests>false</skipTests>
-        <skip.surefire.tests>${skipTests}</skip.surefire.tests>
-        <skip.failsafe.tests>${skipTests}</skip.failsafe.tests>
-    </properties>
+    <profiles>
+        <profile>
+            <id>delayed-slow-tests</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <build>
+                <pluginManagement>
+                    <plugins>
+                        <!-- Configure Surefire to run SlowTests during integration-test phase to speed up the build process -->
+                        <plugin>
+                            <groupId>org.apache.maven.plugins</groupId>
+                            <artifactId>maven-surefire-plugin</artifactId>
+                            <executions>
+                                <execution>
+                                    <id>default-test</id>
+                                    <configuration>
+                                        <excludedGroups>SlowTest,IntegrationTest</excludedGroups>
+                                    </configuration>
+                                </execution>
+                                <execution>
+                                    <id>run-slow-unit-tests</id>
+                                    <goals>
+                                        <goal>test</goal>
+                                    </goals>
+                                    <phase>integration-test</phase>
+                                    <configuration>
+                                        <groups>SlowTest</groups>
+                                    </configuration>
+                                </execution>
+                            </executions>
+                        </plugin>
+                    </plugins>
+                </pluginManagement>
+            </build>
+        </profile>
+        <profile>
+            <id>coverage</id>
+            <build>
+                <pluginManagement>
+                    <plugins>
+                        <!-- Configure JaCoCo to run during unit and integration tests -->
+                        <plugin>
+                            <groupId>org.jacoco</groupId>
+                            <artifactId>jacoco-maven-plugin</artifactId>
+                            <executions>
+                                <execution>
+                                    <id>jacoco-prepare-agent</id>
+                                    <goals>
+                                        <goal>prepare-agent</goal>
+                                    </goals>
+                                </execution>
+                                <execution>
+                                    <id>jacoco-prepare-agent-it</id>
+                                    <goals>
+                                        <goal>prepare-agent-integration</goal>
+                                    </goals>
+                                </execution>
+                                <execution>
+                                    <id>jacoco-merge</id>
+                                    <goals>
+                                        <goal>merge</goal>
+                                    </goals>
+                                    <phase>post-integration-test</phase>
+                                    <configuration>
+                                        <destFile>${project.build.outputDirectory}/jacoco.merged.exec</destFile>
+                                        <fileSets>
+                                            <fileSet>
+                                                <directory>${project.build.directory}</directory>
+                                                <includes>
+                                                    <include>jacoco.exec</include>
+                                                    <include>jacoco-it.exec</include>
+                                                </includes>
+                                            </fileSet>
+                                        </fileSets>
+                                    </configuration>
+                                </execution>
+                                <execution>
+                                    <id>jacoco-report</id>
+                                    <goals>
+                                        <goal>report</goal>
+                                    </goals>
+                                    <phase>verify</phase>
+                                    <configuration>
+                                        <dataFile>${project.build.outputDirectory}/jacoco.merged.exec</dataFile>
+                                    </configuration>
+                                </execution>
+                            </executions>
+                        </plugin>
+                    </plugins>
+                </pluginManagement>
+            </build>
+        </profile>
+    </profiles>
 </project>

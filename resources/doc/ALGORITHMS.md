@@ -1,6 +1,7 @@
 # Supported Algorithms
 
 ---
+
 ## Supported Key Exchange Algorithms
 
 - `diffie-hellman-group-exchange-sha1`
@@ -29,7 +30,9 @@
 - `curve25519-sha256`
 - `curve25519-sha256@libssh.org`
 - `curve448-sha512`
+
 ---
+
 ## Supported Encryption Algorithms
 
 - `3des-{cbc|ctr}`
@@ -52,7 +55,9 @@
 - `serpent{128|256}-gcm@libassh.org`
 - `twofish{128|192|256}-{cbc|ctr}`
 - `twofish{128|256}-gcm@libassh.org`
+
 ---
+
 ## Supported MAC Algorithms
 
 - `AEAD_AES_{128|256}_GCM`
@@ -70,7 +75,9 @@
 - `umac-{32|64|96|128}@openssh.com`
 - `umac-{32|64|96|128}-etm@openssh.com`
 - `none`
+
 ---
+
 ## Supported Host Key Algorithms
 
 - `ssh-rsa`
@@ -85,8 +92,10 @@
 - `ssh-rsa-sha{224|256|384|512}@ssh.com`
 
 ---
+
 ## Supported Compression Methods
 
 - `none`
 - `zlib`
 - `zlib@openssh.com`
+
