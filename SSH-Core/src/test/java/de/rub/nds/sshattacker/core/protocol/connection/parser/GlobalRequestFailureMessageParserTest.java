@@ -13,7 +13,7 @@ import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.protocol.connection.message.GlobalRequestFailureMessage;
 import org.junit.jupiter.api.Test;
 
-public class GlobalGlobalRequestFailureMessageParserTest {
+public class GlobalRequestFailureMessageParserTest {
     /** Test of RequestFailureMessageParser::parse method */
     @Test
     public void testParse() {

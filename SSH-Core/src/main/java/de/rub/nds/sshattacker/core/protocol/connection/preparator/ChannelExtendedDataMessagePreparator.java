@@ -8,37 +8,20 @@
 package de.rub.nds.sshattacker.core.protocol.connection.preparator;
 
 import de.rub.nds.sshattacker.core.constants.ExtendedChannelDataType;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
-import de.rub.nds.sshattacker.core.protocol.connection.Channel;
+import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelExtendedDataMessage;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class ChannelExtendedDataMessagePreparator
-        extends SshMessagePreparator<ChannelExtendedDataMessage> {
-
-    private static final Logger LOGGER = LogManager.getLogger();
+        extends ChannelMessagePreparator<ChannelExtendedDataMessage> {
 
     public ChannelExtendedDataMessagePreparator(
             Chooser chooser, ChannelExtendedDataMessage message) {
-        super(chooser, message);
+        super(chooser, message, MessageIdConstant.SSH_MSG_CHANNEL_EXTENDED_DATA);
     }
 
     @Override
-    public void prepareMessageSpecificContents() {
-        Channel channel = null;
-        if (getObject().getSenderChannel() != null) {
-            channel = chooser.getContext().getChannels().get(getObject().getSenderChannel());
-        }
-
-        if (channel == null) {
-            channel = chooser.getConfig().getDefaultChannel();
-        }
-        if (!channel.isOpen().getValue()) {
-            LOGGER.info("The required channel is closed, still sending the message!");
-        }
-        getObject().setRecipientChannel(channel.getRemoteChannel());
+    protected void prepareChannelMessageSpecificContents() {
         // TODO dummy values for fuzzing
         getObject()
                 .setDataTypeCode(

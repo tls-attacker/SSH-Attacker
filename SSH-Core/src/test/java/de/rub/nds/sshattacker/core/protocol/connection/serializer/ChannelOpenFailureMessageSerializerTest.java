@@ -9,6 +9,7 @@ package de.rub.nds.sshattacker.core.protocol.connection.serializer;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
+import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelOpenFailureMessage;
 import de.rub.nds.sshattacker.core.protocol.connection.parser.ChannelOpenFailureMessageParserTest;
 import java.util.stream.Stream;
@@ -30,7 +31,7 @@ public class ChannelOpenFailureMessageSerializerTest {
      * Test of ChannelCloseMessageSerializer::serialize method
      *
      * @param expectedBytes Expected output bytes of the serialize() call
-     * @param providedRecipientChannel Recipient channel identifier
+     * @param providedRecipientChannelId Recipient channel identifier
      * @param providedReasonCode Reason code
      * @param providedReason Reason string
      * @param providedLanguageTag Language tag string
@@ -39,12 +40,13 @@ public class ChannelOpenFailureMessageSerializerTest {
     @MethodSource("provideTestVectors")
     public void testSerialize(
             byte[] expectedBytes,
-            int providedRecipientChannel,
+            int providedRecipientChannelId,
             int providedReasonCode,
             String providedReason,
             String providedLanguageTag) {
         ChannelOpenFailureMessage msg = new ChannelOpenFailureMessage();
-        msg.setRecipientChannel(providedRecipientChannel);
+        msg.setMessageId(MessageIdConstant.SSH_MSG_CHANNEL_OPEN_FAILURE);
+        msg.setRecipientChannelId(providedRecipientChannelId);
         msg.setReasonCode(providedReasonCode);
         msg.setReason(providedReason, true);
         msg.setLanguageTag(providedLanguageTag, true);

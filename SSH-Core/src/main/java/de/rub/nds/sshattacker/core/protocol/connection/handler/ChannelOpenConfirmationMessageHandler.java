@@ -7,7 +7,6 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.handler;
 
-import de.rub.nds.sshattacker.core.exceptions.MissingChannelException;
 import de.rub.nds.sshattacker.core.protocol.common.*;
 import de.rub.nds.sshattacker.core.protocol.connection.Channel;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelOpenConfirmationMessage;
@@ -15,9 +14,13 @@ import de.rub.nds.sshattacker.core.protocol.connection.parser.ChannelOpenConfirm
 import de.rub.nds.sshattacker.core.protocol.connection.preparator.ChannelOpenConfirmationMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.connection.serializer.ChannelOpenConfirmationMessageSerializer;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class ChannelOpenConfirmationMessageHandler
         extends SshMessageHandler<ChannelOpenConfirmationMessage> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public ChannelOpenConfirmationMessageHandler(SshContext context) {
         super(context);
@@ -30,22 +33,21 @@ public class ChannelOpenConfirmationMessageHandler
 
     @Override
     public void adjustContext() {
-        // ToDo Handle ChannelOpenConfirmation
-        Channel channel = context.getChannels().get(message.getRecipientChannel().getValue());
+        Channel channel = context.getChannels().get(message.getRecipientChannelId().getValue());
         if (channel == null) {
-            throw new MissingChannelException(
-                    "Can't find the required channel of the received message!");
-        } else {
-            channel.setRemoteChannel(message.getModSenderChannel());
-            channel.setRemotePacketSize(message.getPacketSize());
-            channel.setRemoteWindowSize(message.getWindowSize());
-            channel.setOpen(true);
-            LOGGER.debug(channel.toString());
-            Channel.getChannelAssociations()
-                    .put(
-                            message.getRecipientChannel().getValue(),
-                            message.getModSenderChannel().getValue());
+            LOGGER.warn(
+                    "{} received but no channel with id {} found locally, creating a new channel from defaults with given channel id.",
+                    this.getClass().getSimpleName(),
+                    message.getRecipientChannelId().getValue());
+            channel = context.getConfig().getChannelDefaults().newChannelFromDefaults();
+            channel.setLocalChannelId(message.getRecipientChannelId().getValue());
+            context.getChannels().put(channel.getLocalChannelId().getValue(), channel);
         }
+
+        channel.setRemoteChannelId(message.getSenderChannelId());
+        channel.setRemotePacketSize(message.getPacketSize());
+        channel.setRemoteWindowSize(message.getWindowSize());
+        channel.setOpen(true);
     }
 
     @Override

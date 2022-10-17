@@ -10,7 +10,6 @@ package de.rub.nds.sshattacker.core.protocol.connection.message;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
-import de.rub.nds.sshattacker.core.constants.ChannelRequestType;
 import de.rub.nds.sshattacker.core.constants.SignalType;
 import de.rub.nds.sshattacker.core.protocol.connection.handler.ChannelRequestSignalMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
@@ -21,23 +20,6 @@ public class ChannelRequestSignalMessage
 
     private ModifiableInteger signalNameLength;
     private ModifiableString signalName;
-
-    public ChannelRequestSignalMessage() {
-        super(ChannelRequestType.SIGNAL);
-    }
-
-    public ChannelRequestSignalMessage(Integer senderChannel) {
-        super(ChannelRequestType.SIGNAL, senderChannel);
-    }
-
-    public ChannelRequestSignalMessage(Integer senderChannel, String signalName) {
-        super(ChannelRequestType.SIGNAL, senderChannel);
-    }
-
-    @Override
-    public ChannelRequestSignalMessageHandler getHandler(SshContext context) {
-        return new ChannelRequestSignalMessageHandler(context, this);
-    }
 
     public ModifiableInteger getSignalNameLength() {
         return signalNameLength;
@@ -84,5 +66,10 @@ public class ChannelRequestSignalMessage
 
     public void setSignalName(SignalType signalName, boolean adjustLengthField) {
         setSignalName(signalName.toString(), adjustLengthField);
+    }
+
+    @Override
+    public ChannelRequestSignalMessageHandler getHandler(SshContext context) {
+        return new ChannelRequestSignalMessageHandler(context, this);
     }
 }

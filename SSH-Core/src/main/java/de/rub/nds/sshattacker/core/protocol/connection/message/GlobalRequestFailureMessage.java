@@ -7,19 +7,10 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.message;
 
-import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.protocol.connection.handler.GlobalRequestFailureMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class GlobalRequestFailureMessage extends ChannelMessage<GlobalRequestFailureMessage> {
-
-    public static final MessageIdConstant ID = MessageIdConstant.SSH_MSG_REQUEST_FAILURE;
-
-    public GlobalRequestFailureMessage() {}
-
-    public GlobalRequestFailureMessage(Integer senderChannel) {
-        super(senderChannel);
-    }
 
     @Override
     public GlobalRequestFailureMessageHandler getHandler(SshContext context) {

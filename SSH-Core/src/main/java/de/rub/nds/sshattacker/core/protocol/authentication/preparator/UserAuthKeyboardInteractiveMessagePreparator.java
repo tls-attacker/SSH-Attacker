@@ -8,24 +8,19 @@
 package de.rub.nds.sshattacker.core.protocol.authentication.preparator;
 
 import de.rub.nds.sshattacker.core.constants.AuthenticationMethod;
-import de.rub.nds.sshattacker.core.constants.ServiceType;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthKeyboardInteractiveMessage;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class UserAuthKeyboardInteractiveMessagePreparator
-        extends SshMessagePreparator<UserAuthKeyboardInteractiveMessage> {
+        extends UserAuthRequestMessagePreparator<UserAuthKeyboardInteractiveMessage> {
 
     public UserAuthKeyboardInteractiveMessagePreparator(
             Chooser chooser, UserAuthKeyboardInteractiveMessage message) {
-        super(chooser, message);
+        super(chooser, message, AuthenticationMethod.KEYBOARD_INTERACTIVE);
     }
 
     @Override
-    public void prepareMessageSpecificContents() {
-        getObject().setUserName(chooser.getConfig().getUsername(), true);
-        getObject().setServiceName(ServiceType.SSH_CONNECTION, true);
-        getObject().setMethodName(AuthenticationMethod.KEYBOARD_INTERACTIVE, true);
+    public void prepareUserAuthRequestSpecificContents() {
         getObject().setLanguageTag("", true);
         getObject().setSubMethods("pam", true);
     }

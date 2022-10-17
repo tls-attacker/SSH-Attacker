@@ -9,6 +9,7 @@ package de.rub.nds.sshattacker.core.protocol.authentication.serializer;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
+import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthSuccessMessage;
 import org.junit.jupiter.api.Test;
 
@@ -17,6 +18,7 @@ public class UserAuthSuccessMessageSerializerTest {
     @Test
     public void testSerialize() {
         UserAuthSuccessMessage msg = new UserAuthSuccessMessage();
+        msg.setMessageId(MessageIdConstant.SSH_MSG_USERAUTH_SUCCESS);
         assertArrayEquals(new byte[] {52}, new UserAuthSuccessMessageSerializer(msg).serialize());
     }
 }

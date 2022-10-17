@@ -10,6 +10,7 @@ package de.rub.nds.sshattacker.core.protocol.transport.serializer;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 import de.rub.nds.sshattacker.core.constants.DisconnectReason;
+import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.protocol.transport.message.DisconnectMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.parser.DisconnectMessageParserTest;
 import java.util.stream.Stream;
@@ -43,6 +44,7 @@ public class DisconnectMessageSerializerTest {
             String providedDescription,
             String providedLanguageTag) {
         DisconnectMessage msg = new DisconnectMessage();
+        msg.setMessageId(MessageIdConstant.SSH_MSG_DISCONNECT);
         msg.setReasonCode(providedReason);
         msg.setDescription(providedDescription, true);
         msg.setLanguageTag(providedLanguageTag, true);

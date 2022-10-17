@@ -9,13 +9,15 @@ package de.rub.nds.sshattacker.core.protocol.authentication.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.connection.AliasedConnection;
-import de.rub.nds.sshattacker.core.constants.*;
+import de.rub.nds.sshattacker.core.constants.AuthenticationMethod;
+import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
+import de.rub.nds.sshattacker.core.constants.PublicKeyAlgorithm;
+import de.rub.nds.sshattacker.core.constants.SignatureEncoding;
 import de.rub.nds.sshattacker.core.crypto.signature.SignatureFactory;
 import de.rub.nds.sshattacker.core.crypto.signature.SigningSignature;
 import de.rub.nds.sshattacker.core.crypto.util.PublicKeyHelper;
 import de.rub.nds.sshattacker.core.exceptions.CryptoException;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthHostbasedMessage;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.util.Converter;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import java.io.ByteArrayOutputStream;
@@ -26,19 +28,16 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class UserAuthHostbasedMessagePreparator
-        extends SshMessagePreparator<UserAuthHostbasedMessage> {
+        extends UserAuthRequestMessagePreparator<UserAuthHostbasedMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
     public UserAuthHostbasedMessagePreparator(Chooser chooser, UserAuthHostbasedMessage message) {
-        super(chooser, message);
+        super(chooser, message, AuthenticationMethod.HOST_BASED);
     }
 
     @Override
-    public void prepareMessageSpecificContents() {
-        getObject().setUserName(chooser.getConfig().getUsername(), true);
-        getObject().setServiceName(ServiceType.SSH_CONNECTION, true);
-        getObject().setMethodName(AuthenticationMethod.HOST_BASED, true);
+    public void prepareUserAuthRequestSpecificContents() {
         getObject().setPubKeyAlgorithm(chooser.getHostKeyAlgorithm().toString(), true);
         getObject().setHostKeyBytes(PublicKeyHelper.encode(chooser.getNegotiatedHostKey()), true);
         Optional<String> hostName =

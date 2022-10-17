@@ -7,6 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.protocol.authentication.preparator;
 
+import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthBannerMessage;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
@@ -14,7 +15,7 @@ import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 public class UserAuthBannerMessagePreparator extends SshMessagePreparator<UserAuthBannerMessage> {
 
     public UserAuthBannerMessagePreparator(Chooser chooser, UserAuthBannerMessage message) {
-        super(chooser, message);
+        super(chooser, message, MessageIdConstant.SSH_MSG_USERAUTH_BANNER);
     }
 
     @Override

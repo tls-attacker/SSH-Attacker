@@ -8,42 +8,19 @@
 package de.rub.nds.sshattacker.core.protocol.connection.preparator;
 
 import de.rub.nds.sshattacker.core.constants.ChannelRequestType;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
-import de.rub.nds.sshattacker.core.protocol.connection.Channel;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelRequestExitStatusMessage;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class ChannelRequestExitStatusMessagePreparator
-        extends SshMessagePreparator<ChannelRequestExitStatusMessage> {
-
-    private static final Logger LOGGER = LogManager.getLogger();
+        extends ChannelRequestMessagePreparator<ChannelRequestExitStatusMessage> {
 
     public ChannelRequestExitStatusMessagePreparator(
             Chooser chooser, ChannelRequestExitStatusMessage message) {
-        super(chooser, message);
+        super(chooser, message, ChannelRequestType.EXIT_STATUS);
     }
 
     @Override
-    public void prepareMessageSpecificContents() {
-        Channel channel = null;
-        if (getObject().getSenderChannel() != null) {
-            channel = chooser.getContext().getChannels().get(getObject().getSenderChannel());
-        }
-
-        if (channel == null) {
-            channel = chooser.getConfig().getDefaultChannel();
-        }
-        if (!channel.isOpen().getValue()) {
-            LOGGER.info("The required channel is closed, still sending the message!");
-        }
-        getObject().setRecipientChannel(channel.getRemoteChannel());
-        getObject()
-                .setRecipientChannel(
-                        Channel.getChannelAssociations().get(getObject().getSenderChannel()));
-        getObject().setWantReply((byte) 0);
-        getObject().setRequestType(ChannelRequestType.EXIT_STATUS, true);
+    public void prepareChannelRequestMessageSpecificContents() {
         getObject().setExitStatus(1);
     }
 }

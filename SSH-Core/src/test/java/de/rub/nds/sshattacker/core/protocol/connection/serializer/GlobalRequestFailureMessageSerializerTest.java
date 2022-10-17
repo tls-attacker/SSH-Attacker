@@ -9,14 +9,16 @@ package de.rub.nds.sshattacker.core.protocol.connection.serializer;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
+import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.protocol.connection.message.GlobalRequestFailureMessage;
 import org.junit.jupiter.api.Test;
 
-public class GlobalGlobalRequestFailureMessageSerializerTest {
-    /** Test of KeyExchangeInitMessageSerializer::serialize method */
+public class GlobalRequestFailureMessageSerializerTest {
+    /** Test of GlobalRequestFailureMessageSerializer::serialize method */
     @Test
     public void testSerialize() {
         GlobalRequestFailureMessage msg = new GlobalRequestFailureMessage();
+        msg.setMessageId(MessageIdConstant.SSH_MSG_REQUEST_FAILURE);
         assertArrayEquals(
                 new byte[] {82}, new GlobalRequestFailureMessageSerializer(msg).serialize());
     }

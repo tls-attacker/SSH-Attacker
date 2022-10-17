@@ -10,6 +10,7 @@ package de.rub.nds.sshattacker.core.protocol.transport.serializer;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.protocol.transport.message.RsaKeyExchangeSecretMessage;
 import java.util.stream.Stream;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -48,6 +49,7 @@ public class RsaKeyExchangeSecretMessageSerializerTest {
             byte[] providedEncryptedSecret) {
         RsaKeyExchangeSecretMessage msg = new RsaKeyExchangeSecretMessage();
 
+        msg.setMessageId(MessageIdConstant.SSH_MSG_KEXRSA_SECRET);
         msg.setEncryptedSecretLength(providedEncryptedSecretLength);
         msg.setEncryptedSecret(providedEncryptedSecret);
         RsaKeyExchangeSecretMessageSerializer serializer =

@@ -9,6 +9,7 @@ package de.rub.nds.sshattacker.core.protocol.authentication.serializer;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
+import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthBannerMessage;
 import de.rub.nds.sshattacker.core.protocol.authentication.parser.UserAuthBannerMessageParserTest;
 import java.util.stream.Stream;
@@ -38,6 +39,7 @@ public class UserAuthBannerMessageSerializerTest {
     public void testSerialize(
             byte[] expectedBytes, String providedMessage, String providedLanguageTag) {
         UserAuthBannerMessage msg = new UserAuthBannerMessage();
+        msg.setMessageId(MessageIdConstant.SSH_MSG_USERAUTH_BANNER);
         msg.setMessage(providedMessage, true);
         msg.setLanguageTag(providedLanguageTag, true);
         UserAuthBannerMessageSerializer serializer = new UserAuthBannerMessageSerializer(msg);

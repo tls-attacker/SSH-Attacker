@@ -10,26 +10,17 @@ package de.rub.nds.sshattacker.core.protocol.connection.message;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
-import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.protocol.connection.handler.ChannelOpenFailureMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import java.nio.charset.StandardCharsets;
 
 public class ChannelOpenFailureMessage extends ChannelMessage<ChannelOpenFailureMessage> {
 
-    public static final MessageIdConstant ID = MessageIdConstant.SSH_MSG_CHANNEL_OPEN_FAILURE;
-
     private ModifiableInteger reasonCode;
     private ModifiableInteger reasonLength;
     private ModifiableString reason;
     private ModifiableInteger languageTagLength;
     private ModifiableString languageTag;
-
-    public ChannelOpenFailureMessage() {}
-
-    public ChannelOpenFailureMessage(Integer senderChannel) {
-        super(senderChannel);
-    }
 
     public ModifiableInteger getReasonCode() {
         return reasonCode;

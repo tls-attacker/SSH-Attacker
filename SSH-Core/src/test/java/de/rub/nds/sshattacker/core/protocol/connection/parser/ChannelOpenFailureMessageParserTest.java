@@ -64,7 +64,7 @@ public class ChannelOpenFailureMessageParserTest {
         assertEquals(
                 MessageIdConstant.SSH_MSG_CHANNEL_OPEN_FAILURE.getId(),
                 msg.getMessageId().getValue());
-        assertEquals(expectedRecipientChannel, msg.getRecipientChannel().getValue());
+        assertEquals(expectedRecipientChannel, msg.getRecipientChannelId().getValue());
         assertEquals(expectedReasonCode, msg.getReasonCode().getValue());
         assertEquals(expectedReason, msg.getReason().getValue());
         assertEquals(expectedLanguageTag, msg.getLanguageTag().getValue());

@@ -7,11 +7,13 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.preparator;
 
-import de.rub.nds.sshattacker.core.constants.ChannelType;
+import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.connection.Channel;
+import de.rub.nds.sshattacker.core.protocol.connection.ChannelDefaults;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelOpenMessage;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
+import java.util.HashMap;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -20,62 +22,39 @@ public class ChannelOpenMessagePreparator extends SshMessagePreparator<ChannelOp
     private static final Logger LOGGER = LogManager.getLogger();
 
     public ChannelOpenMessagePreparator(Chooser chooser, ChannelOpenMessage message) {
-        super(chooser, message);
+        super(chooser, message, MessageIdConstant.SSH_MSG_CHANNEL_OPEN);
     }
 
     @Override
     public void prepareMessageSpecificContents() {
-        // set transfered value to ModSenderChannel or fallback to config
-        if (getObject().getModSenderChannel() == null
-                || getObject().getModSenderChannel().getValue() == null) {
-            if (getObject().getSenderChannel() != null) {
-                getObject().setModSenderChannel(getObject().getSenderChannel());
+        HashMap<Integer, Channel> channelMap = chooser.getContext().getChannels();
+        ChannelDefaults channelDefaults = chooser.getConfig().getChannelDefaults();
 
-            } else {
-                getObject()
-                        .setModSenderChannel(
-                                chooser.getConfig().getDefaultChannel().getLocalChannel());
-                chooser.getContext()
-                        .getChannels()
-                        .put(
-                                getObject().getModSenderChannel().getValue(),
-                                chooser.getConfig().getDefaultChannel());
-            }
-        }
-        Channel channel =
-                chooser.getContext()
-                        .getChannels()
-                        .get(getObject().getModSenderChannel().getValue());
-
-        getObject().setChannelType(chooser.getConfig().getDefaultChannel().getChannelType(), true);
-        getObject().setWindowSize(chooser.getConfig().getDefaultChannel().getLocalWindowSize());
-        getObject().setPacketSize(chooser.getConfig().getDefaultChannel().getlocalPacketSize());
-
-        if (channel != null) {
-            if (channel.isOpen().getValue()) {
-                LOGGER.info(
-                        "Channel of the belonging ChannelOpenMessage is already open, changing channel "
-                                + "details and sending ChannelOpenMessage again!");
-            }
-            channel.setChannelType(
-                    ChannelType.getByString(getObject().getChannelType().getValue()));
-            channel.setLocalWindowSize(getObject().getWindowSize());
-            channel.setRemotePacketSize(getObject().getPacketSize());
-            chooser.getContext()
-                    .getChannels()
-                    .put(getObject().getModSenderChannel().getValue(), channel);
-
+        int channelId;
+        if (getObject().getConfigSenderChannelId() != null) {
+            channelId = getObject().getConfigSenderChannelId();
         } else {
-            Channel newChannel =
-                    new Channel(
-                            ChannelType.getByString(getObject().getChannelType().getValue()),
-                            getObject().getModSenderChannel(),
-                            getObject().getWindowSize(),
-                            getObject().getPacketSize(),
-                            false);
-            chooser.getContext()
-                    .getChannels()
-                    .put(getObject().getModSenderChannel().getValue(), newChannel);
+            channelId = channelDefaults.getLocalChannelId();
         }
+        getObject().setSenderChannelId(channelId);
+        Channel channel =
+                chooser.getContext().getChannels().get(getObject().getSenderChannelId().getValue());
+        if (channel != null) {
+            LOGGER.warn(
+                    "Channel with id {} is already exists, reusing the existing channel object.",
+                    getObject().getSenderChannelId().getValue());
+            if (channel.isOpen().getValue()) {
+                LOGGER.warn(
+                        "Channel with id {} is already open, sending ChannelOpenMessage with current channel details again.",
+                        getObject().getSenderChannelId().getValue());
+            }
+        } else {
+            channel = channelDefaults.newChannelFromDefaults();
+            channel.setLocalChannelId(getObject().getSenderChannelId().getValue());
+            channelMap.put(getObject().getSenderChannelId().getValue(), channel);
+        }
+        getObject().setChannelType(channel.getChannelType(), true);
+        getObject().setWindowSize(channel.getLocalWindowSize());
+        getObject().setPacketSize(channel.getLocalPacketSize());
     }
 }

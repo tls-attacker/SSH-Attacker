@@ -31,8 +31,8 @@ public class ChannelOpenConfirmationMessageParser
     }
 
     private void parseSenderChannel() {
-        message.setModSenderChannel(parseIntField(DataFormatConstants.UINT32_SIZE));
-        LOGGER.debug("Sender channel: " + message.getModSenderChannel().getValue());
+        message.setSenderChannelId(parseIntField(DataFormatConstants.UINT32_SIZE));
+        LOGGER.debug("Sender channel id: " + message.getSenderChannelId().getValue());
     }
 
     private void parseWindowSize() {

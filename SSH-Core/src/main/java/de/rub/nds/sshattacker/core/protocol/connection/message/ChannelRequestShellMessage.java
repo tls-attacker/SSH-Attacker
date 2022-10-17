@@ -7,19 +7,10 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.message;
 
-import de.rub.nds.sshattacker.core.constants.ChannelRequestType;
 import de.rub.nds.sshattacker.core.protocol.connection.handler.ChannelRequestShellMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class ChannelRequestShellMessage extends ChannelRequestMessage<ChannelRequestShellMessage> {
-
-    public ChannelRequestShellMessage() {
-        super(ChannelRequestType.SHELL);
-    }
-
-    public ChannelRequestShellMessage(Integer senderChannel) {
-        super(ChannelRequestType.SHELL, senderChannel);
-    }
 
     @Override
     public ChannelRequestShellMessageHandler getHandler(SshContext context) {

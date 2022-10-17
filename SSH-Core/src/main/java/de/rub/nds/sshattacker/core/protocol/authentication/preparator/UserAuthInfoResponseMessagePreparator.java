@@ -7,6 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.protocol.authentication.preparator;
 
+import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.protocol.authentication.AuthenticationResponse;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthInfoResponseMessage;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
@@ -17,7 +18,7 @@ public class UserAuthInfoResponseMessagePreparator
 
     public UserAuthInfoResponseMessagePreparator(
             Chooser chooser, UserAuthInfoResponseMessage message) {
-        super(chooser, message);
+        super(chooser, message, MessageIdConstant.SSH_MSG_USERAUTH_INFO_RESPONSE);
     }
 
     @Override

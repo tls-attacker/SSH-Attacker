@@ -9,21 +9,12 @@ package de.rub.nds.sshattacker.core.protocol.connection.message;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
-import de.rub.nds.sshattacker.core.constants.ChannelRequestType;
 import de.rub.nds.sshattacker.core.protocol.connection.handler.ChannelRequestBreakMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class ChannelRequestBreakMessage extends ChannelRequestMessage<ChannelRequestBreakMessage> {
 
     private ModifiableInteger breakLength;
-
-    public ChannelRequestBreakMessage() {
-        super(ChannelRequestType.BREAK);
-    }
-
-    public ChannelRequestBreakMessage(Integer senderChannel) {
-        super(ChannelRequestType.BREAK, senderChannel);
-    }
 
     public ModifiableInteger getBreakLength() {
         return breakLength;

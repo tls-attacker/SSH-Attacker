@@ -87,28 +87,14 @@ public class CyclicParserSerializerTest {
             try {
                 Constructor someMessageConstructor;
 
-                if (messageClass.getSuperclass() == ChannelMessage.class
-                        || messageClass.getSuperclass().getSuperclass() == ChannelMessage.class
-                        || messageClass == ChannelOpenMessage.class) {
-                    someMessageConstructor = getChannelMessageConstructor(messageClass);
-                } else {
-                    someMessageConstructor = getDefaultMessageConstructor(messageClass);
-                }
+                someMessageConstructor = getDefaultMessageConstructor(messageClass);
                 if (someMessageConstructor == null) {
                     fail(
                             "Subclass '"
                                     + messageClassName
                                     + "' does not have the needed constructor.");
-                } else if (someMessageConstructor.getParameterCount() == 0) {
-                    message = (ProtocolMessage) someMessageConstructor.newInstance();
                 } else {
-                    message =
-                            (ProtocolMessage)
-                                    someMessageConstructor.newInstance(
-                                            context.getConfig()
-                                                    .getDefaultChannel()
-                                                    .getLocalChannel()
-                                                    .getValue());
+                    message = (ProtocolMessage) someMessageConstructor.newInstance();
                 }
             } catch (SecurityException
                     | InstantiationException
@@ -123,14 +109,12 @@ public class CyclicParserSerializerTest {
             }
             // prepare specific Channel requirements for sending Channel messages
             if (messageClass.getSuperclass() == ChannelMessage.class
-                    || messageClass.getSuperclass().getSuperclass() == ChannelMessage.class) {
-                Channel defaultChannel = context.getConfig().getDefaultChannel();
-                Channel.getChannelAssociations()
-                        .put(
-                                defaultChannel.getLocalChannel().getValue(),
-                                defaultChannel.getRemoteChannel().getValue());
+                    || messageClass.getSuperclass().getSuperclass() == ChannelMessage.class
+                    || messageClass == ChannelOpenMessage.class) {
+                Channel defaultChannel =
+                        context.getConfig().getChannelDefaults().newChannelFromDefaults();
                 context.getChannels()
-                        .put(defaultChannel.getLocalChannel().getValue(), defaultChannel);
+                        .put(defaultChannel.getLocalChannelId().getValue(), defaultChannel);
                 defaultChannel.setOpen(true);
             }
             // Prepare the message given the fresh context

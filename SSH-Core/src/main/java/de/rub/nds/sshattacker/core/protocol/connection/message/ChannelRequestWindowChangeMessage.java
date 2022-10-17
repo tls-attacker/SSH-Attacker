@@ -9,24 +9,16 @@ package de.rub.nds.sshattacker.core.protocol.connection.message;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
-import de.rub.nds.sshattacker.core.constants.ChannelRequestType;
 import de.rub.nds.sshattacker.core.protocol.connection.handler.ChannelRequestWindowChangeMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class ChannelRequestWindowChangeMessage
         extends ChannelRequestMessage<ChannelRequestWindowChangeMessage> {
+
     private ModifiableInteger widthColumns;
     private ModifiableInteger heightRows;
     private ModifiableInteger widthPixels;
     private ModifiableInteger heightPixels;
-
-    public ChannelRequestWindowChangeMessage() {
-        super(ChannelRequestType.WINDOW_CHANGE);
-    }
-
-    public ChannelRequestWindowChangeMessage(Integer senderChannel) {
-        super(ChannelRequestType.WINDOW_CHANGE, senderChannel);
-    }
 
     public ModifiableInteger getWidthColumns() {
         return widthColumns;

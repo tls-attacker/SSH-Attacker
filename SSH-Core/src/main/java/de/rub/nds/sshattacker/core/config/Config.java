@@ -15,7 +15,7 @@ import de.rub.nds.sshattacker.core.constants.*;
 import de.rub.nds.sshattacker.core.crypto.ec.PointFormatter;
 import de.rub.nds.sshattacker.core.crypto.keys.*;
 import de.rub.nds.sshattacker.core.protocol.authentication.AuthenticationResponse;
-import de.rub.nds.sshattacker.core.protocol.connection.Channel;
+import de.rub.nds.sshattacker.core.protocol.connection.ChannelDefaults;
 import de.rub.nds.sshattacker.core.workflow.factory.WorkflowTraceType;
 import de.rub.nds.sshattacker.core.workflow.filter.FilterType;
 import jakarta.xml.bind.annotation.*;
@@ -275,8 +275,8 @@ public class Config implements Serializable {
     // region Channel
     /** Fallback for command of ChannelRequestExecMessage */
     private String channelCommand;
-    /** Default channel used for */
-    private Channel defaultChannel;
+    /** Default channel values including local channel id and window size */
+    private ChannelDefaults channelDefaults;
     /**
      * Fallback for the wantReply field of messages extending the SSH_MSG_GLOBAL_REQUEST or
      * SSH_MSG_CHANNEL_REQUEST messages
@@ -773,16 +773,15 @@ public class Config implements Serializable {
         // endregion
 
         // region Channel initialization
-        defaultChannel =
-                new Channel(
+        channelDefaults =
+                new ChannelDefaults(
                         ChannelType.SESSION,
                         1337,
                         Integer.MAX_VALUE,
                         Integer.MAX_VALUE,
                         0,
                         Integer.MAX_VALUE,
-                        Integer.MAX_VALUE,
-                        false);
+                        35000);
         replyWanted = 0;
         channelCommand = "nc -l -p 13370";
         defaultVariableName = "PATH";
@@ -1306,8 +1305,8 @@ public class Config implements Serializable {
         return replyWanted;
     }
 
-    public Channel getDefaultChannel() {
-        return defaultChannel;
+    public ChannelDefaults getChannelDefaults() {
+        return channelDefaults;
     }
 
     public String getDefaultVariableValue() {
@@ -1360,8 +1359,8 @@ public class Config implements Serializable {
         this.replyWanted = replyWanted;
     }
 
-    public void setDefaultChannel(Channel defaultChannel) {
-        this.defaultChannel = defaultChannel;
+    public void setChannelDefaults(ChannelDefaults channelDefaults) {
+        this.channelDefaults = channelDefaults;
     }
 
     public void setDefaultVariableValue(String defaultVariableValue) {

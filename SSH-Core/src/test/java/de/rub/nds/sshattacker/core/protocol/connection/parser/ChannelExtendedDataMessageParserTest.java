@@ -67,7 +67,7 @@ public class ChannelExtendedDataMessageParserTest {
         assertEquals(
                 MessageIdConstant.SSH_MSG_CHANNEL_EXTENDED_DATA.getId(),
                 msg.getMessageId().getValue());
-        assertEquals(expectedRecipientChannel, msg.getRecipientChannel().getValue());
+        assertEquals(expectedRecipientChannel, msg.getRecipientChannelId().getValue());
         assertEquals(expectedDataType.getDataTypeCode(), msg.getDataTypeCode().getValue());
         assertArrayEquals(expectedPayload, msg.getData().getValue());
     }

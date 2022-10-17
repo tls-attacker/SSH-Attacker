@@ -7,6 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.preparator;
 
+import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.crypto.kex.RsaKeyExchange;
 import de.rub.nds.sshattacker.core.crypto.util.PublicKeyHelper;
 import de.rub.nds.sshattacker.core.exceptions.CryptoException;
@@ -24,7 +25,7 @@ public class RsaKeyExchangePubkeyMessagePreparator
 
     public RsaKeyExchangePubkeyMessagePreparator(
             Chooser chooser, RsaKeyExchangePubkeyMessage message) {
-        super(chooser, message);
+        super(chooser, message, MessageIdConstant.SSH_MSG_KEXRSA_PUBKEY);
     }
 
     @Override

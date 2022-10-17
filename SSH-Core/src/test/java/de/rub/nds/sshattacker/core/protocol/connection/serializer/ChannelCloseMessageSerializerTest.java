@@ -9,6 +9,7 @@ package de.rub.nds.sshattacker.core.protocol.connection.serializer;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
+import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelCloseMessage;
 import de.rub.nds.sshattacker.core.protocol.connection.parser.ChannelCloseMessageParserTest;
 import java.util.stream.Stream;
@@ -30,13 +31,14 @@ public class ChannelCloseMessageSerializerTest {
      * Test of ChannelCloseMessageSerializer::serialize method
      *
      * @param expectedBytes Expected output bytes of the serialize() call
-     * @param providedRecipientChannel Recipient channel identifier
+     * @param providedRecipientChannelId Recipient channel identifier
      */
     @ParameterizedTest
     @MethodSource("provideTestVectors")
-    public void testSerialize(byte[] expectedBytes, int providedRecipientChannel) {
+    public void testSerialize(byte[] expectedBytes, int providedRecipientChannelId) {
         ChannelCloseMessage msg = new ChannelCloseMessage();
-        msg.setRecipientChannel(providedRecipientChannel);
+        msg.setMessageId(MessageIdConstant.SSH_MSG_CHANNEL_CLOSE);
+        msg.setRecipientChannelId(providedRecipientChannelId);
         ChannelMessageSerializer<ChannelCloseMessage> serializer =
                 new ChannelMessageSerializer<>(msg);
 

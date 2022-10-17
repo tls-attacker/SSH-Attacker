@@ -36,14 +36,13 @@ public class ChannelOpenMessageParser extends SshMessageParser<ChannelOpenMessag
         LOGGER.debug("Channel type length: " + message.getChannelTypeLength().getValue());
         message.setChannelType(
                 parseByteString(
-                        message.getChannelTypeLength().getValue(), StandardCharsets.US_ASCII),
-                false);
+                        message.getChannelTypeLength().getValue(), StandardCharsets.US_ASCII));
         LOGGER.debug("Channel type: " + message.getChannelType().getValue());
     }
 
     public void parseSenderChannel() {
-        message.setModSenderChannel(parseIntField(DataFormatConstants.UINT32_SIZE));
-        LOGGER.debug("Sender channel: " + message.getModSenderChannel().getValue());
+        message.setSenderChannelId(parseIntField(DataFormatConstants.UINT32_SIZE));
+        LOGGER.debug("Sender channel id: " + message.getSenderChannelId().getValue());
     }
 
     public void parseWindowSize() {

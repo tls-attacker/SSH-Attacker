@@ -11,7 +11,6 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
-import de.rub.nds.sshattacker.core.constants.AuthenticationMethod;
 import de.rub.nds.sshattacker.core.crypto.keys.SshPublicKey;
 import de.rub.nds.sshattacker.core.crypto.util.PublicKeyHelper;
 import de.rub.nds.sshattacker.core.protocol.authentication.handler.UserAuthHostbasedMessageHandler;
@@ -33,10 +32,6 @@ public class UserAuthHostbasedMessage extends UserAuthRequestMessage<UserAuthHos
     private ModifiableString clientUserName;
     private ModifiableInteger signatureLength;
     private ModifiableByteArray signature;
-
-    public UserAuthHostbasedMessage() {
-        super(AuthenticationMethod.HOST_BASED);
-    }
 
     public ModifiableInteger getPubKeyAlgorithmLength() {
         return pubKeyAlgorithmLength;

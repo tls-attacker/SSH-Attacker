@@ -362,25 +362,23 @@ public class WorkflowConfigurationFactory {
         AliasedConnection connection = getDefaultConnection();
         workflow.addSshActions(
                 SshActionFactory.createMessageAction(
-                        connection, ConnectionEndType.CLIENT, new ChannelOpenMessage(1337)),
+                        connection, ConnectionEndType.CLIENT, new ChannelOpenMessage()),
                 SshActionFactory.createMessageAction(
-                        connection,
-                        ConnectionEndType.SERVER,
-                        new ChannelOpenConfirmationMessage(0)),
+                        connection, ConnectionEndType.SERVER, new ChannelOpenConfirmationMessage()),
                 SshActionFactory.createMessageAction(
                         connection,
                         ConnectionEndType.CLIENT,
-                        new ChannelRequestPtyMessage(1337),
-                        new ChannelRequestEnvMessage(1337),
-                        new ChannelRequestEnvMessage(1337),
-                        new ChannelRequestEnvMessage(1337),
-                        new ChannelRequestEnvMessage(1337)),
+                        new ChannelRequestPtyMessage(),
+                        new ChannelRequestEnvMessage(),
+                        new ChannelRequestEnvMessage(),
+                        new ChannelRequestEnvMessage(),
+                        new ChannelRequestEnvMessage()),
                 SshActionFactory.createMessageAction(
-                        connection, ConnectionEndType.SERVER, new ChannelSuccessMessage(0)),
+                        connection, ConnectionEndType.SERVER, new ChannelSuccessMessage()),
                 SshActionFactory.createMessageAction(
-                        connection, ConnectionEndType.SERVER, new ChannelSuccessMessage(0)),
+                        connection, ConnectionEndType.SERVER, new ChannelSuccessMessage()),
                 SshActionFactory.createMessageAction(
-                        connection, ConnectionEndType.CLIENT, new ChannelRequestEnvMessage(1337)));
+                        connection, ConnectionEndType.CLIENT, new ChannelRequestEnvMessage()));
     }
 
     private WorkflowTrace createSimpleMitmProxyWorkflow() {

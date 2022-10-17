@@ -10,7 +10,6 @@ package de.rub.nds.sshattacker.core.protocol.connection.message;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
-import de.rub.nds.sshattacker.core.constants.ChannelRequestType;
 import de.rub.nds.sshattacker.core.protocol.connection.handler.ChannelRequestSubsystemMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import java.nio.charset.StandardCharsets;
@@ -20,14 +19,6 @@ public class ChannelRequestSubsystemMessage
 
     private ModifiableInteger subsystemNameLength;
     private ModifiableString subsystemName;
-
-    public ChannelRequestSubsystemMessage() {
-        super(ChannelRequestType.SUBSYSTEM);
-    }
-
-    public ChannelRequestSubsystemMessage(Integer senderChannel) {
-        super(ChannelRequestType.SUBSYSTEM, senderChannel);
-    }
 
     public ModifiableInteger getSubsystemNameLength() {
         return subsystemNameLength;

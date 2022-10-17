@@ -13,18 +13,11 @@ import de.rub.nds.sshattacker.core.protocol.connection.handler.GlobalRequestUnkn
 import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class GlobalRequestUnknownMessage extends GlobalRequestMessage<GlobalRequestUnknownMessage> {
-    private ModifiableByteArray typeSpecificData;
 
-    public GlobalRequestUnknownMessage() {
-        super();
-    }
+    private ModifiableByteArray typeSpecificData;
 
     public ModifiableByteArray getTypeSpecificData() {
         return typeSpecificData;
-    }
-
-    public void setPassword(ModifiableByteArray typeSpecificData) {
-        this.typeSpecificData = typeSpecificData;
     }
 
     public void setTypeSpecificData(byte[] typeSpecificData) {

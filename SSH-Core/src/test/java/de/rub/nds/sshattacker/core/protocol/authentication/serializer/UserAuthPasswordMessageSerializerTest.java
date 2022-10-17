@@ -10,6 +10,8 @@ package de.rub.nds.sshattacker.core.protocol.authentication.serializer;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.sshattacker.core.constants.AuthenticationMethod;
+import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.constants.ServiceType;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthPasswordMessage;
 import java.util.stream.Stream;
@@ -67,6 +69,8 @@ public class UserAuthPasswordMessageSerializerTest {
             byte providedChangePassword,
             String providedPassword) {
         UserAuthPasswordMessage msg = new UserAuthPasswordMessage();
+        msg.setMessageId(MessageIdConstant.SSH_MSG_USERAUTH_REQUEST);
+        msg.setMethodName(AuthenticationMethod.PASSWORD, true);
         msg.setUserName(providedUsername, true);
         msg.setServiceName(providedServiceType, true);
         msg.setChangePassword(providedChangePassword);

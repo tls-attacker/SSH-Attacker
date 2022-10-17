@@ -10,6 +10,7 @@ package de.rub.nds.sshattacker.core.protocol.transport.serializer;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.protocol.transport.message.DhGexKeyExchangeInitMessage;
 import java.math.BigInteger;
 import java.util.stream.Stream;
@@ -61,6 +62,7 @@ public class DhGexKeyExchangeInitMessageSerializerTest {
             int providedEphemeralPublicKeyLength,
             BigInteger providedEphemeralPublicKey) {
         DhGexKeyExchangeInitMessage msg = new DhGexKeyExchangeInitMessage();
+        msg.setMessageId(MessageIdConstant.SSH_MSG_KEX_DH_GEX_INIT);
         msg.setEphemeralPublicKeyLength(providedEphemeralPublicKeyLength);
         msg.setEphemeralPublicKey(providedEphemeralPublicKey);
         DhGexKeyExchangeInitMessageSerializer serializer =

@@ -7,26 +7,19 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.preparator;
 
-import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.connection.message.GlobalRequestUnknownMessage;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class GlobalRequestUnknownMessagePreparator
-        extends SshMessagePreparator<GlobalRequestUnknownMessage> {
-
-    private static final Logger LOGGER = LogManager.getLogger();
+        extends GlobalRequestMessagePreparator<GlobalRequestUnknownMessage> {
 
     public GlobalRequestUnknownMessagePreparator(
             Chooser chooser, GlobalRequestUnknownMessage message) {
-        super(chooser, message);
+        super(chooser, message, "");
     }
 
     @Override
-    public void prepareMessageSpecificContents() {
-        getObject().setWantReply(chooser.getConfig().getReplyWanted());
-        getObject().setRequestName("", true);
+    protected void prepareGlobalRequestMessageSpecificContents() {
         getObject().setTypeSpecificData(new byte[0]);
     }
 }

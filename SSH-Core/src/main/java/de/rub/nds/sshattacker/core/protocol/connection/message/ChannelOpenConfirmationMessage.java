@@ -9,35 +9,26 @@ package de.rub.nds.sshattacker.core.protocol.connection.message;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
-import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.protocol.connection.handler.ChannelOpenConfirmationMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class ChannelOpenConfirmationMessage extends ChannelMessage<ChannelOpenConfirmationMessage> {
 
-    public static final MessageIdConstant ID = MessageIdConstant.SSH_MSG_CHANNEL_OPEN_CONFIRMATION;
-
-    private ModifiableInteger modSenderChannel;
+    private ModifiableInteger senderChannelId;
     private ModifiableInteger windowSize;
     private ModifiableInteger packetSize;
 
-    public ChannelOpenConfirmationMessage() {}
-
-    public ChannelOpenConfirmationMessage(Integer senderChannel) {
-        super(senderChannel);
+    public ModifiableInteger getSenderChannelId() {
+        return senderChannelId;
     }
 
-    public ModifiableInteger getModSenderChannel() {
-        return modSenderChannel;
+    public void setSenderChannelId(ModifiableInteger senderChannelId) {
+        this.senderChannelId = senderChannelId;
     }
 
-    public void setModSenderChannel(ModifiableInteger modSenderChannel) {
-        this.modSenderChannel = modSenderChannel;
-    }
-
-    public void setModSenderChannel(int modSenderChannel) {
-        this.modSenderChannel =
-                ModifiableVariableFactory.safelySetValue(this.modSenderChannel, modSenderChannel);
+    public void setSenderChannelId(int modSenderChannel) {
+        this.senderChannelId =
+                ModifiableVariableFactory.safelySetValue(this.senderChannelId, modSenderChannel);
     }
 
     public ModifiableInteger getWindowSize() {

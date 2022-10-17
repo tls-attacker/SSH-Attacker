@@ -8,16 +8,12 @@
 package de.rub.nds.sshattacker.core.protocol.authentication.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.sshattacker.core.constants.AuthenticationMethod;
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
-import de.rub.nds.sshattacker.core.constants.PublicKeyAlgorithm;
-import de.rub.nds.sshattacker.core.constants.ServiceType;
+import de.rub.nds.sshattacker.core.constants.*;
 import de.rub.nds.sshattacker.core.crypto.keys.SshPublicKey;
 import de.rub.nds.sshattacker.core.crypto.signature.SignatureFactory;
 import de.rub.nds.sshattacker.core.crypto.util.PublicKeyHelper;
 import de.rub.nds.sshattacker.core.exceptions.CryptoException;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthPubkeyMessage;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -25,12 +21,13 @@ import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class UserAuthPubkeyMessagePreparator extends SshMessagePreparator<UserAuthPubkeyMessage> {
+public class UserAuthPubkeyMessagePreparator
+        extends UserAuthRequestMessagePreparator<UserAuthPubkeyMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
     public UserAuthPubkeyMessagePreparator(Chooser chooser, UserAuthPubkeyMessage message) {
-        super(chooser, message);
+        super(chooser, message, AuthenticationMethod.PUBLICKEY);
     }
 
     /* RFC 4252 section 7
@@ -140,10 +137,7 @@ public class UserAuthPubkeyMessagePreparator extends SshMessagePreparator<UserAu
     }
 
     @Override
-    public void prepareMessageSpecificContents() {
-        getObject().setUserName(chooser.getConfig().getUsername(), true);
-        getObject().setServiceName(ServiceType.SSH_CONNECTION, true);
-        getObject().setMethodName(AuthenticationMethod.PUBLICKEY, true);
+    public void prepareUserAuthRequestSpecificContents() {
         getObject().setUseSignature(true);
         SshPublicKey<?, ?> pk = chooser.getConfig().getUserKeys().get(0);
         getObject().setPubkeyAlgName(pk.getPublicKeyFormat().getName(), true);

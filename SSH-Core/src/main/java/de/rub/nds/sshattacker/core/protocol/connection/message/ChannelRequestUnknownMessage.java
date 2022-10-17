@@ -14,16 +14,8 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class ChannelRequestUnknownMessage
         extends ChannelRequestMessage<ChannelRequestUnknownMessage> {
+
     private ModifiableByteArray typeSpecificData;
-
-    public ChannelRequestUnknownMessage() {
-        super();
-    }
-
-    public ChannelRequestUnknownMessage(Integer senderChannel) {
-        super();
-        setSenderChannel(senderChannel);
-    }
 
     public ModifiableByteArray getTypeSpecificData() {
         return typeSpecificData;

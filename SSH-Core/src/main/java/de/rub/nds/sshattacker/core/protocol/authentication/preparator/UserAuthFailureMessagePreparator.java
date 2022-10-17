@@ -7,6 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.protocol.authentication.preparator;
 
+import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthFailureMessage;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
@@ -14,7 +15,7 @@ import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 public class UserAuthFailureMessagePreparator extends SshMessagePreparator<UserAuthFailureMessage> {
 
     public UserAuthFailureMessagePreparator(Chooser chooser, UserAuthFailureMessage message) {
-        super(chooser, message);
+        super(chooser, message, MessageIdConstant.SSH_MSG_USERAUTH_FAILURE);
     }
 
     @Override

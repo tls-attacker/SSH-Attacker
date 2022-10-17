@@ -11,7 +11,6 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
-import de.rub.nds.sshattacker.core.constants.ChannelRequestType;
 import de.rub.nds.sshattacker.core.protocol.connection.handler.ChannelRequestX11MessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.util.Converter;
@@ -25,14 +24,6 @@ public class ChannelRequestX11Message extends ChannelRequestMessage<ChannelReque
     private ModifiableInteger x11AuthenticationCookieLength;
     private ModifiableString x11AuthenticationCookie;
     private ModifiableInteger x11ScreenNumber;
-
-    public ChannelRequestX11Message() {
-        super(ChannelRequestType.X11_REQ);
-    }
-
-    public ChannelRequestX11Message(Integer senderChannel) {
-        super(ChannelRequestType.X11_REQ, senderChannel);
-    }
 
     public ModifiableByte getSingleConnection() {
         return singleConnection;

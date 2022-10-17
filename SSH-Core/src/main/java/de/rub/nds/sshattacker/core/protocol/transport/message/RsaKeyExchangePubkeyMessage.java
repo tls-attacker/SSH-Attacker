@@ -10,7 +10,6 @@ package de.rub.nds.sshattacker.core.protocol.transport.message;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
-import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.constants.PublicKeyFormat;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomRsaPrivateKey;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomRsaPublicKey;
@@ -25,8 +24,6 @@ import java.security.interfaces.RSAPublicKey;
 
 public class RsaKeyExchangePubkeyMessage extends SshMessage<RsaKeyExchangePubkeyMessage>
         implements HostKeyMessage {
-
-    public static final MessageIdConstant ID = MessageIdConstant.SSH_MSG_KEXRSA_PUBKEY;
 
     private ModifiableInteger hostKeyBytesLength;
     private ModifiableByteArray hostKeyBytes;

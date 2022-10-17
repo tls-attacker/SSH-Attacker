@@ -12,61 +12,72 @@ import de.rub.nds.modifiablevariable.bool.ModifiableBoolean;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.sshattacker.core.constants.ChannelType;
 import java.io.Serializable;
-import java.util.HashMap;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class Channel implements Serializable {
 
-    private static final Logger LOGGER = LogManager.getLogger();
-
     private ChannelType channelType;
-    private ModifiableInteger localChannel;
+    private ModifiableInteger localChannelId;
     private ModifiableInteger localWindowSize;
     private ModifiableInteger localPacketSize;
 
-    private ModifiableInteger remoteChannel;
+    private ModifiableInteger remoteChannelId;
     private ModifiableInteger remoteWindowSize;
     private ModifiableInteger remotePacketSize;
 
     private ModifiableBoolean open;
-    private ModifiableBoolean firstCloseMessage;
-
-    private static final HashMap<Integer, Integer> channelAssociations = new HashMap<>();
+    private ModifiableBoolean closeMessageReceived;
+    private ModifiableBoolean closeMessageSent;
 
     public Channel() {}
 
     public Channel(
             ChannelType channelType,
-            ModifiableInteger localChannel,
-            ModifiableInteger localWindowSize,
-            ModifiableInteger localPacketSize,
-            Boolean open) {
+            Integer localChannelId,
+            Integer localWindowSize,
+            Integer localPacketSize,
+            boolean open) {
         this.channelType = channelType;
-        this.localChannel = localChannel;
-        this.localWindowSize = localWindowSize;
-        this.localPacketSize = localPacketSize;
-        setFirstCloseMessage(false);
+        setLocalChannelId(localChannelId);
+        setLocalWindowSize(localWindowSize);
+        setLocalPacketSize(localPacketSize);
+        setCloseMessageSent(false);
+        setCloseMessageReceived(false);
         setOpen(open);
     }
 
     public Channel(
             ChannelType channelType,
-            Integer localChannel,
+            ModifiableInteger localChannelId,
+            ModifiableInteger localWindowSize,
+            ModifiableInteger localPacketSize,
+            Boolean open) {
+        this.channelType = channelType;
+        this.localChannelId = localChannelId;
+        this.localWindowSize = localWindowSize;
+        this.localPacketSize = localPacketSize;
+        setCloseMessageSent(false);
+        setCloseMessageReceived(false);
+        setOpen(open);
+    }
+
+    public Channel(
+            ChannelType channelType,
+            Integer localChannelId,
             Integer localWindowSize,
             Integer localPacketSize,
-            Integer remoteChannel,
+            Integer remoteChannelId,
             Integer remoteWindowSize,
             Integer remotePacketSize,
             Boolean open) {
         this.channelType = channelType;
-        setLocalChannel(localChannel);
+        setLocalChannelId(localChannelId);
         setLocalWindowSize(localWindowSize);
-        setlocalPacketSize(localPacketSize);
-        setRemoteChannel(remoteChannel);
+        setLocalPacketSize(localPacketSize);
+        setRemoteChannelId(remoteChannelId);
         setRemoteWindowSize(remoteWindowSize);
         setRemotePacketSize(remotePacketSize);
-        setFirstCloseMessage(false);
+        setCloseMessageSent(false);
+        setCloseMessageReceived(false);
         setOpen(open);
     }
 
@@ -78,15 +89,15 @@ public class Channel implements Serializable {
         this.channelType = channelType;
     }
 
-    public ModifiableInteger getlocalPacketSize() {
+    public ModifiableInteger getLocalPacketSize() {
         return localPacketSize;
     }
 
-    public void setlocalPacketSize(ModifiableInteger localPacketSize) {
+    public void setLocalPacketSize(ModifiableInteger localPacketSize) {
         this.localPacketSize = localPacketSize;
     }
 
-    public void setlocalPacketSize(Integer localPacketSize) {
+    public void setLocalPacketSize(Integer localPacketSize) {
         this.localPacketSize =
                 ModifiableVariableFactory.safelySetValue(this.localPacketSize, localPacketSize);
     }
@@ -103,6 +114,45 @@ public class Channel implements Serializable {
         this.open = ModifiableVariableFactory.safelySetValue(this.open, open);
     }
 
+    public ModifiableBoolean getCloseMessageReceived() {
+        return closeMessageReceived;
+    }
+
+    public void setCloseMessageReceived(ModifiableBoolean closeMessageReceived) {
+        this.closeMessageReceived = closeMessageReceived;
+        if (this.closeMessageSent.getValue() && this.closeMessageReceived.getValue()) {
+            setOpen(false);
+        }
+    }
+
+    public void setCloseMessageReceived(boolean closeMessageReceived) {
+        this.closeMessageReceived =
+                ModifiableVariableFactory.safelySetValue(
+                        this.closeMessageReceived, closeMessageReceived);
+        if (this.closeMessageSent.getValue() && this.closeMessageReceived.getValue()) {
+            setOpen(false);
+        }
+    }
+
+    public ModifiableBoolean getCloseMessageSent() {
+        return closeMessageSent;
+    }
+
+    public void setCloseMessageSent(ModifiableBoolean closeMessageSent) {
+        this.closeMessageSent = closeMessageSent;
+        if (this.closeMessageSent.getValue() && this.closeMessageReceived.getValue()) {
+            setOpen(false);
+        }
+    }
+
+    public void setCloseMessageSent(boolean closeMessageSent) {
+        this.closeMessageSent =
+                ModifiableVariableFactory.safelySetValue(this.closeMessageSent, closeMessageSent);
+        if (this.closeMessageSent.getValue() && this.closeMessageReceived.getValue()) {
+            setOpen(false);
+        }
+    }
+
     public ModifiableInteger getLocalWindowSize() {
         return localWindowSize;
     }
@@ -116,30 +166,30 @@ public class Channel implements Serializable {
                 ModifiableVariableFactory.safelySetValue(this.localWindowSize, localWindowSize);
     }
 
-    public ModifiableInteger getLocalChannel() {
-        return localChannel;
+    public ModifiableInteger getLocalChannelId() {
+        return localChannelId;
     }
 
-    public void setLocalChannel(ModifiableInteger localChannel) {
-        this.localChannel = localChannel;
+    public void setLocalChannelId(ModifiableInteger localChannelId) {
+        this.localChannelId = localChannelId;
     }
 
-    public void setLocalChannel(Integer localChannel) {
-        this.localChannel =
-                ModifiableVariableFactory.safelySetValue(this.localChannel, localChannel);
+    public void setLocalChannelId(Integer localChannelId) {
+        this.localChannelId =
+                ModifiableVariableFactory.safelySetValue(this.localChannelId, localChannelId);
     }
 
-    public ModifiableInteger getRemoteChannel() {
-        return remoteChannel;
+    public ModifiableInteger getRemoteChannelId() {
+        return remoteChannelId;
     }
 
-    public void setRemoteChannel(ModifiableInteger remoteChannel) {
-        this.remoteChannel = remoteChannel;
+    public void setRemoteChannelId(ModifiableInteger remoteChannelId) {
+        this.remoteChannelId = remoteChannelId;
     }
 
-    public void setRemoteChannel(Integer remoteChannel) {
-        this.remoteChannel =
-                ModifiableVariableFactory.safelySetValue(this.remoteChannel, remoteChannel);
+    public void setRemoteChannelId(Integer remoteChannelId) {
+        this.remoteChannelId =
+                ModifiableVariableFactory.safelySetValue(this.remoteChannelId, remoteChannelId);
     }
 
     public ModifiableInteger getRemotePacketSize() {
@@ -168,55 +218,41 @@ public class Channel implements Serializable {
                 ModifiableVariableFactory.safelySetValue(this.remoteWindowSize, remoteWindowSize);
     }
 
-    public ModifiableBoolean getFirstCloseMessage() {
-        return firstCloseMessage;
-    }
-
-    public void setFirstCloseMessage(ModifiableBoolean firstCloseMessage) {
-        this.firstCloseMessage = firstCloseMessage;
-    }
-
-    public void setFirstCloseMessage(Boolean firstCloseMessage) {
-        this.firstCloseMessage =
-                ModifiableVariableFactory.safelySetValue(this.firstCloseMessage, firstCloseMessage);
-    }
-
     @Override
     public String toString() {
         return "\n"
                 + "Channel{"
                 + "\n"
-                + " channelType:"
+                + " channelType: "
                 + channelType.toString()
                 + "\n"
-                + " localChannel:"
-                + localChannel.getValue()
+                + " localChannelId: "
+                + localChannelId.getValue()
                 + "\n"
-                + " localWindowSize:"
+                + " localWindowSize: "
                 + localWindowSize.getValue()
                 + "\n"
-                + " localPacketSize:"
+                + " localPacketSize: "
                 + localPacketSize.getValue()
                 + "\n"
-                + " remoteChannel:"
-                + remoteChannel.getValue()
+                + " remoteChannelId: "
+                + remoteChannelId.getValue()
                 + "\n"
-                + " remoteWindowSize:"
+                + " remoteWindowSize: "
                 + remoteWindowSize.getValue()
                 + "\n"
-                + " remotePacketSize:"
+                + " remotePacketSize: "
                 + remotePacketSize.getValue()
                 + "\n"
                 + " open:"
                 + open.getValue()
                 + "\n"
-                + " firstCloseMessage:"
-                + firstCloseMessage.getValue()
+                + " closeMessageSent: "
+                + closeMessageSent.getValue()
+                + "\n"
+                + " closeMessageReceived: "
+                + closeMessageReceived.getValue()
                 + "\n"
                 + '}';
-    }
-
-    public static HashMap<Integer, Integer> getChannelAssociations() {
-        return channelAssociations;
     }
 }

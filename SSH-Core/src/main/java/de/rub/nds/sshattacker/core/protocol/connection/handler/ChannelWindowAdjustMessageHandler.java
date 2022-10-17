@@ -7,7 +7,6 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.handler;
 
-import de.rub.nds.sshattacker.core.exceptions.MissingChannelException;
 import de.rub.nds.sshattacker.core.protocol.common.*;
 import de.rub.nds.sshattacker.core.protocol.connection.Channel;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelWindowAdjustMessage;
@@ -30,17 +29,23 @@ public class ChannelWindowAdjustMessageHandler
 
     @Override
     public void adjustContext() {
-        // TODO: Handle ChannelWindowAdjustMessageHandler
-        Channel channel = context.getChannels().get(message.getRecipientChannel().getValue());
-        if (channel == null) {
-            throw new MissingChannelException(
-                    "Can't find the required channel of the received message!");
-        } else if (channel.isOpen().getValue()) {
+        Channel channel = context.getChannels().get(message.getRecipientChannelId().getValue());
+        if (channel != null) {
+            if (!channel.isOpen().getValue()) {
+                LOGGER.warn(
+                        "{} received but channel with id {} is not open, continuing anyway.",
+                        this.getClass().getSimpleName(),
+                        message.getRecipientChannelId().getValue());
+            }
             channel.setRemoteWindowSize(
                     channel.getLocalWindowSize().getValue() + message.getBytesToAdd().getValue());
-            LOGGER.debug(channel.toString());
         } else {
-            throw new MissingChannelException("Required channel is closed!");
+            LOGGER.warn(
+                    "{} received but no channel with id {} found locally, creating a new channel from defaults with given channel id.",
+                    this.getClass().getSimpleName(),
+                    message.getRecipientChannelId().getValue());
+            channel = context.getConfig().getChannelDefaults().newChannelFromDefaults();
+            context.getChannels().put(channel.getLocalChannelId().getValue(), channel);
         }
     }
 

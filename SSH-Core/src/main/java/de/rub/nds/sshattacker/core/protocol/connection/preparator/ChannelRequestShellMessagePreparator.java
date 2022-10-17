@@ -8,38 +8,17 @@
 package de.rub.nds.sshattacker.core.protocol.connection.preparator;
 
 import de.rub.nds.sshattacker.core.constants.ChannelRequestType;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
-import de.rub.nds.sshattacker.core.protocol.connection.Channel;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelRequestShellMessage;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class ChannelRequestShellMessagePreparator
-        extends SshMessagePreparator<ChannelRequestShellMessage> {
-
-    private static final Logger LOGGER = LogManager.getLogger();
+        extends ChannelRequestMessagePreparator<ChannelRequestShellMessage> {
 
     public ChannelRequestShellMessagePreparator(
             Chooser chooser, ChannelRequestShellMessage message) {
-        super(chooser, message);
+        super(chooser, message, ChannelRequestType.SHELL);
     }
 
     @Override
-    public void prepareMessageSpecificContents() {
-        Channel channel = null;
-        if (getObject().getSenderChannel() != null) {
-            channel = chooser.getContext().getChannels().get(getObject().getSenderChannel());
-        }
-
-        if (channel == null) {
-            channel = chooser.getConfig().getDefaultChannel();
-        }
-        if (!channel.isOpen().getValue()) {
-            LOGGER.info("The required channel is closed, still sending the message!");
-        }
-        getObject().setRecipientChannel(channel.getRemoteChannel());
-        getObject().setWantReply(chooser.getConfig().getReplyWanted());
-        getObject().setRequestType(ChannelRequestType.SHELL, true);
-    }
+    public void prepareChannelRequestMessageSpecificContents() {}
 }

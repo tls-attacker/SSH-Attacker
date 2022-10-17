@@ -7,6 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.preparator;
 
+import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.transport.message.RsaKeyExchangeSecretMessage;
 import de.rub.nds.sshattacker.core.protocol.util.KeyExchangeUtil;
@@ -17,7 +18,7 @@ public class RsaKeyExchangeSecretMessagePreparator
 
     public RsaKeyExchangeSecretMessagePreparator(
             Chooser chooser, RsaKeyExchangeSecretMessage message) {
-        super(chooser, message);
+        super(chooser, message, MessageIdConstant.SSH_MSG_KEXRSA_SECRET);
     }
 
     @Override

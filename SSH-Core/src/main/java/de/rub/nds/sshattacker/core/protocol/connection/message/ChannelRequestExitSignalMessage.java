@@ -11,7 +11,6 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.bool.ModifiableBoolean;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
-import de.rub.nds.sshattacker.core.constants.ChannelRequestType;
 import de.rub.nds.sshattacker.core.constants.SignalType;
 import de.rub.nds.sshattacker.core.protocol.connection.handler.ChannelRequestExitSignalMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
@@ -19,6 +18,7 @@ import java.nio.charset.StandardCharsets;
 
 public class ChannelRequestExitSignalMessage
         extends ChannelRequestMessage<ChannelRequestExitSignalMessage> {
+
     private ModifiableInteger signalNameLength;
     private ModifiableString signalName;
     private ModifiableBoolean coreDump;
@@ -26,19 +26,6 @@ public class ChannelRequestExitSignalMessage
     private ModifiableString errorMessage;
     private ModifiableInteger languageTagLength;
     private ModifiableString languageTag;
-
-    public ChannelRequestExitSignalMessage() {
-        super(ChannelRequestType.EXIT_SIGNAL);
-    }
-
-    public ChannelRequestExitSignalMessage(Integer senderChannel) {
-        super(ChannelRequestType.EXIT_SIGNAL, senderChannel);
-    }
-
-    @Override
-    public ChannelRequestExitSignalMessageHandler getHandler(SshContext context) {
-        return new ChannelRequestExitSignalMessageHandler(context, this);
-    }
 
     public ModifiableInteger getSignalNameLength() {
         return signalNameLength;
@@ -178,5 +165,10 @@ public class ChannelRequestExitSignalMessage
         }
         this.errorMessage =
                 ModifiableVariableFactory.safelySetValue(this.errorMessage, errorMessage);
+    }
+
+    @Override
+    public ChannelRequestExitSignalMessageHandler getHandler(SshContext context) {
+        return new ChannelRequestExitSignalMessageHandler(context, this);
     }
 }
