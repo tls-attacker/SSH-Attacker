@@ -2,7 +2,7 @@
 
 ## Transport Layer Protocol (RFC 4253)
 
-| Message Type              | Message ID | XML Tag / Java Class     |     Message      |    Preparator    |    Serializer    |      Parser      |     Handler      |
+|       Message Type        | Message ID |   XML Tag / Java Class   |     Message      |    Preparator    |    Serializer    |      Parser      |     Handler      |
 |---------------------------|:----------:|--------------------------|:----------------:|:----------------:|:----------------:|:----------------:|:----------------:|
 | Version Exchange          |     -      | `VersionExchangeMessage` | &#x2714;&#xfe0f; | &#x2714;&#xfe0f; | &#x2714;&#xfe0f; | &#x2714;&#xfe0f; | &#x2714;&#xfe0f; |
 | `SSH_MSG_DISCONNECT`      |     1      | `DisconnectMessage`      | &#x2714;&#xfe0f; | &#x26a0;&#xfe0f; | &#x2714;&#xfe0f; | &#x2714;&#xfe0f; | &#x2714;&#xfe0f; |
@@ -16,7 +16,7 @@
 
 ### Key Exchange: Diffie Hellman Group Exchange (RFC 4419)
 
-| Message Type                     | Message ID | XML Tag / Java Class                |     Message      |    Preparator    |    Serializer    |      Parser      |     Handler      |
+|           Message Type           | Message ID |        XML Tag / Java Class         |     Message      |    Preparator    |    Serializer    |      Parser      |     Handler      |
 |----------------------------------|:----------:|-------------------------------------|:----------------:|:----------------:|:----------------:|:----------------:|:----------------:|
 | `SSH_MSG_KEX_DH_GEX_REQUEST_OLD` |     30     | `DhGexKeyExchangeOldRequestMessage` | &#x2714;&#xfe0f; | &#x2714;&#xfe0f; | &#x2714;&#xfe0f; |     &#x274c;     |     &#x274c;     |
 | `SSH_MSG_KEX_DH_GEX_REQUEST`     |     34     | `DhGexKeyExchangeRequestMessage`    | &#x2714;&#xfe0f; | &#x2714;&#xfe0f; | &#x2714;&#xfe0f; |     &#x274c;     |     &#x274c;     |
@@ -26,28 +26,28 @@
 
 ### Key Exchange: Diffie Hellman Named Groups (RFC 4253)
 
-| Message Type          | Message ID | XML Tag / Java Class        |     Message      |    Preparator    |    Serializer    |      Parser      |     Handler      |
+|     Message Type      | Message ID |    XML Tag / Java Class     |     Message      |    Preparator    |    Serializer    |      Parser      |     Handler      |
 |-----------------------|:----------:|-----------------------------|:----------------:|:----------------:|:----------------:|:----------------:|:----------------:|
 | `SSH_MSG_KEXDH_INIT`  |     30     | `DhKeyExchangeInitMessage`  | &#x2714;&#xfe0f; | &#x2714;&#xfe0f; | &#x2714;&#xfe0f; |     &#x274c;     |     &#x274c;     |
 | `SSH_MSG_KEXDH_REPLY` |     31     | `DhKeyExchangeReplyMessage` | &#x2714;&#xfe0f; |     &#x274c;     |     &#x274c;     | &#x2714;&#xfe0f; | &#x2714;&#xfe0f; |
 
 ### Key Exchange: ECDH (RFC 5656)
 
-| Message Type             | Message ID | XML Tag / Java Class          |     Message      |    Preparator    |    Serializer    |      Parser      |     Handler      |
+|       Message Type       | Message ID |     XML Tag / Java Class      |     Message      |    Preparator    |    Serializer    |      Parser      |     Handler      |
 |--------------------------|:----------:|-------------------------------|:----------------:|:----------------:|:----------------:|:----------------:|:----------------:|
 | `SSH_MSG_KEX_ECDH_INIT`  |     30     | `EcdhKeyExchangeInitMessage`  | &#x2714;&#xfe0f; | &#x2714;&#xfe0f; | &#x2714;&#xfe0f; | &#x2714;&#xfe0f; |     &#x274c;     |
 | `SSH_MSG_KEX_ECDH_REPLY` |     31     | `EcdhKeyExchangeReplyMessage` | &#x2714;&#xfe0f; | &#x26a0;&#xfe0f; | &#x2714;&#xfe0f; | &#x2714;&#xfe0f; | &#x2714;&#xfe0f; |
 
 ### Key Exchange: ECMQV (RFC 5656)
 
-| Message Type          | Message ID | XML Tag / Java Class | Message  | Preparator | Serializer |  Parser  | Handler  |
+|     Message Type      | Message ID | XML Tag / Java Class | Message  | Preparator | Serializer |  Parser  | Handler  |
 |-----------------------|:----------:|----------------------|:--------:|:----------:|:----------:|:--------:|:--------:|
 | `SSH_MSG_ECMQV_INIT`  |     30     | -                    | &#x274c; |  &#x274c;  |  &#x274c;  | &#x274c; | &#x274c; |
 | `SSH_MSG_ECMQV_REPLY` |     31     | -                    | &#x274c; |  &#x274c;  |  &#x274c;  | &#x274c; | &#x274c; |
 
 ### Key Exchange: RSA (RFC 4432)
 
-| Message Type            | Message ID | XML Tag / Java Class | Message  | Preparator | Serializer |  Parser  | Handler  |
+|      Message Type       | Message ID | XML Tag / Java Class | Message  | Preparator | Serializer |  Parser  | Handler  |
 |-------------------------|:----------:|----------------------|:--------:|:----------:|:----------:|:--------:|:--------:|
 | `SSH_MSG_KEXRSA_PUBKEY` |     30     | -                    | &#x274c; |  &#x274c;  |  &#x274c;  | &#x274c; | &#x274c; |
 | `SSH_MSG_KEXRSA_SECRET` |     31     | -                    | &#x274c; |  &#x274c;  |  &#x274c;  | &#x274c; | &#x274c; |
@@ -55,7 +55,7 @@
 
 ### Key Exchange: GSS-API (RFC 4462)
 
-| Message Type              | Message ID | XML Tag / Java Class | Message  | Preparator | Serializer |  Parser  | Handler  |
+|       Message Type        | Message ID | XML Tag / Java Class | Message  | Preparator | Serializer |  Parser  | Handler  |
 |---------------------------|:----------:|----------------------|:--------:|:----------:|:----------:|:--------:|:--------:|
 | `SSH_MSG_KEXGSS_INIT`     |     30     | -                    | &#x274c; |  &#x274c;  |  &#x274c;  | &#x274c; | &#x274c; |
 | `SSH_MSG_KEXGSS_CONTINUE` |     31     | -                    | &#x274c; |  &#x274c;  |  &#x274c;  | &#x274c; | &#x274c; |
@@ -69,7 +69,7 @@
 
 ## Authentication Protocol (RFC 4252)
 
-| Message Type               | Message ID | XML Tag / Java Class      |     Message      |    Preparator    |    Serializer    |      Parser      | Handler  |
+|        Message Type        | Message ID |   XML Tag / Java Class    |     Message      |    Preparator    |    Serializer    |      Parser      | Handler  |
 |----------------------------|:----------:|---------------------------|:----------------:|:----------------:|:----------------:|:----------------:|:--------:|
 | `SSH_MSG_USERAUTH_REQUEST` |     50     | `UserAuthPasswordMessage` | &#x26a0;&#xfe0f; | &#x26a0;&#xfe0f; | &#x26a0;&#xfe0f; |     &#x274c;     | &#x274c; |
 | `SSH_MSG_USERAUTH_FAILURE` |     51     | `UserAuthFailureMessage`  | &#x2714;&#xfe0f; | &#x26a0;&#xfe0f; | &#x2714;&#xfe0f; | &#x2714;&#xfe0f; | &#x274c; |
@@ -78,26 +78,26 @@
 
 ### Authentication Method: publickey (RFC 4252)
 
-| Message Type             | Message ID | XML Tag / Java Class | Message  | Preparator | Serializer |  Parser  | Handler  |
+|       Message Type       | Message ID | XML Tag / Java Class | Message  | Preparator | Serializer |  Parser  | Handler  |
 |--------------------------|:----------:|----------------------|:--------:|:----------:|:----------:|:--------:|:--------:|
 | `SSH_MSG_USERAUTH_PK_OK` |     60     | -                    | &#x274c; |  &#x274c;  |  &#x274c;  | &#x274c; | &#x274c; |
 
 ### Authentication Method: password (RFC 4252)
 
-| Message Type                        | Message ID | XML Tag / Java Class | Message  | Preparator | Serializer |  Parser  | Handler  |
+|            Message Type             | Message ID | XML Tag / Java Class | Message  | Preparator | Serializer |  Parser  | Handler  |
 |-------------------------------------|:----------:|----------------------|:--------:|:----------:|:----------:|:--------:|:--------:|
 | `SSH_MSG_USERAUTH_PASSWD_CHANGEREQ` |     60     | -                    | &#x274c; |  &#x274c;  |  &#x274c;  | &#x274c; | &#x274c; |
 
 ### Authentication Method: keyboard-interactive (RFC 4256)
 
-| Message Type                     | Message ID | XML Tag / Java Class | Message  | Preparator | Serializer |  Parser  | Handler  |
+|           Message Type           | Message ID | XML Tag / Java Class | Message  | Preparator | Serializer |  Parser  | Handler  |
 |----------------------------------|:----------:|----------------------|:--------:|:----------:|:----------:|:--------:|:--------:|
 | `SSH_MSG_USERAUTH_INFO_REQUEST`  |     60     | -                    | &#x274c; |  &#x274c;  |  &#x274c;  | &#x274c; | &#x274c; |
 | `SSH_MSG_USERAUTH_INFO_RESPONSE` |     61     | -                    | &#x274c; |  &#x274c;  |  &#x274c;  | &#x274c; | &#x274c; |
 
 ### Authentication Method: GSS-API (RFC 4462)
 
-| Message Type                                | Message ID | XML Tag / Java Class | Message  | Preparator | Serializer |  Parser  | Handler  |
+|                Message Type                 | Message ID | XML Tag / Java Class | Message  | Preparator | Serializer |  Parser  | Handler  |
 |---------------------------------------------|:----------:|----------------------|:--------:|:----------:|:----------:|:--------:|:--------:|
 | `SSH_MSG_USERAUTH_GSSAPI_RESPONSE`          |     60     | -                    | &#x274c; |  &#x274c;  |  &#x274c;  | &#x274c; | &#x274c; |
 | `SSH_MSG_USERAUTH_GSSAPI_TOKEN`             |     61     | -                    | &#x274c; |  &#x274c;  |  &#x274c;  | &#x274c; | &#x274c; |
@@ -110,7 +110,7 @@
 
 ## Connection Protocol (RFC 4254)
 
-| Message Type                        | Message ID | XML Tag / Java Class             |     Message      |    Preparator    |    Serializer    |      Parser      |     Handler      |
+|            Message Type             | Message ID |       XML Tag / Java Class       |     Message      |    Preparator    |    Serializer    |      Parser      |     Handler      |
 |-------------------------------------|:----------:|----------------------------------|:----------------:|:----------------:|:----------------:|:----------------:|:----------------:|
 | `SSH_MSG_GLOBAL_REQUEST`            |     80     | `GlobalRequestMessage`           | &#x2714;&#xfe0f; | &#x26a0;&#xfe0f; | &#x2714;&#xfe0f; | &#x2714;&#xfe0f; |     &#x274c;     |
 | `SSH_MSG_REQUEST_SUCCESS`           |     81     | `RequestSuccessMessage`          | &#x26a0;&#xfe0f; | &#x26a0;&#xfe0f; | &#x26a0;&#xfe0f; | &#x26a0;&#xfe0f; |     &#x274c;     |
@@ -126,3 +126,4 @@
 | `SSH_MSG_CHANNEL_REQUEST`           |     98     | `ChannelRequestMessage`          | &#x26a0;&#xfe0f; | &#x26a0;&#xfe0f; | &#x26a0;&#xfe0f; | &#x26a0;&#xfe0f; |     &#x274c;     |
 | `SSH_MSG_CHANNEL_SUCCESS`           |     99     | `ChannelSuccessMessage`          | &#x2714;&#xfe0f; | &#x2714;&#xfe0f; | &#x2714;&#xfe0f; | &#x2714;&#xfe0f; |     &#x274c;     |
 | `SSH_MSG_CHANNEL_FAILURE`           |    100     | `ChannelFailureMessage`          | &#x2714;&#xfe0f; | &#x2714;&#xfe0f; | &#x2714;&#xfe0f; | &#x2714;&#xfe0f; |     &#x274c;     |
+
