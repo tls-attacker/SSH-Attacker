@@ -69,8 +69,8 @@ public class ChannelOpenConfirmationMessageParserTest {
         assertEquals(
                 MessageIdConstant.SSH_MSG_CHANNEL_OPEN_CONFIRMATION.getId(),
                 msg.getMessageId().getValue());
-        assertEquals(expectedRecipientChannel, msg.getRecipientChannel().getValue());
-        assertEquals(expectedSenderChannel, msg.getModSenderChannel().getValue());
+        assertEquals(expectedRecipientChannel, msg.getRecipientChannelId().getValue());
+        assertEquals(expectedSenderChannel, msg.getSenderChannelId().getValue());
         assertEquals(expectedInitialWindowSize, msg.getWindowSize().getValue());
         assertEquals(expectedMaximumPacketSize, msg.getPacketSize().getValue());
     }

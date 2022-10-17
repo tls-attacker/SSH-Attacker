@@ -7,16 +7,11 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.message;
 
-import de.rub.nds.sshattacker.core.constants.GlobalRequestType;
 import de.rub.nds.sshattacker.core.protocol.connection.handler.GlobalRequestNoMoreSessionsMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class GlobalRequestNoMoreSessionsMessage
         extends GlobalRequestMessage<GlobalRequestNoMoreSessionsMessage> {
-
-    public GlobalRequestNoMoreSessionsMessage() {
-        super(GlobalRequestType.NO_MORE_SESSIONS_OPENSSH_COM);
-    }
 
     @Override
     public GlobalRequestNoMoreSessionsMessageHandler getHandler(SshContext context) {

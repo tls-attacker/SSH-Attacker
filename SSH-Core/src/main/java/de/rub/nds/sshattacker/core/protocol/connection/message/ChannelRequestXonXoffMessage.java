@@ -9,7 +9,6 @@ package de.rub.nds.sshattacker.core.protocol.connection.message;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
-import de.rub.nds.sshattacker.core.constants.ChannelRequestType;
 import de.rub.nds.sshattacker.core.protocol.connection.handler.ChannelRequestXonXoffMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.util.Converter;
@@ -18,14 +17,6 @@ public class ChannelRequestXonXoffMessage
         extends ChannelRequestMessage<ChannelRequestXonXoffMessage> {
 
     private ModifiableByte clientFlowControl;
-
-    public ChannelRequestXonXoffMessage() {
-        super(ChannelRequestType.XON_XOFF);
-    }
-
-    public ChannelRequestXonXoffMessage(Integer senderChannel) {
-        super(ChannelRequestType.XON_XOFF, senderChannel);
-    }
 
     public ModifiableByte getClientFlowControl() {
         return clientFlowControl;

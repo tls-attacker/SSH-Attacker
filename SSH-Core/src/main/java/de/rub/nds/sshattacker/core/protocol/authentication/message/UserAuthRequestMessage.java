@@ -11,7 +11,6 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.sshattacker.core.constants.AuthenticationMethod;
-import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.constants.ServiceType;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
 import jakarta.xml.bind.annotation.XmlAccessType;
@@ -30,21 +29,12 @@ import java.nio.charset.StandardCharsets;
 public abstract class UserAuthRequestMessage<T extends UserAuthRequestMessage<T>>
         extends SshMessage<T> {
 
-    public static final MessageIdConstant ID = MessageIdConstant.SSH_MSG_USERAUTH_REQUEST;
-
     protected ModifiableInteger userNameLength;
     protected ModifiableString userName;
     protected ModifiableInteger serviceNameLength;
     protected ModifiableString serviceName;
     protected ModifiableInteger methodNameLength;
     protected ModifiableString methodName;
-
-    protected UserAuthRequestMessage(
-            @SuppressWarnings("SameParameterValue") AuthenticationMethod authenticationMethod) {
-        setMethodName(authenticationMethod, true);
-    }
-
-    protected UserAuthRequestMessage() {}
 
     public ModifiableInteger getUserNameLength() {
         return userNameLength;

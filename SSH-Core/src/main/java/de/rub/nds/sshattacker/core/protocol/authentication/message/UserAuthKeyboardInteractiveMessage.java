@@ -10,7 +10,6 @@ package de.rub.nds.sshattacker.core.protocol.authentication.message;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
-import de.rub.nds.sshattacker.core.constants.AuthenticationMethod;
 import de.rub.nds.sshattacker.core.protocol.authentication.handler.UserAuthKeyboardInteractiveMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import java.nio.charset.StandardCharsets;
@@ -22,10 +21,6 @@ public class UserAuthKeyboardInteractiveMessage
     private ModifiableString languageTag;
     private ModifiableInteger subMethodsLength;
     private ModifiableString subMethods;
-
-    public UserAuthKeyboardInteractiveMessage() {
-        super(AuthenticationMethod.KEYBOARD_INTERACTIVE);
-    }
 
     public ModifiableInteger getLanguageTagLength() {
         return languageTagLength;

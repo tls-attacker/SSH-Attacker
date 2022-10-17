@@ -10,7 +10,6 @@ package de.rub.nds.sshattacker.core.protocol.connection.message;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
-import de.rub.nds.sshattacker.core.constants.ChannelRequestType;
 import de.rub.nds.sshattacker.core.protocol.connection.handler.ChannelRequestExecMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import java.nio.charset.StandardCharsets;
@@ -19,14 +18,6 @@ public class ChannelRequestExecMessage extends ChannelRequestMessage<ChannelRequ
 
     private ModifiableInteger commandLength;
     private ModifiableString command;
-
-    public ChannelRequestExecMessage() {
-        super(ChannelRequestType.EXEC);
-    }
-
-    public ChannelRequestExecMessage(Integer senderChannel) {
-        super(ChannelRequestType.EXEC, senderChannel);
-    }
 
     public ModifiableInteger getCommandLength() {
         return commandLength;

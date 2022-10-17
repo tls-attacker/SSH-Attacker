@@ -7,6 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.preparator;
 
+import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.crypto.kex.DhKeyExchange;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.transport.message.DhKeyExchangeReplyMessage;
@@ -17,7 +18,7 @@ public class DhKeyExchangeReplyMessagePreparator
         extends SshMessagePreparator<DhKeyExchangeReplyMessage> {
 
     public DhKeyExchangeReplyMessagePreparator(Chooser chooser, DhKeyExchangeReplyMessage message) {
-        super(chooser, message);
+        super(chooser, message, MessageIdConstant.SSH_MSG_KEXDH_REPLY);
     }
 
     @Override

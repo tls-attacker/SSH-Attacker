@@ -10,7 +10,6 @@ package de.rub.nds.sshattacker.core.protocol.authentication.message;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
-import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.protocol.authentication.AuthenticationPrompt;
 import de.rub.nds.sshattacker.core.protocol.authentication.handler.UserAuthInfoRequestMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
@@ -19,7 +18,6 @@ import java.nio.charset.StandardCharsets;
 
 public class UserAuthInfoRequestMessage extends SshMessage<UserAuthInfoRequestMessage> {
 
-    public static final MessageIdConstant ID = MessageIdConstant.SSH_MSG_USERAUTH_INFO_REQUEST;
     private ModifiableInteger userNameLength;
     private ModifiableString userName;
     private ModifiableInteger instructionLength;
@@ -28,10 +26,6 @@ public class UserAuthInfoRequestMessage extends SshMessage<UserAuthInfoRequestMe
     private ModifiableString languageTag;
     private ModifiableInteger promptEntryCount;
     private AuthenticationPrompt prompt = new AuthenticationPrompt();
-
-    public UserAuthInfoRequestMessage() {
-        super();
-    }
 
     public ModifiableInteger getUserNameLength() {
         return userNameLength;

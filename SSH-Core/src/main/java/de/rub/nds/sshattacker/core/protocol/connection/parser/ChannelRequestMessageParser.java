@@ -32,8 +32,7 @@ public abstract class ChannelRequestMessageParser<T extends ChannelRequestMessag
         LOGGER.debug("Request type length: " + message.getRequestTypeLength().getValue());
         message.setRequestType(
                 parseByteString(
-                        message.getRequestTypeLength().getValue(), StandardCharsets.US_ASCII),
-                false);
+                        message.getRequestTypeLength().getValue(), StandardCharsets.US_ASCII));
         LOGGER.debug("Request type: " + message.getRequestType().getValue());
     }
 

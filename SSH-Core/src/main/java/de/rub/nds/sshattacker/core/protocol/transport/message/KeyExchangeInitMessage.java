@@ -23,8 +23,6 @@ import java.util.stream.Collectors;
 
 public class KeyExchangeInitMessage extends SshMessage<KeyExchangeInitMessage> {
 
-    public static final MessageIdConstant ID = MessageIdConstant.SSH_MSG_KEXINIT;
-
     private ModifiableByteArray cookie;
     private ModifiableInteger keyExchangeAlgorithmsLength;
     private ModifiableString keyExchangeAlgorithms;

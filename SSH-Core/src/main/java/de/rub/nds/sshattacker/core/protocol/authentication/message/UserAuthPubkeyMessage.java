@@ -12,7 +12,6 @@ import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
-import de.rub.nds.sshattacker.core.constants.AuthenticationMethod;
 import de.rub.nds.sshattacker.core.protocol.authentication.handler.UserAuthPubkeyMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.util.Converter;
@@ -27,10 +26,6 @@ public class UserAuthPubkeyMessage extends UserAuthRequestMessage<UserAuthPubkey
     private ModifiableByte useSignature;
     private ModifiableInteger signatureLength;
     private ModifiableByteArray signature;
-
-    public UserAuthPubkeyMessage() {
-        super(AuthenticationMethod.PUBLICKEY);
-    }
 
     public void setPubkeyLength(int pubkeyLength) {
         this.pubkeyLength =

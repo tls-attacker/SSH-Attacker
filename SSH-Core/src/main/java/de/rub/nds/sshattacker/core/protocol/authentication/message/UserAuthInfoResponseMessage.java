@@ -9,7 +9,6 @@ package de.rub.nds.sshattacker.core.protocol.authentication.message;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
-import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.protocol.authentication.AuthenticationResponse;
 import de.rub.nds.sshattacker.core.protocol.authentication.handler.UserAuthInfoResponseMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
@@ -17,13 +16,8 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class UserAuthInfoResponseMessage extends SshMessage<UserAuthInfoResponseMessage> {
 
-    public static final MessageIdConstant ID = MessageIdConstant.SSH_MSG_USERAUTH_INFO_RESPONSE;
     private ModifiableInteger responseEntryCount;
     private AuthenticationResponse response = new AuthenticationResponse();
-
-    public UserAuthInfoResponseMessage() {
-        super();
-    }
 
     public ModifiableInteger getResponseEntryCount() {
         return responseEntryCount;

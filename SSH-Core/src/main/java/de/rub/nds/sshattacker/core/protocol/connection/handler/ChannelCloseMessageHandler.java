@@ -7,7 +7,6 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.handler;
 
-import de.rub.nds.sshattacker.core.exceptions.MissingChannelException;
 import de.rub.nds.sshattacker.core.protocol.common.*;
 import de.rub.nds.sshattacker.core.protocol.connection.Channel;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelCloseMessage;
@@ -15,8 +14,12 @@ import de.rub.nds.sshattacker.core.protocol.connection.parser.ChannelCloseMessag
 import de.rub.nds.sshattacker.core.protocol.connection.preparator.ChannelCloseMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.connection.serializer.ChannelMessageSerializer;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class ChannelCloseMessageHandler extends SshMessageHandler<ChannelCloseMessage> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public ChannelCloseMessageHandler(SshContext context) {
         super(context);
@@ -28,20 +31,24 @@ public class ChannelCloseMessageHandler extends SshMessageHandler<ChannelCloseMe
 
     @Override
     public void adjustContext() {
-        // TODO: Handle ChannelCloseMessage
-        Channel channel = context.getChannels().get(message.getRecipientChannel().getValue());
-        if (channel == null) {
-            throw new MissingChannelException(
-                    "Can't find the required channel of the received message!");
-        } else if (channel.isOpen().getValue()) {
-            if (channel.getFirstCloseMessage().getValue()) {
-                channel.setOpen(false);
+        Channel channel = context.getChannels().get(message.getRecipientChannelId().getValue());
+        if (channel != null) {
+            if (!channel.isOpen().getValue()) {
+                LOGGER.warn(
+                        "{} received but channel with id {} is not open, continuing anyway.",
+                        this.getClass().getSimpleName(),
+                        message.getRecipientChannelId().getValue());
             } else {
-                channel.setFirstCloseMessage(true);
+                channel.setCloseMessageReceived(true);
+                if (!channel.isOpen().getValue()) {
+                    context.getChannels().remove(message.getRecipientChannelId().getValue());
+                }
             }
         } else {
-            LOGGER.warn("Required channel is closed!");
-            // throw new MissingChannelException("Required channel is closed!");
+            LOGGER.warn(
+                    "{} received but no channel with id {} found locally, ignoring request to close the channel.",
+                    this.getClass().getSimpleName(),
+                    message.getRecipientChannelId().getValue());
         }
     }
 

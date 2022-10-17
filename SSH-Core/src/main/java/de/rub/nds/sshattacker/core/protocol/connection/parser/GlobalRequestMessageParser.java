@@ -33,8 +33,7 @@ public abstract class GlobalRequestMessageParser<T extends GlobalRequestMessage<
         LOGGER.debug("Request name length: " + message.getRequestNameLength().getValue());
         message.setRequestName(
                 parseByteString(
-                        message.getRequestNameLength().getValue(), StandardCharsets.US_ASCII),
-                false);
+                        message.getRequestNameLength().getValue(), StandardCharsets.US_ASCII));
         LOGGER.debug("Request name: " + message.getRequestName().getValue());
     }
 

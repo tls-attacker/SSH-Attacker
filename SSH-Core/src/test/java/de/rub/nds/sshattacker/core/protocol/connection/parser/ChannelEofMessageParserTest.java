@@ -42,6 +42,6 @@ public class ChannelEofMessageParserTest {
         ChannelEofMessage msg = parser.parse();
 
         assertEquals(MessageIdConstant.SSH_MSG_CHANNEL_EOF.getId(), msg.getMessageId().getValue());
-        assertEquals(expectedRecipientChannel, msg.getRecipientChannel().getValue());
+        assertEquals(expectedRecipientChannel, msg.getRecipientChannelId().getValue());
     }
 }

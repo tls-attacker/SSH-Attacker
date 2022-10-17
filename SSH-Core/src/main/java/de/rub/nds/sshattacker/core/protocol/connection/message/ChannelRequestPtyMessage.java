@@ -11,7 +11,6 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
-import de.rub.nds.sshattacker.core.constants.ChannelRequestType;
 import de.rub.nds.sshattacker.core.protocol.connection.handler.ChannelRequestPtyMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import java.nio.charset.StandardCharsets;
@@ -26,14 +25,6 @@ public class ChannelRequestPtyMessage extends ChannelRequestMessage<ChannelReque
     private ModifiableInteger heightPixels;
     private ModifiableInteger encodedTerminalModesLength;
     private ModifiableByteArray encodedTerminalModes;
-
-    public ChannelRequestPtyMessage() {
-        super(ChannelRequestType.PTY_REQ);
-    }
-
-    public ChannelRequestPtyMessage(Integer senderChannel) {
-        super(ChannelRequestType.PTY_REQ, senderChannel);
-    }
 
     public ModifiableInteger getTermEnvVariableLength() {
         return termEnvVariableLength;

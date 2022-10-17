@@ -30,15 +30,15 @@ public class ChannelDataMessageSerializerTest {
      * Test of ChannelDataMessageSerializer::serialize method
      *
      * @param expectedBytes Expected output bytes of the serialize() call
-     * @param providedRecipientChannel Recipient channel identifier
+     * @param providedRecipientChannelId Recipient channel identifier
      * @param providedPayload Payload of the message
      */
     @ParameterizedTest
     @MethodSource("provideTestVectors")
     public void testSerialize(
-            byte[] expectedBytes, int providedRecipientChannel, byte[] providedPayload) {
+            byte[] expectedBytes, int providedRecipientChannelId, byte[] providedPayload) {
         ChannelDataMessage msg = new ChannelDataMessage();
-        msg.setRecipientChannel(providedRecipientChannel);
+        msg.setRecipientChannelId(providedRecipientChannelId);
         msg.setData(providedPayload, true);
         ChannelDataMessageSerializer serializer = new ChannelDataMessageSerializer(msg);
 

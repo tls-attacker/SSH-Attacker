@@ -7,36 +7,18 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.preparator;
 
-import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
-import de.rub.nds.sshattacker.core.protocol.connection.Channel;
+import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.protocol.connection.message.GlobalRequestFailureMessage;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class GlobalRequestFailureMessagePreparator
-        extends SshMessagePreparator<GlobalRequestFailureMessage> {
-
-    private static final Logger LOGGER = LogManager.getLogger();
+        extends ChannelMessagePreparator<GlobalRequestFailureMessage> {
 
     public GlobalRequestFailureMessagePreparator(
             Chooser chooser, GlobalRequestFailureMessage message) {
-        super(chooser, message);
+        super(chooser, message, MessageIdConstant.SSH_MSG_REQUEST_FAILURE);
     }
 
     @Override
-    public void prepareMessageSpecificContents() {
-        Channel channel = null;
-        if (getObject().getSenderChannel() != null) {
-            channel = chooser.getContext().getChannels().get(getObject().getSenderChannel());
-        }
-
-        if (channel == null) {
-            channel = chooser.getConfig().getDefaultChannel();
-        }
-        if (!channel.isOpen().getValue()) {
-            LOGGER.info("The required channel is closed, still sending the message!");
-        }
-        getObject().setRecipientChannel(channel.getRemoteChannel());
-    }
+    protected void prepareChannelMessageSpecificContents() {}
 }

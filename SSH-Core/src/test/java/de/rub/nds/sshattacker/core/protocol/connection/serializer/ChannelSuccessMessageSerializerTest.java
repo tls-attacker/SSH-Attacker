@@ -30,13 +30,13 @@ public class ChannelSuccessMessageSerializerTest {
      * Test of ChannelSuccessMessageSerializer::serialize method
      *
      * @param expectedBytes Expected output bytes of the serialize() call
-     * @param providedRecipientChannel Recipient channel identifier
+     * @param providedRecipientChannelId Recipient channel identifier
      */
     @ParameterizedTest
     @MethodSource("provideTestVectors")
-    public void testSerialize(byte[] expectedBytes, int providedRecipientChannel) {
+    public void testSerialize(byte[] expectedBytes, int providedRecipientChannelId) {
         ChannelSuccessMessage msg = new ChannelSuccessMessage();
-        msg.setRecipientChannel(providedRecipientChannel);
+        msg.setRecipientChannelId(providedRecipientChannelId);
         ChannelMessageSerializer<ChannelSuccessMessage> serializer =
                 new ChannelMessageSerializer<>(msg);
 

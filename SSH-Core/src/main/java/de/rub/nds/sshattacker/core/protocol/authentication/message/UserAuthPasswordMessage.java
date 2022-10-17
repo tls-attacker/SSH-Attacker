@@ -11,7 +11,6 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
-import de.rub.nds.sshattacker.core.constants.AuthenticationMethod;
 import de.rub.nds.sshattacker.core.protocol.authentication.handler.UserAuthPasswordMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.util.Converter;
@@ -24,10 +23,6 @@ public class UserAuthPasswordMessage extends UserAuthRequestMessage<UserAuthPass
     private ModifiableString password;
     private ModifiableInteger newPasswordLength;
     private ModifiableString newPassword;
-
-    public UserAuthPasswordMessage() {
-        super(AuthenticationMethod.PASSWORD);
-    }
 
     public ModifiableByte getChangePassword() {
         return changePassword;

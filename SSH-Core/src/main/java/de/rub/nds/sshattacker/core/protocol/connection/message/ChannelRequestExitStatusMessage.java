@@ -9,21 +9,13 @@ package de.rub.nds.sshattacker.core.protocol.connection.message;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
-import de.rub.nds.sshattacker.core.constants.ChannelRequestType;
 import de.rub.nds.sshattacker.core.protocol.connection.handler.ChannelRequestExitStatusMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class ChannelRequestExitStatusMessage
         extends ChannelRequestMessage<ChannelRequestExitStatusMessage> {
+
     private ModifiableInteger exitStatus;
-
-    public ChannelRequestExitStatusMessage() {
-        super(ChannelRequestType.EXIT_STATUS);
-    }
-
-    public ChannelRequestExitStatusMessage(Integer senderChannel) {
-        super(ChannelRequestType.EXIT_STATUS, senderChannel);
-    }
 
     public ModifiableInteger getExitStatus() {
         return exitStatus;

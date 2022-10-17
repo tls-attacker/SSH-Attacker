@@ -51,7 +51,7 @@ public class ChannelWindowAdjustMessageParserTest {
         assertEquals(
                 MessageIdConstant.SSH_MSG_CHANNEL_WINDOW_ADJUST.getId(),
                 msg.getMessageId().getValue());
-        assertEquals(expectedRecipientChannel, msg.getRecipientChannel().getValue());
+        assertEquals(expectedRecipientChannel, msg.getRecipientChannelId().getValue());
         assertEquals(expectedBytesToAdd, msg.getBytesToAdd().getValue());
     }
 }

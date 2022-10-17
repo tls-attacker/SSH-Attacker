@@ -7,19 +7,10 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.message;
 
-import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.protocol.connection.handler.ChannelCloseMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class ChannelCloseMessage extends ChannelMessage<ChannelCloseMessage> {
-
-    public static final MessageIdConstant ID = MessageIdConstant.SSH_MSG_CHANNEL_CLOSE;
-
-    public ChannelCloseMessage() {}
-
-    public ChannelCloseMessage(Integer senderChannel) {
-        super(senderChannel);
-    }
 
     @Override
     public ChannelCloseMessageHandler getHandler(SshContext context) {

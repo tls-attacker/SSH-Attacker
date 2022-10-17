@@ -10,7 +10,6 @@ package de.rub.nds.sshattacker.core.protocol.connection.message;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
-import de.rub.nds.sshattacker.core.constants.ChannelRequestType;
 import de.rub.nds.sshattacker.core.protocol.connection.handler.ChannelRequestEnvMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import java.nio.charset.StandardCharsets;
@@ -21,14 +20,6 @@ public class ChannelRequestEnvMessage extends ChannelRequestMessage<ChannelReque
     private ModifiableInteger variableNameLength;
     private ModifiableString variableValue;
     private ModifiableInteger variableValueLength;
-
-    public ChannelRequestEnvMessage() {
-        super(ChannelRequestType.ENV);
-    }
-
-    public ChannelRequestEnvMessage(Integer senderChannel) {
-        super(ChannelRequestType.ENV, senderChannel);
-    }
 
     public ModifiableString getVariableName() {
         return variableName;

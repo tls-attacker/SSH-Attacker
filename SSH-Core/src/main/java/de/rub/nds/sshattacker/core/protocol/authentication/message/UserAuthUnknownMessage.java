@@ -15,15 +15,11 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 public class UserAuthUnknownMessage extends UserAuthRequestMessage<UserAuthUnknownMessage> {
     private ModifiableByteArray methodSpecificFields;
 
-    public UserAuthUnknownMessage() {
-        super();
-    }
-
     public ModifiableByteArray getMethodSpecificFields() {
         return methodSpecificFields;
     }
 
-    public void setPassword(ModifiableByteArray methodSpecificFields) {
+    public void setMethodSpecificFields(ModifiableByteArray methodSpecificFields) {
         this.methodSpecificFields = methodSpecificFields;
     }
 

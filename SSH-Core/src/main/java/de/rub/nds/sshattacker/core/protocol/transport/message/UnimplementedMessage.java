@@ -9,14 +9,11 @@ package de.rub.nds.sshattacker.core.protocol.transport.message;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
-import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.UnimplementedMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class UnimplementedMessage extends SshMessage<UnimplementedMessage> {
-
-    public static final MessageIdConstant ID = MessageIdConstant.SSH_MSG_UNIMPLEMENTED;
 
     private ModifiableInteger sequenceNumber;
 

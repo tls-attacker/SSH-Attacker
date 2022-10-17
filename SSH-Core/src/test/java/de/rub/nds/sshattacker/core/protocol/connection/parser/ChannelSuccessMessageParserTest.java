@@ -43,6 +43,6 @@ public class ChannelSuccessMessageParserTest {
 
         assertEquals(
                 MessageIdConstant.SSH_MSG_CHANNEL_SUCCESS.getId(), msg.getMessageId().getValue());
-        assertEquals(expectedRecipientChannel, msg.getRecipientChannel().getValue());
+        assertEquals(expectedRecipientChannel, msg.getRecipientChannelId().getValue());
     }
 }

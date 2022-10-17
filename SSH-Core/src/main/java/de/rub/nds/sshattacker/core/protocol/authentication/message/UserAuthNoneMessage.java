@@ -7,15 +7,10 @@
  */
 package de.rub.nds.sshattacker.core.protocol.authentication.message;
 
-import de.rub.nds.sshattacker.core.constants.AuthenticationMethod;
 import de.rub.nds.sshattacker.core.protocol.authentication.handler.UserAuthNoneMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class UserAuthNoneMessage extends UserAuthRequestMessage<UserAuthNoneMessage> {
-
-    public UserAuthNoneMessage() {
-        super(AuthenticationMethod.NONE);
-    }
 
     @Override
     public UserAuthNoneMessageHandler getHandler(SshContext context) {

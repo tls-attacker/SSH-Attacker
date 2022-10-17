@@ -55,7 +55,7 @@ public class ChannelDataMessageParserTest {
         ChannelDataMessage msg = parser.parse();
 
         assertEquals(MessageIdConstant.SSH_MSG_CHANNEL_DATA.getId(), msg.getMessageId().getValue());
-        assertEquals(expectedRecipientChannel, msg.getRecipientChannel().getValue());
+        assertEquals(expectedRecipientChannel, msg.getRecipientChannelId().getValue());
         assertArrayEquals(expectedPayload, msg.getData().getValue());
     }
 }

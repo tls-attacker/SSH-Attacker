@@ -30,15 +30,15 @@ public class ChannelWindowAdjustMessageSerializerTest {
      * Test of ChannelWindowAdjustMessageSerializer::serialize method
      *
      * @param expectedBytes Expected output bytes of the serialize() call
-     * @param providedRecipientChannel Channel number to add bytes to
+     * @param providedRecipientChannelId Channel number to add bytes to
      * @param providedBytesToAdd Number of bytes to add to the window size
      */
     @ParameterizedTest
     @MethodSource("provideTestVectors")
     public void testSerialize(
-            byte[] expectedBytes, int providedRecipientChannel, int providedBytesToAdd) {
+            byte[] expectedBytes, int providedRecipientChannelId, int providedBytesToAdd) {
         ChannelWindowAdjustMessage msg = new ChannelWindowAdjustMessage();
-        msg.setRecipientChannel(providedRecipientChannel);
+        msg.setRecipientChannelId(providedRecipientChannelId);
         msg.setBytesToAdd(providedBytesToAdd);
         ChannelWindowAdjustMessageSerializer serializer =
                 new ChannelWindowAdjustMessageSerializer(msg);

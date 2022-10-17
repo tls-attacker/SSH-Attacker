@@ -55,8 +55,7 @@ public class ChannelRequestExitSignalMessageParser
         LOGGER.debug("Language tag length: " + message.getLanguageTagLength().getValue());
         message.setLanguageTag(
                 parseByteString(
-                        message.getLanguageTagLength().getValue(), StandardCharsets.US_ASCII),
-                false);
+                        message.getLanguageTagLength().getValue(), StandardCharsets.US_ASCII));
         LOGGER.debug("Language tag: " + message.getLanguageTag().getValue());
     }
 

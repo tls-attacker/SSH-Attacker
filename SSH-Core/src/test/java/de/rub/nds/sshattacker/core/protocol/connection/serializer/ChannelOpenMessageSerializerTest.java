@@ -32,7 +32,7 @@ public class ChannelOpenMessageSerializerTest {
      *
      * @param expectedBytes Expected output bytes of the serialize() call
      * @param providedChannelType Expected channel type
-     * @param providedSenderChannel Expected sender channel index
+     * @param providedSenderChannelId Expected sender channel index
      * @param providedInitialWindowSize Initial window size
      * @param providedMaximumPacketSize Maximum packet size
      */
@@ -41,12 +41,12 @@ public class ChannelOpenMessageSerializerTest {
     public void testSerialize(
             byte[] expectedBytes,
             ChannelType providedChannelType,
-            int providedSenderChannel,
+            int providedSenderChannelId,
             int providedInitialWindowSize,
             int providedMaximumPacketSize) {
         ChannelOpenMessage msg = new ChannelOpenMessage();
         msg.setChannelType(providedChannelType.toString(), true);
-        msg.setModSenderChannel(providedSenderChannel);
+        msg.setSenderChannelId(providedSenderChannelId);
         msg.setWindowSize(providedInitialWindowSize);
         msg.setPacketSize(providedMaximumPacketSize);
         ChannelOpenMessageSerializer serializer = new ChannelOpenMessageSerializer(msg);

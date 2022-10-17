@@ -30,7 +30,7 @@ public class ChannelOpenFailureMessageSerializerTest {
      * Test of ChannelCloseMessageSerializer::serialize method
      *
      * @param expectedBytes Expected output bytes of the serialize() call
-     * @param providedRecipientChannel Recipient channel identifier
+     * @param providedRecipientChannelId Recipient channel identifier
      * @param providedReasonCode Reason code
      * @param providedReason Reason string
      * @param providedLanguageTag Language tag string
@@ -39,12 +39,12 @@ public class ChannelOpenFailureMessageSerializerTest {
     @MethodSource("provideTestVectors")
     public void testSerialize(
             byte[] expectedBytes,
-            int providedRecipientChannel,
+            int providedRecipientChannelId,
             int providedReasonCode,
             String providedReason,
             String providedLanguageTag) {
         ChannelOpenFailureMessage msg = new ChannelOpenFailureMessage();
-        msg.setRecipientChannel(providedRecipientChannel);
+        msg.setRecipientChannelId(providedRecipientChannelId);
         msg.setReasonCode(providedReasonCode);
         msg.setReason(providedReason, true);
         msg.setLanguageTag(providedLanguageTag, true);

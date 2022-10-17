@@ -11,23 +11,14 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.sshattacker.core.constants.ExtendedChannelDataType;
-import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.protocol.connection.handler.ChannelExtendedDataMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class ChannelExtendedDataMessage extends ChannelMessage<ChannelExtendedDataMessage> {
 
-    public static final MessageIdConstant ID = MessageIdConstant.SSH_MSG_CHANNEL_EXTENDED_DATA;
-
     private ModifiableInteger dataTypeCode;
     private ModifiableInteger dataLength;
     private ModifiableByteArray data;
-
-    public ChannelExtendedDataMessage() {}
-
-    public ChannelExtendedDataMessage(Integer senderChannel) {
-        super(senderChannel);
-    }
 
     public ModifiableInteger getDataTypeCode() {
         return dataTypeCode;

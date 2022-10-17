@@ -30,8 +30,8 @@ public class ChannelOpenConfirmationMessageSerializerTest {
      * Test of ChannelOpenConfirmationMessage::serialize method
      *
      * @param expectedBytes Expected output bytes of the serialize() call
-     * @param providedRecipientChannel Recipient channel number
-     * @param providedSenderChannel Sender channel number
+     * @param providedRecipientChannelId Recipient channel number
+     * @param providedSenderChannelId Sender channel number
      * @param providedInitialWindowSize Initial window size
      * @param providedMaximumPacketSize Maximum packet size
      */
@@ -39,13 +39,13 @@ public class ChannelOpenConfirmationMessageSerializerTest {
     @MethodSource("provideTestVectors")
     public void testSerialize(
             byte[] expectedBytes,
-            int providedRecipientChannel,
-            int providedSenderChannel,
+            int providedRecipientChannelId,
+            int providedSenderChannelId,
             int providedInitialWindowSize,
             int providedMaximumPacketSize) {
         ChannelOpenConfirmationMessage msg = new ChannelOpenConfirmationMessage();
-        msg.setRecipientChannel(providedRecipientChannel);
-        msg.setModSenderChannel(providedSenderChannel);
+        msg.setRecipientChannelId(providedRecipientChannelId);
+        msg.setSenderChannelId(providedSenderChannelId);
         msg.setWindowSize(providedInitialWindowSize);
         msg.setPacketSize(providedMaximumPacketSize);
         ChannelOpenConfirmationMessageSerializer serializer =

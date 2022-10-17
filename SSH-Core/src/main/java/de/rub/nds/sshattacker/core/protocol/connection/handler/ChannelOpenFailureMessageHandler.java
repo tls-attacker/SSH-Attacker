@@ -7,16 +7,18 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.handler;
 
-import de.rub.nds.sshattacker.core.exceptions.MissingChannelException;
 import de.rub.nds.sshattacker.core.protocol.common.*;
-import de.rub.nds.sshattacker.core.protocol.connection.Channel;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelOpenFailureMessage;
 import de.rub.nds.sshattacker.core.protocol.connection.parser.ChannelOpenFailureMessageParser;
 import de.rub.nds.sshattacker.core.protocol.connection.preparator.ChannelOpenFailureMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.connection.serializer.ChannelOpenFailureMessageSerializer;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class ChannelOpenFailureMessageHandler extends SshMessageHandler<ChannelOpenFailureMessage> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public ChannelOpenFailureMessageHandler(SshContext context) {
         super(context);
@@ -28,14 +30,13 @@ public class ChannelOpenFailureMessageHandler extends SshMessageHandler<ChannelO
 
     @Override
     public void adjustContext() {
-        // TODO: Handle ChannelOpenFailureMessage
-        Channel channel = context.getChannels().get(message.getRecipientChannel().getValue());
-        if (channel == null) {
-            throw new MissingChannelException(
-                    "Can't find the required channel of the received message!");
-        } else {
-            channel.setOpen(false);
+        if (!context.getChannels().containsKey(message.getRecipientChannelId().getValue())) {
+            LOGGER.warn(
+                    "{} received but no channel with id {} found locally, ignoring it.",
+                    this.getClass().getSimpleName(),
+                    message.getRecipientChannelId().getValue());
         }
+        context.getChannels().remove(message.getRecipientChannelId().getValue());
     }
 
     @Override

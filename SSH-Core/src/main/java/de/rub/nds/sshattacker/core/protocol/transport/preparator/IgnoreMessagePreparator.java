@@ -7,6 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.preparator;
 
+import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.transport.message.IgnoreMessage;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
@@ -14,7 +15,7 @@ import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 public class IgnoreMessagePreparator extends SshMessagePreparator<IgnoreMessage> {
 
     public IgnoreMessagePreparator(Chooser chooser, IgnoreMessage message) {
-        super(chooser, message);
+        super(chooser, message, MessageIdConstant.SSH_MSG_IGNORE);
     }
 
     @Override

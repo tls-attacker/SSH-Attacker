@@ -8,22 +8,19 @@
 package de.rub.nds.sshattacker.core.protocol.connection.preparator;
 
 import de.rub.nds.sshattacker.core.constants.GlobalRequestType;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.connection.message.GlobalRequestTcpIpForwardMessage;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
 public class GlobalRequestTcpIpForwardMessagePreparator
-        extends SshMessagePreparator<GlobalRequestTcpIpForwardMessage> {
+        extends GlobalRequestMessagePreparator<GlobalRequestTcpIpForwardMessage> {
 
     public GlobalRequestTcpIpForwardMessagePreparator(
             Chooser chooser, GlobalRequestTcpIpForwardMessage message) {
-        super(chooser, message);
+        super(chooser, message, GlobalRequestType.TCPIP_FORWARD);
     }
 
     @Override
-    public void prepareMessageSpecificContents() {
-        getObject().setRequestName(GlobalRequestType.TCPIP_FORWARD, true);
-        getObject().setWantReply((byte) 1);
+    protected void prepareGlobalRequestMessageSpecificContents() {
         getObject().setIpAddressToBind("127.0.0.1", true);
         getObject().setPortToBind(22);
     }

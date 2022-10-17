@@ -11,7 +11,6 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
-import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.DebugMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
@@ -19,8 +18,6 @@ import de.rub.nds.sshattacker.core.util.Converter;
 import java.nio.charset.StandardCharsets;
 
 public class DebugMessage extends SshMessage<DebugMessage> {
-
-    public static final MessageIdConstant ID = MessageIdConstant.SSH_MSG_DEBUG;
 
     private ModifiableByte alwaysDisplay;
     private ModifiableInteger messageLength;

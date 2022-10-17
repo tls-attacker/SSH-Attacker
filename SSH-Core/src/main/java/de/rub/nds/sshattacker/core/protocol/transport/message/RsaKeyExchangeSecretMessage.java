@@ -10,15 +10,12 @@ package de.rub.nds.sshattacker.core.protocol.transport.message;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
-import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.RsaKeyExchangeSecretMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class RsaKeyExchangeSecretMessage extends SshMessage<RsaKeyExchangeSecretMessage> {
-
-    public static final MessageIdConstant ID = MessageIdConstant.SSH_MSG_KEXRSA_SECRET;
 
     private ModifiableInteger encryptedSecretLength;
     private ModifiableByteArray encryptedSecret;

@@ -14,36 +14,29 @@ import jakarta.xml.bind.annotation.XmlAttribute;
 
 public abstract class ChannelMessage<T extends ChannelMessage<T>> extends SshMessage<T> {
 
-    protected ModifiableInteger recipientChannel;
+    protected ModifiableInteger recipientChannelId;
 
     @XmlAttribute(name = "channel")
-    protected Integer senderChannel;
+    protected Integer configSenderChannelId;
 
-    protected ChannelMessage() {}
-
-    protected ChannelMessage(Integer senderChannel) {
-        super();
-        this.setSenderChannel(senderChannel);
+    public ModifiableInteger getRecipientChannelId() {
+        return recipientChannelId;
     }
 
-    public ModifiableInteger getRecipientChannel() {
-        return recipientChannel;
+    public void setRecipientChannelId(ModifiableInteger recipientChannelId) {
+        this.recipientChannelId = recipientChannelId;
     }
 
-    public void setRecipientChannel(ModifiableInteger recipientChannel) {
-        this.recipientChannel = recipientChannel;
+    public void setRecipientChannelId(int recipientChannel) {
+        this.recipientChannelId =
+                ModifiableVariableFactory.safelySetValue(this.recipientChannelId, recipientChannel);
     }
 
-    public void setRecipientChannel(int recipientChannel) {
-        this.recipientChannel =
-                ModifiableVariableFactory.safelySetValue(this.recipientChannel, recipientChannel);
+    public Integer getConfigSenderChannelId() {
+        return configSenderChannelId;
     }
 
-    public Integer getSenderChannel() {
-        return senderChannel;
-    }
-
-    public void setSenderChannel(int senderChannel) {
-        this.senderChannel = senderChannel;
+    public void setConfigSenderChannelId(int configSenderChannelId) {
+        this.configSenderChannelId = configSenderChannelId;
     }
 }

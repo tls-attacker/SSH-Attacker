@@ -7,6 +7,7 @@
  */
 package executing;
 
+import de.rub.nds.modifiablevariable.util.Modifiable;
 import de.rub.nds.sshattacker.core.constants.RunningModeType;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelDataMessage;
 import de.rub.nds.sshattacker.core.state.State;
@@ -45,7 +46,7 @@ public class NetcatWorkflowFactory {
             receiveMessageHelper.receiveMessages(state.getSshContext());
             String read = in.readLine();
             ChannelDataMessage dataMessage = new ChannelDataMessage();
-            dataMessage.setRecipientChannel(0);
+            dataMessage.setRecipientChannelId(Modifiable.explicit(0));
             dataMessage.setData((read + "\n").getBytes());
             sendMessageHelper.sendMessage(state.getSshContext(), dataMessage);
         }

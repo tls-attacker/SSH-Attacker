@@ -43,6 +43,6 @@ public class ChannelCloseMessageParserTest {
 
         assertEquals(
                 MessageIdConstant.SSH_MSG_CHANNEL_CLOSE.getId(), msg.getMessageId().getValue());
-        assertEquals(expectedRecipientChannel, msg.getRecipientChannel().getValue());
+        assertEquals(expectedRecipientChannel, msg.getRecipientChannelId().getValue());
     }
 }

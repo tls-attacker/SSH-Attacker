@@ -10,7 +10,6 @@ package de.rub.nds.sshattacker.core.protocol.connection.message;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
-import de.rub.nds.sshattacker.core.constants.GlobalRequestType;
 import de.rub.nds.sshattacker.core.protocol.connection.handler.GlobalRequestCancelTcpIpForwardMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import java.nio.charset.StandardCharsets;
@@ -21,10 +20,6 @@ public class GlobalRequestCancelTcpIpForwardMessage
     private ModifiableInteger ipAddressToBindLength;
     private ModifiableString ipAddressToBind;
     private ModifiableInteger portToBind;
-
-    public GlobalRequestCancelTcpIpForwardMessage() {
-        super(GlobalRequestType.CANCEL_TCPIP_FORWARD);
-    }
 
     public ModifiableString getIpAddressToBind() {
         return ipAddressToBind;

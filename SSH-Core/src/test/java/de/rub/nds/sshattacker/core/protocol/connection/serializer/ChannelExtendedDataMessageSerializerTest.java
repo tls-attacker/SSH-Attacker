@@ -31,7 +31,7 @@ public class ChannelExtendedDataMessageSerializerTest {
      * Test of ChannelExtendedDataMessageSerializer::serialize method
      *
      * @param expectedBytes Expected output bytes of the serialize() call
-     * @param providedRecipientChannel Recipient channel identifier
+     * @param providedRecipientChannelId Recipient channel identifier
      * @param providedDataType Data type
      * @param providedPayload Payload of the message
      */
@@ -39,11 +39,11 @@ public class ChannelExtendedDataMessageSerializerTest {
     @MethodSource("provideTestVectors")
     public void testSerialize(
             byte[] expectedBytes,
-            int providedRecipientChannel,
+            int providedRecipientChannelId,
             ExtendedChannelDataType providedDataType,
             byte[] providedPayload) {
         ChannelExtendedDataMessage msg = new ChannelExtendedDataMessage();
-        msg.setRecipientChannel(providedRecipientChannel);
+        msg.setRecipientChannelId(providedRecipientChannelId);
         msg.setDataTypeCode(providedDataType.getDataTypeCode());
         msg.setData(providedPayload, true);
         ChannelExtendedDataMessageSerializer serializer =

@@ -27,8 +27,8 @@ public abstract class ChannelMessageParser<T extends ChannelMessage<T>>
     }
 
     private void parseRecipientChannel() {
-        message.setRecipientChannel(parseIntField(DataFormatConstants.UINT32_SIZE));
-        LOGGER.debug("Recipient channel: " + message.getRecipientChannel().getValue());
+        message.setRecipientChannelId(parseIntField(DataFormatConstants.UINT32_SIZE));
+        LOGGER.debug("Recipient channel id: " + message.getRecipientChannelId().getValue());
     }
 
     @Override

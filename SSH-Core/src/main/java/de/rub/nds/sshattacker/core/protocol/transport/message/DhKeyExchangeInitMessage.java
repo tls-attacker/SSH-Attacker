@@ -10,15 +10,12 @@ package de.rub.nds.sshattacker.core.protocol.transport.message;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.biginteger.ModifiableBigInteger;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
-import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.protocol.common.*;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.DhKeyExchangeInitMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import java.math.BigInteger;
 
 public class DhKeyExchangeInitMessage extends SshMessage<DhKeyExchangeInitMessage> {
-
-    public static final MessageIdConstant ID = MessageIdConstant.SSH_MSG_KEXDH_INIT;
 
     private ModifiableInteger ephemeralPublicKeyLength;
     private ModifiableBigInteger ephemeralPublicKey;

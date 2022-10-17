@@ -7,6 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.preparator;
 
+import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.transport.message.RsaKeyExchangeDoneMessage;
 import de.rub.nds.sshattacker.core.protocol.util.KeyExchangeUtil;
@@ -16,7 +17,7 @@ public class RsaKeyExchangeDoneMessagePreparator
         extends SshMessagePreparator<RsaKeyExchangeDoneMessage> {
 
     public RsaKeyExchangeDoneMessagePreparator(Chooser chooser, RsaKeyExchangeDoneMessage message) {
-        super(chooser, message);
+        super(chooser, message, MessageIdConstant.SSH_MSG_KEXRSA_DONE);
     }
 
     @Override
