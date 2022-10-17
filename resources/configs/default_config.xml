@@ -1,5 +1,17 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <config>
+    <defaultClientConnection>
+        <alias>client</alias>
+        <ip>127.0.0.1</ip>
+        <port>22510</port>
+        <hostname>localhost</hostname>
+    </defaultClientConnection>
+    <defaultServerConnection>
+        <alias>server</alias>
+        <port>65222</port>
+        <hostname>localhost</hostname>
+    </defaultServerConnection>
+    <defaultRunningMode>CLIENT</defaultRunningMode>
     <clientVersion>SSH-2.0-OpenSSH_8.2p1</clientVersion>
     <clientComment></clientComment>
     <clientEndOfMessageSequence>&#13;
@@ -158,8 +170,16 @@
     <serverFirstKeyExchangePacketFollows>false</serverFirstKeyExchangePacketFollows>
     <clientReserved>0</clientReserved>
     <serverReserved>0</serverReserved>
-    <serverHostKeys>
-        <serverHostKey>
+    <dhGexMinimalGroupSize>2048</dhGexMinimalGroupSize>
+    <dhGexPreferredGroupSize>4096</dhGexPreferredGroupSize>
+    <dhGexMaximalGroupSize>8192</dhGexMaximalGroupSize>
+    <defaultDhKeyExchangeAlgorithm>DIFFIE_HELLMAN_GROUP14_SHA256</defaultDhKeyExchangeAlgorithm>
+    <defaultEcdhKeyExchangeAlgorithm>ECDH_SHA2_NISTP256</defaultEcdhKeyExchangeAlgorithm>
+    <defaultRsaKeyExchangeAlgorithm>RSA2048_SHA256</defaultRsaKeyExchangeAlgorithm>
+    <enableEncryptionOnNewKeysMessage>true</enableEncryptionOnNewKeysMessage>
+    <enforceSettings>false</enforceSettings>
+    <hostKeys>
+        <hostKey>
             <publicKeyAlgorithm>SSH_RSA</publicKeyAlgorithm>
             <rsaPublicKey>
                 <modulus>27515389097880581591839308696003760056189873003702388985224994709073462302627611542082307987774568620766027087542979280757684278901477069056336322131656309325245432795628920327727825161459539424942941001012976388136075296309496951157183676250560121522344251911044865453011046176125841556031454600168206813919336253830837183544059070631904922196549280613071833690141514998043359682275855318700093984399355013666988444606522284947154811019916901587985677020342030775620063248929764274123357628767363851453403902716204216688800415528728422444534927925318220676316664770613893320046477846918463568294798048346062681417993</modulus>
@@ -169,8 +189,8 @@
                 <modulus>27515389097880581591839308696003760056189873003702388985224994709073462302627611542082307987774568620766027087542979280757684278901477069056336322131656309325245432795628920327727825161459539424942941001012976388136075296309496951157183676250560121522344251911044865453011046176125841556031454600168206813919336253830837183544059070631904922196549280613071833690141514998043359682275855318700093984399355013666988444606522284947154811019916901587985677020342030775620063248929764274123357628767363851453403902716204216688800415528728422444534927925318220676316664770613893320046477846918463568294798048346062681417993</modulus>
                 <privateExponent>15485567106920172901313777895591844086737373939432059986435734086843547668799560921588779587425075743600319561422330100423675586966173004792314401109358245161547714165036194781084167771720915698759409736200354320460365918932503555952844388892162587885166324175457814934599683036456132260443172123725592262761318607145013338509770132660886539639135467672101254776827183753780651572194943511165885212080321973760723645232456565627235806423191655540743163348638501944203648892455210990817002936946334114532455896785105209217045950143925744757216122583297808447646534206156155008523356460791355015119444638675592206672193</privateExponent>
             </rsaPrivateKey>
-        </serverHostKey>
-        <serverHostKey>
+        </hostKey>
+        <hostKey>
             <publicKeyAlgorithm>SSH_DSS</publicKeyAlgorithm>
             <dsaPublicKey>
                 <p>98181065627399913315366801213832398366910408424750014396377426984548190062417862297151135386925024267653774790416568495207036076193782716388853895752820468466963277507296755693420137145260499573272741893176293677763872459343107493728414375735672742224046062031825704063022268639762121058752026816612899530837</p>
@@ -184,8 +204,8 @@
                 <g>26415008239714743559285832610035290618004902502313475954524033467933271088547303289527540703540306779653980388198317925821069299742102685825303637442515128751116160824440629517059210206222463808643433128241435680711212994605726268447509864207647181037340770099436853533204797070439784931931659658886790270073</g>
                 <x>710307844775435492750701971700158010530791912264</x>
             </dsaPrivateKey>
-        </serverHostKey>
-        <serverHostKey>
+        </hostKey>
+        <hostKey>
             <publicKeyAlgorithm>ECDSA_SHA2_NISTP256</publicKeyAlgorithm>
             <ecPublicKey>
                 <publicKey>
@@ -205,8 +225,8 @@
                 <group>SECP256R1</group>
                 <privateKey>64154511171343329754910734163504631070465777822792923856132503828410544857551</privateKey>
             </ecPrivateKey>
-        </serverHostKey>
-        <serverHostKey>
+        </hostKey>
+        <hostKey>
             <publicKeyAlgorithm>ECDSA_SHA2_NISTP384</publicKeyAlgorithm>
             <ecPublicKey>
                 <publicKey>
@@ -226,8 +246,8 @@
                 <group>SECP384R1</group>
                 <privateKey>36050726511265987414250148771380356164170835387112645048215030017475896013479718274286368845356254798796678895751832</privateKey>
             </ecPrivateKey>
-        </serverHostKey>
-        <serverHostKey>
+        </hostKey>
+        <hostKey>
             <publicKeyAlgorithm>ECDSA_SHA2_NISTP521</publicKeyAlgorithm>
             <ecPublicKey>
                 <publicKey>
@@ -247,8 +267,8 @@
                 <group>SECP521R1</group>
                 <privateKey>4654291931739978218004099797848549769245786863808395337139032242514913193695116632475208935193748995885860258303221363853541516297085693002196207490064657106</privateKey>
             </ecPrivateKey>
-        </serverHostKey>
-        <serverHostKey>
+        </hostKey>
+        <hostKey>
             <publicKeyAlgorithm>SSH_ED25519</publicKeyAlgorithm>
             <xCurvePublicKey>
                 <group>CURVE25519</group>
@@ -258,14 +278,8 @@
                 <group>CURVE25519</group>
                 <scalar>09 2E 82 9D E5 36 BE 8F 7D 74 E7 A3 C6 CD 90 EA 6E AD DD EE B2 E5 0D 86 17 EB DD 13 2B 53 66 9B</scalar>
             </xCurvePrivateKey>
-        </serverHostKey>
-    </serverHostKeys>
-    <dhGexMinimalGroupSize>2048</dhGexMinimalGroupSize>
-    <dhGexPreferredGroupSize>4096</dhGexPreferredGroupSize>
-    <dhGexMaximalGroupSize>8192</dhGexMaximalGroupSize>
-    <defaultDhKeyExchangeAlgorithm>DIFFIE_HELLMAN_GROUP14_SHA256</defaultDhKeyExchangeAlgorithm>
-    <defaultEcdhKeyExchangeAlgorithm>ECDH_SHA2_NISTP256</defaultEcdhKeyExchangeAlgorithm>
-    <defaultRsaKeyExchangeAlgorithm>RSA2048_SHA256</defaultRsaKeyExchangeAlgorithm>
+        </hostKey>
+    </hostKeys>
     <fallbackRsaTransientPublicKey>
         <publicKeyAlgorithm>SSH_RSA</publicKeyAlgorithm>
         <rsaPublicKey>
@@ -280,62 +294,87 @@
     <authenticationMethod>PASSWORD</authenticationMethod>
     <serviceName>ssh-userauth</serviceName>
     <username>sshattacker</username>
-    <password>bydahirsch</password>
+    <password>secret</password>
+    <preConfiguredAuthResponses>
+        <preConfiguredAuthResponse>
+            <responseEntries>
+                <responseEntry>
+                    <responseLength>
+                        <originalValue>6</originalValue>
+                    </responseLength>
+                    <response>
+                        <originalValue>secret</originalValue>
+                    </response>
+                    <executed>false</executed>
+                </responseEntry>
+            </responseEntries>
+        </preConfiguredAuthResponse>
+        <preConfiguredAuthResponse>
+            <responseEntries>
+                <responseEntry>
+                    <executed>false</executed>
+                </responseEntry>
+            </responseEntries>
+        </preConfiguredAuthResponse>
+    </preConfiguredAuthResponses>
+    <userKeys>
+        <userKey>
+            <publicKeyAlgorithm>ECDSA_SHA2_NISTP521</publicKeyAlgorithm>
+            <ecPublicKey>
+                <publicKey>
+                    <xFieldElementFp>
+                        <data>2698597699847844861972442102111683726627961882342448043790865162991866028092310048060675211927225227922362038325941073520909082263442606973886245878319568180</data>
+                        <modulus>6864797660130609714981900799081393217269435300143305409394463459185543183397656052122559640661454554977296311391480858037121987999716643812574028291115057151</modulus>
+                    </xFieldElementFp>
+                    <yFieldElementFp>
+                        <data>2768987967237450789086795057613727884504273763107424009159523507228867632080586555687545768957538135751005156679168704722906217161490376699752079682757615013</data>
+                        <modulus>6864797660130609714981900799081393217269435300143305409394463459185543183397656052122559640661454554977296311391480858037121987999716643812574028291115057151</modulus>
+                    </yFieldElementFp>
+                    <infinity>false</infinity>
+                </publicKey>
+                <group>SECP521R1</group>
+            </ecPublicKey>
+            <ecPrivateKey>
+                <group>SECP521R1</group>
+                <privateKey>2565864207052444749420343238854522257823374497563809302157550377591760209720792767609401253534663228353020467535373399814417540032271299265465549190625767593</privateKey>
+            </ecPrivateKey>
+        </userKey>
+    </userKeys>
     <channelCommand>nc -l -p 13370</channelCommand>
-    <defaultChannel>
+    <channelDefaults>
         <channelType>SESSION</channelType>
-        <firstCloseMessage>
-            <originalValue>false</originalValue>
-        </firstCloseMessage>
-        <localChannel>
-            <originalValue>1337</originalValue>
-        </localChannel>
-        <open>
-            <originalValue>true</originalValue>
-        </open>
-        <remoteChannel>
-            <originalValue>0</originalValue>
-        </remoteChannel>
-        <remotePacketSize>
-            <originalValue>2147483647</originalValue>
-        </remotePacketSize>
-        <remoteWindowSize>
-            <originalValue>2147483647</originalValue>
-        </remoteWindowSize>
-        <localPacketSize>
-            <originalValue>2147483647</originalValue>
-        </localPacketSize>
-        <localWindowSize>
-            <originalValue>2147483647</originalValue>
-        </localWindowSize>
-    </defaultChannel>
+        <localChannelId>1337</localChannelId>
+        <localWindowSize>2147483647</localWindowSize>
+        <localPacketSize>2147483647</localPacketSize>
+        <remoteChannelId>0</remoteChannelId>
+        <remoteWindowSize>2147483647</remoteWindowSize>
+        <remotePacketSize>35000</remotePacketSize>
+    </channelDefaults>
     <replyWanted>0</replyWanted>
     <defaultVariableName>PATH</defaultVariableName>
     <defaultVariableValue>usr/local/bin</defaultVariableValue>
-    <defaultSignalType>SIGINT</defaultSignalType>
-    <defaultClientConnection>
-        <alias>client</alias>
-        <ip>127.0.0.1</ip>
-        <port>65222</port>
-        <hostname>localhost</hostname>
-    </defaultClientConnection>
-    <defaultServerConnection>
-        <alias>server</alias>
-        <port>65222</port>
-        <hostname>localhost</hostname>
-    </defaultServerConnection>
-    <defaultRunningMode>CLIENT</defaultRunningMode>
-    <filtersKeepUserSettings>true</filtersKeepUserSettings>
+    <clientFlowControl>0</clientFlowControl>
+    <defaultTerminalWidthPixels>640</defaultTerminalWidthPixels>
+    <defaultTerminalWidthColumns>80</defaultTerminalWidthColumns>
+    <defaultTerminalHeightRows>24</defaultTerminalHeightRows>
+    <defaultTerminalHeightPixels>480</defaultTerminalHeightPixels>
+    <defaultTermEnvVariable>vt100</defaultTermEnvVariable>
+    <defaultSubsystemName>sftp</defaultSubsystemName>
+    <defaultBreakLength>600</defaultBreakLength>
     <workflowTraceType>KEX_DYNAMIC</workflowTraceType>
-    <outputFilters>DEFAULT</outputFilters>
+    <outputFilters>
+        <outputFilter>DEFAULT</outputFilter>
+    </outputFilters>
     <applyFiltersInPlace>false</applyFiltersInPlace>
+    <filtersKeepUserSettings>true</filtersKeepUserSettings>
     <workflowExecutorShouldOpen>true</workflowExecutorShouldOpen>
     <stopActionsAfterDisconnect>true</stopActionsAfterDisconnect>
     <stopActionsAfterIOException>true</stopActionsAfterIOException>
     <workflowExecutorShouldClose>true</workflowExecutorShouldClose>
     <resetWorkflowtracesBeforeSaving>false</resetWorkflowtracesBeforeSaving>
+    <quickReceive>true</quickReceive>
+    <receiveMaximumBytes>16777216</receiveMaximumBytes>
+    <stopReceivingAfterDisconnect>false</stopReceivingAfterDisconnect>
     <configOutput>resources/configs/default_config.xml</configOutput>
-    <enforceSettings>false</enforceSettings>
-    <enableEncryptionOnNewKeysMessage>false</enableEncryptionOnNewKeysMessage>
     <chooserType>DEFAULT</chooserType>
 </config>
