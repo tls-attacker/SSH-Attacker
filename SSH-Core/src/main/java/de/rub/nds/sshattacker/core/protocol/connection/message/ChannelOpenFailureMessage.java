@@ -60,17 +60,17 @@ public class ChannelOpenFailureMessage extends ChannelMessage<ChannelOpenFailure
     }
 
     public void setReason(ModifiableString reason, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setReasonLength(reason.getValue().getBytes(StandardCharsets.UTF_8).length);
-        }
         this.reason = reason;
+        if (adjustLengthField) {
+            setReasonLength(this.reason.getValue().getBytes(StandardCharsets.UTF_8).length);
+        }
     }
 
     public void setReason(String reason, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setReasonLength(reason.getBytes(StandardCharsets.UTF_8).length);
-        }
         this.reason = ModifiableVariableFactory.safelySetValue(this.reason, reason);
+        if (adjustLengthField) {
+            setReasonLength(this.reason.getValue().getBytes(StandardCharsets.UTF_8).length);
+        }
     }
 
     public ModifiableInteger getLanguageTagLength() {
@@ -99,17 +99,19 @@ public class ChannelOpenFailureMessage extends ChannelMessage<ChannelOpenFailure
     }
 
     public void setLanguageTag(ModifiableString languageTag, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setLanguageTagLength(languageTag.getValue().getBytes(StandardCharsets.US_ASCII).length);
-        }
         this.languageTag = languageTag;
+        if (adjustLengthField) {
+            setLanguageTagLength(
+                    this.languageTag.getValue().getBytes(StandardCharsets.US_ASCII).length);
+        }
     }
 
     public void setLanguageTag(String languageTag, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setLanguageTagLength(languageTag.getBytes(StandardCharsets.US_ASCII).length);
-        }
         this.languageTag = ModifiableVariableFactory.safelySetValue(this.languageTag, languageTag);
+        if (adjustLengthField) {
+            setLanguageTagLength(
+                    this.languageTag.getValue().getBytes(StandardCharsets.US_ASCII).length);
+        }
     }
 
     @Override

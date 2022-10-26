@@ -73,22 +73,28 @@ public class ChannelRequestX11Message extends ChannelRequestMessage<ChannelReque
 
     public void setX11AuthenticationProtocol(
             ModifiableString x11AuthenticationProtocol, boolean adjustLengthField) {
+        this.x11AuthenticationProtocol = x11AuthenticationProtocol;
         if (adjustLengthField) {
             setX11AuthenticationProtocolLength(
-                    x11AuthenticationProtocol.getValue().getBytes(StandardCharsets.UTF_8).length);
+                    this.x11AuthenticationProtocol
+                            .getValue()
+                            .getBytes(StandardCharsets.UTF_8)
+                            .length);
         }
-        this.x11AuthenticationProtocol = x11AuthenticationProtocol;
     }
 
     public void setX11AuthenticationProtocol(
             String x11AuthenticationProtocol, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setX11AuthenticationProtocolLength(
-                    x11AuthenticationProtocol.getBytes(StandardCharsets.UTF_8).length);
-        }
         this.x11AuthenticationProtocol =
                 ModifiableVariableFactory.safelySetValue(
                         this.x11AuthenticationProtocol, x11AuthenticationProtocol);
+        if (adjustLengthField) {
+            setX11AuthenticationProtocolLength(
+                    this.x11AuthenticationProtocol
+                            .getValue()
+                            .getBytes(StandardCharsets.UTF_8)
+                            .length);
+        }
     }
 
     public ModifiableInteger getX11AuthenticationCookieLength() {
@@ -121,22 +127,28 @@ public class ChannelRequestX11Message extends ChannelRequestMessage<ChannelReque
 
     public void setX11AuthenticationCookie(
             ModifiableString x11AuthenticationCookie, boolean adjustLengthField) {
+        this.x11AuthenticationCookie = x11AuthenticationCookie;
         if (adjustLengthField) {
             setX11AuthenticationCookieLength(
-                    x11AuthenticationCookie.getValue().getBytes(StandardCharsets.UTF_8).length);
+                    this.x11AuthenticationCookie
+                            .getValue()
+                            .getBytes(StandardCharsets.UTF_8)
+                            .length);
         }
-        this.x11AuthenticationCookie = x11AuthenticationCookie;
     }
 
     public void setX11AuthenticationCookie(
             String x11AuthenticationCookie, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setX11AuthenticationCookieLength(
-                    x11AuthenticationCookie.getBytes(StandardCharsets.UTF_8).length);
-        }
         this.x11AuthenticationCookie =
                 ModifiableVariableFactory.safelySetValue(
                         this.x11AuthenticationCookie, x11AuthenticationCookie);
+        if (adjustLengthField) {
+            setX11AuthenticationCookieLength(
+                    this.x11AuthenticationCookie
+                            .getValue()
+                            .getBytes(StandardCharsets.UTF_8)
+                            .length);
+        }
     }
 
     public ModifiableInteger getX11ScreenNumber() {

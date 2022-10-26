@@ -52,17 +52,19 @@ public abstract class GlobalRequestMessage<T extends GlobalRequestMessage<T>>
     }
 
     public void setRequestName(ModifiableString requestName, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setRequestNameLength(requestName.getValue().getBytes(StandardCharsets.US_ASCII).length);
-        }
         this.requestName = requestName;
+        if (adjustLengthField) {
+            setRequestNameLength(
+                    this.requestName.getValue().getBytes(StandardCharsets.US_ASCII).length);
+        }
     }
 
     public void setRequestName(String requestName, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setRequestNameLength(requestName.getBytes(StandardCharsets.US_ASCII).length);
-        }
         this.requestName = ModifiableVariableFactory.safelySetValue(this.requestName, requestName);
+        if (adjustLengthField) {
+            setRequestNameLength(
+                    this.requestName.getValue().getBytes(StandardCharsets.US_ASCII).length);
+        }
     }
 
     public void setRequestName(GlobalRequestType requestType, boolean adjustLengthField) {

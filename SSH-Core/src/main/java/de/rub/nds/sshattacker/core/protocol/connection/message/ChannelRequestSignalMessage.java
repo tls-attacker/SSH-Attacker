@@ -51,17 +51,17 @@ public class ChannelRequestSignalMessage
     }
 
     public void setSignalName(ModifiableString signalName, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setSignalNameLength(signalName.getValue().getBytes(StandardCharsets.UTF_8).length);
-        }
         this.signalName = signalName;
+        if (adjustLengthField) {
+            setSignalNameLength(this.signalName.getValue().getBytes(StandardCharsets.UTF_8).length);
+        }
     }
 
     public void setSignalName(String signalName, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setSignalNameLength(signalName.getBytes(StandardCharsets.UTF_8).length);
-        }
         this.signalName = ModifiableVariableFactory.safelySetValue(this.signalName, signalName);
+        if (adjustLengthField) {
+            setSignalNameLength(this.signalName.getValue().getBytes(StandardCharsets.UTF_8).length);
+        }
     }
 
     public void setSignalName(SignalType signalName, boolean adjustLengthField) {

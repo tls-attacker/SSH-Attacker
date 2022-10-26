@@ -62,17 +62,17 @@ public class ChannelExtendedDataMessage extends ChannelMessage<ChannelExtendedDa
     }
 
     public void setData(ModifiableByteArray data, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setDataLength(data.getValue().length);
-        }
         this.data = data;
+        if (adjustLengthField) {
+            setDataLength(this.data.getValue().length);
+        }
     }
 
     public void setData(byte[] data, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setDataLength(data.length);
-        }
         this.data = ModifiableVariableFactory.safelySetValue(this.data, data);
+        if (adjustLengthField) {
+            setDataLength(this.data.getValue().length);
+        }
     }
 
     @Override

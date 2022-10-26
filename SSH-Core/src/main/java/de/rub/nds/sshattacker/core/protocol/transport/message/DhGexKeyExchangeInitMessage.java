@@ -48,19 +48,19 @@ public class DhGexKeyExchangeInitMessage extends SshMessage<DhGexKeyExchangeInit
 
     public void setEphemeralPublicKey(
             ModifiableBigInteger ephemeralPublicKey, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setEphemeralPublicKeyLength(ephemeralPublicKey.getValue().toByteArray().length);
-        }
         this.ephemeralPublicKey = ephemeralPublicKey;
+        if (adjustLengthField) {
+            setEphemeralPublicKeyLength(this.ephemeralPublicKey.getValue().toByteArray().length);
+        }
     }
 
     public void setEphemeralPublicKey(BigInteger ephemeralPublicKey, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setEphemeralPublicKeyLength(ephemeralPublicKey.toByteArray().length);
-        }
         this.ephemeralPublicKey =
                 ModifiableVariableFactory.safelySetValue(
                         this.ephemeralPublicKey, ephemeralPublicKey);
+        if (adjustLengthField) {
+            setEphemeralPublicKeyLength(this.ephemeralPublicKey.getValue().toByteArray().length);
+        }
     }
 
     @Override

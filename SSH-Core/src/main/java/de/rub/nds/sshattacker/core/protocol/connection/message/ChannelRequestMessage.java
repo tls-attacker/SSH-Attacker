@@ -52,17 +52,19 @@ public abstract class ChannelRequestMessage<T extends ChannelRequestMessage<T>>
     }
 
     public void setRequestType(ModifiableString requestType, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setRequestTypeLength(requestType.getValue().getBytes(StandardCharsets.US_ASCII).length);
-        }
         this.requestType = requestType;
+        if (adjustLengthField) {
+            setRequestTypeLength(
+                    this.requestType.getValue().getBytes(StandardCharsets.US_ASCII).length);
+        }
     }
 
     public void setRequestType(String requestType, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setRequestTypeLength(requestType.getBytes(StandardCharsets.US_ASCII).length);
-        }
         this.requestType = ModifiableVariableFactory.safelySetValue(this.requestType, requestType);
+        if (adjustLengthField) {
+            setRequestTypeLength(
+                    this.requestType.getValue().getBytes(StandardCharsets.US_ASCII).length);
+        }
     }
 
     public void setRequestType(ChannelRequestType requestType, boolean adjustLengthField) {
