@@ -66,17 +66,19 @@ public class DisconnectMessage extends SshMessage<DisconnectMessage> {
     }
 
     public void setDescription(ModifiableString description, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setDescriptionLength(description.getValue().getBytes(StandardCharsets.UTF_8).length);
-        }
         this.description = description;
+        if (adjustLengthField) {
+            setDescriptionLength(
+                    this.description.getValue().getBytes(StandardCharsets.UTF_8).length);
+        }
     }
 
     public void setDescription(String description, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setDescriptionLength(description.getBytes(StandardCharsets.UTF_8).length);
-        }
         this.description = ModifiableVariableFactory.safelySetValue(this.description, description);
+        if (adjustLengthField) {
+            setDescriptionLength(
+                    this.description.getValue().getBytes(StandardCharsets.UTF_8).length);
+        }
     }
 
     public ModifiableInteger getLanguageTagLength() {
@@ -105,17 +107,19 @@ public class DisconnectMessage extends SshMessage<DisconnectMessage> {
     }
 
     public void setLanguageTag(ModifiableString languageTag, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setLanguageTagLength(languageTag.getValue().getBytes(StandardCharsets.US_ASCII).length);
-        }
         this.languageTag = languageTag;
+        if (adjustLengthField) {
+            setLanguageTagLength(
+                    this.languageTag.getValue().getBytes(StandardCharsets.US_ASCII).length);
+        }
     }
 
     public void setLanguageTag(String languageTag, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setLanguageTagLength(languageTag.getBytes(StandardCharsets.US_ASCII).length);
-        }
         this.languageTag = ModifiableVariableFactory.safelySetValue(this.languageTag, languageTag);
+        if (adjustLengthField) {
+            setLanguageTagLength(
+                    this.languageTag.getValue().getBytes(StandardCharsets.US_ASCII).length);
+        }
     }
 
     @Override

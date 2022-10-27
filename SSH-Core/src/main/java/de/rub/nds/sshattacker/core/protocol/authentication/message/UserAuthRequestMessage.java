@@ -62,17 +62,17 @@ public abstract class UserAuthRequestMessage<T extends UserAuthRequestMessage<T>
     }
 
     public void setUserName(ModifiableString userName, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setUserNameLength(userName.getValue().getBytes(StandardCharsets.UTF_8).length);
-        }
         this.userName = userName;
+        if (adjustLengthField) {
+            setUserNameLength(this.userName.getValue().getBytes(StandardCharsets.UTF_8).length);
+        }
     }
 
     public void setUserName(String userName, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setUserNameLength(userName.getBytes(StandardCharsets.UTF_8).length);
-        }
         this.userName = ModifiableVariableFactory.safelySetValue(this.userName, userName);
+        if (adjustLengthField) {
+            setUserNameLength(this.userName.getValue().getBytes(StandardCharsets.UTF_8).length);
+        }
     }
 
     public ModifiableInteger getServiceNameLength() {
@@ -105,17 +105,19 @@ public abstract class UserAuthRequestMessage<T extends UserAuthRequestMessage<T>
     }
 
     public void setServiceName(ModifiableString serviceName, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setServiceNameLength(serviceName.getValue().getBytes(StandardCharsets.US_ASCII).length);
-        }
         this.serviceName = serviceName;
+        if (adjustLengthField) {
+            setServiceNameLength(
+                    this.serviceName.getValue().getBytes(StandardCharsets.US_ASCII).length);
+        }
     }
 
     public void setServiceName(String serviceName, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setServiceNameLength(serviceName.getBytes(StandardCharsets.US_ASCII).length);
-        }
         this.serviceName = ModifiableVariableFactory.safelySetValue(this.serviceName, serviceName);
+        if (adjustLengthField) {
+            setServiceNameLength(
+                    this.serviceName.getValue().getBytes(StandardCharsets.US_ASCII).length);
+        }
     }
 
     public void setServiceName(ServiceType serviceType, boolean adjustLengthField) {
@@ -152,17 +154,19 @@ public abstract class UserAuthRequestMessage<T extends UserAuthRequestMessage<T>
     }
 
     public void setMethodName(ModifiableString methodName, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setMethodNameLength(methodName.getValue().getBytes(StandardCharsets.US_ASCII).length);
-        }
         this.methodName = methodName;
+        if (adjustLengthField) {
+            setMethodNameLength(
+                    this.methodName.getValue().getBytes(StandardCharsets.US_ASCII).length);
+        }
     }
 
     public void setMethodName(String methodName, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setMethodNameLength(methodName.getBytes(StandardCharsets.US_ASCII).length);
-        }
         this.methodName = ModifiableVariableFactory.safelySetValue(this.methodName, methodName);
+        if (adjustLengthField) {
+            setMethodNameLength(
+                    this.methodName.getValue().getBytes(StandardCharsets.US_ASCII).length);
+        }
     }
 
     public void setMethodName(

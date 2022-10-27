@@ -66,25 +66,28 @@ public class UserAuthFailureMessage extends SshMessage<UserAuthFailureMessage> {
 
     public void setPossibleAuthenticationMethods(
             ModifiableString possibleAuthenticationMethods, boolean adjustLengthField) {
+        this.possibleAuthenticationMethods = possibleAuthenticationMethods;
         if (adjustLengthField) {
             setPossibleAuthenticationMethodsLength(
-                    possibleAuthenticationMethods
+                    this.possibleAuthenticationMethods
                             .getValue()
                             .getBytes(StandardCharsets.US_ASCII)
                             .length);
         }
-        this.possibleAuthenticationMethods = possibleAuthenticationMethods;
     }
 
     public void setPossibleAuthenticationMethods(
             String possibleAuthenticationMethods, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setPossibleAuthenticationMethodsLength(
-                    possibleAuthenticationMethods.getBytes(StandardCharsets.US_ASCII).length);
-        }
         this.possibleAuthenticationMethods =
                 ModifiableVariableFactory.safelySetValue(
                         this.possibleAuthenticationMethods, possibleAuthenticationMethods);
+        if (adjustLengthField) {
+            setPossibleAuthenticationMethodsLength(
+                    this.possibleAuthenticationMethods
+                            .getValue()
+                            .getBytes(StandardCharsets.US_ASCII)
+                            .length);
+        }
     }
 
     public void setPossibleAuthenticationMethods(

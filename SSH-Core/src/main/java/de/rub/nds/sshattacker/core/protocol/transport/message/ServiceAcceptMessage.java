@@ -51,17 +51,19 @@ public class ServiceAcceptMessage extends SshMessage<ServiceAcceptMessage> {
     }
 
     public void setServiceName(ModifiableString serviceName, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setServiceNameLength(serviceName.getValue().getBytes(StandardCharsets.US_ASCII).length);
-        }
         this.serviceName = serviceName;
+        if (adjustLengthField) {
+            setServiceNameLength(
+                    this.serviceName.getValue().getBytes(StandardCharsets.US_ASCII).length);
+        }
     }
 
     public void setServiceName(String serviceName, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setServiceNameLength(serviceName.getBytes(StandardCharsets.US_ASCII).length);
-        }
         this.serviceName = ModifiableVariableFactory.safelySetValue(this.serviceName, serviceName);
+        if (adjustLengthField) {
+            setServiceNameLength(
+                    this.serviceName.getValue().getBytes(StandardCharsets.US_ASCII).length);
+        }
     }
 
     public void setServiceName(ServiceType serviceType, boolean adjustLengthField) {

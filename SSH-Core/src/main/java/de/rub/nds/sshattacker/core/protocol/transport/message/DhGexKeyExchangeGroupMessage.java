@@ -49,18 +49,18 @@ public class DhGexKeyExchangeGroupMessage extends SshMessage<DhGexKeyExchangeGro
     }
 
     public void setGroupModulus(ModifiableBigInteger groupModulus, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setGroupModulusLength(groupModulus.getValue().toByteArray().length);
-        }
         this.groupModulus = groupModulus;
+        if (adjustLengthField) {
+            setGroupModulusLength(this.groupModulus.getValue().toByteArray().length);
+        }
     }
 
     public void setGroupModulus(BigInteger groupModulus, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setGroupModulusLength(groupModulus.toByteArray().length);
-        }
         this.groupModulus =
                 ModifiableVariableFactory.safelySetValue(this.groupModulus, groupModulus);
+        if (adjustLengthField) {
+            setGroupModulusLength(this.groupModulus.getValue().toByteArray().length);
+        }
     }
 
     public ModifiableInteger getGroupGeneratorLength() {
@@ -90,18 +90,18 @@ public class DhGexKeyExchangeGroupMessage extends SshMessage<DhGexKeyExchangeGro
     }
 
     public void setGroupGenerator(ModifiableBigInteger groupGenerator, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setGroupGeneratorLength(groupGenerator.getValue().toByteArray().length);
-        }
         this.groupGenerator = groupGenerator;
+        if (adjustLengthField) {
+            setGroupGeneratorLength(this.groupGenerator.getValue().toByteArray().length);
+        }
     }
 
     public void setGroupGenerator(BigInteger groupGenerator, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setGroupGeneratorLength(groupGenerator.toByteArray().length);
-        }
         this.groupGenerator =
                 ModifiableVariableFactory.safelySetValue(this.groupGenerator, groupGenerator);
+        if (adjustLengthField) {
+            setGroupGeneratorLength(this.groupGenerator.getValue().toByteArray().length);
+        }
     }
 
     @Override

@@ -53,17 +53,17 @@ public class UserAuthInfoRequestMessage extends SshMessage<UserAuthInfoRequestMe
     }
 
     public void setUserName(ModifiableString userName, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setUserNameLength(userName.getValue().getBytes(StandardCharsets.UTF_8).length);
-        }
         this.userName = userName;
+        if (adjustLengthField) {
+            setUserNameLength(this.userName.getValue().getBytes(StandardCharsets.UTF_8).length);
+        }
     }
 
     public void setUserName(String userName, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setUserNameLength(userName.getBytes(StandardCharsets.UTF_8).length);
-        }
         this.userName = ModifiableVariableFactory.safelySetValue(this.userName, userName);
+        if (adjustLengthField) {
+            setUserNameLength(this.userName.getValue().getBytes(StandardCharsets.UTF_8).length);
+        }
     }
 
     public ModifiableInteger getInstructionLength() {
@@ -92,17 +92,19 @@ public class UserAuthInfoRequestMessage extends SshMessage<UserAuthInfoRequestMe
     }
 
     public void setInstruction(ModifiableString instruction, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setInstructionLength(instruction.getValue().getBytes(StandardCharsets.UTF_8).length);
-        }
         this.instruction = instruction;
+        if (adjustLengthField) {
+            setInstructionLength(
+                    this.instruction.getValue().getBytes(StandardCharsets.UTF_8).length);
+        }
     }
 
     public void setInstruction(String instruction, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setInstructionLength(instruction.getBytes(StandardCharsets.UTF_8).length);
-        }
         this.instruction = ModifiableVariableFactory.safelySetValue(this.instruction, instruction);
+        if (adjustLengthField) {
+            setInstructionLength(
+                    this.instruction.getValue().getBytes(StandardCharsets.UTF_8).length);
+        }
     }
 
     public ModifiableInteger getLanguageTagLength() {
@@ -131,17 +133,19 @@ public class UserAuthInfoRequestMessage extends SshMessage<UserAuthInfoRequestMe
     }
 
     public void setLanguageTag(ModifiableString languageTag, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setLanguageTagLength(languageTag.getValue().getBytes(StandardCharsets.UTF_8).length);
-        }
         this.languageTag = languageTag;
+        if (adjustLengthField) {
+            setLanguageTagLength(
+                    this.languageTag.getValue().getBytes(StandardCharsets.UTF_8).length);
+        }
     }
 
     public void setLanguageTag(String languageTag, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setLanguageTagLength(languageTag.getBytes(StandardCharsets.UTF_8).length);
-        }
         this.languageTag = ModifiableVariableFactory.safelySetValue(this.languageTag, languageTag);
+        if (adjustLengthField) {
+            setLanguageTagLength(
+                    this.languageTag.getValue().getBytes(StandardCharsets.UTF_8).length);
+        }
     }
 
     public ModifiableInteger getPromptEntryCount() {

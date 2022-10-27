@@ -58,17 +58,19 @@ public class ChannelOpenMessage extends SshMessage<ChannelOpenMessage> {
     }
 
     public void setChannelType(ModifiableString channelType, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setChannelTypeLength(channelType.getValue().getBytes(StandardCharsets.US_ASCII).length);
-        }
         this.channelType = channelType;
+        if (adjustLengthField) {
+            setChannelTypeLength(
+                    this.channelType.getValue().getBytes(StandardCharsets.US_ASCII).length);
+        }
     }
 
     public void setChannelType(String channelType, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setChannelTypeLength(channelType.getBytes(StandardCharsets.US_ASCII).length);
-        }
         this.channelType = ModifiableVariableFactory.safelySetValue(this.channelType, channelType);
+        if (adjustLengthField) {
+            setChannelTypeLength(
+                    this.channelType.getValue().getBytes(StandardCharsets.US_ASCII).length);
+        }
     }
 
     public void setChannelType(ChannelType channelType, boolean adjustLengthField) {

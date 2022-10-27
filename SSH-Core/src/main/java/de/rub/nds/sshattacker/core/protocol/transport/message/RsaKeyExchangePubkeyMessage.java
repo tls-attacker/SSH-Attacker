@@ -71,19 +71,19 @@ public class RsaKeyExchangePubkeyMessage extends SshMessage<RsaKeyExchangePubkey
 
     @Override
     public void setHostKeyBytes(ModifiableByteArray hostKeyBytes, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setHostKeyBytesLength(hostKeyBytes.getValue().length);
-        }
         this.hostKeyBytes = hostKeyBytes;
+        if (adjustLengthField) {
+            setHostKeyBytesLength(this.hostKeyBytes.getValue().length);
+        }
     }
 
     @Override
     public void setHostKeyBytes(byte[] hostKeyBytes, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setHostKeyBytesLength(hostKeyBytes.length);
-        }
         this.hostKeyBytes =
                 ModifiableVariableFactory.safelySetValue(this.hostKeyBytes, hostKeyBytes);
+        if (adjustLengthField) {
+            setHostKeyBytesLength(this.hostKeyBytes.getValue().length);
+        }
     }
 
     // Transient Public Key (K_T) Methods
@@ -122,20 +122,20 @@ public class RsaKeyExchangePubkeyMessage extends SshMessage<RsaKeyExchangePubkey
 
     public void setTransientPublicKeyBytes(
             ModifiableByteArray transientPublicKeyBytes, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setTransientPublicKeyBytesLength(transientPublicKeyBytes.getValue().length);
-        }
         this.transientPublicKeyBytes = transientPublicKeyBytes;
+        if (adjustLengthField) {
+            setTransientPublicKeyBytesLength(this.transientPublicKeyBytes.getValue().length);
+        }
     }
 
     public void setTransientPublicKeyBytes(
             byte[] transientPublicKeyBytes, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setTransientPublicKeyBytesLength(transientPublicKeyBytes.length);
-        }
         this.transientPublicKeyBytes =
                 ModifiableVariableFactory.safelySetValue(
                         this.transientPublicKeyBytes, transientPublicKeyBytes);
+        if (adjustLengthField) {
+            setTransientPublicKeyBytesLength(this.transientPublicKeyBytes.getValue().length);
+        }
     }
 
     public BigInteger getModulus() {
