@@ -12,4 +12,6 @@ public class CryptoConstants {
     public static final int X25519_POINT_SIZE = 32;
     public static final int X448_POINT_SIZE = 56;
     public static final int CHACHA20_KEY_SIZE = 32;
+    public static final int SNTRUP761_PUBLIC_KEY_SIZE = 1158;
+    public static final int SNTRUP761_PRIVATE_KEY_SIZE = 1763;
 }

@@ -46,6 +46,10 @@ public final class ExchangeHashInputHolder {
     private byte[] ecdhServerPublicKey;
     // endregion
 
+    // region SNTRUPX5519 exchange hash fields
+    private byte[] sntrupX25519ClientPublicKey;
+    private byte[] sntrupX25519ServerPublicKey;
+
     // region RSA exchange hash fields
     private SshPublicKey<CustomRsaPublicKey, ?> rsaTransientKey;
     private byte[] rsaEncryptedSecret;
@@ -194,6 +198,24 @@ public final class ExchangeHashInputHolder {
         this.ecdhServerPublicKey = ecdhServerPublicKey;
     }
     // endregion
+
+    // region Getters / setters SNTRUPX25519 exchange hash fields
+    public Optional<byte[]> getSntrupX25519ClientPublicKey() {
+        return Optional.ofNullable(sntrupX25519ClientPublicKey);
+    }
+
+    public void setSntrupX25519ClientPublicKey(byte[] sntrupX25519ClientPublicKey) {
+        this.sntrupX25519ClientPublicKey = sntrupX25519ClientPublicKey;
+    }
+
+    public Optional<byte[]> getSntrupX25519ServerPublicKey() {
+        return Optional.ofNullable(sntrupX25519ServerPublicKey);
+    }
+    
+    public void setSntrupX25519ServerPublicKey(byte[] sntrupX25519ServerPublicKey) {
+        this.sntrupX25519ServerPublicKey = sntrupX25519ServerPublicKey;
+    }
+    // end region
 
     // region Getters / setters RSA exchange hash fields
     public Optional<SshPublicKey<CustomRsaPublicKey, ?>> getRsaTransientKey() {

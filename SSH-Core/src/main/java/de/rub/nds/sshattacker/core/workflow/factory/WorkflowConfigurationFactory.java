@@ -197,6 +197,19 @@ public class WorkflowConfigurationFactory {
             KeyExchangeFlowType flowType, AliasedConnection connection) {
         List<SshAction> sshActions = new ArrayList<>();
         switch (flowType) {
+            case HYBRID:
+                sshActions.add(
+                        SshActionFactory.createMessageAction(
+                                connection, 
+                                ConnectionEndType.CLIENT, 
+                                new Sntrup761X25519KeyExchangeInitMessage()));
+                sshActions.add(
+                        SshActionFactory.createMessageAction(
+                                connection,
+                                ConnectionEndType.SERVER,
+                                new Sntrup761X25519KeyExchangeReplyMessage(),
+                                new NewKeysMessage()));
+                break;
             case DIFFIE_HELLMAN:
                 sshActions.add(
                         SshActionFactory.createMessageAction(
