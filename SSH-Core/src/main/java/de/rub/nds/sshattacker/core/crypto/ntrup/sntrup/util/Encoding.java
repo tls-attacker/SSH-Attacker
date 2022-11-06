@@ -21,9 +21,12 @@ public final class Encoding {
         }
 
         if (m.size() == 1) {
-            r.add(Math.floorMod(IntStream.range(0, s.size())
-                    .mapToLong(i -> (long) (s.get(i) * Math.pow(256, i)))
-                    .sum(), m.get(0).intValue()));
+            r.add(
+                    Math.floorMod(
+                            IntStream.range(0, s.size())
+                                    .mapToLong(i -> (long) (s.get(i) * Math.pow(256, i)))
+                                    .sum(),
+                            m.get(0).intValue()));
             return r;
         }
 
@@ -65,7 +68,6 @@ public final class Encoding {
             r.add(r2.get(r2.size() - 1));
         }
         return r;
-
     }
 
     public static ArrayList<Integer> encode(ArrayList<Integer> r, ArrayList<Integer> m) {

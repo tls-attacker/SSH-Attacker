@@ -7,16 +7,14 @@
  */
 package de.rub.nds.sshattacker.core.crypto.ntrup.sntrup.core;
 
+import cc.redberry.rings.poly.univar.UnivariateDivision;
+import cc.redberry.rings.poly.univar.UnivariatePolynomialZ64;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.LongStream;
-
-import cc.redberry.rings.poly.univar.UnivariateDivision;
-import cc.redberry.rings.poly.univar.UnivariatePolynomialZ64;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -34,7 +32,8 @@ public class Short {
         assert (isShort(shrt.stream().toArray(), set));
     }
 
-    private Short(SntrupParameterSet set, UnivariatePolynomialZ64 shrt, UnivariatePolynomialZ64 mod) {
+    private Short(
+            SntrupParameterSet set, UnivariatePolynomialZ64 shrt, UnivariatePolynomialZ64 mod) {
         this.set = set;
         this.mod = mod;
         this.shrt = shrt;
@@ -54,13 +53,14 @@ public class Short {
     }
 
     public LongStream stream() {
-        return shrt.stream().map(c -> c==2?-1:c);
+        return shrt.stream().map(c -> c == 2 ? -1 : c);
     }
 
     public static Short createShort(SntrupParameterSet set, long[] coefficients) {
         UnivariatePolynomialZ64 mod = UnivariatePolynomialZ64.parse("x^" + set.getP() + "-x-1");
-        UnivariatePolynomialZ64 tmp = UnivariateDivision.remainder(UnivariatePolynomialZ64.create(coefficients), mod,
-                false);
+        UnivariatePolynomialZ64 tmp =
+                UnivariateDivision.remainder(
+                        UnivariatePolynomialZ64.create(coefficients), mod, false);
         if (isShort(tmp.stream().toArray(), set)) {
             return new Short(set, tmp, mod);
         }
@@ -78,7 +78,10 @@ public class Short {
     }
 
     private static boolean isSmall(long[] coefficients) {
-        return !Arrays.stream(coefficients).filter(coef -> Math.abs(coef) > 1).findFirst().isPresent();
+        return !Arrays.stream(coefficients)
+                .filter(coef -> Math.abs(coef) > 1)
+                .findFirst()
+                .isPresent();
     }
 
     private UnivariatePolynomialZ64 generateShort() {
@@ -96,28 +99,33 @@ public class Short {
         }
         Arrays.sort(tmp);
         tmp = Arrays.stream(tmp).map(l -> (l & 0b11) == 0b10 ? -1 : l & 0b11).toArray();
-        return UnivariateDivision.remainder(UnivariatePolynomialZ64.create(tmp), mod,
-                false);
+        return UnivariateDivision.remainder(UnivariatePolynomialZ64.create(tmp), mod, false);
     }
 
     public byte[] encode() {
-        ArrayList<Integer> coefficients = shrt.stream()
-                .mapToInt(c -> Long.valueOf(c + 1).intValue()).boxed()
-                .collect(Collectors.toCollection(ArrayList::new));
-        while (coefficients.size() < set.getP()){
+        ArrayList<Integer> coefficients =
+                shrt.stream()
+                        .mapToInt(c -> Long.valueOf(c + 1).intValue())
+                        .boxed()
+                        .collect(Collectors.toCollection(ArrayList::new));
+        while (coefficients.size() < set.getP()) {
             coefficients.add(1);
         }
         while (coefficients.size() < 4 * Math.ceil(set.getP() / 4.0)) {
             coefficients.add(0);
         }
 
-        ArrayList<Integer> encodedCoefficients = IntStream.range(0, coefficients.size() / 4)
-                .map(x -> 4 * x)
-                .map(x -> coefficients.get(x).intValue() + coefficients.get(x + 1).intValue() * 4
-                        + coefficients.get(x + 2).intValue() * 16
-                        + coefficients.get(x + 3).intValue() * 64)
-                .boxed()
-                .collect(Collectors.toCollection(ArrayList::new));
+        ArrayList<Integer> encodedCoefficients =
+                IntStream.range(0, coefficients.size() / 4)
+                        .map(x -> 4 * x)
+                        .map(
+                                x ->
+                                        coefficients.get(x).intValue()
+                                                + coefficients.get(x + 1).intValue() * 4
+                                                + coefficients.get(x + 2).intValue() * 16
+                                                + coefficients.get(x + 3).intValue() * 64)
+                        .boxed()
+                        .collect(Collectors.toCollection(ArrayList::new));
 
         byte[] res = new byte[encodedCoefficients.size()];
         for (int i = 0; i < encodedCoefficients.size(); i++) {
@@ -132,9 +140,13 @@ public class Short {
             encodedCoefficients[i] = encodedBytes[i] & 0xff;
         }
 
-        long[] decodedCoefficients = IntStream.range(0, set.getP())
-                .mapToLong(i -> (long) (encodedCoefficients[i / 4] / Math.pow(4, i % 4) % 4) - 1)
-                .toArray();
+        long[] decodedCoefficients =
+                IntStream.range(0, set.getP())
+                        .mapToLong(
+                                i ->
+                                        (long) (encodedCoefficients[i / 4] / Math.pow(4, i % 4) % 4)
+                                                - 1)
+                        .toArray();
 
         return Short.createShort(set, decodedCoefficients);
     }
@@ -155,20 +167,14 @@ public class Short {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
+        if (this == obj) return true;
+        if (obj == null) return false;
+        if (getClass() != obj.getClass()) return false;
         Short other = (Short) obj;
-        if (set != other.set)
-            return false;
+        if (set != other.set) return false;
         if (shrt == null) {
-            if (other.shrt != null)
-                return false;
-        } else if (!shrt.equals(other.shrt))
-            return false;
+            if (other.shrt != null) return false;
+        } else if (!shrt.equals(other.shrt)) return false;
         return true;
     }
 }

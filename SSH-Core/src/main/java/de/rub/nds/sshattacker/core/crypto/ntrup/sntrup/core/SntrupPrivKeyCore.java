@@ -27,7 +27,7 @@ public class SntrupPrivKeyCore {
         this.gInv = gInv;
     }
 
-    public SntrupPrivKeyCore(Short f, RQ f3, RQ f3Inv, R g, R3 gInv){
+    public SntrupPrivKeyCore(Short f, RQ f3, RQ f3Inv, R g, R3 gInv) {
         this.f3 = f3;
         this.f3Inv = f3Inv;
         this.f = f;
@@ -35,10 +35,10 @@ public class SntrupPrivKeyCore {
         this.g = g;
     }
 
-    public R getG(){
+    public R getG() {
         return g;
     }
-    
+
     public Short getF() {
         return f;
     }
@@ -65,5 +65,4 @@ public class SntrupPrivKeyCore {
     public RQ getF3Inv() {
         return f3Inv;
     }
-
 }

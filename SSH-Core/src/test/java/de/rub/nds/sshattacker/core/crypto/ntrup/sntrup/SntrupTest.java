@@ -9,25 +9,22 @@ package de.rub.nds.sshattacker.core.crypto.ntrup.sntrup;
 
 import static org.junit.Assert.assertTrue;
 
-import java.util.Arrays;
-
-import org.junit.Test;
-
 import de.rub.nds.sshattacker.core.crypto.ntrup.sntrup.core.SntrupParameterSet;
-
+import java.util.Arrays;
+import org.junit.Test;
 
 public class SntrupTest {
     SntrupParameterSet set = SntrupParameterSet.KEM_SNTRUP_761;
     Sntrup sntrup = new Sntrup(set);
 
-    @Test 
+    @Test
     public void testSntrup() {
         SntrupKeyPair kpair = sntrup.keyGen();
         sntrup.encaps(kpair.getPubK().getPubK());
         byte[] ciphertext = sntrup.getCyphertext();
         byte[] sharedSecret = sntrup.getSharedSecret();
         byte[] decodedSharedSecret = sntrup.decaps(kpair.getPrivK().getPrivK(), ciphertext);
-        assertTrue("Encapsulated != Decapsulated", Arrays.equals(sharedSecret, decodedSharedSecret));
+        assertTrue(
+                "Encapsulated != Decapsulated", Arrays.equals(sharedSecret, decodedSharedSecret));
     }
-
 }

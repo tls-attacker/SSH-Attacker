@@ -8,10 +8,9 @@
 package de.rub.nds.sshattacker.core.crypto.ntrup.sntrup.core;
 
 public class SntrupPubKeyCore {
-    
+
     private RQ h;
 
-    
     public SntrupPubKeyCore(RQ h) {
         this.h = h;
     }
@@ -23,6 +22,4 @@ public class SntrupPubKeyCore {
     public void setH(RQ h) {
         this.h = h;
     }
-
-    
 }

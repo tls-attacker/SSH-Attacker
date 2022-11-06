@@ -11,7 +11,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Random;
 import java.util.stream.LongStream;
-
 import org.junit.Test;
 
 public class RQTest {
@@ -23,7 +22,9 @@ public class RQTest {
         long[] coeff = new long[set.getP()];
         coeff[0] = -1888;
         RQ rq = new RQ(set, coeff);
-        assertTrue("Coefficients have to be between (-(q-1)/2 and (q-1)/2", rq.stream().toArray()[0] == -1888);
+        assertTrue(
+                "Coefficients have to be between (-(q-1)/2 and (q-1)/2",
+                rq.stream().toArray()[0] == -1888);
     }
 
     @Test
@@ -44,13 +45,17 @@ public class RQTest {
         Random rand = new Random();
         long[] coefficient;
         for (int i = 0; i < 100; i++) {
-            coefficient = LongStream.range(0, set.getP())
-                    .map(l -> rand.nextInt(set.getQ()) % set.getQ() - ((set.getQ() + 1) / 2)).toArray();
+            coefficient =
+                    LongStream.range(0, set.getP())
+                            .map(
+                                    l ->
+                                            rand.nextInt(set.getQ()) % set.getQ()
+                                                    - ((set.getQ() + 1) / 2))
+                            .toArray();
             RQ rq = new RQ(set, coefficient);
             byte[] encoded = rq.encode();
             RQ decoded = RQ.decode(set, encoded);
             assertTrue("rq != decoded", rq.equals(decoded));
         }
-
     }
 }

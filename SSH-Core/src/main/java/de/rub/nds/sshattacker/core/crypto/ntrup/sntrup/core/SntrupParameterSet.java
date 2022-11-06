@@ -7,10 +7,10 @@
  */
 package de.rub.nds.sshattacker.core.crypto.ntrup.sntrup.core;
 
-// Enum to define all possible Parameter Sets for sntrup as definded in https://ntruprime.cr.yp.to/nist/ntruprime-20201007.pdf
+// Enum to define all possible Parameter Sets for sntrup as definded in
+// https://ntruprime.cr.yp.to/nist/ntruprime-20201007.pdf
 // Currently only kem/sntrup761 is used
 public enum SntrupParameterSet {
-
     KEM_SNTRUP_761("kem/sntrup761", 761, 4591, 286);
 
     private final String name;
@@ -25,21 +25,20 @@ public enum SntrupParameterSet {
         this.w = w;
     }
 
-    public int getP(){
+    public int getP() {
         return p;
     }
 
-    public int getQ(){
+    public int getQ() {
         return q;
     }
 
-    public int getW(){
+    public int getW() {
         return w;
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         return name;
     }
-
 }

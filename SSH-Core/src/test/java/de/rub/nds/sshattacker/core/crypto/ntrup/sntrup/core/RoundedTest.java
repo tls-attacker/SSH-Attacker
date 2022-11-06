@@ -11,7 +11,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Random;
 import java.util.stream.LongStream;
-
 import org.junit.Test;
 
 public class RoundedTest {
@@ -22,8 +21,10 @@ public class RoundedTest {
     @Test
     public void roundTest() {
         for (int i = 0; i < 10; i++) {
-            coefficient = LongStream.range(0, set.getP())
-                    .map(l -> rand.nextInt(set.getQ()) - ((set.getQ() + 1) / 2)).toArray();
+            coefficient =
+                    LongStream.range(0, set.getP())
+                            .map(l -> rand.nextInt(set.getQ()) - ((set.getQ() + 1) / 2))
+                            .toArray();
             RQ rq = new RQ(set, coefficient);
             Rounded rounded = Rounded.round(rq);
             assertTrue(Rounded.is_rounded(set, rounded.stream().toArray()));
@@ -31,12 +32,14 @@ public class RoundedTest {
     }
 
     @Test
-    public void testEncoding(){
-        coefficient = LongStream.range(0, set.getP())
-                    .map(l -> rand.nextInt(set.getQ()) - ((set.getQ() + 1) / 2)).toArray();
+    public void testEncoding() {
+        coefficient =
+                LongStream.range(0, set.getP())
+                        .map(l -> rand.nextInt(set.getQ()) - ((set.getQ() + 1) / 2))
+                        .toArray();
         Rounded r = Rounded.round(new RQ(set, coefficient));
         byte[] encR = r.encode();
         Rounded rNew = Rounded.decode(set, encR);
-        assertTrue(r.equals(rNew),"r != rNew");
+        assertTrue(r.equals(rNew), "r != rNew");
     }
 }

@@ -7,17 +7,16 @@
  */
 package de.rub.nds.sshattacker.core.crypto.ntrup.sntrup.core;
 
-import java.util.Optional;
+import cc.redberry.rings.IntegersZp64;
+import cc.redberry.rings.poly.PolynomialMethods;
+import cc.redberry.rings.poly.univar.UnivariateDivision;
+import cc.redberry.rings.poly.univar.UnivariatePolynomialZp64;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.LongStream;
-
-import cc.redberry.rings.IntegersZp64;
-import cc.redberry.rings.poly.univar.UnivariateDivision;
-import cc.redberry.rings.poly.univar.UnivariatePolynomialZp64;
-import cc.redberry.rings.poly.PolynomialMethods;
 
 public class R3 {
     private SntrupParameterSet set;
@@ -53,7 +52,9 @@ public class R3 {
     }
 
     public void setR3(long[] coefficients) {
-        this.r3 = UnivariateDivision.remainder(UnivariatePolynomialZp64.create(3, coefficients), mod, false);
+        this.r3 =
+                UnivariateDivision.remainder(
+                        UnivariatePolynomialZp64.create(3, coefficients), mod, false);
     }
 
     public static boolean isR3(long[] coefficients) {
@@ -65,38 +66,49 @@ public class R3 {
     }
 
     public static Optional<R3> isInvertibleInR3(SntrupParameterSet set, R candidate) {
-        UnivariatePolynomialZp64 candidateR3 = UnivariatePolynomialZp64.create(3, candidate.stream().toArray());
-        UnivariatePolynomialZp64[] xgcd = PolynomialMethods.PolynomialExtendedGCD(
-                candidateR3, genereateMod(set));
-        if (UnivariateDivision.remainder(xgcd[1].clone().multiply(candidateR3), genereateMod(set), false)
-                .compareTo(UnivariatePolynomialZp64.one(3)) == 0) {
+        UnivariatePolynomialZp64 candidateR3 =
+                UnivariatePolynomialZp64.create(3, candidate.stream().toArray());
+        UnivariatePolynomialZp64[] xgcd =
+                PolynomialMethods.PolynomialExtendedGCD(candidateR3, genereateMod(set));
+        if (UnivariateDivision.remainder(
+                                xgcd[1].clone().multiply(candidateR3), genereateMod(set), false)
+                        .compareTo(UnivariatePolynomialZp64.one(3))
+                == 0) {
             return Optional.of(new R3(set, xgcd[1]));
         }
         return Optional.ofNullable(null);
     }
 
     public static R3 multiply(R3 r3_1, R3 r3_2) {
-        return new R3(r3_1.getSet(),
-                UnivariateDivision.remainder(r3_1.getR3().multiply(r3_2.getR3()), r3_1.getMod(), true));
+        return new R3(
+                r3_1.getSet(),
+                UnivariateDivision.remainder(
+                        r3_1.getR3().multiply(r3_2.getR3()), r3_1.getMod(), true));
     }
 
     public byte[] encode() {
 
-        ArrayList<Integer> coefficients = stream()
-                .mapToInt(c -> Long.valueOf(c + 1).intValue()).boxed()
-                .collect(Collectors.toCollection(ArrayList::new));
+        ArrayList<Integer> coefficients =
+                stream()
+                        .mapToInt(c -> Long.valueOf(c + 1).intValue())
+                        .boxed()
+                        .collect(Collectors.toCollection(ArrayList::new));
 
         while (coefficients.size() < 4 * Math.ceil(set.getP() / 4.0)) {
             coefficients.add(1);
         }
 
-        ArrayList<Integer> encdodedCoefficients = IntStream.range(0, coefficients.size() / 4)
-                .map(x -> 4 * x)
-                .map(x -> coefficients.get(x).intValue() + coefficients.get(x + 1).intValue() * 4
-                        + coefficients.get(x + 2).intValue() * 16
-                        + coefficients.get(x + 3).intValue() * 64)
-                .boxed()
-                .collect(Collectors.toCollection(ArrayList::new));
+        ArrayList<Integer> encdodedCoefficients =
+                IntStream.range(0, coefficients.size() / 4)
+                        .map(x -> 4 * x)
+                        .map(
+                                x ->
+                                        coefficients.get(x).intValue()
+                                                + coefficients.get(x + 1).intValue() * 4
+                                                + coefficients.get(x + 2).intValue() * 16
+                                                + coefficients.get(x + 3).intValue() * 64)
+                        .boxed()
+                        .collect(Collectors.toCollection(ArrayList::new));
 
         byte[] res = new byte[encdodedCoefficients.size()];
         for (int i = 0; i < encdodedCoefficients.size(); i++) {
@@ -110,9 +122,16 @@ public class R3 {
         for (int i = 0; i < encodedBytes.length; i++) {
             encdodedCoefficients[i] = encodedBytes[i] & 0xff;
         }
-        long[] decodedCoefficients = IntStream.range(0, set.getP())
-                .mapToLong(i -> (long) (encdodedCoefficients[i / 4] / Math.pow(4, i % 4) % 4) - 1)
-                .toArray();
+        long[] decodedCoefficients =
+                IntStream.range(0, set.getP())
+                        .mapToLong(
+                                i ->
+                                        (long)
+                                                        (encdodedCoefficients[i / 4]
+                                                                / Math.pow(4, i % 4)
+                                                                % 4)
+                                                - 1)
+                        .toArray();
 
         return new R3(set, decodedCoefficients);
     }
@@ -133,20 +152,14 @@ public class R3 {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
+        if (this == obj) return true;
+        if (obj == null) return false;
+        if (getClass() != obj.getClass()) return false;
         R3 other = (R3) obj;
         if (r3 == null) {
-            if (other.r3 != null)
-                return false;
-        } else if (!r3.equals(other.r3))
-            return false;
-        if (set != other.set)
-            return false;
+            if (other.r3 != null) return false;
+        } else if (!r3.equals(other.r3)) return false;
+        if (set != other.set) return false;
         return true;
     }
 }

@@ -8,10 +8,10 @@
 package de.rub.nds.sshattacker.core.crypto.ntrup.sntrup.core;
 
 public class SntrupKeyPairCore {
-    
+
     SntrupPrivKeyCore privKey;
     SntrupPubKeyCore pubKey;
-    
+
     public SntrupKeyPairCore(SntrupPrivKeyCore privKey, SntrupPubKeyCore pubKey) {
         this.privKey = privKey;
         this.pubKey = pubKey;
@@ -32,6 +32,4 @@ public class SntrupKeyPairCore {
     public void setPubKey(SntrupPubKeyCore pubKey) {
         this.pubKey = pubKey;
     }
-
-    
 }

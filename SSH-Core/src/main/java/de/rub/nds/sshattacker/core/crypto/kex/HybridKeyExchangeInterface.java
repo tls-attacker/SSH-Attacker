@@ -7,25 +7,25 @@
  */
 package de.rub.nds.sshattacker.core.crypto.kex;
 
-import java.math.BigInteger;
-
 import de.rub.nds.sshattacker.core.crypto.keys.CustomKeyPair;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomPrivateKey;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomPublicKey;
+import java.math.BigInteger;
 
 public interface HybridKeyExchangeInterface {
-    
+
     public abstract void setLocalKeyPair(byte[] privateKeyBytes);
-    
+
     public abstract void setLocalKeyPair(byte[] privateKeyBytes, byte[] publicKeyBytes);
 
     public abstract void generateLocalKeyPair();
 
-    public abstract CustomKeyPair<? extends CustomPrivateKey, ? extends CustomPublicKey> getLocalKeyPair();
+    public abstract CustomKeyPair<? extends CustomPrivateKey, ? extends CustomPublicKey>
+            getLocalKeyPair();
 
     public abstract void setRemotePublicKey(byte[] publicKeyBytes);
 
-    public abstract CustomPublicKey getRemotePublicKey(); 
+    public abstract CustomPublicKey getRemotePublicKey();
 
     public abstract BigInteger getSharedSecret();
 }

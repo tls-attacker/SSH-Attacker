@@ -7,11 +7,6 @@
  */
 package de.rub.nds.sshattacker.core.crypto.kex;
 
-import java.math.BigInteger;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import de.rub.nds.sshattacker.core.crypto.keys.CustomKeyPair;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomPrivateKey;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomPublicKey;
@@ -21,8 +16,12 @@ import de.rub.nds.sshattacker.core.crypto.ntrup.sntrup.Sntrup;
 import de.rub.nds.sshattacker.core.crypto.ntrup.sntrup.SntrupKeyPair;
 import de.rub.nds.sshattacker.core.crypto.ntrup.sntrup.core.SntrupParameterSet;
 import de.rub.nds.sshattacker.core.exceptions.CryptoException;
+import java.math.BigInteger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-public class CustomSntrup761KeyExchange extends KeyEncapsulation implements HybridKeyExchangeEncapsulation {
+public class CustomSntrup761KeyExchange extends KeyEncapsulation
+        implements HybridKeyExchangeEncapsulation {
     private static final Logger LOGGER = LogManager.getLogger();
     private Sntrup sntrup;
     private CustomKeyPair<CustomSntrup761PrivateKey, CustomSntrup761PublicKey> localKeyPair;
@@ -36,21 +35,21 @@ public class CustomSntrup761KeyExchange extends KeyEncapsulation implements Hybr
     @Override
     public void setLocalKeyPair(byte[] privateKeyBytes) {
         LOGGER.warn("Updateing local Key Pairs not supported, use generateLocalKeys instead");
-
     }
 
     @Override
     public void setLocalKeyPair(byte[] privateKeyBytes, byte[] publicKeyBytes) {
         LOGGER.warn("Updateing local Key Pairs not supported, use generateLocalKeys instead");
-
     }
 
     @Override
     public void generateLocalKeyPair() {
         SntrupKeyPair keyPair = sntrup.keyGen();
-        CustomSntrup761PrivateKey privK = new CustomSntrup761PrivateKey(keyPair.getPrivK().getPrivK());
+        CustomSntrup761PrivateKey privK =
+                new CustomSntrup761PrivateKey(keyPair.getPrivK().getPrivK());
         CustomSntrup761PublicKey pubK = new CustomSntrup761PublicKey(keyPair.getPubK().getPubK());
-        this.localKeyPair = new CustomKeyPair<CustomSntrup761PrivateKey, CustomSntrup761PublicKey>(privK, pubK);
+        this.localKeyPair =
+                new CustomKeyPair<CustomSntrup761PrivateKey, CustomSntrup761PublicKey>(privK, pubK);
     }
 
     @Override
@@ -71,13 +70,11 @@ public class CustomSntrup761KeyExchange extends KeyEncapsulation implements Hybr
     @Override
     public void setGenerateSharedSecret(byte[] sharedSecretBytes) {
         sharedSecret = new BigInteger(sharedSecretBytes);
-
     }
 
     @Override
     public void setEncapsulatedSecret(byte[] cyphertext) {
         this.cyphertext = cyphertext;
-
     }
 
     @Override
@@ -105,8 +102,9 @@ public class CustomSntrup761KeyExchange extends KeyEncapsulation implements Hybr
 
     @Override
     public void decryptSharedSecret(byte[] cyphertext) throws CryptoException {
-        this.sharedSecret = new BigInteger(sntrup.decaps(this.localKeyPair.getPrivate().getPrivateKey(), cyphertext));
+        this.sharedSecret =
+                new BigInteger(
+                        sntrup.decaps(this.localKeyPair.getPrivate().getPrivateKey(), cyphertext));
         this.cyphertext = cyphertext;
     }
-
 }

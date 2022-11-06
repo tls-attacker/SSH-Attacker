@@ -17,12 +17,10 @@ import de.rub.nds.sshattacker.core.crypto.ntrup.sntrup.core.SntrupKeyPairCore;
 import de.rub.nds.sshattacker.core.crypto.ntrup.sntrup.core.SntrupParameterSet;
 import de.rub.nds.sshattacker.core.crypto.ntrup.sntrup.core.SntrupPrivKeyCore;
 import de.rub.nds.sshattacker.core.crypto.ntrup.sntrup.core.SntrupPubKeyCore;
-
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.Random;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -33,7 +31,7 @@ public class Sntrup {
     private byte[] cyphertext;
     private byte[] sharedSecret;
 
-    private int cyphertextBytes; 
+    private int cyphertextBytes;
     private int pubKBytes;
     private int smallBytes;
 
@@ -46,12 +44,12 @@ public class Sntrup {
     private void calculateNumberOfBytes(SntrupParameterSet set) {
         switch (set) {
             case KEM_SNTRUP_761:
-                cyphertextBytes =1007;
+                cyphertextBytes = 1007;
                 pubKBytes = 1158;
                 smallBytes = 191;
                 break;
             default:
-                throw new IllegalArgumentException("ParameterSet " + set +" is not supported.");
+                throw new IllegalArgumentException("ParameterSet " + set + " is not supported.");
         }
     }
 
@@ -69,7 +67,8 @@ public class Sntrup {
         byte[] encF = keyPairC.getPrivKey().getF().encode();
         byte[] encV = keyPairC.getPrivKey().getgInv().encode();
         byte[] roh = generateRandomEnc();
-        byte[] privKbytes = ArrayConverter.concatenate(encF, encV, encH, roh, hashPrefixedB(encH, (byte) 4));
+        byte[] privKbytes =
+                ArrayConverter.concatenate(encF, encV, encH, roh, hashPrefixedB(encH, (byte) 4));
 
         SntrupPrivateKey privK = new SntrupPrivateKey(privKbytes);
         SntrupPublicKey pubK = new SntrupPublicKey(encH);
@@ -88,7 +87,8 @@ public class Sntrup {
         byte[] hashConfirm = hashPrefixedB(ArrayConverter.concatenate(hashencR, cache), (byte) 2);
 
         this.cyphertext = ArrayConverter.concatenate(c, hashConfirm);
-        this.sharedSecret = hashPrefixedB(ArrayConverter.concatenate(hashencR, cyphertext), (byte) 1);
+        this.sharedSecret =
+                hashPrefixedB(ArrayConverter.concatenate(hashencR, cyphertext), (byte) 1);
     }
 
     public byte[] decaps(byte[] privK, byte[] cyphertext) {
@@ -96,25 +96,32 @@ public class Sntrup {
         Rounded c = Rounded.decode(set, Arrays.copyOfRange(cyphertext, 0, cyphertextBytes));
         Short f = Short.decode(set, Arrays.copyOfRange(privK, 0, smallBytes));
         R3 gInv = R3.decode(set, Arrays.copyOfRange(privK, smallBytes, 2 * smallBytes));
-        RQ h = RQ.decode(set, Arrays.copyOfRange(privK, 2 * smallBytes, 2 * smallBytes + pubKBytes));
-        byte[] rho = Arrays.copyOfRange(privK, 2 * smallBytes + pubKBytes,
-                2 * smallBytes + pubKBytes + (int) Math.ceil(set.getP() / 4.0));
+        RQ h =
+                RQ.decode(
+                        set, Arrays.copyOfRange(privK, 2 * smallBytes, 2 * smallBytes + pubKBytes));
+        byte[] rho =
+                Arrays.copyOfRange(
+                        privK,
+                        2 * smallBytes + pubKBytes,
+                        2 * smallBytes + pubKBytes + (int) Math.ceil(set.getP() / 4.0));
 
-        
         SntrupPrivKeyCore privKCore = new SntrupPrivKeyCore(f, gInv);
         Short rNew = core.decrypt(c, privKCore);
         byte[] rNewEnc = rNew.encode();
         byte[] cNewEnc = core.encrypt(rNew, new SntrupPubKeyCore(h)).encode();
         byte[] cache = hashPrefixedB(h.encode(), (byte) 4);
         byte[] hashRNewEnc = hashPrefixedB(rNewEnc, (byte) 3);
-        byte[] hashConfirmNew = hashPrefixedB(ArrayConverter.concatenate(hashRNewEnc, cache), (byte) 2);
+        byte[] hashConfirmNew =
+                hashPrefixedB(ArrayConverter.concatenate(hashRNewEnc, cache), (byte) 2);
         byte[] cyphertextNew = ArrayConverter.concatenate(cNewEnc, hashConfirmNew);
-       
+
         if (Arrays.equals(cyphertext, cyphertextNew)) {
             LOGGER.info("Successfully decapsulated the cyphertext. Calculate shared Secret now...");
-            this.sharedSecret = hashPrefixedB(ArrayConverter.concatenate(hashRNewEnc, cyphertext), (byte) 1);
+            this.sharedSecret =
+                    hashPrefixedB(ArrayConverter.concatenate(hashRNewEnc, cyphertext), (byte) 1);
         } else {
-            LOGGER.warn("Could not decapsulate the shared secret, try to return return rho instead");
+            LOGGER.warn(
+                    "Could not decapsulate the shared secret, try to return return rho instead");
             this.sharedSecret = rho;
         }
         return this.sharedSecret;
@@ -124,7 +131,7 @@ public class Sntrup {
         byte[] roh = new byte[(int) Math.ceil(set.getP() / 4.0)];
         Random rand = new Random();
         for (int i = 0; i < roh.length; i++) {
-            roh[i] = (byte)rand.nextInt(256);
+            roh[i] = (byte) rand.nextInt(256);
         }
         return roh;
     }
@@ -140,11 +147,10 @@ public class Sntrup {
             LOGGER.warn("Could not create the hash, return an empty array instead");
             return new byte[32];
         }
-
     }
 
     private byte[] hashPrefixedB(byte[] bytes, byte b) {
-        byte[] bByte = { b };
+        byte[] bByte = {b};
         return sha512(ArrayConverter.concatenate(bByte, bytes));
     }
 }

@@ -10,18 +10,16 @@ package de.rub.nds.sshattacker.core.crypto.ntrup.sntrup.core;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import cc.redberry.rings.IntegersZp64;
+import cc.redberry.rings.poly.PolynomialMethods;
+import cc.redberry.rings.poly.univar.UnivariateDivision;
+import cc.redberry.rings.poly.univar.UnivariatePolynomialZp64;
+import de.rub.nds.sshattacker.core.crypto.ntrup.sntrup.util.Encoding;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.LongStream;
-
-import cc.redberry.rings.IntegersZp64;
-import cc.redberry.rings.poly.PolynomialMethods;
-import cc.redberry.rings.poly.univar.UnivariateDivision;
-import cc.redberry.rings.poly.univar.UnivariatePolynomialZp64;
-
-import de.rub.nds.sshattacker.core.crypto.ntrup.sntrup.util.Encoding;
 
 public class RQ {
     private SntrupParameterSet set;
@@ -41,7 +39,8 @@ public class RQ {
     }
 
     private static UnivariatePolynomialZp64 genereateMod(SntrupParameterSet set) {
-        return UnivariatePolynomialZp64.parse("x^" + set.getP() + "-x-1", new IntegersZp64(set.getQ()), "x");
+        return UnivariatePolynomialZp64.parse(
+                "x^" + set.getP() + "-x-1", new IntegersZp64(set.getQ()), "x");
     }
 
     public UnivariatePolynomialZp64 getMod() {
@@ -53,13 +52,17 @@ public class RQ {
     }
 
     private void setRQ(long[] coefficient) {
-        assertFalse("Coefficients have to be between (-(q+1)/2 and (q+1)/2", Arrays.stream(coefficient)
-                .filter(c -> c > (set.getQ() + 1) / 2 || c < -(set.getQ() + 1) / 2)
-                .peek(c -> System.out.println(c))
-                .findFirst()
-                .isPresent());
+        assertFalse(
+                "Coefficients have to be between (-(q+1)/2 and (q+1)/2",
+                Arrays.stream(coefficient)
+                        .filter(c -> c > (set.getQ() + 1) / 2 || c < -(set.getQ() + 1) / 2)
+                        .peek(c -> System.out.println(c))
+                        .findFirst()
+                        .isPresent());
 
-        this.rQ = UnivariateDivision.remainder(UnivariatePolynomialZp64.create(set.getQ(), coefficient), mod, true);
+        this.rQ =
+                UnivariateDivision.remainder(
+                        UnivariatePolynomialZp64.create(set.getQ(), coefficient), mod, true);
         assertTrue("rQ is not a field", rQ.isOverFiniteField());
     }
 
@@ -72,8 +75,10 @@ public class RQ {
     }
 
     public static RQ invert(RQ rq) {
-        UnivariatePolynomialZp64[] xgcd = PolynomialMethods.PolynomialExtendedGCD(
-                UnivariatePolynomialZp64.create(rq.getSet().getQ(), rq.stream().toArray()), genereateMod(rq.set));
+        UnivariatePolynomialZp64[] xgcd =
+                PolynomialMethods.PolynomialExtendedGCD(
+                        UnivariatePolynomialZp64.create(rq.getSet().getQ(), rq.stream().toArray()),
+                        genereateMod(rq.set));
         return new RQ(rq.getSet(), xgcd[1]);
     }
 
@@ -83,7 +88,9 @@ public class RQ {
     }
 
     public static RQ multiply(int val, RQ rq) {
-        return new RQ(rq.getSet(), UnivariateDivision.remainder(rq.getRQ().multiply(val), rq.getMod(), true));
+        return new RQ(
+                rq.getSet(),
+                UnivariateDivision.remainder(rq.getRQ().multiply(val), rq.getMod(), true));
     }
 
     public static RQ multiply(R r, RQ rq) {
@@ -93,8 +100,10 @@ public class RQ {
     }
 
     public static RQ multiply(RQ rq1, RQ rq2) {
-        return new RQ(rq1.getSet(),
-                UnivariateDivision.remainder(rq1.getRQ().multiply(rq2.getRQ()), rq1.getMod(), true));
+        return new RQ(
+                rq1.getSet(),
+                UnivariateDivision.remainder(
+                        rq1.getRQ().multiply(rq2.getRQ()), rq1.getMod(), true));
     }
 
     public static RQ multiply(Short shrt, RQ rq) {
@@ -113,8 +122,10 @@ public class RQ {
     }
 
     public static RQ sub(RQ rq1, RQ rq2) {
-        return new RQ(rq1.getSet(),
-                UnivariateDivision.remainder(rq1.getRQ().subtract(rq2.getRQ()), rq1.getMod(), true));
+        return new RQ(
+                rq1.getSet(),
+                UnivariateDivision.remainder(
+                        rq1.getRQ().subtract(rq2.getRQ()), rq1.getMod(), true));
     }
 
     public static RQ add(R r, RQ rq) {
@@ -123,27 +134,41 @@ public class RQ {
     }
 
     public static RQ add(RQ rq1, RQ rq2) {
-        return new RQ(rq1.getSet(), UnivariateDivision.remainder(rq1.getRQ().add(rq2.getRQ()), rq1.getMod(), true));
+        return new RQ(
+                rq1.getSet(),
+                UnivariateDivision.remainder(rq1.getRQ().add(rq2.getRQ()), rq1.getMod(), true));
     }
 
     public byte[] encode() {
-        ArrayList<Integer> r = rQ.stream()
-                .mapToInt(l -> Math.toIntExact(Math.floorMod(l + (set.getQ() - 1) / 2, set.getQ())))
-                .boxed()
-                .collect(Collectors.toCollection(ArrayList::new));
+        ArrayList<Integer> r =
+                rQ.stream()
+                        .mapToInt(
+                                l ->
+                                        Math.toIntExact(
+                                                Math.floorMod(
+                                                        l + (set.getQ() - 1) / 2, set.getQ())))
+                        .boxed()
+                        .collect(Collectors.toCollection(ArrayList::new));
 
         while (r.size() < set.getP()) {
             r.add((set.getQ() + 1) / 2);
         }
 
-        ArrayList<Integer> m = IntStream.range(0, r.size())
-                .map(i -> set.getQ())
-                .boxed()
-                .collect(Collectors.toCollection(ArrayList::new));
+        ArrayList<Integer> m =
+                IntStream.range(0, r.size())
+                        .map(i -> set.getQ())
+                        .boxed()
+                        .collect(Collectors.toCollection(ArrayList::new));
 
-        assertTrue("0 > R[i] for some i", r.stream().filter(i -> i < 0).findFirst().isEmpty() == true);
-        assertTrue("R[i] > M[i] for some i", IntStream.range(0, set.getP()).filter(i -> r.get(i) > m.get(i))
-                .findFirst().isPresent() == false);
+        assertTrue(
+                "0 > R[i] for some i", r.stream().filter(i -> i < 0).findFirst().isEmpty() == true);
+        assertTrue(
+                "R[i] > M[i] for some i",
+                IntStream.range(0, set.getP())
+                                .filter(i -> r.get(i) > m.get(i))
+                                .findFirst()
+                                .isPresent()
+                        == false);
 
         ArrayList<Integer> encdodedCoefficients = Encoding.encode(r, m);
 
@@ -159,14 +184,21 @@ public class RQ {
         for (int i = 0; i < encodedRq.length; i++) {
             r.add((int) encodedRq[i] & 0xff);
         }
-        ArrayList<Integer> m = IntStream.range(0, set.getP())
-                .map(i -> set.getQ())
-                .boxed()
-                .collect(Collectors.toCollection(ArrayList::new));
+        ArrayList<Integer> m =
+                IntStream.range(0, set.getP())
+                        .map(i -> set.getQ())
+                        .boxed()
+                        .collect(Collectors.toCollection(ArrayList::new));
 
-        assertTrue("0 > R[i] for some i", r.stream().filter(i -> i < 0).findFirst().isEmpty() == true);
-        assertTrue("R[i] > M[i] for some i", IntStream.range(0, set.getP()).filter(i -> r.get(i) > m.get(i))
-                .findFirst().isPresent() == false);
+        assertTrue(
+                "0 > R[i] for some i", r.stream().filter(i -> i < 0).findFirst().isEmpty() == true);
+        assertTrue(
+                "R[i] > M[i] for some i",
+                IntStream.range(0, set.getP())
+                                .filter(i -> r.get(i) > m.get(i))
+                                .findFirst()
+                                .isPresent()
+                        == false);
 
         ArrayList<Integer> coef = Encoding.decode(r, m);
         return new RQ(set, coef.stream().mapToLong(l -> l - (set.getQ() - 1) / 2).toArray());
@@ -188,21 +220,14 @@ public class RQ {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
+        if (this == obj) return true;
+        if (obj == null) return false;
+        if (getClass() != obj.getClass()) return false;
         RQ other = (RQ) obj;
         if (rQ == null) {
-            if (other.rQ != null)
-                return false;
-        } else if (!rQ.equals(other.rQ))
-            return false;
-        if (set != other.set)
-            return false;
+            if (other.rQ != null) return false;
+        } else if (!rQ.equals(other.rQ)) return false;
+        if (set != other.set) return false;
         return true;
     }
-
 }

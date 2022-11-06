@@ -8,13 +8,16 @@
 package de.rub.nds.sshattacker.core.crypto.ntrup.sntrup;
 
 public class SntrupPrivateKey {
-    byte [] privK;
+    byte[] privK;
+
     public SntrupPrivateKey(byte[] privK) {
         this.privK = privK;
     }
+
     public byte[] getPrivK() {
         return privK;
     }
+
     public void setPrivK(byte[] privK) {
         this.privK = privK;
     }

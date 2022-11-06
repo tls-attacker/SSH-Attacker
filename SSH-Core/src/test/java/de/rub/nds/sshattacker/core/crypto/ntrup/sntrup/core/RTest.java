@@ -16,11 +16,11 @@ public class RTest {
     Random rand = new Random();
 
     @Test
-    public void randomSmallTest(){
+    public void randomSmallTest() {
         R r;
-        for (int i : IntStream.range(0,10).toArray()){
+        for (int i : IntStream.range(0, 10).toArray()) {
             r = R.randomSmall(set);
-            assert(!r.stream().filter(l -> Math.abs(l)>1).findFirst().isPresent());
+            assert (!r.stream().filter(l -> Math.abs(l) > 1).findFirst().isPresent());
         }
     }
 }

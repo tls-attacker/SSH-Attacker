@@ -11,9 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Random;
 import java.util.stream.LongStream;
-
 import org.junit.Test;
-
 
 public class R3Test {
     SntrupParameterSet set = SntrupParameterSet.KEM_SNTRUP_761;

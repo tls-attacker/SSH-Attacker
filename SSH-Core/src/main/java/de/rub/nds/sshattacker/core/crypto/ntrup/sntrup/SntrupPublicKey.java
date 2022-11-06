@@ -10,7 +10,7 @@ package de.rub.nds.sshattacker.core.crypto.ntrup.sntrup;
 public class SntrupPublicKey {
     private byte[] pubK;
 
-    public SntrupPublicKey(byte[] pubK){
+    public SntrupPublicKey(byte[] pubK) {
         this.pubK = pubK;
     }
 
@@ -21,6 +21,4 @@ public class SntrupPublicKey {
     public void setPubK(byte[] pubK) {
         this.pubK = pubK;
     }
-
-    
 }

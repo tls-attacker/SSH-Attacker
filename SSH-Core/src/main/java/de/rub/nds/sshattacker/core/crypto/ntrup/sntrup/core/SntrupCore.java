@@ -28,7 +28,7 @@ public class SntrupCore {
         generateF();
         generateH();
         SntrupPubKeyCore pubK = new SntrupPubKeyCore(h);
-        SntrupPrivKeyCore privK = new SntrupPrivKeyCore(f, f3,f3Inv,g, gInv);
+        SntrupPrivKeyCore privK = new SntrupPrivKeyCore(f, f3, f3Inv, g, gInv);
         return new SntrupKeyPairCore(privK, pubK);
     }
 
@@ -39,11 +39,11 @@ public class SntrupCore {
 
     public Short decrypt(Rounded ciphertext, SntrupPrivKeyCore privK) {
         RQ cf3 = RQ.multiply(ciphertext, privK.getF3());
-        R3 e = new R3(cf3.getSet(),cf3.stream().toArray());
+        R3 e = new R3(cf3.getSet(), cf3.stream().toArray());
         R3 ev = R3.multiply(e, privK.getgInv());
-       System.out.println(Arrays.toString(e.stream().toArray()));
+        System.out.println(Arrays.toString(e.stream().toArray()));
         R r = R.lift(ev);
-        
+
         return Short.createShort(set, r.stream().toArray());
     }
 

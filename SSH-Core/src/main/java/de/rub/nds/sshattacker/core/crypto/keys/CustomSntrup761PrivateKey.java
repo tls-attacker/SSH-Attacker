@@ -7,27 +7,28 @@
  */
 package de.rub.nds.sshattacker.core.crypto.keys;
 
+import de.rub.nds.modifiablevariable.util.UnformattedByteArrayAdapter;
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-import de.rub.nds.modifiablevariable.util.UnformattedByteArrayAdapter;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
 public class CustomSntrup761PrivateKey extends CustomPrivateKey {
 
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
-    private byte[] privateKey ;
+    private byte[] privateKey;
 
     @SuppressWarnings("unused")
-    private CustomSntrup761PrivateKey(){};
+    private CustomSntrup761PrivateKey() {}
+    ;
 
-    public CustomSntrup761PrivateKey(byte[] privateKey){
+    public CustomSntrup761PrivateKey(byte[] privateKey) {
         this.privateKey = privateKey;
     }
 
-    public byte[] getPrivateKey(){
+    public byte[] getPrivateKey() {
         return this.privateKey;
     }
 
@@ -35,10 +36,9 @@ public class CustomSntrup761PrivateKey extends CustomPrivateKey {
     public byte[] getEncoded() {
         return this.privateKey;
     }
-    
+
     @Override
     public String getAlgorithm() {
         return "SNTRUP761";
     }
-    
 }
