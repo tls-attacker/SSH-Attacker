@@ -119,11 +119,6 @@
             <artifactId>modifiable-variable</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.openquantumsafe</groupId>
-            <artifactId>liboqs-java</artifactId>
-            <version>1.0</version>
-        </dependency>
-        <dependency>
             <groupId>jakarta.xml.bind</groupId>
             <artifactId>jakarta.xml.bind-api</artifactId>
         </dependency>
@@ -146,6 +141,11 @@
         <dependency>
             <groupId>org.glassfish.jaxb</groupId>
             <artifactId>jaxb-runtime</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.openquantumsafe</groupId>
+            <artifactId>liboqs-java</artifactId>
+            <version>1.0</version>
         </dependency>
         <!-- scope: test -->
         <dependency>

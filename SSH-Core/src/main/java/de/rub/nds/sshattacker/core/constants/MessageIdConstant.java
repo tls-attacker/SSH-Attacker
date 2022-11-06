@@ -39,10 +39,10 @@ public enum MessageIdConstant {
     SSH_MSG_KEX_DH_GEX_REPLY((byte) 33, KeyExchangeFlowType.DIFFIE_HELLMAN_GROUP_EXCHANGE),
     // [ RFC 4253 ]
     SSH_MSG_KEXDH_INIT((byte) 30, KeyExchangeFlowType.DIFFIE_HELLMAN),
-    SSH_MSG_KEXDH_REPLY((byte) 31, KeyExchangeFlowType.DIFFIE_HELLMAN),  
+    SSH_MSG_KEXDH_REPLY((byte) 31, KeyExchangeFlowType.DIFFIE_HELLMAN),
     // No RFC yet
     SSH_MSG_KEX_SNTRUP761_X25519_INIT((byte) 30, KeyExchangeFlowType.HYBRID),
-    SSH_MSG_KEX_SNTRUP761_X25519_REPLY((byte) 31, KeyExchangeFlowType.HYBRID),   
+    SSH_MSG_KEX_SNTRUP761_X25519_REPLY((byte) 31, KeyExchangeFlowType.HYBRID),
     // [ RFC 5656 ]
     SSH_MSG_KEX_ECDH_INIT((byte) 30, KeyExchangeFlowType.ECDH),
     SSH_MSG_KEX_ECDH_REPLY((byte) 31, KeyExchangeFlowType.ECDH),

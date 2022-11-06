@@ -17,7 +17,9 @@ import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.Sntrup761X25519KeyExchangeReplyMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 
-public class Sntrup761X25519KeyExchangeReplyMessage extends SshMessage<Sntrup761X25519KeyExchangeReplyMessage> implements HostKeyMessage, ExchangeHashSignatureMessage {
+public class Sntrup761X25519KeyExchangeReplyMessage
+        extends SshMessage<Sntrup761X25519KeyExchangeReplyMessage>
+        implements HostKeyMessage, ExchangeHashSignatureMessage {
 
     // Same as forrDH
     public static final MessageIdConstant ID = MessageIdConstant.SSH_MSG_KEXDH_REPLY;
@@ -102,9 +104,10 @@ public class Sntrup761X25519KeyExchangeReplyMessage extends SshMessage<Sntrup761
         return multiPrecisionInteger;
     }
 
-    public void setMultiPrecisionInteger(byte [] multiPrecisionInteger){
+    public void setMultiPrecisionInteger(byte[] multiPrecisionInteger) {
         setMultiPrecisionInteger(multiPrecisionInteger, false);
     }
+
     public void setMultiPrecisionInteger(
             ModifiableByteArray multiPrecisionInteger, boolean adjustLengthField) {
         if (adjustLengthField) {
@@ -117,9 +120,11 @@ public class Sntrup761X25519KeyExchangeReplyMessage extends SshMessage<Sntrup761
         if (adjustLengthField) {
             setMultiPrecisionIntegerLength(multiPrecisionInteger.length);
         }
-        this.multiPrecisionInteger = ModifiableVariableFactory.safelySetValue(this.multiPrecisionInteger, multiPrecisionInteger);
+        this.multiPrecisionInteger =
+                ModifiableVariableFactory.safelySetValue(
+                        this.multiPrecisionInteger, multiPrecisionInteger);
     }
-    
+
     @Override
     public ModifiableInteger getSignatureLength() {
         return signatureLength;

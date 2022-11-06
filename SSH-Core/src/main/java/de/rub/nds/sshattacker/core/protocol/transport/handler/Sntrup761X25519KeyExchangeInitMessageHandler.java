@@ -29,12 +29,19 @@ public class Sntrup761X25519KeyExchangeInitMessageHandler
 
     @Override
     public void adjustContext() {
-        context.getChooser().getSntrup761X25591KeyExchange().getKeyAgreement("ec25519")
+        context.getChooser()
+                .getSntrup761X25591KeyExchange()
+                .getKeyAgreement("ec25519")
                 .setRemotePublicKey(message.getEphemeralECPublicKey().getValue());
-        context.getChooser().getSntrup761X25591KeyExchange().getKeyEncapsulation("sntrup761")
+        context.getChooser()
+                .getSntrup761X25591KeyExchange()
+                .getKeyEncapsulation("sntrup761")
                 .setRemotePublicKey(message.getEphemeralSNTRUPPublicKey().getValue());
-        context.getExchangeHashInputHolder().setSntrupX25519ClientPublicKey(ArrayConverter.concatenate(
-                message.getEphemeralSNTRUPPublicKey().getValue(), message.getEphemeralECPublicKey().getValue()));
+        context.getExchangeHashInputHolder()
+                .setSntrupX25519ClientPublicKey(
+                        ArrayConverter.concatenate(
+                                message.getEphemeralSNTRUPPublicKey().getValue(),
+                                message.getEphemeralECPublicKey().getValue()));
     }
 
     @Override

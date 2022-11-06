@@ -12,9 +12,8 @@ public enum KeyExchangeAlgorithm {
      * Sources:
      *  - https://www.iana.org/assignments/ssh-parameters/ssh-parameters.xhtml#ssh-parameters-16
      */
-  
-    SNTRUP761_X25519(
-            KeyExchangeFlowType.HYBRID, "sntrup761x25519-sha512@openssh.com", "SHA-512"),
+
+    SNTRUP761_X25519(KeyExchangeFlowType.HYBRID, "sntrup761x25519-sha512@openssh.com", "SHA-512"),
 
     // [ RFC 4419 ]
     DIFFIE_HELLMAN_GROUP_EXCHANGE_SHA1(

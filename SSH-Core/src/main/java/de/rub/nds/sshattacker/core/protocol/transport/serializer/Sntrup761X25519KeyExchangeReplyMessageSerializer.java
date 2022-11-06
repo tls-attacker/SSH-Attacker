@@ -7,20 +7,20 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.serializer;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.transport.message.Sntrup761X25519KeyExchangeReplyMessage;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class Sntrup761X25519KeyExchangeReplyMessageSerializer
         extends SshMessageSerializer<Sntrup761X25519KeyExchangeReplyMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public Sntrup761X25519KeyExchangeReplyMessageSerializer(Sntrup761X25519KeyExchangeReplyMessage message) {
+    public Sntrup761X25519KeyExchangeReplyMessageSerializer(
+            Sntrup761X25519KeyExchangeReplyMessage message) {
         super(message);
     }
 
@@ -51,7 +51,9 @@ public class Sntrup761X25519KeyExchangeReplyMessageSerializer
                         + message.getMultiPrecisionIntegerLength().getValue());
         appendBytes(message.getMultiPrecisionInteger().getValue());
         LOGGER.debug(
-                "Multi Precision Integer (server): " + ArrayConverter.bytesToHexString(message.getMultiPrecisionInteger().getValue()));
+                "Multi Precision Integer (server): "
+                        + ArrayConverter.bytesToHexString(
+                                message.getMultiPrecisionInteger().getValue()));
     }
 
     private void serializeSignature() {

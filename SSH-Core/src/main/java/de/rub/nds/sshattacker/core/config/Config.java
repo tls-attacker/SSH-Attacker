@@ -226,8 +226,8 @@ public class Config implements Serializable {
      */
     private KeyExchangeAlgorithm defaultRsaKeyExchangeAlgorithm;
     /**
-     * Default Hybrid key exchange algorithm, which is used if a new Hybrid key exchange is instantiaded
-     * without a matching key exchange algorithm negotiated.
+     * Default Hybrid key exchange algorithm, which is used if a new Hybrid key exchange is
+     * instantiaded without a matching key exchange algorithm negotiated.
      */
     private KeyExchangeAlgorithm defaultHybridKeyExchangeAlgorithm;
     /**
@@ -1239,11 +1239,11 @@ public class Config implements Serializable {
             KeyExchangeAlgorithm defaultDhKeyExchangeAlgorithm) {
         this.defaultDhKeyExchangeAlgorithm = defaultDhKeyExchangeAlgorithm;
     }
-    
+
     public void setDefaultHybridKeyExchangeAlgorithm(
-        KeyExchangeAlgorithm defaultHybridKeyExchangeAlgorithm) {
-            this.defaultHybridKeyExchangeAlgorithm = defaultHybridKeyExchangeAlgorithm;
-        }
+            KeyExchangeAlgorithm defaultHybridKeyExchangeAlgorithm) {
+        this.defaultHybridKeyExchangeAlgorithm = defaultHybridKeyExchangeAlgorithm;
+    }
 
     public void setDefaultEcdhKeyExchangeAlgorithm(
             KeyExchangeAlgorithm defaultEcdhKeyExchangeAlgorithm) {

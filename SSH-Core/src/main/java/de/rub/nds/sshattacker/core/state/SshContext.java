@@ -791,7 +791,7 @@ public class SshContext {
         return Optional.ofNullable(ecdhKeyExchangeInstance);
     }
 
-    public Optional<Sntrup761X25519KeyExchange> getSntrup761X25519KeyExchangeInstance(){
+    public Optional<Sntrup761X25519KeyExchange> getSntrup761X25519KeyExchangeInstance() {
         return Optional.ofNullable(sntrup761X25519KeyExchangeInstance);
     }
 
@@ -840,7 +840,8 @@ public class SshContext {
         this.ecdhKeyExchangeInstance = ecdhKeyExchangeInstance;
     }
 
-    public void setSntrup761X25519KeyExchangeInstance(Sntrup761X25519KeyExchange Sntrup761X25519KeyExchangeInstance) {
+    public void setSntrup761X25519KeyExchangeInstance(
+            Sntrup761X25519KeyExchange Sntrup761X25519KeyExchangeInstance) {
         this.sntrup761X25519KeyExchangeInstance = Sntrup761X25519KeyExchangeInstance;
     }
 

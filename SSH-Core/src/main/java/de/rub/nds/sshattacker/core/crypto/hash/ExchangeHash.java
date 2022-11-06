@@ -127,11 +127,11 @@ public final class ExchangeHash {
     public static byte[] computeHybridHash(
             KeyExchangeAlgorithm algorithm, ExchangeHashInputHolder inputHolder)
             throws CryptoException {
-        if (algorithm.getFlowType() != KeyExchangeFlowType.HYBRID){
+        if (algorithm.getFlowType() != KeyExchangeFlowType.HYBRID) {
             LOGGER.warn(
                     "Trying to compute Hybrid exchange hash with a mismatching algorithm provided, this might fail.");
         }
-        return compute(algorithm, prepareHybridHashInput(inputHolder));      
+        return compute(algorithm, prepareHybridHashInput(inputHolder));
     }
 
     public static byte[] computeRsaHash(
@@ -196,20 +196,20 @@ public final class ExchangeHash {
         Configurator.setLevel(KeyExchangeInitMessageSerializer.class.getName(), Level.OFF);
         byte[] prefix =
                 ArrayConverter.concatenate(
-                Converter.stringToLengthPrefixedBinaryString(
-                        inputHolder.getClientVersion().get().getIdentification()),
-                Converter.stringToLengthPrefixedBinaryString(
-                        inputHolder.getServerVersion().get().getIdentification()),
-                Converter.bytesToLengthPrefixedBinaryString(
-                        new KeyExchangeInitMessageSerializer(
-                                inputHolder.getClientKeyExchangeInit().get())
-                                .serialize()),
-                Converter.bytesToLengthPrefixedBinaryString(
-                        new KeyExchangeInitMessageSerializer(
-                                inputHolder.getServerKeyExchangeInit().get())
-                                .serialize()),
-                Converter.bytesToLengthPrefixedBinaryString(
-                        PublicKeyHelper.encode(inputHolder.getServerHostKey().get())));
+                        Converter.stringToLengthPrefixedBinaryString(
+                                inputHolder.getClientVersion().get().getIdentification()),
+                        Converter.stringToLengthPrefixedBinaryString(
+                                inputHolder.getServerVersion().get().getIdentification()),
+                        Converter.bytesToLengthPrefixedBinaryString(
+                                new KeyExchangeInitMessageSerializer(
+                                                inputHolder.getClientKeyExchangeInit().get())
+                                        .serialize()),
+                        Converter.bytesToLengthPrefixedBinaryString(
+                                new KeyExchangeInitMessageSerializer(
+                                                inputHolder.getServerKeyExchangeInit().get())
+                                        .serialize()),
+                        Converter.bytesToLengthPrefixedBinaryString(
+                                PublicKeyHelper.encode(inputHolder.getServerHostKey().get())));
         // Restore the old log level
         Configurator.setLevel(KeyExchangeInitMessageSerializer.class.getName(), oldLevel);
         return prefix;
@@ -369,12 +369,12 @@ public final class ExchangeHash {
             throw new MissingExchangeHashInputException("[SntrupX25519] Server public key missing");
         }
         return ArrayConverter.concatenate(
-            prepareCommonPrefixHashInput(inputHolder),
-            Converter.bytesToLengthPrefixedBinaryString(
-                    inputHolder.getSntrupX25519ClientPublicKey().get()),
-            Converter.bytesToLengthPrefixedBinaryString(
-                    inputHolder.getSntrupX25519ServerPublicKey().get()),
-            prepareCommonSuffixHashInput(inputHolder));
+                prepareCommonPrefixHashInput(inputHolder),
+                Converter.bytesToLengthPrefixedBinaryString(
+                        inputHolder.getSntrupX25519ClientPublicKey().get()),
+                Converter.bytesToLengthPrefixedBinaryString(
+                        inputHolder.getSntrupX25519ServerPublicKey().get()),
+                prepareCommonSuffixHashInput(inputHolder));
     }
 
     private static byte[] prepareEcdhHashInput(ExchangeHashInputHolder inputHolder) {

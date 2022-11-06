@@ -7,8 +7,6 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.handler;
 
-import java.nio.ByteBuffer;
-
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
@@ -19,14 +17,17 @@ import de.rub.nds.sshattacker.core.protocol.transport.preparator.Sntrup761X25519
 import de.rub.nds.sshattacker.core.protocol.transport.serializer.Sntrup761X25519KeyExchangeReplyMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.util.KeyExchangeUtil;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import java.nio.ByteBuffer;
 
-public class Sntrup761X25519KeyExchangeReplyMessageHandler extends SshMessageHandler<Sntrup761X25519KeyExchangeReplyMessage> {
+public class Sntrup761X25519KeyExchangeReplyMessageHandler
+        extends SshMessageHandler<Sntrup761X25519KeyExchangeReplyMessage> {
 
     public Sntrup761X25519KeyExchangeReplyMessageHandler(SshContext context) {
         super(context);
     }
 
-    public Sntrup761X25519KeyExchangeReplyMessageHandler(SshContext context, Sntrup761X25519KeyExchangeReplyMessage message) {
+    public Sntrup761X25519KeyExchangeReplyMessageHandler(
+            SshContext context, Sntrup761X25519KeyExchangeReplyMessage message) {
         super(context, message);
     }
 
@@ -35,9 +36,11 @@ public class Sntrup761X25519KeyExchangeReplyMessageHandler extends SshMessageHan
         KeyExchangeUtil.handleHostKeyMessage(context, message);
         setRemoteValues(message.getMultiPrecisionInteger().getValue());
         context.getChooser().getSntrup761X25591KeyExchange().combineSharedSecrets();
-        context.setSharedSecret(context.getChooser().getSntrup761X25591KeyExchange().getSharedSecret());
+        context.setSharedSecret(
+                context.getChooser().getSntrup761X25591KeyExchange().getSharedSecret());
         context.getExchangeHashInputHolder()
-                .setSharedSecret(context.getChooser().getSntrup761X25591KeyExchange().getSharedSecret());
+                .setSharedSecret(
+                        context.getChooser().getSntrup761X25591KeyExchange().getSharedSecret());
         KeyExchangeUtil.computeExchangeHash(context);
         KeyExchangeUtil.handleExchangeHashSignatureMessage(context, message);
         KeyExchangeUtil.setSessionId(context);
@@ -52,8 +55,13 @@ public class Sntrup761X25519KeyExchangeReplyMessageHandler extends SshMessageHan
             buf.get(sntrup, 0, sntrup.length);
             buf.get(ec25519, 0, ec25519.length);
 
-            context.getChooser().getSntrup761X25591KeyExchange().getKeyAgreement("ec25519").setRemotePublicKey(ec25519);
-            context.getChooser().getSntrup761X25591KeyExchange().getKeyEncapsulation("sntrup761")
+            context.getChooser()
+                    .getSntrup761X25591KeyExchange()
+                    .getKeyAgreement("ec25519")
+                    .setRemotePublicKey(ec25519);
+            context.getChooser()
+                    .getSntrup761X25591KeyExchange()
+                    .getKeyEncapsulation("sntrup761")
                     .setEncapsulatedSecret(sntrup);
             context.getExchangeHashInputHolder()
                     .setSntrupX25519ServerPublicKey(message.getMultiPrecisionInteger().getValue());
@@ -68,7 +76,8 @@ public class Sntrup761X25519KeyExchangeReplyMessageHandler extends SshMessageHan
     }
 
     @Override
-    public SshMessageParser<Sntrup761X25519KeyExchangeReplyMessage> getParser(byte[] array, int startPosition) {
+    public SshMessageParser<Sntrup761X25519KeyExchangeReplyMessage> getParser(
+            byte[] array, int startPosition) {
         return new Sntrup761X25519KeyExchangeReplyMessageParser(array, startPosition);
     }
 

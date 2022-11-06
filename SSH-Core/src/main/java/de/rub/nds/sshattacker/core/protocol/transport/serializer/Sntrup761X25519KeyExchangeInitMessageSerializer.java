@@ -7,34 +7,39 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.serializer;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.transport.message.Sntrup761X25519KeyExchangeInitMessage;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class Sntrup761X25519KeyExchangeInitMessageSerializer
         extends SshMessageSerializer<Sntrup761X25519KeyExchangeInitMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public Sntrup761X25519KeyExchangeInitMessageSerializer(Sntrup761X25519KeyExchangeInitMessage message) {
+    public Sntrup761X25519KeyExchangeInitMessageSerializer(
+            Sntrup761X25519KeyExchangeInitMessage message) {
         super(message);
     }
 
     @Override
     public void serializeMessageSpecificContents() {
-        int length = message.getEphemeralECPublicKeyLength().getValue()
-                + message.getEphemeralSNTRUPPublicKeyLength().getValue();
-        byte[] keys = ArrayConverter.concatenate(message.getEphemeralSNTRUPPublicKey().getValue(),
-                message.getEphemeralECPublicKey().getValue());
+        int length =
+                message.getEphemeralECPublicKeyLength().getValue()
+                        + message.getEphemeralSNTRUPPublicKeyLength().getValue();
+        byte[] keys =
+                ArrayConverter.concatenate(
+                        message.getEphemeralSNTRUPPublicKey().getValue(),
+                        message.getEphemeralECPublicKey().getValue());
 
         LOGGER.debug("x25519 || sntrup761 public Key (client) length: " + length);
         appendInt(length, DataFormatConstants.STRING_SIZE_LENGTH);
 
-        LOGGER.debug("x25519 || sntrup761 public Key (client): " + ArrayConverter.bytesToHexString(keys));
+        LOGGER.debug(
+                "x25519 || sntrup761 public Key (client): "
+                        + ArrayConverter.bytesToHexString(keys));
         appendBytes(keys);
     }
 }

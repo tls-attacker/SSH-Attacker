@@ -14,7 +14,8 @@ import de.rub.nds.sshattacker.core.protocol.transport.message.Sntrup761X25519Key
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class Sntrup761X25519KeyExchangeReplyMessageParser extends SshMessageParser<Sntrup761X25519KeyExchangeReplyMessage> {
+public class Sntrup761X25519KeyExchangeReplyMessageParser
+        extends SshMessageParser<Sntrup761X25519KeyExchangeReplyMessage> {
     private static final Logger LOGGER = LogManager.getLogger();
 
     public Sntrup761X25519KeyExchangeReplyMessageParser(byte[] array, int startPosition) {
@@ -29,7 +30,9 @@ public class Sntrup761X25519KeyExchangeReplyMessageParser extends SshMessagePars
         message.setHostKeyBytesLength(parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH));
         LOGGER.debug("Host key byte length" + message.getHostKeyBytesLength());
         message.setHostKeyBytes(parseByteArrayField(message.getHostKeyBytesLength().getValue()));
-        LOGGER.debug("Host key bytes: " + ArrayConverter.bytesToHexString(message.getHostKeyBytes().getValue()));
+        LOGGER.debug(
+                "Host key bytes: "
+                        + ArrayConverter.bytesToHexString(message.getHostKeyBytes().getValue()));
     }
 
     private void parseMultiPrecisionInteger() {
@@ -55,12 +58,10 @@ public class Sntrup761X25519KeyExchangeReplyMessageParser extends SshMessagePars
         parseHostKeyBytes();
         parseMultiPrecisionInteger();
         parseSignature();
-
     }
 
     @Override
     protected Sntrup761X25519KeyExchangeReplyMessage createMessage() {
         return new Sntrup761X25519KeyExchangeReplyMessage();
     }
-
 }

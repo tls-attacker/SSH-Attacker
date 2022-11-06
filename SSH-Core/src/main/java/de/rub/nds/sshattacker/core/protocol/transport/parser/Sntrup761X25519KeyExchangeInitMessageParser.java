@@ -7,16 +7,16 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.parser;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.BinaryPacketConstants;
 import de.rub.nds.sshattacker.core.constants.CryptoConstants;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 import de.rub.nds.sshattacker.core.protocol.transport.message.Sntrup761X25519KeyExchangeInitMessage;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-public class Sntrup761X25519KeyExchangeInitMessageParser extends SshMessageParser<Sntrup761X25519KeyExchangeInitMessage> {
+public class Sntrup761X25519KeyExchangeInitMessageParser
+        extends SshMessageParser<Sntrup761X25519KeyExchangeInitMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -33,21 +33,28 @@ public class Sntrup761X25519KeyExchangeInitMessageParser extends SshMessageParse
         LOGGER.debug("Total Length: " + length);
 
         message.setEphemeralSNTRUPPublicKeyLength(length - CryptoConstants.X25519_POINT_SIZE);
-        LOGGER.debug("sntrup761 public key (client) length: "
-                + message.getEphemeralSNTRUPPublicKeyLength().getValue());
+        LOGGER.debug(
+                "sntrup761 public key (client) length: "
+                        + message.getEphemeralSNTRUPPublicKeyLength().getValue());
 
         message.setEphemeralSNTRUPPublicKey(
                 parseByteArrayField(message.getEphemeralSNTRUPPublicKeyLength().getValue()));
-        LOGGER.debug("sntrup761 public key (client): "
-                + ArrayConverter.bytesToHexString(message.getEphemeralSNTRUPPublicKey().getValue()));
-                
-        message.setEphemeralECPublicKeyLength(length - CryptoConstants.SNTRUP761_PUBLIC_KEY_SIZE);
-        LOGGER.debug("c25519 public key (client) length: "
-                + message.getEphemeralECPublicKeyLength().getValue());
+        LOGGER.debug(
+                "sntrup761 public key (client): "
+                        + ArrayConverter.bytesToHexString(
+                                message.getEphemeralSNTRUPPublicKey().getValue()));
 
-        message.setEphemeralECPublicKey(parseByteArrayField(message.getEphemeralECPublicKeyLength().getValue()));
-        LOGGER.debug("c25519 public key (client): "
-                + ArrayConverter.bytesToHexString(message.getEphemeralECPublicKey().getValue()));
+        message.setEphemeralECPublicKeyLength(length - CryptoConstants.SNTRUP761_PUBLIC_KEY_SIZE);
+        LOGGER.debug(
+                "c25519 public key (client) length: "
+                        + message.getEphemeralECPublicKeyLength().getValue());
+
+        message.setEphemeralECPublicKey(
+                parseByteArrayField(message.getEphemeralECPublicKeyLength().getValue()));
+        LOGGER.debug(
+                "c25519 public key (client): "
+                        + ArrayConverter.bytesToHexString(
+                                message.getEphemeralECPublicKey().getValue()));
     }
 
     @Override

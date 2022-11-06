@@ -7,12 +7,12 @@
  */
 package de.rub.nds.sshattacker.core.crypto.kex;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.sshattacker.core.constants.NamedEcGroup;
 import java.math.BigInteger;
 import java.nio.ByteBuffer;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.sshattacker.core.constants.NamedEcGroup;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -26,7 +26,8 @@ public class Sntrup761X25519KeyExchange extends HybridKeyExchange {
     }
 
     public byte[] getPublicKeys() {
-        return mergeKeyExchanges(encapsulation.get("sntrup761").getLocalKeyPair().getPublic().getEncoded(),
+        return mergeKeyExchanges(
+                encapsulation.get("sntrup761").getLocalKeyPair().getPublic().getEncoded(),
                 agreement.get("ec25519").getLocalKeyPair().getPublic().getEncoded());
     }
 
@@ -42,19 +43,26 @@ public class Sntrup761X25519KeyExchange extends HybridKeyExchange {
     public void combineSharedSecrets() {
         try {
             agreement.get("ec25519").computeSharedSecret();
-            if (encapsulation.get("sntrup761").getSharedSecret()==null){
-                encapsulation.get("sntrup761").decryptSharedSecret(); 
+            if (encapsulation.get("sntrup761").getSharedSecret() == null) {
+                encapsulation.get("sntrup761").decryptSharedSecret();
             }
-            
-            byte[] tmpSharedSecret =  mergeKeyExchanges(ArrayConverter.bigIntegerToByteArray(encapsulation.get("sntrup761").getSharedSecret()),
-            ArrayConverter.bigIntegerToByteArray(agreement.get("ec25519").getSharedSecret()));            
+
+            byte[] tmpSharedSecret =
+                    mergeKeyExchanges(
+                            ArrayConverter.bigIntegerToByteArray(
+                                    encapsulation.get("sntrup761").getSharedSecret()),
+                            ArrayConverter.bigIntegerToByteArray(
+                                    agreement.get("ec25519").getSharedSecret()));
             this.sharedSecret = new BigInteger(encode(tmpSharedSecret));
-            LOGGER.debug("Concatenated Shared Secret: " + ArrayConverter.bytesToRawHexString(tmpSharedSecret));
-            LOGGER.debug("Encoded Shared Secret: " + ArrayConverter.bytesToRawHexString(encode(tmpSharedSecret)));
-                } catch (Exception e) {
+            LOGGER.debug(
+                    "Concatenated Shared Secret: "
+                            + ArrayConverter.bytesToRawHexString(tmpSharedSecret));
+            LOGGER.debug(
+                    "Encoded Shared Secret: "
+                            + ArrayConverter.bytesToRawHexString(encode(tmpSharedSecret)));
+        } catch (Exception e) {
             LOGGER.warn("Could not create the shared Secret: " + e);
         }
-
     }
 
     private byte[] encode(byte[] sharedSecret) {

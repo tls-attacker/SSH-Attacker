@@ -18,7 +18,8 @@ import org.apache.logging.log4j.Logger;
 import org.bouncycastle.math.ec.rfc7748.X25519;
 import org.bouncycastle.math.ec.rfc7748.X448;
 
-public class XCurveEcdhKeyExchange extends AbstractEcdhKeyExchange implements HybridKeyExchangeAgreement {
+public class XCurveEcdhKeyExchange extends AbstractEcdhKeyExchange
+        implements HybridKeyExchangeAgreement {
 
     private static final Logger LOGGER = LogManager.getLogger();
 

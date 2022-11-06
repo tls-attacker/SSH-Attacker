@@ -10,7 +10,7 @@ package de.rub.nds.sshattacker.core.crypto.kex;
 import de.rub.nds.sshattacker.core.exceptions.CryptoException;
 
 public interface HybridKeyExchangeEncapsulation extends HybridKeyExchangeInterface {
-    
+
     public abstract void generateSharedSecret();
 
     public abstract void setGenerateSharedSecret(byte[] sharedSecretBytes);

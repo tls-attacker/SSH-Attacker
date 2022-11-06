@@ -9,6 +9,6 @@ package de.rub.nds.sshattacker.core.crypto.kex;
 
 import de.rub.nds.sshattacker.core.exceptions.CryptoException;
 
-public interface HybridKeyExchangeAgreement extends HybridKeyExchangeInterface{
-        public abstract void computeSharedSecret() throws CryptoException;
+public interface HybridKeyExchangeAgreement extends HybridKeyExchangeInterface {
+    public abstract void computeSharedSecret() throws CryptoException;
 }

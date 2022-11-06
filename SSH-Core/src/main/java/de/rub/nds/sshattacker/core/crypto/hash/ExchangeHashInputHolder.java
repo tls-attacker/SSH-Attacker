@@ -211,7 +211,7 @@ public final class ExchangeHashInputHolder {
     public Optional<byte[]> getSntrupX25519ServerPublicKey() {
         return Optional.ofNullable(sntrupX25519ServerPublicKey);
     }
-    
+
     public void setSntrupX25519ServerPublicKey(byte[] sntrupX25519ServerPublicKey) {
         this.sntrupX25519ServerPublicKey = sntrupX25519ServerPublicKey;
     }

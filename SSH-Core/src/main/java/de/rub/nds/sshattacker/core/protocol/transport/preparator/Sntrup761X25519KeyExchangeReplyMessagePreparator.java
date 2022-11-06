@@ -20,7 +20,8 @@ import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 public class Sntrup761X25519KeyExchangeReplyMessagePreparator
         extends SshMessagePreparator<Sntrup761X25519KeyExchangeReplyMessage> {
 
-    public Sntrup761X25519KeyExchangeReplyMessagePreparator(Chooser chooser, Sntrup761X25519KeyExchangeReplyMessage message) {
+    public Sntrup761X25519KeyExchangeReplyMessagePreparator(
+            Chooser chooser, Sntrup761X25519KeyExchangeReplyMessage message) {
         super(chooser, message, MessageIdConstant.SSH_MSG_KEX_SNTRUP761_X25519_REPLY);
     }
 
@@ -29,13 +30,15 @@ public class Sntrup761X25519KeyExchangeReplyMessagePreparator
         KeyExchangeUtil.prepareHostKeyMessage(chooser.getContext(), getObject());
         prepareMultiPrecisionInteger();
         chooser.getSntrup761X25591KeyExchange().combineSharedSecrets();
-        chooser.getContext().setSharedSecret(chooser.getSntrup761X25591KeyExchange().getSharedSecret());
-        chooser.getContext().getExchangeHashInputHolder().setSharedSecret(chooser.getSntrup761X25591KeyExchange().getSharedSecret());
+        chooser.getContext()
+                .setSharedSecret(chooser.getSntrup761X25591KeyExchange().getSharedSecret());
+        chooser.getContext()
+                .getExchangeHashInputHolder()
+                .setSharedSecret(chooser.getSntrup761X25591KeyExchange().getSharedSecret());
         KeyExchangeUtil.computeExchangeHash(chooser.getContext());
         KeyExchangeUtil.prepareExchangeHashSignatureMessage(chooser.getContext(), getObject());
         KeyExchangeUtil.setSessionId(chooser.getContext());
         KeyExchangeUtil.generateKeySet(chooser.getContext());
-
     }
 
     private void prepareMultiPrecisionInteger() {
@@ -45,12 +48,18 @@ public class Sntrup761X25519KeyExchangeReplyMessagePreparator
         ec25519.generateLocalKeyPair();
         sntrup761.encryptSharedSecret();
 
-        getObject().setMultiPrecisionInteger(ArrayConverter.concatenate(sntrup761.getEncapsulatedSecret(),
-                ec25519.getLocalKeyPair().getPublic().getEncoded()), true);
+        getObject()
+                .setMultiPrecisionInteger(
+                        ArrayConverter.concatenate(
+                                sntrup761.getEncapsulatedSecret(),
+                                ec25519.getLocalKeyPair().getPublic().getEncoded()),
+                        true);
 
-        chooser.getContext().getExchangeHashInputHolder()
-                .setSntrupX25519ServerPublicKey((ArrayConverter.concatenate(sntrup761.getEncapsulatedSecret(),
-                        ec25519.getLocalKeyPair().getPublic().getEncoded())));
-
+        chooser.getContext()
+                .getExchangeHashInputHolder()
+                .setSntrupX25519ServerPublicKey(
+                        (ArrayConverter.concatenate(
+                                sntrup761.getEncapsulatedSecret(),
+                                ec25519.getLocalKeyPair().getPublic().getEncoded())));
     }
 }

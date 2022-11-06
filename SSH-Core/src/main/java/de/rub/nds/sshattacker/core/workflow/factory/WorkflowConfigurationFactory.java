@@ -200,8 +200,8 @@ public class WorkflowConfigurationFactory {
             case HYBRID:
                 sshActions.add(
                         SshActionFactory.createMessageAction(
-                                connection, 
-                                ConnectionEndType.CLIENT, 
+                                connection,
+                                ConnectionEndType.CLIENT,
                                 new Sntrup761X25519KeyExchangeInitMessage()));
                 sshActions.add(
                         SshActionFactory.createMessageAction(
