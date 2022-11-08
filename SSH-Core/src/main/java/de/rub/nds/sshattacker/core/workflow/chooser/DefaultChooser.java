@@ -115,6 +115,33 @@ public class DefaultChooser extends Chooser {
     }
     // endregion
 
+    // region Banner Message
+    /**
+     * Retrieves the client banner string from context. If no banner string was received (i.e.
+     * out-of-order workflow or SSH-Attacker is running in client mode), the client banner string
+     * from config will be returned.
+     *
+     * @return The SSH banner string of the server
+     */
+    @Override
+    public String getClientBanner() {
+        return context.getClientBanner().orElse(config.getClientBanner());
+    }
+    // endregion
+
+    /**
+     * Retrieves the server banner string from context. If no banner string was received (i.e.
+     * out-of-order workflow or SSH-Attacker is running in server mode), the server banner string
+     * from config will be returned.
+     *
+     * @return The SSH banner string of the server
+     */
+    @Override
+    public String getServerBanner() {
+        return context.getServerBanner().orElse(config.getServerBanner());
+    }
+    // endregion
+
     // region Key Exchange Initialization
     /**
      * Retrieves the client cookie from context. If no cookie was received (i. e. out-of-order

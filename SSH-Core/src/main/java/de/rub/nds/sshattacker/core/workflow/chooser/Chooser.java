@@ -53,6 +53,12 @@ public abstract class Chooser {
     public abstract String getServerEndOfMessageSequence();
     // endregion
 
+    // region Banner Message
+    public abstract String getClientBanner();
+
+    public abstract String getServerBanner();
+    // endregion
+
     // region Key Exchange Initialization
     public abstract byte[] getClientCookie();
 

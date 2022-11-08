@@ -93,6 +93,13 @@ public class SshContext {
 
     // endregion
 
+    // region Banner Message
+    /** Client banner text. */
+    private String clientBanner;
+    /** Server banner text. */
+    private String serverBanner;
+    // endregion
+
     // region Key Exchange Initialization
     /** Client cookie containing 16 random bytes */
     private byte[] clientCookie;
@@ -448,6 +455,25 @@ public class SshContext {
 
     public void setServerEndOfMessageSequence(String serverEndOfMessageSequence) {
         this.serverEndOfMessageSequence = serverEndOfMessageSequence;
+    }
+    // endregion
+    //
+    // region Getters for Banner Message Fields
+    public Optional<String> getClientBanner() {
+        return Optional.ofNullable(this.clientBanner);
+    }
+
+    public Optional<String> getServerBanner() {
+        return Optional.ofNullable(this.serverBanner);
+    }
+    // endregion
+    // region Setters for Banner Message fields
+    public void setClientBanner(final String clientBanner) {
+        this.clientBanner = clientBanner;
+    }
+
+    public void setServerBanner(final String serverBanner) {
+        this.serverBanner = serverBanner;
     }
     // endregion
 

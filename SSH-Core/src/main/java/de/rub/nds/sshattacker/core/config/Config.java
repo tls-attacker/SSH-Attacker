@@ -71,6 +71,13 @@ public class Config implements Serializable {
     private String serverEndOfMessageSequence;
     // endregion
 
+    // region Banner Message
+    /** Client banner text. */
+    private String clientBanner;
+    /** Server banner text. */
+    private String serverBanner;
+    // endregion
+    //
     // region Pre-KeyExchange
     /** Client cookie containing 16 random bytes */
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
@@ -927,6 +934,25 @@ public class Config implements Serializable {
         this.serverEndOfMessageSequence = serverEndOfMessageSequence;
     }
 
+    // endregion
+
+    // region Getters for Banner Message Fields
+    public String getClientBanner() {
+        return this.clientBanner;
+    }
+
+    public String getServerBanner() {
+        return this.serverBanner;
+    }
+    // endregion
+    // region Setters for Banner Message fields
+    public void setClientBanner(final String clientBanner) {
+        this.clientBanner = clientBanner;
+    }
+
+    public void setServerBanner(final String serverBanner) {
+        this.serverBanner = serverBanner;
+    }
     // endregion
 
     // region Getters for Pre-KeyExchange

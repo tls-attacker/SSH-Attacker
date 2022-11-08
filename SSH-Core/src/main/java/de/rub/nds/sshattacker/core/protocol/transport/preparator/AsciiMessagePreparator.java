@@ -20,8 +20,10 @@ public class AsciiMessagePreparator extends ProtocolMessagePreparator<AsciiMessa
     public void prepareProtocolMessageContents() {
         getObject().setText(""); // TODO: Add a way to set this via configuration.
         if (chooser.getContext().isClient()) {
+            getObject().setText(chooser.getClientBanner());
             getObject().setEndOfMessageSequence(chooser.getClientEndOfMessageSequence());
         } else {
+            getObject().setText(chooser.getServerBanner());
             getObject().setEndOfMessageSequence(chooser.getServerEndOfMessageSequence());
         }
     }
