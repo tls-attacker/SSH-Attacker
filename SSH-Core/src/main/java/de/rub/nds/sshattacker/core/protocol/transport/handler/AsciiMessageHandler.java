@@ -7,10 +7,10 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.handler;
 
-import de.rub.nds.sshattacker.core.exceptions.NotImplementedException;
 import de.rub.nds.sshattacker.core.protocol.common.*;
 import de.rub.nds.sshattacker.core.protocol.transport.message.AsciiMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.parser.AsciiMessageParser;
+import de.rub.nds.sshattacker.core.protocol.transport.preparator.AsciiMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.transport.serializer.AsciiMessageSerializer;
 import de.rub.nds.sshattacker.core.state.SshContext;
 
@@ -41,7 +41,7 @@ public class AsciiMessageHandler extends ProtocolMessageHandler<AsciiMessage> {
 
     @Override
     public ProtocolMessagePreparator<AsciiMessage> getPreparator() {
-        throw new NotImplementedException("AsciiMessageHandler::getPreparator");
+        return new AsciiMessagePreparator(context.getChooser(), message);
     }
 
     @Override
