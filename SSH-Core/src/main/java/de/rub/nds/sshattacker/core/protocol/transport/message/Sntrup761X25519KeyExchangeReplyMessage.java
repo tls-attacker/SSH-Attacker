@@ -21,7 +21,6 @@ public class Sntrup761X25519KeyExchangeReplyMessage
         extends SshMessage<Sntrup761X25519KeyExchangeReplyMessage>
         implements HostKeyMessage, ExchangeHashSignatureMessage {
 
-    // Same as forrDH
     public static final MessageIdConstant ID = MessageIdConstant.SSH_MSG_KEXDH_REPLY;
 
     private ModifiableInteger hostKeyBytesLength;
