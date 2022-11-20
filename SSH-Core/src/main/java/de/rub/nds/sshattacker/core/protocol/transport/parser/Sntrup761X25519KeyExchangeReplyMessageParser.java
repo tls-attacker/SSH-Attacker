@@ -10,12 +10,12 @@ package de.rub.nds.sshattacker.core.protocol.transport.parser;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.BinaryPacketConstants;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
-import de.rub.nds.sshattacker.core.protocol.transport.message.Sntrup761X25519KeyExchangeReplyMessage;
+import de.rub.nds.sshattacker.core.protocol.transport.message.HybridKeyExchangeReplyMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class Sntrup761X25519KeyExchangeReplyMessageParser
-        extends SshMessageParser<Sntrup761X25519KeyExchangeReplyMessage> {
+        extends SshMessageParser<HybridKeyExchangeReplyMessage> {
     private static final Logger LOGGER = LogManager.getLogger();
 
     public Sntrup761X25519KeyExchangeReplyMessageParser(byte[] array, int startPosition) {
@@ -35,15 +35,15 @@ public class Sntrup761X25519KeyExchangeReplyMessageParser
                         + ArrayConverter.bytesToHexString(message.getHostKeyBytes().getValue()));
     }
 
-    private void parseMultiPrecisionInteger() {
-        message.setMultiPrecisionIntegerLength(
+    private void parseHybridKey() {
+        message.setHybridKeyLength(
                 parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH));
         LOGGER.debug(
-                "Multi Precision Integer (server) length: "
-                        + message.getMultiPrecisionIntegerLength().getValue());
-        message.setMultiPrecisionInteger(
-                parseByteArrayField(message.getMultiPrecisionIntegerLength().getValue()));
-        LOGGER.debug("Multi Precision Integer (server): " + message.getMultiPrecisionInteger());
+                "Hybrid Key (server) length: "
+                        + message.getHybridKeyLength().getValue());
+        message.setHybridKey(
+                parseByteArrayField(message.getHybridKeyLength().getValue()));
+        LOGGER.debug("Hybrid Key (server): " + message.getHybridKey());
     }
 
     private void parseSignature() {
@@ -56,12 +56,12 @@ public class Sntrup761X25519KeyExchangeReplyMessageParser
     @Override
     protected void parseMessageSpecificContents() {
         parseHostKeyBytes();
-        parseMultiPrecisionInteger();
+        parseHybridKey();
         parseSignature();
     }
 
     @Override
-    protected Sntrup761X25519KeyExchangeReplyMessage createMessage() {
-        return new Sntrup761X25519KeyExchangeReplyMessage();
+    protected HybridKeyExchangeReplyMessage createMessage() {
+        return new HybridKeyExchangeReplyMessage();
     }
 }

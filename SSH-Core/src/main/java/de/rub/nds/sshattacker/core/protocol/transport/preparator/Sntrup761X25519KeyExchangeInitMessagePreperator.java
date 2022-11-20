@@ -9,30 +9,35 @@ package de.rub.nds.sshattacker.core.protocol.transport.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
+import de.rub.nds.sshattacker.core.crypto.kex.HybridKeyExchange;
 import de.rub.nds.sshattacker.core.crypto.kex.HybridKeyExchangeAgreement;
 import de.rub.nds.sshattacker.core.crypto.kex.HybridKeyExchangeEncapsulation;
+import de.rub.nds.sshattacker.core.crypto.kex.KeyAgreement;
+import de.rub.nds.sshattacker.core.crypto.kex.KeyEncapsulation;
 import de.rub.nds.sshattacker.core.crypto.kex.Sntrup761X25519KeyExchange;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
-import de.rub.nds.sshattacker.core.protocol.transport.message.Sntrup761X25519KeyExchangeInitMessage;
+import de.rub.nds.sshattacker.core.protocol.transport.message.HybridKeyExchangeInitMessage;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
+
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class Sntrup761X25519KeyExchangeInitMessagePreperator
-        extends SshMessagePreparator<Sntrup761X25519KeyExchangeInitMessage> {
+        extends SshMessagePreparator<HybridKeyExchangeInitMessage> {
     private static final Logger LOGGER = LogManager.getLogger();
 
     public Sntrup761X25519KeyExchangeInitMessagePreperator(
-            Chooser chooser, Sntrup761X25519KeyExchangeInitMessage message) {
-        super(chooser, message, MessageIdConstant.SSH_MSG_KEX_SNTRUP761_X25519_INIT);
+            Chooser chooser, HybridKeyExchangeInitMessage message) {
+        super(chooser, message, MessageIdConstant.SSH_MSG_HBR_INIT);
     }
 
     @Override
     public void prepareMessageSpecificContents() {
 
-        Sntrup761X25519KeyExchange keyExchange = chooser.getSntrup761X25591KeyExchange();
-        HybridKeyExchangeAgreement ec25519 = keyExchange.getKeyAgreement("ec25519");
-        HybridKeyExchangeEncapsulation sntrup761 = keyExchange.getKeyEncapsulation("sntrup761");
+        HybridKeyExchange keyExchange = chooser.getHybridKeyExchange();
+        KeyAgreement ec25519 = keyExchange.getKeyAgreement();
+        KeyEncapsulation sntrup761 = keyExchange.getKeyEncapsulation();
 
         ec25519.generateLocalKeyPair();
         sntrup761.generateLocalKeyPair();
@@ -45,7 +50,7 @@ public class Sntrup761X25519KeyExchangeInitMessagePreperator
 
         chooser.getContext()
                 .getExchangeHashInputHolder()
-                .setSntrupX25519ClientPublicKey(
+                .setHybridClientPublicKey(
                         ArrayConverter.concatenate(pubKsntrup761, pubKec25519));
         getObject().setEphemeralECPublicKey(pubKec25519, true);
         getObject().setEphemeralSNTRUPPublicKey(pubKsntrup761, true);

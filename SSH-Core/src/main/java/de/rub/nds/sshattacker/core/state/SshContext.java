@@ -14,7 +14,7 @@ import de.rub.nds.sshattacker.core.crypto.hash.ExchangeHashInputHolder;
 import de.rub.nds.sshattacker.core.crypto.kex.AbstractEcdhKeyExchange;
 import de.rub.nds.sshattacker.core.crypto.kex.DhKeyExchange;
 import de.rub.nds.sshattacker.core.crypto.kex.RsaKeyExchange;
-import de.rub.nds.sshattacker.core.crypto.kex.Sntrup761X25519KeyExchange;
+import de.rub.nds.sshattacker.core.crypto.kex.HybridKeyExchange;
 import de.rub.nds.sshattacker.core.crypto.keys.SshPublicKey;
 import de.rub.nds.sshattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.sshattacker.core.exceptions.TransportHandlerConnectException;
@@ -182,7 +182,7 @@ public class SshContext {
     /** Key exchange instance for RSA key exchange method(s) */
     private RsaKeyExchange rsaKeyExchangeInstance;
     /** Key exchange instance for Hybrid key exchange method(s) */
-    private Sntrup761X25519KeyExchange sntrup761X25519KeyExchangeInstance;
+    private HybridKeyExchange hybridKeyExchangeInstance;
     /**
      * If set to true, the most recent group request received was of type
      * DhGexKeyExchangeOldRequestMessage
@@ -791,8 +791,8 @@ public class SshContext {
         return Optional.ofNullable(ecdhKeyExchangeInstance);
     }
 
-    public Optional<Sntrup761X25519KeyExchange> getSntrup761X25519KeyExchangeInstance() {
-        return Optional.ofNullable(sntrup761X25519KeyExchangeInstance);
+    public Optional<HybridKeyExchange> getHybridKeyExchangeInstance() {
+        return Optional.ofNullable(hybridKeyExchangeInstance);
     }
 
     public Optional<RsaKeyExchange> getRsaKeyExchangeInstance() {
@@ -840,9 +840,9 @@ public class SshContext {
         this.ecdhKeyExchangeInstance = ecdhKeyExchangeInstance;
     }
 
-    public void setSntrup761X25519KeyExchangeInstance(
-            Sntrup761X25519KeyExchange Sntrup761X25519KeyExchangeInstance) {
-        this.sntrup761X25519KeyExchangeInstance = Sntrup761X25519KeyExchangeInstance;
+    public void setHybridKeyExchangeInstance(
+            HybridKeyExchange HybridKeyExchangeInstance) {
+        this.hybridKeyExchangeInstance = HybridKeyExchangeInstance;
     }
 
     public void setRsaKeyExchangeInstance(RsaKeyExchange rsaKeyExchangeInstance) {

@@ -46,9 +46,9 @@ public final class ExchangeHashInputHolder {
     private byte[] ecdhServerPublicKey;
     // endregion
 
-    // region SNTRUPX5519 exchange hash fields
-    private byte[] sntrupX25519ClientPublicKey;
-    private byte[] sntrupX25519ServerPublicKey;
+    // region hybrid exchange hash fields
+    private byte[] hybridClientPublicKey;
+    private byte[] hybridServerPublicKey;
 
     // region RSA exchange hash fields
     private SshPublicKey<CustomRsaPublicKey, ?> rsaTransientKey;
@@ -199,21 +199,21 @@ public final class ExchangeHashInputHolder {
     }
     // endregion
 
-    // region Getters / setters SNTRUPX25519 exchange hash fields
-    public Optional<byte[]> getSntrupX25519ClientPublicKey() {
-        return Optional.ofNullable(sntrupX25519ClientPublicKey);
+    // region Getters / setters hybrid exchange hash fields
+    public Optional<byte[]> getHybridClientPublicKey() {
+        return Optional.ofNullable(hybridClientPublicKey);
     }
 
-    public void setSntrupX25519ClientPublicKey(byte[] sntrupX25519ClientPublicKey) {
-        this.sntrupX25519ClientPublicKey = sntrupX25519ClientPublicKey;
+    public void setHybridClientPublicKey(byte[] hybridClientPublicKey) {
+        this.hybridClientPublicKey = hybridClientPublicKey;
     }
 
-    public Optional<byte[]> getSntrupX25519ServerPublicKey() {
-        return Optional.ofNullable(sntrupX25519ServerPublicKey);
+    public Optional<byte[]> getHybridServerPublicKey() {
+        return Optional.ofNullable(hybridServerPublicKey);
     }
 
-    public void setSntrupX25519ServerPublicKey(byte[] sntrupX25519ServerPublicKey) {
-        this.sntrupX25519ServerPublicKey = sntrupX25519ServerPublicKey;
+    public void setHybridServerPublicKey(byte[] hybridServerPublicKey) {
+        this.hybridServerPublicKey = hybridServerPublicKey;
     }
     // end region
 

@@ -9,36 +9,36 @@ package de.rub.nds.sshattacker.core.protocol.transport.handler;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
-import de.rub.nds.sshattacker.core.protocol.transport.message.Sntrup761X25519KeyExchangeInitMessage;
+import de.rub.nds.sshattacker.core.protocol.transport.message.HybridKeyExchangeInitMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.parser.Sntrup761X25519KeyExchangeInitMessageParser;
 import de.rub.nds.sshattacker.core.protocol.transport.preparator.Sntrup761X25519KeyExchangeInitMessagePreperator;
 import de.rub.nds.sshattacker.core.protocol.transport.serializer.Sntrup761X25519KeyExchangeInitMessageSerializer;
 import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class Sntrup761X25519KeyExchangeInitMessageHandler
-        extends SshMessageHandler<Sntrup761X25519KeyExchangeInitMessage> {
+        extends SshMessageHandler<HybridKeyExchangeInitMessage> {
 
     public Sntrup761X25519KeyExchangeInitMessageHandler(SshContext context) {
         super(context);
     }
 
     public Sntrup761X25519KeyExchangeInitMessageHandler(
-            SshContext context, Sntrup761X25519KeyExchangeInitMessage message) {
+            SshContext context, HybridKeyExchangeInitMessage message) {
         super(context, message);
     }
 
     @Override
     public void adjustContext() {
         context.getChooser()
-                .getSntrup761X25591KeyExchange()
-                .getKeyAgreement("ec25519")
+                .getHybridKeyExchange()
+                .getKeyAgreement()
                 .setRemotePublicKey(message.getEphemeralECPublicKey().getValue());
         context.getChooser()
-                .getSntrup761X25591KeyExchange()
-                .getKeyEncapsulation("sntrup761")
+                .getHybridKeyExchange()
+                .getKeyEncapsulation()
                 .setRemotePublicKey(message.getEphemeralSNTRUPPublicKey().getValue());
         context.getExchangeHashInputHolder()
-                .setSntrupX25519ClientPublicKey(
+                .setHybridClientPublicKey(
                         ArrayConverter.concatenate(
                                 message.getEphemeralSNTRUPPublicKey().getValue(),
                                 message.getEphemeralECPublicKey().getValue()));

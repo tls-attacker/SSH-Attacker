@@ -10,17 +10,17 @@ package de.rub.nds.sshattacker.core.protocol.transport.serializer;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
-import de.rub.nds.sshattacker.core.protocol.transport.message.Sntrup761X25519KeyExchangeInitMessage;
+import de.rub.nds.sshattacker.core.protocol.transport.message.HybridKeyExchangeInitMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class Sntrup761X25519KeyExchangeInitMessageSerializer
-        extends SshMessageSerializer<Sntrup761X25519KeyExchangeInitMessage> {
+        extends SshMessageSerializer<HybridKeyExchangeInitMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
     public Sntrup761X25519KeyExchangeInitMessageSerializer(
-            Sntrup761X25519KeyExchangeInitMessage message) {
+            HybridKeyExchangeInitMessage message) {
         super(message);
     }
 

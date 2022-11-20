@@ -7,6 +7,10 @@
  */
 package de.rub.nds.sshattacker.core.crypto.kex;
 
+import java.security.PrivateKey;
+import java.security.PublicKey;
+
+import de.rub.nds.sshattacker.core.crypto.keys.CustomKeyPair;
 import de.rub.nds.sshattacker.core.exceptions.CryptoException;
 
 public abstract class KeyAgreement extends KeyExchange {
@@ -15,5 +19,12 @@ public abstract class KeyAgreement extends KeyExchange {
         super();
     }
 
+    public abstract void setRemotePublicKey(byte[] publicKeyBytes);
     public abstract void computeSharedSecret() throws CryptoException;
+    public abstract void generateLocalKeyPair();
+    public abstract void setLocalKeyPair(byte[] privateKeyBytes);
+
+    public abstract void setLocalKeyPair(byte[] privateKeyBytes, byte[] publicKeyBytes);
+
+    public abstract CustomKeyPair<? extends PrivateKey, ? extends PublicKey> getLocalKeyPair();
 }

@@ -94,9 +94,9 @@ public abstract class ProtocolMessageParser<T extends ProtocolMessage<T>> extend
                     return new DhKeyExchangeInitMessageParser(raw).parse();
                 case SSH_MSG_KEXDH_REPLY:
                     return new DhKeyExchangeReplyMessageParser(raw).parse();
-                case SSH_MSG_KEX_SNTRUP761_X25519_INIT:
+                case SSH_MSG_HBR_INIT:
                     return new Sntrup761X25519KeyExchangeInitMessageParser(raw).parse();
-                case SSH_MSG_KEX_SNTRUP761_X25519_REPLY:
+                case SSH_MSG_HBR_REPLY:
                     return new Sntrup761X25519KeyExchangeReplyMessageParser(raw).parse();
                 case SSH_MSG_KEX_DH_GEX_REQUEST_OLD:
                     return new DhGexKeyExchangeOldRequestMessageParser(raw).parse();

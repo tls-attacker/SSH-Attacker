@@ -16,8 +16,7 @@ import java.math.BigInteger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class Sntrup761KeyExchange extends KeyEncapsulation
-        implements HybridKeyExchangeEncapsulation {
+public class Sntrup761KeyExchange extends KeyEncapsulation {
 
     private static final Logger LOGGER = LogManager.getLogger();
     private org.openquantumsafe.KeyEncapsulation sntrup;
@@ -95,7 +94,7 @@ public class Sntrup761KeyExchange extends KeyEncapsulation
     }
 
     @Override
-    public void setGenerateSharedSecret(byte[] sharedSecretBytes) {
+    public void setSharedSecret(byte[] sharedSecretBytes) {
         sharedSecret = new BigInteger(sharedSecretBytes);
     }
 
@@ -112,10 +111,5 @@ public class Sntrup761KeyExchange extends KeyEncapsulation
     @Override
     public void decryptSharedSecret() throws CryptoException {
         decryptSharedSecret(encryptedSharedSecret);
-    }
-
-    public static void main(String[] args) {
-        Sntrup761KeyExchange sntrup = new Sntrup761KeyExchange();
-        sntrup.generateLocalKeyPair();
     }
 }

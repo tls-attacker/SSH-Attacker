@@ -10,24 +10,24 @@ package de.rub.nds.sshattacker.core.protocol.transport.serializer;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
-import de.rub.nds.sshattacker.core.protocol.transport.message.Sntrup761X25519KeyExchangeReplyMessage;
+import de.rub.nds.sshattacker.core.protocol.transport.message.HybridKeyExchangeReplyMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class Sntrup761X25519KeyExchangeReplyMessageSerializer
-        extends SshMessageSerializer<Sntrup761X25519KeyExchangeReplyMessage> {
+        extends SshMessageSerializer<HybridKeyExchangeReplyMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
     public Sntrup761X25519KeyExchangeReplyMessageSerializer(
-            Sntrup761X25519KeyExchangeReplyMessage message) {
+            HybridKeyExchangeReplyMessage message) {
         super(message);
     }
 
     @Override
     public void serializeMessageSpecificContents() {
         serializeHostKeyBytes();
-        serializeMultiPrecisionInteger();
+        serializeHybridKey();
         serializeSignature();
     }
 
@@ -42,18 +42,18 @@ public class Sntrup761X25519KeyExchangeReplyMessageSerializer
                         + ArrayConverter.bytesToRawHexString(message.getHostKeyBytes().getValue()));
     }
 
-    private void serializeMultiPrecisionInteger() {
+    private void serializeHybridKey() {
         appendInt(
-                message.getMultiPrecisionIntegerLength().getValue(),
+                message.getHybridKeyLength().getValue(),
                 DataFormatConstants.MPINT_SIZE_LENGTH);
         LOGGER.debug(
-                "Multi Precision Integer (server) length: "
-                        + message.getMultiPrecisionIntegerLength().getValue());
-        appendBytes(message.getMultiPrecisionInteger().getValue());
+                "Hybrid Key (server) length: "
+                        + message.getHybridKeyLength().getValue());
+        appendBytes(message.getHybridKey().getValue());
         LOGGER.debug(
-                "Multi Precision Integer (server): "
+                "Hybrid Key (server): "
                         + ArrayConverter.bytesToHexString(
-                                message.getMultiPrecisionInteger().getValue()));
+                                message.getHybridKey().getValue()));
     }
 
     private void serializeSignature() {

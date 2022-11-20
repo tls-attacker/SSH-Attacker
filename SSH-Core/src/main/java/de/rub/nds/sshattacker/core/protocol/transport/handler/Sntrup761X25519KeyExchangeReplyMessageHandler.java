@@ -11,7 +11,7 @@ import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
-import de.rub.nds.sshattacker.core.protocol.transport.message.Sntrup761X25519KeyExchangeReplyMessage;
+import de.rub.nds.sshattacker.core.protocol.transport.message.HybridKeyExchangeReplyMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.parser.Sntrup761X25519KeyExchangeReplyMessageParser;
 import de.rub.nds.sshattacker.core.protocol.transport.preparator.Sntrup761X25519KeyExchangeReplyMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.transport.serializer.Sntrup761X25519KeyExchangeReplyMessageSerializer;
@@ -20,27 +20,27 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 import java.nio.ByteBuffer;
 
 public class Sntrup761X25519KeyExchangeReplyMessageHandler
-        extends SshMessageHandler<Sntrup761X25519KeyExchangeReplyMessage> {
+        extends SshMessageHandler<HybridKeyExchangeReplyMessage> {
 
     public Sntrup761X25519KeyExchangeReplyMessageHandler(SshContext context) {
         super(context);
     }
 
     public Sntrup761X25519KeyExchangeReplyMessageHandler(
-            SshContext context, Sntrup761X25519KeyExchangeReplyMessage message) {
+            SshContext context, HybridKeyExchangeReplyMessage message) {
         super(context, message);
     }
 
     @Override
     public void adjustContext() {
         KeyExchangeUtil.handleHostKeyMessage(context, message);
-        setRemoteValues(message.getMultiPrecisionInteger().getValue());
-        context.getChooser().getSntrup761X25591KeyExchange().combineSharedSecrets();
+        setRemoteValues(message.getHybridKey().getValue());
+        context.getChooser().getHybridKeyExchange().combineSharedSecrets();
         context.setSharedSecret(
-                context.getChooser().getSntrup761X25591KeyExchange().getSharedSecret());
+                context.getChooser().getHybridKeyExchange().getSharedSecret());
         context.getExchangeHashInputHolder()
                 .setSharedSecret(
-                        context.getChooser().getSntrup761X25591KeyExchange().getSharedSecret());
+                        context.getChooser().getHybridKeyExchange().getSharedSecret());
         KeyExchangeUtil.computeExchangeHash(context);
         KeyExchangeUtil.handleExchangeHashSignatureMessage(context, message);
         KeyExchangeUtil.setSessionId(context);
@@ -56,38 +56,38 @@ public class Sntrup761X25519KeyExchangeReplyMessageHandler
             buf.get(ec25519, 0, ec25519.length);
 
             context.getChooser()
-                    .getSntrup761X25591KeyExchange()
-                    .getKeyAgreement("ec25519")
+                    .getHybridKeyExchange()
+                    .getKeyAgreement()
                     .setRemotePublicKey(ec25519);
             context.getChooser()
-                    .getSntrup761X25591KeyExchange()
-                    .getKeyEncapsulation("sntrup761")
+                    .getHybridKeyExchange()
+                    .getKeyEncapsulation()
                     .setEncapsulatedSecret(sntrup);
             context.getExchangeHashInputHolder()
-                    .setSntrupX25519ServerPublicKey(message.getMultiPrecisionInteger().getValue());
+                    .setHybridServerPublicKey(message.getHybridKey().getValue());
         } catch (Exception e) {
             LOGGER.warn("Could not parse the remote Values: " + e);
         }
     }
 
     @Override
-    public SshMessageParser<Sntrup761X25519KeyExchangeReplyMessage> getParser(byte[] array) {
+    public SshMessageParser<HybridKeyExchangeReplyMessage> getParser(byte[] array) {
         return new Sntrup761X25519KeyExchangeReplyMessageParser(array);
     }
 
     @Override
-    public SshMessageParser<Sntrup761X25519KeyExchangeReplyMessage> getParser(
+    public SshMessageParser<HybridKeyExchangeReplyMessage> getParser(
             byte[] array, int startPosition) {
         return new Sntrup761X25519KeyExchangeReplyMessageParser(array, startPosition);
     }
 
     @Override
-    public SshMessagePreparator<Sntrup761X25519KeyExchangeReplyMessage> getPreparator() {
+    public SshMessagePreparator<HybridKeyExchangeReplyMessage> getPreparator() {
         return new Sntrup761X25519KeyExchangeReplyMessagePreparator(context.getChooser(), message);
     }
 
     @Override
-    public SshMessageSerializer<Sntrup761X25519KeyExchangeReplyMessage> getSerializer() {
+    public SshMessageSerializer<HybridKeyExchangeReplyMessage> getSerializer() {
         return new Sntrup761X25519KeyExchangeReplyMessageSerializer(message);
     }
 }

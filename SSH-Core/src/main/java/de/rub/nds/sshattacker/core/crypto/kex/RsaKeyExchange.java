@@ -15,6 +15,9 @@ import de.rub.nds.sshattacker.core.constants.PublicKeyFormat;
 import de.rub.nds.sshattacker.core.crypto.cipher.CipherFactory;
 import de.rub.nds.sshattacker.core.crypto.cipher.DecryptionCipher;
 import de.rub.nds.sshattacker.core.crypto.cipher.EncryptionCipher;
+import de.rub.nds.sshattacker.core.crypto.keys.CustomKeyPair;
+import de.rub.nds.sshattacker.core.crypto.keys.CustomPrivateKey;
+import de.rub.nds.sshattacker.core.crypto.keys.CustomPublicKey;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomRsaPrivateKey;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomRsaPublicKey;
 import de.rub.nds.sshattacker.core.crypto.keys.SshPublicKey;
@@ -80,10 +83,10 @@ public class RsaKeyExchange extends KeyEncapsulation {
 
     @Override
     public byte[] encryptSharedSecret() {
-        EncryptionCipher cipher =
-                CipherFactory.getEncryptionCipher(algorithm, transientKey.getPublicKey());
+        EncryptionCipher cipher = CipherFactory.getEncryptionCipher(algorithm, transientKey.getPublicKey());
         try {
-            // Shared secret is encrypted as a mpint (which includes an explicit length field)
+            // Shared secret is encrypted as a mpint (which includes an explicit length
+            // field)
             byte[] sharedSecretMpint = Converter.bigIntegerToMpint(sharedSecret);
             return cipher.encrypt(sharedSecretMpint);
         } catch (CryptoException e) {
@@ -98,22 +101,19 @@ public class RsaKeyExchange extends KeyEncapsulation {
         if (transientKey.getPrivateKey().isEmpty()) {
             throw new CryptoException("Unable to decrypt shared secret - no private key present");
         }
-        DecryptionCipher cipher =
-                CipherFactory.getDecryptionCipher(algorithm, transientKey.getPrivateKey().get());
+        DecryptionCipher cipher = CipherFactory.getDecryptionCipher(algorithm, transientKey.getPrivateKey().get());
         try {
             byte[] decryptedSecretMpint = cipher.decrypt(encryptedSharedSecret);
-            int sharedSecretLength =
-                    ArrayConverter.bytesToInt(
-                            Arrays.copyOfRange(
-                                    decryptedSecretMpint,
-                                    0,
-                                    DataFormatConstants.MPINT_SIZE_LENGTH));
-            this.sharedSecret =
-                    new BigInteger(
-                            Arrays.copyOfRange(
-                                    decryptedSecretMpint,
-                                    DataFormatConstants.MPINT_SIZE_LENGTH,
-                                    DataFormatConstants.MPINT_SIZE_LENGTH + sharedSecretLength));
+            int sharedSecretLength = ArrayConverter.bytesToInt(
+                    Arrays.copyOfRange(
+                            decryptedSecretMpint,
+                            0,
+                            DataFormatConstants.MPINT_SIZE_LENGTH));
+            this.sharedSecret = new BigInteger(
+                    Arrays.copyOfRange(
+                            decryptedSecretMpint,
+                            DataFormatConstants.MPINT_SIZE_LENGTH,
+                            DataFormatConstants.MPINT_SIZE_LENGTH + sharedSecretLength));
         } catch (CryptoException e) {
             LOGGER.error(
                     "Unexpected cryptographic exception occurred while decrypting the shared secret");
@@ -137,8 +137,7 @@ public class RsaKeyExchange extends KeyEncapsulation {
             keyGen.initialize(transientKeyLength);
             KeyPair key = keyGen.generateKeyPair();
             CustomRsaPublicKey publicKey = new CustomRsaPublicKey((RSAPublicKey) key.getPublic());
-            CustomRsaPrivateKey privateKey =
-                    new CustomRsaPrivateKey((RSAPrivateKey) key.getPrivate());
+            CustomRsaPrivateKey privateKey = new CustomRsaPrivateKey((RSAPrivateKey) key.getPrivate());
             this.transientKey = new SshPublicKey<>(PublicKeyFormat.SSH_RSA, publicKey, privateKey);
         } catch (NoSuchAlgorithmException e) {
             throw new CryptoException(
@@ -174,7 +173,8 @@ public class RsaKeyExchange extends KeyEncapsulation {
         if (transientKey != null) {
             return transientKey.getPublicKey().getModulus().bitLength();
         } else {
-            // Fallback to default transient key length in case no actual transient key is present
+            // Fallback to default transient key length in case no actual transient key is
+            // present
             return transientKeyLength;
         }
     }
@@ -185,5 +185,62 @@ public class RsaKeyExchange extends KeyEncapsulation {
 
     public boolean areParametersSet() {
         return transientKey != null && hashLength != 0;
+    }
+
+    @Override
+    public void setLocalKeyPair(byte[] privateKeyBytes) {
+        LOGGER.warn("Updateing local Key Pairs not supported, use generateLocalKeys instead");
+
+    }
+
+    @Override
+    public void setLocalKeyPair(byte[] privateKeyBytes, byte[] publicKeyBytes) {
+        LOGGER.warn("Updateing local Key Pairs not supported, use generateLocalKeys instead");
+
+    }
+
+    @Override
+    public CustomPublicKey getRemotePublicKey() {
+        LOGGER.warn("getRemotePublicKey currently not supported");
+        return null;
+    }
+
+    @Override
+    public void setSharedSecret(byte[] sharedSecretBytes) {
+        this.sharedSecret = new BigInteger(sharedSecretBytes);
+
+    }
+
+    @Override
+    public void setEncapsulatedSecret(byte[] encryptedSharedSecret) {
+        LOGGER.warn("setEncapsulatedSecret currently not supported");
+
+    }
+
+    @Override
+    public byte[] getEncapsulatedSecret() {
+        LOGGER.warn("getEncapsulatedSecret currently not supported");
+        return null;
+    }
+
+    @Override
+    public void decryptSharedSecret() throws CryptoException {
+        LOGGER.warn("decryptSharedSecret");
+    }
+
+    @Override
+    public void setRemotePublicKey(byte[] remotPublicKeyBytes) {
+        LOGGER.warn("setRemotePublicKey currently not supported");
+    }
+
+    @Override
+    public void generateLocalKeyPair() {
+        LOGGER.warn("generateLocalKeyPair currently not supported");
+    }
+
+    @Override
+    public CustomKeyPair<? extends CustomPrivateKey, ? extends CustomPublicKey> getLocalKeyPair() {
+        LOGGER.warn("getLocalKeyPair currently not supported");
+        return null;
     }
 }

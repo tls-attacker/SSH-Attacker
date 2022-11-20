@@ -362,18 +362,18 @@ public final class ExchangeHash {
          * string Q_S, server's ephemeral public key octet string
          * mpint K, encoded shared secret
          */
-        if (inputHolder.getSntrupX25519ClientPublicKey().isEmpty()) {
+        if (inputHolder.getHybridClientPublicKey().isEmpty()) {
             throw new MissingExchangeHashInputException("[SntrupX25519] Client public key missing");
         }
-        if (inputHolder.getSntrupX25519ServerPublicKey().isEmpty()) {
+        if (inputHolder.getHybridServerPublicKey().isEmpty()) {
             throw new MissingExchangeHashInputException("[SntrupX25519] Server public key missing");
         }
         return ArrayConverter.concatenate(
                 prepareCommonPrefixHashInput(inputHolder),
                 Converter.bytesToLengthPrefixedBinaryString(
-                        inputHolder.getSntrupX25519ClientPublicKey().get()),
+                        inputHolder.getHybridClientPublicKey().get()),
                 Converter.bytesToLengthPrefixedBinaryString(
-                        inputHolder.getSntrupX25519ServerPublicKey().get()),
+                        inputHolder.getHybridServerPublicKey().get()),
                 prepareCommonSuffixHashInput(inputHolder));
     }
 

@@ -12,7 +12,7 @@ import de.rub.nds.sshattacker.core.constants.*;
 import de.rub.nds.sshattacker.core.crypto.kex.AbstractEcdhKeyExchange;
 import de.rub.nds.sshattacker.core.crypto.kex.DhKeyExchange;
 import de.rub.nds.sshattacker.core.crypto.kex.RsaKeyExchange;
-import de.rub.nds.sshattacker.core.crypto.kex.Sntrup761X25519KeyExchange;
+import de.rub.nds.sshattacker.core.crypto.kex.HybridKeyExchange;
 import de.rub.nds.sshattacker.core.crypto.keys.SshPublicKey;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import java.util.List;
@@ -217,7 +217,7 @@ public abstract class Chooser {
 
     public abstract RsaKeyExchange getRsaKeyExchange();
 
-    public abstract Sntrup761X25519KeyExchange getSntrup761X25591KeyExchange();
+    public abstract HybridKeyExchange getHybridKeyExchange();
 
     public abstract SshPublicKey<?, ?> getNegotiatedHostKey();
 

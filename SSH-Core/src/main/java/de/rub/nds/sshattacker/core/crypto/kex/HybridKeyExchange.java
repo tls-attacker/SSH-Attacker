@@ -10,25 +10,26 @@ package de.rub.nds.sshattacker.core.crypto.kex;
 import de.rub.nds.sshattacker.core.constants.KeyExchangeAlgorithm;
 import de.rub.nds.sshattacker.core.constants.KeyExchangeFlowType;
 import de.rub.nds.sshattacker.core.state.SshContext;
-import java.util.HashMap;
-import java.util.Map;
+
+import java.nio.ByteBuffer;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public abstract class HybridKeyExchange
-        extends KeyExchange { // } implements HybridKeyExchangeAgreementInterface,
-    // HybridKeyExchangeEncapsulationInterface{
+        extends KeyExchange {
     private static final Logger LOGGER = LogManager.getLogger();
-    protected Map<String, HybridKeyExchangeAgreement> agreement;
-    protected Map<String, HybridKeyExchangeEncapsulation> encapsulation;
+    protected KeyAgreement agreement;
+    protected KeyEncapsulation encapsulation;
 
-    protected HybridKeyExchange() {
+    protected HybridKeyExchange(KeyAgreement agreement, KeyEncapsulation encapsulation) {
         super();
-        this.agreement = new HashMap<>();
-        this.encapsulation = new HashMap<>();
+        this.agreement = agreement;
+        this.encapsulation = encapsulation;
     }
 
-    public static HybridKeyExchange NewInstance(
+    public static HybridKeyExchange newInstance(
             SshContext context, KeyExchangeAlgorithm algorithm) {
         if (algorithm == null || algorithm.getFlowType() != KeyExchangeFlowType.HYBRID) {
             LOGGER.warn("Could not create HybridKeyExchange from " + algorithm);
@@ -50,13 +51,32 @@ public abstract class HybridKeyExchange
         }
     }
 
-    public HybridKeyExchangeAgreement getKeyAgreement(String name) {
-        return agreement.getOrDefault(name, null);
+    public KeyAgreement getKeyAgreement() {
+        return agreement;
     }
 
-    public HybridKeyExchangeEncapsulation getKeyEncapsulation(String name) {
-        return encapsulation.getOrDefault(name, null);
+    public KeyEncapsulation getKeyEncapsulation() {
+        return encapsulation;
     }
 
+    protected byte[] mergeKeyExchanges(byte[] keyExchange1, byte[] keyExchange2) {
+        byte[] mergedKeys = new byte[keyExchange1.length + keyExchange2.length];
+        ByteBuffer buff = ByteBuffer.wrap(mergedKeys);
+        buff.put(keyExchange1);
+        buff.put(keyExchange2);
+        return buff.array();
+    }
+
+    protected byte[] encode(byte[] sharedSecret, String hashAlgorithm) {
+        try {
+            MessageDigest md = MessageDigest.getInstance(hashAlgorithm);
+            return md.digest(sharedSecret);
+
+        } catch (NoSuchAlgorithmException e) {
+            LOGGER.warn("Could not get MessageDigest: " + e);
+        }
+        return new byte[0];
+    }
+    
     public abstract void combineSharedSecrets();
 }

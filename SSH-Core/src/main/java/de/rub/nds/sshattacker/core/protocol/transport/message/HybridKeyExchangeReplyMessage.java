@@ -10,24 +10,22 @@ package de.rub.nds.sshattacker.core.protocol.transport.message;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
-import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.crypto.keys.SshPublicKey;
 import de.rub.nds.sshattacker.core.crypto.util.PublicKeyHelper;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.Sntrup761X25519KeyExchangeReplyMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 
-public class Sntrup761X25519KeyExchangeReplyMessage
-        extends SshMessage<Sntrup761X25519KeyExchangeReplyMessage>
+public class HybridKeyExchangeReplyMessage
+        extends SshMessage<HybridKeyExchangeReplyMessage>
         implements HostKeyMessage, ExchangeHashSignatureMessage {
 
-    public static final MessageIdConstant ID = MessageIdConstant.SSH_MSG_KEXDH_REPLY;
 
     private ModifiableInteger hostKeyBytesLength;
     private ModifiableByteArray hostKeyBytes;
 
-    private ModifiableInteger multiPrecisionIntegerLength;
-    private ModifiableByteArray multiPrecisionInteger;
+    private ModifiableInteger hybridKeyLength;
+    private ModifiableByteArray hybridKey;
 
     private ModifiableInteger signatureLength;
     private ModifiableByteArray signature;
@@ -85,43 +83,43 @@ public class Sntrup761X25519KeyExchangeReplyMessage
         this.hostKeyBytes = ModifiableVariableFactory.safelySetValue(this.hostKeyBytes, hostKey);
     }
 
-    public ModifiableInteger getMultiPrecisionIntegerLength() {
-        return multiPrecisionIntegerLength;
+    public ModifiableInteger getHybridKeyLength() {
+        return hybridKeyLength;
     }
 
-    public void setMultiPrecisionIntegerLength(ModifiableInteger multiPrecisionIntegerLength) {
-        this.multiPrecisionIntegerLength = multiPrecisionIntegerLength;
+    public void setHybridKeyLength(ModifiableInteger hybridKeyLength) {
+        this.hybridKeyLength = hybridKeyLength;
     }
 
-    public void setMultiPrecisionIntegerLength(int multiPrecisionIntegerLength) {
-        this.multiPrecisionIntegerLength =
+    public void setHybridKeyLength(int hybridKeyLength) {
+        this.hybridKeyLength =
                 ModifiableVariableFactory.safelySetValue(
-                        this.multiPrecisionIntegerLength, multiPrecisionIntegerLength);
+                        this.hybridKeyLength, hybridKeyLength);
     }
 
-    public ModifiableByteArray getMultiPrecisionInteger() {
-        return multiPrecisionInteger;
+    public ModifiableByteArray getHybridKey() {
+        return hybridKey;
     }
 
-    public void setMultiPrecisionInteger(byte[] multiPrecisionInteger) {
-        setMultiPrecisionInteger(multiPrecisionInteger, false);
+    public void setHybridKey(byte[] hybridKey) {
+        setHybridKey(hybridKey, false);
     }
 
-    public void setMultiPrecisionInteger(
-            ModifiableByteArray multiPrecisionInteger, boolean adjustLengthField) {
+    public void setHybridKey(
+            ModifiableByteArray hybridKey, boolean adjustLengthField) {
         if (adjustLengthField) {
-            setMultiPrecisionIntegerLength(multiPrecisionInteger.getValue().length);
+            setHybridKeyLength(hybridKey.getValue().length);
         }
-        this.multiPrecisionInteger = multiPrecisionInteger;
+        this.hybridKey = hybridKey;
     }
 
-    public void setMultiPrecisionInteger(byte[] multiPrecisionInteger, boolean adjustLengthField) {
+    public void setHybridKey(byte[] hybridKey, boolean adjustLengthField) {
         if (adjustLengthField) {
-            setMultiPrecisionIntegerLength(multiPrecisionInteger.length);
+            setHybridKeyLength(hybridKey.length);
         }
-        this.multiPrecisionInteger =
+        this.hybridKey =
                 ModifiableVariableFactory.safelySetValue(
-                        this.multiPrecisionInteger, multiPrecisionInteger);
+                        this.hybridKey, hybridKey);
     }
 
     @Override

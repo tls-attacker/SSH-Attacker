@@ -11,12 +11,12 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.BinaryPacketConstants;
 import de.rub.nds.sshattacker.core.constants.CryptoConstants;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
-import de.rub.nds.sshattacker.core.protocol.transport.message.Sntrup761X25519KeyExchangeInitMessage;
+import de.rub.nds.sshattacker.core.protocol.transport.message.HybridKeyExchangeInitMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class Sntrup761X25519KeyExchangeInitMessageParser
-        extends SshMessageParser<Sntrup761X25519KeyExchangeInitMessage> {
+        extends SshMessageParser<HybridKeyExchangeInitMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -63,7 +63,7 @@ public class Sntrup761X25519KeyExchangeInitMessageParser
     }
 
     @Override
-    protected Sntrup761X25519KeyExchangeInitMessage createMessage() {
-        return new Sntrup761X25519KeyExchangeInitMessage();
+    protected HybridKeyExchangeInitMessage createMessage() {
+        return new HybridKeyExchangeInitMessage();
     }
 }

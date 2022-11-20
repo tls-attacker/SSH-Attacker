@@ -202,12 +202,12 @@ public class WorkflowConfigurationFactory {
                         SshActionFactory.createMessageAction(
                                 connection,
                                 ConnectionEndType.CLIENT,
-                                new Sntrup761X25519KeyExchangeInitMessage()));
+                                new HybridKeyExchangeInitMessage()));
                 sshActions.add(
                         SshActionFactory.createMessageAction(
                                 connection,
                                 ConnectionEndType.SERVER,
-                                new Sntrup761X25519KeyExchangeReplyMessage(),
+                                new HybridKeyExchangeReplyMessage(),
                                 new NewKeysMessage()));
                 break;
             case DIFFIE_HELLMAN:
