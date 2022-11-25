@@ -7,6 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.crypto.kex;
 
+import de.rub.nds.sshattacker.core.constants.HybridPublicKeyCombiner;
 import de.rub.nds.sshattacker.core.constants.KeyExchangeAlgorithm;
 import de.rub.nds.sshattacker.core.constants.KeyExchangeFlowType;
 import de.rub.nds.sshattacker.core.state.SshContext;
@@ -22,11 +23,21 @@ public abstract class HybridKeyExchange
     private static final Logger LOGGER = LogManager.getLogger();
     protected KeyAgreement agreement;
     protected KeyEncapsulation encapsulation;
+    private int pkAgreementLength;
+    private int pkEncapsulationLength;
+    private int cyphtertextLength;
+    private HybridPublicKeyCombiner pkCombiner;
 
-    protected HybridKeyExchange(KeyAgreement agreement, KeyEncapsulation encapsulation) {
+    protected HybridKeyExchange(KeyAgreement agreement, KeyEncapsulation encapsulation,
+            HybridPublicKeyCombiner pkCombiner, int pkAgreementLength,
+            int pkEncapsulationLength, int cyphtertextLength) {
         super();
         this.agreement = agreement;
         this.encapsulation = encapsulation;
+        this.pkCombiner = pkCombiner;
+        this.pkAgreementLength = pkAgreementLength;
+        this.pkEncapsulationLength = pkEncapsulationLength;
+        this.cyphtertextLength = cyphtertextLength;
     }
 
     public static HybridKeyExchange newInstance(
@@ -77,6 +88,23 @@ public abstract class HybridKeyExchange
         }
         return new byte[0];
     }
-    
+
     public abstract void combineSharedSecrets();
+
+    public int getPkAgreementLength() {
+        return this.pkAgreementLength;
+    }
+
+    public int getPkEncapsulationLength() {
+        return this.pkEncapsulationLength;
+    }
+
+    public int getCyphtertextLength() {
+        return this.cyphtertextLength;
+    }
+
+    public HybridPublicKeyCombiner getPkCombiner() {
+        return this.pkCombiner;
+    }
+
 }

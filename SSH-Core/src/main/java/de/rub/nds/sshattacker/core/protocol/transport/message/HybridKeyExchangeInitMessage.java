@@ -12,104 +12,104 @@ import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
-import de.rub.nds.sshattacker.core.protocol.transport.handler.Sntrup761X25519KeyExchangeInitMessageHandler;
+import de.rub.nds.sshattacker.core.protocol.transport.handler.HybridKeyExchangeInitMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class HybridKeyExchangeInitMessage
         extends SshMessage<HybridKeyExchangeInitMessage> {
 
-    private ModifiableInteger ephemeralECPublicKeyLength;
-    private ModifiableByteArray ephemeralECPublicKey;
-    private ModifiableInteger ephemeralSNTRUPPublicKeyLength;
-    private ModifiableByteArray ephemeralSNTRUPPublicKey;
+    private ModifiableInteger agreementPublicKeyLength;
+    private ModifiableByteArray agreementPublicKey;
+    private ModifiableInteger encapsulationPublicKeyLength;
+    private ModifiableByteArray encapsulationPublicKey;
 
-    public ModifiableInteger getEphemeralECPublicKeyLength() {
-        return ephemeralECPublicKeyLength;
+    public ModifiableInteger getAgreementPublicKeyLength() {
+        return agreementPublicKeyLength;
     }
 
-    public void setEphemeralECPublicKeyLength(ModifiableInteger ephemeralECPublicKeyLength) {
-        this.ephemeralECPublicKeyLength = ephemeralECPublicKeyLength;
+    public void setAgreementPublicKeyLength(ModifiableInteger agreementPublicKeyLength) {
+        this.agreementPublicKeyLength = agreementPublicKeyLength;
     }
 
-    public void setEphemeralECPublicKeyLength(int ephemeralECPublicKeyLength) {
-        this.ephemeralECPublicKeyLength = ModifiableVariableFactory.safelySetValue(
-                this.ephemeralECPublicKeyLength, ephemeralECPublicKeyLength);
+    public void setAgreementPublicKeyLength(int agreementPublicKeyLength) {
+        this.agreementPublicKeyLength = ModifiableVariableFactory.safelySetValue(
+                this.agreementPublicKeyLength, agreementPublicKeyLength);
     }
 
-    public ModifiableByteArray getEphemeralECPublicKey() {
-        return ephemeralECPublicKey;
+    public ModifiableByteArray getAgreementPublicKey() {
+        return agreementPublicKey;
     }
 
-    public void setEphemeralECPublicKey(ModifiableByteArray ephemeralECPublicKey) {
-        setEphemeralECPublicKey(ephemeralECPublicKey, false);
+    public void setAgreementPublicKey(ModifiableByteArray agreementPublicKey) {
+        setAgreementPublicKey(agreementPublicKey, false);
     }
 
-    public void setEphemeralECPublicKey(byte[] ephemeralECPublicKey) {
-        setEphemeralECPublicKey(ephemeralECPublicKey, false);
+    public void setAgreementPublicKey(byte[] agreementPublicKey) {
+        setAgreementPublicKey(agreementPublicKey, false);
     }
 
-    public void setEphemeralECPublicKey(
-            ModifiableByteArray ephemeralECPublicKey, boolean adjustLengthField) {
-        this.ephemeralECPublicKey = ephemeralECPublicKey;
+    public void setAgreementPublicKey(
+            ModifiableByteArray agreementPublicKey, boolean adjustLengthField) {
+        this.agreementPublicKey = agreementPublicKey;
         if (adjustLengthField) {
-            setEphemeralECPublicKeyLength(ephemeralECPublicKey.getValue().length);
+            setAgreementPublicKeyLength(agreementPublicKey.getValue().length);
         }
 
     }
 
-    public void setEphemeralECPublicKey(byte[] ephemeralECPublicKey, boolean adjustLengthField) {
+    public void setAgreementPublicKey(byte[] agreementPublicKey, boolean adjustLengthField) {
+        this.agreementPublicKey = ModifiableVariableFactory.safelySetValue(
+                this.agreementPublicKey, agreementPublicKey);
         if (adjustLengthField) {
-            setEphemeralECPublicKeyLength(ephemeralECPublicKey.length);
-        }
-        this.ephemeralECPublicKey = ModifiableVariableFactory.safelySetValue(
-                this.ephemeralECPublicKey, ephemeralECPublicKey);
-    }
-
-    public ModifiableInteger getEphemeralSNTRUPPublicKeyLength() {
-        return ephemeralSNTRUPPublicKeyLength;
-    }
-
-    public void setEphemeralSNTRUPPublicKeyLength(
-            ModifiableInteger ephemeralSNTRUPPublicKeyLength) {
-        this.ephemeralSNTRUPPublicKeyLength = ephemeralSNTRUPPublicKeyLength;
-    }
-
-    public void setEphemeralSNTRUPPublicKeyLength(int ephemeralSNTRUPPublicKeyLength) {
-        this.ephemeralSNTRUPPublicKeyLength = ModifiableVariableFactory.safelySetValue(
-                this.ephemeralSNTRUPPublicKeyLength, ephemeralSNTRUPPublicKeyLength);
-    }
-
-    public ModifiableByteArray getEphemeralSNTRUPPublicKey() {
-        return ephemeralSNTRUPPublicKey;
-    }
-
-    public void setEphemeralSNTRUPPublicKey(ModifiableByteArray ephemeralSNTRUPPublicKey) {
-        setEphemeralSNTRUPPublicKey(ephemeralSNTRUPPublicKey, false);
-    }
-
-    public void setEphemeralSNTRUPPublicKey(byte[] ephemeralSNTRUPPublicKey) {
-        setEphemeralSNTRUPPublicKey(ephemeralSNTRUPPublicKey, false);
-    }
-
-    public void setEphemeralSNTRUPPublicKey(
-            ModifiableByteArray ephemeralSNTRUPPublicKey, boolean adjustLengthField) {
-        this.ephemeralSNTRUPPublicKey = ephemeralSNTRUPPublicKey;
-        if (adjustLengthField) {
-            setEphemeralSNTRUPPublicKeyLength(ephemeralSNTRUPPublicKey.getValue().length);
+            setAgreementPublicKeyLength(agreementPublicKey.length);
         }
     }
 
-    public void setEphemeralSNTRUPPublicKey(
-            byte[] ephemeralSNTRUPPublicKey, boolean adjustLengthField) {
+    public ModifiableInteger getEncapsulationPublicKeyLength() {
+        return encapsulationPublicKeyLength;
+    }
+
+    public void setEncapsulationPublicKeyLength(
+            ModifiableInteger encapsulationPublicKeyLength) {
+        this.encapsulationPublicKeyLength = encapsulationPublicKeyLength;
+    }
+
+    public void setEncapsulationPublicKeyLength(int encapsulationPublicKeyLength) {
+        this.encapsulationPublicKeyLength = ModifiableVariableFactory.safelySetValue(
+                this.encapsulationPublicKeyLength, encapsulationPublicKeyLength);
+    }
+
+    public ModifiableByteArray getEncapsulationPublicKey() {
+        return encapsulationPublicKey;
+    }
+
+    public void setEncapsulationPublicKey(ModifiableByteArray encapsulationPublicKey) {
+        setEncapsulationPublicKey(encapsulationPublicKey, false);
+    }
+
+    public void setEncapsulationPublicKey(byte[] encapsulationPublicKey) {
+        setEncapsulationPublicKey(encapsulationPublicKey, false);
+    }
+
+    public void setEncapsulationPublicKey(
+            ModifiableByteArray encapsulationPublicKey, boolean adjustLengthField) {
+        this.encapsulationPublicKey = encapsulationPublicKey;
         if (adjustLengthField) {
-            setEphemeralSNTRUPPublicKeyLength(ephemeralSNTRUPPublicKey.length);
+            setEncapsulationPublicKeyLength(encapsulationPublicKey.getValue().length);
         }
-        this.ephemeralSNTRUPPublicKey = ModifiableVariableFactory.safelySetValue(
-                this.ephemeralSNTRUPPublicKey, ephemeralSNTRUPPublicKey);
+    }
+
+    public void setEncapsulationPublicKey(
+            byte[] encapsulationPublicKey, boolean adjustLengthField) {
+        this.encapsulationPublicKey = ModifiableVariableFactory.safelySetValue(
+                this.encapsulationPublicKey, encapsulationPublicKey);
+        if (adjustLengthField) {
+            setEncapsulationPublicKeyLength(encapsulationPublicKey.length);
+        }
     }
 
     @Override
     public SshMessageHandler<HybridKeyExchangeInitMessage> getHandler(SshContext context) {
-        return new Sntrup761X25519KeyExchangeInitMessageHandler(context, this);
+        return new HybridKeyExchangeInitMessageHandler(context, this);
     }
 }

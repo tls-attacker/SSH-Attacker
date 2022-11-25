@@ -32,20 +32,26 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * A utility class to reduce redundancy in handlers and preparators of key exchange messages by
- * implementing common functionality like host key signing, signature verification, shared secret
- * handling, and more. A utility class is preferred over inheritance as messages do not share a
- * common structure and the functionality is used in both, handlers and preparators requiring at
+ * A utility class to reduce redundancy in handlers and preparators of key
+ * exchange messages by
+ * implementing common functionality like host key signing, signature
+ * verification, shared secret
+ * handling, and more. A utility class is preferred over inheritance as messages
+ * do not share a
+ * common structure and the functionality is used in both, handlers and
+ * preparators requiring at
  * least two similar implementations for most methods.
  */
 public final class KeyExchangeUtil {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private KeyExchangeUtil() {}
+    private KeyExchangeUtil() {
+    }
 
     /**
-     * Prepares a host key message by selecting a suitable host key, updating context, and adjusting
+     * Prepares a host key message by selecting a suitable host key, updating
+     * context, and adjusting
      * the encoded host key bytes of the provided message.
      *
      * @param context SSH context
@@ -65,17 +71,18 @@ public final class KeyExchangeUtil {
      * @param message The message to handle
      */
     public static void handleHostKeyMessage(SshContext context, HostKeyMessage message) {
-        SshPublicKey<?, ?> hostKey =
-                PublicKeyHelper.parse(
-                        context.getChooser().getHostKeyAlgorithm().getKeyFormat(),
-                        message.getHostKeyBytes().getValue());
+        SshPublicKey<?, ?> hostKey = PublicKeyHelper.parse(
+                context.getChooser().getHostKeyAlgorithm().getKeyFormat(),
+                message.getHostKeyBytes().getValue());
         context.setHostKey(hostKey);
         context.getExchangeHashInputHolder().setServerHostKey(hostKey);
     }
 
     /**
-     * Prepares an exchange hash signature message by signing the exchange hash present in the
-     * context with a suitable host key. The raw signature is formatted according to RFC 4253 prior
+     * Prepares an exchange hash signature message by signing the exchange hash
+     * present in the
+     * context with a suitable host key. The raw signature is formatted according to
+     * RFC 4253 prior
      * to updating the message.
      *
      * @param context SSH context
@@ -87,11 +94,9 @@ public final class KeyExchangeUtil {
         Optional<byte[]> exchangeHash = context.getExchangeHash();
         SigningSignature signingSignature;
         try {
-            signingSignature =
-                    SignatureFactory.getSigningSignature(
-                            context.getChooser().getHostKeyAlgorithm(), serverHostKey);
-            SignatureEncoding signatureEncoding =
-                    context.getChooser().getHostKeyAlgorithm().getSignatureEncoding();
+            signingSignature = SignatureFactory.getSigningSignature(
+                    context.getChooser().getHostKeyAlgorithm(), serverHostKey);
+            SignatureEncoding signatureEncoding = context.getChooser().getHostKeyAlgorithm().getSignatureEncoding();
             ByteArrayOutputStream signatureOutput = new ByteArrayOutputStream();
             signatureOutput.write(
                     ArrayConverter.intToBytes(
@@ -125,7 +130,8 @@ public final class KeyExchangeUtil {
     }
 
     /**
-     * Handles an exchange hash signature message by updating the context and verifying the
+     * Handles an exchange hash signature message by updating the context and
+     * verifying the
      * signature.
      *
      * @param context SSH context to update
@@ -138,7 +144,8 @@ public final class KeyExchangeUtil {
     }
 
     /**
-     * Verifies the signature of the given message under the context instance. Called as part of the
+     * Verifies the signature of the given message under the context instance.
+     * Called as part of the
      * public handleExchangeHashSignatureMessage() function.
      *
      * @param context SSH context
@@ -149,11 +156,10 @@ public final class KeyExchangeUtil {
         PublicKeyAlgorithm hostKeyAlgorithm = context.getChooser().getHostKeyAlgorithm();
         Optional<SshPublicKey<?, ?>> hostKey = context.getHostKey();
         if (hostKey.isPresent()) {
-            RawSignature signature =
-                    new SignatureParser(message.getSignature().getValue(), 0).parse();
+            RawSignature signature = new SignatureParser(message.getSignature().getValue(), 0).parse();
             try {
-                VerifyingSignature verifyingSignature =
-                        SignatureFactory.getVerifyingSignature(hostKeyAlgorithm, hostKey.get());
+                VerifyingSignature verifyingSignature = SignatureFactory.getVerifyingSignature(hostKeyAlgorithm,
+                        hostKey.get());
                 if (verifyingSignature.verify(exchangeHash, signature.getSignatureBytes())) {
                     LOGGER.info(
                             "Exchange hash signature verification successful: Signature is valid.");
@@ -178,10 +184,11 @@ public final class KeyExchangeUtil {
     }
 
     /**
-     * Computes the shared secret and updates the context and exchange hash input accordingly. Used
+     * Computes the shared secret and updates the context and exchange hash input
+     * accordingly. Used
      * for KeyAgreement Schemes.
      *
-     * @param context SSH context to update
+     * @param context      SSH context to update
      * @param keyAgreement Key exchange instance for shared secret computation
      */
     public static void computeSharedSecret(SshContext context, KeyAgreement keyAgreement) {
@@ -196,10 +203,11 @@ public final class KeyExchangeUtil {
     }
 
     /**
-     * Generates the shared secret and updates the context and exchange hash input accordingly. Used
+     * Generates the shared secret and updates the context and exchange hash input
+     * accordingly. Used
      * for KeyEncapsulation Schemes.
      *
-     * @param context SSH context to update
+     * @param context          SSH context to update
      * @param keyEncapsulation Key exchange instance for shared secret generation
      */
     public static void generateSharedSecret(SshContext context, KeyEncapsulation keyEncapsulation) {
@@ -209,11 +217,13 @@ public final class KeyExchangeUtil {
     }
 
     /**
-     * Computes the exchange hash based on an ExchangeHashInputHolder instance and the negotiated
+     * Computes the exchange hash based on an ExchangeHashInputHolder instance and
+     * the negotiated
      * key exchange algorithm.
      *
-     * @param context SSH context containing the ExchangeHashInputHolder used as an input to
-     *     exchange hash computation
+     * @param context SSH context containing the ExchangeHashInputHolder used as an
+     *                input to
+     *                exchange hash computation
      */
     public static void computeExchangeHash(SshContext context) {
         try {
@@ -232,7 +242,8 @@ public final class KeyExchangeUtil {
     }
 
     /**
-     * Updates the context by setting the session id if missing. This requires the exchange hash
+     * Updates the context by setting the session id if missing. This requires the
+     * exchange hash
      * field to be present.
      *
      * @param context SSH context to set the session id for
@@ -256,5 +267,16 @@ public final class KeyExchangeUtil {
     public static void generateKeySet(SshContext context) {
         KeySet keySet = KeySetGenerator.generateKeySet(context);
         context.setKeySet(keySet);
+    }
+
+    /**
+     * Concatenates two keys.
+     * 
+     * @param first  first key
+     * @param second second key
+     * @return first || second
+     */
+    public static byte[] concatenateHybridKeys(byte[] first, byte[] second) {
+        return ArrayConverter.concatenate(first, second);
     }
 }

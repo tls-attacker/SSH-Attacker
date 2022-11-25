@@ -13,19 +13,21 @@ import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.sshattacker.core.crypto.keys.SshPublicKey;
 import de.rub.nds.sshattacker.core.crypto.util.PublicKeyHelper;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
-import de.rub.nds.sshattacker.core.protocol.transport.handler.Sntrup761X25519KeyExchangeReplyMessageHandler;
+import de.rub.nds.sshattacker.core.protocol.transport.handler.HybridKeyExchangeReplyMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class HybridKeyExchangeReplyMessage
         extends SshMessage<HybridKeyExchangeReplyMessage>
         implements HostKeyMessage, ExchangeHashSignatureMessage {
 
-
     private ModifiableInteger hostKeyBytesLength;
     private ModifiableByteArray hostKeyBytes;
 
-    private ModifiableInteger hybridKeyLength;
-    private ModifiableByteArray hybridKey;
+    private ModifiableInteger publicKeyLength;
+    private ModifiableByteArray publicKey;
+
+    private ModifiableInteger cyphertextLength;
+    private ModifiableByteArray cyphertext;
 
     private ModifiableInteger signatureLength;
     private ModifiableByteArray signature;
@@ -42,9 +44,8 @@ public class HybridKeyExchangeReplyMessage
 
     @Override
     public void setHostKeyBytesLength(int hostKeyBytesLength) {
-        this.hostKeyBytesLength =
-                ModifiableVariableFactory.safelySetValue(
-                        this.hostKeyBytesLength, hostKeyBytesLength);
+        this.hostKeyBytesLength = ModifiableVariableFactory.safelySetValue(
+                this.hostKeyBytesLength, hostKeyBytesLength);
     }
 
     @Override
@@ -83,43 +84,78 @@ public class HybridKeyExchangeReplyMessage
         this.hostKeyBytes = ModifiableVariableFactory.safelySetValue(this.hostKeyBytes, hostKey);
     }
 
-    public ModifiableInteger getHybridKeyLength() {
-        return hybridKeyLength;
+    public ModifiableInteger getPublicKeyLength() {
+        return publicKeyLength;
     }
 
-    public void setHybridKeyLength(ModifiableInteger hybridKeyLength) {
-        this.hybridKeyLength = hybridKeyLength;
+    public void setPublicKeyLength(ModifiableInteger publicKeyLength) {
+        this.publicKeyLength = publicKeyLength;
     }
 
-    public void setHybridKeyLength(int hybridKeyLength) {
-        this.hybridKeyLength =
-                ModifiableVariableFactory.safelySetValue(
-                        this.hybridKeyLength, hybridKeyLength);
+    public void setPublicKeyLength(int publicKeyLength) {
+        this.publicKeyLength = ModifiableVariableFactory.safelySetValue(
+                this.publicKeyLength, publicKeyLength);
     }
 
-    public ModifiableByteArray getHybridKey() {
-        return hybridKey;
+    public ModifiableByteArray getPublicKey() {
+        return publicKey;
     }
 
-    public void setHybridKey(byte[] hybridKey) {
-        setHybridKey(hybridKey, false);
+    public void setPublicKey(byte[] publicKey) {
+        setPublicKey(publicKey, false);
     }
 
-    public void setHybridKey(
-            ModifiableByteArray hybridKey, boolean adjustLengthField) {
+    public void setPublicKey(
+            ModifiableByteArray publicKey, boolean adjustLengthField) {
         if (adjustLengthField) {
-            setHybridKeyLength(hybridKey.getValue().length);
+            setPublicKeyLength(publicKey.getValue().length);
         }
-        this.hybridKey = hybridKey;
+        this.publicKey = publicKey;
     }
 
-    public void setHybridKey(byte[] hybridKey, boolean adjustLengthField) {
+    public void setPublicKey(byte[] publicKey, boolean adjustLengthField) {
         if (adjustLengthField) {
-            setHybridKeyLength(hybridKey.length);
+            setPublicKeyLength(publicKey.length);
         }
-        this.hybridKey =
-                ModifiableVariableFactory.safelySetValue(
-                        this.hybridKey, hybridKey);
+        this.publicKey = ModifiableVariableFactory.safelySetValue(
+                this.publicKey, publicKey);
+    }
+
+    public ModifiableInteger getCyphertextLength() {
+        return cyphertextLength;
+    }
+
+    public void setCyphertextLength(ModifiableInteger cyphertextLength) {
+        this.cyphertextLength = cyphertextLength;
+    }
+
+    public void setCyphertextLength(int cyphertextLength) {
+        this.cyphertextLength = ModifiableVariableFactory.safelySetValue(
+                this.cyphertextLength, cyphertextLength);
+    }
+
+    public ModifiableByteArray getCyphertext() {
+        return cyphertext;
+    }
+
+    public void setCyphertext(byte[] cyphertext) {
+        setCyphertext(cyphertext, false);
+    }
+
+    public void setCyphertext(
+            ModifiableByteArray cyphertext, boolean adjustLengthField) {
+        if (adjustLengthField) {
+            setCyphertextLength(cyphertext.getValue().length);
+        }
+        this.cyphertext = cyphertext;
+    }
+
+    public void setCyphertext(byte[] cyphertext, boolean adjustLengthField) {
+        if (adjustLengthField) {
+            setCyphertextLength(cyphertext.length);
+        }
+        this.cyphertext = ModifiableVariableFactory.safelySetValue(
+                this.cyphertext, cyphertext);
     }
 
     @Override
@@ -134,8 +170,7 @@ public class HybridKeyExchangeReplyMessage
 
     @Override
     public void setSignatureLength(int signatureLength) {
-        this.signatureLength =
-                ModifiableVariableFactory.safelySetValue(this.signatureLength, signatureLength);
+        this.signatureLength = ModifiableVariableFactory.safelySetValue(this.signatureLength, signatureLength);
     }
 
     @Override
@@ -170,7 +205,7 @@ public class HybridKeyExchangeReplyMessage
     }
 
     @Override
-    public Sntrup761X25519KeyExchangeReplyMessageHandler getHandler(SshContext context) {
-        return new Sntrup761X25519KeyExchangeReplyMessageHandler(context, this);
+    public HybridKeyExchangeReplyMessageHandler getHandler(SshContext context) {
+        return new HybridKeyExchangeReplyMessageHandler(context, this);
     }
 }
