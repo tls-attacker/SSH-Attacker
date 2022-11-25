@@ -24,7 +24,8 @@ public abstract class KeyEncapsulation extends KeyExchange {
 
     public abstract void generateLocalKeyPair();
 
-    public abstract CustomKeyPair<? extends CustomPrivateKey, ? extends CustomPublicKey> getLocalKeyPair();
+    public abstract CustomKeyPair<? extends CustomPrivateKey, ? extends CustomPublicKey>
+            getLocalKeyPair();
 
     public abstract CustomPublicKey getRemotePublicKey();
 

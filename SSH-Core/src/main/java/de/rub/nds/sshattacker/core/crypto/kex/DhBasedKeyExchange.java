@@ -7,8 +7,6 @@
  */
 package de.rub.nds.sshattacker.core.crypto.kex;
 
-import de.rub.nds.sshattacker.core.crypto.keys.CustomKeyPair;
-import java.security.PrivateKey;
 import java.security.PublicKey;
 
 public abstract class DhBasedKeyExchange extends KeyAgreement {
@@ -16,8 +14,6 @@ public abstract class DhBasedKeyExchange extends KeyAgreement {
     protected DhBasedKeyExchange() {
         super();
     }
-
-
 
     public abstract PublicKey getRemotePublicKey();
 }

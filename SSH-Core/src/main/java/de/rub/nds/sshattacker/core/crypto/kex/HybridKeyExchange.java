@@ -11,15 +11,13 @@ import de.rub.nds.sshattacker.core.constants.HybridPublicKeyCombiner;
 import de.rub.nds.sshattacker.core.constants.KeyExchangeAlgorithm;
 import de.rub.nds.sshattacker.core.constants.KeyExchangeFlowType;
 import de.rub.nds.sshattacker.core.state.SshContext;
-
 import java.nio.ByteBuffer;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public abstract class HybridKeyExchange
-        extends KeyExchange {
+public abstract class HybridKeyExchange extends KeyExchange {
     private static final Logger LOGGER = LogManager.getLogger();
     protected KeyAgreement agreement;
     protected KeyEncapsulation encapsulation;
@@ -28,9 +26,13 @@ public abstract class HybridKeyExchange
     private int cyphtertextLength;
     private HybridPublicKeyCombiner pkCombiner;
 
-    protected HybridKeyExchange(KeyAgreement agreement, KeyEncapsulation encapsulation,
-            HybridPublicKeyCombiner pkCombiner, int pkAgreementLength,
-            int pkEncapsulationLength, int cyphtertextLength) {
+    protected HybridKeyExchange(
+            KeyAgreement agreement,
+            KeyEncapsulation encapsulation,
+            HybridPublicKeyCombiner pkCombiner,
+            int pkAgreementLength,
+            int pkEncapsulationLength,
+            int cyphtertextLength) {
         super();
         this.agreement = agreement;
         this.encapsulation = encapsulation;
@@ -106,5 +108,4 @@ public abstract class HybridKeyExchange
     public HybridPublicKeyCombiner getPkCombiner() {
         return this.pkCombiner;
     }
-
 }

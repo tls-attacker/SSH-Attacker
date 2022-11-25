@@ -15,60 +15,67 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class HybridKeyExchangeInitMessageParser
-                extends SshMessageParser<HybridKeyExchangeInitMessage> {
+        extends SshMessageParser<HybridKeyExchangeInitMessage> {
 
-        private static final Logger LOGGER = LogManager.getLogger();
+    private static final Logger LOGGER = LogManager.getLogger();
 
-        private HybridPublicKeyCombiner pkCombiner;
-        private int encapsulationSize;
-        private int agreementSize;
+    private HybridPublicKeyCombiner pkCombiner;
+    private int encapsulationSize;
+    private int agreementSize;
 
-        public HybridKeyExchangeInitMessageParser(byte[] array, HybridPublicKeyCombiner pkCombiner,
-                        int agreementSize, int encapsulationSize) {
-                super(array);
-                this.pkCombiner = pkCombiner;
-                this.encapsulationSize = encapsulationSize;
-                this.agreementSize = agreementSize;
+    public HybridKeyExchangeInitMessageParser(
+            byte[] array,
+            HybridPublicKeyCombiner pkCombiner,
+            int agreementSize,
+            int encapsulationSize) {
+        super(array);
+        this.pkCombiner = pkCombiner;
+        this.encapsulationSize = encapsulationSize;
+        this.agreementSize = agreementSize;
+    }
+
+    public HybridKeyExchangeInitMessageParser(
+            byte[] array,
+            int startPosition,
+            HybridPublicKeyCombiner pkCombiner,
+            int agreementSize,
+            int encapsulationSize) {
+        super(array, startPosition);
+        this.pkCombiner = pkCombiner;
+        this.encapsulationSize = encapsulationSize;
+        this.agreementSize = agreementSize;
+    }
+
+    private void parseHybridKey() {
+        int length = parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH);
+        LOGGER.debug("Total Length: " + length);
+
+        switch (pkCombiner) {
+            case CLASSICAL_CONCATENATE_POSTQUANTUM:
+                message.setAgreementPublicKeyLength(agreementSize);
+                message.setAgreementPublicKey(parseByteArrayField(agreementSize));
+                message.setEncapsulationPublicKeyLength(encapsulationSize);
+                message.setEncapsulationPublicKey(parseByteArrayField(encapsulationSize));
+                break;
+            case POSTQUANTUM_CONCATENATE_CLASSICAL:
+                message.setEncapsulationPublicKeyLength(encapsulationSize);
+                message.setEncapsulationPublicKey(parseByteArrayField(encapsulationSize));
+                message.setAgreementPublicKeyLength(agreementSize);
+                message.setAgreementPublicKey(parseByteArrayField(agreementSize));
+                break;
+            default:
+                LOGGER.warn("pkCombiner not supported. Can not update message");
+                break;
         }
+    }
 
-        public HybridKeyExchangeInitMessageParser(byte[] array, int startPosition, HybridPublicKeyCombiner pkCombiner,
-                        int agreementSize, int encapsulationSize) {
-                super(array, startPosition);
-                this.pkCombiner = pkCombiner;
-                this.encapsulationSize = encapsulationSize;
-                this.agreementSize = agreementSize;
-        }
+    @Override
+    protected void parseMessageSpecificContents() {
+        parseHybridKey();
+    }
 
-        private void parseHybridKey() {
-                int length = parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH);
-                LOGGER.debug("Total Length: " + length);
-
-                switch (pkCombiner) {
-                        case CLASSICAL_CONCATENATE_POSTQUANTUM:
-                                message.setAgreementPublicKeyLength(agreementSize);
-                                message.setAgreementPublicKey(parseByteArrayField(agreementSize));
-                                message.setEncapsulationPublicKeyLength(encapsulationSize);
-                                message.setEncapsulationPublicKey(parseByteArrayField(encapsulationSize));
-                                break;
-                        case POSTQUANTUM_CONCATENATE_CLASSICAL:
-                                message.setEncapsulationPublicKeyLength(encapsulationSize);
-                                message.setEncapsulationPublicKey(parseByteArrayField(encapsulationSize));
-                                message.setAgreementPublicKeyLength(agreementSize);
-                                message.setAgreementPublicKey(parseByteArrayField(agreementSize));
-                                break;
-                        default:
-                                LOGGER.warn("pkCombiner not supported. Can not update message");
-                                break;
-                }
-        }
-
-        @Override
-        protected void parseMessageSpecificContents() {
-                parseHybridKey();
-        }
-
-        @Override
-        protected HybridKeyExchangeInitMessage createMessage() {
-                return new HybridKeyExchangeInitMessage();
-        }
+    @Override
+    protected HybridKeyExchangeInitMessage createMessage() {
+        return new HybridKeyExchangeInitMessage();
+    }
 }

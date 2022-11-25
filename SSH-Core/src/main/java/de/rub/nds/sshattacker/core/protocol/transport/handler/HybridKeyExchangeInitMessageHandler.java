@@ -48,26 +48,34 @@ public class HybridKeyExchangeInitMessageHandler
     @Override
     public HybridKeyExchangeInitMessageParser getParser(byte[] array) {
         HybridKeyExchange kex = context.getChooser().getHybridKeyExchange();
-        return new HybridKeyExchangeInitMessageParser(array, kex.getPkCombiner(), kex.getPkAgreementLength(),
+        return new HybridKeyExchangeInitMessageParser(
+                array,
+                kex.getPkCombiner(),
+                kex.getPkAgreementLength(),
                 kex.getPkEncapsulationLength());
     }
 
     @Override
     public HybridKeyExchangeInitMessageParser getParser(byte[] array, int startPosition) {
         HybridKeyExchange kex = context.getChooser().getHybridKeyExchange();
-        return new HybridKeyExchangeInitMessageParser(array, startPosition, kex.getPkCombiner(),
-                kex.getPkAgreementLength(), kex.getPkEncapsulationLength());
+        return new HybridKeyExchangeInitMessageParser(
+                array,
+                startPosition,
+                kex.getPkCombiner(),
+                kex.getPkAgreementLength(),
+                kex.getPkEncapsulationLength());
     }
 
     @Override
     public HybridKeyExchangeInitMessagePreperator getPreparator() {
         HybridKeyExchange kex = context.getChooser().getHybridKeyExchange();
-        return new HybridKeyExchangeInitMessagePreperator(context.getChooser(), message, kex.getPkCombiner());
+        return new HybridKeyExchangeInitMessagePreperator(
+                context.getChooser(), message, kex.getPkCombiner());
     }
 
     @Override
     public HybridKeyExchangeInitMessageSerializer getSerializer() {
         HybridKeyExchange kex = context.getChooser().getHybridKeyExchange();
-        return new HybridKeyExchangeInitMessageSerializer(message,kex.getPkCombiner());
+        return new HybridKeyExchangeInitMessageSerializer(message, kex.getPkCombiner());
     }
 }

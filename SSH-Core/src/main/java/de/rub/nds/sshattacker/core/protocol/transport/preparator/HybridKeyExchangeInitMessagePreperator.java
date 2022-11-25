@@ -18,7 +18,6 @@ import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.transport.message.HybridKeyExchangeInitMessage;
 import de.rub.nds.sshattacker.core.protocol.util.KeyExchangeUtil;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -28,7 +27,9 @@ public class HybridKeyExchangeInitMessagePreperator
     private HybridPublicKeyCombiner combiner;
 
     public HybridKeyExchangeInitMessagePreperator(
-            Chooser chooser, HybridKeyExchangeInitMessage message, HybridPublicKeyCombiner combiner) {
+            Chooser chooser,
+            HybridKeyExchangeInitMessage message,
+            HybridPublicKeyCombiner combiner) {
         super(chooser, message, MessageIdConstant.SSH_MSG_HBR_INIT);
         this.combiner = combiner;
     }
@@ -54,13 +55,16 @@ public class HybridKeyExchangeInitMessagePreperator
             case CLASSICAL_CONCATENATE_POSTQUANTUM:
                 inputHolder.setHybridClientPublicKey(
                         KeyExchangeUtil.concatenateHybridKeys(pubKagreement, pubKencapsulation));
-                        break;
+                break;
             case POSTQUANTUM_CONCATENATE_CLASSICAL:
                 inputHolder.setHybridClientPublicKey(
                         KeyExchangeUtil.concatenateHybridKeys(pubKencapsulation, pubKagreement));
-                        break;
+                break;
             default:
-                LOGGER.warn("Unsupported combiner " + combiner + ", continue without updating ExchangeHashInputHolder");
+                LOGGER.warn(
+                        "Unsupported combiner "
+                                + combiner
+                                + ", continue without updating ExchangeHashInputHolder");
         }
 
         getObject().setAgreementPublicKey(pubKagreement, true);

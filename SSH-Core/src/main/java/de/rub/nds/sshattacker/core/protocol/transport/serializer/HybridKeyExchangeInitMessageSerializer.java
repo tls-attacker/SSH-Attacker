@@ -17,45 +17,46 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class HybridKeyExchangeInitMessageSerializer
-                extends SshMessageSerializer<HybridKeyExchangeInitMessage> {
+        extends SshMessageSerializer<HybridKeyExchangeInitMessage> {
 
-        private static final Logger LOGGER = LogManager.getLogger();
+    private static final Logger LOGGER = LogManager.getLogger();
 
-        private HybridPublicKeyCombiner combiner;
+    private HybridPublicKeyCombiner combiner;
 
-        public HybridKeyExchangeInitMessageSerializer(
-                        HybridKeyExchangeInitMessage message, HybridPublicKeyCombiner combiner) {
-                super(message);
-                this.combiner = combiner;
+    public HybridKeyExchangeInitMessageSerializer(
+            HybridKeyExchangeInitMessage message, HybridPublicKeyCombiner combiner) {
+        super(message);
+        this.combiner = combiner;
+    }
+
+    @Override
+    public void serializeMessageSpecificContents() {
+
+        int length =
+                message.getAgreementPublicKeyLength().getValue()
+                        + message.getEncapsulationPublicKeyLength().getValue();
+        appendInt(length, DataFormatConstants.STRING_SIZE_LENGTH);
+
+        byte[] keys = new byte[length];
+        switch (combiner) {
+            case CLASSICAL_CONCATENATE_POSTQUANTUM:
+                keys =
+                        KeyExchangeUtil.concatenateHybridKeys(
+                                message.getAgreementPublicKey().getValue(),
+                                message.getEncapsulationPublicKey().getValue());
+                break;
+            case POSTQUANTUM_CONCATENATE_CLASSICAL:
+                keys =
+                        KeyExchangeUtil.concatenateHybridKeys(
+                                message.getEncapsulationPublicKey().getValue(),
+                                message.getAgreementPublicKey().getValue());
+                break;
+            default:
+                LOGGER.warn("Unsupported combiner. Could not combine keys, set all bytes to zero.");
         }
+        appendBytes(keys);
 
-        @Override
-        public void serializeMessageSpecificContents() {
-
-                int length = message.getAgreementPublicKeyLength().getValue()
-                                + message.getEncapsulationPublicKeyLength().getValue();
-                appendInt(length, DataFormatConstants.STRING_SIZE_LENGTH);
-
-                byte[] keys = new byte[length];
-                switch (combiner) {
-                        case CLASSICAL_CONCATENATE_POSTQUANTUM:
-                                keys = KeyExchangeUtil.concatenateHybridKeys(message.getAgreementPublicKey().getValue(),
-                                                message.getEncapsulationPublicKey().getValue());
-                                break;
-                        case POSTQUANTUM_CONCATENATE_CLASSICAL:
-                                keys = KeyExchangeUtil.concatenateHybridKeys(
-                                                message.getEncapsulationPublicKey().getValue(),
-                                                message.getAgreementPublicKey().getValue());
-                                break;
-                        default:
-                                LOGGER.warn("Unsupported combiner. Could not combine keys, set all bytes to zero.");
-                }
-                appendBytes(keys);
-
-                LOGGER.debug("HybridKeyLength: " + length);
-                appendInt(length, DataFormatConstants.STRING_SIZE_LENGTH);
-
-                LOGGER.debug(
-                                "HybridKeyBytes: " + ArrayConverter.bytesToHexString(keys));
-        }
+        LOGGER.debug("HybridKeyLength: " + length);
+        LOGGER.debug("HybridKeyBytes: " + ArrayConverter.bytesToHexString(keys));
+    }
 }

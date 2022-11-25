@@ -13,8 +13,8 @@ import de.rub.nds.sshattacker.core.constants.*;
 import de.rub.nds.sshattacker.core.crypto.hash.ExchangeHashInputHolder;
 import de.rub.nds.sshattacker.core.crypto.kex.AbstractEcdhKeyExchange;
 import de.rub.nds.sshattacker.core.crypto.kex.DhKeyExchange;
-import de.rub.nds.sshattacker.core.crypto.kex.RsaKeyExchange;
 import de.rub.nds.sshattacker.core.crypto.kex.HybridKeyExchange;
+import de.rub.nds.sshattacker.core.crypto.kex.RsaKeyExchange;
 import de.rub.nds.sshattacker.core.crypto.keys.SshPublicKey;
 import de.rub.nds.sshattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.sshattacker.core.exceptions.TransportHandlerConnectException;
@@ -840,8 +840,7 @@ public class SshContext {
         this.ecdhKeyExchangeInstance = ecdhKeyExchangeInstance;
     }
 
-    public void setHybridKeyExchangeInstance(
-            HybridKeyExchange HybridKeyExchangeInstance) {
+    public void setHybridKeyExchangeInstance(HybridKeyExchange HybridKeyExchangeInstance) {
         this.hybridKeyExchangeInstance = HybridKeyExchangeInstance;
     }
 

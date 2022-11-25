@@ -63,7 +63,8 @@ public abstract class ProtocolMessageParser<T extends ProtocolMessage<T>> extend
         byte[] raw = packet.getPayload().getValue();
         try {
             if (packet instanceof BlobPacket) {
-                String rawText = new String(packet.getPayload().getValue(), StandardCharsets.US_ASCII);
+                String rawText =
+                        new String(packet.getPayload().getValue(), StandardCharsets.US_ASCII);
                 if (rawText.startsWith("SSH-2.0")) {
                     return new VersionExchangeMessageParser(raw).parse();
                 } else {
@@ -184,17 +185,21 @@ public abstract class ProtocolMessageParser<T extends ProtocolMessage<T>> extend
         }
     }
 
-    public static HybridKeyExchangeReplyMessageParser handleHbrReply(byte[] raw, SshContext context) {
+    public static HybridKeyExchangeReplyMessageParser handleHbrReply(
+            byte[] raw, SshContext context) {
 
         switch (context.getChooser().getKeyExchangeAlgorithm()) {
             case SNTRUP761_X25519:
-                return new HybridKeyExchangeReplyMessageParser(raw,
+                return new HybridKeyExchangeReplyMessageParser(
+                        raw,
                         HybridPublicKeyCombiner.POSTQUANTUM_CONCATENATE_CLASSICAL,
                         CryptoConstants.X25519_POINT_SIZE,
-                        CryptoConstants.SNTRUP761_PUBLIC_KEY_SIZE);
+                        CryptoConstants.SNTRUP761_CYPHERTEXT_SIZE);
             default:
-                LOGGER.warn("The Hybrid Key Exchange Algorithm " + context.getKeyExchangeAlgorithm().get()
-                        + " is not supported");
+                LOGGER.warn(
+                        "The Hybrid Key Exchange Algorithm "
+                                + context.getKeyExchangeAlgorithm().get()
+                                + " is not supported");
                 return null;
         }
     }
@@ -202,13 +207,16 @@ public abstract class ProtocolMessageParser<T extends ProtocolMessage<T>> extend
     public static HybridKeyExchangeInitMessageParser handleHbrInit(byte[] raw, SshContext context) {
         switch (context.getChooser().getKeyExchangeAlgorithm()) {
             case SNTRUP761_X25519:
-                return new HybridKeyExchangeInitMessageParser(raw,
+                return new HybridKeyExchangeInitMessageParser(
+                        raw,
                         HybridPublicKeyCombiner.POSTQUANTUM_CONCATENATE_CLASSICAL,
                         CryptoConstants.X25519_POINT_SIZE,
                         CryptoConstants.SNTRUP761_PUBLIC_KEY_SIZE);
             default:
-                LOGGER.warn("The Hybrid Key Exchange Algorithm " + context.getKeyExchangeAlgorithm().get()
-                        + " is not supported");
+                LOGGER.warn(
+                        "The Hybrid Key Exchange Algorithm "
+                                + context.getKeyExchangeAlgorithm().get()
+                                + " is not supported");
                 return null;
         }
     }

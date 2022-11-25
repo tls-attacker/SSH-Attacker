@@ -21,78 +21,79 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class HybridKeyExchangeReplyMessagePreparator
-                extends SshMessagePreparator<HybridKeyExchangeReplyMessage> {
+        extends SshMessagePreparator<HybridKeyExchangeReplyMessage> {
 
-        private static final Logger LOGGER = LogManager.getLogger();
-        private HybridPublicKeyCombiner pkCombiner;
+    private static final Logger LOGGER = LogManager.getLogger();
+    private HybridPublicKeyCombiner pkCombiner;
 
-        public HybridKeyExchangeReplyMessagePreparator(
-                        Chooser chooser, HybridKeyExchangeReplyMessage message, HybridPublicKeyCombiner pkCombiner) {
-                super(chooser, message, MessageIdConstant.SSH_MSG_HBR_REPLY);
-                this.pkCombiner = pkCombiner;
+    public HybridKeyExchangeReplyMessagePreparator(
+            Chooser chooser,
+            HybridKeyExchangeReplyMessage message,
+            HybridPublicKeyCombiner pkCombiner) {
+        super(chooser, message, MessageIdConstant.SSH_MSG_HBR_REPLY);
+        this.pkCombiner = pkCombiner;
+    }
+
+    @Override
+    public void prepareMessageSpecificContents() {
+        KeyExchangeUtil.prepareHostKeyMessage(chooser.getContext(), getObject());
+        prepareHybridKey();
+        chooser.getHybridKeyExchange().combineSharedSecrets();
+        chooser.getContext().setSharedSecret(chooser.getHybridKeyExchange().getSharedSecret());
+        chooser.getContext()
+                .getExchangeHashInputHolder()
+                .setSharedSecret(chooser.getHybridKeyExchange().getSharedSecret());
+        KeyExchangeUtil.computeExchangeHash(chooser.getContext());
+        KeyExchangeUtil.prepareExchangeHashSignatureMessage(chooser.getContext(), getObject());
+        KeyExchangeUtil.setSessionId(chooser.getContext());
+        KeyExchangeUtil.generateKeySet(chooser.getContext());
+    }
+
+    private void prepareHybridKey() {
+        HybridKeyExchange keyExchange = chooser.getHybridKeyExchange();
+        KeyAgreement agreement = keyExchange.getKeyAgreement();
+        KeyEncapsulation encapsulation = keyExchange.getKeyEncapsulation();
+        agreement.generateLocalKeyPair();
+        encapsulation.encryptSharedSecret();
+
+        ExchangeHashInputHolder inputHolder = chooser.getContext().getExchangeHashInputHolder();
+        byte[] agreementBytes = agreement.getLocalKeyPair().getPublic().getEncoded();
+        byte[] encapsulationBytes = encapsulation.getEncapsulatedSecret();
+        getObject().setPublicKey(agreementBytes, true);
+        getObject().setCyphertext(encapsulationBytes, true);
+        byte[] concatenated;
+        switch (pkCombiner) {
+            case CLASSICAL_CONCATENATE_POSTQUANTUM:
+                concatenated =
+                        KeyExchangeUtil.concatenateHybridKeys(agreementBytes, encapsulationBytes);
+                inputHolder.setHybridServerPublicKey(concatenated);
+                break;
+            case POSTQUANTUM_CONCATENATE_CLASSICAL:
+                concatenated =
+                        KeyExchangeUtil.concatenateHybridKeys(encapsulationBytes, agreementBytes);
+                inputHolder.setHybridServerPublicKey(concatenated);
+                break;
+            default:
+                LOGGER.warn("pkCombiner is not supported. Can not set Hybrid Key.");
+                break;
         }
 
-        @Override
-        public void prepareMessageSpecificContents() {
-                KeyExchangeUtil.prepareHostKeyMessage(chooser.getContext(), getObject());
-                prepareHybridKey();
-                chooser.getHybridKeyExchange().combineSharedSecrets();
-                chooser.getContext()
-                                .setSharedSecret(chooser.getHybridKeyExchange().getSharedSecret());
-                chooser.getContext()
-                                .getExchangeHashInputHolder()
-                                .setSharedSecret(chooser.getHybridKeyExchange().getSharedSecret());
-                KeyExchangeUtil.computeExchangeHash(chooser.getContext());
-                KeyExchangeUtil.prepareExchangeHashSignatureMessage(chooser.getContext(), getObject());
-                KeyExchangeUtil.setSessionId(chooser.getContext());
-                KeyExchangeUtil.generateKeySet(chooser.getContext());
-        }
+        // switch (sCombiner) {
+        // case CLASSICAL_CONCATENATE_POSTQUANTUM:
+        // inputHolder.setHybridServerPublicKey(KeyExchangeUtil.concatenateHybridKeys(
+        // agreement.getLocalKeyPair().getPublic().getEncoded(),
+        // encapsulation.getEncapsulatedSecret()));
+        // break;
+        // case POSTQUANTUM_CONCATENATE_CLASSICAL:
+        // inputHolder.setHybridServerPublicKey(KeyExchangeUtil.concatenateHybridKeys(
+        // encapsulation.getEncapsulatedSecret(),
+        // agreement.getLocalKeyPair().getPublic().getEncoded()));
+        // break;
+        // default:
+        // LOGGER.warn("sCombiner is not supported. Can not set HybridServerPublicKey in
+        // ExchangeHashInputHolder");
+        // break;
 
-        private void prepareHybridKey() {
-                HybridKeyExchange keyExchange = chooser.getHybridKeyExchange();
-                KeyAgreement agreement = keyExchange.getKeyAgreement();
-                KeyEncapsulation encapsulation = keyExchange.getKeyEncapsulation();
-                agreement.generateLocalKeyPair();
-                encapsulation.encryptSharedSecret();
-
-                ExchangeHashInputHolder inputHolder = chooser.getContext().getExchangeHashInputHolder();
-                byte[] agreementBytes = agreement.getLocalKeyPair().getPublic().getEncoded();
-                byte[] encapsulationBytes = encapsulation.getEncapsulatedSecret();
-                getObject().setPublicKey(agreementBytes, true);
-                getObject().setCyphertext(encapsulationBytes, true);
-                byte[] concatenated;
-                switch (pkCombiner) {
-                        case CLASSICAL_CONCATENATE_POSTQUANTUM:
-                                concatenated = KeyExchangeUtil.concatenateHybridKeys(agreementBytes,
-                                                encapsulationBytes);
-                                inputHolder.setHybridServerPublicKey(concatenated);
-                                break;
-                        case POSTQUANTUM_CONCATENATE_CLASSICAL:
-                                concatenated = KeyExchangeUtil.concatenateHybridKeys(encapsulationBytes,
-                                                agreementBytes);
-                                inputHolder.setHybridServerPublicKey(concatenated);
-                                break;
-                        default:
-                                LOGGER.warn("pkCombiner is not supported. Can not set Hybrid Key.");
-                                break;
-                }
-
-                // switch (sCombiner) {
-                // case CLASSICAL_CONCATENATE_POSTQUANTUM:
-                // inputHolder.setHybridServerPublicKey(KeyExchangeUtil.concatenateHybridKeys(
-                // agreement.getLocalKeyPair().getPublic().getEncoded(),
-                // encapsulation.getEncapsulatedSecret()));
-                // break;
-                // case POSTQUANTUM_CONCATENATE_CLASSICAL:
-                // inputHolder.setHybridServerPublicKey(KeyExchangeUtil.concatenateHybridKeys(
-                // encapsulation.getEncapsulatedSecret(),
-                // agreement.getLocalKeyPair().getPublic().getEncoded()));
-                // break;
-                // default:
-                // LOGGER.warn("sCombiner is not supported. Can not set HybridServerPublicKey in
-                // ExchangeHashInputHolder");
-                // break;
-
-                // }
-        }
+        // }
+    }
 }

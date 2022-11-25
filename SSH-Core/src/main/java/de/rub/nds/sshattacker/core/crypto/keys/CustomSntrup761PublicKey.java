@@ -21,8 +21,7 @@ public class CustomSntrup761PublicKey extends CustomPublicKey {
     private byte[] publicKey;
 
     @SuppressWarnings("unused")
-    public CustomSntrup761PublicKey() {
-    }
+    public CustomSntrup761PublicKey() {}
 
     public CustomSntrup761PublicKey(byte[] publicKey) {
         this.publicKey = publicKey;

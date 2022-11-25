@@ -40,11 +40,9 @@ public class HybridKeyExchangeReplyMessageHandler
         KeyExchangeUtil.handleHostKeyMessage(context, message);
         setRemoteValues();
         context.getChooser().getHybridKeyExchange().combineSharedSecrets();
-        context.setSharedSecret(
-                context.getChooser().getHybridKeyExchange().getSharedSecret());
+        context.setSharedSecret(context.getChooser().getHybridKeyExchange().getSharedSecret());
         context.getExchangeHashInputHolder()
-                .setSharedSecret(
-                        context.getChooser().getHybridKeyExchange().getSharedSecret());
+                .setSharedSecret(context.getChooser().getHybridKeyExchange().getSharedSecret());
         KeyExchangeUtil.computeExchangeHash(context);
         KeyExchangeUtil.handleExchangeHashSignatureMessage(context, message);
         KeyExchangeUtil.setSessionId(context);
@@ -52,25 +50,35 @@ public class HybridKeyExchangeReplyMessageHandler
     }
 
     private void setRemoteValues() {
-        context.getChooser().getHybridKeyExchange().getKeyAgreement()
+        context.getChooser()
+                .getHybridKeyExchange()
+                .getKeyAgreement()
                 .setRemotePublicKey(message.getPublicKey().getValue());
-        context.getChooser().getHybridKeyExchange().getKeyEncapsulation()
+        context.getChooser()
+                .getHybridKeyExchange()
+                .getKeyEncapsulation()
                 .setEncapsulatedSecret(message.getCyphertext().getValue());
         byte[] combined;
         switch (context.getChooser().getHybridKeyExchange().getPkCombiner()) {
             case CLASSICAL_CONCATENATE_POSTQUANTUM:
-                combined = KeyExchangeUtil.concatenateHybridKeys(message.getPublicKey().getValue(),
-                        message.getCyphertext().getValue());
+                combined =
+                        KeyExchangeUtil.concatenateHybridKeys(
+                                message.getPublicKey().getValue(),
+                                message.getCyphertext().getValue());
                 context.getExchangeHashInputHolder().setHybridServerPublicKey(combined);
                 break;
             case POSTQUANTUM_CONCATENATE_CLASSICAL:
-                combined = KeyExchangeUtil.concatenateHybridKeys(message.getCyphertext().getValue(),
-                        message.getPublicKey().getValue());
+                combined =
+                        KeyExchangeUtil.concatenateHybridKeys(
+                                message.getCyphertext().getValue(),
+                                message.getPublicKey().getValue());
                 context.getExchangeHashInputHolder().setHybridServerPublicKey(combined);
                 break;
             default:
-                LOGGER.warn("Combiner" + context.getChooser().getHybridKeyExchange().getPkCombiner()
-                        + " is not supported.");
+                LOGGER.warn(
+                        "Combiner"
+                                + context.getChooser().getHybridKeyExchange().getPkCombiner()
+                                + " is not supported.");
                 break;
         }
     }
@@ -78,23 +86,27 @@ public class HybridKeyExchangeReplyMessageHandler
     @Override
     public SshMessageParser<HybridKeyExchangeReplyMessage> getParser(byte[] array) {
         HybridKeyExchange kex = context.getChooser().getHybridKeyExchange();
-        return new HybridKeyExchangeReplyMessageParser(array, kex.getPkCombiner(), kex.getPkAgreementLength(),
-                kex.getPkEncapsulationLength());
+        return new HybridKeyExchangeReplyMessageParser(
+                array, kex.getPkCombiner(), kex.getPkAgreementLength(), kex.getCyphtertextLength());
     }
 
     @Override
     public SshMessageParser<HybridKeyExchangeReplyMessage> getParser(
             byte[] array, int startPosition) {
         HybridKeyExchange kex = context.getChooser().getHybridKeyExchange();
-        return new HybridKeyExchangeReplyMessageParser(array, startPosition, kex.getPkCombiner(),
+        return new HybridKeyExchangeReplyMessageParser(
+                array,
+                startPosition,
+                kex.getPkCombiner(),
                 kex.getPkAgreementLength(),
-                kex.getPkEncapsulationLength());
+                kex.getCyphtertextLength());
     }
 
     @Override
     public SshMessagePreparator<HybridKeyExchangeReplyMessage> getPreparator() {
         HybridKeyExchange kex = context.getChooser().getHybridKeyExchange();
-        return new HybridKeyExchangeReplyMessagePreparator(context.getChooser(), message, kex.getPkCombiner());
+        return new HybridKeyExchangeReplyMessagePreparator(
+                context.getChooser(), message, kex.getPkCombiner());
     }
 
     @Override

@@ -83,7 +83,8 @@ public class RsaKeyExchange extends KeyEncapsulation {
 
     @Override
     public byte[] encryptSharedSecret() {
-        EncryptionCipher cipher = CipherFactory.getEncryptionCipher(algorithm, transientKey.getPublicKey());
+        EncryptionCipher cipher =
+                CipherFactory.getEncryptionCipher(algorithm, transientKey.getPublicKey());
         try {
             // Shared secret is encrypted as a mpint (which includes an explicit length
             // field)
@@ -101,19 +102,22 @@ public class RsaKeyExchange extends KeyEncapsulation {
         if (transientKey.getPrivateKey().isEmpty()) {
             throw new CryptoException("Unable to decrypt shared secret - no private key present");
         }
-        DecryptionCipher cipher = CipherFactory.getDecryptionCipher(algorithm, transientKey.getPrivateKey().get());
+        DecryptionCipher cipher =
+                CipherFactory.getDecryptionCipher(algorithm, transientKey.getPrivateKey().get());
         try {
             byte[] decryptedSecretMpint = cipher.decrypt(encryptedSharedSecret);
-            int sharedSecretLength = ArrayConverter.bytesToInt(
-                    Arrays.copyOfRange(
-                            decryptedSecretMpint,
-                            0,
-                            DataFormatConstants.MPINT_SIZE_LENGTH));
-            this.sharedSecret = new BigInteger(
-                    Arrays.copyOfRange(
-                            decryptedSecretMpint,
-                            DataFormatConstants.MPINT_SIZE_LENGTH,
-                            DataFormatConstants.MPINT_SIZE_LENGTH + sharedSecretLength));
+            int sharedSecretLength =
+                    ArrayConverter.bytesToInt(
+                            Arrays.copyOfRange(
+                                    decryptedSecretMpint,
+                                    0,
+                                    DataFormatConstants.MPINT_SIZE_LENGTH));
+            this.sharedSecret =
+                    new BigInteger(
+                            Arrays.copyOfRange(
+                                    decryptedSecretMpint,
+                                    DataFormatConstants.MPINT_SIZE_LENGTH,
+                                    DataFormatConstants.MPINT_SIZE_LENGTH + sharedSecretLength));
         } catch (CryptoException e) {
             LOGGER.error(
                     "Unexpected cryptographic exception occurred while decrypting the shared secret");
@@ -137,7 +141,8 @@ public class RsaKeyExchange extends KeyEncapsulation {
             keyGen.initialize(transientKeyLength);
             KeyPair key = keyGen.generateKeyPair();
             CustomRsaPublicKey publicKey = new CustomRsaPublicKey((RSAPublicKey) key.getPublic());
-            CustomRsaPrivateKey privateKey = new CustomRsaPrivateKey((RSAPrivateKey) key.getPrivate());
+            CustomRsaPrivateKey privateKey =
+                    new CustomRsaPrivateKey((RSAPrivateKey) key.getPrivate());
             this.transientKey = new SshPublicKey<>(PublicKeyFormat.SSH_RSA, publicKey, privateKey);
         } catch (NoSuchAlgorithmException e) {
             throw new CryptoException(
@@ -190,13 +195,11 @@ public class RsaKeyExchange extends KeyEncapsulation {
     @Override
     public void setLocalKeyPair(byte[] privateKeyBytes) {
         LOGGER.warn("Updateing local Key Pairs not supported, use generateLocalKeys instead");
-
     }
 
     @Override
     public void setLocalKeyPair(byte[] privateKeyBytes, byte[] publicKeyBytes) {
         LOGGER.warn("Updateing local Key Pairs not supported, use generateLocalKeys instead");
-
     }
 
     @Override
@@ -208,13 +211,11 @@ public class RsaKeyExchange extends KeyEncapsulation {
     @Override
     public void setSharedSecret(byte[] sharedSecretBytes) {
         this.sharedSecret = new BigInteger(sharedSecretBytes);
-
     }
 
     @Override
     public void setEncapsulatedSecret(byte[] encryptedSharedSecret) {
         LOGGER.warn("setEncapsulatedSecret currently not supported");
-
     }
 
     @Override

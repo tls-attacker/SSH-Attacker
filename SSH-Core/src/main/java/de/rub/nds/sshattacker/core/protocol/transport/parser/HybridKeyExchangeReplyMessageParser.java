@@ -22,16 +22,23 @@ public class HybridKeyExchangeReplyMessageParser
     private int agreementSize;
     private int encapsulationSize;
 
-    public HybridKeyExchangeReplyMessageParser(byte[] array, int startPosition, HybridPublicKeyCombiner pkCombiner,
-            int agreementSize, int encapsulationSize) {
+    public HybridKeyExchangeReplyMessageParser(
+            byte[] array,
+            int startPosition,
+            HybridPublicKeyCombiner pkCombiner,
+            int agreementSize,
+            int encapsulationSize) {
         super(array, startPosition);
         this.agreementSize = agreementSize;
         this.encapsulationSize = encapsulationSize;
         this.pkCombiner = pkCombiner;
     }
 
-    public HybridKeyExchangeReplyMessageParser(byte[] array, HybridPublicKeyCombiner pkCombiner,
-            int agreementSize, int encapsulationSize) {
+    public HybridKeyExchangeReplyMessageParser(
+            byte[] array,
+            HybridPublicKeyCombiner pkCombiner,
+            int agreementSize,
+            int encapsulationSize) {
         super(array);
         this.agreementSize = agreementSize;
         this.encapsulationSize = encapsulationSize;
@@ -68,7 +75,6 @@ public class HybridKeyExchangeReplyMessageParser
                 LOGGER.warn("pkCombiner not supported. Can not update message");
                 break;
         }
-
     }
 
     private void parseSignature() {

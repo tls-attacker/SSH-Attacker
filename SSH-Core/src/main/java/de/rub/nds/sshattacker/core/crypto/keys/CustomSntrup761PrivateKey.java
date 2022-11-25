@@ -21,8 +21,7 @@ public class CustomSntrup761PrivateKey extends CustomPrivateKey {
     private byte[] privateKey;
 
     @SuppressWarnings("unused")
-    private CustomSntrup761PrivateKey() {
-    }
+    private CustomSntrup761PrivateKey() {}
 
     public CustomSntrup761PrivateKey(byte[] privateKey) {
         this.privateKey = privateKey;

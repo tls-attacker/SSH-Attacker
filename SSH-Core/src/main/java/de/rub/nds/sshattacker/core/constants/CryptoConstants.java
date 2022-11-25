@@ -14,4 +14,5 @@ public class CryptoConstants {
     public static final int CHACHA20_KEY_SIZE = 32;
     public static final int SNTRUP761_PUBLIC_KEY_SIZE = 1158;
     public static final int SNTRUP761_PRIVATE_KEY_SIZE = 1763;
+    public static final int SNTRUP761_CYPHERTEXT_SIZE = 1039;
 }

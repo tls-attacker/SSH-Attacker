@@ -15,8 +15,7 @@ import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.HybridKeyExchangeInitMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 
-public class HybridKeyExchangeInitMessage
-        extends SshMessage<HybridKeyExchangeInitMessage> {
+public class HybridKeyExchangeInitMessage extends SshMessage<HybridKeyExchangeInitMessage> {
 
     private ModifiableInteger agreementPublicKeyLength;
     private ModifiableByteArray agreementPublicKey;
@@ -32,8 +31,9 @@ public class HybridKeyExchangeInitMessage
     }
 
     public void setAgreementPublicKeyLength(int agreementPublicKeyLength) {
-        this.agreementPublicKeyLength = ModifiableVariableFactory.safelySetValue(
-                this.agreementPublicKeyLength, agreementPublicKeyLength);
+        this.agreementPublicKeyLength =
+                ModifiableVariableFactory.safelySetValue(
+                        this.agreementPublicKeyLength, agreementPublicKeyLength);
     }
 
     public ModifiableByteArray getAgreementPublicKey() {
@@ -54,29 +54,29 @@ public class HybridKeyExchangeInitMessage
         if (adjustLengthField) {
             setAgreementPublicKeyLength(agreementPublicKey.getValue().length);
         }
-
     }
 
     public void setAgreementPublicKey(byte[] agreementPublicKey, boolean adjustLengthField) {
-        this.agreementPublicKey = ModifiableVariableFactory.safelySetValue(
-                this.agreementPublicKey, agreementPublicKey);
         if (adjustLengthField) {
             setAgreementPublicKeyLength(agreementPublicKey.length);
         }
+        this.agreementPublicKey =
+                ModifiableVariableFactory.safelySetValue(
+                        this.agreementPublicKey, agreementPublicKey);
     }
 
     public ModifiableInteger getEncapsulationPublicKeyLength() {
         return encapsulationPublicKeyLength;
     }
 
-    public void setEncapsulationPublicKeyLength(
-            ModifiableInteger encapsulationPublicKeyLength) {
+    public void setEncapsulationPublicKeyLength(ModifiableInteger encapsulationPublicKeyLength) {
         this.encapsulationPublicKeyLength = encapsulationPublicKeyLength;
     }
 
     public void setEncapsulationPublicKeyLength(int encapsulationPublicKeyLength) {
-        this.encapsulationPublicKeyLength = ModifiableVariableFactory.safelySetValue(
-                this.encapsulationPublicKeyLength, encapsulationPublicKeyLength);
+        this.encapsulationPublicKeyLength =
+                ModifiableVariableFactory.safelySetValue(
+                        this.encapsulationPublicKeyLength, encapsulationPublicKeyLength);
     }
 
     public ModifiableByteArray getEncapsulationPublicKey() {
@@ -101,11 +101,12 @@ public class HybridKeyExchangeInitMessage
 
     public void setEncapsulationPublicKey(
             byte[] encapsulationPublicKey, boolean adjustLengthField) {
-        this.encapsulationPublicKey = ModifiableVariableFactory.safelySetValue(
-                this.encapsulationPublicKey, encapsulationPublicKey);
         if (adjustLengthField) {
             setEncapsulationPublicKeyLength(encapsulationPublicKey.length);
         }
+        this.encapsulationPublicKey =
+                ModifiableVariableFactory.safelySetValue(
+                        this.encapsulationPublicKey, encapsulationPublicKey);
     }
 
     @Override
