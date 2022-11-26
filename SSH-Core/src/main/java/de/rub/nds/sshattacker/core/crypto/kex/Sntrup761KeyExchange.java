@@ -58,7 +58,7 @@ public class Sntrup761KeyExchange extends KeyEncapsulation {
         try {
             if (remotePublicKey == null) {
                 LOGGER.warn("A Remote Key is not available, use a zero key instead.");
-                setRemotePublicKey( new byte[CryptoConstants.SNTRUP761_PUBLIC_KEY_SIZE]);
+                setRemotePublicKey(new byte[CryptoConstants.SNTRUP761_PUBLIC_KEY_SIZE]);
             }
             org.openquantumsafe.Pair<byte[], byte[]> encapsulation =
                     sntrup.encap_secret(remotePublicKey.getEncoded());
