@@ -77,23 +77,5 @@ public class HybridKeyExchangeReplyMessagePreparator
                 LOGGER.warn("pkCombiner is not supported. Can not set Hybrid Key.");
                 break;
         }
-
-        // switch (sCombiner) {
-        // case CLASSICAL_CONCATENATE_POSTQUANTUM:
-        // inputHolder.setHybridServerPublicKey(KeyExchangeUtil.concatenateHybridKeys(
-        // agreement.getLocalKeyPair().getPublic().getEncoded(),
-        // encapsulation.getEncapsulatedSecret()));
-        // break;
-        // case POSTQUANTUM_CONCATENATE_CLASSICAL:
-        // inputHolder.setHybridServerPublicKey(KeyExchangeUtil.concatenateHybridKeys(
-        // encapsulation.getEncapsulatedSecret(),
-        // agreement.getLocalKeyPair().getPublic().getEncoded()));
-        // break;
-        // default:
-        // LOGGER.warn("sCombiner is not supported. Can not set HybridServerPublicKey in
-        // ExchangeHashInputHolder");
-        // break;
-
-        // }
     }
 }
