@@ -18,6 +18,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class Converter {
 
@@ -53,10 +54,85 @@ public class Converter {
         return builder.toString();
     }
 
+    /**
+     * Convert a name-list string into a stream of strings.
+     *
+     * @see <a href="https://datatracker.ietf.org/doc/html/rfc4251#page-10"><code>name-list</code>
+     *     specification in RFC 4251, Section 5 "Data Type Representations Used in the SSH
+     *     Protocols", page. 10</a>
+     * @param nameListString a single string containing a name-list value
+     * @return stream of strings
+     */
+    private static Stream<String> nameListStringToStringStream(final String nameListString) {
+        return Arrays.stream(
+                nameListString.split(String.valueOf(CharConstants.ALGORITHM_SEPARATOR)));
+    }
+
+    /**
+     * Convert a name-list string into a list of strings.
+     *
+     * @see <a href="https://datatracker.ietf.org/doc/html/rfc4251#page-10"><code>name-list</code>
+     *     specification in RFC 4251, Section 5 "Data Type Representations Used in the SSH
+     *     Protocols", page. 10</a>
+     * @param nameListString a single string containing a name-list value
+     * @return list of strings
+     */
+    public static List<String> nameListStringToStringList(final String nameListString) {
+        return nameListStringToStringStream(nameListString).collect(Collectors.toList());
+    }
+
+    /**
+     * Convert a name-list string into a list of enum values of type {@code enumClass}.
+     *
+     * <p>Note that the resulting list may have fewer elements than the original name-list if not
+     * all names in the name-list have an enum value counterpart.
+     *
+     * @see <a href="https://datatracker.ietf.org/doc/html/rfc4251#page-10"><code>name-list</code>
+     *     specification in RFC 4251, Section 5 "Data Type Representations Used in the SSH
+     *     Protocols", page. 10</a>
+     * @param nameListString a single string containing a name-list value
+     * @param enumClass the enum class that the elements will be converted to
+     * @return list of enums that map to the name sin the name-list
+     */
     public static <T extends Enum<T>> List<T> nameListToEnumValues(
-            String string, Class<T> enumClass) {
-        return Arrays.stream(string.split(String.valueOf(CharConstants.ALGORITHM_SEPARATOR)))
-                .map(
+            final String nameListString, final Class<T> enumClass) {
+        return nameStreamToEnumValues(nameListStringToStringStream(nameListString), enumClass);
+    }
+
+    /**
+     * Convert a list of names into a list of enum values of type {@code enumClass}.
+     *
+     * <p>Note that the resulting list may have fewer elements than the original name-list if not
+     * all names in the name-list have an enum value counterpart.
+     *
+     * @see <a href="https://datatracker.ietf.org/doc/html/rfc4251#page-10"><code>name-list</code>
+     *     specification in RFC 4251, Section 5 "Data Type Representations Used in the SSH
+     *     Protocols", page. 10</a>
+     * @param nameList a list of strings containing names from a name-list
+     * @param enumClass the enum class that the elements will be converted to
+     * @return list of enums that map to the names in the name-list
+     */
+    public static <T extends Enum<T>> List<T> nameListToEnumValues(
+            final List<String> nameList, final Class<T> enumClass) {
+        return nameStreamToEnumValues(nameList.stream(), enumClass);
+    }
+
+    /**
+     * Convert a stream of names into a list of enum values of type {@code enumClass}.
+     *
+     * <p>Note that the resulting list may have fewer elements than the original name-list if not
+     * all names in the name-list have an enum value counterpart.
+     *
+     * @see <a href="https://datatracker.ietf.org/doc/html/rfc4251#page-10"><code>name-list</code>
+     *     specification in RFC 4251, Section 5 "Data Type Representations Used in the SSH
+     *     Protocols", page. 10</a>
+     * @param stream a stream of strings containing names from a name-list
+     * @param enumClass the enum class that the elements will be converted to
+     * @return list of enums that map to the names in the name-list
+     */
+    private static <T extends Enum<T>> List<T> nameStreamToEnumValues(
+            final Stream<String> stream, final Class<T> enumClass) {
+        return stream.map(
                         algorithmName ->
                                 Arrays.stream(enumClass.getEnumConstants())
                                         .filter(
