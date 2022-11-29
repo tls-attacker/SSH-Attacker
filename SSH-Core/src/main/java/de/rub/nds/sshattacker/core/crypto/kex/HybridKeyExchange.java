@@ -7,7 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.crypto.kex;
 
-import de.rub.nds.sshattacker.core.constants.HybridPublicKeyCombiner;
+import de.rub.nds.sshattacker.core.constants.HybridKeyExchangeCombiner;
 import de.rub.nds.sshattacker.core.constants.KeyExchangeAlgorithm;
 import de.rub.nds.sshattacker.core.constants.KeyExchangeFlowType;
 import de.rub.nds.sshattacker.core.state.SshContext;
@@ -24,19 +24,19 @@ public abstract class HybridKeyExchange extends KeyExchange {
     private int pkAgreementLength;
     private int pkEncapsulationLength;
     private int cyphtertextLength;
-    private HybridPublicKeyCombiner pkCombiner;
+    private HybridKeyExchangeCombiner combiner;
 
     protected HybridKeyExchange(
             KeyAgreement agreement,
             KeyEncapsulation encapsulation,
-            HybridPublicKeyCombiner pkCombiner,
+            HybridKeyExchangeCombiner combiner,
             int pkAgreementLength,
             int pkEncapsulationLength,
             int cyphtertextLength) {
         super();
         this.agreement = agreement;
         this.encapsulation = encapsulation;
-        this.pkCombiner = pkCombiner;
+        this.combiner = combiner;
         this.pkAgreementLength = pkAgreementLength;
         this.pkEncapsulationLength = pkEncapsulationLength;
         this.cyphtertextLength = cyphtertextLength;
@@ -105,7 +105,7 @@ public abstract class HybridKeyExchange extends KeyExchange {
         return this.cyphtertextLength;
     }
 
-    public HybridPublicKeyCombiner getPkCombiner() {
-        return this.pkCombiner;
+    public HybridKeyExchangeCombiner getCombiner() {
+        return this.combiner;
     }
 }

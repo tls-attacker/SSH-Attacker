@@ -9,7 +9,7 @@ package de.rub.nds.sshattacker.core.protocol.common;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.CryptoConstants;
-import de.rub.nds.sshattacker.core.constants.HybridPublicKeyCombiner;
+import de.rub.nds.sshattacker.core.constants.HybridKeyExchangeCombiner;
 import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.exceptions.ParserException;
 import de.rub.nds.sshattacker.core.packet.AbstractPacket;
@@ -192,7 +192,7 @@ public abstract class ProtocolMessageParser<T extends ProtocolMessage<T>> extend
             case SNTRUP761_X25519:
                 return new HybridKeyExchangeReplyMessageParser(
                         raw,
-                        HybridPublicKeyCombiner.POSTQUANTUM_CONCATENATE_CLASSICAL,
+                        HybridKeyExchangeCombiner.POSTQUANTUM_CONCATENATE_CLASSICAL,
                         CryptoConstants.X25519_POINT_SIZE,
                         CryptoConstants.SNTRUP761_CYPHERTEXT_SIZE);
             default:
@@ -209,7 +209,7 @@ public abstract class ProtocolMessageParser<T extends ProtocolMessage<T>> extend
             case SNTRUP761_X25519:
                 return new HybridKeyExchangeInitMessageParser(
                         raw,
-                        HybridPublicKeyCombiner.POSTQUANTUM_CONCATENATE_CLASSICAL,
+                        HybridKeyExchangeCombiner.POSTQUANTUM_CONCATENATE_CLASSICAL,
                         CryptoConstants.X25519_POINT_SIZE,
                         CryptoConstants.SNTRUP761_PUBLIC_KEY_SIZE);
             default:

@@ -9,7 +9,7 @@ package de.rub.nds.sshattacker.core.protocol.transport.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.BinaryPacketConstants;
-import de.rub.nds.sshattacker.core.constants.HybridPublicKeyCombiner;
+import de.rub.nds.sshattacker.core.constants.HybridKeyExchangeCombiner;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 import de.rub.nds.sshattacker.core.protocol.transport.message.HybridKeyExchangeReplyMessage;
 import org.apache.logging.log4j.LogManager;
@@ -18,31 +18,31 @@ import org.apache.logging.log4j.Logger;
 public class HybridKeyExchangeReplyMessageParser
         extends SshMessageParser<HybridKeyExchangeReplyMessage> {
     private static final Logger LOGGER = LogManager.getLogger();
-    private HybridPublicKeyCombiner pkCombiner;
+    private HybridKeyExchangeCombiner combiner;
     private int agreementSize;
     private int encapsulationSize;
 
     public HybridKeyExchangeReplyMessageParser(
             byte[] array,
             int startPosition,
-            HybridPublicKeyCombiner pkCombiner,
+            HybridKeyExchangeCombiner combiner,
             int agreementSize,
             int encapsulationSize) {
         super(array, startPosition);
         this.agreementSize = agreementSize;
         this.encapsulationSize = encapsulationSize;
-        this.pkCombiner = pkCombiner;
+        this.combiner = combiner;
     }
 
     public HybridKeyExchangeReplyMessageParser(
             byte[] array,
-            HybridPublicKeyCombiner pkCombiner,
+            HybridKeyExchangeCombiner combiner,
             int agreementSize,
             int encapsulationSize) {
         super(array);
         this.agreementSize = agreementSize;
         this.encapsulationSize = encapsulationSize;
-        this.pkCombiner = pkCombiner;
+        this.combiner = combiner;
     }
 
     private void parseHostKeyBytes() {
@@ -58,7 +58,7 @@ public class HybridKeyExchangeReplyMessageParser
         int length = parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH);
         LOGGER.debug("Total Length: " + length);
 
-        switch (pkCombiner) {
+        switch (combiner) {
             case CLASSICAL_CONCATENATE_POSTQUANTUM:
                 message.setPublicKeyLength(agreementSize);
                 message.setPublicKey(parseByteArrayField(agreementSize));
@@ -72,7 +72,7 @@ public class HybridKeyExchangeReplyMessageParser
                 message.setPublicKey(parseByteArrayField(agreementSize));
                 break;
             default:
-                LOGGER.warn("pkCombiner not supported. Can not update message");
+                LOGGER.warn("combiner not supported. Can not update message");
                 break;
         }
     }

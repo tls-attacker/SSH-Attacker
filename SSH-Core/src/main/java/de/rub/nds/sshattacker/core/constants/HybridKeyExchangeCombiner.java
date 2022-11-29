@@ -7,10 +7,10 @@
  */
 package de.rub.nds.sshattacker.core.constants;
 
-// Defines the two possibilities to combine Public Keys according to rfc draft
-// https://github.com/csosto-pk/pq-ssh/blob/master/draft-kampanakis-ssh-pq-ke.txt Section 2.1
+// Defines the two possibilities to combine key exchanges according to rfc draft
+// https://github.com/csosto-pk/pq-ssh/blob/master/draft-kampanakis-ssh-pq-ke.txt
 // commit e81667e
-public enum HybridPublicKeyCombiner {
+public enum HybridKeyExchangeCombiner {
     CLASSICAL_CONCATENATE_POSTQUANTUM,
     POSTQUANTUM_CONCATENATE_CLASSICAL
 }

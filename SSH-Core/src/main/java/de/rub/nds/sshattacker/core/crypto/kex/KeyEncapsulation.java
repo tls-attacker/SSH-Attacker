@@ -35,9 +35,9 @@ public abstract class KeyEncapsulation extends KeyExchange {
 
     public abstract void generateSharedSecret();
 
-    public abstract void setEncapsulatedSecret(byte[] encryptedSharedSecret);
+    public abstract void setEncryptedSharedSecret(byte[] encryptedSharedSecret);
 
-    public abstract byte[] getEncapsulatedSecret();
+    public abstract byte[] getEncryptedSharedSecret();
 
     public abstract byte[] encryptSharedSecret();
 

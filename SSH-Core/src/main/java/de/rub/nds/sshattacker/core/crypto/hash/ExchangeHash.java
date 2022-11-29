@@ -363,10 +363,10 @@ public final class ExchangeHash {
          * mpint K, encoded shared secret
          */
         if (inputHolder.getHybridClientPublicKey().isEmpty()) {
-            throw new MissingExchangeHashInputException("[SntrupX25519] Client public key missing");
+            throw new MissingExchangeHashInputException(" [Hybrid] Client public key missing");
         }
         if (inputHolder.getHybridServerPublicKey().isEmpty()) {
-            throw new MissingExchangeHashInputException("[SntrupX25519] Server public key missing");
+            throw new MissingExchangeHashInputException(" [Hybrid] Server public key missing");
         }
         return ArrayConverter.concatenate(
                 prepareCommonPrefixHashInput(inputHolder),

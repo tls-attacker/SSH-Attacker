@@ -9,7 +9,7 @@ package de.rub.nds.sshattacker.core.protocol.transport.serializer;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
-import de.rub.nds.sshattacker.core.constants.HybridPublicKeyCombiner;
+import de.rub.nds.sshattacker.core.constants.HybridKeyExchangeCombiner;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.transport.message.HybridKeyExchangeReplyMessage;
 import de.rub.nds.sshattacker.core.protocol.util.KeyExchangeUtil;
@@ -20,10 +20,10 @@ public class HybridKeyExchangeReplyMessageSerializer
         extends SshMessageSerializer<HybridKeyExchangeReplyMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
-    private HybridPublicKeyCombiner combiner;
+    private HybridKeyExchangeCombiner combiner;
 
     public HybridKeyExchangeReplyMessageSerializer(
-            HybridKeyExchangeReplyMessage message, HybridPublicKeyCombiner combiner) {
+            HybridKeyExchangeReplyMessage message, HybridKeyExchangeCombiner combiner) {
         super(message);
         this.combiner = combiner;
     }

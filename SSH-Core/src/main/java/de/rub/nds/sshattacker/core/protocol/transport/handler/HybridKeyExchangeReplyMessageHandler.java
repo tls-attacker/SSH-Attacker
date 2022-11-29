@@ -7,6 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.handler;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.crypto.kex.HybridKeyExchange;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
@@ -54,12 +55,18 @@ public class HybridKeyExchangeReplyMessageHandler
                 .getHybridKeyExchange()
                 .getKeyAgreement()
                 .setRemotePublicKey(message.getPublicKey().getValue());
+        LOGGER.info(
+                "RemoteKey Agreement = "
+                        + ArrayConverter.bytesToRawHexString(message.getPublicKey().getValue()));
         context.getChooser()
                 .getHybridKeyExchange()
                 .getKeyEncapsulation()
-                .setEncapsulatedSecret(message.getCyphertext().getValue());
+                .setEncryptedSharedSecret(message.getCyphertext().getValue());
+        LOGGER.info(
+                "Cyphertext Encapsulation = "
+                        + ArrayConverter.bytesToRawHexString(message.getCyphertext().getValue()));
         byte[] combined;
-        switch (context.getChooser().getHybridKeyExchange().getPkCombiner()) {
+        switch (context.getChooser().getHybridKeyExchange().getCombiner()) {
             case CLASSICAL_CONCATENATE_POSTQUANTUM:
                 combined =
                         KeyExchangeUtil.concatenateHybridKeys(
@@ -77,7 +84,7 @@ public class HybridKeyExchangeReplyMessageHandler
             default:
                 LOGGER.warn(
                         "Combiner"
-                                + context.getChooser().getHybridKeyExchange().getPkCombiner()
+                                + context.getChooser().getHybridKeyExchange().getCombiner()
                                 + " is not supported.");
                 break;
         }
@@ -87,7 +94,7 @@ public class HybridKeyExchangeReplyMessageHandler
     public SshMessageParser<HybridKeyExchangeReplyMessage> getParser(byte[] array) {
         HybridKeyExchange kex = context.getChooser().getHybridKeyExchange();
         return new HybridKeyExchangeReplyMessageParser(
-                array, kex.getPkCombiner(), kex.getPkAgreementLength(), kex.getCyphtertextLength());
+                array, kex.getCombiner(), kex.getPkAgreementLength(), kex.getCyphtertextLength());
     }
 
     @Override
@@ -97,7 +104,7 @@ public class HybridKeyExchangeReplyMessageHandler
         return new HybridKeyExchangeReplyMessageParser(
                 array,
                 startPosition,
-                kex.getPkCombiner(),
+                kex.getCombiner(),
                 kex.getPkAgreementLength(),
                 kex.getCyphtertextLength());
     }
@@ -106,12 +113,12 @@ public class HybridKeyExchangeReplyMessageHandler
     public SshMessagePreparator<HybridKeyExchangeReplyMessage> getPreparator() {
         HybridKeyExchange kex = context.getChooser().getHybridKeyExchange();
         return new HybridKeyExchangeReplyMessagePreparator(
-                context.getChooser(), message, kex.getPkCombiner());
+                context.getChooser(), message, kex.getCombiner());
     }
 
     @Override
     public SshMessageSerializer<HybridKeyExchangeReplyMessage> getSerializer() {
         HybridKeyExchange kex = context.getChooser().getHybridKeyExchange();
-        return new HybridKeyExchangeReplyMessageSerializer(message, kex.getPkCombiner());
+        return new HybridKeyExchangeReplyMessageSerializer(message, kex.getCombiner());
     }
 }

@@ -7,6 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.crypto.kex;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.CryptoConstants;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomKeyPair;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomPublicKey;
@@ -29,14 +30,17 @@ public class Sntrup761KeyExchange extends KeyEncapsulation {
         this.sntrup = new org.openquantumsafe.KeyEncapsulation("sntrup761");
     }
 
+    @Override
     public CustomKeyPair<CustomSntrup761PrivateKey, CustomSntrup761PublicKey> getLocalKeyPair() {
         return this.localKeyPair;
     }
 
+    @Override
     public void setRemotePublicKey(byte[] serializedPublicKey) {
         this.remotePublicKey = new CustomSntrup761PublicKey(serializedPublicKey);
     }
 
+    @Override
     public void generateLocalKeyPair() {
         sntrup.generate_keypair();
         CustomSntrup761PrivateKey privKey =
@@ -77,6 +81,10 @@ public class Sntrup761KeyExchange extends KeyEncapsulation {
         try {
             this.sharedSecret = new BigInteger(sntrup.decap_secret(encryptedSharedSecret));
             this.encryptedSharedSecret = encryptedSharedSecret;
+            LOGGER.info(
+                    "SharedSecret Encapsulation = "
+                            + ArrayConverter.bytesToRawHexString(
+                                    ArrayConverter.bigIntegerToByteArray(sharedSecret)));
         } catch (RuntimeException e) {
             LOGGER.error("Unexpected exception occured while decrypting the shared secret");
             LOGGER.debug(e);
@@ -104,12 +112,12 @@ public class Sntrup761KeyExchange extends KeyEncapsulation {
     }
 
     @Override
-    public void setEncapsulatedSecret(byte[] encryptedSharedSecret) {
+    public void setEncryptedSharedSecret(byte[] encryptedSharedSecret) {
         this.encryptedSharedSecret = encryptedSharedSecret;
     }
 
     @Override
-    public byte[] getEncapsulatedSecret() {
+    public byte[] getEncryptedSharedSecret() {
         return encryptedSharedSecret;
     }
 

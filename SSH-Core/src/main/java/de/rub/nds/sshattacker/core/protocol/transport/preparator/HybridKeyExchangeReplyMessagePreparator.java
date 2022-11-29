@@ -7,7 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.preparator;
 
-import de.rub.nds.sshattacker.core.constants.HybridPublicKeyCombiner;
+import de.rub.nds.sshattacker.core.constants.HybridKeyExchangeCombiner;
 import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.crypto.hash.ExchangeHashInputHolder;
 import de.rub.nds.sshattacker.core.crypto.kex.HybridKeyExchange;
@@ -24,14 +24,14 @@ public class HybridKeyExchangeReplyMessagePreparator
         extends SshMessagePreparator<HybridKeyExchangeReplyMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
-    private HybridPublicKeyCombiner pkCombiner;
+    private HybridKeyExchangeCombiner combiner;
 
     public HybridKeyExchangeReplyMessagePreparator(
             Chooser chooser,
             HybridKeyExchangeReplyMessage message,
-            HybridPublicKeyCombiner pkCombiner) {
+            HybridKeyExchangeCombiner combiner) {
         super(chooser, message, MessageIdConstant.SSH_MSG_HBR_REPLY);
-        this.pkCombiner = pkCombiner;
+        this.combiner = combiner;
     }
 
     @Override
@@ -58,11 +58,11 @@ public class HybridKeyExchangeReplyMessagePreparator
 
         ExchangeHashInputHolder inputHolder = chooser.getContext().getExchangeHashInputHolder();
         byte[] agreementBytes = agreement.getLocalKeyPair().getPublic().getEncoded();
-        byte[] encapsulationBytes = encapsulation.getEncapsulatedSecret();
+        byte[] encapsulationBytes = encapsulation.getEncryptedSharedSecret();
         getObject().setPublicKey(agreementBytes, true);
         getObject().setCyphertext(encapsulationBytes, true);
         byte[] concatenated;
-        switch (pkCombiner) {
+        switch (combiner) {
             case CLASSICAL_CONCATENATE_POSTQUANTUM:
                 concatenated =
                         KeyExchangeUtil.concatenateHybridKeys(agreementBytes, encapsulationBytes);
@@ -74,7 +74,7 @@ public class HybridKeyExchangeReplyMessagePreparator
                 inputHolder.setHybridServerPublicKey(concatenated);
                 break;
             default:
-                LOGGER.warn("pkCombiner is not supported. Can not set Hybrid Key.");
+                LOGGER.warn("combiner is not supported. Can not set Hybrid Key.");
                 break;
         }
     }

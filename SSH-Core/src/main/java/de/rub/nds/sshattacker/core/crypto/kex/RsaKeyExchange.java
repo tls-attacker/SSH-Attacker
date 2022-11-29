@@ -214,12 +214,12 @@ public class RsaKeyExchange extends KeyEncapsulation {
     }
 
     @Override
-    public void setEncapsulatedSecret(byte[] encryptedSharedSecret) {
+    public void setEncryptedSharedSecret(byte[] encryptedSharedSecret) {
         LOGGER.warn("setEncapsulatedSecret currently not supported");
     }
 
     @Override
-    public byte[] getEncapsulatedSecret() {
+    public byte[] getEncryptedSharedSecret() {
         LOGGER.warn("getEncapsulatedSecret currently not supported");
         return null;
     }
