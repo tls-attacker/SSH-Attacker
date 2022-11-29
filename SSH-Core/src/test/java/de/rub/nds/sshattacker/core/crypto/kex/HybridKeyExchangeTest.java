@@ -61,7 +61,7 @@ public class HybridKeyExchangeTest {
         InputStream testVectorFile =
                 HybridKeyExchange.class
                         .getClassLoader()
-                        .getResourceAsStream("hybridKeyExchange-TestVectors");
+                        .getResourceAsStream("hybridKeyExchange-TestVectors.txt");
         assert testVectorFile != null;
         try (Scanner reader = new Scanner(testVectorFile)) {
             Stream.Builder<Arguments> argumentsBuilder = Stream.builder();
