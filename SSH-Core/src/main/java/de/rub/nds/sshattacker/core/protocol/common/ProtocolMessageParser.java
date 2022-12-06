@@ -17,6 +17,7 @@ import de.rub.nds.sshattacker.core.protocol.authentication.parser.*;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelRequestUnknownMessage;
 import de.rub.nds.sshattacker.core.protocol.connection.message.GlobalRequestUnknownMessage;
 import de.rub.nds.sshattacker.core.protocol.connection.parser.*;
+import de.rub.nds.sshattacker.core.protocol.transport.message.AsciiMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.parser.*;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import java.nio.charset.StandardCharsets;
@@ -64,11 +65,21 @@ public abstract class ProtocolMessageParser<T extends ProtocolMessage<T>> extend
                         new String(packet.getPayload().getValue(), StandardCharsets.US_ASCII);
                 if (rawText.startsWith("SSH-2.0")) {
                     return new VersionExchangeMessageParser(raw).parse();
-                } else if (rawText.startsWith("Invalid SSH identification string.")) {
-                    LOGGER.warn(
-                            "The server reported the identification string sent by the SSH-Attacker is invalid");
-                    // TODO: Implement InvalidIdentificationMessage
-                    return null;
+                } else {
+                    final AsciiMessage message = new AsciiMessageParser(raw).parse();
+
+                    // If we know what the text message means we can print a
+                    // human-readable warning to the log. The following
+                    // messages are sent by OpenSSH.
+                    final String messageText = message.getText().getValue();
+                    if ("Invalid SSH identification string.".equals(messageText)) {
+                        LOGGER.warn(
+                                "The server reported the identification string sent by the SSH-Attacker is invalid");
+                    } else if ("Exceeded MaxStartups".equals(messageText)) {
+                        LOGGER.warn(
+                                "The server reported the maximum number of concurrent unauthenticated connections has been exceeded.");
+                    }
+                    return message;
                 }
             }
 
