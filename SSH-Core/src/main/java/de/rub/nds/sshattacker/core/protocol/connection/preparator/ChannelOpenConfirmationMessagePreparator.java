@@ -10,10 +10,8 @@ package de.rub.nds.sshattacker.core.protocol.connection.preparator;
 import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.connection.Channel;
-import de.rub.nds.sshattacker.core.protocol.connection.ChannelDefaults;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelOpenConfirmationMessage;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
-import java.util.HashMap;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -29,34 +27,27 @@ public class ChannelOpenConfirmationMessagePreparator
 
     @Override
     public void prepareMessageSpecificContents() {
-        HashMap<Integer, Channel> channelMap = chooser.getContext().getChannels();
-        ChannelDefaults channelDefaults = chooser.getConfig().getChannelDefaults();
+        ChannelOpenConfirmationMessage toCopy =
+                chooser.getContext().getChannelManager().prepareNextOpenConfirm();
+        getObject().setRecipientChannelId(toCopy.getRecipientChannelId());
+        getObject().setSenderChannelId(toCopy.getSenderChannelId());
 
-        int channelId;
-        if (getObject().getConfigSenderChannelId() != null) {
-            channelId = getObject().getConfigSenderChannelId();
-        } else {
-            channelId = chooser.getConfig().getChannelDefaults().getLocalChannelId();
-        }
-        getObject().setSenderChannelId(channelId);
+        // get the closed Channel
         Channel channel =
-                chooser.getContext().getChannels().get(getObject().getSenderChannelId().getValue());
+                chooser.getContext()
+                        .getChannelManager()
+                        .getChannels()
+                        .get(toCopy.getRecipientChannelId().getValue());
+
         if (channel != null && channel.isOpen().getValue()) {
             LOGGER.warn(
                     "Channel with id {} is already open, sending ChannelOpenConfirmationMessage with current channel details again.",
-                    getObject().getSenderChannelId().getValue());
-        } else {
-            LOGGER.warn(
-                    "Channel with id {} does not exist locally, creating a new one from defaults.",
-                    getObject().getSenderChannelId().getValue());
-            channel = channelDefaults.newChannelFromDefaults();
-            channel.setLocalChannelId(getObject().getSenderChannelId().getValue());
-            channelMap.put(getObject().getSenderChannelId().getValue(), channel);
+                    channel.getLocalChannelId().getValue());
         }
+        channel.setOpen(true);
 
-        getObject().setRecipientChannelId(channel.getRemoteChannelId());
-        getObject().setWindowSize(channel.getLocalWindowSize());
-        getObject().setPacketSize(channel.getLocalPacketSize());
+        getObject().setWindowSize(chooser.getConfig().getChannelDefaults().getLocalWindowSize());
+        getObject().setPacketSize(chooser.getConfig().getChannelDefaults().getLocalPacketSize());
         channel.setOpen(true);
     }
 }

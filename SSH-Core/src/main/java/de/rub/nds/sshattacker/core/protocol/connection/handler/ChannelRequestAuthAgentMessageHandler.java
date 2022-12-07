@@ -13,6 +13,7 @@ import de.rub.nds.sshattacker.core.protocol.connection.parser.ChannelRequestAuth
 import de.rub.nds.sshattacker.core.protocol.connection.preparator.ChannelRequestAuthAgentMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.connection.serializer.ChannelRequestAuthAgentMessageSerializer;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.util.Converter;
 
 public class ChannelRequestAuthAgentMessageHandler
         extends SshMessageHandler<ChannelRequestAuthAgentMessage> {
@@ -27,7 +28,11 @@ public class ChannelRequestAuthAgentMessageHandler
     }
 
     @Override
-    public void adjustContext() {}
+    public void adjustContext() {
+        if (Converter.byteToBoolean(message.getWantReply().getValue())) {
+            context.getChannelManager().addResponseQueue(message);
+        }
+    }
 
     @Override
     public ChannelRequestAuthAgentMessageParser getParser(byte[] array) {

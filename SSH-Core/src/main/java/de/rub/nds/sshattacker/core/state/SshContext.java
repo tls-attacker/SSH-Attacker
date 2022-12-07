@@ -22,6 +22,7 @@ import de.rub.nds.sshattacker.core.packet.layer.AbstractPacketLayer;
 import de.rub.nds.sshattacker.core.packet.layer.PacketLayerFactory;
 import de.rub.nds.sshattacker.core.protocol.common.layer.MessageLayer;
 import de.rub.nds.sshattacker.core.protocol.connection.Channel;
+import de.rub.nds.sshattacker.core.protocol.connection.ChannelManager;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.sshattacker.core.workflow.chooser.ChooserFactory;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
@@ -216,7 +217,9 @@ public class SshContext {
     // endregion
 
     // region Connection Protocol
-    private final HashMap<Integer, Channel> channels = new HashMap<>();
+
+    private ChannelManager channelManager;
+
     // TODO: Implement channel requests in such a way that allows specification within the XML file
     // endregion
 
@@ -265,6 +268,7 @@ public class SshContext {
         writeSequenceNumber = 0;
         readSequenceNumber = 0;
         handleAsClient = (connection.getLocalConnectionEndType() == ConnectionEndType.CLIENT);
+        channelManager = new ChannelManager(this);
     }
 
     // endregion
@@ -907,7 +911,7 @@ public class SshContext {
 
     // region for Connection Protocol Fields
     public HashMap<Integer, Channel> getChannels() {
-        return channels;
+        return channelManager.getChannels();
     }
     // endregion
 
@@ -941,5 +945,13 @@ public class SshContext {
 
     public void setHandleAsClient(boolean handleAsClient) {
         this.handleAsClient = handleAsClient;
+    }
+
+    public ChannelManager getChannelManager() {
+        return channelManager;
+    }
+
+    public void setChannelManager(ChannelManager channelManager) {
+        this.channelManager = channelManager;
     }
 }

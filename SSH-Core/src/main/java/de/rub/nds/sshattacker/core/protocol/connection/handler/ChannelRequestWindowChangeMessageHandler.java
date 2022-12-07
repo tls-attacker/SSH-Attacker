@@ -13,6 +13,7 @@ import de.rub.nds.sshattacker.core.protocol.connection.parser.ChannelRequestWind
 import de.rub.nds.sshattacker.core.protocol.connection.preparator.ChannelRequestWindowChangeMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.connection.serializer.ChannelRequestWindowChangeMessageSerializer;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.util.Converter;
 
 public class ChannelRequestWindowChangeMessageHandler
         extends SshMessageHandler<ChannelRequestWindowChangeMessage> {
@@ -46,5 +47,9 @@ public class ChannelRequestWindowChangeMessageHandler
     }
 
     @Override
-    public void adjustContext() {}
+    public void adjustContext() {
+        if (Converter.byteToBoolean(message.getWantReply().getValue())) {
+            context.getChannelManager().addResponseQueue(message);
+        }
+    }
 }

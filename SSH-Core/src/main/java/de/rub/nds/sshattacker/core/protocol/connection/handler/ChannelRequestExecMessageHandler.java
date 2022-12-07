@@ -13,6 +13,7 @@ import de.rub.nds.sshattacker.core.protocol.connection.parser.ChannelRequestExec
 import de.rub.nds.sshattacker.core.protocol.connection.preparator.ChannelRequestExecMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.connection.serializer.ChannelRequestExecMessageSerializer;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.util.Converter;
 
 public class ChannelRequestExecMessageHandler extends SshMessageHandler<ChannelRequestExecMessage> {
 
@@ -27,6 +28,9 @@ public class ChannelRequestExecMessageHandler extends SshMessageHandler<ChannelR
     @Override
     public void adjustContext() {
         // TODO: Handle ChannelRequestExecMessage
+        if (Converter.byteToBoolean(message.getWantReply().getValue())) {
+            context.getChannelManager().addResponseQueue(message);
+        }
     }
 
     @Override
