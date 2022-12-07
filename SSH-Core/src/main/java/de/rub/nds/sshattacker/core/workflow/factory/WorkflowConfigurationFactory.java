@@ -64,6 +64,8 @@ public class WorkflowConfigurationFactory {
                 return createAuthenticationWorkflowTrace(AuthenticationMethod.PUBLICKEY);
             case AUTH_KEYBOARD_INTERACTIVE:
                 return createAuthenticationWorkflowTrace(AuthenticationMethod.KEYBOARD_INTERACTIVE);
+            case AUTH_DYNAMIC:
+                return createDynamicAuthenticationWorkflowTrace();
             case FULL:
                 return createFullWorkflowTrace();
             case MITM:
@@ -115,6 +117,20 @@ public class WorkflowConfigurationFactory {
         WorkflowTrace workflow = new WorkflowTrace();
         addTransportProtocolActions(workflow);
         addAuthenticationProtocolActions(method, workflow);
+        return workflow;
+    }
+
+    /**
+     * Create a workflow trace with that includes user authentication.
+     *
+     * <p>The authentication method is selected dynamically, based on the configuration.
+     *
+     * @return a new workflow trace
+     */
+    public WorkflowTrace createDynamicAuthenticationWorkflowTrace() {
+        WorkflowTrace workflow = new WorkflowTrace();
+        addTransportProtocolActions(workflow);
+        addAuthenticationProtocolActions(workflow);
         return workflow;
     }
 
