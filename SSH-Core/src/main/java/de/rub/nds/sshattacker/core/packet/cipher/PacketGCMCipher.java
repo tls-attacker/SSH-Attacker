@@ -206,6 +206,22 @@ public class PacketGCMCipher extends PacketCipher {
         return decryptCipher;
     }
 
+    public long getIvCtrDecryption() {
+        return ivCtrDecryption;
+    }
+
+    public long getIvCtrEncryption() {
+        return ivCtrEncryption;
+    }
+
+    public void setIvCtrDecryption(long ivCtrDecryption) {
+        this.ivCtrDecryption = ivCtrDecryption;
+    }
+
+    public void setIvCtrEncryption(long ivCtrEncryption) {
+        this.ivCtrEncryption = ivCtrEncryption;
+    }
+
     @Override
     public String toString() {
         return getClass().getSimpleName() + "[Cipher: " + encryptionAlgorithm + "]";
