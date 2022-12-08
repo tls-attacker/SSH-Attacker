@@ -19,25 +19,25 @@ jobs:
         run: gh pr merge --auto --merge "$PR_URL"
         env:
           PR_URL: ${{github.event.pull_request.html_url}}
-          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+          GITHUB_TOKEN: ${{secrets.PAT_DEPENDABOT_REVIEWER}}
       - name: Approve any update of protocol-toolkit-bom
         if: ${{ steps.dependabot-metadata.outputs.dependency-names == 'protocol-toolkit-bom' }}
         run: gh pr review $PR_URL --approve -b "I'm **approving** this pull request because **it is a BOM update**"
         env:
           PR_URL: ${{github.event.pull_request.html_url}}
-          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+          GITHUB_TOKEN: ${{secrets.PAT_DEPENDABOT_REVIEWER}}
       - name: Approve patch and minor updates
         if: ${{steps.dependabot-metadata.outputs.update-type == 'version-update:semver-patch' || steps.dependabot-metadata.outputs.update-type == 'version-update:semver-minor'}}
         run: gh pr review $PR_URL --approve -b "I'm **approving** this pull request because **it includes a patch or minor update**"
         env:
           PR_URL: ${{github.event.pull_request.html_url}}
-          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+          GITHUB_TOKEN: ${{secrets.PAT_DEPENDABOT_REVIEWER}}
       - name: Approve major updates of development dependencies
         if: ${{steps.dependabot-metadata.outputs.update-type == 'version-update:semver-major' && steps.dependabot-metadata.outputs.dependency-type == 'direct:development'}}
         run: gh pr review $PR_URL --approve -b "I'm **approving** this pull request because **it includes a major update of a dependency used only in development**"
         env:
           PR_URL: ${{github.event.pull_request.html_url}}
-          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+          GITHUB_TOKEN: ${{secrets.PAT_DEPENDABOT_REVIEWER}}
       - name: Comment on major updates of non-development dependencies and request review from tls-attacker-extended
         if: ${{steps.dependabot-metadata.outputs.update-type == 'version-update:semver-major' && steps.dependabot-metadata.outputs.dependency-type == 'direct:production'}}
         run: |
@@ -45,4 +45,4 @@ jobs:
           gh pr edit $PR_URL --add-label "help wanted" --add-reviewer "tls-attacker/tls-attacker-extended"
         env:
           PR_URL: ${{github.event.pull_request.html_url}}
-          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+          GITHUB_TOKEN: ${{secrets.PAT_DEPENDABOT_REVIEWER}}
