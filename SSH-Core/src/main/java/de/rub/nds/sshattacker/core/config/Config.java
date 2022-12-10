@@ -269,7 +269,7 @@ public class Config implements Serializable {
     /** The List of user keys for public key authentication */
     @XmlElement(name = "userKey")
     @XmlElementWrapper
-    private final List<SshPublicKey<?, ?>> userKeys;
+    private List<SshPublicKey<?, ?>> userKeys;
     // endregion
 
     // region Channel
@@ -1292,6 +1292,11 @@ public class Config implements Serializable {
             List<AuthenticationResponse> preConfiguredAuthResponses) {
         this.preConfiguredAuthResponses = preConfiguredAuthResponses;
     }
+
+    public void setUserKeys(final List<SshPublicKey<?, ?>> userKeys) {
+        this.userKeys = Objects.requireNonNull(userKeys);
+    }
+
     // endregion
 
     // region Getters for Channel
