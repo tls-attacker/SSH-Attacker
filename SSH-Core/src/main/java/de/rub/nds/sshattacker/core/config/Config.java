@@ -240,7 +240,7 @@ public class Config implements Serializable {
     /** Host key */
     @XmlElement(name = "hostKey")
     @XmlElementWrapper
-    private final List<SshPublicKey<?, ?>> hostKeys;
+    private List<SshPublicKey<?, ?>> hostKeys;
 
     /**
      * RSA transient key used to encrypt the shared secret K. This may be a transient key generated
@@ -1243,6 +1243,10 @@ public class Config implements Serializable {
 
     public void setEnforceSettings(Boolean enforceSettings) {
         this.enforceSettings = enforceSettings;
+    }
+
+    public void setHostKeys(final List<SshPublicKey<?, ?>> hostKeys) {
+        this.hostKeys = Objects.requireNonNull(hostKeys);
     }
     // endregion
 
