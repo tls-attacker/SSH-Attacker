@@ -40,6 +40,9 @@ public enum MessageIdConstant {
     // [ RFC 4253 ]
     SSH_MSG_KEXDH_INIT((byte) 30, KeyExchangeFlowType.DIFFIE_HELLMAN),
     SSH_MSG_KEXDH_REPLY((byte) 31, KeyExchangeFlowType.DIFFIE_HELLMAN),
+    // [ https://datatracker.ietf.org/doc/html/draft-kampanakis-curdle-pq-ssh-00 ]
+    SSH_MSG_HBR_INIT((byte) 30, KeyExchangeFlowType.HYBRID),
+    SSH_MSG_HBR_REPLY((byte) 31, KeyExchangeFlowType.HYBRID),
     // [ RFC 5656 ]
     SSH_MSG_KEX_ECDH_INIT((byte) 30, KeyExchangeFlowType.ECDH),
     SSH_MSG_KEX_ECDH_REPLY((byte) 31, KeyExchangeFlowType.ECDH),

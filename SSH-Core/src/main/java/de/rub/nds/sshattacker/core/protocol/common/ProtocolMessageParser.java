@@ -8,6 +8,8 @@
 package de.rub.nds.sshattacker.core.protocol.common;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.sshattacker.core.constants.CryptoConstants;
+import de.rub.nds.sshattacker.core.constants.HybridKeyExchangeCombiner;
 import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.exceptions.ParserException;
 import de.rub.nds.sshattacker.core.packet.AbstractPacket;
@@ -94,6 +96,10 @@ public abstract class ProtocolMessageParser<T extends ProtocolMessage<T>> extend
                     return new DhKeyExchangeInitMessageParser(raw).parse();
                 case SSH_MSG_KEXDH_REPLY:
                     return new DhKeyExchangeReplyMessageParser(raw).parse();
+                case SSH_MSG_HBR_INIT:
+                    return handleHbrInit(raw, context).parse();
+                case SSH_MSG_HBR_REPLY:
+                    return handleHbrReply(raw, context).parse();
                 case SSH_MSG_KEX_DH_GEX_REQUEST_OLD:
                     return new DhGexKeyExchangeOldRequestMessageParser(raw).parse();
                 case SSH_MSG_KEX_DH_GEX_REQUEST:
@@ -174,8 +180,40 @@ public abstract class ProtocolMessageParser<T extends ProtocolMessage<T>> extend
                     return new UnknownMessageParser(raw).parse();
             }
         } catch (ParserException e) {
-            LOGGER.debug("Error while Parsing, now parsing as UnknownMessage");
+            LOGGER.debug("Error while Parsing, now parsing as UnknownMessage: " + e);
             return new UnknownMessageParser(raw).parse();
+        }
+    }
+
+    public static HybridKeyExchangeReplyMessageParser handleHbrReply(
+            byte[] raw, SshContext context) {
+
+        switch (context.getChooser().getKeyExchangeAlgorithm()) {
+            default:
+                LOGGER.warn(
+                        "Unsupported hybrid key exchange negotiated, treating received HBR_REPLY as sntrup761x25519-sha512@openssh.com");
+                // Fallthrough to next case statement intended
+            case SNTRUP761_X25519:
+                return new HybridKeyExchangeReplyMessageParser(
+                        raw,
+                        HybridKeyExchangeCombiner.POSTQUANTUM_CONCATENATE_CLASSICAL,
+                        CryptoConstants.X25519_POINT_SIZE,
+                        CryptoConstants.SNTRUP761_CIPHERTEXT_SIZE);
+        }
+    }
+
+    public static HybridKeyExchangeInitMessageParser handleHbrInit(byte[] raw, SshContext context) {
+        switch (context.getChooser().getKeyExchangeAlgorithm()) {
+            default:
+                LOGGER.warn(
+                        "Unsupported hybrid key exchange negotiated, treating received HBR_INIT as sntrup761x25519-sha512@openssh.com");
+                // Fallthrough to next case statement intended
+            case SNTRUP761_X25519:
+                return new HybridKeyExchangeInitMessageParser(
+                        raw,
+                        HybridKeyExchangeCombiner.POSTQUANTUM_CONCATENATE_CLASSICAL,
+                        CryptoConstants.X25519_POINT_SIZE,
+                        CryptoConstants.SNTRUP761_PUBLIC_KEY_SIZE);
         }
     }
 
@@ -243,11 +281,13 @@ public abstract class ProtocolMessageParser<T extends ProtocolMessage<T>> extend
         GlobalRequestUnknownMessage message = new GlobalRequestUnknownMessageParser(raw).parse();
         String globalRequestType = message.getRequestName().getValue();
         /*
-        auth-agent-req@openssh.com,
-        STREAMLOCAL_FORWARD_OPENSSH_COM("streamlocal-forward@openssh.com"),
-        CANCEL_STREAMLOCAL_FORWARD_OPENSSH_COM("cancel-streamlocal-forward@openssh.com"),
-        HOSTKEYS_00_OPENSSH_COM("hostkeys-00@openssh.com"),
-        HOSTKEYS_PROVE_00_OPENSSH_COM("hostkeys-prove-00@openssh.com");*/
+         * auth-agent-req@openssh.com,
+         * STREAMLOCAL_FORWARD_OPENSSH_COM("streamlocal-forward@openssh.com"),
+         * CANCEL_STREAMLOCAL_FORWARD_OPENSSH_COM(
+         * "cancel-streamlocal-forward@openssh.com"),
+         * HOSTKEYS_00_OPENSSH_COM("hostkeys-00@openssh.com"),
+         * HOSTKEYS_PROVE_00_OPENSSH_COM("hostkeys-prove-00@openssh.com");
+         */
         switch (globalRequestType) {
             case "tcpip-forward":
                 return new GlobalRequestTcpIpForwardMessageParser(raw).parse();

@@ -105,5 +105,14 @@
                 </plugins>
             </build>
         </profile>
+        <profile>
+            <id>pqc</id>
+            <dependencies>
+                <dependency>
+                    <groupId>${project.groupId}</groupId>
+                    <artifactId>ssh-core-pqc</artifactId>
+                </dependency>
+            </dependencies>
+        </profile>
     </profiles>
 </project>

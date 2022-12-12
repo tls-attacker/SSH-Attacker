@@ -257,4 +257,15 @@ public final class KeyExchangeUtil {
         KeySet keySet = KeySetGenerator.generateKeySet(context);
         context.setKeySet(keySet);
     }
+
+    /**
+     * Concatenates two keys.
+     *
+     * @param first first key
+     * @param second second key
+     * @return first || second
+     */
+    public static byte[] concatenateHybridKeys(byte[] first, byte[] second) {
+        return ArrayConverter.concatenate(first, second);
+    }
 }
