@@ -11,6 +11,7 @@ import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.constants.*;
 import de.rub.nds.sshattacker.core.crypto.kex.AbstractEcdhKeyExchange;
 import de.rub.nds.sshattacker.core.crypto.kex.DhKeyExchange;
+import de.rub.nds.sshattacker.core.crypto.kex.HybridKeyExchange;
 import de.rub.nds.sshattacker.core.crypto.kex.RsaKeyExchange;
 import de.rub.nds.sshattacker.core.crypto.keys.SshPublicKey;
 import de.rub.nds.sshattacker.core.protocol.util.AlgorithmPicker;
@@ -506,8 +507,10 @@ public class DefaultChooser extends Chooser {
                                                             : this
                                                                     .getServerSupportedKeyExchangeAlgorithms()
                                                                     .get(0));
-                            // TODO: Determine whether updating the context here can be considered
-                            // useful or disadvantageous (same for all negotiated algorithm methods)
+                            // TODO: Determine whether updating the context here can be
+                            // considered
+                            // useful or disadvantageous (same for all negotiated algorithm
+                            // methods)
                             context.setKeyExchangeAlgorithm(negotiatedAlgorithm);
                             return negotiatedAlgorithm;
                         });
@@ -786,6 +789,21 @@ public class DefaultChooser extends Chooser {
                         });
     }
 
+    /** */
+    @Override
+    public HybridKeyExchange getHybridKeyExchange() {
+        return context.getHybridKeyExchangeInstance()
+                .orElseGet(
+                        () -> {
+                            KeyExchangeAlgorithm negotiatedAlgorithm =
+                                    this.getKeyExchangeAlgorithm();
+                            HybridKeyExchange hybridKeyExchange =
+                                    HybridKeyExchange.newInstance(context, negotiatedAlgorithm);
+                            context.setHybridKeyExchangeInstance(hybridKeyExchange);
+                            return hybridKeyExchange;
+                        });
+    }
+
     /**
      * Retrieve the ECDH key exchange object from context. If no ECDH key exchange is available, a
      * new ECDH key exchange object will be constructed using the negotiated key exchange algorithm
@@ -852,7 +870,8 @@ public class DefaultChooser extends Chooser {
                             + ")");
             return fallback;
         }
-        // Find the first configured host key whose format matches the negotiated server host key
+        // Find the first configured host key whose format matches the negotiated server
+        // host key
         // format
         return config.getHostKeys().stream()
                 .filter(

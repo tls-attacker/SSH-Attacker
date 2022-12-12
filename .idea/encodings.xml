@@ -6,6 +6,8 @@
     <file url="file://$PROJECT_DIR$/Attacks/src/test/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/SSH-Client/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/SSH-Client/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/SSH-Core-PQC/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/SSH-Core-PQC/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/SSH-Core/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/SSH-Core/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/SSH-Mitm/src/main/java" charset="UTF-8" />

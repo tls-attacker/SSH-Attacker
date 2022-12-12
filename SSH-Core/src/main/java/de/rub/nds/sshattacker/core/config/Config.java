@@ -226,6 +226,11 @@ public class Config implements Serializable {
      */
     private KeyExchangeAlgorithm defaultRsaKeyExchangeAlgorithm;
     /**
+     * Default Hybrid key exchange algorithm, which is used if a new Hybrid key exchange is
+     * instantiaded without a matching key exchange algorithm negotiated.
+     */
+    private KeyExchangeAlgorithm defaultHybridKeyExchangeAlgorithm;
+    /**
      * If set to true, sending or receiving a NewKeysMessage automatically enables the encryption
      * for the corresponding transport direction. If set to false, encryption must be enabled
      * manually by calling the corresponding methods on the state.
@@ -406,7 +411,7 @@ public class Config implements Serializable {
         defaultServerConnection = new InboundConnection("server", 65222, "localhost");
 
         // region VersionExchange initialization
-        clientVersion = "SSH-2.0-OpenSSH_8.2p1";
+        clientVersion = "SSH-2.0-OpenSSH_9.0";
         clientComment = "";
         serverVersion = clientVersion;
         serverComment = clientComment;
@@ -419,7 +424,16 @@ public class Config implements Serializable {
         serverCookie = ArrayConverter.hexStringToByteArray("00000000000000000000000000000000");
 
         // Default values for cryptographic parameters are taken from OpenSSH 8.2p1
-        clientSupportedKeyExchangeAlgorithms =
+        LinkedList<KeyExchangeAlgorithm> supportedKeyExchangeAlgorithms = new LinkedList<>();
+        try {
+            Class.forName("de.rub.nds.sshattacker.core.crypto.kex.Sntrup761X25519KeyExchange");
+            // PQC algorithms are available (namely sntrup761x25519-sha512@openssh.com
+            supportedKeyExchangeAlgorithms.add(KeyExchangeAlgorithm.SNTRUP761_X25519);
+        } catch (ClassNotFoundException e) {
+            LOGGER.info(
+                    "Classes of module SSH-Core-PQC not found, not offering sntrup761x25519-sha512@openssh.com to peer. If you need PQC support compile with PQC profile enabled.");
+        }
+        supportedKeyExchangeAlgorithms.addAll(
                 Arrays.stream(
                                 new KeyExchangeAlgorithm[] {
                                     KeyExchangeAlgorithm.CURVE25519_SHA256,
@@ -432,7 +446,8 @@ public class Config implements Serializable {
                                     KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP18_SHA512,
                                     KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP14_SHA256
                                 })
-                        .collect(Collectors.toCollection(LinkedList::new));
+                        .collect(Collectors.toCollection(LinkedList::new)));
+        clientSupportedKeyExchangeAlgorithms = supportedKeyExchangeAlgorithms;
         serverSupportedKeyExchangeAlgorithms =
                 new LinkedList<>(clientSupportedKeyExchangeAlgorithms);
 
@@ -539,6 +554,7 @@ public class Config implements Serializable {
         defaultDhKeyExchangeAlgorithm = KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP14_SHA256;
         defaultEcdhKeyExchangeAlgorithm = KeyExchangeAlgorithm.ECDH_SHA2_NISTP256;
         defaultRsaKeyExchangeAlgorithm = KeyExchangeAlgorithm.RSA2048_SHA256;
+        defaultHybridKeyExchangeAlgorithm = KeyExchangeAlgorithm.SNTRUP761_X25519;
 
         // An OpenSSL generated 2048 bit RSA keypair is currently being used as the default host key
         // TODO: Load host keys from file to reduce length of Config class
@@ -1188,6 +1204,10 @@ public class Config implements Serializable {
         return defaultEcdhKeyExchangeAlgorithm;
     }
 
+    public KeyExchangeAlgorithm getDefaultHybridKeyExchangeAlgorithm() {
+        return defaultHybridKeyExchangeAlgorithm;
+    }
+
     public KeyExchangeAlgorithm getDefaultRsaKeyExchangeAlgorithm() {
         return defaultRsaKeyExchangeAlgorithm;
     }
@@ -1225,6 +1245,11 @@ public class Config implements Serializable {
     public void setDefaultDhKeyExchangeAlgorithm(
             KeyExchangeAlgorithm defaultDhKeyExchangeAlgorithm) {
         this.defaultDhKeyExchangeAlgorithm = defaultDhKeyExchangeAlgorithm;
+    }
+
+    public void setDefaultHybridKeyExchangeAlgorithm(
+            KeyExchangeAlgorithm defaultHybridKeyExchangeAlgorithm) {
+        this.defaultHybridKeyExchangeAlgorithm = defaultHybridKeyExchangeAlgorithm;
     }
 
     public void setDefaultEcdhKeyExchangeAlgorithm(

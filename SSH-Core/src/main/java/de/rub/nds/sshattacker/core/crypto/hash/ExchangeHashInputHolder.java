@@ -46,6 +46,10 @@ public final class ExchangeHashInputHolder {
     private byte[] ecdhServerPublicKey;
     // endregion
 
+    // region hybrid exchange hash fields
+    private byte[] hybridClientPublicKey;
+    private byte[] hybridServerPublicKey;
+
     // region RSA exchange hash fields
     private SshPublicKey<CustomRsaPublicKey, ?> rsaTransientKey;
     private byte[] rsaEncryptedSecret;
@@ -194,6 +198,24 @@ public final class ExchangeHashInputHolder {
         this.ecdhServerPublicKey = ecdhServerPublicKey;
     }
     // endregion
+
+    // region Getters / setters hybrid exchange hash fields
+    public Optional<byte[]> getHybridClientPublicKey() {
+        return Optional.ofNullable(hybridClientPublicKey);
+    }
+
+    public void setHybridClientPublicKey(byte[] hybridClientPublicKey) {
+        this.hybridClientPublicKey = hybridClientPublicKey;
+    }
+
+    public Optional<byte[]> getHybridServerPublicKey() {
+        return Optional.ofNullable(hybridServerPublicKey);
+    }
+
+    public void setHybridServerPublicKey(byte[] hybridServerPublicKey) {
+        this.hybridServerPublicKey = hybridServerPublicKey;
+    }
+    // end region
 
     // region Getters / setters RSA exchange hash fields
     public Optional<SshPublicKey<CustomRsaPublicKey, ?>> getRsaTransientKey() {

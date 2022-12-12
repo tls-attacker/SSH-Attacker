@@ -15,10 +15,14 @@ import de.rub.nds.sshattacker.core.constants.PublicKeyFormat;
 import de.rub.nds.sshattacker.core.crypto.cipher.CipherFactory;
 import de.rub.nds.sshattacker.core.crypto.cipher.DecryptionCipher;
 import de.rub.nds.sshattacker.core.crypto.cipher.EncryptionCipher;
+import de.rub.nds.sshattacker.core.crypto.keys.CustomKeyPair;
+import de.rub.nds.sshattacker.core.crypto.keys.CustomPrivateKey;
+import de.rub.nds.sshattacker.core.crypto.keys.CustomPublicKey;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomRsaPrivateKey;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomRsaPublicKey;
 import de.rub.nds.sshattacker.core.crypto.keys.SshPublicKey;
 import de.rub.nds.sshattacker.core.exceptions.CryptoException;
+import de.rub.nds.sshattacker.core.exceptions.NotImplementedException;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.util.Converter;
 import java.math.BigInteger;
@@ -83,7 +87,8 @@ public class RsaKeyExchange extends KeyEncapsulation {
         EncryptionCipher cipher =
                 CipherFactory.getEncryptionCipher(algorithm, transientKey.getPublicKey());
         try {
-            // Shared secret is encrypted as a mpint (which includes an explicit length field)
+            // Shared secret is encrypted as a mpint (which includes an explicit length
+            // field)
             byte[] sharedSecretMpint = Converter.bigIntegerToMpint(sharedSecret);
             return cipher.encrypt(sharedSecretMpint);
         } catch (CryptoException e) {
@@ -174,7 +179,8 @@ public class RsaKeyExchange extends KeyEncapsulation {
         if (transientKey != null) {
             return transientKey.getPublicKey().getModulus().bitLength();
         } else {
-            // Fallback to default transient key length in case no actual transient key is present
+            // Fallback to default transient key length in case no actual transient key is
+            // present
             return transientKeyLength;
         }
     }
@@ -185,5 +191,55 @@ public class RsaKeyExchange extends KeyEncapsulation {
 
     public boolean areParametersSet() {
         return transientKey != null && hashLength != 0;
+    }
+
+    @Override
+    public void setLocalKeyPair(byte[] privateKeyBytes) {
+        throw new NotImplementedException("RsaKeyExchange::setLocalKeyPair");
+    }
+
+    @Override
+    public void setLocalKeyPair(byte[] privateKeyBytes, byte[] publicKeyBytes) {
+        throw new NotImplementedException("RsaKeyExchange::setLocalKeyPair");
+    }
+
+    @Override
+    public CustomPublicKey getRemotePublicKey() {
+        throw new NotImplementedException("RsaKeyExchange::getRemotePublicKey");
+    }
+
+    @Override
+    public void setSharedSecret(byte[] sharedSecretBytes) {
+        this.sharedSecret = new BigInteger(sharedSecretBytes);
+    }
+
+    @Override
+    public void setEncryptedSharedSecret(byte[] encryptedSharedSecret) {
+        throw new NotImplementedException("RsaKeyExchange::encryptedSharedSecret");
+    }
+
+    @Override
+    public byte[] getEncryptedSharedSecret() {
+        throw new NotImplementedException("RsaKeyExchange::getEncryptedSharedSecret");
+    }
+
+    @Override
+    public void decryptSharedSecret() {
+        throw new NotImplementedException("RsaKeyExchange::decryptSharedSecret");
+    }
+
+    @Override
+    public void setRemotePublicKey(byte[] remotePublicKeyBytes) {
+        throw new NotImplementedException("RsaKeyExchange::setRemotePublicKey");
+    }
+
+    @Override
+    public void generateLocalKeyPair() {
+        throw new NotImplementedException("RsaKeyExchange::generateLocalKeyPair");
+    }
+
+    @Override
+    public CustomKeyPair<? extends CustomPrivateKey, ? extends CustomPublicKey> getLocalKeyPair() {
+        throw new NotImplementedException("RsaKeyExchange::getLocalKeyPair");
     }
 }
