@@ -63,8 +63,7 @@ public abstract class ProtocolMessageParser<T extends ProtocolMessage<T>> extend
         byte[] raw = packet.getPayload().getValue();
         try {
             if (packet instanceof BlobPacket) {
-                String rawText =
-                        new String(packet.getPayload().getValue(), StandardCharsets.US_ASCII);
+                String rawText = new String(packet.getPayload().getValue(), StandardCharsets.US_ASCII);
                 if (rawText.startsWith("SSH-2.0")) {
                     return new VersionExchangeMessageParser(raw).parse();
                 } else {
@@ -195,6 +194,11 @@ public abstract class ProtocolMessageParser<T extends ProtocolMessage<T>> extend
                         HybridKeyExchangeCombiner.POSTQUANTUM_CONCATENATE_CLASSICAL,
                         CryptoConstants.X25519_POINT_SIZE,
                         CryptoConstants.SNTRUP761_CYPHERTEXT_SIZE);
+            case CURVE25519_FRODOKEM1344:
+                return new HybridKeyExchangeReplyMessageParser(raw,
+                        HybridKeyExchangeCombiner.POSTQUANTUM_CONCATENATE_CLASSICAL,
+                        CryptoConstants.X25519_POINT_SIZE,
+                        CryptoConstants.FRODOKEM1344_CYPHERTEXT_SIZE);
             default:
                 LOGGER.warn(
                         "The Hybrid Key Exchange Algorithm "

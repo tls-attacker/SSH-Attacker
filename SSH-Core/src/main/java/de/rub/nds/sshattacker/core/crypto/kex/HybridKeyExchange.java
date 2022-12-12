@@ -54,6 +54,8 @@ public abstract class HybridKeyExchange extends KeyExchange {
         switch (algorithm) {
             case SNTRUP761_X25519:
                 return new Sntrup761X25519KeyExchange();
+            case CURVE25519_FRODOKEM1344:
+                return new Curve25519Frodokem1344KeyExchange();
             default:
                 LOGGER.warn(
                         "Algorithm "

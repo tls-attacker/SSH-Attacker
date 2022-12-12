@@ -65,9 +65,9 @@ public class BinaryPacketParser extends AbstractPacketParser<BinaryPacket> {
                             binaryPacket.getCompletePacketBytes().getValue()));
             LOGGER.debug("Packet length: {}", binaryPacket.getLength().getValue());
             if (activeDecryptCipher.getEncryptionAlgorithm() == EncryptionAlgorithm.NONE) {
-                LOGGER.debug(
-                        "Packet bytes: {}",
-                        ArrayConverter.bytesToHexString(binaryPacket.getCiphertext().getValue()));
+                // LOGGER.debug(
+                //         "Packet bytes: {}",
+                //         ArrayConverter.bytesToHexString(binaryPacket.getCiphertext().getValue()));
             } else {
                 LOGGER.debug(
                         "Encrypted packet bytes: {}",

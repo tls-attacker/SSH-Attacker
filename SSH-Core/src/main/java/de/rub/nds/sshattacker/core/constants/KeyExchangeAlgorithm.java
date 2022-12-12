@@ -7,6 +7,8 @@
  */
 package de.rub.nds.sshattacker.core.constants;
 
+import org.bouncycastle.math.ec.custom.djb.Curve25519;
+
 public enum KeyExchangeAlgorithm {
     /*
      * Sources:
@@ -90,8 +92,11 @@ public enum KeyExchangeAlgorithm {
     // [ LibSSH ]
     CURVE25519_SHA256_LIBSSH_ORG(
             KeyExchangeFlowType.ECDH, "curve25519-sha256@libssh.org", "SHA-256"),
+    // [openSSH.com]
     SNTRUP761_X25519(KeyExchangeFlowType.HYBRID, "sntrup761x25519-sha512@openssh.com", "SHA-512"),
     // [ SSH.COM ]
+    CURVE25519_FRODOKEM1344(KeyExchangeFlowType.HYBRID,"curve25519-frodokem1344-sha512@ssh.com","SHA-512"),
+
     DIFFIE_HELLMAN_GROUP_EXCHANGE_SHA224_SSH_COM(
             KeyExchangeFlowType.DIFFIE_HELLMAN_GROUP_EXCHANGE,
             "diffie-hellman-group-exchange-sha224@ssh.com",
