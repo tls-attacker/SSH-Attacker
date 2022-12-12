@@ -107,8 +107,10 @@ public class ReceiveActionTest {
     }
 
     @Test
-    public void testExecutedAsPlannedIsFalseWithUnexpectedIgnoreMessagesAndCheckIgnoreEnabled() {
-        final ReceiveAction action = new ReceiveAction(ReceiveOption.CHECK_IGNORE);
+    public void
+            testExecutedAsPlannedIsFalseWithUnexpectedIgnoreMessagesAndFailOnUnexpectedIgnoreMessagesEnabled() {
+        final ReceiveAction action =
+                new ReceiveAction(ReceiveOption.FAIL_ON_UNEXPECTED_IGNORE_MESSAGES);
         action.setExpectedMessages(
                 List.of(new VersionExchangeMessage(), new KeyExchangeInitMessage()));
         action.setReceivedMessages(
@@ -138,8 +140,10 @@ public class ReceiveActionTest {
     }
 
     @Test
-    public void testExecutedAsPlannedIsTrueWithExpectedIgnoreMessagesAndCheckIgnoreEnabled() {
-        final ReceiveAction action = new ReceiveAction(ReceiveOption.CHECK_IGNORE);
+    public void
+            testExecutedAsPlannedIsTrueWithExpectedIgnoreMessagesAndFailOnUnexpectedIgnoreMessagesEnabled() {
+        final ReceiveAction action =
+                new ReceiveAction(ReceiveOption.FAIL_ON_UNEXPECTED_IGNORE_MESSAGES);
         action.setExpectedMessages(
                 List.of(
                         new VersionExchangeMessage(),

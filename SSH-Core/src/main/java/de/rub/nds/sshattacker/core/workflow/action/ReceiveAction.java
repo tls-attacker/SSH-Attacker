@@ -164,8 +164,11 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
     /** Set to {@code true} if the {@link ReceiveOption#CHECK_ONLY_EXPECTED} option has been set. */
     @XmlElement protected Boolean checkOnlyExpected = null;
 
-    /** Set to {@code true} if the {@link ReceiveOption#CHECK_IGNORE} option has been set. */
-    @XmlElement protected Boolean checkIgnore = null;
+    /**
+     * Set to {@code true} if the {@link ReceiveOption#FAIL_ON_UNEXPECTED_IGNORE_MESSAGES} option
+     * has been set.
+     */
+    @XmlElement protected Boolean failOnUnexpectedIgnoreMessages = null;
 
     public ReceiveAction() {
         super(AliasedConnection.DEFAULT_CONNECTION_ALIAS);
@@ -327,13 +330,13 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
                 // this action has not been executed as planned, unless:
                 //
                 // - the `CHECK_ONLY_EXPECTED` receive option is set, or
-                // - the `CHECK_IGNORE` receive option is not set and the
-                //   actual message is an SSH_MSG_IGNORE message.
+                // - the `FAIL_ON_UNEXPECTED_IGNORE_MESSAGES` receive option is not
+                //   set and the actual message is an SSH_MSG_IGNORE message.
                 //
                 // In these cases, ignore the received message and check if the
                 // next received message matches the expected message.
                 if (this.hasReceiveOption(ReceiveOption.CHECK_ONLY_EXPECTED)
-                        || (!this.hasReceiveOption(ReceiveOption.CHECK_IGNORE)
+                        || (!this.hasReceiveOption(ReceiveOption.FAIL_ON_UNEXPECTED_IGNORE_MESSAGES)
                                 && (actualMessage instanceof IgnoreMessage))) {
                     LOGGER.debug("Ignoring message of type {}.", actualMessage.toCompactString());
                     continue;
@@ -391,8 +394,8 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
             case CHECK_ONLY_EXPECTED:
                 value = this.checkOnlyExpected;
                 break;
-            case CHECK_IGNORE:
-                value = this.checkIgnore;
+            case FAIL_ON_UNEXPECTED_IGNORE_MESSAGES:
+                value = this.failOnUnexpectedIgnoreMessages;
                 break;
         }
 
@@ -408,7 +411,7 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
         return Stream.of(
                         ReceiveOption.EARLY_CLEAN_SHUTDOWN,
                         ReceiveOption.CHECK_ONLY_EXPECTED,
-                        ReceiveOption.CHECK_IGNORE)
+                        ReceiveOption.FAIL_ON_UNEXPECTED_IGNORE_MESSAGES)
                 .filter(this::hasReceiveOption)
                 .collect(Collectors.toSet());
     }
@@ -421,12 +424,13 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
     public void setReceiveOptions(final Set<ReceiveOption> receiveOptions) {
         this.earlyCleanShutdown = receiveOptions.contains(ReceiveOption.EARLY_CLEAN_SHUTDOWN);
         this.checkOnlyExpected = receiveOptions.contains(ReceiveOption.CHECK_ONLY_EXPECTED);
-        this.checkIgnore = receiveOptions.contains(ReceiveOption.CHECK_IGNORE);
+        this.failOnUnexpectedIgnoreMessages =
+                receiveOptions.contains(ReceiveOption.FAIL_ON_UNEXPECTED_IGNORE_MESSAGES);
 
         if (this.hasReceiveOption(ReceiveOption.CHECK_ONLY_EXPECTED)
-                && this.hasReceiveOption(ReceiveOption.CHECK_IGNORE)) {
+                && this.hasReceiveOption(ReceiveOption.FAIL_ON_UNEXPECTED_IGNORE_MESSAGES)) {
             LOGGER.warn(
-                    "ReceiveAction has conflicting options CHECK_ONLY_EXPECTED and CHECK_IGNORE set, the latter will have no effect.");
+                    "ReceiveAction has conflicting options CHECK_ONLY_EXPECTED and FAIL_ON_UNEXPECTED_IGNORE_MESSAGES set, the latter will have no effect.");
         }
     }
 
@@ -498,21 +502,22 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
          * Ignore additional messages of any type when checking if the receive action was executed
          * as planned.
          *
-         * <p>If both this option and {@link ReceiveOption#CHECK_IGNORE} have been set, this option
-         * takes precedence and ignore messages will still be ignored.
+         * <p>If both this option and {@link ReceiveOption#FAIL_ON_UNEXPECTED_IGNORE_MESSAGES} have
+         * been set, this option takes precedence and ignore messages will still be ignored.
          */
         CHECK_ONLY_EXPECTED,
         /**
-         * Do not ignore additional {@code SSH_MSG_IGNORE} messages when checking if the receive
-         * action was executed as planned.
+         * Do not ignore unexpected {@code SSH_MSG_IGNORE} messages when checking if the receive
+         * action was executed as planned. Instead, such messages will cause {@link
+         * #executedAsPlanned} to return {@code false}.
          *
          * <p>If both this option and {@link ReceiveOption#CHECK_ONLY_EXPECTED} have been set, the
-         * latter takes precedence and ignore messages will still be ignored.
+         * latter takes precedence and {@code SSH_MSG_IGNORE} messages will still be ignored.
          *
          * @see <a href="https://datatracker.ietf.org/doc/html/rfc4253#section-11.2">RFC 4253,
          *     section 11.2 "Ignored Data Message"</a>
          */
-        CHECK_IGNORE;
+        FAIL_ON_UNEXPECTED_IGNORE_MESSAGES;
 
         public static Set<ReceiveOption> bundle(ReceiveOption... receiveOptions) {
             return new HashSet<>(Arrays.asList(receiveOptions));
