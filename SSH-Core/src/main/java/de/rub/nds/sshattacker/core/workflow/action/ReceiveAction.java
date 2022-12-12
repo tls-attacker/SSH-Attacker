@@ -285,7 +285,14 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
 
         // If no expected messages were defined, we consider this receive
         // action as "let's see what the other side sends".
-        if (expectedMessages.size() == 0 && messages.size() > 0) {
+        if (expectedMessages.isEmpty()) {
+            // FIXME: In case TLS-Attacker's `GenericReceiveAction` is ported
+            // to SSH-Attacker at some point and the `messages` list is also
+            // empty, it might make sense to log a warning that tells the user
+            // to use the `GenericReceiveAction` instead. If you truly don't
+            // know what the other side will send, it makes sense to wait the
+            // full timeout for incoming data (not exit early after the first
+            // chunk of data has been received).
             return true;
         }
 
