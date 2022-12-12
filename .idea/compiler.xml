@@ -10,6 +10,7 @@
         <module name="ssh-core" />
         <module name="ssh-client" />
         <module name="ssh-mitm" />
+        <module name="ssh-core-pqc" />
         <module name="attacks" />
       </profile>
     </annotationProcessing>
@@ -18,6 +19,7 @@
       <module name="ssh-attacker" target="11" />
       <module name="ssh-client" target="11" />
       <module name="ssh-core" target="11" />
+      <module name="ssh-core-pqc" target="11" />
       <module name="ssh-mitm" target="11" />
       <module name="ssh-server" target="11" />
     </bytecodeTargetLevel>
