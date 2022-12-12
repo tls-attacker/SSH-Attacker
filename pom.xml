@@ -97,6 +97,11 @@
             </dependency>
             <dependency>
                 <groupId>de.rub.nds.ssh.attacker</groupId>
+                <artifactId>ssh-core-pqc</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>de.rub.nds.ssh.attacker</groupId>
                 <artifactId>ssh-mitm</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -141,11 +146,6 @@
         <dependency>
             <groupId>org.glassfish.jaxb</groupId>
             <artifactId>jaxb-runtime</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.openquantumsafe</groupId>
-            <artifactId>liboqs-java</artifactId>
-            <version>1.0</version>
         </dependency>
         <!-- scope: test -->
         <dependency>
@@ -495,6 +495,12 @@
                     </plugins>
                 </pluginManagement>
             </build>
+        </profile>
+        <profile>
+            <id>pqc</id>
+            <modules>
+                <module>SSH-Core-PQC</module>
+            </modules>
         </profile>
     </profiles>
 </project>

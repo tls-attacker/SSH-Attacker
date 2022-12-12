@@ -7,7 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.crypto.kex;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.mockito.Mockito.doReturn;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
@@ -15,7 +15,6 @@ import de.rub.nds.sshattacker.core.constants.KeyExchangeAlgorithm;
 import jakarta.xml.bind.DatatypeConverter;
 import java.io.InputStream;
 import java.lang.reflect.Field;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
@@ -187,24 +186,20 @@ public class HybridKeyExchangeTest {
 
             // Set the keys
             kex.getKeyEncapsulation().generateLocalKeyPair();
-            assertTrue(
-                    Arrays.equals(
-                            kex.getKeyEncapsulation().getLocalKeyPair().getPublic().getEncoded(),
-                            encapsulationPubKey));
-            assertTrue(
-                    Arrays.equals(
-                            kex.getKeyEncapsulation().getLocalKeyPair().getPrivate().getEncoded(),
-                            encapsulationPrivKey));
+            assertArrayEquals(
+                    kex.getKeyEncapsulation().getLocalKeyPair().getPublic().getEncoded(),
+                    encapsulationPubKey);
+            assertArrayEquals(
+                    kex.getKeyEncapsulation().getLocalKeyPair().getPrivate().getEncoded(),
+                    encapsulationPrivKey);
 
             kex.getKeyAgreement().setLocalKeyPair(agreementPrivKeyClient, agreementPubKeyClient);
-            assertTrue(
-                    Arrays.equals(
-                            kex.getKeyAgreement().getLocalKeyPair().getPublic().getEncoded(),
-                            agreementPubKeyClient));
-            assertTrue(
-                    Arrays.equals(
-                            kex.getKeyAgreement().getLocalKeyPair().getPrivate().getEncoded(),
-                            agreementPrivKeyClient));
+            assertArrayEquals(
+                    kex.getKeyAgreement().getLocalKeyPair().getPublic().getEncoded(),
+                    agreementPubKeyClient);
+            assertArrayEquals(
+                    kex.getKeyAgreement().getLocalKeyPair().getPrivate().getEncoded(),
+                    agreementPrivKeyClient);
 
             // Set public Key and ciphertext
             kex.getKeyEncapsulation().setEncryptedSharedSecret(ciphertext);
@@ -212,27 +207,20 @@ public class HybridKeyExchangeTest {
 
             // CombineSharedSecrets
             kex.combineSharedSecrets();
-            assertTrue(
-                    Arrays.equals(
-                            agreementSharedSecret,
-                            ArrayConverter.bigIntegerToByteArray(
-                                    kex.getKeyAgreement().getSharedSecret())));
-            assertTrue(
-                    Arrays.equals(
-                            encapsulationSharedSecret,
-                            ArrayConverter.bigIntegerToByteArray(
-                                    kex.getKeyEncapsulation().getSharedSecret())));
-            assertTrue(
-                    Arrays.equals(
-                            encodedSharedSecret,
-                            ArrayConverter.bigIntegerToByteArray(kex.getSharedSecret())));
-        } catch (SecurityException e) {
-            e.printStackTrace();
-        } catch (NoSuchFieldException e) {
-            e.printStackTrace();
-        } catch (IllegalArgumentException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
+            assertArrayEquals(
+                    agreementSharedSecret,
+                    ArrayConverter.bigIntegerToByteArray(kex.getKeyAgreement().getSharedSecret()));
+            assertArrayEquals(
+                    encapsulationSharedSecret,
+                    ArrayConverter.bigIntegerToByteArray(
+                            kex.getKeyEncapsulation().getSharedSecret()));
+            assertArrayEquals(
+                    encodedSharedSecret,
+                    ArrayConverter.bigIntegerToByteArray(kex.getSharedSecret()));
+        } catch (SecurityException
+                | NoSuchFieldException
+                | IllegalArgumentException
+                | IllegalAccessException e) {
             e.printStackTrace();
         }
     }
@@ -274,52 +262,40 @@ public class HybridKeyExchangeTest {
 
             // Set Server Keys for Key Agreement and PubKeys send by the Client
             kex.getKeyAgreement().setLocalKeyPair(agreementPrivKeyServer, agreementPubKeyServer);
-            assertTrue(
-                    Arrays.equals(
-                            kex.getKeyAgreement().getLocalKeyPair().getPublic().getEncoded(),
-                            agreementPubKeyServer));
-            assertTrue(
-                    Arrays.equals(
-                            kex.getKeyAgreement().getLocalKeyPair().getPrivate().getEncoded(),
-                            agreementPrivKeyServer));
+            assertArrayEquals(
+                    kex.getKeyAgreement().getLocalKeyPair().getPublic().getEncoded(),
+                    agreementPubKeyServer);
+            assertArrayEquals(
+                    kex.getKeyAgreement().getLocalKeyPair().getPrivate().getEncoded(),
+                    agreementPrivKeyServer);
 
             kex.getKeyEncapsulation().setRemotePublicKey(encapsulationPubKey);
             kex.getKeyAgreement().setRemotePublicKey(agreementPubKeyClient);
 
             // generate sharedSecret and ciphertext
             kex.getKeyEncapsulation().encryptSharedSecret();
-            assertTrue(
-                    Arrays.equals(
-                            encapsulationSharedSecret,
-                            ArrayConverter.bigIntegerToByteArray(
-                                    kex.getKeyEncapsulation().getSharedSecret())));
-            assertTrue(
-                    Arrays.equals(
-                            ciphertext, kex.getKeyEncapsulation().getEncryptedSharedSecret()));
+            assertArrayEquals(
+                    encapsulationSharedSecret,
+                    ArrayConverter.bigIntegerToByteArray(
+                            kex.getKeyEncapsulation().getSharedSecret()));
+            assertArrayEquals(ciphertext, kex.getKeyEncapsulation().getEncryptedSharedSecret());
 
             // CombineSharedSecrets
             kex.combineSharedSecrets();
-            assertTrue(
-                    Arrays.equals(
-                            agreementSharedSecret,
-                            ArrayConverter.bigIntegerToByteArray(
-                                    kex.getKeyAgreement().getSharedSecret())));
-            assertTrue(
-                    Arrays.equals(
-                            encapsulationSharedSecret,
-                            ArrayConverter.bigIntegerToByteArray(
-                                    kex.getKeyEncapsulation().getSharedSecret())));
-            assertTrue(
-                    Arrays.equals(
-                            encodedSharedSecret,
-                            ArrayConverter.bigIntegerToByteArray(kex.getSharedSecret())));
-        } catch (SecurityException e) {
-            e.printStackTrace();
-        } catch (NoSuchFieldException e) {
-            e.printStackTrace();
-        } catch (IllegalArgumentException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
+            assertArrayEquals(
+                    agreementSharedSecret,
+                    ArrayConverter.bigIntegerToByteArray(kex.getKeyAgreement().getSharedSecret()));
+            assertArrayEquals(
+                    encapsulationSharedSecret,
+                    ArrayConverter.bigIntegerToByteArray(
+                            kex.getKeyEncapsulation().getSharedSecret()));
+            assertArrayEquals(
+                    encodedSharedSecret,
+                    ArrayConverter.bigIntegerToByteArray(kex.getSharedSecret()));
+        } catch (SecurityException
+                | NoSuchFieldException
+                | IllegalArgumentException
+                | IllegalAccessException e) {
             e.printStackTrace();
         }
     }

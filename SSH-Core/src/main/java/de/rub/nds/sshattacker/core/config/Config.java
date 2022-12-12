@@ -424,10 +424,18 @@ public class Config implements Serializable {
         serverCookie = ArrayConverter.hexStringToByteArray("00000000000000000000000000000000");
 
         // Default values for cryptographic parameters are taken from OpenSSH 8.2p1
-        clientSupportedKeyExchangeAlgorithms =
+        LinkedList<KeyExchangeAlgorithm> supportedKeyExchangeAlgorithms = new LinkedList<>();
+        try {
+            Class.forName("de.rub.nds.sshattacker.core.crypto.kex.Sntrup761X25519KeyExchange");
+            // PQC algorithms are available (namely sntrup761x25519-sha512@openssh.com
+            supportedKeyExchangeAlgorithms.add(KeyExchangeAlgorithm.SNTRUP761_X25519);
+        } catch (ClassNotFoundException e) {
+            LOGGER.info(
+                    "Classes of module SSH-Core-PQC not found, not offering sntrup761x25519-sha512@openssh.com to peer. If you need PQC support compile with PQC profile enabled.");
+        }
+        supportedKeyExchangeAlgorithms.addAll(
                 Arrays.stream(
                                 new KeyExchangeAlgorithm[] {
-                                    KeyExchangeAlgorithm.SNTRUP761_X25519,
                                     KeyExchangeAlgorithm.CURVE25519_SHA256,
                                     KeyExchangeAlgorithm.CURVE25519_SHA256_LIBSSH_ORG,
                                     KeyExchangeAlgorithm.ECDH_SHA2_NISTP256,
@@ -438,7 +446,8 @@ public class Config implements Serializable {
                                     KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP18_SHA512,
                                     KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP14_SHA256
                                 })
-                        .collect(Collectors.toCollection(LinkedList::new));
+                        .collect(Collectors.toCollection(LinkedList::new)));
+        clientSupportedKeyExchangeAlgorithms = supportedKeyExchangeAlgorithms;
         serverSupportedKeyExchangeAlgorithms =
                 new LinkedList<>(clientSupportedKeyExchangeAlgorithms);
 
