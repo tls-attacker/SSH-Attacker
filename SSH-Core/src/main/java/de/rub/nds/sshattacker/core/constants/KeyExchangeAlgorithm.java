@@ -7,8 +7,6 @@
  */
 package de.rub.nds.sshattacker.core.constants;
 
-import org.bouncycastle.math.ec.custom.djb.Curve25519;
-
 public enum KeyExchangeAlgorithm {
     /*
      * Sources:

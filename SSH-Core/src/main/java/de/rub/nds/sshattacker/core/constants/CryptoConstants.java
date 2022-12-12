@@ -14,7 +14,7 @@ public class CryptoConstants {
     public static final int CHACHA20_KEY_SIZE = 32;
     public static final int SNTRUP761_PUBLIC_KEY_SIZE = 1158;
     public static final int SNTRUP761_PRIVATE_KEY_SIZE = 1763;
-    public static final int SNTRUP761_CYPHERTEXT_SIZE = 1039;
+    public static final int SNTRUP761_CIPHERTEXT_SIZE = 1039;
     public static final int FRODOKEM1344_PUBLIC_KEY_SIZE = 21520;
     public static final int FRODOKEM1344_PRIVATE_KEY_SIZE = 0;
     public static final int FRODOKEM1344_CYPHERTEXT_SIZE = 21632;

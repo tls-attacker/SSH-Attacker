@@ -188,40 +188,36 @@ public abstract class ProtocolMessageParser<T extends ProtocolMessage<T>> extend
             byte[] raw, SshContext context) {
 
         switch (context.getChooser().getKeyExchangeAlgorithm()) {
+            default:
+                LOGGER.warn(
+                        "Unsupported hybrid key exchange negotiated, treating received HBR_REPLY as sntrup761x25519-sha512@openssh.com");
+                // Fallthrough to next case statement intended
             case SNTRUP761_X25519:
                 return new HybridKeyExchangeReplyMessageParser(
                         raw,
                         HybridKeyExchangeCombiner.POSTQUANTUM_CONCATENATE_CLASSICAL,
                         CryptoConstants.X25519_POINT_SIZE,
-                        CryptoConstants.SNTRUP761_CYPHERTEXT_SIZE);
+                        CryptoConstants.SNTRUP761_CIPHERTEXT_SIZE);
             case CURVE25519_FRODOKEM1344:
                 return new HybridKeyExchangeReplyMessageParser(raw,
                         HybridKeyExchangeCombiner.POSTQUANTUM_CONCATENATE_CLASSICAL,
                         CryptoConstants.X25519_POINT_SIZE,
                         CryptoConstants.FRODOKEM1344_CYPHERTEXT_SIZE);
-            default:
-                LOGGER.warn(
-                        "The Hybrid Key Exchange Algorithm "
-                                + context.getKeyExchangeAlgorithm().get()
-                                + " is not supported");
-                return null;
         }
     }
 
     public static HybridKeyExchangeInitMessageParser handleHbrInit(byte[] raw, SshContext context) {
         switch (context.getChooser().getKeyExchangeAlgorithm()) {
+            default:
+                LOGGER.warn(
+                        "Unsupported hybrid key exchange negotiated, treating received HBR_INIT as sntrup761x25519-sha512@openssh.com");
+                // Fallthrough to next case statement intended
             case SNTRUP761_X25519:
                 return new HybridKeyExchangeInitMessageParser(
                         raw,
                         HybridKeyExchangeCombiner.POSTQUANTUM_CONCATENATE_CLASSICAL,
                         CryptoConstants.X25519_POINT_SIZE,
                         CryptoConstants.SNTRUP761_PUBLIC_KEY_SIZE);
-            default:
-                LOGGER.warn(
-                        "The Hybrid Key Exchange Algorithm "
-                                + context.getKeyExchangeAlgorithm().get()
-                                + " is not supported");
-                return null;
         }
     }
 

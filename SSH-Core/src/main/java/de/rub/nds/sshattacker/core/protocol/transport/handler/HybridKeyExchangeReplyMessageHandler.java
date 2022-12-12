@@ -61,23 +61,24 @@ public class HybridKeyExchangeReplyMessageHandler
         context.getChooser()
                 .getHybridKeyExchange()
                 .getKeyEncapsulation()
-                .setEncryptedSharedSecret(message.getCyphertext().getValue());
+                .setEncryptedSharedSecret(message.getCombinedKeyShare().getValue());
         LOGGER.info(
-                "Cyphertext Encapsulation = "
-                        + ArrayConverter.bytesToRawHexString(message.getCyphertext().getValue()));
+                "Ciphertext Encapsulation = "
+                        + ArrayConverter.bytesToRawHexString(
+                                message.getCombinedKeyShare().getValue()));
         byte[] combined;
         switch (context.getChooser().getHybridKeyExchange().getCombiner()) {
             case CLASSICAL_CONCATENATE_POSTQUANTUM:
                 combined =
                         KeyExchangeUtil.concatenateHybridKeys(
                                 message.getPublicKey().getValue(),
-                                message.getCyphertext().getValue());
+                                message.getCombinedKeyShare().getValue());
                 context.getExchangeHashInputHolder().setHybridServerPublicKey(combined);
                 break;
             case POSTQUANTUM_CONCATENATE_CLASSICAL:
                 combined =
                         KeyExchangeUtil.concatenateHybridKeys(
-                                message.getCyphertext().getValue(),
+                                message.getCombinedKeyShare().getValue(),
                                 message.getPublicKey().getValue());
                 context.getExchangeHashInputHolder().setHybridServerPublicKey(combined);
                 break;
@@ -94,7 +95,7 @@ public class HybridKeyExchangeReplyMessageHandler
     public SshMessageParser<HybridKeyExchangeReplyMessage> getParser(byte[] array) {
         HybridKeyExchange kex = context.getChooser().getHybridKeyExchange();
         return new HybridKeyExchangeReplyMessageParser(
-                array, kex.getCombiner(), kex.getPkAgreementLength(), kex.getCyphtertextLength());
+                array, kex.getCombiner(), kex.getPkAgreementLength(), kex.getCiphertextLength());
     }
 
     @Override
@@ -106,7 +107,7 @@ public class HybridKeyExchangeReplyMessageHandler
                 startPosition,
                 kex.getCombiner(),
                 kex.getPkAgreementLength(),
-                kex.getCyphtertextLength());
+                kex.getCiphertextLength());
     }
 
     @Override

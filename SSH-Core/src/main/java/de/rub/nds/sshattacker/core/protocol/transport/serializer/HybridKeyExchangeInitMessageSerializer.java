@@ -56,7 +56,7 @@ public class HybridKeyExchangeInitMessageSerializer
         }
         appendBytes(keys);
 
-        // LOGGER.debug("HybridKeyLength: " + length);
-        // LOGGER.debug("HybridKeyBytes: " + ArrayConverter.bytesToHexString(keys));
+        LOGGER.debug("HybridKeyLength: " + length);
+        LOGGER.debug("HybridKeyBytes: " + ArrayConverter.bytesToHexString(keys));
     }
 }

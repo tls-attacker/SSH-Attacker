@@ -62,12 +62,12 @@ public class HybridKeyExchangeReplyMessageParser
             case CLASSICAL_CONCATENATE_POSTQUANTUM:
                 message.setPublicKeyLength(agreementSize);
                 message.setPublicKey(parseByteArrayField(agreementSize));
-                message.setCyphertextLength(encapsulationSize);
-                message.setCyphertext(parseByteArrayField(encapsulationSize));
+                message.setCiphertextLength(encapsulationSize);
+                message.setCombinedKeyShare(parseByteArrayField(encapsulationSize));
                 break;
             case POSTQUANTUM_CONCATENATE_CLASSICAL:
-                message.setCyphertextLength(encapsulationSize);
-                message.setCyphertext(parseByteArrayField(encapsulationSize));
+                message.setCiphertextLength(encapsulationSize);
+                message.setCombinedKeyShare(parseByteArrayField(encapsulationSize));
                 message.setPublicKeyLength(agreementSize);
                 message.setPublicKey(parseByteArrayField(agreementSize));
                 break;

@@ -29,7 +29,7 @@ public abstract class KeyEncapsulation extends KeyExchange {
 
     public abstract CustomPublicKey getRemotePublicKey();
 
-    public abstract void setRemotePublicKey(byte[] remotPublicKeyBytes);
+    public abstract void setRemotePublicKey(byte[] remotePublicKeyBytes);
 
     public abstract void setSharedSecret(byte[] sharedSecretBytes);
 
