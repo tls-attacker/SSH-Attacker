@@ -34,12 +34,16 @@ public class DisconnectMessageParser extends SshMessageParser<DisconnectMessage>
 
     private void parseReasonCode() {
         message.setReasonCode(parseIntField(DataFormatConstants.UINT32_SIZE));
-        LOGGER.debug(
-                "Reason: "
-                        + DisconnectReason.fromId(message.getReasonCode().getValue()).toString()
-                        + " (Code: "
-                        + message.getReasonCode().getValue()
-                        + ")");
+        if (DisconnectReason.fromId(message.getReasonCode().getValue()) != null) {
+            LOGGER.debug(
+                    "Reason: "
+                            + DisconnectReason.fromId(message.getReasonCode().getValue()).toString()
+                            + " (Code: "
+                            + message.getReasonCode().getValue()
+                            + ")");
+        } else {
+            LOGGER.debug("Reason: [unknown] (Code: " + message.getReasonCode().getValue() + ")");
+        }
     }
 
     private void parseDescription() {
