@@ -48,6 +48,24 @@ public class ChangePacketLayerAction extends ConnectionBoundAction {
         this.enableAsciiMode = enableAsciiMode;
     }
 
+    /**
+     * Get the type of packet layer that this action will change to.
+     *
+     * @return the new packet layer type
+     */
+    public PacketLayerType getPacketLayerType() {
+        return this.packetLayerType;
+    }
+
+    /**
+     * Get the "enable ascii mode" setting of this action.
+     *
+     * @return {@code true} if this action will enable ascii mode, else {@code false}
+     */
+    public boolean getEnableAsciiMode() {
+        return this.enableAsciiMode;
+    }
+
     @Override
     public void execute(State state) throws WorkflowExecutionException {
         if (packetLayerType == null) {

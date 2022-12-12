@@ -16,6 +16,7 @@ import de.rub.nds.sshattacker.core.workflow.factory.WorkflowConfigurationFactory
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Predicate;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -66,8 +67,22 @@ public class DynamicKeyExchangeAction extends MessageAction {
     }
 
     @Override
+    public boolean isExecuted() {
+        // This action can only contain other ssh actions if it was actually
+        // executed.
+        return !this.sshActions.isEmpty();
+    }
+
+    @Override
     public boolean executedAsPlanned() {
-        return isExecuted();
+        // Return true if this action was executed and all contained ssh
+        // actions were executed as planned.
+        return this.isExecuted()
+                && this.sshActions.stream()
+                        .map(SshAction::executedAsPlanned)
+                        .filter(Predicate.isEqual(false))
+                        .findAny()
+                        .isEmpty();
     }
 
     @Override

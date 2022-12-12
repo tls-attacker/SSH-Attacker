@@ -149,7 +149,8 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
                 @XmlElement(type = ServiceRequestMessage.class, name = "ServiceRequest"),
                 @XmlElement(type = UnimplementedMessage.class, name = "UnimplementedMessage"),
                 @XmlElement(type = UnknownMessage.class, name = "UnknownMessage"),
-                @XmlElement(type = VersionExchangeMessage.class, name = "VersionExchange")
+                @XmlElement(type = VersionExchangeMessage.class, name = "VersionExchange"),
+                @XmlElement(type = AsciiMessage.class, name = "AsciiMessage")
             })
     protected List<ProtocolMessage<?>> expectedMessages = new ArrayList<>();
 
