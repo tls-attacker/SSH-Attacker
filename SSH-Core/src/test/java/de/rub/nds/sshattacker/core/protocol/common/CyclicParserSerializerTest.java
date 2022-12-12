@@ -16,6 +16,8 @@ import de.rub.nds.sshattacker.core.exceptions.PreparationException;
 import de.rub.nds.sshattacker.core.protocol.connection.Channel;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelMessage;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelOpenMessage;
+import de.rub.nds.sshattacker.core.protocol.transport.message.HybridKeyExchangeInitMessage;
+import de.rub.nds.sshattacker.core.protocol.transport.message.HybridKeyExchangeReplyMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.message.UnknownMessage;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import java.lang.reflect.Constructor;
