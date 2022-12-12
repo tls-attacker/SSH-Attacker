@@ -49,7 +49,7 @@ public class ChannelRequestWindowChangeMessageHandler
     @Override
     public void adjustContext() {
         if (Converter.byteToBoolean(message.getWantReply().getValue())) {
-            context.getChannelManager().addResponseQueue(message);
+            context.getChannelManager().addToChannelRequestResponseQueue(message);
         }
     }
 }

@@ -29,7 +29,7 @@ public class ChannelRequestExecMessageHandler extends SshMessageHandler<ChannelR
     public void adjustContext() {
         // TODO: Handle ChannelRequestExecMessage
         if (Converter.byteToBoolean(message.getWantReply().getValue())) {
-            context.getChannelManager().addResponseQueue(message);
+            context.getChannelManager().addToChannelRequestResponseQueue(message);
         }
     }
 

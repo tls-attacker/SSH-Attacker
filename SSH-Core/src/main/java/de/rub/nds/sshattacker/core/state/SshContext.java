@@ -913,6 +913,14 @@ public class SshContext {
     public HashMap<Integer, Channel> getChannels() {
         return channelManager.getChannels();
     }
+
+    public ChannelManager getChannelManager() {
+        return channelManager;
+    }
+
+    public void setChannelManager(ChannelManager channelManager) {
+        this.channelManager = channelManager;
+    }
     // endregion
 
     public boolean isDisconnectMessageReceived() {
@@ -945,13 +953,5 @@ public class SshContext {
 
     public void setHandleAsClient(boolean handleAsClient) {
         this.handleAsClient = handleAsClient;
-    }
-
-    public ChannelManager getChannelManager() {
-        return channelManager;
-    }
-
-    public void setChannelManager(ChannelManager channelManager) {
-        this.channelManager = channelManager;
     }
 }

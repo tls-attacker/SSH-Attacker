@@ -33,14 +33,13 @@ public abstract class ChannelMessagePreparator<T extends ChannelMessage<T>>
     }
 
     private void prepareChannel() {
-        Integer senderChannelId = null;
         if (getObject().getConfigSenderChannelId() != null) {
             channel =
                     chooser.getContext().getChannels().get(getObject().getConfigSenderChannelId());
         } else {
-            channel = chooser.getContext().getChannelManager().getChannel();
+            channel = chooser.getContext().getChannelManager().guessChannelByReceivedMessages();
         }
-
+        int senderChannelId = channel.getLocalChannelId().getValue();
         if (channel == null) {
             LOGGER.warn(
                     "About to prepare channel message for channel with local id {}, but no such channel found. Creating a new one from defaults.",
