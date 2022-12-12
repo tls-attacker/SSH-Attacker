@@ -13,6 +13,7 @@ import de.rub.nds.sshattacker.core.protocol.connection.parser.ChannelRequestSubs
 import de.rub.nds.sshattacker.core.protocol.connection.preparator.ChannelRequestSubsystemMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.connection.serializer.ChannelRequestSubsystemMessageSerializer;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.util.Converter;
 
 public class ChannelRequestSubsystemMessageHandler
         extends SshMessageHandler<ChannelRequestSubsystemMessage> {
@@ -26,7 +27,11 @@ public class ChannelRequestSubsystemMessageHandler
     }
 
     @Override
-    public void adjustContext() {}
+    public void adjustContext() {
+        if (Converter.byteToBoolean(message.getWantReply().getValue())) {
+            context.getChannelManager().addToChannelRequestResponseQueue(message);
+        }
+    }
 
     @Override
     public ChannelRequestSubsystemMessageParser getParser(byte[] array) {
