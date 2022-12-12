@@ -21,6 +21,8 @@ import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlElementWrapper;
 import jakarta.xml.bind.annotation.XmlElements;
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -174,8 +176,7 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
 
     public ReceiveAction(Set<ReceiveOption> receiveOptions, List<ProtocolMessage<?>> messages) {
         this(messages);
-        this.earlyCleanShutdown = receiveOptions.contains(ReceiveOption.EARLY_CLEAN_SHUTDOWN);
-        this.checkOnlyExpected = receiveOptions.contains(ReceiveOption.CHECK_ONLY_EXPECTED);
+        setReceiveOptions(receiveOptions);
     }
 
     public ReceiveAction(Set<ReceiveOption> receiveOptions, ProtocolMessage<?>... messages) {
@@ -183,14 +184,7 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
     }
 
     public ReceiveAction(ReceiveOption receiveOption, List<ProtocolMessage<?>> messages) {
-        this(messages);
-        switch (receiveOption) {
-            case CHECK_ONLY_EXPECTED:
-                this.checkOnlyExpected = true;
-                break;
-            case EARLY_CLEAN_SHUTDOWN:
-                this.earlyCleanShutdown = true;
-        }
+        this(Set.of(receiveOption), messages);
     }
 
     public ReceiveAction(ReceiveOption receiveOption, ProtocolMessage<?>... messages) {
@@ -318,6 +312,49 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
 
     public void setExpectedMessages(ProtocolMessage<?>... expectedMessages) {
         this.expectedMessages = new ArrayList<>(Arrays.asList(expectedMessages));
+    }
+
+    /**
+     * Check if the receive option is set.
+     *
+     * @param option a receive option
+     * @return {@code true} if the receive option is set, else {@code false}
+     */
+    protected boolean hasReceiveOption(final ReceiveOption option) {
+        Boolean value = null;
+        switch (option) {
+            case EARLY_CLEAN_SHUTDOWN:
+                value = this.earlyCleanShutdown;
+                break;
+            case CHECK_ONLY_EXPECTED:
+                value = this.checkOnlyExpected;
+                break;
+        }
+
+        return value != null && value.booleanValue();
+    }
+
+    /**
+     * Get the receive options for this action.
+     *
+     * @return set of receive options
+     */
+    public Set<ReceiveOption> getReceiveOptions() {
+        return Stream.of(
+                        ReceiveOption.EARLY_CLEAN_SHUTDOWN,
+                        ReceiveOption.CHECK_ONLY_EXPECTED)
+                .filter(this::hasReceiveOption)
+                .collect(Collectors.toSet());
+    }
+
+    /**
+     * Set the receive options for this action.
+     *
+     * @param receiveOptions set of receive options
+     */
+    public void setReceiveOptions(final Set<ReceiveOption> receiveOptions) {
+        this.earlyCleanShutdown = receiveOptions.contains(ReceiveOption.EARLY_CLEAN_SHUTDOWN);
+        this.checkOnlyExpected = receiveOptions.contains(ReceiveOption.CHECK_ONLY_EXPECTED);
     }
 
     @Override
