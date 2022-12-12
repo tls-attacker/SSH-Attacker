@@ -147,6 +147,11 @@
             <artifactId>liboqs-java</artifactId>
             <version>1.0</version>
         </dependency>
+        <dependency>
+            <groupId>cc.redberry</groupId>
+            <artifactId>rings</artifactId>
+            <version>2.5.7</version>
+        </dependency>
         <!-- scope: test -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
