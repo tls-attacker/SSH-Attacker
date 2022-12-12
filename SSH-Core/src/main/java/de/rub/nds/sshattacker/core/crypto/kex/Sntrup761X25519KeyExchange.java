@@ -25,7 +25,7 @@ public class Sntrup761X25519KeyExchange extends HybridKeyExchange {
                 HybridKeyExchangeCombiner.POSTQUANTUM_CONCATENATE_CLASSICAL,
                 CryptoConstants.X25519_POINT_SIZE,
                 CryptoConstants.SNTRUP761_PUBLIC_KEY_SIZE,
-                CryptoConstants.SNTRUP761_CYPHERTEXT_SIZE);
+                CryptoConstants.SNTRUP761_CIPHERTEXT_SIZE);
     }
 
     @Override
@@ -37,7 +37,7 @@ public class Sntrup761X25519KeyExchange extends HybridKeyExchange {
             }
 
             byte[] tmpSharedSecret =
-                    mergeKeyExchanges(
+                    mergeKeyExchangeShares(
                             ArrayConverter.bigIntegerToByteArray(encapsulation.getSharedSecret()),
                             ArrayConverter.bigIntegerToByteArray(agreement.getSharedSecret()));
             this.sharedSecret = new BigInteger(encode(tmpSharedSecret, "SHA-512"));

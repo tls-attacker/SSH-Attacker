@@ -52,17 +52,17 @@ public class HybridKeyExchangeInitMessage extends SshMessage<HybridKeyExchangeIn
             ModifiableByteArray agreementPublicKey, boolean adjustLengthField) {
         this.agreementPublicKey = agreementPublicKey;
         if (adjustLengthField) {
-            setAgreementPublicKeyLength(agreementPublicKey.getValue().length);
+            setAgreementPublicKeyLength(this.agreementPublicKey.getValue().length);
         }
     }
 
     public void setAgreementPublicKey(byte[] agreementPublicKey, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setAgreementPublicKeyLength(agreementPublicKey.length);
-        }
         this.agreementPublicKey =
                 ModifiableVariableFactory.safelySetValue(
                         this.agreementPublicKey, agreementPublicKey);
+        if (adjustLengthField) {
+            setAgreementPublicKeyLength(this.agreementPublicKey.getValue().length);
+        }
     }
 
     public ModifiableInteger getEncapsulationPublicKeyLength() {
@@ -95,18 +95,18 @@ public class HybridKeyExchangeInitMessage extends SshMessage<HybridKeyExchangeIn
             ModifiableByteArray encapsulationPublicKey, boolean adjustLengthField) {
         this.encapsulationPublicKey = encapsulationPublicKey;
         if (adjustLengthField) {
-            setEncapsulationPublicKeyLength(encapsulationPublicKey.getValue().length);
+            setEncapsulationPublicKeyLength(this.encapsulationPublicKey.getValue().length);
         }
     }
 
     public void setEncapsulationPublicKey(
             byte[] encapsulationPublicKey, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setEncapsulationPublicKeyLength(encapsulationPublicKey.length);
-        }
         this.encapsulationPublicKey =
                 ModifiableVariableFactory.safelySetValue(
                         this.encapsulationPublicKey, encapsulationPublicKey);
+        if (adjustLengthField) {
+            setEncapsulationPublicKeyLength(this.encapsulationPublicKey.getValue().length);
+        }
     }
 
     @Override

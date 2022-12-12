@@ -80,7 +80,7 @@ public class HybridKeyExchangeTest {
                     byte[] pubKeyEncaspulation =
                             DatatypeConverter.parseHexBinary(line.split(" = ")[1]);
                     line = reader.nextLine();
-                    byte[] cyphertextEncapsulation =
+                    byte[] ciphertextEncapsulation =
                             DatatypeConverter.parseHexBinary(line.split(" = ")[1]);
                     line = reader.nextLine();
                     byte[] sharedSecretEncapsulation =
@@ -110,7 +110,7 @@ public class HybridKeyExchangeTest {
                                         remoteKeyAgreement,
                                         sharedSecretEncapsulation,
                                         sharedSecretAgreement,
-                                        cyphertextEncapsulation,
+                                        ciphertextEncapsulation,
                                         encodedSharedSecret));
                     }
                     if (mode == 1) {
@@ -123,7 +123,7 @@ public class HybridKeyExchangeTest {
                                         remoteKeyAgreement,
                                         sharedSecretEncapsulation,
                                         sharedSecretAgreement,
-                                        cyphertextEncapsulation,
+                                        ciphertextEncapsulation,
                                         encodedSharedSecret));
                     }
                 }
@@ -161,14 +161,14 @@ public class HybridKeyExchangeTest {
             byte[] agreementPubKeyServer,
             byte[] encapsulationSharedSecret,
             byte[] agreementSharedSecret,
-            byte[] cyphertext,
+            byte[] ciphertext,
             byte[] encodedSharedSecret) {
 
         try {
             // Mock all functionCalls of org.openquantumsafe.KeyEncapsulation
             doReturn(encapsulationPubKey).when(sntrup).export_public_key();
             doReturn(encapsulationPrivKey).when(sntrup).export_secret_key();
-            doReturn(encapsulationSharedSecret).when(sntrup).decap_secret(cyphertext);
+            doReturn(encapsulationSharedSecret).when(sntrup).decap_secret(ciphertext);
 
             // Inject the encapsulation Kex with the mocked key exchange into the
             // object to test
@@ -206,8 +206,8 @@ public class HybridKeyExchangeTest {
                             kex.getKeyAgreement().getLocalKeyPair().getPrivate().getEncoded(),
                             agreementPrivKeyClient));
 
-            // Set public Key and Cyphertext
-            kex.getKeyEncapsulation().setEncryptedSharedSecret(cyphertext);
+            // Set public Key and ciphertext
+            kex.getKeyEncapsulation().setEncryptedSharedSecret(ciphertext);
             kex.getKeyAgreement().setRemotePublicKey(agreementPubKeyServer);
 
             // CombineSharedSecrets
@@ -247,14 +247,14 @@ public class HybridKeyExchangeTest {
             byte[] agreementPubKeyClient,
             byte[] encapsulationSharedSecret,
             byte[] agreementSharedSecret,
-            byte[] cyphertext,
+            byte[] ciphertext,
             byte[] encodedSharedSecret) {
         try {
             // Mock all functionCalls of org.openquantumsafe.KeyEncapsulation
-            doReturn(new Pair<byte[], byte[]>(cyphertext, encapsulationSharedSecret))
+            doReturn(new Pair<byte[], byte[]>(ciphertext, encapsulationSharedSecret))
                     .when(sntrup)
                     .encap_secret(encapsulationPubKey);
-            // doReturn(encapsulationSharedSecret).when(sntrup).decap_secret(cyphertext);
+            // doReturn(encapsulationSharedSecret).when(sntrup).decap_secret(ciphertext);
 
             // Inject the encapsulation Kex with the mocked sntrup key exchange into the
             // object to test
@@ -286,7 +286,7 @@ public class HybridKeyExchangeTest {
             kex.getKeyEncapsulation().setRemotePublicKey(encapsulationPubKey);
             kex.getKeyAgreement().setRemotePublicKey(agreementPubKeyClient);
 
-            // generate sharedSecret and Cyphertext
+            // generate sharedSecret and ciphertext
             kex.getKeyEncapsulation().encryptSharedSecret();
             assertTrue(
                     Arrays.equals(
@@ -295,7 +295,7 @@ public class HybridKeyExchangeTest {
                                     kex.getKeyEncapsulation().getSharedSecret())));
             assertTrue(
                     Arrays.equals(
-                            cyphertext, kex.getKeyEncapsulation().getEncryptedSharedSecret()));
+                            ciphertext, kex.getKeyEncapsulation().getEncryptedSharedSecret()));
 
             // CombineSharedSecrets
             kex.combineSharedSecrets();

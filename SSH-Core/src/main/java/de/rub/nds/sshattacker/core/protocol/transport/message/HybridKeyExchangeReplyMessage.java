@@ -25,8 +25,8 @@ public class HybridKeyExchangeReplyMessage extends SshMessage<HybridKeyExchangeR
     private ModifiableInteger publicKeyLength;
     private ModifiableByteArray publicKey;
 
-    private ModifiableInteger cyphertextLength;
-    private ModifiableByteArray cyphertext;
+    private ModifiableInteger combinedKeyShareLength;
+    private ModifiableByteArray combinedKeyShare;
 
     private ModifiableInteger signatureLength;
     private ModifiableByteArray signature;
@@ -70,18 +70,18 @@ public class HybridKeyExchangeReplyMessage extends SshMessage<HybridKeyExchangeR
 
     @Override
     public void setHostKeyBytes(ModifiableByteArray hostKeyBytes, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setHostKeyBytesLength(hostKeyBytes.getValue().length);
-        }
         this.hostKeyBytes = hostKeyBytes;
+        if (adjustLengthField) {
+            setHostKeyBytesLength(this.hostKeyBytes.getValue().length);
+        }
     }
 
     @Override
     public void setHostKeyBytes(byte[] hostKey, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setHostKeyBytesLength(hostKey.length);
-        }
         this.hostKeyBytes = ModifiableVariableFactory.safelySetValue(this.hostKeyBytes, hostKey);
+        if (adjustLengthField) {
+            setHostKeyBytesLength(this.hostKeyBytes.getValue().length);
+        }
     }
 
     public ModifiableInteger getPublicKeyLength() {
@@ -106,52 +106,54 @@ public class HybridKeyExchangeReplyMessage extends SshMessage<HybridKeyExchangeR
     }
 
     public void setPublicKey(ModifiableByteArray publicKey, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setPublicKeyLength(publicKey.getValue().length);
-        }
         this.publicKey = publicKey;
+        if (adjustLengthField) {
+            setPublicKeyLength(this.publicKey.getValue().length);
+        }
     }
 
     public void setPublicKey(byte[] publicKey, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setPublicKeyLength(publicKey.length);
-        }
         this.publicKey = ModifiableVariableFactory.safelySetValue(this.publicKey, publicKey);
-    }
-
-    public ModifiableInteger getCyphertextLength() {
-        return cyphertextLength;
-    }
-
-    public void setCyphertextLength(ModifiableInteger cyphertextLength) {
-        this.cyphertextLength = cyphertextLength;
-    }
-
-    public void setCyphertextLength(int cyphertextLength) {
-        this.cyphertextLength =
-                ModifiableVariableFactory.safelySetValue(this.cyphertextLength, cyphertextLength);
-    }
-
-    public ModifiableByteArray getCyphertext() {
-        return cyphertext;
-    }
-
-    public void setCyphertext(byte[] cyphertext) {
-        setCyphertext(cyphertext, false);
-    }
-
-    public void setCyphertext(ModifiableByteArray cyphertext, boolean adjustLengthField) {
         if (adjustLengthField) {
-            setCyphertextLength(cyphertext.getValue().length);
+            setPublicKeyLength(this.publicKey.getValue().length);
         }
-        this.cyphertext = cyphertext;
     }
 
-    public void setCyphertext(byte[] cyphertext, boolean adjustLengthField) {
+    public ModifiableInteger getCombinedKeyShareLength() {
+        return combinedKeyShareLength;
+    }
+
+    public void setCombinedKeyShareLength(ModifiableInteger combinedKeyShareLength) {
+        this.combinedKeyShareLength = combinedKeyShareLength;
+    }
+
+    public void setCiphertextLength(int ciphertextLength) {
+        this.combinedKeyShareLength =
+                ModifiableVariableFactory.safelySetValue(
+                        this.combinedKeyShareLength, ciphertextLength);
+    }
+
+    public ModifiableByteArray getCombinedKeyShare() {
+        return combinedKeyShare;
+    }
+
+    public void setCombinedKeyShare(byte[] combinedKeyShare) {
+        setCiphertext(combinedKeyShare, false);
+    }
+
+    public void setCiphertext(ModifiableByteArray ciphertext, boolean adjustLengthField) {
+        this.combinedKeyShare = ciphertext;
         if (adjustLengthField) {
-            setCyphertextLength(cyphertext.length);
+            setCiphertextLength(this.combinedKeyShare.getValue().length);
         }
-        this.cyphertext = ModifiableVariableFactory.safelySetValue(this.cyphertext, cyphertext);
+    }
+
+    public void setCiphertext(byte[] ciphertext, boolean adjustLengthField) {
+        this.combinedKeyShare =
+                ModifiableVariableFactory.safelySetValue(this.combinedKeyShare, ciphertext);
+        if (adjustLengthField) {
+            setCiphertextLength(this.combinedKeyShare.getValue().length);
+        }
     }
 
     @Override
@@ -187,18 +189,18 @@ public class HybridKeyExchangeReplyMessage extends SshMessage<HybridKeyExchangeR
 
     @Override
     public void setSignature(ModifiableByteArray signature, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setSignatureLength(signature.getValue().length);
-        }
         this.signature = signature;
+        if (adjustLengthField) {
+            setSignatureLength(this.signature.getValue().length);
+        }
     }
 
     @Override
     public void setSignature(byte[] signature, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setSignatureLength(signature.length);
-        }
         this.signature = ModifiableVariableFactory.safelySetValue(this.signature, signature);
+        if (adjustLengthField) {
+            setSignatureLength(this.signature.getValue().length);
+        }
     }
 
     @Override

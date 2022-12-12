@@ -48,7 +48,8 @@ public class HybridKeyExchangeReplyMessageSerializer
 
     private void serializeHybridKey() {
         int length =
-                message.getPublicKeyLength().getValue() + message.getCyphertextLength().getValue();
+                message.getPublicKeyLength().getValue()
+                        + message.getCombinedKeyShareLength().getValue();
         appendInt(length, DataFormatConstants.MPINT_SIZE_LENGTH);
         LOGGER.debug("Hybrid Key (server) length: " + length);
         byte[] combined;
@@ -57,13 +58,13 @@ public class HybridKeyExchangeReplyMessageSerializer
                 combined =
                         KeyExchangeUtil.concatenateHybridKeys(
                                 message.getPublicKey().getValue(),
-                                message.getCyphertext().getValue());
+                                message.getCombinedKeyShare().getValue());
                 appendBytes(combined);
                 break;
             case POSTQUANTUM_CONCATENATE_CLASSICAL:
                 combined =
                         KeyExchangeUtil.concatenateHybridKeys(
-                                message.getCyphertext().getValue(),
+                                message.getCombinedKeyShare().getValue(),
                                 message.getPublicKey().getValue());
                 appendBytes(combined);
                 break;

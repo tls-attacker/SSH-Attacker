@@ -36,8 +36,8 @@ public class Sntrup761KeyExchange extends KeyEncapsulation {
     }
 
     @Override
-    public void setRemotePublicKey(byte[] serializedPublicKey) {
-        this.remotePublicKey = new CustomSntrup761PublicKey(serializedPublicKey);
+    public void setRemotePublicKey(byte[] remotePublicKeyBytes) {
+        this.remotePublicKey = new CustomSntrup761PublicKey(remotePublicKeyBytes);
     }
 
     @Override
