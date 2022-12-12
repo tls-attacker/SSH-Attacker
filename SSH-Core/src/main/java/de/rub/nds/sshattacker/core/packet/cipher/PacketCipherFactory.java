@@ -33,8 +33,11 @@ public class PacketCipherFactory {
                 return new PacketMacedCipher(context, keySet, encryptionAlgorithm, macAlgorithm);
             }
         } catch (Exception e) {
-            LOGGER.debug(
-                    "Could not PacketCipher from the current context! Creating none Cipher", e);
+            LOGGER.warn(
+                    "Could not create PacketCipher with encryotion algorithm '{}' and MAC algorithm '{}'! Creating 'none' Cipher instead",
+                    encryptionAlgorithm,
+                    macAlgorithm,
+                    e);
             return getNoneCipher(context);
         }
     }
