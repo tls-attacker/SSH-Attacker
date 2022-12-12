@@ -11,16 +11,14 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.CryptoConstants;
 import de.rub.nds.sshattacker.core.constants.HybridKeyExchangeCombiner;
 import de.rub.nds.sshattacker.core.constants.NamedEcGroup;
-
 import java.math.BigInteger;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class Curve25519Frodokem1344KeyExchange extends HybridKeyExchange {
     private static final Logger LOGGER = LogManager.getLogger();
 
-    protected Curve25519Frodokem1344KeyExchange() {
+    public Curve25519Frodokem1344KeyExchange() {
 
         super(
                 new XCurveEcdhKeyExchange(NamedEcGroup.CURVE25519),
@@ -39,11 +37,12 @@ public class Curve25519Frodokem1344KeyExchange extends HybridKeyExchange {
                 encapsulation.decryptSharedSecret();
             }
 
-            byte[] tmpSharedSecret = mergeKeyExchanges(
-                    ArrayConverter.bigIntegerToByteArray(encapsulation.getSharedSecret()),
-                    ArrayConverter.bigIntegerToByteArray(agreement.getSharedSecret()));
+            byte[] tmpSharedSecret =
+                    mergeKeyExchangeShares(
+                            ArrayConverter.bigIntegerToByteArray(encapsulation.getSharedSecret()),
+                            ArrayConverter.bigIntegerToByteArray(agreement.getSharedSecret()));
 
-            this.sharedSecret = new BigInteger(encode(tmpSharedSecret,"SHA-512"));
+            this.sharedSecret = new BigInteger(encode(tmpSharedSecret, "SHA-512"));
             LOGGER.debug(
                     "Concatenated Shared Secret = "
                             + ArrayConverter.bytesToRawHexString(tmpSharedSecret));
@@ -54,6 +53,5 @@ public class Curve25519Frodokem1344KeyExchange extends HybridKeyExchange {
         } catch (Exception e) {
             LOGGER.warn("Could not create the shared Secret: " + e);
         }
-
     }
 }

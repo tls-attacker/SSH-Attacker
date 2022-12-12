@@ -40,6 +40,12 @@ public class HybridKeyExchangeTest {
     org.openquantumsafe.KeyEncapsulation sntrup =
             new org.openquantumsafe.KeyEncapsulation("sntrup761");
 
+    @Spy
+    org.openquantumsafe.KeyEncapsulation frodokem =
+            new org.openquantumsafe.KeyEncapsulation("FrodoKEM-1344-SHAKE");
+
+    @InjectMocks FrodoKem1344KeyExchange frodokem1344Kex;
+
     @InjectMocks Sntrup761KeyExchange sntrup761Kex;
 
     static final Map<String, KeyExchangeAlgorithm> nameToAlgorithm;
@@ -164,10 +170,6 @@ public class HybridKeyExchangeTest {
             byte[] encodedSharedSecret) {
 
         try {
-            // Mock all functionCalls of org.openquantumsafe.KeyEncapsulation
-            doReturn(encapsulationPubKey).when(sntrup).export_public_key();
-            doReturn(encapsulationPrivKey).when(sntrup).export_secret_key();
-            doReturn(encapsulationSharedSecret).when(sntrup).decap_secret(ciphertext);
 
             // Inject the encapsulation Kex with the mocked key exchange into the
             // object to test
@@ -176,8 +178,20 @@ public class HybridKeyExchangeTest {
             HybridKeyExchange kex = null;
             switch (algorithm) {
                 case SNTRUP761_X25519:
+                    // Mock all functionCalls of org.openquantumsafe.KeyEncapsulation
+                    doReturn(encapsulationPubKey).when(sntrup).export_public_key();
+                    doReturn(encapsulationPrivKey).when(sntrup).export_secret_key();
+                    doReturn(encapsulationSharedSecret).when(sntrup).decap_secret(ciphertext);
                     kex = new Sntrup761X25519KeyExchange();
                     encapsulationField.set(kex, sntrup761Kex);
+                    break;
+                case CURVE25519_FRODOKEM1344:
+                    // Mock all functionCalls of org.openquantumsafe.KeyEncapsulation
+                    doReturn(encapsulationPubKey).when(frodokem).export_public_key();
+                    doReturn(encapsulationPrivKey).when(frodokem).export_secret_key();
+                    doReturn(encapsulationSharedSecret).when(frodokem).decap_secret(ciphertext);
+                    kex = new Curve25519Frodokem1344KeyExchange();
+                    encapsulationField.set(kex, frodokem1344Kex);
                     break;
                 default:
                     LOGGER.error("Algorithm " + algorithm + " not supported");
@@ -238,12 +252,6 @@ public class HybridKeyExchangeTest {
             byte[] ciphertext,
             byte[] encodedSharedSecret) {
         try {
-            // Mock all functionCalls of org.openquantumsafe.KeyEncapsulation
-            doReturn(new Pair<byte[], byte[]>(ciphertext, encapsulationSharedSecret))
-                    .when(sntrup)
-                    .encap_secret(encapsulationPubKey);
-            // doReturn(encapsulationSharedSecret).when(sntrup).decap_secret(ciphertext);
-
             // Inject the encapsulation Kex with the mocked sntrup key exchange into the
             // object to test
             Field encapsulationField = HybridKeyExchange.class.getDeclaredField("encapsulation");
@@ -251,8 +259,20 @@ public class HybridKeyExchangeTest {
             HybridKeyExchange kex;
             switch (algorithm) {
                 case SNTRUP761_X25519:
+                    // Mock all functionCalls of org.openquantumsafe.KeyEncapsulation
+                    doReturn(new Pair<byte[], byte[]>(ciphertext, encapsulationSharedSecret))
+                            .when(sntrup)
+                            .encap_secret(encapsulationPubKey);
                     kex = new Sntrup761X25519KeyExchange();
                     encapsulationField.set(kex, sntrup761Kex);
+                    break;
+                case CURVE25519_FRODOKEM1344:
+                    // Mock all functionCalls of org.openquantumsafe.KeyEncapsulation
+                    doReturn(new Pair<byte[], byte[]>(ciphertext, encapsulationSharedSecret))
+                            .when(frodokem)
+                            .encap_secret(encapsulationPubKey);
+                    kex = new Curve25519Frodokem1344KeyExchange();
+                    encapsulationField.set(kex, frodokem1344Kex);
                     break;
                 default:
                     LOGGER.error("Algorithm " + algorithm + " not supported.");

@@ -105,13 +105,11 @@ public class FrodoKem1344KeyExchange extends KeyEncapsulation {
     @Override
     public void setSharedSecret(byte[] sharedSecretBytes) {
         new BigInteger(sharedSecretBytes);
-        
     }
 
     @Override
     public void setEncryptedSharedSecret(byte[] encryptedSharedSecret) {
         this.encryptedSharedSecret = encryptedSharedSecret;
-        
     }
 
     @Override

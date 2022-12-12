@@ -51,7 +51,7 @@ public abstract class HybridKeyExchange extends KeyExchange {
             LOGGER.warn(
                     "Trying to instantiate new Hybrid key exchange falling back to " + algorithm);
         }
-        String kex ="";
+        String kex = "";
         try {
             switch (algorithm) {
                 default:
@@ -64,15 +64,18 @@ public abstract class HybridKeyExchange extends KeyExchange {
                 case SNTRUP761_X25519:
                     kex = "Sntrup761X25519KeyExchange";
                     // Check if SSH-Core-PQC module has been compiled and is available
-                    Class<?> sntrup761x25519 = Class.forName(
-                            "de.rub.nds.sshattacker.core.crypto.kex.Sntrup761X25519KeyExchange");
+                    Class<?> sntrup761x25519 =
+                            Class.forName(
+                                    "de.rub.nds.sshattacker.core.crypto.kex.Sntrup761X25519KeyExchange");
                     return (HybridKeyExchange) sntrup761x25519.getConstructor().newInstance();
 
                 case CURVE25519_FRODOKEM1344:
                     kex = "Curve25519Frodokem1344KeyExchange";
-                    Class<?> curve25519xfrodokem1344 = Class.forName(
-                            "de.rub.nds.sshattacker.core.crypto.kex.Curve25519Frodokem1344KeyExchange");
-                    return (HybridKeyExchange) curve25519xfrodokem1344.getConstructor().newInstance();
+                    Class<?> curve25519xfrodokem1344 =
+                            Class.forName(
+                                    "de.rub.nds.sshattacker.core.crypto.kex.Curve25519Frodokem1344KeyExchange");
+                    return (HybridKeyExchange)
+                            curve25519xfrodokem1344.getConstructor().newInstance();
             }
 
         } catch (ClassNotFoundException e) {
@@ -81,23 +84,22 @@ public abstract class HybridKeyExchange extends KeyExchange {
             System.exit(1);
             return null;
         } catch (InvocationTargetException e) {
-            LOGGER.fatal(
-                    "Unable to invoke the default constructor of class" + kex);
+            LOGGER.fatal("Unable to invoke the default constructor of class" + kex);
             System.exit(1);
             return null;
         } catch (InstantiationException e) {
-            LOGGER.fatal(
-                    "Unable to create new object by constructor invocation of class" + kex);
+            LOGGER.fatal("Unable to create new object by constructor invocation of class" + kex);
             System.exit(1);
             return null;
         } catch (IllegalAccessException e) {
-            LOGGER.fatal(
-                    "Unable to access the default constructor of class" + kex);
+            LOGGER.fatal("Unable to access the default constructor of class" + kex);
             System.exit(1);
             return null;
         } catch (NoSuchMethodException e) {
             LOGGER.fatal(
-                    "Unable to create new instance of HybridKeyExchange, default constructor of class" + kex +" not found. Did the method signature change?");
+                    "Unable to create new instance of HybridKeyExchange, default constructor of class"
+                            + kex
+                            + " not found. Did the method signature change?");
             System.exit(1);
             return null;
         }

@@ -426,18 +426,19 @@ public class Config implements Serializable {
         // Default values for cryptographic parameters are taken from OpenSSH 8.2p1
         LinkedList<KeyExchangeAlgorithm> supportedKeyExchangeAlgorithms = new LinkedList<>();
         try {
+            Class.forName(
+                    "de.rub.nds.sshattacker.core.crypto.kex.Curve25519Frodokem1344KeyExchange");
             Class.forName("de.rub.nds.sshattacker.core.crypto.kex.Sntrup761X25519KeyExchange");
-            // PQC algorithms are available (namely sntrup761x25519-sha512@openssh.com
+            // PQC algorithms are available (namely sntrup761x25519-sha512@openssh.com)
+            supportedKeyExchangeAlgorithms.add(KeyExchangeAlgorithm.CURVE25519_FRODOKEM1344);
             supportedKeyExchangeAlgorithms.add(KeyExchangeAlgorithm.SNTRUP761_X25519);
         } catch (ClassNotFoundException e) {
             LOGGER.info(
-                    "Classes of module SSH-Core-PQC not found, not offering sntrup761x25519-sha512@openssh.com to peer. If you need PQC support compile with PQC profile enabled.");
+                    "Classes of module SSH-Core-PQC not found, not offering [sntrup761x25519-sha512@openssh.com, curve25519-frodokem1344-sha512@ssh.com ] to peer. If you need PQC support compile with PQC profile enabled.");
         }
         supportedKeyExchangeAlgorithms.addAll(
                 Arrays.stream(
                                 new KeyExchangeAlgorithm[] {
-                                    KeyExchangeAlgorithm.SNTRUP761_X25519,
-                                    KeyExchangeAlgorithm.CURVE25519_FRODOKEM1344,
                                     KeyExchangeAlgorithm.CURVE25519_SHA256,
                                     KeyExchangeAlgorithm.CURVE25519_SHA256_LIBSSH_ORG,
                                     KeyExchangeAlgorithm.ECDH_SHA2_NISTP256,
@@ -453,7 +454,8 @@ public class Config implements Serializable {
         serverSupportedKeyExchangeAlgorithms =
                 new LinkedList<>(clientSupportedKeyExchangeAlgorithms);
 
-        // We don't support CERT_V01 or SK (U2F) host keys (yet), only listed for completeness
+        // We don't support CERT_V01 or SK (U2F) host keys (yet), only listed for
+        // completeness
         clientSupportedHostKeyAlgorithms =
                 Arrays.stream(
                                 new PublicKeyAlgorithm[] {
@@ -558,7 +560,8 @@ public class Config implements Serializable {
         defaultRsaKeyExchangeAlgorithm = KeyExchangeAlgorithm.RSA2048_SHA256;
         defaultHybridKeyExchangeAlgorithm = KeyExchangeAlgorithm.SNTRUP761_X25519;
 
-        // An OpenSSL generated 2048 bit RSA keypair is currently being used as the default host key
+        // An OpenSSL generated 2048 bit RSA keypair is currently being used as the
+        // default host key
         // TODO: Load host keys from file to reduce length of Config class
         hostKeys =
                 List.of(
@@ -764,7 +767,8 @@ public class Config implements Serializable {
         preConfiguredAuthResponses.add(preConfiguredAuthResponse2);
 
         // sshkey generated with "openssl ecparam -name secp521r1 -genkey -out key.pem"
-        // pubkey for authorized_keys file on host generated with "ssh-keygen -y -f key.pem >
+        // pubkey for authorized_keys file on host generated with "ssh-keygen -y -f
+        // key.pem >
         // key.pub"
         userKeys =
                 List.of(
@@ -917,6 +921,7 @@ public class Config implements Serializable {
     public String getServerEndOfMessageSequence() {
         return serverEndOfMessageSequence;
     }
+
     // endregion
     // region Setters for VersionExchange
     public void setClientVersion(String clientVersion) {
@@ -1230,6 +1235,7 @@ public class Config implements Serializable {
     public List<SshPublicKey<?, ?>> getHostKeys() {
         return hostKeys;
     }
+
     // endregion
     // region Setters for KeyExchange
     public void setDhGexMinimalGroupSize(Integer dhGexMinimalGroupSize) {
@@ -1301,6 +1307,7 @@ public class Config implements Serializable {
     public List<SshPublicKey<?, ?>> getUserKeys() {
         return userKeys;
     }
+
     // endregion
     // region Setters for Authentification
     public void setAuthenticationMethod(AuthenticationMethod authenticationMethod) {
