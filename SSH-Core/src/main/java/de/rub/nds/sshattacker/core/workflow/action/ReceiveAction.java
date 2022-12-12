@@ -156,8 +156,12 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
             })
     protected List<ProtocolMessage<?>> expectedMessages = new ArrayList<>();
 
+    /**
+     * Set to {@code true} if the {@link ReceiveOption#EARLY_CLEAN_SHUTDOWN} option has been set.
+     */
     @XmlElement protected Boolean earlyCleanShutdown = null;
 
+    /** Set to {@code true} if the {@link ReceiveOption#CHECK_ONLY_EXPECTED} option has been set. */
     @XmlElement protected Boolean checkOnlyExpected = null;
 
     public ReceiveAction() {
