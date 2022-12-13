@@ -7,11 +7,12 @@
  */
 package de.rub.nds.sshattacker.core.crypto.kex;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.HybridKeyExchangeCombiner;
 import de.rub.nds.sshattacker.core.constants.KeyExchangeAlgorithm;
 import de.rub.nds.sshattacker.core.constants.KeyExchangeFlowType;
 import de.rub.nds.sshattacker.core.state.SshContext;
-import java.nio.ByteBuffer;
+import java.lang.reflect.InvocationTargetException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import org.apache.logging.log4j.LogManager;
@@ -23,7 +24,7 @@ public abstract class HybridKeyExchange extends KeyExchange {
     protected KeyEncapsulation encapsulation;
     private int pkAgreementLength;
     private int pkEncapsulationLength;
-    private int cyphtertextLength;
+    private int ciphertextLength;
     private HybridKeyExchangeCombiner combiner;
 
     protected HybridKeyExchange(
@@ -32,14 +33,14 @@ public abstract class HybridKeyExchange extends KeyExchange {
             HybridKeyExchangeCombiner combiner,
             int pkAgreementLength,
             int pkEncapsulationLength,
-            int cyphtertextLength) {
+            int ciphertextLength) {
         super();
         this.agreement = agreement;
         this.encapsulation = encapsulation;
         this.combiner = combiner;
         this.pkAgreementLength = pkAgreementLength;
         this.pkEncapsulationLength = pkEncapsulationLength;
-        this.cyphtertextLength = cyphtertextLength;
+        this.ciphertextLength = ciphertextLength;
     }
 
     public static HybridKeyExchange newInstance(
@@ -52,15 +53,46 @@ public abstract class HybridKeyExchange extends KeyExchange {
         }
 
         switch (algorithm) {
-            case SNTRUP761_X25519:
-                return new Sntrup761X25519KeyExchange();
             default:
                 LOGGER.warn(
                         "Algorithm "
                                 + algorithm
                                 + "is not supported. Falling back to "
                                 + KeyExchangeAlgorithm.SNTRUP761_X25519);
-                return new Sntrup761X25519KeyExchange();
+                // Fallthrough to case SNTRUP761_X25519 intended
+            case SNTRUP761_X25519:
+                try {
+                    // Check if SSH-Core-PQC module has been compiled and is available
+                    Class<?> sntrup761x25519 =
+                            Class.forName(
+                                    "de.rub.nds.sshattacker.core.crypto.kex.Sntrup761X25519KeyExchange");
+                    return (HybridKeyExchange) sntrup761x25519.getConstructor().newInstance();
+                } catch (ClassNotFoundException e) {
+                    LOGGER.fatal(
+                            "Unable to create new instance of HybridKeyExchange, module SSH-Core-PQC is not available. Make sure to enable PQC by enabling the corresponding profile during build!");
+                    System.exit(1);
+                    return null;
+                } catch (InvocationTargetException e) {
+                    LOGGER.fatal(
+                            "Unable to invoke the default constructor of class Sntrup761X25519KeyExchange");
+                    System.exit(1);
+                    return null;
+                } catch (InstantiationException e) {
+                    LOGGER.fatal(
+                            "Unable to create new object by constructor invocation of class Sntrup761X25519KeyExchange");
+                    System.exit(1);
+                    return null;
+                } catch (IllegalAccessException e) {
+                    LOGGER.fatal(
+                            "Unable to access the default constructor of class Sntrup761X25519KeyExchange");
+                    System.exit(1);
+                    return null;
+                } catch (NoSuchMethodException e) {
+                    LOGGER.fatal(
+                            "Unable to create new instance of HybridKeyExchange, default constructor of class Sntrup761X25519KeyExchange not found. Did the method signature change?");
+                    System.exit(1);
+                    return null;
+                }
         }
     }
 
@@ -72,12 +104,9 @@ public abstract class HybridKeyExchange extends KeyExchange {
         return encapsulation;
     }
 
-    protected byte[] mergeKeyExchanges(byte[] keyExchange1, byte[] keyExchange2) {
-        byte[] mergedKeys = new byte[keyExchange1.length + keyExchange2.length];
-        ByteBuffer buff = ByteBuffer.wrap(mergedKeys);
-        buff.put(keyExchange1);
-        buff.put(keyExchange2);
-        return buff.array();
+    protected byte[] mergeKeyExchangeShares(
+            byte[] firstKeyExchangeShare, byte[] secondKeyExchangeShare) {
+        return ArrayConverter.concatenate(firstKeyExchangeShare, secondKeyExchangeShare);
     }
 
     protected byte[] encode(byte[] sharedSecret, String hashAlgorithm) {
@@ -101,8 +130,8 @@ public abstract class HybridKeyExchange extends KeyExchange {
         return this.pkEncapsulationLength;
     }
 
-    public int getCyphtertextLength() {
-        return this.cyphtertextLength;
+    public int getCiphertextLength() {
+        return this.ciphertextLength;
     }
 
     public HybridKeyExchangeCombiner getCombiner() {

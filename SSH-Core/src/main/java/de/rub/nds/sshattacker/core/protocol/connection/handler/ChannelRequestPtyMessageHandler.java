@@ -13,6 +13,7 @@ import de.rub.nds.sshattacker.core.protocol.connection.parser.ChannelRequestPtyM
 import de.rub.nds.sshattacker.core.protocol.connection.preparator.ChannelRequestPtyMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.connection.serializer.ChannelRequestPtyMessageSerializer;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.util.Converter;
 
 public class ChannelRequestPtyMessageHandler extends SshMessageHandler<ChannelRequestPtyMessage> {
 
@@ -25,7 +26,11 @@ public class ChannelRequestPtyMessageHandler extends SshMessageHandler<ChannelRe
     }
 
     @Override
-    public void adjustContext() {}
+    public void adjustContext() {
+        if (Converter.byteToBoolean(message.getWantReply().getValue())) {
+            context.getChannelManager().addToChannelRequestResponseQueue(message);
+        }
+    }
 
     @Override
     public ChannelRequestPtyMessageParser getParser(byte[] array) {

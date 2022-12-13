@@ -22,6 +22,7 @@ import de.rub.nds.sshattacker.core.crypto.keys.CustomRsaPrivateKey;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomRsaPublicKey;
 import de.rub.nds.sshattacker.core.crypto.keys.SshPublicKey;
 import de.rub.nds.sshattacker.core.exceptions.CryptoException;
+import de.rub.nds.sshattacker.core.exceptions.NotImplementedException;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.util.Converter;
 import java.math.BigInteger;
@@ -194,18 +195,17 @@ public class RsaKeyExchange extends KeyEncapsulation {
 
     @Override
     public void setLocalKeyPair(byte[] privateKeyBytes) {
-        LOGGER.warn("Updateing local Key Pairs not supported, use generateLocalKeys instead");
+        throw new NotImplementedException("RsaKeyExchange::setLocalKeyPair");
     }
 
     @Override
     public void setLocalKeyPair(byte[] privateKeyBytes, byte[] publicKeyBytes) {
-        LOGGER.warn("Updateing local Key Pairs not supported, use generateLocalKeys instead");
+        throw new NotImplementedException("RsaKeyExchange::setLocalKeyPair");
     }
 
     @Override
     public CustomPublicKey getRemotePublicKey() {
-        LOGGER.warn("getRemotePublicKey currently not supported");
-        return null;
+        throw new NotImplementedException("RsaKeyExchange::getRemotePublicKey");
     }
 
     @Override
@@ -215,33 +215,31 @@ public class RsaKeyExchange extends KeyEncapsulation {
 
     @Override
     public void setEncryptedSharedSecret(byte[] encryptedSharedSecret) {
-        LOGGER.warn("setEncapsulatedSecret currently not supported");
+        throw new NotImplementedException("RsaKeyExchange::encryptedSharedSecret");
     }
 
     @Override
     public byte[] getEncryptedSharedSecret() {
-        LOGGER.warn("getEncapsulatedSecret currently not supported");
-        return null;
+        throw new NotImplementedException("RsaKeyExchange::getEncryptedSharedSecret");
     }
 
     @Override
-    public void decryptSharedSecret() throws CryptoException {
-        LOGGER.warn("decryptSharedSecret");
+    public void decryptSharedSecret() {
+        throw new NotImplementedException("RsaKeyExchange::decryptSharedSecret");
     }
 
     @Override
-    public void setRemotePublicKey(byte[] remotPublicKeyBytes) {
-        LOGGER.warn("setRemotePublicKey currently not supported");
+    public void setRemotePublicKey(byte[] remotePublicKeyBytes) {
+        throw new NotImplementedException("RsaKeyExchange::setRemotePublicKey");
     }
 
     @Override
     public void generateLocalKeyPair() {
-        LOGGER.warn("generateLocalKeyPair currently not supported");
+        throw new NotImplementedException("RsaKeyExchange::generateLocalKeyPair");
     }
 
     @Override
     public CustomKeyPair<? extends CustomPrivateKey, ? extends CustomPublicKey> getLocalKeyPair() {
-        LOGGER.warn("getLocalKeyPair currently not supported");
-        return null;
+        throw new NotImplementedException("RsaKeyExchange::getLocalKeyPair");
     }
 }
