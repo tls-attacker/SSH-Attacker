@@ -7,6 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.protocol.authentication.serializer;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthPubkeyMessage;
 import de.rub.nds.sshattacker.core.util.Converter;
@@ -42,14 +43,17 @@ public class UserAuthPubkeyMessageSerializer
     private void serializePubkey() {
         LOGGER.debug("Pubkey length: " + message.getPubkeyLength().getValue());
         appendInt(message.getPubkeyLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
-        LOGGER.debug("Pubkey: " + new String(message.getPubkey().getValue()));
+        LOGGER.debug(
+                "Pubkey: {}", ArrayConverter.bytesToRawHexString((message.getPubkey().getValue())));
         appendBytes(message.getPubkey().getValue());
     }
 
     private void serializeSignature() {
         LOGGER.debug("Signature length: " + message.getSignatureLength().getValue());
         appendInt(message.getSignatureLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
-        LOGGER.debug("Signature: " + new String(message.getSignature().getValue()));
+        LOGGER.debug(
+                "Signature: {}",
+                ArrayConverter.bytesToRawHexString(message.getSignature().getValue()));
         appendBytes(message.getSignature().getValue());
     }
 
