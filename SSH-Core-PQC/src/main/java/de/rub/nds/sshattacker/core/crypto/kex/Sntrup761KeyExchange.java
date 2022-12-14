@@ -12,7 +12,7 @@ import de.rub.nds.sshattacker.core.constants.CryptoConstants;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomKeyPair;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomPublicKey;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomSntrup761PrivateKey;
-import de.rub.nds.sshattacker.core.crypto.keys.CustomSntrup761PublicKey;
+import de.rub.nds.sshattacker.core.crypto.keys.CustomHybridPublicKey;
 import de.rub.nds.sshattacker.core.exceptions.CryptoException;
 import java.math.BigInteger;
 import org.apache.logging.log4j.LogManager;
@@ -22,8 +22,8 @@ public class Sntrup761KeyExchange extends KeyEncapsulation {
 
     private static final Logger LOGGER = LogManager.getLogger();
     private org.openquantumsafe.KeyEncapsulation sntrup;
-    private CustomKeyPair<CustomSntrup761PrivateKey, CustomSntrup761PublicKey> localKeyPair;
-    private CustomSntrup761PublicKey remotePublicKey;
+    private CustomKeyPair<CustomSntrup761PrivateKey, CustomHybridPublicKey> localKeyPair;
+    private CustomHybridPublicKey remotePublicKey;
     private byte[] encryptedSharedSecret;
 
     public Sntrup761KeyExchange() {
@@ -31,13 +31,13 @@ public class Sntrup761KeyExchange extends KeyEncapsulation {
     }
 
     @Override
-    public CustomKeyPair<CustomSntrup761PrivateKey, CustomSntrup761PublicKey> getLocalKeyPair() {
+    public CustomKeyPair<CustomSntrup761PrivateKey, CustomHybridPublicKey> getLocalKeyPair() {
         return this.localKeyPair;
     }
 
     @Override
     public void setRemotePublicKey(byte[] remotePublicKeyBytes) {
-        this.remotePublicKey = new CustomSntrup761PublicKey(remotePublicKeyBytes);
+        this.remotePublicKey = new CustomHybridPublicKey(remotePublicKeyBytes);
     }
 
     @Override
@@ -45,9 +45,9 @@ public class Sntrup761KeyExchange extends KeyEncapsulation {
         sntrup.generate_keypair();
         CustomSntrup761PrivateKey privKey =
                 new CustomSntrup761PrivateKey(sntrup.export_secret_key());
-        CustomSntrup761PublicKey pubKey = new CustomSntrup761PublicKey(sntrup.export_public_key());
+        CustomHybridPublicKey pubKey = new CustomHybridPublicKey(sntrup.export_public_key());
         this.localKeyPair =
-                new CustomKeyPair<CustomSntrup761PrivateKey, CustomSntrup761PublicKey>(
+                new CustomKeyPair<CustomSntrup761PrivateKey, CustomHybridPublicKey>(
                         privKey, pubKey);
     }
 

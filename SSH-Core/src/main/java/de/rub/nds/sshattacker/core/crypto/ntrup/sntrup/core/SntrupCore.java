@@ -7,47 +7,20 @@
  */
 package de.rub.nds.sshattacker.core.crypto.ntrup.sntrup.core;
 
-import java.util.Arrays;
 import java.util.Optional;
 
 public class SntrupCore {
-    private RQ h;
-    private R3 gInv;
-    private Short f;
-    private RQ f3;
-    private RQ f3Inv;
-    private R g;
     private SntrupParameterSet set;
 
     public SntrupCore(SntrupParameterSet set) {
         this.set = set;
     }
 
-    public SntrupKeyPairCore keyGenCore() {
-        generateG();
-        generateF();
-        generateH();
-        SntrupPubKeyCore pubK = new SntrupPubKeyCore(h);
-        SntrupPrivKeyCore privK = new SntrupPrivKeyCore(f, f3, f3Inv, g, gInv);
-        return new SntrupKeyPairCore(privK, pubK);
-    }
+    public SntrupCoreValues keyGenCore() {
 
-    public Rounded encrypt(Short input, SntrupPubKeyCore pubK) {
-        RQ hr = RQ.multiply(input, pubK.getH());
-        return Rounded.round(hr);
-    }
+        R g = null;
+        R3 gInv = null;
 
-    public Short decrypt(Rounded ciphertext, SntrupPrivKeyCore privK) {
-        RQ cf3 = RQ.multiply(ciphertext, privK.getF3());
-        R3 e = new R3(cf3.getSet(), cf3.stream().toArray());
-        R3 ev = R3.multiply(e, privK.getgInv());
-        System.out.println(Arrays.toString(e.stream().toArray()));
-        R r = R.lift(ev);
-
-        return Short.createShort(set, r.stream().toArray());
-    }
-
-    private void generateG() {
         while (g == null) {
             R tmp = R.randomSmall(set);
             Optional<R3> tmpInv = R3.isInvertibleInR3(set, tmp);
@@ -56,16 +29,27 @@ public class SntrupCore {
                 gInv = tmpInv.get();
             }
         }
+
+        Short f = Short.createRandomShort(set);
+        RQ f3 = RQ.multiply(3, f);
+        RQ f3Inv = RQ.invert(f3);
+        RQ h = RQ.multiply(g, f3Inv);
+        Short roh = Short.createRandomShort(set);
+
+        return new SntrupCoreValues(g, gInv, f, f3, f3Inv, h, roh);
     }
 
-    private void generateF() {
-        f = Short.createRandomShort(set);
-        f3 = RQ.multiply(3, f);
+    public Rounded encrypt(Short input, RQ h) {
+        RQ hr = RQ.multiply(input, h);
+        return Rounded.round(hr);
     }
 
-    private void generateH() {
-        f3 = RQ.multiply(3, f);
-        f3Inv = RQ.invert(f3);
-        h = RQ.multiply(g, f3Inv);
+    public Short decrypt(Rounded ciphertext, Short f, R3 gInv) {
+        RQ f3 = RQ.multiply(3, f);
+        RQ cf3 = RQ.multiply(ciphertext, f3);
+        R3 e = new R3(cf3.getSet(), cf3.stream().toArray());
+        R3 ev = R3.multiply(e, gInv);
+        R r = R.lift(ev);
+        return Short.createShort(set, r.stream().toArray());
     }
 }

@@ -194,11 +194,6 @@ public class RsaKeyExchange extends KeyEncapsulation {
     }
 
     @Override
-    public void setLocalKeyPair(byte[] privateKeyBytes) {
-        throw new NotImplementedException("RsaKeyExchange::setLocalKeyPair");
-    }
-
-    @Override
     public void setLocalKeyPair(byte[] privateKeyBytes, byte[] publicKeyBytes) {
         throw new NotImplementedException("RsaKeyExchange::setLocalKeyPair");
     }

@@ -17,10 +17,10 @@ public class SntrupCoreTest {
     public void testCore() {
         SntrupParameterSet set = SntrupParameterSet.KEM_SNTRUP_761;
         SntrupCore core = new SntrupCore(set);
-        SntrupKeyPairCore keyPair = core.keyGenCore();
+        SntrupCoreValues values = core.keyGenCore();
         Short r = Short.createRandomShort(set);
-        Rounded c = core.encrypt(r, keyPair.getPubKey());
-        Short rNew = core.decrypt(c, keyPair.getPrivKey());
+        Rounded c = core.encrypt(r, values.getH());
+        Short rNew = core.decrypt(c,values.getF(),values.getgInv());
         assertTrue("r != r'", r.equals(rNew));
     }
 }
