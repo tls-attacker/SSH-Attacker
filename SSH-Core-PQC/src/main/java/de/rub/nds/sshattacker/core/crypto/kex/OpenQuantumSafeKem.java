@@ -14,11 +14,6 @@ import de.rub.nds.sshattacker.core.crypto.keys.CustomKeyPair;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomPQKemPrivateKey;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomPQKemPublicKey;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomPublicKey;
-<<<<<<< HEAD:SSH-Core-PQC/src/main/java/de/rub/nds/sshattacker/core/crypto/kex/Sntrup761KeyExchange.java
-import de.rub.nds.sshattacker.core.crypto.keys.CustomSntrup761PrivateKey;
-import de.rub.nds.sshattacker.core.crypto.keys.CustomHybridPublicKey;
-=======
->>>>>>> feature/integrateOpenquantumsafeFrodoKem1344Key:SSH-Core-PQC/src/main/java/de/rub/nds/sshattacker/core/crypto/kex/OpenQuantumSafeKem.java
 import de.rub.nds.sshattacker.core.exceptions.CryptoException;
 import de.rub.nds.sshattacker.core.exceptions.NotImplementedException;
 import java.math.BigInteger;
@@ -27,15 +22,9 @@ import org.apache.logging.log4j.Logger;
 
 public class OpenQuantumSafeKem extends KeyEncapsulation {
     private static final Logger LOGGER = LogManager.getLogger();
-<<<<<<< HEAD:SSH-Core-PQC/src/main/java/de/rub/nds/sshattacker/core/crypto/kex/Sntrup761KeyExchange.java
-    private org.openquantumsafe.KeyEncapsulation sntrup;
-    private CustomKeyPair<CustomSntrup761PrivateKey, CustomHybridPublicKey> localKeyPair;
-    private CustomHybridPublicKey remotePublicKey;
-=======
     private org.openquantumsafe.KeyEncapsulation kem;
     private CustomKeyPair<CustomPQKemPrivateKey, CustomPQKemPublicKey> localKeyPair;
     private CustomPQKemPublicKey remotePublicKey;
->>>>>>> feature/integrateOpenquantumsafeFrodoKem1344Key:SSH-Core-PQC/src/main/java/de/rub/nds/sshattacker/core/crypto/kex/OpenQuantumSafeKem.java
     private byte[] encryptedSharedSecret;
     private OpenQuantumSafeKemNames kemName;
 
@@ -45,40 +34,22 @@ public class OpenQuantumSafeKem extends KeyEncapsulation {
     }
 
     @Override
-<<<<<<< HEAD:SSH-Core-PQC/src/main/java/de/rub/nds/sshattacker/core/crypto/kex/Sntrup761KeyExchange.java
-    public CustomKeyPair<CustomSntrup761PrivateKey, CustomHybridPublicKey> getLocalKeyPair() {
-=======
     public CustomKeyPair<CustomPQKemPrivateKey, CustomPQKemPublicKey> getLocalKeyPair() {
->>>>>>> feature/integrateOpenquantumsafeFrodoKem1344Key:SSH-Core-PQC/src/main/java/de/rub/nds/sshattacker/core/crypto/kex/OpenQuantumSafeKem.java
         return this.localKeyPair;
     }
 
     @Override
     public void setRemotePublicKey(byte[] remotePublicKeyBytes) {
-<<<<<<< HEAD:SSH-Core-PQC/src/main/java/de/rub/nds/sshattacker/core/crypto/kex/Sntrup761KeyExchange.java
-        this.remotePublicKey = new CustomHybridPublicKey(remotePublicKeyBytes);
-=======
         this.remotePublicKey = new CustomPQKemPublicKey(remotePublicKeyBytes, kemName);
->>>>>>> feature/integrateOpenquantumsafeFrodoKem1344Key:SSH-Core-PQC/src/main/java/de/rub/nds/sshattacker/core/crypto/kex/OpenQuantumSafeKem.java
     }
 
     @Override
     public void generateLocalKeyPair() {
-<<<<<<< HEAD:SSH-Core-PQC/src/main/java/de/rub/nds/sshattacker/core/crypto/kex/Sntrup761KeyExchange.java
-        sntrup.generate_keypair();
-        CustomSntrup761PrivateKey privKey =
-                new CustomSntrup761PrivateKey(sntrup.export_secret_key());
-        CustomHybridPublicKey pubKey = new CustomHybridPublicKey(sntrup.export_public_key());
-        this.localKeyPair =
-                new CustomKeyPair<CustomSntrup761PrivateKey, CustomHybridPublicKey>(
-                        privKey, pubKey);
-=======
         kem.generate_keypair();
         CustomPQKemPrivateKey privKey = new CustomPQKemPrivateKey(kem.export_secret_key(), kemName);
         CustomPQKemPublicKey pubKey = new CustomPQKemPublicKey(kem.export_public_key(), kemName);
         this.localKeyPair =
                 new CustomKeyPair<CustomPQKemPrivateKey, CustomPQKemPublicKey>(privKey, pubKey);
->>>>>>> feature/integrateOpenquantumsafeFrodoKem1344Key:SSH-Core-PQC/src/main/java/de/rub/nds/sshattacker/core/crypto/kex/OpenQuantumSafeKem.java
     }
 
     @Override
