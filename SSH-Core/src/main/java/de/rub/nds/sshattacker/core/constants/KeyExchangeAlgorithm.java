@@ -90,7 +90,7 @@ public enum KeyExchangeAlgorithm {
     // [ LibSSH ]
     CURVE25519_SHA256_LIBSSH_ORG(
             KeyExchangeFlowType.ECDH, "curve25519-sha256@libssh.org", "SHA-256"),
-    // [openSSH.com]
+    // [ OpenSSH ]
     SNTRUP761_X25519(KeyExchangeFlowType.HYBRID, "sntrup761x25519-sha512@openssh.com", "SHA-512"),
     // [ SSH.COM ]
     CURVE25519_FRODOKEM1344(

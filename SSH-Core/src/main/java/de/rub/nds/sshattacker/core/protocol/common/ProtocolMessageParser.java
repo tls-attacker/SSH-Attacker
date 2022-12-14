@@ -204,7 +204,7 @@ public abstract class ProtocolMessageParser<T extends ProtocolMessage<T>> extend
                         raw,
                         HybridKeyExchangeCombiner.POSTQUANTUM_CONCATENATE_CLASSICAL,
                         CryptoConstants.X25519_POINT_SIZE,
-                        CryptoConstants.FRODOKEM1344_CYPHERTEXT_SIZE);
+                        CryptoConstants.FRODOKEM1344_CIPHERTEXT_SIZE);
         }
     }
 
