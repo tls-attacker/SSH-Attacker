@@ -86,7 +86,9 @@ public abstract class HybridKeyExchange extends KeyExchange {
             System.exit(1);
             return null;
         } catch (InstantiationException e) {
-            LOGGER.fatal("Unable to create new object by constructor invocation of class " + algorithm.name());
+            LOGGER.fatal(
+                    "Unable to create new object by constructor invocation of class "
+                            + algorithm.name());
             System.exit(1);
             return null;
         } catch (IllegalAccessException e) {
