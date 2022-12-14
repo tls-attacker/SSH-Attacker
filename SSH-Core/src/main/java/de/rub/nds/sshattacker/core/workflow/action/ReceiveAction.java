@@ -21,6 +21,8 @@ import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlElementWrapper;
 import jakarta.xml.bind.annotation.XmlElements;
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -154,9 +156,19 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
             })
     protected List<ProtocolMessage<?>> expectedMessages = new ArrayList<>();
 
+    /**
+     * Set to {@code true} if the {@link ReceiveOption#EARLY_CLEAN_SHUTDOWN} option has been set.
+     */
     @XmlElement protected Boolean earlyCleanShutdown = null;
 
+    /** Set to {@code true} if the {@link ReceiveOption#CHECK_ONLY_EXPECTED} option has been set. */
     @XmlElement protected Boolean checkOnlyExpected = null;
+
+    /**
+     * Set to {@code true} if the {@link ReceiveOption#FAIL_ON_UNEXPECTED_IGNORE_MESSAGES} option
+     * has been set.
+     */
+    @XmlElement protected Boolean failOnUnexpectedIgnoreMessages = null;
 
     public ReceiveAction() {
         super(AliasedConnection.DEFAULT_CONNECTION_ALIAS);
@@ -174,8 +186,7 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
 
     public ReceiveAction(Set<ReceiveOption> receiveOptions, List<ProtocolMessage<?>> messages) {
         this(messages);
-        this.earlyCleanShutdown = receiveOptions.contains(ReceiveOption.EARLY_CLEAN_SHUTDOWN);
-        this.checkOnlyExpected = receiveOptions.contains(ReceiveOption.CHECK_ONLY_EXPECTED);
+        setReceiveOptions(receiveOptions);
     }
 
     public ReceiveAction(Set<ReceiveOption> receiveOptions, ProtocolMessage<?>... messages) {
@@ -183,14 +194,7 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
     }
 
     public ReceiveAction(ReceiveOption receiveOption, List<ProtocolMessage<?>> messages) {
-        this(messages);
-        switch (receiveOption) {
-            case CHECK_ONLY_EXPECTED:
-                this.checkOnlyExpected = true;
-                break;
-            case EARLY_CLEAN_SHUTDOWN:
-                this.earlyCleanShutdown = true;
-        }
+        this(Set.of(receiveOption), messages);
     }
 
     public ReceiveAction(ReceiveOption receiveOption, ProtocolMessage<?>... messages) {
@@ -282,24 +286,79 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
             return false;
         }
 
-        if (expectedMessages.size() == 0 && messages.size() > 0) {
+        // If no expected messages were defined, we consider this receive
+        // action as "let's see what the other side sends".
+        if (expectedMessages.isEmpty()) {
+            // FIXME: In case TLS-Attacker's `GenericReceiveAction` is ported
+            // to SSH-Attacker at some point and the `messages` list is also
+            // empty, it might make sense to log a warning that tells the user
+            // to use the `GenericReceiveAction` instead. If you truly don't
+            // know what the other side will send, it makes sense to wait the
+            // full timeout for incoming data (not exit early after the first
+            // chunk of data has been received).
             return true;
         }
 
-        if (checkOnlyExpected != null && checkOnlyExpected) {
-            if (expectedMessages.size() > messages.size()) {
-                return false;
-            }
-        } else {
-            if (messages.size() != expectedMessages.size()) {
+        // This action expected more messages than it received. This means we
+        // can fail early.
+        if (expectedMessages.size() > messages.size()) {
+            return false;
+        }
+
+        final Iterator<ProtocolMessage<?>> actualMessages = messages.iterator();
+        for (ProtocolMessage<?> expectedMessage : expectedMessages) {
+            while (true) {
+                if (!actualMessages.hasNext()) {
+                    // There is still at least one expected message left that
+                    // didn't match any received messages. This action did not
+                    // execute as expected.
+                    LOGGER.debug(
+                            "Expected message of type {} has not been received!",
+                            expectedMessage.toCompactString());
+                    return false;
+                }
+
+                final ProtocolMessage<?> actualMessage = actualMessages.next();
+
+                // Check if the actual message matches the expected message. If
+                // so, continue with the next expected message.
+                if (Objects.equals(expectedMessage.getClass(), actualMessage.getClass())) {
+                    break;
+                }
+
+                // This action received an unexpected message. This means that
+                // this action has not been executed as planned, unless:
+                //
+                // - the `CHECK_ONLY_EXPECTED` receive option is set, or
+                // - the `FAIL_ON_UNEXPECTED_IGNORE_MESSAGES` receive option is not
+                //   set and the actual message is an SSH_MSG_IGNORE message.
+                //
+                // In these cases, ignore the received message and check if the
+                // next received message matches the expected message.
+                if (this.hasReceiveOption(ReceiveOption.CHECK_ONLY_EXPECTED)
+                        || (!this.hasReceiveOption(ReceiveOption.FAIL_ON_UNEXPECTED_IGNORE_MESSAGES)
+                                && (actualMessage instanceof IgnoreMessage))) {
+                    LOGGER.debug("Ignoring message of type {}.", actualMessage.toCompactString());
+                    continue;
+                }
+
+                // At this point, we received a message that was unexpected and
+                // that we cannot ignore.
+                LOGGER.debug(
+                        "Received unexpected message of type {}.", actualMessage.toCompactString());
                 return false;
             }
         }
-        for (int i = 0; i < expectedMessages.size(); i++) {
-            if (!Objects.equals(expectedMessages.get(i).getClass(), messages.get(i).getClass())) {
-                return false;
-            }
-        }
+
+        // At this point, all expected messages have been received. If
+        // `MessageHelper::receiveMessages` behaves correctly, then the
+        // `actualMessages` iterator should be empty at this point (because the
+        // method should stop receiving after the last expected message).
+        //
+        // If this assumption is violated and the iterator still contains
+        // messages, than that is a bug and this method may not work correctly.
+        assert !actualMessages.hasNext()
+                : "MessageHelper::receiveMessages did not stop receiving after the last expected message";
 
         return true;
     }
@@ -318,6 +377,61 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
 
     public void setExpectedMessages(ProtocolMessage<?>... expectedMessages) {
         this.expectedMessages = new ArrayList<>(Arrays.asList(expectedMessages));
+    }
+
+    /**
+     * Check if the receive option is set.
+     *
+     * @param option a receive option
+     * @return {@code true} if the receive option is set, else {@code false}
+     */
+    protected boolean hasReceiveOption(final ReceiveOption option) {
+        Boolean value = null;
+        switch (option) {
+            case EARLY_CLEAN_SHUTDOWN:
+                value = this.earlyCleanShutdown;
+                break;
+            case CHECK_ONLY_EXPECTED:
+                value = this.checkOnlyExpected;
+                break;
+            case FAIL_ON_UNEXPECTED_IGNORE_MESSAGES:
+                value = this.failOnUnexpectedIgnoreMessages;
+                break;
+        }
+
+        return value != null && value.booleanValue();
+    }
+
+    /**
+     * Get the receive options for this action.
+     *
+     * @return set of receive options
+     */
+    public Set<ReceiveOption> getReceiveOptions() {
+        return Stream.of(
+                        ReceiveOption.EARLY_CLEAN_SHUTDOWN,
+                        ReceiveOption.CHECK_ONLY_EXPECTED,
+                        ReceiveOption.FAIL_ON_UNEXPECTED_IGNORE_MESSAGES)
+                .filter(this::hasReceiveOption)
+                .collect(Collectors.toSet());
+    }
+
+    /**
+     * Set the receive options for this action.
+     *
+     * @param receiveOptions set of receive options
+     */
+    public void setReceiveOptions(final Set<ReceiveOption> receiveOptions) {
+        this.earlyCleanShutdown = receiveOptions.contains(ReceiveOption.EARLY_CLEAN_SHUTDOWN);
+        this.checkOnlyExpected = receiveOptions.contains(ReceiveOption.CHECK_ONLY_EXPECTED);
+        this.failOnUnexpectedIgnoreMessages =
+                receiveOptions.contains(ReceiveOption.FAIL_ON_UNEXPECTED_IGNORE_MESSAGES);
+
+        if (this.hasReceiveOption(ReceiveOption.CHECK_ONLY_EXPECTED)
+                && this.hasReceiveOption(ReceiveOption.FAIL_ON_UNEXPECTED_IGNORE_MESSAGES)) {
+            LOGGER.warn(
+                    "ReceiveAction has conflicting options CHECK_ONLY_EXPECTED and FAIL_ON_UNEXPECTED_IGNORE_MESSAGES set, the latter will have no effect.");
+        }
     }
 
     @Override
@@ -384,7 +498,26 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
 
     public enum ReceiveOption {
         EARLY_CLEAN_SHUTDOWN,
-        CHECK_ONLY_EXPECTED;
+        /**
+         * Ignore additional messages of any type when checking if the receive action was executed
+         * as planned.
+         *
+         * <p>If both this option and {@link ReceiveOption#FAIL_ON_UNEXPECTED_IGNORE_MESSAGES} have
+         * been set, this option takes precedence and ignore messages will still be ignored.
+         */
+        CHECK_ONLY_EXPECTED,
+        /**
+         * Do not ignore unexpected {@code SSH_MSG_IGNORE} messages when checking if the receive
+         * action was executed as planned. Instead, such messages will cause {@link
+         * #executedAsPlanned} to return {@code false}.
+         *
+         * <p>If both this option and {@link ReceiveOption#CHECK_ONLY_EXPECTED} have been set, the
+         * latter takes precedence and {@code SSH_MSG_IGNORE} messages will still be ignored.
+         *
+         * @see <a href="https://datatracker.ietf.org/doc/html/rfc4253#section-11.2">RFC 4253,
+         *     section 11.2 "Ignored Data Message"</a>
+         */
+        FAIL_ON_UNEXPECTED_IGNORE_MESSAGES;
 
         public static Set<ReceiveOption> bundle(ReceiveOption... receiveOptions) {
             return new HashSet<>(Arrays.asList(receiveOptions));
