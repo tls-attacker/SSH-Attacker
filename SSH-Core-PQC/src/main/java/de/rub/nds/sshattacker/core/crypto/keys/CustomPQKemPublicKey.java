@@ -8,6 +8,7 @@
 package de.rub.nds.sshattacker.core.crypto.keys;
 
 import de.rub.nds.modifiablevariable.util.UnformattedByteArrayAdapter;
+import de.rub.nds.sshattacker.core.constants.OpenQuantumSafeKemNames;
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlRootElement;
@@ -15,29 +16,29 @@ import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
-public class CustomSntrup761PrivateKey extends CustomPrivateKey {
-
+public class CustomPQKemPublicKey extends CustomPublicKey {
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
-    private byte[] privateKey;
-
+    private byte[] publicKey;
+    private OpenQuantumSafeKemNames kemName;
     @SuppressWarnings("unused")
-    private CustomSntrup761PrivateKey() {}
+    public CustomPQKemPublicKey() {}
 
-    public CustomSntrup761PrivateKey(byte[] privateKey) {
-        this.privateKey = privateKey;
+    public CustomPQKemPublicKey(byte[] publicKey, OpenQuantumSafeKemNames kemName) {
+        this.publicKey = publicKey;
+        this.kemName = kemName;
     }
 
-    public byte[] getPrivateKey() {
-        return this.privateKey;
+    public byte[] getPublicKey() {
+        return this.publicKey;
     }
 
     @Override
     public byte[] getEncoded() {
-        return this.privateKey;
+        return this.publicKey;
     }
 
     @Override
     public String getAlgorithm() {
-        return "SNTRUP761";
+        return kemName.getName();
     }
 }

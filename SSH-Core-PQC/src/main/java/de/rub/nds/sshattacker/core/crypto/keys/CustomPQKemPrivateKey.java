@@ -8,6 +8,7 @@
 package de.rub.nds.sshattacker.core.crypto.keys;
 
 import de.rub.nds.modifiablevariable.util.UnformattedByteArrayAdapter;
+import de.rub.nds.sshattacker.core.constants.OpenQuantumSafeKemNames;
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlRootElement;
@@ -15,17 +16,18 @@ import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
-public class CustomFrodoKem1344PrivateKey extends CustomPrivateKey {
-
+public class CustomPQKemPrivateKey extends CustomPrivateKey {
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] privateKey;
+    private OpenQuantumSafeKemNames kemName;
 
     @SuppressWarnings("unused")
-    private CustomFrodoKem1344PrivateKey() {}
-    ;
+    private CustomPQKemPrivateKey() {
+    }
 
-    public CustomFrodoKem1344PrivateKey(byte[] privateKey) {
+    public CustomPQKemPrivateKey(byte[] privateKey, OpenQuantumSafeKemNames kemName) {
         this.privateKey = privateKey;
+        this.kemName = kemName;
     }
 
     public byte[] getPrivateKey() {
@@ -39,6 +41,7 @@ public class CustomFrodoKem1344PrivateKey extends CustomPrivateKey {
 
     @Override
     public String getAlgorithm() {
-        return "FRODOKEM1344";
+        return kemName.getName();
     }
+
 }
