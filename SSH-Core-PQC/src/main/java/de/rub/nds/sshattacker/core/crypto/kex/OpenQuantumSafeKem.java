@@ -94,7 +94,7 @@ public class OpenQuantumSafeKem extends KeyEncapsulation {
     @Override
     public void setLocalKeyPair(byte[] privateKeyBytes) {
         throw new NotImplementedException(
-                "Updateing local Key Pairs not supported, use generateLocalKeys instead");
+                "Updateing localf Key Pairs not supported, use generateLocalKeys instead");
     }
 
     @Override
