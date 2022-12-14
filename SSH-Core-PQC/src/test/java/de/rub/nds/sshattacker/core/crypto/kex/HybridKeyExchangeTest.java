@@ -12,6 +12,7 @@ import static org.mockito.Mockito.doReturn;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.KeyExchangeAlgorithm;
+import de.rub.nds.sshattacker.core.constants.OpenQuantumSafeKemNames;
 import jakarta.xml.bind.DatatypeConverter;
 import java.io.InputStream;
 import java.lang.reflect.Field;
@@ -26,7 +27,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.InjectMocks;
-import org.mockito.Spy;
+import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.openquantumsafe.Pair;
 
@@ -36,17 +37,14 @@ public class HybridKeyExchangeTest {
     private static final Logger LOGGER = LogManager.getLogger();
     // Each KeyEncapsulation algorithm based on org.openquantumsafe.KeyEncapsulation
     // needs to be mocked for testing.
-    @Spy
-    org.openquantumsafe.KeyEncapsulation sntrup =
-            new org.openquantumsafe.KeyEncapsulation("sntrup761");
+    @Mock org.openquantumsafe.KeyEncapsulation kem;
 
-    @Spy
-    org.openquantumsafe.KeyEncapsulation frodokem =
-            new org.openquantumsafe.KeyEncapsulation("FrodoKEM-1344-SHAKE");
+    @InjectMocks
+    OpenQuantumSafeKem sntrup761Kex = new OpenQuantumSafeKem(OpenQuantumSafeKemNames.SNTRUP761);
 
-    @InjectMocks FrodoKem1344KeyExchange frodokem1344Kex;
-
-    @InjectMocks Sntrup761KeyExchange sntrup761Kex;
+    @InjectMocks
+    OpenQuantumSafeKem frodokem1344Kex =
+            new OpenQuantumSafeKem(OpenQuantumSafeKemNames.FRODOKEM1344);
 
     static final Map<String, KeyExchangeAlgorithm> nameToAlgorithm;
 
@@ -54,6 +52,9 @@ public class HybridKeyExchangeTest {
         nameToAlgorithm = new HashMap<>();
         nameToAlgorithm.put(
                 "sntrup761x25519-sha512@openssh.com", KeyExchangeAlgorithm.SNTRUP761_X25519);
+        nameToAlgorithm.put(
+                "curve25519-frodokem1344-sha512@ssh.com",
+                KeyExchangeAlgorithm.CURVE25519_FRODOKEM1344);
     }
 
     /**
@@ -176,20 +177,16 @@ public class HybridKeyExchangeTest {
             Field encapsulationField = HybridKeyExchange.class.getDeclaredField("encapsulation");
             encapsulationField.setAccessible(true);
             HybridKeyExchange kex = null;
+            // Mock all functionCalls of org.openquantumsafe.KeyEncapsulation
+            doReturn(encapsulationPubKey).when(kem).export_public_key();
+            doReturn(encapsulationPrivKey).when(kem).export_secret_key();
+            doReturn(encapsulationSharedSecret).when(kem).decap_secret(ciphertext);
             switch (algorithm) {
                 case SNTRUP761_X25519:
-                    // Mock all functionCalls of org.openquantumsafe.KeyEncapsulation
-                    doReturn(encapsulationPubKey).when(sntrup).export_public_key();
-                    doReturn(encapsulationPrivKey).when(sntrup).export_secret_key();
-                    doReturn(encapsulationSharedSecret).when(sntrup).decap_secret(ciphertext);
                     kex = new Sntrup761X25519KeyExchange();
                     encapsulationField.set(kex, sntrup761Kex);
                     break;
                 case CURVE25519_FRODOKEM1344:
-                    // Mock all functionCalls of org.openquantumsafe.KeyEncapsulation
-                    doReturn(encapsulationPubKey).when(frodokem).export_public_key();
-                    doReturn(encapsulationPrivKey).when(frodokem).export_secret_key();
-                    doReturn(encapsulationSharedSecret).when(frodokem).decap_secret(ciphertext);
                     kex = new Curve25519Frodokem1344KeyExchange();
                     encapsulationField.set(kex, frodokem1344Kex);
                     break;
@@ -257,20 +254,16 @@ public class HybridKeyExchangeTest {
             Field encapsulationField = HybridKeyExchange.class.getDeclaredField("encapsulation");
             encapsulationField.setAccessible(true);
             HybridKeyExchange kex;
+            // Mock all functionCalls of org.openquantumsafe.KeyEncapsulation
+            doReturn(new Pair<byte[], byte[]>(ciphertext, encapsulationSharedSecret))
+                    .when(kem)
+                    .encap_secret(encapsulationPubKey);
             switch (algorithm) {
                 case SNTRUP761_X25519:
-                    // Mock all functionCalls of org.openquantumsafe.KeyEncapsulation
-                    doReturn(new Pair<byte[], byte[]>(ciphertext, encapsulationSharedSecret))
-                            .when(sntrup)
-                            .encap_secret(encapsulationPubKey);
                     kex = new Sntrup761X25519KeyExchange();
                     encapsulationField.set(kex, sntrup761Kex);
                     break;
                 case CURVE25519_FRODOKEM1344:
-                    // Mock all functionCalls of org.openquantumsafe.KeyEncapsulation
-                    doReturn(new Pair<byte[], byte[]>(ciphertext, encapsulationSharedSecret))
-                            .when(frodokem)
-                            .encap_secret(encapsulationPubKey);
                     kex = new Curve25519Frodokem1344KeyExchange();
                     encapsulationField.set(kex, frodokem1344Kex);
                     break;

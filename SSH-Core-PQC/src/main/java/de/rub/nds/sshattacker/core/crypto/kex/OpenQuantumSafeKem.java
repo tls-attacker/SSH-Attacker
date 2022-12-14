@@ -30,6 +30,7 @@ public class OpenQuantumSafeKem extends KeyEncapsulation {
 
     public OpenQuantumSafeKem(OpenQuantumSafeKemNames kemName) {
         this.kem = new org.openquantumsafe.KeyEncapsulation(kemName.getName());
+        this.kemName = kemName;
     }
 
     @Override
