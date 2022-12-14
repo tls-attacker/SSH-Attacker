@@ -52,47 +52,56 @@ public abstract class HybridKeyExchange extends KeyExchange {
                     "Trying to instantiate new Hybrid key exchange falling back to " + algorithm);
         }
 
-        switch (algorithm) {
-            default:
-                LOGGER.warn(
-                        "Algorithm "
-                                + algorithm
-                                + "is not supported. Falling back to "
-                                + KeyExchangeAlgorithm.SNTRUP761_X25519);
-                // Fallthrough to case SNTRUP761_X25519 intended
-            case SNTRUP761_X25519:
-                try {
+        try {
+            switch (algorithm) {
+                default:
+                    LOGGER.warn(
+                            "Algorithm "
+                                    + algorithm
+                                    + "is not supported. Falling back to "
+                                    + KeyExchangeAlgorithm.SNTRUP761_X25519);
+                    // Fallthrough to case SNTRUP761_X25519 intended
+                case SNTRUP761_X25519:
                     // Check if SSH-Core-PQC module has been compiled and is available
                     Class<?> sntrup761x25519 =
                             Class.forName(
                                     "de.rub.nds.sshattacker.core.crypto.kex.Sntrup761X25519KeyExchange");
                     return (HybridKeyExchange) sntrup761x25519.getConstructor().newInstance();
-                } catch (ClassNotFoundException e) {
-                    LOGGER.fatal(
-                            "Unable to create new instance of HybridKeyExchange, module SSH-Core-PQC is not available. Make sure to enable PQC by enabling the corresponding profile during build!");
-                    System.exit(1);
-                    return null;
-                } catch (InvocationTargetException e) {
-                    LOGGER.fatal(
-                            "Unable to invoke the default constructor of class Sntrup761X25519KeyExchange");
-                    System.exit(1);
-                    return null;
-                } catch (InstantiationException e) {
-                    LOGGER.fatal(
-                            "Unable to create new object by constructor invocation of class Sntrup761X25519KeyExchange");
-                    System.exit(1);
-                    return null;
-                } catch (IllegalAccessException e) {
-                    LOGGER.fatal(
-                            "Unable to access the default constructor of class Sntrup761X25519KeyExchange");
-                    System.exit(1);
-                    return null;
-                } catch (NoSuchMethodException e) {
-                    LOGGER.fatal(
-                            "Unable to create new instance of HybridKeyExchange, default constructor of class Sntrup761X25519KeyExchange not found. Did the method signature change?");
-                    System.exit(1);
-                    return null;
-                }
+
+                case CURVE25519_FRODOKEM1344:
+                    Class<?> curve25519xfrodokem1344 =
+                            Class.forName(
+                                    "de.rub.nds.sshattacker.core.crypto.kex.Curve25519Frodokem1344KeyExchange");
+                    return (HybridKeyExchange)
+                            curve25519xfrodokem1344.getConstructor().newInstance();
+            }
+
+        } catch (ClassNotFoundException e) {
+            LOGGER.fatal(
+                    "Unable to create new instance of HybridKeyExchange, module SSH-Core-PQC is not available. Make sure to enable PQC by enabling the corresponding profile during build!");
+            System.exit(1);
+            return null;
+        } catch (InvocationTargetException e) {
+            LOGGER.fatal("Unable to invoke the default constructor of class " + algorithm.name());
+            System.exit(1);
+            return null;
+        } catch (InstantiationException e) {
+            LOGGER.fatal(
+                    "Unable to create new object by constructor invocation of class "
+                            + algorithm.name());
+            System.exit(1);
+            return null;
+        } catch (IllegalAccessException e) {
+            LOGGER.fatal("Unable to access the default constructor of class " + algorithm.name());
+            System.exit(1);
+            return null;
+        } catch (NoSuchMethodException e) {
+            LOGGER.fatal(
+                    "Unable to create new instance of HybridKeyExchange, default constructor of class "
+                            + algorithm.name()
+                            + " not found. Did the method signature change?");
+            System.exit(1);
+            return null;
         }
     }
 

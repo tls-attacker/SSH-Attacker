@@ -16,17 +16,18 @@ import java.math.BigInteger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class Sntrup761X25519KeyExchange extends HybridKeyExchange {
+public class Curve25519Frodokem1344KeyExchange extends HybridKeyExchange {
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public Sntrup761X25519KeyExchange() {
+    public Curve25519Frodokem1344KeyExchange() {
+
         super(
                 new XCurveEcdhKeyExchange(NamedEcGroup.CURVE25519),
-                new OpenQuantumSafeKem(OpenQuantumSafeKemNames.SNTRUP761),
+                new OpenQuantumSafeKem(OpenQuantumSafeKemNames.FRODOKEM1344),
                 HybridKeyExchangeCombiner.POSTQUANTUM_CONCATENATE_CLASSICAL,
                 CryptoConstants.X25519_POINT_SIZE,
-                CryptoConstants.SNTRUP761_PUBLIC_KEY_SIZE,
-                CryptoConstants.SNTRUP761_CIPHERTEXT_SIZE);
+                CryptoConstants.FRODOKEM1344_PUBLIC_KEY_SIZE,
+                CryptoConstants.FRODOKEM1344_CIPHERTEXT_SIZE);
     }
 
     @Override
@@ -41,6 +42,7 @@ public class Sntrup761X25519KeyExchange extends HybridKeyExchange {
                     mergeKeyExchangeShares(
                             ArrayConverter.bigIntegerToByteArray(encapsulation.getSharedSecret()),
                             ArrayConverter.bigIntegerToByteArray(agreement.getSharedSecret()));
+
             this.sharedSecret = new BigInteger(encode(tmpSharedSecret, "SHA-512"));
             LOGGER.debug(
                     "Concatenated Shared Secret = "
