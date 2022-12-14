@@ -114,6 +114,11 @@
     </dependencyManagement>
 
     <dependencies>
+        <dependency>
+            <groupId>cc.redberry</groupId>
+            <artifactId>rings</artifactId>
+            <version>2.5.8</version>
+        </dependency>
         <!-- scope: compile -->
         <dependency>
             <groupId>com.beust</groupId>
@@ -146,11 +151,6 @@
         <dependency>
             <groupId>org.glassfish.jaxb</groupId>
             <artifactId>jaxb-runtime</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>cc.redberry</groupId>
-            <artifactId>rings</artifactId>
-            <version>2.5.8</version>
         </dependency>
         <!-- scope: test -->
         <dependency>

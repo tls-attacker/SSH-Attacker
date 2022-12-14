@@ -18,7 +18,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
-
 public class SntrupTest {
 
     public static Stream<Arguments> provideTestVectors() {
@@ -43,8 +42,11 @@ public class SntrupTest {
         sntrupServer.setRemotePublicKey(sntrupClient.getLocalKeyPair().getPublic().getEncoded());
         byte[] ciphertext = sntrupServer.encryptSharedSecret();
         assertFalse("could not encrypt shared Secret", sntrupServer.getSharedSecret() == null);
-        assertFalse("could not encrypt shared Secret", sntrupServer.getEncryptedSharedSecret() == null);
-        assertTrue("could not encrypt shared Secret", Arrays.equals(sntrupServer.getEncryptedSharedSecret(), ciphertext));
+        assertFalse(
+                "could not encrypt shared Secret", sntrupServer.getEncryptedSharedSecret() == null);
+        assertTrue(
+                "could not encrypt shared Secret",
+                Arrays.equals(sntrupServer.getEncryptedSharedSecret(), ciphertext));
 
         sntrupClient.setEncryptedSharedSecret(ciphertext);
 
@@ -52,11 +54,13 @@ public class SntrupTest {
             sntrupClient.decryptSharedSecret();
             assertFalse(sntrupClient.getSharedSecret() == null);
             assertTrue(sntrupClient.getSharedSecret().equals(sntrupServer.getSharedSecret()));
-            assertTrue(Arrays.equals(sntrupClient.getEncryptedSharedSecret(),sntrupServer.getEncryptedSharedSecret()));
+            assertTrue(
+                    Arrays.equals(
+                            sntrupClient.getEncryptedSharedSecret(),
+                            sntrupServer.getEncryptedSharedSecret()));
 
         } catch (Exception e) {
             assertTrue("This should not happen: " + e, false);
         }
-
     }
 }

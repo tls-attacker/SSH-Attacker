@@ -429,7 +429,8 @@ public class Config implements Serializable {
             Class.forName(
                     "de.rub.nds.sshattacker.core.crypto.kex.Curve25519Frodokem1344KeyExchange");
             Class.forName("de.rub.nds.sshattacker.core.crypto.kex.Sntrup761X25519KeyExchange");
-            Class.forName("de.rub.nds.sshattacker.core.crypto.kex.CustomSntrup4591761x25519KeyExchange");
+            Class.forName(
+                    "de.rub.nds.sshattacker.core.crypto.kex.CustomSntrup4591761x25519KeyExchange");
             // PQC algorithms are available (namely sntrup761x25519-sha512@openssh.com)
             supportedKeyExchangeAlgorithms.add(KeyExchangeAlgorithm.SNTRUP4591761_x25519);
             supportedKeyExchangeAlgorithms.add(KeyExchangeAlgorithm.CURVE25519_FRODOKEM1344);

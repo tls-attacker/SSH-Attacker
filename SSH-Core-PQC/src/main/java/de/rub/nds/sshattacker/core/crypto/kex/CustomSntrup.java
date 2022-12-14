@@ -9,9 +9,9 @@ package de.rub.nds.sshattacker.core.crypto.kex;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.OpenQuantumSafeKemNames;
+import de.rub.nds.sshattacker.core.crypto.keys.CustomKeyPair;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomPQKemPrivateKey;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomPQKemPublicKey;
-import de.rub.nds.sshattacker.core.crypto.keys.CustomKeyPair;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomPrivateKey;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomPublicKey;
 import de.rub.nds.sshattacker.core.crypto.ntrup.sntrup.core.R3;
@@ -23,7 +23,6 @@ import de.rub.nds.sshattacker.core.crypto.ntrup.sntrup.core.SntrupCoreValues;
 import de.rub.nds.sshattacker.core.crypto.ntrup.sntrup.core.SntrupParameterSet;
 import de.rub.nds.sshattacker.core.exceptions.CryptoException;
 import de.rub.nds.sshattacker.core.exceptions.NotImplementedException;
-
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -61,7 +60,6 @@ public class CustomSntrup extends KeyEncapsulation {
     private void calculateNumberOfBytes(SntrupParameterSet set) {
         switch (set) {
             case KEM_SNTRUP_761:
-
                 if (round1) {
                     ciphertextBytes = 1049;
                     pubKBytes = 1218;
@@ -104,8 +102,11 @@ public class CustomSntrup extends KeyEncapsulation {
         byte[] hashConfirm = hashPrefixedB(ArrayConverter.concatenate(hashencR, cache), (byte) 2);
 
         this.encryptedSharedSecret = ArrayConverter.concatenate(c, hashConfirm);
-        this.sharedSecret = new BigInteger(
-                hashPrefixedB(ArrayConverter.concatenate(hashencR, encryptedSharedSecret), (byte) 1));
+        this.sharedSecret =
+                new BigInteger(
+                        hashPrefixedB(
+                                ArrayConverter.concatenate(hashencR, encryptedSharedSecret),
+                                (byte) 1));
     }
 
     private void decapsR1(byte[] privK, byte[] ciphertext) {
@@ -113,8 +114,9 @@ public class CustomSntrup extends KeyEncapsulation {
 
         Short f = Short.decode(set, Arrays.copyOfRange(privK, 0, smallBytes));
         R3 gInv = R3.decode(set, Arrays.copyOfRange(privK, smallBytes, 2 * smallBytes));
-        RQ h = RQ.decode(
-                set, Arrays.copyOfRange(privK, 2 * smallBytes, 2 * smallBytes + pubKBytes));
+        RQ h =
+                RQ.decode(
+                        set, Arrays.copyOfRange(privK, 2 * smallBytes, 2 * smallBytes + pubKBytes));
 
         Rounded c = Rounded.decode(set, Arrays.copyOfRange(ciphertext, 32, ciphertextBytes));
         Short rNew = core.decrypt(c, f, gInv);
@@ -128,8 +130,7 @@ public class CustomSntrup extends KeyEncapsulation {
             LOGGER.info("Successfully decapsulated the cyphertext. Calculate shared Secret now...");
             this.sharedSecret = new BigInteger(hashConfirmNew);
         } else {
-            LOGGER.warn(
-                    "Could not decapsulate the shared secret.");
+            LOGGER.warn("Could not decapsulate the shared secret.");
         }
     }
 
@@ -138,34 +139,39 @@ public class CustomSntrup extends KeyEncapsulation {
 
         Short f = Short.decode(set, Arrays.copyOfRange(privK, 0, smallBytes));
         R3 gInv = R3.decode(set, Arrays.copyOfRange(privK, smallBytes, 2 * smallBytes));
-        RQ h = RQ.decode(
-                set, Arrays.copyOfRange(privK, 2 * smallBytes, 2 * smallBytes + pubKBytes));
+        RQ h =
+                RQ.decode(
+                        set, Arrays.copyOfRange(privK, 2 * smallBytes, 2 * smallBytes + pubKBytes));
 
         Rounded c = Rounded.decode(set, Arrays.copyOfRange(ciphertext, 0, ciphertextBytes));
-        byte[] rho = Arrays.copyOfRange(privK,
-                2 * smallBytes + pubKBytes,
-                2 * smallBytes + pubKBytes + smallBytes);
+        byte[] rho =
+                Arrays.copyOfRange(
+                        privK, 2 * smallBytes + pubKBytes, 2 * smallBytes + pubKBytes + smallBytes);
 
-        byte[] cache = Arrays.copyOfRange(privK,
-                2 * smallBytes + pubKBytes + smallBytes,
-                2 * smallBytes + pubKBytes + smallBytes + hashBytes);
+        byte[] cache =
+                Arrays.copyOfRange(
+                        privK,
+                        2 * smallBytes + pubKBytes + smallBytes,
+                        2 * smallBytes + pubKBytes + smallBytes + hashBytes);
 
         Short rNew = core.decrypt(c, f, gInv);
         byte[] rNewEnc = rNew.encode();
         byte[] cNewEnc = core.encrypt(rNew, h).encode();
 
         byte[] hashRNewEnc = hashPrefixedB(rNewEnc, (byte) 3);
-        byte[] hashConfirmNew = hashPrefixedB(ArrayConverter.concatenate(hashRNewEnc, cache), (byte) 2);
+        byte[] hashConfirmNew =
+                hashPrefixedB(ArrayConverter.concatenate(hashRNewEnc, cache), (byte) 2);
         byte[] ciphertextNew = ArrayConverter.concatenate(cNewEnc, hashConfirmNew);
 
         if (Arrays.equals(ciphertext, ciphertextNew)) {
             LOGGER.info("Successfully decapsulated the cyphertext. Calculate shared Secret now...");
-            this.sharedSecret = new BigInteger(
-                    hashPrefixedB(ArrayConverter.concatenate(hashRNewEnc, ciphertext), (byte) 1));
+            this.sharedSecret =
+                    new BigInteger(
+                            hashPrefixedB(
+                                    ArrayConverter.concatenate(hashRNewEnc, ciphertext), (byte) 1));
 
         } else {
-            LOGGER.warn(
-                    "Could not decapsulate the shared secret.");
+            LOGGER.warn("Could not decapsulate the shared secret.");
 
             this.sharedSecret = new BigInteger(rho);
         }
@@ -185,7 +191,7 @@ public class CustomSntrup extends KeyEncapsulation {
     }
 
     private byte[] hashPrefixedB(byte[] bytes, byte b) {
-        byte[] bByte = { b };
+        byte[] bByte = {b};
         return sha512(ArrayConverter.concatenate(bByte, bytes));
     }
 
@@ -207,19 +213,24 @@ public class CustomSntrup extends KeyEncapsulation {
         CustomPQKemPublicKey pubK = new CustomPQKemPublicKey(encH, kemName);
 
         if (round1) {
-            privK = new CustomPQKemPrivateKey(ArrayConverter.concatenate(encF, encV, encH), kemName);
+            privK =
+                    new CustomPQKemPrivateKey(
+                            ArrayConverter.concatenate(encF, encV, encH), kemName);
         } else {
             byte[] roh = values.getRoh().encode();
-            privK = new CustomPQKemPrivateKey(
-                    ArrayConverter.concatenate(encF, encV, encH, roh, hashPrefixedB(encH, (byte) 4)), kemName);
-
+            privK =
+                    new CustomPQKemPrivateKey(
+                            ArrayConverter.concatenate(
+                                    encF, encV, encH, roh, hashPrefixedB(encH, (byte) 4)),
+                            kemName);
         }
 
-        LOGGER.info("Private Key CustomSntrup: " + ArrayConverter.bytesToHexString(privK.getEncoded()));
-        LOGGER.info("Public Key CustomSntrup: " + ArrayConverter.bytesToHexString(pubK.getEncoded()));
+        LOGGER.info(
+                "Private Key CustomSntrup: " + ArrayConverter.bytesToHexString(privK.getEncoded()));
+        LOGGER.info(
+                "Public Key CustomSntrup: " + ArrayConverter.bytesToHexString(pubK.getEncoded()));
 
         this.localKeyPair = new CustomKeyPair<>(privK, pubK);
-
     }
 
     @Override
@@ -238,7 +249,6 @@ public class CustomSntrup extends KeyEncapsulation {
     @Override
     public void setRemotePublicKey(byte[] remotePublicKeyBytes) {
         this.remotePublicKey = new CustomPQKemPublicKey(remotePublicKeyBytes, kemName);
-
     }
 
     @Override
@@ -287,7 +297,8 @@ public class CustomSntrup extends KeyEncapsulation {
     @Override
     public void decryptSharedSecret() throws CryptoException {
         if (encryptedSharedSecret == null) {
-            LOGGER.warn("encrypted shared secret not set, set shared secret to BigInteger.valueOf(0)");
+            LOGGER.warn(
+                    "encrypted shared secret not set, set shared secret to BigInteger.valueOf(0)");
             this.sharedSecret = BigInteger.valueOf(0);
             return;
         }
@@ -307,7 +318,6 @@ public class CustomSntrup extends KeyEncapsulation {
         } else {
             decapsR2(localKeyPair.getPrivate().getEncoded(), encryptedSharedSecret);
         }
-
     }
 
     @Override

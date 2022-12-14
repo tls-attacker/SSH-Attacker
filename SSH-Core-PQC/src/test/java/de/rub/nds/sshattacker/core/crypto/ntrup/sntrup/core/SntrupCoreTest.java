@@ -20,7 +20,7 @@ public class SntrupCoreTest {
         SntrupCoreValues values = core.keyGenCore();
         Short r = Short.createRandomShort(set);
         Rounded c = core.encrypt(r, values.getH());
-        Short rNew = core.decrypt(c,values.getF(),values.getgInv());
+        Short rNew = core.decrypt(c, values.getF(), values.getgInv());
         assertTrue("r != r'", r.equals(rNew));
     }
 }

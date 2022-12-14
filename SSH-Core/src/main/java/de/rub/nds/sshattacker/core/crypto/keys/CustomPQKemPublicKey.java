@@ -6,20 +6,18 @@
  * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
 package de.rub.nds.sshattacker.core.crypto.keys;
+
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlRootElement;
-
-
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
 public class CustomPQKemPublicKey extends CustomPublicKey {
 
-
     private byte[] publicKey;
     private String algorithm;
-    
+
     @SuppressWarnings("unused")
     public CustomPQKemPublicKey() {}
 

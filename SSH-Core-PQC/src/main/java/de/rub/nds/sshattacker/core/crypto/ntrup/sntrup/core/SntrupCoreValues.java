@@ -15,7 +15,7 @@ public class SntrupCoreValues {
     private RQ f3Inv;
     private RQ h;
     private Short roh;
-    
+
     public SntrupCoreValues(R g, R3 gInv, Short f, RQ f3, RQ f3Inv, RQ h, Short roh) {
         this.g = g;
         this.gInv = gInv;

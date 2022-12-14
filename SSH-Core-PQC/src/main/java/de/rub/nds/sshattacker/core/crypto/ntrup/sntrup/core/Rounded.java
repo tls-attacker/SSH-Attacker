@@ -11,9 +11,7 @@ import static org.junit.Assert.assertTrue;
 
 import cc.redberry.rings.poly.univar.UnivariateDivision;
 import cc.redberry.rings.poly.univar.UnivariatePolynomialZ64;
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.crypto.ntrup.sntrup.util.Encoding;
-
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -113,20 +111,18 @@ public class Rounded {
     }
 
     // old encoding, used for SNTRUP4591761
-    public byte[] encode_old(){
-        int q61 = (set.getQ()-1)/6;
+    public byte[] encode_old() {
+        int q61 = (set.getQ() - 1) / 6;
         ArrayList<Integer> r =
                 rounded.stream()
                         .mapToInt(l -> Math.toIntExact(q61 + (l / 3)))
                         .boxed()
                         .collect(Collectors.toCollection(ArrayList::new));
-        for(int i=0; i<((-set.getP()+set.getP()*6) % 6); i++) {
+        for (int i = 0; i < ((-set.getP() + set.getP() * 6) % 6); i++) {
             r.add(0);
         }
-        return Arrays.copyOfRange(Encoding.seq2byte(r, 1536,3, 4),0,1015);
+        return Arrays.copyOfRange(Encoding.seq2byte(r, 1536, 3, 4), 0, 1015);
     }
-
-    
 
     public static Rounded decode(SntrupParameterSet set, byte[] encodedRounded) {
         ArrayList<Integer> r = new ArrayList<>();
@@ -156,9 +152,14 @@ public class Rounded {
     }
 
     public static Rounded decode_old(SntrupParameterSet set, byte[] encodedRounded) {
-        int q61 = (set.getQ()-1)/6; 
-        ArrayList<BigInteger> coef = Encoding.byte2seq(encodedRounded,1536,3,4);
-        return new Rounded(set, coef.stream().limit(set.getP()).mapToLong(l ->3*(l.longValue()%(q61*2+1)-q61)).toArray());
+        int q61 = (set.getQ() - 1) / 6;
+        ArrayList<BigInteger> coef = Encoding.byte2seq(encodedRounded, 1536, 3, 4);
+        return new Rounded(
+                set,
+                coef.stream()
+                        .limit(set.getP())
+                        .mapToLong(l -> 3 * (l.longValue() % (q61 * 2 + 1) - q61))
+                        .toArray());
     }
 
     @Override

@@ -12,9 +12,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.Arrays;
 import java.util.Random;
 import java.util.stream.LongStream;
-import org.junit.Test;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.junit.Test;
 
 public class RoundedTest {
     private static final Logger LOGGER = LogManager.getLogger();
@@ -25,9 +25,10 @@ public class RoundedTest {
     @Test
     public void roundTest() {
         for (int i = 0; i < 10; i++) {
-            coefficient = LongStream.range(0, set.getP())
-                    .map(l -> rand.nextInt(set.getQ()) - ((set.getQ() + 1) / 2))
-                    .toArray();
+            coefficient =
+                    LongStream.range(0, set.getP())
+                            .map(l -> rand.nextInt(set.getQ()) - ((set.getQ() + 1) / 2))
+                            .toArray();
             RQ rq = new RQ(set, coefficient);
             Rounded rounded = Rounded.round(rq);
             assertTrue(Rounded.is_rounded(set, rounded.stream().toArray()));
@@ -36,9 +37,10 @@ public class RoundedTest {
 
     @Test
     public void testEncoding() {
-        coefficient = LongStream.range(0, set.getP())
-                .map(l -> rand.nextInt(set.getQ()) - ((set.getQ() + 1) / 2))
-                .toArray();
+        coefficient =
+                LongStream.range(0, set.getP())
+                        .map(l -> rand.nextInt(set.getQ()) - ((set.getQ() + 1) / 2))
+                        .toArray();
         Rounded r = Rounded.round(new RQ(set, coefficient));
         byte[] encR = r.encode();
         Rounded rNew = Rounded.decode(set, encR);
@@ -47,10 +49,11 @@ public class RoundedTest {
 
     @Test
     public void testEncodingOld() {
-        coefficient = LongStream.range(0, set.getP())
-                .map(l -> rand.nextInt(set.getQ()) - ((set.getQ() + 1) / 2))
-                .toArray();
- 
+        coefficient =
+                LongStream.range(0, set.getP())
+                        .map(l -> rand.nextInt(set.getQ()) - ((set.getQ() + 1) / 2))
+                        .toArray();
+
         Rounded r = Rounded.round(new RQ(set, coefficient));
         LOGGER.info("Coefficients: " + Arrays.toString(r.stream().toArray()));
         byte[] encR = r.encode_old();

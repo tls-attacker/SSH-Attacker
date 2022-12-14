@@ -12,9 +12,7 @@ import de.rub.nds.sshattacker.core.constants.CryptoConstants;
 import de.rub.nds.sshattacker.core.constants.HybridKeyExchangeCombiner;
 import de.rub.nds.sshattacker.core.constants.NamedEcGroup;
 import de.rub.nds.sshattacker.core.crypto.ntrup.sntrup.core.SntrupParameterSet;
-
 import java.math.BigInteger;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -39,9 +37,10 @@ public class CustomSntrup4591761x25519KeyExchange extends HybridKeyExchange {
                 encapsulation.decryptSharedSecret();
             }
 
-            byte[] tmpSharedSecret = mergeKeyExchangeShares(
-                    ArrayConverter.bigIntegerToByteArray(encapsulation.getSharedSecret()),
-                    ArrayConverter.bigIntegerToByteArray(agreement.getSharedSecret()));
+            byte[] tmpSharedSecret =
+                    mergeKeyExchangeShares(
+                            ArrayConverter.bigIntegerToByteArray(encapsulation.getSharedSecret()),
+                            ArrayConverter.bigIntegerToByteArray(agreement.getSharedSecret()));
             this.sharedSecret = new BigInteger(encode(tmpSharedSecret, "SHA-512"));
             LOGGER.debug(
                     "Concatenated Shared Secret = "
@@ -53,7 +52,5 @@ public class CustomSntrup4591761x25519KeyExchange extends HybridKeyExchange {
         } catch (Exception e) {
             LOGGER.warn("Could not create the shared Secret: " + e);
         }
-
     }
-
 }

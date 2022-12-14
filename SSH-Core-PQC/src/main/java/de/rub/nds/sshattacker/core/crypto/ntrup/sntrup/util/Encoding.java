@@ -7,14 +7,13 @@
  */
 package de.rub.nds.sshattacker.core.crypto.ntrup.sntrup.util;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import java.math.BigInteger;
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.IntStream;
-
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 
 public final class Encoding {
 
@@ -116,45 +115,56 @@ public final class Encoding {
         s.addAll(encode(r2, m2));
         return s;
     }
-    public static byte[]seq2byte(ArrayList<Integer> u, int radix, int batch, int bytes){
+
+    public static byte[] seq2byte(ArrayList<Integer> u, int radix, int batch, int bytes) {
         byte[] res = new byte[0];
-        for(int i = 0; i<u.size();i+=batch){
+        for (int i = 0; i < u.size(); i += batch) {
             BigInteger tmp = BigInteger.ZERO;
-            for(int j =0; j<batch;j++){
-                tmp = tmp.add(BigInteger.valueOf(u.get(i+j)).multiply(BigInteger.valueOf(radix).pow(j)));
+            for (int j = 0; j < batch; j++) {
+                tmp =
+                        tmp.add(
+                                BigInteger.valueOf(u.get(i + j))
+                                        .multiply(BigInteger.valueOf(radix).pow(j)));
             }
-            res = ArrayConverter.concatenate(res,int2byte(tmp,bytes));
+            res = ArrayConverter.concatenate(res, int2byte(tmp, bytes));
         }
         return res;
     }
 
     public static byte[] int2byte(BigInteger u, int bytes) {
         byte[] res = new byte[bytes];
-        for (int i=0; i< bytes;i++) {
-            res[i] = (byte)((u.divide(BigInteger.valueOf((long)(Math.pow(256,i)))).mod(BigInteger.valueOf(256))).intValue());
+        for (int i = 0; i < bytes; i++) {
+            res[i] =
+                    (byte)
+                            ((u.divide(BigInteger.valueOf((long) (Math.pow(256, i))))
+                                            .mod(BigInteger.valueOf(256)))
+                                    .intValue());
         }
         return res;
     }
 
-    public static long byte2int(byte[]s) {
+    public static long byte2int(byte[] s) {
         long res = 0;
-        for(int i=0; i<s.length;i++){
-            res += Math.round((s[i]&0xff)*Math.pow(256,i));
+        for (int i = 0; i < s.length; i++) {
+            res += Math.round((s[i] & 0xff) * Math.pow(256, i));
         }
         return res;
     }
 
-    public static ArrayList<BigInteger> byte2seq(byte[]s,int radix,int batch, int bytes) {
-        long[] u = new long[(int)(Math.ceil(s.length/(double)bytes))];
+    public static ArrayList<BigInteger> byte2seq(byte[] s, int radix, int batch, int bytes) {
+        long[] u = new long[(int) (Math.ceil(s.length / (double) bytes))];
         ArrayList<BigInteger> res = new ArrayList<>();
-        int k=0;
-        for (int i = 0 ; i< s.length; i+=bytes) {
-            u[k] = byte2int(Arrays.copyOfRange(s, i, i+bytes));
-            k++; 
+        int k = 0;
+        for (int i = 0; i < s.length; i += bytes) {
+            u[k] = byte2int(Arrays.copyOfRange(s, i, i + bytes));
+            k++;
         }
-        for (int i =0; i< u.length; i++) {
-            for (int j = 0; j<batch; j++) {
-                res.add(BigInteger.valueOf(u[i]).divide(BigInteger.valueOf(radix).pow(j)).mod(BigInteger.valueOf(radix)));
+        for (int i = 0; i < u.length; i++) {
+            for (int j = 0; j < batch; j++) {
+                res.add(
+                        BigInteger.valueOf(u[i])
+                                .divide(BigInteger.valueOf(radix).pow(j))
+                                .mod(BigInteger.valueOf(radix)));
             }
         }
         return res;
