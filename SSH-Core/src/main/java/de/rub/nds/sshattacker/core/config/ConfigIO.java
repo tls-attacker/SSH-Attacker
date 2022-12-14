@@ -53,7 +53,7 @@ public class ConfigIO {
             marshaller.marshal(config, tempStream);
             os.write(tempStream.toString().getBytes(StandardCharsets.ISO_8859_1));
         } catch (IOException | JAXBException ex) {
-            throw new RuntimeException("Could not format XML");
+            throw new RuntimeException("Could not format XML", ex);
         }
     }
 
@@ -82,7 +82,7 @@ public class ConfigIO {
         } catch (JAXBException e) {
             throw new RuntimeException(e);
         } catch (FileNotFoundException e) {
-            throw new IllegalArgumentException("File cannot be found");
+            throw new IllegalArgumentException("File cannot be found", e);
         }
     }
 
