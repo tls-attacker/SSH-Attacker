@@ -8,9 +8,9 @@
 package de.rub.nds.sshattacker.core.config;
 
 import de.rub.nds.sshattacker.core.config.filter.ConfigDisplayFilter;
-import jakarta.xml.bind.JAXB;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
+import jakarta.xml.bind.Marshaller;
 import jakarta.xml.bind.Unmarshaller;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -48,10 +48,11 @@ public class ConfigIO {
 
     public static void write(Config config, OutputStream os) {
         ByteArrayOutputStream tempStream = new ByteArrayOutputStream();
-        JAXB.marshal(config, tempStream);
         try {
+            final Marshaller marshaller = getJAXBContext().createMarshaller();
+            marshaller.marshal(config, tempStream);
             os.write(tempStream.toString().getBytes(StandardCharsets.ISO_8859_1));
-        } catch (IOException ex) {
+        } catch (IOException | JAXBException ex) {
             throw new RuntimeException("Could not format XML");
         }
     }
