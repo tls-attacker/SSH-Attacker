@@ -63,8 +63,7 @@ public abstract class ProtocolMessageParser<T extends ProtocolMessage<T>> extend
         byte[] raw = packet.getPayload().getValue();
         try {
             if (packet instanceof BlobPacket) {
-                String rawText =
-                        new String(packet.getPayload().getValue(), StandardCharsets.US_ASCII);
+                String rawText = new String(packet.getPayload().getValue(), StandardCharsets.US_ASCII);
                 if (rawText.startsWith("SSH-2.0")) {
                     return new VersionExchangeMessageParser(raw).parse();
                 } else {
@@ -199,15 +198,18 @@ public abstract class ProtocolMessageParser<T extends ProtocolMessage<T>> extend
                         HybridKeyExchangeCombiner.POSTQUANTUM_CONCATENATE_CLASSICAL,
                         CryptoConstants.X25519_POINT_SIZE,
                         CryptoConstants.SNTRUP761_CIPHERTEXT_SIZE);
-<<<<<<< HEAD
-=======
             case CURVE25519_FRODOKEM1344:
                 return new HybridKeyExchangeReplyMessageParser(
                         raw,
                         HybridKeyExchangeCombiner.POSTQUANTUM_CONCATENATE_CLASSICAL,
                         CryptoConstants.X25519_POINT_SIZE,
                         CryptoConstants.FRODOKEM1344_CIPHERTEXT_SIZE);
->>>>>>> feature/integrateOpenquantumsafeFrodoKem1344Key
+            case SNTRUP4591761_x25519:
+                return new HybridKeyExchangeReplyMessageParser(
+                        raw,
+                        HybridKeyExchangeCombiner.POSTQUANTUM_CONCATENATE_CLASSICAL,
+                        CryptoConstants.X25519_POINT_SIZE,
+                        CryptoConstants.SNTRUP4591761_CIPHERTEXT_SIZE);
         }
     }
 
@@ -223,6 +225,17 @@ public abstract class ProtocolMessageParser<T extends ProtocolMessage<T>> extend
                         HybridKeyExchangeCombiner.POSTQUANTUM_CONCATENATE_CLASSICAL,
                         CryptoConstants.X25519_POINT_SIZE,
                         CryptoConstants.SNTRUP761_PUBLIC_KEY_SIZE);
+            case SNTRUP4591761_x25519:
+                return new HybridKeyExchangeInitMessageParser(
+                        raw,
+                        HybridKeyExchangeCombiner.POSTQUANTUM_CONCATENATE_CLASSICAL,
+                        CryptoConstants.X25519_POINT_SIZE,
+                        CryptoConstants.SNTRUP4591761_PUBLIC_KEY_SIZE);
+            case CURVE25519_FRODOKEM1344:
+                return new HybridKeyExchangeInitMessageParser(raw,
+                HybridKeyExchangeCombiner.POSTQUANTUM_CONCATENATE_CLASSICAL,
+                CryptoConstants.X25519_POINT_SIZE,
+                CryptoConstants.FRODOKEM1344_PUBLIC_KEY_SIZE);
         }
     }
 

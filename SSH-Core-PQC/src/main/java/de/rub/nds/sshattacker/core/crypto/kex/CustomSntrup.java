@@ -5,12 +5,12 @@
  *
  * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
-package de.rub.nds.sshattacker.core.crypto.ntrup.sntrup;
+package de.rub.nds.sshattacker.core.crypto.kex;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.sshattacker.core.crypto.kex.KeyEncapsulation;
-import de.rub.nds.sshattacker.core.crypto.keys.CustomHybridPrivateKey;
-import de.rub.nds.sshattacker.core.crypto.keys.CustomHybridPublicKey;
+import de.rub.nds.sshattacker.core.constants.OpenQuantumSafeKemNames;
+import de.rub.nds.sshattacker.core.crypto.keys.CustomPQKemPrivateKey;
+import de.rub.nds.sshattacker.core.crypto.keys.CustomPQKemPublicKey;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomKeyPair;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomPrivateKey;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomPublicKey;
@@ -22,6 +22,7 @@ import de.rub.nds.sshattacker.core.crypto.ntrup.sntrup.core.SntrupCore;
 import de.rub.nds.sshattacker.core.crypto.ntrup.sntrup.core.SntrupCoreValues;
 import de.rub.nds.sshattacker.core.crypto.ntrup.sntrup.core.SntrupParameterSet;
 import de.rub.nds.sshattacker.core.exceptions.CryptoException;
+import de.rub.nds.sshattacker.core.exceptions.NotImplementedException;
 
 import java.math.BigInteger;
 import java.security.MessageDigest;
@@ -30,13 +31,13 @@ import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class Sntrup extends KeyEncapsulation {
+public class CustomSntrup extends KeyEncapsulation {
     private static final Logger LOGGER = LogManager.getLogger();
     private SntrupParameterSet set;
-    private CustomHybridPublicKey remotePublicKey;
+    private CustomPQKemPublicKey remotePublicKey;
     private SntrupCore core;
 
-    private CustomKeyPair<CustomHybridPrivateKey, CustomHybridPublicKey> localKeyPair;
+    private CustomKeyPair<CustomPQKemPrivateKey, CustomPQKemPublicKey> localKeyPair;
     private byte[] encryptedSharedSecret;
 
     private int ciphertextBytes;
@@ -44,13 +45,13 @@ public class Sntrup extends KeyEncapsulation {
     private int smallBytes;
     private int hashBytes;
 
-    private String algorithm;
+    private OpenQuantumSafeKemNames kemName;
 
     // For SNTRUP4591761 which was defined during round one some things works a
     // little bit different than for SNTRUP761
     private final boolean round1;
 
-    public Sntrup(SntrupParameterSet set, boolean round1) {
+    public CustomSntrup(SntrupParameterSet set, boolean round1) {
         this.set = set;
         this.core = new SntrupCore(set);
         this.round1 = round1;
@@ -65,12 +66,12 @@ public class Sntrup extends KeyEncapsulation {
                     ciphertextBytes = 1049;
                     pubKBytes = 1218;
                     hashBytes = 0;
-                    algorithm = "SNTRUP4591761";
+                    kemName = OpenQuantumSafeKemNames.SNTRUP4591761;
                 } else {
                     pubKBytes = 1158;
                     ciphertextBytes = 1007;
                     hashBytes = 32;
-                    algorithm = "SNTRUP761";
+                    kemName = OpenQuantumSafeKemNames.SNTRUP761;
                 }
                 smallBytes = 191;
 
@@ -103,7 +104,8 @@ public class Sntrup extends KeyEncapsulation {
         byte[] hashConfirm = hashPrefixedB(ArrayConverter.concatenate(hashencR, cache), (byte) 2);
 
         this.encryptedSharedSecret = ArrayConverter.concatenate(c, hashConfirm);
-        this.sharedSecret = new BigInteger(hashPrefixedB(ArrayConverter.concatenate(hashencR, encryptedSharedSecret), (byte) 1));
+        this.sharedSecret = new BigInteger(
+                hashPrefixedB(ArrayConverter.concatenate(hashencR, encryptedSharedSecret), (byte) 1));
     }
 
     private void decapsR1(byte[] privK, byte[] ciphertext) {
@@ -158,7 +160,8 @@ public class Sntrup extends KeyEncapsulation {
 
         if (Arrays.equals(ciphertext, ciphertextNew)) {
             LOGGER.info("Successfully decapsulated the cyphertext. Calculate shared Secret now...");
-            this.sharedSecret = new BigInteger(hashPrefixedB(ArrayConverter.concatenate(hashRNewEnc, ciphertext), (byte) 1));
+            this.sharedSecret = new BigInteger(
+                    hashPrefixedB(ArrayConverter.concatenate(hashRNewEnc, ciphertext), (byte) 1));
 
         } else {
             LOGGER.warn(
@@ -188,9 +191,9 @@ public class Sntrup extends KeyEncapsulation {
 
     @Override
     public void setLocalKeyPair(byte[] privateKeyBytes, byte[] publicKeyBytes) {
-        CustomHybridPrivateKey privK = new CustomHybridPrivateKey(privateKeyBytes, algorithm);
-        CustomHybridPublicKey pubK = new CustomHybridPublicKey(publicKeyBytes, algorithm);
-        localKeyPair = new CustomKeyPair<CustomHybridPrivateKey, CustomHybridPublicKey>(privK, pubK);
+        CustomPQKemPrivateKey privK = new CustomPQKemPrivateKey(privateKeyBytes, kemName);
+        CustomPQKemPublicKey pubK = new CustomPQKemPublicKey(publicKeyBytes, kemName);
+        localKeyPair = new CustomKeyPair<CustomPQKemPrivateKey, CustomPQKemPublicKey>(privK, pubK);
     }
 
     @Override
@@ -199,20 +202,16 @@ public class Sntrup extends KeyEncapsulation {
 
         byte[] encF = values.getF().encode();
         byte[] encV = values.getgInv().encode();
-        byte roh[] = null;
-        byte encH[] = null;
-        CustomHybridPrivateKey privK;
-        CustomHybridPublicKey pubK = new CustomHybridPublicKey(encH, algorithm);
+        byte encH[] = values.getH().encode();
+        CustomPQKemPrivateKey privK;
+        CustomPQKemPublicKey pubK = new CustomPQKemPublicKey(encH, kemName);
 
         if (round1) {
-            encH = values.getH().encode_old();
-            privK = new CustomHybridPrivateKey(ArrayConverter.concatenate(encF, encV, encH), algorithm);
-            pubK = new CustomHybridPublicKey(encH, algorithm);
+            privK = new CustomPQKemPrivateKey(ArrayConverter.concatenate(encF, encV, encH), kemName);
         } else {
-            encH = values.getH().encode();
-            roh = values.getRoh().encode();
-            privK = new CustomHybridPrivateKey(
-                    ArrayConverter.concatenate(encF, encV, encH, roh, hashPrefixedB(encH, (byte) 4)), algorithm);
+            byte[] roh = values.getRoh().encode();
+            privK = new CustomPQKemPrivateKey(
+                    ArrayConverter.concatenate(encF, encV, encH, roh, hashPrefixedB(encH, (byte) 4)), kemName);
 
         }
 
@@ -238,7 +237,7 @@ public class Sntrup extends KeyEncapsulation {
 
     @Override
     public void setRemotePublicKey(byte[] remotePublicKeyBytes) {
-        this.remotePublicKey = new CustomHybridPublicKey(remotePublicKeyBytes, algorithm);
+        this.remotePublicKey = new CustomPQKemPublicKey(remotePublicKeyBytes, kemName);
 
     }
 
@@ -309,5 +308,10 @@ public class Sntrup extends KeyEncapsulation {
             decapsR2(localKeyPair.getPrivate().getEncoded(), encryptedSharedSecret);
         }
 
+    }
+
+    @Override
+    public void setLocalKeyPair(byte[] privateKeyBytes) {
+        throw new NotImplementedException("The method is not supported.");
     }
 }

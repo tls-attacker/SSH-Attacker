@@ -13,16 +13,16 @@ import jakarta.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
-public class CustomHybridPrivateKey extends CustomPrivateKey {
+public class CustomPQKemPrivateKey extends CustomPrivateKey {
 
     private byte[] privateKey;
     private String algorithm;
 
     @SuppressWarnings("unused")
-    private CustomHybridPrivateKey() {
+    private CustomPQKemPrivateKey() {
     }
 
-    public CustomHybridPrivateKey(byte[] privateKey, String algorithm) {
+    public CustomPQKemPrivateKey(byte[] privateKey, String algorithm) {
         this.privateKey = privateKey;
         this.algorithm = algorithm;
     }

@@ -18,6 +18,8 @@ public abstract class KeyEncapsulation extends KeyExchange {
         super();
     }
 
+    public abstract void setLocalKeyPair(byte[] privateKeyBytes); 
+    
     public abstract void setLocalKeyPair(byte[] privateKeyBytes, byte[] publicKeyBytes);
 
     public abstract void generateLocalKeyPair();
