@@ -13,6 +13,7 @@ import de.rub.nds.sshattacker.core.constants.*;
 import de.rub.nds.sshattacker.core.crypto.hash.ExchangeHashInputHolder;
 import de.rub.nds.sshattacker.core.crypto.kex.AbstractEcdhKeyExchange;
 import de.rub.nds.sshattacker.core.crypto.kex.DhKeyExchange;
+import de.rub.nds.sshattacker.core.crypto.kex.HybridKeyExchange;
 import de.rub.nds.sshattacker.core.crypto.kex.RsaKeyExchange;
 import de.rub.nds.sshattacker.core.crypto.keys.SshPublicKey;
 import de.rub.nds.sshattacker.core.exceptions.ConfigurationException;
@@ -22,6 +23,7 @@ import de.rub.nds.sshattacker.core.packet.layer.AbstractPacketLayer;
 import de.rub.nds.sshattacker.core.packet.layer.PacketLayerFactory;
 import de.rub.nds.sshattacker.core.protocol.common.layer.MessageLayer;
 import de.rub.nds.sshattacker.core.protocol.connection.Channel;
+import de.rub.nds.sshattacker.core.protocol.connection.ChannelManager;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.sshattacker.core.workflow.chooser.ChooserFactory;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
@@ -180,6 +182,8 @@ public class SshContext {
     private AbstractEcdhKeyExchange ecdhKeyExchangeInstance;
     /** Key exchange instance for RSA key exchange method(s) */
     private RsaKeyExchange rsaKeyExchangeInstance;
+    /** Key exchange instance for Hybrid key exchange method(s) */
+    private HybridKeyExchange hybridKeyExchangeInstance;
     /**
      * If set to true, the most recent group request received was of type
      * DhGexKeyExchangeOldRequestMessage
@@ -216,7 +220,9 @@ public class SshContext {
     // endregion
 
     // region Connection Protocol
-    private final HashMap<Integer, Channel> channels = new HashMap<>();
+
+    private ChannelManager channelManager;
+
     // TODO: Implement channel requests in such a way that allows specification within the XML file
     // endregion
 
@@ -265,6 +271,7 @@ public class SshContext {
         writeSequenceNumber = 0;
         readSequenceNumber = 0;
         handleAsClient = (connection.getLocalConnectionEndType() == ConnectionEndType.CLIENT);
+        channelManager = new ChannelManager(this);
     }
 
     // endregion
@@ -788,6 +795,10 @@ public class SshContext {
         return Optional.ofNullable(ecdhKeyExchangeInstance);
     }
 
+    public Optional<HybridKeyExchange> getHybridKeyExchangeInstance() {
+        return Optional.ofNullable(hybridKeyExchangeInstance);
+    }
+
     public Optional<RsaKeyExchange> getRsaKeyExchangeInstance() {
         return Optional.ofNullable(rsaKeyExchangeInstance);
     }
@@ -831,6 +842,10 @@ public class SshContext {
 
     public void setEcdhKeyExchangeInstance(AbstractEcdhKeyExchange ecdhKeyExchangeInstance) {
         this.ecdhKeyExchangeInstance = ecdhKeyExchangeInstance;
+    }
+
+    public void setHybridKeyExchangeInstance(HybridKeyExchange HybridKeyExchangeInstance) {
+        this.hybridKeyExchangeInstance = HybridKeyExchangeInstance;
     }
 
     public void setRsaKeyExchangeInstance(RsaKeyExchange rsaKeyExchangeInstance) {
@@ -907,7 +922,15 @@ public class SshContext {
 
     // region for Connection Protocol Fields
     public HashMap<Integer, Channel> getChannels() {
-        return channels;
+        return channelManager.getChannels();
+    }
+
+    public ChannelManager getChannelManager() {
+        return channelManager;
+    }
+
+    public void setChannelManager(ChannelManager channelManager) {
+        this.channelManager = channelManager;
     }
     // endregion
 

@@ -11,6 +11,7 @@ import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.constants.*;
 import de.rub.nds.sshattacker.core.crypto.kex.AbstractEcdhKeyExchange;
 import de.rub.nds.sshattacker.core.crypto.kex.DhKeyExchange;
+import de.rub.nds.sshattacker.core.crypto.kex.HybridKeyExchange;
 import de.rub.nds.sshattacker.core.crypto.kex.RsaKeyExchange;
 import de.rub.nds.sshattacker.core.crypto.keys.SshPublicKey;
 import de.rub.nds.sshattacker.core.state.SshContext;
@@ -215,6 +216,8 @@ public abstract class Chooser {
     public abstract AbstractEcdhKeyExchange getEcdhKeyExchange();
 
     public abstract RsaKeyExchange getRsaKeyExchange();
+
+    public abstract HybridKeyExchange getHybridKeyExchange();
 
     public abstract SshPublicKey<?, ?> getNegotiatedHostKey();
 
