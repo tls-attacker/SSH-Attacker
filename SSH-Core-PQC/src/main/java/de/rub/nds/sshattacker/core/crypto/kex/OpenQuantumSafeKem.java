@@ -16,7 +16,6 @@ import de.rub.nds.sshattacker.core.crypto.keys.CustomPQKemPublicKey;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomPublicKey;
 import de.rub.nds.sshattacker.core.exceptions.CryptoException;
 import de.rub.nds.sshattacker.core.exceptions.NotImplementedException;
-
 import java.math.BigInteger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -48,8 +47,8 @@ public class OpenQuantumSafeKem extends KeyEncapsulation {
         kem.generate_keypair();
         CustomPQKemPrivateKey privKey = new CustomPQKemPrivateKey(kem.export_secret_key(), kemName);
         CustomPQKemPublicKey pubKey = new CustomPQKemPublicKey(kem.export_public_key(), kemName);
-        this.localKeyPair = new CustomKeyPair<CustomPQKemPrivateKey, CustomPQKemPublicKey>(
-                privKey, pubKey);
+        this.localKeyPair =
+                new CustomKeyPair<CustomPQKemPrivateKey, CustomPQKemPublicKey>(privKey, pubKey);
     }
 
     @Override
@@ -65,7 +64,8 @@ public class OpenQuantumSafeKem extends KeyEncapsulation {
                 LOGGER.warn("A Remote Key is not available, use a zero key instead.");
                 setRemotePublicKey(new byte[CryptoConstants.SNTRUP761_PUBLIC_KEY_SIZE]);
             }
-            org.openquantumsafe.Pair<byte[], byte[]> encapsulation = kem.encap_secret(remotePublicKey.getEncoded());
+            org.openquantumsafe.Pair<byte[], byte[]> encapsulation =
+                    kem.encap_secret(remotePublicKey.getEncoded());
             this.sharedSecret = new BigInteger(encapsulation.getRight());
             this.encryptedSharedSecret = encapsulation.getLeft();
             return encapsulation.getLeft();
@@ -86,18 +86,21 @@ public class OpenQuantumSafeKem extends KeyEncapsulation {
                             + ArrayConverter.bytesToRawHexString(
                                     ArrayConverter.bigIntegerToByteArray(sharedSecret)));
         } catch (RuntimeException e) {
-            throw new CryptoException("Unexpected exception occured while decrypting the shared secret: " + e);
+            throw new CryptoException(
+                    "Unexpected exception occured while decrypting the shared secret: " + e);
         }
     }
 
     @Override
     public void setLocalKeyPair(byte[] privateKeyBytes) {
-        throw new NotImplementedException("Updateing local Key Pairs not supported, use generateLocalKeys instead");
+        throw new NotImplementedException(
+                "Updateing local Key Pairs not supported, use generateLocalKeys instead");
     }
 
     @Override
     public void setLocalKeyPair(byte[] privateKeyBytes, byte[] publicKeyBytes) {
-        throw new NotImplementedException("Updateing local Key Pairs not supported, use generateLocalKeys instead");
+        throw new NotImplementedException(
+                "Updateing local Key Pairs not supported, use generateLocalKeys instead");
     }
 
     @Override

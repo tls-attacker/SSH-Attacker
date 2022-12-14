@@ -19,11 +19,11 @@ import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 public class CustomPQKemPrivateKey extends CustomPrivateKey {
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] privateKey;
+
     private OpenQuantumSafeKemNames kemName;
 
     @SuppressWarnings("unused")
-    private CustomPQKemPrivateKey() {
-    }
+    private CustomPQKemPrivateKey() {}
 
     public CustomPQKemPrivateKey(byte[] privateKey, OpenQuantumSafeKemNames kemName) {
         this.privateKey = privateKey;
@@ -43,5 +43,4 @@ public class CustomPQKemPrivateKey extends CustomPrivateKey {
     public String getAlgorithm() {
         return kemName.getName();
     }
-
 }

@@ -19,7 +19,9 @@ import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 public class CustomPQKemPublicKey extends CustomPublicKey {
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] publicKey;
+
     private OpenQuantumSafeKemNames kemName;
+
     @SuppressWarnings("unused")
     public CustomPQKemPublicKey() {}
 

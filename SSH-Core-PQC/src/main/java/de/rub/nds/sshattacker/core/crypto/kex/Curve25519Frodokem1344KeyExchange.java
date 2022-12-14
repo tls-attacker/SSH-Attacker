@@ -12,7 +12,6 @@ import de.rub.nds.sshattacker.core.constants.CryptoConstants;
 import de.rub.nds.sshattacker.core.constants.HybridKeyExchangeCombiner;
 import de.rub.nds.sshattacker.core.constants.NamedEcGroup;
 import de.rub.nds.sshattacker.core.constants.OpenQuantumSafeKemNames;
-
 import java.math.BigInteger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
