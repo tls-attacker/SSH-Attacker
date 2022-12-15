@@ -18,9 +18,7 @@ import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 import java.util.Map;
-import java.util.stream.Stream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -143,18 +141,8 @@ public class UserAuthPubkeyMessagePreparator
     @Override
     public void prepareUserAuthRequestSpecificContents() {
         getObject().setUseSignature(true);
-        final Stream<Map.Entry<SshPublicKey<?, ?>, PublicKeyAlgorithm>> keyAlgorithmCombinations =
-                chooser.getConfig().getUserKeys().stream()
-                        .flatMap(
-                                key ->
-                                        Arrays.stream(PublicKeyAlgorithm.values())
-                                                .filter(
-                                                        algorithm ->
-                                                                algorithm.getKeyFormat()
-                                                                        == key.getPublicKeyFormat())
-                                                .map(algorithm -> Map.entry(key, algorithm)));
         final Map.Entry<SshPublicKey<?, ?>, PublicKeyAlgorithm> keyAlgorithmCombination =
-                keyAlgorithmCombinations
+                chooser.getUserKeyAndAlgorithmCombinations()
                         .findFirst()
                         .orElseThrow(
                                 () ->
