@@ -305,12 +305,25 @@ public class WorkflowConfigurationFactory {
         return sshActions;
     }
 
-    private void addAuthenticationProtocolActions(WorkflowTrace workflow) {
+    /**
+     * Add authentication protocol actions using the configured authentication method to an existing
+     * workflow.
+     *
+     * @param workflow the workflow trace to add actions to
+     */
+    public void addAuthenticationProtocolActions(final WorkflowTrace workflow) {
         this.addAuthenticationProtocolActions(config.getAuthenticationMethod(), workflow);
     }
 
-    private void addAuthenticationProtocolActions(
-            AuthenticationMethod method, WorkflowTrace workflow) {
+    /**
+     * Add authentication protocol actions with the specified authentication method to an existing
+     * workflow.
+     *
+     * @param method the authentication method to use
+     * @param workflow the workflow trace to add actions to
+     */
+    public void addAuthenticationProtocolActions(
+            final AuthenticationMethod method, final WorkflowTrace workflow) {
         AliasedConnection connection = getDefaultConnection();
         switch (method) {
             case NONE:
@@ -387,7 +400,12 @@ public class WorkflowConfigurationFactory {
         }
     }
 
-    private void addConnectionProtocolActions(WorkflowTrace workflow) {
+    /**
+     * Add connections protocol actions to an existing workflow.
+     *
+     * @param workflow the workflow trace to add actions to
+     */
+    public void addConnectionProtocolActions(WorkflowTrace workflow) {
         AliasedConnection connection = getDefaultConnection();
         workflow.addSshActions(
                 SshActionFactory.createMessageAction(
