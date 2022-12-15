@@ -12,6 +12,7 @@ import static org.mockito.Mockito.doReturn;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.KeyExchangeAlgorithm;
+import de.rub.nds.sshattacker.core.constants.OpenQuantumSafeKemNames;
 import jakarta.xml.bind.DatatypeConverter;
 import java.io.InputStream;
 import java.lang.reflect.Field;
@@ -26,7 +27,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.InjectMocks;
-import org.mockito.Spy;
+import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.openquantumsafe.Pair;
 
@@ -36,11 +37,14 @@ public class HybridKeyExchangeTest {
     private static final Logger LOGGER = LogManager.getLogger();
     // Each KeyEncapsulation algorithm based on org.openquantumsafe.KeyEncapsulation
     // needs to be mocked for testing.
-    @Spy
-    org.openquantumsafe.KeyEncapsulation sntrup =
-            new org.openquantumsafe.KeyEncapsulation("sntrup761");
+    @Mock org.openquantumsafe.KeyEncapsulation kem;
 
-    @InjectMocks Sntrup761KeyExchange sntrup761Kex;
+    @InjectMocks
+    OpenQuantumSafeKem sntrup761Kex = new OpenQuantumSafeKem(OpenQuantumSafeKemNames.SNTRUP761);
+
+    @InjectMocks
+    OpenQuantumSafeKem frodokem1344Kex =
+            new OpenQuantumSafeKem(OpenQuantumSafeKemNames.FRODOKEM1344);
 
     static final Map<String, KeyExchangeAlgorithm> nameToAlgorithm;
 
@@ -48,6 +52,9 @@ public class HybridKeyExchangeTest {
         nameToAlgorithm = new HashMap<>();
         nameToAlgorithm.put(
                 "sntrup761x25519-sha512@openssh.com", KeyExchangeAlgorithm.SNTRUP761_X25519);
+        nameToAlgorithm.put(
+                "curve25519-frodokem1344-sha512@ssh.com",
+                KeyExchangeAlgorithm.CURVE25519_FRODOKEM1344);
     }
 
     /**
@@ -164,20 +171,24 @@ public class HybridKeyExchangeTest {
             byte[] encodedSharedSecret) {
 
         try {
-            // Mock all functionCalls of org.openquantumsafe.KeyEncapsulation
-            doReturn(encapsulationPubKey).when(sntrup).export_public_key();
-            doReturn(encapsulationPrivKey).when(sntrup).export_secret_key();
-            doReturn(encapsulationSharedSecret).when(sntrup).decap_secret(ciphertext);
 
             // Inject the encapsulation Kex with the mocked key exchange into the
             // object to test
             Field encapsulationField = HybridKeyExchange.class.getDeclaredField("encapsulation");
             encapsulationField.setAccessible(true);
             HybridKeyExchange kex = null;
+            // Mock all functionCalls of org.openquantumsafe.KeyEncapsulation
+            doReturn(encapsulationPubKey).when(kem).export_public_key();
+            doReturn(encapsulationPrivKey).when(kem).export_secret_key();
+            doReturn(encapsulationSharedSecret).when(kem).decap_secret(ciphertext);
             switch (algorithm) {
                 case SNTRUP761_X25519:
                     kex = new Sntrup761X25519KeyExchange();
                     encapsulationField.set(kex, sntrup761Kex);
+                    break;
+                case CURVE25519_FRODOKEM1344:
+                    kex = new Curve25519Frodokem1344KeyExchange();
+                    encapsulationField.set(kex, frodokem1344Kex);
                     break;
                 default:
                     LOGGER.error("Algorithm " + algorithm + " not supported");
@@ -238,21 +249,23 @@ public class HybridKeyExchangeTest {
             byte[] ciphertext,
             byte[] encodedSharedSecret) {
         try {
-            // Mock all functionCalls of org.openquantumsafe.KeyEncapsulation
-            doReturn(new Pair<byte[], byte[]>(ciphertext, encapsulationSharedSecret))
-                    .when(sntrup)
-                    .encap_secret(encapsulationPubKey);
-            // doReturn(encapsulationSharedSecret).when(sntrup).decap_secret(ciphertext);
-
             // Inject the encapsulation Kex with the mocked sntrup key exchange into the
             // object to test
             Field encapsulationField = HybridKeyExchange.class.getDeclaredField("encapsulation");
             encapsulationField.setAccessible(true);
             HybridKeyExchange kex;
+            // Mock all functionCalls of org.openquantumsafe.KeyEncapsulation
+            doReturn(new Pair<byte[], byte[]>(ciphertext, encapsulationSharedSecret))
+                    .when(kem)
+                    .encap_secret(encapsulationPubKey);
             switch (algorithm) {
                 case SNTRUP761_X25519:
                     kex = new Sntrup761X25519KeyExchange();
                     encapsulationField.set(kex, sntrup761Kex);
+                    break;
+                case CURVE25519_FRODOKEM1344:
+                    kex = new Curve25519Frodokem1344KeyExchange();
+                    encapsulationField.set(kex, frodokem1344Kex);
                     break;
                 default:
                     LOGGER.error("Algorithm " + algorithm + " not supported.");

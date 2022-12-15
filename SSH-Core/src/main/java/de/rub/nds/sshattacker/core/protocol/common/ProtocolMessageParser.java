@@ -199,6 +199,12 @@ public abstract class ProtocolMessageParser<T extends ProtocolMessage<T>> extend
                         HybridKeyExchangeCombiner.POSTQUANTUM_CONCATENATE_CLASSICAL,
                         CryptoConstants.X25519_POINT_SIZE,
                         CryptoConstants.SNTRUP761_CIPHERTEXT_SIZE);
+            case CURVE25519_FRODOKEM1344:
+                return new HybridKeyExchangeReplyMessageParser(
+                        raw,
+                        HybridKeyExchangeCombiner.POSTQUANTUM_CONCATENATE_CLASSICAL,
+                        CryptoConstants.X25519_POINT_SIZE,
+                        CryptoConstants.FRODOKEM1344_CIPHERTEXT_SIZE);
         }
     }
 
