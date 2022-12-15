@@ -9,9 +9,9 @@ package de.rub.nds.sshattacker.core.crypto.mac;
 
 import de.rub.nds.sshattacker.core.constants.MacAlgorithm;
 
-public interface WrappedMac {
+public abstract class AbstractMac {
 
-    byte[] calculate(int sequenceNumber, byte[] unencryptedPacket);
+    public abstract byte[] calculate(int sequenceNumber, byte[] unencryptedPacket);
 
-    MacAlgorithm getAlgorithm();
+    public abstract MacAlgorithm getAlgorithm();
 }

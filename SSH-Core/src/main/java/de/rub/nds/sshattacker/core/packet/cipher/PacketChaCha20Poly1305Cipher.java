@@ -9,9 +9,8 @@ package de.rub.nds.sshattacker.core.packet.cipher;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.*;
+import de.rub.nds.sshattacker.core.crypto.cipher.AbstractCipher;
 import de.rub.nds.sshattacker.core.crypto.cipher.CipherFactory;
-import de.rub.nds.sshattacker.core.crypto.cipher.DecryptionCipher;
-import de.rub.nds.sshattacker.core.crypto.cipher.EncryptionCipher;
 import de.rub.nds.sshattacker.core.exceptions.CryptoException;
 import de.rub.nds.sshattacker.core.packet.BinaryPacket;
 import de.rub.nds.sshattacker.core.packet.BlobPacket;
@@ -38,53 +37,37 @@ public class PacketChaCha20Poly1305Cipher extends PacketCipher {
      *
      * Source: https://cvsweb.openbsd.org/src/usr.bin/ssh/PROTOCOL.chacha20poly1305?annotate=HEAD
      */
-    /** ChaCha20 instance keyed with K_1 for packet length encryption. */
-    private final EncryptionCipher headerEncryptCipher;
-    /** ChaCha20 instance keyed with K_1 for packet length decryption. */
-    private final DecryptionCipher headerDecryptCipher;
-    /** ChaCha20-Poly1305 instance keyed with K_2 for main packet encryption. */
-    private final EncryptionCipher mainEncryptCipher;
-    /** ChaCha20-Poly1305 instance keyed with K_2 for main packet decryption. */
-    private final DecryptionCipher mainDecryptCipher;
+    /** ChaCha20 instance keyed with K_1 for packet length encryption / decryption. */
+    private final AbstractCipher headerCipher;
+    /** ChaCha20-Poly1305 instance keyed with K_2 for main packet encryption / decryption. */
+    private final AbstractCipher mainCipher;
 
-    public PacketChaCha20Poly1305Cipher(SshContext context, KeySet keySet) {
-        super(context, keySet, EncryptionAlgorithm.CHACHA20_POLY1305_OPENSSH_COM, null);
-        headerEncryptCipher =
-                CipherFactory.getEncryptionCipher(
+    public PacketChaCha20Poly1305Cipher(SshContext context, KeySet keySet, CipherMode mode) {
+        super(context, keySet, EncryptionAlgorithm.CHACHA20_POLY1305_OPENSSH_COM, null, mode);
+        headerCipher =
+                CipherFactory.getCipher(
                         encryptionAlgorithm,
                         Arrays.copyOfRange(
-                                keySet.getWriteEncryptionKey(getLocalConnectionEndType()),
+                                mode == CipherMode.ENCRYPT
+                                        ? keySet.getWriteEncryptionKey(getLocalConnectionEndType())
+                                        : keySet.getReadEncryptionKey(getLocalConnectionEndType()),
                                 CryptoConstants.CHACHA20_KEY_SIZE,
                                 2 * CryptoConstants.CHACHA20_KEY_SIZE),
                         false);
-        headerDecryptCipher =
-                CipherFactory.getDecryptionCipher(
+        mainCipher =
+                CipherFactory.getCipher(
                         encryptionAlgorithm,
                         Arrays.copyOfRange(
-                                keySet.getReadEncryptionKey(getLocalConnectionEndType()),
-                                CryptoConstants.CHACHA20_KEY_SIZE,
-                                2 * CryptoConstants.CHACHA20_KEY_SIZE),
-                        false);
-        mainEncryptCipher =
-                CipherFactory.getEncryptionCipher(
-                        encryptionAlgorithm,
-                        Arrays.copyOfRange(
-                                keySet.getWriteEncryptionKey(getLocalConnectionEndType()),
-                                0,
-                                CryptoConstants.CHACHA20_KEY_SIZE),
-                        true);
-        mainDecryptCipher =
-                CipherFactory.getDecryptionCipher(
-                        encryptionAlgorithm,
-                        Arrays.copyOfRange(
-                                keySet.getReadEncryptionKey(getLocalConnectionEndType()),
+                                mode == CipherMode.ENCRYPT
+                                        ? keySet.getWriteEncryptionKey(getLocalConnectionEndType())
+                                        : keySet.getReadEncryptionKey(getLocalConnectionEndType()),
                                 0,
                                 CryptoConstants.CHACHA20_KEY_SIZE),
                         true);
     }
 
     @Override
-    public void encrypt(BinaryPacket packet) throws CryptoException {
+    protected void encrypt(BinaryPacket packet) throws CryptoException {
         if (packet.getComputations() == null) {
             LOGGER.warn("Packet computations are not prepared.");
             packet.prepareComputations();
@@ -101,7 +84,7 @@ public class PacketChaCha20Poly1305Cipher extends PacketCipher {
 
         // Encryption of packet length
         byte[] encryptedPacketLength =
-                headerEncryptCipher.encrypt(
+                headerCipher.encrypt(
                         packet.getLength().getByteArray(BinaryPacketConstants.PACKET_FIELD_LENGTH),
                         computations.getIv().getValue());
         computations.setAdditionalAuthenticatedData(encryptedPacketLength);
@@ -112,7 +95,7 @@ public class PacketChaCha20Poly1305Cipher extends PacketCipher {
                         packet.getCompressedPayload().getValue(),
                         packet.getPadding().getValue()));
         byte[] authenticatedCiphertext =
-                mainEncryptCipher.encrypt(
+                mainCipher.encrypt(
                         computations.getPlainPacketBytes().getValue(),
                         computations.getIv().getValue(),
                         computations.getAdditionalAuthenticatedData().getValue());
@@ -143,17 +126,16 @@ public class PacketChaCha20Poly1305Cipher extends PacketCipher {
     }
 
     @Override
-    public void encrypt(BlobPacket packet) throws CryptoException {
+    protected void encrypt(BlobPacket packet) throws CryptoException {
         byte[] iv =
                 ArrayConverter.intToBytes(
                         context.getWriteSequenceNumber(), DataFormatConstants.UINT64_SIZE);
         packet.setCiphertext(
-                mainEncryptCipher.encrypt(
-                        packet.getCompressedPayload().getValue(), iv, new byte[0]));
+                mainCipher.encrypt(packet.getCompressedPayload().getValue(), iv, new byte[0]));
     }
 
     @Override
-    public void decrypt(BinaryPacket packet) throws CryptoException {
+    protected void decrypt(BinaryPacket packet) throws CryptoException {
         if (packet.getComputations() == null) {
             LOGGER.warn("Packet computations are not prepared.");
             packet.prepareComputations();
@@ -178,7 +160,7 @@ public class PacketChaCha20Poly1305Cipher extends PacketCipher {
                                     packet.getCiphertext().getValue().length),
                             packet.getMac().getValue());
             computations.setPlainPacketBytes(
-                    mainDecryptCipher.decrypt(
+                    mainCipher.decrypt(
                             authenticatedCiphertext,
                             computations.getIv().getValue(),
                             computations.getAdditionalAuthenticatedData().getValue()));
@@ -213,13 +195,13 @@ public class PacketChaCha20Poly1305Cipher extends PacketCipher {
     }
 
     @Override
-    public void decrypt(BlobPacket packet) throws CryptoException {
+    protected void decrypt(BlobPacket packet) throws CryptoException {
         byte[] iv =
                 ArrayConverter.intToBytes(
                         context.getReadSequenceNumber(), DataFormatConstants.UINT64_SIZE);
         try {
             packet.setCompressedPayload(
-                    mainDecryptCipher.decrypt(packet.getCiphertext().getValue(), iv, new byte[0]));
+                    mainCipher.decrypt(packet.getCiphertext().getValue(), iv, new byte[0]));
         } catch (AEADBadTagException e) {
             LOGGER.warn(
                     "Caught an AEADBadTagException while decrypting the blob packet - returning the packet without decryption",
@@ -227,20 +209,12 @@ public class PacketChaCha20Poly1305Cipher extends PacketCipher {
         }
     }
 
-    public EncryptionCipher getHeaderEncryptCipher() {
-        return headerEncryptCipher;
+    public AbstractCipher getHeaderCipher() {
+        return headerCipher;
     }
 
-    public DecryptionCipher getHeaderDecryptCipher() {
-        return headerDecryptCipher;
-    }
-
-    public EncryptionCipher getMainEncryptCipher() {
-        return mainEncryptCipher;
-    }
-
-    public DecryptionCipher getMainDecryptCipher() {
-        return mainDecryptCipher;
+    public AbstractCipher getMainCipher() {
+        return mainCipher;
     }
 
     @Override

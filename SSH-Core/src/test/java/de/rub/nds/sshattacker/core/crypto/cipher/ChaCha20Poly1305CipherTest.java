@@ -84,7 +84,7 @@ public class ChaCha20Poly1305CipherTest {
     public void testEncrypt(
             byte[] key, byte[] iv, byte[] plaintext, byte[] ciphertext, byte[] aad, byte[] mac)
             throws CryptoException {
-        EncryptionCipher mainEncryptCipher =
+        AbstractCipher mainEncryptCipher =
                 new ChaCha20Poly1305Cipher(
                         Arrays.copyOfRange(key, 0, CryptoConstants.CHACHA20_KEY_SIZE));
         byte[] fullCiphertext = mainEncryptCipher.encrypt(plaintext, iv, aad);
@@ -112,7 +112,7 @@ public class ChaCha20Poly1305CipherTest {
     public void testDecrypt(
             byte[] key, byte[] iv, byte[] plaintext, byte[] ciphertext, byte[] aad, byte[] mac)
             throws CryptoException, AEADBadTagException {
-        DecryptionCipher mainDecryptCipher =
+        AbstractCipher mainDecryptCipher =
                 new ChaCha20Poly1305Cipher(
                         Arrays.copyOfRange(key, 0, CryptoConstants.CHACHA20_KEY_SIZE));
         assertEquals(
@@ -133,10 +133,10 @@ public class ChaCha20Poly1305CipherTest {
     @Test
     public void exceptionTesting() {
         LOGGER.info("Exception testing: ");
-        EncryptionCipher encryptCipher =
+        AbstractCipher encryptCipher =
                 new ChaCha20Poly1305Cipher(
                         ArrayConverter.hexStringToByteArray("0dd74c845517a3012ff8aa678e05159c"));
-        DecryptionCipher decryptCipher =
+        AbstractCipher decryptCipher =
                 new ChaCha20Poly1305Cipher(
                         ArrayConverter.hexStringToByteArray(
                                 "c6d10362f5cae608df6e33cc124bcae2263884db63f481ab94e48b1e197f81ba"));

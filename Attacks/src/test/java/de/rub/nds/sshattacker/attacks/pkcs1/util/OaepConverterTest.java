@@ -10,9 +10,8 @@ package de.rub.nds.sshattacker.attacks.pkcs1.util;
 import static org.junit.jupiter.api.Assertions.*;
 
 import de.rub.nds.sshattacker.core.constants.KeyExchangeAlgorithm;
+import de.rub.nds.sshattacker.core.crypto.cipher.AbstractCipher;
 import de.rub.nds.sshattacker.core.crypto.cipher.CipherFactory;
-import de.rub.nds.sshattacker.core.crypto.cipher.DecryptionCipher;
-import de.rub.nds.sshattacker.core.crypto.cipher.EncryptionCipher;
 import de.rub.nds.sshattacker.core.exceptions.CryptoException;
 import java.math.BigInteger;
 import java.nio.ByteBuffer;
@@ -92,8 +91,8 @@ public class OaepConverterTest {
             byte[] encryptedMessage = rawCipher.doFinal(encodedMessage);
 
             // Do decryption using OAEP Cipher
-            DecryptionCipher oaepCipher =
-                    CipherFactory.getDecryptionCipher(
+            AbstractCipher oaepCipher =
+                    CipherFactory.getOaepCipher(
                             KeyExchangeAlgorithm.RSA2048_SHA256, kp.getPrivate());
             byte[] result = oaepCipher.decrypt(encryptedMessage);
 
@@ -120,8 +119,8 @@ public class OaepConverterTest {
             KeyPair kp = kpg.generateKeyPair();
 
             // Do encryption using OAEP Cipher
-            EncryptionCipher oaepCipher =
-                    CipherFactory.getEncryptionCipher(
+            AbstractCipher oaepCipher =
+                    CipherFactory.getOaepCipher(
                             KeyExchangeAlgorithm.RSA2048_SHA256, kp.getPublic());
             byte[] encryptedMessage = oaepCipher.encrypt(message);
 

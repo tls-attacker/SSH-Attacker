@@ -28,7 +28,7 @@ import org.apache.logging.log4j.Logger;
  * restricted to inputs consisting out of full bytes only and of length less or equal to 2^24 bytes
  * (16 MB).
  */
-class UMac implements WrappedMac {
+class UMac extends AbstractMac {
 
     private static final Logger LOGGER = LogManager.getLogger();
     private static final BigInteger INT_MOD = BigInteger.ONE.shiftLeft(32);

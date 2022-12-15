@@ -7,10 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.packet.cipher;
 
-import de.rub.nds.sshattacker.core.constants.BinaryPacketConstants;
-import de.rub.nds.sshattacker.core.constants.EncryptionAlgorithm;
-import de.rub.nds.sshattacker.core.constants.EncryptionAlgorithmType;
-import de.rub.nds.sshattacker.core.constants.MacAlgorithm;
+import de.rub.nds.sshattacker.core.constants.*;
 import de.rub.nds.sshattacker.core.exceptions.CryptoException;
 import de.rub.nds.sshattacker.core.packet.BinaryPacket;
 import de.rub.nds.sshattacker.core.packet.BlobPacket;
@@ -29,49 +26,59 @@ public abstract class PacketCipher {
     protected final EncryptionAlgorithm encryptionAlgorithm;
     /** The MAC algorithm to use. This may be null if using an AEAD encryption algorithm. */
     protected final MacAlgorithm macAlgorithm;
+    /** The cipher mode (whether packages should be encrypted or decrypted by this cipher). */
+    protected final CipherMode mode;
 
     public PacketCipher(
             SshContext context,
             KeySet keySet,
             EncryptionAlgorithm encryptionAlgorithm,
-            MacAlgorithm macAlgorithm) {
+            MacAlgorithm macAlgorithm,
+            CipherMode mode) {
         this.context = context;
         this.keySet = keySet;
         this.encryptionAlgorithm = encryptionAlgorithm;
         this.macAlgorithm = macAlgorithm;
+        this.mode = mode;
     }
 
     /**
-     * Encrypts the provided packet using this PacketCipher instance.
+     * Encrypts or decrypts the provided packet using this PacketCipher instance (the actual
+     * operation performed depends on the mode provided to the constructor).
      *
-     * @param packet The packet to encrypt
+     * @param packet The packet to encrypt or decrypt
      * @throws CryptoException Thrown whenever something crypto-related fatally fails
      */
-    public abstract void encrypt(BinaryPacket packet) throws CryptoException;
+    public final void process(BinaryPacket packet) throws CryptoException {
+        if (mode == CipherMode.ENCRYPT) {
+            encrypt(packet);
+        } else {
+            decrypt(packet);
+        }
+    }
 
     /**
-     * Encrypts the provided packet using this PacketCipher instance.
+     * Encrypts or decrypts the provided packet using this PacketCipher instance (the actual
+     * operation performed depends on the mode provided to the constructor).
      *
-     * @param packet The packet to encrypt
+     * @param packet The packet to encrypt or decrypt
      * @throws CryptoException Thrown whenever something crypto-related fatally fails
      */
-    public abstract void encrypt(BlobPacket packet) throws CryptoException;
+    public final void process(BlobPacket packet) throws CryptoException {
+        if (mode == CipherMode.ENCRYPT) {
+            encrypt(packet);
+        } else {
+            decrypt(packet);
+        }
+    }
 
-    /**
-     * Decrypts the provided packet using this PacketCipher instance.
-     *
-     * @param packet The packet to encrypt
-     * @throws CryptoException Thrown whenever something crypto-related fatally fails
-     */
-    public abstract void decrypt(BinaryPacket packet) throws CryptoException;
+    protected abstract void encrypt(BinaryPacket packet) throws CryptoException;
 
-    /**
-     * Decrypts the provided packet using this PacketCipher instance.
-     *
-     * @param packet The packet to encrypt
-     * @throws CryptoException Thrown whenever something crypto-related fatally fails
-     */
-    public abstract void decrypt(BlobPacket packet) throws CryptoException;
+    protected abstract void encrypt(BlobPacket packet) throws CryptoException;
+
+    protected abstract void decrypt(BinaryPacket packet) throws CryptoException;
+
+    protected abstract void decrypt(BlobPacket packet) throws CryptoException;
 
     public EncryptionAlgorithm getEncryptionAlgorithm() {
         return encryptionAlgorithm;
@@ -83,6 +90,10 @@ public abstract class PacketCipher {
 
     public KeySet getKeySet() {
         return keySet;
+    }
+
+    public CipherMode getMode() {
+        return mode;
     }
 
     public Boolean isEncryptThenMac() {
