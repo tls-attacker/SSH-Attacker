@@ -9,7 +9,7 @@ package de.rub.nds.sshattacker.core.crypto.mac;
 
 import de.rub.nds.sshattacker.core.constants.MacAlgorithm;
 
-class NoneMac implements WrappedMac {
+class NoneMac extends AbstractMac {
 
     public NoneMac() {}
 

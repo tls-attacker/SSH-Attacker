@@ -7,6 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.packet.crypto;
 
+import de.rub.nds.sshattacker.core.constants.CipherMode;
 import de.rub.nds.sshattacker.core.exceptions.CryptoException;
 import de.rub.nds.sshattacker.core.packet.BinaryPacket;
 import de.rub.nds.sshattacker.core.packet.BlobPacket;
@@ -25,8 +26,12 @@ public class PacketEncryptor extends AbstractPacketEncryptor {
 
     public PacketEncryptor(PacketCipher packetCipher, SshContext context) {
         super(packetCipher);
+        if (packetCipher.getMode() != CipherMode.ENCRYPT) {
+            throw new IllegalArgumentException(
+                    "A PacketCipher provided to the PacketEncryptor constructor must be in ENCRYPT mode");
+        }
         this.context = context;
-        noneCipher = PacketCipherFactory.getNoneCipher(context);
+        noneCipher = PacketCipherFactory.getNoneCipher(context, CipherMode.ENCRYPT);
     }
 
     @Override
@@ -35,11 +40,11 @@ public class PacketEncryptor extends AbstractPacketEncryptor {
         LOGGER.debug("Encrypting binary packet using packet cipher: {}", packetCipher);
         try {
             packet.setSequenceNumber(context.getWriteSequenceNumber());
-            packetCipher.encrypt(packet);
+            packetCipher.process(packet);
         } catch (CryptoException e) {
             LOGGER.warn("Could not encrypt binary packet. Using " + noneCipher, e);
             try {
-                noneCipher.encrypt(packet);
+                noneCipher.process(packet);
             } catch (CryptoException ex) {
                 LOGGER.error("Could not encrypt with " + noneCipher, ex);
             }
@@ -52,14 +57,23 @@ public class PacketEncryptor extends AbstractPacketEncryptor {
         PacketCipher packetCipher = getPacketMostRecentCipher();
         LOGGER.debug("Encrypting blob packet using packet cipher: {}", packetCipher);
         try {
-            packetCipher.encrypt(packet);
+            packetCipher.process(packet);
         } catch (CryptoException e) {
             LOGGER.warn("Could not encrypt blob packet. Using " + noneCipher, e);
             try {
-                noneCipher.encrypt(packet);
+                noneCipher.process(packet);
             } catch (CryptoException ex) {
                 LOGGER.error("Could not encrypt with " + noneCipher, ex);
             }
         }
+    }
+
+    @Override
+    public void addNewPacketCipher(PacketCipher packetCipher) {
+        if (packetCipher.getMode() != CipherMode.ENCRYPT) {
+            throw new IllegalArgumentException(
+                    "A PacketCipher provided to the PacketDecryptor::addNewPacketCipher method must be in ENCRYPT mode");
+        }
+        super.addNewPacketCipher(packetCipher);
     }
 }

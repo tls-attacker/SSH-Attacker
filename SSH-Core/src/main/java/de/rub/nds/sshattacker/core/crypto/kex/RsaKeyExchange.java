@@ -12,9 +12,8 @@ import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.constants.KeyExchangeAlgorithm;
 import de.rub.nds.sshattacker.core.constants.KeyExchangeFlowType;
 import de.rub.nds.sshattacker.core.constants.PublicKeyFormat;
+import de.rub.nds.sshattacker.core.crypto.cipher.AbstractCipher;
 import de.rub.nds.sshattacker.core.crypto.cipher.CipherFactory;
-import de.rub.nds.sshattacker.core.crypto.cipher.DecryptionCipher;
-import de.rub.nds.sshattacker.core.crypto.cipher.EncryptionCipher;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomKeyPair;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomPrivateKey;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomPublicKey;
@@ -84,8 +83,7 @@ public class RsaKeyExchange extends KeyEncapsulation {
 
     @Override
     public byte[] encryptSharedSecret() {
-        EncryptionCipher cipher =
-                CipherFactory.getEncryptionCipher(algorithm, transientKey.getPublicKey());
+        AbstractCipher cipher = CipherFactory.getOaepCipher(algorithm, transientKey.getPublicKey());
         try {
             // Shared secret is encrypted as a mpint (which includes an explicit length
             // field)
@@ -103,8 +101,8 @@ public class RsaKeyExchange extends KeyEncapsulation {
         if (transientKey.getPrivateKey().isEmpty()) {
             throw new CryptoException("Unable to decrypt shared secret - no private key present");
         }
-        DecryptionCipher cipher =
-                CipherFactory.getDecryptionCipher(algorithm, transientKey.getPrivateKey().get());
+        AbstractCipher cipher =
+                CipherFactory.getOaepCipher(algorithm, transientKey.getPrivateKey().get());
         try {
             byte[] decryptedSecretMpint = cipher.decrypt(encryptedSharedSecret);
             int sharedSecretLength =

@@ -17,7 +17,7 @@ import javax.crypto.spec.PSource;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class OaepCipher implements EncryptionCipher, DecryptionCipher {
+public class OaepCipher extends AbstractCipher {
 
     private static final Logger LOGGER = LogManager.getLogger();
 

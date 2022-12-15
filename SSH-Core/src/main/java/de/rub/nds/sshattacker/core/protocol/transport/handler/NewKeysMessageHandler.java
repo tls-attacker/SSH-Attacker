@@ -7,6 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.handler;
 
+import de.rub.nds.sshattacker.core.constants.CipherMode;
 import de.rub.nds.sshattacker.core.constants.CompressionMethod;
 import de.rub.nds.sshattacker.core.constants.EncryptionAlgorithm;
 import de.rub.nds.sshattacker.core.constants.MacAlgorithm;
@@ -67,7 +68,11 @@ public class NewKeysMessageHandler extends SshMessageHandler<NewKeysMessage>
         try {
             PacketCipher packetCipher =
                     PacketCipherFactory.getPacketCipher(
-                            context, keySet.get(), encryptionAlgorithm, macAlgorithm);
+                            context,
+                            keySet.get(),
+                            encryptionAlgorithm,
+                            macAlgorithm,
+                            receive ? CipherMode.DECRYPT : CipherMode.ENCRYPT);
             if (receive) {
                 context.getPacketLayer().updateDecryptionCipher(packetCipher);
             } else {
