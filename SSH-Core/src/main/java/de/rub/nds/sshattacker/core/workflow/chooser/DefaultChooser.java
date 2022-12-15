@@ -894,11 +894,14 @@ public class DefaultChooser extends Chooser {
     }
 
     /**
-     * Pick the user key from config that is compatible with the available public key algorithms and
-     * return a stream of (key, algorithm) tuple that could be used for authentication.
+     * Pick the user key from config that is compatible with the configured public key algorithms
+     * and return a stream of (key, algorithm) tuple that could be used for authentication. If no
+     * public key algorithms for user authentication haven been configured, all available public key
+     * algorithms will be considered.
      *
      * @return a stream of (key, algorithm) tuples that can be used for client authentication.
      * @see Config#getUserKeys
+     * @see Config#getUserKeyAlgorithms
      */
     @Override
     public Stream<Map.Entry<SshPublicKey<?, ?>, PublicKeyAlgorithm>>
@@ -906,7 +909,9 @@ public class DefaultChooser extends Chooser {
         return config.getUserKeys().stream()
                 .flatMap(
                         key ->
-                                Arrays.stream(PublicKeyAlgorithm.values())
+                                config.getUserKeyAlgorithms()
+                                        .map(algorithms -> algorithms.stream())
+                                        .orElseGet(() -> Arrays.stream(PublicKeyAlgorithm.values()))
                                         .filter(
                                                 algorithm ->
                                                         algorithm.getKeyFormat()

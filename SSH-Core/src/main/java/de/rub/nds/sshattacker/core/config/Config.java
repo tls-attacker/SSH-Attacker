@@ -275,6 +275,10 @@ public class Config implements Serializable {
     @XmlElement(name = "userKey")
     @XmlElementWrapper
     private List<SshPublicKey<?, ?>> userKeys;
+
+    @XmlElement(name = "userKeyAlgorithms")
+    @XmlElementWrapper
+    private List<PublicKeyAlgorithm> userKeyAlgorithms;
     // endregion
 
     // region Channel
@@ -1308,6 +1312,19 @@ public class Config implements Serializable {
         return userKeys;
     }
 
+    /**
+     * Get the list of user key algorithms to use for authentication.
+     *
+     * <p>These algorithms will be used for user authentication. If this value is not set, the user
+     * key algorithm might be any public key algorithms that is compatible with the user key's
+     * format.
+     *
+     * @return list of public key algorithms, or no value
+     * @see #setUserKeyAlgorithms
+     */
+    public Optional<List<PublicKeyAlgorithm>> getUserKeyAlgorithms() {
+        return Optional.ofNullable(this.userKeyAlgorithms);
+    }
     // endregion
     // region Setters for Authentification
     public void setAuthenticationMethod(AuthenticationMethod authenticationMethod) {
@@ -1333,6 +1350,16 @@ public class Config implements Serializable {
 
     public void setUserKeys(final List<SshPublicKey<?, ?>> userKeys) {
         this.userKeys = Objects.requireNonNull(userKeys);
+    }
+
+    /**
+     * Set the list of user key algorithms to use for authentication.
+     *
+     * @param userKeyAlgorithms list of public key algorithms, or no value
+     * @see #getUserKeyAlgorithms
+     */
+    public void setUserKeyAlgorithms(final Optional<List<PublicKeyAlgorithm>> userKeyAlgorithms) {
+        this.userKeyAlgorithms = userKeyAlgorithms.orElse(null);
     }
 
     // endregion
