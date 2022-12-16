@@ -18,6 +18,7 @@ import de.rub.nds.sshattacker.core.protocol.transport.preparator.NewKeysMessageP
 import de.rub.nds.sshattacker.core.protocol.transport.serializer.NewKeysMessageSerializer;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
+import java.util.Objects;
 import java.util.Optional;
 
 public class NewKeysMessageHandler extends SshMessageHandler<NewKeysMessage>
@@ -68,7 +69,7 @@ public class NewKeysMessageHandler extends SshMessageHandler<NewKeysMessage>
             MacAlgorithm activeMacAlgorithm =
                     context.getPacketLayer().getDecryptorCipher().getMacAlgorithm();
             if (!context.getConfig().getForcePacketCipherChange()
-                    && activeKeySet.equals(keySet.get())
+                    && Objects.equals(activeKeySet, keySet.get())
                     && encryptionAlgorithm == activeEncryptionAlgorithm
                     && (encryptionAlgorithm.getType() == EncryptionAlgorithmType.AEAD
                             || macAlgorithm == activeMacAlgorithm)) {
@@ -85,7 +86,7 @@ public class NewKeysMessageHandler extends SshMessageHandler<NewKeysMessage>
             MacAlgorithm activeMacAlgorithm =
                     context.getPacketLayer().getEncryptorCipher().getMacAlgorithm();
             if (!context.getConfig().getForcePacketCipherChange()
-                    && activeKeySet.equals(keySet.get())
+                    && Objects.equals(activeKeySet, keySet.get())
                     && encryptionAlgorithm == activeEncryptionAlgorithm
                     && (encryptionAlgorithm.getType() == EncryptionAlgorithmType.AEAD
                             || macAlgorithm == activeMacAlgorithm)) {
