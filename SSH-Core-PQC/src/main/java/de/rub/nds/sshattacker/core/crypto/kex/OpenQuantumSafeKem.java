@@ -29,8 +29,10 @@ public class OpenQuantumSafeKem extends KeyEncapsulation {
     private OpenQuantumSafeKemNames kemName;
 
     public OpenQuantumSafeKem(OpenQuantumSafeKemNames kemName) {
-        if(kemName == OpenQuantumSafeKemNames.SNTRUP4591761) {
-            throw new IllegalArgumentException(OpenQuantumSafeKemNames.SNTRUP4591761.getName() + " not supported by openquantumsafe.");
+        if (kemName == OpenQuantumSafeKemNames.SNTRUP4591761) {
+            throw new IllegalArgumentException(
+                    OpenQuantumSafeKemNames.SNTRUP4591761.getName()
+                            + " not supported by openquantumsafe.");
         }
         this.kem = new org.openquantumsafe.KeyEncapsulation(kemName.getName());
         this.kemName = kemName;
