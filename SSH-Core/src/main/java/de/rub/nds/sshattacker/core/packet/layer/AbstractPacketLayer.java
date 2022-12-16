@@ -7,6 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.packet.layer;
 
+import de.rub.nds.sshattacker.core.constants.CipherMode;
 import de.rub.nds.sshattacker.core.constants.CompressionAlgorithm;
 import de.rub.nds.sshattacker.core.exceptions.CryptoException;
 import de.rub.nds.sshattacker.core.exceptions.ParserException;
@@ -42,8 +43,12 @@ public abstract class AbstractPacketLayer {
 
     public AbstractPacketLayer(SshContext context) {
         this.context = context;
-        encryptor = new PacketEncryptor(PacketCipherFactory.getNoneCipher(context), context);
-        decryptor = new PacketDecryptor(PacketCipherFactory.getNoneCipher(context), context);
+        encryptor =
+                new PacketEncryptor(
+                        PacketCipherFactory.getNoneCipher(context, CipherMode.ENCRYPT), context);
+        decryptor =
+                new PacketDecryptor(
+                        PacketCipherFactory.getNoneCipher(context, CipherMode.DECRYPT), context);
         compressor = new PacketCompressor();
         decompressor = new PacketDecompressor();
     }

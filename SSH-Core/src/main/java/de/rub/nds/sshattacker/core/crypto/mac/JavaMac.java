@@ -16,7 +16,7 @@ import java.util.Arrays;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
-class JavaMac implements WrappedMac {
+class JavaMac extends AbstractMac {
 
     private final MacAlgorithm algorithm;
 

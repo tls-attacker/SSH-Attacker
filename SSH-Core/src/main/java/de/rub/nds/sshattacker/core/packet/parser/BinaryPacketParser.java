@@ -118,7 +118,7 @@ public class BinaryPacketParser extends AbstractPacketParser<BinaryPacket> {
                 parseByteArrayField(BinaryPacketConstants.LENGTH_FIELD_LENGTH);
         byte[] decryptedPacketLength =
                 activeDecryptCipher
-                        .getHeaderDecryptCipher()
+                        .getHeaderCipher()
                         .decrypt(
                                 encryptedPacketLength,
                                 ArrayConverter.intToBytes(
@@ -166,10 +166,10 @@ public class BinaryPacketParser extends AbstractPacketParser<BinaryPacket> {
             if (activeDecryptCipher.getEncryptionAlgorithm().getIVSize() > 0) {
                 decryptedBlock =
                         activeDecryptCipher
-                                .getDecryptCipher()
-                                .decrypt(block, activeDecryptCipher.getNextDecryptionIv());
+                                .getCipher()
+                                .decrypt(block, activeDecryptCipher.getNextIv());
             } else {
-                decryptedBlock = activeDecryptCipher.getDecryptCipher().decrypt(block);
+                decryptedBlock = activeDecryptCipher.getCipher().decrypt(block);
             }
             firstBlock = ArrayConverter.concatenate(firstBlock, decryptedBlock);
             decryptedByteCount += blockSize;

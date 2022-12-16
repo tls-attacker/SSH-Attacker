@@ -11,12 +11,8 @@ import de.rub.nds.sshattacker.core.packet.AbstractPacket;
 import de.rub.nds.sshattacker.core.packet.BinaryPacket;
 import de.rub.nds.sshattacker.core.packet.BlobPacket;
 import de.rub.nds.sshattacker.core.packet.cipher.PacketCipher;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public abstract class AbstractPacketEncryptor extends PacketCryptoUnit {
-
-    private static final Logger LOGGER = LogManager.getLogger();
 
     public AbstractPacketEncryptor(PacketCipher cipher) {
         super(cipher);
@@ -28,7 +24,7 @@ public abstract class AbstractPacketEncryptor extends PacketCryptoUnit {
         } else if (object instanceof BlobPacket) {
             encrypt((BlobPacket) object);
         } else {
-            throw new UnsupportedOperationException("Record type unknown.");
+            throw new UnsupportedOperationException("Packet type unknown.");
         }
     }
 

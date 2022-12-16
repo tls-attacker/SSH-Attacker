@@ -16,7 +16,7 @@ import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -132,16 +132,24 @@ public class Converter {
      */
     private static <T extends Enum<T>> List<T> nameStreamToEnumValues(
             final Stream<String> stream, final Class<T> enumClass) {
-        return stream.map(
-                        algorithmName ->
-                                Arrays.stream(enumClass.getEnumConstants())
-                                        .filter(
-                                                enumValue ->
-                                                        enumValue.toString().equals(algorithmName))
-                                        .findFirst()
-                                        .orElse(null))
-                .filter(Objects::nonNull)
+        return stream.map(algorithmName -> nameToEnumValue(algorithmName, enumClass))
+                .flatMap(Optional::stream)
                 .collect(Collectors.toList());
+    }
+
+    /**
+     * Convert a single name into a enum values of type {@code enumClass}.
+     *
+     * @param name name that matches an enum value's {@code toString()} return value
+     * @param enumClass the enum class that the name will be converted to
+     * @return a value of type {@code enumClass} that corresponds to {@code name}, or no value if no
+     *     such item exists
+     */
+    public static <T extends Enum<T>> Optional<T> nameToEnumValue(
+            final String name, final Class<T> enumClass) {
+        return Arrays.stream(enumClass.getEnumConstants())
+                .filter(enumValue -> name.equals(enumValue.toString()))
+                .findFirst();
     }
 
     public static byte[] bigIntegerToMpint(BigInteger input) {

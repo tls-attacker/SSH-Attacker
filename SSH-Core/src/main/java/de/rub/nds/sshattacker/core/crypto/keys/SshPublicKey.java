@@ -75,4 +75,11 @@ public class SshPublicKey<PUBLIC extends CustomPublicKey, PRIVATE extends Custom
     public Optional<PRIVATE> getPrivateKey() {
         return Optional.ofNullable(privateKey);
     }
+
+    public String toString() {
+        return String.format(
+                "SshPublicKey[%s,%s]",
+                this.getPublicKeyFormat().toString(),
+                this.getPrivateKey().map(key -> "private").orElse("public"));
+    }
 }

@@ -28,7 +28,7 @@ import org.apache.logging.log4j.Logger;
  * restricted to inputs consisting out of full bytes only and of length less or equal to 2^24 bytes
  * (16 MB).
  */
-class UMac implements WrappedMac {
+class UMac extends AbstractMac {
 
     private static final Logger LOGGER = LogManager.getLogger();
     private static final BigInteger INT_MOD = BigInteger.ONE.shiftLeft(32);
@@ -374,7 +374,7 @@ class UMac implements WrappedMac {
             y = y.add(m_[i].multiply(k_[i]));
         }
         y = y.mod(prime(36)).mod(BigInteger.ONE.shiftLeft(32));
-        byte[] Y = ArrayConverter.bigIntegerToByteArray(y);
+        byte[] Y = ArrayConverter.bigIntegerToByteArray(y, 4, true);
         for (int i = 0; i < 4; i++) {
             Y[i] = (byte) (Y[i] ^ K2[i]);
         }

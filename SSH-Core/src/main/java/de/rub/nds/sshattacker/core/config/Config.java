@@ -237,6 +237,14 @@ public class Config implements Serializable {
      */
     private Boolean enableEncryptionOnNewKeysMessage = true;
     /**
+     * If set to false, the packet cipher will only be changed in case of algorithm or key material
+     * change during the SSH_MSG_NEWKEYS handler. This can be useful if one tries sending NEWKEYS
+     * without a proper key exchange beforehand and would like to be able to decrypt the servers'
+     * response encrypted under the old cipher state. Will take no effect if {@link
+     * #enableEncryptionOnNewKeysMessage} is set to false.
+     */
+    private Boolean forcePacketCipherChange = false;
+    /**
      * If enforceSettings is true, the algorithms are expected to be already set in the SshContext,
      * when picking the algorithms
      */
@@ -1226,6 +1234,10 @@ public class Config implements Serializable {
         return enableEncryptionOnNewKeysMessage;
     }
 
+    public Boolean getForcePacketCipherChange() {
+        return forcePacketCipherChange;
+    }
+
     public Boolean getEnforceSettings() {
         return enforceSettings;
     }
@@ -1275,6 +1287,10 @@ public class Config implements Serializable {
 
     public void setEnableEncryptionOnNewKeysMessage(Boolean enableEncryptionOnNewKeysMessage) {
         this.enableEncryptionOnNewKeysMessage = enableEncryptionOnNewKeysMessage;
+    }
+
+    public void setForcePacketCipherChange(Boolean forcePacketCipherChange) {
+        this.forcePacketCipherChange = forcePacketCipherChange;
     }
 
     public void setEnforceSettings(Boolean enforceSettings) {
