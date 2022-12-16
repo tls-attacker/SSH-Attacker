@@ -18,7 +18,6 @@ import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -141,18 +140,26 @@ public class UserAuthPubkeyMessagePreparator
     @Override
     public void prepareUserAuthRequestSpecificContents() {
         getObject().setUseSignature(true);
-        final Map.Entry<SshPublicKey<?, ?>, PublicKeyAlgorithm> keyAlgorithmCombination =
-                chooser.getUserKeyAndAlgorithmCombinations()
-                        .findFirst()
-                        .orElseThrow(
-                                () ->
-                                        new RuntimeException(
-                                                "Failed to find suitable combination of user key and public key algorithm"));
-        final SshPublicKey<?, ?> pk = keyAlgorithmCombination.getKey();
-        final PublicKeyAlgorithm publicKeyAlgorithm = keyAlgorithmCombination.getValue();
+        chooser.getUserKeyAndAlgorithmCombinations()
+                .findFirst()
+                .ifPresentOrElse(
+                        keyAlgorithmCombination -> {
+                            final SshPublicKey<?, ?> pk = keyAlgorithmCombination.getKey();
+                            final PublicKeyAlgorithm publicKeyAlgorithm =
+                                    keyAlgorithmCombination.getValue();
 
-        getObject().setPubkeyAlgName(publicKeyAlgorithm.getName(), true);
-        getObject().setPubkey(PublicKeyHelper.encode(pk), true);
-        getObject().setSignature(getEncodedSignature(publicKeyAlgorithm, pk), true);
+                            getObject().setPubkeyAlgName(publicKeyAlgorithm.getName(), true);
+                            getObject().setPubkey(PublicKeyHelper.encode(pk), true);
+                            getObject()
+                                    .setSignature(
+                                            getEncodedSignature(publicKeyAlgorithm, pk), true);
+                        },
+                        () -> {
+                            LOGGER.error(
+                                    "Failed to find suitable combination of user key and public key algorithm, workflow will continue but algorithm name, public key and signature fields are left blank");
+                            getObject().setPubkeyAlgName("", true);
+                            getObject().setPubkey(new byte[0], true);
+                            getObject().setSignature(new byte[0], true);
+                        });
     }
 }
