@@ -19,10 +19,12 @@ import org.apache.logging.log4j.Logger;
 public class Sntrup761X25519KeyExchange extends HybridKeyExchange {
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public Sntrup761X25519KeyExchange() {
+    public Sntrup761X25519KeyExchange(boolean useCustom) {
         super(
                 new XCurveEcdhKeyExchange(NamedEcGroup.CURVE25519),
-                new OpenQuantumSafeKem(OpenQuantumSafeKemNames.SNTRUP761),
+                useCustom
+                        ? new CustomSntrup(OpenQuantumSafeKemNames.SNTRUP761)
+                        : new OpenQuantumSafeKem(OpenQuantumSafeKemNames.SNTRUP761),
                 HybridKeyExchangeCombiner.POSTQUANTUM_CONCATENATE_CLASSICAL,
                 CryptoConstants.X25519_POINT_SIZE,
                 CryptoConstants.SNTRUP761_PUBLIC_KEY_SIZE,

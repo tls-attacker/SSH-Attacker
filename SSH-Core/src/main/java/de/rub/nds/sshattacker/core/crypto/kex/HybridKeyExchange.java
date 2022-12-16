@@ -66,7 +66,8 @@ public abstract class HybridKeyExchange extends KeyExchange {
                     Class<?> sntrup761x25519 =
                             Class.forName(
                                     "de.rub.nds.sshattacker.core.crypto.kex.Sntrup761X25519KeyExchange");
-                    return (HybridKeyExchange) sntrup761x25519.getConstructor().newInstance();
+                    return (HybridKeyExchange)
+                            sntrup761x25519.getConstructor(boolean.class).newInstance(false);
 
                 case CURVE25519_FRODOKEM1344:
                     Class<?> curve25519xfrodokem1344 =

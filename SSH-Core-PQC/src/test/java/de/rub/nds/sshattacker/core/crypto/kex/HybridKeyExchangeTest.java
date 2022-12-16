@@ -183,7 +183,7 @@ public class HybridKeyExchangeTest {
             doReturn(encapsulationSharedSecret).when(kem).decap_secret(ciphertext);
             switch (algorithm) {
                 case SNTRUP761_X25519:
-                    kex = new Sntrup761X25519KeyExchange();
+                    kex = new Sntrup761X25519KeyExchange(false);
                     encapsulationField.set(kex, sntrup761Kex);
                     break;
                 case CURVE25519_FRODOKEM1344:
@@ -192,7 +192,7 @@ public class HybridKeyExchangeTest {
                     break;
                 default:
                     LOGGER.error("Algorithm " + algorithm + " not supported");
-                    kex = new Sntrup761X25519KeyExchange();
+                    kex = new Sntrup761X25519KeyExchange(false);
             }
 
             // Set the keys
@@ -260,7 +260,7 @@ public class HybridKeyExchangeTest {
                     .encap_secret(encapsulationPubKey);
             switch (algorithm) {
                 case SNTRUP761_X25519:
-                    kex = new Sntrup761X25519KeyExchange();
+                    kex = new Sntrup761X25519KeyExchange(false);
                     encapsulationField.set(kex, sntrup761Kex);
                     break;
                 case CURVE25519_FRODOKEM1344:
@@ -269,7 +269,7 @@ public class HybridKeyExchangeTest {
                     break;
                 default:
                     LOGGER.error("Algorithm " + algorithm + " not supported.");
-                    kex = new Sntrup761X25519KeyExchange();
+                    kex = new Sntrup761X25519KeyExchange(false);
                     break;
             }
 
