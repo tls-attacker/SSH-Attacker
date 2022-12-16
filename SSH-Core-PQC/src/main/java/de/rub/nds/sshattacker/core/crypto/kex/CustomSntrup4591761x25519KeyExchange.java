@@ -11,7 +11,7 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.CryptoConstants;
 import de.rub.nds.sshattacker.core.constants.HybridKeyExchangeCombiner;
 import de.rub.nds.sshattacker.core.constants.NamedEcGroup;
-import de.rub.nds.sshattacker.core.crypto.ntrup.sntrup.core.SntrupParameterSet;
+import de.rub.nds.sshattacker.core.constants.OpenQuantumSafeKemNames;
 import java.math.BigInteger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -22,7 +22,7 @@ public class CustomSntrup4591761x25519KeyExchange extends HybridKeyExchange {
     public CustomSntrup4591761x25519KeyExchange() {
         super(
                 new XCurveEcdhKeyExchange(NamedEcGroup.CURVE25519),
-                new CustomSntrup(SntrupParameterSet.KEM_SNTRUP_761, true),
+                new CustomSntrup(OpenQuantumSafeKemNames.SNTRUP4591761),
                 HybridKeyExchangeCombiner.POSTQUANTUM_CONCATENATE_CLASSICAL,
                 CryptoConstants.X25519_POINT_SIZE,
                 CryptoConstants.SNTRUP4591761_PUBLIC_KEY_SIZE,

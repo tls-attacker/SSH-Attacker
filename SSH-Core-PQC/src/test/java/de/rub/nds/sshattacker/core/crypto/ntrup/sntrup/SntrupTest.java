@@ -10,8 +10,8 @@ package de.rub.nds.sshattacker.core.crypto.ntrup.sntrup;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import de.rub.nds.sshattacker.core.constants.OpenQuantumSafeKemNames;
 import de.rub.nds.sshattacker.core.crypto.kex.CustomSntrup;
-import de.rub.nds.sshattacker.core.crypto.ntrup.sntrup.core.SntrupParameterSet;
 import java.util.Arrays;
 import java.util.stream.Stream;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -23,16 +23,16 @@ public class SntrupTest {
     public static Stream<Arguments> provideTestVectors() {
         Stream.Builder<Arguments> argumentsBuilder = Stream.builder();
 
-        argumentsBuilder.add(Arguments.of(SntrupParameterSet.KEM_SNTRUP_761, false));
-        argumentsBuilder.add(Arguments.of(SntrupParameterSet.KEM_SNTRUP_761, true));
+        argumentsBuilder.add(Arguments.of(OpenQuantumSafeKemNames.SNTRUP4591761));
+        argumentsBuilder.add(Arguments.of(OpenQuantumSafeKemNames.SNTRUP761));
         return argumentsBuilder.build();
     }
 
     @ParameterizedTest
     @MethodSource("provideTestVectors")
-    public void testSntrup(SntrupParameterSet set, boolean round1) {
-        CustomSntrup sntrupClient = new CustomSntrup(set, round1);
-        CustomSntrup sntrupServer = new CustomSntrup(set, round1);
+    public void testSntrup(OpenQuantumSafeKemNames kemName) {
+        CustomSntrup sntrupClient = new CustomSntrup(kemName);
+        CustomSntrup sntrupServer = new CustomSntrup(kemName);
 
         sntrupClient.generateLocalKeyPair();
         assertFalse("Key Generation not successfull", sntrupClient.getLocalKeyPair() == null);

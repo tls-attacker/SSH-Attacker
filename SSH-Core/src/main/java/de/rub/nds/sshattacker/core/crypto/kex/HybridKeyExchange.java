@@ -74,6 +74,11 @@ public abstract class HybridKeyExchange extends KeyExchange {
                                     "de.rub.nds.sshattacker.core.crypto.kex.Curve25519Frodokem1344KeyExchange");
                     return (HybridKeyExchange)
                             curve25519xfrodokem1344.getConstructor().newInstance();
+                case SNTRUP4591761_x25519:
+                    Class<?> sntrup4591761x25519 =
+                            Class.forName(
+                                    "de.rub.nds.sshattacker.core.crypto.kex.CustomSntrup4591761x25519KeyExchange");
+                    return (HybridKeyExchange) sntrup4591761x25519.getConstructor().newInstance();
             }
 
         } catch (ClassNotFoundException e) {
