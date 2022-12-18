@@ -39,15 +39,17 @@ public class ChannelOpenConfirmationMessagePreparator
                         .getChannels()
                         .get(toCopy.getRecipientChannelId().getValue());
 
-        if (channel != null && channel.isOpen().getValue()) {
-            LOGGER.warn(
-                    "Channel with id {} is already open, sending ChannelOpenConfirmationMessage with current channel details again.",
-                    channel.getLocalChannelId().getValue());
+        if (channel != null) {
+            if (channel.isOpen().getValue()) {
+                LOGGER.warn(
+                        "Channel with id {} is already open, sending ChannelOpenConfirmationMessage with current channel details again.",
+                        channel.getLocalChannelId().getValue());
+            } else {
+                channel.setOpen(true);
+            }
         }
-        channel.setOpen(true);
 
         getObject().setWindowSize(chooser.getConfig().getChannelDefaults().getLocalWindowSize());
         getObject().setPacketSize(chooser.getConfig().getChannelDefaults().getLocalPacketSize());
-        channel.setOpen(true);
     }
 }
