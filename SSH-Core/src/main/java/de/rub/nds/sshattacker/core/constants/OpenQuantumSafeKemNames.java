@@ -8,8 +8,6 @@
 package de.rub.nds.sshattacker.core.constants;
 
 public enum OpenQuantumSafeKemNames {
-    // Not supported in openquantumsafe
-    SNTRUP4591761("sntrup4591761"),
     SNTRUP761("sntrup761"),
     FRODOKEM1344("FrodoKEM-1344-SHAKE"),
     FIRESABER("FireSaber-KEM"),
