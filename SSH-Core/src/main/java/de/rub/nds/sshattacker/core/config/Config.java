@@ -438,11 +438,16 @@ public class Config implements Serializable {
                     "de.rub.nds.sshattacker.core.crypto.kex.Curve25519Frodokem1344KeyExchange");
             Class.forName("de.rub.nds.sshattacker.core.crypto.kex.Sntrup761X25519KeyExchange");
             Class.forName(
-                    "de.rub.nds.sshattacker.core.crypto.kex.CustomSntrup4591761x25519KeyExchange");
+                    "de.rub.nds.sshattacker.core.crypto.kex.EcdhNistp521FiresaberKeyExchange");
+            Class.forName(
+                    "de.rub.nds.sshattacker.core.crypto.kex.EcdhNistp521Kyber1024KeyExchange");
+
             // PQC algorithms are available (namely sntrup761x25519-sha512@openssh.com)
-            supportedKeyExchangeAlgorithms.add(KeyExchangeAlgorithm.SNTRUP4591761_x25519);
-            supportedKeyExchangeAlgorithms.add(KeyExchangeAlgorithm.CURVE25519_FRODOKEM1344);
             supportedKeyExchangeAlgorithms.add(KeyExchangeAlgorithm.SNTRUP761_X25519);
+            supportedKeyExchangeAlgorithms.add(KeyExchangeAlgorithm.NISTP251_KYBER1024);
+            supportedKeyExchangeAlgorithms.add(KeyExchangeAlgorithm.CURVE25519_FRODOKEM1344);
+            supportedKeyExchangeAlgorithms.add(KeyExchangeAlgorithm.NISTP251_FIRESABER);
+
         } catch (ClassNotFoundException e) {
             LOGGER.info(
                     "Classes of module SSH-Core-PQC not found, not offering [sntrup761x25519-sha512@openssh.com, curve25519-frodokem1344-sha512@ssh.com ] to peer. If you need PQC support compile with PQC profile enabled.");

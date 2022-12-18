@@ -13,22 +13,20 @@ import de.rub.nds.sshattacker.core.constants.KeyExchangeAlgorithm;
 import de.rub.nds.sshattacker.core.constants.NamedEcGroup;
 import de.rub.nds.sshattacker.core.constants.OpenQuantumSafeKemNames;
 
-public class Sntrup761X25519KeyExchange extends HybridKeyExchange {
+public class EcdhNistp521Kyber1024KeyExchange extends HybridKeyExchange {
 
-    public Sntrup761X25519KeyExchange(boolean useCustom) {
+    public EcdhNistp521Kyber1024KeyExchange() {
         super(
-                new XCurveEcdhKeyExchange(NamedEcGroup.CURVE25519),
-                useCustom
-                        ? new CustomSntrup(OpenQuantumSafeKemNames.SNTRUP761)
-                        : new OpenQuantumSafeKem(OpenQuantumSafeKemNames.SNTRUP761),
+                new EcdhKeyExchange(NamedEcGroup.SECP521R1),
+                new OpenQuantumSafeKem(OpenQuantumSafeKemNames.KYBER1024),
                 HybridKeyExchangeCombiner.POSTQUANTUM_CONCATENATE_CLASSICAL,
-                CryptoConstants.X25519_POINT_SIZE,
-                CryptoConstants.SNTRUP761_PUBLIC_KEY_SIZE,
-                CryptoConstants.SNTRUP761_CIPHERTEXT_SIZE);
+                CryptoConstants.NISTP521_POINT_SIZE,
+                CryptoConstants.KYBER1024_PUBLIC_KEY_SIZE,
+                CryptoConstants.KYBER1024_CIPHERTEXT_SIZE);
     }
 
     @Override
     public void combineSharedSecrets() {
-        concatenateAndHash(KeyExchangeAlgorithm.SNTRUP761_X25519);
+        concatenateAndHash(KeyExchangeAlgorithm.NISTP251_KYBER1024);
     }
 }

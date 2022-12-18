@@ -13,6 +13,7 @@ import de.rub.nds.sshattacker.core.constants.KeyExchangeAlgorithm;
 import de.rub.nds.sshattacker.core.constants.KeyExchangeFlowType;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import java.lang.reflect.InvocationTargetException;
+import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import org.apache.logging.log4j.LogManager;
@@ -75,11 +76,16 @@ public abstract class HybridKeyExchange extends KeyExchange {
                                     "de.rub.nds.sshattacker.core.crypto.kex.Curve25519Frodokem1344KeyExchange");
                     return (HybridKeyExchange)
                             curve25519xfrodokem1344.getConstructor().newInstance();
-                case SNTRUP4591761_x25519:
-                    Class<?> sntrup4591761x25519 =
+                case NISTP251_FIRESABER:
+                    Class<?> nistp521xfiresaber =
                             Class.forName(
-                                    "de.rub.nds.sshattacker.core.crypto.kex.CustomSntrup4591761x25519KeyExchange");
-                    return (HybridKeyExchange) sntrup4591761x25519.getConstructor().newInstance();
+                                    "de.rub.nds.sshattacker.core.crypto.kex.EcdhNistp521FiresaberKeyExchange");
+                    return (HybridKeyExchange) nistp521xfiresaber.getConstructor().newInstance();
+                case NISTP251_KYBER1024:
+                    Class<?> nistp521xkyber1024 =
+                            Class.forName(
+                                    "de.rub.nds.sshattacker.core.crypto.kex.EcdhNistp521Kyber1024KeyExchange");
+                    return (HybridKeyExchange) nistp521xkyber1024.getConstructor().newInstance();
             }
 
         } catch (ClassNotFoundException e) {
@@ -133,6 +139,48 @@ public abstract class HybridKeyExchange extends KeyExchange {
             LOGGER.warn("Could not get MessageDigest: " + e);
         }
         return new byte[0];
+    }
+
+    protected void concatenateAndHash(KeyExchangeAlgorithm algorithm) {
+        try {
+            agreement.computeSharedSecret();
+            if (encapsulation.getSharedSecret() == null) {
+                encapsulation.decryptSharedSecret();
+            }
+
+            byte[] tmpSharedSecret;
+            switch (combiner) {
+                case CLASSICAL_CONCATENATE_POSTQUANTUM:
+                    tmpSharedSecret =
+                            mergeKeyExchangeShares(
+                                    ArrayConverter.bigIntegerToByteArray(
+                                            agreement.getSharedSecret()),
+                                    ArrayConverter.bigIntegerToByteArray(
+                                            encapsulation.getSharedSecret()));
+                    break;
+                case POSTQUANTUM_CONCATENATE_CLASSICAL:
+                    tmpSharedSecret =
+                            mergeKeyExchangeShares(
+                                    ArrayConverter.bigIntegerToByteArray(
+                                            encapsulation.getSharedSecret()),
+                                    ArrayConverter.bigIntegerToByteArray(
+                                            agreement.getSharedSecret()));
+                    break;
+                default:
+                    throw new IllegalArgumentException(combiner.name() + " not supported.");
+            }
+
+            this.sharedSecret = new BigInteger(encode(tmpSharedSecret, algorithm.getDigest()));
+            LOGGER.debug(
+                    "Concatenated Shared Secret = "
+                            + ArrayConverter.bytesToRawHexString(tmpSharedSecret));
+            LOGGER.debug(
+                    "Encoded Shared Secret = "
+                            + ArrayConverter.bytesToRawHexString(
+                                    encode(tmpSharedSecret, algorithm.getDigest())));
+        } catch (Exception e) {
+            LOGGER.warn("Could not create the shared Secret: " + e);
+        }
     }
 
     public abstract void combineSharedSecrets();

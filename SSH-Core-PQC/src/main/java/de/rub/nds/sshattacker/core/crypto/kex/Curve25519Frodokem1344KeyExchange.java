@@ -7,17 +7,13 @@
  */
 package de.rub.nds.sshattacker.core.crypto.kex;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.CryptoConstants;
 import de.rub.nds.sshattacker.core.constants.HybridKeyExchangeCombiner;
+import de.rub.nds.sshattacker.core.constants.KeyExchangeAlgorithm;
 import de.rub.nds.sshattacker.core.constants.NamedEcGroup;
 import de.rub.nds.sshattacker.core.constants.OpenQuantumSafeKemNames;
-import java.math.BigInteger;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class Curve25519Frodokem1344KeyExchange extends HybridKeyExchange {
-    private static final Logger LOGGER = LogManager.getLogger();
 
     public Curve25519Frodokem1344KeyExchange() {
 
@@ -32,27 +28,6 @@ public class Curve25519Frodokem1344KeyExchange extends HybridKeyExchange {
 
     @Override
     public void combineSharedSecrets() {
-        try {
-            agreement.computeSharedSecret();
-            if (encapsulation.getSharedSecret() == null) {
-                encapsulation.decryptSharedSecret();
-            }
-
-            byte[] tmpSharedSecret =
-                    mergeKeyExchangeShares(
-                            ArrayConverter.bigIntegerToByteArray(encapsulation.getSharedSecret()),
-                            ArrayConverter.bigIntegerToByteArray(agreement.getSharedSecret()));
-
-            this.sharedSecret = new BigInteger(encode(tmpSharedSecret, "SHA-512"));
-            LOGGER.debug(
-                    "Concatenated Shared Secret = "
-                            + ArrayConverter.bytesToRawHexString(tmpSharedSecret));
-            LOGGER.debug(
-                    "Encoded Shared Secret = "
-                            + ArrayConverter.bytesToRawHexString(
-                                    encode(tmpSharedSecret, "SHA-512")));
-        } catch (Exception e) {
-            LOGGER.warn("Could not create the shared Secret: " + e);
-        }
+        concatenateAndHash(KeyExchangeAlgorithm.CURVE25519_FRODOKEM1344);
     }
 }

@@ -91,12 +91,14 @@ public enum KeyExchangeAlgorithm {
     CURVE25519_SHA256_LIBSSH_ORG(
             KeyExchangeFlowType.ECDH, "curve25519-sha256@libssh.org", "SHA-256"),
     // [ OpenSSH ]
-    SNTRUP4591761_x25519(
-            KeyExchangeFlowType.HYBRID, "sntrup4591761x25519-sha512@tinyssh.org", "SHA-512"),
     SNTRUP761_X25519(KeyExchangeFlowType.HYBRID, "sntrup761x25519-sha512@openssh.com", "SHA-512"),
     // [ SSH.COM ]
     CURVE25519_FRODOKEM1344(
             KeyExchangeFlowType.HYBRID, "curve25519-frodokem1344-sha512@ssh.com", "SHA-512"),
+    NISTP251_KYBER1024(
+            KeyExchangeFlowType.HYBRID, "ecdh-nistp521-kyber1024-sha512@ssh.com", "SHA-512"),
+    NISTP251_FIRESABER(
+            KeyExchangeFlowType.HYBRID, "ecdh-nistp521-firesaber-sha512@ssh.com", "SHA-512"),
 
     DIFFIE_HELLMAN_GROUP_EXCHANGE_SHA224_SSH_COM(
             KeyExchangeFlowType.DIFFIE_HELLMAN_GROUP_EXCHANGE,
