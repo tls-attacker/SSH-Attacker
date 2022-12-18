@@ -12,6 +12,7 @@ import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.connection.Channel;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelMessage;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
+import java.util.Optional;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -33,25 +34,40 @@ public abstract class ChannelMessagePreparator<T extends ChannelMessage<T>>
     }
 
     private void prepareChannel() {
-        if (getObject().getConfigSenderChannelId() != null) {
-            channel =
-                    chooser.getContext().getChannels().get(getObject().getConfigSenderChannelId());
-        } else {
-            channel = chooser.getContext().getChannelManager().guessChannelByReceivedMessages();
-        }
-        int senderChannelId = channel.getLocalChannelId().getValue();
-        if (channel == null) {
-            LOGGER.warn(
-                    "About to prepare channel message for channel with local id {}, but no such channel found. Creating a new one from defaults.",
-                    senderChannelId);
-            channel = chooser.getConfig().getChannelDefaults().newChannelFromDefaults();
-            channel.setLocalChannelId(senderChannelId);
-            chooser.getContext().getChannels().put(senderChannelId, channel);
-        }
+        final Optional<Integer> configSenderChannelId =
+                Optional.ofNullable(getObject().getConfigSenderChannelId());
+        channel =
+                configSenderChannelId
+                        .flatMap(
+                                senderChannelId ->
+                                        Optional.ofNullable(
+                                                this.chooser
+                                                        .getContext()
+                                                        .getChannels()
+                                                        .get(senderChannelId)))
+                        .or(
+                                () ->
+                                        this.chooser
+                                                .getContext()
+                                                .getChannelManager()
+                                                .guessChannelByReceivedMessages())
+                        .orElseGet(
+                                () -> {
+                                    LOGGER.warn(
+                                            "About to prepare channel message, but no corresponding was channel found or guessed. Creating a new one from defaults.");
+                                    final Integer remoteChannelId =
+                                            configSenderChannelId.orElse(Integer.valueOf(0));
+                                    return this.chooser
+                                            .getContext()
+                                            .getChannelManager()
+                                            .createNewChannelFromDefaults(remoteChannelId);
+                                });
+
         if (!channel.isOpen().getValue()) {
+            final int localChannelId = channel.getLocalChannelId().getValue();
             LOGGER.warn(
                     "About to prepare channel message for channel with local id {}, but channel is not open. Continuing anyway.",
-                    senderChannelId);
+                    localChannelId);
         }
         getObject().setRecipientChannelId(channel.getRemoteChannelId());
     }
