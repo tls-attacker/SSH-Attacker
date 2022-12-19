@@ -53,29 +53,16 @@ public abstract class HybridKeyExchange extends KeyExchange {
         }
 
         try {
-            switch (algorithm) {
-                default:
-                    LOGGER.warn(
-                            "Algorithm "
-                                    + algorithm
-                                    + "is not supported. Falling back to "
-                                    + KeyExchangeAlgorithm.SNTRUP761_X25519);
-                    // Fallthrough to case SNTRUP761_X25519 intended
-                case SNTRUP761_X25519:
-                    // Check if SSH-Core-PQC module has been compiled and is available
-                    Class<?> sntrup761x25519 =
-                            Class.forName(
-                                    "de.rub.nds.sshattacker.core.crypto.kex.Sntrup761X25519KeyExchange");
-                    return (HybridKeyExchange) sntrup761x25519.getConstructor().newInstance();
-
-                case CURVE25519_FRODOKEM1344:
-                    Class<?> curve25519xfrodokem1344 =
-                            Class.forName(
-                                    "de.rub.nds.sshattacker.core.crypto.kex.Curve25519Frodokem1344KeyExchange");
-                    return (HybridKeyExchange)
-                            curve25519xfrodokem1344.getConstructor().newInstance();
+            if (!algorithm.isImplemented()) {
+                LOGGER.warn(
+                        "Algorithm "
+                                + algorithm
+                                + "is not yet implemented. Falling back to "
+                                + KeyExchangeAlgorithm.SNTRUP761_X25519);
+                algorithm = KeyExchangeAlgorithm.SNTRUP761_X25519;
             }
-
+            Class<?> kexImplementation = Class.forName(algorithm.getClassName());
+            return (HybridKeyExchange) kexImplementation.getConstructor().newInstance();
         } catch (ClassNotFoundException e) {
             LOGGER.fatal(
                     "Unable to create new instance of HybridKeyExchange, module SSH-Core-PQC is not available. Make sure to enable PQC by enabling the corresponding profile during build!");
