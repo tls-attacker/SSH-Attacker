@@ -12,6 +12,7 @@ import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlRootElement;
+import java.util.Arrays;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -141,5 +142,29 @@ public class KeySet {
                 + "\n"
                 + "Integrity key (server to client): "
                 + ArrayConverter.bytesToRawHexString(serverWriteIntegrityKey);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        KeySet keySet = (KeySet) o;
+        return Arrays.equals(clientWriteInitialIv, keySet.clientWriteInitialIv)
+                && Arrays.equals(serverWriteInitialIv, keySet.serverWriteInitialIv)
+                && Arrays.equals(clientWriteEncryptionKey, keySet.clientWriteEncryptionKey)
+                && Arrays.equals(serverWriteEncryptionKey, keySet.serverWriteEncryptionKey)
+                && Arrays.equals(clientWriteIntegrityKey, keySet.clientWriteIntegrityKey)
+                && Arrays.equals(serverWriteIntegrityKey, keySet.serverWriteIntegrityKey);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = Arrays.hashCode(clientWriteInitialIv);
+        result = 31 * result + Arrays.hashCode(serverWriteInitialIv);
+        result = 31 * result + Arrays.hashCode(clientWriteEncryptionKey);
+        result = 31 * result + Arrays.hashCode(serverWriteEncryptionKey);
+        result = 31 * result + Arrays.hashCode(clientWriteIntegrityKey);
+        result = 31 * result + Arrays.hashCode(serverWriteIntegrityKey);
+        return result;
     }
 }

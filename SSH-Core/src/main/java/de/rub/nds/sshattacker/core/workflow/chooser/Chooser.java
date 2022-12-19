@@ -7,6 +7,8 @@
  */
 package de.rub.nds.sshattacker.core.workflow.chooser;
 
+import static java.util.Map.Entry;
+
 import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.constants.*;
 import de.rub.nds.sshattacker.core.crypto.kex.AbstractEcdhKeyExchange;
@@ -16,6 +18,7 @@ import de.rub.nds.sshattacker.core.crypto.kex.RsaKeyExchange;
 import de.rub.nds.sshattacker.core.crypto.keys.SshPublicKey;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import java.util.List;
+import java.util.stream.Stream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -220,6 +223,9 @@ public abstract class Chooser {
     public abstract HybridKeyExchange getHybridKeyExchange();
 
     public abstract SshPublicKey<?, ?> getNegotiatedHostKey();
+
+    public abstract Stream<Entry<SshPublicKey<?, ?>, PublicKeyAlgorithm>>
+            getUserKeyAndAlgorithmCombinations();
 
     public abstract Integer getMinimalDhGroupSize();
 

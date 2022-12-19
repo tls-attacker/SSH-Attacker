@@ -237,6 +237,14 @@ public class Config implements Serializable {
      */
     private Boolean enableEncryptionOnNewKeysMessage = true;
     /**
+     * If set to false, the packet cipher will only be changed in case of algorithm or key material
+     * change during the SSH_MSG_NEWKEYS handler. This can be useful if one tries sending NEWKEYS
+     * without a proper key exchange beforehand and would like to be able to decrypt the servers'
+     * response encrypted under the old cipher state. Will take no effect if {@link
+     * #enableEncryptionOnNewKeysMessage} is set to false.
+     */
+    private Boolean forcePacketCipherChange = false;
+    /**
      * If enforceSettings is true, the algorithms are expected to be already set in the SshContext,
      * when picking the algorithms
      */
@@ -275,6 +283,10 @@ public class Config implements Serializable {
     @XmlElement(name = "userKey")
     @XmlElementWrapper
     private List<SshPublicKey<?, ?>> userKeys;
+
+    @XmlElement(name = "userKeyAlgorithms")
+    @XmlElementWrapper
+    private List<PublicKeyAlgorithm> userKeyAlgorithms;
     // endregion
 
     // region Channel
@@ -424,21 +436,10 @@ public class Config implements Serializable {
         serverCookie = ArrayConverter.hexStringToByteArray("00000000000000000000000000000000");
 
         // Default values for cryptographic parameters are taken from OpenSSH 8.2p1
-        LinkedList<KeyExchangeAlgorithm> supportedKeyExchangeAlgorithms = new LinkedList<>();
-        try {
-            Class.forName(
-                    "de.rub.nds.sshattacker.core.crypto.kex.Curve25519Frodokem1344KeyExchange");
-            Class.forName("de.rub.nds.sshattacker.core.crypto.kex.Sntrup761X25519KeyExchange");
-            // PQC algorithms are available (namely sntrup761x25519-sha512@openssh.com)
-            supportedKeyExchangeAlgorithms.add(KeyExchangeAlgorithm.CURVE25519_FRODOKEM1344);
-            supportedKeyExchangeAlgorithms.add(KeyExchangeAlgorithm.SNTRUP761_X25519);
-        } catch (ClassNotFoundException e) {
-            LOGGER.info(
-                    "Classes of module SSH-Core-PQC not found, not offering [sntrup761x25519-sha512@openssh.com, curve25519-frodokem1344-sha512@ssh.com ] to peer. If you need PQC support compile with PQC profile enabled.");
-        }
-        supportedKeyExchangeAlgorithms.addAll(
+        clientSupportedKeyExchangeAlgorithms =
                 Arrays.stream(
                                 new KeyExchangeAlgorithm[] {
+                                    KeyExchangeAlgorithm.SNTRUP761_X25519,
                                     KeyExchangeAlgorithm.CURVE25519_SHA256,
                                     KeyExchangeAlgorithm.CURVE25519_SHA256_LIBSSH_ORG,
                                     KeyExchangeAlgorithm.ECDH_SHA2_NISTP256,
@@ -449,8 +450,8 @@ public class Config implements Serializable {
                                     KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP18_SHA512,
                                     KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP14_SHA256
                                 })
-                        .collect(Collectors.toCollection(LinkedList::new)));
-        clientSupportedKeyExchangeAlgorithms = supportedKeyExchangeAlgorithms;
+                        .filter(KeyExchangeAlgorithm::isAvailable)
+                        .collect(Collectors.toCollection(LinkedList::new));
         serverSupportedKeyExchangeAlgorithms =
                 new LinkedList<>(clientSupportedKeyExchangeAlgorithms);
 
@@ -1223,6 +1224,10 @@ public class Config implements Serializable {
         return enableEncryptionOnNewKeysMessage;
     }
 
+    public Boolean getForcePacketCipherChange() {
+        return forcePacketCipherChange;
+    }
+
     public Boolean getEnforceSettings() {
         return enforceSettings;
     }
@@ -1274,6 +1279,10 @@ public class Config implements Serializable {
         this.enableEncryptionOnNewKeysMessage = enableEncryptionOnNewKeysMessage;
     }
 
+    public void setForcePacketCipherChange(Boolean forcePacketCipherChange) {
+        this.forcePacketCipherChange = forcePacketCipherChange;
+    }
+
     public void setEnforceSettings(Boolean enforceSettings) {
         this.enforceSettings = enforceSettings;
     }
@@ -1308,6 +1317,19 @@ public class Config implements Serializable {
         return userKeys;
     }
 
+    /**
+     * Get the list of user key algorithms to use for authentication.
+     *
+     * <p>These algorithms will be used for user authentication. If this value is not set, the user
+     * key algorithm might be any public key algorithms that is compatible with the user key's
+     * format.
+     *
+     * @return list of public key algorithms, or no value
+     * @see #setUserKeyAlgorithms
+     */
+    public Optional<List<PublicKeyAlgorithm>> getUserKeyAlgorithms() {
+        return Optional.ofNullable(this.userKeyAlgorithms);
+    }
     // endregion
     // region Setters for Authentification
     public void setAuthenticationMethod(AuthenticationMethod authenticationMethod) {
@@ -1333,6 +1355,16 @@ public class Config implements Serializable {
 
     public void setUserKeys(final List<SshPublicKey<?, ?>> userKeys) {
         this.userKeys = Objects.requireNonNull(userKeys);
+    }
+
+    /**
+     * Set the list of user key algorithms to use for authentication.
+     *
+     * @param userKeyAlgorithms list of public key algorithms, or no value
+     * @see #getUserKeyAlgorithms
+     */
+    public void setUserKeyAlgorithms(final Optional<List<PublicKeyAlgorithm>> userKeyAlgorithms) {
+        this.userKeyAlgorithms = userKeyAlgorithms.orElse(null);
     }
 
     // endregion
