@@ -53,17 +53,22 @@ public class DhKeyExchange extends DhBasedKeyExchange {
                     "Trying to instantiate a new DH or DH GEX key exchange without a matching key exchange algorithm negotiated, falling back to "
                             + algorithm);
         }
+        /*
+         * In case of group exchange algorithms the following group assignments can be seen as default values
+         * which are used whenever the local key pair is being generated before a group has been negotiated.
+         * This can be the case if, for example, SSH-Attacker tries to perform the actual key exchange prior to
+         * group negotiation. The default values will be overwritten when negotiating a group.
+         */
         NamedDhGroup group;
         switch (algorithm) {
             case DIFFIE_HELLMAN_GROUP_EXCHANGE_SHA1:
+            case DIFFIE_HELLMAN_GROUP1_SHA1:
+                group = NamedDhGroup.GROUP1;
+                break;
             case DIFFIE_HELLMAN_GROUP_EXCHANGE_SHA256:
             case DIFFIE_HELLMAN_GROUP_EXCHANGE_SHA224_SSH_COM:
             case DIFFIE_HELLMAN_GROUP_EXCHANGE_SHA384_SSH_COM:
             case DIFFIE_HELLMAN_GROUP_EXCHANGE_SHA512_SSH_COM:
-                return new DhKeyExchange();
-            case DIFFIE_HELLMAN_GROUP1_SHA1:
-                group = NamedDhGroup.GROUP1;
-                break;
             case DIFFIE_HELLMAN_GROUP14_SHA1:
             case DIFFIE_HELLMAN_GROUP14_SHA256:
             case DIFFIE_HELLMAN_GROUP14_SHA224_SSH_COM:

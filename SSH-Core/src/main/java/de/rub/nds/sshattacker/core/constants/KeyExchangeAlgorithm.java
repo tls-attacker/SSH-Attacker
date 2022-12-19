@@ -7,6 +7,9 @@
  */
 package de.rub.nds.sshattacker.core.constants;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 public enum KeyExchangeAlgorithm {
     /*
      * Sources:
@@ -73,7 +76,7 @@ public enum KeyExchangeAlgorithm {
             KeyExchangeFlowType.ECDH, "ecdh-sha2-1.3.36.3.3.2.8.1.1.11", "SHA-384"),
     ECDH_SHA2_BRAINPOOLP512R1(
             KeyExchangeFlowType.ECDH, "ecdh-sha2-1.3.36.3.3.2.8.1.1.13", "SHA-512"),
-    ECMQV_SHA2(KeyExchangeFlowType.ECMQV, "ecmqv-sha2", null),
+    ECMQV_SHA2(KeyExchangeFlowType.ECMQV, "ecmqv-sha2", null, null),
     // [ RFC 8732 ]
     // GSS-API key exchange methods would be listed here (gss-*)
     // TODO: Change implementation to support wildcard key exchange method names
@@ -84,21 +87,45 @@ public enum KeyExchangeAlgorithm {
     EXT_INFO_S(null, "ext-info-s", null),
     EXT_INFO_C(null, "ext-info-c", null),
     // [ RFC 8731 ]
-    CURVE25519_SHA256(KeyExchangeFlowType.ECDH, "curve25519-sha256", "SHA-256"),
-    CURVE448_SHA512(KeyExchangeFlowType.ECDH, "curve448-sha512", "SHA-512"),
+    CURVE25519_SHA256(
+            KeyExchangeFlowType.ECDH,
+            "curve25519-sha256",
+            "SHA-256",
+            "de.rub.nds.sshattacker.core.crypto.kex.XCurveEcdhKeyExchange"),
+    CURVE448_SHA512(
+            KeyExchangeFlowType.ECDH,
+            "curve448-sha512",
+            "SHA-512",
+            "de.rub.nds.sshattacker.core.crypto.kex.XCurveEcdhKeyExchange"),
     // Vendor extensions
     // [ LibSSH ]
     CURVE25519_SHA256_LIBSSH_ORG(
-            KeyExchangeFlowType.ECDH, "curve25519-sha256@libssh.org", "SHA-256"),
+            KeyExchangeFlowType.ECDH,
+            "curve25519-sha256@libssh.org",
+            "SHA-256",
+            "de.rub.nds.sshattacker.core.crypto.kex.XCurveEcdhKeyExchange"),
     // [ OpenSSH ]
-    SNTRUP761_X25519(KeyExchangeFlowType.HYBRID, "sntrup761x25519-sha512@openssh.com", "SHA-512"),
+    SNTRUP761_X25519(
+            KeyExchangeFlowType.HYBRID,
+            "sntrup761x25519-sha512@openssh.com",
+            "SHA-512",
+            "de.rub.nds.sshattacker.core.crypto.kex.Sntrup761X25519KeyExchange"),
     // [ SSH.COM ]
     CURVE25519_FRODOKEM1344(
-            KeyExchangeFlowType.HYBRID, "curve25519-frodokem1344-sha512@ssh.com", "SHA-512"),
+            KeyExchangeFlowType.HYBRID,
+            "curve25519-frodokem1344-sha512@ssh.com",
+            "SHA-512",
+            "de.rub.nds.sshattacker.core.crypto.kex.Curve25519Frodokem1344KeyExchange"),
     NISTP251_KYBER1024(
-            KeyExchangeFlowType.HYBRID, "ecdh-nistp521-kyber1024-sha512@ssh.com", "SHA-512"),
+            KeyExchangeFlowType.HYBRID,
+            "ecdh-nistp521-kyber1024-sha512@ssh.com",
+            "SHA-512",
+            "de.rub.nds.sshattacker.core.crypto.kex.EcdhNistp521Kyber1024KeyExchange"),
     NISTP251_FIRESABER(
-            KeyExchangeFlowType.HYBRID, "ecdh-nistp521-firesaber-sha512@ssh.com", "SHA-512"),
+            KeyExchangeFlowType.HYBRID,
+            "ecdh-nistp521-firesaber-sha512@ssh.com",
+            "SHA-512",
+            "de.rub.nds.sshattacker.core.crypto.kex.EcdhNistp521FiresaberKeyExchange"),
 
     DIFFIE_HELLMAN_GROUP_EXCHANGE_SHA224_SSH_COM(
             KeyExchangeFlowType.DIFFIE_HELLMAN_GROUP_EXCHANGE,
@@ -127,14 +154,43 @@ public enum KeyExchangeAlgorithm {
     DIFFIE_HELLMAN_GROUP18_SHA512_SSH_COM(
             KeyExchangeFlowType.DIFFIE_HELLMAN, "diffie-hellman-group18-sha512@ssh.com", "SHA-512");
 
+    private static final Logger LOGGER = LogManager.getLogger();
+
     private final String name;
     private final String digest;
     private final KeyExchangeFlowType flowType;
+    private final String className;
 
     KeyExchangeAlgorithm(KeyExchangeFlowType flowType, String name, String digest) {
+        this.flowType = flowType;
+        this.name = name;
+        this.digest = digest;
+        if (flowType == null) {
+            this.className = null;
+        } else
+            switch (flowType) {
+                case DIFFIE_HELLMAN:
+                case DIFFIE_HELLMAN_GROUP_EXCHANGE:
+                    this.className = "de.rub.nds.sshattacker.core.crypto.kex.DhKeyExchange";
+                    break;
+                case ECDH:
+                    this.className = "de.rub.nds.sshattacker.core.crypto.kex.EcdhKeyExchange";
+                    break;
+                case RSA:
+                    this.className = "de.rub.nds.sshattacker.core.crypto.kex.RsaKeyExchange";
+                    break;
+                default:
+                    throw new IllegalArgumentException(
+                            "Implicit className assignment is only available for DH, ECDH and RSA key exchange flows. Make sure to provide the implementing key exchange class explicitly!");
+            }
+    }
+
+    KeyExchangeAlgorithm(
+            KeyExchangeFlowType flowType, String name, String digest, String className) {
         this.name = name;
         this.digest = digest;
         this.flowType = flowType;
+        this.className = className;
     }
 
     @Override
@@ -148,5 +204,42 @@ public enum KeyExchangeAlgorithm {
 
     public KeyExchangeFlowType getFlowType() {
         return flowType;
+    }
+
+    public String getClassName() {
+        return className;
+    }
+
+    /**
+     * Indicates whether the algorithm has been already been implemented. However, the algorithm
+     * might not be available at runtime. To check if an algorithm is available, use {@link
+     * #isAvailable} instead.
+     *
+     * @return True if the key exchange algorithm has been implemented.
+     */
+    public boolean isImplemented() {
+        return className != null;
+    }
+
+    /**
+     * Indicates whether an algorithm is available at runtime. Some algorithms may not be available
+     * at runtime due to missing dependencies.
+     *
+     * @return True if the key exchange algorithm implementation is available.
+     */
+    public boolean isAvailable() {
+        if (className == null) {
+            return false;
+        }
+        try {
+            Class.forName(className);
+            return true;
+        } catch (ClassNotFoundException | LinkageError e) {
+            LOGGER.info(
+                    "Key exchange algorithm '{}' is not available. To enable it make sure {} is present in the classpath.",
+                    name,
+                    className);
+            return false;
+        }
     }
 }
