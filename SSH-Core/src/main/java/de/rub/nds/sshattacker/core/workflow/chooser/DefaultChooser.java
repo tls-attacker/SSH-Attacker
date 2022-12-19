@@ -16,8 +16,11 @@ import de.rub.nds.sshattacker.core.crypto.kex.RsaKeyExchange;
 import de.rub.nds.sshattacker.core.crypto.keys.SshPublicKey;
 import de.rub.nds.sshattacker.core.protocol.util.AlgorithmPicker;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Stream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -888,6 +891,32 @@ public class DefaultChooser extends Chooser {
                                             + ")");
                             return fallback;
                         });
+    }
+
+    /**
+     * Pick the user key from config that is compatible with the configured public key algorithms
+     * and return a stream of (key, algorithm) tuple that could be used for authentication. If no
+     * public key algorithms for user authentication haven been configured, all available public key
+     * algorithms will be considered.
+     *
+     * @return a stream of (key, algorithm) tuples that can be used for client authentication.
+     * @see Config#getUserKeys
+     * @see Config#getUserKeyAlgorithms
+     */
+    @Override
+    public Stream<Map.Entry<SshPublicKey<?, ?>, PublicKeyAlgorithm>>
+            getUserKeyAndAlgorithmCombinations() {
+        return config.getUserKeys().stream()
+                .flatMap(
+                        key ->
+                                config.getUserKeyAlgorithms()
+                                        .map(algorithms -> algorithms.stream())
+                                        .orElseGet(() -> Arrays.stream(PublicKeyAlgorithm.values()))
+                                        .filter(
+                                                algorithm ->
+                                                        algorithm.getKeyFormat()
+                                                                == key.getPublicKeyFormat())
+                                        .map(algorithm -> Map.entry(key, algorithm)));
     }
 
     /**
