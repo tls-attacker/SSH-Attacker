@@ -374,7 +374,7 @@ class UMac extends AbstractMac {
             y = y.add(m_[i].multiply(k_[i]));
         }
         y = y.mod(prime(36)).mod(BigInteger.ONE.shiftLeft(32));
-        byte[] Y = ArrayConverter.bigIntegerToByteArray(y);
+        byte[] Y = ArrayConverter.bigIntegerToByteArray(y, 4, true);
         for (int i = 0; i < 4; i++) {
             Y[i] = (byte) (Y[i] ^ K2[i]);
         }

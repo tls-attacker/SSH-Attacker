@@ -7,10 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.handler;
 
-import de.rub.nds.sshattacker.core.constants.CipherMode;
-import de.rub.nds.sshattacker.core.constants.CompressionMethod;
-import de.rub.nds.sshattacker.core.constants.EncryptionAlgorithm;
-import de.rub.nds.sshattacker.core.constants.MacAlgorithm;
+import de.rub.nds.sshattacker.core.constants.*;
 import de.rub.nds.sshattacker.core.packet.cipher.PacketCipher;
 import de.rub.nds.sshattacker.core.packet.cipher.PacketCipherFactory;
 import de.rub.nds.sshattacker.core.packet.cipher.keys.KeySet;
@@ -21,6 +18,7 @@ import de.rub.nds.sshattacker.core.protocol.transport.preparator.NewKeysMessageP
 import de.rub.nds.sshattacker.core.protocol.transport.serializer.NewKeysMessageSerializer;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
+import java.util.Objects;
 import java.util.Optional;
 
 public class NewKeysMessageHandler extends SshMessageHandler<NewKeysMessage>
@@ -53,18 +51,51 @@ public class NewKeysMessageHandler extends SshMessageHandler<NewKeysMessage>
     private void adjustEncryptionForDirection(boolean receive) {
         Chooser chooser = context.getChooser();
         Optional<KeySet> keySet = context.getKeySet();
-        EncryptionAlgorithm encryptionAlgorithm =
-                receive
-                        ? chooser.getReceiveEncryptionAlgorithm()
-                        : chooser.getSendEncryptionAlgorithm();
-        MacAlgorithm macAlgorithm =
-                receive ? chooser.getReceiveMacAlgorithm() : chooser.getSendMacAlgorithm();
         if (keySet.isEmpty()) {
             LOGGER.warn(
                     "Unable to update the active {} cipher after handling a new keys message because key set is missing - workflow will continue with old cipher",
                     receive ? "decryption" : "encryption");
             return;
         }
+
+        EncryptionAlgorithm encryptionAlgorithm;
+        MacAlgorithm macAlgorithm;
+        if (receive) {
+            encryptionAlgorithm = chooser.getReceiveEncryptionAlgorithm();
+            macAlgorithm = chooser.getReceiveMacAlgorithm();
+            KeySet activeKeySet = context.getPacketLayer().getDecryptorCipher().getKeySet();
+            EncryptionAlgorithm activeEncryptionAlgorithm =
+                    context.getPacketLayer().getDecryptorCipher().getEncryptionAlgorithm();
+            MacAlgorithm activeMacAlgorithm =
+                    context.getPacketLayer().getDecryptorCipher().getMacAlgorithm();
+            if (!context.getConfig().getForcePacketCipherChange()
+                    && Objects.equals(activeKeySet, keySet.get())
+                    && encryptionAlgorithm == activeEncryptionAlgorithm
+                    && (encryptionAlgorithm.getType() == EncryptionAlgorithmType.AEAD
+                            || macAlgorithm == activeMacAlgorithm)) {
+                LOGGER.info(
+                        "Key set and algorithms unchanged, not changing active decryption cipher - workflow will continue with old cipher");
+                return;
+            }
+        } else {
+            encryptionAlgorithm = chooser.getSendEncryptionAlgorithm();
+            macAlgorithm = chooser.getSendMacAlgorithm();
+            KeySet activeKeySet = context.getPacketLayer().getEncryptorCipher().getKeySet();
+            EncryptionAlgorithm activeEncryptionAlgorithm =
+                    context.getPacketLayer().getEncryptorCipher().getEncryptionAlgorithm();
+            MacAlgorithm activeMacAlgorithm =
+                    context.getPacketLayer().getEncryptorCipher().getMacAlgorithm();
+            if (!context.getConfig().getForcePacketCipherChange()
+                    && Objects.equals(activeKeySet, keySet.get())
+                    && encryptionAlgorithm == activeEncryptionAlgorithm
+                    && (encryptionAlgorithm.getType() == EncryptionAlgorithmType.AEAD
+                            || macAlgorithm == activeMacAlgorithm)) {
+                LOGGER.info(
+                        "Key set and algorithms unchanged, not changing active decryption cipher - workflow will continue with old cipher");
+                return;
+            }
+        }
+
         try {
             PacketCipher packetCipher =
                     PacketCipherFactory.getPacketCipher(
