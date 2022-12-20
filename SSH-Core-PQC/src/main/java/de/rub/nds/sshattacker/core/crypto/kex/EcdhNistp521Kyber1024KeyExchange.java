@@ -13,17 +13,16 @@ import de.rub.nds.sshattacker.core.constants.KeyExchangeAlgorithm;
 import de.rub.nds.sshattacker.core.constants.NamedEcGroup;
 import de.rub.nds.sshattacker.core.constants.OpenQuantumSafeKemNames;
 
-public class Curve25519Frodokem1344KeyExchange extends HybridKeyExchange {
+public class EcdhNistp521Kyber1024KeyExchange extends HybridKeyExchange {
 
-    public Curve25519Frodokem1344KeyExchange() {
-
+    public EcdhNistp521Kyber1024KeyExchange() {
         super(
-                KeyExchangeAlgorithm.CURVE25519_FRODOKEM1344,
-                new XCurveEcdhKeyExchange(NamedEcGroup.CURVE25519),
-                new OpenQuantumSafeKem(OpenQuantumSafeKemNames.FRODOKEM1344),
+                KeyExchangeAlgorithm.NISTP521_KYBER1024,
+                new EcdhKeyExchange(NamedEcGroup.SECP521R1),
+                new OpenQuantumSafeKem(OpenQuantumSafeKemNames.KYBER1024),
                 HybridKeyExchangeCombiner.POSTQUANTUM_CONCATENATE_CLASSICAL,
-                CryptoConstants.X25519_POINT_SIZE,
-                CryptoConstants.FRODOKEM1344_PUBLIC_KEY_SIZE,
-                CryptoConstants.FRODOKEM1344_CIPHERTEXT_SIZE);
+                CryptoConstants.NISTP521_POINT_SIZE,
+                CryptoConstants.KYBER1024_PUBLIC_KEY_SIZE,
+                CryptoConstants.KYBER1024_CIPHERTEXT_SIZE);
     }
 }

@@ -116,6 +116,16 @@ public enum KeyExchangeAlgorithm {
             "curve25519-frodokem1344-sha512@ssh.com",
             "SHA-512",
             "de.rub.nds.sshattacker.core.crypto.kex.Curve25519Frodokem1344KeyExchange"),
+    NISTP521_KYBER1024(
+            KeyExchangeFlowType.HYBRID,
+            "ecdh-nistp521-kyber1024-sha512@ssh.com",
+            "SHA-512",
+            "de.rub.nds.sshattacker.core.crypto.kex.EcdhNistp521Kyber1024KeyExchange"),
+    NISTP521_FIRESABER(
+            KeyExchangeFlowType.HYBRID,
+            "ecdh-nistp521-firesaber-sha512@ssh.com",
+            "SHA-512",
+            "de.rub.nds.sshattacker.core.crypto.kex.EcdhNistp521FiresaberKeyExchange"),
 
     DIFFIE_HELLMAN_GROUP_EXCHANGE_SHA224_SSH_COM(
             KeyExchangeFlowType.DIFFIE_HELLMAN_GROUP_EXCHANGE,

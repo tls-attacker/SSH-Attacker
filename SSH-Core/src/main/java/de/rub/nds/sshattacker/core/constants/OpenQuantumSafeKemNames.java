@@ -9,11 +9,13 @@ package de.rub.nds.sshattacker.core.constants;
 
 public enum OpenQuantumSafeKemNames {
     SNTRUP761("sntrup761"),
-    FRODOKEM1344("FrodoKEM-1344-SHAKE");
+    FRODOKEM1344("FrodoKEM-1344-SHAKE"),
+    FIRESABER("FireSaber-KEM"),
+    KYBER1024("Kyber1024");
 
     private String name;
 
-    private OpenQuantumSafeKemNames(String name) {
+    OpenQuantumSafeKemNames(String name) {
         this.name = name;
     }
 

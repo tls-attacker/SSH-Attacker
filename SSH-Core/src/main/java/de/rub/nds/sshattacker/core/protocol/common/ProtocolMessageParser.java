@@ -187,7 +187,9 @@ public abstract class ProtocolMessageParser<T extends ProtocolMessage<T>> extend
 
     public static HybridKeyExchangeReplyMessageParser handleHbrReply(
             byte[] raw, SshContext context) {
-
+        LOGGER.info(
+                "Negotiated Hybrid Key Exchange: "
+                        + context.getChooser().getKeyExchangeAlgorithm());
         switch (context.getChooser().getKeyExchangeAlgorithm()) {
             default:
                 LOGGER.warn(
@@ -205,10 +207,25 @@ public abstract class ProtocolMessageParser<T extends ProtocolMessage<T>> extend
                         HybridKeyExchangeCombiner.POSTQUANTUM_CONCATENATE_CLASSICAL,
                         CryptoConstants.X25519_POINT_SIZE,
                         CryptoConstants.FRODOKEM1344_CIPHERTEXT_SIZE);
+            case NISTP521_FIRESABER:
+                return new HybridKeyExchangeReplyMessageParser(
+                        raw,
+                        HybridKeyExchangeCombiner.POSTQUANTUM_CONCATENATE_CLASSICAL,
+                        CryptoConstants.NISTP521_POINT_SIZE,
+                        CryptoConstants.FIRESABER_CIPHERTEXT_SIZE);
+            case NISTP521_KYBER1024:
+                return new HybridKeyExchangeReplyMessageParser(
+                        raw,
+                        HybridKeyExchangeCombiner.POSTQUANTUM_CONCATENATE_CLASSICAL,
+                        CryptoConstants.NISTP521_POINT_SIZE,
+                        CryptoConstants.KYBER1024_CIPHERTEXT_SIZE);
         }
     }
 
     public static HybridKeyExchangeInitMessageParser handleHbrInit(byte[] raw, SshContext context) {
+        LOGGER.info(
+                "Negotiated Hybrid Key Exchange: "
+                        + context.getChooser().getKeyExchangeAlgorithm());
         switch (context.getChooser().getKeyExchangeAlgorithm()) {
             default:
                 LOGGER.warn(
@@ -220,6 +237,24 @@ public abstract class ProtocolMessageParser<T extends ProtocolMessage<T>> extend
                         HybridKeyExchangeCombiner.POSTQUANTUM_CONCATENATE_CLASSICAL,
                         CryptoConstants.X25519_POINT_SIZE,
                         CryptoConstants.SNTRUP761_PUBLIC_KEY_SIZE);
+            case CURVE25519_FRODOKEM1344:
+                return new HybridKeyExchangeInitMessageParser(
+                        raw,
+                        HybridKeyExchangeCombiner.POSTQUANTUM_CONCATENATE_CLASSICAL,
+                        CryptoConstants.X25519_POINT_SIZE,
+                        CryptoConstants.FRODOKEM1344_PUBLIC_KEY_SIZE);
+            case NISTP521_FIRESABER:
+                return new HybridKeyExchangeInitMessageParser(
+                        raw,
+                        HybridKeyExchangeCombiner.POSTQUANTUM_CONCATENATE_CLASSICAL,
+                        CryptoConstants.NISTP521_POINT_SIZE,
+                        CryptoConstants.FIRESABER_PUBLIC_KEY_SIZE);
+            case NISTP521_KYBER1024:
+                return new HybridKeyExchangeInitMessageParser(
+                        raw,
+                        HybridKeyExchangeCombiner.POSTQUANTUM_CONCATENATE_CLASSICAL,
+                        CryptoConstants.NISTP521_POINT_SIZE,
+                        CryptoConstants.KYBER1024_PUBLIC_KEY_SIZE);
         }
     }
 
