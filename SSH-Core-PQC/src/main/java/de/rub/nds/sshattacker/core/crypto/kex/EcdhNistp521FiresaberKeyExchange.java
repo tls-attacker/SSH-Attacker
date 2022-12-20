@@ -17,16 +17,12 @@ public class EcdhNistp521FiresaberKeyExchange extends HybridKeyExchange {
 
     public EcdhNistp521FiresaberKeyExchange() {
         super(
+                KeyExchangeAlgorithm.NISTP521_FIRESABER,
                 new EcdhKeyExchange(NamedEcGroup.SECP521R1),
                 new OpenQuantumSafeKem(OpenQuantumSafeKemNames.FIRESABER),
                 HybridKeyExchangeCombiner.POSTQUANTUM_CONCATENATE_CLASSICAL,
                 CryptoConstants.NISTP521_POINT_SIZE,
                 CryptoConstants.FIRESABER_PUBLIC_KEY_SIZE,
                 CryptoConstants.FIRESABER_CIPHERTEXT_SIZE);
-    }
-
-    @Override
-    public void combineSharedSecrets() {
-        concatenateAndHash(KeyExchangeAlgorithm.NISTP251_FIRESABER);
     }
 }

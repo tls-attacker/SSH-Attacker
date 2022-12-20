@@ -17,16 +17,12 @@ public class EcdhNistp521Kyber1024KeyExchange extends HybridKeyExchange {
 
     public EcdhNistp521Kyber1024KeyExchange() {
         super(
+                KeyExchangeAlgorithm.NISTP521_KYBER1024,
                 new EcdhKeyExchange(NamedEcGroup.SECP521R1),
                 new OpenQuantumSafeKem(OpenQuantumSafeKemNames.KYBER1024),
                 HybridKeyExchangeCombiner.POSTQUANTUM_CONCATENATE_CLASSICAL,
                 CryptoConstants.NISTP521_POINT_SIZE,
                 CryptoConstants.KYBER1024_PUBLIC_KEY_SIZE,
                 CryptoConstants.KYBER1024_CIPHERTEXT_SIZE);
-    }
-
-    @Override
-    public void combineSharedSecrets() {
-        concatenateAndHash(KeyExchangeAlgorithm.NISTP251_KYBER1024);
     }
 }

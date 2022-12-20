@@ -21,6 +21,7 @@ import org.apache.logging.log4j.Logger;
 
 public abstract class HybridKeyExchange extends KeyExchange {
     private static final Logger LOGGER = LogManager.getLogger();
+    protected KeyExchangeAlgorithm algorithm;
     protected KeyAgreement agreement;
     protected KeyEncapsulation encapsulation;
     private int pkAgreementLength;
@@ -29,6 +30,7 @@ public abstract class HybridKeyExchange extends KeyExchange {
     private HybridKeyExchangeCombiner combiner;
 
     protected HybridKeyExchange(
+            KeyExchangeAlgorithm algorithm,
             KeyAgreement agreement,
             KeyEncapsulation encapsulation,
             HybridKeyExchangeCombiner combiner,
@@ -36,6 +38,7 @@ public abstract class HybridKeyExchange extends KeyExchange {
             int pkEncapsulationLength,
             int ciphertextLength) {
         super();
+        this.algorithm = algorithm;
         this.agreement = agreement;
         this.encapsulation = encapsulation;
         this.combiner = combiner;
@@ -93,6 +96,10 @@ public abstract class HybridKeyExchange extends KeyExchange {
         }
     }
 
+    public KeyExchangeAlgorithm getAlgorithm() {
+        return algorithm;
+    }
+
     public KeyAgreement getKeyAgreement() {
         return agreement;
     }
@@ -117,7 +124,7 @@ public abstract class HybridKeyExchange extends KeyExchange {
         return new byte[0];
     }
 
-    protected void concatenateAndHash(KeyExchangeAlgorithm algorithm) {
+    public void combineSharedSecrets() {
         try {
             agreement.computeSharedSecret();
             if (encapsulation.getSharedSecret() == null) {
@@ -158,8 +165,6 @@ public abstract class HybridKeyExchange extends KeyExchange {
             LOGGER.warn("Could not create the shared Secret: " + e);
         }
     }
-
-    public abstract void combineSharedSecrets();
 
     public int getPkAgreementLength() {
         return this.pkAgreementLength;
