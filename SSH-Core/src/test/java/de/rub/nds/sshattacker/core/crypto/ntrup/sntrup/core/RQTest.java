@@ -7,7 +7,6 @@
  */
 package de.rub.nds.sshattacker.core.crypto.ntrup.sntrup.core;
 
-import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Random;
@@ -28,8 +27,7 @@ public class RQTest {
         long[] coeff = new long[set.getP()];
         coeff[0] = -1888;
         RQ rq = new RQ(set, coeff);
-        assertEquals(
-                rq.stream().toArray()[0],-1888);
+        assertEquals(rq.stream().toArray()[0], -1888);
     }
 
     @Test
@@ -42,7 +40,7 @@ public class RQTest {
         long[] res = new long[set.getP()];
         res[0] = 1;
         RQ rqRes = new RQ(set, res);
-        assertEquals(RQ.multiply(rq, rqInv),rqRes);
+        assertEquals(RQ.multiply(rq, rqInv), rqRes);
     }
 
     @Test
@@ -59,7 +57,7 @@ public class RQTest {
             RQ rq = new RQ(set, coefficient);
             byte[] encRq = rq.encode();
             RQ rqNew = RQ.decode(set, encRq);
-            assertEquals(rq,rqNew);
+            assertEquals(rq, rqNew);
         }
     }
 

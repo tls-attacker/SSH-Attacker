@@ -5,14 +5,13 @@
  *
  * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
-package de.rub.nds.sshattacker.core.crypto.ntrup.sntrup;
+package de.rub.nds.sshattacker.core.crypto.kex;
 
 import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
-import de.rub.nds.sshattacker.core.constants.OpenQuantumSafeKemNames;
-import de.rub.nds.sshattacker.core.crypto.kex.Sntrup;
+import de.rub.nds.sshattacker.core.constants.PQKemNames;
 import java.util.stream.Stream;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -23,14 +22,14 @@ public class SntrupTest {
     public static Stream<Arguments> provideTestVectors() {
         Stream.Builder<Arguments> argumentsBuilder = Stream.builder();
 
-        argumentsBuilder.add(Arguments.of(OpenQuantumSafeKemNames.SNTRUP4591761));
-        argumentsBuilder.add(Arguments.of(OpenQuantumSafeKemNames.SNTRUP761));
+        argumentsBuilder.add(Arguments.of(PQKemNames.SNTRUP4591761));
+        argumentsBuilder.add(Arguments.of(PQKemNames.SNTRUP761));
         return argumentsBuilder.build();
     }
 
     @ParameterizedTest
     @MethodSource("provideTestVectors")
-    public void testSntrup(OpenQuantumSafeKemNames kemName) {
+    public void testSntrup(PQKemNames kemName) {
         Sntrup sntrupClient = new Sntrup(kemName);
         Sntrup sntrupServer = new Sntrup(kemName);
 
@@ -51,7 +50,9 @@ public class SntrupTest {
             sntrupClient.decryptSharedSecret();
             assertNotEquals(null, sntrupClient.getSharedSecret());
             assertEquals(sntrupClient.getSharedSecret(), sntrupServer.getSharedSecret());
-            assertEquals(sntrupClient.getEncryptedSharedSecret(), sntrupServer.getEncryptedSharedSecret());
+            assertEquals(
+                    sntrupClient.getEncryptedSharedSecret(),
+                    sntrupServer.getEncryptedSharedSecret());
 
         } catch (Exception e) {
             assertTrue("This should not happen: " + e, false);

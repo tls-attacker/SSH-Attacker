@@ -8,7 +8,7 @@
 package de.rub.nds.sshattacker.core.crypto.keys;
 
 import de.rub.nds.modifiablevariable.util.UnformattedByteArrayAdapter;
-import de.rub.nds.sshattacker.core.constants.OpenQuantumSafeKemNames;
+import de.rub.nds.sshattacker.core.constants.PQKemNames;
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlRootElement;
@@ -16,27 +16,27 @@ import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
-public class CustomPQKemPublicKey extends CustomPublicKey {
+public class CustomPQKemPrivateKey extends CustomPrivateKey {
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
-    private byte[] publicKey;
+    private byte[] privateKey;
 
-    private OpenQuantumSafeKemNames kemName;
+    private PQKemNames kemName;
 
     @SuppressWarnings("unused")
-    public CustomPQKemPublicKey() {}
+    private CustomPQKemPrivateKey() {}
 
-    public CustomPQKemPublicKey(byte[] publicKey, OpenQuantumSafeKemNames kemName) {
-        this.publicKey = publicKey;
+    public CustomPQKemPrivateKey(byte[] privateKey, PQKemNames kemName) {
+        this.privateKey = privateKey;
         this.kemName = kemName;
     }
 
-    public byte[] getPublicKey() {
-        return this.publicKey;
+    public byte[] getPrivateKey() {
+        return this.privateKey;
     }
 
     @Override
     public byte[] getEncoded() {
-        return this.publicKey;
+        return this.privateKey;
     }
 
     @Override

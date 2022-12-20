@@ -12,7 +12,7 @@ import static org.mockito.Mockito.doReturn;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.KeyExchangeAlgorithm;
-import de.rub.nds.sshattacker.core.constants.OpenQuantumSafeKemNames;
+import de.rub.nds.sshattacker.core.constants.PQKemNames;
 import jakarta.xml.bind.DatatypeConverter;
 import java.io.InputStream;
 import java.lang.reflect.Field;
@@ -39,12 +39,10 @@ public class HybridKeyExchangeTest {
     // needs to be mocked for testing.
     @Mock org.openquantumsafe.KeyEncapsulation kem;
 
-    @InjectMocks
-    OpenQuantumSafeKem sntrup761Kex = new OpenQuantumSafeKem(OpenQuantumSafeKemNames.SNTRUP761);
+    @InjectMocks OpenQuantumSafeKem sntrup761Kex = new OpenQuantumSafeKem(PQKemNames.SNTRUP761);
 
     @InjectMocks
-    OpenQuantumSafeKem frodokem1344Kex =
-            new OpenQuantumSafeKem(OpenQuantumSafeKemNames.FRODOKEM1344);
+    OpenQuantumSafeKem frodokem1344Kex = new OpenQuantumSafeKem(PQKemNames.FRODOKEM1344);
 
     static final Map<String, KeyExchangeAlgorithm> nameToAlgorithm;
 

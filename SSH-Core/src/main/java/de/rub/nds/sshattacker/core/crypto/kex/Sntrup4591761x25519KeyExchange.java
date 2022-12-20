@@ -12,17 +12,20 @@ import de.rub.nds.sshattacker.core.constants.HybridKeyExchangeCombiner;
 import de.rub.nds.sshattacker.core.constants.KeyExchangeAlgorithm;
 import de.rub.nds.sshattacker.core.constants.NamedEcGroup;
 import de.rub.nds.sshattacker.core.constants.PQKemNames;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-public class EcdhNistp521Kyber1024KeyExchange extends HybridKeyExchange {
+public class Sntrup4591761x25519KeyExchange extends HybridKeyExchange {
+    private static final Logger LOGGER = LogManager.getLogger();
 
-    public EcdhNistp521Kyber1024KeyExchange() {
+    public Sntrup4591761x25519KeyExchange() {
         super(
-                KeyExchangeAlgorithm.NISTP521_KYBER1024,
-                new EcdhKeyExchange(NamedEcGroup.SECP521R1),
-                new OpenQuantumSafeKem(PQKemNames.KYBER1024),
+                KeyExchangeAlgorithm.SNTRUP4591761_x25519,
+                new XCurveEcdhKeyExchange(NamedEcGroup.CURVE25519),
+                new Sntrup(PQKemNames.SNTRUP4591761),
                 HybridKeyExchangeCombiner.POSTQUANTUM_CONCATENATE_CLASSICAL,
-                CryptoConstants.NISTP521_POINT_SIZE,
-                CryptoConstants.KYBER1024_PUBLIC_KEY_SIZE,
-                CryptoConstants.KYBER1024_CIPHERTEXT_SIZE);
+                CryptoConstants.X25519_POINT_SIZE,
+                CryptoConstants.SNTRUP4591761_PUBLIC_KEY_SIZE,
+                CryptoConstants.SNTRUP4591761_CIPHERTEXT_SIZE);
     }
 }

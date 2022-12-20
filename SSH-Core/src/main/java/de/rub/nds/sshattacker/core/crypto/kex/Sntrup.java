@@ -8,7 +8,7 @@
 package de.rub.nds.sshattacker.core.crypto.kex;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.sshattacker.core.constants.OpenQuantumSafeKemNames;
+import de.rub.nds.sshattacker.core.constants.PQKemNames;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomKeyPair;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomPQKemPrivateKey;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomPQKemPublicKey;
@@ -39,9 +39,9 @@ public class Sntrup extends KeyEncapsulation {
     private CustomKeyPair<CustomPQKemPrivateKey, CustomPQKemPublicKey> localKeyPair;
     private byte[] encryptedSharedSecret;
 
-    private OpenQuantumSafeKemNames kemName;
+    private PQKemNames kemName;
 
-    public Sntrup(OpenQuantumSafeKemNames kemName) {
+    public Sntrup(PQKemNames kemName) {
         this.kemName = kemName;
         switch (kemName) {
             case SNTRUP4591761:
@@ -52,7 +52,7 @@ public class Sntrup extends KeyEncapsulation {
                 break;
             default:
                 throw new IllegalArgumentException(
-                        "CustomSntrup does not support " + kemName.getName());
+                        this.getClass().getName() + " does not support " + kemName.getName());
         }
         this.core = new SntrupCore(set);
     }

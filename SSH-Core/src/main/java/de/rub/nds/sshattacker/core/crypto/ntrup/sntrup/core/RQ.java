@@ -61,8 +61,9 @@ public class RQ {
                         .isEmpty(),
                 true);
 
-        this.rQ = UnivariateDivision.remainder(
-                UnivariatePolynomialZp64.create(set.getQ(), coefficient), mod, true);
+        this.rQ =
+                UnivariateDivision.remainder(
+                        UnivariatePolynomialZp64.create(set.getQ(), coefficient), mod, true);
         assertEquals(true, rQ.isOverFiniteField());
     }
 
@@ -75,9 +76,10 @@ public class RQ {
     }
 
     public static RQ invert(RQ rq) {
-        UnivariatePolynomialZp64[] xgcd = PolynomialMethods.PolynomialExtendedGCD(
-                UnivariatePolynomialZp64.create(rq.getSet().getQ(), rq.stream().toArray()),
-                genereateMod(rq.set));
+        UnivariatePolynomialZp64[] xgcd =
+                PolynomialMethods.PolynomialExtendedGCD(
+                        UnivariatePolynomialZp64.create(rq.getSet().getQ(), rq.stream().toArray()),
+                        genereateMod(rq.set));
         return new RQ(rq.getSet(), xgcd[1]);
     }
 
@@ -139,28 +141,33 @@ public class RQ {
     }
 
     public byte[] encode() {
-        ArrayList<Integer> r = rQ.stream()
-                .mapToInt(
-                        l -> Math.toIntExact(
-                                Math.floorMod(
-                                        l + (set.getQ() - 1) / 2, set.getQ())))
-                .boxed()
-                .collect(Collectors.toCollection(ArrayList::new));
+        ArrayList<Integer> r =
+                rQ.stream()
+                        .mapToInt(
+                                l ->
+                                        Math.toIntExact(
+                                                Math.floorMod(
+                                                        l + (set.getQ() - 1) / 2, set.getQ())))
+                        .boxed()
+                        .collect(Collectors.toCollection(ArrayList::new));
 
         while (r.size() < set.getP()) {
             r.add((set.getQ() + 1) / 2);
         }
 
-        ArrayList<Integer> m = IntStream.range(0, r.size())
-                .map(i -> set.getQ())
-                .boxed()
-                .collect(Collectors.toCollection(ArrayList::new));
+        ArrayList<Integer> m =
+                IntStream.range(0, r.size())
+                        .map(i -> set.getQ())
+                        .boxed()
+                        .collect(Collectors.toCollection(ArrayList::new));
 
         assertEquals(r.stream().filter(i -> i < 0).findFirst().isEmpty(), true);
-        assertEquals(IntStream.range(0, set.getP())
-                .filter(i -> r.get(i) > m.get(i))
-                .findFirst()
-                .isPresent(), false);
+        assertEquals(
+                IntStream.range(0, set.getP())
+                        .filter(i -> r.get(i) > m.get(i))
+                        .findFirst()
+                        .isPresent(),
+                false);
 
         ArrayList<Integer> encdodedCoefficients = Encoding.encode(r, m);
 
@@ -173,10 +180,11 @@ public class RQ {
 
     public byte[] encode_old() {
         int q12 = (set.getQ() - 1) / 2;
-        ArrayList<Integer> h = this.stream()
-                .mapToInt(l -> Math.toIntExact(l + q12))
-                .boxed()
-                .collect(Collectors.toCollection(ArrayList::new));
+        ArrayList<Integer> h =
+                this.stream()
+                        .mapToInt(l -> Math.toIntExact(l + q12))
+                        .boxed()
+                        .collect(Collectors.toCollection(ArrayList::new));
         for (int i = 0; i < ((-set.getP() + set.getP() * 5) % 5); i++) {
             h.add(0);
         }
@@ -196,16 +204,19 @@ public class RQ {
         for (int i = 0; i < encodedRq.length; i++) {
             r.add((int) encodedRq[i] & 0xff);
         }
-        ArrayList<Integer> m = IntStream.range(0, set.getP())
-                .map(i -> set.getQ())
-                .boxed()
-                .collect(Collectors.toCollection(ArrayList::new));
+        ArrayList<Integer> m =
+                IntStream.range(0, set.getP())
+                        .map(i -> set.getQ())
+                        .boxed()
+                        .collect(Collectors.toCollection(ArrayList::new));
 
         assertEquals(r.stream().filter(i -> i < 0).findFirst().isEmpty(), true);
-        assertEquals(IntStream.range(0, set.getP())
-                .filter(i -> r.get(i) > m.get(i))
-                .findFirst()
-                .isPresent(), false);
+        assertEquals(
+                IntStream.range(0, set.getP())
+                        .filter(i -> r.get(i) > m.get(i))
+                        .findFirst()
+                        .isPresent(),
+                false);
 
         ArrayList<Integer> coef = Encoding.decode(r, m);
         return new RQ(set, coef.stream().mapToLong(l -> l - (set.getQ() - 1) / 2).toArray());
@@ -227,20 +238,14 @@ public class RQ {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
+        if (this == obj) return true;
+        if (obj == null) return false;
+        if (getClass() != obj.getClass()) return false;
         RQ other = (RQ) obj;
         if (rQ == null) {
-            if (other.rQ != null)
-                return false;
-        } else if (!rQ.equals(other.rQ))
-            return false;
-        if (set != other.set)
-            return false;
+            if (other.rQ != null) return false;
+        } else if (!rQ.equals(other.rQ)) return false;
+        if (set != other.set) return false;
         return true;
     }
 }
