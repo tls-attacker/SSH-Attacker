@@ -13,6 +13,7 @@ import de.rub.nds.sshattacker.core.constants.KeyExchangeAlgorithm;
 import de.rub.nds.sshattacker.core.constants.KeyExchangeFlowType;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import java.lang.reflect.InvocationTargetException;
+import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import org.apache.logging.log4j.LogManager;
@@ -20,6 +21,7 @@ import org.apache.logging.log4j.Logger;
 
 public abstract class HybridKeyExchange extends KeyExchange {
     private static final Logger LOGGER = LogManager.getLogger();
+    protected KeyExchangeAlgorithm algorithm;
     protected KeyAgreement agreement;
     protected KeyEncapsulation encapsulation;
     private int pkAgreementLength;
@@ -28,6 +30,7 @@ public abstract class HybridKeyExchange extends KeyExchange {
     private HybridKeyExchangeCombiner combiner;
 
     protected HybridKeyExchange(
+            KeyExchangeAlgorithm algorithm,
             KeyAgreement agreement,
             KeyEncapsulation encapsulation,
             HybridKeyExchangeCombiner combiner,
@@ -35,6 +38,7 @@ public abstract class HybridKeyExchange extends KeyExchange {
             int pkEncapsulationLength,
             int ciphertextLength) {
         super();
+        this.algorithm = algorithm;
         this.agreement = agreement;
         this.encapsulation = encapsulation;
         this.combiner = combiner;
@@ -53,35 +57,16 @@ public abstract class HybridKeyExchange extends KeyExchange {
         }
 
         try {
-            switch (algorithm) {
-                default:
-                    LOGGER.warn(
-                            "Algorithm "
-                                    + algorithm
-                                    + "is not supported. Falling back to "
-                                    + KeyExchangeAlgorithm.SNTRUP761_X25519);
-                    // Fallthrough to case SNTRUP761_X25519 intended
-                case SNTRUP761_X25519:
-                    // Check if SSH-Core-PQC module has been compiled and is available
-                    Class<?> sntrup761x25519 =
-                            Class.forName(
-                                    "de.rub.nds.sshattacker.core.crypto.kex.Sntrup761X25519KeyExchange");
-                    return (HybridKeyExchange)
-                            sntrup761x25519.getConstructor(boolean.class).newInstance(false);
-
-                case CURVE25519_FRODOKEM1344:
-                    Class<?> curve25519xfrodokem1344 =
-                            Class.forName(
-                                    "de.rub.nds.sshattacker.core.crypto.kex.Curve25519Frodokem1344KeyExchange");
-                    return (HybridKeyExchange)
-                            curve25519xfrodokem1344.getConstructor().newInstance();
-                case SNTRUP4591761_x25519:
-                    Class<?> sntrup4591761x25519 =
-                            Class.forName(
-                                    "de.rub.nds.sshattacker.core.crypto.kex.CustomSntrup4591761x25519KeyExchange");
-                    return (HybridKeyExchange) sntrup4591761x25519.getConstructor().newInstance();
+            if (!algorithm.isImplemented()) {
+                LOGGER.warn(
+                        "Algorithm "
+                                + algorithm
+                                + "is not yet implemented. Falling back to "
+                                + KeyExchangeAlgorithm.SNTRUP761_X25519);
+                algorithm = KeyExchangeAlgorithm.SNTRUP761_X25519;
             }
-
+            Class<?> kexImplementation = Class.forName(algorithm.getClassName());
+            return (HybridKeyExchange) kexImplementation.getConstructor().newInstance();
         } catch (ClassNotFoundException e) {
             LOGGER.fatal(
                     "Unable to create new instance of HybridKeyExchange, module SSH-Core-PQC is not available. Make sure to enable PQC by enabling the corresponding profile during build!");
@@ -111,6 +96,10 @@ public abstract class HybridKeyExchange extends KeyExchange {
         }
     }
 
+    public KeyExchangeAlgorithm getAlgorithm() {
+        return algorithm;
+    }
+
     public KeyAgreement getKeyAgreement() {
         return agreement;
     }
@@ -135,7 +124,47 @@ public abstract class HybridKeyExchange extends KeyExchange {
         return new byte[0];
     }
 
-    public abstract void combineSharedSecrets();
+    public void combineSharedSecrets() {
+        try {
+            agreement.computeSharedSecret();
+            if (encapsulation.getSharedSecret() == null) {
+                encapsulation.decryptSharedSecret();
+            }
+
+            byte[] tmpSharedSecret;
+            switch (combiner) {
+                case CLASSICAL_CONCATENATE_POSTQUANTUM:
+                    tmpSharedSecret =
+                            mergeKeyExchangeShares(
+                                    ArrayConverter.bigIntegerToByteArray(
+                                            agreement.getSharedSecret()),
+                                    ArrayConverter.bigIntegerToByteArray(
+                                            encapsulation.getSharedSecret()));
+                    break;
+                case POSTQUANTUM_CONCATENATE_CLASSICAL:
+                    tmpSharedSecret =
+                            mergeKeyExchangeShares(
+                                    ArrayConverter.bigIntegerToByteArray(
+                                            encapsulation.getSharedSecret()),
+                                    ArrayConverter.bigIntegerToByteArray(
+                                            agreement.getSharedSecret()));
+                    break;
+                default:
+                    throw new IllegalArgumentException(combiner.name() + " not supported.");
+            }
+
+            this.sharedSecret = new BigInteger(encode(tmpSharedSecret, algorithm.getDigest()));
+            LOGGER.debug(
+                    "Concatenated Shared Secret = "
+                            + ArrayConverter.bytesToRawHexString(tmpSharedSecret));
+            LOGGER.debug(
+                    "Encoded Shared Secret = "
+                            + ArrayConverter.bytesToRawHexString(
+                                    encode(tmpSharedSecret, algorithm.getDigest())));
+        } catch (Exception e) {
+            LOGGER.warn("Could not create the shared Secret: " + e);
+        }
+    }
 
     public int getPkAgreementLength() {
         return this.pkAgreementLength;

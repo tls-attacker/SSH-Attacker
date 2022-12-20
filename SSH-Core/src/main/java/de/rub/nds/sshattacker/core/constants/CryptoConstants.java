@@ -11,6 +11,7 @@ public class CryptoConstants {
 
     public static final int X25519_POINT_SIZE = 32;
     public static final int X448_POINT_SIZE = 56;
+    public static final int NISTP521_POINT_SIZE = 133;
     public static final int CHACHA20_KEY_SIZE = 32;
     public static final int SNTRUP4591761_PUBLIC_KEY_SIZE = 1218;
     public static final int SNTRUP4591761_CIPHERTEXT_SIZE = 1047;
@@ -18,4 +19,8 @@ public class CryptoConstants {
     public static final int SNTRUP761_CIPHERTEXT_SIZE = 1039;
     public static final int FRODOKEM1344_PUBLIC_KEY_SIZE = 21520;
     public static final int FRODOKEM1344_CIPHERTEXT_SIZE = 21632;
+    public static final int KYBER1024_PUBLIC_KEY_SIZE = 1568;
+    public static final int KYBER1024_CIPHERTEXT_SIZE = 1568;
+    public static final int FIRESABER_PUBLIC_KEY_SIZE = 1327;
+    public static final int FIRESABER_CIPHERTEXT_SIZE = 1472;
 }
