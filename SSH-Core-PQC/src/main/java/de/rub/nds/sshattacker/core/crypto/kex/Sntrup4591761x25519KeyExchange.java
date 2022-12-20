@@ -16,13 +16,13 @@ import java.math.BigInteger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class CustomSntrup4591761x25519KeyExchange extends HybridKeyExchange {
+public class Sntrup4591761x25519KeyExchange extends HybridKeyExchange {
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public CustomSntrup4591761x25519KeyExchange() {
+    public Sntrup4591761x25519KeyExchange() {
         super(
                 new XCurveEcdhKeyExchange(NamedEcGroup.CURVE25519),
-                new CustomSntrup(OpenQuantumSafeKemNames.SNTRUP4591761),
+                new Sntrup(OpenQuantumSafeKemNames.SNTRUP4591761),
                 HybridKeyExchangeCombiner.POSTQUANTUM_CONCATENATE_CLASSICAL,
                 CryptoConstants.X25519_POINT_SIZE,
                 CryptoConstants.SNTRUP4591761_PUBLIC_KEY_SIZE,

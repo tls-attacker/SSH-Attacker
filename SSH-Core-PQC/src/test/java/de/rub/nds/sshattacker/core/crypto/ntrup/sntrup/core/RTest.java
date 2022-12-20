@@ -7,6 +7,8 @@
  */
 package de.rub.nds.sshattacker.core.crypto.ntrup.sntrup.core;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.util.Random;
 import java.util.stream.IntStream;
 import org.junit.Test;
@@ -20,7 +22,7 @@ public class RTest {
         R r;
         for (int i : IntStream.range(0, 10).toArray()) {
             r = R.randomSmall(set);
-            assert (!r.stream().filter(l -> Math.abs(l) > 1).findFirst().isPresent());
+            assertEquals(false, r.stream().filter(l -> Math.abs(l) > 1).findFirst().isPresent());
         }
     }
 }

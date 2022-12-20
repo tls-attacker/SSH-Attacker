@@ -30,7 +30,7 @@ import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class CustomSntrup extends KeyEncapsulation {
+public class Sntrup extends KeyEncapsulation {
     private static final Logger LOGGER = LogManager.getLogger();
     private SntrupParameterSet set;
     private CustomPQKemPublicKey remotePublicKey;
@@ -41,7 +41,7 @@ public class CustomSntrup extends KeyEncapsulation {
 
     private OpenQuantumSafeKemNames kemName;
 
-    public CustomSntrup(OpenQuantumSafeKemNames kemName) {
+    public Sntrup(OpenQuantumSafeKemNames kemName) {
         this.kemName = kemName;
         switch (kemName) {
             case SNTRUP4591761:
@@ -238,11 +238,6 @@ public class CustomSntrup extends KeyEncapsulation {
                                     encF, encV, encH, roh, hashPrefixedB(encH, (byte) 4)),
                             kemName);
         }
-
-        LOGGER.info(
-                "Private Key CustomSntrup: " + ArrayConverter.bytesToHexString(privK.getEncoded()));
-        LOGGER.info(
-                "Public Key CustomSntrup: " + ArrayConverter.bytesToHexString(pubK.getEncoded()));
 
         this.localKeyPair = new CustomKeyPair<>(privK, pubK);
     }

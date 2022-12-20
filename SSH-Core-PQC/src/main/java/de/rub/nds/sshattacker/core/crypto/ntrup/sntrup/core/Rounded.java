@@ -7,7 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.crypto.ntrup.sntrup.core;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
 
 import cc.redberry.rings.poly.univar.UnivariateDivision;
 import cc.redberry.rings.poly.univar.UnivariatePolynomialZ64;
@@ -31,12 +31,11 @@ public class Rounded {
     }
 
     public Rounded(SntrupParameterSet set, long[] coefficients) {
-        assertTrue("coefficients are not rounded", is_rounded(set, coefficients));
+        assertEquals(true, is_rounded(set, coefficients));
         this.set = set;
         this.mod = generateMod(set);
-        this.rounded =
-                UnivariateDivision.remainder(
-                        UnivariatePolynomialZ64.create(coefficients), mod, true);
+        this.rounded = UnivariateDivision.remainder(
+                UnivariatePolynomialZ64.create(coefficients), mod, true);
     }
 
     public SntrupParameterSet getSet() {
@@ -49,18 +48,13 @@ public class Rounded {
 
     public static Rounded round(RQ rq) {
         long[] rounded = round(rq.stream());
-        long error =
-                Arrays.stream(rounded)
-                        .filter(
-                                c ->
-                                        c > (rq.getSet().getQ() + 1) / 2
-                                                || c < -(rq.getSet().getQ() + 1) / 2)
-                        .peek(c -> System.out.println(c))
-                        .findFirst()
-                        .orElse(0);
-        assertTrue(
-                "Coefficients have to be between (-(q-1)/2 and (q-1)/2, but is " + error,
-                error == 0);
+        assertEquals(false,Arrays.stream(rounded)
+                .filter(
+                        c -> c > (rq.getSet().getQ() + 1) / 2
+                                || c < -(rq.getSet().getQ() + 1) / 2)
+                .peek(c -> System.out.println(c))
+                .findFirst()
+                .isPresent());
         return new Rounded(rq.getSet(), UnivariatePolynomialZ64.create(rounded));
     }
 
@@ -80,27 +74,23 @@ public class Rounded {
     }
 
     public byte[] encode() {
-        ArrayList<Integer> r =
-                rounded.stream()
-                        .mapToInt(l -> Math.toIntExact(l + (set.getQ() - 1) / 2) / 3)
-                        .boxed()
-                        .collect(Collectors.toCollection(ArrayList::new));
+        ArrayList<Integer> r = rounded.stream()
+                .mapToInt(l -> Math.toIntExact(l + (set.getQ() - 1) / 2) / 3)
+                .boxed()
+                .collect(Collectors.toCollection(ArrayList::new));
 
-        ArrayList<Integer> m =
-                IntStream.range(0, r.size())
-                        .map(i -> (set.getQ() - 1) / 3 + 1)
-                        .boxed()
-                        .collect(Collectors.toCollection(ArrayList::new));
+        ArrayList<Integer> m = IntStream.range(0, r.size())
+                .map(i -> (set.getQ() - 1) / 3 + 1)
+                .boxed()
+                .collect(Collectors.toCollection(ArrayList::new));
 
-        assertTrue(
-                "0 > R[i] for some i", r.stream().filter(i -> i < 0).findFirst().isEmpty() == true);
-        assertTrue(
-                "R[i] > M[i] for some i",
+        assertEquals(true,
+                r.stream().filter(i -> i < 0).findFirst().isEmpty());
+        assertEquals(false,
                 IntStream.range(0, set.getP())
-                                .filter(i -> r.get(i) > m.get(i))
-                                .findFirst()
-                                .isPresent()
-                        == false);
+                        .filter(i -> r.get(i) > m.get(i))
+                        .findFirst()
+                        .isPresent());
 
         ArrayList<Integer> encdodedCoefficients = Encoding.encode(r, m);
         byte[] res = new byte[encdodedCoefficients.size()];
@@ -113,11 +103,10 @@ public class Rounded {
     // old encoding, used for SNTRUP4591761
     public byte[] encode_old() {
         int q61 = (set.getQ() - 1) / 6;
-        ArrayList<Integer> r =
-                rounded.stream()
-                        .mapToInt(l -> Math.toIntExact(q61 + (l / 3)))
-                        .boxed()
-                        .collect(Collectors.toCollection(ArrayList::new));
+        ArrayList<Integer> r = rounded.stream()
+                .mapToInt(l -> Math.toIntExact(q61 + (l / 3)))
+                .boxed()
+                .collect(Collectors.toCollection(ArrayList::new));
         for (int i = 0; i < ((-set.getP() + set.getP() * 6) % 6); i++) {
             r.add(0);
         }
@@ -130,21 +119,18 @@ public class Rounded {
             r.add((int) encodedRounded[i] & 0xff);
         }
 
-        ArrayList<Integer> m =
-                IntStream.range(0, set.getP())
-                        .map(i -> (set.getQ() - 1) / 3 + 1)
-                        .boxed()
-                        .collect(Collectors.toCollection(ArrayList::new));
+        ArrayList<Integer> m = IntStream.range(0, set.getP())
+                .map(i -> (set.getQ() - 1) / 3 + 1)
+                .boxed()
+                .collect(Collectors.toCollection(ArrayList::new));
 
-        assertTrue(
-                "0 > R[i] for some i", r.stream().filter(i -> i < 0).findFirst().isEmpty() == true);
-        assertTrue(
-                "R[i] > M[i] for some i",
+        assertEquals(true,
+                r.stream().filter(i -> i < 0).findFirst().isEmpty());
+        assertEquals(false,
                 IntStream.range(0, set.getP())
-                                .filter(i -> r.get(i) > m.get(i))
-                                .findFirst()
-                                .isPresent()
-                        == false);
+                        .filter(i -> r.get(i) > m.get(i))
+                        .findFirst()
+                        .isPresent());
 
         ArrayList<Integer> coef = Encoding.decode(r, m);
         return new Rounded(
@@ -178,14 +164,20 @@ public class Rounded {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (obj == null) return false;
-        if (getClass() != obj.getClass()) return false;
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
         Rounded other = (Rounded) obj;
         if (rounded == null) {
-            if (other.rounded != null) return false;
-        } else if (!rounded.equals(other.rounded)) return false;
-        if (set != other.set) return false;
+            if (other.rounded != null)
+                return false;
+        } else if (!rounded.equals(other.rounded))
+            return false;
+        if (set != other.set)
+            return false;
         return true;
     }
 }

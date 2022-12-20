@@ -7,26 +7,42 @@
  */
 package de.rub.nds.sshattacker.core.crypto.ntrup.sntrup.core;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
+import java.util.Arrays;
+import java.util.Optional;
 import java.util.Random;
 import java.util.stream.LongStream;
 import org.junit.Test;
 
 public class R3Test {
+
     SntrupParameterSet set = SntrupParameterSet.KEM_SNTRUP_761;
     Random rand = new Random();
 
     @Test
     public void testIsInvertibleInR3() {
-        // TODO: Find an invertible and not invertible R
-    }
+        R r = new R(set,LongStream.range(0, set.getP()).map(l -> rand.nextInt()).toArray());
+        Optional<R3> r3Inv =  R3.isInvertibleInR3(set, r);;
+        // Haven't found an R which is not invertible so far.
+        for(int i = 0; i< 10; i++) {    
+            r3Inv = R3.isInvertibleInR3(set, r);
+            if(r3Inv.isPresent()){
+                break;
+            }
+            r = new R(set,LongStream.range(0, set.getP()).map(l -> rand.nextInt()).toArray());
+        }
 
-    @Test
-    public void createR3() {
-
-        long[] coeff = LongStream.range(0, set.getP()).map(l -> rand.nextInt(3) - 1).toArray();
-        R3 r3 = new R3(set, coeff);
+        R3 r3 = new R3(set,r.stream().toArray());
+        long[] res = new long[set.getP()];
+        long[] def = new long[set.getP()];
+        def[0] = -1; 
+        res[0] = 1;
+        
+        R3 expected = new R3(set,res);
+        assertEquals(R3.multiply(r3, r3Inv.orElse(new R3(set,def))), expected);
+        
     }
 
     @Test
@@ -38,7 +54,7 @@ public class R3Test {
             r3 = new R3(set, coeff);
             byte[] encoded = r3.encode();
             R3 r3N = R3.decode(set, encoded);
-            assertTrue(r3.equals(r3N));
+            assertEquals(r3, r3N);
         }
     }
 }

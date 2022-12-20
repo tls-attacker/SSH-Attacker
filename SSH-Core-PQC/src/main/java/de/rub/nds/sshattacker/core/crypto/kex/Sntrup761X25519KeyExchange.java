@@ -19,12 +19,10 @@ import org.apache.logging.log4j.Logger;
 public class Sntrup761X25519KeyExchange extends HybridKeyExchange {
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public Sntrup761X25519KeyExchange(boolean useCustom) {
+    public Sntrup761X25519KeyExchange() {
         super(
                 new XCurveEcdhKeyExchange(NamedEcGroup.CURVE25519),
-                useCustom
-                        ? new CustomSntrup(OpenQuantumSafeKemNames.SNTRUP761)
-                        : new OpenQuantumSafeKem(OpenQuantumSafeKemNames.SNTRUP761),
+                new Sntrup(OpenQuantumSafeKemNames.SNTRUP761),
                 HybridKeyExchangeCombiner.POSTQUANTUM_CONCATENATE_CLASSICAL,
                 CryptoConstants.X25519_POINT_SIZE,
                 CryptoConstants.SNTRUP761_PUBLIC_KEY_SIZE,
@@ -39,10 +37,9 @@ public class Sntrup761X25519KeyExchange extends HybridKeyExchange {
                 encapsulation.decryptSharedSecret();
             }
 
-            byte[] tmpSharedSecret =
-                    mergeKeyExchangeShares(
-                            ArrayConverter.bigIntegerToByteArray(encapsulation.getSharedSecret()),
-                            ArrayConverter.bigIntegerToByteArray(agreement.getSharedSecret()));
+            byte[] tmpSharedSecret = mergeKeyExchangeShares(
+                    ArrayConverter.bigIntegerToByteArray(encapsulation.getSharedSecret()),
+                    ArrayConverter.bigIntegerToByteArray(agreement.getSharedSecret()));
             this.sharedSecret = new BigInteger(encode(tmpSharedSecret, "SHA-512"));
             LOGGER.debug(
                     "Concatenated Shared Secret = "

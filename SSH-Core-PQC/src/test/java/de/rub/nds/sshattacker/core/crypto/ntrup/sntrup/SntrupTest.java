@@ -7,12 +7,12 @@
  */
 package de.rub.nds.sshattacker.core.crypto.ntrup.sntrup;
 
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 import de.rub.nds.sshattacker.core.constants.OpenQuantumSafeKemNames;
-import de.rub.nds.sshattacker.core.crypto.kex.CustomSntrup;
-import java.util.Arrays;
+import de.rub.nds.sshattacker.core.crypto.kex.Sntrup;
 import java.util.stream.Stream;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -31,33 +31,27 @@ public class SntrupTest {
     @ParameterizedTest
     @MethodSource("provideTestVectors")
     public void testSntrup(OpenQuantumSafeKemNames kemName) {
-        CustomSntrup sntrupClient = new CustomSntrup(kemName);
-        CustomSntrup sntrupServer = new CustomSntrup(kemName);
+        Sntrup sntrupClient = new Sntrup(kemName);
+        Sntrup sntrupServer = new Sntrup(kemName);
 
         sntrupClient.generateLocalKeyPair();
-        assertFalse("Key Generation not successfull", sntrupClient.getLocalKeyPair() == null);
-        assertFalse("Private Key is null", sntrupClient.getLocalKeyPair().getPrivate() == null);
-        assertFalse("Public Key is null", sntrupClient.getLocalKeyPair().getPublic() == null);
+        assertNotEquals(null, sntrupClient.getLocalKeyPair());
+        assertNotEquals(null, sntrupClient.getLocalKeyPair().getPrivate());
+        assertNotEquals(null, sntrupClient.getLocalKeyPair().getPublic());
 
         sntrupServer.setRemotePublicKey(sntrupClient.getLocalKeyPair().getPublic().getEncoded());
         byte[] ciphertext = sntrupServer.encryptSharedSecret();
-        assertFalse("could not encrypt shared Secret", sntrupServer.getSharedSecret() == null);
-        assertFalse(
-                "could not encrypt shared Secret", sntrupServer.getEncryptedSharedSecret() == null);
-        assertTrue(
-                "could not encrypt shared Secret",
-                Arrays.equals(sntrupServer.getEncryptedSharedSecret(), ciphertext));
+        assertNotEquals(null, sntrupServer.getSharedSecret());
+        assertNotEquals(null, sntrupServer.getEncryptedSharedSecret());
+        assertEquals(ciphertext, sntrupServer.getEncryptedSharedSecret());
 
         sntrupClient.setEncryptedSharedSecret(ciphertext);
 
         try {
             sntrupClient.decryptSharedSecret();
-            assertFalse(sntrupClient.getSharedSecret() == null);
-            assertTrue(sntrupClient.getSharedSecret().equals(sntrupServer.getSharedSecret()));
-            assertTrue(
-                    Arrays.equals(
-                            sntrupClient.getEncryptedSharedSecret(),
-                            sntrupServer.getEncryptedSharedSecret()));
+            assertNotEquals(null, sntrupClient.getSharedSecret());
+            assertEquals(sntrupClient.getSharedSecret(), sntrupServer.getSharedSecret());
+            assertEquals(sntrupClient.getEncryptedSharedSecret(), sntrupServer.getEncryptedSharedSecret());
 
         } catch (Exception e) {
             assertTrue("This should not happen: " + e, false);

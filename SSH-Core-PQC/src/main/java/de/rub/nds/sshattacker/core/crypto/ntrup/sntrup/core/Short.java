@@ -15,12 +15,8 @@ import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.LongStream;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class Short {
-
-    private static final Logger LOGGER = LogManager.getLogger();
     private SntrupParameterSet set;
     private UnivariatePolynomialZ64 shrt;
     private UnivariatePolynomialZ64 mod;
@@ -64,7 +60,6 @@ public class Short {
         if (isShort(tmp.stream().toArray(), set)) {
             return new Short(set, tmp, mod);
         }
-        LOGGER.debug("Coefficients: " + Arrays.toString(tmp.stream().toArray()));
         throw new IllegalArgumentException("Could not create Short with given coefficients");
     }
 
