@@ -25,7 +25,7 @@ public final class KeySetGenerator {
         KeySet keySet = new KeySet();
         Chooser chooser = context.getChooser();
         String hashAlgorithm = chooser.getKeyExchangeAlgorithm().getDigest();
-        BigInteger sharedSecret = context.getSharedSecret().orElse(BigInteger.ZERO);
+        byte[] sharedSecret = context.getSharedSecret().orElse(new byte[0]);
         byte[] exchangeHash = context.getExchangeHash().orElse(new byte[0]);
         byte[] sessionId = context.getSessionID().orElse(new byte[0]);
 

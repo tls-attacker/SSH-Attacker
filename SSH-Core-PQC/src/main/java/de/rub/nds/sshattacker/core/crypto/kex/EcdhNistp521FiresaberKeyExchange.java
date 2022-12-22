@@ -11,7 +11,7 @@ import de.rub.nds.sshattacker.core.constants.CryptoConstants;
 import de.rub.nds.sshattacker.core.constants.HybridKeyExchangeCombiner;
 import de.rub.nds.sshattacker.core.constants.KeyExchangeAlgorithm;
 import de.rub.nds.sshattacker.core.constants.NamedEcGroup;
-import de.rub.nds.sshattacker.core.constants.PQKemNames;
+import de.rub.nds.sshattacker.core.constants.OpenQuantumSafeKemNames;
 
 public class EcdhNistp521FiresaberKeyExchange extends HybridKeyExchange {
 
@@ -19,7 +19,7 @@ public class EcdhNistp521FiresaberKeyExchange extends HybridKeyExchange {
         super(
                 KeyExchangeAlgorithm.NISTP521_FIRESABER,
                 new EcdhKeyExchange(NamedEcGroup.SECP521R1),
-                new OpenQuantumSafeKem(PQKemNames.FIRESABER),
+                new OpenQuantumSafeKem(OpenQuantumSafeKemNames.FIRESABER),
                 HybridKeyExchangeCombiner.POSTQUANTUM_CONCATENATE_CLASSICAL,
                 CryptoConstants.NISTP521_POINT_SIZE,
                 CryptoConstants.FIRESABER_PUBLIC_KEY_SIZE,

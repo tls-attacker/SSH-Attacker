@@ -78,7 +78,7 @@ public class RsaKeyExchange extends KeyEncapsulation {
     public void generateSharedSecret() {
         // Calculation of maximum number of bits taken from RFC 4432
         int maximumBits = (getModulusLengthInBits() - 2 * hashLength - 49);
-        sharedSecret = new BigInteger(maximumBits, random);
+        sharedSecret = new BigInteger(maximumBits, random).toByteArray();
     }
 
     @Override
@@ -87,7 +87,7 @@ public class RsaKeyExchange extends KeyEncapsulation {
         try {
             // Shared secret is encrypted as a mpint (which includes an explicit length
             // field)
-            byte[] sharedSecretMpint = Converter.bigIntegerToMpint(sharedSecret);
+            byte[] sharedSecretMpint = Converter.byteArrayToMpint(sharedSecret);
             return cipher.encrypt(sharedSecretMpint);
         } catch (CryptoException e) {
             LOGGER.error("Unexpected cryptographic exception occurred while encrypting the secret");
@@ -101,22 +101,18 @@ public class RsaKeyExchange extends KeyEncapsulation {
         if (transientKey.getPrivateKey().isEmpty()) {
             throw new CryptoException("Unable to decrypt shared secret - no private key present");
         }
-        AbstractCipher cipher =
-                CipherFactory.getOaepCipher(algorithm, transientKey.getPrivateKey().get());
+        AbstractCipher cipher = CipherFactory.getOaepCipher(algorithm, transientKey.getPrivateKey().get());
         try {
             byte[] decryptedSecretMpint = cipher.decrypt(encryptedSharedSecret);
-            int sharedSecretLength =
-                    ArrayConverter.bytesToInt(
-                            Arrays.copyOfRange(
-                                    decryptedSecretMpint,
-                                    0,
-                                    DataFormatConstants.MPINT_SIZE_LENGTH));
-            this.sharedSecret =
-                    new BigInteger(
-                            Arrays.copyOfRange(
-                                    decryptedSecretMpint,
-                                    DataFormatConstants.MPINT_SIZE_LENGTH,
-                                    DataFormatConstants.MPINT_SIZE_LENGTH + sharedSecretLength));
+            int sharedSecretLength = ArrayConverter.bytesToInt(
+                    Arrays.copyOfRange(
+                            decryptedSecretMpint,
+                            0,
+                            DataFormatConstants.MPINT_SIZE_LENGTH));
+            this.sharedSecret = Arrays.copyOfRange(
+                    decryptedSecretMpint,
+                    DataFormatConstants.MPINT_SIZE_LENGTH,
+                    DataFormatConstants.MPINT_SIZE_LENGTH + sharedSecretLength);
         } catch (CryptoException e) {
             LOGGER.error(
                     "Unexpected cryptographic exception occurred while decrypting the shared secret");
@@ -140,8 +136,7 @@ public class RsaKeyExchange extends KeyEncapsulation {
             keyGen.initialize(transientKeyLength);
             KeyPair key = keyGen.generateKeyPair();
             CustomRsaPublicKey publicKey = new CustomRsaPublicKey((RSAPublicKey) key.getPublic());
-            CustomRsaPrivateKey privateKey =
-                    new CustomRsaPrivateKey((RSAPrivateKey) key.getPrivate());
+            CustomRsaPrivateKey privateKey = new CustomRsaPrivateKey((RSAPrivateKey) key.getPrivate());
             this.transientKey = new SshPublicKey<>(PublicKeyFormat.SSH_RSA, publicKey, privateKey);
         } catch (NoSuchAlgorithmException e) {
             throw new CryptoException(
@@ -183,10 +178,6 @@ public class RsaKeyExchange extends KeyEncapsulation {
         }
     }
 
-    public void setSharedSecret(BigInteger sharedSecret) {
-        this.sharedSecret = sharedSecret;
-    }
-
     public boolean areParametersSet() {
         return transientKey != null && hashLength != 0;
     }
@@ -208,7 +199,7 @@ public class RsaKeyExchange extends KeyEncapsulation {
 
     @Override
     public void setSharedSecret(byte[] sharedSecretBytes) {
-        this.sharedSecret = new BigInteger(sharedSecretBytes);
+        this.sharedSecret = sharedSecretBytes;
     }
 
     @Override

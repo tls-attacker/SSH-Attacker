@@ -13,7 +13,6 @@ import de.rub.nds.sshattacker.core.constants.KeyExchangeAlgorithm;
 import de.rub.nds.sshattacker.core.constants.KeyExchangeFlowType;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import java.lang.reflect.InvocationTargetException;
-import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import org.apache.logging.log4j.LogManager;
@@ -21,6 +20,8 @@ import org.apache.logging.log4j.Logger;
 
 public abstract class HybridKeyExchange extends KeyExchange {
     private static final Logger LOGGER = LogManager.getLogger();
+
+
     protected KeyExchangeAlgorithm algorithm;
     protected KeyAgreement agreement;
     protected KeyEncapsulation encapsulation;
@@ -96,6 +97,15 @@ public abstract class HybridKeyExchange extends KeyExchange {
         }
     }
 
+    protected byte[] sharedSecret;
+    public byte[] getSharedSecret() {
+        return sharedSecret;
+    }
+
+    public void setSharedSecret(byte[] sharedSecret) {
+        this.sharedSecret = sharedSecret;
+    }
+
     public KeyExchangeAlgorithm getAlgorithm() {
         return algorithm;
     }
@@ -134,26 +144,22 @@ public abstract class HybridKeyExchange extends KeyExchange {
             byte[] tmpSharedSecret;
             switch (combiner) {
                 case CLASSICAL_CONCATENATE_POSTQUANTUM:
-                    tmpSharedSecret =
-                            mergeKeyExchangeShares(
-                                    ArrayConverter.bigIntegerToByteArray(
-                                            agreement.getSharedSecret()),
-                                    ArrayConverter.bigIntegerToByteArray(
-                                            encapsulation.getSharedSecret()));
+                    tmpSharedSecret = mergeKeyExchangeShares(
+                            ArrayConverter.bigIntegerToByteArray(
+                                    agreement.getSharedSecret()),
+                            encapsulation.getSharedSecret());
                     break;
                 case POSTQUANTUM_CONCATENATE_CLASSICAL:
-                    tmpSharedSecret =
-                            mergeKeyExchangeShares(
-                                    ArrayConverter.bigIntegerToByteArray(
-                                            encapsulation.getSharedSecret()),
-                                    ArrayConverter.bigIntegerToByteArray(
-                                            agreement.getSharedSecret()));
+                    tmpSharedSecret = mergeKeyExchangeShares(
+                            encapsulation.getSharedSecret(),
+                            ArrayConverter.bigIntegerToByteArray(
+                                    agreement.getSharedSecret()));
                     break;
                 default:
                     throw new IllegalArgumentException(combiner.name() + " not supported.");
             }
 
-            this.sharedSecret = new BigInteger(encode(tmpSharedSecret, algorithm.getDigest()));
+            this.sharedSecret = encode(tmpSharedSecret, algorithm.getDigest());
             LOGGER.debug(
                     "Concatenated Shared Secret = "
                             + ArrayConverter.bytesToRawHexString(tmpSharedSecret));

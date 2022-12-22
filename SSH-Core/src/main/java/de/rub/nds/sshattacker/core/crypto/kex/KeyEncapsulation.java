@@ -14,18 +14,27 @@ import de.rub.nds.sshattacker.core.exceptions.CryptoException;
 
 public abstract class KeyEncapsulation extends KeyExchange {
 
+    protected byte[] sharedSecret;
+
     protected KeyEncapsulation() {
         super();
     }
 
+    public byte[] getSharedSecret() {
+        return sharedSecret;
+    }
+
+    public boolean isComplete() {
+        return sharedSecret != null;
+    }
+    
     public abstract void setLocalKeyPair(byte[] privateKeyBytes);
 
     public abstract void setLocalKeyPair(byte[] privateKeyBytes, byte[] publicKeyBytes);
 
     public abstract void generateLocalKeyPair();
 
-    public abstract CustomKeyPair<? extends CustomPrivateKey, ? extends CustomPublicKey>
-            getLocalKeyPair();
+    public abstract CustomKeyPair<? extends CustomPrivateKey, ? extends CustomPublicKey> getLocalKeyPair();
 
     public abstract CustomPublicKey getRemotePublicKey();
 

@@ -9,7 +9,7 @@ package de.rub.nds.sshattacker.core.crypto.kex;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.CryptoConstants;
-import de.rub.nds.sshattacker.core.constants.PQKemNames;
+import de.rub.nds.sshattacker.core.constants.OpenQuantumSafeKemNames;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomKeyPair;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomPQKemPrivateKey;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomPQKemPublicKey;
@@ -26,13 +26,9 @@ public class OpenQuantumSafeKem extends KeyEncapsulation {
     private CustomKeyPair<CustomPQKemPrivateKey, CustomPQKemPublicKey> localKeyPair;
     private CustomPQKemPublicKey remotePublicKey;
     private byte[] encryptedSharedSecret;
-    private PQKemNames kemName;
+    private OpenQuantumSafeKemNames kemName;
 
-    public OpenQuantumSafeKem(PQKemNames kemName) {
-        if (kemName == PQKemNames.SNTRUP4591761) {
-            throw new IllegalArgumentException(
-                    PQKemNames.SNTRUP4591761.getName() + " not supported by openquantumsafe.");
-        }
+    public OpenQuantumSafeKem(OpenQuantumSafeKemNames kemName) {
         this.kem = new org.openquantumsafe.KeyEncapsulation(kemName.getName());
         this.kemName = kemName;
     }

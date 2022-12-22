@@ -11,7 +11,7 @@ import de.rub.nds.sshattacker.core.constants.CryptoConstants;
 import de.rub.nds.sshattacker.core.constants.HybridKeyExchangeCombiner;
 import de.rub.nds.sshattacker.core.constants.KeyExchangeAlgorithm;
 import de.rub.nds.sshattacker.core.constants.NamedEcGroup;
-import de.rub.nds.sshattacker.core.constants.PQKemNames;
+import de.rub.nds.sshattacker.core.constants.OpenQuantumSafeKemNames;
 
 public class EcdhNistp521Kyber1024KeyExchange extends HybridKeyExchange {
 
@@ -19,7 +19,7 @@ public class EcdhNistp521Kyber1024KeyExchange extends HybridKeyExchange {
         super(
                 KeyExchangeAlgorithm.NISTP521_KYBER1024,
                 new EcdhKeyExchange(NamedEcGroup.SECP521R1),
-                new OpenQuantumSafeKem(PQKemNames.KYBER1024),
+                new OpenQuantumSafeKem(OpenQuantumSafeKemNames.KYBER1024),
                 HybridKeyExchangeCombiner.POSTQUANTUM_CONCATENATE_CLASSICAL,
                 CryptoConstants.NISTP521_POINT_SIZE,
                 CryptoConstants.KYBER1024_PUBLIC_KEY_SIZE,

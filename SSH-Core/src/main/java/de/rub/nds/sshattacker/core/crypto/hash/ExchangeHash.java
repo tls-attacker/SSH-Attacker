@@ -223,7 +223,7 @@ public final class ExchangeHash {
         if (inputHolder.getSharedSecret().isEmpty()) {
             throw new MissingExchangeHashInputException("[Common] Shared secret missing");
         }
-        return Converter.bigIntegerToMpint(inputHolder.getSharedSecret().get());
+        return Converter.byteArrayToMpint(inputHolder.getSharedSecret().get());
     }
 
     private static byte[] prepareDhHashInput(ExchangeHashInputHolder inputHolder) {
