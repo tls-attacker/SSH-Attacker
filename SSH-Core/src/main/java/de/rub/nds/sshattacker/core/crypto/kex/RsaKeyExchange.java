@@ -101,18 +101,21 @@ public class RsaKeyExchange extends KeyEncapsulation {
         if (transientKey.getPrivateKey().isEmpty()) {
             throw new CryptoException("Unable to decrypt shared secret - no private key present");
         }
-        AbstractCipher cipher = CipherFactory.getOaepCipher(algorithm, transientKey.getPrivateKey().get());
+        AbstractCipher cipher =
+                CipherFactory.getOaepCipher(algorithm, transientKey.getPrivateKey().get());
         try {
             byte[] decryptedSecretMpint = cipher.decrypt(encryptedSharedSecret);
-            int sharedSecretLength = ArrayConverter.bytesToInt(
+            int sharedSecretLength =
+                    ArrayConverter.bytesToInt(
+                            Arrays.copyOfRange(
+                                    decryptedSecretMpint,
+                                    0,
+                                    DataFormatConstants.MPINT_SIZE_LENGTH));
+            this.sharedSecret =
                     Arrays.copyOfRange(
                             decryptedSecretMpint,
-                            0,
-                            DataFormatConstants.MPINT_SIZE_LENGTH));
-            this.sharedSecret = Arrays.copyOfRange(
-                    decryptedSecretMpint,
-                    DataFormatConstants.MPINT_SIZE_LENGTH,
-                    DataFormatConstants.MPINT_SIZE_LENGTH + sharedSecretLength);
+                            DataFormatConstants.MPINT_SIZE_LENGTH,
+                            DataFormatConstants.MPINT_SIZE_LENGTH + sharedSecretLength);
         } catch (CryptoException e) {
             LOGGER.error(
                     "Unexpected cryptographic exception occurred while decrypting the shared secret");
@@ -136,7 +139,8 @@ public class RsaKeyExchange extends KeyEncapsulation {
             keyGen.initialize(transientKeyLength);
             KeyPair key = keyGen.generateKeyPair();
             CustomRsaPublicKey publicKey = new CustomRsaPublicKey((RSAPublicKey) key.getPublic());
-            CustomRsaPrivateKey privateKey = new CustomRsaPrivateKey((RSAPrivateKey) key.getPrivate());
+            CustomRsaPrivateKey privateKey =
+                    new CustomRsaPrivateKey((RSAPrivateKey) key.getPrivate());
             this.transientKey = new SshPublicKey<>(PublicKeyFormat.SSH_RSA, publicKey, privateKey);
         } catch (NoSuchAlgorithmException e) {
             throw new CryptoException(

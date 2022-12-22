@@ -72,7 +72,8 @@ public class KeyDerivationTest {
                 // Shared secret is stored as mpint (which has a 4 byte length prefix)
                 byte[] sharedSecretMpint =
                         ArrayConverter.hexStringToByteArray(line.split(" = ")[1]);
-                byte[] sharedSecret=Arrays.copyOfRange(sharedSecretMpint, 4, sharedSecretMpint.length);
+                byte[] sharedSecret =
+                        Arrays.copyOfRange(sharedSecretMpint, 4, sharedSecretMpint.length);
                 line = reader.nextLine();
                 byte[] exchangeHash = ArrayConverter.hexStringToByteArray(line.split(" = ")[1]);
                 line = reader.nextLine();
@@ -246,8 +247,8 @@ public class KeyDerivationTest {
         inputHolder.setEcdhClientPublicKey(ecdhInit.getEphemeralPublicKey().getValue());
         inputHolder.setEcdhServerPublicKey(ecdhReply.getEphemeralPublicKey().getValue());
         inputHolder.setSharedSecret(
-                        ArrayConverter.hexStringToByteArray(
-                                "13625c19127efdb1b15f1d5f48550760f29228342fbc438c06c56d795f31d109"));
+                ArrayConverter.hexStringToByteArray(
+                        "13625c19127efdb1b15f1d5f48550760f29228342fbc438c06c56d795f31d109"));
 
         assertArrayEquals(
                 expectedHash,

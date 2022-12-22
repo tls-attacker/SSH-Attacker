@@ -21,7 +21,6 @@ import org.apache.logging.log4j.Logger;
 public abstract class HybridKeyExchange extends KeyExchange {
     private static final Logger LOGGER = LogManager.getLogger();
 
-
     protected KeyExchangeAlgorithm algorithm;
     protected KeyAgreement agreement;
     protected KeyEncapsulation encapsulation;
@@ -98,6 +97,7 @@ public abstract class HybridKeyExchange extends KeyExchange {
     }
 
     protected byte[] sharedSecret;
+
     public byte[] getSharedSecret() {
         return sharedSecret;
     }
@@ -144,16 +144,18 @@ public abstract class HybridKeyExchange extends KeyExchange {
             byte[] tmpSharedSecret;
             switch (combiner) {
                 case CLASSICAL_CONCATENATE_POSTQUANTUM:
-                    tmpSharedSecret = mergeKeyExchangeShares(
-                            ArrayConverter.bigIntegerToByteArray(
-                                    agreement.getSharedSecret()),
-                            encapsulation.getSharedSecret());
+                    tmpSharedSecret =
+                            mergeKeyExchangeShares(
+                                    ArrayConverter.bigIntegerToByteArray(
+                                            agreement.getSharedSecret()),
+                                    encapsulation.getSharedSecret());
                     break;
                 case POSTQUANTUM_CONCATENATE_CLASSICAL:
-                    tmpSharedSecret = mergeKeyExchangeShares(
-                            encapsulation.getSharedSecret(),
-                            ArrayConverter.bigIntegerToByteArray(
-                                    agreement.getSharedSecret()));
+                    tmpSharedSecret =
+                            mergeKeyExchangeShares(
+                                    encapsulation.getSharedSecret(),
+                                    ArrayConverter.bigIntegerToByteArray(
+                                            agreement.getSharedSecret()));
                     break;
                 default:
                     throw new IllegalArgumentException(combiner.name() + " not supported.");

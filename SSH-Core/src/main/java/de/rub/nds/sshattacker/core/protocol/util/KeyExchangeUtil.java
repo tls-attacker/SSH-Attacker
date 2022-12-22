@@ -188,7 +188,8 @@ public final class KeyExchangeUtil {
         try {
             keyAgreement.computeSharedSecret();
             context.setSharedSecret(keyAgreement.getSharedSecret().toByteArray());
-            context.getExchangeHashInputHolder().setSharedSecret(keyAgreement.getSharedSecret().toByteArray());
+            context.getExchangeHashInputHolder()
+                    .setSharedSecret(keyAgreement.getSharedSecret().toByteArray());
         } catch (CryptoException e) {
             LOGGER.warn("Key exchange instance is not ready yet, unable to compute shared secret");
             LOGGER.debug(e);

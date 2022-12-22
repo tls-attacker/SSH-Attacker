@@ -13,7 +13,6 @@ public abstract class KeyExchange {
 
     protected final SecureRandom random;
 
-
     protected KeyExchange() {
         this.random = new SecureRandom();
     }
