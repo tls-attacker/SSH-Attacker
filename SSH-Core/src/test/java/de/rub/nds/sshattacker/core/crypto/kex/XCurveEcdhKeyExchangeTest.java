@@ -56,8 +56,8 @@ public class XCurveEcdhKeyExchangeTest {
 
         assertTrue(keyExchangeOnASite.isComplete());
         assertTrue(keyExchangeOnBSite.isComplete());
-        assertArrayEquals(expectedSharedSecret, keyExchangeOnASite.getSharedSecret().toByteArray());
-        assertArrayEquals(expectedSharedSecret, keyExchangeOnBSite.getSharedSecret().toByteArray());
+        assertArrayEquals(expectedSharedSecret, keyExchangeOnASite.getSharedSecret());
+        assertArrayEquals(expectedSharedSecret, keyExchangeOnBSite.getSharedSecret());
     }
 
     /** Test of XCurveEcdhKeyExchange with X448 being used as the named group */
@@ -95,7 +95,7 @@ public class XCurveEcdhKeyExchangeTest {
 
         assertTrue(keyExchangeOnASite.isComplete());
         assertTrue(keyExchangeOnBSite.isComplete());
-        assertArrayEquals(expectedSharedSecret, keyExchangeOnASite.getSharedSecret().toByteArray());
-        assertArrayEquals(expectedSharedSecret, keyExchangeOnBSite.getSharedSecret().toByteArray());
+        assertArrayEquals(expectedSharedSecret, keyExchangeOnASite.getSharedSecret());
+        assertArrayEquals(expectedSharedSecret, keyExchangeOnBSite.getSharedSecret());
     }
 }

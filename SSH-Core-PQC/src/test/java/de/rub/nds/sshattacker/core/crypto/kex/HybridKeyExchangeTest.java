@@ -10,7 +10,6 @@ package de.rub.nds.sshattacker.core.crypto.kex;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.mockito.Mockito.doReturn;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.KeyExchangeAlgorithm;
 import de.rub.nds.sshattacker.core.constants.OpenQuantumSafeKemNames;
 import jakarta.xml.bind.DatatypeConverter;
@@ -218,9 +217,7 @@ public class HybridKeyExchangeTest {
 
             // CombineSharedSecrets
             kex.combineSharedSecrets();
-            assertArrayEquals(
-                    agreementSharedSecret,
-                    ArrayConverter.bigIntegerToByteArray(kex.getKeyAgreement().getSharedSecret()));
+            assertArrayEquals(agreementSharedSecret, kex.getKeyAgreement().getSharedSecret());
             assertArrayEquals(
                     encapsulationSharedSecret, kex.getKeyEncapsulation().getSharedSecret());
             assertArrayEquals(encodedSharedSecret, kex.getSharedSecret());
@@ -289,9 +286,7 @@ public class HybridKeyExchangeTest {
 
             // CombineSharedSecrets
             kex.combineSharedSecrets();
-            assertArrayEquals(
-                    agreementSharedSecret,
-                    ArrayConverter.bigIntegerToByteArray(kex.getKeyAgreement().getSharedSecret()));
+            assertArrayEquals(agreementSharedSecret, kex.getKeyAgreement().getSharedSecret());
             assertArrayEquals(
                     encapsulationSharedSecret, kex.getKeyEncapsulation().getSharedSecret());
             assertArrayEquals(encodedSharedSecret, kex.getSharedSecret());

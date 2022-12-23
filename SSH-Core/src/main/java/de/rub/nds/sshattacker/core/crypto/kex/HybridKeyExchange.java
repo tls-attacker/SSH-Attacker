@@ -96,16 +96,6 @@ public abstract class HybridKeyExchange extends KeyExchange {
         }
     }
 
-    protected byte[] sharedSecret;
-
-    public byte[] getSharedSecret() {
-        return sharedSecret;
-    }
-
-    public void setSharedSecret(byte[] sharedSecret) {
-        this.sharedSecret = sharedSecret;
-    }
-
     public KeyExchangeAlgorithm getAlgorithm() {
         return algorithm;
     }
@@ -146,16 +136,12 @@ public abstract class HybridKeyExchange extends KeyExchange {
                 case CLASSICAL_CONCATENATE_POSTQUANTUM:
                     tmpSharedSecret =
                             mergeKeyExchangeShares(
-                                    ArrayConverter.bigIntegerToByteArray(
-                                            agreement.getSharedSecret()),
-                                    encapsulation.getSharedSecret());
+                                    agreement.getSharedSecret(), encapsulation.getSharedSecret());
                     break;
                 case POSTQUANTUM_CONCATENATE_CLASSICAL:
                     tmpSharedSecret =
                             mergeKeyExchangeShares(
-                                    encapsulation.getSharedSecret(),
-                                    ArrayConverter.bigIntegerToByteArray(
-                                            agreement.getSharedSecret()));
+                                    encapsulation.getSharedSecret(), agreement.getSharedSecret());
                     break;
                 default:
                     throw new IllegalArgumentException(combiner.name() + " not supported.");
