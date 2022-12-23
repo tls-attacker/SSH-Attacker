@@ -48,8 +48,7 @@ public class OpenQuantumSafeKem extends KeyEncapsulation {
         kem.generate_keypair();
         CustomPQKemPrivateKey privKey = new CustomPQKemPrivateKey(kem.export_secret_key(), kemName);
         CustomPQKemPublicKey pubKey = new CustomPQKemPublicKey(kem.export_public_key(), kemName);
-        this.localKeyPair =
-                new CustomKeyPair<CustomPQKemPrivateKey, CustomPQKemPublicKey>(privKey, pubKey);
+        this.localKeyPair = new CustomKeyPair<CustomPQKemPrivateKey, CustomPQKemPublicKey>(privKey, pubKey);
     }
 
     @Override
@@ -65,9 +64,8 @@ public class OpenQuantumSafeKem extends KeyEncapsulation {
                 LOGGER.warn("A Remote Key is not available, use a zero key instead.");
                 setRemotePublicKey(new byte[CryptoConstants.SNTRUP761_PUBLIC_KEY_SIZE]);
             }
-            org.openquantumsafe.Pair<byte[], byte[]> encapsulation =
-                    kem.encap_secret(remotePublicKey.getEncoded());
-            this.sharedSecret = new BigInteger(encapsulation.getRight());
+            org.openquantumsafe.Pair<byte[], byte[]> encapsulation = kem.encap_secret(remotePublicKey.getEncoded());
+            this.sharedSecret = encapsulation.getRight();
             this.encryptedSharedSecret = encapsulation.getLeft();
             return encapsulation.getLeft();
         } catch (RuntimeException e) {
@@ -80,12 +78,11 @@ public class OpenQuantumSafeKem extends KeyEncapsulation {
     @Override
     public void decryptSharedSecret(byte[] encryptedSharedSecret) throws CryptoException {
         try {
-            this.sharedSecret = new BigInteger(kem.decap_secret(encryptedSharedSecret));
+            this.sharedSecret = kem.decap_secret(encryptedSharedSecret);
             this.encryptedSharedSecret = encryptedSharedSecret;
             LOGGER.info(
                     "SharedSecret Encapsulation = "
-                            + ArrayConverter.bytesToRawHexString(
-                                    ArrayConverter.bigIntegerToByteArray(sharedSecret)));
+                            + ArrayConverter.bytesToRawHexString(sharedSecret));
         } catch (RuntimeException e) {
             throw new CryptoException(
                     "Unexpected exception occured while decrypting the shared secret: " + e);
@@ -111,7 +108,7 @@ public class OpenQuantumSafeKem extends KeyEncapsulation {
 
     @Override
     public void setSharedSecret(byte[] sharedSecretBytes) {
-        sharedSecret = new BigInteger(sharedSecretBytes);
+        sharedSecret = sharedSecretBytes;
     }
 
     @Override
