@@ -23,7 +23,6 @@ import de.rub.nds.sshattacker.core.crypto.ntrup.sntrup.core.SntrupCoreValues;
 import de.rub.nds.sshattacker.core.crypto.ntrup.sntrup.core.SntrupParameterSet;
 import de.rub.nds.sshattacker.core.exceptions.CryptoException;
 import de.rub.nds.sshattacker.core.exceptions.NotImplementedException;
-import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
@@ -65,7 +64,7 @@ public class Sntrup extends KeyEncapsulation {
 
         byte[] hash = sha512(encR);
         this.encryptedSharedSecret = ArrayConverter.concatenate(Arrays.copyOfRange(hash, 0, 32), c);
-        this.sharedSecret = new BigInteger(Arrays.copyOfRange(hash, 32, 64));
+        this.sharedSecret = Arrays.copyOfRange(hash, 32, 64);
     }
 
     private void encapsR2(byte[] pubK) {
@@ -81,10 +80,8 @@ public class Sntrup extends KeyEncapsulation {
 
         this.encryptedSharedSecret = ArrayConverter.concatenate(c, hashConfirm);
         this.sharedSecret =
-                new BigInteger(
-                        hashPrefixedB(
-                                ArrayConverter.concatenate(hashencR, encryptedSharedSecret),
-                                (byte) 1));
+                hashPrefixedB(
+                        ArrayConverter.concatenate(hashencR, encryptedSharedSecret), (byte) 1);
     }
 
     private void decapsR1(byte[] privK, byte[] ciphertext) {
@@ -118,7 +115,7 @@ public class Sntrup extends KeyEncapsulation {
 
         if (Arrays.equals(ciphertext, ciphertextNew)) {
             LOGGER.info("Successfully decapsulated the cyphertext. Calculate shared Secret now...");
-            this.sharedSecret = new BigInteger(Arrays.copyOfRange(hashNew, 32, 64));
+            this.sharedSecret = Arrays.copyOfRange(hashNew, 32, 64);
             this.encryptedSharedSecret = ciphertext;
         } else {
             LOGGER.warn("Could not decapsulate the shared secret.");
@@ -178,14 +175,12 @@ public class Sntrup extends KeyEncapsulation {
             LOGGER.info("Successfully decapsulated the cyphertext. Calculate shared Secret now...");
 
             this.sharedSecret =
-                    new BigInteger(
-                            hashPrefixedB(
-                                    ArrayConverter.concatenate(hashRNewEnc, ciphertext), (byte) 1));
+                    hashPrefixedB(ArrayConverter.concatenate(hashRNewEnc, ciphertext), (byte) 1);
 
         } else {
             LOGGER.warn("Could not decapsulate the shared secret.");
 
-            this.sharedSecret = new BigInteger(rho);
+            this.sharedSecret = rho;
         }
     }
 
@@ -262,7 +257,7 @@ public class Sntrup extends KeyEncapsulation {
 
     @Override
     public void setSharedSecret(byte[] sharedSecretBytes) {
-        this.sharedSecret = new BigInteger(sharedSecretBytes);
+        this.sharedSecret = sharedSecretBytes;
     }
 
     @Override
@@ -306,9 +301,8 @@ public class Sntrup extends KeyEncapsulation {
     @Override
     public void decryptSharedSecret() throws CryptoException {
         if (encryptedSharedSecret == null) {
-            LOGGER.warn(
-                    "encrypted shared secret not set, set shared secret to BigInteger.valueOf(0)");
-            this.sharedSecret = BigInteger.valueOf(0);
+            LOGGER.warn("encrypted shared secret not set, set shared secret to byte[] {0}");
+            this.sharedSecret = new byte[] {0};
             return;
         }
         decryptSharedSecret(encryptedSharedSecret);
@@ -317,8 +311,8 @@ public class Sntrup extends KeyEncapsulation {
     @Override
     public void decryptSharedSecret(byte[] encryptedSharedSecret) throws CryptoException {
         if (localKeyPair == null) {
-            LOGGER.warn("local key pair not set, set shared secret to BigInteger.valueOf(0)");
-            this.sharedSecret = BigInteger.valueOf(0);
+            LOGGER.warn("local key pair not set, set shared secret to byte[] {0}");
+            this.sharedSecret = new byte[] {0};
             return;
         }
 

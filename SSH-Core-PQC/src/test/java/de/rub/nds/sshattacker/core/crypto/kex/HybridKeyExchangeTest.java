@@ -10,7 +10,6 @@ package de.rub.nds.sshattacker.core.crypto.kex;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.mockito.Mockito.doReturn;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.KeyExchangeAlgorithm;
 import de.rub.nds.sshattacker.core.constants.PQKemNames;
 import jakarta.xml.bind.DatatypeConverter;
@@ -216,16 +215,10 @@ public class HybridKeyExchangeTest {
 
             // CombineSharedSecrets
             kex.combineSharedSecrets();
+            assertArrayEquals(agreementSharedSecret, kex.getKeyAgreement().getSharedSecret());
             assertArrayEquals(
-                    agreementSharedSecret,
-                    ArrayConverter.bigIntegerToByteArray(kex.getKeyAgreement().getSharedSecret()));
-            assertArrayEquals(
-                    encapsulationSharedSecret,
-                    ArrayConverter.bigIntegerToByteArray(
-                            kex.getKeyEncapsulation().getSharedSecret()));
-            assertArrayEquals(
-                    encodedSharedSecret,
-                    ArrayConverter.bigIntegerToByteArray(kex.getSharedSecret()));
+                    encapsulationSharedSecret, kex.getKeyEncapsulation().getSharedSecret());
+            assertArrayEquals(encodedSharedSecret, kex.getSharedSecret());
         } catch (SecurityException
                 | NoSuchFieldException
                 | IllegalArgumentException
@@ -286,23 +279,15 @@ public class HybridKeyExchangeTest {
             // generate sharedSecret and ciphertext
             kex.getKeyEncapsulation().encryptSharedSecret();
             assertArrayEquals(
-                    encapsulationSharedSecret,
-                    ArrayConverter.bigIntegerToByteArray(
-                            kex.getKeyEncapsulation().getSharedSecret()));
+                    encapsulationSharedSecret, kex.getKeyEncapsulation().getSharedSecret());
             assertArrayEquals(ciphertext, kex.getKeyEncapsulation().getEncryptedSharedSecret());
 
             // CombineSharedSecrets
             kex.combineSharedSecrets();
+            assertArrayEquals(agreementSharedSecret, kex.getKeyAgreement().getSharedSecret());
             assertArrayEquals(
-                    agreementSharedSecret,
-                    ArrayConverter.bigIntegerToByteArray(kex.getKeyAgreement().getSharedSecret()));
-            assertArrayEquals(
-                    encapsulationSharedSecret,
-                    ArrayConverter.bigIntegerToByteArray(
-                            kex.getKeyEncapsulation().getSharedSecret()));
-            assertArrayEquals(
-                    encodedSharedSecret,
-                    ArrayConverter.bigIntegerToByteArray(kex.getSharedSecret()));
+                    encapsulationSharedSecret, kex.getKeyEncapsulation().getSharedSecret());
+            assertArrayEquals(encodedSharedSecret, kex.getSharedSecret());
         } catch (SecurityException
                 | NoSuchFieldException
                 | IllegalArgumentException

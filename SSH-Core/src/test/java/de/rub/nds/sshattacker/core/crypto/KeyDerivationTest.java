@@ -24,7 +24,6 @@ import de.rub.nds.sshattacker.core.protocol.transport.parser.EcdhKeyExchangeRepl
 import de.rub.nds.sshattacker.core.protocol.transport.parser.KeyExchangeInitMessageParser;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import java.io.InputStream;
-import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
@@ -73,9 +72,8 @@ public class KeyDerivationTest {
                 // Shared secret is stored as mpint (which has a 4 byte length prefix)
                 byte[] sharedSecretMpint =
                         ArrayConverter.hexStringToByteArray(line.split(" = ")[1]);
-                BigInteger sharedSecret =
-                        new BigInteger(
-                                Arrays.copyOfRange(sharedSecretMpint, 4, sharedSecretMpint.length));
+                byte[] sharedSecret =
+                        Arrays.copyOfRange(sharedSecretMpint, 4, sharedSecretMpint.length);
                 line = reader.nextLine();
                 byte[] exchangeHash = ArrayConverter.hexStringToByteArray(line.split(" = ")[1]);
                 line = reader.nextLine();
@@ -127,7 +125,7 @@ public class KeyDerivationTest {
     @ParameterizedTest
     @MethodSource("provideKDFTestVectors")
     public void testDeriveKey(
-            BigInteger providedSharedSecret,
+            byte[] providedSharedSecret,
             byte[] providedExchangeHash,
             byte[] providedSessionId,
             byte[] expectedKeyA,
@@ -249,9 +247,8 @@ public class KeyDerivationTest {
         inputHolder.setEcdhClientPublicKey(ecdhInit.getEphemeralPublicKey().getValue());
         inputHolder.setEcdhServerPublicKey(ecdhReply.getEphemeralPublicKey().getValue());
         inputHolder.setSharedSecret(
-                new BigInteger(
-                        ArrayConverter.hexStringToByteArray(
-                                "13625c19127efdb1b15f1d5f48550760f29228342fbc438c06c56d795f31d109")));
+                ArrayConverter.hexStringToByteArray(
+                        "13625c19127efdb1b15f1d5f48550760f29228342fbc438c06c56d795f31d109"));
 
         assertArrayEquals(
                 expectedHash,

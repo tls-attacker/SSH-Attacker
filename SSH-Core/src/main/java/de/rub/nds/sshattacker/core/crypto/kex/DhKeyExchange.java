@@ -186,10 +186,14 @@ public class DhKeyExchange extends DhBasedKeyExchange {
             throw new CryptoException(
                     "Unable to compute shared secret - either local key pair or remote public key is null");
         }
-        sharedSecret = remotePublicKey.getY().modPow(localKeyPair.getPrivate().getX(), modulus);
+        sharedSecret =
+                remotePublicKey
+                        .getY()
+                        .modPow(localKeyPair.getPrivate().getX(), modulus)
+                        .toByteArray();
         LOGGER.debug(
                 "Finished computation of shared secret: "
-                        + ArrayConverter.bytesToRawHexString(sharedSecret.toByteArray()));
+                        + ArrayConverter.bytesToRawHexString(sharedSecret));
     }
 
     public void selectGroup(int preferredGroupSize) {

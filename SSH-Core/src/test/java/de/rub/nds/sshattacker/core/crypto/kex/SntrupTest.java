@@ -8,8 +8,9 @@
 package de.rub.nds.sshattacker.core.crypto.kex;
 
 import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import de.rub.nds.sshattacker.core.constants.PQKemNames;
 import java.util.stream.Stream;
@@ -34,23 +35,23 @@ public class SntrupTest {
         Sntrup sntrupServer = new Sntrup(kemName);
 
         sntrupClient.generateLocalKeyPair();
-        assertNotEquals(null, sntrupClient.getLocalKeyPair());
-        assertNotEquals(null, sntrupClient.getLocalKeyPair().getPrivate());
-        assertNotEquals(null, sntrupClient.getLocalKeyPair().getPublic());
+        assertNotNull(sntrupClient.getLocalKeyPair());
+        assertNotNull(sntrupClient.getLocalKeyPair().getPrivate());
+        assertNotNull(sntrupClient.getLocalKeyPair().getPublic());
 
         sntrupServer.setRemotePublicKey(sntrupClient.getLocalKeyPair().getPublic().getEncoded());
         byte[] ciphertext = sntrupServer.encryptSharedSecret();
-        assertNotEquals(null, sntrupServer.getSharedSecret());
-        assertNotEquals(null, sntrupServer.getEncryptedSharedSecret());
+        assertNotNull(sntrupServer.getSharedSecret());
+        assertNotNull(sntrupServer.getEncryptedSharedSecret());
         assertEquals(ciphertext, sntrupServer.getEncryptedSharedSecret());
 
         sntrupClient.setEncryptedSharedSecret(ciphertext);
 
         try {
             sntrupClient.decryptSharedSecret();
-            assertNotEquals(null, sntrupClient.getSharedSecret());
-            assertEquals(sntrupClient.getSharedSecret(), sntrupServer.getSharedSecret());
-            assertEquals(
+            assertNotNull(sntrupClient.getSharedSecret());
+            assertArrayEquals(sntrupClient.getSharedSecret(), sntrupServer.getSharedSecret());
+            assertArrayEquals(
                     sntrupClient.getEncryptedSharedSecret(),
                     sntrupServer.getEncryptedSharedSecret());
 
