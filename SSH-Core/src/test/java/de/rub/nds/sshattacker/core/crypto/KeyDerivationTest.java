@@ -23,6 +23,7 @@ import de.rub.nds.sshattacker.core.protocol.transport.parser.EcdhKeyExchangeInit
 import de.rub.nds.sshattacker.core.protocol.transport.parser.EcdhKeyExchangeReplyMessageParser;
 import de.rub.nds.sshattacker.core.protocol.transport.parser.KeyExchangeInitMessageParser;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.util.Converter;
 import java.io.InputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -143,7 +144,7 @@ public class KeyDerivationTest {
 
         byte[] keyA =
                 KeyDerivation.deriveKey(
-                        providedSharedSecret,
+                        Converter.byteArrayToMpint(providedSharedSecret),
                         providedExchangeHash,
                         'A',
                         providedSessionId,
@@ -151,7 +152,7 @@ public class KeyDerivationTest {
                         providedHashAlgorithm);
         byte[] keyB =
                 KeyDerivation.deriveKey(
-                        providedSharedSecret,
+                        Converter.byteArrayToMpint(providedSharedSecret),
                         providedExchangeHash,
                         'B',
                         providedSessionId,
@@ -159,7 +160,7 @@ public class KeyDerivationTest {
                         providedHashAlgorithm);
         byte[] keyC =
                 KeyDerivation.deriveKey(
-                        providedSharedSecret,
+                        Converter.byteArrayToMpint(providedSharedSecret),
                         providedExchangeHash,
                         'C',
                         providedSessionId,
@@ -167,7 +168,7 @@ public class KeyDerivationTest {
                         providedHashAlgorithm);
         byte[] keyD =
                 KeyDerivation.deriveKey(
-                        providedSharedSecret,
+                        Converter.byteArrayToMpint(providedSharedSecret),
                         providedExchangeHash,
                         'D',
                         providedSessionId,
@@ -175,7 +176,7 @@ public class KeyDerivationTest {
                         providedHashAlgorithm);
         byte[] keyE =
                 KeyDerivation.deriveKey(
-                        providedSharedSecret,
+                        Converter.byteArrayToMpint(providedSharedSecret),
                         providedExchangeHash,
                         'E',
                         providedSessionId,
@@ -183,7 +184,7 @@ public class KeyDerivationTest {
                         providedHashAlgorithm);
         byte[] keyF =
                 KeyDerivation.deriveKey(
-                        providedSharedSecret,
+                        Converter.byteArrayToMpint(providedSharedSecret),
                         providedExchangeHash,
                         'F',
                         providedSessionId,
@@ -247,8 +248,9 @@ public class KeyDerivationTest {
         inputHolder.setEcdhClientPublicKey(ecdhInit.getEphemeralPublicKey().getValue());
         inputHolder.setEcdhServerPublicKey(ecdhReply.getEphemeralPublicKey().getValue());
         inputHolder.setSharedSecret(
-                ArrayConverter.hexStringToByteArray(
-                        "13625c19127efdb1b15f1d5f48550760f29228342fbc438c06c56d795f31d109"));
+                Converter.byteArrayToMpint(
+                        ArrayConverter.hexStringToByteArray(
+                                "13625c19127efdb1b15f1d5f48550760f29228342fbc438c06c56d795f31d109")));
 
         assertArrayEquals(
                 expectedHash,

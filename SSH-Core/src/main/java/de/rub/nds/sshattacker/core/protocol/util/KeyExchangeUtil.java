@@ -24,6 +24,7 @@ import de.rub.nds.sshattacker.core.packet.cipher.keys.KeySetGenerator;
 import de.rub.nds.sshattacker.core.protocol.transport.message.ExchangeHashSignatureMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.message.HostKeyMessage;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.util.Converter;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -187,8 +188,9 @@ public final class KeyExchangeUtil {
     public static void computeSharedSecret(SshContext context, KeyAgreement keyAgreement) {
         try {
             keyAgreement.computeSharedSecret();
-            context.setSharedSecret(keyAgreement.getSharedSecret());
-            context.getExchangeHashInputHolder().setSharedSecret(keyAgreement.getSharedSecret());
+            context.setSharedSecret(Converter.byteArrayToMpint(keyAgreement.getSharedSecret()));
+            context.getExchangeHashInputHolder()
+                    .setSharedSecret(Converter.byteArrayToMpint(keyAgreement.getSharedSecret()));
         } catch (CryptoException e) {
             LOGGER.warn("Key exchange instance is not ready yet, unable to compute shared secret");
             LOGGER.debug(e);

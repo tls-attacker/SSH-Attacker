@@ -19,6 +19,7 @@ import de.rub.nds.sshattacker.core.protocol.transport.preparator.HybridKeyExchan
 import de.rub.nds.sshattacker.core.protocol.transport.serializer.HybridKeyExchangeReplyMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.util.KeyExchangeUtil;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.util.Converter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -41,9 +42,13 @@ public class HybridKeyExchangeReplyMessageHandler
         KeyExchangeUtil.handleHostKeyMessage(context, message);
         setRemoteValues();
         context.getChooser().getHybridKeyExchange().combineSharedSecrets();
-        context.setSharedSecret(context.getChooser().getHybridKeyExchange().getSharedSecret());
+        context.setSharedSecret(
+                Converter.byteArrayToMpintNoZeroExtend(
+                        context.getChooser().getHybridKeyExchange().getSharedSecret()));
         context.getExchangeHashInputHolder()
-                .setSharedSecret(context.getChooser().getHybridKeyExchange().getSharedSecret());
+                .setSharedSecret(
+                        Converter.byteArrayToMpintNoZeroExtend(
+                                context.getChooser().getHybridKeyExchange().getSharedSecret()));
         KeyExchangeUtil.computeExchangeHash(context);
         KeyExchangeUtil.handleExchangeHashSignatureMessage(context, message);
         KeyExchangeUtil.setSessionId(context);

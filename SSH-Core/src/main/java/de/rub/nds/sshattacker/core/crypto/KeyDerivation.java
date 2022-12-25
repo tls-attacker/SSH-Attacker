@@ -7,7 +7,6 @@
  */
 package de.rub.nds.sshattacker.core.crypto;
 
-import de.rub.nds.sshattacker.core.util.Converter;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.security.MessageDigest;
@@ -27,7 +26,6 @@ public class KeyDerivation {
             byte[] sessionID,
             int outputLen,
             String hashFunction) {
-        byte[] serializedSharedSecret = Converter.byteArrayToMpint(sharedSecret);
         try {
             MessageDigest md = MessageDigest.getInstance(hashFunction);
             ByteArrayOutputStream outStream = new ByteArrayOutputStream();
@@ -35,7 +33,7 @@ public class KeyDerivation {
             outStream.write(
                     md.digest(
                             Arrays.concatenate(
-                                    serializedSharedSecret,
+                                    sharedSecret,
                                     exchangeHash,
                                     new byte[] {(byte) label},
                                     sessionID)));
@@ -44,9 +42,7 @@ public class KeyDerivation {
                 outStream.write(
                         md.digest(
                                 Arrays.concatenate(
-                                        serializedSharedSecret,
-                                        exchangeHash,
-                                        outStream.toByteArray())));
+                                        sharedSecret, exchangeHash, outStream.toByteArray())));
             }
             return Arrays.copyOfRange(outStream.toByteArray(), 0, outputLen);
         } catch (NoSuchAlgorithmException e) {

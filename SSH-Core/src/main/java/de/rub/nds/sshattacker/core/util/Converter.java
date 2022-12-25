@@ -159,6 +159,14 @@ public class Converter {
         return ArrayConverter.concatenate(length, value);
     }
 
+    public static byte[] byteArrayToMpintNoZeroExtend(byte[] input) {
+        byte[] mpint = input;
+        byte[] length =
+                ArrayConverter.intToBytes(mpint.length, DataFormatConstants.MPINT_SIZE_LENGTH);
+        mpint = ArrayConverter.concatenate(length, mpint);
+        return mpint;
+    }
+
     public static byte[] byteArrayToMpint(byte[] input) {
         byte[] mpint = input;
         if ((input[0] & 0x80) == 0x80) { // need to append 0 if MSB would be set
