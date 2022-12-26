@@ -24,7 +24,6 @@ import de.rub.nds.sshattacker.core.packet.cipher.keys.KeySetGenerator;
 import de.rub.nds.sshattacker.core.protocol.transport.message.ExchangeHashSignatureMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.message.HostKeyMessage;
 import de.rub.nds.sshattacker.core.state.SshContext;
-import de.rub.nds.sshattacker.core.util.Converter;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -188,9 +187,10 @@ public final class KeyExchangeUtil {
     public static void computeSharedSecret(SshContext context, KeyAgreement keyAgreement) {
         try {
             keyAgreement.computeSharedSecret();
-            context.setSharedSecret(Converter.byteArrayToMpint(keyAgreement.getSharedSecret()));
+
+            context.setSharedSecret(keyAgreement.getEncodedSharedSecret());
             context.getExchangeHashInputHolder()
-                    .setSharedSecret(Converter.byteArrayToMpint(keyAgreement.getSharedSecret()));
+                    .setSharedSecret(keyAgreement.getEncodedSharedSecret());
         } catch (CryptoException e) {
             LOGGER.warn("Key exchange instance is not ready yet, unable to compute shared secret");
             LOGGER.debug(e);
@@ -206,8 +206,9 @@ public final class KeyExchangeUtil {
      */
     public static void generateSharedSecret(SshContext context, KeyEncapsulation keyEncapsulation) {
         keyEncapsulation.generateSharedSecret();
-        context.setSharedSecret(keyEncapsulation.getSharedSecret());
-        context.getExchangeHashInputHolder().setSharedSecret(keyEncapsulation.getSharedSecret());
+        context.setSharedSecret(keyEncapsulation.getEncodedSharedSecret());
+        context.getExchangeHashInputHolder()
+                .setSharedSecret(keyEncapsulation.getEncodedSharedSecret());
     }
 
     /**
@@ -256,7 +257,11 @@ public final class KeyExchangeUtil {
      * @param context SSH context
      */
     public static void generateKeySet(SshContext context) {
-        KeySet keySet = KeySetGenerator.generateKeySet(context);
+        generateKeySet(context, true);
+    }
+
+    public static void generateKeySet(SshContext context, boolean extendSharedSecret) {
+        KeySet keySet = KeySetGenerator.generateKeySet(context, extendSharedSecret);
         context.setKeySet(keySet);
     }
 

@@ -43,12 +43,16 @@ public class HybridKeyExchangeReplyMessageHandler
         setRemoteValues();
         context.getChooser().getHybridKeyExchange().combineSharedSecrets();
         context.setSharedSecret(
-                Converter.byteArrayToMpintNoZeroExtend(
-                        context.getChooser().getHybridKeyExchange().getSharedSecret()));
+                Converter.byteArrayToMpint(
+                        context.getChooser().getHybridKeyExchange().getEncodedSharedSecret(),
+                        false));
         context.getExchangeHashInputHolder()
                 .setSharedSecret(
-                        Converter.byteArrayToMpintNoZeroExtend(
-                                context.getChooser().getHybridKeyExchange().getSharedSecret()));
+                        Converter.byteArrayToMpint(
+                                context.getChooser()
+                                        .getHybridKeyExchange()
+                                        .getEncodedSharedSecret(),
+                                false));
         KeyExchangeUtil.computeExchangeHash(context);
         KeyExchangeUtil.handleExchangeHashSignatureMessage(context, message);
         KeyExchangeUtil.setSessionId(context);

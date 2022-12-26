@@ -25,4 +25,8 @@ public abstract class KeyExchange {
     public byte[] getSharedSecret() {
         return sharedSecret;
     }
+
+    public byte[] getEncodedSharedSecret() {
+        return sharedSecret;
+    }
 }

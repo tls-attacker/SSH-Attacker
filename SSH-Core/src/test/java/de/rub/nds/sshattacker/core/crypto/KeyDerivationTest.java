@@ -248,9 +248,8 @@ public class KeyDerivationTest {
         inputHolder.setEcdhClientPublicKey(ecdhInit.getEphemeralPublicKey().getValue());
         inputHolder.setEcdhServerPublicKey(ecdhReply.getEphemeralPublicKey().getValue());
         inputHolder.setSharedSecret(
-                Converter.byteArrayToMpint(
-                        ArrayConverter.hexStringToByteArray(
-                                "13625c19127efdb1b15f1d5f48550760f29228342fbc438c06c56d795f31d109")));
+                ArrayConverter.hexStringToByteArray(
+                        "13625c19127efdb1b15f1d5f48550760f29228342fbc438c06c56d795f31d109"));
 
         assertArrayEquals(
                 expectedHash,

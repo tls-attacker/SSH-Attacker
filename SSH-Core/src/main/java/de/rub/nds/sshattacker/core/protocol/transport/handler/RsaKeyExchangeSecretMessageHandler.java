@@ -42,7 +42,7 @@ public class RsaKeyExchangeSecretMessageHandler
         RsaKeyExchange keyExchange = context.getChooser().getRsaKeyExchange();
         try {
             keyExchange.decryptSharedSecret(message.getEncryptedSecret().getValue());
-            context.setSharedSecret(keyExchange.getSharedSecret());
+            context.setSharedSecret(keyExchange.getEncodedSharedSecret());
         } catch (CryptoException e) {
             LOGGER.warn(
                     "Decryption of shared secret failed, unable to set shared secret in context");
@@ -55,7 +55,7 @@ public class RsaKeyExchangeSecretMessageHandler
         ExchangeHashInputHolder inputHolder = context.getExchangeHashInputHolder();
         inputHolder.setRsaEncryptedSecret(message.getEncryptedSecret().getValue());
         if (keyExchange.isComplete()) {
-            inputHolder.setSharedSecret(keyExchange.getSharedSecret());
+            inputHolder.setSharedSecret(keyExchange.getEncodedSharedSecret());
         } else {
             LOGGER.warn(
                     "Unable to set shared secret in exchange hash, key exchange is still ongoing");
