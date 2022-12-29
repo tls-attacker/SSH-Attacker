@@ -22,7 +22,6 @@ import jakarta.xml.bind.annotation.XmlElementWrapper;
 import jakarta.xml.bind.annotation.XmlElements;
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -430,11 +429,7 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
      * @return set of receive options
      */
     public Set<ReceiveOption> getReceiveOptions() {
-        return Stream.of(
-                        ReceiveOption.EARLY_CLEAN_SHUTDOWN,
-                        ReceiveOption.CHECK_ONLY_EXPECTED,
-                        ReceiveOption.IGNORE_UNEXPECTED_GLOBAL_REQUESTS_WITHOUT_WANTREPLY,
-                        ReceiveOption.FAIL_ON_UNEXPECTED_IGNORE_MESSAGES)
+        return Arrays.stream(ReceiveOption.values())
                 .filter(this::hasReceiveOption)
                 .collect(Collectors.toSet());
     }
