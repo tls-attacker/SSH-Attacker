@@ -106,6 +106,9 @@ public abstract class MessageAction extends ConnectionBoundAction {
                         type = GlobalRequestTcpIpForwardMessage.class,
                         name = "GlobalRequestTcpIpForward"),
                 @XmlElement(
+                        type = GlobalRequestOpenSshHostKeysMessage.class,
+                        name = "GlobalRequestOpenSshHostKeys"),
+                @XmlElement(
                         type = GlobalRequestUnknownMessage.class,
                         name = "GlobalRequestUnknown"),
                 // Transport Layer Protocol Messages

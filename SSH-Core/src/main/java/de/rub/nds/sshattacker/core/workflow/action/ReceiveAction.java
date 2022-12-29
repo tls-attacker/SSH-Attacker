@@ -111,6 +111,9 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
                         type = GlobalRequestTcpIpForwardMessage.class,
                         name = "GlobalRequestTcpIpForward"),
                 @XmlElement(
+                        type = GlobalRequestOpenSshHostKeysMessage.class,
+                        name = "GlobalRequestOpenSshHostKeys"),
+                @XmlElement(
                         type = GlobalRequestUnknownMessage.class,
                         name = "GlobalRequestUnknown"),
                 // Transport Layer Protocol Messages
