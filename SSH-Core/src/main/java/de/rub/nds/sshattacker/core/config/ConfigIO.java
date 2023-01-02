@@ -10,8 +10,8 @@ package de.rub.nds.sshattacker.core.config;
 import de.rub.nds.sshattacker.core.config.filter.ConfigDisplayFilter;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
-import jakarta.xml.bind.Marshaller;
 import jakarta.xml.bind.Unmarshaller;
+import jakarta.xml.bind.util.JAXBSource;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -25,6 +25,11 @@ import java.nio.charset.StandardCharsets;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.stream.StreamResult;
 
 public class ConfigIO {
 
@@ -46,13 +51,17 @@ public class ConfigIO {
         }
     }
 
-    public static void write(Config config, OutputStream os) {
-        ByteArrayOutputStream tempStream = new ByteArrayOutputStream();
-        try {
-            final Marshaller marshaller = getJAXBContext().createMarshaller();
-            marshaller.marshal(config, tempStream);
-            os.write(tempStream.toString().getBytes(StandardCharsets.ISO_8859_1));
-        } catch (IOException | JAXBException ex) {
+    public static void write(final Config config, final OutputStream outputStream) {
+        try (ByteArrayOutputStream tempStream = new ByteArrayOutputStream()) {
+            // circumvent the max indentation of 8 of the JAXB marshaller
+            Transformer transformer = TransformerFactory.newInstance().newTransformer();
+            transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+            transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
+            transformer.transform(
+                    new JAXBSource(getJAXBContext(), config), new StreamResult(tempStream));
+
+            outputStream.write(tempStream.toString().getBytes(StandardCharsets.ISO_8859_1));
+        } catch (IOException | JAXBException | TransformerException ex) {
             throw new RuntimeException("Could not format XML", ex);
         }
     }
