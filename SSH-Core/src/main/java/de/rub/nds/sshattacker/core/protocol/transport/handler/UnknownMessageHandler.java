@@ -8,10 +8,10 @@
 package de.rub.nds.sshattacker.core.protocol.transport.handler;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.sshattacker.core.exceptions.NotImplementedException;
 import de.rub.nds.sshattacker.core.protocol.common.*;
 import de.rub.nds.sshattacker.core.protocol.transport.message.UnknownMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.parser.UnknownMessageParser;
+import de.rub.nds.sshattacker.core.protocol.transport.preparator.UnknownMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.transport.serializer.UnknownMessageSerializer;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import org.apache.logging.log4j.LogManager;
@@ -48,7 +48,7 @@ public class UnknownMessageHandler extends SshMessageHandler<UnknownMessage> {
 
     @Override
     public SshMessagePreparator<UnknownMessage> getPreparator() {
-        throw new NotImplementedException("UnknownMessageHandler::getPreparator");
+        return new UnknownMessagePreparator(context.getChooser(), message);
     }
 
     @Override
