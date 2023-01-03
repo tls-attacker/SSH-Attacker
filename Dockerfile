@@ -45,4 +45,5 @@ FROM runtime AS ssh-mitm
 ENTRYPOINT ["java", "-jar", "SSH-Mitm.jar"]
 
 FROM runtime AS ssh-server
-ENTRYPOINT ["java", "-jar", "SSH-Server.jar"]
+ENTRYPOINT ["java", "-jar", "SSH-Server.jar", "-port", "22"]
+EXPOSE 22
