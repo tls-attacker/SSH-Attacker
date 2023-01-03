@@ -46,7 +46,7 @@ public class HybridKeyExchangeReplyMessagePreparator
         KeyExchangeUtil.computeExchangeHash(chooser.getContext());
         KeyExchangeUtil.prepareExchangeHashSignatureMessage(chooser.getContext(), getObject());
         KeyExchangeUtil.setSessionId(chooser.getContext());
-        KeyExchangeUtil.generateKeySet(chooser.getContext(),false);
+        KeyExchangeUtil.generateKeySet(chooser.getContext(), false);
     }
 
     private void prepareHybridKey() {
