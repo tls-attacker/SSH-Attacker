@@ -170,6 +170,12 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
      */
     @XmlElement protected Boolean failOnUnexpectedIgnoreMessages = null;
 
+    /**
+     * Set to {@code true} if the {@link ReceiveOption#FAIL_ON_UNEXPECTED_DEBUG_MESSAGES} option has
+     * been set.
+     */
+    @XmlElement protected Boolean failOnUnexpectedDebugMessages = null;
+
     public ReceiveAction() {
         super(AliasedConnection.DEFAULT_CONNECTION_ALIAS);
     }
@@ -337,7 +343,9 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
                 // next received message matches the expected message.
                 if (this.hasReceiveOption(ReceiveOption.CHECK_ONLY_EXPECTED)
                         || (!this.hasReceiveOption(ReceiveOption.FAIL_ON_UNEXPECTED_IGNORE_MESSAGES)
-                                && (actualMessage instanceof IgnoreMessage))) {
+                                && (actualMessage instanceof IgnoreMessage))
+                        || (!this.hasReceiveOption(ReceiveOption.FAIL_ON_UNEXPECTED_DEBUG_MESSAGES)
+                                && (actualMessage instanceof DebugMessage))) {
                     LOGGER.debug("Ignoring message of type {}.", actualMessage.toCompactString());
                     continue;
                 }
@@ -397,6 +405,9 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
             case FAIL_ON_UNEXPECTED_IGNORE_MESSAGES:
                 value = this.failOnUnexpectedIgnoreMessages;
                 break;
+            case FAIL_ON_UNEXPECTED_DEBUG_MESSAGES:
+                value = this.failOnUnexpectedDebugMessages;
+                break;
         }
 
         return value != null && value.booleanValue();
@@ -426,6 +437,8 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
         this.checkOnlyExpected = receiveOptions.contains(ReceiveOption.CHECK_ONLY_EXPECTED);
         this.failOnUnexpectedIgnoreMessages =
                 receiveOptions.contains(ReceiveOption.FAIL_ON_UNEXPECTED_IGNORE_MESSAGES);
+        this.failOnUnexpectedDebugMessages =
+                receiveOptions.contains(ReceiveOption.FAIL_ON_UNEXPECTED_DEBUG_MESSAGES);
 
         if (this.hasReceiveOption(ReceiveOption.CHECK_ONLY_EXPECTED)
                 && this.hasReceiveOption(ReceiveOption.FAIL_ON_UNEXPECTED_IGNORE_MESSAGES)) {
@@ -517,7 +530,19 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
          * @see <a href="https://datatracker.ietf.org/doc/html/rfc4253#section-11.2">RFC 4253,
          *     section 11.2 "Ignored Data Message"</a>
          */
-        FAIL_ON_UNEXPECTED_IGNORE_MESSAGES;
+        FAIL_ON_UNEXPECTED_IGNORE_MESSAGES,
+        /**
+         * Do not ignore unexpected {@code SSH_MSG_DEBUG} messages when checking if the receive
+         * action was executed as planned. Instead, such messages will cause {@link
+         * #executedAsPlanned} to return {@code false}.
+         *
+         * <p>If both this option and {@link ReceiveOption#CHECK_ONLY_EXPECTED} have been set, the
+         * latter takes precedence and {@code SSH_MSG_DEBUG} messages will still be ignored.
+         *
+         * @see <a href="https://datatracker.ietf.org/doc/html/rfc4253#section-11.2">RFC 4253,
+         *     section 11.3 "Debug Message"</a>
+         */
+        FAIL_ON_UNEXPECTED_DEBUG_MESSAGES;
 
         public static Set<ReceiveOption> bundle(ReceiveOption... receiveOptions) {
             return new HashSet<>(Arrays.asList(receiveOptions));
