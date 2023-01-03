@@ -27,7 +27,7 @@ COPY SSH-Server ./SSH-Server/
 
 # Build 'em
 RUN --mount=type=secret,id=m2settings,dst=/root/.m2/settings.xml \
-    mvn install
+    mvn install -DskipTests=true -Dmaven.javadoc.skip=true
 
 # Introduce a separate build stage for runtime to reduce resulting image sizes
 FROM amazoncorretto:11 AS runtime
