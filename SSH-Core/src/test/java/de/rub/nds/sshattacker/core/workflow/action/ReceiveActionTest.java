@@ -11,6 +11,7 @@ import static de.rub.nds.sshattacker.core.workflow.action.ReceiveAction.ReceiveO
 
 import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthNoneMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.message.AsciiMessage;
+import de.rub.nds.sshattacker.core.protocol.transport.message.DebugMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.message.IgnoreMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.message.KeyExchangeInitMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.message.VersionExchangeMessage;
@@ -119,6 +120,38 @@ public class ReceiveActionTest {
                         new VersionExchangeMessage(),
                         new IgnoreMessage(),
                         new IgnoreMessage(),
+                        new KeyExchangeInitMessage()));
+        Assertions.assertFalse(action.executedAsPlanned());
+    }
+
+    @Test
+    public void testExecutedAsPlannedIsTrueWithUnexpectedDebugMessagesAndDefaultReceiveOptions() {
+        final ReceiveAction action = new ReceiveAction();
+        action.setExpectedMessages(
+                List.of(new VersionExchangeMessage(), new KeyExchangeInitMessage()));
+        action.setReceivedMessages(
+                List.of(
+                        new DebugMessage(),
+                        new VersionExchangeMessage(),
+                        new DebugMessage(),
+                        new DebugMessage(),
+                        new KeyExchangeInitMessage()));
+        Assertions.assertTrue(action.executedAsPlanned());
+    }
+
+    @Test
+    public void
+            testExecutedAsPlannedIsFalseWithUnexpectedDebugMessagesAndFailOnUnexpectedDebugMessagesEnabled() {
+        final ReceiveAction action =
+                new ReceiveAction(ReceiveOption.FAIL_ON_UNEXPECTED_DEBUG_MESSAGES);
+        action.setExpectedMessages(
+                List.of(new VersionExchangeMessage(), new KeyExchangeInitMessage()));
+        action.setReceivedMessages(
+                List.of(
+                        new DebugMessage(),
+                        new VersionExchangeMessage(),
+                        new DebugMessage(),
+                        new DebugMessage(),
                         new KeyExchangeInitMessage()));
         Assertions.assertFalse(action.executedAsPlanned());
     }
