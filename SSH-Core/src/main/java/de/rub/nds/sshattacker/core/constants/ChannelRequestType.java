@@ -7,6 +7,9 @@
  */
 package de.rub.nds.sshattacker.core.constants;
 
+import java.util.Map;
+import java.util.TreeMap;
+
 public enum ChannelRequestType {
     /*
      * Sources:
@@ -34,6 +37,15 @@ public enum ChannelRequestType {
 
     private final String name;
 
+    public static final Map<String, ChannelRequestType> map;
+
+    static {
+        map = new TreeMap<>();
+        for (ChannelRequestType requestType : ChannelRequestType.values()) {
+            map.put(requestType.name, requestType);
+        }
+    }
+
     ChannelRequestType(String name) {
         this.name = name;
     }
@@ -41,5 +53,13 @@ public enum ChannelRequestType {
     @Override
     public String toString() {
         return name;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public static ChannelRequestType fromName(String name) {
+        return map.get(name);
     }
 }
