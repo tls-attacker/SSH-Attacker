@@ -28,6 +28,10 @@ public enum CompressionMethod {
         this.algorithm = algorithm;
     }
 
+    public String getName() {
+        return name;
+    }
+
     public CompressionAlgorithm getAlgorithm() {
         return algorithm;
     }

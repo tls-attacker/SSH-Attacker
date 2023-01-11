@@ -8,9 +8,7 @@
 package de.rub.nds.sshattacker.core.protocol.common;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.sshattacker.core.constants.CryptoConstants;
-import de.rub.nds.sshattacker.core.constants.HybridKeyExchangeCombiner;
-import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
+import de.rub.nds.sshattacker.core.constants.*;
 import de.rub.nds.sshattacker.core.exceptions.ParserException;
 import de.rub.nds.sshattacker.core.packet.AbstractPacket;
 import de.rub.nds.sshattacker.core.packet.BlobPacket;
@@ -272,91 +270,81 @@ public abstract class ProtocolMessageParser<T extends ProtocolMessage<T>> extend
 
     private static ProtocolMessage<?> getUserAuthRequestMessageParsing(byte[] raw) {
         UserAuthUnknownMessage message = new UserAuthUnknownMessageParser(raw).parse();
-        switch (message.getMethodName().getValue()) {
-            case "none":
+        String methodString = message.getMethodName().getValue();
+        AuthenticationMethod method = AuthenticationMethod.fromName(methodString);
+        switch (method) {
+            case NONE:
                 return new UserAuthNoneMessageParser(raw).parse();
-            case "password":
+            case PASSWORD:
                 return new UserAuthPasswordMessageParser(raw).parse();
-            case "publickey":
+            case PUBLICKEY:
                 return new UserAuthPubkeyMessageParser(raw).parse();
-            case "hostbased":
+            case HOST_BASED:
                 return new UserAuthHostbasedMessageParser(raw).parse();
-            case "keyboard-interactive":
+            case KEYBOARD_INTERACTIVE:
                 return new UserAuthKeyboardInteractiveMessageParser(raw).parse();
-            case "gssapi-with-mic":
-            case "gssapi-keyex":
-            case "gssapi":
-            case "external-keyx":
             default:
+                LOGGER.debug(
+                        "Received unimplemented user authentication method in user authentication request: {}",
+                        methodString);
                 return message;
         }
     }
 
     public static ProtocolMessage<?> getChannelRequestMessageParsing(byte[] raw) {
         ChannelRequestUnknownMessage message = new ChannelRequestUnknownMessageParser(raw).parse();
-        String requestType = message.getRequestType().getValue();
+        String requestTypeString = message.getRequestType().getValue();
+        ChannelRequestType requestType = ChannelRequestType.fromName(requestTypeString);
         switch (requestType) {
-            case "pty-req":
+            case PTY_REQ:
                 return new ChannelRequestPtyMessageParser(raw).parse();
-            case "x11-req":
+            case X11_REQ:
                 return new ChannelRequestX11MessageParser(raw).parse();
-            case "env":
+            case ENV:
                 return new ChannelRequestEnvMessageParser(raw).parse();
-            case "shell":
+            case SHELL:
                 return new ChannelRequestShellMessageParser(raw).parse();
-            case "exec":
+            case EXEC:
                 return new ChannelRequestExecMessageParser(raw).parse();
-            case "subsystem":
+            case SUBSYSTEM:
                 return new ChannelRequestSubsystemMessageParser(raw).parse();
-            case "window-change":
+            case WINDOW_CHANGE:
                 return new ChannelRequestWindowChangeMessageParser(raw).parse();
-            case "xon-off":
+            case XON_XOFF:
                 return new ChannelRequestXonXoffMessageParser(raw).parse();
-            case "signal":
+            case SIGNAL:
                 return new ChannelRequestSignalMessageParser(raw).parse();
-            case "exit-status":
+            case EXIT_STATUS:
                 return new ChannelRequestExitStatusMessageParser(raw).parse();
-            case "exit-signal":
+            case EXIT_SIGNAL:
                 return new ChannelRequestExitSignalMessageParser(raw).parse();
-            case "auth-agent-req@openssh.com":
+            case AUTH_AGENT_REQ_OPENSSH_COM:
                 return new ChannelRequestAuthAgentMessageParser(raw).parse();
             default:
                 LOGGER.debug(
-                        "Received unimplemented message request type "
-                                + MessageIdConstant.getNameById(raw[0])
-                                + ":"
-                                + requestType);
+                        "Received unimplemented channel request message type: {}",
+                        requestTypeString);
                 return message;
         }
     }
 
     public static ProtocolMessage<?> getGlobalRequestMessageParsing(byte[] raw) {
         GlobalRequestUnknownMessage message = new GlobalRequestUnknownMessageParser(raw).parse();
-        String globalRequestType = message.getRequestName().getValue();
-        /*
-         * auth-agent-req@openssh.com,
-         * STREAMLOCAL_FORWARD_OPENSSH_COM("streamlocal-forward@openssh.com"),
-         * CANCEL_STREAMLOCAL_FORWARD_OPENSSH_COM(
-         * "cancel-streamlocal-forward@openssh.com"),
-         * HOSTKEYS_00_OPENSSH_COM("hostkeys-00@openssh.com"),
-         * HOSTKEYS_PROVE_00_OPENSSH_COM("hostkeys-prove-00@openssh.com");
-         */
-        switch (globalRequestType) {
-            case "tcpip-forward":
+        String requestTypeString = message.getRequestName().getValue();
+        GlobalRequestType requestType = GlobalRequestType.fromName(requestTypeString);
+        switch (requestType) {
+            case TCPIP_FORWARD:
                 return new GlobalRequestTcpIpForwardMessageParser(raw).parse();
-            case "cancel-tcpip-forward":
+            case CANCEL_TCPIP_FORWARD:
                 return new GlobalRequestCancelTcpIpForwardMessageParser(raw).parse();
-            case "no-more-sessions@openssh.com":
+            case NO_MORE_SESSIONS_OPENSSH_COM:
                 return new GlobalRequestNoMoreSessionsMessageParser(raw).parse();
-            case "hostkeys-00@openssh.com":
+            case HOSTKEYS_00_OPENSSH_COM:
                 return new GlobalRequestOpenSshHostKeysMessageParser(raw).parse();
-
             default:
                 LOGGER.debug(
-                        "Received unimplemented global request type "
-                                + MessageIdConstant.getNameById(raw[0])
-                                + ":"
-                                + globalRequestType);
+                        "Received unimplemented global request message type: {}",
+                        requestTypeString);
                 return message;
         }
     }
