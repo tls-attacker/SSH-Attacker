@@ -20,7 +20,7 @@ public class Sntrup4591761x25519KeyExchange extends HybridKeyExchange {
 
     public Sntrup4591761x25519KeyExchange() {
         super(
-                KeyExchangeAlgorithm.SNTRUP4591761_x25519,
+                KeyExchangeAlgorithm.SNTRUP4591761_X25519,
                 new XCurveEcdhKeyExchange(NamedEcGroup.CURVE25519, false),
                 new Sntrup(PQKemNames.SNTRUP4591761),
                 HybridKeyExchangeCombiner.POSTQUANTUM_CONCATENATE_CLASSICAL,

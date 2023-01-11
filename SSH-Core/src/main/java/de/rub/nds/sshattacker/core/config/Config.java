@@ -440,7 +440,7 @@ public class Config implements Serializable {
                 Arrays.stream(
                                 new KeyExchangeAlgorithm[] {
                                     KeyExchangeAlgorithm.SNTRUP761_X25519,
-                                    KeyExchangeAlgorithm.SNTRUP4591761_x25519,
+                                    KeyExchangeAlgorithm.SNTRUP4591761_X25519,
                                     KeyExchangeAlgorithm.CURVE25519_SHA256,
                                     KeyExchangeAlgorithm.CURVE25519_SHA256_LIBSSH_ORG,
                                     KeyExchangeAlgorithm.ECDH_SHA2_NISTP256,
