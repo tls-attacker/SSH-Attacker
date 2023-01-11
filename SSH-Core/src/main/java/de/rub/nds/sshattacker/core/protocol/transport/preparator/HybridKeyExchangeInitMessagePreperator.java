@@ -36,7 +36,7 @@ public class HybridKeyExchangeInitMessagePreperator
 
     @Override
     public void prepareMessageSpecificContents() {
-
+        LOGGER.info("Negotiated Hybrid Key Exchange: " + chooser.getKeyExchangeAlgorithm());
         HybridKeyExchange keyExchange = chooser.getHybridKeyExchange();
         KeyAgreement agreement = keyExchange.getKeyAgreement();
         KeyEncapsulation encapsulation = keyExchange.getKeyEncapsulation();

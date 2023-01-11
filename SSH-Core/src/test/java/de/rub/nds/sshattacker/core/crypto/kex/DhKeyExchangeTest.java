@@ -64,7 +64,7 @@ class DhKeyExchangeTest {
                 line = reader.nextLine();
                 BigInteger publicKeyB = new BigInteger(line.split(" = ")[1], 16);
                 line = reader.nextLine();
-                BigInteger sharedSecret = new BigInteger(line.split(" = ")[1], 16);
+                byte[] sharedSecret = new BigInteger(line.split(" = ")[1], 16).toByteArray();
                 if (mode == 0) {
                     argumentsBuilder.add(
                             Arguments.of(
@@ -129,14 +129,14 @@ class DhKeyExchangeTest {
             BigInteger providedPrivateKeyA,
             BigInteger expectedPublicKeyA,
             BigInteger providedPublicKeyB,
-            BigInteger expectedSharedSecret,
+            byte[] expectedSharedSecret,
             NamedDhGroup group) {
         DhKeyExchange keyExchange = new DhKeyExchange(group);
         keyExchange.setLocalKeyPair(providedPrivateKeyA.toByteArray());
         assertEquals(expectedPublicKeyA, keyExchange.getLocalKeyPair().getPublic().getY());
         keyExchange.setRemotePublicKey(providedPublicKeyB);
         assertDoesNotThrow(keyExchange::computeSharedSecret);
-        assertEquals(expectedSharedSecret, keyExchange.getSharedSecret());
+        assertArrayEquals(expectedSharedSecret, keyExchange.getSharedSecret());
     }
 
     /**

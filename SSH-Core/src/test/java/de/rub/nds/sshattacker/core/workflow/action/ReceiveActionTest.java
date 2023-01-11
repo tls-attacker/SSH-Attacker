@@ -10,12 +10,14 @@ package de.rub.nds.sshattacker.core.workflow.action;
 import static de.rub.nds.sshattacker.core.workflow.action.ReceiveAction.ReceiveOption;
 
 import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthNoneMessage;
+import de.rub.nds.sshattacker.core.protocol.connection.message.GlobalRequestOpenSshHostKeysMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.message.AsciiMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.message.DebugMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.message.IgnoreMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.message.KeyExchangeInitMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.message.VersionExchangeMessage;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -237,5 +239,69 @@ public class ReceiveActionTest {
                         new UserAuthNoneMessage(),
                         new KeyExchangeInitMessage()));
         Assertions.assertTrue(action.executedAsPlanned());
+    }
+
+    @Test
+    public void
+            testExecutedAsPlannedIsFalseWithUnexpectedGlobalRequestMessagesAndDefaultReceiveOptions() {
+        final ReceiveAction action = new ReceiveAction();
+        action.setExpectedMessages(
+                List.of(new VersionExchangeMessage(), new KeyExchangeInitMessage()));
+        action.setReceivedMessages(
+                List.of(
+                        new VersionExchangeMessage(),
+                        Optional.of(new GlobalRequestOpenSshHostKeysMessage())
+                                .map(
+                                        message -> {
+                                            message.setWantReply((byte) 0);
+                                            return message;
+                                        })
+                                .get(),
+                        new KeyExchangeInitMessage()));
+        Assertions.assertFalse(action.executedAsPlanned());
+    }
+
+    @Test
+    public void
+            testExecutedAsPlannedIsTrueWithUnexpectedGlobalRequestMessagesWithoutWantReplyAndIgnoreUnexpectedGlobalRequestsWithoutWantReplyEnabled() {
+        final ReceiveAction action =
+                new ReceiveAction(
+                        ReceiveOption.IGNORE_UNEXPECTED_GLOBAL_REQUESTS_WITHOUT_WANTREPLY);
+        action.setExpectedMessages(
+                List.of(new VersionExchangeMessage(), new KeyExchangeInitMessage()));
+        action.setReceivedMessages(
+                List.of(
+                        new VersionExchangeMessage(),
+                        Optional.of(new GlobalRequestOpenSshHostKeysMessage())
+                                .map(
+                                        message -> {
+                                            message.setWantReply((byte) 0);
+                                            return message;
+                                        })
+                                .get(),
+                        new KeyExchangeInitMessage()));
+        Assertions.assertTrue(action.executedAsPlanned());
+    }
+
+    @Test
+    public void
+            testExecutedAsPlannedIsFalseWithUnexpectedGlobalRequestMessagesWithWantReplyAndIgnoreUnexpectedGlobalRequestsWithoutWantReplyEnabled() {
+        final ReceiveAction action =
+                new ReceiveAction(
+                        ReceiveOption.IGNORE_UNEXPECTED_GLOBAL_REQUESTS_WITHOUT_WANTREPLY);
+        action.setExpectedMessages(
+                List.of(new VersionExchangeMessage(), new KeyExchangeInitMessage()));
+        action.setReceivedMessages(
+                List.of(
+                        new VersionExchangeMessage(),
+                        Optional.of(new GlobalRequestOpenSshHostKeysMessage())
+                                .map(
+                                        message -> {
+                                            message.setWantReply((byte) 1);
+                                            return message;
+                                        })
+                                .get(),
+                        new KeyExchangeInitMessage()));
+        Assertions.assertFalse(action.executedAsPlanned());
     }
 }
