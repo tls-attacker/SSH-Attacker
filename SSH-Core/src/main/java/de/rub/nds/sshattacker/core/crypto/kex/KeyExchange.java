@@ -7,13 +7,12 @@
  */
 package de.rub.nds.sshattacker.core.crypto.kex;
 
-import java.math.BigInteger;
 import java.security.SecureRandom;
 
 public abstract class KeyExchange {
 
     protected final SecureRandom random;
-    protected BigInteger sharedSecret;
+    protected byte[] sharedSecret;
 
     protected KeyExchange() {
         this.random = new SecureRandom();
@@ -23,7 +22,7 @@ public abstract class KeyExchange {
         return sharedSecret != null;
     }
 
-    public BigInteger getSharedSecret() {
+    public byte[] getSharedSecret() {
         return sharedSecret;
     }
 }
