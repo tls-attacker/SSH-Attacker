@@ -57,8 +57,8 @@ public class RsaKeyExchangeTest {
         BigInteger publicModulus = null,
                 publicExponent = null,
                 privateModulus = null,
-                privateExponent = null,
-                sharedSecret;
+                privateExponent = null;
+        byte[] sharedSecret;
         byte[] ciphertext;
 
         while (reader.hasNextLine()) {
@@ -87,7 +87,7 @@ public class RsaKeyExchangeTest {
             if (line.startsWith("Example")) {
                 reader.nextLine();
                 line = reader.nextLine();
-                sharedSecret = new BigInteger(line, 16);
+                sharedSecret = new BigInteger(line, 16).toByteArray();
                 reader.nextLine();
                 line = reader.nextLine();
                 ciphertext = DatatypeConverter.parseHexBinary(line);
@@ -148,7 +148,7 @@ public class RsaKeyExchangeTest {
             BigInteger publicKeyModulus,
             BigInteger privateKeyExponent,
             BigInteger privateKeyModulus,
-            BigInteger sharedSecret,
+            byte[] sharedSecret,
             byte[] ciphertext)
             throws CryptoException {
         RsaKeyExchange rsaKeyExchange =
@@ -176,7 +176,7 @@ public class RsaKeyExchangeTest {
             assertEquals(256, rsaKeyExchange.getHashLength());
         }
         rsaKeyExchange.decryptSharedSecret(ciphertext);
-        assertEquals(sharedSecret, rsaKeyExchange.getSharedSecret());
+        assertArrayEquals(sharedSecret, rsaKeyExchange.getSharedSecret());
     }
 
     /**
@@ -202,7 +202,7 @@ public class RsaKeyExchangeTest {
             BigInteger publicKeyModulus,
             BigInteger privateKeyExponent,
             BigInteger privateKeyModulus,
-            BigInteger sharedSecret,
+            byte[] sharedSecret,
             byte[] ciphertext)
             throws CryptoException {
         RsaKeyExchange rsaKeyExchange =
@@ -232,7 +232,7 @@ public class RsaKeyExchangeTest {
         rsaKeyExchange.setSharedSecret(sharedSecret);
         byte[] cipher = rsaKeyExchange.encryptSharedSecret();
         rsaKeyExchange.decryptSharedSecret(cipher);
-        assertEquals(sharedSecret, rsaKeyExchange.getSharedSecret());
+        assertArrayEquals(sharedSecret, rsaKeyExchange.getSharedSecret());
     }
 
     @Test

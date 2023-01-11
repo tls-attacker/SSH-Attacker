@@ -36,9 +36,9 @@ public abstract class AbstractEcdhKeyExchange extends DhBasedKeyExchange {
         switch (algorithm) {
             case CURVE25519_SHA256:
             case CURVE25519_SHA256_LIBSSH_ORG:
-                return new XCurveEcdhKeyExchange(NamedEcGroup.CURVE25519);
+                return new XCurveEcdhKeyExchange(NamedEcGroup.CURVE25519, true);
             case CURVE448_SHA512:
-                return new XCurveEcdhKeyExchange(NamedEcGroup.CURVE448);
+                return new XCurveEcdhKeyExchange(NamedEcGroup.CURVE448, true);
             case ECDH_SHA2_NISTP256:
                 group = NamedEcGroup.SECP256R1;
                 break;
