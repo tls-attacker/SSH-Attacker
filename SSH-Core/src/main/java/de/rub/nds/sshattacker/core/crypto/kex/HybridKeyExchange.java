@@ -69,7 +69,7 @@ public abstract class HybridKeyExchange extends KeyExchange {
             return (HybridKeyExchange) kexImplementation.getConstructor().newInstance();
         } catch (ClassNotFoundException e) {
             LOGGER.fatal(
-                    "Unable to create new instance of HybridKeyExchange, module SSH-Core-PQC is not available. Make sure to enable PQC by enabling the corresponding profile during build!");
+                    "Unable to create new instance of HybridKeyExchange, module SSH-Core-OQS is not available. Make sure to enable OpenQuantumSafe support by enabling the corresponding profile during build!");
             System.exit(1);
             return null;
         } catch (InvocationTargetException e) {
