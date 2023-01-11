@@ -12,6 +12,9 @@ import de.rub.nds.sshattacker.core.constants.CryptoConstants;
 import de.rub.nds.sshattacker.core.constants.NamedEcGroup;
 import de.rub.nds.sshattacker.core.crypto.keys.*;
 import de.rub.nds.sshattacker.core.exceptions.CryptoException;
+
+import java.math.BigInteger;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.math.ec.rfc7748.X25519;
@@ -23,9 +26,11 @@ public class XCurveEcdhKeyExchange extends AbstractEcdhKeyExchange {
 
     private CustomKeyPair<XCurveEcPrivateKey, XCurveEcPublicKey> localKeyPair;
     private XCurveEcPublicKey remotePublicKey;
+    private final boolean encodeSharedBytes;
 
-    public XCurveEcdhKeyExchange(NamedEcGroup group) {
+    public XCurveEcdhKeyExchange(NamedEcGroup group, boolean encodeSharedBytes) {
         super(group);
+        this.encodeSharedBytes = encodeSharedBytes;
         if (!group.isRFC7748Curve()) {
             throw new IllegalArgumentException(
                     "XCurveEcdhKeyExchange does not support named group " + group);
@@ -114,8 +119,8 @@ public class XCurveEcdhKeyExchange extends AbstractEcdhKeyExchange {
                     sharedBytes,
                     0);
         }
-        // sharedSecret = new BigInteger(1, sharedBytes).toByteArray();
-        sharedSecret = sharedBytes;
+        sharedSecret =
+                encodeSharedBytes ? new BigInteger(1, sharedBytes).toByteArray() : sharedBytes;
         LOGGER.debug(
                 "Finished computation of shared secret: "
                         + ArrayConverter.bytesToRawHexString(sharedSecret));

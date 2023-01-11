@@ -19,7 +19,7 @@ public class Curve25519Frodokem1344KeyExchange extends HybridKeyExchange {
 
         super(
                 KeyExchangeAlgorithm.CURVE25519_FRODOKEM1344,
-                new XCurveEcdhKeyExchange(NamedEcGroup.CURVE25519),
+                new XCurveEcdhKeyExchange(NamedEcGroup.CURVE25519, false),
                 new OpenQuantumSafeKem(PQKemNames.FRODOKEM1344),
                 HybridKeyExchangeCombiner.POSTQUANTUM_CONCATENATE_CLASSICAL,
                 CryptoConstants.X25519_POINT_SIZE,
