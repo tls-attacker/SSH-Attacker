@@ -24,7 +24,7 @@ public abstract class GlobalRequestMessagePreparator<T extends GlobalRequestMess
     }
 
     public GlobalRequestMessagePreparator(Chooser chooser, T message, String globalRequestType) {
-        super(chooser, message, MessageIdConstant.SSH_MSG_CHANNEL_REQUEST);
+        super(chooser, message, MessageIdConstant.SSH_MSG_GLOBAL_REQUEST);
         this.globalRequestType = globalRequestType;
     }
 
