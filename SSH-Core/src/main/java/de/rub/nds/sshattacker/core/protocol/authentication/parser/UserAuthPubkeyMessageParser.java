@@ -7,6 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.protocol.authentication.parser;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthPubkeyMessage;
 import de.rub.nds.sshattacker.core.util.Converter;
@@ -36,7 +37,8 @@ public class UserAuthPubkeyMessageParser
         message.setPubkeyLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
         LOGGER.debug("Pubkey length: " + message.getPubkeyLength().getValue());
         message.setPubkey(parseByteArrayField(message.getPubkeyLength().getValue()));
-        LOGGER.debug("Pubkey: " + new String(message.getPubkey().getValue()));
+        LOGGER.debug(
+                "Pubkey: {}", ArrayConverter.bytesToRawHexString(message.getPubkey().getValue()));
     }
 
     private void parsePubkeyAlgName() {
@@ -58,7 +60,9 @@ public class UserAuthPubkeyMessageParser
         message.setSignatureLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
         LOGGER.debug("Signature length: " + message.getSignatureLength().getValue());
         message.setSignature(parseByteArrayField(message.getSignatureLength().getValue()));
-        LOGGER.debug("Signature: " + new String(message.getSignature().getValue()));
+        LOGGER.debug(
+                "Signature: {}",
+                ArrayConverter.bytesToRawHexString(message.getSignature().getValue()));
     }
 
     @Override
