@@ -60,7 +60,10 @@ public class ConfigIO {
             transformer.transform(
                     new JAXBSource(getJAXBContext(), config), new StreamResult(tempStream));
 
-            outputStream.write(tempStream.toString().getBytes(StandardCharsets.ISO_8859_1));
+            // Replace line separators with the system specific line separator
+            String xmlText = tempStream.toString();
+            xmlText = xmlText.replaceAll("\r?\n", System.lineSeparator());
+            outputStream.write(xmlText.getBytes(StandardCharsets.UTF_8));
         } catch (IOException | JAXBException | TransformerException ex) {
             throw new RuntimeException("Could not format XML", ex);
         }
