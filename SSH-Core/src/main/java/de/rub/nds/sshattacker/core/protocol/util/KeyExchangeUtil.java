@@ -188,9 +188,8 @@ public final class KeyExchangeUtil {
         try {
             keyAgreement.computeSharedSecret();
 
-            context.setSharedSecret(keyAgreement.getEncodedSharedSecret());
-            context.getExchangeHashInputHolder()
-                    .setSharedSecret(keyAgreement.getEncodedSharedSecret());
+            context.setSharedSecret(keyAgreement.getSharedSecret());
+            context.getExchangeHashInputHolder().setSharedSecret(keyAgreement.getSharedSecret());
         } catch (CryptoException e) {
             LOGGER.warn("Key exchange instance is not ready yet, unable to compute shared secret");
             LOGGER.debug(e);
@@ -206,9 +205,8 @@ public final class KeyExchangeUtil {
      */
     public static void generateSharedSecret(SshContext context, KeyEncapsulation keyEncapsulation) {
         keyEncapsulation.generateSharedSecret();
-        context.setSharedSecret(keyEncapsulation.getEncodedSharedSecret());
-        context.getExchangeHashInputHolder()
-                .setSharedSecret(keyEncapsulation.getEncodedSharedSecret());
+        context.setSharedSecret(keyEncapsulation.getSharedSecret());
+        context.getExchangeHashInputHolder().setSharedSecret(keyEncapsulation.getSharedSecret());
     }
 
     /**

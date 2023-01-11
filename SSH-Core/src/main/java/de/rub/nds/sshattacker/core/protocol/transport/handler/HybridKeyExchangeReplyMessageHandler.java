@@ -41,11 +41,9 @@ public class HybridKeyExchangeReplyMessageHandler
         KeyExchangeUtil.handleHostKeyMessage(context, message);
         setRemoteValues();
         context.getChooser().getHybridKeyExchange().combineSharedSecrets();
-        context.setSharedSecret(
-                context.getChooser().getHybridKeyExchange().getEncodedSharedSecret());
+        context.setSharedSecret(context.getChooser().getHybridKeyExchange().getSharedSecret());
         context.getExchangeHashInputHolder()
-                .setSharedSecret(
-                        context.getChooser().getHybridKeyExchange().getEncodedSharedSecret());
+                .setSharedSecret(context.getChooser().getHybridKeyExchange().getSharedSecret());
         KeyExchangeUtil.computeExchangeHash(context);
         KeyExchangeUtil.handleExchangeHashSignatureMessage(context, message);
         KeyExchangeUtil.setSessionId(context);
