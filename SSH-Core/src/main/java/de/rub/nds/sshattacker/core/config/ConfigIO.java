@@ -21,7 +21,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.nio.charset.StandardCharsets;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -63,7 +62,7 @@ public class ConfigIO {
             // Replace line separators with the system specific line separator
             String xmlText = tempStream.toString();
             xmlText = xmlText.replaceAll("\r?\n", System.lineSeparator());
-            outputStream.write(xmlText.getBytes(StandardCharsets.UTF_8));
+            outputStream.write(xmlText.getBytes());
         } catch (IOException | JAXBException | TransformerException ex) {
             throw new RuntimeException("Could not format XML", ex);
         }
