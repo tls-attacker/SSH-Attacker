@@ -7,8 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.crypto.kex;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 import de.rub.nds.sshattacker.core.constants.EcPointFormat;
 import de.rub.nds.sshattacker.core.constants.NamedEcGroup;
@@ -80,7 +79,7 @@ public class EcdhKeyExchangeTest {
                 line = reader.nextLine();
                 BigInteger publicKeyYA = new BigInteger(line.split(" = ")[1], 16);
                 line = reader.nextLine();
-                BigInteger sharedSecret = new BigInteger(line.split(" = ")[1], 16);
+                byte[] sharedSecret = new BigInteger(line.split(" = ")[1], 16).toByteArray();
                 argumentsBuilder.add(
                         Arguments.of(
                                 privateKeyA,
@@ -115,7 +114,7 @@ public class EcdhKeyExchangeTest {
             BigInteger expectedPublicKeyYA,
             BigInteger providedPublicKeyXB,
             BigInteger providedPublicKeyYB,
-            BigInteger expectedSharedSecret,
+            byte[] expectedSharedSecret,
             NamedEcGroup group) {
         EcdhKeyExchange keyExchange = new EcdhKeyExchange(group);
         keyExchange.setLocalKeyPair(providedPrivateKeyA.toByteArray());
@@ -130,6 +129,6 @@ public class EcdhKeyExchangeTest {
         keyExchange.setRemotePublicKey(
                 PointFormatter.formatToByteArray(group, publicKeyB, EcPointFormat.UNCOMPRESSED));
         assertDoesNotThrow(keyExchange::computeSharedSecret);
-        assertEquals(expectedSharedSecret, keyExchange.getSharedSecret());
+        assertArrayEquals(expectedSharedSecret, keyExchange.getSharedSecret());
     }
 }
