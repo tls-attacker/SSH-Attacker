@@ -19,7 +19,7 @@ public class Sntrup761X25519KeyExchange extends HybridKeyExchange {
         super(
                 KeyExchangeAlgorithm.SNTRUP761_X25519,
                 new XCurveEcdhKeyExchange(NamedEcGroup.CURVE25519, false),
-                new Sntrup(PQKemNames.SNTRUP761),
+                new SntrupKeyExchange(PQKemNames.SNTRUP761),
                 HybridKeyExchangeCombiner.POSTQUANTUM_CONCATENATE_CLASSICAL,
                 CryptoConstants.X25519_POINT_SIZE,
                 CryptoConstants.SNTRUP761_PUBLIC_KEY_SIZE,

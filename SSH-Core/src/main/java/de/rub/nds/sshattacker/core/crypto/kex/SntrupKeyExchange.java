@@ -29,7 +29,7 @@ import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class Sntrup extends KeyEncapsulation {
+public class SntrupKeyExchange extends KeyEncapsulation {
     private static final Logger LOGGER = LogManager.getLogger();
     private SntrupParameterSet set;
     private CustomPQKemPublicKey remotePublicKey;
@@ -40,7 +40,7 @@ public class Sntrup extends KeyEncapsulation {
 
     private PQKemNames kemName;
 
-    public Sntrup(PQKemNames kemName) {
+    public SntrupKeyExchange(PQKemNames kemName) {
         this.kemName = kemName;
         switch (kemName) {
             case SNTRUP4591761:
