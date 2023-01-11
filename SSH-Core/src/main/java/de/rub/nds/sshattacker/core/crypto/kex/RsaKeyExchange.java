@@ -78,7 +78,7 @@ public class RsaKeyExchange extends KeyEncapsulation {
     public void generateSharedSecret() {
         // Calculation of maximum number of bits taken from RFC 4432
         int maximumBits = (getModulusLengthInBits() - 2 * hashLength - 49);
-        sharedSecret = new BigInteger(maximumBits, random);
+        sharedSecret = new BigInteger(maximumBits, random).toByteArray();
     }
 
     @Override
@@ -87,7 +87,7 @@ public class RsaKeyExchange extends KeyEncapsulation {
         try {
             // Shared secret is encrypted as a mpint (which includes an explicit length
             // field)
-            byte[] sharedSecretMpint = Converter.bigIntegerToMpint(sharedSecret);
+            byte[] sharedSecretMpint = Converter.byteArrayToMpint(sharedSecret);
             return cipher.encrypt(sharedSecretMpint);
         } catch (CryptoException e) {
             LOGGER.error("Unexpected cryptographic exception occurred while encrypting the secret");
@@ -112,11 +112,10 @@ public class RsaKeyExchange extends KeyEncapsulation {
                                     0,
                                     DataFormatConstants.MPINT_SIZE_LENGTH));
             this.sharedSecret =
-                    new BigInteger(
-                            Arrays.copyOfRange(
-                                    decryptedSecretMpint,
-                                    DataFormatConstants.MPINT_SIZE_LENGTH,
-                                    DataFormatConstants.MPINT_SIZE_LENGTH + sharedSecretLength));
+                    Arrays.copyOfRange(
+                            decryptedSecretMpint,
+                            DataFormatConstants.MPINT_SIZE_LENGTH,
+                            DataFormatConstants.MPINT_SIZE_LENGTH + sharedSecretLength);
         } catch (CryptoException e) {
             LOGGER.error(
                     "Unexpected cryptographic exception occurred while decrypting the shared secret");
@@ -183,10 +182,6 @@ public class RsaKeyExchange extends KeyEncapsulation {
         }
     }
 
-    public void setSharedSecret(BigInteger sharedSecret) {
-        this.sharedSecret = sharedSecret;
-    }
-
     public boolean areParametersSet() {
         return transientKey != null && hashLength != 0;
     }
@@ -208,7 +203,7 @@ public class RsaKeyExchange extends KeyEncapsulation {
 
     @Override
     public void setSharedSecret(byte[] sharedSecretBytes) {
-        this.sharedSecret = new BigInteger(sharedSecretBytes);
+        this.sharedSecret = sharedSecretBytes;
     }
 
     @Override
