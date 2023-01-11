@@ -89,14 +89,13 @@ public class WorkflowTraceSerializer {
         try (ByteArrayOutputStream xmlOutputStream = new ByteArrayOutputStream()) {
             // circumvent the max indentation of 8 of the JAXB marshaller
             Transformer transformer = TransformerFactory.newInstance().newTransformer();
-            transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
             transformer.setOutputProperty(OutputKeys.INDENT, "yes");
             transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
             transformer.transform(
                     new JAXBSource(context, workflowTrace), new StreamResult(xmlOutputStream));
 
             String xmlText = xmlOutputStream.toString();
-            // and we modify all line separators to the system dependant line separator
+            // Replace line separators with the system specific line separator
             xmlText = xmlText.replaceAll("\r?\n", System.lineSeparator());
             outputStream.write(xmlText.getBytes());
         } catch (TransformerException E) {
