@@ -6,9 +6,9 @@
         <artifactId>ssh-attacker</artifactId>
         <version>1.1.1-SNAPSHOT</version>
     </parent>
-    <artifactId>ssh-core-pqc</artifactId>
+    <artifactId>ssh-core-oqs</artifactId>
 
-    <name>SSH-Core-PQC</name>
+    <name>SSH-Core-OQS</name>
 
     <scm>
         <connection>scm:git:https://github.com/tls-attacker/SSH-Attacker.git</connection>
