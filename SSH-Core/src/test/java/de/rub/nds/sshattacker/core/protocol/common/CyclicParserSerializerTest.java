@@ -16,9 +16,7 @@ import de.rub.nds.sshattacker.core.exceptions.PreparationException;
 import de.rub.nds.sshattacker.core.protocol.connection.Channel;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelMessage;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelOpenMessage;
-import de.rub.nds.sshattacker.core.protocol.transport.message.HybridKeyExchangeInitMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.message.HybridKeyExchangeReplyMessage;
-import de.rub.nds.sshattacker.core.protocol.transport.message.UnknownMessage;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -52,11 +50,7 @@ public class CyclicParserSerializerTest {
     @TestFactory
     public Stream<DynamicTest> generateCyclicDefaultConstructorPairsDynamicTests() {
         Set<Class<? extends ProtocolMessage>> excludedClasses = new HashSet<>();
-        // Exclude UnknownMessage as it is not a standardized protocol message (it is only used when
-        // a message could not be parsed successfully)
-        excludedClasses.add(UnknownMessage.class);
-        // TODO: Fix test even if SSH-Core-PQC is not available (i.e. use RSA instead of SNTRUP761)
-        excludedClasses.add(HybridKeyExchangeInitMessage.class);
+        // TODO: Fix HybridKeyExchangeReplyMessagePreparator
         excludedClasses.add(HybridKeyExchangeReplyMessage.class);
         return new Reflections("de.rub.nds.sshattacker.core.protocol")
                 .getSubTypesOf(ProtocolMessage.class).stream()
