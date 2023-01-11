@@ -204,6 +204,12 @@ public abstract class ProtocolMessageParser<T extends ProtocolMessage<T>> extend
                         HybridKeyExchangeCombiner.POSTQUANTUM_CONCATENATE_CLASSICAL,
                         CryptoConstants.X25519_POINT_SIZE,
                         CryptoConstants.FRODOKEM1344_CIPHERTEXT_SIZE);
+            case SNTRUP4591761_X25519:
+                return new HybridKeyExchangeReplyMessageParser(
+                        raw,
+                        HybridKeyExchangeCombiner.POSTQUANTUM_CONCATENATE_CLASSICAL,
+                        CryptoConstants.X25519_POINT_SIZE,
+                        CryptoConstants.SNTRUP4591761_CIPHERTEXT_SIZE);
             case NISTP521_FIRESABER:
                 return new HybridKeyExchangeReplyMessageParser(
                         raw,
@@ -234,6 +240,13 @@ public abstract class ProtocolMessageParser<T extends ProtocolMessage<T>> extend
                         HybridKeyExchangeCombiner.POSTQUANTUM_CONCATENATE_CLASSICAL,
                         CryptoConstants.X25519_POINT_SIZE,
                         CryptoConstants.SNTRUP761_PUBLIC_KEY_SIZE);
+
+            case SNTRUP4591761_X25519:
+                return new HybridKeyExchangeInitMessageParser(
+                        raw,
+                        HybridKeyExchangeCombiner.POSTQUANTUM_CONCATENATE_CLASSICAL,
+                        CryptoConstants.X25519_POINT_SIZE,
+                        CryptoConstants.SNTRUP4591761_PUBLIC_KEY_SIZE);
 
             case CURVE25519_FRODOKEM1344:
                 return new HybridKeyExchangeInitMessageParser(

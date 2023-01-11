@@ -6,9 +6,9 @@
         <artifactId>ssh-attacker</artifactId>
         <version>1.1.1-SNAPSHOT</version>
     </parent>
-    <artifactId>ssh-client</artifactId>
+    <artifactId>ssh-core-oqs</artifactId>
 
-    <name>SSH-Client</name>
+    <name>SSH-Core-OQS</name>
 
     <scm>
         <connection>scm:git:https://github.com/tls-attacker/SSH-Attacker.git</connection>
@@ -28,10 +28,14 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>ssh-core</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.openquantumsafe</groupId>
+            <artifactId>liboqs-java</artifactId>
+            <version>1.0</version>
+        </dependency>
     </dependencies>
 
     <build>
-        <finalName>SSH-Client</finalName>
         <plugins>
             <!--################## clean lifecycle plugins ##################-->
             <plugin>
@@ -58,16 +62,6 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
-                <configuration>
-                    <archive>
-                        <manifest>
-                            <addClasspath>true</addClasspath>
-                            <classpathPrefix>lib/</classpathPrefix>
-                            <mainClass>de.rub.nds.sshattacker.client.main.SshClient</mainClass>
-                            <useUniqueVersions>false</useUniqueVersions>
-                        </manifest>
-                    </archive>
-                </configuration>
             </plugin>
             <!-- Compile javadoc -->
             <plugin>
@@ -78,11 +72,6 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
-            </plugin>
-            <!-- Copy artifacts to apps folder -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
             </plugin>
             <!-- Execute integration tests -->
             <plugin>
@@ -104,22 +93,6 @@
                     </plugin>
                 </plugins>
             </build>
-        </profile>
-        <profile>
-            <id>liboqs-support</id>
-            <activation>
-                <!-- Check for liboqs.so at the default installation path. If you are using a custom path you'll need
-                     to enable this profile by explicitly include -P liboqs-support when calling maven. -->
-                <file>
-                    <exists>/usr/local/lib/liboqs.so</exists>
-                </file>
-            </activation>
-            <dependencies>
-                <dependency>
-                    <groupId>${project.groupId}</groupId>
-                    <artifactId>ssh-core-oqs</artifactId>
-                </dependency>
-            </dependencies>
         </profile>
     </profiles>
 </project>

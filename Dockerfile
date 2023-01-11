@@ -16,7 +16,7 @@ COPY pom.xml license_header_plain.txt ./
 COPY Attacks/pom.xml ./Attacks/pom.xml
 COPY SSH-Client/pom.xml ./SSH-Client/pom.xml
 COPY SSH-Core/pom.xml ./SSH-Core/pom.xml
-COPY SSH-Core-PQC/pom.xml ./SSH-Core-PQC/pom.xml
+COPY SSH-Core-OQS/pom.xml ./SSH-Core-OQS/pom.xml
 COPY SSH-Mitm/pom.xml ./SSH-Mitm/pom.xml
 COPY SSH-Server/pom.xml ./SSH-Server/pom.xml
 # We can only install dependencies for SSH-Core here since the other modules depend on SSH-Core to be built
@@ -27,13 +27,13 @@ RUN --mount=type=secret,id=m2settings,dst=/root/.m2/settings.xml \
 COPY Attacks ./Attacks
 COPY SSH-Client ./SSH-Client/
 COPY SSH-Core ./SSH-Core/
-COPY SSH-Core-PQC ./SSH-Core-PQC/
+COPY SSH-Core-OQS ./SSH-Core-OQS/
 COPY SSH-Mitm ./SSH-Mitm/
 COPY SSH-Server ./SSH-Server/
 
 # Build 'em
 RUN --mount=type=secret,id=m2settings,dst=/root/.m2/settings.xml \
-    mvn install -DskipTests=true -Dmaven.javadoc.skip=true --activate-profiles pqc
+    mvn install -DskipTests=true -Dmaven.javadoc.skip=true
 
 # Introduce a separate build stage for runtime to reduce resulting image sizes
 FROM openjdk:11-slim AS runtime

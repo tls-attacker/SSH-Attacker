@@ -110,11 +110,18 @@
             </build>
         </profile>
         <profile>
-            <id>pqc</id>
+            <id>liboqs-support</id>
+            <activation>
+                <!-- Check for liboqs.so at the default installation path. If you are using a custom path you'll need
+                     to enable this profile by explicitly include -P liboqs-support when calling maven. -->
+                <file>
+                    <exists>/usr/local/lib/liboqs.so</exists>
+                </file>
+            </activation>
             <dependencies>
                 <dependency>
                     <groupId>${project.groupId}</groupId>
-                    <artifactId>ssh-core-pqc</artifactId>
+                    <artifactId>ssh-core-oqs</artifactId>
                 </dependency>
             </dependencies>
         </profile>
