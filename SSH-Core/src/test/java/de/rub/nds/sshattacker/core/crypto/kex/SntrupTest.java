@@ -7,12 +7,12 @@
  */
 package de.rub.nds.sshattacker.core.crypto.kex;
 
-import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import de.rub.nds.sshattacker.core.constants.PQKemNames;
+import de.rub.nds.sshattacker.core.exceptions.CryptoException;
 import java.util.stream.Stream;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -30,7 +30,7 @@ public class SntrupTest {
 
     @ParameterizedTest
     @MethodSource("provideTestVectors")
-    public void testSntrup(PQKemNames kemName) {
+    public void testSntrup(PQKemNames kemName) throws CryptoException {
         Sntrup sntrupClient = new Sntrup(kemName);
         Sntrup sntrupServer = new Sntrup(kemName);
 
@@ -47,16 +47,10 @@ public class SntrupTest {
 
         sntrupClient.setEncryptedSharedSecret(ciphertext);
 
-        try {
-            sntrupClient.decryptSharedSecret();
-            assertNotNull(sntrupClient.getSharedSecret());
-            assertArrayEquals(sntrupClient.getSharedSecret(), sntrupServer.getSharedSecret());
-            assertArrayEquals(
-                    sntrupClient.getEncryptedSharedSecret(),
-                    sntrupServer.getEncryptedSharedSecret());
-
-        } catch (Exception e) {
-            assertTrue("This should not happen: " + e, false);
-        }
+        sntrupClient.decryptSharedSecret();
+        assertNotNull(sntrupClient.getSharedSecret());
+        assertArrayEquals(sntrupClient.getSharedSecret(), sntrupServer.getSharedSecret());
+        assertArrayEquals(
+                sntrupClient.getEncryptedSharedSecret(), sntrupServer.getEncryptedSharedSecret());
     }
 }
