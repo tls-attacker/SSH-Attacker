@@ -12,10 +12,7 @@ import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelMessage;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelOpenConfirmationMessage;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelOpenMessage;
 import de.rub.nds.sshattacker.core.state.SshContext;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.IntStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -23,14 +20,14 @@ import org.apache.logging.log4j.Logger;
 public class ChannelManager {
 
     private static final Logger LOGGER = LogManager.getLogger();
-    private HashMap<Integer, Channel> channels = new HashMap<>();
+    private final HashMap<Integer, Channel> channels = new HashMap<>();
 
-    private SshContext context;
+    private final SshContext context;
 
-    private List<ChannelOpenConfirmationMessage> pendingChannelOpenConfirmations =
+    private final List<ChannelOpenConfirmationMessage> pendingChannelOpenConfirmations =
             new LinkedList<>();
 
-    private List<ChannelMessage> channelRequestResponseQueue = new LinkedList<>();
+    private final List<ChannelMessage<?>> channelRequestResponseQueue = new LinkedList<>();
 
     public ChannelManager(SshContext context) {
         this.context = context;
@@ -40,7 +37,7 @@ public class ChannelManager {
      * Find the next unused channel ID.
      *
      * <p>At the moment, the channel management on server side is just done by a default counter.
-     * Thus the channel manager iterates through the channels, searching for the first non-existing
+     * Thus, the channel manager iterates through the channels, searching for the first non-existing
      * index. If all channels id's exist up to the number of channels, the channel index
      * numberOfChannels + 1 will be opened.
      */
@@ -57,7 +54,7 @@ public class ChannelManager {
         channel.setChannelType(ChannelType.fromName(message.getChannelType().getValue()));
         channel.setRemoteWindowSize(message.getWindowSize());
         channel.setRemotePacketSize(message.getPacketSize());
-        // channel is closed until OpenConfirm is send
+        // channel is closed until OpenConfirm is sent
         channel.setOpen(false);
 
         // prepare the response ChannelOpenConfirm and queue it
@@ -123,10 +120,11 @@ public class ChannelManager {
 
     public Optional<Channel> guessChannelByReceivedMessages() {
         if (channelRequestResponseQueue.size() != 0) {
-            ChannelMessage message = (ChannelMessage) channelRequestResponseQueue.remove(0);
+            ChannelMessage<?> message = channelRequestResponseQueue.remove(0);
             for (Integer object : channels.keySet()) {
-                if (channels.get(object).getLocalChannelId().getValue()
-                        == message.getRecipientChannelId().getValue()) {
+                if (Objects.equals(
+                        channels.get(object).getLocalChannelId().getValue(),
+                        message.getRecipientChannelId().getValue())) {
                     return Optional.ofNullable(channels.get(object));
                 }
             }
@@ -134,7 +132,7 @@ public class ChannelManager {
         return channels.values().stream().findFirst();
     }
 
-    public void addToChannelRequestResponseQueue(ChannelMessage message) {
+    public void addToChannelRequestResponseQueue(ChannelMessage<?> message) {
         channelRequestResponseQueue.add(message);
     }
 }
