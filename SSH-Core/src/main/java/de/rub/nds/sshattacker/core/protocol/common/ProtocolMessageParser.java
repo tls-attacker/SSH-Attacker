@@ -335,6 +335,8 @@ public abstract class ProtocolMessageParser<T extends ProtocolMessage<T>> extend
                 return new GlobalRequestCancelTcpIpForwardMessageParser(raw).parse();
             case "no-more-sessions@openssh.com":
                 return new GlobalRequestNoMoreSessionsMessageParser(raw).parse();
+            case "hostkeys-00@openssh.com":
+                return new GlobalRequestOpenSshHostKeysMessageParser(raw).parse();
 
             default:
                 LOGGER.debug(
