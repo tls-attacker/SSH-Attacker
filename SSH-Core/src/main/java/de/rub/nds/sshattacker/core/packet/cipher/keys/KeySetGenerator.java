@@ -10,8 +10,8 @@ package de.rub.nds.sshattacker.core.packet.cipher.keys;
 import de.rub.nds.sshattacker.core.constants.KeyDerivationLabels;
 import de.rub.nds.sshattacker.core.crypto.KeyDerivation;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.util.Converter;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
-import java.math.BigInteger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -25,7 +25,9 @@ public final class KeySetGenerator {
         KeySet keySet = new KeySet();
         Chooser chooser = context.getChooser();
         String hashAlgorithm = chooser.getKeyExchangeAlgorithm().getDigest();
-        BigInteger sharedSecret = context.getSharedSecret().orElse(BigInteger.ZERO);
+        byte[] sharedSecret =
+                Converter.bytesToLengthPrefixedBinaryString(
+                        context.getSharedSecret().orElse(new byte[] {0}));
         byte[] exchangeHash = context.getExchangeHash().orElse(new byte[0]);
         byte[] sessionId = context.getSessionID().orElse(new byte[0]);
 

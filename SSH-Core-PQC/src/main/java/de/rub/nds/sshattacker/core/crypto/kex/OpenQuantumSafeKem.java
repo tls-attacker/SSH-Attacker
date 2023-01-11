@@ -16,7 +16,6 @@ import de.rub.nds.sshattacker.core.crypto.keys.CustomPQKemPublicKey;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomPublicKey;
 import de.rub.nds.sshattacker.core.exceptions.CryptoException;
 import de.rub.nds.sshattacker.core.exceptions.NotImplementedException;
-import java.math.BigInteger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -67,7 +66,7 @@ public class OpenQuantumSafeKem extends KeyEncapsulation {
             }
             org.openquantumsafe.Pair<byte[], byte[]> encapsulation =
                     kem.encap_secret(remotePublicKey.getEncoded());
-            this.sharedSecret = new BigInteger(encapsulation.getRight());
+            this.sharedSecret = encapsulation.getRight();
             this.encryptedSharedSecret = encapsulation.getLeft();
             return encapsulation.getLeft();
         } catch (RuntimeException e) {
@@ -80,12 +79,11 @@ public class OpenQuantumSafeKem extends KeyEncapsulation {
     @Override
     public void decryptSharedSecret(byte[] encryptedSharedSecret) throws CryptoException {
         try {
-            this.sharedSecret = new BigInteger(kem.decap_secret(encryptedSharedSecret));
+            this.sharedSecret = kem.decap_secret(encryptedSharedSecret);
             this.encryptedSharedSecret = encryptedSharedSecret;
             LOGGER.info(
                     "SharedSecret Encapsulation = "
-                            + ArrayConverter.bytesToRawHexString(
-                                    ArrayConverter.bigIntegerToByteArray(sharedSecret)));
+                            + ArrayConverter.bytesToRawHexString(sharedSecret));
         } catch (RuntimeException e) {
             throw new CryptoException(
                     "Unexpected exception occured while decrypting the shared secret: " + e);
@@ -111,7 +109,7 @@ public class OpenQuantumSafeKem extends KeyEncapsulation {
 
     @Override
     public void setSharedSecret(byte[] sharedSecretBytes) {
-        sharedSecret = new BigInteger(sharedSecretBytes);
+        sharedSecret = sharedSecretBytes;
     }
 
     @Override
