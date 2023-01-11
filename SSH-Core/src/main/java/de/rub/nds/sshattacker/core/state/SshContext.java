@@ -30,7 +30,6 @@ import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import de.rub.nds.tlsattacker.transport.TransportHandlerFactory;
 import java.io.IOException;
-import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
@@ -214,7 +213,7 @@ public class SshContext {
      */
     private byte[] sessionID;
     /** The shared secret established by the negotiated key exchange method */
-    private BigInteger sharedSecret;
+    private byte[] sharedSecret;
     /** The key set derived from the shared secret, the exchange hash, and the session ID */
     private KeySet keySet;
     // endregion
@@ -894,7 +893,7 @@ public class SshContext {
         return Optional.ofNullable(sessionID);
     }
 
-    public Optional<BigInteger> getSharedSecret() {
+    public Optional<byte[]> getSharedSecret() {
         return Optional.ofNullable(sharedSecret);
     }
 
@@ -911,7 +910,7 @@ public class SshContext {
         this.sessionID = sessionID;
     }
 
-    public void setSharedSecret(BigInteger sharedSecret) {
+    public void setSharedSecret(byte[] sharedSecret) {
         this.sharedSecret = sharedSecret;
     }
 
