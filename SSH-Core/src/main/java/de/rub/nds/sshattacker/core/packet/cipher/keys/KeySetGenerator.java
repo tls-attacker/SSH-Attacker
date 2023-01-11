@@ -21,13 +21,13 @@ public final class KeySetGenerator {
 
     private KeySetGenerator() {}
 
-    public static KeySet generateKeySet(SshContext context, boolean extendSharedSecret) {
+    public static KeySet generateKeySet(SshContext context) {
         KeySet keySet = new KeySet();
         Chooser chooser = context.getChooser();
         String hashAlgorithm = chooser.getKeyExchangeAlgorithm().getDigest();
         byte[] sharedSecret =
-                Converter.byteArrayToMpint(
-                        context.getSharedSecret().orElse(new byte[] {0}), extendSharedSecret);
+                Converter.bytesToLengthPrefixedBinaryString(
+                        context.getSharedSecret().orElse(new byte[] {0}));
         byte[] exchangeHash = context.getExchangeHash().orElse(new byte[0]);
         byte[] sessionId = context.getSessionID().orElse(new byte[0]);
 

@@ -215,8 +215,7 @@ public final class ExchangeHash {
         return prefix;
     }
 
-    private static byte[] prepareCommonSuffixHashInput(
-            ExchangeHashInputHolder inputHolder, boolean extendSharedSecret) {
+    private static byte[] prepareCommonSuffixHashInput(ExchangeHashInputHolder inputHolder) {
         /*
          * The common suffix of all exchange hash inputs is:
          *   mpint     K, the shared secret
@@ -224,8 +223,7 @@ public final class ExchangeHash {
         if (inputHolder.getSharedSecret().isEmpty()) {
             throw new MissingExchangeHashInputException("[Common] Shared secret missing");
         }
-
-        return Converter.byteArrayToMpint(inputHolder.getSharedSecret().get(), extendSharedSecret);
+        return Converter.bytesToLengthPrefixedBinaryString(inputHolder.getSharedSecret().get());
     }
 
     private static byte[] prepareDhHashInput(ExchangeHashInputHolder inputHolder) {
@@ -250,7 +248,7 @@ public final class ExchangeHash {
                 prepareCommonPrefixHashInput(inputHolder),
                 Converter.bigIntegerToMpint(inputHolder.getDhClientPublicKey().get()),
                 Converter.bigIntegerToMpint(inputHolder.getDhServerPublicKey().get()),
-                prepareCommonSuffixHashInput(inputHolder, true));
+                prepareCommonSuffixHashInput(inputHolder));
     }
 
     private static byte[] prepareDhGexHashInput(ExchangeHashInputHolder inputHolder) {
@@ -306,7 +304,7 @@ public final class ExchangeHash {
                 Converter.bigIntegerToMpint(inputHolder.getDhGexGroupGenerator().get()),
                 Converter.bigIntegerToMpint(inputHolder.getDhGexClientPublicKey().get()),
                 Converter.bigIntegerToMpint(inputHolder.getDhGexServerPublicKey().get()),
-                prepareCommonSuffixHashInput(inputHolder, true));
+                prepareCommonSuffixHashInput(inputHolder));
     }
 
     private static byte[] prepareOldDhGexHashInput(ExchangeHashInputHolder inputHolder) {
@@ -349,7 +347,7 @@ public final class ExchangeHash {
                 Converter.bigIntegerToMpint(inputHolder.getDhGexGroupGenerator().get()),
                 Converter.bigIntegerToMpint(inputHolder.getDhGexClientPublicKey().get()),
                 Converter.bigIntegerToMpint(inputHolder.getDhGexServerPublicKey().get()),
-                prepareCommonSuffixHashInput(inputHolder, true));
+                prepareCommonSuffixHashInput(inputHolder));
     }
 
     private static byte[] prepareHybridHashInput(ExchangeHashInputHolder inputHolder) {
@@ -376,7 +374,7 @@ public final class ExchangeHash {
                         inputHolder.getHybridClientPublicKey().get()),
                 Converter.bytesToLengthPrefixedBinaryString(
                         inputHolder.getHybridServerPublicKey().get()),
-                prepareCommonSuffixHashInput(inputHolder, false));
+                prepareCommonSuffixHashInput(inputHolder));
     }
 
     private static byte[] prepareEcdhHashInput(ExchangeHashInputHolder inputHolder) {
@@ -403,7 +401,7 @@ public final class ExchangeHash {
                         inputHolder.getEcdhClientPublicKey().get()),
                 Converter.bytesToLengthPrefixedBinaryString(
                         inputHolder.getEcdhServerPublicKey().get()),
-                prepareCommonSuffixHashInput(inputHolder, true));
+                prepareCommonSuffixHashInput(inputHolder));
     }
 
     private static byte[] prepareRsaHashInput(ExchangeHashInputHolder inputHolder) {
@@ -430,6 +428,6 @@ public final class ExchangeHash {
                         PublicKeyHelper.encode(inputHolder.getRsaTransientKey().get())),
                 Converter.bytesToLengthPrefixedBinaryString(
                         inputHolder.getRsaEncryptedSecret().get()),
-                prepareCommonSuffixHashInput(inputHolder, true));
+                prepareCommonSuffixHashInput(inputHolder));
     }
 }

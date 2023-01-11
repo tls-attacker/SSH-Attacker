@@ -57,7 +57,7 @@ public class Converter {
     /**
      * Convert a name-list string into a stream of strings.
      *
-     * @see <a href= "https://datatracker.ietf.org/doc/html/rfc4251#page-10"><code>name-list</code>
+     * @see <a href="https://datatracker.ietf.org/doc/html/rfc4251#page-10"><code>name-list</code>
      *     specification in RFC 4251, Section 5 "Data Type Representations Used in the SSH
      *     Protocols", page. 10</a>
      * @param nameListString a single string containing a name-list value
@@ -71,7 +71,7 @@ public class Converter {
     /**
      * Convert a name-list string into a list of strings.
      *
-     * @see <a href= "https://datatracker.ietf.org/doc/html/rfc4251#page-10"><code>name-list</code>
+     * @see <a href="https://datatracker.ietf.org/doc/html/rfc4251#page-10"><code>name-list</code>
      *     specification in RFC 4251, Section 5 "Data Type Representations Used in the SSH
      *     Protocols", page. 10</a>
      * @param nameListString a single string containing a name-list value
@@ -87,7 +87,7 @@ public class Converter {
      * <p>Note that the resulting list may have fewer elements than the original name-list if not
      * all names in the name-list have an enum value counterpart.
      *
-     * @see <a href= "https://datatracker.ietf.org/doc/html/rfc4251#page-10"><code>name-list</code>
+     * @see <a href="https://datatracker.ietf.org/doc/html/rfc4251#page-10"><code>name-list</code>
      *     specification in RFC 4251, Section 5 "Data Type Representations Used in the SSH
      *     Protocols", page. 10</a>
      * @param nameListString a single string containing a name-list value
@@ -105,7 +105,7 @@ public class Converter {
      * <p>Note that the resulting list may have fewer elements than the original name-list if not
      * all names in the name-list have an enum value counterpart.
      *
-     * @see <a href= "https://datatracker.ietf.org/doc/html/rfc4251#page-10"><code>name-list</code>
+     * @see <a href="https://datatracker.ietf.org/doc/html/rfc4251#page-10"><code>name-list</code>
      *     specification in RFC 4251, Section 5 "Data Type Representations Used in the SSH
      *     Protocols", page. 10</a>
      * @param nameList a list of strings containing names from a name-list
@@ -123,7 +123,7 @@ public class Converter {
      * <p>Note that the resulting list may have fewer elements than the original name-list if not
      * all names in the name-list have an enum value counterpart.
      *
-     * @see <a href= "https://datatracker.ietf.org/doc/html/rfc4251#page-10"><code>name-list</code>
+     * @see <a href="https://datatracker.ietf.org/doc/html/rfc4251#page-10"><code>name-list</code>
      *     specification in RFC 4251, Section 5 "Data Type Representations Used in the SSH
      *     Protocols", page. 10</a>
      * @param stream a stream of strings containing names from a name-list
@@ -159,9 +159,9 @@ public class Converter {
         return ArrayConverter.concatenate(length, value);
     }
 
-    public static byte[] byteArrayToMpint(byte[] input, boolean extendByZero) {
+    public static byte[] byteArrayToMpint(byte[] input) {
         byte[] mpint = input;
-        if ((input[0] & 0x80) == 0x80 && extendByZero) { // need to append 0 if MSB would be set
+        if ((input[0] & 0x80) == 0x80) { // need to append 0 if MSB would be set
             // (twos complement)
             mpint = ArrayConverter.concatenate(new byte[] {0}, input);
         }
@@ -169,10 +169,6 @@ public class Converter {
                 ArrayConverter.intToBytes(mpint.length, DataFormatConstants.MPINT_SIZE_LENGTH);
         mpint = ArrayConverter.concatenate(length, mpint);
         return mpint;
-    }
-
-    public static byte[] byteArrayToMpint(byte[] input) {
-        return byteArrayToMpint(input, true);
     }
 
     public static byte[] stringToLengthPrefixedBinaryString(String input) {

@@ -187,7 +187,6 @@ public final class KeyExchangeUtil {
     public static void computeSharedSecret(SshContext context, KeyAgreement keyAgreement) {
         try {
             keyAgreement.computeSharedSecret();
-
             context.setSharedSecret(keyAgreement.getSharedSecret());
             context.getExchangeHashInputHolder().setSharedSecret(keyAgreement.getSharedSecret());
         } catch (CryptoException e) {
@@ -255,11 +254,7 @@ public final class KeyExchangeUtil {
      * @param context SSH context
      */
     public static void generateKeySet(SshContext context) {
-        generateKeySet(context, true);
-    }
-
-    public static void generateKeySet(SshContext context, boolean extendSharedSecret) {
-        KeySet keySet = KeySetGenerator.generateKeySet(context, extendSharedSecret);
+        KeySet keySet = KeySetGenerator.generateKeySet(context);
         context.setKeySet(keySet);
     }
 

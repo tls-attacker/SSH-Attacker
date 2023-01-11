@@ -47,7 +47,7 @@ public class HybridKeyExchangeReplyMessageHandler
         KeyExchangeUtil.computeExchangeHash(context);
         KeyExchangeUtil.handleExchangeHashSignatureMessage(context, message);
         KeyExchangeUtil.setSessionId(context);
-        KeyExchangeUtil.generateKeySet(context, false);
+        KeyExchangeUtil.generateKeySet(context);
     }
 
     private void setRemoteValues() {
