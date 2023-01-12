@@ -53,7 +53,9 @@ public enum NamedEcGroup {
     static {
         Map<String, NamedEcGroup> mutableMap = new TreeMap<>();
         for (NamedEcGroup group : NamedEcGroup.values()) {
-            mutableMap.put(group.identifier, group);
+            if (group.identifier != null) {
+                mutableMap.put(group.identifier, group);
+            }
         }
         map = Collections.unmodifiableMap(mutableMap);
     }
