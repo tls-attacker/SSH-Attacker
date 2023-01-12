@@ -7,6 +7,10 @@
  */
 package de.rub.nds.sshattacker.core.constants;
 
+import java.util.Collections;
+import java.util.Map;
+import java.util.TreeMap;
+
 public enum NamedEcGroup {
     SECT163K1("1.3.132.0.1", "sect163k1", 163),
     SECT163R1("1.3.132.0.2", "sect163r1", 163),
@@ -44,6 +48,16 @@ public enum NamedEcGroup {
 
     private final Integer coordinateSizeInBit;
 
+    public static final Map<String, NamedEcGroup> map;
+
+    static {
+        Map<String, NamedEcGroup> mutableMap = new TreeMap<>();
+        for (NamedEcGroup group : NamedEcGroup.values()) {
+            mutableMap.put(group.identifier, group);
+        }
+        map = Collections.unmodifiableMap(mutableMap);
+    }
+
     NamedEcGroup(String identifier, String javaName, Integer coordinateSizeInBit) {
         this.identifier = identifier;
         this.javaName = javaName;
@@ -51,12 +65,7 @@ public enum NamedEcGroup {
     }
 
     public static NamedEcGroup fromIdentifier(String identifier) {
-        for (NamedEcGroup group : values()) {
-            if (group.getIdentifier().equals(identifier)) {
-                return group;
-            }
-        }
-        return null;
+        return map.get(identifier);
     }
 
     public String getIdentifier() {

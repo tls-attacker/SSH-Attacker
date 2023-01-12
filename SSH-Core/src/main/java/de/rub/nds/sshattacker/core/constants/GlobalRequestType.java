@@ -7,6 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.constants;
 
+import java.util.Collections;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -32,10 +33,11 @@ public enum GlobalRequestType {
     public static final Map<String, GlobalRequestType> map;
 
     static {
-        map = new TreeMap<>();
+        Map<String, GlobalRequestType> mutableMap = new TreeMap<>();
         for (GlobalRequestType requestType : GlobalRequestType.values()) {
-            map.put(requestType.name, requestType);
+            mutableMap.put(requestType.name, requestType);
         }
+        map = Collections.unmodifiableMap(mutableMap);
     }
 
     GlobalRequestType(String name) {
