@@ -7,6 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.constants;
 
+import java.util.Collections;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -30,10 +31,11 @@ public enum AuthenticationMethod {
     public static final Map<String, AuthenticationMethod> map;
 
     static {
-        map = new TreeMap<>();
+        Map<String, AuthenticationMethod> mutableMap = new TreeMap<>();
         for (AuthenticationMethod method : AuthenticationMethod.values()) {
-            map.put(method.name, method);
+            mutableMap.put(method.name, method);
         }
+        map = Collections.unmodifiableMap(mutableMap);
     }
 
     AuthenticationMethod(String name) {

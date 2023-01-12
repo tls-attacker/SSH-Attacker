@@ -7,6 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.constants;
 
+import java.util.Collections;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -32,10 +33,11 @@ public enum ChannelType {
     public static final Map<String, ChannelType> map;
 
     static {
-        map = new TreeMap<>();
+        Map<String, ChannelType> mutableMap = new TreeMap<>();
         for (ChannelType channelType : ChannelType.values()) {
-            map.put(channelType.name, channelType);
+            mutableMap.put(channelType.name, channelType);
         }
+        map = Collections.unmodifiableMap(mutableMap);
     }
 
     ChannelType(String name) {

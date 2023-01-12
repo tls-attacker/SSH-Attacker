@@ -144,11 +144,13 @@ public enum MessageIdConstant {
     public static final Map<Byte, List<MessageIdConstant>> map;
 
     static {
-        map = new TreeMap<>();
+        Map<Byte, List<MessageIdConstant>> mutableMap = new TreeMap<>();
         for (MessageIdConstant constant : MessageIdConstant.values()) {
-            map.putIfAbsent(constant.id, new LinkedList<>());
-            map.get(constant.id).add(constant);
+            mutableMap.putIfAbsent(constant.id, new LinkedList<>());
+            mutableMap.get(constant.id).add(constant);
         }
+        mutableMap.replaceAll((k, v) -> Collections.unmodifiableList(mutableMap.get(k)));
+        map = Collections.unmodifiableMap(mutableMap);
     }
 
     MessageIdConstant(byte id) {

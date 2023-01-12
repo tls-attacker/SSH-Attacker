@@ -7,6 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.constants;
 
+import java.util.Collections;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -40,10 +41,11 @@ public enum ChannelRequestType {
     public static final Map<String, ChannelRequestType> map;
 
     static {
-        map = new TreeMap<>();
+        Map<String, ChannelRequestType> mutableMap = new TreeMap<>();
         for (ChannelRequestType requestType : ChannelRequestType.values()) {
-            map.put(requestType.name, requestType);
+            mutableMap.put(requestType.name, requestType);
         }
+        map = Collections.unmodifiableMap(mutableMap);
     }
 
     ChannelRequestType(String name) {
