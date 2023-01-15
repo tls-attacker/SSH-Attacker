@@ -54,6 +54,8 @@ public class WorkflowConfigurationFactory {
                 return createKeyExchangeWorkflowTrace(KeyExchangeFlowType.ECDH);
             case KEX_RSA:
                 return createKeyExchangeWorkflowTrace(KeyExchangeFlowType.RSA);
+            case KEX_HYBRID:
+                return createKeyExchangeWorkflowTrace(KeyExchangeFlowType.HYBRID);
             case KEX_DYNAMIC:
                 return createDynamicKeyExchangeWorkflowTrace();
             case AUTH_NONE:
