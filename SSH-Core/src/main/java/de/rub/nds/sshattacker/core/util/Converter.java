@@ -198,4 +198,70 @@ public class Converter {
         }
         return result;
     }
+
+    /**
+     * Checks if the string contains any non-printable or non-ascii characters other than space,
+     * line feed ({@code \n}), carriage return ({@code \r}), or tab stop ({@code \t}).
+     *
+     * @param value string that may contain non-printable or non-ascii chars
+     * @return {@code true} if the string contains any of the disallowed chars, else {@code false}
+     */
+    public static boolean hasNonPrintableOrNonAsciiCharacters(final String value) {
+        return value.codePoints()
+                .anyMatch(
+                        c -> {
+                            switch (c) {
+                                case '\r':
+                                case '\n':
+                                case '\t':
+                                    return false;
+                                default:
+                                    return (c < 0x20) || (c >= 0x7f);
+                            }
+                        });
+    }
+
+    /**
+     * Replace any non-printable (or non-ascii) characters other than space, line feed ({@code \n}),
+     * carriage return ({@code \r}), or tab stop ({@code \t}) with their backslash-escaped
+     * equivalents.
+     *
+     * @param value string that may contain non-printable or non-ascii chars
+     * @return string with non-printable or non-ascii characters replaced
+     */
+    public static String asBackslashEscapedString(final String value) {
+        final StringBuffer buffer = new StringBuffer(value);
+        for (int i = 0; i < buffer.length(); i++) {
+            final int codePoint = buffer.codePointAt(i);
+            String replacement;
+            switch (codePoint) {
+                case (int) '\r':
+                case (int) '\n':
+                case (int) '\t':
+                    continue;
+                case (int) '\f':
+                    replacement = "\\f";
+                    break;
+                case (int) '\b':
+                    replacement = "\\b";
+                    break;
+                case (int) '\\':
+                    replacement = "\\\\";
+                    break;
+                default:
+                    if (codePoint < 0x20 || codePoint == 0x7F) {
+                        replacement = String.format("\\x%02X", codePoint);
+                    } else if (codePoint > 0x7F) {
+                        replacement = String.format("\\u%04X", codePoint);
+                    } else {
+                        continue;
+                    }
+            }
+
+            buffer.replace(i, i + 1, replacement);
+            i += replacement.length() - 1;
+        }
+
+        return buffer.toString();
+    }
 }
