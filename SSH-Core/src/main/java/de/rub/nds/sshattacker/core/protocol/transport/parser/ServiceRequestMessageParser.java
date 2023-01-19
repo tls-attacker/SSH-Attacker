@@ -7,6 +7,8 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.parser;
 
+import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeString;
+
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 import de.rub.nds.sshattacker.core.protocol.transport.message.ServiceRequestMessage;
@@ -32,7 +34,8 @@ public class ServiceRequestMessageParser extends SshMessageParser<ServiceRequest
         message.setServiceName(
                 parseByteString(
                         message.getServiceNameLength().getValue(), StandardCharsets.US_ASCII));
-        LOGGER.debug("Service name: " + message.getServiceName().getValue());
+        LOGGER.debug(
+                "Service name: {}", backslashEscapeString(message.getServiceName().getValue()));
     }
 
     @Override

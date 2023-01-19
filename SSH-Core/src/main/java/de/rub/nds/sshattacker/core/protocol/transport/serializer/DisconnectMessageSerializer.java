@@ -7,6 +7,8 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.serializer;
 
+import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeString;
+
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.constants.DisconnectReason;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
@@ -45,7 +47,7 @@ public class DisconnectMessageSerializer extends SshMessageSerializer<Disconnect
         LOGGER.debug("Language tag length: " + message.getLanguageTagLength().getValue());
         appendInt(
                 message.getLanguageTagLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
-        LOGGER.debug("Language tag: " + message.getLanguageTag().getValue());
+        LOGGER.debug("Language tag: " + backslashEscapeString(message.getLanguageTag().getValue()));
         appendString(message.getLanguageTag().getValue(), StandardCharsets.US_ASCII);
     }
 

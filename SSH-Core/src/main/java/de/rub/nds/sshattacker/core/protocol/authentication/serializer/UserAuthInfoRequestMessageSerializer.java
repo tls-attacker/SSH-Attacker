@@ -7,6 +7,8 @@
  */
 package de.rub.nds.sshattacker.core.protocol.authentication.serializer;
 
+import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeString;
+
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.authentication.AuthenticationPrompt;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthInfoRequestMessage;
@@ -27,7 +29,7 @@ public class UserAuthInfoRequestMessageSerializer
     private void serializeUserName() {
         LOGGER.debug("User name length: " + message.getUserNameLength().getValue());
         appendInt(message.getUserNameLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
-        LOGGER.debug(("User name: " + message.getUserName().getValue()));
+        LOGGER.debug("User name: {}", backslashEscapeString(message.getUserName().getValue()));
         appendString(message.getUserName().getValue());
     }
 
@@ -35,7 +37,7 @@ public class UserAuthInfoRequestMessageSerializer
         LOGGER.debug("Instruction length: " + message.getInstructionLength().getValue());
         appendInt(
                 message.getInstructionLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
-        LOGGER.debug("Instruction: " + message.getInstruction().getValue());
+        LOGGER.debug("Instruction: " + backslashEscapeString(message.getInstruction().getValue()));
         appendString(message.getInstruction().getValue());
     }
 
@@ -43,7 +45,7 @@ public class UserAuthInfoRequestMessageSerializer
         LOGGER.debug("Language tag length: " + message.getLanguageTagLength().getValue());
         appendInt(
                 message.getLanguageTagLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
-        LOGGER.debug("Language tag: " + message.getLanguageTag().getValue());
+        LOGGER.debug("Language tag: " + backslashEscapeString(message.getLanguageTag().getValue()));
         appendString(message.getLanguageTag().getValue());
     }
 
@@ -55,7 +57,7 @@ public class UserAuthInfoRequestMessageSerializer
             AuthenticationPrompt.PromptEntry entry = message.getPrompt().get(i);
             LOGGER.debug("Prompt entry [" + i + "] length: " + entry.getPromptLength().getValue());
             appendInt(entry.getPromptLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
-            LOGGER.debug("Prompt entry [" + i + "] : " + entry.getPrompt());
+            LOGGER.debug("Prompt entry [" + i + "]: {}", entry.getPrompt());
             appendString(entry.getPrompt().getValue());
             LOGGER.debug(
                     "Prompt entry ["

@@ -7,6 +7,8 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.parser;
 
+import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeString;
+
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.constants.DisconnectReason;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
@@ -51,7 +53,7 @@ public class DisconnectMessageParser extends SshMessageParser<DisconnectMessage>
         LOGGER.debug("Description length: " + message.getDescriptionLength().getValue());
         message.setDescription(
                 parseByteString(message.getDescriptionLength().getValue(), StandardCharsets.UTF_8));
-        LOGGER.debug("Description: " + message.getDescription().getValue());
+        LOGGER.debug("Description: {}", backslashEscapeString(message.getDescription().getValue()));
     }
 
     private void parseLanguageTag() {
@@ -60,7 +62,8 @@ public class DisconnectMessageParser extends SshMessageParser<DisconnectMessage>
         message.setLanguageTag(
                 parseByteString(
                         message.getLanguageTagLength().getValue(), StandardCharsets.US_ASCII));
-        LOGGER.debug("Language tag: " + message.getLanguageTag().getValue());
+        LOGGER.debug(
+                "Language tag: {}", backslashEscapeString(message.getLanguageTag().getValue()));
     }
 
     @Override

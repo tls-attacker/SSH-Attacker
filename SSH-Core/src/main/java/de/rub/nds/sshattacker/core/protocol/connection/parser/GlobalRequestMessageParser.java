@@ -7,6 +7,8 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.parser;
 
+import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeString;
+
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 import de.rub.nds.sshattacker.core.protocol.connection.message.GlobalRequestMessage;
@@ -34,7 +36,8 @@ public abstract class GlobalRequestMessageParser<T extends GlobalRequestMessage<
         message.setRequestName(
                 parseByteString(
                         message.getRequestNameLength().getValue(), StandardCharsets.US_ASCII));
-        LOGGER.debug("Request name: " + message.getRequestName().getValue());
+        LOGGER.debug(
+                "Request name: {}", backslashEscapeString(message.getRequestName().getValue()));
     }
 
     private void parseWantReply() {

@@ -7,13 +7,14 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.handler;
 
+import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeString;
+
 import de.rub.nds.sshattacker.core.protocol.common.*;
 import de.rub.nds.sshattacker.core.protocol.transport.message.AsciiMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.parser.AsciiMessageParser;
 import de.rub.nds.sshattacker.core.protocol.transport.preparator.AsciiMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.transport.serializer.AsciiMessageSerializer;
 import de.rub.nds.sshattacker.core.state.SshContext;
-import de.rub.nds.sshattacker.core.util.Converter;
 
 public class AsciiMessageHandler extends ProtocolMessageHandler<AsciiMessage> {
 
@@ -27,13 +28,9 @@ public class AsciiMessageHandler extends ProtocolMessageHandler<AsciiMessage> {
 
     @Override
     public void adjustContext() {
-        if (Converter.hasNonPrintableOrNonAsciiCharacters(this.message.getText().getValue())) {
-            LOGGER.debug(
-                    "Received text message (backslash-escaped): {}",
-                    Converter.asBackslashEscapedString(this.message.getText().getValue()));
-        } else {
-            LOGGER.debug("Received text message: {}", this.message.getText().getValue());
-        }
+        LOGGER.debug(
+                "Received text message: {}",
+                backslashEscapeString(this.message.getText().getValue()));
     }
 
     @Override

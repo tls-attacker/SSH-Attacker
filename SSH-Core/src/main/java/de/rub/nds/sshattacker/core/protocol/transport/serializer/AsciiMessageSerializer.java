@@ -7,6 +7,8 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.serializer;
 
+import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeString;
+
 import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.transport.message.AsciiMessage;
 import java.nio.charset.StandardCharsets;
@@ -26,7 +28,7 @@ public class AsciiMessageSerializer extends ProtocolMessageSerializer<AsciiMessa
         if (text.isEmpty()) {
             LOGGER.debug("Text: [none]");
         } else {
-            LOGGER.debug("Text: " + text);
+            LOGGER.debug("Text: " + backslashEscapeString(text));
             appendString(text, StandardCharsets.US_ASCII);
         }
     }

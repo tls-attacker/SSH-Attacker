@@ -7,6 +7,8 @@
  */
 package de.rub.nds.sshattacker.core.protocol.authentication.parser;
 
+import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeString;
+
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthPubkeyMessage;
@@ -48,7 +50,9 @@ public class UserAuthPubkeyMessageParser
         message.setPubkeyAlgName(
                 parseByteString(
                         message.getPubkeyAlgNameLength().getValue(), StandardCharsets.US_ASCII));
-        LOGGER.debug("Pubkey algorithm name: " + message.getPubkeyAlgName().getValue());
+        LOGGER.debug(
+                "Pubkey algorithm name: {}",
+                backslashEscapeString(message.getPubkeyAlgName().getValue()));
     }
 
     private void parseUseSignature() {
