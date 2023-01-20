@@ -7,6 +7,10 @@
  */
 package de.rub.nds.sshattacker.core.constants;
 
+import java.util.Collections;
+import java.util.Map;
+import java.util.TreeMap;
+
 public enum ChannelType {
     /*
      * Sources:
@@ -26,6 +30,16 @@ public enum ChannelType {
 
     private final String name;
 
+    public static final Map<String, ChannelType> map;
+
+    static {
+        Map<String, ChannelType> mutableMap = new TreeMap<>();
+        for (ChannelType channelType : ChannelType.values()) {
+            mutableMap.put(channelType.name, channelType);
+        }
+        map = Collections.unmodifiableMap(mutableMap);
+    }
+
     ChannelType(String name) {
         this.name = name;
     }
@@ -35,12 +49,11 @@ public enum ChannelType {
         return name;
     }
 
-    public static ChannelType getByString(String name) {
-        for (ChannelType channelType : ChannelType.values()) {
-            if (channelType.name.equals(name)) {
-                return channelType;
-            }
-        }
-        return null;
+    public String getName() {
+        return name;
+    }
+
+    public static ChannelType fromName(String name) {
+        return map.get(name);
     }
 }

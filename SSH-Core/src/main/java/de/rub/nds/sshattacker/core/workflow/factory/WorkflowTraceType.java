@@ -13,6 +13,7 @@ public enum WorkflowTraceType {
     KEX_ECDH,
     KEX_DH_GEX,
     KEX_RSA,
+    KEX_HYBRID,
     KEX_DYNAMIC,
     AUTH_NONE,
     AUTH_PASSWORD,

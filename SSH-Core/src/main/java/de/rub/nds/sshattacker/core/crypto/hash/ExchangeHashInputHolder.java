@@ -23,7 +23,7 @@ public final class ExchangeHashInputHolder {
     private KeyExchangeInitMessage clientKeyExchangeInit;
     private KeyExchangeInitMessage serverKeyExchangeInit;
     private SshPublicKey<?, ?> serverHostKey;
-    private BigInteger sharedSecret;
+    private byte[] sharedSecret;
     // endregion
 
     // region Named DH exchange hash fields
@@ -96,11 +96,11 @@ public final class ExchangeHashInputHolder {
         this.serverHostKey = serverHostKey;
     }
 
-    public Optional<BigInteger> getSharedSecret() {
+    public Optional<byte[]> getSharedSecret() {
         return Optional.ofNullable(sharedSecret);
     }
 
-    public void setSharedSecret(BigInteger sharedSecret) {
+    public void setSharedSecret(byte[] sharedSecret) {
         this.sharedSecret = sharedSecret;
     }
     // endregion

@@ -105,6 +105,11 @@ public enum KeyExchangeAlgorithm {
             "SHA-256",
             "de.rub.nds.sshattacker.core.crypto.kex.XCurveEcdhKeyExchange"),
     // [ OpenSSH ]
+    SNTRUP4591761_X25519(
+            KeyExchangeFlowType.HYBRID,
+            "sntrup4591761x25519-sha512@tinyssh.org",
+            "SHA-512",
+            "de.rub.nds.sshattacker.core.crypto.kex.Sntrup4591761x25519KeyExchange"),
     SNTRUP761_X25519(
             KeyExchangeFlowType.HYBRID,
             "sntrup761x25519-sha512@openssh.com",

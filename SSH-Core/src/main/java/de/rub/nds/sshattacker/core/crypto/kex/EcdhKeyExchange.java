@@ -86,10 +86,10 @@ public class EcdhKeyExchange extends AbstractEcdhKeyExchange {
                 ellipticCurve.mult(localKeyPair.getPrivate().getS(), remotePublicKey.getWAsPoint());
         // RFC 5656 defines ECDH with cofactor multiplication as the cryptographic primitive
         sharedPoint = ellipticCurve.mult(ellipticCurve.getCofactor(), sharedPoint);
-        sharedSecret = sharedPoint.getFieldX().getData();
+        sharedSecret = sharedPoint.getFieldX().getData().toByteArray();
         LOGGER.debug(
                 "Finished computation of shared secret: "
-                        + ArrayConverter.bytesToRawHexString(sharedSecret.toByteArray()));
+                        + ArrayConverter.bytesToRawHexString(sharedSecret));
     }
 
     @Override

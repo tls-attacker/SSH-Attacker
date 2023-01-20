@@ -7,6 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.constants;
 
+import java.util.Collections;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -310,10 +311,11 @@ public enum PublicKeyAlgorithm {
     public static final Map<String, PublicKeyAlgorithm> map;
 
     static {
-        map = new TreeMap<>();
+        Map<String, PublicKeyAlgorithm> mutableMap = new TreeMap<>();
         for (PublicKeyAlgorithm algorithm : PublicKeyAlgorithm.values()) {
-            map.put(algorithm.name, algorithm);
+            mutableMap.put(algorithm.name, algorithm);
         }
+        map = Collections.unmodifiableMap(mutableMap);
     }
 
     PublicKeyAlgorithm(String name, PublicKeyFormat keyFormat) {
