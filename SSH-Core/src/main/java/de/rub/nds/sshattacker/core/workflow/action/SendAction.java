@@ -14,17 +14,28 @@ import de.rub.nds.sshattacker.core.protocol.common.ModifiableVariableHolder;
 import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessage;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.state.State;
+import de.rub.nds.sshattacker.core.workflow.action.executor.MessageActionResult;
+import jakarta.xml.bind.annotation.XmlElement;
 import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class SendAction extends MessageAction implements SendingAction {
 
     private static final Logger LOGGER = LogManager.getLogger();
+
+    /**
+     * True if not all messages could be sent (due to an I/O error, for example).
+     *
+     * @see #isFailed
+     * @see #setFailed
+     */
+    @XmlElement protected Boolean failed;
 
     public SendAction() {
         super();
@@ -54,6 +65,26 @@ public class SendAction extends MessageAction implements SendingAction {
         super(connectionAlias, Arrays.asList(messages));
     }
 
+    /**
+     * Set the failure status of this action.
+     *
+     * @param failed {@code true} if the action has failed, else {@code false}
+     * @see #isFailed
+     */
+    public void setFailed(final boolean failed) {
+        this.failed = Boolean.valueOf(failed);
+    }
+
+    /**
+     * Get the failure status of this action.
+     *
+     * @return {@code true} if the action has failed, else {@code false}
+     * @see #setFailed
+     */
+    public boolean isFailed() {
+        return Optional.ofNullable(this.failed).orElse(Boolean.FALSE).booleanValue();
+    }
+
     @Override
     public void execute(State state) throws WorkflowExecutionException {
         SshContext context = state.getSshContext(connectionAlias);
@@ -70,7 +101,18 @@ public class SendAction extends MessageAction implements SendingAction {
         }
 
         messages.forEach(message -> message.getHandler(context).getPreparator().prepare());
-        sendMessageHelper.sendMessages(context, messages.stream());
+        final MessageActionResult result =
+                sendMessageHelper.sendMessages(context, messages.stream());
+
+        // Check if all actions that were expected to be send were actually
+        // sent or if some failure occurred.
+        final int failedMessageCount = messages.size() - result.getPacketList().size();
+        this.setFailed(failedMessageCount != 0);
+        if (this.isFailed()) {
+            LOGGER.error(
+                    "Failed to send {} out of {} message(s)!", failedMessageCount, messages.size());
+        }
+
         setExecuted(true);
     }
 
@@ -113,7 +155,7 @@ public class SendAction extends MessageAction implements SendingAction {
 
     @Override
     public boolean executedAsPlanned() {
-        return isExecuted();
+        return this.isExecuted() && !this.isFailed();
     }
 
     @Override
@@ -162,8 +204,8 @@ public class SendAction extends MessageAction implements SendingAction {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
-        SendAction that = (SendAction) o;
-        return Objects.equals(messages, that.messages);
+        final SendAction that = (SendAction) o;
+        return Objects.equals(this.messages, that.messages) && this.isFailed() == that.isFailed();
     }
 
     @Override
