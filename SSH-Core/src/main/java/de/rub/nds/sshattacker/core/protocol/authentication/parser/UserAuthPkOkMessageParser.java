@@ -7,6 +7,8 @@
  */
 package de.rub.nds.sshattacker.core.protocol.authentication.parser;
 
+import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeString;
+
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthPkOkMessage;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
@@ -36,7 +38,7 @@ public class UserAuthPkOkMessageParser extends SshMessageParser<UserAuthPkOkMess
         LOGGER.debug("Pubkey length: " + message.getPubkeyLength().getValue());
         message.setPubkey(
                 parseByteString(message.getPubkeyLength().getValue(), StandardCharsets.US_ASCII));
-        LOGGER.debug("Pubkey: " + message.getPubkey().getValue());
+        LOGGER.debug("Pubkey: {}", backslashEscapeString(message.getPubkey().getValue()));
     }
 
     private void parsePubkeyAlgName() {
@@ -46,7 +48,9 @@ public class UserAuthPkOkMessageParser extends SshMessageParser<UserAuthPkOkMess
         message.setPubkeyAlgName(
                 parseByteString(
                         message.getPubkeyAlgNameLength().getValue(), StandardCharsets.US_ASCII));
-        LOGGER.debug("Pubkey algorithm name: " + message.getPubkeyAlgName().getValue());
+        LOGGER.debug(
+                "Pubkey algorithm name: {}",
+                backslashEscapeString(message.getPubkeyAlgName().getValue()));
     }
 
     @Override

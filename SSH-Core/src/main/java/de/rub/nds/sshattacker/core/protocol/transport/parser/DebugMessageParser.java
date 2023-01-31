@@ -7,6 +7,8 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.parser;
 
+import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeString;
+
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 import de.rub.nds.sshattacker.core.protocol.transport.message.DebugMessage;
@@ -44,7 +46,7 @@ public class DebugMessageParser extends SshMessageParser<DebugMessage> {
         LOGGER.debug("Message length: " + message.getMessageLength().getValue());
         message.setMessage(
                 parseByteString(message.getMessageLength().getValue(), StandardCharsets.UTF_8));
-        LOGGER.debug("Message: " + message.getMessage().getValue());
+        LOGGER.debug("Message: " + backslashEscapeString(message.getMessage().getValue()));
     }
 
     private void parseLanguageTag() {
@@ -53,7 +55,7 @@ public class DebugMessageParser extends SshMessageParser<DebugMessage> {
         message.setLanguageTag(
                 parseByteString(
                         message.getLanguageTagLength().getValue(), StandardCharsets.US_ASCII));
-        LOGGER.debug("Language tag: " + message.getLanguageTag().getValue());
+        LOGGER.debug("Language tag: " + backslashEscapeString(message.getLanguageTag().getValue()));
     }
 
     @Override

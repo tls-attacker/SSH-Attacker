@@ -7,6 +7,8 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.serializer;
 
+import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeString;
+
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelOpenFailureMessage;
 import java.nio.charset.StandardCharsets;
@@ -30,7 +32,7 @@ public class ChannelOpenFailureMessageSerializer
     private void serializeReason() {
         LOGGER.debug("Reason length: " + message.getReasonLength().getValue());
         appendInt(message.getReasonLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
-        LOGGER.debug("Reason: " + message.getReason().getValue());
+        LOGGER.debug("Reason: {}", backslashEscapeString(message.getReason().getValue()));
         appendString(message.getReason().getValue(), StandardCharsets.UTF_8);
     }
 
@@ -38,7 +40,8 @@ public class ChannelOpenFailureMessageSerializer
         LOGGER.debug("Language tag length: " + message.getLanguageTagLength().getValue());
         appendInt(
                 message.getLanguageTagLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
-        LOGGER.debug("Language tag: " + message.getLanguageTag().getValue());
+        LOGGER.debug(
+                "Language tag: {}", backslashEscapeString(message.getLanguageTag().getValue()));
         appendString(message.getLanguageTag().getValue(), StandardCharsets.US_ASCII);
     }
 

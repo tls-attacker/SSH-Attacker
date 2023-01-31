@@ -7,6 +7,8 @@
  */
 package de.rub.nds.sshattacker.core.protocol.authentication.serializer;
 
+import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeString;
+
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthHostbasedMessage;
@@ -47,7 +49,7 @@ public class UserAuthHostbasedMessageSerializer
         appendInt(message.getHostNameLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
         LOGGER.debug("Host name length: " + message.getHostNameLength().getValue());
         appendString(message.getHostName().getValue());
-        LOGGER.debug("Host name: " + message.getHostName().getValue());
+        LOGGER.debug("Host name: {}", backslashEscapeString(message.getHostName().getValue()));
     }
 
     private void serializeClientUserName() {
@@ -56,7 +58,9 @@ public class UserAuthHostbasedMessageSerializer
                 DataFormatConstants.STRING_SIZE_LENGTH);
         LOGGER.debug("Client user name length: " + message.getClientUserNameLength().getValue());
         appendString(message.getClientUserName().getValue(), StandardCharsets.UTF_8);
-        LOGGER.debug("Client user name: " + message.getClientUserName().getValue());
+        LOGGER.debug(
+                "Client user name: {}",
+                backslashEscapeString(message.getClientUserName().getValue()));
     }
 
     private void serializeSignature() {

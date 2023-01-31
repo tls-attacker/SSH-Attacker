@@ -7,6 +7,8 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.parser;
 
+import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeString;
+
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.constants.KeyExchangeInitConstants;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
@@ -48,7 +50,9 @@ public class KeyExchangeInitMessageParser extends SshMessageParser<KeyExchangeIn
                 parseByteString(
                         message.getKeyExchangeAlgorithmsLength().getValue(),
                         StandardCharsets.US_ASCII));
-        LOGGER.debug("Key exchange algorithms: " + message.getKeyExchangeAlgorithms().getValue());
+        LOGGER.debug(
+                "Key exchange algorithms: {}",
+                backslashEscapeString(message.getKeyExchangeAlgorithms().getValue()));
     }
 
     private void parseServerHostKeyAlgorithms() {
@@ -62,22 +66,23 @@ public class KeyExchangeInitMessageParser extends SshMessageParser<KeyExchangeIn
                         message.getServerHostKeyAlgorithmsLength().getValue(),
                         StandardCharsets.US_ASCII));
         LOGGER.debug(
-                "Server host key algorithms: " + message.getServerHostKeyAlgorithms().getValue());
+                "Server host key algorithms: {}",
+                backslashEscapeString(message.getServerHostKeyAlgorithms().getValue()));
     }
 
     private void parseEncryptionAlgorithmsClientToServer() {
         message.setEncryptionAlgorithmsClientToServerLength(
                 parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
         LOGGER.debug(
-                "Encryption algorithms length (client to server): "
-                        + message.getEncryptionAlgorithmsClientToServerLength().getValue());
+                "Encryption algorithms length (client to server): {}",
+                message.getEncryptionAlgorithmsClientToServerLength().getValue());
         message.setEncryptionAlgorithmsClientToServer(
                 parseByteString(
                         message.getEncryptionAlgorithmsClientToServerLength().getValue(),
                         StandardCharsets.US_ASCII));
         LOGGER.debug(
-                "Encryption algorithms (client to server): "
-                        + message.getEncryptionAlgorithmsClientToServer().getValue());
+                "Encryption algorithms (client to server): {}",
+                backslashEscapeString(message.getEncryptionAlgorithmsClientToServer().getValue()));
     }
 
     private void parseEncryptionAlgorithmsServerToClient() {
@@ -91,38 +96,38 @@ public class KeyExchangeInitMessageParser extends SshMessageParser<KeyExchangeIn
                         message.getEncryptionAlgorithmsServerToClientLength().getValue(),
                         StandardCharsets.US_ASCII));
         LOGGER.debug(
-                "Encryption algorithms (server to client): "
-                        + message.getEncryptionAlgorithmsServerToClient().getValue());
+                "Encryption algorithms (server to client): {}",
+                backslashEscapeString(message.getEncryptionAlgorithmsServerToClient().getValue()));
     }
 
     private void parseMacAlgorithmsClientToServer() {
         message.setMacAlgorithmsClientToServerLength(
                 parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
         LOGGER.debug(
-                "MAC algorithms length (client to server): "
-                        + message.getMacAlgorithmsClientToServerLength().getValue());
+                "MAC algorithms length (client to server): {}",
+                message.getMacAlgorithmsClientToServerLength().getValue());
         message.setMacAlgorithmsClientToServer(
                 parseByteString(
                         message.getMacAlgorithmsClientToServerLength().getValue(),
                         StandardCharsets.US_ASCII));
         LOGGER.debug(
-                "MAC algorithms (client to server): "
-                        + message.getMacAlgorithmsClientToServer().getValue());
+                "MAC algorithms (client to server): {}",
+                backslashEscapeString(message.getMacAlgorithmsClientToServer().getValue()));
     }
 
     private void parseMacAlgorithmsServerToClient() {
         message.setMacAlgorithmsServerToClientLength(
                 parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
         LOGGER.debug(
-                "MAC algorithms length (server to client): "
-                        + message.getMacAlgorithmsServerToClientLength().getValue());
+                "MAC algorithms length (server to client): {}",
+                message.getMacAlgorithmsServerToClientLength().getValue());
         message.setMacAlgorithmsServerToClient(
                 parseByteString(
                         message.getMacAlgorithmsServerToClientLength().getValue(),
                         StandardCharsets.US_ASCII));
         LOGGER.debug(
-                "MAC algorithms (server to client): "
-                        + message.getMacAlgorithmsServerToClient().getValue());
+                "MAC algorithms (server to client): {}",
+                backslashEscapeString(message.getMacAlgorithmsServerToClient().getValue()));
     }
 
     private void parseCompressionMethodsClientToServer() {
@@ -136,8 +141,8 @@ public class KeyExchangeInitMessageParser extends SshMessageParser<KeyExchangeIn
                         message.getCompressionMethodsClientToServerLength().getValue(),
                         StandardCharsets.US_ASCII));
         LOGGER.debug(
-                "Compression algorithms (client to server): "
-                        + message.getCompressionMethodsClientToServer().getValue());
+                "Compression algorithms (client to server): {}",
+                backslashEscapeString(message.getCompressionMethodsClientToServer().getValue()));
     }
 
     private void parseCompressionMethodsServerToClient() {
@@ -151,8 +156,8 @@ public class KeyExchangeInitMessageParser extends SshMessageParser<KeyExchangeIn
                         message.getCompressionMethodsServerToClientLength().getValue(),
                         StandardCharsets.US_ASCII));
         LOGGER.debug(
-                "Compression algorithms (server to client): "
-                        + message.getCompressionMethodsServerToClient().getValue());
+                "Compression algorithms (server to client): {}",
+                backslashEscapeString(message.getCompressionMethodsServerToClient().getValue()));
     }
 
     private void parseLanguagesClientToServer() {
@@ -166,7 +171,8 @@ public class KeyExchangeInitMessageParser extends SshMessageParser<KeyExchangeIn
                         message.getLanguagesClientToServerLength().getValue(),
                         StandardCharsets.US_ASCII));
         LOGGER.debug(
-                "Languages (client to server): " + message.getLanguagesClientToServer().getValue());
+                "Languages (client to server): {}",
+                backslashEscapeString(message.getLanguagesClientToServer().getValue()));
     }
 
     private void parseLanguagesServerToClient() {
@@ -180,7 +186,8 @@ public class KeyExchangeInitMessageParser extends SshMessageParser<KeyExchangeIn
                         message.getLanguagesServerToClientLength().getValue(),
                         StandardCharsets.US_ASCII));
         LOGGER.debug(
-                "Languages (server to client): " + message.getLanguagesServerToClient().getValue());
+                "Languages (server to client): {}",
+                backslashEscapeString(message.getLanguagesServerToClient().getValue()));
     }
 
     private void parseFirstKeyExchangePacketFollows() {

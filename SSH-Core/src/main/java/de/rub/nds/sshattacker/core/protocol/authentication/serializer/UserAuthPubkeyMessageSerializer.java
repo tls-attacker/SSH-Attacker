@@ -7,6 +7,8 @@
  */
 package de.rub.nds.sshattacker.core.protocol.authentication.serializer;
 
+import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeString;
+
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthPubkeyMessage;
@@ -36,7 +38,9 @@ public class UserAuthPubkeyMessageSerializer
         appendInt(
                 message.getPubkeyAlgNameLength().getValue(),
                 DataFormatConstants.STRING_SIZE_LENGTH);
-        LOGGER.debug("Pubkey algorithm name: " + message.getPubkeyAlgName().getValue());
+        LOGGER.debug(
+                "Pubkey algorithm name: {}",
+                backslashEscapeString(message.getPubkeyAlgName().getValue()));
         appendString(message.getPubkeyAlgName().getValue(), StandardCharsets.US_ASCII);
     }
 

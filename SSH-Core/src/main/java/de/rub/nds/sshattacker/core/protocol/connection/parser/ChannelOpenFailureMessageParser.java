@@ -7,6 +7,8 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.parser;
 
+import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeString;
+
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelOpenFailureMessage;
 import java.nio.charset.StandardCharsets;
@@ -41,7 +43,7 @@ public class ChannelOpenFailureMessageParser
         LOGGER.debug("Reason length: " + message.getReasonLength());
         message.setReason(
                 parseByteString(message.getReasonLength().getValue(), StandardCharsets.UTF_8));
-        LOGGER.debug("Reason: " + message.getReason().getValue());
+        LOGGER.debug("Reason: {}", backslashEscapeString(message.getReason().getValue()));
     }
 
     private void parseLanguageTag() {
@@ -50,7 +52,8 @@ public class ChannelOpenFailureMessageParser
         message.setLanguageTag(
                 parseByteString(
                         message.getLanguageTagLength().getValue(), StandardCharsets.US_ASCII));
-        LOGGER.debug("Language tag: " + message.getLanguageTag().getValue());
+        LOGGER.debug(
+                "Language tag: {}", backslashEscapeString(message.getLanguageTag().getValue()));
     }
 
     @Override
