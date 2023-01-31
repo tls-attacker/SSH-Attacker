@@ -344,7 +344,8 @@ public class PacketMacedCipher extends PacketCipher {
                         ctr.mod(
                                 BigInteger.ONE.shiftLeft(
                                         Byte.SIZE * encryptionAlgorithm.getIVSize()));
-                return ArrayConverter.bigIntegerToByteArray(ctr);
+                return ArrayConverter.bigIntegerToNullPaddedByteArray(
+                        ctr, encryptionAlgorithm.getIVSize());
             default:
                 throw new UnsupportedOperationException(
                         "Unable to extract initialization vector for mode: "
