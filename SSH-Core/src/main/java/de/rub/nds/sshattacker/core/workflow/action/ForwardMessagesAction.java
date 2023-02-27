@@ -9,21 +9,27 @@ package de.rub.nds.sshattacker.core.workflow.action;
 
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.sshattacker.core.exceptions.WorkflowExecutionException;
+import de.rub.nds.sshattacker.core.packet.AbstractPacket;
 import de.rub.nds.sshattacker.core.packet.layer.AbstractPacketLayer;
 import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessage;
 import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.transport.message.VersionExchangeMessage;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.state.State;
+import de.rub.nds.sshattacker.core.workflow.action.executor.MessageActionResult;
 import de.rub.nds.sshattacker.core.workflow.action.executor.ReceiveMessageHelper;
 import de.rub.nds.sshattacker.core.workflow.action.executor.SendMessageHelper;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
-import jakarta.xml.bind.annotation.*;
-import java.io.IOException;
-import java.util.*;
+import jakarta.xml.bind.annotation.XmlAttribute;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlElementWrapper;
+import jakarta.xml.bind.annotation.XmlTransient;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.ThreadContext;
+
+import java.io.IOException;
+import java.util.*;
 
 public class ForwardMessagesAction extends SshAction implements ReceivingAction, SendingAction {
     private static final Logger LOGGER = LogManager.getLogger();
@@ -53,6 +59,8 @@ public class ForwardMessagesAction extends SshAction implements ReceivingAction,
     protected String forwardedConnectionAlias = null;
 
     @XmlTransient private byte[] receivedBytes;
+
+    @XmlTransient protected List<AbstractPacket> packetList = new ArrayList<>();
 
     public ForwardMessagesAction() {
         this.receiveMessageHelper = new ReceiveMessageHelper();
@@ -156,8 +164,10 @@ public class ForwardMessagesAction extends SshAction implements ReceivingAction,
     }
 
     protected void handleReceivedMessages(SshContext ctx) {
-        receivedMessages =
-                receiveMessageHelper.handleReceivedBytes(ctx, receivedBytes).getMessageList();
+        MessageActionResult handleReceived =
+                receiveMessageHelper.handleReceivedBytes(ctx, receivedBytes);
+        receivedMessages = handleReceived.getMessageList();
+        packetList = handleReceived.getPacketList();
         String expected = getReadableString(messages);
         LOGGER.debug("Receive Expected (" + receiveFromAlias + "): " + expected);
         String received = getReadableString(receivedMessages);
@@ -247,6 +257,10 @@ public class ForwardMessagesAction extends SshAction implements ReceivingAction,
 
     public List<ProtocolMessage<?>> getMessages() {
         return messages;
+    }
+
+    public List<AbstractPacket> getPacketList() {
+        return packetList;
     }
 
     public void setMessages(List<ProtocolMessage<?>> messages) {
