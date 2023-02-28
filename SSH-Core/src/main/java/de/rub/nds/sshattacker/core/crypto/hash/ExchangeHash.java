@@ -124,6 +124,12 @@ public final class ExchangeHash {
         return compute(algorithm, prepareEcdhHashInput(inputHolder));
     }
 
+    // INVALID CURVE MOD
+    public static byte[] returnEcdhExchangeHashInput(ExchangeHashInputHolder inputHolder) {
+        return prepareEcdhHashInput(inputHolder);
+    }
+    // MOD END
+
     public static byte[] computeHybridHash(
             KeyExchangeAlgorithm algorithm, ExchangeHashInputHolder inputHolder)
             throws CryptoException {
@@ -222,6 +228,16 @@ public final class ExchangeHash {
          */
         if (inputHolder.getSharedSecret().isEmpty()) {
             throw new MissingExchangeHashInputException("[Common] Shared secret missing");
+        }
+
+        // Shared secret is of type mpint (RFC5655). RFC4251 states that if the value of mpint is 0,
+        // it MUST be a zero byte string,
+        // so we just trick a bit here and concatenate some zero bytes (mpint has 4byte length
+        // field), so it looks like we have "00 00 00 00" as length and then an empty string
+        if (inputHolder.getSharedSecret().get().toString() == "0") {
+            byte[] zeroLength = new byte[3];
+            byte[] a = new byte[1];
+            return ArrayConverter.concatenate(zeroLength, a);
         }
         return Converter.bigIntegerToMpint(inputHolder.getSharedSecret().get());
     }

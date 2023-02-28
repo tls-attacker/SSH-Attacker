@@ -818,6 +818,7 @@ public class DefaultChooser extends Chooser {
                         () -> {
                             KeyExchangeAlgorithm negotiatedAlgorithm =
                                     this.getKeyExchangeAlgorithm();
+
                             AbstractEcdhKeyExchange freshKeyExchange =
                                     AbstractEcdhKeyExchange.newInstance(
                                             context, negotiatedAlgorithm);

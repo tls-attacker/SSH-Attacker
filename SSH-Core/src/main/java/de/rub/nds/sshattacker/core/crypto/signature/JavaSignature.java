@@ -10,8 +10,12 @@ package de.rub.nds.sshattacker.core.crypto.signature;
 import de.rub.nds.sshattacker.core.constants.PublicKeyAlgorithm;
 import de.rub.nds.sshattacker.core.exceptions.CryptoException;
 import java.security.*;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class JavaSignature implements VerifyingSignature, SigningSignature {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private final PublicKeyAlgorithm algorithm;
     private final Key key;

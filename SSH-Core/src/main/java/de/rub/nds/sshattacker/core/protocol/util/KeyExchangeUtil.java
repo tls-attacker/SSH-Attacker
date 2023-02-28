@@ -8,6 +8,7 @@
 package de.rub.nds.sshattacker.core.protocol.util;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.constants.PublicKeyAlgorithm;
 import de.rub.nds.sshattacker.core.constants.SignatureEncoding;
@@ -145,6 +146,9 @@ public final class KeyExchangeUtil {
      * @param message Message object containing the signature to verify
      */
     private static void verifySignature(SshContext context, ExchangeHashSignatureMessage message) {
+
+        Config SshConfig = context.getChooser().getConfig();
+
         byte[] exchangeHash = context.getExchangeHash().orElse(new byte[0]);
         PublicKeyAlgorithm hostKeyAlgorithm = context.getChooser().getHostKeyAlgorithm();
         Optional<SshPublicKey<?, ?>> hostKey = context.getHostKey();
@@ -154,6 +158,9 @@ public final class KeyExchangeUtil {
             try {
                 VerifyingSignature verifyingSignature =
                         SignatureFactory.getVerifyingSignature(hostKeyAlgorithm, hostKey.get());
+                LOGGER.info(hostKey.get());
+
+                SshConfig.setExchangeHashSignatureServer(signature.getSignatureBytes());
                 if (verifyingSignature.verify(exchangeHash, signature.getSignatureBytes())) {
                     LOGGER.info(
                             "Exchange hash signature verification successful: Signature is valid.");
@@ -186,9 +193,16 @@ public final class KeyExchangeUtil {
      */
     public static void computeSharedSecret(SshContext context, KeyAgreement keyAgreement) {
         try {
+
+            Config sshConfig = context.getChooser().getConfig();
+
             keyAgreement.computeSharedSecret();
-            context.setSharedSecret(keyAgreement.getSharedSecret());
-            context.getExchangeHashInputHolder().setSharedSecret(keyAgreement.getSharedSecret());
+            // context.setSharedSecret(keyAgreement.getSharedSecret());
+            // context.getExchangeHashInputHolder().setSharedSecret(keyAgreement.getSharedSecret());
+
+            context.setSharedSecret(sshConfig.getCustomSharedSecret());
+            context.getExchangeHashInputHolder().setSharedSecret(sshConfig.getCustomSharedSecret());
+
         } catch (CryptoException e) {
             LOGGER.warn("Key exchange instance is not ready yet, unable to compute shared secret");
             LOGGER.debug(e);
@@ -220,6 +234,13 @@ public final class KeyExchangeUtil {
             context.setExchangeHash(
                     ExchangeHash.computeHash(
                             context, context.getChooser().getKeyExchangeAlgorithm()));
+
+            context.getChooser()
+                    .getConfig()
+                    .setExchangeHashInputHolderClient(context.getExchangeHashInputHolder());
+
+            context.getChooser().getConfig().setExchangeHashClient(context.getExchangeHash());
+
         } catch (MissingExchangeHashInputException e) {
             LOGGER.warn(
                     "Failed to compute exchange hash and update context, some inputs for exchange hash computation are missing");

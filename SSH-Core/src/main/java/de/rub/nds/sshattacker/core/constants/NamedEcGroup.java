@@ -31,6 +31,7 @@ public enum NamedEcGroup {
     SECP224R1("1.3.132.0.33", "secp224r1", 224),
     SECP256K1("1.3.132.0.10", "secp256k1", 256),
     SECP256R1("nistp256", "secp256r1", 256),
+
     SECP384R1("nistp384", "secp384r1", 384),
     SECP521R1("nistp521", "secp521r1", 521),
     BRAINPOOLP256R1("1.3.36.3.3.2.8.1.1.7", "brainpoolp256r1", 256),

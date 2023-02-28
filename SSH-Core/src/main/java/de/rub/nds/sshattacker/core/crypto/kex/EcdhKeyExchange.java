@@ -36,6 +36,16 @@ public class EcdhKeyExchange extends AbstractEcdhKeyExchange {
         this.ellipticCurve = CurveFactory.getCurve(group);
     }
 
+    /*
+    protected EcdhKeyExchange(SshContext context, NamedEcGroup group) {
+        super(group);
+        if (group.isRFC7748Curve()) {
+            throw new IllegalArgumentException(
+                    "EcdhKeyExchange does not support named group " + group);
+        }
+        this.ellipticCurve = CurveFactory.getCurve(context, group);
+    }*/
+
     @Override
     public void generateLocalKeyPair() {
         int privateKeyBitLength = ellipticCurve.getBasePointOrder().bitLength();
@@ -82,11 +92,13 @@ public class EcdhKeyExchange extends AbstractEcdhKeyExchange {
             throw new CryptoException(
                     "Unable to compute shared secret - either local key pair or remote public key is null");
         }
+
         Point sharedPoint =
                 ellipticCurve.mult(localKeyPair.getPrivate().getS(), remotePublicKey.getWAsPoint());
         // RFC 5656 defines ECDH with cofactor multiplication as the cryptographic primitive
         sharedPoint = ellipticCurve.mult(ellipticCurve.getCofactor(), sharedPoint);
         sharedSecret = sharedPoint.getFieldX().getData();
+
         LOGGER.debug(
                 "Finished computation of shared secret: "
                         + ArrayConverter.bytesToRawHexString(sharedSecret.toByteArray()));

@@ -7,6 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.handler;
 
+import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.protocol.common.*;
 import de.rub.nds.sshattacker.core.protocol.transport.message.EcdhKeyExchangeReplyMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.parser.EcdhKeyExchangeReplyMessageParser;
@@ -29,9 +30,21 @@ public class EcdhKeyExchangeReplyMessageHandler
 
     @Override
     public void adjustContext() {
+
         KeyExchangeUtil.handleHostKeyMessage(context, message);
         updateContextWithRemotePublicKey();
+
+        // Invalid Curve Mod: We get a custom keypair and set them here. The private key is not
+        // relevant, the public key is the invalid point we send to the server.
+        Config sshConfig = context.getChooser().getConfig();
+
+        context.getChooser()
+                .getEcdhKeyExchange()
+                .setLocalKeyPair(
+                        sshConfig.getCustomEcPrivateKey(), sshConfig.getCustomEcPublicKey());
+
         KeyExchangeUtil.computeSharedSecret(context, context.getChooser().getEcdhKeyExchange());
+
         KeyExchangeUtil.computeExchangeHash(context);
         KeyExchangeUtil.handleExchangeHashSignatureMessage(context, message);
         KeyExchangeUtil.setSessionId(context);

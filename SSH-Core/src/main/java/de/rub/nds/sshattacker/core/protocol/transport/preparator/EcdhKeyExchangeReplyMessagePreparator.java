@@ -26,6 +26,7 @@ public class EcdhKeyExchangeReplyMessagePreparator
     public void prepareMessageSpecificContents() {
         KeyExchangeUtil.prepareHostKeyMessage(chooser.getContext(), getObject());
         prepareEphemeralPublicKey();
+
         KeyExchangeUtil.computeSharedSecret(chooser.getContext(), chooser.getEcdhKeyExchange());
         KeyExchangeUtil.computeExchangeHash(chooser.getContext());
         KeyExchangeUtil.prepareExchangeHashSignatureMessage(chooser.getContext(), getObject());

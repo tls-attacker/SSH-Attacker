@@ -13,6 +13,7 @@ import de.rub.nds.sshattacker.core.connection.InboundConnection;
 import de.rub.nds.sshattacker.core.connection.OutboundConnection;
 import de.rub.nds.sshattacker.core.constants.*;
 import de.rub.nds.sshattacker.core.crypto.ec.PointFormatter;
+import de.rub.nds.sshattacker.core.crypto.hash.ExchangeHashInputHolder;
 import de.rub.nds.sshattacker.core.crypto.keys.*;
 import de.rub.nds.sshattacker.core.protocol.authentication.AuthenticationResponse;
 import de.rub.nds.sshattacker.core.protocol.connection.ChannelDefaults;
@@ -48,6 +49,66 @@ public class Config implements Serializable {
         DEFAULT_CONFIG_CACHE = new ConfigCache(createConfig());
         Security.addProvider(new BouncyCastleProvider());
     }
+
+    // Invalid Curve Attack Additions
+    // Mod
+    private byte[] customEcPublicKey;
+    private byte[] customEcPrivateKey;
+    private BigInteger customSharedSecret;
+    private byte[] exchangeHashSignatureServer;
+    private Optional<byte[]> exchangeHashClient;
+    private ExchangeHashInputHolder exchangeHashInputHolderClient;
+
+    public void setCustomEcPublicKey(byte[] customEcPublicKey) {
+        this.customEcPublicKey = customEcPublicKey;
+    }
+
+    public void setCustomEcPrivateKey(byte[] customEcPrivateKey) {
+        this.customEcPrivateKey = customEcPrivateKey;
+    }
+
+    public byte[] getCustomEcPublicKey() {
+        return customEcPublicKey;
+    }
+
+    public byte[] getCustomEcPrivateKey() {
+        return customEcPrivateKey;
+    }
+
+    public void setCustomSharedSecret(BigInteger customSharedSecret) {
+        this.customSharedSecret = customSharedSecret;
+    }
+
+    public BigInteger getCustomSharedSecret() {
+        return customSharedSecret;
+    }
+
+    public byte[] getExchangeHashSignatureServer() {
+        return exchangeHashSignatureServer;
+    }
+
+    public void setExchangeHashSignatureServer(byte[] exchangeHashSignatureServer) {
+        this.exchangeHashSignatureServer = exchangeHashSignatureServer;
+    }
+
+    public Optional<byte[]> getExchangeHashClient() {
+        return exchangeHashClient;
+    }
+
+    public void setExchangeHashClient(Optional<byte[]> exchangeHashClient) {
+        this.exchangeHashClient = exchangeHashClient;
+    }
+
+    public ExchangeHashInputHolder getExchangeHashInputHolderClient() {
+        return exchangeHashInputHolderClient;
+    }
+
+    public void setExchangeHashInputHolderClient(
+            ExchangeHashInputHolder exchangeHashInputHolderClient) {
+        this.exchangeHashInputHolderClient = exchangeHashInputHolderClient;
+    }
+
+    // Mod end
 
     /** Default Connection to use when running as Client */
     private OutboundConnection defaultClientConnection;

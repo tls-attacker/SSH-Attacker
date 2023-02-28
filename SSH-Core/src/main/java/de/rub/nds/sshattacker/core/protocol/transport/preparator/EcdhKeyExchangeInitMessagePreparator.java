@@ -7,6 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.preparator;
 
+import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.crypto.kex.AbstractEcdhKeyExchange;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
@@ -24,10 +25,25 @@ public class EcdhKeyExchangeInitMessagePreparator
     @Override
     public void prepareMessageSpecificContents() {
         AbstractEcdhKeyExchange keyExchange = chooser.getEcdhKeyExchange();
-        keyExchange.generateLocalKeyPair();
-        byte[] encodedPublicKey = keyExchange.getLocalKeyPair().getPublic().getEncoded();
-        chooser.getContext().getExchangeHashInputHolder().setEcdhClientPublicKey(encodedPublicKey);
 
-        getObject().setEphemeralPublicKey(encodedPublicKey, true);
+        byte[] customPubKey = new byte[65];
+
+        Config sshConfig = chooser.getConfig();
+        customPubKey = sshConfig.getCustomEcPublicKey();
+
+        keyExchange.generateLocalKeyPair();
+
+        byte[] encodedPublicKey = keyExchange.getLocalKeyPair().getPublic().getEncoded();
+
+        // Set public key in exchange hash and message
+        try {
+            chooser.getContext().getExchangeHashInputHolder().setEcdhClientPublicKey(customPubKey);
+            getObject().setEphemeralPublicKey(customPubKey, true);
+        } catch (Exception e) {
+            chooser.getContext()
+                    .getExchangeHashInputHolder()
+                    .setEcdhClientPublicKey(encodedPublicKey);
+            getObject().setEphemeralPublicKey(encodedPublicKey, true);
+        }
     }
 }
