@@ -28,55 +28,6 @@ public class EcdhKeyExchangeReplyMessage extends SshMessage<EcdhKeyExchangeReply
     private ModifiableInteger signatureLength;
     private ModifiableByteArray signature;
 
-    /*
-    // Mod
-    private ModifiableInteger ephemeralPrivateKeyLength;
-    private ModifiableByteArray ephemeralPrivateKey;
-
-    public ModifiableInteger getEphemeralPrivateKeyLength() {
-        return ephemeralPrivateKeyLength;
-    }
-
-    public void setEphemeralPrivateKeyLength(ModifiableInteger ephemeralPrivateKeyLength) {
-        this.ephemeralPrivateKeyLength = ephemeralPrivateKeyLength;
-    }
-
-    public void setEphemeralPrivateKeyLength(int ephemeralPrivateKeyLength) {
-        this.ephemeralPrivateKeyLength =
-                ModifiableVariableFactory.safelySetValue(
-                        this.ephemeralPrivateKeyLength, ephemeralPrivateKeyLength);
-    }
-
-    public ModifiableByteArray getEphemeralPrivateKey() {
-        return ephemeralPrivateKey;
-    }
-
-    public void setEphemeralPrivateKey(ModifiableByteArray ephemeralPrivateKey) {
-        setEphemeralPrivateKey(ephemeralPrivateKey, false);
-    }
-
-    public void setEphemeralPrivateKey(byte[] ephemeralPrivateKey) {
-        setEphemeralPrivateKey(ephemeralPrivateKey, false);
-    }
-
-    public void setEphemeralPrivateKey(
-            ModifiableByteArray ephemeralPrivateKey, boolean adjustLengthField) {
-        this.ephemeralPrivateKey = ephemeralPrivateKey;
-        if (adjustLengthField) {
-            setEphemeralPrivateKeyLength(this.ephemeralPrivateKey.getValue().length);
-        }
-    }
-
-    public void setEphemeralPrivateKey(byte[] ephemeralPrivateKey, boolean adjustLengthField) {
-        this.ephemeralPrivateKey =
-                ModifiableVariableFactory.safelySetValue(
-                        this.ephemeralPrivateKey, ephemeralPrivateKey);
-        if (adjustLengthField) {
-            setEphemeralPrivateKeyLength(this.ephemeralPrivateKey.getValue().length);
-        }
-    }
-    // Mod end*/
-
     @Override
     public ModifiableInteger getHostKeyBytesLength() {
         return hostKeyBytesLength;

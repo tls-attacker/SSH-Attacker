@@ -197,9 +197,7 @@ public final class KeyExchangeUtil {
             Config sshConfig = context.getChooser().getConfig();
 
             keyAgreement.computeSharedSecret();
-            // context.setSharedSecret(keyAgreement.getSharedSecret());
-            // context.getExchangeHashInputHolder().setSharedSecret(keyAgreement.getSharedSecret());
-
+            //Replce the sharedsecret we use for our exchange Hash
             context.setSharedSecret(sshConfig.getCustomSharedSecret());
             context.getExchangeHashInputHolder().setSharedSecret(sshConfig.getCustomSharedSecret());
 
