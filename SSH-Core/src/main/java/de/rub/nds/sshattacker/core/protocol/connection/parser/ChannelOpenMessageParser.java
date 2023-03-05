@@ -7,6 +7,8 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.parser;
 
+import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeString;
+
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelOpenMessage;
@@ -37,7 +39,7 @@ public class ChannelOpenMessageParser extends SshMessageParser<ChannelOpenMessag
         message.setChannelType(
                 parseByteString(
                         message.getChannelTypeLength().getValue(), StandardCharsets.US_ASCII));
-        LOGGER.debug("Channel type: " + message.getChannelType().getValue());
+        LOGGER.debug("Channel type: " + backslashEscapeString(message.getChannelType().getValue()));
     }
 
     public void parseSenderChannel() {

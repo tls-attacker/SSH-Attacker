@@ -7,6 +7,8 @@
  */
 package de.rub.nds.sshattacker.core.protocol.authentication.serializer;
 
+import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeString;
+
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthKeyboardInteractiveMessage;
 import java.nio.charset.StandardCharsets;
@@ -27,14 +29,14 @@ public class UserAuthKeyboardInteractiveMessageSerializer
         LOGGER.debug("Language tag length: " + message.getLanguageTagLength().getValue());
         appendInt(
                 message.getLanguageTagLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
-        LOGGER.debug("Language tag: " + message.getLanguageTag().getValue());
+        LOGGER.debug("Language tag: " + backslashEscapeString(message.getLanguageTag().getValue()));
         appendString(message.getLanguageTag().getValue(), StandardCharsets.US_ASCII);
     }
 
     private void serializeSubMethods() {
         LOGGER.debug("Sub methods length: " + message.getSubMethodsLength().getValue());
         appendInt(message.getSubMethodsLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
-        LOGGER.debug("Sub methods: " + message.getSubMethods().getValue());
+        LOGGER.debug("Sub methods: " + backslashEscapeString(message.getSubMethods().getValue()));
         appendString(message.getSubMethods().getValue(), StandardCharsets.UTF_8);
     }
 

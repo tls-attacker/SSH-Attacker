@@ -7,6 +7,8 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.handler;
 
+import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeString;
+
 import de.rub.nds.sshattacker.core.protocol.common.*;
 import de.rub.nds.sshattacker.core.protocol.transport.message.AsciiMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.parser.AsciiMessageParser;
@@ -26,7 +28,9 @@ public class AsciiMessageHandler extends ProtocolMessageHandler<AsciiMessage> {
 
     @Override
     public void adjustContext() {
-        LOGGER.debug("Received text message: {}", this.message.getText().getValue());
+        LOGGER.debug(
+                "Received text message: {}",
+                backslashEscapeString(this.message.getText().getValue()));
     }
 
     @Override

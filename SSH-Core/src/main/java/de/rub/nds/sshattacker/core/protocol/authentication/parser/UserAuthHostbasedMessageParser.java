@@ -7,6 +7,8 @@
  */
 package de.rub.nds.sshattacker.core.protocol.authentication.parser;
 
+import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeString;
+
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.BinaryPacketConstants;
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
@@ -38,7 +40,9 @@ public class UserAuthHostbasedMessageParser
         LOGGER.debug(
                 "Public key algorithm length: " + message.getPubKeyAlgorithmLength().getValue());
         message.setPubKeyAlgorithm(parseByteString(message.getPubKeyAlgorithmLength().getValue()));
-        LOGGER.debug("Public key algorithm: " + message.getPubKeyAlgorithm().getValue());
+        LOGGER.debug(
+                "Public key algorithm: "
+                        + backslashEscapeString(message.getPubKeyAlgorithm().getValue()));
     }
 
     private void parseHostKeyBytes() {
@@ -54,7 +58,7 @@ public class UserAuthHostbasedMessageParser
         message.setHostNameLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
         LOGGER.debug("Host name length: " + message.getHostNameLength().getValue());
         message.setHostName(parseByteString(message.getHostNameLength().getValue()));
-        LOGGER.debug("Host name: " + message.getHostName().getValue());
+        LOGGER.debug("Host name: " + backslashEscapeString(message.getHostName().getValue()));
     }
 
     private void parseClientUserName() {
@@ -63,7 +67,9 @@ public class UserAuthHostbasedMessageParser
         message.setClientUserName(
                 parseByteString(
                         message.getClientUserNameLength().getValue(), StandardCharsets.UTF_8));
-        LOGGER.debug("Client user name: " + message.getClientUserName().getValue());
+        LOGGER.debug(
+                "Client user name: "
+                        + backslashEscapeString(message.getClientUserName().getValue()));
     }
 
     private void parseSignature() {

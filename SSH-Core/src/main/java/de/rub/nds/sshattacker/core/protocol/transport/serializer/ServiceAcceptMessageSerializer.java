@@ -7,6 +7,8 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.serializer;
 
+import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeString;
+
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.transport.message.ServiceAcceptMessage;
@@ -25,7 +27,8 @@ public class ServiceAcceptMessageSerializer extends SshMessageSerializer<Service
     private void serializeServiceName() {
         LOGGER.debug("Service name length: " + message.getServiceNameLength().getValue());
         appendInt(message.getServiceNameLength().getValue(), DataFormatConstants.UINT32_SIZE);
-        LOGGER.debug("Service name: " + message.getServiceName().getValue());
+        LOGGER.debug(
+                "Service name: {}", backslashEscapeString(message.getServiceName().getValue()));
         appendString(message.getServiceName().getValue(), StandardCharsets.US_ASCII);
     }
 

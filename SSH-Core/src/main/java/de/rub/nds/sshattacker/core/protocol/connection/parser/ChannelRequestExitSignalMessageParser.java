@@ -7,6 +7,8 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.parser;
 
+import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeString;
+
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelRequestExitSignalMessage;
 import java.nio.charset.StandardCharsets;
@@ -35,7 +37,7 @@ public class ChannelRequestExitSignalMessageParser
         message.setSignalNameLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
         LOGGER.debug("Signal name length: " + message.getSignalNameLength().getValue());
         message.setSignalName(parseByteString(message.getSignalNameLength().getValue()));
-        LOGGER.debug("Signal name: " + message.getSignalName().getValue());
+        LOGGER.debug("Signal name: {}", backslashEscapeString(message.getSignalName().getValue()));
     }
 
     public void parseCoreDump() {
@@ -45,9 +47,10 @@ public class ChannelRequestExitSignalMessageParser
 
     public void parseErrorMessage() {
         message.setErrorMessageLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-        LOGGER.debug("Error message " + message.getErrorMessageLength().getValue());
+        LOGGER.debug("Error message length: {}", message.getErrorMessageLength().getValue());
         message.setErrorMessage(parseByteString(message.getErrorMessageLength().getValue()));
-        LOGGER.debug("Error message: " + message.getErrorMessage().getValue());
+        LOGGER.debug(
+                "Error message: {}", backslashEscapeString(message.getErrorMessage().getValue()));
     }
 
     private void parseLanguageTag() {
@@ -56,7 +59,8 @@ public class ChannelRequestExitSignalMessageParser
         message.setLanguageTag(
                 parseByteString(
                         message.getLanguageTagLength().getValue(), StandardCharsets.US_ASCII));
-        LOGGER.debug("Language tag: " + message.getLanguageTag().getValue());
+        LOGGER.debug(
+                "Language tag: {}", backslashEscapeString(message.getLanguageTag().getValue()));
     }
 
     @Override

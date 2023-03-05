@@ -7,6 +7,8 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.parser;
 
+import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeString;
+
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelRequestSubsystemMessage;
 import java.nio.charset.StandardCharsets;
@@ -36,7 +38,8 @@ public class ChannelRequestSubsystemMessageParser
         message.setSubsystemName(
                 parseByteString(
                         message.getSubsystemNameLength().getValue(), StandardCharsets.UTF_8));
-        LOGGER.debug("Subsystem name: " + message.getSubsystemName().getValue());
+        LOGGER.debug(
+                "Subsystem name: {}", backslashEscapeString(message.getSubsystemName().getValue()));
     }
 
     @Override
