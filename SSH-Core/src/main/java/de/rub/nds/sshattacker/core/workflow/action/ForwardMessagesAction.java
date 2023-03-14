@@ -24,12 +24,11 @@ import jakarta.xml.bind.annotation.XmlAttribute;
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlElementWrapper;
 import jakarta.xml.bind.annotation.XmlTransient;
+import java.io.IOException;
+import java.util.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.ThreadContext;
-
-import java.io.IOException;
-import java.util.*;
 
 public class ForwardMessagesAction extends SshAction implements ReceivingAction, SendingAction {
     private static final Logger LOGGER = LogManager.getLogger();
@@ -60,7 +59,8 @@ public class ForwardMessagesAction extends SshAction implements ReceivingAction,
 
     @XmlTransient private byte[] receivedBytes;
 
-    @XmlTransient protected List<AbstractPacket> packetList = new ArrayList<>();
+    @XmlTransient @HoldsModifiableVariable @XmlElementWrapper
+    protected List<AbstractPacket> packetList = new ArrayList<>();
 
     public ForwardMessagesAction() {
         this.receiveMessageHelper = new ReceiveMessageHelper();

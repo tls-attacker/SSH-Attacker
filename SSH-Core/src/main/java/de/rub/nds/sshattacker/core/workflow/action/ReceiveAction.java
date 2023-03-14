@@ -186,7 +186,8 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
      */
     @XmlElement protected Boolean failOnUnexpectedDebugMessages = null;
 
-    @XmlTransient protected List<AbstractPacket> packetList = new ArrayList<>();
+    @XmlTransient @HoldsModifiableVariable @XmlElementWrapper
+    protected List<AbstractPacket> packetList = new ArrayList<>();
 
     public ReceiveAction() {
         super(AliasedConnection.DEFAULT_CONNECTION_ALIAS);
