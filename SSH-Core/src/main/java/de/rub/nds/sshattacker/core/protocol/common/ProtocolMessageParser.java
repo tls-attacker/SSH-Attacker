@@ -16,6 +16,7 @@ import de.rub.nds.sshattacker.core.packet.AbstractPacket;
 import de.rub.nds.sshattacker.core.packet.BlobPacket;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.*;
 import de.rub.nds.sshattacker.core.protocol.authentication.parser.*;
+import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelOpenUnknownMessage;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelRequestUnknownMessage;
 import de.rub.nds.sshattacker.core.protocol.connection.message.GlobalRequestUnknownMessage;
 import de.rub.nds.sshattacker.core.protocol.connection.parser.*;
@@ -137,7 +138,7 @@ public abstract class ProtocolMessageParser<T extends ProtocolMessage<T>> extend
                 case SSH_MSG_CHANNEL_OPEN_FAILURE:
                     return new ChannelOpenFailureMessageParser(raw).parse();
                 case SSH_MSG_CHANNEL_OPEN:
-                    return new ChannelOpenUnknownMessageParser(raw).parse();
+                    return getChannelOpenMessageParsing(raw);
                 case SSH_MSG_CHANNEL_SUCCESS:
                     return new ChannelSuccessMessageParser(raw).parse();
                 case SSH_MSG_CHANNEL_WINDOW_ADJUST:
@@ -343,6 +344,23 @@ public abstract class ProtocolMessageParser<T extends ProtocolMessage<T>> extend
                                 + MessageIdConstant.getNameById(raw[0])
                                 + ":"
                                 + globalRequestType);
+                return message;
+        }
+    }
+
+    public static ProtocolMessage<?> getChannelOpenMessageParsing(byte[] raw) {
+        ChannelOpenUnknownMessage message = new ChannelOpenUnknownMessageParser(raw).parse();
+        String typeSpecificData = new String(message.getTypeSpecificData().getValue());
+
+        switch (typeSpecificData) {
+            case "":
+                return new ChannelOpenDefaultMessageParser(raw).parse();
+            default:
+                LOGGER.debug(
+                        "Received unimplemented channel open message type "
+                                + MessageIdConstant.getNameById(raw[0])
+                                + ":"
+                                + typeSpecificData);
                 return message;
         }
     }
