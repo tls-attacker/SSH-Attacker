@@ -25,6 +25,10 @@ public class ChannelOpenUnknownMessage extends ChannelOpenMessage<ChannelOpenUnk
                 ModifiableVariableFactory.safelySetValue(this.typeSpecificData, typeSpecificData);
     }
 
+    public void setTypeSpecificData(ModifiableByteArray typeSpecificData) {
+        this.typeSpecificData = typeSpecificData;
+    }
+
     @Override
     public ChannelOpenUnknownMessageHandler getHandler(SshContext context) {
         return new ChannelOpenUnknownMessageHandler(context, this);
