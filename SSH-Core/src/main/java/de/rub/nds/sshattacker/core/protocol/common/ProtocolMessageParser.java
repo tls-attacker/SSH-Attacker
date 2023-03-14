@@ -8,7 +8,9 @@
 package de.rub.nds.sshattacker.core.protocol.common;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.sshattacker.core.constants.*;
+import de.rub.nds.sshattacker.core.constants.CryptoConstants;
+import de.rub.nds.sshattacker.core.constants.HybridKeyExchangeCombiner;
+import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.exceptions.ParserException;
 import de.rub.nds.sshattacker.core.packet.AbstractPacket;
 import de.rub.nds.sshattacker.core.packet.BlobPacket;
@@ -135,7 +137,7 @@ public abstract class ProtocolMessageParser<T extends ProtocolMessage<T>> extend
                 case SSH_MSG_CHANNEL_OPEN_FAILURE:
                     return new ChannelOpenFailureMessageParser(raw).parse();
                 case SSH_MSG_CHANNEL_OPEN:
-                    return new ChannelOpenMessageParser(raw).parse();
+                    return new ChannelOpenUnknownMessageParser(raw).parse();
                 case SSH_MSG_CHANNEL_SUCCESS:
                     return new ChannelSuccessMessageParser(raw).parse();
                 case SSH_MSG_CHANNEL_WINDOW_ADJUST:
@@ -185,6 +187,9 @@ public abstract class ProtocolMessageParser<T extends ProtocolMessage<T>> extend
 
     public static HybridKeyExchangeReplyMessageParser handleHbrReply(
             byte[] raw, SshContext context) {
+        LOGGER.info(
+                "Negotiated Hybrid Key Exchange: "
+                        + context.getChooser().getKeyExchangeAlgorithm());
         switch (context.getChooser().getKeyExchangeAlgorithm()) {
             default:
                 LOGGER.warn(
@@ -202,12 +207,6 @@ public abstract class ProtocolMessageParser<T extends ProtocolMessage<T>> extend
                         HybridKeyExchangeCombiner.POSTQUANTUM_CONCATENATE_CLASSICAL,
                         CryptoConstants.X25519_POINT_SIZE,
                         CryptoConstants.FRODOKEM1344_CIPHERTEXT_SIZE);
-            case SNTRUP4591761_X25519:
-                return new HybridKeyExchangeReplyMessageParser(
-                        raw,
-                        HybridKeyExchangeCombiner.POSTQUANTUM_CONCATENATE_CLASSICAL,
-                        CryptoConstants.X25519_POINT_SIZE,
-                        CryptoConstants.SNTRUP4591761_CIPHERTEXT_SIZE);
             case NISTP521_FIRESABER:
                 return new HybridKeyExchangeReplyMessageParser(
                         raw,
@@ -238,21 +237,12 @@ public abstract class ProtocolMessageParser<T extends ProtocolMessage<T>> extend
                         HybridKeyExchangeCombiner.POSTQUANTUM_CONCATENATE_CLASSICAL,
                         CryptoConstants.X25519_POINT_SIZE,
                         CryptoConstants.SNTRUP761_PUBLIC_KEY_SIZE);
-
-            case SNTRUP4591761_X25519:
-                return new HybridKeyExchangeInitMessageParser(
-                        raw,
-                        HybridKeyExchangeCombiner.POSTQUANTUM_CONCATENATE_CLASSICAL,
-                        CryptoConstants.X25519_POINT_SIZE,
-                        CryptoConstants.SNTRUP4591761_PUBLIC_KEY_SIZE);
-
             case CURVE25519_FRODOKEM1344:
                 return new HybridKeyExchangeInitMessageParser(
                         raw,
                         HybridKeyExchangeCombiner.POSTQUANTUM_CONCATENATE_CLASSICAL,
                         CryptoConstants.X25519_POINT_SIZE,
                         CryptoConstants.FRODOKEM1344_PUBLIC_KEY_SIZE);
-
             case NISTP521_FIRESABER:
                 return new HybridKeyExchangeInitMessageParser(
                         raw,
@@ -270,81 +260,89 @@ public abstract class ProtocolMessageParser<T extends ProtocolMessage<T>> extend
 
     private static ProtocolMessage<?> getUserAuthRequestMessageParsing(byte[] raw) {
         UserAuthUnknownMessage message = new UserAuthUnknownMessageParser(raw).parse();
-        String methodString = message.getMethodName().getValue();
-        AuthenticationMethod method = AuthenticationMethod.fromName(methodString);
-        switch (method) {
-            case NONE:
+        switch (message.getMethodName().getValue()) {
+            case "none":
                 return new UserAuthNoneMessageParser(raw).parse();
-            case PASSWORD:
+            case "password":
                 return new UserAuthPasswordMessageParser(raw).parse();
-            case PUBLICKEY:
+            case "publickey":
                 return new UserAuthPubkeyMessageParser(raw).parse();
-            case HOST_BASED:
+            case "hostbased":
                 return new UserAuthHostbasedMessageParser(raw).parse();
-            case KEYBOARD_INTERACTIVE:
+            case "keyboard-interactive":
                 return new UserAuthKeyboardInteractiveMessageParser(raw).parse();
+            case "gssapi-with-mic":
+            case "gssapi-keyex":
+            case "gssapi":
+            case "external-keyx":
             default:
-                LOGGER.debug(
-                        "Received unimplemented user authentication method in user authentication request: {}",
-                        methodString);
                 return message;
         }
     }
 
     public static ProtocolMessage<?> getChannelRequestMessageParsing(byte[] raw) {
         ChannelRequestUnknownMessage message = new ChannelRequestUnknownMessageParser(raw).parse();
-        String requestTypeString = message.getRequestType().getValue();
-        ChannelRequestType requestType = ChannelRequestType.fromName(requestTypeString);
+        String requestType = message.getRequestType().getValue();
         switch (requestType) {
-            case PTY_REQ:
+            case "pty-req":
                 return new ChannelRequestPtyMessageParser(raw).parse();
-            case X11_REQ:
+            case "x11-req":
                 return new ChannelRequestX11MessageParser(raw).parse();
-            case ENV:
+            case "env":
                 return new ChannelRequestEnvMessageParser(raw).parse();
-            case SHELL:
+            case "shell":
                 return new ChannelRequestShellMessageParser(raw).parse();
-            case EXEC:
+            case "exec":
                 return new ChannelRequestExecMessageParser(raw).parse();
-            case SUBSYSTEM:
+            case "subsystem":
                 return new ChannelRequestSubsystemMessageParser(raw).parse();
-            case WINDOW_CHANGE:
+            case "window-change":
                 return new ChannelRequestWindowChangeMessageParser(raw).parse();
-            case XON_XOFF:
+            case "xon-off":
                 return new ChannelRequestXonXoffMessageParser(raw).parse();
-            case SIGNAL:
+            case "signal":
                 return new ChannelRequestSignalMessageParser(raw).parse();
-            case EXIT_STATUS:
+            case "exit-status":
                 return new ChannelRequestExitStatusMessageParser(raw).parse();
-            case EXIT_SIGNAL:
+            case "exit-signal":
                 return new ChannelRequestExitSignalMessageParser(raw).parse();
-            case AUTH_AGENT_REQ_OPENSSH_COM:
+            case "auth-agent-req@openssh.com":
                 return new ChannelRequestAuthAgentMessageParser(raw).parse();
             default:
                 LOGGER.debug(
-                        "Received unimplemented channel request message type: {}",
-                        requestTypeString);
+                        "Received unimplemented message request type "
+                                + MessageIdConstant.getNameById(raw[0])
+                                + ":"
+                                + requestType);
                 return message;
         }
     }
 
     public static ProtocolMessage<?> getGlobalRequestMessageParsing(byte[] raw) {
         GlobalRequestUnknownMessage message = new GlobalRequestUnknownMessageParser(raw).parse();
-        String requestTypeString = message.getRequestName().getValue();
-        GlobalRequestType requestType = GlobalRequestType.fromName(requestTypeString);
-        switch (requestType) {
-            case TCPIP_FORWARD:
+        String globalRequestType = message.getRequestName().getValue();
+        /*
+         * auth-agent-req@openssh.com,
+         * STREAMLOCAL_FORWARD_OPENSSH_COM("streamlocal-forward@openssh.com"),
+         * CANCEL_STREAMLOCAL_FORWARD_OPENSSH_COM(
+         * "cancel-streamlocal-forward@openssh.com"),
+         * HOSTKEYS_00_OPENSSH_COM("hostkeys-00@openssh.com"),
+         * HOSTKEYS_PROVE_00_OPENSSH_COM("hostkeys-prove-00@openssh.com");
+         */
+        switch (globalRequestType) {
+            case "tcpip-forward":
                 return new GlobalRequestTcpIpForwardMessageParser(raw).parse();
-            case CANCEL_TCPIP_FORWARD:
+            case "cancel-tcpip-forward":
                 return new GlobalRequestCancelTcpIpForwardMessageParser(raw).parse();
-            case NO_MORE_SESSIONS_OPENSSH_COM:
+            case "no-more-sessions@openssh.com":
                 return new GlobalRequestNoMoreSessionsMessageParser(raw).parse();
-            case HOSTKEYS_00_OPENSSH_COM:
-                return new GlobalRequestOpenSshHostKeysMessageParser(raw).parse();
+
             default:
                 LOGGER.debug(
-                        "Received unimplemented global request message type: {}",
-                        requestTypeString);
+                        "Received unimplemented global request type "
+                                + MessageIdConstant.getNameById(raw[0])
+                                + ":"
+                                + globalRequestType);
                 return message;
         }
     }

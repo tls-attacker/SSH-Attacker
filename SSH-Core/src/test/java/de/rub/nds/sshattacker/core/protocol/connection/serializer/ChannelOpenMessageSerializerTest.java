@@ -11,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 import de.rub.nds.sshattacker.core.constants.ChannelType;
 import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
-import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelOpenMessage;
+import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelOpenUnknownMessage;
 import de.rub.nds.sshattacker.core.protocol.connection.parser.ChannelOpenMessageParserTest;
 import java.util.stream.Stream;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -45,13 +45,15 @@ public class ChannelOpenMessageSerializerTest {
             int providedSenderChannelId,
             int providedInitialWindowSize,
             int providedMaximumPacketSize) {
-        ChannelOpenMessage msg = new ChannelOpenMessage();
+        ChannelOpenUnknownMessage msg = new ChannelOpenUnknownMessage();
         msg.setMessageId(MessageIdConstant.SSH_MSG_CHANNEL_OPEN);
         msg.setChannelType(providedChannelType.toString(), true);
         msg.setSenderChannelId(providedSenderChannelId);
         msg.setWindowSize(providedInitialWindowSize);
         msg.setPacketSize(providedMaximumPacketSize);
-        ChannelOpenMessageSerializer serializer = new ChannelOpenMessageSerializer(msg);
+        msg.setTypeSpecificData(new byte[0]);
+        ChannelOpenUnknownMessageSerializer serializer =
+                new ChannelOpenUnknownMessageSerializer(msg);
 
         assertArrayEquals(expectedBytes, serializer.serialize());
     }

@@ -16,7 +16,8 @@ import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class ChannelOpenMessageParser extends SshMessageParser<ChannelOpenMessage> {
+public abstract class ChannelOpenMessageParser<T extends ChannelOpenMessage<T>>
+        extends SshMessageParser<T> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -26,11 +27,6 @@ public class ChannelOpenMessageParser extends SshMessageParser<ChannelOpenMessag
 
     public ChannelOpenMessageParser(byte[] array, int startPosition) {
         super(array, startPosition);
-    }
-
-    @Override
-    public ChannelOpenMessage createMessage() {
-        return new ChannelOpenMessage();
     }
 
     public void parseChannelType() {

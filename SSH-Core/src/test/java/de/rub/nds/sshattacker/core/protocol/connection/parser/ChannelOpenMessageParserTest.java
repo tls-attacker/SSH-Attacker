@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.ChannelType;
 import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
-import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelOpenMessage;
+import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelOpenUnknownMessage;
 import java.util.stream.Stream;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -66,8 +66,8 @@ public class ChannelOpenMessageParserTest {
             int expectedSenderChannel,
             int expectedInitialWindowSize,
             int expectedMaximumPacketSize) {
-        ChannelOpenMessageParser parser = new ChannelOpenMessageParser(providedBytes);
-        ChannelOpenMessage msg = parser.parse();
+        ChannelOpenUnknownMessageParser parser = new ChannelOpenUnknownMessageParser(providedBytes);
+        ChannelOpenUnknownMessage msg = parser.parse();
 
         assertEquals(MessageIdConstant.SSH_MSG_CHANNEL_OPEN.getId(), msg.getMessageId().getValue());
         assertEquals(expectedChannelType.toString(), msg.getChannelType().getValue());
