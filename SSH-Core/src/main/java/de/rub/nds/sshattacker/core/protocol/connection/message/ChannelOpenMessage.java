@@ -12,12 +12,10 @@ import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.sshattacker.core.constants.ChannelType;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
-import de.rub.nds.sshattacker.core.protocol.connection.handler.ChannelOpenMessageHandler;
-import de.rub.nds.sshattacker.core.state.SshContext;
 import jakarta.xml.bind.annotation.XmlAttribute;
 import java.nio.charset.StandardCharsets;
 
-public class ChannelOpenMessage extends SshMessage<ChannelOpenMessage> {
+public abstract class ChannelOpenMessage<T extends ChannelOpenMessage<T>> extends SshMessage<T> {
 
     private ModifiableInteger channelTypeLength;
     private ModifiableString channelType;
@@ -120,10 +118,5 @@ public class ChannelOpenMessage extends SshMessage<ChannelOpenMessage> {
 
     public void setConfigSenderChannelId(int configSenderChannelId) {
         this.configSenderChannelId = configSenderChannelId;
-    }
-
-    @Override
-    public ChannelOpenMessageHandler getHandler(SshContext context) {
-        return new ChannelOpenMessageHandler(context, this);
     }
 }
