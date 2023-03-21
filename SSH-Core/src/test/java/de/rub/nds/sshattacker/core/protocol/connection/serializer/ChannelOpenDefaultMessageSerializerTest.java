@@ -11,21 +11,21 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 import de.rub.nds.sshattacker.core.constants.ChannelType;
 import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
-import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelOpenUnknownMessage;
-import de.rub.nds.sshattacker.core.protocol.connection.parser.ChannelOpenMessageParserTest;
+import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelOpenDefaultMessage;
+import de.rub.nds.sshattacker.core.protocol.connection.parser.ChannelOpenDefaultMessageParserTest;
 import java.util.stream.Stream;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
-public class ChannelOpenMessageSerializerTest {
+public class ChannelOpenDefaultMessageSerializerTest {
     /**
      * Provides a stream of test vectors for the ChannelOpenMessageSerializer class
      *
      * @return A stream of test vectors to feed the testSerialize unit test
      */
     public static Stream<Arguments> provideTestVectors() {
-        return ChannelOpenMessageParserTest.provideTestVectors();
+        return ChannelOpenDefaultMessageParserTest.provideTestVectors();
     }
 
     /**
@@ -45,15 +45,14 @@ public class ChannelOpenMessageSerializerTest {
             int providedSenderChannelId,
             int providedInitialWindowSize,
             int providedMaximumPacketSize) {
-        ChannelOpenUnknownMessage msg = new ChannelOpenUnknownMessage();
+        ChannelOpenDefaultMessage msg = new ChannelOpenDefaultMessage();
         msg.setMessageId(MessageIdConstant.SSH_MSG_CHANNEL_OPEN);
         msg.setChannelType(providedChannelType.toString(), true);
         msg.setSenderChannelId(providedSenderChannelId);
         msg.setWindowSize(providedInitialWindowSize);
         msg.setPacketSize(providedMaximumPacketSize);
-        msg.setTypeSpecificData(new byte[0]);
-        ChannelOpenUnknownMessageSerializer serializer =
-                new ChannelOpenUnknownMessageSerializer(msg);
+        ChannelOpenDefaultMessageSerializer serializer =
+                new ChannelOpenDefaultMessageSerializer(msg);
 
         assertArrayEquals(expectedBytes, serializer.serialize());
     }
