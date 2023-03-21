@@ -7,13 +7,12 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.message;
 
-import de.rub.nds.sshattacker.core.protocol.connection.handler.ChannelOpenDefaultMessageHandler;
+import de.rub.nds.sshattacker.core.protocol.connection.handler.ChannelOpenSessionMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 
-public class ChannelOpenDefaultMessage extends ChannelOpenMessage<ChannelOpenDefaultMessage> {
-
+public class ChannelOpenSessionMessage extends ChannelOpenMessage<ChannelOpenSessionMessage> {
     @Override
-    public ChannelOpenDefaultMessageHandler getHandler(SshContext context) {
-        return new ChannelOpenDefaultMessageHandler(context, this);
+    public ChannelOpenSessionMessageHandler getHandler(SshContext context) {
+        return new ChannelOpenSessionMessageHandler(context, this);
     }
 }

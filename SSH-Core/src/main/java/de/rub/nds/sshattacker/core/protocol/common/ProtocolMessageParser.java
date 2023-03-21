@@ -357,7 +357,7 @@ public abstract class ProtocolMessageParser<T extends ProtocolMessage<T>> extend
         ChannelType channelType = ChannelType.fromName(channelTypeString);
         switch (channelType) {
             case SESSION:
-                return new ChannelOpenDefaultMessageParser(raw).parse();
+                return new ChannelOpenSessionMessageParser(raw).parse();
             default:
                 LOGGER.debug(
                         "Received unimplemented channel open message type: {}", channelTypeString);

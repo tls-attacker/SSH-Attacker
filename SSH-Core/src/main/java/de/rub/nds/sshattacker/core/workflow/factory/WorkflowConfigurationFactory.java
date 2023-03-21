@@ -410,7 +410,7 @@ public class WorkflowConfigurationFactory {
         AliasedConnection connection = getDefaultConnection();
         workflow.addSshActions(
                 SshActionFactory.createMessageAction(
-                        connection, ConnectionEndType.CLIENT, new ChannelOpenDefaultMessage()),
+                        connection, ConnectionEndType.CLIENT, new ChannelOpenSessionMessage()),
                 SshActionFactory.createMessageAction(
                         connection, ConnectionEndType.SERVER, new ChannelOpenConfirmationMessage()),
                 SshActionFactory.createMessageAction(
