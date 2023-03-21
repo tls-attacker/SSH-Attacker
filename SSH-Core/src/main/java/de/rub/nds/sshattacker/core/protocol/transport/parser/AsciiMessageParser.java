@@ -33,12 +33,15 @@ public class AsciiMessageParser extends ProtocolMessageParser<AsciiMessage> {
     private void parseText() {
         // parse till CR NL (and remove them)
         String result = this.parseStringTill(new byte[] {CharConstants.NEWLINE});
-        if (result.lastIndexOf("\r") == (result.length() - 2)) {
+        if (result.endsWith("\r\n")) {
             message.setEndOfMessageSequence("\r\n");
             result = result.substring(0, result.length() - 2);
-        } else {
+        } else if (result.endsWith("\n")) {
             message.setEndOfMessageSequence("\n");
             result = result.substring(0, result.length() - 1);
+        } else {
+            // This may happen if the server sends a malformed message.
+            message.setEndOfMessageSequence("");
         }
 
         message.setText(result);
