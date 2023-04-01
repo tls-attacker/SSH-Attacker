@@ -108,9 +108,8 @@ public class CyclicParserSerializerTest {
                                 + "'");
             }
             // prepare specific Channel requirements for sending Channel messages
-            if (messageClass.getSuperclass() == ChannelMessage.class
-                    || messageClass.getSuperclass().getSuperclass() == ChannelMessage.class
-                    || messageClass == ChannelOpenMessage.class) {
+            if (ChannelMessage.class.isAssignableFrom(messageClass)
+                    || ChannelOpenMessage.class.isAssignableFrom(messageClass)) {
                 Channel defaultChannel =
                         context.getConfig().getChannelDefaults().newChannelFromDefaults();
                 context.getChannelManager()

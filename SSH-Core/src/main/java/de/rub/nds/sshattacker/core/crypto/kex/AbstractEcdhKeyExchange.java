@@ -49,8 +49,17 @@ public abstract class AbstractEcdhKeyExchange extends DhBasedKeyExchange {
                 group = NamedEcGroup.SECP521R1;
                 break;
             default:
-                String[] kexParts = algorithm.name().split("_");
-                group = NamedEcGroup.valueOf(kexParts[3]);
+                final String[] kexParts = algorithm.name().split("_", 3);
+                if (kexParts.length != 3) {
+                    LOGGER.error(
+                            "Failed to find EC group name in algorithm name '{}'",
+                            algorithm.name());
+                    throw new IllegalArgumentException(
+                            String.format(
+                                    "EcdhKeyExchange does not implement support for algorithm '%s'",
+                                    algorithm.name()));
+                }
+                group = NamedEcGroup.valueOf(kexParts[2]);
                 break;
         }
         return new EcdhKeyExchange(group);

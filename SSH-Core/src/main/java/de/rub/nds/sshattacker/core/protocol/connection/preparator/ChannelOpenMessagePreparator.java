@@ -17,11 +17,12 @@ import java.util.HashMap;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class ChannelOpenMessagePreparator extends SshMessagePreparator<ChannelOpenMessage> {
+public abstract class ChannelOpenMessagePreparator<T extends ChannelOpenMessage<T>>
+        extends SshMessagePreparator<T> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public ChannelOpenMessagePreparator(Chooser chooser, ChannelOpenMessage message) {
+    public ChannelOpenMessagePreparator(Chooser chooser, T message) {
         super(chooser, message, MessageIdConstant.SSH_MSG_CHANNEL_OPEN);
     }
 
@@ -55,6 +56,9 @@ public class ChannelOpenMessagePreparator extends SshMessagePreparator<ChannelOp
         }
         getObject().setChannelType(channel.getChannelType(), true);
         getObject().setWindowSize(channel.getLocalWindowSize());
-        getObject().setPacketSize(channel.getLocalPacketSize());
+        getObject().setPacketSize(32768);
+        prepareChannelOpenMessageSpecificContents();
     }
+
+    protected abstract void prepareChannelOpenMessageSpecificContents();
 }

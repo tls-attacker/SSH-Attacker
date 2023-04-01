@@ -14,11 +14,12 @@ import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class ChannelOpenMessageSerializer extends SshMessageSerializer<ChannelOpenMessage> {
+public abstract class ChannelOpenMessageSerializer<T extends ChannelOpenMessage<T>>
+        extends SshMessageSerializer<T> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public ChannelOpenMessageSerializer(ChannelOpenMessage message) {
+    public ChannelOpenMessageSerializer(T message) {
         super(message);
     }
 
@@ -41,7 +42,7 @@ public class ChannelOpenMessageSerializer extends SshMessageSerializer<ChannelOp
     }
 
     private void serializePacketSize() {
-        LOGGER.debug("Maximum packet size: " + message.getWindowSize().getValue());
+        LOGGER.debug("Maximum packet size: " + message.getPacketSize().getValue());
         appendInt(message.getPacketSize().getValue(), DataFormatConstants.UINT32_SIZE);
     }
 

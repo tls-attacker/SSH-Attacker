@@ -214,6 +214,26 @@ public class WorkflowConfigurationFactory {
     public List<SshAction> createKeyExchangeActions(
             KeyExchangeFlowType flowType, AliasedConnection connection) {
         List<SshAction> sshActions = new ArrayList<>();
+        if (flowType == null) {
+            // This may happen if the key exchange algorithm is `ext-info-s` or
+            // `ext-info-c` [RFC 8308], since they do not have an associated
+            // flow type.
+            //
+            // This case is not covered by the default case of the `switch`
+            // statement below, as per the Java Language Specification (JLS)
+            // §14.11:
+            //
+            //    When the switch statement is executed, first the Expression
+            //    is evaluated. If the Expression evaluates to `null`, a
+            //    `NullPointerException` is thrown and the entire switch
+            //    statement completes abruptly for that reason."
+            //
+            // See this for details:
+            // http://docs.oracle.com/javase/specs/jls/se8/html/jls-14.html#jls-14.11
+            throw new ConfigurationException(
+                    "Unable to add key exchange actions to workflow trace - key exchange algorithm has no flow type!");
+        }
+
         switch (flowType) {
             case HYBRID:
                 sshActions.add(
@@ -410,7 +430,7 @@ public class WorkflowConfigurationFactory {
         AliasedConnection connection = getDefaultConnection();
         workflow.addSshActions(
                 SshActionFactory.createMessageAction(
-                        connection, ConnectionEndType.CLIENT, new ChannelOpenMessage()),
+                        connection, ConnectionEndType.CLIENT, new ChannelOpenSessionMessage()),
                 SshActionFactory.createMessageAction(
                         connection, ConnectionEndType.SERVER, new ChannelOpenConfirmationMessage()),
                 SshActionFactory.createMessageAction(

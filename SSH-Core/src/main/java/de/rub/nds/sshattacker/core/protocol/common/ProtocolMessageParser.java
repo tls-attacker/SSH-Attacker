@@ -14,6 +14,7 @@ import de.rub.nds.sshattacker.core.packet.AbstractPacket;
 import de.rub.nds.sshattacker.core.packet.BlobPacket;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.*;
 import de.rub.nds.sshattacker.core.protocol.authentication.parser.*;
+import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelOpenUnknownMessage;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelRequestUnknownMessage;
 import de.rub.nds.sshattacker.core.protocol.connection.message.GlobalRequestUnknownMessage;
 import de.rub.nds.sshattacker.core.protocol.connection.parser.*;
@@ -95,9 +96,9 @@ public abstract class ProtocolMessageParser<T extends ProtocolMessage<T>> extend
                 case SSH_MSG_KEXDH_REPLY:
                     return new DhKeyExchangeReplyMessageParser(raw).parse();
                 case SSH_MSG_HBR_INIT:
-                    return handleHbrInit(raw, context).parse();
+                    return handleHybridKeyExchangeInitMessageParsing(raw, context).parse();
                 case SSH_MSG_HBR_REPLY:
-                    return handleHbrReply(raw, context).parse();
+                    return handleHybridKeyExchangeReplyMessageParsing(raw, context).parse();
                 case SSH_MSG_KEX_DH_GEX_REQUEST_OLD:
                     return new DhGexKeyExchangeOldRequestMessageParser(raw).parse();
                 case SSH_MSG_KEX_DH_GEX_REQUEST:
@@ -135,7 +136,7 @@ public abstract class ProtocolMessageParser<T extends ProtocolMessage<T>> extend
                 case SSH_MSG_CHANNEL_OPEN_FAILURE:
                     return new ChannelOpenFailureMessageParser(raw).parse();
                 case SSH_MSG_CHANNEL_OPEN:
-                    return new ChannelOpenMessageParser(raw).parse();
+                    return handleChannelOpenMessageParsing(raw);
                 case SSH_MSG_CHANNEL_SUCCESS:
                     return new ChannelSuccessMessageParser(raw).parse();
                 case SSH_MSG_CHANNEL_WINDOW_ADJUST:
@@ -153,7 +154,7 @@ public abstract class ProtocolMessageParser<T extends ProtocolMessage<T>> extend
                 case SSH_MSG_UNIMPLEMENTED:
                     return new UnimplementedMessageParser(raw).parse();
                 case SSH_MSG_USERAUTH_REQUEST:
-                    return getUserAuthRequestMessageParsing(raw);
+                    return handleUserAuthRequestMessageParsing(raw);
                 case SSH_MSG_USERAUTH_BANNER:
                     return new UserAuthBannerMessageParser(raw).parse();
                 case SSH_MSG_USERAUTH_FAILURE:
@@ -161,9 +162,9 @@ public abstract class ProtocolMessageParser<T extends ProtocolMessage<T>> extend
                 case SSH_MSG_USERAUTH_SUCCESS:
                     return new UserAuthSuccessMessageParser(raw).parse();
                 case SSH_MSG_CHANNEL_REQUEST:
-                    return getChannelRequestMessageParsing(raw);
+                    return handleChannelRequestMessageParsing(raw);
                 case SSH_MSG_GLOBAL_REQUEST:
-                    return getGlobalRequestMessageParsing(raw);
+                    return handleGlobalRequestMessageParsing(raw);
                 case SSH_MSG_USERAUTH_INFO_REQUEST:
                     return new UserAuthInfoRequestMessageParser(raw).parse();
                 case SSH_MSG_USERAUTH_INFO_RESPONSE:
@@ -183,8 +184,11 @@ public abstract class ProtocolMessageParser<T extends ProtocolMessage<T>> extend
         }
     }
 
-    public static HybridKeyExchangeReplyMessageParser handleHbrReply(
+    public static HybridKeyExchangeReplyMessageParser handleHybridKeyExchangeReplyMessageParsing(
             byte[] raw, SshContext context) {
+        LOGGER.info(
+                "Negotiated Hybrid Key Exchange: "
+                        + context.getChooser().getKeyExchangeAlgorithm());
         switch (context.getChooser().getKeyExchangeAlgorithm()) {
             default:
                 LOGGER.warn(
@@ -223,7 +227,8 @@ public abstract class ProtocolMessageParser<T extends ProtocolMessage<T>> extend
         }
     }
 
-    public static HybridKeyExchangeInitMessageParser handleHbrInit(byte[] raw, SshContext context) {
+    public static HybridKeyExchangeInitMessageParser handleHybridKeyExchangeInitMessageParsing(
+            byte[] raw, SshContext context) {
         LOGGER.info(
                 "Negotiated Hybrid Key Exchange: "
                         + context.getChooser().getKeyExchangeAlgorithm());
@@ -238,21 +243,18 @@ public abstract class ProtocolMessageParser<T extends ProtocolMessage<T>> extend
                         HybridKeyExchangeCombiner.POSTQUANTUM_CONCATENATE_CLASSICAL,
                         CryptoConstants.X25519_POINT_SIZE,
                         CryptoConstants.SNTRUP761_PUBLIC_KEY_SIZE);
-
             case SNTRUP4591761_X25519:
                 return new HybridKeyExchangeInitMessageParser(
                         raw,
                         HybridKeyExchangeCombiner.POSTQUANTUM_CONCATENATE_CLASSICAL,
                         CryptoConstants.X25519_POINT_SIZE,
                         CryptoConstants.SNTRUP4591761_PUBLIC_KEY_SIZE);
-
             case CURVE25519_FRODOKEM1344:
                 return new HybridKeyExchangeInitMessageParser(
                         raw,
                         HybridKeyExchangeCombiner.POSTQUANTUM_CONCATENATE_CLASSICAL,
                         CryptoConstants.X25519_POINT_SIZE,
                         CryptoConstants.FRODOKEM1344_PUBLIC_KEY_SIZE);
-
             case NISTP521_FIRESABER:
                 return new HybridKeyExchangeInitMessageParser(
                         raw,
@@ -268,7 +270,7 @@ public abstract class ProtocolMessageParser<T extends ProtocolMessage<T>> extend
         }
     }
 
-    private static ProtocolMessage<?> getUserAuthRequestMessageParsing(byte[] raw) {
+    private static ProtocolMessage<?> handleUserAuthRequestMessageParsing(byte[] raw) {
         UserAuthUnknownMessage message = new UserAuthUnknownMessageParser(raw).parse();
         String methodString = message.getMethodName().getValue();
         AuthenticationMethod method = AuthenticationMethod.fromName(methodString);
@@ -291,7 +293,7 @@ public abstract class ProtocolMessageParser<T extends ProtocolMessage<T>> extend
         }
     }
 
-    public static ProtocolMessage<?> getChannelRequestMessageParsing(byte[] raw) {
+    public static ProtocolMessage<?> handleChannelRequestMessageParsing(byte[] raw) {
         ChannelRequestUnknownMessage message = new ChannelRequestUnknownMessageParser(raw).parse();
         String requestTypeString = message.getRequestType().getValue();
         ChannelRequestType requestType = ChannelRequestType.fromName(requestTypeString);
@@ -328,7 +330,7 @@ public abstract class ProtocolMessageParser<T extends ProtocolMessage<T>> extend
         }
     }
 
-    public static ProtocolMessage<?> getGlobalRequestMessageParsing(byte[] raw) {
+    public static ProtocolMessage<?> handleGlobalRequestMessageParsing(byte[] raw) {
         GlobalRequestUnknownMessage message = new GlobalRequestUnknownMessageParser(raw).parse();
         String requestTypeString = message.getRequestName().getValue();
         GlobalRequestType requestType = GlobalRequestType.fromName(requestTypeString);
@@ -345,6 +347,20 @@ public abstract class ProtocolMessageParser<T extends ProtocolMessage<T>> extend
                 LOGGER.debug(
                         "Received unimplemented global request message type: {}",
                         requestTypeString);
+                return message;
+        }
+    }
+
+    public static ProtocolMessage<?> handleChannelOpenMessageParsing(byte[] raw) {
+        ChannelOpenUnknownMessage message = new ChannelOpenUnknownMessageParser(raw).parse();
+        String channelTypeString = message.getChannelType().getValue();
+        ChannelType channelType = ChannelType.fromName(channelTypeString);
+        switch (channelType) {
+            case SESSION:
+                return new ChannelOpenSessionMessageParser(raw).parse();
+            default:
+                LOGGER.debug(
+                        "Received unimplemented channel open message type: {}", channelTypeString);
                 return message;
         }
     }

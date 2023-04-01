@@ -9,10 +9,10 @@ package de.rub.nds.sshattacker.core.protocol.connection.message;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
-import de.rub.nds.sshattacker.core.protocol.connection.handler.GlobalRequestUnknownMessageHandler;
+import de.rub.nds.sshattacker.core.protocol.connection.handler.ChannelOpenUnknownMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 
-public class GlobalRequestUnknownMessage extends GlobalRequestMessage<GlobalRequestUnknownMessage> {
+public class ChannelOpenUnknownMessage extends ChannelOpenMessage<ChannelOpenUnknownMessage> {
 
     private ModifiableByteArray typeSpecificData;
 
@@ -30,7 +30,7 @@ public class GlobalRequestUnknownMessage extends GlobalRequestMessage<GlobalRequ
     }
 
     @Override
-    public GlobalRequestUnknownMessageHandler getHandler(SshContext context) {
-        return new GlobalRequestUnknownMessageHandler(context, this);
+    public ChannelOpenUnknownMessageHandler getHandler(SshContext context) {
+        return new ChannelOpenUnknownMessageHandler(context, this);
     }
 }

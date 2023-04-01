@@ -63,7 +63,8 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
                         type = ChannelOpenConfirmationMessage.class,
                         name = "ChannelOpenConfirmation"),
                 @XmlElement(type = ChannelOpenFailureMessage.class, name = "ChannelOpenFailure"),
-                @XmlElement(type = ChannelOpenMessage.class, name = "ChannelOpen"),
+                @XmlElement(type = ChannelOpenSessionMessage.class, name = "ChannelOpenSession"),
+                @XmlElement(type = ChannelOpenUnknownMessage.class, name = "ChannelOpenUnknown"),
                 @XmlElement(
                         type = ChannelRequestAuthAgentMessage.class,
                         name = "ChannelRequestAuthAgent"),
