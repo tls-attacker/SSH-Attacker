@@ -91,7 +91,7 @@ public class ParallelExecutor {
         return executorService.submit(task);
     }
 
-    private Future<Task> addStateTask(State state) {
+    protected Future<Task> addStateTask(State state) {
         return addTask(new StateExecutionTask(state, reexecutions));
     }
 
