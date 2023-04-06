@@ -197,9 +197,13 @@ public final class KeyExchangeUtil {
             Config sshConfig = context.getChooser().getConfig();
 
             keyAgreement.computeSharedSecret();
-            //Replce the sharedsecret we use for our exchange Hash
-            context.setSharedSecret(sshConfig.getCustomSharedSecret());
-            context.getExchangeHashInputHolder().setSharedSecret(sshConfig.getCustomSharedSecret());
+
+            if (sshConfig.getIsInvalidCurveAttack()) {
+                // Replce the sharedsecret we use for our exchange Hash
+                context.setSharedSecret(sshConfig.getCustomSharedSecret());
+                context.getExchangeHashInputHolder()
+                        .setSharedSecret(sshConfig.getCustomSharedSecret());
+            }
 
         } catch (CryptoException e) {
             LOGGER.warn("Key exchange instance is not ready yet, unable to compute shared secret");
