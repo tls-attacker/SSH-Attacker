@@ -199,10 +199,13 @@ public final class KeyExchangeUtil {
             keyAgreement.computeSharedSecret();
 
             if (sshConfig.getIsInvalidCurveAttack()) {
-                // Replce the sharedsecret we use for our exchange Hash
+                // Replce the sharedsecret we use for our exchange Hash if the invalid curve attack is used
                 context.setSharedSecret(sshConfig.getCustomSharedSecret());
                 context.getExchangeHashInputHolder()
                         .setSharedSecret(sshConfig.getCustomSharedSecret());
+            } else {
+                context.setSharedSecret(keyAgreement.getSharedSecret());
+                context.getExchangeHashInputHolder().setSharedSecret(keyAgreement.getSharedSecret());
             }
 
         } catch (CryptoException e) {
