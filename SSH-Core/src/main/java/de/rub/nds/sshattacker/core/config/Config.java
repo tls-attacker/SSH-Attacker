@@ -52,13 +52,12 @@ public class Config implements Serializable {
 
     // Invalid Curve Attack Additions
     // Mod
-    private boolean isInvalidCurveAttack;
+    private boolean isInvalidCurveAttack = false;
 
     private byte[] customEcPublicKey;
     private byte[] customEcPrivateKey;
     private BigInteger customSharedSecret;
     private byte[] exchangeHashSignatureServer;
-    private Optional<byte[]> exchangeHashClient;
     private ExchangeHashInputHolder exchangeHashInputHolderClient;
 
     public boolean getIsInvalidCurveAttack() {
@@ -99,14 +98,6 @@ public class Config implements Serializable {
 
     public void setExchangeHashSignatureServer(byte[] exchangeHashSignatureServer) {
         this.exchangeHashSignatureServer = exchangeHashSignatureServer;
-    }
-
-    public Optional<byte[]> getExchangeHashClient() {
-        return exchangeHashClient;
-    }
-
-    public void setExchangeHashClient(Optional<byte[]> exchangeHashClient) {
-        this.exchangeHashClient = exchangeHashClient;
     }
 
     public ExchangeHashInputHolder getExchangeHashInputHolderClient() {

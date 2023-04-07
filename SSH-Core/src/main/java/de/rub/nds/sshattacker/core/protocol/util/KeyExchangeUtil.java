@@ -199,13 +199,15 @@ public final class KeyExchangeUtil {
             keyAgreement.computeSharedSecret();
 
             if (sshConfig.getIsInvalidCurveAttack()) {
-                // Replce the sharedsecret we use for our exchange Hash if the invalid curve attack is used
+                // Replce the sharedsecret we use for our exchange Hash if the invalid curve attack
+                // is used
                 context.setSharedSecret(sshConfig.getCustomSharedSecret());
                 context.getExchangeHashInputHolder()
                         .setSharedSecret(sshConfig.getCustomSharedSecret());
             } else {
                 context.setSharedSecret(keyAgreement.getSharedSecret());
-                context.getExchangeHashInputHolder().setSharedSecret(keyAgreement.getSharedSecret());
+                context.getExchangeHashInputHolder()
+                        .setSharedSecret(keyAgreement.getSharedSecret());
             }
 
         } catch (CryptoException e) {
@@ -240,11 +242,12 @@ public final class KeyExchangeUtil {
                     ExchangeHash.computeHash(
                             context, context.getChooser().getKeyExchangeAlgorithm()));
 
-            context.getChooser()
-                    .getConfig()
-                    .setExchangeHashInputHolderClient(context.getExchangeHashInputHolder());
-
-            context.getChooser().getConfig().setExchangeHashClient(context.getExchangeHash());
+            //Get the exchange hash input holder for the client exchange hash we will modify if we use the invalid curve attack
+            if(context.getChooser().getConfig().getIsInvalidCurveAttack()){
+                context.getChooser()
+                        .getConfig()
+                        .setExchangeHashInputHolderClient(context.getExchangeHashInputHolder());
+            }
 
         } catch (MissingExchangeHashInputException e) {
             LOGGER.warn(

@@ -26,20 +26,21 @@ public class EcdhKeyExchangeInitMessagePreparator
     public void prepareMessageSpecificContents() {
         AbstractEcdhKeyExchange keyExchange = chooser.getEcdhKeyExchange();
 
-        byte[] customPubKey = new byte[65];
-
         Config sshConfig = chooser.getConfig();
-        customPubKey = sshConfig.getCustomEcPublicKey();
 
         keyExchange.generateLocalKeyPair();
-
         byte[] encodedPublicKey = keyExchange.getLocalKeyPair().getPublic().getEncoded();
 
-        // Set public key in exchange hash and message
-        try {
+        // Set custom public key in exchange hash and message if we are using the invalid curve
+        // attack
+        if (sshConfig.getIsInvalidCurveAttack()) {
+            byte[] customPubKey = new byte[65];
+
+            customPubKey = sshConfig.getCustomEcPublicKey();
+
             chooser.getContext().getExchangeHashInputHolder().setEcdhClientPublicKey(customPubKey);
             getObject().setEphemeralPublicKey(customPubKey, true);
-        } catch (Exception e) {
+        } else {
             chooser.getContext()
                     .getExchangeHashInputHolder()
                     .setEcdhClientPublicKey(encodedPublicKey);
