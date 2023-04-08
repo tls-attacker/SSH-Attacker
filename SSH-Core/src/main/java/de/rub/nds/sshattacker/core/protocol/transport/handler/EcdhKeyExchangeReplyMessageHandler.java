@@ -37,17 +37,6 @@ public class EcdhKeyExchangeReplyMessageHandler
         KeyExchangeUtil.handleExchangeHashSignatureMessage(context, message);
         KeyExchangeUtil.setSessionId(context);
         KeyExchangeUtil.generateKeySet(context);
-
-        // Invalid Curve Mod: We get a custom keypair and set them here. The private key is not
-        // relevant, the public key is the invalid point we send to the server.
-        // Config sshConfig = context.getChooser().getConfig();
-
-        /*context.getChooser()
-                .getEcdhKeyExchange()
-               .setLocalKeyPair(
-                        sshConfig.getCustomEcPrivateKey(), sshConfig.getCustomEcPublicKey());
-
-        KeyExchangeUtil.computeSharedSecret(context, context.getChooser().getEcdhKeyExchange());*/
     }
 
     private void updateContextWithRemotePublicKey() {

@@ -24,6 +24,7 @@ public abstract class SshMessagePreparator<T extends SshMessage<T>>
         this.messageId = messageId;
     }
 
+    @Override
     protected final void prepareProtocolMessageContents() {
         getObject().setMessageId(messageId);
         prepareMessageSpecificContents();

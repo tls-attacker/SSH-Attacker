@@ -147,8 +147,6 @@ public final class KeyExchangeUtil {
      */
     private static void verifySignature(SshContext context, ExchangeHashSignatureMessage message) {
 
-        Config SshConfig = context.getChooser().getConfig();
-
         byte[] exchangeHash = context.getExchangeHash().orElse(new byte[0]);
         PublicKeyAlgorithm hostKeyAlgorithm = context.getChooser().getHostKeyAlgorithm();
         Optional<SshPublicKey<?, ?>> hostKey = context.getHostKey();
@@ -160,7 +158,6 @@ public final class KeyExchangeUtil {
                         SignatureFactory.getVerifyingSignature(hostKeyAlgorithm, hostKey.get());
                 LOGGER.info(hostKey.get());
 
-                SshConfig.setExchangeHashSignatureServer(signature.getSignatureBytes());
                 if (verifyingSignature.verify(exchangeHash, signature.getSignatureBytes())) {
                     LOGGER.info(
                             "Exchange hash signature verification successful: Signature is valid.");
@@ -241,13 +238,6 @@ public final class KeyExchangeUtil {
             context.setExchangeHash(
                     ExchangeHash.computeHash(
                             context, context.getChooser().getKeyExchangeAlgorithm()));
-
-            //Get the exchange hash input holder for the client exchange hash we will modify if we use the invalid curve attack
-            if(context.getChooser().getConfig().getIsInvalidCurveAttack()){
-                context.getChooser()
-                        .getConfig()
-                        .setExchangeHashInputHolderClient(context.getExchangeHashInputHolder());
-            }
 
         } catch (MissingExchangeHashInputException e) {
             LOGGER.warn(
