@@ -61,13 +61,6 @@ public final class ExchangeHash {
                     return computeDhGexHash(algorithm, context.getExchangeHashInputHolder());
                 }
             case ECDH:
-                // Pass the exchange hash to the config to be used for the invalid curve attack
-                if (context.getChooser().getConfig().getIsInvalidCurveAttack()) {
-                    context.getChooser()
-                            .getConfig()
-                            .setExchangeHashInput(
-                                    prepareEcdhHashInput(context.getExchangeHashInputHolder()));
-                }
                 return computeEcdhHash(algorithm, context.getExchangeHashInputHolder());
             case RSA:
                 return computeRsaHash(algorithm, context.getExchangeHashInputHolder());

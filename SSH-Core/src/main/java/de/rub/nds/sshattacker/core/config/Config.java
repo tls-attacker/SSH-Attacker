@@ -13,7 +13,6 @@ import de.rub.nds.sshattacker.core.connection.InboundConnection;
 import de.rub.nds.sshattacker.core.connection.OutboundConnection;
 import de.rub.nds.sshattacker.core.constants.*;
 import de.rub.nds.sshattacker.core.crypto.ec.PointFormatter;
-import de.rub.nds.sshattacker.core.crypto.hash.ExchangeHashInputHolder;
 import de.rub.nds.sshattacker.core.crypto.keys.*;
 import de.rub.nds.sshattacker.core.protocol.authentication.AuthenticationResponse;
 import de.rub.nds.sshattacker.core.protocol.connection.ChannelDefaults;
@@ -55,9 +54,6 @@ public class Config implements Serializable {
     private boolean isInvalidCurveAttack = false;
     private byte[] customEcPublicKey;
     private BigInteger customSharedSecret;
-    private byte[] exchangeHashSignatureServer;
-    private byte[] exchangeHashInput;
-    private ExchangeHashInputHolder exchangeHashInputHolderClient;
 
     public boolean getIsInvalidCurveAttack() {
         return isInvalidCurveAttack;
@@ -81,31 +77,6 @@ public class Config implements Serializable {
 
     public BigInteger getCustomSharedSecret() {
         return customSharedSecret;
-    }
-
-    public byte[] getExchangeHashSignatureServer() {
-        return exchangeHashSignatureServer;
-    }
-
-    public void setExchangeHashSignatureServer(byte[] exchangeHashSignatureServer) {
-        this.exchangeHashSignatureServer = exchangeHashSignatureServer;
-    }
-
-    public byte[] getExchangeHashInput() {
-        return exchangeHashInput;
-    }
-
-    public void setExchangeHashInput(byte[] exchangeHashInput) {
-        this.exchangeHashInput = exchangeHashInput;
-    }
-
-    public ExchangeHashInputHolder getExchangeHashInputHolderClient() {
-        return exchangeHashInputHolderClient;
-    }
-
-    public void setExchangeHashInputHolderClient(
-            ExchangeHashInputHolder exchangeHashInputHolderClient) {
-        this.exchangeHashInputHolderClient = exchangeHashInputHolderClient;
     }
 
     // Mod end
