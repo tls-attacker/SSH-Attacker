@@ -14,6 +14,7 @@ import de.rub.nds.sshattacker.core.constants.CharConstants;
 import de.rub.nds.sshattacker.core.constants.PublicKeyAlgorithm;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.extension.ServerSigAlgsExtensionHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -50,30 +51,56 @@ public class ServerSigAlgsExtension extends AbstractExtension<ServerSigAlgsExten
     }
 
     public void setAcceptedPublicKeyAlgorithms(ModifiableString publicKeyAlgorithms) {
-        this.acceptedPublicKeyAlgorithms = publicKeyAlgorithms;
+        this.setAcceptedPublicKeyAlgorithms(publicKeyAlgorithms, false);
     }
 
     public void setAcceptedPublicKeyAlgorithms(String publicKeyAlgorithms) {
-        ModifiableVariableFactory.safelySetValue(
-                this.acceptedPublicKeyAlgorithms, publicKeyAlgorithms);
+        this.setAcceptedPublicKeyAlgorithms(publicKeyAlgorithms, false);
     }
 
     public void setAcceptedPublicKeyAlgorithms(String[] publicKeyAlgorithms) {
-        // transform array of public key algorithms into a string with public key algorithms
-        // separated by commas
-        String nameList = String.join("" + CharConstants.ALGORITHM_SEPARATOR, publicKeyAlgorithms);
-
-        this.setAcceptedPublicKeyAlgorithms(nameList);
+        this.setAcceptedPublicKeyAlgorithms(publicKeyAlgorithms, false);
     }
 
     public void setAcceptedPublicKeyAlgorithms(List<PublicKeyAlgorithm> publicKeyAlgorithms) {
-        // transform list into a string with public key algorithms separated by commas
+        this.setAcceptedPublicKeyAlgorithms(publicKeyAlgorithms, false);
+    }
+
+    public void setAcceptedPublicKeyAlgorithms(
+            ModifiableString publicKeyAlgorithms, boolean adjustLengthField) {
+        if (adjustLengthField) {
+            this.setAcceptedPublicKeyAlgorithmsLength(
+                    publicKeyAlgorithms.getValue().getBytes(StandardCharsets.US_ASCII).length);
+            setValueLength(getAcceptedPublicKeyAlgorithmsLength().getValue());
+        }
+        this.acceptedPublicKeyAlgorithms = publicKeyAlgorithms;
+    }
+
+    public void setAcceptedPublicKeyAlgorithms(
+            String publicKeyAlgorithms, boolean adjustLengthField) {
+        if (adjustLengthField) {
+            this.setAcceptedPublicKeyAlgorithmsLength(
+                    publicKeyAlgorithms.getBytes(StandardCharsets.US_ASCII).length);
+            setValueLength(getAcceptedPublicKeyAlgorithmsLength().getValue());
+        }
+        this.acceptedPublicKeyAlgorithms =
+                ModifiableVariableFactory.safelySetValue(
+                        this.acceptedPublicKeyAlgorithms, publicKeyAlgorithms);
+    }
+
+    public void setAcceptedPublicKeyAlgorithms(
+            String[] publicKeyAlgorithms, boolean adjustLengthField) {
+        String nameList = String.join("" + CharConstants.ALGORITHM_SEPARATOR, publicKeyAlgorithms);
+        this.setAcceptedPublicKeyAlgorithms(nameList, adjustLengthField);
+    }
+
+    public void setAcceptedPublicKeyAlgorithms(
+            List<PublicKeyAlgorithm> publicKeyAlgorithms, boolean adjustLengthField) {
         String nameList =
                 publicKeyAlgorithms.stream()
                         .map(PublicKeyAlgorithm::toString)
                         .collect(Collectors.joining("" + CharConstants.ALGORITHM_SEPARATOR));
-
-        this.setAcceptedPublicKeyAlgorithms(nameList);
+        this.setAcceptedPublicKeyAlgorithms(nameList, adjustLengthField);
     }
 
     @Override
