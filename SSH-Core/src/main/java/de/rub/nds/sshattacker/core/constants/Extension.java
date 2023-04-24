@@ -21,6 +21,9 @@ public enum Extension {
     NO_FLOW_CONTROL("no-flow-control"),
     ELEVATION("elevation"),
     // Vendor extensions
+    EXT_AUTH_INFO("ext-auth-info"),
+    GLOBAL_REQUESTS_OK("global-requests-ok"),
+    PUBLICKEY_HOSTBOUND_OPENSSH_COM("publickey-hostbound@openssh.com"),
     UNKNOWN(null);
 
     private final String name;
