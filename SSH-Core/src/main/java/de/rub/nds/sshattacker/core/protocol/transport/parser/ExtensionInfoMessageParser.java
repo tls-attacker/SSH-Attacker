@@ -13,6 +13,7 @@ import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 import de.rub.nds.sshattacker.core.protocol.transport.message.ExtensionInfoMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.parser.extension.AbstractExtensionParser;
 import de.rub.nds.sshattacker.core.protocol.transport.parser.extension.DelayCompressionExtensionParser;
+import de.rub.nds.sshattacker.core.protocol.transport.parser.extension.ServerSigAlgsExtensionParser;
 import de.rub.nds.sshattacker.core.protocol.transport.parser.extension.UnknownExtensionParser;
 import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.LogManager;
@@ -51,6 +52,10 @@ public class ExtensionInfoMessageParser extends SshMessageParser<ExtensionInfoMe
                             parseByteString(extensionNameLength, StandardCharsets.US_ASCII));
             AbstractExtensionParser<?> extensionParser;
             switch (extension) {
+                case SERVER_SIG_ALGS:
+                    extensionParser =
+                            new ServerSigAlgsExtensionParser(getArray(), extensionStartPointer);
+                    break;
                 case DELAY_COMPRESSION:
                     extensionParser =
                             new DelayCompressionExtensionParser(getArray(), extensionStartPointer);
