@@ -22,11 +22,10 @@ import de.rub.nds.sshattacker.core.workflow.action.ChangePacketLayerAction;
 import de.rub.nds.sshattacker.core.workflow.action.DynamicKeyExchangeAction;
 import de.rub.nds.sshattacker.core.workflow.action.SshAction;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /** Create a WorkflowTace based on a Config instance. */
 public class WorkflowConfigurationFactory {
