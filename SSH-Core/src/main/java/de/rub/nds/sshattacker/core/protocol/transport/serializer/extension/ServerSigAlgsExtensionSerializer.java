@@ -7,7 +7,6 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.serializer.extension;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.transport.message.extension.ServerSigAlgsExtension;
 import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.LogManager;
@@ -29,8 +28,7 @@ public class ServerSigAlgsExtensionSerializer
 
     private void serializeAcceptedPublicKeyAlgorithms() {
         LOGGER.debug(
-                "Accepted public key algorithms length: {}",
-                extension.getValueLength().getValue());
+                "Accepted public key algorithms length: {}", extension.getValueLength().getValue());
         LOGGER.debug(
                 "Accepted public key algorithms: "
                         + extension.getAcceptedPublicKeyAlgorithms().getValue());
