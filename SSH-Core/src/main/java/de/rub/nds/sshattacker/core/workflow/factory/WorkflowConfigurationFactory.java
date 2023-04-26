@@ -490,11 +490,6 @@ public class WorkflowConfigurationFactory {
             throw new ConfigurationException("Could not find both necessary connection ends");
         }
 
-        // client -> mitm
-        String clientToMitmAlias = inboundConnection.getAlias();
-        // mitm -> server
-        String mitmToServerAlias = outboundConnection.getAlias();
-
         LOGGER.debug("Building mitm trace for: " + inboundConnection + ", " + outboundConnection);
         addTransportProtocolActions(workflow);
         // The following is run in a loop in SSH-MITM.

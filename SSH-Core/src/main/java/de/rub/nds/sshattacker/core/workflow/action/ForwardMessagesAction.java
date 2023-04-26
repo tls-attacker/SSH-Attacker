@@ -59,7 +59,7 @@ public class ForwardMessagesAction extends SshAction implements ReceivingAction,
 
     @XmlTransient private byte[] receivedBytes;
 
-    @XmlTransient @HoldsModifiableVariable @XmlElementWrapper
+    @XmlElement @HoldsModifiableVariable @XmlElementWrapper
     protected List<AbstractPacket> packetList = new ArrayList<>();
 
     public ForwardMessagesAction() {

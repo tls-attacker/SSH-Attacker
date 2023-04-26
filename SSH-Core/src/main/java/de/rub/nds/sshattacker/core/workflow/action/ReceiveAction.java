@@ -21,7 +21,6 @@ import de.rub.nds.sshattacker.core.workflow.action.executor.MessageActionResult;
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlElementWrapper;
 import jakarta.xml.bind.annotation.XmlElements;
-import jakarta.xml.bind.annotation.XmlTransient;
 import java.util.*;
 import java.util.stream.Collectors;
 import org.apache.logging.log4j.LogManager;
@@ -187,7 +186,7 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
      */
     @XmlElement protected Boolean failOnUnexpectedDebugMessages = null;
 
-    @XmlTransient @HoldsModifiableVariable @XmlElementWrapper
+    @XmlElement @HoldsModifiableVariable @XmlElementWrapper
     protected List<AbstractPacket> packetList = new ArrayList<>();
 
     public ReceiveAction() {
