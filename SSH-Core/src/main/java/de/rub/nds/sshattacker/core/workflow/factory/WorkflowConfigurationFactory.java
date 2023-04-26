@@ -208,7 +208,8 @@ public class WorkflowConfigurationFactory {
                                 connection,
                                 ConnectionEndType.SERVER,
                                 new DhKeyExchangeReplyMessage(),
-                                new NewKeysMessage()));
+                                new NewKeysMessage(),
+                                new ExtensionInfoMessage()));
                 break;
             case DIFFIE_HELLMAN_GROUP_EXCHANGE:
                 sshActions.add(
@@ -216,7 +217,8 @@ public class WorkflowConfigurationFactory {
                                 connection,
                                 ConnectionEndType.CLIENT,
                                 new DhGexKeyExchangeRequestMessage(),
-                                new NewKeysMessage()));
+                                new NewKeysMessage(),
+                                new ExtensionInfoMessage()));
                 sshActions.add(
                         SshActionFactory.createMessageAction(
                                 connection,
@@ -232,7 +234,8 @@ public class WorkflowConfigurationFactory {
                                 connection,
                                 ConnectionEndType.SERVER,
                                 new DhGexKeyExchangeReplyMessage(),
-                                new NewKeysMessage()));
+                                new NewKeysMessage(),
+                                new ExtensionInfoMessage()));
                 break;
             case ECDH:
                 sshActions.add(
@@ -245,7 +248,8 @@ public class WorkflowConfigurationFactory {
                                 connection,
                                 ConnectionEndType.SERVER,
                                 new EcdhKeyExchangeReplyMessage(),
-                                new NewKeysMessage()));
+                                new NewKeysMessage(),
+                                new ExtensionInfoMessage()));
                 break;
             case RSA:
                 sshActions.add(
@@ -263,7 +267,8 @@ public class WorkflowConfigurationFactory {
                                 connection,
                                 ConnectionEndType.SERVER,
                                 new RsaKeyExchangeDoneMessage(),
-                                new NewKeysMessage()));
+                                new NewKeysMessage(),
+                                new ExtensionInfoMessage()));
                 break;
             default:
                 throw new ConfigurationException(
