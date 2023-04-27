@@ -10,6 +10,7 @@ package de.rub.nds.sshattacker.core.workflow.action;
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.sshattacker.core.connection.AliasedConnection;
 import de.rub.nds.sshattacker.core.exceptions.WorkflowExecutionException;
+import de.rub.nds.sshattacker.core.packet.AbstractPacket;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.*;
 import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessage;
 import de.rub.nds.sshattacker.core.protocol.connection.message.*;
@@ -185,6 +186,9 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
      */
     @XmlElement protected Boolean failOnUnexpectedDebugMessages = null;
 
+    @XmlElement @HoldsModifiableVariable @XmlElementWrapper
+    protected List<AbstractPacket> packetList = new ArrayList<>();
+
     public ReceiveAction() {
         super(AliasedConnection.DEFAULT_CONNECTION_ALIAS);
     }
@@ -241,6 +245,7 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
         MessageActionResult result =
                 receiveMessageHelper.receiveMessages(context, expectedMessages);
         setReceivedMessages(result.getMessageList());
+        setPacketList(result.getPacketList());
         setExecuted(true);
 
         String expected = getReadableString(expectedMessages);
@@ -396,6 +401,14 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
 
     void setReceivedMessages(List<ProtocolMessage<?>> receivedMessages) {
         this.messages = receivedMessages;
+    }
+
+    public List<AbstractPacket> getPacketList() {
+        return packetList;
+    }
+
+    public void setPacketList(List<AbstractPacket> packetList) {
+        this.packetList = packetList;
     }
 
     public void setExpectedMessages(List<ProtocolMessage<?>> expectedMessages) {

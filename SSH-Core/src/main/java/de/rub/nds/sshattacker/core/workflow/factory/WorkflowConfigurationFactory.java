@@ -193,11 +193,26 @@ public class WorkflowConfigurationFactory {
         AliasedConnection connection = getDefaultConnection();
         addTransportProtocolInitActions(workflow);
         workflow.addSshActions(new DynamicKeyExchangeAction(connection.getAlias()));
-        workflow.addSshActions(
-                SshActionFactory.createMessageAction(
-                        connection, ConnectionEndType.CLIENT, new ServiceRequestMessage()),
-                SshActionFactory.createMessageAction(
-                        connection, ConnectionEndType.SERVER, new ServiceAcceptMessage()));
+        if (mode == RunningModeType.MITM) {
+            workflow.addSshActions(
+                    SshActionFactory.createProxyFilterMessagesAction(
+                            config.getDefaultServerConnection(),
+                            config.getDefaultClientConnection(),
+                            ConnectionEndType.CLIENT,
+                            new ServiceRequestMessage()));
+            workflow.addSshActions(
+                    SshActionFactory.createProxyFilterMessagesAction(
+                            config.getDefaultServerConnection(),
+                            config.getDefaultClientConnection(),
+                            ConnectionEndType.SERVER,
+                            new ServiceAcceptMessage()));
+        } else {
+            workflow.addSshActions(
+                    SshActionFactory.createMessageAction(
+                            connection, ConnectionEndType.CLIENT, new ServiceRequestMessage()),
+                    SshActionFactory.createMessageAction(
+                            connection, ConnectionEndType.SERVER, new ServiceAcceptMessage()));
+        }
     }
 
     private void addTransportProtocolActions(KeyExchangeFlowType flowType, WorkflowTrace workflow) {
@@ -233,96 +248,105 @@ public class WorkflowConfigurationFactory {
             throw new ConfigurationException(
                     "Unable to add key exchange actions to workflow trace - key exchange algorithm has no flow type!");
         }
+        if (mode == RunningModeType.MITM) {
+            // KeyExchange on server side
+            sshActions.addAll(
+                    createKeyExchangeActions(flowType, config.getDefaultClientConnection()));
+            // KeyExchange on client side
+            sshActions.addAll(
+                    createKeyExchangeActions(flowType, config.getDefaultServerConnection()));
+        } else {
 
-        switch (flowType) {
-            case HYBRID:
-                sshActions.add(
-                        SshActionFactory.createMessageAction(
-                                connection,
-                                ConnectionEndType.CLIENT,
-                                new HybridKeyExchangeInitMessage()));
-                sshActions.add(
-                        SshActionFactory.createMessageAction(
-                                connection,
-                                ConnectionEndType.SERVER,
-                                new HybridKeyExchangeReplyMessage(),
-                                new NewKeysMessage()));
-                break;
-            case DIFFIE_HELLMAN:
-                sshActions.add(
-                        SshActionFactory.createMessageAction(
-                                connection,
-                                ConnectionEndType.CLIENT,
-                                new DhKeyExchangeInitMessage()));
-                sshActions.add(
-                        SshActionFactory.createMessageAction(
-                                connection,
-                                ConnectionEndType.SERVER,
-                                new DhKeyExchangeReplyMessage(),
-                                new NewKeysMessage()));
-                break;
-            case DIFFIE_HELLMAN_GROUP_EXCHANGE:
-                sshActions.add(
-                        SshActionFactory.createMessageAction(
-                                connection,
-                                ConnectionEndType.CLIENT,
-                                new DhGexKeyExchangeRequestMessage()));
-                sshActions.add(
-                        SshActionFactory.createMessageAction(
-                                connection,
-                                ConnectionEndType.SERVER,
-                                new DhGexKeyExchangeGroupMessage()));
-                sshActions.add(
-                        SshActionFactory.createMessageAction(
-                                connection,
-                                ConnectionEndType.CLIENT,
-                                new DhGexKeyExchangeInitMessage()));
-                sshActions.add(
-                        SshActionFactory.createMessageAction(
-                                connection,
-                                ConnectionEndType.SERVER,
-                                new DhGexKeyExchangeReplyMessage(),
-                                new NewKeysMessage()));
-                break;
-            case ECDH:
-                sshActions.add(
-                        SshActionFactory.createMessageAction(
-                                connection,
-                                ConnectionEndType.CLIENT,
-                                new EcdhKeyExchangeInitMessage()));
-                sshActions.add(
-                        SshActionFactory.createMessageAction(
-                                connection,
-                                ConnectionEndType.SERVER,
-                                new EcdhKeyExchangeReplyMessage(),
-                                new NewKeysMessage()));
-                break;
-            case RSA:
-                sshActions.add(
-                        SshActionFactory.createMessageAction(
-                                connection,
-                                ConnectionEndType.SERVER,
-                                new RsaKeyExchangePubkeyMessage()));
-                sshActions.add(
-                        SshActionFactory.createMessageAction(
-                                connection,
-                                ConnectionEndType.CLIENT,
-                                new RsaKeyExchangeSecretMessage()));
-                sshActions.add(
-                        SshActionFactory.createMessageAction(
-                                connection,
-                                ConnectionEndType.SERVER,
-                                new RsaKeyExchangeDoneMessage(),
-                                new NewKeysMessage()));
-                break;
-            default:
-                throw new ConfigurationException(
-                        "Unable to add key exchange actions to workflow trace - unknown or unsupported key exchange flow type: "
-                                + flowType);
+            switch (flowType) {
+                case HYBRID:
+                    sshActions.add(
+                            SshActionFactory.createMessageAction(
+                                    connection,
+                                    ConnectionEndType.CLIENT,
+                                    new HybridKeyExchangeInitMessage()));
+                    sshActions.add(
+                            SshActionFactory.createMessageAction(
+                                    connection,
+                                    ConnectionEndType.SERVER,
+                                    new HybridKeyExchangeReplyMessage(),
+                                    new NewKeysMessage()));
+                    break;
+                case DIFFIE_HELLMAN:
+                    sshActions.add(
+                            SshActionFactory.createMessageAction(
+                                    connection,
+                                    ConnectionEndType.CLIENT,
+                                    new DhKeyExchangeInitMessage()));
+                    sshActions.add(
+                            SshActionFactory.createMessageAction(
+                                    connection,
+                                    ConnectionEndType.SERVER,
+                                    new DhKeyExchangeReplyMessage(),
+                                    new NewKeysMessage()));
+                    break;
+                case DIFFIE_HELLMAN_GROUP_EXCHANGE:
+                    sshActions.add(
+                            SshActionFactory.createMessageAction(
+                                    connection,
+                                    ConnectionEndType.CLIENT,
+                                    new DhGexKeyExchangeRequestMessage()));
+                    sshActions.add(
+                            SshActionFactory.createMessageAction(
+                                    connection,
+                                    ConnectionEndType.SERVER,
+                                    new DhGexKeyExchangeGroupMessage()));
+                    sshActions.add(
+                            SshActionFactory.createMessageAction(
+                                    connection,
+                                    ConnectionEndType.CLIENT,
+                                    new DhGexKeyExchangeInitMessage()));
+                    sshActions.add(
+                            SshActionFactory.createMessageAction(
+                                    connection,
+                                    ConnectionEndType.SERVER,
+                                    new DhGexKeyExchangeReplyMessage(),
+                                    new NewKeysMessage()));
+                    break;
+                case ECDH:
+                    sshActions.add(
+                            SshActionFactory.createMessageAction(
+                                    connection,
+                                    ConnectionEndType.CLIENT,
+                                    new EcdhKeyExchangeInitMessage()));
+                    sshActions.add(
+                            SshActionFactory.createMessageAction(
+                                    connection,
+                                    ConnectionEndType.SERVER,
+                                    new EcdhKeyExchangeReplyMessage(),
+                                    new NewKeysMessage()));
+                    break;
+                case RSA:
+                    sshActions.add(
+                            SshActionFactory.createMessageAction(
+                                    connection,
+                                    ConnectionEndType.SERVER,
+                                    new RsaKeyExchangePubkeyMessage()));
+                    sshActions.add(
+                            SshActionFactory.createMessageAction(
+                                    connection,
+                                    ConnectionEndType.CLIENT,
+                                    new RsaKeyExchangeSecretMessage()));
+                    sshActions.add(
+                            SshActionFactory.createMessageAction(
+                                    connection,
+                                    ConnectionEndType.SERVER,
+                                    new RsaKeyExchangeDoneMessage(),
+                                    new NewKeysMessage()));
+                    break;
+                default:
+                    throw new ConfigurationException(
+                            "Unable to add key exchange actions to workflow trace - unknown or unsupported key exchange flow type: "
+                                    + flowType);
+            }
+            sshActions.add(
+                    SshActionFactory.createMessageAction(
+                            connection, ConnectionEndType.CLIENT, new NewKeysMessage()));
         }
-        sshActions.add(
-                SshActionFactory.createMessageAction(
-                        connection, ConnectionEndType.CLIENT, new NewKeysMessage()));
         return sshActions;
     }
 
@@ -466,32 +490,8 @@ public class WorkflowConfigurationFactory {
             throw new ConfigurationException("Could not find both necessary connection ends");
         }
 
-        // client -> mitm
-        String clientToMitmAlias = inboundConnection.getAlias();
-        // mitm -> server
-        String mitmToServerAlias = outboundConnection.getAlias();
-
         LOGGER.debug("Building mitm trace for: " + inboundConnection + ", " + outboundConnection);
-        addTransportProtocolInitActions(workflow);
-        // KeyExchange on server side
-        workflow.addSshActions(
-                createKeyExchangeActions(KeyExchangeFlowType.ECDH, outboundConnection));
-        // KeyExchange on client side
-        workflow.addSshActions(
-                createKeyExchangeActions(KeyExchangeFlowType.ECDH, inboundConnection));
-        workflow.addSshActions(
-                SshActionFactory.createProxyFilterMessagesAction(
-                        inboundConnection,
-                        outboundConnection,
-                        ConnectionEndType.CLIENT,
-                        new ServiceRequestMessage()));
-        workflow.addSshActions(
-                SshActionFactory.createProxyFilterMessagesAction(
-                        inboundConnection,
-                        outboundConnection,
-                        ConnectionEndType.SERVER,
-                        new ServiceAcceptMessage()));
-
+        addTransportProtocolActions(workflow);
         // The following is run in a loop in SSH-MITM.
         workflow.addSshActions(
                 SshActionFactory.createProxyFilterMessagesAction(
