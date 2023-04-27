@@ -71,7 +71,7 @@ public class ParallelExecutor {
                         size, size, 5, TimeUnit.MINUTES, new LinkedBlockingDeque<>(), factory));
     }
 
-    private Future<Task> addTask(SshTask task) {
+    protected Future<Task> addTask(SshTask task) {
         if (executorService.isShutdown()) {
             throw new RuntimeException("Cannot add Tasks to already shutdown executor");
         }
