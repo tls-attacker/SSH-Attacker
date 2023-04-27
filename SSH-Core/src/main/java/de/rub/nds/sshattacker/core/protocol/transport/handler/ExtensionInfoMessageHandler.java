@@ -26,6 +26,11 @@ public class ExtensionInfoMessageHandler extends SshMessageHandler<ExtensionInfo
 
     @Override
     public void adjustContext() {
+        if (context.isHandleAsClient()) {
+            context.setServerSupportedExtensions(message.getExtensions());
+        } else {
+            context.setClientSupportedExtensions(message.getExtensions());
+        }
         message.getExtensions().forEach(extension -> extension.getHandler(context).adjustContext());
     }
 

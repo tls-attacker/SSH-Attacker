@@ -7,11 +7,13 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.handler.extension;
 
+import de.rub.nds.sshattacker.core.constants.CompressionMethod;
 import de.rub.nds.sshattacker.core.protocol.common.Preparator;
 import de.rub.nds.sshattacker.core.protocol.transport.message.extension.DelayCompressionExtension;
 import de.rub.nds.sshattacker.core.protocol.transport.parser.extension.DelayCompressionExtensionParser;
 import de.rub.nds.sshattacker.core.protocol.transport.serializer.extension.DelayCompressionExtensionSerializer;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.util.Converter;
 
 public class DelayCompressionExtensionHandler
         extends AbstractExtensionHandler<DelayCompressionExtension> {
@@ -27,7 +29,19 @@ public class DelayCompressionExtensionHandler
 
     @Override
     public void adjustContext() {
-        // TODO: Handle DelayCompressionExtension
+        // TODO: work with the values set in the context(pick one compression method from
+        // client+server delay-compressions)
+        if (context.isHandleAsClient()) {
+            context.setServerSupportedDelayCompressionMethods(
+                    Converter.nameListToEnumValues(
+                            extension.getCompressionMethodsServerToClient().getValue(),
+                            CompressionMethod.class));
+        } else {
+            context.setClientSupportedDelayCompressionMethods(
+                    Converter.nameListToEnumValues(
+                            extension.getCompressionMethodsClientToServer().getValue(),
+                            CompressionMethod.class));
+        }
     }
 
     @Override

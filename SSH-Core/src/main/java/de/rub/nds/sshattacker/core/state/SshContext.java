@@ -220,6 +220,12 @@ public class SshContext {
     public List<AbstractExtension<?>> clientSupportedExtensions;
 
     public List<AbstractExtension<?>> serverSupportedExtensions;
+
+    private List<PublicKeyFormat> serverSupportedPublicKeyAlgorithmsForAuthentification;
+
+    private List<CompressionMethod> clientSupportedDelayCompressionMethods;
+
+    private List<CompressionMethod> serverSupportedDelayCompressionMethods;
     // endregion
 
     // region Connection Protocol
@@ -920,6 +926,19 @@ public class SshContext {
     public Optional<List<AbstractExtension<?>>> getServerSupportedExtensions() {
         return Optional.ofNullable(serverSupportedExtensions);
     }
+
+    public Optional<List<PublicKeyFormat>>
+            getServerSupportedPublicKeyAlgorithmsForAuthentification() {
+        return Optional.ofNullable(serverSupportedPublicKeyAlgorithmsForAuthentification);
+    }
+
+    public Optional<List<CompressionMethod>> getClientSupportedDelayCompressionMethods() {
+        return Optional.ofNullable(clientSupportedDelayCompressionMethods);
+    }
+
+    public Optional<List<CompressionMethod>> getServerSupportedDelayCompressionMethods() {
+        return Optional.ofNullable(serverSupportedDelayCompressionMethods);
+    }
     // endregion
 
     // region Setters for SSH Extensions
@@ -929,6 +948,19 @@ public class SshContext {
 
     public void setServerSupportedExtensions(List<AbstractExtension<?>> extensions) {
         this.serverSupportedExtensions = extensions;
+    }
+
+    public void setServerSupportedPublicKeyAlgorithmsForAuthentification(
+            List<PublicKeyFormat> algorithms) {
+        this.serverSupportedPublicKeyAlgorithmsForAuthentification = algorithms;
+    }
+
+    public void setClientSupportedDelayCompressionMethods(List<CompressionMethod> methods) {
+        this.clientSupportedDelayCompressionMethods = methods;
+    }
+
+    public void setServerSupportedDelayCompressionMethods(List<CompressionMethod> methods) {
+        this.serverSupportedDelayCompressionMethods = methods;
     }
     // endregion
 
