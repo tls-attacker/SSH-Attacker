@@ -16,6 +16,7 @@ import de.rub.nds.sshattacker.core.crypto.ec.PointFormatter;
 import de.rub.nds.sshattacker.core.crypto.keys.*;
 import de.rub.nds.sshattacker.core.protocol.authentication.AuthenticationResponse;
 import de.rub.nds.sshattacker.core.protocol.connection.ChannelDefaults;
+import de.rub.nds.sshattacker.core.protocol.transport.message.extension.AbstractExtension;
 import de.rub.nds.sshattacker.core.workflow.factory.WorkflowTraceType;
 import de.rub.nds.sshattacker.core.workflow.filter.FilterType;
 import jakarta.xml.bind.annotation.*;
@@ -248,6 +249,14 @@ public class Config implements Serializable {
      */
     private final SshPublicKey<CustomRsaPublicKey, CustomRsaPrivateKey>
             fallbackRsaTransientPublicKey;
+    // endregion
+
+    // region SSH Extensions
+    /** List of extensions supported by the client */
+    private List<AbstractExtension<?>> clientSupportedExtensions;
+
+    /** List of extensions supported by the server */
+    private List<AbstractExtension<?>> serverSupportedExtensions;
     // endregion
 
     // region Authentication
@@ -1181,6 +1190,26 @@ public class Config implements Serializable {
         this.serverReserved = serverReserved;
     }
 
+    // endregion
+
+    // region Getters SSH Extensions
+    public List<AbstractExtension<?>> getClientSupportedExtensions() {
+        return clientSupportedExtensions;
+    }
+
+    public List<AbstractExtension<?>> getServerSupportedExtensions() {
+        return serverSupportedExtensions;
+    }
+    // endregion
+
+    // region Setters for SSH Extensions
+    public void setClientSupportedExtensions(List<AbstractExtension<?>> extensions) {
+        this.clientSupportedExtensions = extensions;
+    }
+
+    public void setServerSupportedExtensions(List<AbstractExtension<?>> extensions) {
+        this.serverSupportedExtensions = extensions;
+    }
     // endregion
 
     // region Getters for KeyExchange

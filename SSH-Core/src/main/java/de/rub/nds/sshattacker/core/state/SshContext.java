@@ -22,6 +22,7 @@ import de.rub.nds.sshattacker.core.packet.layer.AbstractPacketLayer;
 import de.rub.nds.sshattacker.core.packet.layer.PacketLayerFactory;
 import de.rub.nds.sshattacker.core.protocol.common.layer.MessageLayer;
 import de.rub.nds.sshattacker.core.protocol.connection.Channel;
+import de.rub.nds.sshattacker.core.protocol.transport.message.extension.AbstractExtension;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.sshattacker.core.workflow.chooser.ChooserFactory;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
@@ -213,6 +214,12 @@ public class SshContext {
     private BigInteger sharedSecret;
     /** The key set derived from the shared secret, the exchange hash, and the session ID */
     private KeySet keySet;
+    // endregion
+
+    // region SSH Extensions
+    public List<AbstractExtension<?>> clientSupportedExtensions;
+
+    public List<AbstractExtension<?>> serverSupportedExtensions;
     // endregion
 
     // region Connection Protocol
@@ -902,6 +909,26 @@ public class SshContext {
 
     public void setKeySet(KeySet transportKeySet) {
         this.keySet = transportKeySet;
+    }
+    // endregion
+
+    // region Getters for SSH Extensions
+    public Optional<List<AbstractExtension<?>>> getClientSupportedExtensions() {
+        return Optional.ofNullable(clientSupportedExtensions);
+    }
+
+    public Optional<List<AbstractExtension<?>>> getServerSupportedExtensions() {
+        return Optional.ofNullable(serverSupportedExtensions);
+    }
+    // endregion
+
+    // region Setters for SSH Extensions
+    public void setClientSupportedExtensions(List<AbstractExtension<?>> extensions) {
+        this.clientSupportedExtensions = extensions;
+    }
+
+    public void setServerSupportedExtensions(List<AbstractExtension<?>> extensions) {
+        this.serverSupportedExtensions = extensions;
     }
     // endregion
 
