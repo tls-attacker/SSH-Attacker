@@ -17,17 +17,20 @@ import de.rub.nds.sshattacker.core.crypto.keys.CustomRsaPublicKey;
 import de.rub.nds.sshattacker.core.crypto.keys.SshPublicKey;
 import de.rub.nds.sshattacker.core.exceptions.CryptoException;
 import de.rub.nds.sshattacker.core.state.SshContext;
+
 import jakarta.xml.bind.DatatypeConverter;
-import java.io.InputStream;
-import java.math.BigInteger;
-import java.util.Scanner;
-import java.util.stream.Stream;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+
+import java.io.InputStream;
+import java.math.BigInteger;
+import java.util.Scanner;
+import java.util.stream.Stream;
 
 public class RsaKeyExchangeTest {
     private static final Logger LOGGER = LogManager.getLogger();

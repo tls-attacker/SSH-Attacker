@@ -14,6 +14,7 @@ import de.rub.nds.sshattacker.core.protocol.authentication.AuthenticationPrompt;
 import de.rub.nds.sshattacker.core.protocol.authentication.handler.UserAuthInfoRequestMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
 import de.rub.nds.sshattacker.core.state.SshContext;
+
 import java.nio.charset.StandardCharsets;
 
 public class UserAuthInfoRequestMessage extends SshMessage<UserAuthInfoRequestMessage> {

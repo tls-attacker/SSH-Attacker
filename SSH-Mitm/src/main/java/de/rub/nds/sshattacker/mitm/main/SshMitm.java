@@ -9,6 +9,7 @@ package de.rub.nds.sshattacker.mitm.main;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
+
 import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.config.delegate.GeneralDelegate;
 import de.rub.nds.sshattacker.core.connection.AliasedConnection;
@@ -25,9 +26,11 @@ import de.rub.nds.sshattacker.core.workflow.factory.SshActionFactory;
 import de.rub.nds.sshattacker.mitm.config.MitmCommandConfig;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
-import java.io.*;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.io.*;
 
 public class SshMitm implements Runnable {
 

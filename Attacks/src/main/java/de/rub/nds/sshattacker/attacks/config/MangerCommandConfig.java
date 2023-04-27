@@ -9,12 +9,14 @@ package de.rub.nds.sshattacker.attacks.config;
 
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.ParametersDelegate;
+
 import de.rub.nds.sshattacker.attacks.config.delegate.AttackDelegate;
 import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.config.delegate.ClientDelegate;
 import de.rub.nds.sshattacker.core.config.delegate.GeneralDelegate;
 import de.rub.nds.sshattacker.core.constants.KeyExchangeAlgorithm;
 import de.rub.nds.sshattacker.core.util.Converter;
+
 import java.util.List;
 
 /** Config for Manger's attack */

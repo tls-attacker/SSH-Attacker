@@ -8,6 +8,7 @@
 package de.rub.nds.sshattacker.core.config.delegate;
 
 import com.beust.jcommander.Parameter;
+
 import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.config.converter.WorkflowTraceTypeConverter;
 import de.rub.nds.sshattacker.core.workflow.factory.WorkflowTraceType;

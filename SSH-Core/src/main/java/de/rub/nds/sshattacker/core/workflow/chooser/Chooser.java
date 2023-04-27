@@ -17,10 +17,12 @@ import de.rub.nds.sshattacker.core.crypto.kex.HybridKeyExchange;
 import de.rub.nds.sshattacker.core.crypto.kex.RsaKeyExchange;
 import de.rub.nds.sshattacker.core.crypto.keys.SshPublicKey;
 import de.rub.nds.sshattacker.core.state.SshContext;
-import java.util.List;
-import java.util.stream.Stream;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.util.List;
+import java.util.stream.Stream;
 
 public abstract class Chooser {
 

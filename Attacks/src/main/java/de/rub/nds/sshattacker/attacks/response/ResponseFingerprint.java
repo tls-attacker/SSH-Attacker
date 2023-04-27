@@ -11,10 +11,12 @@ import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessage;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.message.DisconnectMessage;
 import de.rub.nds.tlsattacker.transport.socket.SocketState;
+
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlElementRef;
 import jakarta.xml.bind.annotation.XmlElementWrapper;
+
 import java.util.List;
 import java.util.Objects;
 

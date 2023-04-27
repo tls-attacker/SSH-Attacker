@@ -9,9 +9,11 @@ package de.rub.nds.sshattacker.core.protocol.connection.parser;
 
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.connection.message.GlobalRequestTcpIpForwardMessage;
-import java.nio.charset.StandardCharsets;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.nio.charset.StandardCharsets;
 
 public class GlobalRequestTcpIpForwardMessageParser
         extends GlobalRequestMessageParser<GlobalRequestTcpIpForwardMessage> {

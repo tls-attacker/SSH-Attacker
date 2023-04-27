@@ -10,9 +10,11 @@ package de.rub.nds.sshattacker.core.protocol.connection.serializer;
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelRequestMessage;
 import de.rub.nds.sshattacker.core.util.Converter;
-import java.nio.charset.StandardCharsets;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.nio.charset.StandardCharsets;
 
 public abstract class ChannelRequestMessageSerializer<T extends ChannelRequestMessage<T>>
         extends ChannelMessageSerializer<T> {

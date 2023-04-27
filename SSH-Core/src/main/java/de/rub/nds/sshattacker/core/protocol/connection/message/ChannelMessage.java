@@ -10,6 +10,7 @@ package de.rub.nds.sshattacker.core.protocol.connection.message;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
+
 import jakarta.xml.bind.annotation.XmlAttribute;
 
 public abstract class ChannelMessage<T extends ChannelMessage<T>> extends SshMessage<T> {

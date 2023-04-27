@@ -11,7 +11,9 @@ import de.rub.nds.sshattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.transport.Connection;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.transport.TransportHandlerType;
+
 import jakarta.xml.bind.annotation.XmlType;
+
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Objects;

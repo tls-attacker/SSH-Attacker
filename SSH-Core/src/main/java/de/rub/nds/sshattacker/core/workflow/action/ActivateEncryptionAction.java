@@ -17,9 +17,11 @@ import de.rub.nds.sshattacker.core.packet.cipher.keys.KeySet;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.state.State;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
-import java.util.Optional;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.util.Optional;
 
 public class ActivateEncryptionAction extends ConnectionBoundAction {
 

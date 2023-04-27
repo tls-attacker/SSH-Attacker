@@ -18,10 +18,13 @@ import de.rub.nds.sshattacker.core.state.State;
 import de.rub.nds.sshattacker.core.workflow.action.executor.MessageActionResult;
 import de.rub.nds.sshattacker.core.workflow.action.executor.ReceiveMessageHelper;
 import de.rub.nds.sshattacker.core.workflow.action.executor.SendMessageHelper;
+
 import jakarta.xml.bind.annotation.XmlTransient;
-import java.util.List;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.util.List;
 
 public class ProxyFilterMessagesAction extends ForwardMessagesAction {
 

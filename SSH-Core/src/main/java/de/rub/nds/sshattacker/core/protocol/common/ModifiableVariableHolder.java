@@ -9,13 +9,15 @@ package de.rub.nds.sshattacker.core.protocol.common;
 
 import de.rub.nds.modifiablevariable.ModifiableVariable;
 import de.rub.nds.modifiablevariable.util.ReflectionHelper;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public abstract class ModifiableVariableHolder implements Serializable {
 

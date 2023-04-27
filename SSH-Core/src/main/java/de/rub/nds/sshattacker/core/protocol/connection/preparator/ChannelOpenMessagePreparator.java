@@ -13,9 +13,11 @@ import de.rub.nds.sshattacker.core.protocol.connection.Channel;
 import de.rub.nds.sshattacker.core.protocol.connection.ChannelDefaults;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelOpenMessage;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
-import java.util.HashMap;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.util.HashMap;
 
 public abstract class ChannelOpenMessagePreparator<T extends ChannelOpenMessage<T>>
         extends SshMessagePreparator<T> {

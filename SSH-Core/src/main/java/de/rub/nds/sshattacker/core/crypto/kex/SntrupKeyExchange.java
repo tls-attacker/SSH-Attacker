@@ -23,11 +23,13 @@ import de.rub.nds.sshattacker.core.crypto.ntrup.sntrup.core.SntrupCoreValues;
 import de.rub.nds.sshattacker.core.crypto.ntrup.sntrup.core.SntrupParameterSet;
 import de.rub.nds.sshattacker.core.exceptions.CryptoException;
 import de.rub.nds.sshattacker.core.exceptions.NotImplementedException;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class SntrupKeyExchange extends KeyEncapsulation {
     private static final Logger LOGGER = LogManager.getLogger();

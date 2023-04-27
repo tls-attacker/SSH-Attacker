@@ -12,10 +12,12 @@ import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessage;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
 import de.rub.nds.sshattacker.core.workflow.action.ReceivingAction;
 import de.rub.nds.sshattacker.core.workflow.action.SendingAction;
-import java.util.LinkedList;
-import java.util.List;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.util.LinkedList;
+import java.util.List;
 
 public class WorkflowTraceUtil {
 

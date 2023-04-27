@@ -14,6 +14,7 @@ import de.rub.nds.sshattacker.core.protocol.connection.parser.ChannelCloseMessag
 import de.rub.nds.sshattacker.core.protocol.connection.preparator.ChannelCloseMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.connection.serializer.ChannelMessageSerializer;
 import de.rub.nds.sshattacker.core.state.SshContext;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

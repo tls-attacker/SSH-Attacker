@@ -7,11 +7,12 @@
  */
 package de.rub.nds.sshattacker.core.crypto.ec;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.math.BigInteger;
 import java.util.Objects;
 import java.util.Random;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  * An elliptic curve over a galois field F_{2^m}.<br>

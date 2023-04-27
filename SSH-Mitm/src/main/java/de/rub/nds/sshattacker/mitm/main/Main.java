@@ -8,8 +8,10 @@
 package de.rub.nds.sshattacker.mitm.main;
 
 import com.beust.jcommander.ParameterException;
+
 import de.rub.nds.sshattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.sshattacker.core.exceptions.WorkflowExecutionException;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.ThreadContext;

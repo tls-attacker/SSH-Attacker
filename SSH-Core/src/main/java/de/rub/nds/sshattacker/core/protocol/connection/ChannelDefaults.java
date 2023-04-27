@@ -8,9 +8,11 @@
 package de.rub.nds.sshattacker.core.protocol.connection;
 
 import de.rub.nds.sshattacker.core.constants.ChannelType;
+
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlRootElement;
+
 import java.io.Serializable;
 
 @XmlRootElement

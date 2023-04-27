@@ -9,11 +9,12 @@ package de.rub.nds.sshattacker.core.crypto.ntrup.sntrup.core;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.util.Random;
-import java.util.stream.LongStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.Test;
+
+import java.util.Random;
+import java.util.stream.LongStream;
 
 public class RQTest {
     private static final Logger LOGGER = LogManager.getLogger();

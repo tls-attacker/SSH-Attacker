@@ -11,9 +11,11 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.BinaryPacketConstants;
 import de.rub.nds.sshattacker.core.constants.BinaryPacketField;
 import de.rub.nds.sshattacker.core.packet.BinaryPacket;
-import java.util.Set;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.util.Set;
 
 public class BinaryPacketSerializer extends AbstractPacketSerializer<BinaryPacket> {
 

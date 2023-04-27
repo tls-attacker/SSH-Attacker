@@ -13,6 +13,7 @@ import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.sshattacker.core.constants.GlobalRequestType;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
+
 import java.nio.charset.StandardCharsets;
 
 public abstract class GlobalRequestMessage<T extends GlobalRequestMessage<T>>

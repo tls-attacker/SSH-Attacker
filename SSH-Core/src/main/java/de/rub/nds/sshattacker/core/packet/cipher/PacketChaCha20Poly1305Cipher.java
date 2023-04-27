@@ -17,12 +17,15 @@ import de.rub.nds.sshattacker.core.packet.BlobPacket;
 import de.rub.nds.sshattacker.core.packet.PacketCryptoComputations;
 import de.rub.nds.sshattacker.core.packet.cipher.keys.KeySet;
 import de.rub.nds.sshattacker.core.state.SshContext;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.util.Arrays;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
 import javax.crypto.AEADBadTagException;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class PacketChaCha20Poly1305Cipher extends PacketCipher {
 

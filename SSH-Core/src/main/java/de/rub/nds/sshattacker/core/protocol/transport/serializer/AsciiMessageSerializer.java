@@ -11,9 +11,11 @@ import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeStrin
 
 import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.transport.message.AsciiMessage;
-import java.nio.charset.StandardCharsets;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.nio.charset.StandardCharsets;
 
 public class AsciiMessageSerializer extends ProtocolMessageSerializer<AsciiMessage> {
 

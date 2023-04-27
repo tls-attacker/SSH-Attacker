@@ -11,18 +11,21 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import de.rub.nds.sshattacker.core.constants.EncryptionAlgorithm;
 import de.rub.nds.sshattacker.core.exceptions.CryptoException;
+
 import jakarta.xml.bind.DatatypeConverter;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Scanner;
 import java.util.stream.Stream;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
 
 public class JavaCipherTest {
 

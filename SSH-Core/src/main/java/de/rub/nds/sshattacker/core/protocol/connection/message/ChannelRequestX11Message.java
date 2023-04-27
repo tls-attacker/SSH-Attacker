@@ -14,6 +14,7 @@ import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.sshattacker.core.protocol.connection.handler.ChannelRequestX11MessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.util.Converter;
+
 import java.nio.charset.StandardCharsets;
 
 public class ChannelRequestX11Message extends ChannelRequestMessage<ChannelRequestX11Message> {

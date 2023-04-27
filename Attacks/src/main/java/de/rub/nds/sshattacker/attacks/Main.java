@@ -12,6 +12,7 @@ import static de.rub.nds.tlsattacker.util.ConsoleLogger.CONSOLE;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.JCommander.Builder;
 import com.beust.jcommander.ParameterException;
+
 import de.rub.nds.sshattacker.attacks.config.MangerCommandConfig;
 import de.rub.nds.sshattacker.attacks.config.delegate.GeneralAttackDelegate;
 import de.rub.nds.sshattacker.attacks.impl.Attacker;
@@ -19,9 +20,11 @@ import de.rub.nds.sshattacker.attacks.impl.MangerAttacker;
 import de.rub.nds.sshattacker.core.config.SshDelegateConfig;
 import de.rub.nds.sshattacker.core.config.delegate.GeneralDelegate;
 import de.rub.nds.sshattacker.core.exceptions.ConfigurationException;
-import java.util.Objects;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.util.Objects;
 
 public class Main {
 

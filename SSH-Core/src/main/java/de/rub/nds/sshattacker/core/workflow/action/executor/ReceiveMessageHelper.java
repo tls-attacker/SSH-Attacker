@@ -16,13 +16,15 @@ import de.rub.nds.sshattacker.core.packet.layer.PacketLayerParseResult;
 import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.message.DisconnectMessage;
 import de.rub.nds.sshattacker.core.state.SshContext;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /** A helper class to receive and process bytes from transport handler. */
 public class ReceiveMessageHelper {

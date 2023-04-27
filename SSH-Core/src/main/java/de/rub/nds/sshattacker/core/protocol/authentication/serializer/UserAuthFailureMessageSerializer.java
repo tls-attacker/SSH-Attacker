@@ -11,9 +11,11 @@ import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthFailureMessage;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
 import de.rub.nds.sshattacker.core.util.Converter;
-import java.nio.charset.StandardCharsets;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.nio.charset.StandardCharsets;
 
 public class UserAuthFailureMessageSerializer extends SshMessageSerializer<UserAuthFailureMessage> {
 

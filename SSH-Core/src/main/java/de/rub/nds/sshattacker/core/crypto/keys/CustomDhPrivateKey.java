@@ -8,10 +8,13 @@
 package de.rub.nds.sshattacker.core.crypto.keys;
 
 import de.rub.nds.sshattacker.core.constants.NamedDhGroup;
+
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlRootElement;
+
 import java.math.BigInteger;
+
 import javax.crypto.interfaces.DHPrivateKey;
 import javax.crypto.spec.DHParameterSpec;
 

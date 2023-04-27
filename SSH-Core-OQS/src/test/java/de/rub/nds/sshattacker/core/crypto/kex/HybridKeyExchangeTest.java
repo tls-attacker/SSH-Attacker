@@ -12,13 +12,9 @@ import static org.mockito.Mockito.doReturn;
 
 import de.rub.nds.sshattacker.core.constants.KeyExchangeAlgorithm;
 import de.rub.nds.sshattacker.core.constants.PQKemNames;
+
 import jakarta.xml.bind.DatatypeConverter;
-import java.io.InputStream;
-import java.lang.reflect.Field;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Scanner;
-import java.util.stream.Stream;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -29,6 +25,13 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.openquantumsafe.Pair;
+
+import java.io.InputStream;
+import java.lang.reflect.Field;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Scanner;
+import java.util.stream.Stream;
 
 @ExtendWith(MockitoExtension.class)
 public class HybridKeyExchangeTest {

@@ -14,9 +14,11 @@ import de.rub.nds.sshattacker.core.constants.KeyExchangeInitConstants;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 import de.rub.nds.sshattacker.core.protocol.transport.message.KeyExchangeInitMessage;
 import de.rub.nds.sshattacker.core.util.Converter;
-import java.nio.charset.StandardCharsets;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.nio.charset.StandardCharsets;
 
 public class KeyExchangeInitMessageParser extends SshMessageParser<KeyExchangeInitMessage> {
 

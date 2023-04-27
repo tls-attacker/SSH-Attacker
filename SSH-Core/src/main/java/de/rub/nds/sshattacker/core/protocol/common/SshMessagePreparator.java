@@ -9,6 +9,7 @@ package de.rub.nds.sshattacker.core.protocol.common;
 
 import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

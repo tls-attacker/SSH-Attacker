@@ -14,6 +14,7 @@ import de.rub.nds.sshattacker.core.constants.ServiceType;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.ServiceAcceptMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
+
 import java.nio.charset.StandardCharsets;
 
 public class ServiceAcceptMessage extends SshMessage<ServiceAcceptMessage> {

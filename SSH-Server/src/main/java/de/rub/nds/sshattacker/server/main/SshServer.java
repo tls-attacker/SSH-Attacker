@@ -9,6 +9,7 @@ package de.rub.nds.sshattacker.server.main;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
+
 import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.config.delegate.GeneralDelegate;
 import de.rub.nds.sshattacker.core.exceptions.WorkflowExecutionException;
@@ -16,6 +17,7 @@ import de.rub.nds.sshattacker.core.state.State;
 import de.rub.nds.sshattacker.core.workflow.DefaultWorkflowExecutor;
 import de.rub.nds.sshattacker.core.workflow.WorkflowExecutor;
 import de.rub.nds.sshattacker.server.config.ServerCommandConfig;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

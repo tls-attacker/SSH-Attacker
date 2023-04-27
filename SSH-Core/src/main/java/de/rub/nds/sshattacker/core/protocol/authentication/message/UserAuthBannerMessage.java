@@ -13,6 +13,7 @@ import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.sshattacker.core.protocol.authentication.handler.UserAuthBannerMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
 import de.rub.nds.sshattacker.core.state.SshContext;
+
 import java.nio.charset.StandardCharsets;
 
 public class UserAuthBannerMessage extends SshMessage<UserAuthBannerMessage> {
