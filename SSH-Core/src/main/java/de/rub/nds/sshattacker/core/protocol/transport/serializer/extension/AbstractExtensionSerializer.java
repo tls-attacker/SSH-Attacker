@@ -28,7 +28,7 @@ public abstract class AbstractExtensionSerializer<E extends AbstractExtension<E>
     @Override
     protected final void serializeBytes() {
         serializeExtensionName();
-        serializeExtensionValueLength();
+        // serializeExtensionValueLength();
         serializeExtensionValue();
     }
 
