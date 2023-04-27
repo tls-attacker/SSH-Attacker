@@ -33,12 +33,14 @@ import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.constants.KeyExchangeAlgorithm;
 import de.rub.nds.sshattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.sshattacker.core.state.State;
-import java.math.BigInteger;
-import java.security.interfaces.RSAPublicKey;
-import java.util.*;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.math.BigInteger;
+import java.security.interfaces.RSAPublicKey;
+import java.util.*;
 
 /**
  * Sends differently formatted PKCS#1 v2.x messages to the SSH server and observes the server

@@ -9,9 +9,10 @@ package de.rub.nds.sshattacker.core.crypto.ntrup.sntrup.core;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import org.junit.Test;
+
 import java.util.Random;
 import java.util.stream.IntStream;
-import org.junit.Test;
 
 public class RTest {
     SntrupParameterSet set = SntrupParameterSet.KEM_SNTRUP_761;

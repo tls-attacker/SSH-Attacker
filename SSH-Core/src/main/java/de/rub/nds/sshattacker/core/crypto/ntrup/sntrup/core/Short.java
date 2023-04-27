@@ -9,6 +9,7 @@ package de.rub.nds.sshattacker.core.crypto.ntrup.sntrup.core;
 
 import cc.redberry.rings.poly.univar.UnivariateDivision;
 import cc.redberry.rings.poly.univar.UnivariatePolynomialZ64;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;

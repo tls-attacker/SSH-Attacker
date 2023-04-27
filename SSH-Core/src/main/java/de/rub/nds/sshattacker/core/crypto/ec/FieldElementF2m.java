@@ -7,10 +7,11 @@
  */
 package de.rub.nds.sshattacker.core.crypto.ec;
 
-import java.io.Serializable;
-import java.math.BigInteger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.io.Serializable;
+import java.math.BigInteger;
 
 /**
  * An element of a galois field F_{2^m}.<br>

@@ -10,9 +10,11 @@ package de.rub.nds.sshattacker.core.protocol.transport.serializer;
 import de.rub.nds.sshattacker.core.constants.CharConstants;
 import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.transport.message.VersionExchangeMessage;
-import java.nio.charset.StandardCharsets;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.nio.charset.StandardCharsets;
 
 public class VersionExchangeMessageSerializer
         extends ProtocolMessageSerializer<VersionExchangeMessage> {

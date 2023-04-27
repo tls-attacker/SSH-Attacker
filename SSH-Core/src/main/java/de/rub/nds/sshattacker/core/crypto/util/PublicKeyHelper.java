@@ -20,11 +20,13 @@ import de.rub.nds.sshattacker.core.crypto.keys.serializer.EcdsaPublicKeySerializ
 import de.rub.nds.sshattacker.core.crypto.keys.serializer.RsaPublicKeySerializer;
 import de.rub.nds.sshattacker.core.crypto.keys.serializer.XCurvePublicKeySerializer;
 import de.rub.nds.sshattacker.core.exceptions.NotImplementedException;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.nio.charset.StandardCharsets;
 import java.security.PublicKey;
 import java.util.Arrays;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /** Utility class for public key parsing and serializing */
 public final class PublicKeyHelper {

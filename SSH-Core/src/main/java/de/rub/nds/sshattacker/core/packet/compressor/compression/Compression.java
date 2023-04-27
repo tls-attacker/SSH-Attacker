@@ -8,6 +8,7 @@
 package de.rub.nds.sshattacker.core.packet.compressor.compression;
 
 import de.rub.nds.sshattacker.core.constants.CompressionAlgorithm;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

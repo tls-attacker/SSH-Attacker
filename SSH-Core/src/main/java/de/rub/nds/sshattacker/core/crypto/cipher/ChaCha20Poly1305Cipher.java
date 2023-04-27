@@ -10,14 +10,17 @@ package de.rub.nds.sshattacker.core.crypto.cipher;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.EncryptionAlgorithm;
 import de.rub.nds.sshattacker.core.exceptions.CryptoException;
-import java.util.Arrays;
-import javax.crypto.AEADBadTagException;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.crypto.engines.ChaChaEngine;
 import org.bouncycastle.crypto.macs.Poly1305;
 import org.bouncycastle.crypto.params.KeyParameter;
 import org.bouncycastle.crypto.params.ParametersWithIV;
+
+import java.util.Arrays;
+
+import javax.crypto.AEADBadTagException;
 
 class ChaCha20Poly1305Cipher extends AbstractCipher {
 

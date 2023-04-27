@@ -16,9 +16,11 @@ import de.rub.nds.sshattacker.core.crypto.keys.CustomEcPrivateKey;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomEcPublicKey;
 import de.rub.nds.sshattacker.core.crypto.keys.SshPublicKey;
 import de.rub.nds.sshattacker.core.protocol.common.Parser;
-import java.nio.charset.StandardCharsets;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.nio.charset.StandardCharsets;
 
 /** Parser class to parse an ECDSA public key in the ecdsa-sha2-* format. */
 public class EcdsaPublicKeyParser

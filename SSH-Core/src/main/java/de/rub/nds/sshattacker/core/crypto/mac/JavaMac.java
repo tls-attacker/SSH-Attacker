@@ -10,9 +10,11 @@ package de.rub.nds.sshattacker.core.crypto.mac;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.constants.MacAlgorithm;
+
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
+
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 

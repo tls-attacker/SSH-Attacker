@@ -12,6 +12,7 @@ import static de.rub.nds.tlsattacker.util.ConsoleLogger.CONSOLE;
 import de.rub.nds.sshattacker.attacks.config.AttackConfig;
 import de.rub.nds.sshattacker.attacks.connectivity.ConnectivityChecker;
 import de.rub.nds.sshattacker.core.config.Config;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

@@ -8,6 +8,7 @@
 package de.rub.nds.sshattacker.core.workflow.filter;
 
 import de.rub.nds.sshattacker.core.config.Config;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

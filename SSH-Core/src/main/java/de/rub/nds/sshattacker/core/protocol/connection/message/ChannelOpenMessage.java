@@ -12,7 +12,9 @@ import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.sshattacker.core.constants.ChannelType;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
+
 import jakarta.xml.bind.annotation.XmlAttribute;
+
 import java.nio.charset.StandardCharsets;
 
 public abstract class ChannelOpenMessage<T extends ChannelOpenMessage<T>> extends SshMessage<T> {

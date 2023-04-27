@@ -8,10 +8,12 @@
 package de.rub.nds.sshattacker.mitm.config;
 
 import com.beust.jcommander.ParametersDelegate;
+
 import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.config.SshDelegateConfig;
 import de.rub.nds.sshattacker.core.config.delegate.*;
 import de.rub.nds.sshattacker.core.workflow.factory.WorkflowTraceType;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

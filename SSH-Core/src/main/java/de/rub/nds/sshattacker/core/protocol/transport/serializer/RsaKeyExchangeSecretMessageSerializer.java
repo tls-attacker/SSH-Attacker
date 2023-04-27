@@ -10,9 +10,11 @@ package de.rub.nds.sshattacker.core.protocol.transport.serializer;
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.transport.message.RsaKeyExchangeSecretMessage;
-import java.util.Arrays;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.util.Arrays;
 
 public class RsaKeyExchangeSecretMessageSerializer
         extends SshMessageSerializer<RsaKeyExchangeSecretMessage> {

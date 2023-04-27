@@ -10,12 +10,14 @@ package de.rub.nds.sshattacker.core.crypto.ec;
 import static org.junit.jupiter.api.Assertions.*;
 
 import de.rub.nds.sshattacker.core.constants.NamedEcGroup;
-import java.math.BigInteger;
-import java.util.Random;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import java.math.BigInteger;
+import java.util.Random;
 
 /** Testing EllipticCurve, CurveFactory, EllipticCurveOverFp and EllipticCurveOverF2m */
 public class EllipticCurveTest {

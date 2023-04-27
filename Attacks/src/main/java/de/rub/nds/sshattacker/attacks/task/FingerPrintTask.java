@@ -11,9 +11,11 @@ import de.rub.nds.sshattacker.attacks.response.ResponseExtractor;
 import de.rub.nds.sshattacker.attacks.response.ResponseFingerprint;
 import de.rub.nds.sshattacker.core.state.State;
 import de.rub.nds.sshattacker.core.workflow.WorkflowExecutor;
-import java.io.IOException;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.io.IOException;
 
 /** Executes a workflow and stores the server's response */
 public class FingerPrintTask extends SshTask {

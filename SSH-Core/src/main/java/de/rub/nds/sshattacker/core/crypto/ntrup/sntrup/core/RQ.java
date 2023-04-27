@@ -13,7 +13,9 @@ import cc.redberry.rings.IntegersZp64;
 import cc.redberry.rings.poly.PolynomialMethods;
 import cc.redberry.rings.poly.univar.UnivariateDivision;
 import cc.redberry.rings.poly.univar.UnivariatePolynomialZp64;
+
 import de.rub.nds.sshattacker.core.crypto.ntrup.sntrup.util.Encoding;
+
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
