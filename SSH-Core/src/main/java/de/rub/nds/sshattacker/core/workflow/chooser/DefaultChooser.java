@@ -481,12 +481,24 @@ public class DefaultChooser extends Chooser {
     // endregion
 
     // region SSH Extensions
-    // TODO: add description !
-
+    /**
+     * Retrieves the list of client supported extensions included in the clients SSH_MSG_EXT_INFO
+     * packet from context. If no SSH_MSG_EXT_INFO packet was received yet or SSH-Attacker is
+     * running in client mode, the extensions from config will be returned instead.
+     *
+     * @return List of client supported extensions
+     */
     public List<AbstractExtension<?>> getClientSupportedExtensions() {
         return context.getClientSupportedExtensions().orElse(config.getClientSupportedExtensions());
     }
 
+    /**
+     * Retrieves the list of server supported extensions included in the servers SSH_MSG_EXT_INFO
+     * packet from context. If no SSH_MSG_EXT_INFO packet was received yet or SSH-Attacker is
+     * running in server mode, the extensions from config will be returned instead.
+     *
+     * @return List of server supported extensions
+     */
     public List<AbstractExtension<?>> getServerSupportedExtensions() {
         return context.getServerSupportedExtensions().orElse(config.getServerSupportedExtensions());
     }
