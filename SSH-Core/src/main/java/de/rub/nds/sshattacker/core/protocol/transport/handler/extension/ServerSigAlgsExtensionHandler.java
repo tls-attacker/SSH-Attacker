@@ -11,6 +11,8 @@ import de.rub.nds.sshattacker.core.constants.PublicKeyFormat;
 import de.rub.nds.sshattacker.core.protocol.common.Preparator;
 import de.rub.nds.sshattacker.core.protocol.transport.message.extension.ServerSigAlgsExtension;
 import de.rub.nds.sshattacker.core.protocol.transport.parser.extension.ServerSigAlgsExtensionParser;
+import de.rub.nds.sshattacker.core.protocol.transport.preparator.extension.AbstractExtensionPreparator;
+import de.rub.nds.sshattacker.core.protocol.transport.preparator.extension.ServerSigAlgsExtensionPreparator;
 import de.rub.nds.sshattacker.core.protocol.transport.serializer.extension.ServerSigAlgsExtensionSerializer;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.util.Converter;
@@ -40,11 +42,9 @@ public class ServerSigAlgsExtensionHandler
         return new ServerSigAlgsExtensionParser(array, startPosition);
     }
 
-    // TODO: Implement Preparator for ServerSigAlgsExtension
-
     @Override
-    public Preparator<ServerSigAlgsExtension> getPreparator() {
-        return null;
+    public AbstractExtensionPreparator<ServerSigAlgsExtension> getPreparator() {
+        return new ServerSigAlgsExtensionPreparator(context.getChooser(), extension);
     }
 
     @Override
