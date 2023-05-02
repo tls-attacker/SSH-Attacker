@@ -8,12 +8,17 @@
 package de.rub.nds.sshattacker.core.protocol.transport.handler.extension;
 
 import de.rub.nds.sshattacker.core.constants.PublicKeyFormat;
+import de.rub.nds.sshattacker.core.crypto.keys.SshPublicKey;
 import de.rub.nds.sshattacker.core.protocol.transport.message.extension.ServerSigAlgsExtension;
 import de.rub.nds.sshattacker.core.protocol.transport.parser.extension.ServerSigAlgsExtensionParser;
 import de.rub.nds.sshattacker.core.protocol.transport.preparator.extension.ServerSigAlgsExtensionPreparator;
 import de.rub.nds.sshattacker.core.protocol.transport.serializer.extension.ServerSigAlgsExtensionSerializer;
+import de.rub.nds.sshattacker.core.protocol.util.AlgorithmPicker;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.util.Converter;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Optional;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -58,11 +63,64 @@ public class ServerSigAlgsExtensionHandler
                     Converter.nameListToEnumValues(
                             extension.getAcceptedPublicKeyAlgorithms().getValue(),
                             PublicKeyFormat.class));
+
+            List<PublicKeyFormat> clientSupportedPublicKeyAlgorithms =
+                    collectSupportedPublicKeyAlgorithmsFromClient(
+                            context.getChooser().getConfig().getUserKeys());
+
+            List<PublicKeyFormat> serverSupportedPublicKeyAlgorithms;
+            if (context.getServerSupportedPublicKeyAlgorithmsForAuthentification().isPresent()) {
+                serverSupportedPublicKeyAlgorithms =
+                        context.getServerSupportedPublicKeyAlgorithmsForAuthentification().get();
+            }
+            // ssh-dss is REQUIRED to be implemented by every ssh server (RFC 4253 Section 6.6)
+            else {
+                serverSupportedPublicKeyAlgorithms = new LinkedList<>();
+                serverSupportedPublicKeyAlgorithms.add(PublicKeyFormat.SSH_DSS);
+            }
+
+            // pick common algorithm
+            Optional<PublicKeyFormat> commonAlgorithm =
+                    AlgorithmPicker.pickAlgorithm(
+                            clientSupportedPublicKeyAlgorithms, serverSupportedPublicKeyAlgorithms);
+
+            // transform common algorithm into SshKey<?, ?> and set in config
+            SshPublicKey<?, ?> selectedAlgorithm =
+                    getSshPublicKeyFromSelectedPublicKeyAlgorithm(commonAlgorithm.get());
+            context.getConfig().setSelectedPublicKeyAlgorithmForAuthentification(selectedAlgorithm);
         }
         // receiving "server-sig-algs" extension as a server -> ignore "server-sig-algs"
         else {
             LOGGER.warn(
                     "Client sent ServerSigAlgsExtension which is supposed to be sent by the server only!");
         }
+    }
+
+    private SshPublicKey<?, ?> getSshPublicKeyFromSelectedPublicKeyAlgorithm(
+            PublicKeyFormat algorithm) {
+        for (SshPublicKey<?, ?> key : context.getChooser().getConfig().getUserKeys()) {
+            PublicKeyFormat publicKeyFormat = key.getPublicKeyFormat();
+            if (publicKeyFormat.equals(algorithm)) {
+                return key;
+            }
+        }
+        LOGGER.warn("No intersection of public key algorithms for client authentification found!");
+        return null;
+    }
+
+    // extract all public key algorithms supported by the client from the List of user keys
+    // and return as List<PublicKeyFormat>
+    private List<PublicKeyFormat> collectSupportedPublicKeyAlgorithmsFromClient(
+            List<SshPublicKey<?, ?>> keys) {
+        List<PublicKeyFormat> algorithms = new LinkedList<>();
+        for (SshPublicKey<?, ?> key : keys) {
+            algorithms.add(key.getPublicKeyFormat());
+        }
+        return algorithms;
+    }
+
+    private List<PublicKeyFormat> collectSupportedPublicKeyAlgorithmsFromServer(
+            Optional<List<PublicKeyFormat>> algorithms) {
+        return algorithms.orElse(null);
     }
 }

@@ -257,6 +257,17 @@ public class Config implements Serializable {
 
     /** List of extensions supported by the server */
     private List<AbstractExtension<?>> serverSupportedExtensions;
+
+    /**
+     * The selected public key algorithm for client authentification(from server-sig-algs extension)
+     */
+    private SshPublicKey<?, ?> selectedPublicKeyAlgorithmForAuthentification;
+
+    /**
+     * If set to true, the extensions will be executed. If set to false, execution of the extensions
+     * must be enabled manually by calling the corresponding methods on the state.
+     */
+    private boolean enableExtensions = true;
     // endregion
 
     // region Authentication
@@ -1328,6 +1339,14 @@ public class Config implements Serializable {
     public List<AbstractExtension<?>> getServerSupportedExtensions() {
         return serverSupportedExtensions;
     }
+
+    public SshPublicKey<?, ?> getSelectedPublicKeyAlgorithmForAuthentification() {
+        return selectedPublicKeyAlgorithmForAuthentification;
+    }
+
+    public boolean getEnableExtensions() {
+        return enableExtensions;
+    }
     // endregion
 
     // region Setters for SSH Extensions
@@ -1337,6 +1356,18 @@ public class Config implements Serializable {
 
     public void setServerSupportedExtensions(List<AbstractExtension<?>> extensions) {
         this.serverSupportedExtensions = extensions;
+    }
+
+    public void setSelectedPublicKeyAlgorithmForAuthentification(SshPublicKey<?, ?> algorithm) {
+        this.selectedPublicKeyAlgorithmForAuthentification = algorithm;
+    }
+
+    public void enableExtension() {
+        this.enableExtensions = true;
+    }
+
+    public void disableExtensions() {
+        this.enableExtensions = false;
     }
     // endregion
 
