@@ -140,7 +140,8 @@ public class UserAuthPubkeyMessagePreparator
     public void prepareUserAuthRequestSpecificContents() {
         getObject().setUseSignature(true);
         SshPublicKey<?, ?> pk;
-        if (chooser.getConfig().getEnableExtensions()) {
+        if (chooser.getConfig().getEnableExtensions()
+                && chooser.getConfig().getSelectedPublicKeyAlgorithmForAuthentification() != null) {
             pk = chooser.getConfig().getSelectedPublicKeyAlgorithmForAuthentification();
         } else {
             pk = chooser.getConfig().getUserKeys().get(0);
