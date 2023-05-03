@@ -963,7 +963,8 @@ public class SshContext {
     }
 
     // section server-sig-algs extension
-    public void setSelectedPublicKeyAlgorithmForAuthentification(SshPublicKey<?, ?> selectedAlgorithm) {
+    public void setSelectedPublicKeyAlgorithmForAuthentification(
+            SshPublicKey<?, ?> selectedAlgorithm) {
         this.selectedPublicKeyAlgorithmForAuthentification = selectedAlgorithm;
     }
 

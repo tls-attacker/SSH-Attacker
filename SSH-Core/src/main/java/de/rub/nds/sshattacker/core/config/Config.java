@@ -447,31 +447,31 @@ public class Config implements Serializable {
         clientSupportedKeyExchangeAlgorithms =
                 Arrays.stream(
                                 new KeyExchangeAlgorithm[] {
-                                        KeyExchangeAlgorithm.CURVE25519_SHA256,
-                                        KeyExchangeAlgorithm.CURVE25519_SHA256_LIBSSH_ORG,
-                                        KeyExchangeAlgorithm.ECDH_SHA2_NISTP256,
-                                        KeyExchangeAlgorithm.ECDH_SHA2_NISTP384,
-                                        KeyExchangeAlgorithm.ECDH_SHA2_NISTP521,
-                                        KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP_EXCHANGE_SHA256,
-                                        KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP16_SHA512,
-                                        KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP18_SHA512,
-                                        KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP14_SHA256,
-                                        KeyExchangeAlgorithm.EXT_INFO_C
+                                    KeyExchangeAlgorithm.CURVE25519_SHA256,
+                                    KeyExchangeAlgorithm.CURVE25519_SHA256_LIBSSH_ORG,
+                                    KeyExchangeAlgorithm.ECDH_SHA2_NISTP256,
+                                    KeyExchangeAlgorithm.ECDH_SHA2_NISTP384,
+                                    KeyExchangeAlgorithm.ECDH_SHA2_NISTP521,
+                                    KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP_EXCHANGE_SHA256,
+                                    KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP16_SHA512,
+                                    KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP18_SHA512,
+                                    KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP14_SHA256,
+                                    KeyExchangeAlgorithm.EXT_INFO_C
                                 })
                         .collect(Collectors.toCollection(LinkedList::new));
         serverSupportedKeyExchangeAlgorithms =
                 Arrays.stream(
                                 new KeyExchangeAlgorithm[] {
-                                        KeyExchangeAlgorithm.CURVE25519_SHA256,
-                                        KeyExchangeAlgorithm.CURVE25519_SHA256_LIBSSH_ORG,
-                                        KeyExchangeAlgorithm.ECDH_SHA2_NISTP256,
-                                        KeyExchangeAlgorithm.ECDH_SHA2_NISTP384,
-                                        KeyExchangeAlgorithm.ECDH_SHA2_NISTP521,
-                                        KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP_EXCHANGE_SHA256,
-                                        KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP16_SHA512,
-                                        KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP18_SHA512,
-                                        KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP14_SHA256,
-                                        KeyExchangeAlgorithm.EXT_INFO_S
+                                    KeyExchangeAlgorithm.CURVE25519_SHA256,
+                                    KeyExchangeAlgorithm.CURVE25519_SHA256_LIBSSH_ORG,
+                                    KeyExchangeAlgorithm.ECDH_SHA2_NISTP256,
+                                    KeyExchangeAlgorithm.ECDH_SHA2_NISTP384,
+                                    KeyExchangeAlgorithm.ECDH_SHA2_NISTP521,
+                                    KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP_EXCHANGE_SHA256,
+                                    KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP16_SHA512,
+                                    KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP18_SHA512,
+                                    KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP14_SHA256,
+                                    KeyExchangeAlgorithm.EXT_INFO_S
                                 })
                         .collect(Collectors.toCollection(LinkedList::new));
 
@@ -479,24 +479,24 @@ public class Config implements Serializable {
         clientSupportedHostKeyAlgorithms =
                 Arrays.stream(
                                 new PublicKeyAlgorithm[] {
-                                        // PublicKeyAlgorithm.ECDSA_SHA2_NISTP256_CERT_V01_OPENSSH_COM,
-                                        // PublicKeyAlgorithm.ECDSA_SHA2_NISTP384_CERT_V01_OPENSSH_COM,
-                                        // PublicKeyAlgorithm.ECDSA_SHA2_NISTP521_CERT_V01_OPENSSH_COM,
-                                        // PublicKeyAlgorithm.SK_ECDSA_SHA2_NISTP256_CERT_V01_OPENSSH_COM,
-                                        // PublicKeyAlgorithm.SSH_ED25519_CERT_V01_OPENSSH_COM,
-                                        // PublicKeyAlgorithm.SK_SSH_ED25519_CERT_V01_OPENSSH_COM,
-                                        // PublicKeyAlgorithm.RSA_SHA2_512_CERT_V01_OPENSSH_COM,
-                                        // PublicKeyAlgorithm.RSA_SHA2_256_CERT_V01_OPENSSH_COM,
-                                        // PublicKeyAlgorithm.SSH_RSA_CERT_V01_OPENSSH_COM,
-                                        PublicKeyAlgorithm.ECDSA_SHA2_NISTP256,
-                                        PublicKeyAlgorithm.ECDSA_SHA2_NISTP384,
-                                        PublicKeyAlgorithm.ECDSA_SHA2_NISTP521,
-                                        // PublicKeyAlgorithm.SK_ECDSA_SHA2_NISTP256_OPENSSH_COM,
-                                        PublicKeyAlgorithm.SSH_ED25519,
-                                        // PublicKeyAlgorithm.SK_SSH_ED25519_OPENSSH_COM,
-                                        PublicKeyAlgorithm.RSA_SHA2_512,
-                                        PublicKeyAlgorithm.RSA_SHA2_256,
-                                        PublicKeyAlgorithm.SSH_RSA
+                                    // PublicKeyAlgorithm.ECDSA_SHA2_NISTP256_CERT_V01_OPENSSH_COM,
+                                    // PublicKeyAlgorithm.ECDSA_SHA2_NISTP384_CERT_V01_OPENSSH_COM,
+                                    // PublicKeyAlgorithm.ECDSA_SHA2_NISTP521_CERT_V01_OPENSSH_COM,
+                                    // PublicKeyAlgorithm.SK_ECDSA_SHA2_NISTP256_CERT_V01_OPENSSH_COM,
+                                    // PublicKeyAlgorithm.SSH_ED25519_CERT_V01_OPENSSH_COM,
+                                    // PublicKeyAlgorithm.SK_SSH_ED25519_CERT_V01_OPENSSH_COM,
+                                    // PublicKeyAlgorithm.RSA_SHA2_512_CERT_V01_OPENSSH_COM,
+                                    // PublicKeyAlgorithm.RSA_SHA2_256_CERT_V01_OPENSSH_COM,
+                                    // PublicKeyAlgorithm.SSH_RSA_CERT_V01_OPENSSH_COM,
+                                    PublicKeyAlgorithm.ECDSA_SHA2_NISTP256,
+                                    PublicKeyAlgorithm.ECDSA_SHA2_NISTP384,
+                                    PublicKeyAlgorithm.ECDSA_SHA2_NISTP521,
+                                    // PublicKeyAlgorithm.SK_ECDSA_SHA2_NISTP256_OPENSSH_COM,
+                                    PublicKeyAlgorithm.SSH_ED25519,
+                                    // PublicKeyAlgorithm.SK_SSH_ED25519_OPENSSH_COM,
+                                    PublicKeyAlgorithm.RSA_SHA2_512,
+                                    PublicKeyAlgorithm.RSA_SHA2_256,
+                                    PublicKeyAlgorithm.SSH_RSA
                                 })
                         .collect(Collectors.toCollection(LinkedList::new));
         serverSupportedHostKeyAlgorithms = new LinkedList<>(clientSupportedHostKeyAlgorithms);
@@ -504,12 +504,12 @@ public class Config implements Serializable {
         clientSupportedEncryptionAlgorithmsClientToServer =
                 Arrays.stream(
                                 new EncryptionAlgorithm[] {
-                                        EncryptionAlgorithm.CHACHA20_POLY1305_OPENSSH_COM,
-                                        EncryptionAlgorithm.AES128_CTR,
-                                        EncryptionAlgorithm.AES192_CTR,
-                                        EncryptionAlgorithm.AES256_CTR,
-                                        EncryptionAlgorithm.AES128_GCM_OPENSSH_COM,
-                                        EncryptionAlgorithm.AES256_GCM_OPENSSH_COM
+                                    EncryptionAlgorithm.CHACHA20_POLY1305_OPENSSH_COM,
+                                    EncryptionAlgorithm.AES128_CTR,
+                                    EncryptionAlgorithm.AES192_CTR,
+                                    EncryptionAlgorithm.AES256_CTR,
+                                    EncryptionAlgorithm.AES128_GCM_OPENSSH_COM,
+                                    EncryptionAlgorithm.AES256_GCM_OPENSSH_COM
                                 })
                         .collect(Collectors.toCollection(LinkedList::new));
         clientSupportedEncryptionAlgorithmsServerToClient =
@@ -522,16 +522,16 @@ public class Config implements Serializable {
         clientSupportedMacAlgorithmsClientToServer =
                 Arrays.stream(
                                 new MacAlgorithm[] {
-                                        MacAlgorithm.UMAC_64_ETM_OPENSSH_COM,
-                                        MacAlgorithm.UMAC_128_ETM_OPENSSH_COM,
-                                        MacAlgorithm.HMAC_SHA2_256_ETM_OPENSSH_COM,
-                                        MacAlgorithm.HMAC_SHA2_512_ETM_OPENSSH_COM,
-                                        MacAlgorithm.HMAC_SHA1_ETM_OPENSSH_COM,
-                                        MacAlgorithm.UMAC_64_OPENSSH_COM,
-                                        MacAlgorithm.UMAC_128_OPENSSH_COM,
-                                        MacAlgorithm.HMAC_SHA2_256,
-                                        MacAlgorithm.HMAC_SHA2_512,
-                                        MacAlgorithm.HMAC_SHA1
+                                    MacAlgorithm.UMAC_64_ETM_OPENSSH_COM,
+                                    MacAlgorithm.UMAC_128_ETM_OPENSSH_COM,
+                                    MacAlgorithm.HMAC_SHA2_256_ETM_OPENSSH_COM,
+                                    MacAlgorithm.HMAC_SHA2_512_ETM_OPENSSH_COM,
+                                    MacAlgorithm.HMAC_SHA1_ETM_OPENSSH_COM,
+                                    MacAlgorithm.UMAC_64_OPENSSH_COM,
+                                    MacAlgorithm.UMAC_128_OPENSSH_COM,
+                                    MacAlgorithm.HMAC_SHA2_256,
+                                    MacAlgorithm.HMAC_SHA2_512,
+                                    MacAlgorithm.HMAC_SHA1
                                 })
                         .collect(Collectors.toCollection(LinkedList::new));
         clientSupportedMacAlgorithmsServerToClient =
@@ -544,9 +544,9 @@ public class Config implements Serializable {
         clientSupportedCompressionMethodsClientToServer =
                 Arrays.stream(
                                 new CompressionMethod[] {
-                                        CompressionMethod.NONE,
-                                        CompressionMethod.ZLIB_OPENSSH_COM,
-                                        CompressionMethod.ZLIB
+                                    CompressionMethod.NONE,
+                                    CompressionMethod.ZLIB_OPENSSH_COM,
+                                    CompressionMethod.ZLIB
                                 })
                         .collect(Collectors.toCollection(LinkedList::new));
         clientSupportedCompressionMethodsServerToClient =
@@ -1556,7 +1556,7 @@ public class Config implements Serializable {
     }
 
     public SshPublicKey<CustomRsaPublicKey, CustomRsaPrivateKey>
-    getFallbackRsaTransientPublicKey() {
+            getFallbackRsaTransientPublicKey() {
         return fallbackRsaTransientPublicKey;
     }
 

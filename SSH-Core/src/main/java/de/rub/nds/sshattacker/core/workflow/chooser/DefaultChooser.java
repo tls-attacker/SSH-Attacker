@@ -513,8 +513,7 @@ public class DefaultChooser extends Chooser {
 
     public SshPublicKey<?, ?> getSelectedPublicKeyAlgorithmForAuthentification() {
         // TODO: change orElse to ssh-dss
-        return context.getSelectedPublicKeyAlgorithmForAuthentification()
-                .orElse(null);
+        return context.getSelectedPublicKeyAlgorithmForAuthentification().orElse(null);
     }
 
     // section delay-compression extension
