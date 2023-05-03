@@ -511,6 +511,12 @@ public class DefaultChooser extends Chooser {
                 .orElse(config.getServerSupportedPublicKeyAlgorithmsForAuthentification());
     }
 
+    public SshPublicKey<?, ?> getSelectedPublicKeyAlgorithmForAuthentification() {
+        // TODO: change orElse to ssh-dss
+        return context.getSelectedPublicKeyAlgorithmForAuthentification()
+                .orElse(null);
+    }
+
     // section delay-compression extension
     @Override
     public List<CompressionMethod> getClientSupportedDelayCompressionMethods() {

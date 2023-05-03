@@ -66,18 +66,10 @@ public class ServerSigAlgsExtensionHandler
 
             List<PublicKeyFormat> clientSupportedPublicKeyAlgorithms =
                     collectSupportedPublicKeyAlgorithmsFromClient(
-                            context.getChooser().getConfig().getUserKeys());
+                            context.getConfig().getUserKeys());
 
-            List<PublicKeyFormat> serverSupportedPublicKeyAlgorithms;
-            if (context.getServerSupportedPublicKeyAlgorithmsForAuthentification().isPresent()) {
-                serverSupportedPublicKeyAlgorithms =
-                        context.getServerSupportedPublicKeyAlgorithmsForAuthentification().get();
-            }
-            // ssh-dss is REQUIRED to be implemented by every ssh server (RFC 4253 Section 6.6)
-            else {
-                serverSupportedPublicKeyAlgorithms = new LinkedList<>();
-                serverSupportedPublicKeyAlgorithms.add(PublicKeyFormat.SSH_DSS);
-            }
+            List<PublicKeyFormat> serverSupportedPublicKeyAlgorithms =
+                    context.getChooser().getServerSupportedPublicKeyAlgorithmsForAuthentification();
 
             // pick common algorithm
             Optional<PublicKeyFormat> commonAlgorithm =
@@ -87,7 +79,7 @@ public class ServerSigAlgsExtensionHandler
             // transform common algorithm into SshKey<?, ?> and set in config
             SshPublicKey<?, ?> selectedAlgorithm =
                     getSshPublicKeyFromSelectedPublicKeyAlgorithm(commonAlgorithm.get());
-            context.getConfig().setSelectedPublicKeyAlgorithmForAuthentification(selectedAlgorithm);
+            context.setSelectedPublicKeyAlgorithmForAuthentification(selectedAlgorithm);
         }
         // receiving "server-sig-algs" extension as a server -> ignore "server-sig-algs"
         else {
@@ -98,7 +90,7 @@ public class ServerSigAlgsExtensionHandler
 
     private SshPublicKey<?, ?> getSshPublicKeyFromSelectedPublicKeyAlgorithm(
             PublicKeyFormat algorithm) {
-        for (SshPublicKey<?, ?> key : context.getChooser().getConfig().getUserKeys()) {
+        for (SshPublicKey<?, ?> key : context.getConfig().getUserKeys()) {
             PublicKeyFormat publicKeyFormat = key.getPublicKeyFormat();
             if (publicKeyFormat.equals(algorithm)) {
                 return key;

@@ -17,6 +17,8 @@ import de.rub.nds.sshattacker.core.crypto.keys.*;
 import de.rub.nds.sshattacker.core.protocol.authentication.AuthenticationResponse;
 import de.rub.nds.sshattacker.core.protocol.connection.ChannelDefaults;
 import de.rub.nds.sshattacker.core.protocol.transport.message.extension.AbstractExtension;
+import de.rub.nds.sshattacker.core.protocol.transport.message.extension.DelayCompressionExtension;
+import de.rub.nds.sshattacker.core.protocol.transport.message.extension.ServerSigAlgsExtension;
 import de.rub.nds.sshattacker.core.workflow.factory.WorkflowTraceType;
 import de.rub.nds.sshattacker.core.workflow.filter.FilterType;
 import jakarta.xml.bind.annotation.*;
@@ -259,14 +261,17 @@ public class Config implements Serializable {
     private List<AbstractExtension<?>> serverSupportedExtensions;
 
     /**
-     * The selected public key algorithm for client authentification(from server-sig-algs extension)
+     * List of public key algorithms for authentification supported by the server(server-sig-algs
+     * extension)
      */
-    private SshPublicKey<?, ?> selectedPublicKeyAlgorithmForAuthentification;
+    private List<PublicKeyFormat> serverSupportedPublicKeyAlgorithmsForAuthentification;
 
-    /**
-     * If set to true, the extensions will be executed. If set to false, execution of the extensions
-     * must be enabled manually by calling the corresponding methods on the state.
-     */
+    /** List of compression methods supported by the client(delay-compression extension) */
+    private List<CompressionMethod> clientSupportedDelayCompressionMethods;
+
+    /** List of compression methods supported by the server(delay-compression extension) */
+    private List<CompressionMethod> serverSupportedDelayCompressionMethods;
+
     private boolean enableExtensions = true;
     // endregion
 
@@ -442,31 +447,31 @@ public class Config implements Serializable {
         clientSupportedKeyExchangeAlgorithms =
                 Arrays.stream(
                                 new KeyExchangeAlgorithm[] {
-                                    KeyExchangeAlgorithm.CURVE25519_SHA256,
-                                    KeyExchangeAlgorithm.CURVE25519_SHA256_LIBSSH_ORG,
-                                    KeyExchangeAlgorithm.ECDH_SHA2_NISTP256,
-                                    KeyExchangeAlgorithm.ECDH_SHA2_NISTP384,
-                                    KeyExchangeAlgorithm.ECDH_SHA2_NISTP521,
-                                    KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP_EXCHANGE_SHA256,
-                                    KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP16_SHA512,
-                                    KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP18_SHA512,
-                                    KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP14_SHA256,
-                                    KeyExchangeAlgorithm.EXT_INFO_C
+                                        KeyExchangeAlgorithm.CURVE25519_SHA256,
+                                        KeyExchangeAlgorithm.CURVE25519_SHA256_LIBSSH_ORG,
+                                        KeyExchangeAlgorithm.ECDH_SHA2_NISTP256,
+                                        KeyExchangeAlgorithm.ECDH_SHA2_NISTP384,
+                                        KeyExchangeAlgorithm.ECDH_SHA2_NISTP521,
+                                        KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP_EXCHANGE_SHA256,
+                                        KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP16_SHA512,
+                                        KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP18_SHA512,
+                                        KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP14_SHA256,
+                                        KeyExchangeAlgorithm.EXT_INFO_C
                                 })
                         .collect(Collectors.toCollection(LinkedList::new));
         serverSupportedKeyExchangeAlgorithms =
                 Arrays.stream(
                                 new KeyExchangeAlgorithm[] {
-                                    KeyExchangeAlgorithm.CURVE25519_SHA256,
-                                    KeyExchangeAlgorithm.CURVE25519_SHA256_LIBSSH_ORG,
-                                    KeyExchangeAlgorithm.ECDH_SHA2_NISTP256,
-                                    KeyExchangeAlgorithm.ECDH_SHA2_NISTP384,
-                                    KeyExchangeAlgorithm.ECDH_SHA2_NISTP521,
-                                    KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP_EXCHANGE_SHA256,
-                                    KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP16_SHA512,
-                                    KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP18_SHA512,
-                                    KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP14_SHA256,
-                                    KeyExchangeAlgorithm.EXT_INFO_S
+                                        KeyExchangeAlgorithm.CURVE25519_SHA256,
+                                        KeyExchangeAlgorithm.CURVE25519_SHA256_LIBSSH_ORG,
+                                        KeyExchangeAlgorithm.ECDH_SHA2_NISTP256,
+                                        KeyExchangeAlgorithm.ECDH_SHA2_NISTP384,
+                                        KeyExchangeAlgorithm.ECDH_SHA2_NISTP521,
+                                        KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP_EXCHANGE_SHA256,
+                                        KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP16_SHA512,
+                                        KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP18_SHA512,
+                                        KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP14_SHA256,
+                                        KeyExchangeAlgorithm.EXT_INFO_S
                                 })
                         .collect(Collectors.toCollection(LinkedList::new));
 
@@ -474,24 +479,24 @@ public class Config implements Serializable {
         clientSupportedHostKeyAlgorithms =
                 Arrays.stream(
                                 new PublicKeyAlgorithm[] {
-                                    // PublicKeyAlgorithm.ECDSA_SHA2_NISTP256_CERT_V01_OPENSSH_COM,
-                                    // PublicKeyAlgorithm.ECDSA_SHA2_NISTP384_CERT_V01_OPENSSH_COM,
-                                    // PublicKeyAlgorithm.ECDSA_SHA2_NISTP521_CERT_V01_OPENSSH_COM,
-                                    // PublicKeyAlgorithm.SK_ECDSA_SHA2_NISTP256_CERT_V01_OPENSSH_COM,
-                                    // PublicKeyAlgorithm.SSH_ED25519_CERT_V01_OPENSSH_COM,
-                                    // PublicKeyAlgorithm.SK_SSH_ED25519_CERT_V01_OPENSSH_COM,
-                                    // PublicKeyAlgorithm.RSA_SHA2_512_CERT_V01_OPENSSH_COM,
-                                    // PublicKeyAlgorithm.RSA_SHA2_256_CERT_V01_OPENSSH_COM,
-                                    // PublicKeyAlgorithm.SSH_RSA_CERT_V01_OPENSSH_COM,
-                                    PublicKeyAlgorithm.ECDSA_SHA2_NISTP256,
-                                    PublicKeyAlgorithm.ECDSA_SHA2_NISTP384,
-                                    PublicKeyAlgorithm.ECDSA_SHA2_NISTP521,
-                                    // PublicKeyAlgorithm.SK_ECDSA_SHA2_NISTP256_OPENSSH_COM,
-                                    PublicKeyAlgorithm.SSH_ED25519,
-                                    // PublicKeyAlgorithm.SK_SSH_ED25519_OPENSSH_COM,
-                                    PublicKeyAlgorithm.RSA_SHA2_512,
-                                    PublicKeyAlgorithm.RSA_SHA2_256,
-                                    PublicKeyAlgorithm.SSH_RSA
+                                        // PublicKeyAlgorithm.ECDSA_SHA2_NISTP256_CERT_V01_OPENSSH_COM,
+                                        // PublicKeyAlgorithm.ECDSA_SHA2_NISTP384_CERT_V01_OPENSSH_COM,
+                                        // PublicKeyAlgorithm.ECDSA_SHA2_NISTP521_CERT_V01_OPENSSH_COM,
+                                        // PublicKeyAlgorithm.SK_ECDSA_SHA2_NISTP256_CERT_V01_OPENSSH_COM,
+                                        // PublicKeyAlgorithm.SSH_ED25519_CERT_V01_OPENSSH_COM,
+                                        // PublicKeyAlgorithm.SK_SSH_ED25519_CERT_V01_OPENSSH_COM,
+                                        // PublicKeyAlgorithm.RSA_SHA2_512_CERT_V01_OPENSSH_COM,
+                                        // PublicKeyAlgorithm.RSA_SHA2_256_CERT_V01_OPENSSH_COM,
+                                        // PublicKeyAlgorithm.SSH_RSA_CERT_V01_OPENSSH_COM,
+                                        PublicKeyAlgorithm.ECDSA_SHA2_NISTP256,
+                                        PublicKeyAlgorithm.ECDSA_SHA2_NISTP384,
+                                        PublicKeyAlgorithm.ECDSA_SHA2_NISTP521,
+                                        // PublicKeyAlgorithm.SK_ECDSA_SHA2_NISTP256_OPENSSH_COM,
+                                        PublicKeyAlgorithm.SSH_ED25519,
+                                        // PublicKeyAlgorithm.SK_SSH_ED25519_OPENSSH_COM,
+                                        PublicKeyAlgorithm.RSA_SHA2_512,
+                                        PublicKeyAlgorithm.RSA_SHA2_256,
+                                        PublicKeyAlgorithm.SSH_RSA
                                 })
                         .collect(Collectors.toCollection(LinkedList::new));
         serverSupportedHostKeyAlgorithms = new LinkedList<>(clientSupportedHostKeyAlgorithms);
@@ -499,12 +504,12 @@ public class Config implements Serializable {
         clientSupportedEncryptionAlgorithmsClientToServer =
                 Arrays.stream(
                                 new EncryptionAlgorithm[] {
-                                    EncryptionAlgorithm.CHACHA20_POLY1305_OPENSSH_COM,
-                                    EncryptionAlgorithm.AES128_CTR,
-                                    EncryptionAlgorithm.AES192_CTR,
-                                    EncryptionAlgorithm.AES256_CTR,
-                                    EncryptionAlgorithm.AES128_GCM_OPENSSH_COM,
-                                    EncryptionAlgorithm.AES256_GCM_OPENSSH_COM
+                                        EncryptionAlgorithm.CHACHA20_POLY1305_OPENSSH_COM,
+                                        EncryptionAlgorithm.AES128_CTR,
+                                        EncryptionAlgorithm.AES192_CTR,
+                                        EncryptionAlgorithm.AES256_CTR,
+                                        EncryptionAlgorithm.AES128_GCM_OPENSSH_COM,
+                                        EncryptionAlgorithm.AES256_GCM_OPENSSH_COM
                                 })
                         .collect(Collectors.toCollection(LinkedList::new));
         clientSupportedEncryptionAlgorithmsServerToClient =
@@ -517,16 +522,16 @@ public class Config implements Serializable {
         clientSupportedMacAlgorithmsClientToServer =
                 Arrays.stream(
                                 new MacAlgorithm[] {
-                                    MacAlgorithm.UMAC_64_ETM_OPENSSH_COM,
-                                    MacAlgorithm.UMAC_128_ETM_OPENSSH_COM,
-                                    MacAlgorithm.HMAC_SHA2_256_ETM_OPENSSH_COM,
-                                    MacAlgorithm.HMAC_SHA2_512_ETM_OPENSSH_COM,
-                                    MacAlgorithm.HMAC_SHA1_ETM_OPENSSH_COM,
-                                    MacAlgorithm.UMAC_64_OPENSSH_COM,
-                                    MacAlgorithm.UMAC_128_OPENSSH_COM,
-                                    MacAlgorithm.HMAC_SHA2_256,
-                                    MacAlgorithm.HMAC_SHA2_512,
-                                    MacAlgorithm.HMAC_SHA1
+                                        MacAlgorithm.UMAC_64_ETM_OPENSSH_COM,
+                                        MacAlgorithm.UMAC_128_ETM_OPENSSH_COM,
+                                        MacAlgorithm.HMAC_SHA2_256_ETM_OPENSSH_COM,
+                                        MacAlgorithm.HMAC_SHA2_512_ETM_OPENSSH_COM,
+                                        MacAlgorithm.HMAC_SHA1_ETM_OPENSSH_COM,
+                                        MacAlgorithm.UMAC_64_OPENSSH_COM,
+                                        MacAlgorithm.UMAC_128_OPENSSH_COM,
+                                        MacAlgorithm.HMAC_SHA2_256,
+                                        MacAlgorithm.HMAC_SHA2_512,
+                                        MacAlgorithm.HMAC_SHA1
                                 })
                         .collect(Collectors.toCollection(LinkedList::new));
         clientSupportedMacAlgorithmsServerToClient =
@@ -539,9 +544,9 @@ public class Config implements Serializable {
         clientSupportedCompressionMethodsClientToServer =
                 Arrays.stream(
                                 new CompressionMethod[] {
-                                    CompressionMethod.NONE,
-                                    CompressionMethod.ZLIB_OPENSSH_COM,
-                                    CompressionMethod.ZLIB
+                                        CompressionMethod.NONE,
+                                        CompressionMethod.ZLIB_OPENSSH_COM,
+                                        CompressionMethod.ZLIB
                                 })
                         .collect(Collectors.toCollection(LinkedList::new));
         clientSupportedCompressionMethodsServerToClient =
@@ -806,40 +811,6 @@ public class Config implements Serializable {
                                 NamedEcGroup.SECP521R1)));
         userKeys.add(
                 new SshPublicKey<>(
-                        PublicKeyFormat.ECDSA_SHA2_NISTP384,
-                        new CustomEcPublicKey(
-                                PointFormatter.formatFromByteArray(
-                                        NamedEcGroup.SECP384R1,
-                                        ArrayConverter.hexStringToByteArray(
-                                                "04650469DB4E282660E0DCB23197D10EE935BA038B8B62890EB098420211"
-                                                        + "C38D5E4E737FF2A0DC53E1B8A55C65B2BD85673EFEEEE9CE4727374D2E2D"
-                                                        + "E8EEA6B8AB146245C8627E2346C76944AEB1C0BDCE1B267773F6ED08473A"
-                                                        + "DE8B6F5687A2B6")),
-                                NamedEcGroup.SECP384R1),
-                        new CustomEcPrivateKey(
-                                new BigInteger(
-                                        "EA39EE919D73A1FE8F8FBFC8807E7ED36BE3D89FBC1F35619B04E825E8E8"
-                                                + "07E994348EE8095467499AE15F73FE0FD298",
-                                        16),
-                                NamedEcGroup.SECP384R1)));
-        userKeys.add(
-                new SshPublicKey<>(
-                        PublicKeyFormat.ECDSA_SHA2_NISTP256,
-                        new CustomEcPublicKey(
-                                PointFormatter.formatFromByteArray(
-                                        NamedEcGroup.SECP256R1,
-                                        ArrayConverter.hexStringToByteArray(
-                                                "0492A8D4E6EECBED47D0AACD15D714FB619D6F3941028874B99117CF8EAE"
-                                                        + "BBCDF7CC981DE460635590F3AB5AE6F7DF0A12E6E0DE951DEAE3D2C48EC3"
-                                                        + "4C237C61E7")),
-                                NamedEcGroup.SECP256R1),
-                        new CustomEcPrivateKey(
-                                new BigInteger(
-                                        "8DD62AA24F982B18446E3ECC7E50F8EB976610750242BA637C949F4C8FD6A1CF",
-                                        16),
-                                NamedEcGroup.SECP256R1)));
-        userKeys.add(
-                new SshPublicKey<>(
                         PublicKeyFormat.SSH_RSA,
                         new CustomRsaPublicKey(
                                 new BigInteger("010001", 16),
@@ -877,7 +848,6 @@ public class Config implements Serializable {
                                                 + "150715CB0E648F715E6E5E8FC9D8FA55E9DE0652CF85D7928B235486F54A"
                                                 + "3F3EE64B04888B898864B08200A9E22909",
                                         16))));
-        // SSH enforces the use of 1024 / 160 bit DSA keys as per RFC 4253 Sec. 6.6
         userKeys.add(
                 new SshPublicKey<>(
                         PublicKeyFormat.SSH_DSS,
@@ -923,6 +893,40 @@ public class Config implements Serializable {
                                 new BigInteger("7C6B4E2B32192EFC09B7CB12D85CBB4141EF7348", 16))));
         userKeys.add(
                 new SshPublicKey<>(
+                        PublicKeyFormat.ECDSA_SHA2_NISTP256,
+                        new CustomEcPublicKey(
+                                PointFormatter.formatFromByteArray(
+                                        NamedEcGroup.SECP256R1,
+                                        ArrayConverter.hexStringToByteArray(
+                                                "0492A8D4E6EECBED47D0AACD15D714FB619D6F3941028874B99117CF8EAE"
+                                                        + "BBCDF7CC981DE460635590F3AB5AE6F7DF0A12E6E0DE951DEAE3D2C48EC3"
+                                                        + "4C237C61E7")),
+                                NamedEcGroup.SECP256R1),
+                        new CustomEcPrivateKey(
+                                new BigInteger(
+                                        "8DD62AA24F982B18446E3ECC7E50F8EB976610750242BA637C949F4C8FD6A1CF",
+                                        16),
+                                NamedEcGroup.SECP256R1)));
+        userKeys.add(
+                new SshPublicKey<>(
+                        PublicKeyFormat.ECDSA_SHA2_NISTP384,
+                        new CustomEcPublicKey(
+                                PointFormatter.formatFromByteArray(
+                                        NamedEcGroup.SECP384R1,
+                                        ArrayConverter.hexStringToByteArray(
+                                                "04650469DB4E282660E0DCB23197D10EE935BA038B8B62890EB098420211"
+                                                        + "C38D5E4E737FF2A0DC53E1B8A55C65B2BD85673EFEEEE9CE4727374D2E2D"
+                                                        + "E8EEA6B8AB146245C8627E2346C76944AEB1C0BDCE1B267773F6ED08473A"
+                                                        + "DE8B6F5687A2B6")),
+                                NamedEcGroup.SECP384R1),
+                        new CustomEcPrivateKey(
+                                new BigInteger(
+                                        "EA39EE919D73A1FE8F8FBFC8807E7ED36BE3D89FBC1F35619B04E825E8E8"
+                                                + "07E994348EE8095467499AE15F73FE0FD298",
+                                        16),
+                                NamedEcGroup.SECP384R1)));
+        userKeys.add(
+                new SshPublicKey<>(
                         PublicKeyFormat.SSH_ED25519,
                         new XCurveEcPublicKey(
                                 ArrayConverter.hexStringToByteArray(
@@ -932,6 +936,7 @@ public class Config implements Serializable {
                                 ArrayConverter.hexStringToByteArray(
                                         "092E829DE536BE8F7D74E7A3C6CD90EA6EADDDEEB2E50D8617EBDD132B53669B"),
                                 NamedEcGroup.CURVE25519)));
+
         // endregion
 
         // region Channel initialization
@@ -1332,6 +1337,8 @@ public class Config implements Serializable {
     // endregion
 
     // region Getters SSH Extensions
+
+    // section general extensions
     public List<AbstractExtension<?>> getClientSupportedExtensions() {
         return clientSupportedExtensions;
     }
@@ -1340,16 +1347,115 @@ public class Config implements Serializable {
         return serverSupportedExtensions;
     }
 
-    public SshPublicKey<?, ?> getSelectedPublicKeyAlgorithmForAuthentification() {
-        return selectedPublicKeyAlgorithmForAuthentification;
-    }
-
     public boolean getEnableExtensions() {
         return enableExtensions;
+    }
+
+    private List<AbstractExtension<?>> getDefaultExtensionsForClient() {
+        List<AbstractExtension<?>> extensions = new LinkedList<>();
+        extensions.add(getDefaultDelayCompressionExtension());
+        return extensions;
+    }
+
+    public List<AbstractExtension<?>> getDefaultExtensionsForServer() {
+        List<AbstractExtension<?>> extensions = new LinkedList<>();
+        extensions.add(getDefaultServerSigAlgsExtension());
+        extensions.add(getDefaultDelayCompressionExtension());
+        return extensions;
+    }
+
+    // section server-sig-algs extension
+    public List<PublicKeyFormat> getServerSupportedPublicKeyAlgorithmsForAuthentification() {
+        return serverSupportedPublicKeyAlgorithmsForAuthentification;
+    }
+
+    private ServerSigAlgsExtension getDefaultServerSigAlgsExtension() {
+        ServerSigAlgsExtension extension = new ServerSigAlgsExtension();
+        extension.setNameLength(Extension.SERVER_SIG_ALGS.getName().length());
+        extension.setName(Extension.SERVER_SIG_ALGS.getName());
+
+        // valueLength = length of the string
+        //
+        // "ssh-dss,ssh-rsa,rsa-sha2-256,rsa-sha2-512,ecdsa-sha2-nistp256,ecdsa-sha2-nistp384,ecdsa-sha2-nistp521,ssh-ed25519,ecdsa-sha2-1.3.132.0.10"
+        int valueLength =
+                PublicKeyAlgorithm.SSH_DSS.getName().length()
+                        + PublicKeyAlgorithm.SSH_RSA.getName().length()
+                        + PublicKeyAlgorithm.RSA_SHA2_256.getName().length()
+                        + PublicKeyAlgorithm.RSA_SHA2_512.getName().length()
+                        + PublicKeyAlgorithm.ECDSA_SHA2_NISTP256.getName().length()
+                        + PublicKeyAlgorithm.ECDSA_SHA2_NISTP384.getName().length()
+                        + PublicKeyAlgorithm.ECDSA_SHA2_NISTP521.getName().length()
+                        + PublicKeyAlgorithm.SSH_ED25519.getName().length()
+                        + PublicKeyAlgorithm.ECDSA_SHA2_SECP256K1.getName().length();
+
+        // value =
+        // "ssh-dss,ssh-rsa,rsa-sha2-256,rsa-sha2-512,ecdsa-sha2-nistp256,ecdsa-sha2-nistp384,ecdsa-sha2-nistp521,ssh-ed25519,ecdsa-sha2-1.3.132.0.10"
+        String value =
+                PublicKeyAlgorithm.SSH_DSS.getName()
+                        + CharConstants.ALGORITHM_SEPARATOR
+                        + PublicKeyAlgorithm.SSH_RSA.getName()
+                        + CharConstants.ALGORITHM_SEPARATOR
+                        + PublicKeyAlgorithm.RSA_SHA2_256.getName()
+                        + CharConstants.ALGORITHM_SEPARATOR
+                        + PublicKeyAlgorithm.RSA_SHA2_512.getName()
+                        + CharConstants.ALGORITHM_SEPARATOR
+                        + PublicKeyAlgorithm.ECDSA_SHA2_NISTP256.getName()
+                        + CharConstants.ALGORITHM_SEPARATOR
+                        + PublicKeyAlgorithm.ECDSA_SHA2_NISTP384.getName()
+                        + CharConstants.ALGORITHM_SEPARATOR
+                        + PublicKeyAlgorithm.ECDSA_SHA2_NISTP521.getName()
+                        + CharConstants.ALGORITHM_SEPARATOR
+                        + PublicKeyAlgorithm.SSH_ED25519.getName()
+                        + CharConstants.ALGORITHM_SEPARATOR
+                        + PublicKeyAlgorithm.ECDSA_SHA2_SECP256K1.getName();
+
+        extension.setValueLength(valueLength);
+        extension.setAcceptedPublicKeyAlgorithmsLength(valueLength);
+        extension.setAcceptedPublicKeyAlgorithms(value);
+        return extension;
+    }
+
+    // section delay-compression extension
+    public List<CompressionMethod> getClientSupportedDelayCompressionMethods() {
+        return clientSupportedDelayCompressionMethods;
+    }
+
+    public List<CompressionMethod> getServerSupportedDelayCompressionMethods() {
+        return serverSupportedDelayCompressionMethods;
+    }
+
+    private DelayCompressionExtension getDefaultDelayCompressionExtension() {
+        DelayCompressionExtension extension = new DelayCompressionExtension();
+        extension.setNameLength(Extension.DELAY_COMPRESSION.getName().length());
+        extension.setName(Extension.DELAY_COMPRESSION.getName());
+
+        // valueLength = length of the string "none,zlib,zlib@openssh.com"
+        int valueLength =
+                CompressionMethod.NONE.toString().length()
+                        + CompressionMethod.ZLIB.toString().length()
+                        + CompressionMethod.ZLIB_OPENSSH_COM.toString().length()
+                        + 2;
+
+        // value = "none,zlib,zlib@openssh.com"
+        String value =
+                CompressionMethod.NONE.toString()
+                        + CharConstants.ALGORITHM_SEPARATOR
+                        + CompressionMethod.ZLIB.toString()
+                        + CharConstants.ALGORITHM_SEPARATOR
+                        + CompressionMethod.ZLIB_OPENSSH_COM.toString();
+
+        extension.setValueLength(2 * (valueLength + DataFormatConstants.UINT32_SIZE));
+        extension.setCompressionMethodsClientToServerLength(valueLength);
+        extension.setCompressionMethodsClientToServer(value);
+        extension.setCompressionMethodsServerToClientLength(valueLength);
+        extension.setCompressionMethodsServerToClient(value);
+        return extension;
     }
     // endregion
 
     // region Setters for SSH Extensions
+
+    // section general extensions
     public void setClientSupportedExtensions(List<AbstractExtension<?>> extensions) {
         this.clientSupportedExtensions = extensions;
     }
@@ -1358,16 +1464,61 @@ public class Config implements Serializable {
         this.serverSupportedExtensions = extensions;
     }
 
-    public void setSelectedPublicKeyAlgorithmForAuthentification(SshPublicKey<?, ?> algorithm) {
-        this.selectedPublicKeyAlgorithmForAuthentification = algorithm;
-    }
-
-    public void enableExtension() {
+    public void enableExtensions() {
         this.enableExtensions = true;
     }
 
-    public void disableExtensions() {
+    public void disableExtension() {
         this.enableExtensions = false;
+    }
+
+    public void setDefaultExtensionsForClient() {
+        this.clientSupportedExtensions = this.getDefaultExtensionsForClient();
+    }
+
+    public void setDefaultExtensionsForServer() {
+        this.serverSupportedExtensions = this.getDefaultExtensionsForServer();
+    }
+
+    // section server-sig-algs extension
+    public void setServerSupportedServerSigAlgorithms(List<PublicKeyFormat> algorithms) {
+        this.serverSupportedPublicKeyAlgorithmsForAuthentification = algorithms;
+    }
+
+    public void setDefaultServerSupportedPublicKeyAlgorithmsForAuthentification() {
+        this.serverSupportedPublicKeyAlgorithmsForAuthentification = new LinkedList<>();
+        this.serverSupportedPublicKeyAlgorithmsForAuthentification.add(
+                PublicKeyFormat.ECDSA_SHA2_NISTP521);
+        this.serverSupportedPublicKeyAlgorithmsForAuthentification.add(
+                PublicKeyFormat.ECDSA_SHA2_NISTP384);
+        this.serverSupportedPublicKeyAlgorithmsForAuthentification.add(
+                PublicKeyFormat.ECDSA_SHA2_NISTP256);
+        this.serverSupportedPublicKeyAlgorithmsForAuthentification.add(PublicKeyFormat.SSH_RSA);
+        this.serverSupportedPublicKeyAlgorithmsForAuthentification.add(PublicKeyFormat.SSH_DSS);
+        this.serverSupportedPublicKeyAlgorithmsForAuthentification.add(PublicKeyFormat.SSH_ED25519);
+    }
+
+    // section delay-compression extension
+    public void setClientSupportedDelayCompressionMethods(List<CompressionMethod> methods) {
+        this.clientSupportedDelayCompressionMethods = methods;
+    }
+
+    public void setServerSupportedDelayCompressionMethods(List<CompressionMethod> methods) {
+        this.serverSupportedDelayCompressionMethods = methods;
+    }
+
+    public void setDefaultClientSupportedDelayCompressionMethods() {
+        this.clientSupportedDelayCompressionMethods = new LinkedList<>();
+        this.clientSupportedDelayCompressionMethods.add(CompressionMethod.NONE);
+        this.clientSupportedDelayCompressionMethods.add(CompressionMethod.ZLIB);
+        this.clientSupportedDelayCompressionMethods.add(CompressionMethod.ZLIB_OPENSSH_COM);
+    }
+
+    public void setDefaultServerSupportedDelayCompressionMethods() {
+        this.serverSupportedDelayCompressionMethods = new LinkedList<>();
+        this.serverSupportedDelayCompressionMethods.add(CompressionMethod.NONE);
+        this.serverSupportedDelayCompressionMethods.add(CompressionMethod.ZLIB);
+        this.serverSupportedDelayCompressionMethods.add(CompressionMethod.ZLIB_OPENSSH_COM);
     }
     // endregion
 
@@ -1405,7 +1556,7 @@ public class Config implements Serializable {
     }
 
     public SshPublicKey<CustomRsaPublicKey, CustomRsaPrivateKey>
-            getFallbackRsaTransientPublicKey() {
+    getFallbackRsaTransientPublicKey() {
         return fallbackRsaTransientPublicKey;
     }
 

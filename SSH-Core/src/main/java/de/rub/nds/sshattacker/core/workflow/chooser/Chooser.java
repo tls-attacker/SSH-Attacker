@@ -120,6 +120,8 @@ public abstract class Chooser {
     public abstract List<PublicKeyFormat>
             getServerSupportedPublicKeyAlgorithmsForAuthentification();
 
+    public abstract SshPublicKey<?, ?> getSelectedPublicKeyAlgorithmForAuthentification();
+
     public abstract List<CompressionMethod> getClientSupportedDelayCompressionMethods();
 
     public abstract List<CompressionMethod> getServerSupportedDelayCompressionMethods();
