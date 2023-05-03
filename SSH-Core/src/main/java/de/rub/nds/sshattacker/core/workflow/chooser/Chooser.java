@@ -116,6 +116,12 @@ public abstract class Chooser {
     public abstract List<AbstractExtension<?>> getClientSupportedExtensions();
 
     public abstract List<AbstractExtension<?>> getServerSupportedExtensions();
+
+    public abstract List<PublicKeyFormat> getServerSupportedServerSigAlgorithms();
+
+    public abstract List<CompressionMethod> getClientSupportedDelayCompressionMethods();
+
+    public abstract List<CompressionMethod> getServerSupportedDelayCompressionMethods();
     // endregion
 
     // region Negotiated Parameters

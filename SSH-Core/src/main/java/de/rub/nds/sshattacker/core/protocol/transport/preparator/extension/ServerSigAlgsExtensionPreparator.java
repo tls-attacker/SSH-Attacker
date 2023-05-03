@@ -7,9 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.preparator.extension;
 
-import de.rub.nds.sshattacker.core.constants.PublicKeyFormat;
 import de.rub.nds.sshattacker.core.protocol.transport.message.extension.ServerSigAlgsExtension;
-import de.rub.nds.sshattacker.core.util.Converter;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -30,11 +28,13 @@ public class ServerSigAlgsExtensionPreparator
             LOGGER.warn(
                     "Client sent ServerSigAlgsExtension which is supposed to be sent by the server only!");
         } else {
-            chooser.getContext()
-                    .setServerSupportedPublicKeyAlgorithmsForAuthentification(
-                            Converter.nameListToEnumValues(
-                                    getObject().getAcceptedPublicKeyAlgorithms().getValue(),
-                                    PublicKeyFormat.class));
+            chooser.getConfig().setDefaultServerSupportedServerSigAlgorithms();
+            getObject()
+                    .setAcceptedPublicKeyAlgorithmsLength(
+                            chooser.getServerSupportedServerSigAlgorithms().size());
+            getObject()
+                    .setAcceptedPublicKeyAlgorithms(
+                            chooser.getServerSupportedServerSigAlgorithms());
         }
     }
 }

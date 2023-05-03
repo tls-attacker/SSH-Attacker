@@ -11,7 +11,7 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.sshattacker.core.constants.CharConstants;
-import de.rub.nds.sshattacker.core.constants.PublicKeyAlgorithm;
+import de.rub.nds.sshattacker.core.constants.PublicKeyFormat;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.extension.ServerSigAlgsExtensionHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import java.nio.charset.StandardCharsets;
@@ -62,7 +62,7 @@ public class ServerSigAlgsExtension extends AbstractExtension<ServerSigAlgsExten
         this.setAcceptedPublicKeyAlgorithms(publicKeyAlgorithms, false);
     }
 
-    public void setAcceptedPublicKeyAlgorithms(List<PublicKeyAlgorithm> publicKeyAlgorithms) {
+    public void setAcceptedPublicKeyAlgorithms(List<PublicKeyFormat> publicKeyAlgorithms) {
         this.setAcceptedPublicKeyAlgorithms(publicKeyAlgorithms, false);
     }
 
@@ -95,10 +95,10 @@ public class ServerSigAlgsExtension extends AbstractExtension<ServerSigAlgsExten
     }
 
     public void setAcceptedPublicKeyAlgorithms(
-            List<PublicKeyAlgorithm> publicKeyAlgorithms, boolean adjustLengthField) {
+            List<PublicKeyFormat> publicKeyAlgorithms, boolean adjustLengthField) {
         String nameList =
                 publicKeyAlgorithms.stream()
-                        .map(PublicKeyAlgorithm::toString)
+                        .map(PublicKeyFormat::toString)
                         .collect(Collectors.joining("" + CharConstants.ALGORITHM_SEPARATOR));
         this.setAcceptedPublicKeyAlgorithms(nameList, adjustLengthField);
     }

@@ -259,6 +259,18 @@ public class Config implements Serializable {
 
     /** List of extensions supported by the server */
     private List<AbstractExtension<?>> serverSupportedExtensions;
+
+    /**
+     * List of public key algorithms for authentification supported by the server(server-sig-algs
+     * extension)
+     */
+    private List<PublicKeyFormat> serverSupportedServerSigAlgorithms;
+
+    /** List of compression methods supported by the client(delay-compression extension) */
+    private List<CompressionMethod> clientSupportedDelayCompressionMethods;
+
+    /** List of compression methods supported by the server(delay-compression extension) */
+    private List<CompressionMethod> serverSupportedDelayCompressionMethods;
     // endregion
 
     // region Authentication
@@ -1219,6 +1231,10 @@ public class Config implements Serializable {
     }
 
     // section server-sig-algs extension
+    public List<PublicKeyFormat> getServerSupportedServerSigAlgorithms() {
+        return serverSupportedServerSigAlgorithms;
+    }
+
     private ServerSigAlgsExtension getDefaultServerSigAlgsExtension() {
         ServerSigAlgsExtension extension = new ServerSigAlgsExtension();
         extension.setNameLength(Extension.SERVER_SIG_ALGS.getName().length());
@@ -1266,6 +1282,14 @@ public class Config implements Serializable {
     }
 
     // section delay-compression extension
+    public List<CompressionMethod> getClientSupportedDelayCompressionMethods() {
+        return clientSupportedDelayCompressionMethods;
+    }
+
+    public List<CompressionMethod> getServerSupportedDelayCompressionMethods() {
+        return serverSupportedDelayCompressionMethods;
+    }
+
     private DelayCompressionExtension getDefaultDelayCompressionExtension() {
         DelayCompressionExtension extension = new DelayCompressionExtension();
         extension.setNameLength(Extension.DELAY_COMPRESSION.getName().length());
@@ -1312,6 +1336,44 @@ public class Config implements Serializable {
 
     public void setDefaultExtensionsForServer() {
         this.serverSupportedExtensions = this.getDefaultExtensionsForServer();
+    }
+
+    // section server-sig-algs extension
+    public void setServerSupportedServerSigAlgorithms(List<PublicKeyFormat> algorithms) {
+        this.serverSupportedServerSigAlgorithms = algorithms;
+    }
+
+    public void setDefaultServerSupportedServerSigAlgorithms() {
+        this.serverSupportedServerSigAlgorithms = new LinkedList<>();
+        this.serverSupportedServerSigAlgorithms.add(PublicKeyFormat.ECDSA_SHA2_NISTP521);
+        this.serverSupportedServerSigAlgorithms.add(PublicKeyFormat.ECDSA_SHA2_NISTP384);
+        this.serverSupportedServerSigAlgorithms.add(PublicKeyFormat.ECDSA_SHA2_NISTP256);
+        this.serverSupportedServerSigAlgorithms.add(PublicKeyFormat.SSH_RSA);
+        this.serverSupportedServerSigAlgorithms.add(PublicKeyFormat.SSH_DSS);
+        this.serverSupportedServerSigAlgorithms.add(PublicKeyFormat.SSH_ED25519);
+    }
+
+    // section delay-compression extension
+    public void setClientSupportedDelayCompressionMethods(List<CompressionMethod> methods) {
+        this.clientSupportedDelayCompressionMethods = methods;
+    }
+
+    public void setServerSupportedDelayCompressionMethods(List<CompressionMethod> methods) {
+        this.serverSupportedDelayCompressionMethods = methods;
+    }
+
+    public void setDefaultClientSupportedDelayCompressionMethods() {
+        this.clientSupportedDelayCompressionMethods = new LinkedList<>();
+        this.clientSupportedDelayCompressionMethods.add(CompressionMethod.NONE);
+        this.clientSupportedDelayCompressionMethods.add(CompressionMethod.ZLIB);
+        this.clientSupportedDelayCompressionMethods.add(CompressionMethod.ZLIB_OPENSSH_COM);
+    }
+
+    public void setDefaultServerSupportedDelayCompressionMethods() {
+        this.serverSupportedDelayCompressionMethods = new LinkedList<>();
+        this.serverSupportedDelayCompressionMethods.add(CompressionMethod.NONE);
+        this.serverSupportedDelayCompressionMethods.add(CompressionMethod.ZLIB);
+        this.serverSupportedDelayCompressionMethods.add(CompressionMethod.ZLIB_OPENSSH_COM);
     }
     // endregion
 
