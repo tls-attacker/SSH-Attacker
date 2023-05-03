@@ -27,31 +27,19 @@ public class DelayCompressionExtensionPreparator
         if (chooser.getContext().isClient()) {
             chooser.getConfig().setDefaultClientSupportedDelayCompressionMethods();
             getObject()
-                    .setCompressionMethodsClientToServerLength(
-                            chooser.getClientSupportedDelayCompressionMethods().size());
-            getObject()
                     .setCompressionMethodsClientToServer(
-                            chooser.getClientSupportedDelayCompressionMethods());
-            getObject()
-                    .setCompressionMethodsServerToClientLength(
-                            chooser.getClientSupportedDelayCompressionMethods().size());
+                            chooser.getClientSupportedDelayCompressionMethods(), true);
             getObject()
                     .setCompressionMethodsServerToClient(
-                            chooser.getClientSupportedDelayCompressionMethods());
+                            chooser.getClientSupportedDelayCompressionMethods(), true);
         } else {
             chooser.getConfig().setDefaultServerSupportedDelayCompressionMethods();
             getObject()
-                    .setCompressionMethodsClientToServerLength(
-                            chooser.getServerSupportedDelayCompressionMethods().size());
-            getObject()
                     .setCompressionMethodsClientToServer(
-                            chooser.getServerSupportedDelayCompressionMethods());
-            getObject()
-                    .setCompressionMethodsServerToClientLength(
-                            chooser.getServerSupportedDelayCompressionMethods().size());
+                            chooser.getServerSupportedDelayCompressionMethods(), true);
             getObject()
                     .setCompressionMethodsServerToClient(
-                            chooser.getServerSupportedDelayCompressionMethods());
+                            chooser.getServerSupportedDelayCompressionMethods(), true);
         }
     }
 }

@@ -506,9 +506,9 @@ public class DefaultChooser extends Chooser {
     }
 
     // section server-sig-algs extension
-    public List<PublicKeyFormat> getServerSupportedServerSigAlgorithms() {
-        return context.getServerSupportedServerSigAlgorithms()
-                .orElse(config.getServerSupportedServerSigAlgorithms());
+    public List<PublicKeyFormat> getServerSupportedPublicKeyAlgorithmsForAuthentification() {
+        return context.getServerSupportedPublicKeyAlgorithmsForAuthentification()
+                .orElse(config.getServerSupportedPublicKeyAlgorithmsForAuthentification());
     }
 
     // section delay-compression extension

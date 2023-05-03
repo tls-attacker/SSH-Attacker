@@ -28,13 +28,28 @@ public class ServerSigAlgsExtensionPreparator
             LOGGER.warn(
                     "Client sent ServerSigAlgsExtension which is supposed to be sent by the server only!");
         } else {
-            chooser.getConfig().setDefaultServerSupportedServerSigAlgorithms();
+            chooser.getConfig().setDefaultServerSupportedPublicKeyAlgorithmsForAuthentification();
             getObject()
                     .setAcceptedPublicKeyAlgorithmsLength(
-                            chooser.getServerSupportedServerSigAlgorithms().size());
+                            chooser.getServerSupportedPublicKeyAlgorithmsForAuthentification()
+                                    .size());
             getObject()
                     .setAcceptedPublicKeyAlgorithms(
-                            chooser.getServerSupportedServerSigAlgorithms());
+                            chooser.getServerSupportedPublicKeyAlgorithmsForAuthentification());
         }
+        /*
+        // sending server-sig-algs extension is not allowed when acting as client
+        if (chooser.getContext().isClient()) {
+            LOGGER.warn(
+                    "Client sent ServerSigAlgsExtension which is supposed to be sent by the server only!");
+        } else {
+            chooser.getContext()
+                    .setServerSupportedPublicKeyAlgorithmsForAuthentification(
+                            Converter.nameListToEnumValues(
+                                    getObject().getAcceptedPublicKeyAlgorithms().getValue(),
+                                    PublicKeyFormat.class));
+        }
+
+         */
     }
 }

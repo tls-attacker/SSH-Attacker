@@ -264,7 +264,7 @@ public class Config implements Serializable {
      * List of public key algorithms for authentification supported by the server(server-sig-algs
      * extension)
      */
-    private List<PublicKeyFormat> serverSupportedServerSigAlgorithms;
+    private List<PublicKeyFormat> serverSupportedPublicKeyAlgorithmsForAuthentification;
 
     /** List of compression methods supported by the client(delay-compression extension) */
     private List<CompressionMethod> clientSupportedDelayCompressionMethods;
@@ -1231,8 +1231,8 @@ public class Config implements Serializable {
     }
 
     // section server-sig-algs extension
-    public List<PublicKeyFormat> getServerSupportedServerSigAlgorithms() {
-        return serverSupportedServerSigAlgorithms;
+    public List<PublicKeyFormat> getServerSupportedPublicKeyAlgorithmsForAuthentification() {
+        return serverSupportedPublicKeyAlgorithmsForAuthentification;
     }
 
     private ServerSigAlgsExtension getDefaultServerSigAlgsExtension() {
@@ -1340,17 +1340,20 @@ public class Config implements Serializable {
 
     // section server-sig-algs extension
     public void setServerSupportedServerSigAlgorithms(List<PublicKeyFormat> algorithms) {
-        this.serverSupportedServerSigAlgorithms = algorithms;
+        this.serverSupportedPublicKeyAlgorithmsForAuthentification = algorithms;
     }
 
-    public void setDefaultServerSupportedServerSigAlgorithms() {
-        this.serverSupportedServerSigAlgorithms = new LinkedList<>();
-        this.serverSupportedServerSigAlgorithms.add(PublicKeyFormat.ECDSA_SHA2_NISTP521);
-        this.serverSupportedServerSigAlgorithms.add(PublicKeyFormat.ECDSA_SHA2_NISTP384);
-        this.serverSupportedServerSigAlgorithms.add(PublicKeyFormat.ECDSA_SHA2_NISTP256);
-        this.serverSupportedServerSigAlgorithms.add(PublicKeyFormat.SSH_RSA);
-        this.serverSupportedServerSigAlgorithms.add(PublicKeyFormat.SSH_DSS);
-        this.serverSupportedServerSigAlgorithms.add(PublicKeyFormat.SSH_ED25519);
+    public void setDefaultServerSupportedPublicKeyAlgorithmsForAuthentification() {
+        this.serverSupportedPublicKeyAlgorithmsForAuthentification = new LinkedList<>();
+        this.serverSupportedPublicKeyAlgorithmsForAuthentification.add(
+                PublicKeyFormat.ECDSA_SHA2_NISTP521);
+        this.serverSupportedPublicKeyAlgorithmsForAuthentification.add(
+                PublicKeyFormat.ECDSA_SHA2_NISTP384);
+        this.serverSupportedPublicKeyAlgorithmsForAuthentification.add(
+                PublicKeyFormat.ECDSA_SHA2_NISTP256);
+        this.serverSupportedPublicKeyAlgorithmsForAuthentification.add(PublicKeyFormat.SSH_RSA);
+        this.serverSupportedPublicKeyAlgorithmsForAuthentification.add(PublicKeyFormat.SSH_DSS);
+        this.serverSupportedPublicKeyAlgorithmsForAuthentification.add(PublicKeyFormat.SSH_ED25519);
     }
 
     // section delay-compression extension
