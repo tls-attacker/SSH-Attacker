@@ -217,8 +217,7 @@ public class WorkflowConfigurationFactory {
                                 connection,
                                 ConnectionEndType.CLIENT,
                                 new DhGexKeyExchangeRequestMessage(),
-                                new NewKeysMessage(),
-                                new ExtensionInfoMessage()));
+                                new NewKeysMessage()));
                 sshActions.add(
                         SshActionFactory.createMessageAction(
                                 connection,

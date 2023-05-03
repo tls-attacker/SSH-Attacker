@@ -919,6 +919,8 @@ public class SshContext {
     // endregion
 
     // region Getters for SSH Extensions
+
+    // section general extensions
     public Optional<List<AbstractExtension<?>>> getClientSupportedExtensions() {
         return Optional.ofNullable(clientSupportedExtensions);
     }
@@ -927,11 +929,13 @@ public class SshContext {
         return Optional.ofNullable(serverSupportedExtensions);
     }
 
+    // section server-sig-algs extension
     public Optional<List<PublicKeyFormat>>
             getServerSupportedPublicKeyAlgorithmsForAuthentification() {
         return Optional.ofNullable(serverSupportedPublicKeyAlgorithmsForAuthentification);
     }
 
+    // section delay-compression extension
     public Optional<List<CompressionMethod>> getClientSupportedDelayCompressionMethods() {
         return Optional.ofNullable(clientSupportedDelayCompressionMethods);
     }
@@ -942,6 +946,8 @@ public class SshContext {
     // endregion
 
     // region Setters for SSH Extensions
+
+    // section general extensions
     public void setClientSupportedExtensions(List<AbstractExtension<?>> extensions) {
         this.clientSupportedExtensions = extensions;
     }
@@ -950,11 +956,13 @@ public class SshContext {
         this.serverSupportedExtensions = extensions;
     }
 
+    // section server-sig-algs extension
     public void setServerSupportedPublicKeyAlgorithmsForAuthentification(
             List<PublicKeyFormat> algorithms) {
         this.serverSupportedPublicKeyAlgorithmsForAuthentification = algorithms;
     }
 
+    // section delay-compression extension
     public void setClientSupportedDelayCompressionMethods(List<CompressionMethod> methods) {
         this.clientSupportedDelayCompressionMethods = methods;
     }
