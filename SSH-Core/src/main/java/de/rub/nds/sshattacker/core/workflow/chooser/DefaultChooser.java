@@ -481,6 +481,8 @@ public class DefaultChooser extends Chooser {
     // endregion
 
     // region SSH Extensions
+
+    // section general extensions
     /**
      * Retrieves the list of client supported extensions included in the clients SSH_MSG_EXT_INFO
      * packet from context. If no SSH_MSG_EXT_INFO packet was received yet or SSH-Attacker is
@@ -501,6 +503,25 @@ public class DefaultChooser extends Chooser {
      */
     public List<AbstractExtension<?>> getServerSupportedExtensions() {
         return context.getServerSupportedExtensions().orElse(config.getServerSupportedExtensions());
+    }
+
+    // section server-sig-algs extension
+    public List<PublicKeyFormat> getServerSupportedPublicKeyAlgorithmsForAuthentification() {
+        return context.getServerSupportedPublicKeyAlgorithmsForAuthentification()
+                .orElse(config.getServerSupportedPublicKeyAlgorithmsForAuthentification());
+    }
+
+    // section delay-compression extension
+    @Override
+    public List<CompressionMethod> getClientSupportedDelayCompressionMethods() {
+        return context.getClientSupportedDelayCompressionMethods()
+                .orElse(config.getClientSupportedDelayCompressionMethods());
+    }
+
+    @Override
+    public List<CompressionMethod> getServerSupportedDelayCompressionMethods() {
+        return context.getServerSupportedDelayCompressionMethods()
+                .orElse(config.getServerSupportedDelayCompressionMethods());
     }
     // endregion
 
