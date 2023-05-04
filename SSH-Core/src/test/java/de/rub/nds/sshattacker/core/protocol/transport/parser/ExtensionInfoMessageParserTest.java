@@ -119,7 +119,10 @@ public class ExtensionInfoMessageParserTest {
                 expectedNameOfServerSigAlgsExtension, serverSigAlgsExtension.getName().getValue());
         assertEquals(
                 expectedValueLengthOfServerSigAlgsExtension,
-                serverSigAlgsExtension.getValueLength().getValue().intValue());
+                serverSigAlgsExtension
+                        .getAcceptedPublicKeyAlgorithmsLength()
+                        .getValue()
+                        .intValue());
         assertEquals(
                 expectedValueOfServerSigAlgsExtension,
                 serverSigAlgsExtension.getAcceptedPublicKeyAlgorithms().getValue());
@@ -132,7 +135,7 @@ public class ExtensionInfoMessageParserTest {
                 delayCompressionExtension.getName().getValue());
         assertEquals(
                 expectedValueLengthOfDelayCompressionExtension,
-                delayCompressionExtension.getValueLength().getValue().intValue());
+                delayCompressionExtension.getCompressionMethodsLength().getValue().intValue());
         assertEquals(
                 expectedCompressionMethodsClientToServerLength,
                 delayCompressionExtension

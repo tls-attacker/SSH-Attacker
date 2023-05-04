@@ -33,8 +33,15 @@ public class DelayCompressionExtensionParser
 
     @Override
     protected void parseExtensionValue() {
-        parseCompressionMethodsClientToServer();
-        parseCompressionMethodsServerToClient();
+        this.parseCompressionMethodsLength();
+        this.parseCompressionMethodsClientToServer();
+        this.parseCompressionMethodsServerToClient();
+    }
+
+    private void parseCompressionMethodsLength() {
+        extension.setCompressionMethodsLength(
+                parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
+        LOGGER.debug("Compression methods length: {}", extension.getCompressionMethodsLength());
     }
 
     private void parseCompressionMethodsClientToServer() {

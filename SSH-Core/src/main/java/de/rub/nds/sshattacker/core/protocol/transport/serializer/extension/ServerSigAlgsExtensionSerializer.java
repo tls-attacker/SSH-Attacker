@@ -30,8 +30,11 @@ public class ServerSigAlgsExtensionSerializer
 
     private void serializeAcceptedPublicKeyAlgorithmsLength() {
         LOGGER.debug(
-                "Accepted public key algorithms length: {}", extension.getValueLength().getValue());
-        appendInt(extension.getValueLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
+                "Accepted public key algorithms length: {}",
+                extension.getAcceptedPublicKeyAlgorithmsLength().getValue());
+        appendInt(
+                extension.getAcceptedPublicKeyAlgorithmsLength().getValue(),
+                DataFormatConstants.STRING_SIZE_LENGTH);
     }
 
     private void serializeAcceptedPublicKeyAlgorithms() {

@@ -8,6 +8,7 @@
 package de.rub.nds.sshattacker.core.protocol.transport.serializer.extension;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.transport.message.extension.UnknownExtension;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -22,6 +23,8 @@ public class UnknownExtensionSerializer extends AbstractExtensionSerializer<Unkn
 
     @Override
     protected void serializeExtensionValue() {
+        LOGGER.debug("Extension value length: {}", extension.getValueLength().getValue());
+        appendInt(extension.getValueLength().getValue(), DataFormatConstants.UINT32_SIZE);
         LOGGER.debug("Extension value: {}", ArrayConverter.bytesToHexString(extension.getValue()));
         appendBytes(extension.getValue().getValue());
     }

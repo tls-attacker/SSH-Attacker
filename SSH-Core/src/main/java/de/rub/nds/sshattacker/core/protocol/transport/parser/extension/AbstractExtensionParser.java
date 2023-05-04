@@ -33,7 +33,6 @@ public abstract class AbstractExtensionParser<E extends AbstractExtension> exten
     @Override
     public final E parse() {
         parseExtensionName();
-        parseExtensionValueLength();
         parseExtensionValue();
         return extension;
     }
@@ -44,11 +43,6 @@ public abstract class AbstractExtensionParser<E extends AbstractExtension> exten
         extension.setName(
                 parseByteString(extension.getNameLength().getValue(), StandardCharsets.US_ASCII));
         LOGGER.debug("Extension name: {}", extension.getName().getValue());
-    }
-
-    protected void parseExtensionValueLength() {
-        extension.setValueLength(parseIntField(DataFormatConstants.UINT32_SIZE));
-        LOGGER.debug("Extension value length: {}", extension.getValueLength().getValue());
     }
 
     protected abstract void parseExtensionValue();

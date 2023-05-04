@@ -20,8 +20,6 @@ public abstract class AbstractExtension<E extends AbstractExtension<E>> {
 
     protected ModifiableString name;
 
-    protected ModifiableInteger valueLength;
-
     public ModifiableInteger getNameLength() {
         return nameLength;
     }
@@ -58,18 +56,6 @@ public abstract class AbstractExtension<E extends AbstractExtension<E>> {
             setNameLength(name.getBytes(StandardCharsets.US_ASCII).length);
         }
         this.name = ModifiableVariableFactory.safelySetValue(this.name, name);
-    }
-
-    public ModifiableInteger getValueLength() {
-        return valueLength;
-    }
-
-    public void setValueLength(ModifiableInteger valueLength) {
-        this.valueLength = valueLength;
-    }
-
-    public void setValueLength(int valueLength) {
-        this.valueLength = ModifiableVariableFactory.safelySetValue(this.valueLength, valueLength);
     }
 
     public abstract AbstractExtensionHandler<E> getHandler(SshContext context);

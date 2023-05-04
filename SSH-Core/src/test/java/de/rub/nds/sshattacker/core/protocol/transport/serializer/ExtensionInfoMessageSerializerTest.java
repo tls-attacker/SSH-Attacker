@@ -75,7 +75,8 @@ public class ExtensionInfoMessageSerializerTest {
         ServerSigAlgsExtension serverSigAlgsExtension = new ServerSigAlgsExtension();
         serverSigAlgsExtension.setNameLength(providedNameLengthOfServerSigAlgsExtension);
         serverSigAlgsExtension.setName(providedNameOfServerSigAlgsExtension);
-        serverSigAlgsExtension.setValueLength(providedValueLengthOfServerSigAlgsExtension);
+        serverSigAlgsExtension.setAcceptedPublicKeyAlgorithmsLength(
+                providedValueLengthOfServerSigAlgsExtension);
         serverSigAlgsExtension.setAcceptedPublicKeyAlgorithms(
                 providedValueOfServerSigAlgsExtension);
         msg.addExtension(serverSigAlgsExtension);
@@ -83,7 +84,8 @@ public class ExtensionInfoMessageSerializerTest {
         DelayCompressionExtension delayCompressionExtension = new DelayCompressionExtension();
         delayCompressionExtension.setNameLength(providedNameLengthOfDelayCompressionExtension);
         delayCompressionExtension.setName(providedNameOfDelayCompressionExtension);
-        delayCompressionExtension.setValueLength(providedValueLengthOfDelayCompressionExtension);
+        delayCompressionExtension.setCompressionMethodsLength(
+                providedValueLengthOfDelayCompressionExtension);
         delayCompressionExtension.setCompressionMethodsClientToServerLength(
                 providedCompressionMethodsClientToServerLength);
         delayCompressionExtension.setCompressionMethodsClientToServer(

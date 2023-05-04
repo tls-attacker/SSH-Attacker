@@ -62,7 +62,9 @@ public class ServerSigAlgsExtensionParserTest {
 
         assertEquals(expectedNameLength, extension.getNameLength().getValue().intValue());
         assertEquals(expectedName, extension.getName().getValue());
-        assertEquals(expectedValueLength, extension.getValueLength().getValue().intValue());
+        assertEquals(
+                expectedValueLength,
+                extension.getAcceptedPublicKeyAlgorithmsLength().getValue().intValue());
         assertEquals(expectedValue, extension.getAcceptedPublicKeyAlgorithms().getValue());
     }
 }
