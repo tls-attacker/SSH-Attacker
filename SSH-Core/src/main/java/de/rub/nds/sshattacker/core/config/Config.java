@@ -259,6 +259,12 @@ public class Config implements Serializable {
 
     /** List of extensions supported by the server */
     private List<AbstractExtension<?>> serverSupportedExtensions;
+
+    /** Flag whether client supports SSH Extension Negotiation */
+    private boolean clientSupportsExtensionNegotiation = false;
+
+    /** Flag whether server supports SSH Extension Negotiation */
+    private boolean serverSupportsExtensionNegotiation = false;
     // endregion
 
     // region Authentication
@@ -1205,6 +1211,14 @@ public class Config implements Serializable {
         return serverSupportedExtensions;
     }
 
+    public boolean clientSupportsExtensionNegotiation() {
+        return clientSupportsExtensionNegotiation;
+    }
+
+    public boolean serverSupportsExtensionNegotiation() {
+        return serverSupportsExtensionNegotiation;
+    }
+
     private List<AbstractExtension<?>> getDefaultExtensionsForClient() {
         List<AbstractExtension<?>> extensions = new LinkedList<>();
         extensions.add(getDefaultDelayCompressionExtension());
@@ -1256,13 +1270,6 @@ public class Config implements Serializable {
         DelayCompressionExtension extension = new DelayCompressionExtension();
         extension.setName(Extension.DELAY_COMPRESSION.getName(), true);
 
-        // valueLength = length of the string "none,zlib,zlib@openssh.com"
-        int valueLength =
-                CompressionMethod.NONE.toString().length()
-                        + CompressionMethod.ZLIB.toString().length()
-                        + CompressionMethod.ZLIB_OPENSSH_COM.toString().length()
-                        + 2;
-
         // value = "none,zlib,zlib@openssh.com"
         String value =
                 CompressionMethod.NONE.toString()
@@ -1270,6 +1277,8 @@ public class Config implements Serializable {
                         + CompressionMethod.ZLIB.toString()
                         + CharConstants.ALGORITHM_SEPARATOR
                         + CompressionMethod.ZLIB_OPENSSH_COM.toString();
+
+        int valueLength = value.length();
 
         extension.setCompressionMethodsLength(2 * (valueLength + DataFormatConstants.UINT32_SIZE));
         extension.setCompressionMethodsClientToServerLength(valueLength);
@@ -1289,6 +1298,14 @@ public class Config implements Serializable {
 
     public void setServerSupportedExtensions(List<AbstractExtension<?>> extensions) {
         this.serverSupportedExtensions = extensions;
+    }
+
+    public void setClientSupportsExtensionNegotiation(boolean support) {
+        this.clientSupportsExtensionNegotiation = support;
+    }
+
+    public void setServerSupportsExtensionNegotiation(boolean support) {
+        this.serverSupportsExtensionNegotiation = support;
     }
 
     public void setDefaultExtensionsForClient() {

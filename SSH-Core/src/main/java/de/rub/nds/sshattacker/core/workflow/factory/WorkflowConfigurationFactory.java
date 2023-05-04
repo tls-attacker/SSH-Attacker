@@ -278,9 +278,11 @@ public class WorkflowConfigurationFactory {
                 SshActionFactory.createMessageAction(
                         connection, ConnectionEndType.CLIENT, new NewKeysMessage()));
         // send ExtensionInfoMessage after NewKeysMessage
-        sshActions.add(
-                SshActionFactory.createMessageAction(
-                        connection, ConnectionEndType.CLIENT, new ExtensionInfoMessage()));
+        if (config.serverSupportsExtensionNegotiation()) {
+            sshActions.add(
+                    SshActionFactory.createMessageAction(
+                            connection, ConnectionEndType.CLIENT, new ExtensionInfoMessage()));
+        }
         return sshActions;
     }
 
