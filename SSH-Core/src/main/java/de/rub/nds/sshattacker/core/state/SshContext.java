@@ -221,7 +221,7 @@ public class SshContext {
 
     public List<AbstractExtension<?>> serverSupportedExtensions;
 
-    private List<PublicKeyFormat> serverSupportedPublicKeyAlgorithmsForAuthentification;
+    private List<PublicKeyFormat> serverSupportedPublicKeyAlgorithmsForAuthentication;
 
     private List<CompressionMethod> clientSupportedDelayCompressionMethods;
 
@@ -931,8 +931,8 @@ public class SshContext {
 
     // section server-sig-algs extension
     public Optional<List<PublicKeyFormat>>
-            getServerSupportedPublicKeyAlgorithmsForAuthentification() {
-        return Optional.ofNullable(serverSupportedPublicKeyAlgorithmsForAuthentification);
+            getServerSupportedPublicKeyAlgorithmsForAuthentication() {
+        return Optional.ofNullable(serverSupportedPublicKeyAlgorithmsForAuthentication);
     }
 
     // section delay-compression extension
@@ -957,9 +957,9 @@ public class SshContext {
     }
 
     // section server-sig-algs extension
-    public void setServerSupportedPublicKeyAlgorithmsForAuthentification(
+    public void setServerSupportedPublicKeyAlgorithmsForAuthentication(
             List<PublicKeyFormat> algorithms) {
-        this.serverSupportedPublicKeyAlgorithmsForAuthentification = algorithms;
+        this.serverSupportedPublicKeyAlgorithmsForAuthentication = algorithms;
     }
 
     // section delay-compression extension

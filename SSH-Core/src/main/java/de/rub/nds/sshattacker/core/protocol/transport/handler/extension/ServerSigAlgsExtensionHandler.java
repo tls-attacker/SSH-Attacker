@@ -56,7 +56,7 @@ public class ServerSigAlgsExtensionHandler
     public void adjustContext() {
         // receiving "server-sig-algs" extension as a client -> context has to be updated
         if (context.isHandleAsClient()) {
-            context.setServerSupportedPublicKeyAlgorithmsForAuthentification(
+            context.setServerSupportedPublicKeyAlgorithmsForAuthentication(
                     Converter.nameListToEnumValues(
                             extension.getAcceptedPublicKeyAlgorithms().getValue(),
                             PublicKeyFormat.class));
