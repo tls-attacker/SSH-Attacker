@@ -28,7 +28,6 @@ public abstract class AbstractExtensionSerializer<E extends AbstractExtension<E>
     @Override
     protected final void serializeBytes() {
         serializeExtensionName();
-        serializeExtensionValueLength();
         serializeExtensionValue();
     }
 
@@ -37,11 +36,6 @@ public abstract class AbstractExtensionSerializer<E extends AbstractExtension<E>
         appendInt(extension.getNameLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
         LOGGER.debug("Extension name: {}", extension.getName().getValue());
         appendString(extension.getName().getValue(), StandardCharsets.US_ASCII);
-    }
-
-    private void serializeExtensionValueLength() {
-        LOGGER.debug("Extension value length: {}", extension.getValueLength().getValue());
-        appendInt(extension.getValueLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
     }
 
     protected abstract void serializeExtensionValue();
