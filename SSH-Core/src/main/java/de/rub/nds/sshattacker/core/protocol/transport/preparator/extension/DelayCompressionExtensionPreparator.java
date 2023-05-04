@@ -7,8 +7,11 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.preparator.extension;
 
+import de.rub.nds.sshattacker.core.constants.CompressionMethod;
 import de.rub.nds.sshattacker.core.protocol.transport.message.extension.DelayCompressionExtension;
+import de.rub.nds.sshattacker.core.protocol.util.AlgorithmPicker;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
+import java.util.Optional;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -40,6 +43,21 @@ public class DelayCompressionExtensionPreparator
             getObject()
                     .setCompressionMethodsServerToClient(
                             chooser.getServerSupportedDelayCompressionMethods(), true);
+        }
+
+        // determine intersection of compression methods from delay-compression extension
+        Optional<CompressionMethod> commonCompressionMethod =
+                AlgorithmPicker.pickAlgorithm(
+                        chooser.getClientSupportedDelayCompressionMethods(),
+                        chooser.getServerSupportedDelayCompressionMethods());
+        if (commonCompressionMethod.isPresent()) {
+            chooser.getContext().setSelectedDelayCompressionMethod(commonCompressionMethod.get());
+            chooser.getConfig().setDelayCompressionMethodNegotiated(true);
+        }
+        // no common algorithm found --> disconnect! (RFC 8308 Section 3.2)
+        else {
+            LOGGER.warn("No common compression found in delay-compression extension!");
+            // TODO: disconnect with appropriate disconnect message !
         }
     }
 }

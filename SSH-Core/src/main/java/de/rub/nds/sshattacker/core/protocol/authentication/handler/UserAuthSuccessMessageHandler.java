@@ -15,9 +15,13 @@ import de.rub.nds.sshattacker.core.protocol.authentication.serializer.UserAuthSu
 import de.rub.nds.sshattacker.core.protocol.common.*;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class UserAuthSuccessMessageHandler extends SshMessageHandler<UserAuthSuccessMessage>
         implements MessageSentHandler {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public UserAuthSuccessMessageHandler(SshContext context) {
         super(context);
@@ -50,6 +54,22 @@ public class UserAuthSuccessMessageHandler extends SshMessageHandler<UserAuthSuc
             context.getPacketLayer()
                     .updateDecompressionAlgorithm(
                             chooser.getCompressionMethodServerToClient().getAlgorithm());
+        }
+        // use negotiated compression method of delay-compression extension from SSH_MSG_EXT_INFO
+        if (context.isHandleAsClient() && context.getConfig().getEnableExtensions()) {
+            context.getPacketLayer()
+                    .updateCompressionAlgorithm(
+                            chooser.getSelectedDelayCompressionMethod().getAlgorithm());
+
+            context.getPacketLayer()
+                    .updateDecompressionAlgorithm(
+                            chooser.getSelectedDelayCompressionMethod().getAlgorithm());
+        }
+        // only server can send SSH_MSG_USERAUTH_SUCCESS --> do nothing when receiving a
+        // SSH_MSG_USERAUTH_SUCCESS from client
+        else if (!context.isHandleAsClient()) {
+            LOGGER.warn(
+                    "Client sent UserAuthSuccessMessage which is supposed to be sent by server only !");
         }
     }
 

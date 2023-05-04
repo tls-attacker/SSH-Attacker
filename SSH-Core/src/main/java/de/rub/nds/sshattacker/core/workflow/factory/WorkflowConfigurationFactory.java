@@ -364,6 +364,14 @@ public class WorkflowConfigurationFactory {
                         "Unable to add authentication actions to workflow trace - unknown or unsupported authentication method: "
                                 + method);
         }
+        // send SSH_MSG_NEWCOMPRESS if delay-compression extension was sent
+        if (config.getEnableExtensions() && config.getDelayCompressionMethodNegotiated()) {
+            // TODO: send SSH_MSG_NEWCOMPRESS
+            System.out.println("[START]: " + this.getClass().getSimpleName());
+            workflow.addSshActions(
+                    SshActionFactory.createMessageAction(
+                            connection, ConnectionEndType.CLIENT, new NewCompressMessage()));
+        }
     }
 
     private void addConnectionProtocolActions(WorkflowTrace workflow) {

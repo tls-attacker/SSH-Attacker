@@ -125,6 +125,8 @@ public abstract class Chooser {
     public abstract List<CompressionMethod> getClientSupportedDelayCompressionMethods();
 
     public abstract List<CompressionMethod> getServerSupportedDelayCompressionMethods();
+
+    public abstract CompressionMethod getSelectedDelayCompressionMethod();
     // endregion
 
     // region Negotiated Parameters

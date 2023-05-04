@@ -517,6 +517,11 @@ public class DefaultChooser extends Chooser {
 
     // section delay-compression extension
     @Override
+    public CompressionMethod getSelectedDelayCompressionMethod() {
+        return context.getSelectedDelayCompressionMethod().orElse(null);
+    }
+
+    @Override
     public List<CompressionMethod> getClientSupportedDelayCompressionMethods() {
         return context.getClientSupportedDelayCompressionMethods()
                 .orElse(config.getClientSupportedDelayCompressionMethods());

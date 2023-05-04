@@ -272,7 +272,16 @@ public class Config implements Serializable {
     /** List of compression methods supported by the server(delay-compression extension) */
     private List<CompressionMethod> serverSupportedDelayCompressionMethods;
 
+    /**
+     * If enableExtension is true, the values from the received extensions are used. If set to
+     * false, the values are only set in SshContext but will not be used.
+     */
     private boolean enableExtensions = true;
+
+    /**
+     * Flag whether a common compression method from the delay-compression extension was negotiated
+     */
+    private boolean delayCompressionMethodNegotiated = false;
     // endregion
 
     // region Authentication
@@ -1424,6 +1433,10 @@ public class Config implements Serializable {
         return serverSupportedDelayCompressionMethods;
     }
 
+    public boolean getDelayCompressionMethodNegotiated() {
+        return delayCompressionMethodNegotiated;
+    }
+
     private DelayCompressionExtension getDefaultDelayCompressionExtension() {
         DelayCompressionExtension extension = new DelayCompressionExtension();
         extension.setNameLength(Extension.DELAY_COMPRESSION.getName().length());
@@ -1505,6 +1518,10 @@ public class Config implements Serializable {
 
     public void setServerSupportedDelayCompressionMethods(List<CompressionMethod> methods) {
         this.serverSupportedDelayCompressionMethods = methods;
+    }
+
+    public void setDelayCompressionMethodNegotiated(boolean negotiated) {
+        this.delayCompressionMethodNegotiated = negotiated;
     }
 
     public void setDefaultClientSupportedDelayCompressionMethods() {

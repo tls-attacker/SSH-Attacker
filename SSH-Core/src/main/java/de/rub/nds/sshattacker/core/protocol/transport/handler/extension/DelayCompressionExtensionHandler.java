@@ -29,8 +29,6 @@ public class DelayCompressionExtensionHandler
 
     @Override
     public void adjustContext() {
-        // TODO: work with the values set in the context(pick one compression method from
-        // client+server delay-compressions)
         if (context.isHandleAsClient()) {
             context.setServerSupportedDelayCompressionMethods(
                     Converter.nameListToEnumValues(
