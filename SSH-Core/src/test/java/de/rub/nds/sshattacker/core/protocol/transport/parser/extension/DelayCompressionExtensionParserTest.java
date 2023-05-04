@@ -16,7 +16,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
-
 public class DelayCompressionExtensionParserTest {
     /**
      * Provides a stream of test vectors for the DelayCompressionExtensionParser class
@@ -26,7 +25,8 @@ public class DelayCompressionExtensionParserTest {
     public static Stream<Arguments> provideTestVectors() {
         return Stream.of(
                 Arguments.of(
-                        ArrayConverter.hexStringToByteArray("0000001164656c61792d636f6d7072657373696f6e0000003c0000001a7a6c69622c6e6f6e652c7a6c6962406f70656e7373682e636f6d0000001a7a6c69622c6e6f6e652c7a6c6962406f70656e7373682e636f6d"),
+                        ArrayConverter.hexStringToByteArray(
+                                "0000001164656c61792d636f6d7072657373696f6e0000003c0000001a7a6c69622c6e6f6e652c7a6c6962406f70656e7373682e636f6d0000001a7a6c69622c6e6f6e652c7a6c6962406f70656e7373682e636f6d"),
                         17,
                         "delay-compression",
                         60,
@@ -35,7 +35,8 @@ public class DelayCompressionExtensionParserTest {
                         26,
                         "zlib,none,zlib@openssh.com"),
                 Arguments.of(
-                        ArrayConverter.hexStringToByteArray("0000001164656c61792d636f6d7072657373696f6e0000001600000007666f6f2c626172000000076261722c62617a"),
+                        ArrayConverter.hexStringToByteArray(
+                                "0000001164656c61792d636f6d7072657373696f6e0000001600000007666f6f2c626172000000076261722c62617a"),
                         17,
                         "delay-compression",
                         22,
@@ -52,10 +53,14 @@ public class DelayCompressionExtensionParserTest {
      * @param expectedNameLength Expected length of 'delay-compression' string: 17
      * @param expectedName Expected string: 'delay-compression'
      * @param expectedValueLength Expected length of the value
-     * @param expectedCompressionMethodsClientToServerLength Expected length of compression methods(client to server)
-     * @param expectedCompressionMethodsClientToServer Expected compression methods(client to server)
-     * @param expectedCompressionMethodsServerToClientLength Expected length of compression methods(server to client)
-     * @param expectedCompressionMethodsServerToClient Expected compression methods(server to client)
+     * @param expectedCompressionMethodsClientToServerLength Expected length of compression
+     *     methods(client to server)
+     * @param expectedCompressionMethodsClientToServer Expected compression methods(client to
+     *     server)
+     * @param expectedCompressionMethodsServerToClientLength Expected length of compression
+     *     methods(server to client)
+     * @param expectedCompressionMethodsServerToClient Expected compression methods(server to
+     *     client)
      */
     @ParameterizedTest
     @MethodSource("provideTestVectors")

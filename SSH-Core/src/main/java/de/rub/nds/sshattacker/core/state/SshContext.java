@@ -228,6 +228,8 @@ public class SshContext {
     private List<CompressionMethod> clientSupportedDelayCompressionMethods;
 
     private List<CompressionMethod> serverSupportedDelayCompressionMethods;
+
+    private CompressionMethod selectedDelayCompressionMethod;
     // endregion
 
     // region Connection Protocol
@@ -931,14 +933,14 @@ public class SshContext {
         return Optional.ofNullable(serverSupportedExtensions);
     }
 
-    public Optional<SshPublicKey<?, ?>> getSelectedPublicKeyAlgorithmForAuthentification() {
-        return Optional.ofNullable(selectedPublicKeyAlgorithmForAuthentification);
-    }
-
     // section server-sig-algs extension
     public Optional<List<PublicKeyFormat>>
             getServerSupportedPublicKeyAlgorithmsForAuthentification() {
         return Optional.ofNullable(serverSupportedPublicKeyAlgorithmsForAuthentification);
+    }
+
+    public Optional<SshPublicKey<?, ?>> getSelectedPublicKeyAlgorithmForAuthentification() {
+        return Optional.ofNullable(selectedPublicKeyAlgorithmForAuthentification);
     }
 
     // section delay-compression extension
@@ -948,6 +950,10 @@ public class SshContext {
 
     public Optional<List<CompressionMethod>> getServerSupportedDelayCompressionMethods() {
         return Optional.ofNullable(serverSupportedDelayCompressionMethods);
+    }
+
+    public Optional<CompressionMethod> getSelectedDelayCompressionMethod() {
+        return Optional.ofNullable(selectedDelayCompressionMethod);
     }
     // endregion
 
@@ -974,6 +980,10 @@ public class SshContext {
     }
 
     // section delay-compression extension
+    public void setSelectedDelayCompressionMethod(CompressionMethod method) {
+        this.selectedDelayCompressionMethod = method;
+    }
+
     public void setClientSupportedDelayCompressionMethods(List<CompressionMethod> methods) {
         this.clientSupportedDelayCompressionMethods = methods;
     }
