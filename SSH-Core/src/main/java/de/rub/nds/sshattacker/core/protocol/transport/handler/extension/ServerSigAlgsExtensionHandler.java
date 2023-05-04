@@ -76,9 +76,9 @@ public class ServerSigAlgsExtensionHandler
                     AlgorithmPicker.pickAlgorithm(
                             clientSupportedPublicKeyAlgorithms, serverSupportedPublicKeyAlgorithms);
 
-            // transform common algorithm into SshKey<?, ?> and set in config
+            // transform common algorithm into SshKey<?, ?> and set in context
             SshPublicKey<?, ?> selectedAlgorithm =
-                    getSshPublicKeyFromSelectedPublicKeyAlgorithm(commonAlgorithm.get());
+                    getSshPublicKeyFromSelectedPublicKeyAlgorithm(commonAlgorithm.orElse(null));
             context.setSelectedPublicKeyAlgorithmForAuthentification(selectedAlgorithm);
         }
         // receiving "server-sig-algs" extension as a server -> ignore "server-sig-algs"
@@ -90,14 +90,25 @@ public class ServerSigAlgsExtensionHandler
 
     private SshPublicKey<?, ?> getSshPublicKeyFromSelectedPublicKeyAlgorithm(
             PublicKeyFormat algorithm) {
+        // SshPublicKey for ssh-dss if no match was found
+        // ssh-dss is REQUIRED to be implemented by every server(RFC 4253 Section 6.6)
+        SshPublicKey<?, ?> defaultKey = null;
+        boolean noCommonAlgorithmFound = (algorithm == null);
+
         for (SshPublicKey<?, ?> key : context.getConfig().getUserKeys()) {
             PublicKeyFormat publicKeyFormat = key.getPublicKeyFormat();
             if (publicKeyFormat.equals(algorithm)) {
                 return key;
             }
+            if (noCommonAlgorithmFound && publicKeyFormat.equals(PublicKeyFormat.SSH_DSS)) {
+                defaultKey = key;
+                break;
+            }
         }
-        LOGGER.warn("No intersection of public key algorithms for client authentification found!");
-        return null;
+        LOGGER.warn(
+                "No intersection of public key algorithms for client authentification found!\n"
+                        + "Using ssh-dss as public key algorithm for authentification!");
+        return defaultKey;
     }
 
     // extract all public key algorithms supported by the client from the List of user keys
@@ -109,10 +120,5 @@ public class ServerSigAlgsExtensionHandler
             algorithms.add(key.getPublicKeyFormat());
         }
         return algorithms;
-    }
-
-    private List<PublicKeyFormat> collectSupportedPublicKeyAlgorithmsFromServer(
-            Optional<List<PublicKeyFormat>> algorithms) {
-        return algorithms.orElse(null);
     }
 }
