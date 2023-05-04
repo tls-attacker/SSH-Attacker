@@ -7,7 +7,6 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.parser.extension;
 
-import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.transport.message.extension.ServerSigAlgsExtension;
 import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.LogManager;
@@ -36,8 +35,7 @@ public class ServerSigAlgsExtensionParser extends AbstractExtensionParser<Server
     }
 
     private void parseAcceptedPublicKeyAlgorithms() {
-        extension.setAcceptedPublicKeyAlgorithmsLength(
-                parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
+        extension.setAcceptedPublicKeyAlgorithmsLength(extension.getValueLength().getValue());
         LOGGER.debug(
                 "Accepted public key algorithms length: {}",
                 extension.getAcceptedPublicKeyAlgorithmsLength().getValue());
