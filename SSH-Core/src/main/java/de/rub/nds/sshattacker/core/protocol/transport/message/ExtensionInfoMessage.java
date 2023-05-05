@@ -42,6 +42,13 @@ public class ExtensionInfoMessage extends SshMessage<ExtensionInfoMessage> {
     }
 
     public void setExtensions(List<AbstractExtension<?>> extensions) {
+        setExtensions(extensions, false);
+    }
+
+    public void setExtensions(List<AbstractExtension<?>> extensions, boolean adjustLengthField) {
+        if (adjustLengthField) {
+            this.setExtensionCount(extensions.size());
+        }
         this.extensions = extensions;
     }
 
