@@ -273,24 +273,6 @@ public class WorkflowConfigurationFactory {
         sshActions.add(
                 SshActionFactory.createMessageAction(
                         connection, ConnectionEndType.CLIENT, new NewKeysMessage()));
-
-        // send ExtensionInfoMessage after NewKeysMessage(acting as client and server supports
-        // SSH-EXT-NEG)
-        /*
-        if (config.clientSupportsExtensionNegotiation()) {
-            sshActions.add(
-                    SshActionFactory.createMessageAction(
-                            connection, ConnectionEndType.SERVER, new ExtensionInfoMessage()));
-        }
-
-        // send ExtensionInfoMessage after NewKeysMessage(acting as client and server supports
-        // SSH-EXT-NEG)
-        if (config.serverSupportsExtensionNegotiation()) {
-            sshActions.add(
-                    SshActionFactory.createMessageAction(
-                            connection, ConnectionEndType.CLIENT, new ExtensionInfoMessage()));
-        }
-         */
         return sshActions;
     }
 
