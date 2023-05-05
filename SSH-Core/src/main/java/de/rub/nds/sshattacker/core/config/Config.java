@@ -562,6 +562,17 @@ public class Config implements Serializable {
         serverReserved = 0;
         // endregion
 
+        // region SSH Extension
+        // send delay-compression extension by default when acting as client
+        clientSupportedExtensions = new LinkedList<>();
+        clientSupportedExtensions.add(this.getDefaultDelayCompressionExtension());
+
+        // send server-sig-algs and delay-compression extension by default when acting as server
+        serverSupportedExtensions = new LinkedList<>();
+        serverSupportedExtensions.add(this.getDefaultServerSigAlgsExtension());
+        serverSupportedExtensions.add(this.getDefaultDelayCompressionExtension());
+        // endregion
+
         // region KeyExchange initialization
         dhGexMinimalGroupSize = 2048;
         dhGexPreferredGroupSize = 4096;
@@ -1219,19 +1230,6 @@ public class Config implements Serializable {
         return serverSupportsExtensionNegotiation;
     }
 
-    private List<AbstractExtension<?>> getDefaultExtensionsForClient() {
-        List<AbstractExtension<?>> extensions = new LinkedList<>();
-        extensions.add(getDefaultDelayCompressionExtension());
-        return extensions;
-    }
-
-    public List<AbstractExtension<?>> getDefaultExtensionsForServer() {
-        List<AbstractExtension<?>> extensions = new LinkedList<>();
-        extensions.add(getDefaultServerSigAlgsExtension());
-        extensions.add(getDefaultDelayCompressionExtension());
-        return extensions;
-    }
-
     // section server-sig-algs extension
     private ServerSigAlgsExtension getDefaultServerSigAlgsExtension() {
         ServerSigAlgsExtension extension = new ServerSigAlgsExtension();
@@ -1306,14 +1304,6 @@ public class Config implements Serializable {
 
     public void setServerSupportsExtensionNegotiation(boolean support) {
         this.serverSupportsExtensionNegotiation = support;
-    }
-
-    public void setDefaultExtensionsForClient() {
-        this.clientSupportedExtensions = this.getDefaultExtensionsForClient();
-    }
-
-    public void setDefaultExtensionsForServer() {
-        this.serverSupportedExtensions = this.getDefaultExtensionsForServer();
     }
     // endregion
 

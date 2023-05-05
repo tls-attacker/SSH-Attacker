@@ -20,18 +20,10 @@ public class ExtensionInfoMessagePreparator extends SshMessagePreparator<Extensi
 
     @Override
     public void prepareMessageSpecificContents() {
-        // send delay-compression extension by default when acting as client
         if (chooser.getContext().isClient()) {
-            // setting default extensions in constructor of config class throws a
-            // java.io.NotSerializableException
-            // (the reason why it is done this way:)
-            chooser.getConfig().setDefaultExtensionsForClient();
             getObject().setExtensionCount(chooser.getClientSupportedExtensions().size());
             getObject().setExtensions(chooser.getClientSupportedExtensions());
-        }
-        // send server-sig-algs and delay-compression extension by default when acting as server
-        else {
-            chooser.getConfig().setDefaultExtensionsForServer();
+        } else {
             getObject().setExtensionCount(chooser.getServerSupportedExtensions().size());
             getObject().setExtensions(chooser.getServerSupportedExtensions());
         }
