@@ -9,6 +9,7 @@ package de.rub.nds.sshattacker.core.protocol.transport.message;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
+import de.rub.nds.sshattacker.core.protocol.common.ModifiableVariableHolder;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.ExtensionInfoMessageHandler;
@@ -51,5 +52,14 @@ public class ExtensionInfoMessage extends SshMessage<ExtensionInfoMessage> {
     @Override
     public SshMessageHandler<ExtensionInfoMessage> getHandler(SshContext context) {
         return new ExtensionInfoMessageHandler(context, this);
+    }
+
+    @Override
+    public List<ModifiableVariableHolder> getAllModifiableVariableHolders() {
+        List<ModifiableVariableHolder> holders = super.getAllModifiableVariableHolders();
+        for (AbstractExtension<?> extension : extensions) {
+            holders.add(extension);
+        }
+        return holders;
     }
 }
