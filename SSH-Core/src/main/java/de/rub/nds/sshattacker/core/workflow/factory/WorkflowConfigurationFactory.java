@@ -208,8 +208,7 @@ public class WorkflowConfigurationFactory {
                                 connection,
                                 ConnectionEndType.SERVER,
                                 new DhKeyExchangeReplyMessage(),
-                                new NewKeysMessage(),
-                                new ExtensionInfoMessage()));
+                                new NewKeysMessage()));
                 break;
             case DIFFIE_HELLMAN_GROUP_EXCHANGE:
                 sshActions.add(
@@ -233,8 +232,7 @@ public class WorkflowConfigurationFactory {
                                 connection,
                                 ConnectionEndType.SERVER,
                                 new DhGexKeyExchangeReplyMessage(),
-                                new NewKeysMessage(),
-                                new ExtensionInfoMessage()));
+                                new NewKeysMessage()));
                 break;
             case ECDH:
                 sshActions.add(
@@ -247,8 +245,7 @@ public class WorkflowConfigurationFactory {
                                 connection,
                                 ConnectionEndType.SERVER,
                                 new EcdhKeyExchangeReplyMessage(),
-                                new NewKeysMessage(),
-                                new ExtensionInfoMessage()));
+                                new NewKeysMessage()));
                 break;
             case RSA:
                 sshActions.add(
@@ -266,8 +263,7 @@ public class WorkflowConfigurationFactory {
                                 connection,
                                 ConnectionEndType.SERVER,
                                 new RsaKeyExchangeDoneMessage(),
-                                new NewKeysMessage(),
-                                new ExtensionInfoMessage()));
+                                new NewKeysMessage()));
                 break;
             default:
                 throw new ConfigurationException(
@@ -277,7 +273,17 @@ public class WorkflowConfigurationFactory {
         sshActions.add(
                 SshActionFactory.createMessageAction(
                         connection, ConnectionEndType.CLIENT, new NewKeysMessage()));
-        // send ExtensionInfoMessage after NewKeysMessage
+
+        // send ExtensionInfoMessage after NewKeysMessage(acting as client and server supports
+        // SSH-EXT-NEG)
+        if (config.clientSupportsExtensionNegotiation()) {
+            sshActions.add(
+                    SshActionFactory.createMessageAction(
+                            connection, ConnectionEndType.SERVER, new ExtensionInfoMessage()));
+        }
+
+        // send ExtensionInfoMessage after NewKeysMessage(acting as client and server supports
+        // SSH-EXT-NEG)
         if (config.serverSupportsExtensionNegotiation()) {
             sshActions.add(
                     SshActionFactory.createMessageAction(
