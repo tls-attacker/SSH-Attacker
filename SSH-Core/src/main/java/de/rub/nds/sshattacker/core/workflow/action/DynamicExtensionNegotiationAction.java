@@ -11,13 +11,18 @@ import de.rub.nds.sshattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.sshattacker.core.protocol.transport.message.ExtensionInfoMessage;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.state.State;
-import java.util.LinkedList;
+import de.rub.nds.sshattacker.core.workflow.factory.SshActionFactory;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import java.util.ArrayList;
+import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class DynamicExtensionNegotiationAction extends SendAction {
 
     private static final Logger LOGGER = LogManager.getLogger();
+
+    private List<SshAction> sshActions = new ArrayList<>();
 
     public DynamicExtensionNegotiationAction() {
         super();
@@ -29,19 +34,38 @@ public class DynamicExtensionNegotiationAction extends SendAction {
 
     @Override
     public void execute(State state) throws WorkflowExecutionException {
+        /*
         SshContext context = state.getSshContext();
-        messages = new LinkedList<>();
-        if (context.clientSupportsExtensionNegotiation()) {
-            ExtensionInfoMessage msg = new ExtensionInfoMessage();
-            msg.setExtensionCount(context.getChooser().getServerSupportedExtensions().size());
-            msg.setExtensions(context.getChooser().getServerSupportedExtensions());
-            messages.add(msg);
-        } else if (context.serverSupportsExtensionNegotiation()) {
-            ExtensionInfoMessage msg = new ExtensionInfoMessage();
-            msg.setExtensionCount(context.getChooser().getClientSupportedExtensions().size());
-            msg.setExtensions(context.getChooser().getClientSupportedExtensions());
-            messages.add(msg);
+        if(context.clientSupportsExtensionNegotiation()) {
+            messages.add(new ExtensionInfoMessage());
+            super.execute(state);
         }
-        super.execute(state);
+        else if(context.serverSupportsExtensionNegotiation()) {
+            messages.add(new ExtensionInfoMessage());
+            super.execute(state);
+        }
+         */
+
+        if (isExecuted()) {
+            throw new WorkflowExecutionException("Action already executed!");
+        }
+
+        SshContext context = state.getSshContext(connectionAlias);
+
+        if (context.clientSupportsExtensionNegotiation()) {
+            sshActions.add(
+                    SshActionFactory.createMessageAction(
+                            context.getConnection(),
+                            ConnectionEndType.SERVER,
+                            new ExtensionInfoMessage()));
+            sshActions.forEach(sshAction -> sshAction.execute(state));
+        } else if (context.serverSupportsExtensionNegotiation()) {
+            sshActions.add(
+                    SshActionFactory.createMessageAction(
+                            context.getConnection(),
+                            ConnectionEndType.CLIENT,
+                            new ExtensionInfoMessage()));
+            sshActions.forEach(sshAction -> sshAction.execute(state));
+        }
     }
 }
