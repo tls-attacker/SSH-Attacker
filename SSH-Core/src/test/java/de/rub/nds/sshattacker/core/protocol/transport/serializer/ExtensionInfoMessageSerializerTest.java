@@ -30,7 +30,7 @@ public class ExtensionInfoMessageSerializerTest {
     }
 
     /**
-     * Test of KeyExchangeInitMessageSerializer::serialize method
+     * Test of ExtensionInfoMessageSerializer::serialize method
      *
      * @param expectedBytes Expected output bytes of the serialize() call
      * @param providedExtensionCount Count of the extensions

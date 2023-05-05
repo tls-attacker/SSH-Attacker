@@ -12,9 +12,6 @@ import de.rub.nds.sshattacker.core.constants.Extension;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.transport.message.ExtensionInfoMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.message.extension.AbstractExtension;
-import de.rub.nds.sshattacker.core.protocol.transport.message.extension.DelayCompressionExtension;
-import de.rub.nds.sshattacker.core.protocol.transport.message.extension.ServerSigAlgsExtension;
-import de.rub.nds.sshattacker.core.protocol.transport.message.extension.UnknownExtension;
 import de.rub.nds.sshattacker.core.protocol.transport.serializer.extension.AbstractExtensionSerializer;
 import de.rub.nds.sshattacker.core.protocol.transport.serializer.extension.DelayCompressionExtensionSerializer;
 import de.rub.nds.sshattacker.core.protocol.transport.serializer.extension.ServerSigAlgsExtensionSerializer;
@@ -49,13 +46,13 @@ public class ExtensionInfoMessageSerializer extends SshMessageSerializer<Extensi
             switch (extension) {
                 case SERVER_SIG_ALGS:
                     extensionSerializer =
-                            new ServerSigAlgsExtensionSerializer(
-                                    (ServerSigAlgsExtension) extensions.get(extensionIndex));
+                            (ServerSigAlgsExtensionSerializer)
+                                    extensions.get(extensionIndex).getHandler(null).getSerializer();
                     break;
                 case DELAY_COMPRESSION:
                     extensionSerializer =
-                            new DelayCompressionExtensionSerializer(
-                                    (DelayCompressionExtension) extensions.get(extensionIndex));
+                            (DelayCompressionExtensionSerializer)
+                                    extensions.get(extensionIndex).getHandler(null).getSerializer();
                     break;
                 default:
                     LOGGER.debug(
@@ -63,8 +60,8 @@ public class ExtensionInfoMessageSerializer extends SshMessageSerializer<Extensi
                             extension,
                             extensionIndex);
                     extensionSerializer =
-                            new UnknownExtensionSerializer(
-                                    (UnknownExtension) extensions.get(extensionIndex));
+                            (UnknownExtensionSerializer)
+                                    extensions.get(extensionIndex).getHandler(null).getSerializer();
                     break;
             }
             appendBytes(extensionSerializer.serialize());
