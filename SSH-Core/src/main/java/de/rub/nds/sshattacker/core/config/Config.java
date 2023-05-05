@@ -259,12 +259,6 @@ public class Config implements Serializable {
 
     /** List of extensions supported by the server */
     private List<AbstractExtension<?>> serverSupportedExtensions;
-
-    /** Flag whether client supports SSH Extension Negotiation */
-    private boolean clientSupportsExtensionNegotiation = false;
-
-    /** Flag whether server supports SSH Extension Negotiation */
-    private boolean serverSupportsExtensionNegotiation = false;
     // endregion
 
     // region Authentication
@@ -1222,14 +1216,6 @@ public class Config implements Serializable {
         return serverSupportedExtensions;
     }
 
-    public boolean clientSupportsExtensionNegotiation() {
-        return clientSupportsExtensionNegotiation;
-    }
-
-    public boolean serverSupportsExtensionNegotiation() {
-        return serverSupportsExtensionNegotiation;
-    }
-
     // section server-sig-algs extension
     private ServerSigAlgsExtension getDefaultServerSigAlgsExtension() {
         ServerSigAlgsExtension extension = new ServerSigAlgsExtension();
@@ -1296,14 +1282,6 @@ public class Config implements Serializable {
 
     public void setServerSupportedExtensions(List<AbstractExtension<?>> extensions) {
         this.serverSupportedExtensions = extensions;
-    }
-
-    public void setClientSupportsExtensionNegotiation(boolean support) {
-        this.clientSupportsExtensionNegotiation = support;
-    }
-
-    public void setServerSupportsExtensionNegotiation(boolean support) {
-        this.serverSupportsExtensionNegotiation = support;
     }
     // endregion
 

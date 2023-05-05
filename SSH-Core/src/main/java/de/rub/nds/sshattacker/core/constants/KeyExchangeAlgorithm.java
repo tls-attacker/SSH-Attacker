@@ -138,8 +138,4 @@ public enum KeyExchangeAlgorithm {
     public KeyExchangeFlowType getFlowType() {
         return flowType;
     }
-
-    public boolean equals(KeyExchangeAlgorithm algorithm) {
-        return name.equals(algorithm.toString());
-    }
 }

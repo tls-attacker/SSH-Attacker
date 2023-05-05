@@ -217,9 +217,17 @@ public class SshContext {
     // endregion
 
     // region SSH Extensions
+    /** List of extensions supported by the client */
     public List<AbstractExtension<?>> clientSupportedExtensions;
 
+    /** List of extensions supported by the server */
     public List<AbstractExtension<?>> serverSupportedExtensions;
+
+    /** Flag whether client supports SSH Extension Negotiation */
+    private boolean clientSupportsExtensionNegotiation = false;
+
+    /** Flag whether server supports SSH Extension Negotiation */
+    private boolean serverSupportsExtensionNegotiation = false;
 
     private List<PublicKeyFormat> serverSupportedPublicKeyAlgorithmsForAuthentication;
 
@@ -929,6 +937,14 @@ public class SshContext {
         return Optional.ofNullable(serverSupportedExtensions);
     }
 
+    public boolean clientSupportsExtensionNegotiation() {
+        return clientSupportsExtensionNegotiation;
+    }
+
+    public boolean serverSupportsExtensionNegotiation() {
+        return serverSupportsExtensionNegotiation;
+    }
+
     // section server-sig-algs extension
     public Optional<List<PublicKeyFormat>>
             getServerSupportedPublicKeyAlgorithmsForAuthentication() {
@@ -954,6 +970,14 @@ public class SshContext {
 
     public void setServerSupportedExtensions(List<AbstractExtension<?>> extensions) {
         this.serverSupportedExtensions = extensions;
+    }
+
+    public void setClientSupportsExtensionNegotiation(boolean support) {
+        this.clientSupportsExtensionNegotiation = support;
+    }
+
+    public void setServerSupportsExtensionNegotiation(boolean support) {
+        this.serverSupportsExtensionNegotiation = support;
     }
 
     // section server-sig-algs extension
