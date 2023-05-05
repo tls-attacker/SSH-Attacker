@@ -8,9 +8,9 @@
 package de.rub.nds.sshattacker.core.protocol.transport.handler.extension;
 
 import de.rub.nds.sshattacker.core.constants.CompressionMethod;
-import de.rub.nds.sshattacker.core.protocol.common.Preparator;
 import de.rub.nds.sshattacker.core.protocol.transport.message.extension.DelayCompressionExtension;
 import de.rub.nds.sshattacker.core.protocol.transport.parser.extension.DelayCompressionExtensionParser;
+import de.rub.nds.sshattacker.core.protocol.transport.preparator.extension.DelayCompressionExtensionPreparator;
 import de.rub.nds.sshattacker.core.protocol.transport.serializer.extension.DelayCompressionExtensionSerializer;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.util.Converter;
@@ -55,8 +55,8 @@ public class DelayCompressionExtensionHandler
     }
 
     @Override
-    public Preparator<DelayCompressionExtension> getPreparator() {
-        return null;
+    public DelayCompressionExtensionPreparator getPreparator() {
+        return new DelayCompressionExtensionPreparator(context.getChooser(), extension);
     }
 
     @Override
