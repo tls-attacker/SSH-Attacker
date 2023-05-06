@@ -34,32 +34,20 @@ public class DynamicExtensionNegotiationAction extends SendAction {
 
     @Override
     public void execute(State state) throws WorkflowExecutionException {
-        /*
-        SshContext context = state.getSshContext();
-        if(context.clientSupportsExtensionNegotiation()) {
-            messages.add(new ExtensionInfoMessage());
-            super.execute(state);
-        }
-        else if(context.serverSupportsExtensionNegotiation()) {
-            messages.add(new ExtensionInfoMessage());
-            super.execute(state);
-        }
-         */
-
         if (isExecuted()) {
             throw new WorkflowExecutionException("Action already executed!");
         }
 
         SshContext context = state.getSshContext(connectionAlias);
 
-        if (context.clientSupportsExtensionNegotiation()) {
+        if (context.clientSupportsExtensionNegotiation() && !context.isClient()) {
             sshActions.add(
                     SshActionFactory.createMessageAction(
                             context.getConnection(),
                             ConnectionEndType.SERVER,
                             new ExtensionInfoMessage()));
             sshActions.forEach(sshAction -> sshAction.execute(state));
-        } else if (context.serverSupportsExtensionNegotiation()) {
+        } else if (context.serverSupportsExtensionNegotiation() && context.isClient()) {
             sshActions.add(
                     SshActionFactory.createMessageAction(
                             context.getConnection(),
