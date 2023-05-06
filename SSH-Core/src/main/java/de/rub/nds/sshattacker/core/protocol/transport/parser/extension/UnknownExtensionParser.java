@@ -32,7 +32,7 @@ public class UnknownExtensionParser extends AbstractExtensionParser<UnknownExten
     @Override
     protected void parseExtensionValue() {
         extension.setValueLength(parseIntField(DataFormatConstants.UINT32_SIZE));
-        extension.setValue(parseByteArrayField(extension.getValueLength().getValue()));
+        extension.setValue(parseArrayOrTillEnd(extension.getValueLength().getValue()));
         LOGGER.debug("Extension value: {}", extension.getValue().getValue());
     }
 }

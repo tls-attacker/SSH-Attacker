@@ -79,9 +79,8 @@ public class KeyExchangeInitMessageHandler extends SshMessageHandler<KeyExchange
 
             context.getExchangeHashInputHolder().setServerKeyExchangeInit(message);
 
-            context.getConfig()
-                    .setServerSupportsExtensionNegotiation(
-                            checkServerSupportForExtensionNegotiation());
+            context.setServerSupportsExtensionNegotiation(
+                    checkServerSupportForExtensionNegotiation());
         } else {
             context.setClientCookie(message.getCookie().getValue());
             context.setClientSupportedKeyExchangeAlgorithms(
@@ -130,9 +129,8 @@ public class KeyExchangeInitMessageHandler extends SshMessageHandler<KeyExchange
 
             context.getExchangeHashInputHolder().setClientKeyExchangeInit(message);
 
-            context.getConfig()
-                    .setClientSupportsExtensionNegotiation(
-                            checkClientSupportForExtensionNegotiation());
+            context.setClientSupportsExtensionNegotiation(
+                    checkClientSupportForExtensionNegotiation());
         }
         pickAlgorithms();
     }

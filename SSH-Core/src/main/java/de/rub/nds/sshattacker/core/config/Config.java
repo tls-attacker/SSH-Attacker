@@ -572,25 +572,71 @@ public class Config implements Serializable {
         // endregion
 
         // region SSH Extension
+        ServerSigAlgsExtension serverSigAlgsExtension = new ServerSigAlgsExtension();
+        serverSigAlgsExtension.setName(Extension.SERVER_SIG_ALGS.getName(), true);
+
+        // value =
+        // "ssh-dss,ssh-rsa,rsa-sha2-256,rsa-sha2-512,ecdsa-sha2-nistp256,ecdsa-sha2-nistp384,ecdsa-sha2-nistp521,ssh-ed25519,ecdsa-sha2-1.3.132.0.10"
+        String defaultPublicKeyAlgorithms =
+                PublicKeyAlgorithm.SSH_DSS.getName()
+                        + CharConstants.ALGORITHM_SEPARATOR
+                        + PublicKeyAlgorithm.SSH_RSA.getName()
+                        + CharConstants.ALGORITHM_SEPARATOR
+                        + PublicKeyAlgorithm.RSA_SHA2_256.getName()
+                        + CharConstants.ALGORITHM_SEPARATOR
+                        + PublicKeyAlgorithm.RSA_SHA2_512.getName()
+                        + CharConstants.ALGORITHM_SEPARATOR
+                        + PublicKeyAlgorithm.ECDSA_SHA2_NISTP256.getName()
+                        + CharConstants.ALGORITHM_SEPARATOR
+                        + PublicKeyAlgorithm.ECDSA_SHA2_NISTP384.getName()
+                        + CharConstants.ALGORITHM_SEPARATOR
+                        + PublicKeyAlgorithm.ECDSA_SHA2_NISTP521.getName()
+                        + CharConstants.ALGORITHM_SEPARATOR
+                        + PublicKeyAlgorithm.SSH_ED25519.getName()
+                        + CharConstants.ALGORITHM_SEPARATOR
+                        + PublicKeyAlgorithm.ECDSA_SHA2_SECP256K1.getName();
+
+        serverSigAlgsExtension.setAcceptedPublicKeyAlgorithms(defaultPublicKeyAlgorithms, true);
+
+        DelayCompressionExtension delayCompressionExtension = new DelayCompressionExtension();
+        delayCompressionExtension.setName(Extension.DELAY_COMPRESSION.getName(), true);
+
+        // value = "none,zlib,zlib@openssh.com"
+        String defaultCompressionMethods =
+                CompressionMethod.NONE.toString()
+                        + CharConstants.ALGORITHM_SEPARATOR
+                        + CompressionMethod.ZLIB.toString()
+                        + CharConstants.ALGORITHM_SEPARATOR
+                        + CompressionMethod.ZLIB_OPENSSH_COM.toString();
+
+        int defaultCompressionMethodsLength = defaultCompressionMethods.length();
+
+        delayCompressionExtension.setCompressionMethodsLength(
+                2 * (DataFormatConstants.STRING_SIZE_LENGTH + defaultCompressionMethodsLength));
+        delayCompressionExtension.setCompressionMethodsClientToServer(
+                defaultCompressionMethods, true);
+        delayCompressionExtension.setCompressionMethodsServerToClient(
+                defaultCompressionMethods, true);
+
         // send delay-compression extension by default when acting as client
-        clientSupportedExtensions = new LinkedList<>();
-        clientSupportedExtensions.add(this.getDefaultDelayCompressionExtension());
+        clientSupportedExtensions = new ArrayList<>();
+        clientSupportedExtensions.add(delayCompressionExtension);
 
         // send server-sig-algs and delay-compression extension by default when acting as server
-        serverSupportedExtensions = new LinkedList<>();
-        serverSupportedExtensions.add(this.getDefaultServerSigAlgsExtension());
-        serverSupportedExtensions.add(this.getDefaultDelayCompressionExtension());
+        serverSupportedExtensions = new ArrayList<>();
+        serverSupportedExtensions.add(serverSigAlgsExtension);
+        serverSupportedExtensions.add(delayCompressionExtension);
 
         // section server-sig-algs extension
         serverSupportedPublicKeyAlgorithmsForAuthentication =
                 Arrays.stream(
                                 new PublicKeyFormat[] {
-                                    PublicKeyFormat.SSH_DSS,
-                                    PublicKeyFormat.SSH_RSA,
-                                    PublicKeyFormat.ECDSA_SHA2_NISTP256,
-                                    PublicKeyFormat.ECDSA_SHA2_NISTP384,
-                                    PublicKeyFormat.ECDSA_SHA2_NISTP521,
-                                    PublicKeyFormat.SSH_ED25519
+                                        PublicKeyFormat.SSH_DSS,
+                                        PublicKeyFormat.SSH_RSA,
+                                        PublicKeyFormat.ECDSA_SHA2_NISTP256,
+                                        PublicKeyFormat.ECDSA_SHA2_NISTP384,
+                                        PublicKeyFormat.ECDSA_SHA2_NISTP521,
+                                        PublicKeyFormat.SSH_ED25519
                                 })
                         .collect(Collectors.toCollection(LinkedList::new));
 
@@ -598,9 +644,9 @@ public class Config implements Serializable {
         clientSupportedDelayCompressionMethods =
                 Arrays.stream(
                                 new CompressionMethod[] {
-                                    CompressionMethod.NONE,
-                                    CompressionMethod.ZLIB_OPENSSH_COM,
-                                    CompressionMethod.ZLIB
+                                        CompressionMethod.NONE,
+                                        CompressionMethod.ZLIB_OPENSSH_COM,
+                                        CompressionMethod.ZLIB
                                 })
                         .collect(Collectors.toCollection(LinkedList::new));
 
@@ -1270,38 +1316,6 @@ public class Config implements Serializable {
         return serverSupportedPublicKeyAlgorithmsForAuthentication;
     }
 
-    private ServerSigAlgsExtension getDefaultServerSigAlgsExtension() {
-        ServerSigAlgsExtension extension = new ServerSigAlgsExtension();
-        extension.setName(Extension.SERVER_SIG_ALGS.getName(), true);
-
-        // value =
-        // "ssh-dss,ssh-rsa,rsa-sha2-256,rsa-sha2-512,ecdsa-sha2-nistp256,ecdsa-sha2-nistp384,ecdsa-sha2-nistp521,ssh-ed25519,ecdsa-sha2-1.3.132.0.10"
-        String value =
-                PublicKeyAlgorithm.SSH_DSS.getName()
-                        + CharConstants.ALGORITHM_SEPARATOR
-                        + PublicKeyAlgorithm.SSH_RSA.getName()
-                        + CharConstants.ALGORITHM_SEPARATOR
-                        + PublicKeyAlgorithm.RSA_SHA2_256.getName()
-                        + CharConstants.ALGORITHM_SEPARATOR
-                        + PublicKeyAlgorithm.RSA_SHA2_512.getName()
-                        + CharConstants.ALGORITHM_SEPARATOR
-                        + PublicKeyAlgorithm.ECDSA_SHA2_NISTP256.getName()
-                        + CharConstants.ALGORITHM_SEPARATOR
-                        + PublicKeyAlgorithm.ECDSA_SHA2_NISTP384.getName()
-                        + CharConstants.ALGORITHM_SEPARATOR
-                        + PublicKeyAlgorithm.ECDSA_SHA2_NISTP521.getName()
-                        + CharConstants.ALGORITHM_SEPARATOR
-                        + PublicKeyAlgorithm.SSH_ED25519.getName()
-                        + CharConstants.ALGORITHM_SEPARATOR
-                        + PublicKeyAlgorithm.ECDSA_SHA2_SECP256K1.getName();
-
-        int valueLength = value.length();
-
-        extension.setAcceptedPublicKeyAlgorithmsLength(valueLength);
-        extension.setAcceptedPublicKeyAlgorithms(value);
-        return extension;
-    }
-
     // section delay-compression extension
     public List<CompressionMethod> getClientSupportedDelayCompressionMethods() {
         return clientSupportedDelayCompressionMethods;
@@ -1309,28 +1323,6 @@ public class Config implements Serializable {
 
     public List<CompressionMethod> getServerSupportedDelayCompressionMethods() {
         return serverSupportedDelayCompressionMethods;
-    }
-
-    private DelayCompressionExtension getDefaultDelayCompressionExtension() {
-        DelayCompressionExtension extension = new DelayCompressionExtension();
-        extension.setName(Extension.DELAY_COMPRESSION.getName(), true);
-
-        // value = "none,zlib,zlib@openssh.com"
-        String value =
-                CompressionMethod.NONE.toString()
-                        + CharConstants.ALGORITHM_SEPARATOR
-                        + CompressionMethod.ZLIB.toString()
-                        + CharConstants.ALGORITHM_SEPARATOR
-                        + CompressionMethod.ZLIB_OPENSSH_COM.toString();
-
-        int valueLength = value.length();
-
-        extension.setCompressionMethodsLength(2 * (valueLength + DataFormatConstants.UINT32_SIZE));
-        extension.setCompressionMethodsClientToServerLength(valueLength);
-        extension.setCompressionMethodsClientToServer(value);
-        extension.setCompressionMethodsServerToClientLength(valueLength);
-        extension.setCompressionMethodsServerToClient(value);
-        return extension;
     }
     // endregion
 
