@@ -260,12 +260,6 @@ public class Config implements Serializable {
     /** List of extensions supported by the server */
     private List<AbstractExtension<?>> serverSupportedExtensions;
 
-    /** Flag whether client supports SSH Extension Negotiation */
-    private boolean clientSupportsExtensionNegotiation = false;
-
-    /** Flag whether server supports SSH Extension Negotiation */
-    private boolean serverSupportsExtensionNegotiation = false;
-
     /** List of public key algorithms for authentication supported by server */
     private List<PublicKeyFormat> serverSupportedPublicKeyAlgorithmsForAuthentication;
 
@@ -631,12 +625,12 @@ public class Config implements Serializable {
         serverSupportedPublicKeyAlgorithmsForAuthentication =
                 Arrays.stream(
                                 new PublicKeyFormat[] {
-                                        PublicKeyFormat.SSH_DSS,
-                                        PublicKeyFormat.SSH_RSA,
-                                        PublicKeyFormat.ECDSA_SHA2_NISTP256,
-                                        PublicKeyFormat.ECDSA_SHA2_NISTP384,
-                                        PublicKeyFormat.ECDSA_SHA2_NISTP521,
-                                        PublicKeyFormat.SSH_ED25519
+                                    PublicKeyFormat.SSH_DSS,
+                                    PublicKeyFormat.SSH_RSA,
+                                    PublicKeyFormat.ECDSA_SHA2_NISTP256,
+                                    PublicKeyFormat.ECDSA_SHA2_NISTP384,
+                                    PublicKeyFormat.ECDSA_SHA2_NISTP521,
+                                    PublicKeyFormat.SSH_ED25519
                                 })
                         .collect(Collectors.toCollection(LinkedList::new));
 
@@ -644,9 +638,9 @@ public class Config implements Serializable {
         clientSupportedDelayCompressionMethods =
                 Arrays.stream(
                                 new CompressionMethod[] {
-                                        CompressionMethod.NONE,
-                                        CompressionMethod.ZLIB_OPENSSH_COM,
-                                        CompressionMethod.ZLIB
+                                    CompressionMethod.NONE,
+                                    CompressionMethod.ZLIB_OPENSSH_COM,
+                                    CompressionMethod.ZLIB
                                 })
                         .collect(Collectors.toCollection(LinkedList::new));
 
@@ -1303,14 +1297,6 @@ public class Config implements Serializable {
         return serverSupportedExtensions;
     }
 
-    public boolean clientSupportsExtensionNegotiation() {
-        return clientSupportsExtensionNegotiation;
-    }
-
-    public boolean serverSupportsExtensionNegotiation() {
-        return serverSupportsExtensionNegotiation;
-    }
-
     // section server-sig-algs extension
     public List<PublicKeyFormat> getServerSupportedPublicKeyAlgorithmsForAuthentication() {
         return serverSupportedPublicKeyAlgorithmsForAuthentication;
@@ -1335,14 +1321,6 @@ public class Config implements Serializable {
 
     public void setServerSupportedExtensions(List<AbstractExtension<?>> extensions) {
         this.serverSupportedExtensions = extensions;
-    }
-
-    public void setClientSupportsExtensionNegotiation(boolean support) {
-        this.clientSupportsExtensionNegotiation = support;
-    }
-
-    public void setServerSupportsExtensionNegotiation(boolean support) {
-        this.serverSupportsExtensionNegotiation = support;
     }
     // endregion
 
