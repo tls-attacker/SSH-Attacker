@@ -229,10 +229,16 @@ public class SshContext {
     /** Flag whether server supports SSH Extension Negotiation */
     private boolean serverSupportsExtensionNegotiation = false;
 
+    /**
+     * List of public key algorithms for authentication supported by the server(server-sig-algs
+     * extension)
+     */
     private List<PublicKeyFormat> serverSupportedPublicKeyAlgorithmsForAuthentication;
 
+    /** List of compression methods supported by the client(delay-compression extension) */
     private List<CompressionMethod> clientSupportedDelayCompressionMethods;
 
+    /** List of compression methods supported by the server(delay-compression extension) */
     private List<CompressionMethod> serverSupportedDelayCompressionMethods;
     // endregion
 
