@@ -10,13 +10,9 @@ package de.rub.nds.sshattacker.core.protocol.transport.preparator.extension;
 import de.rub.nds.sshattacker.core.protocol.common.Preparator;
 import de.rub.nds.sshattacker.core.protocol.transport.message.extension.AbstractExtension;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
-public abstract class AbstractExtensionPreparator<E extends AbstractExtension>
+public abstract class AbstractExtensionPreparator<E extends AbstractExtension<E>>
         extends Preparator<E> {
-
-    private static final Logger LOGGER = LogManager.getLogger();
 
     public AbstractExtensionPreparator(Chooser chooser, E extension) {
         super(chooser, extension);

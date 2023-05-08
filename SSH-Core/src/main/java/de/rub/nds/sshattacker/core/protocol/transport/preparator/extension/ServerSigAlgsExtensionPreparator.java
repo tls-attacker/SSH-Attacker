@@ -26,7 +26,7 @@ public class ServerSigAlgsExtensionPreparator
         // sending server-sig-algs extension is not allowed when acting as client
         if (chooser.getContext().isClient()) {
             LOGGER.warn(
-                    "Client sent ServerSigAlgsExtension which is supposed to be sent by the server only!");
+                    "Client prepared ServerSigAlgsExtension which is supposed to be sent by the server only!");
         } else {
             getObject()
                     .setAcceptedPublicKeyAlgorithms(
