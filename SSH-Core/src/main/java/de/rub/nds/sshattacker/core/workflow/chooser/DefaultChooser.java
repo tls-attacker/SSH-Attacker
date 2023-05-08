@@ -511,7 +511,7 @@ public class DefaultChooser extends Chooser {
      *
      * @return List of server supported public key algorithms for authentication
      */
-    public List<PublicKeyFormat> getServerSupportedPublicKeyAlgorithmsForAuthentication() {
+    public List<PublicKeyAlgorithm> getServerSupportedPublicKeyAlgorithmsForAuthentication() {
         return context.getServerSupportedPublicKeyAlgorithmsForAuthentication()
                 .orElse(config.getServerSupportedPublicKeyAlgorithmsForAuthentication());
     }

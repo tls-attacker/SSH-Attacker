@@ -7,6 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.preparator.extension;
 
+import de.rub.nds.sshattacker.core.constants.Extension;
 import de.rub.nds.sshattacker.core.protocol.transport.message.extension.ServerSigAlgsExtension;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import org.apache.logging.log4j.LogManager;
@@ -28,6 +29,7 @@ public class ServerSigAlgsExtensionPreparator
             LOGGER.warn(
                     "Client prepared ServerSigAlgsExtension which is supposed to be sent by the server only!");
         } else {
+            getObject().setName(Extension.SERVER_SIG_ALGS.getName(), true);
             getObject()
                     .setAcceptedPublicKeyAlgorithms(
                             chooser.getServerSupportedPublicKeyAlgorithmsForAuthentication(), true);

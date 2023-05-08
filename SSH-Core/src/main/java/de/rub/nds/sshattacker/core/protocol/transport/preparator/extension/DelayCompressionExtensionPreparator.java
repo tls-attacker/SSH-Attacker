@@ -7,6 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.preparator.extension;
 
+import de.rub.nds.sshattacker.core.constants.Extension;
 import de.rub.nds.sshattacker.core.protocol.transport.message.extension.DelayCompressionExtension;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
@@ -21,6 +22,7 @@ public class DelayCompressionExtensionPreparator
     @Override
     protected void prepareExtensionSpecificContents() {
         if (chooser.getContext().isClient()) {
+            getObject().setName(Extension.DELAY_COMPRESSION.getName(), true);
             getObject()
                     .setCompressionMethodsClientToServer(
                             chooser.getClientSupportedDelayCompressionMethods(), true);
@@ -28,6 +30,7 @@ public class DelayCompressionExtensionPreparator
                     .setCompressionMethodsServerToClient(
                             chooser.getClientSupportedDelayCompressionMethods(), true);
         } else {
+            getObject().setName(Extension.DELAY_COMPRESSION.getName(), true);
             getObject()
                     .setCompressionMethodsClientToServer(
                             chooser.getServerSupportedDelayCompressionMethods(), true);

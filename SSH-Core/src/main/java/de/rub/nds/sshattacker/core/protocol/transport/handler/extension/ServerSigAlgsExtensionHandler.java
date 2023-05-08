@@ -7,7 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.handler.extension;
 
-import de.rub.nds.sshattacker.core.constants.PublicKeyFormat;
+import de.rub.nds.sshattacker.core.constants.PublicKeyAlgorithm;
 import de.rub.nds.sshattacker.core.protocol.transport.message.extension.ServerSigAlgsExtension;
 import de.rub.nds.sshattacker.core.protocol.transport.parser.extension.ServerSigAlgsExtensionParser;
 import de.rub.nds.sshattacker.core.protocol.transport.preparator.extension.ServerSigAlgsExtensionPreparator;
@@ -57,7 +57,7 @@ public class ServerSigAlgsExtensionHandler
             context.setServerSupportedPublicKeyAlgorithmsForAuthentication(
                     Converter.nameListToEnumValues(
                             extension.getAcceptedPublicKeyAlgorithms().getValue(),
-                            PublicKeyFormat.class));
+                            PublicKeyAlgorithm.class));
         }
         // receiving "server-sig-algs" extension as a server -> ignore "server-sig-algs"
         else {

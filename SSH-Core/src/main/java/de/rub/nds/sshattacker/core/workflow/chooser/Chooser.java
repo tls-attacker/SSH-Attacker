@@ -117,7 +117,8 @@ public abstract class Chooser {
 
     public abstract List<AbstractExtension<?>> getServerSupportedExtensions();
 
-    public abstract List<PublicKeyFormat> getServerSupportedPublicKeyAlgorithmsForAuthentication();
+    public abstract List<PublicKeyAlgorithm>
+            getServerSupportedPublicKeyAlgorithmsForAuthentication();
 
     public abstract List<CompressionMethod> getClientSupportedDelayCompressionMethods();
 
