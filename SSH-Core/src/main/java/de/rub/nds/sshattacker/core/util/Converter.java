@@ -139,7 +139,7 @@ public class Converter {
     }
 
     /**
-     * Convert a single name into a enum values of type {@code enumClass}.
+     * Convert a single name into an enum values of type {@code enumClass}.
      *
      * @param name name that matches an enum value's {@code toString()} return value
      * @param enumClass the enum class that the name will be converted to

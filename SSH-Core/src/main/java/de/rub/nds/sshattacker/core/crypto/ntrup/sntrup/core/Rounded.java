@@ -7,7 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.crypto.ntrup.sntrup.core;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 import cc.redberry.rings.poly.univar.UnivariateDivision;
 import cc.redberry.rings.poly.univar.UnivariatePolynomialZ64;
@@ -22,9 +22,9 @@ import java.util.stream.IntStream;
 import java.util.stream.LongStream;
 
 public class Rounded {
-    private SntrupParameterSet set;
-    private UnivariatePolynomialZ64 rounded;
-    private UnivariatePolynomialZ64 mod;
+    private final SntrupParameterSet set;
+    private final UnivariatePolynomialZ64 rounded;
+    private final UnivariatePolynomialZ64 mod;
 
     private Rounded(SntrupParameterSet set, UnivariatePolynomialZ64 rounded) {
         this.set = set;
@@ -33,7 +33,7 @@ public class Rounded {
     }
 
     public Rounded(SntrupParameterSet set, long[] coefficients) {
-        assertEquals(true, is_rounded(set, coefficients));
+        assertTrue(is_rounded(set, coefficients));
         this.set = set;
         this.mod = generateMod(set);
         this.rounded =
@@ -51,28 +51,27 @@ public class Rounded {
 
     public static Rounded round(RQ rq) {
         long[] rounded = round(rq.stream());
-        assertEquals(
-                false,
+        assertFalse(
                 Arrays.stream(rounded)
                         .filter(
                                 c ->
                                         c > (rq.getSet().getQ() + 1) / 2
                                                 || c < -(rq.getSet().getQ() + 1) / 2)
-                        .peek(c -> System.out.println(c))
+                        .peek(System.out::println)
                         .findFirst()
                         .isPresent());
         return new Rounded(rq.getSet(), UnivariatePolynomialZ64.create(rounded));
     }
 
     public static boolean is_rounded(SntrupParameterSet set, long[] coefficients) {
-        return !Arrays.stream(coefficients)
+        return Arrays.stream(coefficients)
                 .filter(c -> c % 3 != 0 || c < -((set.getQ() + 1) / 2) || c > (set.getQ() + 1) / 2)
                 .findFirst()
-                .isPresent();
+                .isEmpty();
     }
 
     private static long[] round(LongStream coefficients) {
-        return coefficients.map(l -> 3 * (Math.round(l / 3.0f))).toArray();
+        return coefficients.map(l -> 3L * (Math.round(l / 3.0f))).toArray();
     }
 
     public LongStream stream() {
@@ -92,9 +91,8 @@ public class Rounded {
                         .boxed()
                         .collect(Collectors.toCollection(ArrayList::new));
 
-        assertEquals(true, r.stream().filter(i -> i < 0).findFirst().isEmpty());
-        assertEquals(
-                false,
+        assertTrue(r.stream().filter(i -> i < 0).findFirst().isEmpty());
+        assertFalse(
                 IntStream.range(0, set.getP())
                         .filter(i -> r.get(i) > m.get(i))
                         .findFirst()
@@ -124,8 +122,8 @@ public class Rounded {
 
     public static Rounded decode(SntrupParameterSet set, byte[] encodedRounded) {
         ArrayList<Integer> r = new ArrayList<>();
-        for (int i = 0; i < encodedRounded.length; i++) {
-            r.add((int) encodedRounded[i] & 0xff);
+        for (byte b : encodedRounded) {
+            r.add((int) b & 0xff);
         }
 
         ArrayList<Integer> m =
@@ -134,9 +132,8 @@ public class Rounded {
                         .boxed()
                         .collect(Collectors.toCollection(ArrayList::new));
 
-        assertEquals(true, r.stream().filter(i -> i < 0).findFirst().isEmpty());
-        assertEquals(
-                false,
+        assertTrue(r.stream().filter(i -> i < 0).findFirst().isEmpty());
+        assertFalse(
                 IntStream.range(0, set.getP())
                         .filter(i -> r.get(i) > m.get(i))
                         .findFirst()
@@ -144,7 +141,7 @@ public class Rounded {
 
         ArrayList<Integer> coef = Encoding.decode(r, m);
         return new Rounded(
-                set, coef.stream().mapToLong(l -> 3 * l - (set.getQ() - 1) / 2).toArray());
+                set, coef.stream().mapToLong(l -> 3L * l - (set.getQ() - 1) / 2).toArray());
     }
 
     public static Rounded decode_old(SntrupParameterSet set, byte[] encodedRounded) {
@@ -181,7 +178,6 @@ public class Rounded {
         if (rounded == null) {
             if (other.rounded != null) return false;
         } else if (!rounded.equals(other.rounded)) return false;
-        if (set != other.set) return false;
-        return true;
+        return set == other.set;
     }
 }

@@ -11,12 +11,7 @@ import de.rub.nds.sshattacker.core.constants.CharConstants;
 import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessageParser;
 import de.rub.nds.sshattacker.core.protocol.transport.message.AsciiMessage;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 public class AsciiMessageParser extends ProtocolMessageParser<AsciiMessage> {
-
-    private static final Logger LOGGER = LogManager.getLogger();
 
     public AsciiMessageParser(final byte[] array) {
         super(array);

@@ -7,9 +7,6 @@
  */
 package de.rub.nds.sshattacker.core.crypto.ec;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import java.io.Serializable;
 import java.math.BigInteger;
 
@@ -22,8 +19,6 @@ import java.math.BigInteger;
  */
 public class FieldElementF2m extends FieldElement implements Serializable {
 
-    private static final Logger LOGGER = LogManager.getLogger();
-
     /**
      * Instantiates an element of a galois field F{2^m}.
      *
@@ -33,10 +28,6 @@ public class FieldElementF2m extends FieldElement implements Serializable {
      */
     public FieldElementF2m(BigInteger data, BigInteger modulus) {
         super(data, modulus);
-    }
-
-    private FieldElementF2m() {
-        super(null, null);
     }
 
     @Override
@@ -67,7 +58,7 @@ public class FieldElementF2m extends FieldElement implements Serializable {
     @Override
     public FieldElement addInv() {
         /*
-         * The characteristic of F_{2^m} is 2. Therefore every element is it's
+         * The characteristic of F_{2^m} is 2. Therefore, every element is its
          * own additive inverse. Like this.subtract(), this method is probably
          * never needed.
          */

@@ -9,16 +9,11 @@ package de.rub.nds.sshattacker.attacks.pkcs1.oracles;
 
 import de.rub.nds.sshattacker.attacks.pkcs1.OracleException;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import java.security.PublicKey;
 import java.security.interfaces.RSAPublicKey;
 
 /** Oracle template for Bleichenbacher/Manger like attacks. */
 public abstract class Pkcs1Oracle {
-
-    private static final Logger LOGGER = LogManager.getLogger();
 
     protected long numberOfQueries;
 
@@ -27,7 +22,7 @@ public abstract class Pkcs1Oracle {
     protected RSAPublicKey publicKey;
 
     /** Indicates if the oracle accepts plaintext (for testing) or if it is a real oracle */
-    protected boolean isPlaintextOracle = false;
+    protected final boolean isPlaintextOracle = false;
 
     /**
      * Gets the blocksize of the encryption algorithm.

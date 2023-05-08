@@ -14,12 +14,8 @@ import de.rub.nds.sshattacker.core.config.SshDelegateConfig;
 import de.rub.nds.sshattacker.core.config.delegate.*;
 import de.rub.nds.sshattacker.core.workflow.factory.WorkflowTraceType;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 public class MitmCommandConfig extends SshDelegateConfig {
 
-    private static final Logger LOGGER = LogManager.getLogger();
     @ParametersDelegate private final ConfigOutputDelegate configOutputDelegate;
     @ParametersDelegate private final TimeoutDelegate timeoutDelegate;
     @ParametersDelegate private final WorkflowInputDelegate workflowInputDelegate;

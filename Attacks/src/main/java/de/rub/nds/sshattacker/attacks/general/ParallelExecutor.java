@@ -131,6 +131,7 @@ public class ParallelExecutor {
         return resultList;
     }
 
+    @SuppressWarnings("UnusedReturnValue")
     public List<Task> bulkExecuteTasks(SshTask... tasks) {
         return this.bulkExecuteTasks(new ArrayList<>(Arrays.asList(tasks)));
     }

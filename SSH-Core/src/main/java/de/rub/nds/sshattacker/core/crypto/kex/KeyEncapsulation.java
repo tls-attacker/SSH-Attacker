@@ -41,6 +41,7 @@ public abstract class KeyEncapsulation extends KeyExchange {
 
     public abstract byte[] encryptSharedSecret();
 
+    @SuppressWarnings("RedundantThrows")
     public abstract void decryptSharedSecret() throws CryptoException;
 
     public abstract void decryptSharedSecret(byte[] encryptedSharedSecret) throws CryptoException;

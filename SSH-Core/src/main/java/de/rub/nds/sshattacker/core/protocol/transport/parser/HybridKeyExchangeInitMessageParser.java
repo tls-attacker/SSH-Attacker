@@ -20,9 +20,9 @@ public class HybridKeyExchangeInitMessageParser
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private HybridKeyExchangeCombiner combiner;
-    private int encapsulationSize;
-    private int agreementSize;
+    private final HybridKeyExchangeCombiner combiner;
+    private final int encapsulationSize;
+    private final int agreementSize;
 
     public HybridKeyExchangeInitMessageParser(
             byte[] array,

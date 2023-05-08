@@ -57,8 +57,7 @@ public abstract class ChannelMessagePreparator<T extends ChannelMessage<T>>
                                 () -> {
                                     LOGGER.warn(
                                             "About to prepare channel message, but no corresponding was channel found or guessed. Creating a new one from defaults.");
-                                    final Integer remoteChannelId =
-                                            configSenderChannelId.orElse(Integer.valueOf(0));
+                                    final Integer remoteChannelId = configSenderChannelId.orElse(0);
                                     return this.chooser
                                             .getContext()
                                             .getChannelManager()

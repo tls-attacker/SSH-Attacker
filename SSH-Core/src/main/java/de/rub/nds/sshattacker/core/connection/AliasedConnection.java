@@ -129,10 +129,6 @@ public abstract class AliasedConnection extends Connection implements Aliasable 
         return false;
     }
 
-    public String getDefaultConnectionAlias() {
-        return DEFAULT_CONNECTION_ALIAS;
-    }
-
     @Override
     public abstract ConnectionEndType getLocalConnectionEndType();
 
@@ -156,7 +152,7 @@ public abstract class AliasedConnection extends Connection implements Aliasable 
         if ((alias == null) || alias.isEmpty()) {
             alias = defaultCon.getAlias();
             if (alias == null || alias.isEmpty()) {
-                alias = getDefaultConnectionAlias();
+                alias = AliasedConnection.DEFAULT_CONNECTION_ALIAS;
             }
         }
 
@@ -212,7 +208,8 @@ public abstract class AliasedConnection extends Connection implements Aliasable 
     }
 
     public void filter(AliasedConnection defaultCon) {
-        if (alias.equals(defaultCon.getAlias()) || alias.equals(getDefaultConnectionAlias())) {
+        if (alias.equals(defaultCon.getAlias())
+                || alias.equals(AliasedConnection.DEFAULT_CONNECTION_ALIAS)) {
             alias = null;
         }
         if (transportHandlerType == defaultCon.getTransportHandlerType()

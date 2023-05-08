@@ -33,7 +33,6 @@ import org.reflections.Reflections;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
-import java.lang.reflect.Parameter;
 import java.security.Security;
 import java.util.HashSet;
 import java.util.Set;
@@ -201,21 +200,6 @@ public class CyclicParserSerializerTest {
             }
             LOGGER.warn(
                     "Unable to find default constructor for class: " + someClass.getSimpleName());
-            return null;
-        }
-
-        private static Constructor<?> getChannelMessageConstructor(Class<?> someClass) {
-            for (Constructor<?> c : someClass.getDeclaredConstructors()) {
-                if (c.getParameterCount() == 1) {
-                    for (Parameter p : c.getParameters()) {
-                        if (p.getType() == Integer.class) {
-                            return c;
-                        }
-                    }
-                }
-            }
-            LOGGER.warn(
-                    "Unable to find channel constructor for class: " + someClass.getSimpleName());
             return null;
         }
     }

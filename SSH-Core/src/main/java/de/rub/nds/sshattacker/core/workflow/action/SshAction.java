@@ -16,9 +16,6 @@ import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlTransient;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.LinkedHashSet;
@@ -26,8 +23,6 @@ import java.util.Set;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 public abstract class SshAction implements Serializable, Aliasable {
-
-    private static final Logger LOGGER = LogManager.getLogger();
 
     private static final boolean EXECUTED_DEFAULT = false;
 

@@ -20,10 +20,7 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Stream;
 
 /**
@@ -912,7 +909,7 @@ public class DefaultChooser extends Chooser {
                 .flatMap(
                         key ->
                                 config.getUserKeyAlgorithms()
-                                        .map(algorithms -> algorithms.stream())
+                                        .map(Collection::stream)
                                         .orElseGet(() -> Arrays.stream(PublicKeyAlgorithm.values()))
                                         .filter(
                                                 algorithm ->

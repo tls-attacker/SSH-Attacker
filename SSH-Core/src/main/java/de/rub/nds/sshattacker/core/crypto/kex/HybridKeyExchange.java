@@ -23,14 +23,15 @@ import java.security.NoSuchAlgorithmException;
 public abstract class HybridKeyExchange extends KeyExchange {
     private static final Logger LOGGER = LogManager.getLogger();
 
-    protected KeyExchangeAlgorithm algorithm;
-    protected KeyAgreement agreement;
-    protected KeyEncapsulation encapsulation;
-    private int pkAgreementLength;
-    private int pkEncapsulationLength;
-    private int ciphertextLength;
-    private HybridKeyExchangeCombiner combiner;
+    protected final KeyExchangeAlgorithm algorithm;
+    protected final KeyAgreement agreement;
+    protected final KeyEncapsulation encapsulation;
+    private final int pkAgreementLength;
+    private final int pkEncapsulationLength;
+    private final int ciphertextLength;
+    private final HybridKeyExchangeCombiner combiner;
 
+    @SuppressWarnings("SameParameterValue")
     protected HybridKeyExchange(
             KeyExchangeAlgorithm algorithm,
             KeyAgreement agreement,

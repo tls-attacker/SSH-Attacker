@@ -16,8 +16,6 @@ import de.rub.nds.sshattacker.core.workflow.factory.WorkflowTraceType;
 
 public class ClientCommandConfig extends SshDelegateConfig {
 
-    public static final String COMMAND = "client";
-
     @ParametersDelegate private final ClientDelegate clientDelegate;
     @ParametersDelegate private final ConfigOutputDelegate configOutputDelegate;
     @ParametersDelegate private final TimeoutDelegate timeoutDelegate;

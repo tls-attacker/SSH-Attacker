@@ -11,8 +11,6 @@ import com.beust.jcommander.Parameter;
 
 import de.rub.nds.sshattacker.core.config.Config;
 
-import java.io.FileInputStream;
-
 public class WorkflowInputDelegate extends Delegate {
 
     @Parameter(
@@ -33,7 +31,6 @@ public class WorkflowInputDelegate extends Delegate {
 
     @Override
     public void applyDelegate(Config config) {
-        FileInputStream fis = null;
         if (workflowInput != null) {
             config.setWorkflowInput(workflowInput);
         }

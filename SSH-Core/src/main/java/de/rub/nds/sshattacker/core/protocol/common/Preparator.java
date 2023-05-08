@@ -10,15 +10,10 @@ package de.rub.nds.sshattacker.core.protocol.common;
 import de.rub.nds.sshattacker.core.exceptions.PreparationException;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 public abstract class Preparator<T> {
 
     private final T object;
     protected final Chooser chooser;
-
-    private static final Logger LOGGER = LogManager.getLogger();
 
     public Preparator(Chooser chooser, T message) {
         this.object = message;

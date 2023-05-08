@@ -352,7 +352,7 @@ public class Config implements Serializable {
     // endregion
 
     // region Workflow settings
-    /** The path to load workflow trace from. The workflow trace must be stored in a XML-File. */
+    /** The path to load workflow trace from. The workflow trace must be stored in an XML-File. */
     private String workflowInput = null;
     /**
      * The type of workflow trace, that should be executed by the Ssh client or server. The workflow
@@ -1367,8 +1367,8 @@ public class Config implements Serializable {
      * @param userKeyAlgorithms list of public key algorithms, or no value
      * @see #getUserKeyAlgorithms
      */
-    public void setUserKeyAlgorithms(final Optional<List<PublicKeyAlgorithm>> userKeyAlgorithms) {
-        this.userKeyAlgorithms = userKeyAlgorithms.orElse(null);
+    public void setUserKeyAlgorithms(List<PublicKeyAlgorithm> userKeyAlgorithms) {
+        this.userKeyAlgorithms = userKeyAlgorithms;
     }
 
     // endregion

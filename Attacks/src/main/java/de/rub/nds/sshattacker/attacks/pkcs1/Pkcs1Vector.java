@@ -26,8 +26,6 @@ public class Pkcs1Vector implements Vector {
 
     private byte[] encryptedValue;
 
-    private Pkcs1Vector() {}
-
     /**
      * @param name A String that describes the content of this vector
      * @param shortName Short name of the vector
@@ -101,8 +99,7 @@ public class Pkcs1Vector implements Vector {
 
     @Override
     public String toString() {
-        return ""
-                + name
+        return name
                 + "{"
                 + "plainValue="
                 + ArrayConverter.bytesToHexString(plainValue)

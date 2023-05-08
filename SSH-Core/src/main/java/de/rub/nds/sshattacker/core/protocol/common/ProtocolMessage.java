@@ -17,10 +17,6 @@ import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlTransient;
 
-import java.lang.reflect.Field;
-import java.util.List;
-import java.util.Random;
-
 @XmlAccessorType(XmlAccessType.FIELD)
 public abstract class ProtocolMessage<T extends ProtocolMessage<T>>
         extends ModifiableVariableHolder {
@@ -77,13 +73,6 @@ public abstract class ProtocolMessage<T extends ProtocolMessage<T>>
 
     public void setGoingToBeSent(ModifiableBoolean goingToBeSent) {
         this.goingToBeSent = goingToBeSent;
-    }
-
-    @Override
-    public Field getRandomModifiableVariableField(Random random) {
-        List<Field> fields = getAllModifiableVariableFields();
-        int randomField = random.nextInt(fields.size());
-        return fields.get(randomField);
     }
 
     public ModifiableByteArray getCompleteResultingMessage() {

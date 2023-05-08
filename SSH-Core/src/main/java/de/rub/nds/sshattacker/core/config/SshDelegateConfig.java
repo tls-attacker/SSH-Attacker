@@ -14,9 +14,6 @@ import com.beust.jcommander.ParametersDelegate;
 import de.rub.nds.sshattacker.core.config.delegate.Delegate;
 import de.rub.nds.sshattacker.core.config.delegate.GeneralDelegate;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import java.io.File;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -24,13 +21,11 @@ import java.util.List;
 
 public class SshDelegateConfig {
 
-    private static final Logger LOGGER = LogManager.getLogger();
-
     private final List<Delegate> delegateList;
 
     @ParametersDelegate private final GeneralDelegate generalDelegate;
 
-    @SuppressWarnings("FieldMayBeFinal")
+    @SuppressWarnings({"CanBeFinal", "FieldMayBeFinal"})
     @Parameter(
             names = "-config",
             description = "This parameter allows you to specify a default SshConfig")

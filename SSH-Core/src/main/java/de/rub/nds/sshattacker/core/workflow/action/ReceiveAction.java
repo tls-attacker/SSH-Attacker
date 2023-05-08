@@ -367,7 +367,9 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
                                         ReceiveOption
                                                 .IGNORE_UNEXPECTED_GLOBAL_REQUESTS_WITHOUT_WANTREPLY)
                                 && (actualMessage instanceof GlobalRequestMessage)
-                                && ((GlobalRequestMessage) actualMessage).getWantReply().getValue()
+                                && ((GlobalRequestMessage<?>) actualMessage)
+                                                .getWantReply()
+                                                .getValue()
                                         == 0)
                         || (!this.hasReceiveOption(ReceiveOption.FAIL_ON_UNEXPECTED_IGNORE_MESSAGES)
                                 && (actualMessage instanceof IgnoreMessage))
@@ -391,7 +393,7 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
         // method should stop receiving after the last expected message).
         //
         // If this assumption is violated and the iterator still contains
-        // messages, than that is a bug and this method may not work correctly.
+        // messages, then that is a bug and this method may not work correctly.
         assert !actualMessages.hasNext()
                 : "MessageHelper::receiveMessages did not stop receiving after the last expected message";
 
@@ -423,10 +425,10 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
     }
 
     /**
-     * Check if the receive option is set.
+     * Check if the reception option is set.
      *
      * @param option a receive option
-     * @return {@code true} if the receive option is set, else {@code false}
+     * @return {@code true} if the reception option is set, else {@code false}
      */
     protected boolean hasReceiveOption(final ReceiveOption option) {
         Boolean value = null;
@@ -448,11 +450,11 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
                 break;
         }
 
-        return value != null && value.booleanValue();
+        return value != null && value;
     }
 
     /**
-     * Get the receive options for this action.
+     * Get the reception options for this action.
      *
      * @return set of receive options
      */
@@ -463,7 +465,7 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
     }
 
     /**
-     * Set the receive options for this action.
+     * Set the reception options for this action.
      *
      * @param receiveOptions set of receive options
      */
@@ -550,7 +552,7 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
     public enum ReceiveOption {
         EARLY_CLEAN_SHUTDOWN,
         /**
-         * Ignore additional messages of any type when checking if the receive action was executed
+         * Ignore additional messages of any type when checking if the reception action was executed
          * as planned.
          *
          * <p>If both this option and {@link ReceiveOption#FAIL_ON_UNEXPECTED_IGNORE_MESSAGES} have
@@ -559,14 +561,14 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
         CHECK_ONLY_EXPECTED,
         /**
          * Ignore unexpected {@code SSH_MSG_GLOBAL_REQUEST} messages where {@code want_reply} is set
-         * to {@code 0} when checking if the receive action was executed as planned.
+         * to {@code 0} when checking if the reception action was executed as planned.
          *
          * @see <a href="https://datatracker.ietf.org/doc/html/rfc4254#section-4">RFC 4254, section
          *     4 "Global Requests"</a>
          */
         IGNORE_UNEXPECTED_GLOBAL_REQUESTS_WITHOUT_WANTREPLY,
         /**
-         * Do not ignore unexpected {@code SSH_MSG_IGNORE} messages when checking if the receive
+         * Do not ignore unexpected {@code SSH_MSG_IGNORE} messages when checking if the reception
          * action was executed as planned. Instead, such messages will cause {@link
          * #executedAsPlanned} to return {@code false}.
          *
@@ -578,7 +580,7 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
          */
         FAIL_ON_UNEXPECTED_IGNORE_MESSAGES,
         /**
-         * Do not ignore unexpected {@code SSH_MSG_DEBUG} messages when checking if the receive
+         * Do not ignore unexpected {@code SSH_MSG_DEBUG} messages when checking if the reception
          * action was executed as planned. Instead, such messages will cause {@link
          * #executedAsPlanned} to return {@code false}.
          *

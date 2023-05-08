@@ -357,6 +357,7 @@ public abstract class ProtocolMessageParser<T extends ProtocolMessage<T>> extend
         ChannelOpenUnknownMessage message = new ChannelOpenUnknownMessageParser(raw).parse();
         String channelTypeString = message.getChannelType().getValue();
         ChannelType channelType = ChannelType.fromName(channelTypeString);
+        //noinspection SwitchStatementWithTooFewBranches
         switch (channelType) {
             case SESSION:
                 return new ChannelOpenSessionMessageParser(raw).parse();

@@ -8,20 +8,18 @@
 package de.rub.nds.sshattacker.core.crypto.ntrup.sntrup.core;
 
 import static org.junit.Assert.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.Test;
 
 public class ShortTest {
-    public SntrupParameterSet set = SntrupParameterSet.KEM_SNTRUP_761;
+    public final SntrupParameterSet set = SntrupParameterSet.KEM_SNTRUP_761;
 
     @Test
     public void testCreateRandomShort() {
         Short r = Short.createRandomShort(set);
         assertEquals(set, r.getSet());
-        assertEquals(
-                false, r.getShrt().stream().filter(c -> (Math.abs(c) > 1)).findFirst().isPresent());
+        assertFalse(r.getShrt().stream().filter(c -> (Math.abs(c) > 1)).findFirst().isPresent());
         assertEquals(
                 r.getSet().getW(), r.getShrt().stream().filter(c -> (1 == Math.abs(c))).count());
     }
@@ -122,8 +120,7 @@ public class ShortTest {
         Short isShort = Short.createShort(set, shortArray);
 
         assertEquals(set, isShort.getSet());
-        assertEquals(
-                false,
+        assertFalse(
                 isShort.getShrt().stream().filter(c -> (Math.abs(c) > 1)).findFirst().isPresent());
         assertEquals(
                 isShort.getSet().getW(),

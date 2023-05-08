@@ -10,7 +10,6 @@ package de.rub.nds.sshattacker.core.workflow.action;
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.sshattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.sshattacker.core.packet.AbstractPacket;
-import de.rub.nds.sshattacker.core.packet.layer.AbstractPacketLayer;
 import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessage;
 import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.transport.message.VersionExchangeMessage;
@@ -152,7 +151,6 @@ public class ForwardMessagesAction extends SshAction implements ReceivingAction,
                         + "): "
                         + getReadableString(receivedMessages));
         try {
-            AbstractPacketLayer packetLayer = forwardToCtx.getPacketLayer();
             TransportHandler transportHandler = forwardToCtx.getTransportHandler();
             transportHandler.sendData(receivedBytes);
             if (messages.get(0).getClass() != VersionExchangeMessage.class) {
@@ -178,10 +176,11 @@ public class ForwardMessagesAction extends SshAction implements ReceivingAction,
 
         executedAsPlanned = checkMessageListsEquals(messages, receivedMessages);
     }
+
     /**
      * Apply the contents of the messages to the given TLS context.
      *
-     * @param ctx
+     * @param ctx SSH context
      */
     protected void applyMessages(SshContext ctx) {
         changeSshContextHandling(ctx);
@@ -217,7 +216,7 @@ public class ForwardMessagesAction extends SshAction implements ReceivingAction,
         if (expectedMessages != null && !expectedMessages.isEmpty()) {
             expectedEmpty = false;
         }
-        if (actualEmpty == expectedEmpty) {
+        if (actualEmpty && expectedEmpty) {
             return true;
         }
         if (actualEmpty != expectedEmpty) {
@@ -271,7 +270,7 @@ public class ForwardMessagesAction extends SshAction implements ReceivingAction,
     }
 
     public void setMessages(ProtocolMessage<?>... messages) {
-        this.messages = new ArrayList(Arrays.asList(messages));
+        this.messages = new ArrayList<>(Arrays.asList(messages));
     }
 
     @Override

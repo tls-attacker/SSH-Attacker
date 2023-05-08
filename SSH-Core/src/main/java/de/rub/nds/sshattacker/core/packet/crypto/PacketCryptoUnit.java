@@ -18,7 +18,7 @@ public abstract class PacketCryptoUnit {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    protected ArrayList<PacketCipher> packetCipherList;
+    protected final ArrayList<PacketCipher> packetCipherList;
 
     public PacketCryptoUnit(PacketCipher packetCipher) {
         packetCipherList = new ArrayList<>();

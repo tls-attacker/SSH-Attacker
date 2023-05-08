@@ -15,12 +15,7 @@ import de.rub.nds.sshattacker.core.protocol.transport.preparator.DhKeyExchangeIn
 import de.rub.nds.sshattacker.core.protocol.transport.serializer.DhKeyExchangeInitMessageSerializer;
 import de.rub.nds.sshattacker.core.state.SshContext;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 public class DhKeyExchangeInitMessageHandler extends SshMessageHandler<DhKeyExchangeInitMessage> {
-
-    private static final Logger LOGGER = LogManager.getLogger();
 
     public DhKeyExchangeInitMessageHandler(SshContext context) {
         super(context);

@@ -38,7 +38,7 @@ public class UserAuthPubkeyMessagePreparator
 
     string    session identifier
     byte      SSH_MSG_USERAUTH_REQUEST
-    string    user name
+    string    username
     string    service name
     string    "publickey"
     boolean   TRUE

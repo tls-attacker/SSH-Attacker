@@ -64,6 +64,7 @@ public class Main {
         Attacker<? extends SshDelegateConfig> attacker = null;
 
         // Insert new attack commands here
+        //noinspection SwitchStatementWithTooFewBranches
         switch (jc.getParsedCommand()) {
             case MangerCommandConfig.ATTACK_COMMAND:
                 attacker = new MangerAttacker(mangerTest, mangerTest.createConfig());

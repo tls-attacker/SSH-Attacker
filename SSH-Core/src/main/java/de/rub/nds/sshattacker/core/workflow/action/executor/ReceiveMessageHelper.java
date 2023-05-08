@@ -9,7 +9,6 @@ package de.rub.nds.sshattacker.core.workflow.action.executor;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.CharConstants;
-import de.rub.nds.sshattacker.core.exceptions.CryptoException;
 import de.rub.nds.sshattacker.core.exceptions.ParserException;
 import de.rub.nds.sshattacker.core.packet.AbstractPacket;
 import de.rub.nds.sshattacker.core.packet.layer.PacketLayerParseResult;
@@ -37,6 +36,7 @@ public class ReceiveMessageHelper {
      * @param context The SSH context
      * @return A message action result containing the received packets and messages
      */
+    @SuppressWarnings("UnusedReturnValue")
     public MessageActionResult receiveMessages(SshContext context) {
         return receiveMessages(context, new LinkedList<>());
     }
@@ -176,11 +176,6 @@ public class ReceiveMessageHelper {
                 }
             }
             LOGGER.debug("Did not receive more bytes. Parsing records softly");
-            return context.getPacketLayer().parsePacketSoftly(packetBytes, startPosition);
-        } catch (CryptoException e) {
-            LOGGER.debug(
-                    "Could not parse the provided bytes into packets due to a cryptographic error. Parsing records softly");
-            LOGGER.debug(e);
             return context.getPacketLayer().parsePacketSoftly(packetBytes, startPosition);
         }
     }

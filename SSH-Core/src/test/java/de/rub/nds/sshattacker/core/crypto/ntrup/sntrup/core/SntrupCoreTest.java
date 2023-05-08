@@ -7,7 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.crypto.ntrup.sntrup.core;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
@@ -21,6 +21,6 @@ public class SntrupCoreTest {
         Short r = Short.createRandomShort(set);
         Rounded c = core.encrypt(r, values.getH());
         Short rNew = core.decrypt(c, values.getF(), values.getgInv());
-        assertTrue("r != r'", r.equals(rNew));
+        assertEquals("r != r'", r, rNew);
     }
 }

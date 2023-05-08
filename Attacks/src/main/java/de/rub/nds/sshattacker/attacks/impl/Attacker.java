@@ -25,7 +25,7 @@ public abstract class Attacker<AttConfigT extends AttackConfig> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    protected AttConfigT config;
+    protected final AttConfigT config;
 
     private final Config baseConfig;
 

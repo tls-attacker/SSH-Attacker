@@ -52,6 +52,7 @@ public enum MacAlgorithm {
         this(name, keySize, outputSize, false, null);
     }
 
+    @SuppressWarnings("SameParameterValue")
     MacAlgorithm(String name, int keySize, int outputSize, boolean isETM) {
         this(name, keySize, outputSize, isETM, null);
     }

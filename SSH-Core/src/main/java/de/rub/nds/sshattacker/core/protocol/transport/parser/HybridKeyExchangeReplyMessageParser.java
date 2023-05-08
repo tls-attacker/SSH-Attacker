@@ -19,9 +19,9 @@ import org.apache.logging.log4j.Logger;
 public class HybridKeyExchangeReplyMessageParser
         extends SshMessageParser<HybridKeyExchangeReplyMessage> {
     private static final Logger LOGGER = LogManager.getLogger();
-    private HybridKeyExchangeCombiner combiner;
-    private int agreementSize;
-    private int encapsulationSize;
+    private final HybridKeyExchangeCombiner combiner;
+    private final int agreementSize;
+    private final int encapsulationSize;
 
     public HybridKeyExchangeReplyMessageParser(
             byte[] array,

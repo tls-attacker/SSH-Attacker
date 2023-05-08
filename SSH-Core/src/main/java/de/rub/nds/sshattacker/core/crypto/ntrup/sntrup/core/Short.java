@@ -18,9 +18,9 @@ import java.util.stream.IntStream;
 import java.util.stream.LongStream;
 
 public class Short {
-    private SntrupParameterSet set;
-    private UnivariatePolynomialZ64 shrt;
-    private UnivariatePolynomialZ64 mod;
+    private final SntrupParameterSet set;
+    private final UnivariatePolynomialZ64 shrt;
+    private final UnivariatePolynomialZ64 mod;
 
     private Short(SntrupParameterSet set) {
         this.set = set;
@@ -74,15 +74,12 @@ public class Short {
     }
 
     private static boolean isSmall(long[] coefficients) {
-        return !Arrays.stream(coefficients)
-                .filter(coef -> Math.abs(coef) > 1)
-                .findFirst()
-                .isPresent();
+        return Arrays.stream(coefficients).filter(coef -> Math.abs(coef) > 1).findFirst().isEmpty();
     }
 
     private UnivariatePolynomialZ64 generateShort() {
-        int mask[] = new int[set.getP()];
-        long tmp[] = new long[set.getP()];
+        int[] mask = new int[set.getP()];
+        long[] tmp = new long[set.getP()];
         Random rand = new Random();
 
         for (int i = 0; i < set.getW(); i++) {
@@ -116,10 +113,10 @@ public class Short {
                         .map(x -> 4 * x)
                         .map(
                                 x ->
-                                        coefficients.get(x).intValue()
-                                                + coefficients.get(x + 1).intValue() * 4
-                                                + coefficients.get(x + 2).intValue() * 16
-                                                + coefficients.get(x + 3).intValue() * 64)
+                                        coefficients.get(x)
+                                                + coefficients.get(x + 1) * 4
+                                                + coefficients.get(x + 2) * 16
+                                                + coefficients.get(x + 3) * 64)
                         .boxed()
                         .collect(Collectors.toCollection(ArrayList::new));
 
@@ -131,7 +128,7 @@ public class Short {
     }
 
     public static Short decode(SntrupParameterSet set, byte[] encodedBytes) {
-        int encodedCoefficients[] = new int[encodedBytes.length];
+        int[] encodedCoefficients = new int[encodedBytes.length];
         for (int i = 0; i < encodedBytes.length; i++) {
             encodedCoefficients[i] = encodedBytes[i] & 0xff;
         }
@@ -169,8 +166,7 @@ public class Short {
         Short other = (Short) obj;
         if (set != other.set) return false;
         if (shrt == null) {
-            if (other.shrt != null) return false;
-        } else if (!shrt.equals(other.shrt)) return false;
-        return true;
+            return other.shrt == null;
+        } else return shrt.equals(other.shrt);
     }
 }

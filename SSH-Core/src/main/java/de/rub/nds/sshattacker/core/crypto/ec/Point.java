@@ -24,7 +24,7 @@ import java.util.Objects;
  *
  * <p>Affine points store their x and y coordinates. The projective z-coordinate (equal to 1) will
  * not be stored. The point at infinity [0:1:0] (the only point with z-coordinate 0) does not store
- * any of it's coordinates.
+ * any of its coordinates.
  */
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)

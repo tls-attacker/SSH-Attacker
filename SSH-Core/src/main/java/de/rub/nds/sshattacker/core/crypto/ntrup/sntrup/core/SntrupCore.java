@@ -10,7 +10,7 @@ package de.rub.nds.sshattacker.core.crypto.ntrup.sntrup.core;
 import java.util.Optional;
 
 public class SntrupCore {
-    private SntrupParameterSet set;
+    private final SntrupParameterSet set;
 
     public SntrupCore(SntrupParameterSet set) {
         this.set = set;

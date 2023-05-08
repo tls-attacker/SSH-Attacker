@@ -7,6 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.constants;
 
+@SuppressWarnings("unused")
 public enum Language {
     NONE("");
 

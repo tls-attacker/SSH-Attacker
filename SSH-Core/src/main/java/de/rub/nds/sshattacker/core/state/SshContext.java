@@ -54,7 +54,7 @@ public class SshContext {
     /** A layer to serialize packets */
     private AbstractPacketLayer packetLayer;
     /**
-     * If set to true, receive actions will read the incoming byte stream on a per line basis (each
+     * If set to true, receive actions will read the incoming byte stream on a per-line basis (each
      * line is terminated by LF).
      */
     private Boolean receiveAsciiModeEnabled;
@@ -226,7 +226,7 @@ public class SshContext {
     // TODO: Implement channel requests in such a way that allows specification within the XML file
     // endregion
 
-    /** If set to true, a SSH_MSG_DISCONNECT has been received from the remote peer */
+    /** If set to true, an SSH_MSG_DISCONNECT has been received from the remote peer */
     private boolean disconnectMessageReceived = false;
     /** If set to true, a version exchange message was sent by each side */
     private boolean versionExchangeCompleted = false;

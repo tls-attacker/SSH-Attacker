@@ -93,7 +93,7 @@ public abstract class Parser<T> {
     }
 
     /**
-     * Parses a number of bytes from the Array and returns them as a int. Throws a ParserException
+     * Parses a number of bytes from the Array and returns them as an int. Throws a ParserException
      * if the number of bytes cannot be parsed. Moves the pointer accordingly.
      *
      * @param length Number of bytes to be parsed
@@ -262,6 +262,7 @@ public abstract class Parser<T> {
         return getBytesLeft() >= count;
     }
 
+    @SuppressWarnings("SameParameterValue")
     protected byte[] parseArrayOrTillEnd(int n) {
         if (n >= 0 && n < getBytesLeft()) {
             return parseByteArrayField(n);

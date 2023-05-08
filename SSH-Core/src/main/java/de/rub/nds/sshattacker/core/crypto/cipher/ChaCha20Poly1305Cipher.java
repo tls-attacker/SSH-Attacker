@@ -9,7 +9,6 @@ package de.rub.nds.sshattacker.core.crypto.cipher;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.EncryptionAlgorithm;
-import de.rub.nds.sshattacker.core.exceptions.CryptoException;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -39,20 +38,19 @@ class ChaCha20Poly1305Cipher extends AbstractCipher {
     }
 
     @Override
-    public byte[] encrypt(byte[] plainData) throws CryptoException {
+    public byte[] encrypt(byte[] plainData) {
         throw new UnsupportedOperationException(
                 "ChaCha20Poly1305 can only be used as an AEAD cipher!");
     }
 
     @Override
-    public byte[] encrypt(byte[] plainData, byte[] iv) throws CryptoException {
+    public byte[] encrypt(byte[] plainData, byte[] iv) {
         throw new UnsupportedOperationException(
                 "ChaCha20Poly1305 can only be used as an AEAD cipher!");
     }
 
     @Override
-    public byte[] encrypt(byte[] plainData, byte[] iv, byte[] additionalAuthenticatedData)
-            throws CryptoException {
+    public byte[] encrypt(byte[] plainData, byte[] iv, byte[] additionalAuthenticatedData) {
         // Initialization
         cipher.init(true, new ParametersWithIV(new KeyParameter(key), iv));
         initMac();
@@ -69,20 +67,20 @@ class ChaCha20Poly1305Cipher extends AbstractCipher {
     }
 
     @Override
-    public byte[] decrypt(byte[] encryptedData) throws CryptoException {
+    public byte[] decrypt(byte[] encryptedData) {
         throw new UnsupportedOperationException(
                 "ChaCha20Poly1305 can only be used as an AEAD cipher!");
     }
 
     @Override
-    public byte[] decrypt(byte[] encryptedData, byte[] iv) throws CryptoException {
+    public byte[] decrypt(byte[] encryptedData, byte[] iv) {
         throw new UnsupportedOperationException(
                 "ChaCha20Poly1305 can only be used as an AEAD cipher!");
     }
 
     @Override
     public byte[] decrypt(byte[] encryptedData, byte[] iv, byte[] additionalAuthenticatedData)
-            throws CryptoException, AEADBadTagException {
+            throws AEADBadTagException {
         // Initialization
         cipher.init(false, new ParametersWithIV(new KeyParameter(key), iv));
         initMac();

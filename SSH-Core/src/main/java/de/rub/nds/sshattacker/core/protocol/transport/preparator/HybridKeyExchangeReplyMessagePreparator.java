@@ -25,7 +25,7 @@ public class HybridKeyExchangeReplyMessagePreparator
         extends SshMessagePreparator<HybridKeyExchangeReplyMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
-    private HybridKeyExchangeCombiner combiner;
+    private final HybridKeyExchangeCombiner combiner;
 
     public HybridKeyExchangeReplyMessagePreparator(
             Chooser chooser,

@@ -21,7 +21,6 @@ import de.rub.nds.sshattacker.core.crypto.ntrup.sntrup.core.Short;
 import de.rub.nds.sshattacker.core.crypto.ntrup.sntrup.core.SntrupCore;
 import de.rub.nds.sshattacker.core.crypto.ntrup.sntrup.core.SntrupCoreValues;
 import de.rub.nds.sshattacker.core.crypto.ntrup.sntrup.core.SntrupParameterSet;
-import de.rub.nds.sshattacker.core.exceptions.CryptoException;
 import de.rub.nds.sshattacker.core.exceptions.NotImplementedException;
 
 import org.apache.logging.log4j.LogManager;
@@ -33,14 +32,14 @@ import java.util.Arrays;
 
 public class SntrupKeyExchange extends KeyEncapsulation {
     private static final Logger LOGGER = LogManager.getLogger();
-    private SntrupParameterSet set;
+    private final SntrupParameterSet set;
     private CustomPQKemPublicKey remotePublicKey;
-    private SntrupCore core;
+    private final SntrupCore core;
 
     private CustomKeyPair<CustomPQKemPrivateKey, CustomPQKemPublicKey> localKeyPair;
     private byte[] encryptedSharedSecret;
 
-    private PQKemNames kemName;
+    private final PQKemNames kemName;
 
     public SntrupKeyExchange(PQKemNames kemName) {
         this.kemName = kemName;
@@ -206,7 +205,7 @@ public class SntrupKeyExchange extends KeyEncapsulation {
     public void setLocalKeyPair(byte[] privateKeyBytes, byte[] publicKeyBytes) {
         CustomPQKemPrivateKey privK = new CustomPQKemPrivateKey(privateKeyBytes, kemName);
         CustomPQKemPublicKey pubK = new CustomPQKemPublicKey(publicKeyBytes, kemName);
-        localKeyPair = new CustomKeyPair<CustomPQKemPrivateKey, CustomPQKemPublicKey>(privK, pubK);
+        localKeyPair = new CustomKeyPair<>(privK, pubK);
     }
 
     @Override
@@ -301,7 +300,7 @@ public class SntrupKeyExchange extends KeyEncapsulation {
     }
 
     @Override
-    public void decryptSharedSecret() throws CryptoException {
+    public void decryptSharedSecret() {
         if (encryptedSharedSecret == null) {
             LOGGER.warn("encrypted shared secret not set, set shared secret to byte[] {0}");
             this.sharedSecret = new byte[] {0};
@@ -311,7 +310,7 @@ public class SntrupKeyExchange extends KeyEncapsulation {
     }
 
     @Override
-    public void decryptSharedSecret(byte[] encryptedSharedSecret) throws CryptoException {
+    public void decryptSharedSecret(byte[] encryptedSharedSecret) {
         if (localKeyPair == null) {
             LOGGER.warn("local key pair not set, set shared secret to byte[] {0}");
             this.sharedSecret = new byte[] {0};

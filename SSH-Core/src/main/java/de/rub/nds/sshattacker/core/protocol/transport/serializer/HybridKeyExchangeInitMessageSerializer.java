@@ -22,7 +22,7 @@ public class HybridKeyExchangeInitMessageSerializer
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private HybridKeyExchangeCombiner combiner;
+    private final HybridKeyExchangeCombiner combiner;
 
     public HybridKeyExchangeInitMessageSerializer(
             HybridKeyExchangeInitMessage message, HybridKeyExchangeCombiner combiner) {

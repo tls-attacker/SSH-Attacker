@@ -8,6 +8,7 @@
 package de.rub.nds.sshattacker.core.crypto.ntrup.sntrup.core;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.Test;
 
@@ -16,9 +17,9 @@ import java.util.stream.LongStream;
 
 public class RoundedTest {
 
-    Random rand = new Random();
+    final Random rand = new Random();
     long[] coefficient;
-    SntrupParameterSet set = SntrupParameterSet.KEM_SNTRUP_761;
+    final SntrupParameterSet set = SntrupParameterSet.KEM_SNTRUP_761;
 
     @Test
     public void roundTest() {
@@ -29,7 +30,7 @@ public class RoundedTest {
                             .toArray();
             RQ rq = new RQ(set, coefficient);
             Rounded rounded = Rounded.round(rq);
-            assertEquals(true, Rounded.is_rounded(set, rounded.stream().toArray()));
+            assertTrue(Rounded.is_rounded(set, rounded.stream().toArray()));
         }
     }
 

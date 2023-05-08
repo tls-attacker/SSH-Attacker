@@ -25,7 +25,7 @@ import org.apache.logging.log4j.Logger;
 public class HybridKeyExchangeInitMessagePreperator
         extends SshMessagePreparator<HybridKeyExchangeInitMessage> {
     private static final Logger LOGGER = LogManager.getLogger();
-    private HybridKeyExchangeCombiner combiner;
+    private final HybridKeyExchangeCombiner combiner;
 
     public HybridKeyExchangeInitMessagePreperator(
             Chooser chooser,

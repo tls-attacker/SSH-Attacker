@@ -12,7 +12,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import de.rub.nds.sshattacker.core.constants.PQKemNames;
-import de.rub.nds.sshattacker.core.exceptions.CryptoException;
 
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -32,7 +31,7 @@ public class SntrupKeyExchangeTest {
 
     @ParameterizedTest
     @MethodSource("provideTestVectors")
-    public void testSntrup(PQKemNames kemName) throws CryptoException {
+    public void testSntrup(PQKemNames kemName) {
         SntrupKeyExchange sntrupKeyExchangeClient = new SntrupKeyExchange(kemName);
         SntrupKeyExchange sntrupKeyExchangeServer = new SntrupKeyExchange(kemName);
 

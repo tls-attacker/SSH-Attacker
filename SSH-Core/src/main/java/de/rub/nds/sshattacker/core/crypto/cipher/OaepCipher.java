@@ -54,13 +54,12 @@ public class OaepCipher extends AbstractCipher {
     }
 
     @Override
-    public byte[] encrypt(byte[] plainData, byte[] iv) throws CryptoException {
+    public byte[] encrypt(byte[] plainData, byte[] iv) {
         throw new UnsupportedOperationException("Encryption with IV not supported.");
     }
 
     @Override
-    public byte[] encrypt(byte[] plainData, byte[] iv, byte[] additionalAuthenticatedData)
-            throws CryptoException {
+    public byte[] encrypt(byte[] plainData, byte[] iv, byte[] additionalAuthenticatedData) {
         throw new UnsupportedOperationException("AEAD encryption not supported.");
     }
 
@@ -76,13 +75,12 @@ public class OaepCipher extends AbstractCipher {
     }
 
     @Override
-    public byte[] decrypt(byte[] encryptedData, byte[] iv) throws CryptoException {
+    public byte[] decrypt(byte[] encryptedData, byte[] iv) {
         throw new UnsupportedOperationException("Decryption with IV not supported.");
     }
 
     @Override
-    public byte[] decrypt(byte[] encryptedData, byte[] iv, byte[] additionalAuthenticatedData)
-            throws CryptoException, AEADBadTagException {
+    public byte[] decrypt(byte[] encryptedData, byte[] iv, byte[] additionalAuthenticatedData) {
         throw new UnsupportedOperationException("AEAD decryption not supported.");
     }
 

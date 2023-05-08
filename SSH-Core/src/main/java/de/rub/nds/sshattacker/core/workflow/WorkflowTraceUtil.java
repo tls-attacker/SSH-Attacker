@@ -13,15 +13,10 @@ import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
 import de.rub.nds.sshattacker.core.workflow.action.ReceivingAction;
 import de.rub.nds.sshattacker.core.workflow.action.SendingAction;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import java.util.LinkedList;
 import java.util.List;
 
 public class WorkflowTraceUtil {
-
-    private static final Logger LOGGER = LogManager.getLogger();
 
     public static List<ProtocolMessage<?>> getAllSendMessages(WorkflowTrace trace) {
         List<ProtocolMessage<?>> sendMessages = new LinkedList<>();

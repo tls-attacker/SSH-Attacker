@@ -78,10 +78,6 @@ public final class ThreadedServerWorkflowExecutor extends WorkflowExecutor {
     @Override
     public void executeWorkflow() throws WorkflowExecutionException {
 
-        synchronized (this) {
-            Thread currentThread = Thread.currentThread();
-        }
-
         LOGGER.info("Listening on port " + port + "...");
         LOGGER.info("--- use SIGINT to shutdown ---");
         initialize();

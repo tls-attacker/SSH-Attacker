@@ -30,7 +30,7 @@ import java.util.stream.Stream;
 public class JavaCipherTest {
 
     private static final Logger LOGGER = LogManager.getLogger();
-    public static String[] aesCbcTestVectorFileNames = {
+    public static final String[] aesCbcTestVectorFileNames = {
         "CBCGFSbox128.rsp",
         "CBCGFSbox192.rsp",
         "CBCGFSbox256.rsp",
@@ -45,11 +45,11 @@ public class JavaCipherTest {
         "CBCVarTxt256.rsp"
     };
 
-    public static String[] aesEncryptionGcmTestVectorFileNames = {
+    public static final String[] aesEncryptionGcmTestVectorFileNames = {
         "gcmEncryptExtIV128.rsp", "gcmEncryptExtIV256.rsp"
     };
 
-    public static String[] aesDecryptionGcmTestVectorFileNames = {
+    public static final String[] aesDecryptionGcmTestVectorFileNames = {
         "gcmDecrypt128.rsp", "gcmDecrypt256.rsp"
     };
 
@@ -279,7 +279,6 @@ public class JavaCipherTest {
             byte[] plaintext,
             byte[] ciphertext)
             throws CryptoException {
-        int keyLength = key.length;
         JavaCipher cipher = new JavaCipher(encryptionAlgorithm, key, true);
         assertEquals(cipher.getAlgorithm(), encryptionAlgorithm);
         byte[] encText = cipher.encrypt(plaintext);
@@ -303,7 +302,6 @@ public class JavaCipherTest {
             byte[] plaintext,
             byte[] ciphertext)
             throws CryptoException {
-        int keyLength = key.length;
         JavaCipher cipher = new JavaCipher(encryptionAlgorithm, key, true);
         assertEquals(cipher.getAlgorithm(), encryptionAlgorithm);
         byte[] decText = cipher.decrypt(ciphertext);
@@ -332,7 +330,6 @@ public class JavaCipherTest {
             byte[] plaintext,
             byte[] ciphertext)
             throws CryptoException {
-        int keyLength = key.length;
         JavaCipher cipher = new JavaCipher(encryptionAlgorithm, key, true);
         assertEquals(cipher.getAlgorithm(), encryptionAlgorithm);
         if (testingMode) {
@@ -345,7 +342,7 @@ public class JavaCipherTest {
     }
 
     /**
-     * Tests the encryption of JavaCipher using a aead cipher, at the moment AEAD_AES_128_GCM and
+     * Tests the encryption of JavaCipher using an aead cipher, at the moment AEAD_AES_128_GCM and
      * AEAD_AES_256_GCM are tested.
      *
      * @param encryptionAlgorithm encryption algorithm to use
@@ -378,7 +375,7 @@ public class JavaCipherTest {
     }
 
     /**
-     * Tests the encryption of JavaCipher using a aead cipher, at the moment AEAD_AES_128_GCM and
+     * Tests the encryption of JavaCipher using an aead cipher, at the moment AEAD_AES_128_GCM and
      * AEAD_AES_256_GCM are tested.
      *
      * @param encryptionAlgorithm encryption algorithm to use

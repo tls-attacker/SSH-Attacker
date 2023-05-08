@@ -440,6 +440,7 @@ public enum EncryptionAlgorithm {
     private final int authTagSize;
     private final String javaName;
 
+    @SuppressWarnings("SameParameterValue")
     EncryptionAlgorithm(
             String name,
             EncryptionAlgorithmType type,
@@ -450,6 +451,7 @@ public enum EncryptionAlgorithm {
         this(name, type, mode, keySize, blockSize, blockSize, 0, javaName);
     }
 
+    @SuppressWarnings("SameParameterValue")
     EncryptionAlgorithm(
             String name,
             EncryptionAlgorithmType type,

@@ -9,11 +9,7 @@ package de.rub.nds.sshattacker.core.crypto.ec;
 
 import de.rub.nds.sshattacker.core.constants.NamedEcGroup;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 public class CurveFactory {
-    private static final Logger LOGGER = LogManager.getLogger();
 
     /**
      * Returns a named elliptic curve.

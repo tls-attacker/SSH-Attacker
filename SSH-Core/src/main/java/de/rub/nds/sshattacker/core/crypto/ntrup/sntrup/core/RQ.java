@@ -7,7 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.crypto.ntrup.sntrup.core;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 import cc.redberry.rings.IntegersZp64;
 import cc.redberry.rings.poly.PolynomialMethods;
@@ -24,9 +24,9 @@ import java.util.stream.IntStream;
 import java.util.stream.LongStream;
 
 public class RQ {
-    private SntrupParameterSet set;
+    private final SntrupParameterSet set;
     private UnivariatePolynomialZp64 rQ;
-    private UnivariatePolynomialZp64 mod;
+    private final UnivariatePolynomialZp64 mod;
 
     public RQ(SntrupParameterSet set, long[] coefficient) {
         this.set = set;
@@ -54,19 +54,18 @@ public class RQ {
     }
 
     private void setRQ(long[] coefficient) {
-        assertEquals(
+        assertTrue(
                 "Coefficients have to be between (-(q+1)/2 and (q+1)/2",
                 Arrays.stream(coefficient)
                         .filter(c -> c > (set.getQ() + 1) / 2 || c < -(set.getQ() + 1) / 2)
-                        .peek(c -> System.out.println(c))
+                        .peek(System.out::println)
                         .findFirst()
-                        .isEmpty(),
-                true);
+                        .isEmpty());
 
         this.rQ =
                 UnivariateDivision.remainder(
                         UnivariatePolynomialZp64.create(set.getQ(), coefficient), mod, true);
-        assertEquals(true, rQ.isOverFiniteField());
+        assertTrue(rQ.isOverFiniteField());
     }
 
     public SntrupParameterSet getSet() {
@@ -163,13 +162,12 @@ public class RQ {
                         .boxed()
                         .collect(Collectors.toCollection(ArrayList::new));
 
-        assertEquals(r.stream().filter(i -> i < 0).findFirst().isEmpty(), true);
-        assertEquals(
+        assertTrue(r.stream().filter(i -> i < 0).findFirst().isEmpty());
+        assertFalse(
                 IntStream.range(0, set.getP())
                         .filter(i -> r.get(i) > m.get(i))
                         .findFirst()
-                        .isPresent(),
-                false);
+                        .isPresent());
 
         ArrayList<Integer> encdodedCoefficients = Encoding.encode(r, m);
 
@@ -203,8 +201,8 @@ public class RQ {
 
     public static RQ decode(SntrupParameterSet set, byte[] encodedRq) {
         ArrayList<Integer> r = new ArrayList<>();
-        for (int i = 0; i < encodedRq.length; i++) {
-            r.add((int) encodedRq[i] & 0xff);
+        for (byte b : encodedRq) {
+            r.add((int) b & 0xff);
         }
         ArrayList<Integer> m =
                 IntStream.range(0, set.getP())
@@ -212,13 +210,12 @@ public class RQ {
                         .boxed()
                         .collect(Collectors.toCollection(ArrayList::new));
 
-        assertEquals(r.stream().filter(i -> i < 0).findFirst().isEmpty(), true);
-        assertEquals(
+        assertTrue(r.stream().filter(i -> i < 0).findFirst().isEmpty());
+        assertFalse(
                 IntStream.range(0, set.getP())
                         .filter(i -> r.get(i) > m.get(i))
                         .findFirst()
-                        .isPresent(),
-                false);
+                        .isPresent());
 
         ArrayList<Integer> coef = Encoding.decode(r, m);
         return new RQ(set, coef.stream().mapToLong(l -> l - (set.getQ() - 1) / 2).toArray());
@@ -247,7 +244,6 @@ public class RQ {
         if (rQ == null) {
             if (other.rQ != null) return false;
         } else if (!rQ.equals(other.rQ)) return false;
-        if (set != other.set) return false;
-        return true;
+        return set == other.set;
     }
 }

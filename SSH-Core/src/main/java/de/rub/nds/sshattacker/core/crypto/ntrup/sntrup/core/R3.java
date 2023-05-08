@@ -20,9 +20,9 @@ import java.util.stream.IntStream;
 import java.util.stream.LongStream;
 
 public class R3 {
-    private SntrupParameterSet set;
+    private final SntrupParameterSet set;
     private UnivariatePolynomialZp64 r3;
-    private UnivariatePolynomialZp64 mod;
+    private final UnivariatePolynomialZp64 mod;
 
     public R3(SntrupParameterSet set, long[] coefficient) {
         this.set = set;
@@ -77,7 +77,7 @@ public class R3 {
                 == 0) {
             return Optional.of(new R3(set, xgcd[1]));
         }
-        return Optional.ofNullable(null);
+        return Optional.empty();
     }
 
     public static R3 multiply(R3 r3_1, R3 r3_2) {
@@ -104,10 +104,10 @@ public class R3 {
                         .map(x -> 4 * x)
                         .map(
                                 x ->
-                                        coefficients.get(x).intValue()
-                                                + coefficients.get(x + 1).intValue() * 4
-                                                + coefficients.get(x + 2).intValue() * 16
-                                                + coefficients.get(x + 3).intValue() * 64)
+                                        coefficients.get(x)
+                                                + coefficients.get(x + 1) * 4
+                                                + coefficients.get(x + 2) * 16
+                                                + coefficients.get(x + 3) * 64)
                         .boxed()
                         .collect(Collectors.toCollection(ArrayList::new));
 
@@ -119,7 +119,7 @@ public class R3 {
     }
 
     public static R3 decode(SntrupParameterSet set, byte[] encodedBytes) {
-        int encdodedCoefficients[] = new int[encodedBytes.length];
+        int[] encdodedCoefficients = new int[encodedBytes.length];
         for (int i = 0; i < encodedBytes.length; i++) {
             encdodedCoefficients[i] = encodedBytes[i] & 0xff;
         }
@@ -160,7 +160,6 @@ public class R3 {
         if (r3 == null) {
             if (other.r3 != null) return false;
         } else if (!r3.equals(other.r3)) return false;
-        if (set != other.set) return false;
-        return true;
+        return set == other.set;
     }
 }

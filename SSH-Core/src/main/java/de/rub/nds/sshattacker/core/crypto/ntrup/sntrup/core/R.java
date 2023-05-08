@@ -17,9 +17,9 @@ import java.util.stream.LongStream;
 
 public class R {
 
-    private SntrupParameterSet set;
+    private final SntrupParameterSet set;
     private UnivariatePolynomialZ64 r;
-    private UnivariatePolynomialZ64 mod;
+    private final UnivariatePolynomialZ64 mod;
 
     public R(SntrupParameterSet set, long[] coefficient) {
         this.set = set;
@@ -105,7 +105,6 @@ public class R {
         if (r == null) {
             if (other.r != null) return false;
         } else if (!r.equals(other.r)) return false;
-        if (set != other.set) return false;
-        return true;
+        return set == other.set;
     }
 }

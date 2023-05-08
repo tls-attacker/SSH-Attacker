@@ -17,17 +17,12 @@ import de.rub.nds.sshattacker.core.workflow.action.GeneralAction;
 import de.rub.nds.sshattacker.core.workflow.action.SshAction;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
 /** Builds a "normalized" workflow trace. */
 public class WorkflowTraceNormalizer {
-
-    private static final Logger LOGGER = LogManager.getLogger();
 
     public void normalize(WorkflowTrace trace, Config config) {
         normalize(trace, config, config.getDefaultRunningMode());
@@ -38,7 +33,7 @@ public class WorkflowTraceNormalizer {
      *
      * @param trace The trace that should be normalized
      * @param config The config that is used
-     * @param mode The mode the Trace is ran in
+     * @param mode The mode the Trace is run in
      */
     public void normalize(WorkflowTrace trace, Config config, RunningModeType mode) {
         List<AliasedConnection> traceConnections = trace.getConnections();

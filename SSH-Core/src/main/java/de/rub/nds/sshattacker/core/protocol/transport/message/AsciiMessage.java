@@ -14,7 +14,7 @@ import de.rub.nds.sshattacker.core.protocol.transport.handler.AsciiMessageHandle
 import de.rub.nds.sshattacker.core.state.SshContext;
 
 /**
- * An generic text message sent via the Blob message layer.
+ * A generic text message sent via the Blob message layer.
  *
  * <p>Examples for this kind of message are the {@code Exceeded MaxStartups} and {@code Invalid SSH
  * identification string} messages sent by OpenSSH.

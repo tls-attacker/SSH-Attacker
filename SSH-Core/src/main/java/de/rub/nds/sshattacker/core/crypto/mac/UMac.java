@@ -109,6 +109,7 @@ class UMac extends AbstractMac {
      *     of bytes).
      * @param Nonce String of length 1 to BLOCKLEN bytes.
      */
+    @SuppressWarnings("unused")
     public static byte[] UMAC128(byte[] K, byte[] M, byte[] Nonce) {
         return UMAC(K, M, Nonce, 16);
     }
@@ -330,7 +331,11 @@ class UMac extends AbstractMac {
      * @param M String with length divisible by (wordbits / 8) bytes.
      * @return y, integer in the range 0 ... prime(wordbits) - 1.
      */
-    static BigInteger POLY(int wordbits, BigInteger maxwordrange, BigInteger k, byte[] M) {
+    static BigInteger POLY(
+            @SuppressWarnings("SameParameterValue") int wordbits,
+            BigInteger maxwordrange,
+            BigInteger k,
+            byte[] M) {
         int wordbytes = wordbits / Byte.SIZE;
         BigInteger p = prime(wordbits);
         BigInteger offset = BigInteger.ONE.shiftLeft(wordbits).subtract(p);

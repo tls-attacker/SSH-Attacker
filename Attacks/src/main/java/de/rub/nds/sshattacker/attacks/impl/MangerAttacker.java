@@ -169,7 +169,7 @@ public class MangerAttacker extends Attacker<MangerCommandConfig> {
     /**
      * @return Response vector list
      */
-    private List<VectorResponse> createVectorResponseList(RSAPublicKey publicKey, boolean plain) {
+    private List<VectorResponse> createVectorResponseList(RSAPublicKey publicKey, @SuppressWarnings("SameParameterValue") boolean plain) {
         List<SshTask> taskList = new LinkedList<>();
         List<FingerprintTaskVectorPair<?>> stateVectorPairList = new LinkedList<>();
 

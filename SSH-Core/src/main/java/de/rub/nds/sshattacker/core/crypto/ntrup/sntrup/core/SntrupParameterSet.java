@@ -24,6 +24,7 @@ public enum SntrupParameterSet {
     private final int encodedSmallLength;
     private final int hashLength;
 
+    @SuppressWarnings("SameParameterValue")
     SntrupParameterSet(
             String name,
             int p,

@@ -266,7 +266,7 @@ public class WorkflowConfigurationFactory {
             //    When the switch statement is executed, first the Expression
             //    is evaluated. If the Expression evaluates to `null`, a
             //    `NullPointerException` is thrown and the entire switch
-            //    statement completes abruptly for that reason."
+            //    statement completes abruptly for that reason.
             //
             // See this for details:
             // http://docs.oracle.com/javase/specs/jls/se8/html/jls-14.html#jls-14.11

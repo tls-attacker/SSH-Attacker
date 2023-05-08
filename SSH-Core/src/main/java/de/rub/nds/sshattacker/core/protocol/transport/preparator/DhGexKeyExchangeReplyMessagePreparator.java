@@ -42,6 +42,4 @@ public class DhGexKeyExchangeReplyMessagePreparator
                 .getExchangeHashInputHolder()
                 .setDhGexServerPublicKey(keyExchange.getLocalKeyPair().getPublic().getY());
     }
-
-    private void prepareSignature() {}
 }

@@ -9,7 +9,6 @@ package de.rub.nds.sshattacker.core.packet.layer;
 
 import de.rub.nds.sshattacker.core.constants.CipherMode;
 import de.rub.nds.sshattacker.core.constants.CompressionAlgorithm;
-import de.rub.nds.sshattacker.core.exceptions.CryptoException;
 import de.rub.nds.sshattacker.core.exceptions.ParserException;
 import de.rub.nds.sshattacker.core.packet.AbstractPacket;
 import de.rub.nds.sshattacker.core.packet.cipher.PacketCipher;
@@ -66,7 +65,7 @@ public abstract class AbstractPacketLayer {
      * @throws ParserException Thrown whenever parsing the provided bytes fails
      */
     public abstract PacketLayerParseResult parsePacket(byte[] rawBytes, int startPosition)
-            throws ParserException, CryptoException;
+            throws ParserException;
 
     /**
      * Tries to parse a single packet from rawBytes at startPosition. Due to the nature of SSH

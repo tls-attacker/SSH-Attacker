@@ -11,8 +11,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import de.rub.nds.sshattacker.core.constants.NamedEcGroup;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -26,7 +24,6 @@ public class EllipticCurveTest {
      * probability, since the curve parameters are very large.)
      */
 
-    private static final Logger LOGGER = LogManager.getLogger();
     private Random rnd;
     private Point inf;
 

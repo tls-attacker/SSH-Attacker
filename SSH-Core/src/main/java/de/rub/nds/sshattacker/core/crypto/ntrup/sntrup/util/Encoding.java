@@ -30,14 +30,14 @@ public final class Encoding {
                             IntStream.range(0, s.size())
                                     .mapToLong(i -> (long) (s.get(i) * Math.pow(256, i)))
                                     .sum(),
-                            m.get(0).intValue()));
+                            m.get(0)));
             return r;
         }
 
         int kLocal = 0;
         ArrayList<AbstractMap.SimpleEntry<Integer, Integer>> bottom = new ArrayList<>();
         ArrayList<Integer> m2 = new ArrayList<>();
-        ArrayList<Integer> r2 = new ArrayList<>();
+        ArrayList<Integer> r2;
         int mLocal, rLocal, tLocal;
         int limit = 16384;
 
@@ -160,10 +160,10 @@ public final class Encoding {
             u[k] = byte2int(Arrays.copyOfRange(s, i, i + bytes));
             k++;
         }
-        for (int i = 0; i < u.length; i++) {
+        for (long l : u) {
             for (int j = 0; j < batch; j++) {
                 res.add(
-                        BigInteger.valueOf(u[i])
+                        BigInteger.valueOf(l)
                                 .divide(BigInteger.valueOf(radix).pow(j))
                                 .mod(BigInteger.valueOf(radix)));
             }

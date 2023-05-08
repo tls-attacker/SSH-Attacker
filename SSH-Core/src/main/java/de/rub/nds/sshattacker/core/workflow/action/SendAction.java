@@ -75,7 +75,7 @@ public class SendAction extends MessageAction implements SendingAction {
      * @see #isFailed
      */
     public void setFailed(final boolean failed) {
-        this.failed = Boolean.valueOf(failed);
+        this.failed = failed;
     }
 
     /**
@@ -85,7 +85,7 @@ public class SendAction extends MessageAction implements SendingAction {
      * @see #setFailed
      */
     public boolean isFailed() {
-        return Optional.ofNullable(this.failed).orElse(Boolean.FALSE).booleanValue();
+        return Optional.ofNullable(this.failed).orElse(Boolean.FALSE);
     }
 
     @Override
@@ -107,7 +107,7 @@ public class SendAction extends MessageAction implements SendingAction {
         final MessageActionResult result =
                 sendMessageHelper.sendMessages(context, messages.stream());
 
-        // Check if all actions that were expected to be send were actually
+        // Check if all actions that were expected to be sent were actually
         // sent or if some failure occurred.
         final int failedMessageCount = messages.size() - result.getPacketList().size();
         this.setFailed(failedMessageCount != 0);
