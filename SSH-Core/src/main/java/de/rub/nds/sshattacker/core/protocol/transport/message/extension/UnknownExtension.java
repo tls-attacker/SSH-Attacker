@@ -9,15 +9,30 @@ package de.rub.nds.sshattacker.core.protocol.transport.message.extension;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
+import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.extension.UnknownExtensionHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class UnknownExtension extends AbstractExtension<UnknownExtension> {
 
+    private ModifiableInteger valueLength;
+
     private ModifiableByteArray value;
 
     public UnknownExtension() {
         super();
+    }
+
+    public ModifiableInteger getValueLength() {
+        return valueLength;
+    }
+
+    public void setValueLength(ModifiableInteger valueLength) {
+        this.valueLength = valueLength;
+    }
+
+    public void setValueLength(int valueLength) {
+        this.valueLength = ModifiableVariableFactory.safelySetValue(this.valueLength, valueLength);
     }
 
     public ModifiableByteArray getValue() {

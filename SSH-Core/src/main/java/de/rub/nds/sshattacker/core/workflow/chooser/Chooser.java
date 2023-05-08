@@ -13,6 +13,7 @@ import de.rub.nds.sshattacker.core.crypto.kex.AbstractEcdhKeyExchange;
 import de.rub.nds.sshattacker.core.crypto.kex.DhKeyExchange;
 import de.rub.nds.sshattacker.core.crypto.kex.RsaKeyExchange;
 import de.rub.nds.sshattacker.core.crypto.keys.SshPublicKey;
+import de.rub.nds.sshattacker.core.protocol.transport.message.extension.AbstractExtension;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
@@ -109,6 +110,12 @@ public abstract class Chooser {
     public abstract int getClientReserved();
 
     public abstract int getServerReserved();
+    // endregion
+
+    // region SSH Extensions
+    public abstract List<AbstractExtension<?>> getClientSupportedExtensions();
+
+    public abstract List<AbstractExtension<?>> getServerSupportedExtensions();
     // endregion
 
     // region Negotiated Parameters

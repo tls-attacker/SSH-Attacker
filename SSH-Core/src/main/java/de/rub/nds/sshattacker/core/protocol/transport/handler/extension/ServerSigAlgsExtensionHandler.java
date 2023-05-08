@@ -7,11 +7,13 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.handler.extension;
 
+import de.rub.nds.sshattacker.core.constants.PublicKeyFormat;
 import de.rub.nds.sshattacker.core.protocol.common.Preparator;
 import de.rub.nds.sshattacker.core.protocol.transport.message.extension.ServerSigAlgsExtension;
 import de.rub.nds.sshattacker.core.protocol.transport.parser.extension.ServerSigAlgsExtensionParser;
 import de.rub.nds.sshattacker.core.protocol.transport.serializer.extension.ServerSigAlgsExtensionSerializer;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.util.Converter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -52,13 +54,17 @@ public class ServerSigAlgsExtensionHandler
 
     @Override
     public void adjustContext() {
-        // "server-sig-algs" extension is only sent by server
-        if (context.isClient() && !context.isHandleAsClient()) {
-            LOGGER.warn(
-                    "Client sent ServerSigAlgsExtension which is supposed to be sent by the server only! We are not handling the message since isHandleAsClient() is false.");
-            return;
+        // receiving "server-sig-algs" extension as a client -> context has to be updated
+        if (context.isHandleAsClient()) {
+            context.setServerSupportedPublicKeyAlgorithmsForAuthentication(
+                    Converter.nameListToEnumValues(
+                            extension.getAcceptedPublicKeyAlgorithms().getValue(),
+                            PublicKeyFormat.class));
         }
-
-        // TODO: Implement adjustContext in ServerSigAlgsExtensionHandler
+        // receiving "server-sig-algs" extension as a server -> ignore "server-sig-algs"
+        else {
+            LOGGER.warn(
+                    "Client sent ServerSigAlgsExtension which is supposed to be sent by the server only!");
+        }
     }
 }

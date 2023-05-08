@@ -22,6 +22,7 @@ import de.rub.nds.sshattacker.core.packet.layer.AbstractPacketLayer;
 import de.rub.nds.sshattacker.core.packet.layer.PacketLayerFactory;
 import de.rub.nds.sshattacker.core.protocol.common.layer.MessageLayer;
 import de.rub.nds.sshattacker.core.protocol.connection.Channel;
+import de.rub.nds.sshattacker.core.protocol.transport.message.extension.AbstractExtension;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.sshattacker.core.workflow.chooser.ChooserFactory;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
@@ -213,6 +214,32 @@ public class SshContext {
     private BigInteger sharedSecret;
     /** The key set derived from the shared secret, the exchange hash, and the session ID */
     private KeySet keySet;
+    // endregion
+
+    // region SSH Extensions
+    /** List of extensions supported by the client */
+    public List<AbstractExtension<?>> clientSupportedExtensions;
+
+    /** List of extensions supported by the server */
+    public List<AbstractExtension<?>> serverSupportedExtensions;
+
+    /** Flag whether client supports SSH Extension Negotiation */
+    private boolean clientSupportsExtensionNegotiation = false;
+
+    /** Flag whether server supports SSH Extension Negotiation */
+    private boolean serverSupportsExtensionNegotiation = false;
+
+    /**
+     * List of public key algorithms for authentication supported by the server(server-sig-algs
+     * extension)
+     */
+    private List<PublicKeyFormat> serverSupportedPublicKeyAlgorithmsForAuthentication;
+
+    /** List of compression methods supported by the client(delay-compression extension) */
+    private List<CompressionMethod> clientSupportedDelayCompressionMethods;
+
+    /** List of compression methods supported by the server(delay-compression extension) */
+    private List<CompressionMethod> serverSupportedDelayCompressionMethods;
     // endregion
 
     // region Connection Protocol
@@ -902,6 +929,76 @@ public class SshContext {
 
     public void setKeySet(KeySet transportKeySet) {
         this.keySet = transportKeySet;
+    }
+    // endregion
+
+    // region Getters for SSH Extensions
+
+    // section general extensions
+    public Optional<List<AbstractExtension<?>>> getClientSupportedExtensions() {
+        return Optional.ofNullable(clientSupportedExtensions);
+    }
+
+    public Optional<List<AbstractExtension<?>>> getServerSupportedExtensions() {
+        return Optional.ofNullable(serverSupportedExtensions);
+    }
+
+    public boolean clientSupportsExtensionNegotiation() {
+        return clientSupportsExtensionNegotiation;
+    }
+
+    public boolean serverSupportsExtensionNegotiation() {
+        return serverSupportsExtensionNegotiation;
+    }
+
+    // section server-sig-algs extension
+    public Optional<List<PublicKeyFormat>>
+            getServerSupportedPublicKeyAlgorithmsForAuthentication() {
+        return Optional.ofNullable(serverSupportedPublicKeyAlgorithmsForAuthentication);
+    }
+
+    // section delay-compression extension
+    public Optional<List<CompressionMethod>> getClientSupportedDelayCompressionMethods() {
+        return Optional.ofNullable(clientSupportedDelayCompressionMethods);
+    }
+
+    public Optional<List<CompressionMethod>> getServerSupportedDelayCompressionMethods() {
+        return Optional.ofNullable(serverSupportedDelayCompressionMethods);
+    }
+    // endregion
+
+    // region Setters for SSH Extensions
+
+    // section general extensions
+    public void setClientSupportedExtensions(List<AbstractExtension<?>> extensions) {
+        this.clientSupportedExtensions = extensions;
+    }
+
+    public void setServerSupportedExtensions(List<AbstractExtension<?>> extensions) {
+        this.serverSupportedExtensions = extensions;
+    }
+
+    public void setClientSupportsExtensionNegotiation(boolean support) {
+        this.clientSupportsExtensionNegotiation = support;
+    }
+
+    public void setServerSupportsExtensionNegotiation(boolean support) {
+        this.serverSupportsExtensionNegotiation = support;
+    }
+
+    // section server-sig-algs extension
+    public void setServerSupportedPublicKeyAlgorithmsForAuthentication(
+            List<PublicKeyFormat> algorithms) {
+        this.serverSupportedPublicKeyAlgorithmsForAuthentication = algorithms;
+    }
+
+    // section delay-compression extension
+    public void setClientSupportedDelayCompressionMethods(List<CompressionMethod> methods) {
+        this.clientSupportedDelayCompressionMethods = methods;
+    }
+
+    public void setServerSupportedDelayCompressionMethods(List<CompressionMethod> methods) {
+        this.serverSupportedDelayCompressionMethods = methods;
     }
     // endregion
 

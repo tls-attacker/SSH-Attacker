@@ -24,8 +24,18 @@ public class DelayCompressionExtensionSerializer
 
     @Override
     protected void serializeExtensionValue() {
-        serializeCompressionMethodsClientToServer();
-        serializeCompressionMethodsServerToClient();
+        this.serializeCompressionMethodsLength();
+        this.serializeCompressionMethodsClientToServer();
+        this.serializeCompressionMethodsServerToClient();
+    }
+
+    private void serializeCompressionMethodsLength() {
+        LOGGER.debug(
+                "Compression methods length: {}",
+                extension.getCompressionMethodsLength().getValue());
+        appendInt(
+                extension.getCompressionMethodsLength().getValue(),
+                DataFormatConstants.STRING_SIZE_LENGTH);
     }
 
     private void serializeCompressionMethodsClientToServer() {

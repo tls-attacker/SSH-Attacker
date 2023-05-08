@@ -7,7 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.preparator;
 
-import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
+import de.rub.nds.sshattacker.core.constants.*;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.transport.message.ExtensionInfoMessage;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
@@ -20,7 +20,12 @@ public class ExtensionInfoMessagePreparator extends SshMessagePreparator<Extensi
 
     @Override
     public void prepareMessageSpecificContents() {
-        // TODO: Maybe include some extensions by default?
-        getObject().setExtensionCount(0);
+        if (chooser.getContext().isClient()) {
+            getObject().setExtensionCount(chooser.getClientSupportedExtensions().size());
+            getObject().setExtensions(chooser.getClientSupportedExtensions());
+        } else {
+            getObject().setExtensionCount(chooser.getServerSupportedExtensions().size());
+            getObject().setExtensions(chooser.getServerSupportedExtensions());
+        }
     }
 }

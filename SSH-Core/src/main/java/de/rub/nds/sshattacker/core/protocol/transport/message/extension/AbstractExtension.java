@@ -10,17 +10,17 @@ package de.rub.nds.sshattacker.core.protocol.transport.message.extension;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
+import de.rub.nds.sshattacker.core.protocol.common.ModifiableVariableHolder;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.extension.AbstractExtensionHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import java.nio.charset.StandardCharsets;
 
-public abstract class AbstractExtension<E extends AbstractExtension<E>> {
+public abstract class AbstractExtension<E extends AbstractExtension<E>>
+        extends ModifiableVariableHolder {
 
     protected ModifiableInteger nameLength;
 
     protected ModifiableString name;
-
-    protected ModifiableInteger valueLength;
 
     public ModifiableInteger getNameLength() {
         return nameLength;
@@ -58,18 +58,6 @@ public abstract class AbstractExtension<E extends AbstractExtension<E>> {
             setNameLength(name.getBytes(StandardCharsets.US_ASCII).length);
         }
         this.name = ModifiableVariableFactory.safelySetValue(this.name, name);
-    }
-
-    public ModifiableInteger getValueLength() {
-        return valueLength;
-    }
-
-    public void setValueLength(ModifiableInteger valueLength) {
-        this.valueLength = valueLength;
-    }
-
-    public void setValueLength(int valueLength) {
-        this.valueLength = ModifiableVariableFactory.safelySetValue(this.valueLength, valueLength);
     }
 
     public abstract AbstractExtensionHandler<E> getHandler(SshContext context);

@@ -16,6 +16,9 @@ import de.rub.nds.sshattacker.core.crypto.ec.PointFormatter;
 import de.rub.nds.sshattacker.core.crypto.keys.*;
 import de.rub.nds.sshattacker.core.protocol.authentication.AuthenticationResponse;
 import de.rub.nds.sshattacker.core.protocol.connection.ChannelDefaults;
+import de.rub.nds.sshattacker.core.protocol.transport.message.extension.AbstractExtension;
+import de.rub.nds.sshattacker.core.protocol.transport.message.extension.DelayCompressionExtension;
+import de.rub.nds.sshattacker.core.protocol.transport.message.extension.ServerSigAlgsExtension;
 import de.rub.nds.sshattacker.core.workflow.factory.WorkflowTraceType;
 import de.rub.nds.sshattacker.core.workflow.filter.FilterType;
 import jakarta.xml.bind.annotation.*;
@@ -248,6 +251,14 @@ public class Config implements Serializable {
      */
     private final SshPublicKey<CustomRsaPublicKey, CustomRsaPrivateKey>
             fallbackRsaTransientPublicKey;
+    // endregion
+
+    // region SSH Extensions
+    /** List of extensions supported by the client */
+    private List<AbstractExtension<?>> clientSupportedExtensions;
+
+    /** List of extensions supported by the server */
+    private List<AbstractExtension<?>> serverSupportedExtensions;
     // endregion
 
     // region Authentication
@@ -543,6 +554,55 @@ public class Config implements Serializable {
         serverFirstKeyExchangePacketFollows = false;
         clientReserved = 0;
         serverReserved = 0;
+        // endregion
+
+        // region SSH Extension
+        ServerSigAlgsExtension serverSigAlgsExtension = new ServerSigAlgsExtension();
+        serverSigAlgsExtension.setName(Extension.SERVER_SIG_ALGS.getName(), true);
+        // value =
+        // "ssh-dss,ssh-rsa,rsa-sha2-256,rsa-sha2-512,ecdsa-sha2-nistp256,ecdsa-sha2-nistp384,ecdsa-sha2-nistp521,ssh-ed25519,ecdsa-sha2-1.3.132.0.10"
+        String defaultPublicKeyAlgorithms =
+                PublicKeyAlgorithm.SSH_DSS.toString()
+                        + CharConstants.ALGORITHM_SEPARATOR
+                        + PublicKeyAlgorithm.SSH_RSA
+                        + CharConstants.ALGORITHM_SEPARATOR
+                        + PublicKeyAlgorithm.RSA_SHA2_256
+                        + CharConstants.ALGORITHM_SEPARATOR
+                        + PublicKeyAlgorithm.RSA_SHA2_512
+                        + CharConstants.ALGORITHM_SEPARATOR
+                        + PublicKeyAlgorithm.ECDSA_SHA2_NISTP256
+                        + CharConstants.ALGORITHM_SEPARATOR
+                        + PublicKeyAlgorithm.ECDSA_SHA2_NISTP384
+                        + CharConstants.ALGORITHM_SEPARATOR
+                        + PublicKeyAlgorithm.ECDSA_SHA2_NISTP521
+                        + CharConstants.ALGORITHM_SEPARATOR
+                        + PublicKeyAlgorithm.SSH_ED25519
+                        + CharConstants.ALGORITHM_SEPARATOR
+                        + PublicKeyAlgorithm.ECDSA_SHA2_SECP256K1;
+        serverSigAlgsExtension.setAcceptedPublicKeyAlgorithms(defaultPublicKeyAlgorithms, true);
+
+        DelayCompressionExtension delayCompressionExtension = new DelayCompressionExtension();
+        delayCompressionExtension.setName(Extension.DELAY_COMPRESSION.getName(), true);
+        // value = "none,zlib,zlib@openssh.com"
+        String defaultCompressionMethods =
+                CompressionMethod.NONE.toString()
+                        + CharConstants.ALGORITHM_SEPARATOR
+                        + CompressionMethod.ZLIB
+                        + CharConstants.ALGORITHM_SEPARATOR
+                        + CompressionMethod.ZLIB_OPENSSH_COM;
+        delayCompressionExtension.setCompressionMethodsClientToServer(
+                defaultCompressionMethods, true);
+        delayCompressionExtension.setCompressionMethodsServerToClient(
+                defaultCompressionMethods, true);
+
+        // send delay-compression extension by default when acting as client
+        clientSupportedExtensions = new ArrayList<>();
+        clientSupportedExtensions.add(delayCompressionExtension);
+
+        // send server-sig-algs and delay-compression extension by default when acting as server
+        serverSupportedExtensions = new ArrayList<>();
+        serverSupportedExtensions.add(serverSigAlgsExtension);
+        serverSupportedExtensions.add(delayCompressionExtension);
         // endregion
 
         // region KeyExchange initialization
@@ -1181,6 +1241,30 @@ public class Config implements Serializable {
         this.serverReserved = serverReserved;
     }
 
+    // endregion
+
+    // region Getters SSH Extensions
+
+    // section general extensions
+    public List<AbstractExtension<?>> getClientSupportedExtensions() {
+        return clientSupportedExtensions;
+    }
+
+    public List<AbstractExtension<?>> getServerSupportedExtensions() {
+        return serverSupportedExtensions;
+    }
+    // endregion
+
+    // region Setters for SSH Extensions
+
+    // section general extensions
+    public void setClientSupportedExtensions(List<AbstractExtension<?>> extensions) {
+        this.clientSupportedExtensions = extensions;
+    }
+
+    public void setServerSupportedExtensions(List<AbstractExtension<?>> extensions) {
+        this.serverSupportedExtensions = extensions;
+    }
     // endregion
 
     // region Getters for KeyExchange

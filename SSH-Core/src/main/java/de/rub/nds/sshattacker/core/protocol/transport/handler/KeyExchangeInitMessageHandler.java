@@ -17,6 +17,7 @@ import de.rub.nds.sshattacker.core.protocol.util.AlgorithmPicker;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.util.Converter;
 import java.util.Arrays;
+import java.util.List;
 
 public class KeyExchangeInitMessageHandler extends SshMessageHandler<KeyExchangeInitMessage> {
 
@@ -77,6 +78,9 @@ public class KeyExchangeInitMessageHandler extends SshMessageHandler<KeyExchange
             context.setServerReserved(message.getReserved().getValue());
 
             context.getExchangeHashInputHolder().setServerKeyExchangeInit(message);
+
+            context.setServerSupportsExtensionNegotiation(
+                    checkServerSupportForExtensionNegotiation());
         } else {
             context.setClientCookie(message.getCookie().getValue());
             context.setClientSupportedKeyExchangeAlgorithms(
@@ -124,9 +128,33 @@ public class KeyExchangeInitMessageHandler extends SshMessageHandler<KeyExchange
             context.setClientReserved(message.getReserved().getValue());
 
             context.getExchangeHashInputHolder().setClientKeyExchangeInit(message);
-        }
 
+            context.setClientSupportsExtensionNegotiation(
+                    checkClientSupportForExtensionNegotiation());
+        }
         pickAlgorithms();
+    }
+
+    private boolean checkClientSupportForExtensionNegotiation() {
+        return containsKeyExchangeAlgorithm(
+                KeyExchangeAlgorithm.EXT_INFO_C,
+                context.getClientSupportedKeyExchangeAlgorithms().get());
+    }
+
+    private boolean checkServerSupportForExtensionNegotiation() {
+        return containsKeyExchangeAlgorithm(
+                KeyExchangeAlgorithm.EXT_INFO_S,
+                context.getServerSupportedKeyExchangeAlgorithms().get());
+    }
+
+    private boolean containsKeyExchangeAlgorithm(
+            KeyExchangeAlgorithm keyExchangeAlgorithm, List<KeyExchangeAlgorithm> algorithms) {
+        for (KeyExchangeAlgorithm algorithm : algorithms) {
+            if (algorithm.equals(keyExchangeAlgorithm)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private void pickAlgorithms() {

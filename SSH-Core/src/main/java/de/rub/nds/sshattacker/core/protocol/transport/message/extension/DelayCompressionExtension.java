@@ -21,6 +21,8 @@ import java.util.stream.Collectors;
 
 public class DelayCompressionExtension extends AbstractExtension<DelayCompressionExtension> {
 
+    private ModifiableInteger compressionMethodsLength;
+
     private ModifiableInteger compressionMethodsClientToServerLength;
 
     private ModifiableString compressionMethodsClientToServer;
@@ -28,6 +30,20 @@ public class DelayCompressionExtension extends AbstractExtension<DelayCompressio
     private ModifiableInteger compressionMethodsServerToClientLength;
 
     private ModifiableString compressionMethodsServerToClient;
+
+    public ModifiableInteger getCompressionMethodsLength() {
+        return compressionMethodsLength;
+    }
+
+    public void setCompressionMethodsLength(ModifiableInteger compressionMethodsLength) {
+        this.compressionMethodsLength = compressionMethodsLength;
+    }
+
+    public void setCompressionMethodsLength(int compressionMethodsLength) {
+        this.compressionMethodsLength =
+                ModifiableVariableFactory.safelySetValue(
+                        this.compressionMethodsLength, compressionMethodsLength);
+    }
 
     public ModifiableInteger getCompressionMethodsClientToServerLength() {
         return compressionMethodsClientToServerLength;
@@ -76,10 +92,7 @@ public class DelayCompressionExtension extends AbstractExtension<DelayCompressio
                             .getValue()
                             .getBytes(StandardCharsets.US_ASCII)
                             .length);
-            setValueLength(
-                    2 * DataFormatConstants.UINT32_SIZE
-                            + compressionMethodsClientToServerLength.getValue()
-                            + compressionMethodsServerToClientLength.getValue());
+            setCompressionMethodsLength(computeCompressionMethodsLength());
         }
         this.compressionMethodsClientToServer = compressionMethodsClientToServer;
     }
@@ -89,10 +102,7 @@ public class DelayCompressionExtension extends AbstractExtension<DelayCompressio
         if (adjustLengthField) {
             setCompressionMethodsClientToServerLength(
                     compressionMethodsClientToServer.getBytes(StandardCharsets.US_ASCII).length);
-            setValueLength(
-                    2 * DataFormatConstants.UINT32_SIZE
-                            + compressionMethodsClientToServerLength.getValue()
-                            + compressionMethodsServerToClientLength.getValue());
+            setCompressionMethodsLength(computeCompressionMethodsLength());
         }
         this.compressionMethodsClientToServer =
                 ModifiableVariableFactory.safelySetValue(
@@ -163,10 +173,7 @@ public class DelayCompressionExtension extends AbstractExtension<DelayCompressio
                             .getValue()
                             .getBytes(StandardCharsets.US_ASCII)
                             .length);
-            setValueLength(
-                    2 * DataFormatConstants.UINT32_SIZE
-                            + compressionMethodsClientToServerLength.getValue()
-                            + compressionMethodsServerToClientLength.getValue());
+            setCompressionMethodsLength(computeCompressionMethodsLength());
         }
         this.compressionMethodsServerToClient = compressionMethodsServerToClient;
     }
@@ -176,10 +183,7 @@ public class DelayCompressionExtension extends AbstractExtension<DelayCompressio
         if (adjustLengthField) {
             setCompressionMethodsServerToClientLength(
                     compressionMethodsServerToClient.getBytes(StandardCharsets.US_ASCII).length);
-            setValueLength(
-                    2 * DataFormatConstants.UINT32_SIZE
-                            + compressionMethodsClientToServerLength.getValue()
-                            + compressionMethodsServerToClientLength.getValue());
+            setCompressionMethodsLength(computeCompressionMethodsLength());
         }
         this.compressionMethodsServerToClient =
                 ModifiableVariableFactory.safelySetValue(
@@ -201,6 +205,16 @@ public class DelayCompressionExtension extends AbstractExtension<DelayCompressio
                         .map(CompressionMethod::toString)
                         .collect(Collectors.joining("" + CharConstants.ALGORITHM_SEPARATOR));
         setCompressionMethodsServerToClient(nameList, adjustLengthField);
+    }
+
+    private int computeCompressionMethodsLength() {
+        return 2 * DataFormatConstants.STRING_SIZE_LENGTH
+                + (compressionMethodsClientToServerLength != null
+                        ? compressionMethodsClientToServerLength.getValue()
+                        : 0)
+                + (compressionMethodsServerToClientLength != null
+                        ? compressionMethodsServerToClientLength.getValue()
+                        : 0);
     }
 
     @Override

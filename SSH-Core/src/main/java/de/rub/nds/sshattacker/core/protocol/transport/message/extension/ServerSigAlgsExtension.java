@@ -71,7 +71,7 @@ public class ServerSigAlgsExtension extends AbstractExtension<ServerSigAlgsExten
         if (adjustLengthField) {
             this.setAcceptedPublicKeyAlgorithmsLength(
                     publicKeyAlgorithms.getValue().getBytes(StandardCharsets.US_ASCII).length);
-            setValueLength(getAcceptedPublicKeyAlgorithmsLength().getValue());
+            setAcceptedPublicKeyAlgorithmsLength(getAcceptedPublicKeyAlgorithmsLength().getValue());
         }
         this.acceptedPublicKeyAlgorithms = publicKeyAlgorithms;
     }
@@ -81,7 +81,7 @@ public class ServerSigAlgsExtension extends AbstractExtension<ServerSigAlgsExten
         if (adjustLengthField) {
             this.setAcceptedPublicKeyAlgorithmsLength(
                     publicKeyAlgorithms.getBytes(StandardCharsets.US_ASCII).length);
-            setValueLength(getAcceptedPublicKeyAlgorithmsLength().getValue());
+            setAcceptedPublicKeyAlgorithmsLength(getAcceptedPublicKeyAlgorithmsLength().getValue());
         }
         this.acceptedPublicKeyAlgorithms =
                 ModifiableVariableFactory.safelySetValue(

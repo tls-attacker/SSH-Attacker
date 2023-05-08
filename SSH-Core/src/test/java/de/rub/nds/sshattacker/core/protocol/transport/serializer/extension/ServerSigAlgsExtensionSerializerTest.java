@@ -46,7 +46,7 @@ public class ServerSigAlgsExtensionSerializerTest {
         ServerSigAlgsExtension extension = new ServerSigAlgsExtension();
         extension.setNameLength(providedNameLength);
         extension.setName(providedName);
-        extension.setValueLength(providedValueLength);
+        extension.setAcceptedPublicKeyAlgorithmsLength(providedValueLength);
         extension.setAcceptedPublicKeyAlgorithms(providedValue);
 
         ServerSigAlgsExtensionSerializer serializer =
