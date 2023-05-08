@@ -259,6 +259,15 @@ public class Config implements Serializable {
 
     /** List of extensions supported by the server */
     private List<AbstractExtension<?>> serverSupportedExtensions;
+
+    /** List of public key algorithms for authentication supported by server */
+    private List<PublicKeyFormat> serverSupportedPublicKeyAlgorithmsForAuthentication;
+
+    /** List of compression methods supported by the client(delay-compression extension) */
+    private List<CompressionMethod> clientSupportedDelayCompressionMethods;
+
+    /** List of compression methods supported by the server(delay-compression extension) */
+    private List<CompressionMethod> serverSupportedDelayCompressionMethods;
     // endregion
 
     // region Authentication
@@ -603,6 +612,32 @@ public class Config implements Serializable {
         serverSupportedExtensions = new ArrayList<>();
         serverSupportedExtensions.add(serverSigAlgsExtension);
         serverSupportedExtensions.add(delayCompressionExtension);
+
+        // section server-sig-algs extension
+        serverSupportedPublicKeyAlgorithmsForAuthentication =
+                Arrays.stream(
+                                new PublicKeyFormat[] {
+                                    PublicKeyFormat.SSH_DSS,
+                                    PublicKeyFormat.SSH_RSA,
+                                    PublicKeyFormat.ECDSA_SHA2_NISTP256,
+                                    PublicKeyFormat.ECDSA_SHA2_NISTP384,
+                                    PublicKeyFormat.ECDSA_SHA2_NISTP521,
+                                    PublicKeyFormat.SSH_ED25519
+                                })
+                        .collect(Collectors.toCollection(LinkedList::new));
+
+        // section delay-compression extension
+        clientSupportedDelayCompressionMethods =
+                Arrays.stream(
+                                new CompressionMethod[] {
+                                    CompressionMethod.NONE,
+                                    CompressionMethod.ZLIB_OPENSSH_COM,
+                                    CompressionMethod.ZLIB
+                                })
+                        .collect(Collectors.toCollection(LinkedList::new));
+
+        serverSupportedDelayCompressionMethods =
+                new LinkedList<>(clientSupportedDelayCompressionMethods);
         // endregion
 
         // region KeyExchange initialization
@@ -1252,6 +1287,20 @@ public class Config implements Serializable {
 
     public List<AbstractExtension<?>> getServerSupportedExtensions() {
         return serverSupportedExtensions;
+    }
+
+    // section server-sig-algs extension
+    public List<PublicKeyFormat> getServerSupportedPublicKeyAlgorithmsForAuthentication() {
+        return serverSupportedPublicKeyAlgorithmsForAuthentication;
+    }
+
+    // section delay-compression extension
+    public List<CompressionMethod> getClientSupportedDelayCompressionMethods() {
+        return clientSupportedDelayCompressionMethods;
+    }
+
+    public List<CompressionMethod> getServerSupportedDelayCompressionMethods() {
+        return serverSupportedDelayCompressionMethods;
     }
     // endregion
 

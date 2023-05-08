@@ -502,6 +502,45 @@ public class DefaultChooser extends Chooser {
     public List<AbstractExtension<?>> getServerSupportedExtensions() {
         return context.getServerSupportedExtensions().orElse(config.getServerSupportedExtensions());
     }
+
+    /**
+     * Retrieves the list of server supported public key algorithms for authentication of the
+     * server-sig-algs extension included in SSH_MSG_EXT_INFO packet from context. If no
+     * SSH_MSG_EXT_INFO packet was received yet or SSH-Attacker is running in server mode, the
+     * extension from config will be returned instead.
+     *
+     * @return List of server supported public key algorithms for authentication
+     */
+    public List<PublicKeyFormat> getServerSupportedPublicKeyAlgorithmsForAuthentication() {
+        return context.getServerSupportedPublicKeyAlgorithmsForAuthentication()
+                .orElse(config.getServerSupportedPublicKeyAlgorithmsForAuthentication());
+    }
+
+    /**
+     * Retrieves the list of client supported compression methods of the delay-compression extension
+     * included in SSH_MSG_EXT_INFO packet from context. If no SSH_MSG_EXT_INFO packet was received
+     * yet or SSH-Attacker is running in client mode, the extension from config will be returned
+     * instead.
+     *
+     * @return List of client supported compression methods
+     */
+    public List<CompressionMethod> getClientSupportedDelayCompressionMethods() {
+        return context.getClientSupportedDelayCompressionMethods()
+                .orElse(config.getClientSupportedDelayCompressionMethods());
+    }
+
+    /**
+     * Retrieves the list of server supported compression methods of the delay-compression extension
+     * included in SSH_MSG_EXT_INFO packet from context. If no SSH_MSG_EXT_INFO packet was received
+     * yet or SSH-Attacker is running in server mode, the extension from config will be returned
+     * instead.
+     *
+     * @return List of server supported compression methods
+     */
+    public List<CompressionMethod> getServerSupportedDelayCompressionMethods() {
+        return context.getServerSupportedDelayCompressionMethods()
+                .orElse(config.getServerSupportedDelayCompressionMethods());
+    }
     // endregion
 
     // region Negotiated Parameters
