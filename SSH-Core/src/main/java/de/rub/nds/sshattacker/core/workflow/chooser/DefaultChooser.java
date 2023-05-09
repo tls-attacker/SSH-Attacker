@@ -516,6 +516,11 @@ public class DefaultChooser extends Chooser {
                 .orElse(config.getServerSupportedPublicKeyAlgorithmsForAuthentication());
     }
 
+    public SshPublicKey<?, ?> getSelectedPublicKeyForAuthentication() {
+        return context.getSelectedPublicKeyForAuthentication()
+                .orElse(config.getSelectedPublicKeyForAuthentication());
+    }
+
     /**
      * Retrieves the list of client supported compression methods of the delay-compression extension
      * included in SSH_MSG_EXT_INFO packet from context. If no SSH_MSG_EXT_INFO packet was received

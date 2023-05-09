@@ -139,7 +139,12 @@ public class UserAuthPubkeyMessagePreparator
     @Override
     public void prepareUserAuthRequestSpecificContents() {
         getObject().setUseSignature(true);
-        SshPublicKey<?, ?> pk = chooser.getConfig().getUserKeys().get(0);
+        SshPublicKey<?, ?> pk;
+        if (chooser.getConfig().getEnableExtensions()) {
+            pk = chooser.getSelectedPublicKeyForAuthentication();
+        } else {
+            pk = chooser.getConfig().getUserKeys().get(0);
+        }
         getObject().setPubkeyAlgName(pk.getPublicKeyFormat().getName(), true);
         getObject().setPubkey(PublicKeyHelper.encode(pk), true);
         getObject().setSignature(getEncodedSignature(pk), true);
