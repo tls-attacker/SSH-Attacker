@@ -240,6 +240,9 @@ public class SshContext {
 
     /** List of compression methods supported by the server(delay-compression extension) */
     private List<CompressionMethod> serverSupportedDelayCompressionMethods;
+
+    /** Compression method to use for compressing the payload(delay-compression extension) */
+    private CompressionMethod selectedDelayCompressionMethod;
     // endregion
 
     // region Connection Protocol
@@ -965,6 +968,10 @@ public class SshContext {
     public Optional<List<CompressionMethod>> getServerSupportedDelayCompressionMethods() {
         return Optional.ofNullable(serverSupportedDelayCompressionMethods);
     }
+
+    public Optional<CompressionMethod> getSelectedDelayCompressionMethod() {
+        return Optional.ofNullable(selectedDelayCompressionMethod);
+    }
     // endregion
 
     // region Setters for SSH Extensions
@@ -999,6 +1006,10 @@ public class SshContext {
 
     public void setServerSupportedDelayCompressionMethods(List<CompressionMethod> methods) {
         this.serverSupportedDelayCompressionMethods = methods;
+    }
+
+    public void setSelectedDelayCompressionMethod(CompressionMethod method) {
+        this.selectedDelayCompressionMethod = method;
     }
     // endregion
 

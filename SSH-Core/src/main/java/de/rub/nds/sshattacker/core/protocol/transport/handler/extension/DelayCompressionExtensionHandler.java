@@ -12,11 +12,18 @@ import de.rub.nds.sshattacker.core.protocol.transport.message.extension.DelayCom
 import de.rub.nds.sshattacker.core.protocol.transport.parser.extension.DelayCompressionExtensionParser;
 import de.rub.nds.sshattacker.core.protocol.transport.preparator.extension.DelayCompressionExtensionPreparator;
 import de.rub.nds.sshattacker.core.protocol.transport.serializer.extension.DelayCompressionExtensionSerializer;
+import de.rub.nds.sshattacker.core.protocol.util.AlgorithmPicker;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.util.Converter;
+import java.util.List;
+import java.util.Optional;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class DelayCompressionExtensionHandler
         extends AbstractExtensionHandler<DelayCompressionExtension> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public DelayCompressionExtensionHandler(SshContext context) {
         super(context);
@@ -42,6 +49,18 @@ public class DelayCompressionExtensionHandler
                             extension.getCompressionMethodsClientToServer().getValue(),
                             CompressionMethod.class));
         }
+        // get client supported compression methods
+        List<CompressionMethod> clientSupportedCompressionMethods =
+                context.getChooser().getClientSupportedDelayCompressionMethods();
+        // get server supported compression methods
+        List<CompressionMethod> serverSupportedCompressionMethods =
+                context.getChooser().getServerSupportedDelayCompressionMethods();
+        // determine common compression method
+        CompressionMethod commonCompressionMethod =
+                this.getCommonCompressionMethod(
+                        clientSupportedCompressionMethods, serverSupportedCompressionMethods);
+        // set in context
+        context.setSelectedDelayCompressionMethod(commonCompressionMethod);
     }
 
     @Override
@@ -62,5 +81,20 @@ public class DelayCompressionExtensionHandler
     @Override
     public DelayCompressionExtensionSerializer getSerializer() {
         return new DelayCompressionExtensionSerializer(extension);
+    }
+
+    private CompressionMethod getCommonCompressionMethod(
+            List<CompressionMethod> clientSupportedCompressionMethods,
+            List<CompressionMethod> serverSupportedCompressionMethods) {
+        Optional<CompressionMethod> commonCompressionMethod =
+                AlgorithmPicker.pickAlgorithm(
+                        clientSupportedCompressionMethods, serverSupportedCompressionMethods);
+        if (commonCompressionMethod.isPresent()) {
+            return commonCompressionMethod.get();
+        } else {
+            LOGGER.warn("No common compression method found from delay-compression extension!");
+            // TODO: disconnect with appropriate disconnect message(RFC 8308 Section 3.2)
+            return null;
+        }
     }
 }
