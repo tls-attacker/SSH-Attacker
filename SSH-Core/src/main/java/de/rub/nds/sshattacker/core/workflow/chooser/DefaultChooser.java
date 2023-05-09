@@ -516,6 +516,11 @@ public class DefaultChooser extends Chooser {
                 .orElse(config.getServerSupportedPublicKeyAlgorithmsForAuthentication());
     }
 
+    /**
+     * Retrieves the public key to use for client authentication from context. If no server-sig-algs
+     * extension was received yet and SSH-Attacker is running in client mode, a public key of the
+     * public key algorithm ssh-dss from config will be returned instead.
+     */
     public SshPublicKey<?, ?> getSelectedPublicKeyForAuthentication() {
         return context.getSelectedPublicKeyForAuthentication()
                 .orElse(config.getSelectedPublicKeyForAuthentication());
