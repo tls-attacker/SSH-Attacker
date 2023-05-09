@@ -39,12 +39,14 @@ public class HybridKeyExchangeTest {
     private static final Logger LOGGER = LogManager.getLogger();
     // Each KeyEncapsulation algorithm based on org.openquantumsafe.KeyEncapsulation
     // needs to be mocked for testing.
-    @Mock org.openquantumsafe.KeyEncapsulation kem;
-
-    @InjectMocks OpenQuantumSafeKem sntrup761Kex = new OpenQuantumSafeKem(PQKemNames.SNTRUP761);
+    @Mock private org.openquantumsafe.KeyEncapsulation kem;
 
     @InjectMocks
-    OpenQuantumSafeKem frodokem1344Kex = new OpenQuantumSafeKem(PQKemNames.FRODOKEM1344);
+    private final OpenQuantumSafeKem sntrup761Kex = new OpenQuantumSafeKem(PQKemNames.SNTRUP761);
+
+    @InjectMocks
+    private final OpenQuantumSafeKem frodokem1344Kex =
+            new OpenQuantumSafeKem(PQKemNames.FRODOKEM1344);
 
     static final Map<String, KeyExchangeAlgorithm> nameToAlgorithm;
 
@@ -174,9 +176,9 @@ public class HybridKeyExchangeTest {
 
             // Inject the encapsulation Kex with the mocked key exchange into the
             // object to test
-            Field encapsulationField = HybridKeyExchange.class.getDeclaredField("encapsulation");
+            Field encapsulationField = HybridKeyExchange.class.getDeclaredField("keyEncapsulation");
             encapsulationField.setAccessible(true);
-            HybridKeyExchange kex = null;
+            HybridKeyExchange kex;
             // Mock all functionCalls of org.openquantumsafe.KeyEncapsulation
             doReturn(encapsulationPubKey).when(kem).export_public_key();
             doReturn(encapsulationPrivKey).when(kem).export_secret_key();
@@ -191,25 +193,25 @@ public class HybridKeyExchangeTest {
                     encapsulationField.set(kex, frodokem1344Kex);
                     break;
                 default:
-                    LOGGER.error("Algorithm " + algorithm + " not supported");
+                    LOGGER.error("Algorithm {} not supported", algorithm);
                     kex = new Sntrup761X25519KeyExchange();
             }
 
             // Set the keys
             kex.getKeyEncapsulation().generateLocalKeyPair();
             assertArrayEquals(
-                    kex.getKeyEncapsulation().getLocalKeyPair().getPublic().getEncoded(),
+                    kex.getKeyEncapsulation().getLocalKeyPair().getPublicKey().getEncoded(),
                     encapsulationPubKey);
             assertArrayEquals(
-                    kex.getKeyEncapsulation().getLocalKeyPair().getPrivate().getEncoded(),
+                    kex.getKeyEncapsulation().getLocalKeyPair().getPrivateKey().getEncoded(),
                     encapsulationPrivKey);
 
             kex.getKeyAgreement().setLocalKeyPair(agreementPrivKeyClient, agreementPubKeyClient);
             assertArrayEquals(
-                    kex.getKeyAgreement().getLocalKeyPair().getPublic().getEncoded(),
+                    kex.getKeyAgreement().getLocalKeyPair().getPublicKey().getEncoded(),
                     agreementPubKeyClient);
             assertArrayEquals(
-                    kex.getKeyAgreement().getLocalKeyPair().getPrivate().getEncoded(),
+                    kex.getKeyAgreement().getLocalKeyPair().getPrivateKey().getEncoded(),
                     agreementPrivKeyClient);
 
             // Set public Key and ciphertext
@@ -245,11 +247,11 @@ public class HybridKeyExchangeTest {
         try {
             // Inject the encapsulation Kex with the mocked sntrup key exchange into the
             // object to test
-            Field encapsulationField = HybridKeyExchange.class.getDeclaredField("encapsulation");
+            Field encapsulationField = HybridKeyExchange.class.getDeclaredField("keyEncapsulation");
             encapsulationField.setAccessible(true);
             HybridKeyExchange kex;
             // Mock all functionCalls of org.openquantumsafe.KeyEncapsulation
-            doReturn(new Pair<byte[], byte[]>(ciphertext, encapsulationSharedSecret))
+            doReturn(new Pair<>(ciphertext, encapsulationSharedSecret))
                     .when(kem)
                     .encap_secret(encapsulationPubKey);
             switch (algorithm) {
@@ -262,7 +264,7 @@ public class HybridKeyExchangeTest {
                     encapsulationField.set(kex, frodokem1344Kex);
                     break;
                 default:
-                    LOGGER.error("Algorithm " + algorithm + " not supported.");
+                    LOGGER.error("Algorithm {} not supported.", algorithm);
                     kex = new Sntrup761X25519KeyExchange();
                     break;
             }
@@ -270,10 +272,10 @@ public class HybridKeyExchangeTest {
             // Set Server Keys for Key Agreement and PubKeys send by the Client
             kex.getKeyAgreement().setLocalKeyPair(agreementPrivKeyServer, agreementPubKeyServer);
             assertArrayEquals(
-                    kex.getKeyAgreement().getLocalKeyPair().getPublic().getEncoded(),
+                    kex.getKeyAgreement().getLocalKeyPair().getPublicKey().getEncoded(),
                     agreementPubKeyServer);
             assertArrayEquals(
-                    kex.getKeyAgreement().getLocalKeyPair().getPrivate().getEncoded(),
+                    kex.getKeyAgreement().getLocalKeyPair().getPrivateKey().getEncoded(),
                     agreementPrivKeyServer);
 
             kex.getKeyEncapsulation().setRemotePublicKey(encapsulationPubKey);
