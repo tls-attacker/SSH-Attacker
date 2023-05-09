@@ -100,8 +100,8 @@ public class ServerSigAlgsExtensionHandler
             List<PublicKeyAlgorithm> serverSupportedPublicKeyAlgorithms) {
         if (clientSupportedPublicKeyAlgorithms == null
                 || serverSupportedPublicKeyAlgorithms == null) {
-            // use ssh-dss as default which is REQUIRED to be implemented by every server(RFC 4253
-            // Section 6.6)
+            // use ssh-dss as default which is REQUIRED to be implemented by every server
+            // (RFC 4253 Section 6.6)
             return PublicKeyAlgorithm.SSH_DSS;
         }
         Optional<PublicKeyAlgorithm> commonAlgorithm =
