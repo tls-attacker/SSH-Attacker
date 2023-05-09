@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import org.junit.Test;
 
 public class RTest {
-    final SntrupParameterSet set = SntrupParameterSet.KEM_SNTRUP_761;
+    private final SntrupParameterSet set = SntrupParameterSet.KEM_SNTRUP_761;
 
     @Test
     public void randomSmallTest() {

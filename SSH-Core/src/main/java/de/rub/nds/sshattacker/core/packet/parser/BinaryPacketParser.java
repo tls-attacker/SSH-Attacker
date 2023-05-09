@@ -124,7 +124,7 @@ public class BinaryPacketParser extends AbstractPacketParser<BinaryPacket> {
                         .decrypt(
                                 encryptedPacketLength,
                                 ArrayConverter.intToBytes(
-                                        this.sequenceNumber, DataFormatConstants.UINT64_SIZE));
+                                        sequenceNumber, DataFormatConstants.UINT64_SIZE));
         binaryPacket.setLength(ArrayConverter.bytesToInt(decryptedPacketLength));
         binaryPacket.setCiphertext(
                 ArrayConverter.concatenate(

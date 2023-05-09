@@ -27,10 +27,11 @@ import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.SecretKeySpec;
 
 /**
- * Implemention of the UMAC message authentication code as per RFC4418. This implementation is
+ * Implementation of the UMAC message authentication code as per RFC4418. This implementation is
  * restricted to inputs consisting out of full bytes only and of length less or equal to 2^24 bytes
  * (16 MB).
  */
+@SuppressWarnings("StandardVariableNames")
 class UMac extends AbstractMac {
 
     private static final Logger LOGGER = LogManager.getLogger();
@@ -42,7 +43,8 @@ class UMac extends AbstractMac {
     private final MacAlgorithm algorithm;
     private final byte[] key;
 
-    public UMac(MacAlgorithm algorithm, byte[] key) {
+    UMac(MacAlgorithm algorithm, byte[] key) {
+        super();
         if (!algorithm.toString().startsWith("umac")) {
             throw new UnsupportedOperationException(
                     "MAC algorithm not supported by UMAC implementation: " + algorithm);

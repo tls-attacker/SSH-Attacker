@@ -52,7 +52,7 @@ public class EcdhKeyExchangeReplyMessage extends SshMessage<EcdhKeyExchangeReply
 
     @Override
     public SshPublicKey<?, ?> getHostKey() {
-        return PublicKeyHelper.parse(this.hostKeyBytes.getValue());
+        return PublicKeyHelper.parse(hostKeyBytes.getValue());
     }
 
     @Override

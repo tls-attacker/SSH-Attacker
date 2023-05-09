@@ -49,7 +49,7 @@ public class HybridKeyExchangeInitMessageParser
 
     private void parseHybridKey() {
         int length = parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH);
-        LOGGER.debug("Total Length: " + length);
+        LOGGER.debug("Total Length: {}", length);
 
         switch (combiner) {
             case CLASSICAL_CONCATENATE_POSTQUANTUM:

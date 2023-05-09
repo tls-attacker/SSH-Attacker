@@ -58,7 +58,7 @@ public class HybridKeyExchangeReplyMessagePreparator
         encapsulation.encryptSharedSecret();
 
         ExchangeHashInputHolder inputHolder = chooser.getContext().getExchangeHashInputHolder();
-        byte[] agreementBytes = agreement.getLocalKeyPair().getPublic().getEncoded();
+        byte[] agreementBytes = agreement.getLocalKeyPair().getPublicKey().getEncoded();
         byte[] encapsulationBytes = encapsulation.getEncryptedSharedSecret();
         getObject().setPublicKey(agreementBytes, true);
         getObject().setCiphertext(encapsulationBytes, true);

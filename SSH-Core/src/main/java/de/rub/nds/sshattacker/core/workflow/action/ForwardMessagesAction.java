@@ -17,7 +17,6 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.state.State;
 import de.rub.nds.sshattacker.core.workflow.action.executor.MessageActionResult;
 import de.rub.nds.sshattacker.core.workflow.action.executor.ReceiveMessageHelper;
-import de.rub.nds.sshattacker.core.workflow.action.executor.SendMessageHelper;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 
 import jakarta.xml.bind.annotation.XmlAttribute;
@@ -36,12 +35,12 @@ public class ForwardMessagesAction extends SshAction implements ReceivingAction,
     private static final Logger LOGGER = LogManager.getLogger();
 
     @XmlElement(name = "from")
-    protected String receiveFromAlias = null;
+    protected String receiveFromAlias;
 
     @XmlElement(name = "to")
-    protected String forwardToAlias = null;
+    protected String forwardToAlias;
 
-    @XmlTransient protected Boolean executedAsPlanned = null;
+    @XmlTransient protected Boolean executedAsPlanned;
 
     /** If you want true here, use the more verbose ForwardMessagesWithPrepareAction. */
     @XmlTransient protected Boolean withPrepare = false;
@@ -52,12 +51,8 @@ public class ForwardMessagesAction extends SshAction implements ReceivingAction,
 
     @HoldsModifiableVariable @XmlElementWrapper protected List<ProtocolMessage<?>> sendMessages;
 
-    @XmlTransient protected ReceiveMessageHelper receiveMessageHelper;
-
-    @XmlTransient protected SendMessageHelper sendMessageHelper;
-
     @XmlAttribute(name = "onConnection")
-    protected String forwardedConnectionAlias = null;
+    protected String forwardedConnectionAlias;
 
     @XmlTransient private byte[] receivedBytes;
 
@@ -65,33 +60,23 @@ public class ForwardMessagesAction extends SshAction implements ReceivingAction,
     protected List<AbstractPacket> packetList = new ArrayList<>();
 
     public ForwardMessagesAction() {
-        this.receiveMessageHelper = new ReceiveMessageHelper();
-        this.sendMessageHelper = new SendMessageHelper();
-    }
-
-    public ForwardMessagesAction(String receiveFromAlias, String forwardToAlias) {
-        this(receiveFromAlias, forwardToAlias, new ReceiveMessageHelper());
+        super();
     }
 
     /** Allow to pass a fake ReceiveMessageHelper helper for testing. */
-    protected ForwardMessagesAction(
-            String receiveFromAlias,
-            String forwardToAlias,
-            ReceiveMessageHelper receiveMessageHelper) {
+    protected ForwardMessagesAction(String receiveFromAlias, String forwardToAlias) {
+        super();
         this.receiveFromAlias = receiveFromAlias;
         this.forwardToAlias = forwardToAlias;
-        this.receiveMessageHelper = receiveMessageHelper;
-        this.sendMessageHelper = new SendMessageHelper();
         forwardedConnectionAlias = receiveFromAlias + " to " + forwardToAlias;
     }
 
     public ForwardMessagesAction(
             String receiveFromAlias, String forwardToAlias, List<ProtocolMessage<?>> messages) {
+        super();
         this.messages = messages;
         this.receiveFromAlias = receiveFromAlias;
         this.forwardToAlias = forwardToAlias;
-        this.receiveMessageHelper = new ReceiveMessageHelper();
-        this.sendMessageHelper = new SendMessageHelper();
         forwardedConnectionAlias = receiveFromAlias + " to " + forwardToAlias;
     }
 
@@ -100,7 +85,7 @@ public class ForwardMessagesAction extends SshAction implements ReceivingAction,
         this(receiveFromAlias, forwardToAlias, new ArrayList<>(Arrays.asList(messages)));
     }
 
-    public void initLoggingSide(SshContext context) {
+    public static void initLoggingSide(SshContext context) {
         if (context.isClient()) {
             ThreadContext.put("side", "Client");
         } else if (context.isServer()) {
@@ -134,7 +119,7 @@ public class ForwardMessagesAction extends SshAction implements ReceivingAction,
     protected void receiveMessages(SshContext receiveFromCtx) {
         LOGGER.debug("Receiving Messages...");
         try {
-            receivedBytes = receiveMessageHelper.receiveBytes(receiveFromCtx);
+            receivedBytes = ReceiveMessageHelper.receiveBytes(receiveFromCtx);
         } catch (IOException e) {
             LOGGER.warn(
                     "Received an IOException while fetching data from socket: {}",
@@ -146,10 +131,9 @@ public class ForwardMessagesAction extends SshAction implements ReceivingAction,
 
     protected void forwardMessages(SshContext forwardToCtx) {
         LOGGER.info(
-                "Forwarding messages ("
-                        + forwardToAlias
-                        + "): "
-                        + getReadableString(receivedMessages));
+                "Forwarding messages ({}): {}",
+                forwardToAlias,
+                getReadableString(receivedMessages));
         try {
             TransportHandler transportHandler = forwardToCtx.getTransportHandler();
             transportHandler.sendData(receivedBytes);
@@ -166,13 +150,13 @@ public class ForwardMessagesAction extends SshAction implements ReceivingAction,
 
     protected void handleReceivedMessages(SshContext ctx) {
         MessageActionResult handleReceived =
-                receiveMessageHelper.handleReceivedBytes(ctx, receivedBytes);
+                ReceiveMessageHelper.handleReceivedBytes(ctx, receivedBytes);
         receivedMessages = handleReceived.getMessageList();
         packetList = handleReceived.getPacketList();
         String expected = getReadableString(messages);
-        LOGGER.debug("Receive Expected (" + receiveFromAlias + "): " + expected);
+        LOGGER.debug("Receive Expected ({}): {}", receiveFromAlias, expected);
         String received = getReadableString(receivedMessages);
-        LOGGER.info("Received Messages (" + receiveFromAlias + "): " + received);
+        LOGGER.info("Received Messages ({}): {}", receiveFromAlias, received);
 
         executedAsPlanned = checkMessageListsEquals(messages, receivedMessages);
     }
@@ -185,14 +169,14 @@ public class ForwardMessagesAction extends SshAction implements ReceivingAction,
     protected void applyMessages(SshContext ctx) {
         changeSshContextHandling(ctx);
         for (ProtocolMessage<?> msg : receivedMessages) {
-            LOGGER.debug("Applying " + msg.toCompactString() + " to forward context " + ctx);
+            LOGGER.debug("Applying {} to forward context {}", msg.toCompactString(), ctx);
             ProtocolMessageHandler<?> h = msg.getHandler(ctx);
             h.adjustContext();
         }
         changeSshContextHandling(ctx);
     }
 
-    private void changeSshContextHandling(SshContext ctx) {
+    private static void changeSshContextHandling(SshContext ctx) {
         ctx.setHandleAsClient(!ctx.isHandleAsClient());
     }
 
@@ -206,7 +190,7 @@ public class ForwardMessagesAction extends SshAction implements ReceivingAction,
 
     // TODO: yes, the correct way would be implement equals() for all
     // ProtocolMessages...
-    protected boolean checkMessageListsEquals(
+    protected static boolean checkMessageListsEquals(
             List<ProtocolMessage<?>> expectedMessages, List<ProtocolMessage<?>> actualMessages) {
         boolean actualEmpty = true;
         boolean expectedEmpty = true;
@@ -274,50 +258,27 @@ public class ForwardMessagesAction extends SshAction implements ReceivingAction,
     }
 
     @Override
-    public int hashCode() {
-        int hash = 7;
-        hash = 89 * hash + Objects.hashCode(this.receiveFromAlias);
-        hash = 89 * hash + Objects.hashCode(this.forwardToAlias);
-        hash = 89 * hash + Objects.hashCode(this.executedAsPlanned);
-        hash = 89 * hash + Objects.hashCode(this.receivedMessages);
-        hash = 89 * hash + Objects.hashCode(this.sendMessages);
-        hash = 89 * hash + Objects.hashCode(this.messages);
-        return hash;
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        ForwardMessagesAction that = (ForwardMessagesAction) obj;
+        return Objects.equals(receiveFromAlias, that.receiveFromAlias)
+                && Objects.equals(forwardToAlias, that.forwardToAlias)
+                && Objects.equals(executedAsPlanned, that.executedAsPlanned)
+                && Objects.equals(receivedMessages, that.receivedMessages)
+                && Objects.equals(messages, that.messages)
+                && Objects.equals(sendMessages, that.sendMessages);
     }
 
-    /**
-     * TODO: the equals methods for message/record actions and similar classes would require that
-     * messages and records implement equals for a proper implementation. The present approach is
-     * not satisfying.
-     */
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final ForwardMessagesAction other = (ForwardMessagesAction) obj;
-        if (!Objects.equals(this.receiveFromAlias, other.receiveFromAlias)) {
-            return false;
-        }
-        if (!Objects.equals(this.forwardToAlias, other.forwardToAlias)) {
-            return false;
-        }
-        if (!Objects.equals(this.executedAsPlanned, other.executedAsPlanned)) {
-            return false;
-        }
-        if (!checkMessageListsEquals(this.receivedMessages, other.receivedMessages)) {
-            return false;
-        }
-        if (!checkMessageListsEquals(this.sendMessages, other.sendMessages)) {
-            return false;
-        }
-        return Objects.equals(this.messages, other.messages);
+    public int hashCode() {
+        return Objects.hash(
+                receiveFromAlias,
+                forwardToAlias,
+                executedAsPlanned,
+                receivedMessages,
+                messages,
+                sendMessages);
     }
 
     @Override
@@ -333,22 +294,22 @@ public class ForwardMessagesAction extends SshAction implements ReceivingAction,
         if ((receiveFromAlias == null) || (receiveFromAlias.isEmpty())) {
             throw new WorkflowExecutionException(
                     "Can't execute "
-                            + this.getClass().getSimpleName()
+                            + getClass().getSimpleName()
                             + " with empty receive alias (if using XML: add <from/>)");
         }
         if ((forwardToAlias == null) || (forwardToAlias.isEmpty())) {
             throw new WorkflowExecutionException(
                     "Can't execute "
-                            + this.getClass().getSimpleName()
+                            + getClass().getSimpleName()
                             + " with empty forward alis (if using XML: add <to/>)");
         }
     }
 
-    public String getReadableString(List<ProtocolMessage<?>> messages) {
+    public static String getReadableString(List<ProtocolMessage<?>> messages) {
         return getReadableString(messages, false);
     }
 
-    public String getReadableString(List<ProtocolMessage<?>> messages, Boolean verbose) {
+    public static String getReadableString(List<ProtocolMessage<?>> messages, Boolean verbose) {
         StringBuilder builder = new StringBuilder();
         if (messages == null) {
             return builder.toString();

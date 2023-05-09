@@ -17,16 +17,16 @@ import java.util.stream.LongStream;
 
 public class R3Test {
 
-    final SntrupParameterSet set = SntrupParameterSet.KEM_SNTRUP_761;
-    final Random rand = new Random();
+    private final SntrupParameterSet set = SntrupParameterSet.KEM_SNTRUP_761;
+    private final Random rand = new Random();
 
     @Test
     public void testIsInvertibleInR3() {
         R r = new R(set, LongStream.range(0, set.getP()).map(l -> rand.nextInt()).toArray());
-        Optional<R3> r3Inv = R3.isInvertibleInR3(set, r);
+        Optional<R3> r3Inv = R3.getInverseInR3(set, r);
         // Haven't found an R which is not invertible so far.
         for (int i = 0; i < 10; i++) {
-            r3Inv = R3.isInvertibleInR3(set, r);
+            r3Inv = R3.getInverseInR3(set, r);
             if (r3Inv.isPresent()) {
                 break;
             }

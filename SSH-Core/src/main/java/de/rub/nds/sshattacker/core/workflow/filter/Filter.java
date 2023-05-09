@@ -22,7 +22,8 @@ public abstract class Filter {
 
     protected final Config config;
 
-    public Filter(Config config) {
+    protected Filter(Config config) {
+        super();
         this.config = config;
     }
 
@@ -48,5 +49,6 @@ public abstract class Filter {
      * @param reference A reference trace that the postFilter can use. This could be a trace
      *     containing original user definitions, for example.
      */
+    @SuppressWarnings("NoopMethodInAbstractClass")
     public void postFilter(WorkflowTrace trace, WorkflowTrace reference) {}
 }

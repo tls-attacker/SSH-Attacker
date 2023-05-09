@@ -38,11 +38,9 @@ public class DynamicKeyExchangeAction extends MessageAction {
         }
 
         SshContext context = state.getSshContext(connectionAlias);
-        WorkflowConfigurationFactory factory =
-                new WorkflowConfigurationFactory(context.getConfig());
         KeyExchangeAlgorithm keyExchangeAlgorithm = context.getChooser().getKeyExchangeAlgorithm();
         sshActions =
-                factory.createKeyExchangeActions(
+                WorkflowConfigurationFactory.createKeyExchangeActions(
                         keyExchangeAlgorithm.getFlowType(), context.getConnection());
         sshActions.forEach(sshAction -> sshAction.execute(state));
     }
@@ -68,15 +66,15 @@ public class DynamicKeyExchangeAction extends MessageAction {
     public boolean isExecuted() {
         // This action can only contain other ssh actions if it was actually
         // executed.
-        return !this.sshActions.isEmpty();
+        return !sshActions.isEmpty();
     }
 
     @Override
     public boolean executedAsPlanned() {
         // Return true if this action was executed and all contained ssh
         // actions were executed as planned.
-        return this.isExecuted()
-                && this.sshActions.stream()
+        return isExecuted()
+                && sshActions.stream()
                         .map(SshAction::executedAsPlanned)
                         .filter(Predicate.isEqual(false))
                         .findAny()
@@ -84,11 +82,11 @@ public class DynamicKeyExchangeAction extends MessageAction {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
-        DynamicKeyExchangeAction that = (DynamicKeyExchangeAction) o;
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        if (!super.equals(obj)) return false;
+        DynamicKeyExchangeAction that = (DynamicKeyExchangeAction) obj;
         return Objects.equals(sshActions, that.sshActions);
     }
 

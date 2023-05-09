@@ -28,14 +28,13 @@ import java.util.Set;
 public abstract class ConnectionBoundAction extends SshAction {
 
     @XmlAttribute(name = "onConnection")
-    protected String connectionAlias = null;
+    protected String connectionAlias;
 
     @XmlTransient private final Set<String> aliases = new HashSet<>();
 
-    private ConnectionBoundAction() {}
-
-    public ConnectionBoundAction(String alias) {
-        this.connectionAlias = alias;
+    protected ConnectionBoundAction(String connectionAlias) {
+        super();
+        this.connectionAlias = connectionAlias;
     }
 
     public String getConnectionAlias() {
@@ -47,9 +46,10 @@ public abstract class ConnectionBoundAction extends SshAction {
     }
 
     public boolean hasDefaultAlias() {
-        return getConnectionAlias().equals(AliasedConnection.DEFAULT_CONNECTION_ALIAS);
+        return connectionAlias.equals(AliasedConnection.DEFAULT_CONNECTION_ALIAS);
     }
 
+    @SuppressWarnings("SuspiciousGetterSetter")
     @Override
     public String getFirstAlias() {
         return connectionAlias;
@@ -77,7 +77,7 @@ public abstract class ConnectionBoundAction extends SshAction {
     public void assertAliasesSetProperly() throws ConfigurationException {
         if ((connectionAlias == null) || (connectionAlias.isEmpty())) {
             throw new ConfigurationException(
-                    "connectionAlias empty or null in " + this.getClass().getSimpleName());
+                    "connectionAlias empty or null in " + getClass().getSimpleName());
         }
     }
 
@@ -107,11 +107,11 @@ public abstract class ConnectionBoundAction extends SshAction {
     }
 
     @Override
-    public void filter(SshAction defaultCon) {
+    public void filter(SshAction defaultAction) {
         if (!isSingleConnectionWorkflow() || connectionAlias == null) {
             return;
         }
-        String defaultAlias = defaultCon.getFirstAlias();
+        String defaultAlias = defaultAction.getFirstAlias();
         if (defaultAlias == null) {
             defaultAlias = AliasedConnection.DEFAULT_CONNECTION_ALIAS;
         }
@@ -121,24 +121,15 @@ public abstract class ConnectionBoundAction extends SshAction {
     }
 
     @Override
-    public int hashCode() {
-        int hash = 3;
-        hash = 79 * hash + Objects.hashCode(this.connectionAlias);
-        return hash;
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        ConnectionBoundAction that = (ConnectionBoundAction) obj;
+        return Objects.equals(connectionAlias, that.connectionAlias);
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final ConnectionBoundAction other = (ConnectionBoundAction) obj;
-        return Objects.equals(this.connectionAlias, other.connectionAlias);
+    public int hashCode() {
+        return Objects.hash(connectionAlias);
     }
 }

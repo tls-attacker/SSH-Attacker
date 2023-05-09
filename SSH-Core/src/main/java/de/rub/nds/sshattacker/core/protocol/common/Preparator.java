@@ -15,8 +15,9 @@ public abstract class Preparator<T> {
     private final T object;
     protected final Chooser chooser;
 
-    public Preparator(Chooser chooser, T message) {
-        this.object = message;
+    protected Preparator(Chooser chooser, T message) {
+        super();
+        object = message;
         this.chooser = chooser;
         if (object == null) {
             throw new PreparationException("Cannot prepare NULL");

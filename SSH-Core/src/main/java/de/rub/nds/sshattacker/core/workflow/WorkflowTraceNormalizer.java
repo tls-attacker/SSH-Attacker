@@ -22,9 +22,13 @@ import java.util.HashSet;
 import java.util.List;
 
 /** Builds a "normalized" workflow trace. */
-public class WorkflowTraceNormalizer {
+public final class WorkflowTraceNormalizer {
 
-    public void normalize(WorkflowTrace trace, Config config) {
+    private WorkflowTraceNormalizer() {
+        super();
+    }
+
+    public static void normalize(WorkflowTrace trace, Config config) {
         normalize(trace, config, config.getDefaultRunningMode());
     }
 
@@ -35,7 +39,7 @@ public class WorkflowTraceNormalizer {
      * @param config The config that is used
      * @param mode The mode the Trace is run in
      */
-    public void normalize(WorkflowTrace trace, Config config, RunningModeType mode) {
+    public static void normalize(WorkflowTrace trace, Config config, RunningModeType mode) {
         List<AliasedConnection> traceConnections = trace.getConnections();
         InboundConnection defaultInCon = config.getDefaultServerConnection().getCopy();
         OutboundConnection defaultOutCon = config.getDefaultClientConnection().getCopy();
@@ -123,7 +127,7 @@ public class WorkflowTraceNormalizer {
         assertNormalizedWorkflowTrace(trace);
     }
 
-    public Boolean isNormalized(WorkflowTrace trace) {
+    public static Boolean isNormalized(WorkflowTrace trace) {
         try {
             assertNormalizedWorkflowTrace(trace);
         } catch (ConfigurationException e) {
@@ -143,7 +147,7 @@ public class WorkflowTraceNormalizer {
      *
      * @param trace The WorkflowTrace to check
      */
-    public void assertNormalizedWorkflowTrace(WorkflowTrace trace) {
+    public static void assertNormalizedWorkflowTrace(WorkflowTrace trace) {
         List<AliasedConnection> connections = trace.getConnections();
         if ((connections == null) || (connections.isEmpty())) {
             throw new ConfigurationException(

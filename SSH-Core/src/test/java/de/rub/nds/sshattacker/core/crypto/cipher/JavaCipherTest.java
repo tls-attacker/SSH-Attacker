@@ -309,12 +309,12 @@ public class JavaCipherTest {
     }
 
     /**
-     * Tests the encyption and decryption of JavaCipher using a block cipher, at the moment
+     * Tests the encryption and decryption of JavaCipher using a block cipher, at the moment
      * aes128-cbc, aes192-cbc and aes256-cbc is used for testing. The testing mode switches, whether
      * to test the encryption or the decryption of the block cipher.
      *
      * @param encryptionAlgorithm encryption algorithm to use
-     * @param testingMode specifies if encryption[e] or decryption[d] shpould be tested
+     * @param testingMode specifies if encryption[e] or decryption[d] should be tested
      * @param key used private key
      * @param iv used initial vector
      * @param plaintext provided[e] or expected[d] plaintext
@@ -407,7 +407,7 @@ public class JavaCipherTest {
             outputStream.write(ciphertext);
             outputStream.write(tag);
         } catch (IOException e) {
-            LOGGER.debug("Failure occured adding the ciphertext and tag together: " + e);
+            LOGGER.debug("Failure occured adding the ciphertext and tag together", e);
         }
         byte[] fullCiphertext = outputStream.toByteArray();
 
@@ -415,7 +415,7 @@ public class JavaCipherTest {
             Throwable e =
                     assertThrows(
                             CryptoException.class, () -> cipher.decrypt(fullCiphertext, iv, aad));
-            LOGGER.debug("CryptoException was thrown right: " + e.getCause().toString());
+            LOGGER.debug("CryptoException was thrown right: {}", e.getCause().toString());
         } else {
             byte[] decText = cipher.decrypt(fullCiphertext, iv, aad);
             assertArrayEquals(plaintext, decText);

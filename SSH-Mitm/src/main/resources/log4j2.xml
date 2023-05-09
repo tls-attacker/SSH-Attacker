@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<Configuration name="Config" xmlns="http://logging.apache.org/log4j/2.0/config" >
+<Configuration name="Config" >
     <Appenders>
         <Console name="Console" target="SYSTEM_OUT">
             <PatternLayout pattern="">

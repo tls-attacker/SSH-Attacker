@@ -17,9 +17,9 @@ import java.util.stream.LongStream;
 
 public class RoundedTest {
 
-    final Random rand = new Random();
-    long[] coefficient;
-    final SntrupParameterSet set = SntrupParameterSet.KEM_SNTRUP_761;
+    private final Random rand = new Random();
+    private long[] coefficient;
+    private final SntrupParameterSet set = SntrupParameterSet.KEM_SNTRUP_761;
 
     @Test
     public void roundTest() {

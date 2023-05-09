@@ -15,9 +15,9 @@ import java.util.Random;
 import java.util.stream.LongStream;
 
 public class RQTest {
-    final SntrupParameterSet set = SntrupParameterSet.KEM_SNTRUP_761;
-    final Random rand = new Random();
-    long[] coefficient;
+    private final SntrupParameterSet set = SntrupParameterSet.KEM_SNTRUP_761;
+    private final Random rand = new Random();
+    private long[] coefficient;
 
     @Test
     public void testRQcreation() {
@@ -25,7 +25,7 @@ public class RQTest {
         long[] coeff = new long[set.getP()];
         coeff[0] = -1888;
         RQ rq = new RQ(set, coeff);
-        assertEquals(rq.stream().toArray()[0], -1888);
+        assertEquals(-1888, rq.stream().toArray()[0]);
     }
 
     @Test

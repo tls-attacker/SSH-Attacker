@@ -37,41 +37,41 @@ public class ChannelRequestX11MessageParser
     public void parseSingleConnection() {
         message.setSingleConnection(parseByteField(1));
         LOGGER.debug(
-                "Single connection: "
-                        + Converter.byteToBoolean(message.getSingleConnection().getValue()));
+                "Single connection: {}",
+                Converter.byteToBoolean(message.getSingleConnection().getValue()));
     }
 
     public void parseX11AuthenticationProtocol() {
         message.setX11AuthenticationProtocolLength(
                 parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
         LOGGER.debug(
-                "X11 authentication protocol length: "
-                        + message.getX11AuthenticationProtocolLength().getValue());
+                "X11 authentication protocol length: {}",
+                message.getX11AuthenticationProtocolLength().getValue());
         message.setX11AuthenticationProtocol(
                 parseByteString(
                         message.getX11AuthenticationProtocolLength().getValue(),
                         StandardCharsets.UTF_8));
         LOGGER.debug(
-                "X11 authentication protocol: "
-                        + message.getX11AuthenticationProtocol().getValue());
+                "X11 authentication protocol: {}",
+                message.getX11AuthenticationProtocol().getValue());
     }
 
     public void parseX11AuthenticationCookie() {
         message.setX11AuthenticationCookieLength(
                 parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
         LOGGER.debug(
-                "X11 authentication cookie length: " + message.getX11AuthenticationCookieLength());
+                "X11 authentication cookie length: {}", message.getX11AuthenticationCookieLength());
         message.setX11AuthenticationCookie(
                 parseByteString(
                         message.getX11AuthenticationCookieLength().getValue(),
                         StandardCharsets.UTF_8));
         LOGGER.debug(
-                "X11 authentication cookie: " + message.getX11AuthenticationCookie().getValue());
+                "X11 authentication cookie: {}", message.getX11AuthenticationCookie().getValue());
     }
 
     public void parseX11ScreenNumber() {
         message.setX11ScreenNumber(parseIntField(DataFormatConstants.UINT32_SIZE));
-        LOGGER.debug("X11 screen number: " + message.getX11ScreenNumber().getValue());
+        LOGGER.debug("X11 screen number: {}", message.getX11ScreenNumber().getValue());
     }
 
     @Override

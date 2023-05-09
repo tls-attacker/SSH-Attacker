@@ -22,15 +22,16 @@ public abstract class Pkcs1Oracle {
     protected RSAPublicKey publicKey;
 
     /** Indicates if the oracle accepts plaintext (for testing) or if it is a real oracle */
-    protected final boolean isPlaintextOracle = false;
+    @SuppressWarnings("FieldMayBeStatic")
+    protected final boolean plaintextOracle = false;
 
     /**
-     * Gets the blocksize of the encryption algorithm.
+     * Gets the block size of the encryption algorithm.
      *
-     * @return Blocksize
+     * @return Block size
      */
     public int getBlockSize() {
-        return this.blockSize;
+        return blockSize;
     }
 
     /**
@@ -39,7 +40,7 @@ public abstract class Pkcs1Oracle {
      * @return Number of queries
      */
     public long getNumberOfQueries() {
-        return this.numberOfQueries;
+        return numberOfQueries;
     }
 
     /**
@@ -57,7 +58,7 @@ public abstract class Pkcs1Oracle {
      * @param msg Encrypted message to check for conformity
      * @return True if PKCS conforming, else false
      */
-    public abstract boolean checkPKCSConformity(final byte[] msg) throws OracleException;
+    public abstract boolean checkPKCSConformity(byte[] msg) throws OracleException;
 
     /**
      * Returns true if the oracle is a plaintext oracle (does not decrypt the data received)
@@ -65,11 +66,11 @@ public abstract class Pkcs1Oracle {
      * @return isPlaintextOracle
      */
     public boolean isPlaintextOracle() {
-        return isPlaintextOracle;
+        return plaintextOracle;
     }
 
     /** */
     public void resetNumberOfQueries() {
-        this.numberOfQueries = 0;
+        numberOfQueries = 0;
     }
 }

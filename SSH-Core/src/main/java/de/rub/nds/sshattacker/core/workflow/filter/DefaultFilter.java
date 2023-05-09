@@ -45,8 +45,7 @@ public class DefaultFilter extends Filter {
      */
     @Override
     public void applyFilter(WorkflowTrace trace) {
-        WorkflowTraceNormalizer normalizer = new WorkflowTraceNormalizer();
-        normalizer.assertNormalizedWorkflowTrace(trace);
+        WorkflowTraceNormalizer.assertNormalizedWorkflowTrace(trace);
 
         List<AliasedConnection> traceConnections = trace.getConnections();
         List<AliasedConnection> strippedTraceConnections = new ArrayList<>();

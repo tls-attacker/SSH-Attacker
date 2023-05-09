@@ -26,9 +26,13 @@ import java.util.List;
 import java.util.Optional;
 
 /** A helper class to receive and process bytes from transport handler. */
-public class ReceiveMessageHelper {
+public final class ReceiveMessageHelper {
 
     private static final Logger LOGGER = LogManager.getLogger();
+
+    private ReceiveMessageHelper() {
+        super();
+    }
 
     /**
      * Receives and handles messages from the underlying transport handler.
@@ -37,7 +41,7 @@ public class ReceiveMessageHelper {
      * @return A message action result containing the received packets and messages
      */
     @SuppressWarnings("UnusedReturnValue")
-    public MessageActionResult receiveMessages(SshContext context) {
+    public static MessageActionResult receiveMessages(SshContext context) {
         return receiveMessages(context, new LinkedList<>());
     }
 
@@ -48,7 +52,7 @@ public class ReceiveMessageHelper {
      * @param expectedMessages A list of expected messages
      * @return A message action result containing the received packets and messages
      */
-    public MessageActionResult receiveMessages(
+    public static MessageActionResult receiveMessages(
             SshContext context, List<ProtocolMessage<?>> expectedMessages) {
         MessageActionResult result = new MessageActionResult();
         try {
@@ -86,7 +90,7 @@ public class ReceiveMessageHelper {
      * @return An array of bytes received from the transport handler
      * @throws IOException Thrown by the underlying transport handler if receiving failed
      */
-    public byte[] receiveBytes(SshContext context) throws IOException {
+    public static byte[] receiveBytes(SshContext context) throws IOException {
         if (context.isReceiveAsciiModeEnabled()) {
             byte[] receiveBuffer = new byte[0];
             byte[] readByte;
@@ -107,7 +111,7 @@ public class ReceiveMessageHelper {
      * @param context The SSH context
      * @return An array of bytes received from the transport handler
      */
-    private byte[] receiveAdditionalBytes(SshContext context) {
+    private static byte[] receiveAdditionalBytes(SshContext context) {
         try {
             return receiveBytes(context);
         } catch (IOException e) {
@@ -124,7 +128,8 @@ public class ReceiveMessageHelper {
      * @param receivedBytes Received bytes to handle
      * @return A MessageActionResult containing the parsed packets and messages
      */
-    public MessageActionResult handleReceivedBytes(SshContext context, byte[] receivedBytes) {
+    public static MessageActionResult handleReceivedBytes(
+            SshContext context, byte[] receivedBytes) {
         if (receivedBytes.length == 0) {
             return new MessageActionResult();
         }
@@ -158,7 +163,7 @@ public class ReceiveMessageHelper {
      * @return The parse result from the underlying packet layer containing the total number of
      *     bytes parsed as well as the parsed packet itself
      */
-    private PacketLayerParseResult parsePacket(
+    private static PacketLayerParseResult parsePacket(
             SshContext context, byte[] packetBytes, int startPosition) {
         try {
             return context.getPacketLayer().parsePacket(packetBytes, startPosition);
@@ -190,12 +195,12 @@ public class ReceiveMessageHelper {
      * @param receivedMessages List of received messages
      * @return True, if receiving should continue. False otherwise.
      */
-    private boolean testShouldContinueReceiving(
+    private static boolean testShouldContinueReceiving(
             SshContext context,
             List<ProtocolMessage<?>> expectedMessages,
             List<ProtocolMessage<?>> receivedMessages) {
         boolean receivedDisconnect =
-                receivedMessages.stream().anyMatch(m -> m instanceof DisconnectMessage);
+                receivedMessages.stream().anyMatch(message -> message instanceof DisconnectMessage);
         if (receivedDisconnect && context.getConfig().isStopReceivingAfterDisconnect()) {
             return false;
         }
@@ -209,13 +214,15 @@ public class ReceiveMessageHelper {
      * @param receivedMessages List of received messages
      * @return A boolean value indicating whether an expected message is missing
      */
-    private boolean isExpectedMessageMissing(
+    private static boolean isExpectedMessageMissing(
             List<ProtocolMessage<?>> expectedMessages, List<ProtocolMessage<?>> receivedMessages) {
         ArrayList<ProtocolMessage<?>> unmatchedMessages = new ArrayList<>(receivedMessages);
         for (ProtocolMessage<?> expectedMessage : expectedMessages) {
             ProtocolMessage<?> matchingMessage =
                     unmatchedMessages.stream()
-                            .filter(m -> m.getClass().equals(expectedMessage.getClass()))
+                            .filter(
+                                    message ->
+                                            message.getClass().equals(expectedMessage.getClass()))
                             .findAny()
                             .orElse(null);
             if (matchingMessage == null) {

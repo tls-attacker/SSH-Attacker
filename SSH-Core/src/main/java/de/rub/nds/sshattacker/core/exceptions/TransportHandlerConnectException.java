@@ -9,22 +9,27 @@ package de.rub.nds.sshattacker.core.exceptions;
 
 public class TransportHandlerConnectException extends RuntimeException {
 
-    public TransportHandlerConnectException() {}
-
-    public TransportHandlerConnectException(String string) {
-        super(string);
+    public TransportHandlerConnectException() {
+        super();
     }
 
-    public TransportHandlerConnectException(String string, Throwable throwable) {
-        super(string, throwable);
+    public TransportHandlerConnectException(String message) {
+        super(message);
     }
 
-    public TransportHandlerConnectException(Throwable throwable) {
-        super(throwable);
+    public TransportHandlerConnectException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    public TransportHandlerConnectException(Throwable cause) {
+        super(cause);
     }
 
     public TransportHandlerConnectException(
-            String string, Throwable throwable, boolean bln, boolean bln1) {
-        super(string, throwable, bln, bln1);
+            String message,
+            Throwable cause,
+            boolean enableSuppression,
+            boolean writableStackTrace) {
+        super(message, cause, enableSuppression, writableStackTrace);
     }
 }

@@ -24,9 +24,8 @@ public class UserAuthUnknownMessageSerializer
 
     private void serializeMethodSpecificFields() {
         LOGGER.debug(
-                "Method Specific Fields: "
-                        + ArrayConverter.bytesToHexString(
-                                message.getMethodSpecificFields().getValue()));
+                "Method Specific Fields: {}",
+                ArrayConverter.bytesToHexString(message.getMethodSpecificFields().getValue()));
         appendBytes(message.getMethodSpecificFields().getValue());
     }
 

@@ -19,17 +19,17 @@ public abstract class ChannelMessageParser<T extends ChannelMessage<T>>
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public ChannelMessageParser(byte[] array) {
+    protected ChannelMessageParser(byte[] array) {
         super(array);
     }
 
-    public ChannelMessageParser(byte[] array, int startPosition) {
+    protected ChannelMessageParser(byte[] array, int startPosition) {
         super(array, startPosition);
     }
 
     private void parseRecipientChannel() {
         message.setRecipientChannelId(parseIntField(DataFormatConstants.UINT32_SIZE));
-        LOGGER.debug("Recipient channel id: " + message.getRecipientChannelId().getValue());
+        LOGGER.debug("Recipient channel id: {}", message.getRecipientChannelId().getValue());
     }
 
     @Override

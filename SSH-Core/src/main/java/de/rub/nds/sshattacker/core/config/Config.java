@@ -230,7 +230,7 @@ public class Config implements Serializable {
     private KeyExchangeAlgorithm defaultRsaKeyExchangeAlgorithm;
     /**
      * Default Hybrid key exchange algorithm, which is used if a new Hybrid key exchange is
-     * instantiaded without a matching key exchange algorithm negotiated.
+     * instantiated without a matching key exchange algorithm negotiated.
      */
     private KeyExchangeAlgorithm defaultHybridKeyExchangeAlgorithm;
     /**
@@ -323,7 +323,7 @@ public class Config implements Serializable {
      */
     private int defaultTerminalWidthPixels;
     /**
-     * Default terminal width in colums, if a pseudo terminal is requested or changed
+     * Default terminal width in columns, if a pseudo terminal is requested or changed
      * (ChannelRequestPty/ChannelRequestWindowChangeMessage)
      */
     private int defaultTerminalWidthColumns;
@@ -342,7 +342,7 @@ public class Config implements Serializable {
      * pseudo terminal(pty-req)
      */
     private String defaultTermEnvVariable;
-    /** Default name of a predefined subsysten, which should be executed on the remote */
+    /** Default name of a predefined subsystem, which should be executed on the remote */
     private String defaultSubsystemName;
     /**
      * The default break length, which is requested when a break operation is performed, by sending
@@ -353,7 +353,7 @@ public class Config implements Serializable {
 
     // region Workflow settings
     /** The path to load workflow trace from. The workflow trace must be stored in an XML-File. */
-    private String workflowInput = null;
+    private String workflowInput;
     /**
      * The type of workflow trace, that should be executed by the Ssh client or server. The workflow
      * configuration factory uses the type to create the belonging workflow trace.
@@ -367,7 +367,7 @@ public class Config implements Serializable {
     @XmlElementWrapper
     private List<FilterType> outputFilters;
     /** The path to save the workflow trace as output */
-    private String workflowOutput = null;
+    private String workflowOutput;
     /**
      * Defines if the output filters should be applied on the workflowTrace or on a fresh workflow
      * trace copy.
@@ -386,9 +386,7 @@ public class Config implements Serializable {
      * workflow
      */
     private Boolean workflowExecutorShouldClose = true;
-    /**
-     * Defines if the workflow trace should be resetted before saving, by resetting all SshActions.
-     */
+    /** Defines if the workflow trace should be reset before saving, by resetting all SshActions. */
     private Boolean resetWorkflowtracesBeforeSaving = false;
     // endregion
 
@@ -414,13 +412,14 @@ public class Config implements Serializable {
     // endregion
 
     /** The path to save the Config as file. */
-    private String configOutput = null;
+    private String configOutput;
 
     /** Fallback for type of chooser, to initialize the chooser in the SshContext */
     private ChooserType chooserType = ChooserType.DEFAULT;
 
     // region Constructors and Initialization
     public Config() {
+        super();
 
         defaultClientConnection = new OutboundConnection("client", 65222, "localhost");
         defaultServerConnection = new InboundConnection("server", 65222, "localhost");
@@ -839,8 +838,8 @@ public class Config implements Serializable {
         return ConfigIO.read(stream);
     }
 
-    public static Config createConfig(File f) {
-        return ConfigIO.read(f);
+    public static Config createConfig(File file) {
+        return ConfigIO.read(file);
     }
 
     public static Config createConfig(InputStream stream) {
@@ -855,18 +854,18 @@ public class Config implements Serializable {
     }
 
     public static Config createEmptyConfig() {
-        Config c = new Config();
-        for (Field field : c.getClass().getDeclaredFields()) {
+        Config config = new Config();
+        for (Field field : config.getClass().getDeclaredFields()) {
             if (!field.getName().equals("LOGGER") && !field.getType().isPrimitive()) {
                 field.setAccessible(true);
                 try {
-                    field.set(c, null);
+                    field.set(config, null);
                 } catch (IllegalAccessException e) {
                     LOGGER.warn("Could not set field in Config!", e);
                 }
             }
         }
-        return c;
+        return config;
     }
     // endregion
 
@@ -1291,12 +1290,12 @@ public class Config implements Serializable {
         this.enforceSettings = enforceSettings;
     }
 
-    public void setHostKeys(final List<SshPublicKey<?, ?>> hostKeys) {
+    public void setHostKeys(List<SshPublicKey<?, ?>> hostKeys) {
         this.hostKeys = Objects.requireNonNull(hostKeys);
     }
     // endregion
 
-    // region Getters for Authentification
+    // region Getters for authentication
     public AuthenticationMethod getAuthenticationMethod() {
         return authenticationMethod;
     }
@@ -1332,10 +1331,10 @@ public class Config implements Serializable {
      * @see #setUserKeyAlgorithms
      */
     public Optional<List<PublicKeyAlgorithm>> getUserKeyAlgorithms() {
-        return Optional.ofNullable(this.userKeyAlgorithms);
+        return Optional.ofNullable(userKeyAlgorithms);
     }
     // endregion
-    // region Setters for Authentification
+    // region Setters for authentication
     public void setAuthenticationMethod(AuthenticationMethod authenticationMethod) {
         this.authenticationMethod = authenticationMethod;
     }
@@ -1357,7 +1356,7 @@ public class Config implements Serializable {
         this.preConfiguredAuthResponses = preConfiguredAuthResponses;
     }
 
-    public void setUserKeys(final List<SshPublicKey<?, ?>> userKeys) {
+    public void setUserKeys(List<SshPublicKey<?, ?>> userKeys) {
         this.userKeys = Objects.requireNonNull(userKeys);
     }
 

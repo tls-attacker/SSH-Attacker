@@ -9,7 +9,7 @@ package de.rub.nds.sshattacker.core.crypto.ec;
 
 import de.rub.nds.sshattacker.core.constants.NamedEcGroup;
 
-public class CurveFactory {
+public final class CurveFactory {
 
     /**
      * Returns a named elliptic curve.
@@ -81,5 +81,7 @@ public class CurveFactory {
         }
     }
 
-    private CurveFactory() {}
+    private CurveFactory() {
+        super();
+    }
 }

@@ -25,12 +25,12 @@ public class ClientCommandConfig extends SshDelegateConfig {
 
     public ClientCommandConfig(GeneralDelegate delegate) {
         super(delegate);
-        this.clientDelegate = new ClientDelegate();
-        this.configOutputDelegate = new ConfigOutputDelegate();
-        this.timeoutDelegate = new TimeoutDelegate();
-        this.workflowInputDelegate = new WorkflowInputDelegate();
-        this.workflowOutputDelegate = new WorkflowOutputDelegate();
-        this.workflowTypeDelegate = new WorkflowTypeDelegate();
+        clientDelegate = new ClientDelegate();
+        configOutputDelegate = new ConfigOutputDelegate();
+        timeoutDelegate = new TimeoutDelegate();
+        workflowInputDelegate = new WorkflowInputDelegate();
+        workflowOutputDelegate = new WorkflowOutputDelegate();
+        workflowTypeDelegate = new WorkflowTypeDelegate();
         addDelegate(clientDelegate);
         addDelegate(configOutputDelegate);
         addDelegate(timeoutDelegate);

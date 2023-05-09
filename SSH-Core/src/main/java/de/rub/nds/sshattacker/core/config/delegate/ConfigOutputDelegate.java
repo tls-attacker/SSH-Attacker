@@ -18,16 +18,14 @@ public class ConfigOutputDelegate extends Delegate {
             description =
                     "Write XML representation "
                             + "of the actual config used during execution to this file")
-    private String configOutput = null;
+    private String configOutput;
 
-    public ConfigOutputDelegate() {}
-
-    public String getWorkflowOutput() {
+    public String getConfigOutput() {
         return configOutput;
     }
 
-    public void setWorkflowOutput(String workflowOutput) {
-        this.configOutput = workflowOutput;
+    public void setConfigOutput(String configOutput) {
+        this.configOutput = configOutput;
     }
 
     @Override

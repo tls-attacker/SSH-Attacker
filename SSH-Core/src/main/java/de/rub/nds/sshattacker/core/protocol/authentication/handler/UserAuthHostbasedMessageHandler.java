@@ -52,7 +52,7 @@ public class UserAuthHostbasedMessageHandler extends SshMessageHandler<UserAuthH
                 VerifyingSignature verifyingSignature =
                         SignatureFactory.getVerifyingSignature(hostKeyAlgorithm, hostKey);
                 if (verifyingSignature.verify(
-                        this.prepareSignatureInput(), signature.getSignatureBytes())) {
+                        prepareSignatureInput(), signature.getSignatureBytes())) {
                     LOGGER.info("Signature verification successful: Signature is valid.");
                 } else {
                     LOGGER.warn(

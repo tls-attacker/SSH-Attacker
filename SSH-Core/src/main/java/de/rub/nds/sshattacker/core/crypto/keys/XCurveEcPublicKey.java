@@ -40,10 +40,12 @@ public class XCurveEcPublicKey extends CustomPublicKey {
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] coordinate;
 
-    @SuppressWarnings("unused")
-    public XCurveEcPublicKey() {}
+    public XCurveEcPublicKey() {
+        super();
+    }
 
     public XCurveEcPublicKey(byte[] coordinate, NamedEcGroup group) {
+        super();
         if (!group.isRFC7748Curve()) {
             throw new IllegalArgumentException(
                     "XCurveEcPublicKey does not support named group " + group);

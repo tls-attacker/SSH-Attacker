@@ -312,7 +312,7 @@ public enum PublicKeyAlgorithm {
 
     static {
         Map<String, PublicKeyAlgorithm> mutableMap = new TreeMap<>();
-        for (PublicKeyAlgorithm algorithm : PublicKeyAlgorithm.values()) {
+        for (PublicKeyAlgorithm algorithm : values()) {
             mutableMap.put(algorithm.name, algorithm);
         }
         map = Collections.unmodifiableMap(mutableMap);

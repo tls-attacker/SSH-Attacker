@@ -37,11 +37,11 @@ public class SntrupKeyExchangeTest {
 
         sntrupKeyExchangeClient.generateLocalKeyPair();
         assertNotNull(sntrupKeyExchangeClient.getLocalKeyPair());
-        assertNotNull(sntrupKeyExchangeClient.getLocalKeyPair().getPrivate());
-        assertNotNull(sntrupKeyExchangeClient.getLocalKeyPair().getPublic());
+        assertNotNull(sntrupKeyExchangeClient.getLocalKeyPair().getPrivateKey());
+        assertNotNull(sntrupKeyExchangeClient.getLocalKeyPair().getPublicKey());
 
         sntrupKeyExchangeServer.setRemotePublicKey(
-                sntrupKeyExchangeClient.getLocalKeyPair().getPublic().getEncoded());
+                sntrupKeyExchangeClient.getLocalKeyPair().getPublicKey().getEncoded());
         byte[] ciphertext = sntrupKeyExchangeServer.encryptSharedSecret();
         assertNotNull(sntrupKeyExchangeServer.getSharedSecret());
         assertNotNull(sntrupKeyExchangeServer.getEncryptedSharedSecret());

@@ -27,9 +27,13 @@ import java.security.interfaces.RSAPublicKey;
 import java.util.List;
 
 /** Utility class to fetch public keys from SSH servers */
-public class KeyFetcher {
+public final class KeyFetcher {
 
     private static final Logger LOGGER = LogManager.getLogger();
+
+    private KeyFetcher() {
+        super();
+    }
 
     /** Fetches the transient public key from an RSA key-exchange */
     public static RSAPublicKey fetchRsaTransientKey(Config config) {
@@ -73,7 +77,7 @@ public class KeyFetcher {
 
         List<ProtocolMessage<?>> receivedMessages = receiveAction.getReceivedMessages();
 
-        if (receivedMessages.size() > 0
+        if (!receivedMessages.isEmpty()
                 && receivedMessages.get(0) instanceof RsaKeyExchangePubkeyMessage) {
             return ((RsaKeyExchangePubkeyMessage) receivedMessages.get(0))
                     .getTransientPublicKey()

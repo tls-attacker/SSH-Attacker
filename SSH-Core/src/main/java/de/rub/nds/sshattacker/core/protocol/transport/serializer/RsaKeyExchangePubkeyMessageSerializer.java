@@ -24,19 +24,19 @@ public class RsaKeyExchangePubkeyMessageSerializer
     }
 
     public void serializeHostKeyBytes() {
-        LOGGER.debug("Host key bytes length: " + message.getHostKeyBytesLength().getValue());
+        LOGGER.debug("Host key bytes length: {}", message.getHostKeyBytesLength().getValue());
         appendInt(
                 message.getHostKeyBytesLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
-        LOGGER.debug("Host key bytes: " + message.getHostKeyBytes());
+        LOGGER.debug("Host key bytes: {}", message.getHostKeyBytes());
         appendBytes(message.getHostKeyBytes().getValue());
     }
 
     public void serializeTransientPublicKey() {
-        LOGGER.debug("Transient public key length: " + message.getTransientPublicKeyBytesLength());
+        LOGGER.debug("Transient public key length: {}", message.getTransientPublicKeyBytesLength());
         appendInt(
                 message.getTransientPublicKeyBytesLength().getValue(),
                 DataFormatConstants.STRING_SIZE_LENGTH);
-        LOGGER.debug("Transient public key: " + message.getTransientPublicKeyBytes());
+        LOGGER.debug("Transient public key: {}", message.getTransientPublicKeyBytes());
         appendBytes(message.getTransientPublicKeyBytes().getValue());
     }
 

@@ -28,13 +28,13 @@ public class KeyExchangeInitMessageSerializer extends SshMessageSerializer<KeyEx
     }
 
     private void serializeCookie() {
-        LOGGER.debug("Cookie: " + message.getCookie());
+        LOGGER.debug("Cookie: {}", message.getCookie());
         appendBytes(message.getCookie().getValue());
     }
 
     private void serializeKeyExchangeAlgorithms() {
         LOGGER.debug(
-                "Key exchange algorithms: " + message.getKeyExchangeAlgorithmsLength().getValue());
+                "Key exchange algorithms: {}", message.getKeyExchangeAlgorithmsLength().getValue());
         appendInt(
                 message.getKeyExchangeAlgorithmsLength().getValue(),
                 DataFormatConstants.STRING_SIZE_LENGTH);
@@ -46,8 +46,8 @@ public class KeyExchangeInitMessageSerializer extends SshMessageSerializer<KeyEx
 
     private void serializeServerHostKeyAlgorithms() {
         LOGGER.debug(
-                "Server host key algorithms: "
-                        + message.getServerHostKeyAlgorithmsLength().getValue());
+                "Server host key algorithms: {}",
+                message.getServerHostKeyAlgorithmsLength().getValue());
         appendInt(
                 message.getServerHostKeyAlgorithmsLength().getValue(),
                 DataFormatConstants.STRING_SIZE_LENGTH);
@@ -59,8 +59,8 @@ public class KeyExchangeInitMessageSerializer extends SshMessageSerializer<KeyEx
 
     private void serializeEncryptionAlgorithmsClientToServer() {
         LOGGER.debug(
-                "Encryption algorithms length (client to server): "
-                        + message.getEncryptionAlgorithmsClientToServerLength().getValue());
+                "Encryption algorithms length (client to server): {}",
+                message.getEncryptionAlgorithmsClientToServerLength().getValue());
         appendInt(
                 message.getEncryptionAlgorithmsClientToServerLength().getValue(),
                 DataFormatConstants.STRING_SIZE_LENGTH);
@@ -74,8 +74,8 @@ public class KeyExchangeInitMessageSerializer extends SshMessageSerializer<KeyEx
 
     private void serializeEncryptionAlgorithmsServerToClient() {
         LOGGER.debug(
-                "Encryption algorithms length (server to client): "
-                        + message.getEncryptionAlgorithmsServerToClientLength().getValue());
+                "Encryption algorithms length (server to client): {}",
+                message.getEncryptionAlgorithmsServerToClientLength().getValue());
         appendInt(
                 message.getEncryptionAlgorithmsServerToClientLength().getValue(),
                 DataFormatConstants.STRING_SIZE_LENGTH);
@@ -89,8 +89,8 @@ public class KeyExchangeInitMessageSerializer extends SshMessageSerializer<KeyEx
 
     private void serializeMacAlgorithmsClientToServer() {
         LOGGER.debug(
-                "MAC algorithms length (client to server): "
-                        + message.getMacAlgorithmsClientToServerLength().getValue());
+                "MAC algorithms length (client to server): {}",
+                message.getMacAlgorithmsClientToServerLength().getValue());
         appendInt(
                 message.getMacAlgorithmsClientToServerLength().getValue(),
                 DataFormatConstants.STRING_SIZE_LENGTH);
@@ -103,8 +103,8 @@ public class KeyExchangeInitMessageSerializer extends SshMessageSerializer<KeyEx
 
     private void serializeMacAlgorithmsServerToClient() {
         LOGGER.debug(
-                "MAC algorithms length (server to client): "
-                        + message.getMacAlgorithmsServerToClientLength().getValue());
+                "MAC algorithms length (server to client): {}",
+                message.getMacAlgorithmsServerToClientLength().getValue());
         appendInt(
                 message.getMacAlgorithmsServerToClientLength().getValue(),
                 DataFormatConstants.STRING_SIZE_LENGTH);
@@ -117,8 +117,8 @@ public class KeyExchangeInitMessageSerializer extends SshMessageSerializer<KeyEx
 
     private void serializeCompressionMethodsClientToServer() {
         LOGGER.debug(
-                "Compression algorithms length (client to server): "
-                        + message.getCompressionMethodsClientToServerLength().getValue());
+                "Compression algorithms length (client to server): {}",
+                message.getCompressionMethodsClientToServerLength().getValue());
         appendInt(
                 message.getCompressionMethodsClientToServerLength().getValue(),
                 DataFormatConstants.STRING_SIZE_LENGTH);
@@ -132,8 +132,8 @@ public class KeyExchangeInitMessageSerializer extends SshMessageSerializer<KeyEx
 
     private void serializeCompressionMethodsServerToClient() {
         LOGGER.debug(
-                "Compression algorithms length (server to client): "
-                        + message.getCompressionMethodsServerToClientLength().getValue());
+                "Compression algorithms length (server to client): {}",
+                message.getCompressionMethodsServerToClientLength().getValue());
         appendInt(
                 message.getCompressionMethodsServerToClientLength().getValue(),
                 DataFormatConstants.STRING_SIZE_LENGTH);
@@ -147,8 +147,8 @@ public class KeyExchangeInitMessageSerializer extends SshMessageSerializer<KeyEx
 
     private void serializeLanguagesClientToServer() {
         LOGGER.debug(
-                "Languages length (client to server): "
-                        + message.getLanguagesClientToServerLength().getValue());
+                "Languages length (client to server): {}",
+                message.getLanguagesClientToServerLength().getValue());
         appendInt(
                 message.getLanguagesClientToServerLength().getValue(),
                 DataFormatConstants.STRING_SIZE_LENGTH);
@@ -160,8 +160,8 @@ public class KeyExchangeInitMessageSerializer extends SshMessageSerializer<KeyEx
 
     private void serializeLanguagesServerToClient() {
         LOGGER.debug(
-                "Languages length (server to client): "
-                        + message.getLanguagesServerToClientLength().getValue());
+                "Languages length (server to client): {}",
+                message.getLanguagesServerToClientLength().getValue());
         appendInt(
                 message.getLanguagesServerToClientLength().getValue(),
                 DataFormatConstants.STRING_SIZE_LENGTH);
@@ -173,14 +173,13 @@ public class KeyExchangeInitMessageSerializer extends SshMessageSerializer<KeyEx
 
     private void serializeFirstKeyExchangePacketFollows() {
         LOGGER.debug(
-                "First key exchange packet follows: "
-                        + Converter.byteToBoolean(
-                                message.getFirstKeyExchangePacketFollows().getValue()));
+                "First key exchange packet follows: {}",
+                Converter.byteToBoolean(message.getFirstKeyExchangePacketFollows().getValue()));
         appendByte(message.getFirstKeyExchangePacketFollows().getValue());
     }
 
     private void serializeReserved() {
-        LOGGER.debug("Reserved: " + message.getReserved().getValue());
+        LOGGER.debug("Reserved: {}", message.getReserved().getValue());
         appendInt(message.getReserved().getValue(), DataFormatConstants.UINT32_SIZE);
     }
 

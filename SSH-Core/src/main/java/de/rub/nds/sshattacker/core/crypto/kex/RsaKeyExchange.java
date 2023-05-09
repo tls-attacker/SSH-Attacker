@@ -50,15 +50,16 @@ public class RsaKeyExchange extends KeyEncapsulation {
     private int transientKeyLength;
 
     protected RsaKeyExchange(KeyExchangeAlgorithm algorithm) {
+        super();
         this.algorithm = algorithm;
         switch (algorithm) {
             case RSA1024_SHA1:
-                this.hashLength = 160;
-                this.transientKeyLength = 1024;
+                hashLength = 160;
+                transientKeyLength = 1024;
                 break;
             case RSA2048_SHA256:
-                this.hashLength = 256;
-                this.transientKeyLength = 2048;
+                hashLength = 256;
+                transientKeyLength = 2048;
                 break;
             default:
                 throw new IllegalArgumentException(
@@ -70,8 +71,8 @@ public class RsaKeyExchange extends KeyEncapsulation {
         if (algorithm == null || algorithm.getFlowType() != KeyExchangeFlowType.RSA) {
             algorithm = context.getConfig().getDefaultRsaKeyExchangeAlgorithm();
             LOGGER.warn(
-                    "Trying to instantiate a new RSA key exchange without a matching key exchange algorithm negotiated, falling back to "
-                            + algorithm);
+                    "Trying to instantiate a new RSA key exchange without a matching key exchange algorithm negotiated, falling back to {}",
+                    algorithm);
         }
         return new RsaKeyExchange(algorithm);
     }
@@ -113,7 +114,7 @@ public class RsaKeyExchange extends KeyEncapsulation {
                                     decryptedSecretMpint,
                                     0,
                                     DataFormatConstants.MPINT_SIZE_LENGTH));
-            this.sharedSecret =
+            sharedSecret =
                     Arrays.copyOfRange(
                             decryptedSecretMpint,
                             DataFormatConstants.MPINT_SIZE_LENGTH,
@@ -143,7 +144,7 @@ public class RsaKeyExchange extends KeyEncapsulation {
             CustomRsaPublicKey publicKey = new CustomRsaPublicKey((RSAPublicKey) key.getPublic());
             CustomRsaPrivateKey privateKey =
                     new CustomRsaPrivateKey((RSAPrivateKey) key.getPrivate());
-            this.transientKey = new SshPublicKey<>(PublicKeyFormat.SSH_RSA, publicKey, privateKey);
+            transientKey = new SshPublicKey<>(PublicKeyFormat.SSH_RSA, publicKey, privateKey);
         } catch (NoSuchAlgorithmException e) {
             throw new CryptoException(
                     "Unable to generate RSA transient key - RSA key pair generator is not available");
@@ -205,7 +206,7 @@ public class RsaKeyExchange extends KeyEncapsulation {
 
     @Override
     public void setSharedSecret(byte[] sharedSecretBytes) {
-        this.sharedSecret = sharedSecretBytes;
+        sharedSecret = sharedSecretBytes;
     }
 
     @Override

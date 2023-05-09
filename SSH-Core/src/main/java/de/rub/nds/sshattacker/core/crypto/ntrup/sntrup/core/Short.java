@@ -12,25 +12,28 @@ import cc.redberry.rings.poly.univar.UnivariatePolynomialZ64;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.LongStream;
 
-public class Short {
+public final class Short {
     private final SntrupParameterSet set;
     private final UnivariatePolynomialZ64 shrt;
     private final UnivariatePolynomialZ64 mod;
 
     private Short(SntrupParameterSet set) {
+        super();
         this.set = set;
-        this.mod = UnivariatePolynomialZ64.parse("x^" + set.getP() + "-x-1");
-        this.shrt = generateShort();
+        mod = UnivariatePolynomialZ64.parse("x^" + set.getP() + "-x-1");
+        shrt = generateShort();
         assert (isShort(shrt.stream().toArray(), set));
     }
 
     private Short(
             SntrupParameterSet set, UnivariatePolynomialZ64 shrt, UnivariatePolynomialZ64 mod) {
+        super();
         this.set = set;
         this.mod = mod;
         this.shrt = shrt;
@@ -50,7 +53,7 @@ public class Short {
     }
 
     public LongStream stream() {
-        return shrt.stream().map(c -> c == 2 ? -1 : c);
+        return shrt.stream().map(l -> l == 2 ? -1 : l);
     }
 
     public static Short createShort(SntrupParameterSet set, long[] coefficients) {
@@ -98,7 +101,7 @@ public class Short {
     public byte[] encode() {
         ArrayList<Integer> coefficients =
                 shrt.stream()
-                        .mapToInt(c -> Long.valueOf(c + 1).intValue())
+                        .mapToInt(l -> Long.valueOf(l + 1).intValue())
                         .boxed()
                         .collect(Collectors.toCollection(ArrayList::new));
         while (coefficients.size() < set.getP()) {
@@ -141,7 +144,7 @@ public class Short {
                                                 - 1)
                         .toArray();
 
-        return Short.createShort(set, decodedCoefficients);
+        return createShort(set, decodedCoefficients);
     }
 
     @Override
@@ -150,23 +153,15 @@ public class Short {
     }
 
     @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((set == null) ? 0 : set.hashCode());
-        result = prime * result + ((shrt == null) ? 0 : shrt.hashCode());
-        return result;
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        Short aShort = (Short) obj;
+        return set == aShort.set && Objects.equals(shrt, aShort.shrt);
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (obj == null) return false;
-        if (getClass() != obj.getClass()) return false;
-        Short other = (Short) obj;
-        if (set != other.set) return false;
-        if (shrt == null) {
-            return other.shrt == null;
-        } else return shrt.equals(other.shrt);
+    public int hashCode() {
+        return Objects.hash(set, shrt);
     }
 }

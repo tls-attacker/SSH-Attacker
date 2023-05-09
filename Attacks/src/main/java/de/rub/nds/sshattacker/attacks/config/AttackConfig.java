@@ -13,28 +13,31 @@ import com.beust.jcommander.ParametersDelegate;
 import de.rub.nds.sshattacker.core.config.SshDelegateConfig;
 import de.rub.nds.sshattacker.core.config.delegate.GeneralDelegate;
 import de.rub.nds.sshattacker.core.config.delegate.TimeoutDelegate;
+import de.rub.nds.sshattacker.core.exceptions.NotImplementedException;
 
 /**
  * Base Config for attacks that can be extended to support additional configuration options All
  * attacks should define an attack command to be executable.
  */
-public abstract class AttackConfig extends SshDelegateConfig {
+public class AttackConfig extends SshDelegateConfig {
 
     @Parameter(
             names = {"-skipConnectionCheck", "-skip_connection_check"},
             description =
                     "If set to true the Attacker will not check if the " + "target is reachable.")
-    private boolean skipConnectionCheck = false;
+    private boolean skipConnectionCheck;
 
     @ParametersDelegate private final TimeoutDelegate timeoutDelegate;
 
-    public AttackConfig(GeneralDelegate delegate) {
+    protected AttackConfig(GeneralDelegate delegate) {
         super(delegate);
-        this.timeoutDelegate = new TimeoutDelegate();
+        timeoutDelegate = new TimeoutDelegate();
         addDelegate(timeoutDelegate);
     }
 
-    public abstract boolean isExecuteAttack();
+    public boolean isExecuteAttack() {
+        throw new NotImplementedException("AttackConfig::isExecuteAttack");
+    }
 
     public boolean isSkipConnectionCheck() {
         return skipConnectionCheck;

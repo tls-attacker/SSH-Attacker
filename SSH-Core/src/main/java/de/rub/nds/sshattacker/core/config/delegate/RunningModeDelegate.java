@@ -21,8 +21,6 @@ public class RunningModeDelegate extends Delegate {
             converter = RunningModeConverter.class)
     private RunningModeType runningMode = RunningModeType.CLIENT;
 
-    public RunningModeDelegate() {}
-
     public RunningModeType getRunningMode() {
         return runningMode;
     }

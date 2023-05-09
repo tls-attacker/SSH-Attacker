@@ -87,7 +87,7 @@ public class UserAuthHostbasedMessagePreparator
                             signatureEncoding.getName().length(),
                             DataFormatConstants.STRING_SIZE_LENGTH));
             signatureOutput.write(signatureEncoding.getName().getBytes(StandardCharsets.US_ASCII));
-            byte[] rawSignature = signingSignature.sign(this.prepareSignatureInput());
+            byte[] rawSignature = signingSignature.sign(prepareSignatureInput());
             signatureOutput.write(
                     ArrayConverter.intToBytes(
                             rawSignature.length, DataFormatConstants.STRING_SIZE_LENGTH));

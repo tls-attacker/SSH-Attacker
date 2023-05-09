@@ -32,9 +32,10 @@ public class Pkcs1Vector implements Vector {
      * @param value Plain value
      */
     public Pkcs1Vector(String name, String shortName, byte[] value) {
+        super();
         this.name = name;
         this.shortName = shortName;
-        this.plainValue = value;
+        plainValue = value;
     }
 
     @Override
@@ -72,29 +73,19 @@ public class Pkcs1Vector implements Vector {
     }
 
     @Override
-    public int hashCode() {
-        int hash = 5;
-        hash = 41 * hash + Arrays.hashCode(this.plainValue);
-        hash = 41 * hash + Arrays.hashCode(this.encryptedValue);
-        return hash;
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        Pkcs1Vector that = (Pkcs1Vector) obj;
+        return Arrays.equals(plainValue, that.plainValue)
+                && Arrays.equals(encryptedValue, that.encryptedValue);
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final Pkcs1Vector other = (Pkcs1Vector) obj;
-        if (!Arrays.equals(this.plainValue, other.plainValue)) {
-            return false;
-        }
-        return Arrays.equals(this.encryptedValue, other.encryptedValue);
+    public int hashCode() {
+        int result = Arrays.hashCode(plainValue);
+        result = 31 * result + Arrays.hashCode(encryptedValue);
+        return result;
     }
 
     @Override

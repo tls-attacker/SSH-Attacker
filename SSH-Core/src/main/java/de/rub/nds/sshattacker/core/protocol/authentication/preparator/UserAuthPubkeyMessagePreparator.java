@@ -44,8 +44,7 @@ public class UserAuthPubkeyMessagePreparator
     boolean   TRUE
     string    public key algorithm name
     string    public key to be used for authentication */
-    private byte[] getSignatureBlob(
-            final PublicKeyAlgorithm algorithm, final SshPublicKey<?, ?> pk) {
+    private byte[] getSignatureBlob(PublicKeyAlgorithm algorithm, SshPublicKey<?, ?> pk) {
 
         // generate the byte array for signing
         // message ID should always be '50'
@@ -110,8 +109,7 @@ public class UserAuthPubkeyMessagePreparator
     Signatures are encoded as follows:
     string   "ecdsa-sha2-[identifier]"
     string   ecdsa_signature_blob */
-    private byte[] getEncodedSignature(
-            final PublicKeyAlgorithm algorithm, final SshPublicKey<?, ?> pk) {
+    private byte[] getEncodedSignature(PublicKeyAlgorithm algorithm, SshPublicKey<?, ?> pk) {
         try {
             byte[] signatureBlob = getSignatureBlob(algorithm, pk);
             ByteArrayOutputStream encodedSignatureOutput = new ByteArrayOutputStream();
@@ -146,8 +144,8 @@ public class UserAuthPubkeyMessagePreparator
                 .findFirst()
                 .ifPresentOrElse(
                         keyAlgorithmCombination -> {
-                            final SshPublicKey<?, ?> pk = keyAlgorithmCombination.getKey();
-                            final PublicKeyAlgorithm publicKeyAlgorithm =
+                            SshPublicKey<?, ?> pk = keyAlgorithmCombination.getKey();
+                            PublicKeyAlgorithm publicKeyAlgorithm =
                                     keyAlgorithmCombination.getValue();
 
                             getObject().setPubkeyAlgName(publicKeyAlgorithm.getName(), true);

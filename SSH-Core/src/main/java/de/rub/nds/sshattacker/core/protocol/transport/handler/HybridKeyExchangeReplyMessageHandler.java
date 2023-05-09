@@ -57,16 +57,15 @@ public class HybridKeyExchangeReplyMessageHandler
                 .getKeyAgreement()
                 .setRemotePublicKey(message.getPublicKey().getValue());
         LOGGER.info(
-                "RemoteKey Agreement = "
-                        + ArrayConverter.bytesToRawHexString(message.getPublicKey().getValue()));
+                "RemoteKey Agreement = {}",
+                ArrayConverter.bytesToRawHexString(message.getPublicKey().getValue()));
         context.getChooser()
                 .getHybridKeyExchange()
                 .getKeyEncapsulation()
                 .setEncryptedSharedSecret(message.getCombinedKeyShare().getValue());
         LOGGER.info(
-                "Ciphertext Encapsulation = "
-                        + ArrayConverter.bytesToRawHexString(
-                                message.getCombinedKeyShare().getValue()));
+                "Ciphertext Encapsulation = {}",
+                ArrayConverter.bytesToRawHexString(message.getCombinedKeyShare().getValue()));
         byte[] combined;
         switch (context.getChooser().getHybridKeyExchange().getCombiner()) {
             case CLASSICAL_CONCATENATE_POSTQUANTUM:
@@ -85,9 +84,8 @@ public class HybridKeyExchangeReplyMessageHandler
                 break;
             default:
                 LOGGER.warn(
-                        "Combiner"
-                                + context.getChooser().getHybridKeyExchange().getCombiner()
-                                + " is not supported.");
+                        "Combiner{} is not supported.",
+                        context.getChooser().getHybridKeyExchange().getCombiner());
                 break;
         }
     }

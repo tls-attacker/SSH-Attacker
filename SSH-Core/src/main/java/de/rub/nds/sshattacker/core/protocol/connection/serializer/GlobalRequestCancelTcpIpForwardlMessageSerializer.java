@@ -26,16 +26,17 @@ public class GlobalRequestCancelTcpIpForwardlMessageSerializer
     }
 
     private void serializeIPAddressToBind() {
-        LOGGER.debug("IP address to bind length: " + message.getIpAddressToBindLength().getValue());
+        LOGGER.debug(
+                "IP address to bind length: {}", message.getIpAddressToBindLength().getValue());
         appendInt(
                 message.getIpAddressToBindLength().getValue(),
                 DataFormatConstants.STRING_SIZE_LENGTH);
-        LOGGER.debug("IP address to bind: " + message.getIpAddressToBind().getValue());
+        LOGGER.debug("IP address to bind: {}", message.getIpAddressToBind().getValue());
         appendString(message.getIpAddressToBind().getValue(), StandardCharsets.US_ASCII);
     }
 
     private void serializePortToBind() {
-        LOGGER.debug("Port to bind: " + message.getPortToBind().getValue());
+        LOGGER.debug("Port to bind: {}", message.getPortToBind().getValue());
         appendInt(message.getPortToBind().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
     }
 

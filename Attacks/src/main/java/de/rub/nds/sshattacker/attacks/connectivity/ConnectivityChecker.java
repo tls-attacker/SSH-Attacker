@@ -37,6 +37,7 @@ public class ConnectivityChecker {
     private final Connection connection;
 
     public ConnectivityChecker(Connection connection) {
+        super();
         this.connection = connection;
         if (connection instanceof AliasedConnection) {
             ((AliasedConnection) connection).normalize((AliasedConnection) connection);
@@ -75,7 +76,7 @@ public class ConnectivityChecker {
     /**
      * @return true, if the server speaks SSH
      */
-    public boolean speaksSsh(Config config) {
+    public static boolean speaksSsh(Config config) {
         WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(config);
         WorkflowTrace trace =
                 factory.createWorkflowTrace(
@@ -85,7 +86,7 @@ public class ConnectivityChecker {
         State state = new State(config, trace);
         WorkflowExecutor executor = new DefaultWorkflowExecutor(state);
         executor.executeWorkflow();
-        if (receiveAction.getReceivedMessages().size() > 0) {
+        if (!receiveAction.getReceivedMessages().isEmpty()) {
             return receiveAction.getReceivedMessages().get(0) instanceof VersionExchangeMessage;
         } else {
             return false;

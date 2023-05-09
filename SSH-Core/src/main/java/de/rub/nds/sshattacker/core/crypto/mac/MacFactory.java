@@ -11,7 +11,7 @@ import de.rub.nds.sshattacker.core.constants.MacAlgorithm;
 
 import java.security.NoSuchAlgorithmException;
 
-public class MacFactory {
+public final class MacFactory {
 
     public static AbstractMac getMac(MacAlgorithm algorithm, byte[] key)
             throws NoSuchAlgorithmException {
@@ -25,5 +25,7 @@ public class MacFactory {
         throw new NoSuchAlgorithmException("MAC algorithm '" + algorithm + "' is not supported!");
     }
 
-    private MacFactory() {}
+    private MacFactory() {
+        super();
+    }
 }

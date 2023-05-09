@@ -9,7 +9,9 @@ package de.rub.nds.sshattacker.core.exceptions;
 
 public class PreparationException extends RuntimeException {
 
-    public PreparationException() {}
+    public PreparationException() {
+        super();
+    }
 
     public PreparationException(String message) {
         super(message);

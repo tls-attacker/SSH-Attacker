@@ -11,8 +11,6 @@ import de.rub.nds.sshattacker.core.constants.MacAlgorithm;
 
 class NoneMac extends AbstractMac {
 
-    public NoneMac() {}
-
     @Override
     public byte[] calculate(int sequenceNumber, byte[] unencryptedPacket) {
         return new byte[0];

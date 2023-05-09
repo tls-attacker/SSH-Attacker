@@ -19,9 +19,9 @@ public class ShortTest {
     public void testCreateRandomShort() {
         Short r = Short.createRandomShort(set);
         assertEquals(set, r.getSet());
-        assertFalse(r.getShrt().stream().filter(c -> (Math.abs(c) > 1)).findFirst().isPresent());
+        assertFalse(r.getShrt().stream().filter(l -> (Math.abs(l) > 1)).findFirst().isPresent());
         assertEquals(
-                r.getSet().getW(), r.getShrt().stream().filter(c -> (1 == Math.abs(c))).count());
+                r.getSet().getW(), r.getShrt().stream().filter(l -> (1 == Math.abs(l))).count());
     }
 
     @Test
@@ -121,10 +121,10 @@ public class ShortTest {
 
         assertEquals(set, isShort.getSet());
         assertFalse(
-                isShort.getShrt().stream().filter(c -> (Math.abs(c) > 1)).findFirst().isPresent());
+                isShort.getShrt().stream().filter(l -> (Math.abs(l) > 1)).findFirst().isPresent());
         assertEquals(
                 isShort.getSet().getW(),
-                isShort.getShrt().stream().filter(c -> (1 == Math.abs(c))).count());
+                isShort.getShrt().stream().filter(l -> (1 == Math.abs(l))).count());
 
         Exception exception =
                 assertThrows(

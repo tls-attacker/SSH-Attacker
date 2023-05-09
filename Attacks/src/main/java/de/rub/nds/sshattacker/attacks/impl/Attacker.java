@@ -33,14 +33,15 @@ public abstract class Attacker<AttConfigT extends AttackConfig> {
      * @param config Attack specific config
      * @param baseConfig Base SSH config
      */
-    public Attacker(AttConfigT config, Config baseConfig) {
+    protected Attacker(AttConfigT config, Config baseConfig) {
+        super();
         this.config = config;
         this.baseConfig = baseConfig;
     }
 
     /** Starts the attack after doing a connection check, if it is not disabled. */
     public void attack() {
-        LOGGER.debug("Attacking with: " + this.getClass().getSimpleName());
+        LOGGER.debug("Attacking with: {}", getClass().getSimpleName());
         if (!config.isSkipConnectionCheck()) {
             if (!canConnect()) {
                 CONSOLE.warn("Cannot reach Server. Is the server online?");
@@ -54,7 +55,7 @@ public abstract class Attacker<AttConfigT extends AttackConfig> {
      * @return True if server is vulnerable to the attack
      */
     public Boolean checkVulnerability() {
-        LOGGER.debug("Checking: " + this.getClass().getSimpleName());
+        LOGGER.debug("Checking: {}", getClass().getSimpleName());
         if (!config.isSkipConnectionCheck()) {
             if (!canConnect()) {
                 CONSOLE.warn("Cannot reach Server. Is the server online?");

@@ -24,7 +24,8 @@ class JavaMac extends AbstractMac {
 
     private final Mac mac;
 
-    public JavaMac(MacAlgorithm algorithm, byte[] key) {
+    JavaMac(MacAlgorithm algorithm, byte[] key) {
+        super();
         this.algorithm = algorithm;
         try {
             mac = Mac.getInstance(algorithm.getJavaName());

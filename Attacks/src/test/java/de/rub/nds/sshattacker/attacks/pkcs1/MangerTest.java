@@ -95,8 +95,8 @@ public class MangerTest {
                             ((RSAPublicKey) oracle.getPublicKey()).getModulus().bitLength()
                                     / Byte.SIZE);
 
-            CONSOLE.info("Encoded Solution: " + solution);
-            CONSOLE.info("Decoded Secret: " + secret);
+            CONSOLE.info("Encoded Solution: {}", solution);
+            CONSOLE.info("Decoded Secret: {}", secret);
 
             assertEquals(secret, result);
         } catch (IOException

@@ -21,7 +21,11 @@ import de.rub.nds.sshattacker.core.workflow.factory.WorkflowTraceType;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
-public class NetcatWorkflowFactory {
+public final class NetcatWorkflowFactory {
+
+    private NetcatWorkflowFactory() {
+        super();
+    }
 
     // integration test
     public static void main(String[] args) throws Exception {
@@ -36,20 +40,17 @@ public class NetcatWorkflowFactory {
         state.getConfig().setWorkflowExecutorShouldClose(false);
         executor.executeWorkflow();
 
-        SendMessageHelper sendMessageHelper = new SendMessageHelper();
-        ReceiveMessageHelper receiveMessageHelper = new ReceiveMessageHelper();
-
         BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
         // noinspection InfiniteLoopStatement
         while (true) {
             // noinspection BusyWait
             Thread.sleep(5000);
-            receiveMessageHelper.receiveMessages(state.getSshContext());
+            ReceiveMessageHelper.receiveMessages(state.getSshContext());
             String read = in.readLine();
             ChannelDataMessage dataMessage = new ChannelDataMessage();
             dataMessage.setRecipientChannelId(Modifiable.explicit(0));
             dataMessage.setData((read + "\n").getBytes());
-            sendMessageHelper.sendMessage(state.getSshContext(), dataMessage);
+            SendMessageHelper.sendMessage(state.getSshContext(), dataMessage);
         }
     }
 }

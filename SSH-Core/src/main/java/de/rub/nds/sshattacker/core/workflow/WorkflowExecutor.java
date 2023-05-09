@@ -28,10 +28,11 @@ public abstract class WorkflowExecutor {
      * @param type of the workflow executor (currently only DEFAULT)
      * @param state to work on
      */
-    public WorkflowExecutor(WorkflowExecutorType type, State state) {
+    protected WorkflowExecutor(WorkflowExecutorType type, State state) {
+        super();
         this.type = type;
         this.state = state;
-        this.config = state.getConfig();
+        config = state.getConfig();
     }
 
     public abstract void executeWorkflow() throws WorkflowExecutionException;

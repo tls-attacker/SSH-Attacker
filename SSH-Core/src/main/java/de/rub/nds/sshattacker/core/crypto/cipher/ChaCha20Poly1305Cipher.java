@@ -31,10 +31,11 @@ class ChaCha20Poly1305Cipher extends AbstractCipher {
     private final ChaChaEngine cipher;
     private final Poly1305 mac;
 
-    public ChaCha20Poly1305Cipher(byte[] key) {
+    ChaCha20Poly1305Cipher(byte[] key) {
+        super();
         this.key = key;
-        this.cipher = new ChaChaEngine();
-        this.mac = new Poly1305();
+        cipher = new ChaChaEngine();
+        mac = new Poly1305();
     }
 
     @Override
@@ -95,7 +96,7 @@ class ChaCha20Poly1305Cipher extends AbstractCipher {
         byte[] receivedMac = Arrays.copyOfRange(encryptedData, ctLength, encryptedData.length);
         if (!Arrays.equals(calculatedMac, receivedMac)) {
             LOGGER.warn("MAC verification failed");
-            throw new AEADBadTagException();
+            throw new AEADBadTagException("Poly1305 MAC verification failed");
         }
         // Decryption
         cipher.processBytes(encryptedData, 0, ctLength, plaintext, 0);
@@ -108,7 +109,7 @@ class ChaCha20Poly1305Cipher extends AbstractCipher {
         mac.init(new KeyParameter(firstBlock, 0, 32));
     }
 
-    private int getOutputSize(boolean isEncrypting, int inputLength) {
+    private static int getOutputSize(boolean isEncrypting, int inputLength) {
         return isEncrypting ? inputLength + TAG_LENGTH : inputLength - TAG_LENGTH;
     }
 

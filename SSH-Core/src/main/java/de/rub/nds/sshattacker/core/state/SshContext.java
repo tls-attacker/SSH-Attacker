@@ -47,7 +47,7 @@ public class SshContext {
 
     private TransportHandler transportHandler;
     /** If set to true, an exception was received from the transport handler */
-    private boolean receivedTransportHandlerException = false;
+    private boolean receivedTransportHandlerException;
 
     /** The currently active packet layer type */
     private PacketLayerType packetLayerType;
@@ -188,7 +188,7 @@ public class SshContext {
      * If set to true, the most recent group request received was of type
      * DhGexKeyExchangeOldRequestMessage
      */
-    private boolean oldGroupRequestReceived = false;
+    private boolean oldGroupRequestReceived;
     /** Minimal acceptable DH group size as reported in the SSH_MSG_KEX_DH_GEX_REQUEST message */
     private Integer minimalDhGroupSize;
     /** Preferred DH group size as reported in the SSH_MSG_KEX_DH_GEX_REQUEST message */
@@ -227,16 +227,17 @@ public class SshContext {
     // endregion
 
     /** If set to true, an SSH_MSG_DISCONNECT has been received from the remote peer */
-    private boolean disconnectMessageReceived = false;
+    private boolean disconnectMessageReceived;
     /** If set to true, a version exchange message was sent by each side */
-    private boolean versionExchangeCompleted = false;
+    private boolean versionExchangeComplete;
 
-    // region Constructors and Initalization
+    // region Constructors and Initialization
     public SshContext() {
         this(Config.createConfig());
     }
 
     public SshContext(Config config) {
+        super();
         RunningModeType mode = config.getDefaultRunningMode();
         if (mode == null) {
             throw new ConfigurationException("Cannot create connection, running mode not set");
@@ -256,6 +257,7 @@ public class SshContext {
     }
 
     public SshContext(Config config, AliasedConnection connection) {
+        super();
         init(config, connection);
     }
 
@@ -827,6 +829,7 @@ public class SshContext {
         return Optional.ofNullable(serverExchangeHashSignature);
     }
 
+    @SuppressWarnings("NonBooleanMethodNameMayNotStartWithQuestion")
     public Optional<Boolean> isServerExchangeHashSignatureValid() {
         return Optional.ofNullable(serverExchangeHashSignatureValid);
     }
@@ -845,7 +848,7 @@ public class SshContext {
     }
 
     public void setHybridKeyExchangeInstance(HybridKeyExchange HybridKeyExchangeInstance) {
-        this.hybridKeyExchangeInstance = HybridKeyExchangeInstance;
+        hybridKeyExchangeInstance = HybridKeyExchangeInstance;
     }
 
     public void setRsaKeyExchangeInstance(RsaKeyExchange rsaKeyExchangeInstance) {
@@ -877,7 +880,7 @@ public class SshContext {
     }
 
     public void setServerExchangeHashSignatureValid(Boolean isValid) {
-        this.serverExchangeHashSignatureValid = isValid;
+        serverExchangeHashSignatureValid = isValid;
     }
     // endregion
 
@@ -916,7 +919,7 @@ public class SshContext {
     }
 
     public void setKeySet(KeySet transportKeySet) {
-        this.keySet = transportKeySet;
+        keySet = transportKeySet;
     }
     // endregion
 
@@ -943,11 +946,11 @@ public class SshContext {
     }
 
     public boolean isVersionExchangeComplete() {
-        return versionExchangeCompleted;
+        return versionExchangeComplete;
     }
 
     public void setVersionExchangeComplete(Boolean complete) {
-        this.versionExchangeCompleted = complete;
+        versionExchangeComplete = complete;
     }
 
     public boolean isClient() {

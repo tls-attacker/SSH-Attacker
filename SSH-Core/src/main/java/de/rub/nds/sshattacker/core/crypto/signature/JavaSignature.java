@@ -19,6 +19,7 @@ public class JavaSignature implements VerifyingSignature, SigningSignature {
     private Signature signature;
 
     public JavaSignature(PublicKeyAlgorithm algorithm, Key key) {
+        super();
         this.algorithm = algorithm;
         this.key = key;
     }

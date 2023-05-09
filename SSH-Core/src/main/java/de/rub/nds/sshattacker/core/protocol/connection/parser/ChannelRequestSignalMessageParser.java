@@ -35,7 +35,7 @@ public class ChannelRequestSignalMessageParser
 
     public void parseSignalName() {
         message.setSignalNameLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-        LOGGER.debug("Signal name length: " + message.getSignalNameLength().getValue());
+        LOGGER.debug("Signal name length: {}", message.getSignalNameLength().getValue());
         message.setSignalName(parseByteString(message.getSignalNameLength().getValue()));
         LOGGER.debug("Signal name: {}", backslashEscapeString(message.getSignalName().getValue()));
     }

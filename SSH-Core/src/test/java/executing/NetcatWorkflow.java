@@ -23,7 +23,11 @@ import de.rub.nds.sshattacker.core.workflow.action.ReceiveAction;
 import de.rub.nds.sshattacker.core.workflow.action.SendAction;
 import de.rub.nds.sshattacker.core.workflow.action.executor.ReceiveMessageHelper;
 
-public class NetcatWorkflow {
+public final class NetcatWorkflow {
+
+    private NetcatWorkflow() {
+        super();
+    }
 
     // integration test
     public static void main(String[] args) throws Exception {
@@ -76,13 +80,11 @@ public class NetcatWorkflow {
         state.getConfig().setWorkflowExecutorShouldClose(false);
         executor.executeWorkflow();
 
-        ReceiveMessageHelper receiveMessageHelper = new ReceiveMessageHelper();
-
         // noinspection InfiniteLoopStatement
         while (true) {
             // noinspection BusyWait
             Thread.sleep(5000);
-            receiveMessageHelper.receiveMessages(state.getSshContext());
+            ReceiveMessageHelper.receiveMessages(state.getSshContext());
         }
     }
 }

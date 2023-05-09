@@ -19,9 +19,11 @@ public class Interval {
      * @param a Start of interval
      * @param b End of interval
      */
+    @SuppressWarnings("StandardVariableNames")
     public Interval(BigInteger a, BigInteger b) {
-        this.lower = a;
-        this.upper = b;
+        super();
+        lower = a;
+        upper = b;
         if (a.compareTo(b) > 0) {
             throw new RuntimeException("something went wrong, a cannot be greater than b");
         }

@@ -33,11 +33,11 @@ public abstract class ProtocolMessageParser<T extends ProtocolMessage<T>> extend
 
     protected final T message = createMessage();
 
-    public ProtocolMessageParser(byte[] array) {
+    protected ProtocolMessageParser(byte[] array) {
         super(array);
     }
 
-    public ProtocolMessageParser(byte[] array, int startPosition) {
+    protected ProtocolMessageParser(byte[] array, int startPosition) {
         super(array, startPosition);
     }
 
@@ -55,9 +55,8 @@ public abstract class ProtocolMessageParser<T extends ProtocolMessage<T>> extend
     private void setCompleteResultingMessage() {
         message.setCompleteResultingMessage(getAlreadyParsed());
         LOGGER.trace(
-                "Complete message bytes parsed: "
-                        + ArrayConverter.bytesToHexString(
-                                message.getCompleteResultingMessage().getValue()));
+                "Complete message bytes parsed: {}",
+                ArrayConverter.bytesToHexString(message.getCompleteResultingMessage().getValue()));
     }
 
     public static ProtocolMessage<?> delegateParsing(AbstractPacket packet, SshContext context) {
@@ -69,12 +68,12 @@ public abstract class ProtocolMessageParser<T extends ProtocolMessage<T>> extend
                 if (rawText.startsWith("SSH-2.0")) {
                     return new VersionExchangeMessageParser(raw).parse();
                 } else {
-                    final AsciiMessage message = new AsciiMessageParser(raw).parse();
+                    AsciiMessage message = new AsciiMessageParser(raw).parse();
 
                     // If we know what the text message means we can print a
                     // human-readable warning to the log. The following
                     // messages are sent by OpenSSH.
-                    final String messageText = message.getText().getValue();
+                    String messageText = message.getText().getValue();
                     if ("Invalid SSH identification string.".equals(messageText)) {
                         LOGGER.warn(
                                 "The server reported the identification string sent by the SSH-Attacker is invalid");
@@ -173,15 +172,13 @@ public abstract class ProtocolMessageParser<T extends ProtocolMessage<T>> extend
                     return new UserAuthInfoResponseMessageParser(raw).parse();
                 default:
                     LOGGER.debug(
-                            "Received unimplemented Message "
-                                    + MessageIdConstant.getNameById(raw[0])
-                                    + " ("
-                                    + raw[0]
-                                    + ")");
+                            "Received unimplemented Message {} ({})",
+                            MessageIdConstant.getNameById(raw[0]),
+                            raw[0]);
                     return new UnknownMessageParser(raw).parse();
             }
         } catch (ParserException e) {
-            LOGGER.debug("Error while Parsing, now parsing as UnknownMessage: " + e);
+            LOGGER.debug("Error while Parsing, now parsing as UnknownMessage", e);
             return new UnknownMessageParser(raw).parse();
         }
     }
@@ -189,9 +186,10 @@ public abstract class ProtocolMessageParser<T extends ProtocolMessage<T>> extend
     public static HybridKeyExchangeReplyMessageParser handleHybridKeyExchangeReplyMessageParsing(
             byte[] raw, SshContext context) {
         LOGGER.info(
-                "Negotiated Hybrid Key Exchange: "
-                        + context.getChooser().getKeyExchangeAlgorithm());
+                "Negotiated Hybrid Key Exchange: {}",
+                context.getChooser().getKeyExchangeAlgorithm());
         switch (context.getChooser().getKeyExchangeAlgorithm()) {
+                //noinspection DefaultNotLastCaseInSwitch
             default:
                 LOGGER.warn(
                         "Unsupported hybrid key exchange negotiated, treating received HBR_REPLY as sntrup761x25519-sha512@openssh.com");
@@ -232,9 +230,10 @@ public abstract class ProtocolMessageParser<T extends ProtocolMessage<T>> extend
     public static HybridKeyExchangeInitMessageParser handleHybridKeyExchangeInitMessageParsing(
             byte[] raw, SshContext context) {
         LOGGER.info(
-                "Negotiated Hybrid Key Exchange: "
-                        + context.getChooser().getKeyExchangeAlgorithm());
+                "Negotiated Hybrid Key Exchange: {}",
+                context.getChooser().getKeyExchangeAlgorithm());
         switch (context.getChooser().getKeyExchangeAlgorithm()) {
+                //noinspection DefaultNotLastCaseInSwitch
             default:
                 LOGGER.warn(
                         "Unsupported hybrid key exchange negotiated, treating received HBR_INIT as sntrup761x25519-sha512@openssh.com");

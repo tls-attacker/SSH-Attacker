@@ -17,9 +17,7 @@ public class WorkflowOutputDelegate extends Delegate {
             names = "-workflow_output",
             description =
                     "This parameter allows you to serialize the whole workflow trace into a specific XML file")
-    private String workflowOutput = null;
-
-    public WorkflowOutputDelegate() {}
+    private String workflowOutput;
 
     public String getWorkflowOutput() {
         return workflowOutput;

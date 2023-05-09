@@ -17,7 +17,8 @@ public abstract class Compression {
     protected static final Logger LOGGER = LogManager.getLogger();
     protected final CompressionAlgorithm algorithm;
 
-    public Compression(CompressionAlgorithm algorithm) {
+    protected Compression(CompressionAlgorithm algorithm) {
+        super();
         this.algorithm = algorithm;
     }
 

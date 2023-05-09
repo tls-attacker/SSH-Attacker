@@ -27,8 +27,6 @@ public class KeySet {
     private byte[] clientWriteIntegrityKey;
     private byte[] serverWriteIntegrityKey;
 
-    public KeySet() {}
-
     public byte[] getClientWriteInitialIv() {
         return clientWriteInitialIv;
     }
@@ -147,10 +145,10 @@ public class KeySet {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        KeySet keySet = (KeySet) o;
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        KeySet keySet = (KeySet) obj;
         return Arrays.equals(clientWriteInitialIv, keySet.clientWriteInitialIv)
                 && Arrays.equals(serverWriteInitialIv, keySet.serverWriteInitialIv)
                 && Arrays.equals(clientWriteEncryptionKey, keySet.clientWriteEncryptionKey)

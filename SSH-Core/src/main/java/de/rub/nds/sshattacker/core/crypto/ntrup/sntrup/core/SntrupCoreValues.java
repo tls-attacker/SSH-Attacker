@@ -7,6 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.crypto.ntrup.sntrup.core;
 
+@SuppressWarnings("StandardVariableNames")
 public class SntrupCoreValues {
     private R g;
     private R3 gInv;
@@ -17,6 +18,7 @@ public class SntrupCoreValues {
     private Short roh;
 
     public SntrupCoreValues(R g, R3 gInv, Short f, RQ f3, RQ f3Inv, RQ h, Short roh) {
+        super();
         this.g = g;
         this.gInv = gInv;
         this.f = f;

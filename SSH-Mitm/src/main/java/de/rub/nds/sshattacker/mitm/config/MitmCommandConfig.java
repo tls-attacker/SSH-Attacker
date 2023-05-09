@@ -25,12 +25,12 @@ public class MitmCommandConfig extends SshDelegateConfig {
 
     public MitmCommandConfig(GeneralDelegate delegate) {
         super(delegate);
-        this.configOutputDelegate = new ConfigOutputDelegate();
-        this.timeoutDelegate = new TimeoutDelegate();
-        this.workflowInputDelegate = new WorkflowInputDelegate();
-        this.workflowOutputDelegate = new WorkflowOutputDelegate();
-        this.workflowTypeDelegate = new WorkflowTypeDelegate();
-        this.mitmDelegate = new MitmDelegate();
+        configOutputDelegate = new ConfigOutputDelegate();
+        timeoutDelegate = new TimeoutDelegate();
+        workflowInputDelegate = new WorkflowInputDelegate();
+        workflowOutputDelegate = new WorkflowOutputDelegate();
+        workflowTypeDelegate = new WorkflowTypeDelegate();
+        mitmDelegate = new MitmDelegate();
         addDelegate(configOutputDelegate);
         addDelegate(timeoutDelegate);
         addDelegate(workflowInputDelegate);

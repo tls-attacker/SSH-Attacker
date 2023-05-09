@@ -38,7 +38,6 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Stream;
 
-@SuppressWarnings("rawtypes")
 public class CyclicParserSerializerTest {
 
     private static final Logger LOGGER = LogManager.getLogger();
@@ -50,7 +49,7 @@ public class CyclicParserSerializerTest {
 
     @TestFactory
     public Stream<DynamicTest> generateCyclicDefaultConstructorPairsDynamicTests() {
-        Set<Class<? extends ProtocolMessage>> excludedClasses = new HashSet<>();
+        Set<Class<? extends ProtocolMessage<?>>> excludedClasses = new HashSet<>();
         // TODO: Fix HybridKeyExchangeReplyMessagePreparator
         excludedClasses.add(HybridKeyExchangeReplyMessage.class);
         return new Reflections("de.rub.nds.sshattacker.core.protocol")
@@ -67,26 +66,32 @@ public class CyclicParserSerializerTest {
                                                         messageClass)));
     }
 
-    private static class CyclicDefaultConstructorPairsTest implements Executable {
+    private static final class CyclicDefaultConstructorPairsTest implements Executable {
 
-        private final Class<? extends ProtocolMessage> messageClass;
+        private final Class<?> messageClass;
         private final String messageClassName;
 
-        private CyclicDefaultConstructorPairsTest(Class<? extends ProtocolMessage> messageClass) {
+        private CyclicDefaultConstructorPairsTest(Class<?> messageClass) {
+            super();
             this.messageClass = messageClass;
-            this.messageClassName = messageClass.getSimpleName();
+            messageClassName = messageClass.getSimpleName();
+            if (!ProtocolMessage.class.isAssignableFrom(messageClass)) {
+                throw new IllegalArgumentException(
+                        "CyclicDefaultConstructorPairsTest is intended for ProtocolMessage subclasses only, but we received class "
+                                + messageClass.getSimpleName());
+            }
         }
 
         @Override
         public void execute() {
-            LOGGER.info("Testing ProtocolMessage subclass: " + messageClassName);
+            LOGGER.info("Testing ProtocolMessage subclass: {}", messageClassName);
 
             // Construct a new instance of the message class to test
-            ProtocolMessage message = null;
+            ProtocolMessage<?> message = null;
             // Create a fresh SshContext
             SshContext context = new SshContext();
             try {
-                Constructor someMessageConstructor;
+                Constructor<?> someMessageConstructor;
 
                 someMessageConstructor = getDefaultMessageConstructor(messageClass);
                 if (someMessageConstructor == null) {
@@ -95,7 +100,7 @@ public class CyclicParserSerializerTest {
                                     + messageClassName
                                     + "' does not have the needed constructor.");
                 } else {
-                    message = (ProtocolMessage) someMessageConstructor.newInstance();
+                    message = (ProtocolMessage<?>) someMessageConstructor.newInstance();
                 }
             } catch (SecurityException
                     | InstantiationException
@@ -156,7 +161,7 @@ public class CyclicParserSerializerTest {
             }
 
             // Parse the serialized message back into a new instance
-            ProtocolMessage parsedMessage = null;
+            ProtocolMessage<?> parsedMessage = null;
             try {
                 parsedMessage = message.getHandler(context).getParser(serializedMessage).parse();
             } catch (ParserException e) {
@@ -193,13 +198,13 @@ public class CyclicParserSerializerTest {
         }
 
         private static Constructor<?> getDefaultMessageConstructor(Class<?> someClass) {
-            for (Constructor<?> c : someClass.getDeclaredConstructors()) {
-                if (c.getParameterCount() == 0) {
-                    return c;
+            for (Constructor<?> constructor : someClass.getDeclaredConstructors()) {
+                if (constructor.getParameterCount() == 0) {
+                    return constructor;
                 }
             }
             LOGGER.warn(
-                    "Unable to find default constructor for class: " + someClass.getSimpleName());
+                    "Unable to find default constructor for class: {}", someClass.getSimpleName());
             return null;
         }
     }

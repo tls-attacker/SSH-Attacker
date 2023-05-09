@@ -36,33 +36,32 @@ public class EcdhKeyExchangeReplyMessageParser
 
     private void parseHostKeyBytes() {
         message.setHostKeyBytesLength(parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH));
-        LOGGER.debug("Host key bytes length: " + message.getHostKeyBytesLength().getValue());
+        LOGGER.debug("Host key bytes length: {}", message.getHostKeyBytesLength().getValue());
         message.setHostKeyBytes(parseByteArrayField(message.getHostKeyBytesLength().getValue()));
         LOGGER.debug(
-                "Host key bytes: "
-                        + ArrayConverter.bytesToRawHexString(message.getHostKeyBytes().getValue()));
+                "Host key bytes: {}",
+                ArrayConverter.bytesToRawHexString(message.getHostKeyBytes().getValue()));
     }
 
     private void parseEphemeralPublicKey() {
         message.setEphemeralPublicKeyLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
         LOGGER.debug(
-                "Ephemeral public key (server) length: "
-                        + message.getEphemeralPublicKeyLength().getValue());
+                "Ephemeral public key (server) length: {}",
+                message.getEphemeralPublicKeyLength().getValue());
         message.setEphemeralPublicKey(
                 parseByteArrayField(message.getEphemeralPublicKeyLength().getValue()));
         LOGGER.debug(
-                "Ephemeral public key (server): "
-                        + ArrayConverter.bytesToRawHexString(
-                                message.getEphemeralPublicKey().getValue()));
+                "Ephemeral public key (server): {}",
+                ArrayConverter.bytesToRawHexString(message.getEphemeralPublicKey().getValue()));
     }
 
     private void parseSignature() {
         message.setSignatureLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-        LOGGER.debug("Signature length: " + message.getSignatureLength().getValue());
+        LOGGER.debug("Signature length: {}", message.getSignatureLength().getValue());
         message.setSignature(parseByteArrayField(message.getSignatureLength().getValue()));
         LOGGER.debug(
-                "Signature :"
-                        + ArrayConverter.bytesToRawHexString(message.getSignature().getValue()));
+                "Signature :{}",
+                ArrayConverter.bytesToRawHexString(message.getSignature().getValue()));
     }
 
     @Override

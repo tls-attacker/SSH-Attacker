@@ -23,6 +23,7 @@ public class MessageActionResult {
 
     public MessageActionResult(
             List<AbstractPacket> packetList, List<ProtocolMessage<?>> messageList) {
+        super();
         this.packetList = packetList;
         this.messageList = messageList;
     }
@@ -48,8 +49,8 @@ public class MessageActionResult {
         List<ProtocolMessage<?>> messageList = new LinkedList<>();
 
         for (MessageActionResult result : results) {
-            packetList.addAll(result.getPacketList());
-            messageList.addAll(result.getMessageList());
+            packetList.addAll(result.packetList);
+            messageList.addAll(result.messageList);
         }
 
         return new MessageActionResult(packetList, messageList);

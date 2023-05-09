@@ -21,26 +21,27 @@ public abstract class ChannelRequestMessageParser<T extends ChannelRequestMessag
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public ChannelRequestMessageParser(byte[] array) {
+    protected ChannelRequestMessageParser(byte[] array) {
         super(array);
     }
 
-    public ChannelRequestMessageParser(byte[] array, int startPosition) {
+    protected ChannelRequestMessageParser(byte[] array, int startPosition) {
         super(array, startPosition);
     }
 
     private void parseRequestType() {
         message.setRequestTypeLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-        LOGGER.debug("Request type length: " + message.getRequestTypeLength().getValue());
+        LOGGER.debug("Request type length: {}", message.getRequestTypeLength().getValue());
         message.setRequestType(
                 parseByteString(
                         message.getRequestTypeLength().getValue(), StandardCharsets.US_ASCII));
-        LOGGER.debug("Request type: " + message.getRequestType().getValue());
+        LOGGER.debug("Request type: {}", message.getRequestType().getValue());
     }
 
     private void parseWantReply() {
         message.setWantReply(parseByteField(1));
-        LOGGER.debug("Reply wanted: " + Converter.byteToBoolean(message.getWantReply().getValue()));
+        LOGGER.debug(
+                "Reply wanted: {}", Converter.byteToBoolean(message.getWantReply().getValue()));
     }
 
     @Override

@@ -17,26 +17,30 @@ import de.rub.nds.sshattacker.core.crypto.ntrup.sntrup.util.Encoding;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.LongStream;
 
+@SuppressWarnings("StandardVariableNames")
 public class Rounded {
     private final SntrupParameterSet set;
     private final UnivariatePolynomialZ64 rounded;
     private final UnivariatePolynomialZ64 mod;
 
     private Rounded(SntrupParameterSet set, UnivariatePolynomialZ64 rounded) {
+        super();
         this.set = set;
-        this.mod = generateMod(set);
+        mod = generateMod(set);
         this.rounded = rounded;
     }
 
     public Rounded(SntrupParameterSet set, long[] coefficients) {
+        super();
         assertTrue(is_rounded(set, coefficients));
         this.set = set;
-        this.mod = generateMod(set);
-        this.rounded =
+        mod = generateMod(set);
+        rounded =
                 UnivariateDivision.remainder(
                         UnivariatePolynomialZ64.create(coefficients), mod, true);
     }
@@ -57,7 +61,6 @@ public class Rounded {
                                 c ->
                                         c > (rq.getSet().getQ() + 1) / 2
                                                 || c < -(rq.getSet().getQ() + 1) / 2)
-                        .peek(System.out::println)
                         .findFirst()
                         .isPresent());
         return new Rounded(rq.getSet(), UnivariatePolynomialZ64.create(rounded));
@@ -161,23 +164,15 @@ public class Rounded {
     }
 
     @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((rounded == null) ? 0 : rounded.hashCode());
-        result = prime * result + ((set == null) ? 0 : set.hashCode());
-        return result;
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        Rounded rounded1 = (Rounded) obj;
+        return set == rounded1.set && Objects.equals(rounded, rounded1.rounded);
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (obj == null) return false;
-        if (getClass() != obj.getClass()) return false;
-        Rounded other = (Rounded) obj;
-        if (rounded == null) {
-            if (other.rounded != null) return false;
-        } else if (!rounded.equals(other.rounded)) return false;
-        return set == other.set;
+    public int hashCode() {
+        return Objects.hash(set, rounded);
     }
 }

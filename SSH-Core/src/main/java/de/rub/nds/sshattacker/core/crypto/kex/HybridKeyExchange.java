@@ -20,12 +20,12 @@ import java.lang.reflect.InvocationTargetException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-public abstract class HybridKeyExchange extends KeyExchange {
+public class HybridKeyExchange extends KeyExchange {
     private static final Logger LOGGER = LogManager.getLogger();
 
     protected final KeyExchangeAlgorithm algorithm;
-    protected final KeyAgreement agreement;
-    protected final KeyEncapsulation encapsulation;
+    protected final KeyAgreement keyAgreement;
+    protected final KeyEncapsulation keyEncapsulation;
     private final int pkAgreementLength;
     private final int pkEncapsulationLength;
     private final int ciphertextLength;
@@ -34,16 +34,16 @@ public abstract class HybridKeyExchange extends KeyExchange {
     @SuppressWarnings("SameParameterValue")
     protected HybridKeyExchange(
             KeyExchangeAlgorithm algorithm,
-            KeyAgreement agreement,
-            KeyEncapsulation encapsulation,
+            KeyAgreement keyAgreement,
+            KeyEncapsulation keyEncapsulation,
             HybridKeyExchangeCombiner combiner,
             int pkAgreementLength,
             int pkEncapsulationLength,
             int ciphertextLength) {
         super();
         this.algorithm = algorithm;
-        this.agreement = agreement;
-        this.encapsulation = encapsulation;
+        this.keyAgreement = keyAgreement;
+        this.keyEncapsulation = keyEncapsulation;
         this.combiner = combiner;
         this.pkAgreementLength = pkAgreementLength;
         this.pkEncapsulationLength = pkEncapsulationLength;
@@ -53,19 +53,18 @@ public abstract class HybridKeyExchange extends KeyExchange {
     public static HybridKeyExchange newInstance(
             SshContext context, KeyExchangeAlgorithm algorithm) {
         if (algorithm == null || algorithm.getFlowType() != KeyExchangeFlowType.HYBRID) {
-            LOGGER.warn("Could not create HybridKeyExchange from " + algorithm);
+            LOGGER.warn("Could not create HybridKeyExchange from {}", algorithm);
             algorithm = context.getConfig().getDefaultHybridKeyExchangeAlgorithm();
             LOGGER.warn(
-                    "Trying to instantiate new Hybrid key exchange falling back to " + algorithm);
+                    "Trying to instantiate new Hybrid key exchange falling back to {}", algorithm);
         }
 
         try {
             if (!algorithm.isImplemented()) {
                 LOGGER.warn(
-                        "Algorithm "
-                                + algorithm
-                                + "is not yet implemented. Falling back to "
-                                + KeyExchangeAlgorithm.SNTRUP761_X25519);
+                        "Algorithm {}is not yet implemented. Falling back to {}",
+                        algorithm,
+                        KeyExchangeAlgorithm.SNTRUP761_X25519);
                 algorithm = KeyExchangeAlgorithm.SNTRUP761_X25519;
             }
             Class<?> kexImplementation = Class.forName(algorithm.getClassName());
@@ -76,24 +75,23 @@ public abstract class HybridKeyExchange extends KeyExchange {
             System.exit(1);
             return null;
         } catch (InvocationTargetException e) {
-            LOGGER.fatal("Unable to invoke the default constructor of class " + algorithm.name());
+            LOGGER.fatal("Unable to invoke the default constructor of class {}", algorithm.name());
             System.exit(1);
             return null;
         } catch (InstantiationException e) {
             LOGGER.fatal(
-                    "Unable to create new object by constructor invocation of class "
-                            + algorithm.name());
+                    "Unable to create new object by constructor invocation of class {}",
+                    algorithm.name());
             System.exit(1);
             return null;
         } catch (IllegalAccessException e) {
-            LOGGER.fatal("Unable to access the default constructor of class " + algorithm.name());
+            LOGGER.fatal("Unable to access the default constructor of class {}", algorithm.name());
             System.exit(1);
             return null;
         } catch (NoSuchMethodException e) {
             LOGGER.fatal(
-                    "Unable to create new instance of HybridKeyExchange, default constructor of class "
-                            + algorithm.name()
-                            + " not found. Did the method signature change?");
+                    "Unable to create new instance of HybridKeyExchange, default constructor of class {} not found. Did the method signature change?",
+                    algorithm.name());
             System.exit(1);
             return null;
         }
@@ -104,34 +102,34 @@ public abstract class HybridKeyExchange extends KeyExchange {
     }
 
     public KeyAgreement getKeyAgreement() {
-        return agreement;
+        return keyAgreement;
     }
 
     public KeyEncapsulation getKeyEncapsulation() {
-        return encapsulation;
+        return keyEncapsulation;
     }
 
-    protected byte[] mergeKeyExchangeShares(
+    protected static byte[] mergeKeyExchangeShares(
             byte[] firstKeyExchangeShare, byte[] secondKeyExchangeShare) {
         return ArrayConverter.concatenate(firstKeyExchangeShare, secondKeyExchangeShare);
     }
 
-    protected byte[] encode(byte[] sharedSecret, String hashAlgorithm) {
+    protected static byte[] encode(byte[] sharedSecret, String hashAlgorithm) {
         try {
             MessageDigest md = MessageDigest.getInstance(hashAlgorithm);
             return md.digest(sharedSecret);
 
         } catch (NoSuchAlgorithmException e) {
-            LOGGER.warn("Could not get MessageDigest: " + e);
+            LOGGER.warn("Could not get MessageDigest", e);
         }
         return new byte[0];
     }
 
     public void combineSharedSecrets() {
         try {
-            agreement.computeSharedSecret();
-            if (encapsulation.getSharedSecret() == null) {
-                encapsulation.decryptSharedSecret();
+            keyAgreement.computeSharedSecret();
+            if (keyEncapsulation.getSharedSecret() == null) {
+                keyEncapsulation.decryptSharedSecret();
             }
 
             byte[] tmpSharedSecret;
@@ -139,43 +137,45 @@ public abstract class HybridKeyExchange extends KeyExchange {
                 case CLASSICAL_CONCATENATE_POSTQUANTUM:
                     tmpSharedSecret =
                             mergeKeyExchangeShares(
-                                    agreement.getSharedSecret(), encapsulation.getSharedSecret());
+                                    keyAgreement.getSharedSecret(),
+                                    keyEncapsulation.getSharedSecret());
                     break;
                 case POSTQUANTUM_CONCATENATE_CLASSICAL:
                     tmpSharedSecret =
                             mergeKeyExchangeShares(
-                                    encapsulation.getSharedSecret(), agreement.getSharedSecret());
+                                    keyEncapsulation.getSharedSecret(),
+                                    keyAgreement.getSharedSecret());
                     break;
                 default:
                     throw new IllegalArgumentException(combiner.name() + " not supported.");
             }
 
-            this.sharedSecret = encode(tmpSharedSecret, algorithm.getDigest());
+            sharedSecret = encode(tmpSharedSecret, algorithm.getDigest());
             LOGGER.debug(
-                    "Concatenated Shared Secret = "
-                            + ArrayConverter.bytesToRawHexString(tmpSharedSecret));
+                    "Concatenated Shared Secret = {}",
+                    ArrayConverter.bytesToRawHexString(tmpSharedSecret));
             LOGGER.debug(
-                    "Encoded Shared Secret = "
-                            + ArrayConverter.bytesToRawHexString(
-                                    encode(tmpSharedSecret, algorithm.getDigest())));
+                    "Encoded Shared Secret = {}",
+                    ArrayConverter.bytesToRawHexString(
+                            encode(tmpSharedSecret, algorithm.getDigest())));
         } catch (Exception e) {
-            LOGGER.warn("Could not create the shared Secret: " + e);
+            LOGGER.warn("Could not create the shared Secret", e);
         }
     }
 
     public int getPkAgreementLength() {
-        return this.pkAgreementLength;
+        return pkAgreementLength;
     }
 
     public int getPkEncapsulationLength() {
-        return this.pkEncapsulationLength;
+        return pkEncapsulationLength;
     }
 
     public int getCiphertextLength() {
-        return this.ciphertextLength;
+        return ciphertextLength;
     }
 
     public HybridKeyExchangeCombiner getCombiner() {
-        return this.combiner;
+        return combiner;
     }
 }

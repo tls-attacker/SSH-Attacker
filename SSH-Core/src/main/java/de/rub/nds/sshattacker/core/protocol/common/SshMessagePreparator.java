@@ -15,7 +15,7 @@ public abstract class SshMessagePreparator<T extends SshMessage<T>>
 
     private final MessageIdConstant messageId;
 
-    public SshMessagePreparator(Chooser chooser, T message, MessageIdConstant messageId) {
+    protected SshMessagePreparator(Chooser chooser, T message, MessageIdConstant messageId) {
         super(chooser, message);
         this.messageId = messageId;
     }

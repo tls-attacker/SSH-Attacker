@@ -18,16 +18,16 @@ public class GlobalRequestOpenSshHostKeysMessageParser
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public GlobalRequestOpenSshHostKeysMessageParser(final byte[] array) {
+    public GlobalRequestOpenSshHostKeysMessageParser(byte[] array) {
         super(array);
     }
 
-    public GlobalRequestOpenSshHostKeysMessageParser(final byte[] array, final int startPosition) {
+    public GlobalRequestOpenSshHostKeysMessageParser(byte[] array, int startPosition) {
         super(array, startPosition);
     }
 
     private void parseHostKeys() {
-        message.setHostKeys(this.parseByteArrayField(this.getBytesLeft()));
+        message.setHostKeys(parseByteArrayField(getBytesLeft()));
         LOGGER.debug(
                 "Host keys blob: {}",
                 ArrayConverter.bytesToRawHexString(message.getHostKeys().getValue()));

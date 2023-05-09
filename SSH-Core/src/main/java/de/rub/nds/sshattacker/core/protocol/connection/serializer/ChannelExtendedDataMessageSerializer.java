@@ -25,18 +25,17 @@ public class ChannelExtendedDataMessageSerializer
     }
 
     private void serializeDataTypeCode() {
-        LOGGER.debug("Data type code: " + message.getDataTypeCode().getValue());
+        LOGGER.debug("Data type code: {}", message.getDataTypeCode().getValue());
         LOGGER.debug(
-                "Data type: "
-                        + ExtendedChannelDataType.fromDataTypeCode(
-                                message.getDataTypeCode().getValue()));
+                "Data type: {}",
+                ExtendedChannelDataType.fromDataTypeCode(message.getDataTypeCode().getValue()));
         appendInt(message.getDataTypeCode().getValue(), DataFormatConstants.UINT32_SIZE);
     }
 
     private void serializeData() {
-        LOGGER.debug("Data length: " + message.getDataLength().getValue());
+        LOGGER.debug("Data length: {}", message.getDataLength().getValue());
         appendInt(message.getDataLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
-        LOGGER.debug("Data: " + ArrayConverter.bytesToRawHexString(message.getData().getValue()));
+        LOGGER.debug("Data: {}", ArrayConverter.bytesToRawHexString(message.getData().getValue()));
         appendBytes(message.getData().getValue());
     }
 

@@ -35,7 +35,7 @@ public class EcdhKeyExchange extends AbstractEcdhKeyExchange {
             throw new IllegalArgumentException(
                     "EcdhKeyExchange does not support named group " + group);
         }
-        this.ellipticCurve = CurveFactory.getCurve(group);
+        ellipticCurve = CurveFactory.getCurve(group);
     }
 
     @Override
@@ -51,7 +51,7 @@ public class EcdhKeyExchange extends AbstractEcdhKeyExchange {
         } while (privateKey.getS().equals(BigInteger.ZERO));
         Point publicKeyPoint = ellipticCurve.mult(privateKey.getS(), ellipticCurve.getBasePoint());
         CustomEcPublicKey publicKey = new CustomEcPublicKey(publicKeyPoint, group);
-        this.localKeyPair = new CustomKeyPair<>(privateKey, publicKey);
+        localKeyPair = new CustomKeyPair<>(privateKey, publicKey);
     }
 
     @Override
@@ -60,7 +60,7 @@ public class EcdhKeyExchange extends AbstractEcdhKeyExchange {
         Point publicKeyPoint = ellipticCurve.mult(privateKeyScalar, ellipticCurve.getBasePoint());
         CustomEcPrivateKey privateKey = new CustomEcPrivateKey(privateKeyScalar, group);
         CustomEcPublicKey publicKey = new CustomEcPublicKey(publicKeyPoint, group);
-        this.localKeyPair = new CustomKeyPair<>(privateKey, publicKey);
+        localKeyPair = new CustomKeyPair<>(privateKey, publicKey);
     }
 
     @Override
@@ -69,13 +69,13 @@ public class EcdhKeyExchange extends AbstractEcdhKeyExchange {
         Point publicKeyPoint = PointFormatter.formatFromByteArray(group, publicKeyBytes);
         CustomEcPrivateKey privateKey = new CustomEcPrivateKey(privateKeyScalar, group);
         CustomEcPublicKey publicKey = new CustomEcPublicKey(publicKeyPoint, group);
-        this.localKeyPair = new CustomKeyPair<>(privateKey, publicKey);
+        localKeyPair = new CustomKeyPair<>(privateKey, publicKey);
     }
 
     @Override
-    public void setRemotePublicKey(byte[] serializedPublicKey) {
-        Point publicKeyPoint = PointFormatter.formatFromByteArray(group, serializedPublicKey);
-        this.remotePublicKey = new CustomEcPublicKey(publicKeyPoint, group);
+    public void setRemotePublicKey(byte[] publicKeyBytes) {
+        Point publicKeyPoint = PointFormatter.formatFromByteArray(group, publicKeyBytes);
+        remotePublicKey = new CustomEcPublicKey(publicKeyPoint, group);
     }
 
     @Override
@@ -85,13 +85,14 @@ public class EcdhKeyExchange extends AbstractEcdhKeyExchange {
                     "Unable to compute shared secret - either local key pair or remote public key is null");
         }
         Point sharedPoint =
-                ellipticCurve.mult(localKeyPair.getPrivate().getS(), remotePublicKey.getWAsPoint());
+                ellipticCurve.mult(
+                        localKeyPair.getPrivateKey().getS(), remotePublicKey.getWAsPoint());
         // RFC 5656 defines ECDH with cofactor multiplication as the cryptographic primitive
         sharedPoint = ellipticCurve.mult(ellipticCurve.getCofactor(), sharedPoint);
         sharedSecret = sharedPoint.getFieldX().getData().toByteArray();
         LOGGER.debug(
-                "Finished computation of shared secret: "
-                        + ArrayConverter.bytesToRawHexString(sharedSecret));
+                "Finished computation of shared secret: {}",
+                ArrayConverter.bytesToRawHexString(sharedSecret));
     }
 
     @Override

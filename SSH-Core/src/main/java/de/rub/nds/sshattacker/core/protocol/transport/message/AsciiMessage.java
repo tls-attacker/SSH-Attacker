@@ -24,19 +24,15 @@ public class AsciiMessage extends ProtocolMessage<AsciiMessage> {
     private ModifiableString text;
     private ModifiableString endOfMessageSequence;
 
-    public AsciiMessage() {
-        super();
-    }
-
     public ModifiableString getText() {
-        return this.text;
+        return text;
     }
 
-    public void setText(final ModifiableString text) {
+    public void setText(ModifiableString text) {
         this.text = text;
     }
 
-    public void setText(final String text) {
+    public void setText(String text) {
         this.text = ModifiableVariableFactory.safelySetValue(this.text, text);
     }
 
@@ -55,12 +51,12 @@ public class AsciiMessage extends ProtocolMessage<AsciiMessage> {
     }
 
     @Override
-    public AsciiMessageHandler getHandler(final SshContext context) {
+    public AsciiMessageHandler getHandler(SshContext context) {
         return new AsciiMessageHandler(context, this);
     }
 
     @Override
     public String toCompactString() {
-        return this.getClass().getSimpleName();
+        return getClass().getSimpleName();
     }
 }

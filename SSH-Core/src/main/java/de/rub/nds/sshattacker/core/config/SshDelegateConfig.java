@@ -25,16 +25,16 @@ public class SshDelegateConfig {
 
     @ParametersDelegate private final GeneralDelegate generalDelegate;
 
-    @SuppressWarnings({"CanBeFinal", "FieldMayBeFinal"})
     @Parameter(
             names = "-config",
             description = "This parameter allows you to specify a default SshConfig")
-    private String defaultConfig = null;
+    private String defaultConfig;
 
     public SshDelegateConfig(GeneralDelegate delegate) {
+        super();
         delegateList = new LinkedList<>();
-        this.generalDelegate = delegate;
-        if (delegate != null) {
+        generalDelegate = delegate;
+        if (generalDelegate != null) {
             delegateList.add(generalDelegate);
         }
     }

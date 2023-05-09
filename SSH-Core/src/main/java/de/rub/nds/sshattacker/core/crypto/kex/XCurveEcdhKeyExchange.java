@@ -63,7 +63,7 @@ public class XCurveEcdhKeyExchange extends AbstractEcdhKeyExchange {
         }
         XCurveEcPrivateKey privateKey = new XCurveEcPrivateKey(privateKeyBytes, group);
         XCurveEcPublicKey publicKey = new XCurveEcPublicKey(publicKeyBytes, group);
-        this.localKeyPair = new CustomKeyPair<>(privateKey, publicKey);
+        localKeyPair = new CustomKeyPair<>(privateKey, publicKey);
     }
 
     @Override
@@ -78,19 +78,19 @@ public class XCurveEcdhKeyExchange extends AbstractEcdhKeyExchange {
         }
         XCurveEcPrivateKey privateKey = new XCurveEcPrivateKey(privateKeyBytes, group);
         XCurveEcPublicKey publicKey = new XCurveEcPublicKey(publicKeyBytes, group);
-        this.localKeyPair = new CustomKeyPair<>(privateKey, publicKey);
+        localKeyPair = new CustomKeyPair<>(privateKey, publicKey);
     }
 
     @Override
     public void setLocalKeyPair(byte[] privateKeyBytes, byte[] publicKeyBytes) {
         XCurveEcPrivateKey privateKey = new XCurveEcPrivateKey(privateKeyBytes, group);
         XCurveEcPublicKey publicKey = new XCurveEcPublicKey(publicKeyBytes, group);
-        this.localKeyPair = new CustomKeyPair<>(privateKey, publicKey);
+        localKeyPair = new CustomKeyPair<>(privateKey, publicKey);
     }
 
     @Override
     public void setRemotePublicKey(byte[] publicKeyBytes) {
-        this.remotePublicKey = new XCurveEcPublicKey(publicKeyBytes, group);
+        remotePublicKey = new XCurveEcPublicKey(publicKeyBytes, group);
     }
 
     @Override
@@ -103,7 +103,7 @@ public class XCurveEcdhKeyExchange extends AbstractEcdhKeyExchange {
         if (group == NamedEcGroup.CURVE25519) {
             sharedBytes = new byte[CryptoConstants.X25519_POINT_SIZE];
             X25519.scalarMult(
-                    localKeyPair.getPrivate().getScalar(),
+                    localKeyPair.getPrivateKey().getScalar(),
                     0,
                     remotePublicKey.getCoordinate(),
                     0,
@@ -112,7 +112,7 @@ public class XCurveEcdhKeyExchange extends AbstractEcdhKeyExchange {
         } else {
             sharedBytes = new byte[CryptoConstants.X448_POINT_SIZE];
             X448.scalarMult(
-                    localKeyPair.getPrivate().getScalar(),
+                    localKeyPair.getPrivateKey().getScalar(),
                     0,
                     remotePublicKey.getCoordinate(),
                     0,
@@ -122,8 +122,8 @@ public class XCurveEcdhKeyExchange extends AbstractEcdhKeyExchange {
         sharedSecret =
                 encodeSharedBytes ? new BigInteger(1, sharedBytes).toByteArray() : sharedBytes;
         LOGGER.debug(
-                "Finished computation of shared secret: "
-                        + ArrayConverter.bytesToRawHexString(sharedSecret));
+                "Finished computation of shared secret: {}",
+                ArrayConverter.bytesToRawHexString(sharedSecret));
     }
 
     @Override

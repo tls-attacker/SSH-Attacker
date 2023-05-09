@@ -16,7 +16,7 @@ import org.apache.logging.log4j.Logger;
 
 import java.security.Key;
 
-public class CipherFactory {
+public final class CipherFactory {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -40,9 +40,8 @@ public class CipherFactory {
                     encryptionAlgorithm.getType() == EncryptionAlgorithmType.STREAM);
         } else {
             LOGGER.warn(
-                    "Encryption algorithm '"
-                            + encryptionAlgorithm
-                            + "' is not supported - Using NullCipher!");
+                    "Encryption algorithm '{}' is not supported - Using NullCipher!",
+                    encryptionAlgorithm);
             return new NoneCipher();
         }
     }
@@ -56,12 +55,13 @@ public class CipherFactory {
                         key, "RSA/ECB/OAEPWithSHA-256AndMGF1Padding", "SHA-256", "MGF1");
             default:
                 LOGGER.warn(
-                        "Cannot generate OAEP cipher for key exchange algorithm: '"
-                                + keyExchangeAlgorithm
-                                + "' - Using NoneCipher!");
+                        "Cannot generate OAEP cipher for key exchange algorithm: '{}' - Using NoneCipher!",
+                        keyExchangeAlgorithm);
                 return new NoneCipher();
         }
     }
 
-    private CipherFactory() {}
+    private CipherFactory() {
+        super();
+    }
 }

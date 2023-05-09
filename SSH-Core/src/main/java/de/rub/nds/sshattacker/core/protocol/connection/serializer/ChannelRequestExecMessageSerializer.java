@@ -27,7 +27,7 @@ public class ChannelRequestExecMessageSerializer
     }
 
     private void serializeCommand() {
-        LOGGER.debug("Command length: " + message.getCommandLength().getValue());
+        LOGGER.debug("Command length: {}", message.getCommandLength().getValue());
         appendInt(message.getCommandLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
         LOGGER.debug("Command: {}", backslashEscapeString(message.getCommand().getValue()));
         appendString(message.getCommand().getValue(), StandardCharsets.UTF_8);

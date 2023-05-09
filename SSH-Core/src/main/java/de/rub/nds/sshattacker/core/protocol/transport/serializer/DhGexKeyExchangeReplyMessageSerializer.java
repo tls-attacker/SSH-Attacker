@@ -27,11 +27,11 @@ public class DhGexKeyExchangeReplyMessageSerializer
     private void serializeHostKeyBytes() {
         appendInt(
                 message.getHostKeyBytesLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
-        LOGGER.debug("Host key bytes length: " + message.getHostKeyBytesLength().getValue());
+        LOGGER.debug("Host key bytes length: {}", message.getHostKeyBytesLength().getValue());
         appendBytes(message.getHostKeyBytes().getValue());
         LOGGER.debug(
-                "Host key bytes: "
-                        + ArrayConverter.bytesToRawHexString(message.getHostKeyBytes().getValue()));
+                "Host key bytes: {}",
+                ArrayConverter.bytesToRawHexString(message.getHostKeyBytes().getValue()));
     }
 
     private void serializeEphemeralPublicKey() {
@@ -39,18 +39,18 @@ public class DhGexKeyExchangeReplyMessageSerializer
                 message.getEphemeralPublicKeyLength().getValue(),
                 DataFormatConstants.MPINT_SIZE_LENGTH);
         LOGGER.debug(
-                "Ephemeral public key (server) length: "
-                        + message.getEphemeralPublicKeyLength().getValue());
+                "Ephemeral public key (server) length: {}",
+                message.getEphemeralPublicKeyLength().getValue());
         appendBytes(message.getEphemeralPublicKey().getValue().toByteArray());
         LOGGER.debug(
-                "Ephemeral public key (server): " + message.getEphemeralPublicKey().getValue());
+                "Ephemeral public key (server): {}", message.getEphemeralPublicKey().getValue());
     }
 
     private void serializeSignature() {
         appendInt(message.getSignatureLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
-        LOGGER.debug("Signature length: " + message.getSignatureLength().getValue());
+        LOGGER.debug("Signature length: {}", message.getSignatureLength().getValue());
         appendBytes(message.getSignature().getValue());
-        LOGGER.debug("Signature: " + message.getSignature());
+        LOGGER.debug("Signature: {}", message.getSignature());
     }
 
     @Override

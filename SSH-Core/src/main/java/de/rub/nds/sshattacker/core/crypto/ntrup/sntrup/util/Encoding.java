@@ -16,11 +16,16 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.IntStream;
 
+@SuppressWarnings("StandardVariableNames")
 public final class Encoding {
+
+    private Encoding() {
+        super();
+    }
 
     public static ArrayList<Integer> decode(List<Integer> s, List<Integer> m) {
         ArrayList<Integer> r = new ArrayList<>();
-        if (m.size() == 0) {
+        if (m.isEmpty()) {
             return r;
         }
 
@@ -79,7 +84,7 @@ public final class Encoding {
         int mLocal, rLocal;
         int limit = 16384;
 
-        if (m.size() == 0) {
+        if (m.isEmpty()) {
             return s;
         }
 

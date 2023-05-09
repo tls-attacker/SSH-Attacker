@@ -31,19 +31,20 @@ public class ParallelExecutor {
     private Callable<Integer> timeoutAction;
 
     private final int size;
-    private boolean shouldShutdown = false;
+    private boolean shouldShutdown;
 
     private final int reexecutions;
 
-    private Function<State, Integer> defaultBeforeTransportPreInitCallback = null;
+    private Function<State, Integer> defaultBeforeTransportPreInitCallback;
 
-    private Function<State, Integer> defaultBeforeTransportInitCallback = null;
+    private Function<State, Integer> defaultBeforeTransportInitCallback;
 
-    private Function<State, Integer> defaultAfterTransportInitCallback = null;
+    private Function<State, Integer> defaultAfterTransportInitCallback;
 
-    private Function<State, Integer> defaultAfterExecutionCallback = null;
+    private Function<State, Integer> defaultAfterExecutionCallback;
 
     public ParallelExecutor(int size, int reexecutions, ThreadPoolExecutor executorService) {
+        super();
         this.executorService = executorService;
         this.reexecutions = reexecutions;
         this.size = size;
@@ -112,7 +113,7 @@ public class ParallelExecutor {
     }
 
     public void bulkExecuteStateTasks(State... states) {
-        this.bulkExecuteStateTasks(new ArrayList<>(Arrays.asList(states)));
+        bulkExecuteStateTasks(new ArrayList<>(Arrays.asList(states)));
     }
 
     public List<Task> bulkExecuteTasks(Iterable<SshTask> taskList) {
@@ -133,7 +134,7 @@ public class ParallelExecutor {
 
     @SuppressWarnings("UnusedReturnValue")
     public List<Task> bulkExecuteTasks(SshTask... tasks) {
-        return this.bulkExecuteTasks(new ArrayList<>(Arrays.asList(tasks)));
+        return bulkExecuteTasks(new ArrayList<>(Arrays.asList(tasks)));
     }
 
     public int getSize() {
@@ -147,7 +148,7 @@ public class ParallelExecutor {
 
     /**
      * Creates a new thread monitoring the executorService. If the time since the last {@link
-     * SshTask} was finished exceeds the timeout, the function assiged to {@link
+     * SshTask} was finished exceeds the timeout, the function assigned to {@link
      * ParallelExecutor#timeoutAction } is executed. The {@link ParallelExecutor#timeoutAction }
      * function can, for example, try to restart the client/server, so that the remaining {@link
      * SshTask}s can be finished.

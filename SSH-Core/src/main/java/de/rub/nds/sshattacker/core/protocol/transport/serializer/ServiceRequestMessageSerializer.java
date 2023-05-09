@@ -27,7 +27,7 @@ public class ServiceRequestMessageSerializer extends SshMessageSerializer<Servic
     }
 
     private void serializeServiceName() {
-        LOGGER.debug("Service name length: " + message.getServiceNameLength().getValue());
+        LOGGER.debug("Service name length: {}", message.getServiceNameLength().getValue());
         appendInt(message.getServiceNameLength().getValue(), DataFormatConstants.UINT32_SIZE);
         LOGGER.debug(
                 "Service name: {}", backslashEscapeString(message.getServiceName().getValue()));

@@ -19,25 +19,29 @@ import de.rub.nds.sshattacker.core.crypto.ntrup.sntrup.util.Encoding;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.LongStream;
 
+@SuppressWarnings("StandardVariableNames")
 public class RQ {
     private final SntrupParameterSet set;
     private UnivariatePolynomialZp64 rQ;
     private final UnivariatePolynomialZp64 mod;
 
     public RQ(SntrupParameterSet set, long[] coefficient) {
+        super();
         this.set = set;
-        this.mod = genereateMod(set);
+        mod = genereateMod(set);
         setRQ(coefficient);
     }
 
     private RQ(SntrupParameterSet set, UnivariatePolynomialZp64 rq) {
+        super();
         this.set = set;
-        this.mod = genereateMod(set);
-        this.rQ = rq;
+        mod = genereateMod(set);
+        rQ = rq;
     }
 
     private static UnivariatePolynomialZp64 genereateMod(SntrupParameterSet set) {
@@ -58,11 +62,10 @@ public class RQ {
                 "Coefficients have to be between (-(q+1)/2 and (q+1)/2",
                 Arrays.stream(coefficient)
                         .filter(c -> c > (set.getQ() + 1) / 2 || c < -(set.getQ() + 1) / 2)
-                        .peek(System.out::println)
                         .findFirst()
                         .isEmpty());
 
-        this.rQ =
+        rQ =
                 UnivariateDivision.remainder(
                         UnivariatePolynomialZp64.create(set.getQ(), coefficient), mod, true);
         assertTrue(rQ.isOverFiniteField());
@@ -79,9 +82,9 @@ public class RQ {
     public static RQ invert(RQ rq) {
         UnivariatePolynomialZp64[] xgcd =
                 PolynomialMethods.PolynomialExtendedGCD(
-                        UnivariatePolynomialZp64.create(rq.getSet().getQ(), rq.stream().toArray()),
+                        UnivariatePolynomialZp64.create(rq.set.getQ(), rq.stream().toArray()),
                         genereateMod(rq.set));
-        return new RQ(rq.getSet(), xgcd[1]);
+        return new RQ(rq.set, xgcd[1]);
     }
 
     public static RQ multiply(int val, Short shrt) {
@@ -91,53 +94,52 @@ public class RQ {
 
     public static RQ multiply(int val, RQ rq) {
         return new RQ(
-                rq.getSet(),
-                UnivariateDivision.remainder(rq.getRQ().multiply(val), rq.getMod(), true));
+                rq.set, UnivariateDivision.remainder(rq.getRQ().multiply(val), rq.getMod(), true));
     }
 
-    public static RQ multiply(R r, RQ rq) {
-        assert (r.getSet() == rq.getSet());
+    public static RQ multiply(R r, RQ rq2) {
+        assert (r.getSet() == rq2.set);
         RQ convertedR = new RQ(r.getSet(), r.stream().toArray());
-        return multiply(convertedR, rq);
+        return multiply(convertedR, rq2);
     }
 
     public static RQ multiply(RQ rq1, RQ rq2) {
         return new RQ(
-                rq1.getSet(),
+                rq1.set,
                 UnivariateDivision.remainder(
                         rq1.getRQ().multiply(rq2.getRQ()), rq1.getMod(), true));
     }
 
-    public static RQ multiply(Short shrt, RQ rq) {
-        RQ convertedShrt = new RQ(rq.getSet(), shrt.stream().toArray());
-        return multiply(convertedShrt, rq);
+    public static RQ multiply(Short shrt, RQ rq2) {
+        RQ convertedShrt = new RQ(rq2.set, shrt.stream().toArray());
+        return multiply(convertedShrt, rq2);
     }
 
-    public static RQ multiply(Rounded rounded, RQ rq) {
+    public static RQ multiply(Rounded rounded, RQ rq2) {
         RQ convertedRounded = new RQ(rounded.getSet(), rounded.stream().toArray());
-        return multiply(convertedRounded, rq);
+        return multiply(convertedRounded, rq2);
     }
 
-    public static RQ sub(Rounded rounded, RQ rq) {
+    public static RQ sub(Rounded rounded, RQ rq2) {
         RQ convertedRounded = new RQ(rounded.getSet(), rounded.stream().toArray());
-        return sub(convertedRounded, rq);
+        return sub(convertedRounded, rq2);
     }
 
     public static RQ sub(RQ rq1, RQ rq2) {
         return new RQ(
-                rq1.getSet(),
+                rq1.set,
                 UnivariateDivision.remainder(
                         rq1.getRQ().subtract(rq2.getRQ()), rq1.getMod(), true));
     }
 
-    public static RQ add(R r, RQ rq) {
+    public static RQ add(R r, RQ rq2) {
         RQ convertedR = new RQ(r.getSet(), r.stream().toArray());
-        return add(convertedR, rq);
+        return add(convertedR, rq2);
     }
 
     public static RQ add(RQ rq1, RQ rq2) {
         return new RQ(
-                rq1.getSet(),
+                rq1.set,
                 UnivariateDivision.remainder(rq1.getRQ().add(rq2.getRQ()), rq1.getMod(), true));
     }
 
@@ -181,7 +183,7 @@ public class RQ {
     public byte[] encode_old() {
         int q12 = (set.getQ() - 1) / 2;
         ArrayList<Integer> h =
-                this.stream()
+                stream()
                         .mapToInt(l -> Math.toIntExact(l + q12))
                         .boxed()
                         .collect(Collectors.toCollection(ArrayList::new));
@@ -227,23 +229,15 @@ public class RQ {
     }
 
     @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((rQ == null) ? 0 : rQ.hashCode());
-        result = prime * result + ((set == null) ? 0 : set.hashCode());
-        return result;
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        RQ rq = (RQ) obj;
+        return set == rq.set && Objects.equals(rQ, rq.rQ);
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (obj == null) return false;
-        if (getClass() != obj.getClass()) return false;
-        RQ other = (RQ) obj;
-        if (rQ == null) {
-            if (other.rQ != null) return false;
-        } else if (!rQ.equals(other.rQ)) return false;
-        return set == other.set;
+    public int hashCode() {
+        return Objects.hash(set, rQ);
     }
 }

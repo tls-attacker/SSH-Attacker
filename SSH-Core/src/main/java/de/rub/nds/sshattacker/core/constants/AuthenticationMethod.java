@@ -32,7 +32,7 @@ public enum AuthenticationMethod {
 
     static {
         Map<String, AuthenticationMethod> mutableMap = new TreeMap<>();
-        for (AuthenticationMethod method : AuthenticationMethod.values()) {
+        for (AuthenticationMethod method : values()) {
             mutableMap.put(method.name, method);
         }
         map = Collections.unmodifiableMap(mutableMap);

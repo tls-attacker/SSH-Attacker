@@ -24,12 +24,12 @@ public abstract class GlobalRequestMessageSerializer<T extends GlobalRequestMess
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public GlobalRequestMessageSerializer(T message) {
+    protected GlobalRequestMessageSerializer(T message) {
         super(message);
     }
 
     private void serializeRequestName() {
-        LOGGER.debug("Request name length: " + message.getRequestNameLength().getValue());
+        LOGGER.debug("Request name length: {}", message.getRequestNameLength().getValue());
         appendInt(
                 message.getRequestNameLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
         LOGGER.debug(
@@ -38,7 +38,7 @@ public abstract class GlobalRequestMessageSerializer<T extends GlobalRequestMess
     }
 
     private void serializeWantReply() {
-        LOGGER.debug("Want reply: " + Converter.byteToBoolean(message.getWantReply().getValue()));
+        LOGGER.debug("Want reply: {}", Converter.byteToBoolean(message.getWantReply().getValue()));
         appendByte(message.getWantReply().getValue());
     }
 

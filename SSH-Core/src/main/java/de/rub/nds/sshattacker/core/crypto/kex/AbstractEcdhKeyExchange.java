@@ -22,6 +22,7 @@ public abstract class AbstractEcdhKeyExchange extends DhBasedKeyExchange {
     protected final NamedEcGroup group;
 
     protected AbstractEcdhKeyExchange(NamedEcGroup group) {
+        super();
         this.group = group;
     }
 
@@ -30,8 +31,8 @@ public abstract class AbstractEcdhKeyExchange extends DhBasedKeyExchange {
         if (algorithm == null || algorithm.getFlowType() != KeyExchangeFlowType.ECDH) {
             algorithm = context.getConfig().getDefaultEcdhKeyExchangeAlgorithm();
             LOGGER.warn(
-                    "Trying to instantiate a new ECDH or X curve ECDH key exchange without a matching key exchange algorithm negotiated, falling back to "
-                            + algorithm);
+                    "Trying to instantiate a new ECDH or X curve ECDH key exchange without a matching key exchange algorithm negotiated, falling back to {}",
+                    algorithm);
         }
         NamedEcGroup group;
         switch (algorithm) {
@@ -50,7 +51,7 @@ public abstract class AbstractEcdhKeyExchange extends DhBasedKeyExchange {
                 group = NamedEcGroup.SECP521R1;
                 break;
             default:
-                final String[] kexParts = algorithm.name().split("_", 3);
+                String[] kexParts = algorithm.name().split("_", 3);
                 if (kexParts.length != 3) {
                     LOGGER.error(
                             "Failed to find EC group name in algorithm name '{}'",

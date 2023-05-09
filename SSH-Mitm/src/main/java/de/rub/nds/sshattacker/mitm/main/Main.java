@@ -16,7 +16,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.ThreadContext;
 
-public class Main {
+public final class Main {
 
     // Loosely based on sysexits.h
     public static final int EX_OK = 0;
@@ -25,10 +25,14 @@ public class Main {
     public static final int EX_SOFTWARE = 70;
     public static final int EX_CONFIG = 78;
 
+    private Main() {
+        super();
+    }
+
     public static void main(String... args) {
         System.setProperty("log4j2.Script.enableLanguages", "javascript");
         ThreadContext.put("side", "");
-        final Logger LOGGER = LogManager.getLogger();
+        Logger LOGGER = LogManager.getLogger();
         try {
             (new SshMitm(args)).run();
         } catch (ParameterException pe) {

@@ -24,9 +24,8 @@ public class ChannelOpenUnknownMessageSerializer
 
     public void serializeTypeSpecificData() {
         LOGGER.debug(
-                "Type specific data: "
-                        + ArrayConverter.bytesToHexString(
-                                message.getTypeSpecificData().getValue()));
+                "Type specific data: {}",
+                ArrayConverter.bytesToHexString(message.getTypeSpecificData().getValue()));
         appendBytes(message.getTypeSpecificData().getValue());
     }
 

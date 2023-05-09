@@ -7,12 +7,12 @@
  */
 package de.rub.nds.sshattacker.core.constants;
 
-@SuppressWarnings("unused")
 public enum Language {
     NONE("");
 
     private final String name;
 
+    @SuppressWarnings("unused")
     Language(@SuppressWarnings("SameParameterValue") String name) {
         this.name = name;
     }

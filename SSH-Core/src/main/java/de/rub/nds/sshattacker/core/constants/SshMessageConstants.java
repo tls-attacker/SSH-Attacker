@@ -7,6 +7,10 @@
  */
 package de.rub.nds.sshattacker.core.constants;
 
-public class SshMessageConstants {
+public final class SshMessageConstants {
     public static final int MESSAGE_ID_LENGTH = 1;
+
+    private SshMessageConstants() {
+        super();
+    }
 }

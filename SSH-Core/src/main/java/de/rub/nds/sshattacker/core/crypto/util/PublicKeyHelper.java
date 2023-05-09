@@ -33,7 +33,9 @@ public final class PublicKeyHelper {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private PublicKeyHelper() {}
+    private PublicKeyHelper() {
+        super();
+    }
 
     /**
      * Parses the given encoded public key bytes. Instead of an explicit key format, the key format
@@ -192,11 +194,9 @@ public final class PublicKeyHelper {
             }
         } catch (ClassCastException e) {
             LOGGER.error(
-                    "Unable to encode public key with key format '"
-                            + keyFormat
-                            + "' due to mismatching classes, got '"
-                            + publicKey.getClass().getSimpleName()
-                            + "'");
+                    "Unable to encode public key with key format '{}' due to mismatching classes, got '{}'",
+                    keyFormat,
+                    publicKey.getClass().getSimpleName());
             LOGGER.debug(e);
             return null;
         }

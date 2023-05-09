@@ -26,6 +26,7 @@ public abstract class EllipticCurve {
      * @param modulus The modulus of the field over which the curve is defined.
      */
     protected EllipticCurve(BigInteger modulus) {
+        super();
         this.modulus = modulus;
     }
 
@@ -46,8 +47,9 @@ public abstract class EllipticCurve {
             BigInteger basePointY,
             BigInteger basePointOrder,
             BigInteger cofactor) {
+        super();
         this.modulus = modulus;
-        this.basePoint = this.getPoint(basePointX, basePointY);
+        basePoint = getPoint(basePointX, basePointY);
         this.basePointOrder = basePointOrder;
         this.cofactor = cofactor;
     }
@@ -73,13 +75,13 @@ public abstract class EllipticCurve {
             return p;
         }
 
-        if (this.inverse(p).equals(q)) {
+        if (inverse(p).equals(q)) {
             // p == -q <=> -p == q
             // => p + q = O
             return new Point();
         }
 
-        return this.additionFormular(p, q);
+        return additionFormular(p, q);
     }
 
     /**
@@ -89,10 +91,10 @@ public abstract class EllipticCurve {
      * @param p A point whose coordinates are elements of the field over which the curve is defined
      *     or the point at infinity.
      */
-    public Point mult(BigInteger k, Point p) {
+    public Point mult(@SuppressWarnings("StandardVariableNames") BigInteger k, Point p) {
         if (k.compareTo(BigInteger.ZERO) < 0) {
             k = k.negate();
-            p = this.inverse(p);
+            p = inverse(p);
         }
 
         // Double-and-add
@@ -100,10 +102,10 @@ public abstract class EllipticCurve {
 
         for (int i = k.bitLength(); i > 0; i--) {
 
-            q = this.add(q, q);
+            q = add(q, q);
 
             if (k.testBit(i - 1)) {
-                q = this.add(q, p);
+                q = add(q, p);
             }
         }
 
@@ -122,7 +124,7 @@ public abstract class EllipticCurve {
             // -O == O
             return p;
         } else {
-            return this.inverseAffine(p);
+            return inverseAffine(p);
         }
     }
 
@@ -164,19 +166,19 @@ public abstract class EllipticCurve {
     protected abstract Point additionFormular(Point p, Point q);
 
     public Point getBasePoint() {
-        return this.basePoint;
+        return basePoint;
     }
 
     public BigInteger getBasePointOrder() {
-        return this.basePointOrder;
+        return basePointOrder;
     }
 
     public BigInteger getModulus() {
-        return this.modulus;
+        return modulus;
     }
 
     public BigInteger getCofactor() {
-        return this.cofactor;
+        return cofactor;
     }
 
     public abstract Point createAPointOnCurve(BigInteger x);

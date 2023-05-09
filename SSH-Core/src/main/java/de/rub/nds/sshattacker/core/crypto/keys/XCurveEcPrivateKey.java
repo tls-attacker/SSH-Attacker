@@ -41,10 +41,12 @@ public class XCurveEcPrivateKey extends CustomPrivateKey {
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] scalar;
 
-    @SuppressWarnings("unused")
-    private XCurveEcPrivateKey() {}
+    public XCurveEcPrivateKey() {
+        super();
+    }
 
     public XCurveEcPrivateKey(byte[] scalar, NamedEcGroup group) {
+        super();
         if (!group.isRFC7748Curve()) {
             throw new IllegalArgumentException(
                     "XCurveEcPrivateKey does not support named group " + group);

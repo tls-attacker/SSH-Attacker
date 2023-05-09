@@ -11,6 +11,7 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
+@SuppressWarnings("StandardVariableNames")
 public class SntrupCoreTest {
 
     @Test
@@ -19,7 +20,7 @@ public class SntrupCoreTest {
         SntrupCore core = new SntrupCore(set);
         SntrupCoreValues values = core.keyGenCore();
         Short r = Short.createRandomShort(set);
-        Rounded c = core.encrypt(r, values.getH());
+        Rounded c = SntrupCore.encrypt(r, values.getH());
         Short rNew = core.decrypt(c, values.getF(), values.getgInv());
         assertEquals("r != r'", r, rNew);
     }

@@ -22,15 +22,18 @@ public class CustomRsaPublicKey extends CustomPublicKey implements RSAPublicKey 
     private BigInteger modulus;
     private BigInteger publicExponent;
 
-    @SuppressWarnings("unused")
-    public CustomRsaPublicKey() {}
+    public CustomRsaPublicKey() {
+        super();
+    }
 
     public CustomRsaPublicKey(RSAPublicKey publicKey) {
-        this.modulus = publicKey.getModulus();
-        this.publicExponent = publicKey.getPublicExponent();
+        super();
+        modulus = publicKey.getModulus();
+        publicExponent = publicKey.getPublicExponent();
     }
 
     public CustomRsaPublicKey(BigInteger publicExponent, BigInteger modulus) {
+        super();
         this.modulus = modulus;
         this.publicExponent = publicExponent;
     }

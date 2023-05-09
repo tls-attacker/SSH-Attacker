@@ -125,7 +125,7 @@ public class UserAuthPubkeyMessage extends UserAuthRequestMessage<UserAuthPubkey
     }
 
     public ModifiableInteger getSignatureLength() {
-        return this.signatureLength;
+        return signatureLength;
     }
 
     public void setSignature(ModifiableByteArray signature, boolean adjustLengthField) {

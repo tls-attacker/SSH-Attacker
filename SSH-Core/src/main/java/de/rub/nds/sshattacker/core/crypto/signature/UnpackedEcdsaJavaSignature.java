@@ -42,6 +42,7 @@ public class UnpackedEcdsaJavaSignature extends UnpackedJavaSignature {
         }
     }
 
+    @SuppressWarnings("StandardVariableNames")
     @Override
     protected byte[] unpackSignature(byte[] packedSignature) {
         try (ASN1InputStream input = new ASN1InputStream(packedSignature)) {
@@ -59,6 +60,7 @@ public class UnpackedEcdsaJavaSignature extends UnpackedJavaSignature {
         }
     }
 
+    @SuppressWarnings("StandardVariableNames")
     @Override
     protected byte[] packSignature(byte[] unpackedSignature) {
         int rStart = DataFormatConstants.MPINT_SIZE_LENGTH;

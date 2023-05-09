@@ -16,7 +16,7 @@ import de.rub.nds.sshattacker.core.workflow.action.SendingAction;
 import java.util.LinkedList;
 import java.util.List;
 
-public class WorkflowTraceUtil {
+public final class WorkflowTraceUtil {
 
     public static List<ProtocolMessage<?>> getAllSendMessages(WorkflowTrace trace) {
         List<ProtocolMessage<?>> sendMessages = new LinkedList<>();
@@ -48,5 +48,7 @@ public class WorkflowTraceUtil {
         return receivedMessage;
     }
 
-    private WorkflowTraceUtil() {}
+    private WorkflowTraceUtil() {
+        super();
+    }
 }

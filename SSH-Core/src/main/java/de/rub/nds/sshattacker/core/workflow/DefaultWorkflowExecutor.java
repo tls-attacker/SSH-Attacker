@@ -37,7 +37,7 @@ public class DefaultWorkflowExecutor extends WorkflowExecutor {
                     .forEach(
                             ctx -> {
                                 ctx.initTransportHandler();
-                                LOGGER.debug("Connection for " + ctx + " initialized");
+                                LOGGER.debug("Connection for {} initialized", ctx);
                             });
         }
 
@@ -76,7 +76,7 @@ public class DefaultWorkflowExecutor extends WorkflowExecutor {
                                 try {
                                     ctx.getTransportHandler().closeConnection();
                                 } catch (IOException ex) {
-                                    LOGGER.warn("Could not close connection for context " + ctx);
+                                    LOGGER.warn("Could not close connection for context {}", ctx);
                                     LOGGER.debug(ex);
                                 }
                             });
