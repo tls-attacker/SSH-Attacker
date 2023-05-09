@@ -7,15 +7,14 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.serializer.extension;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+
 import de.rub.nds.sshattacker.core.protocol.transport.message.extension.DelayCompressionExtension;
 import de.rub.nds.sshattacker.core.protocol.transport.parser.extension.DelayCompressionExtensionParserTest;
+import java.util.stream.Stream;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-
-import java.util.stream.Stream;
-
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 public class DelayCompressionExtensionSerializerTest {
     /**
@@ -34,9 +33,11 @@ public class DelayCompressionExtensionSerializerTest {
      * @param providedNameLength Length of 'delay-compression' string: 17
      * @param providedName The string: 'delay-compression'
      * @param providedValueLength Length of the value of delay-compression extension
-     * @param providedCompressionMethodsClientToServerLength Length of compression methods(client to server)
+     * @param providedCompressionMethodsClientToServerLength Length of compression methods(client to
+     *     server)
      * @param providedCompressionMethodsClientToServer Compression methods(client to server)
-     * @param providedCompressionMethodsServerToClientLength Length of compression methods(server to client)
+     * @param providedCompressionMethodsServerToClientLength Length of compression methods(server to
+     *     client)
      * @param providedCompressionMethodsServerToClient Compression methods(server to client)
      */
     @ParameterizedTest
@@ -54,9 +55,11 @@ public class DelayCompressionExtensionSerializerTest {
         extension.setNameLength(providedNameLength);
         extension.setName(providedName);
         extension.setCompressionMethodsLength(providedValueLength);
-        extension.setCompressionMethodsClientToServerLength(providedCompressionMethodsClientToServerLength);
+        extension.setCompressionMethodsClientToServerLength(
+                providedCompressionMethodsClientToServerLength);
         extension.setCompressionMethodsClientToServer(providedCompressionMethodsClientToServer);
-        extension.setCompressionMethodsServerToClientLength(providedCompressionMethodsServerToClientLength);
+        extension.setCompressionMethodsServerToClientLength(
+                providedCompressionMethodsServerToClientLength);
         extension.setCompressionMethodsServerToClient(providedCompressionMethodsServerToClient);
 
         DelayCompressionExtensionSerializer serializer =
