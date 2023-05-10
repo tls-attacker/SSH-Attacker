@@ -8,10 +8,10 @@
 package de.rub.nds.sshattacker.core.protocol.transport.handler;
 
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.transport.message.NewCompressMessage;
+import de.rub.nds.sshattacker.core.protocol.transport.parser.NewCompressMessageParser;
+import de.rub.nds.sshattacker.core.protocol.transport.preparator.NewCompressMessagePreparator;
+import de.rub.nds.sshattacker.core.protocol.transport.serializer.NewCompressMessageSerializer;
 import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class NewCompressMessageHandler extends SshMessageHandler<NewCompressMessage> {
@@ -40,22 +40,22 @@ public class NewCompressMessageHandler extends SshMessageHandler<NewCompressMess
     }
 
     @Override
-    public SshMessageParser<NewCompressMessage> getParser(byte[] array) {
-        return null;
+    public NewCompressMessageParser getParser(byte[] array) {
+        return new NewCompressMessageParser(array);
     }
 
     @Override
-    public SshMessageParser<NewCompressMessage> getParser(byte[] array, int startPosition) {
-        return null;
+    public NewCompressMessageParser getParser(byte[] array, int startPosition) {
+        return new NewCompressMessageParser(array, startPosition);
     }
 
     @Override
-    public SshMessagePreparator<NewCompressMessage> getPreparator() {
-        return null;
+    public NewCompressMessagePreparator getPreparator() {
+        return new NewCompressMessagePreparator(context.getChooser(), message);
     }
 
     @Override
-    public SshMessageSerializer<NewCompressMessage> getSerializer() {
-        return null;
+    public NewCompressMessageSerializer getSerializer() {
+        return new NewCompressMessageSerializer(message);
     }
 }
