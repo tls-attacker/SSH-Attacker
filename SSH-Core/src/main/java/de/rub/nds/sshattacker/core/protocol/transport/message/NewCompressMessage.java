@@ -8,13 +8,13 @@
 package de.rub.nds.sshattacker.core.protocol.transport.message;
 
 import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
+import de.rub.nds.sshattacker.core.protocol.transport.handler.NewCompressMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class NewCompressMessage extends SshMessage<NewCompressMessage> {
 
     @Override
-    public SshMessageHandler<NewCompressMessage> getHandler(SshContext context) {
-        return null;
+    public NewCompressMessageHandler getHandler(SshContext context) {
+        return new NewCompressMessageHandler(context, this);
     }
 }
