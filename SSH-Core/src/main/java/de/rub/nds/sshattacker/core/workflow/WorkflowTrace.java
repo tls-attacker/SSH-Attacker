@@ -90,7 +90,10 @@ public class WorkflowTrace implements Serializable {
                 @XmlElement(type = ProxyFilterMessagesAction.class, name = "ProxyFilterMessages"),
                 @XmlElement(
                         type = DynamicExtensionNegotiationAction.class,
-                        name = "DynamicExtensionNegotiation")
+                        name = "DynamicExtensionNegotiation"),
+                @XmlElement(
+                        type = DynamicDelayCompressionAction.class,
+                        name = "DynamicDelayCompressionAction")
             })
     private List<SshAction> sshActions = new ArrayList<>();
 
