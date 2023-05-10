@@ -61,6 +61,7 @@ public class DelayCompressionExtensionHandler
                         clientSupportedCompressionMethods, serverSupportedCompressionMethods);
         // set in context
         context.setSelectedDelayCompressionMethod(commonCompressionMethod);
+        context.setDelayCompressionExtensionReceived(true);
     }
 
     @Override

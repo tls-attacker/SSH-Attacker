@@ -51,6 +51,24 @@ public class UserAuthSuccessMessageHandler extends SshMessageHandler<UserAuthSuc
                     .updateDecompressionAlgorithm(
                             chooser.getCompressionMethodServerToClient().getAlgorithm());
         }
+        // receiving UserAuthSuccessMessage when acting as client
+        // --> set new compression algorithm from delay-compression extension
+        if (context.isHandleAsClient()
+                && context.getConfig().getEnableExtensions()
+                && context.delayCompressionExtensionReceived()) {
+            context.getPacketLayer()
+                    .updateCompressionAlgorithm(
+                            context.getSelectedDelayCompressionMethod().get().getAlgorithm());
+            context.getPacketLayer()
+                    .updateDecompressionAlgorithm(
+                            context.getSelectedDelayCompressionMethod().get().getAlgorithm());
+            // TODO: send NewCompressMessage to server
+        }
+        // receiving UserAuthSuccessMessage when acting as server
+        else {
+            LOGGER.debug(
+                    "Client sent UserAuthSuccessMessage which is supposed to be sent by the server only!");
+        }
     }
 
     @Override
