@@ -859,6 +859,17 @@ public class Config implements Serializable {
                                                 + "13056155bd51bde866f92b3e9bcfed230381b3dab5100a03c5965538c6f1c30a9",
                                         16),
                                 NamedEcGroup.SECP521R1)));
+        userKeys.add(
+                new SshPublicKey<>(
+                        PublicKeyFormat.SSH_ED25519,
+                        new XCurveEcPublicKey(
+                                ArrayConverter.hexStringToByteArray(
+                                        "99AF546D30DD1770CC27A1A1CE7AD1CEC729823527529352141E89F7F3420F2C"),
+                                NamedEcGroup.CURVE25519),
+                        new XCurveEcPrivateKey(
+                                ArrayConverter.hexStringToByteArray(
+                                        "6D3703876ED02075102F767E2EA969E311B7776F71630B7C1DF3E55C98D6641B"),
+                                NamedEcGroup.CURVE25519)));
         // endregion
 
         // region Channel initialization
