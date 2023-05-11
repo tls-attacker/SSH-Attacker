@@ -7,6 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.preparator;
 
+import de.rub.nds.sshattacker.core.constants.DisconnectReason;
 import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.transport.message.DisconnectMessage;
@@ -21,14 +22,14 @@ public class DisconnectMessagePreparator extends SshMessagePreparator<Disconnect
     @Override
     public void prepareMessageSpecificContents() {
         // TODO save values in config
-        /*
         getObject().setReasonCode(DisconnectReason.SSH_DISCONNECT_PROTOCOL_ERROR);
         getObject().setDescription("Test", true);
         getObject().setLanguageTag("", true);
-         */
 
-        getObject().setReasonCode(getObject().getReasonCode());
-        getObject().setDescription(getObject().getDescription(), true);
-        getObject().setLanguageTag(getObject().getLanguageTag(), true);
+        if (chooser.getContext().getDelayCompressionExtensionNegotiationFailed()) {
+            getObject().setReasonCode(getObject().getReasonCode());
+            getObject().setDescription(getObject().getDescription(), true);
+            getObject().setLanguageTag(getObject().getLanguageTag(), true);
+        }
     }
 }
