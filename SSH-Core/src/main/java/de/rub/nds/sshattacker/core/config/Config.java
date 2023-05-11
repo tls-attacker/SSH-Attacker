@@ -827,6 +827,21 @@ public class Config implements Serializable {
         userKeys = new ArrayList<>();
         userKeys.add(
                 new SshPublicKey<>(
+                        PublicKeyFormat.SSH_RSA,
+                        new CustomRsaPublicKey(
+                                new BigInteger("10001", 16),
+                                new BigInteger(
+                                        "009df0c70638448afef5799bc7c161d5bc286baeb8a4dc70ffefb2f4813a810747d3cbfcd1c9a9ce76272731ed1e2c0ba64feb9af634ae8e4df699b2d3b52af4df616ca8003502e38b81bfa6801148c7bab1870a694b44d82ff098633edb09bfbab52b3e7498ce1826813da010000f7c458877f859f464420853220d632d9d1fc113e885e631f15dfcf1fddba90c0c5aa520bc6a55a56a1b29ead5492f83fe7e6b9494afbe16615daa446c2909c218dcd750ae4a9a9c69c74d748e904ba8e2ce2812d1ce3c4ed12fd82cca7fe81f888239076702656ef1d3f93e472aae509a0ae5e241c4fd9b661f4cc6ffb02d416a725469e51e27204b3db3f28961e244a9e6c3",
+                                        16)),
+                        new CustomRsaPrivateKey(
+                                new BigInteger(
+                                        "008701ebcef848371c8c0f40c77719bf4f50aa03b7984d4b56abba286152f63a97fe86ef7d10ca534f1256e1c99432085f490fd7edbfc8baa2103affef127d3ec6b80bde6c16e47a47a54882f614504752e22fd20981aabeb5f40eff3f1a9371ce12d17d58c3c9e04101d700bccca070152bfb8952b3a3040303b5270671564f6e2753e05e413931e22a6b115fd3264fd6e4c25cb901ccdd006d9b5785379f7cbcc1bbd149afda6b51fe13430fb5ca19da594afccd2bd99473001e995033116d48d329d42255ef0eec11a6d2310eb97912d719b7b75d74696613e21305da6715846bf04c4e76046fbf86a793d96c0fe702638696eed4b7488c18233db879e70149",
+                                        16),
+                                new BigInteger(
+                                        "009df0c70638448afef5799bc7c161d5bc286baeb8a4dc70ffefb2f4813a810747d3cbfcd1c9a9ce76272731ed1e2c0ba64feb9af634ae8e4df699b2d3b52af4df616ca8003502e38b81bfa6801148c7bab1870a694b44d82ff098633edb09bfbab52b3e7498ce1826813da010000f7c458877f859f464420853220d632d9d1fc113e885e631f15dfcf1fddba90c0c5aa520bc6a55a56a1b29ead5492f83fe7e6b9494afbe16615daa446c2909c218dcd750ae4a9a9c69c74d748e904ba8e2ce2812d1ce3c4ed12fd82cca7fe81f888239076702656ef1d3f93e472aae509a0ae5e241c4fd9b661f4cc6ffb02d416a725469e51e27204b3db3f28961e244a9e6c3",
+                                        16))));
+        userKeys.add(
+                new SshPublicKey<>(
                         PublicKeyFormat.ECDSA_SHA2_NISTP521,
                         new CustomEcPublicKey(
                                 PointFormatter.formatFromByteArray(
@@ -844,133 +859,6 @@ public class Config implements Serializable {
                                                 + "13056155bd51bde866f92b3e9bcfed230381b3dab5100a03c5965538c6f1c30a9",
                                         16),
                                 NamedEcGroup.SECP521R1)));
-        userKeys.add(
-                new SshPublicKey<>(
-                        PublicKeyFormat.SSH_RSA,
-                        new CustomRsaPublicKey(
-                                new BigInteger("010001", 16),
-                                new BigInteger(
-                                        "00D9F6BFFAB8BC79C6E9AB6C3D4593F561CC93B41A70B9A750045ED0AC09"
-                                                + "6EF4A6A8C7B2AAA4F44459481319AE956934BF9D5C5AD7C004ADE0B81E43"
-                                                + "75FD1DF8797DF6F3CA130ED8A2A9B6E94467A05D97A0F8380A4CBB75FC5E"
-                                                + "5C303433B61750063D3801D5C90658ACAEE140B09F95A0FD8886EFAE16EA"
-                                                + "B779DF82E6A12C1BE011FECB417C788B72C42948AB54CCE1E8119CFB78E1"
-                                                + "3B06090CEBF6D3806854FE09F03B20BA92505058EC64C44F0B4DA0BAE71D"
-                                                + "52EDA11AB67F4B54D9FCEFE1FACEB520D595FFA33502FB91423EBD972F26"
-                                                + "150715CB0E648F715E6E5E8FC9D8FA55E9DE0652CF85D7928B235486F54A"
-                                                + "3F3EE64B04888B898864B08200A9E22909",
-                                        16)),
-                        new CustomRsaPrivateKey(
-                                new BigInteger(
-                                        "7AAB5898AEE7C451A2A90B9DE04EC947656FAB69460FF68E1E278EA1841D"
-                                                + "A22B39CA4A4FA7CEA1B8EDCB7224C38A1659D1226D2E07AF9A7C62A305AC"
-                                                + "9DEC042FBC290443B23E24C64765DE1AD58777A522BF102B1BCC5536D794"
-                                                + "62BCBE6DB8E91CD9CF6F98F62E5031BFAA9E51C93ED900579A39C26CBB64"
-                                                + "CF7E6F998513E20B4B2A4DD36D4F6F074A0FDB04232FA6EDAB89A1B32BA5"
-                                                + "2214696BDA66C4518A73F92807DD088AB11263519885A0CD6A42B6D9EAE9"
-                                                + "EBD13241EDC4EB7205AE838A5EF7AE280D36410057B38ED05CEBA75F92AC"
-                                                + "DF40226164BB3A0C4312B65A8C2FBA85CDB7CC5F77F53C45F64409AFC460"
-                                                + "210C8EE4DAB818F009172387ED00E141",
-                                        16),
-                                new BigInteger(
-                                        "00D9F6BFFAB8BC79C6E9AB6C3D4593F561CC93B41A70B9A750045ED0AC09"
-                                                + "6EF4A6A8C7B2AAA4F44459481319AE956934BF9D5C5AD7C004ADE0B81E43"
-                                                + "75FD1DF8797DF6F3CA130ED8A2A9B6E94467A05D97A0F8380A4CBB75FC5E"
-                                                + "5C303433B61750063D3801D5C90658ACAEE140B09F95A0FD8886EFAE16EA"
-                                                + "B779DF82E6A12C1BE011FECB417C788B72C42948AB54CCE1E8119CFB78E1"
-                                                + "3B06090CEBF6D3806854FE09F03B20BA92505058EC64C44F0B4DA0BAE71D"
-                                                + "52EDA11AB67F4B54D9FCEFE1FACEB520D595FFA33502FB91423EBD972F26"
-                                                + "150715CB0E648F715E6E5E8FC9D8FA55E9DE0652CF85D7928B235486F54A"
-                                                + "3F3EE64B04888B898864B08200A9E22909",
-                                        16))));
-        userKeys.add(
-                new SshPublicKey<>(
-                        PublicKeyFormat.SSH_DSS,
-                        new CustomDsaPublicKey(
-                                new BigInteger(
-                                        "008BD081A858028A729F0C04E0788C06BC5B2EA8B880A203986C90E92D20"
-                                                + "322670248A305A3217737BF0256EFFD53CC512993F137A4F64162AF4F3E6"
-                                                + "AA64D348343C86D1B3D18CAE017A48FD2FFA56A9DFC70D18BE8958938768"
-                                                + "995AFD952719DE2066B0A7E3D90948D4E0437BD1A5C94F1A1FBBADDCEA3A"
-                                                + "338E96A4CACCF4A855",
-                                        16),
-                                new BigInteger("00B971EBD0321EEC38C15E01FD9C773CCA23E66879", 16),
-                                new BigInteger(
-                                        "259DC09E04AD1818271F3E676B17A98B6F7B1D08B43B51FAEF06D2C9F921"
-                                                + "0667ED3C14ABEBEE372D1F325C11C0304AE8B9BAC8914619CA05165BAE2B"
-                                                + "E49BAD5DD8ECB8129CDDD2941D6DDF53C7D53A5FB9D88B58F362034CA6A1"
-                                                + "3929D28942D0054FFA4166D3DDDE0B2FE2E4A0342A827DEF6B6FECDB0614"
-                                                + "8ED403D3FC9C4C79",
-                                        16),
-                                new BigInteger(
-                                        "1433495B5BB346BEB6A783DA2ADF1C5CFE946146E4A461B2A658CEC29DA2"
-                                                + "1496A6D69119026059D0C2557D535E664A0F10B4DB006601D8848EA6B92F"
-                                                + "C6313B03103C9C3C6F0ED55CB46EEC8B0FE0007D2411F46676A8761DADAA"
-                                                + "171351322D29487E9AE8738C354DD04FFEACA50503AFEC8F0610A679FF81"
-                                                + "6EFD9B162F152BDA",
-                                        16)),
-                        new CustomDsaPrivateKey(
-                                new BigInteger(
-                                        "008BD081A858028A729F0C04E0788C06BC5B2EA8B880A203986C90E92D20"
-                                                + "322670248A305A3217737BF0256EFFD53CC512993F137A4F64162AF4F3E6"
-                                                + "AA64D348343C86D1B3D18CAE017A48FD2FFA56A9DFC70D18BE8958938768"
-                                                + "995AFD952719DE2066B0A7E3D90948D4E0437BD1A5C94F1A1FBBADDCEA3A"
-                                                + "338E96A4CACCF4A855",
-                                        16),
-                                new BigInteger("00B971EBD0321EEC38C15E01FD9C773CCA23E66879", 16),
-                                new BigInteger(
-                                        "259DC09E04AD1818271F3E676B17A98B6F7B1D08B43B51FAEF06D2C9F921"
-                                                + "0667ED3C14ABEBEE372D1F325C11C0304AE8B9BAC8914619CA05165BAE2B"
-                                                + "E49BAD5DD8ECB8129CDDD2941D6DDF53C7D53A5FB9D88B58F362034CA6A1"
-                                                + "3929D28942D0054FFA4166D3DDDE0B2FE2E4A0342A827DEF6B6FECDB0614"
-                                                + "8ED403D3FC9C4C79",
-                                        16),
-                                new BigInteger("7C6B4E2B32192EFC09B7CB12D85CBB4141EF7348", 16))));
-        userKeys.add(
-                new SshPublicKey<>(
-                        PublicKeyFormat.ECDSA_SHA2_NISTP256,
-                        new CustomEcPublicKey(
-                                PointFormatter.formatFromByteArray(
-                                        NamedEcGroup.SECP256R1,
-                                        ArrayConverter.hexStringToByteArray(
-                                                "0492A8D4E6EECBED47D0AACD15D714FB619D6F3941028874B99117CF8EAE"
-                                                        + "BBCDF7CC981DE460635590F3AB5AE6F7DF0A12E6E0DE951DEAE3D2C48EC3"
-                                                        + "4C237C61E7")),
-                                NamedEcGroup.SECP256R1),
-                        new CustomEcPrivateKey(
-                                new BigInteger(
-                                        "8DD62AA24F982B18446E3ECC7E50F8EB976610750242BA637C949F4C8FD6A1CF",
-                                        16),
-                                NamedEcGroup.SECP256R1)));
-        userKeys.add(
-                new SshPublicKey<>(
-                        PublicKeyFormat.ECDSA_SHA2_NISTP384,
-                        new CustomEcPublicKey(
-                                PointFormatter.formatFromByteArray(
-                                        NamedEcGroup.SECP384R1,
-                                        ArrayConverter.hexStringToByteArray(
-                                                "04650469DB4E282660E0DCB23197D10EE935BA038B8B62890EB098420211"
-                                                        + "C38D5E4E737FF2A0DC53E1B8A55C65B2BD85673EFEEEE9CE4727374D2E2D"
-                                                        + "E8EEA6B8AB146245C8627E2346C76944AEB1C0BDCE1B267773F6ED08473A"
-                                                        + "DE8B6F5687A2B6")),
-                                NamedEcGroup.SECP384R1),
-                        new CustomEcPrivateKey(
-                                new BigInteger(
-                                        "EA39EE919D73A1FE8F8FBFC8807E7ED36BE3D89FBC1F35619B04E825E8E8"
-                                                + "07E994348EE8095467499AE15F73FE0FD298",
-                                        16),
-                                NamedEcGroup.SECP384R1)));
-        userKeys.add(
-                new SshPublicKey<>(
-                        PublicKeyFormat.SSH_ED25519,
-                        new XCurveEcPublicKey(
-                                ArrayConverter.hexStringToByteArray(
-                                        "13E3591CC0D1BAE515EC44FD3FA01784E2103165ECCFE939D91A619F46DBED70"),
-                                NamedEcGroup.CURVE25519),
-                        new XCurveEcPrivateKey(
-                                ArrayConverter.hexStringToByteArray(
-                                        "092E829DE536BE8F7D74E7A3C6CD90EA6EADDDEEB2E50D8617EBDD132B53669B"),
-                                NamedEcGroup.CURVE25519)));
         // endregion
 
         // region Channel initialization
