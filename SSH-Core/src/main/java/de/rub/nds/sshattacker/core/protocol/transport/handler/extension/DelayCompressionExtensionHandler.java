@@ -92,7 +92,7 @@ public class DelayCompressionExtensionHandler
             return commonCompressionMethod.get();
         } else {
             LOGGER.warn("No common compression method found from delay-compression extension!");
-            // TODO: disconnect with appropriate disconnect message(RFC 8308 Section 3.2)
+            context.setDelayCompressionExtensionNegotiationFailed(true);
             return null;
         }
     }

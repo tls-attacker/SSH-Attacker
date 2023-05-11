@@ -246,6 +246,12 @@ public class SshContext {
 
     /** Flag whether a delay-compression extension was received from the peer */
     private boolean delayCompressionExtensionReceived = false;
+
+    /**
+     * Flag to check whether the negotiation of a common compression method in the delay-compression
+     * extension failed
+     */
+    private boolean delayCompressionExtensionNegotiationFailed = false;
     // endregion
 
     // region Connection Protocol
@@ -957,6 +963,10 @@ public class SshContext {
         return serverSupportsExtensionNegotiation;
     }
 
+    public boolean getDelayCompressionExtensionNegotiationFailed() {
+        return delayCompressionExtensionNegotiationFailed;
+    }
+
     // section server-sig-algs extension
     public Optional<List<PublicKeyAlgorithm>>
             getServerSupportedPublicKeyAlgorithmsForAuthentication() {
@@ -998,6 +1008,10 @@ public class SshContext {
 
     public void setServerSupportsExtensionNegotiation(boolean support) {
         this.serverSupportsExtensionNegotiation = support;
+    }
+
+    public void setDelayCompressionExtensionNegotiationFailed(boolean failed) {
+        this.delayCompressionExtensionNegotiationFailed = failed;
     }
 
     // section server-sig-algs extension
