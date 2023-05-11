@@ -260,8 +260,8 @@ public class Config implements Serializable {
     /** List of extensions supported by the server */
     private List<AbstractExtension<?>> serverSupportedExtensions;
 
-    /** Flag for enabling and disabling SSH Extensions */
-    private boolean enableExtensions = true;
+    /** Flag for enabling and disabling the server-sig-algs extension */
+    private boolean respectServerSigAlgsExtension = true;
 
     /** List of public key algorithms for authentication supported by server */
     private List<PublicKeyAlgorithm> serverSupportedPublicKeyAlgorithmsForAuthentication;
@@ -1437,8 +1437,8 @@ public class Config implements Serializable {
         return selectedPublicKeyForAuthentication;
     }
 
-    public boolean getEnableExtensions() {
-        return enableExtensions;
+    public boolean getRespectServerSigAlgsExtension() {
+        return respectServerSigAlgsExtension;
     }
 
     // section delay-compression extension
