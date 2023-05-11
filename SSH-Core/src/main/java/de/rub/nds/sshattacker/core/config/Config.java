@@ -259,6 +259,15 @@ public class Config implements Serializable {
 
     /** List of extensions supported by the server */
     private List<AbstractExtension<?>> serverSupportedExtensions;
+
+    /** List of public key algorithms for authentication supported by server */
+    private List<PublicKeyAlgorithm> serverSupportedPublicKeyAlgorithmsForAuthentication;
+
+    /** List of compression methods supported by the client(delay-compression extension) */
+    private List<CompressionMethod> clientSupportedDelayCompressionMethods;
+
+    /** List of compression methods supported by the server(delay-compression extension) */
+    private List<CompressionMethod> serverSupportedDelayCompressionMethods;
     // endregion
 
     // region Authentication
@@ -557,52 +566,40 @@ public class Config implements Serializable {
         // endregion
 
         // region SSH Extension
-        ServerSigAlgsExtension serverSigAlgsExtension = new ServerSigAlgsExtension();
-        serverSigAlgsExtension.setName(Extension.SERVER_SIG_ALGS.getName(), true);
-        // value =
-        // "ssh-dss,ssh-rsa,rsa-sha2-256,rsa-sha2-512,ecdsa-sha2-nistp256,ecdsa-sha2-nistp384,ecdsa-sha2-nistp521,ssh-ed25519,ecdsa-sha2-1.3.132.0.10"
-        String defaultPublicKeyAlgorithms =
-                PublicKeyAlgorithm.SSH_DSS.toString()
-                        + CharConstants.ALGORITHM_SEPARATOR
-                        + PublicKeyAlgorithm.SSH_RSA
-                        + CharConstants.ALGORITHM_SEPARATOR
-                        + PublicKeyAlgorithm.RSA_SHA2_256
-                        + CharConstants.ALGORITHM_SEPARATOR
-                        + PublicKeyAlgorithm.RSA_SHA2_512
-                        + CharConstants.ALGORITHM_SEPARATOR
-                        + PublicKeyAlgorithm.ECDSA_SHA2_NISTP256
-                        + CharConstants.ALGORITHM_SEPARATOR
-                        + PublicKeyAlgorithm.ECDSA_SHA2_NISTP384
-                        + CharConstants.ALGORITHM_SEPARATOR
-                        + PublicKeyAlgorithm.ECDSA_SHA2_NISTP521
-                        + CharConstants.ALGORITHM_SEPARATOR
-                        + PublicKeyAlgorithm.SSH_ED25519
-                        + CharConstants.ALGORITHM_SEPARATOR
-                        + PublicKeyAlgorithm.ECDSA_SHA2_SECP256K1;
-        serverSigAlgsExtension.setAcceptedPublicKeyAlgorithms(defaultPublicKeyAlgorithms, true);
-
-        DelayCompressionExtension delayCompressionExtension = new DelayCompressionExtension();
-        delayCompressionExtension.setName(Extension.DELAY_COMPRESSION.getName(), true);
-        // value = "none,zlib,zlib@openssh.com"
-        String defaultCompressionMethods =
-                CompressionMethod.NONE.toString()
-                        + CharConstants.ALGORITHM_SEPARATOR
-                        + CompressionMethod.ZLIB
-                        + CharConstants.ALGORITHM_SEPARATOR
-                        + CompressionMethod.ZLIB_OPENSSH_COM;
-        delayCompressionExtension.setCompressionMethodsClientToServer(
-                defaultCompressionMethods, true);
-        delayCompressionExtension.setCompressionMethodsServerToClient(
-                defaultCompressionMethods, true);
-
         // send delay-compression extension by default when acting as client
         clientSupportedExtensions = new ArrayList<>();
-        clientSupportedExtensions.add(delayCompressionExtension);
+        clientSupportedExtensions.add(new DelayCompressionExtension());
 
         // send server-sig-algs and delay-compression extension by default when acting as server
         serverSupportedExtensions = new ArrayList<>();
-        serverSupportedExtensions.add(serverSigAlgsExtension);
-        serverSupportedExtensions.add(delayCompressionExtension);
+        serverSupportedExtensions.add(new ServerSigAlgsExtension());
+        serverSupportedExtensions.add(new DelayCompressionExtension());
+
+        // section server-sig-algs extension
+        serverSupportedPublicKeyAlgorithmsForAuthentication =
+                Arrays.stream(
+                                new PublicKeyAlgorithm[] {
+                                    PublicKeyAlgorithm.SSH_DSS,
+                                    PublicKeyAlgorithm.SSH_RSA,
+                                    PublicKeyAlgorithm.ECDSA_SHA2_NISTP256,
+                                    PublicKeyAlgorithm.ECDSA_SHA2_NISTP384,
+                                    PublicKeyAlgorithm.ECDSA_SHA2_NISTP521,
+                                    PublicKeyAlgorithm.SSH_ED25519
+                                })
+                        .collect(Collectors.toCollection(LinkedList::new));
+
+        // section delay-compression extension
+        clientSupportedDelayCompressionMethods =
+                Arrays.stream(
+                                new CompressionMethod[] {
+                                    CompressionMethod.NONE,
+                                    CompressionMethod.ZLIB_OPENSSH_COM,
+                                    CompressionMethod.ZLIB
+                                })
+                        .collect(Collectors.toCollection(LinkedList::new));
+
+        serverSupportedDelayCompressionMethods =
+                new LinkedList<>(clientSupportedDelayCompressionMethods);
         // endregion
 
         // region KeyExchange initialization
@@ -1253,17 +1250,19 @@ public class Config implements Serializable {
     public List<AbstractExtension<?>> getServerSupportedExtensions() {
         return serverSupportedExtensions;
     }
-    // endregion
 
-    // region Setters for SSH Extensions
-
-    // section general extensions
-    public void setClientSupportedExtensions(List<AbstractExtension<?>> extensions) {
-        this.clientSupportedExtensions = extensions;
+    // section server-sig-algs extension
+    public List<PublicKeyAlgorithm> getServerSupportedPublicKeyAlgorithmsForAuthentication() {
+        return serverSupportedPublicKeyAlgorithmsForAuthentication;
     }
 
-    public void setServerSupportedExtensions(List<AbstractExtension<?>> extensions) {
-        this.serverSupportedExtensions = extensions;
+    // section delay-compression extension
+    public List<CompressionMethod> getClientSupportedDelayCompressionMethods() {
+        return clientSupportedDelayCompressionMethods;
+    }
+
+    public List<CompressionMethod> getServerSupportedDelayCompressionMethods() {
+        return serverSupportedDelayCompressionMethods;
     }
     // endregion
 
