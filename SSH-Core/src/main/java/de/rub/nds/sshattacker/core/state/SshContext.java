@@ -235,8 +235,8 @@ public class SshContext {
      */
     private List<PublicKeyAlgorithm> serverSupportedPublicKeyAlgorithmsForAuthentication;
 
-    /** Public key to use to authenticate the client to the server(server-sig-algs extension) */
-    private SshPublicKey<?, ?> selectedPublicKeyForAuthentication;
+    /** Flag to check whether the server-sig-algs extension was already received */
+    private boolean serverSigAlgsExtensionReceivedFromServer = false;
 
     /** List of compression methods supported by the client(delay-compression extension) */
     private List<CompressionMethod> clientSupportedDelayCompressionMethods;
@@ -960,8 +960,8 @@ public class SshContext {
         return Optional.ofNullable(serverSupportedPublicKeyAlgorithmsForAuthentication);
     }
 
-    public Optional<SshPublicKey<?, ?>> getSelectedPublicKeyForAuthentication() {
-        return Optional.ofNullable(selectedPublicKeyForAuthentication);
+    public boolean getServerSigAlgsExtensionReceivedFromServer() {
+        return serverSigAlgsExtensionReceivedFromServer;
     }
 
     // section delay-compression extension
@@ -999,8 +999,8 @@ public class SshContext {
         this.serverSupportedPublicKeyAlgorithmsForAuthentication = algorithms;
     }
 
-    public void setSelectedPublicKeyForAuthentication(SshPublicKey<?, ?> key) {
-        this.selectedPublicKeyForAuthentication = key;
+    public void setServerSigAlgsExtensionReceivedFromServer(boolean received) {
+        this.serverSigAlgsExtensionReceivedFromServer = received;
     }
 
     // section delay-compression extension

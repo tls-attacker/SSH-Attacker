@@ -266,9 +266,6 @@ public class Config implements Serializable {
     /** List of public key algorithms for authentication supported by server */
     private List<PublicKeyAlgorithm> serverSupportedPublicKeyAlgorithmsForAuthentication;
 
-    /** Public key to use to authenticate the client to the server(server-sig-algs extension) */
-    private SshPublicKey<?, ?> selectedPublicKeyForAuthentication;
-
     /** List of compression methods supported by the client(delay-compression extension) */
     private List<CompressionMethod> clientSupportedDelayCompressionMethods;
 
@@ -593,50 +590,6 @@ public class Config implements Serializable {
                                     PublicKeyAlgorithm.SSH_ED25519
                                 })
                         .collect(Collectors.toCollection(LinkedList::new));
-
-        selectedPublicKeyForAuthentication =
-                new SshPublicKey<>(
-                        PublicKeyFormat.SSH_DSS,
-                        new CustomDsaPublicKey(
-                                new BigInteger(
-                                        "008BD081A858028A729F0C04E0788C06BC5B2EA8B880A203986C90E92D20"
-                                                + "322670248A305A3217737BF0256EFFD53CC512993F137A4F64162AF4F3E6"
-                                                + "AA64D348343C86D1B3D18CAE017A48FD2FFA56A9DFC70D18BE8958938768"
-                                                + "995AFD952719DE2066B0A7E3D90948D4E0437BD1A5C94F1A1FBBADDCEA3A"
-                                                + "338E96A4CACCF4A855",
-                                        16),
-                                new BigInteger("00B971EBD0321EEC38C15E01FD9C773CCA23E66879", 16),
-                                new BigInteger(
-                                        "259DC09E04AD1818271F3E676B17A98B6F7B1D08B43B51FAEF06D2C9F921"
-                                                + "0667ED3C14ABEBEE372D1F325C11C0304AE8B9BAC8914619CA05165BAE2B"
-                                                + "E49BAD5DD8ECB8129CDDD2941D6DDF53C7D53A5FB9D88B58F362034CA6A1"
-                                                + "3929D28942D0054FFA4166D3DDDE0B2FE2E4A0342A827DEF6B6FECDB0614"
-                                                + "8ED403D3FC9C4C79",
-                                        16),
-                                new BigInteger(
-                                        "1433495B5BB346BEB6A783DA2ADF1C5CFE946146E4A461B2A658CEC29DA2"
-                                                + "1496A6D69119026059D0C2557D535E664A0F10B4DB006601D8848EA6B92F"
-                                                + "C6313B03103C9C3C6F0ED55CB46EEC8B0FE0007D2411F46676A8761DADAA"
-                                                + "171351322D29487E9AE8738C354DD04FFEACA50503AFEC8F0610A679FF81"
-                                                + "6EFD9B162F152BDA",
-                                        16)),
-                        new CustomDsaPrivateKey(
-                                new BigInteger(
-                                        "008BD081A858028A729F0C04E0788C06BC5B2EA8B880A203986C90E92D20"
-                                                + "322670248A305A3217737BF0256EFFD53CC512993F137A4F64162AF4F3E6"
-                                                + "AA64D348343C86D1B3D18CAE017A48FD2FFA56A9DFC70D18BE8958938768"
-                                                + "995AFD952719DE2066B0A7E3D90948D4E0437BD1A5C94F1A1FBBADDCEA3A"
-                                                + "338E96A4CACCF4A855",
-                                        16),
-                                new BigInteger("00B971EBD0321EEC38C15E01FD9C773CCA23E66879", 16),
-                                new BigInteger(
-                                        "259DC09E04AD1818271F3E676B17A98B6F7B1D08B43B51FAEF06D2C9F921"
-                                                + "0667ED3C14ABEBEE372D1F325C11C0304AE8B9BAC8914619CA05165BAE2B"
-                                                + "E49BAD5DD8ECB8129CDDD2941D6DDF53C7D53A5FB9D88B58F362034CA6A1"
-                                                + "3929D28942D0054FFA4166D3DDDE0B2FE2E4A0342A827DEF6B6FECDB0614"
-                                                + "8ED403D3FC9C4C79",
-                                        16),
-                                new BigInteger("7C6B4E2B32192EFC09B7CB12D85CBB4141EF7348", 16)));
 
         // section delay-compression extension
         clientSupportedDelayCompressionMethods =
@@ -1431,10 +1384,6 @@ public class Config implements Serializable {
     // section server-sig-algs extension
     public List<PublicKeyAlgorithm> getServerSupportedPublicKeyAlgorithmsForAuthentication() {
         return serverSupportedPublicKeyAlgorithmsForAuthentication;
-    }
-
-    public SshPublicKey<?, ?> getSelectedPublicKeyForAuthentication() {
-        return selectedPublicKeyForAuthentication;
     }
 
     public boolean getRespectServerSigAlgsExtension() {
