@@ -7,7 +7,9 @@
  */
 package de.rub.nds.sshattacker.core.workflow.action;
 
+import de.rub.nds.sshattacker.core.constants.DisconnectReason;
 import de.rub.nds.sshattacker.core.exceptions.WorkflowExecutionException;
+import de.rub.nds.sshattacker.core.protocol.transport.message.DisconnectMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.message.NewCompressMessage;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.state.State;
@@ -35,6 +37,32 @@ public class DynamicDelayCompressionAction extends SendAction {
         }
 
         SshContext context = state.getSshContext();
+
+        // check whether a common compression method could be negotiated
+        if (context.getDelayCompressionExtensionNegotiationFailed()) {
+            DisconnectMessage disconnectMessage = new DisconnectMessage();
+            disconnectMessage.setReasonCode(DisconnectReason.SSH_DISCONNECT_COMPRESSION_ERROR);
+            disconnectMessage.setDescription(
+                    "No common compression algorithm found in delay-compression extension!", true);
+            disconnectMessage.setLanguageTag("", true);
+
+            // send DisconnectMessage acting as client
+            if (context.isClient()) {
+                sshActions.add(
+                        SshActionFactory.createMessageAction(
+                                context.getConnection(),
+                                ConnectionEndType.CLIENT,
+                                disconnectMessage));
+            }
+            // send DisconnectMessage acting as server
+            else {
+                sshActions.add(
+                        SshActionFactory.createMessageAction(
+                                context.getConnection(),
+                                ConnectionEndType.SERVER,
+                                disconnectMessage));
+            }
+        }
 
         if (context.delayCompressionExtensionReceived() && context.isClient()) {
             sshActions.add(
