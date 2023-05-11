@@ -116,7 +116,7 @@ public class SntrupKeyExchange extends KeyEncapsulation {
                 ArrayConverter.concatenate(Arrays.copyOfRange(hashNew, 0, 32), cNewEnc);
 
         if (Arrays.equals(ciphertext, ciphertextNew)) {
-            LOGGER.info("Successfully decapsulated the cyphertext. Calculate shared Secret now...");
+            LOGGER.info("Successfully decapsulated the ciphertext. Calculate shared secret now...");
             this.sharedSecret = Arrays.copyOfRange(hashNew, 32, 64);
             this.encryptedSharedSecret = ciphertext;
         } else {
@@ -174,7 +174,7 @@ public class SntrupKeyExchange extends KeyEncapsulation {
         byte[] ciphertextNew = ArrayConverter.concatenate(cNewEnc, hashConfirmNew);
 
         if (Arrays.equals(ciphertext, ciphertextNew)) {
-            LOGGER.info("Successfully decapsulated the cyphertext. Calculate shared Secret now...");
+            LOGGER.info("Successfully decapsulated the ciphertext. Calculate shared secret now...");
 
             this.sharedSecret =
                     hashPrefixedB(ArrayConverter.concatenate(hashRNewEnc, ciphertext), (byte) 1);
