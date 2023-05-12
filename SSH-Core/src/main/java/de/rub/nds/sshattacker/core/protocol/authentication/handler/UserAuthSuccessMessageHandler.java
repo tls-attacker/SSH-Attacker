@@ -57,9 +57,6 @@ public class UserAuthSuccessMessageHandler extends SshMessageHandler<UserAuthSuc
                 && context.getConfig().getRespectDelayCompressionExtension()
                 && context.delayCompressionExtensionReceived()) {
             context.getPacketLayer()
-                    .updateCompressionAlgorithm(
-                            context.getSelectedDelayCompressionMethod().get().getAlgorithm());
-            context.getPacketLayer()
                     .updateDecompressionAlgorithm(
                             context.getSelectedDelayCompressionMethod().get().getAlgorithm());
         }
