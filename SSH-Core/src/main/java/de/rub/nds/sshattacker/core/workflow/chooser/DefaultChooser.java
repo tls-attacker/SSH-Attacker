@@ -523,6 +523,13 @@ public class DefaultChooser extends Chooser {
      * config(SSH_RSA) is returned.
      */
     public SshPublicKey<?, ?> getSelectedPublicKeyForAuthentication() {
+        // Check if there are user keys present in the Config object. If not, return null.
+        if (config.getUserKeys().size() == 0) {
+            LOGGER.error(
+                    "Unable to select public key for user authentication. No user key provided in Config object.");
+            return null;
+        }
+
         // server-sig-algs extension is disabled or no server-sig-algs extension received yet ?
         // -> use first user key(SSH_RSA)
         if (!config.getRespectServerSigAlgsExtension()
@@ -546,6 +553,7 @@ public class DefaultChooser extends Chooser {
                         .orElse(List.of(PublicKeyAlgorithm.SSH_RSA));
 
         // determine common public key algorithm to use for client authentication
+        // fallback to SSH_RSA in case there is no match between both lists
         PublicKeyAlgorithm commonPublicKeyAlgorithm =
                 AlgorithmPicker.pickAlgorithm(
                                 clientSupportedPublicKeyAlgorithms,
@@ -553,17 +561,14 @@ public class DefaultChooser extends Chooser {
                         .orElse(PublicKeyAlgorithm.SSH_RSA);
 
         // get public key of negotiated public key algorithm
-        // no match? -> use first user key(SSH_RSA)
-        SshPublicKey<?, ?> publicKey =
-                config.getUserKeys().stream()
-                        .filter(
-                                key ->
-                                        PublicKeyAlgorithm.fromName(
-                                                        key.getPublicKeyFormat().getName())
-                                                .equals(commonPublicKeyAlgorithm))
-                        .collect(Collectors.toList())
-                        .get(0);
-        return publicKey;
+        // no match? -> use first user key
+        return config.getUserKeys().stream()
+                .filter(
+                        key ->
+                                PublicKeyAlgorithm.fromName(key.getPublicKeyFormat().getName())
+                                        .equals(commonPublicKeyAlgorithm))
+                .findFirst()
+                .orElse(config.getUserKeys().get(0));
     }
 
     /**
