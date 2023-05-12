@@ -18,6 +18,7 @@ import de.rub.nds.sshattacker.core.protocol.util.AlgorithmPicker;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -514,6 +515,60 @@ public class DefaultChooser extends Chooser {
     public List<PublicKeyAlgorithm> getServerSupportedPublicKeyAlgorithmsForAuthentication() {
         return context.getServerSupportedPublicKeyAlgorithmsForAuthentication()
                 .orElse(config.getServerSupportedPublicKeyAlgorithmsForAuthentication());
+    }
+
+    /**
+     * Retrieves the public key to use for client authentication. If no server-sig-algs extension
+     * was received yet or server-sig-algs extension is disabled in config, the first user key from
+     * config(SSH_RSA) is returned.
+     */
+    public SshPublicKey<?, ?> getSelectedPublicKeyForAuthentication() {
+        // Check if there are user keys present in the Config object. If not, return null.
+        if (config.getUserKeys().size() == 0) {
+            LOGGER.error(
+                    "Unable to select public key for user authentication. No user key provided in Config object.");
+            return null;
+        }
+
+        // server-sig-algs extension is disabled or no server-sig-algs extension received yet ?
+        // -> use first user key(SSH_RSA)
+        if (!config.getRespectServerSigAlgsExtension()
+                || !context.getServerSigAlgsExtensionReceivedFromServer()) {
+            return config.getUserKeys().get(0);
+        }
+
+        // get client supported public key algorithms
+        List<PublicKeyAlgorithm> clientSupportedPublicKeyAlgorithms =
+                config.getUserKeys().stream()
+                        .map(
+                                algorithm ->
+                                        PublicKeyAlgorithm.fromName(
+                                                algorithm.getPublicKeyFormat().getName()))
+                        .collect(Collectors.toList());
+
+        // get server supported public key algorithms
+        // no server-sig-algs extension received? -> SSH_RSA
+        List<PublicKeyAlgorithm> serverSupportedPublicKeyAlgorithms =
+                context.getServerSupportedPublicKeyAlgorithmsForAuthentication()
+                        .orElse(List.of(PublicKeyAlgorithm.SSH_RSA));
+
+        // determine common public key algorithm to use for client authentication
+        // fallback to SSH_RSA in case there is no match between both lists
+        PublicKeyAlgorithm commonPublicKeyAlgorithm =
+                AlgorithmPicker.pickAlgorithm(
+                                clientSupportedPublicKeyAlgorithms,
+                                serverSupportedPublicKeyAlgorithms)
+                        .orElse(PublicKeyAlgorithm.SSH_RSA);
+
+        // get public key of negotiated public key algorithm
+        // no match? -> use first user key
+        return config.getUserKeys().stream()
+                .filter(
+                        key ->
+                                PublicKeyAlgorithm.fromName(key.getPublicKeyFormat().getName())
+                                        .equals(commonPublicKeyAlgorithm))
+                .findFirst()
+                .orElse(config.getUserKeys().get(0));
     }
 
     /**

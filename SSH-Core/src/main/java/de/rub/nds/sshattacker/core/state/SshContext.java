@@ -235,6 +235,9 @@ public class SshContext {
      */
     private List<PublicKeyAlgorithm> serverSupportedPublicKeyAlgorithmsForAuthentication;
 
+    /** Flag to check whether the server-sig-algs extension was already received */
+    private boolean serverSigAlgsExtensionReceivedFromServer = false;
+
     /** List of compression methods supported by the client(delay-compression extension) */
     private List<CompressionMethod> clientSupportedDelayCompressionMethods;
 
@@ -976,6 +979,10 @@ public class SshContext {
         return Optional.ofNullable(serverSupportedPublicKeyAlgorithmsForAuthentication);
     }
 
+    public boolean getServerSigAlgsExtensionReceivedFromServer() {
+        return serverSigAlgsExtensionReceivedFromServer;
+    }
+
     // section delay-compression extension
     public Optional<List<CompressionMethod>> getClientSupportedDelayCompressionMethods() {
         return Optional.ofNullable(clientSupportedDelayCompressionMethods);
@@ -1025,6 +1032,10 @@ public class SshContext {
     public void setServerSupportedPublicKeyAlgorithmsForAuthentication(
             List<PublicKeyAlgorithm> algorithms) {
         this.serverSupportedPublicKeyAlgorithmsForAuthentication = algorithms;
+    }
+
+    public void setServerSigAlgsExtensionReceivedFromServer(boolean received) {
+        this.serverSigAlgsExtensionReceivedFromServer = received;
     }
 
     // section delay-compression extension

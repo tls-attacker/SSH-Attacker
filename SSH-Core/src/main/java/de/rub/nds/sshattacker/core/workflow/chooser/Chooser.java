@@ -113,13 +113,18 @@ public abstract class Chooser {
     // endregion
 
     // region SSH Extensions
+    // section general extensions
     public abstract List<AbstractExtension<?>> getClientSupportedExtensions();
 
     public abstract List<AbstractExtension<?>> getServerSupportedExtensions();
 
+    // section server-sig-algs extension
     public abstract List<PublicKeyAlgorithm>
             getServerSupportedPublicKeyAlgorithmsForAuthentication();
 
+    public abstract SshPublicKey<?, ?> getSelectedPublicKeyForAuthentication();
+
+    // section delay-compression extension
     public abstract List<CompressionMethod> getClientSupportedDelayCompressionMethods();
 
     public abstract List<CompressionMethod> getServerSupportedDelayCompressionMethods();
