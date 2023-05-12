@@ -271,6 +271,9 @@ public class Config implements Serializable {
 
     /** List of compression methods supported by the server(delay-compression extension) */
     private List<CompressionMethod> serverSupportedDelayCompressionMethods;
+
+    /** Flag for enabling and disabling the delay-compression extension */
+    private boolean respectDelayCompressionExtension = true;
     // endregion
 
     // region Authentication
@@ -1365,6 +1368,10 @@ public class Config implements Serializable {
 
     public List<CompressionMethod> getServerSupportedDelayCompressionMethods() {
         return serverSupportedDelayCompressionMethods;
+    }
+
+    public boolean getRespectDelayCompressionExtension() {
+        return respectDelayCompressionExtension;
     }
     // endregion
 

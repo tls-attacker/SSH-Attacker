@@ -243,6 +243,21 @@ public class SshContext {
 
     /** List of compression methods supported by the server(delay-compression extension) */
     private List<CompressionMethod> serverSupportedDelayCompressionMethods;
+
+    /** Compression method to use for compressing the payload(delay-compression extension) */
+    private CompressionMethod selectedDelayCompressionMethod;
+
+    /** Flag whether a delay-compression extension was received from the peer */
+    private boolean delayCompressionExtensionReceived = false;
+
+    /** Flag whether the delay-compression extension was sent by us */
+    private boolean delayCompressionExtensionSent = false;
+
+    /**
+     * Flag to check whether the negotiation of a common compression method in the delay-compression
+     * extension failed
+     */
+    private boolean delayCompressionExtensionNegotiationFailed = false;
     // endregion
 
     // region Connection Protocol
@@ -954,6 +969,10 @@ public class SshContext {
         return serverSupportsExtensionNegotiation;
     }
 
+    public boolean getDelayCompressionExtensionNegotiationFailed() {
+        return delayCompressionExtensionNegotiationFailed;
+    }
+
     // section server-sig-algs extension
     public Optional<List<PublicKeyAlgorithm>>
             getServerSupportedPublicKeyAlgorithmsForAuthentication() {
@@ -971,6 +990,18 @@ public class SshContext {
 
     public Optional<List<CompressionMethod>> getServerSupportedDelayCompressionMethods() {
         return Optional.ofNullable(serverSupportedDelayCompressionMethods);
+    }
+
+    public Optional<CompressionMethod> getSelectedDelayCompressionMethod() {
+        return Optional.ofNullable(selectedDelayCompressionMethod);
+    }
+
+    public boolean delayCompressionExtensionReceived() {
+        return delayCompressionExtensionReceived;
+    }
+
+    public boolean delayCompressionExtensionSent() {
+        return delayCompressionExtensionSent;
     }
     // endregion
 
@@ -993,6 +1024,10 @@ public class SshContext {
         this.serverSupportsExtensionNegotiation = support;
     }
 
+    public void setDelayCompressionExtensionNegotiationFailed(boolean failed) {
+        this.delayCompressionExtensionNegotiationFailed = failed;
+    }
+
     // section server-sig-algs extension
     public void setServerSupportedPublicKeyAlgorithmsForAuthentication(
             List<PublicKeyAlgorithm> algorithms) {
@@ -1010,6 +1045,18 @@ public class SshContext {
 
     public void setServerSupportedDelayCompressionMethods(List<CompressionMethod> methods) {
         this.serverSupportedDelayCompressionMethods = methods;
+    }
+
+    public void setSelectedDelayCompressionMethod(CompressionMethod method) {
+        this.selectedDelayCompressionMethod = method;
+    }
+
+    public void setDelayCompressionExtensionReceived(boolean received) {
+        this.delayCompressionExtensionReceived = received;
+    }
+
+    public void setDelayCompressionExtensionSent(boolean sent) {
+        this.delayCompressionExtensionSent = sent;
     }
     // endregion
 

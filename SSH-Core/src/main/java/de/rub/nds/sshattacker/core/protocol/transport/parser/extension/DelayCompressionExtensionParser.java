@@ -41,7 +41,9 @@ public class DelayCompressionExtensionParser
     private void parseCompressionMethodsLength() {
         extension.setCompressionMethodsLength(
                 parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-        LOGGER.debug("Compression methods length: {}", extension.getCompressionMethodsLength());
+        LOGGER.debug(
+                "Compression methods length: {}",
+                extension.getCompressionMethodsLength().getValue());
     }
 
     private void parseCompressionMethodsClientToServer() {

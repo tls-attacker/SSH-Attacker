@@ -29,6 +29,7 @@ public class DelayCompressionExtensionPreparator
             getObject()
                     .setCompressionMethodsServerToClient(
                             chooser.getClientSupportedDelayCompressionMethods(), true);
+            chooser.getContext().setDelayCompressionExtensionSent(true);
         } else {
             getObject().setName(Extension.DELAY_COMPRESSION.getName(), true);
             getObject()
@@ -37,6 +38,7 @@ public class DelayCompressionExtensionPreparator
             getObject()
                     .setCompressionMethodsServerToClient(
                             chooser.getServerSupportedDelayCompressionMethods(), true);
+            chooser.getContext().setDelayCompressionExtensionSent(true);
         }
     }
 }

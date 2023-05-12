@@ -18,10 +18,7 @@ import de.rub.nds.sshattacker.core.protocol.authentication.message.*;
 import de.rub.nds.sshattacker.core.protocol.connection.message.*;
 import de.rub.nds.sshattacker.core.protocol.transport.message.*;
 import de.rub.nds.sshattacker.core.workflow.WorkflowTrace;
-import de.rub.nds.sshattacker.core.workflow.action.ChangePacketLayerAction;
-import de.rub.nds.sshattacker.core.workflow.action.DynamicExtensionNegotiationAction;
-import de.rub.nds.sshattacker.core.workflow.action.DynamicKeyExchangeAction;
-import de.rub.nds.sshattacker.core.workflow.action.SshAction;
+import de.rub.nds.sshattacker.core.workflow.action.*;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.util.ArrayList;
 import java.util.List;
@@ -281,6 +278,7 @@ public class WorkflowConfigurationFactory {
 
     private void addAuthenticationProtocolActions(WorkflowTrace workflow) {
         this.addAuthenticationProtocolActions(config.getAuthenticationMethod(), workflow);
+        workflow.addSshActions(new DynamicDelayCompressionAction());
     }
 
     private void addAuthenticationProtocolActions(
