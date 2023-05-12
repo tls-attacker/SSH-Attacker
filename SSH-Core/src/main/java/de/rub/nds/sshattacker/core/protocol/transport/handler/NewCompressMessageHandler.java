@@ -7,6 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.handler;
 
+import de.rub.nds.sshattacker.core.protocol.common.MessageSentHandler;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.transport.message.NewCompressMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.parser.NewCompressMessageParser;
@@ -14,7 +15,8 @@ import de.rub.nds.sshattacker.core.protocol.transport.preparator.NewCompressMess
 import de.rub.nds.sshattacker.core.protocol.transport.serializer.NewCompressMessageSerializer;
 import de.rub.nds.sshattacker.core.state.SshContext;
 
-public class NewCompressMessageHandler extends SshMessageHandler<NewCompressMessage> {
+public class NewCompressMessageHandler extends SshMessageHandler<NewCompressMessage>
+        implements MessageSentHandler {
 
     public NewCompressMessageHandler(SshContext context) {
         super(context);
@@ -30,9 +32,6 @@ public class NewCompressMessageHandler extends SshMessageHandler<NewCompressMess
         if (!context.isHandleAsClient()
                 && context.delayCompressionExtensionReceived()
                 && context.getConfig().getRespectDelayCompressionExtension()) {
-            context.getPacketLayer()
-                    .updateCompressionAlgorithm(
-                            context.getSelectedDelayCompressionMethod().get().getAlgorithm());
             context.getPacketLayer()
                     .updateDecompressionAlgorithm(
                             context.getSelectedDelayCompressionMethod().get().getAlgorithm());
@@ -57,5 +56,16 @@ public class NewCompressMessageHandler extends SshMessageHandler<NewCompressMess
     @Override
     public NewCompressMessageSerializer getSerializer() {
         return new NewCompressMessageSerializer(message);
+    }
+
+    @Override
+    public void adjustContextAfterMessageSent() {
+        if (context.isClient()
+                && context.delayCompressionExtensionReceived()
+                && context.getConfig().getRespectDelayCompressionExtension()) {
+            context.getPacketLayer()
+                    .updateCompressionAlgorithm(
+                            context.getSelectedDelayCompressionMethod().get().getAlgorithm());
+        }
     }
 }
