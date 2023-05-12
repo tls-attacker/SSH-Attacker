@@ -7,7 +7,11 @@
  */
 package de.rub.nds.sshattacker.core.constants;
 
-public class KeyExchangeInitConstants {
+public final class KeyExchangeInitConstants {
 
     public static final int COOKIE_LENGTH = 16;
+
+    private KeyExchangeInitConstants() {
+        super();
+    }
 }

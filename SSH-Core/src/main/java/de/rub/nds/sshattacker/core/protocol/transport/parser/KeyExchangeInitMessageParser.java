@@ -39,15 +39,15 @@ public class KeyExchangeInitMessageParser extends SshMessageParser<KeyExchangeIn
 
     private void parseCookie() {
         message.setCookie(parseByteArrayField(KeyExchangeInitConstants.COOKIE_LENGTH));
-        LOGGER.debug("Cookie: " + message.getCookie());
+        LOGGER.debug("Cookie: {}", message.getCookie());
     }
 
     private void parseKeyExchangeAlgorithms() {
         message.setKeyExchangeAlgorithmsLength(
                 parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
         LOGGER.debug(
-                "Key exchange algorithms length: "
-                        + message.getKeyExchangeAlgorithmsLength().getValue());
+                "Key exchange algorithms length: {}",
+                message.getKeyExchangeAlgorithmsLength().getValue());
         message.setKeyExchangeAlgorithms(
                 parseByteString(
                         message.getKeyExchangeAlgorithmsLength().getValue(),
@@ -61,8 +61,8 @@ public class KeyExchangeInitMessageParser extends SshMessageParser<KeyExchangeIn
         message.setServerHostKeyAlgorithmsLength(
                 parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
         LOGGER.debug(
-                "Server host key algorithms length: "
-                        + message.getServerHostKeyAlgorithmsLength().getValue());
+                "Server host key algorithms length: {}",
+                message.getServerHostKeyAlgorithmsLength().getValue());
         message.setServerHostKeyAlgorithms(
                 parseByteString(
                         message.getServerHostKeyAlgorithmsLength().getValue(),
@@ -91,8 +91,8 @@ public class KeyExchangeInitMessageParser extends SshMessageParser<KeyExchangeIn
         message.setEncryptionAlgorithmsServerToClientLength(
                 parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
         LOGGER.debug(
-                "Encryption algorithms length (server to client): "
-                        + message.getEncryptionAlgorithmsServerToClientLength().getValue());
+                "Encryption algorithms length (server to client): {}",
+                message.getEncryptionAlgorithmsServerToClientLength().getValue());
         message.setEncryptionAlgorithmsServerToClient(
                 parseByteString(
                         message.getEncryptionAlgorithmsServerToClientLength().getValue(),
@@ -136,8 +136,8 @@ public class KeyExchangeInitMessageParser extends SshMessageParser<KeyExchangeIn
         message.setCompressionMethodsClientToServerLength(
                 parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
         LOGGER.debug(
-                "Compression algorithms length (client to server): "
-                        + message.getCompressionMethodsClientToServerLength().getValue());
+                "Compression algorithms length (client to server): {}",
+                message.getCompressionMethodsClientToServerLength().getValue());
         message.setCompressionMethodsClientToServer(
                 parseByteString(
                         message.getCompressionMethodsClientToServerLength().getValue(),
@@ -151,8 +151,8 @@ public class KeyExchangeInitMessageParser extends SshMessageParser<KeyExchangeIn
         message.setCompressionMethodsServerToClientLength(
                 parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
         LOGGER.debug(
-                "Compression algorithms length (server to client): "
-                        + message.getCompressionMethodsServerToClientLength().getValue());
+                "Compression algorithms length (server to client): {}",
+                message.getCompressionMethodsServerToClientLength().getValue());
         message.setCompressionMethodsServerToClient(
                 parseByteString(
                         message.getCompressionMethodsServerToClientLength().getValue(),
@@ -166,8 +166,8 @@ public class KeyExchangeInitMessageParser extends SshMessageParser<KeyExchangeIn
         message.setLanguagesClientToServerLength(
                 parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
         LOGGER.debug(
-                "Languages length (client to server): "
-                        + message.getLanguagesClientToServerLength().getValue());
+                "Languages length (client to server): {}",
+                message.getLanguagesClientToServerLength().getValue());
         message.setLanguagesClientToServer(
                 parseByteString(
                         message.getLanguagesClientToServerLength().getValue(),
@@ -181,8 +181,8 @@ public class KeyExchangeInitMessageParser extends SshMessageParser<KeyExchangeIn
         message.setLanguagesServerToClientLength(
                 parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
         LOGGER.debug(
-                "Languages length (server to client): "
-                        + message.getLanguagesServerToClientLength().getValue());
+                "Languages length (server to client): {}",
+                message.getLanguagesServerToClientLength().getValue());
         message.setLanguagesServerToClient(
                 parseByteString(
                         message.getLanguagesServerToClientLength().getValue(),
@@ -195,14 +195,13 @@ public class KeyExchangeInitMessageParser extends SshMessageParser<KeyExchangeIn
     private void parseFirstKeyExchangePacketFollows() {
         message.setFirstKeyExchangePacketFollows(parseByteField(1));
         LOGGER.debug(
-                "First key exchange packet follows: "
-                        + Converter.byteToBoolean(
-                                message.getFirstKeyExchangePacketFollows().getValue()));
+                "First key exchange packet follows: {}",
+                Converter.byteToBoolean(message.getFirstKeyExchangePacketFollows().getValue()));
     }
 
     private void parseReserved() {
         message.setReserved(parseIntField(DataFormatConstants.UINT32_SIZE));
-        LOGGER.debug("Reserved: " + message.getReserved().getValue());
+        LOGGER.debug("Reserved: {}", message.getReserved().getValue());
     }
 
     @Override

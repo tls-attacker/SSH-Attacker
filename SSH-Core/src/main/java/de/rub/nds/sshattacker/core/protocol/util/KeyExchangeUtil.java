@@ -44,7 +44,9 @@ public final class KeyExchangeUtil {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private KeyExchangeUtil() {}
+    private KeyExchangeUtil() {
+        super();
+    }
 
     /**
      * Prepares a host key message by selecting a suitable host key, updating context, and adjusting

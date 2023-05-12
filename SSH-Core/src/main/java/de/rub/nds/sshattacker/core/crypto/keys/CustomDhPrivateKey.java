@@ -30,14 +30,16 @@ public class CustomDhPrivateKey extends CustomPrivateKey implements DHPrivateKey
     // Private key
     private BigInteger privateKey;
 
-    @SuppressWarnings("unused")
-    private CustomDhPrivateKey() {}
+    public CustomDhPrivateKey() {
+        super();
+    }
 
     public CustomDhPrivateKey(NamedDhGroup group, BigInteger privateKey) {
         this(group.getModulus(), group.getGenerator(), privateKey);
     }
 
     public CustomDhPrivateKey(BigInteger modulus, BigInteger generator, BigInteger privateKey) {
+        super();
         this.modulus = modulus;
         this.generator = generator;
         this.privateKey = privateKey;
@@ -68,6 +70,7 @@ public class CustomDhPrivateKey extends CustomPrivateKey implements DHPrivateKey
     }
 
     // Interface methods
+    @SuppressWarnings("SuspiciousGetterSetter")
     @Override
     public BigInteger getX() {
         return privateKey;

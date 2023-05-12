@@ -20,11 +20,12 @@ public abstract class ProtocolMessageHandler<T extends ProtocolMessage<T>> imple
 
     protected final T message;
 
-    public ProtocolMessageHandler(SshContext context) {
+    protected ProtocolMessageHandler(SshContext context) {
         this(context, null);
     }
 
-    public ProtocolMessageHandler(SshContext context, T message) {
+    protected ProtocolMessageHandler(SshContext context, T message) {
+        super();
         this.context = context;
         this.message = message;
     }

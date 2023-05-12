@@ -27,19 +27,19 @@ public class ChannelOpenFailureMessageSerializer
     }
 
     private void serializeReasonCode() {
-        LOGGER.debug("Reason code: " + message.getReasonCode().getValue());
+        LOGGER.debug("Reason code: {}", message.getReasonCode().getValue());
         appendInt(message.getReasonCode().getValue(), DataFormatConstants.UINT32_SIZE);
     }
 
     private void serializeReason() {
-        LOGGER.debug("Reason length: " + message.getReasonLength().getValue());
+        LOGGER.debug("Reason length: {}", message.getReasonLength().getValue());
         appendInt(message.getReasonLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
         LOGGER.debug("Reason: {}", backslashEscapeString(message.getReason().getValue()));
         appendString(message.getReason().getValue(), StandardCharsets.UTF_8);
     }
 
     private void serializeLanguageTag() {
-        LOGGER.debug("Language tag length: " + message.getLanguageTagLength().getValue());
+        LOGGER.debug("Language tag length: {}", message.getLanguageTagLength().getValue());
         appendInt(
                 message.getLanguageTagLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
         LOGGER.debug(

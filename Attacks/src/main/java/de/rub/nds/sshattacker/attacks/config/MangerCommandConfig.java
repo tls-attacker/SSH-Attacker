@@ -95,6 +95,6 @@ public class MangerCommandConfig extends AttackConfig {
     }
 
     public void setNumberOfIterations(int mapListDepth) {
-        this.numberOfIterations = mapListDepth;
+        numberOfIterations = mapListDepth;
     }
 }

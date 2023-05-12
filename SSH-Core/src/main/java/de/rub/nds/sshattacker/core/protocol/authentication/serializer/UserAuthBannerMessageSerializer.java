@@ -27,17 +27,18 @@ public class UserAuthBannerMessageSerializer extends SshMessageSerializer<UserAu
     }
 
     private void serializeMessage() {
-        LOGGER.debug("Message length: " + message.getMessageLength().getValue());
+        LOGGER.debug("Message length: {}", message.getMessageLength().getValue());
         appendInt(message.getMessageLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
-        LOGGER.debug("Message: " + backslashEscapeString(message.getMessage().getValue()));
+        LOGGER.debug("Message: {}", backslashEscapeString(message.getMessage().getValue()));
         appendString(message.getMessage().getValue(), StandardCharsets.UTF_8);
     }
 
     private void serializeLanguageTag() {
-        LOGGER.debug("Language tag length: " + message.getLanguageTagLength().getValue());
+        LOGGER.debug("Language tag length: {}", message.getLanguageTagLength().getValue());
         appendInt(
                 message.getLanguageTagLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
-        LOGGER.debug("Language tag: " + backslashEscapeString(message.getLanguageTag().getValue()));
+        LOGGER.debug(
+                "Language tag: {}", backslashEscapeString(message.getLanguageTag().getValue()));
         appendString(message.getLanguageTag().getValue(), StandardCharsets.US_ASCII);
     }
 

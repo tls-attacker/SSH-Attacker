@@ -9,8 +9,6 @@ package de.rub.nds.sshattacker.core.crypto.kex;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
-import de.rub.nds.sshattacker.core.constants.KeyExchangeAlgorithm;
-
 import jakarta.xml.bind.DatatypeConverter;
 
 import org.junit.jupiter.params.ParameterizedTest;
@@ -42,7 +40,6 @@ public class Sntrup761X25519KeyExchangeTest {
         assert testVectorFile != null;
         try (Scanner reader = new Scanner(testVectorFile)) {
             Stream.Builder<Arguments> argumentsBuilder = Stream.builder();
-            KeyExchangeAlgorithm currentAlgorithm = null;
             String line;
             while (reader.hasNextLine()) {
                 line = reader.nextLine();
@@ -138,18 +135,18 @@ public class Sntrup761X25519KeyExchangeTest {
         // Set client private and public keys for both algorithms
         kex.getKeyEncapsulation().setLocalKeyPair(encapsulationPrivKey, encapsulationPubKey);
         assertArrayEquals(
-                kex.getKeyEncapsulation().getLocalKeyPair().getPublic().getEncoded(),
+                kex.getKeyEncapsulation().getLocalKeyPair().getPublicKey().getEncoded(),
                 encapsulationPubKey);
         assertArrayEquals(
-                kex.getKeyEncapsulation().getLocalKeyPair().getPrivate().getEncoded(),
+                kex.getKeyEncapsulation().getLocalKeyPair().getPrivateKey().getEncoded(),
                 encapsulationPrivKey);
 
         kex.getKeyAgreement().setLocalKeyPair(agreementPrivKeyClient, agreementPubKeyClient);
         assertArrayEquals(
-                kex.getKeyAgreement().getLocalKeyPair().getPublic().getEncoded(),
+                kex.getKeyAgreement().getLocalKeyPair().getPublicKey().getEncoded(),
                 agreementPubKeyClient);
         assertArrayEquals(
-                kex.getKeyAgreement().getLocalKeyPair().getPrivate().getEncoded(),
+                kex.getKeyAgreement().getLocalKeyPair().getPrivateKey().getEncoded(),
                 agreementPrivKeyClient);
 
         // Set remote public key (X25519) and encrypted shared secret (sntrup761) sent by the server
@@ -178,10 +175,10 @@ public class Sntrup761X25519KeyExchangeTest {
         // Set private and public key for key agreement (X25519)
         kex.getKeyAgreement().setLocalKeyPair(agreementPrivKeyServer, agreementPubKeyServer);
         assertArrayEquals(
-                kex.getKeyAgreement().getLocalKeyPair().getPublic().getEncoded(),
+                kex.getKeyAgreement().getLocalKeyPair().getPublicKey().getEncoded(),
                 agreementPubKeyServer);
         assertArrayEquals(
-                kex.getKeyAgreement().getLocalKeyPair().getPrivate().getEncoded(),
+                kex.getKeyAgreement().getLocalKeyPair().getPrivateKey().getEncoded(),
                 agreementPrivKeyServer);
 
         // TODO: Find a way to provide the key encapsulation with the unencrypted shared secret only

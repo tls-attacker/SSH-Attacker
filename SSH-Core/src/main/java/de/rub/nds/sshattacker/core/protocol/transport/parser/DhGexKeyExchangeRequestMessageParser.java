@@ -33,7 +33,7 @@ public class DhGexKeyExchangeRequestMessageParser
     }
 
     public void parseMinimalGroupSize() {
-        message.setMinimalGroupSize((parseIntField(DataFormatConstants.UINT32_SIZE)));
+        message.setMinimalGroupSize(parseIntField(DataFormatConstants.UINT32_SIZE));
         LOGGER.debug("Minimal DH group size: {} bits", message.getMinimalGroupSize().getValue());
     }
 

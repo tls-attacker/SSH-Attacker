@@ -171,18 +171,18 @@ public enum KeyExchangeAlgorithm {
         this.name = name;
         this.digest = digest;
         if (flowType == null) {
-            this.className = null;
+            className = null;
         } else
             switch (flowType) {
                 case DIFFIE_HELLMAN:
                 case DIFFIE_HELLMAN_GROUP_EXCHANGE:
-                    this.className = "de.rub.nds.sshattacker.core.crypto.kex.DhKeyExchange";
+                    className = "de.rub.nds.sshattacker.core.crypto.kex.DhKeyExchange";
                     break;
                 case ECDH:
-                    this.className = "de.rub.nds.sshattacker.core.crypto.kex.EcdhKeyExchange";
+                    className = "de.rub.nds.sshattacker.core.crypto.kex.EcdhKeyExchange";
                     break;
                 case RSA:
-                    this.className = "de.rub.nds.sshattacker.core.crypto.kex.RsaKeyExchange";
+                    className = "de.rub.nds.sshattacker.core.crypto.kex.RsaKeyExchange";
                     break;
                 default:
                     throw new IllegalArgumentException(

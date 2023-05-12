@@ -10,13 +10,15 @@ package de.rub.nds.sshattacker.attacks.pkcs1;
 /** Can be thrown if an exception with an oracle occurs */
 public class OracleException extends RuntimeException {
 
-    public OracleException() {}
+    public OracleException() {
+        super();
+    }
 
     public OracleException(String message) {
         super(message);
     }
 
-    public OracleException(String message, Throwable t) {
-        super(message, t);
+    public OracleException(String message, Throwable cause) {
+        super(message, cause);
     }
 }

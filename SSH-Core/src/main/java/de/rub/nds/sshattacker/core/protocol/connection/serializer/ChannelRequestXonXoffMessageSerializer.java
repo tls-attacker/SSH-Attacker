@@ -24,8 +24,8 @@ public class ChannelRequestXonXoffMessageSerializer
 
     private void serializeClientFlowControl() {
         LOGGER.debug(
-                "Client can do flow control: "
-                        + Converter.byteToBoolean(message.getClientFlowControl().getValue()));
+                "Client can do flow control: {}",
+                Converter.byteToBoolean(message.getClientFlowControl().getValue()));
         appendByte(message.getClientFlowControl().getValue());
     }
 

@@ -22,6 +22,7 @@ public class MessageLayer {
     private final SshContext context;
 
     public MessageLayer(SshContext context) {
+        super();
         this.context = context;
     }
 

@@ -34,12 +34,12 @@ public class DebugMessageHandler extends SshMessageHandler<DebugMessage> {
     public void adjustContext() {
         if (Converter.byteToBoolean(message.getAlwaysDisplay().getValue())) {
             LOGGER.info(
-                    "DebugMessage retrieved from remote, message: "
-                            + message.getMessage().getValue());
+                    "DebugMessage retrieved from remote, message: {}",
+                    message.getMessage().getValue());
         } else {
             LOGGER.debug(
-                    "DebugMessage retrieved from remote, message: "
-                            + message.getMessage().getValue());
+                    "DebugMessage retrieved from remote, message: {}",
+                    message.getMessage().getValue());
         }
     }
 

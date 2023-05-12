@@ -26,9 +26,13 @@ import org.apache.logging.log4j.Logger;
 
 import java.util.Objects;
 
-public class Main {
+public final class Main {
 
     private static final Logger LOGGER = LogManager.getLogger();
+
+    private Main() {
+        super();
+    }
 
     public static void main(String[] args) {
         GeneralDelegate generalDelegate = new GeneralAttackDelegate();
@@ -64,6 +68,7 @@ public class Main {
         Attacker<? extends SshDelegateConfig> attacker = null;
 
         // Insert new attack commands here
+        //noinspection SwitchStatementWithTooFewBranches
         switch (jc.getParsedCommand()) {
             case MangerCommandConfig.ATTACK_COMMAND:
                 attacker = new MangerAttacker(mangerTest, mangerTest.createConfig());
@@ -82,9 +87,9 @@ public class Main {
             try {
                 Boolean result = attacker.checkVulnerability();
                 if (Objects.equals(result, Boolean.TRUE)) {
-                    CONSOLE.error("Vulnerable:" + result);
+                    CONSOLE.error("Vulnerable:{}", result);
                 } else if (Objects.equals(result, Boolean.FALSE)) {
-                    CONSOLE.info("Vulnerable:" + result);
+                    CONSOLE.info("Vulnerable:{}", result);
                 } else {
                     CONSOLE.warn("Vulnerable: Uncertain");
                 }

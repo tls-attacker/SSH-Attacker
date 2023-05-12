@@ -20,6 +20,7 @@ public class DsaPublicKeySerializer extends Serializer<CustomDsaPublicKey> {
     private final CustomDsaPublicKey publicKey;
 
     public DsaPublicKeySerializer(CustomDsaPublicKey publicKey) {
+        super();
         this.publicKey = publicKey;
     }
 

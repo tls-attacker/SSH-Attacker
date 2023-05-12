@@ -40,45 +40,45 @@ public class UserAuthHostbasedMessageParser
     private void parsePubKeyAlgorithm() {
         message.setPubKeyAlgorithmLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
         LOGGER.debug(
-                "Public key algorithm length: " + message.getPubKeyAlgorithmLength().getValue());
+                "Public key algorithm length: {}", message.getPubKeyAlgorithmLength().getValue());
         message.setPubKeyAlgorithm(parseByteString(message.getPubKeyAlgorithmLength().getValue()));
         LOGGER.debug(
-                "Public key algorithm: "
-                        + backslashEscapeString(message.getPubKeyAlgorithm().getValue()));
+                "Public key algorithm: {}",
+                backslashEscapeString(message.getPubKeyAlgorithm().getValue()));
     }
 
     private void parseHostKeyBytes() {
         message.setHostKeyBytesLength(parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH));
-        LOGGER.debug("Host key bytes length: " + message.getHostKeyBytesLength().getValue());
+        LOGGER.debug("Host key bytes length: {}", message.getHostKeyBytesLength().getValue());
         message.setHostKeyBytes(parseByteArrayField(message.getHostKeyBytesLength().getValue()));
         LOGGER.debug(
-                "Host key bytes: "
-                        + ArrayConverter.bytesToRawHexString(message.getHostKeyBytes().getValue()));
+                "Host key bytes: {}",
+                ArrayConverter.bytesToRawHexString(message.getHostKeyBytes().getValue()));
     }
 
     private void parseHostName() {
         message.setHostNameLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-        LOGGER.debug("Host name length: " + message.getHostNameLength().getValue());
+        LOGGER.debug("Host name length: {}", message.getHostNameLength().getValue());
         message.setHostName(parseByteString(message.getHostNameLength().getValue()));
-        LOGGER.debug("Host name: " + backslashEscapeString(message.getHostName().getValue()));
+        LOGGER.debug("Host name: {}", backslashEscapeString(message.getHostName().getValue()));
     }
 
     private void parseClientUserName() {
         message.setClientUserNameLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-        LOGGER.debug("Client user name length: " + message.getClientUserNameLength().getValue());
+        LOGGER.debug("Client user name length: {}", message.getClientUserNameLength().getValue());
         message.setClientUserName(
                 parseByteString(
                         message.getClientUserNameLength().getValue(), StandardCharsets.UTF_8));
         LOGGER.debug(
-                "Client user name: "
-                        + backslashEscapeString(message.getClientUserName().getValue()));
+                "Client user name: {}",
+                backslashEscapeString(message.getClientUserName().getValue()));
     }
 
     private void parseSignature() {
         message.setSignatureLength(parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH));
-        LOGGER.debug("Signature length: " + message.getSignatureLength().getValue());
+        LOGGER.debug("Signature length: {}", message.getSignatureLength().getValue());
         message.setSignature(parseByteArrayField(message.getSignatureLength().getValue()));
-        LOGGER.debug("Signature: " + message.getSignature());
+        LOGGER.debug("Signature: {}", message.getSignature());
     }
 
     @Override

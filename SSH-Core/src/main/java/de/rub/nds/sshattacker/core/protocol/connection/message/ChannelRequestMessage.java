@@ -77,7 +77,7 @@ public abstract class ChannelRequestMessage<T extends ChannelRequestMessage<T>>
     }
 
     public void setWantReply(ModifiableByte replyWanted) {
-        this.wantReply = replyWanted;
+        wantReply = replyWanted;
     }
 
     public void setWantReply(byte wantReply) {

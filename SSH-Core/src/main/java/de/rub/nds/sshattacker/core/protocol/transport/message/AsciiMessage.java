@@ -14,7 +14,7 @@ import de.rub.nds.sshattacker.core.protocol.transport.handler.AsciiMessageHandle
 import de.rub.nds.sshattacker.core.state.SshContext;
 
 /**
- * An generic text message sent via the Blob message layer.
+ * A generic text message sent via the Blob message layer.
  *
  * <p>Examples for this kind of message are the {@code Exceeded MaxStartups} and {@code Invalid SSH
  * identification string} messages sent by OpenSSH.
@@ -24,19 +24,15 @@ public class AsciiMessage extends ProtocolMessage<AsciiMessage> {
     private ModifiableString text;
     private ModifiableString endOfMessageSequence;
 
-    public AsciiMessage() {
-        super();
-    }
-
     public ModifiableString getText() {
-        return this.text;
+        return text;
     }
 
-    public void setText(final ModifiableString text) {
+    public void setText(ModifiableString text) {
         this.text = text;
     }
 
-    public void setText(final String text) {
+    public void setText(String text) {
         this.text = ModifiableVariableFactory.safelySetValue(this.text, text);
     }
 
@@ -55,12 +51,12 @@ public class AsciiMessage extends ProtocolMessage<AsciiMessage> {
     }
 
     @Override
-    public AsciiMessageHandler getHandler(final SshContext context) {
+    public AsciiMessageHandler getHandler(SshContext context) {
         return new AsciiMessageHandler(context, this);
     }
 
     @Override
     public String toCompactString() {
-        return this.getClass().getSimpleName();
+        return getClass().getSimpleName();
     }
 }

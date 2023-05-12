@@ -37,7 +37,7 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 
-public class WorkflowTraceSerializer {
+public final class WorkflowTraceSerializer {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -55,28 +55,28 @@ public class WorkflowTraceSerializer {
      * Writes a WorkflowTrace to a File
      *
      * @param file File to which the WorkflowTrace should be written
-     * @param trace WorkflowTrace that should be written
+     * @param workflowTrace WorkflowTrace that should be written
      * @throws FileNotFoundException Is thrown if the File cannot be found
      * @throws JAXBException Is thrown if the Object cannot be serialized
      * @throws IOException Is thrown if the Process doesn't have the rights to write to the File
      */
-    public static void write(File file, WorkflowTrace trace)
+    public static void write(File file, WorkflowTrace workflowTrace)
             throws FileNotFoundException, JAXBException, IOException {
         FileOutputStream fos = new FileOutputStream(file, true);
-        WorkflowTraceSerializer.write(fos, trace);
+        write(fos, workflowTrace);
     }
 
     /**
      * Writes a serialized WorkflowTrace to string.
      *
-     * @param trace WorkflowTrace that should be written
+     * @param workflowTrace WorkflowTrace that should be written
      * @return String containing XML/serialized representation of the WorkflowTrace
      * @throws JAXBException Is thrown if the Object cannot be serialized
      * @throws IOException Is thrown if the Process doesn't have the rights to write to the File
      */
-    public static String write(WorkflowTrace trace) throws JAXBException, IOException {
+    public static String write(WorkflowTrace workflowTrace) throws JAXBException, IOException {
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        WorkflowTraceSerializer.write(bos, trace);
+        write(bos, workflowTrace);
         return bos.toString(StandardCharsets.UTF_8);
     }
 
@@ -133,22 +133,29 @@ public class WorkflowTraceSerializer {
         return wt;
     }
 
-    /** Reads a file and does not perform schema validation */
-    public static List<WorkflowTrace> insecureReadFolder(File f) {
-        if (f.isDirectory()) {
+    /**
+     * Read multiple {@code WorkflowTrace} objects from their serialized XML form given the parent
+     * directory. WARNING: Does not perform schema validation.
+     *
+     * @param folder The parent directory containing one or multiple {@code WorkflowTrace} objects
+     *     in serialized XML format.
+     * @return A list of parsed {@code WorkflowTrace} objects.
+     */
+    public static List<WorkflowTrace> insecureReadFolder(File folder) {
+        if (folder.isDirectory()) {
             ArrayList<WorkflowTrace> list = new ArrayList<>();
-            for (File file : Objects.requireNonNull(f.listFiles())) {
+            for (File file : Objects.requireNonNull(folder.listFiles())) {
                 if (file.getName().startsWith(".")) {
                     // We ignore the .gitignore File
                     continue;
                 }
                 WorkflowTrace trace;
                 try {
-                    trace = WorkflowTraceSerializer.insecureRead(new FileInputStream(file));
+                    trace = insecureRead(new FileInputStream(file));
                     trace.setName(file.getAbsolutePath());
                     list.add(trace);
                 } catch (JAXBException | IOException | XMLStreamException ex) {
-                    LOGGER.warn("Could not read " + file.getAbsolutePath() + " from Folder.");
+                    LOGGER.warn("Could not read {} from Folder.", file.getAbsolutePath());
                     LOGGER.debug(ex.getLocalizedMessage(), ex);
                 }
             }
@@ -160,5 +167,7 @@ public class WorkflowTraceSerializer {
 
     // TODO: Implement schema validation
 
-    private WorkflowTraceSerializer() {}
+    private WorkflowTraceSerializer() {
+        super();
+    }
 }

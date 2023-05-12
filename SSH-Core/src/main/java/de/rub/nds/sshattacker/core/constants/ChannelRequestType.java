@@ -42,7 +42,7 @@ public enum ChannelRequestType {
 
     static {
         Map<String, ChannelRequestType> mutableMap = new TreeMap<>();
-        for (ChannelRequestType requestType : ChannelRequestType.values()) {
+        for (ChannelRequestType requestType : values()) {
             mutableMap.put(requestType.name, requestType);
         }
         map = Collections.unmodifiableMap(mutableMap);

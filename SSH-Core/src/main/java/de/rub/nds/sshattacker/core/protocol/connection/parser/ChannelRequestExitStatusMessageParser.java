@@ -33,7 +33,7 @@ public class ChannelRequestExitStatusMessageParser
 
     public void parseExitStatus() {
         message.setExitStatus(parseIntField(DataFormatConstants.UINT32_SIZE));
-        LOGGER.debug("Exit status: " + message.getExitStatus().getValue());
+        LOGGER.debug("Exit status: {}", message.getExitStatus().getValue());
     }
 
     public void parseMessageSpecificContents() {

@@ -11,18 +11,13 @@ import de.rub.nds.sshattacker.core.constants.CharConstants;
 import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessageParser;
 import de.rub.nds.sshattacker.core.protocol.transport.message.AsciiMessage;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 public class AsciiMessageParser extends ProtocolMessageParser<AsciiMessage> {
 
-    private static final Logger LOGGER = LogManager.getLogger();
-
-    public AsciiMessageParser(final byte[] array) {
+    public AsciiMessageParser(byte[] array) {
         super(array);
     }
 
-    public AsciiMessageParser(final byte[] array, final int startPosition) {
+    public AsciiMessageParser(byte[] array, int startPosition) {
         super(array, startPosition);
     }
 
@@ -33,7 +28,7 @@ public class AsciiMessageParser extends ProtocolMessageParser<AsciiMessage> {
 
     private void parseText() {
         // parse till CR NL (and remove them)
-        String result = this.parseStringTill(new byte[] {CharConstants.NEWLINE});
+        String result = parseStringTill(new byte[] {CharConstants.NEWLINE});
         if (result.endsWith("\r\n")) {
             message.setEndOfMessageSequence("\r\n");
             result = result.substring(0, result.length() - 2);

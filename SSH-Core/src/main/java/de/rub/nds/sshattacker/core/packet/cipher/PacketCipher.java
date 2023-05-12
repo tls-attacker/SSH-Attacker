@@ -29,12 +29,13 @@ public abstract class PacketCipher {
     /** The cipher mode (whether packages should be encrypted or decrypted by this cipher). */
     protected final CipherMode mode;
 
-    public PacketCipher(
+    protected PacketCipher(
             SshContext context,
             KeySet keySet,
             EncryptionAlgorithm encryptionAlgorithm,
             MacAlgorithm macAlgorithm,
             CipherMode mode) {
+        super();
         this.context = context;
         this.keySet = keySet;
         this.encryptionAlgorithm = encryptionAlgorithm;
@@ -97,20 +98,20 @@ public abstract class PacketCipher {
     }
 
     public Boolean isEncryptThenMac() {
-        return macAlgorithm != null && macAlgorithm.isEncryptThenMacAlgorithm();
+        return macAlgorithm != null && macAlgorithm.isEncryptThenMac();
     }
 
     protected ConnectionEndType getLocalConnectionEndType() {
         return context.getConnection().getLocalConnectionEndType();
     }
 
-    protected int calculatePacketLength(BinaryPacket packet) {
+    protected static int calculatePacketLength(BinaryPacket packet) {
         return BinaryPacketConstants.PADDING_FIELD_LENGTH
                 + packet.getCompressedPayload().getValue().length
                 + packet.getPaddingLength().getValue();
     }
 
-    protected byte[] calculatePadding(int paddingLength) {
+    protected static byte[] calculatePadding(int paddingLength) {
         // For now, we use zero bytes as padding
         return new byte[paddingLength];
     }
@@ -139,7 +140,7 @@ public abstract class PacketCipher {
         return (byte) paddingLength;
     }
 
-    protected boolean isPaddingValid(byte[] padding) {
+    protected static boolean isPaddingValid(byte[] padding) {
         // Any padding shorter than 4 bytes and longer than 255 bytes is invalid by specification
         return padding.length >= 4 && padding.length <= 255;
     }
@@ -152,7 +153,8 @@ public abstract class PacketCipher {
 
         @Override
         public Object parse() {
-            throw new UnsupportedOperationException();
+            throw new UnsupportedOperationException(
+                    "Tried to call parse() on DecryptionParser which is not supported. Call single field parse methods directly instead.");
         }
 
         @Override

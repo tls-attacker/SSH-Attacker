@@ -17,11 +17,13 @@ import de.rub.nds.sshattacker.core.protocol.util.KeyExchangeUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.Arrays;
+
 public class HybridKeyExchangeReplyMessageSerializer
         extends SshMessageSerializer<HybridKeyExchangeReplyMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
-    private HybridKeyExchangeCombiner combiner;
+    private final HybridKeyExchangeCombiner combiner;
 
     public HybridKeyExchangeReplyMessageSerializer(
             HybridKeyExchangeReplyMessage message, HybridKeyExchangeCombiner combiner) {
@@ -39,12 +41,12 @@ public class HybridKeyExchangeReplyMessageSerializer
     private void serializeHostKeyBytes() {
         appendInt(
                 message.getHostKeyBytesLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
-        LOGGER.debug("Host key bytes length: " + message.getHostKeyBytesLength().getValue());
+        LOGGER.debug("Host key bytes length: {}", message.getHostKeyBytesLength().getValue());
 
         appendBytes(message.getHostKeyBytes().getValue());
         LOGGER.debug(
-                "Host key bytes: "
-                        + ArrayConverter.bytesToRawHexString(message.getHostKeyBytes().getValue()));
+                "Host key bytes: {}",
+                ArrayConverter.bytesToRawHexString(message.getHostKeyBytes().getValue()));
     }
 
     private void serializeHybridKey() {
@@ -52,7 +54,7 @@ public class HybridKeyExchangeReplyMessageSerializer
                 message.getPublicKeyLength().getValue()
                         + message.getCombinedKeyShareLength().getValue();
         appendInt(length, DataFormatConstants.MPINT_SIZE_LENGTH);
-        LOGGER.debug("Hybrid Key (server) length: " + length);
+        LOGGER.debug("Hybrid Key (server) length: {}", length);
         byte[] combined;
         switch (combiner) {
             case CLASSICAL_CONCATENATE_POSTQUANTUM:
@@ -70,18 +72,17 @@ public class HybridKeyExchangeReplyMessageSerializer
                 appendBytes(combined);
                 break;
             default:
-                LOGGER.warn(
-                        "The used combiner" + combiner + " is not supported, can not append Bytes");
+                LOGGER.warn("The used combiner{} is not supported, can not append Bytes", combiner);
                 combined = new byte[0];
                 break;
         }
-        LOGGER.debug("Hybrid Key (server): " + combined);
+        LOGGER.debug("Hybrid Key (server): {}", Arrays.toString(combined));
     }
 
     private void serializeSignature() {
         appendInt(message.getSignatureLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
-        LOGGER.debug("Signature length: " + message.getSignatureLength().getValue());
+        LOGGER.debug("Signature length: {}", message.getSignatureLength().getValue());
         appendBytes(message.getSignature().getValue());
-        LOGGER.debug("Signature: " + message.getSignature());
+        LOGGER.debug("Signature: {}", message.getSignature());
     }
 }

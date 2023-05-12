@@ -20,7 +20,7 @@ import de.rub.nds.sshattacker.core.exceptions.NotImplementedException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 
-public class SignatureFactory {
+public final class SignatureFactory {
 
     public static SigningSignature getSigningSignature(
             PublicKeyAlgorithm algorithm, SshPublicKey<?, ?> keyPair) throws CryptoException {
@@ -38,7 +38,7 @@ public class SignatureFactory {
     public static SigningSignature getSigningSignature(
             PublicKeyAlgorithm algorithm,
             CustomKeyPair<? extends PrivateKey, ? extends PublicKey> keyPair) {
-        return getSigningSignature(algorithm, keyPair.getPrivate());
+        return getSigningSignature(algorithm, keyPair.getPrivateKey());
     }
 
     public static SigningSignature getSigningSignature(
@@ -70,7 +70,7 @@ public class SignatureFactory {
     public static VerifyingSignature getVerifyingSignature(
             PublicKeyAlgorithm algorithm,
             CustomKeyPair<? extends PrivateKey, ? extends PublicKey> keyPair) {
-        return getVerifyingSignature(algorithm, keyPair.getPublic());
+        return getVerifyingSignature(algorithm, keyPair.getPublicKey());
     }
 
     public static VerifyingSignature getVerifyingSignature(
@@ -91,12 +91,13 @@ public class SignatureFactory {
     }
 
     public static VerifyingSignature getVerifyingSignature(
-            PublicKeyAlgorithm publicKeyAlgorithm, byte[] encodedPublicKeyBytes)
-            throws CryptoException {
+            PublicKeyAlgorithm algorithm, byte[] encodedPublicKeyBytes) throws CryptoException {
         SshPublicKey<?, ?> publicKey =
-                PublicKeyHelper.parse(publicKeyAlgorithm.getKeyFormat(), encodedPublicKeyBytes);
-        return getVerifyingSignature(publicKeyAlgorithm, publicKey);
+                PublicKeyHelper.parse(algorithm.getKeyFormat(), encodedPublicKeyBytes);
+        return getVerifyingSignature(algorithm, publicKey);
     }
 
-    private SignatureFactory() {}
+    private SignatureFactory() {
+        super();
+    }
 }

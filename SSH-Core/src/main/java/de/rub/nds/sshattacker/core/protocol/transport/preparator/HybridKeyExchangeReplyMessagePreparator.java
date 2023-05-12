@@ -25,7 +25,7 @@ public class HybridKeyExchangeReplyMessagePreparator
         extends SshMessagePreparator<HybridKeyExchangeReplyMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
-    private HybridKeyExchangeCombiner combiner;
+    private final HybridKeyExchangeCombiner combiner;
 
     public HybridKeyExchangeReplyMessagePreparator(
             Chooser chooser,
@@ -58,7 +58,7 @@ public class HybridKeyExchangeReplyMessagePreparator
         encapsulation.encryptSharedSecret();
 
         ExchangeHashInputHolder inputHolder = chooser.getContext().getExchangeHashInputHolder();
-        byte[] agreementBytes = agreement.getLocalKeyPair().getPublic().getEncoded();
+        byte[] agreementBytes = agreement.getLocalKeyPair().getPublicKey().getEncoded();
         byte[] encapsulationBytes = encapsulation.getEncryptedSharedSecret();
         getObject().setPublicKey(agreementBytes, true);
         getObject().setCiphertext(encapsulationBytes, true);

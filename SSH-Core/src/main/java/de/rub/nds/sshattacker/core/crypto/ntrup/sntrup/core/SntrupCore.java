@@ -9,10 +9,12 @@ package de.rub.nds.sshattacker.core.crypto.ntrup.sntrup.core;
 
 import java.util.Optional;
 
+@SuppressWarnings("StandardVariableNames")
 public class SntrupCore {
-    private SntrupParameterSet set;
+    private final SntrupParameterSet set;
 
     public SntrupCore(SntrupParameterSet set) {
+        super();
         this.set = set;
     }
 
@@ -23,7 +25,7 @@ public class SntrupCore {
 
         while (g == null) {
             R tmp = R.randomSmall(set);
-            Optional<R3> tmpInv = R3.isInvertibleInR3(set, tmp);
+            Optional<R3> tmpInv = R3.getInverseInR3(set, tmp);
             if (tmpInv.isPresent()) {
                 g = tmp;
                 gInv = tmpInv.get();
@@ -39,7 +41,7 @@ public class SntrupCore {
         return new SntrupCoreValues(g, gInv, f, f3, f3Inv, h, roh);
     }
 
-    public Rounded encrypt(Short input, RQ h) {
+    public static Rounded encrypt(Short input, RQ h) {
         RQ hr = RQ.multiply(input, h);
         return Rounded.round(hr);
     }

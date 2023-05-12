@@ -11,17 +11,10 @@ import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.config.delegate.GeneralDelegate;
 
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.Configurator;
 
 /** A special GeneralDelegate which allows Attacks to add additional Parameters. */
 public class GeneralAttackDelegate extends GeneralDelegate {
-
-    private static final Logger LOGGER = LogManager.getLogger();
-
-    /** Default Constructor */
-    public GeneralAttackDelegate() {}
 
     /**
      * Adjusts the Config according to the specified values.

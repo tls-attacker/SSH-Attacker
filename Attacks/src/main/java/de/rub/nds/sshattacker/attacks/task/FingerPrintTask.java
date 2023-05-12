@@ -33,11 +33,11 @@ public class FingerPrintTask extends SshTask {
 
     public FingerPrintTask(
             State state,
-            long additionalTimeout,
-            boolean increasingTimeout,
+            long additionalSleepTime,
+            boolean increasingSleepTimes,
             int reexecutions,
             long additionalTcpTimeout) {
-        super(reexecutions, additionalTimeout, increasingTimeout, additionalTcpTimeout);
+        super(reexecutions, additionalSleepTime, increasingSleepTimes, additionalTcpTimeout);
         this.state = state;
     }
 

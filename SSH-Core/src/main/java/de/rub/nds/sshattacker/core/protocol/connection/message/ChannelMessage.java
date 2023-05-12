@@ -29,8 +29,8 @@ public abstract class ChannelMessage<T extends ChannelMessage<T>> extends SshMes
     }
 
     public void setRecipientChannelId(int recipientChannel) {
-        this.recipientChannelId =
-                ModifiableVariableFactory.safelySetValue(this.recipientChannelId, recipientChannel);
+        recipientChannelId =
+                ModifiableVariableFactory.safelySetValue(recipientChannelId, recipientChannel);
     }
 
     public Integer getConfigSenderChannelId() {

@@ -9,7 +9,6 @@ package de.rub.nds.sshattacker.core.crypto.ec;
 
 import java.math.BigInteger;
 
-@SuppressWarnings("SpellCheckingInspection")
 public class EllipticCurveSECP256K1 extends EllipticCurveOverFp {
     public EllipticCurveSECP256K1() {
         super(

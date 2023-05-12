@@ -16,14 +16,12 @@ public class RawSignature {
     private int signatureLength;
     private byte[] signatureBytes;
 
-    public RawSignature() {}
-
     public PublicKeyAlgorithm getSignatureAlgorithm() {
         return signatureAlgorithm;
     }
 
     public void setSignatureAlgorithm(PublicKeyAlgorithm algorithm) {
-        this.signatureAlgorithm = algorithm;
+        signatureAlgorithm = algorithm;
     }
 
     public int getSignatureLength() {

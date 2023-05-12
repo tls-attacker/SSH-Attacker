@@ -36,6 +36,7 @@ public class OaepCipher extends AbstractCipher {
             String cipherInstanceName,
             String hashFunctionName,
             String maskGenerationFunctionName) {
+        super();
         this.key = key;
         this.cipherInstanceName = cipherInstanceName;
         this.hashFunctionName = hashFunctionName;
@@ -43,10 +44,10 @@ public class OaepCipher extends AbstractCipher {
     }
 
     @Override
-    public byte[] encrypt(byte[] data) throws CryptoException {
+    public byte[] encrypt(byte[] plainData) throws CryptoException {
         try {
             prepareCipher(Cipher.ENCRYPT_MODE);
-            return cipher.doFinal(data);
+            return cipher.doFinal(plainData);
         } catch (IllegalBlockSizeException | BadPaddingException e) {
             throw new CryptoException(
                     String.format("Could not encrypt data with %s.", cipherInstanceName), e);
@@ -54,13 +55,12 @@ public class OaepCipher extends AbstractCipher {
     }
 
     @Override
-    public byte[] encrypt(byte[] plainData, byte[] iv) throws CryptoException {
+    public byte[] encrypt(byte[] plainData, byte[] iv) {
         throw new UnsupportedOperationException("Encryption with IV not supported.");
     }
 
     @Override
-    public byte[] encrypt(byte[] plainData, byte[] iv, byte[] additionalAuthenticatedData)
-            throws CryptoException {
+    public byte[] encrypt(byte[] plainData, byte[] iv, byte[] additionalAuthenticatedData) {
         throw new UnsupportedOperationException("AEAD encryption not supported.");
     }
 
@@ -76,13 +76,12 @@ public class OaepCipher extends AbstractCipher {
     }
 
     @Override
-    public byte[] decrypt(byte[] encryptedData, byte[] iv) throws CryptoException {
+    public byte[] decrypt(byte[] encryptedData, byte[] iv) {
         throw new UnsupportedOperationException("Decryption with IV not supported.");
     }
 
     @Override
-    public byte[] decrypt(byte[] encryptedData, byte[] iv, byte[] additionalAuthenticatedData)
-            throws CryptoException, AEADBadTagException {
+    public byte[] decrypt(byte[] encryptedData, byte[] iv, byte[] additionalAuthenticatedData) {
         throw new UnsupportedOperationException("AEAD decryption not supported.");
     }
 
@@ -107,7 +106,7 @@ public class OaepCipher extends AbstractCipher {
                 | NoSuchAlgorithmException
                 | InvalidKeyException
                 | InvalidAlgorithmParameterException e) {
-            LOGGER.error("OAEP Cipher creation failed with error: " + e);
+            LOGGER.error("OAEP Cipher creation failed with error", e);
         }
     }
 }

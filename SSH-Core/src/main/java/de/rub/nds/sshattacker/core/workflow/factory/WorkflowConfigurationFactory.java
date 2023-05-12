@@ -29,7 +29,7 @@ import org.apache.logging.log4j.Logger;
 import java.util.ArrayList;
 import java.util.List;
 
-/** Create a WorkflowTace based on a Config instance. */
+/** Create a WorkflowTrace based on a Config instance. */
 public class WorkflowConfigurationFactory {
 
     private static final Logger LOGGER = LogManager.getLogger();
@@ -38,12 +38,13 @@ public class WorkflowConfigurationFactory {
     private RunningModeType mode;
 
     public WorkflowConfigurationFactory(Config config) {
+        super();
         this.config = config;
     }
 
     public WorkflowTrace createWorkflowTrace(
             WorkflowTraceType workflowTraceType, RunningModeType runningMode) {
-        this.mode = runningMode;
+        mode = runningMode;
         switch (workflowTraceType) {
             case KEX_INIT_ONLY:
                 return createInitKeyExchangeWorkflowTrace();
@@ -147,7 +148,7 @@ public class WorkflowConfigurationFactory {
     }
 
     private void addTransportProtocolInitActions(WorkflowTrace workflow) {
-        if (this.mode == RunningModeType.MITM) {
+        if (mode == RunningModeType.MITM) {
             AliasedConnection inboundConnection = config.getDefaultServerConnection();
             AliasedConnection outboundConnection = config.getDefaultClientConnection();
             workflow.addSshActions(
@@ -251,7 +252,7 @@ public class WorkflowConfigurationFactory {
         return sshActions;
     }
 
-    public List<SshAction> createKeyExchangeActions(
+    public static List<SshAction> createKeyExchangeActions(
             KeyExchangeFlowType flowType, AliasedConnection connection) {
         List<SshAction> sshActions = new ArrayList<>();
         if (flowType == null) {
@@ -266,7 +267,7 @@ public class WorkflowConfigurationFactory {
             //    When the switch statement is executed, first the Expression
             //    is evaluated. If the Expression evaluates to `null`, a
             //    `NullPointerException` is thrown and the entire switch
-            //    statement completes abruptly for that reason."
+            //    statement completes abruptly for that reason.
             //
             // See this for details:
             // http://docs.oracle.com/javase/specs/jls/se8/html/jls-14.html#jls-14.11
@@ -372,8 +373,8 @@ public class WorkflowConfigurationFactory {
      *
      * @param workflow the workflow trace to add actions to
      */
-    public void addAuthenticationProtocolActions(final WorkflowTrace workflow) {
-        this.addAuthenticationProtocolActions(config.getAuthenticationMethod(), workflow);
+    public void addAuthenticationProtocolActions(WorkflowTrace workflow) {
+        addAuthenticationProtocolActions(config.getAuthenticationMethod(), workflow);
     }
 
     /**
@@ -384,7 +385,7 @@ public class WorkflowConfigurationFactory {
      * @param workflow the workflow trace to add actions to
      */
     public void addAuthenticationProtocolActions(
-            final AuthenticationMethod method, final WorkflowTrace workflow) {
+            AuthenticationMethod method, WorkflowTrace workflow) {
         AliasedConnection connection = getDefaultConnection();
         switch (method) {
             case NONE:
@@ -506,7 +507,7 @@ public class WorkflowConfigurationFactory {
             throw new ConfigurationException("Could not find both necessary connection ends");
         }
 
-        LOGGER.debug("Building mitm trace for: " + inboundConnection + ", " + outboundConnection);
+        LOGGER.debug("Building mitm trace for: {}, {}", inboundConnection, outboundConnection);
         addTransportProtocolActions(workflow);
         // The following is run in a loop in SSH-MITM.
         workflow.addSshActions(

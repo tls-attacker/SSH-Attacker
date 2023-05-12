@@ -7,7 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.crypto.ntrup.sntrup.core;
 
-// Enum to define all possible Parameter Sets for sntrup as definded in
+// Enum to define all possible Parameter Sets for sntrup as defined in
 // https://ntruprime.cr.yp.to/nist/ntruprime-20201007.pdf
 // Currently only kem/sntrup761 is used
 // in addition to the defined Parameters, the length of some encoded values is provided
@@ -24,6 +24,7 @@ public enum SntrupParameterSet {
     private final int encodedSmallLength;
     private final int hashLength;
 
+    @SuppressWarnings("SameParameterValue")
     SntrupParameterSet(
             String name,
             int p,

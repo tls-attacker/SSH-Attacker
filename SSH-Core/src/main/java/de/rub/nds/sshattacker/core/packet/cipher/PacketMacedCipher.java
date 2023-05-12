@@ -82,6 +82,7 @@ public class PacketMacedCipher extends PacketCipher {
 
         if (encryptionAlgorithm.getIVSize() > 0) {
             // Encryption algorithm does use an IV
+            assert keySet != null;
             nextIv =
                     mode == CipherMode.ENCRYPT
                             ? keySet.getWriteIv(getLocalConnectionEndType())

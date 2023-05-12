@@ -34,7 +34,7 @@ public enum GlobalRequestType {
 
     static {
         Map<String, GlobalRequestType> mutableMap = new TreeMap<>();
-        for (GlobalRequestType requestType : GlobalRequestType.values()) {
+        for (GlobalRequestType requestType : values()) {
             mutableMap.put(requestType.name, requestType);
         }
         map = Collections.unmodifiableMap(mutableMap);

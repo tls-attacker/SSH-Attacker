@@ -45,7 +45,7 @@ public class UserAuthHostbasedMessagePreparator
         Optional<String> hostName =
                 Optional.ofNullable(chooser.getContext().getConnection().getIp());
         getObject().setHostName(hostName.orElse(AliasedConnection.DEFAULT_IP), true);
-        // set the user name on client machine to the username on remote, specify if needed
+        // set the username on client machine to the username on remote, specify if needed
         getObject().setClientUserName(chooser.getConfig().getUsername(), true);
         prepareSignature();
     }
@@ -87,7 +87,7 @@ public class UserAuthHostbasedMessagePreparator
                             signatureEncoding.getName().length(),
                             DataFormatConstants.STRING_SIZE_LENGTH));
             signatureOutput.write(signatureEncoding.getName().getBytes(StandardCharsets.US_ASCII));
-            byte[] rawSignature = signingSignature.sign(this.prepareSignatureInput());
+            byte[] rawSignature = signingSignature.sign(prepareSignatureInput());
             signatureOutput.write(
                     ArrayConverter.intToBytes(
                             rawSignature.length, DataFormatConstants.STRING_SIZE_LENGTH));

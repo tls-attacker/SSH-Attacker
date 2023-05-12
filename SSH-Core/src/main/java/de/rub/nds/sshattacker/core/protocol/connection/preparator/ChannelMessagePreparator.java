@@ -25,48 +25,44 @@ public abstract class ChannelMessagePreparator<T extends ChannelMessage<T>>
 
     protected Channel channel;
 
-    public ChannelMessagePreparator(Chooser chooser, T message, MessageIdConstant messageId) {
+    protected ChannelMessagePreparator(Chooser chooser, T message, MessageIdConstant messageId) {
         super(chooser, message, messageId);
     }
 
     @Override
     public final void prepareMessageSpecificContents() {
-        this.prepareChannel();
-        this.prepareChannelMessageSpecificContents();
+        prepareChannel();
+        prepareChannelMessageSpecificContents();
     }
 
     private void prepareChannel() {
-        final Optional<Integer> configSenderChannelId =
+        Optional<Integer> configSenderChannelId =
                 Optional.ofNullable(getObject().getConfigSenderChannelId());
         channel =
                 configSenderChannelId
                         .flatMap(
                                 senderChannelId ->
                                         Optional.ofNullable(
-                                                this.chooser
-                                                        .getContext()
+                                                chooser.getContext()
                                                         .getChannels()
                                                         .get(senderChannelId)))
                         .or(
                                 () ->
-                                        this.chooser
-                                                .getContext()
+                                        chooser.getContext()
                                                 .getChannelManager()
                                                 .guessChannelByReceivedMessages())
                         .orElseGet(
                                 () -> {
                                     LOGGER.warn(
                                             "About to prepare channel message, but no corresponding was channel found or guessed. Creating a new one from defaults.");
-                                    final Integer remoteChannelId =
-                                            configSenderChannelId.orElse(Integer.valueOf(0));
-                                    return this.chooser
-                                            .getContext()
+                                    Integer remoteChannelId = configSenderChannelId.orElse(0);
+                                    return chooser.getContext()
                                             .getChannelManager()
                                             .createNewChannelFromDefaults(remoteChannelId);
                                 });
 
         if (!channel.isOpen().getValue()) {
-            final int localChannelId = channel.getLocalChannelId().getValue();
+            int localChannelId = channel.getLocalChannelId().getValue();
             LOGGER.warn(
                     "About to prepare channel message for channel with local id {}, but channel is not open. Continuing anyway.",
                     localChannelId);

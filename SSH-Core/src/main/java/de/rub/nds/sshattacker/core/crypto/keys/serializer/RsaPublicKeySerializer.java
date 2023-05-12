@@ -20,6 +20,7 @@ public class RsaPublicKeySerializer extends Serializer<CustomRsaPublicKey> {
     private final CustomRsaPublicKey publicKey;
 
     public RsaPublicKeySerializer(CustomRsaPublicKey publicKey) {
+        super();
         this.publicKey = publicKey;
     }
 

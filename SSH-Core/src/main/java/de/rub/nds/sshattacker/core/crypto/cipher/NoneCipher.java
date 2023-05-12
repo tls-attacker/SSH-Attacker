@@ -11,8 +11,6 @@ import de.rub.nds.sshattacker.core.constants.EncryptionAlgorithm;
 
 class NoneCipher extends AbstractCipher {
 
-    public NoneCipher() {}
-
     @Override
     public byte[] encrypt(byte[] plainData) {
         return plainData;
@@ -24,7 +22,7 @@ class NoneCipher extends AbstractCipher {
     }
 
     @Override
-    public byte[] encrypt(byte[] plainData, byte[] iv, byte[] additionalEncryptedData) {
+    public byte[] encrypt(byte[] plainData, byte[] iv, byte[] additionalAuthenticatedData) {
         return plainData;
     }
 

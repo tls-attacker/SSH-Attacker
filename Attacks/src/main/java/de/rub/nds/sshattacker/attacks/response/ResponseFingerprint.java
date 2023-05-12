@@ -27,13 +27,16 @@ public class ResponseFingerprint {
 
     private SocketState socketState;
 
-    public ResponseFingerprint() {}
+    public ResponseFingerprint() {
+        super();
+    }
 
     /**
      * @param messageList List of protocol messages
      * @param socketState Socket state
      */
     public ResponseFingerprint(List<ProtocolMessage<?>> messageList, SocketState socketState) {
+        super();
         this.messageList = messageList;
         this.socketState = socketState;
     }
@@ -50,7 +53,7 @@ public class ResponseFingerprint {
     public String toString() {
 
         StringBuilder messages = new StringBuilder();
-        for (ProtocolMessage<?> someMessage : this.messageList) {
+        for (ProtocolMessage<?> someMessage : messageList) {
             messages.append(someMessage.toCompactString()).append(",");
         }
 
@@ -59,7 +62,7 @@ public class ResponseFingerprint {
 
     public String toCompactString() {
         StringBuilder messages = new StringBuilder();
-        for (ProtocolMessage<?> someMessage : this.messageList) {
+        for (ProtocolMessage<?> someMessage : messageList) {
             messages.append(someMessage.toCompactString()).append(",");
         }
         return messages.append("|").append(socketState).toString();
@@ -137,18 +140,17 @@ public class ResponseFingerprint {
      */
     public boolean areCompatible(ResponseFingerprint fingerprint) {
         if (socketState != SocketState.TIMEOUT
-                && fingerprint.getSocketState() != SocketState.TIMEOUT) {
-            if (fingerprint.getSocketState() != socketState) {
-                return false;
-            }
+                && fingerprint.socketState != SocketState.TIMEOUT
+                && fingerprint.socketState != socketState) {
+            return false;
         }
-        int minNumberOfMessages = fingerprint.getMessageList().size();
-        if (this.messageList.size() < minNumberOfMessages) {
-            minNumberOfMessages = this.messageList.size();
+        int minNumberOfMessages = fingerprint.messageList.size();
+        if (messageList.size() < minNumberOfMessages) {
+            minNumberOfMessages = messageList.size();
         }
         for (int i = 0; i < minNumberOfMessages; i++) {
-            ProtocolMessage<?> messageOne = this.getMessageList().get(i);
-            ProtocolMessage<?> messageTwo = fingerprint.getMessageList().get(i);
+            ProtocolMessage<?> messageOne = messageList.get(i);
+            ProtocolMessage<?> messageTwo = fingerprint.messageList.get(i);
             if (!checkMessagesAreRoughlyEqual(messageOne, messageTwo)) {
                 return false;
             }
@@ -156,7 +158,7 @@ public class ResponseFingerprint {
         return true;
     }
 
-    private boolean checkMessagesAreRoughlyEqual(
+    private static boolean checkMessagesAreRoughlyEqual(
             ProtocolMessage<?> messageOne, ProtocolMessage<?> messageTwo) {
         if (!messageOne.getClass().equals(messageTwo.getClass())) {
             return false;

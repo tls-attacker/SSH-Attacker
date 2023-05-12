@@ -135,7 +135,7 @@ class DhKeyExchangeTest {
             NamedDhGroup group) {
         DhKeyExchange keyExchange = new DhKeyExchange(group);
         keyExchange.setLocalKeyPair(providedPrivateKeyA.toByteArray());
-        assertEquals(expectedPublicKeyA, keyExchange.getLocalKeyPair().getPublic().getY());
+        assertEquals(expectedPublicKeyA, keyExchange.getLocalKeyPair().getPublicKey().getY());
         keyExchange.setRemotePublicKey(providedPublicKeyB);
         assertDoesNotThrow(keyExchange::computeSharedSecret);
         assertArrayEquals(expectedSharedSecret, keyExchange.getSharedSecret());
@@ -157,7 +157,8 @@ class DhKeyExchangeTest {
                 NullPointerException.class,
                 () -> keyExchange.setLocalKeyPair(providedPrivateKeyA.toByteArray()));
         assertThrows(
-                NullPointerException.class, () -> keyExchange.getLocalKeyPair().getPublic().getY());
+                NullPointerException.class,
+                () -> keyExchange.getLocalKeyPair().getPublicKey().getY());
         keyExchange.setRemotePublicKey(providedPublicKeyB);
         assertThrows(CryptoException.class, keyExchange::computeSharedSecret);
         assertNull(keyExchange.getSharedSecret());
@@ -175,7 +176,8 @@ class DhKeyExchangeTest {
     public void testWithoutPrivateKey(BigInteger providedPublicKeyB, NamedDhGroup group) {
         DhKeyExchange keyExchange = new DhKeyExchange(group);
         assertThrows(
-                NullPointerException.class, () -> keyExchange.getLocalKeyPair().getPublic().getY());
+                NullPointerException.class,
+                () -> keyExchange.getLocalKeyPair().getPublicKey().getY());
         keyExchange.setRemotePublicKey(providedPublicKeyB);
         assertThrows(CryptoException.class, keyExchange::computeSharedSecret);
         assertNull(keyExchange.getSharedSecret());

@@ -16,8 +16,6 @@ import de.rub.nds.sshattacker.core.workflow.factory.WorkflowTraceType;
 
 public class ServerCommandConfig extends SshDelegateConfig {
 
-    public static final String COMMAND = "server";
-
     @ParametersDelegate private final ServerDelegate serverDelegate;
     @ParametersDelegate private final ConfigOutputDelegate configOutputDelegate;
     @ParametersDelegate private final TimeoutDelegate timeoutDelegate;
@@ -27,12 +25,12 @@ public class ServerCommandConfig extends SshDelegateConfig {
 
     public ServerCommandConfig(GeneralDelegate delegate) {
         super(delegate);
-        this.serverDelegate = new ServerDelegate();
-        this.configOutputDelegate = new ConfigOutputDelegate();
-        this.timeoutDelegate = new TimeoutDelegate();
-        this.workflowInputDelegate = new WorkflowInputDelegate();
-        this.workflowOutputDelegate = new WorkflowOutputDelegate();
-        this.workflowTypeDelegate = new WorkflowTypeDelegate();
+        serverDelegate = new ServerDelegate();
+        configOutputDelegate = new ConfigOutputDelegate();
+        timeoutDelegate = new TimeoutDelegate();
+        workflowInputDelegate = new WorkflowInputDelegate();
+        workflowOutputDelegate = new WorkflowOutputDelegate();
+        workflowTypeDelegate = new WorkflowTypeDelegate();
         addDelegate(serverDelegate);
         addDelegate(configOutputDelegate);
         addDelegate(timeoutDelegate);

@@ -27,45 +27,44 @@ public class ChannelRequestPtyMessageSerializer
 
     public void serializeTermEnvVariable() {
         LOGGER.debug(
-                "TERM environment variable length: " + message.getTermEnvVariable().getValue());
+                "TERM environment variable length: {}", message.getTermEnvVariable().getValue());
         appendInt(
                 message.getTermEnvVariableLength().getValue(),
                 DataFormatConstants.STRING_SIZE_LENGTH);
-        LOGGER.debug("TERM environment variable: " + message.getTermEnvVariable().getValue());
+        LOGGER.debug("TERM environment variable: {}", message.getTermEnvVariable().getValue());
         appendString(message.getTermEnvVariable().getValue(), StandardCharsets.UTF_8);
     }
 
     public void serializeWidthCharacters() {
-        LOGGER.debug("Terminal width in characters: " + message.getWidthCharacters().getValue());
+        LOGGER.debug("Terminal width in characters: {}", message.getWidthCharacters().getValue());
         appendInt(message.getWidthCharacters().getValue(), DataFormatConstants.UINT32_SIZE);
     }
 
     public void serializeHeightRows() {
-        LOGGER.debug("Terminal height in rows: " + message.getHeightRows().getValue());
+        LOGGER.debug("Terminal height in rows: {}", message.getHeightRows().getValue());
         appendInt(message.getHeightRows().getValue(), DataFormatConstants.UINT32_SIZE);
     }
 
     public void serializeWidthPixels() {
-        LOGGER.debug("Terminal width in pixels: " + message.getWidthPixels().getValue());
+        LOGGER.debug("Terminal width in pixels: {}", message.getWidthPixels().getValue());
         appendInt(message.getWidthPixels().getValue(), DataFormatConstants.UINT32_SIZE);
     }
 
     public void serializeHeightPixels() {
-        LOGGER.debug("Terminal height in pixels: " + message.getHeightPixels().getValue());
+        LOGGER.debug("Terminal height in pixels: {}", message.getHeightPixels().getValue());
         appendInt(message.getHeightPixels().getValue(), DataFormatConstants.UINT32_SIZE);
     }
 
     public void serializeEncodedTerminalModes() {
         LOGGER.debug(
-                "Encoded terminal modes length: "
-                        + message.getEncodedTerminalModesLength().getValue());
+                "Encoded terminal modes length: {}",
+                message.getEncodedTerminalModesLength().getValue());
         appendInt(
                 message.getEncodedTerminalModesLength().getValue(),
                 DataFormatConstants.STRING_SIZE_LENGTH);
         LOGGER.debug(
-                "Endcoded terminal modes: "
-                        + ArrayConverter.bytesToHexString(
-                                message.getEncodedTerminalModes().getValue()));
+                "Endcoded terminal modes: {}",
+                ArrayConverter.bytesToHexString(message.getEncodedTerminalModes().getValue()));
         appendBytes(message.getEncodedTerminalModes().getValue());
     }
 

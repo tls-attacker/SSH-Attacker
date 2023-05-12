@@ -34,7 +34,7 @@ public class ChannelOpenFailureMessageHandler extends SshMessageHandler<ChannelO
         if (!context.getChannels().containsKey(message.getRecipientChannelId().getValue())) {
             LOGGER.warn(
                     "{} received but no channel with id {} found locally, ignoring it.",
-                    this.getClass().getSimpleName(),
+                    getClass().getSimpleName(),
                     message.getRecipientChannelId().getValue());
         }
         context.getChannels().remove(message.getRecipientChannelId().getValue());

@@ -27,7 +27,7 @@ public class ChannelRequestSignalMessageSerializer
     }
 
     public void serializeSignalName() {
-        LOGGER.debug("Signal name length: " + message.getSignalNameLength().getValue());
+        LOGGER.debug("Signal name length: {}", message.getSignalNameLength().getValue());
         appendInt(message.getSignalNameLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
         LOGGER.debug("Signal name: {}", backslashEscapeString(message.getSignalName().getValue()));
         appendString(message.getSignalName().getValue(), StandardCharsets.UTF_8);

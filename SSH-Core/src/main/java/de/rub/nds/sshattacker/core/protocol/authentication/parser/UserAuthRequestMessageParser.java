@@ -23,17 +23,17 @@ public abstract class UserAuthRequestMessageParser<T extends UserAuthRequestMess
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public UserAuthRequestMessageParser(byte[] array) {
+    protected UserAuthRequestMessageParser(byte[] array) {
         super(array);
     }
 
-    public UserAuthRequestMessageParser(byte[] array, int startPosition) {
+    protected UserAuthRequestMessageParser(byte[] array, int startPosition) {
         super(array, startPosition);
     }
 
     private void parseUserName() {
         message.setUserNameLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-        LOGGER.debug("Username length: " + message.getUserNameLength().getValue());
+        LOGGER.debug("Username length: {}", message.getUserNameLength().getValue());
         message.setUserName(
                 parseByteString(message.getUserNameLength().getValue(), StandardCharsets.US_ASCII));
         LOGGER.debug("Username: {}", backslashEscapeString(message.getUserName().getValue()));
@@ -41,7 +41,7 @@ public abstract class UserAuthRequestMessageParser<T extends UserAuthRequestMess
 
     private void parseServiceName() {
         message.setServiceNameLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-        LOGGER.debug("Servicename length: " + message.getServiceNameLength().getValue());
+        LOGGER.debug("Servicename length: {}", message.getServiceNameLength().getValue());
         message.setServiceName(
                 parseByteString(
                         message.getServiceNameLength().getValue(), StandardCharsets.US_ASCII));
@@ -50,7 +50,7 @@ public abstract class UserAuthRequestMessageParser<T extends UserAuthRequestMess
 
     private void parseMethodName() {
         message.setMethodNameLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-        LOGGER.debug("Methodname length: " + message.getMethodNameLength().getValue());
+        LOGGER.debug("Methodname length: {}", message.getMethodNameLength().getValue());
         message.setMethodName(
                 parseByteString(
                         message.getMethodNameLength().getValue(), StandardCharsets.US_ASCII));

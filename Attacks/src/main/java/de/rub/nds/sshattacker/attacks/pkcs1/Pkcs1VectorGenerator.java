@@ -27,7 +27,7 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 
 /** Generates Pkcs1 attack vectors */
-public class Pkcs1VectorGenerator {
+public final class Pkcs1VectorGenerator {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -36,7 +36,7 @@ public class Pkcs1VectorGenerator {
      * will fail
      *
      * @param publicKey Public key for encryption
-     * @param hashLength Bit length of the hash function
+     * @param hashLength The output length of the hash function
      * @param hashInstance Hash function to be used
      * @return Pkcs1 Vector with correct first byte but incorrect second byte
      */
@@ -47,7 +47,7 @@ public class Pkcs1VectorGenerator {
                         publicKey.getModulus().bitLength(), hashLength, hashInstance);
         try {
             Cipher rsa = Cipher.getInstance("RSA/NONE/NoPadding");
-            LOGGER.debug("Provider: " + rsa.getProvider());
+            LOGGER.debug("Provider: {}", rsa.getProvider());
             rsa.init(Cipher.ENCRYPT_MODE, publicKey);
             // encrypt padded key
             byte[] encrypted = rsa.doFinal(encryptedVector.getPlainValue());
@@ -65,11 +65,12 @@ public class Pkcs1VectorGenerator {
 
     /**
      * Generates a plain Pkcs1 Vector with correct first byte, but another error so decoding will
-     * fail
+     * fail.
      *
-     * @param publicKeyBitLength Bit length of the transient public key
-     * @param hashLength Bit length of the hash function
-     * @return A PKCS1 v2.x vector with starting 00 byte but incorrect second byte
+     * @param publicKeyBitLength The length of the transient public key.
+     * @param hashLength The output length of the hash function.
+     * @param hashInstance A string indicating the hash instance to use.
+     * @return A PKCS1 v2.x vector with starting 00 byte but incorrect second byte.
      */
     public static Pkcs1Vector generatePlainCorrectFirstBytePkcs1Vector(
             int publicKeyBitLength, int hashLength, String hashInstance) {
@@ -85,10 +86,12 @@ public class Pkcs1VectorGenerator {
     }
 
     /**
-     * Generates different encrypted PKCS1 vectors
+     * Generates different encrypted PKCS1 vectors.
      *
-     * @param publicKey The RSA public key
-     * @return encrypted pkcs1Vectors
+     * @param publicKey The RSA public key.
+     * @param hashLength The output length of the hash function.
+     * @param hashInstance A string indicating the hash instance to use.
+     * @return Encrypted PKCS1 vectors.
      */
     public static List<Pkcs1Vector> generatePkcs1Vectors(
             RSAPublicKey publicKey, int hashLength, String hashInstance) {
@@ -97,7 +100,7 @@ public class Pkcs1VectorGenerator {
                         publicKey.getModulus().bitLength(), hashLength, hashInstance);
         try {
             Cipher rsa = Cipher.getInstance("RSA/NONE/NoPadding");
-            LOGGER.debug("Provider: " + rsa.getProvider());
+            LOGGER.debug("Provider: {}", rsa.getProvider());
             rsa.init(Cipher.ENCRYPT_MODE, publicKey);
             // encrypt all the padded keys
             for (Pkcs1Vector vector : encryptedVectors) {
@@ -116,11 +119,12 @@ public class Pkcs1VectorGenerator {
     }
 
     /**
-     * Generates different plain PKCS1 vectors
+     * Generates different plain PKCS1 vectors.
      *
-     * @param publicKeyBitLength The length of the public key in bits
-     * @param hashLength The length of the hash function's output in bits
-     * @return pkcs1Vectors
+     * @param publicKeyBitLength The length of the public key in bits.
+     * @param hashLength The length of the hash function's output in bits.
+     * @param hashInstance A string indicating the hash function to use.
+     * @return pkcs1Vectors A list of PKCS1 vectors.
      */
     public static List<Pkcs1Vector> generatePlainPkcs1Vectors(
             int publicKeyBitLength, int hashLength, String hashInstance) {
@@ -182,5 +186,7 @@ public class Pkcs1VectorGenerator {
     }
 
     /** No instantiation needed, only one static method used */
-    private Pkcs1VectorGenerator() {}
+    private Pkcs1VectorGenerator() {
+        super();
+    }
 }

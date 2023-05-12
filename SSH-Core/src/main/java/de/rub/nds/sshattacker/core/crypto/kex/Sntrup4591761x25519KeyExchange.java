@@ -13,11 +13,7 @@ import de.rub.nds.sshattacker.core.constants.KeyExchangeAlgorithm;
 import de.rub.nds.sshattacker.core.constants.NamedEcGroup;
 import de.rub.nds.sshattacker.core.constants.PQKemNames;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 public class Sntrup4591761x25519KeyExchange extends HybridKeyExchange {
-    private static final Logger LOGGER = LogManager.getLogger();
 
     public Sntrup4591761x25519KeyExchange() {
         super(

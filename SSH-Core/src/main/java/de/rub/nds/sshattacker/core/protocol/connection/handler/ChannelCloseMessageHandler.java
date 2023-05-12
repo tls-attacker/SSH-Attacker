@@ -37,7 +37,7 @@ public class ChannelCloseMessageHandler extends SshMessageHandler<ChannelCloseMe
             if (!channel.isOpen().getValue()) {
                 LOGGER.warn(
                         "{} received but channel with id {} is not open, continuing anyway.",
-                        this.getClass().getSimpleName(),
+                        getClass().getSimpleName(),
                         message.getRecipientChannelId().getValue());
             } else {
                 channel.setCloseMessageReceived(true);
@@ -48,7 +48,7 @@ public class ChannelCloseMessageHandler extends SshMessageHandler<ChannelCloseMe
         } else {
             LOGGER.warn(
                     "{} received but no channel with id {} found locally, ignoring request to close the channel.",
-                    this.getClass().getSimpleName(),
+                    getClass().getSimpleName(),
                     message.getRecipientChannelId().getValue());
         }
     }

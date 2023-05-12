@@ -14,8 +14,8 @@ import de.rub.nds.sshattacker.core.packet.cipher.PacketCipher;
 
 public abstract class AbstractPacketDecryptor extends PacketCryptoUnit {
 
-    public AbstractPacketDecryptor(PacketCipher cipher) {
-        super(cipher);
+    protected AbstractPacketDecryptor(PacketCipher packetCipher) {
+        super(packetCipher);
     }
 
     public void decrypt(AbstractPacket object) {
@@ -28,7 +28,7 @@ public abstract class AbstractPacketDecryptor extends PacketCryptoUnit {
         }
     }
 
-    public abstract void decrypt(BinaryPacket object);
+    public abstract void decrypt(BinaryPacket packet);
 
-    public abstract void decrypt(BlobPacket object);
+    public abstract void decrypt(BlobPacket packet);
 }

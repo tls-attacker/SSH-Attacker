@@ -9,13 +9,15 @@ package de.rub.nds.sshattacker.core.crypto.kex;
 
 import java.security.SecureRandom;
 
+@SuppressWarnings("AbstractClassWithoutAbstractMethods")
 public abstract class KeyExchange {
 
     protected final SecureRandom random;
     protected byte[] sharedSecret;
 
     protected KeyExchange() {
-        this.random = new SecureRandom();
+        super();
+        random = new SecureRandom();
     }
 
     public boolean isComplete() {

@@ -20,6 +20,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.stream.Stream;
 
+@SuppressWarnings("StandardVariableNames")
 public class UMacTest {
 
     public static Stream<Arguments> provideTestVectors() {
@@ -194,28 +195,26 @@ public class UMacTest {
 
     @Test
     public void testEndianSwap() {
-        byte[] littleEndian =
-                new byte[] {
-                    (byte) 0x00,
-                    (byte) 0xAB,
-                    (byte) 0xBC,
-                    (byte) 0xCD,
-                    (byte) 0x00,
-                    (byte) 0x12,
-                    (byte) 0x23,
-                    (byte) 0x34
-                };
-        byte[] bigEndian =
-                new byte[] {
-                    (byte) 0xCD,
-                    (byte) 0xBC,
-                    (byte) 0xAB,
-                    (byte) 0x00,
-                    (byte) 0x34,
-                    (byte) 0x23,
-                    (byte) 0x12,
-                    (byte) 0x00
-                };
+        byte[] littleEndian = {
+            (byte) 0x00,
+            (byte) 0xAB,
+            (byte) 0xBC,
+            (byte) 0xCD,
+            (byte) 0x00,
+            (byte) 0x12,
+            (byte) 0x23,
+            (byte) 0x34
+        };
+        byte[] bigEndian = {
+            (byte) 0xCD,
+            (byte) 0xBC,
+            (byte) 0xAB,
+            (byte) 0x00,
+            (byte) 0x34,
+            (byte) 0x23,
+            (byte) 0x12,
+            (byte) 0x00
+        };
         Assertions.assertArrayEquals(bigEndian, UMac.ENDIAN_SWAP(littleEndian));
     }
 
@@ -296,11 +295,10 @@ public class UMacTest {
 
     @Test
     public void testZeropad() {
-        byte[] unpadded = new byte[] {(byte) 0xDE, (byte) 0xEA, (byte) 0xC0, (byte) 0xDE};
-        byte[] expectedPadded =
-                new byte[] {
-                    (byte) 0xDE, (byte) 0xEA, (byte) 0xC0, (byte) 0xDE, 0x00, 0x00, 0x00, 0x00
-                };
+        byte[] unpadded = {(byte) 0xDE, (byte) 0xEA, (byte) 0xC0, (byte) 0xDE};
+        byte[] expectedPadded = {
+            (byte) 0xDE, (byte) 0xEA, (byte) 0xC0, (byte) 0xDE, 0x00, 0x00, 0x00, 0x00
+        };
         byte[] actualPadded = UMac.zeropad(unpadded, 8);
         Assertions.assertArrayEquals(expectedPadded, actualPadded);
     }

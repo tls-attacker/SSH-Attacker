@@ -35,7 +35,7 @@ public final class ThreadedServerWorkflowExecutor extends WorkflowExecutor {
     private ServerSocket serverSocket;
     private Socket socket;
     private final int port;
-    final List<Socket> sockets = new ArrayList<>();
+    private final List<Socket> sockets = new ArrayList<>();
     private boolean killed = true;
     private boolean shutdown = true;
     private final ExecutorService pool;
@@ -58,7 +58,7 @@ public final class ThreadedServerWorkflowExecutor extends WorkflowExecutor {
                                     kill();
                                     LOGGER.info("Waiting for connections to be closed...");
                                     int watchDog = 3;
-                                    while ((!shutdown) && (watchDog > 0)) {
+                                    while (!shutdown && watchDog > 0) {
                                         try {
                                             TimeUnit.SECONDS.sleep(1);
                                         } catch (InterruptedException ex) {
@@ -78,11 +78,7 @@ public final class ThreadedServerWorkflowExecutor extends WorkflowExecutor {
     @Override
     public void executeWorkflow() throws WorkflowExecutionException {
 
-        synchronized (this) {
-            Thread currentThread = Thread.currentThread();
-        }
-
-        LOGGER.info("Listening on port " + port + "...");
+        LOGGER.info("Listening on port {}...", port);
         LOGGER.info("--- use SIGINT to shutdown ---");
         initialize();
 
@@ -105,8 +101,8 @@ public final class ThreadedServerWorkflowExecutor extends WorkflowExecutor {
     }
 
     public void initialize() {
-        LOGGER.info("Initializing server connection end at port " + port);
-        if ((serverSocket != null) && (!serverSocket.isClosed())) {
+        LOGGER.info("Initializing server connection end at port {}", port);
+        if (serverSocket != null && !serverSocket.isClosed()) {
             LOGGER.debug("Server socket already initialized");
             return;
         }
@@ -121,20 +117,20 @@ public final class ThreadedServerWorkflowExecutor extends WorkflowExecutor {
     }
 
     public void kill() {
-        this.killed = true;
+        killed = true;
     }
 
     public synchronized void closeSockets() {
-        for (Socket s : sockets) {
-            LOGGER.debug("Closing socket " + socket);
+        for (Socket socket : sockets) {
+            LOGGER.debug("Closing socket {}", this.socket);
             try {
-                if (s != null) {
-                    s.close();
+                if (socket != null) {
+                    socket.close();
                 } else {
                     LOGGER.debug("... already closed.");
                 }
             } catch (IOException ex) {
-                LOGGER.debug("Failed to close socket " + socket);
+                LOGGER.debug("Failed to close socket {}", this.socket);
             }
         }
 

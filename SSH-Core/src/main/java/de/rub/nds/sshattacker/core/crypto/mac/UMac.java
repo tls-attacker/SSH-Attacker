@@ -27,10 +27,11 @@ import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.SecretKeySpec;
 
 /**
- * Implemention of the UMAC message authentication code as per RFC4418. This implementation is
+ * Implementation of the UMAC message authentication code as per RFC4418. This implementation is
  * restricted to inputs consisting out of full bytes only and of length less or equal to 2^24 bytes
  * (16 MB).
  */
+@SuppressWarnings("StandardVariableNames")
 class UMac extends AbstractMac {
 
     private static final Logger LOGGER = LogManager.getLogger();
@@ -42,7 +43,8 @@ class UMac extends AbstractMac {
     private final MacAlgorithm algorithm;
     private final byte[] key;
 
-    public UMac(MacAlgorithm algorithm, byte[] key) {
+    UMac(MacAlgorithm algorithm, byte[] key) {
+        super();
         if (!algorithm.toString().startsWith("umac")) {
             throw new UnsupportedOperationException(
                     "MAC algorithm not supported by UMAC implementation: " + algorithm);
@@ -109,6 +111,7 @@ class UMac extends AbstractMac {
      *     of bytes).
      * @param Nonce String of length 1 to BLOCKLEN bytes.
      */
+    @SuppressWarnings("unused")
     public static byte[] UMAC128(byte[] K, byte[] M, byte[] Nonce) {
         return UMAC(K, M, Nonce, 16);
     }
@@ -218,7 +221,7 @@ class UMac extends AbstractMac {
         byte[] KPrime = KDF(K, 0, KEYLEN);
         byte[] T = ENCIPHER(KPrime, Nonce);
         assert T != null;
-        return Arrays.copyOfRange(T, index * taglen, taglen + (index * taglen));
+        return Arrays.copyOfRange(T, index * taglen, taglen + index * taglen);
     }
 
     /**
@@ -231,7 +234,7 @@ class UMac extends AbstractMac {
         byte[] t = new byte[s.length];
         for (int i = 0; i < s.length; i += 4) {
             for (int j = 0; j < 4; j++) {
-                t[i + j] = s[i + (3 - j)];
+                t[i + j] = s[i + 3 - j];
             }
         }
         return t;
@@ -307,7 +310,7 @@ class UMac extends AbstractMac {
         }
         BigInteger k64 = new BigInteger(1, k64Bytes);
         BigInteger y;
-        if (M.length <= (1 << 17)) {
+        if (M.length <= 1 << 17) {
             y =
                     POLY(
                             64,
@@ -330,7 +333,11 @@ class UMac extends AbstractMac {
      * @param M String with length divisible by (wordbits / 8) bytes.
      * @return y, integer in the range 0 ... prime(wordbits) - 1.
      */
-    static BigInteger POLY(int wordbits, BigInteger maxwordrange, BigInteger k, byte[] M) {
+    static BigInteger POLY(
+            @SuppressWarnings("SameParameterValue") int wordbits,
+            BigInteger maxwordrange,
+            BigInteger k,
+            byte[] M) {
         int wordbytes = wordbits / Byte.SIZE;
         BigInteger p = prime(wordbits);
         BigInteger offset = BigInteger.ONE.shiftLeft(wordbits).subtract(p);

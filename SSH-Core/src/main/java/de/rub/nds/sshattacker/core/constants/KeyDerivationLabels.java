@@ -7,11 +7,15 @@
  */
 package de.rub.nds.sshattacker.core.constants;
 
-public class KeyDerivationLabels {
+public final class KeyDerivationLabels {
     public static final char INITIAL_IV_CLIENT_TO_SERVER = 'A';
     public static final char INITIAL_IV_SERVER_TO_CLIENT = 'B';
     public static final char ENCRYPTION_KEY_CLIENT_TO_SERVER = 'C';
     public static final char ENCRYPTION_KEY_SERVER_TO_CLIENT = 'D';
     public static final char INTEGRITY_KEY_CLIENT_TO_SERVER = 'E';
     public static final char INTEGRITY_KEY_SERVER_TO_CLIENT = 'F';
+
+    private KeyDerivationLabels() {
+        super();
+    }
 }

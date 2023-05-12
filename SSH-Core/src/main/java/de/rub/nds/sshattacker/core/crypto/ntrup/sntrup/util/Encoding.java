@@ -16,11 +16,16 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.IntStream;
 
+@SuppressWarnings("StandardVariableNames")
 public final class Encoding {
+
+    private Encoding() {
+        super();
+    }
 
     public static ArrayList<Integer> decode(List<Integer> s, List<Integer> m) {
         ArrayList<Integer> r = new ArrayList<>();
-        if (m.size() == 0) {
+        if (m.isEmpty()) {
             return r;
         }
 
@@ -30,14 +35,14 @@ public final class Encoding {
                             IntStream.range(0, s.size())
                                     .mapToLong(i -> (long) (s.get(i) * Math.pow(256, i)))
                                     .sum(),
-                            m.get(0).intValue()));
+                            m.get(0)));
             return r;
         }
 
         int kLocal = 0;
         ArrayList<AbstractMap.SimpleEntry<Integer, Integer>> bottom = new ArrayList<>();
         ArrayList<Integer> m2 = new ArrayList<>();
-        ArrayList<Integer> r2 = new ArrayList<>();
+        ArrayList<Integer> r2;
         int mLocal, rLocal, tLocal;
         int limit = 16384;
 
@@ -79,7 +84,7 @@ public final class Encoding {
         int mLocal, rLocal;
         int limit = 16384;
 
-        if (m.size() == 0) {
+        if (m.isEmpty()) {
             return s;
         }
 
@@ -137,9 +142,9 @@ public final class Encoding {
         for (int i = 0; i < bytes; i++) {
             res[i] =
                     (byte)
-                            ((u.divide(BigInteger.valueOf((long) (Math.pow(256, i))))
-                                            .mod(BigInteger.valueOf(256)))
-                                    .intValue());
+                            u.divide(BigInteger.valueOf((long) Math.pow(256, i)))
+                                    .mod(BigInteger.valueOf(256))
+                                    .intValue();
         }
         return res;
     }
@@ -153,17 +158,17 @@ public final class Encoding {
     }
 
     public static ArrayList<BigInteger> byte2seq(byte[] s, int radix, int batch, int bytes) {
-        long[] u = new long[(int) (Math.ceil(s.length / (double) bytes))];
+        long[] u = new long[(int) Math.ceil(s.length / (double) bytes)];
         ArrayList<BigInteger> res = new ArrayList<>();
         int k = 0;
         for (int i = 0; i < s.length; i += bytes) {
             u[k] = byte2int(Arrays.copyOfRange(s, i, i + bytes));
             k++;
         }
-        for (int i = 0; i < u.length; i++) {
+        for (long l : u) {
             for (int j = 0; j < batch; j++) {
                 res.add(
-                        BigInteger.valueOf(u[i])
+                        BigInteger.valueOf(l)
                                 .divide(BigInteger.valueOf(radix).pow(j))
                                 .mod(BigInteger.valueOf(radix)));
             }

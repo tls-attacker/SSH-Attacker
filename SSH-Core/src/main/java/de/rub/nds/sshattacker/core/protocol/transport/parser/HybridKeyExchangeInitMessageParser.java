@@ -20,9 +20,9 @@ public class HybridKeyExchangeInitMessageParser
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private HybridKeyExchangeCombiner combiner;
-    private int encapsulationSize;
-    private int agreementSize;
+    private final HybridKeyExchangeCombiner combiner;
+    private final int encapsulationSize;
+    private final int agreementSize;
 
     public HybridKeyExchangeInitMessageParser(
             byte[] array,
@@ -49,7 +49,7 @@ public class HybridKeyExchangeInitMessageParser
 
     private void parseHybridKey() {
         int length = parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH);
-        LOGGER.debug("Total Length: " + length);
+        LOGGER.debug("Total Length: {}", length);
 
         switch (combiner) {
             case CLASSICAL_CONCATENATE_POSTQUANTUM:

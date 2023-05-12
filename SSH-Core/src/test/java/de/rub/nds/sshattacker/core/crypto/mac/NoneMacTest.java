@@ -29,7 +29,7 @@ public class NoneMacTest {
                 Arguments.of(1000, "no mac".repeat(20).getBytes(StandardCharsets.UTF_8)));
     }
 
-    @ParameterizedTest()
+    @ParameterizedTest
     @MethodSource("provideTestVectors")
     public void testNoneMac(int providedSequenceNr, byte[] data) {
         NoneMac macInstance = new NoneMac();

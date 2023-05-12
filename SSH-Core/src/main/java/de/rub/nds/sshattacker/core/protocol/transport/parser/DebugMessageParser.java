@@ -39,25 +39,26 @@ public class DebugMessageParser extends SshMessageParser<DebugMessage> {
     private void parseAlwaysDisplay() {
         message.setAlwaysDisplay(parseByteField(1));
         LOGGER.debug(
-                "Always display: "
-                        + Converter.byteToBoolean(message.getAlwaysDisplay().getValue()));
+                "Always display: {}",
+                Converter.byteToBoolean(message.getAlwaysDisplay().getValue()));
     }
 
     private void parseMessage() {
         message.setMessageLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-        LOGGER.debug("Message length: " + message.getMessageLength().getValue());
+        LOGGER.debug("Message length: {}", message.getMessageLength().getValue());
         message.setMessage(
                 parseByteString(message.getMessageLength().getValue(), StandardCharsets.UTF_8));
-        LOGGER.debug("Message: " + backslashEscapeString(message.getMessage().getValue()));
+        LOGGER.debug("Message: {}", backslashEscapeString(message.getMessage().getValue()));
     }
 
     private void parseLanguageTag() {
         message.setLanguageTagLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-        LOGGER.debug("Language tag length: " + message.getLanguageTagLength().getValue());
+        LOGGER.debug("Language tag length: {}", message.getLanguageTagLength().getValue());
         message.setLanguageTag(
                 parseByteString(
                         message.getLanguageTagLength().getValue(), StandardCharsets.US_ASCII));
-        LOGGER.debug("Language tag: " + backslashEscapeString(message.getLanguageTag().getValue()));
+        LOGGER.debug(
+                "Language tag: {}", backslashEscapeString(message.getLanguageTag().getValue()));
     }
 
     @Override

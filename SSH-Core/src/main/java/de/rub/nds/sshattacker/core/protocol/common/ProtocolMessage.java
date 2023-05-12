@@ -15,22 +15,17 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
-import jakarta.xml.bind.annotation.XmlTransient;
-
-import java.lang.reflect.Field;
-import java.util.List;
-import java.util.Random;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 public abstract class ProtocolMessage<T extends ProtocolMessage<T>>
         extends ModifiableVariableHolder {
 
     /** content type */
-    @XmlTransient protected final boolean GOING_TO_BE_SENT_DEFAULT = true;
+    protected static final boolean GOING_TO_BE_SENT_DEFAULT = true;
 
-    @XmlTransient protected final boolean REQUIRED_DEFAULT = true;
+    protected static final boolean REQUIRED_DEFAULT = true;
 
-    @XmlTransient protected final boolean ADJUST_CONTEXT_DEFAULT = true;
+    protected static final boolean ADJUST_CONTEXT_DEFAULT = true;
 
     /** Defines whether this message is necessarily required in the workflow. */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.BEHAVIOR_SWITCH)
@@ -49,8 +44,6 @@ public abstract class ProtocolMessage<T extends ProtocolMessage<T>>
     /** resulting message */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PLAIN_PROTOCOL_MESSAGE)
     protected ModifiableByteArray completeResultingMessage;
-
-    public ProtocolMessage() {}
 
     public boolean isRequired() {
         if (required == null || required.getValue() == null) {
@@ -77,13 +70,6 @@ public abstract class ProtocolMessage<T extends ProtocolMessage<T>>
 
     public void setGoingToBeSent(ModifiableBoolean goingToBeSent) {
         this.goingToBeSent = goingToBeSent;
-    }
-
-    @Override
-    public Field getRandomModifiableVariableField(Random random) {
-        List<Field> fields = getAllModifiableVariableFields();
-        int randomField = random.nextInt(fields.size());
-        return fields.get(randomField);
     }
 
     public ModifiableByteArray getCompleteResultingMessage() {

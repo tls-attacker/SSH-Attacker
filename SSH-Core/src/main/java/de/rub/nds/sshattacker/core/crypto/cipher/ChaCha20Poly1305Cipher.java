@@ -9,7 +9,6 @@ package de.rub.nds.sshattacker.core.crypto.cipher;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.EncryptionAlgorithm;
-import de.rub.nds.sshattacker.core.exceptions.CryptoException;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -32,27 +31,27 @@ class ChaCha20Poly1305Cipher extends AbstractCipher {
     private final ChaChaEngine cipher;
     private final Poly1305 mac;
 
-    public ChaCha20Poly1305Cipher(byte[] key) {
+    ChaCha20Poly1305Cipher(byte[] key) {
+        super();
         this.key = key;
-        this.cipher = new ChaChaEngine();
-        this.mac = new Poly1305();
+        cipher = new ChaChaEngine();
+        mac = new Poly1305();
     }
 
     @Override
-    public byte[] encrypt(byte[] plainData) throws CryptoException {
+    public byte[] encrypt(byte[] plainData) {
         throw new UnsupportedOperationException(
                 "ChaCha20Poly1305 can only be used as an AEAD cipher!");
     }
 
     @Override
-    public byte[] encrypt(byte[] plainData, byte[] iv) throws CryptoException {
+    public byte[] encrypt(byte[] plainData, byte[] iv) {
         throw new UnsupportedOperationException(
                 "ChaCha20Poly1305 can only be used as an AEAD cipher!");
     }
 
     @Override
-    public byte[] encrypt(byte[] plainData, byte[] iv, byte[] additionalAuthenticatedData)
-            throws CryptoException {
+    public byte[] encrypt(byte[] plainData, byte[] iv, byte[] additionalAuthenticatedData) {
         // Initialization
         cipher.init(true, new ParametersWithIV(new KeyParameter(key), iv));
         initMac();
@@ -69,20 +68,20 @@ class ChaCha20Poly1305Cipher extends AbstractCipher {
     }
 
     @Override
-    public byte[] decrypt(byte[] encryptedData) throws CryptoException {
+    public byte[] decrypt(byte[] encryptedData) {
         throw new UnsupportedOperationException(
                 "ChaCha20Poly1305 can only be used as an AEAD cipher!");
     }
 
     @Override
-    public byte[] decrypt(byte[] encryptedData, byte[] iv) throws CryptoException {
+    public byte[] decrypt(byte[] encryptedData, byte[] iv) {
         throw new UnsupportedOperationException(
                 "ChaCha20Poly1305 can only be used as an AEAD cipher!");
     }
 
     @Override
     public byte[] decrypt(byte[] encryptedData, byte[] iv, byte[] additionalAuthenticatedData)
-            throws CryptoException, AEADBadTagException {
+            throws AEADBadTagException {
         // Initialization
         cipher.init(false, new ParametersWithIV(new KeyParameter(key), iv));
         initMac();
@@ -97,7 +96,7 @@ class ChaCha20Poly1305Cipher extends AbstractCipher {
         byte[] receivedMac = Arrays.copyOfRange(encryptedData, ctLength, encryptedData.length);
         if (!Arrays.equals(calculatedMac, receivedMac)) {
             LOGGER.warn("MAC verification failed");
-            throw new AEADBadTagException();
+            throw new AEADBadTagException("Poly1305 MAC verification failed");
         }
         // Decryption
         cipher.processBytes(encryptedData, 0, ctLength, plaintext, 0);
@@ -110,7 +109,7 @@ class ChaCha20Poly1305Cipher extends AbstractCipher {
         mac.init(new KeyParameter(firstBlock, 0, 32));
     }
 
-    private int getOutputSize(boolean isEncrypting, int inputLength) {
+    private static int getOutputSize(boolean isEncrypting, int inputLength) {
         return isEncrypting ? inputLength + TAG_LENGTH : inputLength - TAG_LENGTH;
     }
 

@@ -29,7 +29,7 @@ public class Manger extends Pkcs1Attack {
 
     protected Interval result;
 
-    private volatile boolean interrupted = false;
+    private volatile boolean interrupted;
 
     /**
      * @param msg Encrypted secret message
@@ -81,7 +81,7 @@ public class Manger extends Pkcs1Attack {
             }
         }
 
-        LOGGER.debug("f1: " + f1);
+        LOGGER.debug("f1: {}", f1);
 
         LOGGER.debug("Step 2");
         // f2 = int(intfloordiv(N+B,B)*f1/2)
@@ -96,7 +96,7 @@ public class Manger extends Pkcs1Attack {
             }
         }
 
-        LOGGER.debug("f2: " + f2);
+        LOGGER.debug("f2: {}", f2);
 
         LOGGER.debug("Step 3");
         BigInteger mmin = MathHelper.intCeilDiv(publicKey.getModulus(), f2);
@@ -104,16 +104,20 @@ public class Manger extends Pkcs1Attack {
 
         result = new Interval(mmin, mmax);
 
-        int prevIntervalSize = 0;
         while (!interrupted) {
             BigInteger ftmp = MathHelper.intFloorDiv(bigB.shiftLeft(1), mmax.subtract(mmin));
-            BigInteger i = MathHelper.intFloorDiv(ftmp.multiply(mmin), publicKey.getModulus());
-            BigInteger f3 = MathHelper.intCeilDiv(i.multiply(publicKey.getModulus()), mmin);
+            BigInteger integer =
+                    MathHelper.intFloorDiv(ftmp.multiply(mmin), publicKey.getModulus());
+            BigInteger f3 = MathHelper.intCeilDiv(integer.multiply(publicKey.getModulus()), mmin);
             cc = multiply(c0, f3);
             if (!queryOracle(cc)) {
-                mmin = MathHelper.intCeilDiv(i.multiply(publicKey.getModulus()).add(bigB), f3);
+                mmin =
+                        MathHelper.intCeilDiv(
+                                integer.multiply(publicKey.getModulus()).add(bigB), f3);
             } else {
-                mmax = MathHelper.intFloorDiv(i.multiply(publicKey.getModulus()).add(bigB), f3);
+                mmax =
+                        MathHelper.intFloorDiv(
+                                integer.multiply(publicKey.getModulus()).add(bigB), f3);
             }
 
             if (mmax.equals(mmin)) {

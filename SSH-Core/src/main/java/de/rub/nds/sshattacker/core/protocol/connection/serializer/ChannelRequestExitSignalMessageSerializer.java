@@ -28,19 +28,19 @@ public class ChannelRequestExitSignalMessageSerializer
     }
 
     public void serializeSignalName() {
-        LOGGER.debug("Signal name length: " + message.getSignalNameLength().getValue());
+        LOGGER.debug("Signal name length: {}", message.getSignalNameLength().getValue());
         appendInt(message.getSignalNameLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
         LOGGER.debug("Signal name: {}", backslashEscapeString(message.getSignalName().getValue()));
         appendString(message.getSignalName().getValue(), StandardCharsets.UTF_8);
     }
 
     public void serializeCoreDump() {
-        LOGGER.debug("Core dumped:" + message.getCoreDump().getValue());
+        LOGGER.debug("Core dumped:{}", message.getCoreDump().getValue());
         appendByte(Converter.booleanToByte(message.getCoreDump().getValue()));
     }
 
     public void serializeErrorMessage() {
-        LOGGER.debug("Error message length: " + message.getErrorMessageLength().getValue());
+        LOGGER.debug("Error message length: {}", message.getErrorMessageLength().getValue());
         appendInt(
                 message.getErrorMessageLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
         LOGGER.debug(
@@ -49,7 +49,7 @@ public class ChannelRequestExitSignalMessageSerializer
     }
 
     private void serializeLanguageTag() {
-        LOGGER.debug("Language tag length: " + message.getLanguageTagLength().getValue());
+        LOGGER.debug("Language tag length: {}", message.getLanguageTagLength().getValue());
         appendInt(
                 message.getLanguageTagLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
         LOGGER.debug(

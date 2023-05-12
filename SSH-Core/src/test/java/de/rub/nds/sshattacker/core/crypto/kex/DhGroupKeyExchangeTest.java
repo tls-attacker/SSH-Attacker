@@ -50,7 +50,7 @@ class DhGroupKeyExchangeTest {
                 Arguments.of(7000, NamedDhGroup.GROUP18),
                 Arguments.of(9000, NamedDhGroup.GROUP18),
                 Arguments.of(Integer.MAX_VALUE, NamedDhGroup.GROUP18),
-                Arguments.of((Integer.MIN_VALUE + 10000), NamedDhGroup.GROUP1),
+                Arguments.of(Integer.MIN_VALUE + 10000, NamedDhGroup.GROUP1),
                 Arguments.of(50, NamedDhGroup.GROUP1));
     }
 
@@ -85,11 +85,11 @@ class DhGroupKeyExchangeTest {
                 Arguments.of(7000, 7001, 7001, NamedDhGroup.GROUP18),
                 Arguments.of(5000, 9001, 9002, NamedDhGroup.GROUP18),
                 Arguments.of(
-                        (Integer.MIN_VALUE + 10000),
+                        Integer.MIN_VALUE + 10000,
                         Integer.MAX_VALUE,
                         Integer.MAX_VALUE,
                         NamedDhGroup.GROUP18),
-                Arguments.of((Integer.MIN_VALUE + 10000), 0, 2000, NamedDhGroup.GROUP1),
+                Arguments.of(Integer.MIN_VALUE + 10000, 0, 2000, NamedDhGroup.GROUP1),
                 Arguments.of(50, 2000, 3000, NamedDhGroup.GROUP14));
     }
 

@@ -16,9 +16,13 @@ import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-public class KeyDerivation {
+public final class KeyDerivation {
 
     private static final Logger LOGGER = LogManager.getLogger();
+
+    private KeyDerivation() {
+        super();
+    }
 
     public static byte[] deriveKey(
             byte[] sharedSecret,
@@ -50,7 +54,7 @@ public class KeyDerivation {
             throw new RuntimeException(
                     "Provider does not support this hashFunction:" + e.getMessage());
         } catch (IOException e) {
-            LOGGER.error("Error while writing: " + e.getMessage());
+            LOGGER.error("Error while writing: {}", e.getMessage());
             return new byte[0];
         }
     }

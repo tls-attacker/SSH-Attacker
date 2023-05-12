@@ -23,21 +23,35 @@ public class CustomPQKemPublicKey extends CustomPublicKey {
 
     private PQKemNames kemName;
 
-    @SuppressWarnings("unused")
-    public CustomPQKemPublicKey() {}
+    public CustomPQKemPublicKey() {
+        super();
+    }
 
     public CustomPQKemPublicKey(byte[] publicKey, PQKemNames kemName) {
+        super();
         this.publicKey = publicKey;
         this.kemName = kemName;
     }
 
     public byte[] getPublicKey() {
-        return this.publicKey;
+        return publicKey;
+    }
+
+    public void setPublicKey(byte[] publicKey) {
+        this.publicKey = publicKey;
+    }
+
+    public PQKemNames getKemName() {
+        return kemName;
+    }
+
+    public void setKemName(PQKemNames kemName) {
+        this.kemName = kemName;
     }
 
     @Override
     public byte[] getEncoded() {
-        return this.publicKey;
+        return publicKey;
     }
 
     @Override

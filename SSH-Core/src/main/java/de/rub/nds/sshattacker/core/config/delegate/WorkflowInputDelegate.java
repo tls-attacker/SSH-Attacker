@@ -11,17 +11,13 @@ import com.beust.jcommander.Parameter;
 
 import de.rub.nds.sshattacker.core.config.Config;
 
-import java.io.FileInputStream;
-
 public class WorkflowInputDelegate extends Delegate {
 
     @Parameter(
             names = "-workflow_input",
             description =
                     "This parameter allows you to load the whole workflow trace from the specified XML configuration file")
-    private String workflowInput = null;
-
-    public WorkflowInputDelegate() {}
+    private String workflowInput;
 
     public String getWorkflowInput() {
         return workflowInput;
@@ -33,7 +29,6 @@ public class WorkflowInputDelegate extends Delegate {
 
     @Override
     public void applyDelegate(Config config) {
-        FileInputStream fis = null;
         if (workflowInput != null) {
             config.setWorkflowInput(workflowInput);
         }

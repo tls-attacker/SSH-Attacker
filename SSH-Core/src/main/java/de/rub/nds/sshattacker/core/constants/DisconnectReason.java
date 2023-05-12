@@ -39,7 +39,7 @@ public enum DisconnectReason {
 
     static {
         Map<Integer, DisconnectReason> mutableMap = new TreeMap<>();
-        for (DisconnectReason constant : DisconnectReason.values()) {
+        for (DisconnectReason constant : values()) {
             mutableMap.put(constant.id, constant);
         }
         map = Collections.unmodifiableMap(mutableMap);

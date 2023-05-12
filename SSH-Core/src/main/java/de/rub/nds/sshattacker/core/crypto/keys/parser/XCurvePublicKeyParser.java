@@ -40,9 +40,8 @@ public class XCurvePublicKeyParser
             group = NamedEcGroup.CURVE448;
         } else {
             LOGGER.warn(
-                    "Trying to parse X curve public key, but encountered unexpected public key format '"
-                            + format
-                            + "'. Parsing will continue as Curve22519 but may not yield the expected results.");
+                    "Trying to parse X curve public key, but encountered unexpected public key format '{}'. Parsing will continue as Curve22519 but may not yield the expected results.",
+                    format);
             group = NamedEcGroup.CURVE25519;
         }
 

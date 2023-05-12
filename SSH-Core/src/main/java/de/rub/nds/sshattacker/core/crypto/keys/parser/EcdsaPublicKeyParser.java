@@ -38,9 +38,8 @@ public class EcdsaPublicKeyParser
         String formatName = parseByteString(formatNameLength, StandardCharsets.US_ASCII);
         if (!formatName.startsWith("ecdsa-sha2-")) {
             LOGGER.warn(
-                    "Trying to parse ECDSA public key, but encountered unexpected public key format '"
-                            + formatName
-                            + "'. Parsing will continue but may not yield the expected results.");
+                    "Trying to parse ECDSA public key, but encountered unexpected public key format '{}'. Parsing will continue but may not yield the expected results.",
+                    formatName);
         }
 
         int curveIdentifierLength = parseIntField(DataFormatConstants.UINT32_SIZE);

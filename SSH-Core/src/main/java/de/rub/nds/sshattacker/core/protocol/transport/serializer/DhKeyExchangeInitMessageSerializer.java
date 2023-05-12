@@ -25,13 +25,13 @@ public class DhKeyExchangeInitMessageSerializer
 
     private void serializeEphemeralPublicKey() {
         LOGGER.debug(
-                "Ephemeral public key (client) length: "
-                        + message.getEphemeralPublicKeyLength().getValue());
+                "Ephemeral public key (client) length: {}",
+                message.getEphemeralPublicKeyLength().getValue());
         appendInt(
                 message.getEphemeralPublicKeyLength().getValue(),
                 DataFormatConstants.MPINT_SIZE_LENGTH);
         LOGGER.debug(
-                "Ephemeral public key (client): " + message.getEphemeralPublicKey().getValue());
+                "Ephemeral public key (client): {}", message.getEphemeralPublicKey().getValue());
         appendBytes(message.getEphemeralPublicKey().getValue().toByteArray());
     }
 

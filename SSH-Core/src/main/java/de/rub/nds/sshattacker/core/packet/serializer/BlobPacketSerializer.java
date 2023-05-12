@@ -20,6 +20,7 @@ public class BlobPacketSerializer extends AbstractPacketSerializer<BlobPacket> {
     private final BlobPacket packet;
 
     public BlobPacketSerializer(BlobPacket packet) {
+        super();
         this.packet = packet;
     }
 
@@ -28,8 +29,8 @@ public class BlobPacketSerializer extends AbstractPacketSerializer<BlobPacket> {
         LOGGER.debug("Serializing BlobPacket");
         appendBytes(packet.getCiphertext().getValue());
         LOGGER.debug(
-                "Ciphertext: "
-                        + ArrayConverter.bytesToHexString(packet.getCiphertext().getValue()));
+                "Ciphertext: {}",
+                ArrayConverter.bytesToHexString(packet.getCiphertext().getValue()));
 
         packet.setCompletePacketBytes(getAlreadySerialized());
     }

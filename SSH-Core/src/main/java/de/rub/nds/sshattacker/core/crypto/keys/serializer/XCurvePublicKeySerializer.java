@@ -20,6 +20,7 @@ public class XCurvePublicKeySerializer extends Serializer<XCurveEcPublicKey> {
     private final XCurveEcPublicKey publicKey;
 
     public XCurvePublicKeySerializer(XCurveEcPublicKey publicKey) {
+        super();
         this.publicKey = publicKey;
     }
 

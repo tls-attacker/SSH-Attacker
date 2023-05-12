@@ -19,6 +19,7 @@ import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 
+@SuppressWarnings({"SlowListContainsAll", "StandardVariableNames"})
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
 public class AuthenticationResponse
@@ -35,15 +36,19 @@ public class AuthenticationResponse
         private ModifiableString response;
         private boolean executed;
 
-        public ResponseEntry() {}
+        public ResponseEntry() {
+            super();
+        }
 
         public ResponseEntry(boolean executed) {
-            setExecuted(executed);
+            super();
+            this.executed = executed;
         }
 
         public ResponseEntry(String response, boolean executed) {
+            super();
             setResponse(response, true);
-            setExecuted(executed);
+            this.executed = executed;
         }
 
         public ModifiableInteger getResponseLength() {
@@ -135,7 +140,6 @@ public class AuthenticationResponse
         return responseEntries.remove(o);
     }
 
-    @SuppressWarnings("SlowListContainsAll")
     @Override
     public boolean containsAll(@NonNull Collection<?> c) {
         return responseEntries.containsAll(c);

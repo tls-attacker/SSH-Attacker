@@ -18,16 +18,16 @@ import java.util.List;
 
 public final class SshActionFactory {
 
-    private SshActionFactory() {}
+    private SshActionFactory() {
+        super();
+    }
 
     public static MessageAction createMessageAction(
             AliasedConnection connection,
-            ConnectionEndType sendingConnectionEndType,
+            ConnectionEndType sendingConnectionEnd,
             ProtocolMessage<?>... protocolMessages) {
         return createMessageAction(
-                connection,
-                sendingConnectionEndType,
-                new ArrayList<>(Arrays.asList(protocolMessages)));
+                connection, sendingConnectionEnd, new ArrayList<>(Arrays.asList(protocolMessages)));
     }
 
     public static MessageAction createMessageAction(
@@ -50,19 +50,19 @@ public final class SshActionFactory {
      *
      * @param inboundConnection fixed inboundConnection (client to proxy/mitm)
      * @param outboundConnection fixed outboundConnection (proxy/mitm to server)
-     * @param sendingConnectionEndType specifies on which connection the messages are received
+     * @param sendingConnectionEnd specifies on which connection the messages are received
      * @param protocolMessages messages to be sent
      * @return ForwardAction with the provided inputs
      */
     public static SshAction createForwardAction(
             AliasedConnection inboundConnection,
             AliasedConnection outboundConnection,
-            ConnectionEndType sendingConnectionEndType,
+            ConnectionEndType sendingConnectionEnd,
             ProtocolMessage<?>... protocolMessages) {
         return createForwardAction(
                 inboundConnection,
                 outboundConnection,
-                sendingConnectionEndType,
+                sendingConnectionEnd,
                 new ArrayList<>(Arrays.asList(protocolMessages)));
     }
 
@@ -102,12 +102,12 @@ public final class SshActionFactory {
     public static SshAction createProxyFilterMessagesAction(
             AliasedConnection inboundConnection,
             AliasedConnection outboundConnection,
-            ConnectionEndType sendingConnectionEndType,
+            ConnectionEndType sendingConnectionEnd,
             ProtocolMessage<?>... protocolMessages) {
         return createProxyFilterMessagesAction(
                 inboundConnection,
                 outboundConnection,
-                sendingConnectionEndType,
+                sendingConnectionEnd,
                 new ArrayList<>(Arrays.asList(protocolMessages)));
     }
 

@@ -59,13 +59,13 @@ public class MangerAttacker extends Attacker<MangerCommandConfig> {
 
     private long additionalTcpTimeout = 5000;
 
-    private List<VectorResponse> fullResponseMap;
+    private List<VectorResponse> responseMapList;
 
     private EqualityError resultError;
 
     private final ParallelExecutor executor;
 
-    private boolean erroneousScans = false;
+    private boolean erroneousScans;
 
     private KeyExchangeAlgorithm keyExchangeAlgorithm;
 
@@ -87,7 +87,7 @@ public class MangerAttacker extends Attacker<MangerCommandConfig> {
         super(mangerConfig, baseConfig);
         sshConfig = getSshConfig();
         setKeyExchangeAlgorithm();
-        fullResponseMap = new ArrayList<>();
+        responseMapList = new ArrayList<>();
         this.executor = executor;
     }
 
@@ -138,13 +138,13 @@ public class MangerAttacker extends Attacker<MangerCommandConfig> {
         }
 
         EqualityError referenceError;
-        fullResponseMap = new LinkedList<>();
+        responseMapList = new LinkedList<>();
         for (int i = 0; i < config.getNumberOfIterations(); i++) {
             List<VectorResponse> responseMap = createVectorResponseList(publicKey, true);
-            this.fullResponseMap.addAll(responseMap);
+            responseMapList.addAll(responseMap);
         }
 
-        referenceError = getEqualityError(fullResponseMap);
+        referenceError = getEqualityError(responseMapList);
         if (referenceError != EqualityError.NONE) {
             CONSOLE.info(
                     "Found a behavior difference within the responses. The server has Manger's oracle.");
@@ -157,7 +157,7 @@ public class MangerAttacker extends Attacker<MangerCommandConfig> {
         if (referenceError != EqualityError.NONE
                 || LOGGER.getLevel().isMoreSpecificThan(Level.INFO)) {
             LOGGER.debug("-------------(Not Grouped)-----------------");
-            for (VectorResponse vectorResponse : fullResponseMap) {
+            for (VectorResponse vectorResponse : responseMapList) {
                 LOGGER.debug(vectorResponse.toString());
             }
         }
@@ -169,7 +169,8 @@ public class MangerAttacker extends Attacker<MangerCommandConfig> {
     /**
      * @return Response vector list
      */
-    private List<VectorResponse> createVectorResponseList(RSAPublicKey publicKey, boolean plain) {
+    private List<VectorResponse> createVectorResponseList(
+            RSAPublicKey publicKey, @SuppressWarnings("SameParameterValue") boolean plain) {
         List<SshTask> taskList = new LinkedList<>();
         List<FingerprintTaskVectorPair<?>> stateVectorPairList = new LinkedList<>();
 
@@ -218,7 +219,7 @@ public class MangerAttacker extends Attacker<MangerCommandConfig> {
             ResponseFingerprint fingerprint;
             if (pair.getFingerPrintTask().isHasError()) {
                 erroneousScans = true;
-                LOGGER.warn("Could not extract fingerprint for " + pair);
+                LOGGER.warn("Could not extract fingerprint for {}", pair);
             } else {
                 fingerprint = pair.getFingerPrintTask().getFingerprint();
                 tempResponseVectorList.add(new VectorResponse(pair.getVector(), fingerprint));
@@ -231,9 +232,9 @@ public class MangerAttacker extends Attacker<MangerCommandConfig> {
      * This assumes that the responseVectorList only contains comparable vectors
      *
      * @param responseVectorList Response vectors
-     * @return Type of EqualityError or EqualityError.NONE if there was none
+     * @return Type of EqualityError or {@code EqualityError.NONE} if there was none
      */
-    public EqualityError getEqualityError(List<VectorResponse> responseVectorList) {
+    public static EqualityError getEqualityError(List<VectorResponse> responseVectorList) {
 
         for (VectorResponse responseOne : responseVectorList) {
             for (VectorResponse responseTwo : responseVectorList) {
@@ -244,9 +245,9 @@ public class MangerAttacker extends Attacker<MangerCommandConfig> {
                         FingerPrintChecker.checkEquality(
                                 responseOne.getFingerprint(), responseTwo.getFingerprint());
                 if (error != EqualityError.NONE) {
-                    CONSOLE.info("Found an EqualityError: " + error);
-                    LOGGER.debug("Fingerprint1: " + responseOne.getFingerprint().toString());
-                    LOGGER.debug("Fingerprint2: " + responseTwo.getFingerprint().toString());
+                    CONSOLE.info("Found an EqualityError: {}", error);
+                    LOGGER.debug("Fingerprint1: {}", responseOne.getFingerprint().toString());
+                    LOGGER.debug("Fingerprint2: {}", responseTwo.getFingerprint().toString());
                     return error;
                 }
             }
@@ -274,7 +275,12 @@ public class MangerAttacker extends Attacker<MangerCommandConfig> {
         return publicKey;
     }
 
-    /** Checks if the server re-uses its RSA transient public key */
+    /**
+     * Checks whether the server reuses its RSA transient public key. This method will establish a
+     * connection twice and compare the used RSA transient public keys.
+     *
+     * @return True if the key has been reused. False otherwise.
+     */
     public boolean isTransientKeyReused() {
         RSAPublicKey transientKey1 = getServerPublicKey();
         RSAPublicKey transientKey2 = getServerPublicKey();
@@ -298,7 +304,8 @@ public class MangerAttacker extends Attacker<MangerCommandConfig> {
     }
 
     /** Compares moduli and public exponents of public keys to check if they are equal */
-    private boolean comparePublicKeys(RSAPublicKey transientKey1, RSAPublicKey transientKey2) {
+    private static boolean comparePublicKeys(
+            RSAPublicKey transientKey1, RSAPublicKey transientKey2) {
         return transientKey1.getPublicExponent().equals(transientKey2.getPublicExponent())
                 && transientKey1.getModulus().equals(transientKey2.getModulus());
     }
@@ -330,7 +337,7 @@ public class MangerAttacker extends Attacker<MangerCommandConfig> {
                         publicKey.getPublicExponent().toString(16),
                         publicKey.getModulus().toString(16)));
         byte[] encryptedSecret = ArrayConverter.hexStringToByteArray(config.getEncryptedSecret());
-        if ((encryptedSecret.length * Byte.SIZE) != publicKey.getModulus().bitLength()) {
+        if (encryptedSecret.length * Byte.SIZE != publicKey.getModulus().bitLength()) {
             throw new ConfigurationException(
                     "The length of the encrypted secret "
                             + "is not equal to the public key length. Have you selected the correct value?");
@@ -348,8 +355,8 @@ public class MangerAttacker extends Attacker<MangerCommandConfig> {
                         ((RSAPublicKey) oracle.getPublicKey()).getModulus().bitLength()
                                 / Byte.SIZE);
 
-        CONSOLE.info("Encoded Solution: " + solution);
-        CONSOLE.info("Decoded Secret: " + secret);
+        CONSOLE.info("Encoded Solution: {}", solution);
+        CONSOLE.info("Decoded Secret: {}", secret);
     }
 
     private ResponseFingerprint extractValidFingerprint(RSAPublicKey publicKey) {
@@ -374,7 +381,7 @@ public class MangerAttacker extends Attacker<MangerCommandConfig> {
         executor.bulkExecuteTasks(fingerPrintTask);
         ResponseFingerprint fingerprint = null;
         if (stateVectorPair.getFingerPrintTask().isHasError()) {
-            LOGGER.warn("Could not extract fingerprint for " + stateVectorPair);
+            LOGGER.warn("Could not extract fingerprint for {}", stateVectorPair);
         } else {
             fingerprint = fingerPrintTask.getFingerprint();
         }
@@ -423,7 +430,7 @@ public class MangerAttacker extends Attacker<MangerCommandConfig> {
         sshConfig.setClientSupportedKeyExchangeAlgorithms(
                 new ArrayList<>(Collections.singleton(keyExchangeAlgorithm)));
 
-        CONSOLE.info("Set key exchange algorithm to: " + keyExchangeAlgorithm);
+        CONSOLE.info("Set key exchange algorithm to: {}", keyExchangeAlgorithm);
     }
 
     public EqualityError getResultError() {
@@ -431,10 +438,10 @@ public class MangerAttacker extends Attacker<MangerCommandConfig> {
     }
 
     public List<VectorResponse> getResponseMapList() {
-        return fullResponseMap;
+        return responseMapList;
     }
 
-    public boolean isErrornousScans() {
+    public boolean isErroneousScans() {
         return erroneousScans;
     }
 

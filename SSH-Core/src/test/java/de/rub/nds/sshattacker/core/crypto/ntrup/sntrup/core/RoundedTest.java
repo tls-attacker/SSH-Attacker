@@ -8,6 +8,7 @@
 package de.rub.nds.sshattacker.core.crypto.ntrup.sntrup.core;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.Test;
 
@@ -16,20 +17,20 @@ import java.util.stream.LongStream;
 
 public class RoundedTest {
 
-    Random rand = new Random();
-    long[] coefficient;
-    SntrupParameterSet set = SntrupParameterSet.KEM_SNTRUP_761;
+    private final Random rand = new Random();
+    private long[] coefficient;
+    private final SntrupParameterSet set = SntrupParameterSet.KEM_SNTRUP_761;
 
     @Test
     public void roundTest() {
         for (int i = 0; i < 10; i++) {
             coefficient =
                     LongStream.range(0, set.getP())
-                            .map(l -> rand.nextInt(set.getQ()) - ((set.getQ() + 1) / 2))
+                            .map(l -> rand.nextInt(set.getQ()) - (set.getQ() + 1) / 2)
                             .toArray();
             RQ rq = new RQ(set, coefficient);
             Rounded rounded = Rounded.round(rq);
-            assertEquals(true, Rounded.is_rounded(set, rounded.stream().toArray()));
+            assertTrue(Rounded.is_rounded(set, rounded.stream().toArray()));
         }
     }
 
@@ -37,7 +38,7 @@ public class RoundedTest {
     public void testEncoding() {
         coefficient =
                 LongStream.range(0, set.getP())
-                        .map(l -> rand.nextInt(set.getQ()) - ((set.getQ() + 1) / 2))
+                        .map(l -> rand.nextInt(set.getQ()) - (set.getQ() + 1) / 2)
                         .toArray();
         Rounded r = Rounded.round(new RQ(set, coefficient));
         byte[] encR = r.encode();
@@ -49,7 +50,7 @@ public class RoundedTest {
     public void testEncodingOld() {
         coefficient =
                 LongStream.range(0, set.getP())
-                        .map(l -> rand.nextInt(set.getQ()) - ((set.getQ() + 1) / 2))
+                        .map(l -> rand.nextInt(set.getQ()) - (set.getQ() + 1) / 2)
                         .toArray();
 
         Rounded r = Rounded.round(new RQ(set, coefficient));

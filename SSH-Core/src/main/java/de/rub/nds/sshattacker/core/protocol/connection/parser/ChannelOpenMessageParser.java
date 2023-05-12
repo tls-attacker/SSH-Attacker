@@ -23,36 +23,37 @@ public abstract class ChannelOpenMessageParser<T extends ChannelOpenMessage<T>>
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public ChannelOpenMessageParser(byte[] array) {
+    protected ChannelOpenMessageParser(byte[] array) {
         super(array);
     }
 
-    public ChannelOpenMessageParser(byte[] array, int startPosition) {
+    protected ChannelOpenMessageParser(byte[] array, int startPosition) {
         super(array, startPosition);
     }
 
     public void parseChannelType() {
         message.setChannelTypeLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-        LOGGER.debug("Channel type length: " + message.getChannelTypeLength().getValue());
+        LOGGER.debug("Channel type length: {}", message.getChannelTypeLength().getValue());
         message.setChannelType(
                 parseByteString(
                         message.getChannelTypeLength().getValue(), StandardCharsets.US_ASCII));
-        LOGGER.debug("Channel type: " + backslashEscapeString(message.getChannelType().getValue()));
+        LOGGER.debug(
+                "Channel type: {}", backslashEscapeString(message.getChannelType().getValue()));
     }
 
     public void parseSenderChannel() {
         message.setSenderChannelId(parseIntField(DataFormatConstants.UINT32_SIZE));
-        LOGGER.debug("Sender channel id: " + message.getSenderChannelId().getValue());
+        LOGGER.debug("Sender channel id: {}", message.getSenderChannelId().getValue());
     }
 
     public void parseWindowSize() {
         message.setWindowSize(parseIntField(DataFormatConstants.UINT32_SIZE));
-        LOGGER.debug("Initial window size: " + message.getWindowSize().getValue());
+        LOGGER.debug("Initial window size: {}", message.getWindowSize().getValue());
     }
 
     public void parsePacketSize() {
         message.setPacketSize(parseIntField(DataFormatConstants.UINT32_SIZE));
-        LOGGER.debug("Maximum packet size: " + message.getPacketSize().getValue());
+        LOGGER.debug("Maximum packet size: {}", message.getPacketSize().getValue());
     }
 
     @Override

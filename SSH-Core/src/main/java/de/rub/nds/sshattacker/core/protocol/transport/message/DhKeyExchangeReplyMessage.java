@@ -77,8 +77,9 @@ public class DhKeyExchangeReplyMessage extends SshMessage<DhKeyExchangeReplyMess
     }
 
     @Override
-    public void setHostKeyBytes(byte[] hostKey, boolean adjustLengthField) {
-        this.hostKeyBytes = ModifiableVariableFactory.safelySetValue(this.hostKeyBytes, hostKey);
+    public void setHostKeyBytes(byte[] hostKeyBytes, boolean adjustLengthField) {
+        this.hostKeyBytes =
+                ModifiableVariableFactory.safelySetValue(this.hostKeyBytes, hostKeyBytes);
         if (adjustLengthField) {
             setHostKeyBytesLength(this.hostKeyBytes.getValue().length);
         }

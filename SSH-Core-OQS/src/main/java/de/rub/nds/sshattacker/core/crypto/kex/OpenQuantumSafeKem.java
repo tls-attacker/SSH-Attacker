@@ -22,25 +22,26 @@ import org.apache.logging.log4j.Logger;
 
 public class OpenQuantumSafeKem extends KeyEncapsulation {
     private static final Logger LOGGER = LogManager.getLogger();
-    private org.openquantumsafe.KeyEncapsulation kem;
+    private final org.openquantumsafe.KeyEncapsulation kem;
     private CustomKeyPair<CustomPQKemPrivateKey, CustomPQKemPublicKey> localKeyPair;
     private CustomPQKemPublicKey remotePublicKey;
     private byte[] encryptedSharedSecret;
-    private PQKemNames kemName;
+    private final PQKemNames kemName;
 
     public OpenQuantumSafeKem(PQKemNames kemName) {
-        this.kem = new org.openquantumsafe.KeyEncapsulation(kemName.getName());
+        super();
+        kem = new org.openquantumsafe.KeyEncapsulation(kemName.getName());
         this.kemName = kemName;
     }
 
     @Override
     public CustomKeyPair<CustomPQKemPrivateKey, CustomPQKemPublicKey> getLocalKeyPair() {
-        return this.localKeyPair;
+        return localKeyPair;
     }
 
     @Override
     public void setRemotePublicKey(byte[] remotePublicKeyBytes) {
-        this.remotePublicKey = new CustomPQKemPublicKey(remotePublicKeyBytes, kemName);
+        remotePublicKey = new CustomPQKemPublicKey(remotePublicKeyBytes, kemName);
     }
 
     @Override
@@ -48,8 +49,7 @@ public class OpenQuantumSafeKem extends KeyEncapsulation {
         kem.generate_keypair();
         CustomPQKemPrivateKey privKey = new CustomPQKemPrivateKey(kem.export_secret_key(), kemName);
         CustomPQKemPublicKey pubKey = new CustomPQKemPublicKey(kem.export_public_key(), kemName);
-        this.localKeyPair =
-                new CustomKeyPair<CustomPQKemPrivateKey, CustomPQKemPublicKey>(privKey, pubKey);
+        localKeyPair = new CustomKeyPair<>(privKey, pubKey);
     }
 
     @Override
@@ -67,8 +67,8 @@ public class OpenQuantumSafeKem extends KeyEncapsulation {
             }
             org.openquantumsafe.Pair<byte[], byte[]> encapsulation =
                     kem.encap_secret(remotePublicKey.getEncoded());
-            this.sharedSecret = encapsulation.getRight();
-            this.encryptedSharedSecret = encapsulation.getLeft();
+            sharedSecret = encapsulation.getRight();
+            encryptedSharedSecret = encapsulation.getLeft();
             return encapsulation.getLeft();
         } catch (RuntimeException e) {
             LOGGER.error("Unexpected exception occured while encrypting the shared secret");
@@ -80,11 +80,11 @@ public class OpenQuantumSafeKem extends KeyEncapsulation {
     @Override
     public void decryptSharedSecret(byte[] encryptedSharedSecret) throws CryptoException {
         try {
-            this.sharedSecret = kem.decap_secret(encryptedSharedSecret);
+            sharedSecret = kem.decap_secret(encryptedSharedSecret);
             this.encryptedSharedSecret = encryptedSharedSecret;
             LOGGER.info(
-                    "SharedSecret Encapsulation = "
-                            + ArrayConverter.bytesToRawHexString(sharedSecret));
+                    "SharedSecret Encapsulation = {}",
+                    ArrayConverter.bytesToRawHexString(sharedSecret));
         } catch (RuntimeException e) {
             throw new CryptoException(
                     "Unexpected exception occured while decrypting the shared secret: " + e);

@@ -9,18 +9,15 @@ package de.rub.nds.sshattacker.core.crypto.ntrup.sntrup.core;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.junit.Test;
 
 import java.util.Random;
 import java.util.stream.LongStream;
 
 public class RQTest {
-    private static final Logger LOGGER = LogManager.getLogger();
-    SntrupParameterSet set = SntrupParameterSet.KEM_SNTRUP_761;
-    Random rand = new Random();
-    long[] coefficient;
+    private final SntrupParameterSet set = SntrupParameterSet.KEM_SNTRUP_761;
+    private final Random rand = new Random();
+    private long[] coefficient;
 
     @Test
     public void testRQcreation() {
@@ -28,7 +25,7 @@ public class RQTest {
         long[] coeff = new long[set.getP()];
         coeff[0] = -1888;
         RQ rq = new RQ(set, coeff);
-        assertEquals(rq.stream().toArray()[0], -1888);
+        assertEquals(-1888, rq.stream().toArray()[0]);
     }
 
     @Test
@@ -50,10 +47,7 @@ public class RQTest {
         for (int i = 0; i < 100; i++) {
             coefficient =
                     LongStream.range(0, set.getP())
-                            .map(
-                                    l ->
-                                            rand.nextInt(set.getQ()) % set.getQ()
-                                                    - ((set.getQ() + 1) / 2))
+                            .map(l -> rand.nextInt(set.getQ()) % set.getQ() - (set.getQ() + 1) / 2)
                             .toArray();
             RQ rq = new RQ(set, coefficient);
             byte[] encRq = rq.encode();
@@ -66,7 +60,7 @@ public class RQTest {
     public void testEncodingOld() {
         coefficient =
                 LongStream.range(0, set.getP())
-                        .map(l -> rand.nextInt(set.getQ()) - ((set.getQ() + 1) / 2))
+                        .map(l -> rand.nextInt(set.getQ()) - (set.getQ() + 1) / 2)
                         .toArray();
         RQ rq = new RQ(set, coefficient);
         byte[] encRq = rq.encode_old();

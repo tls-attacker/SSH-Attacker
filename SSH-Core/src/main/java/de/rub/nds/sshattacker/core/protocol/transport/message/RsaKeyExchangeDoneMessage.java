@@ -44,19 +44,19 @@ public class RsaKeyExchangeDoneMessage extends SshMessage<RsaKeyExchangeDoneMess
 
     @Override
     public void setSignature(ModifiableByteArray signature) {
-        this.setSignature(signature, false);
+        setSignature(signature, false);
     }
 
     @Override
     public void setSignature(byte[] signature) {
-        this.setSignature(signature, false);
+        setSignature(signature, false);
     }
 
     @Override
     public void setSignature(ModifiableByteArray signature, boolean adjustLengthField) {
         this.signature = signature;
         if (adjustLengthField) {
-            this.setSignatureLength(this.signature.getValue().length);
+            setSignatureLength(this.signature.getValue().length);
         }
     }
 
@@ -64,7 +64,7 @@ public class RsaKeyExchangeDoneMessage extends SshMessage<RsaKeyExchangeDoneMess
     public void setSignature(byte[] signature, boolean adjustLengthField) {
         this.signature = ModifiableVariableFactory.safelySetValue(this.signature, signature);
         if (adjustLengthField) {
-            this.setSignatureLength(this.signature.getValue().length);
+            setSignatureLength(this.signature.getValue().length);
         }
     }
 

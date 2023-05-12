@@ -12,12 +12,7 @@ import de.rub.nds.sshattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.sshattacker.core.state.State;
 import de.rub.nds.sshattacker.core.workflow.action.executor.WorkflowExecutorType;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 public abstract class WorkflowExecutor {
-
-    private static final Logger LOGGER = LogManager.getLogger();
 
     protected final WorkflowExecutorType type;
 
@@ -33,10 +28,11 @@ public abstract class WorkflowExecutor {
      * @param type of the workflow executor (currently only DEFAULT)
      * @param state to work on
      */
-    public WorkflowExecutor(WorkflowExecutorType type, State state) {
+    protected WorkflowExecutor(WorkflowExecutorType type, State state) {
+        super();
         this.type = type;
         this.state = state;
-        this.config = state.getConfig();
+        config = state.getConfig();
     }
 
     public abstract void executeWorkflow() throws WorkflowExecutionException;

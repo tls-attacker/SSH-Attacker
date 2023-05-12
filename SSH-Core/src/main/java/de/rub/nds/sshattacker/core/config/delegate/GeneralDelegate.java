@@ -36,8 +36,6 @@ public class GeneralDelegate extends Delegate {
     @Parameter(names = "-quiet", description = "No output (sets logLevel to NONE)")
     private boolean quiet;
 
-    public GeneralDelegate() {}
-
     public boolean isHelp() {
         return help;
     }
@@ -65,7 +63,7 @@ public class GeneralDelegate extends Delegate {
     @Override
     public void applyDelegate(Config config) {
         Security.addProvider(new BouncyCastleProvider());
-        if (isDebug()) {
+        if (debug) {
             Configurator.setAllLevels("de.rub.nds.sshattacker", Level.DEBUG);
         } else if (quiet) {
             Configurator.setAllLevels("de.rub.nds.sshattacker", Level.OFF);

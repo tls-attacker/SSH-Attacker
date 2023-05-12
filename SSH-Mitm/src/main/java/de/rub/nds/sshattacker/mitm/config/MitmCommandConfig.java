@@ -14,12 +14,8 @@ import de.rub.nds.sshattacker.core.config.SshDelegateConfig;
 import de.rub.nds.sshattacker.core.config.delegate.*;
 import de.rub.nds.sshattacker.core.workflow.factory.WorkflowTraceType;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 public class MitmCommandConfig extends SshDelegateConfig {
 
-    private static final Logger LOGGER = LogManager.getLogger();
     @ParametersDelegate private final ConfigOutputDelegate configOutputDelegate;
     @ParametersDelegate private final TimeoutDelegate timeoutDelegate;
     @ParametersDelegate private final WorkflowInputDelegate workflowInputDelegate;
@@ -29,12 +25,12 @@ public class MitmCommandConfig extends SshDelegateConfig {
 
     public MitmCommandConfig(GeneralDelegate delegate) {
         super(delegate);
-        this.configOutputDelegate = new ConfigOutputDelegate();
-        this.timeoutDelegate = new TimeoutDelegate();
-        this.workflowInputDelegate = new WorkflowInputDelegate();
-        this.workflowOutputDelegate = new WorkflowOutputDelegate();
-        this.workflowTypeDelegate = new WorkflowTypeDelegate();
-        this.mitmDelegate = new MitmDelegate();
+        configOutputDelegate = new ConfigOutputDelegate();
+        timeoutDelegate = new TimeoutDelegate();
+        workflowInputDelegate = new WorkflowInputDelegate();
+        workflowOutputDelegate = new WorkflowOutputDelegate();
+        workflowTypeDelegate = new WorkflowTypeDelegate();
+        mitmDelegate = new MitmDelegate();
         addDelegate(configOutputDelegate);
         addDelegate(timeoutDelegate);
         addDelegate(workflowInputDelegate);

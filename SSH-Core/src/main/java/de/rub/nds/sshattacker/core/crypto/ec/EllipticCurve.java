@@ -26,6 +26,7 @@ public abstract class EllipticCurve {
      * @param modulus The modulus of the field over which the curve is defined.
      */
     protected EllipticCurve(BigInteger modulus) {
+        super();
         this.modulus = modulus;
     }
 
@@ -46,8 +47,9 @@ public abstract class EllipticCurve {
             BigInteger basePointY,
             BigInteger basePointOrder,
             BigInteger cofactor) {
+        super();
         this.modulus = modulus;
-        this.basePoint = this.getPoint(basePointX, basePointY);
+        basePoint = getPoint(basePointX, basePointY);
         this.basePointOrder = basePointOrder;
         this.cofactor = cofactor;
     }
@@ -61,6 +63,7 @@ public abstract class EllipticCurve {
      *     or the point at infinity.
      * @param q A point whose coordinates are elements of the field over which the curve is defined
      *     or the point at infinity.
+     * @return The resulting point r = p + q.
      */
     public Point add(Point p, Point q) {
         if (p.isAtInfinity()) {
@@ -73,26 +76,28 @@ public abstract class EllipticCurve {
             return p;
         }
 
-        if (this.inverse(p).equals(q)) {
+        if (inverse(p).equals(q)) {
             // p == -q <=> -p == q
             // => p + q = O
             return new Point();
         }
 
-        return this.additionFormular(p, q);
+        return additionFormular(p, q);
     }
 
     /**
      * Returns k*p on this curve. If the point is not on the curve and the calculations would
      * require dividing by 0, the result will be the point at infinity.
      *
+     * @param k A scalar which is multiplied with p.
      * @param p A point whose coordinates are elements of the field over which the curve is defined
      *     or the point at infinity.
+     * @return The resulting point r = k * p.
      */
-    public Point mult(BigInteger k, Point p) {
+    public Point mult(@SuppressWarnings("StandardVariableNames") BigInteger k, Point p) {
         if (k.compareTo(BigInteger.ZERO) < 0) {
             k = k.negate();
-            p = this.inverse(p);
+            p = inverse(p);
         }
 
         // Double-and-add
@@ -100,10 +105,10 @@ public abstract class EllipticCurve {
 
         for (int i = k.bitLength(); i > 0; i--) {
 
-            q = this.add(q, q);
+            q = add(q, q);
 
             if (k.testBit(i - 1)) {
-                q = this.add(q, p);
+                q = add(q, p);
             }
         }
 
@@ -116,13 +121,14 @@ public abstract class EllipticCurve {
      *
      * @param p A point whose coordinates are elements of the field over which the curve is defined
      *     or the point at infinity.
+     * @return The inverse point of this. this + (-this) = 0 where 0 is the point at infinity.
      */
     public Point inverse(Point p) {
         if (p.isAtInfinity()) {
             // -O == O
             return p;
         } else {
-            return this.inverseAffine(p);
+            return inverseAffine(p);
         }
     }
 
@@ -133,22 +139,26 @@ public abstract class EllipticCurve {
      *
      * @param x The x coordinate of the point.
      * @param y The y coordinate of the point.
+     * @return Returns an affine point with coordinates x and y.
      */
     public abstract Point getPoint(BigInteger x, BigInteger y);
 
     /**
-     * Returns true iff the point p is on the curve.
+     * Checks whether a point is on the curve.
      *
      * @param p An affine point whose coordinates are elements of the field over which the curve is
      *     defined or the point at infinity.
+     * @return True iff p is a point on the curve.
      */
     public abstract boolean isOnCurve(Point p);
 
     /**
-     * Returns the unique (affine) point q with the property p + q = O on this curve.
+     * Computes the unique (affine) point given point p on this curve.
      *
      * @param p An affine point whose coordinates are elements of the field over which the curve is
      *     defined.
+     * @return The unique (affine) point q on this curve with p + q = 0 where 0 is the point at
+     *     infinity.
      */
     protected abstract Point inverseAffine(Point p);
 
@@ -160,23 +170,24 @@ public abstract class EllipticCurve {
      *     defined.
      * @param q An affine point whose coordinates are elements of the field over which the curve is
      *     defined. Must not be equal to -p.
+     * @return The point p + q for two affine points p + q with p != -q.
      */
     protected abstract Point additionFormular(Point p, Point q);
 
     public Point getBasePoint() {
-        return this.basePoint;
+        return basePoint;
     }
 
     public BigInteger getBasePointOrder() {
-        return this.basePointOrder;
+        return basePointOrder;
     }
 
     public BigInteger getModulus() {
-        return this.modulus;
+        return modulus;
     }
 
     public BigInteger getCofactor() {
-        return this.cofactor;
+        return cofactor;
     }
 
     public abstract Point createAPointOnCurve(BigInteger x);

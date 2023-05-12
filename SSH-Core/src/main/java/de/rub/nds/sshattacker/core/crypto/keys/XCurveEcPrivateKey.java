@@ -41,15 +41,17 @@ public class XCurveEcPrivateKey extends CustomPrivateKey {
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] scalar;
 
-    @SuppressWarnings("unused")
-    private XCurveEcPrivateKey() {}
+    public XCurveEcPrivateKey() {
+        super();
+    }
 
     public XCurveEcPrivateKey(byte[] scalar, NamedEcGroup group) {
+        super();
         if (!group.isRFC7748Curve()) {
             throw new IllegalArgumentException(
                     "XCurveEcPrivateKey does not support named group " + group);
         }
-        if ((group == NamedEcGroup.CURVE25519 && scalar.length != CryptoConstants.X25519_POINT_SIZE)
+        if (group == NamedEcGroup.CURVE25519 && scalar.length != CryptoConstants.X25519_POINT_SIZE
                 || group == NamedEcGroup.CURVE448
                         && scalar.length != CryptoConstants.X448_POINT_SIZE) {
             throw new IllegalArgumentException(

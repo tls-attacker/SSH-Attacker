@@ -18,21 +18,17 @@ import de.rub.nds.sshattacker.core.crypto.kex.RsaKeyExchange;
 import de.rub.nds.sshattacker.core.crypto.keys.SshPublicKey;
 import de.rub.nds.sshattacker.core.state.SshContext;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import java.util.List;
 import java.util.stream.Stream;
 
 public abstract class Chooser {
 
-    private static final Logger LOGGER = LogManager.getLogger();
-
     protected final SshContext context;
 
     protected final Config config;
 
-    public Chooser(SshContext context, Config config) {
+    protected Chooser(SshContext context, Config config) {
+        super();
         this.config = config;
         this.context = context;
     }
@@ -131,8 +127,8 @@ public abstract class Chooser {
      */
     public EncryptionAlgorithm getSendEncryptionAlgorithm() {
         return context.isClient()
-                ? this.getEncryptionAlgorithmClientToServer()
-                : this.getEncryptionAlgorithmServerToClient();
+                ? getEncryptionAlgorithmClientToServer()
+                : getEncryptionAlgorithmServerToClient();
     }
 
     /**
@@ -144,8 +140,8 @@ public abstract class Chooser {
      */
     public EncryptionAlgorithm getReceiveEncryptionAlgorithm() {
         return context.isClient()
-                ? this.getEncryptionAlgorithmServerToClient()
-                : this.getEncryptionAlgorithmClientToServer();
+                ? getEncryptionAlgorithmServerToClient()
+                : getEncryptionAlgorithmClientToServer();
     }
 
     public abstract EncryptionAlgorithm getEncryptionAlgorithmClientToServer();
@@ -161,8 +157,8 @@ public abstract class Chooser {
      */
     public MacAlgorithm getSendMacAlgorithm() {
         return context.isClient()
-                ? this.getMacAlgorithmClientToServer()
-                : this.getMacAlgorithmServerToClient();
+                ? getMacAlgorithmClientToServer()
+                : getMacAlgorithmServerToClient();
     }
 
     /**
@@ -174,8 +170,8 @@ public abstract class Chooser {
      */
     public MacAlgorithm getReceiveMacAlgorithm() {
         return context.isClient()
-                ? this.getMacAlgorithmServerToClient()
-                : this.getMacAlgorithmClientToServer();
+                ? getMacAlgorithmServerToClient()
+                : getMacAlgorithmClientToServer();
     }
 
     public abstract MacAlgorithm getMacAlgorithmClientToServer();
@@ -191,8 +187,8 @@ public abstract class Chooser {
      */
     public CompressionMethod getSendCompressionMethod() {
         return context.isClient()
-                ? this.getCompressionMethodClientToServer()
-                : this.getCompressionMethodServerToClient();
+                ? getCompressionMethodClientToServer()
+                : getCompressionMethodServerToClient();
     }
 
     /**
@@ -204,8 +200,8 @@ public abstract class Chooser {
      */
     public CompressionMethod getReceiveCompressionMethod() {
         return context.isClient()
-                ? this.getCompressionMethodServerToClient()
-                : this.getCompressionMethodClientToServer();
+                ? getCompressionMethodServerToClient()
+                : getCompressionMethodClientToServer();
     }
 
     public abstract CompressionMethod getCompressionMethodClientToServer();

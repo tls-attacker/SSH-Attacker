@@ -110,7 +110,7 @@ public enum PublicKeyFormat {
 
     static {
         Map<String, PublicKeyFormat> mutableMap = new TreeMap<>();
-        for (PublicKeyFormat format : PublicKeyFormat.values()) {
+        for (PublicKeyFormat format : values()) {
             mutableMap.put(format.name, format);
         }
         map = Collections.unmodifiableMap(mutableMap);

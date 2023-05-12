@@ -41,8 +41,6 @@ public class MitmDelegate extends Delegate {
                             + " Allowed syntax: <HOSTNAME>:<PORT> or <CONNECTION_ALIAS>:<HOSTNAME>:<PORT>")
     protected String outboundConnectionStr;
 
-    public MitmDelegate() {}
-
     public String getInboundConnectionStr() {
         return inboundConnectionStr;
     }
@@ -63,9 +61,10 @@ public class MitmDelegate extends Delegate {
     public void applyDelegate(Config config) {
 
         config.setDefaultRunningMode(RunningModeType.MITM);
-        // ToDo implement filters for Mitm workflowtrace
+        // TODO: implement filters for Mitm workflowTrace
         config.setOutputFilters(null);
 
+        //noinspection VariableNotUsedInsideIf
         if (inboundConnectionStr != null) {
             setInboundConnection(config);
         } else {
@@ -74,6 +73,7 @@ public class MitmDelegate extends Delegate {
                             + "-workflow_input or config defaults.");
         }
 
+        //noinspection VariableNotUsedInsideIf
         if (outboundConnectionStr != null) {
             setOutboundConnection(config);
         } else {
@@ -146,7 +146,7 @@ public class MitmDelegate extends Delegate {
         config.setDefaultClientConnection(outboundConnection);
     }
 
-    private int parsePort(String portStr) {
+    private static int parsePort(String portStr) {
         int port = Integer.parseInt(portStr);
         if (port < 0 || port > 65535) {
             throw new ParameterException("port must be in interval [0,65535], but is " + port);

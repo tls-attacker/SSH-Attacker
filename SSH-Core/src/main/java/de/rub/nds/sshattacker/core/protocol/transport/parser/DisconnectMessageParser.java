@@ -40,19 +40,17 @@ public class DisconnectMessageParser extends SshMessageParser<DisconnectMessage>
         message.setReasonCode(parseIntField(DataFormatConstants.UINT32_SIZE));
         if (DisconnectReason.fromId(message.getReasonCode().getValue()) != null) {
             LOGGER.debug(
-                    "Reason: "
-                            + DisconnectReason.fromId(message.getReasonCode().getValue()).toString()
-                            + " (Code: "
-                            + message.getReasonCode().getValue()
-                            + ")");
+                    "Reason: {} (Code: {})",
+                    DisconnectReason.fromId(message.getReasonCode().getValue()).toString(),
+                    message.getReasonCode().getValue());
         } else {
-            LOGGER.debug("Reason: [unknown] (Code: " + message.getReasonCode().getValue() + ")");
+            LOGGER.debug("Reason: [unknown] (Code: {})", message.getReasonCode().getValue());
         }
     }
 
     private void parseDescription() {
         message.setDescriptionLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-        LOGGER.debug("Description length: " + message.getDescriptionLength().getValue());
+        LOGGER.debug("Description length: {}", message.getDescriptionLength().getValue());
         message.setDescription(
                 parseByteString(message.getDescriptionLength().getValue(), StandardCharsets.UTF_8));
         LOGGER.debug("Description: {}", backslashEscapeString(message.getDescription().getValue()));
@@ -60,7 +58,7 @@ public class DisconnectMessageParser extends SshMessageParser<DisconnectMessage>
 
     private void parseLanguageTag() {
         message.setLanguageTagLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-        LOGGER.debug("Language tag length: " + message.getLanguageTagLength().getValue());
+        LOGGER.debug("Language tag length: {}", message.getLanguageTagLength().getValue());
         message.setLanguageTag(
                 parseByteString(
                         message.getLanguageTagLength().getValue(), StandardCharsets.US_ASCII));

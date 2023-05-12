@@ -34,7 +34,7 @@ public enum ChannelType {
 
     static {
         Map<String, ChannelType> mutableMap = new TreeMap<>();
-        for (ChannelType channelType : ChannelType.values()) {
+        for (ChannelType channelType : values()) {
             mutableMap.put(channelType.name, channelType);
         }
         map = Collections.unmodifiableMap(mutableMap);

@@ -21,9 +21,13 @@ import de.rub.nds.sshattacker.core.workflow.WorkflowExecutor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class SshClient {
+public final class SshClient {
 
     private static final Logger LOGGER = LogManager.getLogger();
+
+    private SshClient() {
+        super();
+    }
 
     public static void main(String[] args) {
         ClientCommandConfig config = new ClientCommandConfig(new GeneralDelegate());
@@ -37,20 +41,19 @@ public class SshClient {
 
             try {
                 Config sshConfig = config.createConfig();
-                SshClient client = new SshClient();
-                client.startSshClient(sshConfig);
+                startSshClient(sshConfig);
             } catch (Exception E) {
                 LOGGER.error(
                         "Encountered an uncaught Exception aborting. See debug for more info.", E);
             }
         } catch (ParameterException E) {
-            LOGGER.error("Could not parse provided parameters. " + E.getLocalizedMessage());
+            LOGGER.error("Could not parse provided parameters. {}", E.getLocalizedMessage());
             LOGGER.debug(E);
             commander.usage();
         }
     }
 
-    public void startSshClient(Config config) {
+    public static void startSshClient(Config config) {
         State state = new State(config);
         WorkflowExecutor workflowExecutor = new DefaultWorkflowExecutor(state);
 

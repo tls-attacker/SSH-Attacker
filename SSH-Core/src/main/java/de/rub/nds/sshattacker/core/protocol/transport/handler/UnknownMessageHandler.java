@@ -33,8 +33,8 @@ public class UnknownMessageHandler extends SshMessageHandler<UnknownMessage> {
     @Override
     public void adjustContext() {
         LOGGER.debug(
-                "Received unknown message:\n"
-                        + ArrayConverter.bytesToHexString(message.getPayload()));
+                "Received unknown message:\n{}",
+                ArrayConverter.bytesToHexString(message.getPayload()));
     }
 
     @Override

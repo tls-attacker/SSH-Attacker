@@ -11,11 +11,11 @@ import de.rub.nds.sshattacker.core.constants.SshMessageConstants;
 
 public abstract class SshMessageParser<T extends SshMessage<T>> extends ProtocolMessageParser<T> {
 
-    public SshMessageParser(byte[] array) {
+    protected SshMessageParser(byte[] array) {
         super(array);
     }
 
-    public SshMessageParser(byte[] array, int startPosition) {
+    protected SshMessageParser(byte[] array, int startPosition) {
         super(array, startPosition);
     }
 

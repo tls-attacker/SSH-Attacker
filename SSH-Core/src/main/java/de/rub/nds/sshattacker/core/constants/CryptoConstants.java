@@ -7,7 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.constants;
 
-public class CryptoConstants {
+public final class CryptoConstants {
 
     public static final int X25519_POINT_SIZE = 32;
     public static final int X448_POINT_SIZE = 56;
@@ -23,4 +23,8 @@ public class CryptoConstants {
     public static final int KYBER1024_CIPHERTEXT_SIZE = 1568;
     public static final int FIRESABER_PUBLIC_KEY_SIZE = 1327;
     public static final int FIRESABER_CIPHERTEXT_SIZE = 1472;
+
+    private CryptoConstants() {
+        super();
+    }
 }

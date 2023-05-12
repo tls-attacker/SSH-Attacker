@@ -21,27 +21,27 @@ public class AsciiMessageSerializer extends ProtocolMessageSerializer<AsciiMessa
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public AsciiMessageSerializer(final AsciiMessage message) {
+    public AsciiMessageSerializer(AsciiMessage message) {
         super(message);
     }
 
     private void serializeText() {
-        final String text = message.getText().getValue();
+        String text = message.getText().getValue();
         if (text.isEmpty()) {
             LOGGER.debug("Text: [none]");
         } else {
-            LOGGER.debug("Text: " + backslashEscapeString(text));
+            LOGGER.debug("Text: {}", backslashEscapeString(text));
             appendString(text, StandardCharsets.US_ASCII);
         }
     }
 
     private void serializeEndOfMessageSequence() {
         LOGGER.debug(
-                "End of Line Sequence: "
-                        + message.getEndOfMessageSequence()
-                                .getValue()
-                                .replace("\r", "[CR]")
-                                .replace("\n", "[NL]"));
+                "End of Line Sequence: {}",
+                message.getEndOfMessageSequence()
+                        .getValue()
+                        .replace("\r", "[CR]")
+                        .replace("\n", "[NL]"));
         appendString(message.getEndOfMessageSequence().getValue(), StandardCharsets.US_ASCII);
     }
 

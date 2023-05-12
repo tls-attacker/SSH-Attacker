@@ -16,9 +16,6 @@ import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlTransient;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.LinkedHashSet;
@@ -27,19 +24,15 @@ import java.util.Set;
 @XmlAccessorType(XmlAccessType.FIELD)
 public abstract class SshAction implements Serializable, Aliasable {
 
-    private static final Logger LOGGER = LogManager.getLogger();
-
     private static final boolean EXECUTED_DEFAULT = false;
 
-    private Boolean executed = null;
+    private Boolean executed;
 
     // Whether the action is executed in a workflow with a single connection
     // or not. Useful to decide which information can be stripped in filter().
     @XmlTransient private Boolean singleConnectionWorkflow = true;
 
     @XmlTransient private final Set<String> aliases = new LinkedHashSet<>();
-
-    public SshAction() {}
 
     public boolean isExecuted() {
         if (executed == null) {
@@ -65,6 +58,7 @@ public abstract class SshAction implements Serializable, Aliasable {
     public abstract void reset();
 
     /** Add default values and initialize empty fields. */
+    @SuppressWarnings("NoopMethodInAbstractClass")
     public void normalize() {
         // We don't need any defaults
     }
@@ -74,11 +68,13 @@ public abstract class SshAction implements Serializable, Aliasable {
      *
      * @param defaultAction Not needed / not evaluated
      */
+    @SuppressWarnings("NoopMethodInAbstractClass")
     public void normalize(SshAction defaultAction) {
         // We don't need any defaults
     }
 
     /** Filter empty fields and default values. */
+    @SuppressWarnings("NoopMethodInAbstractClass")
     public void filter() {}
 
     /**
@@ -86,6 +82,7 @@ public abstract class SshAction implements Serializable, Aliasable {
      *
      * @param defaultAction Not needed / not evaluated
      */
+    @SuppressWarnings("NoopMethodInAbstractClass")
     public void filter(SshAction defaultAction) {}
 
     @Override
@@ -103,9 +100,11 @@ public abstract class SshAction implements Serializable, Aliasable {
         return getAllAliases().contains(alias);
     }
 
+    @SuppressWarnings("NoopMethodInAbstractClass")
     @Override
     public void assertAliasesSetProperly() throws ConfigurationException {}
 
+    @SuppressWarnings("SuspiciousGetterSetter")
     @Override
     public Set<String> getAllAliases() {
         return aliases;
@@ -134,7 +133,7 @@ public abstract class SshAction implements Serializable, Aliasable {
 
     public String toCompactString() {
         StringBuilder sb = new StringBuilder();
-        sb.append(this.getClass().getSimpleName());
+        sb.append(getClass().getSimpleName());
         if (!getAllAliases().isEmpty()) {
             sb.append(" [").append(aliasesToString()).append("]");
         }

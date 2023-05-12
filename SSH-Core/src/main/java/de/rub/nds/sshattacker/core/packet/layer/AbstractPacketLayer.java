@@ -9,7 +9,6 @@ package de.rub.nds.sshattacker.core.packet.layer;
 
 import de.rub.nds.sshattacker.core.constants.CipherMode;
 import de.rub.nds.sshattacker.core.constants.CompressionAlgorithm;
-import de.rub.nds.sshattacker.core.exceptions.CryptoException;
 import de.rub.nds.sshattacker.core.exceptions.ParserException;
 import de.rub.nds.sshattacker.core.packet.AbstractPacket;
 import de.rub.nds.sshattacker.core.packet.cipher.PacketCipher;
@@ -39,10 +38,11 @@ public abstract class AbstractPacketLayer {
     private final PacketCompressor compressor;
     private final PacketDecompressor decompressor;
 
-    private int writeEpoch = 0;
-    private int readEpoch = 0;
+    private int writeEpoch;
+    private int readEpoch;
 
-    public AbstractPacketLayer(SshContext context) {
+    protected AbstractPacketLayer(SshContext context) {
+        super();
         this.context = context;
         encryptor =
                 new PacketEncryptor(
@@ -66,7 +66,7 @@ public abstract class AbstractPacketLayer {
      * @throws ParserException Thrown whenever parsing the provided bytes fails
      */
     public abstract PacketLayerParseResult parsePacket(byte[] rawBytes, int startPosition)
-            throws ParserException, CryptoException;
+            throws ParserException;
 
     /**
      * Tries to parse a single packet from rawBytes at startPosition. Due to the nature of SSH
@@ -82,16 +82,16 @@ public abstract class AbstractPacketLayer {
 
     protected void decryptPacket(AbstractPacket packet) {
         packet.prepareComputations();
-        getDecryptor().decrypt(packet);
+        decryptor.decrypt(packet);
     }
 
     protected void decompressPacket(AbstractPacket packet) {
-        getDecompressor().decompress(packet);
+        decompressor.decompress(packet);
     }
 
     public byte[] preparePacket(AbstractPacket packet) {
         AbstractPacketPreparator<? extends AbstractPacket> preparator =
-                packet.getPacketPreparator(context.getChooser(), getEncryptor(), getCompressor());
+                packet.getPacketPreparator(context.getChooser(), encryptor, compressor);
         preparator.prepare();
         AbstractPacketSerializer<? extends AbstractPacket> serializer =
                 packet.getPacketSerializer();
@@ -108,18 +108,16 @@ public abstract class AbstractPacketLayer {
 
     public void updateEncryptionCipher(PacketCipher encryptionCipher) {
         LOGGER.debug(
-                "Activating new EncryptionCipher ("
-                        + encryptionCipher.getClass().getSimpleName()
-                        + ")");
+                "Activating new EncryptionCipher ({})",
+                encryptionCipher.getClass().getSimpleName());
         encryptor.addNewPacketCipher(encryptionCipher);
         writeEpoch++;
     }
 
     public void updateDecryptionCipher(PacketCipher decryptionCipher) {
         LOGGER.debug(
-                "Activating new DecryptionCipher ("
-                        + decryptionCipher.getClass().getSimpleName()
-                        + ")");
+                "Activating new DecryptionCipher ({})",
+                decryptionCipher.getClass().getSimpleName());
         decryptor.addNewPacketCipher(decryptionCipher);
         readEpoch++;
     }

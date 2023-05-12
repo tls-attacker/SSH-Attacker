@@ -25,6 +25,7 @@ public class PacketLayerParseResult {
 
     public PacketLayerParseResult(
             AbstractPacket parsedPacket, int parsedByteCount, boolean softParse) {
+        super();
         this.parsedPacket = parsedPacket;
         this.parsedByteCount = parsedByteCount;
         this.softParse = softParse;

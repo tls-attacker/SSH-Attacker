@@ -25,7 +25,7 @@ import org.apache.logging.log4j.Logger;
 public class HybridKeyExchangeInitMessagePreperator
         extends SshMessagePreparator<HybridKeyExchangeInitMessage> {
     private static final Logger LOGGER = LogManager.getLogger();
-    private HybridKeyExchangeCombiner combiner;
+    private final HybridKeyExchangeCombiner combiner;
 
     public HybridKeyExchangeInitMessagePreperator(
             Chooser chooser,
@@ -37,7 +37,7 @@ public class HybridKeyExchangeInitMessagePreperator
 
     @Override
     public void prepareMessageSpecificContents() {
-        LOGGER.info("Negotiated Hybrid Key Exchange: " + chooser.getKeyExchangeAlgorithm());
+        LOGGER.info("Negotiated Hybrid Key Exchange: {}", chooser.getKeyExchangeAlgorithm());
         HybridKeyExchange keyExchange = chooser.getHybridKeyExchange();
         KeyAgreement agreement = keyExchange.getKeyAgreement();
         KeyEncapsulation encapsulation = keyExchange.getKeyEncapsulation();
@@ -45,20 +45,20 @@ public class HybridKeyExchangeInitMessagePreperator
         agreement.generateLocalKeyPair();
         encapsulation.generateLocalKeyPair();
 
-        byte[] pubKencapsulation = encapsulation.getLocalKeyPair().getPublic().getEncoded();
+        byte[] pubKencapsulation = encapsulation.getLocalKeyPair().getPublicKey().getEncoded();
         LOGGER.info(
-                "PubKey Encapsulation = " + ArrayConverter.bytesToRawHexString(pubKencapsulation));
+                "PubKey Encapsulation = {}", ArrayConverter.bytesToRawHexString(pubKencapsulation));
         LOGGER.info(
-                "PrivKey Encpasulation = "
-                        + ArrayConverter.bytesToRawHexString(
-                                encapsulation.getLocalKeyPair().getPrivate().getEncoded()));
+                "PrivKey Encpasulation = {}",
+                ArrayConverter.bytesToRawHexString(
+                        encapsulation.getLocalKeyPair().getPrivateKey().getEncoded()));
 
-        byte[] pubKagreement = agreement.getLocalKeyPair().getPublic().getEncoded();
-        LOGGER.info("PubKey Agreement = " + ArrayConverter.bytesToRawHexString(pubKagreement));
+        byte[] pubKagreement = agreement.getLocalKeyPair().getPublicKey().getEncoded();
+        LOGGER.info("PubKey Agreement = {}", ArrayConverter.bytesToRawHexString(pubKagreement));
         LOGGER.info(
-                "PrivKey Agreement = "
-                        + ArrayConverter.bytesToRawHexString(
-                                agreement.getLocalKeyPair().getPrivate().getEncoded()));
+                "PrivKey Agreement = {}",
+                ArrayConverter.bytesToRawHexString(
+                        agreement.getLocalKeyPair().getPrivateKey().getEncoded()));
         ExchangeHashInputHolder inputHolder = chooser.getContext().getExchangeHashInputHolder();
         switch (combiner) {
             case CLASSICAL_CONCATENATE_POSTQUANTUM:
@@ -71,9 +71,8 @@ public class HybridKeyExchangeInitMessagePreperator
                 break;
             default:
                 LOGGER.warn(
-                        "Unsupported combiner "
-                                + combiner
-                                + ", continue without updating ExchangeHashInputHolder");
+                        "Unsupported combiner {}, continue without updating ExchangeHashInputHolder",
+                        combiner);
         }
 
         getObject().setAgreementPublicKey(pubKagreement, true);

@@ -38,7 +38,7 @@ public class ChannelOpenConfirmationMessageHandler
         if (channel == null) {
             LOGGER.warn(
                     "{} received but no channel with id {} found locally, creating a new channel from defaults with given channel id.",
-                    this.getClass().getSimpleName(),
+                    getClass().getSimpleName(),
                     message.getRecipientChannelId().getValue());
             channel = context.getConfig().getChannelDefaults().newChannelFromDefaults();
             channel.setLocalChannelId(message.getRecipientChannelId().getValue());

@@ -33,7 +33,7 @@ public class ChannelWindowAdjustMessageParser
 
     private void parseBytesToAdd() {
         message.setBytesToAdd(parseIntField(DataFormatConstants.UINT32_SIZE));
-        LOGGER.debug("Bytes to add: " + message.getBytesToAdd().getValue());
+        LOGGER.debug("Bytes to add: {}", message.getBytesToAdd().getValue());
     }
 
     @Override

@@ -33,22 +33,22 @@ public class ChannelRequestWindowChangeMessageParser
 
     public void parseWidthColumns() {
         message.setWidthColumns(parseIntField(DataFormatConstants.UINT32_SIZE));
-        LOGGER.debug("Terminal width in colums: " + message.getWidthColumns().getValue());
+        LOGGER.debug("Terminal width in colums: {}", message.getWidthColumns().getValue());
     }
 
     public void parseHeightRows() {
         message.setHeightRows(parseIntField(DataFormatConstants.UINT32_SIZE));
-        LOGGER.debug("Terminal height in rows: " + message.getHeightRows().getValue());
+        LOGGER.debug("Terminal height in rows: {}", message.getHeightRows().getValue());
     }
 
     public void parseWidthPixels() {
         message.setWidthPixels(parseIntField(DataFormatConstants.UINT32_SIZE));
-        LOGGER.debug("Terminal width in pixels: " + message.getWidthPixels().getValue());
+        LOGGER.debug("Terminal width in pixels: {}", message.getWidthPixels().getValue());
     }
 
     public void parseHeightPixels() {
         message.setHeightPixels(parseIntField(DataFormatConstants.UINT32_SIZE));
-        LOGGER.debug("Terminal height in pixels: " + message.getHeightPixels().getValue());
+        LOGGER.debug("Terminal height in pixels: {}", message.getHeightPixels().getValue());
     }
 
     @Override
