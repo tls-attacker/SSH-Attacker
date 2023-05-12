@@ -39,7 +39,9 @@ public class UserAuthSuccessMessageHandler extends SshMessageHandler<UserAuthSuc
         activateCompression();
         if (!context.isClient()
                 && context.delayCompressionExtensionReceived()
-                && context.getConfig().getRespectDelayCompressionExtension()) {
+                && context.getConfig().getRespectDelayCompressionExtension()
+                && !context.getDelayCompressionExtensionNegotiationFailed()
+                && context.getSelectedDelayCompressionMethod().isPresent()) {
             context.getPacketLayer()
                     .updateCompressionAlgorithm(
                             context.getSelectedDelayCompressionMethod().get().getAlgorithm());
@@ -62,7 +64,9 @@ public class UserAuthSuccessMessageHandler extends SshMessageHandler<UserAuthSuc
         // --> set new compression algorithm from delay-compression extension
         if (context.isHandleAsClient()
                 && context.getConfig().getRespectDelayCompressionExtension()
-                && context.delayCompressionExtensionReceived()) {
+                && context.delayCompressionExtensionReceived()
+                && !context.getDelayCompressionExtensionNegotiationFailed()
+                && context.getSelectedDelayCompressionMethod().isPresent()) {
             context.getPacketLayer()
                     .updateDecompressionAlgorithm(
                             context.getSelectedDelayCompressionMethod().get().getAlgorithm());
