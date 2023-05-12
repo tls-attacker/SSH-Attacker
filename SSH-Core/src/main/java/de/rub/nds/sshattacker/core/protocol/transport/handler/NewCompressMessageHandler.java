@@ -29,7 +29,7 @@ public class NewCompressMessageHandler extends SshMessageHandler<NewCompressMess
         // receiving NewCompressMessage when acting as server -> update compression algorithm
         if (!context.isHandleAsClient()
                 && context.delayCompressionExtensionReceived()
-                && context.getConfig().getEnableExtensions()) {
+                && context.getConfig().getRespectDelayCompressionExtension()) {
             context.getPacketLayer()
                     .updateCompressionAlgorithm(
                             context.getSelectedDelayCompressionMethod().get().getAlgorithm());

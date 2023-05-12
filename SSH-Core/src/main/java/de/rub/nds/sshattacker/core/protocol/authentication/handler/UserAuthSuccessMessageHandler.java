@@ -54,7 +54,7 @@ public class UserAuthSuccessMessageHandler extends SshMessageHandler<UserAuthSuc
         // receiving UserAuthSuccessMessage when acting as client
         // --> set new compression algorithm from delay-compression extension
         if (context.isHandleAsClient()
-                && context.getConfig().getEnableExtensions()
+                && context.getConfig().getRespectDelayCompressionExtension()
                 && context.delayCompressionExtensionReceived()) {
             context.getPacketLayer()
                     .updateCompressionAlgorithm(
