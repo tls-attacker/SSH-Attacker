@@ -10,6 +10,7 @@
         <module name="ssh-server" />
         <module name="ssh-client" />
         <module name="ssh-mitm" />
+        <module name="ssh-core-oqs" />
         <module name="attacks" />
       </profile>
     </annotationProcessing>

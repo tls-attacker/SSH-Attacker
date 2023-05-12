@@ -9,8 +9,6 @@ package de.rub.nds.sshattacker.core.crypto.kex;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
-import de.rub.nds.sshattacker.core.constants.KeyExchangeAlgorithm;
-
 import jakarta.xml.bind.DatatypeConverter;
 
 import org.junit.jupiter.params.ParameterizedTest;
@@ -42,7 +40,6 @@ public class Sntrup761X25519KeyExchangeTest {
         assert testVectorFile != null;
         try (Scanner reader = new Scanner(testVectorFile)) {
             Stream.Builder<Arguments> argumentsBuilder = Stream.builder();
-            KeyExchangeAlgorithm currentAlgorithm = null;
             String line;
             while (reader.hasNextLine()) {
                 line = reader.nextLine();
