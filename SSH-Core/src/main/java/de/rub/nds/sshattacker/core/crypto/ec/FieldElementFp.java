@@ -12,7 +12,12 @@ import java.math.BigInteger;
 /** An element of the field F_p (with p being a prime number). */
 public class FieldElementFp extends FieldElement {
 
-    /** Instantiates the element data in the field F_modulus. With modulus being a prime number. */
+    /**
+     * Instantiates the element data in the field F_modulus.
+     *
+     * @param data the element in the field F_modulus
+     * @param modulus the field modulus. The modulus must be prime.
+     */
     public FieldElementFp(BigInteger data, BigInteger modulus) {
         super(data.mod(modulus), modulus);
     }

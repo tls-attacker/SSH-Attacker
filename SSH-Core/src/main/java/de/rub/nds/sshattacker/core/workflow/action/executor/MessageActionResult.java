@@ -41,7 +41,14 @@ public class MessageActionResult {
         return messageList;
     }
 
-    /** Merger this with other results, forming a new result. */
+    /**
+     * Merge this {@code MessageActionResult} with other results. The resulting MessageActionResult
+     * will be a combination of both, message and packet lists.
+     *
+     * @param other Multiple other {@code MessageActionResult} objects to join this to.
+     * @return An accumulated {@code MessageActionResult} object containing all messages and packets
+     *     from this and other.
+     */
     public MessageActionResult merge(MessageActionResult... other) {
         LinkedList<MessageActionResult> results = new LinkedList<>(Collections.singletonList(this));
         results.addAll(Arrays.asList(other));

@@ -37,7 +37,7 @@ public class ProxyFilterMessagesAction extends ForwardMessagesAction {
         super();
     }
 
-    /** Allow to pass a fake ReceiveMessageHelper helper for testing. */
+    /* Allow to pass a fake ReceiveMessageHelper helper for testing. */
     protected ProxyFilterMessagesAction(String receiveFromAlias, String forwardToAlias) {
         super(receiveFromAlias, forwardToAlias);
     }

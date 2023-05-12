@@ -76,8 +76,9 @@ public class Point implements Serializable {
     }
 
     /**
-     * Returns true if the point is the point at infinity. Returns false if the point is an affine
-     * point.
+     * Checks whether the point is the point at infinity.
+     *
+     * @return True if point is the point at infinity, false otherwise.
      */
     public boolean isAtInfinity() {
         return atInfinity;

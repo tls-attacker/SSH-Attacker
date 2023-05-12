@@ -142,9 +142,11 @@ public class FieldElementF2m extends FieldElement {
     }
 
     /**
-     * Returns (this^2)^exponent)
+     * Computes the square of this and then potentiate the result with exponent. The result is
+     * (this^2)^exponent.
      *
      * @param exponent An Integer representing the exponent.
+     * @return The resulting field element of (this^2)^exponent
      */
     public FieldElementF2m squarePow(int exponent) {
         FieldElement square = mult(this);

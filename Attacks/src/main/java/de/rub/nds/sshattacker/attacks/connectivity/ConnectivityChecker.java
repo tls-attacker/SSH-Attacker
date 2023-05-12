@@ -74,7 +74,10 @@ public class ConnectivityChecker {
     }
 
     /**
-     * @return true, if the server speaks SSH
+     * Determines whether the connection target set in a Config object speaks SSH.
+     *
+     * @param config Config object which includes the connection target to check.
+     * @return True if the connection target speaks SSH. False otherwise.
      */
     public static boolean speaksSsh(Config config) {
         WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(config);

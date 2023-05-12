@@ -95,6 +95,8 @@ public final class Converter {
      * @see <a href="https://datatracker.ietf.org/doc/html/rfc4251#page-10">name-list specification
      *     in RFC 4251, Section 5 "Data Type Representations Used in the SSH Protocols", page.
      *     10</a>
+     * @param <T> the enum type to convert to. The corresponding class is provided as {@code
+     *     enumClass}.
      * @param nameListString a single string containing a name-list value
      * @param enumClass the enum class that the elements will be converted to
      * @return list of enums that map to the name sin the name-list
@@ -113,6 +115,8 @@ public final class Converter {
      * @see <a href="https://datatracker.ietf.org/doc/html/rfc4251#page-10">name-list specification
      *     in RFC 4251, Section 5 "Data Type Representations Used in the SSH Protocols", page.
      *     10</a>
+     * @param <T> the enum type to convert to. The corresponding class is provided as {@code
+     *     enumClass}.
      * @param nameList a list of strings containing names from a name-list
      * @param enumClass the enum class that the elements will be converted to
      * @return list of enums that map to the names in the name-list
@@ -131,6 +135,8 @@ public final class Converter {
      * @see <a href="https://datatracker.ietf.org/doc/html/rfc4251#page-10">name-list specification
      *     in RFC 4251, Section 5 "Data Type Representations Used in the SSH Protocols", page.
      *     10</a>
+     * @param <T> the enum type to convert to. The corresponding class is provided as {@code
+     *     enumClass}.
      * @param stream a stream of strings containing names from a name-list
      * @param enumClass the enum class that the elements will be converted to
      * @return list of enums that map to the names in the name-list
@@ -145,10 +151,12 @@ public final class Converter {
     /**
      * Convert a single name into an enum values of type {@code enumClass}.
      *
-     * @param name name that matches an enum value's {@code toString()} return value
-     * @param enumClass the enum class that the name will be converted to
+     * @param <T> the enum type to convert to. The corresponding class is provided as {@code
+     *     enumClass}.
+     * @param name name that matches an enum value's {@code toString()} return value.
+     * @param enumClass the enum class that the name will be converted to.
      * @return a value of type {@code enumClass} that corresponds to {@code name}, or no value if no
-     *     such item exists
+     *     such item exists.
      */
     public static <T extends Enum<T>> Optional<T> nameToEnumValue(String name, Class<T> enumClass) {
         return Arrays.stream(enumClass.getEnumConstants())

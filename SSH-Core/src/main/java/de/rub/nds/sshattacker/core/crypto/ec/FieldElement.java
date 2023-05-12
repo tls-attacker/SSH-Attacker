@@ -38,16 +38,18 @@ public abstract class FieldElement implements Serializable {
     }
 
     /**
-     * Returns this + element.
+     * Performs an addition in the field, which this is an element of.
      *
      * @param element An element of the field, which this is an element of.
+     * @return this + element
      */
     public abstract FieldElement add(FieldElement element);
 
     /**
-     * Returns this - element. <br>
+     * Performs a subtraction in the field, which this is an element of.
      *
      * @param element An element of the field, which this is an element of.
+     * @return this - element
      */
     public FieldElement subtract(FieldElement element) {
         element = element.addInv();
@@ -55,26 +57,37 @@ public abstract class FieldElement implements Serializable {
     }
 
     /**
-     * Returns this * element.<br>
+     * Performs a multiplication in the field, which this is an element of.
      *
      * @param element An element of the field, which this is an element of.
+     * @return this * element
      */
     public abstract FieldElement mult(FieldElement element);
 
     /**
-     * Returns this * element^-1.<br>
+     * Performs a multiplication with the inverse element of element in the field, which this is an
+     * element of.
      *
      * @param element An element of the field, which this is an element of.
+     * @return this * element^-1
      */
     public FieldElement divide(FieldElement element) {
         element = element.multInv();
         return mult(element);
     }
 
-    /** Returns -this. */
+    /**
+     * Computes the additive inverse element of this.
+     *
+     * @return -this
+     */
     public abstract FieldElement addInv();
 
-    /** Returns this^-1. */
+    /**
+     * Computes the multiplicative inverse element of this.
+     *
+     * @return this^-1
+     */
     public abstract FieldElement multInv();
 
     public BigInteger getData() {

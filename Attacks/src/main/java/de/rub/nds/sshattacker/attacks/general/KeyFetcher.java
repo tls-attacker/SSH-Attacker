@@ -35,7 +35,12 @@ public final class KeyFetcher {
         super();
     }
 
-    /** Fetches the transient public key from an RSA key-exchange */
+    /**
+     * Fetches the transient public key from an RSA key-exchange.
+     *
+     * @param config Config object which is used to instantiate the underlying SSH attacker.
+     * @return The transient public key used during key exchange.
+     */
     public static RSAPublicKey fetchRsaTransientKey(Config config) {
         return fetchRsaTransientKey(config, 0, 5);
     }

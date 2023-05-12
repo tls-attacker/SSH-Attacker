@@ -148,10 +148,11 @@ public final class OaepConverter {
      *
      * @see <a href="https://datatracker.ietf.org/doc/html/rfc8017#appendix-B.2.1">RFC 8017 Appendix
      *     B.2.1</a>
-     * @param seed Seed for the mask generation
-     * @param maskLen Desired mask length in bytes
-     * @param digestName Name of the digest to be used
-     * @return generated mask
+     * @param seed Seed for the mask generation.
+     * @param maskLen Desired mask length in bytes.
+     * @param digestName Name of the digest to be used.
+     * @throws NoSuchAlgorithmException if the digest specified by digestName could not be found.
+     * @return Generated mask.
      */
     public static byte[] mgf1(byte[] seed, int maskLen, String digestName)
             throws NoSuchAlgorithmException {
@@ -207,12 +208,13 @@ public final class OaepConverter {
     }
 
     /**
-     * Decodes the solution of a Manger attack
+     * Decodes the solution of a Manger attack.
      *
      * @param solution The solution to the attack, i.e. the encoded shared secret.
      * @param hashInstance The hash function. For SSH, this should either be 'SHA-1' or 'SHA-256',
      *     depending on the key exchange method.
      * @param publicKeyByteLength The length of the public key's modulus in bytes.
+     * @return The decoded solution of a Manger attack.
      */
     public static BigInteger decodeSolution(
             BigInteger solution, String hashInstance, int publicKeyByteLength) {

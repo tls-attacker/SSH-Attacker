@@ -275,7 +275,12 @@ public class MangerAttacker extends Attacker<MangerCommandConfig> {
         return publicKey;
     }
 
-    /** Checks if the server re-uses its RSA transient public key */
+    /**
+     * Checks whether the server reuses its RSA transient public key. This method will establish a
+     * connection twice and compare the used RSA transient public keys.
+     *
+     * @return True if the key has been reused. False otherwise.
+     */
     public boolean isTransientKeyReused() {
         RSAPublicKey transientKey1 = getServerPublicKey();
         RSAPublicKey transientKey2 = getServerPublicKey();

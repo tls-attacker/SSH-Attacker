@@ -63,7 +63,7 @@ public class ForwardMessagesAction extends SshAction implements ReceivingAction,
         super();
     }
 
-    /** Allow to pass a fake ReceiveMessageHelper helper for testing. */
+    /* Allow to pass a fake ReceiveMessageHelper helper for testing. */
     protected ForwardMessagesAction(String receiveFromAlias, String forwardToAlias) {
         super();
         this.receiveFromAlias = receiveFromAlias;

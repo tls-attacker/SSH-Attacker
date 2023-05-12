@@ -133,7 +133,14 @@ public final class WorkflowTraceSerializer {
         return wt;
     }
 
-    /** Reads a file and does not perform schema validation */
+    /**
+     * Read multiple {@code WorkflowTrace} objects from their serialized XML form given the parent
+     * directory. WARNING: Does not perform schema validation.
+     *
+     * @param folder The parent directory containing one or multiple {@code WorkflowTrace} objects
+     *     in serialized XML format.
+     * @return A list of parsed {@code WorkflowTrace} objects.
+     */
     public static List<WorkflowTrace> insecureReadFolder(File folder) {
         if (folder.isDirectory()) {
             ArrayList<WorkflowTrace> list = new ArrayList<>();
