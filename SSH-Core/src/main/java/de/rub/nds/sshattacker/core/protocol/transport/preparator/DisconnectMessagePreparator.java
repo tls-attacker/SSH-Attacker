@@ -27,9 +27,12 @@ public class DisconnectMessagePreparator extends SshMessagePreparator<Disconnect
         getObject().setLanguageTag("", true);
 
         if (chooser.getContext().getDelayCompressionExtensionNegotiationFailed()) {
-            getObject().setReasonCode(getObject().getReasonCode());
-            getObject().setDescription(getObject().getDescription(), true);
-            getObject().setLanguageTag(getObject().getLanguageTag(), true);
+            getObject().setReasonCode(DisconnectReason.SSH_DISCONNECT_COMPRESSION_ERROR);
+            getObject()
+                    .setDescription(
+                            "No common compression algorithm found in delay-compression extension!",
+                            true);
+            getObject().setLanguageTag("", true);
         }
     }
 }
