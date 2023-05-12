@@ -247,6 +247,9 @@ public class SshContext {
     /** Flag whether a delay-compression extension was received from the peer */
     private boolean delayCompressionExtensionReceived = false;
 
+    /** Flag whether the delay-compression extension was sent by us */
+    private boolean delayCompressionExtensionSent = false;
+
     /**
      * Flag to check whether the negotiation of a common compression method in the delay-compression
      * extension failed
@@ -989,6 +992,10 @@ public class SshContext {
     public boolean delayCompressionExtensionReceived() {
         return delayCompressionExtensionReceived;
     }
+
+    public boolean delayCompressionExtensionSent() {
+        return delayCompressionExtensionSent;
+    }
     // endregion
 
     // region Setters for SSH Extensions
@@ -1035,6 +1042,10 @@ public class SshContext {
 
     public void setDelayCompressionExtensionReceived(boolean received) {
         this.delayCompressionExtensionReceived = received;
+    }
+
+    public void setDelayCompressionExtensionSent(boolean sent) {
+        this.delayCompressionExtensionSent = sent;
     }
     // endregion
 

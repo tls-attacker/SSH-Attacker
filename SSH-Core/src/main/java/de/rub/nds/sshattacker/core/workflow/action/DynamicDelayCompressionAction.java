@@ -57,7 +57,9 @@ public class DynamicDelayCompressionAction extends SendAction {
             }
         }
 
-        if (context.delayCompressionExtensionReceived() && context.isClient()) {
+        if (context.delayCompressionExtensionReceived()
+                && context.isClient()
+                && context.delayCompressionExtensionSent()) {
             sshActions.add(
                     SshActionFactory.createMessageAction(
                             context.getConnection(),
