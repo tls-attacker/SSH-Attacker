@@ -37,6 +37,13 @@ public class UserAuthSuccessMessageHandler extends SshMessageHandler<UserAuthSuc
     public void adjustContextAfterMessageSent() {
         // Enable delayed compression if negotiated
         activateCompression();
+        if (!context.isClient()
+                && context.delayCompressionExtensionReceived()
+                && context.getConfig().getRespectDelayCompressionExtension()) {
+            context.getPacketLayer()
+                    .updateCompressionAlgorithm(
+                            context.getSelectedDelayCompressionMethod().get().getAlgorithm());
+        }
     }
 
     private void activateCompression() {
