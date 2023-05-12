@@ -47,9 +47,9 @@ public class DhKeyExchange extends DhBasedKeyExchange {
 
     public static DhKeyExchange newInstance(SshContext context, KeyExchangeAlgorithm algorithm) {
         if (algorithm == null
-                || (algorithm.getFlowType() != KeyExchangeFlowType.DIFFIE_HELLMAN
+                || algorithm.getFlowType() != KeyExchangeFlowType.DIFFIE_HELLMAN
                         && algorithm.getFlowType()
-                                != KeyExchangeFlowType.DIFFIE_HELLMAN_GROUP_EXCHANGE)) {
+                                != KeyExchangeFlowType.DIFFIE_HELLMAN_GROUP_EXCHANGE) {
             algorithm = context.getConfig().getDefaultDhKeyExchangeAlgorithm();
             LOGGER.warn(
                     "Trying to instantiate a new DH or DH GEX key exchange without a matching key exchange algorithm negotiated, falling back to {}",
@@ -220,7 +220,7 @@ public class DhKeyExchange extends DhBasedKeyExchange {
                 Arrays.stream(NamedDhGroup.values())
                         .sorted(Comparator.comparingInt(group -> group.getModulus().bitLength()))
                         .filter(
-                                (candidate) ->
+                                candidate ->
                                         candidate.getModulus().bitLength() - preferredGroupSize
                                                 >= 0)
                         .findFirst()

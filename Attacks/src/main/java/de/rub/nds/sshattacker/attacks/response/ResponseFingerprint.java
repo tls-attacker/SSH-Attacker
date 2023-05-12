@@ -139,10 +139,10 @@ public class ResponseFingerprint {
      * @return If this fingerprint and the other fingerprint are compatible
      */
     public boolean areCompatible(ResponseFingerprint fingerprint) {
-        if (socketState != SocketState.TIMEOUT && fingerprint.socketState != SocketState.TIMEOUT) {
-            if (fingerprint.socketState != socketState) {
-                return false;
-            }
+        if (socketState != SocketState.TIMEOUT
+                && fingerprint.socketState != SocketState.TIMEOUT
+                && fingerprint.socketState != socketState) {
+            return false;
         }
         int minNumberOfMessages = fingerprint.messageList.size();
         if (messageList.size() < minNumberOfMessages) {

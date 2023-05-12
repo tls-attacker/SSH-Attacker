@@ -40,8 +40,8 @@ public final class ResponseExtractor {
 
     private static SocketState extractSocketState(State state) {
         if (state.getSshContext().getTransportHandler() instanceof ClientTcpTransportHandler) {
-            return (((ClientTcpTransportHandler) (state.getSshContext().getTransportHandler()))
-                    .getSocketState());
+            return ((ClientTcpTransportHandler) state.getSshContext().getTransportHandler())
+                    .getSocketState();
         } else {
             return null;
         }

@@ -74,7 +74,7 @@ public abstract class Serializer<T> {
         byte[] bytes;
         // special case for which bigIntegerToByteArray
         // wrongly returns an empty array
-        if (bigInteger.equals(new BigInteger("0"))) {
+        if (bigInteger.equals(BigInteger.ZERO)) {
             bytes = ArrayConverter.intToBytes(0, length);
         } else {
             bytes = ArrayConverter.bigIntegerToByteArray(bigInteger, length, true);

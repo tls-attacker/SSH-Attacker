@@ -26,7 +26,7 @@ public class RoundedTest {
         for (int i = 0; i < 10; i++) {
             coefficient =
                     LongStream.range(0, set.getP())
-                            .map(l -> rand.nextInt(set.getQ()) - ((set.getQ() + 1) / 2))
+                            .map(l -> rand.nextInt(set.getQ()) - (set.getQ() + 1) / 2)
                             .toArray();
             RQ rq = new RQ(set, coefficient);
             Rounded rounded = Rounded.round(rq);
@@ -38,7 +38,7 @@ public class RoundedTest {
     public void testEncoding() {
         coefficient =
                 LongStream.range(0, set.getP())
-                        .map(l -> rand.nextInt(set.getQ()) - ((set.getQ() + 1) / 2))
+                        .map(l -> rand.nextInt(set.getQ()) - (set.getQ() + 1) / 2)
                         .toArray();
         Rounded r = Rounded.round(new RQ(set, coefficient));
         byte[] encR = r.encode();
@@ -50,7 +50,7 @@ public class RoundedTest {
     public void testEncodingOld() {
         coefficient =
                 LongStream.range(0, set.getP())
-                        .map(l -> rand.nextInt(set.getQ()) - ((set.getQ() + 1) / 2))
+                        .map(l -> rand.nextInt(set.getQ()) - (set.getQ() + 1) / 2)
                         .toArray();
 
         Rounded r = Rounded.round(new RQ(set, coefficient));

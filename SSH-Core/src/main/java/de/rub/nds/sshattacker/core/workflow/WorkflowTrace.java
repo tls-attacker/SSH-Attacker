@@ -232,7 +232,7 @@ public class WorkflowTrace implements Serializable {
     public MessageAction getLastMessageAction() {
         for (int i = sshActions.size() - 1; i >= 0; i--) {
             if (sshActions.get(i) instanceof MessageAction) {
-                return (MessageAction) (sshActions.get(i));
+                return (MessageAction) sshActions.get(i);
             }
         }
         return null;
@@ -246,7 +246,7 @@ public class WorkflowTrace implements Serializable {
     public SendingAction getLastSendingAction() {
         for (int i = sshActions.size() - 1; i >= 0; i--) {
             if (sshActions.get(i) instanceof SendingAction) {
-                return (SendingAction) (sshActions.get(i));
+                return (SendingAction) sshActions.get(i);
             }
         }
         return null;
@@ -261,7 +261,7 @@ public class WorkflowTrace implements Serializable {
     public ReceivingAction getLastReceivingAction() {
         for (int i = sshActions.size() - 1; i >= 0; i--) {
             if (sshActions.get(i) instanceof ReceivingAction) {
-                return (ReceivingAction) (sshActions.get(i));
+                return (ReceivingAction) sshActions.get(i);
             }
         }
         return null;

@@ -74,11 +74,11 @@ public class Rounded {
     }
 
     private static long[] round(LongStream coefficients) {
-        return coefficients.map(l -> 3L * (Math.round(l / 3.0f))).toArray();
+        return coefficients.map(l -> 3L * Math.round(l / 3.0f)).toArray();
     }
 
     public LongStream stream() {
-        return rounded.stream().map(c -> (c > (set.getQ() + 1) / 2 ? c - set.getQ() : c));
+        return rounded.stream().map(c -> c > (set.getQ() + 1) / 2 ? c - set.getQ() : c);
     }
 
     public byte[] encode() {
@@ -104,7 +104,7 @@ public class Rounded {
         ArrayList<Integer> encdodedCoefficients = Encoding.encode(r, m);
         byte[] res = new byte[encdodedCoefficients.size()];
         for (int i = 0; i < encdodedCoefficients.size(); i++) {
-            res[i] = (byte) (encdodedCoefficients.get(i).intValue());
+            res[i] = (byte) encdodedCoefficients.get(i).intValue();
         }
         return res;
     }
@@ -114,10 +114,10 @@ public class Rounded {
         int q61 = (set.getQ() - 1) / 6;
         ArrayList<Integer> r =
                 rounded.stream()
-                        .mapToInt(l -> Math.toIntExact(q61 + (l / 3)))
+                        .mapToInt(l -> Math.toIntExact(q61 + l / 3))
                         .boxed()
                         .collect(Collectors.toCollection(ArrayList::new));
-        for (int i = 0; i < ((-set.getP() + set.getP() * 6) % 6); i++) {
+        for (int i = 0; i < (-set.getP() + set.getP() * 6) % 6; i++) {
             r.add(0);
         }
         return Arrays.copyOfRange(Encoding.seq2byte(r, 1536, 3, 4), 0, 1015);

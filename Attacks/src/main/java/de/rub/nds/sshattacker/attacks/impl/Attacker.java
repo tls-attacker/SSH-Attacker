@@ -42,13 +42,11 @@ public abstract class Attacker<AttConfigT extends AttackConfig> {
     /** Starts the attack after doing a connection check, if it is not disabled. */
     public void attack() {
         LOGGER.debug("Attacking with: {}", getClass().getSimpleName());
-        if (!config.isSkipConnectionCheck()) {
-            if (!canConnect()) {
-                CONSOLE.warn("Cannot reach Server. Is the server online?");
-                return;
-            }
+        if (config.isSkipConnectionCheck() || canConnect()) {
+            executeAttack();
+        } else {
+            CONSOLE.warn("Cannot reach Server. Is the server online?");
         }
-        executeAttack();
     }
 
     /**

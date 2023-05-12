@@ -34,7 +34,7 @@ public final class Main {
         ThreadContext.put("side", "");
         Logger LOGGER = LogManager.getLogger();
         try {
-            (new SshMitm(args)).run();
+            new SshMitm(args).run();
         } catch (ParameterException pe) {
             System.exit(EX_USAGE);
         } catch (WorkflowExecutionException wee) {

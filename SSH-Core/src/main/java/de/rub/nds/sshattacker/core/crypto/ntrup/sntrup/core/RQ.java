@@ -76,7 +76,7 @@ public class RQ {
     }
 
     public LongStream stream() {
-        return rQ.stream().map(c -> (c >= (set.getQ() + 1) / 2 ? c - set.getQ() : c));
+        return rQ.stream().map(c -> c >= (set.getQ() + 1) / 2 ? c - set.getQ() : c);
     }
 
     public static RQ invert(RQ rq) {
@@ -98,7 +98,7 @@ public class RQ {
     }
 
     public static RQ multiply(R r, RQ rq2) {
-        assert (r.getSet() == rq2.set);
+        assert r.getSet() == rq2.set;
         RQ convertedR = new RQ(r.getSet(), r.stream().toArray());
         return multiply(convertedR, rq2);
     }
@@ -175,7 +175,7 @@ public class RQ {
 
         byte[] res = new byte[encdodedCoefficients.size()];
         for (int i = 0; i < encdodedCoefficients.size(); i++) {
-            res[i] = (byte) (encdodedCoefficients.get(i).intValue());
+            res[i] = (byte) encdodedCoefficients.get(i).intValue();
         }
         return res;
     }
@@ -187,7 +187,7 @@ public class RQ {
                         .mapToInt(l -> Math.toIntExact(l + q12))
                         .boxed()
                         .collect(Collectors.toCollection(ArrayList::new));
-        for (int i = 0; i < ((-set.getP() + set.getP() * 5) % 5); i++) {
+        for (int i = 0; i < (-set.getP() + set.getP() * 5) % 5; i++) {
             h.add(0);
         }
 

@@ -28,7 +28,7 @@ public final class Short {
         this.set = set;
         mod = UnivariatePolynomialZ64.parse("x^" + set.getP() + "-x-1");
         shrt = generateShort();
-        assert (isShort(shrt.stream().toArray(), set));
+        assert isShort(shrt.stream().toArray(), set);
     }
 
     private Short(
@@ -37,7 +37,7 @@ public final class Short {
         this.set = set;
         this.mod = mod;
         this.shrt = shrt;
-        assert (isShort(shrt.stream().toArray(), set));
+        assert isShort(shrt.stream().toArray(), set);
     }
 
     public SntrupParameterSet getSet() {
@@ -91,7 +91,7 @@ public final class Short {
 
         for (int i = 0; i < set.getP(); i++) {
             int rN = rand.nextInt();
-            tmp[i] = rN ^ (rN & 0b11) ^ mask[i];
+            tmp[i] = rN ^ rN & 0b11 ^ mask[i];
         }
         Arrays.sort(tmp);
         tmp = Arrays.stream(tmp).map(l -> (l & 0b11) == 0b10 ? -1 : l & 0b11).toArray();
@@ -125,7 +125,7 @@ public final class Short {
 
         byte[] res = new byte[encodedCoefficients.size()];
         for (int i = 0; i < encodedCoefficients.size(); i++) {
-            res[i] = (byte) (encodedCoefficients.get(i).intValue());
+            res[i] = (byte) encodedCoefficients.get(i).intValue();
         }
         return res;
     }

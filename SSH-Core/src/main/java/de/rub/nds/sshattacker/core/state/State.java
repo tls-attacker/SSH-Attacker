@@ -257,7 +257,7 @@ public class State {
      */
     private void filterTrace(WorkflowTrace trace) {
         List<FilterType> filters = config.getOutputFilters();
-        if ((filters == null) || (filters.isEmpty())) {
+        if (filters == null || filters.isEmpty()) {
             LOGGER.debug("No filters to apply, ouput filter list is empty");
             return;
         }

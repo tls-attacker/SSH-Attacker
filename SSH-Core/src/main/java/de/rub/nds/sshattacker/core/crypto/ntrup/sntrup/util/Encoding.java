@@ -142,9 +142,9 @@ public final class Encoding {
         for (int i = 0; i < bytes; i++) {
             res[i] =
                     (byte)
-                            ((u.divide(BigInteger.valueOf((long) (Math.pow(256, i))))
-                                            .mod(BigInteger.valueOf(256)))
-                                    .intValue());
+                            u.divide(BigInteger.valueOf((long) Math.pow(256, i)))
+                                    .mod(BigInteger.valueOf(256))
+                                    .intValue();
         }
         return res;
     }
@@ -158,7 +158,7 @@ public final class Encoding {
     }
 
     public static ArrayList<BigInteger> byte2seq(byte[] s, int radix, int batch, int bytes) {
-        long[] u = new long[(int) (Math.ceil(s.length / (double) bytes))];
+        long[] u = new long[(int) Math.ceil(s.length / (double) bytes)];
         ArrayList<BigInteger> res = new ArrayList<>();
         int k = 0;
         for (int i = 0; i < s.length; i += bytes) {

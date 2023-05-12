@@ -45,13 +45,13 @@ public class DefaultWorkflowExecutor extends WorkflowExecutor {
         List<SshAction> sshActions = state.getWorkflowTrace().getSshActions();
         for (SshAction action : sshActions) {
 
-            if ((state.getConfig().getStopActionsAfterDisconnect()
-                    && isDisconnectMessageReceived())) {
+            if (state.getConfig().getStopActionsAfterDisconnect()
+                    && isDisconnectMessageReceived()) {
                 LOGGER.debug(
                         "Received a DisconnectMessage, skipping all further actions because StopActionsAfterDisconnect is active");
                 break;
             }
-            if ((state.getConfig().getStopActionsAfterIOException() && isIoException())) {
+            if (state.getConfig().getStopActionsAfterIOException() && isIoException()) {
                 LOGGER.debug(
                         "Received an IOException, skipping all further actions because StopActionsAfterIOException is active");
                 break;

@@ -337,7 +337,7 @@ public class MangerAttacker extends Attacker<MangerCommandConfig> {
                         publicKey.getPublicExponent().toString(16),
                         publicKey.getModulus().toString(16)));
         byte[] encryptedSecret = ArrayConverter.hexStringToByteArray(config.getEncryptedSecret());
-        if ((encryptedSecret.length * Byte.SIZE) != publicKey.getModulus().bitLength()) {
+        if (encryptedSecret.length * Byte.SIZE != publicKey.getModulus().bitLength()) {
             throw new ConfigurationException(
                     "The length of the encrypted secret "
                             + "is not equal to the public key length. Have you selected the correct value?");

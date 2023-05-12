@@ -206,7 +206,7 @@ public final class Converter {
         long result = 0;
         for (int i = 0; i < Long.BYTES && i < value.length; i++) {
             result <<= Byte.SIZE;
-            result |= (value[i] & 0xFF);
+            result |= value[i] & 0xFF;
         }
         return result;
     }

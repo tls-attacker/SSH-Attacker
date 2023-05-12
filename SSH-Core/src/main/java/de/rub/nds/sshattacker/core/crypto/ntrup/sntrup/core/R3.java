@@ -117,7 +117,7 @@ public class R3 {
 
         byte[] res = new byte[encdodedCoefficients.size()];
         for (int i = 0; i < encdodedCoefficients.size(); i++) {
-            res[i] = (byte) (encdodedCoefficients.get(i).intValue());
+            res[i] = (byte) encdodedCoefficients.get(i).intValue();
         }
         return res;
     }

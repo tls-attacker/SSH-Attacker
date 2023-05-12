@@ -90,7 +90,7 @@ public abstract class AliasedConnection extends Connection implements Aliasable 
 
     @Override
     public void assertAliasesSetProperly() throws ConfigurationException {
-        if ((alias == null) || (alias.isEmpty())) {
+        if (alias == null || alias.isEmpty()) {
             throw new ConfigurationException(
                     "Empty or null alias in " + getClass().getSimpleName());
         }
@@ -149,7 +149,7 @@ public abstract class AliasedConnection extends Connection implements Aliasable 
     }
 
     public void normalize(AliasedConnection defaultCon) {
-        if ((alias == null) || alias.isEmpty()) {
+        if (alias == null || alias.isEmpty()) {
             alias = defaultCon.alias;
             if (alias == null || alias.isEmpty()) {
                 alias = DEFAULT_CONNECTION_ALIAS;

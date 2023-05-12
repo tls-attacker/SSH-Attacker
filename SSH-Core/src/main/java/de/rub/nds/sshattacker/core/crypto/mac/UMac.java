@@ -221,7 +221,7 @@ class UMac extends AbstractMac {
         byte[] KPrime = KDF(K, 0, KEYLEN);
         byte[] T = ENCIPHER(KPrime, Nonce);
         assert T != null;
-        return Arrays.copyOfRange(T, index * taglen, taglen + (index * taglen));
+        return Arrays.copyOfRange(T, index * taglen, taglen + index * taglen);
     }
 
     /**
@@ -234,7 +234,7 @@ class UMac extends AbstractMac {
         byte[] t = new byte[s.length];
         for (int i = 0; i < s.length; i += 4) {
             for (int j = 0; j < 4; j++) {
-                t[i + j] = s[i + (3 - j)];
+                t[i + j] = s[i + 3 - j];
             }
         }
         return t;
@@ -310,7 +310,7 @@ class UMac extends AbstractMac {
         }
         BigInteger k64 = new BigInteger(1, k64Bytes);
         BigInteger y;
-        if (M.length <= (1 << 17)) {
+        if (M.length <= 1 << 17) {
             y =
                     POLY(
                             64,

@@ -50,8 +50,8 @@ public class XCurveEcPublicKey extends CustomPublicKey {
             throw new IllegalArgumentException(
                     "XCurveEcPublicKey does not support named group " + group);
         }
-        if ((group == NamedEcGroup.CURVE25519
-                        && coordinate.length != CryptoConstants.X25519_POINT_SIZE)
+        if (group == NamedEcGroup.CURVE25519
+                        && coordinate.length != CryptoConstants.X25519_POINT_SIZE
                 || group == NamedEcGroup.CURVE448
                         && coordinate.length != CryptoConstants.X448_POINT_SIZE) {
             throw new IllegalArgumentException(

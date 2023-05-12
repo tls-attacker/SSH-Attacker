@@ -80,7 +80,7 @@ public class RsaKeyExchange extends KeyEncapsulation {
     @Override
     public void generateSharedSecret() {
         // Calculation of maximum number of bits taken from RFC 4432
-        int maximumBits = (getModulusLengthInBits() - 2 * hashLength - 49);
+        int maximumBits = getModulusLengthInBits() - 2 * hashLength - 49;
         sharedSecret = new BigInteger(maximumBits, random).toByteArray();
     }
 

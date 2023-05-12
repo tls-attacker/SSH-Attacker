@@ -143,7 +143,7 @@ public class SendAction extends MessageAction implements SendingAction {
     @Override
     public String toCompactString() {
         StringBuilder sb = new StringBuilder(super.toCompactString());
-        if ((messages != null) && (!messages.isEmpty())) {
+        if (messages != null && !messages.isEmpty()) {
             sb.append(" (");
             for (ProtocolMessage<?> message : messages) {
                 sb.append(message.toCompactString());

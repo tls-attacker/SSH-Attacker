@@ -233,7 +233,7 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
         StringBuilder sb = new StringBuilder("Receive Action:\n");
 
         sb.append("\tExpected:");
-        if ((expectedMessages != null)) {
+        if (expectedMessages != null) {
             for (ProtocolMessage<?> message : expectedMessages) {
                 sb.append(message.toCompactString());
                 sb.append(", ");
@@ -242,7 +242,7 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
             sb.append(" (no messages set)");
         }
         sb.append("\n\tActual:");
-        if ((messages != null) && (!messages.isEmpty())) {
+        if (messages != null && !messages.isEmpty()) {
             for (ProtocolMessage<?> message : messages) {
                 sb.append(message.toCompactString());
                 sb.append(", ");
@@ -257,7 +257,7 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
     @Override
     public String toCompactString() {
         StringBuilder sb = new StringBuilder(super.toCompactString());
-        if ((expectedMessages != null) && (!expectedMessages.isEmpty())) {
+        if (expectedMessages != null && !expectedMessages.isEmpty()) {
             sb.append(" (");
             for (ProtocolMessage<?> message : expectedMessages) {
                 sb.append(message.toCompactString());
@@ -330,18 +330,18 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
                 // In these cases, ignore the received message and check if the
                 // next received message matches the expected message.
                 if (hasReceiveOption(ReceiveOption.CHECK_ONLY_EXPECTED)
-                        || (hasReceiveOption(
+                        || hasReceiveOption(
                                         ReceiveOption
                                                 .IGNORE_UNEXPECTED_GLOBAL_REQUESTS_WITHOUT_WANTREPLY)
-                                && (actualMessage instanceof GlobalRequestMessage)
+                                && actualMessage instanceof GlobalRequestMessage
                                 && ((GlobalRequestMessage<?>) actualMessage)
                                                 .getWantReply()
                                                 .getValue()
-                                        == 0)
-                        || (!hasReceiveOption(ReceiveOption.FAIL_ON_UNEXPECTED_IGNORE_MESSAGES)
-                                && (actualMessage instanceof IgnoreMessage))
-                        || (!hasReceiveOption(ReceiveOption.FAIL_ON_UNEXPECTED_DEBUG_MESSAGES)
-                                && (actualMessage instanceof DebugMessage))) {
+                                        == 0
+                        || !hasReceiveOption(ReceiveOption.FAIL_ON_UNEXPECTED_IGNORE_MESSAGES)
+                                && actualMessage instanceof IgnoreMessage
+                        || !hasReceiveOption(ReceiveOption.FAIL_ON_UNEXPECTED_DEBUG_MESSAGES)
+                                && actualMessage instanceof DebugMessage) {
                     LOGGER.debug("Ignoring message of type {}.", actualMessage.toCompactString());
                     continue;
                 }

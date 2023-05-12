@@ -291,13 +291,13 @@ public class ForwardMessagesAction extends SshAction implements ReceivingAction,
 
     @Override
     public void assertAliasesSetProperly() throws WorkflowExecutionException {
-        if ((receiveFromAlias == null) || (receiveFromAlias.isEmpty())) {
+        if (receiveFromAlias == null || receiveFromAlias.isEmpty()) {
             throw new WorkflowExecutionException(
                     "Can't execute "
                             + getClass().getSimpleName()
                             + " with empty receive alias (if using XML: add <from/>)");
         }
-        if ((forwardToAlias == null) || (forwardToAlias.isEmpty())) {
+        if (forwardToAlias == null || forwardToAlias.isEmpty()) {
             throw new WorkflowExecutionException(
                     "Can't execute "
                             + getClass().getSimpleName()

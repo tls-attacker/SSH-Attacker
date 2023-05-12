@@ -57,7 +57,7 @@ public abstract class ConnectionBoundAction extends SshAction {
 
     @Override
     public Set<String> getAllAliases() {
-        if (aliases.isEmpty() && (connectionAlias != null) && (!connectionAlias.isEmpty())) {
+        if (aliases.isEmpty() && connectionAlias != null && !connectionAlias.isEmpty()) {
             aliases.add(connectionAlias);
         }
         return aliases;
@@ -75,7 +75,7 @@ public abstract class ConnectionBoundAction extends SshAction {
 
     @Override
     public void assertAliasesSetProperly() throws ConfigurationException {
-        if ((connectionAlias == null) || (connectionAlias.isEmpty())) {
+        if (connectionAlias == null || connectionAlias.isEmpty()) {
             throw new ConfigurationException(
                     "connectionAlias empty or null in " + getClass().getSimpleName());
         }

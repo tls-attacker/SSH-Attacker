@@ -149,7 +149,7 @@ public final class WorkflowTraceNormalizer {
      */
     public static void assertNormalizedWorkflowTrace(WorkflowTrace trace) {
         List<AliasedConnection> connections = trace.getConnections();
-        if ((connections == null) || (connections.isEmpty())) {
+        if (connections == null || connections.isEmpty()) {
             throw new ConfigurationException(
                     "Workflow trace not well defined. " + "Trace does not define any connections.");
         }
@@ -157,7 +157,7 @@ public final class WorkflowTraceNormalizer {
         List<String> knownAliases = new ArrayList<>();
         for (AliasedConnection con : connections) {
             String conAlias = con.getAlias();
-            if ((conAlias == null) || (conAlias.isEmpty())) {
+            if (conAlias == null || conAlias.isEmpty()) {
                 throw new ConfigurationException(
                         "Workflow trace not well defined. "
                                 + "Trace contains connections with empty alias");

@@ -50,7 +50,7 @@ public class UserAuthPubkeyMessageSerializer
         LOGGER.debug("Pubkey length: {}", message.getPubkeyLength().getValue());
         appendInt(message.getPubkeyLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
         LOGGER.debug(
-                "Pubkey: {}", ArrayConverter.bytesToRawHexString((message.getPubkey().getValue())));
+                "Pubkey: {}", ArrayConverter.bytesToRawHexString(message.getPubkey().getValue()));
         appendBytes(message.getPubkey().getValue());
     }
 

@@ -202,7 +202,7 @@ public final class OaepConverter {
         // left.length is now <= right.length
         byte[] out = Arrays.copyOf(right, right.length);
         for (int i = 0; i < left.length; i++) {
-            out[i] = (byte) ((left[i] & 0xFF) ^ (right[i] & 0xFF));
+            out[i] = (byte) (left[i] & 0xFF ^ right[i] & 0xFF);
         }
         return out;
     }

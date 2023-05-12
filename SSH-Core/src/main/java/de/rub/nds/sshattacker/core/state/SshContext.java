@@ -272,7 +272,7 @@ public class SshContext {
         receiveAsciiModeEnabled = true;
         writeSequenceNumber = 0;
         readSequenceNumber = 0;
-        handleAsClient = (connection.getLocalConnectionEndType() == ConnectionEndType.CLIENT);
+        handleAsClient = connection.getLocalConnectionEndType() == ConnectionEndType.CLIENT;
         channelManager = new ChannelManager(this);
     }
 
