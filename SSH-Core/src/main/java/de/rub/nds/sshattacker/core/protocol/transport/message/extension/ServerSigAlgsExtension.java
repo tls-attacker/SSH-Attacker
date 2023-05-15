@@ -48,51 +48,51 @@ public class ServerSigAlgsExtension extends AbstractExtension<ServerSigAlgsExten
     }
 
     public ModifiableString getAcceptedPublicKeyAlgorithms() {
-        return this.acceptedPublicKeyAlgorithms;
+        return acceptedPublicKeyAlgorithms;
     }
 
     public void setAcceptedPublicKeyAlgorithms(ModifiableString publicKeyAlgorithms) {
-        this.setAcceptedPublicKeyAlgorithms(publicKeyAlgorithms, false);
+        setAcceptedPublicKeyAlgorithms(publicKeyAlgorithms, false);
     }
 
     public void setAcceptedPublicKeyAlgorithms(String publicKeyAlgorithms) {
-        this.setAcceptedPublicKeyAlgorithms(publicKeyAlgorithms, false);
+        setAcceptedPublicKeyAlgorithms(publicKeyAlgorithms, false);
     }
 
     public void setAcceptedPublicKeyAlgorithms(String[] publicKeyAlgorithms) {
-        this.setAcceptedPublicKeyAlgorithms(publicKeyAlgorithms, false);
+        setAcceptedPublicKeyAlgorithms(publicKeyAlgorithms, false);
     }
 
     public void setAcceptedPublicKeyAlgorithms(List<PublicKeyAlgorithm> publicKeyAlgorithms) {
-        this.setAcceptedPublicKeyAlgorithms(publicKeyAlgorithms, false);
+        setAcceptedPublicKeyAlgorithms(publicKeyAlgorithms, false);
     }
 
     public void setAcceptedPublicKeyAlgorithms(
             ModifiableString publicKeyAlgorithms, boolean adjustLengthField) {
         if (adjustLengthField) {
-            this.setAcceptedPublicKeyAlgorithmsLength(
+            setAcceptedPublicKeyAlgorithmsLength(
                     publicKeyAlgorithms.getValue().getBytes(StandardCharsets.US_ASCII).length);
-            setAcceptedPublicKeyAlgorithmsLength(getAcceptedPublicKeyAlgorithmsLength().getValue());
+            setAcceptedPublicKeyAlgorithmsLength(acceptedPublicKeyAlgorithmsLength.getValue());
         }
-        this.acceptedPublicKeyAlgorithms = publicKeyAlgorithms;
+        acceptedPublicKeyAlgorithms = publicKeyAlgorithms;
     }
 
     public void setAcceptedPublicKeyAlgorithms(
             String publicKeyAlgorithms, boolean adjustLengthField) {
         if (adjustLengthField) {
-            this.setAcceptedPublicKeyAlgorithmsLength(
+            setAcceptedPublicKeyAlgorithmsLength(
                     publicKeyAlgorithms.getBytes(StandardCharsets.US_ASCII).length);
-            setAcceptedPublicKeyAlgorithmsLength(getAcceptedPublicKeyAlgorithmsLength().getValue());
+            setAcceptedPublicKeyAlgorithmsLength(acceptedPublicKeyAlgorithmsLength.getValue());
         }
-        this.acceptedPublicKeyAlgorithms =
+        acceptedPublicKeyAlgorithms =
                 ModifiableVariableFactory.safelySetValue(
-                        this.acceptedPublicKeyAlgorithms, publicKeyAlgorithms);
+                        acceptedPublicKeyAlgorithms, publicKeyAlgorithms);
     }
 
     public void setAcceptedPublicKeyAlgorithms(
             String[] publicKeyAlgorithms, boolean adjustLengthField) {
         String nameList = String.join("" + CharConstants.ALGORITHM_SEPARATOR, publicKeyAlgorithms);
-        this.setAcceptedPublicKeyAlgorithms(nameList, adjustLengthField);
+        setAcceptedPublicKeyAlgorithms(nameList, adjustLengthField);
     }
 
     public void setAcceptedPublicKeyAlgorithms(
@@ -101,7 +101,7 @@ public class ServerSigAlgsExtension extends AbstractExtension<ServerSigAlgsExten
                 publicKeyAlgorithms.stream()
                         .map(PublicKeyAlgorithm::toString)
                         .collect(Collectors.joining("" + CharConstants.ALGORITHM_SEPARATOR));
-        this.setAcceptedPublicKeyAlgorithms(nameList, adjustLengthField);
+        setAcceptedPublicKeyAlgorithms(nameList, adjustLengthField);
     }
 
     @Override

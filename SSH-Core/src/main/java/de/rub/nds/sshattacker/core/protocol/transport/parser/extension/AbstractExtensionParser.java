@@ -16,17 +16,17 @@ import org.apache.logging.log4j.Logger;
 
 import java.nio.charset.StandardCharsets;
 
-public abstract class AbstractExtensionParser<E extends AbstractExtension> extends Parser<E> {
+public abstract class AbstractExtensionParser<E extends AbstractExtension<E>> extends Parser<E> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
     protected final E extension = createExtension();
 
-    public AbstractExtensionParser(byte[] array) {
+    protected AbstractExtensionParser(byte[] array) {
         super(array);
     }
 
-    public AbstractExtensionParser(byte[] array, int startPosition) {
+    protected AbstractExtensionParser(byte[] array, int startPosition) {
         super(array, startPosition);
     }
 

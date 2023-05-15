@@ -28,11 +28,11 @@ public class ExtensionInfoMessageSerializer extends SshMessageSerializer<Extensi
     }
 
     private void serializeExtensions() {
-        message.getExtensions().stream()
-                .forEachOrdered(
-                        extension -> {
-                            appendBytes(extension.getHandler(null).getSerializer().serialize());
-                        });
+        message.getExtensions()
+                .forEach(
+                        extension ->
+                                appendBytes(
+                                        extension.getHandler(null).getSerializer().serialize()));
     }
 
     @Override

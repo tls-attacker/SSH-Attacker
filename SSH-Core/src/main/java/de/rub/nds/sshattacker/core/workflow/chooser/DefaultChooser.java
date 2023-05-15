@@ -656,8 +656,7 @@ public class DefaultChooser extends Chooser {
                                                     context.isClient()
                                                             ? getClientSupportedHostKeyAlgorithms()
                                                                     .get(0)
-                                                            : this
-                                                                    .getServerSupportedHostKeyAlgorithms()
+                                                            : getServerSupportedHostKeyAlgorithms()
                                                                     .get(0));
                             context.setHostKeyAlgorithm(negotiatedAlgorithm);
                             return negotiatedAlgorithm;

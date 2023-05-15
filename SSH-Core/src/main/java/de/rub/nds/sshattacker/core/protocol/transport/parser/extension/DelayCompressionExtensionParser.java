@@ -35,9 +35,9 @@ public class DelayCompressionExtensionParser
 
     @Override
     protected void parseExtensionValue() {
-        this.parseCompressionMethodsLength();
-        this.parseCompressionMethodsClientToServer();
-        this.parseCompressionMethodsServerToClient();
+        parseCompressionMethodsLength();
+        parseCompressionMethodsClientToServer();
+        parseCompressionMethodsServerToClient();
     }
 
     private void parseCompressionMethodsLength() {

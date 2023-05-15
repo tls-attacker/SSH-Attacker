@@ -228,10 +228,10 @@ public class SshContext {
     public List<AbstractExtension<?>> serverSupportedExtensions;
 
     /** Flag whether client supports SSH Extension Negotiation */
-    private boolean clientSupportsExtensionNegotiation = false;
+    private boolean clientSupportsExtensionNegotiation;
 
     /** Flag whether server supports SSH Extension Negotiation */
-    private boolean serverSupportsExtensionNegotiation = false;
+    private boolean serverSupportsExtensionNegotiation;
 
     /**
      * List of public key algorithms for authentication supported by the server(server-sig-algs
@@ -240,7 +240,7 @@ public class SshContext {
     private List<PublicKeyAlgorithm> serverSupportedPublicKeyAlgorithmsForAuthentication;
 
     /** Flag to check whether the server-sig-algs extension was already received */
-    private boolean serverSigAlgsExtensionReceivedFromServer = false;
+    private boolean serverSigAlgsExtensionReceivedFromServer;
 
     /** List of compression methods supported by the client(delay-compression extension) */
     private List<CompressionMethod> clientSupportedDelayCompressionMethods;
@@ -252,16 +252,16 @@ public class SshContext {
     private CompressionMethod selectedDelayCompressionMethod;
 
     /** Flag whether a delay-compression extension was received from the peer */
-    private boolean delayCompressionExtensionReceived = false;
+    private boolean delayCompressionExtensionReceived;
 
     /** Flag whether the delay-compression extension was sent by us */
-    private boolean delayCompressionExtensionSent = false;
+    private boolean delayCompressionExtensionSent;
 
     /**
      * Flag to check whether the negotiation of a common compression method in the delay-compression
      * extension failed
      */
-    private boolean delayCompressionExtensionNegotiationFailed = false;
+    private boolean delayCompressionExtensionNegotiationFailed;
     // endregion
 
     // region Connection Protocol
@@ -1027,54 +1027,54 @@ public class SshContext {
 
     // section general extensions
     public void setClientSupportedExtensions(List<AbstractExtension<?>> extensions) {
-        this.clientSupportedExtensions = extensions;
+        clientSupportedExtensions = extensions;
     }
 
     public void setServerSupportedExtensions(List<AbstractExtension<?>> extensions) {
-        this.serverSupportedExtensions = extensions;
+        serverSupportedExtensions = extensions;
     }
 
     public void setClientSupportsExtensionNegotiation(boolean support) {
-        this.clientSupportsExtensionNegotiation = support;
+        clientSupportsExtensionNegotiation = support;
     }
 
     public void setServerSupportsExtensionNegotiation(boolean support) {
-        this.serverSupportsExtensionNegotiation = support;
+        serverSupportsExtensionNegotiation = support;
     }
 
     public void setDelayCompressionExtensionNegotiationFailed(boolean failed) {
-        this.delayCompressionExtensionNegotiationFailed = failed;
+        delayCompressionExtensionNegotiationFailed = failed;
     }
 
     // section server-sig-algs extension
     public void setServerSupportedPublicKeyAlgorithmsForAuthentication(
             List<PublicKeyAlgorithm> algorithms) {
-        this.serverSupportedPublicKeyAlgorithmsForAuthentication = algorithms;
+        serverSupportedPublicKeyAlgorithmsForAuthentication = algorithms;
     }
 
     public void setServerSigAlgsExtensionReceivedFromServer(boolean received) {
-        this.serverSigAlgsExtensionReceivedFromServer = received;
+        serverSigAlgsExtensionReceivedFromServer = received;
     }
 
     // section delay-compression extension
     public void setClientSupportedDelayCompressionMethods(List<CompressionMethod> methods) {
-        this.clientSupportedDelayCompressionMethods = methods;
+        clientSupportedDelayCompressionMethods = methods;
     }
 
     public void setServerSupportedDelayCompressionMethods(List<CompressionMethod> methods) {
-        this.serverSupportedDelayCompressionMethods = methods;
+        serverSupportedDelayCompressionMethods = methods;
     }
 
     public void setSelectedDelayCompressionMethod(CompressionMethod method) {
-        this.selectedDelayCompressionMethod = method;
+        selectedDelayCompressionMethod = method;
     }
 
     public void setDelayCompressionExtensionReceived(boolean received) {
-        this.delayCompressionExtensionReceived = received;
+        delayCompressionExtensionReceived = received;
     }
 
     public void setDelayCompressionExtensionSent(boolean sent) {
-        this.delayCompressionExtensionSent = sent;
+        delayCompressionExtensionSent = sent;
     }
     // endregion
 

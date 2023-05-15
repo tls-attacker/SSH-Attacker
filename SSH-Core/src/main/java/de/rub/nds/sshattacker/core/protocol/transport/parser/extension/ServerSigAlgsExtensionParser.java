@@ -34,8 +34,8 @@ public class ServerSigAlgsExtensionParser extends AbstractExtensionParser<Server
 
     @Override
     protected void parseExtensionValue() {
-        this.parseAcceptedPublicKeyAlgorithmsLength();
-        this.parseAcceptedPublicKeyAlgorithms();
+        parseAcceptedPublicKeyAlgorithmsLength();
+        parseAcceptedPublicKeyAlgorithms();
     }
 
     private void parseAcceptedPublicKeyAlgorithmsLength() {

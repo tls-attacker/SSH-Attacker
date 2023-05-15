@@ -1382,6 +1382,44 @@ public class Config implements Serializable {
     }
     // endregion
 
+    // region Setters SSH Extensions
+
+    // section general extensions
+    public void setClientSupportedExtensions(List<AbstractExtension<?>> clientSupportedExtensions) {
+        this.clientSupportedExtensions = clientSupportedExtensions;
+    }
+
+    public void setServerSupportedExtensions(List<AbstractExtension<?>> serverSupportedExtensions) {
+        this.serverSupportedExtensions = serverSupportedExtensions;
+    }
+
+    // section server-sig-algs extension
+    public void setServerSupportedPublicKeyAlgorithmsForAuthentication(
+            List<PublicKeyAlgorithm> serverSupportedPublicKeyAlgorithmsForAuthentication) {
+        this.serverSupportedPublicKeyAlgorithmsForAuthentication =
+                serverSupportedPublicKeyAlgorithmsForAuthentication;
+    }
+
+    public void setRespectServerSigAlgsExtension(boolean respectServerSigAlgsExtension) {
+        this.respectServerSigAlgsExtension = respectServerSigAlgsExtension;
+    }
+
+    // section delay-compression extension
+    public void setClientSupportedDelayCompressionMethods(
+            List<CompressionMethod> clientSupportedDelayCompressionMethods) {
+        this.clientSupportedDelayCompressionMethods = clientSupportedDelayCompressionMethods;
+    }
+
+    public void setServerSupportedDelayCompressionMethods(
+            List<CompressionMethod> serverSupportedDelayCompressionMethods) {
+        this.serverSupportedDelayCompressionMethods = serverSupportedDelayCompressionMethods;
+    }
+
+    public void setRespectDelayCompressionExtension(boolean respectDelayCompressionExtension) {
+        this.respectDelayCompressionExtension = respectDelayCompressionExtension;
+    }
+    // endregion
+
     // region Getters for KeyExchange
     public Integer getDhGexMinimalGroupSize() {
         return dhGexMinimalGroupSize;

@@ -32,7 +32,7 @@ public enum Extension {
 
     static {
         map = new TreeMap<>();
-        for (Extension extension : Extension.values()) {
+        for (Extension extension : values()) {
             if (extension.name != null) {
                 map.put(extension.name, extension);
             }
@@ -56,6 +56,6 @@ public enum Extension {
         if (map.containsKey(name)) {
             return map.get(name);
         }
-        return Extension.UNKNOWN;
+        return UNKNOWN;
     }
 }

@@ -26,8 +26,8 @@ public class ServerSigAlgsExtensionSerializer
 
     @Override
     protected void serializeExtensionValue() {
-        this.serializeAcceptedPublicKeyAlgorithmsLength();
-        this.serializeAcceptedPublicKeyAlgorithms();
+        serializeAcceptedPublicKeyAlgorithmsLength();
+        serializeAcceptedPublicKeyAlgorithms();
     }
 
     private void serializeAcceptedPublicKeyAlgorithmsLength() {
@@ -41,8 +41,8 @@ public class ServerSigAlgsExtensionSerializer
 
     private void serializeAcceptedPublicKeyAlgorithms() {
         LOGGER.debug(
-                "Accepted public key algorithms: "
-                        + extension.getAcceptedPublicKeyAlgorithms().getValue());
+                "Accepted public key algorithms: {}",
+                extension.getAcceptedPublicKeyAlgorithms().getValue());
         appendString(
                 extension.getAcceptedPublicKeyAlgorithms().getValue(), StandardCharsets.US_ASCII);
     }

@@ -48,13 +48,13 @@ public class ExtensionInfoMessage extends SshMessage<ExtensionInfoMessage> {
 
     public void setExtensions(List<AbstractExtension<?>> extensions, boolean adjustLengthField) {
         if (adjustLengthField) {
-            this.setExtensionCount(extensions.size());
+            setExtensionCount(extensions.size());
         }
         this.extensions = extensions;
     }
 
     public void addExtension(AbstractExtension<?> extension) {
-        this.extensions.add(extension);
+        extensions.add(extension);
     }
 
     @Override
@@ -65,9 +65,7 @@ public class ExtensionInfoMessage extends SshMessage<ExtensionInfoMessage> {
     @Override
     public List<ModifiableVariableHolder> getAllModifiableVariableHolders() {
         List<ModifiableVariableHolder> holders = super.getAllModifiableVariableHolders();
-        for (AbstractExtension<?> extension : extensions) {
-            holders.add(extension);
-        }
+        holders.addAll(extensions);
         return holders;
     }
 }

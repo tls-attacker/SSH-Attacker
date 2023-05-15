@@ -139,19 +139,19 @@ public class KeyExchangeInitMessageHandler extends SshMessageHandler<KeyExchange
     private boolean checkClientSupportForExtensionNegotiation() {
         return containsKeyExchangeAlgorithm(
                 KeyExchangeAlgorithm.EXT_INFO_C,
-                context.getClientSupportedKeyExchangeAlgorithms().get());
+                context.getClientSupportedKeyExchangeAlgorithms().orElse(List.of()));
     }
 
     private boolean checkServerSupportForExtensionNegotiation() {
         return containsKeyExchangeAlgorithm(
                 KeyExchangeAlgorithm.EXT_INFO_S,
-                context.getServerSupportedKeyExchangeAlgorithms().get());
+                context.getServerSupportedKeyExchangeAlgorithms().orElse(List.of()));
     }
 
-    private boolean containsKeyExchangeAlgorithm(
+    private static boolean containsKeyExchangeAlgorithm(
             KeyExchangeAlgorithm keyExchangeAlgorithm, List<KeyExchangeAlgorithm> algorithms) {
         for (KeyExchangeAlgorithm algorithm : algorithms) {
-            if (algorithm.equals(keyExchangeAlgorithm)) {
+            if (algorithm == keyExchangeAlgorithm) {
                 return true;
             }
         }

@@ -14,16 +14,12 @@ import de.rub.nds.sshattacker.core.state.State;
 import de.rub.nds.sshattacker.core.workflow.factory.SshActionFactory;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import java.util.ArrayList;
 import java.util.List;
 
 public class DynamicExtensionNegotiationAction extends SendAction {
 
-    private static final Logger LOGGER = LogManager.getLogger();
-
+    @SuppressWarnings({"CanBeFinal", "FieldMayBeFinal"})
     private List<SshAction> sshActions = new ArrayList<>();
 
     public DynamicExtensionNegotiationAction() {

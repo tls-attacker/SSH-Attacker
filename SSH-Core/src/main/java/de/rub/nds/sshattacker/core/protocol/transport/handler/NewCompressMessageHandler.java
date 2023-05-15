@@ -7,6 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.handler;
 
+import de.rub.nds.sshattacker.core.constants.CompressionMethod;
 import de.rub.nds.sshattacker.core.protocol.common.MessageSentHandler;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.transport.message.NewCompressMessage;
@@ -34,7 +35,9 @@ public class NewCompressMessageHandler extends SshMessageHandler<NewCompressMess
                 && context.getConfig().getRespectDelayCompressionExtension()) {
             context.getPacketLayer()
                     .updateDecompressionAlgorithm(
-                            context.getSelectedDelayCompressionMethod().get().getAlgorithm());
+                            context.getSelectedDelayCompressionMethod()
+                                    .orElse(CompressionMethod.NONE)
+                                    .getAlgorithm());
         }
     }
 
@@ -65,7 +68,9 @@ public class NewCompressMessageHandler extends SshMessageHandler<NewCompressMess
                 && context.getConfig().getRespectDelayCompressionExtension()) {
             context.getPacketLayer()
                     .updateCompressionAlgorithm(
-                            context.getSelectedDelayCompressionMethod().get().getAlgorithm());
+                            context.getSelectedDelayCompressionMethod()
+                                    .orElse(CompressionMethod.NONE)
+                                    .getAlgorithm());
         }
     }
 }

@@ -10,12 +10,7 @@ package de.rub.nds.sshattacker.core.protocol.transport.serializer;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.transport.message.NewCompressMessage;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 public class NewCompressMessageSerializer extends SshMessageSerializer<NewCompressMessage> {
-
-    private static final Logger LOGGER = LogManager.getLogger();
 
     public NewCompressMessageSerializer(NewCompressMessage message) {
         super(message);

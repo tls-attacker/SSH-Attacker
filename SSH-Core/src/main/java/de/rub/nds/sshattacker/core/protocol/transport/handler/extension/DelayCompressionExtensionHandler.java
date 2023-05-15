@@ -57,7 +57,7 @@ public class DelayCompressionExtensionHandler
                 context.getChooser().getServerSupportedDelayCompressionMethods();
         // determine common compression method
         CompressionMethod commonCompressionMethod =
-                this.getCommonCompressionMethod(
+                getCommonCompressionMethod(
                         clientSupportedCompressionMethods, serverSupportedCompressionMethods);
         // set in context
         context.setSelectedDelayCompressionMethod(commonCompressionMethod);

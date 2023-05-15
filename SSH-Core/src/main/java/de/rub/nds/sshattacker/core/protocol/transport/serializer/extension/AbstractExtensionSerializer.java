@@ -23,7 +23,8 @@ public abstract class AbstractExtensionSerializer<E extends AbstractExtension<E>
 
     protected final E extension;
 
-    public AbstractExtensionSerializer(E extension) {
+    protected AbstractExtensionSerializer(E extension) {
+        super();
         this.extension = extension;
     }
 

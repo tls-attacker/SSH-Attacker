@@ -14,7 +14,7 @@ import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 public abstract class AbstractExtensionPreparator<E extends AbstractExtension<E>>
         extends Preparator<E> {
 
-    public AbstractExtensionPreparator(Chooser chooser, E extension) {
+    protected AbstractExtensionPreparator(Chooser chooser, E extension) {
         super(chooser, extension);
     }
 

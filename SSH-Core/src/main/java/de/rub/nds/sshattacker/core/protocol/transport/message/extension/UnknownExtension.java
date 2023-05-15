@@ -19,10 +19,6 @@ public class UnknownExtension extends AbstractExtension<UnknownExtension> {
 
     private ModifiableByteArray value;
 
-    public UnknownExtension() {
-        super();
-    }
-
     public ModifiableInteger getValueLength() {
         return valueLength;
     }
