@@ -11,11 +11,11 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 
 public abstract class SshMessageHandler<T extends SshMessage<T>> extends ProtocolMessageHandler<T> {
 
-    public SshMessageHandler(SshContext context) {
+    protected SshMessageHandler(SshContext context) {
         super(context);
     }
 
-    public SshMessageHandler(SshContext context, T message) {
+    protected SshMessageHandler(SshContext context, T message) {
         super(context, message);
     }
 

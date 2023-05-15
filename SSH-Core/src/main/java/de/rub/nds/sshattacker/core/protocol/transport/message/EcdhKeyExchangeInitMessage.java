@@ -47,19 +47,19 @@ public class EcdhKeyExchangeInitMessage extends SshMessage<EcdhKeyExchangeInitMe
 
     public void setEphemeralPublicKey(
             ModifiableByteArray ephemeralPublicKey, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setEphemeralPublicKeyLength(ephemeralPublicKey.getValue().length);
-        }
         this.ephemeralPublicKey = ephemeralPublicKey;
+        if (adjustLengthField) {
+            setEphemeralPublicKeyLength(this.ephemeralPublicKey.getValue().length);
+        }
     }
 
     public void setEphemeralPublicKey(byte[] ephemeralPublicKey, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setEphemeralPublicKeyLength(ephemeralPublicKey.length);
-        }
         this.ephemeralPublicKey =
                 ModifiableVariableFactory.safelySetValue(
                         this.ephemeralPublicKey, ephemeralPublicKey);
+        if (adjustLengthField) {
+            setEphemeralPublicKeyLength(this.ephemeralPublicKey.getValue().length);
+        }
     }
 
     @Override

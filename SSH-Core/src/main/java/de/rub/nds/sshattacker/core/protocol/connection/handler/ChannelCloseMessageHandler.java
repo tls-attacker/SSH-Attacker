@@ -14,6 +14,7 @@ import de.rub.nds.sshattacker.core.protocol.connection.parser.ChannelCloseMessag
 import de.rub.nds.sshattacker.core.protocol.connection.preparator.ChannelCloseMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.connection.serializer.ChannelMessageSerializer;
 import de.rub.nds.sshattacker.core.state.SshContext;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -36,7 +37,7 @@ public class ChannelCloseMessageHandler extends SshMessageHandler<ChannelCloseMe
             if (!channel.isOpen().getValue()) {
                 LOGGER.warn(
                         "{} received but channel with id {} is not open, continuing anyway.",
-                        this.getClass().getSimpleName(),
+                        getClass().getSimpleName(),
                         message.getRecipientChannelId().getValue());
             } else {
                 channel.setCloseMessageReceived(true);
@@ -47,7 +48,7 @@ public class ChannelCloseMessageHandler extends SshMessageHandler<ChannelCloseMe
         } else {
             LOGGER.warn(
                     "{} received but no channel with id {} found locally, ignoring request to close the channel.",
-                    this.getClass().getSimpleName(),
+                    getClass().getSimpleName(),
                     message.getRecipientChannelId().getValue());
         }
     }

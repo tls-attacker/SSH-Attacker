@@ -9,6 +9,7 @@ package de.rub.nds.sshattacker.core.protocol.connection.parser;
 
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelRequestXonXoffMessage;
 import de.rub.nds.sshattacker.core.util.Converter;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -33,8 +34,8 @@ public class ChannelRequestXonXoffMessageParser
     private void parseClientFlowControl() {
         message.setClientFlowControl(parseByteField(1));
         LOGGER.debug(
-                "Client can do flow control: "
-                        + Converter.byteToBoolean(message.getClientFlowControl().getValue()));
+                "Client can do flow control: {}",
+                Converter.byteToBoolean(message.getClientFlowControl().getValue()));
     }
 
     @Override

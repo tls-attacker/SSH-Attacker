@@ -9,11 +9,10 @@ package de.rub.nds.sshattacker.core.packet.cipher;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.*;
+import de.rub.nds.sshattacker.core.crypto.cipher.AbstractCipher;
 import de.rub.nds.sshattacker.core.crypto.cipher.CipherFactory;
-import de.rub.nds.sshattacker.core.crypto.cipher.DecryptionCipher;
-import de.rub.nds.sshattacker.core.crypto.cipher.EncryptionCipher;
+import de.rub.nds.sshattacker.core.crypto.mac.AbstractMac;
 import de.rub.nds.sshattacker.core.crypto.mac.MacFactory;
-import de.rub.nds.sshattacker.core.crypto.mac.WrappedMac;
 import de.rub.nds.sshattacker.core.exceptions.CryptoException;
 import de.rub.nds.sshattacker.core.packet.AbstractPacket;
 import de.rub.nds.sshattacker.core.packet.BinaryPacket;
@@ -21,51 +20,58 @@ import de.rub.nds.sshattacker.core.packet.BlobPacket;
 import de.rub.nds.sshattacker.core.packet.PacketCryptoComputations;
 import de.rub.nds.sshattacker.core.packet.cipher.keys.KeySet;
 import de.rub.nds.sshattacker.core.state.SshContext;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.math.BigInteger;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class PacketMacedCipher extends PacketCipher {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    /** Cipher for encryption of outgoing packets. */
-    private final EncryptionCipher encryptCipher;
-    /** Cipher for decryption of incoming packets. */
-    private final DecryptionCipher decryptCipher;
-    /** MAC for verification of incoming packets. */
-    private final WrappedMac readMac;
-    /** MAC instance for macing outgoing packets. */
-    private final WrappedMac writeMac;
+    /** Cipher for encryption / decryption of packets. */
+    private final AbstractCipher cipher;
+    /** MAC for integrity protection of packets. */
+    private final AbstractMac mac;
 
     /**
-     * Next IV for packet encryption. Might be null if the encryption algorithm does not use an IV.
+     * Next IV for packet processing. Might be null if the encryption algorithm does not use an IV.
      */
-    private byte[] nextEncryptionIv;
-    /**
-     * Next IV for packet decryption. Might be null if the encryption algorithm does not use an IV.
-     */
-    private byte[] nextDecryptionIv;
+    private byte[] nextIv;
 
     public PacketMacedCipher(
             SshContext context,
             KeySet keySet,
             EncryptionAlgorithm encryptionAlgorithm,
-            MacAlgorithm macAlgorithm) {
-        super(context, keySet, encryptionAlgorithm, macAlgorithm);
+            MacAlgorithm macAlgorithm,
+            CipherMode mode) {
+        super(context, keySet, encryptionAlgorithm, macAlgorithm, mode);
         try {
-            encryptCipher =
-                    CipherFactory.getEncryptionCipher(
-                            encryptionAlgorithm, keySet, getLocalConnectionEndType());
-            decryptCipher =
-                    CipherFactory.getDecryptionCipher(
-                            encryptionAlgorithm, keySet, getLocalConnectionEndType());
-            readMac = MacFactory.getReadMac(macAlgorithm, keySet, getLocalConnectionEndType());
-            writeMac = MacFactory.getWriteMac(macAlgorithm, keySet, getLocalConnectionEndType());
+            cipher =
+                    CipherFactory.getCipher(
+                            encryptionAlgorithm,
+                            keySet == null
+                                    ? null
+                                    : mode == CipherMode.ENCRYPT
+                                            ? keySet.getWriteEncryptionKey(
+                                                    getLocalConnectionEndType())
+                                            : keySet.getReadEncryptionKey(
+                                                    getLocalConnectionEndType()));
+            mac =
+                    MacFactory.getMac(
+                            macAlgorithm,
+                            keySet == null
+                                    ? null
+                                    : mode == CipherMode.ENCRYPT
+                                            ? keySet.getWriteIntegrityKey(
+                                                    getLocalConnectionEndType())
+                                            : keySet.getReadIntegrityKey(
+                                                    getLocalConnectionEndType()));
         } catch (NoSuchAlgorithmException e) {
             throw new UnsupportedOperationException(
                     "Unsupported encryption or MAC algorithm: "
@@ -76,8 +82,11 @@ public class PacketMacedCipher extends PacketCipher {
 
         if (encryptionAlgorithm.getIVSize() > 0) {
             // Encryption algorithm does use an IV
-            nextEncryptionIv = keySet.getWriteIv(getLocalConnectionEndType());
-            nextDecryptionIv = keySet.getReadIv(getLocalConnectionEndType());
+            assert keySet != null;
+            nextIv =
+                    mode == CipherMode.ENCRYPT
+                            ? keySet.getWriteIv(getLocalConnectionEndType())
+                            : keySet.getReadIv(getLocalConnectionEndType());
         }
     }
 
@@ -149,7 +158,7 @@ public class PacketMacedCipher extends PacketCipher {
         }
 
         packet.setMac(
-                writeMac.calculate(
+                mac.calculate(
                         packet.getSequenceNumber().getValue(),
                         computations.getAuthenticatedPacketBytes().getValue()));
         computations.setPaddingValid(true);
@@ -171,19 +180,18 @@ public class PacketMacedCipher extends PacketCipher {
 
         if (encryptionAlgorithm.getIVSize() > 0) {
             // Encryption with IV
-            byte[] iv = nextEncryptionIv;
+            byte[] iv = nextIv;
             if (packet instanceof BinaryPacket) {
                 // Apply modifications to IV (if any)
                 PacketCryptoComputations computations = ((BinaryPacket) packet).getComputations();
                 computations.setIv(iv);
                 iv = computations.getIv().getValue();
             }
-            packet.setCiphertext(encryptCipher.encrypt(plainData, iv));
-            nextEncryptionIv =
-                    extractNextIv(nextEncryptionIv, packet.getCiphertext().getOriginalValue());
+            packet.setCiphertext(cipher.encrypt(plainData, iv));
+            nextIv = extractNextIv(nextIv, packet.getCiphertext().getOriginalValue());
         } else {
             // Encryption without IV
-            packet.setCiphertext(encryptCipher.encrypt(plainData));
+            packet.setCiphertext(cipher.encrypt(plainData));
         }
     }
 
@@ -247,7 +255,7 @@ public class PacketMacedCipher extends PacketCipher {
 
         // Verify MAC and padding
         byte[] shouldMac =
-                readMac.calculate(
+                mac.calculate(
                         packet.getSequenceNumber().getValue(),
                         computations.getAuthenticatedPacketBytes().getValue());
         computations.setMacValid(Arrays.equals(shouldMac, packet.getMac().getValue()));
@@ -269,23 +277,23 @@ public class PacketMacedCipher extends PacketCipher {
                 byte[] remainingBlocks;
                 if (encryptionAlgorithm.getIVSize() > 0) {
                     // Case 1a: Binary packet / First block decrypted / Cipher with IV
-                    computations.setIv(nextDecryptionIv);
+                    computations.setIv(nextIv);
                     byte[] remainingBlocksIv =
                             extractNextIv(
-                                    nextDecryptionIv,
+                                    nextIv,
                                     Arrays.copyOfRange(
                                             packet.getCiphertext().getValue(),
                                             0,
                                             firstBlock.length));
                     remainingBlocks =
-                            decryptCipher.decrypt(
+                            cipher.decrypt(
                                     Arrays.copyOfRange(
                                             ciphertext, firstBlock.length, ciphertext.length),
                                     remainingBlocksIv);
                 } else {
                     // Case 1b: Binary packet / First block decrypted / Cipher without IV
                     remainingBlocks =
-                            decryptCipher.decrypt(
+                            cipher.decrypt(
                                     Arrays.copyOfRange(
                                             ciphertext, firstBlock.length, ciphertext.length));
                 }
@@ -293,31 +301,30 @@ public class PacketMacedCipher extends PacketCipher {
             } else {
                 if (encryptionAlgorithm.getIVSize() > 0) {
                     // Case 2a: Binary packet / First block not decrypted / Cipher with IV
-                    computations.setIv(nextDecryptionIv);
+                    computations.setIv(nextIv);
                     plainData =
-                            decryptCipher.decrypt(
+                            cipher.decrypt(
                                     packet.getCiphertext().getValue(),
                                     computations.getIv().getValue());
                 } else {
                     // Case 2b: Binary packet / First block not decrypted / Cipher without IV
-                    plainData = decryptCipher.decrypt(packet.getCiphertext().getValue());
+                    plainData = cipher.decrypt(packet.getCiphertext().getValue());
                 }
             }
             computations.setPlainPacketBytes(plainData);
         } else {
             if (encryptionAlgorithm.getIVSize() > 0) {
                 // Case 3a: Blob packet / Cipher with IV
-                plainData =
-                        decryptCipher.decrypt(packet.getCiphertext().getValue(), nextDecryptionIv);
+                plainData = cipher.decrypt(packet.getCiphertext().getValue(), nextIv);
             } else {
                 // Case 3b: Blob packet / Cipher without IV
-                plainData = decryptCipher.decrypt(packet.getCiphertext().getValue());
+                plainData = cipher.decrypt(packet.getCiphertext().getValue());
             }
             packet.setCompressedPayload(plainData);
         }
         // Set the IV for the next packet if the encryption algorithm incorporates one
         if (encryptionAlgorithm.getIVSize() > 0) {
-            nextDecryptionIv = extractNextIv(nextDecryptionIv, packet.getCiphertext().getValue());
+            nextIv = extractNextIv(nextIv, packet.getCiphertext().getValue());
         }
     }
 
@@ -340,7 +347,8 @@ public class PacketMacedCipher extends PacketCipher {
                         ctr.mod(
                                 BigInteger.ONE.shiftLeft(
                                         Byte.SIZE * encryptionAlgorithm.getIVSize()));
-                return ArrayConverter.bigIntegerToByteArray(ctr);
+                return ArrayConverter.bigIntegerToNullPaddedByteArray(
+                        ctr, encryptionAlgorithm.getIVSize());
             default:
                 throw new UnsupportedOperationException(
                         "Unable to extract initialization vector for mode: "
@@ -348,28 +356,20 @@ public class PacketMacedCipher extends PacketCipher {
         }
     }
 
-    public byte[] getNextEncryptionIv() {
-        return nextEncryptionIv;
+    public byte[] getNextIv() {
+        return nextIv;
     }
 
-    public byte[] getNextDecryptionIv() {
-        return nextDecryptionIv;
+    public void setNextIv(byte[] nextIv) {
+        this.nextIv = nextIv;
     }
 
-    public EncryptionCipher getEncryptCipher() {
-        return encryptCipher;
+    public AbstractCipher getCipher() {
+        return cipher;
     }
 
-    public DecryptionCipher getDecryptCipher() {
-        return decryptCipher;
-    }
-
-    public WrappedMac getReadMac() {
-        return readMac;
-    }
-
-    public WrappedMac getWriteMac() {
-        return writeMac;
+    public AbstractMac getMac() {
+        return mac;
     }
 
     @Override

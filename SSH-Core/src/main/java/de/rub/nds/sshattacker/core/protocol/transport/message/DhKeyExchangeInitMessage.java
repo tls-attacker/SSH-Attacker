@@ -13,6 +13,7 @@ import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.sshattacker.core.protocol.common.*;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.DhKeyExchangeInitMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
+
 import java.math.BigInteger;
 
 public class DhKeyExchangeInitMessage extends SshMessage<DhKeyExchangeInitMessage> {
@@ -29,9 +30,8 @@ public class DhKeyExchangeInitMessage extends SshMessage<DhKeyExchangeInitMessag
     }
 
     public void setEphemeralPublicKeyLength(int publicKeyLength) {
-        this.ephemeralPublicKeyLength =
-                ModifiableVariableFactory.safelySetValue(
-                        this.ephemeralPublicKeyLength, publicKeyLength);
+        ephemeralPublicKeyLength =
+                ModifiableVariableFactory.safelySetValue(ephemeralPublicKeyLength, publicKeyLength);
     }
 
     public ModifiableBigInteger getEphemeralPublicKey() {
@@ -48,19 +48,19 @@ public class DhKeyExchangeInitMessage extends SshMessage<DhKeyExchangeInitMessag
 
     public void setEphemeralPublicKey(
             ModifiableBigInteger ephemeralPublicKey, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setEphemeralPublicKeyLength(ephemeralPublicKey.getValue().toByteArray().length);
-        }
         this.ephemeralPublicKey = ephemeralPublicKey;
+        if (adjustLengthField) {
+            setEphemeralPublicKeyLength(this.ephemeralPublicKey.getValue().toByteArray().length);
+        }
     }
 
     public void setEphemeralPublicKey(BigInteger ephemeralPublicKey, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setEphemeralPublicKeyLength(ephemeralPublicKey.toByteArray().length);
-        }
         this.ephemeralPublicKey =
                 ModifiableVariableFactory.safelySetValue(
                         this.ephemeralPublicKey, ephemeralPublicKey);
+        if (adjustLengthField) {
+            setEphemeralPublicKeyLength(this.ephemeralPublicKey.getValue().toByteArray().length);
+        }
     }
 
     @Override

@@ -11,17 +11,19 @@ import de.rub.nds.sshattacker.core.exceptions.TransportHandlerConnectException;
 import de.rub.nds.sshattacker.core.state.State;
 import de.rub.nds.sshattacker.core.workflow.DefaultWorkflowExecutor;
 import de.rub.nds.sshattacker.core.workflow.WorkflowExecutor;
-import java.util.concurrent.Callable;
-import java.util.function.Function;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.util.concurrent.Callable;
+import java.util.function.Function;
 
 /** Base class for SSH tasks */
 public abstract class SshTask implements Task, Callable<Task> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private boolean hasError = false;
+    private boolean hasError;
 
     private final int reexecutions;
 
@@ -31,26 +33,28 @@ public abstract class SshTask implements Task, Callable<Task> {
 
     private final long additionalTcpTimeout;
 
-    private Function<State, Integer> beforeTransportPreInitCallback = null;
+    private Function<State, Integer> beforeTransportPreInitCallback;
 
-    private Function<State, Integer> beforeTransportInitCallback = null;
+    private Function<State, Integer> beforeTransportInitCallback;
 
-    private Function<State, Integer> afterTransportInitCallback = null;
+    private Function<State, Integer> afterTransportInitCallback;
 
-    private Function<State, Integer> afterExecutionCallback = null;
+    private Function<State, Integer> afterExecutionCallback;
 
-    public SshTask(int reexecutions) {
+    protected SshTask(int reexecutions) {
+        super();
         this.reexecutions = reexecutions;
         additionalSleepTime = 1000;
         increasingSleepTimes = true;
-        this.additionalTcpTimeout = 5000;
+        additionalTcpTimeout = 5000;
     }
 
-    public SshTask(
+    protected SshTask(
             int reexecutions,
             long additionalSleepTime,
             boolean increasingSleepTimes,
             long additionalTcpTimeout) {
+        super();
         this.reexecutions = reexecutions;
         this.additionalSleepTime = additionalSleepTime;
         this.increasingSleepTimes = increasingSleepTimes;
@@ -96,7 +100,7 @@ public abstract class SshTask implements Task, Callable<Task> {
             }
             if (i < reexecutions) {
                 try {
-                    this.reset();
+                    reset();
                 } catch (Throwable e) {
                     LOGGER.error("Could not reset state!", e);
                     hasError = true;
@@ -155,7 +159,7 @@ public abstract class SshTask implements Task, Callable<Task> {
         this.afterExecutionCallback = afterExecutionCallback;
     }
 
-    public WorkflowExecutor getExecutor(State state) {
+    public static WorkflowExecutor getExecutor(State state) {
         return new DefaultWorkflowExecutor(state);
     }
 }

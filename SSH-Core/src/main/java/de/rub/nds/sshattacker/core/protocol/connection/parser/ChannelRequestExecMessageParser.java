@@ -9,6 +9,7 @@ package de.rub.nds.sshattacker.core.protocol.connection.parser;
 
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelRequestExecMessage;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -32,9 +33,9 @@ public class ChannelRequestExecMessageParser
 
     public void parseCommand() {
         message.setCommandLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-        LOGGER.debug("Command length: " + message.getCommandLength().getValue());
+        LOGGER.debug("Command length: {}", message.getCommandLength().getValue());
         message.setCommand(parseByteString(message.getCommandLength().getValue()));
-        LOGGER.debug("Command: " + message.getCommand().getValue());
+        LOGGER.debug("Command: {}", message.getCommand().getValue());
     }
 
     @Override

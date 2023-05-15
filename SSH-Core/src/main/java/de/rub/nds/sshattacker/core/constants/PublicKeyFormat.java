@@ -7,6 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.constants;
 
+import java.util.Collections;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -108,10 +109,11 @@ public enum PublicKeyFormat {
     public static final Map<String, PublicKeyFormat> map;
 
     static {
-        map = new TreeMap<>();
-        for (PublicKeyFormat format : PublicKeyFormat.values()) {
-            map.put(format.name, format);
+        Map<String, PublicKeyFormat> mutableMap = new TreeMap<>();
+        for (PublicKeyFormat format : values()) {
+            mutableMap.put(format.name, format);
         }
+        map = Collections.unmodifiableMap(mutableMap);
     }
 
     PublicKeyFormat(String name) {

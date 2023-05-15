@@ -8,12 +8,9 @@
 package de.rub.nds.sshattacker.core.packet.cipher;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.sshattacker.core.constants.BinaryPacketConstants;
-import de.rub.nds.sshattacker.core.constants.BinaryPacketField;
-import de.rub.nds.sshattacker.core.constants.EncryptionAlgorithm;
+import de.rub.nds.sshattacker.core.constants.*;
+import de.rub.nds.sshattacker.core.crypto.cipher.AbstractCipher;
 import de.rub.nds.sshattacker.core.crypto.cipher.CipherFactory;
-import de.rub.nds.sshattacker.core.crypto.cipher.DecryptionCipher;
-import de.rub.nds.sshattacker.core.crypto.cipher.EncryptionCipher;
 import de.rub.nds.sshattacker.core.exceptions.CryptoException;
 import de.rub.nds.sshattacker.core.packet.BinaryPacket;
 import de.rub.nds.sshattacker.core.packet.BlobPacket;
@@ -21,48 +18,54 @@ import de.rub.nds.sshattacker.core.packet.PacketCryptoComputations;
 import de.rub.nds.sshattacker.core.packet.cipher.keys.KeySet;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.util.Converter;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.util.Arrays;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
 import javax.crypto.AEADBadTagException;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class PacketGCMCipher extends PacketCipher {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    /** Cipher for encryption and integrity protection of outgoing packets. */
-    private final EncryptionCipher encryptCipher;
-    /** Cipher for decryption and integrity protection of incoming packets. */
-    private final DecryptionCipher decryptCipher;
-    /** Fixed part of the IV for packet encryption. */
-    private final byte[] ivFixedEncryption;
-    /** Fixed part of the IV for packet decryption. */
-    private final byte[] ivFixedDecryption;
-    /** Dynamic part of the encryption IV implemented as a counter variable. */
-    private long ivCtrEncryption;
-    /** Dynamic part of the decryption IV implemented as a counter variable. */
-    private long ivCtrDecryption;
+    /** Cipher for encryption / decryption and integrity protection of packets. */
+    private final AbstractCipher cipher;
+    /** Fixed part of the IV. */
+    private final byte[] ivFixed;
+    /** Dynamic part of the IV implemented as a counter variable. */
+    private long ivCtr;
 
     public PacketGCMCipher(
-            SshContext context, KeySet keySet, EncryptionAlgorithm encryptionAlgorithm) {
-        super(context, keySet, encryptionAlgorithm, null);
-        encryptCipher =
-                CipherFactory.getEncryptionCipher(
-                        encryptionAlgorithm, keySet, getLocalConnectionEndType());
-        decryptCipher =
-                CipherFactory.getDecryptionCipher(
-                        encryptionAlgorithm, keySet, getLocalConnectionEndType());
-        ivFixedEncryption =
-                Arrays.copyOfRange(keySet.getWriteIv(getLocalConnectionEndType()), 0, 4);
-        ivFixedDecryption = Arrays.copyOfRange(keySet.getReadIv(getLocalConnectionEndType()), 0, 4);
-        ivCtrEncryption =
+            SshContext context,
+            KeySet keySet,
+            EncryptionAlgorithm encryptionAlgorithm,
+            CipherMode mode) {
+        super(context, keySet, encryptionAlgorithm, null, mode);
+        cipher =
+                CipherFactory.getCipher(
+                        encryptionAlgorithm,
+                        mode == CipherMode.ENCRYPT
+                                ? keySet.getWriteEncryptionKey(getLocalConnectionEndType())
+                                : keySet.getReadEncryptionKey(getLocalConnectionEndType()));
+        ivFixed =
+                Arrays.copyOfRange(
+                        mode == CipherMode.ENCRYPT
+                                ? keySet.getWriteIv(getLocalConnectionEndType())
+                                : keySet.getReadIv(getLocalConnectionEndType()),
+                        0,
+                        4);
+        ivCtr =
                 Converter.byteArrayToLong(
-                        Arrays.copyOfRange(keySet.getWriteIv(getLocalConnectionEndType()), 4, 12));
-        ivCtrDecryption =
-                Converter.byteArrayToLong(
-                        Arrays.copyOfRange(keySet.getReadIv(getLocalConnectionEndType()), 4, 12));
+                        Arrays.copyOfRange(
+                                mode == CipherMode.ENCRYPT
+                                        ? keySet.getWriteIv(getLocalConnectionEndType())
+                                        : keySet.getReadIv(getLocalConnectionEndType()),
+                                4,
+                                12));
     }
 
     @Override
@@ -86,12 +89,11 @@ public class PacketGCMCipher extends PacketCipher {
                         packet.getCompressedPayload().getValue(),
                         packet.getPadding().getValue()));
         computations.setIv(
-                ArrayConverter.concatenate(
-                        ivFixedEncryption, ArrayConverter.longToUint64Bytes(ivCtrEncryption)));
+                ArrayConverter.concatenate(ivFixed, ArrayConverter.longToUint64Bytes(ivCtr)));
         computations.setAdditionalAuthenticatedData(
                 packet.getLength().getByteArray(BinaryPacketConstants.PACKET_FIELD_LENGTH));
         byte[] authenticatedCiphertext =
-                encryptCipher.encrypt(
+                cipher.encrypt(
                         computations.getPlainPacketBytes().getValue(),
                         computations.getIv().getValue(),
                         computations.getAdditionalAuthenticatedData().getValue());
@@ -116,17 +118,15 @@ public class PacketGCMCipher extends PacketCipher {
 
         computations.setPaddingValid(true);
         computations.setMacValid(true);
-        ivCtrEncryption++;
+        ivCtr++;
     }
 
     @Override
     public void encrypt(BlobPacket packet) throws CryptoException {
-        byte[] iv =
-                ArrayConverter.concatenate(
-                        ivFixedEncryption, ArrayConverter.longToUint64Bytes(ivCtrEncryption));
+        byte[] iv = ArrayConverter.concatenate(ivFixed, ArrayConverter.longToUint64Bytes(ivCtr));
         packet.setCiphertext(
-                encryptCipher.encrypt(packet.getCompressedPayload().getValue(), iv, new byte[0]));
-        ivCtrEncryption++;
+                cipher.encrypt(packet.getCompressedPayload().getValue(), iv, new byte[0]));
+        ivCtr++;
     }
 
     @Override
@@ -140,13 +140,12 @@ public class PacketGCMCipher extends PacketCipher {
         computations.setEncryptionKey(keySet.getReadEncryptionKey(getLocalConnectionEndType()));
 
         computations.setIv(
-                ArrayConverter.concatenate(
-                        ivFixedDecryption, ArrayConverter.longToUint64Bytes(ivCtrDecryption)));
+                ArrayConverter.concatenate(ivFixed, ArrayConverter.longToUint64Bytes(ivCtr)));
         computations.setAdditionalAuthenticatedData(
                 packet.getLength().getByteArray(BinaryPacketConstants.PACKET_FIELD_LENGTH));
         try {
             computations.setPlainPacketBytes(
-                    decryptCipher.decrypt(
+                    cipher.decrypt(
                             ArrayConverter.concatenate(
                                     packet.getCiphertext().getValue(), packet.getMac().getValue()),
                             computations.getIv().getValue(),
@@ -156,7 +155,7 @@ public class PacketGCMCipher extends PacketCipher {
                     "Caught an AEADBadTagException while decrypting the binary packet - returning the packet without decryption",
                     e);
             computations.setMacValid(false);
-            ivCtrDecryption++;
+            ivCtr++;
             return;
         }
         computations.setEncryptedPacketFields(
@@ -179,31 +178,33 @@ public class PacketGCMCipher extends PacketCipher {
         // We got here, so the tag is valid
         computations.setMacValid(true);
         computations.setPaddingValid(isPaddingValid(packet.getPadding().getOriginalValue()));
-        ivCtrDecryption++;
+        ivCtr++;
     }
 
     @Override
     public void decrypt(BlobPacket packet) throws CryptoException {
-        byte[] iv =
-                ArrayConverter.concatenate(
-                        ivFixedEncryption, ArrayConverter.longToUint64Bytes(ivCtrEncryption));
+        byte[] iv = ArrayConverter.concatenate(ivFixed, ArrayConverter.longToUint64Bytes(ivCtr));
         try {
             packet.setCompressedPayload(
-                    decryptCipher.decrypt(packet.getCiphertext().getValue(), iv, new byte[0]));
+                    cipher.decrypt(packet.getCiphertext().getValue(), iv, new byte[0]));
         } catch (AEADBadTagException e) {
             LOGGER.warn(
                     "Caught an AEADBadTagException while decrypting the blob packet - returning the packet without decryption",
                     e);
         }
-        ivCtrDecryption++;
+        ivCtr++;
     }
 
-    public EncryptionCipher getEncryptCipher() {
-        return encryptCipher;
+    public AbstractCipher getCipher() {
+        return cipher;
     }
 
-    public DecryptionCipher getDecryptCipher() {
-        return decryptCipher;
+    public long getIvCtr() {
+        return ivCtr;
+    }
+
+    public void setIvCtr(long ivCtr) {
+        this.ivCtr = ivCtr;
     }
 
     @Override

@@ -12,6 +12,7 @@ import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.sshattacker.core.protocol.authentication.handler.UserAuthKeyboardInteractiveMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
+
 import java.nio.charset.StandardCharsets;
 
 public class UserAuthKeyboardInteractiveMessage
@@ -48,17 +49,19 @@ public class UserAuthKeyboardInteractiveMessage
     }
 
     public void setLanguageTag(ModifiableString languageTag, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setLanguageTagLength(languageTag.getValue().getBytes(StandardCharsets.UTF_8).length);
-        }
         this.languageTag = languageTag;
+        if (adjustLengthField) {
+            setLanguageTagLength(
+                    this.languageTag.getValue().getBytes(StandardCharsets.UTF_8).length);
+        }
     }
 
     public void setLanguageTag(String languageTag, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setLanguageTagLength(languageTag.getBytes(StandardCharsets.UTF_8).length);
-        }
         this.languageTag = ModifiableVariableFactory.safelySetValue(this.languageTag, languageTag);
+        if (adjustLengthField) {
+            setLanguageTagLength(
+                    this.languageTag.getValue().getBytes(StandardCharsets.UTF_8).length);
+        }
     }
 
     public ModifiableInteger getSubMethodsLength() {
@@ -87,17 +90,17 @@ public class UserAuthKeyboardInteractiveMessage
     }
 
     public void setSubMethods(ModifiableString subMethods, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setSubMethodsLength(subMethods.getValue().getBytes(StandardCharsets.UTF_8).length);
-        }
         this.subMethods = subMethods;
+        if (adjustLengthField) {
+            setSubMethodsLength(this.subMethods.getValue().getBytes(StandardCharsets.UTF_8).length);
+        }
     }
 
     public void setSubMethods(String subMethods, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setSubMethodsLength(subMethods.getBytes(StandardCharsets.UTF_8).length);
-        }
         this.subMethods = ModifiableVariableFactory.safelySetValue(this.subMethods, subMethods);
+        if (adjustLengthField) {
+            setSubMethodsLength(this.subMethods.getValue().getBytes(StandardCharsets.UTF_8).length);
+        }
     }
 
     @Override

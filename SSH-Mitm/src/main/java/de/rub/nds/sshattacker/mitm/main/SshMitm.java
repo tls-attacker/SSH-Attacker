@@ -9,6 +9,7 @@ package de.rub.nds.sshattacker.mitm.main;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
+
 import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.config.delegate.GeneralDelegate;
 import de.rub.nds.sshattacker.core.connection.AliasedConnection;
@@ -25,9 +26,11 @@ import de.rub.nds.sshattacker.core.workflow.factory.SshActionFactory;
 import de.rub.nds.sshattacker.mitm.config.MitmCommandConfig;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
-import java.io.*;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.io.*;
 
 public class SshMitm implements Runnable {
 
@@ -36,6 +39,7 @@ public class SshMitm implements Runnable {
     private final String[] args;
 
     public SshMitm(String... args) {
+        super();
         this.args = args;
     }
 
@@ -48,7 +52,7 @@ public class SshMitm implements Runnable {
         try {
             commander.parse(args);
         } catch (ParameterException pe) {
-            LOGGER.error("Could not parse provided parameters. " + pe.getLocalizedMessage());
+            LOGGER.error("Could not parse provided parameters. {}", pe.getLocalizedMessage());
             LOGGER.info("Try -help");
             throw pe;
         }
@@ -64,7 +68,7 @@ public class SshMitm implements Runnable {
 
             WorkflowTrace trace = null;
             if (cmdConfig.getWorkflowInput() != null) {
-                LOGGER.debug("Reading workflow trace from " + cmdConfig.getWorkflowInput());
+                LOGGER.debug("Reading workflow trace from {}", cmdConfig.getWorkflowInput());
                 trace =
                         WorkflowTraceSerializer.insecureRead(
                                 new FileInputStream(cmdConfig.getWorkflowInput()));
@@ -98,7 +102,7 @@ public class SshMitm implements Runnable {
                                         ConnectionEndType.SERVER);
 
                 clientAction.execute(state);
-                if (clientAction.getReceivedMessages().size() > 0) {
+                if (!clientAction.getReceivedMessages().isEmpty()) {
                     state.getWorkflowTrace().addSshAction(clientAction);
                     newMessages = true;
                 }
@@ -108,7 +112,7 @@ public class SshMitm implements Runnable {
                     break;
                 }
                 serverAction.execute(state);
-                if (serverAction.getReceivedMessages().size() > 0) {
+                if (!serverAction.getReceivedMessages().isEmpty()) {
                     state.getWorkflowTrace().addSshAction(serverAction);
                     newMessages = true;
                 }
@@ -124,21 +128,19 @@ public class SshMitm implements Runnable {
             state.storeTrace();
         } catch (WorkflowExecutionException wee) {
             LOGGER.error(
-                    "The SSH protocol flow was not executed completely. "
-                            + wee.getLocalizedMessage()
-                            + " - See debug messages for more details.");
+                    "The SSH protocol flow was not executed completely. {} - See debug messages for more details.",
+                    wee.getLocalizedMessage());
             LOGGER.error(wee.getLocalizedMessage());
             LOGGER.debug(wee);
             throw wee;
         } catch (ConfigurationException ce) {
             LOGGER.error(
-                    "Encountered a ConfigurationException aborting. "
-                            + ce.getLocalizedMessage()
-                            + " - See debug messages for more details.");
+                    "Encountered a ConfigurationException aborting. {} - See debug messages for more details.",
+                    ce.getLocalizedMessage());
             LOGGER.debug(ce.getLocalizedMessage(), ce);
             throw ce;
         } catch (ParameterException pe) {
-            LOGGER.error("Could not parse provided parameters. " + pe.getLocalizedMessage());
+            LOGGER.error("Could not parse provided parameters. {}", pe.getLocalizedMessage());
             LOGGER.info("Try -help");
             throw pe;
         } catch (Exception E) {
@@ -146,7 +148,7 @@ public class SshMitm implements Runnable {
         }
     }
 
-    public State executeMitmWorkflow(Config config, WorkflowTrace trace)
+    public static State executeMitmWorkflow(Config config, WorkflowTrace trace)
             throws ConfigurationException {
         LOGGER.debug("Creating and launching mitm.");
         State state;

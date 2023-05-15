@@ -27,8 +27,8 @@ public class ChannelOpenConfirmationMessage extends ChannelMessage<ChannelOpenCo
     }
 
     public void setSenderChannelId(int modSenderChannel) {
-        this.senderChannelId =
-                ModifiableVariableFactory.safelySetValue(this.senderChannelId, modSenderChannel);
+        senderChannelId =
+                ModifiableVariableFactory.safelySetValue(senderChannelId, modSenderChannel);
     }
 
     public ModifiableInteger getWindowSize() {

@@ -13,6 +13,7 @@ import de.rub.nds.sshattacker.core.protocol.connection.parser.ChannelRequestExit
 import de.rub.nds.sshattacker.core.protocol.connection.preparator.ChannelRequestExitSignalMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.connection.serializer.ChannelRequestExitSignalMessageSerializer;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.util.Converter;
 
 public class ChannelRequestExitSignalMessageHandler
         extends SshMessageHandler<ChannelRequestExitSignalMessage> {
@@ -27,7 +28,11 @@ public class ChannelRequestExitSignalMessageHandler
     }
 
     @Override
-    public void adjustContext() {}
+    public void adjustContext() {
+        if (Converter.byteToBoolean(message.getWantReply().getValue())) {
+            context.getChannelManager().addToChannelRequestResponseQueue(message);
+        }
+    }
 
     @Override
     public ChannelRequestExitSignalMessageParser getParser(byte[] array) {

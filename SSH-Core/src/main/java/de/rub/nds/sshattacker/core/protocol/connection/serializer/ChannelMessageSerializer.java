@@ -10,6 +10,7 @@ package de.rub.nds.sshattacker.core.protocol.connection.serializer;
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelMessage;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -22,7 +23,7 @@ public class ChannelMessageSerializer<T extends ChannelMessage<T>> extends SshMe
     }
 
     private void serializeRecipientChannel() {
-        LOGGER.debug("Recipient channel id: " + message.getRecipientChannelId().getValue());
+        LOGGER.debug("Recipient channel id: {}", message.getRecipientChannelId().getValue());
         appendInt(message.getRecipientChannelId().getValue(), DataFormatConstants.UINT32_SIZE);
     }
 

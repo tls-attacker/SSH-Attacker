@@ -10,6 +10,7 @@ package de.rub.nds.sshattacker.core.protocol.transport.parser;
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 import de.rub.nds.sshattacker.core.protocol.transport.message.DhGexKeyExchangeRequestMessage;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -32,7 +33,7 @@ public class DhGexKeyExchangeRequestMessageParser
     }
 
     public void parseMinimalGroupSize() {
-        message.setMinimalGroupSize((parseIntField(DataFormatConstants.UINT32_SIZE)));
+        message.setMinimalGroupSize(parseIntField(DataFormatConstants.UINT32_SIZE));
         LOGGER.debug("Minimal DH group size: {} bits", message.getMinimalGroupSize().getValue());
     }
 

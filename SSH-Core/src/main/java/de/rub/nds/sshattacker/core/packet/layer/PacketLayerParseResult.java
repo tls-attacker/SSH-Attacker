@@ -8,6 +8,7 @@
 package de.rub.nds.sshattacker.core.packet.layer;
 
 import de.rub.nds.sshattacker.core.packet.AbstractPacket;
+
 import java.util.Optional;
 
 public class PacketLayerParseResult {
@@ -24,6 +25,7 @@ public class PacketLayerParseResult {
 
     public PacketLayerParseResult(
             AbstractPacket parsedPacket, int parsedByteCount, boolean softParse) {
+        super();
         this.parsedPacket = parsedPacket;
         this.parsedByteCount = parsedByteCount;
         this.softParse = softParse;

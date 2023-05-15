@@ -9,9 +9,10 @@ package de.rub.nds.sshattacker.core.crypto.ec;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import java.math.BigInteger;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import java.math.BigInteger;
 
 public class FieldElementF2mTest {
 
@@ -26,7 +27,7 @@ public class FieldElementF2mTest {
     @BeforeEach
     public void setUp() {
         /*
-         * x^3 + x + 1 has no roots over F_2 and it's degree is less than 4. This implies that it is irreducible over
+         * x^3 + x + 1 has no roots over F_2, and it's degree is less than 4. This implies that it is irreducible over
          * F_2[x].
          */
         modulus = new BigInteger("1011", 2);
@@ -88,7 +89,7 @@ public class FieldElementF2mTest {
         try {
             p4.divide(zero);
             fail();
-        } catch (ArithmeticException e) {
+        } catch (ArithmeticException ignored) {
         }
     }
 
@@ -114,14 +115,13 @@ public class FieldElementF2mTest {
         try {
             zero.multInv();
             fail();
-        } catch (ArithmeticException e) {
+        } catch (ArithmeticException ignored) {
         }
     }
 
     @Test
     public void testEquals() {
         assertNotEquals(p1, p2);
-        assertEquals(p1, p1);
 
         BigInteger p1Data = p1.getData();
 

@@ -7,10 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.crypto.ec;
 
-import java.io.Serializable;
 import java.math.BigInteger;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  * An element of a galois field F_{2^m}.<br>
@@ -19,9 +16,7 @@ import org.apache.logging.log4j.Logger;
  * These polynomials are represented by BigInteger bit-strings, where the i-th bit represents the
  * i-th coefficient.
  */
-public class FieldElementF2m extends FieldElement implements Serializable {
-
-    private static final Logger LOGGER = LogManager.getLogger();
+public class FieldElementF2m extends FieldElement {
 
     /**
      * Instantiates an element of a galois field F{2^m}.
@@ -34,24 +29,20 @@ public class FieldElementF2m extends FieldElement implements Serializable {
         super(data, modulus);
     }
 
-    private FieldElementF2m() {
-        super(null, null);
-    }
-
     @Override
-    public FieldElement add(FieldElement f) {
+    public FieldElement add(FieldElement element) {
         // Coefficients are added mod 2.
-        BigInteger tmp = this.getData().xor(f.getData());
-        return new FieldElementF2m(tmp, this.getModulus());
+        BigInteger tmp = getData().xor(element.getData());
+        return new FieldElementF2m(tmp, getModulus());
     }
 
     @Override
-    public FieldElement mult(FieldElement f) {
+    public FieldElement mult(FieldElement element) {
         // Binary polynomial school book multiplication.
 
-        BigInteger thisData = this.getData();
-        BigInteger fieldData = f.getData();
-        BigInteger tmp = new BigInteger("0");
+        BigInteger thisData = getData();
+        BigInteger fieldData = element.getData();
+        BigInteger tmp = BigInteger.ZERO;
 
         for (int i = 0; i < fieldData.bitLength(); i++) {
             if (fieldData.testBit(i)) {
@@ -59,14 +50,14 @@ public class FieldElementF2m extends FieldElement implements Serializable {
             }
         }
 
-        tmp = this.reduce(tmp);
-        return new FieldElementF2m(tmp, this.getModulus());
+        tmp = reduce(tmp);
+        return new FieldElementF2m(tmp, getModulus());
     }
 
     @Override
     public FieldElement addInv() {
         /*
-         * The characteristic of F_{2^m} is 2. Therefore every element is it's
+         * The characteristic of F_{2^m} is 2. Therefore, every element is its
          * own additive inverse. Like this.subtract(), this method is probably
          * never needed.
          */
@@ -75,33 +66,34 @@ public class FieldElementF2m extends FieldElement implements Serializable {
 
     @Override
     public FieldElement multInv() {
-        if (this.getData().equals(BigInteger.ZERO)) {
-            throw new ArithmeticException();
+        if (getData().equals(BigInteger.ZERO)) {
+            throw new ArithmeticException(
+                    "Element 0 does not have a multiplicative inverse in GF(2^m)");
         }
 
-        if (this.getData().equals(BigInteger.ONE)) {
+        if (getData().equals(BigInteger.ONE)) {
             return this;
         }
 
         // Polynomial EEA:
-        BigInteger r2 = this.getModulus();
-        BigInteger r1 = this.getData();
-        BigInteger t2 = new BigInteger("0");
+        BigInteger r2 = getModulus();
+        BigInteger r1 = getData();
+        BigInteger t2 = BigInteger.ZERO;
         BigInteger t1 = BigInteger.ONE;
 
         do {
-            BigInteger[] division = this.polynomialDivision(r2, r1);
+            BigInteger[] division = polynomialDivision(r2, r1);
             // r = r2 mod r1
             BigInteger r = division[1];
             // q = (r2 - r) / r1
             BigInteger q = division[0];
 
             // t = t2 - (t1 * q)
-            FieldElementF2m pointT1Polynomial = new FieldElementF2m(t1, this.getModulus());
-            FieldElementF2m pointQPolynomial = new FieldElementF2m(q, this.getModulus());
+            FieldElementF2m pointT1Polynomial = new FieldElementF2m(t1, getModulus());
+            FieldElementF2m pointQPolynomial = new FieldElementF2m(q, getModulus());
 
             BigInteger t = pointT1Polynomial.mult(pointQPolynomial).getData();
-            t = this.reduce(t);
+            t = reduce(t);
             t = t2.xor(t);
 
             t2 = t1;
@@ -112,7 +104,7 @@ public class FieldElementF2m extends FieldElement implements Serializable {
         } while (!r1.equals(BigInteger.ONE) && !r1.equals(BigInteger.ZERO));
 
         // t1 * this.getData() == 1
-        return new FieldElementF2m(t1, this.getModulus());
+        return new FieldElementF2m(t1, getModulus());
     }
 
     /**
@@ -123,11 +115,12 @@ public class FieldElementF2m extends FieldElement implements Serializable {
      * @param f A BigInteger representing a binary polynomial.
      * @param p A BigInteger representing a binary polynomial.
      */
-    private BigInteger[] polynomialDivision(BigInteger f, BigInteger p) {
+    private static BigInteger[] polynomialDivision(
+            @SuppressWarnings("StandardVariableNames") BigInteger f, BigInteger p) {
         int modLength = p.bitLength();
-        BigInteger q = new BigInteger("0");
+        BigInteger q = BigInteger.ZERO;
         while (f.bitLength() >= modLength && modLength != 0) {
-            BigInteger tmp = new BigInteger("1");
+            BigInteger tmp = BigInteger.ONE;
             tmp = tmp.shiftLeft(f.bitLength() - modLength);
             q = q.xor(tmp);
 
@@ -140,21 +133,23 @@ public class FieldElementF2m extends FieldElement implements Serializable {
     }
 
     /**
-     * Returns f mod this.getModulus().
+     * Returns polynomial mod this.getModulus().
      *
-     * @param f A BigInteger representing a binary polynomial.
+     * @param polynomial A BigInteger representing a binary polynomial.
      */
-    private BigInteger reduce(BigInteger f) {
-        return this.polynomialDivision(f, this.getModulus())[1];
+    private BigInteger reduce(BigInteger polynomial) {
+        return polynomialDivision(polynomial, getModulus())[1];
     }
 
     /**
-     * Returns (this^2)^exponent)
+     * Computes the square of this and then potentiate the result with exponent. The result is
+     * (this^2)^exponent.
      *
      * @param exponent An Integer representing the exponent.
+     * @return The resulting field element of (this^2)^exponent
      */
     public FieldElementF2m squarePow(int exponent) {
-        FieldElement square = this.mult(this);
+        FieldElement square = mult(this);
         for (int i = 1; i < exponent; i++) {
             square = square.mult(square);
         }

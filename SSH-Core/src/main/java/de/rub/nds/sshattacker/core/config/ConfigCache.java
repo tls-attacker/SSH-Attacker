@@ -14,6 +14,7 @@ public class ConfigCache {
     private final Config cachedConfig;
 
     public ConfigCache(Config cachedConfig) {
+        super();
         this.cachedConfig = cachedConfig;
     }
 

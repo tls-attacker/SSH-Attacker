@@ -25,6 +25,10 @@ public class GlobalRequestUnknownMessage extends GlobalRequestMessage<GlobalRequ
                 ModifiableVariableFactory.safelySetValue(this.typeSpecificData, typeSpecificData);
     }
 
+    public void setTypeSpecificData(ModifiableByteArray typeSpecificData) {
+        this.typeSpecificData = typeSpecificData;
+    }
+
     @Override
     public GlobalRequestUnknownMessageHandler getHandler(SshContext context) {
         return new GlobalRequestUnknownMessageHandler(context, this);

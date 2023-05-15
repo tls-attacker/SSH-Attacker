@@ -52,7 +52,7 @@ public class EcdhKeyExchangeReplyMessage extends SshMessage<EcdhKeyExchangeReply
 
     @Override
     public SshPublicKey<?, ?> getHostKey() {
-        return PublicKeyHelper.parse(this.hostKeyBytes.getValue());
+        return PublicKeyHelper.parse(hostKeyBytes.getValue());
     }
 
     @Override
@@ -67,19 +67,19 @@ public class EcdhKeyExchangeReplyMessage extends SshMessage<EcdhKeyExchangeReply
 
     @Override
     public void setHostKeyBytes(ModifiableByteArray hostKeyBytes, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setHostKeyBytesLength(hostKeyBytes.getValue().length);
-        }
         this.hostKeyBytes = hostKeyBytes;
+        if (adjustLengthField) {
+            setHostKeyBytesLength(this.hostKeyBytes.getValue().length);
+        }
     }
 
     @Override
     public void setHostKeyBytes(byte[] hostKeyBytes, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setHostKeyBytesLength(hostKeyBytes.length);
-        }
         this.hostKeyBytes =
                 ModifiableVariableFactory.safelySetValue(this.hostKeyBytes, hostKeyBytes);
+        if (adjustLengthField) {
+            setHostKeyBytesLength(this.hostKeyBytes.getValue().length);
+        }
     }
 
     public ModifiableInteger getEphemeralPublicKeyLength() {
@@ -110,19 +110,19 @@ public class EcdhKeyExchangeReplyMessage extends SshMessage<EcdhKeyExchangeReply
 
     public void setEphemeralPublicKey(
             ModifiableByteArray ephemeralPublicKey, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setEphemeralPublicKeyLength(ephemeralPublicKey.getValue().length);
-        }
         this.ephemeralPublicKey = ephemeralPublicKey;
+        if (adjustLengthField) {
+            setEphemeralPublicKeyLength(this.ephemeralPublicKey.getValue().length);
+        }
     }
 
     public void setEphemeralPublicKey(byte[] ephemeralPublicKey, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setEphemeralPublicKeyLength(ephemeralPublicKey.length);
-        }
         this.ephemeralPublicKey =
                 ModifiableVariableFactory.safelySetValue(
                         this.ephemeralPublicKey, ephemeralPublicKey);
+        if (adjustLengthField) {
+            setEphemeralPublicKeyLength(this.ephemeralPublicKey.getValue().length);
+        }
     }
 
     @Override
@@ -158,18 +158,18 @@ public class EcdhKeyExchangeReplyMessage extends SshMessage<EcdhKeyExchangeReply
 
     @Override
     public void setSignature(ModifiableByteArray signature, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setSignatureLength(signature.getValue().length);
-        }
         this.signature = signature;
+        if (adjustLengthField) {
+            setSignatureLength(this.signature.getValue().length);
+        }
     }
 
     @Override
     public void setSignature(byte[] signature, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setSignatureLength(signature.length);
-        }
         this.signature = ModifiableVariableFactory.safelySetValue(this.signature, signature);
+        if (adjustLengthField) {
+            setSignatureLength(this.signature.getValue().length);
+        }
     }
 
     @Override

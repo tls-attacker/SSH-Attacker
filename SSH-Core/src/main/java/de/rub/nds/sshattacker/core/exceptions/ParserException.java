@@ -9,7 +9,9 @@ package de.rub.nds.sshattacker.core.exceptions;
 
 public class ParserException extends RuntimeException {
 
-    public ParserException() {}
+    public ParserException() {
+        super();
+    }
 
     public ParserException(String message) {
         super(message);

@@ -10,7 +10,7 @@ package de.rub.nds.sshattacker.core.packet.layer;
 import de.rub.nds.sshattacker.core.constants.PacketLayerType;
 import de.rub.nds.sshattacker.core.state.SshContext;
 
-public class PacketLayerFactory {
+public final class PacketLayerFactory {
 
     public static AbstractPacketLayer getPacketLayer(PacketLayerType type, SshContext context) {
         switch (type) {
@@ -24,5 +24,7 @@ public class PacketLayerFactory {
         }
     }
 
-    private PacketLayerFactory() {}
+    private PacketLayerFactory() {
+        super();
+    }
 }

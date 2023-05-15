@@ -8,17 +8,21 @@
 package de.rub.nds.sshattacker.core.packet.crypto;
 
 import de.rub.nds.sshattacker.core.packet.cipher.PacketCipher;
-import java.util.ArrayList;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.ArrayList;
+
+@SuppressWarnings("AbstractClassWithoutAbstractMethods")
 public abstract class PacketCryptoUnit {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    protected ArrayList<PacketCipher> packetCipherList;
+    private final ArrayList<PacketCipher> packetCipherList;
 
-    public PacketCryptoUnit(PacketCipher packetCipher) {
+    PacketCryptoUnit(PacketCipher packetCipher) {
+        super();
         packetCipherList = new ArrayList<>();
         packetCipherList.add(0, packetCipher);
     }
@@ -31,7 +35,7 @@ public abstract class PacketCryptoUnit {
         if (packetCipherList.size() > epoch) {
             return packetCipherList.get(epoch);
         } else {
-            LOGGER.warn("Got no PacketCipher for epoch: " + epoch + " using epoch 0 cipher");
+            LOGGER.warn("Got no PacketCipher for epoch: {} using epoch 0 cipher", epoch);
             return packetCipherList.get(0);
         }
     }

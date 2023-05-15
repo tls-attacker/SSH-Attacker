@@ -9,12 +9,15 @@ package de.rub.nds.sshattacker.core.config.delegate;
 
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.ParameterException;
+
 import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.connection.OutboundConnection;
 import de.rub.nds.sshattacker.core.constants.RunningModeType;
 import de.rub.nds.sshattacker.core.exceptions.ConfigurationException;
-import java.net.*;
+
 import org.bouncycastle.util.IPAddress;
+
+import java.net.*;
 
 public class ClientDelegate extends Delegate {
 
@@ -24,9 +27,7 @@ public class ClientDelegate extends Delegate {
             names = "-connect",
             required = true,
             description = "Who to connect to. Syntax: localhost:22")
-    private String host = null;
-
-    public ClientDelegate() {}
+    private String host;
 
     public String getHost() {
         return host;
@@ -80,21 +81,21 @@ public class ClientDelegate extends Delegate {
         }
     }
 
-    private String getIpForHost(String host) {
+    private static String getIpForHost(String host) {
         try {
             InetAddress inetAddress = InetAddress.getByName(host);
             return inetAddress.getHostAddress();
         } catch (UnknownHostException ex) {
-            LOGGER.warn("Could not resolve host \"" + host + "\" returning anyways", ex);
+            LOGGER.warn("Could not resolve host \"{}\" returning anyways", host, ex);
             return host;
         }
     }
 
-    private String getHostForIp(String ip) {
+    private static String getHostForIp(String ip) {
         try {
             return InetAddress.getByName(ip).getCanonicalHostName();
         } catch (UnknownHostException ex) {
-            LOGGER.warn("Could not perform reverse DNS for \"" + ip + "\"", ex);
+            LOGGER.warn("Could not perform reverse DNS for \"{}\"", ip, ex);
             return ip;
         }
     }

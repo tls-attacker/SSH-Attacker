@@ -11,6 +11,7 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 import de.rub.nds.sshattacker.core.protocol.transport.message.EcdhKeyExchangeInitMessage;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -34,14 +35,13 @@ public class EcdhKeyExchangeInitMessageParser extends SshMessageParser<EcdhKeyEx
     private void parseEphemeralPublicKey() {
         message.setEphemeralPublicKeyLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
         LOGGER.debug(
-                "Ephemeral public key (client) length: "
-                        + message.getEphemeralPublicKeyLength().getValue());
+                "Ephemeral public key (client) length: {}",
+                message.getEphemeralPublicKeyLength().getValue());
         message.setEphemeralPublicKey(
                 parseByteArrayField(message.getEphemeralPublicKeyLength().getValue()));
         LOGGER.debug(
-                "Ephemeral public key (client): "
-                        + ArrayConverter.bytesToRawHexString(
-                                message.getEphemeralPublicKey().getValue()));
+                "Ephemeral public key (client): {}",
+                ArrayConverter.bytesToRawHexString(message.getEphemeralPublicKey().getValue()));
     }
 
     @Override

@@ -22,6 +22,7 @@ public class FingerprintTaskVectorPair<T extends Vector> {
     private final T vector;
 
     public FingerprintTaskVectorPair(FingerPrintTask fingerPrintTask, T vector) {
+        super();
         this.fingerPrintTask = fingerPrintTask;
         this.vector = vector;
     }

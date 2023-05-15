@@ -11,6 +11,7 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.transport.message.IgnoreMessage;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -23,9 +24,9 @@ public class IgnoreMessageSerializer extends SshMessageSerializer<IgnoreMessage>
     }
 
     private void serializeData() {
-        LOGGER.debug("Data length: " + message.getDataLength().getValue());
+        LOGGER.debug("Data length: {}", message.getDataLength().getValue());
         appendInt(message.getDataLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
-        LOGGER.debug("Data: " + ArrayConverter.bytesToRawHexString(message.getData().getValue()));
+        LOGGER.debug("Data: {}", ArrayConverter.bytesToRawHexString(message.getData().getValue()));
         appendBytes(message.getData().getValue());
     }
 

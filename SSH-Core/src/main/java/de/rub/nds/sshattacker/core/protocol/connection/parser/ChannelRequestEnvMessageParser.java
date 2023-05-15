@@ -7,8 +7,11 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.parser;
 
+import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeString;
+
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelRequestEnvMessage;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -32,16 +35,18 @@ public class ChannelRequestEnvMessageParser
 
     public void parseVariableName() {
         message.setVariableNameLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-        LOGGER.debug("Variable name length: " + message.getVariableNameLength().getValue());
+        LOGGER.debug("Variable name length: {}", message.getVariableNameLength().getValue());
         message.setVariableName(parseByteString(message.getVariableNameLength().getValue()));
-        LOGGER.debug("Variable name: " + message.getVariableName().getValue());
+        LOGGER.debug(
+                "Variable name: {}", backslashEscapeString(message.getVariableName().getValue()));
     }
 
     public void parseVariableValue() {
         message.setVariableValueLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-        LOGGER.debug("Variable value length: " + message.getVariableValueLength().getValue());
+        LOGGER.debug("Variable value length: {}", message.getVariableValueLength().getValue());
         message.setVariableValue(parseByteString(message.getVariableValueLength().getValue()));
-        LOGGER.debug("Variable value: " + message.getVariableValue().getValue());
+        LOGGER.debug(
+                "Variable value: {}", backslashEscapeString(message.getVariableValue().getValue()));
     }
 
     @Override

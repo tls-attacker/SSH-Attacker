@@ -13,6 +13,7 @@ import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.sshattacker.core.protocol.authentication.handler.UserAuthPkOkMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
 import de.rub.nds.sshattacker.core.state.SshContext;
+
 import java.nio.charset.StandardCharsets;
 
 public class UserAuthPkOkMessage extends SshMessage<UserAuthPkOkMessage> {
@@ -37,19 +38,20 @@ public class UserAuthPkOkMessage extends SshMessage<UserAuthPkOkMessage> {
     }
 
     public void setPubkeyAlgName(ModifiableString pubkeyAlgName, boolean adjustLengthField) {
+        this.pubkeyAlgName = pubkeyAlgName;
         if (adjustLengthField) {
             setPubkeyAlgNameLength(
-                    pubkeyAlgName.getValue().getBytes(StandardCharsets.US_ASCII).length);
+                    this.pubkeyAlgName.getValue().getBytes(StandardCharsets.US_ASCII).length);
         }
-        this.pubkeyAlgName = pubkeyAlgName;
     }
 
     public void setPubkeyAlgName(String pubkeyAlgName, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setPubkeyAlgNameLength(pubkeyAlgName.getBytes(StandardCharsets.US_ASCII).length);
-        }
         this.pubkeyAlgName =
                 ModifiableVariableFactory.safelySetValue(this.pubkeyAlgName, pubkeyAlgName);
+        if (adjustLengthField) {
+            setPubkeyAlgNameLength(
+                    this.pubkeyAlgName.getValue().getBytes(StandardCharsets.US_ASCII).length);
+        }
     }
 
     public void setPubkeyAlgName(ModifiableString pubkeyAlgName) {
@@ -74,17 +76,17 @@ public class UserAuthPkOkMessage extends SshMessage<UserAuthPkOkMessage> {
     }
 
     public void setPubkey(ModifiableString pubkey, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setPubkeyLength(pubkey.getValue().getBytes(StandardCharsets.US_ASCII).length);
-        }
         this.pubkey = pubkey;
+        if (adjustLengthField) {
+            setPubkeyLength(this.pubkey.getValue().getBytes(StandardCharsets.US_ASCII).length);
+        }
     }
 
     public void setPubkey(String pubkey, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setPubkeyLength(pubkey.getBytes(StandardCharsets.US_ASCII).length);
-        }
         this.pubkey = ModifiableVariableFactory.safelySetValue(this.pubkey, pubkey);
+        if (adjustLengthField) {
+            setPubkeyLength(this.pubkey.getValue().getBytes(StandardCharsets.US_ASCII).length);
+        }
     }
 
     public void setPubkey(ModifiableString pubkey) {

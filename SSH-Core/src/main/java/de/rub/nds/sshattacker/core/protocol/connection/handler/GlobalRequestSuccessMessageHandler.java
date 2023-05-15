@@ -28,7 +28,7 @@ public class GlobalRequestSuccessMessageHandler
 
     @Override
     public void adjustContext() {
-        // TODO: Handle RequestSucessMessage
+        // TODO: Handle RequestSuccessMessage
     }
 
     @Override

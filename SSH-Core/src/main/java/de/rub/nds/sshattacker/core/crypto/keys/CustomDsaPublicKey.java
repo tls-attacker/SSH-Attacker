@@ -10,6 +10,7 @@ package de.rub.nds.sshattacker.core.crypto.keys;
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlRootElement;
+
 import java.math.BigInteger;
 import java.security.interfaces.DSAParams;
 import java.security.interfaces.DSAPublicKey;
@@ -28,10 +29,12 @@ public class CustomDsaPublicKey extends CustomPublicKey implements DSAPublicKey 
     // Public key
     private BigInteger y;
 
-    @SuppressWarnings("unused")
-    public CustomDsaPublicKey() {}
+    public CustomDsaPublicKey() {
+        super();
+    }
 
     public CustomDsaPublicKey(BigInteger p, BigInteger q, BigInteger g, BigInteger y) {
+        super();
         this.p = p;
         this.q = q;
         this.g = g;

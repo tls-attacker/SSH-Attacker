@@ -12,6 +12,7 @@ import de.rub.nds.sshattacker.core.constants.NamedEcGroup;
 import de.rub.nds.sshattacker.core.constants.PublicKeyFormat;
 import de.rub.nds.sshattacker.core.crypto.keys.XCurveEcPublicKey;
 import de.rub.nds.sshattacker.core.protocol.common.Serializer;
+
 import java.nio.charset.StandardCharsets;
 
 public class XCurvePublicKeySerializer extends Serializer<XCurveEcPublicKey> {
@@ -19,6 +20,7 @@ public class XCurvePublicKeySerializer extends Serializer<XCurveEcPublicKey> {
     private final XCurveEcPublicKey publicKey;
 
     public XCurvePublicKeySerializer(XCurveEcPublicKey publicKey) {
+        super();
         this.publicKey = publicKey;
     }
 

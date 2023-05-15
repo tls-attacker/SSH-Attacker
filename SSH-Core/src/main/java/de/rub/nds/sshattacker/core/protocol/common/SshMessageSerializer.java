@@ -10,7 +10,7 @@ package de.rub.nds.sshattacker.core.protocol.common;
 public abstract class SshMessageSerializer<T extends SshMessage<T>>
         extends ProtocolMessageSerializer<T> {
 
-    public SshMessageSerializer(T message) {
+    protected SshMessageSerializer(T message) {
         super(message);
     }
 

@@ -7,11 +7,15 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.serializer;
 
+import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeString;
+
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelRequestSubsystemMessage;
-import java.nio.charset.StandardCharsets;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.nio.charset.StandardCharsets;
 
 public class ChannelRequestSubsystemMessageSerializer
         extends ChannelRequestMessageSerializer<ChannelRequestSubsystemMessage> {
@@ -23,11 +27,12 @@ public class ChannelRequestSubsystemMessageSerializer
     }
 
     public void serializeSubsystemName() {
-        LOGGER.debug("Subsystem name length: " + message.getSubsystemNameLength().getValue());
+        LOGGER.debug("Subsystem name length: {}", message.getSubsystemNameLength().getValue());
         appendInt(
                 message.getSubsystemNameLength().getValue(),
                 DataFormatConstants.STRING_SIZE_LENGTH);
-        LOGGER.debug("Subsytem name: " + message.getSubsystemName().getValue());
+        LOGGER.debug(
+                "Subsytem name: {}", backslashEscapeString(message.getSubsystemName().getValue()));
         appendString(message.getSubsystemName().getValue(), StandardCharsets.UTF_8);
     }
 

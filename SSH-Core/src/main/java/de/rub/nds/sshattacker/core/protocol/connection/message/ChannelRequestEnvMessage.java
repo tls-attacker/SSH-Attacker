@@ -12,6 +12,7 @@ import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.sshattacker.core.protocol.connection.handler.ChannelRequestEnvMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
+
 import java.nio.charset.StandardCharsets;
 
 public class ChannelRequestEnvMessage extends ChannelRequestMessage<ChannelRequestEnvMessage> {
@@ -35,18 +36,20 @@ public class ChannelRequestEnvMessage extends ChannelRequestMessage<ChannelReque
     }
 
     public void setVariableName(ModifiableString variableName, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setVariableNameLength(variableName.getValue().getBytes(StandardCharsets.UTF_8).length);
-        }
         this.variableName = variableName;
+        if (adjustLengthField) {
+            setVariableNameLength(
+                    this.variableName.getValue().getBytes(StandardCharsets.UTF_8).length);
+        }
     }
 
     public void setVariableName(String variableName, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setVariableNameLength(variableName.getBytes(StandardCharsets.UTF_8).length);
-        }
         this.variableName =
                 ModifiableVariableFactory.safelySetValue(this.variableName, variableName);
+        if (adjustLengthField) {
+            setVariableNameLength(
+                    this.variableName.getValue().getBytes(StandardCharsets.UTF_8).length);
+        }
     }
 
     public ModifiableInteger getVariableNameLength() {
@@ -77,19 +80,20 @@ public class ChannelRequestEnvMessage extends ChannelRequestMessage<ChannelReque
     }
 
     public void setVariableValue(ModifiableString variableValue, boolean adjustLengthField) {
+        this.variableValue = variableValue;
         if (adjustLengthField) {
             setVariableValueLength(
-                    variableValue.getValue().getBytes(StandardCharsets.UTF_8).length);
+                    this.variableValue.getValue().getBytes(StandardCharsets.UTF_8).length);
         }
-        this.variableValue = variableValue;
     }
 
     public void setVariableValue(String variableValue, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setVariableValueLength(variableValue.getBytes(StandardCharsets.UTF_8).length);
-        }
         this.variableValue =
                 ModifiableVariableFactory.safelySetValue(this.variableValue, variableValue);
+        if (adjustLengthField) {
+            setVariableValueLength(
+                    this.variableValue.getValue().getBytes(StandardCharsets.UTF_8).length);
+        }
     }
 
     public ModifiableInteger getVariableValueLength() {

@@ -10,9 +10,11 @@ package de.rub.nds.sshattacker.core.protocol.transport.serializer;
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.transport.message.RsaKeyExchangeSecretMessage;
-import java.util.Arrays;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.util.Arrays;
 
 public class RsaKeyExchangeSecretMessageSerializer
         extends SshMessageSerializer<RsaKeyExchangeSecretMessage> {
@@ -24,12 +26,12 @@ public class RsaKeyExchangeSecretMessageSerializer
     }
 
     private void serializeEncryptedSecret() {
-        LOGGER.debug("Encrypted secret length: " + message.getEncryptedSecretLength().getValue());
+        LOGGER.debug("Encrypted secret length: {}", message.getEncryptedSecretLength().getValue());
         appendInt(
                 message.getEncryptedSecretLength().getValue(),
                 DataFormatConstants.MPINT_SIZE_LENGTH);
         LOGGER.debug(
-                "Encrypted secret: " + Arrays.toString(message.getEncryptedSecret().getValue()));
+                "Encrypted secret: {}", Arrays.toString(message.getEncryptedSecret().getValue()));
         appendBytes(message.getEncryptedSecret().getValue());
     }
 

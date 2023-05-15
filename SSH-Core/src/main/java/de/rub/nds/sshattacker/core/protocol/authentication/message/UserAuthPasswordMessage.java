@@ -14,6 +14,7 @@ import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.sshattacker.core.protocol.authentication.handler.UserAuthPasswordMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.util.Converter;
+
 import java.nio.charset.StandardCharsets;
 
 public class UserAuthPasswordMessage extends UserAuthRequestMessage<UserAuthPasswordMessage> {
@@ -67,17 +68,17 @@ public class UserAuthPasswordMessage extends UserAuthRequestMessage<UserAuthPass
     }
 
     public void setPassword(ModifiableString password, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setPasswordLength(password.getValue().getBytes(StandardCharsets.UTF_8).length);
-        }
         this.password = password;
+        if (adjustLengthField) {
+            setPasswordLength(this.password.getValue().getBytes(StandardCharsets.UTF_8).length);
+        }
     }
 
     public void setPassword(String password, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setPasswordLength(password.getBytes(StandardCharsets.UTF_8).length);
-        }
         this.password = ModifiableVariableFactory.safelySetValue(this.password, password);
+        if (adjustLengthField) {
+            setPasswordLength(this.password.getValue().getBytes(StandardCharsets.UTF_8).length);
+        }
     }
 
     public ModifiableInteger getNewPasswordLength() {
@@ -106,17 +107,19 @@ public class UserAuthPasswordMessage extends UserAuthRequestMessage<UserAuthPass
     }
 
     public void setNewPassword(ModifiableString newPassword, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setNewPasswordLength(newPassword.getValue().getBytes(StandardCharsets.UTF_8).length);
-        }
         this.newPassword = newPassword;
+        if (adjustLengthField) {
+            setNewPasswordLength(
+                    this.newPassword.getValue().getBytes(StandardCharsets.UTF_8).length);
+        }
     }
 
     public void setNewPassword(String newPassword, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setNewPasswordLength(newPassword.getBytes(StandardCharsets.UTF_8).length);
-        }
         this.newPassword = ModifiableVariableFactory.safelySetValue(this.newPassword, newPassword);
+        if (adjustLengthField) {
+            setNewPasswordLength(
+                    this.newPassword.getValue().getBytes(StandardCharsets.UTF_8).length);
+        }
     }
 
     @Override

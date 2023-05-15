@@ -8,12 +8,8 @@
 package de.rub.nds.sshattacker.core.workflow.filter;
 
 import de.rub.nds.sshattacker.core.config.Config;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
-public class FilterFactory {
-
-    private static final Logger LOGGER = LogManager.getLogger();
+public final class FilterFactory {
 
     public static Filter createWorkflowTraceFilter(FilterType type, Config config) {
         if (type == FilterType.DEFAULT) {
@@ -22,5 +18,7 @@ public class FilterFactory {
         throw new UnsupportedOperationException(type.name() + " not yet implemented");
     }
 
-    private FilterFactory() {}
+    private FilterFactory() {
+        super();
+    }
 }

@@ -10,19 +10,22 @@ package de.rub.nds.sshattacker.core.crypto.mac;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.constants.MacAlgorithm;
+
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
+
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
-class JavaMac implements WrappedMac {
+class JavaMac extends AbstractMac {
 
     private final MacAlgorithm algorithm;
 
     private final Mac mac;
 
-    public JavaMac(MacAlgorithm algorithm, byte[] key) {
+    JavaMac(MacAlgorithm algorithm, byte[] key) {
+        super();
         this.algorithm = algorithm;
         try {
             mac = Mac.getInstance(algorithm.getJavaName());

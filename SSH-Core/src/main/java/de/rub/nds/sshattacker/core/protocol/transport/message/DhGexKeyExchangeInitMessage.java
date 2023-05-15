@@ -13,6 +13,7 @@ import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.sshattacker.core.protocol.common.*;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.DhGexKeyExchangeInitMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
+
 import java.math.BigInteger;
 
 public class DhGexKeyExchangeInitMessage extends SshMessage<DhGexKeyExchangeInitMessage> {
@@ -48,19 +49,19 @@ public class DhGexKeyExchangeInitMessage extends SshMessage<DhGexKeyExchangeInit
 
     public void setEphemeralPublicKey(
             ModifiableBigInteger ephemeralPublicKey, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setEphemeralPublicKeyLength(ephemeralPublicKey.getValue().toByteArray().length);
-        }
         this.ephemeralPublicKey = ephemeralPublicKey;
+        if (adjustLengthField) {
+            setEphemeralPublicKeyLength(this.ephemeralPublicKey.getValue().toByteArray().length);
+        }
     }
 
     public void setEphemeralPublicKey(BigInteger ephemeralPublicKey, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setEphemeralPublicKeyLength(ephemeralPublicKey.toByteArray().length);
-        }
         this.ephemeralPublicKey =
                 ModifiableVariableFactory.safelySetValue(
                         this.ephemeralPublicKey, ephemeralPublicKey);
+        if (adjustLengthField) {
+            setEphemeralPublicKeyLength(this.ephemeralPublicKey.getValue().toByteArray().length);
+        }
     }
 
     @Override

@@ -12,6 +12,10 @@ import de.rub.nds.sshattacker.core.connection.AliasedConnection;
 import de.rub.nds.sshattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.sshattacker.core.exceptions.ContextHandlingException;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -19,8 +23,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /** Manage SSH contexts. */
 public class ContextContainer {
@@ -92,10 +94,10 @@ public class ContextContainer {
         knownAliases.add(alias);
 
         if (con.getLocalConnectionEndType() == ConnectionEndType.SERVER) {
-            LOGGER.debug("Adding context " + alias + " to inboundSshContexts");
+            LOGGER.debug("Adding context {} to inboundSshContexts", alias);
             inboundSshContexts.add(context);
         } else {
-            LOGGER.debug("Adding context " + alias + " to outboundSshContexts");
+            LOGGER.debug("Adding context {} to outboundSshContexts", alias);
             outboundSshContexts.add(context);
         }
     }
@@ -116,7 +118,7 @@ public class ContextContainer {
         return knownAliases.contains(alias);
     }
 
-    public boolean containsAllAliases(Collection<? extends String> aliases) {
+    public boolean containsAllAliases(Collection<String> aliases) {
         return knownAliases.containsAll(aliases);
     }
 
@@ -143,7 +145,7 @@ public class ContextContainer {
             sshContexts.remove(alias);
             knownAliases.remove(alias);
         } else {
-            LOGGER.debug("No context with alias " + alias + " found, nothing to remove");
+            LOGGER.debug("No context with alias {} found, nothing to remove", alias);
         }
     }
 
