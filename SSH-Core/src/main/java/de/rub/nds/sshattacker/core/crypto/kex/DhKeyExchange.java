@@ -17,11 +17,13 @@ import de.rub.nds.sshattacker.core.crypto.keys.CustomKeyPair;
 import de.rub.nds.sshattacker.core.exceptions.CryptoException;
 import de.rub.nds.sshattacker.core.exceptions.NotImplementedException;
 import de.rub.nds.sshattacker.core.state.SshContext;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.Comparator;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class DhKeyExchange extends DhBasedKeyExchange {
 
@@ -39,31 +41,36 @@ public class DhKeyExchange extends DhBasedKeyExchange {
 
     protected DhKeyExchange(NamedDhGroup group) {
         super();
-        this.modulus = group.getModulus();
-        this.generator = group.getGenerator();
+        modulus = group.getModulus();
+        generator = group.getGenerator();
     }
 
     public static DhKeyExchange newInstance(SshContext context, KeyExchangeAlgorithm algorithm) {
         if (algorithm == null
-                || (algorithm.getFlowType() != KeyExchangeFlowType.DIFFIE_HELLMAN
+                || algorithm.getFlowType() != KeyExchangeFlowType.DIFFIE_HELLMAN
                         && algorithm.getFlowType()
-                                != KeyExchangeFlowType.DIFFIE_HELLMAN_GROUP_EXCHANGE)) {
+                                != KeyExchangeFlowType.DIFFIE_HELLMAN_GROUP_EXCHANGE) {
             algorithm = context.getConfig().getDefaultDhKeyExchangeAlgorithm();
             LOGGER.warn(
-                    "Trying to instantiate a new DH or DH GEX key exchange without a matching key exchange algorithm negotiated, falling back to "
-                            + algorithm);
+                    "Trying to instantiate a new DH or DH GEX key exchange without a matching key exchange algorithm negotiated, falling back to {}",
+                    algorithm);
         }
+        /*
+         * In case of group exchange algorithms the following group assignments can be seen as default values
+         * which are used whenever the local key pair is being generated before a group has been negotiated.
+         * This can be the case if, for example, SSH-Attacker tries to perform the actual key exchange prior to
+         * group negotiation. The default values will be overwritten when negotiating a group.
+         */
         NamedDhGroup group;
         switch (algorithm) {
             case DIFFIE_HELLMAN_GROUP_EXCHANGE_SHA1:
+            case DIFFIE_HELLMAN_GROUP1_SHA1:
+                group = NamedDhGroup.GROUP1;
+                break;
             case DIFFIE_HELLMAN_GROUP_EXCHANGE_SHA256:
             case DIFFIE_HELLMAN_GROUP_EXCHANGE_SHA224_SSH_COM:
             case DIFFIE_HELLMAN_GROUP_EXCHANGE_SHA384_SSH_COM:
             case DIFFIE_HELLMAN_GROUP_EXCHANGE_SHA512_SSH_COM:
-                return new DhKeyExchange();
-            case DIFFIE_HELLMAN_GROUP1_SHA1:
-                group = NamedDhGroup.GROUP1;
-                break;
             case DIFFIE_HELLMAN_GROUP14_SHA1:
             case DIFFIE_HELLMAN_GROUP14_SHA256:
             case DIFFIE_HELLMAN_GROUP14_SHA224_SSH_COM:
@@ -120,12 +127,12 @@ public class DhKeyExchange extends DhBasedKeyExchange {
         return remotePublicKey;
     }
 
-    public void setRemotePublicKey(byte[] publicKey) {
-        setRemotePublicKey(new BigInteger(publicKey));
+    public void setRemotePublicKey(byte[] publicKeyBytes) {
+        setRemotePublicKey(new BigInteger(publicKeyBytes));
     }
 
     public void setRemotePublicKey(BigInteger publicKey) {
-        this.remotePublicKey = new CustomDhPublicKey(modulus, generator, publicKey);
+        remotePublicKey = new CustomDhPublicKey(modulus, generator, publicKey);
     }
 
     public boolean areGroupParametersSet() {
@@ -152,7 +159,7 @@ public class DhKeyExchange extends DhBasedKeyExchange {
         CustomDhPublicKey publicKey =
                 new CustomDhPublicKey(
                         modulus, generator, generator.modPow(privateKey.getX(), modulus));
-        this.localKeyPair = new CustomKeyPair<>(privateKey, publicKey);
+        localKeyPair = new CustomKeyPair<>(privateKey, publicKey);
     }
 
     @Override
@@ -163,7 +170,7 @@ public class DhKeyExchange extends DhBasedKeyExchange {
         CustomDhPublicKey publicKey =
                 new CustomDhPublicKey(
                         modulus, generator, generator.modPow(privateKey.getX(), modulus));
-        this.localKeyPair = new CustomKeyPair<>(privateKey, publicKey);
+        localKeyPair = new CustomKeyPair<>(privateKey, publicKey);
     }
 
     @Override
@@ -172,7 +179,7 @@ public class DhKeyExchange extends DhBasedKeyExchange {
                 new CustomDhPrivateKey(modulus, generator, new BigInteger(privateKeyBytes));
         CustomDhPublicKey publicKey =
                 new CustomDhPublicKey(modulus, generator, new BigInteger(publicKeyBytes));
-        this.localKeyPair = new CustomKeyPair<>(privateKey, publicKey);
+        localKeyPair = new CustomKeyPair<>(privateKey, publicKey);
     }
 
     @Override
@@ -181,10 +188,14 @@ public class DhKeyExchange extends DhBasedKeyExchange {
             throw new CryptoException(
                     "Unable to compute shared secret - either local key pair or remote public key is null");
         }
-        sharedSecret = remotePublicKey.getY().modPow(localKeyPair.getPrivate().getX(), modulus);
+        sharedSecret =
+                remotePublicKey
+                        .getY()
+                        .modPow(localKeyPair.getPrivateKey().getX(), modulus)
+                        .toByteArray();
         LOGGER.debug(
-                "Finished computation of shared secret: "
-                        + ArrayConverter.bytesToRawHexString(sharedSecret.toByteArray()));
+                "Finished computation of shared secret: {}",
+                ArrayConverter.bytesToRawHexString(sharedSecret));
     }
 
     public void selectGroup(int preferredGroupSize) {
@@ -192,7 +203,7 @@ public class DhKeyExchange extends DhBasedKeyExchange {
          * Minimal group size taken from RFC 4419 Section 3:
          *   "In all cases, the size of the returned group SHOULD be at least 1024 bits."
          */
-        this.selectGroup(1024, preferredGroupSize, Integer.MAX_VALUE);
+        selectGroup(1024, preferredGroupSize, Integer.MAX_VALUE);
     }
 
     public void selectGroup(int minimalGroupSize, int preferredGroupSize, int maximumGroupSize) {
@@ -209,7 +220,7 @@ public class DhKeyExchange extends DhBasedKeyExchange {
                 Arrays.stream(NamedDhGroup.values())
                         .sorted(Comparator.comparingInt(group -> group.getModulus().bitLength()))
                         .filter(
-                                (candidate) ->
+                                candidate ->
                                         candidate.getModulus().bitLength() - preferredGroupSize
                                                 >= 0)
                         .findFirst()
@@ -239,7 +250,7 @@ public class DhKeyExchange extends DhBasedKeyExchange {
                 selectedGroup,
                 selectedGroup.getModulus().bitLength(),
                 preferredGroupSize);
-        this.setModulus(selectedGroup.getModulus());
-        this.setGenerator(selectedGroup.getGenerator());
+        modulus = selectedGroup.getModulus();
+        generator = selectedGroup.getGenerator();
     }
 }

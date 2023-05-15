@@ -17,6 +17,7 @@ import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.KeyExchangeInitMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.util.Converter;
+
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -95,21 +96,27 @@ public class KeyExchangeInitMessage extends SshMessage<KeyExchangeInitMessage> {
 
     public void setKeyExchangeAlgorithms(
             ModifiableString keyExchangeAlgorithms, boolean adjustLengthField) {
+        this.keyExchangeAlgorithms = keyExchangeAlgorithms;
         if (adjustLengthField) {
             setKeyExchangeAlgorithmsLength(
-                    keyExchangeAlgorithms.getValue().getBytes(StandardCharsets.US_ASCII).length);
+                    this.keyExchangeAlgorithms
+                            .getValue()
+                            .getBytes(StandardCharsets.US_ASCII)
+                            .length);
         }
-        this.keyExchangeAlgorithms = keyExchangeAlgorithms;
     }
 
     public void setKeyExchangeAlgorithms(String keyExchangeAlgorithms, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setKeyExchangeAlgorithmsLength(
-                    keyExchangeAlgorithms.getBytes(StandardCharsets.US_ASCII).length);
-        }
         this.keyExchangeAlgorithms =
                 ModifiableVariableFactory.safelySetValue(
                         this.keyExchangeAlgorithms, keyExchangeAlgorithms);
+        if (adjustLengthField) {
+            setKeyExchangeAlgorithmsLength(
+                    this.keyExchangeAlgorithms
+                            .getValue()
+                            .getBytes(StandardCharsets.US_ASCII)
+                            .length);
+        }
     }
 
     public void setKeyExchangeAlgorithms(
@@ -164,22 +171,28 @@ public class KeyExchangeInitMessage extends SshMessage<KeyExchangeInitMessage> {
 
     public void setServerHostKeyAlgorithms(
             ModifiableString serverHostKeyAlgorithms, boolean adjustLengthField) {
+        this.serverHostKeyAlgorithms = serverHostKeyAlgorithms;
         if (adjustLengthField) {
             setServerHostKeyAlgorithmsLength(
-                    serverHostKeyAlgorithms.getValue().getBytes(StandardCharsets.US_ASCII).length);
+                    this.serverHostKeyAlgorithms
+                            .getValue()
+                            .getBytes(StandardCharsets.US_ASCII)
+                            .length);
         }
-        this.serverHostKeyAlgorithms = serverHostKeyAlgorithms;
     }
 
     public void setServerHostKeyAlgorithms(
             String serverHostKeyAlgorithms, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setServerHostKeyAlgorithmsLength(
-                    serverHostKeyAlgorithms.getBytes(StandardCharsets.US_ASCII).length);
-        }
         this.serverHostKeyAlgorithms =
                 ModifiableVariableFactory.safelySetValue(
                         this.serverHostKeyAlgorithms, serverHostKeyAlgorithms);
+        if (adjustLengthField) {
+            setServerHostKeyAlgorithmsLength(
+                    this.serverHostKeyAlgorithms
+                            .getValue()
+                            .getBytes(StandardCharsets.US_ASCII)
+                            .length);
+        }
     }
 
     public void setServerHostKeyAlgorithms(
@@ -239,26 +252,29 @@ public class KeyExchangeInitMessage extends SshMessage<KeyExchangeInitMessage> {
 
     public void setEncryptionAlgorithmsClientToServer(
             ModifiableString encryptionAlgorithmsClientToServer, boolean adjustLengthField) {
+        this.encryptionAlgorithmsClientToServer = encryptionAlgorithmsClientToServer;
         if (adjustLengthField) {
             setEncryptionAlgorithmsClientToServerLength(
-                    encryptionAlgorithmsClientToServer
+                    this.encryptionAlgorithmsClientToServer
                             .getValue()
                             .getBytes(StandardCharsets.US_ASCII)
                             .length);
         }
-        this.encryptionAlgorithmsClientToServer = encryptionAlgorithmsClientToServer;
     }
 
     public void setEncryptionAlgorithmsClientToServer(
             String encryptionAlgorithmsClientToServer, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setEncryptionAlgorithmsClientToServerLength(
-                    encryptionAlgorithmsClientToServer.getBytes(StandardCharsets.US_ASCII).length);
-        }
         this.encryptionAlgorithmsClientToServer =
                 ModifiableVariableFactory.safelySetValue(
                         this.encryptionAlgorithmsClientToServer,
                         encryptionAlgorithmsClientToServer);
+        if (adjustLengthField) {
+            setEncryptionAlgorithmsClientToServerLength(
+                    this.encryptionAlgorithmsClientToServer
+                            .getValue()
+                            .getBytes(StandardCharsets.US_ASCII)
+                            .length);
+        }
     }
 
     public void setEncryptionAlgorithmsClientToServer(
@@ -320,26 +336,29 @@ public class KeyExchangeInitMessage extends SshMessage<KeyExchangeInitMessage> {
 
     public void setEncryptionAlgorithmsServerToClient(
             ModifiableString encryptionAlgorithmsServerToClient, boolean adjustLengthField) {
+        this.encryptionAlgorithmsServerToClient = encryptionAlgorithmsServerToClient;
         if (adjustLengthField) {
             setEncryptionAlgorithmsServerToClientLength(
-                    encryptionAlgorithmsServerToClient
+                    this.encryptionAlgorithmsServerToClient
                             .getValue()
                             .getBytes(StandardCharsets.US_ASCII)
                             .length);
         }
-        this.encryptionAlgorithmsServerToClient = encryptionAlgorithmsServerToClient;
     }
 
     public void setEncryptionAlgorithmsServerToClient(
             String encryptionAlgorithmsServerToClient, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setEncryptionAlgorithmsServerToClientLength(
-                    encryptionAlgorithmsServerToClient.getBytes(StandardCharsets.US_ASCII).length);
-        }
         this.encryptionAlgorithmsServerToClient =
                 ModifiableVariableFactory.safelySetValue(
                         this.encryptionAlgorithmsServerToClient,
                         encryptionAlgorithmsServerToClient);
+        if (adjustLengthField) {
+            setEncryptionAlgorithmsServerToClientLength(
+                    this.encryptionAlgorithmsServerToClient
+                            .getValue()
+                            .getBytes(StandardCharsets.US_ASCII)
+                            .length);
+        }
     }
 
     public void setEncryptionAlgorithmsServerToClient(
@@ -397,25 +416,28 @@ public class KeyExchangeInitMessage extends SshMessage<KeyExchangeInitMessage> {
 
     public void setMacAlgorithmsClientToServer(
             ModifiableString macAlgorithmsClientToServer, boolean adjustLengthField) {
+        this.macAlgorithmsClientToServer = macAlgorithmsClientToServer;
         if (adjustLengthField) {
             setMacAlgorithmsClientToServerLength(
-                    macAlgorithmsClientToServer
+                    this.macAlgorithmsClientToServer
                             .getValue()
                             .getBytes(StandardCharsets.US_ASCII)
                             .length);
         }
-        this.macAlgorithmsClientToServer = macAlgorithmsClientToServer;
     }
 
     public void setMacAlgorithmsClientToServer(
             String macAlgorithmsClientToServer, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setMacAlgorithmsClientToServerLength(
-                    macAlgorithmsClientToServer.getBytes(StandardCharsets.US_ASCII).length);
-        }
         this.macAlgorithmsClientToServer =
                 ModifiableVariableFactory.safelySetValue(
                         this.macAlgorithmsClientToServer, macAlgorithmsClientToServer);
+        if (adjustLengthField) {
+            setMacAlgorithmsClientToServerLength(
+                    this.macAlgorithmsClientToServer
+                            .getValue()
+                            .getBytes(StandardCharsets.US_ASCII)
+                            .length);
+        }
     }
 
     public void setMacAlgorithmsClientToServer(
@@ -471,25 +493,28 @@ public class KeyExchangeInitMessage extends SshMessage<KeyExchangeInitMessage> {
 
     public void setMacAlgorithmsServerToClient(
             ModifiableString macAlgorithmsServerToClient, boolean adjustLengthField) {
+        this.macAlgorithmsServerToClient = macAlgorithmsServerToClient;
         if (adjustLengthField) {
             setMacAlgorithmsServerToClientLength(
-                    macAlgorithmsServerToClient
+                    this.macAlgorithmsServerToClient
                             .getValue()
                             .getBytes(StandardCharsets.US_ASCII)
                             .length);
         }
-        this.macAlgorithmsServerToClient = macAlgorithmsServerToClient;
     }
 
     public void setMacAlgorithmsServerToClient(
             String macAlgorithmsServerToClient, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setMacAlgorithmsServerToClientLength(
-                    macAlgorithmsServerToClient.getBytes(StandardCharsets.US_ASCII).length);
-        }
         this.macAlgorithmsServerToClient =
                 ModifiableVariableFactory.safelySetValue(
                         this.macAlgorithmsServerToClient, macAlgorithmsServerToClient);
+        if (adjustLengthField) {
+            setMacAlgorithmsServerToClientLength(
+                    this.macAlgorithmsServerToClient
+                            .getValue()
+                            .getBytes(StandardCharsets.US_ASCII)
+                            .length);
+        }
     }
 
     public void setMacAlgorithmsServerToClient(
@@ -549,25 +574,28 @@ public class KeyExchangeInitMessage extends SshMessage<KeyExchangeInitMessage> {
 
     public void setCompressionMethodsClientToServer(
             ModifiableString compressionMethodsClientToServer, boolean adjustLengthField) {
+        this.compressionMethodsClientToServer = compressionMethodsClientToServer;
         if (adjustLengthField) {
             setCompressionMethodsClientToServerLength(
-                    compressionMethodsClientToServer
+                    this.compressionMethodsClientToServer
                             .getValue()
                             .getBytes(StandardCharsets.US_ASCII)
                             .length);
         }
-        this.compressionMethodsClientToServer = compressionMethodsClientToServer;
     }
 
     public void setCompressionMethodsClientToServer(
             String compressionMethodsClientToServer, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setCompressionMethodsClientToServerLength(
-                    compressionMethodsClientToServer.getBytes(StandardCharsets.US_ASCII).length);
-        }
         this.compressionMethodsClientToServer =
                 ModifiableVariableFactory.safelySetValue(
                         this.compressionMethodsClientToServer, compressionMethodsClientToServer);
+        if (adjustLengthField) {
+            setCompressionMethodsClientToServerLength(
+                    this.compressionMethodsClientToServer
+                            .getValue()
+                            .getBytes(StandardCharsets.US_ASCII)
+                            .length);
+        }
     }
 
     public void setCompressionMethodsClientToServer(
@@ -628,25 +656,28 @@ public class KeyExchangeInitMessage extends SshMessage<KeyExchangeInitMessage> {
 
     public void setCompressionMethodsServerToClient(
             ModifiableString compressionMethodsServerToClient, boolean adjustLengthField) {
+        this.compressionMethodsServerToClient = compressionMethodsServerToClient;
         if (adjustLengthField) {
             setCompressionMethodsServerToClientLength(
-                    compressionMethodsServerToClient
+                    this.compressionMethodsServerToClient
                             .getValue()
                             .getBytes(StandardCharsets.US_ASCII)
                             .length);
         }
-        this.compressionMethodsServerToClient = compressionMethodsServerToClient;
     }
 
     public void setCompressionMethodsServerToClient(
             String compressionMethodsServerToClient, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setCompressionMethodsServerToClientLength(
-                    compressionMethodsServerToClient.getBytes(StandardCharsets.US_ASCII).length);
-        }
         this.compressionMethodsServerToClient =
                 ModifiableVariableFactory.safelySetValue(
                         this.compressionMethodsServerToClient, compressionMethodsServerToClient);
+        if (adjustLengthField) {
+            setCompressionMethodsServerToClientLength(
+                    this.compressionMethodsServerToClient
+                            .getValue()
+                            .getBytes(StandardCharsets.US_ASCII)
+                            .length);
+        }
     }
 
     public void setCompressionMethodsServerToClient(
@@ -698,22 +729,28 @@ public class KeyExchangeInitMessage extends SshMessage<KeyExchangeInitMessage> {
 
     public void setLanguagesClientToServer(
             ModifiableString languagesClientToServer, boolean adjustLengthField) {
+        this.languagesClientToServer = languagesClientToServer;
         if (adjustLengthField) {
             setLanguagesClientToServerLength(
-                    languagesClientToServer.getValue().getBytes(StandardCharsets.US_ASCII).length);
+                    this.languagesClientToServer
+                            .getValue()
+                            .getBytes(StandardCharsets.US_ASCII)
+                            .length);
         }
-        this.languagesClientToServer = languagesClientToServer;
     }
 
     public void setLanguagesClientToServer(
             String languagesClientToServer, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setLanguagesClientToServerLength(
-                    languagesClientToServer.getBytes(StandardCharsets.US_ASCII).length);
-        }
         this.languagesClientToServer =
                 ModifiableVariableFactory.safelySetValue(
                         this.languagesClientToServer, languagesClientToServer);
+        if (adjustLengthField) {
+            setLanguagesClientToServerLength(
+                    this.languagesClientToServer
+                            .getValue()
+                            .getBytes(StandardCharsets.US_ASCII)
+                            .length);
+        }
     }
 
     public void setLanguagesClientToServer(
@@ -755,22 +792,28 @@ public class KeyExchangeInitMessage extends SshMessage<KeyExchangeInitMessage> {
 
     public void setLanguagesServerToClient(
             ModifiableString languagesServerToClient, boolean adjustLengthField) {
+        this.languagesServerToClient = languagesServerToClient;
         if (adjustLengthField) {
             setLanguagesServerToClientLength(
-                    languagesServerToClient.getValue().getBytes(StandardCharsets.US_ASCII).length);
+                    this.languagesServerToClient
+                            .getValue()
+                            .getBytes(StandardCharsets.US_ASCII)
+                            .length);
         }
-        this.languagesServerToClient = languagesServerToClient;
     }
 
     public void setLanguagesServerToClient(
             String languagesServerToClient, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setLanguagesServerToClientLength(
-                    languagesServerToClient.getBytes(StandardCharsets.US_ASCII).length);
-        }
         this.languagesServerToClient =
                 ModifiableVariableFactory.safelySetValue(
                         this.languagesServerToClient, languagesServerToClient);
+        if (adjustLengthField) {
+            setLanguagesServerToClientLength(
+                    this.languagesServerToClient
+                            .getValue()
+                            .getBytes(StandardCharsets.US_ASCII)
+                            .length);
+        }
     }
 
     public void setLanguagesServerToClient(

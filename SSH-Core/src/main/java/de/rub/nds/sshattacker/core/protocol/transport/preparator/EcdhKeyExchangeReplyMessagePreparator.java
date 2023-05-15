@@ -38,10 +38,10 @@ public class EcdhKeyExchangeReplyMessagePreparator
         keyExchange.generateLocalKeyPair();
         getObject()
                 .setEphemeralPublicKey(
-                        keyExchange.getLocalKeyPair().getPublic().getEncoded(), true);
+                        keyExchange.getLocalKeyPair().getPublicKey().getEncoded(), true);
         // Update exchange hash with local public key
         chooser.getContext()
                 .getExchangeHashInputHolder()
-                .setEcdhServerPublicKey(keyExchange.getLocalKeyPair().getPublic().getEncoded());
+                .setEcdhServerPublicKey(keyExchange.getLocalKeyPair().getPublicKey().getEncoded());
     }
 }

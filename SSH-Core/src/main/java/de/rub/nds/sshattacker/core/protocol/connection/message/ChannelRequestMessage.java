@@ -13,6 +13,7 @@ import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.sshattacker.core.constants.ChannelRequestType;
 import de.rub.nds.sshattacker.core.util.Converter;
+
 import java.nio.charset.StandardCharsets;
 
 public abstract class ChannelRequestMessage<T extends ChannelRequestMessage<T>>
@@ -52,17 +53,19 @@ public abstract class ChannelRequestMessage<T extends ChannelRequestMessage<T>>
     }
 
     public void setRequestType(ModifiableString requestType, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setRequestTypeLength(requestType.getValue().getBytes(StandardCharsets.US_ASCII).length);
-        }
         this.requestType = requestType;
+        if (adjustLengthField) {
+            setRequestTypeLength(
+                    this.requestType.getValue().getBytes(StandardCharsets.US_ASCII).length);
+        }
     }
 
     public void setRequestType(String requestType, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setRequestTypeLength(requestType.getBytes(StandardCharsets.US_ASCII).length);
-        }
         this.requestType = ModifiableVariableFactory.safelySetValue(this.requestType, requestType);
+        if (adjustLengthField) {
+            setRequestTypeLength(
+                    this.requestType.getValue().getBytes(StandardCharsets.US_ASCII).length);
+        }
     }
 
     public void setRequestType(ChannelRequestType requestType, boolean adjustLengthField) {
@@ -74,7 +77,7 @@ public abstract class ChannelRequestMessage<T extends ChannelRequestMessage<T>>
     }
 
     public void setWantReply(ModifiableByte replyWanted) {
-        this.wantReply = replyWanted;
+        wantReply = replyWanted;
     }
 
     public void setWantReply(byte wantReply) {

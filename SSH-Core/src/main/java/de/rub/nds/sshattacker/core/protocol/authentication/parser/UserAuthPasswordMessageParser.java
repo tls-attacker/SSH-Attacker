@@ -10,9 +10,11 @@ package de.rub.nds.sshattacker.core.protocol.authentication.parser;
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthPasswordMessage;
 import de.rub.nds.sshattacker.core.util.Converter;
-import java.nio.charset.StandardCharsets;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.nio.charset.StandardCharsets;
 
 public class UserAuthPasswordMessageParser
         extends UserAuthRequestMessageParser<UserAuthPasswordMessage> {
@@ -34,23 +36,23 @@ public class UserAuthPasswordMessageParser
 
     private void parseChangePassword() {
         message.setChangePassword(parseByteField(1));
-        LOGGER.debug("Change password: " + message.getChangePassword().getValue());
+        LOGGER.debug("Change password: {}", message.getChangePassword().getValue());
     }
 
     private void parsePassword() {
         message.setPasswordLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-        LOGGER.debug("Password length: " + message.getPasswordLength().getValue());
+        LOGGER.debug("Password length: {}", message.getPasswordLength().getValue());
         message.setPassword(
                 parseByteString(message.getPasswordLength().getValue(), StandardCharsets.UTF_8));
-        LOGGER.debug("Password: " + message.getPassword().getValue());
+        LOGGER.debug("Password: {}", message.getPassword().getValue());
     }
 
     private void parseNewPassword() {
         message.setNewPasswordLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-        LOGGER.debug("New password length: " + message.getNewPasswordLength().getValue());
+        LOGGER.debug("New password length: {}", message.getNewPasswordLength().getValue());
         message.setNewPassword(
                 parseByteString(message.getNewPasswordLength().getValue(), StandardCharsets.UTF_8));
-        LOGGER.debug("New password: " + message.getNewPassword().getValue());
+        LOGGER.debug("New password: {}", message.getNewPassword().getValue());
     }
 
     @Override

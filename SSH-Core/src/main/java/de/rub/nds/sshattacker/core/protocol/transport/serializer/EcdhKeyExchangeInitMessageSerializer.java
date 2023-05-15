@@ -11,6 +11,7 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.transport.message.EcdhKeyExchangeInitMessage;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -25,15 +26,14 @@ public class EcdhKeyExchangeInitMessageSerializer
 
     private void serializeEphemeralPublicKey() {
         LOGGER.debug(
-                "Ephemeral public key (client) length: "
-                        + message.getEphemeralPublicKeyLength().getValue());
+                "Ephemeral public key (client) length: {}",
+                message.getEphemeralPublicKeyLength().getValue());
         appendInt(
                 message.getEphemeralPublicKeyLength().getValue(),
                 DataFormatConstants.STRING_SIZE_LENGTH);
         LOGGER.debug(
-                "Ephemeral public key (client): "
-                        + ArrayConverter.bytesToRawHexString(
-                                message.getEphemeralPublicKey().getValue()));
+                "Ephemeral public key (client): {}",
+                ArrayConverter.bytesToRawHexString(message.getEphemeralPublicKey().getValue()));
         appendBytes(message.getEphemeralPublicKey().getValue());
     }
 

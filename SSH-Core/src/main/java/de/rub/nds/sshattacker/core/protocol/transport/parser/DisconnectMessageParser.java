@@ -7,13 +7,17 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.parser;
 
+import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeString;
+
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.constants.DisconnectReason;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 import de.rub.nds.sshattacker.core.protocol.transport.message.DisconnectMessage;
-import java.nio.charset.StandardCharsets;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.nio.charset.StandardCharsets;
 
 public class DisconnectMessageParser extends SshMessageParser<DisconnectMessage> {
 
@@ -34,29 +38,32 @@ public class DisconnectMessageParser extends SshMessageParser<DisconnectMessage>
 
     private void parseReasonCode() {
         message.setReasonCode(parseIntField(DataFormatConstants.UINT32_SIZE));
-        LOGGER.debug(
-                "Reason: "
-                        + DisconnectReason.fromId(message.getReasonCode().getValue()).toString()
-                        + " (Code: "
-                        + message.getReasonCode().getValue()
-                        + ")");
+        if (DisconnectReason.fromId(message.getReasonCode().getValue()) != null) {
+            LOGGER.debug(
+                    "Reason: {} (Code: {})",
+                    DisconnectReason.fromId(message.getReasonCode().getValue()).toString(),
+                    message.getReasonCode().getValue());
+        } else {
+            LOGGER.debug("Reason: [unknown] (Code: {})", message.getReasonCode().getValue());
+        }
     }
 
     private void parseDescription() {
         message.setDescriptionLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-        LOGGER.debug("Description length: " + message.getDescriptionLength().getValue());
+        LOGGER.debug("Description length: {}", message.getDescriptionLength().getValue());
         message.setDescription(
                 parseByteString(message.getDescriptionLength().getValue(), StandardCharsets.UTF_8));
-        LOGGER.debug("Description: " + message.getDescription().getValue());
+        LOGGER.debug("Description: {}", backslashEscapeString(message.getDescription().getValue()));
     }
 
     private void parseLanguageTag() {
         message.setLanguageTagLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-        LOGGER.debug("Language tag length: " + message.getLanguageTagLength().getValue());
+        LOGGER.debug("Language tag length: {}", message.getLanguageTagLength().getValue());
         message.setLanguageTag(
                 parseByteString(
                         message.getLanguageTagLength().getValue(), StandardCharsets.US_ASCII));
-        LOGGER.debug("Language tag: " + message.getLanguageTag().getValue());
+        LOGGER.debug(
+                "Language tag: {}", backslashEscapeString(message.getLanguageTag().getValue()));
     }
 
     @Override

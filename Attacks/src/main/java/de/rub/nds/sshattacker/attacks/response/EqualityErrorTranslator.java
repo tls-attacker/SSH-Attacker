@@ -8,7 +8,7 @@
 package de.rub.nds.sshattacker.attacks.response;
 
 /** Translates equality errors into human-readable form */
-public class EqualityErrorTranslator {
+public final class EqualityErrorTranslator {
 
     /**
      * @param error The equality error to be translated
@@ -40,5 +40,7 @@ public class EqualityErrorTranslator {
         return builder.toString();
     }
 
-    private EqualityErrorTranslator() {}
+    private EqualityErrorTranslator() {
+        super();
+    }
 }

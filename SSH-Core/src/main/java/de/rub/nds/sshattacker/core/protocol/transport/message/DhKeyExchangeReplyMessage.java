@@ -16,6 +16,7 @@ import de.rub.nds.sshattacker.core.crypto.util.PublicKeyHelper;
 import de.rub.nds.sshattacker.core.protocol.common.*;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.DhKeyExchangeReplyMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
+
 import java.math.BigInteger;
 
 public class DhKeyExchangeReplyMessage extends SshMessage<DhKeyExchangeReplyMessage>
@@ -69,18 +70,19 @@ public class DhKeyExchangeReplyMessage extends SshMessage<DhKeyExchangeReplyMess
 
     @Override
     public void setHostKeyBytes(ModifiableByteArray hostKeyBytes, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setHostKeyBytesLength(hostKeyBytes.getValue().length);
-        }
         this.hostKeyBytes = hostKeyBytes;
+        if (adjustLengthField) {
+            setHostKeyBytesLength(this.hostKeyBytes.getValue().length);
+        }
     }
 
     @Override
-    public void setHostKeyBytes(byte[] hostKey, boolean adjustLengthField) {
+    public void setHostKeyBytes(byte[] hostKeyBytes, boolean adjustLengthField) {
+        this.hostKeyBytes =
+                ModifiableVariableFactory.safelySetValue(this.hostKeyBytes, hostKeyBytes);
         if (adjustLengthField) {
-            setHostKeyBytesLength(hostKey.length);
+            setHostKeyBytesLength(this.hostKeyBytes.getValue().length);
         }
-        this.hostKeyBytes = ModifiableVariableFactory.safelySetValue(this.hostKeyBytes, hostKey);
     }
 
     public ModifiableInteger getEphemeralPublicKeyLength() {
@@ -111,19 +113,19 @@ public class DhKeyExchangeReplyMessage extends SshMessage<DhKeyExchangeReplyMess
 
     public void setEphemeralPublicKey(
             ModifiableBigInteger ephemeralPublicKey, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setEphemeralPublicKeyLength(ephemeralPublicKey.getValue().toByteArray().length);
-        }
         this.ephemeralPublicKey = ephemeralPublicKey;
+        if (adjustLengthField) {
+            setEphemeralPublicKeyLength(this.ephemeralPublicKey.getValue().toByteArray().length);
+        }
     }
 
     public void setEphemeralPublicKey(BigInteger ephemeralPublicKey, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setEphemeralPublicKeyLength(ephemeralPublicKey.toByteArray().length);
-        }
         this.ephemeralPublicKey =
                 ModifiableVariableFactory.safelySetValue(
                         this.ephemeralPublicKey, ephemeralPublicKey);
+        if (adjustLengthField) {
+            setEphemeralPublicKeyLength(this.ephemeralPublicKey.getValue().toByteArray().length);
+        }
     }
 
     @Override
@@ -159,18 +161,18 @@ public class DhKeyExchangeReplyMessage extends SshMessage<DhKeyExchangeReplyMess
 
     @Override
     public void setSignature(ModifiableByteArray signature, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setSignatureLength(signature.getValue().length);
-        }
         this.signature = signature;
+        if (adjustLengthField) {
+            setSignatureLength(this.signature.getValue().length);
+        }
     }
 
     @Override
     public void setSignature(byte[] signature, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setSignatureLength(signature.length);
-        }
         this.signature = ModifiableVariableFactory.safelySetValue(this.signature, signature);
+        if (adjustLengthField) {
+            setSignatureLength(this.signature.getValue().length);
+        }
     }
 
     @Override

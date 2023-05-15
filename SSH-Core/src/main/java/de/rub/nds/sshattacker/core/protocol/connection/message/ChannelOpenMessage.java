@@ -12,12 +12,12 @@ import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.sshattacker.core.constants.ChannelType;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
-import de.rub.nds.sshattacker.core.protocol.connection.handler.ChannelOpenMessageHandler;
-import de.rub.nds.sshattacker.core.state.SshContext;
+
 import jakarta.xml.bind.annotation.XmlAttribute;
+
 import java.nio.charset.StandardCharsets;
 
-public class ChannelOpenMessage extends SshMessage<ChannelOpenMessage> {
+public abstract class ChannelOpenMessage<T extends ChannelOpenMessage<T>> extends SshMessage<T> {
 
     private ModifiableInteger channelTypeLength;
     private ModifiableString channelType;
@@ -58,17 +58,19 @@ public class ChannelOpenMessage extends SshMessage<ChannelOpenMessage> {
     }
 
     public void setChannelType(ModifiableString channelType, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setChannelTypeLength(channelType.getValue().getBytes(StandardCharsets.US_ASCII).length);
-        }
         this.channelType = channelType;
+        if (adjustLengthField) {
+            setChannelTypeLength(
+                    this.channelType.getValue().getBytes(StandardCharsets.US_ASCII).length);
+        }
     }
 
     public void setChannelType(String channelType, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setChannelTypeLength(channelType.getBytes(StandardCharsets.US_ASCII).length);
-        }
         this.channelType = ModifiableVariableFactory.safelySetValue(this.channelType, channelType);
+        if (adjustLengthField) {
+            setChannelTypeLength(
+                    this.channelType.getValue().getBytes(StandardCharsets.US_ASCII).length);
+        }
     }
 
     public void setChannelType(ChannelType channelType, boolean adjustLengthField) {
@@ -84,8 +86,8 @@ public class ChannelOpenMessage extends SshMessage<ChannelOpenMessage> {
     }
 
     public void setSenderChannelId(int modSenderChannel) {
-        this.senderChannelId =
-                ModifiableVariableFactory.safelySetValue(this.senderChannelId, modSenderChannel);
+        senderChannelId =
+                ModifiableVariableFactory.safelySetValue(senderChannelId, modSenderChannel);
     }
 
     public ModifiableInteger getWindowSize() {
@@ -118,10 +120,5 @@ public class ChannelOpenMessage extends SshMessage<ChannelOpenMessage> {
 
     public void setConfigSenderChannelId(int configSenderChannelId) {
         this.configSenderChannelId = configSenderChannelId;
-    }
-
-    @Override
-    public ChannelOpenMessageHandler getHandler(SshContext context) {
-        return new ChannelOpenMessageHandler(context, this);
     }
 }

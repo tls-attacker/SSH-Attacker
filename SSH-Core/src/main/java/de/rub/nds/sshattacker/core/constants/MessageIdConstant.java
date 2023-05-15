@@ -9,6 +9,7 @@ package de.rub.nds.sshattacker.core.constants;
 
 import de.rub.nds.sshattacker.core.exceptions.ParserException;
 import de.rub.nds.sshattacker.core.state.SshContext;
+
 import java.util.*;
 
 public enum MessageIdConstant {
@@ -40,6 +41,9 @@ public enum MessageIdConstant {
     // [ RFC 4253 ]
     SSH_MSG_KEXDH_INIT((byte) 30, KeyExchangeFlowType.DIFFIE_HELLMAN),
     SSH_MSG_KEXDH_REPLY((byte) 31, KeyExchangeFlowType.DIFFIE_HELLMAN),
+    // [ https://datatracker.ietf.org/doc/html/draft-kampanakis-curdle-pq-ssh-00 ]
+    SSH_MSG_HBR_INIT((byte) 30, KeyExchangeFlowType.HYBRID),
+    SSH_MSG_HBR_REPLY((byte) 31, KeyExchangeFlowType.HYBRID),
     // [ RFC 5656 ]
     SSH_MSG_KEX_ECDH_INIT((byte) 30, KeyExchangeFlowType.ECDH),
     SSH_MSG_KEX_ECDH_REPLY((byte) 31, KeyExchangeFlowType.ECDH),
@@ -141,16 +145,18 @@ public enum MessageIdConstant {
     public static final Map<Byte, List<MessageIdConstant>> map;
 
     static {
-        map = new TreeMap<>();
-        for (MessageIdConstant constant : MessageIdConstant.values()) {
-            map.putIfAbsent(constant.id, new LinkedList<>());
-            map.get(constant.id).add(constant);
+        Map<Byte, List<MessageIdConstant>> mutableMap = new TreeMap<>();
+        for (MessageIdConstant constant : values()) {
+            mutableMap.putIfAbsent(constant.id, new LinkedList<>());
+            mutableMap.get(constant.id).add(constant);
         }
+        mutableMap.replaceAll((key, value) -> Collections.unmodifiableList(mutableMap.get(key)));
+        map = Collections.unmodifiableMap(mutableMap);
     }
 
     MessageIdConstant(byte id) {
         this.id = id;
-        this.specificTo = new Enum<?>[] {};
+        specificTo = new Enum<?>[] {};
     }
 
     MessageIdConstant(byte id, Enum<?>... specificTo) {

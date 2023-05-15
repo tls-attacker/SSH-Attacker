@@ -12,5 +12,6 @@ public enum KeyExchangeFlowType {
     DIFFIE_HELLMAN,
     ECDH,
     ECMQV,
-    RSA
+    RSA,
+    HYBRID,
 }

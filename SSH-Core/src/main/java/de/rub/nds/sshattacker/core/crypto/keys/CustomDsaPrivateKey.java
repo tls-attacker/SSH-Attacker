@@ -10,6 +10,7 @@ package de.rub.nds.sshattacker.core.crypto.keys;
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlRootElement;
+
 import java.math.BigInteger;
 import java.security.interfaces.DSAParams;
 import java.security.interfaces.DSAPrivateKey;
@@ -28,10 +29,12 @@ public class CustomDsaPrivateKey extends CustomPrivateKey implements DSAPrivateK
     // Private key
     private BigInteger x;
 
-    @SuppressWarnings("unused")
-    private CustomDsaPrivateKey() {}
+    public CustomDsaPrivateKey() {
+        super();
+    }
 
     public CustomDsaPrivateKey(BigInteger p, BigInteger q, BigInteger g, BigInteger x) {
+        super();
         this.p = p;
         this.q = q;
         this.g = g;

@@ -16,18 +16,22 @@ import de.rub.nds.sshattacker.core.crypto.keys.CustomRsaPrivateKey;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomRsaPublicKey;
 import de.rub.nds.sshattacker.core.crypto.keys.SshPublicKey;
 import de.rub.nds.sshattacker.core.exceptions.CryptoException;
+
 import jakarta.xml.bind.DatatypeConverter;
-import java.io.InputStream;
-import java.math.BigInteger;
-import java.util.Scanner;
-import java.util.stream.Stream;
-import javax.crypto.BadPaddingException;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+
+import java.io.InputStream;
+import java.math.BigInteger;
+import java.util.Scanner;
+import java.util.stream.Stream;
+
+import javax.crypto.BadPaddingException;
 
 public class OaepCipherTest {
 
@@ -130,7 +134,7 @@ public class OaepCipherTest {
     }
 
     /**
-     * Tests the RSA-OAEP decryption by computing the plaintext from the provided ciphertext. Thus
+     * Tests the RSA-OAEP decryption by computing the plaintext from the provided ciphertext. Thus,
      * the method tests the class OaepCipher.java and the DecryptionCipher picking of CipherFactory,
      * which are used in the RsaKeyExchange.
      *
@@ -155,8 +159,7 @@ public class OaepCipherTest {
             throws CryptoException {
         CustomRsaPrivateKey privateKey =
                 new CustomRsaPrivateKey(privateKeyExponent, privateKeyModulus);
-        DecryptionCipher cipher =
-                CipherFactory.getDecryptionCipher(keyExchangeAlgorithm, privateKey);
+        AbstractCipher cipher = CipherFactory.getOaepCipher(keyExchangeAlgorithm, privateKey);
         byte[] computedPlaintext = cipher.decrypt(ciphertext);
         assertArrayEquals(plaintext, computedPlaintext);
     }
@@ -164,7 +167,7 @@ public class OaepCipherTest {
     /**
      * Tests the RSA-OAEP encryption by computing the ciphertext from the given plaintext and
      * decrypting it again. If testRsaOaepDecryption is working the right way, this method verifies
-     * the encryption method of OaepCipher. Thus the method test the class OaepCipher.java and the
+     * the encryption method of OaepCipher. Thus, the method test the class OaepCipher.java and the
      * EncryptionCipher picking of CipherFactory, which are used in the RsaKeyExchange.
      *
      * @param keyExchangeAlgorithm the used rsa oaep algorithm
@@ -191,12 +194,12 @@ public class OaepCipherTest {
                 new CustomRsaPrivateKey(privateKeyExponent, privateKeyModulus);
         SshPublicKey<CustomRsaPublicKey, CustomRsaPrivateKey> keypair =
                 new SshPublicKey<>(PublicKeyFormat.SSH_RSA, publicKey, privateKey);
-        EncryptionCipher encCipher =
-                CipherFactory.getEncryptionCipher(keyExchangeAlgorithm, keypair.getPublicKey());
+        AbstractCipher encCipher =
+                CipherFactory.getOaepCipher(keyExchangeAlgorithm, keypair.getPublicKey());
         byte[] computedCiphertext = encCipher.encrypt(plaintext);
-        DecryptionCipher decCipher =
-                CipherFactory.getDecryptionCipher(
-                        keyExchangeAlgorithm, keypair.getPrivateKey().get());
+        AbstractCipher decCipher =
+                CipherFactory.getOaepCipher(
+                        keyExchangeAlgorithm, keypair.getPrivateKey().orElseThrow());
         byte[] computedPlaintext = decCipher.decrypt(computedCiphertext);
         assertArrayEquals(plaintext, computedPlaintext);
     }
@@ -221,10 +224,10 @@ public class OaepCipherTest {
                 new CustomRsaPrivateKey(new BigInteger(privateExponent), new BigInteger(modulus));
         SshPublicKey<CustomRsaPublicKey, CustomRsaPrivateKey> keypair =
                 new SshPublicKey<>(PublicKeyFormat.SSH_RSA, publicKey, privateKey);
-        DecryptionCipher decCipher =
-                CipherFactory.getDecryptionCipher(KeyExchangeAlgorithm.RSA1024_SHA1, privateKey);
-        EncryptionCipher encCipher =
-                CipherFactory.getEncryptionCipher(
+        AbstractCipher decCipher =
+                CipherFactory.getOaepCipher(KeyExchangeAlgorithm.RSA1024_SHA1, privateKey);
+        AbstractCipher encCipher =
+                CipherFactory.getOaepCipher(
                         KeyExchangeAlgorithm.RSA1024_SHA1, keypair.getPublicKey());
         assertThrows(
                 UnsupportedOperationException.class, () -> encCipher.encrypt(plain, new byte[10]));

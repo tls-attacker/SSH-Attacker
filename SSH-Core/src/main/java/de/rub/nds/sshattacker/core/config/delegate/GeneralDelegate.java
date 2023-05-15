@@ -8,14 +8,17 @@
 package de.rub.nds.sshattacker.core.config.delegate;
 
 import com.beust.jcommander.Parameter;
+
 import de.rub.nds.sshattacker.core.config.Config;
-import java.security.Provider;
-import java.security.Security;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.Configurator;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
+
+import java.security.Provider;
+import java.security.Security;
 
 public class GeneralDelegate extends Delegate {
 
@@ -32,8 +35,6 @@ public class GeneralDelegate extends Delegate {
 
     @Parameter(names = "-quiet", description = "No output (sets logLevel to NONE)")
     private boolean quiet;
-
-    public GeneralDelegate() {}
 
     public boolean isHelp() {
         return help;
@@ -62,7 +63,7 @@ public class GeneralDelegate extends Delegate {
     @Override
     public void applyDelegate(Config config) {
         Security.addProvider(new BouncyCastleProvider());
-        if (isDebug()) {
+        if (debug) {
             Configurator.setAllLevels("de.rub.nds.sshattacker", Level.DEBUG);
         } else if (quiet) {
             Configurator.setAllLevels("de.rub.nds.sshattacker", Level.OFF);

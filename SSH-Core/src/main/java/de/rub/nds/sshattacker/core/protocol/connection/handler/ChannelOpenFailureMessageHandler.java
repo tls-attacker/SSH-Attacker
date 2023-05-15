@@ -13,6 +13,7 @@ import de.rub.nds.sshattacker.core.protocol.connection.parser.ChannelOpenFailure
 import de.rub.nds.sshattacker.core.protocol.connection.preparator.ChannelOpenFailureMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.connection.serializer.ChannelOpenFailureMessageSerializer;
 import de.rub.nds.sshattacker.core.state.SshContext;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -33,7 +34,7 @@ public class ChannelOpenFailureMessageHandler extends SshMessageHandler<ChannelO
         if (!context.getChannels().containsKey(message.getRecipientChannelId().getValue())) {
             LOGGER.warn(
                     "{} received but no channel with id {} found locally, ignoring it.",
-                    this.getClass().getSimpleName(),
+                    getClass().getSimpleName(),
                     message.getRecipientChannelId().getValue());
         }
         context.getChannels().remove(message.getRecipientChannelId().getValue());

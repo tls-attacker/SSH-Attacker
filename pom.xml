@@ -4,12 +4,12 @@
     <parent>
         <groupId>de.rub.nds</groupId>
         <artifactId>protocol-toolkit-bom</artifactId>
-        <version>1.2.0</version>
+        <version>3.1.0</version>
     </parent>
 
     <groupId>de.rub.nds.ssh.attacker</groupId>
     <artifactId>ssh-attacker</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.1.4-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>SSH-Attacker</name>
@@ -55,6 +55,7 @@
     <scm>
         <connection>scm:git:https://github.com/tls-attacker/SSH-Attacker.git</connection>
         <developerConnection>scm:git:ssh://git@github.com/tls-attacker/SSH-Attacker.git</developerConnection>
+        <tag>HEAD</tag>
         <url>https://github.com/tls-attacker/SSH-Attacker</url>
     </scm>
 
@@ -96,6 +97,11 @@
             </dependency>
             <dependency>
                 <groupId>de.rub.nds.ssh.attacker</groupId>
+                <artifactId>ssh-core-oqs</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>de.rub.nds.ssh.attacker</groupId>
                 <artifactId>ssh-mitm</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -108,11 +114,16 @@
     </dependencyManagement>
 
     <dependencies>
+        <!-- scope: compile -->
+        <dependency>
+            <groupId>cc.redberry</groupId>
+            <artifactId>rings</artifactId>
+            <version>2.5.8</version>
+        </dependency>
         <dependency>
             <groupId>com.beust</groupId>
             <artifactId>jcommander</artifactId>
         </dependency>
-        <!-- scope: compile -->
         <dependency>
             <groupId>de.rub.nds</groupId>
             <artifactId>modifiable-variable</artifactId>
@@ -145,6 +156,16 @@
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-junit-jupiter</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -372,11 +393,6 @@
                     </execution>
                 </executions>
             </plugin>
-            <!--################## site lifecycle plugins ###################-->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-site-plugin</artifactId>
-            </plugin>
             <!--############ plugins without lifecycle bindings #############-->
             <!-- Static code analysis -->
             <plugin>
@@ -389,34 +405,6 @@
             </plugin>
         </plugins>
     </build>
-
-    <reporting>
-        <plugins>
-            <plugin>
-                <groupId>com.github.spotbugs</groupId>
-                <artifactId>spotbugs-maven-plugin</artifactId>
-                <version>4.7.2.0</version>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-pmd-plugin</artifactId>
-                <version>3.19.0</version>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jxr-plugin</artifactId>
-                <version>3.3.0</version>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-deploy-plugin</artifactId>
-            </plugin>
-        </plugins>
-    </reporting>
 
     <profiles>
         <profile>
@@ -510,6 +498,19 @@
                     </plugins>
                 </pluginManagement>
             </build>
+        </profile>
+        <profile>
+            <id>liboqs-support</id>
+            <activation>
+                <!-- Check for liboqs.so at the default installation path. If you are using a custom path you'll need
+                     to enable this profile by explicitly include -P liboqs-support when calling maven. -->
+                <file>
+                    <exists>/usr/local/lib/liboqs.so</exists>
+                </file>
+            </activation>
+            <modules>
+                <module>SSH-Core-OQS</module>
+            </modules>
         </profile>
     </profiles>
 </project>

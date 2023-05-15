@@ -13,6 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.NamedEcGroup;
+
 import org.junit.jupiter.api.Test;
 
 public class XCurveEcdhKeyExchangeTest {
@@ -39,15 +40,17 @@ public class XCurveEcdhKeyExchangeTest {
                         "4a5d9d5ba4ce2de1728e3bf480350f25e07e21c947d19e3376f09b3c1e161742");
 
         XCurveEcdhKeyExchange keyExchangeOnASite =
-                new XCurveEcdhKeyExchange(NamedEcGroup.CURVE25519);
+                new XCurveEcdhKeyExchange(NamedEcGroup.CURVE25519, false);
         XCurveEcdhKeyExchange keyExchangeOnBSite =
-                new XCurveEcdhKeyExchange(NamedEcGroup.CURVE25519);
+                new XCurveEcdhKeyExchange(NamedEcGroup.CURVE25519, false);
         keyExchangeOnASite.setLocalKeyPair(privateKeyA);
         keyExchangeOnBSite.setLocalKeyPair(privateKeyB);
         assertArrayEquals(
-                expectedPublicKeyA, keyExchangeOnASite.getLocalKeyPair().getPublic().getEncoded());
+                expectedPublicKeyA,
+                keyExchangeOnASite.getLocalKeyPair().getPublicKey().getEncoded());
         assertArrayEquals(
-                expectedPublicKeyB, keyExchangeOnBSite.getLocalKeyPair().getPublic().getEncoded());
+                expectedPublicKeyB,
+                keyExchangeOnBSite.getLocalKeyPair().getPublicKey().getEncoded());
 
         keyExchangeOnASite.setRemotePublicKey(expectedPublicKeyB);
         keyExchangeOnBSite.setRemotePublicKey(expectedPublicKeyA);
@@ -56,8 +59,8 @@ public class XCurveEcdhKeyExchangeTest {
 
         assertTrue(keyExchangeOnASite.isComplete());
         assertTrue(keyExchangeOnBSite.isComplete());
-        assertArrayEquals(expectedSharedSecret, keyExchangeOnASite.getSharedSecret().toByteArray());
-        assertArrayEquals(expectedSharedSecret, keyExchangeOnBSite.getSharedSecret().toByteArray());
+        assertArrayEquals(expectedSharedSecret, keyExchangeOnASite.getSharedSecret());
+        assertArrayEquals(expectedSharedSecret, keyExchangeOnBSite.getSharedSecret());
     }
 
     /** Test of XCurveEcdhKeyExchange with X448 being used as the named group */
@@ -79,14 +82,18 @@ public class XCurveEcdhKeyExchangeTest {
                 ArrayConverter.hexStringToByteArray(
                         "07fff4181ac6cc95ec1c16a94a0f74d12da232ce40a77552281d282bb60c0b56fd2464c335543936521c24403085d59a449a5037514a879d");
 
-        XCurveEcdhKeyExchange keyExchangeOnASite = new XCurveEcdhKeyExchange(NamedEcGroup.CURVE448);
-        XCurveEcdhKeyExchange keyExchangeOnBSite = new XCurveEcdhKeyExchange(NamedEcGroup.CURVE448);
+        XCurveEcdhKeyExchange keyExchangeOnASite =
+                new XCurveEcdhKeyExchange(NamedEcGroup.CURVE448, false);
+        XCurveEcdhKeyExchange keyExchangeOnBSite =
+                new XCurveEcdhKeyExchange(NamedEcGroup.CURVE448, false);
         keyExchangeOnASite.setLocalKeyPair(privateKeyA);
         keyExchangeOnBSite.setLocalKeyPair(privateKeyB);
         assertArrayEquals(
-                expectedPublicKeyA, keyExchangeOnASite.getLocalKeyPair().getPublic().getEncoded());
+                expectedPublicKeyA,
+                keyExchangeOnASite.getLocalKeyPair().getPublicKey().getEncoded());
         assertArrayEquals(
-                expectedPublicKeyB, keyExchangeOnBSite.getLocalKeyPair().getPublic().getEncoded());
+                expectedPublicKeyB,
+                keyExchangeOnBSite.getLocalKeyPair().getPublicKey().getEncoded());
 
         keyExchangeOnASite.setRemotePublicKey(expectedPublicKeyB);
         keyExchangeOnBSite.setRemotePublicKey(expectedPublicKeyA);
@@ -95,7 +102,7 @@ public class XCurveEcdhKeyExchangeTest {
 
         assertTrue(keyExchangeOnASite.isComplete());
         assertTrue(keyExchangeOnBSite.isComplete());
-        assertArrayEquals(expectedSharedSecret, keyExchangeOnASite.getSharedSecret().toByteArray());
-        assertArrayEquals(expectedSharedSecret, keyExchangeOnBSite.getSharedSecret().toByteArray());
+        assertArrayEquals(expectedSharedSecret, keyExchangeOnASite.getSharedSecret());
+        assertArrayEquals(expectedSharedSecret, keyExchangeOnBSite.getSharedSecret());
     }
 }

@@ -15,9 +15,11 @@ import de.rub.nds.sshattacker.core.packet.PacketCryptoComputations;
 import de.rub.nds.sshattacker.core.packet.cipher.PacketChaCha20Poly1305Cipher;
 import de.rub.nds.sshattacker.core.packet.cipher.PacketCipher;
 import de.rub.nds.sshattacker.core.packet.cipher.PacketMacedCipher;
-import java.util.Arrays;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.util.Arrays;
 
 public class BinaryPacketParser extends AbstractPacketParser<BinaryPacket> {
 
@@ -118,11 +120,11 @@ public class BinaryPacketParser extends AbstractPacketParser<BinaryPacket> {
                 parseByteArrayField(BinaryPacketConstants.LENGTH_FIELD_LENGTH);
         byte[] decryptedPacketLength =
                 activeDecryptCipher
-                        .getHeaderDecryptCipher()
+                        .getHeaderCipher()
                         .decrypt(
                                 encryptedPacketLength,
                                 ArrayConverter.intToBytes(
-                                        this.sequenceNumber, DataFormatConstants.UINT64_SIZE));
+                                        sequenceNumber, DataFormatConstants.UINT64_SIZE));
         binaryPacket.setLength(ArrayConverter.bytesToInt(decryptedPacketLength));
         binaryPacket.setCiphertext(
                 ArrayConverter.concatenate(
@@ -166,10 +168,10 @@ public class BinaryPacketParser extends AbstractPacketParser<BinaryPacket> {
             if (activeDecryptCipher.getEncryptionAlgorithm().getIVSize() > 0) {
                 decryptedBlock =
                         activeDecryptCipher
-                                .getDecryptCipher()
-                                .decrypt(block, activeDecryptCipher.getNextDecryptionIv());
+                                .getCipher()
+                                .decrypt(block, activeDecryptCipher.getNextIv());
             } else {
-                decryptedBlock = activeDecryptCipher.getDecryptCipher().decrypt(block);
+                decryptedBlock = activeDecryptCipher.getCipher().decrypt(block);
             }
             firstBlock = ArrayConverter.concatenate(firstBlock, decryptedBlock);
             decryptedByteCount += blockSize;

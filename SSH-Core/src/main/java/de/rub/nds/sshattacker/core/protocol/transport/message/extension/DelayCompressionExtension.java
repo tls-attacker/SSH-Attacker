@@ -15,6 +15,7 @@ import de.rub.nds.sshattacker.core.constants.CompressionMethod;
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.extension.DelayCompressionExtensionHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
+
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.stream.Collectors;

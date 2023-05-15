@@ -9,9 +9,10 @@ package de.rub.nds.sshattacker.core.crypto.ec;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import java.math.BigInteger;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import java.math.BigInteger;
 
 public class FieldElementFpTest {
 
@@ -94,7 +95,7 @@ public class FieldElementFpTest {
         try {
             e1.divide(zero);
             fail();
-        } catch (ArithmeticException e) {
+        } catch (ArithmeticException ignored) {
         }
     }
 
@@ -114,14 +115,13 @@ public class FieldElementFpTest {
         try {
             zero.multInv();
             fail();
-        } catch (ArithmeticException e) {
+        } catch (ArithmeticException ignored) {
         }
     }
 
     @Test
     public void testEquals() {
         assertNotEquals(e1, e2);
-        assertEquals(e1, e1);
 
         BigInteger e1Data = e1.getData();
 

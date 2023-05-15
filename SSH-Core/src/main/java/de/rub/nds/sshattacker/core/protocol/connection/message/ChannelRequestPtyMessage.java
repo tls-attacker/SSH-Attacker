@@ -13,6 +13,7 @@ import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.sshattacker.core.protocol.connection.handler.ChannelRequestPtyMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
+
 import java.nio.charset.StandardCharsets;
 
 public class ChannelRequestPtyMessage extends ChannelRequestMessage<ChannelRequestPtyMessage> {
@@ -54,19 +55,20 @@ public class ChannelRequestPtyMessage extends ChannelRequestMessage<ChannelReque
     }
 
     public void setTermEnvVariable(ModifiableString termEnvVariable, boolean adjustLengthField) {
+        this.termEnvVariable = termEnvVariable;
         if (adjustLengthField) {
             setTermEnvVariableLength(
-                    termEnvVariable.getValue().getBytes(StandardCharsets.US_ASCII).length);
+                    this.termEnvVariable.getValue().getBytes(StandardCharsets.US_ASCII).length);
         }
-        this.termEnvVariable = termEnvVariable;
     }
 
     public void setTermEnvVariable(String termEnvVariable, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setTermEnvVariableLength(termEnvVariable.getBytes(StandardCharsets.US_ASCII).length);
-        }
         this.termEnvVariable =
                 ModifiableVariableFactory.safelySetValue(this.termEnvVariable, termEnvVariable);
+        if (adjustLengthField) {
+            setTermEnvVariableLength(
+                    this.termEnvVariable.getValue().getBytes(StandardCharsets.US_ASCII).length);
+        }
     }
 
     public ModifiableInteger getWidthCharacters() {
@@ -149,19 +151,19 @@ public class ChannelRequestPtyMessage extends ChannelRequestMessage<ChannelReque
 
     public void setEncodedTerminalModes(
             ModifiableByteArray encodedTerminalModes, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setEncodedTerminalModesLength(encodedTerminalModes.getValue().length);
-        }
         this.encodedTerminalModes = encodedTerminalModes;
+        if (adjustLengthField) {
+            setEncodedTerminalModesLength(this.encodedTerminalModes.getValue().length);
+        }
     }
 
     public void setEncodedTerminalModes(byte[] encodedTerminalModes, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setEncodedTerminalModesLength(encodedTerminalModes.length);
-        }
         this.encodedTerminalModes =
                 ModifiableVariableFactory.safelySetValue(
                         this.encodedTerminalModes, encodedTerminalModes);
+        if (adjustLengthField) {
+            setEncodedTerminalModesLength(this.encodedTerminalModes.getValue().length);
+        }
     }
 
     @Override

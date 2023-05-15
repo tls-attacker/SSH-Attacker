@@ -7,6 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.constants;
 
+import java.util.Collections;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -37,10 +38,11 @@ public enum DisconnectReason {
     public static final Map<Integer, DisconnectReason> map;
 
     static {
-        map = new TreeMap<>();
-        for (DisconnectReason constant : DisconnectReason.values()) {
-            map.put(constant.id, constant);
+        Map<Integer, DisconnectReason> mutableMap = new TreeMap<>();
+        for (DisconnectReason constant : values()) {
+            mutableMap.put(constant.id, constant);
         }
+        map = Collections.unmodifiableMap(mutableMap);
     }
 
     DisconnectReason(int id) {

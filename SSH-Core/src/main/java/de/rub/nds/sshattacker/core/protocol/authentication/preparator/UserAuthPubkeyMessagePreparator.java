@@ -15,11 +15,13 @@ import de.rub.nds.sshattacker.core.crypto.util.PublicKeyHelper;
 import de.rub.nds.sshattacker.core.exceptions.CryptoException;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthPubkeyMessage;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class UserAuthPubkeyMessagePreparator
         extends UserAuthRequestMessagePreparator<UserAuthPubkeyMessage> {
@@ -36,7 +38,7 @@ public class UserAuthPubkeyMessagePreparator
 
     string    session identifier
     byte      SSH_MSG_USERAUTH_REQUEST
-    string    user name
+    string    username
     string    service name
     string    "publickey"
     boolean   TRUE
@@ -140,8 +142,14 @@ public class UserAuthPubkeyMessagePreparator
     public void prepareUserAuthRequestSpecificContents() {
         getObject().setUseSignature(true);
         SshPublicKey<?, ?> pk = chooser.getSelectedPublicKeyForAuthentication();
-        getObject().setPubkeyAlgName(pk.getPublicKeyFormat().getName(), true);
-        getObject().setPubkey(PublicKeyHelper.encode(pk), true);
-        getObject().setSignature(getEncodedSignature(pk), true);
+        if (pk != null) {
+            getObject().setPubkeyAlgName(pk.getPublicKeyFormat().getName(), true);
+            getObject().setPubkey(PublicKeyHelper.encode(pk), true);
+            getObject().setSignature(getEncodedSignature(pk), true);
+        } else {
+            getObject().setPubkeyAlgName("", true);
+            getObject().setPubkey(new byte[0], true);
+            getObject().setSignature(new byte[0], true);
+        }
     }
 }

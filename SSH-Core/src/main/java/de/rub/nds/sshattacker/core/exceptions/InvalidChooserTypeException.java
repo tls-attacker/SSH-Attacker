@@ -9,7 +9,9 @@ package de.rub.nds.sshattacker.core.exceptions;
 
 public class InvalidChooserTypeException extends RuntimeException {
 
-    public InvalidChooserTypeException() {}
+    public InvalidChooserTypeException() {
+        super();
+    }
 
     public InvalidChooserTypeException(String message) {
         super(message);

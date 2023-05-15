@@ -13,6 +13,7 @@ import de.rub.nds.sshattacker.core.protocol.connection.parser.ChannelRequestBrea
 import de.rub.nds.sshattacker.core.protocol.connection.preparator.ChannelRequestBreakMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.connection.serializer.ChannelRequestBreakMessageSerializer;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.util.Converter;
 
 public class ChannelRequestBreakMessageHandler
         extends SshMessageHandler<ChannelRequestBreakMessage> {
@@ -46,5 +47,9 @@ public class ChannelRequestBreakMessageHandler
     }
 
     @Override
-    public void adjustContext() {}
+    public void adjustContext() {
+        if (Converter.byteToBoolean(message.getWantReply().getValue())) {
+            context.getChannelManager().addToChannelRequestResponseQueue(message);
+        }
+    }
 }

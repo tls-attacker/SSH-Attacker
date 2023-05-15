@@ -13,6 +13,7 @@ import de.rub.nds.sshattacker.core.constants.*;
 import de.rub.nds.sshattacker.core.crypto.hash.ExchangeHashInputHolder;
 import de.rub.nds.sshattacker.core.crypto.kex.AbstractEcdhKeyExchange;
 import de.rub.nds.sshattacker.core.crypto.kex.DhKeyExchange;
+import de.rub.nds.sshattacker.core.crypto.kex.HybridKeyExchange;
 import de.rub.nds.sshattacker.core.crypto.kex.RsaKeyExchange;
 import de.rub.nds.sshattacker.core.crypto.keys.SshPublicKey;
 import de.rub.nds.sshattacker.core.exceptions.ConfigurationException;
@@ -22,14 +23,15 @@ import de.rub.nds.sshattacker.core.packet.layer.AbstractPacketLayer;
 import de.rub.nds.sshattacker.core.packet.layer.PacketLayerFactory;
 import de.rub.nds.sshattacker.core.protocol.common.layer.MessageLayer;
 import de.rub.nds.sshattacker.core.protocol.connection.Channel;
+import de.rub.nds.sshattacker.core.protocol.connection.ChannelManager;
 import de.rub.nds.sshattacker.core.protocol.transport.message.extension.AbstractExtension;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.sshattacker.core.workflow.chooser.ChooserFactory;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import de.rub.nds.tlsattacker.transport.TransportHandlerFactory;
+
 import java.io.IOException;
-import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
@@ -46,14 +48,14 @@ public class SshContext {
 
     private TransportHandler transportHandler;
     /** If set to true, an exception was received from the transport handler */
-    private boolean receivedTransportHandlerException = false;
+    private boolean receivedTransportHandlerException;
 
     /** The currently active packet layer type */
     private PacketLayerType packetLayerType;
     /** A layer to serialize packets */
     private AbstractPacketLayer packetLayer;
     /**
-     * If set to true, receive actions will read the incoming byte stream on a per line basis (each
+     * If set to true, receive actions will read the incoming byte stream on a per-line basis (each
      * line is terminated by LF).
      */
     private Boolean receiveAsciiModeEnabled;
@@ -181,11 +183,13 @@ public class SshContext {
     private AbstractEcdhKeyExchange ecdhKeyExchangeInstance;
     /** Key exchange instance for RSA key exchange method(s) */
     private RsaKeyExchange rsaKeyExchangeInstance;
+    /** Key exchange instance for Hybrid key exchange method(s) */
+    private HybridKeyExchange hybridKeyExchangeInstance;
     /**
      * If set to true, the most recent group request received was of type
      * DhGexKeyExchangeOldRequestMessage
      */
-    private boolean oldGroupRequestReceived = false;
+    private boolean oldGroupRequestReceived;
     /** Minimal acceptable DH group size as reported in the SSH_MSG_KEX_DH_GEX_REQUEST message */
     private Integer minimalDhGroupSize;
     /** Preferred DH group size as reported in the SSH_MSG_KEX_DH_GEX_REQUEST message */
@@ -211,7 +215,7 @@ public class SshContext {
      */
     private byte[] sessionID;
     /** The shared secret established by the negotiated key exchange method */
-    private BigInteger sharedSecret;
+    private byte[] sharedSecret;
     /** The key set derived from the shared secret, the exchange hash, and the session ID */
     private KeySet keySet;
     // endregion
@@ -261,21 +265,24 @@ public class SshContext {
     // endregion
 
     // region Connection Protocol
-    private final HashMap<Integer, Channel> channels = new HashMap<>();
+
+    private ChannelManager channelManager;
+
     // TODO: Implement channel requests in such a way that allows specification within the XML file
     // endregion
 
-    /** If set to true, a SSH_MSG_DISCONNECT has been received from the remote peer */
-    private boolean disconnectMessageReceived = false;
+    /** If set to true, an SSH_MSG_DISCONNECT has been received from the remote peer */
+    private boolean disconnectMessageReceived;
     /** If set to true, a version exchange message was sent by each side */
-    private boolean versionExchangeCompleted = false;
+    private boolean versionExchangeComplete;
 
-    // region Constructors and Initalization
+    // region Constructors and Initialization
     public SshContext() {
         this(Config.createConfig());
     }
 
     public SshContext(Config config) {
+        super();
         RunningModeType mode = config.getDefaultRunningMode();
         if (mode == null) {
             throw new ConfigurationException("Cannot create connection, running mode not set");
@@ -295,6 +302,7 @@ public class SshContext {
     }
 
     public SshContext(Config config, AliasedConnection connection) {
+        super();
         init(config, connection);
     }
 
@@ -309,7 +317,8 @@ public class SshContext {
         receiveAsciiModeEnabled = true;
         writeSequenceNumber = 0;
         readSequenceNumber = 0;
-        handleAsClient = (connection.getLocalConnectionEndType() == ConnectionEndType.CLIENT);
+        handleAsClient = connection.getLocalConnectionEndType() == ConnectionEndType.CLIENT;
+        channelManager = new ChannelManager(this);
     }
 
     // endregion
@@ -833,6 +842,10 @@ public class SshContext {
         return Optional.ofNullable(ecdhKeyExchangeInstance);
     }
 
+    public Optional<HybridKeyExchange> getHybridKeyExchangeInstance() {
+        return Optional.ofNullable(hybridKeyExchangeInstance);
+    }
+
     public Optional<RsaKeyExchange> getRsaKeyExchangeInstance() {
         return Optional.ofNullable(rsaKeyExchangeInstance);
     }
@@ -861,6 +874,7 @@ public class SshContext {
         return Optional.ofNullable(serverExchangeHashSignature);
     }
 
+    @SuppressWarnings("NonBooleanMethodNameMayNotStartWithQuestion")
     public Optional<Boolean> isServerExchangeHashSignatureValid() {
         return Optional.ofNullable(serverExchangeHashSignatureValid);
     }
@@ -876,6 +890,10 @@ public class SshContext {
 
     public void setEcdhKeyExchangeInstance(AbstractEcdhKeyExchange ecdhKeyExchangeInstance) {
         this.ecdhKeyExchangeInstance = ecdhKeyExchangeInstance;
+    }
+
+    public void setHybridKeyExchangeInstance(HybridKeyExchange HybridKeyExchangeInstance) {
+        hybridKeyExchangeInstance = HybridKeyExchangeInstance;
     }
 
     public void setRsaKeyExchangeInstance(RsaKeyExchange rsaKeyExchangeInstance) {
@@ -907,7 +925,7 @@ public class SshContext {
     }
 
     public void setServerExchangeHashSignatureValid(Boolean isValid) {
-        this.serverExchangeHashSignatureValid = isValid;
+        serverExchangeHashSignatureValid = isValid;
     }
     // endregion
 
@@ -924,7 +942,7 @@ public class SshContext {
         return Optional.ofNullable(sessionID);
     }
 
-    public Optional<BigInteger> getSharedSecret() {
+    public Optional<byte[]> getSharedSecret() {
         return Optional.ofNullable(sharedSecret);
     }
 
@@ -941,12 +959,12 @@ public class SshContext {
         this.sessionID = sessionID;
     }
 
-    public void setSharedSecret(BigInteger sharedSecret) {
+    public void setSharedSecret(byte[] sharedSecret) {
         this.sharedSecret = sharedSecret;
     }
 
     public void setKeySet(KeySet transportKeySet) {
-        this.keySet = transportKeySet;
+        keySet = transportKeySet;
     }
     // endregion
 
@@ -1062,7 +1080,15 @@ public class SshContext {
 
     // region for Connection Protocol Fields
     public HashMap<Integer, Channel> getChannels() {
-        return channels;
+        return channelManager.getChannels();
+    }
+
+    public ChannelManager getChannelManager() {
+        return channelManager;
+    }
+
+    public void setChannelManager(ChannelManager channelManager) {
+        this.channelManager = channelManager;
     }
     // endregion
 
@@ -1075,11 +1101,11 @@ public class SshContext {
     }
 
     public boolean isVersionExchangeComplete() {
-        return versionExchangeCompleted;
+        return versionExchangeComplete;
     }
 
     public void setVersionExchangeComplete(Boolean complete) {
-        this.versionExchangeCompleted = complete;
+        versionExchangeComplete = complete;
     }
 
     public boolean isClient() {

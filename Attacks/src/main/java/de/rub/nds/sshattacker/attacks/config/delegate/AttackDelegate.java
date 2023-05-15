@@ -8,6 +8,7 @@
 package de.rub.nds.sshattacker.attacks.config.delegate;
 
 import com.beust.jcommander.Parameter;
+
 import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.config.delegate.Delegate;
 import de.rub.nds.sshattacker.core.exceptions.ConfigurationException;
@@ -20,10 +21,7 @@ public class AttackDelegate extends Delegate {
             description =
                     "If this value is set the Attack is not only Tested, but also "
                             + "executed (WARNING)")
-    private boolean executeAttack = false;
-
-    /** Default Constructor */
-    public AttackDelegate() {}
+    private boolean executeAttack;
 
     /**
      * Returns true if an attack should be executed

@@ -11,9 +11,11 @@ import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthFailureMessage;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
 import de.rub.nds.sshattacker.core.util.Converter;
-import java.nio.charset.StandardCharsets;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.nio.charset.StandardCharsets;
 
 public class UserAuthFailureMessageSerializer extends SshMessageSerializer<UserAuthFailureMessage> {
 
@@ -25,22 +27,22 @@ public class UserAuthFailureMessageSerializer extends SshMessageSerializer<UserA
 
     private void serializePossibleAuthenticationMethods() {
         LOGGER.debug(
-                "Possible authentication methods length: "
-                        + message.getPossibleAuthenticationMethodsLength().getValue());
+                "Possible authentication methods length: {}",
+                message.getPossibleAuthenticationMethodsLength().getValue());
         appendInt(
                 message.getPossibleAuthenticationMethodsLength().getValue(),
                 DataFormatConstants.STRING_SIZE_LENGTH);
         LOGGER.debug(
-                "Possible authentication methods: "
-                        + message.getPossibleAuthenticationMethods().getValue());
+                "Possible authentication methods: {}",
+                message.getPossibleAuthenticationMethods().getValue());
         appendString(
                 message.getPossibleAuthenticationMethods().getValue(), StandardCharsets.US_ASCII);
     }
 
     private void serializePartialSuccess() {
         LOGGER.debug(
-                "Partial success: "
-                        + Converter.byteToBoolean(message.getPartialSuccess().getValue()));
+                "Partial success: {}",
+                Converter.byteToBoolean(message.getPartialSuccess().getValue()));
         appendByte(message.getPartialSuccess().getValue());
     }
 

@@ -45,26 +45,28 @@ public enum MacAlgorithm {
     private final String name;
     private final int keySize;
     private final int outputSize;
-    private final boolean isETM;
+    private final boolean encryptThenMac;
     private final String javaName;
 
     MacAlgorithm(String name, int keySize, int outputSize) {
         this(name, keySize, outputSize, false, null);
     }
 
-    MacAlgorithm(String name, int keySize, int outputSize, boolean isETM) {
-        this(name, keySize, outputSize, isETM, null);
+    @SuppressWarnings("SameParameterValue")
+    MacAlgorithm(String name, int keySize, int outputSize, boolean encryptThenMac) {
+        this(name, keySize, outputSize, encryptThenMac, null);
     }
 
     MacAlgorithm(String name, int keySize, int outputSize, String javaName) {
         this(name, keySize, outputSize, false, javaName);
     }
 
-    MacAlgorithm(String name, int keySize, int outputSize, boolean isETM, String javaName) {
+    MacAlgorithm(
+            String name, int keySize, int outputSize, boolean encryptThenMac, String javaName) {
         this.name = name;
         this.keySize = keySize;
         this.outputSize = outputSize;
-        this.isETM = isETM;
+        this.encryptThenMac = encryptThenMac;
         this.javaName = javaName;
     }
 
@@ -81,8 +83,8 @@ public enum MacAlgorithm {
         return outputSize;
     }
 
-    public boolean isEncryptThenMacAlgorithm() {
-        return isETM;
+    public boolean isEncryptThenMac() {
+        return encryptThenMac;
     }
 
     public String getJavaName() {
