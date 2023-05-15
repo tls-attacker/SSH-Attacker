@@ -9,6 +9,7 @@ package de.rub.nds.sshattacker.core.protocol.connection.serializer;
 
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelRequestBreakMessage;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -21,7 +22,7 @@ public class ChannelRequestBreakMessageSerializer
     }
 
     public void serializeBreakLength() {
-        LOGGER.debug("Break length in milliseconds: " + message.getBreakLength().getValue());
+        LOGGER.debug("Break length in milliseconds: {}", message.getBreakLength().getValue());
         appendInt(message.getBreakLength().getValue(), DataFormatConstants.UINT32_SIZE);
     }
 

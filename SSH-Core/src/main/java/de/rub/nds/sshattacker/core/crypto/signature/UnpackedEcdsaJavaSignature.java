@@ -11,14 +11,16 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.constants.PublicKeyAlgorithm;
 import de.rub.nds.sshattacker.core.util.Converter;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.bouncycastle.asn1.*;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.security.Key;
 import java.util.Arrays;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.bouncycastle.asn1.*;
 
 /**
  * This class extends the JavaSignature for the ECDSA signature encoding by unpacking the signature
@@ -40,6 +42,7 @@ public class UnpackedEcdsaJavaSignature extends UnpackedJavaSignature {
         }
     }
 
+    @SuppressWarnings("StandardVariableNames")
     @Override
     protected byte[] unpackSignature(byte[] packedSignature) {
         try (ASN1InputStream input = new ASN1InputStream(packedSignature)) {
@@ -57,6 +60,7 @@ public class UnpackedEcdsaJavaSignature extends UnpackedJavaSignature {
         }
     }
 
+    @SuppressWarnings("StandardVariableNames")
     @Override
     protected byte[] packSignature(byte[] unpackedSignature) {
         int rStart = DataFormatConstants.MPINT_SIZE_LENGTH;

@@ -7,7 +7,6 @@
  */
 package de.rub.nds.sshattacker.core.crypto.keys;
 
-import java.io.Serializable;
 import java.security.PublicKey;
 
 /**
@@ -15,7 +14,7 @@ import java.security.PublicKey;
  * overrides the getFormat() and getEncoded() methods of the PrivateKey interface to return null (no
  * encoding support).
  */
-public abstract class CustomPublicKey implements PublicKey, Serializable {
+public abstract class CustomPublicKey implements PublicKey {
     @Override
     public String getFormat() {
         return null;

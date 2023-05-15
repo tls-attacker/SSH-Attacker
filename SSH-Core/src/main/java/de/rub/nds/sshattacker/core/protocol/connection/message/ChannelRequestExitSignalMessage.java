@@ -14,6 +14,7 @@ import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.sshattacker.core.constants.SignalType;
 import de.rub.nds.sshattacker.core.protocol.connection.handler.ChannelRequestExitSignalMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
+
 import java.nio.charset.StandardCharsets;
 
 public class ChannelRequestExitSignalMessage
@@ -57,17 +58,17 @@ public class ChannelRequestExitSignalMessage
     }
 
     public void setSignalName(ModifiableString signalName, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setSignalNameLength(signalName.getValue().getBytes(StandardCharsets.UTF_8).length);
-        }
         this.signalName = signalName;
+        if (adjustLengthField) {
+            setSignalNameLength(this.signalName.getValue().getBytes(StandardCharsets.UTF_8).length);
+        }
     }
 
     public void setSignalName(String signalName, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setSignalNameLength(signalName.getBytes(StandardCharsets.UTF_8).length);
-        }
         this.signalName = ModifiableVariableFactory.safelySetValue(this.signalName, signalName);
+        if (adjustLengthField) {
+            setSignalNameLength(this.signalName.getValue().getBytes(StandardCharsets.UTF_8).length);
+        }
     }
 
     public void setSignalName(SignalType signalName, boolean adjustLengthField) {
@@ -112,17 +113,19 @@ public class ChannelRequestExitSignalMessage
     }
 
     public void setLanguageTag(ModifiableString languageTag, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setLanguageTagLength(languageTag.getValue().getBytes(StandardCharsets.US_ASCII).length);
-        }
         this.languageTag = languageTag;
+        if (adjustLengthField) {
+            setLanguageTagLength(
+                    this.languageTag.getValue().getBytes(StandardCharsets.US_ASCII).length);
+        }
     }
 
     public void setLanguageTag(String languageTag, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setLanguageTagLength(languageTag.getBytes(StandardCharsets.US_ASCII).length);
-        }
         this.languageTag = ModifiableVariableFactory.safelySetValue(this.languageTag, languageTag);
+        if (adjustLengthField) {
+            setLanguageTagLength(
+                    this.languageTag.getValue().getBytes(StandardCharsets.US_ASCII).length);
+        }
     }
 
     public ModifiableInteger getErrorMessageLength() {
@@ -153,18 +156,20 @@ public class ChannelRequestExitSignalMessage
     }
 
     public void setErrorMessage(ModifiableString errorMessage, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setErrorMessageLength(errorMessage.getValue().getBytes(StandardCharsets.UTF_8).length);
-        }
         this.errorMessage = errorMessage;
+        if (adjustLengthField) {
+            setErrorMessageLength(
+                    this.errorMessage.getValue().getBytes(StandardCharsets.UTF_8).length);
+        }
     }
 
     public void setErrorMessage(String errorMessage, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setErrorMessageLength(errorMessage.getBytes(StandardCharsets.UTF_8).length);
-        }
         this.errorMessage =
                 ModifiableVariableFactory.safelySetValue(this.errorMessage, errorMessage);
+        if (adjustLengthField) {
+            setErrorMessageLength(
+                    this.errorMessage.getValue().getBytes(StandardCharsets.UTF_8).length);
+        }
     }
 
     @Override

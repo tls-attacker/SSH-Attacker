@@ -10,6 +10,7 @@ package de.rub.nds.sshattacker.core.protocol.transport.parser;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 import de.rub.nds.sshattacker.core.protocol.transport.message.UnknownMessage;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -34,6 +35,6 @@ public class UnknownMessageParser extends SshMessageParser<UnknownMessage> {
     protected void parseMessageSpecificContents() {
         message.setPayload(parseArrayOrTillEnd(-1));
         LOGGER.debug(
-                "Payload: " + ArrayConverter.bytesToRawHexString(message.getPayload().getValue()));
+                "Payload: {}", ArrayConverter.bytesToRawHexString(message.getPayload().getValue()));
     }
 }

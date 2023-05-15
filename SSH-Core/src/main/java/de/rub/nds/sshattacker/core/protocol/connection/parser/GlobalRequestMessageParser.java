@@ -7,39 +7,44 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.parser;
 
+import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeString;
+
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 import de.rub.nds.sshattacker.core.protocol.connection.message.GlobalRequestMessage;
 import de.rub.nds.sshattacker.core.util.Converter;
-import java.nio.charset.StandardCharsets;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.nio.charset.StandardCharsets;
 
 public abstract class GlobalRequestMessageParser<T extends GlobalRequestMessage<T>>
         extends SshMessageParser<T> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public GlobalRequestMessageParser(byte[] array) {
+    protected GlobalRequestMessageParser(byte[] array) {
         super(array);
     }
 
-    public GlobalRequestMessageParser(byte[] array, int startPosition) {
+    protected GlobalRequestMessageParser(byte[] array, int startPosition) {
         super(array, startPosition);
     }
 
     private void parseRequestName() {
         message.setRequestNameLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-        LOGGER.debug("Request name length: " + message.getRequestNameLength().getValue());
+        LOGGER.debug("Request name length: {}", message.getRequestNameLength().getValue());
         message.setRequestName(
                 parseByteString(
                         message.getRequestNameLength().getValue(), StandardCharsets.US_ASCII));
-        LOGGER.debug("Request name: " + message.getRequestName().getValue());
+        LOGGER.debug(
+                "Request name: {}", backslashEscapeString(message.getRequestName().getValue()));
     }
 
     private void parseWantReply() {
         message.setWantReply(parseByteField(1));
-        LOGGER.debug("Want reply: " + Converter.byteToBoolean(message.getWantReply().getValue()));
+        LOGGER.debug("Want reply: {}", Converter.byteToBoolean(message.getWantReply().getValue()));
     }
 
     @Override

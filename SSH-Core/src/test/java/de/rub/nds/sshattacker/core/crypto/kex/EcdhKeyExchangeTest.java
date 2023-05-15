@@ -7,23 +7,24 @@
  */
 package de.rub.nds.sshattacker.core.crypto.kex;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 import de.rub.nds.sshattacker.core.constants.EcPointFormat;
 import de.rub.nds.sshattacker.core.constants.NamedEcGroup;
 import de.rub.nds.sshattacker.core.crypto.ec.CurveFactory;
 import de.rub.nds.sshattacker.core.crypto.ec.Point;
 import de.rub.nds.sshattacker.core.crypto.ec.PointFormatter;
+
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+
 import java.io.InputStream;
 import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.stream.Stream;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
 
 public class EcdhKeyExchangeTest {
 
@@ -80,7 +81,7 @@ public class EcdhKeyExchangeTest {
                 line = reader.nextLine();
                 BigInteger publicKeyYA = new BigInteger(line.split(" = ")[1], 16);
                 line = reader.nextLine();
-                BigInteger sharedSecret = new BigInteger(line.split(" = ")[1], 16);
+                byte[] sharedSecret = new BigInteger(line.split(" = ")[1], 16).toByteArray();
                 argumentsBuilder.add(
                         Arguments.of(
                                 privateKeyA,
@@ -115,21 +116,21 @@ public class EcdhKeyExchangeTest {
             BigInteger expectedPublicKeyYA,
             BigInteger providedPublicKeyXB,
             BigInteger providedPublicKeyYB,
-            BigInteger expectedSharedSecret,
+            byte[] expectedSharedSecret,
             NamedEcGroup group) {
         EcdhKeyExchange keyExchange = new EcdhKeyExchange(group);
         keyExchange.setLocalKeyPair(providedPrivateKeyA.toByteArray());
         assertEquals(
                 expectedPublicKeyXA,
-                keyExchange.getLocalKeyPair().getPublic().getWAsPoint().getFieldX().getData());
+                keyExchange.getLocalKeyPair().getPublicKey().getWAsPoint().getFieldX().getData());
         assertEquals(
                 expectedPublicKeyYA,
-                keyExchange.getLocalKeyPair().getPublic().getWAsPoint().getFieldY().getData());
+                keyExchange.getLocalKeyPair().getPublicKey().getWAsPoint().getFieldY().getData());
         Point publicKeyB =
                 CurveFactory.getCurve(group).getPoint(providedPublicKeyXB, providedPublicKeyYB);
         keyExchange.setRemotePublicKey(
                 PointFormatter.formatToByteArray(group, publicKeyB, EcPointFormat.UNCOMPRESSED));
         assertDoesNotThrow(keyExchange::computeSharedSecret);
-        assertEquals(expectedSharedSecret, keyExchange.getSharedSecret());
+        assertArrayEquals(expectedSharedSecret, keyExchange.getSharedSecret());
     }
 }

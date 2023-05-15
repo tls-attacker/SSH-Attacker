@@ -9,6 +9,7 @@ package de.rub.nds.sshattacker.core.protocol.connection.serializer;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelRequestUnknownMessage;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -22,9 +23,8 @@ public class ChannelRequestUnknownMessageSerializer
 
     public void serializeBreakLength() {
         LOGGER.debug(
-                "Type specific data: "
-                        + ArrayConverter.bytesToHexString(
-                                message.getTypeSpecificData().getValue()));
+                "Type specific data: {}",
+                ArrayConverter.bytesToHexString(message.getTypeSpecificData().getValue()));
         appendBytes(message.getTypeSpecificData().getValue());
     }
 

@@ -11,15 +11,11 @@ import de.rub.nds.sshattacker.core.packet.AbstractPacket;
 import de.rub.nds.sshattacker.core.packet.BinaryPacket;
 import de.rub.nds.sshattacker.core.packet.BlobPacket;
 import de.rub.nds.sshattacker.core.packet.cipher.PacketCipher;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public abstract class AbstractPacketDecryptor extends PacketCryptoUnit {
 
-    private static final Logger LOGGER = LogManager.getLogger();
-
-    public AbstractPacketDecryptor(PacketCipher cipher) {
-        super(cipher);
+    protected AbstractPacketDecryptor(PacketCipher packetCipher) {
+        super(packetCipher);
     }
 
     public void decrypt(AbstractPacket object) {
@@ -32,7 +28,7 @@ public abstract class AbstractPacketDecryptor extends PacketCryptoUnit {
         }
     }
 
-    public abstract void decrypt(BinaryPacket object);
+    public abstract void decrypt(BinaryPacket packet);
 
-    public abstract void decrypt(BlobPacket object);
+    public abstract void decrypt(BlobPacket packet);
 }

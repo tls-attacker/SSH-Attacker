@@ -7,28 +7,30 @@
  */
 package de.rub.nds.sshattacker.core.crypto;
 
-import de.rub.nds.sshattacker.core.util.Converter;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.math.BigInteger;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.util.Arrays;
 
-public class KeyDerivation {
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+
+public final class KeyDerivation {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
+    private KeyDerivation() {
+        super();
+    }
+
     public static byte[] deriveKey(
-            BigInteger sharedSecret,
+            byte[] sharedSecret,
             byte[] exchangeHash,
             char label,
             byte[] sessionID,
             int outputLen,
             String hashFunction) {
-        byte[] serializedSharedSecret = Converter.bigIntegerToMpint(sharedSecret);
         try {
             MessageDigest md = MessageDigest.getInstance(hashFunction);
             ByteArrayOutputStream outStream = new ByteArrayOutputStream();
@@ -36,7 +38,7 @@ public class KeyDerivation {
             outStream.write(
                     md.digest(
                             Arrays.concatenate(
-                                    serializedSharedSecret,
+                                    sharedSecret,
                                     exchangeHash,
                                     new byte[] {(byte) label},
                                     sessionID)));
@@ -45,16 +47,14 @@ public class KeyDerivation {
                 outStream.write(
                         md.digest(
                                 Arrays.concatenate(
-                                        serializedSharedSecret,
-                                        exchangeHash,
-                                        outStream.toByteArray())));
+                                        sharedSecret, exchangeHash, outStream.toByteArray())));
             }
             return Arrays.copyOfRange(outStream.toByteArray(), 0, outputLen);
         } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException(
                     "Provider does not support this hashFunction:" + e.getMessage());
         } catch (IOException e) {
-            LOGGER.error("Error while writing: " + e.getMessage());
+            LOGGER.error("Error while writing: {}", e.getMessage());
             return new byte[0];
         }
     }

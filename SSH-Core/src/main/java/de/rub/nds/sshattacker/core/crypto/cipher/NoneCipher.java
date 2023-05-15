@@ -9,9 +9,7 @@ package de.rub.nds.sshattacker.core.crypto.cipher;
 
 import de.rub.nds.sshattacker.core.constants.EncryptionAlgorithm;
 
-class NoneCipher implements EncryptionCipher, DecryptionCipher {
-
-    public NoneCipher() {}
+class NoneCipher extends AbstractCipher {
 
     @Override
     public byte[] encrypt(byte[] plainData) {
@@ -24,7 +22,7 @@ class NoneCipher implements EncryptionCipher, DecryptionCipher {
     }
 
     @Override
-    public byte[] encrypt(byte[] plainData, byte[] iv, byte[] additionalEncryptedData) {
+    public byte[] encrypt(byte[] plainData, byte[] iv, byte[] additionalAuthenticatedData) {
         return plainData;
     }
 

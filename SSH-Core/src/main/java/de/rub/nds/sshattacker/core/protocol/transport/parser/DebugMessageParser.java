@@ -7,13 +7,17 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.parser;
 
+import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeString;
+
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 import de.rub.nds.sshattacker.core.protocol.transport.message.DebugMessage;
 import de.rub.nds.sshattacker.core.util.Converter;
-import java.nio.charset.StandardCharsets;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.nio.charset.StandardCharsets;
 
 public class DebugMessageParser extends SshMessageParser<DebugMessage> {
 
@@ -35,25 +39,26 @@ public class DebugMessageParser extends SshMessageParser<DebugMessage> {
     private void parseAlwaysDisplay() {
         message.setAlwaysDisplay(parseByteField(1));
         LOGGER.debug(
-                "Always display: "
-                        + Converter.byteToBoolean(message.getAlwaysDisplay().getValue()));
+                "Always display: {}",
+                Converter.byteToBoolean(message.getAlwaysDisplay().getValue()));
     }
 
     private void parseMessage() {
         message.setMessageLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-        LOGGER.debug("Message length: " + message.getMessageLength().getValue());
+        LOGGER.debug("Message length: {}", message.getMessageLength().getValue());
         message.setMessage(
                 parseByteString(message.getMessageLength().getValue(), StandardCharsets.UTF_8));
-        LOGGER.debug("Message: " + message.getMessage().getValue());
+        LOGGER.debug("Message: {}", backslashEscapeString(message.getMessage().getValue()));
     }
 
     private void parseLanguageTag() {
         message.setLanguageTagLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-        LOGGER.debug("Language tag length: " + message.getLanguageTagLength().getValue());
+        LOGGER.debug("Language tag length: {}", message.getLanguageTagLength().getValue());
         message.setLanguageTag(
                 parseByteString(
                         message.getLanguageTagLength().getValue(), StandardCharsets.US_ASCII));
-        LOGGER.debug("Language tag: " + message.getLanguageTag().getValue());
+        LOGGER.debug(
+                "Language tag: {}", backslashEscapeString(message.getLanguageTag().getValue()));
     }
 
     @Override

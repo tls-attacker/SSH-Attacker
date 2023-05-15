@@ -19,6 +19,7 @@ import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.RsaKeyExchangePubkeyMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
+
 import java.math.BigInteger;
 import java.security.interfaces.RSAPublicKey;
 
@@ -61,29 +62,29 @@ public class RsaKeyExchangePubkeyMessage extends SshMessage<RsaKeyExchangePubkey
 
     @Override
     public void setHostKeyBytes(ModifiableByteArray hostKeyBytes) {
-        this.setHostKeyBytes(hostKeyBytes, false);
+        setHostKeyBytes(hostKeyBytes, false);
     }
 
     @Override
     public void setHostKeyBytes(byte[] hostKeyBytes) {
-        this.setHostKeyBytes(hostKeyBytes, false);
+        setHostKeyBytes(hostKeyBytes, false);
     }
 
     @Override
     public void setHostKeyBytes(ModifiableByteArray hostKeyBytes, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setHostKeyBytesLength(hostKeyBytes.getValue().length);
-        }
         this.hostKeyBytes = hostKeyBytes;
+        if (adjustLengthField) {
+            setHostKeyBytesLength(this.hostKeyBytes.getValue().length);
+        }
     }
 
     @Override
     public void setHostKeyBytes(byte[] hostKeyBytes, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setHostKeyBytesLength(hostKeyBytes.length);
-        }
         this.hostKeyBytes =
                 ModifiableVariableFactory.safelySetValue(this.hostKeyBytes, hostKeyBytes);
+        if (adjustLengthField) {
+            setHostKeyBytesLength(this.hostKeyBytes.getValue().length);
+        }
     }
 
     // Transient Public Key (K_T) Methods
@@ -108,34 +109,33 @@ public class RsaKeyExchangePubkeyMessage extends SshMessage<RsaKeyExchangePubkey
     @SuppressWarnings("unchecked")
     public SshPublicKey<CustomRsaPublicKey, CustomRsaPrivateKey> getTransientPublicKey() {
         return (SshPublicKey<CustomRsaPublicKey, CustomRsaPrivateKey>)
-                PublicKeyHelper.parse(
-                        PublicKeyFormat.SSH_RSA, this.transientPublicKeyBytes.getValue());
+                PublicKeyHelper.parse(PublicKeyFormat.SSH_RSA, transientPublicKeyBytes.getValue());
     }
 
     public void setTransientPublicKeyBytes(ModifiableByteArray transientPublicKeyBytes) {
-        this.setTransientPublicKeyBytes(transientPublicKeyBytes, false);
+        setTransientPublicKeyBytes(transientPublicKeyBytes, false);
     }
 
     public void setTransientPublicKeyBytes(byte[] transientPublicKeyBytes) {
-        this.setTransientPublicKeyBytes(transientPublicKeyBytes, false);
+        setTransientPublicKeyBytes(transientPublicKeyBytes, false);
     }
 
     public void setTransientPublicKeyBytes(
             ModifiableByteArray transientPublicKeyBytes, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setTransientPublicKeyBytesLength(transientPublicKeyBytes.getValue().length);
-        }
         this.transientPublicKeyBytes = transientPublicKeyBytes;
+        if (adjustLengthField) {
+            setTransientPublicKeyBytesLength(this.transientPublicKeyBytes.getValue().length);
+        }
     }
 
     public void setTransientPublicKeyBytes(
             byte[] transientPublicKeyBytes, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setTransientPublicKeyBytesLength(transientPublicKeyBytes.length);
-        }
         this.transientPublicKeyBytes =
                 ModifiableVariableFactory.safelySetValue(
                         this.transientPublicKeyBytes, transientPublicKeyBytes);
+        if (adjustLengthField) {
+            setTransientPublicKeyBytesLength(this.transientPublicKeyBytes.getValue().length);
+        }
     }
 
     public BigInteger getModulus() {

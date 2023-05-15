@@ -24,9 +24,4 @@ public class GlobalRequestNoMoreSessionsMessageParser
     public GlobalRequestNoMoreSessionsMessage createMessage() {
         return new GlobalRequestNoMoreSessionsMessage();
     }
-
-    @Override
-    protected void parseMessageSpecificContents() {
-        super.parseMessageSpecificContents();
-    }
 }

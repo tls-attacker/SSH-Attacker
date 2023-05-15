@@ -11,6 +11,7 @@ import de.rub.nds.sshattacker.core.crypto.keys.CustomRsaPublicKey;
 import de.rub.nds.sshattacker.core.crypto.keys.SshPublicKey;
 import de.rub.nds.sshattacker.core.protocol.transport.message.KeyExchangeInitMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.message.VersionExchangeMessage;
+
 import java.math.BigInteger;
 import java.util.Optional;
 
@@ -23,7 +24,7 @@ public final class ExchangeHashInputHolder {
     private KeyExchangeInitMessage clientKeyExchangeInit;
     private KeyExchangeInitMessage serverKeyExchangeInit;
     private SshPublicKey<?, ?> serverHostKey;
-    private BigInteger sharedSecret;
+    private byte[] sharedSecret;
     // endregion
 
     // region Named DH exchange hash fields
@@ -45,6 +46,10 @@ public final class ExchangeHashInputHolder {
     private byte[] ecdhClientPublicKey;
     private byte[] ecdhServerPublicKey;
     // endregion
+
+    // region hybrid exchange hash fields
+    private byte[] hybridClientPublicKey;
+    private byte[] hybridServerPublicKey;
 
     // region RSA exchange hash fields
     private SshPublicKey<CustomRsaPublicKey, ?> rsaTransientKey;
@@ -92,11 +97,11 @@ public final class ExchangeHashInputHolder {
         this.serverHostKey = serverHostKey;
     }
 
-    public Optional<BigInteger> getSharedSecret() {
+    public Optional<byte[]> getSharedSecret() {
         return Optional.ofNullable(sharedSecret);
     }
 
-    public void setSharedSecret(BigInteger sharedSecret) {
+    public void setSharedSecret(byte[] sharedSecret) {
         this.sharedSecret = sharedSecret;
     }
     // endregion
@@ -194,6 +199,24 @@ public final class ExchangeHashInputHolder {
         this.ecdhServerPublicKey = ecdhServerPublicKey;
     }
     // endregion
+
+    // region Getters / setters hybrid exchange hash fields
+    public Optional<byte[]> getHybridClientPublicKey() {
+        return Optional.ofNullable(hybridClientPublicKey);
+    }
+
+    public void setHybridClientPublicKey(byte[] hybridClientPublicKey) {
+        this.hybridClientPublicKey = hybridClientPublicKey;
+    }
+
+    public Optional<byte[]> getHybridServerPublicKey() {
+        return Optional.ofNullable(hybridServerPublicKey);
+    }
+
+    public void setHybridServerPublicKey(byte[] hybridServerPublicKey) {
+        this.hybridServerPublicKey = hybridServerPublicKey;
+    }
+    // end region
 
     // region Getters / setters RSA exchange hash fields
     public Optional<SshPublicKey<CustomRsaPublicKey, ?>> getRsaTransientKey() {

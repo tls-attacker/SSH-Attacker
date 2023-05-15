@@ -11,14 +11,16 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.EcPointFormat;
 import de.rub.nds.sshattacker.core.constants.NamedEcGroup;
 import de.rub.nds.sshattacker.core.exceptions.PreparationException;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.math.BigInteger;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
-public class PointFormatter {
+public final class PointFormatter {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -103,7 +105,7 @@ public class PointFormatter {
         EllipticCurve curve = CurveFactory.getCurve(group);
         int elementLength = ArrayConverter.bigIntegerToByteArray(curve.getModulus()).length;
         if (pointBytes.length < elementLength * 2) {
-            LOGGER.warn("Cannot decode byte[] to point of " + group + ". Returning Basepoint");
+            LOGGER.warn("Cannot decode byte[] to point of {}. Returning Basepoint", group);
             return curve.getBasePoint();
         }
         ByteArrayInputStream inputStream = new ByteArrayInputStream(pointBytes);
@@ -137,11 +139,9 @@ public class PointFormatter {
                 case 3:
                     if (compressedPoint.length != elementLength + 1) {
                         LOGGER.warn(
-                                "Could not parse point. Point needs to be "
-                                        + (elementLength + 1)
-                                        + " bytes long, but was "
-                                        + compressedPoint.length
-                                        + "bytes long. Returning Basepoint");
+                                "Could not parse point. Point needs to be {} bytes long, but was {}bytes long. Returning Basepoint",
+                                elementLength + 1,
+                                compressedPoint.length);
 
                         return curve.getBasePoint();
                     }
@@ -161,11 +161,9 @@ public class PointFormatter {
                 case 4:
                     if (compressedPoint.length != elementLength * 2 + 1) {
                         LOGGER.warn(
-                                "Could not parse point. Point needs to be "
-                                        + (elementLength * 2 + 1)
-                                        + " bytes long, but was "
-                                        + compressedPoint.length
-                                        + "bytes long. Returning Basepoint");
+                                "Could not parse point. Point needs to be {} bytes long, but was {}bytes long. Returning Basepoint",
+                                elementLength * 2 + 1,
+                                compressedPoint.length);
                         return curve.getBasePoint();
                     }
 
@@ -189,5 +187,7 @@ public class PointFormatter {
         throw new UnsupportedOperationException("Unsupported NamedGroup: " + group);
     }
 
-    private PointFormatter() {}
+    private PointFormatter() {
+        super();
+    }
 }

@@ -9,7 +9,9 @@ package de.rub.nds.sshattacker.core.exceptions;
 
 public class MissingExchangeHashInputException extends RuntimeException {
 
-    public MissingExchangeHashInputException() {}
+    public MissingExchangeHashInputException() {
+        super();
+    }
 
     public MissingExchangeHashInputException(String message) {
         super(message);

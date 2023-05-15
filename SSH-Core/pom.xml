@@ -4,7 +4,7 @@
     <parent>
         <groupId>de.rub.nds.ssh.attacker</groupId>
         <artifactId>ssh-attacker</artifactId>
-        <version>1.0.0-SNAPSHOT</version>
+        <version>1.1.4-SNAPSHOT</version>
     </parent>
     <artifactId>ssh-core</artifactId>
 
@@ -13,6 +13,7 @@
     <scm>
         <connection>scm:git:https://github.com/tls-attacker/SSH-Attacker.git</connection>
         <developerConnection>scm:git:ssh://git@github.com/tls-attacker/SSH-Attacker.git</developerConnection>
+        <tag>HEAD</tag>
         <url>https://github.com/tls-attacker/SSH-Attacker</url>
     </scm>
 
@@ -85,22 +86,6 @@
             </plugin>
         </plugins>
     </build>
-
-    <reporting>
-        <plugins>
-            <plugin>
-                <groupId>org.jacoco</groupId>
-                <artifactId>jacoco-maven-plugin</artifactId>
-                <reportSets>
-                    <reportSet>
-                        <reports>
-                            <report>report</report>
-                        </reports>
-                    </reportSet>
-                </reportSets>
-            </plugin>
-        </plugins>
-    </reporting>
 
     <profiles>
         <profile>

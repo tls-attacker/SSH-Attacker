@@ -12,16 +12,18 @@ import java.math.BigInteger;
 /** M interval as mentioned in the Bleichenbacher paper. */
 public class Interval {
 
-    public BigInteger lower;
-    public BigInteger upper;
+    public final BigInteger lower;
+    public final BigInteger upper;
 
     /**
      * @param a Start of interval
      * @param b End of interval
      */
+    @SuppressWarnings("StandardVariableNames")
     public Interval(BigInteger a, BigInteger b) {
-        this.lower = a;
-        this.upper = b;
+        super();
+        lower = a;
+        upper = b;
         if (a.compareTo(b) > 0) {
             throw new RuntimeException("something went wrong, a cannot be greater than b");
         }

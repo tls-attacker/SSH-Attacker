@@ -10,12 +10,12 @@ package de.rub.nds.sshattacker.core.crypto.ec;
 import static org.junit.jupiter.api.Assertions.*;
 
 import de.rub.nds.sshattacker.core.constants.NamedEcGroup;
-import java.math.BigInteger;
-import java.util.Random;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import java.math.BigInteger;
+import java.util.Random;
 
 /** Testing EllipticCurve, CurveFactory, EllipticCurveOverFp and EllipticCurveOverF2m */
 public class EllipticCurveTest {
@@ -24,19 +24,18 @@ public class EllipticCurveTest {
      * probability, since the curve parameters are very large.)
      */
 
-    private static final Logger LOGGER = LogManager.getLogger();
     private Random rnd;
     private Point inf;
 
     @BeforeEach
     public void setUp() {
-        this.rnd = new Random();
-        this.inf = new Point();
+        rnd = new Random();
+        inf = new Point();
     }
 
     @Test
     public void test() {
-        final int implemented = NamedEcGroup.values().length;
+        int implemented = NamedEcGroup.values().length;
         int counter = 0;
 
         for (NamedEcGroup name : NamedEcGroup.values()) {
@@ -49,13 +48,13 @@ public class EllipticCurveTest {
                 Point basePoint = curve.getBasePoint();
                 BigInteger basePointOrder = curve.getBasePointOrder();
 
-                this.testCurveParameters(curve, basePoint);
+                testCurveParameters(curve, basePoint);
 
-                this.testCurveGroupLaws(curve, basePoint, basePointOrder);
+                testCurveGroupLaws(curve, basePoint, basePointOrder);
 
-                this.testCurveArithmetic(curve, basePoint, basePointOrder);
+                testCurveArithmetic(curve, basePoint, basePointOrder);
 
-                this.testDecompression(curve, basePoint);
+                testDecompression(curve, basePoint);
 
                 counter++;
             } catch (UnsupportedOperationException e) {
@@ -68,7 +67,7 @@ public class EllipticCurveTest {
         }
     }
 
-    private void testCurveParameters(EllipticCurve curve, Point basePoint) {
+    private static void testCurveParameters(EllipticCurve curve, Point basePoint) {
         assertTrue(curve.isOnCurve(basePoint));
 
         // Constructing a point, that is not on the curve, to ensure that the
@@ -156,7 +155,7 @@ public class EllipticCurveTest {
         }
     }
 
-    private void testDecompression(EllipticCurve curve, Point basePoint) {
+    private static void testDecompression(EllipticCurve curve, Point basePoint) {
         Point decompressed = curve.createAPointOnCurve(basePoint.getFieldX().getData());
 
         // two points share the same x-coordinate - apply inverse if necessary

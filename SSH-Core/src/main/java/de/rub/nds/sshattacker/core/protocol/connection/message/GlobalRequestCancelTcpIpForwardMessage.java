@@ -12,6 +12,7 @@ import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.sshattacker.core.protocol.connection.handler.GlobalRequestCancelTcpIpForwardMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
+
 import java.nio.charset.StandardCharsets;
 
 public class GlobalRequestCancelTcpIpForwardMessage
@@ -35,19 +36,20 @@ public class GlobalRequestCancelTcpIpForwardMessage
     }
 
     public void setIpAddressToBind(ModifiableString ipAddressToBind, boolean adjustLengthField) {
+        this.ipAddressToBind = ipAddressToBind;
         if (adjustLengthField) {
             setIpAddressToBindLength(
-                    ipAddressToBind.getValue().getBytes(StandardCharsets.US_ASCII).length);
+                    this.ipAddressToBind.getValue().getBytes(StandardCharsets.US_ASCII).length);
         }
-        this.ipAddressToBind = ipAddressToBind;
     }
 
     public void setIpAddressToBind(String ipAddressToBind, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setIpAddressToBindLength(ipAddressToBind.getBytes(StandardCharsets.US_ASCII).length);
-        }
         this.ipAddressToBind =
                 ModifiableVariableFactory.safelySetValue(this.ipAddressToBind, ipAddressToBind);
+        if (adjustLengthField) {
+            setIpAddressToBindLength(
+                    this.ipAddressToBind.getValue().getBytes(StandardCharsets.US_ASCII).length);
+        }
     }
 
     public ModifiableInteger getIpAddressToBindLength() {

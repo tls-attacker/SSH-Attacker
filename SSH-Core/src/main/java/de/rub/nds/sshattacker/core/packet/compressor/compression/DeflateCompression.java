@@ -10,7 +10,9 @@ package de.rub.nds.sshattacker.core.packet.compressor.compression;
 import com.jcraft.jzlib.Deflater;
 import com.jcraft.jzlib.Inflater;
 import com.jcraft.jzlib.JZlib;
+
 import de.rub.nds.sshattacker.core.constants.CompressionAlgorithm;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 

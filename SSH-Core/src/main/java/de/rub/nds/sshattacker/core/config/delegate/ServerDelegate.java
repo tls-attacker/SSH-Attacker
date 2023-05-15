@@ -9,6 +9,7 @@ package de.rub.nds.sshattacker.core.config.delegate;
 
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.ParameterException;
+
 import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.connection.InboundConnection;
 import de.rub.nds.sshattacker.core.constants.RunningModeType;
@@ -16,9 +17,7 @@ import de.rub.nds.sshattacker.core.constants.RunningModeType;
 public class ServerDelegate extends Delegate {
 
     @Parameter(names = "-port", required = true, description = "ServerPort")
-    protected Integer port = null;
-
-    public ServerDelegate() {}
+    protected Integer port;
 
     public Integer getPort() {
         return port;
@@ -43,7 +42,7 @@ public class ServerDelegate extends Delegate {
         }
     }
 
-    private int parsePort(Integer port) {
+    private static int parsePort(Integer port) {
         if (port == null) {
             throw new ParameterException("Port must be set, but was not specified");
         }

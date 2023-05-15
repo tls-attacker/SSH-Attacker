@@ -11,6 +11,7 @@ import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.constants.*;
 import de.rub.nds.sshattacker.core.crypto.kex.AbstractEcdhKeyExchange;
 import de.rub.nds.sshattacker.core.crypto.kex.DhKeyExchange;
+import de.rub.nds.sshattacker.core.crypto.kex.HybridKeyExchange;
 import de.rub.nds.sshattacker.core.crypto.kex.RsaKeyExchange;
 import de.rub.nds.sshattacker.core.crypto.keys.SshPublicKey;
 import de.rub.nds.sshattacker.core.protocol.transport.message.extension.AbstractExtension;
@@ -21,6 +22,9 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.util.*;
+import java.util.stream.Stream;
 
 /**
  * A default implementation of the abstract Chooser class. Values will be primarily provided from
@@ -615,18 +619,18 @@ public class DefaultChooser extends Chooser {
                         () -> {
                             KeyExchangeAlgorithm negotiatedAlgorithm =
                                     AlgorithmPicker.pickAlgorithm(
-                                                    this.getClientSupportedKeyExchangeAlgorithms(),
-                                                    this.getServerSupportedKeyExchangeAlgorithms())
+                                                    getClientSupportedKeyExchangeAlgorithms(),
+                                                    getServerSupportedKeyExchangeAlgorithms())
                                             .orElse(
                                                     context.isClient()
-                                                            ? this
-                                                                    .getClientSupportedKeyExchangeAlgorithms()
+                                                            ? getClientSupportedKeyExchangeAlgorithms()
                                                                     .get(0)
-                                                            : this
-                                                                    .getServerSupportedKeyExchangeAlgorithms()
+                                                            : getServerSupportedKeyExchangeAlgorithms()
                                                                     .get(0));
-                            // TODO: Determine whether updating the context here can be considered
-                            // useful or disadvantageous (same for all negotiated algorithm methods)
+                            // TODO: Determine whether updating the context here can be
+                            // considered
+                            // useful or disadvantageous (same for all negotiated algorithm
+                            // methods)
                             context.setKeyExchangeAlgorithm(negotiatedAlgorithm);
                             return negotiatedAlgorithm;
                         });
@@ -648,15 +652,13 @@ public class DefaultChooser extends Chooser {
                         () -> {
                             PublicKeyAlgorithm negotiatedAlgorithm =
                                     AlgorithmPicker.pickAlgorithm(
-                                                    this.getClientSupportedHostKeyAlgorithms(),
-                                                    this.getServerSupportedHostKeyAlgorithms())
+                                                    getClientSupportedHostKeyAlgorithms(),
+                                                    getServerSupportedHostKeyAlgorithms())
                                             .orElse(
                                                     context.isClient()
-                                                            ? this
-                                                                    .getClientSupportedHostKeyAlgorithms()
+                                                            ? getClientSupportedHostKeyAlgorithms()
                                                                     .get(0)
-                                                            : this
-                                                                    .getServerSupportedHostKeyAlgorithms()
+                                                            : getServerSupportedHostKeyAlgorithms()
                                                                     .get(0));
                             context.setHostKeyAlgorithm(negotiatedAlgorithm);
                             return negotiatedAlgorithm;
@@ -679,17 +681,13 @@ public class DefaultChooser extends Chooser {
                         () -> {
                             EncryptionAlgorithm negotiatedAlgorithm =
                                     AlgorithmPicker.pickAlgorithm(
-                                                    this
-                                                            .getClientSupportedEncryptionAlgorithmsClientToServer(),
-                                                    this
-                                                            .getServerSupportedEncryptionAlgorithmsClientToServer())
+                                                    getClientSupportedEncryptionAlgorithmsClientToServer(),
+                                                    getServerSupportedEncryptionAlgorithmsClientToServer())
                                             .orElse(
                                                     context.isClient()
-                                                            ? this
-                                                                    .getClientSupportedEncryptionAlgorithmsClientToServer()
+                                                            ? getClientSupportedEncryptionAlgorithmsClientToServer()
                                                                     .get(0)
-                                                            : this
-                                                                    .getServerSupportedEncryptionAlgorithmsClientToServer()
+                                                            : getServerSupportedEncryptionAlgorithmsClientToServer()
                                                                     .get(0));
                             context.setEncryptionAlgorithmClientToServer(negotiatedAlgorithm);
                             return negotiatedAlgorithm;
@@ -712,17 +710,13 @@ public class DefaultChooser extends Chooser {
                         () -> {
                             EncryptionAlgorithm negotiatedAlgorithm =
                                     AlgorithmPicker.pickAlgorithm(
-                                                    this
-                                                            .getClientSupportedEncryptionAlgorithmsServerToClient(),
-                                                    this
-                                                            .getServerSupportedEncryptionAlgorithmsServerToClient())
+                                                    getClientSupportedEncryptionAlgorithmsServerToClient(),
+                                                    getServerSupportedEncryptionAlgorithmsServerToClient())
                                             .orElse(
                                                     context.isClient()
-                                                            ? this
-                                                                    .getClientSupportedEncryptionAlgorithmsServerToClient()
+                                                            ? getClientSupportedEncryptionAlgorithmsServerToClient()
                                                                     .get(0)
-                                                            : this
-                                                                    .getServerSupportedEncryptionAlgorithmsServerToClient()
+                                                            : getServerSupportedEncryptionAlgorithmsServerToClient()
                                                                     .get(0));
                             context.setEncryptionAlgorithmServerToClient(negotiatedAlgorithm);
                             return negotiatedAlgorithm;
@@ -745,17 +739,13 @@ public class DefaultChooser extends Chooser {
                         () -> {
                             MacAlgorithm negotiatedAlgorithm =
                                     AlgorithmPicker.pickAlgorithm(
-                                                    this
-                                                            .getClientSupportedMacAlgorithmsClientToServer(),
-                                                    this
-                                                            .getServerSupportedMacAlgorithmsClientToServer())
+                                                    getClientSupportedMacAlgorithmsClientToServer(),
+                                                    getServerSupportedMacAlgorithmsClientToServer())
                                             .orElse(
                                                     context.isClient()
-                                                            ? this
-                                                                    .getClientSupportedMacAlgorithmsClientToServer()
+                                                            ? getClientSupportedMacAlgorithmsClientToServer()
                                                                     .get(0)
-                                                            : this
-                                                                    .getServerSupportedMacAlgorithmsClientToServer()
+                                                            : getServerSupportedMacAlgorithmsClientToServer()
                                                                     .get(0));
                             context.setMacAlgorithmClientToServer(negotiatedAlgorithm);
                             return negotiatedAlgorithm;
@@ -778,17 +768,13 @@ public class DefaultChooser extends Chooser {
                         () -> {
                             MacAlgorithm negotiatedAlgorithm =
                                     AlgorithmPicker.pickAlgorithm(
-                                                    this
-                                                            .getClientSupportedMacAlgorithmsServerToClient(),
-                                                    this
-                                                            .getServerSupportedMacAlgorithmsServerToClient())
+                                                    getClientSupportedMacAlgorithmsServerToClient(),
+                                                    getServerSupportedMacAlgorithmsServerToClient())
                                             .orElse(
                                                     context.isClient()
-                                                            ? this
-                                                                    .getClientSupportedMacAlgorithmsServerToClient()
+                                                            ? getClientSupportedMacAlgorithmsServerToClient()
                                                                     .get(0)
-                                                            : this
-                                                                    .getServerSupportedMacAlgorithmsServerToClient()
+                                                            : getServerSupportedMacAlgorithmsServerToClient()
                                                                     .get(0));
                             context.setMacAlgorithmServerToClient(negotiatedAlgorithm);
                             return negotiatedAlgorithm;
@@ -811,17 +797,13 @@ public class DefaultChooser extends Chooser {
                         () -> {
                             CompressionMethod negotiatedMethod =
                                     AlgorithmPicker.pickAlgorithm(
-                                                    this
-                                                            .getClientSupportedCompressionMethodsClientToServer(),
-                                                    this
-                                                            .getServerSupportedCompressionMethodsClientToServer())
+                                                    getClientSupportedCompressionMethodsClientToServer(),
+                                                    getServerSupportedCompressionMethodsClientToServer())
                                             .orElse(
                                                     context.isClient()
-                                                            ? this
-                                                                    .getClientSupportedCompressionMethodsClientToServer()
+                                                            ? getClientSupportedCompressionMethodsClientToServer()
                                                                     .get(0)
-                                                            : this
-                                                                    .getServerSupportedCompressionMethodsClientToServer()
+                                                            : getServerSupportedCompressionMethodsClientToServer()
                                                                     .get(0));
                             context.setCompressionMethodClientToServer(negotiatedMethod);
                             return negotiatedMethod;
@@ -844,17 +826,13 @@ public class DefaultChooser extends Chooser {
                         () -> {
                             CompressionMethod negotiatedMethod =
                                     AlgorithmPicker.pickAlgorithm(
-                                                    this
-                                                            .getClientSupportedCompressionMethodsServerToClient(),
-                                                    this
-                                                            .getServerSupportedCompressionMethodsServerToClient())
+                                                    getClientSupportedCompressionMethodsServerToClient(),
+                                                    getServerSupportedCompressionMethodsServerToClient())
                                             .orElse(
                                                     context.isClient()
-                                                            ? this
-                                                                    .getClientSupportedCompressionMethodsServerToClient()
+                                                            ? getClientSupportedCompressionMethodsServerToClient()
                                                                     .get(0)
-                                                            : this
-                                                                    .getServerSupportedCompressionMethodsServerToClient()
+                                                            : getServerSupportedCompressionMethodsServerToClient()
                                                                     .get(0));
                             context.setCompressionMethodServerToClient(negotiatedMethod);
                             return negotiatedMethod;
@@ -875,8 +853,7 @@ public class DefaultChooser extends Chooser {
         return context.getDhKeyExchangeInstance()
                 .orElseGet(
                         () -> {
-                            KeyExchangeAlgorithm negotiatedAlgorithm =
-                                    this.getKeyExchangeAlgorithm();
+                            KeyExchangeAlgorithm negotiatedAlgorithm = getKeyExchangeAlgorithm();
                             DhKeyExchange freshKeyExchange =
                                     DhKeyExchange.newInstance(context, negotiatedAlgorithm);
                             context.setDhKeyExchangeInstance(freshKeyExchange);
@@ -896,12 +873,25 @@ public class DefaultChooser extends Chooser {
         return context.getDhGexKeyExchangeInstance()
                 .orElseGet(
                         () -> {
-                            KeyExchangeAlgorithm negotiatedAlgorithm =
-                                    this.getKeyExchangeAlgorithm();
+                            KeyExchangeAlgorithm negotiatedAlgorithm = getKeyExchangeAlgorithm();
                             DhKeyExchange freshKeyExchange =
                                     DhKeyExchange.newInstance(context, negotiatedAlgorithm);
                             context.setDhGexKeyExchangeInstance(freshKeyExchange);
                             return freshKeyExchange;
+                        });
+    }
+
+    /** */
+    @Override
+    public HybridKeyExchange getHybridKeyExchange() {
+        return context.getHybridKeyExchangeInstance()
+                .orElseGet(
+                        () -> {
+                            KeyExchangeAlgorithm negotiatedAlgorithm = getKeyExchangeAlgorithm();
+                            HybridKeyExchange hybridKeyExchange =
+                                    HybridKeyExchange.newInstance(context, negotiatedAlgorithm);
+                            context.setHybridKeyExchangeInstance(hybridKeyExchange);
+                            return hybridKeyExchange;
                         });
     }
 
@@ -917,8 +907,7 @@ public class DefaultChooser extends Chooser {
         return context.getEcdhKeyExchangeInstance()
                 .orElseGet(
                         () -> {
-                            KeyExchangeAlgorithm negotiatedAlgorithm =
-                                    this.getKeyExchangeAlgorithm();
+                            KeyExchangeAlgorithm negotiatedAlgorithm = getKeyExchangeAlgorithm();
                             AbstractEcdhKeyExchange freshKeyExchange =
                                     AbstractEcdhKeyExchange.newInstance(
                                             context, negotiatedAlgorithm);
@@ -939,8 +928,7 @@ public class DefaultChooser extends Chooser {
         return context.getRsaKeyExchangeInstance()
                 .orElseGet(
                         () -> {
-                            KeyExchangeAlgorithm negotiatedAlgorithm =
-                                    this.getKeyExchangeAlgorithm();
+                            KeyExchangeAlgorithm negotiatedAlgorithm = getKeyExchangeAlgorithm();
                             RsaKeyExchange freshKeyExchange =
                                     RsaKeyExchange.newInstance(context, negotiatedAlgorithm);
                             // Set transient key to ensure its presence
@@ -966,12 +954,12 @@ public class DefaultChooser extends Chooser {
         SshPublicKey<?, ?> fallback = config.getHostKeys().get(0);
         if (negotiatedHostKeyAlgorithm.isEmpty()) {
             LOGGER.warn(
-                    "No server host key algorithm was negotiated, defaulting to the first server host key ("
-                            + fallback
-                            + ")");
+                    "No server host key algorithm was negotiated, defaulting to the first server host key ({})",
+                    fallback);
             return fallback;
         }
-        // Find the first configured host key whose format matches the negotiated server host key
+        // Find the first configured host key whose format matches the negotiated server
+        // host key
         // format
         return config.getHostKeys().stream()
                 .filter(
@@ -982,12 +970,36 @@ public class DefaultChooser extends Chooser {
                 .orElseGet(
                         () -> {
                             LOGGER.warn(
-                                    "No server host key matching the negotiated algorithm '"
-                                            + "' was found in the config, defaulting to the first server host key ("
-                                            + fallback
-                                            + ")");
+                                    "No server host key matching the negotiated algorithm '' was found in the config, defaulting to the first server host key ({})",
+                                    fallback);
                             return fallback;
                         });
+    }
+
+    /**
+     * Pick the user key from config that is compatible with the configured public key algorithms
+     * and return a stream of (key, algorithm) tuple that could be used for authentication. If no
+     * public key algorithms for user authentication haven been configured, all available public key
+     * algorithms will be considered.
+     *
+     * @return a stream of (key, algorithm) tuples that can be used for client authentication.
+     * @see Config#getUserKeys
+     * @see Config#getUserKeyAlgorithms
+     */
+    @Override
+    public Stream<Map.Entry<SshPublicKey<?, ?>, PublicKeyAlgorithm>>
+            getUserKeyAndAlgorithmCombinations() {
+        return config.getUserKeys().stream()
+                .flatMap(
+                        key ->
+                                config.getUserKeyAlgorithms()
+                                        .map(Collection::stream)
+                                        .orElseGet(() -> Arrays.stream(PublicKeyAlgorithm.values()))
+                                        .filter(
+                                                algorithm ->
+                                                        algorithm.getKeyFormat()
+                                                                == key.getPublicKeyFormat())
+                                        .map(algorithm -> Map.entry(key, algorithm)));
     }
 
     /**

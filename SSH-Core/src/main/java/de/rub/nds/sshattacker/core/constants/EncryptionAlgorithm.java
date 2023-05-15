@@ -440,6 +440,7 @@ public enum EncryptionAlgorithm {
     private final int authTagSize;
     private final String javaName;
 
+    @SuppressWarnings({"SameParameterValue", "ParameterNameDiffersFromOverriddenParameter"})
     EncryptionAlgorithm(
             String name,
             EncryptionAlgorithmType type,
@@ -450,6 +451,7 @@ public enum EncryptionAlgorithm {
         this(name, type, mode, keySize, blockSize, blockSize, 0, javaName);
     }
 
+    @SuppressWarnings("SameParameterValue")
     EncryptionAlgorithm(
             String name,
             EncryptionAlgorithmType type,
@@ -514,8 +516,8 @@ public enum EncryptionAlgorithm {
     }
 
     public int getKeystreamInitialDiscardLength() {
-        if (this == EncryptionAlgorithm.ARCFOUR128 || this == EncryptionAlgorithm.ARCFOUR256) {
-            // ARCFOUR128 and ARCFOUR256 skip the first 1536 bytes of the RC4 keystream before
+        if (this == ARCFOUR128 || this == ARCFOUR256) {
+            // ARCFOUR128 and ARCFOUR256 skip the first 1536 bytes of the RC4 key stream before
             // starting encryption / decryption
             // ref. RFC 4345 Section 4
             return 1536;

@@ -11,24 +11,28 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.constants.MacAlgorithm;
 import de.rub.nds.sshattacker.core.exceptions.NotImplementedException;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.math.BigInteger;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
+
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.SecretKeySpec;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
- * Implemention of the UMAC message authentication code as per RFC4418. This implementation is
+ * Implementation of the UMAC message authentication code as per RFC4418. This implementation is
  * restricted to inputs consisting out of full bytes only and of length less or equal to 2^24 bytes
  * (16 MB).
  */
-class UMac implements WrappedMac {
+@SuppressWarnings("StandardVariableNames")
+class UMac extends AbstractMac {
 
     private static final Logger LOGGER = LogManager.getLogger();
     private static final BigInteger INT_MOD = BigInteger.ONE.shiftLeft(32);
@@ -39,7 +43,8 @@ class UMac implements WrappedMac {
     private final MacAlgorithm algorithm;
     private final byte[] key;
 
-    public UMac(MacAlgorithm algorithm, byte[] key) {
+    UMac(MacAlgorithm algorithm, byte[] key) {
+        super();
         if (!algorithm.toString().startsWith("umac")) {
             throw new UnsupportedOperationException(
                     "MAC algorithm not supported by UMAC implementation: " + algorithm);
@@ -106,6 +111,7 @@ class UMac implements WrappedMac {
      *     of bytes).
      * @param Nonce String of length 1 to BLOCKLEN bytes.
      */
+    @SuppressWarnings("unused")
     public static byte[] UMAC128(byte[] K, byte[] M, byte[] Nonce) {
         return UMAC(K, M, Nonce, 16);
     }
@@ -215,7 +221,7 @@ class UMac implements WrappedMac {
         byte[] KPrime = KDF(K, 0, KEYLEN);
         byte[] T = ENCIPHER(KPrime, Nonce);
         assert T != null;
-        return Arrays.copyOfRange(T, index * taglen, taglen + (index * taglen));
+        return Arrays.copyOfRange(T, index * taglen, taglen + index * taglen);
     }
 
     /**
@@ -228,7 +234,7 @@ class UMac implements WrappedMac {
         byte[] t = new byte[s.length];
         for (int i = 0; i < s.length; i += 4) {
             for (int j = 0; j < 4; j++) {
-                t[i + j] = s[i + (3 - j)];
+                t[i + j] = s[i + 3 - j];
             }
         }
         return t;
@@ -304,7 +310,7 @@ class UMac implements WrappedMac {
         }
         BigInteger k64 = new BigInteger(1, k64Bytes);
         BigInteger y;
-        if (M.length <= (1 << 17)) {
+        if (M.length <= 1 << 17) {
             y =
                     POLY(
                             64,
@@ -327,7 +333,11 @@ class UMac implements WrappedMac {
      * @param M String with length divisible by (wordbits / 8) bytes.
      * @return y, integer in the range 0 ... prime(wordbits) - 1.
      */
-    static BigInteger POLY(int wordbits, BigInteger maxwordrange, BigInteger k, byte[] M) {
+    static BigInteger POLY(
+            @SuppressWarnings("SameParameterValue") int wordbits,
+            BigInteger maxwordrange,
+            BigInteger k,
+            byte[] M) {
         int wordbytes = wordbits / Byte.SIZE;
         BigInteger p = prime(wordbits);
         BigInteger offset = BigInteger.ONE.shiftLeft(wordbits).subtract(p);
@@ -374,7 +384,7 @@ class UMac implements WrappedMac {
             y = y.add(m_[i].multiply(k_[i]));
         }
         y = y.mod(prime(36)).mod(BigInteger.ONE.shiftLeft(32));
-        byte[] Y = ArrayConverter.bigIntegerToByteArray(y);
+        byte[] Y = ArrayConverter.bigIntegerToByteArray(y, 4, true);
         for (int i = 0; i < 4; i++) {
             Y[i] = (byte) (Y[i] ^ K2[i]);
         }

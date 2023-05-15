@@ -7,9 +7,12 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.parser;
 
+import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeString;
+
 import de.rub.nds.sshattacker.core.constants.CharConstants;
 import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessageParser;
 import de.rub.nds.sshattacker.core.protocol.transport.message.VersionExchangeMessage;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -32,7 +35,7 @@ public class VersionExchangeMessageParser extends ProtocolMessageParser<VersionE
 
     private void parseVersion() {
         // parse till CR NL (and remove them)
-        String result = this.parseStringTill(new byte[] {CharConstants.NEWLINE});
+        String result = parseStringTill(new byte[] {CharConstants.NEWLINE});
         if (result.contains("\r")) {
             message.setEndOfMessageSequence("\r\n");
         } else {
@@ -42,10 +45,10 @@ public class VersionExchangeMessageParser extends ProtocolMessageParser<VersionE
 
         String[] parts = result.split(String.valueOf(CharConstants.VERSION_COMMENT_SEPARATOR), 2);
         message.setVersion(parts[0]);
-        LOGGER.debug("Version: " + parts[0]);
+        LOGGER.debug("Version: {}", backslashEscapeString(parts[0]));
         if (parts.length == 2) {
             message.setComment(parts[1]);
-            LOGGER.debug("Comment: " + parts[1]);
+            LOGGER.debug("Comment: {}", backslashEscapeString(parts[1]));
         } else {
             message.setComment("");
             LOGGER.debug("Comment: [none]");

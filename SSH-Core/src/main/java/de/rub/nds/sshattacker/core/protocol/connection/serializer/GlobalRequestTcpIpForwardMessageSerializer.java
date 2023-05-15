@@ -9,9 +9,11 @@ package de.rub.nds.sshattacker.core.protocol.connection.serializer;
 
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.connection.message.GlobalRequestTcpIpForwardMessage;
-import java.nio.charset.StandardCharsets;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.nio.charset.StandardCharsets;
 
 public class GlobalRequestTcpIpForwardMessageSerializer
         extends GlobalRequestMessageSerializer<GlobalRequestTcpIpForwardMessage> {
@@ -23,16 +25,17 @@ public class GlobalRequestTcpIpForwardMessageSerializer
     }
 
     private void serializeIPAddressToBind() {
-        LOGGER.debug("IP address to bind length: " + message.getIpAddressToBindLength().getValue());
+        LOGGER.debug(
+                "IP address to bind length: {}", message.getIpAddressToBindLength().getValue());
         appendInt(
                 message.getIpAddressToBindLength().getValue(),
                 DataFormatConstants.STRING_SIZE_LENGTH);
-        LOGGER.debug("IP address to bind: " + message.getIpAddressToBind().getValue());
+        LOGGER.debug("IP address to bind: {}", message.getIpAddressToBind().getValue());
         appendString(message.getIpAddressToBind().getValue(), StandardCharsets.US_ASCII);
     }
 
     private void serializePortToBind() {
-        LOGGER.debug("Port to bind: " + message.getPortToBind().getValue());
+        LOGGER.debug("Port to bind: {}", message.getPortToBind().getValue());
         appendInt(message.getPortToBind().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
     }
 

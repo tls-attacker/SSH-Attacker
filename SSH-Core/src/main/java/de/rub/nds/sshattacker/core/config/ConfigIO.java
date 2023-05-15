@@ -8,10 +8,12 @@
 package de.rub.nds.sshattacker.core.config;
 
 import de.rub.nds.sshattacker.core.config.filter.ConfigDisplayFilter;
-import jakarta.xml.bind.JAXB;
+
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
 import jakarta.xml.bind.Unmarshaller;
+import jakarta.xml.bind.util.JAXBSource;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -21,12 +23,17 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.nio.charset.StandardCharsets;
+
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.stream.StreamResult;
 
-public class ConfigIO {
+public final class ConfigIO {
 
     /** context initialization is expensive, we need to do that only once */
     private static JAXBContext context;
@@ -38,37 +45,45 @@ public class ConfigIO {
         return context;
     }
 
-    public static void write(Config config, File f) {
+    public static void write(Config config, File file) {
         try {
-            write(config, new FileOutputStream(f));
+            write(config, new FileOutputStream(file));
         } catch (FileNotFoundException ex) {
             throw new RuntimeException(ex);
         }
     }
 
-    public static void write(Config config, OutputStream os) {
-        ByteArrayOutputStream tempStream = new ByteArrayOutputStream();
-        JAXB.marshal(config, tempStream);
-        try {
-            os.write(tempStream.toString().getBytes(StandardCharsets.ISO_8859_1));
-        } catch (IOException ex) {
-            throw new RuntimeException("Could not format XML");
+    public static void write(Config config, OutputStream outputStream) {
+        try (ByteArrayOutputStream tempStream = new ByteArrayOutputStream()) {
+            // circumvent the max indentation of 8 of the JAXB marshaller
+            Transformer transformer = TransformerFactory.newInstance().newTransformer();
+            transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+            transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
+            transformer.transform(
+                    new JAXBSource(getJAXBContext(), config), new StreamResult(tempStream));
+
+            // Replace line separators with the system specific line separator
+            String xmlText = tempStream.toString();
+            xmlText = xmlText.replaceAll("\r?\n", System.lineSeparator());
+            outputStream.write(xmlText.getBytes());
+        } catch (IOException | JAXBException | TransformerException ex) {
+            throw new RuntimeException("Could not format XML", ex);
         }
     }
 
-    public static void write(Config config, File f, ConfigDisplayFilter filter) {
+    public static void write(Config config, File file, ConfigDisplayFilter filter) {
         Config filteredConfig = copy(config);
         filter.applyFilter(filteredConfig);
-        write(filteredConfig, f);
+        write(filteredConfig, file);
     }
 
-    public static void write(Config config, OutputStream os, ConfigDisplayFilter filter) {
+    public static void write(Config config, OutputStream outputStream, ConfigDisplayFilter filter) {
         Config filteredConfig = copy(config);
         filter.applyFilter(filteredConfig);
-        write(filteredConfig, os);
+        write(filteredConfig, outputStream);
     }
 
-    public static Config read(File f) {
+    public static Config read(File file) {
         try {
             Unmarshaller unmarshaller = getJAXBContext().createUnmarshaller();
             // output any anomalies in the given config file
@@ -77,11 +92,11 @@ public class ConfigIO {
                         // Raise an exception also on warnings
                         return false;
                     });
-            return read(new FileInputStream(f), unmarshaller);
+            return read(new FileInputStream(file), unmarshaller);
         } catch (JAXBException e) {
             throw new RuntimeException(e);
         } catch (FileNotFoundException e) {
-            throw new IllegalArgumentException("File cannot be found");
+            throw new IllegalArgumentException("File cannot be found", e);
         }
     }
 
@@ -125,9 +140,11 @@ public class ConfigIO {
 
     public static Config copy(Config config) {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        ConfigIO.write(config, byteArrayOutputStream);
-        return ConfigIO.read(new ByteArrayInputStream(byteArrayOutputStream.toByteArray()));
+        write(config, byteArrayOutputStream);
+        return read(new ByteArrayInputStream(byteArrayOutputStream.toByteArray()));
     }
 
-    private ConfigIO() {}
+    private ConfigIO() {
+        super();
+    }
 }

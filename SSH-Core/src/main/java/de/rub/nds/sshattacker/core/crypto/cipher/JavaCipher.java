@@ -10,9 +10,11 @@ package de.rub.nds.sshattacker.core.crypto.cipher;
 import de.rub.nds.sshattacker.core.constants.EncryptionAlgorithm;
 import de.rub.nds.sshattacker.core.constants.EncryptionAlgorithmFamily;
 import de.rub.nds.sshattacker.core.exceptions.CryptoException;
+
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
@@ -21,14 +23,15 @@ import javax.crypto.spec.GCMParameterSpec;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
-class JavaCipher implements EncryptionCipher, DecryptionCipher {
+class JavaCipher extends AbstractCipher {
 
     private final EncryptionAlgorithm algorithm;
     private final byte[] key;
     private final boolean keepCipherState;
     private Cipher cipher;
 
-    public JavaCipher(EncryptionAlgorithm algorithm, byte[] key, boolean keepCipherState) {
+    JavaCipher(EncryptionAlgorithm algorithm, byte[] key, boolean keepCipherState) {
+        super();
         this.algorithm = algorithm;
         this.key = key;
         this.keepCipherState = keepCipherState;

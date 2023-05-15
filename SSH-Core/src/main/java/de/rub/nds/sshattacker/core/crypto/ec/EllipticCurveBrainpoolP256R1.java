@@ -10,7 +10,6 @@ package de.rub.nds.sshattacker.core.crypto.ec;
 import java.math.BigInteger;
 
 public class EllipticCurveBrainpoolP256R1 extends EllipticCurveOverFp {
-    @SuppressWarnings("SpellCheckingInspection")
     public EllipticCurveBrainpoolP256R1() {
         super(
                 new BigInteger(

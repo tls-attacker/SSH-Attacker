@@ -15,23 +15,29 @@ import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessage;
 import de.rub.nds.sshattacker.core.protocol.common.layer.MessageLayer;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
-import java.io.IOException;
-import java.util.Collections;
-import java.util.stream.Stream;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class SendMessageHelper {
+import java.io.IOException;
+import java.util.Collections;
+import java.util.stream.Stream;
+
+public final class SendMessageHelper {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public void sendPacket(SshContext context, AbstractPacket packet) throws IOException {
+    private SendMessageHelper() {
+        super();
+    }
+
+    public static void sendPacket(SshContext context, AbstractPacket packet) throws IOException {
         AbstractPacketLayer packetLayer = context.getPacketLayer();
         TransportHandler transportHandler = context.getTransportHandler();
         transportHandler.sendData(packetLayer.preparePacket(packet));
     }
 
-    public MessageActionResult sendMessage(SshContext context, ProtocolMessage<?> message) {
+    public static MessageActionResult sendMessage(SshContext context, ProtocolMessage<?> message) {
         MessageLayer messageLayer = context.getMessageLayer();
         try {
             AbstractPacket packet = messageLayer.serialize(message);
@@ -43,12 +49,12 @@ public class SendMessageHelper {
             return new MessageActionResult(
                     Collections.singletonList(packet), Collections.singletonList(message));
         } catch (IOException e) {
-            LOGGER.warn("Error while sending packet: " + e.getMessage());
+            LOGGER.warn("Error while sending packet: {}", e.getMessage());
             return new MessageActionResult();
         }
     }
 
-    public MessageActionResult sendMessages(
+    public static MessageActionResult sendMessages(
             SshContext context, Stream<ProtocolMessage<?>> messageStream) {
         return messageStream
                 .map(message -> sendMessage(context, message))

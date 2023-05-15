@@ -11,6 +11,7 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.BinaryPacketConstants;
 import de.rub.nds.sshattacker.core.constants.PublicKeyAlgorithm;
 import de.rub.nds.sshattacker.core.protocol.common.Parser;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -28,21 +29,21 @@ public class SignatureParser extends Parser<RawSignature> {
         RawSignature signature = new RawSignature();
         int sigtypeLength = parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH);
         String sigtype = parseByteString(sigtypeLength);
-        LOGGER.debug("Signature Type: " + sigtype);
+        LOGGER.debug("Signature Type: {}", sigtype);
 
         // Try to convert the signature type to get the corresponding signature algorithm
         PublicKeyAlgorithm signatureAlgorithm = PublicKeyAlgorithm.fromName(sigtype);
         signature.setSignatureAlgorithm(signatureAlgorithm);
         LOGGER.debug(
-                "Corresponding signature algorithm: "
-                        + signature.getSignatureAlgorithm().getJavaName());
+                "Corresponding signature algorithm: {}",
+                signature.getSignatureAlgorithm().getJavaName());
 
         signature.setSignatureLength(parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH));
-        LOGGER.debug("Signature length: " + signature.getSignatureLength());
+        LOGGER.debug("Signature length: {}", signature.getSignatureLength());
         signature.setSignatureBytes(parseByteArrayField(signature.getSignatureLength()));
         LOGGER.debug(
-                "Signature bytes: "
-                        + ArrayConverter.bytesToHexString(signature.getSignatureBytes()));
+                "Signature bytes: {}",
+                ArrayConverter.bytesToHexString(signature.getSignatureBytes()));
         return signature;
     }
 }

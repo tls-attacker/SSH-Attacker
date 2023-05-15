@@ -8,9 +8,6 @@
 package de.rub.nds.sshattacker.attacks.general;
 
 public interface Vector {
-    @Override
-    boolean equals(Object vector);
-
     String getName();
 
     String getShortName();
