@@ -15,9 +15,11 @@ import de.rub.nds.sshattacker.core.protocol.transport.parser.extension.AbstractE
 import de.rub.nds.sshattacker.core.protocol.transport.parser.extension.DelayCompressionExtensionParser;
 import de.rub.nds.sshattacker.core.protocol.transport.parser.extension.ServerSigAlgsExtensionParser;
 import de.rub.nds.sshattacker.core.protocol.transport.parser.extension.UnknownExtensionParser;
-import java.nio.charset.StandardCharsets;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.nio.charset.StandardCharsets;
 
 public class ExtensionInfoMessageParser extends SshMessageParser<ExtensionInfoMessage> {
 
