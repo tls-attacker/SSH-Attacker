@@ -152,6 +152,10 @@ public abstract class MessageAction extends ConnectionBoundAction {
             })
     protected List<ProtocolMessage<?>> messages = new ArrayList<>();
 
+    protected ReceiveMessageHelper receiveMessageHelper;
+
+    protected SendMessageHelper sendMessageHelper;
+
     protected MessageAction() {
         super(AliasedConnection.DEFAULT_CONNECTION_ALIAS);
         receiveMessageHelper = new ReceiveMessageHelper();

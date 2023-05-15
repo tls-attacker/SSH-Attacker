@@ -27,7 +27,7 @@ public final class SendMessageHelper {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private SendMessageHelper() {
+    public SendMessageHelper() {
         super();
     }
 

@@ -145,6 +145,8 @@ public class UserAuthPubkeyMessagePreparator
         SshPublicKey<?, ?> pk = chooser.getSelectedPublicKeyForAuthentication();
         getObject().setPubkeyAlgName(pk.getPublicKeyFormat().getName(), true);
         getObject().setPubkey(PublicKeyHelper.encode(pk), true);
-        getObject().setSignature(getEncodedSignature(pk), true);
+        getObject().setSignature(getEncodedSignature(
+                PublicKeyAlgorithm.fromName(pk.getPublicKeyFormat().getName()), pk),
+                true);
     }
 }

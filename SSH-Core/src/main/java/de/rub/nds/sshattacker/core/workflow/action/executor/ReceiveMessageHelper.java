@@ -30,7 +30,7 @@ public final class ReceiveMessageHelper {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private ReceiveMessageHelper() {
+    public ReceiveMessageHelper() {
         super();
     }
 
