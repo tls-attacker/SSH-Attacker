@@ -23,7 +23,6 @@ import org.apache.logging.log4j.Logger;
 
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * A default implementation of the abstract Chooser class. Values will be primarily provided from
@@ -527,7 +526,7 @@ public class DefaultChooser extends Chooser {
      */
     public SshPublicKey<?, ?> getSelectedPublicKeyForAuthentication() {
         // Check if there are user keys present in the Config object. If not, return null.
-        if (config.getUserKeys().size() == 0) {
+        if (config.getUserKeys().isEmpty()) {
             LOGGER.error(
                     "Unable to select public key for user authentication. No user key provided in Config object.");
             return null;
@@ -569,7 +568,7 @@ public class DefaultChooser extends Chooser {
                 .filter(
                         key ->
                                 PublicKeyAlgorithm.fromName(key.getPublicKeyFormat().getName())
-                                        .equals(commonPublicKeyAlgorithm))
+                                        == commonPublicKeyAlgorithm)
                 .findFirst()
                 .orElse(config.getUserKeys().get(0));
     }
@@ -974,32 +973,6 @@ public class DefaultChooser extends Chooser {
                                     fallback);
                             return fallback;
                         });
-    }
-
-    /**
-     * Pick the user key from config that is compatible with the configured public key algorithms
-     * and return a stream of (key, algorithm) tuple that could be used for authentication. If no
-     * public key algorithms for user authentication haven been configured, all available public key
-     * algorithms will be considered.
-     *
-     * @return a stream of (key, algorithm) tuples that can be used for client authentication.
-     * @see Config#getUserKeys
-     * @see Config#getUserKeyAlgorithms
-     */
-    @Override
-    public Stream<Map.Entry<SshPublicKey<?, ?>, PublicKeyAlgorithm>>
-            getUserKeyAndAlgorithmCombinations() {
-        return config.getUserKeys().stream()
-                .flatMap(
-                        key ->
-                                config.getUserKeyAlgorithms()
-                                        .map(Collection::stream)
-                                        .orElseGet(() -> Arrays.stream(PublicKeyAlgorithm.values()))
-                                        .filter(
-                                                algorithm ->
-                                                        algorithm.getKeyFormat()
-                                                                == key.getPublicKeyFormat())
-                                        .map(algorithm -> Map.entry(key, algorithm)));
     }
 
     /**
