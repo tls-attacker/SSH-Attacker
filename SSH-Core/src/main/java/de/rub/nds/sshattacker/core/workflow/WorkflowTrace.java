@@ -13,6 +13,7 @@ import de.rub.nds.sshattacker.core.connection.InboundConnection;
 import de.rub.nds.sshattacker.core.connection.OutboundConnection;
 import de.rub.nds.sshattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.sshattacker.core.workflow.action.*;
+
 import jakarta.xml.bind.JAXBException;
 import jakarta.xml.bind.annotation.*;
 
@@ -27,8 +28,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 import javax.xml.stream.XMLStreamException;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /** A wrapper class over a list of protocol expectedMessages. */
 @XmlRootElement

@@ -21,11 +21,14 @@ import de.rub.nds.sshattacker.core.protocol.transport.message.extension.DelayCom
 import de.rub.nds.sshattacker.core.protocol.transport.message.extension.ServerSigAlgsExtension;
 import de.rub.nds.sshattacker.core.workflow.factory.WorkflowTraceType;
 import de.rub.nds.sshattacker.core.workflow.filter.FilterType;
+
 import jakarta.xml.bind.annotation.*;
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -35,9 +38,6 @@ import java.math.BigInteger;
 import java.security.Security;
 import java.util.*;
 import java.util.stream.Collectors;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 @XmlRootElement(name = "config")
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -480,13 +480,12 @@ public class Config implements Serializable {
                                     KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP14_SHA256,
                                     KeyExchangeAlgorithm.EXT_INFO_C
                                 })
-                        .filter(KeyExchangeAlgorithm::isAvailable)
                         .collect(Collectors.toCollection(LinkedList::new));
         serverSupportedKeyExchangeAlgorithms =
                 Arrays.stream(
                                 new KeyExchangeAlgorithm[] {
-                                        KeyExchangeAlgorithm.SNTRUP761_X25519,
-                                        KeyExchangeAlgorithm.SNTRUP4591761_X25519,
+                                    KeyExchangeAlgorithm.SNTRUP761_X25519,
+                                    KeyExchangeAlgorithm.SNTRUP4591761_X25519,
                                     KeyExchangeAlgorithm.CURVE25519_SHA256,
                                     KeyExchangeAlgorithm.CURVE25519_SHA256_LIBSSH_ORG,
                                     KeyExchangeAlgorithm.ECDH_SHA2_NISTP256,
@@ -498,7 +497,6 @@ public class Config implements Serializable {
                                     KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP14_SHA256,
                                     KeyExchangeAlgorithm.EXT_INFO_S
                                 })
-                        .filter(KeyExchangeAlgorithm::isAvailable)
                         .collect(Collectors.toCollection(LinkedList::new));
 
         // We don't support CERT_V01 or SK (U2F) host keys (yet), only listed for
