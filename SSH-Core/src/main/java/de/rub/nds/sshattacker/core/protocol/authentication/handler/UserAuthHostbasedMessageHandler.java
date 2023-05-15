@@ -20,6 +20,7 @@ import de.rub.nds.sshattacker.core.protocol.authentication.serializer.UserAuthHo
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.util.Converter;
+
 import java.nio.charset.StandardCharsets;
 
 public class UserAuthHostbasedMessageHandler extends SshMessageHandler<UserAuthHostbasedMessage> {
@@ -51,7 +52,7 @@ public class UserAuthHostbasedMessageHandler extends SshMessageHandler<UserAuthH
                 VerifyingSignature verifyingSignature =
                         SignatureFactory.getVerifyingSignature(hostKeyAlgorithm, hostKey);
                 if (verifyingSignature.verify(
-                        this.prepareSignatureInput(), signature.getSignatureBytes())) {
+                        prepareSignatureInput(), signature.getSignatureBytes())) {
                     LOGGER.info("Signature verification successful: Signature is valid.");
                 } else {
                     LOGGER.warn(

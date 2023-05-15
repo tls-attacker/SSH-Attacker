@@ -13,9 +13,11 @@ import de.rub.nds.sshattacker.core.crypto.keys.CustomRsaPrivateKey;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomRsaPublicKey;
 import de.rub.nds.sshattacker.core.crypto.keys.SshPublicKey;
 import de.rub.nds.sshattacker.core.protocol.common.Parser;
-import java.nio.charset.StandardCharsets;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.nio.charset.StandardCharsets;
 
 /** Parser class to parse an RSA public key in the ssh-rsa format. */
 public class RsaPublicKeyParser
@@ -35,9 +37,8 @@ public class RsaPublicKeyParser
         String format = parseByteString(formatLength, StandardCharsets.US_ASCII);
         if (!format.equals(PublicKeyFormat.SSH_RSA.getName())) {
             LOGGER.warn(
-                    "Trying to parse RSA public key, but encountered unexpected public key format '"
-                            + format
-                            + "'. Parsing will continue but may not yield the expected results.");
+                    "Trying to parse RSA public key, but encountered unexpected public key format '{}'. Parsing will continue but may not yield the expected results.",
+                    format);
         }
         int publicExponentLength = parseIntField(DataFormatConstants.UINT32_SIZE);
         publicKey.setPublicExponent(parseBigIntField(publicExponentLength));

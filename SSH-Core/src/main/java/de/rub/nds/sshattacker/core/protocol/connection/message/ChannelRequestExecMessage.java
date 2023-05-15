@@ -12,6 +12,7 @@ import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.sshattacker.core.protocol.connection.handler.ChannelRequestExecMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
+
 import java.nio.charset.StandardCharsets;
 
 public class ChannelRequestExecMessage extends ChannelRequestMessage<ChannelRequestExecMessage> {
@@ -45,17 +46,17 @@ public class ChannelRequestExecMessage extends ChannelRequestMessage<ChannelRequ
     }
 
     public void setCommand(ModifiableString command, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setCommandLength(command.getValue().getBytes(StandardCharsets.UTF_8).length);
-        }
         this.command = command;
+        if (adjustLengthField) {
+            setCommandLength(this.command.getValue().getBytes(StandardCharsets.UTF_8).length);
+        }
     }
 
     public void setCommand(String command, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setCommandLength(command.getBytes(StandardCharsets.UTF_8).length);
-        }
         this.command = ModifiableVariableFactory.safelySetValue(this.command, command);
+        if (adjustLengthField) {
+            setCommandLength(this.command.getValue().getBytes(StandardCharsets.UTF_8).length);
+        }
     }
 
     @Override

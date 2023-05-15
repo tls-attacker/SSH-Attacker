@@ -12,10 +12,12 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthBannerMessage;
 import de.rub.nds.sshattacker.core.protocol.authentication.parser.UserAuthBannerMessageParserTest;
-import java.util.stream.Stream;
+
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+
+import java.util.stream.Stream;
 
 public class UserAuthBannerMessageSerializerTest {
     /**

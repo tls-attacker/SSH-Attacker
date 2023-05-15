@@ -12,9 +12,11 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.EcPointFormat;
 import de.rub.nds.sshattacker.core.constants.NamedEcGroup;
+
+import org.junit.jupiter.api.Test;
+
 import java.math.BigInteger;
 import java.util.Random;
-import org.junit.jupiter.api.Test;
 
 public class PointFormatterTest {
     @Test

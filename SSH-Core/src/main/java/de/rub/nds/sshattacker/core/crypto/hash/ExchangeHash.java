@@ -18,12 +18,14 @@ import de.rub.nds.sshattacker.core.exceptions.NotImplementedException;
 import de.rub.nds.sshattacker.core.protocol.transport.serializer.KeyExchangeInitMessageSerializer;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.util.Converter;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.Configurator;
+
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 /**
  * A utility class to perform exchange hash computations based on an ExchangeHashInputHolder
@@ -33,7 +35,9 @@ public final class ExchangeHash {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private ExchangeHash() {}
+    private ExchangeHash() {
+        super();
+    }
 
     /**
      * Computes the exchange hash for the given algorithm with the ExchangeHashInputHolder instance
@@ -64,6 +68,8 @@ public final class ExchangeHash {
                 return computeEcdhHash(algorithm, context.getExchangeHashInputHolder());
             case RSA:
                 return computeRsaHash(algorithm, context.getExchangeHashInputHolder());
+            case HYBRID:
+                return computeHybridHash(algorithm, context.getExchangeHashInputHolder());
             default:
                 throw new NotImplementedException(
                         "Unable to compute exchange hash, hash computation for flow type "
@@ -122,6 +128,16 @@ public final class ExchangeHash {
         return compute(algorithm, prepareEcdhHashInput(inputHolder));
     }
 
+    public static byte[] computeHybridHash(
+            KeyExchangeAlgorithm algorithm, ExchangeHashInputHolder inputHolder)
+            throws CryptoException {
+        if (algorithm.getFlowType() != KeyExchangeFlowType.HYBRID) {
+            LOGGER.warn(
+                    "Trying to compute Hybrid exchange hash with a mismatching algorithm provided, this might fail.");
+        }
+        return compute(algorithm, prepareHybridHashInput(inputHolder));
+    }
+
     public static byte[] computeRsaHash(
             KeyExchangeAlgorithm algorithm, ExchangeHashInputHolder inputHolder)
             throws CryptoException {
@@ -134,21 +150,21 @@ public final class ExchangeHash {
 
     private static byte[] compute(KeyExchangeAlgorithm algorithm, byte[] input)
             throws CryptoException {
-        LOGGER.debug("Exchange hash input: " + ArrayConverter.bytesToRawHexString(input));
+        LOGGER.debug("Exchange hash input: {}", ArrayConverter.bytesToRawHexString(input));
         MessageDigest md;
         try {
             md = MessageDigest.getInstance(algorithm.getDigest());
         } catch (NoSuchAlgorithmException e) {
             LOGGER.error(
-                    "There is no security provider supporting this hash function: "
-                            + algorithm.getDigest());
+                    "There is no security provider supporting this hash function: {}",
+                    algorithm.getDigest());
             LOGGER.debug(e);
             throw new CryptoException(
                     "Unable to calculate exchange hash because the required hash algorithm is not supported by any security provider.",
                     e);
         }
         byte[] hash = md.digest(input);
-        LOGGER.info("Computed exchange hash: " + ArrayConverter.bytesToRawHexString(hash));
+        LOGGER.info("Computed exchange hash: {}", ArrayConverter.bytesToRawHexString(hash));
         return hash;
     }
 
@@ -180,6 +196,7 @@ public final class ExchangeHash {
             throw new MissingExchangeHashInputException("[Common] Server host key missing");
         }
         // Avoid log spam by adjusting the log level of the key exchange init message serializer
+        //noinspection LoggerInitializedWithForeignClass
         Level oldLevel = LogManager.getLogger(KeyExchangeInitMessageSerializer.class).getLevel();
         Configurator.setLevel(KeyExchangeInitMessageSerializer.class.getName(), Level.OFF);
         byte[] prefix =
@@ -211,7 +228,7 @@ public final class ExchangeHash {
         if (inputHolder.getSharedSecret().isEmpty()) {
             throw new MissingExchangeHashInputException("[Common] Shared secret missing");
         }
-        return Converter.bigIntegerToMpint(inputHolder.getSharedSecret().get());
+        return Converter.bytesToLengthPrefixedBinaryString(inputHolder.getSharedSecret().get());
     }
 
     private static byte[] prepareDhHashInput(ExchangeHashInputHolder inputHolder) {
@@ -338,6 +355,33 @@ public final class ExchangeHash {
                 prepareCommonSuffixHashInput(inputHolder));
     }
 
+    private static byte[] prepareHybridHashInput(ExchangeHashInputHolder inputHolder) {
+        /*
+         * Exchange hash input for the ECDH key exchange method:
+         * string V_C, client's identification string (CR and LF excluded)
+         * string V_S, server's identification string (CR and LF excluded)
+         * string I_C, payload of the client's SSH_MSG_KEXINIT
+         * string I_S, payload of the server's SSH_MSG_KEXINIT
+         * string K_S, server's public host key
+         * string Q_C, client's ephemeral public key octet
+         * string Q_S, server's ephemeral public key octet
+         * mpint K, encoded shared secret
+         */
+        if (inputHolder.getHybridClientPublicKey().isEmpty()) {
+            throw new MissingExchangeHashInputException("[Hybrid] Client public key missing");
+        }
+        if (inputHolder.getHybridServerPublicKey().isEmpty()) {
+            throw new MissingExchangeHashInputException("[Hybrid] Server public key missing");
+        }
+        return ArrayConverter.concatenate(
+                prepareCommonPrefixHashInput(inputHolder),
+                Converter.bytesToLengthPrefixedBinaryString(
+                        inputHolder.getHybridClientPublicKey().get()),
+                Converter.bytesToLengthPrefixedBinaryString(
+                        inputHolder.getHybridServerPublicKey().get()),
+                prepareCommonSuffixHashInput(inputHolder));
+    }
+
     private static byte[] prepareEcdhHashInput(ExchangeHashInputHolder inputHolder) {
         /*
          * Exchange hash input for the ECDH key exchange method:
@@ -346,8 +390,8 @@ public final class ExchangeHash {
          *   string   I_C, payload of the client's SSH_MSG_KEXINIT
          *   string   I_S, payload of the server's SSH_MSG_KEXINIT
          *   string   K_S, server's public host key
-         *   string   Q_C, client's ephemeral public key octet string
-         *   string   Q_S, server's ephemeral public key octet string
+         *   string   Q_C, client's ephemeral public key octet
+         *   string   Q_S, server's ephemeral public key octet
          *   mpint    K,   shared secret
          */
         if (inputHolder.getEcdhClientPublicKey().isEmpty()) {

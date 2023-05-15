@@ -12,6 +12,7 @@ import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.sshattacker.core.protocol.connection.handler.ChannelRequestSubsystemMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
+
 import java.nio.charset.StandardCharsets;
 
 public class ChannelRequestSubsystemMessage
@@ -48,19 +49,20 @@ public class ChannelRequestSubsystemMessage
     }
 
     public void setSubsystemName(ModifiableString subsystemName, boolean adjustLengthField) {
+        this.subsystemName = subsystemName;
         if (adjustLengthField) {
             setSubsystemNameLength(
-                    subsystemName.getValue().getBytes(StandardCharsets.UTF_8).length);
+                    this.subsystemName.getValue().getBytes(StandardCharsets.UTF_8).length);
         }
-        this.subsystemName = subsystemName;
     }
 
     public void setSubsystemName(String subsystemName, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setSubsystemNameLength(subsystemName.getBytes(StandardCharsets.UTF_8).length);
-        }
         this.subsystemName =
                 ModifiableVariableFactory.safelySetValue(this.subsystemName, subsystemName);
+        if (adjustLengthField) {
+            setSubsystemNameLength(
+                    this.subsystemName.getValue().getBytes(StandardCharsets.UTF_8).length);
+        }
     }
 
     @Override

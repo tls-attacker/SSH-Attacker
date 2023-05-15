@@ -6,20 +6,13 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="ssh-server" />
         <module name="ssh-core" />
+        <module name="ssh-server" />
         <module name="ssh-client" />
         <module name="ssh-mitm" />
+        <module name="ssh-core-oqs" />
         <module name="attacks" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
-      <module name="attacks" target="11" />
-      <module name="ssh-attacker" target="11" />
-      <module name="ssh-client" target="11" />
-      <module name="ssh-core" target="11" />
-      <module name="ssh-mitm" target="11" />
-      <module name="ssh-server" target="11" />
-    </bytecodeTargetLevel>
   </component>
 </project>

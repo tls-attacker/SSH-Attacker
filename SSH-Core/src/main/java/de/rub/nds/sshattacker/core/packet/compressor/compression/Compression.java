@@ -8,6 +8,7 @@
 package de.rub.nds.sshattacker.core.packet.compressor.compression;
 
 import de.rub.nds.sshattacker.core.constants.CompressionAlgorithm;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -16,7 +17,8 @@ public abstract class Compression {
     protected static final Logger LOGGER = LogManager.getLogger();
     protected final CompressionAlgorithm algorithm;
 
-    public Compression(CompressionAlgorithm algorithm) {
+    protected Compression(CompressionAlgorithm algorithm) {
+        super();
         this.algorithm = algorithm;
     }
 

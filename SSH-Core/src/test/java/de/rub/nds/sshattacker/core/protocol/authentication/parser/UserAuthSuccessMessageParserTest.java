@@ -11,6 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthSuccessMessage;
+
 import org.junit.jupiter.api.Test;
 
 public class UserAuthSuccessMessageParserTest {

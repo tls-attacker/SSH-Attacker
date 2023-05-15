@@ -18,13 +18,13 @@ public abstract class GlobalRequestMessagePreparator<T extends GlobalRequestMess
 
     private final String globalRequestType;
 
-    public GlobalRequestMessagePreparator(
+    protected GlobalRequestMessagePreparator(
             Chooser chooser, T message, GlobalRequestType globalRequestType) {
         this(chooser, message, globalRequestType.toString());
     }
 
-    public GlobalRequestMessagePreparator(Chooser chooser, T message, String globalRequestType) {
-        super(chooser, message, MessageIdConstant.SSH_MSG_CHANNEL_REQUEST);
+    protected GlobalRequestMessagePreparator(Chooser chooser, T message, String globalRequestType) {
+        super(chooser, message, MessageIdConstant.SSH_MSG_GLOBAL_REQUEST);
         this.globalRequestType = globalRequestType;
     }
 
@@ -32,7 +32,7 @@ public abstract class GlobalRequestMessagePreparator<T extends GlobalRequestMess
     public final void prepareMessageSpecificContents() {
         getObject().setRequestName(globalRequestType, true);
         getObject().setWantReply((byte) 0x00);
-        this.prepareGlobalRequestMessageSpecificContents();
+        prepareGlobalRequestMessageSpecificContents();
     }
 
     protected abstract void prepareGlobalRequestMessageSpecificContents();

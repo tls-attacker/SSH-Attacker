@@ -20,3 +20,4 @@ nbactions.xml
 
 # VS Code
 .factorypath
+.vscode

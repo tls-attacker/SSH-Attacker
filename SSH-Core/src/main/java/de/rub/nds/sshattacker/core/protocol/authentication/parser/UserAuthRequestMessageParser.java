@@ -7,50 +7,54 @@
  */
 package de.rub.nds.sshattacker.core.protocol.authentication.parser;
 
+import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeString;
+
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthRequestMessage;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
-import java.nio.charset.StandardCharsets;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.nio.charset.StandardCharsets;
 
 public abstract class UserAuthRequestMessageParser<T extends UserAuthRequestMessage<T>>
         extends SshMessageParser<T> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public UserAuthRequestMessageParser(byte[] array) {
+    protected UserAuthRequestMessageParser(byte[] array) {
         super(array);
     }
 
-    public UserAuthRequestMessageParser(byte[] array, int startPosition) {
+    protected UserAuthRequestMessageParser(byte[] array, int startPosition) {
         super(array, startPosition);
     }
 
     private void parseUserName() {
         message.setUserNameLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-        LOGGER.debug("Username length: " + message.getUserNameLength().getValue());
+        LOGGER.debug("Username length: {}", message.getUserNameLength().getValue());
         message.setUserName(
                 parseByteString(message.getUserNameLength().getValue(), StandardCharsets.US_ASCII));
-        LOGGER.debug("Username: " + message.getUserName().getValue());
+        LOGGER.debug("Username: {}", backslashEscapeString(message.getUserName().getValue()));
     }
 
     private void parseServiceName() {
         message.setServiceNameLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-        LOGGER.debug("Servicename length: " + message.getServiceNameLength().getValue());
+        LOGGER.debug("Servicename length: {}", message.getServiceNameLength().getValue());
         message.setServiceName(
                 parseByteString(
                         message.getServiceNameLength().getValue(), StandardCharsets.US_ASCII));
-        LOGGER.debug("Servicename: " + message.getServiceName().getValue());
+        LOGGER.debug("Servicename: {}", backslashEscapeString(message.getServiceName().getValue()));
     }
 
     private void parseMethodName() {
         message.setMethodNameLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-        LOGGER.debug("Methodname length: " + message.getMethodNameLength().getValue());
+        LOGGER.debug("Methodname length: {}", message.getMethodNameLength().getValue());
         message.setMethodName(
                 parseByteString(
                         message.getMethodNameLength().getValue(), StandardCharsets.US_ASCII));
-        LOGGER.debug("Methodname: " + message.getMethodName().getValue());
+        LOGGER.debug("Methodname: {}", backslashEscapeString(message.getMethodName().getValue()));
     }
 
     @Override

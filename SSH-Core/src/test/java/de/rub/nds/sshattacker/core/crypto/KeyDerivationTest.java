@@ -23,17 +23,19 @@ import de.rub.nds.sshattacker.core.protocol.transport.parser.EcdhKeyExchangeInit
 import de.rub.nds.sshattacker.core.protocol.transport.parser.EcdhKeyExchangeReplyMessageParser;
 import de.rub.nds.sshattacker.core.protocol.transport.parser.KeyExchangeInitMessageParser;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.util.Converter;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+
 import java.io.InputStream;
-import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.Scanner;
 import java.util.stream.Stream;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
 
 public class KeyDerivationTest {
     /**
@@ -73,9 +75,8 @@ public class KeyDerivationTest {
                 // Shared secret is stored as mpint (which has a 4 byte length prefix)
                 byte[] sharedSecretMpint =
                         ArrayConverter.hexStringToByteArray(line.split(" = ")[1]);
-                BigInteger sharedSecret =
-                        new BigInteger(
-                                Arrays.copyOfRange(sharedSecretMpint, 4, sharedSecretMpint.length));
+                byte[] sharedSecret =
+                        Arrays.copyOfRange(sharedSecretMpint, 4, sharedSecretMpint.length);
                 line = reader.nextLine();
                 byte[] exchangeHash = ArrayConverter.hexStringToByteArray(line.split(" = ")[1]);
                 line = reader.nextLine();
@@ -127,7 +128,7 @@ public class KeyDerivationTest {
     @ParameterizedTest
     @MethodSource("provideKDFTestVectors")
     public void testDeriveKey(
-            BigInteger providedSharedSecret,
+            byte[] providedSharedSecret,
             byte[] providedExchangeHash,
             byte[] providedSessionId,
             byte[] expectedKeyA,
@@ -145,7 +146,7 @@ public class KeyDerivationTest {
 
         byte[] keyA =
                 KeyDerivation.deriveKey(
-                        providedSharedSecret,
+                        Converter.byteArrayToMpint(providedSharedSecret),
                         providedExchangeHash,
                         'A',
                         providedSessionId,
@@ -153,7 +154,7 @@ public class KeyDerivationTest {
                         providedHashAlgorithm);
         byte[] keyB =
                 KeyDerivation.deriveKey(
-                        providedSharedSecret,
+                        Converter.byteArrayToMpint(providedSharedSecret),
                         providedExchangeHash,
                         'B',
                         providedSessionId,
@@ -161,7 +162,7 @@ public class KeyDerivationTest {
                         providedHashAlgorithm);
         byte[] keyC =
                 KeyDerivation.deriveKey(
-                        providedSharedSecret,
+                        Converter.byteArrayToMpint(providedSharedSecret),
                         providedExchangeHash,
                         'C',
                         providedSessionId,
@@ -169,7 +170,7 @@ public class KeyDerivationTest {
                         providedHashAlgorithm);
         byte[] keyD =
                 KeyDerivation.deriveKey(
-                        providedSharedSecret,
+                        Converter.byteArrayToMpint(providedSharedSecret),
                         providedExchangeHash,
                         'D',
                         providedSessionId,
@@ -177,7 +178,7 @@ public class KeyDerivationTest {
                         providedHashAlgorithm);
         byte[] keyE =
                 KeyDerivation.deriveKey(
-                        providedSharedSecret,
+                        Converter.byteArrayToMpint(providedSharedSecret),
                         providedExchangeHash,
                         'E',
                         providedSessionId,
@@ -185,7 +186,7 @@ public class KeyDerivationTest {
                         providedHashAlgorithm);
         byte[] keyF =
                 KeyDerivation.deriveKey(
-                        providedSharedSecret,
+                        Converter.byteArrayToMpint(providedSharedSecret),
                         providedExchangeHash,
                         'F',
                         providedSessionId,
@@ -249,9 +250,8 @@ public class KeyDerivationTest {
         inputHolder.setEcdhClientPublicKey(ecdhInit.getEphemeralPublicKey().getValue());
         inputHolder.setEcdhServerPublicKey(ecdhReply.getEphemeralPublicKey().getValue());
         inputHolder.setSharedSecret(
-                new BigInteger(
-                        ArrayConverter.hexStringToByteArray(
-                                "13625c19127efdb1b15f1d5f48550760f29228342fbc438c06c56d795f31d109")));
+                ArrayConverter.hexStringToByteArray(
+                        "13625c19127efdb1b15f1d5f48550760f29228342fbc438c06c56d795f31d109"));
 
         assertArrayEquals(
                 expectedHash,

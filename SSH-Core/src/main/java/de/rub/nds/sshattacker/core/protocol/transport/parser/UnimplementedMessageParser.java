@@ -10,6 +10,7 @@ package de.rub.nds.sshattacker.core.protocol.transport.parser;
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 import de.rub.nds.sshattacker.core.protocol.transport.message.UnimplementedMessage;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -27,7 +28,7 @@ public class UnimplementedMessageParser extends SshMessageParser<UnimplementedMe
 
     private void parseSequenceNumber() {
         message.setSequenceNumber(parseIntField(DataFormatConstants.UINT32_SIZE));
-        LOGGER.debug("Sequence number: " + message.getSequenceNumber());
+        LOGGER.debug("Sequence number: {}", message.getSequenceNumber());
     }
 
     @Override

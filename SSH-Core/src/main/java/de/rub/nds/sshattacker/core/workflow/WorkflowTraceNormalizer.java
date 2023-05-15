@@ -16,18 +16,19 @@ import de.rub.nds.sshattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.sshattacker.core.workflow.action.GeneralAction;
 import de.rub.nds.sshattacker.core.workflow.action.SshAction;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /** Builds a "normalized" workflow trace. */
-public class WorkflowTraceNormalizer {
+public final class WorkflowTraceNormalizer {
 
-    private static final Logger LOGGER = LogManager.getLogger();
+    private WorkflowTraceNormalizer() {
+        super();
+    }
 
-    public void normalize(WorkflowTrace trace, Config config) {
+    public static void normalize(WorkflowTrace trace, Config config) {
         normalize(trace, config, config.getDefaultRunningMode());
     }
 
@@ -36,9 +37,9 @@ public class WorkflowTraceNormalizer {
      *
      * @param trace The trace that should be normalized
      * @param config The config that is used
-     * @param mode The mode the Trace is ran in
+     * @param mode The mode the Trace is run in
      */
-    public void normalize(WorkflowTrace trace, Config config, RunningModeType mode) {
+    public static void normalize(WorkflowTrace trace, Config config, RunningModeType mode) {
         List<AliasedConnection> traceConnections = trace.getConnections();
         InboundConnection defaultInCon = config.getDefaultServerConnection().getCopy();
         OutboundConnection defaultOutCon = config.getDefaultClientConnection().getCopy();
@@ -126,7 +127,7 @@ public class WorkflowTraceNormalizer {
         assertNormalizedWorkflowTrace(trace);
     }
 
-    public Boolean isNormalized(WorkflowTrace trace) {
+    public static Boolean isNormalized(WorkflowTrace trace) {
         try {
             assertNormalizedWorkflowTrace(trace);
         } catch (ConfigurationException e) {
@@ -146,9 +147,9 @@ public class WorkflowTraceNormalizer {
      *
      * @param trace The WorkflowTrace to check
      */
-    public void assertNormalizedWorkflowTrace(WorkflowTrace trace) {
+    public static void assertNormalizedWorkflowTrace(WorkflowTrace trace) {
         List<AliasedConnection> connections = trace.getConnections();
-        if ((connections == null) || (connections.isEmpty())) {
+        if (connections == null || connections.isEmpty()) {
             throw new ConfigurationException(
                     "Workflow trace not well defined. " + "Trace does not define any connections.");
         }
@@ -156,7 +157,7 @@ public class WorkflowTraceNormalizer {
         List<String> knownAliases = new ArrayList<>();
         for (AliasedConnection con : connections) {
             String conAlias = con.getAlias();
-            if ((conAlias == null) || (conAlias.isEmpty())) {
+            if (conAlias == null || conAlias.isEmpty()) {
                 throw new ConfigurationException(
                         "Workflow trace not well defined. "
                                 + "Trace contains connections with empty alias");

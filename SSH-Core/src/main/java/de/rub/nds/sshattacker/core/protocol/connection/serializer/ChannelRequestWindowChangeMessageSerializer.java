@@ -9,6 +9,7 @@ package de.rub.nds.sshattacker.core.protocol.connection.serializer;
 
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelRequestWindowChangeMessage;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -21,22 +22,22 @@ public class ChannelRequestWindowChangeMessageSerializer
     }
 
     public void serializeWidthColums() {
-        LOGGER.debug("Terminal width in colums: " + message.getWidthPixels().getValue());
+        LOGGER.debug("Terminal width in colums: {}", message.getWidthPixels().getValue());
         appendInt(message.getWidthPixels().getValue(), DataFormatConstants.UINT32_SIZE);
     }
 
     public void serializeHeightRows() {
-        LOGGER.debug("Terminal height in rows: " + message.getHeightRows().getValue());
+        LOGGER.debug("Terminal height in rows: {}", message.getHeightRows().getValue());
         appendInt(message.getHeightRows().getValue(), DataFormatConstants.UINT32_SIZE);
     }
 
     public void serializeWidthPixels() {
-        LOGGER.debug("Terminal width in pixels: " + message.getWidthPixels().getValue());
+        LOGGER.debug("Terminal width in pixels: {}", message.getWidthPixels().getValue());
         appendInt(message.getWidthPixels().getValue(), DataFormatConstants.UINT32_SIZE);
     }
 
     public void serializeHeightPixels() {
-        LOGGER.debug("Terminal height in pixels: " + message.getHeightPixels().getValue());
+        LOGGER.debug("Terminal height in pixels: {}", message.getHeightPixels().getValue());
         appendInt(message.getHeightPixels().getValue(), DataFormatConstants.UINT32_SIZE);
     }
 

@@ -23,6 +23,9 @@ import de.rub.nds.sshattacker.core.workflow.factory.WorkflowTraceType;
 import de.rub.nds.sshattacker.core.workflow.filter.FilterType;
 import jakarta.xml.bind.annotation.*;
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -229,11 +232,24 @@ public class Config implements Serializable {
      */
     private KeyExchangeAlgorithm defaultRsaKeyExchangeAlgorithm;
     /**
+     * Default Hybrid key exchange algorithm, which is used if a new Hybrid key exchange is
+     * instantiated without a matching key exchange algorithm negotiated.
+     */
+    private KeyExchangeAlgorithm defaultHybridKeyExchangeAlgorithm;
+    /**
      * If set to true, sending or receiving a NewKeysMessage automatically enables the encryption
      * for the corresponding transport direction. If set to false, encryption must be enabled
      * manually by calling the corresponding methods on the state.
      */
     private Boolean enableEncryptionOnNewKeysMessage = true;
+    /**
+     * If set to false, the packet cipher will only be changed in case of algorithm or key material
+     * change during the SSH_MSG_NEWKEYS handler. This can be useful if one tries sending NEWKEYS
+     * without a proper key exchange beforehand and would like to be able to decrypt the servers'
+     * response encrypted under the old cipher state. Will take no effect if {@link
+     * #enableEncryptionOnNewKeysMessage} is set to false.
+     */
+    private Boolean forcePacketCipherChange = false;
     /**
      * If enforceSettings is true, the algorithms are expected to be already set in the SshContext,
      * when picking the algorithms
@@ -243,7 +259,7 @@ public class Config implements Serializable {
     /** Host key */
     @XmlElement(name = "hostKey")
     @XmlElementWrapper
-    private final List<SshPublicKey<?, ?>> hostKeys;
+    private List<SshPublicKey<?, ?>> hostKeys;
 
     /**
      * RSA transient key used to encrypt the shared secret K. This may be a transient key generated
@@ -295,7 +311,11 @@ public class Config implements Serializable {
     /** The List of user keys for public key authentication */
     @XmlElement(name = "userKey")
     @XmlElementWrapper
-    private final List<SshPublicKey<?, ?>> userKeys;
+    private List<SshPublicKey<?, ?>> userKeys;
+
+    @XmlElement(name = "userKeyAlgorithms")
+    @XmlElementWrapper
+    private List<PublicKeyAlgorithm> userKeyAlgorithms;
     // endregion
 
     // region Channel
@@ -329,7 +349,7 @@ public class Config implements Serializable {
      */
     private int defaultTerminalWidthPixels;
     /**
-     * Default terminal width in colums, if a pseudo terminal is requested or changed
+     * Default terminal width in columns, if a pseudo terminal is requested or changed
      * (ChannelRequestPty/ChannelRequestWindowChangeMessage)
      */
     private int defaultTerminalWidthColumns;
@@ -348,7 +368,7 @@ public class Config implements Serializable {
      * pseudo terminal(pty-req)
      */
     private String defaultTermEnvVariable;
-    /** Default name of a predefined subsysten, which should be executed on the remote */
+    /** Default name of a predefined subsystem, which should be executed on the remote */
     private String defaultSubsystemName;
     /**
      * The default break length, which is requested when a break operation is performed, by sending
@@ -358,8 +378,8 @@ public class Config implements Serializable {
     // endregion
 
     // region Workflow settings
-    /** The path to load workflow trace from. The workflow trace must be stored in a XML-File. */
-    private String workflowInput = null;
+    /** The path to load workflow trace from. The workflow trace must be stored in an XML-File. */
+    private String workflowInput;
     /**
      * The type of workflow trace, that should be executed by the Ssh client or server. The workflow
      * configuration factory uses the type to create the belonging workflow trace.
@@ -373,7 +393,7 @@ public class Config implements Serializable {
     @XmlElementWrapper
     private List<FilterType> outputFilters;
     /** The path to save the workflow trace as output */
-    private String workflowOutput = null;
+    private String workflowOutput;
     /**
      * Defines if the output filters should be applied on the workflowTrace or on a fresh workflow
      * trace copy.
@@ -392,9 +412,7 @@ public class Config implements Serializable {
      * workflow
      */
     private Boolean workflowExecutorShouldClose = true;
-    /**
-     * Defines if the workflow trace should be resetted before saving, by resetting all SshActions.
-     */
+    /** Defines if the workflow trace should be reset before saving, by resetting all SshActions. */
     private Boolean resetWorkflowtracesBeforeSaving = false;
     // endregion
 
@@ -420,19 +438,20 @@ public class Config implements Serializable {
     // endregion
 
     /** The path to save the Config as file. */
-    private String configOutput = null;
+    private String configOutput;
 
     /** Fallback for type of chooser, to initialize the chooser in the SshContext */
     private ChooserType chooserType = ChooserType.DEFAULT;
 
     // region Constructors and Initialization
     public Config() {
+        super();
 
         defaultClientConnection = new OutboundConnection("client", 65222, "localhost");
         defaultServerConnection = new InboundConnection("server", 65222, "localhost");
 
         // region VersionExchange initialization
-        clientVersion = "SSH-2.0-OpenSSH_8.2p1";
+        clientVersion = "SSH-2.0-OpenSSH_9.0";
         clientComment = "";
         serverVersion = clientVersion;
         serverComment = clientComment;
@@ -448,6 +467,8 @@ public class Config implements Serializable {
         clientSupportedKeyExchangeAlgorithms =
                 Arrays.stream(
                                 new KeyExchangeAlgorithm[] {
+                                    KeyExchangeAlgorithm.SNTRUP761_X25519,
+                                    KeyExchangeAlgorithm.SNTRUP4591761_X25519,
                                     KeyExchangeAlgorithm.CURVE25519_SHA256,
                                     KeyExchangeAlgorithm.CURVE25519_SHA256_LIBSSH_ORG,
                                     KeyExchangeAlgorithm.ECDH_SHA2_NISTP256,
@@ -459,10 +480,13 @@ public class Config implements Serializable {
                                     KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP14_SHA256,
                                     KeyExchangeAlgorithm.EXT_INFO_C
                                 })
+                        .filter(KeyExchangeAlgorithm::isAvailable)
                         .collect(Collectors.toCollection(LinkedList::new));
         serverSupportedKeyExchangeAlgorithms =
                 Arrays.stream(
                                 new KeyExchangeAlgorithm[] {
+                                        KeyExchangeAlgorithm.SNTRUP761_X25519,
+                                        KeyExchangeAlgorithm.SNTRUP4591761_X25519,
                                     KeyExchangeAlgorithm.CURVE25519_SHA256,
                                     KeyExchangeAlgorithm.CURVE25519_SHA256_LIBSSH_ORG,
                                     KeyExchangeAlgorithm.ECDH_SHA2_NISTP256,
@@ -474,9 +498,11 @@ public class Config implements Serializable {
                                     KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP14_SHA256,
                                     KeyExchangeAlgorithm.EXT_INFO_S
                                 })
+                        .filter(KeyExchangeAlgorithm::isAvailable)
                         .collect(Collectors.toCollection(LinkedList::new));
 
-        // We don't support CERT_V01 or SK (U2F) host keys (yet), only listed for completeness
+        // We don't support CERT_V01 or SK (U2F) host keys (yet), only listed for
+        // completeness
         clientSupportedHostKeyAlgorithms =
                 Arrays.stream(
                                 new PublicKeyAlgorithm[] {
@@ -616,8 +642,10 @@ public class Config implements Serializable {
         defaultDhKeyExchangeAlgorithm = KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP14_SHA256;
         defaultEcdhKeyExchangeAlgorithm = KeyExchangeAlgorithm.ECDH_SHA2_NISTP256;
         defaultRsaKeyExchangeAlgorithm = KeyExchangeAlgorithm.RSA2048_SHA256;
+        defaultHybridKeyExchangeAlgorithm = KeyExchangeAlgorithm.SNTRUP761_X25519;
 
-        // An OpenSSL generated 2048 bit RSA keypair is currently being used as the default host key
+        // An OpenSSL generated 2048 bit RSA keypair is currently being used as the
+        // default host key
         // TODO: Load host keys from file to reduce length of Config class
         hostKeys = new ArrayList<>();
         hostKeys.add(
@@ -825,7 +853,8 @@ public class Config implements Serializable {
         preConfiguredAuthResponses.add(preConfiguredAuthResponse2);
 
         // sshkey generated with "openssl ecparam -name secp521r1 -genkey -out key.pem"
-        // pubkey for authorized_keys file on host generated with "ssh-keygen -y -f key.pem >
+        // pubkey for authorized_keys file on host generated with "ssh-keygen -y -f
+        // key.pem >
         // key.pub"
         userKeys = new ArrayList<>();
         userKeys.add(
@@ -986,8 +1015,8 @@ public class Config implements Serializable {
         return ConfigIO.read(stream);
     }
 
-    public static Config createConfig(File f) {
-        return ConfigIO.read(f);
+    public static Config createConfig(File file) {
+        return ConfigIO.read(file);
     }
 
     public static Config createConfig(InputStream stream) {
@@ -1002,18 +1031,18 @@ public class Config implements Serializable {
     }
 
     public static Config createEmptyConfig() {
-        Config c = new Config();
-        for (Field field : c.getClass().getDeclaredFields()) {
+        Config config = new Config();
+        for (Field field : config.getClass().getDeclaredFields()) {
             if (!field.getName().equals("LOGGER") && !field.getType().isPrimitive()) {
                 field.setAccessible(true);
                 try {
-                    field.set(c, null);
+                    field.set(config, null);
                 } catch (IllegalAccessException e) {
                     LOGGER.warn("Could not set field in Config!", e);
                 }
             }
         }
-        return c;
+        return config;
     }
     // endregion
 
@@ -1073,6 +1102,7 @@ public class Config implements Serializable {
     public String getServerEndOfMessageSequence() {
         return serverEndOfMessageSequence;
     }
+
     // endregion
     // region Setters for VersionExchange
     public void setClientVersion(String clientVersion) {
@@ -1396,12 +1426,20 @@ public class Config implements Serializable {
         return defaultEcdhKeyExchangeAlgorithm;
     }
 
+    public KeyExchangeAlgorithm getDefaultHybridKeyExchangeAlgorithm() {
+        return defaultHybridKeyExchangeAlgorithm;
+    }
+
     public KeyExchangeAlgorithm getDefaultRsaKeyExchangeAlgorithm() {
         return defaultRsaKeyExchangeAlgorithm;
     }
 
     public Boolean getEnableEncryptionOnNewKeysMessage() {
         return enableEncryptionOnNewKeysMessage;
+    }
+
+    public Boolean getForcePacketCipherChange() {
+        return forcePacketCipherChange;
     }
 
     public Boolean getEnforceSettings() {
@@ -1435,6 +1473,11 @@ public class Config implements Serializable {
         this.defaultDhKeyExchangeAlgorithm = defaultDhKeyExchangeAlgorithm;
     }
 
+    public void setDefaultHybridKeyExchangeAlgorithm(
+            KeyExchangeAlgorithm defaultHybridKeyExchangeAlgorithm) {
+        this.defaultHybridKeyExchangeAlgorithm = defaultHybridKeyExchangeAlgorithm;
+    }
+
     public void setDefaultEcdhKeyExchangeAlgorithm(
             KeyExchangeAlgorithm defaultEcdhKeyExchangeAlgorithm) {
         this.defaultEcdhKeyExchangeAlgorithm = defaultEcdhKeyExchangeAlgorithm;
@@ -1449,12 +1492,20 @@ public class Config implements Serializable {
         this.enableEncryptionOnNewKeysMessage = enableEncryptionOnNewKeysMessage;
     }
 
+    public void setForcePacketCipherChange(Boolean forcePacketCipherChange) {
+        this.forcePacketCipherChange = forcePacketCipherChange;
+    }
+
     public void setEnforceSettings(Boolean enforceSettings) {
         this.enforceSettings = enforceSettings;
     }
+
+    public void setHostKeys(List<SshPublicKey<?, ?>> hostKeys) {
+        this.hostKeys = Objects.requireNonNull(hostKeys);
+    }
     // endregion
 
-    // region Getters for Authentification
+    // region Getters for authentication
     public AuthenticationMethod getAuthenticationMethod() {
         return authenticationMethod;
     }
@@ -1478,8 +1529,22 @@ public class Config implements Serializable {
     public List<SshPublicKey<?, ?>> getUserKeys() {
         return userKeys;
     }
+
+    /**
+     * Get the list of user key algorithms to use for authentication.
+     *
+     * <p>These algorithms will be used for user authentication. If this value is not set, the user
+     * key algorithm might be any public key algorithms that is compatible with the user key's
+     * format.
+     *
+     * @return list of public key algorithms, or no value
+     * @see #setUserKeyAlgorithms
+     */
+    public Optional<List<PublicKeyAlgorithm>> getUserKeyAlgorithms() {
+        return Optional.ofNullable(userKeyAlgorithms);
+    }
     // endregion
-    // region Setters for Authentification
+    // region Setters for authentication
     public void setAuthenticationMethod(AuthenticationMethod authenticationMethod) {
         this.authenticationMethod = authenticationMethod;
     }
@@ -1500,6 +1565,21 @@ public class Config implements Serializable {
             List<AuthenticationResponse> preConfiguredAuthResponses) {
         this.preConfiguredAuthResponses = preConfiguredAuthResponses;
     }
+
+    public void setUserKeys(List<SshPublicKey<?, ?>> userKeys) {
+        this.userKeys = Objects.requireNonNull(userKeys);
+    }
+
+    /**
+     * Set the list of user key algorithms to use for authentication.
+     *
+     * @param userKeyAlgorithms list of public key algorithms, or no value
+     * @see #getUserKeyAlgorithms
+     */
+    public void setUserKeyAlgorithms(List<PublicKeyAlgorithm> userKeyAlgorithms) {
+        this.userKeyAlgorithms = userKeyAlgorithms;
+    }
+
     // endregion
 
     // region Getters for Channel

@@ -7,12 +7,16 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.parser;
 
+import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeString;
+
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 import de.rub.nds.sshattacker.core.protocol.transport.message.ServiceRequestMessage;
-import java.nio.charset.StandardCharsets;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.nio.charset.StandardCharsets;
 
 public class ServiceRequestMessageParser extends SshMessageParser<ServiceRequestMessage> {
 
@@ -28,11 +32,12 @@ public class ServiceRequestMessageParser extends SshMessageParser<ServiceRequest
 
     private void parseServiceName() {
         message.setServiceNameLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-        LOGGER.debug("Service name length: " + message.getServiceNameLength().getValue());
+        LOGGER.debug("Service name length: {}", message.getServiceNameLength().getValue());
         message.setServiceName(
                 parseByteString(
                         message.getServiceNameLength().getValue(), StandardCharsets.US_ASCII));
-        LOGGER.debug("Service name: " + message.getServiceName().getValue());
+        LOGGER.debug(
+                "Service name: {}", backslashEscapeString(message.getServiceName().getValue()));
     }
 
     @Override

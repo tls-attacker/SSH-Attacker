@@ -24,7 +24,7 @@
 | `SSH_MSG_KEX_DH_GEX_INIT`        |     32     | `DhGexKeyExchangeInitMessage`       | &#x2714;&#xfe0f; | &#x2714;&#xfe0f; | &#x2714;&#xfe0f; |     &#x274c;     |     &#x274c;     |
 | `SSH_MSG_KEX_DH_GEX_REPLY`       |     33     | `DhGexKeyExchangeReplyMessage`      | &#x2714;&#xfe0f; |     &#x274c;     |     &#x274c;     | &#x2714;&#xfe0f; | &#x2714;&#xfe0f; |
 
-### Key Exchange: Diffie Hellman Named Groups (RFC 4253)
+### Key Exchange: Diffie-Hellman Named Groups (RFC 4253)
 
 |     Message Type      | Message ID |    XML Tag / Java Class     |     Message      |    Preparator    |    Serializer    |      Parser      |     Handler      |
 |-----------------------|:----------:|-----------------------------|:----------------:|:----------------:|:----------------:|:----------------:|:----------------:|

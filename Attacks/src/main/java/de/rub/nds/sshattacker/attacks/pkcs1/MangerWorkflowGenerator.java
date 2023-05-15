@@ -22,7 +22,7 @@ import de.rub.nds.sshattacker.core.workflow.factory.WorkflowConfigurationFactory
 import de.rub.nds.sshattacker.core.workflow.factory.WorkflowTraceType;
 
 /** Utility class for generating attack workflows for Manger style attacks */
-public class MangerWorkflowGenerator {
+public final class MangerWorkflowGenerator {
 
     /**
      * @param sshConfig SSH config to be used to generate the workflow
@@ -67,5 +67,7 @@ public class MangerWorkflowGenerator {
         return trace;
     }
 
-    private MangerWorkflowGenerator() {}
+    private MangerWorkflowGenerator() {
+        super();
+    }
 }

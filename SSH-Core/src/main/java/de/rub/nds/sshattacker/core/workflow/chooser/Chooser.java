@@ -7,27 +7,29 @@
  */
 package de.rub.nds.sshattacker.core.workflow.chooser;
 
+import static java.util.Map.Entry;
+
 import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.constants.*;
 import de.rub.nds.sshattacker.core.crypto.kex.AbstractEcdhKeyExchange;
 import de.rub.nds.sshattacker.core.crypto.kex.DhKeyExchange;
+import de.rub.nds.sshattacker.core.crypto.kex.HybridKeyExchange;
 import de.rub.nds.sshattacker.core.crypto.kex.RsaKeyExchange;
 import de.rub.nds.sshattacker.core.crypto.keys.SshPublicKey;
 import de.rub.nds.sshattacker.core.protocol.transport.message.extension.AbstractExtension;
 import de.rub.nds.sshattacker.core.state.SshContext;
+
 import java.util.List;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import java.util.stream.Stream;
 
 public abstract class Chooser {
-
-    private static final Logger LOGGER = LogManager.getLogger();
 
     protected final SshContext context;
 
     protected final Config config;
 
-    public Chooser(SshContext context, Config config) {
+    protected Chooser(SshContext context, Config config) {
+        super();
         this.config = config;
         this.context = context;
     }
@@ -144,8 +146,8 @@ public abstract class Chooser {
      */
     public EncryptionAlgorithm getSendEncryptionAlgorithm() {
         return context.isClient()
-                ? this.getEncryptionAlgorithmClientToServer()
-                : this.getEncryptionAlgorithmServerToClient();
+                ? getEncryptionAlgorithmClientToServer()
+                : getEncryptionAlgorithmServerToClient();
     }
 
     /**
@@ -157,8 +159,8 @@ public abstract class Chooser {
      */
     public EncryptionAlgorithm getReceiveEncryptionAlgorithm() {
         return context.isClient()
-                ? this.getEncryptionAlgorithmServerToClient()
-                : this.getEncryptionAlgorithmClientToServer();
+                ? getEncryptionAlgorithmServerToClient()
+                : getEncryptionAlgorithmClientToServer();
     }
 
     public abstract EncryptionAlgorithm getEncryptionAlgorithmClientToServer();
@@ -174,8 +176,8 @@ public abstract class Chooser {
      */
     public MacAlgorithm getSendMacAlgorithm() {
         return context.isClient()
-                ? this.getMacAlgorithmClientToServer()
-                : this.getMacAlgorithmServerToClient();
+                ? getMacAlgorithmClientToServer()
+                : getMacAlgorithmServerToClient();
     }
 
     /**
@@ -187,8 +189,8 @@ public abstract class Chooser {
      */
     public MacAlgorithm getReceiveMacAlgorithm() {
         return context.isClient()
-                ? this.getMacAlgorithmServerToClient()
-                : this.getMacAlgorithmClientToServer();
+                ? getMacAlgorithmServerToClient()
+                : getMacAlgorithmClientToServer();
     }
 
     public abstract MacAlgorithm getMacAlgorithmClientToServer();
@@ -204,8 +206,8 @@ public abstract class Chooser {
      */
     public CompressionMethod getSendCompressionMethod() {
         return context.isClient()
-                ? this.getCompressionMethodClientToServer()
-                : this.getCompressionMethodServerToClient();
+                ? getCompressionMethodClientToServer()
+                : getCompressionMethodServerToClient();
     }
 
     /**
@@ -217,8 +219,8 @@ public abstract class Chooser {
      */
     public CompressionMethod getReceiveCompressionMethod() {
         return context.isClient()
-                ? this.getCompressionMethodServerToClient()
-                : this.getCompressionMethodClientToServer();
+                ? getCompressionMethodServerToClient()
+                : getCompressionMethodClientToServer();
     }
 
     public abstract CompressionMethod getCompressionMethodClientToServer();
@@ -235,7 +237,12 @@ public abstract class Chooser {
 
     public abstract RsaKeyExchange getRsaKeyExchange();
 
+    public abstract HybridKeyExchange getHybridKeyExchange();
+
     public abstract SshPublicKey<?, ?> getNegotiatedHostKey();
+
+    public abstract Stream<Entry<SshPublicKey<?, ?>, PublicKeyAlgorithm>>
+            getUserKeyAndAlgorithmCombinations();
 
     public abstract Integer getMinimalDhGroupSize();
 

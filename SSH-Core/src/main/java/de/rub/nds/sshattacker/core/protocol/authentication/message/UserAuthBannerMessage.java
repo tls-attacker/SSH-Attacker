@@ -13,6 +13,7 @@ import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.sshattacker.core.protocol.authentication.handler.UserAuthBannerMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
 import de.rub.nds.sshattacker.core.state.SshContext;
+
 import java.nio.charset.StandardCharsets;
 
 public class UserAuthBannerMessage extends SshMessage<UserAuthBannerMessage> {
@@ -48,17 +49,17 @@ public class UserAuthBannerMessage extends SshMessage<UserAuthBannerMessage> {
     }
 
     public void setMessage(ModifiableString message, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setMessageLength(message.getValue().getBytes(StandardCharsets.UTF_8).length);
-        }
         this.message = message;
+        if (adjustLengthField) {
+            setMessageLength(this.message.getValue().getBytes(StandardCharsets.UTF_8).length);
+        }
     }
 
     public void setMessage(String message, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setMessageLength(message.getBytes(StandardCharsets.UTF_8).length);
-        }
         this.message = ModifiableVariableFactory.safelySetValue(this.message, message);
+        if (adjustLengthField) {
+            setMessageLength(this.message.getValue().getBytes(StandardCharsets.UTF_8).length);
+        }
     }
 
     public ModifiableInteger getLanguageTagLength() {
@@ -87,17 +88,19 @@ public class UserAuthBannerMessage extends SshMessage<UserAuthBannerMessage> {
     }
 
     public void setLanguageTag(ModifiableString languageTag, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setLanguageTagLength(languageTag.getValue().getBytes(StandardCharsets.US_ASCII).length);
-        }
         this.languageTag = languageTag;
+        if (adjustLengthField) {
+            setLanguageTagLength(
+                    this.languageTag.getValue().getBytes(StandardCharsets.US_ASCII).length);
+        }
     }
 
     public void setLanguageTag(String languageTag, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setLanguageTagLength(languageTag.getBytes(StandardCharsets.US_ASCII).length);
-        }
         this.languageTag = ModifiableVariableFactory.safelySetValue(this.languageTag, languageTag);
+        if (adjustLengthField) {
+            setLanguageTagLength(
+                    this.languageTag.getValue().getBytes(StandardCharsets.US_ASCII).length);
+        }
     }
 
     @Override

@@ -16,15 +16,18 @@ import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.message.RsaKeyExchangeSecretMessage;
 import de.rub.nds.sshattacker.core.state.State;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /** Custom Action for dynamically creating and sending {@link RsaKeyExchangeSecretMessage}s */
 public class SendMangerSecretAction extends SendAction {
@@ -86,7 +89,7 @@ public class SendMangerSecretAction extends SendAction {
         try {
             // Encrypt the encoded secret with plain RSA
             Cipher rsa = Cipher.getInstance("RSA/NONE/NoPadding");
-            LOGGER.debug("Provider: " + rsa.getProvider());
+            LOGGER.debug("Provider: {}", rsa.getProvider());
             rsa.init(Cipher.ENCRYPT_MODE, publicKey);
             byte[] encryptedSecret = rsa.doFinal(encodedSecret);
             encryptedSecretArray.setModification(

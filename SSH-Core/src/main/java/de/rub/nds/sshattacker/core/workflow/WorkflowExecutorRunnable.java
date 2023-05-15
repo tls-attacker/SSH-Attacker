@@ -11,10 +11,12 @@ import de.rub.nds.sshattacker.core.connection.AliasedConnection;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.state.State;
 import de.rub.nds.tlsattacker.transport.tcp.ServerTcpTransportHandler;
-import java.io.IOException;
-import java.net.Socket;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.io.IOException;
+import java.net.Socket;
 
 /**
  * Spawn a new workflow trace for incoming connection.
@@ -28,13 +30,14 @@ public class WorkflowExecutorRunnable implements Runnable {
     private final State globalState;
 
     public WorkflowExecutorRunnable(State globalState, Socket socket) {
+        super();
         this.globalState = globalState;
         this.socket = socket;
     }
 
     @Override
     public void run() {
-        LOGGER.info("Spawning workflow on socket " + socket);
+        LOGGER.info("Spawning workflow on socket {}", socket);
         // Currently, WorkflowTraces cannot be copied with external modules
         // if they define custom actions. This is because copying relies
         // on serialization, and actions from other packages are unknown
@@ -51,7 +54,7 @@ public class WorkflowExecutorRunnable implements Runnable {
         // execution. Let's hope this is true in practice ;)
         State state = new State(globalState.getConfig(), localTrace);
 
-        // Do this post state init only if you know what yout are doing.
+        // Do this post state init only if you know what you are doing.
         SshContext serverCtx = state.getInboundSshContexts().get(0);
         AliasedConnection serverCon = serverCtx.getConnection();
         serverCon.setHostname(socket.getInetAddress().getHostAddress());
@@ -60,15 +63,15 @@ public class WorkflowExecutorRunnable implements Runnable {
         try {
             th = new ServerTcpTransportHandler(serverCon, socket);
         } catch (IOException ex) {
-            LOGGER.error("Could not prepare TransportHandler for " + socket);
-            LOGGER.error("Aborting workflow trace execution on " + socket);
+            LOGGER.error("Could not prepare TransportHandler for {}", socket);
+            LOGGER.error("Aborting workflow trace execution on {}", socket);
             return;
         }
         serverCtx.setTransportHandler(th);
 
-        LOGGER.info("Executing workflow for " + socket + " (" + serverCtx + ")");
+        LOGGER.info("Executing workflow for {} ({})", socket, serverCtx);
         WorkflowExecutor workflowExecutor = new DefaultWorkflowExecutor(state);
         workflowExecutor.executeWorkflow();
-        LOGGER.info("Workflow execution done on " + socket + " (" + serverCtx + ")");
+        LOGGER.info("Workflow execution done on {} ({})", socket, serverCtx);
     }
 }

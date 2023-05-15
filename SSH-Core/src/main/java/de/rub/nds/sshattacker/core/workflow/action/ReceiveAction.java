@@ -10,6 +10,7 @@ package de.rub.nds.sshattacker.core.workflow.action;
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.sshattacker.core.connection.AliasedConnection;
 import de.rub.nds.sshattacker.core.exceptions.WorkflowExecutionException;
+import de.rub.nds.sshattacker.core.packet.AbstractPacket;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.*;
 import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessage;
 import de.rub.nds.sshattacker.core.protocol.connection.message.*;
@@ -17,12 +18,17 @@ import de.rub.nds.sshattacker.core.protocol.transport.message.*;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.state.State;
 import de.rub.nds.sshattacker.core.workflow.action.executor.MessageActionResult;
+import de.rub.nds.sshattacker.core.workflow.action.executor.ReceiveMessageHelper;
+
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlElementWrapper;
 import jakarta.xml.bind.annotation.XmlElements;
 import java.util.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class ReceiveAction extends MessageAction implements ReceivingAction {
 
@@ -155,9 +161,34 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
             })
     protected List<ProtocolMessage<?>> expectedMessages = new ArrayList<>();
 
-    @XmlElement protected Boolean earlyCleanShutdown = null;
+    /**
+     * Set to {@code true} if the {@link ReceiveOption#EARLY_CLEAN_SHUTDOWN} option has been set.
+     */
+    @XmlElement protected Boolean earlyCleanShutdown;
 
-    @XmlElement protected Boolean checkOnlyExpected = null;
+    /** Set to {@code true} if the {@link ReceiveOption#CHECK_ONLY_EXPECTED} option has been set. */
+    @XmlElement protected Boolean checkOnlyExpected;
+
+    /**
+     * Set to {@code true} if the {@link
+     * ReceiveOption#IGNORE_UNEXPECTED_GLOBAL_REQUESTS_WITHOUT_WANTREPLY} option has been set.
+     */
+    @XmlElement protected Boolean ignoreUnexpectedGlobalRequestsWithoutWantReply;
+
+    /**
+     * Set to {@code true} if the {@link ReceiveOption#FAIL_ON_UNEXPECTED_IGNORE_MESSAGES} option
+     * has been set.
+     */
+    @XmlElement protected Boolean failOnUnexpectedIgnoreMessages;
+
+    /**
+     * Set to {@code true} if the {@link ReceiveOption#FAIL_ON_UNEXPECTED_DEBUG_MESSAGES} option has
+     * been set.
+     */
+    @XmlElement protected Boolean failOnUnexpectedDebugMessages;
+
+    @XmlElement @HoldsModifiableVariable @XmlElementWrapper
+    protected List<AbstractPacket> packetList = new ArrayList<>();
 
     public ReceiveAction() {
         super(AliasedConnection.DEFAULT_CONNECTION_ALIAS);
@@ -173,25 +204,18 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
         this.expectedMessages = new ArrayList<>(Arrays.asList(expectedMessages));
     }
 
-    public ReceiveAction(Set<ReceiveOption> receiveOptions, List<ProtocolMessage<?>> messages) {
-        this(messages);
-        this.earlyCleanShutdown = receiveOptions.contains(ReceiveOption.EARLY_CLEAN_SHUTDOWN);
-        this.checkOnlyExpected = receiveOptions.contains(ReceiveOption.CHECK_ONLY_EXPECTED);
+    public ReceiveAction(
+            Set<ReceiveOption> receiveOptions, List<ProtocolMessage<?>> expectedMessages) {
+        this(expectedMessages);
+        setReceiveOptions(receiveOptions);
     }
 
     public ReceiveAction(Set<ReceiveOption> receiveOptions, ProtocolMessage<?>... messages) {
         this(receiveOptions, new ArrayList<>(Arrays.asList(messages)));
     }
 
-    public ReceiveAction(ReceiveOption receiveOption, List<ProtocolMessage<?>> messages) {
-        this(messages);
-        switch (receiveOption) {
-            case CHECK_ONLY_EXPECTED:
-                this.checkOnlyExpected = true;
-                break;
-            case EARLY_CLEAN_SHUTDOWN:
-                this.earlyCleanShutdown = true;
-        }
+    public ReceiveAction(ReceiveOption receiveOption, List<ProtocolMessage<?>> expectedMessages) {
+        this(Set.of(receiveOption), expectedMessages);
     }
 
     public ReceiveAction(ReceiveOption receiveOption, ProtocolMessage<?>... messages) {
@@ -202,13 +226,13 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
         super(connectionAlias);
     }
 
-    public ReceiveAction(String connectionAliasAlias, List<ProtocolMessage<?>> messages) {
-        super(connectionAliasAlias);
-        this.expectedMessages = messages;
+    public ReceiveAction(String connectionAlias, List<ProtocolMessage<?>> messages) {
+        super(connectionAlias);
+        expectedMessages = messages;
     }
 
-    public ReceiveAction(String connectionAliasAlias, ProtocolMessage<?>... messages) {
-        this(connectionAliasAlias, new ArrayList<>(Arrays.asList(messages)));
+    public ReceiveAction(String connectionAlias, ProtocolMessage<?>... messages) {
+        this(connectionAlias, new ArrayList<>(Arrays.asList(messages)));
     }
 
     @Override
@@ -221,8 +245,9 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
 
         LOGGER.debug("Receiving messages for connection alias '{}'...", getConnectionAlias());
         MessageActionResult result =
-                receiveMessageHelper.receiveMessages(context, expectedMessages);
-        setReceivedMessages(result.getMessageList());
+                ReceiveMessageHelper.receiveMessages(context, expectedMessages);
+        messages = result.getMessageList();
+        packetList = result.getPacketList();
         setExecuted(true);
 
         String expected = getReadableString(expectedMessages);
@@ -240,7 +265,7 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
         StringBuilder sb = new StringBuilder("Receive Action:\n");
 
         sb.append("\tExpected:");
-        if ((expectedMessages != null)) {
+        if (expectedMessages != null) {
             for (ProtocolMessage<?> message : expectedMessages) {
                 sb.append(message.toCompactString());
                 sb.append(", ");
@@ -249,7 +274,7 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
             sb.append(" (no messages set)");
         }
         sb.append("\n\tActual:");
-        if ((messages != null) && (!messages.isEmpty())) {
+        if (messages != null && !messages.isEmpty()) {
             for (ProtocolMessage<?> message : messages) {
                 sb.append(message.toCompactString());
                 sb.append(", ");
@@ -264,7 +289,7 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
     @Override
     public String toCompactString() {
         StringBuilder sb = new StringBuilder(super.toCompactString());
-        if ((expectedMessages != null) && (!expectedMessages.isEmpty())) {
+        if (expectedMessages != null && !expectedMessages.isEmpty()) {
             sb.append(" (");
             for (ProtocolMessage<?> message : expectedMessages) {
                 sb.append(message.toCompactString());
@@ -283,24 +308,93 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
             return false;
         }
 
-        if (expectedMessages.size() == 0 && messages.size() > 0) {
+        // If no expected messages were defined, we consider this receive
+        // action as "let's see what the other side sends".
+        if (expectedMessages.isEmpty()) {
+            // FIXME: In case TLS-Attacker's `GenericReceiveAction` is ported
+            // to SSH-Attacker at some point and the `messages` list is also
+            // empty, it might make sense to log a warning that tells the user
+            // to use the `GenericReceiveAction` instead. If you truly don't
+            // know what the other side will send, it makes sense to wait the
+            // full timeout for incoming data (not exit early after the first
+            // chunk of data has been received).
             return true;
         }
 
-        if (checkOnlyExpected != null && checkOnlyExpected) {
-            if (expectedMessages.size() > messages.size()) {
-                return false;
-            }
-        } else {
-            if (messages.size() != expectedMessages.size()) {
+        // This action expected more messages than it received. This means we
+        // can fail early.
+        if (expectedMessages.size() > messages.size()) {
+            return false;
+        }
+
+        Iterator<ProtocolMessage<?>> actualMessages = messages.iterator();
+        for (ProtocolMessage<?> expectedMessage : expectedMessages) {
+            while (true) {
+                if (!actualMessages.hasNext()) {
+                    // There is still at least one expected message left that
+                    // didn't match any received messages. This action did not
+                    // execute as expected.
+                    LOGGER.debug(
+                            "Expected message of type {} has not been received!",
+                            expectedMessage.toCompactString());
+                    return false;
+                }
+
+                ProtocolMessage<?> actualMessage = actualMessages.next();
+
+                // Check if the actual message matches the expected message. If
+                // so, continue with the next expected message.
+                if (Objects.equals(expectedMessage.getClass(), actualMessage.getClass())) {
+                    break;
+                }
+
+                // This action received an unexpected message. This means that
+                // this action has not been executed as planned, unless:
+                //
+                // - the `CHECK_ONLY_EXPECTED` receive option is set, or
+                // - the `IGNORE_UNEXPECTED_GLOBAL_REQUESTS_WITHOUT_WANTREPLY`
+                //   receive option is set and the actual message is an
+                //   SSH_MSG_GLOBAL_REQUEST where the `want_reply` field is set
+                //   to 0.
+                // - the `FAIL_ON_UNEXPECTED_IGNORE_MESSAGES` receive option is not
+                //   set and the actual message is an SSH_MSG_IGNORE message.
+                //
+                // In these cases, ignore the received message and check if the
+                // next received message matches the expected message.
+                if (hasReceiveOption(ReceiveOption.CHECK_ONLY_EXPECTED)
+                        || hasReceiveOption(
+                                        ReceiveOption
+                                                .IGNORE_UNEXPECTED_GLOBAL_REQUESTS_WITHOUT_WANTREPLY)
+                                && actualMessage instanceof GlobalRequestMessage
+                                && ((GlobalRequestMessage<?>) actualMessage)
+                                                .getWantReply()
+                                                .getValue()
+                                        == 0
+                        || !hasReceiveOption(ReceiveOption.FAIL_ON_UNEXPECTED_IGNORE_MESSAGES)
+                                && actualMessage instanceof IgnoreMessage
+                        || !hasReceiveOption(ReceiveOption.FAIL_ON_UNEXPECTED_DEBUG_MESSAGES)
+                                && actualMessage instanceof DebugMessage) {
+                    LOGGER.debug("Ignoring message of type {}.", actualMessage.toCompactString());
+                    continue;
+                }
+
+                // At this point, we received a message that was unexpected and
+                // that we cannot ignore.
+                LOGGER.debug(
+                        "Received unexpected message of type {}.", actualMessage.toCompactString());
                 return false;
             }
         }
-        for (int i = 0; i < expectedMessages.size(); i++) {
-            if (!Objects.equals(expectedMessages.get(i).getClass(), messages.get(i).getClass())) {
-                return false;
-            }
-        }
+
+        // At this point, all expected messages have been received. If
+        // `MessageHelper::receiveMessages` behaves correctly, then the
+        // `actualMessages` iterator should be empty at this point (because the
+        // method should stop receiving after the last expected message).
+        //
+        // If this assumption is violated and the iterator still contains
+        // messages, then that is a bug and this method may not work correctly.
+        assert !actualMessages.hasNext()
+                : "MessageHelper::receiveMessages did not stop receiving after the last expected message";
 
         return true;
     }
@@ -309,8 +403,17 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
         return expectedMessages;
     }
 
+    @SuppressWarnings("SuspiciousGetterSetter")
     void setReceivedMessages(List<ProtocolMessage<?>> receivedMessages) {
-        this.messages = receivedMessages;
+        messages = receivedMessages;
+    }
+
+    public List<AbstractPacket> getPacketList() {
+        return packetList;
+    }
+
+    public void setPacketList(List<AbstractPacket> packetList) {
+        this.packetList = packetList;
     }
 
     public void setExpectedMessages(List<ProtocolMessage<?>> expectedMessages) {
@@ -321,23 +424,87 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
         this.expectedMessages = new ArrayList<>(Arrays.asList(expectedMessages));
     }
 
+    /**
+     * Check if the reception option is set.
+     *
+     * @param option a receive option
+     * @return {@code true} if the reception option is set, else {@code false}
+     */
+    protected boolean hasReceiveOption(ReceiveOption option) {
+        Boolean value = null;
+        switch (option) {
+            case EARLY_CLEAN_SHUTDOWN:
+                value = earlyCleanShutdown;
+                break;
+            case CHECK_ONLY_EXPECTED:
+                value = checkOnlyExpected;
+                break;
+            case IGNORE_UNEXPECTED_GLOBAL_REQUESTS_WITHOUT_WANTREPLY:
+                value = ignoreUnexpectedGlobalRequestsWithoutWantReply;
+                break;
+            case FAIL_ON_UNEXPECTED_IGNORE_MESSAGES:
+                value = failOnUnexpectedIgnoreMessages;
+                break;
+            case FAIL_ON_UNEXPECTED_DEBUG_MESSAGES:
+                value = failOnUnexpectedDebugMessages;
+                break;
+        }
+
+        return value != null && value;
+    }
+
+    /**
+     * Get the reception options for this action.
+     *
+     * @return set of receive options
+     */
+    public Set<ReceiveOption> getReceiveOptions() {
+        return Arrays.stream(ReceiveOption.values())
+                .filter(this::hasReceiveOption)
+                .collect(Collectors.toSet());
+    }
+
+    /**
+     * Set the reception options for this action.
+     *
+     * @param receiveOptions set of receive options
+     */
+    public void setReceiveOptions(Set<ReceiveOption> receiveOptions) {
+        earlyCleanShutdown = receiveOptions.contains(ReceiveOption.EARLY_CLEAN_SHUTDOWN);
+        checkOnlyExpected = receiveOptions.contains(ReceiveOption.CHECK_ONLY_EXPECTED);
+        ignoreUnexpectedGlobalRequestsWithoutWantReply =
+                receiveOptions.contains(
+                        ReceiveOption.IGNORE_UNEXPECTED_GLOBAL_REQUESTS_WITHOUT_WANTREPLY);
+        failOnUnexpectedIgnoreMessages =
+                receiveOptions.contains(ReceiveOption.FAIL_ON_UNEXPECTED_IGNORE_MESSAGES);
+        failOnUnexpectedDebugMessages =
+                receiveOptions.contains(ReceiveOption.FAIL_ON_UNEXPECTED_DEBUG_MESSAGES);
+
+        if (hasReceiveOption(ReceiveOption.CHECK_ONLY_EXPECTED)
+                && hasReceiveOption(ReceiveOption.FAIL_ON_UNEXPECTED_IGNORE_MESSAGES)) {
+            LOGGER.warn(
+                    "ReceiveAction has conflicting options CHECK_ONLY_EXPECTED and FAIL_ON_UNEXPECTED_IGNORE_MESSAGES set, the latter will have no effect.");
+        }
+    }
+
     @Override
     public void reset() {
         messages = null;
         setExecuted(null);
     }
 
+    @SuppressWarnings("SuspiciousGetterSetter")
     @Override
     public List<ProtocolMessage<?>> getReceivedMessages() {
         return messages;
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
-        ReceiveAction that = (ReceiveAction) o;
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        if (!super.equals(obj)) return false;
+        ReceiveAction that = (ReceiveAction) obj;
         return Objects.equals(expectedMessages, that.expectedMessages)
                 && Objects.equals(messages, that.messages);
     }
@@ -366,8 +533,8 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
     }
 
     @Override
-    public void filter(SshAction defaultCon) {
-        super.filter(defaultCon);
+    public void filter(SshAction defaultAction) {
+        super.filter(defaultAction);
         filterEmptyLists();
     }
 
@@ -385,7 +552,46 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
 
     public enum ReceiveOption {
         EARLY_CLEAN_SHUTDOWN,
-        CHECK_ONLY_EXPECTED;
+        /**
+         * Ignore additional messages of any type when checking if the reception action was executed
+         * as planned.
+         *
+         * <p>If both this option and {@link ReceiveOption#FAIL_ON_UNEXPECTED_IGNORE_MESSAGES} have
+         * been set, this option takes precedence and ignore messages will still be ignored.
+         */
+        CHECK_ONLY_EXPECTED,
+        /**
+         * Ignore unexpected {@code SSH_MSG_GLOBAL_REQUEST} messages where {@code want_reply} is set
+         * to {@code 0} when checking if the reception action was executed as planned.
+         *
+         * @see <a href="https://datatracker.ietf.org/doc/html/rfc4254#section-4">RFC 4254, section
+         *     4 "Global Requests"</a>
+         */
+        IGNORE_UNEXPECTED_GLOBAL_REQUESTS_WITHOUT_WANTREPLY,
+        /**
+         * Do not ignore unexpected {@code SSH_MSG_IGNORE} messages when checking if the reception
+         * action was executed as planned. Instead, such messages will cause {@link
+         * #executedAsPlanned} to return {@code false}.
+         *
+         * <p>If both this option and {@link ReceiveOption#CHECK_ONLY_EXPECTED} have been set, the
+         * latter takes precedence and {@code SSH_MSG_IGNORE} messages will still be ignored.
+         *
+         * @see <a href="https://datatracker.ietf.org/doc/html/rfc4253#section-11.2">RFC 4253,
+         *     section 11.2 "Ignored Data Message"</a>
+         */
+        FAIL_ON_UNEXPECTED_IGNORE_MESSAGES,
+        /**
+         * Do not ignore unexpected {@code SSH_MSG_DEBUG} messages when checking if the reception
+         * action was executed as planned. Instead, such messages will cause {@link
+         * #executedAsPlanned} to return {@code false}.
+         *
+         * <p>If both this option and {@link ReceiveOption#CHECK_ONLY_EXPECTED} have been set, the
+         * latter takes precedence and {@code SSH_MSG_DEBUG} messages will still be ignored.
+         *
+         * @see <a href="https://datatracker.ietf.org/doc/html/rfc4253#section-11.2">RFC 4253,
+         *     section 11.3 "Debug Message"</a>
+         */
+        FAIL_ON_UNEXPECTED_DEBUG_MESSAGES;
 
         public static Set<ReceiveOption> bundle(ReceiveOption... receiveOptions) {
             return new HashSet<>(Arrays.asList(receiveOptions));

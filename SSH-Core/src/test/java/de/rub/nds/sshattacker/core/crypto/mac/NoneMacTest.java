@@ -10,11 +10,13 @@ package de.rub.nds.sshattacker.core.crypto.mac;
 import static org.junit.jupiter.api.Assertions.*;
 
 import de.rub.nds.sshattacker.core.constants.MacAlgorithm;
-import java.nio.charset.StandardCharsets;
-import java.util.stream.Stream;
+
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+
+import java.nio.charset.StandardCharsets;
+import java.util.stream.Stream;
 
 public class NoneMacTest {
 
@@ -27,7 +29,7 @@ public class NoneMacTest {
                 Arguments.of(1000, "no mac".repeat(20).getBytes(StandardCharsets.UTF_8)));
     }
 
-    @ParameterizedTest()
+    @ParameterizedTest
     @MethodSource("provideTestVectors")
     public void testNoneMac(int providedSequenceNr, byte[] data) {
         NoneMac macInstance = new NoneMac();

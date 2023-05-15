@@ -20,6 +20,7 @@ import de.rub.nds.sshattacker.core.packet.preparator.BinaryPacketPreparator;
 import de.rub.nds.sshattacker.core.packet.serializer.BinaryPacketSerializer;
 import de.rub.nds.sshattacker.core.protocol.common.ModifiableVariableHolder;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
+
 import java.util.List;
 import java.util.Objects;
 
@@ -52,8 +53,6 @@ public class BinaryPacket extends AbstractPacket {
 
     /** A holder instance for all temporary fields used during crypto computations. */
     private PacketCryptoComputations computations;
-
-    public BinaryPacket() {}
 
     public ModifiableInteger getLength() {
         return length;
@@ -155,10 +154,10 @@ public class BinaryPacket extends AbstractPacket {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        BinaryPacket that = (BinaryPacket) o;
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        BinaryPacket that = (BinaryPacket) obj;
         return Objects.equals(length, that.length)
                 && Objects.equals(sequenceNumber, that.sequenceNumber)
                 && Objects.equals(computations, that.computations);

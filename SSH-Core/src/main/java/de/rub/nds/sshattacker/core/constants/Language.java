@@ -12,6 +12,7 @@ public enum Language {
 
     private final String name;
 
+    @SuppressWarnings("unused")
     Language(@SuppressWarnings("SameParameterValue") String name) {
         this.name = name;
     }

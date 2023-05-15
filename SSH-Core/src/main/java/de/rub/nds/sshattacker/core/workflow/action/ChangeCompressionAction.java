@@ -12,6 +12,7 @@ import de.rub.nds.sshattacker.core.constants.CompressionAlgorithm;
 import de.rub.nds.sshattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.state.State;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

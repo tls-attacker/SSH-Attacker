@@ -8,7 +8,9 @@
 package de.rub.nds.sshattacker.core.exceptions;
 
 public class DecryptionException extends RuntimeException {
-    public DecryptionException() {}
+    public DecryptionException() {
+        super();
+    }
 
     public DecryptionException(String message) {
         super(message);

@@ -24,12 +24,14 @@ import de.rub.nds.sshattacker.core.packet.cipher.keys.KeySetGenerator;
 import de.rub.nds.sshattacker.core.protocol.transport.message.ExchangeHashSignatureMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.message.HostKeyMessage;
 import de.rub.nds.sshattacker.core.state.SshContext;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Optional;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  * A utility class to reduce redundancy in handlers and preparators of key exchange messages by
@@ -42,7 +44,9 @@ public final class KeyExchangeUtil {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private KeyExchangeUtil() {}
+    private KeyExchangeUtil() {
+        super();
+    }
 
     /**
      * Prepares a host key message by selecting a suitable host key, updating context, and adjusting
@@ -256,5 +260,16 @@ public final class KeyExchangeUtil {
     public static void generateKeySet(SshContext context) {
         KeySet keySet = KeySetGenerator.generateKeySet(context);
         context.setKeySet(keySet);
+    }
+
+    /**
+     * Concatenates two keys.
+     *
+     * @param first first key
+     * @param second second key
+     * @return first || second
+     */
+    public static byte[] concatenateHybridKeys(byte[] first, byte[] second) {
+        return ArrayConverter.concatenate(first, second);
     }
 }

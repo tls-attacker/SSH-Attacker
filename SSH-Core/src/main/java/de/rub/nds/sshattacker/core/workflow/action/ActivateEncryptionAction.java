@@ -8,6 +8,7 @@
 package de.rub.nds.sshattacker.core.workflow.action;
 
 import de.rub.nds.sshattacker.core.connection.AliasedConnection;
+import de.rub.nds.sshattacker.core.constants.CipherMode;
 import de.rub.nds.sshattacker.core.constants.EncryptionAlgorithm;
 import de.rub.nds.sshattacker.core.constants.MacAlgorithm;
 import de.rub.nds.sshattacker.core.exceptions.WorkflowExecutionException;
@@ -16,9 +17,11 @@ import de.rub.nds.sshattacker.core.packet.cipher.keys.KeySet;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.state.State;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
-import java.util.Optional;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.util.Optional;
 
 public class ActivateEncryptionAction extends ConnectionBoundAction {
 
@@ -47,13 +50,15 @@ public class ActivateEncryptionAction extends ConnectionBoundAction {
         MacAlgorithm outMac = chooser.getSendMacAlgorithm();
         context.getPacketLayer()
                 .updateEncryptionCipher(
-                        PacketCipherFactory.getPacketCipher(context, keySet.get(), outEnc, outMac));
+                        PacketCipherFactory.getPacketCipher(
+                                context, keySet.get(), outEnc, outMac, CipherMode.ENCRYPT));
 
         EncryptionAlgorithm inEnc = chooser.getReceiveEncryptionAlgorithm();
         MacAlgorithm inMac = chooser.getReceiveMacAlgorithm();
         context.getPacketLayer()
                 .updateDecryptionCipher(
-                        PacketCipherFactory.getPacketCipher(context, keySet.get(), inEnc, inMac));
+                        PacketCipherFactory.getPacketCipher(
+                                context, keySet.get(), inEnc, inMac, CipherMode.DECRYPT));
     }
 
     @Override

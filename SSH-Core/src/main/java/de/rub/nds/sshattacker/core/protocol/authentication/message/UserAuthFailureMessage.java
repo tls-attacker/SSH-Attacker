@@ -17,6 +17,7 @@ import de.rub.nds.sshattacker.core.protocol.authentication.handler.UserAuthFailu
 import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.util.Converter;
+
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -66,25 +67,28 @@ public class UserAuthFailureMessage extends SshMessage<UserAuthFailureMessage> {
 
     public void setPossibleAuthenticationMethods(
             ModifiableString possibleAuthenticationMethods, boolean adjustLengthField) {
+        this.possibleAuthenticationMethods = possibleAuthenticationMethods;
         if (adjustLengthField) {
             setPossibleAuthenticationMethodsLength(
-                    possibleAuthenticationMethods
+                    this.possibleAuthenticationMethods
                             .getValue()
                             .getBytes(StandardCharsets.US_ASCII)
                             .length);
         }
-        this.possibleAuthenticationMethods = possibleAuthenticationMethods;
     }
 
     public void setPossibleAuthenticationMethods(
             String possibleAuthenticationMethods, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setPossibleAuthenticationMethodsLength(
-                    possibleAuthenticationMethods.getBytes(StandardCharsets.US_ASCII).length);
-        }
         this.possibleAuthenticationMethods =
                 ModifiableVariableFactory.safelySetValue(
                         this.possibleAuthenticationMethods, possibleAuthenticationMethods);
+        if (adjustLengthField) {
+            setPossibleAuthenticationMethodsLength(
+                    this.possibleAuthenticationMethods
+                            .getValue()
+                            .getBytes(StandardCharsets.US_ASCII)
+                            .length);
+        }
     }
 
     public void setPossibleAuthenticationMethods(

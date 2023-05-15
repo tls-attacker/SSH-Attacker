@@ -15,6 +15,10 @@ import de.rub.nds.sshattacker.core.crypto.util.PublicKeyHelper;
 import de.rub.nds.sshattacker.core.exceptions.CryptoException;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthPubkeyMessage;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -36,13 +40,13 @@ public class UserAuthPubkeyMessagePreparator
 
     string    session identifier
     byte      SSH_MSG_USERAUTH_REQUEST
-    string    user name
+    string    username
     string    service name
     string    "publickey"
     boolean   TRUE
     string    public key algorithm name
     string    public key to be used for authentication */
-    private byte[] getSignatureBlob(SshPublicKey<?, ?> pk) {
+    private byte[] getSignatureBlob(PublicKeyAlgorithm algorithm, SshPublicKey<?, ?> pk) {
 
         // generate the byte array for signing
         // message ID should always be '50'
@@ -85,8 +89,7 @@ public class UserAuthPubkeyMessagePreparator
                             getObject().getPubkeyLength().getValue(),
                             DataFormatConstants.STRING_SIZE_LENGTH));
             signatureOutput.write(getObject().getPubkey().getValue());
-            return SignatureFactory.getSigningSignature(
-                            PublicKeyAlgorithm.fromName(pk.getPublicKeyFormat().getName()), pk)
+            return SignatureFactory.getSigningSignature(algorithm, pk)
                     .sign(signatureOutput.toByteArray());
         } catch (IOException e) {
             LOGGER.error(
@@ -108,9 +111,9 @@ public class UserAuthPubkeyMessagePreparator
     Signatures are encoded as follows:
     string   "ecdsa-sha2-[identifier]"
     string   ecdsa_signature_blob */
-    private byte[] getEncodedSignature(SshPublicKey<?, ?> pk) {
+    private byte[] getEncodedSignature(PublicKeyAlgorithm algorithm, SshPublicKey<?, ?> pk) {
         try {
-            byte[] signatureBlob = getSignatureBlob(pk);
+            byte[] signatureBlob = getSignatureBlob(algorithm, pk);
             ByteArrayOutputStream encodedSignatureOutput = new ByteArrayOutputStream();
             encodedSignatureOutput.write(
                     ArrayConverter.intToBytes(

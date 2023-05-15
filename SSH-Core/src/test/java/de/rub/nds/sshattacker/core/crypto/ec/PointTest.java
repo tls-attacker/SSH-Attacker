@@ -7,11 +7,11 @@
  */
 package de.rub.nds.sshattacker.core.crypto.ec;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
-import java.math.BigInteger;
 import org.junit.jupiter.api.Test;
+
+import java.math.BigInteger;
 
 public class PointTest {
 
@@ -35,9 +35,6 @@ public class PointTest {
         Point p2 = new Point(f3, f4);
         Point p1_ = new Point(f1_, f2_);
 
-        assertEquals(p1, p1);
-        assertEquals(p2, p2);
-        assertEquals(p1_, p1_);
         assertNotEquals(p1, p2);
         assertNotEquals(p1, p1_);
     }

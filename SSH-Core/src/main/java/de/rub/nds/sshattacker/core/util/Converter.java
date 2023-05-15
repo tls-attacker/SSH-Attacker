@@ -12,14 +12,20 @@ import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.CharConstants;
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
+
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-public class Converter {
+public final class Converter {
+
+    private Converter() {
+        super();
+    }
 
     public static <T extends Enum<T>> ModifiableString listOfAlgorithmsToModifiableString(
             List<T> list) {
@@ -53,19 +59,109 @@ public class Converter {
         return builder.toString();
     }
 
+    /**
+     * Convert a name-list string into a stream of strings.
+     *
+     * @see <a href="https://datatracker.ietf.org/doc/html/rfc4251#page-10">name-list specification
+     *     in RFC 4251, Section 5 "Data Type Representations Used in the SSH Protocols", page.
+     *     10</a>
+     * @param nameListString a single string containing a name-list value
+     * @return stream of strings
+     */
+    private static Stream<String> nameListStringToStringStream(String nameListString) {
+        return Arrays.stream(
+                nameListString.split(String.valueOf(CharConstants.ALGORITHM_SEPARATOR)));
+    }
+
+    /**
+     * Convert a name-list string into a list of strings.
+     *
+     * @see <a href="https://datatracker.ietf.org/doc/html/rfc4251#page-10">name-list specification
+     *     in RFC 4251, Section 5 "Data Type Representations Used in the SSH Protocols", page.
+     *     10</a>
+     * @param nameListString a single string containing a name-list value
+     * @return list of strings
+     */
+    public static List<String> nameListStringToStringList(String nameListString) {
+        return nameListStringToStringStream(nameListString).collect(Collectors.toList());
+    }
+
+    /**
+     * Convert a name-list string into a list of enum values of type {@code enumClass}.
+     *
+     * <p>Note that the resulting list may have fewer elements than the original name-list if not
+     * all names in the name-list have an enum value counterpart.
+     *
+     * @see <a href="https://datatracker.ietf.org/doc/html/rfc4251#page-10">name-list specification
+     *     in RFC 4251, Section 5 "Data Type Representations Used in the SSH Protocols", page.
+     *     10</a>
+     * @param <T> the enum type to convert to. The corresponding class is provided as {@code
+     *     enumClass}.
+     * @param nameListString a single string containing a name-list value
+     * @param enumClass the enum class that the elements will be converted to
+     * @return list of enums that map to the name sin the name-list
+     */
     public static <T extends Enum<T>> List<T> nameListToEnumValues(
-            String string, Class<T> enumClass) {
-        return Arrays.stream(string.split(String.valueOf(CharConstants.ALGORITHM_SEPARATOR)))
-                .map(
-                        algorithmName ->
-                                Arrays.stream(enumClass.getEnumConstants())
-                                        .filter(
-                                                enumValue ->
-                                                        enumValue.toString().equals(algorithmName))
-                                        .findFirst()
-                                        .orElse(null))
-                .filter(Objects::nonNull)
+            String nameListString, Class<T> enumClass) {
+        return nameStreamToEnumValues(nameListStringToStringStream(nameListString), enumClass);
+    }
+
+    /**
+     * Convert a list of names into a list of enum values of type {@code enumClass}.
+     *
+     * <p>Note that the resulting list may have fewer elements than the original name-list if not
+     * all names in the name-list have an enum value counterpart.
+     *
+     * @see <a href="https://datatracker.ietf.org/doc/html/rfc4251#page-10">name-list specification
+     *     in RFC 4251, Section 5 "Data Type Representations Used in the SSH Protocols", page.
+     *     10</a>
+     * @param <T> the enum type to convert to. The corresponding class is provided as {@code
+     *     enumClass}.
+     * @param nameList a list of strings containing names from a name-list
+     * @param enumClass the enum class that the elements will be converted to
+     * @return list of enums that map to the names in the name-list
+     */
+    public static <T extends Enum<T>> List<T> nameListToEnumValues(
+            List<String> nameList, Class<T> enumClass) {
+        return nameStreamToEnumValues(nameList.stream(), enumClass);
+    }
+
+    /**
+     * Convert a stream of names into a list of enum values of type {@code enumClass}.
+     *
+     * <p>Note that the resulting list may have fewer elements than the original name-list if not
+     * all names in the name-list have an enum value counterpart.
+     *
+     * @see <a href="https://datatracker.ietf.org/doc/html/rfc4251#page-10">name-list specification
+     *     in RFC 4251, Section 5 "Data Type Representations Used in the SSH Protocols", page.
+     *     10</a>
+     * @param <T> the enum type to convert to. The corresponding class is provided as {@code
+     *     enumClass}.
+     * @param stream a stream of strings containing names from a name-list
+     * @param enumClass the enum class that the elements will be converted to
+     * @return list of enums that map to the names in the name-list
+     */
+    private static <T extends Enum<T>> List<T> nameStreamToEnumValues(
+            Stream<String> stream, Class<T> enumClass) {
+        return stream.map(algorithmName -> nameToEnumValue(algorithmName, enumClass))
+                .flatMap(Optional::stream)
                 .collect(Collectors.toList());
+    }
+
+    /**
+     * Convert a single name into an enum values of type {@code enumClass}.
+     *
+     * @param <T> the enum type to convert to. The corresponding class is provided as {@code
+     *     enumClass}.
+     * @param name name that matches an enum value's {@code toString()} return value.
+     * @param enumClass the enum class that the name will be converted to.
+     * @return a value of type {@code enumClass} that corresponds to {@code name}, or no value if no
+     *     such item exists.
+     */
+    public static <T extends Enum<T>> Optional<T> nameToEnumValue(String name, Class<T> enumClass) {
+        return Arrays.stream(enumClass.getEnumConstants())
+                .filter(enumValue -> name.equals(enumValue.toString()))
+                .findFirst();
     }
 
     public static byte[] bigIntegerToMpint(BigInteger input) {
@@ -110,7 +206,7 @@ public class Converter {
         long result = 0;
         for (int i = 0; i < Long.BYTES && i < value.length; i++) {
             result <<= Byte.SIZE;
-            result |= (value[i] & 0xFF);
+            result |= value[i] & 0xFF;
         }
         return result;
     }
