@@ -17,11 +17,11 @@ public class CryptoException extends Exception {
         super(message);
     }
 
-    public CryptoException(Throwable t) {
-        super(t);
+    public CryptoException(Throwable cause) {
+        super(cause);
     }
 
-    public CryptoException(String message, Throwable t) {
-        super(message, t);
+    public CryptoException(String message, Throwable cause) {
+        super(message, cause);
     }
 }

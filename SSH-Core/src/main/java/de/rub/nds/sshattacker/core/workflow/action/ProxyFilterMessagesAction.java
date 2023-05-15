@@ -16,12 +16,14 @@ import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessage;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.state.State;
 import de.rub.nds.sshattacker.core.workflow.action.executor.MessageActionResult;
-import de.rub.nds.sshattacker.core.workflow.action.executor.ReceiveMessageHelper;
 import de.rub.nds.sshattacker.core.workflow.action.executor.SendMessageHelper;
+
 import jakarta.xml.bind.annotation.XmlTransient;
-import java.util.List;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.util.List;
 
 public class ProxyFilterMessagesAction extends ForwardMessagesAction {
 
@@ -32,20 +34,12 @@ public class ProxyFilterMessagesAction extends ForwardMessagesAction {
     @XmlTransient protected List<ProtocolMessage<?>> filteredMessages;
 
     public ProxyFilterMessagesAction() {
-        this.receiveMessageHelper = new ReceiveMessageHelper();
-        this.sendMessageHelper = new SendMessageHelper();
+        super();
     }
 
-    public ProxyFilterMessagesAction(String receiveFromAlias, String forwardToAlias) {
-        super(receiveFromAlias, forwardToAlias, new ReceiveMessageHelper());
-    }
-
-    /** Allow to pass a fake ReceiveMessageHelper helper for testing. */
-    protected ProxyFilterMessagesAction(
-            String receiveFromAlias,
-            String forwardToAlias,
-            ReceiveMessageHelper receiveMessageHelper) {
-        super(receiveFromAlias, forwardToAlias, receiveMessageHelper);
+    /* Allow to pass a fake ReceiveMessageHelper helper for testing. */
+    protected ProxyFilterMessagesAction(String receiveFromAlias, String forwardToAlias) {
+        super(receiveFromAlias, forwardToAlias);
     }
 
     public ProxyFilterMessagesAction(
@@ -80,12 +74,11 @@ public class ProxyFilterMessagesAction extends ForwardMessagesAction {
     @Override
     protected void forwardMessages(SshContext forwardToCtx) {
         LOGGER.info(
-                "Forwarding messages ("
-                        + forwardToAlias
-                        + "): "
-                        + getReadableString(receivedMessages));
+                "Forwarding messages ({}): {}",
+                forwardToAlias,
+                getReadableString(receivedMessages));
         MessageActionResult result =
-                sendMessageHelper.sendMessages(forwardToCtx, filteredMessages.stream());
+                SendMessageHelper.sendMessages(forwardToCtx, filteredMessages.stream());
         sendMessages = result.getMessageList();
 
         if (executedAsPlanned) {
@@ -106,7 +99,7 @@ public class ProxyFilterMessagesAction extends ForwardMessagesAction {
         }
     }
 
-    public UserAuthPubkeyMessage filterUserAuthPubkeyMessage(SshContext forwardToCtx) {
+    public static UserAuthPubkeyMessage filterUserAuthPubkeyMessage(SshContext forwardToCtx) {
         UserAuthPubkeyMessage newPubkeyMessage = new UserAuthPubkeyMessage();
         UserAuthPubkeyMessagePreparator forwardContextPreparator =
                 new UserAuthPubkeyMessagePreparator(forwardToCtx.getChooser(), newPubkeyMessage);
@@ -114,7 +107,7 @@ public class ProxyFilterMessagesAction extends ForwardMessagesAction {
         return newPubkeyMessage;
     }
 
-    public UserAuthHostbasedMessage filterUserAuthHostbasedMessage(SshContext forwardToCtx) {
+    public static UserAuthHostbasedMessage filterUserAuthHostbasedMessage(SshContext forwardToCtx) {
         UserAuthHostbasedMessage newHostbasedMessage = new UserAuthHostbasedMessage();
         UserAuthHostbasedMessagePreparator forwardContextPreparator =
                 new UserAuthHostbasedMessagePreparator(

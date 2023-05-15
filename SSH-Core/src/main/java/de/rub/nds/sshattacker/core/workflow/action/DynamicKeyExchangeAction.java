@@ -13,15 +13,14 @@ import de.rub.nds.sshattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.state.State;
 import de.rub.nds.sshattacker.core.workflow.factory.WorkflowConfigurationFactory;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import java.util.function.Predicate;
 
 public class DynamicKeyExchangeAction extends MessageAction {
 
-    private static final Logger LOGGER = LogManager.getLogger();
     private List<SshAction> sshActions = new ArrayList<>();
 
     public DynamicKeyExchangeAction() {
@@ -39,11 +38,9 @@ public class DynamicKeyExchangeAction extends MessageAction {
         }
 
         SshContext context = state.getSshContext(connectionAlias);
-        WorkflowConfigurationFactory factory =
-                new WorkflowConfigurationFactory(context.getConfig());
         KeyExchangeAlgorithm keyExchangeAlgorithm = context.getChooser().getKeyExchangeAlgorithm();
         sshActions =
-                factory.createKeyExchangeActions(
+                WorkflowConfigurationFactory.createKeyExchangeActions(
                         keyExchangeAlgorithm.getFlowType(), context.getConnection());
         sshActions.forEach(sshAction -> sshAction.execute(state));
     }
@@ -66,16 +63,30 @@ public class DynamicKeyExchangeAction extends MessageAction {
     }
 
     @Override
-    public boolean executedAsPlanned() {
-        return isExecuted();
+    public boolean isExecuted() {
+        // This action can only contain other ssh actions if it was actually
+        // executed.
+        return !sshActions.isEmpty();
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
-        DynamicKeyExchangeAction that = (DynamicKeyExchangeAction) o;
+    public boolean executedAsPlanned() {
+        // Return true if this action was executed and all contained ssh
+        // actions were executed as planned.
+        return isExecuted()
+                && sshActions.stream()
+                        .map(SshAction::executedAsPlanned)
+                        .filter(Predicate.isEqual(false))
+                        .findAny()
+                        .isEmpty();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        if (!super.equals(obj)) return false;
+        DynamicKeyExchangeAction that = (DynamicKeyExchangeAction) obj;
         return Objects.equals(sshActions, that.sshActions);
     }
 

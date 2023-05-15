@@ -13,6 +13,7 @@ import de.rub.nds.sshattacker.core.protocol.connection.parser.ChannelRequestUnkn
 import de.rub.nds.sshattacker.core.protocol.connection.preparator.ChannelRequestUnknownMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.connection.serializer.ChannelRequestUnknownMessageSerializer;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.util.Converter;
 
 public class ChannelRequestUnknownMessageHandler
         extends SshMessageHandler<ChannelRequestUnknownMessage> {
@@ -27,7 +28,11 @@ public class ChannelRequestUnknownMessageHandler
     }
 
     @Override
-    public void adjustContext() {}
+    public void adjustContext() {
+        if (Converter.byteToBoolean(message.getWantReply().getValue())) {
+            context.getChannelManager().addToChannelRequestResponseQueue(message);
+        }
+    }
 
     @Override
     public ChannelRequestUnknownMessageParser getParser(byte[] array) {

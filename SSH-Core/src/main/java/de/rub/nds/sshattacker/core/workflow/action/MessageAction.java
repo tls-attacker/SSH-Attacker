@@ -152,56 +152,42 @@ public abstract class MessageAction extends ConnectionBoundAction {
             })
     protected List<ProtocolMessage<?>> messages = new ArrayList<>();
 
-    @XmlTransient protected final ReceiveMessageHelper receiveMessageHelper;
-
-    @XmlTransient protected final SendMessageHelper sendMessageHelper;
-
-    public MessageAction() {
+    protected MessageAction() {
         super(AliasedConnection.DEFAULT_CONNECTION_ALIAS);
-        receiveMessageHelper = new ReceiveMessageHelper();
-        sendMessageHelper = new SendMessageHelper();
     }
 
-    public MessageAction(List<ProtocolMessage<?>> messages) {
+    protected MessageAction(List<ProtocolMessage<?>> messages) {
         super(AliasedConnection.DEFAULT_CONNECTION_ALIAS);
         this.messages = new ArrayList<>(messages);
-        receiveMessageHelper = new ReceiveMessageHelper();
-        sendMessageHelper = new SendMessageHelper();
     }
 
-    public MessageAction(ProtocolMessage<?>... messages) {
+    protected MessageAction(ProtocolMessage<?>... messages) {
         super(AliasedConnection.DEFAULT_CONNECTION_ALIAS);
         this.messages = Arrays.asList(messages);
-        receiveMessageHelper = new ReceiveMessageHelper();
-        sendMessageHelper = new SendMessageHelper();
     }
 
-    public MessageAction(String connectionAlias) {
+    protected MessageAction(String connectionAlias) {
         super(connectionAlias);
-        receiveMessageHelper = new ReceiveMessageHelper();
-        sendMessageHelper = new SendMessageHelper();
     }
 
-    public MessageAction(String connectionAlias, List<ProtocolMessage<?>> messages) {
+    protected MessageAction(String connectionAlias, List<ProtocolMessage<?>> messages) {
         super(connectionAlias);
         this.messages = new ArrayList<>(messages);
-        receiveMessageHelper = new ReceiveMessageHelper();
-        sendMessageHelper = new SendMessageHelper();
     }
 
-    public MessageAction(String connectionAlias, ProtocolMessage<?>... messages) {
+    protected MessageAction(String connectionAlias, ProtocolMessage<?>... messages) {
         this(connectionAlias, Arrays.asList(messages));
     }
 
-    public String getReadableString(ProtocolMessage<?>... messages) {
+    public static String getReadableString(ProtocolMessage<?>... messages) {
         return getReadableString(Arrays.asList(messages));
     }
 
-    public String getReadableString(List<ProtocolMessage<?>> messages) {
+    public static String getReadableString(List<ProtocolMessage<?>> messages) {
         return getReadableString(messages, false);
     }
 
-    public String getReadableString(List<ProtocolMessage<?>> messages, Boolean verbose) {
+    public static String getReadableString(List<ProtocolMessage<?>> messages, Boolean verbose) {
         if (messages == null || messages.isEmpty()) {
             return "";
         }

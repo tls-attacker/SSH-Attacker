@@ -8,10 +8,13 @@
 package de.rub.nds.sshattacker.core.crypto.keys;
 
 import de.rub.nds.sshattacker.core.constants.NamedDhGroup;
+
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlRootElement;
+
 import java.math.BigInteger;
+
 import javax.crypto.interfaces.DHPublicKey;
 import javax.crypto.spec.DHParameterSpec;
 
@@ -27,14 +30,16 @@ public class CustomDhPublicKey extends CustomPublicKey implements DHPublicKey {
     // Public key
     private BigInteger publicKey;
 
-    @SuppressWarnings("unused")
-    public CustomDhPublicKey() {}
+    public CustomDhPublicKey() {
+        super();
+    }
 
     public CustomDhPublicKey(NamedDhGroup group, BigInteger publicKey) {
         this(group.getModulus(), group.getGenerator(), publicKey);
     }
 
     public CustomDhPublicKey(BigInteger modulus, BigInteger generator, BigInteger publicKey) {
+        super();
         this.modulus = modulus;
         this.generator = generator;
         this.publicKey = publicKey;
@@ -65,6 +70,7 @@ public class CustomDhPublicKey extends CustomPublicKey implements DHPublicKey {
     }
 
     // Interface methods
+    @SuppressWarnings("SuspiciousGetterSetter")
     @Override
     public BigInteger getY() {
         return publicKey;

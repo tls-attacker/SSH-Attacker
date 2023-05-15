@@ -9,6 +9,7 @@ package de.rub.nds.sshattacker.core.protocol.connection.parser;
 
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelWindowAdjustMessage;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -32,7 +33,7 @@ public class ChannelWindowAdjustMessageParser
 
     private void parseBytesToAdd() {
         message.setBytesToAdd(parseIntField(DataFormatConstants.UINT32_SIZE));
-        LOGGER.debug("Bytes to add: " + message.getBytesToAdd().getValue());
+        LOGGER.debug("Bytes to add: {}", message.getBytesToAdd().getValue());
     }
 
     @Override

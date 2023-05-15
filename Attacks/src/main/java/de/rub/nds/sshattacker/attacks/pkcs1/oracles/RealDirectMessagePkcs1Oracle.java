@@ -21,11 +21,13 @@ import de.rub.nds.sshattacker.core.workflow.DefaultWorkflowExecutor;
 import de.rub.nds.sshattacker.core.workflow.WorkflowExecutor;
 import de.rub.nds.sshattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.tlsattacker.util.MathHelper;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.io.IOException;
 import java.security.PublicKey;
 import java.security.interfaces.RSAPublicKey;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /** An oracle that communicates with a real server to check PKCS conformity */
 public class RealDirectMessagePkcs1Oracle extends Pkcs1Oracle {
@@ -44,19 +46,20 @@ public class RealDirectMessagePkcs1Oracle extends Pkcs1Oracle {
      * @param pubKey The public key
      * @param config Config
      * @param validResponseContent ResponseFingerprint of a valid response
-     * @param invalidResponseContent ResponseFingerprint of an invalid repsonse
+     * @param invalidResponseContent ResponseFingerprint of an invalid response
      */
     public RealDirectMessagePkcs1Oracle(
             PublicKey pubKey,
             Config config,
             ResponseFingerprint validResponseContent,
             ResponseFingerprint invalidResponseContent) {
-        this.publicKey = (RSAPublicKey) pubKey;
-        this.blockSize = MathHelper.intCeilDiv(publicKey.getModulus().bitLength(), Byte.SIZE);
+        super();
+        publicKey = (RSAPublicKey) pubKey;
+        blockSize = MathHelper.intCeilDiv(publicKey.getModulus().bitLength(), Byte.SIZE);
         this.validResponseContent = validResponseContent;
         this.invalidResponseContent = invalidResponseContent;
         this.config = config;
-        this.maxAttempts = 10;
+        maxAttempts = 10;
     }
 
     /**
@@ -72,8 +75,9 @@ public class RealDirectMessagePkcs1Oracle extends Pkcs1Oracle {
             ResponseFingerprint validResponseContent,
             ResponseFingerprint invalidResponseContent,
             int maxAttempts) {
-        this.publicKey = (RSAPublicKey) pubKey;
-        this.blockSize = MathHelper.intCeilDiv(publicKey.getModulus().bitLength(), Byte.SIZE);
+        super();
+        publicKey = (RSAPublicKey) pubKey;
+        blockSize = MathHelper.intCeilDiv(publicKey.getModulus().bitLength(), Byte.SIZE);
         this.validResponseContent = validResponseContent;
         this.invalidResponseContent = invalidResponseContent;
         this.config = config;
@@ -81,11 +85,11 @@ public class RealDirectMessagePkcs1Oracle extends Pkcs1Oracle {
     }
 
     @Override
-    public boolean checkPKCSConformity(final byte[] msg) {
+    public boolean checkPKCSConformity(byte[] msg) {
         return checkPKCSConformity(msg, 0);
     }
 
-    private boolean checkPKCSConformity(final byte[] msg, int currentAttempt) {
+    private boolean checkPKCSConformity(byte[] msg, int currentAttempt) {
         // we are initializing a new connection in every loop step, since most
         // of the known servers close the connection after an invalid handshake
         Config sshConfig = config;
@@ -123,7 +127,7 @@ public class RealDirectMessagePkcs1Oracle extends Pkcs1Oracle {
 
         } catch (WorkflowExecutionException e) {
             // If workflow execution failed, retry. This might be because a packet got lost
-            LOGGER.debug("Exception during workflow execution:" + e.getLocalizedMessage(), e);
+            LOGGER.debug("Exception during workflow execution:{}", e.getLocalizedMessage(), e);
             if (currentAttempt < maxAttempts) {
                 return checkPKCSConformity(msg, currentAttempt + 1);
             }
@@ -131,7 +135,7 @@ public class RealDirectMessagePkcs1Oracle extends Pkcs1Oracle {
         return conform;
     }
 
-    private ResponseFingerprint getFingerprint(State state) {
+    private static ResponseFingerprint getFingerprint(State state) {
         if (state.getWorkflowTrace().allActionsExecuted()) {
             return ResponseExtractor.getFingerprint(state);
         } else {
@@ -141,7 +145,7 @@ public class RealDirectMessagePkcs1Oracle extends Pkcs1Oracle {
         return null;
     }
 
-    private void clearConnections(State state) {
+    private static void clearConnections(State state) {
         try {
             if (!state.getSshContext().getTransportHandler().isClosed()) {
                 state.getSshContext().getTransportHandler().closeConnection();

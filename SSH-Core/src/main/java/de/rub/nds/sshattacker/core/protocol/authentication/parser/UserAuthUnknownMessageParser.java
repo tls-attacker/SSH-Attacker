@@ -9,6 +9,7 @@ package de.rub.nds.sshattacker.core.protocol.authentication.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthUnknownMessage;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -33,9 +34,8 @@ public class UserAuthUnknownMessageParser
     private void parseMethodSpecificFields() {
         message.setMethodSpecificFields(parseByteArrayField(getBytesLeft()));
         LOGGER.debug(
-                "Method Specific Fields: "
-                        + ArrayConverter.bytesToHexString(
-                                message.getMethodSpecificFields().getValue()));
+                "Method Specific Fields: {}",
+                ArrayConverter.bytesToHexString(message.getMethodSpecificFields().getValue()));
     }
 
     @Override

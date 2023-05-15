@@ -20,12 +20,14 @@ import de.rub.nds.sshattacker.core.exceptions.CryptoException;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthHostbasedMessage;
 import de.rub.nds.sshattacker.core.util.Converter;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Optional;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class UserAuthHostbasedMessagePreparator
         extends UserAuthRequestMessagePreparator<UserAuthHostbasedMessage> {
@@ -43,7 +45,7 @@ public class UserAuthHostbasedMessagePreparator
         Optional<String> hostName =
                 Optional.ofNullable(chooser.getContext().getConnection().getIp());
         getObject().setHostName(hostName.orElse(AliasedConnection.DEFAULT_IP), true);
-        // set the user name on client machine to the username on remote, specify if needed
+        // set the username on client machine to the username on remote, specify if needed
         getObject().setClientUserName(chooser.getConfig().getUsername(), true);
         prepareSignature();
     }
@@ -85,7 +87,7 @@ public class UserAuthHostbasedMessagePreparator
                             signatureEncoding.getName().length(),
                             DataFormatConstants.STRING_SIZE_LENGTH));
             signatureOutput.write(signatureEncoding.getName().getBytes(StandardCharsets.US_ASCII));
-            byte[] rawSignature = signingSignature.sign(this.prepareSignatureInput());
+            byte[] rawSignature = signingSignature.sign(prepareSignatureInput());
             signatureOutput.write(
                     ArrayConverter.intToBytes(
                             rawSignature.length, DataFormatConstants.STRING_SIZE_LENGTH));

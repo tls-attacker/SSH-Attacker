@@ -9,6 +9,7 @@ package de.rub.nds.sshattacker.core.crypto.ec;
 
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
+
 import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.Objects;
@@ -30,87 +31,88 @@ public abstract class FieldElement implements Serializable {
     private final BigInteger data;
     private final BigInteger modulus;
 
-    public FieldElement(BigInteger data, BigInteger modulus) {
+    protected FieldElement(BigInteger data, BigInteger modulus) {
+        super();
         this.data = data;
         this.modulus = modulus;
     }
 
     /**
-     * Returns this + f.
+     * Performs an addition in the field, which this is an element of.
      *
-     * @param f An element of the field, which this is an element of.
+     * @param element An element of the field, which this is an element of.
+     * @return this + element
      */
-    public abstract FieldElement add(FieldElement f);
+    public abstract FieldElement add(FieldElement element);
 
     /**
-     * Returns this - f. <br>
+     * Performs a subtraction in the field, which this is an element of.
      *
-     * @param f An element of the field, which this is an element of.
+     * @param element An element of the field, which this is an element of.
+     * @return this - element
      */
-    public FieldElement subtract(FieldElement f) {
-        f = f.addInv();
-        return add(f);
+    public FieldElement subtract(FieldElement element) {
+        element = element.addInv();
+        return add(element);
     }
 
     /**
-     * Returns this * f.<br>
+     * Performs a multiplication in the field, which this is an element of.
      *
-     * @param f An element of the field, which this is an element of.
+     * @param element An element of the field, which this is an element of.
+     * @return this * element
      */
-    public abstract FieldElement mult(FieldElement f);
+    public abstract FieldElement mult(FieldElement element);
 
     /**
-     * Returns this * f^-1.<br>
+     * Performs a multiplication with the inverse element of element in the field, which this is an
+     * element of.
      *
-     * @param f An element of the field, which this is an element of.
+     * @param element An element of the field, which this is an element of.
+     * @return this * element^-1
      */
-    public FieldElement divide(FieldElement f) {
-        f = f.multInv();
-        return mult(f);
+    public FieldElement divide(FieldElement element) {
+        element = element.multInv();
+        return mult(element);
     }
 
-    /** Returns -this. */
+    /**
+     * Computes the additive inverse element of this.
+     *
+     * @return -this
+     */
     public abstract FieldElement addInv();
 
-    /** Returns this^-1. */
+    /**
+     * Computes the multiplicative inverse element of this.
+     *
+     * @return this^-1
+     */
     public abstract FieldElement multInv();
 
     public BigInteger getData() {
-        return this.data;
+        return data;
     }
 
     public BigInteger getModulus() {
-        return this.modulus;
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 5;
-        hash = 89 * hash + Objects.hashCode(this.data);
-        hash = 89 * hash + Objects.hashCode(this.modulus);
-        return hash;
+        return modulus;
     }
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final FieldElement other = (FieldElement) obj;
-        if (!Objects.equals(this.data, other.data)) {
-            return false;
-        }
-        return Objects.equals(this.modulus, other.modulus);
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        FieldElement that = (FieldElement) obj;
+        return Objects.equals(data, that.data) && Objects.equals(modulus, that.modulus);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(data, modulus);
     }
 
     @Override
     public String toString() {
-        return this.getData().toString() + " mod " + this.getModulus().toString();
+        return data.toString() + " mod " + modulus.toString();
     }
 }

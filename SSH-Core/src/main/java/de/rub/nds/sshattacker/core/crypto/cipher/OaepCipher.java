@@ -9,15 +9,18 @@ package de.rub.nds.sshattacker.core.crypto.cipher;
 
 import de.rub.nds.sshattacker.core.constants.EncryptionAlgorithm;
 import de.rub.nds.sshattacker.core.exceptions.CryptoException;
-import java.security.*;
-import java.security.spec.MGF1ParameterSpec;
-import javax.crypto.*;
-import javax.crypto.spec.OAEPParameterSpec;
-import javax.crypto.spec.PSource;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class OaepCipher implements EncryptionCipher, DecryptionCipher {
+import java.security.*;
+import java.security.spec.MGF1ParameterSpec;
+
+import javax.crypto.*;
+import javax.crypto.spec.OAEPParameterSpec;
+import javax.crypto.spec.PSource;
+
+public class OaepCipher extends AbstractCipher {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -33,6 +36,7 @@ public class OaepCipher implements EncryptionCipher, DecryptionCipher {
             String cipherInstanceName,
             String hashFunctionName,
             String maskGenerationFunctionName) {
+        super();
         this.key = key;
         this.cipherInstanceName = cipherInstanceName;
         this.hashFunctionName = hashFunctionName;
@@ -40,10 +44,10 @@ public class OaepCipher implements EncryptionCipher, DecryptionCipher {
     }
 
     @Override
-    public byte[] encrypt(byte[] data) throws CryptoException {
+    public byte[] encrypt(byte[] plainData) throws CryptoException {
         try {
             prepareCipher(Cipher.ENCRYPT_MODE);
-            return cipher.doFinal(data);
+            return cipher.doFinal(plainData);
         } catch (IllegalBlockSizeException | BadPaddingException e) {
             throw new CryptoException(
                     String.format("Could not encrypt data with %s.", cipherInstanceName), e);
@@ -51,13 +55,12 @@ public class OaepCipher implements EncryptionCipher, DecryptionCipher {
     }
 
     @Override
-    public byte[] encrypt(byte[] plainData, byte[] iv) throws CryptoException {
+    public byte[] encrypt(byte[] plainData, byte[] iv) {
         throw new UnsupportedOperationException("Encryption with IV not supported.");
     }
 
     @Override
-    public byte[] encrypt(byte[] plainData, byte[] iv, byte[] additionalAuthenticatedData)
-            throws CryptoException {
+    public byte[] encrypt(byte[] plainData, byte[] iv, byte[] additionalAuthenticatedData) {
         throw new UnsupportedOperationException("AEAD encryption not supported.");
     }
 
@@ -73,13 +76,12 @@ public class OaepCipher implements EncryptionCipher, DecryptionCipher {
     }
 
     @Override
-    public byte[] decrypt(byte[] encryptedData, byte[] iv) throws CryptoException {
+    public byte[] decrypt(byte[] encryptedData, byte[] iv) {
         throw new UnsupportedOperationException("Decryption with IV not supported.");
     }
 
     @Override
-    public byte[] decrypt(byte[] encryptedData, byte[] iv, byte[] additionalAuthenticatedData)
-            throws CryptoException, AEADBadTagException {
+    public byte[] decrypt(byte[] encryptedData, byte[] iv, byte[] additionalAuthenticatedData) {
         throw new UnsupportedOperationException("AEAD decryption not supported.");
     }
 
@@ -104,7 +106,7 @@ public class OaepCipher implements EncryptionCipher, DecryptionCipher {
                 | NoSuchAlgorithmException
                 | InvalidKeyException
                 | InvalidAlgorithmParameterException e) {
-            LOGGER.error("OAEP Cipher creation failed with error: " + e);
+            LOGGER.error("OAEP Cipher creation failed with error", e);
         }
     }
 }

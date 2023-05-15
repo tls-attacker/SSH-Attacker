@@ -11,6 +11,7 @@ import de.rub.nds.sshattacker.core.constants.KeyExchangeAlgorithm;
 import de.rub.nds.sshattacker.core.constants.KeyExchangeFlowType;
 import de.rub.nds.sshattacker.core.constants.NamedEcGroup;
 import de.rub.nds.sshattacker.core.state.SshContext;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -21,6 +22,7 @@ public abstract class AbstractEcdhKeyExchange extends DhBasedKeyExchange {
     protected final NamedEcGroup group;
 
     protected AbstractEcdhKeyExchange(NamedEcGroup group) {
+        super();
         this.group = group;
     }
 
@@ -29,16 +31,16 @@ public abstract class AbstractEcdhKeyExchange extends DhBasedKeyExchange {
         if (algorithm == null || algorithm.getFlowType() != KeyExchangeFlowType.ECDH) {
             algorithm = context.getConfig().getDefaultEcdhKeyExchangeAlgorithm();
             LOGGER.warn(
-                    "Trying to instantiate a new ECDH or X curve ECDH key exchange without a matching key exchange algorithm negotiated, falling back to "
-                            + algorithm);
+                    "Trying to instantiate a new ECDH or X curve ECDH key exchange without a matching key exchange algorithm negotiated, falling back to {}",
+                    algorithm);
         }
         NamedEcGroup group;
         switch (algorithm) {
             case CURVE25519_SHA256:
             case CURVE25519_SHA256_LIBSSH_ORG:
-                return new XCurveEcdhKeyExchange(NamedEcGroup.CURVE25519);
+                return new XCurveEcdhKeyExchange(NamedEcGroup.CURVE25519, true);
             case CURVE448_SHA512:
-                return new XCurveEcdhKeyExchange(NamedEcGroup.CURVE448);
+                return new XCurveEcdhKeyExchange(NamedEcGroup.CURVE448, true);
             case ECDH_SHA2_NISTP256:
                 group = NamedEcGroup.SECP256R1;
                 break;
@@ -49,8 +51,17 @@ public abstract class AbstractEcdhKeyExchange extends DhBasedKeyExchange {
                 group = NamedEcGroup.SECP521R1;
                 break;
             default:
-                String[] kexParts = algorithm.name().split("_");
-                group = NamedEcGroup.valueOf(kexParts[3]);
+                String[] kexParts = algorithm.name().split("_", 3);
+                if (kexParts.length != 3) {
+                    LOGGER.error(
+                            "Failed to find EC group name in algorithm name '{}'",
+                            algorithm.name());
+                    throw new IllegalArgumentException(
+                            String.format(
+                                    "EcdhKeyExchange does not implement support for algorithm '%s'",
+                                    algorithm.name()));
+                }
+                group = NamedEcGroup.valueOf(kexParts[2]);
                 break;
         }
         return new EcdhKeyExchange(group);

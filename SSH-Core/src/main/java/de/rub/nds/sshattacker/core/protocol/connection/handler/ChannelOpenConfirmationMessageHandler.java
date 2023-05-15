@@ -14,6 +14,7 @@ import de.rub.nds.sshattacker.core.protocol.connection.parser.ChannelOpenConfirm
 import de.rub.nds.sshattacker.core.protocol.connection.preparator.ChannelOpenConfirmationMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.connection.serializer.ChannelOpenConfirmationMessageSerializer;
 import de.rub.nds.sshattacker.core.state.SshContext;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -37,7 +38,7 @@ public class ChannelOpenConfirmationMessageHandler
         if (channel == null) {
             LOGGER.warn(
                     "{} received but no channel with id {} found locally, creating a new channel from defaults with given channel id.",
-                    this.getClass().getSimpleName(),
+                    getClass().getSimpleName(),
                     message.getRecipientChannelId().getValue());
             channel = context.getConfig().getChannelDefaults().newChannelFromDefaults();
             channel.setLocalChannelId(message.getRecipientChannelId().getValue());

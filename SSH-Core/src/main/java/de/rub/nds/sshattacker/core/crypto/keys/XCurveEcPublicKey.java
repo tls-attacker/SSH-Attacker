@@ -10,19 +10,22 @@ package de.rub.nds.sshattacker.core.crypto.keys;
 import de.rub.nds.modifiablevariable.util.UnformattedByteArrayAdapter;
 import de.rub.nds.sshattacker.core.constants.CryptoConstants;
 import de.rub.nds.sshattacker.core.constants.NamedEcGroup;
+
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+
+import org.bouncycastle.asn1.edec.EdECObjectIdentifiers;
+import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
+import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;
+
 import java.io.IOException;
 import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.X509EncodedKeySpec;
-import org.bouncycastle.asn1.edec.EdECObjectIdentifiers;
-import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
-import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;
 
 /**
  * A serializable elliptic curve public key for X curves (Curve 25519 and Curve 448) used in the
@@ -37,16 +40,18 @@ public class XCurveEcPublicKey extends CustomPublicKey {
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] coordinate;
 
-    @SuppressWarnings("unused")
-    public XCurveEcPublicKey() {}
+    public XCurveEcPublicKey() {
+        super();
+    }
 
     public XCurveEcPublicKey(byte[] coordinate, NamedEcGroup group) {
+        super();
         if (!group.isRFC7748Curve()) {
             throw new IllegalArgumentException(
                     "XCurveEcPublicKey does not support named group " + group);
         }
-        if ((group == NamedEcGroup.CURVE25519
-                        && coordinate.length != CryptoConstants.X25519_POINT_SIZE)
+        if (group == NamedEcGroup.CURVE25519
+                        && coordinate.length != CryptoConstants.X25519_POINT_SIZE
                 || group == NamedEcGroup.CURVE448
                         && coordinate.length != CryptoConstants.X448_POINT_SIZE) {
             throw new IllegalArgumentException(

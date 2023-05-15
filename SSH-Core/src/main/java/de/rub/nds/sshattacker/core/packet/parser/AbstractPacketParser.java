@@ -12,7 +12,7 @@ import de.rub.nds.sshattacker.core.protocol.common.Parser;
 
 public abstract class AbstractPacketParser<T extends AbstractPacket> extends Parser<T> {
 
-    public AbstractPacketParser(byte[] array, int startPosition) {
+    protected AbstractPacketParser(byte[] array, int startPosition) {
         super(array, startPosition);
     }
 }

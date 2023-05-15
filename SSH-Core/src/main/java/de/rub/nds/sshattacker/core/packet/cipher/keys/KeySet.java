@@ -9,9 +9,12 @@ package de.rub.nds.sshattacker.core.packet.cipher.keys;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlRootElement;
+
+import java.util.Arrays;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -23,8 +26,6 @@ public class KeySet {
     private byte[] serverWriteEncryptionKey;
     private byte[] clientWriteIntegrityKey;
     private byte[] serverWriteIntegrityKey;
-
-    public KeySet() {}
 
     public byte[] getClientWriteInitialIv() {
         return clientWriteInitialIv;
@@ -141,5 +142,29 @@ public class KeySet {
                 + "\n"
                 + "Integrity key (server to client): "
                 + ArrayConverter.bytesToRawHexString(serverWriteIntegrityKey);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        KeySet keySet = (KeySet) obj;
+        return Arrays.equals(clientWriteInitialIv, keySet.clientWriteInitialIv)
+                && Arrays.equals(serverWriteInitialIv, keySet.serverWriteInitialIv)
+                && Arrays.equals(clientWriteEncryptionKey, keySet.clientWriteEncryptionKey)
+                && Arrays.equals(serverWriteEncryptionKey, keySet.serverWriteEncryptionKey)
+                && Arrays.equals(clientWriteIntegrityKey, keySet.clientWriteIntegrityKey)
+                && Arrays.equals(serverWriteIntegrityKey, keySet.serverWriteIntegrityKey);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = Arrays.hashCode(clientWriteInitialIv);
+        result = 31 * result + Arrays.hashCode(serverWriteInitialIv);
+        result = 31 * result + Arrays.hashCode(clientWriteEncryptionKey);
+        result = 31 * result + Arrays.hashCode(serverWriteEncryptionKey);
+        result = 31 * result + Arrays.hashCode(clientWriteIntegrityKey);
+        result = 31 * result + Arrays.hashCode(serverWriteIntegrityKey);
+        return result;
     }
 }

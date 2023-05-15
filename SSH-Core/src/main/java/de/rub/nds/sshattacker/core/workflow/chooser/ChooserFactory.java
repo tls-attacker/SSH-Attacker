@@ -12,7 +12,7 @@ import de.rub.nds.sshattacker.core.constants.ChooserType;
 import de.rub.nds.sshattacker.core.exceptions.InvalidChooserTypeException;
 import de.rub.nds.sshattacker.core.state.SshContext;
 
-public class ChooserFactory {
+public final class ChooserFactory {
     public static Chooser getChooser(ChooserType type, SshContext context, Config config) {
         if (type == ChooserType.DEFAULT) {
             return new DefaultChooser(context, config);
@@ -20,5 +20,7 @@ public class ChooserFactory {
         throw new InvalidChooserTypeException("ChooserType \"" + type + "\" not supported");
     }
 
-    private ChooserFactory() {}
+    private ChooserFactory() {
+        super();
+    }
 }

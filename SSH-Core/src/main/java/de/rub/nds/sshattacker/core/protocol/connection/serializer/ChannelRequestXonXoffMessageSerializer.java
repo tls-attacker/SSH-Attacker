@@ -9,6 +9,7 @@ package de.rub.nds.sshattacker.core.protocol.connection.serializer;
 
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelRequestXonXoffMessage;
 import de.rub.nds.sshattacker.core.util.Converter;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -23,8 +24,8 @@ public class ChannelRequestXonXoffMessageSerializer
 
     private void serializeClientFlowControl() {
         LOGGER.debug(
-                "Client can do flow control: "
-                        + Converter.byteToBoolean(message.getClientFlowControl().getValue()));
+                "Client can do flow control: {}",
+                Converter.byteToBoolean(message.getClientFlowControl().getValue()));
         appendByte(message.getClientFlowControl().getValue());
     }
 

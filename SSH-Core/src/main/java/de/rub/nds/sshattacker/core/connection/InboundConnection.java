@@ -13,7 +13,9 @@ public class InboundConnection extends AliasedConnection {
 
     private static final ConnectionEndType LOCAL_CONNECTION_END_TYPE = ConnectionEndType.SERVER;
 
-    public InboundConnection() {}
+    public InboundConnection() {
+        super();
+    }
 
     public InboundConnection(Integer port) {
         super(port);

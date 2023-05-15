@@ -10,6 +10,7 @@ package de.rub.nds.sshattacker.core.crypto.keys;
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlRootElement;
+
 import java.math.BigInteger;
 import java.security.interfaces.RSAPublicKey;
 
@@ -21,15 +22,18 @@ public class CustomRsaPublicKey extends CustomPublicKey implements RSAPublicKey 
     private BigInteger modulus;
     private BigInteger publicExponent;
 
-    @SuppressWarnings("unused")
-    public CustomRsaPublicKey() {}
+    public CustomRsaPublicKey() {
+        super();
+    }
 
     public CustomRsaPublicKey(RSAPublicKey publicKey) {
-        this.modulus = publicKey.getModulus();
-        this.publicExponent = publicKey.getPublicExponent();
+        super();
+        modulus = publicKey.getModulus();
+        publicExponent = publicKey.getPublicExponent();
     }
 
     public CustomRsaPublicKey(BigInteger publicExponent, BigInteger modulus) {
+        super();
         this.modulus = modulus;
         this.publicExponent = publicExponent;
     }

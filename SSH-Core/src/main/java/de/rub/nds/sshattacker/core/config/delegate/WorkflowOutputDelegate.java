@@ -8,6 +8,7 @@
 package de.rub.nds.sshattacker.core.config.delegate;
 
 import com.beust.jcommander.Parameter;
+
 import de.rub.nds.sshattacker.core.config.Config;
 
 public class WorkflowOutputDelegate extends Delegate {
@@ -16,9 +17,7 @@ public class WorkflowOutputDelegate extends Delegate {
             names = "-workflow_output",
             description =
                     "This parameter allows you to serialize the whole workflow trace into a specific XML file")
-    private String workflowOutput = null;
-
-    public WorkflowOutputDelegate() {}
+    private String workflowOutput;
 
     public String getWorkflowOutput() {
         return workflowOutput;

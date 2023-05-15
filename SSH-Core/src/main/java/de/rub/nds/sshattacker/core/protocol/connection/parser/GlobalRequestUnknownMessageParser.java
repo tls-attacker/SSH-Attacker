@@ -9,6 +9,7 @@ package de.rub.nds.sshattacker.core.protocol.connection.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.protocol.connection.message.GlobalRequestUnknownMessage;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -32,9 +33,8 @@ public class GlobalRequestUnknownMessageParser
     public void parseTypeSpecificData() {
         message.setTypeSpecificData(parseByteArrayField(getBytesLeft()));
         LOGGER.debug(
-                "Type specific data: "
-                        + ArrayConverter.bytesToHexString(
-                                message.getTypeSpecificData().getValue()));
+                "Type specific data: {}",
+                ArrayConverter.bytesToHexString(message.getTypeSpecificData().getValue()));
     }
 
     @Override

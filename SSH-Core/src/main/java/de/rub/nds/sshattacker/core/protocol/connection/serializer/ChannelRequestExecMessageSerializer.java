@@ -7,11 +7,15 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.serializer;
 
+import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeString;
+
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelRequestExecMessage;
-import java.nio.charset.StandardCharsets;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.nio.charset.StandardCharsets;
 
 public class ChannelRequestExecMessageSerializer
         extends ChannelRequestMessageSerializer<ChannelRequestExecMessage> {
@@ -23,9 +27,9 @@ public class ChannelRequestExecMessageSerializer
     }
 
     private void serializeCommand() {
-        LOGGER.debug("Command length: " + message.getCommandLength().getValue());
+        LOGGER.debug("Command length: {}", message.getCommandLength().getValue());
         appendInt(message.getCommandLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
-        LOGGER.debug("Command: " + message.getCommand().getValue());
+        LOGGER.debug("Command: {}", backslashEscapeString(message.getCommand().getValue()));
         appendString(message.getCommand().getValue(), StandardCharsets.UTF_8);
     }
 

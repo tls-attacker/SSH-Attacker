@@ -17,17 +17,20 @@ import de.rub.nds.sshattacker.core.crypto.keys.CustomRsaPublicKey;
 import de.rub.nds.sshattacker.core.crypto.keys.SshPublicKey;
 import de.rub.nds.sshattacker.core.exceptions.CryptoException;
 import de.rub.nds.sshattacker.core.state.SshContext;
+
 import jakarta.xml.bind.DatatypeConverter;
-import java.io.InputStream;
-import java.math.BigInteger;
-import java.util.Scanner;
-import java.util.stream.Stream;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+
+import java.io.InputStream;
+import java.math.BigInteger;
+import java.util.Scanner;
+import java.util.stream.Stream;
 
 public class RsaKeyExchangeTest {
     private static final Logger LOGGER = LogManager.getLogger();
@@ -57,8 +60,8 @@ public class RsaKeyExchangeTest {
         BigInteger publicModulus = null,
                 publicExponent = null,
                 privateModulus = null,
-                privateExponent = null,
-                sharedSecret;
+                privateExponent = null;
+        byte[] sharedSecret;
         byte[] ciphertext;
 
         while (reader.hasNextLine()) {
@@ -87,7 +90,7 @@ public class RsaKeyExchangeTest {
             if (line.startsWith("Example")) {
                 reader.nextLine();
                 line = reader.nextLine();
-                sharedSecret = new BigInteger(line, 16);
+                sharedSecret = new BigInteger(line, 16).toByteArray();
                 reader.nextLine();
                 line = reader.nextLine();
                 ciphertext = DatatypeConverter.parseHexBinary(line);
@@ -129,8 +132,8 @@ public class RsaKeyExchangeTest {
 
     /**
      * Tests the rsa key exchange decryption by computing the shared secret from the given
-     * ciphertext, according to the mpint computations standarized in SSH. Thus the method tests the
-     * class RsaKeyExchange.java and all underlying classes used for the decryption.
+     * ciphertext, according to the mpint computations standardized in SSH. Thus, the method tests
+     * the class RsaKeyExchange.java and all underlying classes used for the decryption.
      *
      * @param keyExchangeAlgorithm used rsa key exchange algorithm
      * @param publicKeyExponent public key exponent
@@ -148,7 +151,7 @@ public class RsaKeyExchangeTest {
             BigInteger publicKeyModulus,
             BigInteger privateKeyExponent,
             BigInteger privateKeyModulus,
-            BigInteger sharedSecret,
+            byte[] sharedSecret,
             byte[] ciphertext)
             throws CryptoException {
         RsaKeyExchange rsaKeyExchange =
@@ -176,20 +179,20 @@ public class RsaKeyExchangeTest {
             assertEquals(256, rsaKeyExchange.getHashLength());
         }
         rsaKeyExchange.decryptSharedSecret(ciphertext);
-        assertEquals(sharedSecret, rsaKeyExchange.getSharedSecret());
+        assertArrayEquals(sharedSecret, rsaKeyExchange.getSharedSecret());
     }
 
     /**
      * Tests the rsa key exchange encryption by computing the ciphertext from the given plaintext
-     * and decrypting it again, according to the mpint computations standarized in SSH. If
-     * testRsaKeyexchangeDecryption is working the right way, this method verifies the encryption
-     * method of RsaKeyExchange. Thus the method test the class RsaKeyExchange.java and all
+     * and decrypting it again, according to the mpint computations standardized in SSH. If
+     * testRsaKeyExchangeDecryption is working the right way, this method verifies the encryption
+     * method of RsaKeyExchange. Thus, the method test the class RsaKeyExchange.java and all
      * underlying classes.
      *
      * @param keyExchangeAlgorithm used rs key exchange algorithm
      * @param publicKeyExponent public key exponent
      * @param publicKeyModulus the modulus of public key
-     * @param privateKeyExponent private key expontent
+     * @param privateKeyExponent private key exponent
      * @param privateKeyModulus modulus of private key
      * @param sharedSecret the shared secret to be encrypted
      * @param ciphertext cipher
@@ -202,7 +205,7 @@ public class RsaKeyExchangeTest {
             BigInteger publicKeyModulus,
             BigInteger privateKeyExponent,
             BigInteger privateKeyModulus,
-            BigInteger sharedSecret,
+            byte[] sharedSecret,
             byte[] ciphertext)
             throws CryptoException {
         RsaKeyExchange rsaKeyExchange =
@@ -232,7 +235,7 @@ public class RsaKeyExchangeTest {
         rsaKeyExchange.setSharedSecret(sharedSecret);
         byte[] cipher = rsaKeyExchange.encryptSharedSecret();
         rsaKeyExchange.decryptSharedSecret(cipher);
-        assertEquals(sharedSecret, rsaKeyExchange.getSharedSecret());
+        assertArrayEquals(sharedSecret, rsaKeyExchange.getSharedSecret());
     }
 
     @Test

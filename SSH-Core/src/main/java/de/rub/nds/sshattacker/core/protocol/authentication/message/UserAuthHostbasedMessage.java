@@ -17,6 +17,7 @@ import de.rub.nds.sshattacker.core.protocol.authentication.handler.UserAuthHostb
 import de.rub.nds.sshattacker.core.protocol.transport.message.ExchangeHashSignatureMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.message.HostKeyMessage;
 import de.rub.nds.sshattacker.core.state.SshContext;
+
 import java.nio.charset.StandardCharsets;
 
 public class UserAuthHostbasedMessage extends UserAuthRequestMessage<UserAuthHostbasedMessage>
@@ -61,19 +62,20 @@ public class UserAuthHostbasedMessage extends UserAuthRequestMessage<UserAuthHos
     }
 
     public void setPubKeyAlgorithm(ModifiableString pubKeyAlgorithm, boolean adjustLengthField) {
+        this.pubKeyAlgorithm = pubKeyAlgorithm;
         if (adjustLengthField) {
             setPubKeyAlgorithmLength(
-                    pubKeyAlgorithm.getValue().getBytes(StandardCharsets.UTF_8).length);
+                    this.pubKeyAlgorithm.getValue().getBytes(StandardCharsets.UTF_8).length);
         }
-        this.pubKeyAlgorithm = pubKeyAlgorithm;
     }
 
     public void setPubKeyAlgorithm(String pubKeyAlgorithm, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setPubKeyAlgorithmLength(pubKeyAlgorithm.getBytes(StandardCharsets.UTF_8).length);
-        }
         this.pubKeyAlgorithm =
                 ModifiableVariableFactory.safelySetValue(this.pubKeyAlgorithm, pubKeyAlgorithm);
+        if (adjustLengthField) {
+            setPubKeyAlgorithmLength(
+                    this.pubKeyAlgorithm.getValue().getBytes(StandardCharsets.UTF_8).length);
+        }
     }
 
     @Override
@@ -115,19 +117,19 @@ public class UserAuthHostbasedMessage extends UserAuthRequestMessage<UserAuthHos
 
     @Override
     public void setHostKeyBytes(ModifiableByteArray hostKeyBytes, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setHostKeyBytesLength(hostKeyBytes.getValue().length);
-        }
         this.hostKeyBytes = hostKeyBytes;
+        if (adjustLengthField) {
+            setHostKeyBytesLength(this.hostKeyBytes.getValue().length);
+        }
     }
 
     @Override
     public void setHostKeyBytes(byte[] hostKeyBytes, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setHostKeyBytesLength(hostKeyBytes.length);
-        }
         this.hostKeyBytes =
                 ModifiableVariableFactory.safelySetValue(this.hostKeyBytes, hostKeyBytes);
+        if (adjustLengthField) {
+            setHostKeyBytesLength(this.hostKeyBytes.getValue().length);
+        }
     }
 
     public ModifiableInteger getHostNameLength() {
@@ -156,17 +158,17 @@ public class UserAuthHostbasedMessage extends UserAuthRequestMessage<UserAuthHos
     }
 
     public void setHostName(ModifiableString hostName, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setHostNameLength(hostName.getValue().getBytes(StandardCharsets.UTF_8).length);
-        }
         this.hostName = hostName;
+        if (adjustLengthField) {
+            setHostNameLength(this.hostName.getValue().getBytes(StandardCharsets.UTF_8).length);
+        }
     }
 
-    public void setHostName(String hostName, boolean adjusLengthField) {
-        if (adjusLengthField) {
-            setHostNameLength(hostName.getBytes(StandardCharsets.UTF_8).length);
-        }
+    public void setHostName(String hostName, boolean adjustLengthField) {
         this.hostName = ModifiableVariableFactory.safelySetValue(this.hostName, hostName);
+        if (adjustLengthField) {
+            setHostNameLength(this.hostName.getValue().getBytes(StandardCharsets.UTF_8).length);
+        }
     }
 
     public ModifiableInteger getClientUserNameLength() {
@@ -197,19 +199,20 @@ public class UserAuthHostbasedMessage extends UserAuthRequestMessage<UserAuthHos
     }
 
     public void setClientUserName(ModifiableString clientUserName, boolean adjustLengthField) {
+        this.clientUserName = clientUserName;
         if (adjustLengthField) {
             setClientUserNameLength(
-                    clientUserName.getValue().getBytes(StandardCharsets.UTF_8).length);
+                    this.clientUserName.getValue().getBytes(StandardCharsets.UTF_8).length);
         }
-        this.clientUserName = clientUserName;
     }
 
     public void setClientUserName(String clientUserName, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setClientUserNameLength(clientUserName.getBytes(StandardCharsets.UTF_8).length);
-        }
         this.clientUserName =
                 ModifiableVariableFactory.safelySetValue(this.clientUserName, clientUserName);
+        if (adjustLengthField) {
+            setClientUserNameLength(
+                    this.clientUserName.getValue().getBytes(StandardCharsets.UTF_8).length);
+        }
     }
 
     @Override
@@ -245,18 +248,18 @@ public class UserAuthHostbasedMessage extends UserAuthRequestMessage<UserAuthHos
 
     @Override
     public void setSignature(ModifiableByteArray signature, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setSignatureLength(signature.getValue().length);
-        }
         this.signature = signature;
+        if (adjustLengthField) {
+            setSignatureLength(this.signature.getValue().length);
+        }
     }
 
     @Override
     public void setSignature(byte[] signature, boolean adjustLengthField) {
-        if (adjustLengthField) {
-            setSignatureLength(signature.length);
-        }
         this.signature = ModifiableVariableFactory.safelySetValue(this.signature, signature);
+        if (adjustLengthField) {
+            setSignatureLength(this.signature.getValue().length);
+        }
     }
 
     @Override

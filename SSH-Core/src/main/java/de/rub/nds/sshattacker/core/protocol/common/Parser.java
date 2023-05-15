@@ -9,13 +9,15 @@ package de.rub.nds.sshattacker.core.protocol.common;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.exceptions.ParserException;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.io.ByteArrayOutputStream;
 import java.math.BigInteger;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  * Abstract Parser class which can be used to read a byte array.
@@ -38,7 +40,7 @@ public abstract class Parser<T> {
      *
      * @param array Array that should be parsed
      */
-    public Parser(byte[] array) {
+    protected Parser(byte[] array) {
         this(array, 0);
     }
 
@@ -48,9 +50,10 @@ public abstract class Parser<T> {
      * @param startPosition Position in the array from which the Parser should start working
      * @param array Array that should be parsed
      */
-    public Parser(byte[] array, int startPosition) {
-        this.startPoint = startPosition;
-        this.pointer = startPosition;
+    protected Parser(byte[] array, int startPosition) {
+        super();
+        startPoint = startPosition;
+        pointer = startPosition;
         this.array = array;
         if (startPosition > array.length) {
             throw new ParserException(
@@ -66,7 +69,7 @@ public abstract class Parser<T> {
      * ParserException if the number of bytes cannot be parsed. Moves the pointer accordingly.
      *
      * @param length Number of bytes to be parsed
-     * @return A subbyteArray of according size from the Array
+     * @return A partial byteArray of according size from the Array
      */
     protected byte[] parseByteArrayField(int length) {
         if (length == 0) {
@@ -91,11 +94,11 @@ public abstract class Parser<T> {
     }
 
     /**
-     * Parses a number of bytes from the Array and returns them as a int. Throws a ParserException
+     * Parses a number of bytes from the Array and returns them as an int. Throws a ParserException
      * if the number of bytes cannot be parsed. Moves the pointer accordingly.
      *
      * @param length Number of bytes to be parsed
-     * @return An integer representation of the subbyteArray
+     * @return An integer representation of the partial byteArray
      */
     protected int parseIntField(int length) {
         if (length == 0) {
@@ -109,7 +112,7 @@ public abstract class Parser<T> {
      * ParserException if the number of bytes cannot be parsed. Moves the pointer accordingly.
      *
      * @param length Number of bytes to be parsed
-     * @return A BigInteger representation of the subbyteArray
+     * @return A BigInteger representation of the partial byteArray
      */
     protected BigInteger parseBigIntField(int length) {
         if (length == 0) {
@@ -123,7 +126,7 @@ public abstract class Parser<T> {
      * if the number of bytes cannot be parsed. Moves the pointer accordingly.
      *
      * @param length Number of bytes to be parsed
-     * @return An integer representation of the subbyteArray
+     * @return An integer representation of the partial byteArray
      */
     protected byte parseByteField(int length) {
         if (length == 0) {
@@ -141,7 +144,7 @@ public abstract class Parser<T> {
      * accordingly.
      *
      * @param length Number of bytes to be parsed
-     * @return A string representation of the subbyteArray
+     * @return A string representation of the partial byteArray
      */
     protected String parseByteString(int length) {
         return parseByteString(length, StandardCharsets.UTF_8);
@@ -153,7 +156,7 @@ public abstract class Parser<T> {
      *
      * @param length Number of bytes to be parsed
      * @param charset Charset used to convert the bytes into a String
-     * @return A string representation of the subbyteArray
+     * @return A string representation of the partial byteArray
      */
     protected String parseByteString(int length, Charset charset) {
         return new String(parseByteArrayField(length), charset);
@@ -260,15 +263,16 @@ public abstract class Parser<T> {
     }
 
     /**
-     * Checks if there are atleast count bytes left to read
+     * Checks if there are at least count bytes left to read
      *
      * @param count Number of bytes to check for
-     * @return True if there are atleast count bytes left to read
+     * @return True if there are at least count bytes left to read
      */
     protected boolean enoughBytesLeft(int count) {
         return getBytesLeft() >= count;
     }
 
+    @SuppressWarnings("SameParameterValue")
     protected byte[] parseArrayOrTillEnd(int n) {
         if (n >= 0 && n < getBytesLeft()) {
             return parseByteArrayField(n);

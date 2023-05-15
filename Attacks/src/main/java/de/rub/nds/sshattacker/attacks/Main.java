@@ -12,6 +12,7 @@ import static de.rub.nds.tlsattacker.util.ConsoleLogger.CONSOLE;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.JCommander.Builder;
 import com.beust.jcommander.ParameterException;
+
 import de.rub.nds.sshattacker.attacks.config.MangerCommandConfig;
 import de.rub.nds.sshattacker.attacks.config.delegate.GeneralAttackDelegate;
 import de.rub.nds.sshattacker.attacks.impl.Attacker;
@@ -19,13 +20,19 @@ import de.rub.nds.sshattacker.attacks.impl.MangerAttacker;
 import de.rub.nds.sshattacker.core.config.SshDelegateConfig;
 import de.rub.nds.sshattacker.core.config.delegate.GeneralDelegate;
 import de.rub.nds.sshattacker.core.exceptions.ConfigurationException;
-import java.util.Objects;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class Main {
+import java.util.Objects;
+
+public final class Main {
 
     private static final Logger LOGGER = LogManager.getLogger();
+
+    private Main() {
+        super();
+    }
 
     public static void main(String[] args) {
         GeneralDelegate generalDelegate = new GeneralAttackDelegate();
@@ -61,6 +68,7 @@ public class Main {
         Attacker<? extends SshDelegateConfig> attacker = null;
 
         // Insert new attack commands here
+        //noinspection SwitchStatementWithTooFewBranches
         switch (jc.getParsedCommand()) {
             case MangerCommandConfig.ATTACK_COMMAND:
                 attacker = new MangerAttacker(mangerTest, mangerTest.createConfig());
@@ -79,9 +87,9 @@ public class Main {
             try {
                 Boolean result = attacker.checkVulnerability();
                 if (Objects.equals(result, Boolean.TRUE)) {
-                    CONSOLE.error("Vulnerable:" + result);
+                    CONSOLE.error("Vulnerable:{}", result);
                 } else if (Objects.equals(result, Boolean.FALSE)) {
-                    CONSOLE.info("Vulnerable:" + result);
+                    CONSOLE.info("Vulnerable:{}", result);
                 } else {
                     CONSOLE.warn("Vulnerable: Uncertain");
                 }

@@ -19,16 +19,20 @@ import de.rub.nds.sshattacker.core.workflow.factory.WorkflowConfigurationFactory
 import de.rub.nds.sshattacker.core.workflow.filter.Filter;
 import de.rub.nds.sshattacker.core.workflow.filter.FilterFactory;
 import de.rub.nds.sshattacker.core.workflow.filter.FilterType;
+
 import jakarta.xml.bind.JAXBException;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
 import java.util.Random;
+
 import javax.xml.stream.XMLStreamException;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  * The central object passed around during program execution. The state initializes and holds the
@@ -63,18 +67,20 @@ public class State {
         this(new Config());
     }
 
-    public State(WorkflowTrace trace) {
-        this(Config.createConfig(), trace);
+    public State(WorkflowTrace workflowTrace) {
+        this(Config.createConfig(), workflowTrace);
     }
 
     public State(Config config) {
+        super();
         this.config = config;
         runningMode = config.getDefaultRunningMode();
-        this.workflowTrace = loadWorkflowTrace();
+        workflowTrace = loadWorkflowTrace();
         initState();
     }
 
     public State(Config config, WorkflowTrace workflowTrace) {
+        super();
         this.config = config;
         runningMode = config.getDefaultRunningMode();
         this.workflowTrace = workflowTrace;
@@ -94,8 +100,7 @@ public class State {
             originalWorkflowTrace = WorkflowTrace.copy(workflowTrace);
         }
 
-        WorkflowTraceNormalizer normalizer = new WorkflowTraceNormalizer();
-        normalizer.normalize(workflowTrace, config, runningMode);
+        WorkflowTraceNormalizer.normalize(workflowTrace, config, runningMode);
 
         for (AliasedConnection con : workflowTrace.getConnections()) {
             SshContext ctx = new SshContext(config, con);
@@ -111,14 +116,14 @@ public class State {
                 trace =
                         WorkflowTraceSerializer.insecureRead(
                                 new FileInputStream(config.getWorkflowInput()));
-                LOGGER.debug("Loaded workflow trace from " + config.getWorkflowInput());
+                LOGGER.debug("Loaded workflow trace from {}", config.getWorkflowInput());
             } catch (FileNotFoundException ex) {
                 LOGGER.warn(
-                        "Could not read workflow trace. File not found: "
-                                + config.getWorkflowInput());
+                        "Could not read workflow trace. File not found: {}",
+                        config.getWorkflowInput());
                 LOGGER.debug(ex);
             } catch (JAXBException | IOException | XMLStreamException ex) {
-                LOGGER.warn("Could not read workflow trace: " + config.getWorkflowInput());
+                LOGGER.warn("Could not read workflow trace: {}", config.getWorkflowInput());
                 LOGGER.debug(ex);
             }
         } else if (config.getWorkflowTraceType() != null) {
@@ -149,8 +154,8 @@ public class State {
     }
 
     /**
-     * Replace existing SshContext with new SshContext. This can only be done if
-     * existingSshContext.connection equals newSshContext.connection.
+     * Replace existing SshContext with new SshContext. This can only be done if {@code
+     * existingSshContext.connection} equals newSshContext.connection.
      *
      * @param newSshContext The new SshContext to replace the old with
      */
@@ -252,7 +257,7 @@ public class State {
      */
     private void filterTrace(WorkflowTrace trace) {
         List<FilterType> filters = config.getOutputFilters();
-        if ((filters == null) || (filters.isEmpty())) {
+        if (filters == null || filters.isEmpty()) {
             LOGGER.debug("No filters to apply, ouput filter list is empty");
             return;
         }
@@ -280,10 +285,10 @@ public class State {
             try {
                 workflowOutputName = config.getWorkflowOutput();
 
-                File f = new File(workflowOutputName);
-                if (f.isDirectory()) {
+                File file = new File(workflowOutputName);
+                if (file.isDirectory()) {
                     workflowOutputName = config.getWorkflowOutput() + "trace-" + random.nextInt();
-                    f = new File(workflowOutputName);
+                    file = new File(workflowOutputName);
                 }
                 WorkflowTrace filteredTrace;
                 if (config.isApplyFiltersInPlace()) {
@@ -292,7 +297,7 @@ public class State {
                 } else {
                     filteredTrace = getFilteredTraceCopy(workflowTrace);
                 }
-                WorkflowTraceSerializer.write(f, filteredTrace);
+                WorkflowTraceSerializer.write(file, filteredTrace);
             } catch (JAXBException | IOException ex) {
                 LOGGER.info("Could not serialize WorkflowTrace.");
                 LOGGER.debug(ex);
@@ -302,6 +307,7 @@ public class State {
 
     private void assertWorkflowTraceNotNull(
             @SuppressWarnings("SameParameterValue") String operationName) {
+        //noinspection VariableNotUsedInsideIf
         if (workflowTrace != null) {
             return;
         }
@@ -314,7 +320,7 @@ public class State {
     }
 
     public void setWorkflowTrace(WorkflowTrace trace) {
-        this.workflowTrace = trace;
+        workflowTrace = trace;
     }
 
     public String getWorkflowOutputName() {

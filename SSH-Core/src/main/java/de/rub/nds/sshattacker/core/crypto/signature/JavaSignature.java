@@ -9,6 +9,7 @@ package de.rub.nds.sshattacker.core.crypto.signature;
 
 import de.rub.nds.sshattacker.core.constants.PublicKeyAlgorithm;
 import de.rub.nds.sshattacker.core.exceptions.CryptoException;
+
 import java.security.*;
 
 public class JavaSignature implements VerifyingSignature, SigningSignature {
@@ -18,6 +19,7 @@ public class JavaSignature implements VerifyingSignature, SigningSignature {
     private Signature signature;
 
     public JavaSignature(PublicKeyAlgorithm algorithm, Key key) {
+        super();
         this.algorithm = algorithm;
         this.key = key;
     }

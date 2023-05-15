@@ -9,6 +9,7 @@ package de.rub.nds.sshattacker.client.main;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
+
 import de.rub.nds.sshattacker.client.config.ClientCommandConfig;
 import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.config.delegate.GeneralDelegate;
@@ -16,12 +17,17 @@ import de.rub.nds.sshattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.sshattacker.core.state.State;
 import de.rub.nds.sshattacker.core.workflow.DefaultWorkflowExecutor;
 import de.rub.nds.sshattacker.core.workflow.WorkflowExecutor;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class SshClient {
+public final class SshClient {
 
     private static final Logger LOGGER = LogManager.getLogger();
+
+    private SshClient() {
+        super();
+    }
 
     public static void main(String[] args) {
         ClientCommandConfig config = new ClientCommandConfig(new GeneralDelegate());
@@ -35,20 +41,19 @@ public class SshClient {
 
             try {
                 Config sshConfig = config.createConfig();
-                SshClient client = new SshClient();
-                client.startSshClient(sshConfig);
+                startSshClient(sshConfig);
             } catch (Exception E) {
                 LOGGER.error(
                         "Encountered an uncaught Exception aborting. See debug for more info.", E);
             }
         } catch (ParameterException E) {
-            LOGGER.error("Could not parse provided parameters. " + E.getLocalizedMessage());
+            LOGGER.error("Could not parse provided parameters. {}", E.getLocalizedMessage());
             LOGGER.debug(E);
             commander.usage();
         }
     }
 
-    public void startSshClient(Config config) {
+    public static void startSshClient(Config config) {
         State state = new State(config);
         WorkflowExecutor workflowExecutor = new DefaultWorkflowExecutor(state);
 

@@ -13,14 +13,20 @@ import de.rub.nds.sshattacker.core.connection.InboundConnection;
 import de.rub.nds.sshattacker.core.connection.OutboundConnection;
 import de.rub.nds.sshattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.sshattacker.core.workflow.action.*;
+
 import jakarta.xml.bind.JAXBException;
 import jakarta.xml.bind.annotation.*;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
+
 import javax.xml.stream.XMLStreamException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -46,18 +52,18 @@ public class WorkflowTrace implements Serializable {
     public static WorkflowTrace copy(WorkflowTrace orig) {
         WorkflowTrace copy;
 
-        List<SshAction> origActions = orig.getSshActions();
+        List<SshAction> origActions = orig.sshActions;
 
         try {
             String origTraceStr = WorkflowTraceSerializer.write(orig);
             InputStream is =
-                    new ByteArrayInputStream(origTraceStr.getBytes(StandardCharsets.UTF_8.name()));
+                    new ByteArrayInputStream(origTraceStr.getBytes(StandardCharsets.UTF_8));
             copy = WorkflowTraceSerializer.insecureRead(is);
         } catch (JAXBException | IOException | XMLStreamException ex) {
             throw new ConfigurationException("Could not copy workflow trace: " + ex);
         }
 
-        List<SshAction> copiedActions = copy.getSshActions();
+        List<SshAction> copiedActions = copy.sshActions;
         for (int i = 0; i < origActions.size(); i++) {
             copiedActions
                     .get(i)
@@ -97,19 +103,21 @@ public class WorkflowTrace implements Serializable {
             })
     private List<SshAction> sshActions = new ArrayList<>();
 
-    private String name = null;
-    private String description = null;
+    private String name;
+    private String description;
 
     public WorkflowTrace() {
-        this.sshActions = new LinkedList<>();
+        super();
+        sshActions = new LinkedList<>();
     }
 
     public WorkflowTrace(List<AliasedConnection> cons) {
-        this.connections = cons;
+        super();
+        connections = cons;
     }
 
     public void reset() {
-        for (SshAction action : getSshActions()) {
+        for (SshAction action : sshActions) {
             action.reset();
         }
     }
@@ -144,6 +152,7 @@ public class WorkflowTrace implements Serializable {
         sshActions.add(position, action);
     }
 
+    @SuppressWarnings("UnusedReturnValue")
     public SshAction removeSshAction(int index) {
         return sshActions.remove(index);
     }
@@ -153,7 +162,7 @@ public class WorkflowTrace implements Serializable {
     }
 
     public void setSshActions(SshAction... sshActions) {
-        setSshActions(new ArrayList<>(Arrays.asList(sshActions)));
+        this.sshActions = new ArrayList<>(Arrays.asList(sshActions));
     }
 
     public List<AliasedConnection> getConnections() {
@@ -179,7 +188,7 @@ public class WorkflowTrace implements Serializable {
      * @param connection new connection to add to the workflow trace
      */
     public void addConnection(AliasedConnection connection) {
-        this.connections.add(connection);
+        connections.add(connection);
     }
 
     public List<MessageAction> getMessageActions() {
@@ -233,7 +242,7 @@ public class WorkflowTrace implements Serializable {
     public MessageAction getLastMessageAction() {
         for (int i = sshActions.size() - 1; i >= 0; i--) {
             if (sshActions.get(i) instanceof MessageAction) {
-                return (MessageAction) (sshActions.get(i));
+                return (MessageAction) sshActions.get(i);
             }
         }
         return null;
@@ -247,7 +256,7 @@ public class WorkflowTrace implements Serializable {
     public SendingAction getLastSendingAction() {
         for (int i = sshActions.size() - 1; i >= 0; i--) {
             if (sshActions.get(i) instanceof SendingAction) {
-                return (SendingAction) (sshActions.get(i));
+                return (SendingAction) sshActions.get(i);
             }
         }
         return null;
@@ -262,7 +271,7 @@ public class WorkflowTrace implements Serializable {
     public ReceivingAction getLastReceivingAction() {
         for (int i = sshActions.size() - 1; i >= 0; i--) {
             if (sshActions.get(i) instanceof ReceivingAction) {
-                return (ReceivingAction) (sshActions.get(i));
+                return (ReceivingAction) sshActions.get(i);
             }
         }
         return null;
@@ -287,42 +296,27 @@ public class WorkflowTrace implements Serializable {
     }
 
     @Override
-    public int hashCode() {
-        int hash = 3;
-        hash = 23 * hash + Objects.hashCode(this.sshActions);
-        hash = 23 * hash + Objects.hashCode(this.name);
-        hash = 23 * hash + Objects.hashCode(this.description);
-        return hash;
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        WorkflowTrace that = (WorkflowTrace) obj;
+        return Objects.equals(sshActions, that.sshActions)
+                && Objects.equals(name, that.name)
+                && Objects.equals(description, that.description);
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final WorkflowTrace other = (WorkflowTrace) obj;
-        if (!Objects.equals(this.name, other.name)) {
-            return false;
-        }
-        if (!Objects.equals(this.description, other.description)) {
-            return false;
-        }
-        return Objects.equals(this.sshActions, other.sshActions);
+    public int hashCode() {
+        return Objects.hash(sshActions, name, description);
     }
 
     public boolean executedAsPlanned() {
         for (SshAction action : sshActions) {
             if (!action.executedAsPlanned()) {
-                LOGGER.debug("Action " + action.toCompactString() + " did not execute as planned");
+                LOGGER.debug("Action {} did not execute as planned", action.toCompactString());
                 return false;
             } else {
-                LOGGER.debug("Action " + action.toCompactString() + " executed as planned");
+                LOGGER.debug("Action {} executed as planned", action.toCompactString());
             }
         }
         return true;

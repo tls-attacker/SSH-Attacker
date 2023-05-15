@@ -13,13 +13,9 @@ import de.rub.nds.sshattacker.core.protocol.transport.parser.EcdhKeyExchangeInit
 import de.rub.nds.sshattacker.core.protocol.transport.preparator.EcdhKeyExchangeInitMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.transport.serializer.EcdhKeyExchangeInitMessageSerializer;
 import de.rub.nds.sshattacker.core.state.SshContext;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class EcdhKeyExchangeInitMessageHandler
         extends SshMessageHandler<EcdhKeyExchangeInitMessage> {
-
-    private static final Logger LOGGER = LogManager.getLogger();
 
     public EcdhKeyExchangeInitMessageHandler(SshContext context) {
         super(context);

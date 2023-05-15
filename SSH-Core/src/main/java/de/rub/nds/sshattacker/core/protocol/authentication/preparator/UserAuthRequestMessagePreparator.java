@@ -19,7 +19,7 @@ public abstract class UserAuthRequestMessagePreparator<T extends UserAuthRequest
 
     private final AuthenticationMethod authenticationMethod;
 
-    public UserAuthRequestMessagePreparator(
+    protected UserAuthRequestMessagePreparator(
             Chooser chooser, T message, AuthenticationMethod authenticationMethod) {
         super(chooser, message, MessageIdConstant.SSH_MSG_USERAUTH_REQUEST);
         this.authenticationMethod = authenticationMethod;
