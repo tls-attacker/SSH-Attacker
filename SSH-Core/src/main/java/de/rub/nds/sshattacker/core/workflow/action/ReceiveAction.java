@@ -11,6 +11,8 @@ import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.sshattacker.core.connection.AliasedConnection;
 import de.rub.nds.sshattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.sshattacker.core.packet.AbstractPacket;
+import de.rub.nds.sshattacker.core.packet.BinaryPacket;
+import de.rub.nds.sshattacker.core.packet.BlobPacket;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.*;
 import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessage;
 import de.rub.nds.sshattacker.core.protocol.connection.message.*;
@@ -157,7 +159,13 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
      */
     @XmlElement protected Boolean failOnUnexpectedDebugMessages;
 
-    @XmlElement @HoldsModifiableVariable @XmlElementWrapper
+    @HoldsModifiableVariable
+    @XmlElementWrapper
+    @XmlElements(
+            value = {
+                @XmlElement(type = BlobPacket.class, name = "BlobPacket"),
+                @XmlElement(type = BinaryPacket.class, name = "BinaryPacket")
+            })
     protected List<AbstractPacket> packetList = new ArrayList<>();
 
     public ReceiveAction() {
