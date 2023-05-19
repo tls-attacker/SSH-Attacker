@@ -129,7 +129,9 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
         @XmlElement(type = UnimplementedMessage.class, name = "UnimplementedMessage"),
         @XmlElement(type = UnknownMessage.class, name = "UnknownMessage"),
         @XmlElement(type = VersionExchangeMessage.class, name = "VersionExchange"),
-        @XmlElement(type = AsciiMessage.class, name = "AsciiMessage")
+        @XmlElement(type = AsciiMessage.class, name = "AsciiMessage"),
+        @XmlElement(type = HybridKeyExchangeInitMessage.class, name = "HybridKeyExchangeInit"),
+        @XmlElement(type = HybridKeyExchangeReplyMessage.class, name = "HybridKeyExchangeReply")
     })
     protected List<ProtocolMessage<?>> expectedMessages = new ArrayList<>();
 
