@@ -163,11 +163,10 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
 
     @HoldsModifiableVariable
     @XmlElementWrapper
-    @XmlElements(
-            value = {
-                @XmlElement(type = BlobPacket.class, name = "BlobPacket"),
-                @XmlElement(type = BinaryPacket.class, name = "BinaryPacket")
-            })
+    @XmlElements({
+        @XmlElement(type = BlobPacket.class, name = "BlobPacket"),
+        @XmlElement(type = BinaryPacket.class, name = "BinaryPacket")
+    })
     protected List<AbstractPacket> packetList = new ArrayList<>();
 
     public ReceiveAction() {

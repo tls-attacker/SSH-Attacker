@@ -32,14 +32,11 @@ public class ExtensionInfoMessage extends SshMessage<ExtensionInfoMessage> {
 
     @HoldsModifiableVariable
     @XmlElementWrapper
-    @XmlElements(
-            value = {
-                @XmlElement(type = ServerSigAlgsExtension.class, name = "ServerSigAlgsExtension"),
-                @XmlElement(
-                        type = DelayCompressionExtension.class,
-                        name = "DelayCompressionExtension"),
-                @XmlElement(type = UnknownExtension.class, name = "UnknownExtension")
-            })
+    @XmlElements({
+        @XmlElement(type = ServerSigAlgsExtension.class, name = "ServerSigAlgsExtension"),
+        @XmlElement(type = DelayCompressionExtension.class, name = "DelayCompressionExtension"),
+        @XmlElement(type = UnknownExtension.class, name = "UnknownExtension")
+    })
     private List<AbstractExtension<?>> extensions = new ArrayList<>();
 
     public ModifiableInteger getExtensionCount() {
