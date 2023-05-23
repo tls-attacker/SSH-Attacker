@@ -11,6 +11,8 @@ import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.sshattacker.core.connection.AliasedConnection;
 import de.rub.nds.sshattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.sshattacker.core.packet.AbstractPacket;
+import de.rub.nds.sshattacker.core.packet.BinaryPacket;
+import de.rub.nds.sshattacker.core.packet.BlobPacket;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.*;
 import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessage;
 import de.rub.nds.sshattacker.core.protocol.connection.message.*;
@@ -114,8 +116,10 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
         @XmlElement(type = DisconnectMessage.class, name = "DisconnectMessage"),
         @XmlElement(type = EcdhKeyExchangeInitMessage.class, name = "EcdhKeyExchangeInit"),
         @XmlElement(type = EcdhKeyExchangeReplyMessage.class, name = "EcdhKeyExchangeReply"),
+        @XmlElement(type = ExtensionInfoMessage.class, name = "ExtensionInfo"),
         @XmlElement(type = IgnoreMessage.class, name = "IgnoreMessage"),
         @XmlElement(type = KeyExchangeInitMessage.class, name = "KeyExchangeInit"),
+        @XmlElement(type = NewCompressMessage.class, name = "NewCompress"),
         @XmlElement(type = NewKeysMessage.class, name = "NewKeys"),
         @XmlElement(type = RsaKeyExchangeDoneMessage.class, name = "RsaKeyExchangeDone"),
         @XmlElement(type = RsaKeyExchangePubkeyMessage.class, name = "RsaKeyExchangePubkey"),
@@ -125,7 +129,9 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
         @XmlElement(type = UnimplementedMessage.class, name = "UnimplementedMessage"),
         @XmlElement(type = UnknownMessage.class, name = "UnknownMessage"),
         @XmlElement(type = VersionExchangeMessage.class, name = "VersionExchange"),
-        @XmlElement(type = AsciiMessage.class, name = "AsciiMessage")
+        @XmlElement(type = AsciiMessage.class, name = "AsciiMessage"),
+        @XmlElement(type = HybridKeyExchangeInitMessage.class, name = "HybridKeyExchangeInit"),
+        @XmlElement(type = HybridKeyExchangeReplyMessage.class, name = "HybridKeyExchangeReply")
     })
     protected List<ProtocolMessage<?>> expectedMessages = new ArrayList<>();
 
@@ -155,7 +161,12 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
      */
     @XmlElement protected Boolean failOnUnexpectedDebugMessages;
 
-    @XmlElement @HoldsModifiableVariable @XmlElementWrapper
+    @HoldsModifiableVariable
+    @XmlElementWrapper
+    @XmlElements({
+        @XmlElement(type = BlobPacket.class, name = "BlobPacket"),
+        @XmlElement(type = BinaryPacket.class, name = "BinaryPacket")
+    })
     protected List<AbstractPacket> packetList = new ArrayList<>();
 
     public ReceiveAction() {

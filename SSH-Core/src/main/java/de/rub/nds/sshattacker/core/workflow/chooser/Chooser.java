@@ -7,8 +7,6 @@
  */
 package de.rub.nds.sshattacker.core.workflow.chooser;
 
-import static java.util.Map.Entry;
-
 import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.constants.*;
 import de.rub.nds.sshattacker.core.crypto.kex.AbstractEcdhKeyExchange;
@@ -16,10 +14,10 @@ import de.rub.nds.sshattacker.core.crypto.kex.DhKeyExchange;
 import de.rub.nds.sshattacker.core.crypto.kex.HybridKeyExchange;
 import de.rub.nds.sshattacker.core.crypto.kex.RsaKeyExchange;
 import de.rub.nds.sshattacker.core.crypto.keys.SshPublicKey;
+import de.rub.nds.sshattacker.core.protocol.transport.message.extension.AbstractExtension;
 import de.rub.nds.sshattacker.core.state.SshContext;
 
 import java.util.List;
-import java.util.stream.Stream;
 
 public abstract class Chooser {
 
@@ -111,6 +109,24 @@ public abstract class Chooser {
     public abstract int getClientReserved();
 
     public abstract int getServerReserved();
+    // endregion
+
+    // region SSH Extensions
+    // section general extensions
+    public abstract List<AbstractExtension<?>> getClientSupportedExtensions();
+
+    public abstract List<AbstractExtension<?>> getServerSupportedExtensions();
+
+    // section server-sig-algs extension
+    public abstract List<PublicKeyAlgorithm>
+            getServerSupportedPublicKeyAlgorithmsForAuthentication();
+
+    public abstract SshPublicKey<?, ?> getSelectedPublicKeyForAuthentication();
+
+    // section delay-compression extension
+    public abstract List<CompressionMethod> getClientSupportedDelayCompressionMethods();
+
+    public abstract List<CompressionMethod> getServerSupportedDelayCompressionMethods();
     // endregion
 
     // region Negotiated Parameters
@@ -221,9 +237,6 @@ public abstract class Chooser {
     public abstract HybridKeyExchange getHybridKeyExchange();
 
     public abstract SshPublicKey<?, ?> getNegotiatedHostKey();
-
-    public abstract Stream<Entry<SshPublicKey<?, ?>, PublicKeyAlgorithm>>
-            getUserKeyAndAlgorithmCombinations();
 
     public abstract Integer getMinimalDhGroupSize();
 

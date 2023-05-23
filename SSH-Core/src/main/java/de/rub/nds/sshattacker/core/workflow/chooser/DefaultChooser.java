@@ -14,6 +14,7 @@ import de.rub.nds.sshattacker.core.crypto.kex.DhKeyExchange;
 import de.rub.nds.sshattacker.core.crypto.kex.HybridKeyExchange;
 import de.rub.nds.sshattacker.core.crypto.kex.RsaKeyExchange;
 import de.rub.nds.sshattacker.core.crypto.keys.SshPublicKey;
+import de.rub.nds.sshattacker.core.protocol.transport.message.extension.AbstractExtension;
 import de.rub.nds.sshattacker.core.protocol.util.AlgorithmPicker;
 import de.rub.nds.sshattacker.core.state.SshContext;
 
@@ -21,7 +22,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.*;
-import java.util.stream.Stream;
+import java.util.stream.Collectors;
 
 /**
  * A default implementation of the abstract Chooser class. Values will be primarily provided from
@@ -482,6 +483,123 @@ public class DefaultChooser extends Chooser {
     }
     // endregion
 
+    // region SSH Extensions
+    /**
+     * Retrieves the list of client supported extensions included in the clients SSH_MSG_EXT_INFO
+     * packet from context. If no SSH_MSG_EXT_INFO packet was received yet or SSH-Attacker is
+     * running in client mode, the extensions from config will be returned instead.
+     *
+     * @return List of client supported extensions
+     */
+    public List<AbstractExtension<?>> getClientSupportedExtensions() {
+        return context.getClientSupportedExtensions().orElse(config.getClientSupportedExtensions());
+    }
+
+    /**
+     * Retrieves the list of server supported extensions included in the servers SSH_MSG_EXT_INFO
+     * packet from context. If no SSH_MSG_EXT_INFO packet was received yet or SSH-Attacker is
+     * running in server mode, the extensions from config will be returned instead.
+     *
+     * @return List of server supported extensions
+     */
+    public List<AbstractExtension<?>> getServerSupportedExtensions() {
+        return context.getServerSupportedExtensions().orElse(config.getServerSupportedExtensions());
+    }
+
+    /**
+     * Retrieves the list of server supported public key algorithms for authentication of the
+     * server-sig-algs extension included in SSH_MSG_EXT_INFO packet from context. If no
+     * SSH_MSG_EXT_INFO packet was received yet or SSH-Attacker is running in server mode, the
+     * extension from config will be returned instead.
+     *
+     * @return List of server supported public key algorithms for authentication
+     */
+    public List<PublicKeyAlgorithm> getServerSupportedPublicKeyAlgorithmsForAuthentication() {
+        return context.getServerSupportedPublicKeyAlgorithmsForAuthentication()
+                .orElse(config.getServerSupportedPublicKeyAlgorithmsForAuthentication());
+    }
+
+    /**
+     * Retrieves the public key to use for client authentication. If no server-sig-algs extension
+     * was received yet or server-sig-algs extension is disabled in config, the first user key from
+     * config(SSH_RSA) is returned.
+     */
+    public SshPublicKey<?, ?> getSelectedPublicKeyForAuthentication() {
+        // Check if there are user keys present in the Config object. If not, return null.
+        if (config.getUserKeys().isEmpty()) {
+            LOGGER.error(
+                    "Unable to select public key for user authentication. No user key provided in Config object.");
+            return null;
+        }
+
+        // server-sig-algs extension is disabled or no server-sig-algs extension received yet ?
+        // -> use first user key(SSH_RSA)
+        if (!config.getRespectServerSigAlgsExtension()
+                || !context.getServerSigAlgsExtensionReceivedFromServer()) {
+            return config.getUserKeys().get(0);
+        }
+
+        // get client supported public key algorithms
+        List<PublicKeyAlgorithm> clientSupportedPublicKeyAlgorithms =
+                config.getUserKeys().stream()
+                        .map(
+                                algorithm ->
+                                        PublicKeyAlgorithm.fromName(
+                                                algorithm.getPublicKeyFormat().getName()))
+                        .collect(Collectors.toList());
+
+        // get server supported public key algorithms
+        // no server-sig-algs extension received? -> SSH_RSA
+        List<PublicKeyAlgorithm> serverSupportedPublicKeyAlgorithms =
+                context.getServerSupportedPublicKeyAlgorithmsForAuthentication()
+                        .orElse(List.of(PublicKeyAlgorithm.SSH_RSA));
+
+        // determine common public key algorithm to use for client authentication
+        // fallback to SSH_RSA in case there is no match between both lists
+        PublicKeyAlgorithm commonPublicKeyAlgorithm =
+                AlgorithmPicker.pickAlgorithm(
+                                clientSupportedPublicKeyAlgorithms,
+                                serverSupportedPublicKeyAlgorithms)
+                        .orElse(PublicKeyAlgorithm.SSH_RSA);
+
+        // get public key of negotiated public key algorithm
+        // no match? -> use first user key
+        return config.getUserKeys().stream()
+                .filter(
+                        key ->
+                                PublicKeyAlgorithm.fromName(key.getPublicKeyFormat().getName())
+                                        == commonPublicKeyAlgorithm)
+                .findFirst()
+                .orElse(config.getUserKeys().get(0));
+    }
+
+    /**
+     * Retrieves the list of client supported compression methods of the delay-compression extension
+     * included in SSH_MSG_EXT_INFO packet from context. If no SSH_MSG_EXT_INFO packet was received
+     * yet or SSH-Attacker is running in client mode, the extension from config will be returned
+     * instead.
+     *
+     * @return List of client supported compression methods
+     */
+    public List<CompressionMethod> getClientSupportedDelayCompressionMethods() {
+        return context.getClientSupportedDelayCompressionMethods()
+                .orElse(config.getClientSupportedDelayCompressionMethods());
+    }
+
+    /**
+     * Retrieves the list of server supported compression methods of the delay-compression extension
+     * included in SSH_MSG_EXT_INFO packet from context. If no SSH_MSG_EXT_INFO packet was received
+     * yet or SSH-Attacker is running in server mode, the extension from config will be returned
+     * instead.
+     *
+     * @return List of server supported compression methods
+     */
+    public List<CompressionMethod> getServerSupportedDelayCompressionMethods() {
+        return context.getServerSupportedDelayCompressionMethods()
+                .orElse(config.getServerSupportedDelayCompressionMethods());
+    }
+    // endregion
+
     // region Negotiated Parameters
     /**
      * Retrieves the negotiated key exchange algorithm from context. If the field is not set in
@@ -854,32 +972,6 @@ public class DefaultChooser extends Chooser {
                                     fallback);
                             return fallback;
                         });
-    }
-
-    /**
-     * Pick the user key from config that is compatible with the configured public key algorithms
-     * and return a stream of (key, algorithm) tuple that could be used for authentication. If no
-     * public key algorithms for user authentication haven been configured, all available public key
-     * algorithms will be considered.
-     *
-     * @return a stream of (key, algorithm) tuples that can be used for client authentication.
-     * @see Config#getUserKeys
-     * @see Config#getUserKeyAlgorithms
-     */
-    @Override
-    public Stream<Map.Entry<SshPublicKey<?, ?>, PublicKeyAlgorithm>>
-            getUserKeyAndAlgorithmCombinations() {
-        return config.getUserKeys().stream()
-                .flatMap(
-                        key ->
-                                config.getUserKeyAlgorithms()
-                                        .map(Collection::stream)
-                                        .orElseGet(() -> Arrays.stream(PublicKeyAlgorithm.values()))
-                                        .filter(
-                                                algorithm ->
-                                                        algorithm.getKeyFormat()
-                                                                == key.getPublicKeyFormat())
-                                        .map(algorithm -> Map.entry(key, algorithm)));
     }
 
     /**

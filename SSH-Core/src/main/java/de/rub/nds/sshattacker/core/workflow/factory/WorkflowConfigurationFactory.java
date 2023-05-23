@@ -18,9 +18,7 @@ import de.rub.nds.sshattacker.core.protocol.authentication.message.*;
 import de.rub.nds.sshattacker.core.protocol.connection.message.*;
 import de.rub.nds.sshattacker.core.protocol.transport.message.*;
 import de.rub.nds.sshattacker.core.workflow.WorkflowTrace;
-import de.rub.nds.sshattacker.core.workflow.action.ChangePacketLayerAction;
-import de.rub.nds.sshattacker.core.workflow.action.DynamicKeyExchangeAction;
-import de.rub.nds.sshattacker.core.workflow.action.SshAction;
+import de.rub.nds.sshattacker.core.workflow.action.*;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 
 import org.apache.logging.log4j.LogManager;
@@ -215,6 +213,7 @@ public class WorkflowConfigurationFactory {
             AliasedConnection connection = getDefaultConnection();
             addTransportProtocolInitActions(workflow);
             workflow.addSshActions(new DynamicKeyExchangeAction(connection.getAlias()));
+            workflow.addSshActions(new DynamicExtensionNegotiationAction());
             workflow.addSshActions(
                     SshActionFactory.createMessageAction(
                             connection, ConnectionEndType.CLIENT, new ServiceRequestMessage()),
@@ -231,6 +230,7 @@ public class WorkflowConfigurationFactory {
             AliasedConnection connection = getDefaultConnection();
             addTransportProtocolInitActions(workflow);
             workflow.addSshActions(createKeyExchangeActions(flowType, connection));
+            workflow.addSshActions(new DynamicExtensionNegotiationAction());
             workflow.addSshActions(
                     SshActionFactory.createMessageAction(
                             connection, ConnectionEndType.CLIENT, new ServiceRequestMessage()),
@@ -460,6 +460,7 @@ public class WorkflowConfigurationFactory {
                         "Unable to add authentication actions to workflow trace - unknown or unsupported authentication method: "
                                 + method);
         }
+        workflow.addSshActions(new DynamicDelayCompressionAction());
     }
 
     /**

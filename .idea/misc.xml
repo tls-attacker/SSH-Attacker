@@ -2,9 +2,7 @@
 <project version="4">
   <component name="EntryPointsManager">
     <writeAnnotations>
-      <writeAnnotation name="com.beust.jcommander.Parameter" />
       <writeAnnotation name="jakarta.xml.bind.annotation.XmlElements" />
-      <writeAnnotation name="jakarta.xml.bind.annotation.XmlElement" />
     </writeAnnotations>
   </component>
   <component name="ExternalStorageConfigurationManager" enabled="true" />

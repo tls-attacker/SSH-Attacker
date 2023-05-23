@@ -16,6 +16,9 @@ import de.rub.nds.sshattacker.core.crypto.ec.PointFormatter;
 import de.rub.nds.sshattacker.core.crypto.keys.*;
 import de.rub.nds.sshattacker.core.protocol.authentication.AuthenticationResponse;
 import de.rub.nds.sshattacker.core.protocol.connection.ChannelDefaults;
+import de.rub.nds.sshattacker.core.protocol.transport.message.extension.AbstractExtension;
+import de.rub.nds.sshattacker.core.protocol.transport.message.extension.DelayCompressionExtension;
+import de.rub.nds.sshattacker.core.protocol.transport.message.extension.ServerSigAlgsExtension;
 import de.rub.nds.sshattacker.core.workflow.factory.WorkflowTraceType;
 import de.rub.nds.sshattacker.core.workflow.filter.FilterType;
 
@@ -266,6 +269,29 @@ public class Config implements Serializable {
             fallbackRsaTransientPublicKey;
     // endregion
 
+    // region SSH Extensions
+    /** List of extensions supported by the client */
+    private List<AbstractExtension<?>> clientSupportedExtensions;
+
+    /** List of extensions supported by the server */
+    private List<AbstractExtension<?>> serverSupportedExtensions;
+
+    /** Flag for enabling and disabling the server-sig-algs extension */
+    private boolean respectServerSigAlgsExtension = true;
+
+    /** List of public key algorithms for authentication supported by server */
+    private List<PublicKeyAlgorithm> serverSupportedPublicKeyAlgorithmsForAuthentication;
+
+    /** List of compression methods supported by the client(delay-compression extension) */
+    private List<CompressionMethod> clientSupportedDelayCompressionMethods;
+
+    /** List of compression methods supported by the server(delay-compression extension) */
+    private List<CompressionMethod> serverSupportedDelayCompressionMethods;
+
+    /** Flag for enabling and disabling the delay-compression extension */
+    private boolean respectDelayCompressionExtension = true;
+    // endregion
+
     // region Authentication
     /**
      * The method, which should be used to authenticate to the server as reported in the
@@ -286,10 +312,6 @@ public class Config implements Serializable {
     @XmlElement(name = "userKey")
     @XmlElementWrapper
     private List<SshPublicKey<?, ?>> userKeys;
-
-    @XmlElement(name = "userKeyAlgorithms")
-    @XmlElementWrapper
-    private List<PublicKeyAlgorithm> userKeyAlgorithms;
     // endregion
 
     // region Channel
@@ -451,12 +473,27 @@ public class Config implements Serializable {
                                     KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP_EXCHANGE_SHA256,
                                     KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP16_SHA512,
                                     KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP18_SHA512,
-                                    KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP14_SHA256
+                                    KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP14_SHA256,
+                                    KeyExchangeAlgorithm.EXT_INFO_C
                                 })
-                        .filter(KeyExchangeAlgorithm::isAvailable)
                         .collect(Collectors.toCollection(LinkedList::new));
         serverSupportedKeyExchangeAlgorithms =
-                new LinkedList<>(clientSupportedKeyExchangeAlgorithms);
+                Arrays.stream(
+                                new KeyExchangeAlgorithm[] {
+                                    KeyExchangeAlgorithm.SNTRUP761_X25519,
+                                    KeyExchangeAlgorithm.SNTRUP4591761_X25519,
+                                    KeyExchangeAlgorithm.CURVE25519_SHA256,
+                                    KeyExchangeAlgorithm.CURVE25519_SHA256_LIBSSH_ORG,
+                                    KeyExchangeAlgorithm.ECDH_SHA2_NISTP256,
+                                    KeyExchangeAlgorithm.ECDH_SHA2_NISTP384,
+                                    KeyExchangeAlgorithm.ECDH_SHA2_NISTP521,
+                                    KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP_EXCHANGE_SHA256,
+                                    KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP16_SHA512,
+                                    KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP18_SHA512,
+                                    KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP14_SHA256,
+                                    KeyExchangeAlgorithm.EXT_INFO_S
+                                })
+                        .collect(Collectors.toCollection(LinkedList::new));
 
         // We don't support CERT_V01 or SK (U2F) host keys (yet), only listed for
         // completeness
@@ -552,6 +589,43 @@ public class Config implements Serializable {
         serverFirstKeyExchangePacketFollows = false;
         clientReserved = 0;
         serverReserved = 0;
+        // endregion
+
+        // region SSH Extension
+        // send delay-compression extension by default when acting as client
+        clientSupportedExtensions = new ArrayList<>();
+        clientSupportedExtensions.add(new DelayCompressionExtension());
+
+        // send server-sig-algs and delay-compression extension by default when acting as server
+        serverSupportedExtensions = new ArrayList<>();
+        serverSupportedExtensions.add(new ServerSigAlgsExtension());
+        serverSupportedExtensions.add(new DelayCompressionExtension());
+
+        // section server-sig-algs extension
+        serverSupportedPublicKeyAlgorithmsForAuthentication =
+                Arrays.stream(
+                                new PublicKeyAlgorithm[] {
+                                    PublicKeyAlgorithm.SSH_DSS,
+                                    PublicKeyAlgorithm.SSH_RSA,
+                                    PublicKeyAlgorithm.ECDSA_SHA2_NISTP256,
+                                    PublicKeyAlgorithm.ECDSA_SHA2_NISTP384,
+                                    PublicKeyAlgorithm.ECDSA_SHA2_NISTP521,
+                                    PublicKeyAlgorithm.SSH_ED25519
+                                })
+                        .collect(Collectors.toCollection(LinkedList::new));
+
+        // section delay-compression extension
+        clientSupportedDelayCompressionMethods =
+                Arrays.stream(
+                                new CompressionMethod[] {
+                                    CompressionMethod.NONE,
+                                    CompressionMethod.ZLIB_OPENSSH_COM,
+                                    CompressionMethod.ZLIB
+                                })
+                        .collect(Collectors.toCollection(LinkedList::new));
+
+        serverSupportedDelayCompressionMethods =
+                new LinkedList<>(clientSupportedDelayCompressionMethods);
         // endregion
 
         // region KeyExchange initialization
@@ -777,23 +851,118 @@ public class Config implements Serializable {
         userKeys =
                 List.of(
                         new SshPublicKey<>(
+                                PublicKeyFormat.SSH_RSA,
+                                new CustomRsaPublicKey(
+                                        new BigInteger("10001", 16),
+                                        new BigInteger(
+                                                "009df0c70638448afef5799bc7c161d5bc286baeb8a4dc70ffefb2f4813a"
+                                                        + "810747d3cbfcd1c9a9ce76272731ed1e2c0ba64feb9af634ae8e4df699b2"
+                                                        + "d3b52af4df616ca8003502e38b81bfa6801148c7bab1870a694b44d82ff0"
+                                                        + "98633edb09bfbab52b3e7498ce1826813da010000f7c458877f859f46442"
+                                                        + "0853220d632d9d1fc113e885e631f15dfcf1fddba90c0c5aa520bc6a55a5"
+                                                        + "6a1b29ead5492f83fe7e6b9494afbe16615daa446c2909c218dcd750ae4a"
+                                                        + "9a9c69c74d748e904ba8e2ce2812d1ce3c4ed12fd82cca7fe81f88823907"
+                                                        + "6702656ef1d3f93e472aae509a0ae5e241c4fd9b661f4cc6ffb02d416a72"
+                                                        + "5469e51e27204b3db3f28961e244a9e6c3",
+                                                16)),
+                                new CustomRsaPrivateKey(
+                                        new BigInteger(
+                                                "008701ebcef848371c8c0f40c77719bf4f50aa03b7984d4b56abba286152"
+                                                        + "f63a97fe86ef7d10ca534f1256e1c99432085f490fd7edbfc8baa2103aff"
+                                                        + "ef127d3ec6b80bde6c16e47a47a54882f614504752e22fd20981aabeb5f4"
+                                                        + "0eff3f1a9371ce12d17d58c3c9e04101d700bccca070152bfb8952b3a304"
+                                                        + "0303b5270671564f6e2753e05e413931e22a6b115fd3264fd6e4c25cb901"
+                                                        + "ccdd006d9b5785379f7cbcc1bbd149afda6b51fe13430fb5ca19da594afc"
+                                                        + "cd2bd99473001e995033116d48d329d42255ef0eec11a6d2310eb97912d7"
+                                                        + "19b7b75d74696613e21305da6715846bf04c4e76046fbf86a793d96c0fe7"
+                                                        + "02638696eed4b7488c18233db879e70149",
+                                                16),
+                                        new BigInteger(
+                                                "009df0c70638448afef5799bc7c161d5bc286baeb8a4dc70ffefb2f4813a"
+                                                        + "810747d3cbfcd1c9a9ce76272731ed1e2c0ba64feb9af634ae8e4df699b2"
+                                                        + "d3b52af4df616ca8003502e38b81bfa6801148c7bab1870a694b44d82ff0"
+                                                        + "98633edb09bfbab52b3e7498ce1826813da010000f7c458877f859f46442"
+                                                        + "0853220d632d9d1fc113e885e631f15dfcf1fddba90c0c5aa520bc6a55a5"
+                                                        + "6a1b29ead5492f83fe7e6b9494afbe16615daa446c2909c218dcd750ae4a"
+                                                        + "9a9c69c74d748e904ba8e2ce2812d1ce3c4ed12fd82cca7fe81f88823907"
+                                                        + "6702656ef1d3f93e472aae509a0ae5e241c4fd9b661f4cc6ffb02d416a72"
+                                                        + "5469e51e27204b3db3f28961e244a9e6c3",
+                                                16))),
+                        new SshPublicKey<>(
                                 PublicKeyFormat.ECDSA_SHA2_NISTP521,
                                 new CustomEcPublicKey(
                                         PointFormatter.formatFromByteArray(
                                                 NamedEcGroup.SECP521R1,
                                                 ArrayConverter.hexStringToByteArray(
-                                                        "0400c94546ca3a758e2be7700c6710dbc193db62b511b51c2e5ae09e92"
-                                                                + "723527078bfc97d7cfe0b30adec350905d4c3b2f798b88d57ca1a4cc8600ff"
-                                                                + "a9568b50b8553400ce85433ffb71641153d690d1c253c8ca395daa9100a547"
-                                                                + "f42a0ca8aee4711bcc750294fd6719bb6348d0b92c51d00b7a12ba0646433d"
-                                                                + "2f56677b4540ddf89a5da5")),
+                                                        "0400c94546ca3a758e2be7700c6710dbc193db62b511b51c"
+                                                                + "2e5ae09e92723527078bfc97d7cfe0b30adec350905d4c3b"
+                                                                + "2f798b88d57ca1a4cc8600ffa9568b50b8553400ce85433f"
+                                                                + "fb71641153d690d1c253c8ca395daa9100a547f42a0ca8ae"
+                                                                + "e4711bcc750294fd6719bb6348d0b92c51d00b7a12ba0646"
+                                                                + "433d2f56677b4540ddf89a5da5")),
                                         NamedEcGroup.SECP521R1),
                                 new CustomEcPrivateKey(
                                         new BigInteger(
-                                                "000bf5ef2fdec03bfa6cf0e2c5ee58c8bcfe0d1b41920792151f2c51b0aa621743b6"
-                                                        + "13056155bd51bde866f92b3e9bcfed230381b3dab5100a03c5965538c6f1c30a9",
+                                                "000bf5ef2fdec03bfa6cf0e2c5ee58c8bcfe0d1b41920792151f2c"
+                                                        + "51b0aa621743b613056155bd51bde866f92b3e9bcfed230381"
+                                                        + "b3dab5100a03c5965538c6f1c30a9",
                                                 16),
-                                        NamedEcGroup.SECP521R1)));
+                                        NamedEcGroup.SECP521R1)),
+                        new SshPublicKey<>(
+                                PublicKeyFormat.SSH_ED25519,
+                                new XCurveEcPublicKey(
+                                        ArrayConverter.hexStringToByteArray(
+                                                "99AF546D30DD1770CC27A1A1CE7AD1CEC729823527529352141E89F7F3420F2C"),
+                                        NamedEcGroup.CURVE25519),
+                                new XCurveEcPrivateKey(
+                                        ArrayConverter.hexStringToByteArray(
+                                                "6D3703876ED02075102F767E2EA969E311B7776F71630B7C1DF3E55C98D6641B"),
+                                        NamedEcGroup.CURVE25519)),
+                        new SshPublicKey<>(
+                                PublicKeyFormat.SSH_DSS,
+                                new CustomDsaPublicKey(
+                                        new BigInteger(
+                                                "00D34ED25D35236E5A3EFCAE34C30F06F444D1FBE85DC29D71DAD5"
+                                                        + "A8EFD5ED45609F4E29484DF5E21DB9926664296EF910AA9822FECDD"
+                                                        + "97514479DC28C69AB424A12D792E3B38D56C2DE668DA788286E5136"
+                                                        + "8AC1B837C7C928B5B5A6A277ECEA9436FAF7CBF279CD103695B7AEC"
+                                                        + "96B4EF975A218483BB715FE0CFEE7BE9E07DFA5",
+                                                16),
+                                        new BigInteger(
+                                                "00D8F3DAC6BFAA2CEAFCBF0E249DD0750913A5BFE9", 16),
+                                        new BigInteger(
+                                                "42B4D9C983941ADFDA0E6D9C4583F6FA96417017B389D750CFD717C"
+                                                        + "591FD12931167D12C96E3345E79B6225360485FF2E839CA9C38"
+                                                        + "D443A4AE2F13D6593FF69605866AC4AD1CD677441FD0D6ED15F"
+                                                        + "F636D8231130CC07B8AA6F1DF54A6517983695E3E5FFA3BFF9A"
+                                                        + "30B44423D8504CF0748AF99CA79B6A8599759E7C6DBBB5DC",
+                                                16),
+                                        new BigInteger(
+                                                "68801435B2A260F778520BD23C9EBF38AF523CB81D64C56F8741890B"
+                                                        + "1206CA2E175EE94BFF2C84601F357FB5B6071AB2240D7258D1EDE3D8B"
+                                                        + "CC2F6E78DEA5DCBB5BC315B858A1DD833607E0433CDE2FD24240DD2D1"
+                                                        + "C45F9508FBA25DC8E6F40D9BC58B6D3246865027E9B5E48F410E084B5"
+                                                        + "2A1AE99D2966543243764436757F6",
+                                                16)),
+                                new CustomDsaPrivateKey(
+                                        new BigInteger(
+                                                "00D34ED25D35236E5A3EFCAE34C30F06F444D1FBE85DC29D71DAD5A8EFD5"
+                                                        + "ED45609F4E29484DF5E21DB9926664296EF910AA9822FECDD97514479D"
+                                                        + "C28C69AB424A12D792E3B38D56C2DE668DA788286E51368AC1B837C7C9"
+                                                        + "28B5B5A6A277ECEA9436FAF7CBF279CD103695B7AEC96B4EF975A21848"
+                                                        + "3BB715FE0CFEE7BE9E07DFA5",
+                                                16),
+                                        new BigInteger(
+                                                "00D8F3DAC6BFAA2CEAFCBF0E249DD0750913A5BFE9", 16),
+                                        new BigInteger(
+                                                "42B4D9C983941ADFDA0E6D9C4583F6FA96417017B389D750CFD717C591FD"
+                                                        + "12931167D12C96E3345E79B6225360485FF2E839CA9C38D443A4AE2F13D6"
+                                                        + "593FF69605866AC4AD1CD677441FD0D6ED15FF636D8231130CC07B8AA6F1"
+                                                        + "DF54A6517983695E3E5FFA3BFF9A30B44423D8504CF0748AF99CA79B6A85"
+                                                        + "99759E7C6DBBB5DC",
+                                                16),
+                                        new BigInteger(
+                                                "6616556442F6B8F1EA8B5FA3A93BB638D55737D8", 16))));
         // endregion
 
         // region Channel initialization
@@ -1194,6 +1363,78 @@ public class Config implements Serializable {
 
     // endregion
 
+    // region Getters SSH Extensions
+
+    // section general extensions
+    public List<AbstractExtension<?>> getClientSupportedExtensions() {
+        return clientSupportedExtensions;
+    }
+
+    public List<AbstractExtension<?>> getServerSupportedExtensions() {
+        return serverSupportedExtensions;
+    }
+
+    // section server-sig-algs extension
+    public List<PublicKeyAlgorithm> getServerSupportedPublicKeyAlgorithmsForAuthentication() {
+        return serverSupportedPublicKeyAlgorithmsForAuthentication;
+    }
+
+    public boolean getRespectServerSigAlgsExtension() {
+        return respectServerSigAlgsExtension;
+    }
+
+    // section delay-compression extension
+    public List<CompressionMethod> getClientSupportedDelayCompressionMethods() {
+        return clientSupportedDelayCompressionMethods;
+    }
+
+    public List<CompressionMethod> getServerSupportedDelayCompressionMethods() {
+        return serverSupportedDelayCompressionMethods;
+    }
+
+    public boolean getRespectDelayCompressionExtension() {
+        return respectDelayCompressionExtension;
+    }
+    // endregion
+
+    // region Setters SSH Extensions
+
+    // section general extensions
+    public void setClientSupportedExtensions(List<AbstractExtension<?>> clientSupportedExtensions) {
+        this.clientSupportedExtensions = clientSupportedExtensions;
+    }
+
+    public void setServerSupportedExtensions(List<AbstractExtension<?>> serverSupportedExtensions) {
+        this.serverSupportedExtensions = serverSupportedExtensions;
+    }
+
+    // section server-sig-algs extension
+    public void setServerSupportedPublicKeyAlgorithmsForAuthentication(
+            List<PublicKeyAlgorithm> serverSupportedPublicKeyAlgorithmsForAuthentication) {
+        this.serverSupportedPublicKeyAlgorithmsForAuthentication =
+                serverSupportedPublicKeyAlgorithmsForAuthentication;
+    }
+
+    public void setRespectServerSigAlgsExtension(boolean respectServerSigAlgsExtension) {
+        this.respectServerSigAlgsExtension = respectServerSigAlgsExtension;
+    }
+
+    // section delay-compression extension
+    public void setClientSupportedDelayCompressionMethods(
+            List<CompressionMethod> clientSupportedDelayCompressionMethods) {
+        this.clientSupportedDelayCompressionMethods = clientSupportedDelayCompressionMethods;
+    }
+
+    public void setServerSupportedDelayCompressionMethods(
+            List<CompressionMethod> serverSupportedDelayCompressionMethods) {
+        this.serverSupportedDelayCompressionMethods = serverSupportedDelayCompressionMethods;
+    }
+
+    public void setRespectDelayCompressionExtension(boolean respectDelayCompressionExtension) {
+        this.respectDelayCompressionExtension = respectDelayCompressionExtension;
+    }
+    // endregion
+
     // region Getters for KeyExchange
     public Integer getDhGexMinimalGroupSize() {
         return dhGexMinimalGroupSize;
@@ -1319,20 +1560,6 @@ public class Config implements Serializable {
     public List<SshPublicKey<?, ?>> getUserKeys() {
         return userKeys;
     }
-
-    /**
-     * Get the list of user key algorithms to use for authentication.
-     *
-     * <p>These algorithms will be used for user authentication. If this value is not set, the user
-     * key algorithm might be any public key algorithms that is compatible with the user key's
-     * format.
-     *
-     * @return list of public key algorithms, or no value
-     * @see #setUserKeyAlgorithms
-     */
-    public Optional<List<PublicKeyAlgorithm>> getUserKeyAlgorithms() {
-        return Optional.ofNullable(userKeyAlgorithms);
-    }
     // endregion
     // region Setters for authentication
     public void setAuthenticationMethod(AuthenticationMethod authenticationMethod) {
@@ -1359,17 +1586,6 @@ public class Config implements Serializable {
     public void setUserKeys(List<SshPublicKey<?, ?>> userKeys) {
         this.userKeys = Objects.requireNonNull(userKeys);
     }
-
-    /**
-     * Set the list of user key algorithms to use for authentication.
-     *
-     * @param userKeyAlgorithms list of public key algorithms, or no value
-     * @see #getUserKeyAlgorithms
-     */
-    public void setUserKeyAlgorithms(List<PublicKeyAlgorithm> userKeyAlgorithms) {
-        this.userKeyAlgorithms = userKeyAlgorithms;
-    }
-
     // endregion
 
     // region Getters for Channel

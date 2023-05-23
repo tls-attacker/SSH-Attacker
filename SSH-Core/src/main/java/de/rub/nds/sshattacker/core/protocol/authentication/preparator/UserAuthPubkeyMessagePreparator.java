@@ -44,7 +44,7 @@ public class UserAuthPubkeyMessagePreparator
     boolean   TRUE
     string    public key algorithm name
     string    public key to be used for authentication */
-    private byte[] getSignatureBlob(PublicKeyAlgorithm algorithm, SshPublicKey<?, ?> pk) {
+    private byte[] getSignatureBlob(SshPublicKey<?, ?> pk) {
 
         // generate the byte array for signing
         // message ID should always be '50'
@@ -87,7 +87,8 @@ public class UserAuthPubkeyMessagePreparator
                             getObject().getPubkeyLength().getValue(),
                             DataFormatConstants.STRING_SIZE_LENGTH));
             signatureOutput.write(getObject().getPubkey().getValue());
-            return SignatureFactory.getSigningSignature(algorithm, pk)
+            return SignatureFactory.getSigningSignature(
+                            PublicKeyAlgorithm.fromName(pk.getPublicKeyFormat().getName()), pk)
                     .sign(signatureOutput.toByteArray());
         } catch (IOException e) {
             LOGGER.error(
@@ -109,9 +110,9 @@ public class UserAuthPubkeyMessagePreparator
     Signatures are encoded as follows:
     string   "ecdsa-sha2-[identifier]"
     string   ecdsa_signature_blob */
-    private byte[] getEncodedSignature(PublicKeyAlgorithm algorithm, SshPublicKey<?, ?> pk) {
+    private byte[] getEncodedSignature(SshPublicKey<?, ?> pk) {
         try {
-            byte[] signatureBlob = getSignatureBlob(algorithm, pk);
+            byte[] signatureBlob = getSignatureBlob(pk);
             ByteArrayOutputStream encodedSignatureOutput = new ByteArrayOutputStream();
             encodedSignatureOutput.write(
                     ArrayConverter.intToBytes(
@@ -140,26 +141,15 @@ public class UserAuthPubkeyMessagePreparator
     @Override
     public void prepareUserAuthRequestSpecificContents() {
         getObject().setUseSignature(true);
-        chooser.getUserKeyAndAlgorithmCombinations()
-                .findFirst()
-                .ifPresentOrElse(
-                        keyAlgorithmCombination -> {
-                            SshPublicKey<?, ?> pk = keyAlgorithmCombination.getKey();
-                            PublicKeyAlgorithm publicKeyAlgorithm =
-                                    keyAlgorithmCombination.getValue();
-
-                            getObject().setPubkeyAlgName(publicKeyAlgorithm.getName(), true);
-                            getObject().setPubkey(PublicKeyHelper.encode(pk), true);
-                            getObject()
-                                    .setSignature(
-                                            getEncodedSignature(publicKeyAlgorithm, pk), true);
-                        },
-                        () -> {
-                            LOGGER.error(
-                                    "Failed to find suitable combination of user key and public key algorithm, workflow will continue but algorithm name, public key and signature fields are left blank");
-                            getObject().setPubkeyAlgName("", true);
-                            getObject().setPubkey(new byte[0], true);
-                            getObject().setSignature(new byte[0], true);
-                        });
+        SshPublicKey<?, ?> pk = chooser.getSelectedPublicKeyForAuthentication();
+        if (pk != null) {
+            getObject().setPubkeyAlgName(pk.getPublicKeyFormat().getName(), true);
+            getObject().setPubkey(PublicKeyHelper.encode(pk), true);
+            getObject().setSignature(getEncodedSignature(pk), true);
+        } else {
+            getObject().setPubkeyAlgName("", true);
+            getObject().setPubkey(new byte[0], true);
+            getObject().setSignature(new byte[0], true);
+        }
     }
 }
