@@ -30,10 +30,9 @@ import de.rub.nds.sshattacker.core.layer.hints.RecordLayerHint;
 import de.rub.nds.sshattacker.core.layer.stream.HintedInputStream;
 import de.rub.nds.sshattacker.core.layer.stream.HintedLayerInputStream;
 import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessage;
+import java.io.IOException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import java.io.IOException;
 
 public class SSH2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessage> {
 

@@ -291,10 +291,7 @@ public abstract class MessageAction extends ConnectionBoundAction {
 
         List<LayerConfiguration> layerConfigurationList =
                 sortLayerConfigurations(
-                        layerStack,
-                        ssh2Configuration,
-                        ssh1Configuration,
-                        sessionConfiguration);
+                        layerStack, ssh2Configuration, ssh1Configuration, sessionConfiguration);
         LayerStackProcessingResult processingResult = layerStack.sendData(layerConfigurationList);
         setContainers(processingResult);
     }
@@ -352,7 +349,11 @@ public abstract class MessageAction extends ConnectionBoundAction {
         LayerConfiguration recordConfiguration =
                 new GenericReceiveLayerConfiguration(ImplementedLayers.Session);
         layerConfigurationList =
-                sortLayerConfigurations(layerStack,messageSsh2Configuration, messageSsh1Configuration, recordConfiguration);
+                sortLayerConfigurations(
+                        layerStack,
+                        messageSsh2Configuration,
+                        messageSsh1Configuration,
+                        recordConfiguration);
         return layerConfigurationList;
     }
 
@@ -383,7 +384,11 @@ public abstract class MessageAction extends ConnectionBoundAction {
         applyActionOptionFilters(messageSsh1Configuration);
         applyActionOptionFilters(messageSsh2Configuration);
         layerConfigurationList =
-                sortLayerConfigurations(layerStack,messageSsh2Configuration, messageSsh1Configuration, recordConfiguration);
+                sortLayerConfigurations(
+                        layerStack,
+                        messageSsh2Configuration,
+                        messageSsh1Configuration,
+                        recordConfiguration);
 
         return layerConfigurationList;
     }
