@@ -14,7 +14,8 @@ public enum ImplementedLayers implements LayerType {
     ConnectionLayer,
     TransportLayer,
     Session,
-    SSHv1;
+    SSHv1,
+    SSHv2;
 
     @Override
     public String getName() {

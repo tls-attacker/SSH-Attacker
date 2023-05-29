@@ -280,35 +280,39 @@ public abstract class MessageAction extends ConnectionBoundAction {
             throws IOException {
         LayerStack layerStack = sshContext.getLayerStack();
 
-        LayerConfiguration authenticationConfiguration =
+        LayerConfiguration ssh2Configuration =
                 new SpecificSendLayerConfiguration<>(
-                        ImplementedLayers.AuthenticationLayer, protocolMessagesToSend);
-        LayerConfiguration transportConfiguration =
+                        ImplementedLayers.SSHv2, protocolMessagesToSend);
+        LayerConfiguration ssh1Configuration =
                 new SpecificSendLayerConfiguration<>(
-                        ImplementedLayers.TransportLayer, protocolMessagesToSend);
-        LayerConfiguration connectionConfiguration =
-                new SpecificSendLayerConfiguration<>(
-                        ImplementedLayers.ConnectionLayer, protocolMessagesToSend);
+                        ImplementedLayers.SSHv1, protocolMessagesToSend);
         LayerConfiguration sessionConfiguration =
                 new SpecificSendLayerConfiguration<>(ImplementedLayers.Session, sessionsToSend);
 
         List<LayerConfiguration> layerConfigurationList =
                 sortLayerConfigurations(
                         layerStack,
-                        authenticationConfiguration,
-                        transportConfiguration,
-                        connectionConfiguration,
+                        ssh2Configuration,
+                        ssh1Configuration,
                         sessionConfiguration);
         LayerStackProcessingResult processingResult = layerStack.sendData(layerConfigurationList);
         setContainers(processingResult);
     }
 
     private void setContainers(LayerStackProcessingResult processingResults) {
-        if (processingResults.getResultForLayer(ImplementedLayers.AuthenticationLayer) != null) {
+        if (processingResults.getResultForLayer(ImplementedLayers.SSHv2) != null) {
             messages =
                     new ArrayList<>(
                             processingResults
-                                    .getResultForLayer(ImplementedLayers.AuthenticationLayer)
+                                    .getResultForLayer(ImplementedLayers.SSHv2)
+                                    .getUsedContainers());
+        }
+
+        if (processingResults.getResultForLayer(ImplementedLayers.SSHv1) != null) {
+            messages =
+                    new ArrayList<>(
+                            processingResults
+                                    .getResultForLayer(ImplementedLayers.SSHv1)
                                     .getUsedContainers());
         }
 
@@ -341,12 +345,14 @@ public abstract class MessageAction extends ConnectionBoundAction {
 
     private List<LayerConfiguration> getGenericReceiveConfigurations(LayerStack layerStack) {
         List<LayerConfiguration> layerConfigurationList;
-        LayerConfiguration messageConfiguration =
-                new GenericReceiveLayerConfiguration(ImplementedLayers.AuthenticationLayer);
+        LayerConfiguration messageSsh2Configuration =
+                new GenericReceiveLayerConfiguration(ImplementedLayers.SSHv2);
+        LayerConfiguration messageSsh1Configuration =
+                new GenericReceiveLayerConfiguration(ImplementedLayers.SSHv1);
         LayerConfiguration recordConfiguration =
                 new GenericReceiveLayerConfiguration(ImplementedLayers.Session);
         layerConfigurationList =
-                sortLayerConfigurations(layerStack, messageConfiguration, recordConfiguration);
+                sortLayerConfigurations(layerStack,messageSsh2Configuration, messageSsh1Configuration, recordConfiguration);
         return layerConfigurationList;
     }
 
@@ -356,9 +362,12 @@ public abstract class MessageAction extends ConnectionBoundAction {
             LayerStack layerStack) {
         List<LayerConfiguration> layerConfigurationList;
 
-        LayerConfiguration messageConfiguration =
+        LayerConfiguration messageSsh2Configuration =
                 new SpecificReceiveLayerConfiguration<>(
-                        ImplementedLayers.AuthenticationLayer, protocolMessagesToReceive);
+                        ImplementedLayers.SSHv2, protocolMessagesToReceive);
+        LayerConfiguration messageSsh1Configuration =
+                new SpecificReceiveLayerConfiguration<>(
+                        ImplementedLayers.SSHv1, protocolMessagesToReceive);
         LayerConfiguration recordConfiguration =
                 new SpecificReceiveLayerConfiguration<>(
                         ImplementedLayers.Session, sessionsToReceive);
@@ -371,9 +380,10 @@ public abstract class MessageAction extends ConnectionBoundAction {
         /*        LayerConfiguration httpConfiguration =
         new SpecificReceiveLayerConfiguration<>(
                 ImplementedLayers.HTTP, httpMessagesToReceive);*/
-        applyActionOptionFilters(messageConfiguration);
+        applyActionOptionFilters(messageSsh1Configuration);
+        applyActionOptionFilters(messageSsh2Configuration);
         layerConfigurationList =
-                sortLayerConfigurations(layerStack, messageConfiguration, recordConfiguration);
+                sortLayerConfigurations(layerStack,messageSsh2Configuration, messageSsh1Configuration, recordConfiguration);
 
         return layerConfigurationList;
     }

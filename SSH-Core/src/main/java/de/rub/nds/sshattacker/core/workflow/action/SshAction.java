@@ -165,9 +165,7 @@ public abstract class SshAction implements Serializable, Aliasable {
             }
             Optional<LayerConfiguration> layerConfiguration = Optional.empty();
             if (layer == ImplementedLayers.SSHv1
-                    || layer == ImplementedLayers.AuthenticationLayer
-                    || layer == ImplementedLayers.TransportLayer
-                    || layer == ImplementedLayers.ConnectionLayer
+                    || layer == ImplementedLayers.SSHv2
                     || layer == ImplementedLayers.Session) {
                 layerConfiguration =
                         unsortedLayerConfigurations.stream()
