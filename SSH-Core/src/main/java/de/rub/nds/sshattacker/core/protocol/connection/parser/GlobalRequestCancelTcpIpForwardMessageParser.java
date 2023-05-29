@@ -9,6 +9,7 @@ package de.rub.nds.sshattacker.core.protocol.connection.parser;
 
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.connection.message.GlobalRequestCancelTcpIpForwardMessage;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -18,12 +19,20 @@ public class GlobalRequestCancelTcpIpForwardMessageParser
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public GlobalRequestCancelTcpIpForwardMessageParser(byte[] array) {
+    /*    public GlobalRequestCancelTcpIpForwardMessageParser(byte[] array) {
         super(array);
     }
-
     public GlobalRequestCancelTcpIpForwardMessageParser(byte[] array, int startPosition) {
         super(array, startPosition);
+    }*/
+
+    public GlobalRequestCancelTcpIpForwardMessageParser(InputStream stream) {
+        super(stream);
+    }
+
+    @Override
+    public void parse(GlobalRequestCancelTcpIpForwardMessage message) {
+        parseMessageSpecificContents();
     }
 
     private void parseIPAddressToBind() {

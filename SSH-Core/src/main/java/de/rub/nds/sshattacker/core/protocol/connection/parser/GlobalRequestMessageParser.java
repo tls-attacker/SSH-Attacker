@@ -13,6 +13,7 @@ import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 import de.rub.nds.sshattacker.core.protocol.connection.message.GlobalRequestMessage;
 import de.rub.nds.sshattacker.core.util.Converter;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -22,12 +23,17 @@ public abstract class GlobalRequestMessageParser<T extends GlobalRequestMessage<
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public GlobalRequestMessageParser(byte[] array) {
-        super(array);
-    }
+    /*
+        public GlobalRequestMessageParser(byte[] array) {
+            super(array);
+        }
+        public GlobalRequestMessageParser(byte[] array, int startPosition) {
+            super(array, startPosition);
+        }
+    */
 
-    public GlobalRequestMessageParser(byte[] array, int startPosition) {
-        super(array, startPosition);
+    public GlobalRequestMessageParser(InputStream stream) {
+        super(stream);
     }
 
     private void parseRequestName() {

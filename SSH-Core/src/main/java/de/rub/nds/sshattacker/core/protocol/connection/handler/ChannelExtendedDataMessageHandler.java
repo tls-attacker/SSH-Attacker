@@ -7,12 +7,9 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.handler;
 
+import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.protocol.common.*;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelExtendedDataMessage;
-import de.rub.nds.sshattacker.core.protocol.connection.parser.ChannelExtendedDataMessageParser;
-import de.rub.nds.sshattacker.core.protocol.connection.preparator.ChannelExtendedDataMessagePreparator;
-import de.rub.nds.sshattacker.core.protocol.connection.serializer.ChannelExtendedDataMessageSerializer;
-import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class ChannelExtendedDataMessageHandler
         extends SshMessageHandler<ChannelExtendedDataMessage> {
@@ -21,17 +18,17 @@ public class ChannelExtendedDataMessageHandler
         super(context);
     }
 
-    public ChannelExtendedDataMessageHandler(
+    /*public ChannelExtendedDataMessageHandler(
             SshContext context, ChannelExtendedDataMessage message) {
         super(context, message);
-    }
+    }*/
 
     @Override
-    public void adjustContext() {
+    public void adjustContext(ChannelExtendedDataMessage message) {
         // TODO: Handle ChannelExtendedDataMessage
     }
 
-    @Override
+    /*@Override
     public ChannelExtendedDataMessageParser getParser(byte[] array) {
         return new ChannelExtendedDataMessageParser(array);
     }
@@ -49,5 +46,5 @@ public class ChannelExtendedDataMessageHandler
     @Override
     public ChannelExtendedDataMessageSerializer getSerializer() {
         return new ChannelExtendedDataMessageSerializer(message);
-    }
+    }*/
 }

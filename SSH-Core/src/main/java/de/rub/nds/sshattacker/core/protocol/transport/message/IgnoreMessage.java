@@ -10,9 +10,13 @@ package de.rub.nds.sshattacker.core.protocol.transport.message;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
+import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.IgnoreMessageHandler;
-import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.protocol.transport.parser.IgnoreMessageParser;
+import de.rub.nds.sshattacker.core.protocol.transport.preparator.IgnoreMessagePreparator;
+import de.rub.nds.sshattacker.core.protocol.transport.serializer.IgnoreMessageSerializer;
+import java.io.InputStream;
 
 public class IgnoreMessage extends SshMessage<IgnoreMessage> {
 
@@ -59,6 +63,31 @@ public class IgnoreMessage extends SshMessage<IgnoreMessage> {
 
     @Override
     public IgnoreMessageHandler getHandler(SshContext context) {
-        return new IgnoreMessageHandler(context, this);
+        return new IgnoreMessageHandler(context);
+    }
+
+    @Override
+    public IgnoreMessageParser getParser(SshContext context, InputStream stream) {
+        return new IgnoreMessageParser(stream);
+    }
+
+    /*@Override
+    public IgnoreMessageParser getParser(byte[] array, int startPosition) {
+        return new IgnoreMessageParser(array, startPosition);
+    }*/
+
+    @Override
+    public IgnoreMessagePreparator getPreparator(SshContext context) {
+        return new IgnoreMessagePreparator(context.getChooser(), this);
+    }
+
+    @Override
+    public IgnoreMessageSerializer getSerializer(SshContext context) {
+        return new IgnoreMessageSerializer(this);
+    }
+
+    @Override
+    public String toShortString() {
+        return "IGNORE";
     }
 }

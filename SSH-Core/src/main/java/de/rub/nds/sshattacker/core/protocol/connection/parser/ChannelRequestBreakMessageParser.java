@@ -9,6 +9,7 @@ package de.rub.nds.sshattacker.core.protocol.connection.parser;
 
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelRequestBreakMessage;
+import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -16,12 +17,22 @@ public class ChannelRequestBreakMessageParser
         extends ChannelRequestMessageParser<ChannelRequestBreakMessage> {
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public ChannelRequestBreakMessageParser(byte[] array) {
-        super(array);
+    /*
+        public ChannelRequestBreakMessageParser(byte[] array) {
+            super(array);
+        }
+        public ChannelRequestBreakMessageParser(byte[] array, int startPosition) {
+            super(array, startPosition);
+        }
+    */
+
+    public ChannelRequestBreakMessageParser(InputStream stream) {
+        super(stream);
     }
 
-    public ChannelRequestBreakMessageParser(byte[] array, int startPosition) {
-        super(array, startPosition);
+    @Override
+    public void parse(ChannelRequestBreakMessage message) {
+        parseMessageSpecificContents();
     }
 
     @Override

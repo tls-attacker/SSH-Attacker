@@ -10,8 +10,15 @@ package de.rub.nds.sshattacker.core.protocol.connection.message;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
+import de.rub.nds.sshattacker.core.layer.context.SshContext;
+import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
+import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
+import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.connection.handler.GlobalRequestTcpIpForwardMessageHandler;
-import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.protocol.connection.parser.GlobalRequestTcpIpForwardMessageParser;
+import de.rub.nds.sshattacker.core.protocol.connection.preparator.GlobalRequestTcpIpForwardMessagePreparator;
+import de.rub.nds.sshattacker.core.protocol.connection.serializer.GlobalRequestTcpIpForwardMessageSerializer;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
 public class GlobalRequestTcpIpForwardMessage
@@ -79,6 +86,29 @@ public class GlobalRequestTcpIpForwardMessage
 
     @Override
     public GlobalRequestTcpIpForwardMessageHandler getHandler(SshContext context) {
-        return new GlobalRequestTcpIpForwardMessageHandler(context, this);
+        return new GlobalRequestTcpIpForwardMessageHandler(context);
+    }
+
+    @Override
+    public SshMessageParser<GlobalRequestTcpIpForwardMessage> getParser(
+            SshContext context, InputStream stream) {
+        return new GlobalRequestTcpIpForwardMessageParser(stream);
+    }
+
+    @Override
+    public SshMessagePreparator<GlobalRequestTcpIpForwardMessage> getPreparator(
+            SshContext context) {
+        return new GlobalRequestTcpIpForwardMessagePreparator(context.getChooser(), this);
+    }
+
+    @Override
+    public SshMessageSerializer<GlobalRequestTcpIpForwardMessage> getSerializer(
+            SshContext context) {
+        return new GlobalRequestTcpIpForwardMessageSerializer(this);
+    }
+
+    @Override
+    public String toShortString() {
+        return "TCPIP_FW";
     }
 }

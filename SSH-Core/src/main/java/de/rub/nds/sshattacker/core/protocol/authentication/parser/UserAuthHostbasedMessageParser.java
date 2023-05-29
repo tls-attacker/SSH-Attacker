@@ -13,6 +13,7 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.BinaryPacketConstants;
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthHostbasedMessage;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -22,17 +23,29 @@ public class UserAuthHostbasedMessageParser
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public UserAuthHostbasedMessageParser(byte[] array) {
-        super(array);
-    }
+    /*
+        public UserAuthHostbasedMessageParser(byte[] array) {
+            super(array);
+        }
+        public UserAuthHostbasedMessageParser(byte[] array, int startPosition) {
+            super(array, startPosition);
+        }
+    */
 
-    public UserAuthHostbasedMessageParser(byte[] array, int startPosition) {
-        super(array, startPosition);
+    public UserAuthHostbasedMessageParser(InputStream stream) {
+        super(stream);
     }
 
     @Override
     protected UserAuthHostbasedMessage createMessage() {
         return new UserAuthHostbasedMessage();
+    }
+
+    @Override
+    public void parse(UserAuthHostbasedMessage message) {
+        LOGGER.debug("Parsing UserAuthBannerMessage");
+        parseMessageSpecificContents();
+        message.setCompleteResultingMessage(getAlreadyParsed());
     }
 
     private void parsePubKeyAlgorithm() {

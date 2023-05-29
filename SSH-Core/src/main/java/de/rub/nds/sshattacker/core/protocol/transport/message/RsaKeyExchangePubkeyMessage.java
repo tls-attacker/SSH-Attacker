@@ -15,10 +15,13 @@ import de.rub.nds.sshattacker.core.crypto.keys.CustomRsaPrivateKey;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomRsaPublicKey;
 import de.rub.nds.sshattacker.core.crypto.keys.SshPublicKey;
 import de.rub.nds.sshattacker.core.crypto.util.PublicKeyHelper;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
+import de.rub.nds.sshattacker.core.layer.context.SshContext;
+import de.rub.nds.sshattacker.core.protocol.common.*;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.RsaKeyExchangePubkeyMessageHandler;
-import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.protocol.transport.parser.RsaKeyExchangePubkeyMessageParser;
+import de.rub.nds.sshattacker.core.protocol.transport.preparator.RsaKeyExchangePubkeyMessagePreparator;
+import de.rub.nds.sshattacker.core.protocol.transport.serializer.RsaKeyExchangePubkeyMessageSerializer;
+import java.io.InputStream;
 import java.math.BigInteger;
 import java.security.interfaces.RSAPublicKey;
 
@@ -148,6 +151,28 @@ public class RsaKeyExchangePubkeyMessage extends SshMessage<RsaKeyExchangePubkey
 
     @Override
     public SshMessageHandler<RsaKeyExchangePubkeyMessage> getHandler(SshContext context) {
-        return new RsaKeyExchangePubkeyMessageHandler(context, this);
+        return new RsaKeyExchangePubkeyMessageHandler(context);
+    }
+
+    @Override
+    public SshMessageParser<RsaKeyExchangePubkeyMessage> getParser(
+            SshContext context, InputStream stream) {
+        return new RsaKeyExchangePubkeyMessageParser(stream);
+    }
+
+    @Override
+    public SshMessagePreparator<RsaKeyExchangePubkeyMessage> getPreparator(SshContext context) {
+        return new RsaKeyExchangePubkeyMessagePreparator(context.getChooser(), this);
+    }
+
+    @Override
+    public SshMessageSerializer<RsaKeyExchangePubkeyMessage> getSerializer(SshContext context) {
+        // TODO: Implement Serializer
+        return new RsaKeyExchangePubkeyMessageSerializer(this);
+    }
+
+    @Override
+    public String toShortString() {
+        return "RSA_PUBKEY_KEX";
     }
 }

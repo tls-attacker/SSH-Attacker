@@ -9,6 +9,7 @@ package de.rub.nds.sshattacker.core.protocol.connection.parser;
 
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelRequestExecMessage;
+import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -17,12 +18,22 @@ public class ChannelRequestExecMessageParser
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public ChannelRequestExecMessageParser(byte[] array) {
-        super(array);
+    /*
+        public ChannelRequestExecMessageParser(byte[] array) {
+            super(array);
+        }
+        public ChannelRequestExecMessageParser(byte[] array, int startPosition) {
+            super(array, startPosition);
+        }
+    */
+
+    public ChannelRequestExecMessageParser(InputStream stream) {
+        super(stream);
     }
 
-    public ChannelRequestExecMessageParser(byte[] array, int startPosition) {
-        super(array, startPosition);
+    @Override
+    public void parse(ChannelRequestExecMessage message) {
+        parseMessageSpecificContents();
     }
 
     @Override

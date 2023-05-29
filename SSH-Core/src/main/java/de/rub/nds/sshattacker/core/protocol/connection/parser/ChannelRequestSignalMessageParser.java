@@ -11,6 +11,7 @@ import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeStrin
 
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelRequestSignalMessage;
+import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -19,12 +20,20 @@ public class ChannelRequestSignalMessageParser
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public ChannelRequestSignalMessageParser(byte[] array) {
+    /*  public ChannelRequestSignalMessageParser(byte[] array) {
         super(array);
     }
-
     public ChannelRequestSignalMessageParser(byte[] array, Integer startPosition) {
         super(array, startPosition);
+    }*/
+
+    public ChannelRequestSignalMessageParser(InputStream stream) {
+        super(stream);
+    }
+
+    @Override
+    public void parse(ChannelRequestSignalMessage message) {
+        parseMessageSpecificContents();
     }
 
     @Override

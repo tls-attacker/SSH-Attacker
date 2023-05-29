@@ -7,13 +7,10 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.handler;
 
+import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.protocol.common.*;
 import de.rub.nds.sshattacker.core.protocol.transport.message.DhKeyExchangeReplyMessage;
-import de.rub.nds.sshattacker.core.protocol.transport.parser.DhKeyExchangeReplyMessageParser;
-import de.rub.nds.sshattacker.core.protocol.transport.preparator.DhKeyExchangeReplyMessagePreparator;
-import de.rub.nds.sshattacker.core.protocol.transport.serializer.DhKeyExchangeReplyMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.util.KeyExchangeUtil;
-import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class DhKeyExchangeReplyMessageHandler extends SshMessageHandler<DhKeyExchangeReplyMessage> {
 
@@ -21,12 +18,12 @@ public class DhKeyExchangeReplyMessageHandler extends SshMessageHandler<DhKeyExc
         super(context);
     }
 
-    public DhKeyExchangeReplyMessageHandler(SshContext context, DhKeyExchangeReplyMessage message) {
+    /*public DhKeyExchangeReplyMessageHandler(SshContext context, DhKeyExchangeReplyMessage message) {
         super(context, message);
-    }
+    }*/
 
     @Override
-    public void adjustContext() {
+    public void adjustContext(DhKeyExchangeReplyMessage message) {
         KeyExchangeUtil.handleHostKeyMessage(context, message);
         updateContextWithRemotePublicKey(message);
         KeyExchangeUtil.computeSharedSecret(context, context.getChooser().getDhKeyExchange());
@@ -44,7 +41,7 @@ public class DhKeyExchangeReplyMessageHandler extends SshMessageHandler<DhKeyExc
                 .setDhServerPublicKey(message.getEphemeralPublicKey().getValue());
     }
 
-    @Override
+    /*@Override
     public DhKeyExchangeReplyMessageParser getParser(byte[] array) {
         return new DhKeyExchangeReplyMessageParser(array);
     }
@@ -62,5 +59,5 @@ public class DhKeyExchangeReplyMessageHandler extends SshMessageHandler<DhKeyExc
     @Override
     public SshMessageSerializer<DhKeyExchangeReplyMessage> getSerializer() {
         return new DhKeyExchangeReplyMessageSerializer(message);
-    }
+    }*/
 }

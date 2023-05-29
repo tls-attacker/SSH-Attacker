@@ -11,6 +11,7 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 import de.rub.nds.sshattacker.core.protocol.transport.message.IgnoreMessage;
+import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -18,12 +19,18 @@ public class IgnoreMessageParser extends SshMessageParser<IgnoreMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public IgnoreMessageParser(byte[] array) {
-        super(array);
-    }
+    /*
+        public IgnoreMessageParser(byte[] array) {
+            super(array);
+        }
+        public IgnoreMessageParser(byte[] array, int startPosition) {
+            super(array, startPosition);
+        }
 
-    public IgnoreMessageParser(byte[] array, int startPosition) {
-        super(array, startPosition);
+    */
+
+    public IgnoreMessageParser(InputStream stream) {
+        super(stream);
     }
 
     @Override
@@ -41,5 +48,10 @@ public class IgnoreMessageParser extends SshMessageParser<IgnoreMessage> {
     @Override
     protected void parseMessageSpecificContents() {
         parseData();
+    }
+
+    @Override
+    public void parse(IgnoreMessage message) {
+        parseMessageSpecificContents();
     }
 }

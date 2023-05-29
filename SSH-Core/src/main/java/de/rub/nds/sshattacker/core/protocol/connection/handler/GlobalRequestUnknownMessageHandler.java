@@ -7,12 +7,9 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.handler;
 
+import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.connection.message.GlobalRequestUnknownMessage;
-import de.rub.nds.sshattacker.core.protocol.connection.parser.GlobalRequestUnknownMessageParser;
-import de.rub.nds.sshattacker.core.protocol.connection.preparator.GlobalRequestUnknownMessagePreparator;
-import de.rub.nds.sshattacker.core.protocol.connection.serializer.GlobalRequestUnknownMessageSerializer;
-import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class GlobalRequestUnknownMessageHandler
         extends SshMessageHandler<GlobalRequestUnknownMessage> {
@@ -21,15 +18,15 @@ public class GlobalRequestUnknownMessageHandler
         super(context);
     }
 
-    public GlobalRequestUnknownMessageHandler(
+    /*public GlobalRequestUnknownMessageHandler(
             SshContext context, GlobalRequestUnknownMessage message) {
         super(context, message);
-    }
+    }*/
 
     @Override
-    public void adjustContext() {}
+    public void adjustContext(GlobalRequestUnknownMessage message) {}
 
-    @Override
+    /*@Override
     public GlobalRequestUnknownMessageParser getParser(byte[] array) {
         return new GlobalRequestUnknownMessageParser(array);
     }
@@ -47,5 +44,5 @@ public class GlobalRequestUnknownMessageHandler
     @Override
     public GlobalRequestUnknownMessageSerializer getSerializer() {
         return new GlobalRequestUnknownMessageSerializer(message);
-    }
+    }*/
 }

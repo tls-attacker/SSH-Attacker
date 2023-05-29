@@ -13,9 +13,13 @@ import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.sshattacker.core.crypto.keys.SshPublicKey;
 import de.rub.nds.sshattacker.core.crypto.util.PublicKeyHelper;
+import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.protocol.common.*;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.DhKeyExchangeReplyMessageHandler;
-import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.protocol.transport.parser.DhKeyExchangeReplyMessageParser;
+import de.rub.nds.sshattacker.core.protocol.transport.preparator.DhKeyExchangeReplyMessagePreparator;
+import de.rub.nds.sshattacker.core.protocol.transport.serializer.DhKeyExchangeReplyMessageSerializer;
+import java.io.InputStream;
 import java.math.BigInteger;
 
 public class DhKeyExchangeReplyMessage extends SshMessage<DhKeyExchangeReplyMessage>
@@ -175,6 +179,26 @@ public class DhKeyExchangeReplyMessage extends SshMessage<DhKeyExchangeReplyMess
 
     @Override
     public DhKeyExchangeReplyMessageHandler getHandler(SshContext context) {
-        return new DhKeyExchangeReplyMessageHandler(context, this);
+        return new DhKeyExchangeReplyMessageHandler(context);
+    }
+
+    @Override
+    public DhKeyExchangeReplyMessageParser getParser(SshContext context, InputStream stream) {
+        return new DhKeyExchangeReplyMessageParser(stream);
+    }
+
+    @Override
+    public SshMessagePreparator<DhKeyExchangeReplyMessage> getPreparator(SshContext context) {
+        return new DhKeyExchangeReplyMessagePreparator(context.getChooser(), this);
+    }
+
+    @Override
+    public SshMessageSerializer<DhKeyExchangeReplyMessage> getSerializer(SshContext context) {
+        return new DhKeyExchangeReplyMessageSerializer(this);
+    }
+
+    @Override
+    public String toShortString() {
+        return "DHkeyExchangeRepl";
     }
 }

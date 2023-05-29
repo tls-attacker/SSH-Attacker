@@ -8,12 +8,9 @@
 package de.rub.nds.sshattacker.core.protocol.transport.handler;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.protocol.common.*;
 import de.rub.nds.sshattacker.core.protocol.transport.message.UnknownMessage;
-import de.rub.nds.sshattacker.core.protocol.transport.parser.UnknownMessageParser;
-import de.rub.nds.sshattacker.core.protocol.transport.preparator.UnknownMessagePreparator;
-import de.rub.nds.sshattacker.core.protocol.transport.serializer.UnknownMessageSerializer;
-import de.rub.nds.sshattacker.core.state.SshContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -25,18 +22,18 @@ public class UnknownMessageHandler extends SshMessageHandler<UnknownMessage> {
         super(context);
     }
 
-    public UnknownMessageHandler(SshContext context, UnknownMessage message) {
+    /*public UnknownMessageHandler(SshContext context, UnknownMessage message) {
         super(context, message);
-    }
+    }*/
 
     @Override
-    public void adjustContext() {
+    public void adjustContext(UnknownMessage message) {
         LOGGER.debug(
                 "Received unknown message:\n"
                         + ArrayConverter.bytesToHexString(message.getPayload()));
     }
 
-    @Override
+    /*@Override
     public UnknownMessageParser getParser(byte[] array) {
         return new UnknownMessageParser(array);
     }
@@ -54,5 +51,5 @@ public class UnknownMessageHandler extends SshMessageHandler<UnknownMessage> {
     @Override
     public UnknownMessageSerializer getSerializer() {
         return new UnknownMessageSerializer(message);
-    }
+    }*/
 }

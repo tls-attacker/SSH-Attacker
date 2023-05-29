@@ -16,7 +16,9 @@ import de.rub.nds.sshattacker.core.crypto.kex.DhKeyExchange;
 import de.rub.nds.sshattacker.core.crypto.kex.HybridKeyExchange;
 import de.rub.nds.sshattacker.core.crypto.kex.RsaKeyExchange;
 import de.rub.nds.sshattacker.core.crypto.keys.SshPublicKey;
-import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.state.Context;
+import de.rub.nds.tlsattacker.transport.Connection;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.util.List;
 import java.util.stream.Stream;
 import org.apache.logging.log4j.LogManager;
@@ -26,11 +28,11 @@ public abstract class Chooser {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    protected final SshContext context;
+    protected final Context context;
 
     protected final Config config;
 
-    public Chooser(SshContext context, Config config) {
+    public Chooser(Context context, Config config) {
         this.config = config;
         this.context = context;
     }
@@ -39,7 +41,7 @@ public abstract class Chooser {
         return config;
     }
 
-    public SshContext getContext() {
+    public Context getContext() {
         return context;
     }
 
@@ -128,7 +130,7 @@ public abstract class Chooser {
      * @return The negotiated encryption algorithm for outgoing packets.
      */
     public EncryptionAlgorithm getSendEncryptionAlgorithm() {
-        return context.isClient()
+        return context.getSshContext().isClient()
                 ? this.getEncryptionAlgorithmClientToServer()
                 : this.getEncryptionAlgorithmServerToClient();
     }
@@ -141,7 +143,7 @@ public abstract class Chooser {
      * @return The negotiated encryption algorithm for incoming packets.
      */
     public EncryptionAlgorithm getReceiveEncryptionAlgorithm() {
-        return context.isClient()
+        return context.getSshContext().isClient()
                 ? this.getEncryptionAlgorithmServerToClient()
                 : this.getEncryptionAlgorithmClientToServer();
     }
@@ -158,7 +160,7 @@ public abstract class Chooser {
      * @return The negotiated MAC algorithm for outgoing packets.
      */
     public MacAlgorithm getSendMacAlgorithm() {
-        return context.isClient()
+        return context.getSshContext().isClient()
                 ? this.getMacAlgorithmClientToServer()
                 : this.getMacAlgorithmServerToClient();
     }
@@ -171,7 +173,7 @@ public abstract class Chooser {
      * @return The negotiated MAC algorithm for incoming packets.
      */
     public MacAlgorithm getReceiveMacAlgorithm() {
-        return context.isClient()
+        return context.getSshContext().isClient()
                 ? this.getMacAlgorithmServerToClient()
                 : this.getMacAlgorithmClientToServer();
     }
@@ -188,7 +190,7 @@ public abstract class Chooser {
      * @return The negotiated compression method for outgoing packets.
      */
     public CompressionMethod getSendCompressionMethod() {
-        return context.isClient()
+        return context.getSshContext().isClient()
                 ? this.getCompressionMethodClientToServer()
                 : this.getCompressionMethodServerToClient();
     }
@@ -201,7 +203,7 @@ public abstract class Chooser {
      * @return The negotiated compression method for incoming packets.
      */
     public CompressionMethod getReceiveCompressionMethod() {
-        return context.isClient()
+        return context.getSshContext().isClient()
                 ? this.getCompressionMethodServerToClient()
                 : this.getCompressionMethodClientToServer();
     }
@@ -235,4 +237,16 @@ public abstract class Chooser {
     // endregion
 
     public abstract AuthenticationMethod getAuthenticationMethod();
+
+    public abstract ConnectionEndType getConnectionEndType();
+
+    public abstract Connection getConnection();
+
+    public abstract CompressionAlgorithm getSelectedCompressionAlgorithm();
+
+    public abstract EncryptionAlgorithm getSelectedEncryptionAlgorithm();
+
+    public abstract MacAlgorithm getSelectedMacAlgorithm();
+
+    public abstract KeyExchangeAlgorithm getSelectedKeyExchangeAlgorithm();
 }

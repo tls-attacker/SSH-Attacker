@@ -12,6 +12,7 @@ import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeStrin
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 import de.rub.nds.sshattacker.core.protocol.transport.message.ServiceRequestMessage;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -20,13 +21,17 @@ public class ServiceRequestMessageParser extends SshMessageParser<ServiceRequest
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public ServiceRequestMessageParser(byte[] array) {
+    /*public ServiceRequestMessageParser(byte[] array) {
         super(array);
+    }*/
+
+    public ServiceRequestMessageParser(InputStream stream) {
+        super(stream);
     }
 
-    public ServiceRequestMessageParser(byte[] array, int startPosition) {
+    /*public ServiceRequestMessageParser(byte[] array, int startPosition) {
         super(array, startPosition);
-    }
+    }*/
 
     private void parseServiceName() {
         message.setServiceNameLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
@@ -46,5 +51,10 @@ public class ServiceRequestMessageParser extends SshMessageParser<ServiceRequest
     @Override
     protected void parseMessageSpecificContents() {
         parseServiceName();
+    }
+
+    @Override
+    public void parse(ServiceRequestMessage message) {
+        parseMessageSpecificContents();
     }
 }

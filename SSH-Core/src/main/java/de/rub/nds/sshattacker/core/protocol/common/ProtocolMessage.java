@@ -11,7 +11,8 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bool.ModifiableBoolean;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
-import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.layer.Message;
+import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlTransient;
@@ -20,8 +21,8 @@ import java.util.List;
 import java.util.Random;
 
 @XmlAccessorType(XmlAccessType.FIELD)
-public abstract class ProtocolMessage<T extends ProtocolMessage<T>>
-        extends ModifiableVariableHolder {
+public abstract class ProtocolMessage<Self extends ProtocolMessage<?>>
+        extends Message<Self, SshContext> {
 
     /** content type */
     @XmlTransient protected final boolean GOING_TO_BE_SENT_DEFAULT = true;
@@ -114,7 +115,20 @@ public abstract class ProtocolMessage<T extends ProtocolMessage<T>>
                 ModifiableVariableFactory.safelySetValue(this.adjustContext, adjustContext);
     }
 
-    public abstract ProtocolMessageHandler<T> getHandler(SshContext context);
+    @Override
+    public abstract ProtocolMessageHandler<Self> getHandler(SshContext sshContext);
+
+    // @Override
+    // public abstract ProtocolMessageParser<Self> getParser(byte[] array);
+
+    // @Override
+    // public abstract ProtocolMessageParser<Self> getParser(byte[] array, int startPosition);
+
+    @Override
+    public abstract ProtocolMessagePreparator<Self> getPreparator(SshContext sshContext);
+
+    @Override
+    public abstract ProtocolMessageSerializer<Self> getSerializer(SshContext sshContext);
 
     public abstract String toCompactString();
 }

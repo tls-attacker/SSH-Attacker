@@ -11,9 +11,13 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.sshattacker.core.constants.DisconnectReason;
+import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.DisconnectMessageHandler;
-import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.protocol.transport.parser.DisconnectMessageParser;
+import de.rub.nds.sshattacker.core.protocol.transport.preparator.DisconnectMessagePreparator;
+import de.rub.nds.sshattacker.core.protocol.transport.serializer.DisconnectMessageSerializer;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
 public class DisconnectMessage extends SshMessage<DisconnectMessage> {
@@ -124,6 +128,26 @@ public class DisconnectMessage extends SshMessage<DisconnectMessage> {
 
     @Override
     public DisconnectMessageHandler getHandler(SshContext context) {
-        return new DisconnectMessageHandler(context, this);
+        return new DisconnectMessageHandler(context);
+    }
+
+    @Override
+    public DisconnectMessageParser getParser(SshContext context, InputStream stream) {
+        return new DisconnectMessageParser(stream);
+    }
+
+    @Override
+    public DisconnectMessagePreparator getPreparator(SshContext context) {
+        return new DisconnectMessagePreparator(context.getChooser(), this);
+    }
+
+    @Override
+    public DisconnectMessageSerializer getSerializer(SshContext context) {
+        return new DisconnectMessageSerializer(this);
+    }
+
+    @Override
+    public String toShortString() {
+        return "DISCONNECT";
     }
 }

@@ -7,12 +7,9 @@
  */
 package de.rub.nds.sshattacker.core.protocol.authentication.handler;
 
+import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthKeyboardInteractiveMessage;
-import de.rub.nds.sshattacker.core.protocol.authentication.parser.UserAuthKeyboardInteractiveMessageParser;
-import de.rub.nds.sshattacker.core.protocol.authentication.preparator.UserAuthKeyboardInteractiveMessagePreparator;
-import de.rub.nds.sshattacker.core.protocol.authentication.serializer.UserAuthKeyboardInteractiveMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
-import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class UserAuthKeyboardInteractiveMessageHandler
         extends SshMessageHandler<UserAuthKeyboardInteractiveMessage> {
@@ -21,31 +18,11 @@ public class UserAuthKeyboardInteractiveMessageHandler
         super(context);
     }
 
-    public UserAuthKeyboardInteractiveMessageHandler(
+    /*public UserAuthKeyboardInteractiveMessageHandler(
             SshContext context, UserAuthKeyboardInteractiveMessage message) {
         super(context, message);
-    }
+    }*/
     // ToDo Handle UserAuthKeyboardInteractive
     @Override
-    public void adjustContext() {}
-
-    @Override
-    public UserAuthKeyboardInteractiveMessageParser getParser(byte[] array) {
-        return new UserAuthKeyboardInteractiveMessageParser(array);
-    }
-
-    @Override
-    public UserAuthKeyboardInteractiveMessageParser getParser(byte[] array, int startPosition) {
-        return new UserAuthKeyboardInteractiveMessageParser(array, startPosition);
-    }
-
-    @Override
-    public UserAuthKeyboardInteractiveMessagePreparator getPreparator() {
-        return new UserAuthKeyboardInteractiveMessagePreparator(context.getChooser(), message);
-    }
-
-    @Override
-    public UserAuthKeyboardInteractiveMessageSerializer getSerializer() {
-        return new UserAuthKeyboardInteractiveMessageSerializer(message);
-    }
+    public void adjustContext(UserAuthKeyboardInteractiveMessage message) {}
 }

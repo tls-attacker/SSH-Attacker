@@ -7,13 +7,37 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.message;
 
+import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.protocol.connection.handler.GlobalRequestFailureMessageHandler;
-import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.protocol.connection.parser.GlobalRequestFailureMessageParser;
+import de.rub.nds.sshattacker.core.protocol.connection.preparator.GlobalRequestFailureMessagePreparator;
+import de.rub.nds.sshattacker.core.protocol.connection.serializer.GlobalRequestFailureMessageSerializer;
+import java.io.InputStream;
 
 public class GlobalRequestFailureMessage extends ChannelMessage<GlobalRequestFailureMessage> {
 
     @Override
     public GlobalRequestFailureMessageHandler getHandler(SshContext context) {
-        return new GlobalRequestFailureMessageHandler(context, this);
+        return new GlobalRequestFailureMessageHandler(context);
+    }
+
+    @Override
+    public GlobalRequestFailureMessageParser getParser(SshContext context, InputStream stream) {
+        return new GlobalRequestFailureMessageParser(stream);
+    }
+
+    @Override
+    public GlobalRequestFailureMessagePreparator getPreparator(SshContext context) {
+        return new GlobalRequestFailureMessagePreparator(context.getChooser(), this);
+    }
+
+    @Override
+    public GlobalRequestFailureMessageSerializer getSerializer(SshContext context) {
+        return new GlobalRequestFailureMessageSerializer(this);
+    }
+
+    @Override
+    public String toShortString() {
+        return "REQ_FAILURE";
     }
 }

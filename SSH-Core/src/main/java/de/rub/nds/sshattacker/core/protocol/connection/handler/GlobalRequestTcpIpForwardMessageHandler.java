@@ -7,12 +7,9 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.handler;
 
+import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.protocol.common.*;
 import de.rub.nds.sshattacker.core.protocol.connection.message.GlobalRequestTcpIpForwardMessage;
-import de.rub.nds.sshattacker.core.protocol.connection.parser.GlobalRequestTcpIpForwardMessageParser;
-import de.rub.nds.sshattacker.core.protocol.connection.preparator.GlobalRequestTcpIpForwardMessagePreparator;
-import de.rub.nds.sshattacker.core.protocol.connection.serializer.GlobalRequestTcpIpForwardMessageSerializer;
-import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class GlobalRequestTcpIpForwardMessageHandler
         extends SshMessageHandler<GlobalRequestTcpIpForwardMessage> {
@@ -21,15 +18,15 @@ public class GlobalRequestTcpIpForwardMessageHandler
         super(context);
     }
 
-    public GlobalRequestTcpIpForwardMessageHandler(
+    /*public GlobalRequestTcpIpForwardMessageHandler(
             SshContext context, GlobalRequestTcpIpForwardMessage message) {
         super(context, message);
-    }
+    }*/
 
     @Override
-    public void adjustContext() {}
+    public void adjustContext(GlobalRequestTcpIpForwardMessage message) {}
 
-    @Override
+    /*@Override
     public SshMessageParser<GlobalRequestTcpIpForwardMessage> getParser(byte[] array) {
         return new GlobalRequestTcpIpForwardMessageParser(array);
     }
@@ -48,5 +45,5 @@ public class GlobalRequestTcpIpForwardMessageHandler
     @Override
     public SshMessageSerializer<GlobalRequestTcpIpForwardMessage> getSerializer() {
         return new GlobalRequestTcpIpForwardMessageSerializer(message);
-    }
+    }*/
 }

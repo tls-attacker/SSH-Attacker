@@ -7,13 +7,9 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.handler;
 
+import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 import de.rub.nds.sshattacker.core.protocol.transport.message.DhGexKeyExchangeOldRequestMessage;
-import de.rub.nds.sshattacker.core.protocol.transport.parser.DhGexKeyExchangeOldRequestMessageParser;
-import de.rub.nds.sshattacker.core.protocol.transport.preparator.DhGexKeyExchangeOldRequestMessagePreparator;
-import de.rub.nds.sshattacker.core.protocol.transport.serializer.DhGexKeyExchangeOldRequestMessageSerializer;
-import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class DhGexKeyExchangeOldRequestMessageHandler
         extends SshMessageHandler<DhGexKeyExchangeOldRequestMessage> {
@@ -22,24 +18,24 @@ public class DhGexKeyExchangeOldRequestMessageHandler
         super(context);
     }
 
-    public DhGexKeyExchangeOldRequestMessageHandler(
+    /*public DhGexKeyExchangeOldRequestMessageHandler(
             SshContext context, DhGexKeyExchangeOldRequestMessage message) {
         super(context, message);
-    }
+    }*/
 
     @Override
-    public void adjustContext() {
-        updateContextWithPreferredGroupSize();
+    public void adjustContext(DhGexKeyExchangeOldRequestMessage message) {
+        updateContextWithPreferredGroupSize(message);
         context.setOldGroupRequestReceived(true);
     }
 
-    private void updateContextWithPreferredGroupSize() {
+    private void updateContextWithPreferredGroupSize(DhGexKeyExchangeOldRequestMessage message) {
         context.setPreferredDhGroupSize(message.getPreferredGroupSize().getValue());
         context.getExchangeHashInputHolder()
                 .setDhGexPreferredGroupSize(message.getPreferredGroupSize().getValue());
     }
 
-    @Override
+    /*@Override
     public SshMessageParser<DhGexKeyExchangeOldRequestMessage> getParser(byte[] array) {
         return new DhGexKeyExchangeOldRequestMessageParser(array);
     }
@@ -58,5 +54,5 @@ public class DhGexKeyExchangeOldRequestMessageHandler
     @Override
     public DhGexKeyExchangeOldRequestMessageSerializer getSerializer() {
         return new DhGexKeyExchangeOldRequestMessageSerializer(message);
-    }
+    }*/
 }

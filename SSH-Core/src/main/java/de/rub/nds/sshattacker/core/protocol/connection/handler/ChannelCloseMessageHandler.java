@@ -7,13 +7,10 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.handler;
 
+import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.protocol.common.*;
 import de.rub.nds.sshattacker.core.protocol.connection.Channel;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelCloseMessage;
-import de.rub.nds.sshattacker.core.protocol.connection.parser.ChannelCloseMessageParser;
-import de.rub.nds.sshattacker.core.protocol.connection.preparator.ChannelCloseMessagePreparator;
-import de.rub.nds.sshattacker.core.protocol.connection.serializer.ChannelMessageSerializer;
-import de.rub.nds.sshattacker.core.state.SshContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -25,12 +22,12 @@ public class ChannelCloseMessageHandler extends SshMessageHandler<ChannelCloseMe
         super(context);
     }
 
-    public ChannelCloseMessageHandler(SshContext context, ChannelCloseMessage message) {
+    /*public ChannelCloseMessageHandler(SshContext context, ChannelCloseMessage message) {
         super(context, message);
-    }
+    }*/
 
     @Override
-    public void adjustContext() {
+    public void adjustContext(ChannelCloseMessage message) {
         Channel channel = context.getChannels().get(message.getRecipientChannelId().getValue());
         if (channel != null) {
             if (!channel.isOpen().getValue()) {
@@ -52,7 +49,7 @@ public class ChannelCloseMessageHandler extends SshMessageHandler<ChannelCloseMe
         }
     }
 
-    @Override
+    /*@Override
     public ChannelCloseMessageParser getParser(byte[] array) {
         return new ChannelCloseMessageParser(array);
     }
@@ -70,5 +67,5 @@ public class ChannelCloseMessageHandler extends SshMessageHandler<ChannelCloseMe
     @Override
     public ChannelMessageSerializer<ChannelCloseMessage> getSerializer() {
         return new ChannelMessageSerializer<>(message);
-    }
+    }*/
 }

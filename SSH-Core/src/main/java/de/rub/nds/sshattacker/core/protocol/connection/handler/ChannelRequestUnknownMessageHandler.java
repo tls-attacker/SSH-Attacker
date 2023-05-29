@@ -7,12 +7,9 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.handler;
 
+import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelRequestUnknownMessage;
-import de.rub.nds.sshattacker.core.protocol.connection.parser.ChannelRequestUnknownMessageParser;
-import de.rub.nds.sshattacker.core.protocol.connection.preparator.ChannelRequestUnknownMessagePreparator;
-import de.rub.nds.sshattacker.core.protocol.connection.serializer.ChannelRequestUnknownMessageSerializer;
-import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.util.Converter;
 
 public class ChannelRequestUnknownMessageHandler
@@ -22,19 +19,19 @@ public class ChannelRequestUnknownMessageHandler
         super(context);
     }
 
-    public ChannelRequestUnknownMessageHandler(
+    /*public ChannelRequestUnknownMessageHandler(
             SshContext context, ChannelRequestUnknownMessage message) {
         super(context, message);
-    }
+    }*/
 
     @Override
-    public void adjustContext() {
+    public void adjustContext(ChannelRequestUnknownMessage message) {
         if (Converter.byteToBoolean(message.getWantReply().getValue())) {
             context.getChannelManager().addToChannelRequestResponseQueue(message);
         }
     }
 
-    @Override
+    /*@Override
     public ChannelRequestUnknownMessageParser getParser(byte[] array) {
         return new ChannelRequestUnknownMessageParser(array);
     }
@@ -52,5 +49,5 @@ public class ChannelRequestUnknownMessageHandler
     @Override
     public ChannelRequestUnknownMessageSerializer getSerializer() {
         return new ChannelRequestUnknownMessageSerializer(message);
-    }
+    }*/
 }

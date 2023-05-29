@@ -8,15 +8,26 @@
 package de.rub.nds.sshattacker.core.protocol.connection.parser;
 
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelEofMessage;
+import java.io.InputStream;
 
 public class ChannelEofMessageParser extends ChannelMessageParser<ChannelEofMessage> {
 
-    public ChannelEofMessageParser(byte[] array) {
-        super(array);
+    /*
+        public ChannelEofMessageParser(byte[] array) {
+            super(array);
+        }
+        public ChannelEofMessageParser(byte[] array, int startPosition) {
+            super(array, startPosition);
+        }
+    */
+
+    public ChannelEofMessageParser(InputStream stream) {
+        super(stream);
     }
 
-    public ChannelEofMessageParser(byte[] array, int startPosition) {
-        super(array, startPosition);
+    @Override
+    public void parse(ChannelEofMessage message) {
+        parseMessageSpecificContents();
     }
 
     @Override

@@ -7,12 +7,9 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.handler;
 
+import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelOpenUnknownMessage;
-import de.rub.nds.sshattacker.core.protocol.connection.parser.ChannelOpenUnknownMessageParser;
-import de.rub.nds.sshattacker.core.protocol.connection.preparator.ChannelOpenUnknownMessagePreparator;
-import de.rub.nds.sshattacker.core.protocol.connection.serializer.ChannelOpenUnknownMessageSerializer;
-import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class ChannelOpenUnknownMessageHandler extends SshMessageHandler<ChannelOpenUnknownMessage> {
 
@@ -20,14 +17,16 @@ public class ChannelOpenUnknownMessageHandler extends SshMessageHandler<ChannelO
         super(context);
     }
 
-    public ChannelOpenUnknownMessageHandler(SshContext context, ChannelOpenUnknownMessage message) {
+    /*public ChannelOpenUnknownMessageHandler(SshContext context, ChannelOpenUnknownMessage message) {
         super(context, message);
     }
+    /
+     */
 
     @Override
-    public void adjustContext() {}
+    public void adjustContext(ChannelOpenUnknownMessage message) {}
 
-    @Override
+    /*@Override
     public ChannelOpenUnknownMessageParser getParser(byte[] array) {
         return new ChannelOpenUnknownMessageParser(array);
     }
@@ -45,5 +44,5 @@ public class ChannelOpenUnknownMessageHandler extends SshMessageHandler<ChannelO
     @Override
     public ChannelOpenUnknownMessageSerializer getSerializer() {
         return new ChannelOpenUnknownMessageSerializer(message);
-    }
+    }*/
 }

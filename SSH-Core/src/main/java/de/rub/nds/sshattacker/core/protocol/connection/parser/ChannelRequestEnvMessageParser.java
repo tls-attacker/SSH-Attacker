@@ -11,6 +11,7 @@ import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeStrin
 
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelRequestEnvMessage;
+import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -19,12 +20,22 @@ public class ChannelRequestEnvMessageParser
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public ChannelRequestEnvMessageParser(byte[] array) {
-        super(array);
+    /*
+        public ChannelRequestEnvMessageParser(byte[] array) {
+            super(array);
+        }
+        public ChannelRequestEnvMessageParser(byte[] array, int startPosition) {
+            super(array, startPosition);
+        }
+    */
+
+    public ChannelRequestEnvMessageParser(InputStream stream) {
+        super(stream);
     }
 
-    public ChannelRequestEnvMessageParser(byte[] array, int startPosition) {
-        super(array, startPosition);
+    @Override
+    public void parse(ChannelRequestEnvMessage message) {
+        parseMessageSpecificContents();
     }
 
     @Override

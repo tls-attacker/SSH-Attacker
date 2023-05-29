@@ -10,6 +10,7 @@ package de.rub.nds.sshattacker.core.protocol.connection.parser;
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelRequestMessage;
 import de.rub.nds.sshattacker.core.util.Converter;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -19,12 +20,17 @@ public abstract class ChannelRequestMessageParser<T extends ChannelRequestMessag
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public ChannelRequestMessageParser(byte[] array) {
-        super(array);
-    }
+    /*
+        public ChannelRequestMessageParser(byte[] array) {
+            super(array);
+        }
+        public ChannelRequestMessageParser(byte[] array, int startPosition) {
+            super(array, startPosition);
+        }
+    */
 
-    public ChannelRequestMessageParser(byte[] array, int startPosition) {
-        super(array, startPosition);
+    public ChannelRequestMessageParser(InputStream stream) {
+        super(stream);
     }
 
     private void parseRequestType() {

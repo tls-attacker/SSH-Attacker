@@ -8,7 +8,7 @@
 package de.rub.nds.sshattacker.core.constants;
 
 import de.rub.nds.sshattacker.core.exceptions.ParserException;
-import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.state.Context;
 import java.util.*;
 
 public enum MessageIdConstant {
@@ -175,7 +175,7 @@ public enum MessageIdConstant {
         }
     }
 
-    public static MessageIdConstant fromId(byte id, SshContext context) {
+    public static MessageIdConstant fromId(byte id, Context context) {
         List<MessageIdConstant> idList = map.get(id);
         if (idList == null) {
             throw new ParserException("Unable to parse message with unknown id");

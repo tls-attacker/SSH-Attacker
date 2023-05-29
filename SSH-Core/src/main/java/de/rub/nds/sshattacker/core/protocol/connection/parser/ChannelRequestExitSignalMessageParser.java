@@ -11,6 +11,7 @@ import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeStrin
 
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelRequestExitSignalMessage;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -20,12 +21,22 @@ public class ChannelRequestExitSignalMessageParser
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public ChannelRequestExitSignalMessageParser(byte[] array) {
-        super(array);
+    /*
+        public ChannelRequestExitSignalMessageParser(byte[] array) {
+            super(array);
+        }
+        public ChannelRequestExitSignalMessageParser(byte[] array, int startPosition) {
+            super(array, startPosition);
+        }
+    */
+
+    public ChannelRequestExitSignalMessageParser(InputStream stream) {
+        super(stream);
     }
 
-    public ChannelRequestExitSignalMessageParser(byte[] array, int startPosition) {
-        super(array, startPosition);
+    @Override
+    public void parse(ChannelRequestExitSignalMessage message) {
+        parseMessageSpecificContents();
     }
 
     @Override

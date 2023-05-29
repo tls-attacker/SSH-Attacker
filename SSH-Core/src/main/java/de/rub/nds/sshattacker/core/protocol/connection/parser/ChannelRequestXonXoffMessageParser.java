@@ -9,6 +9,7 @@ package de.rub.nds.sshattacker.core.protocol.connection.parser;
 
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelRequestXonXoffMessage;
 import de.rub.nds.sshattacker.core.util.Converter;
+import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -17,12 +18,22 @@ public class ChannelRequestXonXoffMessageParser
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public ChannelRequestXonXoffMessageParser(byte[] array) {
-        super(array);
+    /*
+        public ChannelRequestXonXoffMessageParser(byte[] array) {
+            super(array);
+        }
+        public ChannelRequestXonXoffMessageParser(byte[] array, int startPosition) {
+            super(array, startPosition);
+        }
+    */
+
+    public ChannelRequestXonXoffMessageParser(InputStream stream) {
+        super(stream);
     }
 
-    public ChannelRequestXonXoffMessageParser(byte[] array, int startPosition) {
-        super(array, startPosition);
+    @Override
+    public void parse(ChannelRequestXonXoffMessage message) {
+        parseMessageSpecificContents();
     }
 
     @Override

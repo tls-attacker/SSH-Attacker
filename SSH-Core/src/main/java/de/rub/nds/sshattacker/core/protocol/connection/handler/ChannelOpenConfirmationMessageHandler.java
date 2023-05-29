@@ -7,13 +7,10 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.handler;
 
+import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.protocol.common.*;
 import de.rub.nds.sshattacker.core.protocol.connection.Channel;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelOpenConfirmationMessage;
-import de.rub.nds.sshattacker.core.protocol.connection.parser.ChannelOpenConfirmationMessageParser;
-import de.rub.nds.sshattacker.core.protocol.connection.preparator.ChannelOpenConfirmationMessagePreparator;
-import de.rub.nds.sshattacker.core.protocol.connection.serializer.ChannelOpenConfirmationMessageSerializer;
-import de.rub.nds.sshattacker.core.state.SshContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -26,13 +23,13 @@ public class ChannelOpenConfirmationMessageHandler
         super(context);
     }
 
-    public ChannelOpenConfirmationMessageHandler(
+    /*public ChannelOpenConfirmationMessageHandler(
             SshContext context, ChannelOpenConfirmationMessage message) {
         super(context, message);
-    }
+    }*/
 
     @Override
-    public void adjustContext() {
+    public void adjustContext(ChannelOpenConfirmationMessage message) {
         Channel channel = context.getChannels().get(message.getRecipientChannelId().getValue());
         if (channel == null) {
             LOGGER.warn(
@@ -50,7 +47,7 @@ public class ChannelOpenConfirmationMessageHandler
         channel.setOpen(true);
     }
 
-    @Override
+    /*@Override
     public ChannelOpenConfirmationMessageParser getParser(byte[] array) {
         return new ChannelOpenConfirmationMessageParser(array);
     }
@@ -68,5 +65,5 @@ public class ChannelOpenConfirmationMessageHandler
     @Override
     public ChannelOpenConfirmationMessageSerializer getSerializer() {
         return new ChannelOpenConfirmationMessageSerializer(message);
-    }
+    }*/
 }

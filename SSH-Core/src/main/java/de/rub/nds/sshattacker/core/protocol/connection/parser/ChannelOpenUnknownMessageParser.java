@@ -9,6 +9,7 @@ package de.rub.nds.sshattacker.core.protocol.connection.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelOpenUnknownMessage;
+import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -16,12 +17,23 @@ public class ChannelOpenUnknownMessageParser
         extends ChannelOpenMessageParser<ChannelOpenUnknownMessage> {
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public ChannelOpenUnknownMessageParser(byte[] array) {
-        super(array);
+    /*
+        public ChannelOpenUnknownMessageParser(byte[] array) {
+            super(array);
+        }
+
+        public ChannelOpenUnknownMessageParser(byte[] array, int startPosition) {
+            super(array, startPosition);
+        }
+    */
+
+    public ChannelOpenUnknownMessageParser(InputStream stream) {
+        super(stream);
     }
 
-    public ChannelOpenUnknownMessageParser(byte[] array, int startPosition) {
-        super(array, startPosition);
+    @Override
+    public void parse(ChannelOpenUnknownMessage message) {
+        parseMessageSpecificContents();
     }
 
     @Override

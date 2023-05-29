@@ -12,9 +12,13 @@ import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
+import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.protocol.authentication.handler.UserAuthPubkeyMessageHandler;
-import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.protocol.authentication.parser.UserAuthPubkeyMessageParser;
+import de.rub.nds.sshattacker.core.protocol.authentication.preparator.UserAuthPubkeyMessagePreparator;
+import de.rub.nds.sshattacker.core.protocol.authentication.serializer.UserAuthPubkeyMessageSerializer;
 import de.rub.nds.sshattacker.core.util.Converter;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
 public class UserAuthPubkeyMessage extends UserAuthRequestMessage<UserAuthPubkeyMessage> {
@@ -155,6 +159,36 @@ public class UserAuthPubkeyMessage extends UserAuthRequestMessage<UserAuthPubkey
 
     @Override
     public UserAuthPubkeyMessageHandler getHandler(SshContext context) {
-        return new UserAuthPubkeyMessageHandler(context, this);
+        return new UserAuthPubkeyMessageHandler(context);
+    }
+
+    @Override
+    public UserAuthPubkeyMessageParser getParser(SshContext context, InputStream stream) {
+        return new UserAuthPubkeyMessageParser(stream);
+    }
+
+    /*@Override
+    public UserAuthPubkeyMessageParser getParser(byte[] array) {
+        return new UserAuthPubkeyMessageParser(array);
+    }
+
+    @Override
+    public UserAuthPubkeyMessageParser getParser(byte[] array, int startPosition) {
+        return new UserAuthPubkeyMessageParser(array, startPosition);
+    }*/
+
+    @Override
+    public UserAuthPubkeyMessagePreparator getPreparator(SshContext context) {
+        return new UserAuthPubkeyMessagePreparator(context.getChooser(), this);
+    }
+
+    @Override
+    public UserAuthPubkeyMessageSerializer getSerializer(SshContext context) {
+        return new UserAuthPubkeyMessageSerializer(this);
+    }
+
+    @Override
+    public String toShortString() {
+        return "USERAUTHPUBKEY";
     }
 }

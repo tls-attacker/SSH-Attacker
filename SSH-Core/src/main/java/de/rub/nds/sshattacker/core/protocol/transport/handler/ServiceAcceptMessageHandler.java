@@ -7,12 +7,9 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.handler;
 
+import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.protocol.common.*;
 import de.rub.nds.sshattacker.core.protocol.transport.message.ServiceAcceptMessage;
-import de.rub.nds.sshattacker.core.protocol.transport.parser.ServiceAcceptMessageParser;
-import de.rub.nds.sshattacker.core.protocol.transport.preparator.ServiceAcceptMessagePreparator;
-import de.rub.nds.sshattacker.core.protocol.transport.serializer.ServiceAcceptMessageSerializer;
-import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class ServiceAcceptMessageHandler extends SshMessageHandler<ServiceAcceptMessage> {
 
@@ -20,16 +17,16 @@ public class ServiceAcceptMessageHandler extends SshMessageHandler<ServiceAccept
         super(context);
     }
 
-    public ServiceAcceptMessageHandler(SshContext context, ServiceAcceptMessage message) {
+    /*public ServiceAcceptMessageHandler(SshContext context, ServiceAcceptMessage message) {
         super(context, message);
-    }
+    }*/
 
     @Override
-    public void adjustContext() {
+    public void adjustContext(ServiceAcceptMessage message) {
         // TODO: Handle ServiceAcceptMessage
     }
 
-    @Override
+    /*@Override
     public ServiceAcceptMessageParser getParser(byte[] array) {
         return new ServiceAcceptMessageParser(array);
     }
@@ -47,5 +44,5 @@ public class ServiceAcceptMessageHandler extends SshMessageHandler<ServiceAccept
     @Override
     public ServiceAcceptMessageSerializer getSerializer() {
         return new ServiceAcceptMessageSerializer(message);
-    }
+    }*/
 }

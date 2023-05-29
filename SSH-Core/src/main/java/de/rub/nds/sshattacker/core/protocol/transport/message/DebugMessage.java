@@ -11,10 +11,14 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
+import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.DebugMessageHandler;
-import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.protocol.transport.parser.DebugMessageParser;
+import de.rub.nds.sshattacker.core.protocol.transport.preparator.DebugMessagePreparator;
+import de.rub.nds.sshattacker.core.protocol.transport.serializer.DebugMessageSerializer;
 import de.rub.nds.sshattacker.core.util.Converter;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
 public class DebugMessage extends SshMessage<DebugMessage> {
@@ -124,6 +128,26 @@ public class DebugMessage extends SshMessage<DebugMessage> {
 
     @Override
     public DebugMessageHandler getHandler(SshContext context) {
-        return new DebugMessageHandler(context, this);
+        return new DebugMessageHandler(context);
+    }
+
+    @Override
+    public DebugMessageParser getParser(SshContext context, InputStream stream) {
+        return new DebugMessageParser(stream);
+    }
+
+    @Override
+    public DebugMessagePreparator getPreparator(SshContext context) {
+        return new DebugMessagePreparator(context.getChooser(), this);
+    }
+
+    @Override
+    public DebugMessageSerializer getSerializer(SshContext context) {
+        return new DebugMessageSerializer(this);
+    }
+
+    @Override
+    public String toShortString() {
+        return "DEBUG_MSG";
     }
 }

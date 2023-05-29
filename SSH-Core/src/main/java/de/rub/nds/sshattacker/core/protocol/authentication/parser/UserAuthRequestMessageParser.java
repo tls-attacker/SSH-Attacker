@@ -12,6 +12,7 @@ import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeStrin
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthRequestMessage;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -21,12 +22,15 @@ public abstract class UserAuthRequestMessageParser<T extends UserAuthRequestMess
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public UserAuthRequestMessageParser(byte[] array) {
+    /*    public UserAuthRequestMessageParser(byte[] array) {
         super(array);
     }
-
     public UserAuthRequestMessageParser(byte[] array, int startPosition) {
         super(array, startPosition);
+    }*/
+
+    public UserAuthRequestMessageParser(InputStream stream) {
+        super(stream);
     }
 
     private void parseUserName() {

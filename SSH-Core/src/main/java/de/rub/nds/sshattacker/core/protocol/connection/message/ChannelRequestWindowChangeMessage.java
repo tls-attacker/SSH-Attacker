@@ -9,8 +9,12 @@ package de.rub.nds.sshattacker.core.protocol.connection.message;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
+import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.protocol.connection.handler.ChannelRequestWindowChangeMessageHandler;
-import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.protocol.connection.parser.ChannelRequestWindowChangeMessageParser;
+import de.rub.nds.sshattacker.core.protocol.connection.preparator.ChannelRequestWindowChangeMessagePreparator;
+import de.rub.nds.sshattacker.core.protocol.connection.serializer.ChannelRequestWindowChangeMessageSerializer;
+import java.io.InputStream;
 
 public class ChannelRequestWindowChangeMessage
         extends ChannelRequestMessage<ChannelRequestWindowChangeMessage> {
@@ -72,6 +76,27 @@ public class ChannelRequestWindowChangeMessage
 
     @Override
     public ChannelRequestWindowChangeMessageHandler getHandler(SshContext context) {
-        return new ChannelRequestWindowChangeMessageHandler(context, this);
+        return new ChannelRequestWindowChangeMessageHandler(context);
+    }
+
+    @Override
+    public ChannelRequestWindowChangeMessageParser getParser(
+            SshContext context, InputStream inputStream) {
+        return new ChannelRequestWindowChangeMessageParser(inputStream);
+    }
+
+    @Override
+    public ChannelRequestWindowChangeMessagePreparator getPreparator(SshContext context) {
+        return new ChannelRequestWindowChangeMessagePreparator(context.getChooser(), this);
+    }
+
+    @Override
+    public ChannelRequestWindowChangeMessageSerializer getSerializer(SshContext context) {
+        return new ChannelRequestWindowChangeMessageSerializer(this);
+    }
+
+    @Override
+    public String toShortString() {
+        return "REQ_WINDOW_CHANGE";
     }
 }

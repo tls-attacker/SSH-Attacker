@@ -10,9 +10,13 @@ package de.rub.nds.sshattacker.core.protocol.transport.message;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.biginteger.ModifiableBigInteger;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
+import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.protocol.common.*;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.DhGexKeyExchangeInitMessageHandler;
-import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.protocol.transport.parser.DhGexKeyExchangeInitMessageParser;
+import de.rub.nds.sshattacker.core.protocol.transport.preparator.DhGexKeyExchangeInitMessagePreparator;
+import de.rub.nds.sshattacker.core.protocol.transport.serializer.DhGexKeyExchangeInitMessageSerializer;
+import java.io.InputStream;
 import java.math.BigInteger;
 
 public class DhGexKeyExchangeInitMessage extends SshMessage<DhGexKeyExchangeInitMessage> {
@@ -65,6 +69,27 @@ public class DhGexKeyExchangeInitMessage extends SshMessage<DhGexKeyExchangeInit
 
     @Override
     public DhGexKeyExchangeInitMessageHandler getHandler(SshContext context) {
-        return new DhGexKeyExchangeInitMessageHandler(context, this);
+        return new DhGexKeyExchangeInitMessageHandler(context);
+    }
+
+    @Override
+    public SshMessageParser<DhGexKeyExchangeInitMessage> getParser(
+            SshContext context, InputStream stream) {
+        return new DhGexKeyExchangeInitMessageParser(stream);
+    }
+
+    @Override
+    public DhGexKeyExchangeInitMessagePreparator getPreparator(SshContext context) {
+        return new DhGexKeyExchangeInitMessagePreparator(context.getChooser(), this);
+    }
+
+    @Override
+    public DhGexKeyExchangeInitMessageSerializer getSerializer(SshContext context) {
+        return new DhGexKeyExchangeInitMessageSerializer(this);
+    }
+
+    @Override
+    public String toShortString() {
+        return "DHGexKeyExInit";
     }
 }

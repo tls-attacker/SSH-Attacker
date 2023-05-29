@@ -8,7 +8,7 @@
 package de.rub.nds.sshattacker.core.packet.layer;
 
 import de.rub.nds.sshattacker.core.constants.PacketLayerType;
-import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.layer.context.SshContext;
 
 public class PacketLayerFactory {
 

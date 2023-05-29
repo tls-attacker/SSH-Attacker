@@ -8,14 +8,13 @@
 package de.rub.nds.sshattacker.core.workflow.action;
 
 import de.rub.nds.sshattacker.core.exceptions.WorkflowExecutionException;
+import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthHostbasedMessage;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthPubkeyMessage;
 import de.rub.nds.sshattacker.core.protocol.authentication.preparator.UserAuthHostbasedMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.authentication.preparator.UserAuthPubkeyMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessage;
-import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.state.State;
-import de.rub.nds.sshattacker.core.workflow.action.executor.MessageActionResult;
 import de.rub.nds.sshattacker.core.workflow.action.executor.ReceiveMessageHelper;
 import de.rub.nds.sshattacker.core.workflow.action.executor.SendMessageHelper;
 import jakarta.xml.bind.annotation.XmlTransient;
@@ -84,13 +83,13 @@ public class ProxyFilterMessagesAction extends ForwardMessagesAction {
                         + forwardToAlias
                         + "): "
                         + getReadableString(receivedMessages));
-        MessageActionResult result =
+        /*MessageActionResult result =
                 sendMessageHelper.sendMessages(forwardToCtx, filteredMessages.stream());
         sendMessages = result.getMessageList();
 
         if (executedAsPlanned) {
             executedAsPlanned = checkMessageListsEquals(sendMessages, messages);
-        }
+        }*/
         setExecuted(true);
     }
 

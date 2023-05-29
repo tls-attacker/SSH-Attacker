@@ -7,12 +7,9 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.handler;
 
+import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.protocol.common.*;
 import de.rub.nds.sshattacker.core.protocol.transport.message.DisconnectMessage;
-import de.rub.nds.sshattacker.core.protocol.transport.parser.DisconnectMessageParser;
-import de.rub.nds.sshattacker.core.protocol.transport.preparator.DisconnectMessagePreparator;
-import de.rub.nds.sshattacker.core.protocol.transport.serializer.DisconnectMessageSerializer;
-import de.rub.nds.sshattacker.core.state.SshContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -24,17 +21,17 @@ public class DisconnectMessageHandler extends SshMessageHandler<DisconnectMessag
         super(context);
     }
 
-    public DisconnectMessageHandler(SshContext context, DisconnectMessage message) {
+    /*public DisconnectMessageHandler(SshContext context, DisconnectMessage message) {
         super(context, message);
-    }
+    }*/
 
     @Override
-    public void adjustContext() {
+    public void adjustContext(DisconnectMessage message) {
         LOGGER.info("Received DisconnectMessage");
         context.setDisconnectMessageReceived(true);
     }
 
-    @Override
+    /*@Override
     public DisconnectMessageParser getParser(byte[] array) {
         return new DisconnectMessageParser(array);
     }
@@ -52,5 +49,5 @@ public class DisconnectMessageHandler extends SshMessageHandler<DisconnectMessag
     @Override
     public DisconnectMessageSerializer getSerializer() {
         return new DisconnectMessageSerializer(message);
-    }
+    }*/
 }

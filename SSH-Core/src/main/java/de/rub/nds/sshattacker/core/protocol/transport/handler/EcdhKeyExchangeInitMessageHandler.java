@@ -7,12 +7,9 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.handler;
 
+import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.transport.message.EcdhKeyExchangeInitMessage;
-import de.rub.nds.sshattacker.core.protocol.transport.parser.EcdhKeyExchangeInitMessageParser;
-import de.rub.nds.sshattacker.core.protocol.transport.preparator.EcdhKeyExchangeInitMessagePreparator;
-import de.rub.nds.sshattacker.core.protocol.transport.serializer.EcdhKeyExchangeInitMessageSerializer;
-import de.rub.nds.sshattacker.core.state.SshContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -25,13 +22,13 @@ public class EcdhKeyExchangeInitMessageHandler
         super(context);
     }
 
-    public EcdhKeyExchangeInitMessageHandler(
+    /*public EcdhKeyExchangeInitMessageHandler(
             SshContext context, EcdhKeyExchangeInitMessage message) {
         super(context, message);
-    }
+    }*/
 
     @Override
-    public void adjustContext() {
+    public void adjustContext(EcdhKeyExchangeInitMessage message) {
         context.getChooser()
                 .getEcdhKeyExchange()
                 .setRemotePublicKey(message.getEphemeralPublicKey().getValue());
@@ -39,7 +36,7 @@ public class EcdhKeyExchangeInitMessageHandler
                 .setEcdhClientPublicKey(message.getEphemeralPublicKey().getValue());
     }
 
-    @Override
+    /*@Override
     public EcdhKeyExchangeInitMessageParser getParser(byte[] array) {
         return new EcdhKeyExchangeInitMessageParser(array);
     }
@@ -57,5 +54,5 @@ public class EcdhKeyExchangeInitMessageHandler
     @Override
     public EcdhKeyExchangeInitMessageSerializer getSerializer() {
         return new EcdhKeyExchangeInitMessageSerializer(message);
-    }
+    }*/
 }

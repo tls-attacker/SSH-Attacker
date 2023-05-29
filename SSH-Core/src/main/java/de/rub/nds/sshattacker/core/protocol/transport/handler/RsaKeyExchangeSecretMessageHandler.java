@@ -10,15 +10,9 @@ package de.rub.nds.sshattacker.core.protocol.transport.handler;
 import de.rub.nds.sshattacker.core.crypto.hash.ExchangeHashInputHolder;
 import de.rub.nds.sshattacker.core.crypto.kex.RsaKeyExchange;
 import de.rub.nds.sshattacker.core.exceptions.CryptoException;
+import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.transport.message.RsaKeyExchangeSecretMessage;
-import de.rub.nds.sshattacker.core.protocol.transport.parser.RsaKeyExchangeSecretMessageParser;
-import de.rub.nds.sshattacker.core.protocol.transport.preparator.RsaKeyExchangeSecretMessagePreparator;
-import de.rub.nds.sshattacker.core.protocol.transport.serializer.RsaKeyExchangeSecretMessageSerializer;
-import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class RsaKeyExchangeSecretMessageHandler
         extends SshMessageHandler<RsaKeyExchangeSecretMessage> {
@@ -27,18 +21,18 @@ public class RsaKeyExchangeSecretMessageHandler
         super(context);
     }
 
-    public RsaKeyExchangeSecretMessageHandler(
+    /*public RsaKeyExchangeSecretMessageHandler(
             SshContext context, RsaKeyExchangeSecretMessage message) {
         super(context, message);
-    }
+    }*/
 
     @Override
-    public void adjustContext() {
-        decryptSharedSecret();
-        updateExchangeHashWithSecrets();
+    public void adjustContext(RsaKeyExchangeSecretMessage message) {
+        decryptSharedSecret(message);
+        updateExchangeHashWithSecrets(message);
     }
 
-    private void decryptSharedSecret() {
+    private void decryptSharedSecret(RsaKeyExchangeSecretMessage message) {
         RsaKeyExchange keyExchange = context.getChooser().getRsaKeyExchange();
         try {
             keyExchange.decryptSharedSecret(message.getEncryptedSecret().getValue());
@@ -50,7 +44,7 @@ public class RsaKeyExchangeSecretMessageHandler
         }
     }
 
-    private void updateExchangeHashWithSecrets() {
+    private void updateExchangeHashWithSecrets(RsaKeyExchangeSecretMessage message) {
         RsaKeyExchange keyExchange = context.getChooser().getRsaKeyExchange();
         ExchangeHashInputHolder inputHolder = context.getExchangeHashInputHolder();
         inputHolder.setRsaEncryptedSecret(message.getEncryptedSecret().getValue());
@@ -62,7 +56,7 @@ public class RsaKeyExchangeSecretMessageHandler
         }
     }
 
-    @Override
+    /*@Override
     public SshMessageParser<RsaKeyExchangeSecretMessage> getParser(byte[] array) {
         return new RsaKeyExchangeSecretMessageParser(array);
     }
@@ -81,5 +75,5 @@ public class RsaKeyExchangeSecretMessageHandler
     @Override
     public SshMessageSerializer<RsaKeyExchangeSecretMessage> getSerializer() {
         return new RsaKeyExchangeSecretMessageSerializer(message);
-    }
+    }*/
 }

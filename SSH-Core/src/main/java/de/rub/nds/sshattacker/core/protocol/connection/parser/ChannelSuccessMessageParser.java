@@ -8,15 +8,27 @@
 package de.rub.nds.sshattacker.core.protocol.connection.parser;
 
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelSuccessMessage;
+import java.io.InputStream;
 
 public class ChannelSuccessMessageParser extends ChannelMessageParser<ChannelSuccessMessage> {
 
-    public ChannelSuccessMessageParser(byte[] array) {
-        super(array);
+    /*
+        public ChannelSuccessMessageParser(byte[] array) {
+            super(array);
+        }
+
+        public ChannelSuccessMessageParser(byte[] array, int startPosition) {
+            super(array, startPosition);
+        }
+    */
+
+    public ChannelSuccessMessageParser(InputStream stream) {
+        super(stream);
     }
 
-    public ChannelSuccessMessageParser(byte[] array, int startPosition) {
-        super(array, startPosition);
+    @Override
+    public void parse(ChannelSuccessMessage message) {
+        parseMessageSpecificContents();
     }
 
     @Override

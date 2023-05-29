@@ -7,12 +7,9 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.handler;
 
+import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.protocol.common.*;
 import de.rub.nds.sshattacker.core.protocol.transport.message.IgnoreMessage;
-import de.rub.nds.sshattacker.core.protocol.transport.parser.IgnoreMessageParser;
-import de.rub.nds.sshattacker.core.protocol.transport.preparator.IgnoreMessagePreparator;
-import de.rub.nds.sshattacker.core.protocol.transport.serializer.IgnoreMessageSerializer;
-import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class IgnoreMessageHandler extends SshMessageHandler<IgnoreMessage> {
 
@@ -20,14 +17,14 @@ public class IgnoreMessageHandler extends SshMessageHandler<IgnoreMessage> {
         super(context);
     }
 
-    public IgnoreMessageHandler(SshContext context, IgnoreMessage message) {
+    /*public IgnoreMessageHandler(SshContext context, IgnoreMessage message) {
         super(context, message);
-    }
+    }*/
 
     @Override
-    public void adjustContext() {}
+    public void adjustContext(IgnoreMessage message) {}
 
-    @Override
+    /*@Override
     public IgnoreMessageParser getParser(byte[] array) {
         return new IgnoreMessageParser(array);
     }
@@ -45,5 +42,5 @@ public class IgnoreMessageHandler extends SshMessageHandler<IgnoreMessage> {
     @Override
     public IgnoreMessageSerializer getSerializer() {
         return new IgnoreMessageSerializer(message);
-    }
+    }*/
 }

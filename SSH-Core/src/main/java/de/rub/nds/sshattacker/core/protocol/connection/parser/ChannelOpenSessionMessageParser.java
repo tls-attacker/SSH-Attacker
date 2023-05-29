@@ -8,15 +8,26 @@
 package de.rub.nds.sshattacker.core.protocol.connection.parser;
 
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelOpenSessionMessage;
+import java.io.InputStream;
 
 public class ChannelOpenSessionMessageParser
         extends ChannelOpenMessageParser<ChannelOpenSessionMessage> {
-    public ChannelOpenSessionMessageParser(byte[] array) {
-        super(array);
+    /*
+        public ChannelOpenSessionMessageParser(byte[] array) {
+            super(array);
+        }
+        public ChannelOpenSessionMessageParser(byte[] array, int startPosition) {
+            super(array, startPosition);
+        }
+    */
+
+    public ChannelOpenSessionMessageParser(InputStream stream) {
+        super(stream);
     }
 
-    public ChannelOpenSessionMessageParser(byte[] array, int startPosition) {
-        super(array, startPosition);
+    @Override
+    public void parse(ChannelOpenSessionMessage message) {
+        parseMessageSpecificContents();
     }
 
     @Override

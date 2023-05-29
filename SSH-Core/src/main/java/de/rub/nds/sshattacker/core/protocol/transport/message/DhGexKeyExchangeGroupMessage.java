@@ -10,9 +10,13 @@ package de.rub.nds.sshattacker.core.protocol.transport.message;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.biginteger.ModifiableBigInteger;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
+import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.protocol.common.*;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.DhGexKeyExchangeGroupMessageHandler;
-import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.protocol.transport.parser.DhGexKeyExchangeGroupMessageParser;
+import de.rub.nds.sshattacker.core.protocol.transport.preparator.DhGexKeyExchangeGroupMessagePreparator;
+import de.rub.nds.sshattacker.core.protocol.transport.serializer.DhGexKeyExchangeGroupMessageSerializer;
+import java.io.InputStream;
 import java.math.BigInteger;
 
 public class DhGexKeyExchangeGroupMessage extends SshMessage<DhGexKeyExchangeGroupMessage> {
@@ -106,6 +110,26 @@ public class DhGexKeyExchangeGroupMessage extends SshMessage<DhGexKeyExchangeGro
 
     @Override
     public DhGexKeyExchangeGroupMessageHandler getHandler(SshContext context) {
-        return new DhGexKeyExchangeGroupMessageHandler(context, this);
+        return new DhGexKeyExchangeGroupMessageHandler(context);
+    }
+
+    @Override
+    public DhGexKeyExchangeGroupMessageParser getParser(SshContext context, InputStream stream) {
+        return new DhGexKeyExchangeGroupMessageParser(stream);
+    }
+
+    @Override
+    public SshMessagePreparator<DhGexKeyExchangeGroupMessage> getPreparator(SshContext context) {
+        return new DhGexKeyExchangeGroupMessagePreparator(context.getChooser(), this);
+    }
+
+    @Override
+    public SshMessageSerializer<DhGexKeyExchangeGroupMessage> getSerializer(SshContext context) {
+        return new DhGexKeyExchangeGroupMessageSerializer(this);
+    }
+
+    @Override
+    public String toShortString() {
+        return "DHGexKEYGROUP";
     }
 }

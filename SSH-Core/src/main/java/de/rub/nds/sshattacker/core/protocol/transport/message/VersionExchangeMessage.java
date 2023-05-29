@@ -10,9 +10,13 @@ package de.rub.nds.sshattacker.core.protocol.transport.message;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.sshattacker.core.constants.CharConstants;
+import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.VersionExchangeMessageHandler;
-import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.protocol.transport.parser.VersionExchangeMessageParser;
+import de.rub.nds.sshattacker.core.protocol.transport.preparator.VersionExchangeMessagePreparator;
+import de.rub.nds.sshattacker.core.protocol.transport.serializer.VersionExchangeMessageSerializer;
+import java.io.InputStream;
 
 public class VersionExchangeMessage extends ProtocolMessage<VersionExchangeMessage> {
 
@@ -71,11 +75,31 @@ public class VersionExchangeMessage extends ProtocolMessage<VersionExchangeMessa
 
     @Override
     public VersionExchangeMessageHandler getHandler(SshContext context) {
-        return new VersionExchangeMessageHandler(context, this);
+        return new VersionExchangeMessageHandler(context);
     }
 
     @Override
     public String toCompactString() {
         return this.getClass().getSimpleName();
+    }
+
+    @Override
+    public VersionExchangeMessageParser getParser(SshContext context, InputStream stream) {
+        return new VersionExchangeMessageParser(stream);
+    }
+
+    @Override
+    public VersionExchangeMessagePreparator getPreparator(SshContext context) {
+        return new VersionExchangeMessagePreparator(context.getChooser(), this);
+    }
+
+    @Override
+    public VersionExchangeMessageSerializer getSerializer(SshContext context) {
+        return new VersionExchangeMessageSerializer(this);
+    }
+
+    @Override
+    public String toShortString() {
+        return "VESION_EXCHANGE";
     }
 }

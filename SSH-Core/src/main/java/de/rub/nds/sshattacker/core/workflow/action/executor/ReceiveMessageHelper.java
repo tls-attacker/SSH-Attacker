@@ -11,11 +11,11 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.CharConstants;
 import de.rub.nds.sshattacker.core.exceptions.CryptoException;
 import de.rub.nds.sshattacker.core.exceptions.ParserException;
+import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.packet.AbstractPacket;
 import de.rub.nds.sshattacker.core.packet.layer.PacketLayerParseResult;
 import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.message.DisconnectMessage;
-import de.rub.nds.sshattacker.core.state.SshContext;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -134,10 +134,10 @@ public class ReceiveMessageHelper {
             PacketLayerParseResult parseResult = parsePacket(context, receivedBytes, dataPointer);
             Optional<AbstractPacket> parsedPacket = parseResult.getParsedPacket();
             if (parsedPacket.isPresent()) {
-                ProtocolMessage<?> message = context.getMessageLayer().parse(parsedPacket.get());
+                /*ProtocolMessage<?> message = context.getMessageLayer().parse(parsedPacket.get());
                 message.getHandler(context).adjustContext();
                 retrievedPackets.add(parsedPacket.get());
-                parsedMessages.add(message);
+                parsedMessages.add(message);*/
             }
             dataPointer += parseResult.getParsedByteCount();
         } while (dataPointer < receivedBytes.length);

@@ -12,6 +12,9 @@ import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.connection.AliasedConnection;
 import de.rub.nds.sshattacker.core.constants.RunningModeType;
 import de.rub.nds.sshattacker.core.exceptions.ConfigurationException;
+import de.rub.nds.sshattacker.core.layer.LayerStack;
+import de.rub.nds.sshattacker.core.layer.LayerStackFactory;
+import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.sshattacker.core.workflow.WorkflowTraceNormalizer;
 import de.rub.nds.sshattacker.core.workflow.WorkflowTraceSerializer;
@@ -98,8 +101,11 @@ public class State {
         normalizer.normalize(workflowTrace, config, runningMode);
 
         for (AliasedConnection con : workflowTrace.getConnections()) {
-            SshContext ctx = new SshContext(config, con);
-            addSshContext(ctx);
+            Context ctx = new Context(config, con);
+            LayerStack layerStack =
+                    LayerStackFactory.createLayerStack(config.getDefaultLayerConfiguration(), ctx);
+            ctx.setLayerStack(layerStack);
+            addContext(ctx);
         }
     }
 
@@ -152,10 +158,10 @@ public class State {
      * Replace existing SshContext with new SshContext. This can only be done if
      * existingSshContext.connection equals newSshContext.connection.
      *
-     * @param newSshContext The new SshContext to replace the old with
+     * @param Context The new SshContext to replace the old with
      */
-    public void replaceSshContext(SshContext newSshContext) {
-        contextContainer.replaceSshContext(newSshContext);
+    public void replaceContext(Context newContext) {
+        contextContainer.replaceContext(newContext);
     }
 
     /**
@@ -170,8 +176,8 @@ public class State {
      *
      * @return the only context known to the state
      */
-    public SshContext getSshContext() {
-        return contextContainer.getSshContext();
+    public Context getContext() {
+        return contextContainer.getContext();
     }
 
     /**
@@ -186,20 +192,28 @@ public class State {
      * @param alias The Alias for which the SshContext should be returned
      * @return the context with the given connection end alias
      */
-    public SshContext getSshContext(String alias) {
+    public Context getContext(String alias) {
         return contextContainer.getSshContext(alias);
     }
 
-    public List<SshContext> getAllSshContexts() {
+    public SshContext getSshContext() {
+        return getContext().getSshContext();
+    }
+
+    public SshContext getSshContext(String alias) {
+        return getContext(alias).getSshContext();
+    }
+
+    public List<Context> getAllContexts() {
         return contextContainer.getAllContexts();
     }
 
-    public List<SshContext> getInboundSshContexts() {
-        return contextContainer.getInboundSshContexts();
+    public List<Context> getInboundContexts() {
+        return contextContainer.getInboundContexts();
     }
 
-    public List<SshContext> getOutboundSshContexts() {
-        return contextContainer.getOutboundSshContexts();
+    public List<Context> getOutboundContexts() {
+        return contextContainer.getOutboundContexts();
     }
 
     public RunningModeType getRunningMode() {
@@ -210,8 +224,8 @@ public class State {
         this.runningMode = runningMode;
     }
 
-    private void addSshContext(SshContext context) {
-        contextContainer.addSshContext(context);
+    private void addContext(Context context) {
+        contextContainer.addContext(context);
     }
 
     /**

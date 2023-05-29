@@ -9,15 +9,21 @@ package de.rub.nds.sshattacker.core.protocol.transport.parser;
 
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 import de.rub.nds.sshattacker.core.protocol.transport.message.NewKeysMessage;
+import java.io.InputStream;
 
 public class NewKeysMessageParser extends SshMessageParser<NewKeysMessage> {
 
-    public NewKeysMessageParser(byte[] array) {
-        super(array);
-    }
+    /*
+        public NewKeysMessageParser(byte[] array) {
+            super(array);
+        }
+        public NewKeysMessageParser(byte[] array, int startPosition) {
+            super(array, startPosition);
+        }
+    */
 
-    public NewKeysMessageParser(byte[] array, int startPosition) {
-        super(array, startPosition);
+    public NewKeysMessageParser(InputStream stream) {
+        super(stream);
     }
 
     @Override
@@ -27,4 +33,9 @@ public class NewKeysMessageParser extends SshMessageParser<NewKeysMessage> {
 
     @Override
     protected void parseMessageSpecificContents() {}
+
+    @Override
+    public void parse(NewKeysMessage message) {
+        parseMessageSpecificContents();
+    }
 }

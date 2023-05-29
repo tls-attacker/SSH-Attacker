@@ -7,36 +7,29 @@
  */
 package de.rub.nds.sshattacker.core.protocol.common;
 
-import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.layer.context.SshContext;
+import de.rub.nds.sshattacker.core.layer.data.Handler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public abstract class ProtocolMessageHandler<T extends ProtocolMessage<T>> implements Handler<T> {
+public abstract class ProtocolMessageHandler<MessageT extends ProtocolMessage>
+        implements Handler<MessageT> {
 
     protected static final Logger LOGGER = LogManager.getLogger();
 
     protected final SshContext context;
 
-    protected final T message;
+    // protected final MessageT message;
 
     public ProtocolMessageHandler(SshContext context) {
-        this(context, null);
-    }
-
-    public ProtocolMessageHandler(SshContext context, T message) {
         this.context = context;
-        this.message = message;
     }
 
-    @Override
-    public abstract ProtocolMessageParser<T> getParser(byte[] array);
+    /*
+        public ProtocolMessageHandler(SshContext context, T message) {
+            this.context = context;
+            this.message = message;
+        }
 
-    @Override
-    public abstract ProtocolMessageParser<T> getParser(byte[] array, int startPosition);
-
-    @Override
-    public abstract ProtocolMessagePreparator<T> getPreparator();
-
-    @Override
-    public abstract ProtocolMessageSerializer<T> getSerializer();
+    */
 }

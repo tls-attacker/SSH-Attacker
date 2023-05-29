@@ -8,10 +8,10 @@
 package de.rub.nds.sshattacker.core.protocol.connection;
 
 import de.rub.nds.sshattacker.core.constants.ChannelType;
+import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelMessage;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelOpenConfirmationMessage;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelOpenMessage;
-import de.rub.nds.sshattacker.core.state.SshContext;
 import java.util.*;
 import java.util.stream.IntStream;
 import org.apache.logging.log4j.LogManager;

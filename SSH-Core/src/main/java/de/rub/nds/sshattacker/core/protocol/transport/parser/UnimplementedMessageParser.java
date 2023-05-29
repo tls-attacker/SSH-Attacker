@@ -10,6 +10,7 @@ package de.rub.nds.sshattacker.core.protocol.transport.parser;
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 import de.rub.nds.sshattacker.core.protocol.transport.message.UnimplementedMessage;
+import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -17,12 +18,18 @@ public class UnimplementedMessageParser extends SshMessageParser<UnimplementedMe
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public UnimplementedMessageParser(byte[] array) {
-        super(array);
-    }
+    /*
+        public UnimplementedMessageParser(byte[] array) {
+            super(array);
+        }
+        public UnimplementedMessageParser(byte[] array, int startPosition) {
+            super(array, startPosition);
+        }
 
-    public UnimplementedMessageParser(byte[] array, int startPosition) {
-        super(array, startPosition);
+    */
+
+    public UnimplementedMessageParser(InputStream stream) {
+        super(stream);
     }
 
     private void parseSequenceNumber() {
@@ -38,5 +45,10 @@ public class UnimplementedMessageParser extends SshMessageParser<UnimplementedMe
     @Override
     protected void parseMessageSpecificContents() {
         parseSequenceNumber();
+    }
+
+    @Override
+    public void parse(UnimplementedMessage message) {
+        parseMessageSpecificContents();
     }
 }

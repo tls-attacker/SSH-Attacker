@@ -20,7 +20,7 @@ public class KeyExchangeInitMessagePreparator extends SshMessagePreparator<KeyEx
 
     @Override
     public void prepareMessageSpecificContents() {
-        if (chooser.getContext().isClient()) {
+        if (chooser.getContext().getSshContext().isClient()) {
             getObject().setCookie(chooser.getClientCookie());
             getObject()
                     .setKeyExchangeAlgorithms(
@@ -61,7 +61,10 @@ public class KeyExchangeInitMessagePreparator extends SshMessagePreparator<KeyEx
                             chooser.getClientFirstKeyExchangePacketFollows());
             getObject().setReserved(chooser.getClientReserved());
 
-            chooser.getContext().getExchangeHashInputHolder().setClientKeyExchangeInit(getObject());
+            chooser.getContext()
+                    .getSshContext()
+                    .getExchangeHashInputHolder()
+                    .setClientKeyExchangeInit(getObject());
         } else {
             getObject().setCookie(chooser.getServerCookie());
             getObject()
@@ -103,7 +106,10 @@ public class KeyExchangeInitMessagePreparator extends SshMessagePreparator<KeyEx
                             chooser.getServerFirstKeyExchangePacketFollows());
             getObject().setReserved(chooser.getServerReserved());
 
-            chooser.getContext().getExchangeHashInputHolder().setServerKeyExchangeInit(getObject());
+            chooser.getContext()
+                    .getSshContext()
+                    .getExchangeHashInputHolder()
+                    .setServerKeyExchangeInit(getObject());
         }
     }
 }

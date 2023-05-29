@@ -5,10 +5,9 @@
  *
  * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
-package de.rub.nds.sshattacker.core.state;
+package de.rub.nds.sshattacker.core.layer.context;
 
 import de.rub.nds.sshattacker.core.config.Config;
-import de.rub.nds.sshattacker.core.connection.AliasedConnection;
 import de.rub.nds.sshattacker.core.constants.*;
 import de.rub.nds.sshattacker.core.crypto.hash.ExchangeHashInputHolder;
 import de.rub.nds.sshattacker.core.crypto.kex.AbstractEcdhKeyExchange;
@@ -17,33 +16,37 @@ import de.rub.nds.sshattacker.core.crypto.kex.HybridKeyExchange;
 import de.rub.nds.sshattacker.core.crypto.kex.RsaKeyExchange;
 import de.rub.nds.sshattacker.core.crypto.keys.SshPublicKey;
 import de.rub.nds.sshattacker.core.exceptions.ConfigurationException;
-import de.rub.nds.sshattacker.core.exceptions.TransportHandlerConnectException;
 import de.rub.nds.sshattacker.core.packet.cipher.keys.KeySet;
 import de.rub.nds.sshattacker.core.packet.layer.AbstractPacketLayer;
 import de.rub.nds.sshattacker.core.packet.layer.PacketLayerFactory;
-import de.rub.nds.sshattacker.core.protocol.common.layer.MessageLayer;
 import de.rub.nds.sshattacker.core.protocol.connection.Channel;
 import de.rub.nds.sshattacker.core.protocol.connection.ChannelManager;
+import de.rub.nds.sshattacker.core.state.Context;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.sshattacker.core.workflow.chooser.ChooserFactory;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
-import de.rub.nds.tlsattacker.transport.TransportHandlerFactory;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 
-public class SshContext {
+public class SshContext extends LayerContext {
 
     /** Static configuration for SSH-Attacker */
-    private Config config;
-
     private Chooser chooser;
 
-    /** Connection used to communicate with the remote peer */
-    private AliasedConnection connection;
+    public Random getRandom() {
+        return random;
+    }
 
+    public void setRandom(Random random) {
+        this.random = random;
+    }
+
+    private Random random;
+
+    /** Connection used to communicate with the remote peer */
     private TransportHandler transportHandler;
     /** If set to true, an exception was received from the transport handler */
     private boolean receivedTransportHandlerException = false;
@@ -58,7 +61,7 @@ public class SshContext {
      */
     private Boolean receiveAsciiModeEnabled;
     /** A layer to serialize messages */
-    private MessageLayer messageLayer = new MessageLayer(this);
+    // private MessageLayer messageLayer = new MessageLayer(super.getContext());
 
     /**
      * Sequence number used to generate MAC when sending packages. The sequence number is unsigned,
@@ -230,37 +233,65 @@ public class SshContext {
     /** If set to true, a version exchange message was sent by each side */
     private boolean versionExchangeCompleted = false;
 
+    private CompressionAlgorithm selectedCompressionAlgorithm;
+
+    public CompressionAlgorithm getSelectedCompressionAlgorithm() {
+        return selectedCompressionAlgorithm;
+    }
+
+    public void setSelectedCompressionAlgorithm(CompressionAlgorithm selectedCompressionAlgorithm) {
+        this.selectedCompressionAlgorithm = selectedCompressionAlgorithm;
+    }
+
+    public EncryptionAlgorithm getSelectedEncryptionAlgorithm() {
+        return selectedEncryptionAlgorithm;
+    }
+
+    public void setSelectedEncryptionAlgorithm(EncryptionAlgorithm selectedEncryptionAlgorithm) {
+        this.selectedEncryptionAlgorithm = selectedEncryptionAlgorithm;
+    }
+
+    public MacAlgorithm getSelectedMacAlgorithm() {
+        return selectedMacAlgorithm;
+    }
+
+    public void setSelectedMacAlgorithm(MacAlgorithm selectedMacAlgorithm) {
+        this.selectedMacAlgorithm = selectedMacAlgorithm;
+    }
+
+    public KeyExchangeAlgorithm getSelectedKeyExchangeAlgorithm() {
+        return selectedKeyExchangeAlgorithm;
+    }
+
+    public void setSelectedKeyExchangeAlgorithm(KeyExchangeAlgorithm selectedKeyExchangeAlgorithm) {
+        this.selectedKeyExchangeAlgorithm = selectedKeyExchangeAlgorithm;
+    }
+
+    private EncryptionAlgorithm selectedEncryptionAlgorithm;
+    private MacAlgorithm selectedMacAlgorithm;
+    private KeyExchangeAlgorithm selectedKeyExchangeAlgorithm;
+
     // region Constructors and Initalization
     public SshContext() {
-        this(Config.createConfig());
+        this(new Context(new Config()));
     }
 
     public SshContext(Config config) {
-        RunningModeType mode = config.getDefaultRunningMode();
-        if (mode == null) {
+        this(new Context(config));
+    }
+
+    public SshContext(Context context) {
+        super(context);
+        context.setSshContext(this);
+        RunningModeType mode = getConfig().getDefaultRunningMode();
+        if (null == mode) {
             throw new ConfigurationException("Cannot create connection, running mode not set");
         } else {
-            switch (mode) {
-                case CLIENT:
-                    init(config, config.getDefaultClientConnection());
-                    break;
-                case SERVER:
-                    init(config, config.getDefaultServerConnection());
-                    break;
-                default:
-                    throw new ConfigurationException(
-                            "Cannot create connection for unknown running mode '" + mode + "'");
-            }
+            init();
         }
     }
 
-    public SshContext(Config config, AliasedConnection connection) {
-        init(config, connection);
-    }
-
-    public void init(Config config, AliasedConnection connection) {
-        this.config = config;
-        this.connection = connection;
+    public void init() {
         exchangeHashInputHolder = new ExchangeHashInputHolder();
 
         // TODO: Initial packet layer type from config
@@ -269,29 +300,19 @@ public class SshContext {
         receiveAsciiModeEnabled = true;
         writeSequenceNumber = 0;
         readSequenceNumber = 0;
-        handleAsClient = (connection.getLocalConnectionEndType() == ConnectionEndType.CLIENT);
+        handleAsClient = (getConnection().getLocalConnectionEndType() == ConnectionEndType.CLIENT);
         channelManager = new ChannelManager(this);
     }
 
     // endregion
 
-    public Config getConfig() {
-        return config;
-    }
-
     public Chooser getChooser() {
         if (chooser == null) {
-            chooser = ChooserFactory.getChooser(config.getChooserType(), this, config);
+            chooser =
+                    ChooserFactory.getChooser(
+                            getConfig().getChooserType(), this.getContext(), getConfig());
         }
         return chooser;
-    }
-
-    public AliasedConnection getConnection() {
-        return connection;
-    }
-
-    public void setConnection(AliasedConnection connection) {
-        this.connection = connection;
     }
 
     public TransportHandler getTransportHandler() {
@@ -308,26 +329,6 @@ public class SshContext {
 
     public void setReceivedTransportHandlerException(boolean receivedTransportHandlerException) {
         this.receivedTransportHandlerException = receivedTransportHandlerException;
-    }
-
-    public void initTransportHandler() {
-        if (transportHandler == null) {
-            if (connection == null) {
-                throw new ConfigurationException("Connection end not set");
-            }
-            transportHandler = TransportHandlerFactory.createTransportHandler(connection);
-        }
-
-        try {
-            transportHandler.preInitialize();
-            transportHandler.initialize();
-        } catch (NullPointerException | NumberFormatException ex) {
-            throw new ConfigurationException("Invalid values in " + connection.toString(), ex);
-        } catch (IOException ex) {
-            throw new TransportHandlerConnectException(
-                    "Unable to initialize the transport handler with: " + connection.toString(),
-                    ex);
-        }
     }
 
     public PacketLayerType getPacketLayerType() {
@@ -354,13 +355,13 @@ public class SshContext {
         this.receiveAsciiModeEnabled = receiveAsciiModeEnabled;
     }
 
-    public MessageLayer getMessageLayer() {
+    /*public MessageLayer getMessageLayer() {
         return messageLayer;
     }
 
     public void setMessageLayer(MessageLayer messageLayer) {
         this.messageLayer = messageLayer;
-    }
+    }*/
 
     // region Getters and Setters for Sequence Numbers
     public int getWriteSequenceNumber() {
@@ -950,11 +951,11 @@ public class SshContext {
     }
 
     public boolean isClient() {
-        return connection.getLocalConnectionEndType() == ConnectionEndType.CLIENT;
+        return getConnection().getLocalConnectionEndType() == ConnectionEndType.CLIENT;
     }
 
     public boolean isServer() {
-        return connection.getLocalConnectionEndType() == ConnectionEndType.SERVER;
+        return getConnection().getLocalConnectionEndType() == ConnectionEndType.SERVER;
     }
 
     public boolean isHandleAsClient() {

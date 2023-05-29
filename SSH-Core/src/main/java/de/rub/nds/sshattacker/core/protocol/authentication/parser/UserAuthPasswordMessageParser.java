@@ -10,6 +10,7 @@ package de.rub.nds.sshattacker.core.protocol.authentication.parser;
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthPasswordMessage;
 import de.rub.nds.sshattacker.core.util.Converter;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -19,17 +20,30 @@ public class UserAuthPasswordMessageParser
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public UserAuthPasswordMessageParser(byte[] array) {
-        super(array);
-    }
+    /*
+        public UserAuthPasswordMessageParser(byte[] array) {
+            super(array);
+        }
+        public UserAuthPasswordMessageParser(byte[] array, int startPosition) {
+            super(array, startPosition);
+        }
 
-    public UserAuthPasswordMessageParser(byte[] array, int startPosition) {
-        super(array, startPosition);
+    */
+
+    public UserAuthPasswordMessageParser(InputStream stream) {
+        super(stream);
     }
 
     @Override
     public UserAuthPasswordMessage createMessage() {
         return new UserAuthPasswordMessage();
+    }
+
+    @Override
+    public void parse(UserAuthPasswordMessage message) {
+        LOGGER.debug("Parsing UserAuthBannerMessage");
+        parseMessageSpecificContents();
+        message.setCompleteResultingMessage(getAlreadyParsed());
     }
 
     private void parseChangePassword() {

@@ -11,6 +11,7 @@ import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeStrin
 
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthKeyboardInteractiveMessage;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -20,17 +21,29 @@ public class UserAuthKeyboardInteractiveMessageParser
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public UserAuthKeyboardInteractiveMessageParser(byte[] array) {
-        super(array);
-    }
+    /*
+        public UserAuthKeyboardInteractiveMessageParser(byte[] array) {
+            super(array);
+        }
+        public UserAuthKeyboardInteractiveMessageParser(byte[] array, int startPosition) {
+            super(array, startPosition);
+        }
+    */
 
-    public UserAuthKeyboardInteractiveMessageParser(byte[] array, int startPosition) {
-        super(array, startPosition);
+    public UserAuthKeyboardInteractiveMessageParser(InputStream stream) {
+        super(stream);
     }
 
     @Override
     protected UserAuthKeyboardInteractiveMessage createMessage() {
         return new UserAuthKeyboardInteractiveMessage();
+    }
+
+    @Override
+    public void parse(UserAuthKeyboardInteractiveMessage message) {
+        LOGGER.debug("Parsing UserAuthBannerMessage");
+        parseMessageSpecificContents();
+        message.setCompleteResultingMessage(getAlreadyParsed());
     }
 
     private void parseLanguageTag() {

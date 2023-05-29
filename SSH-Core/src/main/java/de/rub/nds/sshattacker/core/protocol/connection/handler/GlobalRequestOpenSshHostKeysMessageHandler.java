@@ -7,12 +7,9 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.handler;
 
+import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.protocol.common.*;
 import de.rub.nds.sshattacker.core.protocol.connection.message.GlobalRequestOpenSshHostKeysMessage;
-import de.rub.nds.sshattacker.core.protocol.connection.parser.GlobalRequestOpenSshHostKeysMessageParser;
-import de.rub.nds.sshattacker.core.protocol.connection.preparator.GlobalRequestOpenSshHostKeysMessagePreparator;
-import de.rub.nds.sshattacker.core.protocol.connection.serializer.GlobalRequestOpenSshHostKeysMessageSerializer;
-import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class GlobalRequestOpenSshHostKeysMessageHandler
         extends SshMessageHandler<GlobalRequestOpenSshHostKeysMessage> {
@@ -21,15 +18,15 @@ public class GlobalRequestOpenSshHostKeysMessageHandler
         super(context);
     }
 
-    public GlobalRequestOpenSshHostKeysMessageHandler(
+    /*public GlobalRequestOpenSshHostKeysMessageHandler(
             SshContext context, GlobalRequestOpenSshHostKeysMessage message) {
         super(context, message);
-    }
+    }*/
 
     @Override
-    public void adjustContext() {}
+    public void adjustContext(GlobalRequestOpenSshHostKeysMessage message) {}
 
-    @Override
+    /*@Override
     public SshMessageParser<GlobalRequestOpenSshHostKeysMessage> getParser(byte[] array) {
         return new GlobalRequestOpenSshHostKeysMessageParser(array);
     }
@@ -48,5 +45,5 @@ public class GlobalRequestOpenSshHostKeysMessageHandler
     @Override
     public SshMessageSerializer<GlobalRequestOpenSshHostKeysMessage> getSerializer() {
         return new GlobalRequestOpenSshHostKeysMessageSerializer(message);
-    }
+    }*/
 }

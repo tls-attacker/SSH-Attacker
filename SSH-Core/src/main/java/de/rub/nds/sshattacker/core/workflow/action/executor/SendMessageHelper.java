@@ -7,17 +7,11 @@
  */
 package de.rub.nds.sshattacker.core.workflow.action.executor;
 
+import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.packet.AbstractPacket;
 import de.rub.nds.sshattacker.core.packet.layer.AbstractPacketLayer;
-import de.rub.nds.sshattacker.core.protocol.common.Handler;
-import de.rub.nds.sshattacker.core.protocol.common.MessageSentHandler;
-import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessage;
-import de.rub.nds.sshattacker.core.protocol.common.layer.MessageLayer;
-import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
 import java.io.IOException;
-import java.util.Collections;
-import java.util.stream.Stream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -31,16 +25,16 @@ public class SendMessageHelper {
         transportHandler.sendData(packetLayer.preparePacket(packet));
     }
 
-    public MessageActionResult sendMessage(SshContext context, ProtocolMessage<?> message) {
-        MessageLayer messageLayer = context.getMessageLayer();
-        try {
-            AbstractPacket packet = messageLayer.serialize(message);
-            sendPacket(context, packet);
-            Handler<?> handler = message.getHandler(context);
-            if (handler instanceof MessageSentHandler) {
-                ((MessageSentHandler) handler).adjustContextAfterMessageSent();
-            }
-            return new MessageActionResult(
+    /*public MessageActionResult sendMessage(SshContext context, ProtocolMessage<?> message) {
+    MessageLayer messageLayer = context.getMessageLayer();
+    try {
+        AbstractPacket packet = messageLayer.serialize(message);
+        sendPacket(context, packet);
+        Handler<?> handler = message.getHandler(context);
+        if (handler instanceof MessageSentHandler) {
+            ((MessageSentHandler) handler).adjustContextAfterMessageSent();
+        }
+    return new MessageActionResult(
                     Collections.singletonList(packet), Collections.singletonList(message));
         } catch (IOException e) {
             LOGGER.warn("Error while sending packet: " + e.getMessage());
@@ -54,5 +48,5 @@ public class SendMessageHelper {
                 .map(message -> sendMessage(context, message))
                 .reduce(MessageActionResult::merge)
                 .orElse(new MessageActionResult());
-    }
+    }*/
 }

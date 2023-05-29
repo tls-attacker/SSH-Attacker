@@ -9,8 +9,10 @@ package de.rub.nds.sshattacker.core.protocol.transport.parser;
 
 import de.rub.nds.sshattacker.core.constants.BinaryPacketConstants;
 import de.rub.nds.sshattacker.core.constants.HybridKeyExchangeCombiner;
+import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 import de.rub.nds.sshattacker.core.protocol.transport.message.HybridKeyExchangeInitMessage;
+import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -23,7 +25,7 @@ public class HybridKeyExchangeInitMessageParser
     private int encapsulationSize;
     private int agreementSize;
 
-    public HybridKeyExchangeInitMessageParser(
+    /*public HybridKeyExchangeInitMessageParser(
             byte[] array,
             HybridKeyExchangeCombiner combiner,
             int agreementSize,
@@ -32,9 +34,16 @@ public class HybridKeyExchangeInitMessageParser
         this.combiner = combiner;
         this.encapsulationSize = encapsulationSize;
         this.agreementSize = agreementSize;
+    }*/
+
+    public HybridKeyExchangeInitMessageParser(SshContext context, InputStream stream) {
+        super(stream);
+        this.combiner = combiner;
+        this.encapsulationSize = encapsulationSize;
+        this.agreementSize = agreementSize;
     }
 
-    public HybridKeyExchangeInitMessageParser(
+    /*public HybridKeyExchangeInitMessageParser(
             byte[] array,
             int startPosition,
             HybridKeyExchangeCombiner combiner,
@@ -44,7 +53,7 @@ public class HybridKeyExchangeInitMessageParser
         this.combiner = combiner;
         this.encapsulationSize = encapsulationSize;
         this.agreementSize = agreementSize;
-    }
+    }*/
 
     private void parseHybridKey() {
         int length = parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH);
@@ -77,5 +86,10 @@ public class HybridKeyExchangeInitMessageParser
     @Override
     protected HybridKeyExchangeInitMessage createMessage() {
         return new HybridKeyExchangeInitMessage();
+    }
+
+    @Override
+    public void parse(HybridKeyExchangeInitMessage message) {
+        parseMessageSpecificContents();
     }
 }

@@ -10,8 +10,12 @@ package de.rub.nds.sshattacker.core.protocol.connection.message;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
+import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.protocol.connection.handler.ChannelRequestSubsystemMessageHandler;
-import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.protocol.connection.parser.ChannelRequestSubsystemMessageParser;
+import de.rub.nds.sshattacker.core.protocol.connection.preparator.ChannelRequestSubsystemMessagePreparator;
+import de.rub.nds.sshattacker.core.protocol.connection.serializer.ChannelRequestSubsystemMessageSerializer;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
 public class ChannelRequestSubsystemMessage
@@ -66,6 +70,26 @@ public class ChannelRequestSubsystemMessage
 
     @Override
     public ChannelRequestSubsystemMessageHandler getHandler(SshContext context) {
-        return new ChannelRequestSubsystemMessageHandler(context, this);
+        return new ChannelRequestSubsystemMessageHandler(context);
+    }
+
+    @Override
+    public ChannelRequestSubsystemMessageParser getParser(SshContext context, InputStream stream) {
+        return new ChannelRequestSubsystemMessageParser(stream);
+    }
+
+    @Override
+    public ChannelRequestSubsystemMessagePreparator getPreparator(SshContext context) {
+        return new ChannelRequestSubsystemMessagePreparator(context.getChooser(), this);
+    }
+
+    @Override
+    public ChannelRequestSubsystemMessageSerializer getSerializer(SshContext context) {
+        return new ChannelRequestSubsystemMessageSerializer(this);
+    }
+
+    @Override
+    public String toShortString() {
+        return "REQ_SUB";
     }
 }

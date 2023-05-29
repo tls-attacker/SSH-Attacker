@@ -7,12 +7,9 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.handler;
 
+import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.protocol.common.*;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelEofMessage;
-import de.rub.nds.sshattacker.core.protocol.connection.parser.ChannelEofMessageParser;
-import de.rub.nds.sshattacker.core.protocol.connection.preparator.ChannelEofMessagePreparator;
-import de.rub.nds.sshattacker.core.protocol.connection.serializer.ChannelMessageSerializer;
-import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class ChannelEofMessageHandler extends SshMessageHandler<ChannelEofMessage> {
 
@@ -20,16 +17,16 @@ public class ChannelEofMessageHandler extends SshMessageHandler<ChannelEofMessag
         super(context);
     }
 
-    public ChannelEofMessageHandler(SshContext context, ChannelEofMessage message) {
+    /*public ChannelEofMessageHandler(SshContext context, ChannelEofMessage message) {
         super(context, message);
-    }
+    }*/
 
     @Override
-    public void adjustContext() {
+    public void adjustContext(ChannelEofMessage message) {
         // TODO: Handle ChannelEofMessage
     }
 
-    @Override
+    /*@Override
     public ChannelEofMessageParser getParser(byte[] array) {
         return new ChannelEofMessageParser(array);
     }
@@ -47,5 +44,5 @@ public class ChannelEofMessageHandler extends SshMessageHandler<ChannelEofMessag
     @Override
     public ChannelMessageSerializer<ChannelEofMessage> getSerializer() {
         return new ChannelMessageSerializer<>(message);
-    }
+    }*/
 }

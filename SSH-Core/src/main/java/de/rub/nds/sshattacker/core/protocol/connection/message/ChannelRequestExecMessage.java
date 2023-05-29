@@ -10,8 +10,13 @@ package de.rub.nds.sshattacker.core.protocol.connection.message;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
+import de.rub.nds.sshattacker.core.layer.context.SshContext;
+import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 import de.rub.nds.sshattacker.core.protocol.connection.handler.ChannelRequestExecMessageHandler;
-import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.protocol.connection.parser.ChannelRequestExecMessageParser;
+import de.rub.nds.sshattacker.core.protocol.connection.preparator.ChannelRequestExecMessagePreparator;
+import de.rub.nds.sshattacker.core.protocol.connection.serializer.ChannelRequestExecMessageSerializer;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
 public class ChannelRequestExecMessage extends ChannelRequestMessage<ChannelRequestExecMessage> {
@@ -60,6 +65,27 @@ public class ChannelRequestExecMessage extends ChannelRequestMessage<ChannelRequ
 
     @Override
     public ChannelRequestExecMessageHandler getHandler(SshContext context) {
-        return new ChannelRequestExecMessageHandler(context, this);
+        return new ChannelRequestExecMessageHandler(context);
+    }
+
+    @Override
+    public SshMessageParser<ChannelRequestExecMessage> getParser(
+            SshContext context, InputStream stream) {
+        return new ChannelRequestExecMessageParser(stream);
+    }
+
+    @Override
+    public ChannelRequestExecMessagePreparator getPreparator(SshContext context) {
+        return new ChannelRequestExecMessagePreparator(context.getChooser(), this);
+    }
+
+    @Override
+    public ChannelRequestExecMessageSerializer getSerializer(SshContext context) {
+        return new ChannelRequestExecMessageSerializer(this);
+    }
+
+    @Override
+    public String toShortString() {
+        return "EXEC_MESSAGE";
     }
 }

@@ -12,6 +12,7 @@ import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeStrin
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthPkOkMessage;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -20,17 +21,29 @@ public class UserAuthPkOkMessageParser extends SshMessageParser<UserAuthPkOkMess
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public UserAuthPkOkMessageParser(byte[] array) {
-        super(array);
-    }
+    /*
+        public UserAuthPkOkMessageParser(byte[] array) {
+            super(array);
+        }
+        public UserAuthPkOkMessageParser(byte[] array, int startPosition) {
+            super(array, startPosition);
+        }
+    */
 
-    public UserAuthPkOkMessageParser(byte[] array, int startPosition) {
-        super(array, startPosition);
+    public UserAuthPkOkMessageParser(InputStream stream) {
+        super(stream);
     }
 
     @Override
     protected UserAuthPkOkMessage createMessage() {
         return new UserAuthPkOkMessage();
+    }
+
+    @Override
+    public void parse(UserAuthPkOkMessage message) {
+        LOGGER.debug("Parsing UserAuthBannerMessage");
+        parseMessageSpecificContents();
+        message.setCompleteResultingMessage(getAlreadyParsed());
     }
 
     private void parsePubkey() {

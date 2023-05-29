@@ -7,13 +7,10 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.handler;
 
+import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.protocol.common.*;
 import de.rub.nds.sshattacker.core.protocol.transport.message.EcdhKeyExchangeReplyMessage;
-import de.rub.nds.sshattacker.core.protocol.transport.parser.EcdhKeyExchangeReplyMessageParser;
-import de.rub.nds.sshattacker.core.protocol.transport.preparator.EcdhKeyExchangeReplyMessagePreparator;
-import de.rub.nds.sshattacker.core.protocol.transport.serializer.EcdhKeyExchangeReplyMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.util.KeyExchangeUtil;
-import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class EcdhKeyExchangeReplyMessageHandler
         extends SshMessageHandler<EcdhKeyExchangeReplyMessage> {
@@ -22,15 +19,15 @@ public class EcdhKeyExchangeReplyMessageHandler
         super(context);
     }
 
-    public EcdhKeyExchangeReplyMessageHandler(
+    /*public EcdhKeyExchangeReplyMessageHandler(
             SshContext context, EcdhKeyExchangeReplyMessage message) {
         super(context, message);
-    }
+    }*/
 
     @Override
-    public void adjustContext() {
+    public void adjustContext(EcdhKeyExchangeReplyMessage message) {
         KeyExchangeUtil.handleHostKeyMessage(context, message);
-        updateContextWithRemotePublicKey();
+        updateContextWithRemotePublicKey(message);
         KeyExchangeUtil.computeSharedSecret(context, context.getChooser().getEcdhKeyExchange());
         KeyExchangeUtil.computeExchangeHash(context);
         KeyExchangeUtil.handleExchangeHashSignatureMessage(context, message);
@@ -38,7 +35,7 @@ public class EcdhKeyExchangeReplyMessageHandler
         KeyExchangeUtil.generateKeySet(context);
     }
 
-    private void updateContextWithRemotePublicKey() {
+    private void updateContextWithRemotePublicKey(EcdhKeyExchangeReplyMessage message) {
         context.getChooser()
                 .getEcdhKeyExchange()
                 .setRemotePublicKey(message.getEphemeralPublicKey().getValue());
@@ -46,7 +43,7 @@ public class EcdhKeyExchangeReplyMessageHandler
                 .setEcdhServerPublicKey(message.getEphemeralPublicKey().getValue());
     }
 
-    @Override
+    /*@Override
     public EcdhKeyExchangeReplyMessageParser getParser(byte[] array) {
         return new EcdhKeyExchangeReplyMessageParser(array);
     }
@@ -64,5 +61,5 @@ public class EcdhKeyExchangeReplyMessageHandler
     @Override
     public EcdhKeyExchangeReplyMessageSerializer getSerializer() {
         return new EcdhKeyExchangeReplyMessageSerializer(message);
-    }
+    }*/
 }

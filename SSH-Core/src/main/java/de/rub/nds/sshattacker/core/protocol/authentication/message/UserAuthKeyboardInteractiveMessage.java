@@ -10,8 +10,12 @@ package de.rub.nds.sshattacker.core.protocol.authentication.message;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
+import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.protocol.authentication.handler.UserAuthKeyboardInteractiveMessageHandler;
-import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.protocol.authentication.parser.UserAuthKeyboardInteractiveMessageParser;
+import de.rub.nds.sshattacker.core.protocol.authentication.preparator.UserAuthKeyboardInteractiveMessagePreparator;
+import de.rub.nds.sshattacker.core.protocol.authentication.serializer.UserAuthKeyboardInteractiveMessageSerializer;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
 public class UserAuthKeyboardInteractiveMessage
@@ -104,6 +108,36 @@ public class UserAuthKeyboardInteractiveMessage
 
     @Override
     public UserAuthKeyboardInteractiveMessageHandler getHandler(SshContext context) {
-        return new UserAuthKeyboardInteractiveMessageHandler(context, this);
+        return new UserAuthKeyboardInteractiveMessageHandler(context);
+    }
+
+    @Override
+    public UserAuthKeyboardInteractiveMessageParser getParser(
+            SshContext context, InputStream stream) {
+        return new UserAuthKeyboardInteractiveMessageParser(stream);
+    }
+    /*@Override
+    public UserAuthKeyboardInteractiveMessageParser getParser(byte[] array) {
+        return new UserAuthKeyboardInteractiveMessageParser(array);
+    }
+
+    @Override
+    public UserAuthKeyboardInteractiveMessageParser getParser(byte[] array, int startPosition) {
+        return new UserAuthKeyboardInteractiveMessageParser(array, startPosition);
+    }*/
+
+    @Override
+    public UserAuthKeyboardInteractiveMessagePreparator getPreparator(SshContext context) {
+        return new UserAuthKeyboardInteractiveMessagePreparator(context.getChooser(), this);
+    }
+
+    @Override
+    public UserAuthKeyboardInteractiveMessageSerializer getSerializer(SshContext context) {
+        return new UserAuthKeyboardInteractiveMessageSerializer(this);
+    }
+
+    @Override
+    public String toShortString() {
+        return "AUTH_KEYBOARD";
     }
 }

@@ -22,9 +22,10 @@ public class RsaKeyExchangeDoneMessagePreparator
 
     @Override
     public void prepareMessageSpecificContents() {
-        KeyExchangeUtil.computeExchangeHash(chooser.getContext());
-        KeyExchangeUtil.prepareExchangeHashSignatureMessage(chooser.getContext(), getObject());
-        KeyExchangeUtil.setSessionId(chooser.getContext());
-        KeyExchangeUtil.generateKeySet(chooser.getContext());
+        KeyExchangeUtil.computeExchangeHash(chooser.getContext().getSshContext());
+        KeyExchangeUtil.prepareExchangeHashSignatureMessage(
+                chooser.getContext().getSshContext(), getObject());
+        KeyExchangeUtil.setSessionId(chooser.getContext().getSshContext());
+        KeyExchangeUtil.generateKeySet(chooser.getContext().getSshContext());
     }
 }

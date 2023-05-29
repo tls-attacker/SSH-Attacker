@@ -14,6 +14,7 @@ import de.rub.nds.sshattacker.core.constants.KeyExchangeInitConstants;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 import de.rub.nds.sshattacker.core.protocol.transport.message.KeyExchangeInitMessage;
 import de.rub.nds.sshattacker.core.util.Converter;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -21,13 +22,19 @@ import org.apache.logging.log4j.Logger;
 public class KeyExchangeInitMessageParser extends SshMessageParser<KeyExchangeInitMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
+    /*
 
-    public KeyExchangeInitMessageParser(byte[] array) {
-        super(array);
-    }
+        public KeyExchangeInitMessageParser(byte[] array) {
+            super(array);
+        }
+        public KeyExchangeInitMessageParser(byte[] array, int startPosition) {
+            super(array, startPosition);
+        }
 
-    public KeyExchangeInitMessageParser(byte[] array, int startPosition) {
-        super(array, startPosition);
+    */
+
+    public KeyExchangeInitMessageParser(InputStream stream) {
+        super(stream);
     }
 
     @Override
@@ -218,5 +225,10 @@ public class KeyExchangeInitMessageParser extends SshMessageParser<KeyExchangeIn
         parseLanguagesServerToClient();
         parseFirstKeyExchangePacketFollows();
         parseReserved();
+    }
+
+    @Override
+    public void parse(KeyExchangeInitMessage message) {
+        parseMessageSpecificContents();
     }
 }

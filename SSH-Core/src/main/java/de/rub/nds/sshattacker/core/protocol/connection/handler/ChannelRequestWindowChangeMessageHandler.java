@@ -7,12 +7,9 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.handler;
 
+import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelRequestWindowChangeMessage;
-import de.rub.nds.sshattacker.core.protocol.connection.parser.ChannelRequestWindowChangeMessageParser;
-import de.rub.nds.sshattacker.core.protocol.connection.preparator.ChannelRequestWindowChangeMessagePreparator;
-import de.rub.nds.sshattacker.core.protocol.connection.serializer.ChannelRequestWindowChangeMessageSerializer;
-import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.util.Converter;
 
 public class ChannelRequestWindowChangeMessageHandler
@@ -21,7 +18,7 @@ public class ChannelRequestWindowChangeMessageHandler
         super(context);
     }
 
-    public ChannelRequestWindowChangeMessageHandler(
+    /*public ChannelRequestWindowChangeMessageHandler(
             SshContext context, ChannelRequestWindowChangeMessage message) {
         super(context, message);
     }
@@ -44,10 +41,10 @@ public class ChannelRequestWindowChangeMessageHandler
     @Override
     public ChannelRequestWindowChangeMessageSerializer getSerializer() {
         return new ChannelRequestWindowChangeMessageSerializer(message);
-    }
+    }*/
 
     @Override
-    public void adjustContext() {
+    public void adjustContext(ChannelRequestWindowChangeMessage message) {
         if (Converter.byteToBoolean(message.getWantReply().getValue())) {
             context.getChannelManager().addToChannelRequestResponseQueue(message);
         }

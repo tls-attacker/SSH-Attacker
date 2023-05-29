@@ -9,16 +9,27 @@ package de.rub.nds.sshattacker.core.protocol.connection.parser;
 
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 import de.rub.nds.sshattacker.core.protocol.connection.message.GlobalRequestFailureMessage;
+import java.io.InputStream;
 
 public class GlobalRequestFailureMessageParser
         extends SshMessageParser<GlobalRequestFailureMessage> {
 
-    public GlobalRequestFailureMessageParser(byte[] array) {
-        super(array);
+    /*
+        public GlobalRequestFailureMessageParser(byte[] array) {
+            super(array);
+        }
+        public GlobalRequestFailureMessageParser(byte[] array, int startPosition) {
+            super(array, startPosition);
+        }
+    */
+
+    public GlobalRequestFailureMessageParser(InputStream stream) {
+        super(stream);
     }
 
-    public GlobalRequestFailureMessageParser(byte[] array, int startPosition) {
-        super(array, startPosition);
+    @Override
+    public void parse(GlobalRequestFailureMessage globalRequestFailureMessage) {
+        parseMessageSpecificContents();
     }
 
     @Override

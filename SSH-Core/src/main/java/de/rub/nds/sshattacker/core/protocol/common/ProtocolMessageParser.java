@@ -9,19 +9,12 @@ package de.rub.nds.sshattacker.core.protocol.common;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.*;
-import de.rub.nds.sshattacker.core.exceptions.ParserException;
-import de.rub.nds.sshattacker.core.packet.AbstractPacket;
-import de.rub.nds.sshattacker.core.packet.BlobPacket;
+import de.rub.nds.sshattacker.core.layer.data.Parser;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.*;
 import de.rub.nds.sshattacker.core.protocol.authentication.parser.*;
-import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelOpenUnknownMessage;
-import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelRequestUnknownMessage;
-import de.rub.nds.sshattacker.core.protocol.connection.message.GlobalRequestUnknownMessage;
 import de.rub.nds.sshattacker.core.protocol.connection.parser.*;
-import de.rub.nds.sshattacker.core.protocol.transport.message.AsciiMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.parser.*;
-import de.rub.nds.sshattacker.core.state.SshContext;
-import java.nio.charset.StandardCharsets;
+import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -31,20 +24,24 @@ public abstract class ProtocolMessageParser<T extends ProtocolMessage<T>> extend
 
     protected final T message = createMessage();
 
-    public ProtocolMessageParser(byte[] array) {
+    public ProtocolMessageParser(InputStream stream) {
+        super(stream);
+    }
+
+    /*public ProtocolMessageParser(byte[] array) {
         super(array);
     }
 
     public ProtocolMessageParser(byte[] array, int startPosition) {
         super(array, startPosition);
-    }
+    }*/
 
-    @Override
+    /*@Override
     public final T parse() {
         parseProtocolMessageContents();
         setCompleteResultingMessage();
         return message;
-    }
+    }*/
 
     protected abstract T createMessage();
 
@@ -58,7 +55,7 @@ public abstract class ProtocolMessageParser<T extends ProtocolMessage<T>> extend
                                 message.getCompleteResultingMessage().getValue()));
     }
 
-    public static ProtocolMessage<?> delegateParsing(AbstractPacket packet, SshContext context) {
+    /*public static ProtocolMessage<?> delegateParsing(AbstractPacket packet, Context context) {
         byte[] raw = packet.getPayload().getValue();
         try {
             if (packet instanceof BlobPacket) {
@@ -185,7 +182,7 @@ public abstract class ProtocolMessageParser<T extends ProtocolMessage<T>> extend
     }
 
     public static HybridKeyExchangeReplyMessageParser handleHybridKeyExchangeReplyMessageParsing(
-            byte[] raw, SshContext context) {
+            byte[] raw, Context context) {
         LOGGER.info(
                 "Negotiated Hybrid Key Exchange: "
                         + context.getChooser().getKeyExchangeAlgorithm());
@@ -225,10 +222,10 @@ public abstract class ProtocolMessageParser<T extends ProtocolMessage<T>> extend
                         CryptoConstants.NISTP521_POINT_SIZE,
                         CryptoConstants.KYBER1024_CIPHERTEXT_SIZE);
         }
-    }
+    }*/
 
-    public static HybridKeyExchangeInitMessageParser handleHybridKeyExchangeInitMessageParsing(
-            byte[] raw, SshContext context) {
+    /*public static HybridKeyExchangeInitMessageParser handleHybridKeyExchangeInitMessageParsing(
+            byte[] raw, Context context) {
         LOGGER.info(
                 "Negotiated Hybrid Key Exchange: "
                         + context.getChooser().getKeyExchangeAlgorithm());
@@ -291,9 +288,9 @@ public abstract class ProtocolMessageParser<T extends ProtocolMessage<T>> extend
                         methodString);
                 return message;
         }
-    }
+    }*/
 
-    public static ProtocolMessage<?> handleChannelRequestMessageParsing(byte[] raw) {
+    /*public static ProtocolMessage<?> handleChannelRequestMessageParsing(byte[] raw) {
         ChannelRequestUnknownMessage message = new ChannelRequestUnknownMessageParser(raw).parse();
         String requestTypeString = message.getRequestType().getValue();
         ChannelRequestType requestType = ChannelRequestType.fromName(requestTypeString);
@@ -328,9 +325,9 @@ public abstract class ProtocolMessageParser<T extends ProtocolMessage<T>> extend
                         requestTypeString);
                 return message;
         }
-    }
+    }*/
 
-    public static ProtocolMessage<?> handleGlobalRequestMessageParsing(byte[] raw) {
+    /*public static ProtocolMessage<?> handleGlobalRequestMessageParsing(byte[] raw) {
         GlobalRequestUnknownMessage message = new GlobalRequestUnknownMessageParser(raw).parse();
         String requestTypeString = message.getRequestName().getValue();
         GlobalRequestType requestType = GlobalRequestType.fromName(requestTypeString);
@@ -363,5 +360,5 @@ public abstract class ProtocolMessageParser<T extends ProtocolMessage<T>> extend
                         "Received unimplemented channel open message type: {}", channelTypeString);
                 return message;
         }
-    }
+    }*/
 }

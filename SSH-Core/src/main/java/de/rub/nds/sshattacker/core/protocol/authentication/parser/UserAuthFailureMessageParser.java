@@ -10,21 +10,38 @@ package de.rub.nds.sshattacker.core.protocol.authentication.parser;
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthFailureMessage;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class UserAuthFailureMessageParser extends SshMessageParser<UserAuthFailureMessage> {
 
-    public UserAuthFailureMessageParser(byte[] array) {
-        super(array);
-    }
+    private static final Logger LOGGER = LogManager.getLogger();
 
-    public UserAuthFailureMessageParser(byte[] array, int startPosition) {
-        super(array, startPosition);
+    /*
+        public UserAuthFailureMessageParser(byte[] array) {
+            super(array);
+        }
+        public UserAuthFailureMessageParser(byte[] array, int startPosition) {
+            super(array, startPosition);
+        }
+    */
+
+    public UserAuthFailureMessageParser(InputStream stream) {
+        super(stream);
     }
 
     @Override
     public UserAuthFailureMessage createMessage() {
         return new UserAuthFailureMessage();
+    }
+
+    @Override
+    public void parse(UserAuthFailureMessage message) {
+        LOGGER.debug("Parsing UserAuthBannerMessage");
+        parseMessageSpecificContents();
+        message.setCompleteResultingMessage(getAlreadyParsed());
     }
 
     private void parsePossibleAuthenticationMethods() {

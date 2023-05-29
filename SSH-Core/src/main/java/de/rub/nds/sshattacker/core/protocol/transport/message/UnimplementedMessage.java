@@ -9,9 +9,13 @@ package de.rub.nds.sshattacker.core.protocol.transport.message;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
+import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.UnimplementedMessageHandler;
-import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.protocol.transport.parser.UnimplementedMessageParser;
+import de.rub.nds.sshattacker.core.protocol.transport.preparator.UnimplementedMessagePreparator;
+import de.rub.nds.sshattacker.core.protocol.transport.serializer.UnimplementedMessageSerializer;
+import java.io.InputStream;
 
 public class UnimplementedMessage extends SshMessage<UnimplementedMessage> {
 
@@ -32,6 +36,26 @@ public class UnimplementedMessage extends SshMessage<UnimplementedMessage> {
 
     @Override
     public UnimplementedMessageHandler getHandler(SshContext context) {
-        return new UnimplementedMessageHandler(context, this);
+        return new UnimplementedMessageHandler(context);
+    }
+
+    @Override
+    public UnimplementedMessageParser getParser(SshContext context, InputStream stream) {
+        return new UnimplementedMessageParser(stream);
+    }
+
+    @Override
+    public UnimplementedMessagePreparator getPreparator(SshContext context) {
+        return new UnimplementedMessagePreparator(context.getChooser(), this);
+    }
+
+    @Override
+    public UnimplementedMessageSerializer getSerializer(SshContext context) {
+        return new UnimplementedMessageSerializer(this);
+    }
+
+    @Override
+    public String toShortString() {
+        return "UNIMPLEMENTED_MESSAGE";
     }
 }

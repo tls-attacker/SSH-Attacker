@@ -7,12 +7,9 @@
  */
 package de.rub.nds.sshattacker.core.protocol.authentication.handler;
 
+import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthNoneMessage;
-import de.rub.nds.sshattacker.core.protocol.authentication.parser.UserAuthNoneMessageParser;
-import de.rub.nds.sshattacker.core.protocol.authentication.preparator.UserAuthNoneMessagePreparator;
-import de.rub.nds.sshattacker.core.protocol.authentication.serializer.UserAuthNoneMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.common.*;
-import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class UserAuthNoneMessageHandler extends SshMessageHandler<UserAuthNoneMessage> {
 
@@ -20,32 +17,12 @@ public class UserAuthNoneMessageHandler extends SshMessageHandler<UserAuthNoneMe
         super(context);
     }
 
-    public UserAuthNoneMessageHandler(SshContext context, UserAuthNoneMessage message) {
+    /*public UserAuthNoneMessageHandler(SshContext context, UserAuthNoneMessage message) {
         super(context, message);
-    }
+    }*/
 
     @Override
-    public void adjustContext() {
+    public void adjustContext(UserAuthNoneMessage message) {
         // TODO: Handle UserAuthNoneMessage
-    }
-
-    @Override
-    public SshMessageParser<UserAuthNoneMessage> getParser(byte[] array) {
-        return new UserAuthNoneMessageParser(array);
-    }
-
-    @Override
-    public SshMessageParser<UserAuthNoneMessage> getParser(byte[] array, int startPosition) {
-        return new UserAuthNoneMessageParser(array, startPosition);
-    }
-
-    @Override
-    public UserAuthNoneMessagePreparator getPreparator() {
-        return new UserAuthNoneMessagePreparator(context.getChooser(), message);
-    }
-
-    @Override
-    public UserAuthNoneMessageSerializer getSerializer() {
-        return new UserAuthNoneMessageSerializer(message);
     }
 }

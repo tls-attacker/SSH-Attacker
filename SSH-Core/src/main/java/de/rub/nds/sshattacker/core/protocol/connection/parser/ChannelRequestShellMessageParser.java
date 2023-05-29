@@ -8,16 +8,24 @@
 package de.rub.nds.sshattacker.core.protocol.connection.parser;
 
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelRequestShellMessage;
+import java.io.InputStream;
 
 public class ChannelRequestShellMessageParser
         extends ChannelRequestMessageParser<ChannelRequestShellMessage> {
 
-    public ChannelRequestShellMessageParser(byte[] array) {
+    /*    public ChannelRequestShellMessageParser(byte[] array) {
         super(array);
     }
-
     public ChannelRequestShellMessageParser(byte[] array, int startPosition) {
         super(array, startPosition);
+    }*/
+    public ChannelRequestShellMessageParser(InputStream stream) {
+        super(stream);
+    }
+
+    @Override
+    public void parse(ChannelRequestShellMessage message) {
+        parseMessageSpecificContents();
     }
 
     @Override

@@ -30,7 +30,7 @@ public class RsaKeyExchangePubkeyMessagePreparator
 
     @Override
     public void prepareMessageSpecificContents() {
-        KeyExchangeUtil.prepareHostKeyMessage(chooser.getContext(), getObject());
+        KeyExchangeUtil.prepareHostKeyMessage(chooser.getContext().getSshContext(), getObject());
         prepareTransientPublicKey();
     }
 
@@ -42,6 +42,7 @@ public class RsaKeyExchangePubkeyMessagePreparator
                     .setTransientPublicKeyBytes(
                             PublicKeyHelper.encode(keyExchange.getTransientKey()), true);
             chooser.getContext()
+                    .getSshContext()
                     .getExchangeHashInputHolder()
                     .setRsaTransientKey(getObject().getTransientPublicKey());
         } catch (CryptoException e) {

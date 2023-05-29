@@ -23,13 +23,17 @@ public class RsaKeyExchangeSecretMessagePreparator
 
     @Override
     public void prepareMessageSpecificContents() {
-        KeyExchangeUtil.generateSharedSecret(chooser.getContext(), chooser.getRsaKeyExchange());
+        KeyExchangeUtil.generateSharedSecret(
+                chooser.getContext().getSshContext(), chooser.getRsaKeyExchange());
         prepareEncryptedSecret();
     }
 
     private void prepareEncryptedSecret() {
         byte[] encryptedSecret = chooser.getRsaKeyExchange().encryptSharedSecret();
         getObject().setEncryptedSecret(encryptedSecret, true);
-        chooser.getContext().getExchangeHashInputHolder().setRsaEncryptedSecret(encryptedSecret);
+        chooser.getContext()
+                .getSshContext()
+                .getExchangeHashInputHolder()
+                .setRsaEncryptedSecret(encryptedSecret);
     }
 }

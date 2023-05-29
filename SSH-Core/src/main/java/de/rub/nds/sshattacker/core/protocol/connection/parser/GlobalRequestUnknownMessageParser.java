@@ -9,6 +9,7 @@ package de.rub.nds.sshattacker.core.protocol.connection.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.protocol.connection.message.GlobalRequestUnknownMessage;
+import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -16,12 +17,22 @@ public class GlobalRequestUnknownMessageParser
         extends GlobalRequestMessageParser<GlobalRequestUnknownMessage> {
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public GlobalRequestUnknownMessageParser(byte[] array) {
-        super(array);
+    /*
+        public GlobalRequestUnknownMessageParser(byte[] array) {
+            super(array);
+        }
+        public GlobalRequestUnknownMessageParser(byte[] array, int startPosition) {
+            super(array, startPosition);
+        }
+    */
+
+    public GlobalRequestUnknownMessageParser(InputStream stream) {
+        super(stream);
     }
 
-    public GlobalRequestUnknownMessageParser(byte[] array, int startPosition) {
-        super(array, startPosition);
+    @Override
+    public void parse(GlobalRequestUnknownMessage message) {
+        parseMessageSpecificContents();
     }
 
     @Override

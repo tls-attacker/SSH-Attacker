@@ -9,12 +9,9 @@ package de.rub.nds.sshattacker.core.protocol.transport.handler;
 
 import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeString;
 
+import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.protocol.common.*;
 import de.rub.nds.sshattacker.core.protocol.transport.message.AsciiMessage;
-import de.rub.nds.sshattacker.core.protocol.transport.parser.AsciiMessageParser;
-import de.rub.nds.sshattacker.core.protocol.transport.preparator.AsciiMessagePreparator;
-import de.rub.nds.sshattacker.core.protocol.transport.serializer.AsciiMessageSerializer;
-import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class AsciiMessageHandler extends ProtocolMessageHandler<AsciiMessage> {
 
@@ -22,17 +19,17 @@ public class AsciiMessageHandler extends ProtocolMessageHandler<AsciiMessage> {
         super(context);
     }
 
-    public AsciiMessageHandler(final SshContext context, final AsciiMessage message) {
+    /*public AsciiMessageHandler(final SshContext context, final AsciiMessage message) {
         super(context, message);
-    }
+    }*/
 
     @Override
-    public void adjustContext() {
+    public void adjustContext(AsciiMessage message) {
         LOGGER.debug(
-                "Received text message: {}",
-                backslashEscapeString(this.message.getText().getValue()));
+                "Received text message: {}", backslashEscapeString(message.getText().getValue()));
     }
 
+    /*
     @Override
     public AsciiMessageParser getParser(final byte[] array) {
         return new AsciiMessageParser(array);
@@ -52,4 +49,5 @@ public class AsciiMessageHandler extends ProtocolMessageHandler<AsciiMessage> {
     public AsciiMessageSerializer getSerializer() {
         return new AsciiMessageSerializer(message);
     }
+    */
 }

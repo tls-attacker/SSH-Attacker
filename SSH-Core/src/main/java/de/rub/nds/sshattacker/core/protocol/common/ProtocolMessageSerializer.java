@@ -7,8 +7,9 @@
  */
 package de.rub.nds.sshattacker.core.protocol.common;
 
-public abstract class ProtocolMessageSerializer<T extends ProtocolMessage<T>>
-        extends Serializer<T> {
+import de.rub.nds.sshattacker.core.layer.data.Serializer;
+
+public abstract class ProtocolMessageSerializer<T extends ProtocolMessage> extends Serializer<T> {
 
     protected final T message;
 
@@ -17,8 +18,9 @@ public abstract class ProtocolMessageSerializer<T extends ProtocolMessage<T>>
     }
 
     @Override
-    protected final void serializeBytes() {
+    protected final byte[] serializeBytes() {
         serializeProtocolMessageContents();
+        return getAlreadySerialized();
     }
 
     protected abstract void serializeProtocolMessageContents();

@@ -14,6 +14,7 @@ import de.rub.nds.sshattacker.core.protocol.authentication.AuthenticationPrompt;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthInfoRequestMessage;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 import de.rub.nds.sshattacker.core.util.Converter;
+import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -21,17 +22,30 @@ public class UserAuthInfoRequestMessageParser extends SshMessageParser<UserAuthI
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public UserAuthInfoRequestMessageParser(byte[] array) {
-        super(array);
-    }
+    /*
+        public UserAuthInfoRequestMessageParser(byte[] array) {
+            super(array);
+        }
 
-    public UserAuthInfoRequestMessageParser(byte[] array, int startPosition) {
-        super(array, startPosition);
+        public UserAuthInfoRequestMessageParser(byte[] array, int startPosition) {
+            super(array, startPosition);
+        }
+    */
+
+    public UserAuthInfoRequestMessageParser(InputStream stream) {
+        super(stream);
     }
 
     @Override
     protected UserAuthInfoRequestMessage createMessage() {
         return new UserAuthInfoRequestMessage();
+    }
+
+    @Override
+    public void parse(UserAuthInfoRequestMessage message) {
+        LOGGER.debug("Parsing UserAuthBannerMessage");
+        parseMessageSpecificContents();
+        message.setCompleteResultingMessage(getAlreadyParsed());
     }
 
     private void parseUserName() {

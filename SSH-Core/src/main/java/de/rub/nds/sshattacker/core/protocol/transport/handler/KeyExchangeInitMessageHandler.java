@@ -8,13 +8,10 @@
 package de.rub.nds.sshattacker.core.protocol.transport.handler;
 
 import de.rub.nds.sshattacker.core.constants.*;
+import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.protocol.common.*;
 import de.rub.nds.sshattacker.core.protocol.transport.message.KeyExchangeInitMessage;
-import de.rub.nds.sshattacker.core.protocol.transport.parser.KeyExchangeInitMessageParser;
-import de.rub.nds.sshattacker.core.protocol.transport.preparator.KeyExchangeInitMessagePreparator;
-import de.rub.nds.sshattacker.core.protocol.transport.serializer.KeyExchangeInitMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.util.AlgorithmPicker;
-import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.util.Converter;
 import java.util.Arrays;
 
@@ -24,12 +21,12 @@ public class KeyExchangeInitMessageHandler extends SshMessageHandler<KeyExchange
         super(context);
     }
 
-    public KeyExchangeInitMessageHandler(SshContext context, KeyExchangeInitMessage message) {
+    /*public KeyExchangeInitMessageHandler(SshContext context, KeyExchangeInitMessage message) {
         super(context, message);
-    }
+    }*/
 
     @Override
-    public void adjustContext() {
+    public void adjustContext(KeyExchangeInitMessage message) {
         if (context.isHandleAsClient()) {
             context.setServerCookie(message.getCookie().getValue());
             context.setServerSupportedKeyExchangeAlgorithms(
@@ -195,7 +192,7 @@ public class KeyExchangeInitMessageHandler extends SshMessageHandler<KeyExchange
         }
     }
 
-    @Override
+    /*@Override
     public KeyExchangeInitMessageParser getParser(byte[] array) {
         return new KeyExchangeInitMessageParser(array);
     }
@@ -213,5 +210,5 @@ public class KeyExchangeInitMessageHandler extends SshMessageHandler<KeyExchange
     @Override
     public KeyExchangeInitMessageSerializer getSerializer() {
         return new KeyExchangeInitMessageSerializer(message);
-    }
+    }*/
 }

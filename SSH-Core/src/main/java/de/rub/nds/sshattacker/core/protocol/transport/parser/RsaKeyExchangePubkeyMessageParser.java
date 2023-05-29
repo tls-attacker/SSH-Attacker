@@ -10,6 +10,7 @@ package de.rub.nds.sshattacker.core.protocol.transport.parser;
 import de.rub.nds.sshattacker.core.constants.BinaryPacketConstants;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 import de.rub.nds.sshattacker.core.protocol.transport.message.RsaKeyExchangePubkeyMessage;
+import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -18,12 +19,22 @@ public class RsaKeyExchangePubkeyMessageParser
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public RsaKeyExchangePubkeyMessageParser(byte[] array) {
-        super(array);
+    /*
+        public RsaKeyExchangePubkeyMessageParser(byte[] array) {
+            super(array);
+        }
+        public RsaKeyExchangePubkeyMessageParser(byte[] array, int startPosition) {
+            super(array, startPosition);
+        }
+    */
+
+    public RsaKeyExchangePubkeyMessageParser(InputStream stream) {
+        super(stream);
     }
 
-    public RsaKeyExchangePubkeyMessageParser(byte[] array, int startPosition) {
-        super(array, startPosition);
+    @Override
+    public void parse(RsaKeyExchangePubkeyMessage message) {
+        parseMessageSpecificContents();
     }
 
     @Override

@@ -7,13 +7,9 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.handler;
 
+import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 import de.rub.nds.sshattacker.core.protocol.transport.message.DhGexKeyExchangeInitMessage;
-import de.rub.nds.sshattacker.core.protocol.transport.parser.DhGexKeyExchangeInitMessageParser;
-import de.rub.nds.sshattacker.core.protocol.transport.preparator.DhGexKeyExchangeInitMessagePreparator;
-import de.rub.nds.sshattacker.core.protocol.transport.serializer.DhGexKeyExchangeInitMessageSerializer;
-import de.rub.nds.sshattacker.core.state.SshContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -26,13 +22,13 @@ public class DhGexKeyExchangeInitMessageHandler
         super(context);
     }
 
-    public DhGexKeyExchangeInitMessageHandler(
+    /*public DhGexKeyExchangeInitMessageHandler(
             SshContext context, DhGexKeyExchangeInitMessage message) {
         super(context, message);
-    }
+    }*/
 
     @Override
-    public void adjustContext() {
+    public void adjustContext(DhGexKeyExchangeInitMessage message) {
         context.getChooser()
                 .getDhGexKeyExchange()
                 .setRemotePublicKey(message.getEphemeralPublicKey().getValue());
@@ -40,7 +36,7 @@ public class DhGexKeyExchangeInitMessageHandler
                 .setDhGexClientPublicKey(message.getEphemeralPublicKey().getValue());
     }
 
-    @Override
+    /*@Override
     public SshMessageParser<DhGexKeyExchangeInitMessage> getParser(byte[] array) {
         return new DhGexKeyExchangeInitMessageParser(array);
     }
@@ -59,5 +55,5 @@ public class DhGexKeyExchangeInitMessageHandler
     @Override
     public DhGexKeyExchangeInitMessageSerializer getSerializer() {
         return new DhGexKeyExchangeInitMessageSerializer(message);
-    }
+    }*/
 }

@@ -23,7 +23,8 @@ public class DhGexKeyExchangeRequestMessagePreparator
 
     @Override
     public void prepareMessageSpecificContents() {
-        ExchangeHashInputHolder inputHolder = chooser.getContext().getExchangeHashInputHolder();
+        ExchangeHashInputHolder inputHolder =
+                chooser.getContext().getSshContext().getExchangeHashInputHolder();
         inputHolder.setDhGexMinimalGroupSize(chooser.getMinimalDhGroupSize());
         inputHolder.setDhGexPreferredGroupSize(chooser.getPreferredDhGroupSize());
         inputHolder.setDhGexMaximalGroupSize(chooser.getMaximalDhGroupSize());

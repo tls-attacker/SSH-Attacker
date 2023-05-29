@@ -9,6 +9,7 @@ package de.rub.nds.sshattacker.core.protocol.connection.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.protocol.connection.message.GlobalRequestOpenSshHostKeysMessage;
+import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -17,12 +18,22 @@ public class GlobalRequestOpenSshHostKeysMessageParser
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public GlobalRequestOpenSshHostKeysMessageParser(final byte[] array) {
-        super(array);
+    /*
+        public GlobalRequestOpenSshHostKeysMessageParser(final byte[] array) {
+            super(array);
+        }
+        public GlobalRequestOpenSshHostKeysMessageParser(final byte[] array, final int startPosition) {
+            super(array, startPosition);
+        }
+    */
+
+    public GlobalRequestOpenSshHostKeysMessageParser(InputStream stream) {
+        super(stream);
     }
 
-    public GlobalRequestOpenSshHostKeysMessageParser(final byte[] array, final int startPosition) {
-        super(array, startPosition);
+    @Override
+    public void parse(GlobalRequestOpenSshHostKeysMessage message) {
+        parseMessageSpecificContents();
     }
 
     private void parseHostKeys() {

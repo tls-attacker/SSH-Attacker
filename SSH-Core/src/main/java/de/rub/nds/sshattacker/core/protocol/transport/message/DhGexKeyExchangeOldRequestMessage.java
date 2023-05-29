@@ -9,9 +9,13 @@ package de.rub.nds.sshattacker.core.protocol.transport.message;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
+import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.protocol.common.*;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.DhGexKeyExchangeOldRequestMessageHandler;
-import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.protocol.transport.parser.DhGexKeyExchangeOldRequestMessageParser;
+import de.rub.nds.sshattacker.core.protocol.transport.preparator.DhGexKeyExchangeOldRequestMessagePreparator;
+import de.rub.nds.sshattacker.core.protocol.transport.serializer.DhGexKeyExchangeOldRequestMessageSerializer;
+import java.io.InputStream;
 
 public class DhGexKeyExchangeOldRequestMessage
         extends SshMessage<DhGexKeyExchangeOldRequestMessage> {
@@ -34,6 +38,27 @@ public class DhGexKeyExchangeOldRequestMessage
 
     @Override
     public DhGexKeyExchangeOldRequestMessageHandler getHandler(SshContext context) {
-        return new DhGexKeyExchangeOldRequestMessageHandler(context, this);
+        return new DhGexKeyExchangeOldRequestMessageHandler(context);
+    }
+
+    @Override
+    public SshMessageParser<DhGexKeyExchangeOldRequestMessage> getParser(
+            SshContext context, InputStream stream) {
+        return new DhGexKeyExchangeOldRequestMessageParser(stream);
+    }
+
+    @Override
+    public DhGexKeyExchangeOldRequestMessagePreparator getPreparator(SshContext context) {
+        return new DhGexKeyExchangeOldRequestMessagePreparator(context.getChooser(), this);
+    }
+
+    @Override
+    public DhGexKeyExchangeOldRequestMessageSerializer getSerializer(SshContext context) {
+        return new DhGexKeyExchangeOldRequestMessageSerializer(this);
+    }
+
+    @Override
+    public String toShortString() {
+        return "DHGKexOldRequest";
     }
 }

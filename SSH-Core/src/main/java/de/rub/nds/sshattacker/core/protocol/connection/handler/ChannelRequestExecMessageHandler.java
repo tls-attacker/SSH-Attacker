@@ -7,12 +7,9 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.handler;
 
+import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.protocol.common.*;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelRequestExecMessage;
-import de.rub.nds.sshattacker.core.protocol.connection.parser.ChannelRequestExecMessageParser;
-import de.rub.nds.sshattacker.core.protocol.connection.preparator.ChannelRequestExecMessagePreparator;
-import de.rub.nds.sshattacker.core.protocol.connection.serializer.ChannelRequestExecMessageSerializer;
-import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.util.Converter;
 
 public class ChannelRequestExecMessageHandler extends SshMessageHandler<ChannelRequestExecMessage> {
@@ -21,19 +18,20 @@ public class ChannelRequestExecMessageHandler extends SshMessageHandler<ChannelR
         super(context);
     }
 
-    public ChannelRequestExecMessageHandler(SshContext context, ChannelRequestExecMessage message) {
+    /*public ChannelRequestExecMessageHandler(SshContext context, ChannelRequestExecMessage message) {
         super(context, message);
     }
+     */
 
     @Override
-    public void adjustContext() {
+    public void adjustContext(ChannelRequestExecMessage message) {
         // TODO: Handle ChannelRequestExecMessage
         if (Converter.byteToBoolean(message.getWantReply().getValue())) {
             context.getChannelManager().addToChannelRequestResponseQueue(message);
         }
     }
 
-    @Override
+    /*@Override
     public SshMessageParser<ChannelRequestExecMessage> getParser(byte[] array) {
         return new ChannelRequestExecMessageParser(array);
     }
@@ -51,5 +49,5 @@ public class ChannelRequestExecMessageHandler extends SshMessageHandler<ChannelR
     @Override
     public ChannelRequestExecMessageSerializer getSerializer() {
         return new ChannelRequestExecMessageSerializer(message);
-    }
+    }*/
 }

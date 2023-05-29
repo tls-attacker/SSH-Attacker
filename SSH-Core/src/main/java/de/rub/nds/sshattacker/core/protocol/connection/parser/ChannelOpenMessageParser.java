@@ -12,6 +12,7 @@ import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeStrin
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelOpenMessage;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -21,12 +22,14 @@ public abstract class ChannelOpenMessageParser<T extends ChannelOpenMessage<T>>
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public ChannelOpenMessageParser(byte[] array) {
+    /* public ChannelOpenMessageParser(byte[] array) {
         super(array);
     }
-
     public ChannelOpenMessageParser(byte[] array, int startPosition) {
         super(array, startPosition);
+    }*/
+    public ChannelOpenMessageParser(InputStream stream) {
+        super(stream);
     }
 
     public void parseChannelType() {

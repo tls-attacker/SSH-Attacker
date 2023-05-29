@@ -9,14 +9,9 @@ package de.rub.nds.sshattacker.core.protocol.transport.handler;
 
 import de.rub.nds.sshattacker.core.crypto.hash.ExchangeHashInputHolder;
 import de.rub.nds.sshattacker.core.crypto.kex.DhKeyExchange;
+import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.transport.message.DhGexKeyExchangeGroupMessage;
-import de.rub.nds.sshattacker.core.protocol.transport.parser.DhGexKeyExchangeGroupMessageParser;
-import de.rub.nds.sshattacker.core.protocol.transport.preparator.DhGexKeyExchangeGroupMessagePreparator;
-import de.rub.nds.sshattacker.core.protocol.transport.serializer.DhGexKeyExchangeGroupMessageSerializer;
-import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class DhGexKeyExchangeGroupMessageHandler
         extends SshMessageHandler<DhGexKeyExchangeGroupMessage> {
@@ -25,13 +20,13 @@ public class DhGexKeyExchangeGroupMessageHandler
         super(context);
     }
 
-    public DhGexKeyExchangeGroupMessageHandler(
+    /*public DhGexKeyExchangeGroupMessageHandler(
             SshContext context, DhGexKeyExchangeGroupMessage message) {
         super(context, message);
-    }
+    }*/
 
     @Override
-    public void adjustContext() {
+    public void adjustContext(DhGexKeyExchangeGroupMessage message) {
         setGroupParametersFromMessage(message);
         updateExchangeHashWithGroupParameters(message);
     }
@@ -48,7 +43,7 @@ public class DhGexKeyExchangeGroupMessageHandler
         inputHolder.setDhGexGroupGenerator(msg.getGroupGenerator().getValue());
     }
 
-    @Override
+    /*@Override
     public DhGexKeyExchangeGroupMessageParser getParser(byte[] array) {
         return new DhGexKeyExchangeGroupMessageParser(array);
     }
@@ -66,5 +61,5 @@ public class DhGexKeyExchangeGroupMessageHandler
     @Override
     public SshMessageSerializer<DhGexKeyExchangeGroupMessage> getSerializer() {
         return new DhGexKeyExchangeGroupMessageSerializer(message);
-    }
+    }*/
 }

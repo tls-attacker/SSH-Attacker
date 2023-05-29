@@ -9,6 +9,7 @@ package de.rub.nds.sshattacker.core.protocol.connection.parser;
 
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelWindowAdjustMessage;
+import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -17,12 +18,22 @@ public class ChannelWindowAdjustMessageParser
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public ChannelWindowAdjustMessageParser(byte[] array) {
-        super(array);
+    /*
+        public ChannelWindowAdjustMessageParser(byte[] array) {
+            super(array);
+        }
+        public ChannelWindowAdjustMessageParser(byte[] array, int startPosition) {
+            super(array, startPosition);
+        }
+    */
+
+    public ChannelWindowAdjustMessageParser(InputStream stream) {
+        super(stream);
     }
 
-    public ChannelWindowAdjustMessageParser(byte[] array, int startPosition) {
-        super(array, startPosition);
+    @Override
+    public void parse(ChannelWindowAdjustMessage message) {
+        parseMessageSpecificContents();
     }
 
     @Override

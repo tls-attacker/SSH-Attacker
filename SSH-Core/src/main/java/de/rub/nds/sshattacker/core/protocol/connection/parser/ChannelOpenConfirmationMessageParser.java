@@ -9,6 +9,7 @@ package de.rub.nds.sshattacker.core.protocol.connection.parser;
 
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelOpenConfirmationMessage;
+import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -17,12 +18,21 @@ public class ChannelOpenConfirmationMessageParser
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public ChannelOpenConfirmationMessageParser(byte[] array) {
+    /*public ChannelOpenConfirmationMessageParser(byte[] array) {
         super(array);
     }
 
     public ChannelOpenConfirmationMessageParser(byte[] array, int startPosition) {
         super(array, startPosition);
+    }*/
+
+    @Override
+    public void parse(ChannelOpenConfirmationMessage message) {
+        parseMessageSpecificContents();
+    }
+
+    public ChannelOpenConfirmationMessageParser(InputStream stream) {
+        super(stream);
     }
 
     @Override

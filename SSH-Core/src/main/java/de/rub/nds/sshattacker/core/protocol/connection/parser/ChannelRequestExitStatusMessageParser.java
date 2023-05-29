@@ -9,6 +9,7 @@ package de.rub.nds.sshattacker.core.protocol.connection.parser;
 
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelRequestExitStatusMessage;
+import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -17,12 +18,23 @@ public class ChannelRequestExitStatusMessageParser
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public ChannelRequestExitStatusMessageParser(byte[] array) {
-        super(array);
+    /*
+        public ChannelRequestExitStatusMessageParser(byte[] array) {
+            super(array);
+        }
+
+        public ChannelRequestExitStatusMessageParser(byte[] array, int startPosition) {
+            super(array, startPosition);
+        }
+    */
+
+    public ChannelRequestExitStatusMessageParser(InputStream stream) {
+        super(stream);
     }
 
-    public ChannelRequestExitStatusMessageParser(byte[] array, int startPosition) {
-        super(array, startPosition);
+    @Override
+    public void parse(ChannelRequestExitStatusMessage message) {
+        parseMessageSpecificContents();
     }
 
     @Override

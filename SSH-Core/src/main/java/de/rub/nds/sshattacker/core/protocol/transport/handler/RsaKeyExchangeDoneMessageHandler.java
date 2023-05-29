@@ -7,16 +7,10 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.handler;
 
+import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.transport.message.RsaKeyExchangeDoneMessage;
-import de.rub.nds.sshattacker.core.protocol.transport.parser.RsaKeyExchangeDoneMessageParser;
-import de.rub.nds.sshattacker.core.protocol.transport.preparator.RsaKeyExchangeDoneMessagePreparator;
-import de.rub.nds.sshattacker.core.protocol.transport.serializer.RsaKeyExchangeDoneMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.util.KeyExchangeUtil;
-import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class RsaKeyExchangeDoneMessageHandler extends SshMessageHandler<RsaKeyExchangeDoneMessage> {
 
@@ -24,19 +18,19 @@ public class RsaKeyExchangeDoneMessageHandler extends SshMessageHandler<RsaKeyEx
         super(context);
     }
 
-    public RsaKeyExchangeDoneMessageHandler(SshContext context, RsaKeyExchangeDoneMessage message) {
+    /*public RsaKeyExchangeDoneMessageHandler(SshContext context, RsaKeyExchangeDoneMessage message) {
         super(context, message);
-    }
+    }*/
 
     @Override
-    public void adjustContext() {
+    public void adjustContext(RsaKeyExchangeDoneMessage message) {
         KeyExchangeUtil.computeExchangeHash(context);
         KeyExchangeUtil.handleExchangeHashSignatureMessage(context, message);
         KeyExchangeUtil.setSessionId(context);
         KeyExchangeUtil.generateKeySet(context);
     }
 
-    @Override
+    /*@Override
     public SshMessageParser<RsaKeyExchangeDoneMessage> getParser(byte[] array) {
         return new RsaKeyExchangeDoneMessageParser(array);
     }
@@ -54,5 +48,5 @@ public class RsaKeyExchangeDoneMessageHandler extends SshMessageHandler<RsaKeyEx
     @Override
     public SshMessageSerializer<RsaKeyExchangeDoneMessage> getSerializer() {
         return new RsaKeyExchangeDoneMessageSerializer(message);
-    }
+    }*/
 }

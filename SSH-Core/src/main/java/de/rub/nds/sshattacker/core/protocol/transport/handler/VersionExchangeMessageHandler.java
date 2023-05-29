@@ -7,12 +7,9 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.handler;
 
+import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.protocol.common.*;
 import de.rub.nds.sshattacker.core.protocol.transport.message.VersionExchangeMessage;
-import de.rub.nds.sshattacker.core.protocol.transport.parser.VersionExchangeMessageParser;
-import de.rub.nds.sshattacker.core.protocol.transport.preparator.VersionExchangeMessagePreparator;
-import de.rub.nds.sshattacker.core.protocol.transport.serializer.VersionExchangeMessageSerializer;
-import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class VersionExchangeMessageHandler extends ProtocolMessageHandler<VersionExchangeMessage> {
 
@@ -20,12 +17,12 @@ public class VersionExchangeMessageHandler extends ProtocolMessageHandler<Versio
         super(context);
     }
 
-    public VersionExchangeMessageHandler(SshContext context, VersionExchangeMessage message) {
+    /*public VersionExchangeMessageHandler(SshContext context, VersionExchangeMessage message) {
         super(context, message);
-    }
+    }*/
 
     @Override
-    public void adjustContext() {
+    public void adjustContext(VersionExchangeMessage message) {
         if (context.isHandleAsClient()) {
             context.setServerVersion(message.getVersion().getValue());
             context.setServerComment(message.getComment().getValue());
@@ -37,7 +34,7 @@ public class VersionExchangeMessageHandler extends ProtocolMessageHandler<Versio
         }
     }
 
-    @Override
+    /*@Override
     public VersionExchangeMessageParser getParser(byte[] array) {
         return new VersionExchangeMessageParser(array);
     }
@@ -55,5 +52,5 @@ public class VersionExchangeMessageHandler extends ProtocolMessageHandler<Versio
     @Override
     public VersionExchangeMessageSerializer getSerializer() {
         return new VersionExchangeMessageSerializer(message);
-    }
+    }*/
 }

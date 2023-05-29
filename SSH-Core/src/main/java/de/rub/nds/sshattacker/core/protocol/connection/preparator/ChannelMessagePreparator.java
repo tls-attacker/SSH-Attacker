@@ -43,12 +43,14 @@ public abstract class ChannelMessagePreparator<T extends ChannelMessage<T>>
                                         Optional.ofNullable(
                                                 this.chooser
                                                         .getContext()
+                                                        .getSshContext()
                                                         .getChannels()
                                                         .get(senderChannelId)))
                         .or(
                                 () ->
                                         this.chooser
                                                 .getContext()
+                                                .getSshContext()
                                                 .getChannelManager()
                                                 .guessChannelByReceivedMessages())
                         .orElseGet(
@@ -59,6 +61,7 @@ public abstract class ChannelMessagePreparator<T extends ChannelMessage<T>>
                                             configSenderChannelId.orElse(Integer.valueOf(0));
                                     return this.chooser
                                             .getContext()
+                                            .getSshContext()
                                             .getChannelManager()
                                             .createNewChannelFromDefaults(remoteChannelId);
                                 });

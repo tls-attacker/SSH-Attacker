@@ -11,6 +11,7 @@ import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.authentication.AuthenticationResponse;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthInfoResponseMessage;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
+import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -19,17 +20,29 @@ public class UserAuthInfoResponseMessageParser
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public UserAuthInfoResponseMessageParser(byte[] array) {
-        super(array);
-    }
+    /*
+        public UserAuthInfoResponseMessageParser(byte[] array) {
+            super(array);
+        }
+        public UserAuthInfoResponseMessageParser(byte[] array, int startPosition) {
+            super(array, startPosition);
+        }
+    */
 
-    public UserAuthInfoResponseMessageParser(byte[] array, int startPosition) {
-        super(array, startPosition);
+    public UserAuthInfoResponseMessageParser(InputStream stream) {
+        super(stream);
     }
 
     @Override
     protected UserAuthInfoResponseMessage createMessage() {
         return new UserAuthInfoResponseMessage();
+    }
+
+    @Override
+    public void parse(UserAuthInfoResponseMessage message) {
+        LOGGER.debug("Parsing UserAuthBannerMessage");
+        parseMessageSpecificContents();
+        message.setCompleteResultingMessage(getAlreadyParsed());
     }
 
     private void parseResponseEntries() {

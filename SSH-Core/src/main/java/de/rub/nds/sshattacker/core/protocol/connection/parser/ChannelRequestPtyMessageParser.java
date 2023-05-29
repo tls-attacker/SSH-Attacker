@@ -10,6 +10,7 @@ package de.rub.nds.sshattacker.core.protocol.connection.parser;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelRequestPtyMessage;
+import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -18,12 +19,20 @@ public class ChannelRequestPtyMessageParser
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public ChannelRequestPtyMessageParser(byte[] array) {
+    /*    public ChannelRequestPtyMessageParser(byte[] array) {
         super(array);
     }
 
     public ChannelRequestPtyMessageParser(byte[] array, int startPosition) {
         super(array, startPosition);
+    }*/
+    public ChannelRequestPtyMessageParser(InputStream stream) {
+        super(stream);
+    }
+
+    @Override
+    public void parse(ChannelRequestPtyMessage message) {
+        parseMessageSpecificContents();
     }
 
     @Override

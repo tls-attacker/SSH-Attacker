@@ -10,9 +10,14 @@ package de.rub.nds.sshattacker.core.protocol.authentication.message;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
+import de.rub.nds.sshattacker.core.exceptions.NotImplementedException;
+import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.protocol.authentication.handler.UserAuthPkOkMessageHandler;
+import de.rub.nds.sshattacker.core.protocol.authentication.parser.UserAuthPkOkMessageParser;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
-import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
+import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
 public class UserAuthPkOkMessage extends SshMessage<UserAuthPkOkMessage> {
@@ -98,6 +103,35 @@ public class UserAuthPkOkMessage extends SshMessage<UserAuthPkOkMessage> {
 
     @Override
     public UserAuthPkOkMessageHandler getHandler(SshContext context) {
-        return new UserAuthPkOkMessageHandler(context, this);
+        return new UserAuthPkOkMessageHandler(context);
+    }
+
+    @Override
+    public UserAuthPkOkMessageParser getParser(SshContext context, InputStream stream) {
+        return new UserAuthPkOkMessageParser(stream);
+    }
+    /*@Override
+    public UserAuthPkOkMessageParser getParser(byte[] array) {
+        return new UserAuthPkOkMessageParser(array);
+    }
+
+    @Override
+    public UserAuthPkOkMessageParser getParser(byte[] array, int startPosition) {
+        return new UserAuthPkOkMessageParser(array, startPosition);
+    }*/
+
+    @Override
+    public SshMessagePreparator<UserAuthPkOkMessage> getPreparator(SshContext context) {
+        throw new NotImplementedException("UserAuthPkOkMessageHandler::getPreparator");
+    }
+
+    @Override
+    public SshMessageSerializer<UserAuthPkOkMessage> getSerializer(SshContext context) {
+        throw new NotImplementedException("UserAuthPkOkMessageHandler::getSerializer");
+    }
+
+    @Override
+    public String toShortString() {
+        return "AUTH_OK";
     }
 }

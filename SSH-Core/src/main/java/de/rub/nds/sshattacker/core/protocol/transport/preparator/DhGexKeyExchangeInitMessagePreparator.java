@@ -27,7 +27,8 @@ public class DhGexKeyExchangeInitMessagePreparator
         DhKeyExchange keyExchange = chooser.getDhGexKeyExchange();
         keyExchange.generateLocalKeyPair();
         getObject().setEphemeralPublicKey(keyExchange.getLocalKeyPair().getPublic().getY(), true);
-        ExchangeHashInputHolder exchangeHash = chooser.getContext().getExchangeHashInputHolder();
+        ExchangeHashInputHolder exchangeHash =
+                chooser.getContext().getSshContext().getExchangeHashInputHolder();
         exchangeHash.setDhGexClientPublicKey(getObject().getEphemeralPublicKey().getValue());
     }
 }

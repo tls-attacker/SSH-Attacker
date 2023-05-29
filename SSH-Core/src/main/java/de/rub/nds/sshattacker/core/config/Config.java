@@ -14,6 +14,7 @@ import de.rub.nds.sshattacker.core.connection.OutboundConnection;
 import de.rub.nds.sshattacker.core.constants.*;
 import de.rub.nds.sshattacker.core.crypto.ec.PointFormatter;
 import de.rub.nds.sshattacker.core.crypto.keys.*;
+import de.rub.nds.sshattacker.core.layer.constant.LayerConfiguration;
 import de.rub.nds.sshattacker.core.protocol.authentication.AuthenticationResponse;
 import de.rub.nds.sshattacker.core.protocol.connection.ChannelDefaults;
 import de.rub.nds.sshattacker.core.workflow.factory.WorkflowTraceType;
@@ -39,6 +40,16 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider;
 public class Config implements Serializable {
 
     private static final Logger LOGGER = LogManager.getLogger();
+
+    public Integer getDefaultAdditionalPadding() {
+        return defaultAdditionalPadding;
+    }
+
+    public void setDefaultAdditionalPadding(Integer defaultAdditionalPadding) {
+        this.defaultAdditionalPadding = defaultAdditionalPadding;
+    }
+
+    private Integer defaultAdditionalPadding = 0;
 
     private static final String DEFAULT_CONFIG_FILE = "/default_config.xml";
 
@@ -415,6 +426,34 @@ public class Config implements Serializable {
 
     /** Fallback for type of chooser, to initialize the chooser in the SshContext */
     private ChooserType chooserType = ChooserType.DEFAULT;
+
+    private LayerConfiguration defaultLayerConfiguration;
+
+    public CompressionAlgorithm getDefaultSelectedCompressionAlgorithm() {
+        return defaultSelectedCompressionAlgorithm;
+    }
+
+    private CompressionAlgorithm defaultSelectedCompressionAlgorithm = CompressionAlgorithm.NONE;
+
+    public EncryptionAlgorithm getDefaultSelectedEncryptionAlgorithm() {
+        return defaultSelectedEncryptionAlgorithm;
+    }
+
+    private EncryptionAlgorithm defaultSelectedEncryptionAlgorithm =
+            EncryptionAlgorithm.AEAD_AES_256_GCM;
+
+    public MacAlgorithm getDefaultSelectedMacAlgorithm() {
+        return defaultSelectedMacAlgorithm;
+    }
+
+    private MacAlgorithm defaultSelectedMacAlgorithm = MacAlgorithm.AEAD_AES_256_GCM;
+
+    public KeyExchangeAlgorithm getDefaultSelectedKeyExchangeAlgorithm() {
+        return defaultSelectedKeyExchangeAlgorithm;
+    }
+
+    private KeyExchangeAlgorithm defaultSelectedKeyExchangeAlgorithm =
+            KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP14_SHA256;
 
     // region Constructors and Initialization
     public Config() {
@@ -1614,5 +1653,9 @@ public class Config implements Serializable {
 
     public void setChooserType(ChooserType chooserType) {
         this.chooserType = chooserType;
+    }
+
+    public LayerConfiguration getDefaultLayerConfiguration() {
+        return defaultLayerConfiguration;
     }
 }

@@ -13,6 +13,7 @@ import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.constants.DisconnectReason;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 import de.rub.nds.sshattacker.core.protocol.transport.message.DisconnectMessage;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -21,12 +22,18 @@ public class DisconnectMessageParser extends SshMessageParser<DisconnectMessage>
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public DisconnectMessageParser(byte[] array) {
-        super(array);
-    }
+    /*
+        public DisconnectMessageParser(byte[] array) {
+            super(array);
+        }
+        public DisconnectMessageParser(byte[] array, int startPosition) {
+            super(array, startPosition);
+        }
 
-    public DisconnectMessageParser(byte[] array, int startPosition) {
-        super(array, startPosition);
+    */
+
+    public DisconnectMessageParser(InputStream stream) {
+        super(stream);
     }
 
     @Override
@@ -71,5 +78,10 @@ public class DisconnectMessageParser extends SshMessageParser<DisconnectMessage>
         parseReasonCode();
         parseDescription();
         parseLanguageTag();
+    }
+
+    @Override
+    public void parse(DisconnectMessage message) {
+        parseMessageSpecificContents();
     }
 }

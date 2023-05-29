@@ -7,13 +7,10 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.handler;
 
+import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.protocol.common.*;
 import de.rub.nds.sshattacker.core.protocol.transport.message.DhGexKeyExchangeReplyMessage;
-import de.rub.nds.sshattacker.core.protocol.transport.parser.DhGexKeyExchangeReplyMessageParser;
-import de.rub.nds.sshattacker.core.protocol.transport.preparator.DhGexKeyExchangeReplyMessagePreparator;
-import de.rub.nds.sshattacker.core.protocol.transport.serializer.DhGexKeyExchangeReplyMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.util.KeyExchangeUtil;
-import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class DhGexKeyExchangeReplyMessageHandler
         extends SshMessageHandler<DhGexKeyExchangeReplyMessage> {
@@ -22,15 +19,15 @@ public class DhGexKeyExchangeReplyMessageHandler
         super(context);
     }
 
-    public DhGexKeyExchangeReplyMessageHandler(
+    /*public DhGexKeyExchangeReplyMessageHandler(
             SshContext context, DhGexKeyExchangeReplyMessage message) {
         super(context, message);
-    }
+    }*/
 
     @Override
-    public void adjustContext() {
+    public void adjustContext(DhGexKeyExchangeReplyMessage message) {
         KeyExchangeUtil.handleHostKeyMessage(context, message);
-        updateContextWithRemotePublicKey();
+        updateContextWithRemotePublicKey(message);
         KeyExchangeUtil.computeSharedSecret(context, context.getChooser().getDhGexKeyExchange());
         KeyExchangeUtil.computeExchangeHash(context);
         KeyExchangeUtil.handleExchangeHashSignatureMessage(context, message);
@@ -38,7 +35,7 @@ public class DhGexKeyExchangeReplyMessageHandler
         KeyExchangeUtil.generateKeySet(context);
     }
 
-    private void updateContextWithRemotePublicKey() {
+    private void updateContextWithRemotePublicKey(DhGexKeyExchangeReplyMessage message) {
         context.getChooser()
                 .getDhGexKeyExchange()
                 .setRemotePublicKey(message.getEphemeralPublicKey().getValue());
@@ -46,7 +43,7 @@ public class DhGexKeyExchangeReplyMessageHandler
                 .setDhGexServerPublicKey(message.getEphemeralPublicKey().getValue());
     }
 
-    @Override
+    /*@Override
     public DhGexKeyExchangeReplyMessageParser getParser(byte[] array) {
         return new DhGexKeyExchangeReplyMessageParser(array);
     }
@@ -64,5 +61,5 @@ public class DhGexKeyExchangeReplyMessageHandler
     @Override
     public DhGexKeyExchangeReplyMessageSerializer getSerializer() {
         return new DhGexKeyExchangeReplyMessageSerializer(message);
-    }
+    }*/
 }

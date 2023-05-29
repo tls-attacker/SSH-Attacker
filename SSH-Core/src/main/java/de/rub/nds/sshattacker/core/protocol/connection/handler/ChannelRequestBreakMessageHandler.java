@@ -7,12 +7,9 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.handler;
 
+import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelRequestBreakMessage;
-import de.rub.nds.sshattacker.core.protocol.connection.parser.ChannelRequestBreakMessageParser;
-import de.rub.nds.sshattacker.core.protocol.connection.preparator.ChannelRequestBreakMessagePreparator;
-import de.rub.nds.sshattacker.core.protocol.connection.serializer.ChannelRequestBreakMessageSerializer;
-import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.util.Converter;
 
 public class ChannelRequestBreakMessageHandler
@@ -21,12 +18,12 @@ public class ChannelRequestBreakMessageHandler
         super(context);
     }
 
-    public ChannelRequestBreakMessageHandler(
+    /*public ChannelRequestBreakMessageHandler(
             SshContext context, ChannelRequestBreakMessage message) {
         super(context, message);
-    }
+    }*/
 
-    @Override
+    /*@Override
     public ChannelRequestBreakMessageParser getParser(byte[] array) {
         return new ChannelRequestBreakMessageParser(array);
     }
@@ -44,10 +41,10 @@ public class ChannelRequestBreakMessageHandler
     @Override
     public ChannelRequestBreakMessageSerializer getSerializer() {
         return new ChannelRequestBreakMessageSerializer(message);
-    }
+    }*/
 
     @Override
-    public void adjustContext() {
+    public void adjustContext(ChannelRequestBreakMessage message) {
         if (Converter.byteToBoolean(message.getWantReply().getValue())) {
             context.getChannelManager().addToChannelRequestResponseQueue(message);
         }

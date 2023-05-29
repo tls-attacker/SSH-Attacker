@@ -10,6 +10,7 @@ package de.rub.nds.sshattacker.core.protocol.transport.parser;
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 import de.rub.nds.sshattacker.core.protocol.transport.message.ServiceAcceptMessage;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -18,12 +19,18 @@ public class ServiceAcceptMessageParser extends SshMessageParser<ServiceAcceptMe
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public ServiceAcceptMessageParser(byte[] array) {
-        super(array);
-    }
+    /*
+        public ServiceAcceptMessageParser(byte[] array) {
+            super(array);
+        }
+        public ServiceAcceptMessageParser(byte[] array, int startPosition) {
+            super(array, startPosition);
+        }
 
-    public ServiceAcceptMessageParser(byte[] array, int startPosition) {
-        super(array, startPosition);
+    */
+
+    public ServiceAcceptMessageParser(InputStream stream) {
+        super(stream);
     }
 
     private void parseServiceType() {
@@ -43,5 +50,10 @@ public class ServiceAcceptMessageParser extends SshMessageParser<ServiceAcceptMe
     @Override
     public ServiceAcceptMessage createMessage() {
         return new ServiceAcceptMessage();
+    }
+
+    @Override
+    public void parse(ServiceAcceptMessage message) {
+        parseMessageSpecificContents();
     }
 }

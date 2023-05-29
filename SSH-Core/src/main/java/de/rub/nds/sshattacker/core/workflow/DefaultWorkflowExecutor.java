@@ -10,7 +10,7 @@ package de.rub.nds.sshattacker.core.workflow;
 import de.rub.nds.sshattacker.core.config.ConfigIO;
 import de.rub.nds.sshattacker.core.exceptions.PreparationException;
 import de.rub.nds.sshattacker.core.exceptions.WorkflowExecutionException;
-import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.state.Context;
 import de.rub.nds.sshattacker.core.state.State;
 import de.rub.nds.sshattacker.core.workflow.action.SshAction;
 import de.rub.nds.sshattacker.core.workflow.action.executor.WorkflowExecutorType;
@@ -31,12 +31,12 @@ public class DefaultWorkflowExecutor extends WorkflowExecutor {
     @Override
     public void executeWorkflow() throws WorkflowExecutionException {
         if (config.getWorkflowExecutorShouldOpen()) {
-            state.getAllSshContexts()
-                    .forEach(
-                            ctx -> {
-                                ctx.initTransportHandler();
-                                LOGGER.debug("Connection for " + ctx + " initialized");
-                            });
+            try {
+                initAllLayer();
+            } catch (IOException ex) {
+                throw new WorkflowExecutionException(
+                        "Workflow not executed, could not initialize transport handler: ", ex);
+            }
         }
 
         state.getWorkflowTrace().reset();
@@ -67,7 +67,7 @@ public class DefaultWorkflowExecutor extends WorkflowExecutor {
             }
         }
 
-        if (state.getConfig().getWorkflowExecutorShouldClose()) {
+        /*        if (state.getConfig().getWorkflowExecutorShouldClose()) {
             state.getAllSshContexts()
                     .forEach(
                             ctx -> {
@@ -78,7 +78,7 @@ public class DefaultWorkflowExecutor extends WorkflowExecutor {
                                     LOGGER.debug(ex);
                                 }
                             });
-        }
+        }*/
 
         if (state.getConfig().getResetWorkflowtracesBeforeSaving()) {
             state.getWorkflowTrace().reset();
@@ -91,11 +91,20 @@ public class DefaultWorkflowExecutor extends WorkflowExecutor {
     }
 
     private boolean isDisconnectMessageReceived() {
-        return state.getAllSshContexts().stream().anyMatch(SshContext::isDisconnectMessageReceived);
+        for (Context context : state.getAllContexts()) {
+            if (context.getSshContext().isDisconnectMessageReceived()) {
+                return true;
+            }
+        }
+        return false;
     }
 
-    private boolean isIoException() {
-        return state.getAllSshContexts().stream()
-                .anyMatch(SshContext::hasReceivedTransportHandlerException);
+    public boolean isIoException() {
+        for (Context context : state.getAllContexts()) {
+            if (context.getSshContext().hasReceivedTransportHandlerException()) {
+                return true;
+            }
+        }
+        return false;
     }
 }

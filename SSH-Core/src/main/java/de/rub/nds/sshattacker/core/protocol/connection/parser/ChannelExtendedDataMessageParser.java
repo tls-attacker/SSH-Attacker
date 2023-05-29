@@ -11,18 +11,30 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.constants.ExtendedChannelDataType;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelExtendedDataMessage;
+import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class ChannelExtendedDataMessageParser
         extends ChannelMessageParser<ChannelExtendedDataMessage> {
 
-    public ChannelExtendedDataMessageParser(byte[] array) {
-        super(array);
+    /*
+        public ChannelExtendedDataMessageParser(byte[] array) {
+            super(array);
+        }
+        public ChannelExtendedDataMessageParser(byte[] array, int startPosition) {
+            super(array, startPosition);
+        }
+
+    */
+
+    public ChannelExtendedDataMessageParser(InputStream stream) {
+        super(stream);
     }
 
-    public ChannelExtendedDataMessageParser(byte[] array, int startPosition) {
-        super(array, startPosition);
+    @Override
+    public void parse(ChannelExtendedDataMessage message) {
+        parseMessageSpecificContents();
     }
 
     private static final Logger LOGGER = LogManager.getLogger();

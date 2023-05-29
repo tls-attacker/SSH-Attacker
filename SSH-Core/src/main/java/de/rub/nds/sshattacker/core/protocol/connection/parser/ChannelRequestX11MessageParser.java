@@ -10,6 +10,7 @@ package de.rub.nds.sshattacker.core.protocol.connection.parser;
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelRequestX11Message;
 import de.rub.nds.sshattacker.core.util.Converter;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -19,12 +20,17 @@ public class ChannelRequestX11MessageParser
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public ChannelRequestX11MessageParser(byte[] array) {
-        super(array);
-    }
+    /*
+        public ChannelRequestX11MessageParser(byte[] array) {
+            super(array);
+        }
+        public ChannelRequestX11MessageParser(byte[] array, int startPosition) {
+            super(array, startPosition);
+        }
+    */
 
-    public ChannelRequestX11MessageParser(byte[] array, int startPosition) {
-        super(array, startPosition);
+    public ChannelRequestX11MessageParser(InputStream stream) {
+        super(stream);
     }
 
     @Override
@@ -79,5 +85,10 @@ public class ChannelRequestX11MessageParser
         parseX11AuthenticationProtocol();
         parseX11AuthenticationCookie();
         parseX11ScreenNumber();
+    }
+
+    @Override
+    public void parse(ChannelRequestX11Message message) {
+        parseMessageSpecificContents();
     }
 }

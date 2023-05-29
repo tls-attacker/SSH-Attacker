@@ -15,7 +15,9 @@ import de.rub.nds.sshattacker.core.crypto.kex.HybridKeyExchange;
 import de.rub.nds.sshattacker.core.crypto.kex.RsaKeyExchange;
 import de.rub.nds.sshattacker.core.crypto.keys.SshPublicKey;
 import de.rub.nds.sshattacker.core.protocol.util.AlgorithmPicker;
-import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.state.Context;
+import de.rub.nds.tlsattacker.transport.Connection;
+import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -39,7 +41,7 @@ public class DefaultChooser extends Chooser {
      * @param context Context of the SSH connection
      * @param config Configuration of the SSH-Attacker
      */
-    public DefaultChooser(SshContext context, Config config) {
+    public DefaultChooser(Context context, Config config) {
         super(context, config);
     }
 
@@ -53,7 +55,17 @@ public class DefaultChooser extends Chooser {
      */
     @Override
     public String getClientVersion() {
-        return context.getClientVersion().orElse(config.getClientVersion());
+        return context.getSshContext().getClientVersion().orElse(config.getClientVersion());
+    }
+
+    @Override
+    public ConnectionEndType getConnectionEndType() {
+        return getConnection().getLocalConnectionEndType();
+    }
+
+    @Override
+    public Connection getConnection() {
+        return context.getConnection();
     }
 
     /**
@@ -65,7 +77,7 @@ public class DefaultChooser extends Chooser {
      */
     @Override
     public String getClientComment() {
-        return context.getClientComment().orElse(config.getClientComment());
+        return context.getSshContext().getClientComment().orElse(config.getClientComment());
     }
 
     /**
@@ -77,7 +89,8 @@ public class DefaultChooser extends Chooser {
      */
     @Override
     public String getClientEndOfMessageSequence() {
-        return context.getClientEndOfMessageSequence()
+        return context.getSshContext()
+                .getClientEndOfMessageSequence()
                 .orElse(config.getClientEndOfMessageSequence());
     }
 
@@ -90,7 +103,7 @@ public class DefaultChooser extends Chooser {
      */
     @Override
     public String getServerVersion() {
-        return context.getServerVersion().orElse(config.getServerVersion());
+        return context.getSshContext().getServerVersion().orElse(config.getServerVersion());
     }
 
     /**
@@ -102,7 +115,7 @@ public class DefaultChooser extends Chooser {
      */
     @Override
     public String getServerComment() {
-        return context.getServerComment().orElse(config.getServerComment());
+        return context.getSshContext().getServerComment().orElse(config.getServerComment());
     }
 
     /**
@@ -114,7 +127,8 @@ public class DefaultChooser extends Chooser {
      */
     @Override
     public String getServerEndOfMessageSequence() {
-        return context.getServerEndOfMessageSequence()
+        return context.getSshContext()
+                .getServerEndOfMessageSequence()
                 .orElse(config.getServerEndOfMessageSequence());
     }
     // endregion
@@ -129,7 +143,7 @@ public class DefaultChooser extends Chooser {
      */
     @Override
     public byte[] getClientCookie() {
-        return context.getClientCookie().orElse(config.getClientCookie());
+        return context.getSshContext().getClientCookie().orElse(config.getClientCookie());
     }
 
     /**
@@ -141,7 +155,7 @@ public class DefaultChooser extends Chooser {
      */
     @Override
     public byte[] getServerCookie() {
-        return context.getServerCookie().orElse(config.getServerCookie());
+        return context.getSshContext().getServerCookie().orElse(config.getServerCookie());
     }
 
     /**
@@ -153,7 +167,8 @@ public class DefaultChooser extends Chooser {
      */
     @Override
     public List<KeyExchangeAlgorithm> getClientSupportedKeyExchangeAlgorithms() {
-        return context.getClientSupportedKeyExchangeAlgorithms()
+        return context.getSshContext()
+                .getClientSupportedKeyExchangeAlgorithms()
                 .orElse(config.getClientSupportedKeyExchangeAlgorithms());
     }
 
@@ -166,7 +181,8 @@ public class DefaultChooser extends Chooser {
      */
     @Override
     public List<KeyExchangeAlgorithm> getServerSupportedKeyExchangeAlgorithms() {
-        return context.getServerSupportedKeyExchangeAlgorithms()
+        return context.getSshContext()
+                .getServerSupportedKeyExchangeAlgorithms()
                 .orElse(config.getServerSupportedKeyExchangeAlgorithms());
     }
 
@@ -179,7 +195,8 @@ public class DefaultChooser extends Chooser {
      */
     @Override
     public List<PublicKeyAlgorithm> getClientSupportedHostKeyAlgorithms() {
-        return context.getClientSupportedHostKeyAlgorithms()
+        return context.getSshContext()
+                .getClientSupportedHostKeyAlgorithms()
                 .orElse(config.getClientSupportedHostKeyAlgorithms());
     }
 
@@ -192,7 +209,8 @@ public class DefaultChooser extends Chooser {
      */
     @Override
     public List<PublicKeyAlgorithm> getServerSupportedHostKeyAlgorithms() {
-        return context.getServerSupportedHostKeyAlgorithms()
+        return context.getSshContext()
+                .getServerSupportedHostKeyAlgorithms()
                 .orElse(config.getServerSupportedHostKeyAlgorithms());
     }
 
@@ -207,7 +225,8 @@ public class DefaultChooser extends Chooser {
      */
     @Override
     public List<EncryptionAlgorithm> getClientSupportedEncryptionAlgorithmsClientToServer() {
-        return context.getClientSupportedEncryptionAlgorithmsClientToServer()
+        return context.getSshContext()
+                .getClientSupportedEncryptionAlgorithmsClientToServer()
                 .orElse(config.getClientSupportedEncryptionAlgorithmsClientToServer());
     }
 
@@ -222,7 +241,8 @@ public class DefaultChooser extends Chooser {
      */
     @Override
     public List<EncryptionAlgorithm> getClientSupportedEncryptionAlgorithmsServerToClient() {
-        return context.getClientSupportedEncryptionAlgorithmsServerToClient()
+        return context.getSshContext()
+                .getClientSupportedEncryptionAlgorithmsServerToClient()
                 .orElse(config.getClientSupportedEncryptionAlgorithmsServerToClient());
     }
 
@@ -237,7 +257,8 @@ public class DefaultChooser extends Chooser {
      */
     @Override
     public List<EncryptionAlgorithm> getServerSupportedEncryptionAlgorithmsServerToClient() {
-        return context.getServerSupportedEncryptionAlgorithmsServerToClient()
+        return context.getSshContext()
+                .getServerSupportedEncryptionAlgorithmsServerToClient()
                 .orElse(config.getServerSupportedEncryptionAlgorithmsServerToClient());
     }
 
@@ -252,7 +273,8 @@ public class DefaultChooser extends Chooser {
      */
     @Override
     public List<EncryptionAlgorithm> getServerSupportedEncryptionAlgorithmsClientToServer() {
-        return context.getServerSupportedEncryptionAlgorithmsClientToServer()
+        return context.getSshContext()
+                .getServerSupportedEncryptionAlgorithmsClientToServer()
                 .orElse(config.getServerSupportedEncryptionAlgorithmsClientToServer());
     }
 
@@ -266,7 +288,8 @@ public class DefaultChooser extends Chooser {
      */
     @Override
     public List<MacAlgorithm> getClientSupportedMacAlgorithmsClientToServer() {
-        return context.getClientSupportedMacAlgorithmsClientToServer()
+        return context.getSshContext()
+                .getClientSupportedMacAlgorithmsClientToServer()
                 .orElse(config.getClientSupportedMacAlgorithmsClientToServer());
     }
 
@@ -280,7 +303,8 @@ public class DefaultChooser extends Chooser {
      */
     @Override
     public List<MacAlgorithm> getClientSupportedMacAlgorithmsServerToClient() {
-        return context.getClientSupportedMacAlgorithmsServerToClient()
+        return context.getSshContext()
+                .getClientSupportedMacAlgorithmsServerToClient()
                 .orElse(config.getClientSupportedMacAlgorithmsServerToClient());
     }
 
@@ -294,7 +318,8 @@ public class DefaultChooser extends Chooser {
      */
     @Override
     public List<MacAlgorithm> getServerSupportedMacAlgorithmsServerToClient() {
-        return context.getServerSupportedMacAlgorithmsServerToClient()
+        return context.getSshContext()
+                .getServerSupportedMacAlgorithmsServerToClient()
                 .orElse(config.getServerSupportedMacAlgorithmsServerToClient());
     }
 
@@ -308,7 +333,8 @@ public class DefaultChooser extends Chooser {
      */
     @Override
     public List<MacAlgorithm> getServerSupportedMacAlgorithmsClientToServer() {
-        return context.getServerSupportedMacAlgorithmsClientToServer()
+        return context.getSshContext()
+                .getServerSupportedMacAlgorithmsClientToServer()
                 .orElse(config.getServerSupportedMacAlgorithmsClientToServer());
     }
 
@@ -323,7 +349,8 @@ public class DefaultChooser extends Chooser {
      */
     @Override
     public List<CompressionMethod> getClientSupportedCompressionMethodsClientToServer() {
-        return context.getClientSupportedCompressionMethodsClientToServer()
+        return context.getSshContext()
+                .getClientSupportedCompressionMethodsClientToServer()
                 .orElse(config.getClientSupportedCompressionMethodsClientToServer());
     }
 
@@ -338,7 +365,8 @@ public class DefaultChooser extends Chooser {
      */
     @Override
     public List<CompressionMethod> getClientSupportedCompressionMethodsServerToClient() {
-        return context.getClientSupportedCompressionMethodsServerToClient()
+        return context.getSshContext()
+                .getClientSupportedCompressionMethodsServerToClient()
                 .orElse(config.getClientSupportedCompressionMethodsServerToClient());
     }
 
@@ -353,7 +381,8 @@ public class DefaultChooser extends Chooser {
      */
     @Override
     public List<CompressionMethod> getServerSupportedCompressionMethodsServerToClient() {
-        return context.getServerSupportedCompressionMethodsServerToClient()
+        return context.getSshContext()
+                .getServerSupportedCompressionMethodsServerToClient()
                 .orElse(config.getServerSupportedCompressionMethodsServerToClient());
     }
 
@@ -368,7 +397,8 @@ public class DefaultChooser extends Chooser {
      */
     @Override
     public List<CompressionMethod> getServerSupportedCompressionMethodsClientToServer() {
-        return context.getServerSupportedCompressionMethodsClientToServer()
+        return context.getSshContext()
+                .getServerSupportedCompressionMethodsClientToServer()
                 .orElse(config.getServerSupportedCompressionMethodsClientToServer());
     }
 
@@ -382,7 +412,8 @@ public class DefaultChooser extends Chooser {
      */
     @Override
     public List<String> getClientSupportedLanguagesClientToServer() {
-        return context.getClientSupportedLanguagesClientToServer()
+        return context.getSshContext()
+                .getClientSupportedLanguagesClientToServer()
                 .orElse(config.getClientSupportedLanguagesClientToServer());
     }
 
@@ -396,7 +427,8 @@ public class DefaultChooser extends Chooser {
      */
     @Override
     public List<String> getClientSupportedLanguagesServerToClient() {
-        return context.getClientSupportedLanguagesServerToClient()
+        return context.getSshContext()
+                .getClientSupportedLanguagesServerToClient()
                 .orElse(config.getClientSupportedLanguagesServerToClient());
     }
 
@@ -410,7 +442,8 @@ public class DefaultChooser extends Chooser {
      */
     @Override
     public List<String> getServerSupportedLanguagesServerToClient() {
-        return context.getServerSupportedLanguagesServerToClient()
+        return context.getSshContext()
+                .getServerSupportedLanguagesServerToClient()
                 .orElse(config.getServerSupportedLanguagesServerToClient());
     }
 
@@ -424,7 +457,8 @@ public class DefaultChooser extends Chooser {
      */
     @Override
     public List<String> getServerSupportedLanguagesClientToServer() {
-        return context.getServerSupportedLanguagesClientToServer()
+        return context.getSshContext()
+                .getServerSupportedLanguagesClientToServer()
                 .orElse(config.getServerSupportedLanguagesClientToServer());
     }
 
@@ -439,7 +473,8 @@ public class DefaultChooser extends Chooser {
      */
     @Override
     public boolean getClientFirstKeyExchangePacketFollows() {
-        return context.getClientFirstKeyExchangePacketFollows()
+        return context.getSshContext()
+                .getClientFirstKeyExchangePacketFollows()
                 .orElse(config.getClientFirstKeyExchangePacketFollows());
     }
 
@@ -454,7 +489,8 @@ public class DefaultChooser extends Chooser {
      */
     @Override
     public boolean getServerFirstKeyExchangePacketFollows() {
-        return context.getServerFirstKeyExchangePacketFollows()
+        return context.getSshContext()
+                .getServerFirstKeyExchangePacketFollows()
                 .orElse(config.getServerFirstKeyExchangePacketFollows());
     }
 
@@ -467,7 +503,7 @@ public class DefaultChooser extends Chooser {
      */
     @Override
     public int getClientReserved() {
-        return context.getClientReserved().orElse(config.getClientReserved());
+        return context.getSshContext().getClientReserved().orElse(config.getClientReserved());
     }
 
     /**
@@ -479,7 +515,7 @@ public class DefaultChooser extends Chooser {
      */
     @Override
     public int getServerReserved() {
-        return context.getServerReserved().orElse(config.getServerReserved());
+        return context.getSshContext().getServerReserved().orElse(config.getServerReserved());
     }
     // endregion
 
@@ -495,7 +531,8 @@ public class DefaultChooser extends Chooser {
      */
     @Override
     public KeyExchangeAlgorithm getKeyExchangeAlgorithm() {
-        return context.getKeyExchangeAlgorithm()
+        return context.getSshContext()
+                .getKeyExchangeAlgorithm()
                 .orElseGet(
                         () -> {
                             KeyExchangeAlgorithm negotiatedAlgorithm =
@@ -503,7 +540,7 @@ public class DefaultChooser extends Chooser {
                                                     this.getClientSupportedKeyExchangeAlgorithms(),
                                                     this.getServerSupportedKeyExchangeAlgorithms())
                                             .orElse(
-                                                    context.isClient()
+                                                    context.getSshContext().isClient()
                                                             ? this
                                                                     .getClientSupportedKeyExchangeAlgorithms()
                                                                     .get(0)
@@ -514,7 +551,7 @@ public class DefaultChooser extends Chooser {
                             // considered
                             // useful or disadvantageous (same for all negotiated algorithm
                             // methods)
-                            context.setKeyExchangeAlgorithm(negotiatedAlgorithm);
+                            context.getSshContext().setKeyExchangeAlgorithm(negotiatedAlgorithm);
                             return negotiatedAlgorithm;
                         });
     }
@@ -530,7 +567,8 @@ public class DefaultChooser extends Chooser {
      */
     @Override
     public PublicKeyAlgorithm getHostKeyAlgorithm() {
-        return context.getHostKeyAlgorithm()
+        return context.getSshContext()
+                .getHostKeyAlgorithm()
                 .orElseGet(
                         () -> {
                             PublicKeyAlgorithm negotiatedAlgorithm =
@@ -538,14 +576,14 @@ public class DefaultChooser extends Chooser {
                                                     this.getClientSupportedHostKeyAlgorithms(),
                                                     this.getServerSupportedHostKeyAlgorithms())
                                             .orElse(
-                                                    context.isClient()
+                                                    context.getSshContext().isClient()
                                                             ? this
                                                                     .getClientSupportedHostKeyAlgorithms()
                                                                     .get(0)
                                                             : this
                                                                     .getServerSupportedHostKeyAlgorithms()
                                                                     .get(0));
-                            context.setHostKeyAlgorithm(negotiatedAlgorithm);
+                            context.getSshContext().setHostKeyAlgorithm(negotiatedAlgorithm);
                             return negotiatedAlgorithm;
                         });
     }
@@ -561,7 +599,8 @@ public class DefaultChooser extends Chooser {
      */
     @Override
     public EncryptionAlgorithm getEncryptionAlgorithmClientToServer() {
-        return context.getEncryptionAlgorithmClientToServer()
+        return context.getSshContext()
+                .getEncryptionAlgorithmClientToServer()
                 .orElseGet(
                         () -> {
                             EncryptionAlgorithm negotiatedAlgorithm =
@@ -571,14 +610,15 @@ public class DefaultChooser extends Chooser {
                                                     this
                                                             .getServerSupportedEncryptionAlgorithmsClientToServer())
                                             .orElse(
-                                                    context.isClient()
+                                                    context.getSshContext().isClient()
                                                             ? this
                                                                     .getClientSupportedEncryptionAlgorithmsClientToServer()
                                                                     .get(0)
                                                             : this
                                                                     .getServerSupportedEncryptionAlgorithmsClientToServer()
                                                                     .get(0));
-                            context.setEncryptionAlgorithmClientToServer(negotiatedAlgorithm);
+                            context.getSshContext()
+                                    .setEncryptionAlgorithmClientToServer(negotiatedAlgorithm);
                             return negotiatedAlgorithm;
                         });
     }
@@ -594,7 +634,8 @@ public class DefaultChooser extends Chooser {
      */
     @Override
     public EncryptionAlgorithm getEncryptionAlgorithmServerToClient() {
-        return context.getEncryptionAlgorithmServerToClient()
+        return context.getSshContext()
+                .getEncryptionAlgorithmServerToClient()
                 .orElseGet(
                         () -> {
                             EncryptionAlgorithm negotiatedAlgorithm =
@@ -604,14 +645,15 @@ public class DefaultChooser extends Chooser {
                                                     this
                                                             .getServerSupportedEncryptionAlgorithmsServerToClient())
                                             .orElse(
-                                                    context.isClient()
+                                                    context.getSshContext().isClient()
                                                             ? this
                                                                     .getClientSupportedEncryptionAlgorithmsServerToClient()
                                                                     .get(0)
                                                             : this
                                                                     .getServerSupportedEncryptionAlgorithmsServerToClient()
                                                                     .get(0));
-                            context.setEncryptionAlgorithmServerToClient(negotiatedAlgorithm);
+                            context.getSshContext()
+                                    .setEncryptionAlgorithmServerToClient(negotiatedAlgorithm);
                             return negotiatedAlgorithm;
                         });
     }
@@ -627,7 +669,8 @@ public class DefaultChooser extends Chooser {
      */
     @Override
     public MacAlgorithm getMacAlgorithmClientToServer() {
-        return context.getMacAlgorithmClientToServer()
+        return context.getSshContext()
+                .getMacAlgorithmClientToServer()
                 .orElseGet(
                         () -> {
                             MacAlgorithm negotiatedAlgorithm =
@@ -637,14 +680,15 @@ public class DefaultChooser extends Chooser {
                                                     this
                                                             .getServerSupportedMacAlgorithmsClientToServer())
                                             .orElse(
-                                                    context.isClient()
+                                                    context.getSshContext().isClient()
                                                             ? this
                                                                     .getClientSupportedMacAlgorithmsClientToServer()
                                                                     .get(0)
                                                             : this
                                                                     .getServerSupportedMacAlgorithmsClientToServer()
                                                                     .get(0));
-                            context.setMacAlgorithmClientToServer(negotiatedAlgorithm);
+                            context.getSshContext()
+                                    .setMacAlgorithmClientToServer(negotiatedAlgorithm);
                             return negotiatedAlgorithm;
                         });
     }
@@ -660,7 +704,8 @@ public class DefaultChooser extends Chooser {
      */
     @Override
     public MacAlgorithm getMacAlgorithmServerToClient() {
-        return context.getMacAlgorithmServerToClient()
+        return context.getSshContext()
+                .getMacAlgorithmServerToClient()
                 .orElseGet(
                         () -> {
                             MacAlgorithm negotiatedAlgorithm =
@@ -670,14 +715,15 @@ public class DefaultChooser extends Chooser {
                                                     this
                                                             .getServerSupportedMacAlgorithmsServerToClient())
                                             .orElse(
-                                                    context.isClient()
+                                                    context.getSshContext().isClient()
                                                             ? this
                                                                     .getClientSupportedMacAlgorithmsServerToClient()
                                                                     .get(0)
                                                             : this
                                                                     .getServerSupportedMacAlgorithmsServerToClient()
                                                                     .get(0));
-                            context.setMacAlgorithmServerToClient(negotiatedAlgorithm);
+                            context.getSshContext()
+                                    .setMacAlgorithmServerToClient(negotiatedAlgorithm);
                             return negotiatedAlgorithm;
                         });
     }
@@ -693,7 +739,8 @@ public class DefaultChooser extends Chooser {
      */
     @Override
     public CompressionMethod getCompressionMethodClientToServer() {
-        return context.getCompressionMethodClientToServer()
+        return context.getSshContext()
+                .getCompressionMethodClientToServer()
                 .orElseGet(
                         () -> {
                             CompressionMethod negotiatedMethod =
@@ -703,14 +750,15 @@ public class DefaultChooser extends Chooser {
                                                     this
                                                             .getServerSupportedCompressionMethodsClientToServer())
                                             .orElse(
-                                                    context.isClient()
+                                                    context.getSshContext().isClient()
                                                             ? this
                                                                     .getClientSupportedCompressionMethodsClientToServer()
                                                                     .get(0)
                                                             : this
                                                                     .getServerSupportedCompressionMethodsClientToServer()
                                                                     .get(0));
-                            context.setCompressionMethodClientToServer(negotiatedMethod);
+                            context.getSshContext()
+                                    .setCompressionMethodClientToServer(negotiatedMethod);
                             return negotiatedMethod;
                         });
     }
@@ -726,7 +774,8 @@ public class DefaultChooser extends Chooser {
      */
     @Override
     public CompressionMethod getCompressionMethodServerToClient() {
-        return context.getCompressionMethodServerToClient()
+        return context.getSshContext()
+                .getCompressionMethodServerToClient()
                 .orElseGet(
                         () -> {
                             CompressionMethod negotiatedMethod =
@@ -736,14 +785,15 @@ public class DefaultChooser extends Chooser {
                                                     this
                                                             .getServerSupportedCompressionMethodsServerToClient())
                                             .orElse(
-                                                    context.isClient()
+                                                    context.getSshContext().isClient()
                                                             ? this
                                                                     .getClientSupportedCompressionMethodsServerToClient()
                                                                     .get(0)
                                                             : this
                                                                     .getServerSupportedCompressionMethodsServerToClient()
                                                                     .get(0));
-                            context.setCompressionMethodServerToClient(negotiatedMethod);
+                            context.getSshContext()
+                                    .setCompressionMethodServerToClient(negotiatedMethod);
                             return negotiatedMethod;
                         });
     }
@@ -759,14 +809,16 @@ public class DefaultChooser extends Chooser {
      */
     @Override
     public DhKeyExchange getDhKeyExchange() {
-        return context.getDhKeyExchangeInstance()
+        return context.getSshContext()
+                .getDhKeyExchangeInstance()
                 .orElseGet(
                         () -> {
                             KeyExchangeAlgorithm negotiatedAlgorithm =
                                     this.getKeyExchangeAlgorithm();
                             DhKeyExchange freshKeyExchange =
-                                    DhKeyExchange.newInstance(context, negotiatedAlgorithm);
-                            context.setDhKeyExchangeInstance(freshKeyExchange);
+                                    DhKeyExchange.newInstance(
+                                            context.getSshContext(), negotiatedAlgorithm);
+                            context.getSshContext().setDhKeyExchangeInstance(freshKeyExchange);
                             return freshKeyExchange;
                         });
     }
@@ -780,14 +832,16 @@ public class DefaultChooser extends Chooser {
      */
     @Override
     public DhKeyExchange getDhGexKeyExchange() {
-        return context.getDhGexKeyExchangeInstance()
+        return context.getSshContext()
+                .getDhGexKeyExchangeInstance()
                 .orElseGet(
                         () -> {
                             KeyExchangeAlgorithm negotiatedAlgorithm =
                                     this.getKeyExchangeAlgorithm();
                             DhKeyExchange freshKeyExchange =
-                                    DhKeyExchange.newInstance(context, negotiatedAlgorithm);
-                            context.setDhGexKeyExchangeInstance(freshKeyExchange);
+                                    DhKeyExchange.newInstance(
+                                            context.getSshContext(), negotiatedAlgorithm);
+                            context.getSshContext().setDhGexKeyExchangeInstance(freshKeyExchange);
                             return freshKeyExchange;
                         });
     }
@@ -795,14 +849,16 @@ public class DefaultChooser extends Chooser {
     /** */
     @Override
     public HybridKeyExchange getHybridKeyExchange() {
-        return context.getHybridKeyExchangeInstance()
+        return context.getSshContext()
+                .getHybridKeyExchangeInstance()
                 .orElseGet(
                         () -> {
                             KeyExchangeAlgorithm negotiatedAlgorithm =
                                     this.getKeyExchangeAlgorithm();
                             HybridKeyExchange hybridKeyExchange =
-                                    HybridKeyExchange.newInstance(context, negotiatedAlgorithm);
-                            context.setHybridKeyExchangeInstance(hybridKeyExchange);
+                                    HybridKeyExchange.newInstance(
+                                            context.getSshContext(), negotiatedAlgorithm);
+                            context.getSshContext().setHybridKeyExchangeInstance(hybridKeyExchange);
                             return hybridKeyExchange;
                         });
     }
@@ -816,15 +872,16 @@ public class DefaultChooser extends Chooser {
      */
     @Override
     public AbstractEcdhKeyExchange getEcdhKeyExchange() {
-        return context.getEcdhKeyExchangeInstance()
+        return context.getSshContext()
+                .getEcdhKeyExchangeInstance()
                 .orElseGet(
                         () -> {
                             KeyExchangeAlgorithm negotiatedAlgorithm =
                                     this.getKeyExchangeAlgorithm();
                             AbstractEcdhKeyExchange freshKeyExchange =
                                     AbstractEcdhKeyExchange.newInstance(
-                                            context, negotiatedAlgorithm);
-                            context.setEcdhKeyExchangeInstance(freshKeyExchange);
+                                            context.getSshContext(), negotiatedAlgorithm);
+                            context.getSshContext().setEcdhKeyExchangeInstance(freshKeyExchange);
                             return freshKeyExchange;
                         });
     }
@@ -838,17 +895,19 @@ public class DefaultChooser extends Chooser {
      */
     @Override
     public RsaKeyExchange getRsaKeyExchange() {
-        return context.getRsaKeyExchangeInstance()
+        return context.getSshContext()
+                .getRsaKeyExchangeInstance()
                 .orElseGet(
                         () -> {
                             KeyExchangeAlgorithm negotiatedAlgorithm =
                                     this.getKeyExchangeAlgorithm();
                             RsaKeyExchange freshKeyExchange =
-                                    RsaKeyExchange.newInstance(context, negotiatedAlgorithm);
+                                    RsaKeyExchange.newInstance(
+                                            context.getSshContext(), negotiatedAlgorithm);
                             // Set transient key to ensure its presence
                             freshKeyExchange.setTransientKey(
                                     config.getFallbackRsaTransientPublicKey());
-                            context.setRsaKeyExchangeInstance(freshKeyExchange);
+                            context.getSshContext().setRsaKeyExchangeInstance(freshKeyExchange);
                             return freshKeyExchange;
                         });
     }
@@ -864,7 +923,8 @@ public class DefaultChooser extends Chooser {
      */
     @Override
     public SshPublicKey<?, ?> getNegotiatedHostKey() {
-        Optional<PublicKeyAlgorithm> negotiatedHostKeyAlgorithm = context.getHostKeyAlgorithm();
+        Optional<PublicKeyAlgorithm> negotiatedHostKeyAlgorithm =
+                context.getSshContext().getHostKeyAlgorithm();
         SshPublicKey<?, ?> fallback = config.getHostKeys().get(0);
         if (negotiatedHostKeyAlgorithm.isEmpty()) {
             LOGGER.warn(
@@ -926,7 +986,9 @@ public class DefaultChooser extends Chooser {
      */
     @Override
     public Integer getMinimalDhGroupSize() {
-        return context.getMinimalDhGroupSize().orElse(config.getDhGexMinimalGroupSize());
+        return context.getSshContext()
+                .getMinimalDhGroupSize()
+                .orElse(config.getDhGexMinimalGroupSize());
     }
 
     /**
@@ -936,7 +998,9 @@ public class DefaultChooser extends Chooser {
      */
     @Override
     public Integer getPreferredDhGroupSize() {
-        return context.getPreferredDhGroupSize().orElse(config.getDhGexPreferredGroupSize());
+        return context.getSshContext()
+                .getPreferredDhGroupSize()
+                .orElse(config.getDhGexPreferredGroupSize());
     }
 
     /**
@@ -946,7 +1010,9 @@ public class DefaultChooser extends Chooser {
      */
     @Override
     public Integer getMaximalDhGroupSize() {
-        return context.getMaximalDhGroupSize().orElse(config.getDhGexMaximalGroupSize());
+        return context.getSshContext()
+                .getMaximalDhGroupSize()
+                .orElse(config.getDhGexMaximalGroupSize());
     }
     // endregion
 
@@ -960,5 +1026,37 @@ public class DefaultChooser extends Chooser {
     @Override
     public AuthenticationMethod getAuthenticationMethod() {
         return config.getAuthenticationMethod();
+    }
+
+    public CompressionAlgorithm getSelectedCompressionAlgorithm() {
+        if (context.getSshContext().getSelectedCompressionAlgorithm() != null) {
+            return context.getSshContext().getSelectedCompressionAlgorithm();
+        } else {
+            return config.getDefaultSelectedCompressionAlgorithm();
+        }
+    }
+
+    public EncryptionAlgorithm getSelectedEncryptionAlgorithm() {
+        if (context.getSshContext().getSelectedEncryptionAlgorithm() != null) {
+            return context.getSshContext().getSelectedEncryptionAlgorithm();
+        } else {
+            return config.getDefaultSelectedEncryptionAlgorithm();
+        }
+    }
+
+    public MacAlgorithm getSelectedMacAlgorithm() {
+        if (context.getSshContext().getSelectedMacAlgorithm() != null) {
+            return context.getSshContext().getSelectedMacAlgorithm();
+        } else {
+            return config.getDefaultSelectedMacAlgorithm();
+        }
+    }
+
+    public KeyExchangeAlgorithm getSelectedKeyExchangeAlgorithm() {
+        if (context.getSshContext().getSelectedMacAlgorithm() != null) {
+            return context.getSshContext().getSelectedKeyExchangeAlgorithm();
+        } else {
+            return config.getDefaultSelectedKeyExchangeAlgorithm();
+        }
     }
 }

@@ -7,12 +7,9 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.handler;
 
+import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.protocol.common.*;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelOpenFailureMessage;
-import de.rub.nds.sshattacker.core.protocol.connection.parser.ChannelOpenFailureMessageParser;
-import de.rub.nds.sshattacker.core.protocol.connection.preparator.ChannelOpenFailureMessagePreparator;
-import de.rub.nds.sshattacker.core.protocol.connection.serializer.ChannelOpenFailureMessageSerializer;
-import de.rub.nds.sshattacker.core.state.SshContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -24,12 +21,12 @@ public class ChannelOpenFailureMessageHandler extends SshMessageHandler<ChannelO
         super(context);
     }
 
-    public ChannelOpenFailureMessageHandler(SshContext context, ChannelOpenFailureMessage message) {
+    /*public ChannelOpenFailureMessageHandler(SshContext context, ChannelOpenFailureMessage message) {
         super(context, message);
-    }
+    }*/
 
     @Override
-    public void adjustContext() {
+    public void adjustContext(ChannelOpenFailureMessage message) {
         if (!context.getChannels().containsKey(message.getRecipientChannelId().getValue())) {
             LOGGER.warn(
                     "{} received but no channel with id {} found locally, ignoring it.",
@@ -39,7 +36,7 @@ public class ChannelOpenFailureMessageHandler extends SshMessageHandler<ChannelO
         context.getChannels().remove(message.getRecipientChannelId().getValue());
     }
 
-    @Override
+    /*@Override
     public ChannelOpenFailureMessageParser getParser(byte[] array) {
         return new ChannelOpenFailureMessageParser(array);
     }
@@ -57,5 +54,5 @@ public class ChannelOpenFailureMessageHandler extends SshMessageHandler<ChannelO
     @Override
     public ChannelOpenFailureMessageSerializer getSerializer() {
         return new ChannelOpenFailureMessageSerializer(message);
-    }
+    }*/
 }

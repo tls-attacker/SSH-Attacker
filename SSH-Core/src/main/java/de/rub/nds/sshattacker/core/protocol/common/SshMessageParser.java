@@ -8,15 +8,20 @@
 package de.rub.nds.sshattacker.core.protocol.common;
 
 import de.rub.nds.sshattacker.core.constants.SshMessageConstants;
+import java.io.InputStream;
 
 public abstract class SshMessageParser<T extends SshMessage<T>> extends ProtocolMessageParser<T> {
 
-    public SshMessageParser(byte[] array) {
+    /*public SshMessageParser(byte[] array) {
         super(array);
     }
 
     public SshMessageParser(byte[] array, int startPosition) {
         super(array, startPosition);
+    }*/
+
+    public SshMessageParser(InputStream stream) {
+        super(stream);
     }
 
     @Override

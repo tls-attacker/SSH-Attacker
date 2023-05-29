@@ -31,7 +31,7 @@ public class DhGexKeyExchangeGroupMessagePreparator
 
     private void selectGroupParameters() {
         DhKeyExchange keyExchange = chooser.getDhGexKeyExchange();
-        if (chooser.getContext().isOldGroupRequestReceived()) {
+        if (chooser.getContext().getSshContext().isOldGroupRequestReceived()) {
             keyExchange.selectGroup(chooser.getPreferredDhGroupSize());
         } else {
             keyExchange.selectGroup(
@@ -43,7 +43,8 @@ public class DhGexKeyExchangeGroupMessagePreparator
 
     private void updateExchangeHashWithGroupParameters() {
         DhKeyExchange keyExchange = chooser.getDhGexKeyExchange();
-        ExchangeHashInputHolder inputHolder = chooser.getContext().getExchangeHashInputHolder();
+        ExchangeHashInputHolder inputHolder =
+                chooser.getContext().getSshContext().getExchangeHashInputHolder();
         inputHolder.setDhGexGroupGenerator(keyExchange.getGenerator());
         inputHolder.setDhGexGroupModulus(keyExchange.getModulus());
     }

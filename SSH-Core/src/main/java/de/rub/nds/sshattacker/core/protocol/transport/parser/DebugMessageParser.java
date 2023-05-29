@@ -13,6 +13,7 @@ import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 import de.rub.nds.sshattacker.core.protocol.transport.message.DebugMessage;
 import de.rub.nds.sshattacker.core.util.Converter;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -21,12 +22,22 @@ public class DebugMessageParser extends SshMessageParser<DebugMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public DebugMessageParser(byte[] array) {
-        super(array);
+    /*
+        public DebugMessageParser(byte[] array) {
+            super(array);
+        }
+        public DebugMessageParser(byte[] array, int startPosition) {
+            super(array, startPosition);
+        }
+    */
+
+    public DebugMessageParser(InputStream stream) {
+        super(stream);
     }
 
-    public DebugMessageParser(byte[] array, int startPosition) {
-        super(array, startPosition);
+    @Override
+    public void parse(DebugMessage message) {
+        parseMessageSpecificContents();
     }
 
     @Override

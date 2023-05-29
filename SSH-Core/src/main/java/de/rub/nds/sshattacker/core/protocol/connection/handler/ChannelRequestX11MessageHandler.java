@@ -7,12 +7,9 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.handler;
 
+import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelRequestX11Message;
-import de.rub.nds.sshattacker.core.protocol.connection.parser.ChannelRequestX11MessageParser;
-import de.rub.nds.sshattacker.core.protocol.connection.preparator.ChannelRequestX11MessagePreparator;
-import de.rub.nds.sshattacker.core.protocol.connection.serializer.ChannelRequestX11MessageSerializer;
-import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.util.Converter;
 
 public class ChannelRequestX11MessageHandler extends SshMessageHandler<ChannelRequestX11Message> {
@@ -20,7 +17,7 @@ public class ChannelRequestX11MessageHandler extends SshMessageHandler<ChannelRe
         super(context);
     }
 
-    public ChannelRequestX11MessageHandler(SshContext context, ChannelRequestX11Message message) {
+    /*public ChannelRequestX11MessageHandler(SshContext context, ChannelRequestX11Message message) {
         super(context, message);
     }
 
@@ -42,10 +39,10 @@ public class ChannelRequestX11MessageHandler extends SshMessageHandler<ChannelRe
     @Override
     public ChannelRequestX11MessageSerializer getSerializer() {
         return new ChannelRequestX11MessageSerializer(message);
-    }
+    }*/
 
     @Override
-    public void adjustContext() {
+    public void adjustContext(ChannelRequestX11Message message) {
         if (Converter.byteToBoolean(message.getWantReply().getValue())) {
             context.getChannelManager().addToChannelRequestResponseQueue(message);
         }

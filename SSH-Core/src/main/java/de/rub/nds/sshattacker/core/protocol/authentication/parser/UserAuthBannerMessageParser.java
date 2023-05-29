@@ -10,16 +10,37 @@ package de.rub.nds.sshattacker.core.protocol.authentication.parser;
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthBannerMessage;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class UserAuthBannerMessageParser extends SshMessageParser<UserAuthBannerMessage> {
 
-    public UserAuthBannerMessageParser(byte[] array) {
+    private static final Logger LOGGER = LogManager.getLogger();
+
+    /*    public UserAuthBannerMessageParser(byte[] array) {
         super(array);
     }
 
     public UserAuthBannerMessageParser(byte[] array, int startPosition) {
         super(array, startPosition);
+    }*/
+
+    public UserAuthBannerMessageParser(InputStream stream) {
+        super(stream);
+    }
+
+    @Override
+    public void parse(UserAuthBannerMessage message) {
+        LOGGER.debug("Parsing UserAuthBannerMessage");
+        parseData(message);
+        message.setCompleteResultingMessage(getAlreadyParsed());
+    }
+
+    private void parseData(UserAuthBannerMessage msg) {
+        msg.setData(parseByteArrayField(getBytesLeft()));
+        LOGGER.debug("Data: {}", msg.getData().getValue());
     }
 
     @Override

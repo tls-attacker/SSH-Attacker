@@ -8,11 +8,17 @@
 package de.rub.nds.sshattacker.core.protocol.authentication.message;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
+import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
+import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
+import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.protocol.authentication.handler.UserAuthBannerMessageHandler;
+import de.rub.nds.sshattacker.core.protocol.authentication.parser.UserAuthBannerMessageParser;
+import de.rub.nds.sshattacker.core.protocol.authentication.preparator.UserAuthBannerMessagePreparator;
+import de.rub.nds.sshattacker.core.protocol.authentication.serializer.UserAuthBannerMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
-import de.rub.nds.sshattacker.core.state.SshContext;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
 public class UserAuthBannerMessage extends SshMessage<UserAuthBannerMessage> {
@@ -21,6 +27,23 @@ public class UserAuthBannerMessage extends SshMessage<UserAuthBannerMessage> {
     private ModifiableString message;
     private ModifiableInteger languageTagLength;
     private ModifiableString languageTag;
+
+    public ModifiableByteArray getData() {
+        return data;
+    }
+
+    public void setData(ModifiableByteArray data) {
+        this.data = data;
+    }
+
+    public void setData(byte[] data) {
+        if (this.data == null) {
+            this.data = new ModifiableByteArray();
+        }
+        this.data.setOriginalValue(data);
+    }
+
+    @ModifiableVariableProperty private ModifiableByteArray data;
 
     public ModifiableInteger getMessageLength() {
         return messageLength;
@@ -104,6 +127,26 @@ public class UserAuthBannerMessage extends SshMessage<UserAuthBannerMessage> {
 
     @Override
     public UserAuthBannerMessageHandler getHandler(SshContext context) {
-        return new UserAuthBannerMessageHandler(context, this);
+        return new UserAuthBannerMessageHandler(context);
+    }
+
+    @Override
+    public UserAuthBannerMessagePreparator getPreparator(SshContext sshContext) {
+        return new UserAuthBannerMessagePreparator(sshContext.getChooser(), this);
+    }
+
+    @Override
+    public UserAuthBannerMessageSerializer getSerializer(SshContext sshContext) {
+        return new UserAuthBannerMessageSerializer(this);
+    }
+
+    @Override
+    public UserAuthBannerMessageParser getParser(SshContext sshContext, InputStream stream) {
+        return new UserAuthBannerMessageParser(stream);
+    }
+
+    @Override
+    public String toShortString() {
+        return "AUTHBANNER";
     }
 }

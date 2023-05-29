@@ -10,6 +10,7 @@ package de.rub.nds.sshattacker.core.protocol.transport.parser;
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 import de.rub.nds.sshattacker.core.protocol.transport.message.DhGexKeyExchangeOldRequestMessage;
+import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -18,12 +19,17 @@ public class DhGexKeyExchangeOldRequestMessageParser
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public DhGexKeyExchangeOldRequestMessageParser(byte[] array) {
-        super(array);
-    }
+    /*
+        public DhGexKeyExchangeOldRequestMessageParser(byte[] array) {
+            super(array);
+        }
+        public DhGexKeyExchangeOldRequestMessageParser(byte[] array, int startPosition) {
+            super(array, startPosition);
+        }
+    */
 
-    public DhGexKeyExchangeOldRequestMessageParser(byte[] array, int startPosition) {
-        super(array, startPosition);
+    public DhGexKeyExchangeOldRequestMessageParser(InputStream stream) {
+        super(stream);
     }
 
     @Override
@@ -39,5 +45,10 @@ public class DhGexKeyExchangeOldRequestMessageParser
     @Override
     protected void parseMessageSpecificContents() {
         parsePreferredGroupSize();
+    }
+
+    @Override
+    public void parse(DhGexKeyExchangeOldRequestMessage message) {
+        parseMessageSpecificContents();
     }
 }

@@ -9,8 +9,13 @@ package de.rub.nds.sshattacker.core.protocol.authentication.message;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
+import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.protocol.authentication.handler.UserAuthUnknownMessageHandler;
-import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.protocol.authentication.parser.UserAuthUnknownMessageParser;
+import de.rub.nds.sshattacker.core.protocol.authentication.preparator.UserAuthUnknownMessagePreparator;
+import de.rub.nds.sshattacker.core.protocol.authentication.serializer.UserAuthUnknownMessageSerializer;
+import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
+import java.io.InputStream;
 
 public class UserAuthUnknownMessage extends UserAuthRequestMessage<UserAuthUnknownMessage> {
     private ModifiableByteArray methodSpecificFields;
@@ -31,6 +36,37 @@ public class UserAuthUnknownMessage extends UserAuthRequestMessage<UserAuthUnkno
 
     @Override
     public UserAuthUnknownMessageHandler getHandler(SshContext context) {
-        return new UserAuthUnknownMessageHandler(context, this);
+        return new UserAuthUnknownMessageHandler(context);
+    }
+
+    @Override
+    public SshMessageParser<UserAuthUnknownMessage> getParser(
+            SshContext context, InputStream stream) {
+        return new UserAuthUnknownMessageParser(stream);
+    }
+
+    /*@Override
+    public SshMessageParser<UserAuthUnknownMessage> getParser(byte[] array) {
+        return new UserAuthUnknownMessageParser(array);
+    }
+
+    @Override
+    public SshMessageParser<UserAuthUnknownMessage> getParser(byte[] array, int startPosition) {
+        return new UserAuthUnknownMessageParser(array, startPosition);
+    }*/
+
+    @Override
+    public UserAuthUnknownMessagePreparator getPreparator(SshContext context) {
+        return new UserAuthUnknownMessagePreparator(context.getChooser(), this);
+    }
+
+    @Override
+    public UserAuthUnknownMessageSerializer getSerializer(SshContext context) {
+        return new UserAuthUnknownMessageSerializer(this);
+    }
+
+    @Override
+    public String toShortString() {
+        return "USERAUTH_Unnkown";
     }
 }

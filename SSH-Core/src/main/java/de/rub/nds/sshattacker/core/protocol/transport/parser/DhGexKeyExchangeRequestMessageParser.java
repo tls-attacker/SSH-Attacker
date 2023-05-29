@@ -10,6 +10,7 @@ package de.rub.nds.sshattacker.core.protocol.transport.parser;
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 import de.rub.nds.sshattacker.core.protocol.transport.message.DhGexKeyExchangeRequestMessage;
+import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -18,12 +19,14 @@ public class DhGexKeyExchangeRequestMessageParser
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public DhGexKeyExchangeRequestMessageParser(byte[] array) {
+    /* public DhGexKeyExchangeRequestMessageParser(byte[] array) {
         super(array);
     }
-
     public DhGexKeyExchangeRequestMessageParser(byte[] array, int startPosition) {
         super(array, startPosition);
+    }*/
+    public DhGexKeyExchangeRequestMessageParser(InputStream stream) {
+        super(stream);
     }
 
     @Override
@@ -52,5 +55,10 @@ public class DhGexKeyExchangeRequestMessageParser
         parseMinimalGroupSize();
         parsePreferredGroupSize();
         parseMaximalGroupSize();
+    }
+
+    @Override
+    public void parse(DhGexKeyExchangeRequestMessage message) {
+        parseMessageSpecificContents();
     }
 }

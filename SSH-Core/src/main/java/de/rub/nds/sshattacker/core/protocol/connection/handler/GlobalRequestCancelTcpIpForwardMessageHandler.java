@@ -7,12 +7,9 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.handler;
 
+import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.protocol.common.*;
 import de.rub.nds.sshattacker.core.protocol.connection.message.GlobalRequestCancelTcpIpForwardMessage;
-import de.rub.nds.sshattacker.core.protocol.connection.parser.GlobalRequestCancelTcpIpForwardMessageParser;
-import de.rub.nds.sshattacker.core.protocol.connection.preparator.GlobalRequestCancelTcpIpForwardlMessagePreparator;
-import de.rub.nds.sshattacker.core.protocol.connection.serializer.GlobalRequestCancelTcpIpForwardlMessageSerializer;
-import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class GlobalRequestCancelTcpIpForwardMessageHandler
         extends SshMessageHandler<GlobalRequestCancelTcpIpForwardMessage> {
@@ -21,15 +18,15 @@ public class GlobalRequestCancelTcpIpForwardMessageHandler
         super(context);
     }
 
-    public GlobalRequestCancelTcpIpForwardMessageHandler(
+    /*public GlobalRequestCancelTcpIpForwardMessageHandler(
             SshContext context, GlobalRequestCancelTcpIpForwardMessage message) {
         super(context, message);
-    }
+    }*/
 
     @Override
-    public void adjustContext() {}
+    public void adjustContext(GlobalRequestCancelTcpIpForwardMessage message) {}
 
-    @Override
+    /*@Override
     public SshMessageParser<GlobalRequestCancelTcpIpForwardMessage> getParser(byte[] array) {
         return new GlobalRequestCancelTcpIpForwardMessageParser(array);
     }
@@ -48,5 +45,5 @@ public class GlobalRequestCancelTcpIpForwardMessageHandler
     @Override
     public SshMessageSerializer<GlobalRequestCancelTcpIpForwardMessage> getSerializer() {
         return new GlobalRequestCancelTcpIpForwardlMessageSerializer(message);
-    }
+    }*/
 }

@@ -9,9 +9,13 @@ package de.rub.nds.sshattacker.core.protocol.transport.message;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
+import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.AsciiMessageHandler;
-import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.protocol.transport.parser.AsciiMessageParser;
+import de.rub.nds.sshattacker.core.protocol.transport.preparator.AsciiMessagePreparator;
+import de.rub.nds.sshattacker.core.protocol.transport.serializer.AsciiMessageSerializer;
+import java.io.InputStream;
 
 /**
  * An generic text message sent via the Blob message layer.
@@ -56,11 +60,32 @@ public class AsciiMessage extends ProtocolMessage<AsciiMessage> {
 
     @Override
     public AsciiMessageHandler getHandler(final SshContext context) {
-        return new AsciiMessageHandler(context, this);
+        // return new AsciiMessageHandler(context, this);
+        return new AsciiMessageHandler(context);
+    }
+
+    @Override
+    public AsciiMessagePreparator getPreparator(SshContext sshContext) {
+        return new AsciiMessagePreparator(sshContext.getChooser(), this);
+    }
+
+    @Override
+    public AsciiMessageSerializer getSerializer(SshContext sshContext) {
+        return new AsciiMessageSerializer(this);
+    }
+
+    @Override
+    public AsciiMessageParser getParser(SshContext sshContext, InputStream stream) {
+        return new AsciiMessageParser(stream);
     }
 
     @Override
     public String toCompactString() {
         return this.getClass().getSimpleName();
+    }
+
+    @Override
+    public String toShortString() {
+        return "ASCII_MESSAGE";
     }
 }

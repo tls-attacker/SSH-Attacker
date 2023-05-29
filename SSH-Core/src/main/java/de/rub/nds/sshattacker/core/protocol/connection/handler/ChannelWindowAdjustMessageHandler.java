@@ -7,13 +7,10 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.handler;
 
+import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.protocol.common.*;
 import de.rub.nds.sshattacker.core.protocol.connection.Channel;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelWindowAdjustMessage;
-import de.rub.nds.sshattacker.core.protocol.connection.parser.ChannelWindowAdjustMessageParser;
-import de.rub.nds.sshattacker.core.protocol.connection.preparator.ChannelWindowAdjustMessagePreparator;
-import de.rub.nds.sshattacker.core.protocol.connection.serializer.ChannelWindowAdjustMessageSerializer;
-import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class ChannelWindowAdjustMessageHandler
         extends SshMessageHandler<ChannelWindowAdjustMessage> {
@@ -22,13 +19,13 @@ public class ChannelWindowAdjustMessageHandler
         super(context);
     }
 
-    public ChannelWindowAdjustMessageHandler(
+    /*public ChannelWindowAdjustMessageHandler(
             SshContext context, ChannelWindowAdjustMessage message) {
         super(context, message);
-    }
+    }*/
 
     @Override
-    public void adjustContext() {
+    public void adjustContext(ChannelWindowAdjustMessage message) {
         Channel channel = context.getChannels().get(message.getRecipientChannelId().getValue());
         if (channel != null) {
             if (!channel.isOpen().getValue()) {
@@ -49,7 +46,7 @@ public class ChannelWindowAdjustMessageHandler
         }
     }
 
-    @Override
+    /*@Override
     public ChannelWindowAdjustMessageParser getParser(byte[] array) {
         return new ChannelWindowAdjustMessageParser(array);
     }
@@ -67,5 +64,5 @@ public class ChannelWindowAdjustMessageHandler
     @Override
     public ChannelWindowAdjustMessageSerializer getSerializer() {
         return new ChannelWindowAdjustMessageSerializer(message);
-    }
+    }*/
 }

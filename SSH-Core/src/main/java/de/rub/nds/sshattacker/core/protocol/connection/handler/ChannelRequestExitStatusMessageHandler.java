@@ -7,12 +7,9 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.handler;
 
+import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelRequestExitStatusMessage;
-import de.rub.nds.sshattacker.core.protocol.connection.parser.ChannelRequestExitStatusMessageParser;
-import de.rub.nds.sshattacker.core.protocol.connection.preparator.ChannelRequestExitStatusMessagePreparator;
-import de.rub.nds.sshattacker.core.protocol.connection.serializer.ChannelRequestExitStatusMessageSerializer;
-import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.util.Converter;
 
 public class ChannelRequestExitStatusMessageHandler
@@ -22,7 +19,7 @@ public class ChannelRequestExitStatusMessageHandler
         super(context);
     }
 
-    public ChannelRequestExitStatusMessageHandler(
+    /*public ChannelRequestExitStatusMessageHandler(
             SshContext context, ChannelRequestExitStatusMessage message) {
         super(context, message);
     }
@@ -45,10 +42,10 @@ public class ChannelRequestExitStatusMessageHandler
     @Override
     public ChannelRequestExitStatusMessageSerializer getSerializer() {
         return new ChannelRequestExitStatusMessageSerializer(message);
-    }
+    }*/
 
     @Override
-    public void adjustContext() {
+    public void adjustContext(ChannelRequestExitStatusMessage message) {
         if (Converter.byteToBoolean(message.getWantReply().getValue())) {
             context.getChannelManager().addToChannelRequestResponseQueue(message);
         }

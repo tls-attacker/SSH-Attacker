@@ -7,14 +7,10 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.handler;
 
-import de.rub.nds.sshattacker.core.crypto.kex.HybridKeyExchange;
+import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.transport.message.HybridKeyExchangeInitMessage;
-import de.rub.nds.sshattacker.core.protocol.transport.parser.HybridKeyExchangeInitMessageParser;
-import de.rub.nds.sshattacker.core.protocol.transport.preparator.HybridKeyExchangeInitMessagePreperator;
-import de.rub.nds.sshattacker.core.protocol.transport.serializer.HybridKeyExchangeInitMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.util.KeyExchangeUtil;
-import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class HybridKeyExchangeInitMessageHandler
         extends SshMessageHandler<HybridKeyExchangeInitMessage> {
@@ -23,13 +19,13 @@ public class HybridKeyExchangeInitMessageHandler
         super(context);
     }
 
-    public HybridKeyExchangeInitMessageHandler(
+    /*public HybridKeyExchangeInitMessageHandler(
             SshContext context, HybridKeyExchangeInitMessage message) {
         super(context, message);
-    }
+    }*/
 
     @Override
-    public void adjustContext() {
+    public void adjustContext(HybridKeyExchangeInitMessage message) {
         context.getChooser()
                 .getHybridKeyExchange()
                 .getKeyAgreement()
@@ -60,7 +56,7 @@ public class HybridKeyExchangeInitMessageHandler
         }
     }
 
-    @Override
+    /*@Override
     public HybridKeyExchangeInitMessageParser getParser(byte[] array) {
         HybridKeyExchange kex = context.getChooser().getHybridKeyExchange();
         return new HybridKeyExchangeInitMessageParser(
@@ -92,5 +88,5 @@ public class HybridKeyExchangeInitMessageHandler
     public HybridKeyExchangeInitMessageSerializer getSerializer() {
         HybridKeyExchange kex = context.getChooser().getHybridKeyExchange();
         return new HybridKeyExchangeInitMessageSerializer(message, kex.getCombiner());
-    }
+    }*/
 }

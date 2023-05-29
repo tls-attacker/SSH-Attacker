@@ -8,9 +8,16 @@
 package de.rub.nds.sshattacker.core.workflow;
 
 import de.rub.nds.sshattacker.core.config.Config;
+import de.rub.nds.sshattacker.core.exceptions.ConfigurationException;
+import de.rub.nds.sshattacker.core.exceptions.TransportHandlerConnectException;
 import de.rub.nds.sshattacker.core.exceptions.WorkflowExecutionException;
+import de.rub.nds.sshattacker.core.layer.LayerStackFactory;
+import de.rub.nds.sshattacker.core.state.Context;
 import de.rub.nds.sshattacker.core.state.State;
 import de.rub.nds.sshattacker.core.workflow.action.executor.WorkflowExecutorType;
+import de.rub.nds.tlsattacker.transport.TransportHandlerFactory;
+import java.io.IOException;
+import java.util.function.Function;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -22,6 +29,47 @@ public abstract class WorkflowExecutor {
 
     protected final State state;
     protected final Config config;
+    private Function<State, Integer> beforeTransportPreInitCallback = null;
+
+    private Function<State, Integer> beforeTransportInitCallback = null;
+
+    public Function<State, Integer> getBeforeTransportPreInitCallback() {
+        return beforeTransportPreInitCallback;
+    }
+
+    public void setBeforeTransportPreInitCallback(
+            Function<State, Integer> beforeTransportPreInitCallback) {
+        this.beforeTransportPreInitCallback = beforeTransportPreInitCallback;
+    }
+
+    public Function<State, Integer> getBeforeTransportInitCallback() {
+        return beforeTransportInitCallback;
+    }
+
+    public void setBeforeTransportInitCallback(
+            Function<State, Integer> beforeTransportInitCallback) {
+        this.beforeTransportInitCallback = beforeTransportInitCallback;
+    }
+
+    public Function<State, Integer> getAfterTransportInitCallback() {
+        return afterTransportInitCallback;
+    }
+
+    public void setAfterTransportInitCallback(Function<State, Integer> afterTransportInitCallback) {
+        this.afterTransportInitCallback = afterTransportInitCallback;
+    }
+
+    public Function<State, Integer> getAfterExecutionCallback() {
+        return afterExecutionCallback;
+    }
+
+    public void setAfterExecutionCallback(Function<State, Integer> afterExecutionCallback) {
+        this.afterExecutionCallback = afterExecutionCallback;
+    }
+
+    private Function<State, Integer> afterTransportInitCallback = null;
+
+    private Function<State, Integer> afterExecutionCallback = null;
 
     /**
      * Prepare a workflow trace for execution according to the given state and executor type. Try
@@ -39,4 +87,56 @@ public abstract class WorkflowExecutor {
     }
 
     public abstract void executeWorkflow() throws WorkflowExecutionException;
+
+    public void initProtocolStack(Context context) throws IOException {
+        context.setLayerStack(
+                LayerStackFactory.createLayerStack(config.getDefaultLayerConfiguration(), context));
+    }
+
+    public void initAllLayer() throws IOException {
+        for (Context ctx : state.getAllContexts()) {
+            initTransportHandler(ctx);
+            initProtocolStack(ctx);
+        }
+    }
+
+    public void initTransportHandler(Context context) {
+
+        if (context.getTransportHandler() == null) {
+            if (context.getConnection() == null) {
+                throw new ConfigurationException("Connection end not set");
+            }
+            context.setTransportHandler(
+                    TransportHandlerFactory.createTransportHandler(context.getConnection()));
+            /*context.getTransportHandler()
+                    .setResetClientSourcePort(config.isResetClientSourcePort());
+            if (context.getTransportHandler() instanceof ClientTcpTransportHandler) {
+                ((ClientTcpTransportHandler) context.getTransportHandler())
+                        .setRetryFailedSocketInitialization(
+                                config.isRetryFailedClientTcpSocketInitialization());
+            }*/
+        }
+
+        try {
+            if (getBeforeTransportPreInitCallback() != null) {
+                getBeforeTransportPreInitCallback().apply(state);
+            }
+            context.getTransportHandler().preInitialize();
+            if (getBeforeTransportInitCallback() != null) {
+                getBeforeTransportInitCallback().apply(state);
+            }
+            context.getTransportHandler().initialize();
+            if (getAfterTransportInitCallback() != null) {
+                getAfterTransportInitCallback().apply(state);
+            }
+        } catch (NullPointerException | NumberFormatException ex) {
+            throw new ConfigurationException(
+                    "Invalid values in " + context.getConnection().toString(), ex);
+        } catch (Exception ex) {
+            throw new TransportHandlerConnectException(
+                    "Unable to initialize the transport handler with: "
+                            + context.getConnection().toString(),
+                    ex);
+        }
+    }
 }

@@ -11,6 +11,7 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.BinaryPacketConstants;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 import de.rub.nds.sshattacker.core.protocol.transport.message.DhKeyExchangeReplyMessage;
+import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -18,12 +19,17 @@ public class DhKeyExchangeReplyMessageParser extends SshMessageParser<DhKeyExcha
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public DhKeyExchangeReplyMessageParser(byte[] array) {
-        super(array);
-    }
+    /*
+        public DhKeyExchangeReplyMessageParser(byte[] array) {
+            super(array);
+        }
+        public DhKeyExchangeReplyMessageParser(byte[] array, int startPosition) {
+            super(array, startPosition);
+        }
+    */
 
-    public DhKeyExchangeReplyMessageParser(byte[] array, int startPosition) {
-        super(array, startPosition);
+    public DhKeyExchangeReplyMessageParser(InputStream stream) {
+        super(stream);
     }
 
     @Override
@@ -63,5 +69,10 @@ public class DhKeyExchangeReplyMessageParser extends SshMessageParser<DhKeyExcha
         parseHostKeyBytes();
         parseEphemeralPublicKey();
         parseSignature();
+    }
+
+    @Override
+    public void parse(DhKeyExchangeReplyMessage message) {
+        parseMessageSpecificContents();
     }
 }

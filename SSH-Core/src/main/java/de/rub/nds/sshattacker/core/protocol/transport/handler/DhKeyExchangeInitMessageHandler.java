@@ -7,13 +7,9 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.handler;
 
+import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 import de.rub.nds.sshattacker.core.protocol.transport.message.DhKeyExchangeInitMessage;
-import de.rub.nds.sshattacker.core.protocol.transport.parser.DhKeyExchangeInitMessageParser;
-import de.rub.nds.sshattacker.core.protocol.transport.preparator.DhKeyExchangeInitMessagePreparator;
-import de.rub.nds.sshattacker.core.protocol.transport.serializer.DhKeyExchangeInitMessageSerializer;
-import de.rub.nds.sshattacker.core.state.SshContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -25,12 +21,12 @@ public class DhKeyExchangeInitMessageHandler extends SshMessageHandler<DhKeyExch
         super(context);
     }
 
-    public DhKeyExchangeInitMessageHandler(SshContext context, DhKeyExchangeInitMessage message) {
+    /*public DhKeyExchangeInitMessageHandler(SshContext context, DhKeyExchangeInitMessage message) {
         super(context, message);
-    }
+    }*/
 
     @Override
-    public void adjustContext() {
+    public void adjustContext(DhKeyExchangeInitMessage message) {
         context.getChooser()
                 .getDhKeyExchange()
                 .setRemotePublicKey(message.getEphemeralPublicKey().getValue());
@@ -38,7 +34,7 @@ public class DhKeyExchangeInitMessageHandler extends SshMessageHandler<DhKeyExch
                 .setDhClientPublicKey(message.getEphemeralPublicKey().getValue());
     }
 
-    @Override
+    /*@Override
     public SshMessageParser<DhKeyExchangeInitMessage> getParser(byte[] array) {
         return new DhKeyExchangeInitMessageParser(array);
     }
@@ -56,5 +52,5 @@ public class DhKeyExchangeInitMessageHandler extends SshMessageHandler<DhKeyExch
     @Override
     public DhKeyExchangeInitMessageSerializer getSerializer() {
         return new DhKeyExchangeInitMessageSerializer(message);
-    }
+    }*/
 }

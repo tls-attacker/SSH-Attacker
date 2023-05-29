@@ -10,8 +10,10 @@ package de.rub.nds.sshattacker.core.protocol.transport.parser;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.BinaryPacketConstants;
 import de.rub.nds.sshattacker.core.constants.HybridKeyExchangeCombiner;
+import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 import de.rub.nds.sshattacker.core.protocol.transport.message.HybridKeyExchangeReplyMessage;
+import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -22,24 +24,33 @@ public class HybridKeyExchangeReplyMessageParser
     private int agreementSize;
     private int encapsulationSize;
 
-    public HybridKeyExchangeReplyMessageParser(
-            byte[] array,
-            int startPosition,
-            HybridKeyExchangeCombiner combiner,
-            int agreementSize,
-            int encapsulationSize) {
-        super(array, startPosition);
-        this.agreementSize = agreementSize;
-        this.encapsulationSize = encapsulationSize;
-        this.combiner = combiner;
-    }
+    /*
+        public HybridKeyExchangeReplyMessageParser(
+                byte[] array,
+                int startPosition,
+                HybridKeyExchangeCombiner combiner,
+                int agreementSize,
+                int encapsulationSize) {
+            super(array, startPosition);
+            this.agreementSize = agreementSize;
+            this.encapsulationSize = encapsulationSize;
+            this.combiner = combiner;
+        }
 
-    public HybridKeyExchangeReplyMessageParser(
-            byte[] array,
-            HybridKeyExchangeCombiner combiner,
-            int agreementSize,
-            int encapsulationSize) {
-        super(array);
+        public HybridKeyExchangeReplyMessageParser(
+                byte[] array,
+                HybridKeyExchangeCombiner combiner,
+                int agreementSize,
+                int encapsulationSize) {
+            super(array);
+            this.agreementSize = agreementSize;
+            this.encapsulationSize = encapsulationSize;
+            this.combiner = combiner;
+        }
+    */
+
+    public HybridKeyExchangeReplyMessageParser(SshContext context, InputStream stream) {
+        super(stream);
         this.agreementSize = agreementSize;
         this.encapsulationSize = encapsulationSize;
         this.combiner = combiner;
@@ -94,5 +105,10 @@ public class HybridKeyExchangeReplyMessageParser
     @Override
     protected HybridKeyExchangeReplyMessage createMessage() {
         return new HybridKeyExchangeReplyMessage();
+    }
+
+    @Override
+    public void parse(HybridKeyExchangeReplyMessage message) {
+        parseMessageSpecificContents();
     }
 }

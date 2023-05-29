@@ -8,7 +8,7 @@
 package de.rub.nds.sshattacker.core.workflow;
 
 import de.rub.nds.sshattacker.core.connection.AliasedConnection;
-import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.state.State;
 import de.rub.nds.tlsattacker.transport.tcp.ServerTcpTransportHandler;
 import java.io.IOException;
@@ -52,7 +52,8 @@ public class WorkflowExecutorRunnable implements Runnable {
         State state = new State(globalState.getConfig(), localTrace);
 
         // Do this post state init only if you know what yout are doing.
-        SshContext serverCtx = state.getInboundSshContexts().get(0);
+
+        SshContext serverCtx = state.getInboundContexts().get(0).getSshContext();
         AliasedConnection serverCon = serverCtx.getConnection();
         serverCon.setHostname(socket.getInetAddress().getHostAddress());
         serverCon.setPort(socket.getLocalPort());

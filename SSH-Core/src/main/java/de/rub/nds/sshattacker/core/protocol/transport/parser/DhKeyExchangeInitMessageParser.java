@@ -10,6 +10,7 @@ package de.rub.nds.sshattacker.core.protocol.transport.parser;
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 import de.rub.nds.sshattacker.core.protocol.transport.message.DhKeyExchangeInitMessage;
+import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -17,12 +18,17 @@ public class DhKeyExchangeInitMessageParser extends SshMessageParser<DhKeyExchan
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public DhKeyExchangeInitMessageParser(byte[] array) {
-        super(array);
-    }
+    /*
+        public DhKeyExchangeInitMessageParser(byte[] array) {
+            super(array);
+        }
+        public DhKeyExchangeInitMessageParser(byte[] array, int startPosition) {
+            super(array, startPosition);
+        }
+    */
 
-    public DhKeyExchangeInitMessageParser(byte[] array, int startPosition) {
-        super(array, startPosition);
+    public DhKeyExchangeInitMessageParser(InputStream stream) {
+        super(stream);
     }
 
     @Override
@@ -43,5 +49,10 @@ public class DhKeyExchangeInitMessageParser extends SshMessageParser<DhKeyExchan
     @Override
     protected void parseMessageSpecificContents() {
         parseEphemeralPublicKey();
+    }
+
+    @Override
+    public void parse(DhKeyExchangeInitMessage message) {
+        parseMessageSpecificContents();
     }
 }

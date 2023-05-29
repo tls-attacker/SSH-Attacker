@@ -9,8 +9,12 @@ package de.rub.nds.sshattacker.core.protocol.connection.message;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
+import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.protocol.connection.handler.ChannelRequestExitStatusMessageHandler;
-import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.protocol.connection.parser.ChannelRequestExitStatusMessageParser;
+import de.rub.nds.sshattacker.core.protocol.connection.preparator.ChannelRequestExitStatusMessagePreparator;
+import de.rub.nds.sshattacker.core.protocol.connection.serializer.ChannelRequestExitStatusMessageSerializer;
+import java.io.InputStream;
 
 public class ChannelRequestExitStatusMessage
         extends ChannelRequestMessage<ChannelRequestExitStatusMessage> {
@@ -31,6 +35,26 @@ public class ChannelRequestExitStatusMessage
 
     @Override
     public ChannelRequestExitStatusMessageHandler getHandler(SshContext context) {
-        return new ChannelRequestExitStatusMessageHandler(context, this);
+        return new ChannelRequestExitStatusMessageHandler(context);
+    }
+
+    @Override
+    public ChannelRequestExitStatusMessageParser getParser(SshContext context, InputStream stream) {
+        return new ChannelRequestExitStatusMessageParser(stream);
+    }
+
+    @Override
+    public ChannelRequestExitStatusMessagePreparator getPreparator(SshContext context) {
+        return new ChannelRequestExitStatusMessagePreparator(context.getChooser(), this);
+    }
+
+    @Override
+    public ChannelRequestExitStatusMessageSerializer getSerializer(SshContext context) {
+        return new ChannelRequestExitStatusMessageSerializer(this);
+    }
+
+    @Override
+    public String toShortString() {
+        return "EXIT_STATUS";
     }
 }

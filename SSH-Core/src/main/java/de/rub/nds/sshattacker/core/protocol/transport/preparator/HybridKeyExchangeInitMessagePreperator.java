@@ -58,7 +58,8 @@ public class HybridKeyExchangeInitMessagePreperator
                 "PrivKey Agreement = "
                         + ArrayConverter.bytesToRawHexString(
                                 agreement.getLocalKeyPair().getPrivate().getEncoded()));
-        ExchangeHashInputHolder inputHolder = chooser.getContext().getExchangeHashInputHolder();
+        ExchangeHashInputHolder inputHolder =
+                chooser.getContext().getSshContext().getExchangeHashInputHolder();
         switch (combiner) {
             case CLASSICAL_CONCATENATE_POSTQUANTUM:
                 inputHolder.setHybridClientPublicKey(

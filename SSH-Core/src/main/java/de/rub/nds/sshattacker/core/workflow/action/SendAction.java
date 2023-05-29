@@ -10,11 +10,10 @@ package de.rub.nds.sshattacker.core.workflow.action;
 import de.rub.nds.modifiablevariable.ModifiableVariable;
 import de.rub.nds.sshattacker.core.connection.AliasedConnection;
 import de.rub.nds.sshattacker.core.exceptions.WorkflowExecutionException;
+import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.protocol.common.ModifiableVariableHolder;
 import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessage;
-import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.state.State;
-import de.rub.nds.sshattacker.core.workflow.action.executor.MessageActionResult;
 import jakarta.xml.bind.annotation.XmlElement;
 import java.lang.reflect.Field;
 import java.util.Arrays;
@@ -100,7 +99,7 @@ public class SendAction extends MessageAction implements SendingAction {
             LOGGER.info("Sending messages (" + connectionAlias + "): " + sending);
         }
 
-        messages.forEach(message -> message.getHandler(context).getPreparator().prepare());
+        /*messages.forEach(message -> message.getHandler(context).getPreparator().prepare());
         final MessageActionResult result =
                 sendMessageHelper.sendMessages(context, messages.stream());
 
@@ -111,7 +110,7 @@ public class SendAction extends MessageAction implements SendingAction {
         if (this.isFailed()) {
             LOGGER.error(
                     "Failed to send {} out of {} message(s)!", failedMessageCount, messages.size());
-        }
+        }*/
 
         setExecuted(true);
     }

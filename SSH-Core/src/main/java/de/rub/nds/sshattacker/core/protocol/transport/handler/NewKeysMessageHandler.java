@@ -8,15 +8,12 @@
 package de.rub.nds.sshattacker.core.protocol.transport.handler;
 
 import de.rub.nds.sshattacker.core.constants.*;
+import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.packet.cipher.PacketCipher;
 import de.rub.nds.sshattacker.core.packet.cipher.PacketCipherFactory;
 import de.rub.nds.sshattacker.core.packet.cipher.keys.KeySet;
 import de.rub.nds.sshattacker.core.protocol.common.*;
 import de.rub.nds.sshattacker.core.protocol.transport.message.NewKeysMessage;
-import de.rub.nds.sshattacker.core.protocol.transport.parser.NewKeysMessageParser;
-import de.rub.nds.sshattacker.core.protocol.transport.preparator.NewKeysMessagePreparator;
-import de.rub.nds.sshattacker.core.protocol.transport.serializer.NewKeysMessageSerializer;
-import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import java.util.Objects;
 import java.util.Optional;
@@ -28,12 +25,12 @@ public class NewKeysMessageHandler extends SshMessageHandler<NewKeysMessage>
         super(context);
     }
 
-    public NewKeysMessageHandler(SshContext context, NewKeysMessage message) {
+    /*public NewKeysMessageHandler(SshContext context, NewKeysMessage message) {
         super(context, message);
-    }
+    }*/
 
     @Override
-    public void adjustContext() {
+    public void adjustContext(NewKeysMessage message) {
         if (context.getConfig().getEnableEncryptionOnNewKeysMessage()) {
             adjustEncryptionForDirection(true);
         }
@@ -132,7 +129,7 @@ public class NewKeysMessageHandler extends SshMessageHandler<NewKeysMessage>
         }
     }
 
-    @Override
+    /*@Override
     public NewKeysMessageParser getParser(byte[] array) {
         return new NewKeysMessageParser(array);
     }
@@ -150,5 +147,5 @@ public class NewKeysMessageHandler extends SshMessageHandler<NewKeysMessage>
     @Override
     public NewKeysMessageSerializer getSerializer() {
         return new NewKeysMessageSerializer(message);
-    }
+    }*/
 }

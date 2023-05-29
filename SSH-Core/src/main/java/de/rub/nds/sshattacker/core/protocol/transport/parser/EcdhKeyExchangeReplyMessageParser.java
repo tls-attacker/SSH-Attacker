@@ -12,6 +12,7 @@ import de.rub.nds.sshattacker.core.constants.BinaryPacketConstants;
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 import de.rub.nds.sshattacker.core.protocol.transport.message.EcdhKeyExchangeReplyMessage;
+import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -20,12 +21,17 @@ public class EcdhKeyExchangeReplyMessageParser
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public EcdhKeyExchangeReplyMessageParser(byte[] array) {
-        super(array);
-    }
+    /*
+        public EcdhKeyExchangeReplyMessageParser(byte[] array) {
+            super(array);
+        }
+        public EcdhKeyExchangeReplyMessageParser(byte[] array, int startPosition) {
+            super(array, startPosition);
+        }
+    */
 
-    public EcdhKeyExchangeReplyMessageParser(byte[] array, int startPosition) {
-        super(array, startPosition);
+    public EcdhKeyExchangeReplyMessageParser(InputStream stream) {
+        super(stream);
     }
 
     @Override
@@ -69,5 +75,10 @@ public class EcdhKeyExchangeReplyMessageParser
         parseHostKeyBytes();
         parseEphemeralPublicKey();
         parseSignature();
+    }
+
+    @Override
+    public void parse(EcdhKeyExchangeReplyMessage message) {
+        parseMessageSpecificContents();
     }
 }

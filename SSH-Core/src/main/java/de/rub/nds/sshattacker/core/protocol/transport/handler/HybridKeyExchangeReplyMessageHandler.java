@@ -8,17 +8,10 @@
 package de.rub.nds.sshattacker.core.protocol.transport.handler;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.sshattacker.core.crypto.kex.HybridKeyExchange;
+import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.transport.message.HybridKeyExchangeReplyMessage;
-import de.rub.nds.sshattacker.core.protocol.transport.parser.HybridKeyExchangeReplyMessageParser;
-import de.rub.nds.sshattacker.core.protocol.transport.preparator.HybridKeyExchangeReplyMessagePreparator;
-import de.rub.nds.sshattacker.core.protocol.transport.serializer.HybridKeyExchangeReplyMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.util.KeyExchangeUtil;
-import de.rub.nds.sshattacker.core.state.SshContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -31,15 +24,15 @@ public class HybridKeyExchangeReplyMessageHandler
         super(context);
     }
 
-    public HybridKeyExchangeReplyMessageHandler(
+    /*public HybridKeyExchangeReplyMessageHandler(
             SshContext context, HybridKeyExchangeReplyMessage message) {
         super(context, message);
-    }
+    }*/
 
     @Override
-    public void adjustContext() {
+    public void adjustContext(HybridKeyExchangeReplyMessage message) {
         KeyExchangeUtil.handleHostKeyMessage(context, message);
-        setRemoteValues();
+        setRemoteValues(message);
         context.getChooser().getHybridKeyExchange().combineSharedSecrets();
         context.setSharedSecret(context.getChooser().getHybridKeyExchange().getSharedSecret());
         context.getExchangeHashInputHolder()
@@ -50,7 +43,7 @@ public class HybridKeyExchangeReplyMessageHandler
         KeyExchangeUtil.generateKeySet(context);
     }
 
-    private void setRemoteValues() {
+    private void setRemoteValues(HybridKeyExchangeReplyMessage message) {
         context.getChooser()
                 .getHybridKeyExchange()
                 .getKeyAgreement()
@@ -91,7 +84,7 @@ public class HybridKeyExchangeReplyMessageHandler
         }
     }
 
-    @Override
+    /*@Override
     public SshMessageParser<HybridKeyExchangeReplyMessage> getParser(byte[] array) {
         HybridKeyExchange kex = context.getChooser().getHybridKeyExchange();
         return new HybridKeyExchangeReplyMessageParser(
@@ -121,5 +114,5 @@ public class HybridKeyExchangeReplyMessageHandler
     public SshMessageSerializer<HybridKeyExchangeReplyMessage> getSerializer() {
         HybridKeyExchange kex = context.getChooser().getHybridKeyExchange();
         return new HybridKeyExchangeReplyMessageSerializer(message, kex.getCombiner());
-    }
+    }*/
 }

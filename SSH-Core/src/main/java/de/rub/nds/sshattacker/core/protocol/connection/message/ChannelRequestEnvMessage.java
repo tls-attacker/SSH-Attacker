@@ -10,8 +10,12 @@ package de.rub.nds.sshattacker.core.protocol.connection.message;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
+import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.protocol.connection.handler.ChannelRequestEnvMessageHandler;
-import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.protocol.connection.parser.ChannelRequestEnvMessageParser;
+import de.rub.nds.sshattacker.core.protocol.connection.preparator.ChannelRequestEnvMessagePreparator;
+import de.rub.nds.sshattacker.core.protocol.connection.serializer.ChannelRequestEnvMessageSerializer;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
 public class ChannelRequestEnvMessage extends ChannelRequestMessage<ChannelRequestEnvMessage> {
@@ -111,6 +115,26 @@ public class ChannelRequestEnvMessage extends ChannelRequestMessage<ChannelReque
 
     @Override
     public ChannelRequestEnvMessageHandler getHandler(SshContext context) {
-        return new ChannelRequestEnvMessageHandler(context, this);
+        return new ChannelRequestEnvMessageHandler(context);
+    }
+
+    @Override
+    public ChannelRequestEnvMessageParser getParser(SshContext context, InputStream stream) {
+        return new ChannelRequestEnvMessageParser(stream);
+    }
+
+    @Override
+    public ChannelRequestEnvMessagePreparator getPreparator(SshContext context) {
+        return new ChannelRequestEnvMessagePreparator(context.getChooser(), this);
+    }
+
+    @Override
+    public ChannelRequestEnvMessageSerializer getSerializer(SshContext context) {
+        return new ChannelRequestEnvMessageSerializer(this);
+    }
+
+    @Override
+    public String toShortString() {
+        return "ENV_Message";
     }
 }

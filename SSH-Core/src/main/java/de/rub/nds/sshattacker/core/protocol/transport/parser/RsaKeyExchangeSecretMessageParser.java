@@ -10,6 +10,7 @@ package de.rub.nds.sshattacker.core.protocol.transport.parser;
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 import de.rub.nds.sshattacker.core.protocol.transport.message.RsaKeyExchangeSecretMessage;
+import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -17,13 +18,24 @@ public class RsaKeyExchangeSecretMessageParser
         extends SshMessageParser<RsaKeyExchangeSecretMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
+    /*
 
-    public RsaKeyExchangeSecretMessageParser(byte[] array) {
-        super(array);
+        public RsaKeyExchangeSecretMessageParser(byte[] array) {
+            super(array);
+        }
+
+        public RsaKeyExchangeSecretMessageParser(byte[] array, int startPosition) {
+            super(array, startPosition);
+        }
+    */
+
+    public RsaKeyExchangeSecretMessageParser(InputStream stream) {
+        super(stream);
     }
 
-    public RsaKeyExchangeSecretMessageParser(byte[] array, int startPosition) {
-        super(array, startPosition);
+    @Override
+    public void parse(RsaKeyExchangeSecretMessage message) {
+        parseMessageSpecificContents();
     }
 
     @Override
