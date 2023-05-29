@@ -15,7 +15,6 @@ import de.rub.nds.sshattacker.core.protocol.common.ModifiableVariableHolder;
 import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessage;
 import de.rub.nds.sshattacker.core.state.State;
 import jakarta.xml.bind.annotation.XmlElement;
-
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.Arrays;

@@ -10,20 +10,17 @@ package de.rub.nds.sshattacker.core.workflow.action;
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.sshattacker.core.connection.AliasedConnection;
 import de.rub.nds.sshattacker.core.layer.*;
+import de.rub.nds.sshattacker.core.layer.constant.ImplementedLayers;
 import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.*;
 import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessage;
 import de.rub.nds.sshattacker.core.protocol.connection.message.*;
 import de.rub.nds.sshattacker.core.protocol.transport.message.*;
 import de.rub.nds.sshattacker.core.session.Session;
-import de.rub.nds.sshattacker.core.workflow.action.executor.ReceiveMessageHelper;
-import de.rub.nds.sshattacker.core.workflow.action.executor.SendMessageHelper;
-import de.rub.nds.sshattacker.core.layer.constant.ImplementedLayers;
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlElementWrapper;
 import jakarta.xml.bind.annotation.XmlElements;
 import jakarta.xml.bind.annotation.XmlTransient;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -166,16 +163,15 @@ public abstract class MessageAction extends ConnectionBoundAction {
                 @XmlElement(type = VersionExchangeMessage.class, name = "VersionExchange"),
                 @XmlElement(type = AsciiMessage.class, name = "AsciiMessage")
             })
+    @XmlTransient
+    private LayerStackProcessingResult layerStackProcessingResult;
 
-
-    @XmlTransient private LayerStackProcessingResult layerStackProcessingResult;
     protected List<ProtocolMessage<?>> messages = new ArrayList<>();
     protected List<Session> sessions = new ArrayList<>();
 
+    // @XmlTransient protected final ReceiveMessageHelper receiveMessageHelper;
 
-    //@XmlTransient protected final ReceiveMessageHelper receiveMessageHelper;
-
-    //@XmlTransient protected final SendMessageHelper sendMessageHelper;
+    // @XmlTransient protected final SendMessageHelper sendMessageHelper;
 
     public MessageAction() {
         super(AliasedConnection.DEFAULT_CONNECTION_ALIAS);
@@ -296,7 +292,6 @@ public abstract class MessageAction extends ConnectionBoundAction {
         LayerConfiguration sessionConfiguration =
                 new SpecificSendLayerConfiguration<>(ImplementedLayers.Session, sessionsToSend);
 
-
         List<LayerConfiguration> layerConfigurationList =
                 sortLayerConfigurations(
                         layerStack,
@@ -324,25 +319,21 @@ public abstract class MessageAction extends ConnectionBoundAction {
                                     .getResultForLayer(ImplementedLayers.Session)
                                     .getUsedContainers());
         }
-
     }
 
     protected void receive(
             SshContext sshContext,
             List<ProtocolMessage<?>> protocolMessagesToReceive,
-            List<Session> sessionsToReceive){
+            List<Session> sessionsToReceive) {
         LayerStack layerStack = sshContext.getLayerStack();
 
         List<LayerConfiguration> layerConfigurationList;
-        if (protocolMessagesToReceive == null
-                && sessionsToReceive == null) {
+        if (protocolMessagesToReceive == null && sessionsToReceive == null) {
             layerConfigurationList = getGenericReceiveConfigurations(layerStack);
         } else {
             layerConfigurationList =
                     getSpecificReceiveConfigurations(
-                            protocolMessagesToReceive,
-                            sessionsToReceive,
-                            layerStack);
+                            protocolMessagesToReceive, sessionsToReceive, layerStack);
         }
 
         getReceiveResult(layerStack, layerConfigurationList);
@@ -355,10 +346,7 @@ public abstract class MessageAction extends ConnectionBoundAction {
         LayerConfiguration recordConfiguration =
                 new GenericReceiveLayerConfiguration(ImplementedLayers.Session);
         layerConfigurationList =
-                sortLayerConfigurations(
-                        layerStack,
-                        messageConfiguration,
-                        recordConfiguration);
+                sortLayerConfigurations(layerStack, messageConfiguration, recordConfiguration);
         return layerConfigurationList;
     }
 
@@ -372,23 +360,21 @@ public abstract class MessageAction extends ConnectionBoundAction {
                 new SpecificReceiveLayerConfiguration<>(
                         ImplementedLayers.AuthenticationLayer, protocolMessagesToReceive);
         LayerConfiguration recordConfiguration =
-                new SpecificReceiveLayerConfiguration<>(ImplementedLayers.Session, sessionsToReceive);
+                new SpecificReceiveLayerConfiguration<>(
+                        ImplementedLayers.Session, sessionsToReceive);
         if (sessionsToReceive == null || sessionsToReceive.isEmpty()) {
             // always allow (trailing) records when no records were set
             // a ReceiveAction actually intended to expect no records is pointless
             ((SpecificReceiveLayerConfiguration) recordConfiguration)
                     .setAllowTrailingContainers(true);
         }
-/*        LayerConfiguration httpConfiguration =
-                new SpecificReceiveLayerConfiguration<>(
-                        ImplementedLayers.HTTP, httpMessagesToReceive);*/
+        /*        LayerConfiguration httpConfiguration =
+        new SpecificReceiveLayerConfiguration<>(
+                ImplementedLayers.HTTP, httpMessagesToReceive);*/
         applyActionOptionFilters(messageConfiguration);
         layerConfigurationList =
-                sortLayerConfigurations(
-                        layerStack,
+                sortLayerConfigurations(layerStack, messageConfiguration, recordConfiguration);
 
-                        messageConfiguration,
-                        recordConfiguration);
         return layerConfigurationList;
     }
 
