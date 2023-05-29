@@ -15,6 +15,8 @@ import de.rub.nds.sshattacker.core.protocol.common.ModifiableVariableHolder;
 import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessage;
 import de.rub.nds.sshattacker.core.state.State;
 import jakarta.xml.bind.annotation.XmlElement;
+
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -97,6 +99,17 @@ public class SendAction extends MessageAction implements SendingAction {
             LOGGER.info("Sending messages: " + sending);
         } else {
             LOGGER.info("Sending messages (" + connectionAlias + "): " + sending);
+        }
+
+        try {
+            send(context, messages, sessions);
+            setExecuted(true);
+        } catch (IOException e) {
+            /*if (!getActionOptions().contains(ActionOption.MAY_FAIL)) {
+                tlsContext.setReceivedTransportHandlerException(true);
+                LOGGER.debug(e);
+            }
+            setExecuted(getActionOptions().contains(ActionOption.MAY_FAIL));*/
         }
 
         /*messages.forEach(message -> message.getHandler(context).getPreparator().prepare());

@@ -9,18 +9,25 @@ package de.rub.nds.sshattacker.core.workflow.action;
 
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.sshattacker.core.connection.AliasedConnection;
+import de.rub.nds.sshattacker.core.layer.*;
+import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.*;
 import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessage;
 import de.rub.nds.sshattacker.core.protocol.connection.message.*;
 import de.rub.nds.sshattacker.core.protocol.transport.message.*;
+import de.rub.nds.sshattacker.core.session.Session;
 import de.rub.nds.sshattacker.core.workflow.action.executor.ReceiveMessageHelper;
 import de.rub.nds.sshattacker.core.workflow.action.executor.SendMessageHelper;
+import de.rub.nds.sshattacker.core.layer.constant.ImplementedLayers;
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlElementWrapper;
 import jakarta.xml.bind.annotation.XmlElements;
 import jakarta.xml.bind.annotation.XmlTransient;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 
 public abstract class MessageAction extends ConnectionBoundAction {
@@ -159,43 +166,48 @@ public abstract class MessageAction extends ConnectionBoundAction {
                 @XmlElement(type = VersionExchangeMessage.class, name = "VersionExchange"),
                 @XmlElement(type = AsciiMessage.class, name = "AsciiMessage")
             })
+
+
+    @XmlTransient private LayerStackProcessingResult layerStackProcessingResult;
     protected List<ProtocolMessage<?>> messages = new ArrayList<>();
+    protected List<Session> sessions = new ArrayList<>();
 
-    @XmlTransient protected final ReceiveMessageHelper receiveMessageHelper;
 
-    @XmlTransient protected final SendMessageHelper sendMessageHelper;
+    //@XmlTransient protected final ReceiveMessageHelper receiveMessageHelper;
+
+    //@XmlTransient protected final SendMessageHelper sendMessageHelper;
 
     public MessageAction() {
         super(AliasedConnection.DEFAULT_CONNECTION_ALIAS);
-        receiveMessageHelper = new ReceiveMessageHelper();
-        sendMessageHelper = new SendMessageHelper();
+        /*receiveMessageHelper = new ReceiveMessageHelper();
+        sendMessageHelper = new SendMessageHelper();*/
     }
 
     public MessageAction(List<ProtocolMessage<?>> messages) {
         super(AliasedConnection.DEFAULT_CONNECTION_ALIAS);
         this.messages = new ArrayList<>(messages);
-        receiveMessageHelper = new ReceiveMessageHelper();
-        sendMessageHelper = new SendMessageHelper();
+        /*receiveMessageHelper = new ReceiveMessageHelper();
+        sendMessageHelper = new SendMessageHelper();*/
     }
 
     public MessageAction(ProtocolMessage<?>... messages) {
         super(AliasedConnection.DEFAULT_CONNECTION_ALIAS);
         this.messages = Arrays.asList(messages);
-        receiveMessageHelper = new ReceiveMessageHelper();
-        sendMessageHelper = new SendMessageHelper();
+        /*receiveMessageHelper = new ReceiveMessageHelper();
+        sendMessageHelper = new SendMessageHelper();*/
     }
 
     public MessageAction(String connectionAlias) {
         super(connectionAlias);
-        receiveMessageHelper = new ReceiveMessageHelper();
-        sendMessageHelper = new SendMessageHelper();
+        /*receiveMessageHelper = new ReceiveMessageHelper();
+        sendMessageHelper = new SendMessageHelper();*/
     }
 
     public MessageAction(String connectionAlias, List<ProtocolMessage<?>> messages) {
         super(connectionAlias);
         this.messages = new ArrayList<>(messages);
-        receiveMessageHelper = new ReceiveMessageHelper();
-        sendMessageHelper = new SendMessageHelper();
+        /*receiveMessageHelper = new ReceiveMessageHelper();
+        sendMessageHelper = new SendMessageHelper();*/
     }
 
     public MessageAction(String connectionAlias, ProtocolMessage<?>... messages) {
@@ -263,5 +275,151 @@ public abstract class MessageAction extends ConnectionBoundAction {
         if (messages == null) {
             messages = new ArrayList<>();
         }
+    }
+
+    protected void send(
+            SshContext sshContext,
+            List<ProtocolMessage<?>> protocolMessagesToSend,
+            List<Session> sessionsToSend)
+            throws IOException {
+        LayerStack layerStack = sshContext.getLayerStack();
+
+        LayerConfiguration authenticationConfiguration =
+                new SpecificSendLayerConfiguration<>(
+                        ImplementedLayers.AuthenticationLayer, protocolMessagesToSend);
+        LayerConfiguration transportConfiguration =
+                new SpecificSendLayerConfiguration<>(
+                        ImplementedLayers.TransportLayer, protocolMessagesToSend);
+        LayerConfiguration connectionConfiguration =
+                new SpecificSendLayerConfiguration<>(
+                        ImplementedLayers.ConnectionLayer, protocolMessagesToSend);
+        LayerConfiguration sessionConfiguration =
+                new SpecificSendLayerConfiguration<>(ImplementedLayers.Session, sessionsToSend);
+
+
+        List<LayerConfiguration> layerConfigurationList =
+                sortLayerConfigurations(
+                        layerStack,
+                        authenticationConfiguration,
+                        transportConfiguration,
+                        connectionConfiguration,
+                        sessionConfiguration);
+        LayerStackProcessingResult processingResult = layerStack.sendData(layerConfigurationList);
+        setContainers(processingResult);
+    }
+
+    private void setContainers(LayerStackProcessingResult processingResults) {
+        if (processingResults.getResultForLayer(ImplementedLayers.AuthenticationLayer) != null) {
+            messages =
+                    new ArrayList<>(
+                            processingResults
+                                    .getResultForLayer(ImplementedLayers.AuthenticationLayer)
+                                    .getUsedContainers());
+        }
+
+        if (processingResults.getResultForLayer(ImplementedLayers.Session) != null) {
+            sessions =
+                    new ArrayList<>(
+                            processingResults
+                                    .getResultForLayer(ImplementedLayers.Session)
+                                    .getUsedContainers());
+        }
+
+    }
+
+    protected void receive(
+            SshContext sshContext,
+            List<ProtocolMessage<?>> protocolMessagesToReceive,
+            List<Session> sessionsToReceive){
+        LayerStack layerStack = sshContext.getLayerStack();
+
+        List<LayerConfiguration> layerConfigurationList;
+        if (protocolMessagesToReceive == null
+                && sessionsToReceive == null) {
+            layerConfigurationList = getGenericReceiveConfigurations(layerStack);
+        } else {
+            layerConfigurationList =
+                    getSpecificReceiveConfigurations(
+                            protocolMessagesToReceive,
+                            sessionsToReceive,
+                            layerStack);
+        }
+
+        getReceiveResult(layerStack, layerConfigurationList);
+    }
+
+    private List<LayerConfiguration> getGenericReceiveConfigurations(LayerStack layerStack) {
+        List<LayerConfiguration> layerConfigurationList;
+        LayerConfiguration messageConfiguration =
+                new GenericReceiveLayerConfiguration(ImplementedLayers.AuthenticationLayer);
+        LayerConfiguration recordConfiguration =
+                new GenericReceiveLayerConfiguration(ImplementedLayers.Session);
+        layerConfigurationList =
+                sortLayerConfigurations(
+                        layerStack,
+                        messageConfiguration,
+                        recordConfiguration);
+        return layerConfigurationList;
+    }
+
+    private List<LayerConfiguration> getSpecificReceiveConfigurations(
+            List<ProtocolMessage<?>> protocolMessagesToReceive,
+            List<Session> sessionsToReceive,
+            LayerStack layerStack) {
+        List<LayerConfiguration> layerConfigurationList;
+
+        LayerConfiguration messageConfiguration =
+                new SpecificReceiveLayerConfiguration<>(
+                        ImplementedLayers.AuthenticationLayer, protocolMessagesToReceive);
+        LayerConfiguration recordConfiguration =
+                new SpecificReceiveLayerConfiguration<>(ImplementedLayers.Session, sessionsToReceive);
+        if (sessionsToReceive == null || sessionsToReceive.isEmpty()) {
+            // always allow (trailing) records when no records were set
+            // a ReceiveAction actually intended to expect no records is pointless
+            ((SpecificReceiveLayerConfiguration) recordConfiguration)
+                    .setAllowTrailingContainers(true);
+        }
+/*        LayerConfiguration httpConfiguration =
+                new SpecificReceiveLayerConfiguration<>(
+                        ImplementedLayers.HTTP, httpMessagesToReceive);*/
+        applyActionOptionFilters(messageConfiguration);
+        layerConfigurationList =
+                sortLayerConfigurations(
+                        layerStack,
+
+                        messageConfiguration,
+                        recordConfiguration);
+        return layerConfigurationList;
+    }
+
+    private void applyActionOptionFilters(LayerConfiguration messageConfiguration) {
+        List<DataContainerFilter> containerFilters = new LinkedList<>();
+        /*if (getActionOptions().contains(ActionOption.IGNORE_UNEXPECTED_APP_DATA)) {
+            containerFilters.add(new GenericDataContainerFilter(ApplicationMessage.class));
+        }
+        if (getActionOptions().contains(ActionOption.IGNORE_UNEXPECTED_KEY_UPDATE_MESSAGES)) {
+            containerFilters.add(new GenericDataContainerFilter(KeyUpdateMessage.class));
+        }
+        if (getActionOptions().contains(ActionOption.IGNORE_UNEXPECTED_NEW_SESSION_TICKETS)) {
+            containerFilters.add(new GenericDataContainerFilter(NewSessionTicketMessage.class));
+        }
+        if (getActionOptions().contains(ActionOption.IGNORE_UNEXPECTED_WARNINGS)) {
+            containerFilters.add(new WarningAlertFilter());
+        }*/
+        ((SpecificReceiveLayerConfiguration) messageConfiguration)
+                .setContainerFilterList(containerFilters);
+    }
+
+    private void getReceiveResult(
+            LayerStack layerStack, List<LayerConfiguration> layerConfigurationList) {
+        LayerStackProcessingResult processingResult;
+        processingResult = layerStack.receiveData(layerConfigurationList);
+        setContainers(processingResult);
+        setLayerStackProcessingResult(processingResult);
+    }
+
+    public void setLayerStackProcessingResult(
+            LayerStackProcessingResult layerStackProcessingResult) {
+        this.layerStackProcessingResult = layerStackProcessingResult;
     }
 }

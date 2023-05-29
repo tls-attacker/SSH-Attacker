@@ -13,6 +13,7 @@ public enum ImplementedLayers implements LayerType {
     AuthenticationLayer,
     ConnectionLayer,
     TransportLayer,
+    Session,
     SSHv1;
 
     @Override

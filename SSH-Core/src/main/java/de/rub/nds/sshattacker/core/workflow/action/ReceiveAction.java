@@ -237,10 +237,13 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
             throw new WorkflowExecutionException("Action already executed!");
         }
 
-        LOGGER.debug("Receiving messages for connection alias '{}'...", getConnectionAlias());
+        receive(context, expectedMessages, sessions);
+
+
+        /*LOGGER.debug("Receiving messages for connection alias '{}'...", getConnectionAlias());
         MessageActionResult result =
                 receiveMessageHelper.receiveMessages(context, expectedMessages);
-        setReceivedMessages(result.getMessageList());
+        setReceivedMessages(result.getMessageList());*/
         setExecuted(true);
 
         String expected = getReadableString(expectedMessages);

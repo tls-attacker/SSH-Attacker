@@ -10,14 +10,18 @@ package de.rub.nds.sshattacker.core.workflow.action;
 import de.rub.nds.sshattacker.core.connection.Aliasable;
 import de.rub.nds.sshattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.sshattacker.core.exceptions.WorkflowExecutionException;
+import de.rub.nds.sshattacker.core.layer.LayerConfiguration;
+import de.rub.nds.sshattacker.core.layer.LayerStack;
+import de.rub.nds.sshattacker.core.layer.SpecificReceiveLayerConfiguration;
+import de.rub.nds.sshattacker.core.layer.constant.ImplementedLayers;
+import de.rub.nds.sshattacker.core.layer.constant.LayerType;
 import de.rub.nds.sshattacker.core.state.State;
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlTransient;
 import java.io.Serializable;
-import java.util.Collection;
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.*;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -136,5 +140,48 @@ public abstract class SshAction implements Serializable, Aliasable {
             sb.append(" [").append(aliasesToString()).append("]");
         }
         return sb.toString();
+    }
+
+    public List<LayerConfiguration> sortLayerConfigurations(
+            LayerStack layerStack, LayerConfiguration... unsortedLayerConfigurations) {
+        return sortLayerConfigurations(
+                layerStack, new LinkedList<>(Arrays.asList(unsortedLayerConfigurations)));
+    }
+    public List<LayerConfiguration> sortLayerConfigurations(
+            LayerStack layerStack, List<LayerConfiguration> unsortedLayerConfigurations) {
+        List<LayerConfiguration> sortedLayerConfigurations = new LinkedList<>();
+        // iterate over all layers in the stack and assign the correct configuration
+        // reset configurations to only assign a configuration to the upper most layer
+        for (LayerType layerType : layerStack.getLayersInStack()) {
+            ImplementedLayers layer;
+            try {
+                layer = (ImplementedLayers) layerType;
+            } catch (ClassCastException e) {
+                LOGGER.warn(
+                        "Cannot assign layer "
+                                + layerType.getName()
+                                + "to current LayerStack. LayerType not implemented for TLSAction.");
+                continue;
+            }
+            Optional<LayerConfiguration> layerConfiguration = Optional.empty();
+            if (layer == ImplementedLayers.SSHv1
+                    || layer == ImplementedLayers.AuthenticationLayer
+                    || layer == ImplementedLayers.TransportLayer
+                    || layer == ImplementedLayers.ConnectionLayer
+                    || layer == ImplementedLayers.Session) {
+                layerConfiguration =
+                        unsortedLayerConfigurations.stream()
+                                .filter(layerConfig -> layerConfig.getLayerType().equals(layer))
+                                .findFirst();
+            }
+            if (layerConfiguration.isPresent()) {
+                sortedLayerConfigurations.add(layerConfiguration.get());
+                unsortedLayerConfigurations.remove(layerConfiguration.get());
+            } else {
+                sortedLayerConfigurations.add(
+                        new SpecificReceiveLayerConfiguration(layerType, new LinkedList<>()));
+            }
+        }
+        return sortedLayerConfigurations;
     }
 }
