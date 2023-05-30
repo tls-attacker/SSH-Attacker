@@ -157,7 +157,8 @@ public abstract class SshTask implements Task, Callable<Task> {
         this.afterExecutionCallback = afterExecutionCallback;
     }
 
-    public static WorkflowExecutor getExecutor(State state) {
+    @SuppressWarnings("MethodMayBeStatic")
+    public WorkflowExecutor getExecutor(State state) {
         return new DefaultWorkflowExecutor(state);
     }
 }
