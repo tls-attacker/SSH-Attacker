@@ -13,7 +13,6 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.state.State;
 import de.rub.nds.sshattacker.core.workflow.factory.SshActionFactory;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-
 import java.util.ArrayList;
 import java.util.List;
 

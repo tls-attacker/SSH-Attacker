@@ -13,7 +13,6 @@ import de.rub.nds.sshattacker.core.protocol.transport.parser.DisconnectMessagePa
 import de.rub.nds.sshattacker.core.protocol.transport.preparator.DisconnectMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.transport.serializer.DisconnectMessageSerializer;
 import de.rub.nds.sshattacker.core.state.SshContext;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

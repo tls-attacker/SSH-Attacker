@@ -12,7 +12,6 @@ import de.rub.nds.sshattacker.core.constants.EcPointFormat;
 import de.rub.nds.sshattacker.core.crypto.ec.PointFormatter;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomEcPublicKey;
 import de.rub.nds.sshattacker.core.protocol.common.Serializer;
-
 import java.nio.charset.StandardCharsets;
 
 /** Serializer class to encode an ECDSA public key to the ecdsa-sha2-* format */

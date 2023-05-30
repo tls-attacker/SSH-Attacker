@@ -11,7 +11,6 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.protocol.transport.message.NewKeysMessage;
-
 import org.junit.jupiter.api.Test;
 
 public class NewKeysMessageSerializerTest {

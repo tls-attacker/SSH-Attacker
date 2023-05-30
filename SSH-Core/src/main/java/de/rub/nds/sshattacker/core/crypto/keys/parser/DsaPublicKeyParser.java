@@ -13,11 +13,9 @@ import de.rub.nds.sshattacker.core.crypto.keys.CustomDsaPrivateKey;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomDsaPublicKey;
 import de.rub.nds.sshattacker.core.crypto.keys.SshPublicKey;
 import de.rub.nds.sshattacker.core.protocol.common.Parser;
-
+import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import java.nio.charset.StandardCharsets;
 
 /** Parser class to parse an DSA public key in the ssh-dss format. */
 public class DsaPublicKeyParser

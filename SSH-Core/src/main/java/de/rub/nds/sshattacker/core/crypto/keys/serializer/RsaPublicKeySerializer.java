@@ -11,7 +11,6 @@ import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.constants.PublicKeyFormat;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomRsaPublicKey;
 import de.rub.nds.sshattacker.core.protocol.common.Serializer;
-
 import java.nio.charset.StandardCharsets;
 
 /** Serializer class to encode an RSA public key to the ssh-rsa format. */

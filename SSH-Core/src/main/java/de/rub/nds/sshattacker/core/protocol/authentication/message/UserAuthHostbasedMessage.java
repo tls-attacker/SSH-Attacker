@@ -17,7 +17,6 @@ import de.rub.nds.sshattacker.core.protocol.authentication.handler.UserAuthHostb
 import de.rub.nds.sshattacker.core.protocol.transport.message.ExchangeHashSignatureMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.message.HostKeyMessage;
 import de.rub.nds.sshattacker.core.state.SshContext;
-
 import java.nio.charset.StandardCharsets;
 
 public class UserAuthHostbasedMessage extends UserAuthRequestMessage<UserAuthHostbasedMessage>

@@ -9,7 +9,6 @@ package de.rub.nds.sshattacker.core.constants;
 
 import de.rub.nds.sshattacker.core.exceptions.ParserException;
 import de.rub.nds.sshattacker.core.state.SshContext;
-
 import java.util.*;
 
 public enum MessageIdConstant {

@@ -8,7 +8,6 @@
 package de.rub.nds.sshattacker.mitm.config;
 
 import com.beust.jcommander.ParametersDelegate;
-
 import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.config.SshDelegateConfig;
 import de.rub.nds.sshattacker.core.config.delegate.*;

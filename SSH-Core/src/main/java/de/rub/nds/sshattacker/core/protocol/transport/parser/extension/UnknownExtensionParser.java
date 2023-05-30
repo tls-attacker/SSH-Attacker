@@ -9,7 +9,6 @@ package de.rub.nds.sshattacker.core.protocol.transport.parser.extension;
 
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.transport.message.extension.UnknownExtension;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

@@ -11,7 +11,6 @@ import cc.redberry.rings.IntegersZp64;
 import cc.redberry.rings.poly.PolynomialMethods;
 import cc.redberry.rings.poly.univar.UnivariateDivision;
 import cc.redberry.rings.poly.univar.UnivariatePolynomialZp64;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Objects;

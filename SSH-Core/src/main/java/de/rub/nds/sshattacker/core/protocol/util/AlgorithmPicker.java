@@ -7,12 +7,11 @@
  */
 package de.rub.nds.sshattacker.core.protocol.util;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /** A utility class to ease the algorithm selection during an SSH transport protocol flow. */
 public final class AlgorithmPicker {

@@ -10,14 +10,12 @@ package de.rub.nds.sshattacker.core.crypto.kex;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 import jakarta.xml.bind.DatatypeConverter;
-
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
-
 import java.io.InputStream;
 import java.util.Scanner;
 import java.util.stream.Stream;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 public class Sntrup761X25519KeyExchangeTest {
 

@@ -9,7 +9,6 @@ package de.rub.nds.sshattacker.core.packet.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.packet.BlobPacket;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

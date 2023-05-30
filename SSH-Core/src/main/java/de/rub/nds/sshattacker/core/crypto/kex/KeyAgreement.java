@@ -9,7 +9,6 @@ package de.rub.nds.sshattacker.core.crypto.kex;
 
 import de.rub.nds.sshattacker.core.crypto.keys.CustomKeyPair;
 import de.rub.nds.sshattacker.core.exceptions.CryptoException;
-
 import java.security.PrivateKey;
 import java.security.PublicKey;
 

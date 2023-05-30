@@ -8,7 +8,6 @@
 package de.rub.nds.sshattacker.attacks.pkcs1.oracles;
 
 import de.rub.nds.sshattacker.attacks.pkcs1.OracleException;
-
 import java.security.PublicKey;
 import java.security.interfaces.RSAPublicKey;
 

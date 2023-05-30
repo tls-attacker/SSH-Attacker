@@ -12,12 +12,10 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelEofMessage;
 import de.rub.nds.sshattacker.core.protocol.connection.parser.ChannelEofMessageParserTest;
-
+import java.util.stream.Stream;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-
-import java.util.stream.Stream;
 
 public class ChannelEofMessageSerializerTest {
     /**

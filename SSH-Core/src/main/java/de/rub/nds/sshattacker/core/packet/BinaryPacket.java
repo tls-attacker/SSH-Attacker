@@ -20,7 +20,6 @@ import de.rub.nds.sshattacker.core.packet.preparator.BinaryPacketPreparator;
 import de.rub.nds.sshattacker.core.packet.serializer.BinaryPacketSerializer;
 import de.rub.nds.sshattacker.core.protocol.common.ModifiableVariableHolder;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
-
 import java.util.List;
 import java.util.Objects;
 

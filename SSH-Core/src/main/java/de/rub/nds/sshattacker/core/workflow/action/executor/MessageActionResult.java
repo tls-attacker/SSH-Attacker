@@ -9,7 +9,6 @@ package de.rub.nds.sshattacker.core.workflow.action.executor;
 
 import de.rub.nds.sshattacker.core.packet.AbstractPacket;
 import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessage;
-
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;

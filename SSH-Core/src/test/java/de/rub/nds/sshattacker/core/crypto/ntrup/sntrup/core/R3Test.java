@@ -9,11 +9,10 @@ package de.rub.nds.sshattacker.core.crypto.ntrup.sntrup.core;
 
 import static org.junit.Assert.assertEquals;
 
-import org.junit.Test;
-
 import java.util.Optional;
 import java.util.Random;
 import java.util.stream.LongStream;
+import org.junit.Test;
 
 public class R3Test {
 

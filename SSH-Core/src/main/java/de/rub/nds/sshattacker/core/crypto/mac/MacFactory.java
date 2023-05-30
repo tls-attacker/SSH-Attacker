@@ -8,7 +8,6 @@
 package de.rub.nds.sshattacker.core.crypto.mac;
 
 import de.rub.nds.sshattacker.core.constants.MacAlgorithm;
-
 import java.security.NoSuchAlgorithmException;
 
 public final class MacFactory {

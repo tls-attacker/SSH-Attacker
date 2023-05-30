@@ -8,9 +8,7 @@
 package de.rub.nds.sshattacker.core.crypto.keys;
 
 import de.rub.nds.sshattacker.core.constants.PublicKeyFormat;
-
 import jakarta.xml.bind.annotation.*;
-
 import java.io.Serializable;
 import java.util.Optional;
 

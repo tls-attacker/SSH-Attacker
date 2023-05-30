@@ -16,7 +16,6 @@ import de.rub.nds.sshattacker.core.protocol.transport.serializer.KeyExchangeInit
 import de.rub.nds.sshattacker.core.protocol.util.AlgorithmPicker;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.util.Converter;
-
 import java.util.Arrays;
 import java.util.List;
 

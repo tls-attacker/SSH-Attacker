@@ -11,7 +11,6 @@ import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.constants.PublicKeyFormat;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomDsaPublicKey;
 import de.rub.nds.sshattacker.core.protocol.common.Serializer;
-
 import java.nio.charset.StandardCharsets;
 
 /** Serializer class to encode an DSA public key to the ssh-dsa format. */
