@@ -12,11 +12,9 @@ import static de.rub.nds.modifiablevariable.util.StringUtil.backslashEscapeStrin
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelRequestExitSignalMessage;
 import de.rub.nds.sshattacker.core.util.Converter;
-
+import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import java.nio.charset.StandardCharsets;
 
 public class ChannelRequestExitSignalMessageSerializer
         extends ChannelRequestMessageSerializer<ChannelRequestExitSignalMessage> {

@@ -10,11 +10,9 @@ package de.rub.nds.sshattacker.core.crypto.cipher;
 import de.rub.nds.sshattacker.core.constants.EncryptionAlgorithm;
 import de.rub.nds.sshattacker.core.constants.EncryptionAlgorithmType;
 import de.rub.nds.sshattacker.core.constants.KeyExchangeAlgorithm;
-
+import java.security.Key;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import java.security.Key;
 
 public final class CipherFactory {
 

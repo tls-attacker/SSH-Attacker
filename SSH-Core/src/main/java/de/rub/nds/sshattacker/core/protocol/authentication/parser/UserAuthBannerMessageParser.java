@@ -10,7 +10,6 @@ package de.rub.nds.sshattacker.core.protocol.authentication.parser;
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthBannerMessage;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
-
 import java.nio.charset.StandardCharsets;
 
 public class UserAuthBannerMessageParser extends SshMessageParser<UserAuthBannerMessage> {

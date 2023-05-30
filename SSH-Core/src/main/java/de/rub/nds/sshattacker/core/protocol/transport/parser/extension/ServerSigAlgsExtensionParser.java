@@ -9,11 +9,9 @@ package de.rub.nds.sshattacker.core.protocol.transport.parser.extension;
 
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.transport.message.extension.ServerSigAlgsExtension;
-
+import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import java.nio.charset.StandardCharsets;
 
 public class ServerSigAlgsExtensionParser extends AbstractExtensionParser<ServerSigAlgsExtension> {
 

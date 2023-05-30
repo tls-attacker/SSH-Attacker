@@ -9,7 +9,6 @@ package de.rub.nds.sshattacker.core.crypto.cipher;
 
 import de.rub.nds.sshattacker.core.constants.EncryptionAlgorithm;
 import de.rub.nds.sshattacker.core.exceptions.CryptoException;
-
 import javax.crypto.AEADBadTagException;
 
 public abstract class AbstractCipher {

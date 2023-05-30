@@ -13,7 +13,6 @@ import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.sshattacker.core.protocol.connection.handler.ChannelRequestPtyMessageHandler;
 import de.rub.nds.sshattacker.core.state.SshContext;
-
 import java.nio.charset.StandardCharsets;
 
 public class ChannelRequestPtyMessage extends ChannelRequestMessage<ChannelRequestPtyMessage> {

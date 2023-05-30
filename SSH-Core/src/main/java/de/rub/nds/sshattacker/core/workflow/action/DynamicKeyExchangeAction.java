@@ -13,7 +13,6 @@ import de.rub.nds.sshattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.state.State;
 import de.rub.nds.sshattacker.core.workflow.factory.WorkflowConfigurationFactory;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;

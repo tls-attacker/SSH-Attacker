@@ -8,11 +8,9 @@
 package de.rub.nds.sshattacker.core.packet.crypto;
 
 import de.rub.nds.sshattacker.core.packet.cipher.PacketCipher;
-
+import java.util.ArrayList;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import java.util.ArrayList;
 
 @SuppressWarnings("AbstractClassWithoutAbstractMethods")
 public abstract class PacketCryptoUnit {

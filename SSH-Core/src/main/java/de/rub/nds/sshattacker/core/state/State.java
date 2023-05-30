@@ -19,20 +19,16 @@ import de.rub.nds.sshattacker.core.workflow.factory.WorkflowConfigurationFactory
 import de.rub.nds.sshattacker.core.workflow.filter.Filter;
 import de.rub.nds.sshattacker.core.workflow.filter.FilterFactory;
 import de.rub.nds.sshattacker.core.workflow.filter.FilterType;
-
 import jakarta.xml.bind.JAXBException;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
 import java.util.Random;
-
 import javax.xml.stream.XMLStreamException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * The central object passed around during program execution. The state initializes and holds the

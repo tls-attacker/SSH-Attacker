@@ -9,7 +9,6 @@ package de.rub.nds.sshattacker.core.crypto.ec;
 
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
-
 import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.Objects;

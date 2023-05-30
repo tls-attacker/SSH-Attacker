@@ -13,7 +13,6 @@ import de.rub.nds.sshattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.sshattacker.core.packet.layer.PacketLayerFactory;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.state.State;
-
 import jakarta.xml.bind.annotation.XmlAttribute;
 
 public class ChangePacketLayerAction extends ConnectionBoundAction {

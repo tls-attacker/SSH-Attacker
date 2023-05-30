@@ -10,11 +10,9 @@ package de.rub.nds.sshattacker.core.protocol.transport.serializer.extension;
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.common.Serializer;
 import de.rub.nds.sshattacker.core.protocol.transport.message.extension.AbstractExtension;
-
+import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import java.nio.charset.StandardCharsets;
 
 public abstract class AbstractExtensionSerializer<E extends AbstractExtension<E>>
         extends Serializer<E> {

@@ -8,7 +8,6 @@
 package de.rub.nds.sshattacker.core.config.delegate;
 
 import com.beust.jcommander.Parameter;
-
 import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.config.converter.RunningModeConverter;
 import de.rub.nds.sshattacker.core.constants.RunningModeType;

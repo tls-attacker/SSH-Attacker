@@ -18,11 +18,9 @@ import de.rub.nds.sshattacker.core.protocol.transport.message.extension.DelayCom
 import de.rub.nds.sshattacker.core.protocol.transport.message.extension.ServerSigAlgsExtension;
 import de.rub.nds.sshattacker.core.protocol.transport.message.extension.UnknownExtension;
 import de.rub.nds.sshattacker.core.state.SshContext;
-
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlElementWrapper;
 import jakarta.xml.bind.annotation.XmlElements;
-
 import java.util.ArrayList;
 import java.util.List;
 

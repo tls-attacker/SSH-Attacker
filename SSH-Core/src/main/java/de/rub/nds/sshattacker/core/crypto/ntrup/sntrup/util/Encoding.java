@@ -8,7 +8,6 @@
 package de.rub.nds.sshattacker.core.crypto.ntrup.sntrup.util;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-
 import java.math.BigInteger;
 import java.util.AbstractMap;
 import java.util.ArrayList;

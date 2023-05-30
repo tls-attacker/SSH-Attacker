@@ -8,7 +8,6 @@
 package de.rub.nds.sshattacker.core.connection;
 
 import de.rub.nds.sshattacker.core.exceptions.ConfigurationException;
-
 import java.util.Collection;
 import java.util.Set;
 

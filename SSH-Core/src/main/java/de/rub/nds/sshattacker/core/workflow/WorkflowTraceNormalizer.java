@@ -16,7 +16,6 @@ import de.rub.nds.sshattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.sshattacker.core.workflow.action.GeneralAction;
 import de.rub.nds.sshattacker.core.workflow.action.SshAction;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;

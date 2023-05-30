@@ -8,18 +8,12 @@
 package de.rub.nds.sshattacker.attacks.pkcs1;
 
 import static de.rub.nds.tlsattacker.util.ConsoleLogger.CONSOLE;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.attacks.pkcs1.oracles.MockOracle;
 import de.rub.nds.sshattacker.attacks.pkcs1.util.OaepConverter;
-
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import org.bouncycastle.util.io.pem.PemReader;
-import org.junit.jupiter.api.Test;
-
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
@@ -34,8 +28,10 @@ import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.Objects;
-
 import javax.crypto.NoSuchPaddingException;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.bouncycastle.util.io.pem.PemReader;
+import org.junit.jupiter.api.Test;
 
 public class MangerTest {
 

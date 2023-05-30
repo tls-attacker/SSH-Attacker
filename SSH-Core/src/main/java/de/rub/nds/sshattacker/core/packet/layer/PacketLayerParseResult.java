@@ -8,7 +8,6 @@
 package de.rub.nds.sshattacker.core.packet.layer;
 
 import de.rub.nds.sshattacker.core.packet.AbstractPacket;
-
 import java.util.Optional;
 
 public class PacketLayerParseResult {

@@ -10,10 +10,8 @@ package de.rub.nds.sshattacker.core.config;
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.ParameterException;
 import com.beust.jcommander.ParametersDelegate;
-
 import de.rub.nds.sshattacker.core.config.delegate.Delegate;
 import de.rub.nds.sshattacker.core.config.delegate.GeneralDelegate;
-
 import java.io.File;
 import java.util.Collections;
 import java.util.LinkedList;

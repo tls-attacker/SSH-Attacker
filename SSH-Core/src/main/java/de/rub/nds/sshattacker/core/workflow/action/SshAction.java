@@ -11,11 +11,9 @@ import de.rub.nds.sshattacker.core.connection.Aliasable;
 import de.rub.nds.sshattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.sshattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.sshattacker.core.state.State;
-
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlTransient;
-
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.LinkedHashSet;

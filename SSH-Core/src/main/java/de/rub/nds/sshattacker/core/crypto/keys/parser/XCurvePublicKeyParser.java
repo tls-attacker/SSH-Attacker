@@ -14,11 +14,9 @@ import de.rub.nds.sshattacker.core.crypto.keys.SshPublicKey;
 import de.rub.nds.sshattacker.core.crypto.keys.XCurveEcPrivateKey;
 import de.rub.nds.sshattacker.core.crypto.keys.XCurveEcPublicKey;
 import de.rub.nds.sshattacker.core.protocol.common.Parser;
-
+import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import java.nio.charset.StandardCharsets;
 
 public class XCurvePublicKeyParser
         extends Parser<SshPublicKey<XCurveEcPublicKey, XCurveEcPrivateKey>> {

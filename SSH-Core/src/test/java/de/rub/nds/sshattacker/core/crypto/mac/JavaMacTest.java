@@ -12,19 +12,16 @@ import static org.junit.jupiter.api.Assertions.*;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.MacAlgorithm;
 import de.rub.nds.sshattacker.core.crypto.kex.EcdhKeyExchangeTest;
-
 import jakarta.xml.bind.DatatypeConverter;
-
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
-
 import java.io.InputStream;
 import java.security.Security;
 import java.util.Arrays;
 import java.util.Scanner;
 import java.util.stream.Stream;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 public class JavaMacTest {
 
