@@ -57,6 +57,37 @@ public class State {
     private final Config config;
     private RunningModeType runningMode;
 
+
+    public long getStartTimestamp() {
+        return startTimestamp;
+    }
+
+    public void setStartTimestamp(long startTimestamp) {
+        this.startTimestamp = startTimestamp;
+    }
+
+    private long startTimestamp;
+
+    public long getEndTimestamp() {
+        return endTimestamp;
+    }
+
+    public void setEndTimestamp(long endTimestamp) {
+        this.endTimestamp = endTimestamp;
+    }
+
+    private long endTimestamp;
+
+    public Throwable getExecutionException() {
+        return executionException;
+    }
+
+    public void setExecutionException(Throwable executionException) {
+        this.executionException = executionException;
+    }
+
+    private Throwable executionException;
+
     @HoldsModifiableVariable private WorkflowTrace workflowTrace;
     private WorkflowTrace originalWorkflowTrace;
 
@@ -158,7 +189,7 @@ public class State {
      * Replace existing SshContext with new SshContext. This can only be done if
      * existingSshContext.connection equals newSshContext.connection.
      *
-     * @param Context The new SshContext to replace the old with
+     * @param newContext The new SshContext to replace the old with
      */
     public void replaceContext(Context newContext) {
         contextContainer.replaceContext(newContext);

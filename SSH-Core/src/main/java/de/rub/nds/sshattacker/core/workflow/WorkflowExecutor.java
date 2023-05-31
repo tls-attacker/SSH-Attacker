@@ -29,6 +29,7 @@ public abstract class WorkflowExecutor {
 
     protected final State state;
     protected final Config config;
+
     private Function<State, Integer> beforeTransportPreInitCallback = null;
 
     private Function<State, Integer> beforeTransportInitCallback = null;
@@ -117,6 +118,8 @@ public abstract class WorkflowExecutor {
             }*/
         }
 
+
+
         try {
             if (getBeforeTransportPreInitCallback() != null) {
                 getBeforeTransportPreInitCallback().apply(state);
@@ -137,6 +140,16 @@ public abstract class WorkflowExecutor {
                     "Unable to initialize the transport handler with: "
                             + context.getConnection().toString(),
                     ex);
+        }
+    }
+    public void closeConnection() {
+        for (Context context : state.getAllContexts()) {
+            try {
+                context.getTransportHandler().closeConnection();
+            } catch (IOException ex) {
+                LOGGER.warn("Could not close connection for context " + context);
+                LOGGER.debug(ex);
+            }
         }
     }
 }

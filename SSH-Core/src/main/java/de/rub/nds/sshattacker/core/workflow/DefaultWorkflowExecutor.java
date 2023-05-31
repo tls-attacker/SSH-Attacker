@@ -8,7 +8,9 @@
 package de.rub.nds.sshattacker.core.workflow;
 
 import de.rub.nds.sshattacker.core.config.ConfigIO;
+import de.rub.nds.sshattacker.core.exceptions.ActionExecutionException;
 import de.rub.nds.sshattacker.core.exceptions.PreparationException;
+import de.rub.nds.sshattacker.core.exceptions.SkipActionException;
 import de.rub.nds.sshattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.sshattacker.core.state.Context;
 import de.rub.nds.sshattacker.core.state.State;
@@ -40,6 +42,7 @@ public class DefaultWorkflowExecutor extends WorkflowExecutor {
         }
 
         state.getWorkflowTrace().reset();
+        state.setStartTimestamp(System.currentTimeMillis());
         List<SshAction> sshActions = state.getWorkflowTrace().getSshActions();
         for (SshAction action : sshActions) {
 
@@ -56,7 +59,8 @@ public class DefaultWorkflowExecutor extends WorkflowExecutor {
             }
 
             try {
-                action.execute(state);
+                this.executeAction(action, state);
+
                 // TODO: Implement feature to check if message was received as expected.
                 // We should accept unexpected messages to keep going in case something
                 // unexpected happens.
@@ -67,18 +71,16 @@ public class DefaultWorkflowExecutor extends WorkflowExecutor {
             }
         }
 
-        /*        if (state.getConfig().getWorkflowExecutorShouldClose()) {
-            state.getAllSshContexts()
-                    .forEach(
-                            ctx -> {
-                                try {
-                                    ctx.getTransportHandler().closeConnection();
-                                } catch (IOException ex) {
-                                    LOGGER.warn("Could not close connection for context " + ctx);
-                                    LOGGER.debug(ex);
-                                }
-                            });
-        }*/
+        if (config.getWorkflowExecutorShouldClose()) {
+            closeConnection();
+        }
+
+        if (state.getWorkflowTrace().executedAsPlanned()) {
+            LOGGER.info("Workflow executed as planned.");
+        } else {
+            LOGGER.info("Workflow was not executed as planned.");
+        }
+
 
         if (state.getConfig().getResetWorkflowtracesBeforeSaving()) {
             state.getWorkflowTrace().reset();
@@ -87,6 +89,29 @@ public class DefaultWorkflowExecutor extends WorkflowExecutor {
 
         if (config.getConfigOutput() != null) {
             ConfigIO.write(config, new File(config.getConfigOutput()));
+        }
+    }
+
+    protected void executeAction(SshAction action, State state) throws SkipActionException {
+        try {
+            action.execute(state);
+        } catch (WorkflowExecutionException ex) {
+            LOGGER.error("Fatal error during action execution, stopping execution: ", ex);
+            state.setExecutionException(ex);
+            throw ex;
+        } catch (UnsupportedOperationException
+                 | PreparationException
+                 | ActionExecutionException ex) {
+            state.setExecutionException(ex);
+            LOGGER.warn("Not fatal error during action execution, skipping action: " + action, ex);
+            throw new SkipActionException(ex);
+        } catch (Exception ex) {
+            LOGGER.error(
+                    "Unexpected fatal error during action execution, stopping execution: ", ex);
+            state.setExecutionException(ex);
+            throw new WorkflowExecutionException(ex);
+        } finally {
+            state.setEndTimestamp(System.currentTimeMillis());
         }
     }
 
