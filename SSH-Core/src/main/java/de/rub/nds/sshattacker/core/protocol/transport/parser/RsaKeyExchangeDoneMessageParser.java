@@ -33,20 +33,22 @@ public class RsaKeyExchangeDoneMessageParser extends SshMessageParser<RsaKeyExch
 
     @Override
     public void parse(RsaKeyExchangeDoneMessage message) {
-        parseMessageSpecificContents();
+        parseMessageSpecificContents(message);
     }
+
+    /*
+        @Override
+        protected RsaKeyExchangeDoneMessage createMessage() {
+            return new RsaKeyExchangeDoneMessage();
+        }
+    */
 
     @Override
-    protected RsaKeyExchangeDoneMessage createMessage() {
-        return new RsaKeyExchangeDoneMessage();
+    protected void parseMessageSpecificContents(RsaKeyExchangeDoneMessage message) {
+        parseSignature(message);
     }
 
-    @Override
-    protected void parseMessageSpecificContents() {
-        parseSignature();
-    }
-
-    private void parseSignature() {
+    private void parseSignature(RsaKeyExchangeDoneMessage message) {
         message.setSignatureLength(parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH));
         LOGGER.debug("Signature length: " + message.getSignatureLength().getValue());
         message.setSignature(parseByteArrayField(message.getSignatureLength().getValue()));

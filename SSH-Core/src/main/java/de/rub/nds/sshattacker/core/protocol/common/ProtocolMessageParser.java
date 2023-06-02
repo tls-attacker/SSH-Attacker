@@ -7,7 +7,6 @@
  */
 package de.rub.nds.sshattacker.core.protocol.common;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.*;
 import de.rub.nds.sshattacker.core.layer.data.Parser;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.*;
@@ -22,7 +21,7 @@ public abstract class ProtocolMessageParser<T extends ProtocolMessage<T>> extend
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    protected final T message = createMessage();
+    // protected final T message = createMessage();
 
     public ProtocolMessageParser(InputStream stream) {
         super(stream);
@@ -43,17 +42,17 @@ public abstract class ProtocolMessageParser<T extends ProtocolMessage<T>> extend
         return message;
     }*/
 
-    protected abstract T createMessage();
+    // protected abstract T createMessage();
 
-    protected abstract void parseProtocolMessageContents();
+    // protected abstract void parseProtocolMessageContents();
 
-    private void setCompleteResultingMessage() {
+    /*private void setCompleteResultingMessage() {
         message.setCompleteResultingMessage(getAlreadyParsed());
         LOGGER.trace(
                 "Complete message bytes parsed: "
                         + ArrayConverter.bytesToHexString(
                                 message.getCompleteResultingMessage().getValue()));
-    }
+    }*/
 
     /*public static ProtocolMessage<?> delegateParsing(AbstractPacket packet, Context context) {
         byte[] raw = packet.getPayload().getValue();

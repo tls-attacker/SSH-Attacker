@@ -33,15 +33,17 @@ public class ChannelDataMessageParser extends ChannelMessageParser<ChannelDataMe
 
     @Override
     public void parse(ChannelDataMessage message) {
-        parseMessageSpecificContents();
+        parseMessageSpecificContents(message);
     }
 
-    @Override
-    public ChannelDataMessage createMessage() {
-        return new ChannelDataMessage();
-    }
+    /*
+        @Override
+        public ChannelDataMessage createMessage() {
+            return new ChannelDataMessage();
+        }
+    */
 
-    private void parseData() {
+    private void parseData(ChannelDataMessage message) {
         message.setDataLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
         LOGGER.debug("Data length: " + message.getDataLength().getValue());
         message.setData(parseByteArrayField(message.getDataLength().getValue()));
@@ -49,8 +51,8 @@ public class ChannelDataMessageParser extends ChannelMessageParser<ChannelDataMe
     }
 
     @Override
-    protected void parseMessageSpecificContents() {
-        super.parseMessageSpecificContents();
-        parseData();
+    protected void parseMessageSpecificContents(ChannelDataMessage message) {
+        super.parseMessageSpecificContents(message);
+        parseData(message);
     }
 }

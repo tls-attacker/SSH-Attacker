@@ -33,24 +33,26 @@ public class GlobalRequestOpenSshHostKeysMessageParser
 
     @Override
     public void parse(GlobalRequestOpenSshHostKeysMessage message) {
-        parseMessageSpecificContents();
+        parseMessageSpecificContents(message);
     }
 
-    private void parseHostKeys() {
+    private void parseHostKeys(GlobalRequestOpenSshHostKeysMessage message) {
         message.setHostKeys(this.parseByteArrayField(this.getBytesLeft()));
         LOGGER.debug(
                 "Host keys blob: {}",
                 ArrayConverter.bytesToRawHexString(message.getHostKeys().getValue()));
     }
 
-    @Override
-    public GlobalRequestOpenSshHostKeysMessage createMessage() {
-        return new GlobalRequestOpenSshHostKeysMessage();
-    }
+    /*
+        @Override
+        public GlobalRequestOpenSshHostKeysMessage createMessage() {
+            return new GlobalRequestOpenSshHostKeysMessage();
+        }
+    */
 
     @Override
-    protected void parseMessageSpecificContents() {
-        super.parseMessageSpecificContents();
-        parseHostKeys();
+    protected void parseMessageSpecificContents(GlobalRequestOpenSshHostKeysMessage message) {
+        super.parseMessageSpecificContents(message);
+        parseHostKeys(message);
     }
 }

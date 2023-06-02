@@ -28,7 +28,7 @@ public class ChannelCloseMessageHandler extends SshMessageHandler<ChannelCloseMe
 
     @Override
     public void adjustContext(ChannelCloseMessage message) {
-        Channel channel = context.getChannels().get(message.getRecipientChannelId().getValue());
+        Channel channel = sshContext.getChannels().get(message.getRecipientChannelId().getValue());
         if (channel != null) {
             if (!channel.isOpen().getValue()) {
                 LOGGER.warn(
@@ -38,7 +38,7 @@ public class ChannelCloseMessageHandler extends SshMessageHandler<ChannelCloseMe
             } else {
                 channel.setCloseMessageReceived(true);
                 if (!channel.isOpen().getValue()) {
-                    context.getChannels().remove(message.getRecipientChannelId().getValue());
+                    sshContext.getChannels().remove(message.getRecipientChannelId().getValue());
                 }
             }
         } else {

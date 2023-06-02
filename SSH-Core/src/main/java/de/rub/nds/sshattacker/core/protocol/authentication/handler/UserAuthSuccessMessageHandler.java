@@ -37,14 +37,16 @@ public class UserAuthSuccessMessageHandler extends SshMessageHandler<UserAuthSuc
     }
 
     private void activateCompression() {
-        Chooser chooser = context.getChooser();
+        Chooser chooser = sshContext.getChooser();
         if (chooser.getCompressionMethodClientToServer() == CompressionMethod.ZLIB_OPENSSH_COM) {
-            context.getPacketLayer()
+            sshContext
+                    .getPacketLayer()
                     .updateCompressionAlgorithm(
                             chooser.getCompressionMethodClientToServer().getAlgorithm());
         }
         if (chooser.getCompressionMethodServerToClient() == CompressionMethod.ZLIB_OPENSSH_COM) {
-            context.getPacketLayer()
+            sshContext
+                    .getPacketLayer()
                     .updateDecompressionAlgorithm(
                             chooser.getCompressionMethodServerToClient().getAlgorithm());
         }

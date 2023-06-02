@@ -27,11 +27,11 @@ public class ChannelFailureMessageParser extends ChannelMessageParser<ChannelFai
 
     @Override
     public void parse(ChannelFailureMessage message) {
-        parseMessageSpecificContents();
+        parseMessageSpecificContents(message);
     }
 
-    @Override
+    /*    @Override
     public ChannelFailureMessage createMessage() {
         return new ChannelFailureMessage();
-    }
+    }*/
 }

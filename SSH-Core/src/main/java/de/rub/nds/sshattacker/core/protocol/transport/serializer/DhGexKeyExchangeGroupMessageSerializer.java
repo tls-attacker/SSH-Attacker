@@ -51,4 +51,10 @@ public class DhGexKeyExchangeGroupMessageSerializer
         serializeGroupModulus();
         serializeGroupGenerator();
     }
+
+    @Override
+    protected byte[] serializeBytes() {
+        serializeMessageSpecificContents();
+        return getAlreadySerialized();
+    }
 }

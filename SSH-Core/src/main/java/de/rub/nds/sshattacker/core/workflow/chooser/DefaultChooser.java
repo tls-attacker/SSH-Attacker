@@ -18,6 +18,7 @@ import de.rub.nds.sshattacker.core.protocol.util.AlgorithmPicker;
 import de.rub.nds.sshattacker.core.state.Context;
 import de.rub.nds.tlsattacker.transport.Connection;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -586,6 +587,27 @@ public class DefaultChooser extends Chooser {
                             context.getSshContext().setHostKeyAlgorithm(negotiatedAlgorithm);
                             return negotiatedAlgorithm;
                         });
+    }
+
+    @Override
+    public ConnectionEndType getMyConnectionPeer() {
+        return getConnection().getLocalConnectionEndType() == ConnectionEndType.CLIENT
+                ? ConnectionEndType.SERVER
+                : ConnectionEndType.CLIENT;
+    }
+
+    @Override
+    public byte[] getLastHandledAuthenticationMessageData() {
+        if (context.getSshContext().getLastHandledAuthenticationMessageData() != null) {
+            return copy(context.getSshContext().getLastHandledAuthenticationMessageData());
+        } else {
+            return config.getDefaultAuthenticationMessageData()
+                    .getBytes(StandardCharsets.ISO_8859_1);
+        }
+    }
+
+    private byte[] copy(byte[] array) {
+        return org.bouncycastle.util.Arrays.copyOf(array, array.length);
     }
 
     /**

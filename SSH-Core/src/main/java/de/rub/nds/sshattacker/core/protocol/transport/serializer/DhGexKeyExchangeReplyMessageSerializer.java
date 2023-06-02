@@ -58,4 +58,10 @@ public class DhGexKeyExchangeReplyMessageSerializer
         serializeEphemeralPublicKey();
         serializeSignature();
     }
+
+    @Override
+    protected byte[] serializeBytes() {
+        serializeMessageSpecificContents();
+        return getAlreadySerialized();
+    }
 }

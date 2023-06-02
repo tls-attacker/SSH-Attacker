@@ -33,15 +33,17 @@ public class ChannelRequestXonXoffMessageParser
 
     @Override
     public void parse(ChannelRequestXonXoffMessage message) {
-        parseMessageSpecificContents();
+        parseMessageSpecificContents(message);
     }
 
-    @Override
-    public ChannelRequestXonXoffMessage createMessage() {
-        return new ChannelRequestXonXoffMessage();
-    }
+    /*
+        @Override
+        public ChannelRequestXonXoffMessage createMessage() {
+            return new ChannelRequestXonXoffMessage();
+        }
+    */
 
-    private void parseClientFlowControl() {
+    private void parseClientFlowControl(ChannelRequestXonXoffMessage message) {
         message.setClientFlowControl(parseByteField(1));
         LOGGER.debug(
                 "Client can do flow control: "
@@ -49,8 +51,8 @@ public class ChannelRequestXonXoffMessageParser
     }
 
     @Override
-    protected void parseMessageSpecificContents() {
-        super.parseMessageSpecificContents();
-        parseClientFlowControl();
+    protected void parseMessageSpecificContents(ChannelRequestXonXoffMessage message) {
+        super.parseMessageSpecificContents(message);
+        parseClientFlowControl(message);
     }
 }

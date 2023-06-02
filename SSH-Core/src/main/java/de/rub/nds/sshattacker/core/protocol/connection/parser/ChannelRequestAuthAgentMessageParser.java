@@ -28,11 +28,11 @@ public class ChannelRequestAuthAgentMessageParser
 
     @Override
     public void parse(ChannelRequestAuthAgentMessage message) {
-        parseMessageSpecificContents();
+        parseMessageSpecificContents(message);
     }
 
-    @Override
+    /*    @Override
     public ChannelRequestAuthAgentMessage createMessage() {
         return new ChannelRequestAuthAgentMessage();
-    }
+    }*/
 }

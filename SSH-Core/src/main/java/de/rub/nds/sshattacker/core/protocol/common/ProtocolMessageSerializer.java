@@ -17,11 +17,11 @@ public abstract class ProtocolMessageSerializer<T extends ProtocolMessage> exten
         this.message = message;
     }
 
-    @Override
+    /*    @Override
     protected final byte[] serializeBytes() {
         serializeProtocolMessageContents();
         return getAlreadySerialized();
-    }
+    }*/
 
-    protected abstract void serializeProtocolMessageContents();
+    // protected abstract void serializeProtocolMessageContents();
 }

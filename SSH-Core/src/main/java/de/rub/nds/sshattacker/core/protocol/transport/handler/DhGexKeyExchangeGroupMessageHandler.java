@@ -32,13 +32,13 @@ public class DhGexKeyExchangeGroupMessageHandler
     }
 
     private void setGroupParametersFromMessage(DhGexKeyExchangeGroupMessage msg) {
-        DhKeyExchange keyExchange = context.getChooser().getDhGexKeyExchange();
+        DhKeyExchange keyExchange = sshContext.getChooser().getDhGexKeyExchange();
         keyExchange.setModulus(msg.getGroupModulus().getValue());
         keyExchange.setGenerator(msg.getGroupGenerator().getValue());
     }
 
     private void updateExchangeHashWithGroupParameters(DhGexKeyExchangeGroupMessage msg) {
-        ExchangeHashInputHolder inputHolder = context.getExchangeHashInputHolder();
+        ExchangeHashInputHolder inputHolder = sshContext.getExchangeHashInputHolder();
         inputHolder.setDhGexGroupModulus(msg.getGroupModulus().getValue());
         inputHolder.setDhGexGroupGenerator(msg.getGroupGenerator().getValue());
     }

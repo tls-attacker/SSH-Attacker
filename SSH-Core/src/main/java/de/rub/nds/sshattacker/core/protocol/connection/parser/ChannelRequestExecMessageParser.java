@@ -33,15 +33,17 @@ public class ChannelRequestExecMessageParser
 
     @Override
     public void parse(ChannelRequestExecMessage message) {
-        parseMessageSpecificContents();
+        parseMessageSpecificContents(message);
     }
 
-    @Override
-    public ChannelRequestExecMessage createMessage() {
-        return new ChannelRequestExecMessage();
-    }
+    /*
+        @Override
+        public ChannelRequestExecMessage createMessage() {
+            return new ChannelRequestExecMessage();
+        }
+    */
 
-    public void parseCommand() {
+    public void parseCommand(ChannelRequestExecMessage message) {
         message.setCommandLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
         LOGGER.debug("Command length: " + message.getCommandLength().getValue());
         message.setCommand(parseByteString(message.getCommandLength().getValue()));
@@ -49,8 +51,8 @@ public class ChannelRequestExecMessageParser
     }
 
     @Override
-    protected void parseMessageSpecificContents() {
-        super.parseMessageSpecificContents();
-        parseCommand();
+    protected void parseMessageSpecificContents(ChannelRequestExecMessage message) {
+        super.parseMessageSpecificContents(message);
+        parseCommand(message);
     }
 }

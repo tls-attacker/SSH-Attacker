@@ -81,7 +81,6 @@ public class DefaultWorkflowExecutor extends WorkflowExecutor {
             LOGGER.info("Workflow was not executed as planned.");
         }
 
-
         if (state.getConfig().getResetWorkflowtracesBeforeSaving()) {
             state.getWorkflowTrace().reset();
         }
@@ -100,8 +99,8 @@ public class DefaultWorkflowExecutor extends WorkflowExecutor {
             state.setExecutionException(ex);
             throw ex;
         } catch (UnsupportedOperationException
-                 | PreparationException
-                 | ActionExecutionException ex) {
+                | PreparationException
+                | ActionExecutionException ex) {
             state.setExecutionException(ex);
             LOGGER.warn("Not fatal error during action execution, skipping action: " + action, ex);
             throw new SkipActionException(ex);

@@ -27,11 +27,11 @@ public class ChannelOpenSessionMessageParser
 
     @Override
     public void parse(ChannelOpenSessionMessage message) {
-        parseMessageSpecificContents();
+        parseMessageSpecificContents(message);
     }
 
-    @Override
+    /*    @Override
     public ChannelOpenSessionMessage createMessage() {
         return new ChannelOpenSessionMessage();
-    }
+    }*/
 }

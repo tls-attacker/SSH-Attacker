@@ -31,12 +31,14 @@ public class UserAuthUnknownMessageParser
         super(stream);
     }
 
-    @Override
-    public UserAuthUnknownMessage createMessage() {
-        return new UserAuthUnknownMessage();
-    }
+    /*
+        @Override
+        public UserAuthUnknownMessage createMessage() {
+            return new UserAuthUnknownMessage();
+        }
+    */
 
-    private void parseMethodSpecificFields() {
+    private void parseMethodSpecificFields(UserAuthUnknownMessage message) {
         message.setMethodSpecificFields(parseByteArrayField(getBytesLeft()));
         LOGGER.debug(
                 "Method Specific Fields: "
@@ -47,13 +49,13 @@ public class UserAuthUnknownMessageParser
     @Override
     public void parse(UserAuthUnknownMessage message) {
         LOGGER.debug("Parsing UserAuthBannerMessage");
-        parseMessageSpecificContents();
+        parseMessageSpecificContents(message);
         message.setCompleteResultingMessage(getAlreadyParsed());
     }
 
     @Override
-    protected void parseMessageSpecificContents() {
-        super.parseMessageSpecificContents();
-        parseMethodSpecificFields();
+    protected void parseMessageSpecificContents(UserAuthUnknownMessage message) {
+        super.parseMessageSpecificContents(message);
+        parseMethodSpecificFields(message);
     }
 }

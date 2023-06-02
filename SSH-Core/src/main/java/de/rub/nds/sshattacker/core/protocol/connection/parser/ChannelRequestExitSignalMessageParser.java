@@ -36,27 +36,29 @@ public class ChannelRequestExitSignalMessageParser
 
     @Override
     public void parse(ChannelRequestExitSignalMessage message) {
-        parseMessageSpecificContents();
+        parseMessageSpecificContents(message);
     }
 
-    @Override
-    public ChannelRequestExitSignalMessage createMessage() {
-        return new ChannelRequestExitSignalMessage();
-    }
+    /*
+        @Override
+        public ChannelRequestExitSignalMessage createMessage() {
+            return new ChannelRequestExitSignalMessage();
+        }
+    */
 
-    public void parseSignalName() {
+    public void parseSignalName(ChannelRequestExitSignalMessage message) {
         message.setSignalNameLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
         LOGGER.debug("Signal name length: " + message.getSignalNameLength().getValue());
         message.setSignalName(parseByteString(message.getSignalNameLength().getValue()));
         LOGGER.debug("Signal name: {}", backslashEscapeString(message.getSignalName().getValue()));
     }
 
-    public void parseCoreDump() {
+    public void parseCoreDump(ChannelRequestExitSignalMessage message) {
         message.setCoreDump(false);
         LOGGER.debug("Core dumped: " + message.getCoreDump().getValue());
     }
 
-    public void parseErrorMessage() {
+    public void parseErrorMessage(ChannelRequestExitSignalMessage message) {
         message.setErrorMessageLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
         LOGGER.debug("Error message length: {}", message.getErrorMessageLength().getValue());
         message.setErrorMessage(parseByteString(message.getErrorMessageLength().getValue()));
@@ -64,7 +66,7 @@ public class ChannelRequestExitSignalMessageParser
                 "Error message: {}", backslashEscapeString(message.getErrorMessage().getValue()));
     }
 
-    private void parseLanguageTag() {
+    private void parseLanguageTag(ChannelRequestExitSignalMessage message) {
         message.setLanguageTagLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
         LOGGER.debug("Language tag length: " + message.getLanguageTagLength().getValue());
         message.setLanguageTag(
@@ -75,11 +77,11 @@ public class ChannelRequestExitSignalMessageParser
     }
 
     @Override
-    protected void parseMessageSpecificContents() {
-        super.parseMessageSpecificContents();
-        parseSignalName();
-        parseCoreDump();
-        parseErrorMessage();
-        parseLanguageTag();
+    protected void parseMessageSpecificContents(ChannelRequestExitSignalMessage message) {
+        super.parseMessageSpecificContents(message);
+        parseSignalName(message);
+        parseCoreDump(message);
+        parseErrorMessage(message);
+        parseLanguageTag(message);
     }
 }

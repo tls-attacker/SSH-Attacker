@@ -17,13 +17,16 @@ public abstract class ProtocolMessageHandler<MessageT extends ProtocolMessage>
 
     protected static final Logger LOGGER = LogManager.getLogger();
 
-    protected final SshContext context;
+    protected final SshContext sshContext;
 
     // protected final MessageT message;
 
-    public ProtocolMessageHandler(SshContext context) {
-        this.context = context;
+    public ProtocolMessageHandler(SshContext sshContext) {
+        this.sshContext = sshContext;
     }
+
+    // Kann von den detaillierten Handlern überschrieben werden.
+    public void adjustContextAfterSerialize(MessageT message) {}
 
     /*
         public ProtocolMessageHandler(SshContext context, T message) {

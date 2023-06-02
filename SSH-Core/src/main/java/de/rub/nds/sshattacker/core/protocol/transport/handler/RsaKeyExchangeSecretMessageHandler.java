@@ -33,10 +33,10 @@ public class RsaKeyExchangeSecretMessageHandler
     }
 
     private void decryptSharedSecret(RsaKeyExchangeSecretMessage message) {
-        RsaKeyExchange keyExchange = context.getChooser().getRsaKeyExchange();
+        RsaKeyExchange keyExchange = sshContext.getChooser().getRsaKeyExchange();
         try {
             keyExchange.decryptSharedSecret(message.getEncryptedSecret().getValue());
-            context.setSharedSecret(keyExchange.getSharedSecret());
+            sshContext.setSharedSecret(keyExchange.getSharedSecret());
         } catch (CryptoException e) {
             LOGGER.warn(
                     "Decryption of shared secret failed, unable to set shared secret in context");
@@ -45,8 +45,8 @@ public class RsaKeyExchangeSecretMessageHandler
     }
 
     private void updateExchangeHashWithSecrets(RsaKeyExchangeSecretMessage message) {
-        RsaKeyExchange keyExchange = context.getChooser().getRsaKeyExchange();
-        ExchangeHashInputHolder inputHolder = context.getExchangeHashInputHolder();
+        RsaKeyExchange keyExchange = sshContext.getChooser().getRsaKeyExchange();
+        ExchangeHashInputHolder inputHolder = sshContext.getExchangeHashInputHolder();
         inputHolder.setRsaEncryptedSecret(message.getEncryptedSecret().getValue());
         if (keyExchange.isComplete()) {
             inputHolder.setSharedSecret(keyExchange.getSharedSecret());

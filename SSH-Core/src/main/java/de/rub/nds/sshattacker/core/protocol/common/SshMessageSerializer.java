@@ -14,7 +14,7 @@ public abstract class SshMessageSerializer<T extends SshMessage<T>>
         super(message);
     }
 
-    @Override
+    // @Override
     protected final void serializeProtocolMessageContents() {
         appendByte(message.getMessageId().getValue());
         serializeMessageSpecificContents();

@@ -29,36 +29,38 @@ public class DhGexKeyExchangeRequestMessageParser
         super(stream);
     }
 
-    @Override
-    public DhGexKeyExchangeRequestMessage createMessage() {
-        return new DhGexKeyExchangeRequestMessage();
-    }
+    /*
+        @Override
+        public DhGexKeyExchangeRequestMessage createMessage() {
+            return new DhGexKeyExchangeRequestMessage();
+        }
+    */
 
-    public void parseMinimalGroupSize() {
+    public void parseMinimalGroupSize(DhGexKeyExchangeRequestMessage message) {
         message.setMinimalGroupSize((parseIntField(DataFormatConstants.UINT32_SIZE)));
         LOGGER.debug("Minimal DH group size: {} bits", message.getMinimalGroupSize().getValue());
     }
 
-    public void parsePreferredGroupSize() {
+    public void parsePreferredGroupSize(DhGexKeyExchangeRequestMessage message) {
         message.setPreferredGroupSize(parseIntField(DataFormatConstants.UINT32_SIZE));
         LOGGER.debug(
                 "Preferred DH group size: {} bits", message.getPreferredGroupSize().getValue());
     }
 
-    public void parseMaximalGroupSize() {
+    public void parseMaximalGroupSize(DhGexKeyExchangeRequestMessage message) {
         message.setMaximalGroupSize(parseIntField(DataFormatConstants.UINT32_SIZE));
         LOGGER.debug("Maximal DH group size: {} bits", message.getMaximalGroupSize().getValue());
     }
 
     @Override
-    protected void parseMessageSpecificContents() {
-        parseMinimalGroupSize();
-        parsePreferredGroupSize();
-        parseMaximalGroupSize();
+    protected void parseMessageSpecificContents(DhGexKeyExchangeRequestMessage message) {
+        parseMinimalGroupSize(message);
+        parsePreferredGroupSize(message);
+        parseMaximalGroupSize(message);
     }
 
     @Override
     public void parse(DhGexKeyExchangeRequestMessage message) {
-        parseMessageSpecificContents();
+        parseMessageSpecificContents(message);
     }
 }

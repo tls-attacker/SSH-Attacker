@@ -47,7 +47,7 @@ public class ChannelRequestXonXoffMessageHandler
     @Override
     public void adjustContext(ChannelRequestXonXoffMessage message) {
         if (Converter.byteToBoolean(message.getWantReply().getValue())) {
-            context.getChannelManager().addToChannelRequestResponseQueue(message);
+            sshContext.getChannelManager().addToChannelRequestResponseQueue(message);
         }
     }
 }

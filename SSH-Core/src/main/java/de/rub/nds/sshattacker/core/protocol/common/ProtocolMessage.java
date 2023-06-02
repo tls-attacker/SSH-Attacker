@@ -11,6 +11,7 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bool.ModifiableBoolean;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
+import de.rub.nds.sshattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.sshattacker.core.layer.Message;
 import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import jakarta.xml.bind.annotation.XmlAccessType;
@@ -48,6 +49,17 @@ public abstract class ProtocolMessage<Self extends ProtocolMessage<?>>
     /** resulting message */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PLAIN_PROTOCOL_MESSAGE)
     protected ModifiableByteArray completeResultingMessage;
+
+    public ProtocolMessageType getProtocolMessageType() {
+        return protocolMessageType;
+    }
+
+    public void setProtocolMessageType(ProtocolMessageType protocolMessageType) {
+        this.protocolMessageType = protocolMessageType;
+    }
+
+    /** content type */
+    @XmlTransient protected ProtocolMessageType protocolMessageType;
 
     public ProtocolMessage() {}
 

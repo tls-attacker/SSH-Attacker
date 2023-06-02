@@ -31,12 +31,12 @@ public class EcdhKeyExchangeInitMessageParser extends SshMessageParser<EcdhKeyEx
         super(stream);
     }
 
-    @Override
+    /*    @Override
     public EcdhKeyExchangeInitMessage createMessage() {
         return new EcdhKeyExchangeInitMessage();
-    }
+    }*/
 
-    private void parseEphemeralPublicKey() {
+    private void parseEphemeralPublicKey(EcdhKeyExchangeInitMessage message) {
         message.setEphemeralPublicKeyLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
         LOGGER.debug(
                 "Ephemeral public key (client) length: "
@@ -50,12 +50,12 @@ public class EcdhKeyExchangeInitMessageParser extends SshMessageParser<EcdhKeyEx
     }
 
     @Override
-    public void parseMessageSpecificContents() {
-        parseEphemeralPublicKey();
+    public void parseMessageSpecificContents(EcdhKeyExchangeInitMessage message) {
+        parseEphemeralPublicKey(message);
     }
 
     @Override
     public void parse(EcdhKeyExchangeInitMessage message) {
-        parseMessageSpecificContents();
+        parseMessageSpecificContents(message);
     }
 }

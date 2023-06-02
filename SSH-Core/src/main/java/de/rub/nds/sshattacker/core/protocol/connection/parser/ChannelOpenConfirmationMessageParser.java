@@ -28,38 +28,38 @@ public class ChannelOpenConfirmationMessageParser
 
     @Override
     public void parse(ChannelOpenConfirmationMessage message) {
-        parseMessageSpecificContents();
+        parseMessageSpecificContents(message);
     }
 
     public ChannelOpenConfirmationMessageParser(InputStream stream) {
         super(stream);
     }
 
-    @Override
-    public ChannelOpenConfirmationMessage createMessage() {
-        return new ChannelOpenConfirmationMessage();
-    }
-
-    private void parseSenderChannel() {
+    /*  @Override
+        public ChannelOpenConfirmationMessage createMessage() {
+            return new ChannelOpenConfirmationMessage();
+        }
+    */
+    private void parseSenderChannel(ChannelOpenConfirmationMessage message) {
         message.setSenderChannelId(parseIntField(DataFormatConstants.UINT32_SIZE));
         LOGGER.debug("Sender channel id: " + message.getSenderChannelId().getValue());
     }
 
-    private void parseWindowSize() {
+    private void parseWindowSize(ChannelOpenConfirmationMessage message) {
         message.setWindowSize(parseIntField(DataFormatConstants.UINT32_SIZE));
         LOGGER.debug("Initial window size: " + message.getWindowSize().getValue());
     }
 
-    private void parsePacketSize() {
+    private void parsePacketSize(ChannelOpenConfirmationMessage message) {
         message.setPacketSize(parseIntField(DataFormatConstants.UINT32_SIZE));
         LOGGER.debug("Maximum packet size: " + message.getPacketSize().getValue());
     }
 
     @Override
-    protected void parseMessageSpecificContents() {
-        super.parseMessageSpecificContents();
-        parseSenderChannel();
-        parseWindowSize();
-        parsePacketSize();
+    protected void parseMessageSpecificContents(ChannelOpenConfirmationMessage message) {
+        super.parseMessageSpecificContents(message);
+        parseSenderChannel(message);
+        parseWindowSize(message);
+        parsePacketSize(message);
     }
 }

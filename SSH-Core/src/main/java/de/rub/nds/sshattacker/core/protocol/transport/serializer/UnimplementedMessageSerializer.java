@@ -25,4 +25,10 @@ public class UnimplementedMessageSerializer extends SshMessageSerializer<Unimple
     public void serializeMessageSpecificContents() {
         serializeSequenceNumber();
     }
+
+    @Override
+    protected byte[] serializeBytes() {
+        serializeMessageSpecificContents();
+        return getAlreadySerialized();
+    }
 }

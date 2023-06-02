@@ -27,7 +27,7 @@ public class ChannelRequestAuthAgentMessageHandler
     @Override
     public void adjustContext(ChannelRequestAuthAgentMessage message) {
         if (Converter.byteToBoolean(message.getWantReply().getValue())) {
-            context.getChannelManager().addToChannelRequestResponseQueue(message);
+            sshContext.getChannelManager().addToChannelRequestResponseQueue(message);
         }
     }
 

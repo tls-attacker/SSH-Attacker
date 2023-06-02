@@ -118,8 +118,6 @@ public abstract class WorkflowExecutor {
             }*/
         }
 
-
-
         try {
             if (getBeforeTransportPreInitCallback() != null) {
                 getBeforeTransportPreInitCallback().apply(state);
@@ -142,6 +140,7 @@ public abstract class WorkflowExecutor {
                     ex);
         }
     }
+
     public void closeConnection() {
         for (Context context : state.getAllContexts()) {
             try {

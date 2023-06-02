@@ -29,10 +29,12 @@ public class EcdhKeyExchangeInitMessageHandler
 
     @Override
     public void adjustContext(EcdhKeyExchangeInitMessage message) {
-        context.getChooser()
+        sshContext
+                .getChooser()
                 .getEcdhKeyExchange()
                 .setRemotePublicKey(message.getEphemeralPublicKey().getValue());
-        context.getExchangeHashInputHolder()
+        sshContext
+                .getExchangeHashInputHolder()
                 .setEcdhClientPublicKey(message.getEphemeralPublicKey().getValue());
     }
 

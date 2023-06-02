@@ -32,12 +32,14 @@ public class DhKeyExchangeReplyMessageParser extends SshMessageParser<DhKeyExcha
         super(stream);
     }
 
-    @Override
-    public DhKeyExchangeReplyMessage createMessage() {
-        return new DhKeyExchangeReplyMessage();
-    }
+    /*
+        @Override
+        public DhKeyExchangeReplyMessage createMessage() {
+            return new DhKeyExchangeReplyMessage();
+        }
+    */
 
-    private void parseHostKeyBytes() {
+    private void parseHostKeyBytes(DhKeyExchangeReplyMessage message) {
         message.setHostKeyBytesLength(parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH));
         LOGGER.debug("Host key bytes length: " + message.getHostKeyBytesLength().getValue());
         message.setHostKeyBytes(parseByteArrayField(message.getHostKeyBytesLength().getValue()));
@@ -46,7 +48,7 @@ public class DhKeyExchangeReplyMessageParser extends SshMessageParser<DhKeyExcha
                         + ArrayConverter.bytesToRawHexString(message.getHostKeyBytes().getValue()));
     }
 
-    private void parseEphemeralPublicKey() {
+    private void parseEphemeralPublicKey(DhKeyExchangeReplyMessage message) {
         message.setEphemeralPublicKeyLength(
                 parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH));
         LOGGER.debug(
@@ -57,7 +59,7 @@ public class DhKeyExchangeReplyMessageParser extends SshMessageParser<DhKeyExcha
         LOGGER.debug("Ephemeral public key (server): " + message.getEphemeralPublicKey());
     }
 
-    private void parseSignature() {
+    private void parseSignature(DhKeyExchangeReplyMessage message) {
         message.setSignatureLength(parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH));
         LOGGER.debug("Signature length: " + message.getSignatureLength().getValue());
         message.setSignature(parseByteArrayField(message.getSignatureLength().getValue()));
@@ -65,14 +67,14 @@ public class DhKeyExchangeReplyMessageParser extends SshMessageParser<DhKeyExcha
     }
 
     @Override
-    protected void parseMessageSpecificContents() {
-        parseHostKeyBytes();
-        parseEphemeralPublicKey();
-        parseSignature();
+    protected void parseMessageSpecificContents(DhKeyExchangeReplyMessage message) {
+        parseHostKeyBytes(message);
+        parseEphemeralPublicKey(message);
+        parseSignature(message);
     }
 
     @Override
     public void parse(DhKeyExchangeReplyMessage message) {
-        parseMessageSpecificContents();
+        parseMessageSpecificContents(message);
     }
 }

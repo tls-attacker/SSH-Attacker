@@ -27,11 +27,11 @@ public class ChannelEofMessageParser extends ChannelMessageParser<ChannelEofMess
 
     @Override
     public void parse(ChannelEofMessage message) {
-        parseMessageSpecificContents();
+        parseMessageSpecificContents(message);
     }
 
-    @Override
+    /*    @Override
     public ChannelEofMessage createMessage() {
         return new ChannelEofMessage();
-    }
+    }*/
 }

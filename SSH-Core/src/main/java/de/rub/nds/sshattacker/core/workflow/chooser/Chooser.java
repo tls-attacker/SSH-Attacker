@@ -122,6 +122,10 @@ public abstract class Chooser {
 
     public abstract PublicKeyAlgorithm getHostKeyAlgorithm();
 
+    public abstract ConnectionEndType getMyConnectionPeer();
+
+    public abstract byte[] getLastHandledAuthenticationMessageData();
+
     /**
      * Returns the encryption algorithm for outgoing packets (send). Internally, this either calls
      * getEncryptionAlgorithmClientToServer() or getEncryptionAlgorithmServerToClient(), depending

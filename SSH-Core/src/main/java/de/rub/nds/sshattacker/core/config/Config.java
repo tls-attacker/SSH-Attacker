@@ -8,6 +8,7 @@
 package de.rub.nds.sshattacker.core.config;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.modifiablevariable.util.IllegalStringAdapter;
 import de.rub.nds.modifiablevariable.util.UnformattedByteArrayAdapter;
 import de.rub.nds.sshattacker.core.connection.InboundConnection;
 import de.rub.nds.sshattacker.core.connection.OutboundConnection;
@@ -44,6 +45,17 @@ public class Config implements Serializable {
     public Integer getDefaultAdditionalPadding() {
         return defaultAdditionalPadding;
     }
+
+    public String getDefaultAuthenticationMessageData() {
+        return defaultAuthenticationMessageData;
+    }
+
+    public void setDefaultAuthenticationMessageData(String defaultAuthenticationMessageData) {
+        this.defaultAuthenticationMessageData = defaultAuthenticationMessageData;
+    }
+
+    @XmlJavaTypeAdapter(IllegalStringAdapter.class)
+    private String defaultAuthenticationMessageData = "Test";
 
     public void setDefaultAdditionalPadding(Integer defaultAdditionalPadding) {
         this.defaultAdditionalPadding = defaultAdditionalPadding;

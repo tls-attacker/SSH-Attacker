@@ -32,10 +32,10 @@ public class GlobalRequestCancelTcpIpForwardMessageParser
 
     @Override
     public void parse(GlobalRequestCancelTcpIpForwardMessage message) {
-        parseMessageSpecificContents();
+        parseMessageSpecificContents(message);
     }
 
-    private void parseIPAddressToBind() {
+    private void parseIPAddressToBind(GlobalRequestCancelTcpIpForwardMessage message) {
         message.setIpAddressToBindLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
         LOGGER.debug("IP address to bind length: " + message.getIpAddressToBindLength().getValue());
         message.setIpAddressToBind(
@@ -44,20 +44,20 @@ public class GlobalRequestCancelTcpIpForwardMessageParser
         LOGGER.debug("IP address to bind: " + message.getIpAddressToBind().getValue());
     }
 
-    private void parsePortToBind() {
+    private void parsePortToBind(GlobalRequestCancelTcpIpForwardMessage message) {
         message.setPortToBind(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
         LOGGER.debug("Port to bind: " + message.getPortToBind().getValue());
     }
 
-    @Override
+    /*    @Override
     public GlobalRequestCancelTcpIpForwardMessage createMessage() {
         return new GlobalRequestCancelTcpIpForwardMessage();
-    }
+    }*/
 
     @Override
-    protected void parseMessageSpecificContents() {
-        super.parseMessageSpecificContents();
-        parseIPAddressToBind();
-        parsePortToBind();
+    protected void parseMessageSpecificContents(GlobalRequestCancelTcpIpForwardMessage message) {
+        super.parseMessageSpecificContents(message);
+        parseIPAddressToBind(message);
+        parsePortToBind(message);
     }
 }

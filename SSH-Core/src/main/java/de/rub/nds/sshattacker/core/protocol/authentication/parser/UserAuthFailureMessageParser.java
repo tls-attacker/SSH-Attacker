@@ -32,19 +32,19 @@ public class UserAuthFailureMessageParser extends SshMessageParser<UserAuthFailu
         super(stream);
     }
 
-    @Override
-    public UserAuthFailureMessage createMessage() {
-        return new UserAuthFailureMessage();
-    }
-
+    /*   @Override
+        public UserAuthFailureMessage createMessage() {
+            return new UserAuthFailureMessage();
+        }
+    */
     @Override
     public void parse(UserAuthFailureMessage message) {
         LOGGER.debug("Parsing UserAuthBannerMessage");
-        parseMessageSpecificContents();
+        parseMessageSpecificContents(message);
         message.setCompleteResultingMessage(getAlreadyParsed());
     }
 
-    private void parsePossibleAuthenticationMethods() {
+    private void parsePossibleAuthenticationMethods(UserAuthFailureMessage message) {
         message.setPossibleAuthenticationMethodsLength(
                 parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
         message.setPossibleAuthenticationMethods(
@@ -54,13 +54,13 @@ public class UserAuthFailureMessageParser extends SshMessageParser<UserAuthFailu
                 false);
     }
 
-    private void parsePartialSuccess() {
+    private void parsePartialSuccess(UserAuthFailureMessage message) {
         message.setPartialSuccess(parseByteField(1));
     }
 
     @Override
-    protected void parseMessageSpecificContents() {
-        parsePossibleAuthenticationMethods();
-        parsePartialSuccess();
+    protected void parseMessageSpecificContents(UserAuthFailureMessage message) {
+        parsePossibleAuthenticationMethods(message);
+        parsePartialSuccess(message);
     }
 }

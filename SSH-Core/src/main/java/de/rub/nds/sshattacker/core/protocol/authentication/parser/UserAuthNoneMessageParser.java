@@ -29,20 +29,22 @@ public class UserAuthNoneMessageParser extends UserAuthRequestMessageParser<User
         super(stream);
     }
 
-    @Override
-    public UserAuthNoneMessage createMessage() {
-        return new UserAuthNoneMessage();
-    }
+    /*
+        @Override
+        public UserAuthNoneMessage createMessage() {
+            return new UserAuthNoneMessage();
+        }
+    */
 
     @Override
     public void parse(UserAuthNoneMessage message) {
         LOGGER.debug("Parsing UserAuthBannerMessage");
-        parseMessageSpecificContents();
+        parseMessageSpecificContents(message);
         message.setCompleteResultingMessage(getAlreadyParsed());
     }
 
     @Override
-    protected void parseMessageSpecificContents() {
-        super.parseMessageSpecificContents();
+    protected void parseMessageSpecificContents(UserAuthNoneMessage message) {
+        super.parseMessageSpecificContents(message);
     }
 }

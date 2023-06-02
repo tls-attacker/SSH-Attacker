@@ -34,17 +34,19 @@ public class ChannelExtendedDataMessageParser
 
     @Override
     public void parse(ChannelExtendedDataMessage message) {
-        parseMessageSpecificContents();
+        parseMessageSpecificContents(message);
     }
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    @Override
-    public ChannelExtendedDataMessage createMessage() {
-        return new ChannelExtendedDataMessage();
-    }
+    /*
+        @Override
+        public ChannelExtendedDataMessage createMessage() {
+            return new ChannelExtendedDataMessage();
+        }
+    */
 
-    private void parseDataTypeCode() {
+    private void parseDataTypeCode(ChannelExtendedDataMessage message) {
         message.setDataTypeCode(parseIntField(DataFormatConstants.UINT32_SIZE));
         LOGGER.debug("Data type code: " + message.getDataTypeCode().getValue());
         LOGGER.debug(
@@ -53,7 +55,7 @@ public class ChannelExtendedDataMessageParser
                                 message.getDataTypeCode().getValue()));
     }
 
-    private void parseData() {
+    private void parseData(ChannelExtendedDataMessage message) {
         message.setDataLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
         LOGGER.debug("Data length: " + message.getDataLength().getValue());
         message.setData(parseByteArrayField(message.getDataLength().getValue()));
@@ -61,9 +63,9 @@ public class ChannelExtendedDataMessageParser
     }
 
     @Override
-    protected void parseMessageSpecificContents() {
-        super.parseMessageSpecificContents();
-        parseDataTypeCode();
-        parseData();
+    protected void parseMessageSpecificContents(ChannelExtendedDataMessage message) {
+        super.parseMessageSpecificContents(message);
+        parseDataTypeCode(message);
+        parseData(message);
     }
 }

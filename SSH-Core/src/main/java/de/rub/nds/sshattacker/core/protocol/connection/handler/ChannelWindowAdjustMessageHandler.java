@@ -26,7 +26,7 @@ public class ChannelWindowAdjustMessageHandler
 
     @Override
     public void adjustContext(ChannelWindowAdjustMessage message) {
-        Channel channel = context.getChannels().get(message.getRecipientChannelId().getValue());
+        Channel channel = sshContext.getChannels().get(message.getRecipientChannelId().getValue());
         if (channel != null) {
             if (!channel.isOpen().getValue()) {
                 LOGGER.warn(
@@ -41,8 +41,8 @@ public class ChannelWindowAdjustMessageHandler
                     "{} received but no channel with id {} found locally, creating a new channel from defaults with given channel id.",
                     this.getClass().getSimpleName(),
                     message.getRecipientChannelId().getValue());
-            channel = context.getConfig().getChannelDefaults().newChannelFromDefaults();
-            context.getChannels().put(channel.getLocalChannelId().getValue(), channel);
+            channel = sshContext.getConfig().getChannelDefaults().newChannelFromDefaults();
+            sshContext.getChannels().put(channel.getLocalChannelId().getValue(), channel);
         }
     }
 

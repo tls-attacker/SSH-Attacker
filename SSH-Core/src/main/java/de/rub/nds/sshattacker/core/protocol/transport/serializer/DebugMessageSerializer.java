@@ -54,4 +54,10 @@ public class DebugMessageSerializer extends SshMessageSerializer<DebugMessage> {
         serializeMessage();
         serializeLanguageTag();
     }
+
+    @Override
+    protected byte[] serializeBytes() {
+        serializeMessageSpecificContents();
+        return getAlreadySerialized();
+    }
 }

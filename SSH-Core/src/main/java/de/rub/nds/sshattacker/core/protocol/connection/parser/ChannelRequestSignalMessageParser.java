@@ -33,15 +33,17 @@ public class ChannelRequestSignalMessageParser
 
     @Override
     public void parse(ChannelRequestSignalMessage message) {
-        parseMessageSpecificContents();
+        parseMessageSpecificContents(message);
     }
 
-    @Override
-    public ChannelRequestSignalMessage createMessage() {
-        return new ChannelRequestSignalMessage();
-    }
+    /*
+        @Override
+        public ChannelRequestSignalMessage createMessage() {
+            return new ChannelRequestSignalMessage();
+        }
+    */
 
-    public void parseSignalName() {
+    public void parseSignalName(ChannelRequestSignalMessage message) {
         message.setSignalNameLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
         LOGGER.debug("Signal name length: " + message.getSignalNameLength().getValue());
         message.setSignalName(parseByteString(message.getSignalNameLength().getValue()));
@@ -49,8 +51,8 @@ public class ChannelRequestSignalMessageParser
     }
 
     @Override
-    protected void parseMessageSpecificContents() {
-        super.parseMessageSpecificContents();
-        parseSignalName();
+    protected void parseMessageSpecificContents(ChannelRequestSignalMessage message) {
+        super.parseMessageSpecificContents(message);
+        parseSignalName(message);
     }
 }

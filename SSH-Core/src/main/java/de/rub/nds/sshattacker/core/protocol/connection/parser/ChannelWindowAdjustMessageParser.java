@@ -33,22 +33,24 @@ public class ChannelWindowAdjustMessageParser
 
     @Override
     public void parse(ChannelWindowAdjustMessage message) {
-        parseMessageSpecificContents();
+        parseMessageSpecificContents(message);
     }
 
-    @Override
-    public ChannelWindowAdjustMessage createMessage() {
-        return new ChannelWindowAdjustMessage();
-    }
+    /*
+        @Override
+        public ChannelWindowAdjustMessage createMessage() {
+            return new ChannelWindowAdjustMessage();
+        }
+    */
 
-    private void parseBytesToAdd() {
+    private void parseBytesToAdd(ChannelWindowAdjustMessage message) {
         message.setBytesToAdd(parseIntField(DataFormatConstants.UINT32_SIZE));
         LOGGER.debug("Bytes to add: " + message.getBytesToAdd().getValue());
     }
 
     @Override
-    protected void parseMessageSpecificContents() {
-        super.parseMessageSpecificContents();
-        parseBytesToAdd();
+    protected void parseMessageSpecificContents(ChannelWindowAdjustMessage message) {
+        super.parseMessageSpecificContents(message);
+        parseBytesToAdd(message);
     }
 }

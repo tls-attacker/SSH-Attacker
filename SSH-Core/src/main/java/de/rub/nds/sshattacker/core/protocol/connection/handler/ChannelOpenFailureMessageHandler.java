@@ -27,13 +27,13 @@ public class ChannelOpenFailureMessageHandler extends SshMessageHandler<ChannelO
 
     @Override
     public void adjustContext(ChannelOpenFailureMessage message) {
-        if (!context.getChannels().containsKey(message.getRecipientChannelId().getValue())) {
+        if (!sshContext.getChannels().containsKey(message.getRecipientChannelId().getValue())) {
             LOGGER.warn(
                     "{} received but no channel with id {} found locally, ignoring it.",
                     this.getClass().getSimpleName(),
                     message.getRecipientChannelId().getValue());
         }
-        context.getChannels().remove(message.getRecipientChannelId().getValue());
+        sshContext.getChannels().remove(message.getRecipientChannelId().getValue());
     }
 
     /*@Override

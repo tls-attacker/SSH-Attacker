@@ -41,4 +41,10 @@ public class UserAuthInfoResponseMessageSerializer
     public void serializeMessageSpecificContents() {
         serializeResponse();
     }
+
+    @Override
+    protected byte[] serializeBytes() {
+        serializeMessageSpecificContents();
+        return getAlreadySerialized();
+    }
 }

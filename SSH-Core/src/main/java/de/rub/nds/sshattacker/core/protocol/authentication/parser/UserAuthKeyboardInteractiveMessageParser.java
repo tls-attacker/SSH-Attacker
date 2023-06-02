@@ -34,19 +34,21 @@ public class UserAuthKeyboardInteractiveMessageParser
         super(stream);
     }
 
-    @Override
-    protected UserAuthKeyboardInteractiveMessage createMessage() {
-        return new UserAuthKeyboardInteractiveMessage();
-    }
+    /*
+        @Override
+        protected UserAuthKeyboardInteractiveMessage createMessage() {
+            return new UserAuthKeyboardInteractiveMessage();
+        }
+    */
 
     @Override
     public void parse(UserAuthKeyboardInteractiveMessage message) {
         LOGGER.debug("Parsing UserAuthBannerMessage");
-        parseMessageSpecificContents();
+        parseMessageSpecificContents(message);
         message.setCompleteResultingMessage(getAlreadyParsed());
     }
 
-    private void parseLanguageTag() {
+    private void parseLanguageTag(UserAuthKeyboardInteractiveMessage message) {
         message.setLanguageTagLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
         LOGGER.debug("Language tag length: " + message.getLanguageTagLength().getValue());
         message.setLanguageTag(
@@ -55,7 +57,7 @@ public class UserAuthKeyboardInteractiveMessageParser
         LOGGER.debug("Language tag: " + backslashEscapeString(message.getLanguageTag().getValue()));
     }
 
-    private void parseSubMethods() {
+    private void parseSubMethods(UserAuthKeyboardInteractiveMessage message) {
         message.setSubMethodsLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
         LOGGER.debug("Sub methods length: " + message.getSubMethodsLength().getValue());
         message.setSubMethods(
@@ -64,9 +66,9 @@ public class UserAuthKeyboardInteractiveMessageParser
     }
 
     @Override
-    protected void parseMessageSpecificContents() {
-        super.parseMessageSpecificContents();
-        parseLanguageTag();
-        parseSubMethods();
+    protected void parseMessageSpecificContents(UserAuthKeyboardInteractiveMessage message) {
+        super.parseMessageSpecificContents(message);
+        parseLanguageTag(message);
+        parseSubMethods(message);
     }
 }

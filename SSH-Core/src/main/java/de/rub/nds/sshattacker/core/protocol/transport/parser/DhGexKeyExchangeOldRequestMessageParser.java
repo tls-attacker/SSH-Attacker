@@ -32,23 +32,23 @@ public class DhGexKeyExchangeOldRequestMessageParser
         super(stream);
     }
 
-    @Override
+    /*    @Override
     protected DhGexKeyExchangeOldRequestMessage createMessage() {
         return new DhGexKeyExchangeOldRequestMessage();
-    }
+    }*/
 
-    public void parsePreferredGroupSize() {
+    public void parsePreferredGroupSize(DhGexKeyExchangeOldRequestMessage message) {
         message.setPreferredGroupSize(parseIntField(DataFormatConstants.UINT32_SIZE));
         LOGGER.debug("Preferred group size: {} bits", message.getPreferredGroupSize().getValue());
     }
 
     @Override
-    protected void parseMessageSpecificContents() {
-        parsePreferredGroupSize();
+    protected void parseMessageSpecificContents(DhGexKeyExchangeOldRequestMessage message) {
+        parsePreferredGroupSize(message);
     }
 
     @Override
     public void parse(DhGexKeyExchangeOldRequestMessage message) {
-        parseMessageSpecificContents();
+        parseMessageSpecificContents(message);
     }
 }

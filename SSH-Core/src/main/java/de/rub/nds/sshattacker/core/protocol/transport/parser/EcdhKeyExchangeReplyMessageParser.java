@@ -34,12 +34,12 @@ public class EcdhKeyExchangeReplyMessageParser
         super(stream);
     }
 
-    @Override
-    public EcdhKeyExchangeReplyMessage createMessage() {
-        return new EcdhKeyExchangeReplyMessage();
-    }
-
-    private void parseHostKeyBytes() {
+    /*   @Override
+        public EcdhKeyExchangeReplyMessage createMessage() {
+            return new EcdhKeyExchangeReplyMessage();
+        }
+    */
+    private void parseHostKeyBytes(EcdhKeyExchangeReplyMessage message) {
         message.setHostKeyBytesLength(parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH));
         LOGGER.debug("Host key bytes length: " + message.getHostKeyBytesLength().getValue());
         message.setHostKeyBytes(parseByteArrayField(message.getHostKeyBytesLength().getValue()));
@@ -48,7 +48,7 @@ public class EcdhKeyExchangeReplyMessageParser
                         + ArrayConverter.bytesToRawHexString(message.getHostKeyBytes().getValue()));
     }
 
-    private void parseEphemeralPublicKey() {
+    private void parseEphemeralPublicKey(EcdhKeyExchangeReplyMessage message) {
         message.setEphemeralPublicKeyLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
         LOGGER.debug(
                 "Ephemeral public key (server) length: "
@@ -61,7 +61,7 @@ public class EcdhKeyExchangeReplyMessageParser
                                 message.getEphemeralPublicKey().getValue()));
     }
 
-    private void parseSignature() {
+    private void parseSignature(EcdhKeyExchangeReplyMessage message) {
         message.setSignatureLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
         LOGGER.debug("Signature length: " + message.getSignatureLength().getValue());
         message.setSignature(parseByteArrayField(message.getSignatureLength().getValue()));
@@ -71,14 +71,14 @@ public class EcdhKeyExchangeReplyMessageParser
     }
 
     @Override
-    public void parseMessageSpecificContents() {
-        parseHostKeyBytes();
-        parseEphemeralPublicKey();
-        parseSignature();
+    public void parseMessageSpecificContents(EcdhKeyExchangeReplyMessage message) {
+        parseHostKeyBytes(message);
+        parseEphemeralPublicKey(message);
+        parseSignature(message);
     }
 
     @Override
     public void parse(EcdhKeyExchangeReplyMessage message) {
-        parseMessageSpecificContents();
+        parseMessageSpecificContents(message);
     }
 }

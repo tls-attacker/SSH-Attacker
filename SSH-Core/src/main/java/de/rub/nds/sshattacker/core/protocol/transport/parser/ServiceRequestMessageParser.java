@@ -33,7 +33,7 @@ public class ServiceRequestMessageParser extends SshMessageParser<ServiceRequest
         super(array, startPosition);
     }*/
 
-    private void parseServiceName() {
+    private void parseServiceName(ServiceRequestMessage message) {
         message.setServiceNameLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
         LOGGER.debug("Service name length: " + message.getServiceNameLength().getValue());
         message.setServiceName(
@@ -43,18 +43,18 @@ public class ServiceRequestMessageParser extends SshMessageParser<ServiceRequest
                 "Service name: {}", backslashEscapeString(message.getServiceName().getValue()));
     }
 
-    @Override
+    /*    @Override
     public ServiceRequestMessage createMessage() {
         return new ServiceRequestMessage();
-    }
+    }*/
 
     @Override
-    protected void parseMessageSpecificContents() {
-        parseServiceName();
+    protected void parseMessageSpecificContents(ServiceRequestMessage message) {
+        parseServiceName(message);
     }
 
     @Override
     public void parse(ServiceRequestMessage message) {
-        parseMessageSpecificContents();
+        parseMessageSpecificContents(message);
     }
 }

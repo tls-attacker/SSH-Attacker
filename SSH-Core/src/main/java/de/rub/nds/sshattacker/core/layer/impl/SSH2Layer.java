@@ -19,8 +19,10 @@ import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.message.*;*/
 
+import de.rub.nds.sshattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.sshattacker.core.exceptions.EndOfStreamException;
 import de.rub.nds.sshattacker.core.exceptions.TimeoutException;
+import de.rub.nds.sshattacker.core.layer.LayerConfiguration;
 import de.rub.nds.sshattacker.core.layer.LayerProcessingResult;
 import de.rub.nds.sshattacker.core.layer.ProtocolLayer;
 import de.rub.nds.sshattacker.core.layer.constant.ImplementedLayers;
@@ -29,7 +31,12 @@ import de.rub.nds.sshattacker.core.layer.hints.LayerProcessingHint;
 import de.rub.nds.sshattacker.core.layer.hints.RecordLayerHint;
 import de.rub.nds.sshattacker.core.layer.stream.HintedInputStream;
 import de.rub.nds.sshattacker.core.layer.stream.HintedLayerInputStream;
+import de.rub.nds.sshattacker.core.protocol.authentication.message.AuthenticationMessage;
 import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessage;
+import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessageSerializer;
+import de.rub.nds.sshattacker.core.protocol.connection.message.ConnectionMessage;
+import de.rub.nds.sshattacker.core.protocol.transport.message.UnknownMessage;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -44,8 +51,44 @@ public class SSH2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
         this.context = context;
     }
 
+    private void flushCollectedMessages(
+            ProtocolMessageType runningProtocolMessageType, ByteArrayOutputStream byteStream)
+            throws IOException {
+        if (byteStream.size() > 0) {
+            getLowerLayer()
+                    .sendData(
+                            new RecordLayerHint(runningProtocolMessageType),
+                            byteStream.toByteArray());
+            byteStream.reset();
+        }
+    }
+
     @Override
     public LayerProcessingResult sendConfiguration() throws IOException {
+        LayerConfiguration<ProtocolMessage> configuration = getLayerConfiguration();
+        ProtocolMessageType runningProtocolMessageType = null;
+        ByteArrayOutputStream collectedMessageStream = new ByteArrayOutputStream();
+
+        if (configuration != null && configuration.getContainerList() != null) {
+            for (ProtocolMessage message : configuration.getContainerList()) {
+                if (containerAlreadyUsedByHigherLayer(message)
+                        || !prepareDataContainer(message, context)) {
+                    continue;
+                }
+                // Es gibt erstmal keine Handshake-Messages mit einer Spezialbehandlung bei SSH
+                /*if (!message.isHandshakeMessage()) {
+                    // only handshake messages may share a record
+                    flushCollectedMessages(runningProtocolMessageType, collectedMessageStream);
+                }*/
+                runningProtocolMessageType = message.getProtocolMessageType();
+                processMessage(message, collectedMessageStream);
+                addProducedContainer(message);
+            }
+        }
+        // hand remaining serialized to record layer
+        flushCollectedMessages(runningProtocolMessageType, collectedMessageStream);
+        return getLayerResult();
+
         /*LayerConfiguration<ProtocolMessage> configuration = getLayerConfiguration();
         if (configuration != null && !configuration.getContainerList().isEmpty()) {
             for (ProtocolMessage ssl2message : configuration.getContainerList()) {
@@ -66,7 +109,29 @@ public class SSH2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
             }
         }
         return getLayerResult();*/
-        return null;
+    }
+
+    private void processMessage(
+            ProtocolMessage message, ByteArrayOutputStream collectedMessageStream)
+            throws IOException {
+        ProtocolMessageSerializer serializer = message.getSerializer(context);
+        byte[] serializedMessage = serializer.serialize();
+        message.setCompleteResultingMessage(serializedMessage);
+
+        // Wird nicht benötigt, da wir keinen "Gesamt"-Digest benötigen ?
+        // message.getHandler(context).updateDigest(message, true);
+
+        if (message.getAdjustContext()) {
+            message.getHandler(context).adjustContext(message);
+        }
+        collectedMessageStream.writeBytes(message.getCompleteResultingMessage().getValue());
+        // Unklar für SSHv2, erstmal ignoriert
+        /*if (mustFlushCollectedMessagesImmediately(message)) {
+            flushCollectedMessages(message.getProtocolMessageType(), collectedMessageStream);
+        }*/
+        if (message.getAdjustContext()) {
+            message.getHandler(context).adjustContextAfterSerialize(message);
+        }
     }
 
     @Override
@@ -77,6 +142,35 @@ public class SSH2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
 
     @Override
     public LayerProcessingResult receiveData() {
+
+        try {
+            HintedInputStream dataStream;
+            do {
+                try {
+                    dataStream = getLowerLayer().getDataStream();
+                } catch (IOException e) {
+                    // the lower layer does not give us any data so we can simply return here
+                    LOGGER.warn("The lower layer did not produce a data stream: ", e);
+                    return getLayerResult();
+                }
+                LayerProcessingHint tempHint = dataStream.getHint();
+                if (tempHint == null) {
+                    LOGGER.warn(
+                            "The TLS message layer requires a processing hint. E.g. a record type. Parsing as an unknown message");
+                    readUnknownProtocolData();
+                } else if (tempHint instanceof RecordLayerHint) {
+                    RecordLayerHint hint = (RecordLayerHint) dataStream.getHint();
+                    readMessageForHint(hint);
+                }
+                // receive until the layer configuration is satisfied or no data is left
+            } while (shouldContinueProcessing());
+        } catch (TimeoutException ex) {
+            LOGGER.debug(ex);
+        } catch (EndOfStreamException ex) {
+            LOGGER.debug("Reached end of stream, cannot parse more messages", ex);
+        }
+
+        return getLayerResult();
 
         /*try {
             int messageLength = 0;
@@ -134,7 +228,6 @@ public class SSH2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
         }
 
         return getLayerResult();*/
-        return null;
     }
 
     /*private static int resolvePaddedMessageLength(final byte[] totalHeaderLength) {
@@ -146,6 +239,152 @@ public class SSH2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
         return (totalHeaderLength[0] & SSL2TotalHeaderLengths.ALL_BUT_ONE_BIT.getValue()) << 8
                 | totalHeaderLength[1];
     }*/
+
+    public void readMessageForHint(RecordLayerHint hint) {
+        switch (hint.getType()) {
+                // use correct parser for the message
+                /*            case ALERT:
+                    readAlertProtocolData();
+                    break;
+                case APPLICATION_DATA:
+                    readAppDataProtocolData();
+                    break;
+                case CHANGE_CIPHER_SPEC:
+                    readCcsProtocolData(hint.getEpoch());
+                    break;
+                case HANDSHAKE:
+                    readHandshakeProtocolData();
+                    break;
+                case HEARTBEAT:
+                    readHeartbeatProtocolData();
+                    break;
+                case UNKNOWN:
+                    readUnknownProtocolData();
+                    break;*/
+            case AUTHENTICATION:
+                readAuthenticationProtocolData();
+                break;
+            case CONNECTION:
+                readConnectionProtocolData();
+                break;
+            default:
+                LOGGER.error("Undefined record layer type");
+                break;
+        }
+    }
+
+    private void readAuthenticationProtocolData() {
+        AuthenticationMessage message = new AuthenticationMessage();
+        readDataContainer(message, context);
+    }
+
+    private void readConnectionProtocolData() {
+        ConnectionMessage message = new ConnectionMessage();
+        readDataContainer(message, context);
+    }
+
+    /*private void readAlertProtocolData() {
+        AlertMessage message = new AlertMessage();
+        readDataContainer(message, context);
+    }
+
+    private ApplicationMessage readAppDataProtocolData() {
+        ApplicationMessage message = new ApplicationMessage();
+        readDataContainer(message, context);
+        getLowerLayer().removeDrainedInputStream();
+        return message;
+    }
+
+    private void readCcsProtocolData(Integer epoch) {
+        ChangeCipherSpecMessage message = new ChangeCipherSpecMessage();
+        if (context.getSelectedProtocolVersion().isDTLS()) {
+            if (context.getDtlsReceivedChangeCipherSpecEpochs().contains(epoch)
+                    && context.getConfig().isIgnoreRetransmittedCcsInDtls()) {
+                message.setAdjustContext(false);
+            } else {
+                context.addDtlsReceivedChangeCipherSpecEpochs(epoch);
+            }
+        }
+        readDataContainer(message, context);
+    }
+
+    */
+    /**
+     * Parses the handshake layer header from the given message and parses the encapsulated message
+     * using the correct parser.
+     *
+     * @throws IOException
+     */
+    /*
+    private void readHandshakeProtocolData() {
+        byte[] readBytes = new byte[0];
+        byte type;
+        int length;
+        byte[] payload;
+        HandshakeMessage handshakeMessage;
+        HintedInputStream handshakeStream;
+        try {
+            handshakeStream = getLowerLayer().getDataStream();
+            type = handshakeStream.readByte();
+            readBytes = ArrayConverter.concatenate(readBytes, new byte[] {type});
+            handshakeMessage =
+                    MessageFactory.generateHandshakeMessage(
+                            HandshakeMessageType.getMessageType(type), context);
+            handshakeMessage.setType(type);
+            byte[] lengthBytes =
+                    handshakeStream.readChunk(HandshakeByteLength.MESSAGE_LENGTH_FIELD);
+            length = ArrayConverter.bytesToInt(lengthBytes);
+            readBytes = ArrayConverter.concatenate(readBytes, lengthBytes);
+            handshakeMessage.setLength(length);
+            payload = handshakeStream.readChunk(length);
+            readBytes = ArrayConverter.concatenate(readBytes, payload);
+
+        } catch (IOException ex) {
+            LOGGER.error("Could not parse message header. Setting bytes as unread: ", ex);
+            // not being able to parse the header leaves us with unreadable bytes
+            // append instead of replace because we can read multiple messages in one read action
+            setUnreadBytes(ArrayConverter.concatenate(this.getUnreadBytes(), readBytes));
+            return;
+        }
+        Handler handler = handshakeMessage.getHandler(context);
+        handshakeMessage.setMessageContent(payload);
+
+        try {
+            handshakeMessage.setCompleteResultingMessage(
+                    ArrayConverter.concatenate(
+                            new byte[] {type},
+                            ArrayConverter.intToBytes(
+                                    length, HandshakeByteLength.MESSAGE_LENGTH_FIELD),
+                            payload));
+            Parser parser = handshakeMessage.getParser(context, new ByteArrayInputStream(payload));
+            parser.parse(handshakeMessage);
+            Preparator preparator = handshakeMessage.getPreparator(context);
+            preparator.prepareAfterParse(false); // TODO REMOVE THIS CLIENTMODE FLAG
+            if (context.getChooser().getSelectedProtocolVersion().isDTLS()) {
+                handshakeMessage.setMessageSequence(
+                        ((RecordLayerHint) handshakeStream.getHint()).getMessageSequence());
+            }
+            handshakeMessage.getHandler(context).updateDigest(handshakeMessage, false);
+            handler.adjustContext(handshakeMessage);
+            addProducedContainer(handshakeMessage);
+        } catch (RuntimeException ex) {
+            // not being able to handle the handshake message results in an UnknownMessageContainer
+            UnknownHandshakeMessage message = new UnknownHandshakeMessage();
+            message.setData(payload);
+            addProducedContainer(message);
+        }
+    }
+
+    private void readHeartbeatProtocolData() {
+        HeartbeatMessage message = new HeartbeatMessage();
+        readDataContainer(message, context);
+    }*/
+
+    private void readUnknownProtocolData() {
+        UnknownMessage message = new UnknownMessage();
+        readDataContainer(message, context);
+        getLowerLayer().removeDrainedInputStream();
+    }
 
     @Override
     public void receiveMoreDataForHint(LayerProcessingHint hint) throws IOException {

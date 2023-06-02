@@ -32,22 +32,22 @@ public class ChannelRequestBreakMessageParser
 
     @Override
     public void parse(ChannelRequestBreakMessage message) {
-        parseMessageSpecificContents();
+        parseMessageSpecificContents(message);
     }
 
-    @Override
-    public ChannelRequestBreakMessage createMessage() {
-        return new ChannelRequestBreakMessage();
-    }
-
-    public void parseBreakLength() {
+    /* @Override
+        public ChannelRequestBreakMessage createMessage() {
+            return new ChannelRequestBreakMessage();
+        }
+    */
+    public void parseBreakLength(ChannelRequestBreakMessage message) {
         message.setBreakLength(parseIntField(DataFormatConstants.UINT32_SIZE));
         LOGGER.debug("Break length in milliseconds: " + message.getBreakLength().getValue());
     }
 
     @Override
-    protected void parseMessageSpecificContents() {
-        super.parseMessageSpecificContents();
-        parseBreakLength();
+    protected void parseMessageSpecificContents(ChannelRequestBreakMessage message) {
+        super.parseMessageSpecificContents(message);
+        parseBreakLength(message);
     }
 }

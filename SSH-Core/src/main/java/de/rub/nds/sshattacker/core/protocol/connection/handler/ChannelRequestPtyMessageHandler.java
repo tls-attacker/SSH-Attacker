@@ -25,7 +25,7 @@ public class ChannelRequestPtyMessageHandler extends SshMessageHandler<ChannelRe
     @Override
     public void adjustContext(ChannelRequestPtyMessage message) {
         if (Converter.byteToBoolean(message.getWantReply().getValue())) {
-            context.getChannelManager().addToChannelRequestResponseQueue(message);
+            sshContext.getChannelManager().addToChannelRequestResponseQueue(message);
         }
     }
 

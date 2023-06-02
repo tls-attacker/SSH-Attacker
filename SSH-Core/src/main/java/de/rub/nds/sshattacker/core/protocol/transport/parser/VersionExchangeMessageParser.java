@@ -32,12 +32,12 @@ public class VersionExchangeMessageParser extends ProtocolMessageParser<VersionE
         super(stream);
     }
 
-    @Override
+    /*@Override
     protected VersionExchangeMessage createMessage() {
         return new VersionExchangeMessage();
-    }
+    }*/
 
-    private void parseVersion() {
+    private void parseVersion(VersionExchangeMessage message) {
         // parse till CR NL (and remove them)
         String result = this.parseStringTill(CharConstants.NEWLINE);
         if (result.contains("\r")) {
@@ -59,13 +59,13 @@ public class VersionExchangeMessageParser extends ProtocolMessageParser<VersionE
         }
     }
 
-    @Override
-    public void parseProtocolMessageContents() {
-        parseVersion();
+    // @Override
+    public void parseProtocolMessageContents(VersionExchangeMessage message) {
+        parseVersion(message);
     }
 
     @Override
     public void parse(VersionExchangeMessage message) {
-        parseProtocolMessageContents();
+        parseProtocolMessageContents(message);
     }
 }

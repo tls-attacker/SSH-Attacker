@@ -30,4 +30,10 @@ public class ChannelMessageSerializer<T extends ChannelMessage<T>> extends SshMe
     public void serializeMessageSpecificContents() {
         serializeRecipientChannel();
     }
+
+    @Override
+    protected byte[] serializeBytes() {
+        serializeMessageSpecificContents();
+        return getAlreadySerialized();
+    }
 }

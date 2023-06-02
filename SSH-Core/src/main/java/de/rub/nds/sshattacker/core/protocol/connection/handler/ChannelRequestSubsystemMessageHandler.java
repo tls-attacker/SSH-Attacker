@@ -26,7 +26,7 @@ public class ChannelRequestSubsystemMessageHandler
     @Override
     public void adjustContext(ChannelRequestSubsystemMessage message) {
         if (Converter.byteToBoolean(message.getWantReply().getValue())) {
-            context.getChannelManager().addToChannelRequestResponseQueue(message);
+            sshContext.getChannelManager().addToChannelRequestResponseQueue(message);
         }
     }
 

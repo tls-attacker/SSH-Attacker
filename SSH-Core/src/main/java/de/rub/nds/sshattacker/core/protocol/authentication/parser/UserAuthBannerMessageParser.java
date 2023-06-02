@@ -43,19 +43,21 @@ public class UserAuthBannerMessageParser extends SshMessageParser<UserAuthBanner
         LOGGER.debug("Data: {}", msg.getData().getValue());
     }
 
-    @Override
-    public UserAuthBannerMessage createMessage() {
-        return new UserAuthBannerMessage();
-    }
+    /*
+        @Override
+        public UserAuthBannerMessage createMessage() {
+            return new UserAuthBannerMessage();
+        }
+    */
 
-    private void parseMessage() {
+    private void parseMessage(UserAuthBannerMessage message) {
         message.setMessageLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
         message.setMessage(
                 parseByteString(message.getMessageLength().getValue(), StandardCharsets.UTF_8),
                 false);
     }
 
-    private void parseLanguageTag() {
+    private void parseLanguageTag(UserAuthBannerMessage message) {
         message.setLanguageTagLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
         message.setLanguageTag(
                 parseByteString(
@@ -64,8 +66,8 @@ public class UserAuthBannerMessageParser extends SshMessageParser<UserAuthBanner
     }
 
     @Override
-    protected void parseMessageSpecificContents() {
-        parseMessage();
-        parseLanguageTag();
+    protected void parseMessageSpecificContents(UserAuthBannerMessage message) {
+        parseMessage(message);
+        parseLanguageTag(message);
     }
 }

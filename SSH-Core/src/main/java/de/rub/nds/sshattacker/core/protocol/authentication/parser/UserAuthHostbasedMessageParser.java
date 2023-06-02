@@ -36,19 +36,21 @@ public class UserAuthHostbasedMessageParser
         super(stream);
     }
 
-    @Override
-    protected UserAuthHostbasedMessage createMessage() {
-        return new UserAuthHostbasedMessage();
-    }
+    /*
+        @Override
+        protected UserAuthHostbasedMessage createMessage() {
+            return new UserAuthHostbasedMessage();
+        }
+    */
 
     @Override
     public void parse(UserAuthHostbasedMessage message) {
         LOGGER.debug("Parsing UserAuthBannerMessage");
-        parseMessageSpecificContents();
+        parseMessageSpecificContents(message);
         message.setCompleteResultingMessage(getAlreadyParsed());
     }
 
-    private void parsePubKeyAlgorithm() {
+    private void parsePubKeyAlgorithm(UserAuthHostbasedMessage message) {
         message.setPubKeyAlgorithmLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
         LOGGER.debug(
                 "Public key algorithm length: " + message.getPubKeyAlgorithmLength().getValue());
@@ -58,7 +60,7 @@ public class UserAuthHostbasedMessageParser
                         + backslashEscapeString(message.getPubKeyAlgorithm().getValue()));
     }
 
-    private void parseHostKeyBytes() {
+    private void parseHostKeyBytes(UserAuthHostbasedMessage message) {
         message.setHostKeyBytesLength(parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH));
         LOGGER.debug("Host key bytes length: " + message.getHostKeyBytesLength().getValue());
         message.setHostKeyBytes(parseByteArrayField(message.getHostKeyBytesLength().getValue()));
@@ -67,14 +69,14 @@ public class UserAuthHostbasedMessageParser
                         + ArrayConverter.bytesToRawHexString(message.getHostKeyBytes().getValue()));
     }
 
-    private void parseHostName() {
+    private void parseHostName(UserAuthHostbasedMessage message) {
         message.setHostNameLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
         LOGGER.debug("Host name length: " + message.getHostNameLength().getValue());
         message.setHostName(parseByteString(message.getHostNameLength().getValue()));
         LOGGER.debug("Host name: " + backslashEscapeString(message.getHostName().getValue()));
     }
 
-    private void parseClientUserName() {
+    private void parseClientUserName(UserAuthHostbasedMessage message) {
         message.setClientUserNameLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
         LOGGER.debug("Client user name length: " + message.getClientUserNameLength().getValue());
         message.setClientUserName(
@@ -85,7 +87,7 @@ public class UserAuthHostbasedMessageParser
                         + backslashEscapeString(message.getClientUserName().getValue()));
     }
 
-    private void parseSignature() {
+    private void parseSignature(UserAuthHostbasedMessage message) {
         message.setSignatureLength(parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH));
         LOGGER.debug("Signature length: " + message.getSignatureLength().getValue());
         message.setSignature(parseByteArrayField(message.getSignatureLength().getValue()));
@@ -93,12 +95,12 @@ public class UserAuthHostbasedMessageParser
     }
 
     @Override
-    protected void parseMessageSpecificContents() {
-        super.parseMessageSpecificContents();
-        parsePubKeyAlgorithm();
-        parseHostKeyBytes();
-        parseHostName();
-        parseClientUserName();
-        parseSignature();
+    protected void parseMessageSpecificContents(UserAuthHostbasedMessage message) {
+        super.parseMessageSpecificContents(message);
+        parsePubKeyAlgorithm(message);
+        parseHostKeyBytes(message);
+        parseHostName(message);
+        parseClientUserName(message);
+        parseSignature(message);
     }
 }

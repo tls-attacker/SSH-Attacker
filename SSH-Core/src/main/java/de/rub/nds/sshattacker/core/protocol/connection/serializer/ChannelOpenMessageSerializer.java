@@ -53,4 +53,10 @@ public abstract class ChannelOpenMessageSerializer<T extends ChannelOpenMessage<
         serializeWindowSize();
         serializePacketSize();
     }
+
+    @Override
+    protected byte[] serializeBytes() {
+        serializeMessageSpecificContents();
+        return getAlreadySerialized();
+    }
 }

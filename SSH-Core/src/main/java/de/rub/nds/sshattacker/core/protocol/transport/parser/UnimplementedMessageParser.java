@@ -32,23 +32,25 @@ public class UnimplementedMessageParser extends SshMessageParser<UnimplementedMe
         super(stream);
     }
 
-    private void parseSequenceNumber() {
+    private void parseSequenceNumber(UnimplementedMessage message) {
         message.setSequenceNumber(parseIntField(DataFormatConstants.UINT32_SIZE));
         LOGGER.debug("Sequence number: " + message.getSequenceNumber());
     }
 
-    @Override
-    public UnimplementedMessage createMessage() {
-        return new UnimplementedMessage();
-    }
+    /*
+        @Override
+        public UnimplementedMessage createMessage() {
+            return new UnimplementedMessage();
+        }
+    */
 
     @Override
-    protected void parseMessageSpecificContents() {
-        parseSequenceNumber();
+    protected void parseMessageSpecificContents(UnimplementedMessage message) {
+        parseSequenceNumber(message);
     }
 
     @Override
     public void parse(UnimplementedMessage message) {
-        parseMessageSpecificContents();
+        parseMessageSpecificContents(message);
     }
 }

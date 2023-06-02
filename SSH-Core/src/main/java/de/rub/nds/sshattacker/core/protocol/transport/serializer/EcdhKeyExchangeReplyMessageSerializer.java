@@ -56,4 +56,10 @@ public class EcdhKeyExchangeReplyMessageSerializer
         serializeEphemeralPublicKey(message);
         serializeSignature(message);
     }
+
+    @Override
+    protected byte[] serializeBytes() {
+        serializeMessageSpecificContents();
+        return getAlreadySerialized();
+    }
 }

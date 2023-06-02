@@ -28,16 +28,18 @@ public class GlobalRequestNoMoreSessionsMessageParser
 
     @Override
     public void parse(GlobalRequestNoMoreSessionsMessage message) {
-        parseMessageSpecificContents();
+        parseMessageSpecificContents(message);
     }
 
-    @Override
-    public GlobalRequestNoMoreSessionsMessage createMessage() {
-        return new GlobalRequestNoMoreSessionsMessage();
-    }
+    /*
+        @Override
+        public GlobalRequestNoMoreSessionsMessage createMessage() {
+            return new GlobalRequestNoMoreSessionsMessage();
+        }
+    */
 
     @Override
-    protected void parseMessageSpecificContents() {
-        super.parseMessageSpecificContents();
+    protected void parseMessageSpecificContents(GlobalRequestNoMoreSessionsMessage message) {
+        super.parseMessageSpecificContents(message);
     }
 }

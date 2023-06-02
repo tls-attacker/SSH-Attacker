@@ -56,7 +56,7 @@ public class HybridKeyExchangeReplyMessageParser
         this.combiner = combiner;
     }
 
-    private void parseHostKeyBytes() {
+    private void parseHostKeyBytes(HybridKeyExchangeReplyMessage message) {
         message.setHostKeyBytesLength(parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH));
         LOGGER.debug("Host key byte length" + message.getHostKeyBytesLength());
         message.setHostKeyBytes(parseByteArrayField(message.getHostKeyBytesLength().getValue()));
@@ -65,7 +65,7 @@ public class HybridKeyExchangeReplyMessageParser
                         + ArrayConverter.bytesToHexString(message.getHostKeyBytes().getValue()));
     }
 
-    private void parseHybridKey() {
+    private void parseHybridKey(HybridKeyExchangeReplyMessage message) {
         int length = parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH);
         LOGGER.debug("Total Length: " + length);
 
@@ -88,7 +88,7 @@ public class HybridKeyExchangeReplyMessageParser
         }
     }
 
-    private void parseSignature() {
+    private void parseSignature(HybridKeyExchangeReplyMessage message) {
         message.setSignatureLength(parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH));
         LOGGER.debug("Signature length: " + message.getSignatureLength().getValue());
         message.setSignature(parseByteArrayField(message.getSignatureLength().getValue()));
@@ -96,19 +96,21 @@ public class HybridKeyExchangeReplyMessageParser
     }
 
     @Override
-    protected void parseMessageSpecificContents() {
-        parseHostKeyBytes();
-        parseHybridKey();
-        parseSignature();
+    protected void parseMessageSpecificContents(HybridKeyExchangeReplyMessage message) {
+        parseHostKeyBytes(message);
+        parseHybridKey(message);
+        parseSignature(message);
     }
 
-    @Override
-    protected HybridKeyExchangeReplyMessage createMessage() {
-        return new HybridKeyExchangeReplyMessage();
-    }
+    /*
+        @Override
+        protected HybridKeyExchangeReplyMessage createMessage() {
+            return new HybridKeyExchangeReplyMessage();
+        }
+    */
 
     @Override
     public void parse(HybridKeyExchangeReplyMessage message) {
-        parseMessageSpecificContents();
+        parseMessageSpecificContents(message);
     }
 }

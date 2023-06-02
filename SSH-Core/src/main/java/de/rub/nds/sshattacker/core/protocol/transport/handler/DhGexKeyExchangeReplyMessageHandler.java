@@ -26,20 +26,23 @@ public class DhGexKeyExchangeReplyMessageHandler
 
     @Override
     public void adjustContext(DhGexKeyExchangeReplyMessage message) {
-        KeyExchangeUtil.handleHostKeyMessage(context, message);
+        KeyExchangeUtil.handleHostKeyMessage(sshContext, message);
         updateContextWithRemotePublicKey(message);
-        KeyExchangeUtil.computeSharedSecret(context, context.getChooser().getDhGexKeyExchange());
-        KeyExchangeUtil.computeExchangeHash(context);
-        KeyExchangeUtil.handleExchangeHashSignatureMessage(context, message);
-        KeyExchangeUtil.setSessionId(context);
-        KeyExchangeUtil.generateKeySet(context);
+        KeyExchangeUtil.computeSharedSecret(
+                sshContext, sshContext.getChooser().getDhGexKeyExchange());
+        KeyExchangeUtil.computeExchangeHash(sshContext);
+        KeyExchangeUtil.handleExchangeHashSignatureMessage(sshContext, message);
+        KeyExchangeUtil.setSessionId(sshContext);
+        KeyExchangeUtil.generateKeySet(sshContext);
     }
 
     private void updateContextWithRemotePublicKey(DhGexKeyExchangeReplyMessage message) {
-        context.getChooser()
+        sshContext
+                .getChooser()
                 .getDhGexKeyExchange()
                 .setRemotePublicKey(message.getEphemeralPublicKey().getValue());
-        context.getExchangeHashInputHolder()
+        sshContext
+                .getExchangeHashInputHolder()
                 .setDhGexServerPublicKey(message.getEphemeralPublicKey().getValue());
     }
 

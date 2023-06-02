@@ -33,7 +33,7 @@ public abstract class ChannelRequestMessageParser<T extends ChannelRequestMessag
         super(stream);
     }
 
-    private void parseRequestType() {
+    private void parseRequestType(T message) {
         message.setRequestTypeLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
         LOGGER.debug("Request type length: " + message.getRequestTypeLength().getValue());
         message.setRequestType(
@@ -42,15 +42,15 @@ public abstract class ChannelRequestMessageParser<T extends ChannelRequestMessag
         LOGGER.debug("Request type: " + message.getRequestType().getValue());
     }
 
-    private void parseWantReply() {
+    private void parseWantReply(T message) {
         message.setWantReply(parseByteField(1));
         LOGGER.debug("Reply wanted: " + Converter.byteToBoolean(message.getWantReply().getValue()));
     }
 
     @Override
-    protected void parseMessageSpecificContents() {
-        super.parseMessageSpecificContents();
-        parseRequestType();
-        parseWantReply();
+    protected void parseMessageSpecificContents(T message) {
+        super.parseMessageSpecificContents(message);
+        parseRequestType(message);
+        parseWantReply(message);
     }
 }

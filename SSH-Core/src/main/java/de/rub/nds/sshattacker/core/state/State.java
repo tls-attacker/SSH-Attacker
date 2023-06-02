@@ -57,7 +57,6 @@ public class State {
     private final Config config;
     private RunningModeType runningMode;
 
-
     public long getStartTimestamp() {
         return startTimestamp;
     }

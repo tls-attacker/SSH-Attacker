@@ -24,20 +24,22 @@ public class DhKeyExchangeReplyMessageHandler extends SshMessageHandler<DhKeyExc
 
     @Override
     public void adjustContext(DhKeyExchangeReplyMessage message) {
-        KeyExchangeUtil.handleHostKeyMessage(context, message);
+        KeyExchangeUtil.handleHostKeyMessage(sshContext, message);
         updateContextWithRemotePublicKey(message);
-        KeyExchangeUtil.computeSharedSecret(context, context.getChooser().getDhKeyExchange());
-        KeyExchangeUtil.computeExchangeHash(context);
-        KeyExchangeUtil.handleExchangeHashSignatureMessage(context, message);
-        KeyExchangeUtil.setSessionId(context);
-        KeyExchangeUtil.generateKeySet(context);
+        KeyExchangeUtil.computeSharedSecret(sshContext, sshContext.getChooser().getDhKeyExchange());
+        KeyExchangeUtil.computeExchangeHash(sshContext);
+        KeyExchangeUtil.handleExchangeHashSignatureMessage(sshContext, message);
+        KeyExchangeUtil.setSessionId(sshContext);
+        KeyExchangeUtil.generateKeySet(sshContext);
     }
 
     private void updateContextWithRemotePublicKey(DhKeyExchangeReplyMessage message) {
-        context.getChooser()
+        sshContext
+                .getChooser()
                 .getDhKeyExchange()
                 .setRemotePublicKey(message.getEphemeralPublicKey().getValue());
-        context.getExchangeHashInputHolder()
+        sshContext
+                .getExchangeHashInputHolder()
                 .setDhServerPublicKey(message.getEphemeralPublicKey().getValue());
     }
 

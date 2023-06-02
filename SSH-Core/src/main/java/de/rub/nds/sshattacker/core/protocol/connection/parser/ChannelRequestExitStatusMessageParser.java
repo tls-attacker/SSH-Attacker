@@ -34,21 +34,21 @@ public class ChannelRequestExitStatusMessageParser
 
     @Override
     public void parse(ChannelRequestExitStatusMessage message) {
-        parseMessageSpecificContents();
+        parseMessageSpecificContents(message);
     }
 
-    @Override
+    /*@Override
     public ChannelRequestExitStatusMessage createMessage() {
         return new ChannelRequestExitStatusMessage();
-    }
+    }*/
 
-    public void parseExitStatus() {
+    public void parseExitStatus(ChannelRequestExitStatusMessage message) {
         message.setExitStatus(parseIntField(DataFormatConstants.UINT32_SIZE));
         LOGGER.debug("Exit status: " + message.getExitStatus().getValue());
     }
 
-    public void parseMessageSpecificContents() {
-        super.parseMessageSpecificContents();
-        parseExitStatus();
+    public void parseMessageSpecificContents(ChannelRequestExitStatusMessage message) {
+        super.parseMessageSpecificContents(message);
+        parseExitStatus(message);
     }
 }

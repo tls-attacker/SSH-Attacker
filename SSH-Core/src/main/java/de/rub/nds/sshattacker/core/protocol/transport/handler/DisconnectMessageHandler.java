@@ -28,7 +28,7 @@ public class DisconnectMessageHandler extends SshMessageHandler<DisconnectMessag
     @Override
     public void adjustContext(DisconnectMessage message) {
         LOGGER.info("Received DisconnectMessage");
-        context.setDisconnectMessageReceived(true);
+        sshContext.setDisconnectMessageReceived(true);
     }
 
     /*@Override

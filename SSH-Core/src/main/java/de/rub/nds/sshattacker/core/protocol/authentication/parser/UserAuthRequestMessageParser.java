@@ -33,7 +33,7 @@ public abstract class UserAuthRequestMessageParser<T extends UserAuthRequestMess
         super(stream);
     }
 
-    private void parseUserName() {
+    private void parseUserName(T message) {
         message.setUserNameLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
         LOGGER.debug("Username length: " + message.getUserNameLength().getValue());
         message.setUserName(
@@ -41,7 +41,7 @@ public abstract class UserAuthRequestMessageParser<T extends UserAuthRequestMess
         LOGGER.debug("Username: {}", backslashEscapeString(message.getUserName().getValue()));
     }
 
-    private void parseServiceName() {
+    private void parseServiceName(T message) {
         message.setServiceNameLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
         LOGGER.debug("Servicename length: " + message.getServiceNameLength().getValue());
         message.setServiceName(
@@ -50,7 +50,7 @@ public abstract class UserAuthRequestMessageParser<T extends UserAuthRequestMess
         LOGGER.debug("Servicename: {}", backslashEscapeString(message.getServiceName().getValue()));
     }
 
-    private void parseMethodName() {
+    private void parseMethodName(T message) {
         message.setMethodNameLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
         LOGGER.debug("Methodname length: " + message.getMethodNameLength().getValue());
         message.setMethodName(
@@ -60,9 +60,9 @@ public abstract class UserAuthRequestMessageParser<T extends UserAuthRequestMess
     }
 
     @Override
-    protected void parseMessageSpecificContents() {
-        parseUserName();
-        parseServiceName();
-        parseMethodName();
+    protected void parseMessageSpecificContents(T message) {
+        parseUserName(message);
+        parseServiceName(message);
+        parseMethodName(message);
     }
 }

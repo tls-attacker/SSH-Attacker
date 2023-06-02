@@ -26,29 +26,31 @@ public class HybridKeyExchangeInitMessageHandler
 
     @Override
     public void adjustContext(HybridKeyExchangeInitMessage message) {
-        context.getChooser()
+        sshContext
+                .getChooser()
                 .getHybridKeyExchange()
                 .getKeyAgreement()
                 .setRemotePublicKey(message.getAgreementPublicKey().getValue());
-        context.getChooser()
+        sshContext
+                .getChooser()
                 .getHybridKeyExchange()
                 .getKeyEncapsulation()
                 .setRemotePublicKey(message.getEncapsulationPublicKey().getValue());
         byte[] combined;
-        switch (context.getChooser().getHybridKeyExchange().getCombiner()) {
+        switch (sshContext.getChooser().getHybridKeyExchange().getCombiner()) {
             case POSTQUANTUM_CONCATENATE_CLASSICAL:
                 combined =
                         KeyExchangeUtil.concatenateHybridKeys(
                                 message.getEncapsulationPublicKey().getValue(),
                                 message.getAgreementPublicKey().getValue());
-                context.getExchangeHashInputHolder().setHybridClientPublicKey(combined);
+                sshContext.getExchangeHashInputHolder().setHybridClientPublicKey(combined);
                 break;
             case CLASSICAL_CONCATENATE_POSTQUANTUM:
                 combined =
                         KeyExchangeUtil.concatenateHybridKeys(
                                 message.getAgreementPublicKey().getValue(),
                                 message.getEncapsulationPublicKey().getValue());
-                context.getExchangeHashInputHolder().setHybridClientPublicKey(combined);
+                sshContext.getExchangeHashInputHolder().setHybridClientPublicKey(combined);
                 break;
             default:
                 LOGGER.warn("combiner is not supported. Can not set Hybrid Key.");

@@ -35,15 +35,17 @@ public class ChannelRequestEnvMessageParser
 
     @Override
     public void parse(ChannelRequestEnvMessage message) {
-        parseMessageSpecificContents();
+        parseMessageSpecificContents(message);
     }
 
-    @Override
-    public ChannelRequestEnvMessage createMessage() {
-        return new ChannelRequestEnvMessage();
-    }
+    /*
+        @Override
+        public ChannelRequestEnvMessage createMessage() {
+            return new ChannelRequestEnvMessage();
+        }
+    */
 
-    public void parseVariableName() {
+    public void parseVariableName(ChannelRequestEnvMessage message) {
         message.setVariableNameLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
         LOGGER.debug("Variable name length: " + message.getVariableNameLength().getValue());
         message.setVariableName(parseByteString(message.getVariableNameLength().getValue()));
@@ -51,7 +53,7 @@ public class ChannelRequestEnvMessageParser
                 "Variable name: {}", backslashEscapeString(message.getVariableName().getValue()));
     }
 
-    public void parseVariableValue() {
+    public void parseVariableValue(ChannelRequestEnvMessage message) {
         message.setVariableValueLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
         LOGGER.debug("Variable value length: " + message.getVariableValueLength().getValue());
         message.setVariableValue(parseByteString(message.getVariableValueLength().getValue()));
@@ -60,9 +62,9 @@ public class ChannelRequestEnvMessageParser
     }
 
     @Override
-    protected void parseMessageSpecificContents() {
-        super.parseMessageSpecificContents();
-        parseVariableName();
-        parseVariableValue();
+    protected void parseMessageSpecificContents(ChannelRequestEnvMessage message) {
+        super.parseMessageSpecificContents(message);
+        parseVariableName(message);
+        parseVariableValue(message);
     }
 }

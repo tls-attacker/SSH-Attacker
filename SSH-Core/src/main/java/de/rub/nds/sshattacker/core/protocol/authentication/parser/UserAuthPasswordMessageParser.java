@@ -34,24 +34,26 @@ public class UserAuthPasswordMessageParser
         super(stream);
     }
 
-    @Override
-    public UserAuthPasswordMessage createMessage() {
-        return new UserAuthPasswordMessage();
-    }
+    /*
+        @Override
+        public UserAuthPasswordMessage createMessage() {
+            return new UserAuthPasswordMessage();
+        }
+    */
 
     @Override
     public void parse(UserAuthPasswordMessage message) {
         LOGGER.debug("Parsing UserAuthBannerMessage");
-        parseMessageSpecificContents();
+        parseMessageSpecificContents(message);
         message.setCompleteResultingMessage(getAlreadyParsed());
     }
 
-    private void parseChangePassword() {
+    private void parseChangePassword(UserAuthPasswordMessage message) {
         message.setChangePassword(parseByteField(1));
         LOGGER.debug("Change password: " + message.getChangePassword().getValue());
     }
 
-    private void parsePassword() {
+    private void parsePassword(UserAuthPasswordMessage message) {
         message.setPasswordLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
         LOGGER.debug("Password length: " + message.getPasswordLength().getValue());
         message.setPassword(
@@ -59,7 +61,7 @@ public class UserAuthPasswordMessageParser
         LOGGER.debug("Password: " + message.getPassword().getValue());
     }
 
-    private void parseNewPassword() {
+    private void parseNewPassword(UserAuthPasswordMessage message) {
         message.setNewPasswordLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
         LOGGER.debug("New password length: " + message.getNewPasswordLength().getValue());
         message.setNewPassword(
@@ -68,12 +70,12 @@ public class UserAuthPasswordMessageParser
     }
 
     @Override
-    protected void parseMessageSpecificContents() {
-        super.parseMessageSpecificContents();
-        parseChangePassword();
-        parsePassword();
+    protected void parseMessageSpecificContents(UserAuthPasswordMessage message) {
+        super.parseMessageSpecificContents(message);
+        parseChangePassword(message);
+        parsePassword(message);
         if (Converter.byteToBoolean(message.getChangePassword().getValue())) {
-            parseNewPassword();
+            parseNewPassword(message);
         }
     }
 }

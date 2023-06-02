@@ -36,12 +36,14 @@ public class DisconnectMessageParser extends SshMessageParser<DisconnectMessage>
         super(stream);
     }
 
-    @Override
-    public DisconnectMessage createMessage() {
-        return new DisconnectMessage();
-    }
+    /*
+        @Override
+        public DisconnectMessage createMessage() {
+            return new DisconnectMessage();
+        }
+    */
 
-    private void parseReasonCode() {
+    private void parseReasonCode(DisconnectMessage message) {
         message.setReasonCode(parseIntField(DataFormatConstants.UINT32_SIZE));
         if (DisconnectReason.fromId(message.getReasonCode().getValue()) != null) {
             LOGGER.debug(
@@ -55,7 +57,7 @@ public class DisconnectMessageParser extends SshMessageParser<DisconnectMessage>
         }
     }
 
-    private void parseDescription() {
+    private void parseDescription(DisconnectMessage message) {
         message.setDescriptionLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
         LOGGER.debug("Description length: " + message.getDescriptionLength().getValue());
         message.setDescription(
@@ -63,7 +65,7 @@ public class DisconnectMessageParser extends SshMessageParser<DisconnectMessage>
         LOGGER.debug("Description: {}", backslashEscapeString(message.getDescription().getValue()));
     }
 
-    private void parseLanguageTag() {
+    private void parseLanguageTag(DisconnectMessage message) {
         message.setLanguageTagLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
         LOGGER.debug("Language tag length: " + message.getLanguageTagLength().getValue());
         message.setLanguageTag(
@@ -74,14 +76,14 @@ public class DisconnectMessageParser extends SshMessageParser<DisconnectMessage>
     }
 
     @Override
-    protected void parseMessageSpecificContents() {
-        parseReasonCode();
-        parseDescription();
-        parseLanguageTag();
+    protected void parseMessageSpecificContents(DisconnectMessage message) {
+        parseReasonCode(message);
+        parseDescription(message);
+        parseLanguageTag(message);
     }
 
     @Override
     public void parse(DisconnectMessage message) {
-        parseMessageSpecificContents();
+        parseMessageSpecificContents(message);
     }
 }

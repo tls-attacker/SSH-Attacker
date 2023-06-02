@@ -26,4 +26,10 @@ public class UnknownMessageSerializer extends SshMessageSerializer<UnknownMessag
         LOGGER.debug("Payload: " + ArrayConverter.bytesToHexString(message.getPayload()));
         appendBytes(message.getPayload().getValue());
     }
+
+    @Override
+    protected byte[] serializeBytes() {
+        serializeMessageSpecificContents();
+        return getAlreadySerialized();
+    }
 }

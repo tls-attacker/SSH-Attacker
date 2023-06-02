@@ -32,12 +32,12 @@ public class DhGexKeyExchangeInitMessageParser
         super(stream);
     }
 
-    @Override
+    /*    @Override
     protected DhGexKeyExchangeInitMessage createMessage() {
         return new DhGexKeyExchangeInitMessage();
-    }
+    }*/
 
-    public void parseEphemeralPublicKey() {
+    public void parseEphemeralPublicKey(DhGexKeyExchangeInitMessage message) {
         message.setEphemeralPublicKeyLength(parseIntField(DataFormatConstants.UINT32_SIZE));
         LOGGER.debug(
                 "Ephemeral public key (client) length: " + message.getEphemeralPublicKeyLength());
@@ -48,12 +48,12 @@ public class DhGexKeyExchangeInitMessageParser
     }
 
     @Override
-    protected void parseMessageSpecificContents() {
-        parseEphemeralPublicKey();
+    protected void parseMessageSpecificContents(DhGexKeyExchangeInitMessage message) {
+        parseEphemeralPublicKey(message);
     }
 
     @Override
     public void parse(DhGexKeyExchangeInitMessage message) {
-        parseMessageSpecificContents();
+        parseMessageSpecificContents(message);
     }
 }

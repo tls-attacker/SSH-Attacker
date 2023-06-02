@@ -32,15 +32,15 @@ public class GlobalRequestUnknownMessageParser
 
     @Override
     public void parse(GlobalRequestUnknownMessage message) {
-        parseMessageSpecificContents();
+        parseMessageSpecificContents(message);
     }
 
-    @Override
+    /*@Override
     public GlobalRequestUnknownMessage createMessage() {
         return new GlobalRequestUnknownMessage();
-    }
+    }*/
 
-    public void parseTypeSpecificData() {
+    public void parseTypeSpecificData(GlobalRequestUnknownMessage message) {
         message.setTypeSpecificData(parseByteArrayField(getBytesLeft()));
         LOGGER.debug(
                 "Type specific data: "
@@ -49,8 +49,8 @@ public class GlobalRequestUnknownMessageParser
     }
 
     @Override
-    protected void parseMessageSpecificContents() {
-        super.parseMessageSpecificContents();
-        parseTypeSpecificData();
+    protected void parseMessageSpecificContents(GlobalRequestUnknownMessage message) {
+        super.parseMessageSpecificContents(message);
+        parseTypeSpecificData(message);
     }
 }

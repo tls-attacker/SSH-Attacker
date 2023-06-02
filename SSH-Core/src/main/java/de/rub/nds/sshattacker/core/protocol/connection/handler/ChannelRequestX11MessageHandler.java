@@ -44,7 +44,7 @@ public class ChannelRequestX11MessageHandler extends SshMessageHandler<ChannelRe
     @Override
     public void adjustContext(ChannelRequestX11Message message) {
         if (Converter.byteToBoolean(message.getWantReply().getValue())) {
-            context.getChannelManager().addToChannelRequestResponseQueue(message);
+            sshContext.getChannelManager().addToChannelRequestResponseQueue(message);
         }
     }
 }

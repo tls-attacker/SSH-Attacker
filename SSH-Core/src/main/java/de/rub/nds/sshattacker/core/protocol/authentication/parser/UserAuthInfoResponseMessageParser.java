@@ -33,19 +33,21 @@ public class UserAuthInfoResponseMessageParser
         super(stream);
     }
 
-    @Override
-    protected UserAuthInfoResponseMessage createMessage() {
-        return new UserAuthInfoResponseMessage();
-    }
+    /*
+        @Override
+        protected UserAuthInfoResponseMessage createMessage() {
+            return new UserAuthInfoResponseMessage();
+        }
+    */
 
     @Override
     public void parse(UserAuthInfoResponseMessage message) {
         LOGGER.debug("Parsing UserAuthBannerMessage");
-        parseMessageSpecificContents();
+        parseMessageSpecificContents(message);
         message.setCompleteResultingMessage(getAlreadyParsed());
     }
 
-    private void parseResponseEntries() {
+    private void parseResponseEntries(UserAuthInfoResponseMessage message) {
         message.setResponseEntryCount(parseIntField(DataFormatConstants.UINT32_SIZE));
         LOGGER.debug("Number of response entries: " + message.getResponseEntryCount().getValue());
         for (int i = 0; i < message.getResponseEntryCount().getValue(); i++) {
@@ -60,7 +62,7 @@ public class UserAuthInfoResponseMessageParser
     }
 
     @Override
-    protected void parseMessageSpecificContents() {
-        parseResponseEntries();
+    protected void parseMessageSpecificContents(UserAuthInfoResponseMessage message) {
+        parseResponseEntries(message);
     }
 }

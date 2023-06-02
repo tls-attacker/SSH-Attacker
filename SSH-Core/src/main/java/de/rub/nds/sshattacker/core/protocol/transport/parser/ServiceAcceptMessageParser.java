@@ -33,7 +33,7 @@ public class ServiceAcceptMessageParser extends SshMessageParser<ServiceAcceptMe
         super(stream);
     }
 
-    private void parseServiceType() {
+    private void parseServiceType(ServiceAcceptMessage message) {
         message.setServiceNameLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
         LOGGER.debug("Service name length: " + message.getServiceNameLength());
         message.setServiceName(
@@ -43,17 +43,19 @@ public class ServiceAcceptMessageParser extends SshMessageParser<ServiceAcceptMe
     }
 
     @Override
-    protected void parseMessageSpecificContents() {
-        parseServiceType();
+    protected void parseMessageSpecificContents(ServiceAcceptMessage message) {
+        parseServiceType(message);
     }
 
-    @Override
-    public ServiceAcceptMessage createMessage() {
-        return new ServiceAcceptMessage();
-    }
+    /*
+        @Override
+        public ServiceAcceptMessage createMessage() {
+            return new ServiceAcceptMessage();
+        }
+    */
 
     @Override
     public void parse(ServiceAcceptMessage message) {
-        parseMessageSpecificContents();
+        parseMessageSpecificContents(message);
     }
 }

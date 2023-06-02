@@ -31,27 +31,31 @@ public class HybridKeyExchangeReplyMessageHandler
 
     @Override
     public void adjustContext(HybridKeyExchangeReplyMessage message) {
-        KeyExchangeUtil.handleHostKeyMessage(context, message);
+        KeyExchangeUtil.handleHostKeyMessage(sshContext, message);
         setRemoteValues(message);
-        context.getChooser().getHybridKeyExchange().combineSharedSecrets();
-        context.setSharedSecret(context.getChooser().getHybridKeyExchange().getSharedSecret());
-        context.getExchangeHashInputHolder()
-                .setSharedSecret(context.getChooser().getHybridKeyExchange().getSharedSecret());
-        KeyExchangeUtil.computeExchangeHash(context);
-        KeyExchangeUtil.handleExchangeHashSignatureMessage(context, message);
-        KeyExchangeUtil.setSessionId(context);
-        KeyExchangeUtil.generateKeySet(context);
+        sshContext.getChooser().getHybridKeyExchange().combineSharedSecrets();
+        sshContext.setSharedSecret(
+                sshContext.getChooser().getHybridKeyExchange().getSharedSecret());
+        sshContext
+                .getExchangeHashInputHolder()
+                .setSharedSecret(sshContext.getChooser().getHybridKeyExchange().getSharedSecret());
+        KeyExchangeUtil.computeExchangeHash(sshContext);
+        KeyExchangeUtil.handleExchangeHashSignatureMessage(sshContext, message);
+        KeyExchangeUtil.setSessionId(sshContext);
+        KeyExchangeUtil.generateKeySet(sshContext);
     }
 
     private void setRemoteValues(HybridKeyExchangeReplyMessage message) {
-        context.getChooser()
+        sshContext
+                .getChooser()
                 .getHybridKeyExchange()
                 .getKeyAgreement()
                 .setRemotePublicKey(message.getPublicKey().getValue());
         LOGGER.info(
                 "RemoteKey Agreement = "
                         + ArrayConverter.bytesToRawHexString(message.getPublicKey().getValue()));
-        context.getChooser()
+        sshContext
+                .getChooser()
                 .getHybridKeyExchange()
                 .getKeyEncapsulation()
                 .setEncryptedSharedSecret(message.getCombinedKeyShare().getValue());
@@ -60,25 +64,25 @@ public class HybridKeyExchangeReplyMessageHandler
                         + ArrayConverter.bytesToRawHexString(
                                 message.getCombinedKeyShare().getValue()));
         byte[] combined;
-        switch (context.getChooser().getHybridKeyExchange().getCombiner()) {
+        switch (sshContext.getChooser().getHybridKeyExchange().getCombiner()) {
             case CLASSICAL_CONCATENATE_POSTQUANTUM:
                 combined =
                         KeyExchangeUtil.concatenateHybridKeys(
                                 message.getPublicKey().getValue(),
                                 message.getCombinedKeyShare().getValue());
-                context.getExchangeHashInputHolder().setHybridServerPublicKey(combined);
+                sshContext.getExchangeHashInputHolder().setHybridServerPublicKey(combined);
                 break;
             case POSTQUANTUM_CONCATENATE_CLASSICAL:
                 combined =
                         KeyExchangeUtil.concatenateHybridKeys(
                                 message.getCombinedKeyShare().getValue(),
                                 message.getPublicKey().getValue());
-                context.getExchangeHashInputHolder().setHybridServerPublicKey(combined);
+                sshContext.getExchangeHashInputHolder().setHybridServerPublicKey(combined);
                 break;
             default:
                 LOGGER.warn(
                         "Combiner"
-                                + context.getChooser().getHybridKeyExchange().getCombiner()
+                                + sshContext.getChooser().getHybridKeyExchange().getCombiner()
                                 + " is not supported.");
                 break;
         }

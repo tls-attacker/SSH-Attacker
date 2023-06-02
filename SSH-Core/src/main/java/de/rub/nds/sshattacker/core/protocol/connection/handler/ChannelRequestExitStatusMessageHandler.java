@@ -47,7 +47,7 @@ public class ChannelRequestExitStatusMessageHandler
     @Override
     public void adjustContext(ChannelRequestExitStatusMessage message) {
         if (Converter.byteToBoolean(message.getWantReply().getValue())) {
-            context.getChannelManager().addToChannelRequestResponseQueue(message);
+            sshContext.getChannelManager().addToChannelRequestResponseQueue(message);
         }
     }
 }

@@ -29,17 +29,17 @@ public class AsciiMessageParser extends ProtocolMessageParser<AsciiMessage> {
         super(stream);
     }
 
-    @Override
+    /*    @Override
     protected AsciiMessage createMessage() {
         return new AsciiMessage();
-    }
+    }*/
 
     public void parse(AsciiMessage message) {
         LOGGER.debug("Parsing ApplicationMessage");
-        parseProtocolMessageContents();
+        parseProtocolMessageContents(message);
     }
 
-    private void parseText() {
+    private void parseText(AsciiMessage message) {
         // parse till CR NL (and remove them)
         String result = this.parseStringTill(CharConstants.NEWLINE);
         if (result.endsWith("\r\n")) {
@@ -56,8 +56,8 @@ public class AsciiMessageParser extends ProtocolMessageParser<AsciiMessage> {
         message.setText(result);
     }
 
-    @Override
-    public void parseProtocolMessageContents() {
-        parseText();
+    // @Override
+    public void parseProtocolMessageContents(AsciiMessage message) {
+        parseText(message);
     }
 }

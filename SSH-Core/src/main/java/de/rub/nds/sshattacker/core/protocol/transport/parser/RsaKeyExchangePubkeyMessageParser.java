@@ -34,22 +34,24 @@ public class RsaKeyExchangePubkeyMessageParser
 
     @Override
     public void parse(RsaKeyExchangePubkeyMessage message) {
-        parseMessageSpecificContents();
+        parseMessageSpecificContents(message);
     }
 
-    @Override
-    protected RsaKeyExchangePubkeyMessage createMessage() {
-        return new RsaKeyExchangePubkeyMessage();
-    }
+    /*
+        @Override
+        protected RsaKeyExchangePubkeyMessage createMessage() {
+            return new RsaKeyExchangePubkeyMessage();
+        }
+    */
 
-    private void parseHostKeyBytes() {
+    private void parseHostKeyBytes(RsaKeyExchangePubkeyMessage message) {
         message.setHostKeyBytesLength(parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH));
         LOGGER.debug("Host key bytes length: " + message.getHostKeyBytesLength().getValue());
         message.setHostKeyBytes(parseByteArrayField(message.getHostKeyBytesLength().getValue()));
         LOGGER.debug("Host key bytes: " + message.getHostKeyBytes());
     }
 
-    private void parseTransientPublicKey() {
+    private void parseTransientPublicKey(RsaKeyExchangePubkeyMessage message) {
         message.setTransientPublicKeyBytesLength(
                 parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH));
         LOGGER.debug(
@@ -61,8 +63,8 @@ public class RsaKeyExchangePubkeyMessageParser
     }
 
     @Override
-    protected void parseMessageSpecificContents() {
-        parseHostKeyBytes();
-        parseTransientPublicKey();
+    protected void parseMessageSpecificContents(RsaKeyExchangePubkeyMessage message) {
+        parseHostKeyBytes(message);
+        parseTransientPublicKey(message);
     }
 }

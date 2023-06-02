@@ -32,15 +32,17 @@ public class ChannelRequestUnknownMessageParser
 
     @Override
     public void parse(ChannelRequestUnknownMessage message) {
-        parseMessageSpecificContents();
+        parseMessageSpecificContents(message);
     }
 
-    @Override
-    public ChannelRequestUnknownMessage createMessage() {
-        return new ChannelRequestUnknownMessage();
-    }
+    /*
+        @Override
+        public ChannelRequestUnknownMessage createMessage() {
+            return new ChannelRequestUnknownMessage();
+        }
+    */
 
-    public void parseTypeSpecificData() {
+    public void parseTypeSpecificData(ChannelRequestUnknownMessage message) {
         message.setTypeSpecificData(parseByteArrayField(getBytesLeft()));
         LOGGER.debug(
                 "Type specific data: "
@@ -49,8 +51,8 @@ public class ChannelRequestUnknownMessageParser
     }
 
     @Override
-    protected void parseMessageSpecificContents() {
-        super.parseMessageSpecificContents();
-        parseTypeSpecificData();
+    protected void parseMessageSpecificContents(ChannelRequestUnknownMessage message) {
+        super.parseMessageSpecificContents(message);
+        parseTypeSpecificData(message);
     }
 }

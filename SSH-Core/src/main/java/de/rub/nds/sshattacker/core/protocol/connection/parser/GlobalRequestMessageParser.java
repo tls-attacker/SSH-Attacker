@@ -36,7 +36,7 @@ public abstract class GlobalRequestMessageParser<T extends GlobalRequestMessage<
         super(stream);
     }
 
-    private void parseRequestName() {
+    private void parseRequestName(T message) {
         message.setRequestNameLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
         LOGGER.debug("Request name length: " + message.getRequestNameLength().getValue());
         message.setRequestName(
@@ -46,14 +46,14 @@ public abstract class GlobalRequestMessageParser<T extends GlobalRequestMessage<
                 "Request name: {}", backslashEscapeString(message.getRequestName().getValue()));
     }
 
-    private void parseWantReply() {
+    private void parseWantReply(T message) {
         message.setWantReply(parseByteField(1));
         LOGGER.debug("Want reply: " + Converter.byteToBoolean(message.getWantReply().getValue()));
     }
 
     @Override
-    protected void parseMessageSpecificContents() {
-        parseRequestName();
-        parseWantReply();
+    protected void parseMessageSpecificContents(T message) {
+        parseRequestName(message);
+        parseWantReply(message);
     }
 }

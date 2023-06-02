@@ -26,16 +26,18 @@ public class NewKeysMessageParser extends SshMessageParser<NewKeysMessage> {
         super(stream);
     }
 
-    @Override
-    public NewKeysMessage createMessage() {
-        return new NewKeysMessage();
-    }
+    /*
+        @Override
+        public NewKeysMessage createMessage() {
+            return new NewKeysMessage();
+        }
+    */
 
     @Override
-    protected void parseMessageSpecificContents() {}
+    protected void parseMessageSpecificContents(NewKeysMessage message) {}
 
     @Override
     public void parse(NewKeysMessage message) {
-        parseMessageSpecificContents();
+        parseMessageSpecificContents(message);
     }
 }

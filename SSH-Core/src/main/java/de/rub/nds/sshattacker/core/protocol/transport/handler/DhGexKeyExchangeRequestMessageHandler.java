@@ -28,17 +28,17 @@ public class DhGexKeyExchangeRequestMessageHandler
     public void adjustContext(DhGexKeyExchangeRequestMessage message) {
         updateContextWithAcceptableGroupSize(message);
         updateExchangeHashWithAcceptableGroupSize(message);
-        context.setOldGroupRequestReceived(false);
+        sshContext.setOldGroupRequestReceived(false);
     }
 
     private void updateContextWithAcceptableGroupSize(DhGexKeyExchangeRequestMessage message) {
-        context.setMinimalDhGroupSize(message.getMinimalGroupSize().getValue());
-        context.setPreferredDhGroupSize(message.getPreferredGroupSize().getValue());
-        context.setMaximalDhGroupSize(message.getMaximalGroupSize().getValue());
+        sshContext.setMinimalDhGroupSize(message.getMinimalGroupSize().getValue());
+        sshContext.setPreferredDhGroupSize(message.getPreferredGroupSize().getValue());
+        sshContext.setMaximalDhGroupSize(message.getMaximalGroupSize().getValue());
     }
 
     private void updateExchangeHashWithAcceptableGroupSize(DhGexKeyExchangeRequestMessage message) {
-        ExchangeHashInputHolder inputHolder = context.getExchangeHashInputHolder();
+        ExchangeHashInputHolder inputHolder = sshContext.getExchangeHashInputHolder();
         inputHolder.setDhGexMinimalGroupSize(message.getMinimalGroupSize().getValue());
         inputHolder.setDhGexPreferredGroupSize(message.getPreferredGroupSize().getValue());
         inputHolder.setDhGexMaximalGroupSize(message.getMaximalGroupSize().getValue());

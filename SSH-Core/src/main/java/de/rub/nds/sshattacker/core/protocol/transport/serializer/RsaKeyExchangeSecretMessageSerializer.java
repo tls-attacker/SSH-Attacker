@@ -37,4 +37,10 @@ public class RsaKeyExchangeSecretMessageSerializer
     public void serializeMessageSpecificContents() {
         serializeEncryptedSecret();
     }
+
+    @Override
+    protected byte[] serializeBytes() {
+        serializeMessageSpecificContents();
+        return getAlreadySerialized();
+    }
 }

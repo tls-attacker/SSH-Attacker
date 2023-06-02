@@ -27,7 +27,7 @@ public class ChannelRequestUnknownMessageHandler
     @Override
     public void adjustContext(ChannelRequestUnknownMessage message) {
         if (Converter.byteToBoolean(message.getWantReply().getValue())) {
-            context.getChannelManager().addToChannelRequestResponseQueue(message);
+            sshContext.getChannelManager().addToChannelRequestResponseQueue(message);
         }
     }
 

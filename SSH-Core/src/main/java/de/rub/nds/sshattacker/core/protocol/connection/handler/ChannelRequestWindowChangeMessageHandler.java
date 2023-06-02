@@ -46,7 +46,7 @@ public class ChannelRequestWindowChangeMessageHandler
     @Override
     public void adjustContext(ChannelRequestWindowChangeMessage message) {
         if (Converter.byteToBoolean(message.getWantReply().getValue())) {
-            context.getChannelManager().addToChannelRequestResponseQueue(message);
+            sshContext.getChannelManager().addToChannelRequestResponseQueue(message);
         }
     }
 }

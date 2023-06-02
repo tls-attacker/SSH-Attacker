@@ -33,40 +33,42 @@ public class ChannelRequestWindowChangeMessageParser
 
     @Override
     public void parse(ChannelRequestWindowChangeMessage message) {
-        parseMessageSpecificContents();
+        parseMessageSpecificContents(message);
     }
 
-    @Override
-    public ChannelRequestWindowChangeMessage createMessage() {
-        return new ChannelRequestWindowChangeMessage();
-    }
+    /*
+        @Override
+        public ChannelRequestWindowChangeMessage createMessage() {
+            return new ChannelRequestWindowChangeMessage();
+        }
+    */
 
-    public void parseWidthColumns() {
+    public void parseWidthColumns(ChannelRequestWindowChangeMessage message) {
         message.setWidthColumns(parseIntField(DataFormatConstants.UINT32_SIZE));
         LOGGER.debug("Terminal width in colums: " + message.getWidthColumns().getValue());
     }
 
-    public void parseHeightRows() {
+    public void parseHeightRows(ChannelRequestWindowChangeMessage message) {
         message.setHeightRows(parseIntField(DataFormatConstants.UINT32_SIZE));
         LOGGER.debug("Terminal height in rows: " + message.getHeightRows().getValue());
     }
 
-    public void parseWidthPixels() {
+    public void parseWidthPixels(ChannelRequestWindowChangeMessage message) {
         message.setWidthPixels(parseIntField(DataFormatConstants.UINT32_SIZE));
         LOGGER.debug("Terminal width in pixels: " + message.getWidthPixels().getValue());
     }
 
-    public void parseHeightPixels() {
+    public void parseHeightPixels(ChannelRequestWindowChangeMessage message) {
         message.setHeightPixels(parseIntField(DataFormatConstants.UINT32_SIZE));
         LOGGER.debug("Terminal height in pixels: " + message.getHeightPixels().getValue());
     }
 
     @Override
-    protected void parseMessageSpecificContents() {
-        super.parseMessageSpecificContents();
-        parseWidthColumns();
-        parseHeightRows();
-        parseWidthPixels();
-        parseHeightPixels();
+    protected void parseMessageSpecificContents(ChannelRequestWindowChangeMessage message) {
+        super.parseMessageSpecificContents(message);
+        parseWidthColumns(message);
+        parseHeightRows(message);
+        parseWidthPixels(message);
+        parseHeightPixels(message);
     }
 }

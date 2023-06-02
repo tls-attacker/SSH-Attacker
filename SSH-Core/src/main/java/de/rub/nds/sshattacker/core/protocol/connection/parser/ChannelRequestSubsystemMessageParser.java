@@ -35,15 +35,17 @@ public class ChannelRequestSubsystemMessageParser
 
     @Override
     public void parse(ChannelRequestSubsystemMessage message) {
-        parseMessageSpecificContents();
+        parseMessageSpecificContents(message);
     }
 
-    @Override
-    public ChannelRequestSubsystemMessage createMessage() {
-        return new ChannelRequestSubsystemMessage();
-    }
+    /*
+        @Override
+        public ChannelRequestSubsystemMessage createMessage() {
+            return new ChannelRequestSubsystemMessage();
+        }
+    */
 
-    public void parseSubsystemName() {
+    public void parseSubsystemName(ChannelRequestSubsystemMessage message) {
         message.setSubsystemNameLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
         LOGGER.debug("Subsystem name length: " + message.getSubsystemNameLength().getValue());
         message.setSubsystemName(
@@ -54,8 +56,8 @@ public class ChannelRequestSubsystemMessageParser
     }
 
     @Override
-    protected void parseMessageSpecificContents() {
-        super.parseMessageSpecificContents();
-        parseSubsystemName();
+    protected void parseMessageSpecificContents(ChannelRequestSubsystemMessage message) {
+        super.parseMessageSpecificContents(message);
+        parseSubsystemName(message);
     }
 }

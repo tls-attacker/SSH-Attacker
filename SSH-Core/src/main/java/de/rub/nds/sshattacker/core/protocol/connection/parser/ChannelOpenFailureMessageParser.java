@@ -34,20 +34,22 @@ public class ChannelOpenFailureMessageParser
 
     @Override
     public void parse(ChannelOpenFailureMessage message) {
-        parseMessageSpecificContents();
+        parseMessageSpecificContents(message);
     }
 
-    @Override
-    public ChannelOpenFailureMessage createMessage() {
-        return new ChannelOpenFailureMessage();
-    }
+    /*
+        @Override
+        public ChannelOpenFailureMessage createMessage() {
+            return new ChannelOpenFailureMessage();
+        }
+    */
 
-    private void parseReasonCode() {
+    private void parseReasonCode(ChannelOpenFailureMessage message) {
         message.setReasonCode(parseIntField(DataFormatConstants.UINT32_SIZE));
         LOGGER.debug("Reason code: " + message.getReasonCode());
     }
 
-    private void parseReason() {
+    private void parseReason(ChannelOpenFailureMessage message) {
         message.setReasonLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
         LOGGER.debug("Reason length: " + message.getReasonLength());
         message.setReason(
@@ -55,7 +57,7 @@ public class ChannelOpenFailureMessageParser
         LOGGER.debug("Reason: {}", backslashEscapeString(message.getReason().getValue()));
     }
 
-    private void parseLanguageTag() {
+    private void parseLanguageTag(ChannelOpenFailureMessage message) {
         message.setLanguageTagLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
         LOGGER.debug("Language tag length: " + message.getLanguageTagLength().getValue());
         message.setLanguageTag(
@@ -66,10 +68,10 @@ public class ChannelOpenFailureMessageParser
     }
 
     @Override
-    protected void parseMessageSpecificContents() {
-        super.parseMessageSpecificContents();
-        parseReasonCode();
-        parseReason();
-        parseLanguageTag();
+    protected void parseMessageSpecificContents(ChannelOpenFailureMessage message) {
+        super.parseMessageSpecificContents(message);
+        parseReasonCode(message);
+        parseReason(message);
+        parseLanguageTag(message);
     }
 }

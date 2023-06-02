@@ -24,10 +24,10 @@ public class RsaKeyExchangeDoneMessageHandler extends SshMessageHandler<RsaKeyEx
 
     @Override
     public void adjustContext(RsaKeyExchangeDoneMessage message) {
-        KeyExchangeUtil.computeExchangeHash(context);
-        KeyExchangeUtil.handleExchangeHashSignatureMessage(context, message);
-        KeyExchangeUtil.setSessionId(context);
-        KeyExchangeUtil.generateKeySet(context);
+        KeyExchangeUtil.computeExchangeHash(sshContext);
+        KeyExchangeUtil.handleExchangeHashSignatureMessage(sshContext, message);
+        KeyExchangeUtil.setSessionId(sshContext);
+        KeyExchangeUtil.generateKeySet(sshContext);
     }
 
     /*@Override

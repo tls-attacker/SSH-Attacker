@@ -30,18 +30,20 @@ public class UserAuthSuccessMessageParser extends SshMessageParser<UserAuthSucce
         super(stream);
     }
 
-    @Override
-    public UserAuthSuccessMessage createMessage() {
-        return new UserAuthSuccessMessage();
-    }
+    /*
+        @Override
+        public UserAuthSuccessMessage createMessage() {
+            return new UserAuthSuccessMessage();
+        }
+    */
 
     @Override
     public void parse(UserAuthSuccessMessage message) {
         LOGGER.debug("Parsing UserAuthBannerMessage");
-        parseMessageSpecificContents();
+        parseMessageSpecificContents(message);
         message.setCompleteResultingMessage(getAlreadyParsed());
     }
 
     @Override
-    protected void parseMessageSpecificContents() {}
+    protected void parseMessageSpecificContents(UserAuthSuccessMessage message) {}
 }

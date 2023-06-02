@@ -30,15 +30,15 @@ public class ChannelOpenConfirmationMessageHandler
 
     @Override
     public void adjustContext(ChannelOpenConfirmationMessage message) {
-        Channel channel = context.getChannels().get(message.getRecipientChannelId().getValue());
+        Channel channel = sshContext.getChannels().get(message.getRecipientChannelId().getValue());
         if (channel == null) {
             LOGGER.warn(
                     "{} received but no channel with id {} found locally, creating a new channel from defaults with given channel id.",
                     this.getClass().getSimpleName(),
                     message.getRecipientChannelId().getValue());
-            channel = context.getConfig().getChannelDefaults().newChannelFromDefaults();
+            channel = sshContext.getConfig().getChannelDefaults().newChannelFromDefaults();
             channel.setLocalChannelId(message.getRecipientChannelId().getValue());
-            context.getChannels().put(channel.getLocalChannelId().getValue(), channel);
+            sshContext.getChannels().put(channel.getLocalChannelId().getValue(), channel);
         }
 
         channel.setRemoteChannelId(message.getSenderChannelId());

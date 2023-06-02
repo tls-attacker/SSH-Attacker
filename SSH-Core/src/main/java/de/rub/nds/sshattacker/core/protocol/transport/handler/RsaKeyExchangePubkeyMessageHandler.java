@@ -26,13 +26,16 @@ public class RsaKeyExchangePubkeyMessageHandler
 
     @Override
     public void adjustContext(RsaKeyExchangePubkeyMessage message) {
-        KeyExchangeUtil.handleHostKeyMessage(context, message);
+        KeyExchangeUtil.handleHostKeyMessage(sshContext, message);
         updateContextWithTransientPublicKey(message);
     }
 
     private void updateContextWithTransientPublicKey(RsaKeyExchangePubkeyMessage message) {
-        context.getChooser().getRsaKeyExchange().setTransientKey(message.getTransientPublicKey());
-        context.getExchangeHashInputHolder().setRsaTransientKey(message.getTransientPublicKey());
+        sshContext
+                .getChooser()
+                .getRsaKeyExchange()
+                .setTransientKey(message.getTransientPublicKey());
+        sshContext.getExchangeHashInputHolder().setRsaTransientKey(message.getTransientPublicKey());
     }
 
     /*@Override

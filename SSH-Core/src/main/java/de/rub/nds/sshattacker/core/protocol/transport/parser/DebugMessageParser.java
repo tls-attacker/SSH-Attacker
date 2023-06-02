@@ -37,22 +37,22 @@ public class DebugMessageParser extends SshMessageParser<DebugMessage> {
 
     @Override
     public void parse(DebugMessage message) {
-        parseMessageSpecificContents();
+        parseMessageSpecificContents(message);
     }
 
-    @Override
+    // @Override
     public DebugMessage createMessage() {
         return new DebugMessage();
     }
 
-    private void parseAlwaysDisplay() {
+    private void parseAlwaysDisplay(DebugMessage message) {
         message.setAlwaysDisplay(parseByteField(1));
         LOGGER.debug(
                 "Always display: "
                         + Converter.byteToBoolean(message.getAlwaysDisplay().getValue()));
     }
 
-    private void parseMessage() {
+    private void parseMessage(DebugMessage message) {
         message.setMessageLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
         LOGGER.debug("Message length: " + message.getMessageLength().getValue());
         message.setMessage(
@@ -60,7 +60,7 @@ public class DebugMessageParser extends SshMessageParser<DebugMessage> {
         LOGGER.debug("Message: " + backslashEscapeString(message.getMessage().getValue()));
     }
 
-    private void parseLanguageTag() {
+    private void parseLanguageTag(DebugMessage message) {
         message.setLanguageTagLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
         LOGGER.debug("Language tag length: " + message.getLanguageTagLength().getValue());
         message.setLanguageTag(
@@ -69,10 +69,10 @@ public class DebugMessageParser extends SshMessageParser<DebugMessage> {
         LOGGER.debug("Language tag: " + backslashEscapeString(message.getLanguageTag().getValue()));
     }
 
-    @Override
-    protected void parseMessageSpecificContents() {
-        parseAlwaysDisplay();
-        parseMessage();
-        parseLanguageTag();
+    // @Override
+    protected void parseMessageSpecificContents(DebugMessage message) {
+        parseAlwaysDisplay(message);
+        parseMessage(message);
+        parseLanguageTag(message);
     }
 }

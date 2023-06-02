@@ -26,20 +26,23 @@ public class EcdhKeyExchangeReplyMessageHandler
 
     @Override
     public void adjustContext(EcdhKeyExchangeReplyMessage message) {
-        KeyExchangeUtil.handleHostKeyMessage(context, message);
+        KeyExchangeUtil.handleHostKeyMessage(sshContext, message);
         updateContextWithRemotePublicKey(message);
-        KeyExchangeUtil.computeSharedSecret(context, context.getChooser().getEcdhKeyExchange());
-        KeyExchangeUtil.computeExchangeHash(context);
-        KeyExchangeUtil.handleExchangeHashSignatureMessage(context, message);
-        KeyExchangeUtil.setSessionId(context);
-        KeyExchangeUtil.generateKeySet(context);
+        KeyExchangeUtil.computeSharedSecret(
+                sshContext, sshContext.getChooser().getEcdhKeyExchange());
+        KeyExchangeUtil.computeExchangeHash(sshContext);
+        KeyExchangeUtil.handleExchangeHashSignatureMessage(sshContext, message);
+        KeyExchangeUtil.setSessionId(sshContext);
+        KeyExchangeUtil.generateKeySet(sshContext);
     }
 
     private void updateContextWithRemotePublicKey(EcdhKeyExchangeReplyMessage message) {
-        context.getChooser()
+        sshContext
+                .getChooser()
                 .getEcdhKeyExchange()
                 .setRemotePublicKey(message.getEphemeralPublicKey().getValue());
-        context.getExchangeHashInputHolder()
+        sshContext
+                .getExchangeHashInputHolder()
                 .setEcdhServerPublicKey(message.getEphemeralPublicKey().getValue());
     }
 

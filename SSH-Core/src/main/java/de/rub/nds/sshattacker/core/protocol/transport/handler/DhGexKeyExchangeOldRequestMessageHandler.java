@@ -26,12 +26,13 @@ public class DhGexKeyExchangeOldRequestMessageHandler
     @Override
     public void adjustContext(DhGexKeyExchangeOldRequestMessage message) {
         updateContextWithPreferredGroupSize(message);
-        context.setOldGroupRequestReceived(true);
+        sshContext.setOldGroupRequestReceived(true);
     }
 
     private void updateContextWithPreferredGroupSize(DhGexKeyExchangeOldRequestMessage message) {
-        context.setPreferredDhGroupSize(message.getPreferredGroupSize().getValue());
-        context.getExchangeHashInputHolder()
+        sshContext.setPreferredDhGroupSize(message.getPreferredGroupSize().getValue());
+        sshContext
+                .getExchangeHashInputHolder()
                 .setDhGexPreferredGroupSize(message.getPreferredGroupSize().getValue());
     }
 

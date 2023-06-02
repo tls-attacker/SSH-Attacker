@@ -33,4 +33,10 @@ public class RsaKeyExchangeDoneMessageSerializer
     public void serializeMessageSpecificContents() {
         serializeSignature();
     }
+
+    @Override
+    protected byte[] serializeBytes() {
+        serializeMessageSpecificContents();
+        return getAlreadySerialized();
+    }
 }

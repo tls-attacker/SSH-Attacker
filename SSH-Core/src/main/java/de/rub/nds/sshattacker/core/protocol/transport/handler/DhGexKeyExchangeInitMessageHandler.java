@@ -29,10 +29,12 @@ public class DhGexKeyExchangeInitMessageHandler
 
     @Override
     public void adjustContext(DhGexKeyExchangeInitMessage message) {
-        context.getChooser()
+        sshContext
+                .getChooser()
                 .getDhGexKeyExchange()
                 .setRemotePublicKey(message.getEphemeralPublicKey().getValue());
-        context.getExchangeHashInputHolder()
+        sshContext
+                .getExchangeHashInputHolder()
                 .setDhGexClientPublicKey(message.getEphemeralPublicKey().getValue());
     }
 

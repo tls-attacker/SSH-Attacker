@@ -29,14 +29,16 @@ public class GlobalRequestFailureMessageParser
 
     @Override
     public void parse(GlobalRequestFailureMessage globalRequestFailureMessage) {
-        parseMessageSpecificContents();
+        parseMessageSpecificContents(globalRequestFailureMessage);
     }
 
-    @Override
-    public GlobalRequestFailureMessage createMessage() {
-        return new GlobalRequestFailureMessage();
-    }
+    /*
+        @Override
+        public GlobalRequestFailureMessage createMessage() {
+            return new GlobalRequestFailureMessage();
+        }
+    */
 
     @Override
-    protected void parseMessageSpecificContents() {}
+    protected void parseMessageSpecificContents(GlobalRequestFailureMessage message) {}
 }

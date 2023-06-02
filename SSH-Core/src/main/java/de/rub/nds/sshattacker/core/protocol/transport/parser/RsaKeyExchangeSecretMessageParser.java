@@ -35,15 +35,15 @@ public class RsaKeyExchangeSecretMessageParser
 
     @Override
     public void parse(RsaKeyExchangeSecretMessage message) {
-        parseMessageSpecificContents();
+        parseMessageSpecificContents(message);
     }
 
-    @Override
+    /*    @Override
     public RsaKeyExchangeSecretMessage createMessage() {
         return new RsaKeyExchangeSecretMessage();
-    }
+    }*/
 
-    private void parseEncryptedSecret() {
+    private void parseEncryptedSecret(RsaKeyExchangeSecretMessage message) {
         message.setEncryptedSecretLength(parseIntField(DataFormatConstants.UINT32_SIZE));
         LOGGER.debug("Encrypted secret length: {}", message.getEncryptedSecretLength().getValue());
         message.setEncryptedSecret(
@@ -52,7 +52,7 @@ public class RsaKeyExchangeSecretMessageParser
     }
 
     @Override
-    protected void parseMessageSpecificContents() {
-        parseEncryptedSecret();
+    protected void parseMessageSpecificContents(RsaKeyExchangeSecretMessage message) {
+        parseEncryptedSecret(message);
     }
 }

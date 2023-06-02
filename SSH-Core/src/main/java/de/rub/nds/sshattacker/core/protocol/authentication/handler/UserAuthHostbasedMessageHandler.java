@@ -67,7 +67,7 @@ public class UserAuthHostbasedMessageHandler extends SshMessageHandler<UserAuthH
     public byte[] prepareSignatureInput(UserAuthHostbasedMessage message) {
         return ArrayConverter.concatenate(
                 Converter.bytesToLengthPrefixedBinaryString(
-                        context.getSessionID().orElse(new byte[] {})),
+                        sshContext.getSessionID().orElse(new byte[] {})),
                 new byte[] {message.getMessageId().getValue()},
                 Converter.stringToLengthPrefixedBinaryString(message.getUserName().getValue()),
                 Converter.stringToLengthPrefixedBinaryString(message.getServiceName().getValue()),

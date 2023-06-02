@@ -32,12 +32,12 @@ public class DhGexKeyExchangeGroupMessageParser
         super(stream);
     }
 
-    @Override
+    /*    @Override
     public DhGexKeyExchangeGroupMessage createMessage() {
         return new DhGexKeyExchangeGroupMessage();
-    }
+    }*/
 
-    private void parseGroupModulus() {
+    private void parseGroupModulus(DhGexKeyExchangeGroupMessage message) {
         message.setGroupModulusLength(parseIntField(DataFormatConstants.UINT32_SIZE));
         LOGGER.debug("Group modulus length: " + message.getGroupModulusLength().getValue());
         message.setGroupModulus(parseBigIntField(message.getGroupModulusLength().getValue()));
@@ -47,7 +47,7 @@ public class DhGexKeyExchangeGroupMessageParser
                                 message.getGroupModulus().getByteArray()));
     }
 
-    private void parseGroupGenerator() {
+    private void parseGroupGenerator(DhGexKeyExchangeGroupMessage message) {
         message.setGroupGeneratorLength(parseIntField(DataFormatConstants.UINT32_SIZE));
         LOGGER.debug("Group generator length: " + message.getGroupGeneratorLength().getValue());
         message.setGroupGenerator(parseBigIntField(message.getGroupGeneratorLength().getValue()));
@@ -58,13 +58,13 @@ public class DhGexKeyExchangeGroupMessageParser
     }
 
     @Override
-    protected void parseMessageSpecificContents() {
-        parseGroupModulus();
-        parseGroupGenerator();
+    protected void parseMessageSpecificContents(DhGexKeyExchangeGroupMessage message) {
+        parseGroupModulus(message);
+        parseGroupGenerator(message);
     }
 
     @Override
     public void parse(DhGexKeyExchangeGroupMessage message) {
-        parseMessageSpecificContents();
+        parseMessageSpecificContents(message);
     }
 }

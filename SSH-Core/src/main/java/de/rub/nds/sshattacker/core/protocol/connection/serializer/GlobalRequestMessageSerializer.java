@@ -45,4 +45,10 @@ public abstract class GlobalRequestMessageSerializer<T extends GlobalRequestMess
         serializeRequestName();
         serializeWantReply();
     }
+
+    @Override
+    protected byte[] serializeBytes() {
+        serializeMessageSpecificContents();
+        return getAlreadySerialized();
+    }
 }

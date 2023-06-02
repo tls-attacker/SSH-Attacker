@@ -55,7 +55,7 @@ public class HybridKeyExchangeInitMessageParser
         this.agreementSize = agreementSize;
     }*/
 
-    private void parseHybridKey() {
+    private void parseHybridKey(HybridKeyExchangeInitMessage message) {
         int length = parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH);
         LOGGER.debug("Total Length: " + length);
 
@@ -79,17 +79,17 @@ public class HybridKeyExchangeInitMessageParser
     }
 
     @Override
-    protected void parseMessageSpecificContents() {
-        parseHybridKey();
+    protected void parseMessageSpecificContents(HybridKeyExchangeInitMessage message) {
+        parseHybridKey(message);
     }
 
-    @Override
-    protected HybridKeyExchangeInitMessage createMessage() {
-        return new HybridKeyExchangeInitMessage();
-    }
-
+    /*  @Override
+        protected HybridKeyExchangeInitMessage createMessage() {
+            return new HybridKeyExchangeInitMessage();
+        }
+    */
     @Override
     public void parse(HybridKeyExchangeInitMessage message) {
-        parseMessageSpecificContents();
+        parseMessageSpecificContents(message);
     }
 }

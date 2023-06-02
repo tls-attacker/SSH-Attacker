@@ -35,10 +35,10 @@ public class GlobalRequestTcpIpForwardMessageParser
 
     @Override
     public void parse(GlobalRequestTcpIpForwardMessage message) {
-        parseMessageSpecificContents();
+        parseMessageSpecificContents(message);
     }
 
-    private void parseIPAddressToBind() {
+    private void parseIPAddressToBind(GlobalRequestTcpIpForwardMessage message) {
         message.setIpAddressToBindLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
         LOGGER.debug("IP address to bind length: " + message.getIpAddressToBindLength().getValue());
         message.setIpAddressToBind(
@@ -47,20 +47,22 @@ public class GlobalRequestTcpIpForwardMessageParser
         LOGGER.debug("IP address to bind: " + message.getIpAddressToBind().getValue());
     }
 
-    private void parsePortToBind() {
+    private void parsePortToBind(GlobalRequestTcpIpForwardMessage message) {
         message.setPortToBind(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
         LOGGER.debug("Port to bind: " + message.getPortToBind().getValue());
     }
 
-    @Override
-    public GlobalRequestTcpIpForwardMessage createMessage() {
-        return new GlobalRequestTcpIpForwardMessage();
-    }
+    /*
+        @Override
+        public GlobalRequestTcpIpForwardMessage createMessage() {
+            return new GlobalRequestTcpIpForwardMessage();
+        }
+    */
 
     @Override
-    protected void parseMessageSpecificContents() {
-        super.parseMessageSpecificContents();
-        parseIPAddressToBind();
-        parsePortToBind();
+    protected void parseMessageSpecificContents(GlobalRequestTcpIpForwardMessage message) {
+        super.parseMessageSpecificContents(message);
+        parseIPAddressToBind(message);
+        parsePortToBind(message);
     }
 }

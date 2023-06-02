@@ -34,19 +34,21 @@ public class UserAuthPkOkMessageParser extends SshMessageParser<UserAuthPkOkMess
         super(stream);
     }
 
-    @Override
-    protected UserAuthPkOkMessage createMessage() {
-        return new UserAuthPkOkMessage();
-    }
+    /*
+        @Override
+        protected UserAuthPkOkMessage createMessage() {
+            return new UserAuthPkOkMessage();
+        }
+    */
 
     @Override
     public void parse(UserAuthPkOkMessage message) {
         LOGGER.debug("Parsing UserAuthBannerMessage");
-        parseMessageSpecificContents();
+        parseMessageSpecificContents(message);
         message.setCompleteResultingMessage(getAlreadyParsed());
     }
 
-    private void parsePubkey() {
+    private void parsePubkey(UserAuthPkOkMessage message) {
         message.setPubkeyLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
         LOGGER.debug("Pubkey length: " + message.getPubkeyLength().getValue());
         message.setPubkey(
@@ -54,7 +56,7 @@ public class UserAuthPkOkMessageParser extends SshMessageParser<UserAuthPkOkMess
         LOGGER.debug("Pubkey: {}", backslashEscapeString(message.getPubkey().getValue()));
     }
 
-    private void parsePubkeyAlgName() {
+    private void parsePubkeyAlgName(UserAuthPkOkMessage message) {
         message.setPubkeyAlgNameLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
         LOGGER.debug(
                 "Pubkey algorithm name length: " + message.getPubkeyAlgNameLength().getValue());
@@ -67,8 +69,8 @@ public class UserAuthPkOkMessageParser extends SshMessageParser<UserAuthPkOkMess
     }
 
     @Override
-    protected void parseMessageSpecificContents() {
-        parsePubkeyAlgName();
-        parsePubkey();
+    protected void parseMessageSpecificContents(UserAuthPkOkMessage message) {
+        parsePubkeyAlgName(message);
+        parsePubkey(message);
     }
 }

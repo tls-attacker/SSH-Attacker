@@ -49,4 +49,10 @@ public class UserAuthFailureMessageSerializer extends SshMessageSerializer<UserA
         serializePossibleAuthenticationMethods();
         serializePartialSuccess();
     }
+
+    @Override
+    protected byte[] serializeBytes() {
+        serializeMessageSpecificContents();
+        return getAlreadySerialized();
+    }
 }

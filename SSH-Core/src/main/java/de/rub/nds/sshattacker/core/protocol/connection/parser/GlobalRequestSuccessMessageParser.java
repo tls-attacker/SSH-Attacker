@@ -29,14 +29,16 @@ public class GlobalRequestSuccessMessageParser
 
     @Override
     public void parse(GlobalRequestSuccessMessage message) {
-        parseMessageSpecificContents();
+        parseMessageSpecificContents(message);
     }
 
-    @Override
-    public GlobalRequestSuccessMessage createMessage() {
-        return new GlobalRequestSuccessMessage();
-    }
+    /*
+        @Override
+        public GlobalRequestSuccessMessage createMessage() {
+            return new GlobalRequestSuccessMessage();
+        }
+    */
 
     @Override
-    protected void parseMessageSpecificContents() {}
+    protected void parseMessageSpecificContents(GlobalRequestSuccessMessage message) {}
 }
