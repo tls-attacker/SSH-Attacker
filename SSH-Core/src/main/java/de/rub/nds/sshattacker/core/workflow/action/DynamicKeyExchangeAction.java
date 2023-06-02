@@ -44,6 +44,10 @@ public class DynamicKeyExchangeAction extends MessageAction {
         sshActions.forEach(sshAction -> sshAction.execute(state));
     }
 
+    public List<SshAction> getSshActions() {
+        return sshActions;
+    }
+
     @Override
     public void reset() {
         for (SshAction action : sshActions) {
