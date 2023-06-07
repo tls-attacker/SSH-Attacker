@@ -8,6 +8,6 @@
 package de.rub.nds.sshattacker.core.packet.serializer;
 
 import de.rub.nds.sshattacker.core.packet.AbstractPacket;
-import de.rub.nds.sshattacker.core.protocol.common.Serializer;
+import de.rub.nds.sshattacker.core.layer.data.Serializer;
 
 public abstract class AbstractPacketSerializer<T extends AbstractPacket> extends Serializer<T> {}

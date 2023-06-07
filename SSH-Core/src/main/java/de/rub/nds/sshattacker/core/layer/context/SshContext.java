@@ -17,8 +17,11 @@ import de.rub.nds.sshattacker.core.crypto.kex.RsaKeyExchange;
 import de.rub.nds.sshattacker.core.crypto.keys.SshPublicKey;
 import de.rub.nds.sshattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.sshattacker.core.packet.cipher.keys.KeySet;
+import de.rub.nds.sshattacker.core.packet.compressor.PacketCompressor;
+import de.rub.nds.sshattacker.core.packet.crypto.AbstractPacketEncryptor;
 import de.rub.nds.sshattacker.core.packet.layer.AbstractPacketLayer;
 import de.rub.nds.sshattacker.core.packet.layer.PacketLayerFactory;
+import de.rub.nds.sshattacker.core.protocol.common.layer.MessageLayer;
 import de.rub.nds.sshattacker.core.protocol.connection.Channel;
 import de.rub.nds.sshattacker.core.protocol.connection.ChannelManager;
 import de.rub.nds.sshattacker.core.state.Context;
@@ -45,6 +48,18 @@ public class SshContext extends LayerContext {
     }
 
     private Random random;
+
+
+    public AbstractPacketEncryptor getEncryptor() {
+        return encryptor;
+    }
+
+    public PacketCompressor getCompressor() {
+        return compressor;
+    }
+
+    private  AbstractPacketEncryptor encryptor;
+    private  PacketCompressor compressor;
 
     /** Connection used to communicate with the remote peer */
     private TransportHandler transportHandler;
@@ -220,6 +235,17 @@ public class SshContext extends LayerContext {
     /** The key set derived from the shared secret, the exchange hash, and the session ID */
     private KeySet keySet;
     // endregion
+
+
+    public MessageLayer getMessageLayer() {
+        return messageLayer;
+    }
+
+    public void setMessageLayer(MessageLayer messageLayer) {
+        this.messageLayer = messageLayer;
+    }
+
+    private MessageLayer messageLayer = new MessageLayer(this.getContext());
 
     // region Connection Protocol
 

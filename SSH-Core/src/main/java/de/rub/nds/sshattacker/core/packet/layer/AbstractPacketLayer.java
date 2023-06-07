@@ -12,6 +12,8 @@ import de.rub.nds.sshattacker.core.constants.CompressionAlgorithm;
 import de.rub.nds.sshattacker.core.exceptions.CryptoException;
 import de.rub.nds.sshattacker.core.exceptions.ParserException;
 import de.rub.nds.sshattacker.core.layer.context.SshContext;
+import de.rub.nds.sshattacker.core.layer.data.Preparator;
+import de.rub.nds.sshattacker.core.layer.data.Serializer;
 import de.rub.nds.sshattacker.core.packet.AbstractPacket;
 import de.rub.nds.sshattacker.core.packet.cipher.PacketCipher;
 import de.rub.nds.sshattacker.core.packet.cipher.PacketCipherFactory;
@@ -89,11 +91,9 @@ public abstract class AbstractPacketLayer {
     }
 
     public byte[] preparePacket(AbstractPacket packet) {
-        AbstractPacketPreparator<? extends AbstractPacket> preparator =
-                packet.getPacketPreparator(context.getChooser(), getEncryptor(), getCompressor());
+        Preparator preparator = packet.getPreparator(context);
         preparator.prepare();
-        AbstractPacketSerializer<? extends AbstractPacket> serializer =
-                packet.getPacketSerializer();
+        Serializer serializer = packet.getSerializer(context);
         return serializer.serialize();
     }
 

@@ -12,15 +12,26 @@ import de.rub.nds.sshattacker.core.packet.BlobPacket;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.io.InputStream;
+
 public class BlobPacketParser extends AbstractPacketParser<BlobPacket> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public BlobPacketParser(byte[] array, int startPosition) {
+    /*public BlobPacketParser(byte[] array, int startPosition) {
         super(array, startPosition);
+    }*/
+
+    public BlobPacketParser(InputStream stream) {
+        super(stream);
     }
 
     @Override
+    public void parse(BlobPacket blobPacket) {
+
+    }
+
+    //@Override
     public BlobPacket parse() {
         LOGGER.debug("Parsing BlobPacket from serialized bytes:");
 

@@ -15,6 +15,8 @@ import de.rub.nds.sshattacker.core.packet.PacketCryptoComputations;
 import de.rub.nds.sshattacker.core.packet.cipher.PacketChaCha20Poly1305Cipher;
 import de.rub.nds.sshattacker.core.packet.cipher.PacketCipher;
 import de.rub.nds.sshattacker.core.packet.cipher.PacketMacedCipher;
+
+import java.io.InputStream;
 import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -30,14 +32,22 @@ public class BinaryPacketParser extends AbstractPacketParser<BinaryPacket> {
      */
     private final int sequenceNumber;
 
+/*
     public BinaryPacketParser(
             byte[] array, int startPosition, PacketCipher activeDecryptCipher, int sequenceNumber) {
         super(array, startPosition);
         this.activeDecryptCipher = activeDecryptCipher;
         this.sequenceNumber = sequenceNumber;
     }
+*/
 
-    @Override
+    public BinaryPacketParser(InputStream stream) {
+        super(stream);
+    }
+
+
+
+    //@Override
     public BinaryPacket parse() {
         LOGGER.debug("Parsing BinaryPacket from serialized bytes:");
         try {
@@ -187,5 +197,10 @@ public class BinaryPacketParser extends AbstractPacketParser<BinaryPacket> {
                                 + binaryPacket.getLength().getValue()));
         binaryPacket.setMac(
                 parseByteArrayField(activeDecryptCipher.getMacAlgorithm().getOutputSize()));
+    }
+
+    @Override
+    public void parse(BinaryPacket binaryPacket) {
+
     }
 }

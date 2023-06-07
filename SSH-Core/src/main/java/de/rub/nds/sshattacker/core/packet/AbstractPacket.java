@@ -10,6 +10,9 @@ package de.rub.nds.sshattacker.core.packet;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
+import de.rub.nds.sshattacker.core.layer.Message;
+import de.rub.nds.sshattacker.core.layer.context.SshContext;
+import de.rub.nds.sshattacker.core.layer.data.DataContainer;
 import de.rub.nds.sshattacker.core.packet.cipher.PacketCipher;
 import de.rub.nds.sshattacker.core.packet.compressor.PacketCompressor;
 import de.rub.nds.sshattacker.core.packet.crypto.AbstractPacketEncryptor;
@@ -19,7 +22,7 @@ import de.rub.nds.sshattacker.core.packet.serializer.AbstractPacketSerializer;
 import de.rub.nds.sshattacker.core.protocol.common.ModifiableVariableHolder;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 
-public abstract class AbstractPacket extends ModifiableVariableHolder {
+public abstract class AbstractPacket<Self extends AbstractPacket<?>> extends ModifiableVariableHolder implements DataContainer<Self, SshContext> {
 
     /**
      * This field contains the packet bytes sent over the network. This includes packet_length,
@@ -96,13 +99,13 @@ public abstract class AbstractPacket extends ModifiableVariableHolder {
         this.payload = ModifiableVariableFactory.safelySetValue(this.payload, payload);
     }
 
-    public abstract AbstractPacketPreparator<? extends AbstractPacket> getPacketPreparator(
+/*    public abstract AbstractPacketPreparator<? extends AbstractPacket> getPacketPreparator(
             Chooser chooser, AbstractPacketEncryptor encryptor, PacketCompressor compressor);
 
     public abstract AbstractPacketParser<? extends AbstractPacket> getPacketParser(
             byte[] array, int startPosition, PacketCipher activeDecryptCipher, int sequenceNumber);
 
-    public abstract AbstractPacketSerializer<? extends AbstractPacket> getPacketSerializer();
+    public abstract AbstractPacketSerializer<? extends AbstractPacket> getPacketSerializer();*/
 
     public abstract void prepareComputations();
 }

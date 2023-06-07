@@ -31,14 +31,21 @@ import de.rub.nds.sshattacker.core.layer.hints.LayerProcessingHint;
 import de.rub.nds.sshattacker.core.layer.hints.RecordLayerHint;
 import de.rub.nds.sshattacker.core.layer.stream.HintedInputStream;
 import de.rub.nds.sshattacker.core.layer.stream.HintedLayerInputStream;
+import de.rub.nds.sshattacker.core.packet.AbstractPacket;
+import de.rub.nds.sshattacker.core.packet.BlobPacket;
+import de.rub.nds.sshattacker.core.packet.layer.AbstractPacketLayer;
+import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
+import de.rub.nds.sshattacker.core.protocol.common.layer.MessageLayer;
 import de.rub.nds.sshattacker.core.session.Session;
 import de.rub.nds.sshattacker.core.session.preparator.SessionPreparator;
 import de.rub.nds.sshattacker.core.session.serializer.SessionSerializer;
 import java.io.IOException;
+
+import de.rub.nds.sshattacker.core.workflow.action.executor.MessageActionResult;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class TransportLayer extends ProtocolLayer<LayerProcessingHint, Session> {
+public class TransportLayer extends ProtocolLayer<LayerProcessingHint, SshMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
     private SshContext context;
@@ -71,36 +78,67 @@ public class TransportLayer extends ProtocolLayer<LayerProcessingHint, Session> 
         }
         return getLayerResult();*/
 
-        LayerConfiguration<Session> configuration = getLayerConfiguration();
+        LayerConfiguration<SshMessage> configuration = getLayerConfiguration();
         if (configuration != null && configuration.getContainerList() != null) {
-            for (Session session : configuration.getContainerList()) {
-                if (containerAlreadyUsedByHigherLayer(session) /*|| skipEmptyRecords(session)*/) {
+            for (SshMessage message: configuration.getContainerList()) {
+                if (containerAlreadyUsedByHigherLayer(message) /*|| skipEmptyRecords(session)*/) {
                     continue;
                 }
-                ProtocolMessageType contentType = session.getContentMessageType();
+
+                MessageLayer messageLayer = context.getMessageLayer();
+
+                try {
+                    AbstractPacket packet = messageLayer.serialize(message);
+                    AbstractPacketLayer packetLayer = context.getPacketLayer();
+                    byte[] serializedMessage = packetLayer.preparePacket(packet);
+
+                    LayerProcessingResult layerProcessingResult = getLowerLayer().sendData(null, serializedMessage);
+
+                    /*sendPacket(context, packet);
+                    Handler<?> handler = message.getHandler(context);
+                    if (handler instanceof MessageSentHandler) {
+                        ((MessageSentHandler) handler).adjustContextAfterMessageSent();
+                    }
+                    return new MessageActionResult(
+                            Collections.singletonList(packet), Collections.singletonList(message));*/
+                } catch (IOException e) {
+                    LOGGER.warn("Error while sending packet: " + e.getMessage());
+                    //return new MessageActionResult();
+                }
+            }
+
+            /*public MessageActionResult sendMessages(
+                    SshContext context, Stream<ProtocolMessage<?>> messageStream) {
+                return messageStream
+                        .map(message -> sendMessage(context, message))
+                        .reduce(MessageActionResult::merge)
+                        .orElse(new MessageActionResult());
+            }*/
+
+/*                ProtocolMessageType contentType = packet.getContentMessageType();
                 if (contentType == null) {
                     contentType = ProtocolMessageType.UNKNOWN;
                     LOGGER.warn(
                             "Sending record without a LayerProcessing hint. Using \"UNKNOWN\" as the type");
                 }
-                /*if (encryptor.getRecordCipher(writeEpoch).getState().getVersion().isDTLS()
+                *//*if (encryptor.getRecordCipher(writeEpoch).getState().getVersion().isDTLS()
                         && session.getEpoch() == null) {
                     session.setEpoch(writeEpoch);
-                }*/
-                if (session.getCleanProtocolMessageBytes() == null) {
-                    session.setCleanProtocolMessageBytes(new byte[0]);
+                }*//*
+                if (packet.getCleanProtocolMessageBytes() == null) {
+                    packet.setCleanProtocolMessageBytes(new byte[0]);
                 }
                 SessionPreparator preparator =
-                        session.getSessionPreparator(
-                                context, /* encryptor, compressor, */ contentType);
+                        packet.getSessionPreparator(
+                                context, *//* encryptor, compressor, *//* contentType);
                 preparator.prepare();
                 preparator.afterPrepare();
-                SessionSerializer serializer = session.getSessionSerializer();
+                SessionSerializer serializer = packet.getSessionSerializer();
                 byte[] serializedMessage = serializer.serialize();
-                session.setCompleteRecordBytes(serializedMessage);
+                packet.setCompleteRecordBytes(serializedMessage);
                 getLowerLayer().sendData(null, serializedMessage);
-                addProducedContainer(session);
-            }
+                addProducedContainer(packet);
+            }*/
         }
         return getLayerResult();
     }

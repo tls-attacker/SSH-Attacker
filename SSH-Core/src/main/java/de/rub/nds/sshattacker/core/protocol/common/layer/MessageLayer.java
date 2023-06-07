@@ -7,6 +7,11 @@
  */
 package de.rub.nds.sshattacker.core.protocol.common.layer;
 
+import de.rub.nds.sshattacker.core.constants.PacketLayerType;
+import de.rub.nds.sshattacker.core.packet.AbstractPacket;
+import de.rub.nds.sshattacker.core.packet.BinaryPacket;
+import de.rub.nds.sshattacker.core.packet.BlobPacket;
+import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessage;
 import de.rub.nds.sshattacker.core.state.Context;
 
 public class MessageLayer {
@@ -23,7 +28,7 @@ public class MessageLayer {
 
     /*public Stream<ProtocolMessage<?>> parse(Stream<AbstractPacket> packetStream) {
         return packetStream.map(this::parse);
-    }
+    }*/
 
     public AbstractPacket serialize(ProtocolMessage<?> message) {
         AbstractPacket packet;
@@ -32,11 +37,11 @@ public class MessageLayer {
         } else {
             packet = new BinaryPacket();
         }
-        packet.setPayload(message.getHandler(context).getSerializer().serialize());
+        packet.setPayload(message.getSerializer(context.getSshContext()).serialize());
         return packet;
     }
 
-    public Stream<AbstractPacket> serialize(Stream<ProtocolMessage<?>> messageStream) {
+    /*public Stream<AbstractPacket> serialize(Stream<ProtocolMessage<?>> messageStream) {
         return messageStream.map(this::serialize);
     }*/
 }
