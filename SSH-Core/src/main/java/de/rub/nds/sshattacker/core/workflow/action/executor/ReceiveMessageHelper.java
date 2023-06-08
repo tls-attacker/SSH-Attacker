@@ -9,18 +9,12 @@ package de.rub.nds.sshattacker.core.workflow.action.executor;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.CharConstants;
-import de.rub.nds.sshattacker.core.exceptions.CryptoException;
-import de.rub.nds.sshattacker.core.exceptions.ParserException;
 import de.rub.nds.sshattacker.core.layer.context.SshContext;
-import de.rub.nds.sshattacker.core.packet.AbstractPacket;
-import de.rub.nds.sshattacker.core.packet.layer.PacketLayerParseResult;
 import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.message.DisconnectMessage;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Optional;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -35,9 +29,9 @@ public class ReceiveMessageHelper {
      * @param context The SSH context
      * @return A message action result containing the received packets and messages
      */
-    public MessageActionResult receiveMessages(SshContext context) {
+    /*    public MessageActionResult receiveMessages(SshContext context) {
         return receiveMessages(context, new LinkedList<>());
-    }
+    }*/
 
     /**
      * Receives and handles messages from the underlying transport handler.
@@ -46,7 +40,7 @@ public class ReceiveMessageHelper {
      * @param expectedMessages A list of expected messages
      * @return A message action result containing the received packets and messages
      */
-    public MessageActionResult receiveMessages(
+    /*    public MessageActionResult receiveMessages(
             SshContext context, List<ProtocolMessage<?>> expectedMessages) {
         MessageActionResult result = new MessageActionResult();
         try {
@@ -75,7 +69,7 @@ public class ReceiveMessageHelper {
             context.setReceivedTransportHandlerException(true);
         }
         return result;
-    }
+    }*/
 
     /**
      * Receives bytes from the underlying transport handler.
@@ -122,27 +116,29 @@ public class ReceiveMessageHelper {
      * @param receivedBytes Received bytes to handle
      * @return A MessageActionResult containing the parsed packets and messages
      */
-    public MessageActionResult handleReceivedBytes(SshContext context, byte[] receivedBytes) {
-        if (receivedBytes.length == 0) {
-            return new MessageActionResult();
-        }
+    /*    public MessageActionResult handleReceivedBytes(SshContext context, byte[] receivedBytes) {
+    if (receivedBytes.length == 0) {
+        return new MessageActionResult();
+    }
 
-        int dataPointer = 0;
-        List<AbstractPacket> retrievedPackets = new LinkedList<>();
-        List<ProtocolMessage<?>> parsedMessages = new LinkedList<>();
-        do {
-            PacketLayerParseResult parseResult = parsePacket(context, receivedBytes, dataPointer);
-            Optional<AbstractPacket> parsedPacket = parseResult.getParsedPacket();
-            if (parsedPacket.isPresent()) {
-                /*ProtocolMessage<?> message = context.getMessageLayer().parse(parsedPacket.get());
-                message.getHandler(context).adjustContext();
-                retrievedPackets.add(parsedPacket.get());
-                parsedMessages.add(message);*/
+    int dataPointer = 0;
+    List<AbstractPacket> retrievedPackets = new LinkedList<>();
+    List<ProtocolMessage<?>> parsedMessages = new LinkedList<>();
+    do {
+        PacketLayerParseResult parseResult = parsePacket(context, receivedBytes, dataPointer);
+        Optional<AbstractPacket> parsedPacket = parseResult.getParsedPacket();
+        if (parsedPacket.isPresent()) {
+            */
+    /*ProtocolMessage<?> message = context.getMessageLayer().parse(parsedPacket.get());
+    message.getHandler(context).adjustContext();
+    retrievedPackets.add(parsedPacket.get());
+    parsedMessages.add(message);*/
+    /*
             }
             dataPointer += parseResult.getParsedByteCount();
         } while (dataPointer < receivedBytes.length);
         return new MessageActionResult(retrievedPackets, parsedMessages);
-    }
+    }*/
 
     /**
      * Parses the given bytes into AbstractPackets. If parsing fails, the method will try to receive
@@ -156,7 +152,7 @@ public class ReceiveMessageHelper {
      * @return The parse result from the underlying packet layer containing the total number of
      *     bytes parsed as well as the parsed packet itself
      */
-    private PacketLayerParseResult parsePacket(
+    /*    private PacketLayerParseResult parsePacket(
             SshContext context, byte[] packetBytes, int startPosition) {
         try {
             return context.getPacketLayer().parsePacket(packetBytes, startPosition);
@@ -181,7 +177,7 @@ public class ReceiveMessageHelper {
             LOGGER.debug(e);
             return context.getPacketLayer().parsePacketSoftly(packetBytes, startPosition);
         }
-    }
+    }*/
 
     /**
      * Tests if receiving should continue based on a list of expected and received messages. Will

@@ -14,7 +14,7 @@ import java.util.Objects;
  * The Record Layer/Fragment layer need information about the messages they're sending. This class
  * holds information about the messages such as their message type.
  */
-public class RecordLayerHint implements LayerProcessingHint {
+public class PacketLayerHint implements LayerProcessingHint {
 
     private final ProtocolMessageType type;
 
@@ -24,21 +24,21 @@ public class RecordLayerHint implements LayerProcessingHint {
 
     private final Integer messageSequence;
 
-    public RecordLayerHint(ProtocolMessageType type) {
+    public PacketLayerHint(ProtocolMessageType type) {
         this.type = type;
         this.epoch = null;
         this.sequenceNumber = null;
         this.messageSequence = null;
     }
 
-    public RecordLayerHint(ProtocolMessageType type, int epoch, int sequenceNumber) {
+    public PacketLayerHint(ProtocolMessageType type, int epoch, int sequenceNumber) {
         this.type = type;
         this.epoch = epoch;
         this.sequenceNumber = sequenceNumber;
         this.messageSequence = null;
     }
 
-    public RecordLayerHint(ProtocolMessageType type, int messageSequence) {
+    public PacketLayerHint(ProtocolMessageType type, int messageSequence) {
         this.type = type;
         this.epoch = null;
         this.sequenceNumber = null;
@@ -47,8 +47,8 @@ public class RecordLayerHint implements LayerProcessingHint {
 
     @Override
     public boolean equals(Object other) {
-        if (other instanceof RecordLayerHint) {
-            RecordLayerHint otherHint = (RecordLayerHint) other;
+        if (other instanceof PacketLayerHint) {
+            PacketLayerHint otherHint = (PacketLayerHint) other;
             if (this.type == otherHint.type) {
                 return true;
             }

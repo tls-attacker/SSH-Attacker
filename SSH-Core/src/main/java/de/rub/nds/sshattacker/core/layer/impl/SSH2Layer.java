@@ -27,13 +27,17 @@ import de.rub.nds.sshattacker.core.layer.LayerProcessingResult;
 import de.rub.nds.sshattacker.core.layer.ProtocolLayer;
 import de.rub.nds.sshattacker.core.layer.constant.ImplementedLayers;
 import de.rub.nds.sshattacker.core.layer.context.SshContext;
+import de.rub.nds.sshattacker.core.layer.data.Preparator;
+import de.rub.nds.sshattacker.core.layer.data.Serializer;
 import de.rub.nds.sshattacker.core.layer.hints.LayerProcessingHint;
-import de.rub.nds.sshattacker.core.layer.hints.RecordLayerHint;
+import de.rub.nds.sshattacker.core.layer.hints.PacketLayerHint;
 import de.rub.nds.sshattacker.core.layer.stream.HintedInputStream;
 import de.rub.nds.sshattacker.core.layer.stream.HintedLayerInputStream;
+import de.rub.nds.sshattacker.core.packet.AbstractPacket;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.AuthenticationMessage;
 import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessage;
 import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessageSerializer;
+import de.rub.nds.sshattacker.core.protocol.common.layer.MessageLayer;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ConnectionMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.message.UnknownMessage;
 import java.io.ByteArrayOutputStream;
@@ -57,7 +61,7 @@ public class SSH2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
         if (byteStream.size() > 0) {
             getLowerLayer()
                     .sendData(
-                            new RecordLayerHint(runningProtocolMessageType),
+                            new PacketLayerHint(runningProtocolMessageType),
                             byteStream.toByteArray());
             byteStream.reset();
         }
@@ -75,6 +79,16 @@ public class SSH2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
                         || !prepareDataContainer(message, context)) {
                     continue;
                 }
+
+                MessageLayer messageLayer = context.getMessageLayer();
+                AbstractPacket packet = messageLayer.serialize(message);
+                Preparator preparator = packet.getPreparator(context);
+                preparator.prepare();
+                Serializer serializer = packet.getSerializer(context);
+                byte[] serializedMessage = serializer.serialize();
+
+                getLowerLayer().sendData(null, serializedMessage);
+
                 // Es gibt erstmal keine Handshake-Messages mit einer Spezialbehandlung bei SSH
                 /*if (!message.isHandshakeMessage()) {
                     // only handshake messages may share a record
@@ -158,8 +172,8 @@ public class SSH2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
                     LOGGER.warn(
                             "The TLS message layer requires a processing hint. E.g. a record type. Parsing as an unknown message");
                     readUnknownProtocolData();
-                } else if (tempHint instanceof RecordLayerHint) {
-                    RecordLayerHint hint = (RecordLayerHint) dataStream.getHint();
+                } else if (tempHint instanceof PacketLayerHint) {
+                    PacketLayerHint hint = (PacketLayerHint) dataStream.getHint();
                     readMessageForHint(hint);
                 }
                 // receive until the layer configuration is satisfied or no data is left
@@ -240,7 +254,7 @@ public class SSH2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
                 | totalHeaderLength[1];
     }*/
 
-    public void readMessageForHint(RecordLayerHint hint) {
+    public void readMessageForHint(PacketLayerHint hint) {
         switch (hint.getType()) {
                 // use correct parser for the message
                 /*            case ALERT:
@@ -396,8 +410,8 @@ public class SSH2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
                         "The DTLS fragment layer requires a processing hint. E.g. a record type. Parsing as an unknown fragment");
                 currentInputStream = new HintedLayerInputStream(null, this);
                 currentInputStream.extendStream(dataStream.readAllBytes());
-            } else if (dataStream.getHint() instanceof RecordLayerHint) {
-                RecordLayerHint tempHint = (RecordLayerHint) dataStream.getHint();
+            } else if (dataStream.getHint() instanceof PacketLayerHint) {
+                PacketLayerHint tempHint = (PacketLayerHint) dataStream.getHint();
                 /*if (tempHint.getType() == ProtocolMessageType.HANDSHAKE) {
                     DtlsHandshakeMessageFragment fragment = new DtlsHandshakeMessageFragment();
                     fragment.setEpoch(tempHint.getEpoch());

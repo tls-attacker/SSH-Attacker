@@ -9,8 +9,6 @@ package de.rub.nds.sshattacker.core.packet.layer;
 
 import de.rub.nds.sshattacker.core.constants.CipherMode;
 import de.rub.nds.sshattacker.core.constants.CompressionAlgorithm;
-import de.rub.nds.sshattacker.core.exceptions.CryptoException;
-import de.rub.nds.sshattacker.core.exceptions.ParserException;
 import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.layer.data.Preparator;
 import de.rub.nds.sshattacker.core.layer.data.Serializer;
@@ -23,8 +21,6 @@ import de.rub.nds.sshattacker.core.packet.crypto.AbstractPacketDecryptor;
 import de.rub.nds.sshattacker.core.packet.crypto.AbstractPacketEncryptor;
 import de.rub.nds.sshattacker.core.packet.crypto.PacketDecryptor;
 import de.rub.nds.sshattacker.core.packet.crypto.PacketEncryptor;
-import de.rub.nds.sshattacker.core.packet.preparator.AbstractPacketPreparator;
-import de.rub.nds.sshattacker.core.packet.serializer.AbstractPacketSerializer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -66,20 +62,25 @@ public abstract class AbstractPacketLayer {
      *     as the parsed packet
      * @throws ParserException Thrown whenever parsing the provided bytes fails
      */
+    /*
     public abstract PacketLayerParseResult parsePacket(byte[] rawBytes, int startPosition)
             throws ParserException, CryptoException;
 
+    */
     /**
      * Tries to parse a single packet from rawBytes at startPosition. Due to the nature of SSH
      * encryption, this does include decryption of the packet. Exception which might occur are
      * handled.
      *
-     * @param rawBytes Bytes to parse
-     * @param startPosition Start position for parsing
+     * <p>//@param rawBytes Bytes to parse //@param startPosition Start position for parsing
+     *
      * @return Parse result of the packet layer containing the total number of bytes parsed as well
      *     as the parsed packet
      */
-    public abstract PacketLayerParseResult parsePacketSoftly(byte[] rawBytes, int startPosition);
+    /*
+
+        public abstract PacketLayerParseResult parsePacketSoftly(byte[] rawBytes, int startPosition);
+    */
 
     protected void decryptPacket(AbstractPacket packet) {
         packet.prepareComputations();

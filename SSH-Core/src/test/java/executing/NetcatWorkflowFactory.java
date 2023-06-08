@@ -43,12 +43,12 @@ public class NetcatWorkflowFactory {
         while (true) {
             // noinspection BusyWait
             Thread.sleep(5000);
-            receiveMessageHelper.receiveMessages(state.getSshContext());
+            // receiveMessageHelper.receiveMessages(state.getSshContext());
             String read = in.readLine();
             ChannelDataMessage dataMessage = new ChannelDataMessage();
             dataMessage.setRecipientChannelId(Modifiable.explicit(0));
             dataMessage.setData((read + "\n").getBytes());
-            sendMessageHelper.sendMessage(state.getSshContext(), dataMessage);
+            // sendMessageHelper.sendMessage(state.getSshContext(), dataMessage);
         }
     }
 }

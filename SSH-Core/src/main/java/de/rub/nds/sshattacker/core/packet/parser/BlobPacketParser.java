@@ -9,10 +9,9 @@ package de.rub.nds.sshattacker.core.packet.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.packet.BlobPacket;
+import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import java.io.InputStream;
 
 public class BlobPacketParser extends AbstractPacketParser<BlobPacket> {
 
@@ -28,11 +27,6 @@ public class BlobPacketParser extends AbstractPacketParser<BlobPacket> {
 
     @Override
     public void parse(BlobPacket blobPacket) {
-
-    }
-
-    //@Override
-    public BlobPacket parse() {
         LOGGER.debug("Parsing BlobPacket from serialized bytes:");
 
         BlobPacket packet = new BlobPacket();
@@ -43,6 +37,6 @@ public class BlobPacketParser extends AbstractPacketParser<BlobPacket> {
                 "Complete packet bytes: {}",
                 ArrayConverter.bytesToHexString(packet.getCompletePacketBytes().getValue()));
 
-        return packet;
+        // return packet;
     }
 }

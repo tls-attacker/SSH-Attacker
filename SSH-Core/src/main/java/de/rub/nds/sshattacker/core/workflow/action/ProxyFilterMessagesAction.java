@@ -70,7 +70,7 @@ public class ProxyFilterMessagesAction extends ForwardMessagesAction {
         initLoggingSide(receiveFromCtx);
 
         receiveMessages(receiveFromCtx);
-        handleReceivedMessages(receiveFromCtx);
+        // handleReceivedMessages(receiveFromCtx);
         filterMessages(receiveFromCtx, forwardToCtx);
         forwardMessages(forwardToCtx);
         applyMessages(forwardToCtx);

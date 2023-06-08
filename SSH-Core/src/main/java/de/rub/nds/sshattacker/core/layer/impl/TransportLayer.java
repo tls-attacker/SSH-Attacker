@@ -19,33 +19,33 @@ import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.message.*;*/
 
+import de.rub.nds.sshattacker.core.constants.PacketLayerType;
 import de.rub.nds.sshattacker.core.constants.ProtocolMessageType;
-import de.rub.nds.sshattacker.core.exceptions.EndOfStreamException;
-import de.rub.nds.sshattacker.core.exceptions.TimeoutException;
+import de.rub.nds.sshattacker.core.exceptions.PreparationException;
 import de.rub.nds.sshattacker.core.layer.LayerConfiguration;
 import de.rub.nds.sshattacker.core.layer.LayerProcessingResult;
 import de.rub.nds.sshattacker.core.layer.ProtocolLayer;
 import de.rub.nds.sshattacker.core.layer.constant.ImplementedLayers;
 import de.rub.nds.sshattacker.core.layer.context.SshContext;
+import de.rub.nds.sshattacker.core.layer.data.Preparator;
+import de.rub.nds.sshattacker.core.layer.data.Serializer;
 import de.rub.nds.sshattacker.core.layer.hints.LayerProcessingHint;
-import de.rub.nds.sshattacker.core.layer.hints.RecordLayerHint;
-import de.rub.nds.sshattacker.core.layer.stream.HintedInputStream;
-import de.rub.nds.sshattacker.core.layer.stream.HintedLayerInputStream;
+import de.rub.nds.sshattacker.core.layer.hints.PacketLayerHint;
 import de.rub.nds.sshattacker.core.packet.AbstractPacket;
+import de.rub.nds.sshattacker.core.packet.BinaryPacket;
 import de.rub.nds.sshattacker.core.packet.BlobPacket;
-import de.rub.nds.sshattacker.core.packet.layer.AbstractPacketLayer;
-import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
-import de.rub.nds.sshattacker.core.protocol.common.layer.MessageLayer;
-import de.rub.nds.sshattacker.core.session.Session;
-import de.rub.nds.sshattacker.core.session.preparator.SessionPreparator;
-import de.rub.nds.sshattacker.core.session.serializer.SessionSerializer;
+import de.rub.nds.sshattacker.core.packet.parser.AbstractPacketParser;
+import de.rub.nds.sshattacker.core.packet.parser.BinaryPacketParser;
+import de.rub.nds.sshattacker.core.packet.parser.BlobPacketParser;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-
-import de.rub.nds.sshattacker.core.workflow.action.executor.MessageActionResult;
+import java.io.InputStream;
+import java.util.LinkedList;
+import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class TransportLayer extends ProtocolLayer<LayerProcessingHint, SshMessage> {
+public class TransportLayer extends ProtocolLayer<PacketLayerHint, AbstractPacket> {
 
     private static final Logger LOGGER = LogManager.getLogger();
     private SshContext context;
@@ -78,21 +78,24 @@ public class TransportLayer extends ProtocolLayer<LayerProcessingHint, SshMessag
         }
         return getLayerResult();*/
 
-        LayerConfiguration<SshMessage> configuration = getLayerConfiguration();
+        LayerConfiguration<AbstractPacket> configuration = getLayerConfiguration();
         if (configuration != null && configuration.getContainerList() != null) {
-            for (SshMessage message: configuration.getContainerList()) {
-                if (containerAlreadyUsedByHigherLayer(message) /*|| skipEmptyRecords(session)*/) {
+            for (AbstractPacket packet : configuration.getContainerList()) {
+                if (containerAlreadyUsedByHigherLayer(packet) /*|| skipEmptyRecords(session)*/) {
                     continue;
                 }
 
-                MessageLayer messageLayer = context.getMessageLayer();
+                // MessageLayer messageLayer = context.getMessageLayer();
 
                 try {
-                    AbstractPacket packet = messageLayer.serialize(message);
-                    AbstractPacketLayer packetLayer = context.getPacketLayer();
-                    byte[] serializedMessage = packetLayer.preparePacket(packet);
+                    // AbstractPacket packet = messageLayer.serialize(message);
+                    Preparator preparator = packet.getPreparator(context);
+                    preparator.prepare();
+                    Serializer serializer = packet.getSerializer(context);
+                    byte[] serializedMessage = serializer.serialize();
 
-                    LayerProcessingResult layerProcessingResult = getLowerLayer().sendData(null, serializedMessage);
+                    LayerProcessingResult layerProcessingResult =
+                            getLowerLayer().sendData(null, serializedMessage);
 
                     /*sendPacket(context, packet);
                     Handler<?> handler = message.getHandler(context);
@@ -103,7 +106,7 @@ public class TransportLayer extends ProtocolLayer<LayerProcessingHint, SshMessag
                             Collections.singletonList(packet), Collections.singletonList(message));*/
                 } catch (IOException e) {
                     LOGGER.warn("Error while sending packet: " + e.getMessage());
-                    //return new MessageActionResult();
+                    // return new MessageActionResult();
                 }
             }
 
@@ -115,22 +118,26 @@ public class TransportLayer extends ProtocolLayer<LayerProcessingHint, SshMessag
                         .orElse(new MessageActionResult());
             }*/
 
-/*                ProtocolMessageType contentType = packet.getContentMessageType();
-                if (contentType == null) {
-                    contentType = ProtocolMessageType.UNKNOWN;
-                    LOGGER.warn(
-                            "Sending record without a LayerProcessing hint. Using \"UNKNOWN\" as the type");
-                }
-                *//*if (encryptor.getRecordCipher(writeEpoch).getState().getVersion().isDTLS()
-                        && session.getEpoch() == null) {
-                    session.setEpoch(writeEpoch);
-                }*//*
-                if (packet.getCleanProtocolMessageBytes() == null) {
-                    packet.setCleanProtocolMessageBytes(new byte[0]);
-                }
-                SessionPreparator preparator =
-                        packet.getSessionPreparator(
-                                context, *//* encryptor, compressor, *//* contentType);
+            /*                ProtocolMessageType contentType = packet.getContentMessageType();
+            if (contentType == null) {
+                contentType = ProtocolMessageType.UNKNOWN;
+                LOGGER.warn(
+                        "Sending record without a LayerProcessing hint. Using \"UNKNOWN\" as the type");
+            }
+            */
+            /*if (encryptor.getRecordCipher(writeEpoch).getState().getVersion().isDTLS()
+                    && session.getEpoch() == null) {
+                session.setEpoch(writeEpoch);
+            }*/
+            /*
+            if (packet.getCleanProtocolMessageBytes() == null) {
+                packet.setCleanProtocolMessageBytes(new byte[0]);
+            }
+            SessionPreparator preparator =
+                    packet.getSessionPreparator(
+                            context, */
+            /* encryptor, compressor, */
+            /* contentType);
                 preparator.prepare();
                 preparator.afterPrepare();
                 SessionSerializer serializer = packet.getSessionSerializer();
@@ -144,9 +151,58 @@ public class TransportLayer extends ProtocolLayer<LayerProcessingHint, SshMessag
     }
 
     @Override
-    public LayerProcessingResult sendData(LayerProcessingHint hint, byte[] additionalData)
-            throws IOException {
-        return sendConfiguration();
+    public LayerProcessingResult<AbstractPacket> sendData(
+            PacketLayerHint hint, byte[] additionalData) throws IOException {
+        ProtocolMessageType type = ProtocolMessageType.UNKNOWN;
+        if (hint != null) {
+            type = hint.getType();
+        } else {
+            LOGGER.warn(
+                    "Sending record without a LayerProcessing hint. Using \"UNKNOWN\" as the type");
+        }
+
+        List<AbstractPacket> packets = new LinkedList<>();
+        List<AbstractPacket> givenPackets = getLayerConfiguration().getContainerList();
+
+        int dataToBeSent = additionalData.length;
+
+        while (givenPackets.size() > 0 && dataToBeSent > 0) {
+            AbstractPacket nextPacket = givenPackets.remove(0);
+            packets.add(nextPacket);
+            /*            int recordData =
+                    (nextPacket.get() != null
+                            ? nextPacket.getMaxRecordLengthConfig()
+                            : context.getChooser().getOutboundMaxRecordDataSize());
+            dataToBeSent -= recordData;*/
+        }
+
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+
+        // prepare, serialize, and send records
+        for (AbstractPacket packet : packets) {
+            /*            ProtocolMessageType contentType = packet.getContentMessageType();
+            if (contentType == null) {
+                contentType = type;
+            }*/
+            /*            if (encryptor.getRecordCipher(writeEpoch).getState().getVersion().isDTLS()) {
+                record.setEpoch(writeEpoch);
+            }*/
+            Preparator preparator = packet.getPreparator(context);
+            preparator.prepare();
+            preparator.afterPrepare();
+            try {
+                byte[] recordBytes = packet.getSerializer(context).serialize();
+                packet.setCompletePacketBytes(recordBytes);
+                stream.write(packet.getCompletePacketBytes().getValue());
+            } catch (IOException ex) {
+                throw new PreparationException(
+                        "Could not write Record bytes to ByteArrayStream", ex);
+            }
+            addProducedContainer(packet);
+        }
+
+        getLowerLayer().sendData(null, stream.toByteArray());
+        return new LayerProcessingResult<>(packets, getLayerType(), true);
     }
 
     @Override
@@ -223,81 +279,30 @@ public class TransportLayer extends ProtocolLayer<LayerProcessingHint, SshMessag
 
     @Override
     public void receiveMoreDataForHint(LayerProcessingHint hint) throws IOException {
-        try {
-            HintedInputStream dataStream = null;
-            dataStream = getLowerLayer().getDataStream();
-            if (dataStream.getHint() == null) {
-                LOGGER.warn(
-                        "The Transport-layer requires a processing hint. E.g. a record type. Parsing as an unknown fragment");
-                currentInputStream = new HintedLayerInputStream(null, this);
-                currentInputStream.extendStream(dataStream.readAllBytes());
-            } else if (dataStream.getHint() instanceof RecordLayerHint) {
-                RecordLayerHint tempHint = (RecordLayerHint) dataStream.getHint();
-                /*if (tempHint.getType() == ProtocolMessageType.HANDSHAKE) {
-                    DtlsHandshakeMessageFragment fragment = new DtlsHandshakeMessageFragment();
-                    fragment.setEpoch(tempHint.getEpoch());
-                    DtlsHandshakeMessageFragmentParser parser =
-                            fragment.getParser(
-                                    context,
-                                    new ByteArrayInputStream(
-                                            dataStream.readChunk(dataStream.available())));
-                    parser.parse(fragment);
-                    fragment.setCompleteResultingMessage(
-                            fragment.getSerializer(context).serialize());
-                    fragmentManager.addMessageFragment(fragment);
-                    List<DtlsHandshakeMessageFragment> uninterpretedMessageFragments =
-                            fragmentManager.getOrderedCombinedUninterpretedMessageFragments(
-                                    true, false);
-                    // run until we received a complete fragment
-                    if (!uninterpretedMessageFragments.isEmpty()) {
-                        DtlsHandshakeMessageFragment uninterpretedMessageFragment =
-                                uninterpretedMessageFragments.get(0);
-                        addProducedContainer(uninterpretedMessageFragment);
-                        RecordLayerHint currentHint =
-                                new RecordLayerHint(
-                                        uninterpretedMessageFragment.getProtocolMessageType(),
-                                        uninterpretedMessageFragment
-                                                .getMessageSequence()
-                                                .getValue());
-                        byte type = uninterpretedMessageFragment.getType().getValue();
-                        byte[] content =
-                                uninterpretedMessageFragment.getMessageContent().getValue();
-                        byte[] message =
-                                ArrayConverter.concatenate(
-                                        new byte[] {type},
-                                        ArrayConverter.intToBytes(
-                                                content.length,
-                                                HandshakeByteLength.MESSAGE_LENGTH_FIELD),
-                                        content);
-                        if (desiredHint == null || currentHint.equals(desiredHint)) {
-                            if (currentInputStream == null) {
-                                currentInputStream = new HintedLayerInputStream(currentHint, this);
-                            } else {
-                                currentInputStream.setHint(currentHint);
-                            }
-                            currentInputStream.extendStream(message);
-                        } else {
-                            if (nextInputStream == null) {
-                                nextInputStream = new HintedLayerInputStream(currentHint, this);
-                            } else {
-                                nextInputStream.setHint(currentHint);
-                            }
-                            nextInputStream.extendStream(message);
-                        }
-                    } else {
-                        receiveMoreDataForHint(desiredHint);
-                    }
-                } else {
-                    currentInputStream = new HintedLayerInputStream(tempHint, this);
-                    currentInputStream.extendStream(dataStream.readChunk(dataStream.available()));
-                }*/
-            }
-        } catch (TimeoutException ex) {
-            LOGGER.debug(ex);
-            throw ex;
-        } catch (EndOfStreamException ex) {
-            LOGGER.debug("Reached end of stream, cannot parse more dtls fragments", ex);
-            throw ex;
+
+        InputStream dataStream = getLowerLayer().getDataStream();
+        AbstractPacketParser parser;
+        AbstractPacket packet;
+
+        if (context.getPacketLayerType() == PacketLayerType.BINARY_PACKET) {
+            parser =
+                    new BinaryPacketParser(
+                            dataStream,
+                            context.getActiveDecryptCipher(),
+                            context.getReadSequenceNumber());
+            packet = new BinaryPacket();
+        } else if (context.getPacketLayerType() == PacketLayerType.BLOB) {
+            parser = new BlobPacketParser(dataStream);
+            packet = new BlobPacket();
+        } else {
+            throw new RuntimeException();
         }
+
+        parser.parse(packet);
+
+        context.getPacketLayer().getDecryptor().decrypt(packet);
+        context.getPacketLayer().getDecompressor().decompress(packet);
+
+        addProducedContainer(packet);
     }
 }

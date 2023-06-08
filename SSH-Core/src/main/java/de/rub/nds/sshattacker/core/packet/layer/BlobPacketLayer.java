@@ -7,10 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.packet.layer;
 
-import de.rub.nds.sshattacker.core.exceptions.ParserException;
 import de.rub.nds.sshattacker.core.layer.context.SshContext;
-import de.rub.nds.sshattacker.core.packet.BlobPacket;
-import de.rub.nds.sshattacker.core.packet.parser.BlobPacketParser;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -22,7 +19,7 @@ public class BlobPacketLayer extends AbstractPacketLayer {
         super(context);
     }
 
-    @Override
+    /*  @Override
     public PacketLayerParseResult parsePacket(byte[] rawBytes, int startPosition)
             throws ParserException {
         try {
@@ -48,5 +45,5 @@ public class BlobPacketLayer extends AbstractPacketLayer {
             LOGGER.warn("Could not parse provided data as blob packet, dropping remaining bytes");
             return new PacketLayerParseResult(null, rawBytes.length - startPosition, true);
         }
-    }
+    }*/
 }

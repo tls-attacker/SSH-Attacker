@@ -25,7 +25,7 @@ import de.rub.nds.sshattacker.core.layer.ProtocolLayer;
 import de.rub.nds.sshattacker.core.layer.constant.ImplementedLayers;
 import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.layer.hints.LayerProcessingHint;
-import de.rub.nds.sshattacker.core.layer.hints.RecordLayerHint;
+import de.rub.nds.sshattacker.core.layer.hints.PacketLayerHint;
 import de.rub.nds.sshattacker.core.layer.stream.HintedInputStream;
 import de.rub.nds.sshattacker.core.layer.stream.HintedLayerInputStream;
 import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessage;
@@ -156,8 +156,8 @@ public class SSH1Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
                         "The DTLS fragment layer requires a processing hint. E.g. a record type. Parsing as an unknown fragment");
                 currentInputStream = new HintedLayerInputStream(null, this);
                 currentInputStream.extendStream(dataStream.readAllBytes());
-            } else if (dataStream.getHint() instanceof RecordLayerHint) {
-                RecordLayerHint tempHint = (RecordLayerHint) dataStream.getHint();
+            } else if (dataStream.getHint() instanceof PacketLayerHint) {
+                PacketLayerHint tempHint = (PacketLayerHint) dataStream.getHint();
                 /*if (tempHint.getType() == ProtocolMessageType.HANDSHAKE) {
                     DtlsHandshakeMessageFragment fragment = new DtlsHandshakeMessageFragment();
                     fragment.setEpoch(tempHint.getEpoch());

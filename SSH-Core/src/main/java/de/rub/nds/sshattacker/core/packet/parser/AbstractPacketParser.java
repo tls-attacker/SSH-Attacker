@@ -7,9 +7,8 @@
  */
 package de.rub.nds.sshattacker.core.packet.parser;
 
-import de.rub.nds.sshattacker.core.packet.AbstractPacket;
 import de.rub.nds.sshattacker.core.layer.data.Parser;
-
+import de.rub.nds.sshattacker.core.packet.AbstractPacket;
 import java.io.InputStream;
 
 public abstract class AbstractPacketParser<T extends AbstractPacket> extends Parser<T> {

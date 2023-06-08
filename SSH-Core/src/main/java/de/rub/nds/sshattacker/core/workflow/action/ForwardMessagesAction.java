@@ -117,7 +117,7 @@ public class ForwardMessagesAction extends SshAction implements ReceivingAction,
         SshContext forwardToCtx = state.getSshContext(forwardToAlias);
         receiveMessages(receiveFromCtx);
         forwardMessages(forwardToCtx);
-        handleReceivedMessages(receiveFromCtx);
+        // handleReceivedMessages(receiveFromCtx);
         applyMessages(forwardToCtx);
     }
 
@@ -155,7 +155,7 @@ public class ForwardMessagesAction extends SshAction implements ReceivingAction,
         }
     }
 
-    protected void handleReceivedMessages(SshContext ctx) {
+    /*    protected void handleReceivedMessages(SshContext ctx) {
         receivedMessages =
                 receiveMessageHelper.handleReceivedBytes(ctx, receivedBytes).getMessageList();
         String expected = getReadableString(messages);
@@ -164,7 +164,7 @@ public class ForwardMessagesAction extends SshAction implements ReceivingAction,
         LOGGER.info("Received Messages (" + receiveFromAlias + "): " + received);
 
         executedAsPlanned = checkMessageListsEquals(messages, receivedMessages);
-    }
+    }*/
     /**
      * Apply the contents of the messages to the given TLS context.
      *

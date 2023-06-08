@@ -7,7 +7,6 @@
  */
 package de.rub.nds.sshattacker.core.packet.preparator;
 
-import de.rub.nds.sshattacker.core.packet.BinaryPacket;
 import de.rub.nds.sshattacker.core.packet.BlobPacket;
 import de.rub.nds.sshattacker.core.packet.compressor.PacketCompressor;
 import de.rub.nds.sshattacker.core.packet.crypto.AbstractPacketEncryptor;
@@ -31,7 +30,6 @@ public class BlobPacketPreparator extends AbstractPacketPreparator<BlobPacket> {
         this.encryptor = encryptor;
         this.compressor = compressor;
     }
-
 
     @Override
     public void prepare() {
