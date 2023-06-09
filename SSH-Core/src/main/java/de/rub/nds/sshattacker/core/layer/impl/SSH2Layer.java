@@ -27,17 +27,13 @@ import de.rub.nds.sshattacker.core.layer.LayerProcessingResult;
 import de.rub.nds.sshattacker.core.layer.ProtocolLayer;
 import de.rub.nds.sshattacker.core.layer.constant.ImplementedLayers;
 import de.rub.nds.sshattacker.core.layer.context.SshContext;
-import de.rub.nds.sshattacker.core.layer.data.Preparator;
-import de.rub.nds.sshattacker.core.layer.data.Serializer;
 import de.rub.nds.sshattacker.core.layer.hints.LayerProcessingHint;
 import de.rub.nds.sshattacker.core.layer.hints.PacketLayerHint;
 import de.rub.nds.sshattacker.core.layer.stream.HintedInputStream;
 import de.rub.nds.sshattacker.core.layer.stream.HintedLayerInputStream;
-import de.rub.nds.sshattacker.core.packet.AbstractPacket;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.AuthenticationMessage;
 import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessage;
 import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessageSerializer;
-import de.rub.nds.sshattacker.core.protocol.common.layer.MessageLayer;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ConnectionMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.message.UnknownMessage;
 import java.io.ByteArrayOutputStream;
@@ -75,17 +71,23 @@ public class SSH2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
 
         if (configuration != null && configuration.getContainerList() != null) {
             for (ProtocolMessage message : configuration.getContainerList()) {
-                if (containerAlreadyUsedByHigherLayer(message)
-                        || !prepareDataContainer(message, context)) {
-                    continue;
-                }
+                /*
+                                if (containerAlreadyUsedByHigherLayer(message)
+                                        || !prepareDataContainer(message, context)) {
+                                    continue;
+                                }
+                */
 
-                MessageLayer messageLayer = context.getMessageLayer();
+                /*MessageLayer messageLayer = context.getMessageLayer();
                 AbstractPacket packet = messageLayer.serialize(message);
                 Preparator preparator = packet.getPreparator(context);
                 preparator.prepare();
                 Serializer serializer = packet.getSerializer(context);
+                byte[] serializedMessage = serializer.serialize();*/
+
+                ProtocolMessageSerializer serializer = message.getSerializer(context);
                 byte[] serializedMessage = serializer.serialize();
+                message.setCompleteResultingMessage(serializedMessage);
 
                 getLowerLayer().sendData(null, serializedMessage);
 

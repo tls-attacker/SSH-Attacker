@@ -13,6 +13,7 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.constants.ServiceType;
 import de.rub.nds.sshattacker.core.protocol.transport.message.ServiceRequestMessage;
+import java.io.ByteArrayInputStream;
 import java.util.stream.Stream;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -44,8 +45,10 @@ public class ServiceRequestMessageParserTest {
     @ParameterizedTest
     @MethodSource("provideTestVectors")
     public void testParse(byte[] providedBytes, ServiceType expectedServiceType) {
-        ServiceRequestMessageParser parser = new ServiceRequestMessageParser(providedBytes);
-        ServiceRequestMessage msg = parser.parse();
+        ServiceRequestMessageParser parser =
+                new ServiceRequestMessageParser(new ByteArrayInputStream(providedBytes));
+        ServiceRequestMessage msg = new ServiceRequestMessage();
+        parser.parse(msg);
 
         assertEquals(
                 MessageIdConstant.SSH_MSG_SERVICE_REQUEST.getId(), msg.getMessageId().getValue());

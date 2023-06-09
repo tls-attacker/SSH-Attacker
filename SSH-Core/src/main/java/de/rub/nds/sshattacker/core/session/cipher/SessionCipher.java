@@ -69,9 +69,8 @@ public abstract class SessionCipher {
      * field, a 2-byte version field, and a 2-byte length field. It then calculates a MAC over the
      * bytes SQN || HDR || R.
      *
-     * @param session The Record for which the data should be collected
-     * @param protocolVersion According to which ProtocolVersion the AdditionalAuthenticationData is
-     *     collected
+     * @param session The Record for which the data should be collected //@param protocolVersion
+     *     According to which ProtocolVersion the AdditionalAuthenticationData is collected
      * @return The AdditionalAuthenticatedData
      */
     protected final byte[] collectAdditionalAuthenticatedData(Session session) {

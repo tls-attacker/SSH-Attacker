@@ -13,6 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.protocol.transport.message.EcdhKeyExchangeInitMessage;
+import java.io.ByteArrayInputStream;
 import java.util.stream.Stream;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -48,8 +49,9 @@ public class EcdhKeyExchangeInitMessageParserTest {
             int expectedEphemeralPublicKeyLength,
             byte[] expectedEphemeralPublicKey) {
         EcdhKeyExchangeInitMessageParser parser =
-                new EcdhKeyExchangeInitMessageParser(providedBytes);
-        EcdhKeyExchangeInitMessage msg = parser.parse();
+                new EcdhKeyExchangeInitMessageParser(new ByteArrayInputStream(providedBytes));
+        EcdhKeyExchangeInitMessage msg = new EcdhKeyExchangeInitMessage();
+        parser.parse(msg);
 
         assertEquals(
                 MessageIdConstant.SSH_MSG_KEX_ECDH_INIT.getId(), msg.getMessageId().getValue());

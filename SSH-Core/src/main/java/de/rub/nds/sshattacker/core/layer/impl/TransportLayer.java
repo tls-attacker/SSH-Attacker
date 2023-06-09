@@ -21,7 +21,6 @@ import de.rub.nds.sshattacker.core.protocol.message.*;*/
 
 import de.rub.nds.sshattacker.core.constants.PacketLayerType;
 import de.rub.nds.sshattacker.core.constants.ProtocolMessageType;
-import de.rub.nds.sshattacker.core.exceptions.PreparationException;
 import de.rub.nds.sshattacker.core.layer.LayerConfiguration;
 import de.rub.nds.sshattacker.core.layer.LayerProcessingResult;
 import de.rub.nds.sshattacker.core.layer.ProtocolLayer;
@@ -37,7 +36,6 @@ import de.rub.nds.sshattacker.core.packet.BlobPacket;
 import de.rub.nds.sshattacker.core.packet.parser.AbstractPacketParser;
 import de.rub.nds.sshattacker.core.packet.parser.BinaryPacketParser;
 import de.rub.nds.sshattacker.core.packet.parser.BlobPacketParser;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.LinkedList;
@@ -161,6 +159,24 @@ public class TransportLayer extends ProtocolLayer<PacketLayerHint, AbstractPacke
                     "Sending record without a LayerProcessing hint. Using \"UNKNOWN\" as the type");
         }
 
+        AbstractPacket packet;
+        if (context.getPacketLayerType() == PacketLayerType.BLOB) {
+            packet = new BlobPacket();
+        } else {
+            packet = new BinaryPacket();
+        }
+        packet.setPayload(additionalData);
+
+        Preparator preparator = packet.getPreparator(context);
+        preparator.prepare();
+        Serializer serializer = packet.getSerializer(context);
+        byte[] serializedMessage = serializer.serialize();
+
+        List<AbstractPacket> packets = new LinkedList<>();
+        packets.add(packet);
+
+        /*
+
         List<AbstractPacket> packets = new LinkedList<>();
         List<AbstractPacket> givenPackets = getLayerConfiguration().getContainerList();
 
@@ -169,24 +185,32 @@ public class TransportLayer extends ProtocolLayer<PacketLayerHint, AbstractPacke
         while (givenPackets.size() > 0 && dataToBeSent > 0) {
             AbstractPacket nextPacket = givenPackets.remove(0);
             packets.add(nextPacket);
-            /*            int recordData =
-                    (nextPacket.get() != null
-                            ? nextPacket.getMaxRecordLengthConfig()
-                            : context.getChooser().getOutboundMaxRecordDataSize());
-            dataToBeSent -= recordData;*/
+            */
+        /*            int recordData =
+                (nextPacket.get() != null
+                        ? nextPacket.getMaxRecordLengthConfig()
+                        : context.getChooser().getOutboundMaxRecordDataSize());
+        dataToBeSent -= recordData;*/
+        /*
         }
 
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
 
+
+
         // prepare, serialize, and send records
         for (AbstractPacket packet : packets) {
-            /*            ProtocolMessageType contentType = packet.getContentMessageType();
-            if (contentType == null) {
-                contentType = type;
-            }*/
-            /*            if (encryptor.getRecordCipher(writeEpoch).getState().getVersion().isDTLS()) {
-                record.setEpoch(writeEpoch);
-            }*/
+            */
+        /*            ProtocolMessageType contentType = packet.getContentMessageType();
+        if (contentType == null) {
+            contentType = type;
+        }*/
+        /*
+         */
+        /*            if (encryptor.getRecordCipher(writeEpoch).getState().getVersion().isDTLS()) {
+            record.setEpoch(writeEpoch);
+        }*/
+        /*
             Preparator preparator = packet.getPreparator(context);
             preparator.prepare();
             preparator.afterPrepare();
@@ -199,9 +223,9 @@ public class TransportLayer extends ProtocolLayer<PacketLayerHint, AbstractPacke
                         "Could not write Record bytes to ByteArrayStream", ex);
             }
             addProducedContainer(packet);
-        }
+        }*/
 
-        getLowerLayer().sendData(null, stream.toByteArray());
+        getLowerLayer().sendData(null, additionalData);
         return new LayerProcessingResult<>(packets, getLayerType(), true);
     }
 

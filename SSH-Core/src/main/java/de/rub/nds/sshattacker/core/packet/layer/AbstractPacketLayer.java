@@ -74,8 +74,8 @@ public abstract class AbstractPacketLayer {
      *
      * <p>//@param rawBytes Bytes to parse //@param startPosition Start position for parsing
      *
-     * @return Parse result of the packet layer containing the total number of bytes parsed as well
-     *     as the parsed packet
+     * <p>//@return Parse result of the packet layer containing the total number of bytes parsed as
+     * well as the parsed packet
      */
     /*
 

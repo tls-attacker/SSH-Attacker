@@ -13,11 +13,14 @@ import static org.junit.jupiter.api.Assertions.fail;
 import de.rub.nds.sshattacker.core.exceptions.NotImplementedException;
 import de.rub.nds.sshattacker.core.exceptions.ParserException;
 import de.rub.nds.sshattacker.core.exceptions.PreparationException;
+import de.rub.nds.sshattacker.core.layer.context.SshContext;
+import de.rub.nds.sshattacker.core.layer.data.Parser;
 import de.rub.nds.sshattacker.core.protocol.connection.Channel;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelMessage;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelOpenMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.message.HybridKeyExchangeReplyMessage;
-import de.rub.nds.sshattacker.core.state.SshContext;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
@@ -119,7 +122,7 @@ public class CyclicParserSerializerTest {
             }
             // Prepare the message given the fresh context
             try {
-                message.getHandler(context).getPreparator().prepare();
+                message.getPreparator(context).prepare();
             } catch (PreparationException e) {
                 LOGGER.fatal(e);
                 fail(
@@ -138,7 +141,7 @@ public class CyclicParserSerializerTest {
             // Serialize message into a byte array
             byte[] serializedMessage = null;
             try {
-                serializedMessage = message.getHandler(context).getSerializer().serialize();
+                serializedMessage = message.getSerializer(context).serialize();
             } catch (SerializationException e) {
                 LOGGER.fatal(e);
                 fail(
@@ -156,8 +159,10 @@ public class CyclicParserSerializerTest {
 
             // Parse the serialized message back into a new instance
             ProtocolMessage parsedMessage = null;
+            InputStream streamedMessage = new ByteArrayInputStream(serializedMessage);
             try {
-                parsedMessage = message.getHandler(context).getParser(serializedMessage).parse();
+                Parser parser = message.getParser(context, streamedMessage);
+                parser.parse(parsedMessage);
             } catch (ParserException e) {
                 LOGGER.fatal(e);
                 fail(
@@ -178,8 +183,7 @@ public class CyclicParserSerializerTest {
             // This validates the order parse -> serialize
             try {
                 assertArrayEquals(
-                        serializedMessage,
-                        parsedMessage.getHandler(context).getSerializer().serialize());
+                        serializedMessage, parsedMessage.getSerializer(context).serialize());
             } catch (SerializationException e) {
                 LOGGER.fatal(e);
                 fail(

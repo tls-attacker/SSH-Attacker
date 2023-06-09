@@ -14,7 +14,7 @@ import java.util.List;
 /**
  * Send configuration that sends a list of containers to the recipient.
  *
- * @param <Container>
+ * @param <Container> Container
  */
 public class SpecificSendLayerConfiguration<Container extends DataContainer>
         extends LayerConfiguration<Container> {

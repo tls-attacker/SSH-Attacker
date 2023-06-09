@@ -10,15 +10,20 @@ package de.rub.nds.sshattacker.core.protocol.connection.parser;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
+import de.rub.nds.sshattacker.core.layer.data.Parser;
 import de.rub.nds.sshattacker.core.protocol.connection.message.GlobalRequestFailureMessage;
+import java.io.ByteArrayInputStream;
 import org.junit.jupiter.api.Test;
 
 public class GlobalRequestFailureMessageParserTest {
     /** Test of RequestFailureMessageParser::parse method */
     @Test
     public void testParse() {
-        GlobalRequestFailureMessage msg =
-                new GlobalRequestFailureMessageParser(new byte[] {82}).parse();
+        GlobalRequestFailureMessage msg = new GlobalRequestFailureMessage();
+        Parser parser =
+                new GlobalRequestFailureMessageParser(new ByteArrayInputStream(new byte[] {82}));
+        parser.parse(msg);
+
         assertEquals(
                 MessageIdConstant.SSH_MSG_REQUEST_FAILURE.getId(), msg.getMessageId().getValue());
     }

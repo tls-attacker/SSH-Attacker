@@ -12,6 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.protocol.transport.message.DebugMessage;
+import java.io.ByteArrayInputStream;
 import java.util.stream.Stream;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -57,8 +58,9 @@ public class DebugMessageParserTest {
             byte expectedAlwaysDisplay,
             String expectedMessage,
             String expectedLanguageTag) {
-        DebugMessageParser parser = new DebugMessageParser(providedBytes);
-        DebugMessage msg = parser.parse();
+        DebugMessageParser parser = new DebugMessageParser(new ByteArrayInputStream(providedBytes));
+        DebugMessage msg = new DebugMessage();
+        parser.parse(msg);
 
         assertEquals(MessageIdConstant.SSH_MSG_DEBUG.getId(), msg.getMessageId().getValue());
         assertEquals(expectedAlwaysDisplay, msg.getAlwaysDisplay().getValue());

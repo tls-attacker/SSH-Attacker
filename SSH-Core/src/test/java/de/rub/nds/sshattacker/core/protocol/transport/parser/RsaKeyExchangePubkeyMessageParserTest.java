@@ -13,6 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.protocol.transport.message.RsaKeyExchangePubkeyMessage;
+import java.io.ByteArrayInputStream;
 import java.math.BigInteger;
 import java.util.stream.Stream;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -63,8 +64,9 @@ public class RsaKeyExchangePubkeyMessageParserTest {
             BigInteger exponent,
             BigInteger modulus) {
         RsaKeyExchangePubkeyMessageParser parser =
-                new RsaKeyExchangePubkeyMessageParser(providedBytes);
-        RsaKeyExchangePubkeyMessage msg = parser.parse();
+                new RsaKeyExchangePubkeyMessageParser(new ByteArrayInputStream(providedBytes));
+        RsaKeyExchangePubkeyMessage msg = new RsaKeyExchangePubkeyMessage();
+        parser.parse(msg);
 
         assertEquals(
                 MessageIdConstant.SSH_MSG_KEXRSA_PUBKEY.getId(), msg.getMessageId().getValue());

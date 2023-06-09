@@ -12,6 +12,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelCloseMessage;
+import java.io.ByteArrayInputStream;
 import java.util.stream.Stream;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -38,8 +39,10 @@ public class ChannelCloseMessageParserTest {
     @ParameterizedTest
     @MethodSource("provideTestVectors")
     public void testParse(byte[] providedBytes, int expectedRecipientChannel) {
-        ChannelCloseMessageParser parser = new ChannelCloseMessageParser(providedBytes);
-        ChannelCloseMessage msg = parser.parse();
+        ChannelCloseMessageParser parser =
+                new ChannelCloseMessageParser(new ByteArrayInputStream(providedBytes));
+        ChannelCloseMessage msg = new ChannelCloseMessage();
+        parser.parse(msg);
 
         assertEquals(
                 MessageIdConstant.SSH_MSG_CHANNEL_CLOSE.getId(), msg.getMessageId().getValue());

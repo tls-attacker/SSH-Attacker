@@ -13,8 +13,7 @@ import java.io.InputStream;
 
 /**
  * HintedInputStream, that wraps around another Stream (used in the {@link
- * de.rub.nds.tlsattacker.core.layer.impl.TcpLayer} and the {@link
- * de.rub.nds.tlsattacker.core.layer.impl.UdpLayer}
+ * de.rub.nds.sshattacker.core.layer.impl.TcpLayer}
  */
 public class HintedInputStreamAdapterStream extends HintedInputStream {
 
