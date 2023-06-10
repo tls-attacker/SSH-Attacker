@@ -158,17 +158,21 @@ public class SSH2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
 
     @Override
     public LayerProcessingResult receiveData() {
+        LOGGER.debug("[bro] SSH-Layer ist Recieving Data now");
 
         try {
             HintedInputStream dataStream;
             do {
                 try {
+                    LOGGER.debug("[bro] I´m here");
                     dataStream = getLowerLayer().getDataStream();
+                    LOGGER.debug("[bro] I was here");
                 } catch (IOException e) {
                     // the lower layer does not give us any data so we can simply return here
                     LOGGER.warn("The lower layer did not produce a data stream: ", e);
                     return getLayerResult();
                 }
+                LOGGER.debug("[bro] Searching for Hint");
                 LayerProcessingHint tempHint = dataStream.getHint();
                 if (tempHint == null) {
                     LOGGER.warn(

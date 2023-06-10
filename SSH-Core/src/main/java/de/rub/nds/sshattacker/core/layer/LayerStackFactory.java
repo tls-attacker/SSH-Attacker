@@ -12,6 +12,8 @@ import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.layer.context.TcpContext;
 import de.rub.nds.sshattacker.core.layer.impl.*;
 import de.rub.nds.sshattacker.core.state.Context;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Creates a layerStack based on pre-defined configurations. E.g., to send TLS messages with
@@ -19,8 +21,11 @@ import de.rub.nds.sshattacker.core.state.Context;
  * TcpLayer. Each layer is assigned a different context.
  */
 public class LayerStackFactory {
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public static LayerStack createLayerStack(LayerConfiguration type, Context context) {
+
+        LOGGER.debug("Creating Layerstack for type: " + type);
 
         LayerStack layerStack;
         SshContext sshContext = context.getSshContext();
@@ -65,9 +70,19 @@ public class LayerStackFactory {
             case SSHv1:
                 layerStack =
                         new LayerStack(
-                                context, new SSH1Layer(sshContext), new TcpLayer(tcpContext));
+                                context,
+                                new SSH1Layer(sshContext),
+                                new TransportLayer(sshContext),
+                                new TcpLayer(tcpContext));
                 return layerStack;
-
+            case SSHv2:
+                layerStack =
+                        new LayerStack(
+                                context,
+                                new SSH2Layer(sshContext),
+                                new TransportLayer(sshContext),
+                                new TcpLayer(tcpContext));
+                return layerStack;
             default:
                 throw new RuntimeException("Unknown LayerStackType: " + type.name());
         }

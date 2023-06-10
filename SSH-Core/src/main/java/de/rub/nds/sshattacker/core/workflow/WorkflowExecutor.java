@@ -90,6 +90,7 @@ public abstract class WorkflowExecutor {
     public abstract void executeWorkflow() throws WorkflowExecutionException;
 
     public void initProtocolStack(Context context) throws IOException {
+        LOGGER.debug("[bro] Layerstack-3");
         context.setLayerStack(
                 LayerStackFactory.createLayerStack(config.getDefaultLayerConfiguration(), context));
     }

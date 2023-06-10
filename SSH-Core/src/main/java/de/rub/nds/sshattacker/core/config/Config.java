@@ -473,6 +473,8 @@ public class Config implements Serializable {
         defaultClientConnection = new OutboundConnection("client", 65222, "localhost");
         defaultServerConnection = new InboundConnection("server", 65222, "localhost");
 
+        defaultLayerConfiguration = LayerConfiguration.SSHv2;
+
         // region VersionExchange initialization
         clientVersion = "SSH-2.0-OpenSSH_9.0";
         clientComment = "";

@@ -177,6 +177,7 @@ public class Context {
     }
 
     public void prepareWithLayers(LayerConfiguration type) {
+        LOGGER.debug("[bro] Layerstack-1");
         sshContext = new SshContext(this);
         tcpContext = new TcpContext(this);
         layerStack = LayerStackFactory.createLayerStack(type, this);

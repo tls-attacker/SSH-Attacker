@@ -163,11 +163,11 @@ public abstract class MessageAction extends ConnectionBoundAction {
                 @XmlElement(type = VersionExchangeMessage.class, name = "VersionExchange"),
                 @XmlElement(type = AsciiMessage.class, name = "AsciiMessage")
             })
-    @XmlTransient
-    private LayerStackProcessingResult layerStackProcessingResult;
-
     protected List<ProtocolMessage<?>> messages = new ArrayList<>();
+
     protected List<Session> sessions = new ArrayList<>();
+
+    @XmlTransient private LayerStackProcessingResult layerStackProcessingResult;
 
     // @XmlTransient protected final ReceiveMessageHelper receiveMessageHelper;
 

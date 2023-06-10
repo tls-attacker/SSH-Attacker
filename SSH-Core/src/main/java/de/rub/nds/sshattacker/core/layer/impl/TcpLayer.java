@@ -66,6 +66,7 @@ public class TcpLayer extends ProtocolLayer<LayerProcessingHint, DataContainer> 
     @Override
     public HintedInputStream getDataStream() {
         getTransportHandler().setTimeout(getTransportHandler().getTimeout());
+        LOGGER.debug("[bro] TCP-Layer is transmitting Datastream now");
         currentInputStream =
                 new HintedInputStreamAdapterStream(null, getTransportHandler().getInputStream());
         return currentInputStream;
@@ -73,6 +74,7 @@ public class TcpLayer extends ProtocolLayer<LayerProcessingHint, DataContainer> 
 
     @Override
     public LayerProcessingResult receiveData() {
+        LOGGER.debug("TCP-Layer ist Recieving Data now");
         return new LayerProcessingResult(null, getLayerType(), true);
     }
 

@@ -303,7 +303,6 @@ public class TransportLayer extends ProtocolLayer<PacketLayerHint, AbstractPacke
 
     @Override
     public void receiveMoreDataForHint(LayerProcessingHint hint) throws IOException {
-
         InputStream dataStream = getLowerLayer().getDataStream();
         AbstractPacketParser parser;
         AbstractPacket packet;
@@ -324,9 +323,16 @@ public class TransportLayer extends ProtocolLayer<PacketLayerHint, AbstractPacke
 
         parser.parse(packet);
 
+        LOGGER.debug(
+                "[bro] Recieved Packet: " + packet.getPayload() + " | " + packet.getCiphertext());
+
         context.getPacketLayer().getDecryptor().decrypt(packet);
         context.getPacketLayer().getDecompressor().decompress(packet);
 
         addProducedContainer(packet);
+
+        PacketLayerHint currentHint;
+
+        currentHint = new PacketLayerHint(packet.getContentMessageType());
     }
 }

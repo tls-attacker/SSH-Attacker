@@ -10,6 +10,7 @@ package de.rub.nds.sshattacker.core.packet;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
+import de.rub.nds.sshattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.layer.data.DataContainer;
 import de.rub.nds.sshattacker.core.protocol.common.ModifiableVariableHolder;
@@ -38,6 +39,16 @@ public abstract class AbstractPacket<Self extends AbstractPacket<?>>
     /** The useful contents of the packet. */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PLAIN_PROTOCOL_MESSAGE)
     private ModifiableByteArray payload;
+
+    public ProtocolMessageType getContentMessageType() {
+        return contentMessageType;
+    }
+
+    public void setContentMessageType(ProtocolMessageType contentMessageType) {
+        this.contentMessageType = contentMessageType;
+    }
+
+    private ProtocolMessageType contentMessageType;
 
     public AbstractPacket() {}
 

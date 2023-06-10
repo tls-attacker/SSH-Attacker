@@ -129,9 +129,10 @@ public class State {
 
         WorkflowTraceNormalizer normalizer = new WorkflowTraceNormalizer();
         normalizer.normalize(workflowTrace, config, runningMode);
-
+        LOGGER.debug("[bro] Layerstack-2");
         for (AliasedConnection con : workflowTrace.getConnections()) {
             Context ctx = new Context(config, con);
+
             LayerStack layerStack =
                     LayerStackFactory.createLayerStack(config.getDefaultLayerConfiguration(), ctx);
             ctx.setLayerStack(layerStack);

@@ -29,13 +29,13 @@ public class BlobPacketParser extends AbstractPacketParser<BlobPacket> {
     public void parse(BlobPacket blobPacket) {
         LOGGER.debug("Parsing BlobPacket from serialized bytes:");
 
-        BlobPacket packet = new BlobPacket();
-        packet.setCiphertext(parseByteArrayField(getBytesLeft()));
-        packet.setCompletePacketBytes(getAlreadyParsed());
+        // BlobPacket packet = new BlobPacket();
+        blobPacket.setCiphertext(parseByteArrayField(getBytesLeft()));
+        blobPacket.setCompletePacketBytes(getAlreadyParsed());
 
         LOGGER.debug(
                 "Complete packet bytes: {}",
-                ArrayConverter.bytesToHexString(packet.getCompletePacketBytes().getValue()));
+                ArrayConverter.bytesToHexString(blobPacket.getCompletePacketBytes().getValue()));
 
         // return packet;
     }

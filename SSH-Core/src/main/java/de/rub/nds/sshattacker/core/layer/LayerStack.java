@@ -139,6 +139,8 @@ public class LayerStack {
         }
         context.setTalkingConnectionEndType(
                 context.getConnection().getLocalConnectionEndType().getPeer());
+
+        LOGGER.debug("[bro] Recieving on Layer: " + getLayerList().get(0).getLayerType());
         getLayerList().get(0).receiveData();
         // reverse order
         for (int i = getLayerList().size() - 1; i >= 0; i--) {
