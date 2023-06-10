@@ -33,6 +33,7 @@ import de.rub.nds.sshattacker.core.layer.stream.HintedInputStream;
 import de.rub.nds.sshattacker.core.layer.stream.HintedLayerInputStream;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.AuthenticationMessage;
 import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessage;
+import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ConnectionMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.message.UnknownMessage;
@@ -69,6 +70,14 @@ public class SSH2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
         LayerConfiguration<ProtocolMessage> configuration = getLayerConfiguration();
         ProtocolMessageType runningProtocolMessageType = null;
         ByteArrayOutputStream collectedMessageStream = new ByteArrayOutputStream();
+        if (configuration != null) {
+            LOGGER.debug(
+                    "[bro] Sending following configuration-size {} with layer_0 is {}",
+                    configuration.getContainerList().size(),
+                    configuration.getContainerList().get(0).toCompactString());
+        } else {
+            LOGGER.debug("[bro] Configuration is null");
+        }
 
         if (configuration != null && configuration.getContainerList() != null) {
             for (ProtocolMessage message : configuration.getContainerList()) {
@@ -86,11 +95,30 @@ public class SSH2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
                 Serializer serializer = packet.getSerializer(context);
                 byte[] serializedMessage = serializer.serialize();*/
 
-                ProtocolMessageSerializer serializer = message.getSerializer(context);
-                byte[] serializedMessage = serializer.serialize();
-                message.setCompleteResultingMessage(serializedMessage);
+                LOGGER.debug("[bro] here i am with sending the message");
+                /*
+                LOGGER.debug(
+                        "[bro] MESSAGE: {} {}",
+                        message.getProtocolMessageType(),
+                        message.getCompleteResultingMessage().getValue());*/
 
-                getLowerLayer().sendData(null, serializedMessage);
+                ProtocolMessagePreparator preparator = message.getPreparator(context);
+                preparator.prepare();
+
+                ProtocolMessageSerializer serializer = message.getSerializer(context);
+                LOGGER.debug("[bro] got serializer");
+                byte[] serializedMessage = serializer.serialize();
+                LOGGER.debug("[bro] serializied the message");
+                message.setCompleteResultingMessage(serializedMessage);
+                LOGGER.debug("[bro] set complete message");
+                ProtocolMessageType protocolMessageType = null;
+                protocolMessageType = message.getProtocolMessageType();
+
+                LOGGER.debug(
+                        "[bro] Sending Data on lower layer {}", getLowerLayer().getLayerType());
+
+                getLowerLayer()
+                        .sendData(new PacketLayerHint(protocolMessageType), serializedMessage);
 
                 // Es gibt erstmal keine Handshake-Messages mit einer Spezialbehandlung bei SSH
                 /*if (!message.isHandshakeMessage()) {
@@ -289,7 +317,7 @@ public class SSH2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
                 readConnectionProtocolData();
                 break;
             case VERSION_EXCHANGE_MESSAGE:
-                readVerisonExchangeProtocolData();
+                readVersionExchangeProtocolData();
             default:
                 LOGGER.error("Undefined record layer type");
                 break;
@@ -301,7 +329,7 @@ public class SSH2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
         readDataContainer(message, context);
     }
 
-    private void readVerisonExchangeProtocolData() {
+    private void readVersionExchangeProtocolData() {
         VersionExchangeMessage message = new VersionExchangeMessage();
         readDataContainer(message, context);
     }

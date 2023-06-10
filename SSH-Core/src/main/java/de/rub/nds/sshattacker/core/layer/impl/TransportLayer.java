@@ -37,7 +37,6 @@ import de.rub.nds.sshattacker.core.packet.BlobPacket;
 import de.rub.nds.sshattacker.core.packet.parser.AbstractPacketParser;
 import de.rub.nds.sshattacker.core.packet.parser.BinaryPacketParser;
 import de.rub.nds.sshattacker.core.packet.parser.BlobPacketParser;
-import de.rub.nds.sshattacker.core.protocol.connection.parser.*;
 import de.rub.nds.sshattacker.core.protocol.transport.message.AsciiMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.parser.*;
 import java.io.ByteArrayInputStream;
@@ -167,16 +166,23 @@ public class TransportLayer extends ProtocolLayer<PacketLayerHint, AbstractPacke
 
         AbstractPacket packet;
         if (context.getPacketLayerType() == PacketLayerType.BLOB) {
+            LOGGER.debug("[bro] Created a BLOB Packet");
             packet = new BlobPacket();
         } else {
+            LOGGER.debug("[bro] Created a Binary Packet");
             packet = new BinaryPacket();
         }
         packet.setPayload(additionalData);
 
+        LOGGER.debug("[bro] Set Packetpayload");
         Preparator preparator = packet.getPreparator(context);
+        LOGGER.debug("[bro] Got Preperator");
         preparator.prepare();
+        LOGGER.debug("[bro] Prepared Packetpayload");
         Serializer serializer = packet.getSerializer(context);
+        LOGGER.debug("[bro] got Serializier");
         byte[] serializedMessage = serializer.serialize();
+        LOGGER.debug("[bro] Serializied Payload");
 
         List<AbstractPacket> packets = new LinkedList<>();
         packets.add(packet);
@@ -385,7 +391,7 @@ public class TransportLayer extends ProtocolLayer<PacketLayerHint, AbstractPacke
                     LOGGER.warn(
                             "The server reported the maximum number of concurrent unauthenticated connections has been exceeded.");
                 }
-                return new PacketLayerHint(ProtocolMessageType.ASCII_MESSAEG);
+                return new PacketLayerHint(ProtocolMessageType.ASCII_MESSAGE);
             }
         }
 
