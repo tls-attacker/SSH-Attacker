@@ -36,6 +36,7 @@ import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessage;
 import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ConnectionMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.message.UnknownMessage;
+import de.rub.nds.sshattacker.core.protocol.transport.message.VersionExchangeMessage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import org.apache.logging.log4j.LogManager;
@@ -287,6 +288,8 @@ public class SSH2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
             case CONNECTION:
                 readConnectionProtocolData();
                 break;
+            case VERSION_EXCHANGE_MESSAGE:
+                readVerisonExchangeProtocolData();
             default:
                 LOGGER.error("Undefined record layer type");
                 break;
@@ -295,6 +298,11 @@ public class SSH2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
 
     private void readAuthenticationProtocolData() {
         AuthenticationMessage message = new AuthenticationMessage();
+        readDataContainer(message, context);
+    }
+
+    private void readVerisonExchangeProtocolData() {
+        VersionExchangeMessage message = new VersionExchangeMessage();
         readDataContainer(message, context);
     }
 

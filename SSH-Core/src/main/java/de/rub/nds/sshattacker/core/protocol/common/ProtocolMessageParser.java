@@ -8,12 +8,20 @@
 package de.rub.nds.sshattacker.core.protocol.common;
 
 import de.rub.nds.sshattacker.core.constants.*;
+import de.rub.nds.sshattacker.core.exceptions.ParserException;
+import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.layer.data.Parser;
+import de.rub.nds.sshattacker.core.packet.AbstractPacket;
+import de.rub.nds.sshattacker.core.packet.BlobPacket;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.*;
 import de.rub.nds.sshattacker.core.protocol.authentication.parser.*;
 import de.rub.nds.sshattacker.core.protocol.connection.parser.*;
+import de.rub.nds.sshattacker.core.protocol.transport.message.AsciiMessage;
+import de.rub.nds.sshattacker.core.protocol.transport.message.VersionExchangeMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.parser.*;
+import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -54,16 +62,23 @@ public abstract class ProtocolMessageParser<T extends ProtocolMessage<T>> extend
                                 message.getCompleteResultingMessage().getValue()));
     }*/
 
-    /*public static ProtocolMessage<?> delegateParsing(AbstractPacket packet, Context context) {
+    public static ProtocolMessage<?> delegateParsing(AbstractPacket packet, SshContext context) {
         byte[] raw = packet.getPayload().getValue();
         try {
             if (packet instanceof BlobPacket) {
                 String rawText =
                         new String(packet.getPayload().getValue(), StandardCharsets.US_ASCII);
                 if (rawText.startsWith("SSH-2.0")) {
-                    return new VersionExchangeMessageParser(raw).parse();
+                    VersionExchangeMessage message = new VersionExchangeMessage();
+                    VersionExchangeMessageParser parser =
+                            new VersionExchangeMessageParser(new ByteArrayInputStream(raw));
+                    parser.parse(message);
+                    return message;
                 } else {
-                    final AsciiMessage message = new AsciiMessageParser(raw).parse();
+                    final AsciiMessage message = new AsciiMessage();
+                    AsciiMessageParser parser =
+                            new AsciiMessageParser(new ByteArrayInputStream(raw));
+                    parser.parse(message);
 
                     // If we know what the text message means we can print a
                     // human-readable warning to the log. The following
@@ -80,7 +95,7 @@ public abstract class ProtocolMessageParser<T extends ProtocolMessage<T>> extend
                 }
             }
 
-            switch (MessageIdConstant.fromId(raw[0], context)) {
+            /*switch (MessageIdConstant.fromId(raw[0], context.getContext())) {
                 case SSH_MSG_KEXINIT:
                     return new KeyExchangeInitMessageParser(raw).parse();
                 case SSH_MSG_KEX_ECDH_INIT:
@@ -173,14 +188,15 @@ public abstract class ProtocolMessageParser<T extends ProtocolMessage<T>> extend
                                     + raw[0]
                                     + ")");
                     return new UnknownMessageParser(raw).parse();
-            }
+            }*/
         } catch (ParserException e) {
             LOGGER.debug("Error while Parsing, now parsing as UnknownMessage: " + e);
-            return new UnknownMessageParser(raw).parse();
+            // return new UnknownMessageParser(raw).parse();
         }
+        return null;
     }
 
-    public static HybridKeyExchangeReplyMessageParser handleHybridKeyExchangeReplyMessageParsing(
+    /*public static HybridKeyExchangeReplyMessageParser handleHybridKeyExchangeReplyMessageParsing(
             byte[] raw, Context context) {
         LOGGER.info(
                 "Negotiated Hybrid Key Exchange: "

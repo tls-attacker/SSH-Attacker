@@ -30,14 +30,20 @@ import de.rub.nds.sshattacker.core.layer.data.Preparator;
 import de.rub.nds.sshattacker.core.layer.data.Serializer;
 import de.rub.nds.sshattacker.core.layer.hints.LayerProcessingHint;
 import de.rub.nds.sshattacker.core.layer.hints.PacketLayerHint;
+import de.rub.nds.sshattacker.core.layer.stream.HintedLayerInputStream;
 import de.rub.nds.sshattacker.core.packet.AbstractPacket;
 import de.rub.nds.sshattacker.core.packet.BinaryPacket;
 import de.rub.nds.sshattacker.core.packet.BlobPacket;
 import de.rub.nds.sshattacker.core.packet.parser.AbstractPacketParser;
 import de.rub.nds.sshattacker.core.packet.parser.BinaryPacketParser;
 import de.rub.nds.sshattacker.core.packet.parser.BlobPacketParser;
+import de.rub.nds.sshattacker.core.protocol.connection.parser.*;
+import de.rub.nds.sshattacker.core.protocol.transport.message.AsciiMessage;
+import de.rub.nds.sshattacker.core.protocol.transport.parser.*;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.LinkedList;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
@@ -303,6 +309,7 @@ public class TransportLayer extends ProtocolLayer<PacketLayerHint, AbstractPacke
 
     @Override
     public void receiveMoreDataForHint(LayerProcessingHint hint) throws IOException {
+        LayerProcessingHint desiredHint = hint;
         InputStream dataStream = getLowerLayer().getDataStream();
         AbstractPacketParser parser;
         AbstractPacket packet;
@@ -330,9 +337,191 @@ public class TransportLayer extends ProtocolLayer<PacketLayerHint, AbstractPacke
         context.getPacketLayer().getDecompressor().decompress(packet);
 
         addProducedContainer(packet);
-
         PacketLayerHint currentHint;
 
-        currentHint = new PacketLayerHint(packet.getContentMessageType());
+        // currentHint = new PacketLayerHint(packet.getContentMessageType());
+        currentHint = temp_parser(packet, context);
+
+        LOGGER.debug("[bro] got hint: " + currentHint.getType());
+
+        if (desiredHint == null || currentHint.equals(desiredHint)) {
+            if (currentInputStream == null) {
+                // only set new input stream if necessary, extend current stream otherwise
+                currentInputStream = new HintedLayerInputStream(currentHint, this);
+            } else {
+                currentInputStream.setHint(currentHint);
+            }
+            currentInputStream.extendStream(packet.getCleanProtocolMessageBytes().getValue());
+        } else {
+            if (nextInputStream == null) {
+                // only set new input stream if necessary, extend current stream otherwise
+                nextInputStream = new HintedLayerInputStream(currentHint, this);
+            } else {
+                nextInputStream.setHint(currentHint);
+            }
+            nextInputStream.extendStream(packet.getCleanProtocolMessageBytes().getValue());
+        }
+    }
+
+    public PacketLayerHint temp_parser(AbstractPacket packet, SshContext context) {
+        byte[] raw = packet.getPayload().getValue();
+        if (packet instanceof BlobPacket) {
+            String rawText = new String(packet.getPayload().getValue(), StandardCharsets.US_ASCII);
+            if (rawText.startsWith("SSH-2.0")) {
+                return new PacketLayerHint(ProtocolMessageType.VERSION_EXCHANGE_MESSAGE);
+            } else {
+                final AsciiMessage message = new AsciiMessage();
+                AsciiMessageParser parser = new AsciiMessageParser(new ByteArrayInputStream(raw));
+                parser.parse(message);
+
+                // If we know what the text message means we can print a
+                // human-readable warning to the log. The following
+                // messages are sent by OpenSSH.
+                final String messageText = message.getText().getValue();
+                if ("Invalid SSH identification string.".equals(messageText)) {
+                    LOGGER.warn(
+                            "The server reported the identification string sent by the SSH-Attacker is invalid");
+                } else if ("Exceeded MaxStartups".equals(messageText)) {
+                    LOGGER.warn(
+                            "The server reported the maximum number of concurrent unauthenticated connections has been exceeded.");
+                }
+                return new PacketLayerHint(ProtocolMessageType.ASCII_MESSAEG);
+            }
+        }
+
+        LOGGER.debug("[bro] Identifier: " + raw[0]);
+
+        /* try {
+            if (packet instanceof BlobPacket) {
+                String rawText =
+                        new String(packet.getPayload().getValue(), StandardCharsets.US_ASCII);
+                if (rawText.startsWith("SSH-2.0")) {
+                    VersionExchangeMessage message = new VersionExchangeMessage();
+                    VersionExchangeMessageParser parser =
+                            new VersionExchangeMessageParser(new ByteArrayInputStream(raw));
+                    parser.parse(message);
+                    return new PacketLayerHint(ProtocolMessageType.TRANSPORT);
+                } else {
+                    final AsciiMessage message = new AsciiMessage();
+                    AsciiMessageParser parser =
+                            new AsciiMessageParser(new ByteArrayInputStream(raw));
+                    parser.parse(message);
+
+                    // If we know what the text message means we can print a
+                    // human-readable warning to the log. The following
+                    // messages are sent by OpenSSH.
+                    final String messageText = message.getText().getValue();
+                    if ("Invalid SSH identification string.".equals(messageText)) {
+                        LOGGER.warn(
+                                "The server reported the identification string sent by the SSH-Attacker is invalid");
+                    } else if ("Exceeded MaxStartups".equals(messageText)) {
+                        LOGGER.warn(
+                                "The server reported the maximum number of concurrent unauthenticated connections has been exceeded.");
+                    }
+                    return new PacketLayerHint(ProtocolMessageType.TRANSPORT);
+                }
+            }
+        } catch (ParserException e) {
+            LOGGER.debug("Error while Parsing, now parsing as UnknownMessage: " + e);
+            return new PacketLayerHint(ProtocolMessageType.UNKNOWN);
+            //return new UnknownMessageParser(raw).parse();
+        }*/
+
+        /*switch (MessageIdConstant.fromId(raw[0], context.getContext())) {
+            case SSH_MSG_KEXINIT:
+                return new KeyExchangeInitMessageParser(raw).parse();
+            case SSH_MSG_KEX_ECDH_INIT:
+                return new EcdhKeyExchangeInitMessageParser(raw).parse();
+            case SSH_MSG_KEX_ECDH_REPLY:
+                return new EcdhKeyExchangeReplyMessageParser(raw).parse();
+            case SSH_MSG_KEXDH_INIT:
+                return new DhKeyExchangeInitMessageParser(raw).parse();
+            case SSH_MSG_KEXDH_REPLY:
+                return new DhKeyExchangeReplyMessageParser(raw).parse();
+            case SSH_MSG_HBR_INIT:
+                return handleHybridKeyExchangeInitMessageParsing(raw, context).parse();
+            case SSH_MSG_HBR_REPLY:
+                return handleHybridKeyExchangeReplyMessageParsing(raw, context).parse();
+            case SSH_MSG_KEX_DH_GEX_REQUEST_OLD:
+                return new DhGexKeyExchangeOldRequestMessageParser(raw).parse();
+            case SSH_MSG_KEX_DH_GEX_REQUEST:
+                return new DhGexKeyExchangeRequestMessageParser(raw).parse();
+            case SSH_MSG_KEX_DH_GEX_GROUP:
+                return new DhGexKeyExchangeGroupMessageParser(raw).parse();
+            case SSH_MSG_KEX_DH_GEX_INIT:
+                return new DhGexKeyExchangeInitMessageParser(raw).parse();
+            case SSH_MSG_KEX_DH_GEX_REPLY:
+                return new DhGexKeyExchangeReplyMessageParser(raw).parse();
+            case SSH_MSG_KEXRSA_PUBKEY:
+                return new RsaKeyExchangePubkeyMessageParser(raw).parse();
+            case SSH_MSG_KEXRSA_SECRET:
+                return new RsaKeyExchangeSecretMessageParser(raw).parse();
+            case SSH_MSG_KEXRSA_DONE:
+                return new RsaKeyExchangeDoneMessageParser(raw).parse();
+            case SSH_MSG_NEWKEYS:
+                return new NewKeysMessageParser(raw).parse();
+            case SSH_MSG_SERVICE_REQUEST:
+                return new ServiceRequestMessageParser(raw).parse();
+            case SSH_MSG_SERVICE_ACCEPT:
+                return new ServiceAcceptMessageParser(raw).parse();
+            case SSH_MSG_CHANNEL_OPEN_CONFIRMATION:
+                return new ChannelOpenConfirmationMessageParser(raw).parse();
+            case SSH_MSG_CHANNEL_DATA:
+                return new ChannelDataMessageParser(raw).parse();
+            case SSH_MSG_CHANNEL_CLOSE:
+                return new ChannelCloseMessageParser(raw).parse();
+            case SSH_MSG_CHANNEL_EOF:
+                return new ChannelEofMessageParser(raw).parse();
+            case SSH_MSG_CHANNEL_EXTENDED_DATA:
+                return new ChannelExtendedDataMessageParser(raw).parse();
+            case SSH_MSG_CHANNEL_FAILURE:
+                return new ChannelFailureMessageParser(raw).parse();
+            case SSH_MSG_CHANNEL_OPEN_FAILURE:
+                return new ChannelOpenFailureMessageParser(raw).parse();
+            case SSH_MSG_CHANNEL_OPEN:
+                return handleChannelOpenMessageParsing(raw);
+            case SSH_MSG_CHANNEL_SUCCESS:
+                return new ChannelSuccessMessageParser(raw).parse();
+            case SSH_MSG_CHANNEL_WINDOW_ADJUST:
+                return new ChannelWindowAdjustMessageParser(raw).parse();
+            case SSH_MSG_DEBUG:
+                return new DebugMessageParser(raw).parse();
+            case SSH_MSG_DISCONNECT:
+                return new DisconnectMessageParser(raw).parse();
+            case SSH_MSG_IGNORE:
+                return new IgnoreMessageParser(raw).parse();
+            case SSH_MSG_REQUEST_FAILURE:
+                return new GlobalRequestFailureMessageParser(raw).parse();
+            case SSH_MSG_REQUEST_SUCCESS:
+                return new GlobalRequestSuccessMessageParser(raw).parse();
+            case SSH_MSG_UNIMPLEMENTED:
+                return new UnimplementedMessageParser(raw).parse();
+            case SSH_MSG_USERAUTH_REQUEST:
+                return handleUserAuthRequestMessageParsing(raw);
+            case SSH_MSG_USERAUTH_BANNER:
+                return new UserAuthBannerMessageParser(raw).parse();
+            case SSH_MSG_USERAUTH_FAILURE:
+                return new UserAuthFailureMessageParser(raw).parse();
+            case SSH_MSG_USERAUTH_SUCCESS:
+                return new UserAuthSuccessMessageParser(raw).parse();
+            case SSH_MSG_CHANNEL_REQUEST:
+                return handleChannelRequestMessageParsing(raw);
+            case SSH_MSG_GLOBAL_REQUEST:
+                return handleGlobalRequestMessageParsing(raw);
+            case SSH_MSG_USERAUTH_INFO_REQUEST:
+                return new UserAuthInfoRequestMessageParser(raw).parse();
+            case SSH_MSG_USERAUTH_INFO_RESPONSE:
+                return new UserAuthInfoResponseMessageParser(raw).parse();
+            default:
+                LOGGER.debug(
+                        "Received unimplemented Message "
+                                + MessageIdConstant.getNameById(raw[0])
+                                + " ("
+                                + raw[0]
+                                + ")");
+                return new UnknownMessageParser(raw).parse();
+        }*/
+
+        return null;
     }
 }

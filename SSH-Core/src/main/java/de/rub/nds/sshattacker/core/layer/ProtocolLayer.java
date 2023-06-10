@@ -163,13 +163,16 @@ public abstract class ProtocolLayer<
      */
     public HintedInputStream getDataStream() throws IOException {
         if (currentInputStream == null) {
+            LOGGER.debug("[bro] Current Inputstream is null");
             receiveMoreDataForHint(null);
             if (currentInputStream == null) {
                 throw new EndOfStreamException(
                         "Could not receive data stream from lower layer, nothing more to receive");
             }
         }
+        LOGGER.debug("Returned from 'more data', avilable = " + currentInputStream.available());
         if (currentInputStream.available() > 0) {
+            LOGGER.debug("[bro] Will Return now!");
             return currentInputStream;
         } else {
             if (nextInputStream != null) {

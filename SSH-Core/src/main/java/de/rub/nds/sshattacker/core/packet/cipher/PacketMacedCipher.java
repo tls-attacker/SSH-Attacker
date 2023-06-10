@@ -7,6 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.packet.cipher;
 
+import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.*;
 import de.rub.nds.sshattacker.core.crypto.cipher.AbstractCipher;
@@ -318,6 +319,9 @@ public class PacketMacedCipher extends PacketCipher {
                 plainData = cipher.decrypt(packet.getCiphertext().getValue());
             }
             packet.setCompressedPayload(plainData);
+            ModifiableByteArray plain_modifialbel = new ModifiableByteArray();
+            plain_modifialbel.setOriginalValue(plainData);
+            packet.setCleanProtocolMessageBytes(plain_modifialbel);
         }
         // Set the IV for the next packet if the encryption algorithm incorporates one
         if (encryptionAlgorithm.getIVSize() > 0) {
