@@ -99,6 +99,7 @@ public class LayerStack {
         context.setTalkingConnectionEndType(context.getConnection().getLocalConnectionEndType());
         // Send data
         for (ProtocolLayer layer : getLayerList()) {
+            LOGGER.debug("Layer {} sending configuration", layer.getLayerType());
             layer.sendConfiguration();
         }
 

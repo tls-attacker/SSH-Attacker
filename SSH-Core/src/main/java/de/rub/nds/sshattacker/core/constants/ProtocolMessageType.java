@@ -23,7 +23,7 @@ public enum ProtocolMessageType {
     TRANSPORT((byte) 3),
 
     VERSION_EXCHANGE_MESSAGE((byte) 0),
-    ASCII_MESSAEG((byte) 20),
+    ASCII_MESSAGE((byte) 20),
     SSH_MSG_DISCONNECT((byte) 1),
     SSH_MSG_IGNORE((byte) 2),
     SSH_MSG_UNIMPLEMENTED((byte) 3),

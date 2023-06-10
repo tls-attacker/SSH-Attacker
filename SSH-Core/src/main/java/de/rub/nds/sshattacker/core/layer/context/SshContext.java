@@ -17,9 +17,11 @@ import de.rub.nds.sshattacker.core.crypto.kex.RsaKeyExchange;
 import de.rub.nds.sshattacker.core.crypto.keys.SshPublicKey;
 import de.rub.nds.sshattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.sshattacker.core.packet.cipher.PacketCipher;
+import de.rub.nds.sshattacker.core.packet.cipher.PacketCipherFactory;
 import de.rub.nds.sshattacker.core.packet.cipher.keys.KeySet;
 import de.rub.nds.sshattacker.core.packet.compressor.PacketCompressor;
 import de.rub.nds.sshattacker.core.packet.crypto.AbstractPacketEncryptor;
+import de.rub.nds.sshattacker.core.packet.crypto.PacketEncryptor;
 import de.rub.nds.sshattacker.core.packet.layer.AbstractPacketLayer;
 import de.rub.nds.sshattacker.core.packet.layer.PacketLayerFactory;
 import de.rub.nds.sshattacker.core.protocol.common.layer.MessageLayer;
@@ -59,6 +61,15 @@ public class SshContext extends LayerContext {
     }
 
     private AbstractPacketEncryptor encryptor;
+
+    public void setEncryptor(AbstractPacketEncryptor encryptor) {
+        this.encryptor = encryptor;
+    }
+
+    public void setCompressor(PacketCompressor compressor) {
+        this.compressor = compressor;
+    }
+
     private PacketCompressor compressor;
 
     public PacketCipher getActiveDecryptCipher() {
@@ -347,6 +358,12 @@ public class SshContext extends LayerContext {
         readSequenceNumber = 0;
         handleAsClient = (getConnection().getLocalConnectionEndType() == ConnectionEndType.CLIENT);
         channelManager = new ChannelManager(this);
+
+        encryptor =
+                new PacketEncryptor(
+                        PacketCipherFactory.getNoneCipher(this, CipherMode.ENCRYPT), this);
+
+        compressor = new PacketCompressor();
     }
 
     // endregion
