@@ -10,11 +10,12 @@ package de.rub.nds.sshattacker.core.packet.cipher;
 import de.rub.nds.sshattacker.core.constants.*;
 import de.rub.nds.sshattacker.core.exceptions.CryptoException;
 import de.rub.nds.sshattacker.core.layer.context.SshContext;
+import de.rub.nds.sshattacker.core.layer.data.Parser;
 import de.rub.nds.sshattacker.core.packet.BinaryPacket;
 import de.rub.nds.sshattacker.core.packet.BlobPacket;
 import de.rub.nds.sshattacker.core.packet.cipher.keys.KeySet;
-import de.rub.nds.sshattacker.core.protocol.common.Parser;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
+import java.io.ByteArrayInputStream;
 
 public abstract class PacketCipher {
 
@@ -146,12 +147,16 @@ public abstract class PacketCipher {
 
     protected static class DecryptionParser extends Parser<Object> {
 
-        public DecryptionParser(byte[] array, int startPosition) {
+        /*public DecryptionParser(byte[] array, int startPosition) {
             super(array, startPosition);
+        }*/
+
+        public DecryptionParser(byte[] array) {
+            super(new ByteArrayInputStream(array));
         }
 
         @Override
-        public Object parse() {
+        public void parse(Object t) {
             throw new UnsupportedOperationException();
         }
 

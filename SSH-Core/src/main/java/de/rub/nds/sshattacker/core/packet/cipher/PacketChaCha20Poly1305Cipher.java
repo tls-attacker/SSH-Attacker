@@ -180,7 +180,7 @@ public class PacketChaCha20Poly1305Cipher extends PacketCipher {
                         .collect(Collectors.toSet()));
 
         DecryptionParser parser =
-                new DecryptionParser(computations.getPlainPacketBytes().getValue(), 0);
+                new DecryptionParser(computations.getPlainPacketBytes().getValue() /*, 0*/);
         packet.setPaddingLength(parser.parseByteField(BinaryPacketConstants.PADDING_FIELD_LENGTH));
         packet.setCompressedPayload(
                 parser.parseByteArrayField(

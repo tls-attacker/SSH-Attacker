@@ -73,11 +73,7 @@ public class SshContext extends LayerContext {
     private PacketCompressor compressor;
 
     public PacketCipher getActiveDecryptCipher() {
-        return activeDecryptCipher;
-    }
-
-    public void setActiveDecryptCipher(PacketCipher activeDecryptCipher) {
-        this.activeDecryptCipher = activeDecryptCipher;
+        return encryptor.getPacketMostRecentCipher();
     }
 
     private PacketCipher activeDecryptCipher;

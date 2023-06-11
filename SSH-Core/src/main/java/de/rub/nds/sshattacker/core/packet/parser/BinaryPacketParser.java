@@ -67,6 +67,7 @@ public class BinaryPacketParser extends AbstractPacketParser<BinaryPacket> {
                 LOGGER.debug("Packet structure: Encrypt-and-MAC");
                 parseEAMPacket(binaryPacket);
             }
+            LOGGER.debug("SET COMPLETE BYTES TO {}", getAlreadyParsed());
             binaryPacket.setCompletePacketBytes(getAlreadyParsed());
 
             LOGGER.trace(
@@ -185,8 +186,14 @@ public class BinaryPacketParser extends AbstractPacketParser<BinaryPacket> {
             }
             firstBlock = ArrayConverter.concatenate(firstBlock, decryptedBlock);
             decryptedByteCount += blockSize;
+            LOGGER.debug(
+                    "LENGHT_FIELD_LENGHT = {} - DECRYPTED = {} - DECRYPTED_LENGHT = {}",
+                    BinaryPacketConstants.LENGTH_FIELD_LENGTH,
+                    firstBlock,
+                    firstBlock.length);
         } while (decryptedByteCount < BinaryPacketConstants.LENGTH_FIELD_LENGTH);
         // setPointer(pointer);
+        LOGGER.debug("DONE WITH PARSING LENGHT");
         computations.setPlainPacketBytes(firstBlock, true);
 
         binaryPacket.setLength(
@@ -195,9 +202,10 @@ public class BinaryPacketParser extends AbstractPacketParser<BinaryPacket> {
                                 firstBlock, 0, BinaryPacketConstants.LENGTH_FIELD_LENGTH)));
         binaryPacket.setCiphertext(
                 parseByteArrayField(
-                        BinaryPacketConstants.LENGTH_FIELD_LENGTH
-                                + binaryPacket.getLength().getValue()));
+                        /*BinaryPacketConstants.LENGTH_FIELD_LENGTH
+                        + */ binaryPacket.getLength().getValue()));
         binaryPacket.setMac(
                 parseByteArrayField(activeDecryptCipher.getMacAlgorithm().getOutputSize()));
+        LOGGER.debug("DONE WITH PARSING parseEAMPacket ");
     }
 }
