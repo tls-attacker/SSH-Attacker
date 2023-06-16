@@ -159,6 +159,11 @@ public class TransportLayer extends ProtocolLayer<PacketLayerHint, AbstractPacke
     @Override
     public LayerProcessingResult<AbstractPacket> sendData(
             PacketLayerHint hint, byte[] additionalData) throws IOException {
+
+        LOGGER.debug(
+                "[bro] sending hint {} with data {}",
+                hint.getType(),
+                ArrayConverter.bytesToHexString(additionalData));
         ProtocolMessageType type = ProtocolMessageType.UNKNOWN;
         if (hint != null) {
             type = hint.getType();
@@ -240,7 +245,7 @@ public class TransportLayer extends ProtocolLayer<PacketLayerHint, AbstractPacke
             addProducedContainer(packet);
         }*/
 
-        getLowerLayer().sendData(null, additionalData);
+        getLowerLayer().sendData(null, serializedMessage);
         return new LayerProcessingResult<>(packets, getLayerType(), true);
     }
 

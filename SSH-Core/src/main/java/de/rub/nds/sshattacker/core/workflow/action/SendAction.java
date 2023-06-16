@@ -101,7 +101,7 @@ public class SendAction extends MessageAction implements SendingAction {
         }
 
         try {
-            send(context, messages, sessions);
+            send(context, messages, packets);
             setExecuted(true);
         } catch (IOException e) {
             /*if (!getActionOptions().contains(ActionOption.MAY_FAIL)) {

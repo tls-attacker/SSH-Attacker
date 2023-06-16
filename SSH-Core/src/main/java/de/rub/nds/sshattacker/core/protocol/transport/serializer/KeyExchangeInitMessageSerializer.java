@@ -201,7 +201,8 @@ public class KeyExchangeInitMessageSerializer extends SshMessageSerializer<KeyEx
 
     @Override
     protected byte[] serializeBytes() {
-        serializeMessageSpecificContents();
+        super.serializeProtocolMessageContents();
+        // serializeMessageSpecificContents();
         return getAlreadySerialized();
     }
 }

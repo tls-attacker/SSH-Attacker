@@ -51,6 +51,11 @@ public class KeyExchangeInitMessage extends SshMessage<KeyExchangeInitMessage> {
     private ModifiableByte firstKeyExchangePacketFollows;
     private ModifiableInteger reserved;
 
+    public KeyExchangeInitMessage() {
+        super();
+        this.protocolMessageType = ProtocolMessageType.SSH_MSG_KEXINIT;
+    }
+
     public ModifiableByteArray getCookie() {
         return cookie;
     }

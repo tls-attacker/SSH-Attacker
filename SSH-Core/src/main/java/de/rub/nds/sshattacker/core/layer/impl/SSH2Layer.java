@@ -141,6 +141,12 @@ public class SSH2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
             }
         }
 
+        if (runningProtocolMessageType == null) {
+            LOGGER.debug("[bro] Protocol Message Type is null!");
+        } else {
+            LOGGER.debug("ProtocolMessageType: {}", runningProtocolMessageType.getValue());
+        }
+
         LOGGER.debug("[bro] " + "flushing {} to lower layer", collectedMessageStream.toByteArray());
         // hand remaining serialized to record layer
         flushCollectedMessages(runningProtocolMessageType, collectedMessageStream);

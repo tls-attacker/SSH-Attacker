@@ -12,11 +12,11 @@ import de.rub.nds.sshattacker.core.connection.AliasedConnection;
 import de.rub.nds.sshattacker.core.layer.*;
 import de.rub.nds.sshattacker.core.layer.constant.ImplementedLayers;
 import de.rub.nds.sshattacker.core.layer.context.SshContext;
+import de.rub.nds.sshattacker.core.packet.AbstractPacket;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.*;
 import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessage;
 import de.rub.nds.sshattacker.core.protocol.connection.message.*;
 import de.rub.nds.sshattacker.core.protocol.transport.message.*;
-import de.rub.nds.sshattacker.core.session.Session;
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlElementWrapper;
 import jakarta.xml.bind.annotation.XmlElements;
@@ -26,8 +26,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public abstract class MessageAction extends ConnectionBoundAction {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     @HoldsModifiableVariable
     @XmlElementWrapper
@@ -165,7 +169,7 @@ public abstract class MessageAction extends ConnectionBoundAction {
             })
     protected List<ProtocolMessage<?>> messages = new ArrayList<>();
 
-    protected List<Session> sessions = new ArrayList<>();
+    protected List<AbstractPacket> packets = new ArrayList<>();
 
     @XmlTransient private LayerStackProcessingResult layerStackProcessingResult;
 
@@ -276,7 +280,7 @@ public abstract class MessageAction extends ConnectionBoundAction {
     protected void send(
             SshContext sshContext,
             List<ProtocolMessage<?>> protocolMessagesToSend,
-            List<Session> sessionsToSend)
+            List<AbstractPacket> packetsToSend)
             throws IOException {
         LayerStack layerStack = sshContext.getLayerStack();
 
@@ -286,12 +290,13 @@ public abstract class MessageAction extends ConnectionBoundAction {
         LayerConfiguration ssh1Configuration =
                 new SpecificSendLayerConfiguration<>(
                         ImplementedLayers.SSHv1, protocolMessagesToSend);
-        LayerConfiguration sessionConfiguration =
-                new SpecificSendLayerConfiguration<>(ImplementedLayers.Session, sessionsToSend);
+        LayerConfiguration transportConfiguration =
+                new SpecificSendLayerConfiguration<>(
+                        ImplementedLayers.TransportLayer, packetsToSend);
 
         List<LayerConfiguration> layerConfigurationList =
                 sortLayerConfigurations(
-                        layerStack, ssh2Configuration, ssh1Configuration, sessionConfiguration);
+                        layerStack, ssh2Configuration, ssh1Configuration, transportConfiguration);
         LayerStackProcessingResult processingResult = layerStack.sendData(layerConfigurationList);
         setContainers(processingResult);
     }
@@ -314,7 +319,7 @@ public abstract class MessageAction extends ConnectionBoundAction {
         }
 
         if (processingResults.getResultForLayer(ImplementedLayers.Session) != null) {
-            sessions =
+            packets =
                     new ArrayList<>(
                             processingResults
                                     .getResultForLayer(ImplementedLayers.Session)
@@ -325,16 +330,16 @@ public abstract class MessageAction extends ConnectionBoundAction {
     protected void receive(
             SshContext sshContext,
             List<ProtocolMessage<?>> protocolMessagesToReceive,
-            List<Session> sessionsToReceive) {
+            List<AbstractPacket> packetsToRecieve) {
         LayerStack layerStack = sshContext.getLayerStack();
 
         List<LayerConfiguration> layerConfigurationList;
-        if (protocolMessagesToReceive == null && sessionsToReceive == null) {
+        if (protocolMessagesToReceive == null && packetsToRecieve == null) {
             layerConfigurationList = getGenericReceiveConfigurations(layerStack);
         } else {
             layerConfigurationList =
                     getSpecificReceiveConfigurations(
-                            protocolMessagesToReceive, sessionsToReceive, layerStack);
+                            protocolMessagesToReceive, packetsToRecieve, layerStack);
         }
 
         getReceiveResult(layerStack, layerConfigurationList);
@@ -359,7 +364,7 @@ public abstract class MessageAction extends ConnectionBoundAction {
 
     private List<LayerConfiguration> getSpecificReceiveConfigurations(
             List<ProtocolMessage<?>> protocolMessagesToReceive,
-            List<Session> sessionsToReceive,
+            List<AbstractPacket> packetsToRecieve,
             LayerStack layerStack) {
         List<LayerConfiguration> layerConfigurationList;
 
@@ -371,8 +376,8 @@ public abstract class MessageAction extends ConnectionBoundAction {
                         ImplementedLayers.SSHv1, protocolMessagesToReceive);
         LayerConfiguration recordConfiguration =
                 new SpecificReceiveLayerConfiguration<>(
-                        ImplementedLayers.Session, sessionsToReceive);
-        if (sessionsToReceive == null || sessionsToReceive.isEmpty()) {
+                        ImplementedLayers.Session, packetsToRecieve);
+        if (packetsToRecieve == null || packetsToRecieve.isEmpty()) {
             // always allow (trailing) records when no records were set
             // a ReceiveAction actually intended to expect no records is pointless
             ((SpecificReceiveLayerConfiguration) recordConfiguration)

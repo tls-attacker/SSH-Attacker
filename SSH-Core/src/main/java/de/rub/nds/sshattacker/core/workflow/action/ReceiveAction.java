@@ -238,7 +238,7 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
             throw new WorkflowExecutionException("Action already executed!");
         }
 
-        receive(context, expectedMessages, sessions);
+        receive(context, expectedMessages, packets);
 
         /*LOGGER.debug("Receiving messages for connection alias '{}'...", getConnectionAlias());
         MessageActionResult result =
