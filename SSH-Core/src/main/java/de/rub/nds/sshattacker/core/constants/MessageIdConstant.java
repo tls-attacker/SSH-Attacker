@@ -18,8 +18,8 @@ public enum MessageIdConstant {
      *  - https://www.iana.org/assignments/ssh-parameters/ssh-parameters.xhtml#ssh-parameters-1
      */
     // [ RFC 4253 ]
-    VERSION_EXCHANGE_MESSAGE((byte) 0),
-    ASCII_MESSAEG((byte) 20),
+    VERSION_EXCHANGE_MESSAGE((byte) 200),
+    ASCII_MESSAGE((byte) 201),
     SSH_MSG_DISCONNECT((byte) 1),
     SSH_MSG_IGNORE((byte) 2),
     SSH_MSG_UNIMPLEMENTED((byte) 3),

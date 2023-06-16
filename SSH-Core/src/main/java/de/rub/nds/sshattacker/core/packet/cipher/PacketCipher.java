@@ -7,6 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.packet.cipher;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.*;
 import de.rub.nds.sshattacker.core.exceptions.CryptoException;
 import de.rub.nds.sshattacker.core.layer.context.SshContext;
@@ -16,8 +17,13 @@ import de.rub.nds.sshattacker.core.packet.BlobPacket;
 import de.rub.nds.sshattacker.core.packet.cipher.keys.KeySet;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.ByteArrayInputStream;
+import java.util.Arrays;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public abstract class PacketCipher {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     /** The SSH context this packet cipher is used in. */
     protected final SshContext context;
@@ -153,6 +159,17 @@ public abstract class PacketCipher {
 
         public DecryptionParser(byte[] array) {
             super(new ByteArrayInputStream(array));
+        }
+
+        public DecryptionParser(byte[] array, int offset) {
+            super(new ByteArrayInputStream(Arrays.copyOfRange(array, offset, array.length - 1)));
+
+            byte[] new_array = Arrays.copyOfRange(array, offset, array.length - 1);
+            LOGGER.debug(
+                    "[bro] New Bytarray with lenght {} :  {}",
+                    new_array.length,
+                    ArrayConverter.bytesToHexString(new_array));
+            // super(new ByteArrayInputStream(Arrays.copyOfRange(array, offset, array.length-1)));
         }
 
         @Override

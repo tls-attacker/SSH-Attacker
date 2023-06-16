@@ -203,7 +203,7 @@ public class BinaryPacketParser extends AbstractPacketParser<BinaryPacket> {
         binaryPacket.setCiphertext(
                 parseByteArrayField(
                         /*BinaryPacketConstants.LENGTH_FIELD_LENGTH
-                        + */ binaryPacket.getLength().getValue()));
+                        +*/ binaryPacket.getLength().getValue()));
         binaryPacket.setMac(
                 parseByteArrayField(activeDecryptCipher.getMacAlgorithm().getOutputSize()));
         LOGGER.debug("DONE WITH PARSING parseEAMPacket ");

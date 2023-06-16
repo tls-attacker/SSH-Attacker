@@ -19,6 +19,8 @@ import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.message.*;*/
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.constants.PacketLayerType;
 import de.rub.nds.sshattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.sshattacker.core.layer.LayerConfiguration;
@@ -43,6 +45,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
@@ -345,6 +348,12 @@ public class TransportLayer extends ProtocolLayer<PacketLayerHint, AbstractPacke
         context.getPacketLayer().getDecryptor().decrypt(packet);
         context.getPacketLayer().getDecompressor().decompress(packet);
 
+        LOGGER.debug(
+                "[bro] Decompressed Payload: {}",
+                ArrayConverter.bytesToHexString(packet.getPayload()));
+
+        packet.setCleanProtocolMessageBytes(packet.getPayload());
+
         addProducedContainer(packet);
         PacketLayerHint currentHint;
 
@@ -360,7 +369,12 @@ public class TransportLayer extends ProtocolLayer<PacketLayerHint, AbstractPacke
             } else {
                 currentInputStream.setHint(currentHint);
             }
-            currentInputStream.extendStream(packet.getCleanProtocolMessageBytes().getValue());
+            // currentInputStream.extendStream(packet.getCleanProtocolMessageBytes().getValue());
+            currentInputStream.extendStream(
+                    Arrays.copyOfRange(
+                            packet.getCleanProtocolMessageBytes().getValue(),
+                            1,
+                            packet.getCleanProtocolMessageBytes().getValue().length));
         } else {
             if (nextInputStream == null) {
                 // only set new input stream if necessary, extend current stream otherwise
@@ -368,7 +382,12 @@ public class TransportLayer extends ProtocolLayer<PacketLayerHint, AbstractPacke
             } else {
                 nextInputStream.setHint(currentHint);
             }
-            nextInputStream.extendStream(packet.getCleanProtocolMessageBytes().getValue());
+            // nextInputStream.extendStream(packet.getCleanProtocolMessageBytes().getValue());
+            nextInputStream.extendStream(
+                    Arrays.copyOfRange(
+                            packet.getCleanProtocolMessageBytes().getValue(),
+                            1,
+                            packet.getCleanProtocolMessageBytes().getValue().length));
         }
     }
 
@@ -398,7 +417,32 @@ public class TransportLayer extends ProtocolLayer<PacketLayerHint, AbstractPacke
             }
         }
 
-        LOGGER.debug("[bro] Identifier: " + raw[0]);
+        // LOGGER.debug("[bro] Identifier: {} and constant {}",
+        // packet.getCiphertext().getValue()[1]);
+
+        MessageIdConstant id =
+                MessageIdConstant.fromId(
+                        packet.getCleanProtocolMessageBytes().getValue()[0], context.getContext());
+        LOGGER.debug(
+                "[bro] Identifier: {} and constant {}",
+                packet.getCleanProtocolMessageBytes().getValue()[0],
+                id);
+
+        switch (MessageIdConstant.fromId(
+                packet.getCleanProtocolMessageBytes().getValue()[0], context.getContext())) {
+            case SSH_MSG_KEXINIT:
+                LOGGER.debug("[bro] returning SSH KEX INIT Hint");
+                return new PacketLayerHint(ProtocolMessageType.SSH_MSG_KEXINIT);
+            default:
+                LOGGER.debug(
+                        "[bro] cannot identifie {} as {} - returningn null",
+                        raw[1],
+                        MessageIdConstant.fromId(
+                                packet.getCleanProtocolMessageBytes().getValue()[0],
+                                context.getContext()));
+                return null;
+                // return new KeyExchangeInitMessageParser(raw).parse();
+        }
 
         /* try {
             if (packet instanceof BlobPacket) {
@@ -531,6 +575,6 @@ public class TransportLayer extends ProtocolLayer<PacketLayerHint, AbstractPacke
                 return new UnknownMessageParser(raw).parse();
         }*/
 
-        return null;
+        // return null;
     }
 }

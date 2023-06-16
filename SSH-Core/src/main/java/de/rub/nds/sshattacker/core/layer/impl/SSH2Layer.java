@@ -36,6 +36,7 @@ import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessage;
 import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ConnectionMessage;
+import de.rub.nds.sshattacker.core.protocol.transport.message.KeyExchangeInitMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.message.UnknownMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.message.VersionExchangeMessage;
 import java.io.ByteArrayOutputStream;
@@ -334,6 +335,9 @@ public class SSH2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
             case VERSION_EXCHANGE_MESSAGE:
                 readVersionExchangeProtocolData();
                 break;
+            case SSH_MSG_KEXINIT:
+                readKexInitProtocolData();
+                break;
             default:
                 LOGGER.error("Undefined record layer type, found type {}", hint.getType());
                 break;
@@ -342,6 +346,11 @@ public class SSH2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
 
     private void readAuthenticationProtocolData() {
         AuthenticationMessage message = new AuthenticationMessage();
+        readDataContainer(message, context);
+    }
+
+    private void readKexInitProtocolData() {
+        KeyExchangeInitMessage message = new KeyExchangeInitMessage();
         readDataContainer(message, context);
     }
 

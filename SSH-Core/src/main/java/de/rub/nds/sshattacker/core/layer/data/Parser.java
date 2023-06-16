@@ -69,7 +69,12 @@ public abstract class Parser<T> {
                 throw new EndOfStreamException("Reached end of Stream");
             }
             if (read != length) {
-                throw new EndOfStreamException("Reached end of stream after " + read + " bytes");
+                throw new EndOfStreamException(
+                        "Reached end of stream after "
+                                + read
+                                + " bytes, while trying to read "
+                                + length
+                                + " bytes!");
             } else {
                 outputStream.write(data);
             }

@@ -208,16 +208,29 @@ public class PacketMacedCipher extends PacketCipher {
 
         decryptInner(packet);
 
+        /*        DecryptionParser parser =
+        new DecryptionParser(
+                computations.getPlainPacketBytes().getValue(),
+                isEncryptThenMac() ? 0 : BinaryPacketConstants.PACKET_FIELD_LENGTH);*/
+
         DecryptionParser parser =
-                new DecryptionParser(computations.getPlainPacketBytes().getValue() /*,
-                        isEncryptThenMac() ? 0 : BinaryPacketConstants.PACKET_FIELD_LENGTH*/);
+                new DecryptionParser(computations.getPlainPacketBytes().getValue());
+
+        int lenghtToForget = parser.parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH);
+        LOGGER.debug("[bro] lenght to forget:" + lenghtToForget);
         packet.setPaddingLength(parser.parseByteField(BinaryPacketConstants.PADDING_FIELD_LENGTH));
+        LOGGER.debug("[bro] Padding Lenght:" + packet.getPaddingLength().getValue().intValue());
         packet.setCompressedPayload(
                 parser.parseByteArrayField(
                         packet.getLength().getValue()
                                 - packet.getPaddingLength().getValue()
                                 - BinaryPacketConstants.PADDING_FIELD_LENGTH));
         packet.setPadding(parser.parseByteArrayField(packet.getPaddingLength().getValue()));
+
+        LOGGER.debug(
+                "[bro] Compressed Payload:"
+                        + ArrayConverter.bytesToHexString(
+                                packet.getCompressedPayload().getValue()));
 
         if (isEncryptThenMac()) {
             computations.setEncryptedPacketFields(
@@ -289,10 +302,12 @@ public class PacketMacedCipher extends PacketCipher {
                                     remainingBlocksIv);
                 } else {
                     // Case 1b: Binary packet / First block decrypted / Cipher without IV
-                    remainingBlocks =
-                            cipher.decrypt(
-                                    Arrays.copyOfRange(
-                                            ciphertext, firstBlock.length, ciphertext.length));
+                    /*                   remainingBlocks =
+                    cipher.decrypt(
+                            Arrays.copyOfRange(
+                                    ciphertext, firstBlock.length, ciphertext.length));*/
+
+                    remainingBlocks = cipher.decrypt(ciphertext);
                 }
                 plainData = ArrayConverter.concatenate(firstBlock, remainingBlocks);
             } else {
@@ -309,6 +324,9 @@ public class PacketMacedCipher extends PacketCipher {
                 }
             }
             computations.setPlainPacketBytes(plainData);
+            ModifiableByteArray plain_modifialbel = new ModifiableByteArray();
+            plain_modifialbel.setOriginalValue(plainData);
+            packet.setCleanProtocolMessageBytes(plain_modifialbel);
         } else {
             if (encryptionAlgorithm.getIVSize() > 0) {
                 // Case 3a: Blob packet / Cipher with IV
