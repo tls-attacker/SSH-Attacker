@@ -36,6 +36,7 @@ import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessage;
 import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ConnectionMessage;
+import de.rub.nds.sshattacker.core.protocol.transport.message.HybridKeyExchangeInitMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.message.KeyExchangeInitMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.message.UnknownMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.message.VersionExchangeMessage;
@@ -87,6 +88,7 @@ public class SSH2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
 
         if (configuration != null && configuration.getContainerList() != null) {
             for (ProtocolMessage message : configuration.getContainerList()) {
+                collectedMessageStream = new ByteArrayOutputStream();
                 /*
                                 if (containerAlreadyUsedByHigherLayer(message)
                                         || !prepareDataContainer(message, context)) {
@@ -138,6 +140,7 @@ public class SSH2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
                 runningProtocolMessageType = message.getProtocolMessageType();
                 processMessage(message, collectedMessageStream);
                 addProducedContainer(message);
+                flushCollectedMessages(runningProtocolMessageType, collectedMessageStream);
             }
         }
 
@@ -149,7 +152,7 @@ public class SSH2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
 
         LOGGER.debug("[bro] " + "flushing {} to lower layer", collectedMessageStream.toByteArray());
         // hand remaining serialized to record layer
-        flushCollectedMessages(runningProtocolMessageType, collectedMessageStream);
+        // flushCollectedMessages(runningProtocolMessageType, collectedMessageStream);
         return getLayerResult();
 
         /*LayerConfiguration<ProtocolMessage> configuration = getLayerConfiguration();
@@ -344,6 +347,9 @@ public class SSH2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
             case SSH_MSG_KEXINIT:
                 readKexInitProtocolData();
                 break;
+            case SSH_MSG_HBR_INIT:
+                readHbrInitProtocolData();
+                break;
             default:
                 LOGGER.error("Undefined record layer type, found type {}", hint.getType());
                 break;
@@ -357,6 +363,11 @@ public class SSH2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
 
     private void readKexInitProtocolData() {
         KeyExchangeInitMessage message = new KeyExchangeInitMessage();
+        readDataContainer(message, context);
+    }
+
+    private void readHbrInitProtocolData() {
+        HybridKeyExchangeInitMessage message = new HybridKeyExchangeInitMessage();
         readDataContainer(message, context);
     }
 

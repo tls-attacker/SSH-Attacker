@@ -86,7 +86,8 @@ public class HybridKeyExchangeReplyMessageSerializer
 
     @Override
     protected byte[] serializeBytes() {
-        serializeMessageSpecificContents();
+        super.serializeProtocolMessageContents();
+        // serializeMessageSpecificContents();
         return getAlreadySerialized();
     }
 }

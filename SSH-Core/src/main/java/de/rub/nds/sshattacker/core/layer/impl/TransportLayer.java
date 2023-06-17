@@ -438,6 +438,9 @@ public class TransportLayer extends ProtocolLayer<PacketLayerHint, AbstractPacke
             case SSH_MSG_KEXINIT:
                 LOGGER.debug("[bro] returning SSH KEX INIT Hint");
                 return new PacketLayerHint(ProtocolMessageType.SSH_MSG_KEXINIT);
+            case SSH_MSG_HBR_INIT:
+                LOGGER.debug("[bro] returning SSH_MSG_HBR_INIT Hint");
+                return new PacketLayerHint(ProtocolMessageType.SSH_MSG_HBR_INIT);
             default:
                 LOGGER.debug(
                         "[bro] cannot identifie {} as {} - returningn null",

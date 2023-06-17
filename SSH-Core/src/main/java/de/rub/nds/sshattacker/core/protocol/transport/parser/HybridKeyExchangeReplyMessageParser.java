@@ -9,6 +9,7 @@ package de.rub.nds.sshattacker.core.protocol.transport.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.BinaryPacketConstants;
+import de.rub.nds.sshattacker.core.constants.CryptoConstants;
 import de.rub.nds.sshattacker.core.constants.HybridKeyExchangeCombiner;
 import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
@@ -51,9 +52,45 @@ public class HybridKeyExchangeReplyMessageParser
 
     public HybridKeyExchangeReplyMessageParser(SshContext context, InputStream stream) {
         super(stream);
-        this.agreementSize = agreementSize;
+
+        LOGGER.info(
+                "Negotiated Hybrid Key Exchange: "
+                        + context.getChooser().getKeyExchangeAlgorithm());
+        switch (context.getChooser().getKeyExchangeAlgorithm()) {
+            default:
+                LOGGER.warn(
+                        "Unsupported hybrid key exchange negotiated, treating received HBR_REPLY as sntrup761x25519-sha512@openssh.com");
+                // Fallthrough to next case statement intended
+            case SNTRUP761_X25519:
+                this.combiner = HybridKeyExchangeCombiner.POSTQUANTUM_CONCATENATE_CLASSICAL;
+                this.agreementSize = CryptoConstants.X25519_POINT_SIZE;
+                this.encapsulationSize = CryptoConstants.SNTRUP761_CIPHERTEXT_SIZE;
+                break;
+            case CURVE25519_FRODOKEM1344:
+                this.combiner = HybridKeyExchangeCombiner.POSTQUANTUM_CONCATENATE_CLASSICAL;
+                this.agreementSize = CryptoConstants.X25519_POINT_SIZE;
+                this.encapsulationSize = CryptoConstants.FRODOKEM1344_CIPHERTEXT_SIZE;
+                break;
+            case SNTRUP4591761_X25519:
+                this.combiner = HybridKeyExchangeCombiner.POSTQUANTUM_CONCATENATE_CLASSICAL;
+                this.agreementSize = CryptoConstants.X25519_POINT_SIZE;
+                this.encapsulationSize = CryptoConstants.SNTRUP4591761_CIPHERTEXT_SIZE;
+                break;
+            case NISTP521_FIRESABER:
+                this.combiner = HybridKeyExchangeCombiner.POSTQUANTUM_CONCATENATE_CLASSICAL;
+                this.agreementSize = CryptoConstants.NISTP521_POINT_SIZE;
+                this.encapsulationSize = CryptoConstants.FIRESABER_CIPHERTEXT_SIZE;
+                break;
+            case NISTP521_KYBER1024:
+                this.combiner = HybridKeyExchangeCombiner.POSTQUANTUM_CONCATENATE_CLASSICAL;
+                this.agreementSize = CryptoConstants.NISTP521_POINT_SIZE;
+                this.encapsulationSize = CryptoConstants.KYBER1024_CIPHERTEXT_SIZE;
+                break;
+        }
+
+        /*        this.agreementSize = agreementSize;
         this.encapsulationSize = encapsulationSize;
-        this.combiner = combiner;
+        this.combiner = combiner;*/
     }
 
     private void parseHostKeyBytes(HybridKeyExchangeReplyMessage message) {
