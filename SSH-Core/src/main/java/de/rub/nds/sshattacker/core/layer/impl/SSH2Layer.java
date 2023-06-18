@@ -184,12 +184,19 @@ public class SSH2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
         ProtocolMessagePreparator preparator = message.getPreparator(context);
         preparator.prepare();
 
+        LOGGER.debug("Prepared packet");
+
         ProtocolMessageSerializer serializer = message.getSerializer(context);
         byte[] serializedMessage = serializer.serialize();
         message.setCompleteResultingMessage(serializedMessage);
 
         // Wird nicht benötigt, da wir keinen "Gesamt"-Digest benötigen ?
         // message.getHandler(context).updateDigest(message, true);
+
+        if (message.getCompleteResultingMessage().getValue()[0]
+                == ProtocolMessageType.SSH_MSG_HBR_REPLY.getValue()) {
+            message.setAdjustContext(Boolean.FALSE);
+        }
 
         if (message.getAdjustContext()) {
             message.getHandler(context).adjustContext(message);

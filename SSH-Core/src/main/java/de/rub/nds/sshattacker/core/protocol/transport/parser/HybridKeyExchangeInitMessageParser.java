@@ -111,6 +111,11 @@ public class HybridKeyExchangeInitMessageParser
                 LOGGER.warn("combiner not supported. Can not update message");
                 break;
         }
+
+        LOGGER.debug(
+                "Agreement: {}, Encapsulation: {}",
+                message.getAgreementPublicKey(),
+                message.getEncapsulationPublicKey());
     }
 
     @Override

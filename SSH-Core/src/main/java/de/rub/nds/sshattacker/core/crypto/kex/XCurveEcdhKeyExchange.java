@@ -97,6 +97,9 @@ public class XCurveEcdhKeyExchange extends AbstractEcdhKeyExchange {
             throw new CryptoException(
                     "Unable to compute shared secret - either local key pair or remote public key is null");
         }
+        LOGGER.debug(
+                "Remote Public: {}",
+                ArrayConverter.bytesToHexString(remotePublicKey.getCoordinate()));
         byte[] sharedBytes;
         if (group == NamedEcGroup.CURVE25519) {
             sharedBytes = new byte[CryptoConstants.X25519_POINT_SIZE];
