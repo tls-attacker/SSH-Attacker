@@ -93,7 +93,7 @@ You can find more information about these modules in the Wiki.
 Currently, the following features are supported:
 - SSH 2 (RFC-4253)
 - transport, authentication and connection protocol support
--> all supported message types: [Messages](https://github.com/tls-attacker/SSH-Attacker/tree/main/resources/doc/MESSAGES.md ':include')
+- all supported message types: [Messages](https://github.com/tls-attacker/SSH-Attacker/tree/main/resources/doc/MESSAGES.md ':include')
 - all supported crypto algorithms: [Algorithms](https://github.com/tls-attacker/SSH-Attacker/tree/main/resources/doc/ALGORITHMS.md ':include')
 - some extension
 - client, server and mitm
