@@ -75,7 +75,7 @@ Although these example applications are very powerful in itself, SSH-Attacker un
 
 ## Code Structure
 
-![Project Structure](https://github.com/tls-attacker/SSH-Attacker/tree/main/resources/doc/SSH-Attacker-Overview.png?raw=true)
+![Project Structure](/resources/doc/SSH-Attacker-Overview.png?raw=true)
 
 SSH-Attacker consists of several (maven) projects:
 - SSH-Client: A simple, highly configurable SSH client using SSH-Attacker
