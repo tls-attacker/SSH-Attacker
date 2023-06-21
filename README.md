@@ -1,6 +1,6 @@
 # SSH-Attacker
 
-A framework for automated analysis of SSH
+A framework for automated analysis of the SSH protocol.
 
 SSH-Attacker is a Java-based framework for analyzing SSH libraries. It is able to send arbitrary protocol messages in an arbitrary order to the SSH peer, and define their modifications using a provided interface. This gives the developer an opportunity to easily define a custom SSH protocol flow and test it against his SSH library.
 
@@ -14,9 +14,7 @@ In order to compile and use SSH-Attacker, you need to have Java and Maven instal
 $ sudo apt-get install maven
 ```
 
-SSH-Attacker currently needs Java JDK 11 to run.
-
-If you have the correct Java version you can run the maven command from the SSH-Attacker directory:
+SSH-Attacker currently needs Java JDK 11 to run. If you have the correct Java version, you can run the `mvn` command from the SSH-Attacker directory to build the project:
 
 ```bash
 $ git clone git@github.com:tls-attacker/SSH-Attacker.git
@@ -77,27 +75,24 @@ Although these example applications are very powerful in itself, SSH-Attacker un
 
 ## Code Structure
 
-![Project Structure](https://github.com/tls-attacker/SSH-Attacker/tree/main/resources/doc/SSH-Attacker-Overview.png)
+![Project Structure](https://github.com/tls-attacker/SSH-Attacker/tree/main/resources/doc/SSH-Attacker-Overview.png?raw=true)
 
 SSH-Attacker consists of several (maven) projects:
-- SSH-Client: The client example application
+- SSH-Client: A simple, highly configurable SSH client using SSH-Attacker
 - SSH-Core: The protocol stack and heart of SSH-Attacker
-- SSH-Core-OQS:SSH post-quantum crypto support
-- SSH-Mitm: A prototype for MitM workflows
-- SSH-Server: The server example application
-
-You can find more information about these modules in the Wiki.
+- SSH-Core-OQS: SSH post-quantum crypto support using liboqs
+- SSH-Mitm: A simple man-in-the-middle application for SSH
+- SSH-Server: A simple, highly configurable SSH server using SSH-Attacker
 
 ## Features
 
 Currently, the following features are supported:
-- SSH 2 (RFC-4253)
-- transport, authentication and connection protocol support
-- all supported message types: [Messages](https://github.com/tls-attacker/SSH-Attacker/tree/main/resources/doc/MESSAGES.md ':include')
-- all supported crypto algorithms: [Algorithms](https://github.com/tls-attacker/SSH-Attacker/tree/main/resources/doc/ALGORITHMS.md ':include')
-- some extension
-- client, server and mitm
-- multiple workflows representing the ssh protocol flow
+- SSHv2 (RFC4251 and related)
+- Support for Transport Layer (RFC4253), Authentication (RFC4252), and Connection Protocol (RFC4254)
+- Supported message types: [Messages](https://github.com/tls-attacker/SSH-Attacker/tree/main/resources/doc/MESSAGES.md ':include')
+- Supported crypto algorithms: [Algorithms](https://github.com/tls-attacker/SSH-Attacker/tree/main/resources/doc/ALGORITHMS.md ':include')
+- Some extensions (proprietary and RFC8308)
+- Client, Server, and MitM
 
 ## Usage
 
@@ -126,7 +121,7 @@ DefaultWorkflowExecutor executor = new DefaultWorkflowExecutor(state);
 executor.executeWorkflow();
 ```
 
-SSH-Attacker uses the concept of WorkflowTraces to define a "SSH message flow". A WorkflowTrace consists of a list of actions which are then executed one after the other. Although for a typical "SSH message flow" only SendAction's and ReceiveAction's are needed, the framework does not stop here and implements a lot of different other actions which can be used to execute even more arbitrary message flows. A list of currently implemented actions with explanations can be found in the Wiki.
+SSH-Attacker uses the concept of `WorkflowTrace`s to define a message flow. Each `WorkflowTrace` consists of a list of actions which are executed in sequence.
 
 We know many of you hate Java. Therefore, you can also use an XML structure and run your customized SSH protocol from XML:
 
@@ -194,7 +189,7 @@ We know many of you hate Java. Therefore, you can also use an XML structure and 
 </workflowTrace>
 ```
 
-Given this XML structure is located in /SSH-Attacker/resources/examples, you would just need to execute:
+Given this XML structure, located in `SSH-Attacker/resources/examples`, you would just need to execute:
 
 ```bash
 $ java -jar SSH-Client.jar -connect [host]:[port] -workflow_input workflow.xml
@@ -203,11 +198,11 @@ $ java -jar SSH-Client.jar -connect [host]:[port] -workflow_input workflow.xml
 
 ## Dockerfile
 
-Additionally we provide a docker image, located in /SSH-Attacker/Dockerfile, which can be used to run the different SSH-Attacker modules directly in a container. When running the image use the --target [ssh-client, ssh-server, ssh-mitm, attacks]docker flag to specify which module should be executed as entrypoint in the docker container.
+Additionally we provide a docker image, located in `SSH-Attacker/Dockerfile`, which can be used to run the different SSH-Attacker modules directly in a container. When running the image use the --target [ssh-client, ssh-server, ssh-mitm, attacks]docker flag to specify which module should be executed as entrypoint in the docker container.
 
 ## Modifiable Variables
 
-SSH-Attacker uses the concept of Modifiable Variables to allow runtime modifications to predefined Workflows. Modifiable variables allow one to set modifications to basic types after or before their values are actually set. When their actual values are determined and one tries to access the value via getters the original value will be returned in a modified form accordingly. More details on this concept can be found at https://github.com/tls-attacker/ModifiableVariable.
+SSH-Attacker uses the concept of Modifiable Variables to allow runtime modifications to predefined Workflows. Modifiable variables allow one to set modifications to basic types after or before their values are actually set. When their actual values are determined and one tries to access the value via getters the original value will be returned in a modified form accordingly. More details on this concept can be found at the [ModifiableVariable repository](https://github.com/tls-attacker/ModifiableVariable).
 
 ```java
 ModifiableInteger i = new ModifiableInteger();
@@ -228,9 +223,9 @@ ChannelOpenSessionMessage channelOpenSessionMessage = new ChannelOpenSessionMess
         channelOpenSessionMessage.setSenderChannelId(i);//1437
 ```
 
-The ChannelOpenSessionMessagePreparator wil overwrite the ModifiableInteger holding the SenderChannelId with the ConfigSenderChannelId, so the original value will be set to 1337 by that. When accessing the SenderChannelId for serializing the message, the value will be returned in modified form.
+The ChannelOpenSessionMessagePreparator wil overwrite the ModifiableInteger holding the `senderChannelId` with the `configSenderChannelId`, so the original value will be set to 1337 by that. When accessing the `senderChannelId` for serializing the message, the value will be returned in modified form:
 
-```
+```xml
 <ChannelOpenSession channel="1337">
                 <messageId>
                     <originalValue>90</originalValue>
@@ -254,26 +249,14 @@ The ChannelOpenSessionMessagePreparator wil overwrite the ModifiableInteger hold
                     <originalValue>1337</originalValue>
                 </senderChannelId>
 </ChannelOpenSession>
-
 ```
 
-As you can see, we explicitly increased the SenderChannelID by 100 through the modification.
-
-Further examples on attacks and further explanations on SSH-Attacker can be found in the wiki.
+As you can see, we explicitly increased the `senderChannelId` by 100 through the modification.
 
 ## Advanced Features
 
-Some actions require context, or configuration to be executed correctly. For example, if SSH-Attacker tries to send a KeyExchangeInit message, it needs to know which values to
+Some actions require context, or configuration to be executed correctly. For example, if SSH-Attacker tries to send a `KeyExchangeInit` message, it needs to know which values to
 put into the message, e.g., which crypto algorithms to use. SSH-Attacker can draw this information
-from a configuration file, thus we added some default config files to /resources/configs, which allow running the SSH-Attacker in different scenarios.
-Values which are determined at runtime are stored in the SshContext. When a value which is normally selected from the context is missing (because a message was not yet received), a chooser will determine where to load the value from. In the standard implementation the default value from the Config is selected. You can specify your own configuration file from command line with the "-config" parameter. Note that if you do not explicitly define a default value in the config file, SSH-Attacker fills
-this gap with hardcoded values (which are equal to the provided default config). More details on how to customize SSH-Attacker can be found in the wiki.
-
-## Acknowledgements
-
-The following people have contributed code to the SSH-Attacker project:
-
-Additionally we would like to thank all the other people who have contributed code to the project.
-
-Further contributions and pull requests are welcome.
-
+from a configuration file, thus we added some default config files to `resources/configs`, which allow running the SSH-Attacker in different scenarios.
+Values which are determined at runtime are stored in the `SshContext` class. When a required value is missing from context, a chooser will determine where to load the value from. In the default impelementation, the value from `Config` is selected. You may specify your own configuration file from command line with the "-config" parameter. Note that if you do not explicitly define a default value in the config file, SSH-Attacker fills
+this gap with hardcoded values.
