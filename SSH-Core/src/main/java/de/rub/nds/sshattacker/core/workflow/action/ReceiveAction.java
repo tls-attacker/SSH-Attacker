@@ -247,7 +247,7 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
         setExecuted(true);
 
         String expected = getReadableString(expectedMessages);
-        LOGGER.debug("Expected messages: {}", expected);
+        LOGGER.info("Expected messages: {}", expected);
         String received = getReadableString(messages);
         if (hasDefaultAlias()) {
             LOGGER.info("Received messages: {}", received);

@@ -127,6 +127,7 @@ public class KeyExchangeInitMessageHandler extends SshMessageHandler<KeyExchange
     }
 
     private void pickAlgorithms() {
+
         // if enforceSettings is true, the algorithms are expected to be
         // already set in the context
         if (!sshContext.getConfig().getEnforceSettings()) {
@@ -206,6 +207,10 @@ public class KeyExchangeInitMessageHandler extends SshMessageHandler<KeyExchange
                                             .getServerSupportedCompressionMethodsServerToClient())
                             .orElse(null));
         }
+
+        LOGGER.info(
+                "[bro] Picking KEX Algorithm, Setting Hostkey to {}",
+                sshContext.getHostKeyAlgorithm());
     }
 
     /*@Override

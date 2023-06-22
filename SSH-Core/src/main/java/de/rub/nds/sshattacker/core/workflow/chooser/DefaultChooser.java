@@ -945,6 +945,10 @@ public class DefaultChooser extends Chooser {
      */
     @Override
     public SshPublicKey<?, ?> getNegotiatedHostKey() {
+
+        LOGGER.info(
+                "[bro] getting Negotiated algorithm, hostkey_alg is {}",
+                context.getSshContext().getHostKeyAlgorithm());
         Optional<PublicKeyAlgorithm> negotiatedHostKeyAlgorithm =
                 context.getSshContext().getHostKeyAlgorithm();
         SshPublicKey<?, ?> fallback = config.getHostKeys().get(0);

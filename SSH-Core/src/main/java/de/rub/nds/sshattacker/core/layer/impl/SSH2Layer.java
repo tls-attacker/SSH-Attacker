@@ -194,8 +194,14 @@ public class SSH2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
         // message.getHandler(context).updateDigest(message, true);
 
         if (message.getCompleteResultingMessage().getValue()[0]
-                == ProtocolMessageType.SSH_MSG_HBR_REPLY.getValue()) {
+                        == ProtocolMessageType.SSH_MSG_HBR_REPLY.getValue()
+                || message.getCompleteResultingMessage().getValue()[0]
+                        == ProtocolMessageType.SSH_MSG_KEXINIT.getValue()) {
             message.setAdjustContext(Boolean.FALSE);
+        } else {
+            LOGGER.info(
+                    "[bro] Adjusting Context while messagetype is {}",
+                    message.getCompleteResultingMessage().getValue()[0]);
         }
 
         if (message.getAdjustContext()) {
