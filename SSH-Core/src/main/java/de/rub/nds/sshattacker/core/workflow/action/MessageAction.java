@@ -199,13 +199,13 @@ public abstract class MessageAction extends ConnectionBoundAction {
         stripEmptyLists();
     }
 
-    private void stripEmptyLists() {
+    protected void stripEmptyLists() {
         if (messages == null || messages.isEmpty()) {
             messages = null;
         }
     }
 
-    private void initEmptyLists() {
+    protected void initEmptyLists() {
         if (messages == null) {
             messages = new ArrayList<>();
         }

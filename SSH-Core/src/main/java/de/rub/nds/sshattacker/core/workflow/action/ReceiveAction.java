@@ -164,7 +164,7 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
         @XmlElement(type = BlobPacket.class, name = "BlobPacket"),
         @XmlElement(type = BinaryPacket.class, name = "BinaryPacket")
     })
-    protected List<AbstractPacket> packetList = new ArrayList<>();
+    protected List<AbstractPacket> receivedPackets = new ArrayList<>();
 
     public ReceiveAction() {
         super(AliasedConnection.DEFAULT_CONNECTION_ALIAS);
@@ -223,7 +223,7 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
         MessageActionResult result =
                 ReceiveMessageHelper.receiveMessages(context, expectedMessages);
         messages = result.getMessageList();
-        packetList = result.getPacketList();
+        receivedPackets = result.getPacketList();
         setExecuted(true);
 
         String expected = getReadableString(expectedMessages);
@@ -384,12 +384,13 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
         messages = receivedMessages;
     }
 
-    public List<AbstractPacket> getPacketList() {
-        return packetList;
+    @Override
+    public List<AbstractPacket> getReceivedPackets() {
+        return receivedPackets;
     }
 
-    public void setPacketList(List<AbstractPacket> packetList) {
-        this.packetList = packetList;
+    public void setReceivedPackets(List<AbstractPacket> packetList) {
+        this.receivedPackets = receivedPackets;
     }
 
     public void setExpectedMessages(List<ProtocolMessage<?>> expectedMessages) {
@@ -466,6 +467,7 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
     @Override
     public void reset() {
         messages = null;
+        receivedPackets = null;
         setExecuted(null);
     }
 
@@ -482,47 +484,34 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
         if (!super.equals(obj)) return false;
         ReceiveAction that = (ReceiveAction) obj;
         return Objects.equals(expectedMessages, that.expectedMessages)
-                && Objects.equals(messages, that.messages);
+                && Objects.equals(messages, that.messages)
+                && Objects.equals(receivedPackets, that.receivedPackets);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), expectedMessages, messages);
+        return Objects.hash(super.hashCode(), expectedMessages, messages, receivedPackets);
     }
 
     @Override
-    public void normalize() {
-        super.normalize();
-        initEmptyLists();
-    }
-
-    @Override
-    public void normalize(SshAction defaultAction) {
-        super.normalize(defaultAction);
-        initEmptyLists();
-    }
-
-    @Override
-    public void filter() {
-        super.filter();
-        filterEmptyLists();
-    }
-
-    @Override
-    public void filter(SshAction defaultAction) {
-        super.filter(defaultAction);
-        filterEmptyLists();
-    }
-
-    private void filterEmptyLists() {
+    protected void stripEmptyLists() {
+        super.stripEmptyLists();
         if (expectedMessages == null || expectedMessages.isEmpty()) {
             expectedMessages = null;
         }
+        if (receivedPackets == null || receivedPackets.isEmpty()) {
+            receivedPackets = null;
+        }
     }
 
-    private void initEmptyLists() {
+    @Override
+    protected void initEmptyLists() {
+        super.initEmptyLists();
         if (expectedMessages == null) {
             expectedMessages = new ArrayList<>();
+        }
+        if (receivedPackets == null) {
+            receivedPackets = new ArrayList<>();
         }
     }
 
