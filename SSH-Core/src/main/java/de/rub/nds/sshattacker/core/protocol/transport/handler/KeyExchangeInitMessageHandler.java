@@ -25,6 +25,104 @@ public class KeyExchangeInitMessageHandler extends SshMessageHandler<KeyExchange
         super(context, message);
     }*/
 
+    public void adjustContextAfterMessageSent(KeyExchangeInitMessage message) {
+        if (sshContext.isHandleAsClient()) {
+            sshContext.setServerCookie(message.getCookie().getValue());
+            sshContext.setServerSupportedKeyExchangeAlgorithms(
+                    Converter.nameListToEnumValues(
+                            message.getKeyExchangeAlgorithms().getValue(),
+                            KeyExchangeAlgorithm.class));
+            sshContext.setServerSupportedHostKeyAlgorithms(
+                    Converter.nameListToEnumValues(
+                            message.getServerHostKeyAlgorithms().getValue(),
+                            PublicKeyAlgorithm.class));
+            sshContext.setServerSupportedEncryptionAlgorithmsClientToServer(
+                    Converter.nameListToEnumValues(
+                            message.getEncryptionAlgorithmsClientToServer().getValue(),
+                            EncryptionAlgorithm.class));
+            sshContext.setServerSupportedEncryptionAlgorithmsServerToClient(
+                    Converter.nameListToEnumValues(
+                            message.getEncryptionAlgorithmsServerToClient().getValue(),
+                            EncryptionAlgorithm.class));
+            sshContext.setServerSupportedMacAlgorithmsClientToServer(
+                    Converter.nameListToEnumValues(
+                            message.getMacAlgorithmsClientToServer().getValue(),
+                            MacAlgorithm.class));
+            sshContext.setServerSupportedMacAlgorithmsServerToClient(
+                    Converter.nameListToEnumValues(
+                            message.getMacAlgorithmsServerToClient().getValue(),
+                            MacAlgorithm.class));
+            sshContext.setServerSupportedCompressionMethodsClientToServer(
+                    Converter.nameListToEnumValues(
+                            message.getCompressionMethodsClientToServer().getValue(),
+                            CompressionMethod.class));
+            sshContext.setServerSupportedCompressionMethodsServerToClient(
+                    Converter.nameListToEnumValues(
+                            message.getCompressionMethodsServerToClient().getValue(),
+                            CompressionMethod.class));
+            sshContext.setServerSupportedLanguagesClientToServer(
+                    Arrays.asList(
+                            message.getLanguagesClientToServer()
+                                    .getValue()
+                                    .split("" + CharConstants.ALGORITHM_SEPARATOR)));
+            sshContext.setServerSupportedLanguagesServerToClient(
+                    Arrays.asList(
+                            message.getLanguagesServerToClient()
+                                    .getValue()
+                                    .split("" + CharConstants.ALGORITHM_SEPARATOR)));
+            sshContext.setServerReserved(message.getReserved().getValue());
+
+            sshContext.getExchangeHashInputHolder().setServerKeyExchangeInit(message);
+        } else {
+            sshContext.setClientCookie(message.getCookie().getValue());
+            sshContext.setClientSupportedKeyExchangeAlgorithms(
+                    Converter.nameListToEnumValues(
+                            message.getKeyExchangeAlgorithms().getValue(),
+                            KeyExchangeAlgorithm.class));
+            sshContext.setClientSupportedHostKeyAlgorithms(
+                    Converter.nameListToEnumValues(
+                            message.getServerHostKeyAlgorithms().getValue(),
+                            PublicKeyAlgorithm.class));
+            sshContext.setClientSupportedEncryptionAlgorithmsClientToServer(
+                    Converter.nameListToEnumValues(
+                            message.getEncryptionAlgorithmsClientToServer().getValue(),
+                            EncryptionAlgorithm.class));
+            sshContext.setClientSupportedEncryptionAlgorithmsServerToClient(
+                    Converter.nameListToEnumValues(
+                            message.getEncryptionAlgorithmsServerToClient().getValue(),
+                            EncryptionAlgorithm.class));
+            sshContext.setClientSupportedMacAlgorithmsClientToServer(
+                    Converter.nameListToEnumValues(
+                            message.getMacAlgorithmsClientToServer().getValue(),
+                            MacAlgorithm.class));
+            sshContext.setClientSupportedMacAlgorithmsServerToClient(
+                    Converter.nameListToEnumValues(
+                            message.getMacAlgorithmsServerToClient().getValue(),
+                            MacAlgorithm.class));
+            sshContext.setClientSupportedCompressionMethodsClientToServer(
+                    Converter.nameListToEnumValues(
+                            message.getCompressionMethodsClientToServer().getValue(),
+                            CompressionMethod.class));
+            sshContext.setClientSupportedCompressionMethodsServerToClient(
+                    Converter.nameListToEnumValues(
+                            message.getCompressionMethodsServerToClient().getValue(),
+                            CompressionMethod.class));
+            sshContext.setClientSupportedLanguagesClientToServer(
+                    Arrays.asList(
+                            message.getLanguagesClientToServer()
+                                    .getValue()
+                                    .split("" + CharConstants.ALGORITHM_SEPARATOR)));
+            sshContext.setClientSupportedLanguagesServerToClient(
+                    Arrays.asList(
+                            message.getLanguagesServerToClient()
+                                    .getValue()
+                                    .split("" + CharConstants.ALGORITHM_SEPARATOR)));
+            sshContext.setClientReserved(message.getReserved().getValue());
+
+            sshContext.getExchangeHashInputHolder().setClientKeyExchangeInit(message);
+        }
+    }
+
     @Override
     public void adjustContext(KeyExchangeInitMessage message) {
         if (sshContext.isHandleAsClient()) {

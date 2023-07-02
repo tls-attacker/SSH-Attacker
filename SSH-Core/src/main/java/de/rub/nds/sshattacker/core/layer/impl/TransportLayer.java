@@ -441,6 +441,9 @@ public class TransportLayer extends ProtocolLayer<PacketLayerHint, AbstractPacke
             case SSH_MSG_HBR_INIT:
                 LOGGER.debug("[bro] returning SSH_MSG_HBR_INIT Hint");
                 return new PacketLayerHint(ProtocolMessageType.SSH_MSG_HBR_INIT);
+            case SSH_MSG_NEWKEYS:
+                LOGGER.debug("[bro] returning SSH_MSG_NEWKEYS Hint");
+                return new PacketLayerHint(ProtocolMessageType.SSH_MSG_NEWKEYS);
             default:
                 LOGGER.debug(
                         "[bro] cannot identifie {} as {} - returningn null",

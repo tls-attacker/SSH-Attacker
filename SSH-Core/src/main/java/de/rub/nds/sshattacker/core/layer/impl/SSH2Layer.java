@@ -32,9 +32,7 @@ import de.rub.nds.sshattacker.core.layer.hints.PacketLayerHint;
 import de.rub.nds.sshattacker.core.layer.stream.HintedInputStream;
 import de.rub.nds.sshattacker.core.layer.stream.HintedLayerInputStream;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.AuthenticationMessage;
-import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessage;
-import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessagePreparator;
-import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessageSerializer;
+import de.rub.nds.sshattacker.core.protocol.common.*;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ConnectionMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.message.HybridKeyExchangeInitMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.message.KeyExchangeInitMessage;
@@ -194,10 +192,35 @@ public class SSH2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
         // message.getHandler(context).updateDigest(message, true);
 
         if (message.getCompleteResultingMessage().getValue()[0]
+                        == ProtocolMessageType.SSH_MSG_NEWKEYS.getValue()
+                || message.getCompleteResultingMessage().getValue()[0]
                         == ProtocolMessageType.SSH_MSG_HBR_REPLY.getValue()
                 || message.getCompleteResultingMessage().getValue()[0]
                         == ProtocolMessageType.SSH_MSG_KEXINIT.getValue()) {
             message.setAdjustContext(Boolean.FALSE);
+        } else {
+            LOGGER.info(
+                    "[bro] Adjusting Context while messagetype is {}",
+                    message.getCompleteResultingMessage().getValue()[0]);
+        }
+
+        if (message.getCompleteResultingMessage().getValue()[0]
+                == ProtocolMessageType.SSH_MSG_NEWKEYS.getValue()) {
+            ProtocolMessageHandler<?> handler = message.getHandler(context);
+            if (handler instanceof MessageSentHandler) {
+                ((MessageSentHandler) handler).adjustContextAfterMessageSent();
+            }
+        } else {
+            LOGGER.info(
+                    "[bro] Adjusting Context while messagetype is {}",
+                    message.getCompleteResultingMessage().getValue()[0]);
+        }
+
+        if (message.getCompleteResultingMessage().getValue()[0]
+                        == ProtocolMessageType.SSH_MSG_NEWKEYS.getValue()
+                || message.getCompleteResultingMessage().getValue()[0]
+                        == ProtocolMessageType.SSH_MSG_KEXINIT.getValue()) {
+            message.getHandler(context).adjustContextAfterMessageSent(message);
         } else {
             LOGGER.info(
                     "[bro] Adjusting Context while messagetype is {}",
