@@ -375,7 +375,7 @@ public class TransportLayer extends ProtocolLayer<PacketLayerHint, AbstractPacke
                 currentInputStream.setHint(currentHint);
             }
             // currentInputStream.extendStream(packet.getCleanProtocolMessageBytes().getValue());
-            // TODO: [bro] here is the error, 1 till 1 is null !
+            // if only one byte is to transmit - transmit it alone
             if (packet.getCleanProtocolMessageBytes().getValue().length == 1) {
                 currentInputStream.extendStream(
                         Arrays.copyOfRange(
