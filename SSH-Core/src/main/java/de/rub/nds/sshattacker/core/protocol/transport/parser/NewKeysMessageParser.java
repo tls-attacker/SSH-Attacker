@@ -34,7 +34,10 @@ public class NewKeysMessageParser extends SshMessageParser<NewKeysMessage> {
     */
 
     @Override
-    protected void parseMessageSpecificContents(NewKeysMessage message) {}
+    protected void parseMessageSpecificContents(NewKeysMessage message) {
+        // does nothing, only used to take the one byte out of the stream
+        parseByteString(1);
+    }
 
     @Override
     public void parse(NewKeysMessage message) {

@@ -375,11 +375,21 @@ public class TransportLayer extends ProtocolLayer<PacketLayerHint, AbstractPacke
                 currentInputStream.setHint(currentHint);
             }
             // currentInputStream.extendStream(packet.getCleanProtocolMessageBytes().getValue());
-            currentInputStream.extendStream(
-                    Arrays.copyOfRange(
-                            packet.getCleanProtocolMessageBytes().getValue(),
-                            1,
-                            packet.getCleanProtocolMessageBytes().getValue().length));
+            // TODO: [bro] here is the error, 1 till 1 is null !
+            if (packet.getCleanProtocolMessageBytes().getValue().length == 1) {
+                currentInputStream.extendStream(
+                        Arrays.copyOfRange(
+                                packet.getCleanProtocolMessageBytes().getValue(),
+                                0,
+                                packet.getCleanProtocolMessageBytes().getValue().length));
+            } else {
+                currentInputStream.extendStream(
+                        Arrays.copyOfRange(
+                                packet.getCleanProtocolMessageBytes().getValue(),
+                                1,
+                                packet.getCleanProtocolMessageBytes().getValue().length));
+            }
+
         } else {
             if (nextInputStream == null) {
                 // only set new input stream if necessary, extend current stream otherwise
@@ -388,11 +398,19 @@ public class TransportLayer extends ProtocolLayer<PacketLayerHint, AbstractPacke
                 nextInputStream.setHint(currentHint);
             }
             // nextInputStream.extendStream(packet.getCleanProtocolMessageBytes().getValue());
-            nextInputStream.extendStream(
-                    Arrays.copyOfRange(
-                            packet.getCleanProtocolMessageBytes().getValue(),
-                            1,
-                            packet.getCleanProtocolMessageBytes().getValue().length));
+            if (packet.getCleanProtocolMessageBytes().getValue().length == 1) {
+                nextInputStream.extendStream(
+                        Arrays.copyOfRange(
+                                packet.getCleanProtocolMessageBytes().getValue(),
+                                1,
+                                packet.getCleanProtocolMessageBytes().getValue().length));
+            } else {
+                nextInputStream.extendStream(
+                        Arrays.copyOfRange(
+                                packet.getCleanProtocolMessageBytes().getValue(),
+                                1,
+                                packet.getCleanProtocolMessageBytes().getValue().length));
+            }
         }
     }
 

@@ -34,10 +34,7 @@ import de.rub.nds.sshattacker.core.layer.stream.HintedLayerInputStream;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.AuthenticationMessage;
 import de.rub.nds.sshattacker.core.protocol.common.*;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ConnectionMessage;
-import de.rub.nds.sshattacker.core.protocol.transport.message.HybridKeyExchangeInitMessage;
-import de.rub.nds.sshattacker.core.protocol.transport.message.KeyExchangeInitMessage;
-import de.rub.nds.sshattacker.core.protocol.transport.message.UnknownMessage;
-import de.rub.nds.sshattacker.core.protocol.transport.message.VersionExchangeMessage;
+import de.rub.nds.sshattacker.core.protocol.transport.message.*;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import org.apache.logging.log4j.LogManager;
@@ -386,10 +383,18 @@ public class SSH2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
             case SSH_MSG_HBR_INIT:
                 readHbrInitProtocolData();
                 break;
+            case SSH_MSG_NEWKEYS:
+                readNewKeysProtocolData();
+                break;
             default:
                 LOGGER.error("Undefined record layer type, found type {}", hint.getType());
                 break;
         }
+    }
+
+    private void readNewKeysProtocolData() {
+        NewKeysMessage message = new NewKeysMessage();
+        readDataContainer(message, context);
     }
 
     private void readAuthenticationProtocolData() {
