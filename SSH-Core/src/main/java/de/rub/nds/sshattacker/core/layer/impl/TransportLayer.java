@@ -334,7 +334,7 @@ public class TransportLayer extends ProtocolLayer<PacketLayerHint, AbstractPacke
             parser =
                     new BinaryPacketParser(
                             dataStream,
-                            context.getActiveDecryptCipher(),
+                            context.getPacketLayer().getDecryptorCipher(),
                             context.getReadSequenceNumber());
             packet = new BinaryPacket();
         } else if (context.getPacketLayerType() == PacketLayerType.BLOB) {
@@ -462,6 +462,12 @@ public class TransportLayer extends ProtocolLayer<PacketLayerHint, AbstractPacke
             case SSH_MSG_NEWKEYS:
                 LOGGER.debug("[bro] returning SSH_MSG_NEWKEYS Hint");
                 return new PacketLayerHint(ProtocolMessageType.SSH_MSG_NEWKEYS);
+            case SSH_MSG_SERVICE_REQUEST:
+                LOGGER.debug("[bro] returning SSH_MSG_SERVICE_REQUEST Hint");
+                return new PacketLayerHint(ProtocolMessageType.SSH_MSG_SERVICE_REQUEST);
+                /*            case SSH_MSG_NEWKEYS:
+                LOGGER.debug("[bro] returning SSH_MSG_NEWKEYS Hint");
+                return new PacketLayerHint(ProtocolMessageType.SSH_MSG_NEWKEYS);*/
             default:
                 LOGGER.debug(
                         "[bro] cannot identifie {} as {} - returningn null",

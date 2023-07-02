@@ -136,6 +136,18 @@ public class SSH2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
                 processMessage(message, collectedMessageStream);
                 addProducedContainer(message);
                 flushCollectedMessages(runningProtocolMessageType, collectedMessageStream);
+
+                if (message.getCompleteResultingMessage().getValue()[0]
+                        == ProtocolMessageType.SSH_MSG_NEWKEYS.getValue()) {
+                    ProtocolMessageHandler<?> handler = message.getHandler(context);
+                    if (handler instanceof MessageSentHandler) {
+                        ((MessageSentHandler) handler).adjustContextAfterMessageSent();
+                    }
+                } else {
+                    LOGGER.info(
+                            "[bro] Adjusting Context while messagetype is {}",
+                            message.getCompleteResultingMessage().getValue()[0]);
+                }
             }
         }
 
@@ -185,6 +197,8 @@ public class SSH2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
         byte[] serializedMessage = serializer.serialize();
         message.setCompleteResultingMessage(serializedMessage);
 
+        collectedMessageStream.writeBytes(message.getCompleteResultingMessage().getValue());
+
         // Wird nicht benötigt, da wir keinen "Gesamt"-Digest benötigen ?
         // message.getHandler(context).updateDigest(message, true);
 
@@ -201,7 +215,16 @@ public class SSH2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
                     message.getCompleteResultingMessage().getValue()[0]);
         }
 
-        if (message.getCompleteResultingMessage().getValue()[0]
+        if (message.getAdjustContext()) {
+            message.getHandler(context).adjustContext(message);
+        }
+
+        // Unklar für SSHv2, erstmal ignoriert
+        /*if (mustFlushCollectedMessagesImmediately(message)) {
+            flushCollectedMessages(message.getProtocolMessageType(), collectedMessageStream);
+        }*/
+
+        /*        if (message.getCompleteResultingMessage().getValue()[0]
                 == ProtocolMessageType.SSH_MSG_NEWKEYS.getValue()) {
             ProtocolMessageHandler<?> handler = message.getHandler(context);
             if (handler instanceof MessageSentHandler) {
@@ -211,7 +234,7 @@ public class SSH2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
             LOGGER.info(
                     "[bro] Adjusting Context while messagetype is {}",
                     message.getCompleteResultingMessage().getValue()[0]);
-        }
+        }*/
 
         if (message.getCompleteResultingMessage().getValue()[0]
                         == ProtocolMessageType.SSH_MSG_NEWKEYS.getValue()
@@ -224,14 +247,6 @@ public class SSH2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
                     message.getCompleteResultingMessage().getValue()[0]);
         }
 
-        if (message.getAdjustContext()) {
-            message.getHandler(context).adjustContext(message);
-        }
-        collectedMessageStream.writeBytes(message.getCompleteResultingMessage().getValue());
-        // Unklar für SSHv2, erstmal ignoriert
-        /*if (mustFlushCollectedMessagesImmediately(message)) {
-            flushCollectedMessages(message.getProtocolMessageType(), collectedMessageStream);
-        }*/
         if (message.getAdjustContext()) {
             message.getHandler(context).adjustContextAfterSerialize(message);
         }
@@ -386,10 +401,18 @@ public class SSH2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
             case SSH_MSG_NEWKEYS:
                 readNewKeysProtocolData();
                 break;
+            case SSH_MSG_SERVICE_REQUEST:
+                readServiceRequestData();
+                break;
             default:
                 LOGGER.error("Undefined record layer type, found type {}", hint.getType());
                 break;
         }
+    }
+
+    private void readServiceRequestData() {
+        ServiceRequestMessage message = new ServiceRequestMessage();
+        readDataContainer(message, context);
     }
 
     private void readNewKeysProtocolData() {

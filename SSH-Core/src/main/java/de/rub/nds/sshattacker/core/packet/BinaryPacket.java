@@ -190,7 +190,10 @@ public class BinaryPacket extends AbstractPacket<BinaryPacket>
     @Override
     public BinaryPacketPreparator getPreparator(SshContext context) {
         return new BinaryPacketPreparator(
-                context.getChooser(), this, context.getEncryptor(), context.getCompressor());
+                context.getChooser(),
+                this,
+                context.getPacketLayer().getEncryptor(),
+                context.getCompressor());
     }
 
     @Override
