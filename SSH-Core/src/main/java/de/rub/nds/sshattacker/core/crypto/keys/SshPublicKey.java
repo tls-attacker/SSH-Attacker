@@ -7,9 +7,14 @@
  */
 package de.rub.nds.sshattacker.core.crypto.keys;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.PublicKeyFormat;
+import de.rub.nds.sshattacker.core.crypto.util.PublicKeyHelper;
 import jakarta.xml.bind.annotation.*;
 import java.io.Serializable;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.Base64;
 import java.util.Optional;
 
 /**
@@ -72,6 +77,57 @@ public class SshPublicKey<PUBLIC extends CustomPublicKey, PRIVATE extends Custom
         return publicKey;
     }
 
+    public int getKeyStrength() {
+        if (publicKey instanceof CustomDsaPublicKey) {
+            return ((CustomDsaPublicKey) publicKey).getParams().getP().bitLength();
+        } else if (publicKey instanceof CustomEcPublicKey) {
+            return ((CustomEcPublicKey) publicKey).getGroup().getCoordinateSizeInBit();
+        } else if (publicKey instanceof CustomRsaPublicKey) {
+            return ((CustomRsaPublicKey) publicKey).getModulus().bitLength();
+        } else if (publicKey instanceof CustomDhPublicKey) {
+            return ((CustomDhPublicKey) publicKey).getParams().getP().bitLength();
+        } else if (publicKey instanceof XCurveEcPublicKey) {
+            return ((XCurveEcPublicKey) publicKey).getGroup().getCoordinateSizeInBit();
+        } else {
+            throw new UnsupportedOperationException(
+                    "Unsupported public key type: " + publicKey.getClass().getSimpleName());
+        }
+    }
+
+    public byte[] getEncoded() {
+        return PublicKeyHelper.encode(this);
+    }
+
+    public byte[] getFingerprint(FingerprintType algorithm) {
+        return computeFingerprint(algorithm);
+    }
+
+    public String getEncodedFingerprint(FingerprintType type, FingerprintEncoding encoding) {
+        byte[] fingerprint = computeFingerprint(type);
+        switch (encoding) {
+            case HEX:
+                return ArrayConverter.bytesToHexString(fingerprint);
+            case BASE64:
+                return Base64.getEncoder().encodeToString(fingerprint);
+            case OPENSSH:
+                return type
+                        + ":"
+                        + Base64.getEncoder().encodeToString(fingerprint).replace("=", "");
+        }
+        return ArrayConverter.bytesToHexString(fingerprint);
+    }
+
+    private byte[] computeFingerprint(FingerprintType type) {
+        try {
+            String hashAlgorithm = type.toString().replace("SHA", "SHA-");
+            MessageDigest digest = MessageDigest.getInstance(hashAlgorithm);
+            byte[] encodedPublicKey = getEncoded();
+            return digest.digest(encodedPublicKey);
+        } catch (NoSuchAlgorithmException e) {
+            throw new UnsupportedOperationException("Unable to compute fingerprint", e);
+        }
+    }
+
     public Optional<PRIVATE> getPrivateKey() {
         return Optional.ofNullable(privateKey);
     }
@@ -80,5 +136,16 @@ public class SshPublicKey<PUBLIC extends CustomPublicKey, PRIVATE extends Custom
         return String.format(
                 "SshPublicKey[%s,%s]",
                 publicKeyFormat.toString(), getPrivateKey().map(key -> "private").orElse("public"));
+    }
+
+    public enum FingerprintType {
+        SHA1,
+        SHA256
+    }
+
+    public enum FingerprintEncoding {
+        HEX,
+        BASE64,
+        OPENSSH
     }
 }
