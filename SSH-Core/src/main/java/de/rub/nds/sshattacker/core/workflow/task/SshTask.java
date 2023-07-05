@@ -1,27 +1,26 @@
 /*
  * SSH-Attacker - A Modular Penetration Testing Framework for SSH
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
-package de.rub.nds.sshattacker.attacks.task;
+package de.rub.nds.sshattacker.core.workflow.task;
 
 import de.rub.nds.sshattacker.core.exceptions.TransportHandlerConnectException;
 import de.rub.nds.sshattacker.core.state.State;
-import de.rub.nds.sshattacker.core.workflow.DefaultWorkflowExecutor;
 import de.rub.nds.sshattacker.core.workflow.WorkflowExecutor;
+import de.rub.nds.sshattacker.core.workflow.WorkflowExecutorFactory;
 import java.util.concurrent.Callable;
 import java.util.function.Function;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-/** Base class for SSH tasks */
 public abstract class SshTask implements Task, Callable<Task> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private boolean hasError;
+    private boolean hasError = false;
 
     private final int reexecutions;
 
@@ -157,8 +156,25 @@ public abstract class SshTask implements Task, Callable<Task> {
         this.afterExecutionCallback = afterExecutionCallback;
     }
 
-    @SuppressWarnings("MethodMayBeStatic")
     public WorkflowExecutor getExecutor(State state) {
-        return new DefaultWorkflowExecutor(state);
+        WorkflowExecutor executor =
+                WorkflowExecutorFactory.createWorkflowExecutor(
+                        state.getConfig().getWorkflowExecutorType(), state);
+        if (beforeTransportPreInitCallback != null
+                && executor.getBeforeTransportPreInitCallback() == null) {
+            executor.setBeforeTransportPreInitCallback(beforeTransportPreInitCallback);
+        }
+        if (beforeTransportInitCallback != null
+                && executor.getBeforeTransportInitCallback() == null) {
+            executor.setBeforeTransportInitCallback(beforeTransportInitCallback);
+        }
+        if (afterTransportInitCallback != null
+                && executor.getAfterTransportInitCallback() == null) {
+            executor.setAfterTransportInitCallback(afterTransportInitCallback);
+        }
+        if (afterExecutionCallback != null && executor.getAfterExecutionCallback() == null) {
+            executor.setAfterExecutionCallback(afterExecutionCallback);
+        }
+        return executor;
     }
 }

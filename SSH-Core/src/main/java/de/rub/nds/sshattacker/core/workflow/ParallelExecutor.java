@@ -1,16 +1,16 @@
 /*
  * SSH-Attacker - A Modular Penetration Testing Framework for SSH
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
-package de.rub.nds.sshattacker.attacks.general;
+package de.rub.nds.sshattacker.core.workflow;
 
-import de.rub.nds.sshattacker.attacks.task.SshTask;
-import de.rub.nds.sshattacker.attacks.task.StateExecutionTask;
-import de.rub.nds.sshattacker.attacks.task.Task;
 import de.rub.nds.sshattacker.core.state.State;
+import de.rub.nds.sshattacker.core.workflow.task.SshTask;
+import de.rub.nds.sshattacker.core.workflow.task.StateExecutionTask;
+import de.rub.nds.sshattacker.core.workflow.task.Task;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -20,7 +20,6 @@ import java.util.function.Function;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-/** Executes tasks in parallel */
 public class ParallelExecutor {
 
     private static final Logger LOGGER = LogManager.getLogger();
@@ -29,20 +28,19 @@ public class ParallelExecutor {
     private Callable<Integer> timeoutAction;
 
     private final int size;
-    private boolean shouldShutdown;
+    private boolean shouldShutdown = false;
 
     private final int reexecutions;
 
-    private Function<State, Integer> defaultBeforeTransportPreInitCallback;
+    private Function<State, Integer> defaultBeforeTransportPreInitCallback = null;
 
-    private Function<State, Integer> defaultBeforeTransportInitCallback;
+    private Function<State, Integer> defaultBeforeTransportInitCallback = null;
 
-    private Function<State, Integer> defaultAfterTransportInitCallback;
+    private Function<State, Integer> defaultAfterTransportInitCallback = null;
 
-    private Function<State, Integer> defaultAfterExecutionCallback;
+    private Function<State, Integer> defaultAfterExecutionCallback = null;
 
     public ParallelExecutor(int size, int reexecutions, ThreadPoolExecutor executorService) {
-        super();
         this.executorService = executorService;
         this.reexecutions = reexecutions;
         this.size = size;
@@ -59,7 +57,8 @@ public class ParallelExecutor {
         this(
                 size,
                 reexecutions,
-                new ThreadPoolExecutor(size, size, 10, TimeUnit.DAYS, new LinkedBlockingDeque<>()));
+                new ThreadPoolExecutor(
+                        size, size, 10, TimeUnit.DAYS, new LinkedBlockingDeque<Runnable>()));
     }
 
     public ParallelExecutor(int size, int reexecutions, ThreadFactory factory) {
@@ -70,7 +69,7 @@ public class ParallelExecutor {
                         size, size, 5, TimeUnit.MINUTES, new LinkedBlockingDeque<>(), factory));
     }
 
-    protected Future<Task> addTask(SshTask task) {
+    private Future<Task> addTask(SshTask task) {
         if (executorService.isShutdown()) {
             throw new RuntimeException("Cannot add Tasks to already shutdown executor");
         }
@@ -92,16 +91,16 @@ public class ParallelExecutor {
         return executorService.submit(task);
     }
 
-    protected Future<Task> addStateTask(State state) {
+    private Future<Task> addStateTask(State state) {
         return addTask(new StateExecutionTask(state, reexecutions));
     }
 
     public void bulkExecuteStateTasks(Iterable<State> stateList) {
-        List<Future<?>> futureList = new LinkedList<>();
+        List<Future> futureList = new LinkedList<>();
         for (State state : stateList) {
             futureList.add(addStateTask(state));
         }
-        for (Future<?> future : futureList) {
+        for (Future future : futureList) {
             try {
                 future.get();
             } catch (InterruptedException | ExecutionException ex) {
@@ -111,14 +110,14 @@ public class ParallelExecutor {
     }
 
     public void bulkExecuteStateTasks(State... states) {
-        bulkExecuteStateTasks(new ArrayList<>(Arrays.asList(states)));
+        this.bulkExecuteStateTasks(new ArrayList<>(Arrays.asList(states)));
     }
 
     public List<Task> bulkExecuteTasks(Iterable<SshTask> taskList) {
         List<Future<Task>> futureList = new LinkedList<>();
-        List<Task> resultList = new ArrayList<>(0);
-        for (SshTask tlStask : taskList) {
-            futureList.add(addTask(tlStask));
+        List<Task> resultList = new ArrayList<>();
+        for (SshTask sshTask : taskList) {
+            futureList.add(addTask(sshTask));
         }
         for (Future<Task> future : futureList) {
             try {
@@ -130,7 +129,6 @@ public class ParallelExecutor {
         return resultList;
     }
 
-    @SuppressWarnings("UnusedReturnValue")
     public List<Task> bulkExecuteTasks(SshTask... tasks) {
         return bulkExecuteTasks(new ArrayList<>(Arrays.asList(tasks)));
     }
@@ -146,7 +144,7 @@ public class ParallelExecutor {
 
     /**
      * Creates a new thread monitoring the executorService. If the time since the last {@link
-     * SshTask} was finished exceeds the timeout, the function assigned to {@link
+     * SshTask} was finished exceeds the timeout, the function assiged to {@link
      * ParallelExecutor#timeoutAction } is executed. The {@link ParallelExecutor#timeoutAction }
      * function can, for example, try to restart the client/server, so that the remaining {@link
      * SshTask}s can be finished.
@@ -159,7 +157,11 @@ public class ParallelExecutor {
             return;
         }
 
-        new Thread(() -> monitorExecution(timeout)).start();
+        new Thread(
+                        () -> {
+                            monitorExecution(timeout);
+                        })
+                .start();
     }
 
     private void monitorExecution(int timeout) {
