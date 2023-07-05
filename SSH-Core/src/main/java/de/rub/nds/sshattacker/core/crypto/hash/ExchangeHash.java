@@ -212,6 +212,7 @@ public final class ExchangeHash {
                                 PublicKeyHelper.encode(inputHolder.getServerHostKey().get())));
         // Restore the old log level
         Configurator.setLevel(KeyExchangeInitMessageSerializer.class.getName(), oldLevel);
+        LOGGER.debug("[bro - hash,prefix] {}", ArrayConverter.bytesToHexString(prefix));
         return prefix;
     }
 

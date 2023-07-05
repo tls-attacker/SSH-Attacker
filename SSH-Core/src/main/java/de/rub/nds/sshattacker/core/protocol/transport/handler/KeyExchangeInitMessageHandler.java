@@ -72,7 +72,7 @@ public class KeyExchangeInitMessageHandler extends SshMessageHandler<KeyExchange
                                     .split("" + CharConstants.ALGORITHM_SEPARATOR)));
             sshContext.setServerReserved(message.getReserved().getValue());
 
-            sshContext.getExchangeHashInputHolder().setServerKeyExchangeInit(message);
+            sshContext.getExchangeHashInputHolder().setClientKeyExchangeInit(message);
         } else {
             sshContext.setClientCookie(message.getCookie().getValue());
             sshContext.setClientSupportedKeyExchangeAlgorithms(
@@ -119,13 +119,14 @@ public class KeyExchangeInitMessageHandler extends SshMessageHandler<KeyExchange
                                     .split("" + CharConstants.ALGORITHM_SEPARATOR)));
             sshContext.setClientReserved(message.getReserved().getValue());
 
-            sshContext.getExchangeHashInputHolder().setClientKeyExchangeInit(message);
+            sshContext.getExchangeHashInputHolder().setServerKeyExchangeInit(message);
         }
     }
 
     @Override
     public void adjustContext(KeyExchangeInitMessage message) {
         if (sshContext.isHandleAsClient()) {
+            LOGGER.info("Server_Coookie is: {}", message.getCookie().getValue());
             sshContext.setServerCookie(message.getCookie().getValue());
             sshContext.setServerSupportedKeyExchangeAlgorithms(
                     Converter.nameListToEnumValues(
@@ -173,6 +174,8 @@ public class KeyExchangeInitMessageHandler extends SshMessageHandler<KeyExchange
 
             sshContext.getExchangeHashInputHolder().setServerKeyExchangeInit(message);
         } else {
+            LOGGER.info("Client_Coookie is: {}", message.getCookie());
+
             sshContext.setClientCookie(message.getCookie().getValue());
             sshContext.setClientSupportedKeyExchangeAlgorithms(
                     Converter.nameListToEnumValues(

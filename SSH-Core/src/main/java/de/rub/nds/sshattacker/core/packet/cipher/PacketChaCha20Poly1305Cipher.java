@@ -69,7 +69,6 @@ public class PacketChaCha20Poly1305Cipher extends PacketCipher {
     @Override
     protected void encrypt(BinaryPacket packet) throws CryptoException {
         if (packet.getComputations() == null) {
-            LOGGER.warn("Packet computations are not prepared.");
             packet.prepareComputations();
         }
         PacketCryptoComputations computations = packet.getComputations();

@@ -216,7 +216,7 @@ public class SSH2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
         }
 
         if (message.getAdjustContext()) {
-            message.getHandler(context).adjustContext(message);
+            // message.getHandler(context).adjustContext(message);
         }
 
         // Unklar für SSHv2, erstmal ignoriert

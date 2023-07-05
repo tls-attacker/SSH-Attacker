@@ -56,6 +56,6 @@ public class ServiceAcceptMessageParser extends SshMessageParser<ServiceAcceptMe
 
     @Override
     public void parse(ServiceAcceptMessage message) {
-        parseMessageSpecificContents(message);
+        parseProtocolMessageContents(message);
     }
 }

@@ -231,6 +231,6 @@ public class KeyExchangeInitMessageParser extends SshMessageParser<KeyExchangeIn
 
     @Override
     public void parse(KeyExchangeInitMessage message) {
-        parseMessageSpecificContents(message);
+        parseProtocolMessageContents(message);
     }
 }

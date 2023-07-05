@@ -130,6 +130,6 @@ public class HybridKeyExchangeInitMessageParser
     */
     @Override
     public void parse(HybridKeyExchangeInitMessage message) {
-        parseMessageSpecificContents(message);
+        parseProtocolMessageContents(message);
     }
 }

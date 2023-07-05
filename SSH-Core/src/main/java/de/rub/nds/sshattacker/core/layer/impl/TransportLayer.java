@@ -386,7 +386,7 @@ public class TransportLayer extends ProtocolLayer<PacketLayerHint, AbstractPacke
                 currentInputStream.extendStream(
                         Arrays.copyOfRange(
                                 packet.getCleanProtocolMessageBytes().getValue(),
-                                1,
+                                0,
                                 packet.getCleanProtocolMessageBytes().getValue().length));
             }
 
@@ -402,13 +402,13 @@ public class TransportLayer extends ProtocolLayer<PacketLayerHint, AbstractPacke
                 nextInputStream.extendStream(
                         Arrays.copyOfRange(
                                 packet.getCleanProtocolMessageBytes().getValue(),
-                                1,
+                                0,
                                 packet.getCleanProtocolMessageBytes().getValue().length));
             } else {
                 nextInputStream.extendStream(
                         Arrays.copyOfRange(
                                 packet.getCleanProtocolMessageBytes().getValue(),
-                                1,
+                                0,
                                 packet.getCleanProtocolMessageBytes().getValue().length));
             }
         }

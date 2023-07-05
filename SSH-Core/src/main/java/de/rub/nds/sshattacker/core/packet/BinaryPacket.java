@@ -22,9 +22,13 @@ import de.rub.nds.sshattacker.core.protocol.common.ModifiableVariableHolder;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Objects;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class BinaryPacket extends AbstractPacket<BinaryPacket>
         implements DataContainer<BinaryPacket, SshContext> {
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     /**
      * The length of the packet in bytes, not including 'mac' or the 'packet_length' field itself.
@@ -147,6 +151,7 @@ public class BinaryPacket extends AbstractPacket<BinaryPacket>
 
     @Override
     public void prepareComputations() {
+        LOGGER.info("[bro] Preparing Computation");
         if (computations == null) {
             computations = new PacketCryptoComputations();
         }
