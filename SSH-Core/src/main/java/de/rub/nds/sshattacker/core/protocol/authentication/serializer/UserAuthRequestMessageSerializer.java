@@ -57,7 +57,7 @@ public abstract class UserAuthRequestMessageSerializer<T extends UserAuthRequest
 
     @Override
     public byte[] serializeBytes() {
-        serializeMessageSpecificContents();
+        serializeProtocolMessageContents();
         return getAlreadySerialized();
     }
 }

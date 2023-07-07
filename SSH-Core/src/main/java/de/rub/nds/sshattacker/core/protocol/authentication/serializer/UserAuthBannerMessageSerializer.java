@@ -47,7 +47,7 @@ public class UserAuthBannerMessageSerializer extends SshMessageSerializer<UserAu
 
     @Override
     protected byte[] serializeBytes() {
-        serializeMessageSpecificContents();
+        serializeProtocolMessageContents();
         return getAlreadySerialized();
     }
 }

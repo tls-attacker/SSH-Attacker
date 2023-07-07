@@ -21,7 +21,7 @@ public class UserAuthSuccessMessageSerializer extends SshMessageSerializer<UserA
 
     @Override
     protected byte[] serializeBytes() {
-        serializeMessageSpecificContents();
+        serializeProtocolMessageContents();
         return getAlreadySerialized();
     }
 }

@@ -44,7 +44,7 @@ public class UserAuthInfoResponseMessageSerializer
 
     @Override
     protected byte[] serializeBytes() {
-        serializeMessageSpecificContents();
+        serializeProtocolMessageContents();
         return getAlreadySerialized();
     }
 }

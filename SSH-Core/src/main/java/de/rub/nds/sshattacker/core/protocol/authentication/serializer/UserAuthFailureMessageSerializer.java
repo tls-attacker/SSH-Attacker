@@ -52,7 +52,7 @@ public class UserAuthFailureMessageSerializer extends SshMessageSerializer<UserA
 
     @Override
     protected byte[] serializeBytes() {
-        serializeMessageSpecificContents();
+        serializeProtocolMessageContents();
         return getAlreadySerialized();
     }
 }

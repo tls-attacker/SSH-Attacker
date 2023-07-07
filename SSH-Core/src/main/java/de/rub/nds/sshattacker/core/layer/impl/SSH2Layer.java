@@ -32,6 +32,7 @@ import de.rub.nds.sshattacker.core.layer.hints.PacketLayerHint;
 import de.rub.nds.sshattacker.core.layer.stream.HintedInputStream;
 import de.rub.nds.sshattacker.core.layer.stream.HintedLayerInputStream;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.AuthenticationMessage;
+import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthUnknownMessage;
 import de.rub.nds.sshattacker.core.protocol.common.*;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ConnectionMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.message.*;
@@ -410,11 +411,19 @@ public class SSH2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
             case SSH_MSG_SERVICE_ACCEPT:
                 readMsgServiceAccept();
                 break;
-
+            case SSH_MSG_USERAUTH_REQUEST:
+                readUserAuthReq();
+                break;
             default:
                 LOGGER.error("Undefined record layer type, found type {}", hint.getType());
                 break;
         }
+    }
+
+    private void readUserAuthReq() {
+        // TODO: Rework / Research (original: handleUserAuthRequestMessageParsing)
+        UserAuthUnknownMessage message = new UserAuthUnknownMessage();
+        readDataContainer(message, context);
     }
 
     private void readServiceRequestData() {
