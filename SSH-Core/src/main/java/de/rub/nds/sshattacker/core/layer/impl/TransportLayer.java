@@ -467,12 +467,12 @@ public class TransportLayer extends ProtocolLayer<PacketLayerHint, AbstractPacke
                 LOGGER.debug("[bro] returning SSH_MSG_SERVICE_REQUEST Hint");
                 return new PacketLayerHint(ProtocolMessageType.SSH_MSG_SERVICE_REQUEST);
             case SSH_MSG_HBR_REPLY:
-                LOGGER.debug("[bro] returning SSH_MSG_SERVICE_REQUEST Hint");
+                LOGGER.debug("[bro] returning SSH_MSG_HBR_REPLY Hint");
                 return new PacketLayerHint(ProtocolMessageType.SSH_MSG_HBR_REPLY);
                 /*            case SSH_MSG_NEWKEYS:
                 LOGGER.debug("[bro] returning SSH_MSG_NEWKEYS Hint");
                 return new PacketLayerHint(ProtocolMessageType.SSH_MSG_NEWKEYS);*/
-            //SPACER//
+                // SPACER//
             case SSH_MSG_DISCONNECT:
                 LOGGER.debug("[bro] returning SSH_MSG_DISCONNECT Hint");
                 return new PacketLayerHint(ProtocolMessageType.SSH_MSG_DISCONNECT);
@@ -589,7 +589,8 @@ public class TransportLayer extends ProtocolLayer<PacketLayerHint, AbstractPacke
                 return new PacketLayerHint(ProtocolMessageType.SSH_MSG_USERAUTH_GSSAPI_TOKEN);
             case SSH_MSG_USERAUTH_GSSAPI_EXCHANGE_COMPLETE:
                 LOGGER.debug("[bro] returning SSH_MSG_USERAUTH_GSSAPI_EXCHANGE_COMPLETE Hint");
-                return new PacketLayerHint(ProtocolMessageType.SSH_MSG_USERAUTH_GSSAPI_EXCHANGE_COMPLETE);
+                return new PacketLayerHint(
+                        ProtocolMessageType.SSH_MSG_USERAUTH_GSSAPI_EXCHANGE_COMPLETE);
             case SSH_MSG_USERAUTH_GSSAPI_ERROR:
                 LOGGER.debug("[bro] returning SSH_MSG_USERAUTH_GSSAPI_ERROR Hint");
                 return new PacketLayerHint(ProtocolMessageType.SSH_MSG_USERAUTH_GSSAPI_ERROR);

@@ -18,10 +18,8 @@ import de.rub.nds.sshattacker.core.layer.stream.HintedInputStream;
 import de.rub.nds.sshattacker.core.layer.stream.HintedInputStreamAdapterStream;
 import de.rub.nds.tlsattacker.transport.tcp.TcpTransportHandler;
 import java.io.IOException;
-import java.util.concurrent.TimeUnit;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.glassfish.jaxb.core.v2.TODO;
 
 /**
  * The TCP layer is a wrapper around an underlying TCP socket. It forwards the sockets InputStream
@@ -69,12 +67,12 @@ public class TcpLayer extends ProtocolLayer<LayerProcessingHint, DataContainer> 
     public HintedInputStream getDataStream() {
         getTransportHandler().setTimeout(getTransportHandler().getTimeout());
         LOGGER.debug("[bro] TCP-Layer is transmitting Datastream now");
-        // TODO: remove later, just for debugging
+        /*// TODO: remove later, just for debugging
         try {
             TimeUnit.SECONDS.sleep(1);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
-        }
+        }*/
         currentInputStream =
                 new HintedInputStreamAdapterStream(null, getTransportHandler().getInputStream());
         return currentInputStream;

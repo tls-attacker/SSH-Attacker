@@ -405,7 +405,10 @@ public class SSH2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
                 readServiceRequestData();
                 break;
             case SSH_MSG_HBR_REPLY:
-                readServiceRequestData();
+                readHbrReplProtocolData();
+                break;
+            case SSH_MSG_SERVICE_ACCEPT:
+                readMsgServiceAccept();
                 break;
 
             default:
@@ -416,6 +419,16 @@ public class SSH2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
 
     private void readServiceRequestData() {
         ServiceRequestMessage message = new ServiceRequestMessage();
+        readDataContainer(message, context);
+    }
+
+    private void readMsgServiceAccept() {
+        ServiceAcceptMessage message = new ServiceAcceptMessage();
+        readDataContainer(message, context);
+    }
+
+    private void readHbrReplProtocolData() {
+        HybridKeyExchangeReplyMessage message = new HybridKeyExchangeReplyMessage();
         readDataContainer(message, context);
     }
 
