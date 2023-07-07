@@ -148,6 +148,6 @@ public class HybridKeyExchangeReplyMessageParser
 
     @Override
     public void parse(HybridKeyExchangeReplyMessage message) {
-        parseMessageSpecificContents(message);
+        parseProtocolMessageContents(message);
     }
 }

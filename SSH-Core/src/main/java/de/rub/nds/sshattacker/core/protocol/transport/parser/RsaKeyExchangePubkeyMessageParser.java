@@ -34,7 +34,7 @@ public class RsaKeyExchangePubkeyMessageParser
 
     @Override
     public void parse(RsaKeyExchangePubkeyMessage message) {
-        parseMessageSpecificContents(message);
+        parseProtocolMessageContents(message);
     }
 
     /*

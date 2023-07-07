@@ -84,6 +84,6 @@ public class DisconnectMessageParser extends SshMessageParser<DisconnectMessage>
 
     @Override
     public void parse(DisconnectMessage message) {
-        parseMessageSpecificContents(message);
+        parseProtocolMessageContents(message);
     }
 }

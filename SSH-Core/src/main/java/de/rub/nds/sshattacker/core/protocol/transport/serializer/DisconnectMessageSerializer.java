@@ -60,7 +60,7 @@ public class DisconnectMessageSerializer extends SshMessageSerializer<Disconnect
 
     @Override
     protected byte[] serializeBytes() {
-        serializeMessageSpecificContents();
+        serializeProtocolMessageContents();
         return getAlreadySerialized();
     }
 }

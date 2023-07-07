@@ -29,7 +29,7 @@ public class UnknownMessageSerializer extends SshMessageSerializer<UnknownMessag
 
     @Override
     protected byte[] serializeBytes() {
-        serializeMessageSpecificContents();
+        serializeProtocolMessageContents();
         return getAlreadySerialized();
     }
 }

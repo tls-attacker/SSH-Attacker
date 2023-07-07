@@ -37,7 +37,7 @@ public class DebugMessageParser extends SshMessageParser<DebugMessage> {
 
     @Override
     public void parse(DebugMessage message) {
-        parseMessageSpecificContents(message);
+        parseProtocolMessageContents(message);
     }
 
     // @Override

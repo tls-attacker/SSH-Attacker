@@ -33,7 +33,7 @@ public class RsaKeyExchangeDoneMessageParser extends SshMessageParser<RsaKeyExch
 
     @Override
     public void parse(RsaKeyExchangeDoneMessage message) {
-        parseMessageSpecificContents(message);
+        parseProtocolMessageContents(message);
     }
 
     /*

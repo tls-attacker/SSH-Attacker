@@ -36,7 +36,7 @@ public class RsaKeyExchangeDoneMessageSerializer
 
     @Override
     protected byte[] serializeBytes() {
-        serializeMessageSpecificContents();
+        serializeProtocolMessageContents();
         return getAlreadySerialized();
     }
 }

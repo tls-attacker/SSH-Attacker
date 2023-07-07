@@ -31,6 +31,11 @@ public class BlobPacketParser extends AbstractPacketParser<BlobPacket> {
 
         // BlobPacket packet = new BlobPacket();
         blobPacket.setCiphertext(parseByteArrayField(getBytesLeft()));
+
+        LOGGER.debug(
+                "Ciphertext bytes: {}",
+                ArrayConverter.bytesToHexString(blobPacket.getCiphertext().getValue()));
+
         blobPacket.setCompletePacketBytes(getAlreadyParsed());
 
         LOGGER.debug(

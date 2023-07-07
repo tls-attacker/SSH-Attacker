@@ -61,7 +61,7 @@ public class DhKeyExchangeReplyMessageSerializer
 
     @Override
     protected byte[] serializeBytes() {
-        serializeMessageSpecificContents();
+        serializeProtocolMessageContents();
         return getAlreadySerialized();
     }
 }

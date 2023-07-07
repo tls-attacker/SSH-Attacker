@@ -35,7 +35,7 @@ public class RsaKeyExchangeSecretMessageParser
 
     @Override
     public void parse(RsaKeyExchangeSecretMessage message) {
-        parseMessageSpecificContents(message);
+        parseProtocolMessageContents(message);
     }
 
     /*    @Override

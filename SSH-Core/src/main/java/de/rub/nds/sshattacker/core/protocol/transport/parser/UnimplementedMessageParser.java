@@ -51,6 +51,6 @@ public class UnimplementedMessageParser extends SshMessageParser<UnimplementedMe
 
     @Override
     public void parse(UnimplementedMessage message) {
-        parseMessageSpecificContents(message);
+        parseProtocolMessageContents(message);
     }
 }

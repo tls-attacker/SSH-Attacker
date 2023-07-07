@@ -404,6 +404,10 @@ public class SSH2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
             case SSH_MSG_SERVICE_REQUEST:
                 readServiceRequestData();
                 break;
+            case SSH_MSG_HBR_REPLY:
+                readServiceRequestData();
+                break;
+
             default:
                 LOGGER.error("Undefined record layer type, found type {}", hint.getType());
                 break;

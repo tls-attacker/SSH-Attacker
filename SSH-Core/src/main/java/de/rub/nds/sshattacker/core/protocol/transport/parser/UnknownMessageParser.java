@@ -48,6 +48,6 @@ public class UnknownMessageParser extends SshMessageParser<UnknownMessage> {
 
     @Override
     public void parse(UnknownMessage message) {
-        parseMessageSpecificContents(message);
+        parseProtocolMessageContents(message);
     }
 }

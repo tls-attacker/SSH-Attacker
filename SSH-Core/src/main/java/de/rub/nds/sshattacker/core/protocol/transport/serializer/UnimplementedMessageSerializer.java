@@ -28,7 +28,7 @@ public class UnimplementedMessageSerializer extends SshMessageSerializer<Unimple
 
     @Override
     protected byte[] serializeBytes() {
-        serializeMessageSpecificContents();
+        serializeProtocolMessageContents();
         return getAlreadySerialized();
     }
 }

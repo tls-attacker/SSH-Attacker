@@ -53,6 +53,6 @@ public class DhKeyExchangeInitMessageParser extends SshMessageParser<DhKeyExchan
 
     @Override
     public void parse(DhKeyExchangeInitMessage message) {
-        parseMessageSpecificContents(message);
+        parseProtocolMessageContents(message);
     }
 }

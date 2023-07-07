@@ -326,6 +326,7 @@ public class TransportLayer extends ProtocolLayer<PacketLayerHint, AbstractPacke
         LOGGER.debug("[bro] receiveMoreDataForHint now in Transport");
         LayerProcessingHint desiredHint = hint;
         InputStream dataStream = getLowerLayer().getDataStream();
+        LOGGER.debug("Avialble Data: {}", dataStream.available());
         AbstractPacketParser parser;
         AbstractPacket packet;
 
@@ -465,9 +466,185 @@ public class TransportLayer extends ProtocolLayer<PacketLayerHint, AbstractPacke
             case SSH_MSG_SERVICE_REQUEST:
                 LOGGER.debug("[bro] returning SSH_MSG_SERVICE_REQUEST Hint");
                 return new PacketLayerHint(ProtocolMessageType.SSH_MSG_SERVICE_REQUEST);
+            case SSH_MSG_HBR_REPLY:
+                LOGGER.debug("[bro] returning SSH_MSG_SERVICE_REQUEST Hint");
+                return new PacketLayerHint(ProtocolMessageType.SSH_MSG_HBR_REPLY);
                 /*            case SSH_MSG_NEWKEYS:
                 LOGGER.debug("[bro] returning SSH_MSG_NEWKEYS Hint");
                 return new PacketLayerHint(ProtocolMessageType.SSH_MSG_NEWKEYS);*/
+            //SPACER//
+            case SSH_MSG_DISCONNECT:
+                LOGGER.debug("[bro] returning SSH_MSG_DISCONNECT Hint");
+                return new PacketLayerHint(ProtocolMessageType.SSH_MSG_DISCONNECT);
+            case SSH_MSG_IGNORE:
+                LOGGER.debug("[bro] returning SSH_MSG_IGNORE Hint");
+                return new PacketLayerHint(ProtocolMessageType.SSH_MSG_IGNORE);
+            case SSH_MSG_UNIMPLEMENTED:
+                LOGGER.debug("[bro] returning SSH_MSG_UNIMPLEMENTED Hint");
+                return new PacketLayerHint(ProtocolMessageType.SSH_MSG_UNIMPLEMENTED);
+            case SSH_MSG_DEBUG:
+                LOGGER.debug("[bro] returning SSH_MSG_DEBUG Hint");
+                return new PacketLayerHint(ProtocolMessageType.SSH_MSG_DEBUG);
+            case SSH_MSG_SERVICE_ACCEPT:
+                LOGGER.debug("[bro] returning SSH_MSG_SERVICE_ACCEPT Hint");
+                return new PacketLayerHint(ProtocolMessageType.SSH_MSG_SERVICE_ACCEPT);
+            case SSH_MSG_EXT_INFO:
+                LOGGER.debug("[bro] returning SSH_MSG_EXT_INFO Hint");
+                return new PacketLayerHint(ProtocolMessageType.SSH_MSG_EXT_INFO);
+            case SSH_MSG_NEWCOMPRESS:
+                LOGGER.debug("[bro] returning SSH_MSG_NEWCOMPRESS Hint");
+                return new PacketLayerHint(ProtocolMessageType.SSH_MSG_NEWCOMPRESS);
+            case SSH_MSG_KEX_DH_GEX_REQUEST_OLD:
+                LOGGER.debug("[bro] returning SSH_MSG_KEX_DH_GEX_REQUEST_OLD Hint");
+                return new PacketLayerHint(ProtocolMessageType.SSH_MSG_KEX_DH_GEX_REQUEST_OLD);
+            case SSH_MSG_KEX_DH_GEX_REQUEST:
+                LOGGER.debug("[bro] returning SSH_MSG_KEX_DH_GEX_REQUEST Hint");
+                return new PacketLayerHint(ProtocolMessageType.SSH_MSG_KEX_DH_GEX_REQUEST);
+            case SSH_MSG_KEX_DH_GEX_GROUP:
+                LOGGER.debug("[bro] returning SSH_MSG_KEX_DH_GEX_GROUP Hint");
+                return new PacketLayerHint(ProtocolMessageType.SSH_MSG_KEX_DH_GEX_GROUP);
+            case SSH_MSG_KEX_DH_GEX_INIT:
+                LOGGER.debug("[bro] returning SSH_MSG_KEX_DH_GEX_INIT Hint");
+                return new PacketLayerHint(ProtocolMessageType.SSH_MSG_KEX_DH_GEX_INIT);
+            case SSH_MSG_KEX_DH_GEX_REPLY:
+                LOGGER.debug("[bro] returning SSH_MSG_KEX_DH_GEX_REPLY Hint");
+                return new PacketLayerHint(ProtocolMessageType.SSH_MSG_KEX_DH_GEX_REPLY);
+            case SSH_MSG_KEXDH_INIT:
+                LOGGER.debug("[bro] returning SSH_MSG_KEXDH_INIT Hint");
+                return new PacketLayerHint(ProtocolMessageType.SSH_MSG_KEXDH_INIT);
+            case SSH_MSG_KEXDH_REPLY:
+                LOGGER.debug("[bro] returning SSH_MSG_KEXDH_REPLY Hint");
+                return new PacketLayerHint(ProtocolMessageType.SSH_MSG_KEXDH_REPLY);
+            case SSH_MSG_KEX_ECDH_INIT:
+                LOGGER.debug("[bro] returning SSH_MSG_KEX_ECDH_INIT Hint");
+                return new PacketLayerHint(ProtocolMessageType.SSH_MSG_KEX_ECDH_INIT);
+            case SSH_MSG_KEX_ECDH_REPLY:
+                LOGGER.debug("[bro] returning SSH_MSG_KEX_ECDH_REPLY Hint");
+                return new PacketLayerHint(ProtocolMessageType.SSH_MSG_KEX_ECDH_REPLY);
+            case SSH_MSG_ECMQV_INIT:
+                LOGGER.debug("[bro] returning SSH_MSG_ECMQV_INIT Hint");
+                return new PacketLayerHint(ProtocolMessageType.SSH_MSG_ECMQV_INIT);
+            case SSH_MSG_ECMQV_REPLY:
+                LOGGER.debug("[bro] returning SSH_MSG_ECMQV_REPLY Hint");
+                return new PacketLayerHint(ProtocolMessageType.SSH_MSG_ECMQV_REPLY);
+            case SSH_MSG_KEXRSA_PUBKEY:
+                LOGGER.debug("[bro] returning SSH_MSG_KEXRSA_PUBKEY Hint");
+                return new PacketLayerHint(ProtocolMessageType.SSH_MSG_KEXRSA_PUBKEY);
+            case SSH_MSG_KEXRSA_SECRET:
+                LOGGER.debug("[bro] returning SSH_MSG_KEXRSA_SECRET Hint");
+                return new PacketLayerHint(ProtocolMessageType.SSH_MSG_KEXRSA_SECRET);
+            case SSH_MSG_KEXRSA_DONE:
+                LOGGER.debug("[bro] returning SSH_MSG_KEXRSA_DONE Hint");
+                return new PacketLayerHint(ProtocolMessageType.SSH_MSG_KEXRSA_DONE);
+            case SSH_MSG_KEXGSS_INIT:
+                LOGGER.debug("[bro] returning SSH_MSG_KEXGSS_INIT Hint");
+                return new PacketLayerHint(ProtocolMessageType.SSH_MSG_KEXGSS_INIT);
+            case SSH_MSG_KEXGSS_CONTINUE:
+                LOGGER.debug("[bro] returning SSH_MSG_KEXGSS_CONTINUE Hint");
+                return new PacketLayerHint(ProtocolMessageType.SSH_MSG_KEXGSS_CONTINUE);
+            case SSH_MSG_KEXGSS_COMPLETE:
+                LOGGER.debug("[bro] returning SSH_MSG_KEXGSS_COMPLETE Hint");
+                return new PacketLayerHint(ProtocolMessageType.SSH_MSG_KEXGSS_COMPLETE);
+            case SSH_MSG_KEXGSS_HOSTKEY:
+                LOGGER.debug("[bro] returning SSH_MSG_KEXGSS_HOSTKEY Hint");
+                return new PacketLayerHint(ProtocolMessageType.SSH_MSG_KEXGSS_HOSTKEY);
+            case SSH_MSG_KEXGSS_ERROR:
+                LOGGER.debug("[bro] returning SSH_MSG_KEXGSS_ERROR Hint");
+                return new PacketLayerHint(ProtocolMessageType.SSH_MSG_KEXGSS_ERROR);
+            case SSH_MSG_KEXGSS_GROUPREQ:
+                LOGGER.debug("[bro] returning SSH_MSG_KEXGSS_GROUPREQ Hint");
+                return new PacketLayerHint(ProtocolMessageType.SSH_MSG_KEXGSS_GROUPREQ);
+            case SSH_MSG_KEXGSS_GROUP:
+                LOGGER.debug("[bro] returning SSH_MSG_KEXGSS_GROUP Hint");
+                return new PacketLayerHint(ProtocolMessageType.SSH_MSG_KEXGSS_GROUP);
+            case SSH_MSG_USERAUTH_REQUEST:
+                LOGGER.debug("[bro] returning SSH_MSG_USERAUTH_REQUEST Hint");
+                return new PacketLayerHint(ProtocolMessageType.SSH_MSG_USERAUTH_REQUEST);
+            case SSH_MSG_USERAUTH_FAILURE:
+                LOGGER.debug("[bro] returning SSH_MSG_USERAUTH_FAILURE Hint");
+                return new PacketLayerHint(ProtocolMessageType.SSH_MSG_USERAUTH_FAILURE);
+            case SSH_MSG_USERAUTH_SUCCESS:
+                LOGGER.debug("[bro] returning SSH_MSG_USERAUTH_SUCCESS Hint");
+                return new PacketLayerHint(ProtocolMessageType.SSH_MSG_USERAUTH_SUCCESS);
+            case SSH_MSG_USERAUTH_BANNER:
+                LOGGER.debug("[bro] returning SSH_MSG_USERAUTH_BANNER Hint");
+                return new PacketLayerHint(ProtocolMessageType.SSH_MSG_USERAUTH_BANNER);
+            case SSH_MSG_USERAUTH_PK_OK:
+                LOGGER.debug("[bro] returning SSH_MSG_USERAUTH_PK_OK Hint");
+                return new PacketLayerHint(ProtocolMessageType.SSH_MSG_USERAUTH_PK_OK);
+            case SSH_MSG_USERAUTH_PASSWD_CHANGEREQ:
+                LOGGER.debug("[bro] returning SSH_MSG_USERAUTH_PASSWD_CHANGEREQ Hint");
+                return new PacketLayerHint(ProtocolMessageType.SSH_MSG_USERAUTH_PASSWD_CHANGEREQ);
+            case SSH_MSG_USERAUTH_INFO_REQUEST:
+                LOGGER.debug("[bro] returning SSH_MSG_USERAUTH_INFO_REQUEST Hint");
+                return new PacketLayerHint(ProtocolMessageType.SSH_MSG_USERAUTH_INFO_REQUEST);
+            case SSH_MSG_USERAUTH_INFO_RESPONSE:
+                LOGGER.debug("[bro] returning SSH_MSG_USERAUTH_INFO_RESPONSE Hint");
+                return new PacketLayerHint(ProtocolMessageType.SSH_MSG_USERAUTH_INFO_RESPONSE);
+            case SSH_MSG_USERAUTH_GSSAPI_RESPONSE:
+                LOGGER.debug("[bro] returning SSH_MSG_USERAUTH_GSSAPI_RESPONSE Hint");
+                return new PacketLayerHint(ProtocolMessageType.SSH_MSG_USERAUTH_GSSAPI_RESPONSE);
+            case SSH_MSG_USERAUTH_GSSAPI_TOKEN:
+                LOGGER.debug("[bro] returning SSH_MSG_USERAUTH_GSSAPI_TOKEN Hint");
+                return new PacketLayerHint(ProtocolMessageType.SSH_MSG_USERAUTH_GSSAPI_TOKEN);
+            case SSH_MSG_USERAUTH_GSSAPI_EXCHANGE_COMPLETE:
+                LOGGER.debug("[bro] returning SSH_MSG_USERAUTH_GSSAPI_EXCHANGE_COMPLETE Hint");
+                return new PacketLayerHint(ProtocolMessageType.SSH_MSG_USERAUTH_GSSAPI_EXCHANGE_COMPLETE);
+            case SSH_MSG_USERAUTH_GSSAPI_ERROR:
+                LOGGER.debug("[bro] returning SSH_MSG_USERAUTH_GSSAPI_ERROR Hint");
+                return new PacketLayerHint(ProtocolMessageType.SSH_MSG_USERAUTH_GSSAPI_ERROR);
+            case SSH_MSG_USERAUTH_GSSAPI_ERRTOK:
+                LOGGER.debug("[bro] returning SSH_MSG_USERAUTH_GSSAPI_ERRTOK Hint");
+                return new PacketLayerHint(ProtocolMessageType.SSH_MSG_USERAUTH_GSSAPI_ERRTOK);
+            case SSH_MSG_USERAUTH_GSSAPI_MIC:
+                LOGGER.debug("[bro] returning SSH_MSG_USERAUTH_GSSAPI_MIC Hint");
+                return new PacketLayerHint(ProtocolMessageType.SSH_MSG_USERAUTH_GSSAPI_MIC);
+            case SSH_MSG_GLOBAL_REQUEST:
+                LOGGER.debug("[bro] returning SSH_MSG_GLOBAL_REQUEST Hint");
+                return new PacketLayerHint(ProtocolMessageType.SSH_MSG_GLOBAL_REQUEST);
+            case SSH_MSG_REQUEST_SUCCESS:
+                LOGGER.debug("[bro] returning SSH_MSG_REQUEST_SUCCESS Hint");
+                return new PacketLayerHint(ProtocolMessageType.SSH_MSG_REQUEST_SUCCESS);
+            case SSH_MSG_REQUEST_FAILURE:
+                LOGGER.debug("[bro] returning SSH_MSG_REQUEST_FAILURE Hint");
+                return new PacketLayerHint(ProtocolMessageType.SSH_MSG_REQUEST_FAILURE);
+            case SSH_MSG_CHANNEL_OPEN:
+                LOGGER.debug("[bro] returning SSH_MSG_CHANNEL_OPEN Hint");
+                return new PacketLayerHint(ProtocolMessageType.SSH_MSG_CHANNEL_OPEN);
+            case SSH_MSG_CHANNEL_OPEN_CONFIRMATION:
+                LOGGER.debug("[bro] returning SSH_MSG_CHANNEL_OPEN_CONFIRMATION Hint");
+                return new PacketLayerHint(ProtocolMessageType.SSH_MSG_CHANNEL_OPEN_CONFIRMATION);
+            case SSH_MSG_CHANNEL_OPEN_FAILURE:
+                LOGGER.debug("[bro] returning SSH_MSG_CHANNEL_OPEN_FAILURE Hint");
+                return new PacketLayerHint(ProtocolMessageType.SSH_MSG_CHANNEL_OPEN_FAILURE);
+            case SSH_MSG_CHANNEL_WINDOW_ADJUST:
+                LOGGER.debug("[bro] returning SSH_MSG_CHANNEL_WINDOW_ADJUST Hint");
+                return new PacketLayerHint(ProtocolMessageType.SSH_MSG_CHANNEL_WINDOW_ADJUST);
+            case SSH_MSG_CHANNEL_DATA:
+                LOGGER.debug("[bro] returning SSH_MSG_CHANNEL_DATA Hint");
+                return new PacketLayerHint(ProtocolMessageType.SSH_MSG_CHANNEL_DATA);
+            case SSH_MSG_CHANNEL_EXTENDED_DATA:
+                LOGGER.debug("[bro] returning SSH_MSG_CHANNEL_EXTENDED_DATA Hint");
+                return new PacketLayerHint(ProtocolMessageType.SSH_MSG_CHANNEL_EXTENDED_DATA);
+            case SSH_MSG_CHANNEL_EOF:
+                LOGGER.debug("[bro] returning SSH_MSG_CHANNEL_EOF Hint");
+                return new PacketLayerHint(ProtocolMessageType.SSH_MSG_CHANNEL_EOF);
+            case SSH_MSG_CHANNEL_CLOSE:
+                LOGGER.debug("[bro] returning SSH_MSG_CHANNEL_CLOSE Hint");
+                return new PacketLayerHint(ProtocolMessageType.SSH_MSG_CHANNEL_CLOSE);
+            case SSH_MSG_CHANNEL_REQUEST:
+                LOGGER.debug("[bro] returning SSH_MSG_CHANNEL_REQUEST Hint");
+                return new PacketLayerHint(ProtocolMessageType.SSH_MSG_CHANNEL_REQUEST);
+            case SSH_MSG_CHANNEL_SUCCESS:
+                LOGGER.debug("[bro] returning SSH_MSG_CHANNEL_SUCCESS Hint");
+                return new PacketLayerHint(ProtocolMessageType.SSH_MSG_CHANNEL_SUCCESS);
+            case SSH_MSG_CHANNEL_FAILURE:
+                LOGGER.debug("[bro] returning SSH_MSG_CHANNEL_FAILURE Hint");
+                return new PacketLayerHint(ProtocolMessageType.SSH_MSG_CHANNEL_FAILURE);
+            case UNKNOWN:
+                LOGGER.debug("[bro] returning UNKNOWN Hint");
+                return new PacketLayerHint(ProtocolMessageType.UNKNOWN);
+
             default:
                 LOGGER.debug(
                         "[bro] cannot identifie {} as {} - returningn null",

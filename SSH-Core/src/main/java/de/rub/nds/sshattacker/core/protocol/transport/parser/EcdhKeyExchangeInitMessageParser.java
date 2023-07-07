@@ -56,6 +56,6 @@ public class EcdhKeyExchangeInitMessageParser extends SshMessageParser<EcdhKeyEx
 
     @Override
     public void parse(EcdhKeyExchangeInitMessage message) {
-        parseMessageSpecificContents(message);
+        parseProtocolMessageContents(message);
     }
 }

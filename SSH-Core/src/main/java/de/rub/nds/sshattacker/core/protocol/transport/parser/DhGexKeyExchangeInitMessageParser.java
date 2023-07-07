@@ -54,6 +54,6 @@ public class DhGexKeyExchangeInitMessageParser
 
     @Override
     public void parse(DhGexKeyExchangeInitMessage message) {
-        parseMessageSpecificContents(message);
+        parseProtocolMessageContents(message);
     }
 }

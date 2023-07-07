@@ -79,6 +79,6 @@ public class EcdhKeyExchangeReplyMessageParser
 
     @Override
     public void parse(EcdhKeyExchangeReplyMessage message) {
-        parseMessageSpecificContents(message);
+        parseProtocolMessageContents(message);
     }
 }

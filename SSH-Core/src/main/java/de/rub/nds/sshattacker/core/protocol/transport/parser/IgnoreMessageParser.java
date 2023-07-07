@@ -52,6 +52,6 @@ public class IgnoreMessageParser extends SshMessageParser<IgnoreMessage> {
 
     @Override
     public void parse(IgnoreMessage message) {
-        parseMessageSpecificContents(message);
+        parseProtocolMessageContents(message);
     }
 }
