@@ -20,6 +20,7 @@ import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.message.*;*/
 
 import de.rub.nds.sshattacker.core.constants.AuthenticationMethod;
+import de.rub.nds.sshattacker.core.constants.ChannelType;
 import de.rub.nds.sshattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.sshattacker.core.exceptions.EndOfStreamException;
 import de.rub.nds.sshattacker.core.exceptions.TimeoutException;
@@ -36,7 +37,10 @@ import de.rub.nds.sshattacker.core.layer.stream.HintedLayerInputStream;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.*;
 import de.rub.nds.sshattacker.core.protocol.authentication.parser.*;
 import de.rub.nds.sshattacker.core.protocol.common.*;
+import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelOpenSessionMessage;
+import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelOpenUnknownMessage;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ConnectionMessage;
+import de.rub.nds.sshattacker.core.protocol.connection.parser.ChannelOpenUnknownMessageParser;
 import de.rub.nds.sshattacker.core.protocol.transport.message.*;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -417,6 +421,10 @@ public class SSH2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
             case SSH_MSG_USERAUTH_REQUEST:
                 readUserAuthReq();
                 break;
+            case SSH_MSG_CHANNEL_OPEN:
+                readChannelOpen();
+                break;
+
             default:
                 LOGGER.error("Undefined record layer type, found type {}", hint.getType());
                 throw new RuntimeException();
@@ -425,7 +433,6 @@ public class SSH2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
     }
 
     private void readUserAuthReq() {
-        // TODO: Rework / Research (original: handleUserAuthRequestMessageParsing)
         UserAuthUnknownMessage userAuthUnknownMessage = new UserAuthUnknownMessage();
         HintedInputStream inputStream;
         HintedInputStream temp_stream;
@@ -506,12 +513,12 @@ public class SSH2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
                 LOGGER.info("Parsing Authenticationmethod: PubKey");
                 UserAuthPubkeyMessage userAuthPubkeyMessage = new UserAuthPubkeyMessage();
                 temp_stream =
-                new HintedInputStreamAdapterStream(
-                        null,
-                        new ByteArrayInputStream(
-                                userAuthUnknownMessage
-                                        .getCompleteResultingMessage()
-                                        .getOriginalValue()));
+                        new HintedInputStreamAdapterStream(
+                                null,
+                                new ByteArrayInputStream(
+                                        userAuthUnknownMessage
+                                                .getCompleteResultingMessage()
+                                                .getOriginalValue()));
                 readContainerFromStream(userAuthPubkeyMessage, context, temp_stream);
 
                 break;
@@ -553,6 +560,38 @@ public class SSH2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
     private void readServiceRequestData() {
         ServiceRequestMessage message = new ServiceRequestMessage();
         readDataContainer(message, context);
+    }
+
+    private void readChannelOpen() {
+        ChannelOpenUnknownMessage channelOpenUnknownMessage = new ChannelOpenUnknownMessage();
+        HintedInputStream inputStream;
+        HintedInputStream temp_stream;
+        try {
+            inputStream = getLowerLayer().getDataStream();
+        } catch (IOException e) {
+            LOGGER.warn("The lower layer did not produce a data stream: ", e);
+            return;
+        }
+        ChannelOpenUnknownMessageParser parser = new ChannelOpenUnknownMessageParser(inputStream);
+        parser.parse(channelOpenUnknownMessage);
+        String channelTypeString = channelOpenUnknownMessage.getChannelType().getValue();
+        ChannelType channelType = ChannelType.fromName(channelTypeString);
+        switch (channelType) {
+            case SESSION:
+                ChannelOpenSessionMessage channelOpenSessionMessage =
+                        new ChannelOpenSessionMessage();
+                temp_stream =
+                        new HintedInputStreamAdapterStream(
+                                null,
+                                new ByteArrayInputStream(
+                                        channelOpenUnknownMessage
+                                                .getCompleteResultingMessage()
+                                                .getOriginalValue()));
+                readContainerFromStream(channelOpenSessionMessage, context, temp_stream);
+            default:
+                LOGGER.debug(
+                        "Received unimplemented channel open message type: {}", channelTypeString);
+        }
     }
 
     private void readMsgServiceAccept() {
