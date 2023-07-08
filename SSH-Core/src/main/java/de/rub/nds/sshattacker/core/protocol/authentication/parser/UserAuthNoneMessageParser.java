@@ -39,7 +39,7 @@ public class UserAuthNoneMessageParser extends UserAuthRequestMessageParser<User
     @Override
     public void parse(UserAuthNoneMessage message) {
         LOGGER.debug("Parsing UserAuthBannerMessage");
-        parseMessageSpecificContents(message);
+        parseProtocolMessageContents(message);
         message.setCompleteResultingMessage(getAlreadyParsed());
     }
 

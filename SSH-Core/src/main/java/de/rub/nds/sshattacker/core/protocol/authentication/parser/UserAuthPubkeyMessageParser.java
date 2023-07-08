@@ -46,7 +46,7 @@ public class UserAuthPubkeyMessageParser
     @Override
     public void parse(UserAuthPubkeyMessage message) {
         LOGGER.debug("Parsing UserAuthBannerMessage");
-        parseMessageSpecificContents(message);
+        parseProtocolMessageContents(message);
         message.setCompleteResultingMessage(getAlreadyParsed());
     }
 

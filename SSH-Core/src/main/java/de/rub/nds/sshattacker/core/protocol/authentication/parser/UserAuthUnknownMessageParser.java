@@ -49,7 +49,7 @@ public class UserAuthUnknownMessageParser
     @Override
     public void parse(UserAuthUnknownMessage message) {
         LOGGER.debug("Parsing UserAuthBannerMessage");
-        parseMessageSpecificContents(message);
+        parseProtocolMessageContents(message);
         message.setCompleteResultingMessage(getAlreadyParsed());
     }
 

@@ -44,7 +44,7 @@ public class UserAuthPkOkMessageParser extends SshMessageParser<UserAuthPkOkMess
     @Override
     public void parse(UserAuthPkOkMessage message) {
         LOGGER.debug("Parsing UserAuthBannerMessage");
-        parseMessageSpecificContents(message);
+        parseProtocolMessageContents(message);
         message.setCompleteResultingMessage(getAlreadyParsed());
     }
 

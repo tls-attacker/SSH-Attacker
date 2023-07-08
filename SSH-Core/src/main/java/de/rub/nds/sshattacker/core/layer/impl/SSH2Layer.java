@@ -19,6 +19,7 @@ import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.message.*;*/
 
+import de.rub.nds.sshattacker.core.constants.AuthenticationMethod;
 import de.rub.nds.sshattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.sshattacker.core.exceptions.EndOfStreamException;
 import de.rub.nds.sshattacker.core.exceptions.TimeoutException;
@@ -30,12 +31,14 @@ import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.layer.hints.LayerProcessingHint;
 import de.rub.nds.sshattacker.core.layer.hints.PacketLayerHint;
 import de.rub.nds.sshattacker.core.layer.stream.HintedInputStream;
+import de.rub.nds.sshattacker.core.layer.stream.HintedInputStreamAdapterStream;
 import de.rub.nds.sshattacker.core.layer.stream.HintedLayerInputStream;
-import de.rub.nds.sshattacker.core.protocol.authentication.message.AuthenticationMessage;
-import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthUnknownMessage;
+import de.rub.nds.sshattacker.core.protocol.authentication.message.*;
+import de.rub.nds.sshattacker.core.protocol.authentication.parser.*;
 import de.rub.nds.sshattacker.core.protocol.common.*;
 import de.rub.nds.sshattacker.core.protocol.connection.message.ConnectionMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.message.*;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import org.apache.logging.log4j.LogManager;
@@ -416,14 +419,135 @@ public class SSH2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
                 break;
             default:
                 LOGGER.error("Undefined record layer type, found type {}", hint.getType());
-                break;
+                throw new RuntimeException();
+                // break;
         }
     }
 
     private void readUserAuthReq() {
         // TODO: Rework / Research (original: handleUserAuthRequestMessageParsing)
-        UserAuthUnknownMessage message = new UserAuthUnknownMessage();
-        readDataContainer(message, context);
+        UserAuthUnknownMessage userAuthUnknownMessage = new UserAuthUnknownMessage();
+        HintedInputStream inputStream;
+        HintedInputStream temp_stream;
+        try {
+            inputStream = getLowerLayer().getDataStream();
+        } catch (IOException e) {
+            LOGGER.warn("The lower layer did not produce a data stream: ", e);
+            return;
+        }
+
+        /* int length = 0;
+
+        try {
+            length = inputStream.available();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+
+        try {
+            LOGGER.info("remainign in Inpustream: {}", inputStream.available());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        byte[] data = new byte[length];
+
+        try {
+            inputStream.read(data);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        HintedInputStream copied_inputstream = new HintedInputStreamAdapterStream(null, new ByteArrayInputStream(data)); */
+
+        UserAuthUnknownMessageParser parser = new UserAuthUnknownMessageParser(inputStream);
+        parser.parse(userAuthUnknownMessage);
+        String methodString = userAuthUnknownMessage.getMethodName().getValue();
+        try {
+            LOGGER.info(
+                    "Got Method-Request: {}, remainign in Inpustream: {}",
+                    methodString,
+                    inputStream.available());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        AuthenticationMethod method = AuthenticationMethod.fromName(methodString);
+        switch (method) {
+            case NONE:
+                LOGGER.info("Parsing Authenticationmethod: None");
+                UserAuthNoneMessage userAuthNoneMessage = new UserAuthNoneMessage();
+                temp_stream =
+                        new HintedInputStreamAdapterStream(
+                                null,
+                                new ByteArrayInputStream(
+                                        userAuthUnknownMessage
+                                                .getCompleteResultingMessage()
+                                                .getOriginalValue()));
+                readContainerFromStream(userAuthNoneMessage, context, temp_stream);
+
+                break;
+            case PASSWORD:
+                LOGGER.info("Parsing Authenticationmethod: Password");
+                UserAuthPasswordMessage userAuthPasswordMessage = new UserAuthPasswordMessage();
+                temp_stream =
+                        new HintedInputStreamAdapterStream(
+                                null,
+                                new ByteArrayInputStream(
+                                        userAuthUnknownMessage
+                                                .getCompleteResultingMessage()
+                                                .getOriginalValue()));
+
+                readContainerFromStream(userAuthPasswordMessage, context, temp_stream);
+
+                break;
+            case PUBLICKEY:
+                LOGGER.info("Parsing Authenticationmethod: PubKey");
+                UserAuthPubkeyMessage userAuthPubkeyMessage = new UserAuthPubkeyMessage();
+                temp_stream =
+                new HintedInputStreamAdapterStream(
+                        null,
+                        new ByteArrayInputStream(
+                                userAuthUnknownMessage
+                                        .getCompleteResultingMessage()
+                                        .getOriginalValue()));
+                readContainerFromStream(userAuthPubkeyMessage, context, temp_stream);
+
+                break;
+            case HOST_BASED:
+                LOGGER.info("Parsing Authenticationmethod: Hostbased");
+                UserAuthHostbasedMessage userAuthHostbasedMessage = new UserAuthHostbasedMessage();
+                temp_stream =
+                        new HintedInputStreamAdapterStream(
+                                null,
+                                new ByteArrayInputStream(
+                                        userAuthUnknownMessage
+                                                .getCompleteResultingMessage()
+                                                .getOriginalValue()));
+                readContainerFromStream(userAuthHostbasedMessage, context, temp_stream);
+
+            case KEYBOARD_INTERACTIVE:
+                LOGGER.info("Parsing Authenticationmethod: Interactive");
+                UserAuthKeyboardInteractiveMessage userAuthKeyboardInteractiveMessage =
+                        new UserAuthKeyboardInteractiveMessage();
+                temp_stream =
+                        new HintedInputStreamAdapterStream(
+                                null,
+                                new ByteArrayInputStream(
+                                        userAuthUnknownMessage
+                                                .getCompleteResultingMessage()
+                                                .getOriginalValue()));
+                readContainerFromStream(userAuthKeyboardInteractiveMessage, context, temp_stream);
+
+            default:
+                LOGGER.debug(
+                        "Received unimplemented user authentication method in user authentication request: {}",
+                        methodString);
+                break;
+        }
+
+        LOGGER.info("Done with Parsing UserAuth");
     }
 
     private void readServiceRequestData() {

@@ -44,7 +44,7 @@ public class UserAuthPasswordMessageParser
     @Override
     public void parse(UserAuthPasswordMessage message) {
         LOGGER.debug("Parsing UserAuthBannerMessage");
-        parseMessageSpecificContents(message);
+        parseProtocolMessageContents(message);
         message.setCompleteResultingMessage(getAlreadyParsed());
     }
 

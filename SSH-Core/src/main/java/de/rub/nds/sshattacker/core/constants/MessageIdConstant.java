@@ -10,6 +10,8 @@ package de.rub.nds.sshattacker.core.constants;
 import de.rub.nds.sshattacker.core.exceptions.ParserException;
 import de.rub.nds.sshattacker.core.state.Context;
 import java.util.*;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public enum MessageIdConstant {
 
@@ -146,6 +148,8 @@ public enum MessageIdConstant {
 
     public static final Map<Byte, List<MessageIdConstant>> map;
 
+    private static final Logger LOGGER = LogManager.getLogger();
+
     static {
         Map<Byte, List<MessageIdConstant>> mutableMap = new TreeMap<>();
         for (MessageIdConstant constant : MessageIdConstant.values()) {
@@ -181,6 +185,7 @@ public enum MessageIdConstant {
     public static MessageIdConstant fromId(byte id, Context context) {
         List<MessageIdConstant> idList = map.get(id);
         if (idList == null) {
+            LOGGER.warn("Unknonw Message-ID: {}", id);
             throw new ParserException("Unable to parse message with unknown id");
         }
         if (id >= (byte) 30 && id <= (byte) 49) {

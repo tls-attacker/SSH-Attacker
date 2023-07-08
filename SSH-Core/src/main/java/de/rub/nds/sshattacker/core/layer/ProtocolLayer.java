@@ -257,6 +257,22 @@ public abstract class ProtocolLayer<
         }
     }
 
+    protected void readContainerFromStream(
+            Container container, LayerContext context, HintedInputStream inputStream) {
+        Parser parser = container.getParser(context, inputStream);
+
+        try {
+            parser.parse(container);
+            Preparator preparator = container.getPreparator(context);
+            preparator.prepareAfterParse(false); // TODO REMOVE THIS CLIENTMODE FLAG
+            Handler handler = container.getHandler(context);
+            handler.adjustContext(container);
+            addProducedContainer(container);
+        } catch (RuntimeException ex) {
+            setUnreadBytes(parser.getAlreadyParsed());
+        }
+    }
+
     public byte[] getUnreadBytes() {
         return unreadBytes;
     }
