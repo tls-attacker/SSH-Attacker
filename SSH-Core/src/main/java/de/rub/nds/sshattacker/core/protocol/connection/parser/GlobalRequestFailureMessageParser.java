@@ -29,7 +29,7 @@ public class GlobalRequestFailureMessageParser
 
     @Override
     public void parse(GlobalRequestFailureMessage globalRequestFailureMessage) {
-        parseMessageSpecificContents(globalRequestFailureMessage);
+        parseProtocolMessageContents(globalRequestFailureMessage);
     }
 
     /*

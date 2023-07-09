@@ -36,7 +36,7 @@ public class ChannelRequestExitSignalMessageParser
 
     @Override
     public void parse(ChannelRequestExitSignalMessage message) {
-        parseMessageSpecificContents(message);
+        parseProtocolMessageContents(message);
     }
 
     /*

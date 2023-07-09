@@ -35,7 +35,7 @@ public class GlobalRequestTcpIpForwardMessageParser
 
     @Override
     public void parse(GlobalRequestTcpIpForwardMessage message) {
-        parseMessageSpecificContents(message);
+        parseProtocolMessageContents(message);
     }
 
     private void parseIPAddressToBind(GlobalRequestTcpIpForwardMessage message) {

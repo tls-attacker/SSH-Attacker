@@ -25,7 +25,7 @@ public class ChannelRequestShellMessageParser
 
     @Override
     public void parse(ChannelRequestShellMessage message) {
-        parseMessageSpecificContents(message);
+        parseProtocolMessageContents(message);
     }
 
     /*    @Override

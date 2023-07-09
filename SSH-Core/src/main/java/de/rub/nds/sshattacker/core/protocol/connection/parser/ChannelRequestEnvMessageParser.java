@@ -35,7 +35,7 @@ public class ChannelRequestEnvMessageParser
 
     @Override
     public void parse(ChannelRequestEnvMessage message) {
-        parseMessageSpecificContents(message);
+        parseProtocolMessageContents(message);
     }
 
     /*

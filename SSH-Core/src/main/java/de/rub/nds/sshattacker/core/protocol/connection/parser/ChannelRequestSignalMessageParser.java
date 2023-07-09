@@ -33,7 +33,7 @@ public class ChannelRequestSignalMessageParser
 
     @Override
     public void parse(ChannelRequestSignalMessage message) {
-        parseMessageSpecificContents(message);
+        parseProtocolMessageContents(message);
     }
 
     /*

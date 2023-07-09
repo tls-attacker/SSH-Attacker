@@ -33,7 +33,7 @@ public class ChannelRequestXonXoffMessageParser
 
     @Override
     public void parse(ChannelRequestXonXoffMessage message) {
-        parseMessageSpecificContents(message);
+        parseProtocolMessageContents(message);
     }
 
     /*

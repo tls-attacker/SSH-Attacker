@@ -33,7 +33,7 @@ public class GlobalRequestOpenSshHostKeysMessageParser
 
     @Override
     public void parse(GlobalRequestOpenSshHostKeysMessage message) {
-        parseMessageSpecificContents(message);
+        parseProtocolMessageContents(message);
     }
 
     private void parseHostKeys(GlobalRequestOpenSshHostKeysMessage message) {

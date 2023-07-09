@@ -27,7 +27,7 @@ public class ChannelOpenSessionMessageParser
 
     @Override
     public void parse(ChannelOpenSessionMessage message) {
-        parseMessageSpecificContents(message);
+        parseProtocolMessageContents(message);
     }
 
     /*    @Override

@@ -28,7 +28,7 @@ public class ChannelOpenConfirmationMessageParser
 
     @Override
     public void parse(ChannelOpenConfirmationMessage message) {
-        parseMessageSpecificContents(message);
+        parseProtocolMessageContents(message);
     }
 
     public ChannelOpenConfirmationMessageParser(InputStream stream) {

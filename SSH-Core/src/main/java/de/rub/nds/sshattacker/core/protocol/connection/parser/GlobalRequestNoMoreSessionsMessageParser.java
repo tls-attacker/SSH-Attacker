@@ -28,7 +28,7 @@ public class GlobalRequestNoMoreSessionsMessageParser
 
     @Override
     public void parse(GlobalRequestNoMoreSessionsMessage message) {
-        parseMessageSpecificContents(message);
+        parseProtocolMessageContents(message);
     }
 
     /*

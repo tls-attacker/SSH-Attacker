@@ -33,7 +33,7 @@ public class ChannelMessageSerializer<T extends ChannelMessage<T>> extends SshMe
 
     @Override
     protected byte[] serializeBytes() {
-        serializeMessageSpecificContents();
+        serializeProtocolMessageContents();
         return getAlreadySerialized();
     }
 }

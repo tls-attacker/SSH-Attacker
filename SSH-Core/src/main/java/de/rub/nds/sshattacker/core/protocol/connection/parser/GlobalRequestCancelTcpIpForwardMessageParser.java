@@ -32,7 +32,7 @@ public class GlobalRequestCancelTcpIpForwardMessageParser
 
     @Override
     public void parse(GlobalRequestCancelTcpIpForwardMessage message) {
-        parseMessageSpecificContents(message);
+        parseProtocolMessageContents(message);
     }
 
     private void parseIPAddressToBind(GlobalRequestCancelTcpIpForwardMessage message) {

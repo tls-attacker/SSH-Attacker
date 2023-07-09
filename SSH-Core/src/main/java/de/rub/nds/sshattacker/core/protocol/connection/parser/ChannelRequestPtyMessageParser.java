@@ -32,7 +32,7 @@ public class ChannelRequestPtyMessageParser
 
     @Override
     public void parse(ChannelRequestPtyMessage message) {
-        parseMessageSpecificContents(message);
+        parseProtocolMessageContents(message);
     }
 
     /*

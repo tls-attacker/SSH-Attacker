@@ -35,7 +35,7 @@ public class ChannelRequestSubsystemMessageParser
 
     @Override
     public void parse(ChannelRequestSubsystemMessage message) {
-        parseMessageSpecificContents(message);
+        parseProtocolMessageContents(message);
     }
 
     /*

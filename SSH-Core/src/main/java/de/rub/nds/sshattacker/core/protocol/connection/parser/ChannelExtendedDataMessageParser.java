@@ -34,7 +34,7 @@ public class ChannelExtendedDataMessageParser
 
     @Override
     public void parse(ChannelExtendedDataMessage message) {
-        parseMessageSpecificContents(message);
+        parseProtocolMessageContents(message);
     }
 
     private static final Logger LOGGER = LogManager.getLogger();

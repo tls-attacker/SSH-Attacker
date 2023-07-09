@@ -27,7 +27,7 @@ public class ChannelCloseMessageParser extends ChannelMessageParser<ChannelClose
 
     @Override
     public void parse(ChannelCloseMessage message) {
-        parseMessageSpecificContents(message);
+        parseProtocolMessageContents(message);
     }
 
     /*    @Override

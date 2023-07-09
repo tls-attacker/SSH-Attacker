@@ -32,7 +32,7 @@ public class ChannelRequestBreakMessageParser
 
     @Override
     public void parse(ChannelRequestBreakMessage message) {
-        parseMessageSpecificContents(message);
+        parseProtocolMessageContents(message);
     }
 
     /* @Override

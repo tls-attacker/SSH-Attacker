@@ -19,9 +19,7 @@ import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.message.*;*/
 
-import de.rub.nds.sshattacker.core.constants.AuthenticationMethod;
-import de.rub.nds.sshattacker.core.constants.ChannelType;
-import de.rub.nds.sshattacker.core.constants.ProtocolMessageType;
+import de.rub.nds.sshattacker.core.constants.*;
 import de.rub.nds.sshattacker.core.exceptions.EndOfStreamException;
 import de.rub.nds.sshattacker.core.exceptions.TimeoutException;
 import de.rub.nds.sshattacker.core.layer.LayerConfiguration;
@@ -37,10 +35,10 @@ import de.rub.nds.sshattacker.core.layer.stream.HintedLayerInputStream;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.*;
 import de.rub.nds.sshattacker.core.protocol.authentication.parser.*;
 import de.rub.nds.sshattacker.core.protocol.common.*;
-import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelOpenSessionMessage;
-import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelOpenUnknownMessage;
-import de.rub.nds.sshattacker.core.protocol.connection.message.ConnectionMessage;
+import de.rub.nds.sshattacker.core.protocol.connection.message.*;
 import de.rub.nds.sshattacker.core.protocol.connection.parser.ChannelOpenUnknownMessageParser;
+import de.rub.nds.sshattacker.core.protocol.connection.parser.ChannelRequestUnknownMessageParser;
+import de.rub.nds.sshattacker.core.protocol.connection.parser.GlobalRequestUnknownMessageParser;
 import de.rub.nds.sshattacker.core.protocol.transport.message.*;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -424,7 +422,12 @@ public class SSH2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
             case SSH_MSG_CHANNEL_OPEN:
                 readChannelOpen();
                 break;
-
+            case SSH_MSG_CHANNEL_REQUEST:
+                readChannelRequest();
+                break;
+            case SSH_MSG_GLOBAL_REQUEST:
+                readGlobalRequest();
+                break;
             default:
                 LOGGER.error("Undefined record layer type, found type {}", hint.getType());
                 throw new RuntimeException();
@@ -555,6 +558,285 @@ public class SSH2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
         }
 
         LOGGER.info("Done with Parsing UserAuth");
+    }
+
+    private void readChannelRequest() {
+        ChannelRequestUnknownMessage channelRequestUnknownMessage =
+                new ChannelRequestUnknownMessage();
+        HintedInputStream inputStream;
+        HintedInputStream temp_stream;
+        try {
+            inputStream = getLowerLayer().getDataStream();
+        } catch (IOException e) {
+            LOGGER.warn("The lower layer did not produce a data stream: ", e);
+            return;
+        }
+
+        /* int length = 0;
+
+        try {
+            length = inputStream.available();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+
+        try {
+            LOGGER.info("remainign in Inpustream: {}", inputStream.available());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        byte[] data = new byte[length];
+
+        try {
+            inputStream.read(data);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        HintedInputStream copied_inputstream = new HintedInputStreamAdapterStream(null, new ByteArrayInputStream(data)); */
+
+        ChannelRequestUnknownMessageParser parser =
+                new ChannelRequestUnknownMessageParser(inputStream);
+        parser.parse(channelRequestUnknownMessage);
+        String requestTypeString = channelRequestUnknownMessage.getRequestType().getValue();
+        try {
+            LOGGER.info(
+                    "Got Method-Request: {}, remainign in Inpustream: {}",
+                    requestTypeString,
+                    inputStream.available());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        ChannelRequestType requestType = ChannelRequestType.fromName(requestTypeString);
+        switch (requestType) {
+            case PTY_REQ:
+                LOGGER.info("Parsing Authenticationmethod: None");
+                ChannelRequestPtyMessage channelRequestPtyMessage = new ChannelRequestPtyMessage();
+                temp_stream =
+                        new HintedInputStreamAdapterStream(
+                                null,
+                                new ByteArrayInputStream(
+                                        channelRequestUnknownMessage
+                                                .getCompleteResultingMessage()
+                                                .getOriginalValue()));
+                readContainerFromStream(channelRequestPtyMessage, context, temp_stream);
+
+                break;
+            case X11_REQ:
+                LOGGER.info("Parsing Authenticationmethod: Password");
+                ChannelRequestX11Message channelRequestX11Message = new ChannelRequestX11Message();
+                temp_stream =
+                        new HintedInputStreamAdapterStream(
+                                null,
+                                new ByteArrayInputStream(
+                                        channelRequestUnknownMessage
+                                                .getCompleteResultingMessage()
+                                                .getOriginalValue()));
+
+                readContainerFromStream(channelRequestX11Message, context, temp_stream);
+
+                break;
+            case ENV:
+                LOGGER.info("Parsing Authenticationmethod: PubKey");
+                ChannelRequestEnvMessage channelRequestEnvMessage = new ChannelRequestEnvMessage();
+                temp_stream =
+                        new HintedInputStreamAdapterStream(
+                                null,
+                                new ByteArrayInputStream(
+                                        channelRequestUnknownMessage
+                                                .getCompleteResultingMessage()
+                                                .getOriginalValue()));
+                readContainerFromStream(channelRequestEnvMessage, context, temp_stream);
+
+                break;
+            case SHELL:
+                LOGGER.info("Parsing Authenticationmethod: Hostbased");
+                ChannelRequestShellMessage channelRequestShellMessage =
+                        new ChannelRequestShellMessage();
+                temp_stream =
+                        new HintedInputStreamAdapterStream(
+                                null,
+                                new ByteArrayInputStream(
+                                        channelRequestUnknownMessage
+                                                .getCompleteResultingMessage()
+                                                .getOriginalValue()));
+                readContainerFromStream(channelRequestShellMessage, context, temp_stream);
+
+            case EXEC:
+                LOGGER.info("Parsing Authenticationmethod: Interactive");
+                ChannelRequestExecMessage channelRequestExecMessage =
+                        new ChannelRequestExecMessage();
+                temp_stream =
+                        new HintedInputStreamAdapterStream(
+                                null,
+                                new ByteArrayInputStream(
+                                        channelRequestUnknownMessage
+                                                .getCompleteResultingMessage()
+                                                .getOriginalValue()));
+                readContainerFromStream(channelRequestExecMessage, context, temp_stream);
+
+            case SUBSYSTEM:
+                LOGGER.info("Parsing Authenticationmethod: Interactive");
+                ChannelRequestSubsystemMessage channelRequestSubsystemMessage =
+                        new ChannelRequestSubsystemMessage();
+                temp_stream =
+                        new HintedInputStreamAdapterStream(
+                                null,
+                                new ByteArrayInputStream(
+                                        channelRequestUnknownMessage
+                                                .getCompleteResultingMessage()
+                                                .getOriginalValue()));
+                readContainerFromStream(channelRequestSubsystemMessage, context, temp_stream);
+
+            case WINDOW_CHANGE:
+                LOGGER.info("Parsing Authenticationmethod: Interactive");
+                ChannelRequestWindowChangeMessage channelRequestWindowChangeMessage =
+                        new ChannelRequestWindowChangeMessage();
+                temp_stream =
+                        new HintedInputStreamAdapterStream(
+                                null,
+                                new ByteArrayInputStream(
+                                        channelRequestUnknownMessage
+                                                .getCompleteResultingMessage()
+                                                .getOriginalValue()));
+                readContainerFromStream(channelRequestWindowChangeMessage, context, temp_stream);
+            case XON_XOFF:
+                LOGGER.info("Parsing Authenticationmethod: Interactive");
+                ChannelRequestXonXoffMessage channelRequestXonXoffMessage =
+                        new ChannelRequestXonXoffMessage();
+                temp_stream =
+                        new HintedInputStreamAdapterStream(
+                                null,
+                                new ByteArrayInputStream(
+                                        channelRequestUnknownMessage
+                                                .getCompleteResultingMessage()
+                                                .getOriginalValue()));
+                readContainerFromStream(channelRequestXonXoffMessage, context, temp_stream);
+            case SIGNAL:
+                LOGGER.info("Parsing Authenticationmethod: Interactive");
+                ChannelRequestSignalMessage channelRequestSignalMessage =
+                        new ChannelRequestSignalMessage();
+                temp_stream =
+                        new HintedInputStreamAdapterStream(
+                                null,
+                                new ByteArrayInputStream(
+                                        channelRequestUnknownMessage
+                                                .getCompleteResultingMessage()
+                                                .getOriginalValue()));
+                readContainerFromStream(channelRequestSignalMessage, context, temp_stream);
+            case EXIT_STATUS:
+                LOGGER.info("Parsing Authenticationmethod: Interactive");
+                ChannelRequestExitStatusMessage channelRequestExitStatusMessage =
+                        new ChannelRequestExitStatusMessage();
+                temp_stream =
+                        new HintedInputStreamAdapterStream(
+                                null,
+                                new ByteArrayInputStream(
+                                        channelRequestUnknownMessage
+                                                .getCompleteResultingMessage()
+                                                .getOriginalValue()));
+                readContainerFromStream(channelRequestExitStatusMessage, context, temp_stream);
+            case EXIT_SIGNAL:
+                LOGGER.info("Parsing Authenticationmethod: Interactive");
+                ChannelRequestExitSignalMessage channelRequestExitSignalMessage =
+                        new ChannelRequestExitSignalMessage();
+                temp_stream =
+                        new HintedInputStreamAdapterStream(
+                                null,
+                                new ByteArrayInputStream(
+                                        channelRequestUnknownMessage
+                                                .getCompleteResultingMessage()
+                                                .getOriginalValue()));
+                readContainerFromStream(channelRequestExitSignalMessage, context, temp_stream);
+            case AUTH_AGENT_REQ_OPENSSH_COM:
+                LOGGER.info("Parsing Authenticationmethod: Interactive");
+                ChannelRequestAuthAgentMessage channelRequestAuthAgentMessage =
+                        new ChannelRequestAuthAgentMessage();
+                temp_stream =
+                        new HintedInputStreamAdapterStream(
+                                null,
+                                new ByteArrayInputStream(
+                                        channelRequestUnknownMessage
+                                                .getCompleteResultingMessage()
+                                                .getOriginalValue()));
+                readContainerFromStream(channelRequestAuthAgentMessage, context, temp_stream);
+            default:
+                LOGGER.debug(
+                        "Received unimplemented user authentication method in user authentication request: {}",
+                        requestType);
+                break;
+        }
+
+        LOGGER.info("Done with Parsing UserAuth");
+    }
+
+    private void readGlobalRequest() {
+        GlobalRequestUnknownMessage globalRequestUnknownMessage = new GlobalRequestUnknownMessage();
+        HintedInputStream inputStream;
+        HintedInputStream temp_stream;
+        try {
+            inputStream = getLowerLayer().getDataStream();
+        } catch (IOException e) {
+            LOGGER.warn("The lower layer did not produce a data stream: ", e);
+            return;
+        }
+        GlobalRequestUnknownMessageParser parser =
+                new GlobalRequestUnknownMessageParser(inputStream);
+        parser.parse(globalRequestUnknownMessage);
+        String requestTypeString = globalRequestUnknownMessage.getRequestName().getValue();
+        GlobalRequestType requestType = GlobalRequestType.fromName(requestTypeString);
+        switch (requestType) {
+            case TCPIP_FORWARD:
+                GlobalRequestTcpIpForwardMessage tcpIpForwardMessage =
+                        new GlobalRequestTcpIpForwardMessage();
+                temp_stream =
+                        new HintedInputStreamAdapterStream(
+                                null,
+                                new ByteArrayInputStream(
+                                        globalRequestUnknownMessage
+                                                .getCompleteResultingMessage()
+                                                .getOriginalValue()));
+                readContainerFromStream(tcpIpForwardMessage, context, temp_stream);
+            case CANCEL_TCPIP_FORWARD:
+                GlobalRequestCancelTcpIpForwardMessage cancelTcpIpForwardMessage =
+                        new GlobalRequestCancelTcpIpForwardMessage();
+                temp_stream =
+                        new HintedInputStreamAdapterStream(
+                                null,
+                                new ByteArrayInputStream(
+                                        globalRequestUnknownMessage
+                                                .getCompleteResultingMessage()
+                                                .getOriginalValue()));
+                readContainerFromStream(cancelTcpIpForwardMessage, context, temp_stream);
+            case NO_MORE_SESSIONS_OPENSSH_COM:
+                GlobalRequestNoMoreSessionsMessage noMoreSessionsMessage =
+                        new GlobalRequestNoMoreSessionsMessage();
+                temp_stream =
+                        new HintedInputStreamAdapterStream(
+                                null,
+                                new ByteArrayInputStream(
+                                        globalRequestUnknownMessage
+                                                .getCompleteResultingMessage()
+                                                .getOriginalValue()));
+                readContainerFromStream(noMoreSessionsMessage, context, temp_stream);
+            case HOSTKEYS_00_OPENSSH_COM:
+                GlobalRequestOpenSshHostKeysMessage openSshHostKeysMessage =
+                        new GlobalRequestOpenSshHostKeysMessage();
+                temp_stream =
+                        new HintedInputStreamAdapterStream(
+                                null,
+                                new ByteArrayInputStream(
+                                        globalRequestUnknownMessage
+                                                .getCompleteResultingMessage()
+                                                .getOriginalValue()));
+                readContainerFromStream(openSshHostKeysMessage, context, temp_stream);
+            default:
+                LOGGER.debug(
+                        "Received unimplemented channel open message type: {}", requestTypeString);
+        }
     }
 
     private void readServiceRequestData() {

@@ -29,7 +29,7 @@ public class GlobalRequestSuccessMessageParser
 
     @Override
     public void parse(GlobalRequestSuccessMessage message) {
-        parseMessageSpecificContents(message);
+        parseProtocolMessageContents(message);
     }
 
     /*

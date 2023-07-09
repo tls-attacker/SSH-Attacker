@@ -33,7 +33,8 @@ public class ChannelOpenUnknownMessageParser
 
     @Override
     public void parse(ChannelOpenUnknownMessage message) {
-        parseMessageSpecificContents(message);
+        parseProtocolMessageContents(message);
+        message.setCompleteResultingMessage(getAlreadyParsed());
     }
 
     /*    @Override

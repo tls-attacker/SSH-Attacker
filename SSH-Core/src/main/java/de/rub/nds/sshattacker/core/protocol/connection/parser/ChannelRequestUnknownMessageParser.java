@@ -32,7 +32,8 @@ public class ChannelRequestUnknownMessageParser
 
     @Override
     public void parse(ChannelRequestUnknownMessage message) {
-        parseMessageSpecificContents(message);
+        parseProtocolMessageContents(message);
+        message.setCompleteResultingMessage(getAlreadyParsed());
     }
 
     /*

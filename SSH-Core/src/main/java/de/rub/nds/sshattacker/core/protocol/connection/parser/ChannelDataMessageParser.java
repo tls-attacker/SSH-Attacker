@@ -33,7 +33,7 @@ public class ChannelDataMessageParser extends ChannelMessageParser<ChannelDataMe
 
     @Override
     public void parse(ChannelDataMessage message) {
-        parseMessageSpecificContents(message);
+        parseProtocolMessageContents(message);
     }
 
     /*

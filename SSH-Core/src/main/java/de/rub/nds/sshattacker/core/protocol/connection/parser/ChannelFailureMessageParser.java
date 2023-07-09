@@ -27,7 +27,7 @@ public class ChannelFailureMessageParser extends ChannelMessageParser<ChannelFai
 
     @Override
     public void parse(ChannelFailureMessage message) {
-        parseMessageSpecificContents(message);
+        parseProtocolMessageContents(message);
     }
 
     /*    @Override

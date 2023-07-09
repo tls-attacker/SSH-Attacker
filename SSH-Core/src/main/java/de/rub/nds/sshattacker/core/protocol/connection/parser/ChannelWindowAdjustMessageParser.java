@@ -33,7 +33,7 @@ public class ChannelWindowAdjustMessageParser
 
     @Override
     public void parse(ChannelWindowAdjustMessage message) {
-        parseMessageSpecificContents(message);
+        parseProtocolMessageContents(message);
     }
 
     /*

@@ -34,7 +34,7 @@ public class ChannelRequestExitStatusMessageParser
 
     @Override
     public void parse(ChannelRequestExitStatusMessage message) {
-        parseMessageSpecificContents(message);
+        parseProtocolMessageContents(message);
     }
 
     /*@Override

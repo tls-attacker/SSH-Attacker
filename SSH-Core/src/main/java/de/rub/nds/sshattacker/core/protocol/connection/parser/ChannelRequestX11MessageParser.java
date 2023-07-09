@@ -91,6 +91,6 @@ public class ChannelRequestX11MessageParser
 
     @Override
     public void parse(ChannelRequestX11Message message) {
-        parseMessageSpecificContents(message);
+        parseProtocolMessageContents(message);
     }
 }

@@ -34,7 +34,7 @@ public class ChannelOpenFailureMessageParser
 
     @Override
     public void parse(ChannelOpenFailureMessage message) {
-        parseMessageSpecificContents(message);
+        parseProtocolMessageContents(message);
     }
 
     /*

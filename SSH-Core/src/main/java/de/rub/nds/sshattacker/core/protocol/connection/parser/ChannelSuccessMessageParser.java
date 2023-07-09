@@ -28,7 +28,7 @@ public class ChannelSuccessMessageParser extends ChannelMessageParser<ChannelSuc
 
     @Override
     public void parse(ChannelSuccessMessage message) {
-        parseMessageSpecificContents(message);
+        parseProtocolMessageContents(message);
     }
 
     /*    @Override

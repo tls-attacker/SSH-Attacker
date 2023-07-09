@@ -28,7 +28,7 @@ public class ChannelRequestAuthAgentMessageParser
 
     @Override
     public void parse(ChannelRequestAuthAgentMessage message) {
-        parseMessageSpecificContents(message);
+        parseProtocolMessageContents(message);
     }
 
     /*    @Override

@@ -33,7 +33,7 @@ public class ChannelRequestWindowChangeMessageParser
 
     @Override
     public void parse(ChannelRequestWindowChangeMessage message) {
-        parseMessageSpecificContents(message);
+        parseProtocolMessageContents(message);
     }
 
     /*

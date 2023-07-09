@@ -32,7 +32,8 @@ public class GlobalRequestUnknownMessageParser
 
     @Override
     public void parse(GlobalRequestUnknownMessage message) {
-        parseMessageSpecificContents(message);
+        parseProtocolMessageContents(message);
+        message.setCompleteResultingMessage(getAlreadyParsed());
     }
 
     /*@Override
