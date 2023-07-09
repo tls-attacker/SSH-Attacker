@@ -40,7 +40,7 @@ public class UserAuthFailureMessageParser extends SshMessageParser<UserAuthFailu
     @Override
     public void parse(UserAuthFailureMessage message) {
         LOGGER.debug("Parsing UserAuthBannerMessage");
-        parseMessageSpecificContents(message);
+        parseProtocolMessageContents(message);
         message.setCompleteResultingMessage(getAlreadyParsed());
     }
 

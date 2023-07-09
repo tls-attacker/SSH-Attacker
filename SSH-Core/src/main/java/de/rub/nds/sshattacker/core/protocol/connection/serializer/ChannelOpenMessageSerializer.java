@@ -56,7 +56,7 @@ public abstract class ChannelOpenMessageSerializer<T extends ChannelOpenMessage<
 
     @Override
     protected byte[] serializeBytes() {
-        serializeMessageSpecificContents();
+        serializeProtocolMessageContents();
         return getAlreadySerialized();
     }
 }

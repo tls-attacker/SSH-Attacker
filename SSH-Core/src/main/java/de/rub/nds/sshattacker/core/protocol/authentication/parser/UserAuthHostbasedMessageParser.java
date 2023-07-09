@@ -46,7 +46,7 @@ public class UserAuthHostbasedMessageParser
     @Override
     public void parse(UserAuthHostbasedMessage message) {
         LOGGER.debug("Parsing UserAuthBannerMessage");
-        parseMessageSpecificContents(message);
+        parseProtocolMessageContents(message);
         message.setCompleteResultingMessage(getAlreadyParsed());
     }
 

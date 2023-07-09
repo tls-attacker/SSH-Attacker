@@ -46,7 +46,7 @@ public class UserAuthInfoRequestMessageParser extends SshMessageParser<UserAuthI
     @Override
     public void parse(UserAuthInfoRequestMessage message) {
         LOGGER.debug("Parsing UserAuthBannerMessage");
-        parseMessageSpecificContents(message);
+        parseProtocolMessageContents(message);
         message.setCompleteResultingMessage(getAlreadyParsed());
     }
 

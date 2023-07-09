@@ -43,7 +43,7 @@ public class UserAuthInfoResponseMessageParser
     @Override
     public void parse(UserAuthInfoResponseMessage message) {
         LOGGER.debug("Parsing UserAuthBannerMessage");
-        parseMessageSpecificContents(message);
+        parseProtocolMessageContents(message);
         message.setCompleteResultingMessage(getAlreadyParsed());
     }
 

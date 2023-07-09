@@ -40,7 +40,7 @@ public class UserAuthSuccessMessageParser extends SshMessageParser<UserAuthSucce
     @Override
     public void parse(UserAuthSuccessMessage message) {
         LOGGER.debug("Parsing UserAuthBannerMessage");
-        parseMessageSpecificContents(message);
+        parseProtocolMessageContents(message);
         message.setCompleteResultingMessage(getAlreadyParsed());
     }
 

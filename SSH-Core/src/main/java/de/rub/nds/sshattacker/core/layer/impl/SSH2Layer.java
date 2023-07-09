@@ -428,6 +428,34 @@ public class SSH2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
             case SSH_MSG_GLOBAL_REQUEST:
                 readGlobalRequest();
                 break;
+            case SSH_MSG_USERAUTH_SUCCESS:
+                readUserAuthSucc();
+                break;
+            case SSH_MSG_CHANNEL_OPEN_CONFIRMATION:
+                readChannelOpenConfirmation();
+                break;
+            case SSH_MSG_CHANNEL_CLOSE:
+                readChannelCloseMessage();
+                break;
+
+            case SSH_MSG_CHANNEL_EOF:
+                readChannelEofMessage();
+                break;
+
+            case SSH_MSG_CHANNEL_EXTENDED_DATA:
+                readChannelExtendedDataMessage();
+                break;
+
+            case SSH_MSG_CHANNEL_FAILURE:
+                readChannelFailureMessage();
+                break;
+
+            case SSH_MSG_CHANNEL_OPEN_FAILURE:
+                readChannelOpenFailureMessage();
+                break;
+            case SSH_MSG_CHANNEL_SUCCESS:
+                readChannelSuccessMessage();
+                break;
             default:
                 LOGGER.error("Undefined record layer type, found type {}", hint.getType());
                 throw new RuntimeException();
@@ -837,6 +865,46 @@ public class SSH2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
                 LOGGER.debug(
                         "Received unimplemented channel open message type: {}", requestTypeString);
         }
+    }
+
+    private void readChannelSuccessMessage() {
+        ChannelSuccessMessage message = new ChannelSuccessMessage();
+        readDataContainer(message, context);
+    }
+
+    private void readChannelCloseMessage() {
+        ChannelCloseMessage message = new ChannelCloseMessage();
+        readDataContainer(message, context);
+    }
+
+    private void readChannelEofMessage() {
+        ChannelEofMessage message = new ChannelEofMessage();
+        readDataContainer(message, context);
+    }
+
+    private void readChannelExtendedDataMessage() {
+        ChannelExtendedDataMessage message = new ChannelExtendedDataMessage();
+        readDataContainer(message, context);
+    }
+
+    private void readChannelFailureMessage() {
+        ChannelFailureMessage message = new ChannelFailureMessage();
+        readDataContainer(message, context);
+    }
+
+    private void readChannelOpenFailureMessage() {
+        ChannelOpenFailureMessage message = new ChannelOpenFailureMessage();
+        readDataContainer(message, context);
+    }
+
+    private void readChannelOpenConfirmation() {
+        ChannelOpenConfirmationMessage message = new ChannelOpenConfirmationMessage();
+        readDataContainer(message, context);
+    }
+
+    private void readUserAuthSucc() {
+        UserAuthSuccessMessage message = new UserAuthSuccessMessage();
+        readDataContainer(message, context);
     }
 
     private void readServiceRequestData() {
