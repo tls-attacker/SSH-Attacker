@@ -22,6 +22,14 @@ public class DynamicDelayCompressionAction extends SendAction {
     @SuppressWarnings({"CanBeFinal", "FieldMayBeFinal"})
     private List<SshAction> sshActions = new ArrayList<>();
 
+    public DynamicDelayCompressionAction() {
+        super();
+    }
+
+    public DynamicDelayCompressionAction(String connectionAlias) {
+        super(connectionAlias);
+    }
+
     @Override
     public void execute(State state) throws WorkflowExecutionException {
         if (isExecuted()) {

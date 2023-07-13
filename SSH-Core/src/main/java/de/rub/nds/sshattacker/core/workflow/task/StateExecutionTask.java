@@ -1,19 +1,15 @@
 /*
  * SSH-Attacker - A Modular Penetration Testing Framework for SSH
  *
- * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ * Copyright 2014-2023 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
  *
  * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  */
-package de.rub.nds.sshattacker.attacks.task;
+package de.rub.nds.sshattacker.core.workflow.task;
 
 import de.rub.nds.sshattacker.core.state.State;
 import de.rub.nds.sshattacker.core.workflow.WorkflowExecutor;
 
-/**
- * Simply executes a given workflow without any checks (e.g. if workflow was executed as planned).
- * Do not use this Task if you want to rely on the socket state
- */
 public class StateExecutionTask extends SshTask {
 
     private final State state;
@@ -27,6 +23,9 @@ public class StateExecutionTask extends SshTask {
     public boolean execute() {
         WorkflowExecutor executor = getExecutor(state);
         executor.executeWorkflow();
+        if (state.getSshContext().hasReceivedTransportHandlerException()) {
+            throw new RuntimeException("TransportHandler exception received.");
+        }
         return true;
     }
 

@@ -19,6 +19,7 @@ import de.rub.nds.sshattacker.core.protocol.connection.ChannelDefaults;
 import de.rub.nds.sshattacker.core.protocol.transport.message.extension.AbstractExtension;
 import de.rub.nds.sshattacker.core.protocol.transport.message.extension.DelayCompressionExtension;
 import de.rub.nds.sshattacker.core.protocol.transport.message.extension.ServerSigAlgsExtension;
+import de.rub.nds.sshattacker.core.workflow.action.executor.WorkflowExecutorType;
 import de.rub.nds.sshattacker.core.workflow.factory.WorkflowTraceType;
 import de.rub.nds.sshattacker.core.workflow.filter.FilterType;
 import jakarta.xml.bind.annotation.*;
@@ -387,6 +388,8 @@ public class Config implements Serializable {
     private List<FilterType> outputFilters;
     /** The path to save the workflow trace as output */
     private String workflowOutput;
+    /** Defines the type of WorkflowExecutor to use when executing the workflow. */
+    private WorkflowExecutorType workflowExecutorType = WorkflowExecutorType.DEFAULT;
     /**
      * Defines if the output filters should be applied on the workflowTrace or on a fresh workflow
      * trace copy.
@@ -407,6 +410,21 @@ public class Config implements Serializable {
     private Boolean workflowExecutorShouldClose = true;
     /** Defines if the workflow trace should be reset before saving, by resetting all SshActions. */
     private Boolean resetWorkflowtracesBeforeSaving = false;
+    /**
+     * Setting this to true results in the client transport handlers trying to acquire a new port on
+     * each connection attempt. Default behavior true so that reused ports are not an issue.
+     */
+    private Boolean resetClientSourcePort = true;
+    /**
+     * Setting this to true results in multiple attempts to initialize a connection to the server
+     * when a ClientTcpTransportHandler is used.
+     */
+    private Boolean retryFailedClientTcpSocketInitialization = false;
+    /**
+     * Setting this to true will stop all further action executions in a workflow trace if an action
+     * was not executed as planned.
+     */
+    private Boolean stopTraceAfterUnexpected = false;
     // endregion
 
     // region ReceiveAction
@@ -1715,6 +1733,10 @@ public class Config implements Serializable {
         return workflowOutput;
     }
 
+    public WorkflowExecutorType getWorkflowExecutorType() {
+        return workflowExecutorType;
+    }
+
     public Boolean isApplyFiltersInPlace() {
         return applyFiltersInPlace;
     }
@@ -1739,6 +1761,17 @@ public class Config implements Serializable {
         return resetWorkflowtracesBeforeSaving;
     }
 
+    public Boolean getResetClientSourcePort() {
+        return resetClientSourcePort;
+    }
+
+    public Boolean getRetryFailedClientTcpSocketInitialization() {
+        return retryFailedClientTcpSocketInitialization;
+    }
+
+    public Boolean getStopTraceAfterUnexpected() {
+        return stopTraceAfterUnexpected;
+    }
     // endregion
     // region Setters for Workflow settings
 
@@ -1760,6 +1793,10 @@ public class Config implements Serializable {
 
     public void setWorkflowOutput(String workflowOutput) {
         this.workflowOutput = workflowOutput;
+    }
+
+    public void setWorkflowExecutorType(WorkflowExecutorType workflowExecutorType) {
+        this.workflowExecutorType = workflowExecutorType;
     }
 
     public void setApplyFiltersInPlace(Boolean applyFiltersInPlace) {
@@ -1784,6 +1821,19 @@ public class Config implements Serializable {
 
     public void setResetWorkflowtracesBeforeSaving(Boolean resetWorkflowtracesBeforeSaving) {
         this.resetWorkflowtracesBeforeSaving = resetWorkflowtracesBeforeSaving;
+    }
+
+    public void setResetClientSourcePort(Boolean resetClientSourcePort) {
+        this.resetClientSourcePort = resetClientSourcePort;
+    }
+
+    public void setRetryFailedClientTcpSocketInitialization(
+            Boolean retryFailedClientTcpSocketInitialization) {
+        this.retryFailedClientTcpSocketInitialization = retryFailedClientTcpSocketInitialization;
+    }
+
+    public void setStopTraceAfterUnexpected(Boolean stopTraceAfterUnexpected) {
+        this.stopTraceAfterUnexpected = stopTraceAfterUnexpected;
     }
     // endregion
 

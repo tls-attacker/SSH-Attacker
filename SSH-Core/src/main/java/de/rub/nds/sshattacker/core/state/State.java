@@ -24,6 +24,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 import javax.xml.stream.XMLStreamException;
@@ -59,18 +60,25 @@ public class State {
 
     public String workflowOutputName;
 
+    private long startTimestamp;
+    private long endTimestamp;
+    private Throwable executionException;
+
+    private final LinkedList<Process> spawnedSubprocesses;
+
     public State() {
         this(new Config());
     }
 
     public State(WorkflowTrace workflowTrace) {
-        this(Config.createConfig(), workflowTrace);
+        this(new Config(), workflowTrace);
     }
 
     public State(Config config) {
         super();
         this.config = config;
         runningMode = config.getDefaultRunningMode();
+        spawnedSubprocesses = new LinkedList<>();
         workflowTrace = loadWorkflowTrace();
         initState();
     }
@@ -79,6 +87,7 @@ public class State {
         super();
         this.config = config;
         runningMode = config.getDefaultRunningMode();
+        spawnedSubprocesses = new LinkedList<>();
         this.workflowTrace = workflowTrace;
         initState();
     }
@@ -86,6 +95,7 @@ public class State {
     public void reset() {
         contextContainer.clear();
         workflowTrace.reset();
+        killAllSpawnedSubprocesses();
         initState();
     }
 
@@ -321,5 +331,42 @@ public class State {
 
     public String getWorkflowOutputName() {
         return workflowOutputName;
+    }
+
+    public long getStartTimestamp() {
+        return startTimestamp;
+    }
+
+    public void setStartTimestamp(long startTimestamp) {
+        this.startTimestamp = startTimestamp;
+    }
+
+    public long getEndTimestamp() {
+        return endTimestamp;
+    }
+
+    public void setEndTimestamp(long endTimestamp) {
+        this.endTimestamp = endTimestamp;
+    }
+
+    public Throwable getExecutionException() {
+        return executionException;
+    }
+
+    public void setExecutionException(Throwable executionException) {
+        this.executionException = executionException;
+    }
+
+    public void addSpawnedSubprocess(Process process) {
+        if (process != null) {
+            spawnedSubprocesses.add(process);
+        }
+    }
+
+    public void killAllSpawnedSubprocesses() {
+        for (Process process : spawnedSubprocesses) {
+            process.destroy();
+        }
+        spawnedSubprocesses.clear();
     }
 }

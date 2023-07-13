@@ -7,6 +7,8 @@
  */
 package de.rub.nds.sshattacker.core.constants;
 
+import java.util.Map;
+import java.util.TreeMap;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -157,7 +159,8 @@ public enum KeyExchangeAlgorithm {
     DIFFIE_HELLMAN_GROUP16_SHA512_SSH_COM(
             KeyExchangeFlowType.DIFFIE_HELLMAN, "diffie-hellman-group16-sha512@ssh.com", "SHA-512"),
     DIFFIE_HELLMAN_GROUP18_SHA512_SSH_COM(
-            KeyExchangeFlowType.DIFFIE_HELLMAN, "diffie-hellman-group18-sha512@ssh.com", "SHA-512");
+            KeyExchangeFlowType.DIFFIE_HELLMAN, "diffie-hellman-group18-sha512@ssh.com", "SHA-512"),
+    UNKNOWN(null, null, null);
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -165,6 +168,17 @@ public enum KeyExchangeAlgorithm {
     private final String digest;
     private final KeyExchangeFlowType flowType;
     private final String className;
+
+    private static final Map<String, KeyExchangeAlgorithm> map;
+
+    static {
+        map = new TreeMap<>();
+        for (KeyExchangeAlgorithm algorithm : values()) {
+            if (algorithm.name != null) {
+                map.put(algorithm.name, algorithm);
+            }
+        }
+    }
 
     KeyExchangeAlgorithm(KeyExchangeFlowType flowType, String name, String digest) {
         this.flowType = flowType;
@@ -246,5 +260,12 @@ public enum KeyExchangeAlgorithm {
                     className);
             return false;
         }
+    }
+
+    public static KeyExchangeAlgorithm fromName(String name) {
+        if (map.containsKey(name)) {
+            return map.get(name);
+        }
+        return UNKNOWN;
     }
 }

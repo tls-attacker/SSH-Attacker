@@ -10,6 +10,8 @@ package de.rub.nds.sshattacker.core.workflow.action;
 import de.rub.nds.sshattacker.core.connection.AliasedConnection;
 import de.rub.nds.sshattacker.core.constants.KeyExchangeAlgorithm;
 import de.rub.nds.sshattacker.core.exceptions.WorkflowExecutionException;
+import de.rub.nds.sshattacker.core.packet.AbstractPacket;
+import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessage;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.state.State;
 import de.rub.nds.sshattacker.core.workflow.factory.WorkflowConfigurationFactory;
@@ -17,8 +19,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
-public class DynamicKeyExchangeAction extends MessageAction {
+public class DynamicKeyExchangeAction extends MessageAction
+        implements ReceivingAction, SendingAction {
 
     private List<SshAction> sshActions = new ArrayList<>();
 
@@ -42,6 +46,30 @@ public class DynamicKeyExchangeAction extends MessageAction {
                 WorkflowConfigurationFactory.createKeyExchangeActions(
                         keyExchangeAlgorithm.getFlowType(), context.getConnection());
         sshActions.forEach(sshAction -> sshAction.execute(state));
+    }
+
+    @Override
+    public List<ProtocolMessage<?>> getReceivedMessages() {
+        return sshActions.stream()
+                .filter(action -> action instanceof ReceivingAction)
+                .flatMap(action -> ((ReceivingAction) action).getReceivedMessages().stream())
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<AbstractPacket> getReceivedPackets() {
+        return sshActions.stream()
+                .filter(action -> action instanceof ReceivingAction)
+                .flatMap(action -> ((ReceivingAction) action).getReceivedPackets().stream())
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<ProtocolMessage<?>> getSendMessages() {
+        return sshActions.stream()
+                .filter(action -> action instanceof SendingAction)
+                .flatMap(action -> ((SendingAction) action).getSendMessages().stream())
+                .collect(Collectors.toList());
     }
 
     public List<SshAction> getSshActions() {

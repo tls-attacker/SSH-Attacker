@@ -21,4 +21,8 @@ public class WorkflowExecutionException extends RuntimeException {
     public WorkflowExecutionException(String message, Throwable cause) {
         super(message, cause);
     }
+
+    public WorkflowExecutionException(Throwable cause) {
+        super(cause);
+    }
 }

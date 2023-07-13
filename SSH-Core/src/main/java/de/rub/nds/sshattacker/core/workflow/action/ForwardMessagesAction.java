@@ -10,6 +10,8 @@ package de.rub.nds.sshattacker.core.workflow.action;
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.sshattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.sshattacker.core.packet.AbstractPacket;
+import de.rub.nds.sshattacker.core.packet.BinaryPacket;
+import de.rub.nds.sshattacker.core.packet.BlobPacket;
 import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessage;
 import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.transport.message.VersionExchangeMessage;
@@ -18,10 +20,7 @@ import de.rub.nds.sshattacker.core.state.State;
 import de.rub.nds.sshattacker.core.workflow.action.executor.MessageActionResult;
 import de.rub.nds.sshattacker.core.workflow.action.executor.ReceiveMessageHelper;
 import de.rub.nds.tlsattacker.transport.TransportHandler;
-import jakarta.xml.bind.annotation.XmlAttribute;
-import jakarta.xml.bind.annotation.XmlElement;
-import jakarta.xml.bind.annotation.XmlElementWrapper;
-import jakarta.xml.bind.annotation.XmlTransient;
+import jakarta.xml.bind.annotation.*;
 import java.io.IOException;
 import java.util.*;
 import org.apache.logging.log4j.LogManager;
@@ -53,8 +52,13 @@ public class ForwardMessagesAction extends SshAction implements ReceivingAction,
 
     @XmlTransient private byte[] receivedBytes;
 
-    @XmlElement @HoldsModifiableVariable @XmlElementWrapper
-    protected List<AbstractPacket> packetList = new ArrayList<>();
+    @HoldsModifiableVariable
+    @XmlElementWrapper
+    @XmlElements({
+        @XmlElement(type = BinaryPacket.class, name = "BinaryPacket"),
+        @XmlElement(type = BlobPacket.class, name = "BlobPacket")
+    })
+    protected List<AbstractPacket> receivedPackets = new ArrayList<>();
 
     public ForwardMessagesAction() {
         super();
@@ -149,7 +153,7 @@ public class ForwardMessagesAction extends SshAction implements ReceivingAction,
         MessageActionResult handleReceived =
                 ReceiveMessageHelper.handleReceivedBytes(ctx, receivedBytes);
         receivedMessages = handleReceived.getMessageList();
-        packetList = handleReceived.getPacketList();
+        receivedPackets = handleReceived.getPacketList();
         String expected = getReadableString(messages);
         LOGGER.debug("Receive Expected ({}): {}", receiveFromAlias, expected);
         String received = getReadableString(receivedMessages);
@@ -242,8 +246,9 @@ public class ForwardMessagesAction extends SshAction implements ReceivingAction,
         return messages;
     }
 
-    public List<AbstractPacket> getPacketList() {
-        return packetList;
+    @Override
+    public List<AbstractPacket> getReceivedPackets() {
+        return receivedPackets;
     }
 
     public void setMessages(List<ProtocolMessage<?>> messages) {

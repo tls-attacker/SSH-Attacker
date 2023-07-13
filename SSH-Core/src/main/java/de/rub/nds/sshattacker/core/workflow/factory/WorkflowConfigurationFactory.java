@@ -211,7 +211,7 @@ public class WorkflowConfigurationFactory {
             AliasedConnection connection = getDefaultConnection();
             addTransportProtocolInitActions(workflow);
             workflow.addSshActions(new DynamicKeyExchangeAction(connection.getAlias()));
-            workflow.addSshActions(new DynamicExtensionNegotiationAction());
+            workflow.addSshActions(new DynamicExtensionNegotiationAction(connection.getAlias()));
             workflow.addSshActions(
                     SshActionFactory.createMessageAction(
                             connection, ConnectionEndType.CLIENT, new ServiceRequestMessage()),
@@ -228,7 +228,7 @@ public class WorkflowConfigurationFactory {
             AliasedConnection connection = getDefaultConnection();
             addTransportProtocolInitActions(workflow);
             workflow.addSshActions(createKeyExchangeActions(flowType, connection));
-            workflow.addSshActions(new DynamicExtensionNegotiationAction());
+            workflow.addSshActions(new DynamicExtensionNegotiationAction(connection.getAlias()));
             workflow.addSshActions(
                     SshActionFactory.createMessageAction(
                             connection, ConnectionEndType.CLIENT, new ServiceRequestMessage()),
@@ -458,7 +458,7 @@ public class WorkflowConfigurationFactory {
                         "Unable to add authentication actions to workflow trace - unknown or unsupported authentication method: "
                                 + method);
         }
-        workflow.addSshActions(new DynamicDelayCompressionAction());
+        workflow.addSshActions(new DynamicDelayCompressionAction(connection.getAlias()));
     }
 
     /**

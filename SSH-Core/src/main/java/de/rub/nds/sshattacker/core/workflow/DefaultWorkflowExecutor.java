@@ -7,15 +7,13 @@
  */
 package de.rub.nds.sshattacker.core.workflow;
 
-import de.rub.nds.sshattacker.core.config.ConfigIO;
-import de.rub.nds.sshattacker.core.exceptions.PreparationException;
+import de.rub.nds.sshattacker.core.exceptions.SkipActionException;
 import de.rub.nds.sshattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.state.State;
+import de.rub.nds.sshattacker.core.workflow.action.ReceivingAction;
 import de.rub.nds.sshattacker.core.workflow.action.SshAction;
 import de.rub.nds.sshattacker.core.workflow.action.executor.WorkflowExecutorType;
-import java.io.File;
-import java.io.IOException;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -30,72 +28,67 @@ public class DefaultWorkflowExecutor extends WorkflowExecutor {
 
     @Override
     public void executeWorkflow() throws WorkflowExecutionException {
+
         if (config.getWorkflowExecutorShouldOpen()) {
-            state.getAllSshContexts()
-                    .forEach(
-                            ctx -> {
-                                ctx.initTransportHandler();
-                                LOGGER.debug("Connection for {} initialized", ctx);
-                            });
+            for (SshContext context : state.getAllSshContexts()) {
+                initTransportHandler(context);
+            }
         }
 
         state.getWorkflowTrace().reset();
+        state.setStartTimestamp(System.currentTimeMillis());
         List<SshAction> sshActions = state.getWorkflowTrace().getSshActions();
         for (SshAction action : sshActions) {
-
-            if (state.getConfig().getStopActionsAfterDisconnect()
-                    && isDisconnectMessageReceived()) {
+            if (config.isStopReceivingAfterDisconnect() && hasReceivedDisconnectMessage()) {
                 LOGGER.debug(
-                        "Received a DisconnectMessage, skipping all further actions because StopActionsAfterDisconnect is active");
+                        "Skipping all Actions, received DisconnectMessage, StopActionsAfterDisconnect active");
                 break;
             }
-            if (state.getConfig().getStopActionsAfterIOException() && isIoException()) {
+            if (config.isStopReceivingAfterDisconnect()
+                    && hasReceivedDisconnectMessage()
+                    && action instanceof ReceivingAction) {
                 LOGGER.debug(
-                        "Received an IOException, skipping all further actions because StopActionsAfterIOException is active");
+                        "Skipping all ReceiveActions, received FatalAlert, StopActionsAfterFatal active");
+                break;
+            }
+            if (config.getStopActionsAfterIOException() && hasReceivedTransportHandlerException()) {
+                LOGGER.debug(
+                        "Skipping all Actions, received IO Exception, StopActionsAfterIOException active");
                 break;
             }
 
             try {
-                action.execute(state);
-                // TODO: Implement feature to check if message was received as expected.
-                // We should accept unexpected messages to keep going in case something
-                // unexpected happens.
-                // action.isExecutedAsPlanned(...);
-            } catch (PreparationException | WorkflowExecutionException ex) {
-                throw new WorkflowExecutionException(
-                        "Problem while executing action: " + action, ex);
+                executeAction(action, state);
+            } catch (SkipActionException ex) {
+                continue;
+            }
+
+            if (config.getStopTraceAfterUnexpected() && !action.executedAsPlanned()) {
+                LOGGER.debug("Skipping all Actions, action did not execute as planned.");
+                break;
             }
         }
 
-        if (state.getConfig().getWorkflowExecutorShouldClose()) {
-            state.getAllSshContexts()
-                    .forEach(
-                            ctx -> {
-                                try {
-                                    ctx.getTransportHandler().closeConnection();
-                                } catch (IOException ex) {
-                                    LOGGER.warn("Could not close connection for context {}", ctx);
-                                    LOGGER.debug(ex);
-                                }
-                            });
+        if (config.getWorkflowExecutorShouldClose()) {
+            closeConnection();
         }
 
-        if (state.getConfig().getResetWorkflowtracesBeforeSaving()) {
+        if (state.getWorkflowTrace().executedAsPlanned()) {
+            LOGGER.info("Workflow executed as planned.");
+        } else {
+            LOGGER.info("Workflow was not executed as planned.");
+        }
+
+        if (config.getResetWorkflowtracesBeforeSaving()) {
             state.getWorkflowTrace().reset();
         }
-        state.storeTrace();
 
-        if (config.getConfigOutput() != null) {
-            ConfigIO.write(config, new File(config.getConfigOutput()));
+        try {
+            if (getAfterExecutionCallback() != null) {
+                getAfterExecutionCallback().apply(state);
+            }
+        } catch (Exception ex) {
+            LOGGER.trace("Error during AfterExecutionCallback", ex);
         }
-    }
-
-    private boolean isDisconnectMessageReceived() {
-        return state.getAllSshContexts().stream().anyMatch(SshContext::isDisconnectMessageReceived);
-    }
-
-    private boolean isIoException() {
-        return state.getAllSshContexts().stream()
-                .anyMatch(SshContext::hasReceivedTransportHandlerException);
     }
 }
