@@ -8,6 +8,7 @@
 package de.rub.nds.sshattacker.core.protocol.transport.preparator;
 
 import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
+import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.transport.message.KeyExchangeInitMessage;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
@@ -19,7 +20,7 @@ public class KeyExchangeInitMessagePreparator extends SshMessagePreparator<KeyEx
     }
 
     @Override
-    public void prepareMessageSpecificContents() {
+    /*    public void prepareMessageSpecificContents() {
         if (chooser.getContext().getSshContext().isClient()) {
             getObject().setCookie(chooser.getClientCookie());
             getObject()
@@ -61,10 +62,10 @@ public class KeyExchangeInitMessagePreparator extends SshMessagePreparator<KeyEx
                             chooser.getClientFirstKeyExchangePacketFollows());
             getObject().setReserved(chooser.getClientReserved());
 
-            /*chooser.getContext()
-            .getSshContext()
-            .getExchangeHashInputHolder()
-            .setClientKeyExchangeInit(getObject());*/
+            chooser.getContext()
+                    .getSshContext()
+                    .getExchangeHashInputHolder()
+                    .setClientKeyExchangeInit(getObject());
         } else {
             getObject().setCookie(chooser.getServerCookie());
             getObject()
@@ -106,10 +107,105 @@ public class KeyExchangeInitMessagePreparator extends SshMessagePreparator<KeyEx
                             chooser.getServerFirstKeyExchangePacketFollows());
             getObject().setReserved(chooser.getServerReserved());
 
-            /*chooser.getContext()
-            .getSshContext()
-            .getExchangeHashInputHolder()
-            .setServerKeyExchangeInit(getObject());*/
+            chooser.getContext()
+                    .getSshContext()
+                    .getExchangeHashInputHolder()
+                    .setServerKeyExchangeInit(getObject());
+        }
+    }*/
+
+    public void prepareMessageSpecificContents() {
+        SshContext sshContext = chooser.getContext().getSshContext();
+        if (sshContext.isClient()) {
+            getObject().setCookie(chooser.getClientCookie());
+            getObject()
+                    .setKeyExchangeAlgorithms(
+                            chooser.getClientSupportedKeyExchangeAlgorithms(), true);
+            getObject()
+                    .setServerHostKeyAlgorithms(
+                            chooser.getClientSupportedHostKeyAlgorithms(), true);
+            getObject()
+                    .setEncryptionAlgorithmsClientToServer(
+                            chooser.getClientSupportedEncryptionAlgorithmsClientToServer(), true);
+            getObject()
+                    .setEncryptionAlgorithmsServerToClient(
+                            chooser.getClientSupportedEncryptionAlgorithmsServerToClient(), true);
+            getObject()
+                    .setMacAlgorithmsClientToServer(
+                            chooser.getClientSupportedMacAlgorithmsClientToServer(), true);
+            getObject()
+                    .setMacAlgorithmsServerToClient(
+                            chooser.getClientSupportedMacAlgorithmsServerToClient(), true);
+            getObject()
+                    .setCompressionMethodsClientToServer(
+                            chooser.getClientSupportedCompressionMethodsClientToServer(), true);
+            getObject()
+                    .setCompressionMethodsServerToClient(
+                            chooser.getClientSupportedCompressionMethodsServerToClient(), true);
+            getObject()
+                    .setLanguagesClientToServer(
+                            chooser.getClientSupportedLanguagesClientToServer()
+                                    .toArray(new String[0]),
+                            true);
+            getObject()
+                    .setLanguagesServerToClient(
+                            chooser.getClientSupportedLanguagesServerToClient()
+                                    .toArray(new String[0]),
+                            true);
+            getObject()
+                    .setFirstKeyExchangePacketFollows(
+                            chooser.getClientFirstKeyExchangePacketFollows());
+            getObject().setReserved(chooser.getClientReserved());
+
+            chooser.getContext()
+                    .getSshContext()
+                    .getExchangeHashInputHolder()
+                    .setClientKeyExchangeInit(getObject());
+        } else {
+            getObject().setCookie(chooser.getServerCookie());
+            getObject()
+                    .setKeyExchangeAlgorithms(
+                            chooser.getServerSupportedKeyExchangeAlgorithms(), true);
+            getObject()
+                    .setServerHostKeyAlgorithms(
+                            chooser.getServerSupportedHostKeyAlgorithms(), true);
+            getObject()
+                    .setEncryptionAlgorithmsClientToServer(
+                            chooser.getServerSupportedEncryptionAlgorithmsClientToServer(), true);
+            getObject()
+                    .setEncryptionAlgorithmsServerToClient(
+                            chooser.getServerSupportedEncryptionAlgorithmsServerToClient(), true);
+            getObject()
+                    .setMacAlgorithmsClientToServer(
+                            chooser.getServerSupportedMacAlgorithmsClientToServer(), true);
+            getObject()
+                    .setMacAlgorithmsServerToClient(
+                            chooser.getServerSupportedMacAlgorithmsServerToClient(), true);
+            getObject()
+                    .setCompressionMethodsClientToServer(
+                            chooser.getServerSupportedCompressionMethodsClientToServer(), true);
+            getObject()
+                    .setCompressionMethodsServerToClient(
+                            chooser.getServerSupportedCompressionMethodsServerToClient(), true);
+            getObject()
+                    .setLanguagesClientToServer(
+                            chooser.getServerSupportedLanguagesClientToServer()
+                                    .toArray(new String[0]),
+                            true);
+            getObject()
+                    .setLanguagesServerToClient(
+                            chooser.getServerSupportedLanguagesServerToClient()
+                                    .toArray(new String[0]),
+                            true);
+            getObject()
+                    .setFirstKeyExchangePacketFollows(
+                            chooser.getServerFirstKeyExchangePacketFollows());
+            getObject().setReserved(chooser.getServerReserved());
+
+            chooser.getContext()
+                    .getSshContext()
+                    .getExchangeHashInputHolder()
+                    .setServerKeyExchangeInit(getObject());
         }
     }
 }

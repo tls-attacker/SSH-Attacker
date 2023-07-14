@@ -72,7 +72,7 @@ public class KeyExchangeInitMessageHandler extends SshMessageHandler<KeyExchange
                                     .split("" + CharConstants.ALGORITHM_SEPARATOR)));
             sshContext.setServerReserved(message.getReserved().getValue());
 
-            sshContext.getExchangeHashInputHolder().setClientKeyExchangeInit(message);
+            // sshContext.getExchangeHashInputHolder().setClientKeyExchangeInit(message);
         } else {
             sshContext.setClientCookie(message.getCookie().getValue());
             sshContext.setClientSupportedKeyExchangeAlgorithms(
@@ -119,7 +119,7 @@ public class KeyExchangeInitMessageHandler extends SshMessageHandler<KeyExchange
                                     .split("" + CharConstants.ALGORITHM_SEPARATOR)));
             sshContext.setClientReserved(message.getReserved().getValue());
 
-            sshContext.getExchangeHashInputHolder().setServerKeyExchangeInit(message);
+            // sshContext.getExchangeHashInputHolder().setServerKeyExchangeInit(message);
         }
     }
 

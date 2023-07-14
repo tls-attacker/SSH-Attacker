@@ -18,6 +18,7 @@ import de.rub.nds.sshattacker.core.layer.stream.HintedInputStream;
 import de.rub.nds.sshattacker.core.layer.stream.HintedInputStreamAdapterStream;
 import de.rub.nds.tlsattacker.transport.tcp.TcpTransportHandler;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.concurrent.TimeUnit;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -67,13 +68,34 @@ public class TcpLayer extends ProtocolLayer<LayerProcessingHint, DataContainer> 
     @Override
     public HintedInputStream getDataStream() {
         getTransportHandler().setTimeout(getTransportHandler().getTimeout());
-        LOGGER.debug("[bro] TCP-Layer is transmitting Datastream now");
+        int retries = 0;
+        int maxRetries = 10;
+        LOGGER.debug(
+                "[bro] TCP-Layer is transmitting Datastream now with Timeout ",
+                getTransportHandler().getTimeout());
         // TODO: remove later, just for debugging
-        try {
+        /* try {
             TimeUnit.SECONDS.sleep(1);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
+        }*/
+
+        InputStream handlerStream = getTransportHandler().getInputStream();
+        try {
+            while (handlerStream.available() == 0 && retries < maxRetries) {
+                handlerStream = getTransportHandler().getInputStream();
+                try {
+                    TimeUnit.MILLISECONDS.sleep(10);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+                retries++;
+                LOGGER.debug("got no stream in {}-trie", retries);
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
+
         currentInputStream =
                 new HintedInputStreamAdapterStream(null, getTransportHandler().getInputStream());
         return currentInputStream;

@@ -7,18 +7,6 @@
  */
 package de.rub.nds.sshattacker.core.layer.impl;
 
-/*import de.rub.nds.sshattacker.core.constants.SSL2MessageType;
-import de.rub.nds.sshattacker.core.constants.SSL2TotalHeaderLengths;
-import de.rub.nds.sshattacker.core.constants.ssl.SSL2ByteLength;
-import de.rub.nds.sshattacker.core.exceptions.EndOfStreamException;
-import de.rub.nds.sshattacker.core.exceptions.TimeoutException;
-import de.rub.nds.sshattacker.core.layer.LayerConfiguration;
-import de.rub.nds.sshattacker.core.layer.hints.RecordLayerHint;
-import de.rub.nds.sshattacker.core.layer.stream.HintedInputStream;
-import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessagePreparator;
-import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessageSerializer;
-import de.rub.nds.sshattacker.core.protocol.message.*;*/
-
 import de.rub.nds.sshattacker.core.constants.*;
 import de.rub.nds.sshattacker.core.exceptions.EndOfStreamException;
 import de.rub.nds.sshattacker.core.exceptions.TimeoutException;
@@ -143,7 +131,12 @@ public class SSH2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
                 addProducedContainer(message);
                 flushCollectedMessages(runningProtocolMessageType, collectedMessageStream);
 
-                if (message.getCompleteResultingMessage().getValue()[0]
+                ProtocolMessageHandler<?> handler = message.getHandler(context);
+                if (handler instanceof MessageSentHandler) {
+                    ((MessageSentHandler) handler).adjustContextAfterMessageSent();
+                }
+
+                /*if (message.getCompleteResultingMessage().getValue()[0]
                         == ProtocolMessageType.SSH_MSG_NEWKEYS.getValue()) {
                     ProtocolMessageHandler<?> handler = message.getHandler(context);
                     if (handler instanceof MessageSentHandler) {
@@ -153,7 +146,7 @@ public class SSH2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
                     LOGGER.info(
                             "[bro] Adjusting Context while messagetype is {}",
                             message.getCompleteResultingMessage().getValue()[0]);
-                }
+                }*/
             }
         }
 
@@ -205,57 +198,6 @@ public class SSH2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
 
         collectedMessageStream.writeBytes(message.getCompleteResultingMessage().getValue());
 
-        // Wird nicht benötigt, da wir keinen "Gesamt"-Digest benötigen ?
-        // message.getHandler(context).updateDigest(message, true);
-
-        if (message.getCompleteResultingMessage().getValue()[0]
-                        == ProtocolMessageType.SSH_MSG_NEWKEYS.getValue()
-                || message.getCompleteResultingMessage().getValue()[0]
-                        == ProtocolMessageType.SSH_MSG_HBR_REPLY.getValue()
-                || message.getCompleteResultingMessage().getValue()[0]
-                        == ProtocolMessageType.SSH_MSG_KEXINIT.getValue()) {
-            message.setAdjustContext(Boolean.FALSE);
-        } else {
-            LOGGER.info(
-                    "[bro] Adjusting Context while messagetype is {}",
-                    message.getCompleteResultingMessage().getValue()[0]);
-        }
-
-        if (message.getAdjustContext()) {
-            // message.getHandler(context).adjustContext(message);
-        }
-
-        // Unklar für SSHv2, erstmal ignoriert
-        /*if (mustFlushCollectedMessagesImmediately(message)) {
-            flushCollectedMessages(message.getProtocolMessageType(), collectedMessageStream);
-        }*/
-
-        /*        if (message.getCompleteResultingMessage().getValue()[0]
-                == ProtocolMessageType.SSH_MSG_NEWKEYS.getValue()) {
-            ProtocolMessageHandler<?> handler = message.getHandler(context);
-            if (handler instanceof MessageSentHandler) {
-                ((MessageSentHandler) handler).adjustContextAfterMessageSent();
-            }
-        } else {
-            LOGGER.info(
-                    "[bro] Adjusting Context while messagetype is {}",
-                    message.getCompleteResultingMessage().getValue()[0]);
-        }*/
-
-        if (message.getCompleteResultingMessage().getValue()[0]
-                        == ProtocolMessageType.SSH_MSG_NEWKEYS.getValue()
-                || message.getCompleteResultingMessage().getValue()[0]
-                        == ProtocolMessageType.SSH_MSG_KEXINIT.getValue()) {
-            message.getHandler(context).adjustContextAfterMessageSent(message);
-        } else {
-            LOGGER.info(
-                    "[bro] Adjusting Context while messagetype is {}",
-                    message.getCompleteResultingMessage().getValue()[0]);
-        }
-
-        if (message.getAdjustContext()) {
-            message.getHandler(context).adjustContextAfterSerialize(message);
-        }
     }
 
     @Override
