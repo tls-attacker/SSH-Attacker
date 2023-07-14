@@ -20,7 +20,7 @@ public class AuthenticationMessageParser extends ProtocolMessageParser<Authentic
     /**
      * Constructor for the Parser class
      *
-     * @param stream
+     * @param stream Inputstream to Parse the AuthentiactionMessage from
      */
     public AuthenticationMessageParser(InputStream stream) {
         super(stream);

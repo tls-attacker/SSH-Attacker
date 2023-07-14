@@ -206,7 +206,7 @@ public abstract class Parser<T> {
     /**
      * TODO: This can break get already parsed - not so nice
      *
-     * @return
+     * @return return Inputstream
      */
     protected InputStream getStream() {
         return stream;

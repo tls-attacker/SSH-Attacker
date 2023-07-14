@@ -9,14 +9,9 @@
         <module name="ssh-core" />
         <module name="ssh-server" />
         <module name="ssh-client" />
+        <module name="ssh-mitm" />
         <module name="ssh-core-oqs" />
         <module name="attacks" />
-      </profile>
-      <profile name="Annotation profile for SSH-Attacker" enabled="true">
-        <sourceOutputDir name="../target/generated-sources/annotations" />
-        <sourceTestOutputDir name="../target/generated-test-sources/test-annotations" />
-        <outputRelativeToContentRoot value="true" />
-        <module name="ssh-mitm" />
       </profile>
     </annotationProcessing>
   </component>

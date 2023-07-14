@@ -20,7 +20,7 @@ public class ConnectionMessageParser extends ProtocolMessageParser<ConnectionMes
     /**
      * Constructor for the Parser class
      *
-     * @param stream
+     * @param stream nputstream to Parse the ConnectionMessage from
      */
     public ConnectionMessageParser(InputStream stream) {
         super(stream);

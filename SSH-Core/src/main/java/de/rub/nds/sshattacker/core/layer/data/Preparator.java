@@ -37,7 +37,7 @@ public abstract class Preparator<T> {
      * the client parsed this Method. This is mostly only useful if you are reparsing or doing
      * something really crazy. For any normal use case this should be set to false;
      *
-     * @param clientMode
+     * @param clientMode see above
      */
     public void prepareAfterParse(boolean clientMode) {}
 

@@ -57,6 +57,7 @@ public abstract class EllipticCurve {
      * one point is not on the curve and the calculations would require dividing by 0, the result
      * will be the point at infinity.
      *
+     * @return result of p+q
      * @param p A point whose coordinates are elements of the field over which the curve is defined
      *     or the point at infinity.
      * @param q A point whose coordinates are elements of the field over which the curve is defined
@@ -86,8 +87,10 @@ public abstract class EllipticCurve {
      * Returns k*p on this curve. If the point is not on the curve and the calculations would
      * require dividing by 0, the result will be the point at infinity.
      *
+     * @param k integer which defines, how often to multiply the point
      * @param p A point whose coordinates are elements of the field over which the curve is defined
      *     or the point at infinity.
+     * @return result of multiplication k*p
      */
     public Point mult(BigInteger k, Point p) {
         if (k.compareTo(BigInteger.ZERO) < 0) {
@@ -114,6 +117,7 @@ public abstract class EllipticCurve {
      * Returns the unique point q with the property p + q = O on this curve. If p is null the result
      * will be null.
      *
+     * @return unique point q
      * @param p A point whose coordinates are elements of the field over which the curve is defined
      *     or the point at infinity.
      */
