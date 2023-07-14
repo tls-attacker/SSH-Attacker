@@ -159,6 +159,31 @@ public class CyclicParserSerializerTest {
 
             // Parse the serialized message back into a new instance
             ProtocolMessage parsedMessage = null;
+
+            try {
+                Constructor someMessageConstructor;
+
+                someMessageConstructor = getDefaultMessageConstructor(messageClass);
+                if (someMessageConstructor == null) {
+                    fail(
+                            "Subclass '"
+                                    + messageClassName
+                                    + "' does not have the needed constructor.");
+                } else {
+                    parsedMessage = (ProtocolMessage) someMessageConstructor.newInstance();
+                }
+            } catch (SecurityException
+                    | InstantiationException
+                    | IllegalAccessException
+                    | IllegalArgumentException
+                    | InvocationTargetException e) {
+                LOGGER.fatal(e);
+                fail(
+                        "Unable to construct message instance for subclass '"
+                                + messageClassName
+                                + "'");
+            }
+
             InputStream streamedMessage = new ByteArrayInputStream(serializedMessage);
             try {
                 Parser parser = message.getParser(context, streamedMessage);

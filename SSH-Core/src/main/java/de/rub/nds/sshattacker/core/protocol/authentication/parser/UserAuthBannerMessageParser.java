@@ -34,7 +34,8 @@ public class UserAuthBannerMessageParser extends SshMessageParser<UserAuthBanner
     @Override
     public void parse(UserAuthBannerMessage message) {
         LOGGER.debug("Parsing UserAuthBannerMessage");
-        parseData(message);
+        parseProtocolMessageContents(message);
+        // parseData(message);
         message.setCompleteResultingMessage(getAlreadyParsed());
     }
 

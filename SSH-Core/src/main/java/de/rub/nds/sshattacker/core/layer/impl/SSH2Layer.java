@@ -197,7 +197,6 @@ public class SSH2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
         message.setCompleteResultingMessage(serializedMessage);
 
         collectedMessageStream.writeBytes(message.getCompleteResultingMessage().getValue());
-
     }
 
     @Override
