@@ -24,7 +24,6 @@ import de.rub.nds.sshattacker.core.packet.crypto.AbstractPacketEncryptor;
 import de.rub.nds.sshattacker.core.packet.crypto.PacketEncryptor;
 import de.rub.nds.sshattacker.core.packet.layer.AbstractPacketLayer;
 import de.rub.nds.sshattacker.core.packet.layer.PacketLayerFactory;
-import de.rub.nds.sshattacker.core.protocol.common.layer.MessageLayer;
 import de.rub.nds.sshattacker.core.protocol.connection.Channel;
 import de.rub.nds.sshattacker.core.protocol.connection.ChannelManager;
 import de.rub.nds.sshattacker.core.state.Context;
@@ -253,7 +252,7 @@ public class SshContext extends LayerContext {
     private KeySet keySet;
     // endregion
 
-    public MessageLayer getMessageLayer() {
+    /*    public MessageLayer getMessageLayer() {
         return messageLayer;
     }
 
@@ -261,7 +260,7 @@ public class SshContext extends LayerContext {
         this.messageLayer = messageLayer;
     }
 
-    private MessageLayer messageLayer = new MessageLayer(this.getContext());
+    private MessageLayer messageLayer = new MessageLayer(this.getContext());*/
 
     // region Connection Protocol
 

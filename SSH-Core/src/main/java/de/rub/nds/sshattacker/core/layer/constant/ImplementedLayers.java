@@ -10,10 +10,7 @@ package de.rub.nds.sshattacker.core.layer.constant;
 /** Holds all implemented layers of the TLS-Core, not limited to any layer of the ISO stack */
 public enum ImplementedLayers implements LayerType {
     TCP,
-    AuthenticationLayer,
-    ConnectionLayer,
     TransportLayer,
-    Session,
     SSHv1,
     SSHv2;
 

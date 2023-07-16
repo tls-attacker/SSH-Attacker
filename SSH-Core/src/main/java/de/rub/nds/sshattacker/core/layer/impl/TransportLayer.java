@@ -7,18 +7,6 @@
  */
 package de.rub.nds.sshattacker.core.layer.impl;
 
-/*import de.rub.nds.sshattacker.core.constants.SSL2MessageType;
-import de.rub.nds.sshattacker.core.constants.SSL2TotalHeaderLengths;
-import de.rub.nds.sshattacker.core.constants.ssl.SSL2ByteLength;
-import de.rub.nds.sshattacker.core.exceptions.EndOfStreamException;
-import de.rub.nds.sshattacker.core.exceptions.TimeoutException;
-import de.rub.nds.sshattacker.core.layer.LayerConfiguration;
-import de.rub.nds.sshattacker.core.layer.hints.RecordLayerHint;
-import de.rub.nds.sshattacker.core.layer.stream.HintedInputStream;
-import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessagePreparator;
-import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessageSerializer;
-import de.rub.nds.sshattacker.core.protocol.message.*;*/
-
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.constants.PacketLayerType;
@@ -63,26 +51,6 @@ public class TransportLayer extends ProtocolLayer<PacketLayerHint, AbstractPacke
 
     @Override
     public LayerProcessingResult sendConfiguration() throws IOException {
-        /*LayerConfiguration<ProtocolMessage> configuration = getLayerConfiguration();
-        if (configuration != null && !configuration.getContainerList().isEmpty()) {
-            for (ProtocolMessage ssl2message : configuration.getContainerList()) {
-                ProtocolMessagePreparator preparator = ssl2message.getPreparator(context);
-                preparator.prepare();
-                preparator.afterPrepare();
-                ssl2message.getHandler(context).adjustContext(ssl2message);
-                ProtocolMessageSerializer serializer = ssl2message.getSerializer(context);
-                byte[] serializedMessage = serializer.serialize();
-                ssl2message.setCompleteResultingMessage(serializedMessage);
-                ssl2message.getHandler(context).adjustContextAfterSerialize(ssl2message);
-                ssl2message.getHandler(context).updateDigest(ssl2message, true);
-                getLowerLayer()
-                        .sendData(
-                                new RecordLayerHint(ssl2message.getProtocolMessageType()),
-                                serializedMessage);
-                addProducedContainer(ssl2message);
-            }
-        }
-        return getLayerResult();*/
 
         LayerConfiguration<AbstractPacket> configuration = getLayerConfiguration();
         if (configuration != null && configuration.getContainerList() != null) {
@@ -103,55 +71,11 @@ public class TransportLayer extends ProtocolLayer<PacketLayerHint, AbstractPacke
                     LayerProcessingResult layerProcessingResult =
                             getLowerLayer().sendData(null, serializedMessage);
 
-                    /*sendPacket(context, packet);
-                    Handler<?> handler = message.getHandler(context);
-                    if (handler instanceof MessageSentHandler) {
-                        ((MessageSentHandler) handler).adjustContextAfterMessageSent();
-                    }
-                    return new MessageActionResult(
-                            Collections.singletonList(packet), Collections.singletonList(message));*/
                 } catch (IOException e) {
                     LOGGER.warn("Error while sending packet: " + e.getMessage());
-                    // return new MessageActionResult();
+                    // return new LayerProcessingResult();
                 }
             }
-
-            /*public MessageActionResult sendMessages(
-                    SshContext context, Stream<ProtocolMessage<?>> messageStream) {
-                return messageStream
-                        .map(message -> sendMessage(context, message))
-                        .reduce(MessageActionResult::merge)
-                        .orElse(new MessageActionResult());
-            }*/
-
-            /*                ProtocolMessageType contentType = packet.getContentMessageType();
-            if (contentType == null) {
-                contentType = ProtocolMessageType.UNKNOWN;
-                LOGGER.warn(
-                        "Sending record without a LayerProcessing hint. Using \"UNKNOWN\" as the type");
-            }
-            */
-            /*if (encryptor.getRecordCipher(writeEpoch).getState().getVersion().isDTLS()
-                    && session.getEpoch() == null) {
-                session.setEpoch(writeEpoch);
-            }*/
-            /*
-            if (packet.getCleanProtocolMessageBytes() == null) {
-                packet.setCleanProtocolMessageBytes(new byte[0]);
-            }
-            SessionPreparator preparator =
-                    packet.getSessionPreparator(
-                            context, */
-            /* encryptor, compressor, */
-            /* contentType);
-                preparator.prepare();
-                preparator.afterPrepare();
-                SessionSerializer serializer = packet.getSessionSerializer();
-                byte[] serializedMessage = serializer.serialize();
-                packet.setCompleteRecordBytes(serializedMessage);
-                getLowerLayer().sendData(null, serializedMessage);
-                addProducedContainer(packet);
-            }*/
         }
         return getLayerResult();
     }
@@ -195,56 +119,6 @@ public class TransportLayer extends ProtocolLayer<PacketLayerHint, AbstractPacke
         List<AbstractPacket> packets = new LinkedList<>();
         packets.add(packet);
 
-        /*
-
-        List<AbstractPacket> packets = new LinkedList<>();
-        List<AbstractPacket> givenPackets = getLayerConfiguration().getContainerList();
-
-        int dataToBeSent = additionalData.length;
-
-        while (givenPackets.size() > 0 && dataToBeSent > 0) {
-            AbstractPacket nextPacket = givenPackets.remove(0);
-            packets.add(nextPacket);
-            */
-        /*            int recordData =
-                (nextPacket.get() != null
-                        ? nextPacket.getMaxRecordLengthConfig()
-                        : context.getChooser().getOutboundMaxRecordDataSize());
-        dataToBeSent -= recordData;*/
-        /*
-        }
-
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-
-
-
-        // prepare, serialize, and send records
-        for (AbstractPacket packet : packets) {
-            */
-        /*            ProtocolMessageType contentType = packet.getContentMessageType();
-        if (contentType == null) {
-            contentType = type;
-        }*/
-        /*
-         */
-        /*            if (encryptor.getRecordCipher(writeEpoch).getState().getVersion().isDTLS()) {
-            record.setEpoch(writeEpoch);
-        }*/
-        /*
-            Preparator preparator = packet.getPreparator(context);
-            preparator.prepare();
-            preparator.afterPrepare();
-            try {
-                byte[] recordBytes = packet.getSerializer(context).serialize();
-                packet.setCompletePacketBytes(recordBytes);
-                stream.write(packet.getCompletePacketBytes().getValue());
-            } catch (IOException ex) {
-                throw new PreparationException(
-                        "Could not write Record bytes to ByteArrayStream", ex);
-            }
-            addProducedContainer(packet);
-        }*/
-
         getLowerLayer().sendData(null, serializedMessage);
         return new LayerProcessingResult<>(packets, getLayerType(), true);
     }
@@ -252,74 +126,8 @@ public class TransportLayer extends ProtocolLayer<PacketLayerHint, AbstractPacke
     @Override
     public LayerProcessingResult receiveData() {
 
-        /*try {
-            int messageLength = 0;
-            byte paddingLength = 0;
-            byte[] totalHeader;
-            HintedInputStream dataStream = null;
-            SSL2MessageType messageType;
-            try {
-
-                dataStream = getLowerLayer().getDataStream();
-                totalHeader = dataStream.readNBytes(SSL2ByteLength.LENGTH);
-
-                if (SSL2TotalHeaderLengths.isNoPaddingHeader(totalHeader[0])) {
-                    messageLength = resolveUnpaddedMessageLength(totalHeader);
-                    paddingLength = 0x00;
-                } else {
-                    messageLength = resolvePaddedMessageLength(totalHeader);
-                    paddingLength = dataStream.readByte();
-                }
-                messageType = SSL2MessageType.getMessageType(dataStream.readByte());
-            } catch (IOException e) {
-                LOGGER.warn(
-                        "Failed to parse SSL2 message header, parsing as unknown SSL2 message", e);
-                messageType = SSL2MessageType.SSL_UNKNOWN;
-            }
-
-            SSL2Message message = null;
-
-            switch (messageType) {
-                case SSL_CLIENT_HELLO:
-                    message = new SSL2ClientHelloMessage();
-                    break;
-                case SSL_CLIENT_MASTER_KEY:
-                    message = new SSL2ClientMasterKeyMessage();
-                    break;
-                case SSL_SERVER_VERIFY:
-                    message = new SSL2ServerVerifyMessage();
-                    break;
-                case SSL_SERVER_HELLO:
-                    message = new SSL2ServerHelloMessage();
-                    break;
-                default:
-                    message = new UnknownSSL2Message();
-            }
-
-            message.setType((byte) messageType.getType());
-            message.setMessageLength(messageLength);
-            message.setPaddingLength((int) paddingLength);
-            readDataContainer(message, context);
-
-        } catch (TimeoutException ex) {
-            LOGGER.debug(ex);
-        } catch (EndOfStreamException ex) {
-            LOGGER.debug("Reached end of stream, cannot parse more messages", ex);
-        }
-
-        return getLayerResult();*/
         throw new UnsupportedOperationException("Not supported yet.");
     }
-
-    /*private static int resolvePaddedMessageLength(final byte[] totalHeaderLength) {
-        return (totalHeaderLength[0] & SSL2TotalHeaderLengths.ALL_BUT_TWO_BIT.getValue()) << 8
-                | totalHeaderLength[1];
-    }
-
-    private static int resolveUnpaddedMessageLength(final byte[] totalHeaderLength) {
-        return (totalHeaderLength[0] & SSL2TotalHeaderLengths.ALL_BUT_ONE_BIT.getValue()) << 8
-                | totalHeaderLength[1];
-    }*/
 
     @Override
     public void receiveMoreDataForHint(LayerProcessingHint hint) throws IOException {
@@ -472,7 +280,6 @@ public class TransportLayer extends ProtocolLayer<PacketLayerHint, AbstractPacke
             case SSH_MSG_NEWCOMPRESS:
                 LOGGER.debug("[bro] returning SSH_MSG_NEWCOMPRESS Hint");
                 return new PacketLayerHint(ProtocolMessageType.SSH_MSG_NEWCOMPRESS);
-
             case SSH_MSG_KEXINIT:
                 LOGGER.debug("[bro] returning SSH KEX INIT Hint");
                 return new PacketLayerHint(ProtocolMessageType.SSH_MSG_KEXINIT);

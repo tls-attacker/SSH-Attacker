@@ -15,12 +15,4 @@ package de.rub.nds.sshattacker.core.layer.constant;
 public enum LayerConfiguration {
     SSHv1,
     SSHv2;
-    /*    TLS,
-    DTLS,
-    QUIC,
-    OPEN_VPN,
-
-    STARTTLS,
-    HTTPS,
-    SSL2; */
 }
