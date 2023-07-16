@@ -119,7 +119,7 @@ public class SSH2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
 
         collectedMessageStream.writeBytes(message.getCompleteResultingMessage().getValue());
 
-        if (message.getCompleteResultingMessage().getValue()[0]
+        /*   if (message.getCompleteResultingMessage().getValue()[0]
                         == ProtocolMessageType.SSH_MSG_NEWKEYS.getValue()
                 || message.getCompleteResultingMessage().getValue()[0]
                         == ProtocolMessageType.SSH_MSG_KEXINIT.getValue()) {
@@ -128,7 +128,7 @@ public class SSH2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
             LOGGER.info(
                     "[bro] Adjusting Context while messagetype is {}",
                     message.getCompleteResultingMessage().getValue()[0]);
-        }
+        }*/
     }
 
     @Override
@@ -226,19 +226,15 @@ public class SSH2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
             case SSH_MSG_CHANNEL_CLOSE:
                 readChannelCloseMessage();
                 break;
-
             case SSH_MSG_CHANNEL_EOF:
                 readChannelEofMessage();
                 break;
-
             case SSH_MSG_CHANNEL_EXTENDED_DATA:
                 readChannelExtendedDataMessage();
                 break;
-
             case SSH_MSG_CHANNEL_FAILURE:
                 readChannelFailureMessage();
                 break;
-
             case SSH_MSG_CHANNEL_OPEN_FAILURE:
                 readChannelOpenFailureMessage();
                 break;

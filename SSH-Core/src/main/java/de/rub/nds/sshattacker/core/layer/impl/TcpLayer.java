@@ -96,15 +96,6 @@ public class TcpLayer extends ProtocolLayer<LayerProcessingHint, DataContainer> 
             LOGGER.debug(
                     "[bro] TCP-Layer is transmitting Datastream now with Timeout ",
                     getTransportHandler().getTimeout());
-            // TODO: remove later, just for debugging
-            /*
-                    try {
-                        TimeUnit.SECONDS.sleep(1);
-                    } catch (InterruptedException e) {
-                        throw new RuntimeException(e);
-                    }
-            */
-
             InputStream handlerStream = getTransportHandler().getInputStream();
             try {
                 while (handlerStream.available() == 0 && retries < maxRetries) {

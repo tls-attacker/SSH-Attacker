@@ -318,11 +318,11 @@ public abstract class MessageAction extends ConnectionBoundAction {
                                     .getUsedContainers());
         }
 
-        if (processingResults.getResultForLayer(ImplementedLayers.Session) != null) {
+        if (processingResults.getResultForLayer(ImplementedLayers.TransportLayer) != null) {
             packets =
                     new ArrayList<>(
                             processingResults
-                                    .getResultForLayer(ImplementedLayers.Session)
+                                    .getResultForLayer(ImplementedLayers.TransportLayer)
                                     .getUsedContainers());
         }
     }
@@ -352,7 +352,7 @@ public abstract class MessageAction extends ConnectionBoundAction {
         LayerConfiguration messageSsh1Configuration =
                 new GenericReceiveLayerConfiguration(ImplementedLayers.SSHv1);
         LayerConfiguration recordConfiguration =
-                new GenericReceiveLayerConfiguration(ImplementedLayers.Session);
+                new GenericReceiveLayerConfiguration(ImplementedLayers.TransportLayer);
         layerConfigurationList =
                 sortLayerConfigurations(
                         layerStack,
@@ -376,7 +376,7 @@ public abstract class MessageAction extends ConnectionBoundAction {
                         ImplementedLayers.SSHv1, protocolMessagesToReceive);
         LayerConfiguration recordConfiguration =
                 new SpecificReceiveLayerConfiguration<>(
-                        ImplementedLayers.Session, packetsToRecieve);
+                        ImplementedLayers.TransportLayer, packetsToRecieve);
         if (packetsToRecieve == null || packetsToRecieve.isEmpty()) {
             // always allow (trailing) records when no records were set
             // a ReceiveAction actually intended to expect no records is pointless
