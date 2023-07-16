@@ -7,6 +7,8 @@
  */
 package de.rub.nds.sshattacker.core.layer.impl;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.sshattacker.core.constants.CharConstants;
 import de.rub.nds.sshattacker.core.layer.LayerConfiguration;
 import de.rub.nds.sshattacker.core.layer.LayerProcessingResult;
 import de.rub.nds.sshattacker.core.layer.ProtocolLayer;
@@ -17,6 +19,7 @@ import de.rub.nds.sshattacker.core.layer.hints.LayerProcessingHint;
 import de.rub.nds.sshattacker.core.layer.stream.HintedInputStream;
 import de.rub.nds.sshattacker.core.layer.stream.HintedInputStreamAdapterStream;
 import de.rub.nds.tlsattacker.transport.tcp.TcpTransportHandler;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.concurrent.TimeUnit;
@@ -66,39 +69,63 @@ public class TcpLayer extends ProtocolLayer<LayerProcessingHint, DataContainer> 
 
     /** Returns the inputStream associated with the TCP socket. */
     @Override
-    public HintedInputStream getDataStream() {
+    public HintedInputStream getDataStream() throws IOException {
         getTransportHandler().setTimeout(getTransportHandler().getTimeout());
-        int retries = 0;
-        int maxRetries = 10;
-        LOGGER.debug(
-                "[bro] TCP-Layer is transmitting Datastream now with Timeout ",
-                getTransportHandler().getTimeout());
-        // TODO: remove later, just for debugging
-        /* try {
-            TimeUnit.SECONDS.sleep(1);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }*/
 
-        InputStream handlerStream = getTransportHandler().getInputStream();
-        try {
-            while (handlerStream.available() == 0 && retries < maxRetries) {
-                handlerStream = getTransportHandler().getInputStream();
-                try {
-                    TimeUnit.MILLISECONDS.sleep(10);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
+        if (context.getContext().getSshContext().isReceiveAsciiModeEnabled()) {
+            LOGGER.info("Recive in ASCII-Mode");
+            byte[] receiveBuffer = new byte[0];
+            byte[] readByte;
+            do {
+                readByte = context.getTransportHandler().fetchData(1);
+                receiveBuffer = ArrayConverter.concatenate(receiveBuffer, readByte);
+            } while (readByte.length > 0 && readByte[0] != CharConstants.NEWLINE);
+            LOGGER.info("Ended after got a new line");
+
+            currentInputStream =
+                    new HintedInputStreamAdapterStream(
+                            null, new ByteArrayInputStream(receiveBuffer));
+            return currentInputStream;
+
+            // return receiveBuffer;
+        } else {
+            //            return context.getTransportHandler().fetchData();
+
+            int retries = 0;
+            int maxRetries = 5;
+            LOGGER.debug(
+                    "[bro] TCP-Layer is transmitting Datastream now with Timeout ",
+                    getTransportHandler().getTimeout());
+            // TODO: remove later, just for debugging
+            /*
+                    try {
+                        TimeUnit.SECONDS.sleep(1);
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+            */
+
+            InputStream handlerStream = getTransportHandler().getInputStream();
+            try {
+                while (handlerStream.available() == 0 && retries < maxRetries) {
+                    handlerStream = getTransportHandler().getInputStream();
+                    try {
+                        TimeUnit.MILLISECONDS.sleep(10);
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+                    retries++;
+                    LOGGER.debug("got no stream in {}-trie", retries);
                 }
-                retries++;
-                LOGGER.debug("got no stream in {}-trie", retries);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
             }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
 
-        currentInputStream =
-                new HintedInputStreamAdapterStream(null, getTransportHandler().getInputStream());
-        return currentInputStream;
+            currentInputStream =
+                    new HintedInputStreamAdapterStream(
+                            null, getTransportHandler().getInputStream());
+            return currentInputStream;
+        }
     }
 
     @Override

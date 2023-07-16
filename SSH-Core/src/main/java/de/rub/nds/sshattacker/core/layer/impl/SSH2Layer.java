@@ -118,6 +118,17 @@ public class SSH2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
         message.setCompleteResultingMessage(serializedMessage);
 
         collectedMessageStream.writeBytes(message.getCompleteResultingMessage().getValue());
+
+        if (message.getCompleteResultingMessage().getValue()[0]
+                        == ProtocolMessageType.SSH_MSG_NEWKEYS.getValue()
+                || message.getCompleteResultingMessage().getValue()[0]
+                        == ProtocolMessageType.SSH_MSG_KEXINIT.getValue()) {
+            message.getHandler(context).adjustContextAfterMessageSent(message);
+        } else {
+            LOGGER.info(
+                    "[bro] Adjusting Context while messagetype is {}",
+                    message.getCompleteResultingMessage().getValue()[0]);
+        }
     }
 
     @Override
@@ -233,6 +244,9 @@ public class SSH2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
                 break;
             case SSH_MSG_CHANNEL_SUCCESS:
                 readChannelSuccessMessage();
+                break;
+            case SSH_MSG_IGNORE:
+                readIngoreMessage();
                 break;
             default:
                 LOGGER.error("Undefined record layer type, found type {}", hint.getType());
@@ -643,6 +657,11 @@ public class SSH2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
                 LOGGER.debug(
                         "Received unimplemented channel open message type: {}", requestTypeString);
         }
+    }
+
+    private void readIngoreMessage() {
+        ChannelSuccessMessage message = new ChannelSuccessMessage();
+        readDataContainer(message, context);
     }
 
     private void readChannelSuccessMessage() {
