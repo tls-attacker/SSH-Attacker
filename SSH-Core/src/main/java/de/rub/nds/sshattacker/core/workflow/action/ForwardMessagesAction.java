@@ -9,15 +9,15 @@ package de.rub.nds.sshattacker.core.workflow.action;
 
 import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.sshattacker.core.exceptions.WorkflowExecutionException;
+import de.rub.nds.sshattacker.core.layer.*;
+import de.rub.nds.sshattacker.core.layer.constant.ImplementedLayers;
 import de.rub.nds.sshattacker.core.layer.context.SshContext;
-import de.rub.nds.sshattacker.core.packet.layer.AbstractPacketLayer;
+import de.rub.nds.sshattacker.core.packet.AbstractPacket;
 import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessage;
 import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessageHandler;
-import de.rub.nds.sshattacker.core.protocol.transport.message.VersionExchangeMessage;
 import de.rub.nds.sshattacker.core.state.State;
 import de.rub.nds.sshattacker.core.workflow.action.executor.ReceiveMessageHelper;
 import de.rub.nds.sshattacker.core.workflow.action.executor.SendMessageHelper;
-import de.rub.nds.tlsattacker.transport.TransportHandler;
 import jakarta.xml.bind.annotation.*;
 import java.io.IOException;
 import java.util.*;
@@ -53,6 +53,11 @@ public class ForwardMessagesAction extends SshAction implements ReceivingAction,
     protected String forwardedConnectionAlias = null;
 
     @XmlTransient private byte[] receivedBytes;
+
+    // equvialent to recived records
+    protected List<AbstractPacket> receivedPackets;
+
+    protected List<AbstractPacket> sendPackets;
 
     public ForwardMessagesAction() {
         this.receiveMessageHelper = new ReceiveMessageHelper();
@@ -112,18 +117,52 @@ public class ForwardMessagesAction extends SshAction implements ReceivingAction,
             throw new WorkflowExecutionException("Action already executed!");
         }
         assertAliasesSetProperly();
+
         SshContext receiveFromCtx = state.getSshContext(receiveFromAlias);
-        initLoggingSide(receiveFromCtx);
         SshContext forwardToCtx = state.getSshContext(forwardToAlias);
+
+        initLoggingSide(receiveFromCtx);
+
+        // Reihenfolge TLS Attacker: Recive, Apply, Forward
         receiveMessages(receiveFromCtx);
+        applyMessages(forwardToCtx);
         forwardMessages(forwardToCtx);
         // handleReceivedMessages(receiveFromCtx);
-        applyMessages(forwardToCtx);
+
     }
 
     protected void receiveMessages(SshContext receiveFromCtx) {
         LOGGER.debug("Receiving Messages...");
-        try {
+
+        LayerStack layerStack = receiveFromCtx.getLayerStack();
+
+        LayerConfiguration messageConfiguration =
+                new SpecificReceiveLayerConfiguration(ImplementedLayers.SSHv2, messages);
+
+        List<LayerConfiguration> layerConfigurationList =
+                sortLayerConfigurations(layerStack, messageConfiguration);
+        LayerStackProcessingResult processingResult;
+        processingResult = layerStack.receiveData(layerConfigurationList);
+
+        receivedMessages =
+                new ArrayList<>(
+                        processingResult
+                                .getResultForLayer(ImplementedLayers.SSHv2)
+                                .getUsedContainers());
+        receivedPackets =
+                new ArrayList<>(
+                        processingResult
+                                .getResultForLayer(ImplementedLayers.TransportLayer)
+                                .getUsedContainers());
+
+        String expected = getReadableString(receivedMessages);
+        LOGGER.debug("Receive Expected (" + receiveFromAlias + "): " + expected);
+        String received = getReadableString(receivedMessages);
+        LOGGER.info("Received Messages (" + receiveFromAlias + "): " + received);
+
+        executedAsPlanned = checkMessageListsEquals(messages, receivedMessages);
+
+        /*        try {
             receivedBytes = receiveMessageHelper.receiveBytes(receiveFromCtx);
         } catch (IOException e) {
             LOGGER.warn(
@@ -131,15 +170,50 @@ public class ForwardMessagesAction extends SshAction implements ReceivingAction,
                     e.getLocalizedMessage());
             LOGGER.debug(e);
             receiveFromCtx.setReceivedTransportHandlerException(true);
-        }
+        }*/
     }
 
     protected void forwardMessages(SshContext forwardToCtx) {
+
         LOGGER.info(
                 "Forwarding messages ("
                         + forwardToAlias
                         + "): "
                         + getReadableString(receivedMessages));
+
+        try {
+            LayerStack layerStack = forwardToCtx.getLayerStack();
+            LayerConfiguration messageConfiguration =
+                    new SpecificSendLayerConfiguration(ImplementedLayers.SSHv2, receivedMessages);
+            LayerConfiguration packetConfiguration =
+                    new SpecificSendLayerConfiguration(
+                            ImplementedLayers.TransportLayer, receivedPackets);
+
+            List<LayerConfiguration> layerConfigurationList =
+                    sortLayerConfigurations(layerStack, messageConfiguration, packetConfiguration);
+            LayerStackProcessingResult processingResult =
+                    layerStack.sendData(layerConfigurationList);
+
+            sendMessages =
+                    new ArrayList<>(
+                            processingResult
+                                    .getResultForLayer(ImplementedLayers.SSHv2)
+                                    .getUsedContainers());
+            sendPackets =
+                    new ArrayList<>(
+                            processingResult
+                                    .getResultForLayer(ImplementedLayers.TransportLayer)
+                                    .getUsedContainers());
+
+            executedAsPlanned = checkMessageListsEquals(sendMessages, receivedMessages);
+
+            setExecuted(true);
+
+        } catch (IOException e) {
+            LOGGER.debug(e);
+            throw new RuntimeException(e);
+        }
+        /*
         try {
             AbstractPacketLayer packetLayer = forwardToCtx.getPacketLayer();
             TransportHandler transportHandler = forwardToCtx.getTransportHandler();
@@ -152,7 +226,7 @@ public class ForwardMessagesAction extends SshAction implements ReceivingAction,
             LOGGER.debug(e);
             executedAsPlanned = false;
             setExecuted(false);
-        }
+        }*/
     }
 
     /*    protected void handleReceivedMessages(SshContext ctx) {
@@ -172,10 +246,10 @@ public class ForwardMessagesAction extends SshAction implements ReceivingAction,
      */
     protected void applyMessages(SshContext ctx) {
         changeSshContextHandling(ctx);
-        for (ProtocolMessage<?> msg : receivedMessages) {
+        for (ProtocolMessage msg : receivedMessages) {
             LOGGER.debug("Applying " + msg.toCompactString() + " to forward context " + ctx);
-            ProtocolMessageHandler<?> h = msg.getHandler(ctx);
-            // h.adjustContext();
+            ProtocolMessageHandler h = msg.getHandler(ctx);
+            h.adjustContext(msg);
         }
         changeSshContextHandling(ctx);
     }
