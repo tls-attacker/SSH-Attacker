@@ -8,6 +8,11 @@
 package de.rub.nds.sshattacker.core.workflow.action;
 
 import de.rub.nds.sshattacker.core.exceptions.WorkflowExecutionException;
+import de.rub.nds.sshattacker.core.layer.LayerConfiguration;
+import de.rub.nds.sshattacker.core.layer.LayerStack;
+import de.rub.nds.sshattacker.core.layer.LayerStackProcessingResult;
+import de.rub.nds.sshattacker.core.layer.SpecificSendLayerConfiguration;
+import de.rub.nds.sshattacker.core.layer.constant.ImplementedLayers;
 import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthHostbasedMessage;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.UserAuthPubkeyMessage;
@@ -15,9 +20,9 @@ import de.rub.nds.sshattacker.core.protocol.authentication.preparator.UserAuthHo
 import de.rub.nds.sshattacker.core.protocol.authentication.preparator.UserAuthPubkeyMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessage;
 import de.rub.nds.sshattacker.core.state.State;
-import de.rub.nds.sshattacker.core.workflow.action.executor.ReceiveMessageHelper;
-import de.rub.nds.sshattacker.core.workflow.action.executor.SendMessageHelper;
 import jakarta.xml.bind.annotation.XmlTransient;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -31,20 +36,17 @@ public class ProxyFilterMessagesAction extends ForwardMessagesAction {
     @XmlTransient protected List<ProtocolMessage<?>> filteredMessages;
 
     public ProxyFilterMessagesAction() {
-        this.receiveMessageHelper = new ReceiveMessageHelper();
-        this.sendMessageHelper = new SendMessageHelper();
+        /*        this.receiveMessageHelper = new ReceiveMessageHelper();
+        this.sendMessageHelper = new SendMessageHelper();*/
     }
 
-    public ProxyFilterMessagesAction(String receiveFromAlias, String forwardToAlias) {
+    /*    public ProxyFilterMessagesAction(String receiveFromAlias, String forwardToAlias) {
         super(receiveFromAlias, forwardToAlias, new ReceiveMessageHelper());
-    }
+    }*/
 
     /** Allow to pass a fake ReceiveMessageHelper helper for testing. */
-    protected ProxyFilterMessagesAction(
-            String receiveFromAlias,
-            String forwardToAlias,
-            ReceiveMessageHelper receiveMessageHelper) {
-        super(receiveFromAlias, forwardToAlias, receiveMessageHelper);
+    protected ProxyFilterMessagesAction(String receiveFromAlias, String forwardToAlias) {
+        super(receiveFromAlias, forwardToAlias);
     }
 
     public ProxyFilterMessagesAction(
@@ -72,8 +74,8 @@ public class ProxyFilterMessagesAction extends ForwardMessagesAction {
         receiveMessages(receiveFromCtx);
         // - affected - handleReceivedMessages(receiveFromCtx);
         filterMessages(receiveFromCtx, forwardToCtx);
-        forwardMessages(forwardToCtx);
         applyMessages(forwardToCtx);
+        forwardMessages(forwardToCtx);
     }
 
     @Override
@@ -82,7 +84,41 @@ public class ProxyFilterMessagesAction extends ForwardMessagesAction {
                 "Forwarding messages ("
                         + forwardToAlias
                         + "): "
-                        + getReadableString(receivedMessages));
+                        + getReadableString(filteredMessages));
+
+        try {
+            LayerStack layerStack = forwardToCtx.getLayerStack();
+            LayerConfiguration messageConfiguration =
+                    new SpecificSendLayerConfiguration(ImplementedLayers.SSHv2, filteredMessages);
+            LayerConfiguration packetConfiguration =
+                    new SpecificSendLayerConfiguration(
+                            ImplementedLayers.TransportLayer, receivedPackets);
+
+            List<LayerConfiguration> layerConfigurationList =
+                    sortLayerConfigurations(layerStack, messageConfiguration, packetConfiguration);
+            LayerStackProcessingResult processingResult =
+                    layerStack.sendData(layerConfigurationList);
+
+            sendMessages =
+                    new ArrayList<>(
+                            processingResult
+                                    .getResultForLayer(ImplementedLayers.SSHv2)
+                                    .getUsedContainers());
+            sendPackets =
+                    new ArrayList<>(
+                            processingResult
+                                    .getResultForLayer(ImplementedLayers.TransportLayer)
+                                    .getUsedContainers());
+
+            executedAsPlanned = checkMessageListsEquals(sendMessages, filteredMessages);
+
+            setExecuted(true);
+
+        } catch (IOException e) {
+            LOGGER.debug(e);
+            throw new RuntimeException(e);
+        }
+
         /*MessageActionResult result =
                 sendMessageHelper.sendMessages(forwardToCtx, filteredMessages.stream());
         sendMessages = result.getMessageList();

@@ -16,8 +16,6 @@ import de.rub.nds.sshattacker.core.packet.AbstractPacket;
 import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessage;
 import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessageHandler;
 import de.rub.nds.sshattacker.core.state.State;
-import de.rub.nds.sshattacker.core.workflow.action.executor.ReceiveMessageHelper;
-import de.rub.nds.sshattacker.core.workflow.action.executor.SendMessageHelper;
 import jakarta.xml.bind.annotation.*;
 import java.io.IOException;
 import java.util.*;
@@ -44,10 +42,10 @@ public class ForwardMessagesAction extends SshAction implements ReceivingAction,
     @XmlTransient protected List<ProtocolMessage<?>> messages;
 
     @HoldsModifiableVariable @XmlElementWrapper protected List<ProtocolMessage<?>> sendMessages;
-
+    /*
     @XmlTransient protected ReceiveMessageHelper receiveMessageHelper;
 
-    @XmlTransient protected SendMessageHelper sendMessageHelper;
+    @XmlTransient protected SendMessageHelper sendMessageHelper;*/
 
     @XmlAttribute(name = "onConnection")
     protected String forwardedConnectionAlias = null;
@@ -60,23 +58,20 @@ public class ForwardMessagesAction extends SshAction implements ReceivingAction,
     protected List<AbstractPacket> sendPackets;
 
     public ForwardMessagesAction() {
-        this.receiveMessageHelper = new ReceiveMessageHelper();
-        this.sendMessageHelper = new SendMessageHelper();
+        /*        this.receiveMessageHelper = new ReceiveMessageHelper();
+        this.sendMessageHelper = new SendMessageHelper();*/
     }
 
-    public ForwardMessagesAction(String receiveFromAlias, String forwardToAlias) {
+    /*    public ForwardMessagesAction(String receiveFromAlias, String forwardToAlias) {
         this(receiveFromAlias, forwardToAlias, new ReceiveMessageHelper());
-    }
+    }*/
 
     /** Allow to pass a fake ReceiveMessageHelper helper for testing. */
-    protected ForwardMessagesAction(
-            String receiveFromAlias,
-            String forwardToAlias,
-            ReceiveMessageHelper receiveMessageHelper) {
+    protected ForwardMessagesAction(String receiveFromAlias, String forwardToAlias) {
         this.receiveFromAlias = receiveFromAlias;
         this.forwardToAlias = forwardToAlias;
-        this.receiveMessageHelper = receiveMessageHelper;
-        this.sendMessageHelper = new SendMessageHelper();
+        /*        this.receiveMessageHelper = receiveMessageHelper;
+        this.sendMessageHelper = new SendMessageHelper();*/
         forwardedConnectionAlias = receiveFromAlias + " to " + forwardToAlias;
     }
 
@@ -85,8 +80,8 @@ public class ForwardMessagesAction extends SshAction implements ReceivingAction,
         this.messages = messages;
         this.receiveFromAlias = receiveFromAlias;
         this.forwardToAlias = forwardToAlias;
-        this.receiveMessageHelper = new ReceiveMessageHelper();
-        this.sendMessageHelper = new SendMessageHelper();
+        /*        this.receiveMessageHelper = new ReceiveMessageHelper();
+        this.sendMessageHelper = new SendMessageHelper();*/
         forwardedConnectionAlias = receiveFromAlias + " to " + forwardToAlias;
     }
 

@@ -13,8 +13,6 @@ import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelDataMessag
 import de.rub.nds.sshattacker.core.state.State;
 import de.rub.nds.sshattacker.core.workflow.DefaultWorkflowExecutor;
 import de.rub.nds.sshattacker.core.workflow.WorkflowTrace;
-import de.rub.nds.sshattacker.core.workflow.action.executor.ReceiveMessageHelper;
-import de.rub.nds.sshattacker.core.workflow.action.executor.SendMessageHelper;
 import de.rub.nds.sshattacker.core.workflow.factory.WorkflowConfigurationFactory;
 import de.rub.nds.sshattacker.core.workflow.factory.WorkflowTraceType;
 import java.io.BufferedReader;
@@ -35,8 +33,6 @@ public class NetcatWorkflowFactory {
         state.getConfig().setWorkflowExecutorShouldClose(false);
         executor.executeWorkflow();
 
-        SendMessageHelper sendMessageHelper = new SendMessageHelper();
-        ReceiveMessageHelper receiveMessageHelper = new ReceiveMessageHelper();
 
         BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
         // noinspection InfiniteLoopStatement

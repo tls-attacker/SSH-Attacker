@@ -250,10 +250,10 @@ public class SSH2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
             case SSH_MSG_KEX_ECDH_INIT:
                 readKexECDHInit();
                 break;
-/*           Not Implementended Yet
-             case SSH_MSG_EXT_INFO:
-                readExtensionInfo();
-                break;*/
+                /*           Not Implementended Yet
+                case SSH_MSG_EXT_INFO:
+                   readExtensionInfo();
+                   break;*/
             default:
                 LOGGER.error("Undefined record layer type, found type {}", hint.getType());
                 throw new RuntimeException();
@@ -669,7 +669,6 @@ public class SSH2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
         ChannelSuccessMessage message = new ChannelSuccessMessage();
         readDataContainer(message, context);
     }
-
 
     private void readKexECDHInit() {
         EcdhKeyExchangeInitMessage message = new EcdhKeyExchangeInitMessage();
