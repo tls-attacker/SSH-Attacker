@@ -227,7 +227,7 @@ public class TransportLayer extends ProtocolLayer<PacketLayerHint, AbstractPacke
         byte[] raw = packet.getPayload().getValue();
         if (packet instanceof BlobPacket) {
             String rawText = new String(packet.getPayload().getValue(), StandardCharsets.US_ASCII);
-            if (rawText.startsWith("SSH-2.0")) {
+            if (rawText.startsWith("SSH-")) {
                 return new PacketLayerHint(ProtocolMessageType.VERSION_EXCHANGE_MESSAGE);
             } else {
                 final AsciiMessage message = new AsciiMessage();

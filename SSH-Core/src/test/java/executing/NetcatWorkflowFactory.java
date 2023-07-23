@@ -33,7 +33,6 @@ public class NetcatWorkflowFactory {
         state.getConfig().setWorkflowExecutorShouldClose(false);
         executor.executeWorkflow();
 
-
         BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
         // noinspection InfiniteLoopStatement
         while (true) {

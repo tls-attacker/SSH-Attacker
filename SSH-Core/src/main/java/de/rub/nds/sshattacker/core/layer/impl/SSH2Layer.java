@@ -184,6 +184,9 @@ public class SSH2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
             case CONNECTION:
                 readConnectionProtocolData();
                 break;
+            case ASCII_MESSAGE:
+                readASCIIData();
+                break;
             case VERSION_EXCHANGE_MESSAGE:
                 readVersionExchangeProtocolData();
                 break;
@@ -663,6 +666,11 @@ public class SSH2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
                 LOGGER.debug(
                         "Received unimplemented channel open message type: {}", requestTypeString);
         }
+    }
+
+    private void readASCIIData() {
+        AsciiMessage message = new AsciiMessage();
+        readDataContainer(message, context);
     }
 
     private void readIngoreMessage() {
