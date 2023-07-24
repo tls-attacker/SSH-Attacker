@@ -177,13 +177,6 @@ public class SSH2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
     public void readMessageForHint(PacketLayerHint hint) {
         switch (hint.getType()) {
                 // use correct parser for the message
-
-            case AUTHENTICATION:
-                readAuthenticationProtocolData();
-                break;
-            case CONNECTION:
-                readConnectionProtocolData();
-                break;
             case ASCII_MESSAGE:
                 readASCIIData();
                 break;
@@ -780,11 +773,6 @@ public class SSH2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
         readDataContainer(message, context);
     }
 
-    private void readAuthenticationProtocolData() {
-        AuthenticationMessage message = new AuthenticationMessage();
-        readDataContainer(message, context);
-    }
-
     private void readKexInitProtocolData() {
         KeyExchangeInitMessage message = new KeyExchangeInitMessage();
         readDataContainer(message, context);
@@ -797,11 +785,6 @@ public class SSH2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
 
     private void readVersionExchangeProtocolData() {
         VersionExchangeMessage message = new VersionExchangeMessage();
-        readDataContainer(message, context);
-    }
-
-    private void readConnectionProtocolData() {
-        ConnectionMessage message = new ConnectionMessage();
         readDataContainer(message, context);
     }
 
