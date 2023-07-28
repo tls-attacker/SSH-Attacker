@@ -48,7 +48,7 @@ public abstract class AbstractPacket<Self extends AbstractPacket<?>>
         this.cleanProtocolMessageBytes = cleanProtocolMessageBytes;
     }
 
-    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PLAIN_PROTOCOL_MESSAGE)
+    /*    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PLAIN_PROTOCOL_MESSAGE)*/
     private ModifiableByteArray cleanProtocolMessageBytes;
 
     public ProtocolMessageType getContentMessageType() {

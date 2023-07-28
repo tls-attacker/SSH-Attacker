@@ -7,9 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.layer.hints;
 
-import de.rub.nds.sshattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.sshattacker.core.constants.ProtocolMessageTypeSSHV1;
-
 import java.util.Objects;
 
 /**

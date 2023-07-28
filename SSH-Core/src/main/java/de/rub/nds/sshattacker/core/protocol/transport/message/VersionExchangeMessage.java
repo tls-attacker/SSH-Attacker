@@ -107,6 +107,6 @@ public class VersionExchangeMessage extends ProtocolMessage<VersionExchangeMessa
 
     @Override
     public String toShortString() {
-        return "VESION_EXCHANGE";
+        return "VERSION_EXCHANGE";
     }
 }

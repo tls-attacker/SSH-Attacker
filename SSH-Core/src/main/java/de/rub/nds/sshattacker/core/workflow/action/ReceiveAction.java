@@ -14,6 +14,7 @@ import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.*;
 import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessage;
 import de.rub.nds.sshattacker.core.protocol.connection.message.*;
+import de.rub.nds.sshattacker.core.protocol.ssh1.message.VersionExchangeMessageSSHV1;
 import de.rub.nds.sshattacker.core.protocol.transport.message.*;
 import de.rub.nds.sshattacker.core.state.State;
 import jakarta.xml.bind.annotation.XmlElement;
@@ -154,7 +155,8 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
                 @XmlElement(type = UnimplementedMessage.class, name = "UnimplementedMessage"),
                 @XmlElement(type = UnknownMessage.class, name = "UnknownMessage"),
                 @XmlElement(type = VersionExchangeMessage.class, name = "VersionExchange"),
-                @XmlElement(type = AsciiMessage.class, name = "AsciiMessage")
+                @XmlElement(type = AsciiMessage.class, name = "AsciiMessage"),
+                @XmlElement(type = VersionExchangeMessageSSHV1.class, name = "VersionExchangeSSH1"),
             })
     protected List<ProtocolMessage<?>> expectedMessages = new ArrayList<>();
 

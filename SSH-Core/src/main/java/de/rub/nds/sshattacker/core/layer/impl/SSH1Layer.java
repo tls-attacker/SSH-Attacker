@@ -32,14 +32,11 @@ import de.rub.nds.sshattacker.core.layer.hints.PacketLayerHintSSHV1;
 import de.rub.nds.sshattacker.core.layer.stream.HintedInputStream;
 import de.rub.nds.sshattacker.core.layer.stream.HintedLayerInputStream;
 import de.rub.nds.sshattacker.core.protocol.common.*;
-
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-
 import de.rub.nds.sshattacker.core.protocol.ssh1.message.VersionExchangeMessageSSHV1;
 import de.rub.nds.sshattacker.core.protocol.transport.message.AsciiMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.message.UnknownMessage;
-import de.rub.nds.sshattacker.core.protocol.transport.message.VersionExchangeMessage;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -170,6 +167,7 @@ public class SSH1Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
                     readUnknownProtocolData();
                 } else if (tempHint instanceof PacketLayerHintSSHV1) {
                     PacketLayerHintSSHV1 hint = (PacketLayerHintSSHV1) dataStream.getHint();
+                    LOGGER.debug("[bro] reading message for  Hint {}", hint.getType());
                     readMessageForHint(hint);
                 }
                 // receive until the layer configuration is satisfied or no data is left
@@ -191,11 +189,11 @@ public class SSH1Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
 
     public void readMessageForHint(PacketLayerHintSSHV1 hint) {
         switch (hint.getType()) {
-            // use correct parser for the message
+                // use correct parser for the message
             case ASCII_MESSAGE:
                 readASCIIData();
                 break;
-            case VERSION_EXCHANGE_MESSAGE:
+            case VERSION_EXCHANGE_MESSAG_ESSH1:
                 readVersionExchangeProtocolData();
             case SSH_CMSG_AUTH_RHOSTS_RSA:
                 // Read CMSG_AUTH_RHOSTS_RSA
@@ -310,7 +308,6 @@ public class SSH1Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
                 // break;
         }
     }
-
 
     private void readASCIIData() {
         AsciiMessage message = new AsciiMessage();

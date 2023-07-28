@@ -439,6 +439,10 @@ public class Config implements Serializable {
     /** Fallback for type of chooser, to initialize the chooser in the SshContext */
     private ChooserType chooserType = ChooserType.DEFAULT;
 
+    public void setDefaultLayerConfiguration(LayerConfiguration defaultLayerConfiguration) {
+        this.defaultLayerConfiguration = defaultLayerConfiguration;
+    }
+
     private LayerConfiguration defaultLayerConfiguration;
 
     public CompressionAlgorithm getDefaultSelectedCompressionAlgorithm() {
@@ -467,12 +471,23 @@ public class Config implements Serializable {
     private KeyExchangeAlgorithm defaultSelectedKeyExchangeAlgorithm =
             KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP14_SHA256;
 
+    public ProtocolVersion getProtocolVersion() {
+        return protocolVersion;
+    }
+
+    public void setProtocolVersion(ProtocolVersion protocolVersion) {
+        this.protocolVersion = protocolVersion;
+    }
+
+    private ProtocolVersion protocolVersion;
+
     // region Constructors and Initialization
     public Config() {
 
         defaultClientConnection = new OutboundConnection("client", 65222, "localhost");
         defaultServerConnection = new InboundConnection("server", 65222, "localhost");
 
+        protocolVersion = ProtocolVersion.SSH2;
         defaultLayerConfiguration = LayerConfiguration.SSHv2;
 
         // region VersionExchange initialization

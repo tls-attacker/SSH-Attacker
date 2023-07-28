@@ -11,6 +11,7 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.constants.PacketLayerType;
 import de.rub.nds.sshattacker.core.constants.ProtocolMessageType;
+import de.rub.nds.sshattacker.core.constants.ProtocolMessageTypeSSHV1;
 import de.rub.nds.sshattacker.core.layer.LayerConfiguration;
 import de.rub.nds.sshattacker.core.layer.LayerProcessingResult;
 import de.rub.nds.sshattacker.core.layer.ProtocolLayer;
@@ -20,6 +21,7 @@ import de.rub.nds.sshattacker.core.layer.data.Preparator;
 import de.rub.nds.sshattacker.core.layer.data.Serializer;
 import de.rub.nds.sshattacker.core.layer.hints.LayerProcessingHint;
 import de.rub.nds.sshattacker.core.layer.hints.PacketLayerHint;
+import de.rub.nds.sshattacker.core.layer.hints.PacketLayerHintSSHV1;
 import de.rub.nds.sshattacker.core.layer.stream.HintedLayerInputStream;
 import de.rub.nds.sshattacker.core.packet.AbstractPacket;
 import de.rub.nds.sshattacker.core.packet.BinaryPacket;
@@ -169,12 +171,20 @@ public class TransportLayer extends ProtocolLayer<PacketLayerHint, AbstractPacke
         packet.setCleanProtocolMessageBytes(packet.getPayload());
 
         addProducedContainer(packet);
-        PacketLayerHint currentHint;
+        LayerProcessingHint currentHint;
 
         // currentHint = new PacketLayerHint(packet.getContentMessageType());
         currentHint = parseMessageId(packet, context);
 
-        LOGGER.debug("[bro] got hint: " + currentHint.getType());
+        if (currentHint instanceof PacketLayerHint) {
+            PacketLayerHint p_hint = (PacketLayerHint) currentHint;
+            LOGGER.debug("[bro] got hint V2: " + p_hint.getType());
+        } else if (currentHint instanceof PacketLayerHintSSHV1) {
+            PacketLayerHintSSHV1 p_hint = (PacketLayerHintSSHV1) currentHint;
+            LOGGER.debug("[bro] got hint V1: " + p_hint.getType());
+        }
+
+        // LOGGER.debug("[bro] got hint: " + currentHint.getType());
 
         if (desiredHint == null || currentHint.equals(desiredHint)) {
             if (currentInputStream == null) {
@@ -223,14 +233,15 @@ public class TransportLayer extends ProtocolLayer<PacketLayerHint, AbstractPacke
         }
     }
 
-    public PacketLayerHint parseMessageId(AbstractPacket packet, SshContext context) {
+    public LayerProcessingHint parseMessageId(AbstractPacket packet, SshContext context) {
         byte[] raw = packet.getPayload().getValue();
         if (packet instanceof BlobPacket) {
             String rawText = new String(packet.getPayload().getValue(), StandardCharsets.US_ASCII);
             if (rawText.startsWith("SSH-2")) {
                 return new PacketLayerHint(ProtocolMessageType.VERSION_EXCHANGE_MESSAGE);
             } else if (rawText.startsWith("SSH-1")) {
-                return new PacketLayerHint(ProtocolMessageType.VERSION_EXCHANGE_MESSAGE);
+                return new PacketLayerHintSSHV1(
+                        ProtocolMessageTypeSSHV1.VERSION_EXCHANGE_MESSAG_ESSH1);
             } else {
                 final AsciiMessage message = new AsciiMessage();
                 AsciiMessageParser parser = new AsciiMessageParser(new ByteArrayInputStream(raw));

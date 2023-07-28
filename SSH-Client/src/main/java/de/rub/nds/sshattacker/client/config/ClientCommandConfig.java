@@ -23,6 +23,7 @@ public class ClientCommandConfig extends SshDelegateConfig {
     @ParametersDelegate private final WorkflowInputDelegate workflowInputDelegate;
     @ParametersDelegate private final WorkflowOutputDelegate workflowOutputDelegate;
     @ParametersDelegate private final WorkflowTypeDelegate workflowTypeDelegate;
+    @ParametersDelegate private final ProtocolVersionDelegate protocolVersionDelegate;
 
     public ClientCommandConfig(GeneralDelegate delegate) {
         super(delegate);
@@ -32,12 +33,14 @@ public class ClientCommandConfig extends SshDelegateConfig {
         this.workflowInputDelegate = new WorkflowInputDelegate();
         this.workflowOutputDelegate = new WorkflowOutputDelegate();
         this.workflowTypeDelegate = new WorkflowTypeDelegate();
+        this.protocolVersionDelegate = new ProtocolVersionDelegate();
         addDelegate(clientDelegate);
         addDelegate(configOutputDelegate);
         addDelegate(timeoutDelegate);
         addDelegate(workflowInputDelegate);
         addDelegate(workflowOutputDelegate);
         addDelegate(workflowTypeDelegate);
+        addDelegate(protocolVersionDelegate);
     }
 
     @Override
