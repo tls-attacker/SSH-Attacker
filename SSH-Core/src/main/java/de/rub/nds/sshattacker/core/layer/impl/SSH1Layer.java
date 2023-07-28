@@ -193,7 +193,7 @@ public class SSH1Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
             case ASCII_MESSAGE:
                 readASCIIData();
                 break;
-            case VERSION_EXCHANGE_MESSAG_ESSH1:
+            case VERSION_EXCHANGE_MESSAGE_SSH1:
                 readVersionExchangeProtocolData();
             case SSH_CMSG_AUTH_RHOSTS_RSA:
                 // Read CMSG_AUTH_RHOSTS_RSA

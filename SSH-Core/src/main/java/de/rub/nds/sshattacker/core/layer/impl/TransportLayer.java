@@ -241,7 +241,7 @@ public class TransportLayer extends ProtocolLayer<PacketLayerHint, AbstractPacke
                 return new PacketLayerHint(ProtocolMessageType.VERSION_EXCHANGE_MESSAGE);
             } else if (rawText.startsWith("SSH-1")) {
                 return new PacketLayerHintSSHV1(
-                        ProtocolMessageTypeSSHV1.VERSION_EXCHANGE_MESSAG_ESSH1);
+                        ProtocolMessageTypeSSHV1.VERSION_EXCHANGE_MESSAGE_SSH1);
             } else {
                 final AsciiMessage message = new AsciiMessage();
                 AsciiMessageParser parser = new AsciiMessageParser(new ByteArrayInputStream(raw));

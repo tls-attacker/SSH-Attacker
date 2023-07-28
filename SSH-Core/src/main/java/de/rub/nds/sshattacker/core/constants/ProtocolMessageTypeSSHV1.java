@@ -11,7 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public enum ProtocolMessageTypeSSHV1 {
-    VERSION_EXCHANGE_MESSAG_ESSH1((byte) 0),
+    VERSION_EXCHANGE_MESSAGE_SSH1((byte) 0),
     ASCII_MESSAGE((byte) 40),
     SSH_MSG_DISCONNECT((byte) 1),
     SSH_SMSG_PUBLIC_KEY((byte) 2),
