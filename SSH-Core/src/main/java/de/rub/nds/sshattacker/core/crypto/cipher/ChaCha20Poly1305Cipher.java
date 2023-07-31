@@ -93,6 +93,7 @@ class ChaCha20Poly1305Cipher extends AbstractCipher {
         byte[] receivedMac = Arrays.copyOfRange(encryptedData, ctLength, encryptedData.length);
         if (!Arrays.equals(calculatedMac, receivedMac)) {
             LOGGER.warn("MAC verification failed");
+            // FIXME In the context of SSH-Attacker it might be reasonable to decrypt anyway
             throw new AEADBadTagException("Poly1305 MAC verification failed");
         }
         // Decryption
