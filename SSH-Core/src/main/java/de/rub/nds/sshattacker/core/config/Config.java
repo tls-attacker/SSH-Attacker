@@ -103,6 +103,9 @@ public class Config implements Serializable {
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] serverCookie;
 
+    @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
+    private byte[] antiSpoofingCookie;
+
     /** List of key exchange algorithms supported by the remote peer */
     @XmlElement(name = "clientSupportedKeyExchangeAlgorithm")
     @XmlElementWrapper
@@ -502,6 +505,10 @@ public class Config implements Serializable {
         // region Pre-KeyExchange initialization
         clientCookie = ArrayConverter.hexStringToByteArray("00000000000000000000000000000000");
         serverCookie = ArrayConverter.hexStringToByteArray("00000000000000000000000000000000");
+
+        antiSpoofingCookie =
+                ArrayConverter.hexStringToByteArray(
+                        "0000000000000000"); // 16 Byte Anti-Spoofing-Cookie
 
         // Default values for cryptographic parameters are taken from OpenSSH 8.2p1
         clientSupportedKeyExchangeAlgorithms =
@@ -984,6 +991,10 @@ public class Config implements Serializable {
         return serverCookie;
     }
 
+    public byte[] getAntiSpoofingCookie() {
+        return antiSpoofingCookie;
+    }
+
     public String getClientEndOfMessageSequence() {
         return clientEndOfMessageSequence;
     }
@@ -1124,6 +1135,10 @@ public class Config implements Serializable {
 
     // endregion
     // region Setters for Pre-KeyExchange
+
+    public void setAntiSpoofingCookie(byte[] antiSpoofingCookie) {
+        this.antiSpoofingCookie = antiSpoofingCookie;
+    }
 
     public void setClientCookie(byte[] clientCookie) {
         this.clientCookie = clientCookie;

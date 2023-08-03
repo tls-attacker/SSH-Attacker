@@ -16,6 +16,7 @@ import de.rub.nds.sshattacker.core.constants.RunningModeType;
 import de.rub.nds.sshattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.*;
 import de.rub.nds.sshattacker.core.protocol.connection.message.*;
+import de.rub.nds.sshattacker.core.protocol.ssh1.message.VersionExchangeMessageSSHV1;
 import de.rub.nds.sshattacker.core.protocol.transport.message.*;
 import de.rub.nds.sshattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.sshattacker.core.workflow.action.ChangePacketLayerAction;
@@ -72,6 +73,8 @@ public class WorkflowConfigurationFactory {
                 return createFullWorkflowTrace();
             case MITM:
                 return createSimpleMitmProxyWorkflow();
+            case SSH1:
+                return createSSHv1Workflow();
             default:
                 throw new ConfigurationException(
                         "Unable to create workflow trace - Unknown WorkflowTraceType: "
@@ -95,6 +98,12 @@ public class WorkflowConfigurationFactory {
                                     + mode);
             }
         }
+    }
+
+    public WorkflowTrace createSSHv1Workflow() {
+        WorkflowTrace workflow = new WorkflowTrace();
+        addSSHV1Packates(workflow);
+        return workflow;
     }
 
     public WorkflowTrace createInitKeyExchangeWorkflowTrace() {
@@ -142,6 +151,20 @@ public class WorkflowConfigurationFactory {
         addAuthenticationProtocolActions(workflow);
         addConnectionProtocolActions(workflow);
         return workflow;
+    }
+
+    private void addSSHV1Packates(WorkflowTrace workflow) {
+        AliasedConnection connection = getDefaultConnection();
+        workflow.addSshActions(
+                SshActionFactory.createMessageAction(
+                        connection, ConnectionEndType.CLIENT, new VersionExchangeMessageSSHV1()),
+                SshActionFactory.createMessageAction(
+                        connection, ConnectionEndType.SERVER, new VersionExchangeMessageSSHV1()),
+                new ChangePacketLayerAction(connection.getAlias(), PacketLayerType.BINARY_PACKET),
+                SshActionFactory.createMessageAction(
+                        connection, ConnectionEndType.CLIENT, new KeyExchangeInitMessage()),
+                SshActionFactory.createMessageAction(
+                        connection, ConnectionEndType.SERVER, new KeyExchangeInitMessage()));
     }
 
     private void addTransportProtocolInitActions(WorkflowTrace workflow) {

@@ -7,7 +7,10 @@
  */
 package de.rub.nds.sshattacker.core.protocol.common;
 
+import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
+import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
+import de.rub.nds.sshattacker.core.constants.MessageIdConstantSSH1;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -17,11 +20,16 @@ public abstract class SshMessagePreparator<T extends SshMessage<T>>
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private final MessageIdConstant messageId;
+    private final ModifiableByte messageId;
 
     public SshMessagePreparator(Chooser chooser, T message, MessageIdConstant messageId) {
         super(chooser, message);
-        this.messageId = messageId;
+        this.messageId = ModifiableVariableFactory.safelySetValue(null, messageId.getId());
+    }
+
+    public SshMessagePreparator(Chooser chooser, T message, MessageIdConstantSSH1 messageId) {
+        super(chooser, message);
+        this.messageId = ModifiableVariableFactory.safelySetValue(null, messageId.getId());
     }
 
     @Override

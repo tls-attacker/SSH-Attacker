@@ -32,6 +32,7 @@ import de.rub.nds.sshattacker.core.layer.hints.PacketLayerHintSSHV1;
 import de.rub.nds.sshattacker.core.layer.stream.HintedInputStream;
 import de.rub.nds.sshattacker.core.layer.stream.HintedLayerInputStream;
 import de.rub.nds.sshattacker.core.protocol.common.*;
+import de.rub.nds.sshattacker.core.protocol.ssh1.message.ServerPublicKeyMessage;
 import de.rub.nds.sshattacker.core.protocol.ssh1.message.VersionExchangeMessageSSHV1;
 import de.rub.nds.sshattacker.core.protocol.transport.message.AsciiMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.message.UnknownMessage;
@@ -195,13 +196,14 @@ public class SSH1Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
                 break;
             case VERSION_EXCHANGE_MESSAGE_SSH1:
                 readVersionExchangeProtocolData();
+                break;
             case SSH_CMSG_AUTH_RHOSTS_RSA:
                 // Read CMSG_AUTH_RHOSTS_RSA
             case SSH_MSG_DISCONNECT:
                 // Handle SSH_MSG_DISCONNECT message
                 break;
             case SSH_SMSG_PUBLIC_KEY:
-                // Handle SSH_SMSG_PUBLIC_KEY message
+                readPublicKeyData();
                 break;
             case SSH_CMSG_SESSION_KEY:
                 // Handle SSH_CMSG_SESSION_KEY message
@@ -307,6 +309,11 @@ public class SSH1Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
                 throw new RuntimeException();
                 // break;
         }
+    }
+
+    private void readPublicKeyData() {
+        ServerPublicKeyMessage message = new ServerPublicKeyMessage();
+        readDataContainer(message, context);
     }
 
     private void readASCIIData() {
