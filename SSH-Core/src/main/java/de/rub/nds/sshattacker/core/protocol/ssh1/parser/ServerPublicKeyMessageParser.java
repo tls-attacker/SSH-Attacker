@@ -8,12 +8,20 @@
 package de.rub.nds.sshattacker.core.protocol.ssh1.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.sshattacker.core.constants.BinaryPacketConstants;
+import de.rub.nds.sshattacker.core.constants.AuthenticationMethodSSHv1;
+import de.rub.nds.sshattacker.core.constants.CipherMethod;
 import de.rub.nds.sshattacker.core.constants.HybridKeyExchangeCombiner;
+import de.rub.nds.sshattacker.core.constants.PublicKeyFormat;
+import de.rub.nds.sshattacker.core.crypto.keys.CustomRsaPrivateKey;
+import de.rub.nds.sshattacker.core.crypto.keys.CustomRsaPublicKey;
+import de.rub.nds.sshattacker.core.crypto.keys.SshPublicKey;
 import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 import de.rub.nds.sshattacker.core.protocol.ssh1.message.ServerPublicKeyMessage;
 import java.io.InputStream;
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -92,21 +100,57 @@ public class ServerPublicKeyMessageParser extends SshMessageParser<ServerPublicK
     }
 
     private void parseHostKeyBytes(ServerPublicKeyMessage message) {
-        message.setHostKeyByteLenght(parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH));
+
+        int hostKeyBits = parseIntField(4);
+        BigInteger exponent = parseMultiprecision();
+        BigInteger modulus = parseMultiprecision();
+        CustomRsaPublicKey publicKey = new CustomRsaPublicKey(exponent, modulus);
+        message.setHostKey(
+                new SshPublicKey<CustomRsaPublicKey, CustomRsaPrivateKey>(
+                        PublicKeyFormat.SSH_RSA, publicKey));
+
+        LOGGER.debug(
+                "Added Public Host Exponent with value {}",
+                ArrayConverter.bytesToHexString(
+                        message.getHostKey().getPublicKey().getPublicExponent().toByteArray()));
+
+        LOGGER.debug(
+                "Added Public Host Modulus with value {}",
+                ArrayConverter.bytesToHexString(
+                        message.getHostKey().getPublicKey().getModulus().toByteArray()));
+        /*        message.setHostKeyByteLenght(parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH));
         LOGGER.debug("Host key byte length" + message.getHostKeyByteLenght().getValue());
         message.setHostKeyBytes(parseByteArrayField(message.getHostKeyByteLenght().getValue()));
         LOGGER.debug(
                 "Host key bytes: "
-                        + ArrayConverter.bytesToHexString(message.getHostKeyBytes().getValue()));
+                        + ArrayConverter.bytesToHexString(message.getHostKeyBytes().getValue()));*/
     }
 
     private void parseServerKeyBytes(ServerPublicKeyMessage message) {
-        message.setServerKeyByteLenght(parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH));
+
+        int serverKeyBits = parseIntField(4);
+        BigInteger exponent = parseMultiprecision();
+        BigInteger modulus = parseMultiprecision();
+        CustomRsaPublicKey publicKey = new CustomRsaPublicKey(exponent, modulus);
+        message.setServerKey(
+                new SshPublicKey<CustomRsaPublicKey, CustomRsaPrivateKey>(
+                        PublicKeyFormat.SSH_RSA, publicKey));
+
+        LOGGER.debug(
+                "Added Public Host Exponent with value {}",
+                ArrayConverter.bytesToHexString(
+                        message.getServerKey().getPublicKey().getPublicExponent().toByteArray()));
+
+        LOGGER.debug(
+                "Added Public Host Modulus with value {}",
+                ArrayConverter.bytesToHexString(
+                        message.getServerKey().getPublicKey().getModulus().toByteArray()));
+        /*        message.setServerKeyByteLenght(parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH));
         LOGGER.debug("Server key byte length" + message.getServerKeyByteLength().getValue());
         message.setServerKeyBytes(parseByteArrayField(message.getServerKeyByteLength().getValue()));
         LOGGER.debug(
                 "Server key bytes: "
-                        + ArrayConverter.bytesToHexString(message.getServerKeyBytes().getValue()));
+                        + ArrayConverter.bytesToHexString(message.getServerKeyBytes().getValue()));*/
     }
 
     private void parseAntiSpoofingCookie(ServerPublicKeyMessage message) {
@@ -114,7 +158,58 @@ public class ServerPublicKeyMessageParser extends SshMessageParser<ServerPublicK
         LOGGER.debug("AntiSpoofingCookie: {}", message.getAntiSpoofingCookie().getValue());
     }
 
-    private void parseHybridKey(ServerPublicKeyMessage message) {
+    private void parseProtocolFlags(ServerPublicKeyMessage message) {
+        message.setProtocolFlags(parseByteArrayField(4));
+        LOGGER.debug("Protocol Flags: {}", message.getProtocolFlags().getValue());
+    }
+
+    private void parseCipherMask(ServerPublicKeyMessage message) {
+        message.setCipherMask(parseIntField(4));
+        LOGGER.debug(
+                "CipherMask: {}", ArrayConverter.intToBytes(message.getCipherMask().getValue(), 4));
+
+        int cipherMask = message.getCipherMask().getValue();
+        String stringCipherMask = Integer.toBinaryString(cipherMask);
+        List<CipherMethod> supportedCipherMethods = new ArrayList<>();
+        for (int i = 0; i < stringCipherMask.length(); i++) {
+            if (stringCipherMask.charAt(i) == '1') {
+                int id = stringCipherMask.length() - 1 - i;
+                supportedCipherMethods.add(CipherMethod.fromId(id));
+                LOGGER.debug("Parsed Authentiationmethod {} at id {}", CipherMethod.fromId(id), id);
+            }
+        }
+
+        message.setSupportedCipherMethods(supportedCipherMethods);
+    }
+
+    private void parseAuthMask(ServerPublicKeyMessage message) {
+        message.setAuthMask(parseIntField(4));
+        LOGGER.debug(
+                "AuthMask: {}", ArrayConverter.intToBytes(message.getAuthMask().getValue(), 4));
+
+        int authMask = message.getAuthMask().getValue();
+        String stringAuthMask = Integer.toBinaryString(authMask);
+        List<AuthenticationMethodSSHv1> supportedAuthenticationMethods = new ArrayList<>();
+        for (int i = 0; i < stringAuthMask.length(); i++) {
+            if (stringAuthMask.charAt(i) == '1') {
+                int id = stringAuthMask.length() - 1 - i;
+                supportedAuthenticationMethods.add(AuthenticationMethodSSHv1.fromId(id));
+                LOGGER.debug(
+                        "Parsed Authentiationmethod {} at id {}",
+                        AuthenticationMethodSSHv1.fromId(id),
+                        id);
+            }
+        }
+
+        message.setSupportedAuthenticationMethods(supportedAuthenticationMethods);
+    }
+
+    private void parseCRC(ServerPublicKeyMessage message) {
+        byte[] CRC = parseByteArrayField(4);
+        LOGGER.debug("CRC: {}", CRC);
+    }
+
+    /*    private void parseHybridKey(ServerPublicKeyMessage message) {
         int length = parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH);
         LOGGER.debug("Total Length: " + length);
 
@@ -135,7 +230,7 @@ public class ServerPublicKeyMessageParser extends SshMessageParser<ServerPublicK
                 LOGGER.warn("combiner not supported. Can not update message");
                 break;
         }
-    }
+    }*/
 
     /*    private void parseSignature(ServerPublicKeyMessage message) {
         message.setSignatureLength(parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH));
@@ -149,6 +244,11 @@ public class ServerPublicKeyMessageParser extends SshMessageParser<ServerPublicK
         parseAntiSpoofingCookie(message);
         parseServerKeyBytes(message);
         parseHostKeyBytes(message);
+        parseProtocolFlags(message);
+        parseCipherMask(message);
+        parseAuthMask(message);
+        parseCRC(message);
+
         // parseHybridKey(message);
         // parseSignature(message);
     }

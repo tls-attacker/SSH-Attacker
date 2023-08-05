@@ -129,6 +129,11 @@ public class SshContext extends LayerContext {
     // endregion
 
     // region Key Exchange Initialization
+
+    // SSHv1
+    private List<CipherMethod> supportedCipherMethods;
+    private List<AuthenticationMethodSSHv1> supportedAuthenticationMethods;
+
     /** Client cookie containing 16 random bytes */
     private byte[] clientCookie;
     /** Server cookie containing 16 random bytes */
@@ -275,6 +280,14 @@ public class SshContext extends LayerContext {
     private boolean disconnectMessageReceived = false;
     /** If set to true, a version exchange message was sent by each side */
     private boolean versionExchangeCompleted = false;
+
+    public List<CipherMethod> getSupportedCipherMethods() {
+        return supportedCipherMethods;
+    }
+
+    public void setSupportedCipherMethods(List<CipherMethod> supportedCipherMethods) {
+        this.supportedCipherMethods = supportedCipherMethods;
+    }
 
     public byte[] getLastHandledAuthenticationMessageData() {
         return lastHandledApplicationMessageData;

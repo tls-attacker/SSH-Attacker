@@ -7,11 +7,9 @@
  */
 package de.rub.nds.sshattacker.core.protocol.ssh1.handler;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.ssh1.message.ServerPublicKeyMessage;
-import de.rub.nds.sshattacker.core.protocol.util.KeyExchangeUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -30,21 +28,24 @@ public class ServerPublicKeyMessageHandler extends SshMessageHandler<ServerPubli
 
     @Override
     public void adjustContext(ServerPublicKeyMessage message) {
+
         // KeyExchangeUtil.handleHostKeyMessage(sshContext, message);
-        setRemoteValues(message);
-        sshContext.getChooser().getHybridKeyExchange().combineSharedSecrets();
+        // setRemoteValues(message);
+        /*        sshContext.getChooser().getHybridKeyExchange().combineSharedSecrets();
         sshContext.setSharedSecret(
                 sshContext.getChooser().getHybridKeyExchange().getSharedSecret());
         sshContext
                 .getExchangeHashInputHolder()
                 .setSharedSecret(sshContext.getChooser().getHybridKeyExchange().getSharedSecret());
         KeyExchangeUtil.computeExchangeHash(sshContext);
+        */
         /*        KeyExchangeUtil.handleExchangeHashSignatureMessage(sshContext, message);*/
+        /*
         KeyExchangeUtil.setSessionId(sshContext);
-        KeyExchangeUtil.generateKeySet(sshContext);
+        KeyExchangeUtil.generateKeySet(sshContext);*/
     }
 
-    private void setRemoteValues(ServerPublicKeyMessage message) {
+    /*private void setRemoteValues(ServerPublicKeyMessage message) {
         sshContext
                 .getChooser()
                 .getHybridKeyExchange()
@@ -85,7 +86,7 @@ public class ServerPublicKeyMessageHandler extends SshMessageHandler<ServerPubli
                                 + " is not supported.");
                 break;
         }
-    }
+    }*/
 
     /*@Override
     public SshMessageParser<HybridKeyExchangeReplyMessage> getParser(byte[] array) {

@@ -10,6 +10,8 @@ package de.rub.nds.sshattacker.core.protocol.ssh1.message;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
+import de.rub.nds.sshattacker.core.constants.AuthenticationMethodSSHv1;
+import de.rub.nds.sshattacker.core.constants.CipherMethod;
 import de.rub.nds.sshattacker.core.crypto.kex.HybridKeyExchange;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomRsaPrivateKey;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomRsaPublicKey;
@@ -24,11 +26,39 @@ import de.rub.nds.sshattacker.core.protocol.ssh1.parser.ServerPublicKeyMessagePa
 import de.rub.nds.sshattacker.core.protocol.ssh1.preparator.ServerPublicKeyMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.ssh1.serializer.ServerPublicKeyMessageSerializer;
 import java.io.InputStream;
+import java.util.List;
 
 public class ServerPublicKeyMessage extends SshMessage<ServerPublicKeyMessage> {
 
-    public ModifiableByteArray getAntiSpoofingCookie() {
-        return antiSpoofingCookie;
+    // ServerKey
+    private SshPublicKey<CustomRsaPublicKey, CustomRsaPrivateKey> serverKey;
+    private ModifiableInteger serverKeyByteLength;
+    private ModifiableByteArray serverPublicExponent;
+    private ModifiableByteArray serverPublicModulus;
+
+    private ModifiableByteArray serverKeyBytes;
+
+    // Host Key
+    private SshPublicKey<CustomRsaPublicKey, CustomRsaPrivateKey> hostKey;
+    private ModifiableInteger hostKeyByteLenght;
+    private ModifiableByteArray hostPublicExponent;
+    private ModifiableByteArray hostPublicModulus;
+    private ModifiableByteArray hostKeyBytes;
+
+    // Other Values
+    private ModifiableByteArray antiSpoofingCookie;
+
+    private ModifiableByteArray protocolFlags;
+
+    private ModifiableInteger cipherMask;
+    private ModifiableInteger authMask;
+
+    private List<CipherMethod> supportedCipherMethods;
+
+    private List<AuthenticationMethodSSHv1> supportedAuthenticationMethods;
+
+    public ModifiableByteArray getServerKeyBytes() {
+        return serverKeyBytes;
     }
 
     public void setAntiSpoofingCookie(ModifiableByteArray antiSpoofingCookie) {
@@ -41,13 +71,68 @@ public class ServerPublicKeyMessage extends SshMessage<ServerPublicKeyMessage> {
                         this.antiSpoofingCookie, antiSpoofingCookie);
     }
 
-    private SshPublicKey<CustomRsaPublicKey, CustomRsaPrivateKey> hostKey;
+    public SshPublicKey<CustomRsaPublicKey, CustomRsaPrivateKey> getHostKey() {
+        return hostKey;
+    }
 
     public void setHostKey(SshPublicKey<CustomRsaPublicKey, CustomRsaPrivateKey> hostKey) {
         this.hostKey = hostKey;
     }
 
-    public SshPublicKey<?, ?> getServerKey() {
+    public ModifiableInteger getHostKeyByteLenght() {
+        return hostKeyByteLenght;
+    }
+
+    public void setHostKeyByteLenght(ModifiableInteger hostKeyByteLenght) {
+        this.hostKeyByteLenght = hostKeyByteLenght;
+    }
+
+    public void setHostKeyByteLenght(int hostKeyBits) {
+        this.hostKeyByteLenght =
+                ModifiableVariableFactory.safelySetValue(this.hostKeyByteLenght, hostKeyBits);
+    }
+
+    public ModifiableByteArray getHostPublicExponent() {
+        return hostPublicExponent;
+    }
+
+    public void setHostPublicExponent(ModifiableByteArray hostPublicExponent) {
+        this.hostPublicExponent = hostPublicExponent;
+    }
+
+    public void setHostPublicExponent(byte[] hostPublicExponent) {
+        this.hostPublicExponent =
+                ModifiableVariableFactory.safelySetValue(
+                        this.hostPublicExponent, hostPublicExponent);
+    }
+
+    public ModifiableByteArray getHostPublicModulus() {
+        return hostPublicModulus;
+    }
+
+    public void setHostPublicModulus(ModifiableByteArray hostPublicModulus) {
+        this.hostPublicModulus = hostPublicModulus;
+    }
+
+    public void setHostPublicModulus(byte[] publicModulus) {
+        this.hostPublicModulus =
+                ModifiableVariableFactory.safelySetValue(this.hostPublicModulus, publicModulus);
+    }
+
+    public ModifiableByteArray getHostKeyBytes() {
+        return hostKeyBytes;
+    }
+
+    public void setHostKeyBytes(ModifiableByteArray hostKeyBytes) {
+        this.hostKeyBytes = hostKeyBytes;
+    }
+
+    public void setHostKeyBytes(byte[] hostKeyBytes) {
+        this.hostKeyBytes =
+                ModifiableVariableFactory.safelySetValue(this.hostKeyBytes, hostKeyBytes);
+    }
+
+    public SshPublicKey<CustomRsaPublicKey, CustomRsaPrivateKey> getServerKey() {
         return serverKey;
     }
 
@@ -59,11 +144,17 @@ public class ServerPublicKeyMessage extends SshMessage<ServerPublicKeyMessage> {
         // //toModifiableByteArry...
     }
 
-    private SshPublicKey<CustomRsaPublicKey, CustomRsaPrivateKey> serverKey;
+    public void setServerKeyBytes(byte[] serverKeyBytes) {
+        this.serverKeyBytes =
+                ModifiableVariableFactory.safelySetValue(this.serverKeyBytes, serverKeyBytes);
+        ;
+    }
+
+    public ModifiableByteArray getAntiSpoofingCookie() {
+        return antiSpoofingCookie;
+    }
 
     // *SSHV1*//
-    private ModifiableByteArray antiSpoofingCookie;
-    private ModifiableInteger serverKeyByteLength;
 
     public ModifiableByteArray getServerPublicExponent() {
         return serverPublicExponent;
@@ -93,9 +184,6 @@ public class ServerPublicKeyMessage extends SshMessage<ServerPublicKeyMessage> {
                         this.serverPublicModulus, serverPublicModulus);
     }
 
-    private ModifiableByteArray serverPublicExponent;
-    private ModifiableByteArray serverPublicModulus;
-
     public ModifiableInteger getServerKeyByteLength() {
         return serverKeyByteLength;
     }
@@ -109,178 +197,66 @@ public class ServerPublicKeyMessage extends SshMessage<ServerPublicKeyMessage> {
                 ModifiableVariableFactory.safelySetValue(this.serverKeyByteLength, serverKeyBits);
     }
 
-    public ModifiableInteger getHostKeyByteLenght() {
-        return hostKeyByteLenght;
+    public ModifiableByteArray getProtocolFlags() {
+        return protocolFlags;
     }
 
-    public void setHostKeyByteLenght(ModifiableInteger hostKeyByteLenght) {
-        this.hostKeyByteLenght = hostKeyByteLenght;
+    public void setProtocolFlags(ModifiableByteArray protocolFlags) {
+        this.protocolFlags = protocolFlags;
     }
 
-    public void setHostKeyByteLenght(int hostKeyBits) {
-        this.hostKeyByteLenght =
-                ModifiableVariableFactory.safelySetValue(this.hostKeyByteLenght, hostKeyBits);
+    public void setProtocolFlags(byte[] protocolFlags) {
+        this.protocolFlags =
+                ModifiableVariableFactory.safelySetValue(this.protocolFlags, protocolFlags);
     }
 
-    private ModifiableInteger hostKeyByteLenght;
-
-    public ModifiableByteArray getHostPublicExponent() {
-        return hostPublicExponent;
+    public ModifiableInteger getCipherMask() {
+        return cipherMask;
     }
 
-    public void setHostPublicExponent(ModifiableByteArray hostPublicExponent) {
-        this.hostPublicExponent = hostPublicExponent;
+    public void setCipherMask(ModifiableInteger cipherMask) {
+        this.cipherMask = cipherMask;
     }
 
-    public void setHostPublicExponent(byte[] hostPublicExponent) {
-        this.hostPublicExponent =
-                ModifiableVariableFactory.safelySetValue(
-                        this.hostPublicExponent, hostPublicExponent);
+    public void setCipherMask(int cipherMask) {
+        this.cipherMask = ModifiableVariableFactory.safelySetValue(this.cipherMask, cipherMask);
     }
 
-    public ModifiableByteArray getHostPublicModulus() {
-        return hostPublicModulus;
+    public ModifiableInteger getAuthMask() {
+        return authMask;
     }
 
-    public void setHostPublicModulus(ModifiableByteArray hostPublicModulus) {
-        this.hostPublicModulus = hostPublicModulus;
+    public void setAuthMask(ModifiableInteger authMask) {
+        this.authMask = authMask;
     }
 
-    public void setHostPublicModulus(byte[] publicModulus) {
-        this.hostPublicModulus =
-                ModifiableVariableFactory.safelySetValue(this.hostPublicModulus, publicModulus);
+    public void setAuthMask(int authMask) {
+        this.authMask = ModifiableVariableFactory.safelySetValue(this.authMask, authMask);
     }
 
-    private ModifiableByteArray hostPublicExponent;
-    private ModifiableByteArray hostPublicModulus;
-    private ModifiableInteger protocolFlags;
-    private ModifiableInteger cipherMask;
-    private ModifiableInteger authMask;
-    // *SSHV1*//
-
-    public ModifiableByteArray getHostKeyBytes() {
-        return hostKeyBytes;
+    public List<CipherMethod> getSupportedCipherMethods() {
+        return supportedCipherMethods;
     }
 
-    public void setHostKeyBytes(ModifiableByteArray hostKeyBytes) {
-        this.hostKeyBytes = hostKeyBytes;
+    public void setSupportedCipherMethods(List<CipherMethod> supportedCipherMethods) {
+        this.supportedCipherMethods = supportedCipherMethods;
     }
 
-    public void setHostKeyBytes(byte[] hostKeyBytes) {
-        this.hostKeyBytes =
-                ModifiableVariableFactory.safelySetValue(this.hostKeyBytes, hostKeyBytes);
+    public List<AuthenticationMethodSSHv1> getSupportedAuthenticationMethods() {
+        return supportedAuthenticationMethods;
     }
 
-    private ModifiableByteArray hostKeyBytes;
-
-    public ModifiableByteArray getServerKeyBytes() {
-        return serverKeyBytes;
+    public void setSupportedAuthenticationMethods(
+            List<AuthenticationMethodSSHv1> supportedAuthenticationMethods) {
+        this.supportedAuthenticationMethods = supportedAuthenticationMethods;
     }
-
-    public void setServerKeyBytes(ModifiableByteArray serverKeyBytes) {
-        this.serverKeyBytes = serverKeyBytes;
-    }
-
-    public void setServerKeyBytes(byte[] serverKeyBytes) {
-        this.serverKeyBytes =
-                ModifiableVariableFactory.safelySetValue(this.serverKeyBytes, serverKeyBytes);
-        ;
-    }
-
-    private ModifiableByteArray serverKeyBytes;
 
     private ModifiableInteger publicKeyLength;
-    private ModifiableByteArray publicKey;
-
-    private ModifiableInteger combinedKeyShareLength;
-    private ModifiableByteArray combinedKeyShare;
-
-    private ModifiableInteger signatureLength;
-    private ModifiableByteArray signature;
-
-    public ModifiableInteger getPublicKeyLength() {
-        return publicKeyLength;
-    }
-
-    public void setPublicKeyLength(ModifiableInteger publicKeyLength) {
-        this.publicKeyLength = publicKeyLength;
-    }
-
-    public void setPublicKeyLength(int publicKeyLength) {
-        this.publicKeyLength =
-                ModifiableVariableFactory.safelySetValue(this.publicKeyLength, publicKeyLength);
-    }
-
-    public ModifiableByteArray getPublicKey() {
-        return publicKey;
-    }
-
-    public void setPublicKey(byte[] publicKey) {
-        setPublicKey(publicKey, false);
-    }
-
-    public void setPublicKey(ModifiableByteArray publicKey, boolean adjustLengthField) {
-        this.publicKey = publicKey;
-        if (adjustLengthField) {
-            setPublicKeyLength(this.publicKey.getValue().length);
-        }
-    }
-
-    public void setPublicKey(byte[] publicKey, boolean adjustLengthField) {
-        this.publicKey = ModifiableVariableFactory.safelySetValue(this.publicKey, publicKey);
-        if (adjustLengthField) {
-            setPublicKeyLength(this.publicKey.getValue().length);
-        }
-    }
-
-    public ModifiableInteger getCombinedKeyShareLength() {
-        return combinedKeyShareLength;
-    }
-
-    public void setCombinedKeyShareLength(ModifiableInteger combinedKeyShareLength) {
-        this.combinedKeyShareLength = combinedKeyShareLength;
-    }
-
-    public void setCiphertextLength(int ciphertextLength) {
-        this.combinedKeyShareLength =
-                ModifiableVariableFactory.safelySetValue(
-                        this.combinedKeyShareLength, ciphertextLength);
-    }
-
-    public ModifiableByteArray getCombinedKeyShare() {
-        return combinedKeyShare;
-    }
-
-    public void setCombinedKeyShare(byte[] combinedKeyShare) {
-        setCiphertext(combinedKeyShare, false);
-    }
-
-    public void setCiphertext(ModifiableByteArray ciphertext, boolean adjustLengthField) {
-        this.combinedKeyShare = ciphertext;
-        if (adjustLengthField) {
-            setCiphertextLength(this.combinedKeyShare.getValue().length);
-        }
-    }
-
-    public void setCiphertext(byte[] ciphertext, boolean adjustLengthField) {
-        this.combinedKeyShare =
-                ModifiableVariableFactory.safelySetValue(this.combinedKeyShare, ciphertext);
-        if (adjustLengthField) {
-            setCiphertextLength(this.combinedKeyShare.getValue().length);
-        }
-    }
 
     @Override
     public ServerPublicKeyMessageHandler getHandler(SshContext context) {
         return new ServerPublicKeyMessageHandler(context);
     }
-
-    /*@Override
-    public SshMessageParser<HybridKeyExchangeReplyMessage> getParser(SshContext context, InputStream stream) {
-        HybridKeyExchange kex = context.getChooser().getHybridKeyExchange();
-        return new HybridKeyExchangeReplyMessageParser(
-                array, kex.getCombiner(), kex.getPkAgreementLength(), kex.getCiphertextLength());
-    }*/
 
     @Override
     public SshMessageParser<ServerPublicKeyMessage> getParser(

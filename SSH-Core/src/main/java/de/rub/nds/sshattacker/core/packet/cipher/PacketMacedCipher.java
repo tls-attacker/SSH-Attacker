@@ -16,10 +16,7 @@ import de.rub.nds.sshattacker.core.crypto.mac.AbstractMac;
 import de.rub.nds.sshattacker.core.crypto.mac.MacFactory;
 import de.rub.nds.sshattacker.core.exceptions.CryptoException;
 import de.rub.nds.sshattacker.core.layer.context.SshContext;
-import de.rub.nds.sshattacker.core.packet.AbstractPacket;
-import de.rub.nds.sshattacker.core.packet.BinaryPacket;
-import de.rub.nds.sshattacker.core.packet.BlobPacket;
-import de.rub.nds.sshattacker.core.packet.PacketCryptoComputations;
+import de.rub.nds.sshattacker.core.packet.*;
 import de.rub.nds.sshattacker.core.packet.cipher.keys.KeySet;
 import java.math.BigInteger;
 import java.security.NoSuchAlgorithmException;
@@ -86,6 +83,28 @@ public class PacketMacedCipher extends PacketCipher {
                             ? keySet.getWriteIv(getLocalConnectionEndType())
                             : keySet.getReadIv(getLocalConnectionEndType());
         }
+    }
+
+    @Override
+    public void encrypt(BinaryPacketSSHv1 packet) {
+        packet.setPaddingLength(calculatePaddingLengthSSHv1(packet));
+        packet.setPadding(calculatePadding(packet.getPaddingLength().getValue()));
+        packet.setLength(packet.getCompressedPayload().getValue().length);
+
+        PacketCryptoComputations computations = packet.getComputations();
+        try {
+            encryptInner(packet);
+        } catch (CryptoException e) {
+            throw new RuntimeException(e);
+        }
+
+        computations.setEncryptedPacketFields(
+                Stream.of(BinaryPacketField.PAYLOAD).collect(Collectors.toSet()));
+    }
+
+    @Override
+    public void decrypt(BinaryPacketSSHv1 packet) throws CryptoException {
+        decryptInner(packet);
     }
 
     @Override

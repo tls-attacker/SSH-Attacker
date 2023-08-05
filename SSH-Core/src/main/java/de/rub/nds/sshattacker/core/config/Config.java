@@ -106,6 +106,14 @@ public class Config implements Serializable {
     @XmlJavaTypeAdapter(UnformattedByteArrayAdapter.class)
     private byte[] antiSpoofingCookie;
 
+    @XmlElement(name = "supportedCipherMethod")
+    @XmlElementWrapper
+    private List<CipherMethod> supportedCipherMethods;
+
+    @XmlElement(name = "supportedAuthenticationMethod")
+    @XmlElementWrapper
+    private List<AuthenticationMethodSSHv1> supportedAuthenticationMethods;
+
     /** List of key exchange algorithms supported by the remote peer */
     @XmlElement(name = "clientSupportedKeyExchangeAlgorithm")
     @XmlElementWrapper
@@ -509,6 +517,17 @@ public class Config implements Serializable {
         antiSpoofingCookie =
                 ArrayConverter.hexStringToByteArray(
                         "0000000000000000"); // 16 Byte Anti-Spoofing-Cookie
+
+        supportedCipherMethods =
+                Arrays.stream(new CipherMethod[] {CipherMethod.SSH_CIPHER_3DES})
+                        .collect(Collectors.toCollection(LinkedList::new));
+
+        supportedAuthenticationMethods =
+                Arrays.stream(
+                                new AuthenticationMethodSSHv1[] {
+                                    AuthenticationMethodSSHv1.SSH_AUTH_PASSWORD
+                                })
+                        .collect(Collectors.toCollection(LinkedList::new));
 
         // Default values for cryptographic parameters are taken from OpenSSH 8.2p1
         clientSupportedKeyExchangeAlgorithms =
@@ -1701,5 +1720,22 @@ public class Config implements Serializable {
 
     public LayerConfiguration getDefaultLayerConfiguration() {
         return defaultLayerConfiguration;
+    }
+
+    public List<CipherMethod> getSupportedCipherMethods() {
+        return supportedCipherMethods;
+    }
+
+    public void setSupportedCipherMethods(List<CipherMethod> supportedCipherMethods) {
+        this.supportedCipherMethods = supportedCipherMethods;
+    }
+
+    public List<AuthenticationMethodSSHv1> getSupportedAuthenticationMethods() {
+        return supportedAuthenticationMethods;
+    }
+
+    public void setSupportedAuthenticationMethods(
+            List<AuthenticationMethodSSHv1> supportedAuthenticationMethods) {
+        this.supportedAuthenticationMethods = supportedAuthenticationMethods;
     }
 }

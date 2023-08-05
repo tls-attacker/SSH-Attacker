@@ -7,6 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.layer.impl;
 
+import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.*;
 import de.rub.nds.sshattacker.core.layer.LayerConfiguration;
@@ -23,9 +24,11 @@ import de.rub.nds.sshattacker.core.layer.hints.PacketLayerHintSSHV1;
 import de.rub.nds.sshattacker.core.layer.stream.HintedLayerInputStream;
 import de.rub.nds.sshattacker.core.packet.AbstractPacket;
 import de.rub.nds.sshattacker.core.packet.BinaryPacket;
+import de.rub.nds.sshattacker.core.packet.BinaryPacketSSHv1;
 import de.rub.nds.sshattacker.core.packet.BlobPacket;
 import de.rub.nds.sshattacker.core.packet.parser.AbstractPacketParser;
 import de.rub.nds.sshattacker.core.packet.parser.BinaryPacketParser;
+import de.rub.nds.sshattacker.core.packet.parser.BinaryPacketParserSSHv1;
 import de.rub.nds.sshattacker.core.packet.parser.BlobPacketParser;
 import de.rub.nds.sshattacker.core.protocol.transport.message.AsciiMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.parser.*;
@@ -101,8 +104,13 @@ public class TransportLayer extends ProtocolLayer<PacketLayerHint, AbstractPacke
             LOGGER.debug("[bro] Created a BLOB Packet");
             packet = new BlobPacket();
         } else {
-            LOGGER.debug("[bro] Created a Binary Packet");
-            packet = new BinaryPacket();
+            if (this.getHigherLayer().getLayerType().getName().equals("SSHv1")) {
+                LOGGER.debug("[bro] Created a Binary SSHv1 Packet");
+                packet = new BinaryPacketSSHv1();
+            } else {
+                LOGGER.debug("[bro] Created a Binary SSHv2 Packet");
+                packet = new BinaryPacket();
+            }
         }
         packet.setPayload(additionalData);
 
@@ -140,12 +148,22 @@ public class TransportLayer extends ProtocolLayer<PacketLayerHint, AbstractPacke
 
         LOGGER.debug("[bro] Recieving a {}", context.getPacketLayer());
         if (context.getPacketLayerType() == PacketLayerType.BINARY_PACKET) {
-            parser =
-                    new BinaryPacketParser(
-                            dataStream,
-                            context.getPacketLayer().getDecryptorCipher(),
-                            context.getReadSequenceNumber());
-            packet = new BinaryPacket();
+            if (this.getHigherLayer().getLayerType().getName().equals("SSHv1")) {
+                parser =
+                        new BinaryPacketParserSSHv1(
+                                dataStream,
+                                context.getPacketLayer().getDecryptorCipher(),
+                                context.getReadSequenceNumber());
+                packet = new BinaryPacketSSHv1();
+            } else {
+                parser =
+                        new BinaryPacketParser(
+                                dataStream,
+                                context.getPacketLayer().getDecryptorCipher(),
+                                context.getReadSequenceNumber());
+                packet = new BinaryPacket();
+            }
+
         } else if (context.getPacketLayerType() == PacketLayerType.BLOB) {
             parser = new BlobPacketParser(dataStream);
             packet = new BlobPacket();
@@ -166,7 +184,29 @@ public class TransportLayer extends ProtocolLayer<PacketLayerHint, AbstractPacke
                 "[bro] Decompressed Payload: {}",
                 ArrayConverter.bytesToHexString(packet.getPayload()));
 
-        packet.setCleanProtocolMessageBytes(packet.getPayload());
+        if (packet instanceof BinaryPacketSSHv1) {
+            BinaryPacketSSHv1 binaryPacketSSHv1 = (BinaryPacketSSHv1) packet;
+
+            int paddingLenght = (8 - binaryPacketSSHv1.getLength().getValue() % 8);
+            byte[] padding = Arrays.copyOfRange(packet.getPayload().getValue(), 0, paddingLenght);
+            byte[] cleanContent =
+                    Arrays.copyOfRange(
+                            packet.getPayload().getValue(),
+                            paddingLenght,
+                            binaryPacketSSHv1.getLength().getValue() + paddingLenght);
+
+            LOGGER.debug(
+                    "Lenght = {}, so padding is {} long and has {} as value, clean is now {} which is {} long",
+                    binaryPacketSSHv1.getLength().getValue(),
+                    paddingLenght,
+                    padding,
+                    ArrayConverter.bytesToHexString(cleanContent),
+                    cleanContent.length);
+            packet.setCleanProtocolMessageBytes(
+                    ModifiableVariableFactory.safelySetValue(null, cleanContent));
+        } else {
+            packet.setCleanProtocolMessageBytes(packet.getPayload());
+        }
 
         addProducedContainer(packet);
         LayerProcessingHint currentHint;

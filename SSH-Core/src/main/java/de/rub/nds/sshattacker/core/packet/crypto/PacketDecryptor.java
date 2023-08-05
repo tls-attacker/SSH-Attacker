@@ -11,6 +11,7 @@ import de.rub.nds.sshattacker.core.constants.CipherMode;
 import de.rub.nds.sshattacker.core.exceptions.CryptoException;
 import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.packet.BinaryPacket;
+import de.rub.nds.sshattacker.core.packet.BinaryPacketSSHv1;
 import de.rub.nds.sshattacker.core.packet.BlobPacket;
 import de.rub.nds.sshattacker.core.packet.cipher.PacketCipher;
 import de.rub.nds.sshattacker.core.packet.cipher.PacketCipherFactory;
@@ -32,6 +33,24 @@ public class PacketDecryptor extends AbstractPacketDecryptor {
         }
         this.context = context;
         noneCipher = PacketCipherFactory.getNoneCipher(context, CipherMode.DECRYPT);
+    }
+
+    @Override
+    public void decrypt(BinaryPacketSSHv1 packet) {
+        PacketCipher packetCipher = getPacketMostRecentCipher();
+        LOGGER.debug("Decrypting binary packet using packet cipher: {}", packetCipher);
+        try {
+            packet.setSequenceNumber(context.getReadSequenceNumber());
+            packetCipher.process(packet);
+        } catch (CryptoException e) {
+            LOGGER.warn("Could not decrypt binary packet. Using " + noneCipher, e);
+            try {
+                noneCipher.process(packet);
+            } catch (CryptoException ex) {
+                LOGGER.error("Could not decrypt with " + noneCipher, ex);
+            }
+        }
+        context.incrementReadSequenceNumber();
     }
 
     @Override

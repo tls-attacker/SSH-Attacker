@@ -13,6 +13,7 @@ import de.rub.nds.sshattacker.core.exceptions.CryptoException;
 import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.layer.data.Parser;
 import de.rub.nds.sshattacker.core.packet.BinaryPacket;
+import de.rub.nds.sshattacker.core.packet.BinaryPacketSSHv1;
 import de.rub.nds.sshattacker.core.packet.BlobPacket;
 import de.rub.nds.sshattacker.core.packet.cipher.keys.KeySet;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
@@ -64,6 +65,14 @@ public abstract class PacketCipher {
         }
     }
 
+    public final void process(BinaryPacketSSHv1 packet) throws CryptoException {
+        if (mode == CipherMode.ENCRYPT) {
+            encrypt(packet);
+        } else {
+            decrypt(packet);
+        }
+    }
+
     /**
      * Encrypts or decrypts the provided packet using this PacketCipher instance (the actual
      * operation performed depends on the mode provided to the constructor).
@@ -81,9 +90,13 @@ public abstract class PacketCipher {
 
     protected abstract void encrypt(BinaryPacket packet) throws CryptoException;
 
+    protected abstract void encrypt(BinaryPacketSSHv1 packet) throws CryptoException;
+
     protected abstract void encrypt(BlobPacket packet) throws CryptoException;
 
     protected abstract void decrypt(BinaryPacket packet) throws CryptoException;
+
+    protected abstract void decrypt(BinaryPacketSSHv1 packet) throws CryptoException;
 
     protected abstract void decrypt(BlobPacket packet) throws CryptoException;
 
@@ -120,6 +133,15 @@ public abstract class PacketCipher {
     protected byte[] calculatePadding(int paddingLength) {
         // For now, we use zero bytes as padding
         return new byte[paddingLength];
+    }
+
+    protected byte calculatePaddingLengthSSHv1(BinaryPacketSSHv1 packet) {
+
+        // TODO: fix later, just for debugging padding
+        int lenght = packet.getCompressedPayload().getValue().length;
+        int padding_lenght = 8 - (lenght % 8);
+
+        return (byte) padding_lenght;
     }
 
     protected byte calculatePaddingLength(BinaryPacket packet) {

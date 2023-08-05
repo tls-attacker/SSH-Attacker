@@ -8,26 +8,20 @@
 package de.rub.nds.sshattacker.core.protocol.ssh1.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.sshattacker.core.constants.HybridKeyExchangeCombiner;
-import de.rub.nds.sshattacker.core.constants.MessageIdConstantSSH1;
-import de.rub.nds.sshattacker.core.constants.PublicKeyFormat;
-import de.rub.nds.sshattacker.core.crypto.hash.ExchangeHashInputHolder;
-import de.rub.nds.sshattacker.core.crypto.kex.HybridKeyExchange;
-import de.rub.nds.sshattacker.core.crypto.kex.KeyAgreement;
-import de.rub.nds.sshattacker.core.crypto.kex.KeyEncapsulation;
+import de.rub.nds.sshattacker.core.constants.*;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomRsaPrivateKey;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomRsaPublicKey;
 import de.rub.nds.sshattacker.core.crypto.keys.SshPublicKey;
 import de.rub.nds.sshattacker.core.exceptions.CryptoException;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.ssh1.message.ServerPublicKeyMessage;
-import de.rub.nds.sshattacker.core.protocol.util.KeyExchangeUtil;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
+import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -42,6 +36,16 @@ public class ServerPublicKeyMessagePreparator extends SshMessagePreparator<Serve
             Chooser chooser, ServerPublicKeyMessage message, HybridKeyExchangeCombiner combiner) {
         super(chooser, message, MessageIdConstantSSH1.SSH_SMSG_PUBLIC_KEY);
         this.combiner = combiner;
+    }
+
+    @Override
+    public void prepareMessageSpecificContents() {
+        LOGGER.debug("Preparring now...");
+        prepareServertKey();
+        prepareHostKey();
+        prepareAntiSpoofingCookie();
+        prepareSupportedCipers();
+        prepareSupportedAuthenticationMethods();
     }
 
     public void generateServerKey() throws CryptoException {
@@ -60,16 +64,34 @@ public class ServerPublicKeyMessagePreparator extends SshMessagePreparator<Serve
         }
     }
 
-    @Override
-    public void prepareMessageSpecificContents() {
-        LOGGER.debug("Preparring now...");
+    public void prepareHostKey() {
         int hostKeylenght;
+        SshPublicKey<?, ?> opt_hostKey = chooser.getConfig().getHostKeys().get(0);
+
+        CustomRsaPublicKey pubkey = (CustomRsaPublicKey) opt_hostKey.getPublicKey();
+        SshPublicKey<CustomRsaPublicKey, CustomRsaPrivateKey> hostKey =
+                new SshPublicKey<>(PublicKeyFormat.SSH_RSA, pubkey);
+
+        getObject().setHostKey(hostKey);
+
+        CustomRsaPublicKey publicKey = (CustomRsaPublicKey) hostKey.getPublicKey();
+        hostKeylenght = publicKey.getPublicExponent().bitLength();
+        hostKeylenght = hostKeylenght + publicKey.getModulus().bitLength();
+        getObject().setHostPublicModulus(publicKey.getModulus().toByteArray());
+        getObject().setHostPublicExponent(publicKey.getPublicExponent().toByteArray());
+        getObject().setHostKeyByteLenght(hostKeylenght / 8);
+
+        LOGGER.debug(
+                "[bro] Hostkey Exponent: {}",
+                ArrayConverter.bytesToHexString(publicKey.getPublicExponent().toByteArray()));
+        LOGGER.debug(
+                "[bro] Hostkey Modulus: {}",
+                ArrayConverter.bytesToHexString(publicKey.getModulus().toByteArray()));
+    }
+
+    public void prepareServertKey() {
+
         int serverKeyLenght;
-
-        // *SSHV1*//
-
-        // ServerKey
-        SshPublicKey<?, ?> hostkey;
         try {
             generateServerKey();
         } catch (CryptoException e) {
@@ -86,21 +108,6 @@ public class ServerPublicKeyMessagePreparator extends SshMessagePreparator<Serve
                 .setServerPublicExponent(
                         serverKey.getPublicKey().getPublicExponent().toByteArray());
 
-        byte[] concatenated;
-
-        concatenated =
-                KeyExchangeUtil.concatenateHybridKeys(
-                        serverKey.getPublicKey().getModulus().toByteArray(),
-                        serverKey.getPublicKey().getPublicExponent().toByteArray());
-
-        getObject().setServerKeyBytes(concatenated);
-        LOGGER.debug(
-                "[bro] concatenated server key lenght: {} vs calculated: {}",
-                concatenated.length,
-                serverKeyLenght / 8);
-
-        getObject().setServerKeyByteLenght(concatenated.length);
-
         LOGGER.debug(
                 "[bro] ServerKey Exponent: {}",
                 ArrayConverter.bytesToHexString(
@@ -109,108 +116,52 @@ public class ServerPublicKeyMessagePreparator extends SshMessagePreparator<Serve
                 "[bro] ServerKey Modulus: {}",
                 ArrayConverter.bytesToHexString(
                         serverKey.getPublicKey().getModulus().toByteArray()));
-
-        SshPublicKey<?, ?> hostKey = chooser.getConfig().getHostKeys().get(0);
-
-        // Hostkey
-        // Optional<SshPublicKey<?, ?>> hostKey = chooser.getContext().getSshContext().getHostKey();
-        /*        if (hostKey.isPresent()) {
-            CustomRsaPublicKey publicKey = (CustomRsaPublicKey) hostKey.get().getPublicKey();
-            hostKeylenght = publicKey.getPublicExponent().bitLength();
-            hostKeylenght = hostKeylenght + publicKey.getModulus().bitLength();
-            getObject().setHostPublicModulus(publicKey.getModulus().toByteArray());
-            getObject().setHostPublicExponent(publicKey.getPublicExponent().toByteArray());
-            getObject().setHostKeyBits(hostKeylenght);
-
-            LOGGER.debug(
-                    "[bro] Hostkey Exponent: {}",
-                    ArrayConverter.bytesToHexString(publicKey.getPublicExponent().toByteArray()));
-            LOGGER.debug(
-                    "[bro] Hostkey Modulus: {}",
-                    ArrayConverter.bytesToHexString(publicKey.getModulus().toByteArray()));
-        } else {
-            LOGGER.error("Got no Hostkey!");
-            throw new RuntimeException("error");
-        }*/
-
-        CustomRsaPublicKey publicKey = (CustomRsaPublicKey) hostKey.getPublicKey();
-        hostKeylenght = publicKey.getPublicExponent().bitLength();
-        hostKeylenght = hostKeylenght + publicKey.getModulus().bitLength();
-        getObject().setHostPublicModulus(publicKey.getModulus().toByteArray());
-        getObject().setHostPublicExponent(publicKey.getPublicExponent().toByteArray());
-        getObject().setHostKeyByteLenght(hostKeylenght / 8);
-
-        concatenated =
-                KeyExchangeUtil.concatenateHybridKeys(
-                        publicKey.getModulus().toByteArray(),
-                        publicKey.getPublicExponent().toByteArray());
-
-        getObject().setHostKeyBytes(concatenated);
-
-        getObject().setHostKeyByteLenght(concatenated.length);
-
-        LOGGER.debug(
-                "[bro] concatenated host key lenght: {} vs calculated: {}",
-                concatenated.length,
-                hostKeylenght / 8);
-
-        LOGGER.debug(
-                "[bro] Hostkey Exponent: {}",
-                ArrayConverter.bytesToHexString(publicKey.getPublicExponent().toByteArray()));
-        LOGGER.debug(
-                "[bro] Hostkey Modulus: {}",
-                ArrayConverter.bytesToHexString(publicKey.getModulus().toByteArray()));
-
-        // AntiSpoofingCookie
-        getObject().setAntiSpoofingCookie(chooser.getConfig().getAntiSpoofingCookie());
-
-        // *SSHV1*//
-        /*
-        KeyExchangeUtil.prepareHostKeyMessage(chooser.getContext().getSshContext(), getObject());
-        prepareHybridKey();
-        chooser.getHybridKeyExchange().combineSharedSecrets();
-        chooser.getContext()
-                .getSshContext()
-                .setSharedSecret(chooser.getHybridKeyExchange().getSharedSecret());
-        chooser.getContext()
-                .getSshContext()
-                .getExchangeHashInputHolder()
-                .setSharedSecret(chooser.getHybridKeyExchange().getSharedSecret());
-        KeyExchangeUtil.computeExchangeHash(chooser.getContext().getSshContext());
-        KeyExchangeUtil.prepareExchangeHashSignatureMessage(
-                chooser.getContext().getSshContext(), getObject());
-        KeyExchangeUtil.setSessionId(chooser.getContext().getSshContext());
-        KeyExchangeUtil.generateKeySet(chooser.getContext().getSshContext());*/
     }
 
-    private void prepareHybridKey() {
-        HybridKeyExchange keyExchange = chooser.getHybridKeyExchange();
-        KeyAgreement agreement = keyExchange.getKeyAgreement();
-        KeyEncapsulation encapsulation = keyExchange.getKeyEncapsulation();
-        agreement.generateLocalKeyPair();
-        encapsulation.encryptSharedSecret();
+    public void prepareSupportedCipers() {
+        int ciphers = 0;
 
-        ExchangeHashInputHolder inputHolder =
-                chooser.getContext().getSshContext().getExchangeHashInputHolder();
-        byte[] agreementBytes = agreement.getLocalKeyPair().getPublic().getEncoded();
-        byte[] encapsulationBytes = encapsulation.getEncryptedSharedSecret();
-        getObject().setPublicKey(agreementBytes, true);
-        getObject().setCiphertext(encapsulationBytes, true);
-        byte[] concatenated;
-        switch (combiner) {
-            case CLASSICAL_CONCATENATE_POSTQUANTUM:
-                concatenated =
-                        KeyExchangeUtil.concatenateHybridKeys(agreementBytes, encapsulationBytes);
-                inputHolder.setHybridServerPublicKey(concatenated);
-                break;
-            case POSTQUANTUM_CONCATENATE_CLASSICAL:
-                concatenated =
-                        KeyExchangeUtil.concatenateHybridKeys(encapsulationBytes, agreementBytes);
-                inputHolder.setHybridServerPublicKey(concatenated);
-                break;
-            default:
-                LOGGER.warn("combiner is not supported. Can not set Hybrid Key.");
-                break;
+        List<CipherMethod> supportedCipherMethods = chooser.getConfig().getSupportedCipherMethods();
+
+        for (CipherMethod method : supportedCipherMethods) {
+            int shifter = method.getId();
+            int helper = 1;
+
+            helper = helper << shifter;
+            ciphers = ciphers | helper;
+            LOGGER.debug("got {} shifted {}-times", CipherMethod.fromId(method.getId()), shifter);
         }
+
+        getObject().setCipherMask(ciphers);
+
+        getObject().setSupportedCipherMethods(chooser.getConfig().getSupportedCipherMethods());
+    }
+
+    public void prepareSupportedAuthenticationMethods() {
+        int authMask = 0;
+        List<AuthenticationMethodSSHv1> supportedAuthenticationMethods =
+                chooser.getConfig().getSupportedAuthenticationMethods();
+
+        for (AuthenticationMethodSSHv1 method : supportedAuthenticationMethods) {
+            int shifter = method.getId();
+            int helper = 1;
+
+            helper = helper << shifter;
+            authMask = authMask | helper;
+            LOGGER.debug(
+                    "got {} shifted {}-times",
+                    AuthenticationMethodSSHv1.fromId(method.getId()),
+                    shifter);
+        }
+
+        getObject()
+                .setSupportedAuthenticationMethods(
+                        chooser.getConfig().getSupportedAuthenticationMethods());
+
+        getObject().setAuthMask(authMask);
+    }
+
+    public void prepareAntiSpoofingCookie() {
+        getObject().setAntiSpoofingCookie(chooser.getConfig().getAntiSpoofingCookie());
     }
 }

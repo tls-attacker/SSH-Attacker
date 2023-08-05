@@ -14,6 +14,7 @@ import de.rub.nds.sshattacker.core.crypto.cipher.CipherFactory;
 import de.rub.nds.sshattacker.core.exceptions.CryptoException;
 import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.packet.BinaryPacket;
+import de.rub.nds.sshattacker.core.packet.BinaryPacketSSHv1;
 import de.rub.nds.sshattacker.core.packet.BlobPacket;
 import de.rub.nds.sshattacker.core.packet.PacketCryptoComputations;
 import de.rub.nds.sshattacker.core.packet.cipher.keys.KeySet;
@@ -63,6 +64,18 @@ public class PacketGCMCipher extends PacketCipher {
                                         : keySet.getReadIv(getLocalConnectionEndType()),
                                 4,
                                 12));
+    }
+
+    @Override
+    public void encrypt(BinaryPacketSSHv1 packet) {
+        LOGGER.warn("SSHv1 does not Support GCM Cipher");
+        throw new RuntimeException();
+    }
+
+    @Override
+    public void decrypt(BinaryPacketSSHv1 packet) {
+        LOGGER.warn("SSHv1 does not Support GCM Cipher");
+        throw new RuntimeException();
     }
 
     @Override

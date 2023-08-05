@@ -196,6 +196,19 @@ public abstract class Parser<T> {
         return new String(parseByteArrayField(length), charset);
     }
 
+    protected BigInteger parseMultiprecision() {
+        int lenght = parseIntField(2);
+        LOGGER.debug("[bro] got lenght before resize: {}", lenght);
+        int resize = 0;
+        if (lenght % 8 != 0) {
+            resize = 8 - lenght % 8;
+        }
+
+        lenght = (lenght + resize) / 8;
+        LOGGER.debug("[bro] got lenght after resize: {}", lenght);
+        return parseBigIntField(lenght);
+    }
+
     /**
      * Returns the parsed object.
      *
