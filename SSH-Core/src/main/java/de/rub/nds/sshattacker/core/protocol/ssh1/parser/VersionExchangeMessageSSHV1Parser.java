@@ -21,22 +21,9 @@ public class VersionExchangeMessageSSHV1Parser
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    /*public VersionExchangeMessageParser(byte[] array) {
-        super(array);
-    }
-
-    public VersionExchangeMessageParser(byte[] array, int startPosition) {
-        super(array, startPosition);
-    }*/
-
     public VersionExchangeMessageSSHV1Parser(InputStream stream) {
         super(stream);
     }
-
-    /*@Override
-    protected VersionExchangeMessage createMessage() {
-        return new VersionExchangeMessage();
-    }*/
 
     private void parseVersion(VersionExchangeMessageSSHV1 message) {
         // parse till CR NL (and remove them)

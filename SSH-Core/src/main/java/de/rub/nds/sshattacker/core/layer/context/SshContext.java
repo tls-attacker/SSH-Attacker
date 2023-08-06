@@ -257,6 +257,8 @@ public class SshContext extends LayerContext {
     private byte[] sharedSecret;
     /** The key set derived from the shared secret, the exchange hash, and the session ID */
     private KeySet keySet;
+
+    private byte[] sshv1SessionID;
     // endregion
 
     /*    public MessageLayer getMessageLayer() {
@@ -1044,5 +1046,13 @@ public class SshContext extends LayerContext {
 
     public void setHandleAsClient(boolean handleAsClient) {
         this.handleAsClient = handleAsClient;
+    }
+
+    public byte[] getSshv1SessionID() {
+        return sshv1SessionID;
+    }
+
+    public void setSshv1SessionID(byte[] sshv1SessionID) {
+        this.sshv1SessionID = sshv1SessionID;
     }
 }

@@ -114,6 +114,10 @@ public class Config implements Serializable {
     @XmlElementWrapper
     private List<AuthenticationMethodSSHv1> supportedAuthenticationMethods;
 
+    @XmlElement(name = "protocolFlag")
+    @XmlElementWrapper
+    private List<ProtocolFlag> chosenProtocolFlags;
+
     /** List of key exchange algorithms supported by the remote peer */
     @XmlElement(name = "clientSupportedKeyExchangeAlgorithm")
     @XmlElementWrapper
@@ -517,6 +521,10 @@ public class Config implements Serializable {
         antiSpoofingCookie =
                 ArrayConverter.hexStringToByteArray(
                         "0000000000000000"); // 16 Byte Anti-Spoofing-Cookie
+
+        chosenProtocolFlags =
+                Arrays.stream(new ProtocolFlag[] {})
+                        .collect(Collectors.toCollection(LinkedList::new));
 
         supportedCipherMethods =
                 Arrays.stream(new CipherMethod[] {CipherMethod.SSH_CIPHER_3DES})
@@ -1737,5 +1745,13 @@ public class Config implements Serializable {
     public void setSupportedAuthenticationMethods(
             List<AuthenticationMethodSSHv1> supportedAuthenticationMethods) {
         this.supportedAuthenticationMethods = supportedAuthenticationMethods;
+    }
+
+    public List<ProtocolFlag> getChosenProtocolFlags() {
+        return chosenProtocolFlags;
+    }
+
+    public void setChosenProtocolFlags(List<ProtocolFlag> chosenProtocolFlags) {
+        this.chosenProtocolFlags = chosenProtocolFlags;
     }
 }

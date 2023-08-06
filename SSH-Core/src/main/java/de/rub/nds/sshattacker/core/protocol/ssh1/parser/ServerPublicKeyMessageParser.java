@@ -8,10 +8,7 @@
 package de.rub.nds.sshattacker.core.protocol.ssh1.parser;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.sshattacker.core.constants.AuthenticationMethodSSHv1;
-import de.rub.nds.sshattacker.core.constants.CipherMethod;
-import de.rub.nds.sshattacker.core.constants.HybridKeyExchangeCombiner;
-import de.rub.nds.sshattacker.core.constants.PublicKeyFormat;
+import de.rub.nds.sshattacker.core.constants.*;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomRsaPrivateKey;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomRsaPublicKey;
 import de.rub.nds.sshattacker.core.crypto.keys.SshPublicKey;
@@ -102,6 +99,7 @@ public class ServerPublicKeyMessageParser extends SshMessageParser<ServerPublicK
     private void parseHostKeyBytes(ServerPublicKeyMessage message) {
 
         int hostKeyBits = parseIntField(4);
+        message.setHostKeyBitLenght(hostKeyBits);
         BigInteger exponent = parseMultiprecision();
         BigInteger modulus = parseMultiprecision();
         CustomRsaPublicKey publicKey = new CustomRsaPublicKey(exponent, modulus);
@@ -129,6 +127,7 @@ public class ServerPublicKeyMessageParser extends SshMessageParser<ServerPublicK
     private void parseServerKeyBytes(ServerPublicKeyMessage message) {
 
         int serverKeyBits = parseIntField(4);
+        message.setServerKeyBitLenght(serverKeyBits);
         BigInteger exponent = parseMultiprecision();
         BigInteger modulus = parseMultiprecision();
         CustomRsaPublicKey publicKey = new CustomRsaPublicKey(exponent, modulus);
@@ -159,8 +158,21 @@ public class ServerPublicKeyMessageParser extends SshMessageParser<ServerPublicK
     }
 
     private void parseProtocolFlags(ServerPublicKeyMessage message) {
-        message.setProtocolFlags(parseByteArrayField(4));
-        LOGGER.debug("Protocol Flags: {}", message.getProtocolFlags().getValue());
+        message.setProtocolFlagMask(parseIntField(4));
+        LOGGER.debug("Protocol Flags Mask {}", message.getProtocolFlagMask().getValue());
+
+        int flagMask = message.getProtocolFlagMask().getValue();
+        String stringProtocolMask = Integer.toBinaryString(flagMask);
+        List<ProtocolFlag> chosenProtocolFlags = new ArrayList<>();
+        for (int i = 0; i < stringProtocolMask.length(); i++) {
+            if (stringProtocolMask.charAt(i) == '1') {
+                int id = stringProtocolMask.length() - 1 - i;
+                chosenProtocolFlags.add(ProtocolFlag.fromId(id));
+                LOGGER.debug("Parsed ProtocolFlags {} at id {}", ProtocolFlag.fromId(id), id);
+            }
+        }
+
+        message.setChosenProtocolFlags(chosenProtocolFlags);
     }
 
     private void parseCipherMask(ServerPublicKeyMessage message) {
@@ -175,7 +187,7 @@ public class ServerPublicKeyMessageParser extends SshMessageParser<ServerPublicK
             if (stringCipherMask.charAt(i) == '1') {
                 int id = stringCipherMask.length() - 1 - i;
                 supportedCipherMethods.add(CipherMethod.fromId(id));
-                LOGGER.debug("Parsed Authentiationmethod {} at id {}", CipherMethod.fromId(id), id);
+                LOGGER.debug("Parsed Ciphers {} at id {}", CipherMethod.fromId(id), id);
             }
         }
 

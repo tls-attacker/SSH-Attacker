@@ -38,9 +38,9 @@ public class ServerPublicKeyMessageSerializer extends SshMessageSerializer<Serve
     }
 
     private void serializeProtocolFlags() {
-        byte[] flags = new byte[4];
-        appendBytes(flags);
-        LOGGER.debug("Flags:  " + ArrayConverter.bytesToRawHexString(flags));
+        int flags = message.getProtocolFlagMask().getValue();
+        appendInt(flags, 4);
+        LOGGER.debug("Flags:  " + Integer.toBinaryString(flags));
     }
 
     private void serializeCipherMask() {
@@ -72,7 +72,7 @@ public class ServerPublicKeyMessageSerializer extends SshMessageSerializer<Serve
     }
 
     private void serializeServerKeyBytes() {
-        appendInt(message.getServerKey().getPublicKey().getModulus().bitLength(), 4);
+        appendInt(message.getServerKeyBitLenght().getValue(), 4);
 
         appendMultiPrecision(message.getServerKey().getPublicKey().getPublicExponent());
         LOGGER.debug(
@@ -89,7 +89,8 @@ public class ServerPublicKeyMessageSerializer extends SshMessageSerializer<Serve
 
     private void serializeHostKeyBytes() {
 
-        appendInt(message.getHostKey().getPublicKey().getModulus().bitLength(), 4);
+        appendInt(message.getHostKeyBitLenght().getValue(), 4);
+
         appendMultiPrecision(message.getHostKey().getPublicKey().getPublicExponent());
         LOGGER.debug(
                 "Added Public Host Exponent with value {}",

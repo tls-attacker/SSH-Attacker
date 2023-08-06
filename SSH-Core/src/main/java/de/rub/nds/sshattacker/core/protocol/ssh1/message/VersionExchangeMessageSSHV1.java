@@ -9,7 +9,6 @@ package de.rub.nds.sshattacker.core.protocol.ssh1.message;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
-import de.rub.nds.sshattacker.core.constants.CharConstants;
 import de.rub.nds.sshattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessage;
@@ -56,13 +55,6 @@ public class VersionExchangeMessageSSHV1 extends ProtocolMessage<VersionExchange
 
     public void setComment(String comment) {
         this.comment = ModifiableVariableFactory.safelySetValue(this.comment, comment);
-    }
-
-    public String getIdentification() {
-        if (this.comment.getValue().isEmpty()) return this.version.getValue();
-        return this.version.getValue()
-                + CharConstants.VERSION_COMMENT_SEPARATOR
-                + this.comment.getValue();
     }
 
     public ModifiableString getEndOfMessageSequence() {

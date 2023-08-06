@@ -9,9 +9,7 @@ package de.rub.nds.sshattacker.core.protocol.ssh1.preparator;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.*;
-import de.rub.nds.sshattacker.core.crypto.keys.CustomRsaPrivateKey;
-import de.rub.nds.sshattacker.core.crypto.keys.CustomRsaPublicKey;
-import de.rub.nds.sshattacker.core.crypto.keys.SshPublicKey;
+import de.rub.nds.sshattacker.core.crypto.keys.*;
 import de.rub.nds.sshattacker.core.exceptions.CryptoException;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.ssh1.message.ServerPublicKeyMessage;
@@ -41,11 +39,12 @@ public class ServerPublicKeyMessagePreparator extends SshMessagePreparator<Serve
     @Override
     public void prepareMessageSpecificContents() {
         LOGGER.debug("Preparring now...");
-        prepareServertKey();
+        prepareServerKey();
         prepareHostKey();
         prepareAntiSpoofingCookie();
         prepareSupportedCipers();
         prepareSupportedAuthenticationMethods();
+        prepareFlags();
     }
 
     public void generateServerKey() throws CryptoException {
@@ -68,18 +67,29 @@ public class ServerPublicKeyMessagePreparator extends SshMessagePreparator<Serve
         int hostKeylenght;
         SshPublicKey<?, ?> opt_hostKey = chooser.getConfig().getHostKeys().get(0);
 
-        CustomRsaPublicKey pubkey = (CustomRsaPublicKey) opt_hostKey.getPublicKey();
+        CustomRsaPublicKey publicKey = (CustomRsaPublicKey) opt_hostKey.getPublicKey();
+        if (!opt_hostKey.getPrivateKey().isPresent()) {
+            LOGGER.warn("no privat key defined for hostkey");
+        }
+        if (opt_hostKey.getPublicKeyFormat().getName().equals(PublicKeyFormat.SSH_RSA.getName())) {
+            LOGGER.warn(
+                    "the Host-Key is not formated as RSA Key-Type, it is {}",
+                    opt_hostKey.getPublicKeyFormat().getName());
+        }
+        CustomRsaPrivateKey privateKey = (CustomRsaPrivateKey) opt_hostKey.getPrivateKey().get();
+
         SshPublicKey<CustomRsaPublicKey, CustomRsaPrivateKey> hostKey =
-                new SshPublicKey<>(PublicKeyFormat.SSH_RSA, pubkey);
+                new SshPublicKey<>(PublicKeyFormat.SSH_RSA, publicKey, privateKey);
 
         getObject().setHostKey(hostKey);
 
-        CustomRsaPublicKey publicKey = (CustomRsaPublicKey) hostKey.getPublicKey();
-        hostKeylenght = publicKey.getPublicExponent().bitLength();
+        /*        hostKeylenght = publicKey.getPublicExponent().bitLength();
         hostKeylenght = hostKeylenght + publicKey.getModulus().bitLength();
         getObject().setHostPublicModulus(publicKey.getModulus().toByteArray());
         getObject().setHostPublicExponent(publicKey.getPublicExponent().toByteArray());
-        getObject().setHostKeyByteLenght(hostKeylenght / 8);
+        getObject().setHostKeyByteLenght(hostKeylenght / 8);*/
+
+        getObject().setHostKeyBitLenght(publicKey.getModulus().bitLength());
 
         LOGGER.debug(
                 "[bro] Hostkey Exponent: {}",
@@ -89,7 +99,7 @@ public class ServerPublicKeyMessagePreparator extends SshMessagePreparator<Serve
                 ArrayConverter.bytesToHexString(publicKey.getModulus().toByteArray()));
     }
 
-    public void prepareServertKey() {
+    public void prepareServerKey() {
 
         int serverKeyLenght;
         try {
@@ -99,14 +109,17 @@ public class ServerPublicKeyMessagePreparator extends SshMessagePreparator<Serve
         }
         chooser.getContext().getSshContext().setServerKey(serverKey);
         getObject().setServerKey(serverKey);
-        serverKeyLenght = serverKey.getPublicKey().getPublicExponent().bitLength();
-        serverKeyLenght = serverKeyLenght + serverKey.getPublicKey().getModulus().bitLength();
-        getObject().setServerKeyByteLenght(serverKeyLenght / 8);
 
+        /*        serverKeyLenght = serverKey.getPublicKey().getPublicExponent().bitLength();
+        serverKeyLenght = serverKeyLenght + serverKey.getPublicKey().getModulus().bitLength();
+        getObject().setServerKeyByteLenght(serverKeyLenght / 8);*/
+
+        getObject().setServerKeyBitLenght(serverKey.getPublicKey().getModulus().bitLength());
+        /*
         getObject().setServerPublicModulus(serverKey.getPublicKey().getModulus().toByteArray());
         getObject()
                 .setServerPublicExponent(
-                        serverKey.getPublicKey().getPublicExponent().toByteArray());
+                        serverKey.getPublicKey().getPublicExponent().toByteArray());*/
 
         LOGGER.debug(
                 "[bro] ServerKey Exponent: {}",
@@ -163,5 +176,21 @@ public class ServerPublicKeyMessagePreparator extends SshMessagePreparator<Serve
 
     public void prepareAntiSpoofingCookie() {
         getObject().setAntiSpoofingCookie(chooser.getConfig().getAntiSpoofingCookie());
+    }
+
+    public void prepareFlags() {
+        int flagMask = 0;
+        List<ProtocolFlag> chosenProtocolFlags = chooser.getConfig().getChosenProtocolFlags();
+        for (ProtocolFlag flag : chosenProtocolFlags) {
+            int shifter = flag.getId();
+            int helper = 1;
+
+            helper = helper << shifter;
+            flagMask = flagMask | helper;
+            LOGGER.debug("got {} shifted {}-times", ProtocolFlag.fromId(flag.getId()), shifter);
+        }
+        getObject().setChosenProtocolFlags(chooser.getConfig().getChosenProtocolFlags());
+
+        getObject().setProtocolFlagMask(flagMask);
     }
 }

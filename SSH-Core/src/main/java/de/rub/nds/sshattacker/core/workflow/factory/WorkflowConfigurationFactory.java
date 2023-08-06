@@ -16,6 +16,7 @@ import de.rub.nds.sshattacker.core.constants.RunningModeType;
 import de.rub.nds.sshattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.*;
 import de.rub.nds.sshattacker.core.protocol.connection.message.*;
+import de.rub.nds.sshattacker.core.protocol.ssh1.message.ServerPublicKeyMessage;
 import de.rub.nds.sshattacker.core.protocol.ssh1.message.VersionExchangeMessageSSHV1;
 import de.rub.nds.sshattacker.core.protocol.transport.message.*;
 import de.rub.nds.sshattacker.core.workflow.WorkflowTrace;
@@ -157,14 +158,14 @@ public class WorkflowConfigurationFactory {
         AliasedConnection connection = getDefaultConnection();
         workflow.addSshActions(
                 SshActionFactory.createMessageAction(
-                        connection, ConnectionEndType.CLIENT, new VersionExchangeMessageSSHV1()),
-                SshActionFactory.createMessageAction(
                         connection, ConnectionEndType.SERVER, new VersionExchangeMessageSSHV1()),
+                SshActionFactory.createMessageAction(
+                        connection, ConnectionEndType.CLIENT, new VersionExchangeMessageSSHV1()),
                 new ChangePacketLayerAction(connection.getAlias(), PacketLayerType.BINARY_PACKET),
                 SshActionFactory.createMessageAction(
-                        connection, ConnectionEndType.CLIENT, new KeyExchangeInitMessage()),
+                        connection, ConnectionEndType.SERVER, new ServerPublicKeyMessage()),
                 SshActionFactory.createMessageAction(
-                        connection, ConnectionEndType.SERVER, new KeyExchangeInitMessage()));
+                        connection, ConnectionEndType.CLIENT, new ServerPublicKeyMessage()));
     }
 
     private void addTransportProtocolInitActions(WorkflowTrace workflow) {

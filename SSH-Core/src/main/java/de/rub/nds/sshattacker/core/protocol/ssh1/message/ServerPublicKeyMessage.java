@@ -12,6 +12,7 @@ import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.sshattacker.core.constants.AuthenticationMethodSSHv1;
 import de.rub.nds.sshattacker.core.constants.CipherMethod;
+import de.rub.nds.sshattacker.core.constants.ProtocolFlag;
 import de.rub.nds.sshattacker.core.crypto.kex.HybridKeyExchange;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomRsaPrivateKey;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomRsaPublicKey;
@@ -36,6 +37,7 @@ public class ServerPublicKeyMessage extends SshMessage<ServerPublicKeyMessage> {
     private ModifiableByteArray serverPublicExponent;
     private ModifiableByteArray serverPublicModulus;
 
+    private ModifiableInteger serverKeyBitLenght;
     private ModifiableByteArray serverKeyBytes;
 
     // Host Key
@@ -45,15 +47,18 @@ public class ServerPublicKeyMessage extends SshMessage<ServerPublicKeyMessage> {
     private ModifiableByteArray hostPublicModulus;
     private ModifiableByteArray hostKeyBytes;
 
+    private ModifiableInteger hostKeyBitLenght;
+
     // Other Values
     private ModifiableByteArray antiSpoofingCookie;
 
-    private ModifiableByteArray protocolFlags;
+    private ModifiableInteger protocolFlagMask;
 
     private ModifiableInteger cipherMask;
     private ModifiableInteger authMask;
 
     private List<CipherMethod> supportedCipherMethods;
+    private List<ProtocolFlag> chosenProtocolFlags;
 
     private List<AuthenticationMethodSSHv1> supportedAuthenticationMethods;
 
@@ -77,6 +82,8 @@ public class ServerPublicKeyMessage extends SshMessage<ServerPublicKeyMessage> {
 
     public void setHostKey(SshPublicKey<CustomRsaPublicKey, CustomRsaPrivateKey> hostKey) {
         this.hostKey = hostKey;
+        setHostPublicModulus(this.hostKey.getPublicKey().getModulus().toByteArray());
+        setHostPublicExponent(this.hostKey.getPublicKey().getPublicExponent().toByteArray());
     }
 
     public ModifiableInteger getHostKeyByteLenght() {
@@ -138,6 +145,9 @@ public class ServerPublicKeyMessage extends SshMessage<ServerPublicKeyMessage> {
 
     public void setServerKey(SshPublicKey<CustomRsaPublicKey, CustomRsaPrivateKey> serverKey) {
         this.serverKey = serverKey;
+        setServerPublicModulus(this.serverKey.getPublicKey().getModulus().toByteArray());
+        setServerPublicExponent(this.serverKey.getPublicKey().getPublicExponent().toByteArray());
+
         // this.serverPublicExponent = serverKey.getPublicKey().getPublicExponent().byteValue();
         // //toModifiableByteArry....
         // this.serverPublicModulus = serverKey.getPublicKey().getModulus().byteValue();
@@ -197,17 +207,17 @@ public class ServerPublicKeyMessage extends SshMessage<ServerPublicKeyMessage> {
                 ModifiableVariableFactory.safelySetValue(this.serverKeyByteLength, serverKeyBits);
     }
 
-    public ModifiableByteArray getProtocolFlags() {
-        return protocolFlags;
+    public ModifiableInteger getProtocolFlagMask() {
+        return protocolFlagMask;
     }
 
-    public void setProtocolFlags(ModifiableByteArray protocolFlags) {
-        this.protocolFlags = protocolFlags;
+    public void setProtocolFlagMask(ModifiableInteger protocolFlagMask) {
+        this.protocolFlagMask = protocolFlagMask;
     }
 
-    public void setProtocolFlags(byte[] protocolFlags) {
-        this.protocolFlags =
-                ModifiableVariableFactory.safelySetValue(this.protocolFlags, protocolFlags);
+    public void setProtocolFlagMask(int protocolFlags) {
+        this.protocolFlagMask =
+                ModifiableVariableFactory.safelySetValue(this.protocolFlagMask, protocolFlags);
     }
 
     public ModifiableInteger getCipherMask() {
@@ -249,6 +259,41 @@ public class ServerPublicKeyMessage extends SshMessage<ServerPublicKeyMessage> {
     public void setSupportedAuthenticationMethods(
             List<AuthenticationMethodSSHv1> supportedAuthenticationMethods) {
         this.supportedAuthenticationMethods = supportedAuthenticationMethods;
+    }
+
+    public ModifiableInteger getServerKeyBitLenght() {
+        return serverKeyBitLenght;
+    }
+
+    public void setServerKeyBitLenght(ModifiableInteger serverKeyBitLenght) {
+        this.serverKeyBitLenght = serverKeyBitLenght;
+    }
+
+    public void setServerKeyBitLenght(int serverKeyBitLenght) {
+        this.serverKeyBitLenght =
+                ModifiableVariableFactory.safelySetValue(
+                        this.serverKeyBitLenght, serverKeyBitLenght);
+    }
+
+    public ModifiableInteger getHostKeyBitLenght() {
+        return hostKeyBitLenght;
+    }
+
+    public void setHostKeyBitLenght(ModifiableInteger hostKeyBitLenght) {
+        this.hostKeyBitLenght = hostKeyBitLenght;
+    }
+
+    public void setHostKeyBitLenght(int hostKeyBitLenght) {
+        this.hostKeyBitLenght =
+                ModifiableVariableFactory.safelySetValue(this.hostKeyBitLenght, hostKeyBitLenght);
+    }
+
+    public List<ProtocolFlag> getChosenProtocolFlags() {
+        return chosenProtocolFlags;
+    }
+
+    public void setChosenProtocolFlags(List<ProtocolFlag> chosenProtocolFlags) {
+        this.chosenProtocolFlags = chosenProtocolFlags;
     }
 
     private ModifiableInteger publicKeyLength;

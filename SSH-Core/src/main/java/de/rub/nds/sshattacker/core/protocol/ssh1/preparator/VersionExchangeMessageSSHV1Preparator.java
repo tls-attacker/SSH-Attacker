@@ -25,18 +25,10 @@ public class VersionExchangeMessageSSHV1Preparator
             getObject().setVersion(chooser.getClientVersion());
             getObject().setComment(chooser.getClientComment());
             getObject().setEndOfMessageSequence(chooser.getClientEndOfMessageSequence());
-            /*chooser.getContext()
-            .getSshContext()
-            .getExchangeHashInputHolder()
-            .setClientVersion(getObject());*/
         } else {
             getObject().setVersion(chooser.getServerVersion());
             getObject().setComment(chooser.getServerComment());
             getObject().setEndOfMessageSequence(chooser.getServerEndOfMessageSequence());
-            /*            chooser.getContext()
-            .getSshContext()
-            .getExchangeHashInputHolder()
-            .setServerVersion(getObject());*/
         }
     }
 }
