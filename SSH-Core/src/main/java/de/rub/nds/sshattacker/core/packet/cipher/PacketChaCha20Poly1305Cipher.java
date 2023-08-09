@@ -206,6 +206,10 @@ public class PacketChaCha20Poly1305Cipher extends PacketCipher {
             LOGGER.warn(
                     "Caught an AEADBadTagException while decrypting the blob packet - returning the packet without decryption",
                     e);
+            // Trigger "none" cipher fallback to populate the compressedPayload data member
+            // FIXME
+            throw new CryptoException(
+                    "Chacha20Poly1305 bad tag (BlobPacket). CompressedPayload was not set.");
         }
     }
 

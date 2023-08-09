@@ -42,10 +42,12 @@ public class PacketDecryptor extends AbstractPacketDecryptor {
             packet.setSequenceNumber(context.getReadSequenceNumber());
             packetCipher.process(packet);
         } catch (CryptoException e) {
+            // Set compressedPayload if decryption failed to do so
             LOGGER.warn("Could not decrypt binary packet. Using {}", noneCipher, e);
             try {
                 noneCipher.process(packet);
             } catch (CryptoException ex) {
+                // FIXME Need to set compressedPayload to continue?
                 LOGGER.error("Could not decrypt with {}", noneCipher, ex);
             }
         }
