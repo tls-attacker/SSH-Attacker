@@ -9,6 +9,7 @@ package de.rub.nds.sshattacker.core.layer.impl;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.CipherMode;
+import de.rub.nds.sshattacker.core.constants.CompressionAlgorithm;
 import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.constants.PacketLayerType;
 import de.rub.nds.sshattacker.core.layer.LayerConfiguration;
@@ -510,5 +511,36 @@ public class PacketLayer extends ProtocolLayer<PacketLayerHint, AbstractPacket> 
 
     public PacketDecompressor getDecompressor() {
         return decompressor;
+    }
+
+    public void updateCompressionAlgorithm(CompressionAlgorithm algorithm) {
+        compressor.setCompressionAlgorithm(algorithm);
+    }
+
+    public void updateDecompressionAlgorithm(CompressionAlgorithm algorithm) {
+        decompressor.setCompressionAlgorithm(algorithm);
+    }
+
+    public void updateEncryptionCipher(PacketCipher encryptionCipher) {
+        LOGGER.debug(
+                "Activating new EncryptionCipher ("
+                        + encryptionCipher.getClass().getSimpleName()
+                        + ")");
+        encryptor.addNewPacketCipher(encryptionCipher);
+        writeEpoch++;
+    }
+
+    public void updateDecryptionCipher(PacketCipher decryptionCipher) {
+        LOGGER.debug(
+                "Activating new DecryptionCipher ("
+                        + decryptionCipher.getClass().getSimpleName()
+                        + ")");
+        decryptor.addNewPacketCipher(decryptionCipher);
+        readEpoch++;
+    }
+
+    protected void decryptPacket(AbstractPacket<?> packet) {
+        packet.prepareComputations();
+        getDecryptor().decrypt(packet);
     }
 }

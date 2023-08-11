@@ -23,8 +23,6 @@ import de.rub.nds.sshattacker.core.packet.cipher.keys.KeySet;
 import de.rub.nds.sshattacker.core.packet.compressor.PacketCompressor;
 import de.rub.nds.sshattacker.core.packet.crypto.AbstractPacketEncryptor;
 import de.rub.nds.sshattacker.core.packet.crypto.PacketEncryptor;
-import de.rub.nds.sshattacker.core.packet.layer.AbstractPacketLayer;
-import de.rub.nds.sshattacker.core.packet.layer.PacketLayerFactory;
 import de.rub.nds.sshattacker.core.protocol.connection.Channel;
 import de.rub.nds.sshattacker.core.protocol.connection.ChannelManager;
 import de.rub.nds.sshattacker.core.state.Context;
@@ -74,8 +72,6 @@ public class SshContext extends LayerContext {
 
     /** The currently active packet layer type */
     private PacketLayerType packetLayerType;
-    /** A layer to serialize packets */
-    private AbstractPacketLayer packetLayer;
     /**
      * If set to true, receive actions will read the incoming byte stream on a per line basis (each
      * line is terminated by LF).
@@ -327,7 +323,6 @@ public class SshContext extends LayerContext {
 
         // TODO: Initial packet layer type from config
         packetLayerType = PacketLayerType.BLOB;
-        packetLayer = PacketLayerFactory.getPacketLayer(packetLayerType, this);
         receiveAsciiModeEnabled = true;
         writeSequenceNumber = 0;
         readSequenceNumber = 0;
@@ -376,12 +371,8 @@ public class SshContext extends LayerContext {
         this.packetLayerType = packetLayerType;
     }
 
-    public AbstractPacketLayer getPacketLayer() {
-        return packetLayer;
-    }
-
-    public void setPacketLayer(AbstractPacketLayer packetLayer) {
-        this.packetLayer = packetLayer;
+    public PacketLayer getPacketLayer() {
+        return (PacketLayer) getContext().getLayerStack().getLayer(PacketLayer.class);
     }
 
     public Boolean isReceiveAsciiModeEnabled() {

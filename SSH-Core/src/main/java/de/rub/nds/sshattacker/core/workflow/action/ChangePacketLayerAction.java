@@ -11,7 +11,6 @@ import de.rub.nds.sshattacker.core.connection.AliasedConnection;
 import de.rub.nds.sshattacker.core.constants.PacketLayerType;
 import de.rub.nds.sshattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.sshattacker.core.layer.context.SshContext;
-import de.rub.nds.sshattacker.core.packet.layer.PacketLayerFactory;
 import de.rub.nds.sshattacker.core.state.State;
 import jakarta.xml.bind.annotation.XmlAttribute;
 
@@ -74,7 +73,7 @@ public class ChangePacketLayerAction extends ConnectionBoundAction {
         }
         SshContext context = state.getSshContext(getConnectionAlias());
         context.setPacketLayerType(packetLayerType);
-        context.setPacketLayer(PacketLayerFactory.getPacketLayer(packetLayerType, context));
+        // context.setPacketLayer(PacketLayerFactory.getPacketLayer(packetLayerType, context));
         context.setReceiveAsciiModeEnabled(enableAsciiMode);
         setExecuted(true);
     }
