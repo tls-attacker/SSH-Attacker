@@ -291,8 +291,7 @@ public abstract class MessageAction extends ConnectionBoundAction {
                 new SpecificSendLayerConfiguration<>(
                         ImplementedLayers.SSHV1, protocolMessagesToSend);
         LayerConfiguration transportConfiguration =
-                new SpecificSendLayerConfiguration<>(
-                        ImplementedLayers.PACKET_LAYER, packetsToSend);
+                new SpecificSendLayerConfiguration<>(ImplementedLayers.PACKET_LAYER, packetsToSend);
 
         List<LayerConfiguration> layerConfigurationList =
                 sortLayerConfigurations(

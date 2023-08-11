@@ -22,7 +22,7 @@ public class BinaryPacketLayer extends AbstractPacketLayer {
     }
 
     @Override
-    protected void decryptPacket(AbstractPacket packet) {
+    protected void decryptPacket(AbstractPacket<?> packet) {
         if (!(packet instanceof BinaryPacket)) {
             LOGGER.warn("Decrypting received non binary packet: {}", packet);
         }

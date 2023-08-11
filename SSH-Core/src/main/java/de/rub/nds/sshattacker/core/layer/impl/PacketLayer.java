@@ -8,6 +8,7 @@
 package de.rub.nds.sshattacker.core.layer.impl;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.sshattacker.core.constants.CipherMode;
 import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.constants.PacketLayerType;
 import de.rub.nds.sshattacker.core.layer.LayerConfiguration;
@@ -23,6 +24,14 @@ import de.rub.nds.sshattacker.core.layer.stream.HintedLayerInputStream;
 import de.rub.nds.sshattacker.core.packet.AbstractPacket;
 import de.rub.nds.sshattacker.core.packet.BinaryPacket;
 import de.rub.nds.sshattacker.core.packet.BlobPacket;
+import de.rub.nds.sshattacker.core.packet.cipher.PacketCipher;
+import de.rub.nds.sshattacker.core.packet.cipher.PacketCipherFactory;
+import de.rub.nds.sshattacker.core.packet.compressor.PacketCompressor;
+import de.rub.nds.sshattacker.core.packet.compressor.PacketDecompressor;
+import de.rub.nds.sshattacker.core.packet.crypto.AbstractPacketDecryptor;
+import de.rub.nds.sshattacker.core.packet.crypto.AbstractPacketEncryptor;
+import de.rub.nds.sshattacker.core.packet.crypto.PacketDecryptor;
+import de.rub.nds.sshattacker.core.packet.crypto.PacketEncryptor;
 import de.rub.nds.sshattacker.core.packet.parser.AbstractPacketParser;
 import de.rub.nds.sshattacker.core.packet.parser.BinaryPacketParser;
 import de.rub.nds.sshattacker.core.packet.parser.BlobPacketParser;
@@ -43,9 +52,26 @@ public class PacketLayer extends ProtocolLayer<PacketLayerHint, AbstractPacket> 
     private static final Logger LOGGER = LogManager.getLogger();
     private SshContext context;
 
+    private final AbstractPacketDecryptor decryptor;
+    private final AbstractPacketEncryptor encryptor;
+
+    private final PacketCompressor compressor;
+    private final PacketDecompressor decompressor;
+
+    private int writeEpoch = 0;
+    private int readEpoch = 0;
+
     public PacketLayer(SshContext context) {
         super(ImplementedLayers.PACKET_LAYER);
         this.context = context;
+        encryptor =
+                new PacketEncryptor(
+                        PacketCipherFactory.getNoneCipher(context, CipherMode.ENCRYPT), context);
+        decryptor =
+                new PacketDecryptor(
+                        PacketCipherFactory.getNoneCipher(context, CipherMode.DECRYPT), context);
+        compressor = new PacketCompressor();
+        decompressor = new PacketDecompressor();
     }
 
     @Override
@@ -452,5 +478,37 @@ public class PacketLayer extends ProtocolLayer<PacketLayerHint, AbstractPacket> 
                                 context.getContext()));
                 return null;
         }
+    }
+
+    public PacketCipher getEncryptorCipher() {
+        return encryptor.getPacketMostRecentCipher();
+    }
+
+    public PacketCipher getDecryptorCipher() {
+        return decryptor.getPacketMostRecentCipher();
+    }
+
+    public void resetEncryptor() {
+        encryptor.removeAllCiphers();
+    }
+
+    public void resetDecryptor() {
+        decryptor.removeAllCiphers();
+    }
+
+    public AbstractPacketEncryptor getEncryptor() {
+        return encryptor;
+    }
+
+    public AbstractPacketDecryptor getDecryptor() {
+        return decryptor;
+    }
+
+    public PacketCompressor getCompressor() {
+        return compressor;
+    }
+
+    public PacketDecompressor getDecompressor() {
+        return decompressor;
     }
 }

@@ -48,7 +48,7 @@ public class ChannelManager {
                 .orElseThrow(); // should never occur with infinite stream
     }
 
-    public void handleChannelOpenMessage(ChannelOpenMessage message) {
+    public void handleChannelOpenMessage(ChannelOpenMessage<?> message) {
         final Channel channel =
                 this.createNewChannelFromDefaults(message.getSenderChannelId().getValue());
         channel.setChannelType(ChannelType.fromName(message.getChannelType().getValue()));

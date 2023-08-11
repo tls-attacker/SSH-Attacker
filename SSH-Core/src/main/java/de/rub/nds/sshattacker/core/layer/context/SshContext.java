@@ -16,6 +16,7 @@ import de.rub.nds.sshattacker.core.crypto.kex.HybridKeyExchange;
 import de.rub.nds.sshattacker.core.crypto.kex.RsaKeyExchange;
 import de.rub.nds.sshattacker.core.crypto.keys.SshPublicKey;
 import de.rub.nds.sshattacker.core.exceptions.ConfigurationException;
+import de.rub.nds.sshattacker.core.layer.impl.PacketLayer;
 import de.rub.nds.sshattacker.core.packet.cipher.PacketCipher;
 import de.rub.nds.sshattacker.core.packet.cipher.PacketCipherFactory;
 import de.rub.nds.sshattacker.core.packet.cipher.keys.KeySet;

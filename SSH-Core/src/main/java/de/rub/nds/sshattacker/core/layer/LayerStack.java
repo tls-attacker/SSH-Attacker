@@ -29,10 +29,10 @@ public class LayerStack {
 
     /**
      * The layer list, layer 0 is the highest layer, layer n is the lowest. Eg. For SSH layer 0
-     * could be the SSHv1 layer, layer 1 the ssh transport layer 2 and
-     * layer 3 the tcp transport layer, layer 4 could be the ip layer layer 5 could be the ethernet
-     * layer. Not all layers need to be defined at any time, it is perfectly fine to leave the layer
-     * stack and plug another component in which does the rest of the processing
+     * could be the SSHv1 layer, layer 1 the ssh transport layer 2 and layer 3 the tcp transport
+     * layer, layer 4 could be the ip layer layer 5 could be the ethernet layer. Not all layers need
+     * to be defined at any time, it is perfectly fine to leave the layer stack and plug another
+     * component in which does the rest of the processing
      */
     private final List<ProtocolLayer> layerList;
 

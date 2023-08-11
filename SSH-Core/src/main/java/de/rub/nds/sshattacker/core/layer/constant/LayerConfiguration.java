@@ -8,8 +8,8 @@
 package de.rub.nds.sshattacker.core.layer.constant;
 
 /**
- * Pre-defined configurations for the Layer Stack. E.g., SSHv1 will Create a Layerstack containing no SSHv2 Layer to
- * the LayerStack. Custom LayerStack have to be created manually.
+ * Pre-defined configurations for the Layer Stack. E.g., SSHv1 will Create a Layerstack containing
+ * no SSHv2 Layer to the LayerStack. Custom LayerStack have to be created manually.
  */
 public enum LayerConfiguration {
     SSHV1,

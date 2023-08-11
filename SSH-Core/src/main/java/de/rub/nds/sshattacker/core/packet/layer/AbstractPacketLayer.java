@@ -82,19 +82,19 @@ public abstract class AbstractPacketLayer {
         public abstract PacketLayerParseResult parsePacketSoftly(byte[] rawBytes, int startPosition);
     */
 
-    protected void decryptPacket(AbstractPacket packet) {
+    protected void decryptPacket(AbstractPacket<?> packet) {
         packet.prepareComputations();
         getDecryptor().decrypt(packet);
     }
 
-    protected void decompressPacket(AbstractPacket packet) {
+    protected void decompressPacket(AbstractPacket<?> packet) {
         getDecompressor().decompress(packet);
     }
 
-    public byte[] preparePacket(AbstractPacket packet) {
-        Preparator preparator = packet.getPreparator(context);
+    public byte[] preparePacket(AbstractPacket<?> packet) {
+        Preparator<?> preparator = packet.getPreparator(context);
         preparator.prepare();
-        Serializer serializer = packet.getSerializer(context);
+        Serializer<?> serializer = packet.getSerializer(context);
         return serializer.serialize();
     }
 

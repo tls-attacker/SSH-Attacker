@@ -10,4 +10,4 @@ package de.rub.nds.sshattacker.core.packet.serializer;
 import de.rub.nds.sshattacker.core.layer.data.Serializer;
 import de.rub.nds.sshattacker.core.packet.AbstractPacket;
 
-public abstract class AbstractPacketSerializer<T extends AbstractPacket> extends Serializer<T> {}
+public abstract class AbstractPacketSerializer<T extends AbstractPacket<?>> extends Serializer<T> {}

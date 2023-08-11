@@ -18,7 +18,7 @@ public abstract class AbstractPacketEncryptor extends PacketCryptoUnit {
         super(cipher);
     }
 
-    public void encrypt(AbstractPacket object) {
+    public void encrypt(AbstractPacket<?> object) {
         if (object instanceof BinaryPacket) {
             encrypt((BinaryPacket) object);
         } else if (object instanceof BlobPacket) {

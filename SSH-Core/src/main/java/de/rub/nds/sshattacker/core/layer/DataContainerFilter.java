@@ -8,7 +8,6 @@
 package de.rub.nds.sshattacker.core.layer;
 
 import de.rub.nds.sshattacker.core.layer.data.DataContainer;
-
 import java.util.function.Predicate;
 
 public abstract class DataContainerFilter implements Predicate<DataContainer<?, ?>> {
