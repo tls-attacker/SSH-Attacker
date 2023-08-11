@@ -82,7 +82,6 @@ public class NetcatWorkflow {
         while (true) {
             // noinspection BusyWait
             Thread.sleep(5000);
-            // receiveMessageHelper.receiveMessages(state.getSshContext());
         }
     }
 }

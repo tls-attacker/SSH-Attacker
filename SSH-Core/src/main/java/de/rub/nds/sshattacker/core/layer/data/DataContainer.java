@@ -11,7 +11,7 @@ import de.rub.nds.sshattacker.core.layer.context.LayerContext;
 import java.io.InputStream;
 
 /**
- * All protocol messages are abstracted with the DataContainer interface. For TLS-Attacker to work
+ * All protocol messages are abstracted with the DataContainer interface. For SSH-Attacker to work
  * with data it only needs to know how to parse, prepare, serialize and handle the message. All
  * messages must therefore provide this functionality.
  */

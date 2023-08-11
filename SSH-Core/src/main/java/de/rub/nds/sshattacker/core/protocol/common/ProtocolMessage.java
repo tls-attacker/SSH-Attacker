@@ -11,9 +11,9 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bool.ModifiableBoolean;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
-import de.rub.nds.sshattacker.core.constants.ProtocolMessageType;
-import de.rub.nds.sshattacker.core.layer.Message;
+import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.layer.context.SshContext;
+import de.rub.nds.sshattacker.core.layer.data.DataContainer;
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlTransient;
@@ -23,7 +23,7 @@ import java.util.Random;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 public abstract class ProtocolMessage<Self extends ProtocolMessage<?>>
-        extends Message<Self, SshContext> {
+        extends ModifiableVariableHolder implements DataContainer<Self, SshContext> {
 
     /** content type */
     @XmlTransient protected final boolean GOING_TO_BE_SENT_DEFAULT = true;
@@ -50,16 +50,16 @@ public abstract class ProtocolMessage<Self extends ProtocolMessage<?>>
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PLAIN_PROTOCOL_MESSAGE)
     protected ModifiableByteArray completeResultingMessage;
 
-    public ProtocolMessageType getProtocolMessageType() {
-        return protocolMessageType;
+    public MessageIdConstant getMessageIdConstant() {
+        return messageIdConstant;
     }
 
-    public void setProtocolMessageType(ProtocolMessageType protocolMessageType) {
-        this.protocolMessageType = protocolMessageType;
+    public void setMessageIdConstant(MessageIdConstant MessageIdConstant) {
+        this.messageIdConstant = MessageIdConstant;
     }
 
     /** content type */
-    @XmlTransient protected ProtocolMessageType protocolMessageType;
+    @XmlTransient protected MessageIdConstant messageIdConstant;
 
     public ProtocolMessage() {}
 

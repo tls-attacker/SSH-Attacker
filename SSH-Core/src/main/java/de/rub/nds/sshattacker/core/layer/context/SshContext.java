@@ -34,22 +34,11 @@ import de.rub.nds.tlsattacker.transport.TransportHandler;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
-import java.util.Random;
 
 public class SshContext extends LayerContext {
 
     /** Static configuration for SSH-Attacker */
     private Chooser chooser;
-
-    public Random getRandom() {
-        return random;
-    }
-
-    public void setRandom(Random random) {
-        this.random = random;
-    }
-
-    private Random random;
 
     public AbstractPacketEncryptor getEncryptor() {
         return encryptor;
@@ -251,16 +240,6 @@ public class SshContext extends LayerContext {
     /** The key set derived from the shared secret, the exchange hash, and the session ID */
     private KeySet keySet;
     // endregion
-
-    /*    public MessageLayer getMessageLayer() {
-        return messageLayer;
-    }
-
-    public void setMessageLayer(MessageLayer messageLayer) {
-        this.messageLayer = messageLayer;
-    }
-
-    private MessageLayer messageLayer = new MessageLayer(this.getContext());*/
 
     // region Connection Protocol
 

@@ -160,11 +160,11 @@ public abstract class SshAction implements Serializable, Aliasable {
                 LOGGER.warn(
                         "Cannot assign layer "
                                 + layerType.getName()
-                                + "to current LayerStack. LayerType not implemented for TLSAction.");
+                                + "to current LayerStack. LayerType not implemented for SSHAction.");
                 continue;
             }
             Optional<LayerConfiguration> layerConfiguration = Optional.empty();
-            if (layer == ImplementedLayers.SSHv1 || layer == ImplementedLayers.SSHv2) {
+            if (layer == ImplementedLayers.SSHV1 || layer == ImplementedLayers.SSHV2) {
                 layerConfiguration =
                         unsortedLayerConfigurations.stream()
                                 .filter(layerConfig -> layerConfig.getLayerType().equals(layer))

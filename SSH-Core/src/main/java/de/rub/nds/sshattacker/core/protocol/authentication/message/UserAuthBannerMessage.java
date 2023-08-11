@@ -28,23 +28,6 @@ public class UserAuthBannerMessage extends SshMessage<UserAuthBannerMessage> {
     private ModifiableInteger languageTagLength;
     private ModifiableString languageTag;
 
-    public ModifiableByteArray getData() {
-        return data;
-    }
-
-    public void setData(ModifiableByteArray data) {
-        this.data = data;
-    }
-
-    public void setData(byte[] data) {
-        if (this.data == null) {
-            this.data = new ModifiableByteArray();
-        }
-        this.data.setOriginalValue(data);
-    }
-
-    @ModifiableVariableProperty private ModifiableByteArray data;
-
     public ModifiableInteger getMessageLength() {
         return messageLength;
     }
@@ -68,6 +51,10 @@ public class UserAuthBannerMessage extends SshMessage<UserAuthBannerMessage> {
 
     public void setMessage(String message) {
         setMessage(message, false);
+    }
+
+    public void setMessage(byte[] message) {
+        setMessage(new String(message,StandardCharsets.UTF_8), false);
     }
 
     public void setMessage(ModifiableString message, boolean adjustLengthField) {

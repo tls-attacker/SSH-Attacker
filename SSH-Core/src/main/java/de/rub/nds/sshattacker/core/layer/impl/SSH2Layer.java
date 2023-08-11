@@ -40,12 +40,12 @@ public class SSH2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
     private SshContext context;
 
     public SSH2Layer(SshContext context) {
-        super(ImplementedLayers.SSHv2);
+        super(ImplementedLayers.SSHV2);
         this.context = context;
     }
 
     private void flushCollectedMessages(
-            ProtocolMessageType runningProtocolMessageType, ByteArrayOutputStream byteStream)
+            MessageIdConstant runningProtocolMessageType, ByteArrayOutputStream byteStream)
             throws IOException {
 
         LOGGER.debug(
@@ -64,7 +64,7 @@ public class SSH2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
     @Override
     public LayerProcessingResult sendConfiguration() throws IOException {
         LayerConfiguration<ProtocolMessage> configuration = getLayerConfiguration();
-        ProtocolMessageType runningProtocolMessageType = null;
+        MessageIdConstant runningProtocolMessageType = null;
         ByteArrayOutputStream collectedMessageStream = new ByteArrayOutputStream();
         if (configuration != null) {
             LOGGER.debug(
@@ -81,7 +81,7 @@ public class SSH2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
 
                 LOGGER.debug("[bro] here i am with sending the message");
 
-                runningProtocolMessageType = message.getProtocolMessageType();
+                runningProtocolMessageType = message.getMessageIdConstant();
                 processMessage(message, collectedMessageStream);
                 addProducedContainer(message);
                 flushCollectedMessages(runningProtocolMessageType, collectedMessageStream);
@@ -96,7 +96,7 @@ public class SSH2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
         if (runningProtocolMessageType == null) {
             LOGGER.debug("[bro] Protocol Message Type is null!");
         } else {
-            LOGGER.debug("ProtocolMessageType: {}", runningProtocolMessageType.getValue());
+            LOGGER.debug("ProtocolMessageType: {}", runningProtocolMessageType.getId());
         }
 
         LOGGER.debug("[bro] " + "flushing {} to lower layer", collectedMessageStream.toByteArray());
@@ -157,7 +157,7 @@ public class SSH2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
                 LayerProcessingHint tempHint = dataStream.getHint();
                 if (tempHint == null) {
                     LOGGER.warn(
-                            "The TLS message layer requires a processing hint. E.g. a record type. Parsing as an unknown message");
+                            "The SSH message layer requires a processing hint. E.g. a record type. Parsing as an unknown message");
                     readUnknownProtocolData();
                 } else if (tempHint instanceof PacketLayerHint) {
                     PacketLayerHint hint = (PacketLayerHint) dataStream.getHint();
@@ -177,13 +177,6 @@ public class SSH2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
     public void readMessageForHint(PacketLayerHint hint) {
         switch (hint.getType()) {
                 // use correct parser for the message
-
-            case AUTHENTICATION:
-                readAuthenticationProtocolData();
-                break;
-            case CONNECTION:
-                readConnectionProtocolData();
-                break;
             case ASCII_MESSAGE:
                 readASCIIData();
                 break;
@@ -797,11 +790,6 @@ public class SSH2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
 
     private void readVersionExchangeProtocolData() {
         VersionExchangeMessage message = new VersionExchangeMessage();
-        readDataContainer(message, context);
-    }
-
-    private void readConnectionProtocolData() {
-        ConnectionMessage message = new ConnectionMessage();
         readDataContainer(message, context);
     }
 

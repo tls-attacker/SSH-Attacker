@@ -452,20 +452,20 @@ public class Config implements Serializable {
     }
 
     private EncryptionAlgorithm defaultSelectedEncryptionAlgorithm =
-            EncryptionAlgorithm.AEAD_AES_256_GCM;
+            EncryptionAlgorithm.CHACHA20_POLY1305_OPENSSH_COM;
 
     public MacAlgorithm getDefaultSelectedMacAlgorithm() {
         return defaultSelectedMacAlgorithm;
     }
 
-    private MacAlgorithm defaultSelectedMacAlgorithm = MacAlgorithm.AEAD_AES_256_GCM;
+    private MacAlgorithm defaultSelectedMacAlgorithm = MacAlgorithm.UMAC_64_ETM_OPENSSH_COM;
 
     public KeyExchangeAlgorithm getDefaultSelectedKeyExchangeAlgorithm() {
         return defaultSelectedKeyExchangeAlgorithm;
     }
 
     private KeyExchangeAlgorithm defaultSelectedKeyExchangeAlgorithm =
-            KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP14_SHA256;
+            KeyExchangeAlgorithm.CURVE25519_SHA256;
 
     // region Constructors and Initialization
     public Config() {
@@ -473,7 +473,7 @@ public class Config implements Serializable {
         defaultClientConnection = new OutboundConnection("client", 65222, "localhost");
         defaultServerConnection = new InboundConnection("server", 65222, "localhost");
 
-        defaultLayerConfiguration = LayerConfiguration.SSHv2;
+        defaultLayerConfiguration = LayerConfiguration.SSHV2;
 
         // region VersionExchange initialization
         clientVersion = "SSH-2.0-OpenSSH_9.0";

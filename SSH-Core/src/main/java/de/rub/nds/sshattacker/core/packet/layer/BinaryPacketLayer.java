@@ -21,56 +21,6 @@ public class BinaryPacketLayer extends AbstractPacketLayer {
         super(context);
     }
 
-    /*@Override
-    public PacketLayerParseResult parsePacket(byte[] rawBytes, int startPosition)
-            throws ParserException {
-        try {
-            BinaryPacketParser parser =
-                    new BinaryPacketParser(
-                            rawBytes,
-                            startPosition,
-                            getDecryptorCipher(),
-                            context.getReadSequenceNumber());
-            BinaryPacket packet = parser.parse();
-            decryptPacket(packet);
-            decompressPacket(packet);
-            return new PacketLayerParseResult(packet, parser.getPointer() - startPosition);
-        } catch (ParserException e) {
-            throw new ParserException("Could not parse provided data as binary packet", e);
-        }
-    }
-
-    @Override
-    public PacketLayerParseResult parsePacketSoftly(byte[] rawBytes, int startPosition) {
-        try {
-            BinaryPacketParser parser =
-                    new BinaryPacketParser(
-                            rawBytes,
-                            startPosition,
-                            getDecryptorCipher(),
-                            context.getReadSequenceNumber());
-            BinaryPacket packet = parser.parse();
-            decryptPacket(packet);
-            decompressPacket(packet);
-            return new PacketLayerParseResult(packet, parser.getPointer() - startPosition, true);
-        } catch (ParserException e) {
-            LOGGER.debug("Could not parse binary packet, parsing as blob");
-            LOGGER.trace(e);
-            try {
-                BlobPacketParser parser = new BlobPacketParser(rawBytes, startPosition);
-                BlobPacket packet = parser.parse();
-                decryptPacket(packet);
-                decompressPacket(packet);
-                return new PacketLayerParseResult(
-                        packet, parser.getPointer() - startPosition, true);
-            } catch (ParserException ex) {
-                LOGGER.warn("Could not parse data as blob packet, dropping remaining bytes");
-                LOGGER.trace(ex);
-                return new PacketLayerParseResult(null, rawBytes.length - startPosition, true);
-            }
-        }
-    }*/
-
     @Override
     protected void decryptPacket(AbstractPacket packet) {
         if (!(packet instanceof BinaryPacket)) {

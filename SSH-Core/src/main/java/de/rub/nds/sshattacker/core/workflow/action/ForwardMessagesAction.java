@@ -118,12 +118,9 @@ public class ForwardMessagesAction extends SshAction implements ReceivingAction,
 
         initLoggingSide(receiveFromCtx);
 
-        // Reihenfolge TLS Attacker: Recive, Apply, Forward
         receiveMessages(receiveFromCtx);
         applyMessages(forwardToCtx);
         forwardMessages(forwardToCtx);
-        // handleReceivedMessages(receiveFromCtx);
-
     }
 
     protected void receiveMessages(SshContext receiveFromCtx) {
@@ -132,7 +129,7 @@ public class ForwardMessagesAction extends SshAction implements ReceivingAction,
         LayerStack layerStack = receiveFromCtx.getLayerStack();
 
         LayerConfiguration messageConfiguration =
-                new SpecificReceiveLayerConfiguration(ImplementedLayers.SSHv2, messages);
+                new SpecificReceiveLayerConfiguration(ImplementedLayers.SSHV2, messages);
 
         List<LayerConfiguration> layerConfigurationList =
                 sortLayerConfigurations(layerStack, messageConfiguration);
@@ -142,12 +139,12 @@ public class ForwardMessagesAction extends SshAction implements ReceivingAction,
         receivedMessages =
                 new ArrayList<>(
                         processingResult
-                                .getResultForLayer(ImplementedLayers.SSHv2)
+                                .getResultForLayer(ImplementedLayers.SSHV2)
                                 .getUsedContainers());
         receivedPackets =
                 new ArrayList<>(
                         processingResult
-                                .getResultForLayer(ImplementedLayers.TransportLayer)
+                                .getResultForLayer(ImplementedLayers.PACKET_LAYER)
                                 .getUsedContainers());
 
         String expected = getReadableString(receivedMessages);
@@ -179,10 +176,10 @@ public class ForwardMessagesAction extends SshAction implements ReceivingAction,
         try {
             LayerStack layerStack = forwardToCtx.getLayerStack();
             LayerConfiguration messageConfiguration =
-                    new SpecificSendLayerConfiguration(ImplementedLayers.SSHv2, receivedMessages);
+                    new SpecificSendLayerConfiguration(ImplementedLayers.SSHV2, receivedMessages);
             LayerConfiguration packetConfiguration =
                     new SpecificSendLayerConfiguration(
-                            ImplementedLayers.TransportLayer, receivedPackets);
+                            ImplementedLayers.PACKET_LAYER, receivedPackets);
 
             List<LayerConfiguration> layerConfigurationList =
                     sortLayerConfigurations(layerStack, messageConfiguration, packetConfiguration);
@@ -192,12 +189,12 @@ public class ForwardMessagesAction extends SshAction implements ReceivingAction,
             sendMessages =
                     new ArrayList<>(
                             processingResult
-                                    .getResultForLayer(ImplementedLayers.SSHv2)
+                                    .getResultForLayer(ImplementedLayers.SSHV2)
                                     .getUsedContainers());
             sendPackets =
                     new ArrayList<>(
                             processingResult
-                                    .getResultForLayer(ImplementedLayers.TransportLayer)
+                                    .getResultForLayer(ImplementedLayers.PACKET_LAYER)
                                     .getUsedContainers());
 
             executedAsPlanned = checkMessageListsEquals(sendMessages, receivedMessages);
@@ -235,7 +232,7 @@ public class ForwardMessagesAction extends SshAction implements ReceivingAction,
         executedAsPlanned = checkMessageListsEquals(messages, receivedMessages);
     }*/
     /**
-     * Apply the contents of the messages to the given TLS context.
+     * Apply the contents of the messages to the given SSH context.
      *
      * @param ctx
      */

@@ -89,10 +89,10 @@ public class ProxyFilterMessagesAction extends ForwardMessagesAction {
         try {
             LayerStack layerStack = forwardToCtx.getLayerStack();
             LayerConfiguration messageConfiguration =
-                    new SpecificSendLayerConfiguration(ImplementedLayers.SSHv2, filteredMessages);
+                    new SpecificSendLayerConfiguration(ImplementedLayers.SSHV2, filteredMessages);
             LayerConfiguration packetConfiguration =
                     new SpecificSendLayerConfiguration(
-                            ImplementedLayers.TransportLayer, receivedPackets);
+                            ImplementedLayers.PACKET_LAYER, receivedPackets);
 
             List<LayerConfiguration> layerConfigurationList =
                     sortLayerConfigurations(layerStack, messageConfiguration, packetConfiguration);
@@ -102,12 +102,12 @@ public class ProxyFilterMessagesAction extends ForwardMessagesAction {
             sendMessages =
                     new ArrayList<>(
                             processingResult
-                                    .getResultForLayer(ImplementedLayers.SSHv2)
+                                    .getResultForLayer(ImplementedLayers.SSHV2)
                                     .getUsedContainers());
             sendPackets =
                     new ArrayList<>(
                             processingResult
-                                    .getResultForLayer(ImplementedLayers.TransportLayer)
+                                    .getResultForLayer(ImplementedLayers.PACKET_LAYER)
                                     .getUsedContainers());
 
             executedAsPlanned = checkMessageListsEquals(sendMessages, filteredMessages);

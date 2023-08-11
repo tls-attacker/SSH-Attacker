@@ -39,7 +39,7 @@ public class SSH1Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
     private SshContext context;
 
     public SSH1Layer(SshContext context) {
-        super(ImplementedLayers.SSHv1);
+        super(ImplementedLayers.SSHV1);
         this.context = context;
     }
 
@@ -153,7 +153,7 @@ public class SSH1Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
             dataStream = getLowerLayer().getDataStream();
             if (dataStream.getHint() == null) {
                 LOGGER.warn(
-                        "The DTLS fragment layer requires a processing hint. E.g. a record type. Parsing as an unknown fragment");
+                        "The SSH layer requires a processing hint. E.g. a record type. Parsing as an unknown fragment");
                 currentInputStream = new HintedLayerInputStream(null, this);
                 currentInputStream.extendStream(dataStream.readAllBytes());
             } else if (dataStream.getHint() instanceof PacketLayerHint) {

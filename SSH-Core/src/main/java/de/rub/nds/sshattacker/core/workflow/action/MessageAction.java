@@ -286,13 +286,13 @@ public abstract class MessageAction extends ConnectionBoundAction {
 
         LayerConfiguration ssh2Configuration =
                 new SpecificSendLayerConfiguration<>(
-                        ImplementedLayers.SSHv2, protocolMessagesToSend);
+                        ImplementedLayers.SSHV2, protocolMessagesToSend);
         LayerConfiguration ssh1Configuration =
                 new SpecificSendLayerConfiguration<>(
-                        ImplementedLayers.SSHv1, protocolMessagesToSend);
+                        ImplementedLayers.SSHV1, protocolMessagesToSend);
         LayerConfiguration transportConfiguration =
                 new SpecificSendLayerConfiguration<>(
-                        ImplementedLayers.TransportLayer, packetsToSend);
+                        ImplementedLayers.PACKET_LAYER, packetsToSend);
 
         List<LayerConfiguration> layerConfigurationList =
                 sortLayerConfigurations(
@@ -302,27 +302,27 @@ public abstract class MessageAction extends ConnectionBoundAction {
     }
 
     private void setContainers(LayerStackProcessingResult processingResults) {
-        if (processingResults.getResultForLayer(ImplementedLayers.SSHv2) != null) {
+        if (processingResults.getResultForLayer(ImplementedLayers.SSHV2) != null) {
             messages =
                     new ArrayList<>(
                             processingResults
-                                    .getResultForLayer(ImplementedLayers.SSHv2)
+                                    .getResultForLayer(ImplementedLayers.SSHV2)
                                     .getUsedContainers());
         }
 
-        if (processingResults.getResultForLayer(ImplementedLayers.SSHv1) != null) {
+        if (processingResults.getResultForLayer(ImplementedLayers.SSHV1) != null) {
             messages =
                     new ArrayList<>(
                             processingResults
-                                    .getResultForLayer(ImplementedLayers.SSHv1)
+                                    .getResultForLayer(ImplementedLayers.SSHV1)
                                     .getUsedContainers());
         }
 
-        if (processingResults.getResultForLayer(ImplementedLayers.TransportLayer) != null) {
+        if (processingResults.getResultForLayer(ImplementedLayers.PACKET_LAYER) != null) {
             packets =
                     new ArrayList<>(
                             processingResults
-                                    .getResultForLayer(ImplementedLayers.TransportLayer)
+                                    .getResultForLayer(ImplementedLayers.PACKET_LAYER)
                                     .getUsedContainers());
         }
     }
@@ -348,11 +348,11 @@ public abstract class MessageAction extends ConnectionBoundAction {
     private List<LayerConfiguration> getGenericReceiveConfigurations(LayerStack layerStack) {
         List<LayerConfiguration> layerConfigurationList;
         LayerConfiguration messageSsh2Configuration =
-                new GenericReceiveLayerConfiguration(ImplementedLayers.SSHv2);
+                new GenericReceiveLayerConfiguration(ImplementedLayers.SSHV2);
         LayerConfiguration messageSsh1Configuration =
-                new GenericReceiveLayerConfiguration(ImplementedLayers.SSHv1);
+                new GenericReceiveLayerConfiguration(ImplementedLayers.SSHV1);
         LayerConfiguration recordConfiguration =
-                new GenericReceiveLayerConfiguration(ImplementedLayers.TransportLayer);
+                new GenericReceiveLayerConfiguration(ImplementedLayers.PACKET_LAYER);
         layerConfigurationList =
                 sortLayerConfigurations(
                         layerStack,
@@ -370,13 +370,13 @@ public abstract class MessageAction extends ConnectionBoundAction {
 
         LayerConfiguration messageSsh2Configuration =
                 new SpecificReceiveLayerConfiguration<>(
-                        ImplementedLayers.SSHv2, protocolMessagesToReceive);
+                        ImplementedLayers.SSHV2, protocolMessagesToReceive);
         LayerConfiguration messageSsh1Configuration =
                 new SpecificReceiveLayerConfiguration<>(
-                        ImplementedLayers.SSHv1, protocolMessagesToReceive);
+                        ImplementedLayers.SSHV1, protocolMessagesToReceive);
         LayerConfiguration recordConfiguration =
                 new SpecificReceiveLayerConfiguration<>(
-                        ImplementedLayers.TransportLayer, packetsToRecieve);
+                        ImplementedLayers.PACKET_LAYER, packetsToRecieve);
         if (packetsToRecieve == null || packetsToRecieve.isEmpty()) {
             // always allow (trailing) records when no records were set
             // a ReceiveAction actually intended to expect no records is pointless

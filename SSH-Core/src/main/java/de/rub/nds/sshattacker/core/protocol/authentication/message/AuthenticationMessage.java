@@ -11,7 +11,6 @@ import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.modifiablevariable.util.UnformattedByteArrayAdapter;
-import de.rub.nds.sshattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.protocol.authentication.handler.AuthenticationMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.authentication.parser.AuthenticationMessageParser;
@@ -31,12 +30,10 @@ public class AuthenticationMessage extends ProtocolMessage<AuthenticationMessage
     public AuthenticationMessage(byte[] dataConfig) {
         super();
         this.dataConfig = dataConfig;
-        this.protocolMessageType = ProtocolMessageType.AUTHENTICATION;
     }
 
     public AuthenticationMessage() {
         super();
-        this.protocolMessageType = ProtocolMessageType.AUTHENTICATION;
     }
 
     public ModifiableByteArray getData() {
