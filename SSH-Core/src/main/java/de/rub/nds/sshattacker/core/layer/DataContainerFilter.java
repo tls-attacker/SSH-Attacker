@@ -9,7 +9,9 @@ package de.rub.nds.sshattacker.core.layer;
 
 import de.rub.nds.sshattacker.core.layer.data.DataContainer;
 
-public abstract class DataContainerFilter {
+import java.util.function.Predicate;
 
-    public abstract boolean filterApplies(DataContainer container);
+public abstract class DataContainerFilter implements Predicate<DataContainer<?, ?>> {
+
+    public abstract boolean test(DataContainer<?, ?> container);
 }
