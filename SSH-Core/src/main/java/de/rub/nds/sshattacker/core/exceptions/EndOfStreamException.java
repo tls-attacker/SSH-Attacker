@@ -7,27 +7,13 @@
  */
 package de.rub.nds.sshattacker.core.exceptions;
 
-public class EndOfStreamException extends RuntimeException {
+import java.io.EOFException;
+
+public class EndOfStreamException extends EOFException {
 
     public EndOfStreamException() {}
 
     public EndOfStreamException(String message) {
         super(message);
-    }
-
-    public EndOfStreamException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    public EndOfStreamException(Throwable cause) {
-        super(cause);
-    }
-
-    public EndOfStreamException(
-            String message,
-            Throwable cause,
-            boolean enableSuppression,
-            boolean writableStackTrace) {
-        super(message, cause, enableSuppression, writableStackTrace);
     }
 }

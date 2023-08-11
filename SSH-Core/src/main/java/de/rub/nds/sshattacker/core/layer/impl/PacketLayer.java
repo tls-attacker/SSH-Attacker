@@ -224,6 +224,7 @@ public class PacketLayer extends ProtocolLayer<PacketLayerHint, AbstractPacket> 
             }
 
         } else {
+
             if (nextInputStream == null) {
                 // only set new input stream if necessary, extend current stream otherwise
                 nextInputStream = new HintedLayerInputStream(currentHint, this);
@@ -244,6 +245,7 @@ public class PacketLayer extends ProtocolLayer<PacketLayerHint, AbstractPacket> 
                                 0,
                                 packet.getCleanProtocolMessageBytes().getValue().length));
             }
+            throw new RuntimeException();
         }
     }
 

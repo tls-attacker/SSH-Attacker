@@ -167,8 +167,6 @@ public class SSH2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
             } while (shouldContinueProcessing());
         } catch (TimeoutException ex) {
             LOGGER.debug(ex);
-        } catch (EndOfStreamException ex) {
-            LOGGER.debug("Reached end of stream, cannot parse more messages", ex);
         }
 
         return getLayerResult();

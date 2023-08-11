@@ -88,5 +88,7 @@ public abstract class ChannelRequestMessage<T extends ChannelRequestMessage<T>>
     }
 
     @Override
-    public String toShortString(){return "CHANNEL_REQUEST";}
+    public String toShortString() {
+        return "CHANNEL_REQUEST";
+    }
 }
