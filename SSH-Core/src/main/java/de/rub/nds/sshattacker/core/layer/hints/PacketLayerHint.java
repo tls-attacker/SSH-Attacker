@@ -30,7 +30,6 @@ public class PacketLayerHint implements LayerProcessingHint {
         this.sequenceNumber = sequenceNumber;
     }
 
-    @Override
     public boolean equals(Object other) {
         if (other instanceof PacketLayerHint) {
             PacketLayerHint otherHint = (PacketLayerHint) other;

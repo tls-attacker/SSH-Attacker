@@ -46,9 +46,4 @@ public abstract class GlobalRequestMessageSerializer<T extends GlobalRequestMess
         serializeWantReply();
     }
 
-    @Override
-    protected byte[] serializeBytes() {
-        serializeProtocolMessageContents();
-        return getAlreadySerialized();
-    }
 }

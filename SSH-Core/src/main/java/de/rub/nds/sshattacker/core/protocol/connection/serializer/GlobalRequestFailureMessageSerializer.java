@@ -20,9 +20,4 @@ public class GlobalRequestFailureMessageSerializer
     @Override
     public void serializeMessageSpecificContents() {}
 
-    @Override
-    protected byte[] serializeBytes() {
-        serializeProtocolMessageContents();
-        return getAlreadySerialized();
-    }
 }

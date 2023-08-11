@@ -37,10 +37,4 @@ public class ServiceAcceptMessageSerializer extends SshMessageSerializer<Service
         serializeServiceName();
     }
 
-    @Override
-    protected byte[] serializeBytes() {
-        // serializeMessageSpecificContents();
-        super.serializeProtocolMessageContents();
-        return getAlreadySerialized();
-    }
 }

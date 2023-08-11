@@ -45,9 +45,4 @@ public class RsaKeyExchangePubkeyMessageSerializer
         serializeTransientPublicKey();
     }
 
-    @Override
-    protected byte[] serializeBytes() {
-        serializeProtocolMessageContents();
-        return getAlreadySerialized();
-    }
 }

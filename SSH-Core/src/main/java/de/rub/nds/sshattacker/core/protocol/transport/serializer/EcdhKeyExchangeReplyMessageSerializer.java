@@ -57,9 +57,4 @@ public class EcdhKeyExchangeReplyMessageSerializer
         serializeSignature(message);
     }
 
-    @Override
-    protected byte[] serializeBytes() {
-        serializeProtocolMessageContents();
-        return getAlreadySerialized();
-    }
 }

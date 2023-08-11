@@ -61,9 +61,4 @@ public class VersionExchangeMessageSerializer
         serializeEndOfMessageSequence();
     }
 
-    @Override
-    protected byte[] serializeBytes() {
-        serializeProtocolMessageContents();
-        return getAlreadySerialized();
-    }
 }

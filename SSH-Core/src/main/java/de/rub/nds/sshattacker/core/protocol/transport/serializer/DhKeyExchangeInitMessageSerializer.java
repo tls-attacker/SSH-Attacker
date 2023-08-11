@@ -39,9 +39,4 @@ public class DhKeyExchangeInitMessageSerializer
         serializeEphemeralPublicKey();
     }
 
-    @Override
-    protected byte[] serializeBytes() {
-        serializeProtocolMessageContents();
-        return getAlreadySerialized();
-    }
 }

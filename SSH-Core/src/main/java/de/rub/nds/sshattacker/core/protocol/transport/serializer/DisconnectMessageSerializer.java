@@ -58,9 +58,4 @@ public class DisconnectMessageSerializer extends SshMessageSerializer<Disconnect
         serializeLanguageTag();
     }
 
-    @Override
-    protected byte[] serializeBytes() {
-        serializeProtocolMessageContents();
-        return getAlreadySerialized();
-    }
 }

@@ -31,10 +31,4 @@ public class DhGexKeyExchangeOldRequestMessageSerializer
     public void serializeMessageSpecificContents() {
         serializePreferredGroupSize();
     }
-
-    @Override
-    protected byte[] serializeBytes() {
-        serializeProtocolMessageContents();
-        return getAlreadySerialized();
-    }
 }

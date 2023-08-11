@@ -49,9 +49,4 @@ public class AsciiMessageSerializer extends ProtocolMessageSerializer<AsciiMessa
         serializeEndOfMessageSequence();
     }
 
-    @Override
-    protected byte[] serializeBytes() {
-        serializeProtocolMessageContents();
-        return getAlreadySerialized();
-    }
 }

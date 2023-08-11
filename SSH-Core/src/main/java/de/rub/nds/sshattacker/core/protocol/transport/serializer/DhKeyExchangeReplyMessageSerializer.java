@@ -59,9 +59,4 @@ public class DhKeyExchangeReplyMessageSerializer
         serializeSignature();
     }
 
-    @Override
-    protected byte[] serializeBytes() {
-        serializeProtocolMessageContents();
-        return getAlreadySerialized();
-    }
 }

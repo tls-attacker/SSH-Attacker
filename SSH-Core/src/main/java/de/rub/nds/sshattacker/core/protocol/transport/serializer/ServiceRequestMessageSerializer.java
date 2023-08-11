@@ -37,9 +37,4 @@ public class ServiceRequestMessageSerializer extends SshMessageSerializer<Servic
         serializeServiceName();
     }
 
-    @Override
-    protected byte[] serializeBytes() {
-        serializeProtocolMessageContents();
-        return getAlreadySerialized();
-    }
 }

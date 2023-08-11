@@ -76,9 +76,4 @@ public class UserAuthInfoRequestMessageSerializer
         serializePrompt();
     }
 
-    @Override
-    protected byte[] serializeBytes() {
-        serializeProtocolMessageContents();
-        return getAlreadySerialized();
-    }
 }

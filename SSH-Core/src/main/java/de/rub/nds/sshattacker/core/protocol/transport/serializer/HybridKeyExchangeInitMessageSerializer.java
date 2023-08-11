@@ -60,9 +60,4 @@ public class HybridKeyExchangeInitMessageSerializer
         LOGGER.debug("HybridKeyBytes: " + ArrayConverter.bytesToHexString(keys));
     }
 
-    @Override
-    protected byte[] serializeBytes() {
-        serializeProtocolMessageContents();
-        return getAlreadySerialized();
-    }
 }

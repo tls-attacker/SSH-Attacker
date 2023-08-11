@@ -45,9 +45,4 @@ public class UserAuthBannerMessageSerializer extends SshMessageSerializer<UserAu
         serializeLanguageTag();
     }
 
-    @Override
-    protected byte[] serializeBytes() {
-        serializeProtocolMessageContents();
-        return getAlreadySerialized();
-    }
 }

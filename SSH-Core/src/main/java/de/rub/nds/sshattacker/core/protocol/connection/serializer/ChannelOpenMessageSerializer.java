@@ -54,9 +54,4 @@ public abstract class ChannelOpenMessageSerializer<T extends ChannelOpenMessage<
         serializePacketSize();
     }
 
-    @Override
-    protected byte[] serializeBytes() {
-        serializeProtocolMessageContents();
-        return getAlreadySerialized();
-    }
 }

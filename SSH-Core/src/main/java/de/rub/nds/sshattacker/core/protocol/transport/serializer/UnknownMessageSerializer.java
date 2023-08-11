@@ -27,9 +27,4 @@ public class UnknownMessageSerializer extends SshMessageSerializer<UnknownMessag
         appendBytes(message.getPayload().getValue());
     }
 
-    @Override
-    protected byte[] serializeBytes() {
-        serializeProtocolMessageContents();
-        return getAlreadySerialized();
-    }
 }

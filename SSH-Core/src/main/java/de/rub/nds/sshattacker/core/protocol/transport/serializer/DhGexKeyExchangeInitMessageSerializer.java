@@ -38,10 +38,4 @@ public class DhGexKeyExchangeInitMessageSerializer
     public void serializeMessageSpecificContents() {
         serializeEphemeralPublicKey();
     }
-
-    @Override
-    protected byte[] serializeBytes() {
-        serializeProtocolMessageContents();
-        return getAlreadySerialized();
-    }
 }
