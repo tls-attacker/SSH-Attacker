@@ -43,10 +43,4 @@ public class DhGexKeyExchangeRequestMessageSerializer
         serializePreferredGroupSize();
         serializeMaximalGroupSize();
     }
-
-    @Override
-    protected byte[] serializeBytes() {
-        serializeProtocolMessageContents();
-        return getAlreadySerialized();
-    }
 }

@@ -118,17 +118,6 @@ public class SSH2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
         message.setCompleteResultingMessage(serializedMessage);
 
         collectedMessageStream.writeBytes(message.getCompleteResultingMessage().getValue());
-
-        /*   if (message.getCompleteResultingMessage().getValue()[0]
-                        == ProtocolMessageType.SSH_MSG_NEWKEYS.getValue()
-                || message.getCompleteResultingMessage().getValue()[0]
-                        == ProtocolMessageType.SSH_MSG_KEXINIT.getValue()) {
-            message.getHandler(context).adjustContextAfterMessageSent(message);
-        } else {
-            LOGGER.info(
-                    "[bro] Adjusting Context while messagetype is {}",
-                    message.getCompleteResultingMessage().getValue()[0]);
-        }*/
     }
 
     @Override
@@ -265,32 +254,6 @@ public class SSH2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
             LOGGER.warn("The lower layer did not produce a data stream: ", e);
             return;
         }
-
-        /* int length = 0;
-
-        try {
-            length = inputStream.available();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
-
-        try {
-            LOGGER.info("remainign in Inpustream: {}", inputStream.available());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
-        byte[] data = new byte[length];
-
-        try {
-            inputStream.read(data);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
-        HintedInputStream copied_inputstream = new HintedInputStreamAdapterStream(null, new ByteArrayInputStream(data)); */
-
         UserAuthUnknownMessageParser parser = new UserAuthUnknownMessageParser(inputStream);
         parser.parse(userAuthUnknownMessage);
         String methodString = userAuthUnknownMessage.getMethodName().getValue();
@@ -391,31 +354,6 @@ public class SSH2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
             LOGGER.warn("The lower layer did not produce a data stream: ", e);
             return;
         }
-
-        /* int length = 0;
-
-        try {
-            length = inputStream.available();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
-
-        try {
-            LOGGER.info("remainign in Inpustream: {}", inputStream.available());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
-        byte[] data = new byte[length];
-
-        try {
-            inputStream.read(data);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
-        HintedInputStream copied_inputstream = new HintedInputStreamAdapterStream(null, new ByteArrayInputStream(data)); */
 
         ChannelRequestUnknownMessageParser parser =
                 new ChannelRequestUnknownMessageParser(inputStream);

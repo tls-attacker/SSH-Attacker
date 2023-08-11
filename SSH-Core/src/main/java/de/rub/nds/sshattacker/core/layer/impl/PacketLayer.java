@@ -190,7 +190,7 @@ public class PacketLayer extends ProtocolLayer<PacketLayerHint, AbstractPacket> 
                 "[bro] Decompressed Payload: {}",
                 ArrayConverter.bytesToHexString(packet.getPayload()));
 
-        packet.setCleanProtocolMessageBytes(packet.getPayload());
+        packet.setPayload(packet.getPayload());
 
         addProducedContainer(packet);
         PacketLayerHint currentHint;
@@ -209,18 +209,18 @@ public class PacketLayer extends ProtocolLayer<PacketLayerHint, AbstractPacket> 
             }
             // currentInputStream.extendStream(packet.getCleanProtocolMessageBytes().getValue());
             // if only one byte is to transmit - transmit it alone
-            if (packet.getCleanProtocolMessageBytes().getValue().length == 1) {
+            if (packet.getPayload().getValue().length == 1) {
                 currentInputStream.extendStream(
                         Arrays.copyOfRange(
-                                packet.getCleanProtocolMessageBytes().getValue(),
+                                packet.getPayload().getValue(),
                                 0,
-                                packet.getCleanProtocolMessageBytes().getValue().length));
+                                packet.getPayload().getValue().length));
             } else {
                 currentInputStream.extendStream(
                         Arrays.copyOfRange(
-                                packet.getCleanProtocolMessageBytes().getValue(),
+                                packet.getPayload().getValue(),
                                 0,
-                                packet.getCleanProtocolMessageBytes().getValue().length));
+                                packet.getPayload().getValue().length));
             }
 
         } else {
@@ -232,18 +232,18 @@ public class PacketLayer extends ProtocolLayer<PacketLayerHint, AbstractPacket> 
                 nextInputStream.setHint(currentHint);
             }
             // nextInputStream.extendStream(packet.getCleanProtocolMessageBytes().getValue());
-            if (packet.getCleanProtocolMessageBytes().getValue().length == 1) {
+            if (packet.getPayload().getValue().length == 1) {
                 nextInputStream.extendStream(
                         Arrays.copyOfRange(
-                                packet.getCleanProtocolMessageBytes().getValue(),
+                                packet.getPayload().getValue(),
                                 0,
-                                packet.getCleanProtocolMessageBytes().getValue().length));
+                                packet.getPayload().getValue().length));
             } else {
                 nextInputStream.extendStream(
                         Arrays.copyOfRange(
-                                packet.getCleanProtocolMessageBytes().getValue(),
+                                packet.getPayload().getValue(),
                                 0,
-                                packet.getCleanProtocolMessageBytes().getValue().length));
+                                packet.getPayload().getValue().length));
             }
             throw new RuntimeException();
         }
@@ -276,15 +276,10 @@ public class PacketLayer extends ProtocolLayer<PacketLayerHint, AbstractPacket> 
         }
 
         MessageIdConstant id =
-                MessageIdConstant.fromId(
-                        packet.getCleanProtocolMessageBytes().getValue()[0], context.getContext());
-        LOGGER.debug(
-                "[bro] Identifier: {} and constant {}",
-                packet.getCleanProtocolMessageBytes().getValue()[0],
-                id);
+                MessageIdConstant.fromId(packet.getPayload().getValue()[0], context.getContext());
+        LOGGER.debug("[bro] Identifier: {} and constant {}", packet.getPayload().getValue()[0], id);
 
-        switch (MessageIdConstant.fromId(
-                packet.getCleanProtocolMessageBytes().getValue()[0], context.getContext())) {
+        switch (MessageIdConstant.fromId(packet.getPayload().getValue()[0], context.getContext())) {
             case SSH_MSG_DISCONNECT:
                 LOGGER.debug("[bro] returning SSH_MSG_DISCONNECT Hint");
                 return new PacketLayerHint(MessageIdConstant.SSH_MSG_DISCONNECT);
@@ -477,8 +472,7 @@ public class PacketLayer extends ProtocolLayer<PacketLayerHint, AbstractPacket> 
                         "[bro] cannot identifie {} as {} - returningn null",
                         raw[1],
                         MessageIdConstant.fromId(
-                                packet.getCleanProtocolMessageBytes().getValue()[0],
-                                context.getContext()));
+                                packet.getPayload().getValue()[0], context.getContext()));
                 return null;
         }
     }

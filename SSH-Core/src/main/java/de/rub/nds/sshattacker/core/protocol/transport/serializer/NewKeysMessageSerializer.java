@@ -18,11 +18,4 @@ public class NewKeysMessageSerializer extends SshMessageSerializer<NewKeysMessag
 
     @Override
     public void serializeMessageSpecificContents() {}
-
-    @Override
-    protected byte[] serializeBytes() {
-        super.serializeProtocolMessageContents();
-        // serializeMessageSpecificContents();
-        return getAlreadySerialized();
-    }
 }

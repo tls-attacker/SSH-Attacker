@@ -31,15 +31,6 @@ public class BinaryPacketParser extends AbstractPacketParser<BinaryPacket> {
      */
     private final int sequenceNumber;
 
-    /*
-        public BinaryPacketParser(
-                byte[] array, int startPosition, PacketCipher activeDecryptCipher, int sequenceNumber) {
-            super(array, startPosition);
-            this.activeDecryptCipher = activeDecryptCipher;
-            this.sequenceNumber = sequenceNumber;
-        }
-    */
-
     public BinaryPacketParser(
             InputStream stream, PacketCipher activeDecryptCipher, int sequenceNumber) {
         super(stream);

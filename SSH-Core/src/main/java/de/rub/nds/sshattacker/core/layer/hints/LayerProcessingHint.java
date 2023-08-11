@@ -11,8 +11,4 @@ package de.rub.nds.sshattacker.core.layer.hints;
  * Lower layers sometimes need a hint for which data they need to receive. This a
  * LayerProcessingHint carries the necessary information.
  */
-public interface LayerProcessingHint {
-
-    @Override
-    public boolean equals(Object o);
-}
+public interface LayerProcessingHint {}

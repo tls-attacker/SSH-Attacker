@@ -39,14 +39,6 @@ public abstract class AbstractPacket<Self extends AbstractPacket<?>>
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PLAIN_PROTOCOL_MESSAGE)
     private ModifiableByteArray payload;
 
-    public ModifiableByteArray getCleanProtocolMessageBytes() {
-        return cleanProtocolMessageBytes;
-    }
-
-    public void setCleanProtocolMessageBytes(ModifiableByteArray cleanProtocolMessageBytes) {
-        this.cleanProtocolMessageBytes = cleanProtocolMessageBytes;
-    }
-
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PLAIN_PROTOCOL_MESSAGE)
     private ModifiableByteArray cleanProtocolMessageBytes;
 
@@ -91,16 +83,17 @@ public abstract class AbstractPacket<Self extends AbstractPacket<?>>
                 ModifiableVariableFactory.safelySetValue(this.compressedPayload, compressedPayload);
     }
 
+    public void setPayload(byte[] payload) {
+        this.payload = ModifiableVariableFactory.safelySetValue(this.payload, payload);
+    }
+
     public ModifiableByteArray getPayload() {
         return payload;
     }
 
     public void setPayload(ModifiableByteArray payload) {
+        // this.cleanProtocolMessageBytes = cleanProtocolMessageBytes;
         this.payload = payload;
-    }
-
-    public void setPayload(byte[] payload) {
-        this.payload = ModifiableVariableFactory.safelySetValue(this.payload, payload);
     }
 
     public abstract void prepareComputations();

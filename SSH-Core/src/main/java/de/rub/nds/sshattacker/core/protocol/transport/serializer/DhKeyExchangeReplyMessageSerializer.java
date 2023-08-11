@@ -58,10 +58,4 @@ public class DhKeyExchangeReplyMessageSerializer
         serializeEphemeralPublicKey();
         serializeSignature();
     }
-
-    @Override
-    protected byte[] serializeBytes() {
-        serializeProtocolMessageContents();
-        return getAlreadySerialized();
-    }
 }

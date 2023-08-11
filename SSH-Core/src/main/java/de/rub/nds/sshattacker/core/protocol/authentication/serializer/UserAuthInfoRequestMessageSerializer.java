@@ -75,10 +75,4 @@ public class UserAuthInfoRequestMessageSerializer
         serializeLanguageTag();
         serializePrompt();
     }
-
-    @Override
-    protected byte[] serializeBytes() {
-        serializeProtocolMessageContents();
-        return getAlreadySerialized();
-    }
 }
