@@ -56,6 +56,6 @@ public class UnimplementedMessage extends SshMessage<UnimplementedMessage> {
 
     @Override
     public String toShortString() {
-        return "UNIMPLEMENTED_MESSAGE";
+        return "UNIMPLEMENTED";
     }
 }

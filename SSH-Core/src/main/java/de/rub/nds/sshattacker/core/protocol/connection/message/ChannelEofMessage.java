@@ -38,6 +38,6 @@ public class ChannelEofMessage extends ChannelMessage<ChannelEofMessage> {
 
     @Override
     public String toShortString() {
-        return "CHAN_EOF";
+        return "CHANNEL_EOF";
     }
 }

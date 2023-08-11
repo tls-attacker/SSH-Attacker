@@ -204,6 +204,6 @@ public class UserAuthInfoRequestMessage extends SshMessage<UserAuthInfoRequestMe
 
     @Override
     public String toShortString() {
-        return "AUTH_INFO_REQUEST";
+        return "USERAUTH_REQUEST";
     }
 }

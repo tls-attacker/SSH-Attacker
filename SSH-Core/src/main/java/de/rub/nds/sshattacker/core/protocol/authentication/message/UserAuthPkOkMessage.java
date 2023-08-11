@@ -132,6 +132,6 @@ public class UserAuthPkOkMessage extends SshMessage<UserAuthPkOkMessage> {
 
     @Override
     public String toShortString() {
-        return "AUTH_OK";
+        return "USERAUTH_PK_OK";
     }
 }

@@ -148,6 +148,6 @@ public class DebugMessage extends SshMessage<DebugMessage> {
 
     @Override
     public String toShortString() {
-        return "DEBUG_MSG";
+        return "DEBUG";
     }
 }

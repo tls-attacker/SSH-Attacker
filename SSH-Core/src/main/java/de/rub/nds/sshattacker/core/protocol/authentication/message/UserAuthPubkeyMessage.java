@@ -189,6 +189,6 @@ public class UserAuthPubkeyMessage extends UserAuthRequestMessage<UserAuthPubkey
 
     @Override
     public String toShortString() {
-        return "USERAUTHPUBKEY";
+        return "USERAUTH_REQUEST";
     }
 }

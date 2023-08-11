@@ -82,6 +82,6 @@ public class ChannelDataMessage extends ChannelMessage<ChannelDataMessage> {
 
     @Override
     public String toShortString() {
-        return "CHANDAT";
+        return "CHANNEL_DATA";
     }
 }

@@ -38,6 +38,6 @@ public class GlobalRequestFailureMessage extends ChannelMessage<GlobalRequestFai
 
     @Override
     public String toShortString() {
-        return "REQ_FAILURE";
+        return "REQUEST_FAILURE";
     }
 }

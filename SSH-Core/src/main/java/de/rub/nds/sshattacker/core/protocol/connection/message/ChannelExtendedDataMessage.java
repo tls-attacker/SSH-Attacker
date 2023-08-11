@@ -108,6 +108,6 @@ public class ChannelExtendedDataMessage extends ChannelMessage<ChannelExtendedDa
 
     @Override
     public String toShortString() {
-        return "CHANEXTEND";
+        return "CHANNEL_EXTENDED_DATA";
     }
 }

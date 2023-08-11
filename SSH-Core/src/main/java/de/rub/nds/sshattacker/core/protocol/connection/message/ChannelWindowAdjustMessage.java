@@ -54,7 +54,7 @@ public class ChannelWindowAdjustMessage extends ChannelMessage<ChannelWindowAdju
 
     @Override
     public String toShortString() {
-        return "CH_WINDOW_ADJ";
+        return "CHANNEL_WINDOW_ADJUST";
     }
 
     @Override

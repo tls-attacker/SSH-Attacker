@@ -140,6 +140,6 @@ public class ChannelOpenFailureMessage extends ChannelMessage<ChannelOpenFailure
 
     @Override
     public String toShortString() {
-        return "OPENFAIL";
+        return "CHANNEL_OPEN_FAILURE";
     }
 }

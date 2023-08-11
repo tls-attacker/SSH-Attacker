@@ -132,6 +132,6 @@ public class UserAuthBannerMessage extends SshMessage<UserAuthBannerMessage> {
 
     @Override
     public String toShortString() {
-        return "AUTHBANNER";
+        return "USERAUTH_BANNER";
     }
 }

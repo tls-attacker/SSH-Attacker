@@ -81,6 +81,6 @@ public class ChannelOpenConfirmationMessage extends ChannelMessage<ChannelOpenCo
 
     @Override
     public String toShortString() {
-        return "CHANNEL_OPEN";
+        return "CHANNEL_OPEN_CONFIRMATION";
     }
 }

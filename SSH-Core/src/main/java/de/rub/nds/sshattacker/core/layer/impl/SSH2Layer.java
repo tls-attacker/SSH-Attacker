@@ -773,11 +773,6 @@ public class SSH2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
         readDataContainer(message, context);
     }
 
-    private void readAuthenticationProtocolData() {
-        AuthenticationMessage message = new AuthenticationMessage();
-        readDataContainer(message, context);
-    }
-
     private void readKexInitProtocolData() {
         KeyExchangeInitMessage message = new KeyExchangeInitMessage();
         readDataContainer(message, context);
