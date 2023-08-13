@@ -18,8 +18,10 @@ import java.math.BigInteger;
 import java.nio.charset.Charset;
 import java.security.*;
 import java.security.spec.*;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Base64;
+import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -27,13 +29,27 @@ public final class KeyParser {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public KeyParser() {}
+    private KeyParser() {}
 
-    public static SshPublicKey readPublicKeyFromBytes(String path) {
+    /**
+     * Reads a private key from a file and returns it as an SshPublicKey, only containing the public
+     * component of the key
+     *
+     * @param path path to the file containing the public key
+     * @return
+     */
+    public static SshPublicKey<?, ?> readPublicKeyFromBytes(String path) {
         InputStream inputStream = KeyParser.class.getClassLoader().getResourceAsStream(path);
-        byte[] publicKeyBytes = new byte[0];
+        byte[] publicKeyBytes;
         try {
             publicKeyBytes = inputStream.readAllBytes();
+            if (publicKeyBytes == null) {
+                LOGGER.error(
+                        "Error occured reading user key:"
+                                + path
+                                + ", continue without adding key!");
+                return null;
+            }
         } catch (IOException e) {
             LOGGER.error(
                     "Error occured reading user key:" + path + ", continue without adding key!");
@@ -44,17 +60,31 @@ public final class KeyParser {
         return PublicKeyHelper.parse(Arrays.copyOfRange(keyBytes, offset, keyBytes.length));
     }
 
-    public static SshPublicKey readKeyPairFromBytes(String path) {
+    /**
+     * Reads a private key from a file and returns it as an SshPrivateKey, containing both key
+     * components
+     *
+     * @param path path to the file containing the private key
+     * @return
+     */
+    public static SshPublicKey<?, ?> readKeyPairFromBytes(String path) {
         InputStream inputStream = KeyParser.class.getClassLoader().getResourceAsStream(path);
-        byte[] privateKeyBytes = new byte[0];
+        byte[] privateKeyBytes;
         try {
             privateKeyBytes = inputStream.readAllBytes();
+            if (privateKeyBytes == null) {
+                LOGGER.error(
+                        "Error occured reading user key:"
+                                + path
+                                + ", continue without adding key!");
+                return null;
+            }
         } catch (IOException e) {
             LOGGER.error(
                     "Error occured reading user key: " + path + ", continue without adding key!");
             return null;
         }
-        byte[] keyBytes = new byte[0];
+        byte[] keyBytes;
         try {
             keyBytes = unwrapPrivateKeyBytes(privateKeyBytes);
         } catch (IllegalArgumentException e) {
@@ -78,18 +108,8 @@ public final class KeyParser {
                             + path);
             return null;
         }
-
-        // 32-bit length, "none"   # ciphername length and string
-        // 32-bit length, "none"   # kdfname length and string
-        // 32-bit length, nil      # kdf (0 length, no kdf)
-        // 32-bit 0x01             # number of keys, hard-coded to 1 (no length)
-        // 32-bit length, sshpub   # public key in ssh format
-        //    32-bit length, keytype
-        //    32-bit length, pub0
-        //    32-bit length, pub1
         // in this case we need to add +1 on the parser, because the string is finished with a
         // null-byte, but would be interpreted wrong by Java
-
         offset = offset + 1;
         BigInteger lengthCipherName =
                 new BigInteger(
@@ -118,7 +138,8 @@ public final class KeyParser {
                                 keyBytes,
                                 offset,
                                 offset = offset + DataFormatConstants.MPINT_SIZE_LENGTH));
-        if (lengthKdf.intValue() != 0) {}
+        if (lengthKdf.intValue() != 0) { // ToDo
+        }
         BigInteger numberOfKeys =
                 new BigInteger(
                         Arrays.copyOfRange(
@@ -147,6 +168,12 @@ public final class KeyParser {
         return sshPublicKey;
     }
 
+    /**
+     * Parses a private key, first analysing which pubkey type needs to be parsed
+     *
+     * @param keyBytes the key bytes to parse
+     * @return a CustomPrivateKey containing the parsed key
+     */
     public static CustomPrivateKey parsePrivateKey(byte[] keyBytes) {
         int offset = 0;
         offset = offset + 12;
@@ -187,6 +214,12 @@ public final class KeyParser {
         }
     }
 
+    /**
+     * Reads a RSA private key from the given key bytes
+     *
+     * @param keyBytes the key bytes to read
+     * @return a CustomRsaPrivateKey containing the parsed key
+     */
     public static CustomRsaPrivateKey readRsaPrivateKey(byte[] keyBytes) {
         int offset = 0;
         BigInteger lengthN =
@@ -220,6 +253,12 @@ public final class KeyParser {
         return new CustomRsaPrivateKey(d, n);
     }
 
+    /**
+     * Reads a ECDSA private key from the given key bytes
+     *
+     * @param keyBytes the key bytes to read
+     * @return a CustomEcPrivateKey containing the parsed key
+     */
     public static CustomEcPrivateKey readEcdsaPrivateKey(byte[] keyBytes) {
         int offset = 0;
         BigInteger curveSpeclength =
@@ -256,6 +295,12 @@ public final class KeyParser {
         return new CustomEcPrivateKey(privateKey, NamedEcGroup.fromIdentifier(curveSpec));
     }
 
+    /**
+     * Reads a Ed25519 private key from the given key bytes
+     *
+     * @param keyBytes the key bytes to read
+     * @return a XCurveEcPrivateKey containing the parsed key
+     */
     public static XCurveEcPrivateKey readEd25519PrivateKey(byte[] keyBytes) {
         int offset = 0;
         BigInteger lengthCoordinate =
@@ -280,6 +325,12 @@ public final class KeyParser {
         return new XCurveEcPrivateKey(scalar, NamedEcGroup.CURVE25519);
     }
 
+    /**
+     * Reads a DSA private key from the given key bytes
+     *
+     * @param keyBytes the key bytes to read
+     * @return a CustomDsaPrivateKey containing the parsed key
+     */
     public static CustomDsaPrivateKey readDsaPrivateKey(byte[] keyBytes) {
         int offset = 0;
         BigInteger lengthP =
@@ -328,6 +379,12 @@ public final class KeyParser {
         return new CustomDsaPrivateKey(p, q, g, x);
     }
 
+    /**
+     * Unwraps the public key bytes from the public key file
+     *
+     * @param publicKeyBytes the public key bytes
+     * @return
+     */
     public static byte[] unwrapPublicKeyBytes(byte[] publicKeyBytes) {
         // pubkey structure ssh-rsa AAAAB3NzaC1yc2E...Q02P1Eamz/nT4I3 root@localhost thus we want to
         // cut the last part of the pubkey holding the ownership
@@ -343,10 +400,15 @@ public final class KeyParser {
                         .replace(" ", "")
                         .replace("=", "")
                         .replaceAll(System.lineSeparator(), "");
-        byte[] keyBytes = Base64.getDecoder().decode(unwrappedKey);
-        return keyBytes;
+        return Base64.getDecoder().decode(unwrappedKey);
     }
 
+    /**
+     * Unwraps the private key bytes from the keyfile
+     *
+     * @param privateKeyBytes the private key bytes
+     * @return
+     */
     private static byte[] unwrapPrivateKeyBytes(byte[] privateKeyBytes) {
         // replacements for private key
         // == are not accepted as Base64 Java encoding so we need to cut them off too
@@ -360,5 +422,29 @@ public final class KeyParser {
                         .replace("=", "");
         byte[] keyBytes = Base64.getDecoder().decode(unwrappedKey);
         return keyBytes;
+    }
+
+    /**
+     * Parses the hostkey blob into a list of hostkeys
+     *
+     * @param hostkeyBlob the hostkey blob
+     * @return
+     */
+    public static List<SshPublicKey<?, ?>> parseHostkeyBlob(byte[] hostkeyBlob) {
+        int offset = 0;
+        List<SshPublicKey<?, ?>> hostKeyList = new ArrayList<>();
+        while (offset < hostkeyBlob.length) {
+            BigInteger lengthKey =
+                    new BigInteger(
+                            Arrays.copyOfRange(
+                                    hostkeyBlob,
+                                    offset,
+                                    offset = offset + DataFormatConstants.MPINT_SIZE_LENGTH));
+            hostKeyList.add(
+                    PublicKeyHelper.parse(
+                            Arrays.copyOfRange(
+                                    hostkeyBlob, offset, offset = offset + lengthKey.intValue())));
+        }
+        return hostKeyList;
     }
 }

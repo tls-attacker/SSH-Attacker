@@ -13,6 +13,7 @@ import de.rub.nds.sshattacker.core.protocol.connection.parser.GlobalRequestOpenS
 import de.rub.nds.sshattacker.core.protocol.connection.preparator.GlobalRequestOpenSshHostKeysMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.connection.serializer.GlobalRequestOpenSshHostKeysMessageSerializer;
 import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.util.KeyParser;
 
 public class GlobalRequestOpenSshHostKeysMessageHandler
         extends SshMessageHandler<GlobalRequestOpenSshHostKeysMessage> {
@@ -27,7 +28,10 @@ public class GlobalRequestOpenSshHostKeysMessageHandler
     }
 
     @Override
-    public void adjustContext() {}
+    public void adjustContext() {
+        // this parses the hostkeyblob and sets the hostkeys in the context
+        context.setServerHostKeys(KeyParser.parseHostkeyBlob(message.getHostKeys().getValue()));
+    }
 
     @Override
     public SshMessageParser<GlobalRequestOpenSshHostKeysMessage> getParser(byte[] array) {
