@@ -159,6 +159,8 @@ public class BinaryPacketParser extends AbstractPacketParser<BinaryPacket> {
          *  byte[n] ciphertext      ; n = 4 + packet_length (decryption of first block required)
          *  byte[m] mac             ; m = length of mac output
          */
+
+        LOGGER.debug("I can mark: {}", getStream().markSupported());
         // int pointer = getPointer();
         int blockSize = activeDecryptCipher.getEncryptionAlgorithm().getBlockSize();
         int decryptedByteCount = 0;

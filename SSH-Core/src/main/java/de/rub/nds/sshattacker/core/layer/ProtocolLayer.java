@@ -258,7 +258,6 @@ public abstract class ProtocolLayer<
     protected void readContainerFromStream(
             ContainerT container, LayerContext context, HintedInputStream inputStream) {
         Parser parser = container.getParser(context, inputStream);
-
         try {
             parser.parse(container);
             Handler handler = container.getHandler(context);
