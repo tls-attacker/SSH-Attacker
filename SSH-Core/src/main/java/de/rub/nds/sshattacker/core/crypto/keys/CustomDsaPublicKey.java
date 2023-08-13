@@ -14,6 +14,7 @@ import java.math.BigInteger;
 import java.security.interfaces.DSAParams;
 import java.security.interfaces.DSAPublicKey;
 import java.security.spec.DSAParameterSpec;
+import java.util.Objects;
 
 /** A serializable DSA public key used in the DSA signature algorithm. */
 @XmlRootElement
@@ -82,5 +83,21 @@ public class CustomDsaPublicKey extends CustomPublicKey implements DSAPublicKey 
     @Override
     public String getAlgorithm() {
         return "DSA";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        CustomDsaPublicKey that = (CustomDsaPublicKey) o;
+        return Objects.equals(p, that.p)
+                && Objects.equals(q, that.q)
+                && Objects.equals(g, that.g)
+                && Objects.equals(y, that.y);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(p, q, g, y);
     }
 }

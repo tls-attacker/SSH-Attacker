@@ -14,6 +14,7 @@ import java.math.BigInteger;
 import java.security.interfaces.DSAParams;
 import java.security.interfaces.DSAPrivateKey;
 import java.security.spec.DSAParameterSpec;
+import java.util.Objects;
 
 /** A serializable DSA private key used in the DSA signature algorithm. */
 @XmlRootElement
@@ -82,5 +83,21 @@ public class CustomDsaPrivateKey extends CustomPrivateKey implements DSAPrivateK
     @Override
     public DSAParams getParams() {
         return new DSAParameterSpec(p, q, g);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        CustomDsaPrivateKey that = (CustomDsaPrivateKey) o;
+        return Objects.equals(p, that.p)
+                && Objects.equals(q, that.q)
+                && Objects.equals(g, that.g)
+                && Objects.equals(x, that.x);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(p, q, g, x);
     }
 }

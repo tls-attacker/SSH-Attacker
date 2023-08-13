@@ -20,6 +20,8 @@ import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.X509EncodedKeySpec;
+import java.util.Arrays;
+import java.util.Objects;
 import org.bouncycastle.asn1.edec.EdECObjectIdentifiers;
 import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
 import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;
@@ -111,5 +113,20 @@ public class XCurveEcPublicKey extends CustomPublicKey {
     @Override
     public byte[] getEncoded() {
         return coordinate;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        XCurveEcPublicKey that = (XCurveEcPublicKey) o;
+        return group == that.group && Arrays.equals(coordinate, that.coordinate);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = Objects.hash(group);
+        result = 31 * result + Arrays.hashCode(coordinate);
+        return result;
     }
 }

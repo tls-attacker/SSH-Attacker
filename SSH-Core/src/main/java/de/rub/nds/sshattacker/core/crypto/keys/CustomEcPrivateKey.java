@@ -19,6 +19,7 @@ import java.security.interfaces.ECPrivateKey;
 import java.security.spec.ECGenParameterSpec;
 import java.security.spec.ECParameterSpec;
 import java.security.spec.InvalidParameterSpecException;
+import java.util.Objects;
 
 /**
  * A serializable elliptic curve private key used in various EC-based algorithms like ECDH and
@@ -96,5 +97,18 @@ public class CustomEcPrivateKey extends CustomPrivateKey implements ECPrivateKey
     @Override
     public byte[] getEncoded() {
         return ArrayConverter.bigIntegerToByteArray(privateKey);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        CustomEcPrivateKey that = (CustomEcPrivateKey) o;
+        return group == that.group && Objects.equals(privateKey, that.privateKey);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(group, privateKey);
     }
 }
