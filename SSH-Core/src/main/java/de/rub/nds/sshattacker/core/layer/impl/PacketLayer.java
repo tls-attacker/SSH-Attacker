@@ -42,7 +42,6 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
@@ -195,7 +194,10 @@ public class PacketLayer extends ProtocolLayer<PacketLayerHint, AbstractPacket> 
         addProducedContainer(packet);
         PacketLayerHint currentHint;
 
-        // currentHint = new PacketLayerHint(packet.getContentMessageType());
+        /*        currentHint =
+        new PacketLayerHint(
+                MessageIdConstant.fromId(
+                        packet.getPayload().getValue()[0], context.getContext()));*/
         currentHint = parseMessageId(packet, context);
 
         LOGGER.debug("[bro] got hint: " + currentHint.getType());
@@ -207,21 +209,7 @@ public class PacketLayer extends ProtocolLayer<PacketLayerHint, AbstractPacket> 
             } else {
                 currentInputStream.setHint(currentHint);
             }
-            // currentInputStream.extendStream(packet.getCleanProtocolMessageBytes().getValue());
-            // if only one byte is to transmit - transmit it alone
-            if (packet.getPayload().getValue().length == 1) {
-                currentInputStream.extendStream(
-                        Arrays.copyOfRange(
-                                packet.getPayload().getValue(),
-                                0,
-                                packet.getPayload().getValue().length));
-            } else {
-                currentInputStream.extendStream(
-                        Arrays.copyOfRange(
-                                packet.getPayload().getValue(),
-                                0,
-                                packet.getPayload().getValue().length));
-            }
+            currentInputStream.extendStream(packet.getPayload().getValue());
 
         } else {
 
@@ -231,21 +219,7 @@ public class PacketLayer extends ProtocolLayer<PacketLayerHint, AbstractPacket> 
             } else {
                 nextInputStream.setHint(currentHint);
             }
-            // nextInputStream.extendStream(packet.getCleanProtocolMessageBytes().getValue());
-            if (packet.getPayload().getValue().length == 1) {
-                nextInputStream.extendStream(
-                        Arrays.copyOfRange(
-                                packet.getPayload().getValue(),
-                                0,
-                                packet.getPayload().getValue().length));
-            } else {
-                nextInputStream.extendStream(
-                        Arrays.copyOfRange(
-                                packet.getPayload().getValue(),
-                                0,
-                                packet.getPayload().getValue().length));
-            }
-            throw new RuntimeException();
+            nextInputStream.extendStream(packet.getPayload().getValue());
         }
     }
 
