@@ -121,7 +121,6 @@ public class TcpLayer extends ProtocolLayer<LayerProcessingHint, DataContainer> 
 
     @Override
     public LayerProcessingResult receiveData() {
-        LOGGER.debug("TCP-Layer ist Recieving Data now");
         return new LayerProcessingResult(null, getLayerType(), true);
     }
 

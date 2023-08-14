@@ -124,8 +124,6 @@ public abstract class Chooser {
 
     public abstract ConnectionEndType getMyConnectionPeer();
 
-    public abstract byte[] getLastHandledAuthenticationMessageData();
-
     /**
      * Returns the encryption algorithm for outgoing packets (send). Internally, this either calls
      * getEncryptionAlgorithmClientToServer() or getEncryptionAlgorithmServerToClient(), depending

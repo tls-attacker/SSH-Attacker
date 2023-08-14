@@ -250,16 +250,6 @@ public class SshContext extends LayerContext {
     /** If set to true, a version exchange message was sent by each side */
     private boolean versionExchangeCompleted = false;
 
-    public byte[] getLastHandledAuthenticationMessageData() {
-        return lastHandledApplicationMessageData;
-    }
-
-    public void setLastHandledApplicationMessageData(byte[] lastHandledApplicationMessageData) {
-        this.lastHandledApplicationMessageData = lastHandledApplicationMessageData;
-    }
-
-    private byte[] lastHandledApplicationMessageData;
-
     // region Constructors and Initalization
     public SshContext() {
         this(new Context(new Config()));
