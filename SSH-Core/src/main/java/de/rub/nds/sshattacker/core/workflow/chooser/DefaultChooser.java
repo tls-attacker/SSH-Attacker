@@ -1053,36 +1053,4 @@ public class DefaultChooser extends Chooser {
     public AuthenticationMethod getAuthenticationMethod() {
         return config.getAuthenticationMethod();
     }
-
-    public CompressionAlgorithm getSelectedCompressionAlgorithm() {
-        if (context.getSshContext().getSelectedCompressionAlgorithm() != null) {
-            return context.getSshContext().getSelectedCompressionAlgorithm();
-        } else {
-            return config.getDefaultSelectedCompressionAlgorithm();
-        }
-    }
-
-    public EncryptionAlgorithm getSelectedEncryptionAlgorithm() {
-        if (context.getSshContext().getSelectedEncryptionAlgorithm() != null) {
-            return context.getSshContext().getSelectedEncryptionAlgorithm();
-        } else {
-            return config.getDefaultSelectedEncryptionAlgorithm();
-        }
-    }
-
-    public MacAlgorithm getSelectedMacAlgorithm() {
-        if (context.getSshContext().getSelectedMacAlgorithm() != null) {
-            return context.getSshContext().getSelectedMacAlgorithm();
-        } else {
-            return config.getDefaultSelectedMacAlgorithm();
-        }
-    }
-
-    public KeyExchangeAlgorithm getSelectedKeyExchangeAlgorithm() {
-        if (context.getSshContext().getSelectedMacAlgorithm() != null) {
-            return context.getSshContext().getSelectedKeyExchangeAlgorithm();
-        } else {
-            return config.getDefaultSelectedKeyExchangeAlgorithm();
-        }
-    }
 }

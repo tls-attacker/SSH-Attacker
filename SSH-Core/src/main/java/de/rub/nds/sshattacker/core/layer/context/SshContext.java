@@ -260,44 +260,6 @@ public class SshContext extends LayerContext {
 
     private byte[] lastHandledApplicationMessageData;
 
-    private CompressionAlgorithm selectedCompressionAlgorithm;
-
-    public CompressionAlgorithm getSelectedCompressionAlgorithm() {
-        return selectedCompressionAlgorithm;
-    }
-
-    public void setSelectedCompressionAlgorithm(CompressionAlgorithm selectedCompressionAlgorithm) {
-        this.selectedCompressionAlgorithm = selectedCompressionAlgorithm;
-    }
-
-    public EncryptionAlgorithm getSelectedEncryptionAlgorithm() {
-        return selectedEncryptionAlgorithm;
-    }
-
-    public void setSelectedEncryptionAlgorithm(EncryptionAlgorithm selectedEncryptionAlgorithm) {
-        this.selectedEncryptionAlgorithm = selectedEncryptionAlgorithm;
-    }
-
-    public MacAlgorithm getSelectedMacAlgorithm() {
-        return selectedMacAlgorithm;
-    }
-
-    public void setSelectedMacAlgorithm(MacAlgorithm selectedMacAlgorithm) {
-        this.selectedMacAlgorithm = selectedMacAlgorithm;
-    }
-
-    public KeyExchangeAlgorithm getSelectedKeyExchangeAlgorithm() {
-        return selectedKeyExchangeAlgorithm;
-    }
-
-    public void setSelectedKeyExchangeAlgorithm(KeyExchangeAlgorithm selectedKeyExchangeAlgorithm) {
-        this.selectedKeyExchangeAlgorithm = selectedKeyExchangeAlgorithm;
-    }
-
-    private EncryptionAlgorithm selectedEncryptionAlgorithm;
-    private MacAlgorithm selectedMacAlgorithm;
-    private KeyExchangeAlgorithm selectedKeyExchangeAlgorithm;
-
     // region Constructors and Initalization
     public SshContext() {
         this(new Context(new Config()));

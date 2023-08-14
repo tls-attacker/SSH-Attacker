@@ -245,12 +245,4 @@ public abstract class Chooser {
     public abstract ConnectionEndType getConnectionEndType();
 
     public abstract Connection getConnection();
-
-    public abstract CompressionAlgorithm getSelectedCompressionAlgorithm();
-
-    public abstract EncryptionAlgorithm getSelectedEncryptionAlgorithm();
-
-    public abstract MacAlgorithm getSelectedMacAlgorithm();
-
-    public abstract KeyExchangeAlgorithm getSelectedKeyExchangeAlgorithm();
 }
