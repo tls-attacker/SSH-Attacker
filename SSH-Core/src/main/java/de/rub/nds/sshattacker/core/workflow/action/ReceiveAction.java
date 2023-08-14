@@ -78,6 +78,9 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
         @XmlElement(type = ChannelRequestSubsystemMessage.class, name = "ChannelRequestSubsystem"),
         @XmlElement(type = ChannelRequestUnknownMessage.class, name = "ChannelRequestUnknown"),
         @XmlElement(
+                type = ChannelRequestEndOfWriteMessage.class,
+                name = "ChannelRequestEndOfWrite"),
+        @XmlElement(
                 type = ChannelRequestWindowChangeMessage.class,
                 name = "ChannelRequestWindowChange"),
         @XmlElement(type = ChannelRequestX11Message.class, name = "ChannelRequestX11"),

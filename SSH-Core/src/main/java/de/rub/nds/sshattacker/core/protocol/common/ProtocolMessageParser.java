@@ -325,6 +325,8 @@ public abstract class ProtocolMessageParser<T extends ProtocolMessage<T>> extend
                 return new ChannelRequestExitSignalMessageParser(raw).parse();
             case AUTH_AGENT_REQ_OPENSSH_COM:
                 return new ChannelRequestAuthAgentMessageParser(raw).parse();
+            case EOW_OPENSSH_COM:
+                return new ChannelRequestEndOfWriteMessageParser(raw).parse();
             default:
                 LOGGER.debug(
                         "Received unimplemented channel request message type: {}",
