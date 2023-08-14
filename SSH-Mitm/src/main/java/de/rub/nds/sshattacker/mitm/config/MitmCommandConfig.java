@@ -21,6 +21,8 @@ public class MitmCommandConfig extends SshDelegateConfig {
     @ParametersDelegate private final WorkflowOutputDelegate workflowOutputDelegate;
     @ParametersDelegate private final WorkflowTypeDelegate workflowTypeDelegate;
     @ParametersDelegate private final MitmDelegate mitmDelegate;
+    @ParametersDelegate private final UserKeysPathDelegate userKeysPathDelegate;
+    @ParametersDelegate private final HostKeysPathDelegate hostKeysPathDelegate;
 
     public MitmCommandConfig(GeneralDelegate delegate) {
         super(delegate);
@@ -30,12 +32,16 @@ public class MitmCommandConfig extends SshDelegateConfig {
         workflowOutputDelegate = new WorkflowOutputDelegate();
         workflowTypeDelegate = new WorkflowTypeDelegate();
         mitmDelegate = new MitmDelegate();
+        userKeysPathDelegate = new UserKeysPathDelegate();
+        hostKeysPathDelegate = new HostKeysPathDelegate();
         addDelegate(configOutputDelegate);
         addDelegate(timeoutDelegate);
         addDelegate(workflowInputDelegate);
         addDelegate(workflowOutputDelegate);
         addDelegate(workflowTypeDelegate);
         addDelegate(mitmDelegate);
+        addDelegate(userKeysPathDelegate);
+        addDelegate(hostKeysPathDelegate);
     }
 
     public String getWorkflowInput() {
