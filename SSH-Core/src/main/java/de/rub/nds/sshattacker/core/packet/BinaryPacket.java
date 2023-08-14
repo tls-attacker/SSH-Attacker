@@ -14,7 +14,6 @@ import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.layer.data.*;
-import de.rub.nds.sshattacker.core.packet.handler.BinaryPacketHandler;
 import de.rub.nds.sshattacker.core.packet.parser.BinaryPacketParser;
 import de.rub.nds.sshattacker.core.packet.preparator.BinaryPacketPreparator;
 import de.rub.nds.sshattacker.core.packet.serializer.BinaryPacketSerializer;
@@ -121,25 +120,6 @@ public class BinaryPacket extends AbstractPacket<BinaryPacket>
         this.sequenceNumber =
                 ModifiableVariableFactory.safelySetValue(this.sequenceNumber, sequenceNumber);
     }
-    /*
-        @Override
-        public BinaryPacketPreparator getPacketPreparator(
-                Chooser chooser, AbstractPacketEncryptor encryptor, PacketCompressor compressor) {
-            return new BinaryPacketPreparator(chooser, this, encryptor, compressor);
-        }
-
-    */
-    /*    @Override
-    public BinaryPacketParser getPacketParser(
-            byte[] array, int startPosition, PacketCipher activeDecryptCipher, int sequenceNumber) {
-        return new BinaryPacketParser(array, startPosition, activeDecryptCipher, sequenceNumber);
-    }*/
-    /*
-
-    @Override
-    public BinaryPacketSerializer getPacketSerializer() {
-        return new BinaryPacketSerializer(this);
-    }*/
 
     public PacketCryptoComputations getComputations() {
         return computations;
@@ -207,7 +187,7 @@ public class BinaryPacket extends AbstractPacket<BinaryPacket>
     }
 
     @Override
-    public BinaryPacketHandler getHandler(SshContext context) {
-        return new BinaryPacketHandler(context);
+    public Handler getHandler(SshContext context) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 }

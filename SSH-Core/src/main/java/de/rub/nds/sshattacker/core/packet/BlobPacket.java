@@ -8,33 +8,13 @@
 package de.rub.nds.sshattacker.core.packet;
 
 import de.rub.nds.sshattacker.core.layer.context.SshContext;
-import de.rub.nds.sshattacker.core.packet.handler.BlobPacketHandler;
+import de.rub.nds.sshattacker.core.layer.data.Handler;
 import de.rub.nds.sshattacker.core.packet.parser.BlobPacketParser;
 import de.rub.nds.sshattacker.core.packet.preparator.BlobPacketPreparator;
 import de.rub.nds.sshattacker.core.packet.serializer.BlobPacketSerializer;
 import java.io.InputStream;
 
 public class BlobPacket extends AbstractPacket<BlobPacket> {
-    /*
-        @Override
-        public BlobPacketPreparator getPacketPreparator(
-                Chooser chooser, AbstractPacketEncryptor encryptor, PacketCompressor compressor) {
-            return new BlobPacketPreparator(chooser, this, encryptor, compressor);
-        }
-
-        @Override
-        public BlobPacketParser getPacketParser(
-                byte[] array, int startPosition, PacketCipher activeDecryptCipher, int sequenceNumber) {
-            return new BlobPacketParser(array, startPosition);
-        }
-    */
-
-    /*
-        @Override
-        public BlobPacketSerializer getPacketSerializer() {
-            return new BlobPacketSerializer(this);
-        }
-    */
 
     @Override
     public void prepareComputations() {}
@@ -56,7 +36,7 @@ public class BlobPacket extends AbstractPacket<BlobPacket> {
     }
 
     @Override
-    public BlobPacketHandler getHandler(SshContext context) {
-        return new BlobPacketHandler(context);
+    public Handler getHandler(SshContext context) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 }
