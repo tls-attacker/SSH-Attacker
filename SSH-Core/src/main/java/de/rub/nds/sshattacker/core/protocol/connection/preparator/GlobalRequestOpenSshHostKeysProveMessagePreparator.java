@@ -26,7 +26,10 @@ public class GlobalRequestOpenSshHostKeysProveMessagePreparator
     @Override
     protected void prepareGlobalRequestMessageSpecificContents() {
         // default is to prove all host keys
-        getObject().setHostKeys(chooser.getConfig().getHostKeys());
+        getObject()
+                .setHostKeys(
+                        chooser.getContext().getServerHostKeys().keySet().stream()
+                                .collect(Collectors.toList()));
         // when preparing the hostkeys-prove-00@openssh.com message, all host keys to be proven are
         // set respectively
         // to true in the hashmap stored in SshContext

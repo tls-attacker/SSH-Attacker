@@ -14,7 +14,6 @@ import de.rub.nds.sshattacker.core.constants.NamedEcGroup;
 import de.rub.nds.sshattacker.core.constants.PublicKeyFormat;
 import de.rub.nds.sshattacker.core.crypto.ec.PointFormatter;
 import de.rub.nds.sshattacker.core.crypto.keys.*;
-import java.io.InputStream;
 import java.math.BigInteger;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
@@ -140,19 +139,10 @@ public class KeyParserTest {
                                     new BigInteger(
                                             "6616556442F6B8F1EA8B5FA3A93BB638D55737D8", 16))));
 
-    InputStream id_rsa = KeyParser.class.getClassLoader().getResourceAsStream("keys/id_rsa-new1");
-
-    InputStream id_dsa = KeyParser.class.getClassLoader().getResourceAsStream("keys/id_dsa");
-
-    InputStream id_ecdsa = KeyParser.class.getClassLoader().getResourceAsStream("keys/id_ecdsa");
-
-    InputStream id_ed25519 =
-            KeyParser.class.getClassLoader().getResourceAsStream("keys/id_ed25519");
-
     @Test
     public void testRsaKeyParsing() {
         SshPublicKey rsaKey;
-        rsaKey = KeyParser.readKeyPairFromBytes("keys/id_rsa");
+        rsaKey = KeyParser.readKeyPairFromBytes("keys/userkeys/id_rsa");
         SshPublicKey check = userKeys.get(0);
         assertTrue(check.equals(rsaKey));
         assertEquals(rsaKey, userKeys.get(0));
@@ -161,14 +151,14 @@ public class KeyParserTest {
     @Test
     public void testDsaKeyParsing() {
         SshPublicKey dsaKey = null;
-        dsaKey = KeyParser.readKeyPairFromBytes("keys/id_dsa");
+        dsaKey = KeyParser.readKeyPairFromBytes("keys/userkeys/id_dsa");
         assertEquals(dsaKey, userKeys.get(3));
     }
 
     @Test
     public void testEcdsaKeyParsing() {
         SshPublicKey ecdsaKey;
-        ecdsaKey = KeyParser.readKeyPairFromBytes("keys/id_ecdsa");
+        ecdsaKey = KeyParser.readKeyPairFromBytes("keys/userkeys/id_ecdsa");
 
         assertTrue(ecdsaKey.equals(userKeys.get(1)));
     }
@@ -176,7 +166,7 @@ public class KeyParserTest {
     @Test
     public void testEd25519KeyParsing() {
         SshPublicKey ed25519Key;
-        ed25519Key = KeyParser.readKeyPairFromBytes("keys/id_ed25519");
+        ed25519Key = KeyParser.readKeyPairFromBytes("keys/userkeys/id_ed25519");
 
         assertEquals(ed25519Key, userKeys.get(2));
     }

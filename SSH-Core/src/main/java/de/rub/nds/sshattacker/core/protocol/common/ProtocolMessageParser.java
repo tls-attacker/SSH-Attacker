@@ -14,9 +14,7 @@ import de.rub.nds.sshattacker.core.packet.AbstractPacket;
 import de.rub.nds.sshattacker.core.packet.BlobPacket;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.*;
 import de.rub.nds.sshattacker.core.protocol.authentication.parser.*;
-import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelOpenUnknownMessage;
-import de.rub.nds.sshattacker.core.protocol.connection.message.ChannelRequestUnknownMessage;
-import de.rub.nds.sshattacker.core.protocol.connection.message.GlobalRequestUnknownMessage;
+import de.rub.nds.sshattacker.core.protocol.connection.message.*;
 import de.rub.nds.sshattacker.core.protocol.connection.parser.*;
 import de.rub.nds.sshattacker.core.protocol.transport.message.AsciiMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.parser.*;
@@ -153,7 +151,7 @@ public abstract class ProtocolMessageParser<T extends ProtocolMessage<T>> extend
                 case SSH_MSG_REQUEST_FAILURE:
                     return new GlobalRequestFailureMessageParser(raw).parse();
                 case SSH_MSG_REQUEST_SUCCESS:
-                    return new GlobalRequestSuccessMessageParser(raw).parse();
+                    return handleGlobalRequestSuccesMessagePaersing(raw);
                 case SSH_MSG_UNIMPLEMENTED:
                     return new UnimplementedMessageParser(raw).parse();
                 case SSH_MSG_USERAUTH_REQUEST:
@@ -370,6 +368,19 @@ public abstract class ProtocolMessageParser<T extends ProtocolMessage<T>> extend
                 LOGGER.debug(
                         "Received unimplemented channel open message type: {}", channelTypeString);
                 return message;
+        }
+    }
+
+    public static ProtocolMessage<?> handleGlobalRequestSuccesMessagePaersing(byte[] raw) {
+        GlobalRequestSuccessMessageParser globalRequestSuccessMessageParser =
+                new GlobalRequestSuccessMessageParser(raw);
+        GlobalRequestSuccessMessage message = globalRequestSuccessMessageParser.parse();
+        // ToDo the message type is not indicated in the SSH_MSG_REQUEST_SUCCESS, when we have to
+        // deal with more than two messages right here, this need to be fixed
+        if (globalRequestSuccessMessageParser.getBytesLeft() > 0) {
+            return new GlobalRequestHostKeysProveSuccessMessageParser(raw).parse();
+        } else {
+            return message;
         }
     }
 }

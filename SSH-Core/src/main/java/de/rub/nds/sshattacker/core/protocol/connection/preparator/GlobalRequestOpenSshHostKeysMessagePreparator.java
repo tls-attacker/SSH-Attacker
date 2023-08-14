@@ -34,7 +34,7 @@ public class GlobalRequestOpenSshHostKeysMessagePreparator
                                         .collect(
                                                 Collectors.toMap(
                                                         sshPublicKey -> sshPublicKey,
-                                                        sshPublicKey -> Boolean.FALSE // Using
+                                                        sshPublicKey -> Boolean.FALSE
                                                         // Boolean.FALSE
                                                         // instead of FALSE
                                                         ))));

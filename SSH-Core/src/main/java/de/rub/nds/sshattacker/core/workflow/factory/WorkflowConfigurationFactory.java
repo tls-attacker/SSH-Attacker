@@ -139,6 +139,7 @@ public class WorkflowConfigurationFactory {
         WorkflowTrace workflow = new WorkflowTrace();
         addTransportProtocolActions(workflow);
         addAuthenticationProtocolActions(workflow);
+        addOpennSshHostkeyMessages(workflow);
         addConnectionProtocolActions(workflow);
         return workflow;
     }
@@ -487,6 +488,23 @@ public class WorkflowConfigurationFactory {
                         connection, ConnectionEndType.SERVER, new ChannelSuccessMessage()),
                 SshActionFactory.createMessageAction(
                         connection, ConnectionEndType.CLIENT, new ChannelRequestEnvMessage()));
+    }
+
+    public void addOpennSshHostkeyMessages(WorkflowTrace workflow) {
+        AliasedConnection connection = getDefaultConnection();
+        workflow.addSshActions(
+                SshActionFactory.createMessageAction(
+                        connection,
+                        ConnectionEndType.SERVER,
+                        new GlobalRequestOpenSshHostKeysMessage()),
+                SshActionFactory.createMessageAction(
+                        connection,
+                        ConnectionEndType.CLIENT,
+                        new GlobalRequestOpenSshHostKeysProveMessage()),
+                SshActionFactory.createMessageAction(
+                        connection,
+                        ConnectionEndType.SERVER,
+                        new GlobalRequestHostKeysProveSuccessMessage()));
     }
 
     private WorkflowTrace createSimpleMitmProxyWorkflow() {
