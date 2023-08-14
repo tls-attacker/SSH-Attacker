@@ -54,8 +54,7 @@ public class TcpLayer extends ProtocolLayer<LayerProcessingHint, DataContainer> 
 
     /** Sends data over the TCP socket. */
     @Override
-    public LayerProcessingResult sendData(LayerProcessingHint hint, byte[] data)
-            throws IOException {
+    public LayerProcessingResult sendData(byte[] data) throws IOException {
         TcpTransportHandler handler = getTransportHandler();
         handler.sendData(data);
         return new LayerProcessingResult(null, getLayerType(), true); // Not implemented

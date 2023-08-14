@@ -86,7 +86,7 @@ public class PacketLayer extends ProtocolLayer<PacketLayerHint, AbstractPacket> 
                     byte[] serializedMessage = serializer.serialize();
 
                     LayerProcessingResult layerProcessingResult =
-                            getLowerLayer().sendData(null, serializedMessage);
+                            getLowerLayer().sendData(serializedMessage);
 
                 } catch (IOException e) {
                     LOGGER.warn("Error while sending packet: " + e.getMessage());
@@ -98,16 +98,10 @@ public class PacketLayer extends ProtocolLayer<PacketLayerHint, AbstractPacket> 
     }
 
     @Override
-    public LayerProcessingResult<AbstractPacket> sendData(
-            PacketLayerHint hint, byte[] additionalData) throws IOException {
+    public LayerProcessingResult<AbstractPacket> sendData(byte[] additionalData)
+            throws IOException {
 
         MessageIdConstant type = MessageIdConstant.UNKNOWN;
-        if (hint != null) {
-            type = hint.getType();
-        } else {
-            LOGGER.warn(
-                    "Sending record without a LayerProcessing hint. Using \"UNKNOWN\" as the type");
-        }
 
         AbstractPacket packet;
         if (context.getPacketLayerType() == PacketLayerType.BLOB) {
@@ -125,7 +119,7 @@ public class PacketLayer extends ProtocolLayer<PacketLayerHint, AbstractPacket> 
         List<AbstractPacket> packets = new LinkedList<>();
         packets.add(packet);
 
-        getLowerLayer().sendData(null, serializedMessage);
+        getLowerLayer().sendData(serializedMessage);
         return new LayerProcessingResult<>(packets, getLayerType(), true);
     }
 

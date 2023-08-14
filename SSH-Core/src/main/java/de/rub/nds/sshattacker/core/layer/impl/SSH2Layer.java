@@ -49,23 +49,6 @@ public class SSH2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
         this.context = context;
     }
 
-    private void flushCollectedMessages(
-            MessageIdConstant runningProtocolMessageType, ByteArrayOutputStream byteStream)
-            throws IOException {
-
-        LOGGER.debug(
-                "[bro] Sending the following {} on {}",
-                byteStream.toByteArray(),
-                getLowerLayer().getLayerType());
-        if (byteStream.size() > 0) {
-            getLowerLayer()
-                    .sendData(
-                            new PacketLayerHint(runningProtocolMessageType),
-                            byteStream.toByteArray());
-            byteStream.reset();
-        }
-    }
-
     @Override
     public LayerProcessingResult sendConfiguration() throws IOException {
         LayerConfiguration<ProtocolMessage> configuration = getLayerConfiguration();
@@ -90,10 +73,7 @@ public class SSH2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
                 processMessage(message, collectedMessageStream);
                 addProducedContainer(message);
                 // flushCollectedMessages(runningProtocolMessageType, collectedMessageStream);
-                getLowerLayer()
-                        .sendData(
-                                new PacketLayerHint(runningProtocolMessageType),
-                                collectedMessageStream.toByteArray());
+                getLowerLayer().sendData(collectedMessageStream.toByteArray());
 
                 ProtocolMessageHandler<?> handler = message.getHandler(context);
                 if (handler instanceof MessageSentHandler) {
@@ -130,8 +110,7 @@ public class SSH2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
     }
 
     @Override
-    public LayerProcessingResult sendData(LayerProcessingHint hint, byte[] additionalData)
-            throws IOException {
+    public LayerProcessingResult sendData(byte[] additionalData) throws IOException {
         return sendConfiguration();
     }
 

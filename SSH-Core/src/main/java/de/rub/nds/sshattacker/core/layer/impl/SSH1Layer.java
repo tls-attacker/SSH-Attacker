@@ -69,8 +69,7 @@ public class SSH1Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
     }
 
     @Override
-    public LayerProcessingResult sendData(LayerProcessingHint hint, byte[] additionalData)
-            throws IOException {
+    public LayerProcessingResult sendData(byte[] additionalData) throws IOException {
         return sendConfiguration();
     }
 

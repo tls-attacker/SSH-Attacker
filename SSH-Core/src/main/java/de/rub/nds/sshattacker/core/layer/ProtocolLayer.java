@@ -76,8 +76,7 @@ public abstract class ProtocolLayer<
 
     public abstract LayerProcessingResult sendConfiguration() throws IOException;
 
-    public abstract LayerProcessingResult sendData(HintT hintT, byte[] additionalData)
-            throws IOException;
+    public abstract LayerProcessingResult sendData(byte[] additionalData) throws IOException;
 
     public LayerConfiguration<ContainerT> getLayerConfiguration() {
         return layerConfiguration;
