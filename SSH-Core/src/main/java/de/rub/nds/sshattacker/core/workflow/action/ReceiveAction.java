@@ -101,6 +101,10 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
         @XmlElement(
                 type = GlobalRequestOpenSshHostKeysMessage.class,
                 name = "GlobalRequestOpenSshHostKeys"),
+
+            @XmlElement(
+                    type = GlobalRequestOpenSshHostKeysProveMessage.class,
+                    name = "GlobalRequestOpenSshHostKeysProve"),
         @XmlElement(type = GlobalRequestUnknownMessage.class, name = "GlobalRequestUnknown"),
         // Transport Layer Protocol Messages
         @XmlElement(type = DebugMessage.class, name = "DebugMessage"),

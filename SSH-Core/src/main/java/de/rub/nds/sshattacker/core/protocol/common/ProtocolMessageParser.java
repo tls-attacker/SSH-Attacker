@@ -348,6 +348,8 @@ public abstract class ProtocolMessageParser<T extends ProtocolMessage<T>> extend
                 return new GlobalRequestNoMoreSessionsMessageParser(raw).parse();
             case HOSTKEYS_00_OPENSSH_COM:
                 return new GlobalRequestOpenSshHostKeysMessageParser(raw).parse();
+            case HOSTKEYS_PROVE_00_OPENSSH_COM:
+                return new GlobalRequestOpenSshHostKeysProveMessageParser(raw).parse();
             default:
                 LOGGER.debug(
                         "Received unimplemented global request message type: {}",

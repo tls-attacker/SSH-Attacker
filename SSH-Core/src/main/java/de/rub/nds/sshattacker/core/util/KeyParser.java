@@ -18,10 +18,8 @@ import java.math.BigInteger;
 import java.nio.charset.Charset;
 import java.security.*;
 import java.security.spec.*;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Base64;
-import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -422,29 +420,5 @@ public final class KeyParser {
                         .replace("=", "");
         byte[] keyBytes = Base64.getDecoder().decode(unwrappedKey);
         return keyBytes;
-    }
-
-    /**
-     * Parses the hostkey blob into a list of hostkeys
-     *
-     * @param hostkeyBlob the hostkey blob
-     * @return
-     */
-    public static List<SshPublicKey<?, ?>> parseHostkeyBlob(byte[] hostkeyBlob) {
-        int offset = 0;
-        List<SshPublicKey<?, ?>> hostKeyList = new ArrayList<>();
-        while (offset < hostkeyBlob.length) {
-            BigInteger lengthKey =
-                    new BigInteger(
-                            Arrays.copyOfRange(
-                                    hostkeyBlob,
-                                    offset,
-                                    offset = offset + DataFormatConstants.MPINT_SIZE_LENGTH));
-            hostKeyList.add(
-                    PublicKeyHelper.parse(
-                            Arrays.copyOfRange(
-                                    hostkeyBlob, offset, offset = offset + lengthKey.intValue())));
-        }
-        return hostKeyList;
     }
 }

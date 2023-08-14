@@ -7,13 +7,16 @@
  */
 package de.rub.nds.sshattacker.core.protocol.connection.handler;
 
+import de.rub.nds.sshattacker.core.crypto.keys.SshPublicKey;
+import de.rub.nds.sshattacker.core.crypto.util.OpenSshHostKeyHelper;
 import de.rub.nds.sshattacker.core.protocol.common.*;
 import de.rub.nds.sshattacker.core.protocol.connection.message.GlobalRequestOpenSshHostKeysMessage;
 import de.rub.nds.sshattacker.core.protocol.connection.parser.GlobalRequestOpenSshHostKeysMessageParser;
 import de.rub.nds.sshattacker.core.protocol.connection.preparator.GlobalRequestOpenSshHostKeysMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.connection.serializer.GlobalRequestOpenSshHostKeysMessageSerializer;
 import de.rub.nds.sshattacker.core.state.SshContext;
-import de.rub.nds.sshattacker.core.util.KeyParser;
+import java.util.HashMap;
+import java.util.stream.Collectors;
 
 public class GlobalRequestOpenSshHostKeysMessageHandler
         extends SshMessageHandler<GlobalRequestOpenSshHostKeysMessage> {
@@ -29,8 +32,17 @@ public class GlobalRequestOpenSshHostKeysMessageHandler
 
     @Override
     public void adjustContext() {
-        // this parses the hostkeyblob and sets the hostkeys in the context
-        context.setServerHostKeys(KeyParser.parseHostkeyBlob(message.getHostKeys().getValue()));
+        // parses the hostkeyblob and sets the hostkeys in the specified hashmap in context
+        context.setServerHostKeys(
+                new HashMap<SshPublicKey<?, ?>, Boolean>(
+                        OpenSshHostKeyHelper.parseHostkeyBlob(message.getHostKeys().getValue())
+                                .stream()
+                                .collect(
+                                        Collectors.toMap(
+                                                sshPublicKey -> sshPublicKey,
+                                                sshPublicKey -> Boolean.FALSE // Using Boolean.FALSE
+                                                // instead of FALSE
+                                                ))));
     }
 
     @Override

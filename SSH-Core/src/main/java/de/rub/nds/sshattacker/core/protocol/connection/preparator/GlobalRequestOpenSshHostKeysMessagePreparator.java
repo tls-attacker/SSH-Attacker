@@ -8,8 +8,11 @@
 package de.rub.nds.sshattacker.core.protocol.connection.preparator;
 
 import de.rub.nds.sshattacker.core.constants.GlobalRequestType;
+import de.rub.nds.sshattacker.core.crypto.keys.SshPublicKey;
 import de.rub.nds.sshattacker.core.protocol.connection.message.GlobalRequestOpenSshHostKeysMessage;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
+import java.util.HashMap;
+import java.util.stream.Collectors;
 
 public class GlobalRequestOpenSshHostKeysMessagePreparator
         extends GlobalRequestMessagePreparator<GlobalRequestOpenSshHostKeysMessage> {
@@ -22,5 +25,18 @@ public class GlobalRequestOpenSshHostKeysMessagePreparator
     @Override
     protected void prepareGlobalRequestMessageSpecificContents() {
         getObject().setHostKeys(chooser.getConfig().getHostKeys());
+        // initially all server host keys, don't need to be proven, so we set every hashmap value to
+        // false
+        chooser.getContext()
+                .setServerHostKeys(
+                        new HashMap<SshPublicKey<?, ?>, Boolean>(
+                                chooser.getConfig().getHostKeys().stream()
+                                        .collect(
+                                                Collectors.toMap(
+                                                        sshPublicKey -> sshPublicKey,
+                                                        sshPublicKey -> Boolean.FALSE // Using
+                                                        // Boolean.FALSE
+                                                        // instead of FALSE
+                                                        ))));
     }
 }
