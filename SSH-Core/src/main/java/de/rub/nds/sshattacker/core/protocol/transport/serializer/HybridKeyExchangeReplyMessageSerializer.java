@@ -83,11 +83,4 @@ public class HybridKeyExchangeReplyMessageSerializer
         appendBytes(message.getSignature().getValue());
         LOGGER.debug("Signature: " + message.getSignature());
     }
-
-    @Override
-    protected byte[] serializeBytes() {
-        super.serializeProtocolMessageContents();
-        // serializeMessageSpecificContents();
-        return getAlreadySerialized();
-    }
 }

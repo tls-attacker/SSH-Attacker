@@ -40,8 +40,8 @@ public class UserAuthBannerMessageParser extends SshMessageParser<UserAuthBanner
     }
 
     private void parseData(UserAuthBannerMessage msg) {
-        msg.setData(parseByteArrayField(getBytesLeft()));
-        LOGGER.debug("Data: {}", msg.getData().getValue());
+        msg.setMessage(parseByteArrayField(getBytesLeft()));
+        LOGGER.debug("Data: {}", msg.getMessage().getValue());
     }
 
     /*

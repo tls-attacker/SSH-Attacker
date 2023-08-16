@@ -82,4 +82,9 @@ public abstract class GlobalRequestMessage<T extends GlobalRequestMessage<T>>
     public void setWantReply(byte wantReply) {
         this.wantReply = ModifiableVariableFactory.safelySetValue(this.wantReply, wantReply);
     }
+
+    @Override
+    public String toShortString() {
+        return "GLOBAL_REQUEST";
+    }
 }

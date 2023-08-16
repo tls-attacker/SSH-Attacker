@@ -28,11 +28,11 @@ import org.apache.logging.log4j.Logger;
  * itself. It can send messages using the layer below and forward received messages to the layer
  * above.
  *
- * @param <Hint> Some layers need a hint which message they should send or receive.
- * @param <Container> The kind of messages/Containers this layer is able to send and receive.
+ * @param <HintT> Some layers need a hint which message they should send or receive.
+ * @param <ContainerT> The kind of messages/Containers this layer is able to send and receive.
  */
 public abstract class ProtocolLayer<
-        Hint extends LayerProcessingHint, Container extends DataContainer> {
+        HintT extends LayerProcessingHint, ContainerT extends DataContainer> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -40,9 +40,9 @@ public abstract class ProtocolLayer<
 
     private ProtocolLayer lowerLayer = null;
 
-    private LayerConfiguration<Container> layerConfiguration;
+    private LayerConfiguration<ContainerT> layerConfiguration;
 
-    private List<Container> producedDataContainers;
+    private List<ContainerT> producedDataContainers;
 
     protected HintedInputStream currentInputStream = null;
 
@@ -76,10 +76,9 @@ public abstract class ProtocolLayer<
 
     public abstract LayerProcessingResult sendConfiguration() throws IOException;
 
-    public abstract LayerProcessingResult sendData(Hint hint, byte[] additionalData)
-            throws IOException;
+    public abstract LayerProcessingResult sendData(byte[] additionalData) throws IOException;
 
-    public LayerConfiguration<Container> getLayerConfiguration() {
+    public LayerConfiguration<ContainerT> getLayerConfiguration() {
         return layerConfiguration;
     }
 
@@ -87,7 +86,7 @@ public abstract class ProtocolLayer<
         this.layerConfiguration = layerConfiguration;
     }
 
-    public LayerProcessingResult<Container> getLayerResult() {
+    public LayerProcessingResult<ContainerT> getLayerResult() {
         boolean isExecutedAsPlanned = executedAsPlanned();
         return new LayerProcessingResult(
                 producedDataContainers, getLayerType(), isExecutedAsPlanned, getUnreadBytes());
@@ -122,11 +121,11 @@ public abstract class ProtocolLayer<
         nextInputStream = null;
     }
 
-    protected void addProducedContainer(Container container) {
+    protected void addProducedContainer(ContainerT container) {
         producedDataContainers.add(container);
     }
 
-    protected boolean containerAlreadyUsedByHigherLayer(Container container) {
+    protected boolean containerAlreadyUsedByHigherLayer(ContainerT container) {
         if (producedDataContainers == null) {
             return false;
         }
@@ -234,7 +233,7 @@ public abstract class ProtocolLayer<
      * @param container The container to handle.
      * @param context The context of the connection. Keeps parsed and handled values.
      */
-    protected void readDataContainer(Container container, LayerContext context) {
+    protected void readDataContainer(ContainerT container, LayerContext context) {
         HintedInputStream inputStream;
         try {
             inputStream = getLowerLayer().getDataStream();
@@ -247,8 +246,6 @@ public abstract class ProtocolLayer<
 
         try {
             parser.parse(container);
-            Preparator preparator = container.getPreparator(context);
-            preparator.prepareAfterParse(false); // TODO REMOVE THIS CLIENTMODE FLAG
             Handler handler = container.getHandler(context);
             handler.adjustContext(container);
             addProducedContainer(container);
@@ -258,13 +255,10 @@ public abstract class ProtocolLayer<
     }
 
     protected void readContainerFromStream(
-            Container container, LayerContext context, HintedInputStream inputStream) {
+            ContainerT container, LayerContext context, HintedInputStream inputStream) {
         Parser parser = container.getParser(context, inputStream);
-
         try {
             parser.parse(container);
-            Preparator preparator = container.getPreparator(context);
-            preparator.prepareAfterParse(false); // TODO REMOVE THIS CLIENTMODE FLAG
             Handler handler = container.getHandler(context);
             handler.adjustContext(container);
             addProducedContainer(container);

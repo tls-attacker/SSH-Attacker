@@ -38,6 +38,6 @@ public class ChannelCloseMessage extends ChannelMessage<ChannelCloseMessage> {
 
     @Override
     public String toShortString() {
-        return "CHAN_CLOSE";
+        return "CHANNEL_CLOSE";
     }
 }

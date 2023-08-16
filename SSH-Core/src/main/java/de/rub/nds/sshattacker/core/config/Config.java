@@ -471,20 +471,20 @@ public class Config implements Serializable {
     }
 
     private EncryptionAlgorithm defaultSelectedEncryptionAlgorithm =
-            EncryptionAlgorithm.AEAD_AES_256_GCM;
+            EncryptionAlgorithm.CHACHA20_POLY1305_OPENSSH_COM;
 
     public MacAlgorithm getDefaultSelectedMacAlgorithm() {
         return defaultSelectedMacAlgorithm;
     }
 
-    private MacAlgorithm defaultSelectedMacAlgorithm = MacAlgorithm.AEAD_AES_256_GCM;
+    private MacAlgorithm defaultSelectedMacAlgorithm = MacAlgorithm.UMAC_64_ETM_OPENSSH_COM;
 
     public KeyExchangeAlgorithm getDefaultSelectedKeyExchangeAlgorithm() {
         return defaultSelectedKeyExchangeAlgorithm;
     }
 
     private KeyExchangeAlgorithm defaultSelectedKeyExchangeAlgorithm =
-            KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP14_SHA256;
+            KeyExchangeAlgorithm.CURVE25519_SHA256;
 
     public ProtocolVersion getProtocolVersion() {
         return protocolVersion;

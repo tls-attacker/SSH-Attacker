@@ -60,10 +60,4 @@ public class VersionExchangeMessageSerializer
         serializeComment();
         serializeEndOfMessageSequence();
     }
-
-    @Override
-    protected byte[] serializeBytes() {
-        serializeProtocolMessageContents();
-        return getAlreadySerialized();
-    }
 }

@@ -8,8 +8,6 @@
 package de.rub.nds.sshattacker.core.protocol.authentication.message;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
-import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
-import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.sshattacker.core.layer.context.SshContext;
@@ -27,23 +25,6 @@ public class UserAuthBannerMessage extends SshMessage<UserAuthBannerMessage> {
     private ModifiableString message;
     private ModifiableInteger languageTagLength;
     private ModifiableString languageTag;
-
-    public ModifiableByteArray getData() {
-        return data;
-    }
-
-    public void setData(ModifiableByteArray data) {
-        this.data = data;
-    }
-
-    public void setData(byte[] data) {
-        if (this.data == null) {
-            this.data = new ModifiableByteArray();
-        }
-        this.data.setOriginalValue(data);
-    }
-
-    @ModifiableVariableProperty private ModifiableByteArray data;
 
     public ModifiableInteger getMessageLength() {
         return messageLength;
@@ -68,6 +49,10 @@ public class UserAuthBannerMessage extends SshMessage<UserAuthBannerMessage> {
 
     public void setMessage(String message) {
         setMessage(message, false);
+    }
+
+    public void setMessage(byte[] message) {
+        setMessage(new String(message, StandardCharsets.UTF_8), false);
     }
 
     public void setMessage(ModifiableString message, boolean adjustLengthField) {
@@ -147,6 +132,6 @@ public class UserAuthBannerMessage extends SshMessage<UserAuthBannerMessage> {
 
     @Override
     public String toShortString() {
-        return "AUTHBANNER";
+        return "USERAUTH_BANNER";
     }
 }

@@ -311,6 +311,8 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
         // If no expected messages were defined, we consider this receive
         // action as "let's see what the other side sends".
         if (expectedMessages.isEmpty()) {
+            // TODO: Handle for SSH-Attacker
+
             // FIXME: In case TLS-Attacker's `GenericReceiveAction` is ported
             // to SSH-Attacker at some point and the `messages` list is also
             // empty, it might make sense to log a warning that tells the user

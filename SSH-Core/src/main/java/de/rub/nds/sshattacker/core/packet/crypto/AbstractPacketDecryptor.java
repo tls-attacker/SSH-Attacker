@@ -19,7 +19,7 @@ public abstract class AbstractPacketDecryptor extends PacketCryptoUnit {
         super(cipher);
     }
 
-    public void decrypt(AbstractPacket object) {
+    public void decrypt(AbstractPacket<?> object) {
         if (object instanceof BinaryPacket) {
             decrypt((BinaryPacket) object);
         } else if (object instanceof BinaryPacketSSHv1) {

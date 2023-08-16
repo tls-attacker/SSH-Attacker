@@ -17,14 +17,13 @@ import de.rub.nds.sshattacker.core.crypto.kex.HybridKeyExchange;
 import de.rub.nds.sshattacker.core.crypto.kex.RsaKeyExchange;
 import de.rub.nds.sshattacker.core.crypto.keys.SshPublicKey;
 import de.rub.nds.sshattacker.core.exceptions.ConfigurationException;
+import de.rub.nds.sshattacker.core.layer.impl.PacketLayer;
 import de.rub.nds.sshattacker.core.packet.cipher.PacketCipher;
 import de.rub.nds.sshattacker.core.packet.cipher.PacketCipherFactory;
 import de.rub.nds.sshattacker.core.packet.cipher.keys.KeySet;
 import de.rub.nds.sshattacker.core.packet.compressor.PacketCompressor;
 import de.rub.nds.sshattacker.core.packet.crypto.AbstractPacketEncryptor;
 import de.rub.nds.sshattacker.core.packet.crypto.PacketEncryptor;
-import de.rub.nds.sshattacker.core.packet.layer.AbstractPacketLayer;
-import de.rub.nds.sshattacker.core.packet.layer.PacketLayerFactory;
 import de.rub.nds.sshattacker.core.protocol.connection.Channel;
 import de.rub.nds.sshattacker.core.protocol.connection.ChannelManager;
 import de.rub.nds.sshattacker.core.state.Context;
@@ -35,22 +34,11 @@ import de.rub.nds.tlsattacker.transport.TransportHandler;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
-import java.util.Random;
 
 public class SshContext extends LayerContext {
 
     /** Static configuration for SSH-Attacker */
     private Chooser chooser;
-
-    public Random getRandom() {
-        return random;
-    }
-
-    public void setRandom(Random random) {
-        this.random = random;
-    }
-
-    private Random random;
 
     public AbstractPacketEncryptor getEncryptor() {
         return encryptor;
@@ -85,8 +73,6 @@ public class SshContext extends LayerContext {
 
     /** The currently active packet layer type */
     private PacketLayerType packetLayerType;
-    /** A layer to serialize packets */
-    private AbstractPacketLayer packetLayer;
     /**
      * If set to true, receive actions will read the incoming byte stream on a per line basis (each
      * line is terminated by LF).
@@ -268,16 +254,6 @@ public class SshContext extends LayerContext {
     private AuthenticationMethodSSHv1 chosenAuthenticationMethod;
     // endregion
 
-    /*    public MessageLayer getMessageLayer() {
-        return messageLayer;
-    }
-
-    public void setMessageLayer(MessageLayer messageLayer) {
-        this.messageLayer = messageLayer;
-    }
-
-    private MessageLayer messageLayer = new MessageLayer(this.getContext());*/
-
     // region Connection Protocol
 
     private ChannelManager channelManager;
@@ -289,62 +265,6 @@ public class SshContext extends LayerContext {
     private boolean disconnectMessageReceived = false;
     /** If set to true, a version exchange message was sent by each side */
     private boolean versionExchangeCompleted = false;
-
-    public List<CipherMethod> getSupportedCipherMethods() {
-        return supportedCipherMethods;
-    }
-
-    public void setSupportedCipherMethods(List<CipherMethod> supportedCipherMethods) {
-        this.supportedCipherMethods = supportedCipherMethods;
-    }
-
-    public byte[] getLastHandledAuthenticationMessageData() {
-        return lastHandledApplicationMessageData;
-    }
-
-    public void setLastHandledApplicationMessageData(byte[] lastHandledApplicationMessageData) {
-        this.lastHandledApplicationMessageData = lastHandledApplicationMessageData;
-    }
-
-    private byte[] lastHandledApplicationMessageData;
-
-    private CompressionAlgorithm selectedCompressionAlgorithm;
-
-    public CompressionAlgorithm getSelectedCompressionAlgorithm() {
-        return selectedCompressionAlgorithm;
-    }
-
-    public void setSelectedCompressionAlgorithm(CompressionAlgorithm selectedCompressionAlgorithm) {
-        this.selectedCompressionAlgorithm = selectedCompressionAlgorithm;
-    }
-
-    public EncryptionAlgorithm getSelectedEncryptionAlgorithm() {
-        return selectedEncryptionAlgorithm;
-    }
-
-    public void setSelectedEncryptionAlgorithm(EncryptionAlgorithm selectedEncryptionAlgorithm) {
-        this.selectedEncryptionAlgorithm = selectedEncryptionAlgorithm;
-    }
-
-    public MacAlgorithm getSelectedMacAlgorithm() {
-        return selectedMacAlgorithm;
-    }
-
-    public void setSelectedMacAlgorithm(MacAlgorithm selectedMacAlgorithm) {
-        this.selectedMacAlgorithm = selectedMacAlgorithm;
-    }
-
-    public KeyExchangeAlgorithm getSelectedKeyExchangeAlgorithm() {
-        return selectedKeyExchangeAlgorithm;
-    }
-
-    public void setSelectedKeyExchangeAlgorithm(KeyExchangeAlgorithm selectedKeyExchangeAlgorithm) {
-        this.selectedKeyExchangeAlgorithm = selectedKeyExchangeAlgorithm;
-    }
-
-    private EncryptionAlgorithm selectedEncryptionAlgorithm;
-    private MacAlgorithm selectedMacAlgorithm;
-    private KeyExchangeAlgorithm selectedKeyExchangeAlgorithm;
 
     // region Constructors and Initalization
     public SshContext() {
@@ -371,7 +291,6 @@ public class SshContext extends LayerContext {
 
         // TODO: Initial packet layer type from config
         packetLayerType = PacketLayerType.BLOB;
-        packetLayer = PacketLayerFactory.getPacketLayer(packetLayerType, this);
         receiveAsciiModeEnabled = true;
         writeSequenceNumber = 0;
         readSequenceNumber = 0;
@@ -420,12 +339,8 @@ public class SshContext extends LayerContext {
         this.packetLayerType = packetLayerType;
     }
 
-    public AbstractPacketLayer getPacketLayer() {
-        return packetLayer;
-    }
-
-    public void setPacketLayer(AbstractPacketLayer packetLayer) {
-        this.packetLayer = packetLayer;
+    public PacketLayer getPacketLayer() {
+        return (PacketLayer) getContext().getLayerStack().getLayer(PacketLayer.class);
     }
 
     public Boolean isReceiveAsciiModeEnabled() {

@@ -90,6 +90,6 @@ public class DhKeyExchangeInitMessage extends SshMessage<DhKeyExchangeInitMessag
 
     @Override
     public String toShortString() {
-        return "DHgKexInit";
+        return "KEXDH_INIT";
     }
 }

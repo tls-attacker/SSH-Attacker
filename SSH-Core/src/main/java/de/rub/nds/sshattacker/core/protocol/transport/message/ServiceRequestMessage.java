@@ -96,6 +96,6 @@ public class ServiceRequestMessage extends SshMessage<ServiceRequestMessage> {
 
     @Override
     public String toShortString() {
-        return "SVC_REQ";
+        return "SERVICE_REQUEST";
     }
 }

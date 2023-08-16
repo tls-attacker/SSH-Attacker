@@ -10,6 +10,7 @@ package de.rub.nds.sshattacker.core.layer.data;
 /**
  * @param <T> The Object that should be Handled
  */
+@FunctionalInterface
 public interface Handler<T> {
 
     void adjustContext(T object);

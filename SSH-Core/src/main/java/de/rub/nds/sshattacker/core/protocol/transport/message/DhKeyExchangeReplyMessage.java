@@ -199,6 +199,6 @@ public class DhKeyExchangeReplyMessage extends SshMessage<DhKeyExchangeReplyMess
 
     @Override
     public String toShortString() {
-        return "DHkeyExchangeRepl";
+        return "KEXDH_REPLY";
     }
 }

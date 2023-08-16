@@ -96,6 +96,6 @@ public class ServiceAcceptMessage extends SshMessage<ServiceAcceptMessage> {
 
     @Override
     public String toShortString() {
-        return "SVC_ACCEPT";
+        return "SERVICE_ACCEPT";
     }
 }

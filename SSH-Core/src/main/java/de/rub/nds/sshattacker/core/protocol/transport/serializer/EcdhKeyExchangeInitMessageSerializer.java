@@ -41,10 +41,4 @@ public class EcdhKeyExchangeInitMessageSerializer
     public void serializeMessageSpecificContents() {
         serializeEphemeralPublicKey();
     }
-
-    @Override
-    protected byte[] serializeBytes() {
-        serializeProtocolMessageContents();
-        return getAlreadySerialized();
-    }
 }

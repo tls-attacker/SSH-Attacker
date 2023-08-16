@@ -119,4 +119,9 @@ public abstract class ChannelOpenMessage<T extends ChannelOpenMessage<T>> extend
     public void setConfigSenderChannelId(int configSenderChannelId) {
         this.configSenderChannelId = configSenderChannelId;
     }
+
+    @Override
+    public String toShortString() {
+        return "CHANNEL_OPEN";
+    }
 }

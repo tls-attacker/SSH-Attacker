@@ -86,4 +86,9 @@ public abstract class ChannelRequestMessage<T extends ChannelRequestMessage<T>>
     public void setWantReply(boolean wantReply) {
         setWantReply(Converter.booleanToByte(wantReply));
     }
+
+    @Override
+    public String toShortString() {
+        return "CHANNEL_REQUEST";
+    }
 }

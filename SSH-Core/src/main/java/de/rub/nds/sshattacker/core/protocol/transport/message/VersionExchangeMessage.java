@@ -10,7 +10,6 @@ package de.rub.nds.sshattacker.core.protocol.transport.message;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.sshattacker.core.constants.CharConstants;
-import de.rub.nds.sshattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.VersionExchangeMessageHandler;
@@ -31,7 +30,6 @@ public class VersionExchangeMessage extends ProtocolMessage<VersionExchangeMessa
 
     public VersionExchangeMessage() {
         super();
-        this.protocolMessageType = ProtocolMessageType.VERSION_EXCHANGE_MESSAGE;
     }
 
     public ModifiableString getVersion() {

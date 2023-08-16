@@ -10,7 +10,6 @@ package de.rub.nds.sshattacker.core.packet;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
-import de.rub.nds.sshattacker.core.constants.ProtocolMessageType;
 import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.layer.data.DataContainer;
 import de.rub.nds.sshattacker.core.protocol.common.ModifiableVariableHolder;
@@ -40,26 +39,8 @@ public abstract class AbstractPacket<Self extends AbstractPacket<?>>
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PLAIN_PROTOCOL_MESSAGE)
     private ModifiableByteArray payload;
 
-    public ModifiableByteArray getCleanProtocolMessageBytes() {
-        return cleanProtocolMessageBytes;
-    }
-
-    public void setCleanProtocolMessageBytes(ModifiableByteArray cleanProtocolMessageBytes) {
-        this.cleanProtocolMessageBytes = cleanProtocolMessageBytes;
-    }
-
-    /*    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PLAIN_PROTOCOL_MESSAGE)*/
+    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PLAIN_PROTOCOL_MESSAGE)
     private ModifiableByteArray cleanProtocolMessageBytes;
-
-    public ProtocolMessageType getContentMessageType() {
-        return contentMessageType;
-    }
-
-    public void setContentMessageType(ProtocolMessageType contentMessageType) {
-        this.contentMessageType = contentMessageType;
-    }
-
-    private ProtocolMessageType contentMessageType;
 
     public AbstractPacket() {}
 
@@ -102,25 +83,18 @@ public abstract class AbstractPacket<Self extends AbstractPacket<?>>
                 ModifiableVariableFactory.safelySetValue(this.compressedPayload, compressedPayload);
     }
 
+    public void setPayload(byte[] payload) {
+        this.payload = ModifiableVariableFactory.safelySetValue(this.payload, payload);
+    }
+
     public ModifiableByteArray getPayload() {
         return payload;
     }
 
     public void setPayload(ModifiableByteArray payload) {
+        // this.cleanProtocolMessageBytes = cleanProtocolMessageBytes;
         this.payload = payload;
     }
-
-    public void setPayload(byte[] payload) {
-        this.payload = ModifiableVariableFactory.safelySetValue(this.payload, payload);
-    }
-
-    /*    public abstract AbstractPacketPreparator<? extends AbstractPacket> getPacketPreparator(
-            Chooser chooser, AbstractPacketEncryptor encryptor, PacketCompressor compressor);
-
-    public abstract AbstractPacketParser<? extends AbstractPacket> getPacketParser(
-            byte[] array, int startPosition, PacketCipher activeDecryptCipher, int sequenceNumber);
-
-    public abstract AbstractPacketSerializer<? extends AbstractPacket> getPacketSerializer();*/
 
     public abstract void prepareComputations();
 }

@@ -40,6 +40,6 @@ public class GlobalRequestSuccessMessage extends ChannelMessage<GlobalRequestSuc
 
     @Override
     public String toShortString() {
-        return "REQ_SUCCESS";
+        return "REQUEST_SUCCESS";
     }
 }

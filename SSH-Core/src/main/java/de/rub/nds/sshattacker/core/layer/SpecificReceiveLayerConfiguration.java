@@ -16,7 +16,7 @@ import java.util.List;
  * ReceiveConfiguration that receives a specific list of DataContainers. Any additional received
  * containers are marked as such.
  */
-public class SpecificReceiveLayerConfiguration<Container extends DataContainer>
+public class SpecificReceiveLayerConfiguration<Container extends DataContainer<?, ?>>
         extends ReceiveLayerConfiguration<Container> {
 
     private List<DataContainerFilter> containerFilterList;
@@ -97,7 +97,7 @@ public class SpecificReceiveLayerConfiguration<Container extends DataContainer>
     public boolean containerCanBeFiltered(Container container) {
         if (getContainerFilterList() != null) {
             for (DataContainerFilter containerFilter : getContainerFilterList()) {
-                if (containerFilter.filterApplies(container)) {
+                if (containerFilter.test(container)) {
                     return true;
                 }
             }

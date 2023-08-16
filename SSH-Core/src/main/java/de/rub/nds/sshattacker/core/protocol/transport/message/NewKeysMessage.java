@@ -39,6 +39,6 @@ public class NewKeysMessage extends SshMessage<NewKeysMessage> {
 
     @Override
     public String toShortString() {
-        return "NEW_KEYS";
+        return "NEWKEYS";
     }
 }

@@ -345,7 +345,7 @@ public class PacketMacedCipher extends PacketCipher {
             computations.setPlainPacketBytes(plainData);
             ModifiableByteArray plain_modifialbel = new ModifiableByteArray();
             plain_modifialbel.setOriginalValue(plainData);
-            packet.setCleanProtocolMessageBytes(plain_modifialbel);
+            packet.setPayload(plain_modifialbel);
         } else {
             if (encryptionAlgorithm.getIVSize() > 0) {
                 // Case 3a: Blob packet / Cipher with IV
@@ -357,7 +357,7 @@ public class PacketMacedCipher extends PacketCipher {
             packet.setCompressedPayload(plainData);
             ModifiableByteArray plain_modifialbel = new ModifiableByteArray();
             plain_modifialbel.setOriginalValue(plainData);
-            packet.setCleanProtocolMessageBytes(plain_modifialbel);
+            packet.setPayload(plain_modifialbel);
         }
         // Set the IV for the next packet if the encryption algorithm incorporates one
         if (encryptionAlgorithm.getIVSize() > 0) {

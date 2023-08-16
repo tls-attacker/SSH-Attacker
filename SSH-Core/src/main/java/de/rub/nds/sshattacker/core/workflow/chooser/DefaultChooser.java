@@ -18,7 +18,6 @@ import de.rub.nds.sshattacker.core.protocol.util.AlgorithmPicker;
 import de.rub.nds.sshattacker.core.state.Context;
 import de.rub.nds.tlsattacker.transport.Connection;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
-import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -596,16 +595,6 @@ public class DefaultChooser extends Chooser {
                 : ConnectionEndType.CLIENT;
     }
 
-    @Override
-    public byte[] getLastHandledAuthenticationMessageData() {
-        if (context.getSshContext().getLastHandledAuthenticationMessageData() != null) {
-            return copy(context.getSshContext().getLastHandledAuthenticationMessageData());
-        } else {
-            return config.getDefaultAuthenticationMessageData()
-                    .getBytes(StandardCharsets.ISO_8859_1);
-        }
-    }
-
     private byte[] copy(byte[] array) {
         return org.bouncycastle.util.Arrays.copyOf(array, array.length);
     }
@@ -1052,37 +1041,5 @@ public class DefaultChooser extends Chooser {
     @Override
     public AuthenticationMethod getAuthenticationMethod() {
         return config.getAuthenticationMethod();
-    }
-
-    public CompressionAlgorithm getSelectedCompressionAlgorithm() {
-        if (context.getSshContext().getSelectedCompressionAlgorithm() != null) {
-            return context.getSshContext().getSelectedCompressionAlgorithm();
-        } else {
-            return config.getDefaultSelectedCompressionAlgorithm();
-        }
-    }
-
-    public EncryptionAlgorithm getSelectedEncryptionAlgorithm() {
-        if (context.getSshContext().getSelectedEncryptionAlgorithm() != null) {
-            return context.getSshContext().getSelectedEncryptionAlgorithm();
-        } else {
-            return config.getDefaultSelectedEncryptionAlgorithm();
-        }
-    }
-
-    public MacAlgorithm getSelectedMacAlgorithm() {
-        if (context.getSshContext().getSelectedMacAlgorithm() != null) {
-            return context.getSshContext().getSelectedMacAlgorithm();
-        } else {
-            return config.getDefaultSelectedMacAlgorithm();
-        }
-    }
-
-    public KeyExchangeAlgorithm getSelectedKeyExchangeAlgorithm() {
-        if (context.getSshContext().getSelectedMacAlgorithm() != null) {
-            return context.getSshContext().getSelectedKeyExchangeAlgorithm();
-        } else {
-            return config.getDefaultSelectedKeyExchangeAlgorithm();
-        }
     }
 }

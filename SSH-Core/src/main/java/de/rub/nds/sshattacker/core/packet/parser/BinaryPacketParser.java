@@ -31,15 +31,6 @@ public class BinaryPacketParser extends AbstractPacketParser<BinaryPacket> {
      */
     private final int sequenceNumber;
 
-    /*
-        public BinaryPacketParser(
-                byte[] array, int startPosition, PacketCipher activeDecryptCipher, int sequenceNumber) {
-            super(array, startPosition);
-            this.activeDecryptCipher = activeDecryptCipher;
-            this.sequenceNumber = sequenceNumber;
-        }
-    */
-
     public BinaryPacketParser(
             InputStream stream, PacketCipher activeDecryptCipher, int sequenceNumber) {
         super(stream);
@@ -168,6 +159,8 @@ public class BinaryPacketParser extends AbstractPacketParser<BinaryPacket> {
          *  byte[n] ciphertext      ; n = 4 + packet_length (decryption of first block required)
          *  byte[m] mac             ; m = length of mac output
          */
+
+        LOGGER.debug("I can mark: {}", getStream().markSupported());
         // int pointer = getPointer();
         int blockSize = activeDecryptCipher.getEncryptionAlgorithm().getBlockSize();
         int decryptedByteCount = 0;

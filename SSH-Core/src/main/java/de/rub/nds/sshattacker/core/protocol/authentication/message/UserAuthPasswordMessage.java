@@ -160,6 +160,6 @@ public class UserAuthPasswordMessage extends UserAuthRequestMessage<UserAuthPass
 
     @Override
     public String toShortString() {
-        return "AUTH_PW";
+        return "USERAUTH_REQUEST";
     }
 }

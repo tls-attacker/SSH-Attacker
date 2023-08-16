@@ -159,6 +159,6 @@ public class UserAuthFailureMessage extends SshMessage<UserAuthFailureMessage> {
 
     @Override
     public String toShortString() {
-        return "AUTHFAIL";
+        return "USERAUTH_FAILURE";
     }
 }

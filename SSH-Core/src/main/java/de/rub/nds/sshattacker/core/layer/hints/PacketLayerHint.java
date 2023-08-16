@@ -7,7 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.layer.hints;
 
-import de.rub.nds.sshattacker.core.constants.ProtocolMessageType;
+import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import java.util.Objects;
 
 /**
@@ -16,49 +16,27 @@ import java.util.Objects;
  */
 public class PacketLayerHint implements LayerProcessingHint {
 
-    private final ProtocolMessageType type;
-
-    private final Integer epoch;
+    private final MessageIdConstant type;
 
     private final Integer sequenceNumber;
 
-    private final Integer messageSequence;
-
-    public PacketLayerHint(ProtocolMessageType type) {
+    public PacketLayerHint(MessageIdConstant type) {
         this.type = type;
-        this.epoch = null;
         this.sequenceNumber = null;
-        this.messageSequence = null;
     }
 
-    public PacketLayerHint(ProtocolMessageType type, int epoch, int sequenceNumber) {
+    public PacketLayerHint(MessageIdConstant type, int epoch, int sequenceNumber) {
         this.type = type;
-        this.epoch = epoch;
         this.sequenceNumber = sequenceNumber;
-        this.messageSequence = null;
     }
 
-    public PacketLayerHint(ProtocolMessageType type, int messageSequence) {
-        this.type = type;
-        this.epoch = null;
-        this.sequenceNumber = null;
-        this.messageSequence = messageSequence;
-    }
-
-    @Override
     public boolean equals(Object other) {
         if (other instanceof PacketLayerHint) {
             PacketLayerHint otherHint = (PacketLayerHint) other;
             if (this.type == otherHint.type) {
                 return true;
             }
-            if (this.epoch == otherHint.epoch) {
-                return false;
-            }
             if (this.sequenceNumber == otherHint.sequenceNumber) {
-                return true;
-            }
-            if (this.messageSequence == otherHint.messageSequence) {
                 return true;
             }
         }
@@ -69,25 +47,15 @@ public class PacketLayerHint implements LayerProcessingHint {
     public int hashCode() {
         int hash = 3;
         hash = 79 * hash + Objects.hashCode(this.type);
-        hash = 79 * hash + Objects.hashCode(this.epoch);
         hash = 79 * hash + Objects.hashCode(this.sequenceNumber);
-        hash = 79 * hash + Objects.hashCode(this.messageSequence);
         return hash;
     }
 
-    public ProtocolMessageType getType() {
+    public MessageIdConstant getType() {
         return type;
-    }
-
-    public Integer getEpoch() {
-        return epoch;
     }
 
     public Integer getSequenceNumber() {
         return sequenceNumber;
-    }
-
-    public Integer getMessageSequence() {
-        return messageSequence;
     }
 }

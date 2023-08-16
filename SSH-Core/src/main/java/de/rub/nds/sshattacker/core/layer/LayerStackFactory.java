@@ -16,11 +16,11 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * Creates a layerStack based on pre-defined configurations. E.g., to send TLS messages with
- * TLS-Attacker, we have to produce a layerStack that contains the MessageLayer, RecordLayer, and
+ * Creates a layerStack based on pre-defined configurations. E.g., to send SSHv2 messages with
+ * SSH-Attacker, we have to produce a layerStack that contains the SSHv2, TransportLayer, and
  * TcpLayer. Each layer is assigned a different context.
  */
-public class LayerStackFactory {
+public final class LayerStackFactory {
     private static final Logger LOGGER = LogManager.getLogger();
 
     public static LayerStack createLayerStack(LayerConfiguration type, Context context) {
@@ -32,20 +32,20 @@ public class LayerStackFactory {
         TcpContext tcpContext = context.getTcpContext();
 
         switch (type) {
-            case SSHv1:
+            case SSHV1:
                 layerStack =
                         new LayerStack(
                                 context,
                                 new SSH1Layer(sshContext),
-                                new TransportLayer(sshContext),
+                                new PacketLayer(sshContext),
                                 new TcpLayer(tcpContext));
                 return layerStack;
-            case SSHv2:
+            case SSHV2:
                 layerStack =
                         new LayerStack(
                                 context,
                                 new SSH2Layer(sshContext),
-                                new TransportLayer(sshContext),
+                                new PacketLayer(sshContext),
                                 new TcpLayer(tcpContext));
                 return layerStack;
             default:
