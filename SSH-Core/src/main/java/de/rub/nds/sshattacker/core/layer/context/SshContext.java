@@ -7,6 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.layer.context;
 
+import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.constants.*;
 import de.rub.nds.sshattacker.core.crypto.hash.ExchangeHashInputHolder;
@@ -259,6 +260,12 @@ public class SshContext extends LayerContext {
     private KeySet keySet;
 
     private byte[] sshv1SessionID;
+
+    private byte[] antiSpoofingCookie;
+
+    private List<ProtocolFlag> chosenProtocolFlags;
+    private CipherMethod chosenCipherMethod;
+    private AuthenticationMethodSSHv1 chosenAuthenticationMethod;
     // endregion
 
     /*    public MessageLayer getMessageLayer() {
@@ -1054,5 +1061,37 @@ public class SshContext extends LayerContext {
 
     public void setSshv1SessionID(byte[] sshv1SessionID) {
         this.sshv1SessionID = sshv1SessionID;
+    }
+
+    public byte[] getAntiSpoofingCookie() {
+        return antiSpoofingCookie;
+    }
+
+    public void setAntiSpoofingCookie(byte[] antiSpoofingCookie) {
+        this.antiSpoofingCookie = antiSpoofingCookie;
+    }
+
+    public List<ProtocolFlag> getChosenProtocolFlags() {
+        return chosenProtocolFlags;
+    }
+
+    public void setChosenProtocolFlags(List<ProtocolFlag> chosenProtocolFlags) {
+        this.chosenProtocolFlags = chosenProtocolFlags;
+    }
+
+    public CipherMethod getChosenCipherMethod() {
+        return chosenCipherMethod;
+    }
+
+    public void setChosenCipherMethod(CipherMethod chosenCipherMethod) {
+        this.chosenCipherMethod = chosenCipherMethod;
+    }
+
+    public AuthenticationMethodSSHv1 getChosenAuthenticationMethod() {
+        return chosenAuthenticationMethod;
+    }
+
+    public void setChosenAuthenticationMethod(AuthenticationMethodSSHv1 chosenAuthenticationMethod) {
+        this.chosenAuthenticationMethod = chosenAuthenticationMethod;
     }
 }

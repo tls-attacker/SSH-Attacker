@@ -324,6 +324,6 @@ public class ServerPublicKeyMessage extends SshMessage<ServerPublicKeyMessage> {
 
     @Override
     public String toShortString() {
-        return "HYB_KEX_REPL";
+        return "SMGS_PUBLIC_KEY";
     }
 }
