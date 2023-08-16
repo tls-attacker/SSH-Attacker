@@ -503,7 +503,7 @@ public class Config implements Serializable {
         defaultServerConnection = new InboundConnection("server", 65222, "localhost");
 
         protocolVersion = ProtocolVersion.SSH2;
-        defaultLayerConfiguration = LayerConfiguration.SSHv2;
+        defaultLayerConfiguration = LayerConfiguration.SSHV2;
 
         // region VersionExchange initialization
         clientVersion = "SSH-2.0-OpenSSH_9.0";

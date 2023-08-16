@@ -60,10 +60,4 @@ public class VersionExchangeMessageSSHV1Serializer
         serializeComment();
         serializeEndOfMessageSequence();
     }
-
-    @Override
-    protected byte[] serializeBytes() {
-        serializeProtocolMessageContents();
-        return getAlreadySerialized();
-    }
 }

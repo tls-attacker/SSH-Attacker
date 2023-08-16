@@ -10,13 +10,9 @@ package de.rub.nds.sshattacker.core.protocol.ssh1.message;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
-import de.rub.nds.sshattacker.core.constants.AuthenticationMethodSSHv1;
 import de.rub.nds.sshattacker.core.constants.CipherMethod;
 import de.rub.nds.sshattacker.core.constants.ProtocolFlag;
 import de.rub.nds.sshattacker.core.crypto.kex.HybridKeyExchange;
-import de.rub.nds.sshattacker.core.crypto.keys.CustomRsaPrivateKey;
-import de.rub.nds.sshattacker.core.crypto.keys.CustomRsaPublicKey;
-import de.rub.nds.sshattacker.core.crypto.keys.SshPublicKey;
 import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
@@ -26,7 +22,6 @@ import de.rub.nds.sshattacker.core.protocol.ssh1.handler.ClientSessionKeyMessage
 import de.rub.nds.sshattacker.core.protocol.ssh1.parser.ClientSessionKeyMessageParser;
 import de.rub.nds.sshattacker.core.protocol.ssh1.preparator.ClientSessionKeyMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.ssh1.serializer.ClientSessionKeyMessageSerializer;
-
 import java.io.InputStream;
 import java.util.List;
 
@@ -57,9 +52,10 @@ public class ClientSessionKeyMessage extends SshMessage<ClientSessionKeyMessage>
     }
 
     public void setAntiSpoofingCookie(byte[] antiSpoofingCookie) {
-        this.antiSpoofingCookie = ModifiableVariableFactory.safelySetValue(this.antiSpoofingCookie,antiSpoofingCookie);
+        this.antiSpoofingCookie =
+                ModifiableVariableFactory.safelySetValue(
+                        this.antiSpoofingCookie, antiSpoofingCookie);
     }
-
 
     public ModifiableByteArray getEncryptedSessioKey() {
         return encryptedSessioKey;

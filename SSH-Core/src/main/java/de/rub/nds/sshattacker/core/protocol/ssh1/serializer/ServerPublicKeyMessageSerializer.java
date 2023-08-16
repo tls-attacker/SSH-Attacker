@@ -103,13 +103,4 @@ public class ServerPublicKeyMessageSerializer extends SshMessageSerializer<Serve
                 ArrayConverter.bytesToHexString(
                         message.getHostKey().getPublicKey().getModulus().toByteArray()));
     }
-
-    @Override
-    protected byte[] serializeBytes() {
-        super.serializeProtocolMessageContents();
-        LOGGER.debug(
-                "[bro] SSHV1 serializied PubKey Message. Content: {}",
-                ArrayConverter.bytesToHexString(getAlreadySerialized()));
-        return getAlreadySerialized();
-    }
 }

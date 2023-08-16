@@ -18,7 +18,7 @@ import de.rub.nds.sshattacker.core.layer.stream.HintedInputStream;
 import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.message.*;*/
-import de.rub.nds.sshattacker.core.constants.ProtocolMessageType;
+import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.exceptions.EndOfStreamException;
 import de.rub.nds.sshattacker.core.exceptions.TimeoutException;
 import de.rub.nds.sshattacker.core.layer.LayerConfiguration;
@@ -54,7 +54,7 @@ public class SSH1Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
     @Override
     public LayerProcessingResult sendConfiguration() throws IOException {
         LayerConfiguration<ProtocolMessage> configuration = getLayerConfiguration();
-        ProtocolMessageType runningProtocolMessageType = null;
+        MessageIdConstant runningProtocolMessageType = null;
         ByteArrayOutputStream collectedMessageStream = new ByteArrayOutputStream();
         if (configuration != null) {
             LOGGER.debug(
@@ -71,7 +71,7 @@ public class SSH1Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
 
                 LOGGER.debug("[bro] here i am with sending the message");
 
-                runningProtocolMessageType = message.getProtocolMessageType();
+                runningProtocolMessageType = message.getMessageIdConstant();
                 processMessage(message, collectedMessageStream);
                 addProducedContainer(message);
                 flushCollectedMessages(runningProtocolMessageType, collectedMessageStream);
@@ -86,7 +86,7 @@ public class SSH1Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
         if (runningProtocolMessageType == null) {
             LOGGER.debug("[bro] Protocol Message Type is null!");
         } else {
-            LOGGER.debug("ProtocolMessageType: {}", runningProtocolMessageType.getValue());
+            LOGGER.debug("ProtocolMessageType: {}", runningProtocolMessageType.getId());
         }
 
         LOGGER.debug("[bro] " + "flushing {} to lower layer", collectedMessageStream.toByteArray());
@@ -122,7 +122,7 @@ public class SSH1Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
     }
 
     private void flushCollectedMessages(
-            ProtocolMessageType runningProtocolMessageType, ByteArrayOutputStream byteStream)
+            MessageIdConstant runningProtocolMessageType, ByteArrayOutputStream byteStream)
             throws IOException {
 
         LOGGER.debug(
@@ -130,10 +130,7 @@ public class SSH1Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
                 byteStream.toByteArray(),
                 getLowerLayer().getLayerType());
         if (byteStream.size() > 0) {
-            getLowerLayer()
-                    .sendData(
-                            new PacketLayerHint(runningProtocolMessageType),
-                            byteStream.toByteArray());
+            getLowerLayer().sendData(byteStream.toByteArray());
             byteStream.reset();
         }
     }
@@ -174,10 +171,7 @@ public class SSH1Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
             } while (shouldContinueProcessing());
         } catch (TimeoutException ex) {
             LOGGER.debug(ex);
-        } catch (EndOfStreamException ex) {
-            LOGGER.debug("Reached end of stream, cannot parse more messages", ex);
         }
-
         return getLayerResult();
     }
 

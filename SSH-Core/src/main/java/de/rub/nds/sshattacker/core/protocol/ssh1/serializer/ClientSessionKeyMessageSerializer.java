@@ -7,17 +7,14 @@
  */
 package de.rub.nds.sshattacker.core.protocol.ssh1.serializer;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.HybridKeyExchangeCombiner;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.ssh1.message.ClientSessionKeyMessage;
-import de.rub.nds.sshattacker.core.protocol.ssh1.message.ServerPublicKeyMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.zip.CRC32;
-
-public class ClientSessionKeyMessageSerializer extends SshMessageSerializer<ClientSessionKeyMessage> {
+public class ClientSessionKeyMessageSerializer
+        extends SshMessageSerializer<ClientSessionKeyMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
     private HybridKeyExchangeCombiner combiner;
@@ -29,15 +26,5 @@ public class ClientSessionKeyMessageSerializer extends SshMessageSerializer<Clie
     }
 
     @Override
-    public void serializeMessageSpecificContents() {
-    }
-
-    @Override
-    protected byte[] serializeBytes() {
-        super.serializeProtocolMessageContents();
-        LOGGER.debug(
-                "[bro] SSHV1 serializied PubKey Message. Content: {}",
-                ArrayConverter.bytesToHexString(getAlreadySerialized()));
-        return getAlreadySerialized();
-    }
+    public void serializeMessageSpecificContents() {}
 }

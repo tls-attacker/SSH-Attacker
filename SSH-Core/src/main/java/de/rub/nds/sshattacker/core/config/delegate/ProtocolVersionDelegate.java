@@ -41,9 +41,9 @@ public class ProtocolVersionDelegate extends Delegate {
         config.setProtocolVersion(protocolVersion);
         TransportHandlerType th = TransportHandlerType.TCP;
         if (config.getProtocolVersion().isSSHv2()) {
-            config.setDefaultLayerConfiguration(LayerConfiguration.SSHv2);
+            config.setDefaultLayerConfiguration(LayerConfiguration.SSHV2);
         } else if (config.getProtocolVersion().isSSHv1()) {
-            config.setDefaultLayerConfiguration(LayerConfiguration.SSHv1);
+            config.setDefaultLayerConfiguration(LayerConfiguration.SSHV1);
         } else {
             LOGGER.error("[bro] does not initalize with sshv1 or sshv2");
             throw new RuntimeException();

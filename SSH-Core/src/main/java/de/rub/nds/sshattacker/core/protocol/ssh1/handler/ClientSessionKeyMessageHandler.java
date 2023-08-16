@@ -10,13 +10,8 @@ package de.rub.nds.sshattacker.core.protocol.ssh1.handler;
 import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.ssh1.message.ClientSessionKeyMessage;
-import de.rub.nds.sshattacker.core.protocol.ssh1.message.ServerPublicKeyMessage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 
 public class ClientSessionKeyMessageHandler extends SshMessageHandler<ClientSessionKeyMessage> {
 
@@ -33,9 +28,6 @@ public class ClientSessionKeyMessageHandler extends SshMessageHandler<ClientSess
 
     @Override
     public void adjustContext(ClientSessionKeyMessage message) {
-
-
-
 
         // KeyExchangeUtil.handleHostKeyMessage(sshContext, message);
         // setRemoteValues(message);

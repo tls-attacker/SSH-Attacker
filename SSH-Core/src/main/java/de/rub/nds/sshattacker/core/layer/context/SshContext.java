@@ -7,7 +7,6 @@
  */
 package de.rub.nds.sshattacker.core.layer.context;
 
-import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.constants.*;
 import de.rub.nds.sshattacker.core.crypto.hash.ExchangeHashInputHolder;
@@ -1006,7 +1005,8 @@ public class SshContext extends LayerContext {
         return chosenAuthenticationMethod;
     }
 
-    public void setChosenAuthenticationMethod(AuthenticationMethodSSHv1 chosenAuthenticationMethod) {
+    public void setChosenAuthenticationMethod(
+            AuthenticationMethodSSHv1 chosenAuthenticationMethod) {
         this.chosenAuthenticationMethod = chosenAuthenticationMethod;
     }
 }

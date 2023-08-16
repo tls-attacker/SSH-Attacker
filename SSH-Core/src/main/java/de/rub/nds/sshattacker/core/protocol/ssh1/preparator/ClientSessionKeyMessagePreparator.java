@@ -7,27 +7,18 @@
  */
 package de.rub.nds.sshattacker.core.protocol.ssh1.preparator;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.*;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomRsaPrivateKey;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomRsaPublicKey;
 import de.rub.nds.sshattacker.core.crypto.keys.SshPublicKey;
-import de.rub.nds.sshattacker.core.exceptions.CryptoException;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.ssh1.message.ClientSessionKeyMessage;
-import de.rub.nds.sshattacker.core.protocol.ssh1.message.ServerPublicKeyMessage;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.security.KeyPair;
-import java.security.KeyPairGenerator;
-import java.security.NoSuchAlgorithmException;
-import java.security.interfaces.RSAPrivateKey;
-import java.security.interfaces.RSAPublicKey;
-import java.util.List;
-
-public class ClientSessionKeyMessagePreparator extends SshMessagePreparator<ClientSessionKeyMessage> {
+public class ClientSessionKeyMessagePreparator
+        extends SshMessagePreparator<ClientSessionKeyMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
     private HybridKeyExchangeCombiner combiner;
@@ -40,11 +31,11 @@ public class ClientSessionKeyMessagePreparator extends SshMessagePreparator<Clie
         this.combiner = combiner;
     }
 
-    private void prepareAntiSpoofingCookie(){
+    private void prepareAntiSpoofingCookie() {
         getObject().setAntiSpoofingCookie(chooser.getConfig().getAntiSpoofingCookie());
     }
 
-    private void prepareSessionID(){
+    private void prepareSessionID() {
         chooser.getContext().getSshContext().getServerKey();
         chooser.getContext().getSshContext().getHostKey();
     }
@@ -52,8 +43,5 @@ public class ClientSessionKeyMessagePreparator extends SshMessagePreparator<Clie
     @Override
     public void prepareMessageSpecificContents() {
         LOGGER.debug("Preparring now...");
-
     }
-
-
 }

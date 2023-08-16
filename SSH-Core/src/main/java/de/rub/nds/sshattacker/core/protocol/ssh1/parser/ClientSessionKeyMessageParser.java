@@ -7,22 +7,13 @@
  */
 package de.rub.nds.sshattacker.core.protocol.ssh1.parser;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.*;
-import de.rub.nds.sshattacker.core.crypto.keys.CustomRsaPrivateKey;
-import de.rub.nds.sshattacker.core.crypto.keys.CustomRsaPublicKey;
-import de.rub.nds.sshattacker.core.crypto.keys.SshPublicKey;
 import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 import de.rub.nds.sshattacker.core.protocol.ssh1.message.ClientSessionKeyMessage;
-import de.rub.nds.sshattacker.core.protocol.ssh1.message.ServerPublicKeyMessage;
+import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import java.io.InputStream;
-import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.List;
 
 public class ClientSessionKeyMessageParser extends SshMessageParser<ClientSessionKeyMessage> {
     private static final Logger LOGGER = LogManager.getLogger();
@@ -97,9 +88,6 @@ public class ClientSessionKeyMessageParser extends SshMessageParser<ClientSessio
         this.encapsulationSize = encapsulationSize;
         this.combiner = combiner;*/
     }
-
-
-
 
     private void parseCRC(ClientSessionKeyMessage message) {
         byte[] CRC = parseByteArrayField(4);

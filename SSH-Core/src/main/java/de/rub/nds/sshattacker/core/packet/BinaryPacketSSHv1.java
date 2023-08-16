@@ -14,7 +14,7 @@ import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.layer.data.DataContainer;
-import de.rub.nds.sshattacker.core.packet.handler.BinaryPacketHandlerSSHv1;
+import de.rub.nds.sshattacker.core.layer.data.Handler;
 import de.rub.nds.sshattacker.core.packet.parser.BinaryPacketParserSSHv1;
 import de.rub.nds.sshattacker.core.packet.preparator.BinaryPacketPreparatorSSHv1;
 import de.rub.nds.sshattacker.core.packet.serializer.BinaryPacketSerializerSSHv1;
@@ -207,7 +207,7 @@ public class BinaryPacketSSHv1 extends AbstractPacket<BinaryPacketSSHv1>
     }
 
     @Override
-    public BinaryPacketHandlerSSHv1 getHandler(SshContext context) {
-        return new BinaryPacketHandlerSSHv1(context);
+    public Handler getHandler(SshContext context) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 }

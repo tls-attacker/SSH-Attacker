@@ -10,12 +10,11 @@ package de.rub.nds.sshattacker.core.protocol.ssh1.handler;
 import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.ssh1.message.ServerPublicKeyMessage;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class ServerPublicKeyMessageHandler extends SshMessageHandler<ServerPublicKeyMessage> {
 
@@ -33,9 +32,16 @@ public class ServerPublicKeyMessageHandler extends SshMessageHandler<ServerPubli
     @Override
     public void adjustContext(ServerPublicKeyMessage message) {
 
-        String serverKeyModulus = new String(message.getServerKey().getPublicKey().getModulus().toByteArray(), StandardCharsets.UTF_8);
-        String hostKeyModulus = new String(message.getHostKey().getPublicKey().getModulus().toByteArray(), StandardCharsets.UTF_8);
-        String cookie = new String(message.getAntiSpoofingCookie().getValue(), StandardCharsets.UTF_8);
+        String serverKeyModulus =
+                new String(
+                        message.getServerKey().getPublicKey().getModulus().toByteArray(),
+                        StandardCharsets.UTF_8);
+        String hostKeyModulus =
+                new String(
+                        message.getHostKey().getPublicKey().getModulus().toByteArray(),
+                        StandardCharsets.UTF_8);
+        String cookie =
+                new String(message.getAntiSpoofingCookie().getValue(), StandardCharsets.UTF_8);
 
         String concatenated = serverKeyModulus + hostKeyModulus + cookie;
         try {
@@ -50,10 +56,9 @@ public class ServerPublicKeyMessageHandler extends SshMessageHandler<ServerPubli
         sshContext.setServerKey(message.getServerKey());
         sshContext.setHostKey(message.getHostKey());
         sshContext.setAntiSpoofingCookie(message.getAntiSpoofingCookie().getValue());
-        //TODO: Choose correct CipherMethod
-        
-        //TODO: Choose correct AuthenticationMethod
+        // TODO: Choose correct CipherMethod
 
+        // TODO: Choose correct AuthenticationMethod
 
         // KeyExchangeUtil.handleHostKeyMessage(sshContext, message);
         // setRemoteValues(message);
