@@ -105,6 +105,20 @@ public abstract class Serializer<T> {
         appendBytes(bytes);
     }
 
+    public final void appendMultiPrecisionAsByteArray(byte[] i) {
+        byte[] bytes;
+        int lenght = i.length * 8;
+        LOGGER.debug("MPI is {} Bit long", lenght);
+        bytes = ArrayConverter.intToBytes(lenght, 2);
+        appendBytes(bytes);
+        LOGGER.debug(" -> Appended Length {}", ArrayConverter.bytesToHexString(bytes));
+
+        bytes = i;
+        LOGGER.debug(" -> Appended MPI-Value {}", ArrayConverter.bytesToHexString(bytes));
+
+        appendBytes(bytes);
+    }
+
     /**
      * Adds a byte to the final byte[].
      *

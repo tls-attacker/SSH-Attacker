@@ -7,11 +7,14 @@
  */
 package de.rub.nds.sshattacker.core.protocol.ssh1.parser;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.*;
 import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 import de.rub.nds.sshattacker.core.protocol.ssh1.message.ClientSessionKeyMessage;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -91,7 +94,26 @@ public class ClientSessionKeyMessageParser extends SshMessageParser<ClientSessio
 
     private void parseCRC(ClientSessionKeyMessage message) {
         byte[] CRC = parseByteArrayField(4);
-        LOGGER.debug("CRC: {}", CRC);
+        LOGGER.debug("CRC: {}", ArrayConverter.bytesToHexString(CRC));
+    }
+
+    private void parseChosenCipherMethod(ClientSessionKeyMessage message) {
+        CipherMethod chosenCipherMethod = CipherMethod.fromId(parseIntField(1));
+        message.setChosenCipherMethod(chosenCipherMethod);
+        LOGGER.debug("Ciphermethod: {}", chosenCipherMethod);
+    }
+
+    private void parseAntiSpoofingCookie(ClientSessionKeyMessage message) {
+        message.setAntiSpoofingCookie(parseByteArrayField(8));
+        LOGGER.debug("AntiSpoofingCookie: {}", message.getAntiSpoofingCookie().getValue());
+    }
+
+    private void parseSessionKey(ClientSessionKeyMessage message) {
+        // message.setEncryptedSessioKey(parseMultiprecisionAsByteArray());
+        message.setEncryptedSessioKey(parseMultiprecision().toByteArray());
+        LOGGER.debug(
+                "Encrypted Session Key: {}",
+                ArrayConverter.bytesToHexString(message.getEncryptedSessioKey().getValue()));
     }
 
     /*    private void parseHybridKey(ServerPublicKeyMessage message) {
@@ -124,8 +146,30 @@ public class ClientSessionKeyMessageParser extends SshMessageParser<ClientSessio
         LOGGER.debug("Signature: " + message.getSignature());
     }*/
 
+    private void parseProtocolFlags(ClientSessionKeyMessage message) {
+        message.setProtocolFlagMask(parseIntField(4));
+        LOGGER.debug("Protocol Flags Mask {}", message.getProtocolFlagMask().getValue());
+
+        int flagMask = message.getProtocolFlagMask().getValue();
+        String stringProtocolMask = Integer.toBinaryString(flagMask);
+        List<ProtocolFlag> chosenProtocolFlags = new ArrayList<>();
+        for (int i = 0; i < stringProtocolMask.length(); i++) {
+            if (stringProtocolMask.charAt(i) == '1') {
+                int id = stringProtocolMask.length() - 1 - i;
+                chosenProtocolFlags.add(ProtocolFlag.fromId(id));
+                LOGGER.debug("Parsed ProtocolFlags {} at id {}", ProtocolFlag.fromId(id), id);
+            }
+        }
+
+        message.setChosenProtocolFlags(chosenProtocolFlags);
+    }
+
     @Override
     protected void parseMessageSpecificContents(ClientSessionKeyMessage message) {
+        parseChosenCipherMethod(message);
+        parseAntiSpoofingCookie(message);
+        parseSessionKey(message);
+        parseProtocolFlags(message);
         parseCRC(message);
 
         // parseHybridKey(message);

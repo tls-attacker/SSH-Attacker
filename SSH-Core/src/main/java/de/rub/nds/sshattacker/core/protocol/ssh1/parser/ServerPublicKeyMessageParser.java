@@ -190,7 +190,6 @@ public class ServerPublicKeyMessageParser extends SshMessageParser<ServerPublicK
                 LOGGER.debug("Parsed Ciphers {} at id {}", CipherMethod.fromId(id), id);
             }
         }
-
         message.setSupportedCipherMethods(supportedCipherMethods);
     }
 

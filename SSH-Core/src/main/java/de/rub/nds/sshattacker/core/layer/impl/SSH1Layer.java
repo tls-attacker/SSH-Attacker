@@ -18,6 +18,7 @@ import de.rub.nds.sshattacker.core.layer.stream.HintedInputStream;
 import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.message.*;*/
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.constants.MessageIdConstantSSH1;
 import de.rub.nds.sshattacker.core.constants.PacketLayerType;
@@ -38,6 +39,7 @@ import de.rub.nds.sshattacker.core.packet.AbstractPacket;
 import de.rub.nds.sshattacker.core.packet.BinaryPacket;
 import de.rub.nds.sshattacker.core.packet.BlobPacket;
 import de.rub.nds.sshattacker.core.protocol.common.*;
+import de.rub.nds.sshattacker.core.protocol.ssh1.message.ClientSessionKeyMessage;
 import de.rub.nds.sshattacker.core.protocol.ssh1.message.ServerPublicKeyMessage;
 import de.rub.nds.sshattacker.core.protocol.ssh1.message.VersionExchangeMessageSSHV1;
 import de.rub.nds.sshattacker.core.protocol.transport.message.AsciiMessage;
@@ -175,6 +177,7 @@ public class SSH1Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
+                LOGGER.debug("STREAMCONTENT: {}", ArrayConverter.bytesToHexString(streamContent));
 
                 AbstractPacket<?> packet;
 
@@ -251,6 +254,10 @@ public class SSH1Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
                 LOGGER.debug("[bro] returning SSH_SMSG_PUBLIC_KEY Hint");
                 readPublicKeyData((BinaryPacket) packet);
                 break;
+            case SSH_CMSG_SESSION_KEY:
+                LOGGER.debug("[bro] returning SSH_SMSG_PUBLIC_KEY Hint");
+                readSessionKeyData((BinaryPacket) packet);
+                break;
                 // return new PacketLayerHintSSHV1(ProtocolMessageTypeSSHV1.SSH_SMSG_PUBLIC_KEY);
             case SSH_MSG_IGNORE:
                 LOGGER.debug("[bro] returning SSH_MSG_IGNORE Hint");
@@ -291,6 +298,16 @@ public class SSH1Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
         UnknownMessage message = new UnknownMessage();
         readDataContainer(message, context);
         getLowerLayer().removeDrainedInputStream();
+    }
+
+    private void readSessionKeyData(AbstractPacket<BinaryPacket> packet) {
+        ClientSessionKeyMessage message = new ClientSessionKeyMessage();
+        HintedInputStream temp_stream;
+
+        temp_stream =
+                new HintedInputStreamAdapterStream(
+                        null, new ByteArrayInputStream(packet.getPayload().getValue()));
+        readContainerFromStream(message, context, temp_stream);
     }
 
     public void readMessageForHint(PacketLayerHintSSHV1 hint) {

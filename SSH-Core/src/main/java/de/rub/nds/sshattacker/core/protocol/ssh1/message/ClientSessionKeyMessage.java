@@ -65,6 +65,12 @@ public class ClientSessionKeyMessage extends SshMessage<ClientSessionKeyMessage>
         this.encryptedSessioKey = encryptedSessioKey;
     }
 
+    public void setEncryptedSessioKey(byte[] encryptedSessioKey) {
+        this.encryptedSessioKey =
+                ModifiableVariableFactory.safelySetValue(
+                        this.encryptedSessioKey, encryptedSessioKey);
+    }
+
     public ModifiableByteArray getPlaintextSessioKey() {
         return plaintextSessioKey;
     }
@@ -87,6 +93,24 @@ public class ClientSessionKeyMessage extends SshMessage<ClientSessionKeyMessage>
 
     public void setProtocolFlagMask(ModifiableInteger protocolFlagMask) {
         this.protocolFlagMask = protocolFlagMask;
+    }
+
+    public void setProtocolFlagMask(int protocolFlagMask) {
+        this.protocolFlagMask =
+                ModifiableVariableFactory.safelySetValue(this.protocolFlagMask, protocolFlagMask);
+    }
+
+    public ModifiableByteArray getSshv1SessionID() {
+        return sshv1SessionID;
+    }
+
+    public void setSshv1SessionID(ModifiableByteArray sshv1SessionID) {
+        this.sshv1SessionID = sshv1SessionID;
+    }
+
+    public void setSshv1SessionID(byte[] sshv1SessionID) {
+        this.sshv1SessionID =
+                ModifiableVariableFactory.safelySetValue(this.sshv1SessionID, sshv1SessionID);
     }
 
     @Override

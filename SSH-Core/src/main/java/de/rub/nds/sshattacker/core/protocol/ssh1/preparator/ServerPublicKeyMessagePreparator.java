@@ -7,6 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.protocol.ssh1.preparator;
 
+import com.google.common.primitives.Bytes;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.*;
 import de.rub.nds.sshattacker.core.crypto.keys.*;
@@ -16,6 +17,7 @@ import de.rub.nds.sshattacker.core.protocol.ssh1.message.ServerPublicKeyMessage;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
+import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
@@ -45,6 +47,7 @@ public class ServerPublicKeyMessagePreparator extends SshMessagePreparator<Serve
         prepareSupportedCipers();
         prepareSupportedAuthenticationMethods();
         prepareFlags();
+        prepareSessionID();
     }
 
     public void generateServerKey() throws CryptoException {
@@ -82,6 +85,7 @@ public class ServerPublicKeyMessagePreparator extends SshMessagePreparator<Serve
                 new SshPublicKey<>(PublicKeyFormat.SSH_RSA, publicKey, privateKey);
 
         getObject().setHostKey(hostKey);
+        chooser.getContext().getSshContext().setHostKey(hostKey);
 
         /*        hostKeylenght = publicKey.getPublicExponent().bitLength();
         hostKeylenght = hostKeylenght + publicKey.getModulus().bitLength();
@@ -192,5 +196,40 @@ public class ServerPublicKeyMessagePreparator extends SshMessagePreparator<Serve
         getObject().setChosenProtocolFlags(chooser.getConfig().getChosenProtocolFlags());
 
         getObject().setProtocolFlagMask(flagMask);
+    }
+
+    private void prepareSessionID() {
+        byte[] serverModulus;
+        byte[] hostModulus;
+        byte[] cookie;
+        SshPublicKey<?, ?> serverkey = chooser.getContext().getSshContext().getServerKey();
+
+        if (serverkey.getPublicKey() instanceof CustomRsaPublicKey) {
+            CustomRsaPublicKey rsaPublicKey = (CustomRsaPublicKey) serverkey.getPublicKey();
+            serverModulus = rsaPublicKey.getModulus().toByteArray();
+        } else {
+            throw new RuntimeException();
+        }
+
+        SshPublicKey<?, ?> hostKey = chooser.getConfig().getHostKeys().get(0);
+        if (hostKey.getPublicKey() instanceof CustomRsaPublicKey) {
+            CustomRsaPublicKey rsaPublicKey = (CustomRsaPublicKey) hostKey.getPublicKey();
+            hostModulus = rsaPublicKey.getModulus().toByteArray();
+        } else {
+            throw new RuntimeException();
+        }
+
+        cookie = chooser.getConfig().getAntiSpoofingCookie();
+
+        MessageDigest md = null;
+        try {
+            md = MessageDigest.getInstance("MD5");
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        }
+        md.update(Bytes.concat(serverModulus, hostModulus, cookie));
+        byte[] sessionID = md.digest();
+        LOGGER.debug("Session-ID {}", ArrayConverter.bytesToHexString(sessionID));
+        chooser.getContext().getSshContext().setSessionID(sessionID);
     }
 }

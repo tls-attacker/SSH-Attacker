@@ -56,6 +56,9 @@ public class ServerPublicKeyMessageHandler extends SshMessageHandler<ServerPubli
         sshContext.setServerKey(message.getServerKey());
         sshContext.setHostKey(message.getHostKey());
         sshContext.setAntiSpoofingCookie(message.getAntiSpoofingCookie().getValue());
+        sshContext.setSupportedCipherMethods(message.getSupportedCipherMethods());
+        sshContext.setSupportedAuthenticationMethods(message.getSupportedAuthenticationMethods());
+        sshContext.setChosenProtocolFlags(message.getChosenProtocolFlags());
         // TODO: Choose correct CipherMethod
 
         // TODO: Choose correct AuthenticationMethod

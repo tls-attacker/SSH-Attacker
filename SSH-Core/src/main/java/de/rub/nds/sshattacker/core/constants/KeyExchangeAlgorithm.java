@@ -83,6 +83,8 @@ public enum KeyExchangeAlgorithm {
     // [ RFC 4432 ]
     RSA1024_SHA1(KeyExchangeFlowType.RSA, "rsa1024-sha1", "SHA-1"),
     RSA2048_SHA256(KeyExchangeFlowType.RSA, "rsa2048-sha256", "SHA-256"),
+
+    RSA1024_PCKS1(KeyExchangeFlowType.RSA, "rsa1024-pkcs1", "PKCS1"),
     // [ RFC 8308 ]
     EXT_INFO_S(null, "ext-info-s", null),
     EXT_INFO_C(null, "ext-info-c", null),

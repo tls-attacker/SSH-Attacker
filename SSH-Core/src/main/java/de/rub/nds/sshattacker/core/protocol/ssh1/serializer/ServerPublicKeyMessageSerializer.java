@@ -66,7 +66,7 @@ public class ServerPublicKeyMessageSerializer extends SshMessageSerializer<Serve
     private void serializeCookie() {
         appendBytes(message.getAntiSpoofingCookie().getValue());
         LOGGER.debug(
-                "Host key bytes: "
+                "Cookie: "
                         + ArrayConverter.bytesToRawHexString(
                                 message.getAntiSpoofingCookie().getValue()));
     }

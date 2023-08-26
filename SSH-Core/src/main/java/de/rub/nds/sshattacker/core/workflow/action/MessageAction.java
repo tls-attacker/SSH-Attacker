@@ -16,6 +16,7 @@ import de.rub.nds.sshattacker.core.packet.AbstractPacket;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.*;
 import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessage;
 import de.rub.nds.sshattacker.core.protocol.connection.message.*;
+import de.rub.nds.sshattacker.core.protocol.ssh1.message.ClientSessionKeyMessage;
 import de.rub.nds.sshattacker.core.protocol.ssh1.message.ServerPublicKeyMessage;
 import de.rub.nds.sshattacker.core.protocol.ssh1.message.VersionExchangeMessageSSHV1;
 import de.rub.nds.sshattacker.core.protocol.transport.message.*;
@@ -169,7 +170,10 @@ public abstract class MessageAction extends ConnectionBoundAction {
                 @XmlElement(type = VersionExchangeMessage.class, name = "VersionExchange"),
                 @XmlElement(type = AsciiMessage.class, name = "AsciiMessage"),
                 @XmlElement(type = VersionExchangeMessageSSHV1.class, name = "VersionExchangeSSH1"),
-                @XmlElement(type = ServerPublicKeyMessage.class, name = "PublicKeyMessageSSH1")
+                @XmlElement(type = ServerPublicKeyMessage.class, name = "PublicKeyMessageSSH1"),
+                @XmlElement(
+                        type = ClientSessionKeyMessage.class,
+                        name = "ClientSessionKeyMessageSSH1")
             })
     protected List<ProtocolMessage<?>> messages = new ArrayList<>();
 

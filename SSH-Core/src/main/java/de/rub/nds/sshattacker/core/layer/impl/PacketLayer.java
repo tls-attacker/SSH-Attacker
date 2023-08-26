@@ -37,6 +37,7 @@ import de.rub.nds.sshattacker.core.packet.crypto.PacketDecryptor;
 import de.rub.nds.sshattacker.core.packet.crypto.PacketEncryptor;
 import de.rub.nds.sshattacker.core.packet.parser.AbstractPacketParser;
 import de.rub.nds.sshattacker.core.packet.parser.BinaryPacketParser;
+import de.rub.nds.sshattacker.core.packet.parser.BinaryPacketParserSSHv1;
 import de.rub.nds.sshattacker.core.packet.parser.BlobPacketParser;
 import de.rub.nds.sshattacker.core.protocol.transport.parser.*;
 import java.io.IOException;
@@ -110,7 +111,13 @@ public class PacketLayer extends ProtocolLayer<PacketLayerHint, AbstractPacket> 
         if (context.getPacketLayerType() == PacketLayerType.BLOB) {
             packet = new BlobPacket();
         } else {
-            packet = new BinaryPacket();
+            if (this.getHigherLayer().getLayerType().getName().equals("SSHV1")) {
+                LOGGER.debug("[bro] Created a Binary SSHv1 Packet");
+                packet = new BinaryPacketSSHv1();
+            } else {
+                LOGGER.debug("[bro] Created a Binary SSHv2 Packet");
+                packet = new BinaryPacket();
+            }
         }
         packet.setPayload(additionalData);
 
@@ -143,12 +150,22 @@ public class PacketLayer extends ProtocolLayer<PacketLayerHint, AbstractPacket> 
 
         LOGGER.debug("[bro] Recieving a {}", context.getPacketLayer());
         if (context.getPacketLayerType() == PacketLayerType.BINARY_PACKET) {
-            parser =
-                    new BinaryPacketParser(
-                            dataStream,
-                            context.getPacketLayer().getDecryptorCipher(),
-                            context.getReadSequenceNumber());
-            packet = new BinaryPacket();
+            if (this.getHigherLayer().getLayerType().getName().equals("SSHV1")) {
+                parser =
+                        new BinaryPacketParserSSHv1(
+                                dataStream,
+                                context.getPacketLayer().getDecryptorCipher(),
+                                context.getReadSequenceNumber());
+                packet = new BinaryPacketSSHv1();
+            } else {
+                parser =
+                        new BinaryPacketParser(
+                                dataStream,
+                                context.getPacketLayer().getDecryptorCipher(),
+                                context.getReadSequenceNumber());
+                packet = new BinaryPacket();
+            }
+
         } else if (context.getPacketLayerType() == PacketLayerType.BLOB) {
             parser = new BlobPacketParser(dataStream);
             packet = new BlobPacket();
