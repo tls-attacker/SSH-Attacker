@@ -9,9 +9,9 @@ package de.rub.nds.sshattacker.core.protocol.ssh1.serializer;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.HybridKeyExchangeCombiner;
+import de.rub.nds.sshattacker.core.crypto.checksum.CRC;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.ssh1.message.ServerPublicKeyMessage;
-import java.util.zip.CRC32;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -56,9 +56,8 @@ public class ServerPublicKeyMessageSerializer extends SshMessageSerializer<Serve
     }
 
     private void serializCRCChecksum() {
-        CRC32 crc = new CRC32();
-        crc.update(getAlreadySerialized());
-        byte[] checksum = ArrayConverter.longToBytes(crc.getValue(), 4);
+        CRC crc32 = new CRC(32, 0x0104C11DB7L, 0, true, true, 0);
+        byte[] checksum = ArrayConverter.longToBytes(crc32.calculateCRC(getAlreadySerialized()), 4);
         appendBytes(checksum);
         LOGGER.debug("CRC:  " + ArrayConverter.bytesToRawHexString(checksum));
     }
