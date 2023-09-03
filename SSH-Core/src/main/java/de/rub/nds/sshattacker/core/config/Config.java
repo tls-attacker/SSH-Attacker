@@ -79,6 +79,9 @@ public class Config implements Serializable {
     /** The default running mode, when running the SSH-Attacker */
     private RunningModeType defaultRunningMode = RunningModeType.CLIENT;
 
+    private Boolean resetClientSourcePort = true;
+
+
     // region VersionExchange
     /** Client protocol and software version string starting with the SSH version (SSH-2.0-...) */
     private String clientVersion;
@@ -92,6 +95,7 @@ public class Config implements Serializable {
     private String serverComment;
     /** End-of-message sequence of the servers' VersionExchangeMessage */
     private String serverEndOfMessageSequence;
+
     // endregion
 
     // region Pre-KeyExchange
@@ -1344,6 +1348,10 @@ public class Config implements Serializable {
     public void setHostKeys(final List<SshPublicKey<?, ?>> hostKeys) {
         this.hostKeys = Objects.requireNonNull(hostKeys);
     }
+
+    public void setResetClientSourcePort(Boolean resetClientSourcePort) {
+        this.resetClientSourcePort = resetClientSourcePort;
+    }
     // endregion
 
     // region Getters for Authentification
@@ -1575,6 +1583,10 @@ public class Config implements Serializable {
 
     public Boolean getResetWorkflowtracesBeforeSaving() {
         return resetWorkflowtracesBeforeSaving;
+    }
+
+    public Boolean isResetClientSourcePort() {
+        return resetClientSourcePort;
     }
 
     // endregion

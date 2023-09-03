@@ -86,15 +86,11 @@ public class TcpLayer extends ProtocolLayer<LayerProcessingHint, DataContainer> 
                             null, new ByteArrayInputStream(receiveBuffer));
             return currentInputStream;
 
-            // return receiveBuffer;
         } else {
-            //            return context.getTransportHandler().fetchData();
 
             int retries = 0;
             int maxRetries = 5;
-            LOGGER.debug(
-                    "[bro] TCP-Layer is transmitting Datastream now with Timeout ",
-                    getTransportHandler().getTimeout());
+
             InputStream handlerStream = getTransportHandler().getInputStream();
             try {
                 while (handlerStream.available() == 0 && retries < maxRetries) {

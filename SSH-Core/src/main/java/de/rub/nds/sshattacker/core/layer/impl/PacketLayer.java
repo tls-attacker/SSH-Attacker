@@ -7,7 +7,6 @@
  */
 package de.rub.nds.sshattacker.core.layer.impl;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.CipherMode;
 import de.rub.nds.sshattacker.core.constants.CompressionAlgorithm;
 import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
@@ -79,7 +78,6 @@ public class PacketLayer extends ProtocolLayer<PacketLayerHint, AbstractPacket> 
                 }
 
                 try {
-                    // AbstractPacket packet = messageLayer.serialize(message);
                     Preparator preparator = packet.getPreparator(context);
                     preparator.prepare();
                     Serializer serializer = packet.getSerializer(context);
@@ -90,7 +88,6 @@ public class PacketLayer extends ProtocolLayer<PacketLayerHint, AbstractPacket> 
 
                 } catch (IOException e) {
                     LOGGER.warn("Error while sending packet: " + e.getMessage());
-                    // return new LayerProcessingResult();
                 }
             }
         }
@@ -131,14 +128,12 @@ public class PacketLayer extends ProtocolLayer<PacketLayerHint, AbstractPacket> 
 
     @Override
     public void receiveMoreDataForHint(LayerProcessingHint hint) throws IOException {
-        LOGGER.debug("[bro] receiveMoreDataForHint now in Transport");
         LayerProcessingHint desiredHint = hint;
         InputStream dataStream = getLowerLayer().getDataStream();
-        LOGGER.debug("Avialble Data: {}", dataStream.available());
+        /*LOGGER.debug("Avialble Data: {}", dataStream.available());*/
         AbstractPacketParser parser;
         AbstractPacket packet;
 
-        LOGGER.debug("[bro] Recieving a {}", context.getPacketLayer());
         if (context.getPacketLayerType() == PacketLayerType.BINARY_PACKET) {
             parser =
                     new BinaryPacketParser(
@@ -153,18 +148,17 @@ public class PacketLayer extends ProtocolLayer<PacketLayerHint, AbstractPacket> 
             throw new RuntimeException();
         }
 
-        LOGGER.debug("[bro] Parsing a {}", context.getPacketLayer());
         parser.parse(packet);
 
-        LOGGER.debug(
-                "[bro] Recieved Packet: " + packet.getPayload() + " | " + packet.getCiphertext());
-
+        /*LOGGER.debug(
+                        "[bro] Recieved Packet: " + packet.getPayload() + " | " + packet.getCiphertext());
+        */
         context.getPacketLayer().getDecryptor().decrypt(packet);
         context.getPacketLayer().getDecompressor().decompress(packet);
 
-        LOGGER.debug(
-                "[bro] Decompressed Payload: {}",
-                ArrayConverter.bytesToHexString(packet.getPayload()));
+        /*LOGGER.debug(
+        "[bro] Decompressed Payload: {}",
+        ArrayConverter.bytesToHexString(packet.getPayload()));*/
 
         addProducedContainer(packet);
 

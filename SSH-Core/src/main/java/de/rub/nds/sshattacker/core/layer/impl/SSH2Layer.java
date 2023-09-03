@@ -16,7 +16,6 @@ import de.rub.nds.sshattacker.core.layer.ProtocolLayer;
 import de.rub.nds.sshattacker.core.layer.constant.ImplementedLayers;
 import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.layer.hints.LayerProcessingHint;
-import de.rub.nds.sshattacker.core.layer.hints.PacketLayerHint;
 import de.rub.nds.sshattacker.core.layer.stream.HintedInputStream;
 import de.rub.nds.sshattacker.core.layer.stream.HintedInputStreamAdapterStream;
 import de.rub.nds.sshattacker.core.layer.stream.HintedLayerInputStream;
@@ -54,20 +53,10 @@ public class SSH2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
         LayerConfiguration<ProtocolMessage> configuration = getLayerConfiguration();
         MessageIdConstant runningProtocolMessageType = null;
         ByteArrayOutputStream collectedMessageStream = new ByteArrayOutputStream();
-        if (configuration != null) {
-            LOGGER.debug(
-                    "[bro] Sending following configuration-size {} with layer_0 is {}",
-                    configuration.getContainerList().size(),
-                    configuration.getContainerList().get(0).toCompactString());
-        } else {
-            LOGGER.debug("[bro] Configuration is null");
-        }
 
         if (configuration != null && configuration.getContainerList() != null) {
             for (ProtocolMessage message : configuration.getContainerList()) {
                 collectedMessageStream = new ByteArrayOutputStream();
-
-                LOGGER.debug("[bro] here i am with sending the message");
 
                 runningProtocolMessageType = message.getMessageIdConstant();
                 processMessage(message, collectedMessageStream);
@@ -81,15 +70,6 @@ public class SSH2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
                 }
             }
         }
-
-        if (runningProtocolMessageType == null) {
-            LOGGER.debug("[bro] Protocol Message Type is null!");
-        } else {
-            LOGGER.debug("ProtocolMessageType: {}", runningProtocolMessageType.getId());
-        }
-
-        LOGGER.debug("[bro] " + "flushing {} to lower layer", collectedMessageStream.toByteArray());
-
         return getLayerResult();
     }
 
@@ -116,26 +96,21 @@ public class SSH2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
 
     @Override
     public LayerProcessingResult receiveData() {
-        LOGGER.debug("[bro] SSH-Layer ist Recieving Data now");
-
         try {
             HintedInputStream dataStream;
             do {
                 try {
-                    LOGGER.debug("[bro] I´m here");
                     dataStream = getLowerLayer().getDataStream();
-                    LOGGER.debug("[bro] I was here");
                 } catch (IOException e) {
                     // the lower layer does not give us any data so we can simply return here
                     LOGGER.warn("The lower layer did not produce a data stream: ", e);
                     return getLayerResult();
                 }
-                LOGGER.debug("[bro] Searching for Message");
                 LayerProcessingHint tempHint = dataStream.getHint();
 
                 byte[] streamContent;
                 try {
-                    LOGGER.debug("I could read {} bytes", dataStream.available());
+                    // LOGGER.debug("I could read {} bytes", dataStream.available());
                     streamContent = dataStream.readChunk(dataStream.available());
                 } catch (IOException e) {
                     throw new RuntimeException(e);
@@ -143,7 +118,6 @@ public class SSH2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
 
                 AbstractPacket<?> packet;
 
-                LOGGER.debug("[bro] Recieving a {}", context.getPacketLayer());
                 if (context.getPacketLayerType() == PacketLayerType.BINARY_PACKET) {
                     packet = new BinaryPacket();
                 } else if (context.getPacketLayerType() == PacketLayerType.BLOB) {
@@ -194,7 +168,6 @@ public class SSH2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
 
         MessageIdConstant id =
                 MessageIdConstant.fromId(packet.getPayload().getValue()[0], context.getContext());
-        LOGGER.debug("[bro] Identifier: {} and constant {}", packet.getPayload().getValue()[0], id);
 
         switch (MessageIdConstant.fromId(packet.getPayload().getValue()[0], context.getContext())) {
             case SSH_MSG_DISCONNECT:
@@ -1212,14 +1185,9 @@ public class SSH2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
         try {
             HintedInputStream dataStream = null;
             dataStream = getLowerLayer().getDataStream();
-            if (dataStream.getHint() == null) {
-                LOGGER.warn(
-                        "The DTLS fragment layer requires a processing hint. E.g. a record type. Parsing as an unknown fragment");
-                currentInputStream = new HintedLayerInputStream(null, this);
-                currentInputStream.extendStream(dataStream.readAllBytes());
-            } else if (dataStream.getHint() instanceof PacketLayerHint) {
-                PacketLayerHint tempHint = (PacketLayerHint) dataStream.getHint();
-            }
+            currentInputStream = new HintedLayerInputStream(null, this);
+            currentInputStream.extendStream(dataStream.readAllBytes());
+
         } catch (TimeoutException ex) {
             LOGGER.debug(ex);
             throw ex;

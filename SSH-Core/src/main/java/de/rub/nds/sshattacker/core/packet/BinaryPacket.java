@@ -187,7 +187,7 @@ public class BinaryPacket extends AbstractPacket<BinaryPacket>
     }
 
     @Override
-    public Handler getHandler(SshContext context) {
+    public Handler<BinaryPacket> getHandler(SshContext context) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 }

@@ -36,9 +36,9 @@ public abstract class ProtocolLayer<
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private ProtocolLayer higherLayer = null;
+    private ProtocolLayer<HintT, ContainerT> higherLayer = null;
 
-    private ProtocolLayer lowerLayer = null;
+    private ProtocolLayer<HintT, ContainerT> lowerLayer = null;
 
     private LayerConfiguration<ContainerT> layerConfiguration;
 
@@ -162,16 +162,14 @@ public abstract class ProtocolLayer<
      */
     public HintedInputStream getDataStream() throws IOException {
         if (currentInputStream == null) {
-            LOGGER.debug("[bro] Current Inputstream is null");
             receiveMoreDataForHint(null);
             if (currentInputStream == null) {
                 throw new EndOfStreamException(
                         "Could not receive data stream from lower layer, nothing more to receive");
             }
         }
-        LOGGER.debug("Returned from 'more data', avilable = " + currentInputStream.available());
+        /*LOGGER.debug("Returned from 'more data', avilable = " + currentInputStream.available());*/
         if (currentInputStream.available() > 0) {
-            LOGGER.debug("[bro] Will Return now!");
             return currentInputStream;
         } else {
             if (nextInputStream != null) {

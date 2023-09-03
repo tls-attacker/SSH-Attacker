@@ -173,41 +173,27 @@ public abstract class MessageAction extends ConnectionBoundAction {
 
     @XmlTransient private LayerStackProcessingResult layerStackProcessingResult;
 
-    // @XmlTransient protected final ReceiveMessageHelper receiveMessageHelper;
-
-    // @XmlTransient protected final SendMessageHelper sendMessageHelper;
-
     public MessageAction() {
         super(AliasedConnection.DEFAULT_CONNECTION_ALIAS);
-        /*receiveMessageHelper = new ReceiveMessageHelper();
-        sendMessageHelper = new SendMessageHelper();*/
     }
 
     public MessageAction(List<ProtocolMessage<?>> messages) {
         super(AliasedConnection.DEFAULT_CONNECTION_ALIAS);
         this.messages = new ArrayList<>(messages);
-        /*receiveMessageHelper = new ReceiveMessageHelper();
-        sendMessageHelper = new SendMessageHelper();*/
     }
 
     public MessageAction(ProtocolMessage<?>... messages) {
         super(AliasedConnection.DEFAULT_CONNECTION_ALIAS);
         this.messages = Arrays.asList(messages);
-        /*receiveMessageHelper = new ReceiveMessageHelper();
-        sendMessageHelper = new SendMessageHelper();*/
     }
 
     public MessageAction(String connectionAlias) {
         super(connectionAlias);
-        /*receiveMessageHelper = new ReceiveMessageHelper();
-        sendMessageHelper = new SendMessageHelper();*/
     }
 
     public MessageAction(String connectionAlias, List<ProtocolMessage<?>> messages) {
         super(connectionAlias);
         this.messages = new ArrayList<>(messages);
-        /*receiveMessageHelper = new ReceiveMessageHelper();
-        sendMessageHelper = new SendMessageHelper();*/
     }
 
     public MessageAction(String connectionAlias, ProtocolMessage<?>... messages) {
@@ -382,11 +368,6 @@ public abstract class MessageAction extends ConnectionBoundAction {
             ((SpecificReceiveLayerConfiguration) recordConfiguration)
                     .setAllowTrailingContainers(true);
         }
-        /*        LayerConfiguration httpConfiguration =
-        new SpecificReceiveLayerConfiguration<>(
-                ImplementedLayers.HTTP, httpMessagesToReceive);*/
-        applyActionOptionFilters(messageSsh1Configuration);
-        applyActionOptionFilters(messageSsh2Configuration);
         layerConfigurationList =
                 sortLayerConfigurations(
                         layerStack,
@@ -397,23 +378,6 @@ public abstract class MessageAction extends ConnectionBoundAction {
         return layerConfigurationList;
     }
 
-    private void applyActionOptionFilters(LayerConfiguration messageConfiguration) {
-        List<DataContainerFilter> containerFilters = new LinkedList<>();
-        /*if (getActionOptions().contains(ActionOption.IGNORE_UNEXPECTED_APP_DATA)) {
-            containerFilters.add(new GenericDataContainerFilter(ApplicationMessage.class));
-        }
-        if (getActionOptions().contains(ActionOption.IGNORE_UNEXPECTED_KEY_UPDATE_MESSAGES)) {
-            containerFilters.add(new GenericDataContainerFilter(KeyUpdateMessage.class));
-        }
-        if (getActionOptions().contains(ActionOption.IGNORE_UNEXPECTED_NEW_SESSION_TICKETS)) {
-            containerFilters.add(new GenericDataContainerFilter(NewSessionTicketMessage.class));
-        }
-        if (getActionOptions().contains(ActionOption.IGNORE_UNEXPECTED_WARNINGS)) {
-            containerFilters.add(new WarningAlertFilter());
-        }*/
-        ((SpecificReceiveLayerConfiguration) messageConfiguration)
-                .setContainerFilterList(containerFilters);
-    }
 
     private void getReceiveResult(
             LayerStack layerStack, List<LayerConfiguration> layerConfigurationList) {

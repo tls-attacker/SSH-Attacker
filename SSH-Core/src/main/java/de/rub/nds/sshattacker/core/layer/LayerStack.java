@@ -124,7 +124,6 @@ public class LayerStack {
      *     data.
      */
     public LayerStackProcessingResult receiveData(List<LayerConfiguration> layerConfigurationList) {
-        LOGGER.debug("Receiving Data");
         if (getLayerList().size() != layerConfigurationList.size()) {
             throw new RuntimeException(
                     "Illegal LayerConfiguration list provided. Each layer needs a configuration entry (null is fine too if no explicit configuration is desired). Expected "
@@ -141,7 +140,6 @@ public class LayerStack {
         context.setTalkingConnectionEndType(
                 context.getConnection().getLocalConnectionEndType().getPeer());
 
-        LOGGER.debug("[bro] Recieving on Layer: " + getLayerList().get(0).getLayerType());
         getLayerList().get(0).receiveData();
         // reverse order
         for (int i = getLayerList().size() - 1; i >= 0; i--) {
