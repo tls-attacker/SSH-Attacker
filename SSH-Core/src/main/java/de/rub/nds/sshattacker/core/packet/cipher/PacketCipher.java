@@ -162,9 +162,9 @@ public abstract class PacketCipher {
         }
 
         public DecryptionParser(byte[] array, int offset) {
-            super(new ByteArrayInputStream(Arrays.copyOfRange(array, offset, array.length - 1)));
+            super(new ByteArrayInputStream(Arrays.copyOfRange(array, offset, array.length)));
 
-            byte[] new_array = Arrays.copyOfRange(array, offset, array.length - 1);
+            byte[] new_array = Arrays.copyOfRange(array, offset, array.length);
             LOGGER.debug(
                     "[bro] New Bytarray with lenght {} :  {}",
                     new_array.length,
