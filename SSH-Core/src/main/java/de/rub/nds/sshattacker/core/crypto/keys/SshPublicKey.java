@@ -143,6 +143,14 @@ public class SshPublicKey<PUBLIC extends CustomPublicKey, PRIVATE extends Custom
                 publicKeyFormat.toString(), getPrivateKey().map(key -> "private").orElse("public"));
     }
 
+    // method is used for finding the according private key in the
+    public boolean publicKeyEquality(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        SshPublicKey<?, ?> that = (SshPublicKey<?, ?>) o;
+        return publicKeyFormat == that.publicKeyFormat && Objects.equals(publicKey, that.publicKey);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

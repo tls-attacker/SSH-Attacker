@@ -15,8 +15,6 @@ import de.rub.nds.sshattacker.core.protocol.connection.parser.GlobalRequestOpenS
 import de.rub.nds.sshattacker.core.protocol.connection.preparator.GlobalRequestOpenSshHostKeysProveMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.connection.serializer.GlobalRequestOpenSshHostKeysProveMessageSerializer;
 import de.rub.nds.sshattacker.core.state.SshContext;
-import java.util.HashMap;
-import java.util.stream.Collectors;
 
 public class GlobalRequestOpenSshHostKeysProveMessageHandler
         extends SshMessageHandler<GlobalRequestOpenSshHostKeysProveMessage> {
@@ -34,14 +32,19 @@ public class GlobalRequestOpenSshHostKeysProveMessageHandler
     public void adjustContext() {
         // parses the hostkeyblob and sets the hostkeys, that need to be proven to true in the
         // hashmap stored in SshContext
-        context.setServerHostKeys(
-                new HashMap<SshPublicKey<?, ?>, Boolean>(
-                        OpenSshHostKeyHelper.parseHostkeyBlob(message.getHostKeys().getValue())
-                                .stream()
-                                .collect(
-                                        Collectors.toMap(
-                                                sshPublicKey -> sshPublicKey,
-                                                sshPublicKey -> Boolean.TRUE))));
+
+        // private keys have been added to the hashmap in the GlobalRequestHostKeysProveMessage and
+        // will be important for signature creation later on
+        for (SshPublicKey<?, ?> blobHostKey :
+                OpenSshHostKeyHelper.parseHostkeyBlob(message.getHostKeys().getValue())) {
+            // following behavior can be seen as a contains method using publicKeyEquality as equal
+            // function
+            for (SshPublicKey<?, ?> serverHostKey : context.getServerHostKeys().keySet()) {
+                if (serverHostKey.publicKeyEquality(blobHostKey)) {
+                    context.getServerHostKeys().replace(serverHostKey, Boolean.TRUE);
+                }
+            }
+        }
     }
 
     @Override
