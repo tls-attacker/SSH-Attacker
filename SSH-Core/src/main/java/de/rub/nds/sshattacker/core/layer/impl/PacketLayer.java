@@ -130,7 +130,6 @@ public class PacketLayer extends ProtocolLayer<PacketLayerHint, AbstractPacket> 
     public void receiveMoreDataForHint(LayerProcessingHint hint) throws IOException {
         LayerProcessingHint desiredHint = hint;
         InputStream dataStream = getLowerLayer().getDataStream();
-        /*LOGGER.debug("Avialble Data: {}", dataStream.available());*/
         AbstractPacketParser parser;
         AbstractPacket packet;
 
@@ -149,12 +148,8 @@ public class PacketLayer extends ProtocolLayer<PacketLayerHint, AbstractPacket> 
         }
 
         parser.parse(packet);
-
-        /*LOGGER.debug(
-                        "[bro] Recieved Packet: " + packet.getPayload() + " | " + packet.getCiphertext());
-        */
-        context.getPacketLayer().getDecryptor().decrypt(packet);
-        context.getPacketLayer().getDecompressor().decompress(packet);
+        decryptPacket(packet);
+        decompressPacket(packet);
 
         /*LOGGER.debug(
         "[bro] Decompressed Payload: {}",
@@ -230,5 +225,9 @@ public class PacketLayer extends ProtocolLayer<PacketLayerHint, AbstractPacket> 
     protected void decryptPacket(AbstractPacket<?> packet) {
         packet.prepareComputations();
         getDecryptor().decrypt(packet);
+    }
+
+    protected void decompressPacket(AbstractPacket packet) {
+        getDecompressor().decompress(packet);
     }
 }

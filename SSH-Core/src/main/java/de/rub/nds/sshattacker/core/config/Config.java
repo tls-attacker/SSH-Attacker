@@ -81,7 +81,6 @@ public class Config implements Serializable {
 
     private Boolean resetClientSourcePort = true;
 
-
     // region VersionExchange
     /** Client protocol and software version string starting with the SSH version (SSH-2.0-...) */
     private String clientVersion;
