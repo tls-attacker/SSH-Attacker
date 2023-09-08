@@ -53,9 +53,9 @@ public class ForwardMessagesAction extends SshAction implements ReceivingAction,
     @XmlTransient private byte[] receivedBytes;
 
     // equvialent to recived records
-    protected List<AbstractPacket> receivedPackets;
+    protected List<AbstractPacket<?>> receivedPackets;
 
-    protected List<AbstractPacket> sendPackets;
+    protected List<AbstractPacket<?>> sendPackets;
 
     public ForwardMessagesAction() {
         /*        this.receiveMessageHelper = new ReceiveMessageHelper();
@@ -205,32 +205,8 @@ public class ForwardMessagesAction extends SshAction implements ReceivingAction,
             LOGGER.debug(e);
             throw new RuntimeException(e);
         }
-        /*
-        try {
-            AbstractPacketLayer packetLayer = forwardToCtx.getPacketLayer();
-            TransportHandler transportHandler = forwardToCtx.getTransportHandler();
-            transportHandler.sendData(receivedBytes);
-            if (messages.get(0).getClass() != VersionExchangeMessage.class) {
-                forwardToCtx.incrementWriteSequenceNumber();
-            }
-            setExecuted(true);
-        } catch (IOException e) {
-            LOGGER.debug(e);
-            executedAsPlanned = false;
-            setExecuted(false);
-        }*/
     }
 
-    /*    protected void handleReceivedMessages(SshContext ctx) {
-        receivedMessages =
-                receiveMessageHelper.handleReceivedBytes(ctx, receivedBytes).getMessageList();
-        String expected = getReadableString(messages);
-        LOGGER.debug("Receive Expected (" + receiveFromAlias + "): " + expected);
-        String received = getReadableString(receivedMessages);
-        LOGGER.info("Received Messages (" + receiveFromAlias + "): " + received);
-
-        executedAsPlanned = checkMessageListsEquals(messages, receivedMessages);
-    }*/
     /**
      * Apply the contents of the messages to the given SSH context.
      *

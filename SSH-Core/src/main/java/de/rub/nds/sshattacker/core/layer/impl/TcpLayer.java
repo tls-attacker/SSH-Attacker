@@ -21,8 +21,6 @@ import de.rub.nds.sshattacker.core.layer.stream.HintedInputStreamAdapterStream;
 import de.rub.nds.tlsattacker.transport.tcp.TcpTransportHandler;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.util.concurrent.TimeUnit;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -86,30 +84,7 @@ public class TcpLayer extends ProtocolLayer<LayerProcessingHint, DataContainer> 
                             null, new ByteArrayInputStream(receiveBuffer));
             return currentInputStream;
 
-            // return receiveBuffer;
         } else {
-            //            return context.getTransportHandler().fetchData();
-
-            int retries = 0;
-            int maxRetries = 5;
-            LOGGER.debug(
-                    "[bro] TCP-Layer is transmitting Datastream now with Timeout ",
-                    getTransportHandler().getTimeout());
-            InputStream handlerStream = getTransportHandler().getInputStream();
-            try {
-                while (handlerStream.available() == 0 && retries < maxRetries) {
-                    handlerStream = getTransportHandler().getInputStream();
-                    try {
-                        TimeUnit.MILLISECONDS.sleep(10);
-                    } catch (InterruptedException e) {
-                        throw new RuntimeException(e);
-                    }
-                    retries++;
-                    LOGGER.debug("got no stream in {}-trie", retries);
-                }
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
 
             currentInputStream =
                     new HintedInputStreamAdapterStream(

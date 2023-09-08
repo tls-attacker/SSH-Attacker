@@ -104,25 +104,8 @@ public class SendAction extends MessageAction implements SendingAction {
             send(context, messages, packets);
             setExecuted(true);
         } catch (IOException e) {
-            /*if (!getActionOptions().contains(ActionOption.MAY_FAIL)) {
-                tlsContext.setReceivedTransportHandlerException(true);
-                LOGGER.debug(e);
-            }
-            setExecuted(getActionOptions().contains(ActionOption.MAY_FAIL));*/
+            LOGGER.warn(e);
         }
-
-        /*messages.forEach(message -> message.getHandler(context).getPreparator().prepare());
-        final MessageActionResult result =
-                sendMessageHelper.sendMessages(context, messages.stream());
-
-        // Check if all actions that were expected to be send were actually
-        // sent or if some failure occurred.
-        final int failedMessageCount = messages.size() - result.getPacketList().size();
-        this.setFailed(failedMessageCount != 0);
-        if (this.isFailed()) {
-            LOGGER.error(
-                    "Failed to send {} out of {} message(s)!", failedMessageCount, messages.size());
-        }*/
 
         setExecuted(true);
     }
