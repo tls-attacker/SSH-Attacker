@@ -32,12 +32,18 @@ public class ClientSessionKeyMessageHandler extends SshMessageHandler<ClientSess
     public void adjustContext(ClientSessionKeyMessage message) {
         sshContext.setChosenCipherMethod(message.getChosenCipherMethod());
         sshContext.setChosenProtocolFlags(message.getChosenProtocolFlags());
-        byte[] decryptedSessionkey = decryptSessionKey(message);
+
+        byte[] decryptedSessionkey;
+        try {
+            decryptedSessionkey = decryptSessionKey(message);
+        } catch (CryptoException e) {
+            throw new RuntimeException(e);
+        }
 
         sshContext.setSessionKey(decryptedSessionkey);
     }
 
-    private byte[] decryptSessionKey(ClientSessionKeyMessage message) {
+    private byte[] decryptSessionKey(ClientSessionKeyMessage message) throws CryptoException {
         byte[] sessionKey = message.getEncryptedSessioKey().getValue();
         LOGGER.debug("Enc. session Key: {}", ArrayConverter.bytesToHexString(sessionKey));
         if (sessionKey[0] == 0) {
@@ -50,55 +56,50 @@ public class ClientSessionKeyMessageHandler extends SshMessageHandler<ClientSess
         SshPublicKey<?, ?> serverkey = sshContext.getServerKey();
         SshPublicKey<?, ?> hostKey = sshContext.getHostKey().orElseThrow();
 
-        if (!serverkey.getPrivateKey().isPresent()) {
-            LOGGER.fatal("ServerPrivateKey not Present");
-        }
 
         if (serverkey.getPrivateKey().isPresent()
                 && serverkey.getPrivateKey().get() instanceof CustomRsaPrivateKey) {
             serverPrivatKey = (CustomRsaPrivateKey) serverkey.getPrivateKey().get();
         } else {
-            throw new RuntimeException();
+            throw new CryptoException("Private-Server-Key is Missing");
         }
 
         if (hostKey.getPrivateKey().isPresent()
                 && hostKey.getPrivateKey().get() instanceof CustomRsaPrivateKey) {
             hostPrivateKey = (CustomRsaPrivateKey) hostKey.getPrivateKey().get();
         } else {
-            throw new RuntimeException();
+            throw new CryptoException("Private-Host-Key is Missing");
         }
 
         AbstractCipher innerEncryption;
         AbstractCipher outerEncryption;
 
-        if (hostPrivateKey != null) {
-            try {
+        try {
 
-                if (hostPrivateKey.getModulus().bitLength()
-                        > serverPrivatKey.getModulus().bitLength()) {
+            if (hostPrivateKey.getModulus().bitLength()
+                    > serverPrivatKey.getModulus().bitLength()) {
 
-                    LOGGER.debug(
-                            "Hostkeylenght: {}, ServerKeyLenght: {}",
-                            hostPrivateKey.getModulus().bitLength(),
-                            serverPrivatKey.getModulus().bitLength());
+                LOGGER.debug(
+                        "Hostkeylenght: {}, ServerKeyLenght: {}",
+                        hostPrivateKey.getModulus().bitLength(),
+                        serverPrivatKey.getModulus().bitLength());
 
-                    outerEncryption = CipherFactory.getRsaPkcs1Cipher(hostPrivateKey);
-                    sessionKey = outerEncryption.decrypt(sessionKey);
+                outerEncryption = CipherFactory.getRsaPkcs1Cipher(hostPrivateKey);
+                sessionKey = outerEncryption.decrypt(sessionKey);
 
-                    innerEncryption = CipherFactory.getRsaPkcs1Cipher(serverPrivatKey);
-                    sessionKey = innerEncryption.decrypt(sessionKey);
+                innerEncryption = CipherFactory.getRsaPkcs1Cipher(serverPrivatKey);
+                sessionKey = innerEncryption.decrypt(sessionKey);
 
-                } else {
-                    outerEncryption = CipherFactory.getRsaPkcs1Cipher(serverPrivatKey);
-                    sessionKey = outerEncryption.decrypt(sessionKey);
+            } else {
+                outerEncryption = CipherFactory.getRsaPkcs1Cipher(serverPrivatKey);
+                sessionKey = outerEncryption.decrypt(sessionKey);
 
-                    innerEncryption = CipherFactory.getRsaPkcs1Cipher(hostPrivateKey);
-                    sessionKey = innerEncryption.decrypt(sessionKey);
-                }
-
-            } catch (CryptoException e) {
-                throw new RuntimeException(e);
+                innerEncryption = CipherFactory.getRsaPkcs1Cipher(hostPrivateKey);
+                sessionKey = innerEncryption.decrypt(sessionKey);
             }
+
+        } catch (CryptoException e) {
+            throw new RuntimeException(e);
         }
 
         // Set Sessionkey

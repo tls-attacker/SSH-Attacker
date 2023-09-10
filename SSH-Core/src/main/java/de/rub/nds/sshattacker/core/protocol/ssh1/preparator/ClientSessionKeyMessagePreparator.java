@@ -22,6 +22,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.Random;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -29,12 +30,10 @@ public class ClientSessionKeyMessagePreparator
         extends SshMessagePreparator<ClientSessionKeyMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
-    private HybridKeyExchangeCombiner combiner;
 
     public ClientSessionKeyMessagePreparator(
-            Chooser chooser, ClientSessionKeyMessage message, HybridKeyExchangeCombiner combiner) {
+            Chooser chooser, ClientSessionKeyMessage message) {
         super(chooser, message, MessageIdConstantSSH1.SSH_CMSG_SESSION_KEY);
-        this.combiner = combiner;
     }
 
     private void prepareAntiSpoofingCookie() {
@@ -67,7 +66,7 @@ public class ClientSessionKeyMessagePreparator
 
         cookie = chooser.getContext().getSshContext().getAntiSpoofingCookie();
 
-        MessageDigest md = null;
+        MessageDigest md;
         try {
             md = MessageDigest.getInstance("MD5");
         } catch (NoSuchAlgorithmException e) {
@@ -108,26 +107,18 @@ public class ClientSessionKeyMessagePreparator
         getObject().setProtocolFlagMask(flagMask);
     }
 
-    private void prepareSessionKey() {
+    private void prepareSessionKey() throws CryptoException {
         Random random = new Random();
         byte[] sessionKey = new byte[32];
         random.nextBytes(sessionKey);
 
         byte[] sessionID = getObject().getSshv1SessionID().getValue();
-        LOGGER.debug(
-                "Session-ID {} | SessionKey before {}",
-                ArrayConverter.bytesToHexString(sessionID),
-                ArrayConverter.bytesToHexString(sessionKey));
 
         int i = 0;
         for (byte sesseionByte : sessionID) {
             sessionKey[i] = (byte) (sesseionByte ^ sessionKey[i++]);
         }
 
-        LOGGER.debug(
-                "Session-ID {} | SessionKey after {}",
-                ArrayConverter.bytesToHexString(sessionID),
-                ArrayConverter.bytesToHexString(sessionKey));
 
         CustomRsaPublicKey hostPublickey;
         CustomRsaPublicKey serverPublicKey;
@@ -137,7 +128,7 @@ public class ClientSessionKeyMessagePreparator
         if (serverkey.getPublicKey() instanceof CustomRsaPublicKey) {
             serverPublicKey = (CustomRsaPublicKey) serverkey.getPublicKey();
         } else {
-            throw new RuntimeException();
+            throw new CryptoException("Public-Server-Key is Missing");
         }
 
         SshPublicKey<?, ?> hostKey =
@@ -145,7 +136,7 @@ public class ClientSessionKeyMessagePreparator
         if (hostKey.getPublicKey() instanceof CustomRsaPublicKey) {
             hostPublickey = (CustomRsaPublicKey) hostKey.getPublicKey();
         } else {
-            throw new RuntimeException();
+            throw new CryptoException("Public-Host-Key is Missing");
         }
 
         AbstractCipher innerEncryption;
@@ -205,6 +196,11 @@ public class ClientSessionKeyMessagePreparator
         prepareEncryptionAlgorithm();
         prepareProtoclFlags();
         prepareAntiSpoofingCookie();
-        prepareSessionKey();
+        try {
+            prepareSessionKey();
+        } catch (CryptoException e) {
+            LOGGER.fatal("Error while encrypting Session key {}.",e.getMessage());
+            throw new RuntimeException(e);
+        }
     }
 }

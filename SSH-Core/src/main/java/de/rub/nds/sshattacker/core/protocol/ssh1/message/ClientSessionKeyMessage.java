@@ -128,7 +128,7 @@ public class ClientSessionKeyMessage extends SshMessage<ClientSessionKeyMessage>
     @Override
     public SshMessagePreparator<ClientSessionKeyMessage> getPreparator(SshContext context) {
         HybridKeyExchange kex = context.getChooser().getHybridKeyExchange();
-        return new ClientSessionKeyMessagePreparator(context.getChooser(), this, kex.getCombiner());
+        return new ClientSessionKeyMessagePreparator(context.getChooser(), this);
     }
 
     @Override
