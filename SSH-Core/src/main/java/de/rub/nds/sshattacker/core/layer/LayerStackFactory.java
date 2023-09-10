@@ -25,8 +25,6 @@ public final class LayerStackFactory {
 
     public static LayerStack createLayerStack(LayerConfiguration type, Context context) {
 
-        LOGGER.debug("Creating Layerstack for type: " + type);
-
         LayerStack layerStack;
         SshContext sshContext = context.getSshContext();
         TcpContext tcpContext = context.getTcpContext();

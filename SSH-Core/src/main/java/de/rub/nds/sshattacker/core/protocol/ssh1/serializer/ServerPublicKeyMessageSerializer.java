@@ -56,7 +56,7 @@ public class ServerPublicKeyMessageSerializer extends SshMessageSerializer<Serve
     }
 
     private void serializCRCChecksum() {
-        CRC crc32 = new CRC(32, 0x0104C11DB7L, 0, true, true, 0);
+        CRC crc32 = new CRC();
         byte[] checksum = ArrayConverter.longToBytes(crc32.calculateCRC(getAlreadySerialized()), 4);
         appendBytes(checksum);
         LOGGER.debug("CRC:  " + ArrayConverter.bytesToRawHexString(checksum));

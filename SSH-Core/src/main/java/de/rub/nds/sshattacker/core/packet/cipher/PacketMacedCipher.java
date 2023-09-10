@@ -227,16 +227,11 @@ public class PacketMacedCipher extends PacketCipher {
 
         decryptInner(packet);
 
-        /*        DecryptionParser parser =
-        new DecryptionParser(
-                computations.getPlainPacketBytes().getValue(),
-                isEncryptThenMac() ? 0 : BinaryPacketConstants.PACKET_FIELD_LENGTH);*/
-
         DecryptionParser parser =
-                new DecryptionParser(computations.getPlainPacketBytes().getValue());
+                new DecryptionParser(
+                        computations.getPlainPacketBytes().getValue(),
+                        isEncryptThenMac() ? 0 : BinaryPacketConstants.PACKET_FIELD_LENGTH);
 
-        int lenghtToForget = parser.parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH);
-        LOGGER.debug("[bro] lenght to forget:" + lenghtToForget);
         packet.setPaddingLength(parser.parseByteField(BinaryPacketConstants.PADDING_FIELD_LENGTH));
         LOGGER.debug("[bro] Padding Lenght:" + packet.getPaddingLength().getValue().intValue());
         packet.setCompressedPayload(
@@ -321,12 +316,10 @@ public class PacketMacedCipher extends PacketCipher {
                                     remainingBlocksIv);
                 } else {
                     // Case 1b: Binary packet / First block decrypted / Cipher without IV
-                    /*                   remainingBlocks =
-                    cipher.decrypt(
-                            Arrays.copyOfRange(
-                                    ciphertext, firstBlock.length, ciphertext.length));*/
-
-                    remainingBlocks = cipher.decrypt(ciphertext);
+                    remainingBlocks =
+                            cipher.decrypt(
+                                    Arrays.copyOfRange(
+                                            ciphertext, firstBlock.length, ciphertext.length));
                 }
                 plainData = ArrayConverter.concatenate(firstBlock, remainingBlocks);
             } else {
