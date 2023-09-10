@@ -77,8 +77,6 @@ public class SshContext extends LayerContext {
      * line is terminated by LF).
      */
     private Boolean receiveAsciiModeEnabled;
-    /** A layer to serialize messages */
-    // private MessageLayer messageLayer = new MessageLayer(super.getContext());
 
     /**
      * Sequence number used to generate MAC when sending packages. The sequence number is unsigned,

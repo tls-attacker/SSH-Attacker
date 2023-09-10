@@ -7,6 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.packet.parser;
 
+import com.google.common.primitives.Bytes;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.*;
 import de.rub.nds.sshattacker.core.exceptions.CryptoException;
@@ -160,12 +161,11 @@ public class BinaryPacketParser extends AbstractPacketParser<BinaryPacket> {
          *  byte[m] mac             ; m = length of mac output
          */
 
-        LOGGER.debug("I can mark: {}", getStream().markSupported());
-        // int pointer = getPointer();
         int blockSize = activeDecryptCipher.getEncryptionAlgorithm().getBlockSize();
         int decryptedByteCount = 0;
         // Loop required for stream cipher support (effective block length is 1 in this case)
         byte[] firstBlock = new byte[0];
+        byte[] firstBlockEncrypted = new byte[0];
         do {
             byte[] block = parseByteArrayField(blockSize);
             byte[] decryptedBlock;
@@ -178,27 +178,23 @@ public class BinaryPacketParser extends AbstractPacketParser<BinaryPacket> {
                 decryptedBlock = activeDecryptCipher.getCipher().decrypt(block);
             }
             firstBlock = ArrayConverter.concatenate(firstBlock, decryptedBlock);
+            firstBlockEncrypted = ArrayConverter.concatenate(firstBlockEncrypted, block);
             decryptedByteCount += blockSize;
-            LOGGER.debug(
-                    "LENGHT_FIELD_LENGHT = {} - DECRYPTED = {} - DECRYPTED_LENGHT = {}",
-                    BinaryPacketConstants.LENGTH_FIELD_LENGTH,
-                    firstBlock,
-                    firstBlock.length);
         } while (decryptedByteCount < BinaryPacketConstants.LENGTH_FIELD_LENGTH);
-        // setPointer(pointer);
-        LOGGER.debug("DONE WITH PARSING LENGHT");
+
         computations.setPlainPacketBytes(firstBlock, true);
 
         binaryPacket.setLength(
                 ArrayConverter.bytesToInt(
                         Arrays.copyOfRange(
                                 firstBlock, 0, BinaryPacketConstants.LENGTH_FIELD_LENGTH)));
+
         binaryPacket.setCiphertext(
-                parseByteArrayField(
-                        /*BinaryPacketConstants.LENGTH_FIELD_LENGTH
-                        +*/ binaryPacket.getLength().getValue()));
+                Bytes.concat(
+                        firstBlockEncrypted,
+                        parseByteArrayField(binaryPacket.getLength().getValue())));
+
         binaryPacket.setMac(
                 parseByteArrayField(activeDecryptCipher.getMacAlgorithm().getOutputSize()));
-        LOGGER.debug("DONE WITH PARSING parseEAMPacket ");
     }
 }

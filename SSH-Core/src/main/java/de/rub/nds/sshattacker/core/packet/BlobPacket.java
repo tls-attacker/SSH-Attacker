@@ -36,7 +36,7 @@ public class BlobPacket extends AbstractPacket<BlobPacket> {
     }
 
     @Override
-    public Handler getHandler(SshContext context) {
+    public Handler<BlobPacket> getHandler(SshContext context) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 }
