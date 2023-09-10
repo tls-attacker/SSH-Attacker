@@ -11,21 +11,17 @@ import com.google.common.primitives.Bytes;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.*;
 import de.rub.nds.sshattacker.core.crypto.cipher.AbstractCipher;
-import de.rub.nds.sshattacker.core.crypto.keys.CustomRsaPrivateKey;
+import de.rub.nds.sshattacker.core.crypto.cipher.CipherFactory;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomRsaPublicKey;
 import de.rub.nds.sshattacker.core.crypto.keys.SshPublicKey;
+import de.rub.nds.sshattacker.core.exceptions.CryptoException;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.ssh1.message.ClientSessionKeyMessage;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
-import java.security.InvalidKeyException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.Random;
-import javax.crypto.BadPaddingException;
-import javax.crypto.Cipher;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -34,8 +30,6 @@ public class ClientSessionKeyMessagePreparator
 
     private static final Logger LOGGER = LogManager.getLogger();
     private HybridKeyExchangeCombiner combiner;
-
-    private SshPublicKey<CustomRsaPublicKey, CustomRsaPrivateKey> serverKey;
 
     public ClientSessionKeyMessagePreparator(
             Chooser chooser, ClientSessionKeyMessage message, HybridKeyExchangeCombiner combiner) {
@@ -138,9 +132,6 @@ public class ClientSessionKeyMessagePreparator
         CustomRsaPublicKey hostPublickey;
         CustomRsaPublicKey serverPublicKey;
 
-        CustomRsaPrivateKey hostPrivateKey;
-        CustomRsaPrivateKey serverPrivatKey;
-
         SshPublicKey<?, ?> serverkey = chooser.getContext().getSshContext().getServerKey();
 
         if (serverkey.getPublicKey() instanceof CustomRsaPublicKey) {
@@ -149,17 +140,6 @@ public class ClientSessionKeyMessagePreparator
             throw new RuntimeException();
         }
 
-        /* if (!serverkey.getPrivateKey().isPresent()) {
-            LOGGER.fatal("ServerPrivateKey not Present");
-        }
-
-        if (serverkey.getPrivateKey().isPresent()
-                && serverkey.getPrivateKey().get() instanceof CustomRsaPrivateKey) {
-            serverPrivatKey = (CustomRsaPrivateKey) serverkey.getPrivateKey().get();
-        } else {
-            throw new RuntimeException();
-        }*/
-
         SshPublicKey<?, ?> hostKey =
                 chooser.getContext().getSshContext().getHostKey().orElseThrow();
         if (hostKey.getPublicKey() instanceof CustomRsaPublicKey) {
@@ -167,13 +147,6 @@ public class ClientSessionKeyMessagePreparator
         } else {
             throw new RuntimeException();
         }
-        /*
-        if (hostKey.getPrivateKey().isPresent()
-                && hostKey.getPrivateKey().get() instanceof CustomRsaPrivateKey) {
-            hostPrivateKey = (CustomRsaPrivateKey) hostKey.getPrivateKey().get();
-        } else {
-            throw new RuntimeException();
-        }*/
 
         AbstractCipher innerEncryption;
         AbstractCipher outerEncryption;
@@ -189,27 +162,12 @@ public class ClientSessionKeyMessagePreparator
                             hostPublickey.getModulus().bitLength(),
                             serverPublicKey.getModulus().bitLength());
 
-                    /*                    innerEncryption =
-                            CipherFactory.getOaepCipher(
-                                    KeyExchangeAlgorithm.RSA1024_PCKS1, hostPublickey);
+                    innerEncryption = CipherFactory.getRsaPkcs1Cipher(hostPublickey);
                     sessionKey = innerEncryption.encrypt(sessionKey);
 
-                    outerEncryption =
-                            CipherFactory.getOaepCipher(
-                                    KeyExchangeAlgorithm.RSA1024_PCKS1, serverPublicKey);
+                    outerEncryption = CipherFactory.getRsaPkcs1Cipher(serverPublicKey);
 
-                    sessionKey = outerEncryption.encrypt(sessionKey);*/
-
-                    /* Alternative Imlementation */
-
-                    Cipher encryptCipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
-                    encryptCipher.init(Cipher.ENCRYPT_MODE, hostPublickey);
-                    sessionKey = encryptCipher.doFinal(sessionKey);
-
-                    encryptCipher.init(Cipher.ENCRYPT_MODE, serverPublicKey);
-                    sessionKey = encryptCipher.doFinal(sessionKey);
-
-                    /* Alternative Imlementation */
+                    sessionKey = outerEncryption.encrypt(sessionKey);
 
                     LOGGER.debug("Scucessfull Decrypted, Sanity-Check passed");
                 } else {
@@ -219,42 +177,17 @@ public class ClientSessionKeyMessagePreparator
                             hostPublickey.getModulus().bitLength(),
                             serverPublicKey.getModulus().bitLength());
 
-                    /*                   innerEncryption =
-                            CipherFactory.getOaepCipher(
-                                    KeyExchangeAlgorithm.RSA1024_PCKS1, serverPublicKey);
+                    innerEncryption = CipherFactory.getRsaPkcs1Cipher(serverPublicKey);
                     sessionKey = innerEncryption.encrypt(sessionKey);
 
-                    outerEncryption =
-                            CipherFactory.getOaepCipher(
-                                    KeyExchangeAlgorithm.RSA1024_PCKS1, hostPublickey);
+                    outerEncryption = CipherFactory.getRsaPkcs1Cipher(hostPublickey);
 
-                    sessionKey = outerEncryption.encrypt(sessionKey);*/
-
-                    /* Alternative Imlementation */
-
-                    // shorter
-                    Cipher encryptCipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
-                    encryptCipher.init(Cipher.ENCRYPT_MODE, serverPublicKey);
-                    sessionKey = encryptCipher.doFinal(sessionKey);
-
-                    // longer
-                    encryptCipher.init(Cipher.ENCRYPT_MODE, hostPublickey);
-                    sessionKey = encryptCipher.doFinal(sessionKey);
-
-                    /* Alternative Imlementation */
+                    sessionKey = outerEncryption.encrypt(sessionKey);
 
                     LOGGER.debug("Scucessfull Decrypted, Sanity-Check passed");
                 }
 
-            } catch (NoSuchPaddingException e) {
-                throw new RuntimeException(e);
-            } catch (IllegalBlockSizeException e) {
-                throw new RuntimeException(e);
-            } catch (NoSuchAlgorithmException e) {
-                throw new RuntimeException(e);
-            } catch (BadPaddingException e) {
-                throw new RuntimeException(e);
-            } catch (InvalidKeyException e) {
+            } catch (CryptoException e) {
                 throw new RuntimeException(e);
             }
         }

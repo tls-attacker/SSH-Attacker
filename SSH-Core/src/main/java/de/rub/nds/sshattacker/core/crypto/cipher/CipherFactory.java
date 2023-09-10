@@ -63,5 +63,9 @@ public class CipherFactory {
         }
     }
 
+    public static AbstractCipher getRsaPkcs1Cipher(Key key) {
+        return new RsaPkcs1Cipher(key);
+    }
+
     private CipherFactory() {}
 }
