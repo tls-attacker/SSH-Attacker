@@ -22,7 +22,6 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.Random;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -31,8 +30,7 @@ public class ClientSessionKeyMessagePreparator
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public ClientSessionKeyMessagePreparator(
-            Chooser chooser, ClientSessionKeyMessage message) {
+    public ClientSessionKeyMessagePreparator(Chooser chooser, ClientSessionKeyMessage message) {
         super(chooser, message, MessageIdConstantSSH1.SSH_CMSG_SESSION_KEY);
     }
 
@@ -119,7 +117,6 @@ public class ClientSessionKeyMessagePreparator
             sessionKey[i] = (byte) (sesseionByte ^ sessionKey[i++]);
         }
 
-
         CustomRsaPublicKey hostPublickey;
         CustomRsaPublicKey serverPublicKey;
 
@@ -199,7 +196,7 @@ public class ClientSessionKeyMessagePreparator
         try {
             prepareSessionKey();
         } catch (CryptoException e) {
-            LOGGER.fatal("Error while encrypting Session key {}.",e.getMessage());
+            LOGGER.fatal("Error while encrypting Session key {}.", e.getMessage());
             throw new RuntimeException(e);
         }
     }

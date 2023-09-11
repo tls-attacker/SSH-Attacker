@@ -56,7 +56,6 @@ public class ClientSessionKeyMessageHandler extends SshMessageHandler<ClientSess
         SshPublicKey<?, ?> serverkey = sshContext.getServerKey();
         SshPublicKey<?, ?> hostKey = sshContext.getHostKey().orElseThrow();
 
-
         if (serverkey.getPrivateKey().isPresent()
                 && serverkey.getPrivateKey().get() instanceof CustomRsaPrivateKey) {
             serverPrivatKey = (CustomRsaPrivateKey) serverkey.getPrivateKey().get();
@@ -70,6 +69,18 @@ public class ClientSessionKeyMessageHandler extends SshMessageHandler<ClientSess
         } else {
             throw new CryptoException("Private-Host-Key is Missing");
         }
+
+        LOGGER.debug(
+                "Server: \n Key: {} \n Mod: {}",
+                ArrayConverter.bytesToRawHexString(
+                        serverPrivatKey.getPrivateExponent().toByteArray()),
+                ArrayConverter.bytesToRawHexString(serverPrivatKey.getModulus().toByteArray()));
+        LOGGER.debug(
+                "Host: \n Key: {} \n Mod: {}",
+                ArrayConverter.bytesToRawHexString(
+                        hostPrivateKey.getPrivateExponent().toByteArray()),
+                ArrayConverter.bytesToRawHexString(hostPrivateKey.getModulus().toByteArray()));
+        LOGGER.debug("Message: {}", ArrayConverter.bytesToRawHexString(sessionKey));
 
         AbstractCipher innerEncryption;
         AbstractCipher outerEncryption;

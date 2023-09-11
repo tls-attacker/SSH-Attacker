@@ -133,8 +133,7 @@ public class ClientSessionKeyMessage extends SshMessage<ClientSessionKeyMessage>
 
     @Override
     public SshMessageSerializer<ClientSessionKeyMessage> getSerializer(SshContext context) {
-        HybridKeyExchange kex = context.getChooser().getHybridKeyExchange();
-        return new ClientSessionKeyMessageSerializer(this, kex.getCombiner());
+        return new ClientSessionKeyMessageSerializer(this);
     }
 
     @Override

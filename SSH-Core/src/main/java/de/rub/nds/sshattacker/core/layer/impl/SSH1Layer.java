@@ -39,9 +39,7 @@ import de.rub.nds.sshattacker.core.packet.AbstractPacket;
 import de.rub.nds.sshattacker.core.packet.BinaryPacket;
 import de.rub.nds.sshattacker.core.packet.BlobPacket;
 import de.rub.nds.sshattacker.core.protocol.common.*;
-import de.rub.nds.sshattacker.core.protocol.ssh1.message.ClientSessionKeyMessage;
-import de.rub.nds.sshattacker.core.protocol.ssh1.message.ServerPublicKeyMessage;
-import de.rub.nds.sshattacker.core.protocol.ssh1.message.VersionExchangeMessageSSHV1;
+import de.rub.nds.sshattacker.core.protocol.ssh1.message.*;
 import de.rub.nds.sshattacker.core.protocol.transport.message.AsciiMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.message.UnknownMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.parser.AsciiMessageParser;
@@ -248,7 +246,7 @@ public class SSH1Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
         switch (id) {
             case SSH_MSG_DISCONNECT:
                 LOGGER.debug("[bro] returning SSH_MSG_DISCONNECT Hint");
-                // return new PacketLayerHintSSHV1(ProtocolMessageTypeSSHV1.SSH_MSG_DISCONNECT);
+                readDisconnectData((BinaryPacket) packet);
                 break;
             case SSH_SMSG_PUBLIC_KEY:
                 LOGGER.debug("[bro] returning SSH_SMSG_PUBLIC_KEY Hint");
@@ -284,6 +282,10 @@ public class SSH1Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
                 LOGGER.debug("[bro] returning SSH_MSG_CHANNEL_CLOSE Hint");
                 break;
                 // return new PacketLayerHint(ProtocolMessageType.SSH_MSG_CHANNEL_CLOSE);
+            case SSH_SMSG_SUCCESS:
+                LOGGER.debug("[bro] returning SSH_SMSG_SUCCESS Hint");
+                readSuccessMessage((BinaryPacket) packet);
+                break;
             default:
                 LOGGER.debug(
                         "[bro] cannot identifie {} as {} - returningn null",
@@ -302,6 +304,26 @@ public class SSH1Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
 
     private void readSessionKeyData(AbstractPacket<BinaryPacket> packet) {
         ClientSessionKeyMessage message = new ClientSessionKeyMessage();
+        HintedInputStream temp_stream;
+
+        temp_stream =
+                new HintedInputStreamAdapterStream(
+                        null, new ByteArrayInputStream(packet.getPayload().getValue()));
+        readContainerFromStream(message, context, temp_stream);
+    }
+
+    private void readDisconnectData(AbstractPacket<BinaryPacket> packet) {
+        DisconnectMessage message = new DisconnectMessage();
+        HintedInputStream temp_stream;
+
+        temp_stream =
+                new HintedInputStreamAdapterStream(
+                        null, new ByteArrayInputStream(packet.getPayload().getValue()));
+        readContainerFromStream(message, context, temp_stream);
+    }
+
+    private void readSuccessMessage(AbstractPacket<BinaryPacket> packet) {
+        SuccessMessage message = new SuccessMessage();
         HintedInputStream temp_stream;
 
         temp_stream =

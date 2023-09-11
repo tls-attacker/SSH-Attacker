@@ -8,8 +8,6 @@
 package de.rub.nds.sshattacker.core.protocol.ssh1.serializer;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.sshattacker.core.constants.HybridKeyExchangeCombiner;
-import de.rub.nds.sshattacker.core.crypto.checksum.CRC;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.ssh1.message.ServerPublicKeyMessage;
 import org.apache.logging.log4j.LogManager;
@@ -18,23 +16,9 @@ import org.apache.logging.log4j.Logger;
 public class ServerPublicKeyMessageSerializer extends SshMessageSerializer<ServerPublicKeyMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
-    private HybridKeyExchangeCombiner combiner;
 
-    public ServerPublicKeyMessageSerializer(
-            ServerPublicKeyMessage message, HybridKeyExchangeCombiner combiner) {
+    public ServerPublicKeyMessageSerializer(ServerPublicKeyMessage message) {
         super(message);
-        this.combiner = combiner;
-    }
-
-    @Override
-    public void serializeMessageSpecificContents() {
-        serializeCookie();
-        serializeServerKeyBytes();
-        serializeHostKeyBytes();
-        serializeProtocolFlags();
-        serializeCipherMask();
-        serializeSupportedAuthMask();
-        serializCRCChecksum();
     }
 
     private void serializeProtocolFlags() {
@@ -53,13 +37,6 @@ public class ServerPublicKeyMessageSerializer extends SshMessageSerializer<Serve
         int authMask = message.getAuthMask().getValue();
         appendInt(authMask, 4);
         LOGGER.debug("AuthMasks:  " + Integer.toBinaryString(authMask));
-    }
-
-    private void serializCRCChecksum() {
-        CRC crc32 = new CRC();
-        byte[] checksum = ArrayConverter.longToBytes(crc32.calculateCRC(getAlreadySerialized()), 4);
-        appendBytes(checksum);
-        LOGGER.debug("CRC:  " + ArrayConverter.bytesToRawHexString(checksum));
     }
 
     private void serializeCookie() {
@@ -101,5 +78,15 @@ public class ServerPublicKeyMessageSerializer extends SshMessageSerializer<Serve
                 "Added Public Host Modulus with value {}",
                 ArrayConverter.bytesToHexString(
                         message.getHostKey().getPublicKey().getModulus().toByteArray()));
+    }
+
+    @Override
+    public void serializeMessageSpecificContents() {
+        serializeCookie();
+        serializeServerKeyBytes();
+        serializeHostKeyBytes();
+        serializeProtocolFlags();
+        serializeCipherMask();
+        serializeSupportedAuthMask();
     }
 }

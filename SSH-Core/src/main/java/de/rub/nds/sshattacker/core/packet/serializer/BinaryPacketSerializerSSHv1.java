@@ -37,7 +37,7 @@ public class BinaryPacketSerializerSSHv1 extends AbstractPacketSerializer<Binary
             LOGGER.debug("Packet length: {}", binaryPacket.getLength().getValue());
         }
         if (!encryptedFields.contains(BinaryPacketField.PADDING)) {
-            appendBytes(binaryPacket.getPadding().getValue());
+            // appendBytes(binaryPacket.getPadding().getValue());
             LOGGER.debug(
                     "Padding: {}",
                     ArrayConverter.bytesToHexString(binaryPacket.getPadding().getValue()));
@@ -55,6 +55,8 @@ public class BinaryPacketSerializerSSHv1 extends AbstractPacketSerializer<Binary
         LOGGER.debug(
                 "MAC / Authentication tag: {}",
                 ArrayConverter.bytesToHexString(binaryPacket.getMac().getValue()));*/
+
+        appendBytes(binaryPacket.getCrcChecksum().getValue());
 
         binaryPacket.setCompletePacketBytes(getAlreadySerialized());
         LOGGER.debug(

@@ -8,7 +8,6 @@
 package de.rub.nds.sshattacker.core.protocol.ssh1.serializer;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
-import de.rub.nds.sshattacker.core.constants.HybridKeyExchangeCombiner;
 import de.rub.nds.sshattacker.core.crypto.checksum.CRC;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.ssh1.message.ClientSessionKeyMessage;
@@ -20,12 +19,9 @@ public class ClientSessionKeyMessageSerializer
         extends SshMessageSerializer<ClientSessionKeyMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
-    private HybridKeyExchangeCombiner combiner;
 
-    public ClientSessionKeyMessageSerializer(
-            ClientSessionKeyMessage message, HybridKeyExchangeCombiner combiner) {
+    public ClientSessionKeyMessageSerializer(ClientSessionKeyMessage message) {
         super(message);
-        this.combiner = combiner;
     }
 
     private void serializieCipherType() {
@@ -60,7 +56,7 @@ public class ClientSessionKeyMessageSerializer
     private void serializCRCChecksum() {
         CRC crc32 = new CRC();
         byte[] checksum = ArrayConverter.longToBytes(crc32.calculateCRC(getAlreadySerialized()), 4);
-        appendBytes(checksum);
+        // appendBytes(checksum);
 
         LOGGER.debug("CRC:  " + ArrayConverter.bytesToRawHexString(checksum));
     }

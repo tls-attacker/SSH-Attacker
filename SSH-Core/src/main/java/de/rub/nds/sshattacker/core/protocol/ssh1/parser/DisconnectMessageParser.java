@@ -136,7 +136,7 @@ public class DisconnectMessageParser extends SshMessageParser<DisconnectMessage>
     @Override
     protected void parseMessageSpecificContents(DisconnectMessage message) {
         parseDisconnectReason(message);
-        parseCRC(message);
+        // parseCRC(message);
 
         // parseHybridKey(message);
         // parseSignature(message);

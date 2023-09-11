@@ -57,8 +57,7 @@ public class DisconnectMessage extends SshMessage<DisconnectMessage> {
 
     @Override
     public SshMessageSerializer<DisconnectMessage> getSerializer(SshContext context) {
-        HybridKeyExchange kex = context.getChooser().getHybridKeyExchange();
-        return new DisconnectMessageSerializier(this, kex.getCombiner());
+        return new DisconnectMessageSerializier(this);
     }
 
     @Override

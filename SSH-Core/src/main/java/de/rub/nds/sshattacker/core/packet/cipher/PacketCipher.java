@@ -136,9 +136,7 @@ public abstract class PacketCipher {
     }
 
     protected byte calculatePaddingLengthSSHv1(BinaryPacketSSHv1 packet) {
-
-        // TODO: fix later, just for debugging padding
-        int lenght = packet.getCompressedPayload().getValue().length;
+        int lenght = packet.getLength().getValue();
         int padding_lenght = 8 - (lenght % 8);
 
         return (byte) padding_lenght;

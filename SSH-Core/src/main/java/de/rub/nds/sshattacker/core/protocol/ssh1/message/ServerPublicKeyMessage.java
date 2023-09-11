@@ -318,8 +318,7 @@ public class ServerPublicKeyMessage extends SshMessage<ServerPublicKeyMessage> {
 
     @Override
     public SshMessageSerializer<ServerPublicKeyMessage> getSerializer(SshContext context) {
-        HybridKeyExchange kex = context.getChooser().getHybridKeyExchange();
-        return new ServerPublicKeyMessageSerializer(this, kex.getCombiner());
+        return new ServerPublicKeyMessageSerializer(this);
     }
 
     @Override

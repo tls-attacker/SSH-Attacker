@@ -7,7 +7,6 @@
  */
 package de.rub.nds.sshattacker.core.layer.impl;
 
-import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.CipherMode;
 import de.rub.nds.sshattacker.core.constants.CompressionAlgorithm;
@@ -42,7 +41,6 @@ import de.rub.nds.sshattacker.core.packet.parser.BlobPacketParser;
 import de.rub.nds.sshattacker.core.protocol.transport.parser.*;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
@@ -181,30 +179,6 @@ public class PacketLayer extends ProtocolLayer<PacketLayerHint, AbstractPacket> 
 
         decryptPacket(packet);
         decompressPacket(packet);
-
-        // for SSHv1 we need to remove the padding here! //TODO: can be changed?
-        if (packet instanceof BinaryPacketSSHv1) {
-            BinaryPacketSSHv1 binaryPacketSSHv1 = (BinaryPacketSSHv1) packet;
-
-            int paddingLenght = (8 - binaryPacketSSHv1.getLength().getValue() % 8);
-            byte[] padding = Arrays.copyOfRange(packet.getPayload().getValue(), 0, paddingLenght);
-            byte[] cleanContent =
-                    Arrays.copyOfRange(
-                            packet.getPayload().getValue(),
-                            paddingLenght,
-                            binaryPacketSSHv1.getLength().getValue() + paddingLenght);
-
-            LOGGER.debug(
-                    "Lenght = {}, so padding is {} long and has {} as value, clean is now {} which is {} long",
-                    binaryPacketSSHv1.getLength().getValue(),
-                    paddingLenght,
-                    padding,
-                    ArrayConverter.bytesToHexString(cleanContent),
-                    cleanContent.length);
-            packet.setPayload(ModifiableVariableFactory.safelySetValue(null, cleanContent));
-        } else {
-            packet.setPayload(packet.getPayload());
-        }
 
         LOGGER.debug(
                 "[bro] Decompressed Payload: {}",

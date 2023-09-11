@@ -258,7 +258,7 @@ public class ServerPublicKeyMessageParser extends SshMessageParser<ServerPublicK
         parseProtocolFlags(message);
         parseCipherMask(message);
         parseAuthMask(message);
-        parseCRC(message);
+        // parseCRC(message);
 
         // parseHybridKey(message);
         // parseSignature(message);

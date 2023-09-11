@@ -11,7 +11,6 @@ import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
-import de.rub.nds.modifiablevariable.singlebyte.ModifiableByte;
 import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.layer.data.DataContainer;
 import de.rub.nds.sshattacker.core.layer.data.Handler;
@@ -36,9 +35,12 @@ public class BinaryPacketSSHv1 extends AbstractPacket<BinaryPacketSSHv1>
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
     private ModifiableInteger length;
 
+    @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PLAIN_RECORD)
+    private ModifiableByteArray CrcChecksum;
+
     /** The length of the padding. Must be at least 4 bytes and at most 255 bytes to be valid. */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.LENGTH)
-    private ModifiableByte paddingLength;
+    private ModifiableInteger paddingLength;
 
     /** The padding bytes of the packet. */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PADDING)
@@ -72,15 +74,15 @@ public class BinaryPacketSSHv1 extends AbstractPacket<BinaryPacketSSHv1>
         this.length = ModifiableVariableFactory.safelySetValue(this.length, length);
     }
 
-    public ModifiableByte getPaddingLength() {
+    public ModifiableInteger getPaddingLength() {
         return paddingLength;
     }
 
-    public void setPaddingLength(ModifiableByte paddingLength) {
+    public void setPaddingLength(ModifiableInteger paddingLength) {
         this.paddingLength = paddingLength;
     }
 
-    public void setPaddingLength(byte paddingLength) {
+    public void setPaddingLength(int paddingLength) {
         this.paddingLength =
                 ModifiableVariableFactory.safelySetValue(this.paddingLength, paddingLength);
     }
@@ -147,6 +149,18 @@ public class BinaryPacketSSHv1 extends AbstractPacket<BinaryPacketSSHv1>
 
     public void setComputations(PacketCryptoComputations computations) {
         this.computations = computations;
+    }
+
+    public ModifiableByteArray getCrcChecksum() {
+        return CrcChecksum;
+    }
+
+    public void setCrcChecksum(ModifiableByteArray crcChecksum) {
+        CrcChecksum = crcChecksum;
+    }
+
+    public void setCrcChecksum(byte[] crcChecksum) {
+        CrcChecksum = ModifiableVariableFactory.safelySetValue(this.CrcChecksum, crcChecksum);
     }
 
     @Override

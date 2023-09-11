@@ -10,6 +10,7 @@ package de.rub.nds.sshattacker.core.packet.cipher;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.*;
+import de.rub.nds.sshattacker.core.crypto.checksum.CRC;
 import de.rub.nds.sshattacker.core.crypto.cipher.AbstractCipher;
 import de.rub.nds.sshattacker.core.crypto.cipher.CipherFactory;
 import de.rub.nds.sshattacker.core.crypto.mac.AbstractMac;
@@ -85,11 +86,34 @@ public class PacketMacedCipher extends PacketCipher {
         }
     }
 
+    private void calculateCrcChecksum(BinaryPacketSSHv1 binaryPacket) {
+        CRC crc32 = new CRC();
+        byte[] value =
+                ArrayConverter.concatenate(
+                        binaryPacket.getPadding().getValue(),
+                        binaryPacket.getCompressedPayload().getValue());
+        byte[] checksum = ArrayConverter.longToBytes(crc32.calculateCRC(value), 4);
+        binaryPacket.setCrcChecksum(checksum);
+        LOGGER.debug(
+                "CRC:  "
+                        + ArrayConverter.bytesToRawHexString(
+                                binaryPacket.getCrcChecksum().getValue()));
+    }
+
     @Override
     public void encrypt(BinaryPacketSSHv1 packet) {
+
+        packet.setLength(
+                packet.getCompressedPayload().getValue().length + 4); // +4 for CRC-Checksum
+
         packet.setPaddingLength(calculatePaddingLengthSSHv1(packet));
         packet.setPadding(calculatePadding(packet.getPaddingLength().getValue()));
-        packet.setLength(packet.getCompressedPayload().getValue().length);
+
+        packet.setCompressedPayload(
+                ArrayConverter.concatenate(
+                        packet.getPadding().getValue(), packet.getCompressedPayload().getValue()));
+
+        calculateCrcChecksum(packet);
 
         PacketCryptoComputations computations = packet.getComputations();
         try {
@@ -100,11 +124,6 @@ public class PacketMacedCipher extends PacketCipher {
 
         computations.setEncryptedPacketFields(
                 Stream.of(BinaryPacketField.PAYLOAD).collect(Collectors.toSet()));
-    }
-
-    @Override
-    public void decrypt(BinaryPacketSSHv1 packet) throws CryptoException {
-        decryptInner(packet);
     }
 
     @Override
@@ -191,8 +210,12 @@ public class PacketMacedCipher extends PacketCipher {
         byte[] plainData;
         if (packet instanceof BinaryPacket) {
             plainData = ((BinaryPacket) packet).getComputations().getPlainPacketBytes().getValue();
+            LOGGER.debug(
+                    "PlainData from Computation: {}", ArrayConverter.bytesToHexString(plainData));
         } else {
             plainData = packet.getCompressedPayload().getValue();
+            LOGGER.debug(
+                    "PlainData from Compression: {}", ArrayConverter.bytesToHexString(plainData));
         }
 
         if (encryptionAlgorithm.getIVSize() > 0) {
@@ -210,6 +233,30 @@ public class PacketMacedCipher extends PacketCipher {
             // Encryption without IV
             packet.setCiphertext(cipher.encrypt(plainData));
         }
+    }
+
+    @Override
+    public void decrypt(BinaryPacketSSHv1 packet) throws CryptoException {
+        decryptInner(packet);
+
+        DecryptionParser parser = new DecryptionParser(packet.getPayload().getValue());
+
+        packet.setPaddingLength(8 - packet.getLength().getValue() % 8);
+        packet.setPadding(parser.parseByteArrayField(packet.getPaddingLength().getValue()));
+
+        byte[] newPayload = parser.parseByteArrayField(packet.getLength().getValue() - 4);
+
+        packet.setCrcChecksum(parser.parseByteArrayField(4));
+
+        LOGGER.debug("DEBUGGER");
+        LOGGER.debug(
+                "Padding: {}", ArrayConverter.bytesToHexString(packet.getPadding().getValue()));
+        LOGGER.debug("Payload: {}", ArrayConverter.bytesToHexString(newPayload));
+        LOGGER.debug(
+                "CRC_Checksum: {}",
+                ArrayConverter.bytesToHexString(packet.getCrcChecksum().getValue()));
+
+        packet.setCompressedPayload(newPayload);
     }
 
     @Override

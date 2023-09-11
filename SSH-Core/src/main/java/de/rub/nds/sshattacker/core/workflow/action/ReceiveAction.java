@@ -16,6 +16,7 @@ import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessage;
 import de.rub.nds.sshattacker.core.protocol.connection.message.*;
 import de.rub.nds.sshattacker.core.protocol.ssh1.message.ClientSessionKeyMessage;
 import de.rub.nds.sshattacker.core.protocol.ssh1.message.ServerPublicKeyMessage;
+import de.rub.nds.sshattacker.core.protocol.ssh1.message.SuccessMessage;
 import de.rub.nds.sshattacker.core.protocol.ssh1.message.VersionExchangeMessageSSHV1;
 import de.rub.nds.sshattacker.core.protocol.transport.message.*;
 import de.rub.nds.sshattacker.core.state.State;
@@ -162,7 +163,8 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
                 @XmlElement(type = ServerPublicKeyMessage.class, name = "PublicKeyMessageSSH1"),
                 @XmlElement(
                         type = ClientSessionKeyMessage.class,
-                        name = "ClientSessionKeyMessageSSH1")
+                        name = "ClientSessionKeyMessageSSH1"),
+                @XmlElement(type = SuccessMessage.class, name = "SuccessMessageSSH1")
             })
     protected List<ProtocolMessage<?>> expectedMessages = new ArrayList<>();
 

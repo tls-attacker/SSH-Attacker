@@ -170,7 +170,7 @@ public class ClientSessionKeyMessageParser extends SshMessageParser<ClientSessio
         parseAntiSpoofingCookie(message);
         parseSessionKey(message);
         parseProtocolFlags(message);
-        parseCRC(message);
+        // parseCRC(message);
 
         // parseHybridKey(message);
         // parseSignature(message);
