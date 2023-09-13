@@ -129,7 +129,8 @@ public class PacketChaCha20Poly1305Cipher extends PacketCipher {
     protected void encrypt(BlobPacket packet) throws CryptoException {
         byte[] iv =
                 ArrayConverter.intToBytes(
-                        context.getWriteSequenceNumber(), DataFormatConstants.UINT64_SIZE);
+                        context.getWriteSequenceNumber().getValue(),
+                        DataFormatConstants.UINT64_SIZE);
         packet.setCiphertext(
                 mainCipher.encrypt(packet.getCompressedPayload().getValue(), iv, new byte[0]));
     }
@@ -198,7 +199,8 @@ public class PacketChaCha20Poly1305Cipher extends PacketCipher {
     protected void decrypt(BlobPacket packet) throws CryptoException {
         byte[] iv =
                 ArrayConverter.intToBytes(
-                        context.getReadSequenceNumber(), DataFormatConstants.UINT64_SIZE);
+                        context.getReadSequenceNumber().getValue(),
+                        DataFormatConstants.UINT64_SIZE);
         try {
             packet.setCompressedPayload(
                     mainCipher.decrypt(packet.getCiphertext().getValue(), iv, new byte[0]));

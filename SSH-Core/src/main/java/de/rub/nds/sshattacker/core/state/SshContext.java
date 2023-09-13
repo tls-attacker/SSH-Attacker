@@ -7,6 +7,8 @@
  */
 package de.rub.nds.sshattacker.core.state;
 
+import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
+import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.connection.AliasedConnection;
 import de.rub.nds.sshattacker.core.constants.*;
@@ -65,12 +67,12 @@ public class SshContext {
      * Sequence number used to generate MAC when sending packages. The sequence number is unsigned,
      * initialized to 0 and wraps around at 2^32.
      */
-    private Integer writeSequenceNumber;
+    private ModifiableInteger writeSequenceNumber;
     /**
      * Sequence number used to verify the MAC of received packages. The sequence number is unsigned,
      * initialized to 0 and wraps around at 2^32.
      */
-    private Integer readSequenceNumber;
+    private ModifiableInteger readSequenceNumber;
 
     /**
      * If set to false, messages are handled as a server connection. handleAsClient is used to allow
@@ -314,8 +316,8 @@ public class SshContext {
         packetLayerType = PacketLayerType.BLOB;
         packetLayer = PacketLayerFactory.getPacketLayer(packetLayerType, this);
         receiveAsciiModeEnabled = true;
-        writeSequenceNumber = 0;
-        readSequenceNumber = 0;
+        writeSequenceNumber = ModifiableVariableFactory.safelySetValue(writeSequenceNumber, 0);
+        readSequenceNumber = ModifiableVariableFactory.safelySetValue(readSequenceNumber, 0);
         handleAsClient = connection.getLocalConnectionEndType() == ConnectionEndType.CLIENT;
         channelManager = new ChannelManager(this);
     }
@@ -410,12 +412,18 @@ public class SshContext {
     }
 
     // region Getters and Setters for Sequence Numbers
-    public int getWriteSequenceNumber() {
+    public ModifiableInteger getWriteSequenceNumber() {
         return writeSequenceNumber;
     }
 
-    public void setWriteSequenceNumber(int writeSequenceNumber) {
+    public void setWriteSequenceNumber(ModifiableInteger writeSequenceNumber) {
         this.writeSequenceNumber = writeSequenceNumber;
+    }
+
+    public void setWriteSequenceNumber(int writeSequenceNumber) {
+        this.writeSequenceNumber =
+                ModifiableVariableFactory.safelySetValue(
+                        this.writeSequenceNumber, writeSequenceNumber);
     }
 
     public void incrementWriteSequenceNumber() {
@@ -424,18 +432,26 @@ public class SshContext {
 
     public void incrementWriteSequenceNumber(int i) {
         // Java does not support native unsigned integers :(
-        writeSequenceNumber =
+        // Increment the underlying value to avoid stacking modifications
+        setWriteSequenceNumber(
                 (int)
-                        ((Integer.toUnsignedLong(writeSequenceNumber) + Integer.toUnsignedLong(i))
-                                % DataFormatConstants.UNSIGNED_INT_MAX_VALUE);
+                        ((Integer.toUnsignedLong(writeSequenceNumber.getOriginalValue())
+                                        + Integer.toUnsignedLong(i))
+                                % DataFormatConstants.UNSIGNED_INT_MAX_VALUE));
     }
 
-    public int getReadSequenceNumber() {
+    public ModifiableInteger getReadSequenceNumber() {
         return readSequenceNumber;
     }
 
-    public void setReadSequenceNumber(int readSequenceNumber) {
+    public void setReadSequenceNumber(ModifiableInteger readSequenceNumber) {
         this.readSequenceNumber = readSequenceNumber;
+    }
+
+    public void setReadSequenceNumber(int readSequenceNumber) {
+        this.readSequenceNumber =
+                ModifiableVariableFactory.safelySetValue(
+                        this.readSequenceNumber, readSequenceNumber);
     }
 
     public void incrementReadSequenceNumber() {
@@ -444,10 +460,12 @@ public class SshContext {
 
     public void incrementReadSequenceNumber(int i) {
         // Java does not support native unsigned integers :(
-        readSequenceNumber =
+        // Increment the underlying value to avoid stacking modifications
+        setReadSequenceNumber(
                 (int)
-                        ((Integer.toUnsignedLong(readSequenceNumber) + Integer.toUnsignedLong(i))
-                                % DataFormatConstants.UNSIGNED_INT_MAX_VALUE);
+                        ((Integer.toUnsignedLong(readSequenceNumber.getOriginalValue())
+                                        + Integer.toUnsignedLong(i))
+                                % DataFormatConstants.UNSIGNED_INT_MAX_VALUE));
     }
 
     // endregion

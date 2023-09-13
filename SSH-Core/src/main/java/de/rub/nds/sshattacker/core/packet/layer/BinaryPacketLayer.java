@@ -34,7 +34,7 @@ public class BinaryPacketLayer extends AbstractPacketLayer {
                             rawBytes,
                             startPosition,
                             getDecryptorCipher(),
-                            context.getReadSequenceNumber());
+                            context.getReadSequenceNumber().getValue());
             BinaryPacket packet = parser.parse();
             decryptPacket(packet);
             decompressPacket(packet);
@@ -52,7 +52,7 @@ public class BinaryPacketLayer extends AbstractPacketLayer {
                             rawBytes,
                             startPosition,
                             getDecryptorCipher(),
-                            context.getReadSequenceNumber());
+                            context.getReadSequenceNumber().getValue());
             BinaryPacket packet = parser.parse();
             decryptPacket(packet);
             decompressPacket(packet);
