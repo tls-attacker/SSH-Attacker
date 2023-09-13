@@ -16,7 +16,6 @@ import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.state.State;
 import de.rub.nds.sshattacker.core.workflow.action.executor.MessageActionResult;
 import de.rub.nds.sshattacker.core.workflow.action.executor.SendMessageHelper;
-import jakarta.xml.bind.annotation.XmlElement;
 import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -36,7 +35,14 @@ public class SendAction extends MessageAction implements SendingAction {
      * @see #isFailed
      * @see #setFailed
      */
-    @XmlElement protected Boolean failed;
+    protected Boolean failed;
+
+    /**
+     * If set to true, the resulting bytes of the binary packets will not be sent to the remote
+     * peer. This is useful for updating the SSH context and the binary packet protocol state
+     * without actually sending the message.
+     */
+    protected Boolean skipTransport;
 
     public SendAction() {
         super();
@@ -102,7 +108,8 @@ public class SendAction extends MessageAction implements SendingAction {
         }
 
         messages.forEach(message -> message.getHandler(context).getPreparator().prepare());
-        MessageActionResult result = SendMessageHelper.sendMessages(context, messages.stream());
+        MessageActionResult result =
+                SendMessageHelper.sendMessages(context, messages.stream(), skipTransport);
 
         // Check if all actions that were expected to be sent were actually
         // sent or if some failure occurred.

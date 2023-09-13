@@ -14,12 +14,22 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ * The result of a {@link SendMessageHelper#sendMessage} call. Contains the sent packets and
+ * messages.
+ */
 public class MessageActionResult {
 
     private final List<AbstractPacket> packetList;
 
     private final List<ProtocolMessage<?>> messageList;
 
+    /**
+     * Generates a MessageActionResult with the given packet and message lists.
+     *
+     * @param packetList The list of packets that were sent.
+     * @param messageList The list of messages that were sent.
+     */
     public MessageActionResult(
             List<AbstractPacket> packetList, List<ProtocolMessage<?>> messageList) {
         super();
@@ -27,15 +37,21 @@ public class MessageActionResult {
         this.messageList = messageList;
     }
 
-    /** Generates an empty MessageActionResult, that is, a result whose list fields are empty. */
+    /** Generates a MessageActionResult with empty packet and message lists. */
     public MessageActionResult() {
         this(new LinkedList<>(), new LinkedList<>());
     }
 
+    /**
+     * @return The list of packets that were sent.
+     */
     public List<AbstractPacket> getPacketList() {
         return packetList;
     }
 
+    /**
+     * @return The list of messages that were sent.
+     */
     public List<ProtocolMessage<?>> getMessageList() {
         return messageList;
     }

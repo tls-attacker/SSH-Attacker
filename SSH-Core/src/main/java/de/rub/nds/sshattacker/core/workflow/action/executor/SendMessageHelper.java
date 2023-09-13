@@ -21,6 +21,11 @@ import java.util.stream.Stream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+/**
+ * Helper class for sending messages.
+ *
+ * @see MessageActionResult
+ */
 public final class SendMessageHelper {
 
     private static final Logger LOGGER = LogManager.getLogger();
@@ -29,17 +34,66 @@ public final class SendMessageHelper {
         super();
     }
 
+    /**
+     * Sends the given packet.
+     *
+     * @param context the SSH context
+     * @param packet the packet to send
+     * @throws IOException if an I/O error occurs
+     */
     public static void sendPacket(SshContext context, AbstractPacket packet) throws IOException {
-        AbstractPacketLayer packetLayer = context.getPacketLayer();
-        TransportHandler transportHandler = context.getTransportHandler();
-        transportHandler.sendData(packetLayer.preparePacket(packet));
+        sendPacket(context, packet, false);
     }
 
+    /**
+     * Sends the given packet.
+     *
+     * @param context the SSH context
+     * @param packet the packet to send
+     * @param skipTransport if set to true, the resulting bytes of the binary packet will not be
+     *     sent to the remote peer. This is useful for updating the SSH context and the binary
+     *     packet protocol state without actually sending the packet.
+     * @throws IOException if an I/O error occurs
+     */
+    public static void sendPacket(SshContext context, AbstractPacket packet, boolean skipTransport)
+            throws IOException {
+        AbstractPacketLayer packetLayer = context.getPacketLayer();
+        TransportHandler transportHandler = context.getTransportHandler();
+        byte[] packetBytes = packetLayer.preparePacket(packet);
+        if (!skipTransport) {
+            transportHandler.sendData(packetBytes);
+        }
+    }
+
+    /**
+     * Sends the given message and returns a {@link MessageActionResult} containing the sent packet
+     * and message.
+     *
+     * @param context the SSH context
+     * @param message the message to send
+     * @return the {@link MessageActionResult}
+     */
     public static MessageActionResult sendMessage(SshContext context, ProtocolMessage<?> message) {
+        return sendMessage(context, message, false);
+    }
+
+    /**
+     * Sends the given message and returns a {@link MessageActionResult} containing the sent packet
+     * and message.
+     *
+     * @param context the SSH context
+     * @param message the message to send
+     * @param skipTransport if set to true, the resulting bytes of the message will not be sent to
+     *     the remote peer. This is useful for updating the SSH context and the binary packet
+     *     protocol state without actually sending the message.
+     * @return the {@link MessageActionResult}
+     */
+    public static MessageActionResult sendMessage(
+            SshContext context, ProtocolMessage<?> message, boolean skipTransport) {
         MessageLayer messageLayer = context.getMessageLayer();
         try {
             AbstractPacket packet = messageLayer.serialize(message);
-            sendPacket(context, packet);
+            sendPacket(context, packet, skipTransport);
             Handler<?> handler = message.getHandler(context);
             if (handler instanceof MessageSentHandler) {
                 ((MessageSentHandler) handler).adjustContextAfterMessageSent();
@@ -52,10 +106,34 @@ public final class SendMessageHelper {
         }
     }
 
+    /**
+     * Sends the given messages and returns a {@link MessageActionResult} containing the sent packet
+     * and messages.
+     *
+     * @param context the SSH context
+     * @param messageStream the messages to send
+     * @return the {@link MessageActionResult}
+     */
     public static MessageActionResult sendMessages(
             SshContext context, Stream<ProtocolMessage<?>> messageStream) {
+        return sendMessages(context, messageStream, false);
+    }
+
+    /**
+     * Sends the given messages and returns a {@link MessageActionResult} containing the sent
+     * packets and messages.
+     *
+     * @param context the SSH context
+     * @param messageStream the messages to send
+     * @param skipTransport if set to true, the resulting bytes of the binary packet will not be
+     *     sent to the remote peer. This is useful for updating the SSH context and the binary
+     *     packet protocol state without actually sending the packet.
+     * @return the {@link MessageActionResult}
+     */
+    public static MessageActionResult sendMessages(
+            SshContext context, Stream<ProtocolMessage<?>> messageStream, boolean skipTransport) {
         return messageStream
-                .map(message -> sendMessage(context, message))
+                .map(message -> sendMessage(context, message, skipTransport))
                 .reduce(MessageActionResult::merge)
                 .orElse(new MessageActionResult());
     }

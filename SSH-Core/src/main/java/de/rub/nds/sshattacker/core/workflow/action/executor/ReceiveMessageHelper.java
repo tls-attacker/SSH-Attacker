@@ -23,7 +23,11 @@ import java.util.Optional;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-/** A helper class to receive and process bytes from transport handler. */
+/**
+ * Helper class for receiving messages.
+ *
+ * @see MessageActionResult
+ */
 public final class ReceiveMessageHelper {
 
     private static final Logger LOGGER = LogManager.getLogger();
