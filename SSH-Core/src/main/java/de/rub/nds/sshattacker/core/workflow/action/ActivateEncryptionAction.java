@@ -35,6 +35,10 @@ public class ActivateEncryptionAction extends ConnectionBoundAction {
 
     @Override
     public void execute(State state) throws WorkflowExecutionException {
+        if (isExecuted()) {
+            throw new WorkflowExecutionException("Action already executed!");
+        }
+
         SshContext context = state.getSshContext(getConnectionAlias());
         Chooser chooser = context.getChooser();
         Optional<KeySet> keySet = context.getKeySet();
@@ -57,6 +61,7 @@ public class ActivateEncryptionAction extends ConnectionBoundAction {
                 .updateDecryptionCipher(
                         PacketCipherFactory.getPacketCipher(
                                 context, keySet.get(), inEnc, inMac, CipherMode.DECRYPT));
+        setExecuted(true);
     }
 
     @Override

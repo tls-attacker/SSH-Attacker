@@ -52,5 +52,11 @@ public class DynamicExtensionNegotiationAction extends SendAction {
                             new ExtensionInfoMessage()));
             sshActions.forEach(sshAction -> sshAction.execute(state));
         }
+        setExecuted(true);
+    }
+
+    @Override
+    public boolean executedAsPlanned() {
+        return isExecuted() && sshActions.stream().allMatch(SshAction::executedAsPlanned);
     }
 }

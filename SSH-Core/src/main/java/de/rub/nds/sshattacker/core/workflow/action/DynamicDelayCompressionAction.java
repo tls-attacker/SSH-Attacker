@@ -68,5 +68,11 @@ public class DynamicDelayCompressionAction extends SendAction {
                             new NewCompressMessage()));
             sshActions.forEach(sshAction -> sshAction.execute(state));
         }
+        setExecuted(true);
+    }
+
+    @Override
+    public boolean executedAsPlanned() {
+        return isExecuted() && sshActions.stream().allMatch(SshAction::executedAsPlanned);
     }
 }

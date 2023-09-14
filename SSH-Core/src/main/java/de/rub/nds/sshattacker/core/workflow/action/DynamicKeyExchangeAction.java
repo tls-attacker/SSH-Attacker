@@ -18,7 +18,6 @@ import de.rub.nds.sshattacker.core.workflow.factory.WorkflowConfigurationFactory
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class DynamicKeyExchangeAction extends MessageAction
@@ -104,12 +103,7 @@ public class DynamicKeyExchangeAction extends MessageAction
     public boolean executedAsPlanned() {
         // Return true if this action was executed and all contained ssh
         // actions were executed as planned.
-        return isExecuted()
-                && sshActions.stream()
-                        .map(SshAction::executedAsPlanned)
-                        .filter(Predicate.isEqual(false))
-                        .findAny()
-                        .isEmpty();
+        return isExecuted() && sshActions.stream().allMatch(SshAction::executedAsPlanned);
     }
 
     @Override

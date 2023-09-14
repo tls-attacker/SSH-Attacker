@@ -42,7 +42,7 @@ public class SendAction extends MessageAction implements SendingAction {
      * peer. This is useful for updating the SSH context and the binary packet protocol state
      * without actually sending the message.
      */
-    protected Boolean skipTransport;
+    protected Boolean skipTransport = false;
 
     public SendAction() {
         super();
@@ -90,6 +90,30 @@ public class SendAction extends MessageAction implements SendingAction {
      */
     public boolean isFailed() {
         return Optional.ofNullable(failed).orElse(Boolean.FALSE);
+    }
+
+    /**
+     * Get the skip transport status of this action.
+     *
+     * @return {@code true} if the resulting bytes of the binary packets should not be sent to the
+     *     remote peer, else {@code false}
+     * @see #setSkipTransport
+     */
+    public Boolean getSkipTransport() {
+        return skipTransport;
+    }
+
+    /**
+     * If set to true, the resulting bytes of the binary packets will not be sent to the remote
+     * peer. This is useful for updating the SSH context and the binary packet protocol state
+     * without actually sending the message.
+     *
+     * @param skipTransport {@code true} if the resulting bytes of the binary packets should not be
+     *     sent to the remote peer, else {@code false}
+     * @see #getSkipTransport
+     */
+    public void setSkipTransport(Boolean skipTransport) {
+        this.skipTransport = skipTransport;
     }
 
     @Override

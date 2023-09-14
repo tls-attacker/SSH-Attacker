@@ -26,6 +26,10 @@ public class DeactivateEncryptionAction extends ConnectionBoundAction {
 
     @Override
     public void execute(State state) throws WorkflowExecutionException {
+        if (isExecuted()) {
+            throw new WorkflowExecutionException("Action already executed!");
+        }
+
         SshContext context = state.getSshContext(getConnectionAlias());
         context.getPacketLayer()
                 .updateEncryptionCipher(
@@ -33,6 +37,7 @@ public class DeactivateEncryptionAction extends ConnectionBoundAction {
         context.getPacketLayer()
                 .updateDecryptionCipher(
                         PacketCipherFactory.getNoneCipher(context, CipherMode.DECRYPT));
+        setExecuted(true);
     }
 
     @Override
