@@ -64,6 +64,9 @@ public class BinaryPacketParserSSHv1 extends AbstractPacketParser<BinaryPacketSS
             } else if (activeDecryptCipher.isEncryptThenMac()) {
                 LOGGER.debug("Packet structure: Encrypt-then-MAC");
                 parseETMPacket(binaryPacket);
+            } else if (activeDecryptCipher.getMacAlgorithm() == null
+                    && activeDecryptCipher.getEncryptionAlgorithm() != EncryptionAlgorithm.NONE) {
+                parseSSHv1Packet(binaryPacket);
             } else {
                 LOGGER.debug("Packet structure: Encrypt-and-MAC");
                 parseEAMPacket(binaryPacket);
@@ -210,5 +213,16 @@ public class BinaryPacketParserSSHv1 extends AbstractPacketParser<BinaryPacketSS
         /*        binaryPacket.setMac(
         parseByteArrayField(activeDecryptCipher.getMacAlgorithm().getOutputSize()));*/
         LOGGER.debug("DONE WITH PARSING parseEAMPacket ");
+    }
+
+    private void parseSSHv1Packet(BinaryPacketSSHv1 binaryPacket) throws CryptoException {
+        LOGGER.debug("PARSING SSHv1Packet");
+        binaryPacket.setLength(parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH));
+        LOGGER.debug("LENGHT = {}", binaryPacket.getLength());
+
+        int padding_lenght = 8 - (binaryPacket.getLength().getValue() % 8);
+
+        binaryPacket.setCiphertext(
+                parseByteArrayField(binaryPacket.getLength().getValue() + padding_lenght));
     }
 }

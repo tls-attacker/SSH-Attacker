@@ -15,7 +15,7 @@ import de.rub.nds.sshattacker.core.layer.data.Parser;
 import de.rub.nds.sshattacker.core.packet.BinaryPacket;
 import de.rub.nds.sshattacker.core.packet.BinaryPacketSSHv1;
 import de.rub.nds.sshattacker.core.packet.BlobPacket;
-import de.rub.nds.sshattacker.core.packet.cipher.keys.KeySet;
+import de.rub.nds.sshattacker.core.packet.cipher.keys.AbstractKeySet;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.io.ByteArrayInputStream;
 import java.util.Arrays;
@@ -29,7 +29,7 @@ public abstract class PacketCipher {
     /** The SSH context this packet cipher is used in. */
     protected final SshContext context;
     /** The key set used by the cipher. */
-    protected final KeySet keySet;
+    protected final AbstractKeySet keySet;
     /** The encryption algorithm to use. */
     protected final EncryptionAlgorithm encryptionAlgorithm;
     /** The MAC algorithm to use. This may be null if using an AEAD encryption algorithm. */
@@ -39,7 +39,7 @@ public abstract class PacketCipher {
 
     public PacketCipher(
             SshContext context,
-            KeySet keySet,
+            AbstractKeySet keySet,
             EncryptionAlgorithm encryptionAlgorithm,
             MacAlgorithm macAlgorithm,
             CipherMode mode) {
@@ -108,7 +108,7 @@ public abstract class PacketCipher {
         return macAlgorithm;
     }
 
-    public KeySet getKeySet() {
+    public AbstractKeySet getKeySet() {
         return keySet;
     }
 

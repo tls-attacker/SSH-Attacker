@@ -56,7 +56,7 @@ public class BinaryPacketSerializerSSHv1 extends AbstractPacketSerializer<Binary
                 "MAC / Authentication tag: {}",
                 ArrayConverter.bytesToHexString(binaryPacket.getMac().getValue()));*/
 
-        appendBytes(binaryPacket.getCrcChecksum().getValue());
+        // appendBytes(binaryPacket.getCrcChecksum().getValue());
 
         binaryPacket.setCompletePacketBytes(getAlreadySerialized());
         LOGGER.debug(

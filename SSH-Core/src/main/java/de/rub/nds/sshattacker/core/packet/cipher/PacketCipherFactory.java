@@ -12,7 +12,7 @@ import de.rub.nds.sshattacker.core.constants.EncryptionAlgorithm;
 import de.rub.nds.sshattacker.core.constants.EncryptionMode;
 import de.rub.nds.sshattacker.core.constants.MacAlgorithm;
 import de.rub.nds.sshattacker.core.layer.context.SshContext;
-import de.rub.nds.sshattacker.core.packet.cipher.keys.KeySet;
+import de.rub.nds.sshattacker.core.packet.cipher.keys.AbstractKeySet;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -22,7 +22,7 @@ public class PacketCipherFactory {
 
     public static PacketCipher getPacketCipher(
             SshContext context,
-            KeySet keySet,
+            AbstractKeySet keySet,
             EncryptionAlgorithm encryptionAlgorithm,
             MacAlgorithm macAlgorithm,
             CipherMode mode) {
@@ -31,13 +31,19 @@ public class PacketCipherFactory {
                 return new PacketChaCha20Poly1305Cipher(context, keySet, mode);
             } else if (encryptionAlgorithm.getMode() == EncryptionMode.GCM) {
                 return new PacketGCMCipher(context, keySet, encryptionAlgorithm, mode);
+            } else if (encryptionAlgorithm == EncryptionAlgorithm.BLOWFISH_CBC) {
+                return new PacketSsh1Cipher(
+                        context, keySet, EncryptionAlgorithm.BLOWFISH_CBC, null, mode);
+            } else if (encryptionAlgorithm == EncryptionAlgorithm.TRIPLE_DES_CBC) {
+                return new PacketSsh1Cipher(
+                        context, keySet, EncryptionAlgorithm.TRIPLE_DES_CBC, null, mode);
             } else {
                 return new PacketMacedCipher(
                         context, keySet, encryptionAlgorithm, macAlgorithm, mode);
             }
         } catch (Exception e) {
             LOGGER.warn(
-                    "Could not create PacketCipher with encryotion algorithm '{}' and MAC algorithm '{}'! Creating 'none' Cipher instead",
+                    "Could not create PacketCipher with encryption algorithm '{}' and MAC algorithm '{}'! Creating 'none' Cipher instead",
                     encryptionAlgorithm,
                     macAlgorithm,
                     e);

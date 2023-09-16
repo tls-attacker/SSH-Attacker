@@ -17,7 +17,7 @@ import de.rub.nds.sshattacker.core.packet.BinaryPacket;
 import de.rub.nds.sshattacker.core.packet.BinaryPacketSSHv1;
 import de.rub.nds.sshattacker.core.packet.BlobPacket;
 import de.rub.nds.sshattacker.core.packet.PacketCryptoComputations;
-import de.rub.nds.sshattacker.core.packet.cipher.keys.KeySet;
+import de.rub.nds.sshattacker.core.packet.cipher.keys.AbstractKeySet;
 import de.rub.nds.sshattacker.core.util.Converter;
 import java.util.Arrays;
 import java.util.stream.Collectors;
@@ -39,7 +39,7 @@ public class PacketGCMCipher extends PacketCipher {
 
     public PacketGCMCipher(
             SshContext context,
-            KeySet keySet,
+            AbstractKeySet keySet,
             EncryptionAlgorithm encryptionAlgorithm,
             CipherMode mode) {
         super(context, keySet, encryptionAlgorithm, null, mode);

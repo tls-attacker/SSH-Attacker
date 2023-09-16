@@ -11,7 +11,7 @@ import de.rub.nds.sshattacker.core.constants.*;
 import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.packet.cipher.PacketCipher;
 import de.rub.nds.sshattacker.core.packet.cipher.PacketCipherFactory;
-import de.rub.nds.sshattacker.core.packet.cipher.keys.KeySet;
+import de.rub.nds.sshattacker.core.packet.cipher.keys.AbstractKeySet;
 import de.rub.nds.sshattacker.core.protocol.common.*;
 import de.rub.nds.sshattacker.core.protocol.transport.message.NewKeysMessage;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
@@ -47,7 +47,7 @@ public class NewKeysMessageHandler extends SshMessageHandler<NewKeysMessage>
 
     private void adjustEncryptionForDirection(boolean receive) {
         Chooser chooser = sshContext.getChooser();
-        Optional<KeySet> keySet = sshContext.getKeySet();
+        Optional<AbstractKeySet> keySet = sshContext.getKeySet();
         if (keySet.isEmpty()) {
             LOGGER.warn(
                     "Unable to update the active {} cipher after handling a new keys message because key set is missing - workflow will continue with old cipher",
@@ -60,7 +60,8 @@ public class NewKeysMessageHandler extends SshMessageHandler<NewKeysMessage>
         if (receive) {
             encryptionAlgorithm = chooser.getReceiveEncryptionAlgorithm();
             macAlgorithm = chooser.getReceiveMacAlgorithm();
-            KeySet activeKeySet = sshContext.getPacketLayer().getDecryptorCipher().getKeySet();
+            AbstractKeySet activeKeySet =
+                    sshContext.getPacketLayer().getDecryptorCipher().getKeySet();
             EncryptionAlgorithm activeEncryptionAlgorithm =
                     sshContext.getPacketLayer().getDecryptorCipher().getEncryptionAlgorithm();
             MacAlgorithm activeMacAlgorithm =
@@ -77,7 +78,8 @@ public class NewKeysMessageHandler extends SshMessageHandler<NewKeysMessage>
         } else {
             encryptionAlgorithm = chooser.getSendEncryptionAlgorithm();
             macAlgorithm = chooser.getSendMacAlgorithm();
-            KeySet activeKeySet = sshContext.getPacketLayer().getEncryptorCipher().getKeySet();
+            AbstractKeySet activeKeySet =
+                    sshContext.getPacketLayer().getEncryptorCipher().getKeySet();
             EncryptionAlgorithm activeEncryptionAlgorithm =
                     sshContext.getPacketLayer().getEncryptorCipher().getEncryptionAlgorithm();
             MacAlgorithm activeMacAlgorithm =

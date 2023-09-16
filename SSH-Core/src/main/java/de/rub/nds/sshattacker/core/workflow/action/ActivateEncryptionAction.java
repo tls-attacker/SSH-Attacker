@@ -14,7 +14,7 @@ import de.rub.nds.sshattacker.core.constants.MacAlgorithm;
 import de.rub.nds.sshattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.packet.cipher.PacketCipherFactory;
-import de.rub.nds.sshattacker.core.packet.cipher.keys.KeySet;
+import de.rub.nds.sshattacker.core.packet.cipher.keys.AbstractKeySet;
 import de.rub.nds.sshattacker.core.state.State;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import java.util.Optional;
@@ -37,7 +37,7 @@ public class ActivateEncryptionAction extends ConnectionBoundAction {
     public void execute(State state) throws WorkflowExecutionException {
         SshContext context = state.getSshContext(getConnectionAlias());
         Chooser chooser = context.getChooser();
-        Optional<KeySet> keySet = context.getKeySet();
+        Optional<AbstractKeySet> keySet = context.getKeySet();
         if (keySet.isEmpty()) {
             LOGGER.error(
                     "Unable to activate encryption, there is no key set available in the context");

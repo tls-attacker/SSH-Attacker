@@ -16,16 +16,14 @@ import java.util.Arrays;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
-public class KeySet {
+public class SSHv1KeySet extends AbstractKeySet {
 
     private byte[] clientWriteInitialIv;
     private byte[] serverWriteInitialIv;
     private byte[] clientWriteEncryptionKey;
     private byte[] serverWriteEncryptionKey;
-    private byte[] clientWriteIntegrityKey;
-    private byte[] serverWriteIntegrityKey;
 
-    public KeySet() {}
+    public SSHv1KeySet() {}
 
     public byte[] getClientWriteInitialIv() {
         return clientWriteInitialIv;
@@ -57,22 +55,6 @@ public class KeySet {
 
     public void setServerWriteEncryptionKey(byte[] serverWriteEncryptionKey) {
         this.serverWriteEncryptionKey = serverWriteEncryptionKey;
-    }
-
-    public byte[] getClientWriteIntegrityKey() {
-        return clientWriteIntegrityKey;
-    }
-
-    public void setClientWriteIntegrityKey(byte[] clientWriteIntegrityKey) {
-        this.clientWriteIntegrityKey = clientWriteIntegrityKey;
-    }
-
-    public byte[] getServerWriteIntegrityKey() {
-        return serverWriteIntegrityKey;
-    }
-
-    public void setServerWriteIntegrityKey(byte[] serverWriteIntegrityKey) {
-        this.serverWriteIntegrityKey = serverWriteIntegrityKey;
     }
 
     public byte[] getWriteIv(ConnectionEndType connectionEndType) {
@@ -107,22 +89,6 @@ public class KeySet {
         }
     }
 
-    public byte[] getWriteIntegrityKey(ConnectionEndType connectionEndType) {
-        if (connectionEndType == ConnectionEndType.CLIENT) {
-            return clientWriteIntegrityKey;
-        } else {
-            return serverWriteIntegrityKey;
-        }
-    }
-
-    public byte[] getReadIntegrityKey(ConnectionEndType connectionEndType) {
-        if (connectionEndType == ConnectionEndType.CLIENT) {
-            return serverWriteIntegrityKey;
-        } else {
-            return clientWriteIntegrityKey;
-        }
-    }
-
     @Override
     public String toString() {
         return "Initial IV (client to server): "
@@ -135,26 +101,18 @@ public class KeySet {
                 + ArrayConverter.bytesToRawHexString(clientWriteEncryptionKey)
                 + "\n"
                 + "Encryption key (server to client): "
-                + ArrayConverter.bytesToRawHexString(serverWriteEncryptionKey)
-                + "\n"
-                + "Integrity key (client to server): "
-                + ArrayConverter.bytesToRawHexString(clientWriteIntegrityKey)
-                + "\n"
-                + "Integrity key (server to client): "
-                + ArrayConverter.bytesToRawHexString(serverWriteIntegrityKey);
+                + ArrayConverter.bytesToRawHexString(serverWriteEncryptionKey);
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        KeySet keySet = (KeySet) o;
+        SSHv1KeySet keySet = (SSHv1KeySet) o;
         return Arrays.equals(clientWriteInitialIv, keySet.clientWriteInitialIv)
                 && Arrays.equals(serverWriteInitialIv, keySet.serverWriteInitialIv)
                 && Arrays.equals(clientWriteEncryptionKey, keySet.clientWriteEncryptionKey)
-                && Arrays.equals(serverWriteEncryptionKey, keySet.serverWriteEncryptionKey)
-                && Arrays.equals(clientWriteIntegrityKey, keySet.clientWriteIntegrityKey)
-                && Arrays.equals(serverWriteIntegrityKey, keySet.serverWriteIntegrityKey);
+                && Arrays.equals(serverWriteEncryptionKey, keySet.serverWriteEncryptionKey);
     }
 
     @Override
@@ -163,8 +121,6 @@ public class KeySet {
         result = 31 * result + Arrays.hashCode(serverWriteInitialIv);
         result = 31 * result + Arrays.hashCode(clientWriteEncryptionKey);
         result = 31 * result + Arrays.hashCode(serverWriteEncryptionKey);
-        result = 31 * result + Arrays.hashCode(clientWriteIntegrityKey);
-        result = 31 * result + Arrays.hashCode(serverWriteIntegrityKey);
         return result;
     }
 }

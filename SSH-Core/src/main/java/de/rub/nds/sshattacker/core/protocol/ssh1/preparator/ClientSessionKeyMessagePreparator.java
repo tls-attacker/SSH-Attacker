@@ -83,9 +83,57 @@ public class ClientSessionKeyMessagePreparator
         if (!chooser.getContext().getSshContext().getSupportedCipherMethods().isEmpty()) {
             chosenCipherMethod =
                     chooser.getContext().getSshContext().getSupportedCipherMethods().get(0);
+            if (chooser.getContext().getSshContext().getSupportedCipherMethods().size() > 1) {
+                chosenCipherMethod =
+                        chooser.getContext().getSshContext().getSupportedCipherMethods().get(1);
+            }
             chooser.getContext().getSshContext().setChosenCipherMethod(chosenCipherMethod);
+
+            // Derive correct Encryption Algorithm
+            EncryptionAlgorithm encryptionAlgorithm;
+            switch (chosenCipherMethod) {
+                case SSH_CIPHER_3DES:
+                    encryptionAlgorithm = EncryptionAlgorithm.TRIPLE_DES_CBC;
+                    break;
+                case SSH_CIPHER_NONE:
+                    encryptionAlgorithm = EncryptionAlgorithm.NONE;
+                    break;
+                case SSH_CIPHER_IDEA:
+                    encryptionAlgorithm =
+                            EncryptionAlgorithm.IDEA_CTR; // Wrong, needts to be IDEA_CFB!
+                    break;
+                case SSH_CIPHER_DES:
+                    encryptionAlgorithm = EncryptionAlgorithm.DES_CBC;
+                    break;
+                case SSH_CIPHER_ARCFOUR:
+                    encryptionAlgorithm = EncryptionAlgorithm.ARCFOUR;
+                    break;
+                case SSH_CIPHER_BLOWFISH:
+                    encryptionAlgorithm = EncryptionAlgorithm.BLOWFISH_CBC;
+                    break;
+                default:
+                    encryptionAlgorithm = EncryptionAlgorithm.NONE;
+                    // Fallback to None if nothing applied, throw Warning.
+                    LOGGER.warn(
+                            "chosen unsupported Encryption-Algorithm {}, fall back to NONE",
+                            chosenCipherMethod);
+            }
+            LOGGER.info("Successfulle applied Encryption Algorihm {}", encryptionAlgorithm);
+
+            // Set Server2Client and Client2Server identical because of SSH1
+            chooser.getContext()
+                    .getSshContext()
+                    .setEncryptionAlgorithmClientToServer(encryptionAlgorithm);
+
+            chooser.getContext()
+                    .getSshContext()
+                    .setEncryptionAlgorithmServerToClient(encryptionAlgorithm);
+
             getObject().setChosenCipherMethod(chosenCipherMethod);
         }
+        LOGGER.info(
+                "Choose Ciphermethod: {}",
+                chooser.getContext().getSshContext().getChosenCipherMethod());
     }
 
     private void prepareProtoclFlags() {
@@ -108,6 +156,7 @@ public class ClientSessionKeyMessagePreparator
     private void prepareSessionKey() throws CryptoException {
         Random random = new Random();
         byte[] sessionKey = new byte[32];
+        byte[] plainSessionKey;
         random.nextBytes(sessionKey);
 
         byte[] sessionID = getObject().getSshv1SessionID().getValue();
@@ -116,6 +165,9 @@ public class ClientSessionKeyMessagePreparator
         for (byte sesseionByte : sessionID) {
             sessionKey[i] = (byte) (sesseionByte ^ sessionKey[i++]);
         }
+
+        LOGGER.debug("the Session_key is {}", ArrayConverter.bytesToHexString(sessionKey));
+        plainSessionKey = sessionKey;
 
         CustomRsaPublicKey hostPublickey;
         CustomRsaPublicKey serverPublicKey;
@@ -182,8 +234,9 @@ public class ClientSessionKeyMessagePreparator
 
         // Set Sessionkey
         getObject().setEncryptedSessioKey(sessionKey);
-        chooser.getContext().getSshContext().setSessionKey(sessionKey);
-        LOGGER.debug("The Session_key is {}", ArrayConverter.bytesToHexString(sessionKey));
+        chooser.getContext().getSshContext().setSessionKey(plainSessionKey);
+        chooser.getContext().getSshContext().setSharedSecret(plainSessionKey);
+        LOGGER.debug("The Session_key is {}", ArrayConverter.bytesToHexString(plainSessionKey));
     }
 
     @Override

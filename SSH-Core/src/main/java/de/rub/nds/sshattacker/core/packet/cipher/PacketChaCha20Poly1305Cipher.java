@@ -17,7 +17,7 @@ import de.rub.nds.sshattacker.core.packet.BinaryPacket;
 import de.rub.nds.sshattacker.core.packet.BinaryPacketSSHv1;
 import de.rub.nds.sshattacker.core.packet.BlobPacket;
 import de.rub.nds.sshattacker.core.packet.PacketCryptoComputations;
-import de.rub.nds.sshattacker.core.packet.cipher.keys.KeySet;
+import de.rub.nds.sshattacker.core.packet.cipher.keys.AbstractKeySet;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -43,7 +43,8 @@ public class PacketChaCha20Poly1305Cipher extends PacketCipher {
     /** ChaCha20-Poly1305 instance keyed with K_2 for main packet encryption / decryption. */
     private final AbstractCipher mainCipher;
 
-    public PacketChaCha20Poly1305Cipher(SshContext context, KeySet keySet, CipherMode mode) {
+    public PacketChaCha20Poly1305Cipher(
+            SshContext context, AbstractKeySet keySet, CipherMode mode) {
         super(context, keySet, EncryptionAlgorithm.CHACHA20_POLY1305_OPENSSH_COM, null, mode);
         headerCipher =
                 CipherFactory.getCipher(

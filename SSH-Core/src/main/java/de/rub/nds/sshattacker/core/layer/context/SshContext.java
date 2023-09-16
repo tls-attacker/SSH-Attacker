@@ -19,7 +19,7 @@ import de.rub.nds.sshattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.sshattacker.core.layer.impl.PacketLayer;
 import de.rub.nds.sshattacker.core.packet.cipher.PacketCipher;
 import de.rub.nds.sshattacker.core.packet.cipher.PacketCipherFactory;
-import de.rub.nds.sshattacker.core.packet.cipher.keys.KeySet;
+import de.rub.nds.sshattacker.core.packet.cipher.keys.AbstractKeySet;
 import de.rub.nds.sshattacker.core.packet.compressor.PacketCompressor;
 import de.rub.nds.sshattacker.core.packet.crypto.AbstractPacketEncryptor;
 import de.rub.nds.sshattacker.core.packet.crypto.PacketEncryptor;
@@ -240,7 +240,7 @@ public class SshContext extends LayerContext {
     /** The shared secret established by the negotiated key exchange method */
     private byte[] sharedSecret;
     /** The key set derived from the shared secret, the exchange hash, and the session ID */
-    private KeySet keySet;
+    private AbstractKeySet keySet;
 
     private byte[] sshv1SessionID;
 
@@ -901,7 +901,7 @@ public class SshContext extends LayerContext {
         return Optional.ofNullable(sharedSecret);
     }
 
-    public Optional<KeySet> getKeySet() {
+    public Optional<AbstractKeySet> getKeySet() {
         return Optional.ofNullable(keySet);
     }
     // endregion
@@ -918,7 +918,7 @@ public class SshContext extends LayerContext {
         this.sharedSecret = sharedSecret;
     }
 
-    public void setKeySet(KeySet transportKeySet) {
+    public void setKeySet(AbstractKeySet transportKeySet) {
         this.keySet = transportKeySet;
     }
     // endregion
