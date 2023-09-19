@@ -21,6 +21,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
+import java.util.Arrays;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -221,15 +222,27 @@ public class ServerPublicKeyMessagePreparator extends SshMessagePreparator<Serve
 
         cookie = chooser.getConfig().getAntiSpoofingCookie();
 
+        // DEBUG CODE
+        if (hostModulus[0] == 0) {
+            hostModulus = Arrays.copyOfRange(hostModulus, 1, hostModulus.length);
+        }
+        // DEBUG CODE
+
+        LOGGER.debug("Servermodulus for SessionID: {}", serverModulus);
+        LOGGER.debug("Hostmodulus for SessionID: {}", hostModulus);
+        LOGGER.debug("Cookie for SessionID: {}", cookie);
+
         MessageDigest md = null;
         try {
             md = MessageDigest.getInstance("MD5");
         } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException(e);
         }
-        md.update(Bytes.concat(serverModulus, hostModulus, cookie));
+        md.update(Bytes.concat(hostModulus, serverModulus, cookie));
+        // md.update(Bytes.concat(serverModulus, hostModulus, cookie));
         byte[] sessionID = md.digest();
         LOGGER.debug("Session-ID {}", ArrayConverter.bytesToHexString(sessionID));
         chooser.getContext().getSshContext().setSessionID(sessionID);
+        chooser.getContext().getSshContext().setSshv1SessionID(sessionID);
     }
 }

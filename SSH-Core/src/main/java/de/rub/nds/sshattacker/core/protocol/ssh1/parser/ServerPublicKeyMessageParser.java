@@ -136,12 +136,12 @@ public class ServerPublicKeyMessageParser extends SshMessageParser<ServerPublicK
                         PublicKeyFormat.SSH_RSA, publicKey));
 
         LOGGER.debug(
-                "Added Public Host Exponent with value {}",
+                "Added Public Server Exponent with value {}",
                 ArrayConverter.bytesToHexString(
                         message.getServerKey().getPublicKey().getPublicExponent().toByteArray()));
 
         LOGGER.debug(
-                "Added Public Host Modulus with value {}",
+                "Added Public Server Modulus with value {}",
                 ArrayConverter.bytesToHexString(
                         message.getServerKey().getPublicKey().getModulus().toByteArray()));
         /*        message.setServerKeyByteLenght(parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH));

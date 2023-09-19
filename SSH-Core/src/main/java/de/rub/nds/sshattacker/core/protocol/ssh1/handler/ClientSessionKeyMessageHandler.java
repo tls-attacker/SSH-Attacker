@@ -227,6 +227,17 @@ public class ClientSessionKeyMessageHandler extends SshMessageHandler<ClientSess
 
         // Set Sessionkey
         LOGGER.debug("The Session_key is {}", ArrayConverter.bytesToHexString(sessionKey));
+
+        byte[] sessionID = sshContext.getSshv1SessionID();
+        LOGGER.debug("Session_ID: {}", ArrayConverter.bytesToHexString(sessionID));
+        int i = 0;
+
+        for (byte sesseionByte : sessionID) {
+            sessionKey[i] = (byte) (sesseionByte ^ sessionKey[i++]);
+        }
+
+        // Set Sessionkey
+        LOGGER.debug("The Session_key is {}", ArrayConverter.bytesToHexString(sessionKey));
         return sessionKey;
     }
 

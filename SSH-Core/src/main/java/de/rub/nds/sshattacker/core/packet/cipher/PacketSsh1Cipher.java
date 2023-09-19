@@ -29,7 +29,8 @@ public class PacketSsh1Cipher extends PacketCipher {
     private static final Logger LOGGER = LogManager.getLogger();
 
     /** Cipher for encryption / decryption of packets. */
-    private final AbstractCipher cipher;
+    // private final AbstractCipher cipher;
+    private AbstractCipher cipher;
 
     /**
      * Next IV for packet processing. Might be null if the encryption algorithm does not use an IV.
@@ -238,6 +239,43 @@ public class PacketSsh1Cipher extends PacketCipher {
         LOGGER.debug(
                 "CRC_Checksum: {}",
                 ArrayConverter.bytesToHexString(packet.getCrcChecksum().getValue()));
+
+        // ** DEBUG**//
+
+        cipher =
+                CipherFactory.getCipher(
+                        EncryptionAlgorithm.TRIPLE_DES_CBC,
+                        keySet == null
+                                ? null
+                                : mode == CipherMode.ENCRYPT
+                                        ? keySet.getWriteEncryptionKey(getLocalConnectionEndType())
+                                        : keySet.getReadEncryptionKey(getLocalConnectionEndType()));
+
+        nextIv =
+                mode == CipherMode.ENCRYPT
+                        ? keySet.getWriteIv(getLocalConnectionEndType())
+                        : keySet.getReadIv(getLocalConnectionEndType());
+
+        decryptInner(packet);
+
+        parser = new DecryptionParser(packet.getPayload().getValue());
+
+        packet.setPaddingLength(8 - packet.getLength().getValue() % 8);
+        packet.setPadding(parser.parseByteArrayField(packet.getPaddingLength().getValue()));
+
+        newPayload = parser.parseByteArrayField(packet.getLength().getValue() - 4);
+
+        packet.setCrcChecksum(parser.parseByteArrayField(4));
+
+        LOGGER.debug("DEBUGGER");
+        LOGGER.debug(
+                "Padding: {}", ArrayConverter.bytesToHexString(packet.getPadding().getValue()));
+        LOGGER.debug("Payload: {}", ArrayConverter.bytesToHexString(newPayload));
+        LOGGER.debug(
+                "CRC_Checksum: {}",
+                ArrayConverter.bytesToHexString(packet.getCrcChecksum().getValue()));
+
+        // **END**//
 
         packet.setCompressedPayload(newPayload);
     }

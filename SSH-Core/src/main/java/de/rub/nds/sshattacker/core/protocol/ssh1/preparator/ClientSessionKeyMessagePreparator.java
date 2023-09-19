@@ -20,6 +20,7 @@ import de.rub.nds.sshattacker.core.protocol.ssh1.message.ClientSessionKeyMessage
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 import org.apache.logging.log4j.LogManager;
@@ -62,7 +63,23 @@ public class ClientSessionKeyMessagePreparator
             throw new RuntimeException();
         }
 
+        // DEBUG CODE
+        if (hostModulus[0] == 0) {
+            hostModulus = Arrays.copyOfRange(hostModulus, 1, hostModulus.length);
+        }
+        // DEBUG CODE
+
+        // DEBUG CODE
+        if (serverModulus[0] == 0) {
+            serverModulus = Arrays.copyOfRange(serverModulus, 1, serverModulus.length);
+        }
+        // DEBUG CODE
+
         cookie = chooser.getContext().getSshContext().getAntiSpoofingCookie();
+
+        LOGGER.debug("Servermodulus for SessionID: {}", serverModulus);
+        LOGGER.debug("Hostmodulus for SessionID: {}", hostModulus);
+        LOGGER.debug("Cookie for SessionID: {}", cookie);
 
         MessageDigest md;
         try {
@@ -70,11 +87,13 @@ public class ClientSessionKeyMessagePreparator
         } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException(e);
         }
-        md.update(Bytes.concat(serverModulus, hostModulus, cookie));
+        md.update(Bytes.concat(hostModulus, serverModulus, cookie));
+        // md.update(Bytes.concat(serverModulus, hostModulus, cookie));
         byte[] sessionID = md.digest();
         LOGGER.debug("Session-ID {}", ArrayConverter.bytesToHexString(sessionID));
         getObject().setSshv1SessionID(sessionID);
         chooser.getContext().getSshContext().setSessionID(sessionID);
+        chooser.getContext().getSshContext().setSshv1SessionID(sessionID);
     }
 
     private void prepareEncryptionAlgorithm() {
@@ -159,15 +178,24 @@ public class ClientSessionKeyMessagePreparator
         byte[] plainSessionKey;
         random.nextBytes(sessionKey);
 
-        byte[] sessionID = getObject().getSshv1SessionID().getValue();
+        plainSessionKey = sessionKey.clone();
+
+        // byte[] sessionID = getObject().getSshv1SessionID().getValue();
+        byte[] sessionID = chooser.getContext().getSshContext().getSshv1SessionID();
+        LOGGER.debug("Session id = {}", ArrayConverter.bytesToHexString(sessionID));
+        LOGGER.debug(
+                "the not XORED Session_key is {}", ArrayConverter.bytesToHexString(sessionKey));
 
         int i = 0;
         for (byte sesseionByte : sessionID) {
             sessionKey[i] = (byte) (sesseionByte ^ sessionKey[i++]);
         }
 
-        LOGGER.debug("the Session_key is {}", ArrayConverter.bytesToHexString(sessionKey));
-        plainSessionKey = sessionKey;
+        LOGGER.debug(
+                "the Plain Session_key is {}", ArrayConverter.bytesToHexString(plainSessionKey));
+
+        LOGGER.debug("the XORED Session_key is {}", ArrayConverter.bytesToHexString(sessionKey));
+        // plainSessionKey = sessionKey;
 
         CustomRsaPublicKey hostPublickey;
         CustomRsaPublicKey serverPublicKey;
@@ -236,7 +264,7 @@ public class ClientSessionKeyMessagePreparator
         getObject().setEncryptedSessioKey(sessionKey);
         chooser.getContext().getSshContext().setSessionKey(plainSessionKey);
         chooser.getContext().getSshContext().setSharedSecret(plainSessionKey);
-        LOGGER.debug("The Session_key is {}", ArrayConverter.bytesToHexString(plainSessionKey));
+        // LOGGER.debug("The Session_key is {}", ArrayConverter.bytesToHexString(plainSessionKey));
     }
 
     @Override
