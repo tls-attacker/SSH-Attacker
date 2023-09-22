@@ -64,6 +64,8 @@ public abstract class Chooser {
 
     public abstract byte[] getServerCookie();
 
+    public abstract byte[] getAntiSpoofingCookie();
+
     public abstract List<KeyExchangeAlgorithm> getClientSupportedKeyExchangeAlgorithms();
 
     public abstract List<KeyExchangeAlgorithm> getServerSupportedKeyExchangeAlgorithms();

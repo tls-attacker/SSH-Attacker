@@ -147,6 +147,20 @@ public class DefaultChooser extends Chooser {
     }
 
     /**
+     * Retrieves the SSHv1-Anti-Spoofing cookie from context. If no cookie was received (i. e.
+     * out-of-order workflow or SSH-Attacker is running in client mode), the SSHv1-Anti-Spoofing
+     * cookie from config will be returned instead.
+     *
+     * @return The key exchange cookie of the client
+     */
+    @Override
+    public byte[] getAntiSpoofingCookie() {
+        return context.getSshContext()
+                .getAntiSpoofingCookie()
+                .orElse(config.getAntiSpoofingCookie());
+    }
+
+    /**
      * Retrieves the server cookie from context. If no cookie was received (i. e. out-of-order
      * workflow or SSH-Attacker is running in server mode), the server cookie from config will be
      * returned instead.

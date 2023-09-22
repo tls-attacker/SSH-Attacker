@@ -11,16 +11,11 @@ import com.google.common.primitives.Bytes;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.*;
 import de.rub.nds.sshattacker.core.crypto.keys.*;
-import de.rub.nds.sshattacker.core.exceptions.CryptoException;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.ssh1.message.ServerPublicKeyMessage;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
-import java.security.KeyPair;
-import java.security.KeyPairGenerator;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.security.interfaces.RSAPrivateKey;
-import java.security.interfaces.RSAPublicKey;
 import java.util.Arrays;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
@@ -51,24 +46,7 @@ public class ServerPublicKeyMessagePreparator extends SshMessagePreparator<Serve
         prepareSessionID();
     }
 
-    public void generateServerKey() throws CryptoException {
-        int transientKeyLength = 786; // Bit, default Value referring to RFC
-        try {
-            KeyPairGenerator keyGen = KeyPairGenerator.getInstance("RSA");
-            keyGen.initialize(transientKeyLength);
-            KeyPair key = keyGen.generateKeyPair();
-            CustomRsaPublicKey publicKey = new CustomRsaPublicKey((RSAPublicKey) key.getPublic());
-            CustomRsaPrivateKey privateKey =
-                    new CustomRsaPrivateKey((RSAPrivateKey) key.getPrivate());
-            this.serverKey = new SshPublicKey<>(PublicKeyFormat.SSH_RSA, publicKey, privateKey);
-        } catch (NoSuchAlgorithmException e) {
-            throw new CryptoException(
-                    "Unable to generate RSA transient key - RSA key pair generator is not available");
-        }
-    }
-
     public void prepareHostKey() {
-        int hostKeylenght;
         SshPublicKey<?, ?> opt_hostKey = chooser.getConfig().getHostKeys().get(0);
 
         CustomRsaPublicKey publicKey = (CustomRsaPublicKey) opt_hostKey.getPublicKey();
@@ -88,12 +66,6 @@ public class ServerPublicKeyMessagePreparator extends SshMessagePreparator<Serve
         getObject().setHostKey(hostKey);
         chooser.getContext().getSshContext().setHostKey(hostKey);
 
-        /*        hostKeylenght = publicKey.getPublicExponent().bitLength();
-        hostKeylenght = hostKeylenght + publicKey.getModulus().bitLength();
-        getObject().setHostPublicModulus(publicKey.getModulus().toByteArray());
-        getObject().setHostPublicExponent(publicKey.getPublicExponent().toByteArray());
-        getObject().setHostKeyByteLenght(hostKeylenght / 8);*/
-
         getObject().setHostKeyBitLenght(publicKey.getModulus().bitLength());
 
         LOGGER.debug(
@@ -106,25 +78,19 @@ public class ServerPublicKeyMessagePreparator extends SshMessagePreparator<Serve
 
     public void prepareServerKey() {
 
-        int serverKeyLenght;
-        try {
-            generateServerKey();
-        } catch (CryptoException e) {
-            throw new RuntimeException(e);
+        List<SshPublicKey<?, ?>> serverKeys = chooser.getConfig().getServerKeys();
+        if (!serverKeys.isEmpty()) {
+            SshPublicKey<?, ?> key = serverKeys.get(0);
+            if (key.getPrivateKey().isPresent()) {
+                CustomRsaPrivateKey privkey = (CustomRsaPrivateKey) key.getPrivateKey().get();
+                CustomRsaPublicKey pubkey = (CustomRsaPublicKey) key.getPublicKey();
+                this.serverKey = new SshPublicKey<>(PublicKeyFormat.SSH_RSA, pubkey, privkey);
+            }
         }
+
         chooser.getContext().getSshContext().setServerKey(serverKey);
         getObject().setServerKey(serverKey);
-
-        /*        serverKeyLenght = serverKey.getPublicKey().getPublicExponent().bitLength();
-        serverKeyLenght = serverKeyLenght + serverKey.getPublicKey().getModulus().bitLength();
-        getObject().setServerKeyByteLenght(serverKeyLenght / 8);*/
-
         getObject().setServerKeyBitLenght(serverKey.getPublicKey().getModulus().bitLength());
-        /*
-        getObject().setServerPublicModulus(serverKey.getPublicKey().getModulus().toByteArray());
-        getObject()
-                .setServerPublicExponent(
-                        serverKey.getPublicKey().getPublicExponent().toByteArray());*/
 
         LOGGER.debug(
                 "[bro] ServerKey Exponent: {}",
@@ -220,23 +186,21 @@ public class ServerPublicKeyMessagePreparator extends SshMessagePreparator<Serve
             throw new RuntimeException();
         }
 
-        cookie = chooser.getConfig().getAntiSpoofingCookie();
+        cookie = chooser.getAntiSpoofingCookie();
 
-        // DEBUG CODE
+        // Remove sign-byte if present
         if (hostModulus[0] == 0) {
             hostModulus = Arrays.copyOfRange(hostModulus, 1, hostModulus.length);
         }
-        // DEBUG CODE
-
-        // DEBUG CODE
         if (serverModulus[0] == 0) {
             serverModulus = Arrays.copyOfRange(serverModulus, 1, serverModulus.length);
         }
-        // DEBUG CODE
 
-        LOGGER.debug("Servermodulus for SessionID: {}", serverModulus);
-        LOGGER.debug("Hostmodulus for SessionID: {}", hostModulus);
-        LOGGER.debug("Cookie for SessionID: {}", cookie);
+        /*
+                LOGGER.debug("Servermodulus for SessionID: {}", serverModulus);
+                LOGGER.debug("Hostmodulus for SessionID: {}", hostModulus);
+                LOGGER.debug("Cookie for SessionID: {}", cookie);
+        */
 
         MessageDigest md = null;
         try {

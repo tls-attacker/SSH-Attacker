@@ -31,9 +31,7 @@ public class ClientSessionKeyMessagePreparator
     }
 
     private void prepareAntiSpoofingCookie() {
-        getObject()
-                .setAntiSpoofingCookie(
-                        chooser.getContext().getSshContext().getAntiSpoofingCookie());
+        getObject().setAntiSpoofingCookie(chooser.getAntiSpoofingCookie());
     }
 
     private void prepareSessionID() {
@@ -41,62 +39,6 @@ public class ClientSessionKeyMessagePreparator
     }
 
     private void prepareEncryptionAlgorithm() {
-        // Choose Encryption Type
-        // CipherMethod chosenCipherMethod;
-        /*if (!chooser.getContext().getSshContext().getSupportedCipherMethods().isEmpty()) {
-        chosenCipherMethod =
-                chooser.getContext().getSshContext().getSupportedCipherMethods().get(0);
-        */
-        /*if (chooser.getContext().getSshContext().getSupportedCipherMethods().size() > 1) {
-            chosenCipherMethod =
-                    chooser.getContext().getSshContext().getSupportedCipherMethods().get(1);
-        }*/
-        /*
-            chooser.getContext().getSshContext().setChosenCipherMethod(chosenCipherMethod);
-
-            // Derive correct Encryption Algorithm
-            EncryptionAlgorithm encryptionAlgorithm;
-            switch (chosenCipherMethod) {
-                case SSH_CIPHER_3DES:
-                    encryptionAlgorithm = EncryptionAlgorithm.TRIPLE_DES_CBC;
-                    break;
-                case SSH_CIPHER_NONE:
-                    encryptionAlgorithm = EncryptionAlgorithm.NONE;
-                    break;
-                case SSH_CIPHER_IDEA:
-                    encryptionAlgorithm =
-                            EncryptionAlgorithm.IDEA_CTR; // Wrong, needts to be IDEA_CFB!
-                    break;
-                case SSH_CIPHER_DES:
-                    encryptionAlgorithm = EncryptionAlgorithm.DES_CBC;
-                    break;
-                case SSH_CIPHER_ARCFOUR:
-                    encryptionAlgorithm = EncryptionAlgorithm.ARCFOUR;
-                    break;
-                case SSH_CIPHER_BLOWFISH:
-                    encryptionAlgorithm = EncryptionAlgorithm.BLOWFISH_CBC;
-                    break;
-                default:
-                    encryptionAlgorithm = EncryptionAlgorithm.NONE;
-                    // Fallback to None if nothing applied, throw Warning.
-                    LOGGER.warn(
-                            "chosen unsupported Encryption-Algorithm {}, fall back to NONE",
-                            chosenCipherMethod);
-            }
-            LOGGER.info("Successfulle applied Encryption Algorihm {}", encryptionAlgorithm);
-
-            // Set Server2Client and Client2Server identical because of SSH1
-            chooser.getContext()
-                    .getSshContext()
-                    .setEncryptionAlgorithmClientToServer(encryptionAlgorithm);
-
-            chooser.getContext()
-                    .getSshContext()
-                    .setEncryptionAlgorithmServerToClient(encryptionAlgorithm);
-
-            getObject().setChosenCipherMethod(chooser.getContext().getSshContext().getChosenCipherMethod());
-        }*/
-
         getObject()
                 .setChosenCipherMethod(
                         chooser.getContext().getSshContext().getChosenCipherMethod());

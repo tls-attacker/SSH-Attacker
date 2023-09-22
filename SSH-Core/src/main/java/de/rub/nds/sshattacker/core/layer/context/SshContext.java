@@ -977,8 +977,8 @@ public class SshContext extends LayerContext {
         this.sshv1SessionID = sshv1SessionID;
     }
 
-    public byte[] getAntiSpoofingCookie() {
-        return antiSpoofingCookie;
+    public Optional<byte[]> getAntiSpoofingCookie() {
+        return Optional.ofNullable(antiSpoofingCookie);
     }
 
     public void setAntiSpoofingCookie(byte[] antiSpoofingCookie) {

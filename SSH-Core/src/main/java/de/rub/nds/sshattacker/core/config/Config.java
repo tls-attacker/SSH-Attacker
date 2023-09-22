@@ -296,6 +296,11 @@ public class Config implements Serializable {
     @XmlElementWrapper
     private List<SshPublicKey<?, ?>> hostKeys;
 
+    /** Server key */
+    @XmlElement(name = "hostKey")
+    @XmlElementWrapper
+    private List<SshPublicKey<?, ?>> serverKeys;
+
     /**
      * RSA transient key used to encrypt the shared secret K. This may be a transient key generated
      * solely for this SSH connection, or it may be re-used for several connections.
@@ -817,6 +822,47 @@ public class Config implements Serializable {
                                         ArrayConverter.hexStringToByteArray(
                                                 "092E829DE536BE8F7D74E7A3C6CD90EA6EADDDEEB2E50D8617EBDD132B53669B"),
                                         NamedEcGroup.CURVE25519)));
+
+        serverKeys =
+                List.of(
+                        new SshPublicKey<>(
+                                PublicKeyFormat.SSH_RSA,
+                                new CustomRsaPublicKey(
+                                        new BigInteger("010001", 16),
+                                        new BigInteger(
+                                                "00C25E6978A2B8FE2C6228024BD5D0"
+                                                        + "F3239DDDDECCDF156AEF9D3F7F56AF"
+                                                        + "8443C510A03C66779363C33082D04D"
+                                                        + "23648B308AE0BE07A1451C8BFF0B97"
+                                                        + "DCA43E5703D66B8C04BF46DDBC79A7"
+                                                        + "7228179E5B246433098BF8271CCE66"
+                                                        + "C5E4CB3A9E2ECEE52BB07C33F92893"
+                                                        + "A5D5B6F163BE6FBC1E8E66E4666866"
+                                                        + "871890105EFFE1193F",
+                                                16)),
+                                new CustomRsaPrivateKey(
+                                        new BigInteger(
+                                                "64F3D28624C63EC5E0A9751FDC4B2D"
+                                                        + "ADC715F0DDA9D49EF91B4C5AA03483"
+                                                        + "570BA8AA01151B704335A3219E7D22"
+                                                        + "2FDB9777DA68F8DF8B5CDB5DB9B0C3"
+                                                        + "99CF0334044E6ED09B40E754809429"
+                                                        + "F6C387B7AC7BA00ECFE7AFE4D41499"
+                                                        + "B2F341FBB0496C52CBE5EB1F7E64F4"
+                                                        + "BF21F72B64EE0B478EAB6A0008E07A"
+                                                        + "E2F52960703D0EB9",
+                                                16),
+                                        new BigInteger(
+                                                "00C25E6978A2B8FE2C6228024BD5D0"
+                                                        + "F3239DDDDECCDF156AEF9D3F7F56AF"
+                                                        + "8443C510A03C66779363C33082D04D"
+                                                        + "23648B308AE0BE07A1451C8BFF0B97"
+                                                        + "DCA43E5703D66B8C04BF46DDBC79A7"
+                                                        + "7228179E5B246433098BF8271CCE66"
+                                                        + "C5E4CB3A9E2ECEE52BB07C33F92893"
+                                                        + "A5D5B6F163BE6FBC1E8E66E4666866"
+                                                        + "871890105EFFE1193F",
+                                                16))));
 
         fallbackRsaTransientPublicKey =
                 new SshPublicKey<>(
@@ -1353,6 +1399,10 @@ public class Config implements Serializable {
 
     public List<SshPublicKey<?, ?>> getHostKeys() {
         return hostKeys;
+    }
+
+    public List<SshPublicKey<?, ?>> getServerKeys() {
+        return serverKeys;
     }
 
     // endregion
