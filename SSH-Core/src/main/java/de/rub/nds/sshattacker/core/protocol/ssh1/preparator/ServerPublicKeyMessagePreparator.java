@@ -228,6 +228,12 @@ public class ServerPublicKeyMessagePreparator extends SshMessagePreparator<Serve
         }
         // DEBUG CODE
 
+        // DEBUG CODE
+        if (serverModulus[0] == 0) {
+            serverModulus = Arrays.copyOfRange(serverModulus, 1, serverModulus.length);
+        }
+        // DEBUG CODE
+
         LOGGER.debug("Servermodulus for SessionID: {}", serverModulus);
         LOGGER.debug("Hostmodulus for SessionID: {}", hostModulus);
         LOGGER.debug("Cookie for SessionID: {}", cookie);

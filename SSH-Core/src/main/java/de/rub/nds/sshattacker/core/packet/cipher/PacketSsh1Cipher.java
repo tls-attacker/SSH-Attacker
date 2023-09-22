@@ -28,7 +28,7 @@ public class PacketSsh1Cipher extends PacketCipher {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    /** Cipher for encryption / decryption of packets. */
+    /** Cipher for encryption / decryption of SSHv1-packets. */
     // private final AbstractCipher cipher;
     private AbstractCipher cipher;
 
@@ -64,20 +64,10 @@ public class PacketSsh1Cipher extends PacketCipher {
 
     private void calculateCrcChecksum(BinaryPacketSSHv1 binaryPacket) {
         CRC crc32 = new CRC();
-        /*        byte[] value =
-        ArrayConverter.concatenate(
-                binaryPacket.getPadding().getValue(),
-                binaryPacket.getCompressedPayload().getValue());*/
-
         byte[] value = binaryPacket.getCompressedPayload().getValue();
 
-        LOGGER.debug("Calculating Checksum over {}", value);
         byte[] checksum = ArrayConverter.longToBytes(crc32.calculateCRC(value), 4);
         binaryPacket.setCrcChecksum(checksum);
-        LOGGER.debug(
-                "CRC:  "
-                        + ArrayConverter.bytesToRawHexString(
-                                binaryPacket.getCrcChecksum().getValue()));
     }
 
     @Override
@@ -86,7 +76,7 @@ public class PacketSsh1Cipher extends PacketCipher {
         packet.setLength(
                 packet.getCompressedPayload().getValue().length + 4); // +4 for CRC-Checksum
 
-        packet.setPaddingLength(calculatePaddingLengthSSHv1(packet));
+        packet.setPaddingLength(calculatePaddingLength(packet));
         packet.setPadding(calculatePadding(packet.getPaddingLength().getValue()));
 
         packet.setCompressedPayload(
@@ -225,59 +215,15 @@ public class PacketSsh1Cipher extends PacketCipher {
 
         DecryptionParser parser = new DecryptionParser(packet.getPayload().getValue());
 
-        packet.setPaddingLength(8 - packet.getLength().getValue() % 8);
+        packet.setPaddingLength(calculatePaddingLength(packet));
         packet.setPadding(parser.parseByteArrayField(packet.getPaddingLength().getValue()));
 
-        byte[] newPayload = parser.parseByteArrayField(packet.getLength().getValue() - 4);
+        byte[] compressedPayload =
+                parser.parseByteArrayField(packet.getLength().getValue() - 4); // 4 for CRC
 
-        packet.setCrcChecksum(parser.parseByteArrayField(4));
-
-        LOGGER.debug("DEBUGGER");
-        LOGGER.debug(
-                "Padding: {}", ArrayConverter.bytesToHexString(packet.getPadding().getValue()));
-        LOGGER.debug("Payload: {}", ArrayConverter.bytesToHexString(newPayload));
-        LOGGER.debug(
-                "CRC_Checksum: {}",
-                ArrayConverter.bytesToHexString(packet.getCrcChecksum().getValue()));
-
-        // ** DEBUG**//
-
-        cipher =
-                CipherFactory.getCipher(
-                        EncryptionAlgorithm.TRIPLE_DES_CBC,
-                        keySet == null
-                                ? null
-                                : mode == CipherMode.ENCRYPT
-                                        ? keySet.getWriteEncryptionKey(getLocalConnectionEndType())
-                                        : keySet.getReadEncryptionKey(getLocalConnectionEndType()));
-
-        nextIv =
-                mode == CipherMode.ENCRYPT
-                        ? keySet.getWriteIv(getLocalConnectionEndType())
-                        : keySet.getReadIv(getLocalConnectionEndType());
-
-        decryptInner(packet);
-
-        parser = new DecryptionParser(packet.getPayload().getValue());
-
-        packet.setPaddingLength(8 - packet.getLength().getValue() % 8);
-        packet.setPadding(parser.parseByteArrayField(packet.getPaddingLength().getValue()));
-
-        newPayload = parser.parseByteArrayField(packet.getLength().getValue() - 4);
-
-        packet.setCrcChecksum(parser.parseByteArrayField(4));
-
-        LOGGER.debug("DEBUGGER");
-        LOGGER.debug(
-                "Padding: {}", ArrayConverter.bytesToHexString(packet.getPadding().getValue()));
-        LOGGER.debug("Payload: {}", ArrayConverter.bytesToHexString(newPayload));
-        LOGGER.debug(
-                "CRC_Checksum: {}",
-                ArrayConverter.bytesToHexString(packet.getCrcChecksum().getValue()));
-
-        // **END**//
-
-        packet.setCompressedPayload(newPayload);
+        packet.setCrcChecksum(
+                parser.parseByteArrayField(BinaryPacketConstants.CRC_FIELD_LENGHT)); // parse last 4
+        packet.setCompressedPayload(compressedPayload);
     }
 
     @Override

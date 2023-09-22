@@ -135,7 +135,7 @@ public abstract class PacketCipher {
         return new byte[paddingLength];
     }
 
-    protected byte calculatePaddingLengthSSHv1(BinaryPacketSSHv1 packet) {
+    protected byte calculatePaddingLength(BinaryPacketSSHv1 packet) {
         int lenght = packet.getLength().getValue();
         int padding_lenght = 8 - (lenght % 8);
 

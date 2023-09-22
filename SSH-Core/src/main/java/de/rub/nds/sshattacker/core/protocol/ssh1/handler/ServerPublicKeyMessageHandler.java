@@ -7,12 +7,20 @@
  */
 package de.rub.nds.sshattacker.core.protocol.ssh1.handler;
 
+import com.google.common.primitives.Bytes;
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
+import de.rub.nds.sshattacker.core.constants.AuthenticationMethodSSHv1;
+import de.rub.nds.sshattacker.core.constants.CipherMethod;
+import de.rub.nds.sshattacker.core.crypto.keys.CustomRsaPublicKey;
+import de.rub.nds.sshattacker.core.crypto.keys.SshPublicKey;
 import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.ssh1.message.ServerPublicKeyMessage;
-import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -32,36 +40,16 @@ public class ServerPublicKeyMessageHandler extends SshMessageHandler<ServerPubli
     @Override
     public void adjustContext(ServerPublicKeyMessage message) {
 
-        String serverKeyModulus =
-                new String(
-                        message.getServerKey().getPublicKey().getModulus().toByteArray(),
-                        StandardCharsets.UTF_8);
-        String hostKeyModulus =
-                new String(
-                        message.getHostKey().getPublicKey().getModulus().toByteArray(),
-                        StandardCharsets.UTF_8);
-        String cookie =
-                new String(message.getAntiSpoofingCookie().getValue(), StandardCharsets.UTF_8);
-
-        String concatenated = serverKeyModulus + hostKeyModulus + cookie;
-        try {
-            MessageDigest md = MessageDigest.getInstance("MD5");
-            md.update(concatenated.getBytes(StandardCharsets.UTF_8));
-            byte[] digest = md.digest();
-            sshContext.setSshv1SessionID(digest);
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException(e);
-        }
-
         sshContext.setServerKey(message.getServerKey());
         sshContext.setHostKey(message.getHostKey());
         sshContext.setAntiSpoofingCookie(message.getAntiSpoofingCookie().getValue());
         sshContext.setSupportedCipherMethods(message.getSupportedCipherMethods());
         sshContext.setSupportedAuthenticationMethods(message.getSupportedAuthenticationMethods());
         sshContext.setChosenProtocolFlags(message.getChosenProtocolFlags());
-        // TODO: Choose correct CipherMethod
 
-        // TODO: Choose correct AuthenticationMethod
+        caluculateSessionId(message);
+        setCipherMethod(message);
+        setAuthenticationMethod(message);
 
         // KeyExchangeUtil.handleHostKeyMessage(sshContext, message);
         // setRemoteValues(message);
@@ -79,78 +67,77 @@ public class ServerPublicKeyMessageHandler extends SshMessageHandler<ServerPubli
         KeyExchangeUtil.generateKeySet(sshContext);*/
     }
 
-    /*private void setRemoteValues(ServerPublicKeyMessage message) {
-        sshContext
-                .getChooser()
-                .getHybridKeyExchange()
-                .getKeyAgreement()
-                .setRemotePublicKey(message.getPublicKey().getValue());
-        LOGGER.info(
-                "RemoteKey Agreement = "
-                        + ArrayConverter.bytesToRawHexString(message.getPublicKey().getValue()));
-        sshContext
-                .getChooser()
-                .getHybridKeyExchange()
-                .getKeyEncapsulation()
-                .setEncryptedSharedSecret(message.getCombinedKeyShare().getValue());
-        LOGGER.info(
-                "Ciphertext Encapsulation = "
-                        + ArrayConverter.bytesToRawHexString(
-                                message.getCombinedKeyShare().getValue()));
-        byte[] combined;
-        switch (sshContext.getChooser().getHybridKeyExchange().getCombiner()) {
-            case CLASSICAL_CONCATENATE_POSTQUANTUM:
-                combined =
-                        KeyExchangeUtil.concatenateHybridKeys(
-                                message.getPublicKey().getValue(),
-                                message.getCombinedKeyShare().getValue());
-                sshContext.getExchangeHashInputHolder().setHybridServerPublicKey(combined);
-                break;
-            case POSTQUANTUM_CONCATENATE_CLASSICAL:
-                combined =
-                        KeyExchangeUtil.concatenateHybridKeys(
-                                message.getCombinedKeyShare().getValue(),
-                                message.getPublicKey().getValue());
-                sshContext.getExchangeHashInputHolder().setHybridServerPublicKey(combined);
-                break;
-            default:
-                LOGGER.warn(
-                        "Combiner"
-                                + sshContext.getChooser().getHybridKeyExchange().getCombiner()
-                                + " is not supported.");
-                break;
+    private void setCipherMethod(ServerPublicKeyMessage message) {
+
+        Collections.reverse(message.getSupportedCipherMethods());
+
+        List<CipherMethod> supportedCipherMethods = message.getSupportedCipherMethods();
+
+        // As the RFC States: prefer 3DES, then Blowfish, and then the rest.
+        if (supportedCipherMethods.contains(CipherMethod.SSH_CIPHER_3DES)) {
+            sshContext.setChosenCipherMethod(CipherMethod.SSH_CIPHER_3DES);
+        } else if (supportedCipherMethods.contains(CipherMethod.SSH_CIPHER_BLOWFISH)) {
+            sshContext.setChosenCipherMethod(CipherMethod.SSH_CIPHER_BLOWFISH);
+        } else {
+            CipherMethod chosenCipherMethod = supportedCipherMethods.get(0);
+            sshContext.setChosenCipherMethod(chosenCipherMethod);
         }
-    }*/
-
-    /*@Override
-    public SshMessageParser<HybridKeyExchangeReplyMessage> getParser(byte[] array) {
-        HybridKeyExchange kex = context.getChooser().getHybridKeyExchange();
-        return new HybridKeyExchangeReplyMessageParser(
-                array, kex.getCombiner(), kex.getPkAgreementLength(), kex.getCiphertextLength());
     }
 
-    @Override
-    public SshMessageParser<HybridKeyExchangeReplyMessage> getParser(
-            byte[] array, int startPosition) {
-        HybridKeyExchange kex = context.getChooser().getHybridKeyExchange();
-        return new HybridKeyExchangeReplyMessageParser(
-                array,
-                startPosition,
-                kex.getCombiner(),
-                kex.getPkAgreementLength(),
-                kex.getCiphertextLength());
+    private void setAuthenticationMethod(ServerPublicKeyMessage message) {
+
+        Collections.reverse(message.getSupportedAuthenticationMethods());
+        List<AuthenticationMethodSSHv1> supportedAuthenticationMethods =
+                message.getSupportedAuthenticationMethods();
+        sshContext.setChosenAuthenticationMethod(supportedAuthenticationMethods.get(0));
     }
 
-    @Override
-    public SshMessagePreparator<HybridKeyExchangeReplyMessage> getPreparator() {
-        HybridKeyExchange kex = context.getChooser().getHybridKeyExchange();
-        return new HybridKeyExchangeReplyMessagePreparator(
-                context.getChooser(), message, kex.getCombiner());
-    }
+    private void caluculateSessionId(ServerPublicKeyMessage message) {
 
-    @Override
-    public SshMessageSerializer<HybridKeyExchangeReplyMessage> getSerializer() {
-        HybridKeyExchange kex = context.getChooser().getHybridKeyExchange();
-        return new HybridKeyExchangeReplyMessageSerializer(message, kex.getCombiner());
-    }*/
+        byte[] serverModulus;
+        byte[] hostModulus;
+        byte[] cookie;
+        SshPublicKey<?, ?> serverkey = message.getServerKey();
+
+        if (serverkey.getPublicKey() instanceof CustomRsaPublicKey) {
+            CustomRsaPublicKey rsaPublicKey = (CustomRsaPublicKey) serverkey.getPublicKey();
+            serverModulus = rsaPublicKey.getModulus().toByteArray();
+        } else {
+            throw new RuntimeException();
+        }
+
+        SshPublicKey<?, ?> hostKey = message.getHostKey();
+        if (hostKey.getPublicKey() instanceof CustomRsaPublicKey) {
+            CustomRsaPublicKey rsaPublicKey = (CustomRsaPublicKey) hostKey.getPublicKey();
+            hostModulus = rsaPublicKey.getModulus().toByteArray();
+        } else {
+            throw new RuntimeException();
+        }
+
+        // Remove sign-byte if present
+        if (hostModulus[0] == 0) {
+            hostModulus = Arrays.copyOfRange(hostModulus, 1, hostModulus.length);
+        }
+        if (serverModulus[0] == 0) {
+            serverModulus = Arrays.copyOfRange(serverModulus, 1, serverModulus.length);
+        }
+
+        cookie = message.getAntiSpoofingCookie().getValue();
+
+        LOGGER.debug("Servermodulus for SessionID: {}", serverModulus);
+        LOGGER.debug("Hostmodulus for SessionID: {}", hostModulus);
+        LOGGER.debug("Cookie for SessionID: {}", cookie);
+
+        MessageDigest md;
+        try {
+            md = MessageDigest.getInstance("MD5");
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        }
+        md.update(Bytes.concat(hostModulus, serverModulus, cookie));
+        byte[] sessionID = md.digest();
+        LOGGER.debug("Session-ID {}", ArrayConverter.bytesToHexString(sessionID));
+        sshContext.setSessionID(sessionID);
+        sshContext.setSshv1SessionID(sessionID);
+    }
 }

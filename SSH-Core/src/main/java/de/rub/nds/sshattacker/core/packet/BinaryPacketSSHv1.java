@@ -123,25 +123,6 @@ public class BinaryPacketSSHv1 extends AbstractPacket<BinaryPacketSSHv1>
         this.sequenceNumber =
                 ModifiableVariableFactory.safelySetValue(this.sequenceNumber, sequenceNumber);
     }
-    /*
-        @Override
-        public BinaryPacketPreparator getPacketPreparator(
-                Chooser chooser, AbstractPacketEncryptor encryptor, PacketCompressor compressor) {
-            return new BinaryPacketPreparator(chooser, this, encryptor, compressor);
-        }
-
-    */
-    /*    @Override
-    public BinaryPacketParser getPacketParser(
-            byte[] array, int startPosition, PacketCipher activeDecryptCipher, int sequenceNumber) {
-        return new BinaryPacketParser(array, startPosition, activeDecryptCipher, sequenceNumber);
-    }*/
-    /*
-
-    @Override
-    public BinaryPacketSerializer getPacketSerializer() {
-        return new BinaryPacketSerializer(this);
-    }*/
 
     public PacketCryptoComputations getComputations() {
         return computations;

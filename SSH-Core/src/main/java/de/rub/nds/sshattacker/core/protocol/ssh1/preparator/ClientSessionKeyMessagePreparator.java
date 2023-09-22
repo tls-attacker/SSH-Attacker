@@ -7,7 +7,6 @@
  */
 package de.rub.nds.sshattacker.core.protocol.ssh1.preparator;
 
-import com.google.common.primitives.Bytes;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.*;
 import de.rub.nds.sshattacker.core.crypto.cipher.AbstractCipher;
@@ -18,9 +17,6 @@ import de.rub.nds.sshattacker.core.exceptions.CryptoException;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.ssh1.message.ClientSessionKeyMessage;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 import org.apache.logging.log4j.LogManager;
@@ -42,58 +38,7 @@ public class ClientSessionKeyMessagePreparator
     }
 
     private void prepareSessionID() {
-        byte[] serverModulus;
-        byte[] hostModulus;
-        byte[] cookie;
-        SshPublicKey<?, ?> serverkey = chooser.getContext().getSshContext().getServerKey();
-
-        if (serverkey.getPublicKey() instanceof CustomRsaPublicKey) {
-            CustomRsaPublicKey rsaPublicKey = (CustomRsaPublicKey) serverkey.getPublicKey();
-            serverModulus = rsaPublicKey.getModulus().toByteArray();
-        } else {
-            throw new RuntimeException();
-        }
-
-        SshPublicKey<?, ?> hostKey =
-                chooser.getContext().getSshContext().getHostKey().orElseThrow();
-        if (hostKey.getPublicKey() instanceof CustomRsaPublicKey) {
-            CustomRsaPublicKey rsaPublicKey = (CustomRsaPublicKey) hostKey.getPublicKey();
-            hostModulus = rsaPublicKey.getModulus().toByteArray();
-        } else {
-            throw new RuntimeException();
-        }
-
-        // DEBUG CODE
-        if (hostModulus[0] == 0) {
-            hostModulus = Arrays.copyOfRange(hostModulus, 1, hostModulus.length);
-        }
-        // DEBUG CODE
-
-        // DEBUG CODE
-        if (serverModulus[0] == 0) {
-            serverModulus = Arrays.copyOfRange(serverModulus, 1, serverModulus.length);
-        }
-        // DEBUG CODE
-
-        cookie = chooser.getContext().getSshContext().getAntiSpoofingCookie();
-
-        LOGGER.debug("Servermodulus for SessionID: {}", serverModulus);
-        LOGGER.debug("Hostmodulus for SessionID: {}", hostModulus);
-        LOGGER.debug("Cookie for SessionID: {}", cookie);
-
-        MessageDigest md;
-        try {
-            md = MessageDigest.getInstance("MD5");
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException(e);
-        }
-        md.update(Bytes.concat(hostModulus, serverModulus, cookie));
-        // md.update(Bytes.concat(serverModulus, hostModulus, cookie));
-        byte[] sessionID = md.digest();
-        LOGGER.debug("Session-ID {}", ArrayConverter.bytesToHexString(sessionID));
-        getObject().setSshv1SessionID(sessionID);
-        chooser.getContext().getSshContext().setSessionID(sessionID);
-        chooser.getContext().getSshContext().setSshv1SessionID(sessionID);
+        getObject().setAntiSpoofingCookie(chooser.getContext().getSshContext().getSshv1SessionID());
     }
 
     private void prepareEncryptionAlgorithm() {
@@ -102,10 +47,10 @@ public class ClientSessionKeyMessagePreparator
         if (!chooser.getContext().getSshContext().getSupportedCipherMethods().isEmpty()) {
             chosenCipherMethod =
                     chooser.getContext().getSshContext().getSupportedCipherMethods().get(0);
-            if (chooser.getContext().getSshContext().getSupportedCipherMethods().size() > 1) {
+            /*if (chooser.getContext().getSshContext().getSupportedCipherMethods().size() > 1) {
                 chosenCipherMethod =
                         chooser.getContext().getSshContext().getSupportedCipherMethods().get(1);
-            }
+            }*/
             chooser.getContext().getSshContext().setChosenCipherMethod(chosenCipherMethod);
 
             // Derive correct Encryption Algorithm

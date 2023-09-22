@@ -131,7 +131,6 @@ public class BinaryPacket extends AbstractPacket<BinaryPacket>
 
     @Override
     public void prepareComputations() {
-        LOGGER.info("[bro] Preparing Computation");
         if (computations == null) {
             computations = new PacketCryptoComputations();
         }

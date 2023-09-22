@@ -88,29 +88,29 @@ public class PacketMacedCipher extends PacketCipher {
 
     private void calculateCrcChecksum(BinaryPacketSSHv1 binaryPacket) {
         CRC crc32 = new CRC();
-        /*
-                byte[] value =
-                        ArrayConverter.concatenate(
-                                binaryPacket.getPadding().getValue(),
-                                binaryPacket.getCompressedPayload().getValue());
-        */
-
         byte[] value = binaryPacket.getCompressedPayload().getValue();
         byte[] checksum = ArrayConverter.longToBytes(crc32.calculateCRC(value), 4);
         binaryPacket.setCrcChecksum(checksum);
-        LOGGER.debug(
-                "CRC:  "
-                        + ArrayConverter.bytesToRawHexString(
-                                binaryPacket.getCrcChecksum().getValue()));
     }
 
     @Override
     public void encrypt(BinaryPacketSSHv1 packet) {
 
+        if (packet.getComputations() == null) {
+            LOGGER.warn("Packet computations are not prepared.");
+            packet.prepareComputations();
+        }
+        PacketCryptoComputations computations = packet.getComputations();
+
+        if (keySet != null) {
+            computations.setEncryptionKey(
+                    keySet.getWriteEncryptionKey(getLocalConnectionEndType()));
+        }
+
         packet.setLength(
                 packet.getCompressedPayload().getValue().length + 4); // +4 for CRC-Checksum
 
-        packet.setPaddingLength(calculatePaddingLengthSSHv1(packet));
+        packet.setPaddingLength(calculatePaddingLength(packet));
         packet.setPadding(calculatePadding(packet.getPaddingLength().getValue()));
 
         packet.setCompressedPayload(
@@ -119,15 +119,14 @@ public class PacketMacedCipher extends PacketCipher {
 
         calculateCrcChecksum(packet);
 
-        packet.setCompressedPayload(
+        computations.setPlainPacketBytes(
                 ArrayConverter.concatenate(
                         packet.getCompressedPayload().getValue(),
                         packet.getCrcChecksum().getValue()));
-
-        PacketCryptoComputations computations = packet.getComputations();
         try {
             encryptInner(packet);
         } catch (CryptoException e) {
+            LOGGER.warn("Exception while encrypting Pz");
             throw new RuntimeException(e);
         }
 
@@ -219,12 +218,11 @@ public class PacketMacedCipher extends PacketCipher {
         byte[] plainData;
         if (packet instanceof BinaryPacket) {
             plainData = ((BinaryPacket) packet).getComputations().getPlainPacketBytes().getValue();
-            LOGGER.debug(
-                    "PlainData from Computation: {}", ArrayConverter.bytesToHexString(plainData));
+        } else if (packet instanceof BinaryPacketSSHv1) {
+            plainData =
+                    ((BinaryPacketSSHv1) packet).getComputations().getPlainPacketBytes().getValue();
         } else {
             plainData = packet.getCompressedPayload().getValue();
-            LOGGER.debug(
-                    "PlainData from Compression: {}", ArrayConverter.bytesToHexString(plainData));
         }
 
         if (encryptionAlgorithm.getIVSize() > 0) {
@@ -233,6 +231,12 @@ public class PacketMacedCipher extends PacketCipher {
             if (packet instanceof BinaryPacket) {
                 // Apply modifications to IV (if any)
                 PacketCryptoComputations computations = ((BinaryPacket) packet).getComputations();
+                computations.setIv(iv);
+                iv = computations.getIv().getValue();
+            } else if (packet instanceof BinaryPacketSSHv1) {
+                // Apply modifications to IV (if any)
+                PacketCryptoComputations computations =
+                        ((BinaryPacketSSHv1) packet).getComputations();
                 computations.setIv(iv);
                 iv = computations.getIv().getValue();
             }
@@ -250,22 +254,16 @@ public class PacketMacedCipher extends PacketCipher {
 
         DecryptionParser parser = new DecryptionParser(packet.getPayload().getValue());
 
-        packet.setPaddingLength(8 - packet.getLength().getValue() % 8);
+        packet.setPaddingLength(calculatePaddingLength(packet));
         packet.setPadding(parser.parseByteArrayField(packet.getPaddingLength().getValue()));
 
-        byte[] newPayload = parser.parseByteArrayField(packet.getLength().getValue() - 4);
+        byte[] compressedPayload =
+                parser.parseByteArrayField(
+                        packet.getLength().getValue() - BinaryPacketConstants.CRC_FIELD_LENGHT);
 
-        packet.setCrcChecksum(parser.parseByteArrayField(4));
+        packet.setCrcChecksum(parser.parseByteArrayField(BinaryPacketConstants.CRC_FIELD_LENGHT));
 
-        LOGGER.debug("DEBUGGER");
-        LOGGER.debug(
-                "Padding: {}", ArrayConverter.bytesToHexString(packet.getPadding().getValue()));
-        LOGGER.debug("Payload: {}", ArrayConverter.bytesToHexString(newPayload));
-        LOGGER.debug(
-                "CRC_Checksum: {}",
-                ArrayConverter.bytesToHexString(packet.getCrcChecksum().getValue()));
-
-        packet.setCompressedPayload(newPayload);
+        packet.setCompressedPayload(compressedPayload);
     }
 
     @Override

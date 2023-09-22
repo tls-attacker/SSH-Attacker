@@ -12,6 +12,7 @@ import de.rub.nds.sshattacker.core.constants.EncryptionAlgorithm;
 import de.rub.nds.sshattacker.core.constants.KeyDerivationLabels;
 import de.rub.nds.sshattacker.core.crypto.KeyDerivation;
 import de.rub.nds.sshattacker.core.layer.constant.ImplementedLayers;
+import de.rub.nds.sshattacker.core.layer.constant.LayerType;
 import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.util.Converter;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
@@ -27,11 +28,10 @@ public final class KeySetGenerator {
 
     public static AbstractKeySet generateKeySet(SshContext context) {
         AbstractKeySet keySet;
-        if (context.getContext()
-                .getLayerStack()
-                .getHighestLayer()
-                .getLayerType()
-                .equals(ImplementedLayers.SSHV2)) {
+
+        LayerType highestLayer =
+                context.getContext().getLayerStack().getHighestLayer().getLayerType();
+        if (highestLayer.equals(ImplementedLayers.SSHV2)) {
             keySet = new SSHv2KeySet();
             Chooser chooser = context.getChooser();
             String hashAlgorithm = chooser.getKeyExchangeAlgorithm().getDigest();
@@ -91,16 +91,13 @@ public final class KeySetGenerator {
                             hashAlgorithm));
 
             LOGGER.info(keySet);
-        } else if (context.getContext()
-                .getLayerStack()
-                .getHighestLayer()
-                .getLayerType()
-                .equals(ImplementedLayers.SSHV1)) {
+        } else if (highestLayer.equals(ImplementedLayers.SSHV1)) {
             keySet = new SSHv1KeySet();
             byte[] sharedSecret = context.getSharedSecret().orElse(new byte[] {0});
 
             if (context.getEncryptionAlgorithmClientToServer().isPresent()
                     && context.getEncryptionAlgorithmServerToClient().isPresent()) {
+
                 EncryptionAlgorithm c2s, s2c;
 
                 c2s = context.getEncryptionAlgorithmClientToServer().get();
@@ -109,6 +106,9 @@ public final class KeySetGenerator {
                 byte[] server_key;
                 byte[] client_key;
 
+                // Only DES, RC4, Blowfish and Triple DES are implemented now; Setting Key-Lenghtes
+                // accordingly
+                // Missing TSS and IDEA (CFB)
                 if (c2s == EncryptionAlgorithm.TRIPLE_DES_CBC
                         && s2c == EncryptionAlgorithm.TRIPLE_DES_CBC) {
                     server_key = Arrays.copyOfRange(sharedSecret, 0, 24);
@@ -116,6 +116,34 @@ public final class KeySetGenerator {
 
                     LOGGER.debug(
                             "SHARED SECRET is {}", ArrayConverter.bytesToHexString(server_key));
+
+                } else if (c2s == EncryptionAlgorithm.DES_CBC
+                        && s2c == EncryptionAlgorithm.DES_CBC) {
+                    server_key = Arrays.copyOfRange(sharedSecret, 0, 8);
+                    client_key = Arrays.copyOfRange(sharedSecret, 0, 8);
+
+                    LOGGER.debug(
+                            "SHARED SECRET is {}", ArrayConverter.bytesToHexString(server_key));
+
+                } else if (c2s == EncryptionAlgorithm.BLOWFISH_CBC
+                        && s2c == EncryptionAlgorithm.BLOWFISH_CBC) {
+                    server_key = Arrays.copyOfRange(sharedSecret, 0, 32);
+                    client_key = Arrays.copyOfRange(sharedSecret, 0, 32);
+
+                    LOGGER.debug(
+                            "SHARED SECRET is {}", ArrayConverter.bytesToHexString(server_key));
+
+                } else if (c2s == EncryptionAlgorithm.ARCFOUR128
+                        && s2c == EncryptionAlgorithm.ARCFOUR128) {
+                    server_key = Arrays.copyOfRange(sharedSecret, 0, 16);
+                    client_key = Arrays.copyOfRange(sharedSecret, 16, 32);
+
+                    LOGGER.debug(
+                            "Key Server 2 Client is {}",
+                            ArrayConverter.bytesToHexString(server_key));
+                    LOGGER.debug(
+                            "Key Client 2 Server is {}",
+                            ArrayConverter.bytesToHexString(client_key));
 
                 } else {
                     server_key = sharedSecret;
@@ -127,6 +155,12 @@ public final class KeySetGenerator {
                 keySet.setClientWriteInitialIv(new byte[c2s.getIVSize()]);
                 keySet.setServerWriteInitialIv(new byte[s2c.getIVSize()]);
                 LOGGER.debug("Generated SSHv1 Keyset sucessfully");
+            } else {
+                LOGGER.warn(
+                        "Missing EncryptionAlgorithm for {}",
+                        context.getEncryptionAlgorithmClientToServer().isPresent()
+                                ? "Server!"
+                                : "Client!");
             }
 
         } else {
