@@ -11,6 +11,7 @@ import com.google.common.primitives.Bytes;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.AuthenticationMethodSSHv1;
 import de.rub.nds.sshattacker.core.constants.CipherMethod;
+import de.rub.nds.sshattacker.core.constants.EncryptionAlgorithm;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomRsaPublicKey;
 import de.rub.nds.sshattacker.core.crypto.keys.SshPublicKey;
 import de.rub.nds.sshattacker.core.layer.context.SshContext;
@@ -32,11 +33,6 @@ public class ServerPublicKeyMessageHandler extends SshMessageHandler<ServerPubli
         super(context);
     }
 
-    /*public HybridKeyExchangeReplyMessageHandler(
-            SshContext context, HybridKeyExchangeReplyMessage message) {
-        super(context, message);
-    }*/
-
     @Override
     public void adjustContext(ServerPublicKeyMessage message) {
 
@@ -50,21 +46,6 @@ public class ServerPublicKeyMessageHandler extends SshMessageHandler<ServerPubli
         caluculateSessionId(message);
         setCipherMethod(message);
         setAuthenticationMethod(message);
-
-        // KeyExchangeUtil.handleHostKeyMessage(sshContext, message);
-        // setRemoteValues(message);
-        /*        sshContext.getChooser().getHybridKeyExchange().combineSharedSecrets();
-        sshContext.setSharedSecret(
-                sshContext.getChooser().getHybridKeyExchange().getSharedSecret());
-        sshContext
-                .getExchangeHashInputHolder()
-                .setSharedSecret(sshContext.getChooser().getHybridKeyExchange().getSharedSecret());
-        KeyExchangeUtil.computeExchangeHash(sshContext);
-        */
-        /*        KeyExchangeUtil.handleExchangeHashSignatureMessage(sshContext, message);*/
-        /*
-        KeyExchangeUtil.setSessionId(sshContext);
-        KeyExchangeUtil.generateKeySet(sshContext);*/
     }
 
     private void setCipherMethod(ServerPublicKeyMessage message) {
@@ -72,16 +53,51 @@ public class ServerPublicKeyMessageHandler extends SshMessageHandler<ServerPubli
         Collections.reverse(message.getSupportedCipherMethods());
 
         List<CipherMethod> supportedCipherMethods = message.getSupportedCipherMethods();
-
+        CipherMethod chosenCipherMethod;
         // As the RFC States: prefer 3DES, then Blowfish, and then the rest.
         if (supportedCipherMethods.contains(CipherMethod.SSH_CIPHER_3DES)) {
             sshContext.setChosenCipherMethod(CipherMethod.SSH_CIPHER_3DES);
         } else if (supportedCipherMethods.contains(CipherMethod.SSH_CIPHER_BLOWFISH)) {
             sshContext.setChosenCipherMethod(CipherMethod.SSH_CIPHER_BLOWFISH);
         } else {
-            CipherMethod chosenCipherMethod = supportedCipherMethods.get(0);
+            chosenCipherMethod = supportedCipherMethods.get(0);
             sshContext.setChosenCipherMethod(chosenCipherMethod);
         }
+
+        LOGGER.debug("Set Ciphermethod {}", sshContext.getChosenCipherMethod());
+
+        EncryptionAlgorithm encryptionAlgorithm;
+        switch (sshContext.getChosenCipherMethod()) {
+            case SSH_CIPHER_3DES:
+                encryptionAlgorithm = EncryptionAlgorithm.TRIPLE_DES_CBC;
+                break;
+            case SSH_CIPHER_NONE:
+                encryptionAlgorithm = EncryptionAlgorithm.NONE;
+                break;
+            case SSH_CIPHER_IDEA:
+                encryptionAlgorithm = EncryptionAlgorithm.IDEA_CTR; // Wrong, needts to be IDEA_CFB!
+                break;
+            case SSH_CIPHER_DES:
+                encryptionAlgorithm = EncryptionAlgorithm.DES_CBC;
+                break;
+            case SSH_CIPHER_ARCFOUR:
+                encryptionAlgorithm = EncryptionAlgorithm.ARCFOUR;
+                break;
+            case SSH_CIPHER_BLOWFISH:
+                encryptionAlgorithm = EncryptionAlgorithm.BLOWFISH_CBC;
+                break;
+            default:
+                encryptionAlgorithm = EncryptionAlgorithm.NONE;
+                // Fallback to None if nothing applied, throw Warning.
+                LOGGER.warn(
+                        "chosen unsupported Encryption-Algorithm {}, fall back to NONE",
+                        sshContext.getChosenCipherMethod());
+        }
+
+        LOGGER.info("Successfulle applied Encryption Algorihm {}", encryptionAlgorithm);
+
+        sshContext.setEncryptionAlgorithmClientToServer(encryptionAlgorithm);
+        sshContext.setEncryptionAlgorithmServerToClient(encryptionAlgorithm);
     }
 
     private void setAuthenticationMethod(ServerPublicKeyMessage message) {

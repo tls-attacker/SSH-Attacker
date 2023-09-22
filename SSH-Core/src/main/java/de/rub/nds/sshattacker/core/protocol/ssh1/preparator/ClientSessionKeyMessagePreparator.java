@@ -7,7 +7,6 @@
  */
 package de.rub.nds.sshattacker.core.protocol.ssh1.preparator;
 
-import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.*;
 import de.rub.nds.sshattacker.core.crypto.cipher.AbstractCipher;
 import de.rub.nds.sshattacker.core.crypto.cipher.CipherFactory;
@@ -43,14 +42,16 @@ public class ClientSessionKeyMessagePreparator
 
     private void prepareEncryptionAlgorithm() {
         // Choose Encryption Type
-        CipherMethod chosenCipherMethod;
-        if (!chooser.getContext().getSshContext().getSupportedCipherMethods().isEmpty()) {
+        // CipherMethod chosenCipherMethod;
+        /*if (!chooser.getContext().getSshContext().getSupportedCipherMethods().isEmpty()) {
+        chosenCipherMethod =
+                chooser.getContext().getSshContext().getSupportedCipherMethods().get(0);
+        */
+        /*if (chooser.getContext().getSshContext().getSupportedCipherMethods().size() > 1) {
             chosenCipherMethod =
-                    chooser.getContext().getSshContext().getSupportedCipherMethods().get(0);
-            /*if (chooser.getContext().getSshContext().getSupportedCipherMethods().size() > 1) {
-                chosenCipherMethod =
-                        chooser.getContext().getSshContext().getSupportedCipherMethods().get(1);
-            }*/
+                    chooser.getContext().getSshContext().getSupportedCipherMethods().get(1);
+        }*/
+        /*
             chooser.getContext().getSshContext().setChosenCipherMethod(chosenCipherMethod);
 
             // Derive correct Encryption Algorithm
@@ -93,8 +94,12 @@ public class ClientSessionKeyMessagePreparator
                     .getSshContext()
                     .setEncryptionAlgorithmServerToClient(encryptionAlgorithm);
 
-            getObject().setChosenCipherMethod(chosenCipherMethod);
-        }
+            getObject().setChosenCipherMethod(chooser.getContext().getSshContext().getChosenCipherMethod());
+        }*/
+
+        getObject()
+                .setChosenCipherMethod(
+                        chooser.getContext().getSshContext().getChosenCipherMethod());
         LOGGER.info(
                 "Choose Ciphermethod: {}",
                 chooser.getContext().getSshContext().getChosenCipherMethod());
@@ -118,34 +123,24 @@ public class ClientSessionKeyMessagePreparator
     }
 
     private void prepareSessionKey() throws CryptoException {
-        Random random = new Random();
-        byte[] sessionKey = new byte[32];
-        byte[] plainSessionKey;
-        random.nextBytes(sessionKey);
-
-        plainSessionKey = sessionKey.clone();
-
-        // byte[] sessionID = getObject().getSshv1SessionID().getValue();
-        byte[] sessionID = chooser.getContext().getSshContext().getSshv1SessionID();
-        LOGGER.debug("Session id = {}", ArrayConverter.bytesToHexString(sessionID));
-        LOGGER.debug(
-                "the not XORED Session_key is {}", ArrayConverter.bytesToHexString(sessionKey));
-
-        int i = 0;
-        for (byte sesseionByte : sessionID) {
-            sessionKey[i] = (byte) (sesseionByte ^ sessionKey[i++]);
-        }
-
-        LOGGER.debug(
-                "the Plain Session_key is {}", ArrayConverter.bytesToHexString(plainSessionKey));
-
-        LOGGER.debug("the XORED Session_key is {}", ArrayConverter.bytesToHexString(sessionKey));
-        // plainSessionKey = sessionKey;
-
         CustomRsaPublicKey hostPublickey;
         CustomRsaPublicKey serverPublicKey;
 
         SshPublicKey<?, ?> serverkey = chooser.getContext().getSshContext().getServerKey();
+        SshPublicKey<?, ?> hostKey =
+                chooser.getContext().getSshContext().getHostKey().orElseThrow();
+
+        Random random = new Random();
+        byte[] sessionKey = new byte[32];
+        random.nextBytes(sessionKey);
+        byte[] plainSessionKey = sessionKey.clone();
+
+        // Use xored sessionkey for transmission
+        byte[] sessionID = chooser.getContext().getSshContext().getSshv1SessionID();
+        int i = 0;
+        for (byte sesseionByte : sessionID) {
+            sessionKey[i] = (byte) (sesseionByte ^ sessionKey[i++]);
+        }
 
         if (serverkey.getPublicKey() instanceof CustomRsaPublicKey) {
             serverPublicKey = (CustomRsaPublicKey) serverkey.getPublicKey();
@@ -153,8 +148,6 @@ public class ClientSessionKeyMessagePreparator
             throw new CryptoException("Public-Server-Key is Missing");
         }
 
-        SshPublicKey<?, ?> hostKey =
-                chooser.getContext().getSshContext().getHostKey().orElseThrow();
         if (hostKey.getPublicKey() instanceof CustomRsaPublicKey) {
             hostPublickey = (CustomRsaPublicKey) hostKey.getPublicKey();
         } else {
@@ -182,7 +175,6 @@ public class ClientSessionKeyMessagePreparator
 
                     sessionKey = outerEncryption.encrypt(sessionKey);
 
-                    LOGGER.debug("Scucessfull Decrypted, Sanity-Check passed");
                 } else {
 
                     LOGGER.debug(
@@ -196,8 +188,6 @@ public class ClientSessionKeyMessagePreparator
                     outerEncryption = CipherFactory.getRsaPkcs1Cipher(hostPublickey);
 
                     sessionKey = outerEncryption.encrypt(sessionKey);
-
-                    LOGGER.debug("Scucessfull Decrypted, Sanity-Check passed");
                 }
 
             } catch (CryptoException e) {
@@ -205,11 +195,9 @@ public class ClientSessionKeyMessagePreparator
             }
         }
 
-        // Set Sessionkey
         getObject().setEncryptedSessioKey(sessionKey);
         chooser.getContext().getSshContext().setSessionKey(plainSessionKey);
         chooser.getContext().getSshContext().setSharedSecret(plainSessionKey);
-        // LOGGER.debug("The Session_key is {}", ArrayConverter.bytesToHexString(plainSessionKey));
     }
 
     @Override
