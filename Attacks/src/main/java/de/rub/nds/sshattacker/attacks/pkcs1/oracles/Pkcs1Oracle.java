@@ -62,6 +62,10 @@ public abstract class Pkcs1Oracle {
      */
     public abstract boolean checkPKCSConformity(final byte[] msg) throws OracleException;
 
+    public boolean[] checkDoublePKCSConformity(final byte[] msg) throws OracleException {
+        return new boolean[] {false, false};
+    }
+
     /**
      * Returns true if the oracle is a plaintext oracle (does not decrypt the data received)
      *

@@ -162,6 +162,8 @@ public class ClientSessionKeyMessageHandler extends SshMessageHandler<ClientSess
             sessionKey = Arrays.copyOfRange(sessionKey, 1, sessionKey.length);
         }
 
+        byte[] second_sessionkey = sessionKey.clone();
+
         CustomRsaPrivateKey hostPrivateKey;
         CustomRsaPrivateKey serverPrivatKey;
 

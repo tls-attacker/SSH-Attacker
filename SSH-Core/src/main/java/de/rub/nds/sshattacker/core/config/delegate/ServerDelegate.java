@@ -18,6 +18,9 @@ public class ServerDelegate extends Delegate {
     @Parameter(names = "-port", required = true, description = "ServerPort")
     protected Integer port = null;
 
+    @Parameter(names = "-endless", description = "EndlessMode")
+    protected Boolean endless = null;
+
     public ServerDelegate() {}
 
     public Integer getPort() {
@@ -26,6 +29,14 @@ public class ServerDelegate extends Delegate {
 
     public void setPort(int port) {
         this.port = port;
+    }
+
+    public Boolean getEndless() {
+        return endless;
+    }
+
+    public void setEndless(Boolean endless) {
+        this.endless = endless;
     }
 
     @Override
@@ -40,6 +51,12 @@ public class ServerDelegate extends Delegate {
         } else {
             inboundConnection = new InboundConnection(parsedPort);
             config.setDefaultServerConnection(inboundConnection);
+        }
+
+        if (endless) {
+            LOGGER.debug("ENDLESS");
+            config.setWorkflowExecutorShouldClose(false);
+            config.setStopActionsAfterDisconnect(false);
         }
     }
 

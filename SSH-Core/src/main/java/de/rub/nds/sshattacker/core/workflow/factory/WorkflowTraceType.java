@@ -9,6 +9,7 @@ package de.rub.nds.sshattacker.core.workflow.factory;
 
 public enum WorkflowTraceType {
     KEX_INIT_ONLY,
+    KEX_SSH1_ONLY,
     KEX_DH,
     KEX_ECDH,
     KEX_DH_GEX,

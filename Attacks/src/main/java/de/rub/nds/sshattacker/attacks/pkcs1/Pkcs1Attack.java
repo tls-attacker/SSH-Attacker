@@ -92,6 +92,22 @@ public class Pkcs1Attack {
 
     /**
      * @param message Message to query the oracle with
+     * @param inner True, if the query is for the inner encryption
+     * @return The return value of the oracle (true/false), the result belongs to the inner / outer
+     *     encryption give with the parameter inner
+     */
+    protected boolean queryOracle(BigInteger message, boolean inner) {
+        byte[] msg = ArrayConverter.bigIntegerToByteArray(message, blockSize, true);
+        boolean[] results = oracle.checkDoublePKCSConformity(msg);
+        if (inner) {
+            return results[1];
+        } else {
+            return results[0];
+        }
+    }
+
+    /**
+     * @param message Message to query the oracle with
      * @return The return value of the oracle (true/false)
      */
     protected boolean queryOracle(BigInteger message) {

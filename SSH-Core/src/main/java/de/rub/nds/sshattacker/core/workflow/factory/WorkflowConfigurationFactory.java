@@ -47,6 +47,8 @@ public class WorkflowConfigurationFactory {
         switch (workflowTraceType) {
             case KEX_INIT_ONLY:
                 return createInitKeyExchangeWorkflowTrace();
+            case KEX_SSH1_ONLY:
+                return createSSH1KeyExchangeWorkflowTrace();
             case KEX_DH:
                 return createKeyExchangeWorkflowTrace(KeyExchangeFlowType.DIFFIE_HELLMAN);
             case KEX_DH_GEX:
@@ -110,6 +112,12 @@ public class WorkflowConfigurationFactory {
     public WorkflowTrace createInitKeyExchangeWorkflowTrace() {
         WorkflowTrace workflow = new WorkflowTrace();
         addTransportProtocolInitActions(workflow);
+        return workflow;
+    }
+
+    public WorkflowTrace createSSH1KeyExchangeWorkflowTrace() {
+        WorkflowTrace workflow = new WorkflowTrace();
+        addSSH1KexProtocolInitActions(workflow);
         return workflow;
     }
 
@@ -210,6 +218,59 @@ public class WorkflowConfigurationFactory {
                             connection, ConnectionEndType.CLIENT, new KeyExchangeInitMessage()),
                     SshActionFactory.createMessageAction(
                             connection, ConnectionEndType.SERVER, new KeyExchangeInitMessage()));
+        }
+    }
+
+    private void addSSH1KexProtocolInitActions(WorkflowTrace workflow) {
+        if (this.mode == RunningModeType.MITM) {
+            AliasedConnection inboundConnection = config.getDefaultServerConnection();
+            AliasedConnection outboundConnection = config.getDefaultClientConnection();
+            workflow.addSshActions(
+                    SshActionFactory.createForwardAction(
+                            inboundConnection,
+                            outboundConnection,
+                            ConnectionEndType.SERVER,
+                            new VersionExchangeMessage()),
+                    SshActionFactory.createForwardAction(
+                            inboundConnection,
+                            outboundConnection,
+                            ConnectionEndType.CLIENT,
+                            new VersionExchangeMessage()),
+                    new ChangePacketLayerAction(
+                            inboundConnection.getAlias(), PacketLayerType.BINARY_PACKET),
+                    new ChangePacketLayerAction(
+                            outboundConnection.getAlias(), PacketLayerType.BINARY_PACKET),
+                    SshActionFactory.createForwardAction(
+                            inboundConnection,
+                            outboundConnection,
+                            ConnectionEndType.CLIENT,
+                            new KeyExchangeInitMessage()),
+                    SshActionFactory.createForwardAction(
+                            inboundConnection,
+                            outboundConnection,
+                            ConnectionEndType.SERVER,
+                            new KeyExchangeInitMessage()));
+        } else {
+            AliasedConnection connection = getDefaultConnection();
+            workflow.addSshActions(
+                    SshActionFactory.createMessageAction(
+                            connection,
+                            ConnectionEndType.SERVER,
+                            new VersionExchangeMessageSSHV1()),
+                    SshActionFactory.createMessageAction(
+                            connection,
+                            ConnectionEndType.CLIENT,
+                            new VersionExchangeMessageSSHV1()),
+                    new ChangePacketLayerAction(
+                            connection.getAlias(), PacketLayerType.BINARY_PACKET));
+            /*                    SshActionFactory.createMessageAction(
+                    connection, ConnectionEndType.CLIENT, new ServerPublicKeyMessage()),
+            SshActionFactory.createMessageAction(
+                    connection, ConnectionEndType.SERVER, new ServerPublicKeyMessage()),
+            SshActionFactory.createMessageAction(
+                    connection, ConnectionEndType.CLIENT, new ClientSessionKeyMessage()),
+            SshActionFactory.createMessageAction(
+                    connection, ConnectionEndType.SERVER, new ClientSessionKeyMessage()));*/
         }
     }
 
