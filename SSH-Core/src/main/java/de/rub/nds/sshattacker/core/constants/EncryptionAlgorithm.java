@@ -7,6 +7,10 @@
  */
 package de.rub.nds.sshattacker.core.constants;
 
+import java.util.Collections;
+import java.util.Map;
+import java.util.TreeMap;
+
 public enum EncryptionAlgorithm {
     /*
      * Sources:
@@ -440,6 +444,16 @@ public enum EncryptionAlgorithm {
     private final int authTagSize;
     private final String javaName;
 
+    public static final Map<String, EncryptionAlgorithm> map;
+
+    static {
+        Map<String, EncryptionAlgorithm> mutableMap = new TreeMap<>();
+        for (EncryptionAlgorithm algorithm : values()) {
+            mutableMap.put(algorithm.name, algorithm);
+        }
+        map = Collections.unmodifiableMap(mutableMap);
+    }
+
     @SuppressWarnings({"SameParameterValue", "ParameterNameDiffersFromOverriddenParameter"})
     EncryptionAlgorithm(
             String name,
@@ -523,5 +537,9 @@ public enum EncryptionAlgorithm {
             return 1536;
         }
         return 0;
+    }
+
+    public static EncryptionAlgorithm fromName(String name) {
+        return map.get(name);
     }
 }
