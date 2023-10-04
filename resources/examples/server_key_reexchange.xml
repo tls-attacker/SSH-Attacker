@@ -22,6 +22,11 @@
         </expectedMessages>
     </Receive>
     <DynamicKeyExchange onConnection="server" />
+    <Send onConnection="server">
+        <messages>
+            <NewKeys />
+        </messages>
+    </Send>
     <Receive onConnection="server">
         <expectedMessages>
             <ServiceRequest />
@@ -52,6 +57,7 @@
     <DynamicKeyExchange onConnection="server" />
     <Send onConnection="server">
         <messages>
+            <NewKeys />
             <DisconnectMessage />
         </messages>
     </Send>
