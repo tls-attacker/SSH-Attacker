@@ -24,6 +24,7 @@ public enum Extension {
     EXT_AUTH_INFO("ext-auth-info"),
     GLOBAL_REQUESTS_OK("global-requests-ok"),
     PUBLICKEY_HOSTBOUND_OPENSSH_COM("publickey-hostbound@openssh.com"),
+    PING_OPENSSH_COM("ping@openssh.com"),
     UNKNOWN(null);
 
     private final String name;
