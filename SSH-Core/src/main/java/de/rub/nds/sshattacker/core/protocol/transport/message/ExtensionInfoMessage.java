@@ -13,10 +13,7 @@ import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.sshattacker.core.protocol.common.ModifiableVariableHolder;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.ExtensionInfoMessageHandler;
-import de.rub.nds.sshattacker.core.protocol.transport.message.extension.AbstractExtension;
-import de.rub.nds.sshattacker.core.protocol.transport.message.extension.DelayCompressionExtension;
-import de.rub.nds.sshattacker.core.protocol.transport.message.extension.ServerSigAlgsExtension;
-import de.rub.nds.sshattacker.core.protocol.transport.message.extension.UnknownExtension;
+import de.rub.nds.sshattacker.core.protocol.transport.message.extension.*;
 import de.rub.nds.sshattacker.core.state.SshContext;
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlElementWrapper;
@@ -33,6 +30,7 @@ public class ExtensionInfoMessage extends SshMessage<ExtensionInfoMessage> {
     @XmlElements({
         @XmlElement(type = ServerSigAlgsExtension.class, name = "ServerSigAlgsExtension"),
         @XmlElement(type = DelayCompressionExtension.class, name = "DelayCompressionExtension"),
+        @XmlElement(type = PingExtension.class, name = "PingExtension"),
         @XmlElement(type = UnknownExtension.class, name = "UnknownExtension")
     })
     private List<AbstractExtension<?>> extensions = new ArrayList<>();

@@ -11,10 +11,7 @@ import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.constants.Extension;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 import de.rub.nds.sshattacker.core.protocol.transport.message.ExtensionInfoMessage;
-import de.rub.nds.sshattacker.core.protocol.transport.parser.extension.AbstractExtensionParser;
-import de.rub.nds.sshattacker.core.protocol.transport.parser.extension.DelayCompressionExtensionParser;
-import de.rub.nds.sshattacker.core.protocol.transport.parser.extension.ServerSigAlgsExtensionParser;
-import de.rub.nds.sshattacker.core.protocol.transport.parser.extension.UnknownExtensionParser;
+import de.rub.nds.sshattacker.core.protocol.transport.parser.extension.*;
 import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -59,6 +56,9 @@ public class ExtensionInfoMessageParser extends SshMessageParser<ExtensionInfoMe
                 case DELAY_COMPRESSION:
                     extensionParser =
                             new DelayCompressionExtensionParser(getArray(), extensionStartPointer);
+                    break;
+                case PING_OPENSSH_COM:
+                    extensionParser = new PingExtensionParser(getArray(), extensionStartPointer);
                     break;
                 default:
                     LOGGER.debug(
