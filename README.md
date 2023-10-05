@@ -126,73 +126,26 @@ SSH-Attacker uses the concept of `WorkflowTrace`s to define a message flow. Each
 We know many of you hate Java. Therefore, you can also use an XML structure and run your customized SSH protocol from XML:
 
 ```xml
-<?xml version="1.0" encoding="UTF-8"?><workflowTrace>
+<?xml version="1.0" encoding="UTF-8"?>
+<workflowTrace>
     <Send>
-        <executed>true</executed>
         <messages>
-            <VersionExchange>
-                <version>
-                    <originalValue>SSH-2.0-OpenSSH_9.0</originalValue>
-                </version>
-                <comment>
-                    <originalValue/>
-                </comment>
-                <endOfMessageSequence>
-                    <originalValue>\r\n</originalValue>
-                </endOfMessageSequence>
-            </VersionExchange>
+            <VersionExchange/>
         </messages>
-        <failed>false</failed>
     </Send>
     <Receive>
-        <executed>true</executed>
-        <messages>
-            <VersionExchange>
-                <completeResultingMessage>
-                    <originalValue>53 53 48 2D 32 2E 30 2D 4F 70 65 6E 53 53 48 5F 38 2E 38 0D 0A</originalValue>
-                </completeResultingMessage>
-                <version>
-                    <originalValue>SSH-2.0-OpenSSH_8.8</originalValue>
-                </version>
-                <comment>
-                    <originalValue/>
-                </comment>
-                <endOfMessageSequence>
-                    <originalValue>\r\n</originalValue>
-                </endOfMessageSequence>
-            </VersionExchange>
-        </messages>
         <expectedMessages>
             <VersionExchange/>
         </expectedMessages>
-        <packetList>
-            <BlobPacket>
-                <ciphertext>
-                    <originalValue>53 53 48 2D 32 2E 30 2D 4F 70 65 6E 53 53 48 5F 38 2E 38 0D 0A</originalValue>
-                </ciphertext>
-                <completePacketBytes>
-                    <originalValue>53 53 48 2D 32 2E 30 2D 4F 70 65 6E 53 53 48 5F 38 2E 38 0D 0A</originalValue>
-                </completePacketBytes>
-                <compressedPayload>
-                    <originalValue>53 53 48 2D 32 2E 30 2D 4F 70 65 6E 53 53 48 5F 38 2E 38 0D 0A</originalValue>
-                </compressedPayload>
-                <payload>
-                    <originalValue>53 53 48 2D 32 2E 30 2D 4F 70 65 6E 53 53 48 5F 38 2E 38 0D 0A</originalValue>
-                </payload>
-            </BlobPacket>
-        </packetList>
     </Receive>
-    <ChangePacketLayer to="BINARY_PACKET">
-        <executed>true</executed>
-        <enableAsciiMode>false</enableAsciiMode>
-    </ChangePacketLayer>
+    <ChangePacketLayer to="BINARY_PACKET"/>
 </workflowTrace>
 ```
 
-Given this XML structure, located in `SSH-Attacker/resources/examples`, you would just need to execute:
+Given this XML structure, located in `SSH-Attacker/resources/examples`, you would just need to execute (replacing `[host]` and `[port]`):
 
 ```bash
-$ java -jar SSH-Client.jar -connect [host]:[port] -workflow_input workflow.xml
+$ java -jar apps/SSH-Client.jar -connect [host]:[port] -workflow_input resources/examples/workflow.xml
 
 ```
 
