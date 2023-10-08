@@ -81,6 +81,8 @@ public class Config implements Serializable {
 
     private Boolean resetClientSourcePort = true;
 
+    private Boolean endless = false;
+
     // region VersionExchange
     /** Client protocol and software version string starting with the SSH version (SSH-2.0-...) */
     private String clientVersion;
@@ -1814,5 +1816,13 @@ public class Config implements Serializable {
 
     public void setChosenProtocolFlags(List<ProtocolFlag> chosenProtocolFlags) {
         this.chosenProtocolFlags = chosenProtocolFlags;
+    }
+
+    public Boolean getEndless() {
+        return endless;
+    }
+
+    public void setEndless(Boolean endless) {
+        this.endless = endless;
     }
 }

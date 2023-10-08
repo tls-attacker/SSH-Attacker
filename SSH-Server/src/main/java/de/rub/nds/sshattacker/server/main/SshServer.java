@@ -16,6 +16,7 @@ import de.rub.nds.sshattacker.core.state.State;
 import de.rub.nds.sshattacker.core.workflow.DefaultWorkflowExecutor;
 import de.rub.nds.sshattacker.core.workflow.WorkflowExecutor;
 import de.rub.nds.sshattacker.server.config.ServerCommandConfig;
+import java.io.IOException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -33,14 +34,19 @@ public class SshServer {
                 return;
             }
 
-            try {
-                Config sshConfig = config.createConfig();
-                SshServer server = new SshServer();
-                server.startSshServer(sshConfig);
-            } catch (Exception e) {
-                LOGGER.error(
-                        "Encountered an uncaught exception, aborting. See debug for more info.", e);
-            }
+            Config sshConfig = config.createConfig();
+
+            do {
+                try {
+
+                    SshServer server = new SshServer();
+                    server.startSshServer(sshConfig);
+                } catch (Exception e) {
+                    LOGGER.error(
+                            "Encountered an uncaught exception, aborting. See debug for more info.",
+                            e);
+                }
+            } while (sshConfig.getEndless());
         } catch (ParameterException e) {
             LOGGER.error("Could not parse provided parameters: " + e.getLocalizedMessage());
             LOGGER.debug(e);
@@ -57,6 +63,14 @@ public class SshServer {
             LOGGER.warn(
                     "The SSH protocol flow was not executed completely, follow the debug messages for more information.");
             LOGGER.debug(e.getLocalizedMessage(), e);
+        }
+
+        try {
+            if (!state.getSshContext().getTransportHandler().isClosed()) {
+                state.getSshContext().getTransportHandler().closeConnection();
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 }
