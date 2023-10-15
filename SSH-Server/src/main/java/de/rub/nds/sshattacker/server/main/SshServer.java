@@ -16,7 +16,6 @@ import de.rub.nds.sshattacker.core.state.State;
 import de.rub.nds.sshattacker.core.workflow.DefaultWorkflowExecutor;
 import de.rub.nds.sshattacker.core.workflow.WorkflowExecutor;
 import de.rub.nds.sshattacker.server.config.ServerCommandConfig;
-import java.io.IOException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -65,12 +64,12 @@ public class SshServer {
             LOGGER.debug(e.getLocalizedMessage(), e);
         }
 
-        try {
+        /*        try {
             if (!state.getSshContext().getTransportHandler().isClosed()) {
                 state.getSshContext().getTransportHandler().closeConnection();
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
-        }
+        }*/
     }
 }

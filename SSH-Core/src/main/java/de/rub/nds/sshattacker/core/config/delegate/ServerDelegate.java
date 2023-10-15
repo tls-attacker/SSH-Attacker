@@ -55,8 +55,8 @@ public class ServerDelegate extends Delegate {
 
         if (endless) {
             LOGGER.debug("ENDLESS");
-            config.setWorkflowExecutorShouldClose(false);
-            config.setStopActionsAfterDisconnect(false);
+            config.setWorkflowExecutorShouldClose(true);
+            config.setStopActionsAfterDisconnect(true);
             config.setEndless(true);
         }
     }
