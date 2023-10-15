@@ -14,10 +14,7 @@ import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.*;
 import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessage;
 import de.rub.nds.sshattacker.core.protocol.connection.message.*;
-import de.rub.nds.sshattacker.core.protocol.ssh1.message.ClientSessionKeyMessage;
-import de.rub.nds.sshattacker.core.protocol.ssh1.message.ServerPublicKeyMessage;
-import de.rub.nds.sshattacker.core.protocol.ssh1.message.SuccessMessage;
-import de.rub.nds.sshattacker.core.protocol.ssh1.message.VersionExchangeMessageSSHV1;
+import de.rub.nds.sshattacker.core.protocol.ssh1.message.*;
 import de.rub.nds.sshattacker.core.protocol.transport.message.*;
 import de.rub.nds.sshattacker.core.state.State;
 import jakarta.xml.bind.annotation.XmlElement;
@@ -164,7 +161,9 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
                 @XmlElement(
                         type = ClientSessionKeyMessage.class,
                         name = "ClientSessionKeyMessageSSH1"),
-                @XmlElement(type = SuccessMessage.class, name = "SuccessMessageSSH1")
+                @XmlElement(type = SuccessMessageSSH1.class, name = "SuccessMessageSSH1"),
+                @XmlElement(type = FailureMessageSSH1.class, name = "FailureMessageSSH1"),
+                @XmlElement(type = DisconnectMessageSSH1.class, name = "DisconnectMessageSSH1")
             })
     protected List<ProtocolMessage<?>> expectedMessages = new ArrayList<>();
 

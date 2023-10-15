@@ -9,7 +9,6 @@ package de.rub.nds.sshattacker.core.protocol.ssh1.message;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.string.ModifiableString;
-import de.rub.nds.sshattacker.core.crypto.kex.HybridKeyExchange;
 import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
@@ -21,7 +20,7 @@ import de.rub.nds.sshattacker.core.protocol.ssh1.preparator.DisconnectMessagePre
 import de.rub.nds.sshattacker.core.protocol.ssh1.serializer.DisconnectMessageSerializier;
 import java.io.InputStream;
 
-public class DisconnectMessage extends SshMessage<DisconnectMessage> {
+public class DisconnectMessageSSH1 extends SshMessage<DisconnectMessageSSH1> {
 
     private ModifiableString disconnectReason;
 
@@ -44,24 +43,23 @@ public class DisconnectMessage extends SshMessage<DisconnectMessage> {
     }
 
     @Override
-    public SshMessageParser<DisconnectMessage> getParser(SshContext context, InputStream stream) {
-        HybridKeyExchange kex = context.getChooser().getHybridKeyExchange();
+    public SshMessageParser<DisconnectMessageSSH1> getParser(
+            SshContext context, InputStream stream) {
         return new DisconnectMessageParser(context, stream);
     }
 
     @Override
-    public SshMessagePreparator<DisconnectMessage> getPreparator(SshContext context) {
-        HybridKeyExchange kex = context.getChooser().getHybridKeyExchange();
-        return new DisconnectMessagePreparator(context.getChooser(), this, kex.getCombiner());
+    public SshMessagePreparator<DisconnectMessageSSH1> getPreparator(SshContext context) {
+        return new DisconnectMessagePreparator(context.getChooser(), this);
     }
 
     @Override
-    public SshMessageSerializer<DisconnectMessage> getSerializer(SshContext context) {
+    public SshMessageSerializer<DisconnectMessageSSH1> getSerializer(SshContext context) {
         return new DisconnectMessageSerializier(this);
     }
 
     @Override
     public String toShortString() {
-        return "CMSG_SESSION_KEY";
+        return "SSH_DISCONNECT";
     }
 }

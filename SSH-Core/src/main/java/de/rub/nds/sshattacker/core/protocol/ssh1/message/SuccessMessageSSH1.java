@@ -18,7 +18,7 @@ import de.rub.nds.sshattacker.core.protocol.ssh1.preparator.SuccessMessagePrepar
 import de.rub.nds.sshattacker.core.protocol.ssh1.serializer.SuccessMessageSerializier;
 import java.io.InputStream;
 
-public class SuccessMessage extends SshMessage<SuccessMessage> {
+public class SuccessMessageSSH1 extends SshMessage<SuccessMessageSSH1> {
 
     @Override
     public SuccessMessageHandler getHandler(SshContext context) {
@@ -26,17 +26,17 @@ public class SuccessMessage extends SshMessage<SuccessMessage> {
     }
 
     @Override
-    public SshMessageParser<SuccessMessage> getParser(SshContext context, InputStream stream) {
+    public SshMessageParser<SuccessMessageSSH1> getParser(SshContext context, InputStream stream) {
         return new SuccessMessageParser(context, stream);
     }
 
     @Override
-    public SshMessagePreparator<SuccessMessage> getPreparator(SshContext context) {
+    public SshMessagePreparator<SuccessMessageSSH1> getPreparator(SshContext context) {
         return new SuccessMessagePreparator(context.getChooser(), this);
     }
 
     @Override
-    public SshMessageSerializer<SuccessMessage> getSerializer(SshContext context) {
+    public SshMessageSerializer<SuccessMessageSSH1> getSerializer(SshContext context) {
         return new SuccessMessageSerializier(this);
     }
 

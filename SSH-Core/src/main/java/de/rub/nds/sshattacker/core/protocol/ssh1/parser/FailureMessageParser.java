@@ -9,23 +9,25 @@ package de.rub.nds.sshattacker.core.protocol.ssh1.parser;
 
 import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
+import de.rub.nds.sshattacker.core.protocol.ssh1.message.FailureMessageSSH1;
 import de.rub.nds.sshattacker.core.protocol.ssh1.message.SuccessMessageSSH1;
-import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class SuccessMessageParser extends SshMessageParser<SuccessMessageSSH1> {
+import java.io.InputStream;
+
+public class FailureMessageParser extends SshMessageParser<FailureMessageSSH1> {
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public SuccessMessageParser(SshContext context, InputStream stream) {
+    public FailureMessageParser(SshContext context, InputStream stream) {
         super(stream);
     }
 
     @Override
-    protected void parseMessageSpecificContents(SuccessMessageSSH1 message) {}
+    protected void parseMessageSpecificContents(FailureMessageSSH1 message) {}
 
     @Override
-    public void parse(SuccessMessageSSH1 message) {
+    public void parse(FailureMessageSSH1 message) {
         parseProtocolMessageContents(message);
     }
 }

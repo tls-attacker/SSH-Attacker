@@ -11,12 +11,12 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.HybridKeyExchangeCombiner;
 import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
-import de.rub.nds.sshattacker.core.protocol.ssh1.message.DisconnectMessage;
+import de.rub.nds.sshattacker.core.protocol.ssh1.message.DisconnectMessageSSH1;
 import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class DisconnectMessageParser extends SshMessageParser<DisconnectMessage> {
+public class DisconnectMessageParser extends SshMessageParser<DisconnectMessageSSH1> {
     private static final Logger LOGGER = LogManager.getLogger();
     private HybridKeyExchangeCombiner combiner;
     private int agreementSize;
@@ -90,12 +90,12 @@ public class DisconnectMessageParser extends SshMessageParser<DisconnectMessage>
         this.combiner = combiner;*/
     }
 
-    private void parseCRC(DisconnectMessage message) {
+    private void parseCRC(DisconnectMessageSSH1 message) {
         byte[] CRC = parseByteArrayField(4);
         LOGGER.debug("CRC: {}", ArrayConverter.bytesToHexString(CRC));
     }
 
-    private void parseDisconnectReason(DisconnectMessage message) {
+    private void parseDisconnectReason(DisconnectMessageSSH1 message) {
         int lenght = parseIntField(4);
         String disconnectReason = parseByteString(lenght);
         message.setDisconnectReason(disconnectReason);
@@ -131,10 +131,10 @@ public class DisconnectMessageParser extends SshMessageParser<DisconnectMessage>
         LOGGER.debug("Signature: " + message.getSignature());
     }*/
 
-    private void parseProtocolFlags(DisconnectMessage message) {}
+    private void parseProtocolFlags(DisconnectMessageSSH1 message) {}
 
     @Override
-    protected void parseMessageSpecificContents(DisconnectMessage message) {
+    protected void parseMessageSpecificContents(DisconnectMessageSSH1 message) {
         parseDisconnectReason(message);
         // parseCRC(message);
 
@@ -150,7 +150,7 @@ public class DisconnectMessageParser extends SshMessageParser<DisconnectMessage>
     */
 
     @Override
-    public void parse(DisconnectMessage message) {
+    public void parse(DisconnectMessageSSH1 message) {
         parseProtocolMessageContents(message);
     }
 }

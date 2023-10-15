@@ -9,17 +9,18 @@ package de.rub.nds.sshattacker.core.protocol.ssh1.preparator;
 
 import de.rub.nds.sshattacker.core.constants.MessageIdConstantSSH1;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
+import de.rub.nds.sshattacker.core.protocol.ssh1.message.FailureMessageSSH1;
 import de.rub.nds.sshattacker.core.protocol.ssh1.message.SuccessMessageSSH1;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class SuccessMessagePreparator extends SshMessagePreparator<SuccessMessageSSH1> {
+public class FailureMessagePreparator extends SshMessagePreparator<FailureMessageSSH1> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public SuccessMessagePreparator(Chooser chooser, SuccessMessageSSH1 message) {
-        super(chooser, message, MessageIdConstantSSH1.SSH_SMSG_SUCCESS);
+    public FailureMessagePreparator(Chooser chooser, FailureMessageSSH1 message) {
+        super(chooser, message, MessageIdConstantSSH1.SSH_SMSG_FAILURE);
     }
 
     @Override

@@ -8,15 +8,16 @@
 package de.rub.nds.sshattacker.core.protocol.ssh1.serializer;
 
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
+import de.rub.nds.sshattacker.core.protocol.ssh1.message.FailureMessageSSH1;
 import de.rub.nds.sshattacker.core.protocol.ssh1.message.SuccessMessageSSH1;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class SuccessMessageSerializier extends SshMessageSerializer<SuccessMessageSSH1> {
+public class FailureMessageSerializier extends SshMessageSerializer<FailureMessageSSH1> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public SuccessMessageSerializier(SuccessMessageSSH1 message) {
+    public FailureMessageSerializier(FailureMessageSSH1 message) {
         super(message);
     }
 

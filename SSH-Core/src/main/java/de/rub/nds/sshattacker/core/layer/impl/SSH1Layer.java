@@ -313,17 +313,18 @@ public class SSH1Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
     }
 
     private void readDisconnectData(AbstractPacket<BinaryPacket> packet) {
-        DisconnectMessage message = new DisconnectMessage();
+        DisconnectMessageSSH1 message = new DisconnectMessageSSH1();
         HintedInputStream temp_stream;
 
         temp_stream =
                 new HintedInputStreamAdapterStream(
                         null, new ByteArrayInputStream(packet.getPayload().getValue()));
         readContainerFromStream(message, context, temp_stream);
+
     }
 
     private void readSuccessMessage(AbstractPacket<BinaryPacket> packet) {
-        SuccessMessage message = new SuccessMessage();
+        SuccessMessageSSH1 message = new SuccessMessageSSH1();
         HintedInputStream temp_stream;
 
         temp_stream =

@@ -130,12 +130,6 @@ public abstract class ProtocolMessage<Self extends ProtocolMessage<?>>
     @Override
     public abstract ProtocolMessageHandler<Self> getHandler(SshContext sshContext);
 
-    // @Override
-    // public abstract ProtocolMessageParser<Self> getParser(byte[] array);
-
-    // @Override
-    // public abstract ProtocolMessageParser<Self> getParser(byte[] array, int startPosition);
-
     @Override
     public abstract ProtocolMessagePreparator<Self> getPreparator(SshContext sshContext);
 

@@ -9,25 +9,21 @@ package de.rub.nds.sshattacker.core.protocol.ssh1.handler;
 
 import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
+import de.rub.nds.sshattacker.core.protocol.ssh1.message.FailureMessageSSH1;
 import de.rub.nds.sshattacker.core.protocol.ssh1.message.SuccessMessageSSH1;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class SuccessMessageHandler extends SshMessageHandler<SuccessMessageSSH1> {
+public class FailureMessageHandler extends SshMessageHandler<FailureMessageSSH1> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public SuccessMessageHandler(SshContext context) {
+    public FailureMessageHandler(SshContext context) {
         super(context);
     }
 
-    /*public HybridKeyExchangeReplyMessageHandler(
-            SshContext context, HybridKeyExchangeReplyMessage message) {
-        super(context, message);
-    }*/
-
     @Override
-    public void adjustContext(SuccessMessageSSH1 message) {
-        LOGGER.info("Recived a Success Message");
+    public void adjustContext(FailureMessageSSH1 message) {
+        LOGGER.info("Received a Success Message");
     }
 }

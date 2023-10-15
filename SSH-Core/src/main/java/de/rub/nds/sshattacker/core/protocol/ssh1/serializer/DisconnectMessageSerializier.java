@@ -7,19 +7,32 @@
  */
 package de.rub.nds.sshattacker.core.protocol.ssh1.serializer;
 
+import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
-import de.rub.nds.sshattacker.core.protocol.ssh1.message.DisconnectMessage;
+import de.rub.nds.sshattacker.core.protocol.ssh1.message.DisconnectMessageSSH1;
+import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class DisconnectMessageSerializier extends SshMessageSerializer<DisconnectMessage> {
+public class DisconnectMessageSerializier extends SshMessageSerializer<DisconnectMessageSSH1> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public DisconnectMessageSerializier(DisconnectMessage message) {
+    public DisconnectMessageSerializier(DisconnectMessageSSH1 message) {
         super(message);
     }
 
+    private void serializeReason() {
+        LOGGER.debug("Description length: " + message.getDisconnectReason().getValue());
+        appendInt(
+                message.getDisconnectReason().getValue().length(),
+                DataFormatConstants.STRING_SIZE_LENGTH);
+        LOGGER.debug("Description: " + message.getDisconnectReason().getValue());
+        appendString(message.getDisconnectReason().getValue(), StandardCharsets.UTF_8);
+    }
+
     @Override
-    public void serializeMessageSpecificContents() {}
+    public void serializeMessageSpecificContents() {
+        serializeReason();
+    }
 }

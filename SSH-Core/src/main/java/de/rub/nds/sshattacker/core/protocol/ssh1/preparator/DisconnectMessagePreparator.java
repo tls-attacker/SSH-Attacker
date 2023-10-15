@@ -12,26 +12,25 @@ import de.rub.nds.sshattacker.core.crypto.keys.CustomRsaPrivateKey;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomRsaPublicKey;
 import de.rub.nds.sshattacker.core.crypto.keys.SshPublicKey;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
-import de.rub.nds.sshattacker.core.protocol.ssh1.message.DisconnectMessage;
+import de.rub.nds.sshattacker.core.protocol.ssh1.message.DisconnectMessageSSH1;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class DisconnectMessagePreparator extends SshMessagePreparator<DisconnectMessage> {
+public class DisconnectMessagePreparator extends SshMessagePreparator<DisconnectMessageSSH1> {
 
     private static final Logger LOGGER = LogManager.getLogger();
-    private HybridKeyExchangeCombiner combiner;
 
     private SshPublicKey<CustomRsaPublicKey, CustomRsaPrivateKey> serverKey;
 
-    public DisconnectMessagePreparator(
-            Chooser chooser, DisconnectMessage message, HybridKeyExchangeCombiner combiner) {
+    public DisconnectMessagePreparator(Chooser chooser, DisconnectMessageSSH1 message) {
         super(chooser, message, MessageIdConstantSSH1.SSH_MSG_DISCONNECT);
-        this.combiner = combiner;
     }
 
     @Override
     public void prepareMessageSpecificContents() {
         LOGGER.debug("Preparring now...");
+        getObject().setDisconnectReason("DummyValue");
+        LOGGER.debug(getObject().getDisconnectReason().getValue());
     }
 }
