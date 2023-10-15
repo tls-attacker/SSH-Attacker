@@ -63,6 +63,7 @@ public class BleichenbacherCommandConfig extends AttackConfig {
         config.setWorkflowExecutorShouldClose(false);
         config.setProtocolVersion(ProtocolVersion.SSH1);
         config.setDefaultLayerConfiguration(LayerConfiguration.SSHV1);
+        config.setClientVersion("SSH-1.7-OpenSSH_6.2p1");
 
         return config;
     }

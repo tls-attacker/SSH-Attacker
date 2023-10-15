@@ -8,9 +8,12 @@
 package de.rub.nds.sshattacker.attacks.general;
 
 import de.rub.nds.sshattacker.core.config.Config;
+import de.rub.nds.sshattacker.core.constants.MessageIdConstantSSH1;
 import de.rub.nds.sshattacker.core.constants.ProtocolVersion;
 import de.rub.nds.sshattacker.core.constants.RunningModeType;
+import de.rub.nds.sshattacker.core.crypto.keys.CustomRsaPublicKey;
 import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessage;
+import de.rub.nds.sshattacker.core.protocol.ssh1.message.DisconnectMessageSSH1;
 import de.rub.nds.sshattacker.core.protocol.ssh1.message.ServerPublicKeyMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.message.RsaKeyExchangePubkeyMessage;
 import de.rub.nds.sshattacker.core.state.State;
@@ -18,6 +21,7 @@ import de.rub.nds.sshattacker.core.workflow.DefaultWorkflowExecutor;
 import de.rub.nds.sshattacker.core.workflow.WorkflowExecutor;
 import de.rub.nds.sshattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.sshattacker.core.workflow.action.ReceiveAction;
+import de.rub.nds.sshattacker.core.workflow.action.SendAction;
 import de.rub.nds.sshattacker.core.workflow.factory.WorkflowConfigurationFactory;
 import de.rub.nds.sshattacker.core.workflow.factory.WorkflowTraceType;
 import java.io.IOException;
@@ -158,12 +162,14 @@ public class KeyFetcher {
         }
     }
 
-    public static List<RSAPublicKey> fetchRsaSsh1Keys(Config config) {
+    public static List<CustomRsaPublicKey> fetchRsaSsh1Keys(Config config) {
         return fetchRsaSsh1Keys(config, 0, 5);
     }
 
-    public static List<RSAPublicKey> fetchRsaSsh1Keys(Config config, int attempt, int maxAttempts) {
+    public static List<CustomRsaPublicKey> fetchRsaSsh1Keys(
+            Config config, int attempt, int maxAttempts) {
         WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(config);
+        LOGGER.debug("Fetchng keys");
 
         WorkflowTrace trace =
                 factory.createWorkflowTrace(
@@ -171,6 +177,16 @@ public class KeyFetcher {
 
         ReceiveAction receiveAction = new ReceiveAction(new ServerPublicKeyMessage());
         trace.addSshAction(receiveAction);
+
+        DisconnectMessageSSH1 disconnectMessage = new DisconnectMessageSSH1();
+        disconnectMessage.setDisconnectReason("cusIcan");
+
+        LOGGER.debug(disconnectMessage.getDisconnectReason());
+        LOGGER.debug(disconnectMessage.toShortString());
+
+        disconnectMessage.setMessageId(MessageIdConstantSSH1.SSH_MSG_DISCONNECT.getId());
+        SendAction disconnectAction = new SendAction(disconnectMessage);
+        trace.addSshAction(disconnectAction);
 
         State state = new State(config, trace);
         WorkflowExecutor workflowExecutor = new DefaultWorkflowExecutor(state);
@@ -199,11 +215,13 @@ public class KeyFetcher {
         }*/
 
         List<ProtocolMessage<?>> receivedMessages = receiveAction.getReceivedMessages();
+        LOGGER.info(receivedMessages.size());
+        LOGGER.info(receivedMessages.get(0).toString());
 
         if (receivedMessages.size() > 0
                 && receivedMessages.get(0) instanceof ServerPublicKeyMessage) {
 
-            List<RSAPublicKey> rsaPublicKeys = new ArrayList<>();
+            List<CustomRsaPublicKey> rsaPublicKeys = new ArrayList<>();
 
             rsaPublicKeys.add(
                     ((ServerPublicKeyMessage) receivedMessages.get(0))
@@ -219,6 +237,11 @@ public class KeyFetcher {
                         String.format(
                                 "Did not receive PubkeyMessage in attempt %d, retrying...",
                                 attempt));
+                try {
+                    Thread.sleep(5000);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
                 return fetchRsaSsh1Keys(config, attempt + 1, maxAttempts);
             } else {
                 LOGGER.warn(
