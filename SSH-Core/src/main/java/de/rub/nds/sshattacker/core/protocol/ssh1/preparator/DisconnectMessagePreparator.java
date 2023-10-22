@@ -30,7 +30,9 @@ public class DisconnectMessagePreparator extends SshMessagePreparator<Disconnect
     @Override
     public void prepareMessageSpecificContents() {
         LOGGER.debug("Preparring now...");
-        getObject().setDisconnectReason("DummyValue");
+        if (getObject().getDisconnectReason() == null) {
+            getObject().setDisconnectReason("DummyValue");
+        }
         LOGGER.debug(getObject().getDisconnectReason().getValue());
     }
 }

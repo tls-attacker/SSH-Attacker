@@ -7,6 +7,8 @@
  */
 package de.rub.nds.sshattacker.attacks.general;
 
+import de.rub.nds.modifiablevariable.VariableModification;
+import de.rub.nds.modifiablevariable.string.StringModificationFactory;
 import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.constants.MessageIdConstantSSH1;
 import de.rub.nds.sshattacker.core.constants.ProtocolVersion;
@@ -180,6 +182,8 @@ public class KeyFetcher {
 
         DisconnectMessageSSH1 disconnectMessage = new DisconnectMessageSSH1();
         disconnectMessage.setDisconnectReason("cusIcan");
+        VariableModification<String> newValue = StringModificationFactory.explicitValue("youKnow");
+        disconnectMessage.getDisconnectReason().setModification(newValue);
 
         LOGGER.debug(disconnectMessage.getDisconnectReason());
         LOGGER.debug(disconnectMessage.toShortString());

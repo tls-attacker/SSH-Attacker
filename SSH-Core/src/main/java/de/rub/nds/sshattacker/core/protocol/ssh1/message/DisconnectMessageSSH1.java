@@ -60,6 +60,6 @@ public class DisconnectMessageSSH1 extends SshMessage<DisconnectMessageSSH1> {
 
     @Override
     public String toShortString() {
-        return "SSH_DISCONNECT";
+        return "Disconnect Message";
     }
 }
