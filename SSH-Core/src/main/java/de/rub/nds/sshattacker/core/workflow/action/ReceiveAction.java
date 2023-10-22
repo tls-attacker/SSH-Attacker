@@ -241,7 +241,7 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
     public void execute(State state) throws WorkflowExecutionException {
         SshContext context = state.getSshContext(getConnectionAlias());
 
-        LOGGER.debug("[bro] Recieving Messages");
+        LOGGER.debug("[bro] Receiving Messages");
 
         if (isExecuted()) {
             throw new WorkflowExecutionException("Action already executed!");

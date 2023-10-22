@@ -142,11 +142,11 @@ public class PacketLayer extends ProtocolLayer<PacketLayerHint, AbstractPacket> 
         LOGGER.debug("[bro] receiveMoreDataForHint now in Transport");
         LayerProcessingHint desiredHint = hint;
         InputStream dataStream = getLowerLayer().getDataStream();
-        LOGGER.debug("Avialble Data: {}", dataStream.available());
+        LOGGER.debug("Available Data: {}", dataStream.available());
         AbstractPacketParser parser;
         AbstractPacket packet;
 
-        LOGGER.debug("[bro] Recieving a {}", context.getPacketLayer());
+        LOGGER.debug("[bro] Receiving a {}", context.getPacketLayer());
         if (context.getPacketLayerType() == PacketLayerType.BINARY_PACKET) {
             if (this.getHigherLayer().getLayerType().getName().equals("SSHV1")) {
                 parser =

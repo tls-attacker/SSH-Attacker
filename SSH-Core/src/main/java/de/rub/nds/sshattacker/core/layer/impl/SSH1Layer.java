@@ -320,7 +320,6 @@ public class SSH1Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
                 new HintedInputStreamAdapterStream(
                         null, new ByteArrayInputStream(packet.getPayload().getValue()));
         readContainerFromStream(message, context, temp_stream);
-
     }
 
     private void readSuccessMessage(AbstractPacket<BinaryPacket> packet) {
