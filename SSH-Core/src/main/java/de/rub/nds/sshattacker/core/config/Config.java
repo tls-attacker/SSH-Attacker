@@ -97,6 +97,8 @@ public class Config implements Serializable {
     /** End-of-message sequence of the servers' VersionExchangeMessage */
     private String serverEndOfMessageSequence;
 
+    private boolean doNotEncryptMessages = false;
+
     // endregion
 
     // region Pre-KeyExchange
@@ -537,7 +539,7 @@ public class Config implements Serializable {
                         .collect(Collectors.toCollection(LinkedList::new));
 
         supportedCipherMethods =
-                Arrays.stream(new CipherMethod[] {CipherMethod.SSH_CIPHER_3DES})
+                Arrays.stream(new CipherMethod[] {CipherMethod.SSH_CIPHER_NONE})
                         .collect(Collectors.toCollection(LinkedList::new));
 
         supportedAuthenticationMethods =
@@ -1824,5 +1826,13 @@ public class Config implements Serializable {
 
     public void setEndless(Boolean endless) {
         this.endless = endless;
+    }
+
+    public boolean isDoNotEncryptMessages() {
+        return doNotEncryptMessages;
+    }
+
+    public void setDoNotEncryptMessages(boolean doNotEncryptMessages) {
+        this.doNotEncryptMessages = doNotEncryptMessages;
     }
 }

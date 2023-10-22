@@ -177,8 +177,11 @@ public abstract class ProtocolLayer<
                 return currentInputStream;
             } else {
                 LOGGER.debug("Trying to get datastream while no data is available");
-                this.receiveMoreDataForHint(null);
-                return currentInputStream;
+                // this.receiveMoreDataForHint(null);
+                // <--- Testing -->
+                throw new EndOfStreamException(
+                        "The original data stream does not produce any more data and there is no next datastream -> returning now");
+                // return currentInputStream;
             }
         }
     }

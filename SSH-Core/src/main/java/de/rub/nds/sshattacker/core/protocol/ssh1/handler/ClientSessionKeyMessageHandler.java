@@ -31,6 +31,7 @@ import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.Optional;
+import javax.crypto.BadPaddingException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -199,6 +200,8 @@ public class ClientSessionKeyMessageHandler extends SshMessageHandler<ClientSess
         AbstractCipher innerEncryption;
         AbstractCipher outerEncryption;
 
+        boolean firstEncryptionSuccessfull = false;
+
         try {
 
             if (hostPrivateKey.getModulus().bitLength()
@@ -208,9 +211,17 @@ public class ClientSessionKeyMessageHandler extends SshMessageHandler<ClientSess
                         "Hostkeylenght: {}, ServerKeyLenght: {}",
                         hostPrivateKey.getModulus().bitLength(),
                         serverPrivatKey.getModulus().bitLength());
+                LOGGER.debug(sessionKey.length);
+                if (sessionKey.length > hostPrivateKey.getModulus().bitLength()) {
+
+                    LOGGER.debug(
+                            "Suspisius, the encrypted session key is longer then the host key modulus");
+                }
 
                 outerEncryption = CipherFactory.getRsaPkcs1Cipher(hostPrivateKey);
                 sessionKey = outerEncryption.decrypt(sessionKey);
+
+                firstEncryptionSuccessfull = true;
 
                 innerEncryption = CipherFactory.getRsaPkcs1Cipher(serverPrivatKey);
                 sessionKey = innerEncryption.decrypt(sessionKey);
@@ -219,12 +230,34 @@ public class ClientSessionKeyMessageHandler extends SshMessageHandler<ClientSess
                 outerEncryption = CipherFactory.getRsaPkcs1Cipher(serverPrivatKey);
                 sessionKey = outerEncryption.decrypt(sessionKey);
 
+                firstEncryptionSuccessfull = true;
+
                 innerEncryption = CipherFactory.getRsaPkcs1Cipher(hostPrivateKey);
                 sessionKey = innerEncryption.decrypt(sessionKey);
             }
 
         } catch (CryptoException e) {
-            throw new RuntimeException(e);
+            LOGGER.fatal(e);
+            if (e.getCause() instanceof BadPaddingException) {
+                if (firstEncryptionSuccessfull) {
+                    LOGGER.fatal("Caused by BadPadding in second encryption");
+                    // SEND Disconnect Message
+                    // only the first one is correct, setting to 1
+                    sshContext.setBbResult(1);
+                } else {
+                    LOGGER.fatal("Caused by BadPadding in first encryption");
+                    // SEND Failure Message
+                    // no key is correct - setting to 0
+                    sshContext.setBbResult(0);
+                }
+            } else {
+                sshContext.setBbResult(2);
+            }
+            // Both correct, setting BB Result to 2
+
+            // throw new RuntimeException(e);
+            // Set Session key to dummy value
+            sessionKey = new byte[32];
         }
 
         // Set Sessionkey
@@ -245,6 +278,11 @@ public class ClientSessionKeyMessageHandler extends SshMessageHandler<ClientSess
 
     @Override
     public void adjustContextAfterMessageSent() {
+
+        if (sshContext.getContext().getConfig().isDoNotEncryptMessages()) {
+            LOGGER.debug("Not enabling the encryption of packages due to configuration");
+            return;
+        }
         // We Send here, because we are in the perperator
         EncryptionAlgorithm encryptionAlgorithm;
         Chooser chooser = sshContext.getChooser();

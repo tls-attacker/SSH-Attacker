@@ -64,6 +64,9 @@ public class BleichenbacherCommandConfig extends AttackConfig {
         config.setProtocolVersion(ProtocolVersion.SSH1);
         config.setDefaultLayerConfiguration(LayerConfiguration.SSHV1);
         config.setClientVersion("SSH-1.7-OpenSSH_6.2p1");
+        config.setDoNotEncryptMessages(true);
+        config.setStopActionsAfterDisconnect(false);
+        config.setStopReceivingAfterDisconnect(false);
 
         return config;
     }

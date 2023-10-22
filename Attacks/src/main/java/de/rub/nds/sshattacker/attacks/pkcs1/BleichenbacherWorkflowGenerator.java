@@ -44,7 +44,7 @@ public class BleichenbacherWorkflowGenerator {
                 ByteArrayModificationFactory.explicitValue(encryptedSecret));
         clientSessionKeyMessage.setEncryptedSessioKey(encryptedSecretArray);
         trace.addSshAction(new SendAction(clientSessionKeyMessage));
-        trace.addSshAction(new ReceiveAction());
+
         return trace;
     }
 

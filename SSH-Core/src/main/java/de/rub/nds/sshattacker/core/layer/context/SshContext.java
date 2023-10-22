@@ -110,6 +110,8 @@ public class SshContext extends LayerContext {
     /** End-of-message sequence of the servers' VersionExchangeMessage */
     private String serverEndOfMessageSequence;
 
+    /** Result of BB-Oracle; 0 = both false, 1 = first correct, second false, 2 = both correct */
+    private int bbResult = 0;
     // endregion
 
     // region Key Exchange Initialization
@@ -1033,5 +1035,13 @@ public class SshContext extends LayerContext {
 
     public void setSessionKey(byte[] sessionKey) {
         this.sessionKey = sessionKey;
+    }
+
+    public int getBbResult() {
+        return bbResult;
+    }
+
+    public void setBbResult(int bbResult) {
+        this.bbResult = bbResult;
     }
 }

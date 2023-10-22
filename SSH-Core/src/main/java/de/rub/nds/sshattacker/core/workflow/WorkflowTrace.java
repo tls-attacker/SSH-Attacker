@@ -87,7 +87,11 @@ public class WorkflowTrace implements Serializable {
                 @XmlElement(type = DynamicKeyExchangeAction.class, name = "DynamicKeyExchange"),
                 @XmlElement(type = SendMangerSecretAction.class, name = "SendMangerSecret"),
                 @XmlElement(type = ForwardMessagesAction.class, name = "ForwardMessages"),
-                @XmlElement(type = ProxyFilterMessagesAction.class, name = "ProxyFilterMessages")
+                @XmlElement(type = ProxyFilterMessagesAction.class, name = "ProxyFilterMessages"),
+                @XmlElement(
+                        type = SendBleichenbacherOracleReply.class,
+                        name = "SendBleichenbacherOracle"),
+                @XmlElement(type = GenericReceiveAction.class, name = "GenericReceive")
             })
     private List<SshAction> sshActions = new ArrayList<>();
 
