@@ -10,7 +10,6 @@ package de.rub.nds.sshattacker.core.protocol.ssh1.handler;
 import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.ssh1.message.FailureMessageSSH1;
-import de.rub.nds.sshattacker.core.protocol.ssh1.message.SuccessMessageSSH1;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -24,6 +23,6 @@ public class FailureMessageHandler extends SshMessageHandler<FailureMessageSSH1>
 
     @Override
     public void adjustContext(FailureMessageSSH1 message) {
-        LOGGER.info("Received a Success Message");
+        LOGGER.info("Received a Failure Message");
     }
 }

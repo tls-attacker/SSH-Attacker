@@ -13,14 +13,9 @@ import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.ssh1.handler.FailureMessageHandler;
-import de.rub.nds.sshattacker.core.protocol.ssh1.handler.SuccessMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.ssh1.parser.FailureMessageParser;
-import de.rub.nds.sshattacker.core.protocol.ssh1.parser.SuccessMessageParser;
 import de.rub.nds.sshattacker.core.protocol.ssh1.preparator.FailureMessagePreparator;
-import de.rub.nds.sshattacker.core.protocol.ssh1.preparator.SuccessMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.ssh1.serializer.FailureMessageSerializier;
-import de.rub.nds.sshattacker.core.protocol.ssh1.serializer.SuccessMessageSerializier;
-
 import java.io.InputStream;
 
 public class FailureMessageSSH1 extends SshMessage<FailureMessageSSH1> {
