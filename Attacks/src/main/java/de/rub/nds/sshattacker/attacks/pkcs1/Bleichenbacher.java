@@ -37,6 +37,10 @@ public class Bleichenbacher extends Pkcs1Attack {
     private BigInteger three_B_sub_one = null;
     private BigInteger three_B_plus_one = null;
 
+    private int counterInnerBleichenbacher;
+    private int counterOuterBleichenbacher;
+
+
     /**
      * @param msg The message that should be decrypted with the attack
      * @param pkcsOracle The oracle to be queried
@@ -104,6 +108,7 @@ public class Bleichenbacher extends Pkcs1Attack {
                 throw new RuntimeException(e);
             }
             boolean oracleResult = queryOracle(attempt, false);
+            counterOuterBleichenbacher++;
 
             if (oracleResult) {
                 return s;
@@ -141,6 +146,7 @@ public class Bleichenbacher extends Pkcs1Attack {
             BigInteger encryptedAttempt = encryptBigInt(attempt, outerKey);
 
             boolean oracleResult = queryOracle(encryptedAttempt, true);
+            counterInnerBleichenbacher++;
 
             if (oracleResult) {
                 LOGGER.debug("Found smallest s: {}", s);
@@ -196,6 +202,7 @@ public class Bleichenbacher extends Pkcs1Attack {
                 BigInteger encryptedAttempt = encryptBigInt(attempt, outerKey);
 
                 boolean oracleResult = queryOracle(encryptedAttempt, true);
+                counterInnerBleichenbacher++;
 
                 if (oracleResult) {
                     return si;
@@ -245,6 +252,7 @@ public class Bleichenbacher extends Pkcs1Attack {
                 BigInteger res = cipher.multiply(exponentiated);
                 BigInteger attempt = res.mod(rsaPublicKey.getModulus());
                 boolean oracleResult = queryOracle(attempt, false);
+                counterOuterBleichenbacher++;
 
                 if (oracleResult) {
                     return si;
@@ -360,7 +368,6 @@ public class Bleichenbacher extends Pkcs1Attack {
             LOGGER.debug("Cracked encoded: {}", ArrayConverter.bytesToHexString(cracked));
             byte[] cracked_decoded = pkcs1Decode(cracked);
             LOGGER.debug("Cracked decoded: {}", ArrayConverter.bytesToHexString(cracked_decoded));
-
             solution = new BigInteger(cracked_decoded);
         } else {
             byte[] cracked =
@@ -587,5 +594,21 @@ public class Bleichenbacher extends Pkcs1Attack {
                 | NoSuchAlgorithmException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public int getCounterInnerBleichenbacher() {
+        return counterInnerBleichenbacher;
+    }
+
+    public void setCounterInnerBleichenbacher(int counterInnerBleichenbacher) {
+        this.counterInnerBleichenbacher = counterInnerBleichenbacher;
+    }
+
+    public int getCounterOuterBleichenbacher() {
+        return counterOuterBleichenbacher;
+    }
+
+    public void setCounterOuterBleichenbacher(int counterOuterBleichenbacher) {
+        this.counterOuterBleichenbacher = counterOuterBleichenbacher;
     }
 }

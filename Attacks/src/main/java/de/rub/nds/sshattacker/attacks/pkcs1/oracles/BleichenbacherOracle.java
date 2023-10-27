@@ -42,21 +42,25 @@ public class BleichenbacherOracle extends Pkcs1Oracle {
 
     private final int maxAttempts;
 
-    private int counter;
 
     /**
      * @param hostPublicKey The public key
      * @param config Config
      */
     public BleichenbacherOracle(
-            CustomRsaPublicKey hostPublicKey, CustomRsaPublicKey serverPublicKey, Config config) {
+            CustomRsaPublicKey hostPublicKey,
+            CustomRsaPublicKey serverPublicKey,
+            Config config,
+            int attemptCounterInnerBleichenbacher,
+            int attemptCounterOuterBleichenbacher) {
         this.hostPublicKey = hostPublicKey;
         this.serverPublicKey = serverPublicKey;
         this.blockSize =
                 MathHelper.intCeilDiv(this.hostPublicKey.getModulus().bitLength(), Byte.SIZE);
         this.config = config;
         this.maxAttempts = 10;
-        counter = 0;
+        this.counterOuterBleichenbacher = attemptCounterOuterBleichenbacher;
+        this.counterInnerBleichenbacher = attemptCounterInnerBleichenbacher;
     }
 
     /**
@@ -113,9 +117,11 @@ public class BleichenbacherOracle extends Pkcs1Oracle {
 
             if (lastMessage instanceof DisconnectMessageSSH1) {
                 LOGGER.debug("Received Disconnected Message -> nothing was correct .... :(");
+                counterOuterBleichenbacher++;
             } else if (lastMessage instanceof FailureMessageSSH1) {
                 LOGGER.debug("Received Failure Message -> the first one was correct :|");
                 conform[0] = true;
+                counterInnerBleichenbacher++;
             } else if (lastMessage instanceof SuccessMessageSSH1) {
                 LOGGER.debug("Received Failure Message -> both were correct :)");
                 conform[0] = true;
@@ -124,8 +130,7 @@ public class BleichenbacherOracle extends Pkcs1Oracle {
                 LOGGER.fatal("Something gone wrong with the preconfigured oracle....");
             }
 
-            LOGGER.fatal("Attempt {}", counter);
-            counter++;
+            LOGGER.fatal("Attempt {}", counterInnerBleichenbacher + counterOuterBleichenbacher);
 
             if (!trace.executedAsPlanned()) {
                 // Something did not execute as planned, the result may be either way
@@ -156,8 +161,6 @@ public class BleichenbacherOracle extends Pkcs1Oracle {
     private void clearConnections(State state) {
         try {
             state.getSshContext();
-            LOGGER.debug("Transporthandler is:");
-            LOGGER.debug(state.getSshContext().getTransportHandler().toString());
             if (!state.getSshContext().getTransportHandler().isClosed()) {
                 state.getSshContext().getTransportHandler().closeConnection();
             }

