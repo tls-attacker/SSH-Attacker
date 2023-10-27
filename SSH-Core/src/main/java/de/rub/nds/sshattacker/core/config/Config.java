@@ -301,7 +301,7 @@ public class Config implements Serializable {
     private List<SshPublicKey<?, ?>> hostKeys;
 
     /** Server key */
-    @XmlElement(name = "hostKey")
+    @XmlElement(name = "serverKey")
     @XmlElementWrapper
     private List<SshPublicKey<?, ?>> serverKeys;
 

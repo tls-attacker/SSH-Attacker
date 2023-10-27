@@ -19,7 +19,7 @@ public class ServerDelegate extends Delegate {
     protected Integer port = null;
 
     @Parameter(names = "-endless", description = "EndlessMode")
-    protected Boolean endless = null;
+    protected Boolean endless = false;
 
     public ServerDelegate() {}
 
