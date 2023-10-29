@@ -101,11 +101,11 @@ public class Bleichenbacher extends Pkcs1Attack {
             BigInteger cipher = new BigInteger(1, ciphertext);
             BigInteger res = cipher.multiply(exponentiated);
             BigInteger attempt = res.mod(rsaPublicKey.getModulus());
-/*            try {
-                Thread.sleep(1);
+            try {
+                Thread.sleep(10);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
-            }*/
+            }
             boolean oracleResult = queryOracle(attempt, false);
             counterOuterBleichenbacher++;
 

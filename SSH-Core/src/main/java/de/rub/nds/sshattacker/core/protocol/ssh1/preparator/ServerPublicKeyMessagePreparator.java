@@ -27,6 +27,7 @@ public class ServerPublicKeyMessagePreparator extends SshMessagePreparator<Serve
     private HybridKeyExchangeCombiner combiner;
 
     private SshPublicKey<CustomRsaPublicKey, CustomRsaPrivateKey> serverKey;
+    private SshPublicKey<CustomRsaPublicKey, CustomRsaPrivateKey> hostkey;
 
     public ServerPublicKeyMessagePreparator(
             Chooser chooser, ServerPublicKeyMessage message, HybridKeyExchangeCombiner combiner) {
@@ -47,33 +48,48 @@ public class ServerPublicKeyMessagePreparator extends SshMessagePreparator<Serve
     }
 
     public void prepareHostKey() {
-        SshPublicKey<?, ?> opt_hostKey = chooser.getConfig().getHostKeys().get(7);
 
-        CustomRsaPublicKey publicKey = (CustomRsaPublicKey) opt_hostKey.getPublicKey();
-        if (!opt_hostKey.getPrivateKey().isPresent()) {
-            LOGGER.warn("no privat key defined for hostkey");
+        List<SshPublicKey<?, ?>> hostkeys = chooser.getConfig().getHostKeys();
+        if (!hostkeys.isEmpty()) {
+            SshPublicKey<?, ?> key = hostkeys.get(7);
+            if (key.getPrivateKey().isPresent()) {
+                CustomRsaPrivateKey privkey = (CustomRsaPrivateKey) key.getPrivateKey().get();
+                CustomRsaPublicKey pubkey = (CustomRsaPublicKey) key.getPublicKey();
+                this.hostkey = new SshPublicKey<>(PublicKeyFormat.SSH_RSA, pubkey, privkey);
+            }
         }
-        if (opt_hostKey.getPublicKeyFormat().getName().equals(PublicKeyFormat.SSH_RSA.getName())) {
-            LOGGER.warn(
-                    "the Host-Key is not formated as RSA Key-Type, it is {}",
-                    opt_hostKey.getPublicKeyFormat().getName());
-        }
-        CustomRsaPrivateKey privateKey = (CustomRsaPrivateKey) opt_hostKey.getPrivateKey().get();
 
-        SshPublicKey<CustomRsaPublicKey, CustomRsaPrivateKey> hostKey =
-                new SshPublicKey<>(PublicKeyFormat.SSH_RSA, publicKey, privateKey);
+        /*
+              SshPublicKey<?, ?> opt_hostKey = chooser.getConfig().getHostKeys().get(7);
 
-        getObject().setHostKey(hostKey);
-        chooser.getContext().getSshContext().setHostKey(hostKey);
+              CustomRsaPublicKey publicKey = (CustomRsaPublicKey) opt_hostKey.getPublicKey();
 
-        getObject().setHostKeyBitLenght(publicKey.getModulus().bitLength());
+              if (!opt_hostKey.getPrivateKey().isPresent()) {
+                    LOGGER.warn("no privat key defined for hostkey");
+                }
+                if (opt_hostKey.getPublicKeyFormat().getName().equals(PublicKeyFormat.SSH_RSA.getName())) {
+                    LOGGER.warn(
+                            "the Host-Key is not formated as RSA Key-Type, it is {}",
+                            opt_hostKey.getPublicKeyFormat().getName());
+                }
+                CustomRsaPrivateKey privateKey = (CustomRsaPrivateKey) opt_hostKey.getPrivateKey().get();
+
+                SshPublicKey<CustomRsaPublicKey, CustomRsaPrivateKey> hostKey =
+                        new SshPublicKey<>(PublicKeyFormat.SSH_RSA, publicKey, privateKey);
+        */
+        getObject().setHostKey(this.hostkey);
+        chooser.getContext().getSshContext().setHostKey(this.hostkey);
+
+        getObject().setHostKeyBitLenght(this.hostkey.getPublicKey().getModulus().bitLength());
 
         LOGGER.debug(
                 "[bro] Hostkey Exponent: {}",
-                ArrayConverter.bytesToHexString(publicKey.getPublicExponent().toByteArray()));
+                ArrayConverter.bytesToHexString(
+                        this.hostkey.getPublicKey().getPublicExponent().toByteArray()));
         LOGGER.debug(
                 "[bro] Hostkey Modulus: {}",
-                ArrayConverter.bytesToHexString(publicKey.getModulus().toByteArray()));
+                ArrayConverter.bytesToHexString(
+                        this.hostkey.getPublicKey().getModulus().toByteArray()));
     }
 
     public void prepareServerKey() {
@@ -178,7 +194,7 @@ public class ServerPublicKeyMessagePreparator extends SshMessagePreparator<Serve
             throw new RuntimeException();
         }
 
-        SshPublicKey<?, ?> hostKey = chooser.getConfig().getHostKeys().get(7);
+        SshPublicKey<?, ?> hostKey = chooser.getContext().getSshContext().getHostKey().orElse(null);
         if (hostKey.getPublicKey() instanceof CustomRsaPublicKey) {
             CustomRsaPublicKey rsaPublicKey = (CustomRsaPublicKey) hostKey.getPublicKey();
             hostModulus = rsaPublicKey.getModulus().toByteArray();
