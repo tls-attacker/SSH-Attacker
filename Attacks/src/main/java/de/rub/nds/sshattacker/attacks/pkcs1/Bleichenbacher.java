@@ -40,7 +40,6 @@ public class Bleichenbacher extends Pkcs1Attack {
     private int counterInnerBleichenbacher;
     private int counterOuterBleichenbacher;
 
-
     /**
      * @param msg The message that should be decrypted with the attack
      * @param pkcsOracle The oracle to be queried
@@ -103,7 +102,7 @@ public class Bleichenbacher extends Pkcs1Attack {
             BigInteger res = cipher.multiply(exponentiated);
             BigInteger attempt = res.mod(rsaPublicKey.getModulus());
             try {
-                Thread.sleep(500);
+                Thread.sleep(100);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }

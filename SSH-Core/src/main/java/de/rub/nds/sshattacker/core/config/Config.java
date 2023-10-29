@@ -825,10 +825,83 @@ public class Config implements Serializable {
                                 new XCurveEcPrivateKey(
                                         ArrayConverter.hexStringToByteArray(
                                                 "092E829DE536BE8F7D74E7A3C6CD90EA6EADDDEEB2E50D8617EBDD132B53669B"),
-                                        NamedEcGroup.CURVE25519)));
+                                        NamedEcGroup.CURVE25519)),
+                        // 768 Bit SSH RSA Hostkey -> for SSHv1 Testing
+                        new SshPublicKey<>(
+                                PublicKeyFormat.SSH_RSA,
+                                new CustomRsaPublicKey(
+                                        new BigInteger("010001", 16),
+                                        new BigInteger(
+                                                "00CBD043B6C05475FA3361BAB21CD2"
+                                                        + "58D703B61551A486991B601827176B"
+                                                        + "3E060147B6A031B44AB557E43A9AC6"
+                                                        + "BF0D569266501017C7055449975B61"
+                                                        + "2650ED45DF03CB5B53A468117827B1"
+                                                        + "D15C24253FBA68874DDD3827302EE9"
+                                                        + "B01749716C9CD1",
+                                                16)),
+                                new CustomRsaPrivateKey(
+                                        new BigInteger(
+                                                "00852020CAA2EFC82BC81A02AF4A62"
+                                                        + "1EC33ADA592C7DB1A91A17774F395D"
+                                                        + "C42279FD948D284A222E371D8D2601"
+                                                        + "C152FE02F18C2D3BBD97EBD9D34AA5"
+                                                        + "DE558AFAF6B47B3A2D0A29E44729A9"
+                                                        + "1DEFDA9712051B3EA2C79A307BBFDF"
+                                                        + "257EB0A21369C1",
+                                                16),
+                                        new BigInteger(
+                                                "00CBD043B6C05475FA3361BAB21CD2"
+                                                        + "58D703B61551A486991B601827176B"
+                                                        + "3E060147B6A031B44AB557E43A9AC6"
+                                                        + "BF0D569266501017C7055449975B61"
+                                                        + "2650ED45DF03CB5B53A468117827B1"
+                                                        + "D15C24253FBA68874DDD3827302EE9"
+                                                        + "B01749716C9CD1",
+                                                16))),
+                        // 1024 Bit SSH RSA Hostkey -> for SSHv1 Testing
+                        new SshPublicKey<>(
+                                PublicKeyFormat.SSH_RSA,
+                                new CustomRsaPublicKey(
+                                        new BigInteger("010001", 16),
+                                        new BigInteger(
+                                                "00C6D5D18B3BDCA91AE922941730D7"
+                                                        + "BFF6F959CACC67609C571CA281148B"
+                                                        + "97F8CA742B85E9FABAF308E6BFED40"
+                                                        + "06B639159E19CCCD3FFF4374E905B3"
+                                                        + "D4FEE6B3F8867940FDAD622FF59E7E"
+                                                        + "8E7801C29D5BEB6004E1F127C1B37B"
+                                                        + "5BEDFF057F06FB133A21DA77B2B9FA"
+                                                        + "9E4CF72740F0049B30DC1CE23EB2B7"
+                                                        + "E6E92B129E1EFE67E3",
+                                                16)),
+                                new CustomRsaPrivateKey(
+                                        new BigInteger(
+                                                "0092FAA9AC0FB31CBA0CCE07C460D1"
+                                                        + "8B5088A02C7E0E88E6E8A9FD2207CA"
+                                                        + "ECAAF7150ABB31EBAAD84EA32C0AB7"
+                                                        + "C27E5F1230CD878BCD9BE7047BE040"
+                                                        + "3FD9B13624D9C822AB17C96615BB5A"
+                                                        + "875D1A076D282B2E9035FAC37DB066"
+                                                        + "82C8498BA624C77B0E1E2ECBE7AB5A"
+                                                        + "5A0342E20C54482D149A7F37F8EF4A"
+                                                        + "2C148CD3ADD6782189",
+                                                16),
+                                        new BigInteger(
+                                                "00C6D5D18B3BDCA91AE922941730D7"
+                                                        + "BFF6F959CACC67609C571CA281148B"
+                                                        + "97F8CA742B85E9FABAF308E6BFED40"
+                                                        + "06B639159E19CCCD3FFF4374E905B3"
+                                                        + "D4FEE6B3F8867940FDAD622FF59E7E"
+                                                        + "8E7801C29D5BEB6004E1F127C1B37B"
+                                                        + "5BEDFF057F06FB133A21DA77B2B9FA"
+                                                        + "9E4CF72740F0049B30DC1CE23EB2B7"
+                                                        + "E6E92B129E1EFE67E3",
+                                                16))));
 
         serverKeys =
                 List.of(
+                        // Default 1024 Bit Serverkey for SSHv1
                         new SshPublicKey<>(
                                 PublicKeyFormat.SSH_RSA,
                                 new CustomRsaPublicKey(
@@ -866,6 +939,104 @@ public class Config implements Serializable {
                                                         + "C5E4CB3A9E2ECEE52BB07C33F92893"
                                                         + "A5D5B6F163BE6FBC1E8E66E4666866"
                                                         + "871890105EFFE1193F",
+                                                16))),
+                        // Default 768 Bit Serverkey for SSHv1
+                        new SshPublicKey<>(
+                                PublicKeyFormat.SSH_RSA,
+                                new CustomRsaPublicKey(
+                                        new BigInteger("010001", 16),
+                                        new BigInteger(
+                                                "00CB2C65943BB603C0072D4C5AFD8B"
+                                                        + "C5155D57231F02D191A079A3758BCF"
+                                                        + "96E83318F0729D05437B543088D8A1"
+                                                        + "73675EE40E7506EFB09EDD62C868C5"
+                                                        + "27DB0768AB643AD09A7C42C6AD47DA"
+                                                        + "ACE6CD53C051E26E69AF472D0CFE17"
+                                                        + "322EC96499E529",
+                                                16)),
+                                new CustomRsaPrivateKey(
+                                        new BigInteger(
+                                                "00B30F82CADCC13296E7FC5D420819"
+                                                        + "49EDE560A99C68208906F48D4248A1"
+                                                        + "00EFCE30D9A1398FED04619390D7D3"
+                                                        + "9AE0ECB7DFB6A5EC8CA6A491097680"
+                                                        + "9280CB64AF1F8C8B67739CF7093B34"
+                                                        + "4343419647B331CD9827953279BE6C"
+                                                        + "AC31C55BA6EF01",
+                                                16),
+                                        new BigInteger(
+                                                "00CB2C65943BB603C0072D4C5AFD8B"
+                                                        + "C5155D57231F02D191A079A3758BCF"
+                                                        + "96E83318F0729D05437B543088D8A1"
+                                                        + "73675EE40E7506EFB09EDD62C868C5"
+                                                        + "27DB0768AB643AD09A7C42C6AD47DA"
+                                                        + "ACE6CD53C051E26E69AF472D0CFE17"
+                                                        + "322EC96499E529",
+                                                16))),
+                        // Default 2048 Bit Serverkey for SSHv1
+                        new SshPublicKey<>(
+                                PublicKeyFormat.SSH_RSA,
+                                new CustomRsaPublicKey(
+                                        new BigInteger("010001", 16),
+                                        new BigInteger(
+                                                "009DC14D07EADCB9AFF4C37E5961BA"
+                                                        + "17EF728A8E8BF106AEDCE25AAD2282"
+                                                        + "CEA7A9FAED27BE0EC988DCA1434216"
+                                                        + "974D3078A0226182CF9A8945681263"
+                                                        + "E0B7724F8A92D97DCF9D1BE9234D51"
+                                                        + "8F91879078B72DB44DE8B9AB76568D"
+                                                        + "6FE10A1264B947BBBFF3957A9F3699"
+                                                        + "3EC3CD623A6D3E4B188476CC91C547"
+                                                        + "00D0BD3CCB6872EDAF1E42CA69A206"
+                                                        + "57E667D7760BEED1D817971B4F3764"
+                                                        + "7A1E7AC85605E1AABC836B04CED2E8"
+                                                        + "A389EA339116806FED939D12F26CB9"
+                                                        + "D82D91DD5D9B5B86D052FC890F1305"
+                                                        + "393C57656D37A691ABAD93D24251FC"
+                                                        + "897E39BFED07679C16B8355C804EFA"
+                                                        + "23BBF2A7CABEE87EF768E75D1D0CEF"
+                                                        + "7251E09BD911DF7E7EFB3E0E8480FA"
+                                                        + "7C57",
+                                                16)),
+                                new CustomRsaPrivateKey(
+                                        new BigInteger(
+                                                "132E4755AC2A09DC814737F827A31D"
+                                                        + "92698119F14B0A999379AB80FD8513"
+                                                        + "3D321E3BBA81C55C28916D0FFE3CC6"
+                                                        + "D35E02A7D9CCECC56BAC771C30467B"
+                                                        + "EBC658789E41EB043EA92036FB87F2"
+                                                        + "1BE8E714DAF5FD36FA589BD5BBD696"
+                                                        + "F5D46CDDCC6B856584DD295B1204B6"
+                                                        + "35F229E7CA75299D96ACA0448BCF89"
+                                                        + "062AACAC66F80228E8A2B4F7255944"
+                                                        + "9843F398A2E3E09B4D9402CB50D425"
+                                                        + "86CA6251B268624590BE96D34B67B7"
+                                                        + "0AED343D979B91BC36697F15FA1BD7"
+                                                        + "CF2528ED177A5BD03ECA6D65D8CA76"
+                                                        + "C91F0B97335C1F7325860334EACB8D"
+                                                        + "D05DAB103FC73AF6C377FCE7725063"
+                                                        + "E2EB3680BA19EFB457AE905622D564"
+                                                        + "A1BFA6686FD2D5B31024251483FA61",
+                                                16),
+                                        new BigInteger(
+                                                "009DC14D07EADCB9AFF4C37E5961BA"
+                                                        + "17EF728A8E8BF106AEDCE25AAD2282"
+                                                        + "CEA7A9FAED27BE0EC988DCA1434216"
+                                                        + "974D3078A0226182CF9A8945681263"
+                                                        + "E0B7724F8A92D97DCF9D1BE9234D51"
+                                                        + "8F91879078B72DB44DE8B9AB76568D"
+                                                        + "6FE10A1264B947BBBFF3957A9F3699"
+                                                        + "3EC3CD623A6D3E4B188476CC91C547"
+                                                        + "00D0BD3CCB6872EDAF1E42CA69A206"
+                                                        + "57E667D7760BEED1D817971B4F3764"
+                                                        + "7A1E7AC85605E1AABC836B04CED2E8"
+                                                        + "A389EA339116806FED939D12F26CB9"
+                                                        + "D82D91DD5D9B5B86D052FC890F1305"
+                                                        + "393C57656D37A691ABAD93D24251FC"
+                                                        + "897E39BFED07679C16B8355C804EFA"
+                                                        + "23BBF2A7CABEE87EF768E75D1D0CEF"
+                                                        + "7251E09BD911DF7E7EFB3E0E8480FA"
+                                                        + "7C57",
                                                 16))));
 
         fallbackRsaTransientPublicKey =

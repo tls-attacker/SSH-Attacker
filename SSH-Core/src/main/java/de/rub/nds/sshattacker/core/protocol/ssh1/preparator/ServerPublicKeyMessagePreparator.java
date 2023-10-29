@@ -47,7 +47,7 @@ public class ServerPublicKeyMessagePreparator extends SshMessagePreparator<Serve
     }
 
     public void prepareHostKey() {
-        SshPublicKey<?, ?> opt_hostKey = chooser.getConfig().getHostKeys().get(0);
+        SshPublicKey<?, ?> opt_hostKey = chooser.getConfig().getHostKeys().get(7);
 
         CustomRsaPublicKey publicKey = (CustomRsaPublicKey) opt_hostKey.getPublicKey();
         if (!opt_hostKey.getPrivateKey().isPresent()) {
@@ -80,7 +80,7 @@ public class ServerPublicKeyMessagePreparator extends SshMessagePreparator<Serve
 
         List<SshPublicKey<?, ?>> serverKeys = chooser.getConfig().getServerKeys();
         if (!serverKeys.isEmpty()) {
-            SshPublicKey<?, ?> key = serverKeys.get(0);
+            SshPublicKey<?, ?> key = serverKeys.get(1);
             if (key.getPrivateKey().isPresent()) {
                 CustomRsaPrivateKey privkey = (CustomRsaPrivateKey) key.getPrivateKey().get();
                 CustomRsaPublicKey pubkey = (CustomRsaPublicKey) key.getPublicKey();
@@ -178,7 +178,7 @@ public class ServerPublicKeyMessagePreparator extends SshMessagePreparator<Serve
             throw new RuntimeException();
         }
 
-        SshPublicKey<?, ?> hostKey = chooser.getConfig().getHostKeys().get(0);
+        SshPublicKey<?, ?> hostKey = chooser.getConfig().getHostKeys().get(7);
         if (hostKey.getPublicKey() instanceof CustomRsaPublicKey) {
             CustomRsaPublicKey rsaPublicKey = (CustomRsaPublicKey) hostKey.getPublicKey();
             hostModulus = rsaPublicKey.getModulus().toByteArray();

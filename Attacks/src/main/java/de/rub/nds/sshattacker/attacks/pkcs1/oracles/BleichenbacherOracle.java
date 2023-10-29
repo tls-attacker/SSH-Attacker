@@ -42,7 +42,6 @@ public class BleichenbacherOracle extends Pkcs1Oracle {
 
     private final int maxAttempts;
 
-
     /**
      * @param hostPublicKey The public key
      * @param config Config
@@ -59,8 +58,6 @@ public class BleichenbacherOracle extends Pkcs1Oracle {
                 MathHelper.intCeilDiv(this.hostPublicKey.getModulus().bitLength(), Byte.SIZE);
         this.config = config;
         this.maxAttempts = 10;
-        this.counterOuterBleichenbacher = attemptCounterOuterBleichenbacher;
-        this.counterInnerBleichenbacher = attemptCounterInnerBleichenbacher;
     }
 
     /**
@@ -117,11 +114,9 @@ public class BleichenbacherOracle extends Pkcs1Oracle {
 
             if (lastMessage instanceof DisconnectMessageSSH1) {
                 LOGGER.debug("Received Disconnected Message -> nothing was correct .... :(");
-                counterOuterBleichenbacher++;
             } else if (lastMessage instanceof FailureMessageSSH1) {
                 LOGGER.debug("Received Failure Message -> the first one was correct :|");
                 conform[0] = true;
-                counterInnerBleichenbacher++;
             } else if (lastMessage instanceof SuccessMessageSSH1) {
                 LOGGER.debug("Received Failure Message -> both were correct :)");
                 conform[0] = true;
@@ -129,8 +124,6 @@ public class BleichenbacherOracle extends Pkcs1Oracle {
             } else {
                 LOGGER.fatal("Something gone wrong with the preconfigured oracle....");
             }
-
-            LOGGER.fatal("Attempt {}", counterInnerBleichenbacher + counterOuterBleichenbacher);
 
             if (!trace.executedAsPlanned()) {
                 // Something did not execute as planned, the result may be either way
