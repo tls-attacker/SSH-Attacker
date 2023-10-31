@@ -286,6 +286,10 @@ public class SSH1Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
                 LOGGER.debug("[bro] returning SSH_SMSG_SUCCESS Hint");
                 readSuccessMessage((BinaryPacket) packet);
                 break;
+            case SSH_SMSG_FAILURE:
+                LOGGER.debug("[bro] returning SSH_SMSG_FAILURE Hint");
+                readFailureMessage((BinaryPacket) packet);
+                break;
             default:
                 LOGGER.debug(
                         "[bro] cannot identifie {} as {} - returningn null",
@@ -324,6 +328,16 @@ public class SSH1Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
 
     private void readSuccessMessage(AbstractPacket<BinaryPacket> packet) {
         SuccessMessageSSH1 message = new SuccessMessageSSH1();
+        HintedInputStream temp_stream;
+
+        temp_stream =
+                new HintedInputStreamAdapterStream(
+                        null, new ByteArrayInputStream(packet.getPayload().getValue()));
+        readContainerFromStream(message, context, temp_stream);
+    }
+
+    private void readFailureMessage(AbstractPacket<BinaryPacket> packet) {
+        FailureMessageSSH1 message = new FailureMessageSSH1();
         HintedInputStream temp_stream;
 
         temp_stream =
