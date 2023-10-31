@@ -51,7 +51,7 @@ public class ServerPublicKeyMessagePreparator extends SshMessagePreparator<Serve
 
         List<SshPublicKey<?, ?>> hostkeys = chooser.getConfig().getHostKeys();
         if (!hostkeys.isEmpty()) {
-            SshPublicKey<?, ?> key = hostkeys.get(7);
+            SshPublicKey<?, ?> key = hostkeys.get(0);
             if (key.getPrivateKey().isPresent()) {
                 CustomRsaPrivateKey privkey = (CustomRsaPrivateKey) key.getPrivateKey().get();
                 CustomRsaPublicKey pubkey = (CustomRsaPublicKey) key.getPublicKey();
@@ -96,7 +96,7 @@ public class ServerPublicKeyMessagePreparator extends SshMessagePreparator<Serve
 
         List<SshPublicKey<?, ?>> serverKeys = chooser.getConfig().getServerKeys();
         if (!serverKeys.isEmpty()) {
-            SshPublicKey<?, ?> key = serverKeys.get(1);
+            SshPublicKey<?, ?> key = serverKeys.get(0);
             if (key.getPrivateKey().isPresent()) {
                 CustomRsaPrivateKey privkey = (CustomRsaPrivateKey) key.getPrivateKey().get();
                 CustomRsaPublicKey pubkey = (CustomRsaPublicKey) key.getPublicKey();

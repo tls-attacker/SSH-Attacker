@@ -42,6 +42,8 @@ public class BleichenbacherOracle extends Pkcs1Oracle {
 
     private final int maxAttempts;
 
+    private int counter = 0;
+
     /**
      * @param hostPublicKey The public key
      * @param config Config
@@ -129,6 +131,9 @@ public class BleichenbacherOracle extends Pkcs1Oracle {
                 // Something did not execute as planned, the result may be either way
                 throw new WorkflowExecutionException("Workflow did not execute as planned!");
             }
+
+            counter++;
+            LOGGER.info("Try #{} ", counter);
             // clearConnections(state);
 
         } catch (WorkflowExecutionException e) {
