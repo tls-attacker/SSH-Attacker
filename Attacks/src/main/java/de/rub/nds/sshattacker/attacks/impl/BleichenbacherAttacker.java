@@ -300,8 +300,8 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
 
             long finish = System.currentTimeMillis();
             long timeElapsed = finish - start;
-            LOGGER.debug("The attack took {} milliseconds", timeElapsed);
-            LOGGER.debug(
+            LOGGER.info("The attack took {} milliseconds", timeElapsed);
+            LOGGER.info(
                     "It took {} tries for the inner and {} tries for the outer Bleichenbacher-Attack",
                     attacker.getCounterInnerBleichenbacher(),
                     attacker.getCounterOuterBleichenbacher());

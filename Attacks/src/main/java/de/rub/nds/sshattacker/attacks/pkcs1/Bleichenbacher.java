@@ -102,7 +102,7 @@ public class Bleichenbacher extends Pkcs1Attack {
             BigInteger res = cipher.multiply(exponentiated);
             BigInteger attempt = res.mod(rsaPublicKey.getModulus());
             try {
-                Thread.sleep(10);
+                Thread.sleep(100);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
