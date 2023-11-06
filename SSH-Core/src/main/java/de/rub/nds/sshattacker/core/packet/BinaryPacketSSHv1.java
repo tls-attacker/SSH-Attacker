@@ -146,7 +146,7 @@ public class BinaryPacketSSHv1 extends AbstractPacket<BinaryPacketSSHv1>
 
     @Override
     public void prepareComputations() {
-        LOGGER.info("[bro] Preparing Computation");
+        LOGGER.debug("[bro] Preparing Computation");
         if (computations == null) {
             computations = new PacketCryptoComputations();
         }

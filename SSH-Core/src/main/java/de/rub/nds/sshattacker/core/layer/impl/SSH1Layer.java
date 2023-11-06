@@ -162,7 +162,7 @@ public class SSH1Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
                     LOGGER.debug("[bro] I was here");
                 } catch (IOException e) {
                     // the lower layer does not give us any data so we can simply return here
-                    LOGGER.warn("The lower layer did not produce a data stream: ", e);
+                    LOGGER.debug("The lower layer did not produce a data stream: ", e);
                     return getLayerResult();
                 }
                 LOGGER.debug("[bro] Searching for Hint");

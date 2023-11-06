@@ -55,7 +55,7 @@ public class RsaPkcs1Cipher extends AbstractCipher {
             prepareCipher(Cipher.DECRYPT_MODE);
             return cipher.doFinal(encryptedData);
         } catch (IllegalBlockSizeException e) {
-            LOGGER.fatal("Encryption-Error: {}", e.getMessage());
+            LOGGER.fatal("Decryption-Error: {}", e.getMessage());
             LOGGER.fatal(e);
             throw new CryptoException("Could not decrypt data with RSA/ECB/PKCS1Padding.", e);
         } catch (BadPaddingException e) {

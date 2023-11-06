@@ -70,14 +70,12 @@ public class TcpLayer extends ProtocolLayer<LayerProcessingHint, DataContainer> 
         getTransportHandler().setTimeout(getTransportHandler().getTimeout());
 
         if (context.getContext().getSshContext().isReceiveAsciiModeEnabled()) {
-            LOGGER.info("Recive in ASCII-Mode");
             byte[] receiveBuffer = new byte[0];
             byte[] readByte;
             do {
                 readByte = context.getTransportHandler().fetchData(1);
                 receiveBuffer = ArrayConverter.concatenate(receiveBuffer, readByte);
             } while (readByte.length > 0 && readByte[0] != CharConstants.NEWLINE);
-            LOGGER.info("Ended after got a new line");
 
             currentInputStream =
                     new HintedInputStreamAdapterStream(

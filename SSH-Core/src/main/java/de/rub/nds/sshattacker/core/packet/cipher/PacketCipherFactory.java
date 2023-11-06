@@ -37,6 +37,8 @@ public class PacketCipherFactory {
             } else if (encryptionAlgorithm == EncryptionAlgorithm.TRIPLE_DES_CBC) {
                 return new PacketSsh1Cipher(
                         context, keySet, EncryptionAlgorithm.TRIPLE_DES_CBC, null, mode);
+            } else if (encryptionAlgorithm == EncryptionAlgorithm.NONE && macAlgorithm == null) {
+                return getNoneCipher(context, mode);
             } else {
                 return new PacketMacedCipher(
                         context, keySet, encryptionAlgorithm, macAlgorithm, mode);
