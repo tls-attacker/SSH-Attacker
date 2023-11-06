@@ -458,9 +458,7 @@ public class Bleichenbacher extends Pkcs1Attack {
                 BigInteger a = M.get(0).lower;
                 BigInteger b = M.get(0).upper;
                 if (a.equals(b)) {
-                    byte[] result = new byte[innerK];
-                    byte[] aBytes = a.toByteArray();
-                    System.arraycopy(aBytes, 0, result, innerK - aBytes.length, aBytes.length);
+                    byte[] result = a.toByteArray();
                     return result;
                 }
                 s = find_s_in_range_nested(a, b, s, ciphertext, innerPublicKey, outerPublicKey);

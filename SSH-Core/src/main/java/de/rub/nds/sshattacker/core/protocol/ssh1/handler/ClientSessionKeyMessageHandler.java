@@ -32,6 +32,7 @@ import java.util.Arrays;
 import java.util.Objects;
 import java.util.Optional;
 import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -80,7 +81,7 @@ public class ClientSessionKeyMessageHandler extends SshMessageHandler<ClientSess
                         "chosen unsupported Encryption-Algorithm {}, fall back to NONE",
                         chosenCipherMethod);
         }
-        LOGGER.info("Successfulle applied Encryption Algorihm {}", encryptionAlgorithm);
+        LOGGER.info("Successfully applied Encryption Algorithm {}", encryptionAlgorithm);
 
         // Set Server2Client and Client2Server identical because of SSH1
         chooser.getContext()
@@ -201,6 +202,7 @@ public class ClientSessionKeyMessageHandler extends SshMessageHandler<ClientSess
         AbstractCipher outerEncryption;
 
         boolean firstEncryptionSuccessfull = false;
+        boolean secondEncryptionSuccessfull = false;
 
         try {
 
@@ -226,6 +228,8 @@ public class ClientSessionKeyMessageHandler extends SshMessageHandler<ClientSess
                 innerEncryption = CipherFactory.getRsaPkcs1Cipher(serverPrivatKey);
                 sessionKey = innerEncryption.decrypt(sessionKey);
 
+                secondEncryptionSuccessfull = true;
+
             } else {
                 outerEncryption = CipherFactory.getRsaPkcs1Cipher(serverPrivatKey);
                 sessionKey = outerEncryption.decrypt(sessionKey);
@@ -234,30 +238,37 @@ public class ClientSessionKeyMessageHandler extends SshMessageHandler<ClientSess
 
                 innerEncryption = CipherFactory.getRsaPkcs1Cipher(hostPrivateKey);
                 sessionKey = innerEncryption.decrypt(sessionKey);
+
+                secondEncryptionSuccessfull = true;
             }
 
         } catch (CryptoException e) {
             LOGGER.fatal(e);
-            if (e.getCause() instanceof BadPaddingException) {
-                if (firstEncryptionSuccessfull) {
+            if (e.getCause() instanceof BadPaddingException
+                    || e.getCause() instanceof IllegalBlockSizeException) {
+                if (firstEncryptionSuccessfull && !secondEncryptionSuccessfull) {
                     LOGGER.fatal("Caused by BadPadding in second encryption");
                     // SEND Disconnect Message
                     // only the first one is correct, setting to 1
                     sshContext.setBbResult(1);
-                } else {
+                } else if (!firstEncryptionSuccessfull && !secondEncryptionSuccessfull) {
                     LOGGER.fatal("Caused by BadPadding in first encryption");
                     // SEND Failure Message
                     // no key is correct - setting to 0
                     sshContext.setBbResult(0);
+                } else if (firstEncryptionSuccessfull && secondEncryptionSuccessfull) {
+                    LOGGER.fatal("Anything happend but both run successfull");
+                    sshContext.setBbResult(2);
                 }
-            } else {
-                sshContext.setBbResult(2);
             }
-            // Both correct, setting BB Result to 2
-
             // throw new RuntimeException(e);
             // Set Session key to dummy value
             sessionKey = new byte[32];
+        }
+
+        if (firstEncryptionSuccessfull && secondEncryptionSuccessfull) {
+            LOGGER.info("no Error while decrypting -> both were successfull");
+            sshContext.setBbResult(2);
         }
 
         // Set Sessionkey
