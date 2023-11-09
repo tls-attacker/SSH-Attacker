@@ -19,13 +19,20 @@ import de.rub.nds.sshattacker.attacks.pkcs1.oracles.BleichenbacherOracle;
 import de.rub.nds.sshattacker.attacks.response.EqualityError;
 import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.constants.KeyExchangeAlgorithm;
+import de.rub.nds.sshattacker.core.crypto.cipher.AbstractCipher;
+import de.rub.nds.sshattacker.core.crypto.cipher.CipherFactory;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomRsaPublicKey;
 import de.rub.nds.sshattacker.core.exceptions.ConfigurationException;
+import de.rub.nds.sshattacker.core.exceptions.CryptoException;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.math.BigInteger;
 import java.security.interfaces.RSAPublicKey;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -176,6 +183,10 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
         // --UnComment FOR "NORMAL" NOES
         getPublicKeys();
         getHostPublicKey();
+        Random random = new Random();
+        byte[] sessionKey = new byte[32];
+        random.nextBytes(sessionKey);
+
         getServerPublicKey();
         LOGGER.info(
                 String.format(
@@ -340,8 +351,29 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
                                         + "ACE6CD53C051E26E69AF472D0CFE17"
                                         + "322EC96499E529",
                                 16));*/
+        byte[] encryptedSecret;
+        if (config.isBenchmark()) {
+            LOGGER.info("Running in Benchmark Mode, generating encrypted Session Key");
+            AbstractCipher innerEncryption;
+            AbstractCipher outerEncryption;
+            if (hostPublicKey.getModulus().bitLength() < serverPublicKey.getModulus().bitLength()) {
+                innerEncryption = CipherFactory.getRsaPkcs1Cipher(hostPublicKey);
+                outerEncryption = CipherFactory.getRsaPkcs1Cipher(serverPublicKey);
+            } else {
+                innerEncryption = CipherFactory.getRsaPkcs1Cipher(serverPublicKey);
+                outerEncryption = CipherFactory.getRsaPkcs1Cipher(hostPublicKey);
+            }
 
-        byte[] encryptedSecret = ArrayConverter.hexStringToByteArray(config.getEncryptedSecret());
+            try {
+                sessionKey = innerEncryption.encrypt(sessionKey);
+                encryptedSecret = outerEncryption.encrypt(sessionKey);
+            } catch (CryptoException e) {
+                throw new RuntimeException(e);
+            }
+        } else {
+            encryptedSecret = ArrayConverter.hexStringToByteArray(config.getEncryptedSecret());
+        }
+
         if ((encryptedSecret.length * Byte.SIZE) != hostPublicKey.getModulus().bitLength()) {
             throw new ConfigurationException(
                     "The length of the encrypted secret "
@@ -392,6 +424,33 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
                             / Byte.SIZE);*/
 
             CONSOLE.info("Encoded Solution: " + solution);
+
+            byte[] array = solution.toByteArray();
+            if (array[0] == 0) {
+                byte[] tmp = new byte[array.length - 1];
+                System.arraycopy(array, 1, tmp, 0, tmp.length);
+                array = tmp;
+            }
+
+            try {
+                String str =
+                        String.format(
+                                "Results: Plaintext: %s; Time: %d ms; Inner-Tries: %d; Outer-Tries: %d",
+                                ArrayConverter.bytesToHexString(array),
+                                timeElapsed,
+                                attacker.getCounterInnerBleichenbacher(),
+                                attacker.getCounterOuterBleichenbacher());
+                FileOutputStream outputStream = new FileOutputStream("benchmark_result.output");
+                byte[] strToBytes = str.getBytes();
+                outputStream.write(strToBytes);
+
+                outputStream.close();
+            } catch (FileNotFoundException e) {
+                throw new RuntimeException(e);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+
             // CONSOLE.info("Decoded Secret: " + secret);
         } /*catch (NoSuchPaddingException e) {
               throw new RuntimeException(e);

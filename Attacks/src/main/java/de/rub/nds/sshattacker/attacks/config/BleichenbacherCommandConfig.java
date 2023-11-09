@@ -45,6 +45,12 @@ public class BleichenbacherCommandConfig extends AttackConfig {
                             + " secret message, right click on the \"Encrypted Secret\" value and copy this value as a Hex Stream.")
     private String encryptedSecret;
 
+    @Parameter(
+            names = {"-benchmark", "-b"},
+            description =
+                    "If this value is set the Attack is Benchmarked, all Encrypted-Secrets are randomly generated")
+    private boolean benchmark = false;
+
     /** How many rescans should be done */
     private int numberOfIterations = 3;
 
@@ -104,5 +110,13 @@ public class BleichenbacherCommandConfig extends AttackConfig {
 
     public void setNumberOfIterations(int mapListDepth) {
         this.numberOfIterations = mapListDepth;
+    }
+
+    public boolean isBenchmark() {
+        return benchmark;
+    }
+
+    public void setBenchmark(boolean benchmark) {
+        this.benchmark = benchmark;
     }
 }
