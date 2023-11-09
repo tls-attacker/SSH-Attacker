@@ -39,6 +39,7 @@ public class SshServer {
                 try {
 
                     SshServer server = new SshServer();
+                    LOGGER.info("Starting Server now... ");
                     server.startSshServer(sshConfig);
                 } catch (Exception e) {
                     LOGGER.error(

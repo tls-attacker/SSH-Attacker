@@ -120,7 +120,7 @@ public class BleichenbacherOracle extends Pkcs1Oracle {
                 LOGGER.debug("Received Failure Message -> the first one was correct :|");
                 conform[0] = true;
             } else if (lastMessage instanceof SuccessMessageSSH1) {
-                LOGGER.debug("Received Failure Message -> both were correct :)");
+                LOGGER.info("Received Success Message -> both were correct :)");
                 conform[0] = true;
                 conform[1] = true;
             } else {

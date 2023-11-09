@@ -102,7 +102,7 @@ public class Bleichenbacher extends Pkcs1Attack {
             BigInteger res = cipher.multiply(exponentiated);
             BigInteger attempt = res.mod(rsaPublicKey.getModulus());
             try {
-                Thread.sleep(100);
+                Thread.sleep(0);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
@@ -364,16 +364,16 @@ public class Bleichenbacher extends Pkcs1Attack {
         if (hostPublicKey.getModulus().bitLength() > serverPublicKey.getModulus().bitLength()) {
             byte[] cracked =
                     nestedBleichenbacher(encryptedMsg, this.serverPublicKey, this.hostPublicKey);
-            LOGGER.debug("Cracked encoded: {}", ArrayConverter.bytesToHexString(cracked));
+            LOGGER.info("Cracked encoded: {}", ArrayConverter.bytesToHexString(cracked));
             byte[] cracked_decoded = pkcs1Decode(cracked);
-            LOGGER.debug("Cracked decoded: {}", ArrayConverter.bytesToHexString(cracked_decoded));
+            LOGGER.info("Cracked decoded: {}", ArrayConverter.bytesToHexString(cracked_decoded));
             solution = new BigInteger(cracked_decoded);
         } else {
             byte[] cracked =
                     nestedBleichenbacher(encryptedMsg, this.serverPublicKey, this.hostPublicKey);
-            LOGGER.debug("Cracked encoded: {}", ArrayConverter.bytesToHexString(cracked));
+            LOGGER.info("Cracked encoded: {}", ArrayConverter.bytesToHexString(cracked));
             byte[] cracked_decoded = pkcs1Decode(cracked);
-            LOGGER.debug("Cracked decoded: {}", ArrayConverter.bytesToHexString(cracked_decoded));
+            LOGGER.info("Cracked decoded: {}", ArrayConverter.bytesToHexString(cracked_decoded));
             solution = new BigInteger(cracked_decoded);
         }
     }
