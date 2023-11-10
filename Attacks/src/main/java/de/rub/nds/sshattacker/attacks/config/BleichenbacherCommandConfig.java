@@ -13,11 +13,8 @@ import de.rub.nds.sshattacker.attacks.config.delegate.AttackDelegate;
 import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.config.delegate.ClientDelegate;
 import de.rub.nds.sshattacker.core.config.delegate.GeneralDelegate;
-import de.rub.nds.sshattacker.core.constants.KeyExchangeAlgorithm;
 import de.rub.nds.sshattacker.core.constants.ProtocolVersion;
 import de.rub.nds.sshattacker.core.layer.constant.LayerConfiguration;
-import de.rub.nds.sshattacker.core.util.Converter;
-import java.util.List;
 
 /** Config for Manger's attack */
 public class BleichenbacherCommandConfig extends AttackConfig {
@@ -30,15 +27,8 @@ public class BleichenbacherCommandConfig extends AttackConfig {
     @ParametersDelegate private final AttackDelegate attackDelegate;
 
     @Parameter(
-            names = "-kex_algorithm",
-            required = true,
-            description =
-                    "The key exchange algorithm that should be used: rsa2048-pkcs1 or rsa1024-pkcs1")
-    private String kexAlgorithm;
-
-    @Parameter(
             names = "-encrypted_secret",
-            required = true,
+            required = false,
             description =
                     "Encrypted secret from the CMSG_SSH_SESSION_KEY "
                             + " message. You can retrieve this message from the Wireshark traffic. Find the"
@@ -88,20 +78,6 @@ public class BleichenbacherCommandConfig extends AttackConfig {
 
     public void setEncryptedSecret(String encryptedSecret) {
         this.encryptedSecret = encryptedSecret;
-    }
-
-    public String getKexAlgorithm() {
-        return kexAlgorithm;
-    }
-
-    public KeyExchangeAlgorithm getKeyExchangeAlgorithm() {
-        List<KeyExchangeAlgorithm> list =
-                Converter.nameListToEnumValues(kexAlgorithm, KeyExchangeAlgorithm.class);
-        return list.get(0);
-    }
-
-    public void setKexAlgorithm(String kexAlgorithm) {
-        this.kexAlgorithm = kexAlgorithm;
     }
 
     public int getNumberOfIterations() {
