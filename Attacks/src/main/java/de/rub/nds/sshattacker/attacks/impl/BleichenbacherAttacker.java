@@ -24,6 +24,7 @@ import de.rub.nds.sshattacker.core.crypto.cipher.CipherFactory;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomRsaPublicKey;
 import de.rub.nds.sshattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.sshattacker.core.exceptions.CryptoException;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -160,6 +161,20 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
 
     @Override
     public void executeAttack() {
+
+        try {
+            String str = "Starting.";
+            File output_File = new File("benchmark_results.txt");
+            FileOutputStream outputStream = new FileOutputStream(output_File, true);
+            byte[] strToBytes = str.getBytes();
+            outputStream.write(strToBytes);
+
+            outputStream.close();
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
         /*if (!isVulnerable()) {
             LOGGER.warn("The server is not vulnerable to Manger's attack");
@@ -440,7 +455,8 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
                                 timeElapsed,
                                 attacker.getCounterInnerBleichenbacher(),
                                 attacker.getCounterOuterBleichenbacher());
-                FileOutputStream outputStream = new FileOutputStream("benchmark_result.output");
+                File output_File = new File("benchmark_results.txt");
+                FileOutputStream outputStream = new FileOutputStream(output_File, true);
                 byte[] strToBytes = str.getBytes();
                 outputStream.write(strToBytes);
 
