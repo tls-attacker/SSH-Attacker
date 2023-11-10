@@ -136,6 +136,8 @@ public enum MessageIdConstant {
     // 101 - 127 unassigned (channel related messages)
     // 128 - 191 reserved (for client protocols)
     // 192 - 255 reserved for private use (local extensions)
+    SSH_MSG_PING((byte) 192),
+    SSH_MSG_PONG((byte) 193),
     UNKNOWN((byte) 255);
 
     private final byte id;

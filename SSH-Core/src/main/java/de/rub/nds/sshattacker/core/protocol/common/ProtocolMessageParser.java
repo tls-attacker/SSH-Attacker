@@ -120,6 +120,10 @@ public abstract class ProtocolMessageParser<T extends ProtocolMessage<T>> extend
                     return new ExtensionInfoMessageParser(raw).parse();
                 case SSH_MSG_NEWCOMPRESS:
                     return new NewCompressMessageParser(raw).parse();
+                case SSH_MSG_PING:
+                    return new PingMessageParser(raw).parse();
+                case SSH_MSG_PONG:
+                    return new PongMessageParser(raw).parse();
                 case SSH_MSG_SERVICE_REQUEST:
                     return new ServiceRequestMessageParser(raw).parse();
                 case SSH_MSG_SERVICE_ACCEPT:
