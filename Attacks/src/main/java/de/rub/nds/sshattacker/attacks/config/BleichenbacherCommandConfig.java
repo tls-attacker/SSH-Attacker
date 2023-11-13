@@ -36,6 +36,12 @@ public class BleichenbacherCommandConfig extends AttackConfig {
     private String encryptedSecret;
 
     @Parameter(
+            names = {"-cookie", "-b"},
+            required = false,
+            description = "Cookie for SessionID Calculation")
+    private String cookie;
+
+    @Parameter(
             names = {"-benchmark", "-b"},
             description =
                     "If this value is set the Attack is Benchmarked, all Encrypted-Secrets are randomly generated")
@@ -94,5 +100,13 @@ public class BleichenbacherCommandConfig extends AttackConfig {
 
     public void setBenchmark(boolean benchmark) {
         this.benchmark = benchmark;
+    }
+
+    public String getCookie() {
+        return cookie;
+    }
+
+    public void setCookie(String cookie) {
+        this.cookie = cookie;
     }
 }
