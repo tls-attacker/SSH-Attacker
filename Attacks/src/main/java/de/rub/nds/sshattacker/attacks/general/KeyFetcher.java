@@ -171,7 +171,6 @@ public class KeyFetcher {
     public static List<CustomRsaPublicKey> fetchRsaSsh1Keys(
             Config config, int attempt, int maxAttempts) {
         WorkflowConfigurationFactory factory = new WorkflowConfigurationFactory(config);
-        LOGGER.debug("Fetchng keys");
 
         WorkflowTrace trace =
                 factory.createWorkflowTrace(
@@ -181,8 +180,9 @@ public class KeyFetcher {
         trace.addSshAction(receiveAction);
 
         DisconnectMessageSSH1 disconnectMessage = new DisconnectMessageSSH1();
-        disconnectMessage.setDisconnectReason("cusIcan");
-        VariableModification<String> newValue = StringModificationFactory.explicitValue("youKnow");
+        disconnectMessage.setDisconnectReason("fetching Keys");
+        VariableModification<String> newValue =
+                StringModificationFactory.explicitValue("fetching Keys");
         disconnectMessage.getDisconnectReason().setModification(newValue);
 
         LOGGER.debug(disconnectMessage.getDisconnectReason());
@@ -196,27 +196,6 @@ public class KeyFetcher {
         WorkflowExecutor workflowExecutor = new DefaultWorkflowExecutor(state);
 
         workflowExecutor.executeWorkflow();
-
-        /*            try {
-            workflowExecutor.executeWorkflow();
-
-            if (!state.getSshContext().getTransportHandler().isClosed()) {
-                LOGGER.debug("Running into");
-                state.getSshContext().getTransportHandler().closeConnection();
-            }
-        } catch (IOException e) {
-            if (attempt < maxAttempts) {
-                LOGGER.debug(
-                        String.format(
-                                "Encountered IOException on socket in attempt %d, retrying...",
-                                attempt));
-                return fetchRsaTransientKey(config, attempt + 1, maxAttempts, version);
-            } else {
-                LOGGER.warn("Could not fetch server's RSA host key, encountered IOException");
-                LOGGER.debug(e);
-                return null;
-            }
-        }*/
 
         List<ProtocolMessage<?>> receivedMessages = receiveAction.getReceivedMessages();
         LOGGER.info(receivedMessages.size());

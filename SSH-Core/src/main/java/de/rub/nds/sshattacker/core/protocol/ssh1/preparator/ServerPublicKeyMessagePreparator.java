@@ -59,24 +59,6 @@ public class ServerPublicKeyMessagePreparator extends SshMessagePreparator<Serve
             }
         }
 
-        /*
-              SshPublicKey<?, ?> opt_hostKey = chooser.getConfig().getHostKeys().get(7);
-
-              CustomRsaPublicKey publicKey = (CustomRsaPublicKey) opt_hostKey.getPublicKey();
-
-              if (!opt_hostKey.getPrivateKey().isPresent()) {
-                    LOGGER.warn("no privat key defined for hostkey");
-                }
-                if (opt_hostKey.getPublicKeyFormat().getName().equals(PublicKeyFormat.SSH_RSA.getName())) {
-                    LOGGER.warn(
-                            "the Host-Key is not formated as RSA Key-Type, it is {}",
-                            opt_hostKey.getPublicKeyFormat().getName());
-                }
-                CustomRsaPrivateKey privateKey = (CustomRsaPrivateKey) opt_hostKey.getPrivateKey().get();
-
-                SshPublicKey<CustomRsaPublicKey, CustomRsaPrivateKey> hostKey =
-                        new SshPublicKey<>(PublicKeyFormat.SSH_RSA, publicKey, privateKey);
-        */
         getObject().setHostKey(this.hostkey);
         chooser.getContext().getSshContext().setHostKey(this.hostkey);
 
