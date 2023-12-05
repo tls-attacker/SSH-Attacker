@@ -36,7 +36,7 @@ public class BleichenbacherCommandConfig extends AttackConfig {
     private String encryptedSecret;
 
     @Parameter(
-            names = {"-cookie", "-b"},
+            names = {"-cookie", "-c"},
             required = false,
             description = "Cookie for SessionID Calculation")
     private String cookie;

