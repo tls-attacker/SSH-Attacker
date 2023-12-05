@@ -211,7 +211,7 @@ public class Ssh1MockOracle extends Pkcs1Oracle {
      */
     @Override
     public boolean[] checkDoublePKCSConformity(byte[] msg) {
-        /// return oracleWeak(msg);
+        // return oracleWeak(msg);
         return oracleStrong(msg);
     }
 

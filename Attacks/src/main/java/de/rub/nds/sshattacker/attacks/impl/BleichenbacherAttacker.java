@@ -164,7 +164,7 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
             }
         }
 
-        // Host 2048
+        /*// Host 2048
         CustomRsaPrivateKey hostPrivatKey =
                 new CustomRsaPrivateKey(
                         new BigInteger(
@@ -241,9 +241,9 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
                                         + "C5E4CB3A9E2ECEE52BB07C33F92893"
                                         + "A5D5B6F163BE6FBC1E8E66E4666866"
                                         + "871890105EFFE1193F",
-                                16));
+                                16));*/
 
-        /*// Host 1024
+        // Host 1024
         CustomRsaPublicKey hostPublicKey =
                 new CustomRsaPublicKey(
                         new BigInteger("010001", 16),
@@ -314,7 +314,7 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
                                         + "27DB0768AB643AD09A7C42C6AD47DA"
                                         + "ACE6CD53C051E26E69AF472D0CFE17"
                                         + "322EC96499E529",
-                                16));*/
+                                16));
         /*if (!isVulnerable()) {
             LOGGER.warn("The server is not vulnerable to Manger's attack");
             return;
@@ -434,7 +434,8 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
                                         + "  \"Inner-Tries\": \"%d\","
                                         + "  \"Outer-Tries\": \"%d\","
                                         + "  \"serverkey_lenght\": \"%d\","
-                                        + "  \"hostkey_lenght\": \"%d\""
+                                        + "  \"hostkey_lenght\": \"%d\","
+                                        + "  \"oracle_type\": \"strong\""
                                         + "}",
                                 ArrayConverter.bytesToHexString(solutionByteArray),
                                 ArrayConverter.bytesToHexString(encryptedSecret),
