@@ -137,14 +137,15 @@ public abstract class EllipticCurve {
      *
      * @param x The x coordinate of the point.
      * @param y The y coordinate of the point.
+     * @return The Point object with the given coordinates.
      */
     public abstract Point getPoint(BigInteger x, BigInteger y);
 
     /**
-     * Returns true iff the point p is on the curve.
+     * Determines whether a given point is on the curve.
      *
-     * @param p An affine point whose coordinates are elements of the field over which the curve is
-     *     defined or the point at infinity.
+     * @param p The point to check.
+     * @return True if the point is on the curve, false otherwise.
      */
     public abstract boolean isOnCurve(Point p);
 

