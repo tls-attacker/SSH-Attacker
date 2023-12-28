@@ -68,7 +68,8 @@ public class Bleichenbacher extends Pkcs1Attack {
     }
 
     /**
-     * Divides a BigInteger number 'a' by another BigInteger number 'b' and returns the ceiling of the result.
+     * Divides a BigInteger number 'a' by another BigInteger number 'b' and returns the ceiling of
+     * the result.
      *
      * @param a The BigInteger number to be divided
      * @param b The BigInteger number that is the divisor
@@ -84,11 +85,10 @@ public class Bleichenbacher extends Pkcs1Attack {
     }
 
     /**
-     * Manipulates the ciphertext by performing the following steps:
-     * 1. Computes the exponentiated value of s using the public exponent e and modulus n.
-     * 2. Converts the ciphertext array c to a BigInteger cipher.
-     * 3. Multiplies cipher with exponentiated and stores the result in res.
-     * 4. Computes the modulus of res with n and returns the result.
+     * Manipulates the ciphertext by performing the following steps: 1. Computes the exponentiated
+     * value of s using the public exponent e and modulus n. 2. Converts the ciphertext array c to a
+     * BigInteger cipher. 3. Multiplies cipher with exponentiated and stores the result in res. 4.
+     * Computes the modulus of res with n and returns the result.
      *
      * @param s The value to be exponentiated.
      * @param e The public exponent.
@@ -498,9 +498,9 @@ public class Bleichenbacher extends Pkcs1Attack {
     /**
      * Perform the inner Bleichenbacher algorithm.
      *
-     * @param ciphertext    The ciphertext to decrypt.
-     * @param innerPublicKey    The inner RSA public key.
-     * @param outerPublicKey    The outer RSA public key.
+     * @param ciphertext The ciphertext to decrypt.
+     * @param innerPublicKey The inner RSA public key.
+     * @param outerPublicKey The outer RSA public key.
      * @return The decrypted plaintext as a byte array.
      */
     private byte[] innerBleichenbacher(
@@ -530,7 +530,7 @@ public class Bleichenbacher extends Pkcs1Attack {
 
         BigInteger s =
                 find_smallest_s_nested(
-                        ceil(innerPublicKey.getModulus(), three_B),
+                        ceil(innerPublicKey.getModulus().add(two_B), three_B_sub_one),
                         ciphertext,
                         innerPublicKey,
                         outerPublicKey);
@@ -589,7 +589,10 @@ public class Bleichenbacher extends Pkcs1Attack {
                 M.get(0).upper.toString(16));
 
         BigInteger s =
-                find_smallest_s(ceil(publicKey.getModulus(), three_B), ciphertext, publicKey);
+                find_smallest_s(
+                        ceil(publicKey.getModulus().add(two_B), three_B_sub_one),
+                        ciphertext,
+                        publicKey);
 
         LOGGER.debug(
                 "found s, initial updating M lower: {} M upper: {}",
