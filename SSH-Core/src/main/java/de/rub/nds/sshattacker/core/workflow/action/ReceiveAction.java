@@ -163,6 +163,8 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
                         name = "ClientSessionKeyMessageSSH1"),
                 @XmlElement(type = SuccessMessageSSH1.class, name = "SuccessMessageSSH1"),
                 @XmlElement(type = FailureMessageSSH1.class, name = "FailureMessageSSH1"),
+                @XmlElement(type = UserMessageSSH1.class, name = "UserMessageSSH1"),
+                @XmlElement(type = AuthPasswordSSH1.class, name = "AuthPasswordSSH1"),
                 @XmlElement(type = DisconnectMessageSSH1.class, name = "DisconnectMessageSSH1")
             })
     protected List<ProtocolMessage<?>> expectedMessages = new ArrayList<>();

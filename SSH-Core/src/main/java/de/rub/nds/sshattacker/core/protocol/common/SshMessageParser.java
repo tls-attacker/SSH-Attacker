@@ -36,7 +36,7 @@ public abstract class SshMessageParser<T extends SshMessage<T>> extends Protocol
 
     private void parseMessageID(T message) {
         message.setMessageId(parseByteField(SshMessageConstants.MESSAGE_ID_LENGTH));
-        LOGGER.debug("Parsing MessageID {}", message.getMessageId());
+        LOGGER.debug("Parsing MessageID {}", message.getMessageId().getValue());
     }
 
     protected abstract void parseMessageSpecificContents(T message);
