@@ -7,6 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.packet.crypto;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.CipherMode;
 import de.rub.nds.sshattacker.core.exceptions.CryptoException;
 import de.rub.nds.sshattacker.core.layer.context.SshContext;
@@ -39,6 +40,9 @@ public class PacketDecryptor extends AbstractPacketDecryptor {
     public void decrypt(BinaryPacketSSHv1 packet) {
         PacketCipher packetCipher = getPacketMostRecentCipher();
         LOGGER.debug("Decrypting binary packet using packet cipher: {}", packetCipher);
+        LOGGER.debug(
+                "Decrypting total {}",
+                ArrayConverter.bytesToHexString(packet.getCiphertext().getValue()));
         try {
             packet.setSequenceNumber(context.getReadSequenceNumber());
             packetCipher.process(packet);
@@ -50,6 +54,10 @@ public class PacketDecryptor extends AbstractPacketDecryptor {
                 LOGGER.error("Could not decrypt with " + noneCipher, ex);
             }
         }
+
+        LOGGER.debug(
+                "resulting in {}", ArrayConverter.bytesToHexString(packet.getPayload().getValue()));
+
         context.incrementReadSequenceNumber();
     }
 

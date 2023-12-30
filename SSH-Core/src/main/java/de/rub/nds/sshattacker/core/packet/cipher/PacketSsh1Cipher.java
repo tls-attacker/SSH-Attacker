@@ -59,6 +59,7 @@ public class PacketSsh1Cipher extends PacketCipher {
                     mode == CipherMode.ENCRYPT
                             ? keySet.getWriteIv(getLocalConnectionEndType())
                             : keySet.getReadIv(getLocalConnectionEndType());
+            LOGGER.debug("nextIV is {}", nextIv);
         }
     }
 
@@ -72,6 +73,8 @@ public class PacketSsh1Cipher extends PacketCipher {
 
     @Override
     public void encrypt(BinaryPacketSSHv1 packet) {
+
+        LOGGER.debug("Encrypting the Packet now really");
 
         packet.setLength(
                 packet.getCompressedPayload().getValue().length + 4); // +4 for CRC-Checksum
@@ -201,6 +204,7 @@ public class PacketSsh1Cipher extends PacketCipher {
                 iv = computations.getIv().getValue();
             }
             LOGGER.info("Plain data to encrypt is {}", plainData);
+            LOGGER.debug("Encryption Cipher is {}", cipher.getAlgorithm());
             packet.setCiphertext(cipher.encrypt(plainData, iv));
             nextIv = extractNextIv(nextIv, packet.getCiphertext().getOriginalValue());
         } else {
@@ -376,18 +380,23 @@ public class PacketSsh1Cipher extends PacketCipher {
                 plainData = ArrayConverter.concatenate(firstBlock, remainingBlocks);
             } else {
                 if (encryptionAlgorithm.getIVSize() > 0) {
+                    LOGGER.debug("2a:");
                     // Case 2a: Binary packet / First block not decrypted / Cipher with IV
                     computations.setIv(nextIv);
+                    LOGGER.debug("iv is {}", nextIv);
                     plainData =
                             cipher.decrypt(
                                     packet.getCiphertext().getValue(),
                                     computations.getIv().getValue());
                 } else {
+                    LOGGER.debug("2b:");
                     // Case 2b: Binary packet / First block not decrypted / Cipher without IV
                     plainData = cipher.decrypt(packet.getCiphertext().getValue());
                 }
             }
             computations.setPlainPacketBytes(plainData);
+            LOGGER.debug("DEBUGGING NOW HIER {}", ArrayConverter.bytesToHexString(plainData));
+
             ModifiableByteArray plain_modifialbel = new ModifiableByteArray();
             plain_modifialbel.setOriginalValue(plainData);
             packet.setPayload(plain_modifialbel);

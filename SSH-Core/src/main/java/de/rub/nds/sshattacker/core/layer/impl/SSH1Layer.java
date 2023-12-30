@@ -248,6 +248,10 @@ public class SSH1Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
                 LOGGER.debug("[bro] returning SSH_MSG_DISCONNECT Hint");
                 readDisconnectData((BinaryPacket) packet);
                 break;
+            case SSH_CMSG_USER:
+                LOGGER.debug("[bro] returning SSH_CMSG_USER Hint");
+                readUserData((BinaryPacket) packet);
+                break;
             case SSH_SMSG_PUBLIC_KEY:
                 LOGGER.debug("[bro] returning SSH_SMSG_PUBLIC_KEY Hint");
                 readPublicKeyData((BinaryPacket) packet);
@@ -318,6 +322,16 @@ public class SSH1Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
 
     private void readDisconnectData(AbstractPacket<BinaryPacket> packet) {
         DisconnectMessageSSH1 message = new DisconnectMessageSSH1();
+        HintedInputStream temp_stream;
+
+        temp_stream =
+                new HintedInputStreamAdapterStream(
+                        null, new ByteArrayInputStream(packet.getPayload().getValue()));
+        readContainerFromStream(message, context, temp_stream);
+    }
+
+    private void readUserData(AbstractPacket<BinaryPacket> packet) {
+        UserMessageSSH1 message = new UserMessageSSH1();
         HintedInputStream temp_stream;
 
         temp_stream =
