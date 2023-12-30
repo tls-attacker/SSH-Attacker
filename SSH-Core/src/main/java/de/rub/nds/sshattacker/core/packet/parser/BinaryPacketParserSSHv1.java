@@ -221,6 +221,7 @@ public class BinaryPacketParserSSHv1 extends AbstractPacketParser<BinaryPacketSS
         LOGGER.debug("LENGHT = {}", binaryPacket.getLength());
 
         int padding_lenght = 8 - (binaryPacket.getLength().getValue() % 8);
+        LOGGER.debug("PADDING LENGHT = {}", padding_lenght);
 
         binaryPacket.setCiphertext(
                 parseByteArrayField(binaryPacket.getLength().getValue() + padding_lenght));

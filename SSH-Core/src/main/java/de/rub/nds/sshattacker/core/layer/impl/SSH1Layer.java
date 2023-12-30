@@ -286,6 +286,10 @@ public class SSH1Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
                 LOGGER.debug("[bro] returning SSH_MSG_CHANNEL_CLOSE Hint");
                 break;
                 // return new PacketLayerHint(ProtocolMessageType.SSH_MSG_CHANNEL_CLOSE);
+            case SSH_CMSG_AUTH_TIS:
+                LOGGER.debug("[bro] returning SSH_CMSG_AUTH_TIS Hint");
+                readSuccessMessage((BinaryPacket) packet);
+                break;
             case SSH_SMSG_SUCCESS:
                 LOGGER.debug("[bro] returning SSH_SMSG_SUCCESS Hint");
                 readSuccessMessage((BinaryPacket) packet);
