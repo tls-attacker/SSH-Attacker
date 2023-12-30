@@ -23,11 +23,19 @@ class TribleDESCipher extends AbstractCipher {
 
     private static final Logger LOGGER = LogManager.getLogger();
     private final byte[] key1, key2, key3;
-    private final Cipher cipher1, cipher2, cipher3;
+    private final Cipher encCipher1, encCipher2, encCipher3;
+    private final Cipher decCipher1, decCipher2, decCipher3;
 
     public TribleDESCipher(byte[] key) {
 
         LOGGER.debug("Init with key {}", ArrayConverter.bytesToHexString(key));
+
+        IvParameterSpec encIvSpec1 = new IvParameterSpec(new byte[8]);
+        IvParameterSpec encIvSpec2 = new IvParameterSpec(new byte[8]);
+        IvParameterSpec encIvSpec3 = new IvParameterSpec(new byte[8]);
+        IvParameterSpec decIvSpec1 = new IvParameterSpec(new byte[8]);
+        IvParameterSpec decIvSpec2 = new IvParameterSpec(new byte[8]);
+        IvParameterSpec decIvSpec3 = new IvParameterSpec(new byte[8]);
 
         this.key1 = new byte[8];
         this.key2 = new byte[8];
@@ -38,10 +46,26 @@ class TribleDESCipher extends AbstractCipher {
         System.arraycopy(key, 16, this.key3, 0, 8);
 
         try {
-            this.cipher1 = Cipher.getInstance("DES/CBC/NoPadding");
-            this.cipher2 = Cipher.getInstance("DES/CBC/NoPadding");
-            this.cipher3 = Cipher.getInstance("DES/CBC/NoPadding");
-        } catch (NoSuchAlgorithmException | NoSuchPaddingException e) {
+            this.encCipher1 = Cipher.getInstance("DES/CBC/NoPadding");
+            this.encCipher2 = Cipher.getInstance("DES/CBC/NoPadding");
+            this.encCipher3 = Cipher.getInstance("DES/CBC/NoPadding");
+
+            encCipher1.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(this.key1, "DES"), encIvSpec1);
+            encCipher2.init(Cipher.DECRYPT_MODE, new SecretKeySpec(this.key2, "DES"), encIvSpec2);
+            encCipher3.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(this.key3, "DES"), encIvSpec3);
+
+            this.decCipher1 = Cipher.getInstance("DES/CBC/NoPadding");
+            this.decCipher2 = Cipher.getInstance("DES/CBC/NoPadding");
+            this.decCipher3 = Cipher.getInstance("DES/CBC/NoPadding");
+
+            decCipher1.init(Cipher.DECRYPT_MODE, new SecretKeySpec(this.key3, "DES"), decIvSpec1);
+            decCipher2.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(this.key2, "DES"), decIvSpec2);
+            decCipher3.init(Cipher.DECRYPT_MODE, new SecretKeySpec(this.key1, "DES"), decIvSpec3);
+
+        } catch (NoSuchAlgorithmException
+                | NoSuchPaddingException
+                | InvalidAlgorithmParameterException
+                | InvalidKeyException e) {
             throw new RuntimeException(e);
         }
     }
@@ -53,32 +77,21 @@ class TribleDESCipher extends AbstractCipher {
 
     @Override
     public byte[] encrypt(byte[] plainData, byte[] iv) throws CryptoException {
+        // iv = new byte[8];
         LOGGER.info(
                 "Encrypting 3DES with data: {} with iv {}",
                 ArrayConverter.bytesToHexString(plainData),
-                iv);
-        IvParameterSpec decryptIv = new IvParameterSpec(iv);
-        try {
-            LOGGER.debug("Encryption with key {}", ArrayConverter.bytesToHexString(this.key1));
-            LOGGER.debug("Encryption with key {}", ArrayConverter.bytesToHexString(this.key2));
-            LOGGER.debug("Encryption with key {}", ArrayConverter.bytesToHexString(this.key3));
+                ArrayConverter.bytesToHexString(iv));
 
-            cipher1.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(this.key1, "DES"), decryptIv);
-            cipher2.init(Cipher.DECRYPT_MODE, new SecretKeySpec(this.key2, "DES"), decryptIv);
-            cipher3.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(this.key3, "DES"), decryptIv);
+        LOGGER.debug("Encryption with key {}", ArrayConverter.bytesToHexString(this.key1));
+        LOGGER.debug("Encryption with key {}", ArrayConverter.bytesToHexString(this.key2));
+        LOGGER.debug("Encryption with key {}", ArrayConverter.bytesToHexString(this.key3));
 
-            byte[] enc1 = cipher1.doFinal(plainData);
-            byte[] enc2 = cipher2.doFinal(enc1);
-            byte[] enc3 = cipher3.doFinal(enc2);
-            LOGGER.info("Resulting in encrypted ata: {}", ArrayConverter.bytesToHexString(enc3));
-            return enc3;
-
-        } catch (InvalidKeyException
-                | InvalidAlgorithmParameterException
-                | IllegalBlockSizeException
-                | BadPaddingException e) {
-            throw new RuntimeException(e);
-        }
+        byte[] enc1 = encCipher1.update(plainData);
+        byte[] enc2 = encCipher2.update(enc1);
+        byte[] enc3 = encCipher3.update(enc2);
+        LOGGER.info("Resulting in encrypted ata: {}", ArrayConverter.bytesToHexString(enc3));
+        return enc3;
     }
 
     @Override
@@ -94,28 +107,21 @@ class TribleDESCipher extends AbstractCipher {
 
     @Override
     public byte[] decrypt(byte[] encryptedData, byte[] iv) throws CryptoException {
-        IvParameterSpec decryptIv = new IvParameterSpec(iv);
+        // iv = new byte[8];
         LOGGER.info(
                 "Decrypting 3DES with data: {} with iv {}",
                 ArrayConverter.bytesToHexString(encryptedData),
-                iv);
-        try {
-            cipher1.init(Cipher.DECRYPT_MODE, new SecretKeySpec(this.key3, "DES"), decryptIv);
-            cipher2.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(this.key2, "DES"), decryptIv);
-            cipher3.init(Cipher.DECRYPT_MODE, new SecretKeySpec(this.key1, "DES"), decryptIv);
+                ArrayConverter.bytesToHexString(iv));
 
-            byte[] enc1 = cipher1.doFinal(encryptedData);
-            byte[] enc2 = cipher2.doFinal(enc1);
-            byte[] enc3 = cipher3.doFinal(enc2);
-            LOGGER.info("Resulting in decrypted data: {}", ArrayConverter.bytesToHexString(enc3));
-            return enc3;
+        LOGGER.debug("Decryption with key {}", ArrayConverter.bytesToHexString(this.key1));
+        LOGGER.debug("Decryption with key {}", ArrayConverter.bytesToHexString(this.key2));
+        LOGGER.debug("Decryption with key {}", ArrayConverter.bytesToHexString(this.key3));
 
-        } catch (InvalidKeyException
-                | InvalidAlgorithmParameterException
-                | IllegalBlockSizeException
-                | BadPaddingException e) {
-            throw new RuntimeException(e);
-        }
+        byte[] enc1 = decCipher1.update(encryptedData);
+        byte[] enc2 = decCipher2.update(enc1);
+        byte[] enc3 = decCipher3.update(enc2);
+        LOGGER.info("Resulting in decrypted data: {}", ArrayConverter.bytesToHexString(enc3));
+        return enc3;
     }
 
     @Override
