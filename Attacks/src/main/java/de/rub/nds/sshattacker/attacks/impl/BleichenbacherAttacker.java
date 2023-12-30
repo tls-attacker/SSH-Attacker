@@ -226,7 +226,7 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
                                 "CC8E8480EB2E26580EA260146575CB10D215F71A46BBB62C98D854154579E372E193102FF359799C4D247A661F32C082EE5C1919B43889214C8310E6291E2B0B16818464BAE5A0374CACA0EB4814756B71C3E1F459AB4B8DE555D338CA30557F",
                                 16));*/
 
-        /*// Host 2048
+        // Host 2048
         CustomRsaPrivateKey hostPrivatKey =
                 new CustomRsaPrivateKey(
                         new BigInteger(
@@ -303,9 +303,9 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
                                         + "C5E4CB3A9E2ECEE52BB07C33F92893"
                                         + "A5D5B6F163BE6FBC1E8E66E4666866"
                                         + "871890105EFFE1193F",
-                                16));*/
+                                16));
 
-        // Host 1024
+        /*// Host 1024
         CustomRsaPublicKey hostPublicKey =
                 new CustomRsaPublicKey(
                         new BigInteger("010001", 16),
@@ -376,7 +376,8 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
                                         + "27DB0768AB643AD09A7C42C6AD47DA"
                                         + "ACE6CD53C051E26E69AF472D0CFE17"
                                         + "322EC96499E529",
-                                16));
+                                16));*/
+
         /*if (!isVulnerable()) {
             LOGGER.warn("The server is not vulnerable to Manger's attack");
             return;
@@ -488,7 +489,7 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
                                         + "  \"Outer-Tries\": \"%d\","
                                         + "  \"serverkey_lenght\": \"%d\","
                                         + "  \"hostkey_lenght\": \"%d\","
-                                        + "  \"oracle_type\": \"real\""
+                                        + "  \"oracle_type\": \"weaks\""
                                         + "}",
                                 ArrayConverter.bytesToHexString(solutionByteArray),
                                 ArrayConverter.bytesToHexString(encryptedSecret),
