@@ -10,6 +10,8 @@ package de.rub.nds.sshattacker.attacks.config;
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.ParametersDelegate;
 import de.rub.nds.sshattacker.attacks.config.delegate.AttackDelegate;
+import de.rub.nds.sshattacker.attacks.pkcs1.KeyLenght;
+import de.rub.nds.sshattacker.attacks.pkcs1.OracleType;
 import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.config.delegate.ClientDelegate;
 import de.rub.nds.sshattacker.core.config.delegate.GeneralDelegate;
@@ -46,6 +48,34 @@ public class BleichenbacherCommandConfig extends AttackConfig {
             description =
                     "If this value is set the Attack is Benchmarked, all Encrypted-Secrets are randomly generated")
     private boolean benchmark = false;
+
+    @Parameter(
+            names = {"-classic"},
+            required = false,
+            description =
+                    "If this value is set the Attack is run in 'classic' mode, so no algorithm_improvements are used")
+    private boolean classic = false;
+
+    @Parameter(
+            names = {"-keyLenght", "-k"},
+            required = false,
+            description =
+                    "Sets the oracle type for the attack, if real, the connection will be queried, otherwise it will be handeled as mock oracle. In case of the mock oracle, short means 1024 and 768 bit keys, long means 2048 and 1024 bit keys")
+    private KeyLenght keyLenght = KeyLenght.REAL;
+
+    @Parameter(
+            names = {"-oracleType", "-o"},
+            required = false,
+            description =
+                    "Sets the oracle type for the attack, if real, the connection will be queried, otherwise it will be handeled as mock oracle")
+    private OracleType oracleType = OracleType.REAL;
+
+    @Parameter(
+            names = {"-sendSinglePacket", "-s"},
+            required = false,
+            description =
+                    "If set, the string after this parameter will be send as packet directly to the oracle")
+    private String sendSinglePacket = "";
 
     /** How many rescans should be done */
     private int numberOfIterations = 3;
@@ -108,5 +138,21 @@ public class BleichenbacherCommandConfig extends AttackConfig {
 
     public void setCookie(String cookie) {
         this.cookie = cookie;
+    }
+
+    public KeyLenght getKeyLenght() {
+        return keyLenght;
+    }
+
+    public OracleType getOracleType() {
+        return oracleType;
+    }
+
+    public String getSendSinglePacket() {
+        return sendSinglePacket;
+    }
+
+    public boolean isClassic() {
+        return classic;
     }
 }

