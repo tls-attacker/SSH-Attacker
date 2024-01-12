@@ -516,8 +516,7 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
         }
 
         String attackType = "bardou";
-        if (config.isClassic())
-            attackType="classic";
+        if (config.isClassic()) attackType = "classic";
 
         if (config.isBenchmark()) {
             try {

