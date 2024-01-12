@@ -10,9 +10,7 @@ package de.rub.nds.sshattacker.attacks.pkcs1.util;
 import java.math.BigInteger;
 import java.util.ArrayList;
 
-/**
- * The MathHelper class provides various mathematical helper methods.
- */
+/** The MathHelper class provides various mathematical helper methods. */
 public class MathHelper {
 
     public MathHelper() {}
