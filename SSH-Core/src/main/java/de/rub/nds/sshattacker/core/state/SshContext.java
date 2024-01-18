@@ -171,6 +171,8 @@ public class SshContext {
     private CompressionMethod compressionMethodClientToServer;
     /** Negotiated compression algorithm (server to client) */
     private CompressionMethod compressionMethodServerToClient;
+    /** Flag indicating whether strict key exchange mode is enabled */
+    private Boolean strictKeyExchangeEnabled;
     // endregion
 
     // region Key Exchange
@@ -788,6 +790,9 @@ public class SshContext {
         return Optional.ofNullable(compressionMethodServerToClient);
     }
 
+    public Optional<Boolean> getStrictKeyExchangeEnabled() {
+        return Optional.ofNullable(strictKeyExchangeEnabled);
+    }
     // endregion
     // region Setters for Negotiated Parameters
     public void setKeyExchangeAlgorithm(KeyExchangeAlgorithm keyExchangeAlgorithm) {
@@ -826,6 +831,9 @@ public class SshContext {
         this.compressionMethodServerToClient = compressionMethodServerToClient;
     }
 
+    public void setStrictKeyExchangeEnabled(boolean strictKeyExchangeEnabled) {
+        this.strictKeyExchangeEnabled = strictKeyExchangeEnabled;
+    }
     // endregion
 
     // region Getters for Key Exchange Fields

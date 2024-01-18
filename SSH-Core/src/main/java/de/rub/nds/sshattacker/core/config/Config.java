@@ -489,7 +489,8 @@ public class Config implements Serializable {
                                     KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP16_SHA512,
                                     KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP18_SHA512,
                                     KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP14_SHA256,
-                                    KeyExchangeAlgorithm.EXT_INFO_C
+                                    KeyExchangeAlgorithm.EXT_INFO_C,
+                                    KeyExchangeAlgorithm.KEX_STRICT_C_V00_OPENSSH_COM
                                 })
                         .collect(Collectors.toCollection(LinkedList::new));
         serverSupportedKeyExchangeAlgorithms =
@@ -506,7 +507,8 @@ public class Config implements Serializable {
                                     KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP16_SHA512,
                                     KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP18_SHA512,
                                     KeyExchangeAlgorithm.DIFFIE_HELLMAN_GROUP14_SHA256,
-                                    KeyExchangeAlgorithm.EXT_INFO_S
+                                    KeyExchangeAlgorithm.EXT_INFO_S,
+                                    KeyExchangeAlgorithm.KEX_STRICT_S_V00_OPENSSH_COM
                                 })
                         .collect(Collectors.toCollection(LinkedList::new));
 

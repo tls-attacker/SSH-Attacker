@@ -117,6 +117,8 @@ public enum KeyExchangeAlgorithm {
             "sntrup761x25519-sha512@openssh.com",
             "SHA-512",
             "de.rub.nds.sshattacker.core.crypto.kex.Sntrup761X25519KeyExchange"),
+    KEX_STRICT_S_V00_OPENSSH_COM(null, "kex-strict-s-v00@openssh.com", null),
+    KEX_STRICT_C_V00_OPENSSH_COM(null, "kex-strict-c-v00@openssh.com", null),
     // [ SSH.COM ]
     CURVE25519_FRODOKEM1344(
             KeyExchangeFlowType.HYBRID,
