@@ -81,6 +81,14 @@ public class KeyExchangeInitMessageHandler extends SshMessageHandler<KeyExchange
 
             context.setServerSupportsExtensionNegotiation(
                     checkServerSupportForExtensionNegotiation());
+            context.setStrictKeyExchangeEnabled(
+                    containsKeyExchangeAlgorithm(
+                                    KeyExchangeAlgorithm.KEX_STRICT_S_V00_OPENSSH_COM,
+                                    context.getServerSupportedKeyExchangeAlgorithms()
+                                            .orElse(List.of()))
+                            && containsKeyExchangeAlgorithm(
+                                    KeyExchangeAlgorithm.KEX_STRICT_C_V00_OPENSSH_COM,
+                                    context.getConfig().getClientSupportedKeyExchangeAlgorithms()));
         } else {
             context.setClientCookie(message.getCookie().getValue());
             context.setClientSupportedKeyExchangeAlgorithms(
@@ -131,6 +139,14 @@ public class KeyExchangeInitMessageHandler extends SshMessageHandler<KeyExchange
 
             context.setClientSupportsExtensionNegotiation(
                     checkClientSupportForExtensionNegotiation());
+            context.setStrictKeyExchangeEnabled(
+                    containsKeyExchangeAlgorithm(
+                                    KeyExchangeAlgorithm.KEX_STRICT_C_V00_OPENSSH_COM,
+                                    context.getClientSupportedKeyExchangeAlgorithms()
+                                            .orElse(List.of()))
+                            && containsKeyExchangeAlgorithm(
+                                    KeyExchangeAlgorithm.KEX_STRICT_S_V00_OPENSSH_COM,
+                                    context.getConfig().getServerSupportedKeyExchangeAlgorithms()));
         }
         pickAlgorithms();
     }
