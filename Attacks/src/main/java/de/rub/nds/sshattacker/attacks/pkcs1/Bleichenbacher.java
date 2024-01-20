@@ -44,6 +44,11 @@ public class Bleichenbacher extends Pkcs1Attack {
     private int counterInnerBleichenbacher;
     private int counterOuterBleichenbacher;
 
+    private boolean innerTrimmed = false;
+    private boolean outerTrimmed = false;
+    private int innerTrimmers = 5000;
+    private int outerTrimmers = 1000;
+
     /**
      * @param msg The message that should be decrypted with the attack
      * @param pkcsOracle The oracle to be queried
@@ -500,6 +505,12 @@ public class Bleichenbacher extends Pkcs1Attack {
             M.add(new Interval(a, b));
             LOGGER.debug("done. trimming M0 iterations: [{},{}]", a, b);
 
+            if (outerPublicKey != null) {
+                innerTrimmed = true;
+            } else {
+                outerTrimmed = true;
+            }
+
         } else {
             LOGGER.debug("utPaires where empty, falling back to 2B and 3B-1");
             M = new ArrayList<>();
@@ -543,7 +554,7 @@ public class Bleichenbacher extends Pkcs1Attack {
                 M.get(0).lower.toString(16),
                 M.get(0).upper.toString(16));
         if (!classic) {
-            int maxTrimmes = outerPublicKey != null ? 5000 : 1000;
+            int maxTrimmes = outerPublicKey != null ? innerTrimmers : outerTrimmers;
 
             M = trimM0(ciphertext, innerPublicKey, outerPublicKey, maxTrimmes);
         }
@@ -651,5 +662,21 @@ public class Bleichenbacher extends Pkcs1Attack {
 
     public int getCounterOuterBleichenbacher() {
         return counterOuterBleichenbacher;
+    }
+
+    public boolean isInnerTrimmed() {
+        return innerTrimmed;
+    }
+
+    public boolean isOuterTrimmed() {
+        return outerTrimmed;
+    }
+
+    public int getInnerTrimmers() {
+        return innerTrimmers;
+    }
+
+    public int getOuterTrimmers() {
+        return outerTrimmers;
     }
 }
