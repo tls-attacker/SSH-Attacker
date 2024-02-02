@@ -122,6 +122,7 @@ public class Bleichenbacher extends Pkcs1Attack {
                 oracleResult = queryOracle(attempt, false);
 
                 if (counterOuterBleichenbacher == 0) {
+                    LOGGER.fatal("first");
                     LOGGER.fatal(
                             ArrayConverter.bytesToHexString(
                                     ArrayConverter.bigIntegerToByteArray(attempt)));
@@ -129,6 +130,7 @@ public class Bleichenbacher extends Pkcs1Attack {
                 counterOuterBleichenbacher++;
             }
             if (oracleResult) {
+                LOGGER.fatal("2b");
                 LOGGER.fatal(
                         ArrayConverter.bytesToHexString(
                                 ArrayConverter.bigIntegerToByteArray(attempt)));
@@ -214,6 +216,7 @@ public class Bleichenbacher extends Pkcs1Attack {
                 oracleResult = queryOracle(attempt, false);
 
                 if (counterOuterBleichenbacher == 0) {
+                    LOGGER.fatal("first");
                     LOGGER.fatal(
                             ArrayConverter.bytesToHexString(
                                     ArrayConverter.bigIntegerToByteArray(attempt)));
@@ -221,6 +224,7 @@ public class Bleichenbacher extends Pkcs1Attack {
                 counterOuterBleichenbacher++;
             }
             if (oracleResult) {
+                LOGGER.fatal("2a");
                 LOGGER.fatal(
                         ArrayConverter.bytesToHexString(
                                 ArrayConverter.bigIntegerToByteArray(attempt)));
@@ -576,7 +580,7 @@ public class Bleichenbacher extends Pkcs1Attack {
 
         while (true) {
             if (M.size() >= 2) {
-                s = step2b(s, ciphertext, innerPublicKey, outerPublicKey);
+                s = step2b(s.add(BigInteger.ONE), ciphertext, innerPublicKey, outerPublicKey);
             } else if (M.size() == 1) {
                 BigInteger a = M.get(0).lower;
                 BigInteger b = M.get(0).upper;
