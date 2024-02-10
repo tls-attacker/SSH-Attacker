@@ -7,8 +7,6 @@
  */
 package de.rub.nds.sshattacker.attacks.pkcs1.oracles;
 
-import static de.rub.nds.tlsattacker.util.ConsoleLogger.CONSOLE;
-
 import de.rub.nds.sshattacker.attacks.pkcs1.BleichenbacherWorkflowGenerator;
 import de.rub.nds.sshattacker.attacks.response.ResponseExtractor;
 import de.rub.nds.sshattacker.attacks.response.ResponseFingerprint;
@@ -42,18 +40,15 @@ public class BleichenbacherOracle extends Pkcs1Oracle {
 
     private final int maxAttempts;
 
-    private int counter = 0;
+    long timeElapsedforAverageCalculation = 0;
+    long timeElapsed = 0;
 
     /**
      * @param hostPublicKey The public key
      * @param config Config
      */
     public BleichenbacherOracle(
-            CustomRsaPublicKey hostPublicKey,
-            CustomRsaPublicKey serverPublicKey,
-            Config config,
-            int attemptCounterInnerBleichenbacher,
-            int attemptCounterOuterBleichenbacher) {
+            CustomRsaPublicKey hostPublicKey, CustomRsaPublicKey serverPublicKey, Config config) {
         this.hostPublicKey = hostPublicKey;
         this.serverPublicKey = serverPublicKey;
         this.blockSize =
@@ -78,17 +73,36 @@ public class BleichenbacherOracle extends Pkcs1Oracle {
         this.maxAttempts = maxAttempts;
     }
 
+    /**
+     * A "noramle" single encryption PCKS Conformity Check
+     *
+     * @param msg Encrypted message to check for conformity
+     * @return Conformty (True or False)
+     */
     @Override
     public boolean checkPKCSConformity(final byte[] msg) {
         return checkPKCSConformity(msg, 0)[0];
     }
 
+    /**
+     * A "double" PCKS Conformity check for nested encryption
+     *
+     * @param msg Encrypted message to check for conformity
+     * @return Conformty (True or False)
+     */
     @Override
     public boolean[] checkDoublePKCSConformity(final byte[] msg) {
 
         return checkPKCSConformity(msg, 0);
     }
 
+    /**
+     * Check for PKCS Conformity with an attempt counter
+     *
+     * @param msg Encrypted message to check for conformity
+     * @param currentAttempt Attempt to check for conformity, use for limiting attempts
+     * @return
+     */
     private boolean[] checkPKCSConformity(final byte[] msg, int currentAttempt) {
         // we are initializing a new connection in every loop step, since most
         // of the known servers close the connection after an invalid handshake
@@ -103,13 +117,26 @@ public class BleichenbacherOracle extends Pkcs1Oracle {
         WorkflowExecutor workflowExecutor = new DefaultWorkflowExecutor(state);
 
         numberOfQueries++;
-        if (numberOfQueries % 250 == 0) {
-            CONSOLE.info("Number of queries so far: {}", numberOfQueries);
+        if (numberOfQueries % 500 == 0) {
+            LOGGER.warn(
+                    String.format(
+                            "[%d] Tries, took per average %f ms per oracle-request, in total %s ms have gone by",
+                            numberOfQueries,
+                            (timeElapsedforAverageCalculation / (double) 500),
+                            timeElapsed),
+                    numberOfQueries,
+                    (timeElapsedforAverageCalculation / 500),
+                    timeElapsed);
+            timeElapsedforAverageCalculation = 0;
         }
 
         boolean conform[] = {false, false};
         try {
+            long start = System.currentTimeMillis();
             workflowExecutor.executeWorkflow();
+            long finish = System.currentTimeMillis();
+            timeElapsedforAverageCalculation = timeElapsedforAverageCalculation + (finish - start);
+            timeElapsed = timeElapsed + (finish - start);
 
             ProtocolMessage<?> lastMessage = receiveOracleResultAction.getReceivedMessages().get(0);
             LOGGER.debug("Received: {}", lastMessage.toString());
@@ -132,8 +159,7 @@ public class BleichenbacherOracle extends Pkcs1Oracle {
                 throw new WorkflowExecutionException("Workflow did not execute as planned!");
             }
 
-            counter++;
-            LOGGER.info("Try #{} ", counter);
+            LOGGER.warn("Try #{} took {}ms to query oracle", numberOfQueries, (finish - start));
             // clearConnections(state);
 
         } catch (WorkflowExecutionException e) {

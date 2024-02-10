@@ -63,6 +63,7 @@ public class Ssh1MockOracle extends Pkcs1Oracle {
 
     int counter = 0;
     long timeElapsed = 0;
+    long timeElapsedforAverageCalculation = 0;
 
     /**
      * Check the given content for PKCS-Conformity
@@ -84,10 +85,14 @@ public class Ssh1MockOracle extends Pkcs1Oracle {
             LOGGER.info(
                     String.format(
                             "[%d] Tries, took per average %f ms per oracle-request, in total %s ms have gone by",
-                            counter, (timeElapsed / (double) counter), timeElapsed),
+                            counter,
+                            (timeElapsedforAverageCalculation / (double) 500),
+                            timeElapsed),
                     counter,
-                    (timeElapsed / counter),
+                    (timeElapsedforAverageCalculation / 500),
                     timeElapsed);
+
+            timeElapsedforAverageCalculation = 0;
         }
         if (isPlaintextOracle) {
             return new boolean[] {true, true};
@@ -128,6 +133,7 @@ public class Ssh1MockOracle extends Pkcs1Oracle {
 
             long finish = System.currentTimeMillis();
             timeElapsed = timeElapsed + (finish - start);
+            timeElapsedforAverageCalculation = timeElapsedforAverageCalculation + (finish - start);
 
             return oracleResult;
         }
@@ -136,14 +142,19 @@ public class Ssh1MockOracle extends Pkcs1Oracle {
     private boolean[] oracleWeak(byte[] msg) {
         boolean[] oracleResult = new boolean[] {false, false};
         counter++;
+
         if (counter % 500 == 0) {
             LOGGER.info(
                     String.format(
                             "[%d] Tries, took per average %f ms per oracle-request, in total %s ms have gone by ",
-                            counter, (timeElapsed / (double) counter), timeElapsed),
+                            counter,
+                            (timeElapsedforAverageCalculation / (double) 500),
+                            timeElapsed),
                     counter,
-                    (timeElapsed / counter),
+                    (timeElapsedforAverageCalculation / 500),
                     timeElapsed);
+
+            timeElapsedforAverageCalculation = 0;
         }
         long start = System.currentTimeMillis();
 
@@ -193,11 +204,15 @@ public class Ssh1MockOracle extends Pkcs1Oracle {
                 }
                 long finish = System.currentTimeMillis();
                 timeElapsed = timeElapsed + (finish - start);
+                timeElapsedforAverageCalculation =
+                        timeElapsedforAverageCalculation + (finish - start);
                 return oracleResult;
 
             } catch (IllegalBlockSizeException | BadPaddingException e) {
                 long finish = System.currentTimeMillis();
                 timeElapsed = timeElapsed + (finish - start);
+                timeElapsedforAverageCalculation =
+                        timeElapsedforAverageCalculation + (finish - start);
 
                 return oracleResult;
             } catch (InvalidKeyException | NoSuchAlgorithmException | InvalidKeySpecException e) {
