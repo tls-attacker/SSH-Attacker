@@ -69,13 +69,13 @@ public class GeneralDelegate extends Delegate {
     public void applyDelegate(Config config) {
         Security.addProvider(new BouncyCastleProvider());
         if (isDebug()) {
-            Configurator.setAllLevels("de.rub.nds.sshattacker", Level.DEBUG);
+            Configurator.setAllLevels("de.rub.nds", Level.DEBUG);
         } else if (info) {
-            Configurator.setAllLevels("de.rub.nds.sshattacker", Level.INFO);
+            Configurator.setAllLevels("de.rub.nds", Level.INFO);
         } else if (warn) {
-            Configurator.setAllLevels("de.rub.nds.sshattacker", Level.WARN);
+            Configurator.setAllLevels("de.rub.nds", Level.WARN);
         } else if (quiet) {
-            Configurator.setAllLevels("de.rub.nds.sshattacker", Level.OFF);
+            Configurator.setAllLevels("de.rub.nds", Level.OFF);
         }
         LOGGER.debug("Using the following security providers");
         for (Provider p : Security.getProviders()) {
