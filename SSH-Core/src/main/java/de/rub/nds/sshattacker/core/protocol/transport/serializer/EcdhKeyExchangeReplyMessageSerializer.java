@@ -25,11 +25,11 @@ public class EcdhKeyExchangeReplyMessageSerializer
 
     private void serializeHostKeyBytes(EcdhKeyExchangeReplyMessage msg) {
         appendInt(msg.getHostKeyBytesLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
-        LOGGER.debug("Host key bytes length: " + msg.getHostKeyBytesLength().getValue());
+        LOGGER.debug("Host key bytes length: {}", msg.getHostKeyBytesLength().getValue());
         appendBytes(msg.getHostKeyBytes().getValue());
         LOGGER.debug(
-                "Host key bytes: "
-                        + ArrayConverter.bytesToRawHexString(msg.getHostKeyBytes().getValue()));
+                "Host key bytes: {}",
+                ArrayConverter.bytesToRawHexString(msg.getHostKeyBytes().getValue()));
     }
 
     private void serializeEphemeralPublicKey(EcdhKeyExchangeReplyMessage msg) {
@@ -37,17 +37,17 @@ public class EcdhKeyExchangeReplyMessageSerializer
                 msg.getEphemeralPublicKeyLength().getValue(),
                 DataFormatConstants.STRING_SIZE_LENGTH);
         LOGGER.debug(
-                "Ephemeral public key (server) length: "
-                        + msg.getEphemeralPublicKeyLength().getValue());
+                "Ephemeral public key (server) length: {}",
+                msg.getEphemeralPublicKeyLength().getValue());
         appendBytes(msg.getEphemeralPublicKey().getValue());
-        LOGGER.debug("Ephemeral public key (server): " + msg.getEphemeralPublicKey());
+        LOGGER.debug("Ephemeral public key (server): {}", msg.getEphemeralPublicKey());
     }
 
     private void serializeSignature(EcdhKeyExchangeReplyMessage msg) {
         appendInt(msg.getSignatureLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
-        LOGGER.debug("Signature length: " + msg.getSignatureLength().getValue());
+        LOGGER.debug("Signature length: {}", msg.getSignatureLength().getValue());
         appendBytes(msg.getSignature().getValue());
-        LOGGER.debug("Signature: " + msg.getSignature());
+        LOGGER.debug("Signature: {}", msg.getSignature());
     }
 
     @Override

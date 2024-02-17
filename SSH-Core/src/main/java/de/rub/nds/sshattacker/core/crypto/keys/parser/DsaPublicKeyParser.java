@@ -35,9 +35,8 @@ public class DsaPublicKeyParser
         String format = parseByteString(formatLength, StandardCharsets.US_ASCII);
         if (!format.equals(PublicKeyFormat.SSH_DSS.getName())) {
             LOGGER.warn(
-                    "Trying to parse an DSA public key, but encountered unexpected public key format '"
-                            + format
-                            + "'. Parsing will continue but may not yield the expected results.");
+                    "Trying to parse an DSA public key, but encountered unexpected public key format '{}'. Parsing will continue but may not yield the expected results.",
+                    format);
         }
         int pLength = parseIntField(DataFormatConstants.MPINT_SIZE_LENGTH);
         publicKey.setP(parseBigIntField(pLength));

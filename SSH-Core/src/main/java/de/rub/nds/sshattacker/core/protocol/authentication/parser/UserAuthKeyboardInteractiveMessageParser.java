@@ -50,19 +50,20 @@ public class UserAuthKeyboardInteractiveMessageParser
 
     private void parseLanguageTag(UserAuthKeyboardInteractiveMessage message) {
         message.setLanguageTagLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-        LOGGER.debug("Language tag length: " + message.getLanguageTagLength().getValue());
+        LOGGER.debug("Language tag length: {}", message.getLanguageTagLength().getValue());
         message.setLanguageTag(
                 parseByteString(
                         message.getLanguageTagLength().getValue(), StandardCharsets.US_ASCII));
-        LOGGER.debug("Language tag: " + backslashEscapeString(message.getLanguageTag().getValue()));
+        LOGGER.debug(
+                "Language tag: {}", backslashEscapeString(message.getLanguageTag().getValue()));
     }
 
     private void parseSubMethods(UserAuthKeyboardInteractiveMessage message) {
         message.setSubMethodsLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-        LOGGER.debug("Sub methods length: " + message.getSubMethodsLength().getValue());
+        LOGGER.debug("Sub methods length: {}", message.getSubMethodsLength().getValue());
         message.setSubMethods(
                 parseByteString(message.getSubMethodsLength().getValue(), StandardCharsets.UTF_8));
-        LOGGER.debug("Sub methods: " + backslashEscapeString(message.getSubMethods().getValue()));
+        LOGGER.debug("Sub methods: {}", backslashEscapeString(message.getSubMethods().getValue()));
     }
 
     @Override

@@ -33,7 +33,9 @@ public final class ExchangeHash {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private ExchangeHash() {}
+    private ExchangeHash() {
+        super();
+    }
 
     /**
      * Computes the exchange hash for the given algorithm with the ExchangeHashInputHolder instance
@@ -146,21 +148,21 @@ public final class ExchangeHash {
 
     private static byte[] compute(KeyExchangeAlgorithm algorithm, byte[] input)
             throws CryptoException {
-        LOGGER.debug("Exchange hash input: " + ArrayConverter.bytesToRawHexString(input));
+        LOGGER.debug("Exchange hash input: {}", ArrayConverter.bytesToRawHexString(input));
         MessageDigest md;
         try {
             md = MessageDigest.getInstance(algorithm.getDigest());
         } catch (NoSuchAlgorithmException e) {
             LOGGER.error(
-                    "There is no security provider supporting this hash function: "
-                            + algorithm.getDigest());
+                    "There is no security provider supporting this hash function: {}",
+                    algorithm.getDigest());
             LOGGER.debug(e);
             throw new CryptoException(
                     "Unable to calculate exchange hash because the required hash algorithm is not supported by any security provider.",
                     e);
         }
         byte[] hash = md.digest(input);
-        LOGGER.info("Computed exchange hash: " + ArrayConverter.bytesToRawHexString(hash));
+        LOGGER.info("Computed exchange hash: {}", ArrayConverter.bytesToRawHexString(hash));
         return hash;
     }
 
@@ -192,6 +194,7 @@ public final class ExchangeHash {
             throw new MissingExchangeHashInputException("[Common] Server host key missing");
         }
         // Avoid log spam by adjusting the log level of the key exchange init message serializer
+        //noinspection LoggerInitializedWithForeignClass
         Level oldLevel = LogManager.getLogger(KeyExchangeInitMessageSerializer.class).getLevel();
         Configurator.setLevel(KeyExchangeInitMessageSerializer.class.getName(), Level.OFF);
         byte[] prefix =
@@ -359,8 +362,8 @@ public final class ExchangeHash {
          * string I_C, payload of the client's SSH_MSG_KEXINIT
          * string I_S, payload of the server's SSH_MSG_KEXINIT
          * string K_S, server's public host key
-         * string Q_C, client's ephemeral public key octet string
-         * string Q_S, server's ephemeral public key octet string
+         * string Q_C, client's ephemeral public key octet
+         * string Q_S, server's ephemeral public key octet
          * mpint K, encoded shared secret
          */
         if (inputHolder.getHybridClientPublicKey().isEmpty()) {
@@ -386,8 +389,8 @@ public final class ExchangeHash {
          *   string   I_C, payload of the client's SSH_MSG_KEXINIT
          *   string   I_S, payload of the server's SSH_MSG_KEXINIT
          *   string   K_S, server's public host key
-         *   string   Q_C, client's ephemeral public key octet string
-         *   string   Q_S, server's ephemeral public key octet string
+         *   string   Q_C, client's ephemeral public key octet
+         *   string   Q_S, server's ephemeral public key octet
          *   mpint    K,   shared secret
          */
         if (inputHolder.getEcdhClientPublicKey().isEmpty()) {

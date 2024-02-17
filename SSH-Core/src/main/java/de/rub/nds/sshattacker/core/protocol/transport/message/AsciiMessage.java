@@ -59,7 +59,7 @@ public class AsciiMessage extends ProtocolMessage<AsciiMessage> {
     }
 
     @Override
-    public AsciiMessageHandler getHandler(final SshContext context) {
+    public AsciiMessageHandler getHandler(SshContext context) {
         // return new AsciiMessageHandler(context, this);
         return new AsciiMessageHandler(context);
     }

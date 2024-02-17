@@ -20,16 +20,14 @@ import de.rub.nds.sshattacker.core.protocol.ssh1.message.ServerPublicKeyMessage;
 import de.rub.nds.sshattacker.core.protocol.ssh1.message.VersionExchangeMessageSSHV1;
 import de.rub.nds.sshattacker.core.protocol.transport.message.*;
 import de.rub.nds.sshattacker.core.workflow.WorkflowTrace;
-import de.rub.nds.sshattacker.core.workflow.action.ChangePacketLayerAction;
-import de.rub.nds.sshattacker.core.workflow.action.DynamicKeyExchangeAction;
-import de.rub.nds.sshattacker.core.workflow.action.SshAction;
+import de.rub.nds.sshattacker.core.workflow.action.*;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-/** Create a WorkflowTace based on a Config instance. */
+/** Create a WorkflowTrace based on a Config instance. */
 public class WorkflowConfigurationFactory {
 
     private static final Logger LOGGER = LogManager.getLogger();
@@ -38,12 +36,13 @@ public class WorkflowConfigurationFactory {
     private RunningModeType mode;
 
     public WorkflowConfigurationFactory(Config config) {
+        super();
         this.config = config;
     }
 
     public WorkflowTrace createWorkflowTrace(
             WorkflowTraceType workflowTraceType, RunningModeType runningMode) {
-        this.mode = runningMode;
+        mode = runningMode;
         switch (workflowTraceType) {
             case KEX_INIT_ONLY:
                 return createInitKeyExchangeWorkflowTrace();
@@ -177,7 +176,7 @@ public class WorkflowConfigurationFactory {
     }
 
     private void addTransportProtocolInitActions(WorkflowTrace workflow) {
-        if (this.mode == RunningModeType.MITM) {
+        if (mode == RunningModeType.MITM) {
             AliasedConnection inboundConnection = config.getDefaultServerConnection();
             AliasedConnection outboundConnection = config.getDefaultClientConnection();
             workflow.addSshActions(
@@ -275,28 +274,68 @@ public class WorkflowConfigurationFactory {
     }
 
     private void addTransportProtocolActions(WorkflowTrace workflow) {
-        AliasedConnection connection = getDefaultConnection();
-        addTransportProtocolInitActions(workflow);
-        workflow.addSshActions(new DynamicKeyExchangeAction(connection.getAlias()));
-        workflow.addSshActions(
-                SshActionFactory.createMessageAction(
-                        connection, ConnectionEndType.CLIENT, new ServiceRequestMessage()),
-                SshActionFactory.createMessageAction(
-                        connection, ConnectionEndType.SERVER, new ServiceAcceptMessage()));
+        if (mode == RunningModeType.MITM) {
+            addTransportProtocolInitActions(workflow);
+            workflow.addSshActions(
+                    new DynamicKeyExchangeAction(config.getDefaultServerConnection().getAlias()));
+            workflow.addSshActions(
+                    new DynamicKeyExchangeAction(config.getDefaultClientConnection().getAlias()));
+            workflow.addSshActions(
+                    SshActionFactory.createProxyFilterMessagesAction(
+                            config.getDefaultServerConnection(),
+                            config.getDefaultClientConnection(),
+                            ConnectionEndType.CLIENT,
+                            new ServiceRequestMessage()));
+            workflow.addSshActions(
+                    SshActionFactory.createProxyFilterMessagesAction(
+                            config.getDefaultServerConnection(),
+                            config.getDefaultClientConnection(),
+                            ConnectionEndType.SERVER,
+                            new ServiceAcceptMessage()));
+        } else {
+            AliasedConnection connection = getDefaultConnection();
+            addTransportProtocolInitActions(workflow);
+            workflow.addSshActions(new DynamicKeyExchangeAction(connection.getAlias()));
+            workflow.addSshActions(new DynamicExtensionNegotiationAction(connection.getAlias()));
+            workflow.addSshActions(
+                    SshActionFactory.createMessageAction(
+                            connection, ConnectionEndType.CLIENT, new ServiceRequestMessage()),
+                    SshActionFactory.createMessageAction(
+                            connection, ConnectionEndType.SERVER, new ServiceAcceptMessage()));
+        }
     }
 
     private void addTransportProtocolActions(KeyExchangeFlowType flowType, WorkflowTrace workflow) {
-        AliasedConnection connection = getDefaultConnection();
-        addTransportProtocolInitActions(workflow);
-        workflow.addSshActions(createKeyExchangeActions(flowType, connection));
-        workflow.addSshActions(
-                SshActionFactory.createMessageAction(
-                        connection, ConnectionEndType.CLIENT, new ServiceRequestMessage()),
-                SshActionFactory.createMessageAction(
-                        connection, ConnectionEndType.SERVER, new ServiceAcceptMessage()));
+        if (mode == RunningModeType.MITM) {
+            addTransportProtocolInitActions(workflow);
+            workflow.addSshActions(createKeyExchangeActionsMitm(flowType));
+        } else {
+            AliasedConnection connection = getDefaultConnection();
+            addTransportProtocolInitActions(workflow);
+            workflow.addSshActions(createKeyExchangeActions(flowType, connection));
+            workflow.addSshActions(new DynamicExtensionNegotiationAction(connection.getAlias()));
+            workflow.addSshActions(
+                    SshActionFactory.createMessageAction(
+                            connection, ConnectionEndType.CLIENT, new ServiceRequestMessage()),
+                    SshActionFactory.createMessageAction(
+                            connection, ConnectionEndType.SERVER, new ServiceAcceptMessage()));
+        }
     }
 
-    public List<SshAction> createKeyExchangeActions(
+    public List<SshAction> createKeyExchangeActionsMitm(KeyExchangeFlowType flowType) {
+        List<SshAction> sshActions = new ArrayList<>();
+        if (mode == RunningModeType.MITM) {
+            // KeyExchange on server side
+            sshActions.addAll(
+                    createKeyExchangeActions(flowType, config.getDefaultClientConnection()));
+            // KeyExchange on client side
+            sshActions.addAll(
+                    createKeyExchangeActions(flowType, config.getDefaultServerConnection()));
+        }
+        return sshActions;
+    }
+
+    public static List<SshAction> createKeyExchangeActions(
             KeyExchangeFlowType flowType, AliasedConnection connection) {
         List<SshAction> sshActions = new ArrayList<>();
         if (flowType == null) {
@@ -311,7 +350,7 @@ public class WorkflowConfigurationFactory {
             //    When the switch statement is executed, first the Expression
             //    is evaluated. If the Expression evaluates to `null`, a
             //    `NullPointerException` is thrown and the entire switch
-            //    statement completes abruptly for that reason."
+            //    statement completes abruptly for that reason.
             //
             // See this for details:
             // http://docs.oracle.com/javase/specs/jls/se8/html/jls-14.html#jls-14.11
@@ -417,8 +456,8 @@ public class WorkflowConfigurationFactory {
      *
      * @param workflow the workflow trace to add actions to
      */
-    public void addAuthenticationProtocolActions(final WorkflowTrace workflow) {
-        this.addAuthenticationProtocolActions(config.getAuthenticationMethod(), workflow);
+    public void addAuthenticationProtocolActions(WorkflowTrace workflow) {
+        addAuthenticationProtocolActions(config.getAuthenticationMethod(), workflow);
     }
 
     /**
@@ -429,7 +468,7 @@ public class WorkflowConfigurationFactory {
      * @param workflow the workflow trace to add actions to
      */
     public void addAuthenticationProtocolActions(
-            final AuthenticationMethod method, final WorkflowTrace workflow) {
+            AuthenticationMethod method, WorkflowTrace workflow) {
         AliasedConnection connection = getDefaultConnection();
         switch (method) {
             case NONE:
@@ -504,6 +543,7 @@ public class WorkflowConfigurationFactory {
                         "Unable to add authentication actions to workflow trace - unknown or unsupported authentication method: "
                                 + method);
         }
+        workflow.addSshActions(new DynamicDelayCompressionAction(connection.getAlias()));
     }
 
     /**
@@ -551,32 +591,8 @@ public class WorkflowConfigurationFactory {
             throw new ConfigurationException("Could not find both necessary connection ends");
         }
 
-        // client -> mitm
-        String clientToMitmAlias = inboundConnection.getAlias();
-        // mitm -> server
-        String mitmToServerAlias = outboundConnection.getAlias();
-
-        LOGGER.debug("Building mitm trace for: " + inboundConnection + ", " + outboundConnection);
-        addTransportProtocolInitActions(workflow);
-        // KeyExchange on server side
-        workflow.addSshActions(
-                createKeyExchangeActions(KeyExchangeFlowType.ECDH, outboundConnection));
-        // KeyExchange on client side
-        workflow.addSshActions(
-                createKeyExchangeActions(KeyExchangeFlowType.ECDH, inboundConnection));
-        workflow.addSshActions(
-                SshActionFactory.createProxyFilterMessagesAction(
-                        inboundConnection,
-                        outboundConnection,
-                        ConnectionEndType.CLIENT,
-                        new ServiceRequestMessage()));
-        workflow.addSshActions(
-                SshActionFactory.createProxyFilterMessagesAction(
-                        inboundConnection,
-                        outboundConnection,
-                        ConnectionEndType.SERVER,
-                        new ServiceAcceptMessage()));
-
+        LOGGER.debug("Building mitm trace for: {}, {}", inboundConnection, outboundConnection);
+        addTransportProtocolActions(workflow);
         // The following is run in a loop in SSH-MITM.
         workflow.addSshActions(
                 SshActionFactory.createProxyFilterMessagesAction(

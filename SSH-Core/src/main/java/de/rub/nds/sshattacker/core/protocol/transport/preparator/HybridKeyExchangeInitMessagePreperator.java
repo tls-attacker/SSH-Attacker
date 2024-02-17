@@ -24,7 +24,7 @@ import org.apache.logging.log4j.Logger;
 public class HybridKeyExchangeInitMessagePreperator
         extends SshMessagePreparator<HybridKeyExchangeInitMessage> {
     private static final Logger LOGGER = LogManager.getLogger();
-    private HybridKeyExchangeCombiner combiner;
+    private final HybridKeyExchangeCombiner combiner;
 
     public HybridKeyExchangeInitMessagePreperator(
             Chooser chooser,
@@ -36,7 +36,7 @@ public class HybridKeyExchangeInitMessagePreperator
 
     @Override
     public void prepareMessageSpecificContents() {
-        LOGGER.info("Negotiated Hybrid Key Exchange: " + chooser.getKeyExchangeAlgorithm());
+        LOGGER.info("Negotiated Hybrid Key Exchange: {}", chooser.getKeyExchangeAlgorithm());
         HybridKeyExchange keyExchange = chooser.getHybridKeyExchange();
         KeyAgreement agreement = keyExchange.getKeyAgreement();
         KeyEncapsulation encapsulation = keyExchange.getKeyEncapsulation();
@@ -71,9 +71,8 @@ public class HybridKeyExchangeInitMessagePreperator
                 break;
             default:
                 LOGGER.warn(
-                        "Unsupported combiner "
-                                + combiner
-                                + ", continue without updating ExchangeHashInputHolder");
+                        "Unsupported combiner {}, continue without updating ExchangeHashInputHolder",
+                        combiner);
         }
 
         getObject().setAgreementPublicKey(pubKagreement, true);

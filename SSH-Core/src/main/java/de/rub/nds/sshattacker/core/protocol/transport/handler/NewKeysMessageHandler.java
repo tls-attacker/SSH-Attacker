@@ -33,6 +33,10 @@ public class NewKeysMessageHandler extends SshMessageHandler<NewKeysMessage>
     public void adjustContext(NewKeysMessage message) {
         if (sshContext.getConfig().getEnableEncryptionOnNewKeysMessage()) {
             adjustEncryptionForDirection(true);
+            if (context.getStrictKeyExchangeEnabled().orElse(false)) {
+                LOGGER.info("Resetting read sequence number to 0 because of strict key exchange");
+                context.setReadSequenceNumber(0);
+            }
         }
         adjustCompressionForDirection(true);
     }
@@ -41,6 +45,10 @@ public class NewKeysMessageHandler extends SshMessageHandler<NewKeysMessage>
     public void adjustContextAfterMessageSent() {
         if (sshContext.getConfig().getEnableEncryptionOnNewKeysMessage()) {
             adjustEncryptionForDirection(false);
+            if (context.getStrictKeyExchangeEnabled().orElse(false)) {
+                LOGGER.info("Resetting write sequence number to 0 because of strict key exchange");
+                context.setWriteSequenceNumber(0);
+            }
         }
         adjustCompressionForDirection(false);
     }

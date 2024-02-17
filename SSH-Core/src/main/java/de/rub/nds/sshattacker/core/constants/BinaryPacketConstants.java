@@ -7,11 +7,15 @@
  */
 package de.rub.nds.sshattacker.core.constants;
 
-public class BinaryPacketConstants {
+public final class BinaryPacketConstants {
     public static final int LENGTH_FIELD_LENGTH = 4;
     public static final int PACKET_FIELD_LENGTH = 4;
     public static final int PADDING_FIELD_LENGTH = 1;
     public static final int CRC_FIELD_LENGHT = 4;
     public static final int DEFAULT_BLOCK_SIZE = 8;
     public static final int MIN_PADDING_LENGTH = 4;
+
+    private BinaryPacketConstants() {
+        super();
+    }
 }

@@ -24,7 +24,9 @@ public final class KeySetGenerator {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private KeySetGenerator() {}
+    private KeySetGenerator() {
+        super();
+    }
 
     public static AbstractKeySet generateKeySet(SshContext context) {
         AbstractKeySet keySet;

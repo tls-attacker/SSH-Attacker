@@ -92,6 +92,12 @@ public class WorkflowTrace implements Serializable {
                         type = SendBleichenbacherOracleReply.class,
                         name = "SendBleichenbacherOracle"),
                 @XmlElement(type = GenericReceiveAction.class, name = "GenericReceive")
+                @XmlElement(
+                        type = DynamicExtensionNegotiationAction.class,
+                        name = "DynamicExtensionNegotiation"),
+                @XmlElement(
+                        type = DynamicDelayCompressionAction.class,
+                        name = "DynamicDelayCompressionAction")
             })
     private List<SshAction> sshActions = new ArrayList<>();
 
@@ -99,11 +105,13 @@ public class WorkflowTrace implements Serializable {
     private String description = null;
 
     public WorkflowTrace() {
-        this.sshActions = new LinkedList<>();
+        super();
+        sshActions = new LinkedList<>();
     }
 
     public WorkflowTrace(List<AliasedConnection> cons) {
-        this.connections = cons;
+        super();
+        connections = cons;
     }
 
     public void reset() {
@@ -142,6 +150,7 @@ public class WorkflowTrace implements Serializable {
         sshActions.add(position, action);
     }
 
+    @SuppressWarnings("UnusedReturnValue")
     public SshAction removeSshAction(int index) {
         return sshActions.remove(index);
     }
@@ -177,7 +186,7 @@ public class WorkflowTrace implements Serializable {
      * @param connection new connection to add to the workflow trace
      */
     public void addConnection(AliasedConnection connection) {
-        this.connections.add(connection);
+        connections.add(connection);
     }
 
     public List<MessageAction> getMessageActions() {
@@ -317,10 +326,10 @@ public class WorkflowTrace implements Serializable {
     public boolean executedAsPlanned() {
         for (SshAction action : sshActions) {
             if (!action.executedAsPlanned()) {
-                LOGGER.debug("Action " + action.toCompactString() + " did not execute as planned");
+                LOGGER.debug("Action {} did not execute as planned", action.toCompactString());
                 return false;
             } else {
-                LOGGER.debug("Action " + action.toCompactString() + " executed as planned");
+                LOGGER.debug("Action {} executed as planned", action.toCompactString());
             }
         }
         return true;

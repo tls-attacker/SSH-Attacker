@@ -23,7 +23,11 @@ import org.bouncycastle.pqc.math.linearalgebra.BigEndianConversions;
  * 8017) It implements OAEP encoding and decoding, mask generation function MGF1 and xor for byte
  * arrays
  */
-public class OaepConverter {
+public final class OaepConverter {
+
+    private OaepConverter() {
+        super();
+    }
 
     /**
      * Encodes message using OAEP with digest hashInstance for a key of length keyLen
@@ -101,10 +105,8 @@ public class OaepConverter {
         int hashLen = hash.getDigestLength();
 
         // Step a: label hash
-        byte[] lHash = hash.digest(new byte[0]);
 
         // Step b: Separating the message
-        byte y = encodedMessage[0];
         byte[] maskedSeed =
                 Arrays.copyOfRange(
                         encodedMessage, 1, encodedMessage.length - (keyLen - hashLen - 1));
@@ -127,7 +129,6 @@ public class OaepConverter {
         byte[] dataBlock = xor(maskedDataBlock, dataBlockMask);
 
         // Step g: Separate dataBlock
-        byte[] lhashPrime = Arrays.copyOfRange(dataBlock, 0, hashLen);
         byte[] paddedMessage = Arrays.copyOfRange(dataBlock, hashLen, dataBlock.length);
 
         byte[] separator = new byte[1];
@@ -137,8 +138,6 @@ public class OaepConverter {
             throw new IndexOutOfBoundsException("Could not find separator in padded message");
         }
 
-        byte[] padding = Arrays.copyOfRange(paddedMessage, 0, indexOfSeparator);
-
         return Arrays.copyOfRange(paddedMessage, indexOfSeparator + 1, paddedMessage.length);
     }
 
@@ -147,10 +146,11 @@ public class OaepConverter {
      *
      * @see <a href="https://datatracker.ietf.org/doc/html/rfc8017#appendix-B.2.1">RFC 8017 Appendix
      *     B.2.1</a>
-     * @param seed Seed for the mask generation
-     * @param maskLen Desired mask length in bytes
-     * @param digestName Name of the digest to be used
-     * @return generated mask
+     * @param seed Seed for the mask generation.
+     * @param maskLen Desired mask length in bytes.
+     * @param digestName Name of the digest to be used.
+     * @throws NoSuchAlgorithmException if the digest specified by digestName could not be found.
+     * @return Generated mask.
      */
     public static byte[] mgf1(byte[] seed, int maskLen, String digestName)
             throws NoSuchAlgorithmException {
@@ -200,18 +200,19 @@ public class OaepConverter {
         // left.length is now <= right.length
         byte[] out = Arrays.copyOf(right, right.length);
         for (int i = 0; i < left.length; i++) {
-            out[i] = (byte) ((left[i] & 0xFF) ^ (right[i] & 0xFF));
+            out[i] = (byte) (left[i] & 0xFF ^ right[i] & 0xFF);
         }
         return out;
     }
 
     /**
-     * Decodes the solution of a Manger attack
+     * Decodes the solution of a Manger attack.
      *
      * @param solution The solution to the attack, i.e. the encoded shared secret.
      * @param hashInstance The hash function. For SSH, this should either be 'SHA-1' or 'SHA-256',
      *     depending on the key exchange method.
      * @param publicKeyByteLength The length of the public key's modulus in bytes.
+     * @return The decoded solution of a Manger attack.
      */
     public static BigInteger decodeSolution(
             BigInteger solution, String hashInstance, int publicKeyByteLength) {
@@ -219,11 +220,10 @@ public class OaepConverter {
             // Decode solution
             byte[] solutionBytes = solution.toByteArray();
 
-            byte[] result =
-                    OaepConverter.doOaepDecoding(solutionBytes, hashInstance, publicKeyByteLength);
+            byte[] result = doOaepDecoding(solutionBytes, hashInstance, publicKeyByteLength);
 
-            CONSOLE.debug("Secret with length field as byte array: " + Arrays.toString(result));
-            CONSOLE.debug("Secret with length field: " + new BigInteger(result));
+            CONSOLE.debug("Secret with length field as byte array: {}", Arrays.toString(result));
+            CONSOLE.debug("Secret with length field: {}", new BigInteger(result));
 
             // Cut off length field to get secret as decimal number
             ByteBuffer secretBuffer = ByteBuffer.wrap(result);

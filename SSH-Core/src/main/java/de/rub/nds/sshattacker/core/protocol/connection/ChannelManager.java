@@ -30,6 +30,7 @@ public class ChannelManager {
     private final List<ChannelMessage<?>> channelRequestResponseQueue = new LinkedList<>();
 
     public ChannelManager(SshContext context) {
+        super();
         this.context = context;
     }
 
@@ -38,7 +39,7 @@ public class ChannelManager {
      *
      * <p>At the moment, the channel management on server side is just done by a default counter.
      * Thus, the channel manager iterates through the channels, searching for the first non-existing
-     * index. If all channels id's exist up to the number of channels, the channel index
+     * index. If all channels ids exist up to the number of channels, the channel index
      * numberOfChannels + 1 will be opened.
      */
     private int findUnusedChannelId() {
@@ -49,8 +50,7 @@ public class ChannelManager {
     }
 
     public void handleChannelOpenMessage(ChannelOpenMessage<?> message) {
-        final Channel channel =
-                this.createNewChannelFromDefaults(message.getSenderChannelId().getValue());
+        Channel channel = createNewChannelFromDefaults(message.getSenderChannelId().getValue());
         channel.setChannelType(ChannelType.fromName(message.getChannelType().getValue()));
         channel.setRemoteWindowSize(message.getWindowSize());
         channel.setRemotePacketSize(message.getPacketSize());
@@ -69,7 +69,7 @@ public class ChannelManager {
             return pendingChannelOpenConfirmations.remove(0);
         }
         ChannelOpenConfirmationMessage fresh = new ChannelOpenConfirmationMessage();
-        this.guessChannelByReceivedMessages()
+        guessChannelByReceivedMessages()
                 .ifPresentOrElse(
                         channel -> {
                             fresh.setSenderChannelId(channel.getLocalChannelId());
@@ -113,13 +113,13 @@ public class ChannelManager {
      * @param remoteChannelId the remote channel ID
      * @return the created channel
      */
-    public Channel createNewChannelFromDefaults(final int remoteChannelId) {
-        final int localChannelId = this.findUnusedChannelId();
-        return this.createNewChannelFromDefaults(localChannelId, remoteChannelId);
+    public Channel createNewChannelFromDefaults(int remoteChannelId) {
+        int localChannelId = findUnusedChannelId();
+        return createNewChannelFromDefaults(localChannelId, remoteChannelId);
     }
 
     public Optional<Channel> guessChannelByReceivedMessages() {
-        if (channelRequestResponseQueue.size() != 0) {
+        if (!channelRequestResponseQueue.isEmpty()) {
             ChannelMessage<?> message = channelRequestResponseQueue.remove(0);
             for (Integer object : channels.keySet()) {
                 if (Objects.equals(

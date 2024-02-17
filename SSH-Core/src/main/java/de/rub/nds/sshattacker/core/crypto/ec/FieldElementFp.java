@@ -7,48 +7,54 @@
  */
 package de.rub.nds.sshattacker.core.crypto.ec;
 
-import java.io.Serializable;
 import java.math.BigInteger;
 
 /** An element of the field F_p (with p being a prime number). */
-public class FieldElementFp extends FieldElement implements Serializable {
+public class FieldElementFp extends FieldElement {
 
-    /** Instantiates the element data in the field F_modulus. With modulus being a prime number. */
+    /**
+     * Instantiates the element data in the field F_modulus.
+     *
+     * @param data the element in the field F_modulus
+     * @param modulus the field modulus. The modulus must be prime.
+     */
     public FieldElementFp(BigInteger data, BigInteger modulus) {
         super(data.mod(modulus), modulus);
     }
 
+    @SuppressWarnings("unused")
     private FieldElementFp() {
         super(null, null);
     }
 
     @Override
-    public FieldElement add(FieldElement f) {
-        BigInteger tmp = this.getData().add(f.getData());
-        tmp = tmp.mod(this.getModulus());
-        return new FieldElementFp(tmp, this.getModulus());
+    public FieldElement add(FieldElement element) {
+        BigInteger tmp = getData().add(element.getData());
+        tmp = tmp.mod(getModulus());
+        return new FieldElementFp(tmp, getModulus());
     }
 
     @Override
-    public FieldElement mult(FieldElement f) {
-        BigInteger tmp = this.getData().multiply(f.getData());
-        tmp = tmp.mod(this.getModulus());
-        return new FieldElementFp(tmp, this.getModulus());
+    public FieldElement mult(FieldElement element) {
+        BigInteger tmp = getData().multiply(element.getData());
+        tmp = tmp.mod(getModulus());
+        return new FieldElementFp(tmp, getModulus());
     }
 
     @Override
     public FieldElement addInv() {
-        BigInteger tmp = this.getData().negate();
-        tmp = tmp.mod(this.getModulus());
-        return new FieldElementFp(tmp, this.getModulus());
+        BigInteger tmp = getData().negate();
+        tmp = tmp.mod(getModulus());
+        return new FieldElementFp(tmp, getModulus());
     }
 
     @Override
     public FieldElement multInv() {
-        if (this.getData().equals(BigInteger.ZERO)) {
-            throw new ArithmeticException();
+        if (getData().equals(BigInteger.ZERO)) {
+            throw new ArithmeticException(
+                    "Element 0 does not have a multiplicative inverse in GF(p)");
         }
-        BigInteger tmp = this.getData().modInverse(this.getModulus());
-        return new FieldElementFp(tmp, this.getModulus());
+        BigInteger tmp = getData().modInverse(getModulus());
+        return new FieldElementFp(tmp, getModulus());
     }
 }

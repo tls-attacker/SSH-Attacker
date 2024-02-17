@@ -7,6 +7,8 @@
  */
 package de.rub.nds.sshattacker.core.constants;
 
+import java.util.Map;
+import java.util.TreeMap;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -117,6 +119,8 @@ public enum KeyExchangeAlgorithm {
             "sntrup761x25519-sha512@openssh.com",
             "SHA-512",
             "de.rub.nds.sshattacker.core.crypto.kex.Sntrup761X25519KeyExchange"),
+    KEX_STRICT_S_V00_OPENSSH_COM(null, "kex-strict-s-v00@openssh.com", null),
+    KEX_STRICT_C_V00_OPENSSH_COM(null, "kex-strict-c-v00@openssh.com", null),
     // [ SSH.COM ]
     CURVE25519_FRODOKEM1344(
             KeyExchangeFlowType.HYBRID,
@@ -159,7 +163,8 @@ public enum KeyExchangeAlgorithm {
     DIFFIE_HELLMAN_GROUP16_SHA512_SSH_COM(
             KeyExchangeFlowType.DIFFIE_HELLMAN, "diffie-hellman-group16-sha512@ssh.com", "SHA-512"),
     DIFFIE_HELLMAN_GROUP18_SHA512_SSH_COM(
-            KeyExchangeFlowType.DIFFIE_HELLMAN, "diffie-hellman-group18-sha512@ssh.com", "SHA-512");
+            KeyExchangeFlowType.DIFFIE_HELLMAN, "diffie-hellman-group18-sha512@ssh.com", "SHA-512"),
+    UNKNOWN(null, null, null);
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -168,23 +173,34 @@ public enum KeyExchangeAlgorithm {
     private final KeyExchangeFlowType flowType;
     private final String className;
 
+    private static final Map<String, KeyExchangeAlgorithm> map;
+
+    static {
+        map = new TreeMap<>();
+        for (KeyExchangeAlgorithm algorithm : values()) {
+            if (algorithm.name != null) {
+                map.put(algorithm.name, algorithm);
+            }
+        }
+    }
+
     KeyExchangeAlgorithm(KeyExchangeFlowType flowType, String name, String digest) {
         this.flowType = flowType;
         this.name = name;
         this.digest = digest;
         if (flowType == null) {
-            this.className = null;
+            className = null;
         } else
             switch (flowType) {
                 case DIFFIE_HELLMAN:
                 case DIFFIE_HELLMAN_GROUP_EXCHANGE:
-                    this.className = "de.rub.nds.sshattacker.core.crypto.kex.DhKeyExchange";
+                    className = "de.rub.nds.sshattacker.core.crypto.kex.DhKeyExchange";
                     break;
                 case ECDH:
-                    this.className = "de.rub.nds.sshattacker.core.crypto.kex.EcdhKeyExchange";
+                    className = "de.rub.nds.sshattacker.core.crypto.kex.EcdhKeyExchange";
                     break;
                 case RSA:
-                    this.className = "de.rub.nds.sshattacker.core.crypto.kex.RsaKeyExchange";
+                    className = "de.rub.nds.sshattacker.core.crypto.kex.RsaKeyExchange";
                     break;
                 default:
                     throw new IllegalArgumentException(
@@ -248,5 +264,12 @@ public enum KeyExchangeAlgorithm {
                     className);
             return false;
         }
+    }
+
+    public static KeyExchangeAlgorithm fromName(String name) {
+        if (map.containsKey(name)) {
+            return map.get(name);
+        }
+        return UNKNOWN;
     }
 }

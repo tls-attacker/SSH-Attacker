@@ -26,6 +26,7 @@ import de.rub.nds.sshattacker.core.packet.crypto.PacketEncryptor;
 import de.rub.nds.sshattacker.core.protocol.connection.Channel;
 import de.rub.nds.sshattacker.core.protocol.connection.ChannelManager;
 import de.rub.nds.sshattacker.core.state.Context;
+import de.rub.nds.sshattacker.core.protocol.transport.message.extension.AbstractExtension;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import de.rub.nds.sshattacker.core.workflow.chooser.ChooserFactory;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
@@ -68,12 +69,12 @@ public class SshContext extends LayerContext {
     /** Connection used to communicate with the remote peer */
     private TransportHandler transportHandler;
     /** If set to true, an exception was received from the transport handler */
-    private boolean receivedTransportHandlerException = false;
+    private boolean receivedTransportHandlerException;
 
     /** The currently active packet layer type */
     private PacketLayerType packetLayerType;
     /**
-     * If set to true, receive actions will read the incoming byte stream on a per line basis (each
+     * If set to true, receive actions will read the incoming byte stream on a per-line basis (each
      * line is terminated by LF).
      */
     private Boolean receiveAsciiModeEnabled;
@@ -195,6 +196,8 @@ public class SshContext extends LayerContext {
     private CompressionMethod compressionMethodClientToServer;
     /** Negotiated compression algorithm (server to client) */
     private CompressionMethod compressionMethodServerToClient;
+    /** Flag indicating whether strict key exchange mode is enabled */
+    private Boolean strictKeyExchangeEnabled;
     // endregion
 
     // region Key Exchange
@@ -255,6 +258,50 @@ public class SshContext extends LayerContext {
     private AuthenticationMethodSSHv1 chosenAuthenticationMethod;
     // endregion
 
+    // region SSH Extensions
+    /** List of extensions supported by the client */
+    public List<AbstractExtension<?>> clientSupportedExtensions;
+
+    /** List of extensions supported by the server */
+    public List<AbstractExtension<?>> serverSupportedExtensions;
+
+    /** Flag whether client supports SSH Extension Negotiation */
+    private boolean clientSupportsExtensionNegotiation;
+
+    /** Flag whether server supports SSH Extension Negotiation */
+    private boolean serverSupportsExtensionNegotiation;
+
+    /**
+     * List of public key algorithms for authentication supported by the server(server-sig-algs
+     * extension)
+     */
+    private List<PublicKeyAlgorithm> serverSupportedPublicKeyAlgorithmsForAuthentication;
+
+    /** Flag to check whether the server-sig-algs extension was already received */
+    private boolean serverSigAlgsExtensionReceivedFromServer;
+
+    /** List of compression methods supported by the client(delay-compression extension) */
+    private List<CompressionMethod> clientSupportedDelayCompressionMethods;
+
+    /** List of compression methods supported by the server(delay-compression extension) */
+    private List<CompressionMethod> serverSupportedDelayCompressionMethods;
+
+    /** Compression method to use for compressing the payload(delay-compression extension) */
+    private CompressionMethod selectedDelayCompressionMethod;
+
+    /** Flag whether a delay-compression extension was received from the peer */
+    private boolean delayCompressionExtensionReceived;
+
+    /** Flag whether the delay-compression extension was sent by us */
+    private boolean delayCompressionExtensionSent;
+
+    /**
+     * Flag to check whether the negotiation of a common compression method in the delay-compression
+     * extension failed
+     */
+    private boolean delayCompressionExtensionNegotiationFailed;
+    // endregion
+
     // region Connection Protocol
 
     private ChannelManager channelManager;
@@ -267,7 +314,7 @@ public class SshContext extends LayerContext {
     /** If set to true, a version exchange message was sent by each side */
     private boolean versionExchangeCompleted = false;
 
-    // region Constructors and Initalization
+    // region Constructors and Initialization
     public SshContext() {
         this(new Context(new Config()));
     }
@@ -739,6 +786,9 @@ public class SshContext extends LayerContext {
         return Optional.ofNullable(compressionMethodServerToClient);
     }
 
+    public Optional<Boolean> getStrictKeyExchangeEnabled() {
+        return Optional.ofNullable(strictKeyExchangeEnabled);
+    }
     // endregion
     // region Setters for Negotiated Parameters
     public void setKeyExchangeAlgorithm(KeyExchangeAlgorithm keyExchangeAlgorithm) {
@@ -777,6 +827,9 @@ public class SshContext extends LayerContext {
         this.compressionMethodServerToClient = compressionMethodServerToClient;
     }
 
+    public void setStrictKeyExchangeEnabled(boolean strictKeyExchangeEnabled) {
+        this.strictKeyExchangeEnabled = strictKeyExchangeEnabled;
+    }
     // endregion
 
     // region Getters for Key Exchange Fields
@@ -832,6 +885,7 @@ public class SshContext extends LayerContext {
         return Optional.ofNullable(serverExchangeHashSignature);
     }
 
+    @SuppressWarnings("NonBooleanMethodNameMayNotStartWithQuestion")
     public Optional<Boolean> isServerExchangeHashSignatureValid() {
         return Optional.ofNullable(serverExchangeHashSignatureValid);
     }
@@ -850,7 +904,7 @@ public class SshContext extends LayerContext {
     }
 
     public void setHybridKeyExchangeInstance(HybridKeyExchange HybridKeyExchangeInstance) {
-        this.hybridKeyExchangeInstance = HybridKeyExchangeInstance;
+        hybridKeyExchangeInstance = HybridKeyExchangeInstance;
     }
 
     public void setRsaKeyExchangeInstance(RsaKeyExchange rsaKeyExchangeInstance) {
@@ -882,7 +936,7 @@ public class SshContext extends LayerContext {
     }
 
     public void setServerExchangeHashSignatureValid(Boolean isValid) {
-        this.serverExchangeHashSignatureValid = isValid;
+        serverExchangeHashSignatureValid = isValid;
     }
     // endregion
 
@@ -921,7 +975,117 @@ public class SshContext extends LayerContext {
     }
 
     public void setKeySet(AbstractKeySet transportKeySet) {
-        this.keySet = transportKeySet;
+        keySet = transportKeySet;
+    }
+    // endregion
+
+    // region Getters for SSH Extensions
+
+    // section general extensions
+    public Optional<List<AbstractExtension<?>>> getClientSupportedExtensions() {
+        return Optional.ofNullable(clientSupportedExtensions);
+    }
+
+    public Optional<List<AbstractExtension<?>>> getServerSupportedExtensions() {
+        return Optional.ofNullable(serverSupportedExtensions);
+    }
+
+    public boolean clientSupportsExtensionNegotiation() {
+        return clientSupportsExtensionNegotiation;
+    }
+
+    public boolean serverSupportsExtensionNegotiation() {
+        return serverSupportsExtensionNegotiation;
+    }
+
+    public boolean getDelayCompressionExtensionNegotiationFailed() {
+        return delayCompressionExtensionNegotiationFailed;
+    }
+
+    // section server-sig-algs extension
+    public Optional<List<PublicKeyAlgorithm>>
+            getServerSupportedPublicKeyAlgorithmsForAuthentication() {
+        return Optional.ofNullable(serverSupportedPublicKeyAlgorithmsForAuthentication);
+    }
+
+    public boolean getServerSigAlgsExtensionReceivedFromServer() {
+        return serverSigAlgsExtensionReceivedFromServer;
+    }
+
+    // section delay-compression extension
+    public Optional<List<CompressionMethod>> getClientSupportedDelayCompressionMethods() {
+        return Optional.ofNullable(clientSupportedDelayCompressionMethods);
+    }
+
+    public Optional<List<CompressionMethod>> getServerSupportedDelayCompressionMethods() {
+        return Optional.ofNullable(serverSupportedDelayCompressionMethods);
+    }
+
+    public Optional<CompressionMethod> getSelectedDelayCompressionMethod() {
+        return Optional.ofNullable(selectedDelayCompressionMethod);
+    }
+
+    public boolean delayCompressionExtensionReceived() {
+        return delayCompressionExtensionReceived;
+    }
+
+    public boolean delayCompressionExtensionSent() {
+        return delayCompressionExtensionSent;
+    }
+    // endregion
+
+    // region Setters for SSH Extensions
+
+    // section general extensions
+    public void setClientSupportedExtensions(List<AbstractExtension<?>> extensions) {
+        clientSupportedExtensions = extensions;
+    }
+
+    public void setServerSupportedExtensions(List<AbstractExtension<?>> extensions) {
+        serverSupportedExtensions = extensions;
+    }
+
+    public void setClientSupportsExtensionNegotiation(boolean support) {
+        clientSupportsExtensionNegotiation = support;
+    }
+
+    public void setServerSupportsExtensionNegotiation(boolean support) {
+        serverSupportsExtensionNegotiation = support;
+    }
+
+    public void setDelayCompressionExtensionNegotiationFailed(boolean failed) {
+        delayCompressionExtensionNegotiationFailed = failed;
+    }
+
+    // section server-sig-algs extension
+    public void setServerSupportedPublicKeyAlgorithmsForAuthentication(
+            List<PublicKeyAlgorithm> algorithms) {
+        serverSupportedPublicKeyAlgorithmsForAuthentication = algorithms;
+    }
+
+    public void setServerSigAlgsExtensionReceivedFromServer(boolean received) {
+        serverSigAlgsExtensionReceivedFromServer = received;
+    }
+
+    // section delay-compression extension
+    public void setClientSupportedDelayCompressionMethods(List<CompressionMethod> methods) {
+        clientSupportedDelayCompressionMethods = methods;
+    }
+
+    public void setServerSupportedDelayCompressionMethods(List<CompressionMethod> methods) {
+        serverSupportedDelayCompressionMethods = methods;
+    }
+
+    public void setSelectedDelayCompressionMethod(CompressionMethod method) {
+        selectedDelayCompressionMethod = method;
+    }
+
+    public void setDelayCompressionExtensionReceived(boolean received) {
+        delayCompressionExtensionReceived = received;
+    }
+
+    public void setDelayCompressionExtensionSent(boolean sent) {
+        delayCompressionExtensionSent = sent;
     }
     // endregion
 

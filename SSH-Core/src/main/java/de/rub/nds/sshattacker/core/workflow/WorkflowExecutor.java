@@ -14,6 +14,7 @@ import de.rub.nds.sshattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.sshattacker.core.layer.LayerStackFactory;
 import de.rub.nds.sshattacker.core.state.Context;
 import de.rub.nds.sshattacker.core.state.State;
+import de.rub.nds.sshattacker.core.workflow.action.SshAction;
 import de.rub.nds.sshattacker.core.workflow.action.executor.WorkflowExecutorType;
 import de.rub.nds.tlsattacker.transport.TransportHandlerFactory;
 import java.io.IOException;
@@ -81,10 +82,11 @@ public abstract class WorkflowExecutor {
      * @param type of the workflow executor (currently only DEFAULT)
      * @param state to work on
      */
-    public WorkflowExecutor(WorkflowExecutorType type, State state) {
+    protected WorkflowExecutor(WorkflowExecutorType type, State state) {
+        super();
         this.type = type;
         this.state = state;
-        this.config = state.getConfig();
+        config = state.getConfig();
     }
 
     public abstract void executeWorkflow() throws WorkflowExecutionException;

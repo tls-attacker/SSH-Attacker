@@ -24,15 +24,14 @@ public class UserAuthInfoResponseMessageSerializer
     }
 
     private void serializeResponse() {
-        LOGGER.debug("Number of response entries: " + message.getResponseEntryCount().getValue());
+        LOGGER.debug("Number of response entries: {}", message.getResponseEntryCount().getValue());
         appendInt(message.getResponseEntryCount().getValue(), DataFormatConstants.UINT32_SIZE);
 
         for (int i = 0; i < message.getResponseEntryCount().getValue(); i++) {
             AuthenticationResponse.ResponseEntry entry = message.getResponse().get(i);
-            LOGGER.debug(
-                    "Response entry [" + i + "] length: " + entry.getResponseLength().getValue());
+            LOGGER.debug("Response entry [{}] length: {}", i, entry.getResponseLength().getValue());
             appendInt(entry.getResponseLength().getValue(), DataFormatConstants.UINT32_SIZE);
-            LOGGER.debug("Response entry [" + i + "]: " + entry.getResponse().getValue());
+            LOGGER.debug("Response entry [{}]: {}", i, entry.getResponse().getValue());
             appendString(entry.getResponse().getValue(), StandardCharsets.UTF_8);
         }
     }

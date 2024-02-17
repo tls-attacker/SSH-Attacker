@@ -32,10 +32,12 @@ public class CustomEcPublicKey extends CustomPublicKey implements ECPublicKey {
     private Point publicKey;
     private NamedEcGroup group;
 
-    @SuppressWarnings("unused")
-    public CustomEcPublicKey() {}
+    public CustomEcPublicKey() {
+        super();
+    }
 
     public CustomEcPublicKey(Point publicKey, NamedEcGroup group) {
+        super();
         if (group.isRFC7748Curve()) {
             throw new IllegalArgumentException(
                     "CustomEcPublicKey does not support named group " + group);
@@ -52,6 +54,7 @@ public class CustomEcPublicKey extends CustomPublicKey implements ECPublicKey {
         this.group = group;
     }
 
+    @SuppressWarnings("SuspiciousGetterSetter")
     public Point getWAsPoint() {
         return publicKey;
     }
@@ -61,8 +64,9 @@ public class CustomEcPublicKey extends CustomPublicKey implements ECPublicKey {
         return new ECPoint(publicKey.getFieldX().getData(), publicKey.getFieldY().getData());
     }
 
+    @SuppressWarnings("SuspiciousGetterSetter")
     public void setW(Point w) {
-        this.publicKey = w;
+        publicKey = w;
     }
 
     @Override

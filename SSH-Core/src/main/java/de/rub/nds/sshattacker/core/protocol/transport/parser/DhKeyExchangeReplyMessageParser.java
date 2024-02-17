@@ -41,29 +41,29 @@ public class DhKeyExchangeReplyMessageParser extends SshMessageParser<DhKeyExcha
 
     private void parseHostKeyBytes(DhKeyExchangeReplyMessage message) {
         message.setHostKeyBytesLength(parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH));
-        LOGGER.debug("Host key bytes length: " + message.getHostKeyBytesLength().getValue());
+        LOGGER.debug("Host key bytes length: {}", message.getHostKeyBytesLength().getValue());
         message.setHostKeyBytes(parseByteArrayField(message.getHostKeyBytesLength().getValue()));
         LOGGER.debug(
-                "Host key bytes: "
-                        + ArrayConverter.bytesToRawHexString(message.getHostKeyBytes().getValue()));
+                "Host key bytes: {}",
+                ArrayConverter.bytesToRawHexString(message.getHostKeyBytes().getValue()));
     }
 
     private void parseEphemeralPublicKey(DhKeyExchangeReplyMessage message) {
         message.setEphemeralPublicKeyLength(
                 parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH));
         LOGGER.debug(
-                "Ephemeral public key (server) length: "
-                        + message.getEphemeralPublicKeyLength().getValue());
+                "Ephemeral public key (server) length: {}",
+                message.getEphemeralPublicKeyLength().getValue());
         message.setEphemeralPublicKey(
                 parseBigIntField(message.getEphemeralPublicKeyLength().getValue()));
-        LOGGER.debug("Ephemeral public key (server): " + message.getEphemeralPublicKey());
+        LOGGER.debug("Ephemeral public key (server): {}", message.getEphemeralPublicKey());
     }
 
     private void parseSignature(DhKeyExchangeReplyMessage message) {
         message.setSignatureLength(parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH));
-        LOGGER.debug("Signature length: " + message.getSignatureLength().getValue());
+        LOGGER.debug("Signature length: {}", message.getSignatureLength().getValue());
         message.setSignature(parseByteArrayField(message.getSignatureLength().getValue()));
-        LOGGER.debug("Signature: " + message.getSignature());
+        LOGGER.debug("Signature: {}", message.getSignature());
     }
 
     @Override

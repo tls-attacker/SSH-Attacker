@@ -34,6 +34,15 @@ public class UserAuthSuccessMessageHandler extends SshMessageHandler<UserAuthSuc
     public void adjustContextAfterMessageSent() {
         // Enable delayed compression if negotiated
         activateCompression();
+        if (!context.isClient()
+                && context.delayCompressionExtensionReceived()
+                && context.getConfig().getRespectDelayCompressionExtension()
+                && !context.getDelayCompressionExtensionNegotiationFailed()
+                && context.getSelectedDelayCompressionMethod().isPresent()) {
+            context.getPacketLayer()
+                    .updateCompressionAlgorithm(
+                            context.getSelectedDelayCompressionMethod().get().getAlgorithm());
+        }
     }
 
     private void activateCompression() {
@@ -49,6 +58,22 @@ public class UserAuthSuccessMessageHandler extends SshMessageHandler<UserAuthSuc
                     .getPacketLayer()
                     .updateDecompressionAlgorithm(
                             chooser.getCompressionMethodServerToClient().getAlgorithm());
+        }
+        // receiving UserAuthSuccessMessage when acting as client
+        // --> set new compression algorithm from delay-compression extension
+        if (context.isHandleAsClient()
+                && context.getConfig().getRespectDelayCompressionExtension()
+                && context.delayCompressionExtensionReceived()
+                && !context.getDelayCompressionExtensionNegotiationFailed()
+                && context.getSelectedDelayCompressionMethod().isPresent()) {
+            context.getPacketLayer()
+                    .updateDecompressionAlgorithm(
+                            context.getSelectedDelayCompressionMethod().get().getAlgorithm());
+        }
+        // receiving UserAuthSuccessMessage when acting as server
+        else {
+            LOGGER.debug(
+                    "Client sent UserAuthSuccessMessage which is supposed to be sent by the server only!");
         }
     }
 }

@@ -145,10 +145,10 @@ public abstract class AbstractKeySet {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        AbstractKeySet keySet = (AbstractKeySet) o;
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        AbstractKeySet keySet = (AbstractKeySet) obj;
         return Arrays.equals(clientWriteInitialIv, keySet.clientWriteInitialIv)
                 && Arrays.equals(serverWriteInitialIv, keySet.serverWriteInitialIv)
                 && Arrays.equals(clientWriteEncryptionKey, keySet.clientWriteEncryptionKey)

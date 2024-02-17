@@ -11,6 +11,7 @@ import de.rub.nds.sshattacker.attacks.response.ResponseExtractor;
 import de.rub.nds.sshattacker.attacks.response.ResponseFingerprint;
 import de.rub.nds.sshattacker.core.state.State;
 import de.rub.nds.sshattacker.core.workflow.WorkflowExecutor;
+import de.rub.nds.sshattacker.core.workflow.task.SshTask;
 import java.io.IOException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -31,11 +32,11 @@ public class FingerPrintTask extends SshTask {
 
     public FingerPrintTask(
             State state,
-            long additionalTimeout,
-            boolean increasingTimeout,
+            long additionalSleepTime,
+            boolean increasingSleepTimes,
             int reexecutions,
             long additionalTcpTimeout) {
-        super(reexecutions, additionalTimeout, increasingTimeout, additionalTcpTimeout);
+        super(reexecutions, additionalSleepTime, increasingSleepTimes, additionalTcpTimeout);
         this.state = state;
     }
 

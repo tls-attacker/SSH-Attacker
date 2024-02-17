@@ -14,6 +14,7 @@ import de.rub.nds.sshattacker.core.exceptions.SkipActionException;
 import de.rub.nds.sshattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.sshattacker.core.state.Context;
 import de.rub.nds.sshattacker.core.state.State;
+import de.rub.nds.sshattacker.core.workflow.action.ReceivingAction;
 import de.rub.nds.sshattacker.core.workflow.action.SshAction;
 import de.rub.nds.sshattacker.core.workflow.action.executor.WorkflowExecutorType;
 import java.io.File;
@@ -32,6 +33,7 @@ public class DefaultWorkflowExecutor extends WorkflowExecutor {
 
     @Override
     public void executeWorkflow() throws WorkflowExecutionException {
+
         if (config.getWorkflowExecutorShouldOpen()) {
             try {
                 initAllLayer();
@@ -49,12 +51,12 @@ public class DefaultWorkflowExecutor extends WorkflowExecutor {
             if ((state.getConfig().getStopActionsAfterDisconnect()
                     && isDisconnectMessageReceived())) {
                 LOGGER.debug(
-                        "Received a DisconnectMessage, skipping all further actions because StopActionsAfterDisconnect is active");
+                        "Skipping all ReceiveActions, received FatalAlert, StopActionsAfterFatal active");
                 break;
             }
             if ((state.getConfig().getStopActionsAfterIOException() && isIoException())) {
                 LOGGER.debug(
-                        "Received an IOException, skipping all further actions because StopActionsAfterIOException is active");
+                        "Skipping all Actions, received IO Exception, StopActionsAfterIOException active");
                 break;
             }
 

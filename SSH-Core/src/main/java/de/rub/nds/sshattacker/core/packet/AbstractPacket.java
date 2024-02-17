@@ -39,8 +39,6 @@ public abstract class AbstractPacket<Self extends AbstractPacket<?>>
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.PLAIN_PROTOCOL_MESSAGE)
     private ModifiableByteArray payload;
 
-    public AbstractPacket() {}
-
     public ModifiableByteArray getCompletePacketBytes() {
         return completePacketBytes;
     }

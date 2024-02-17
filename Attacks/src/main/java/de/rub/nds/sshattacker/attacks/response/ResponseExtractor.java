@@ -12,15 +12,10 @@ import de.rub.nds.sshattacker.core.state.State;
 import de.rub.nds.sshattacker.core.workflow.action.ReceivingAction;
 import de.rub.nds.tlsattacker.transport.socket.SocketState;
 import de.rub.nds.tlsattacker.transport.tcp.ClientTcpTransportHandler;
-import java.util.LinkedList;
 import java.util.List;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /** Extracts a server's response to an attack vector */
-public class ResponseExtractor {
-
-    private static final Logger LOGGER = LogManager.getLogger();
+public final class ResponseExtractor {
 
     /**
      * @param state SSH state
@@ -44,23 +39,14 @@ public class ResponseExtractor {
 
     private static SocketState extractSocketState(State state) {
         if (state.getSshContext().getTransportHandler() instanceof ClientTcpTransportHandler) {
-            return (((ClientTcpTransportHandler) (state.getSshContext().getTransportHandler()))
-                    .getSocketState());
+            return ((ClientTcpTransportHandler) state.getSshContext().getTransportHandler())
+                    .getSocketState();
         } else {
             return null;
         }
     }
 
-    private static List<Class<ProtocolMessage<?>>> extractMessageClasses(ReceivingAction action) {
-        List<Class<ProtocolMessage<?>>> classList = new LinkedList<>();
-        if (action.getReceivedMessages() != null) {
-            for (ProtocolMessage<?> message : action.getReceivedMessages()) {
-                //noinspection unchecked
-                classList.add((Class<ProtocolMessage<?>>) message.getClass());
-            }
-        }
-        return classList;
+    private ResponseExtractor() {
+        super();
     }
-
-    private ResponseExtractor() {}
 }

@@ -69,7 +69,7 @@ public class CyclicParserSerializerTest {
                                                         messageClass)));
     }
 
-    private static class CyclicDefaultConstructorPairsTest implements Executable {
+    private static final class CyclicDefaultConstructorPairsTest implements Executable {
 
         private final Class<? extends ProtocolMessage> messageClass;
         private final String messageClassName;

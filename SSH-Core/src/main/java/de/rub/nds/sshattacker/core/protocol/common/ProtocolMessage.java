@@ -26,11 +26,11 @@ public abstract class ProtocolMessage<Self extends ProtocolMessage<?>>
         extends ModifiableVariableHolder implements DataContainer<Self, SshContext> {
 
     /** content type */
-    @XmlTransient protected final boolean GOING_TO_BE_SENT_DEFAULT = true;
+    protected static final boolean GOING_TO_BE_SENT_DEFAULT = true;
 
-    @XmlTransient protected final boolean REQUIRED_DEFAULT = true;
+    protected static final boolean REQUIRED_DEFAULT = true;
 
-    @XmlTransient protected final boolean ADJUST_CONTEXT_DEFAULT = true;
+    protected static final boolean ADJUST_CONTEXT_DEFAULT = true;
 
     /** Defines whether this message is necessarily required in the workflow. */
     @ModifiableVariableProperty(type = ModifiableVariableProperty.Type.BEHAVIOR_SWITCH)

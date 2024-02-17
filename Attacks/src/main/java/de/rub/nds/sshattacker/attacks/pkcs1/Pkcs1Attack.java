@@ -39,31 +39,32 @@ public class Pkcs1Attack {
      * @param pkcsOracle The oracle to be queried
      */
     public Pkcs1Attack(byte[] msg, Pkcs1Oracle pkcsOracle) {
-        this.encryptedMsg = msg.clone();
-        this.publicKey = (RSAPublicKey) pkcsOracle.getPublicKey();
-        this.oracle = pkcsOracle;
+        super();
+        encryptedMsg = msg.clone();
+        publicKey = (RSAPublicKey) pkcsOracle.getPublicKey();
+        oracle = pkcsOracle;
         c0 = BigInteger.ZERO;
-        this.blockSize = oracle.getBlockSize();
+        blockSize = oracle.getBlockSize();
     }
 
     /**
-     * @param m original message to be changed
+     * @param message original message to be changed
      * @param si factor
      * @return (m*si) mod N, or (m*si^e) mod N, depending on the oracle type, in a byte array
      */
-    protected byte[] prepareMsg(BigInteger m, BigInteger si) {
+    protected byte[] prepareMsg(BigInteger message, BigInteger si) {
         byte[] msg;
-        BigInteger tmp = multiply(m, si);
+        BigInteger tmp = multiply(message, si);
         msg = ArrayConverter.bigIntegerToByteArray(tmp, blockSize, true);
         return msg;
     }
 
     /**
-     * @param m original message to be changed
+     * @param message original message to be changed
      * @param si factor
      * @return (m*si) mod N, or (m*si^e) mod N, depending on the oracle type
      */
-    protected BigInteger multiply(BigInteger m, BigInteger si) {
+    protected BigInteger multiply(BigInteger message, BigInteger si) {
         BigInteger tmp;
         // if we use a real oracle (not a plaintext oracle), the si value has
         // to be encrypted first.
@@ -75,7 +76,7 @@ public class Pkcs1Attack {
         }
         // blind: c0*(si^e) mod n
         // or: m*si mod n (in case of plaintext oracle)
-        tmp = m.multiply(tmp);
+        tmp = message.multiply(tmp);
         return tmp.mod(publicKey.getModulus());
     }
 

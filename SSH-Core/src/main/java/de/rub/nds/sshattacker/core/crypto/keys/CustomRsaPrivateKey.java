@@ -21,15 +21,18 @@ public class CustomRsaPrivateKey extends CustomPrivateKey implements RSAPrivateK
     private BigInteger modulus;
     private BigInteger privateExponent;
 
-    @SuppressWarnings("unused")
-    private CustomRsaPrivateKey() {}
+    public CustomRsaPrivateKey() {
+        super();
+    }
 
     public CustomRsaPrivateKey(RSAPrivateKey privateKey) {
-        this.modulus = privateKey.getModulus();
-        this.privateExponent = privateKey.getPrivateExponent();
+        super();
+        modulus = privateKey.getModulus();
+        privateExponent = privateKey.getPrivateExponent();
     }
 
     public CustomRsaPrivateKey(BigInteger privateExponent, BigInteger modulus) {
+        super();
         this.modulus = modulus;
         this.privateExponent = privateExponent;
     }

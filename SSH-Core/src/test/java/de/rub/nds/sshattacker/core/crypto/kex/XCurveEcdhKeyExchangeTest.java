@@ -45,9 +45,11 @@ public class XCurveEcdhKeyExchangeTest {
         keyExchangeOnASite.setLocalKeyPair(privateKeyA);
         keyExchangeOnBSite.setLocalKeyPair(privateKeyB);
         assertArrayEquals(
-                expectedPublicKeyA, keyExchangeOnASite.getLocalKeyPair().getPublic().getEncoded());
+                expectedPublicKeyA,
+                keyExchangeOnASite.getLocalKeyPair().getPublicKey().getEncoded());
         assertArrayEquals(
-                expectedPublicKeyB, keyExchangeOnBSite.getLocalKeyPair().getPublic().getEncoded());
+                expectedPublicKeyB,
+                keyExchangeOnBSite.getLocalKeyPair().getPublicKey().getEncoded());
 
         keyExchangeOnASite.setRemotePublicKey(expectedPublicKeyB);
         keyExchangeOnBSite.setRemotePublicKey(expectedPublicKeyA);
@@ -86,9 +88,11 @@ public class XCurveEcdhKeyExchangeTest {
         keyExchangeOnASite.setLocalKeyPair(privateKeyA);
         keyExchangeOnBSite.setLocalKeyPair(privateKeyB);
         assertArrayEquals(
-                expectedPublicKeyA, keyExchangeOnASite.getLocalKeyPair().getPublic().getEncoded());
+                expectedPublicKeyA,
+                keyExchangeOnASite.getLocalKeyPair().getPublicKey().getEncoded());
         assertArrayEquals(
-                expectedPublicKeyB, keyExchangeOnBSite.getLocalKeyPair().getPublic().getEncoded());
+                expectedPublicKeyB,
+                keyExchangeOnBSite.getLocalKeyPair().getPublicKey().getEncoded());
 
         keyExchangeOnASite.setRemotePublicKey(expectedPublicKeyB);
         keyExchangeOnBSite.setRemotePublicKey(expectedPublicKeyA);

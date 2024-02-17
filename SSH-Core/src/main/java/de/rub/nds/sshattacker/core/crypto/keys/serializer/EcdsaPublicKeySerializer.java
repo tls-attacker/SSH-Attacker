@@ -20,6 +20,7 @@ public class EcdsaPublicKeySerializer extends Serializer<CustomEcPublicKey> {
     private final CustomEcPublicKey publicKey;
 
     public EcdsaPublicKeySerializer(CustomEcPublicKey publicKey) {
+        super();
         this.publicKey = publicKey;
     }
 

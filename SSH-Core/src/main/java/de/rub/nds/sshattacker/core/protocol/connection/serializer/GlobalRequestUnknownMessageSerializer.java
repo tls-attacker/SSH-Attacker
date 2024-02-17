@@ -22,9 +22,8 @@ public class GlobalRequestUnknownMessageSerializer
 
     public void serializeBreakLength() {
         LOGGER.debug(
-                "Type specific data: "
-                        + ArrayConverter.bytesToHexString(
-                                message.getTypeSpecificData().getValue()));
+                "Type specific data: {}",
+                ArrayConverter.bytesToHexString(message.getTypeSpecificData().getValue()));
         appendBytes(message.getTypeSpecificData().getValue());
     }
 

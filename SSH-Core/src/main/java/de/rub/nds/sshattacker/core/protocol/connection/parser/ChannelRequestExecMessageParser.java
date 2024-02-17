@@ -45,9 +45,9 @@ public class ChannelRequestExecMessageParser
 
     public void parseCommand(ChannelRequestExecMessage message) {
         message.setCommandLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-        LOGGER.debug("Command length: " + message.getCommandLength().getValue());
+        LOGGER.debug("Command length: {}", message.getCommandLength().getValue());
         message.setCommand(parseByteString(message.getCommandLength().getValue()));
-        LOGGER.debug("Command: " + message.getCommand().getValue());
+        LOGGER.debug("Command: {}", message.getCommand().getValue());
     }
 
     @Override

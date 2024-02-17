@@ -94,7 +94,7 @@ public class FieldElementFpTest {
         try {
             e1.divide(zero);
             fail();
-        } catch (ArithmeticException e) {
+        } catch (ArithmeticException ignored) {
         }
     }
 
@@ -114,14 +114,13 @@ public class FieldElementFpTest {
         try {
             zero.multInv();
             fail();
-        } catch (ArithmeticException e) {
+        } catch (ArithmeticException ignored) {
         }
     }
 
     @Test
     public void testEquals() {
         assertNotEquals(e1, e2);
-        assertEquals(e1, e1);
 
         BigInteger e1Data = e1.getData();
 

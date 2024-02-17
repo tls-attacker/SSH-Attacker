@@ -32,18 +32,19 @@ public class MockOracle extends Pkcs1Oracle {
 
     public MockOracle(RSAPublicKey publicKey, RSAPrivateKey privateKey)
             throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException {
+        super();
         this.publicKey = publicKey;
         this.privateKey = privateKey;
-        this.blockSize = MathHelper.intCeilDiv(publicKey.getModulus().bitLength(), Byte.SIZE);
+        blockSize = MathHelper.intCeilDiv(publicKey.getModulus().bitLength(), Byte.SIZE);
 
         // Init cipher
-        this.cipher = Cipher.getInstance("RSA/NONE/NoPadding");
+        cipher = Cipher.getInstance("RSA/NONE/NoPadding");
         cipher.init(Cipher.DECRYPT_MODE, privateKey);
     }
 
     @Override
     public boolean checkPKCSConformity(byte[] msg) {
-        if (isPlaintextOracle) {
+        if (plaintextOracle) {
             return msg[0] == (byte) 0;
         } else {
             try {

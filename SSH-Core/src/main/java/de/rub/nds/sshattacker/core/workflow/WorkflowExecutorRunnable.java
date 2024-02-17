@@ -13,6 +13,7 @@ import de.rub.nds.sshattacker.core.state.State;
 import de.rub.nds.tlsattacker.transport.tcp.ServerTcpTransportHandler;
 import java.io.IOException;
 import java.net.Socket;
+import org.apache.logging.log4j.CloseableThreadContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -24,17 +25,33 @@ import org.apache.logging.log4j.Logger;
 public class WorkflowExecutorRunnable implements Runnable {
 
     private static final Logger LOGGER = LogManager.getLogger();
-    private final Socket socket;
-    private final State globalState;
+    protected final Socket socket;
+    protected final State globalState;
+    protected final ThreadedServerWorkflowExecutor parent;
 
-    public WorkflowExecutorRunnable(State globalState, Socket socket) {
+    public WorkflowExecutorRunnable(
+            State globalState, Socket socket, ThreadedServerWorkflowExecutor parent) {
         this.globalState = globalState;
         this.socket = socket;
+        this.parent = parent;
     }
 
     @Override
     public void run() {
-        LOGGER.info("Spawning workflow on socket " + socket);
+        String loggingContextString =
+                String.format("%s %s", socket.getLocalPort(), socket.getRemoteSocketAddress());
+        // add local port and remote address onto logging thread context
+        // see https://logging.apache.org/log4j/2.x/manual/thread-context.html
+        try (final CloseableThreadContext.Instance ctc =
+                CloseableThreadContext.push(loggingContextString)) {
+            runInternal();
+        } finally {
+            parent.clientDone(socket);
+        }
+    }
+
+    protected void runInternal() {
+        LOGGER.info("Spawning workflow on socket {}", socket);
         // Currently, WorkflowTraces cannot be copied with external modules
         // if they define custom actions. This is because copying relies
         // on serialization, and actions from other packages are unknown
@@ -59,17 +76,12 @@ public class WorkflowExecutorRunnable implements Runnable {
         serverCon.setPort(socket.getLocalPort());
         ServerTcpTransportHandler th;
         try {
-            th = new ServerTcpTransportHandler(serverCon, socket);
+            th = new ServerTcpTransportHandler(connection, socket);
         } catch (IOException ex) {
-            LOGGER.error("Could not prepare TransportHandler for " + socket);
-            LOGGER.error("Aborting workflow trace execution on " + socket);
+            LOGGER.error("Could not prepare TransportHandler for {}: {}", socket, ex);
+            LOGGER.error("Aborting workflow trace execution on {}", socket);
             return;
         }
-        serverCtx.setTransportHandler(th);
-
-        LOGGER.info("Executing workflow for " + socket + " (" + serverCtx + ")");
-        WorkflowExecutor workflowExecutor = new DefaultWorkflowExecutor(state);
-        workflowExecutor.executeWorkflow();
-        LOGGER.info("Workflow execution done on " + socket + " (" + serverCtx + ")");
+        context.setTransportHandler(th);
     }
 }

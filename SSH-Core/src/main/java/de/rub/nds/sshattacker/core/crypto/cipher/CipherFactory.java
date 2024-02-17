@@ -14,7 +14,7 @@ import java.security.Key;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class CipherFactory {
+public final class CipherFactory {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -42,9 +42,8 @@ public class CipherFactory {
                     encryptionAlgorithm.getType() == EncryptionAlgorithmType.STREAM);
         } else {
             LOGGER.warn(
-                    "Encryption algorithm '"
-                            + encryptionAlgorithm
-                            + "' is not supported - Using NullCipher!");
+                    "Encryption algorithm '{}' is not supported - Using NullCipher!",
+                    encryptionAlgorithm);
             return new NoneCipher();
         }
     }
@@ -60,9 +59,8 @@ public class CipherFactory {
                 return new OaepCipher(key, "RSA/ECB/PKCS1Padding", "SHA-1", "MGF1");
             default:
                 LOGGER.warn(
-                        "Cannot generate OAEP cipher for key exchange algorithm: '"
-                                + keyExchangeAlgorithm
-                                + "' - Using NoneCipher!");
+                        "Cannot generate OAEP cipher for key exchange algorithm: '{}' - Using NoneCipher!",
+                        keyExchangeAlgorithm);
                 return new NoneCipher();
         }
     }
@@ -71,5 +69,7 @@ public class CipherFactory {
         return new RsaPkcs1Cipher(key);
     }
 
-    private CipherFactory() {}
+    private CipherFactory() {
+        super();
+    }
 }

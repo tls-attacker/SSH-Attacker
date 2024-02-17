@@ -45,9 +45,8 @@ public class ChannelOpenUnknownMessageParser
     public void parseTypeSpecificData(ChannelOpenUnknownMessage message) {
         message.setTypeSpecificData(parseByteArrayField(getBytesLeft()));
         LOGGER.debug(
-                "Type specific data: "
-                        + ArrayConverter.bytesToHexString(
-                                message.getTypeSpecificData().getValue()));
+                "Type specific data: {}",
+                ArrayConverter.bytesToHexString(message.getTypeSpecificData().getValue()));
     }
 
     @Override

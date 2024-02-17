@@ -11,29 +11,32 @@ import cc.redberry.rings.poly.univar.UnivariateDivision;
 import cc.redberry.rings.poly.univar.UnivariatePolynomialZ64;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.LongStream;
 
-public class Short {
-    private SntrupParameterSet set;
-    private UnivariatePolynomialZ64 shrt;
-    private UnivariatePolynomialZ64 mod;
+public final class Short {
+    private final SntrupParameterSet set;
+    private final UnivariatePolynomialZ64 shrt;
+    private final UnivariatePolynomialZ64 mod;
 
     private Short(SntrupParameterSet set) {
+        super();
         this.set = set;
-        this.mod = UnivariatePolynomialZ64.parse("x^" + set.getP() + "-x-1");
-        this.shrt = generateShort();
-        assert (isShort(shrt.stream().toArray(), set));
+        mod = UnivariatePolynomialZ64.parse("x^" + set.getP() + "-x-1");
+        shrt = generateShort();
+        assert isShort(shrt.stream().toArray(), set);
     }
 
     private Short(
             SntrupParameterSet set, UnivariatePolynomialZ64 shrt, UnivariatePolynomialZ64 mod) {
+        super();
         this.set = set;
         this.mod = mod;
         this.shrt = shrt;
-        assert (isShort(shrt.stream().toArray(), set));
+        assert isShort(shrt.stream().toArray(), set);
     }
 
     public SntrupParameterSet getSet() {
@@ -49,7 +52,7 @@ public class Short {
     }
 
     public LongStream stream() {
-        return shrt.stream().map(c -> c == 2 ? -1 : c);
+        return shrt.stream().map(l -> l == 2 ? -1 : l);
     }
 
     public static Short createShort(SntrupParameterSet set, long[] coefficients) {
@@ -73,15 +76,12 @@ public class Short {
     }
 
     private static boolean isSmall(long[] coefficients) {
-        return !Arrays.stream(coefficients)
-                .filter(coef -> Math.abs(coef) > 1)
-                .findFirst()
-                .isPresent();
+        return Arrays.stream(coefficients).filter(coef -> Math.abs(coef) > 1).findFirst().isEmpty();
     }
 
     private UnivariatePolynomialZ64 generateShort() {
-        int mask[] = new int[set.getP()];
-        long tmp[] = new long[set.getP()];
+        int[] mask = new int[set.getP()];
+        long[] tmp = new long[set.getP()];
         Random rand = new Random();
 
         for (int i = 0; i < set.getW(); i++) {
@@ -90,7 +90,7 @@ public class Short {
 
         for (int i = 0; i < set.getP(); i++) {
             int rN = rand.nextInt();
-            tmp[i] = rN ^ (rN & 0b11) ^ mask[i];
+            tmp[i] = rN ^ rN & 0b11 ^ mask[i];
         }
         Arrays.sort(tmp);
         tmp = Arrays.stream(tmp).map(l -> (l & 0b11) == 0b10 ? -1 : l & 0b11).toArray();
@@ -100,7 +100,7 @@ public class Short {
     public byte[] encode() {
         ArrayList<Integer> coefficients =
                 shrt.stream()
-                        .mapToInt(c -> Long.valueOf(c + 1).intValue())
+                        .mapToInt(l -> Long.valueOf(l + 1).intValue())
                         .boxed()
                         .collect(Collectors.toCollection(ArrayList::new));
         while (coefficients.size() < set.getP()) {
@@ -115,22 +115,22 @@ public class Short {
                         .map(x -> 4 * x)
                         .map(
                                 x ->
-                                        coefficients.get(x).intValue()
-                                                + coefficients.get(x + 1).intValue() * 4
-                                                + coefficients.get(x + 2).intValue() * 16
-                                                + coefficients.get(x + 3).intValue() * 64)
+                                        coefficients.get(x)
+                                                + coefficients.get(x + 1) * 4
+                                                + coefficients.get(x + 2) * 16
+                                                + coefficients.get(x + 3) * 64)
                         .boxed()
                         .collect(Collectors.toCollection(ArrayList::new));
 
         byte[] res = new byte[encodedCoefficients.size()];
         for (int i = 0; i < encodedCoefficients.size(); i++) {
-            res[i] = (byte) (encodedCoefficients.get(i).intValue());
+            res[i] = (byte) encodedCoefficients.get(i).intValue();
         }
         return res;
     }
 
     public static Short decode(SntrupParameterSet set, byte[] encodedBytes) {
-        int encodedCoefficients[] = new int[encodedBytes.length];
+        int[] encodedCoefficients = new int[encodedBytes.length];
         for (int i = 0; i < encodedBytes.length; i++) {
             encodedCoefficients[i] = encodedBytes[i] & 0xff;
         }
@@ -143,7 +143,7 @@ public class Short {
                                                 - 1)
                         .toArray();
 
-        return Short.createShort(set, decodedCoefficients);
+        return createShort(set, decodedCoefficients);
     }
 
     @Override
@@ -152,24 +152,15 @@ public class Short {
     }
 
     @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((set == null) ? 0 : set.hashCode());
-        result = prime * result + ((shrt == null) ? 0 : shrt.hashCode());
-        return result;
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        Short aShort = (Short) obj;
+        return set == aShort.set && Objects.equals(shrt, aShort.shrt);
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (obj == null) return false;
-        if (getClass() != obj.getClass()) return false;
-        Short other = (Short) obj;
-        if (set != other.set) return false;
-        if (shrt == null) {
-            if (other.shrt != null) return false;
-        } else if (!shrt.equals(other.shrt)) return false;
-        return true;
+    public int hashCode() {
+        return Objects.hash(set, shrt);
     }
 }

@@ -17,9 +17,14 @@ import java.util.Random;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+@SuppressWarnings("AbstractClassWithoutAbstractMethods")
 public abstract class ModifiableVariableHolder implements Serializable {
 
     private static final Logger LOGGER = LogManager.getLogger();
+
+    protected ModifiableVariableHolder() {
+        super();
+    }
 
     /**
      * Lists all the modifiable variables declared in the class
@@ -27,7 +32,7 @@ public abstract class ModifiableVariableHolder implements Serializable {
      * @return List of all modifiableVariables declared in this class
      */
     public List<Field> getAllModifiableVariableFields() {
-        return ReflectionHelper.getFieldsUpTo(this.getClass(), null, ModifiableVariable.class);
+        return ReflectionHelper.getFieldsUpTo(getClass(), null, ModifiableVariable.class);
     }
 
     /**
@@ -67,12 +72,12 @@ public abstract class ModifiableVariableHolder implements Serializable {
 
     public void reset() {
         List<Field> fields = getAllModifiableVariableFields();
-        for (Field f : fields) {
-            f.setAccessible(true);
+        for (Field field : fields) {
+            field.setAccessible(true);
 
             ModifiableVariable<?> mv = null;
             try {
-                mv = (ModifiableVariable<?>) f.get(this);
+                mv = (ModifiableVariable<?>) field.get(this);
             } catch (IllegalArgumentException | IllegalAccessException ex) {
                 LOGGER.warn("Could not retrieve ModifiableVariables");
                 LOGGER.debug(ex);
@@ -82,7 +87,7 @@ public abstract class ModifiableVariableHolder implements Serializable {
                     mv.setOriginalValue(null);
                 } else {
                     try {
-                        f.set(this, null);
+                        field.set(this, null);
                     } catch (IllegalArgumentException | IllegalAccessException ex) {
                         LOGGER.warn("Could not strip ModifiableVariable without Modification");
                     }

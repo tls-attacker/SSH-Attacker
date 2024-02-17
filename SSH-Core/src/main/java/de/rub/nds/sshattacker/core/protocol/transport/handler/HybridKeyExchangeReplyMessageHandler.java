@@ -60,9 +60,8 @@ public class HybridKeyExchangeReplyMessageHandler
                 .getKeyEncapsulation()
                 .setEncryptedSharedSecret(message.getCombinedKeyShare().getValue());
         LOGGER.info(
-                "Ciphertext Encapsulation = "
-                        + ArrayConverter.bytesToRawHexString(
-                                message.getCombinedKeyShare().getValue()));
+                "Ciphertext Encapsulation = {}",
+                ArrayConverter.bytesToRawHexString(message.getCombinedKeyShare().getValue()));
         byte[] combined;
         switch (sshContext.getChooser().getHybridKeyExchange().getCombiner()) {
             case CLASSICAL_CONCATENATE_POSTQUANTUM:

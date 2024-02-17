@@ -1,0 +1,12 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="OpenSSH 9.5 Client" type="docker-deploy" factoryName="docker-image" server-name="Docker">
+    <deployment type="docker-image">
+      <settings>
+        <option name="imageTag" value="rub-nds/openssh-client:9.5p1" />
+        <option name="command" value="-v -u sshattacker -p 22510 -o StrictHostKeyChecking=no host.docker.internal" />
+        <option name="containerName" value="intellij-openssh-client" />
+      </settings>
+    </deployment>
+    <method v="2" />
+  </configuration>
+</component>

@@ -42,7 +42,7 @@ public class ChannelRequestBreakMessageParser
     */
     public void parseBreakLength(ChannelRequestBreakMessage message) {
         message.setBreakLength(parseIntField(DataFormatConstants.UINT32_SIZE));
-        LOGGER.debug("Break length in milliseconds: " + message.getBreakLength().getValue());
+        LOGGER.debug("Break length in milliseconds: {}", message.getBreakLength().getValue());
     }
 
     @Override

@@ -92,10 +92,10 @@ public class ContextContainer {
         knownAliases.add(alias);
 
         if (con.getLocalConnectionEndType() == ConnectionEndType.SERVER) {
-            LOGGER.debug("Adding context " + alias + " to inboundSshContexts");
+            LOGGER.debug("Adding context {} to inboundSshContexts", alias);
             inboundSshContexts.add(context);
         } else {
-            LOGGER.debug("Adding context " + alias + " to outboundSshContexts");
+            LOGGER.debug("Adding context {} to outboundSshContexts", alias);
             outboundSshContexts.add(context);
         }
     }
@@ -116,7 +116,7 @@ public class ContextContainer {
         return knownAliases.contains(alias);
     }
 
-    public boolean containsAllAliases(Collection<? extends String> aliases) {
+    public boolean containsAllAliases(Collection<String> aliases) {
         return knownAliases.containsAll(aliases);
     }
 
@@ -143,7 +143,7 @@ public class ContextContainer {
             contexts.remove(alias);
             knownAliases.remove(alias);
         } else {
-            LOGGER.debug("No context with alias " + alias + " found, nothing to remove");
+            LOGGER.debug("No context with alias {} found, nothing to remove", alias);
         }
     }
 

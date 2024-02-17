@@ -30,7 +30,7 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 
-public class ConfigIO {
+public final class ConfigIO {
 
     /** context initialization is expensive, we need to do that only once */
     private static JAXBContext context;
@@ -42,15 +42,15 @@ public class ConfigIO {
         return context;
     }
 
-    public static void write(Config config, File f) {
+    public static void write(Config config, File file) {
         try {
-            write(config, new FileOutputStream(f));
+            write(config, new FileOutputStream(file));
         } catch (FileNotFoundException ex) {
             throw new RuntimeException(ex);
         }
     }
 
-    public static void write(final Config config, final OutputStream outputStream) {
+    public static void write(Config config, OutputStream outputStream) {
         try (ByteArrayOutputStream tempStream = new ByteArrayOutputStream()) {
             // circumvent the max indentation of 8 of the JAXB marshaller
             Transformer transformer = TransformerFactory.newInstance().newTransformer();
@@ -68,19 +68,19 @@ public class ConfigIO {
         }
     }
 
-    public static void write(Config config, File f, ConfigDisplayFilter filter) {
+    public static void write(Config config, File file, ConfigDisplayFilter filter) {
         Config filteredConfig = copy(config);
         filter.applyFilter(filteredConfig);
-        write(filteredConfig, f);
+        write(filteredConfig, file);
     }
 
-    public static void write(Config config, OutputStream os, ConfigDisplayFilter filter) {
+    public static void write(Config config, OutputStream outputStream, ConfigDisplayFilter filter) {
         Config filteredConfig = copy(config);
         filter.applyFilter(filteredConfig);
-        write(filteredConfig, os);
+        write(filteredConfig, outputStream);
     }
 
-    public static Config read(File f) {
+    public static Config read(File file) {
         try {
             Unmarshaller unmarshaller = getJAXBContext().createUnmarshaller();
             // output any anomalies in the given config file
@@ -89,7 +89,7 @@ public class ConfigIO {
                         // Raise an exception also on warnings
                         return false;
                     });
-            return read(new FileInputStream(f), unmarshaller);
+            return read(new FileInputStream(file), unmarshaller);
         } catch (JAXBException e) {
             throw new RuntimeException(e);
         } catch (FileNotFoundException e) {
@@ -137,9 +137,11 @@ public class ConfigIO {
 
     public static Config copy(Config config) {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        ConfigIO.write(config, byteArrayOutputStream);
-        return ConfigIO.read(new ByteArrayInputStream(byteArrayOutputStream.toByteArray()));
+        write(config, byteArrayOutputStream);
+        return read(new ByteArrayInputStream(byteArrayOutputStream.toByteArray()));
     }
 
-    private ConfigIO() {}
+    private ConfigIO() {
+        super();
+    }
 }

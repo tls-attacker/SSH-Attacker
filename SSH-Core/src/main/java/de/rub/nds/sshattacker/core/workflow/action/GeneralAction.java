@@ -23,20 +23,26 @@ public class GeneralAction extends SshAction {
 
     @XmlTransient private final Set<String> aliases = new LinkedHashSet<>();
 
-    public GeneralAction() {}
-
-    public GeneralAction(String alias) {
-        this.aliases.add(alias);
+    public GeneralAction() {
+        super();
     }
 
-    public GeneralAction(Collection<? extends String> aliases) {
+    public GeneralAction(String alias) {
+        super();
+        aliases.add(alias);
+    }
+
+    public GeneralAction(Collection<String> aliases) {
+        super();
         this.aliases.addAll(aliases);
     }
 
     public GeneralAction(String... aliases) {
+        super();
         this.aliases.addAll(Arrays.asList(aliases));
     }
 
+    @SuppressWarnings("SuspiciousGetterSetter")
     @Override
     public Set<String> getAllAliases() {
         return aliases;

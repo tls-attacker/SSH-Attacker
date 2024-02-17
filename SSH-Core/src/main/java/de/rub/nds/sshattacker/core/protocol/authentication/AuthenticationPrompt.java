@@ -18,6 +18,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.*;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
+@SuppressWarnings({"SlowListContainsAll", "StandardVariableNames"})
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
 public class AuthenticationPrompt implements List<AuthenticationPrompt.PromptEntry>, Serializable {
@@ -32,8 +33,6 @@ public class AuthenticationPrompt implements List<AuthenticationPrompt.PromptEnt
         private ModifiableInteger promptLength;
         private ModifiableString prompt;
         private ModifiableByte echo;
-
-        public PromptEntry() {}
 
         public ModifiableInteger getPromptLength() {
             return promptLength;
@@ -62,14 +61,14 @@ public class AuthenticationPrompt implements List<AuthenticationPrompt.PromptEnt
 
         public void setPrompt(ModifiableString prompt, boolean adjustLengthField) {
             if (adjustLengthField) {
-                this.setPromptLength(prompt.getValue().getBytes(StandardCharsets.UTF_8).length);
+                setPromptLength(prompt.getValue().getBytes(StandardCharsets.UTF_8).length);
             }
             this.prompt = prompt;
         }
 
         public void setPrompt(String prompt, boolean adjustLengthField) {
             if (adjustLengthField) {
-                this.setPromptLength(prompt.getBytes(StandardCharsets.UTF_8).length);
+                setPromptLength(prompt.getBytes(StandardCharsets.UTF_8).length);
             }
             this.prompt = ModifiableVariableFactory.safelySetValue(this.prompt, prompt);
         }
@@ -132,7 +131,6 @@ public class AuthenticationPrompt implements List<AuthenticationPrompt.PromptEnt
         return promptEntries.remove(o);
     }
 
-    @SuppressWarnings("SlowListContainsAll")
     @Override
     public boolean containsAll(@NonNull Collection<?> c) {
         return promptEntries.containsAll(c);

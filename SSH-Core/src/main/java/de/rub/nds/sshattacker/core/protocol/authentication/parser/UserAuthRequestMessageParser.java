@@ -35,7 +35,7 @@ public abstract class UserAuthRequestMessageParser<T extends UserAuthRequestMess
 
     private void parseUserName(T message) {
         message.setUserNameLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-        LOGGER.debug("Username length: " + message.getUserNameLength().getValue());
+        LOGGER.debug("Username length: {}", message.getUserNameLength().getValue());
         message.setUserName(
                 parseByteString(message.getUserNameLength().getValue(), StandardCharsets.US_ASCII));
         LOGGER.debug("Username: {}", backslashEscapeString(message.getUserName().getValue()));
@@ -43,7 +43,7 @@ public abstract class UserAuthRequestMessageParser<T extends UserAuthRequestMess
 
     private void parseServiceName(T message) {
         message.setServiceNameLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-        LOGGER.debug("Servicename length: " + message.getServiceNameLength().getValue());
+        LOGGER.debug("Servicename length: {}", message.getServiceNameLength().getValue());
         message.setServiceName(
                 parseByteString(
                         message.getServiceNameLength().getValue(), StandardCharsets.US_ASCII));
@@ -52,7 +52,7 @@ public abstract class UserAuthRequestMessageParser<T extends UserAuthRequestMess
 
     private void parseMethodName(T message) {
         message.setMethodNameLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-        LOGGER.debug("Methodname length: " + message.getMethodNameLength().getValue());
+        LOGGER.debug("Methodname length: {}", message.getMethodNameLength().getValue());
         message.setMethodName(
                 parseByteString(
                         message.getMethodNameLength().getValue(), StandardCharsets.US_ASCII));

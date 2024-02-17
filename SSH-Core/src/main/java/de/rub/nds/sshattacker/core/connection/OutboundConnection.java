@@ -13,7 +13,9 @@ public class OutboundConnection extends AliasedConnection {
 
     private static final ConnectionEndType LOCAL_CONNECTION_END_TYPE = ConnectionEndType.CLIENT;
 
-    public OutboundConnection() {}
+    public OutboundConnection() {
+        super();
+    }
 
     public OutboundConnection(Integer port) {
         super(port);

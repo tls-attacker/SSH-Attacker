@@ -30,20 +30,20 @@ public class GlobalRequestOpenSshHostKeysMessage
     private ModifiableByteArray hostKeys;
 
     public ModifiableByteArray getHostKeys() {
-        return this.hostKeys;
+        return hostKeys;
     }
 
-    public void setHostKeys(final ModifiableByteArray hostKeys) {
+    public void setHostKeys(ModifiableByteArray hostKeys) {
         this.hostKeys = hostKeys;
     }
 
-    public void setHostKeys(final byte[] hostKeys) {
-        this.setHostKeys(ModifiableVariableFactory.safelySetValue(this.hostKeys, hostKeys));
+    public void setHostKeys(byte[] hostKeys) {
+        this.hostKeys = ModifiableVariableFactory.safelySetValue(this.hostKeys, hostKeys);
     }
 
-    public void setHostKeys(final List<SshPublicKey<?, ?>> hostKeys) {
-        this.setHostKeys(
-                ModifiableVariableFactory.safelySetValue(this.hostKeys, encodeKeys(hostKeys)));
+    public void setHostKeys(List<SshPublicKey<?, ?>> hostKeys) {
+        this.hostKeys =
+                ModifiableVariableFactory.safelySetValue(this.hostKeys, encodeKeys(hostKeys));
     }
 
     @Override
@@ -76,7 +76,7 @@ public class GlobalRequestOpenSshHostKeysMessage
      * @param keys the list of keys to encode
      * @return the encoded key blob
      */
-    private static byte[] encodeKeys(final List<SshPublicKey<?, ?>> keys) {
+    private static byte[] encodeKeys(List<SshPublicKey<?, ?>> keys) {
         return keys.stream()
                 .map(PublicKeyHelper::encode)
                 .map(Converter::bytesToLengthPrefixedBinaryString)

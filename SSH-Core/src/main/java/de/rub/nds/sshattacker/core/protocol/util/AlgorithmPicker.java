@@ -18,7 +18,9 @@ public final class AlgorithmPicker {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private AlgorithmPicker() {}
+    private AlgorithmPicker() {
+        super();
+    }
 
     // TODO: Implement pickAlgorithm to satisfy the additional constraints mentioned in RFC 4253
     // Sec. 7.1

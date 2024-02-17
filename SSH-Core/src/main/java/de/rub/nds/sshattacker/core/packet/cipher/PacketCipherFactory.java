@@ -16,9 +16,13 @@ import de.rub.nds.sshattacker.core.packet.cipher.keys.AbstractKeySet;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class PacketCipherFactory {
+public final class PacketCipherFactory {
 
     private static final Logger LOGGER = LogManager.getLogger();
+
+    private PacketCipherFactory() {
+        super();
+    }
 
     public static PacketCipher getPacketCipher(
             SshContext context,

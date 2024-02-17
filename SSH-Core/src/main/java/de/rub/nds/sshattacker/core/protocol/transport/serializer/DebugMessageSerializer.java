@@ -27,20 +27,20 @@ public class DebugMessageSerializer extends SshMessageSerializer<DebugMessage> {
 
     private void serializeAlwaysDisplayed() {
         LOGGER.debug(
-                "Always displayed: "
-                        + Converter.byteToBoolean(message.getAlwaysDisplay().getValue()));
+                "Always displayed: {}",
+                Converter.byteToBoolean(message.getAlwaysDisplay().getValue()));
         appendByte(message.getAlwaysDisplay().getValue());
     }
 
     private void serializeMessage() {
-        LOGGER.debug("Message length: " + message.getMessageLength().getValue());
+        LOGGER.debug("Message length: {}", message.getMessageLength().getValue());
         appendInt(message.getMessageLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
         LOGGER.debug("Message: {}", backslashEscapeString(message.getMessage().getValue()));
         appendString(message.getMessage().getValue(), StandardCharsets.UTF_8);
     }
 
     private void serializeLanguageTag() {
-        LOGGER.debug("Language tag length: " + message.getLanguageTagLength().getValue());
+        LOGGER.debug("Language tag length: {}", message.getLanguageTagLength().getValue());
         appendInt(
                 message.getLanguageTagLength().getValue(), DataFormatConstants.STRING_SIZE_LENGTH);
         LOGGER.debug(

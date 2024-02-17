@@ -187,26 +187,26 @@ public abstract class MessageAction extends ConnectionBoundAction {
         super(AliasedConnection.DEFAULT_CONNECTION_ALIAS);
     }
 
-    public MessageAction(List<ProtocolMessage<?>> messages) {
+    protected MessageAction(List<ProtocolMessage<?>> messages) {
         super(AliasedConnection.DEFAULT_CONNECTION_ALIAS);
         this.messages = new ArrayList<>(messages);
     }
 
-    public MessageAction(ProtocolMessage<?>... messages) {
+    protected MessageAction(ProtocolMessage<?>... messages) {
         super(AliasedConnection.DEFAULT_CONNECTION_ALIAS);
         this.messages = Arrays.asList(messages);
     }
 
-    public MessageAction(String connectionAlias) {
+    protected MessageAction(String connectionAlias) {
         super(connectionAlias);
     }
 
-    public MessageAction(String connectionAlias, List<ProtocolMessage<?>> messages) {
+    protected MessageAction(String connectionAlias, List<ProtocolMessage<?>> messages) {
         super(connectionAlias);
         this.messages = new ArrayList<>(messages);
     }
 
-    public MessageAction(String connectionAlias, ProtocolMessage<?>... messages) {
+    protected MessageAction(String connectionAlias, ProtocolMessage<?>... messages) {
         this(connectionAlias, Arrays.asList(messages));
     }
 
@@ -214,11 +214,11 @@ public abstract class MessageAction extends ConnectionBoundAction {
         return getReadableString(Arrays.asList(messages));
     }
 
-    public String getReadableString(List<ProtocolMessage<?>> messages) {
+    public static String getReadableString(List<ProtocolMessage<?>> messages) {
         return getReadableString(messages, false);
     }
 
-    public String getReadableString(List<ProtocolMessage<?>> messages, Boolean verbose) {
+    public static String getReadableString(List<ProtocolMessage<?>> messages, Boolean verbose) {
         if (messages == null || messages.isEmpty()) {
             return "";
         }
@@ -261,13 +261,13 @@ public abstract class MessageAction extends ConnectionBoundAction {
         stripEmptyLists();
     }
 
-    private void stripEmptyLists() {
+    protected void stripEmptyLists() {
         if (messages == null || messages.isEmpty()) {
             messages = null;
         }
     }
 
-    private void initEmptyLists() {
+    protected void initEmptyLists() {
         if (messages == null) {
             messages = new ArrayList<>();
         }

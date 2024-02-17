@@ -34,7 +34,7 @@ public class UnimplementedMessageParser extends SshMessageParser<UnimplementedMe
 
     private void parseSequenceNumber(UnimplementedMessage message) {
         message.setSequenceNumber(parseIntField(DataFormatConstants.UINT32_SIZE));
-        LOGGER.debug("Sequence number: " + message.getSequenceNumber());
+        LOGGER.debug("Sequence number: {}", message.getSequenceNumber());
     }
 
     /*

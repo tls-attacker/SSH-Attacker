@@ -11,16 +11,19 @@ import de.rub.nds.sshattacker.core.connection.AliasedConnection;
 import de.rub.nds.sshattacker.core.constants.KeyExchangeAlgorithm;
 import de.rub.nds.sshattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.sshattacker.core.layer.context.SshContext;
+import de.rub.nds.sshattacker.core.packet.AbstractPacket;
+import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessage;
+import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.state.State;
 import de.rub.nds.sshattacker.core.workflow.factory.WorkflowConfigurationFactory;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Predicate;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import java.util.stream.Collectors;
 
-public class DynamicKeyExchangeAction extends MessageAction {
+public class DynamicKeyExchangeAction extends MessageAction
+        implements ReceivingAction, SendingAction {
 
     private static final Logger LOGGER = LogManager.getLogger();
     private List<SshAction> sshActions = new ArrayList<>();
@@ -40,13 +43,39 @@ public class DynamicKeyExchangeAction extends MessageAction {
         }
 
         SshContext context = state.getSshContext(connectionAlias);
-        WorkflowConfigurationFactory factory =
-                new WorkflowConfigurationFactory(context.getConfig());
         KeyExchangeAlgorithm keyExchangeAlgorithm = context.getChooser().getKeyExchangeAlgorithm();
         sshActions =
-                factory.createKeyExchangeActions(
+                WorkflowConfigurationFactory.createKeyExchangeActions(
                         keyExchangeAlgorithm.getFlowType(), context.getConnection());
         sshActions.forEach(sshAction -> sshAction.execute(state));
+    }
+
+    @Override
+    public List<ProtocolMessage<?>> getReceivedMessages() {
+        return sshActions.stream()
+                .filter(action -> action instanceof ReceivingAction)
+                .flatMap(action -> ((ReceivingAction) action).getReceivedMessages().stream())
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<AbstractPacket> getReceivedPackets() {
+        return sshActions.stream()
+                .filter(action -> action instanceof ReceivingAction)
+                .flatMap(action -> ((ReceivingAction) action).getReceivedPackets().stream())
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<ProtocolMessage<?>> getSendMessages() {
+        return sshActions.stream()
+                .filter(action -> action instanceof SendingAction)
+                .flatMap(action -> ((SendingAction) action).getSendMessages().stream())
+                .collect(Collectors.toList());
+    }
+
+    public List<SshAction> getSshActions() {
+        return sshActions;
     }
 
     @Override
@@ -70,15 +99,15 @@ public class DynamicKeyExchangeAction extends MessageAction {
     public boolean isExecuted() {
         // This action can only contain other ssh actions if it was actually
         // executed.
-        return !this.sshActions.isEmpty();
+        return !sshActions.isEmpty();
     }
 
     @Override
     public boolean executedAsPlanned() {
         // Return true if this action was executed and all contained ssh
         // actions were executed as planned.
-        return this.isExecuted()
-                && this.sshActions.stream()
+        return isExecuted()
+                && sshActions.stream()
                         .map(SshAction::executedAsPlanned)
                         .filter(Predicate.isEqual(false))
                         .findAny()
@@ -86,11 +115,11 @@ public class DynamicKeyExchangeAction extends MessageAction {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
-        DynamicKeyExchangeAction that = (DynamicKeyExchangeAction) o;
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        if (!super.equals(obj)) return false;
+        DynamicKeyExchangeAction that = (DynamicKeyExchangeAction) obj;
         return Objects.equals(sshActions, that.sshActions);
     }
 

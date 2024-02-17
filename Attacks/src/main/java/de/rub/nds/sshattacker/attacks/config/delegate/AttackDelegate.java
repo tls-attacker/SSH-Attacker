@@ -20,10 +20,7 @@ public class AttackDelegate extends Delegate {
             description =
                     "If this value is set the Attack is not only Tested, but also "
                             + "executed (WARNING)")
-    private boolean executeAttack = false;
-
-    /** Default Constructor */
-    public AttackDelegate() {}
+    private boolean executeAttack;
 
     /**
      * Returns true if an attack should be executed

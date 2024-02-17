@@ -23,7 +23,7 @@ public class PacketCryptoComputations extends ModifiableVariableHolder {
     private ModifiableByteArray integrityKey;
 
     /** Set to true whenever the plainPacketBytes field only contains the first decrypted block */
-    private boolean plainPacketBytesFirstBlockOnly = false;
+    private boolean plainPacketBytesFirstBlockOnly;
 
     /**
      * The bytes which are going to be passed to the encrypt function. If encrypt-and-mac is used,
@@ -50,8 +50,6 @@ public class PacketCryptoComputations extends ModifiableVariableHolder {
 
     /** A flag indicating whether the mac is considered valid */
     private Boolean macValid;
-
-    public PacketCryptoComputations() {}
 
     @Override
     public void reset() {
@@ -84,7 +82,7 @@ public class PacketCryptoComputations extends ModifiableVariableHolder {
     }
 
     public void setIntegrityKey(byte[] macKey) {
-        this.integrityKey = ModifiableVariableFactory.safelySetValue(this.integrityKey, macKey);
+        integrityKey = ModifiableVariableFactory.safelySetValue(integrityKey, macKey);
     }
 
     public boolean isPlainPacketBytesFirstBlockOnly() {
@@ -96,22 +94,22 @@ public class PacketCryptoComputations extends ModifiableVariableHolder {
     }
 
     public void setPlainPacketBytes(ModifiableByteArray plainPacketBytes) {
-        this.setPlainPacketBytes(plainPacketBytes, false);
+        setPlainPacketBytes(plainPacketBytes, false);
     }
 
     public void setPlainPacketBytes(ModifiableByteArray plainPacketBytes, boolean firstBlockOnly) {
         this.plainPacketBytes = plainPacketBytes;
-        this.plainPacketBytesFirstBlockOnly = firstBlockOnly;
+        plainPacketBytesFirstBlockOnly = firstBlockOnly;
     }
 
     public void setPlainPacketBytes(byte[] plainPacketBytes) {
-        this.setPlainPacketBytes(plainPacketBytes, false);
+        setPlainPacketBytes(plainPacketBytes, false);
     }
 
     public void setPlainPacketBytes(byte[] plainPacketBytes, boolean firstBlockOnly) {
         this.plainPacketBytes =
                 ModifiableVariableFactory.safelySetValue(this.plainPacketBytes, plainPacketBytes);
-        this.plainPacketBytesFirstBlockOnly = firstBlockOnly;
+        plainPacketBytesFirstBlockOnly = firstBlockOnly;
     }
 
     public ModifiableByteArray getAuthenticatedPacketBytes() {
@@ -179,10 +177,10 @@ public class PacketCryptoComputations extends ModifiableVariableHolder {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        PacketCryptoComputations that = (PacketCryptoComputations) o;
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        PacketCryptoComputations that = (PacketCryptoComputations) obj;
         return Objects.equals(encryptionKey, that.encryptionKey)
                 && Objects.equals(integrityKey, that.integrityKey)
                 && Objects.equals(

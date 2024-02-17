@@ -21,7 +21,6 @@ import de.rub.nds.sshattacker.core.crypto.ntrup.sntrup.core.Short;
 import de.rub.nds.sshattacker.core.crypto.ntrup.sntrup.core.SntrupCore;
 import de.rub.nds.sshattacker.core.crypto.ntrup.sntrup.core.SntrupCoreValues;
 import de.rub.nds.sshattacker.core.crypto.ntrup.sntrup.core.SntrupParameterSet;
-import de.rub.nds.sshattacker.core.exceptions.CryptoException;
 import de.rub.nds.sshattacker.core.exceptions.NotImplementedException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -29,42 +28,44 @@ import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+@SuppressWarnings("StandardVariableNames")
 public class SntrupKeyExchange extends KeyEncapsulation {
     private static final Logger LOGGER = LogManager.getLogger();
-    private SntrupParameterSet set;
+    private final SntrupParameterSet set;
     private CustomPQKemPublicKey remotePublicKey;
-    private SntrupCore core;
+    private final SntrupCore core;
 
     private CustomKeyPair<CustomPQKemPrivateKey, CustomPQKemPublicKey> localKeyPair;
     private byte[] encryptedSharedSecret;
 
-    private PQKemNames kemName;
+    private final PQKemNames kemName;
 
     public SntrupKeyExchange(PQKemNames kemName) {
+        super();
         this.kemName = kemName;
         switch (kemName) {
             case SNTRUP4591761:
-                this.set = SntrupParameterSet.KEM_SNTRUP_4591761;
+                set = SntrupParameterSet.KEM_SNTRUP_4591761;
                 break;
             case SNTRUP761:
-                this.set = SntrupParameterSet.KEM_SNTRUP_761;
+                set = SntrupParameterSet.KEM_SNTRUP_761;
                 break;
             default:
                 throw new IllegalArgumentException(
-                        this.getClass().getName() + " does not support " + kemName.getName());
+                        getClass().getName() + " does not support " + kemName.getName());
         }
-        this.core = new SntrupCore(set);
+        core = new SntrupCore(set);
     }
 
     private void encapsR1(byte[] pubK) {
         Short r = Short.createRandomShort(set);
         RQ h = RQ.decode_old(set, pubK);
         byte[] encR = r.encode();
-        byte[] c = core.encrypt(r, h).encode_old();
+        byte[] c = SntrupCore.encrypt(r, h).encode_old();
 
         byte[] hash = sha512(encR);
-        this.encryptedSharedSecret = ArrayConverter.concatenate(Arrays.copyOfRange(hash, 0, 32), c);
-        this.sharedSecret = Arrays.copyOfRange(hash, 32, 64);
+        encryptedSharedSecret = ArrayConverter.concatenate(Arrays.copyOfRange(hash, 0, 32), c);
+        sharedSecret = Arrays.copyOfRange(hash, 32, 64);
     }
 
     private void encapsR2(byte[] pubK) {
@@ -72,20 +73,20 @@ public class SntrupKeyExchange extends KeyEncapsulation {
         RQ h = RQ.decode(set, pubK);
 
         byte[] encR = r.encode();
-        byte[] c = core.encrypt(r, h).encode();
+        byte[] c = SntrupCore.encrypt(r, h).encode();
 
         byte[] cache = hashPrefixedB(pubK, (byte) 4);
         byte[] hashencR = hashPrefixedB(encR, (byte) 3);
         byte[] hashConfirm = hashPrefixedB(ArrayConverter.concatenate(hashencR, cache), (byte) 2);
 
-        this.encryptedSharedSecret = ArrayConverter.concatenate(c, hashConfirm);
-        this.sharedSecret =
+        encryptedSharedSecret = ArrayConverter.concatenate(c, hashConfirm);
+        sharedSecret =
                 hashPrefixedB(
                         ArrayConverter.concatenate(hashencR, encryptedSharedSecret), (byte) 1);
     }
 
     private void decapsR1(byte[] privK, byte[] ciphertext) {
-        this.encryptedSharedSecret = ciphertext;
+        encryptedSharedSecret = ciphertext;
         Short f = Short.decode(set, Arrays.copyOfRange(privK, 0, set.getEncodedSmallLength()));
         R3 gInv =
                 R3.decode(
@@ -107,23 +108,23 @@ public class SntrupKeyExchange extends KeyEncapsulation {
                         set, Arrays.copyOfRange(ciphertext, 32, set.getEncodedCiphertextLength()));
         Short rNew = core.decrypt(c, f, gInv);
         byte[] rNewEnc = rNew.encode();
-        byte[] cNewEnc = core.encrypt(rNew, h).encode_old();
+        byte[] cNewEnc = SntrupCore.encrypt(rNew, h).encode_old();
 
         byte[] hashNew = sha512(rNewEnc);
         byte[] ciphertextNew =
                 ArrayConverter.concatenate(Arrays.copyOfRange(hashNew, 0, 32), cNewEnc);
 
         if (Arrays.equals(ciphertext, ciphertextNew)) {
-            LOGGER.info("Successfully decapsulated the cyphertext. Calculate shared Secret now...");
-            this.sharedSecret = Arrays.copyOfRange(hashNew, 32, 64);
-            this.encryptedSharedSecret = ciphertext;
+            LOGGER.info("Successfully decapsulated the ciphertext. Calculate shared secret now...");
+            sharedSecret = Arrays.copyOfRange(hashNew, 32, 64);
+            encryptedSharedSecret = ciphertext;
         } else {
             LOGGER.warn("Could not decapsulate the shared secret.");
         }
     }
 
     private void decapsR2(byte[] privK, byte[] ciphertext) {
-        this.encryptedSharedSecret = ciphertext;
+        encryptedSharedSecret = ciphertext;
         Short f = Short.decode(set, Arrays.copyOfRange(privK, 0, set.getEncodedSmallLength()));
         R3 gInv =
                 R3.decode(
@@ -164,7 +165,7 @@ public class SntrupKeyExchange extends KeyEncapsulation {
 
         Short rNew = core.decrypt(c, f, gInv);
         byte[] rNewEnc = rNew.encode();
-        byte[] cNewEnc = core.encrypt(rNew, h).encode();
+        byte[] cNewEnc = SntrupCore.encrypt(rNew, h).encode();
 
         byte[] hashRNewEnc = hashPrefixedB(rNewEnc, (byte) 3);
         byte[] hashConfirmNew =
@@ -172,19 +173,19 @@ public class SntrupKeyExchange extends KeyEncapsulation {
         byte[] ciphertextNew = ArrayConverter.concatenate(cNewEnc, hashConfirmNew);
 
         if (Arrays.equals(ciphertext, ciphertextNew)) {
-            LOGGER.info("Successfully decapsulated the cyphertext. Calculate shared Secret now...");
+            LOGGER.info("Successfully decapsulated the ciphertext. Calculate shared secret now...");
 
-            this.sharedSecret =
+            sharedSecret =
                     hashPrefixedB(ArrayConverter.concatenate(hashRNewEnc, ciphertext), (byte) 1);
 
         } else {
             LOGGER.warn("Could not decapsulate the shared secret.");
 
-            this.sharedSecret = rho;
+            sharedSecret = rho;
         }
     }
 
-    private byte[] sha512(byte[] bytes) {
+    private static byte[] sha512(byte[] bytes) {
         try {
             MessageDigest md = MessageDigest.getInstance("SHA-512");
             return md.digest(bytes);
@@ -195,7 +196,7 @@ public class SntrupKeyExchange extends KeyEncapsulation {
         }
     }
 
-    private byte[] hashPrefixedB(byte[] bytes, byte b) {
+    private static byte[] hashPrefixedB(byte[] bytes, byte b) {
         byte[] bByte = {b};
         return Arrays.copyOfRange(sha512(ArrayConverter.concatenate(bByte, bytes)), 0, 32);
     }
@@ -204,7 +205,7 @@ public class SntrupKeyExchange extends KeyEncapsulation {
     public void setLocalKeyPair(byte[] privateKeyBytes, byte[] publicKeyBytes) {
         CustomPQKemPrivateKey privK = new CustomPQKemPrivateKey(privateKeyBytes, kemName);
         CustomPQKemPublicKey pubK = new CustomPQKemPublicKey(publicKeyBytes, kemName);
-        localKeyPair = new CustomKeyPair<CustomPQKemPrivateKey, CustomPQKemPublicKey>(privK, pubK);
+        localKeyPair = new CustomKeyPair<>(privK, pubK);
     }
 
     @Override
@@ -234,7 +235,7 @@ public class SntrupKeyExchange extends KeyEncapsulation {
                             kemName);
         }
 
-        this.localKeyPair = new CustomKeyPair<>(privK, pubK);
+        localKeyPair = new CustomKeyPair<>(privK, pubK);
     }
 
     @Override
@@ -252,12 +253,12 @@ public class SntrupKeyExchange extends KeyEncapsulation {
 
     @Override
     public void setRemotePublicKey(byte[] remotePublicKeyBytes) {
-        this.remotePublicKey = new CustomPQKemPublicKey(remotePublicKeyBytes, kemName);
+        remotePublicKey = new CustomPQKemPublicKey(remotePublicKeyBytes, kemName);
     }
 
     @Override
     public void setSharedSecret(byte[] sharedSecretBytes) {
-        this.sharedSecret = sharedSecretBytes;
+        sharedSecret = sharedSecretBytes;
     }
 
     @Override
@@ -267,7 +268,7 @@ public class SntrupKeyExchange extends KeyEncapsulation {
         }
 
         if (set == SntrupParameterSet.KEM_SNTRUP_4591761) {
-            encapsR1(localKeyPair.getPublic().getEncoded());
+            encapsR1(localKeyPair.getPublicKey().getEncoded());
         } else {
             encapsR2(encryptedSharedSecret);
         }
@@ -280,7 +281,7 @@ public class SntrupKeyExchange extends KeyEncapsulation {
 
     @Override
     public byte[] getEncryptedSharedSecret() {
-        return this.encryptedSharedSecret;
+        return encryptedSharedSecret;
     }
 
     @Override
@@ -295,31 +296,31 @@ public class SntrupKeyExchange extends KeyEncapsulation {
             encapsR2(remotePublicKey.getEncoded());
         }
 
-        return this.encryptedSharedSecret;
+        return encryptedSharedSecret;
     }
 
     @Override
-    public void decryptSharedSecret() throws CryptoException {
+    public void decryptSharedSecret() {
         if (encryptedSharedSecret == null) {
             LOGGER.warn("encrypted shared secret not set, set shared secret to byte[] {0}");
-            this.sharedSecret = new byte[] {0};
+            sharedSecret = new byte[] {0};
             return;
         }
         decryptSharedSecret(encryptedSharedSecret);
     }
 
     @Override
-    public void decryptSharedSecret(byte[] encryptedSharedSecret) throws CryptoException {
+    public void decryptSharedSecret(byte[] encryptedSharedSecret) {
         if (localKeyPair == null) {
             LOGGER.warn("local key pair not set, set shared secret to byte[] {0}");
-            this.sharedSecret = new byte[] {0};
+            sharedSecret = new byte[] {0};
             return;
         }
 
         if (set == SntrupParameterSet.KEM_SNTRUP_4591761) {
-            decapsR1(localKeyPair.getPrivate().getEncoded(), encryptedSharedSecret);
+            decapsR1(localKeyPair.getPrivateKey().getEncoded(), encryptedSharedSecret);
         } else {
-            decapsR2(localKeyPair.getPrivate().getEncoded(), encryptedSharedSecret);
+            decapsR2(localKeyPair.getPrivateKey().getEncoded(), encryptedSharedSecret);
         }
     }
 

@@ -22,7 +22,7 @@ public abstract class ChannelOpenMessagePreparator<T extends ChannelOpenMessage<
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public ChannelOpenMessagePreparator(Chooser chooser, T message) {
+    protected ChannelOpenMessagePreparator(Chooser chooser, T message) {
         super(chooser, message, MessageIdConstant.SSH_MSG_CHANNEL_OPEN);
     }
 

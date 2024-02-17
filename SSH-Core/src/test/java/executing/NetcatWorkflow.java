@@ -24,7 +24,11 @@ import de.rub.nds.sshattacker.core.workflow.action.SendAction;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
-public class NetcatWorkflow {
+public final class NetcatWorkflow {
+
+    private NetcatWorkflow() {
+        super();
+    }
 
     // integration test
     public static void main(String[] args) throws Exception {

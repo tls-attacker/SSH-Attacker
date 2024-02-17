@@ -33,7 +33,8 @@ class JavaCipher extends AbstractCipher {
     private final boolean keepCipherState;
     private Cipher cipher;
 
-    public JavaCipher(EncryptionAlgorithm algorithm, byte[] key, boolean keepCipherState) {
+    JavaCipher(EncryptionAlgorithm algorithm, byte[] key, boolean keepCipherState) {
+        super();
         this.algorithm = algorithm;
         this.key = key;
         this.keepCipherState = keepCipherState;

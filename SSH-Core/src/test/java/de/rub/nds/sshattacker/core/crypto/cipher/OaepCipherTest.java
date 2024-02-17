@@ -130,7 +130,7 @@ public class OaepCipherTest {
     }
 
     /**
-     * Tests the RSA-OAEP decryption by computing the plaintext from the provided ciphertext. Thus
+     * Tests the RSA-OAEP decryption by computing the plaintext from the provided ciphertext. Thus,
      * the method tests the class OaepCipher.java and the DecryptionCipher picking of CipherFactory,
      * which are used in the RsaKeyExchange.
      *
@@ -163,7 +163,7 @@ public class OaepCipherTest {
     /**
      * Tests the RSA-OAEP encryption by computing the ciphertext from the given plaintext and
      * decrypting it again. If testRsaOaepDecryption is working the right way, this method verifies
-     * the encryption method of OaepCipher. Thus the method test the class OaepCipher.java and the
+     * the encryption method of OaepCipher. Thus, the method test the class OaepCipher.java and the
      * EncryptionCipher picking of CipherFactory, which are used in the RsaKeyExchange.
      *
      * @param keyExchangeAlgorithm the used rsa oaep algorithm
@@ -194,7 +194,8 @@ public class OaepCipherTest {
                 CipherFactory.getOaepCipher(keyExchangeAlgorithm, keypair.getPublicKey());
         byte[] computedCiphertext = encCipher.encrypt(plaintext);
         AbstractCipher decCipher =
-                CipherFactory.getOaepCipher(keyExchangeAlgorithm, keypair.getPrivateKey().get());
+                CipherFactory.getOaepCipher(
+                        keyExchangeAlgorithm, keypair.getPrivateKey().orElseThrow());
         byte[] computedPlaintext = decCipher.decrypt(computedCiphertext);
         assertArrayEquals(plaintext, computedPlaintext);
     }

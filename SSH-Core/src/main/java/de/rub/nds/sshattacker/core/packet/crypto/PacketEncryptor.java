@@ -43,11 +43,11 @@ public class PacketEncryptor extends AbstractPacketEncryptor {
             packet.setSequenceNumber(context.getWriteSequenceNumber());
             packetCipher.process(packet);
         } catch (CryptoException e) {
-            LOGGER.warn("Could not encrypt binary packet. Using " + noneCipher, e);
+            LOGGER.warn("Could not encrypt binary packet. Using {}", noneCipher, e);
             try {
                 noneCipher.process(packet);
             } catch (CryptoException ex) {
-                LOGGER.error("Could not encrypt with " + noneCipher, ex);
+                LOGGER.error("Could not encrypt with {}", noneCipher, ex);
             }
         }
         context.incrementWriteSequenceNumber();
@@ -77,11 +77,11 @@ public class PacketEncryptor extends AbstractPacketEncryptor {
         try {
             packetCipher.process(packet);
         } catch (CryptoException e) {
-            LOGGER.warn("Could not encrypt blob packet. Using " + noneCipher, e);
+            LOGGER.warn("Could not encrypt blob packet. Using {}", noneCipher, e);
             try {
                 noneCipher.process(packet);
             } catch (CryptoException ex) {
-                LOGGER.error("Could not encrypt with " + noneCipher, ex);
+                LOGGER.error("Could not encrypt with {}", noneCipher, ex);
             }
         }
     }

@@ -38,13 +38,12 @@ public class DhGexKeyExchangeReplyMessagePreparator
     private void prepareEphemeralPublicKey() {
         DhKeyExchange keyExchange = chooser.getDhGexKeyExchange();
         keyExchange.generateLocalKeyPair();
-        getObject().setEphemeralPublicKey(keyExchange.getLocalKeyPair().getPublic().getY(), true);
+        getObject()
+                .setEphemeralPublicKey(keyExchange.getLocalKeyPair().getPublicKey().getY(), true);
         // Update exchange hash with local public key
         chooser.getContext()
                 .getSshContext()
                 .getExchangeHashInputHolder()
-                .setDhGexServerPublicKey(keyExchange.getLocalKeyPair().getPublic().getY());
+                .setDhGexServerPublicKey(keyExchange.getLocalKeyPair().getPublicKey().getY());
     }
-
-    private void prepareSignature() {}
 }

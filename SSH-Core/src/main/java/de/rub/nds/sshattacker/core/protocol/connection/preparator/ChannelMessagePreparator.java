@@ -67,7 +67,7 @@ public abstract class ChannelMessagePreparator<T extends ChannelMessage<T>>
                                 });
 
         if (!channel.isOpen().getValue()) {
-            final int localChannelId = channel.getLocalChannelId().getValue();
+            int localChannelId = channel.getLocalChannelId().getValue();
             LOGGER.warn(
                     "About to prepare channel message for channel with local id {}, but channel is not open. Continuing anyway.",
                     localChannelId);

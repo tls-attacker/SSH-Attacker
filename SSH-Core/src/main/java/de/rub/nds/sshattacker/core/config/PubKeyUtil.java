@@ -28,13 +28,15 @@ import org.bouncycastle.crypto.util.OpenSSHPrivateKeyUtil;
 import org.bouncycastle.util.io.pem.PemObject;
 import org.bouncycastle.util.io.pem.PemReader;
 
-/** Utlity class for working with SSH keys. */
-public class PubKeyUtil {
+/** Utility class for working with SSH keys. */
+public final class PubKeyUtil {
     /** Logger instance. */
     private static final Logger LOGGER = LogManager.getLogger();
 
     /** Private constructor because this is a utility class. */
-    private PubKeyUtil() {}
+    private PubKeyUtil() {
+        super();
+    }
 
     /** Set of allowed PEM types. */
     private static final Set<String> ALLOWED_PEM_TYPES =
@@ -47,8 +49,8 @@ public class PubKeyUtil {
      * @return the parsed SSH key
      * @throws IOException if the key data cannot be read
      */
-    public static SshPublicKey<?, ?> parsePrivateKey(final Path path) throws IOException {
-        try (final Reader reader = Files.newBufferedReader(path)) {
+    public static SshPublicKey<?, ?> parsePrivateKey(Path path) throws IOException {
+        try (Reader reader = Files.newBufferedReader(path)) {
             return parsePrivateKey(reader);
         }
     }
@@ -60,9 +62,9 @@ public class PubKeyUtil {
      * @return the parsed SSH key
      * @throws IOException if the key data cannot be read
      */
-    public static SshPublicKey<?, ?> parsePrivateKey(final Reader reader) throws IOException {
-        final PemReader pemReader = new PemReader(reader);
-        final PemObject pem = pemReader.readPemObject();
+    public static SshPublicKey<?, ?> parsePrivateKey(Reader reader) throws IOException {
+        PemReader pemReader = new PemReader(reader);
+        PemObject pem = pemReader.readPemObject();
         if (!ALLOWED_PEM_TYPES.contains(pem.getType())) {
             throw new IOException(String.format("Unexpected PEM file type \"%s\"", pem.getType()));
         }
@@ -76,13 +78,13 @@ public class PubKeyUtil {
      * @return the parsed SSH key
      * @throws IOException if the key data cannot be read
      */
-    public static SshPublicKey<?, ?> parsePrivateKey(final byte[] blob) throws IOException {
-        final AsymmetricKeyParameter params = OpenSSHPrivateKeyUtil.parsePrivateKeyBlob(blob);
+    public static SshPublicKey<?, ?> parsePrivateKey(byte[] blob) throws IOException {
+        AsymmetricKeyParameter params = OpenSSHPrivateKeyUtil.parsePrivateKeyBlob(blob);
         if (params instanceof RSAPrivateCrtKeyParameters) {
-            final RSAPrivateCrtKeyParameters rsaParams = (RSAPrivateCrtKeyParameters) params;
-            final CustomRsaPrivateKey privateKey =
+            RSAPrivateCrtKeyParameters rsaParams = (RSAPrivateCrtKeyParameters) params;
+            CustomRsaPrivateKey privateKey =
                     new CustomRsaPrivateKey(rsaParams.getExponent(), rsaParams.getModulus());
-            final CustomRsaPublicKey publicKey =
+            CustomRsaPublicKey publicKey =
                     new CustomRsaPublicKey(rsaParams.getPublicExponent(), rsaParams.getModulus());
             LOGGER.debug(
                     "Successfully parsed {} bit RSA keypair", rsaParams.getModulus().bitLength());
@@ -90,10 +92,10 @@ public class PubKeyUtil {
         }
 
         if (params instanceof Ed25519PrivateKeyParameters) {
-            final Ed25519PrivateKeyParameters ed25519Params = (Ed25519PrivateKeyParameters) params;
-            final XCurveEcPrivateKey privateKey =
+            Ed25519PrivateKeyParameters ed25519Params = (Ed25519PrivateKeyParameters) params;
+            XCurveEcPrivateKey privateKey =
                     new XCurveEcPrivateKey(ed25519Params.getEncoded(), NamedEcGroup.CURVE25519);
-            final XCurveEcPublicKey publicKey =
+            XCurveEcPublicKey publicKey =
                     new XCurveEcPublicKey(
                             ed25519Params.generatePublicKey().getEncoded(),
                             NamedEcGroup.CURVE25519);

@@ -25,7 +25,7 @@ public class ChannelRequestSubsystemMessageSerializer
     }
 
     public void serializeSubsystemName() {
-        LOGGER.debug("Subsystem name length: " + message.getSubsystemNameLength().getValue());
+        LOGGER.debug("Subsystem name length: {}", message.getSubsystemNameLength().getValue());
         appendInt(
                 message.getSubsystemNameLength().getValue(),
                 DataFormatConstants.STRING_SIZE_LENGTH);

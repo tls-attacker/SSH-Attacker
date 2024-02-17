@@ -9,7 +9,9 @@ package de.rub.nds.sshattacker.core.exceptions;
 
 public class AdjustmentException extends RuntimeException {
 
-    public AdjustmentException() {}
+    public AdjustmentException() {
+        super();
+    }
 
     public AdjustmentException(String message) {
         super(message);

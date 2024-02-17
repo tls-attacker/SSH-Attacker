@@ -64,12 +64,12 @@ public class RsaKeyExchangePubkeyMessage extends SshMessage<RsaKeyExchangePubkey
 
     @Override
     public void setHostKeyBytes(ModifiableByteArray hostKeyBytes) {
-        this.setHostKeyBytes(hostKeyBytes, false);
+        setHostKeyBytes(hostKeyBytes, false);
     }
 
     @Override
     public void setHostKeyBytes(byte[] hostKeyBytes) {
-        this.setHostKeyBytes(hostKeyBytes, false);
+        setHostKeyBytes(hostKeyBytes, false);
     }
 
     @Override
@@ -111,16 +111,15 @@ public class RsaKeyExchangePubkeyMessage extends SshMessage<RsaKeyExchangePubkey
     @SuppressWarnings("unchecked")
     public SshPublicKey<CustomRsaPublicKey, CustomRsaPrivateKey> getTransientPublicKey() {
         return (SshPublicKey<CustomRsaPublicKey, CustomRsaPrivateKey>)
-                PublicKeyHelper.parse(
-                        PublicKeyFormat.SSH_RSA, this.transientPublicKeyBytes.getValue());
+                PublicKeyHelper.parse(PublicKeyFormat.SSH_RSA, transientPublicKeyBytes.getValue());
     }
 
     public void setTransientPublicKeyBytes(ModifiableByteArray transientPublicKeyBytes) {
-        this.setTransientPublicKeyBytes(transientPublicKeyBytes, false);
+        setTransientPublicKeyBytes(transientPublicKeyBytes, false);
     }
 
     public void setTransientPublicKeyBytes(byte[] transientPublicKeyBytes) {
-        this.setTransientPublicKeyBytes(transientPublicKeyBytes, false);
+        setTransientPublicKeyBytes(transientPublicKeyBytes, false);
     }
 
     public void setTransientPublicKeyBytes(

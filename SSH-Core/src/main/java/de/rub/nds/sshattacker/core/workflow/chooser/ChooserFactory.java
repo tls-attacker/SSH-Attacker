@@ -20,5 +20,7 @@ public class ChooserFactory {
         throw new InvalidChooserTypeException("ChooserType \"" + type + "\" not supported");
     }
 
-    private ChooserFactory() {}
+    private ChooserFactory() {
+        super();
+    }
 }

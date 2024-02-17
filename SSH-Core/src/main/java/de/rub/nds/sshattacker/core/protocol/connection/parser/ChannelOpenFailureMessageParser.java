@@ -46,12 +46,12 @@ public class ChannelOpenFailureMessageParser
 
     private void parseReasonCode(ChannelOpenFailureMessage message) {
         message.setReasonCode(parseIntField(DataFormatConstants.UINT32_SIZE));
-        LOGGER.debug("Reason code: " + message.getReasonCode());
+        LOGGER.debug("Reason code: {}", message.getReasonCode());
     }
 
     private void parseReason(ChannelOpenFailureMessage message) {
         message.setReasonLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-        LOGGER.debug("Reason length: " + message.getReasonLength());
+        LOGGER.debug("Reason length: {}", message.getReasonLength());
         message.setReason(
                 parseByteString(message.getReasonLength().getValue(), StandardCharsets.UTF_8));
         LOGGER.debug("Reason: {}", backslashEscapeString(message.getReason().getValue()));
@@ -59,7 +59,7 @@ public class ChannelOpenFailureMessageParser
 
     private void parseLanguageTag(ChannelOpenFailureMessage message) {
         message.setLanguageTagLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-        LOGGER.debug("Language tag length: " + message.getLanguageTagLength().getValue());
+        LOGGER.debug("Language tag length: {}", message.getLanguageTagLength().getValue());
         message.setLanguageTag(
                 parseByteString(
                         message.getLanguageTagLength().getValue(), StandardCharsets.US_ASCII));

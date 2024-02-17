@@ -31,10 +31,12 @@ public class CustomEcPrivateKey extends CustomPrivateKey implements ECPrivateKey
     private NamedEcGroup group;
     private BigInteger privateKey;
 
-    @SuppressWarnings("unused")
-    private CustomEcPrivateKey() {}
+    public CustomEcPrivateKey() {
+        super();
+    }
 
     public CustomEcPrivateKey(BigInteger privateKey, NamedEcGroup group) {
+        super();
         if (group.isRFC7748Curve()) {
             throw new IllegalArgumentException(
                     "CustomEcPrivateKey does not support named group " + group);
@@ -59,11 +61,12 @@ public class CustomEcPrivateKey extends CustomPrivateKey implements ECPrivateKey
         this.privateKey = privateKey;
     }
 
-    public CustomEcPrivateKey parse(byte[] encoded, NamedEcGroup group) {
+    public static CustomEcPrivateKey parse(byte[] encoded, NamedEcGroup group) {
         return new CustomEcPrivateKey(new BigInteger(1, encoded), group);
     }
 
     // Interface methods
+    @SuppressWarnings("SuspiciousGetterSetter")
     @Override
     public BigInteger getS() {
         return privateKey;

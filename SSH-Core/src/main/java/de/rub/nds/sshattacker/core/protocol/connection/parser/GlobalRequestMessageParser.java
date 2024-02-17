@@ -38,7 +38,7 @@ public abstract class GlobalRequestMessageParser<T extends GlobalRequestMessage<
 
     private void parseRequestName(T message) {
         message.setRequestNameLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-        LOGGER.debug("Request name length: " + message.getRequestNameLength().getValue());
+        LOGGER.debug("Request name length: {}", message.getRequestNameLength().getValue());
         message.setRequestName(
                 parseByteString(
                         message.getRequestNameLength().getValue(), StandardCharsets.US_ASCII));
@@ -48,7 +48,7 @@ public abstract class GlobalRequestMessageParser<T extends GlobalRequestMessage<
 
     private void parseWantReply(T message) {
         message.setWantReply(parseByteField(1));
-        LOGGER.debug("Want reply: " + Converter.byteToBoolean(message.getWantReply().getValue()));
+        LOGGER.debug("Want reply: {}", Converter.byteToBoolean(message.getWantReply().getValue()));
     }
 
     @Override

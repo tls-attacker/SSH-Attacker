@@ -18,6 +18,7 @@ public class PacketCompressor extends Compressor<AbstractPacket> {
     private Compression compression;
 
     public PacketCompressor() {
+        super();
         setCompressionAlgorithm(CompressionAlgorithm.NONE);
     }
 

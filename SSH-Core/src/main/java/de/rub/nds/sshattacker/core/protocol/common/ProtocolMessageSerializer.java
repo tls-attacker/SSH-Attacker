@@ -13,7 +13,8 @@ public abstract class ProtocolMessageSerializer<T extends ProtocolMessage> exten
 
     protected final T message;
 
-    public ProtocolMessageSerializer(T message) {
+    protected ProtocolMessageSerializer(T message) {
+        super();
         this.message = message;
     }
 

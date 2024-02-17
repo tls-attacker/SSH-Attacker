@@ -47,7 +47,7 @@ public class DebugMessageParserTest {
      * Test of DebugMessageParser::parse method
      *
      * @param providedBytes Bytes to parse
-     * @param expectedAlwaysDisplay Expected value for the always display flag
+     * @param expectedAlwaysDisplay Expected value for the alwaysDisplay flag
      * @param expectedMessage Expected debug message
      * @param expectedLanguageTag Expected language tag
      */

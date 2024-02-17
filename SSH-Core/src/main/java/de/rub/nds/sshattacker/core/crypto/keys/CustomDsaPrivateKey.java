@@ -28,10 +28,12 @@ public class CustomDsaPrivateKey extends CustomPrivateKey implements DSAPrivateK
     // Private key
     private BigInteger x;
 
-    @SuppressWarnings("unused")
-    private CustomDsaPrivateKey() {}
+    public CustomDsaPrivateKey() {
+        super();
+    }
 
     public CustomDsaPrivateKey(BigInteger p, BigInteger q, BigInteger g, BigInteger x) {
+        super();
         this.p = p;
         this.q = q;
         this.g = g;

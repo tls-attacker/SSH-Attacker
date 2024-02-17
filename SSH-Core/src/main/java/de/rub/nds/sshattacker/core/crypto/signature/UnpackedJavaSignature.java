@@ -17,9 +17,9 @@ import java.security.Key;
  * required format. Processing of the signature is done by the unpackSignature() and packSignature()
  * abstract functions.
  */
-public abstract class UnpackedJavaSignature extends JavaSignature {
+public class UnpackedJavaSignature extends JavaSignature {
 
-    public UnpackedJavaSignature(PublicKeyAlgorithm algorithm, Key key) {
+    protected UnpackedJavaSignature(PublicKeyAlgorithm algorithm, Key key) {
         super(algorithm, key);
     }
 
@@ -33,7 +33,13 @@ public abstract class UnpackedJavaSignature extends JavaSignature {
         return unpackSignature(super.sign(data));
     }
 
-    protected abstract byte[] unpackSignature(byte[] packedSignature);
+    protected byte[] unpackSignature(byte[] packedSignature) {
+        throw new UnsupportedOperationException(
+                "Calling unpackSignature on UnpackedJavaSignature base class is not supported. Make sure to override this method in subclasses.");
+    }
 
-    protected abstract byte[] packSignature(byte[] unpackedSignature);
+    protected byte[] packSignature(byte[] unpackedSignature) {
+        throw new UnsupportedOperationException(
+                "Calling packSignature on UnpackedJavaSignature base class is not supported. Make sure to override this method in subclasses.");
+    }
 }

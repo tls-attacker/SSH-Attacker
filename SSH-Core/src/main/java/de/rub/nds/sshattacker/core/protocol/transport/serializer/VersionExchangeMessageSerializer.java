@@ -27,7 +27,7 @@ public class VersionExchangeMessageSerializer
         if (message.getVersion().getValue().isEmpty()) {
             LOGGER.debug("Version: [none]");
         } else {
-            LOGGER.debug("Version: " + message.getVersion().getValue());
+            LOGGER.debug("Version: {}", message.getVersion().getValue());
             appendString(message.getVersion().getValue(), StandardCharsets.US_ASCII);
         }
     }
@@ -36,7 +36,7 @@ public class VersionExchangeMessageSerializer
         if (message.getComment().getValue().isEmpty()) {
             LOGGER.debug("Comment: [none]");
         } else {
-            LOGGER.debug("Comment: " + message.getComment().getValue());
+            LOGGER.debug("Comment: {}", message.getComment().getValue());
             appendString(
                     String.valueOf(CharConstants.VERSION_COMMENT_SEPARATOR),
                     StandardCharsets.US_ASCII);
@@ -46,11 +46,11 @@ public class VersionExchangeMessageSerializer
 
     private void serializeEndOfMessageSequence() {
         LOGGER.debug(
-                "End of Line Sequence: "
-                        + message.getEndOfMessageSequence()
-                                .getValue()
-                                .replace("\r", "[CR]")
-                                .replace("\n", "[NL]"));
+                "End of Line Sequence: {}",
+                message.getEndOfMessageSequence()
+                        .getValue()
+                        .replace("\r", "[CR]")
+                        .replace("\n", "[NL]"));
         appendString(message.getEndOfMessageSequence().getValue(), StandardCharsets.US_ASCII);
     }
 

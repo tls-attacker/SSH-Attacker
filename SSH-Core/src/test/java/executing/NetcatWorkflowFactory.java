@@ -18,7 +18,11 @@ import de.rub.nds.sshattacker.core.workflow.factory.WorkflowTraceType;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
-public class NetcatWorkflowFactory {
+public final class NetcatWorkflowFactory {
+
+    private NetcatWorkflowFactory() {
+        super();
+    }
 
     // integration test
     public static void main(String[] args) throws Exception {

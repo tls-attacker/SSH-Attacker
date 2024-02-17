@@ -57,6 +57,12 @@ public class ActivateEncryptionAction extends ConnectionBoundAction {
                 .updateDecryptionCipher(
                         PacketCipherFactory.getPacketCipher(
                                 context, keySet.get(), inEnc, inMac, CipherMode.DECRYPT));
+
+        if (context.getStrictKeyExchangeEnabled().orElse(false)) {
+            LOGGER.info("Resetting sequence numbers because of strict key exchange");
+            context.setReadSequenceNumber(0);
+            context.setWriteSequenceNumber(0);
+        }
     }
 
     @Override

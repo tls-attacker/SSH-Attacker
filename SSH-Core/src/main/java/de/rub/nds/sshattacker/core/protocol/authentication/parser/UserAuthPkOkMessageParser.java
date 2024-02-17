@@ -50,7 +50,7 @@ public class UserAuthPkOkMessageParser extends SshMessageParser<UserAuthPkOkMess
 
     private void parsePubkey(UserAuthPkOkMessage message) {
         message.setPubkeyLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-        LOGGER.debug("Pubkey length: " + message.getPubkeyLength().getValue());
+        LOGGER.debug("Pubkey length: {}", message.getPubkeyLength().getValue());
         message.setPubkey(
                 parseByteString(message.getPubkeyLength().getValue(), StandardCharsets.US_ASCII));
         LOGGER.debug("Pubkey: {}", backslashEscapeString(message.getPubkey().getValue()));
@@ -59,7 +59,7 @@ public class UserAuthPkOkMessageParser extends SshMessageParser<UserAuthPkOkMess
     private void parsePubkeyAlgName(UserAuthPkOkMessage message) {
         message.setPubkeyAlgNameLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
         LOGGER.debug(
-                "Pubkey algorithm name length: " + message.getPubkeyAlgNameLength().getValue());
+                "Pubkey algorithm name length: {}", message.getPubkeyAlgNameLength().getValue());
         message.setPubkeyAlgName(
                 parseByteString(
                         message.getPubkeyAlgNameLength().getValue(), StandardCharsets.US_ASCII));

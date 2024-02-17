@@ -16,6 +16,7 @@ import de.rub.nds.sshattacker.core.crypto.kex.DhKeyExchange;
 import de.rub.nds.sshattacker.core.crypto.kex.HybridKeyExchange;
 import de.rub.nds.sshattacker.core.crypto.kex.RsaKeyExchange;
 import de.rub.nds.sshattacker.core.crypto.keys.SshPublicKey;
+import de.rub.nds.sshattacker.core.protocol.transport.message.extension.AbstractExtension;
 import de.rub.nds.sshattacker.core.state.Context;
 import de.rub.nds.tlsattacker.transport.Connection;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;
@@ -32,7 +33,8 @@ public abstract class Chooser {
 
     protected final Config config;
 
-    public Chooser(Context context, Config config) {
+    protected Chooser(Context context, Config config) {
+        super();
         this.config = config;
         this.context = context;
     }
@@ -117,6 +119,24 @@ public abstract class Chooser {
     public abstract int getClientReserved();
 
     public abstract int getServerReserved();
+    // endregion
+
+    // region SSH Extensions
+    // section general extensions
+    public abstract List<AbstractExtension<?>> getClientSupportedExtensions();
+
+    public abstract List<AbstractExtension<?>> getServerSupportedExtensions();
+
+    // section server-sig-algs extension
+    public abstract List<PublicKeyAlgorithm>
+            getServerSupportedPublicKeyAlgorithmsForAuthentication();
+
+    public abstract SshPublicKey<?, ?> getSelectedPublicKeyForAuthentication();
+
+    // section delay-compression extension
+    public abstract List<CompressionMethod> getClientSupportedDelayCompressionMethods();
+
+    public abstract List<CompressionMethod> getServerSupportedDelayCompressionMethods();
     // endregion
 
     // region Negotiated Parameters

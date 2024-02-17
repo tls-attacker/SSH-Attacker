@@ -71,8 +71,8 @@ public class SendAction extends MessageAction implements SendingAction {
      * @param failed {@code true} if the action has failed, else {@code false}
      * @see #isFailed
      */
-    public void setFailed(final boolean failed) {
-        this.failed = Boolean.valueOf(failed);
+    public void setFailed(boolean failed) {
+        this.failed = failed;
     }
 
     /**
@@ -82,7 +82,7 @@ public class SendAction extends MessageAction implements SendingAction {
      * @see #setFailed
      */
     public boolean isFailed() {
-        return Optional.ofNullable(this.failed).orElse(Boolean.FALSE).booleanValue();
+        return Optional.ofNullable(failed).orElse(Boolean.FALSE);
     }
 
     @Override
@@ -95,9 +95,9 @@ public class SendAction extends MessageAction implements SendingAction {
 
         String sending = getReadableString(messages);
         if (hasDefaultAlias()) {
-            LOGGER.info("Sending messages: " + sending);
+            LOGGER.info("Sending messages: {}", sending);
         } else {
-            LOGGER.info("Sending messages (" + connectionAlias + "): " + sending);
+            LOGGER.info("Sending messages ({}): {}", connectionAlias, sending);
         }
 
         try {
@@ -134,7 +134,7 @@ public class SendAction extends MessageAction implements SendingAction {
     @Override
     public String toCompactString() {
         StringBuilder sb = new StringBuilder(super.toCompactString());
-        if ((messages != null) && (!messages.isEmpty())) {
+        if (messages != null && !messages.isEmpty()) {
             sb.append(" (");
             for (ProtocolMessage<?> message : messages) {
                 sb.append(message.toCompactString());
@@ -149,7 +149,7 @@ public class SendAction extends MessageAction implements SendingAction {
 
     @Override
     public boolean executedAsPlanned() {
-        return this.isExecuted() && !this.isFailed();
+        return isExecuted() && !isFailed();
     }
 
     @Override
@@ -162,12 +162,12 @@ public class SendAction extends MessageAction implements SendingAction {
         }
         for (ModifiableVariableHolder holder : holders) {
             List<Field> fields = holder.getAllModifiableVariableFields();
-            for (Field f : fields) {
-                f.setAccessible(true);
+            for (Field field : fields) {
+                field.setAccessible(true);
 
                 ModifiableVariable<?> mv = null;
                 try {
-                    mv = (ModifiableVariable<?>) f.get(holder);
+                    mv = (ModifiableVariable<?>) field.get(holder);
                 } catch (IllegalArgumentException | IllegalAccessException ex) {
                     LOGGER.warn("Could not retrieve ModifiableVariables");
                     LOGGER.debug(ex);
@@ -177,7 +177,7 @@ public class SendAction extends MessageAction implements SendingAction {
                         mv.setOriginalValue(null);
                     } else {
                         try {
-                            f.set(holder, null);
+                            field.set(holder, null);
                         } catch (IllegalArgumentException | IllegalAccessException ex) {
                             LOGGER.warn("Could not strip ModifiableVariable without Modification");
                         }
@@ -188,18 +188,19 @@ public class SendAction extends MessageAction implements SendingAction {
         setExecuted(null);
     }
 
+    @SuppressWarnings("SuspiciousGetterSetter")
     @Override
     public List<ProtocolMessage<?>> getSendMessages() {
         return messages;
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
-        final SendAction that = (SendAction) o;
-        return Objects.equals(this.messages, that.messages) && this.isFailed() == that.isFailed();
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        if (!super.equals(obj)) return false;
+        SendAction that = (SendAction) obj;
+        return Objects.equals(messages, that.messages) && isFailed() == that.isFailed();
     }
 
     @Override

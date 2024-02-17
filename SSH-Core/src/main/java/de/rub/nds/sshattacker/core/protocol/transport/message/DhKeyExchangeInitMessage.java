@@ -33,9 +33,8 @@ public class DhKeyExchangeInitMessage extends SshMessage<DhKeyExchangeInitMessag
     }
 
     public void setEphemeralPublicKeyLength(int publicKeyLength) {
-        this.ephemeralPublicKeyLength =
-                ModifiableVariableFactory.safelySetValue(
-                        this.ephemeralPublicKeyLength, publicKeyLength);
+        ephemeralPublicKeyLength =
+                ModifiableVariableFactory.safelySetValue(ephemeralPublicKeyLength, publicKeyLength);
     }
 
     public ModifiableBigInteger getEphemeralPublicKey() {

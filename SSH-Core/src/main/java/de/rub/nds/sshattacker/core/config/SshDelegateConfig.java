@@ -16,27 +16,24 @@ import java.io.File;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class SshDelegateConfig {
-
-    private static final Logger LOGGER = LogManager.getLogger();
 
     private final List<Delegate> delegateList;
 
     @ParametersDelegate private final GeneralDelegate generalDelegate;
 
-    @SuppressWarnings("FieldMayBeFinal")
+    @SuppressWarnings("unused")
     @Parameter(
             names = "-config",
             description = "This parameter allows you to specify a default SshConfig")
-    private String defaultConfig = null;
+    private String defaultConfig;
 
     public SshDelegateConfig(GeneralDelegate delegate) {
+        super();
         delegateList = new LinkedList<>();
-        this.generalDelegate = delegate;
-        if (delegate != null) {
+        generalDelegate = delegate;
+        if (generalDelegate != null) {
             delegateList.add(generalDelegate);
         }
     }

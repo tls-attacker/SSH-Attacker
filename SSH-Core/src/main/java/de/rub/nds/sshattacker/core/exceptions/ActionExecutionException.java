@@ -9,7 +9,9 @@ package de.rub.nds.sshattacker.core.exceptions;
 
 public class ActionExecutionException extends RuntimeException {
 
-    public ActionExecutionException() {}
+    public ActionExecutionException() {
+        super();
+    }
 
     public ActionExecutionException(String message) {
         super(message);

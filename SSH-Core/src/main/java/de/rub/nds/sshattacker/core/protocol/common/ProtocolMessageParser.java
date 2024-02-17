@@ -83,7 +83,7 @@ public abstract class ProtocolMessageParser<T extends ProtocolMessage<T>> extend
                     // If we know what the text message means we can print a
                     // human-readable warning to the log. The following
                     // messages are sent by OpenSSH.
-                    final String messageText = message.getText().getValue();
+                    String messageText = message.getText().getValue();
                     if ("Invalid SSH identification string.".equals(messageText)) {
                         LOGGER.warn(
                                 "The server reported the identification string sent by the SSH-Attacker is invalid");

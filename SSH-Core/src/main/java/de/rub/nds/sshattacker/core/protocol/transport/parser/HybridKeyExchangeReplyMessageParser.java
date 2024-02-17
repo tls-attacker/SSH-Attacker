@@ -21,9 +21,9 @@ import org.apache.logging.log4j.Logger;
 public class HybridKeyExchangeReplyMessageParser
         extends SshMessageParser<HybridKeyExchangeReplyMessage> {
     private static final Logger LOGGER = LogManager.getLogger();
-    private HybridKeyExchangeCombiner combiner;
-    private int agreementSize;
-    private int encapsulationSize;
+    private final HybridKeyExchangeCombiner combiner;
+    private final int agreementSize;
+    private final int encapsulationSize;
 
     /*
         public HybridKeyExchangeReplyMessageParser(
@@ -95,16 +95,16 @@ public class HybridKeyExchangeReplyMessageParser
 
     private void parseHostKeyBytes(HybridKeyExchangeReplyMessage message) {
         message.setHostKeyBytesLength(parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH));
-        LOGGER.debug("Host key byte length" + message.getHostKeyBytesLength());
+        LOGGER.debug("Host key byte length{}", message.getHostKeyBytesLength());
         message.setHostKeyBytes(parseByteArrayField(message.getHostKeyBytesLength().getValue()));
         LOGGER.debug(
-                "Host key bytes: "
-                        + ArrayConverter.bytesToHexString(message.getHostKeyBytes().getValue()));
+                "Host key bytes: {}",
+                ArrayConverter.bytesToHexString(message.getHostKeyBytes().getValue()));
     }
 
     private void parseHybridKey(HybridKeyExchangeReplyMessage message) {
         int length = parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH);
-        LOGGER.debug("Total Length: " + length);
+        LOGGER.debug("Total Length: {}", length);
 
         switch (combiner) {
             case CLASSICAL_CONCATENATE_POSTQUANTUM:
@@ -127,9 +127,9 @@ public class HybridKeyExchangeReplyMessageParser
 
     private void parseSignature(HybridKeyExchangeReplyMessage message) {
         message.setSignatureLength(parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH));
-        LOGGER.debug("Signature length: " + message.getSignatureLength().getValue());
+        LOGGER.debug("Signature length: {}", message.getSignatureLength().getValue());
         message.setSignature(parseByteArrayField(message.getSignatureLength().getValue()));
-        LOGGER.debug("Signature: " + message.getSignature());
+        LOGGER.debug("Signature: {}", message.getSignature());
     }
 
     @Override

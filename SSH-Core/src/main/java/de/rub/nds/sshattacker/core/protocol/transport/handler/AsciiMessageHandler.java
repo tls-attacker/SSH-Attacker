@@ -15,11 +15,11 @@ import de.rub.nds.sshattacker.core.protocol.transport.message.AsciiMessage;
 
 public class AsciiMessageHandler extends ProtocolMessageHandler<AsciiMessage> {
 
-    public AsciiMessageHandler(final SshContext context) {
+    public AsciiMessageHandler(SshContext context) {
         super(context);
     }
 
-    /*public AsciiMessageHandler(final SshContext context, final AsciiMessage message) {
+    /*public AsciiMessageHandler(SshContext context, AsciiMessage message) {
         super(context, message);
     }*/
 

@@ -22,6 +22,7 @@ public class BinaryPacketSerializer extends AbstractPacketSerializer<BinaryPacke
     private final BinaryPacket binaryPacket;
 
     public BinaryPacketSerializer(BinaryPacket binaryPacket) {
+        super();
         this.binaryPacket = binaryPacket;
     }
 

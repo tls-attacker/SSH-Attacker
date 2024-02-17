@@ -86,7 +86,7 @@ public class SendMangerSecretAction extends SendAction {
         try {
             // Encrypt the encoded secret with plain RSA
             Cipher rsa = Cipher.getInstance("RSA/NONE/NoPadding");
-            LOGGER.debug("Provider: " + rsa.getProvider());
+            LOGGER.debug("Provider: {}", rsa.getProvider());
             rsa.init(Cipher.ENCRYPT_MODE, publicKey);
             byte[] encryptedSecret = rsa.doFinal(encodedSecret);
             encryptedSecretArray.setModification(

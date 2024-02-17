@@ -49,14 +49,13 @@ public class UserAuthInfoResponseMessageParser
 
     private void parseResponseEntries(UserAuthInfoResponseMessage message) {
         message.setResponseEntryCount(parseIntField(DataFormatConstants.UINT32_SIZE));
-        LOGGER.debug("Number of response entries: " + message.getResponseEntryCount().getValue());
+        LOGGER.debug("Number of response entries: {}", message.getResponseEntryCount().getValue());
         for (int i = 0; i < message.getResponseEntryCount().getValue(); i++) {
             AuthenticationResponse.ResponseEntry entry = new AuthenticationResponse.ResponseEntry();
             entry.setResponseLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-            LOGGER.debug(
-                    "Response entry [" + i + "] length: " + entry.getResponseLength().getValue());
+            LOGGER.debug("Response entry [{}] length: {}", i, entry.getResponseLength().getValue());
             entry.setResponse(parseByteString(entry.getResponseLength().getValue()));
-            LOGGER.debug("Response entry [" + i + "]: " + entry.getResponse().getValue());
+            LOGGER.debug("Response entry [{}]: {}", i, entry.getResponse().getValue());
             message.getResponse().add(entry);
         }
     }

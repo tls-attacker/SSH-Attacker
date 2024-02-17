@@ -7,22 +7,19 @@
  */
 package de.rub.nds.sshattacker.core.crypto.ntrup.sntrup.core;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
-import java.util.Random;
-import java.util.stream.IntStream;
 import org.junit.Test;
 
 public class RTest {
-    SntrupParameterSet set = SntrupParameterSet.KEM_SNTRUP_761;
-    Random rand = new Random();
+    private final SntrupParameterSet set = SntrupParameterSet.KEM_SNTRUP_761;
 
     @Test
     public void randomSmallTest() {
         R r;
-        for (int i : IntStream.range(0, 10).toArray()) {
+        for (int i = 0; i < 10; i++) {
             r = R.randomSmall(set);
-            assertEquals(false, r.stream().filter(l -> Math.abs(l) > 1).findFirst().isPresent());
+            assertFalse(r.stream().filter(l -> Math.abs(l) > 1).findFirst().isPresent());
         }
     }
 }

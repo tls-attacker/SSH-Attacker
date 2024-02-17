@@ -16,14 +16,14 @@ import java.util.Arrays;
 public class RunningModeConverter implements IStringConverter<RunningModeType> {
 
     @Override
-    public RunningModeType convert(String value) {
+    public RunningModeType convert(String s) {
 
         try {
-            return RunningModeType.valueOf(value);
+            return RunningModeType.valueOf(s);
         } catch (IllegalArgumentException e) {
             throw new ParameterException(
                     "Value "
-                            + value
+                            + s
                             + " cannot be converted to a RunningModeType. "
                             + "Available values are: "
                             + Arrays.toString(RunningModeType.values()));

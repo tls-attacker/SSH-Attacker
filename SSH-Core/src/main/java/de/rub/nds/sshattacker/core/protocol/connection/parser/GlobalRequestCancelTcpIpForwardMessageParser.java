@@ -37,16 +37,17 @@ public class GlobalRequestCancelTcpIpForwardMessageParser
 
     private void parseIPAddressToBind(GlobalRequestCancelTcpIpForwardMessage message) {
         message.setIpAddressToBindLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-        LOGGER.debug("IP address to bind length: " + message.getIpAddressToBindLength().getValue());
+        LOGGER.debug(
+                "IP address to bind length: {}", message.getIpAddressToBindLength().getValue());
         message.setIpAddressToBind(
                 parseByteString(
                         message.getIpAddressToBindLength().getValue(), StandardCharsets.US_ASCII));
-        LOGGER.debug("IP address to bind: " + message.getIpAddressToBind().getValue());
+        LOGGER.debug("IP address to bind: {}", message.getIpAddressToBind().getValue());
     }
 
     private void parsePortToBind(GlobalRequestCancelTcpIpForwardMessage message) {
         message.setPortToBind(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-        LOGGER.debug("Port to bind: " + message.getPortToBind().getValue());
+        LOGGER.debug("Port to bind: {}", message.getPortToBind().getValue());
     }
 
     /*    @Override

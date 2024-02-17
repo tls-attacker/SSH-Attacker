@@ -28,10 +28,6 @@ public class VersionExchangeMessage extends ProtocolMessage<VersionExchangeMessa
     private ModifiableString comment;
     private ModifiableString endOfMessageSequence;
 
-    public VersionExchangeMessage() {
-        super();
-    }
-
     public ModifiableString getVersion() {
         return version;
     }
@@ -57,10 +53,8 @@ public class VersionExchangeMessage extends ProtocolMessage<VersionExchangeMessa
     }
 
     public String getIdentification() {
-        if (this.comment.getValue().isEmpty()) return this.version.getValue();
-        return this.version.getValue()
-                + CharConstants.VERSION_COMMENT_SEPARATOR
-                + this.comment.getValue();
+        if (comment.getValue().isEmpty()) return version.getValue();
+        return version.getValue() + CharConstants.VERSION_COMMENT_SEPARATOR + comment.getValue();
     }
 
     public ModifiableString getEndOfMessageSequence() {
@@ -84,7 +78,7 @@ public class VersionExchangeMessage extends ProtocolMessage<VersionExchangeMessa
 
     @Override
     public String toCompactString() {
-        return this.getClass().getSimpleName();
+        return getClass().getSimpleName();
     }
 
     @Override

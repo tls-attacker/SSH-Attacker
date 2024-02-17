@@ -17,10 +17,11 @@ public abstract class SshMessageParser<T extends SshMessage<T>> extends Protocol
     private static final Logger LOGGER = LogManager.getLogger();
 
     /*public SshMessageParser(byte[] array) {
+    protected SshMessageParser(byte[] array) {
         super(array);
     }
 
-    public SshMessageParser(byte[] array, int startPosition) {
+    protected SshMessageParser(byte[] array, int startPosition) {
         super(array, startPosition);
     }*/
 

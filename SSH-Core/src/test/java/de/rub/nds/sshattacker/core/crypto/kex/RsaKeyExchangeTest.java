@@ -129,8 +129,8 @@ public class RsaKeyExchangeTest {
 
     /**
      * Tests the rsa key exchange decryption by computing the shared secret from the given
-     * ciphertext, according to the mpint computations standarized in SSH. Thus the method tests the
-     * class RsaKeyExchange.java and all underlying classes used for the decryption.
+     * ciphertext, according to the mpint computations standardized in SSH. Thus, the method tests
+     * the class RsaKeyExchange.java and all underlying classes used for the decryption.
      *
      * @param keyExchangeAlgorithm used rsa key exchange algorithm
      * @param publicKeyExponent public key exponent
@@ -181,15 +181,15 @@ public class RsaKeyExchangeTest {
 
     /**
      * Tests the rsa key exchange encryption by computing the ciphertext from the given plaintext
-     * and decrypting it again, according to the mpint computations standarized in SSH. If
-     * testRsaKeyexchangeDecryption is working the right way, this method verifies the encryption
-     * method of RsaKeyExchange. Thus the method test the class RsaKeyExchange.java and all
+     * and decrypting it again, according to the mpint computations standardized in SSH. If
+     * testRsaKeyExchangeDecryption is working the right way, this method verifies the encryption
+     * method of RsaKeyExchange. Thus, the method test the class RsaKeyExchange.java and all
      * underlying classes.
      *
      * @param keyExchangeAlgorithm used rs key exchange algorithm
      * @param publicKeyExponent public key exponent
      * @param publicKeyModulus the modulus of public key
-     * @param privateKeyExponent private key expontent
+     * @param privateKeyExponent private key exponent
      * @param privateKeyModulus modulus of private key
      * @param sharedSecret the shared secret to be encrypted
      * @param ciphertext cipher

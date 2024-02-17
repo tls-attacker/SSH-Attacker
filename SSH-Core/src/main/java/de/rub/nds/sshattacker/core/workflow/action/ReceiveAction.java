@@ -399,7 +399,7 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
         // method should stop receiving after the last expected message).
         //
         // If this assumption is violated and the iterator still contains
-        // messages, than that is a bug and this method may not work correctly.
+        // messages, then that is a bug and this method may not work correctly.
         assert !actualMessages.hasNext()
                 : "MessageHelper::receiveMessages did not stop receiving after the last expected message";
 
@@ -410,8 +410,18 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
         return expectedMessages;
     }
 
+    @SuppressWarnings("SuspiciousGetterSetter")
     void setReceivedMessages(List<ProtocolMessage<?>> receivedMessages) {
-        this.messages = receivedMessages;
+        messages = receivedMessages;
+    }
+
+    @Override
+    public List<AbstractPacket> getReceivedPackets() {
+        return receivedPackets;
+    }
+
+    public void setReceivedPackets(List<AbstractPacket> packetList) {
+        this.receivedPackets = receivedPackets;
     }
 
     public void setExpectedMessages(List<ProtocolMessage<?>> expectedMessages) {
@@ -423,28 +433,28 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
     }
 
     /**
-     * Check if the receive option is set.
+     * Check if the reception option is set.
      *
      * @param option a receive option
-     * @return {@code true} if the receive option is set, else {@code false}
+     * @return {@code true} if the reception option is set, else {@code false}
      */
-    protected boolean hasReceiveOption(final ReceiveOption option) {
+    protected boolean hasReceiveOption(ReceiveOption option) {
         Boolean value = null;
         switch (option) {
             case EARLY_CLEAN_SHUTDOWN:
-                value = this.earlyCleanShutdown;
+                value = earlyCleanShutdown;
                 break;
             case CHECK_ONLY_EXPECTED:
-                value = this.checkOnlyExpected;
+                value = checkOnlyExpected;
                 break;
             case IGNORE_UNEXPECTED_GLOBAL_REQUESTS_WITHOUT_WANTREPLY:
-                value = this.ignoreUnexpectedGlobalRequestsWithoutWantReply;
+                value = ignoreUnexpectedGlobalRequestsWithoutWantReply;
                 break;
             case FAIL_ON_UNEXPECTED_IGNORE_MESSAGES:
-                value = this.failOnUnexpectedIgnoreMessages;
+                value = failOnUnexpectedIgnoreMessages;
                 break;
             case FAIL_ON_UNEXPECTED_DEBUG_MESSAGES:
-                value = this.failOnUnexpectedDebugMessages;
+                value = failOnUnexpectedDebugMessages;
                 break;
         }
 
@@ -452,7 +462,7 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
     }
 
     /**
-     * Get the receive options for this action.
+     * Get the reception options for this action.
      *
      * @return set of receive options
      */
@@ -463,23 +473,23 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
     }
 
     /**
-     * Set the receive options for this action.
+     * Set the reception options for this action.
      *
      * @param receiveOptions set of receive options
      */
-    public void setReceiveOptions(final Set<ReceiveOption> receiveOptions) {
-        this.earlyCleanShutdown = receiveOptions.contains(ReceiveOption.EARLY_CLEAN_SHUTDOWN);
-        this.checkOnlyExpected = receiveOptions.contains(ReceiveOption.CHECK_ONLY_EXPECTED);
-        this.ignoreUnexpectedGlobalRequestsWithoutWantReply =
+    public void setReceiveOptions(Set<ReceiveOption> receiveOptions) {
+        earlyCleanShutdown = receiveOptions.contains(ReceiveOption.EARLY_CLEAN_SHUTDOWN);
+        checkOnlyExpected = receiveOptions.contains(ReceiveOption.CHECK_ONLY_EXPECTED);
+        ignoreUnexpectedGlobalRequestsWithoutWantReply =
                 receiveOptions.contains(
                         ReceiveOption.IGNORE_UNEXPECTED_GLOBAL_REQUESTS_WITHOUT_WANTREPLY);
-        this.failOnUnexpectedIgnoreMessages =
+        failOnUnexpectedIgnoreMessages =
                 receiveOptions.contains(ReceiveOption.FAIL_ON_UNEXPECTED_IGNORE_MESSAGES);
-        this.failOnUnexpectedDebugMessages =
+        failOnUnexpectedDebugMessages =
                 receiveOptions.contains(ReceiveOption.FAIL_ON_UNEXPECTED_DEBUG_MESSAGES);
 
-        if (this.hasReceiveOption(ReceiveOption.CHECK_ONLY_EXPECTED)
-                && this.hasReceiveOption(ReceiveOption.FAIL_ON_UNEXPECTED_IGNORE_MESSAGES)) {
+        if (hasReceiveOption(ReceiveOption.CHECK_ONLY_EXPECTED)
+                && hasReceiveOption(ReceiveOption.FAIL_ON_UNEXPECTED_IGNORE_MESSAGES)) {
             LOGGER.warn(
                     "ReceiveAction has conflicting options CHECK_ONLY_EXPECTED and FAIL_ON_UNEXPECTED_IGNORE_MESSAGES set, the latter will have no effect.");
         }
@@ -488,20 +498,22 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
     @Override
     public void reset() {
         messages = null;
+        receivedPackets = null;
         setExecuted(null);
     }
 
+    @SuppressWarnings("SuspiciousGetterSetter")
     @Override
     public List<ProtocolMessage<?>> getReceivedMessages() {
         return messages;
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
-        ReceiveAction that = (ReceiveAction) o;
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        if (!super.equals(obj)) return false;
+        ReceiveAction that = (ReceiveAction) obj;
         return Objects.equals(expectedMessages, that.expectedMessages)
                 && Objects.equals(messages, that.messages);
     }
@@ -539,18 +551,26 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
         if (expectedMessages == null || expectedMessages.isEmpty()) {
             expectedMessages = null;
         }
+        if (receivedPackets == null || receivedPackets.isEmpty()) {
+            receivedPackets = null;
+        }
     }
 
-    private void initEmptyLists() {
+    @Override
+    protected void initEmptyLists() {
+        super.initEmptyLists();
         if (expectedMessages == null) {
             expectedMessages = new ArrayList<>();
+        }
+        if (receivedPackets == null) {
+            receivedPackets = new ArrayList<>();
         }
     }
 
     public enum ReceiveOption {
         EARLY_CLEAN_SHUTDOWN,
         /**
-         * Ignore additional messages of any type when checking if the receive action was executed
+         * Ignore additional messages of any type when checking if the reception action was executed
          * as planned.
          *
          * <p>If both this option and {@link ReceiveOption#FAIL_ON_UNEXPECTED_IGNORE_MESSAGES} have
@@ -559,14 +579,14 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
         CHECK_ONLY_EXPECTED,
         /**
          * Ignore unexpected {@code SSH_MSG_GLOBAL_REQUEST} messages where {@code want_reply} is set
-         * to {@code 0} when checking if the receive action was executed as planned.
+         * to {@code 0} when checking if the reception action was executed as planned.
          *
          * @see <a href="https://datatracker.ietf.org/doc/html/rfc4254#section-4">RFC 4254, section
          *     4 "Global Requests"</a>
          */
         IGNORE_UNEXPECTED_GLOBAL_REQUESTS_WITHOUT_WANTREPLY,
         /**
-         * Do not ignore unexpected {@code SSH_MSG_IGNORE} messages when checking if the receive
+         * Do not ignore unexpected {@code SSH_MSG_IGNORE} messages when checking if the reception
          * action was executed as planned. Instead, such messages will cause {@link
          * #executedAsPlanned} to return {@code false}.
          *
@@ -578,7 +598,7 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
          */
         FAIL_ON_UNEXPECTED_IGNORE_MESSAGES,
         /**
-         * Do not ignore unexpected {@code SSH_MSG_DEBUG} messages when checking if the receive
+         * Do not ignore unexpected {@code SSH_MSG_DEBUG} messages when checking if the reception
          * action was executed as planned. Instead, such messages will cause {@link
          * #executedAsPlanned} to return {@code false}.
          *

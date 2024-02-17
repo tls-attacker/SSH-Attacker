@@ -35,11 +35,11 @@ public class ServiceAcceptMessageParser extends SshMessageParser<ServiceAcceptMe
 
     private void parseServiceType(ServiceAcceptMessage message) {
         message.setServiceNameLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-        LOGGER.debug("Service name length: " + message.getServiceNameLength());
+        LOGGER.debug("Service name length: {}", message.getServiceNameLength());
         message.setServiceName(
                 parseByteString(
                         message.getServiceNameLength().getValue(), StandardCharsets.US_ASCII));
-        LOGGER.debug("Service name: " + message.getServiceName());
+        LOGGER.debug("Service name: {}", message.getServiceName());
     }
 
     @Override

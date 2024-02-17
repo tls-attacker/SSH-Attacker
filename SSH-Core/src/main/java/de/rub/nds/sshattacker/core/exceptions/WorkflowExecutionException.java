@@ -18,8 +18,12 @@ public class WorkflowExecutionException extends RuntimeException {
         super(message);
     }
 
-    public WorkflowExecutionException(String message, Throwable t) {
-        super(message, t);
+    public WorkflowExecutionException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    public WorkflowExecutionException(Throwable cause) {
+        super(cause);
     }
 
     public WorkflowExecutionException(Throwable throwable) {

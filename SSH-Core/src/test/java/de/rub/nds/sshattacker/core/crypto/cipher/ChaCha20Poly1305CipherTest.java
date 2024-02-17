@@ -76,7 +76,7 @@ public class ChaCha20Poly1305CipherTest {
      * @param key the used 512bit key, building K_2 and K_1
      * @param iv an initial vector, in case of chacha20-poly1305@openssh.com the sequence number
      * @param plaintext plaintext
-     * @param ciphertext encrypted lengthfield + ciphertext
+     * @param ciphertext encrypted length field + ciphertext
      * @param mac authentication tag
      */
     @ParameterizedTest(name = "Key:{0}")
@@ -111,7 +111,7 @@ public class ChaCha20Poly1305CipherTest {
     @MethodSource("provideChacha20Poly1305Vectors")
     public void testDecrypt(
             byte[] key, byte[] iv, byte[] plaintext, byte[] ciphertext, byte[] aad, byte[] mac)
-            throws CryptoException, AEADBadTagException {
+            throws Exception {
         AbstractCipher mainDecryptCipher =
                 new ChaCha20Poly1305Cipher(
                         Arrays.copyOfRange(key, 0, CryptoConstants.CHACHA20_KEY_SIZE));
@@ -123,7 +123,7 @@ public class ChaCha20Poly1305CipherTest {
             outputStream.write(ciphertext);
             outputStream.write(mac);
         } catch (IOException e) {
-            LOGGER.debug("Failure occured adding the ciphertext and tag together: " + e);
+            LOGGER.debug("Failure occured adding the ciphertext and tag together", e);
         }
         byte[] fullCiphertext = outputStream.toByteArray();
         byte[] computedPlaintext = mainDecryptCipher.decrypt(fullCiphertext, iv, aad);

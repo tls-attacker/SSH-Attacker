@@ -11,8 +11,10 @@ import de.rub.nds.sshattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.sshattacker.core.state.State;
 import de.rub.nds.sshattacker.core.workflow.action.executor.WorkflowExecutorType;
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -29,25 +31,54 @@ import org.apache.logging.log4j.Logger;
 public final class ThreadedServerWorkflowExecutor extends WorkflowExecutor {
 
     private static final Logger LOGGER = LogManager.getLogger();
+    private static final int BACKLOG = 50;
+    private static final int POOL_SIZE = 3;
 
     private ServerSocket serverSocket;
-    private Socket socket;
-    private final int port;
-    final List<Socket> sockets = new ArrayList<>();
+    private final InetAddress bindAddr;
+    private final int bindPort;
+    private List<Socket> sockets = new ArrayList<>();
     private boolean killed = true;
     private boolean shutdown = true;
-    private final ExecutorService pool;
+    protected final ExecutorService pool;
 
-    public ThreadedServerWorkflowExecutor(State state) {
+    public ThreadedServerWorkflowExecutor(State state, ExecutorService pool) {
         super(WorkflowExecutorType.THREADED_SERVER, state);
 
-        port = config.getDefaultServerConnection().getPort();
-        int poolSize = 3;
-        pool = Executors.newFixedThreadPool(poolSize);
+        bindPort = config.getDefaultServerConnection().getPort();
+        String hostname = config.getDefaultServerConnection().getHostname();
+        if (hostname != null) {
+            InetAddress tempBindAddr;
+            try {
+                tempBindAddr = InetAddress.getByName(hostname);
+            } catch (UnknownHostException e) {
+                LOGGER.warn(
+                        "Failed to resolve bind address {} - Falling back to loopback: {}",
+                        hostname,
+                        e);
+                // we could also fallback to null, which would be any address
+                // but I think in the case of an error we might just want to
+                // either exit or fallback to a rather closed
+                // option, like loopback
+                tempBindAddr = InetAddress.getLoopbackAddress();
+            }
+            bindAddr = tempBindAddr;
+            // Java did not allow me to set the bindAddr field in the
+            // *single line* try block and the catch block at the same
+            // time, because it might already be set...
+            // So now we have a temporary variable as a workaround
+        } else {
+            bindAddr = null;
+        }
+        this.pool = pool;
         addHook();
     }
 
-    public void addHook() {
+    public ThreadedServerWorkflowExecutor(State state) {
+        this(state, Executors.newFixedThreadPool(POOL_SIZE));
+    }
+
+    private void addHook() {
         Runtime.getRuntime()
                 .addShutdownHook(
                         new Thread(
@@ -75,19 +106,18 @@ public final class ThreadedServerWorkflowExecutor extends WorkflowExecutor {
 
     @Override
     public void executeWorkflow() throws WorkflowExecutionException {
-
-        synchronized (this) {
-            Thread currentThread = Thread.currentThread();
-        }
-
-        LOGGER.info("Listening on port " + port + "...");
-        LOGGER.info("--- use SIGINT to shutdown ---");
         initialize();
+        String bindaddrStr = "any";
+        if (getBoundAddress() != null) {
+            bindaddrStr = getBoundAddress().toString();
+        }
+        LOGGER.info("Listening on {}:{}...", bindaddrStr, getBoundPort());
+        LOGGER.info("--- use SIGINT to shutdown ---");
 
         try {
             while (!killed) {
-                socket = serverSocket.accept();
-                pool.execute(new WorkflowExecutorRunnable(state, socket));
+                Socket socket = serverSocket.accept();
+                this.handleClient(socket);
                 sockets.add(socket);
             }
         } catch (IOException ex) {
@@ -102,45 +132,58 @@ public final class ThreadedServerWorkflowExecutor extends WorkflowExecutor {
         }
     }
 
-    public void initialize() {
-        LOGGER.info("Initializing server connection end at port " + port);
+    private void handleClient(Socket socket) {
+        pool.execute(new WorkflowExecutorRunnable(state, socket, this));
+    }
+
+    public void clientDone(Socket socket) {
+        if (socket == null) {
+            throw new IllegalArgumentException("socket may not be null");
+        }
+        if (!sockets.contains(socket)) {
+            throw new IllegalArgumentException("Unknown socket");
+        }
+        try {
+            if (!socket.isClosed()) {
+                socket.close();
+            }
+            sockets.remove(socket);
+        } catch (IOException e) {
+            LOGGER.debug("Failed to close socket {}", socket);
+        }
+    }
+
+    private void initialize() {
+        LOGGER.info("Initializing server connection end at port {}", bindPort);
         if ((serverSocket != null) && (!serverSocket.isClosed())) {
             LOGGER.debug("Server socket already initialized");
             return;
         }
         try {
-            serverSocket = new ServerSocket(port);
+            serverSocket = new ServerSocket(bindPort, BACKLOG);
             serverSocket.setReuseAddress(true);
         } catch (IOException ex) {
-            throw new RuntimeException("Could not instantiate server socket");
+            throw new RuntimeException("Could not instantiate server socket", ex);
         }
         killed = false;
         shutdown = false;
     }
 
     public void kill() {
-        this.killed = true;
+        killed = true;
+        closeSockets();
     }
 
-    public synchronized void closeSockets() {
-        for (Socket s : sockets) {
-            LOGGER.debug("Closing socket " + socket);
-            try {
-                if (s != null) {
-                    s.close();
-                } else {
-                    LOGGER.debug("... already closed.");
-                }
-            } catch (IOException ex) {
-                LOGGER.debug("Failed to close socket " + socket);
-            }
+    private synchronized void closeSockets() {
+        for (Socket socket : sockets.toArray(new Socket[] {})) {
+            LOGGER.debug("Closing socket {}", socket);
+            clientDone(socket);
         }
 
         try {
             LOGGER.debug("Closing server socket ");
-            if (serverSocket != null) {
+            if (serverSocket != null && !serverSocket.isClosed()) {
                 serverSocket.close();
-                serverSocket = null;
             }
         } catch (IOException ex) {
             LOGGER.debug("Failed to close server socket.");
@@ -148,8 +191,15 @@ public final class ThreadedServerWorkflowExecutor extends WorkflowExecutor {
         LOGGER.info("All sockets closed");
     }
 
+    public InetAddress getBoundAddress() {
+        return serverSocket.getInetAddress();
+    }
+
+    public int getBoundPort() {
+        return serverSocket.getLocalPort();
+    }
+
     // Straight from the java docs for ExecutorService
-    @SuppressWarnings("ResultOfMethodCallIgnored")
     private void shutdownAndAwaitTermination() {
         pool.shutdown(); // Disable new tasks from being submitted
         try {

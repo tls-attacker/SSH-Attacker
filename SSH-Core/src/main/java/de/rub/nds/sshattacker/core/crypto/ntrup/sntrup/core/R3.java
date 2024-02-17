@@ -13,26 +13,30 @@ import cc.redberry.rings.poly.univar.UnivariateDivision;
 import cc.redberry.rings.poly.univar.UnivariatePolynomialZp64;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.LongStream;
 
+@SuppressWarnings("StandardVariableNames")
 public class R3 {
-    private SntrupParameterSet set;
+    private final SntrupParameterSet set;
     private UnivariatePolynomialZp64 r3;
-    private UnivariatePolynomialZp64 mod;
+    private final UnivariatePolynomialZp64 mod;
 
     public R3(SntrupParameterSet set, long[] coefficient) {
+        super();
         this.set = set;
-        this.mod = genereateMod(set);
+        mod = genereateMod(set);
         setR3(coefficient);
     }
 
     private R3(SntrupParameterSet set, UnivariatePolynomialZp64 r3) {
+        super();
         this.set = set;
         this.r3 = r3;
-        this.mod = genereateMod(set);
+        mod = genereateMod(set);
     }
 
     private static UnivariatePolynomialZp64 genereateMod(SntrupParameterSet set) {
@@ -52,7 +56,7 @@ public class R3 {
     }
 
     public void setR3(long[] coefficients) {
-        this.r3 =
+        r3 =
                 UnivariateDivision.remainder(
                         UnivariatePolynomialZp64.create(3, coefficients), mod, false);
     }
@@ -65,7 +69,7 @@ public class R3 {
         return r3.stream().map(l -> l == 2 ? -1 : l);
     }
 
-    public static Optional<R3> isInvertibleInR3(SntrupParameterSet set, R candidate) {
+    public static Optional<R3> getInverseInR3(SntrupParameterSet set, R candidate) {
         UnivariatePolynomialZp64 candidateR3 =
                 UnivariatePolynomialZp64.create(3, candidate.stream().toArray());
         UnivariatePolynomialZp64[] xgcd =
@@ -76,12 +80,12 @@ public class R3 {
                 == 0) {
             return Optional.of(new R3(set, xgcd[1]));
         }
-        return Optional.ofNullable(null);
+        return Optional.empty();
     }
 
     public static R3 multiply(R3 r3_1, R3 r3_2) {
         return new R3(
-                r3_1.getSet(),
+                r3_1.set,
                 UnivariateDivision.remainder(
                         r3_1.getR3().multiply(r3_2.getR3()), r3_1.getMod(), true));
     }
@@ -103,22 +107,22 @@ public class R3 {
                         .map(x -> 4 * x)
                         .map(
                                 x ->
-                                        coefficients.get(x).intValue()
-                                                + coefficients.get(x + 1).intValue() * 4
-                                                + coefficients.get(x + 2).intValue() * 16
-                                                + coefficients.get(x + 3).intValue() * 64)
+                                        coefficients.get(x)
+                                                + coefficients.get(x + 1) * 4
+                                                + coefficients.get(x + 2) * 16
+                                                + coefficients.get(x + 3) * 64)
                         .boxed()
                         .collect(Collectors.toCollection(ArrayList::new));
 
         byte[] res = new byte[encdodedCoefficients.size()];
         for (int i = 0; i < encdodedCoefficients.size(); i++) {
-            res[i] = (byte) (encdodedCoefficients.get(i).intValue());
+            res[i] = (byte) encdodedCoefficients.get(i).intValue();
         }
         return res;
     }
 
     public static R3 decode(SntrupParameterSet set, byte[] encodedBytes) {
-        int encdodedCoefficients[] = new int[encodedBytes.length];
+        int[] encdodedCoefficients = new int[encodedBytes.length];
         for (int i = 0; i < encodedBytes.length; i++) {
             encdodedCoefficients[i] = encodedBytes[i] & 0xff;
         }
@@ -142,24 +146,15 @@ public class R3 {
     }
 
     @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((r3 == null) ? 0 : r3.hashCode());
-        result = prime * result + ((set == null) ? 0 : set.hashCode());
-        return result;
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        R3 r31 = (R3) obj;
+        return set == r31.set && Objects.equals(r3, r31.r3);
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (obj == null) return false;
-        if (getClass() != obj.getClass()) return false;
-        R3 other = (R3) obj;
-        if (r3 == null) {
-            if (other.r3 != null) return false;
-        } else if (!r3.equals(other.r3)) return false;
-        if (set != other.set) return false;
-        return true;
+    public int hashCode() {
+        return Objects.hash(set, r3);
     }
 }

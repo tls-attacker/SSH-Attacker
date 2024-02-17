@@ -28,7 +28,9 @@ public class Channel implements Serializable {
     private ModifiableBoolean closeMessageReceived;
     private ModifiableBoolean closeMessageSent;
 
-    public Channel() {}
+    public Channel() {
+        super();
+    }
 
     public Channel(
             ChannelType channelType,
@@ -36,6 +38,7 @@ public class Channel implements Serializable {
             Integer localWindowSize,
             Integer localPacketSize,
             boolean open) {
+        super();
         this.channelType = channelType;
         setLocalChannelId(localChannelId);
         setLocalWindowSize(localWindowSize);
@@ -51,6 +54,7 @@ public class Channel implements Serializable {
             ModifiableInteger localWindowSize,
             ModifiableInteger localPacketSize,
             Boolean open) {
+        super();
         this.channelType = channelType;
         this.localChannelId = localChannelId;
         this.localWindowSize = localWindowSize;
@@ -69,6 +73,7 @@ public class Channel implements Serializable {
             Integer remoteWindowSize,
             Integer remotePacketSize,
             Boolean open) {
+        super();
         this.channelType = channelType;
         setLocalChannelId(localChannelId);
         setLocalWindowSize(localWindowSize);
@@ -102,6 +107,7 @@ public class Channel implements Serializable {
                 ModifiableVariableFactory.safelySetValue(this.localPacketSize, localPacketSize);
     }
 
+    @SuppressWarnings("NonBooleanMethodNameMayNotStartWithQuestion")
     public ModifiableBoolean isOpen() {
         return open;
     }
@@ -120,7 +126,7 @@ public class Channel implements Serializable {
 
     public void setCloseMessageReceived(ModifiableBoolean closeMessageReceived) {
         this.closeMessageReceived = closeMessageReceived;
-        if (this.closeMessageSent.getValue() && this.closeMessageReceived.getValue()) {
+        if (closeMessageSent.getValue() && this.closeMessageReceived.getValue()) {
             setOpen(false);
         }
     }
@@ -129,7 +135,7 @@ public class Channel implements Serializable {
         this.closeMessageReceived =
                 ModifiableVariableFactory.safelySetValue(
                         this.closeMessageReceived, closeMessageReceived);
-        if (this.closeMessageSent.getValue() && this.closeMessageReceived.getValue()) {
+        if (closeMessageSent.getValue() && this.closeMessageReceived.getValue()) {
             setOpen(false);
         }
     }
@@ -140,7 +146,7 @@ public class Channel implements Serializable {
 
     public void setCloseMessageSent(ModifiableBoolean closeMessageSent) {
         this.closeMessageSent = closeMessageSent;
-        if (this.closeMessageSent.getValue() && this.closeMessageReceived.getValue()) {
+        if (this.closeMessageSent.getValue() && closeMessageReceived.getValue()) {
             setOpen(false);
         }
     }
@@ -148,7 +154,7 @@ public class Channel implements Serializable {
     public void setCloseMessageSent(boolean closeMessageSent) {
         this.closeMessageSent =
                 ModifiableVariableFactory.safelySetValue(this.closeMessageSent, closeMessageSent);
-        if (this.closeMessageSent.getValue() && this.closeMessageReceived.getValue()) {
+        if (this.closeMessageSent.getValue() && closeMessageReceived.getValue()) {
             setOpen(false);
         }
     }

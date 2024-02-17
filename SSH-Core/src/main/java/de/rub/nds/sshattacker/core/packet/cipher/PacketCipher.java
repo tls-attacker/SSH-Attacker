@@ -37,12 +37,13 @@ public abstract class PacketCipher {
     /** The cipher mode (whether packages should be encrypted or decrypted by this cipher). */
     protected final CipherMode mode;
 
-    public PacketCipher(
+    protected PacketCipher(
             SshContext context,
             AbstractKeySet keySet,
             EncryptionAlgorithm encryptionAlgorithm,
             MacAlgorithm macAlgorithm,
             CipherMode mode) {
+        super();
         this.context = context;
         this.keySet = keySet;
         this.encryptionAlgorithm = encryptionAlgorithm;

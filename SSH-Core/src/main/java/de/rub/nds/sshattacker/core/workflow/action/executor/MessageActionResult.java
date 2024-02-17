@@ -22,6 +22,7 @@ public class MessageActionResult {
 
     public MessageActionResult(
             List<AbstractPacket> packetList, List<ProtocolMessage<?>> messageList) {
+        super();
         this.packetList = packetList;
         this.messageList = messageList;
     }
@@ -39,7 +40,14 @@ public class MessageActionResult {
         return messageList;
     }
 
-    /** Merger this with other results, forming a new result. */
+    /**
+     * Merge this {@code MessageActionResult} with other results. The resulting MessageActionResult
+     * will be a combination of both, message and packet lists.
+     *
+     * @param other Multiple other {@code MessageActionResult} objects to join this to.
+     * @return An accumulated {@code MessageActionResult} object containing all messages and packets
+     *     from this and other.
+     */
     public MessageActionResult merge(MessageActionResult... other) {
         LinkedList<MessageActionResult> results = new LinkedList<>(Collections.singletonList(this));
         results.addAll(Arrays.asList(other));
@@ -47,8 +55,8 @@ public class MessageActionResult {
         List<ProtocolMessage<?>> messageList = new LinkedList<>();
 
         for (MessageActionResult result : results) {
-            packetList.addAll(result.getPacketList());
-            messageList.addAll(result.getMessageList());
+            packetList.addAll(result.packetList);
+            messageList.addAll(result.messageList);
         }
 
         return new MessageActionResult(packetList, messageList);

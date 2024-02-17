@@ -27,6 +27,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 import javax.xml.stream.XMLStreamException;
@@ -92,24 +93,34 @@ public class State {
 
     public String workflowOutputName;
 
+    private long startTimestamp;
+    private long endTimestamp;
+    private Throwable executionException;
+
+    private final LinkedList<Process> spawnedSubprocesses;
+
     public State() {
         this(new Config());
     }
 
-    public State(WorkflowTrace trace) {
-        this(Config.createConfig(), trace);
+    public State(WorkflowTrace workflowTrace) {
+        this(new Config(), workflowTrace);
     }
 
     public State(Config config) {
+        super();
         this.config = config;
         runningMode = config.getDefaultRunningMode();
-        this.workflowTrace = loadWorkflowTrace();
+        spawnedSubprocesses = new LinkedList<>();
+        workflowTrace = loadWorkflowTrace();
         initState();
     }
 
     public State(Config config, WorkflowTrace workflowTrace) {
+        super();
         this.config = config;
         runningMode = config.getDefaultRunningMode();
+        spawnedSubprocesses = new LinkedList<>();
         this.workflowTrace = workflowTrace;
         initState();
     }
@@ -117,6 +128,7 @@ public class State {
     public void reset() {
         contextContainer.clear();
         workflowTrace.reset();
+        killAllSpawnedSubprocesses();
         initState();
     }
 
@@ -148,14 +160,14 @@ public class State {
                 trace =
                         WorkflowTraceSerializer.insecureRead(
                                 new FileInputStream(config.getWorkflowInput()));
-                LOGGER.debug("Loaded workflow trace from " + config.getWorkflowInput());
+                LOGGER.debug("Loaded workflow trace from {}", config.getWorkflowInput());
             } catch (FileNotFoundException ex) {
                 LOGGER.warn(
-                        "Could not read workflow trace. File not found: "
-                                + config.getWorkflowInput());
+                        "Could not read workflow trace. File not found: {}",
+                        config.getWorkflowInput());
                 LOGGER.debug(ex);
             } catch (JAXBException | IOException | XMLStreamException ex) {
-                LOGGER.warn("Could not read workflow trace: " + config.getWorkflowInput());
+                LOGGER.warn("Could not read workflow trace: {}", config.getWorkflowInput());
                 LOGGER.debug(ex);
             }
         } else if (config.getWorkflowTraceType() != null) {
@@ -186,8 +198,8 @@ public class State {
     }
 
     /**
-     * Replace existing SshContext with new SshContext. This can only be done if
-     * existingSshContext.connection equals newSshContext.connection.
+     * Replace existing SshContext with new SshContext. This can only be done if {@code
+     * existingSshContext.connection} equals newSshContext.connection.
      *
      * @param newContext The new SshContext to replace the old with
      */
@@ -297,7 +309,7 @@ public class State {
      */
     private void filterTrace(WorkflowTrace trace) {
         List<FilterType> filters = config.getOutputFilters();
-        if ((filters == null) || (filters.isEmpty())) {
+        if (filters == null || filters.isEmpty()) {
             LOGGER.debug("No filters to apply, ouput filter list is empty");
             return;
         }
@@ -325,10 +337,10 @@ public class State {
             try {
                 workflowOutputName = config.getWorkflowOutput();
 
-                File f = new File(workflowOutputName);
-                if (f.isDirectory()) {
+                File file = new File(workflowOutputName);
+                if (file.isDirectory()) {
                     workflowOutputName = config.getWorkflowOutput() + "trace-" + random.nextInt();
-                    f = new File(workflowOutputName);
+                    file = new File(workflowOutputName);
                 }
                 WorkflowTrace filteredTrace;
                 if (config.isApplyFiltersInPlace()) {
@@ -337,7 +349,7 @@ public class State {
                 } else {
                     filteredTrace = getFilteredTraceCopy(workflowTrace);
                 }
-                WorkflowTraceSerializer.write(f, filteredTrace);
+                WorkflowTraceSerializer.write(file, filteredTrace);
             } catch (JAXBException | IOException ex) {
                 LOGGER.info("Could not serialize WorkflowTrace.");
                 LOGGER.debug(ex);
@@ -347,6 +359,7 @@ public class State {
 
     private void assertWorkflowTraceNotNull(
             @SuppressWarnings("SameParameterValue") String operationName) {
+        //noinspection VariableNotUsedInsideIf
         if (workflowTrace != null) {
             return;
         }
@@ -359,10 +372,47 @@ public class State {
     }
 
     public void setWorkflowTrace(WorkflowTrace trace) {
-        this.workflowTrace = trace;
+        workflowTrace = trace;
     }
 
     public String getWorkflowOutputName() {
         return workflowOutputName;
+    }
+
+    public long getStartTimestamp() {
+        return startTimestamp;
+    }
+
+    public void setStartTimestamp(long startTimestamp) {
+        this.startTimestamp = startTimestamp;
+    }
+
+    public long getEndTimestamp() {
+        return endTimestamp;
+    }
+
+    public void setEndTimestamp(long endTimestamp) {
+        this.endTimestamp = endTimestamp;
+    }
+
+    public Throwable getExecutionException() {
+        return executionException;
+    }
+
+    public void setExecutionException(Throwable executionException) {
+        this.executionException = executionException;
+    }
+
+    public void addSpawnedSubprocess(Process process) {
+        if (process != null) {
+            spawnedSubprocesses.add(process);
+        }
+    }
+
+    public void killAllSpawnedSubprocesses() {
+        for (Process process : spawnedSubprocesses) {
+            process.destroy();
+        }
+        spawnedSubprocesses.clear();
     }
 }

@@ -42,6 +42,6 @@ public abstract class SshMessage<T extends SshMessage<T>> extends ProtocolMessag
 
     @Override
     public String toCompactString() {
-        return this.getClass().getSimpleName();
+        return getClass().getSimpleName();
     }
 }

@@ -18,9 +18,7 @@ public class WorkflowTypeDelegate extends Delegate {
             names = "-workflow_trace_type",
             description = "Type of the workflow trace",
             converter = WorkflowTraceTypeConverter.class)
-    private WorkflowTraceType workflowTraceType = null;
-
-    public WorkflowTypeDelegate() {}
+    private WorkflowTraceType workflowTraceType;
 
     public WorkflowTraceType getWorkflowTraceType() {
         return workflowTraceType;

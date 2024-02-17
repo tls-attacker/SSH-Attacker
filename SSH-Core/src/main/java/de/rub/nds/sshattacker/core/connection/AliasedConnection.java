@@ -9,7 +9,6 @@ package de.rub.nds.sshattacker.core.connection;
 
 import de.rub.nds.sshattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.tlsattacker.transport.Connection;
-import de.rub.nds.tlsattacker.transport.ConnectionEndType;
 import de.rub.nds.tlsattacker.transport.TransportHandlerType;
 import jakarta.xml.bind.annotation.XmlType;
 import java.util.Collection;
@@ -45,33 +44,36 @@ public abstract class AliasedConnection extends Connection implements Aliasable 
     public static final String DEFAULT_IP = "127.0.0.1";
     public static final Integer DEFAULT_PORT = 65222;
 
-    protected String alias = null;
+    protected String alias;
 
-    public AliasedConnection() {}
+    protected AliasedConnection() {
+        super();
+    }
 
-    public AliasedConnection(Integer port) {
+    protected AliasedConnection(Integer port) {
         super(port);
     }
 
-    public AliasedConnection(Integer port, String hostname) {
+    protected AliasedConnection(Integer port, String hostname) {
         super(port, hostname);
     }
 
-    public AliasedConnection(String alias) {
+    protected AliasedConnection(String alias) {
+        super();
         this.alias = alias;
     }
 
-    public AliasedConnection(String alias, Integer port) {
+    protected AliasedConnection(String alias, Integer port) {
         super(port);
         this.alias = alias;
     }
 
-    public AliasedConnection(String alias, Integer port, String hostname) {
+    protected AliasedConnection(String alias, Integer port, String hostname) {
         super(port, hostname);
         this.alias = alias;
     }
 
-    public AliasedConnection(AliasedConnection other) {
+    protected AliasedConnection(AliasedConnection other) {
         super(other);
         alias = other.alias;
     }
@@ -86,9 +88,9 @@ public abstract class AliasedConnection extends Connection implements Aliasable 
 
     @Override
     public void assertAliasesSetProperly() throws ConfigurationException {
-        if ((alias == null) || (alias.isEmpty())) {
+        if (alias == null || alias.isEmpty()) {
             throw new ConfigurationException(
-                    "Empty or null alias in " + this.getClass().getSimpleName());
+                    "Empty or null alias in " + getClass().getSimpleName());
         }
     }
 
@@ -99,6 +101,7 @@ public abstract class AliasedConnection extends Connection implements Aliasable 
         return alias;
     }
 
+    @SuppressWarnings("SuspiciousGetterSetter")
     @Override
     public String getFirstAlias() {
         return alias;
@@ -122,22 +125,15 @@ public abstract class AliasedConnection extends Connection implements Aliasable 
             return false;
         }
         if (aliases.size() == 1) {
-            return this.alias.equals(aliases.iterator().next());
+            return alias.equals(aliases.iterator().next());
         }
         return false;
     }
 
-    public String getDefaultConnectionAlias() {
-        return DEFAULT_CONNECTION_ALIAS;
-    }
-
-    @Override
-    public abstract ConnectionEndType getLocalConnectionEndType();
-
     @Override
     public int hashCode() {
         int hash = super.hashCode();
-        hash = 41 * hash + Objects.hashCode(this.alias);
+        hash = 41 * hash + Objects.hashCode(alias);
         return hash;
     }
 
@@ -146,15 +142,15 @@ public abstract class AliasedConnection extends Connection implements Aliasable 
         if (!super.equals(obj)) {
             return false;
         }
-        final AliasedConnection other = (AliasedConnection) obj;
-        return Objects.equals(this.alias, other.alias);
+        AliasedConnection other = (AliasedConnection) obj;
+        return Objects.equals(alias, other.alias);
     }
 
     public void normalize(AliasedConnection defaultCon) {
-        if ((alias == null) || alias.isEmpty()) {
-            alias = defaultCon.getAlias();
+        if (alias == null || alias.isEmpty()) {
+            alias = defaultCon.alias;
             if (alias == null || alias.isEmpty()) {
-                alias = getDefaultConnectionAlias();
+                alias = DEFAULT_CONNECTION_ALIAS;
             }
         }
 
@@ -210,7 +206,7 @@ public abstract class AliasedConnection extends Connection implements Aliasable 
     }
 
     public void filter(AliasedConnection defaultCon) {
-        if (alias.equals(defaultCon.getAlias()) || alias.equals(getDefaultConnectionAlias())) {
+        if (alias.equals(defaultCon.alias) || alias.equals(DEFAULT_CONNECTION_ALIAS)) {
             alias = null;
         }
         if (transportHandlerType == defaultCon.getTransportHandlerType()

@@ -85,8 +85,9 @@ public class HybridKeyExchangeReplyMessage extends SshMessage<HybridKeyExchangeR
     }
 
     @Override
-    public void setHostKeyBytes(byte[] hostKey, boolean adjustLengthField) {
-        this.hostKeyBytes = ModifiableVariableFactory.safelySetValue(this.hostKeyBytes, hostKey);
+    public void setHostKeyBytes(byte[] hostKeyBytes, boolean adjustLengthField) {
+        this.hostKeyBytes =
+                ModifiableVariableFactory.safelySetValue(this.hostKeyBytes, hostKeyBytes);
         if (adjustLengthField) {
             setHostKeyBytesLength(this.hostKeyBytes.getValue().length);
         }
@@ -136,9 +137,8 @@ public class HybridKeyExchangeReplyMessage extends SshMessage<HybridKeyExchangeR
     }
 
     public void setCiphertextLength(int ciphertextLength) {
-        this.combinedKeyShareLength =
-                ModifiableVariableFactory.safelySetValue(
-                        this.combinedKeyShareLength, ciphertextLength);
+        combinedKeyShareLength =
+                ModifiableVariableFactory.safelySetValue(combinedKeyShareLength, ciphertextLength);
     }
 
     public ModifiableByteArray getCombinedKeyShare() {
@@ -150,17 +150,16 @@ public class HybridKeyExchangeReplyMessage extends SshMessage<HybridKeyExchangeR
     }
 
     public void setCiphertext(ModifiableByteArray ciphertext, boolean adjustLengthField) {
-        this.combinedKeyShare = ciphertext;
+        combinedKeyShare = ciphertext;
         if (adjustLengthField) {
-            setCiphertextLength(this.combinedKeyShare.getValue().length);
+            setCiphertextLength(combinedKeyShare.getValue().length);
         }
     }
 
     public void setCiphertext(byte[] ciphertext, boolean adjustLengthField) {
-        this.combinedKeyShare =
-                ModifiableVariableFactory.safelySetValue(this.combinedKeyShare, ciphertext);
+        combinedKeyShare = ModifiableVariableFactory.safelySetValue(combinedKeyShare, ciphertext);
         if (adjustLengthField) {
-            setCiphertextLength(this.combinedKeyShare.getValue().length);
+            setCiphertextLength(combinedKeyShare.getValue().length);
         }
     }
 

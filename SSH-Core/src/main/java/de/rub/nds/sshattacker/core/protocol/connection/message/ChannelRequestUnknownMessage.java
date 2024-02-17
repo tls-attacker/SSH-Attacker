@@ -25,7 +25,7 @@ public class ChannelRequestUnknownMessage
         return typeSpecificData;
     }
 
-    public void setPassword(ModifiableByteArray typeSpecificData) {
+    public void setTypeSpecificData(ModifiableByteArray typeSpecificData) {
         this.typeSpecificData = typeSpecificData;
     }
 

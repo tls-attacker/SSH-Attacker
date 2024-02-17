@@ -17,10 +17,11 @@ import jakarta.xml.bind.annotation.XmlAttribute;
 public class ChangePacketLayerAction extends ConnectionBoundAction {
 
     @XmlAttribute(name = "to")
-    protected PacketLayerType packetLayerType = null;
+    protected PacketLayerType packetLayerType;
 
     protected Boolean enableAsciiMode = false;
 
+    @SuppressWarnings("unused")
     private ChangePacketLayerAction() {
         super(AliasedConnection.DEFAULT_CONNECTION_ALIAS);
     }
@@ -53,7 +54,7 @@ public class ChangePacketLayerAction extends ConnectionBoundAction {
      * @return the new packet layer type
      */
     public PacketLayerType getPacketLayerType() {
-        return this.packetLayerType;
+        return packetLayerType;
     }
 
     /**
@@ -62,7 +63,7 @@ public class ChangePacketLayerAction extends ConnectionBoundAction {
      * @return {@code true} if this action will enable ascii mode, else {@code false}
      */
     public boolean getEnableAsciiMode() {
-        return this.enableAsciiMode;
+        return enableAsciiMode;
     }
 
     @Override

@@ -14,6 +14,7 @@ import de.rub.nds.sshattacker.core.crypto.kex.DhKeyExchange;
 import de.rub.nds.sshattacker.core.crypto.kex.HybridKeyExchange;
 import de.rub.nds.sshattacker.core.crypto.kex.RsaKeyExchange;
 import de.rub.nds.sshattacker.core.crypto.keys.SshPublicKey;
+import de.rub.nds.sshattacker.core.protocol.transport.message.extension.AbstractExtension;
 import de.rub.nds.sshattacker.core.protocol.util.AlgorithmPicker;
 import de.rub.nds.sshattacker.core.state.Context;
 import de.rub.nds.tlsattacker.transport.Connection;
@@ -533,6 +534,123 @@ public class DefaultChooser extends Chooser {
     }
     // endregion
 
+    // region SSH Extensions
+    /**
+     * Retrieves the list of client supported extensions included in the clients SSH_MSG_EXT_INFO
+     * packet from context. If no SSH_MSG_EXT_INFO packet was received yet or SSH-Attacker is
+     * running in client mode, the extensions from config will be returned instead.
+     *
+     * @return List of client supported extensions
+     */
+    public List<AbstractExtension<?>> getClientSupportedExtensions() {
+        return context.getClientSupportedExtensions().orElse(config.getClientSupportedExtensions());
+    }
+
+    /**
+     * Retrieves the list of server supported extensions included in the servers SSH_MSG_EXT_INFO
+     * packet from context. If no SSH_MSG_EXT_INFO packet was received yet or SSH-Attacker is
+     * running in server mode, the extensions from config will be returned instead.
+     *
+     * @return List of server supported extensions
+     */
+    public List<AbstractExtension<?>> getServerSupportedExtensions() {
+        return context.getServerSupportedExtensions().orElse(config.getServerSupportedExtensions());
+    }
+
+    /**
+     * Retrieves the list of server supported public key algorithms for authentication of the
+     * server-sig-algs extension included in SSH_MSG_EXT_INFO packet from context. If no
+     * SSH_MSG_EXT_INFO packet was received yet or SSH-Attacker is running in server mode, the
+     * extension from config will be returned instead.
+     *
+     * @return List of server supported public key algorithms for authentication
+     */
+    public List<PublicKeyAlgorithm> getServerSupportedPublicKeyAlgorithmsForAuthentication() {
+        return context.getServerSupportedPublicKeyAlgorithmsForAuthentication()
+                .orElse(config.getServerSupportedPublicKeyAlgorithmsForAuthentication());
+    }
+
+    /**
+     * Retrieves the public key to use for client authentication. If no server-sig-algs extension
+     * was received yet or server-sig-algs extension is disabled in config, the first user key from
+     * config(SSH_RSA) is returned.
+     */
+    public SshPublicKey<?, ?> getSelectedPublicKeyForAuthentication() {
+        // Check if there are user keys present in the Config object. If not, return null.
+        if (config.getUserKeys().isEmpty()) {
+            LOGGER.error(
+                    "Unable to select public key for user authentication. No user key provided in Config object.");
+            return null;
+        }
+
+        // server-sig-algs extension is disabled or no server-sig-algs extension received yet ?
+        // -> use first user key(SSH_RSA)
+        if (!config.getRespectServerSigAlgsExtension()
+                || !context.getServerSigAlgsExtensionReceivedFromServer()) {
+            return config.getUserKeys().get(0);
+        }
+
+        // get client supported public key algorithms
+        List<PublicKeyAlgorithm> clientSupportedPublicKeyAlgorithms =
+                config.getUserKeys().stream()
+                        .map(
+                                algorithm ->
+                                        PublicKeyAlgorithm.fromName(
+                                                algorithm.getPublicKeyFormat().getName()))
+                        .collect(Collectors.toList());
+
+        // get server supported public key algorithms
+        // no server-sig-algs extension received? -> SSH_RSA
+        List<PublicKeyAlgorithm> serverSupportedPublicKeyAlgorithms =
+                context.getServerSupportedPublicKeyAlgorithmsForAuthentication()
+                        .orElse(List.of(PublicKeyAlgorithm.SSH_RSA));
+
+        // determine common public key algorithm to use for client authentication
+        // fallback to SSH_RSA in case there is no match between both lists
+        PublicKeyAlgorithm commonPublicKeyAlgorithm =
+                AlgorithmPicker.pickAlgorithm(
+                                clientSupportedPublicKeyAlgorithms,
+                                serverSupportedPublicKeyAlgorithms)
+                        .orElse(PublicKeyAlgorithm.SSH_RSA);
+
+        // get public key of negotiated public key algorithm
+        // no match? -> use first user key
+        return config.getUserKeys().stream()
+                .filter(
+                        key ->
+                                PublicKeyAlgorithm.fromName(key.getPublicKeyFormat().getName())
+                                        == commonPublicKeyAlgorithm)
+                .findFirst()
+                .orElse(config.getUserKeys().get(0));
+    }
+
+    /**
+     * Retrieves the list of client supported compression methods of the delay-compression extension
+     * included in SSH_MSG_EXT_INFO packet from context. If no SSH_MSG_EXT_INFO packet was received
+     * yet or SSH-Attacker is running in client mode, the extension from config will be returned
+     * instead.
+     *
+     * @return List of client supported compression methods
+     */
+    public List<CompressionMethod> getClientSupportedDelayCompressionMethods() {
+        return context.getClientSupportedDelayCompressionMethods()
+                .orElse(config.getClientSupportedDelayCompressionMethods());
+    }
+
+    /**
+     * Retrieves the list of server supported compression methods of the delay-compression extension
+     * included in SSH_MSG_EXT_INFO packet from context. If no SSH_MSG_EXT_INFO packet was received
+     * yet or SSH-Attacker is running in server mode, the extension from config will be returned
+     * instead.
+     *
+     * @return List of server supported compression methods
+     */
+    public List<CompressionMethod> getServerSupportedDelayCompressionMethods() {
+        return context.getServerSupportedDelayCompressionMethods()
+                .orElse(config.getServerSupportedDelayCompressionMethods());
+    }
+    // endregion
+
     // region Negotiated Parameters
     /**
      * Retrieves the negotiated key exchange algorithm from context. If the field is not set in
@@ -957,9 +1075,8 @@ public class DefaultChooser extends Chooser {
         SshPublicKey<?, ?> fallback = config.getHostKeys().get(0);
         if (negotiatedHostKeyAlgorithm.isEmpty()) {
             LOGGER.warn(
-                    "No server host key algorithm was negotiated, defaulting to the first server host key ("
-                            + fallback
-                            + ")");
+                    "No server host key algorithm was negotiated, defaulting to the first server host key ({})",
+                    fallback);
             return fallback;
         }
         // Find the first configured host key whose format matches the negotiated server
@@ -974,10 +1091,8 @@ public class DefaultChooser extends Chooser {
                 .orElseGet(
                         () -> {
                             LOGGER.warn(
-                                    "No server host key matching the negotiated algorithm '"
-                                            + "' was found in the config, defaulting to the first server host key ("
-                                            + fallback
-                                            + ")");
+                                    "No server host key matching the negotiated algorithm '' was found in the config, defaulting to the first server host key ({})",
+                                    fallback);
                             return fallback;
                         });
     }

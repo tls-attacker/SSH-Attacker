@@ -12,30 +12,31 @@ import cc.redberry.rings.poly.UnivariateRing;
 import cc.redberry.rings.poly.univar.UnivariateDivision;
 import cc.redberry.rings.poly.univar.UnivariatePolynomialZ64;
 import cc.redberry.rings.poly.univar.UnivariatePolynomialZp64;
+import java.util.Objects;
 import java.util.stream.LongStream;
 
 public class R {
 
-    private SntrupParameterSet set;
+    private final SntrupParameterSet set;
     private UnivariatePolynomialZ64 r;
-    private UnivariatePolynomialZ64 mod;
+    private final UnivariatePolynomialZ64 mod;
 
     public R(SntrupParameterSet set, long[] coefficient) {
+        super();
         this.set = set;
-        this.mod = genereateMod(set);
-        this.r =
-                UnivariateDivision.remainder(
-                        UnivariatePolynomialZ64.create(coefficient), mod, false);
+        mod = genereateMod(set);
+        r = UnivariateDivision.remainder(UnivariatePolynomialZ64.create(coefficient), mod, false);
     }
 
-    private UnivariatePolynomialZ64 genereateMod(SntrupParameterSet set) {
+    private static UnivariatePolynomialZ64 genereateMod(SntrupParameterSet set) {
         return UnivariatePolynomialZ64.parse("x^" + set.getP() + "-x-1");
     }
 
     private R(SntrupParameterSet set, UnivariatePolynomialZ64 r) {
+        super();
         this.set = set;
         this.r = r;
-        this.mod = genereateMod(set);
+        mod = genereateMod(set);
     }
 
     public SntrupParameterSet getSet() {
@@ -47,9 +48,7 @@ public class R {
     }
 
     public void setR(long[] coefficient) {
-        this.r =
-                UnivariateDivision.remainder(
-                        UnivariatePolynomialZ64.create(coefficient), mod, false);
+        r = UnivariateDivision.remainder(UnivariatePolynomialZ64.create(coefficient), mod, false);
     }
 
     public UnivariatePolynomialZ64 getMod() {
@@ -70,9 +69,9 @@ public class R {
         return new R(r3.getSet(), r3.stream().toArray());
     }
 
-    public static R multiply(Short shrt, R r) {
+    public static R multiply(Short shrt, R r2) {
         R convertedShort = new R(shrt.getSet(), shrt.stream().toArray());
-        return multiply(convertedShort, r);
+        return multiply(convertedShort, r2);
     }
 
     public static R multiply(R r1, R r2) {
@@ -87,24 +86,15 @@ public class R {
     }
 
     @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((r == null) ? 0 : r.hashCode());
-        result = prime * result + ((set == null) ? 0 : set.hashCode());
-        return result;
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        R r1 = (R) obj;
+        return set == r1.set && Objects.equals(r, r1.r);
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (obj == null) return false;
-        if (getClass() != obj.getClass()) return false;
-        R other = (R) obj;
-        if (r == null) {
-            if (other.r != null) return false;
-        } else if (!r.equals(other.r)) return false;
-        if (set != other.set) return false;
-        return true;
+    public int hashCode() {
+        return Objects.hash(set, r);
     }
 }

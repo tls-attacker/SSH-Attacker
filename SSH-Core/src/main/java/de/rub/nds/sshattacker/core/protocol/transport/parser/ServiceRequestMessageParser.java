@@ -35,7 +35,7 @@ public class ServiceRequestMessageParser extends SshMessageParser<ServiceRequest
 
     private void parseServiceName(ServiceRequestMessage message) {
         message.setServiceNameLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-        LOGGER.debug("Service name length: " + message.getServiceNameLength().getValue());
+        LOGGER.debug("Service name length: {}", message.getServiceNameLength().getValue());
         message.setServiceName(
                 parseByteString(
                         message.getServiceNameLength().getValue(), StandardCharsets.US_ASCII));

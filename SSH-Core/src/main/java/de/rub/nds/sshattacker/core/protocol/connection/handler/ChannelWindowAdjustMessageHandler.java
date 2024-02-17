@@ -31,7 +31,7 @@ public class ChannelWindowAdjustMessageHandler
             if (!channel.isOpen().getValue()) {
                 LOGGER.warn(
                         "{} received but channel with id {} is not open, continuing anyway.",
-                        this.getClass().getSimpleName(),
+                        getClass().getSimpleName(),
                         message.getRecipientChannelId().getValue());
             }
             channel.setRemoteWindowSize(
@@ -39,7 +39,7 @@ public class ChannelWindowAdjustMessageHandler
         } else {
             LOGGER.warn(
                     "{} received but no channel with id {} found locally, creating a new channel from defaults with given channel id.",
-                    this.getClass().getSimpleName(),
+                    getClass().getSimpleName(),
                     message.getRecipientChannelId().getValue());
             channel = sshContext.getConfig().getChannelDefaults().newChannelFromDefaults();
             sshContext.getChannels().put(channel.getLocalChannelId().getValue(), channel);

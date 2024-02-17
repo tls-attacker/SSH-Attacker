@@ -77,6 +77,7 @@ public class ForwardMessagesAction extends SshAction implements ReceivingAction,
 
     public ForwardMessagesAction(
             String receiveFromAlias, String forwardToAlias, List<ProtocolMessage<?>> messages) {
+        super();
         this.messages = messages;
         this.receiveFromAlias = receiveFromAlias;
         this.forwardToAlias = forwardToAlias;
@@ -90,7 +91,7 @@ public class ForwardMessagesAction extends SshAction implements ReceivingAction,
         this(receiveFromAlias, forwardToAlias, new ArrayList<>(Arrays.asList(messages)));
     }
 
-    public void initLoggingSide(SshContext context) {
+    public static void initLoggingSide(SshContext context) {
         if (context.isClient()) {
             ThreadContext.put("side", "Client");
         } else if (context.isServer()) {
@@ -168,11 +169,9 @@ public class ForwardMessagesAction extends SshAction implements ReceivingAction,
     protected void forwardMessages(SshContext forwardToCtx) {
 
         LOGGER.info(
-                "Forwarding messages ("
-                        + forwardToAlias
-                        + "): "
-                        + getReadableString(receivedMessages));
-
+                "Forwarding messages ({}): {}",
+                forwardToAlias,
+                getReadableString(receivedMessages));
         try {
             LayerStack layerStack = forwardToCtx.getLayerStack();
             LayerConfiguration messageConfiguration =
@@ -210,7 +209,7 @@ public class ForwardMessagesAction extends SshAction implements ReceivingAction,
     /**
      * Apply the contents of the messages to the given SSH context.
      *
-     * @param ctx
+     * @param ctx SSH context
      */
     protected void applyMessages(SshContext ctx) {
         changeSshContextHandling(ctx);
@@ -291,59 +290,41 @@ public class ForwardMessagesAction extends SshAction implements ReceivingAction,
         return messages;
     }
 
+    @Override
+    public List<AbstractPacket> getReceivedPackets() {
+        return receivedPackets;
+    }
+
     public void setMessages(List<ProtocolMessage<?>> messages) {
         this.messages = messages;
     }
 
     public void setMessages(ProtocolMessage<?>... messages) {
-        this.messages = new ArrayList(Arrays.asList(messages));
+        this.messages = new ArrayList<>(Arrays.asList(messages));
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        ForwardMessagesAction that = (ForwardMessagesAction) obj;
+        return Objects.equals(receiveFromAlias, that.receiveFromAlias)
+                && Objects.equals(forwardToAlias, that.forwardToAlias)
+                && Objects.equals(executedAsPlanned, that.executedAsPlanned)
+                && Objects.equals(receivedMessages, that.receivedMessages)
+                && Objects.equals(messages, that.messages)
+                && Objects.equals(sendMessages, that.sendMessages);
     }
 
     @Override
     public int hashCode() {
-        int hash = 7;
-        hash = 89 * hash + Objects.hashCode(this.receiveFromAlias);
-        hash = 89 * hash + Objects.hashCode(this.forwardToAlias);
-        hash = 89 * hash + Objects.hashCode(this.executedAsPlanned);
-        hash = 89 * hash + Objects.hashCode(this.receivedMessages);
-        hash = 89 * hash + Objects.hashCode(this.sendMessages);
-        hash = 89 * hash + Objects.hashCode(this.messages);
-        return hash;
-    }
-
-    /**
-     * TODO: the equals methods for message/record actions and similar classes would require that
-     * messages and records implement equals for a proper implementation. The present approach is
-     * not satisfying.
-     */
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final ForwardMessagesAction other = (ForwardMessagesAction) obj;
-        if (!Objects.equals(this.receiveFromAlias, other.receiveFromAlias)) {
-            return false;
-        }
-        if (!Objects.equals(this.forwardToAlias, other.forwardToAlias)) {
-            return false;
-        }
-        if (!Objects.equals(this.executedAsPlanned, other.executedAsPlanned)) {
-            return false;
-        }
-        if (!checkMessageListsEquals(this.receivedMessages, other.receivedMessages)) {
-            return false;
-        }
-        if (!checkMessageListsEquals(this.sendMessages, other.sendMessages)) {
-            return false;
-        }
-        return Objects.equals(this.messages, other.messages);
+        return Objects.hash(
+                receiveFromAlias,
+                forwardToAlias,
+                executedAsPlanned,
+                receivedMessages,
+                messages,
+                sendMessages);
     }
 
     @Override
@@ -356,16 +337,16 @@ public class ForwardMessagesAction extends SshAction implements ReceivingAction,
 
     @Override
     public void assertAliasesSetProperly() throws WorkflowExecutionException {
-        if ((receiveFromAlias == null) || (receiveFromAlias.isEmpty())) {
+        if (receiveFromAlias == null || receiveFromAlias.isEmpty()) {
             throw new WorkflowExecutionException(
                     "Can't execute "
-                            + this.getClass().getSimpleName()
+                            + getClass().getSimpleName()
                             + " with empty receive alias (if using XML: add <from/>)");
         }
-        if ((forwardToAlias == null) || (forwardToAlias.isEmpty())) {
+        if (forwardToAlias == null || forwardToAlias.isEmpty()) {
             throw new WorkflowExecutionException(
                     "Can't execute "
-                            + this.getClass().getSimpleName()
+                            + getClass().getSimpleName()
                             + " with empty forward alis (if using XML: add <to/>)");
         }
     }

@@ -48,18 +48,17 @@ public class ChannelExtendedDataMessageParser
 
     private void parseDataTypeCode(ChannelExtendedDataMessage message) {
         message.setDataTypeCode(parseIntField(DataFormatConstants.UINT32_SIZE));
-        LOGGER.debug("Data type code: " + message.getDataTypeCode().getValue());
+        LOGGER.debug("Data type code: {}", message.getDataTypeCode().getValue());
         LOGGER.debug(
-                "Data type: "
-                        + ExtendedChannelDataType.fromDataTypeCode(
-                                message.getDataTypeCode().getValue()));
+                "Data type: {}",
+                ExtendedChannelDataType.fromDataTypeCode(message.getDataTypeCode().getValue()));
     }
 
     private void parseData(ChannelExtendedDataMessage message) {
         message.setDataLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
-        LOGGER.debug("Data length: " + message.getDataLength().getValue());
+        LOGGER.debug("Data length: {}", message.getDataLength().getValue());
         message.setData(parseByteArrayField(message.getDataLength().getValue()));
-        LOGGER.debug("Data: " + ArrayConverter.bytesToRawHexString(message.getData().getValue()));
+        LOGGER.debug("Data: {}", ArrayConverter.bytesToRawHexString(message.getData().getValue()));
     }
 
     @Override

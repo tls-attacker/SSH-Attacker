@@ -37,11 +37,12 @@ public class DhKeyExchangeReplyMessagePreparator
     private void prepareEphemeralPublicKey() {
         DhKeyExchange keyExchange = chooser.getDhKeyExchange();
         keyExchange.generateLocalKeyPair();
-        getObject().setEphemeralPublicKey(keyExchange.getLocalKeyPair().getPublic().getY(), true);
+        getObject()
+                .setEphemeralPublicKey(keyExchange.getLocalKeyPair().getPublicKey().getY(), true);
         // Update exchange hash with local public key
         chooser.getContext()
                 .getSshContext()
                 .getExchangeHashInputHolder()
-                .setDhServerPublicKey(keyExchange.getLocalKeyPair().getPublic().getY());
+                .setDhServerPublicKey(keyExchange.getLocalKeyPair().getPublicKey().getY());
     }
 }

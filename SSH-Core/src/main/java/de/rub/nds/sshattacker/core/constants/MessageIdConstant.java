@@ -141,6 +141,8 @@ public enum MessageIdConstant {
     // 101 - 127 unassigned (channel related messages)
     // 128 - 191 reserved (for client protocols)
     // 192 - 255 reserved for private use (local extensions)
+    SSH_MSG_PING((byte) 192),
+    SSH_MSG_PONG((byte) 193),
     UNKNOWN((byte) 255);
 
     private final byte id;
@@ -152,17 +154,17 @@ public enum MessageIdConstant {
 
     static {
         Map<Byte, List<MessageIdConstant>> mutableMap = new TreeMap<>();
-        for (MessageIdConstant constant : MessageIdConstant.values()) {
+        for (MessageIdConstant constant : values()) {
             mutableMap.putIfAbsent(constant.id, new LinkedList<>());
             mutableMap.get(constant.id).add(constant);
         }
-        mutableMap.replaceAll((k, v) -> Collections.unmodifiableList(mutableMap.get(k)));
+        mutableMap.replaceAll((key, value) -> Collections.unmodifiableList(mutableMap.get(key)));
         map = Collections.unmodifiableMap(mutableMap);
     }
 
     MessageIdConstant(byte id) {
         this.id = id;
-        this.specificTo = new Enum<?>[] {};
+        specificTo = new Enum<?>[] {};
     }
 
     MessageIdConstant(byte id, Enum<?>... specificTo) {

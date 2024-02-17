@@ -14,8 +14,8 @@ public enum PQKemNames {
     FIRESABER("FireSaber-KEM", true),
     KYBER1024("Kyber1024", true);
 
-    private String name;
-    private boolean libOqs;
+    private final String name;
+    private final boolean libOqs;
 
     PQKemNames(String name, boolean libOqs) {
         this.name = name;

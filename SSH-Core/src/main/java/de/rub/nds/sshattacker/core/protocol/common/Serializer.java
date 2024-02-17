@@ -30,7 +30,8 @@ public abstract class Serializer<T> {
     private ByteArrayOutputStream outputStream;
 
     /** Constructor for the Serializer */
-    public Serializer() {
+    protected Serializer() {
+        super();
         outputStream = new ByteArrayOutputStream();
     }
 
@@ -52,13 +53,10 @@ public abstract class Serializer<T> {
         int reconvertedInt = ArrayConverter.bytesToInt(bytes);
         if (reconvertedInt != i) {
             LOGGER.warn(
-                    "Int \""
-                            + i
-                            + "\" is too long to write in field of size "
-                            + length
-                            + ". Only using last "
-                            + length
-                            + " bytes.");
+                    "Int \"{}\" is too long to write in field of size {}. Only using last {} bytes.",
+                    i,
+                    length,
+                    length);
         }
         appendBytes(ArrayConverter.intToBytes(i, length));
     }
@@ -67,17 +65,17 @@ public abstract class Serializer<T> {
      * Adds a byte[] representation of a BigInteger to the final byte[] minus the sign byte. If the
      * BigInteger is greater than the specified length only the lower length bytes are serialized.
      *
-     * @param i The BigInteger that should be appended
+     * @param bigInteger The BigInteger that should be appended
      * @param length The number of bytes which should be reserved for this BigInteger
      */
-    protected final void appendBigInteger(BigInteger i, int length) {
+    protected final void appendBigInteger(BigInteger bigInteger, int length) {
         byte[] bytes;
         // special case for which bigIntegerToByteArray
         // wrongly returns an empty array
-        if (i.equals(new BigInteger("0"))) {
+        if (bigInteger.equals(BigInteger.ZERO)) {
             bytes = ArrayConverter.intToBytes(0, length);
         } else {
-            bytes = ArrayConverter.bigIntegerToByteArray(i, length, true);
+            bytes = ArrayConverter.bigIntegerToByteArray(bigInteger, length, true);
         }
         appendBytes(bytes);
     }
