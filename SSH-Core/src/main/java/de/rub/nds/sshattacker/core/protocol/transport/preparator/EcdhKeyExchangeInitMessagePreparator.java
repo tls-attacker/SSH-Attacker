@@ -25,7 +25,7 @@ public class EcdhKeyExchangeInitMessagePreparator
     public void prepareMessageSpecificContents() {
         AbstractEcdhKeyExchange keyExchange = chooser.getEcdhKeyExchange();
         keyExchange.generateLocalKeyPair();
-        byte[] encodedPublicKey = keyExchange.getLocalKeyPair().getPublic().getEncoded();
+        byte[] encodedPublicKey = keyExchange.getLocalKeyPair().getPublicKey().getEncoded();
         chooser.getContext()
                 .getSshContext()
                 .getExchangeHashInputHolder()

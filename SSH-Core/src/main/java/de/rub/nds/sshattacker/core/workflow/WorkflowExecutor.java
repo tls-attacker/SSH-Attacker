@@ -14,7 +14,6 @@ import de.rub.nds.sshattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.sshattacker.core.layer.LayerStackFactory;
 import de.rub.nds.sshattacker.core.state.Context;
 import de.rub.nds.sshattacker.core.state.State;
-import de.rub.nds.sshattacker.core.workflow.action.SshAction;
 import de.rub.nds.sshattacker.core.workflow.action.executor.WorkflowExecutorType;
 import de.rub.nds.tlsattacker.transport.TransportHandlerFactory;
 import java.io.IOException;

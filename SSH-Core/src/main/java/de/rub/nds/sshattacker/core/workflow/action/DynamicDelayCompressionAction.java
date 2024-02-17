@@ -8,9 +8,9 @@
 package de.rub.nds.sshattacker.core.workflow.action;
 
 import de.rub.nds.sshattacker.core.exceptions.WorkflowExecutionException;
+import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.protocol.transport.message.DisconnectMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.message.NewCompressMessage;
-import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.state.State;
 import de.rub.nds.sshattacker.core.workflow.factory.SshActionFactory;
 import de.rub.nds.tlsattacker.transport.ConnectionEndType;

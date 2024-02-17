@@ -8,11 +8,10 @@
 package de.rub.nds.sshattacker.core.protocol.transport.parser;
 
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
-import de.rub.nds.sshattacker.core.constants.Extension;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 import de.rub.nds.sshattacker.core.protocol.transport.message.ExtensionInfoMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.parser.extension.*;
-import java.nio.charset.StandardCharsets;
+import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -20,26 +19,33 @@ public class ExtensionInfoMessageParser extends SshMessageParser<ExtensionInfoMe
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public ExtensionInfoMessageParser(byte[] array) {
-        super(array);
-    }
-
-    public ExtensionInfoMessageParser(byte[] array, int startPosition) {
-        super(array, startPosition);
+    public ExtensionInfoMessageParser(InputStream stream) {
+        super(stream);
+        ;
     }
 
     @Override
-    public ExtensionInfoMessage createMessage() {
-        return new ExtensionInfoMessage();
+    public void parse(ExtensionInfoMessage message) {
+        parseMessageSpecificContents(message);
     }
 
-    private void parseExtensionCount() {
+    /*public ExtensionInfoMessageParser(byte[] array, int startPosition) {
+        super(array, startPosition);
+    }*/
+
+    /*    @Override
+    public ExtensionInfoMessage createMessage() {
+        return new ExtensionInfoMessage();
+    }*/
+
+    private void parseExtensionCount(ExtensionInfoMessage message) {
         message.setExtensionCount(parseIntField(DataFormatConstants.UINT32_SIZE));
         LOGGER.debug("Extension count: {}", message.getExtensionCount().getValue());
     }
 
-    private void parseExtensions() {
-        for (int extensionIndex = 0, extensionStartPointer = getPointer();
+    private void parseExtensions(ExtensionInfoMessage message) {
+        // Commenting just for debugging
+        /*for (int extensionIndex = 0, extensionStartPointer = getPointer();
                 extensionIndex < message.getExtensionCount().getValue();
                 extensionIndex++, extensionStartPointer = getPointer()) {
             // Parse extension name to determine the parser to use
@@ -70,12 +76,12 @@ public class ExtensionInfoMessageParser extends SshMessageParser<ExtensionInfoMe
             }
             message.addExtension(extensionParser.parse());
             setPointer(extensionParser.getPointer());
-        }
+        }*/
     }
 
     @Override
-    protected void parseMessageSpecificContents() {
-        parseExtensionCount();
-        parseExtensions();
+    protected void parseMessageSpecificContents(ExtensionInfoMessage message) {
+        parseExtensionCount(message);
+        parseExtensions(message);
     }
 }

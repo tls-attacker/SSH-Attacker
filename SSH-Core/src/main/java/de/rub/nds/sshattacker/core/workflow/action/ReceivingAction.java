@@ -7,13 +7,10 @@
  */
 package de.rub.nds.sshattacker.core.workflow.action;
 
-import de.rub.nds.sshattacker.core.packet.AbstractPacket;
 import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessage;
 import java.util.List;
 
 public interface ReceivingAction {
-
-    List<AbstractPacket> getReceivedPackets();
 
     List<ProtocolMessage<?>> getReceivedMessages();
 }

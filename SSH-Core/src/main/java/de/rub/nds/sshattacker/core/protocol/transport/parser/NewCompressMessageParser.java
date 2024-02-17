@@ -9,22 +9,28 @@ package de.rub.nds.sshattacker.core.protocol.transport.parser;
 
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 import de.rub.nds.sshattacker.core.protocol.transport.message.NewCompressMessage;
+import java.io.InputStream;
 
 public class NewCompressMessageParser extends SshMessageParser<NewCompressMessage> {
 
-    public NewCompressMessageParser(byte[] array) {
-        super(array);
+    public NewCompressMessageParser(InputStream stream) {
+        super(stream);
     }
 
-    public NewCompressMessageParser(byte[] array, int startPosition) {
+    @Override
+    public void parse(NewCompressMessage message) {
+        parseProtocolMessageContents(message);
+    }
+
+    /*    public NewCompressMessageParser(byte[] array, int startPosition) {
         super(array, startPosition);
     }
 
     @Override
     protected NewCompressMessage createMessage() {
         return new NewCompressMessage();
-    }
+    }*/
 
     @Override
-    protected void parseMessageSpecificContents() {}
+    protected void parseMessageSpecificContents(NewCompressMessage message) {}
 }

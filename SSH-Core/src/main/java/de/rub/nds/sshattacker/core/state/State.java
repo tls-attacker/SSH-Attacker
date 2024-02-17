@@ -93,10 +93,6 @@ public class State {
 
     public String workflowOutputName;
 
-    private long startTimestamp;
-    private long endTimestamp;
-    private Throwable executionException;
-
     private final LinkedList<Process> spawnedSubprocesses;
 
     public State() {
@@ -377,30 +373,6 @@ public class State {
 
     public String getWorkflowOutputName() {
         return workflowOutputName;
-    }
-
-    public long getStartTimestamp() {
-        return startTimestamp;
-    }
-
-    public void setStartTimestamp(long startTimestamp) {
-        this.startTimestamp = startTimestamp;
-    }
-
-    public long getEndTimestamp() {
-        return endTimestamp;
-    }
-
-    public void setEndTimestamp(long endTimestamp) {
-        this.endTimestamp = endTimestamp;
-    }
-
-    public Throwable getExecutionException() {
-        return executionException;
-    }
-
-    public void setExecutionException(Throwable executionException) {
-        this.executionException = executionException;
     }
 
     public void addSpawnedSubprocess(Process process) {

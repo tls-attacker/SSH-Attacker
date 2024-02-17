@@ -11,9 +11,7 @@ import de.rub.nds.sshattacker.core.connection.AliasedConnection;
 import de.rub.nds.sshattacker.core.constants.KeyExchangeAlgorithm;
 import de.rub.nds.sshattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.sshattacker.core.layer.context.SshContext;
-import de.rub.nds.sshattacker.core.packet.AbstractPacket;
 import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessage;
-import de.rub.nds.sshattacker.core.state.SshContext;
 import de.rub.nds.sshattacker.core.state.State;
 import de.rub.nds.sshattacker.core.workflow.factory.WorkflowConfigurationFactory;
 import java.util.ArrayList;
@@ -21,6 +19,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class DynamicKeyExchangeAction extends MessageAction
         implements ReceivingAction, SendingAction {
@@ -55,14 +55,6 @@ public class DynamicKeyExchangeAction extends MessageAction
         return sshActions.stream()
                 .filter(action -> action instanceof ReceivingAction)
                 .flatMap(action -> ((ReceivingAction) action).getReceivedMessages().stream())
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    public List<AbstractPacket> getReceivedPackets() {
-        return sshActions.stream()
-                .filter(action -> action instanceof ReceivingAction)
-                .flatMap(action -> ((ReceivingAction) action).getReceivedPackets().stream())
                 .collect(Collectors.toList());
     }
 

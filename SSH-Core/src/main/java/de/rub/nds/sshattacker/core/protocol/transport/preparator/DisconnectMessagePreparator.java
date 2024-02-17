@@ -26,7 +26,7 @@ public class DisconnectMessagePreparator extends SshMessagePreparator<Disconnect
         getObject().setDescription("Test", true);
         getObject().setLanguageTag("", true);
 
-        if (chooser.getContext().getDelayCompressionExtensionNegotiationFailed()) {
+        if (chooser.getContext().getSshContext().getDelayCompressionExtensionNegotiationFailed()) {
             getObject().setReasonCode(DisconnectReason.SSH_DISCONNECT_COMPRESSION_ERROR);
             getObject()
                     .setDescription(

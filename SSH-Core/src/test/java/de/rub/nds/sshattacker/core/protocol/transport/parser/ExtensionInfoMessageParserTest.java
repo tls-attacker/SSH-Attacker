@@ -14,6 +14,7 @@ import de.rub.nds.sshattacker.core.protocol.transport.message.ExtensionInfoMessa
 import de.rub.nds.sshattacker.core.protocol.transport.message.extension.AbstractExtension;
 import de.rub.nds.sshattacker.core.protocol.transport.message.extension.DelayCompressionExtension;
 import de.rub.nds.sshattacker.core.protocol.transport.message.extension.ServerSigAlgsExtension;
+import java.io.ByteArrayInputStream;
 import java.util.List;
 import java.util.stream.Stream;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -103,8 +104,10 @@ public class ExtensionInfoMessageParserTest {
             String expectedCompressionMethodsClientToServer,
             int expectedCompressionMethodsServerToClientLength,
             String expectedCompressionMethodsServerToClient) {
-        ExtensionInfoMessageParser parser = new ExtensionInfoMessageParser(providedBytes);
-        ExtensionInfoMessage msg = parser.parse();
+        ExtensionInfoMessageParser parser =
+                new ExtensionInfoMessageParser(new ByteArrayInputStream(providedBytes));
+        ExtensionInfoMessage msg = new ExtensionInfoMessage();
+        parser.parse(msg);
         List<AbstractExtension<?>> extensions = msg.getExtensions();
         ServerSigAlgsExtension serverSigAlgsExtension = (ServerSigAlgsExtension) extensions.get(0);
         DelayCompressionExtension delayCompressionExtension =

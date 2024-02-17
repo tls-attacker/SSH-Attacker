@@ -20,7 +20,7 @@ public class ExtensionInfoMessagePreparator extends SshMessagePreparator<Extensi
 
     @Override
     public void prepareMessageSpecificContents() {
-        if (chooser.getContext().isClient()) {
+        if (chooser.getContext().getSshContext().isClient()) {
             getObject().setExtensionCount(chooser.getClientSupportedExtensions().size());
             getObject().setExtensions(chooser.getClientSupportedExtensions());
         } else {
@@ -33,7 +33,7 @@ public class ExtensionInfoMessagePreparator extends SshMessagePreparator<Extensi
                 .forEach(
                         extension ->
                                 extension
-                                        .getHandler(chooser.getContext())
+                                        .getHandler(chooser.getContext().getSshContext())
                                         .getPreparator()
                                         .prepare());
     }

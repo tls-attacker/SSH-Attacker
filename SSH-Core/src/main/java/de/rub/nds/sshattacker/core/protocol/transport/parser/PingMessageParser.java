@@ -11,6 +11,7 @@ import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 import de.rub.nds.sshattacker.core.protocol.transport.message.PingMessage;
+import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -18,21 +19,28 @@ public class PingMessageParser extends SshMessageParser<PingMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public PingMessageParser(byte[] array) {
-        super(array);
+    public PingMessageParser(InputStream stream) {
+        super(stream);
     }
 
-    public PingMessageParser(byte[] array, int startPosition) {
+    @Override
+    public void parse(PingMessage message) {
+        parseProtocolMessageContents(message);
+    }
+
+    /*    public PingMessageParser(byte[] array, int startPosition) {
         super(array, startPosition);
-    }
+    }*/
+
+    /*
+        @Override
+        protected PingMessage createMessage() {
+            return new PingMessage();
+        }
+    */
 
     @Override
-    protected PingMessage createMessage() {
-        return new PingMessage();
-    }
-
-    @Override
-    protected void parseMessageSpecificContents() {
+    protected void parseMessageSpecificContents(PingMessage message) {
         message.setDataLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));
         LOGGER.debug("Data length: {}", message.getDataLength().getValue());
         message.setData(parseByteArrayField(message.getDataLength().getValue()));

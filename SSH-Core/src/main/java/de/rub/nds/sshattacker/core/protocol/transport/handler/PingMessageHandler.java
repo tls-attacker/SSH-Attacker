@@ -7,12 +7,9 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.handler;
 
+import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.transport.message.PingMessage;
-import de.rub.nds.sshattacker.core.protocol.transport.parser.PingMessageParser;
-import de.rub.nds.sshattacker.core.protocol.transport.preparator.PingMessagePreparator;
-import de.rub.nds.sshattacker.core.protocol.transport.serializer.PingMessageSerializer;
-import de.rub.nds.sshattacker.core.state.SshContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -24,18 +21,18 @@ public class PingMessageHandler extends SshMessageHandler<PingMessage> {
         super(context);
     }
 
-    public PingMessageHandler(SshContext context, PingMessage message) {
+    /*    public PingMessageHandler(SshContext context, PingMessage message) {
         super(context, message);
-    }
+    }*/
 
     @Override
-    public void adjustContext() {
+    public void adjustContext(PingMessage message) {
         LOGGER.debug(
                 "PingMessage received from remote, data to respond length: {}",
                 message.getDataLength().getValue());
     }
 
-    @Override
+    /*    @Override
     public PingMessageParser getParser(byte[] array) {
         return new PingMessageParser(array);
     }
@@ -53,5 +50,5 @@ public class PingMessageHandler extends SshMessageHandler<PingMessage> {
     @Override
     public PingMessageSerializer getSerializer() {
         return new PingMessageSerializer(message);
-    }
+    }*/
 }

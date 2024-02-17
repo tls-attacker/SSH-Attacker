@@ -44,20 +44,20 @@ public class HybridKeyExchangeInitMessagePreperator
         agreement.generateLocalKeyPair();
         encapsulation.generateLocalKeyPair();
 
-        byte[] pubKencapsulation = encapsulation.getLocalKeyPair().getPublic().getEncoded();
+        byte[] pubKencapsulation = encapsulation.getLocalKeyPair().getPublicKey().getEncoded();
         LOGGER.info(
                 "PubKey Encapsulation = " + ArrayConverter.bytesToRawHexString(pubKencapsulation));
         LOGGER.info(
                 "PrivKey Encpasulation = "
                         + ArrayConverter.bytesToRawHexString(
-                                encapsulation.getLocalKeyPair().getPrivate().getEncoded()));
+                                encapsulation.getLocalKeyPair().getPrivateKey().getEncoded()));
 
-        byte[] pubKagreement = agreement.getLocalKeyPair().getPublic().getEncoded();
+        byte[] pubKagreement = agreement.getLocalKeyPair().getPublicKey().getEncoded();
         LOGGER.info("PubKey Agreement = " + ArrayConverter.bytesToRawHexString(pubKagreement));
         LOGGER.info(
                 "PrivKey Agreement = "
                         + ArrayConverter.bytesToRawHexString(
-                                agreement.getLocalKeyPair().getPrivate().getEncoded()));
+                                agreement.getLocalKeyPair().getPrivateKey().getEncoded()));
         ExchangeHashInputHolder inputHolder =
                 chooser.getContext().getSshContext().getExchangeHashInputHolder();
         switch (combiner) {

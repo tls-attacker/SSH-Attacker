@@ -442,6 +442,10 @@ public class Config implements Serializable {
     private List<FilterType> outputFilters;
     /** The path to save the workflow trace as output */
     private String workflowOutput = null;
+
+    /** Defines the type of WorkflowExecutor to use when executing the workflow. */
+    private WorkflowExecutorType workflowExecutorType = WorkflowExecutorType.DEFAULT;
+
     /**
      * Defines if the output filters should be applied on the workflowTrace or on a fresh workflow
      * trace copy.
@@ -466,7 +470,6 @@ public class Config implements Serializable {
      * Setting this to true results in the client transport handlers trying to acquire a new port on
      * each connection attempt. Default behavior true so that reused ports are not an issue.
      */
-    private Boolean resetClientSourcePort = true;
     /**
      * Setting this to true results in multiple attempts to initialize a connection to the server
      * when a ClientTcpTransportHandler is used.
@@ -2193,10 +2196,6 @@ public class Config implements Serializable {
 
     public void setResetWorkflowtracesBeforeSaving(Boolean resetWorkflowtracesBeforeSaving) {
         this.resetWorkflowtracesBeforeSaving = resetWorkflowtracesBeforeSaving;
-    }
-
-    public void setResetClientSourcePort(Boolean resetClientSourcePort) {
-        this.resetClientSourcePort = resetClientSourcePort;
     }
 
     public void setRetryFailedClientTcpSocketInitialization(

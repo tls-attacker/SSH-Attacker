@@ -25,7 +25,7 @@ public class ServerSigAlgsExtensionPreparator
     @Override
     protected void prepareExtensionSpecificContents() {
         // sending server-sig-algs extension is not allowed when acting as client
-        if (chooser.getContext().isClient()) {
+        if (chooser.getContext().getSshContext().isClient()) {
             LOGGER.warn(
                     "Client prepared ServerSigAlgsExtension which is supposed to be sent by the server only!");
         } else {

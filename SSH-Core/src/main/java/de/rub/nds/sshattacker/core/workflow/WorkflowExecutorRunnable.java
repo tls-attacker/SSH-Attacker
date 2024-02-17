@@ -76,12 +76,12 @@ public class WorkflowExecutorRunnable implements Runnable {
         serverCon.setPort(socket.getLocalPort());
         ServerTcpTransportHandler th;
         try {
-            th = new ServerTcpTransportHandler(connection, socket);
+            th = new ServerTcpTransportHandler(serverCon, socket);
         } catch (IOException ex) {
             LOGGER.error("Could not prepare TransportHandler for {}: {}", socket, ex);
             LOGGER.error("Aborting workflow trace execution on {}", socket);
             return;
         }
-        context.setTransportHandler(th);
+        serverCtx.setTransportHandler(th);
     }
 }

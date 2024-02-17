@@ -10,9 +10,13 @@ package de.rub.nds.sshattacker.core.protocol.transport.message;
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
+import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.handler.PingMessageHandler;
-import de.rub.nds.sshattacker.core.state.SshContext;
+import de.rub.nds.sshattacker.core.protocol.transport.parser.PingMessageParser;
+import de.rub.nds.sshattacker.core.protocol.transport.preparator.PingMessagePreparator;
+import de.rub.nds.sshattacker.core.protocol.transport.serializer.PingMessageSerializer;
+import java.io.InputStream;
 
 public class PingMessage extends SshMessage<PingMessage> {
 
@@ -59,6 +63,21 @@ public class PingMessage extends SshMessage<PingMessage> {
 
     @Override
     public PingMessageHandler getHandler(SshContext context) {
-        return new PingMessageHandler(context, this);
+        return new PingMessageHandler(context);
+    }
+
+    @Override
+    public PingMessageParser getParser(SshContext context, InputStream stream) {
+        return new PingMessageParser(stream);
+    }
+
+    @Override
+    public PingMessagePreparator getPreparator(SshContext context) {
+        return new PingMessagePreparator(context.getChooser(), this);
+    }
+
+    @Override
+    public PingMessageSerializer getSerializer(SshContext context) {
+        return new PingMessageSerializer(this);
     }
 }

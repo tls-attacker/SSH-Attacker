@@ -7,11 +7,11 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.handler.extension;
 
+import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.protocol.transport.message.extension.PingExtension;
 import de.rub.nds.sshattacker.core.protocol.transport.parser.extension.PingExtensionParser;
 import de.rub.nds.sshattacker.core.protocol.transport.preparator.extension.PingExtensionPreparator;
 import de.rub.nds.sshattacker.core.protocol.transport.serializer.extension.PingExtensionSerializer;
-import de.rub.nds.sshattacker.core.state.SshContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

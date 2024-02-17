@@ -7,12 +7,9 @@
  */
 package de.rub.nds.sshattacker.core.protocol.transport.handler;
 
+import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.transport.message.ExtensionInfoMessage;
-import de.rub.nds.sshattacker.core.protocol.transport.parser.ExtensionInfoMessageParser;
-import de.rub.nds.sshattacker.core.protocol.transport.preparator.ExtensionInfoMessagePreparator;
-import de.rub.nds.sshattacker.core.protocol.transport.serializer.ExtensionInfoMessageSerializer;
-import de.rub.nds.sshattacker.core.state.SshContext;
 
 public class ExtensionInfoMessageHandler extends SshMessageHandler<ExtensionInfoMessage> {
 
@@ -20,21 +17,22 @@ public class ExtensionInfoMessageHandler extends SshMessageHandler<ExtensionInfo
         super(context);
     }
 
-    public ExtensionInfoMessageHandler(SshContext context, ExtensionInfoMessage message) {
+    /*public ExtensionInfoMessageHandler(SshContext context, ExtensionInfoMessage message) {
         super(context, message);
-    }
+    }*/
 
     @Override
-    public void adjustContext() {
-        if (context.isHandleAsClient()) {
-            context.setServerSupportedExtensions(message.getExtensions());
+    public void adjustContext(ExtensionInfoMessage message) {
+        if (sshContext.isHandleAsClient()) {
+            sshContext.setServerSupportedExtensions(message.getExtensions());
         } else {
-            context.setClientSupportedExtensions(message.getExtensions());
+            sshContext.setClientSupportedExtensions(message.getExtensions());
         }
-        message.getExtensions().forEach(extension -> extension.getHandler(context).adjustContext());
+        message.getExtensions()
+                .forEach(extension -> extension.getHandler(sshContext).adjustContext());
     }
 
-    @Override
+    /*    @Override
     public ExtensionInfoMessageParser getParser(byte[] array) {
         return new ExtensionInfoMessageParser(array);
     }
@@ -52,5 +50,5 @@ public class ExtensionInfoMessageHandler extends SshMessageHandler<ExtensionInfo
     @Override
     public ExtensionInfoMessageSerializer getSerializer() {
         return new ExtensionInfoMessageSerializer(message);
-    }
+    }*/
 }

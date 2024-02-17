@@ -62,7 +62,7 @@ public class HybridKeyExchangeReplyMessagePreparator
 
         ExchangeHashInputHolder inputHolder =
                 chooser.getContext().getSshContext().getExchangeHashInputHolder();
-        byte[] agreementBytes = agreement.getLocalKeyPair().getPublic().getEncoded();
+        byte[] agreementBytes = agreement.getLocalKeyPair().getPublicKey().getEncoded();
         byte[] encapsulationBytes = encapsulation.getEncryptedSharedSecret();
         getObject().setPublicKey(agreementBytes, true);
         getObject().setCiphertext(encapsulationBytes, true);

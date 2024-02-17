@@ -118,7 +118,7 @@ public abstract class PacketCipher {
     }
 
     public Boolean isEncryptThenMac() {
-        return macAlgorithm != null && macAlgorithm.isEncryptThenMacAlgorithm();
+        return macAlgorithm != null && macAlgorithm.isEncryptThenMac();
     }
 
     protected ConnectionEndType getLocalConnectionEndType() {

@@ -23,6 +23,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -543,7 +544,9 @@ public class DefaultChooser extends Chooser {
      * @return List of client supported extensions
      */
     public List<AbstractExtension<?>> getClientSupportedExtensions() {
-        return context.getClientSupportedExtensions().orElse(config.getClientSupportedExtensions());
+        return context.getSshContext()
+                .getClientSupportedExtensions()
+                .orElse(config.getClientSupportedExtensions());
     }
 
     /**
@@ -554,7 +557,9 @@ public class DefaultChooser extends Chooser {
      * @return List of server supported extensions
      */
     public List<AbstractExtension<?>> getServerSupportedExtensions() {
-        return context.getServerSupportedExtensions().orElse(config.getServerSupportedExtensions());
+        return context.getSshContext()
+                .getServerSupportedExtensions()
+                .orElse(config.getServerSupportedExtensions());
     }
 
     /**
@@ -566,7 +571,8 @@ public class DefaultChooser extends Chooser {
      * @return List of server supported public key algorithms for authentication
      */
     public List<PublicKeyAlgorithm> getServerSupportedPublicKeyAlgorithmsForAuthentication() {
-        return context.getServerSupportedPublicKeyAlgorithmsForAuthentication()
+        return context.getSshContext()
+                .getServerSupportedPublicKeyAlgorithmsForAuthentication()
                 .orElse(config.getServerSupportedPublicKeyAlgorithmsForAuthentication());
     }
 
@@ -586,7 +592,7 @@ public class DefaultChooser extends Chooser {
         // server-sig-algs extension is disabled or no server-sig-algs extension received yet ?
         // -> use first user key(SSH_RSA)
         if (!config.getRespectServerSigAlgsExtension()
-                || !context.getServerSigAlgsExtensionReceivedFromServer()) {
+                || !context.getSshContext().getServerSigAlgsExtensionReceivedFromServer()) {
             return config.getUserKeys().get(0);
         }
 
@@ -602,7 +608,8 @@ public class DefaultChooser extends Chooser {
         // get server supported public key algorithms
         // no server-sig-algs extension received? -> SSH_RSA
         List<PublicKeyAlgorithm> serverSupportedPublicKeyAlgorithms =
-                context.getServerSupportedPublicKeyAlgorithmsForAuthentication()
+                context.getSshContext()
+                        .getServerSupportedPublicKeyAlgorithmsForAuthentication()
                         .orElse(List.of(PublicKeyAlgorithm.SSH_RSA));
 
         // determine common public key algorithm to use for client authentication
@@ -633,7 +640,8 @@ public class DefaultChooser extends Chooser {
      * @return List of client supported compression methods
      */
     public List<CompressionMethod> getClientSupportedDelayCompressionMethods() {
-        return context.getClientSupportedDelayCompressionMethods()
+        return context.getSshContext()
+                .getClientSupportedDelayCompressionMethods()
                 .orElse(config.getClientSupportedDelayCompressionMethods());
     }
 
@@ -646,7 +654,8 @@ public class DefaultChooser extends Chooser {
      * @return List of server supported compression methods
      */
     public List<CompressionMethod> getServerSupportedDelayCompressionMethods() {
-        return context.getServerSupportedDelayCompressionMethods()
+        return context.getSshContext()
+                .getServerSupportedDelayCompressionMethods()
                 .orElse(config.getServerSupportedDelayCompressionMethods());
     }
     // endregion

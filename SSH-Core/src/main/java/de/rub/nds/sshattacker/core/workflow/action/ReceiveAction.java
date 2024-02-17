@@ -11,6 +11,7 @@ import de.rub.nds.modifiablevariable.HoldsModifiableVariable;
 import de.rub.nds.sshattacker.core.connection.AliasedConnection;
 import de.rub.nds.sshattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.sshattacker.core.layer.context.SshContext;
+import de.rub.nds.sshattacker.core.packet.AbstractPacket;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.*;
 import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessage;
 import de.rub.nds.sshattacker.core.protocol.connection.message.*;
@@ -194,6 +195,8 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
      * been set.
      */
     @XmlElement protected Boolean failOnUnexpectedDebugMessages = null;
+
+    protected List<AbstractPacket> receivedPackets = new ArrayList<>();
 
     public ReceiveAction() {
         super(AliasedConnection.DEFAULT_CONNECTION_ALIAS);
@@ -413,11 +416,6 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
     @SuppressWarnings("SuspiciousGetterSetter")
     void setReceivedMessages(List<ProtocolMessage<?>> receivedMessages) {
         messages = receivedMessages;
-    }
-
-    @Override
-    public List<AbstractPacket> getReceivedPackets() {
-        return receivedPackets;
     }
 
     public void setReceivedPackets(List<AbstractPacket> packetList) {

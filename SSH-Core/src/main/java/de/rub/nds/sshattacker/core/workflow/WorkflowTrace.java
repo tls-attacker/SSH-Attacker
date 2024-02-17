@@ -91,7 +91,7 @@ public class WorkflowTrace implements Serializable {
                 @XmlElement(
                         type = SendBleichenbacherOracleReply.class,
                         name = "SendBleichenbacherOracle"),
-                @XmlElement(type = GenericReceiveAction.class, name = "GenericReceive")
+                @XmlElement(type = GenericReceiveAction.class, name = "GenericReceive"),
                 @XmlElement(
                         type = DynamicExtensionNegotiationAction.class,
                         name = "DynamicExtensionNegotiation"),

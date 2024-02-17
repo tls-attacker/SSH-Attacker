@@ -73,6 +73,20 @@ public class KeyExchangeInitMessageHandler extends SshMessageHandler<KeyExchange
                                     .split("" + CharConstants.ALGORITHM_SEPARATOR)));
             sshContext.setServerReserved(message.getReserved().getValue());
 
+            sshContext.setServerSupportsExtensionNegotiation(
+                    checkServerSupportForExtensionNegotiation());
+            sshContext.setStrictKeyExchangeEnabled(
+                    containsKeyExchangeAlgorithm(
+                                    KeyExchangeAlgorithm.KEX_STRICT_S_V00_OPENSSH_COM,
+                                    sshContext
+                                            .getServerSupportedKeyExchangeAlgorithms()
+                                            .orElse(List.of()))
+                            && containsKeyExchangeAlgorithm(
+                                    KeyExchangeAlgorithm.KEX_STRICT_C_V00_OPENSSH_COM,
+                                    sshContext
+                                            .getConfig()
+                                            .getClientSupportedKeyExchangeAlgorithms()));
+
             // sshContext.getExchangeHashInputHolder().setClientKeyExchangeInit(message);
         } else {
             sshContext.setClientCookie(message.getCookie().getValue());
@@ -174,16 +188,6 @@ public class KeyExchangeInitMessageHandler extends SshMessageHandler<KeyExchange
             sshContext.setServerReserved(message.getReserved().getValue());
 
             sshContext.getExchangeHashInputHolder().setServerKeyExchangeInit(message);
-            sshContext.setServerSupportsExtensionNegotiation(
-                    checkServerSupportForExtensionNegotiation());
-            sshContext.setStrictKeyExchangeEnabled(
-                    containsKeyExchangeAlgorithm(
-                            KeyExchangeAlgorithm.KEX_STRICT_S_V00_OPENSSH_COM,
-                            context.getServerSupportedKeyExchangeAlgorithms()
-                                    .orElse(List.of()))
-                            && containsKeyExchangeAlgorithm(
-                            KeyExchangeAlgorithm.KEX_STRICT_C_V00_OPENSSH_COM,
-                            context.getConfig().getClientSupportedKeyExchangeAlgorithms()));
         } else {
             LOGGER.info("Client_Coookie is: {}", message.getCookie());
 
@@ -233,32 +237,35 @@ public class KeyExchangeInitMessageHandler extends SshMessageHandler<KeyExchange
             sshContext.setClientReserved(message.getReserved().getValue());
 
             sshContext.getExchangeHashInputHolder().setClientKeyExchangeInit(message);
-        }
 
-            context.setClientSupportsExtensionNegotiation(
+            sshContext.setClientSupportsExtensionNegotiation(
                     checkClientSupportForExtensionNegotiation());
-            context.setStrictKeyExchangeEnabled(
+            sshContext.setStrictKeyExchangeEnabled(
                     containsKeyExchangeAlgorithm(
                                     KeyExchangeAlgorithm.KEX_STRICT_C_V00_OPENSSH_COM,
-                                    context.getClientSupportedKeyExchangeAlgorithms()
+                                    sshContext
+                                            .getClientSupportedKeyExchangeAlgorithms()
                                             .orElse(List.of()))
                             && containsKeyExchangeAlgorithm(
                                     KeyExchangeAlgorithm.KEX_STRICT_S_V00_OPENSSH_COM,
-                                    context.getConfig().getServerSupportedKeyExchangeAlgorithms()));
+                                    sshContext
+                                            .getConfig()
+                                            .getServerSupportedKeyExchangeAlgorithms()));
         }
+
         pickAlgorithms();
     }
 
     private boolean checkClientSupportForExtensionNegotiation() {
         return containsKeyExchangeAlgorithm(
                 KeyExchangeAlgorithm.EXT_INFO_C,
-                context.getClientSupportedKeyExchangeAlgorithms().orElse(List.of()));
+                sshContext.getClientSupportedKeyExchangeAlgorithms().orElse(List.of()));
     }
 
     private boolean checkServerSupportForExtensionNegotiation() {
         return containsKeyExchangeAlgorithm(
                 KeyExchangeAlgorithm.EXT_INFO_S,
-                context.getServerSupportedKeyExchangeAlgorithms().orElse(List.of()));
+                sshContext.getServerSupportedKeyExchangeAlgorithms().orElse(List.of()));
     }
 
     private static boolean containsKeyExchangeAlgorithm(

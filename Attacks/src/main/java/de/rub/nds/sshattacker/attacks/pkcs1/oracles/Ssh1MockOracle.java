@@ -94,7 +94,7 @@ public class Ssh1MockOracle extends Pkcs1Oracle {
 
             timeElapsedforAverageCalculation = 0;
         }
-        if (isPlaintextOracle) {
+        if (isPlaintextOracle()) {
             return new boolean[] {true, true};
         } else {
             long start = System.currentTimeMillis();
@@ -158,7 +158,7 @@ public class Ssh1MockOracle extends Pkcs1Oracle {
         }
         long start = System.currentTimeMillis();
 
-        if (isPlaintextOracle) {
+        if (isPlaintextOracle()) {
             return new boolean[] {true, true};
         } else {
             try {

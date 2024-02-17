@@ -290,11 +290,6 @@ public class ForwardMessagesAction extends SshAction implements ReceivingAction,
         return messages;
     }
 
-    @Override
-    public List<AbstractPacket> getReceivedPackets() {
-        return receivedPackets;
-    }
-
     public void setMessages(List<ProtocolMessage<?>> messages) {
         this.messages = messages;
     }

@@ -34,14 +34,15 @@ public class UserAuthSuccessMessageHandler extends SshMessageHandler<UserAuthSuc
     public void adjustContextAfterMessageSent() {
         // Enable delayed compression if negotiated
         activateCompression();
-        if (!context.isClient()
-                && context.delayCompressionExtensionReceived()
-                && context.getConfig().getRespectDelayCompressionExtension()
-                && !context.getDelayCompressionExtensionNegotiationFailed()
-                && context.getSelectedDelayCompressionMethod().isPresent()) {
-            context.getPacketLayer()
+        if (!sshContext.isClient()
+                && sshContext.delayCompressionExtensionReceived()
+                && sshContext.getConfig().getRespectDelayCompressionExtension()
+                && !sshContext.getDelayCompressionExtensionNegotiationFailed()
+                && sshContext.getSelectedDelayCompressionMethod().isPresent()) {
+            sshContext
+                    .getPacketLayer()
                     .updateCompressionAlgorithm(
-                            context.getSelectedDelayCompressionMethod().get().getAlgorithm());
+                            sshContext.getSelectedDelayCompressionMethod().get().getAlgorithm());
         }
     }
 
@@ -61,14 +62,15 @@ public class UserAuthSuccessMessageHandler extends SshMessageHandler<UserAuthSuc
         }
         // receiving UserAuthSuccessMessage when acting as client
         // --> set new compression algorithm from delay-compression extension
-        if (context.isHandleAsClient()
-                && context.getConfig().getRespectDelayCompressionExtension()
-                && context.delayCompressionExtensionReceived()
-                && !context.getDelayCompressionExtensionNegotiationFailed()
-                && context.getSelectedDelayCompressionMethod().isPresent()) {
-            context.getPacketLayer()
+        if (sshContext.isHandleAsClient()
+                && sshContext.getConfig().getRespectDelayCompressionExtension()
+                && sshContext.delayCompressionExtensionReceived()
+                && !sshContext.getDelayCompressionExtensionNegotiationFailed()
+                && sshContext.getSelectedDelayCompressionMethod().isPresent()) {
+            sshContext
+                    .getPacketLayer()
                     .updateDecompressionAlgorithm(
-                            context.getSelectedDelayCompressionMethod().get().getAlgorithm());
+                            sshContext.getSelectedDelayCompressionMethod().get().getAlgorithm());
         }
         // receiving UserAuthSuccessMessage when acting as server
         else {
