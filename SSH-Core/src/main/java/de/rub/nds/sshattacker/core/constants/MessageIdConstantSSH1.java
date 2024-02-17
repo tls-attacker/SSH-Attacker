@@ -106,7 +106,7 @@ public enum MessageIdConstantSSH1 {
             LOGGER.warn("Unknonw Message-ID: {}", id);
             throw new ParserException("Unable to parse message with unknown id");
         }
-        if (id >= (byte) 30 && id <= (byte) 49) {
+        /*if (id >= (byte) 30 && id <= (byte) 49) {
             KeyExchangeAlgorithm kexInContext = context.getChooser().getKeyExchangeAlgorithm();
             for (MessageIdConstantSSH1 candidate : idList) {
                 if (Arrays.asList(candidate.specificTo).contains(kexInContext.getFlowType())) {
@@ -129,7 +129,7 @@ public enum MessageIdConstantSSH1 {
             }
             throw new ParserException(
                     "Unable to parse user authentication specific message in the current context");
-        }
+        }*/
         return idList.get(0);
     }
 }
