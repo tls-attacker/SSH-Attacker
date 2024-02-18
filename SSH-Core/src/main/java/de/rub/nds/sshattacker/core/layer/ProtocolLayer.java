@@ -15,7 +15,6 @@ import de.rub.nds.sshattacker.core.layer.data.DataContainer;
 import de.rub.nds.sshattacker.core.layer.data.Handler;
 import de.rub.nds.sshattacker.core.layer.data.Parser;
 import de.rub.nds.sshattacker.core.layer.data.Preparator;
-import de.rub.nds.sshattacker.core.layer.hints.LayerProcessingHint;
 import de.rub.nds.sshattacker.core.layer.stream.HintedInputStream;
 import java.io.IOException;
 import java.util.LinkedList;
@@ -28,17 +27,15 @@ import org.apache.logging.log4j.Logger;
  * itself. It can send messages using the layer below and forward received messages to the layer
  * above.
  *
- * @param <HintT> Some layers need a hint which message they should send or receive.
  * @param <ContainerT> The kind of messages/Containers this layer is able to send and receive.
  */
-public abstract class ProtocolLayer<
-        HintT extends LayerProcessingHint, ContainerT extends DataContainer> {
+public abstract class ProtocolLayer<ContainerT extends DataContainer> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private ProtocolLayer<HintT, ContainerT> higherLayer = null;
+    private ProtocolLayer<ContainerT> higherLayer = null;
 
-    private ProtocolLayer<HintT, ContainerT> lowerLayer = null;
+    private ProtocolLayer<ContainerT> lowerLayer = null;
 
     private LayerConfiguration<ContainerT> layerConfiguration;
 
@@ -147,11 +144,10 @@ public abstract class ProtocolLayer<
      * calling layer) is produced, the data is instead cached in the next inputstream. It may be
      * that the current input stream is null when this method is called.
      *
-     * @param hint This hint from the calling layer specifies which data its wants to read.
      * @throws IOException Some layers might produce IOExceptions when sending or receiving data
      *     over sockets etc.
      */
-    public abstract void receiveMoreDataForHint(LayerProcessingHint hint) throws IOException;
+    public abstract void receiveMoreData() throws IOException;
 
     /**
      * Returns a datastream from which currently should be read
@@ -162,7 +158,7 @@ public abstract class ProtocolLayer<
      */
     public HintedInputStream getDataStream() throws IOException {
         if (currentInputStream == null) {
-            receiveMoreDataForHint(null);
+            receiveMoreData();
             if (currentInputStream == null) {
                 throw new EndOfStreamException(
                         "Could not receive data stream from lower layer, nothing more to receive");
@@ -177,11 +173,8 @@ public abstract class ProtocolLayer<
                 return currentInputStream;
             } else {
                 LOGGER.debug("Trying to get datastream while no data is available");
-                // this.receiveMoreDataForHint(null);
-                // <--- Testing -->
-                throw new EndOfStreamException(
-                        "The original data stream does not produce any more data and there is no next datastream -> returning now");
-                // return currentInputStream;
+                receiveMoreData();
+                return currentInputStream;
             }
         }
     }

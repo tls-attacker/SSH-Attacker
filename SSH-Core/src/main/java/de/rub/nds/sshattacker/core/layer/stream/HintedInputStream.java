@@ -10,7 +10,6 @@ package de.rub.nds.sshattacker.core.layer.stream;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.exceptions.EndOfStreamException;
 import de.rub.nds.sshattacker.core.exceptions.ParserException;
-import de.rub.nds.sshattacker.core.layer.hints.LayerProcessingHint;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -20,15 +19,7 @@ import java.io.InputStream;
  */
 public abstract class HintedInputStream extends InputStream {
 
-    private LayerProcessingHint hint;
-
-    public HintedInputStream(LayerProcessingHint hint) {
-        this.hint = hint;
-    }
-
-    public LayerProcessingHint getHint() {
-        return hint;
-    }
+    public HintedInputStream() {}
 
     public byte readByte() throws IOException {
         return (byte) read();
@@ -62,8 +53,4 @@ public abstract class HintedInputStream extends InputStream {
     protected abstract InputStream getDataSource();
 
     public abstract void extendStream(byte[] bytes);
-
-    public void setHint(LayerProcessingHint hint) {
-        this.hint = hint;
-    }
 }

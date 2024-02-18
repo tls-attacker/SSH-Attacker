@@ -8,7 +8,6 @@
 package de.rub.nds.sshattacker.core.layer.stream;
 
 import de.rub.nds.sshattacker.core.layer.ProtocolLayer;
-import de.rub.nds.sshattacker.core.layer.hints.LayerProcessingHint;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -20,12 +19,12 @@ import java.io.InputStream;
  */
 public class HintedLayerInputStream extends HintedInputStream {
 
-    private final ProtocolLayer<?, ?> layer;
+    private final ProtocolLayer<?> layer;
 
     private ByteArrayInputStream stream = new ByteArrayInputStream(new byte[0]);
 
-    public HintedLayerInputStream(LayerProcessingHint hint, ProtocolLayer<?, ?> layer) {
-        super(hint);
+    public HintedLayerInputStream(ProtocolLayer<?> layer) {
+        super();
         this.layer = layer;
     }
 
@@ -38,7 +37,7 @@ public class HintedLayerInputStream extends HintedInputStream {
         if (stream.available() > 0) {
             return stream.read();
         } else {
-            layer.receiveMoreDataForHint(getHint());
+            layer.receiveMoreData();
             // either the stream is now filled, or we ran into a timeout
             // or the next stream is available
             return stream.read();

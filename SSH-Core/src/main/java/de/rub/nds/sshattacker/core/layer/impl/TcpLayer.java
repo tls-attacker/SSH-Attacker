@@ -15,7 +15,6 @@ import de.rub.nds.sshattacker.core.layer.ProtocolLayer;
 import de.rub.nds.sshattacker.core.layer.constant.ImplementedLayers;
 import de.rub.nds.sshattacker.core.layer.context.TcpContext;
 import de.rub.nds.sshattacker.core.layer.data.DataContainer;
-import de.rub.nds.sshattacker.core.layer.hints.LayerProcessingHint;
 import de.rub.nds.sshattacker.core.layer.stream.HintedInputStream;
 import de.rub.nds.sshattacker.core.layer.stream.HintedInputStreamAdapterStream;
 import de.rub.nds.tlsattacker.transport.tcp.TcpTransportHandler;
@@ -28,7 +27,7 @@ import org.apache.logging.log4j.Logger;
  * The TCP layer is a wrapper around an underlying TCP socket. It forwards the sockets InputStream
  * for reading and sends any data over the TCP socket without modifications.
  */
-public class TcpLayer extends ProtocolLayer<LayerProcessingHint, DataContainer> {
+public class TcpLayer extends ProtocolLayer<DataContainer> {
 
     private static Logger LOGGER = LogManager.getLogger();
 
@@ -59,7 +58,7 @@ public class TcpLayer extends ProtocolLayer<LayerProcessingHint, DataContainer> 
     }
 
     @Override
-    public void receiveMoreDataForHint(LayerProcessingHint hint) throws IOException {
+    public void receiveMoreData() throws IOException {
         // There is nothing we can do here to fill up our stream, either there is data in it
         // or not
     }
@@ -78,15 +77,13 @@ public class TcpLayer extends ProtocolLayer<LayerProcessingHint, DataContainer> 
             } while (readByte.length > 0 && readByte[0] != CharConstants.NEWLINE);
 
             currentInputStream =
-                    new HintedInputStreamAdapterStream(
-                            null, new ByteArrayInputStream(receiveBuffer));
+                    new HintedInputStreamAdapterStream(new ByteArrayInputStream(receiveBuffer));
             return currentInputStream;
 
         } else {
 
             currentInputStream =
-                    new HintedInputStreamAdapterStream(
-                            null, getTransportHandler().getInputStream());
+                    new HintedInputStreamAdapterStream(getTransportHandler().getInputStream());
             return currentInputStream;
         }
     }

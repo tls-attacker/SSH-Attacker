@@ -7,7 +7,6 @@
  */
 package de.rub.nds.sshattacker.core.layer.stream;
 
-import de.rub.nds.sshattacker.core.layer.hints.LayerProcessingHint;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -19,8 +18,8 @@ public class HintedInputStreamAdapterStream extends HintedInputStream {
 
     private InputStream stream;
 
-    public HintedInputStreamAdapterStream(LayerProcessingHint hint, InputStream stream) {
-        super(hint);
+    public HintedInputStreamAdapterStream(InputStream stream) {
+        super();
         this.stream = stream;
     }
 

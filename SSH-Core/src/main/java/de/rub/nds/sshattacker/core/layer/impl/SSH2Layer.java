@@ -15,7 +15,6 @@ import de.rub.nds.sshattacker.core.layer.LayerProcessingResult;
 import de.rub.nds.sshattacker.core.layer.ProtocolLayer;
 import de.rub.nds.sshattacker.core.layer.constant.ImplementedLayers;
 import de.rub.nds.sshattacker.core.layer.context.SshContext;
-import de.rub.nds.sshattacker.core.layer.hints.LayerProcessingHint;
 import de.rub.nds.sshattacker.core.layer.stream.HintedInputStream;
 import de.rub.nds.sshattacker.core.layer.stream.HintedInputStreamAdapterStream;
 import de.rub.nds.sshattacker.core.layer.stream.HintedLayerInputStream;
@@ -38,7 +37,7 @@ import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class SSH2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessage> {
+public class SSH2Layer extends ProtocolLayer<ProtocolMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
     private SshContext context;
@@ -106,7 +105,6 @@ public class SSH2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
                     LOGGER.warn("The lower layer did not produce a data stream: ", e);
                     return getLayerResult();
                 }
-                LayerProcessingHint tempHint = dataStream.getHint();
 
                 byte[] streamContent;
                 try {
@@ -411,7 +409,7 @@ public class SSH2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
         HintedInputStream temp_stream;
         inputStream =
                 new HintedInputStreamAdapterStream(
-                        null, new ByteArrayInputStream(packet.getPayload().getValue()));
+                        new ByteArrayInputStream(packet.getPayload().getValue()));
         UserAuthUnknownMessageParser parser = new UserAuthUnknownMessageParser(inputStream);
         parser.parse(userAuthUnknownMessage);
         String methodString = userAuthUnknownMessage.getMethodName().getValue();
@@ -431,7 +429,6 @@ public class SSH2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
                 UserAuthNoneMessage userAuthNoneMessage = new UserAuthNoneMessage();
                 temp_stream =
                         new HintedInputStreamAdapterStream(
-                                null,
                                 new ByteArrayInputStream(
                                         userAuthUnknownMessage
                                                 .getCompleteResultingMessage()
@@ -444,7 +441,6 @@ public class SSH2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
                 UserAuthPasswordMessage userAuthPasswordMessage = new UserAuthPasswordMessage();
                 temp_stream =
                         new HintedInputStreamAdapterStream(
-                                null,
                                 new ByteArrayInputStream(
                                         userAuthUnknownMessage
                                                 .getCompleteResultingMessage()
@@ -458,7 +454,6 @@ public class SSH2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
                 UserAuthPubkeyMessage userAuthPubkeyMessage = new UserAuthPubkeyMessage();
                 temp_stream =
                         new HintedInputStreamAdapterStream(
-                                null,
                                 new ByteArrayInputStream(
                                         userAuthUnknownMessage
                                                 .getCompleteResultingMessage()
@@ -471,7 +466,6 @@ public class SSH2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
                 UserAuthHostbasedMessage userAuthHostbasedMessage = new UserAuthHostbasedMessage();
                 temp_stream =
                         new HintedInputStreamAdapterStream(
-                                null,
                                 new ByteArrayInputStream(
                                         userAuthUnknownMessage
                                                 .getCompleteResultingMessage()
@@ -484,7 +478,6 @@ public class SSH2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
                         new UserAuthKeyboardInteractiveMessage();
                 temp_stream =
                         new HintedInputStreamAdapterStream(
-                                null,
                                 new ByteArrayInputStream(
                                         userAuthUnknownMessage
                                                 .getCompleteResultingMessage()
@@ -509,7 +502,7 @@ public class SSH2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
 
         inputStream =
                 new HintedInputStreamAdapterStream(
-                        null, new ByteArrayInputStream(packet.getPayload().getValue()));
+                        new ByteArrayInputStream(packet.getPayload().getValue()));
 
         ChannelRequestUnknownMessageParser parser =
                 new ChannelRequestUnknownMessageParser(inputStream);
@@ -531,7 +524,6 @@ public class SSH2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
                 ChannelRequestPtyMessage channelRequestPtyMessage = new ChannelRequestPtyMessage();
                 temp_stream =
                         new HintedInputStreamAdapterStream(
-                                null,
                                 new ByteArrayInputStream(
                                         channelRequestUnknownMessage
                                                 .getCompleteResultingMessage()
@@ -544,7 +536,6 @@ public class SSH2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
                 ChannelRequestX11Message channelRequestX11Message = new ChannelRequestX11Message();
                 temp_stream =
                         new HintedInputStreamAdapterStream(
-                                null,
                                 new ByteArrayInputStream(
                                         channelRequestUnknownMessage
                                                 .getCompleteResultingMessage()
@@ -558,7 +549,6 @@ public class SSH2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
                 ChannelRequestEnvMessage channelRequestEnvMessage = new ChannelRequestEnvMessage();
                 temp_stream =
                         new HintedInputStreamAdapterStream(
-                                null,
                                 new ByteArrayInputStream(
                                         channelRequestUnknownMessage
                                                 .getCompleteResultingMessage()
@@ -572,7 +562,6 @@ public class SSH2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
                         new ChannelRequestShellMessage();
                 temp_stream =
                         new HintedInputStreamAdapterStream(
-                                null,
                                 new ByteArrayInputStream(
                                         channelRequestUnknownMessage
                                                 .getCompleteResultingMessage()
@@ -585,7 +574,6 @@ public class SSH2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
                         new ChannelRequestExecMessage();
                 temp_stream =
                         new HintedInputStreamAdapterStream(
-                                null,
                                 new ByteArrayInputStream(
                                         channelRequestUnknownMessage
                                                 .getCompleteResultingMessage()
@@ -598,7 +586,6 @@ public class SSH2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
                         new ChannelRequestSubsystemMessage();
                 temp_stream =
                         new HintedInputStreamAdapterStream(
-                                null,
                                 new ByteArrayInputStream(
                                         channelRequestUnknownMessage
                                                 .getCompleteResultingMessage()
@@ -611,7 +598,6 @@ public class SSH2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
                         new ChannelRequestWindowChangeMessage();
                 temp_stream =
                         new HintedInputStreamAdapterStream(
-                                null,
                                 new ByteArrayInputStream(
                                         channelRequestUnknownMessage
                                                 .getCompleteResultingMessage()
@@ -623,7 +609,6 @@ public class SSH2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
                         new ChannelRequestXonXoffMessage();
                 temp_stream =
                         new HintedInputStreamAdapterStream(
-                                null,
                                 new ByteArrayInputStream(
                                         channelRequestUnknownMessage
                                                 .getCompleteResultingMessage()
@@ -635,7 +620,6 @@ public class SSH2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
                         new ChannelRequestSignalMessage();
                 temp_stream =
                         new HintedInputStreamAdapterStream(
-                                null,
                                 new ByteArrayInputStream(
                                         channelRequestUnknownMessage
                                                 .getCompleteResultingMessage()
@@ -647,7 +631,6 @@ public class SSH2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
                         new ChannelRequestExitStatusMessage();
                 temp_stream =
                         new HintedInputStreamAdapterStream(
-                                null,
                                 new ByteArrayInputStream(
                                         channelRequestUnknownMessage
                                                 .getCompleteResultingMessage()
@@ -659,7 +642,6 @@ public class SSH2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
                         new ChannelRequestExitSignalMessage();
                 temp_stream =
                         new HintedInputStreamAdapterStream(
-                                null,
                                 new ByteArrayInputStream(
                                         channelRequestUnknownMessage
                                                 .getCompleteResultingMessage()
@@ -671,7 +653,6 @@ public class SSH2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
                         new ChannelRequestAuthAgentMessage();
                 temp_stream =
                         new HintedInputStreamAdapterStream(
-                                null,
                                 new ByteArrayInputStream(
                                         channelRequestUnknownMessage
                                                 .getCompleteResultingMessage()
@@ -694,7 +675,7 @@ public class SSH2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
 
         inputStream =
                 new HintedInputStreamAdapterStream(
-                        null, new ByteArrayInputStream(packet.getPayload().getValue()));
+                        new ByteArrayInputStream(packet.getPayload().getValue()));
 
         GlobalRequestUnknownMessageParser parser =
                 new GlobalRequestUnknownMessageParser(inputStream);
@@ -707,7 +688,6 @@ public class SSH2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
                         new GlobalRequestTcpIpForwardMessage();
                 temp_stream =
                         new HintedInputStreamAdapterStream(
-                                null,
                                 new ByteArrayInputStream(
                                         globalRequestUnknownMessage
                                                 .getCompleteResultingMessage()
@@ -718,7 +698,6 @@ public class SSH2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
                         new GlobalRequestCancelTcpIpForwardMessage();
                 temp_stream =
                         new HintedInputStreamAdapterStream(
-                                null,
                                 new ByteArrayInputStream(
                                         globalRequestUnknownMessage
                                                 .getCompleteResultingMessage()
@@ -729,7 +708,6 @@ public class SSH2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
                         new GlobalRequestNoMoreSessionsMessage();
                 temp_stream =
                         new HintedInputStreamAdapterStream(
-                                null,
                                 new ByteArrayInputStream(
                                         globalRequestUnknownMessage
                                                 .getCompleteResultingMessage()
@@ -740,7 +718,6 @@ public class SSH2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
                         new GlobalRequestOpenSshHostKeysMessage();
                 temp_stream =
                         new HintedInputStreamAdapterStream(
-                                null,
                                 new ByteArrayInputStream(
                                         globalRequestUnknownMessage
                                                 .getCompleteResultingMessage()
@@ -758,7 +735,7 @@ public class SSH2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
 
         temp_stream =
                 new HintedInputStreamAdapterStream(
-                        null, new ByteArrayInputStream(packet.getPayload().getValue()));
+                        new ByteArrayInputStream(packet.getPayload().getValue()));
         readContainerFromStream(message, context, temp_stream);
     }
 
@@ -768,7 +745,7 @@ public class SSH2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
 
         temp_stream =
                 new HintedInputStreamAdapterStream(
-                        null, new ByteArrayInputStream(packet.getPayload().getValue()));
+                        new ByteArrayInputStream(packet.getPayload().getValue()));
         readContainerFromStream(message, context, temp_stream);
     }
 
@@ -778,7 +755,7 @@ public class SSH2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
 
         temp_stream =
                 new HintedInputStreamAdapterStream(
-                        null, new ByteArrayInputStream(packet.getPayload().getValue()));
+                        new ByteArrayInputStream(packet.getPayload().getValue()));
         readContainerFromStream(message, context, temp_stream);
     }
 
@@ -788,7 +765,7 @@ public class SSH2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
 
         temp_stream =
                 new HintedInputStreamAdapterStream(
-                        null, new ByteArrayInputStream(packet.getPayload().getValue()));
+                        new ByteArrayInputStream(packet.getPayload().getValue()));
         readContainerFromStream(message, context, temp_stream);
     }
 
@@ -798,7 +775,7 @@ public class SSH2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
 
         temp_stream =
                 new HintedInputStreamAdapterStream(
-                        null, new ByteArrayInputStream(packet.getPayload().getValue()));
+                        new ByteArrayInputStream(packet.getPayload().getValue()));
         readContainerFromStream(message, context, temp_stream);
     }
 
@@ -808,7 +785,7 @@ public class SSH2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
 
         temp_stream =
                 new HintedInputStreamAdapterStream(
-                        null, new ByteArrayInputStream(packet.getPayload().getValue()));
+                        new ByteArrayInputStream(packet.getPayload().getValue()));
         readContainerFromStream(message, context, temp_stream);
     }
 
@@ -818,7 +795,7 @@ public class SSH2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
 
         temp_stream =
                 new HintedInputStreamAdapterStream(
-                        null, new ByteArrayInputStream(packet.getPayload().getValue()));
+                        new ByteArrayInputStream(packet.getPayload().getValue()));
         readContainerFromStream(message, context, temp_stream);
     }
 
@@ -828,7 +805,7 @@ public class SSH2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
 
         temp_stream =
                 new HintedInputStreamAdapterStream(
-                        null, new ByteArrayInputStream(packet.getPayload().getValue()));
+                        new ByteArrayInputStream(packet.getPayload().getValue()));
         readContainerFromStream(message, context, temp_stream);
     }
 
@@ -838,7 +815,7 @@ public class SSH2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
 
         temp_stream =
                 new HintedInputStreamAdapterStream(
-                        null, new ByteArrayInputStream(packet.getPayload().getValue()));
+                        new ByteArrayInputStream(packet.getPayload().getValue()));
         readContainerFromStream(message, context, temp_stream);
     }
 
@@ -848,7 +825,7 @@ public class SSH2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
 
         temp_stream =
                 new HintedInputStreamAdapterStream(
-                        null, new ByteArrayInputStream(packet.getPayload().getValue()));
+                        new ByteArrayInputStream(packet.getPayload().getValue()));
         readContainerFromStream(message, context, temp_stream);
     }
 
@@ -858,7 +835,7 @@ public class SSH2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
 
         temp_stream =
                 new HintedInputStreamAdapterStream(
-                        null, new ByteArrayInputStream(packet.getPayload().getValue()));
+                        new ByteArrayInputStream(packet.getPayload().getValue()));
         readContainerFromStream(message, context, temp_stream);
     }
 
@@ -868,7 +845,7 @@ public class SSH2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
 
         temp_stream =
                 new HintedInputStreamAdapterStream(
-                        null, new ByteArrayInputStream(packet.getPayload().getValue()));
+                        new ByteArrayInputStream(packet.getPayload().getValue()));
         readContainerFromStream(message, context, temp_stream);
     }
 
@@ -878,7 +855,7 @@ public class SSH2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
 
         temp_stream =
                 new HintedInputStreamAdapterStream(
-                        null, new ByteArrayInputStream(packet.getPayload().getValue()));
+                        new ByteArrayInputStream(packet.getPayload().getValue()));
         readContainerFromStream(message, context, temp_stream);
     }
 
@@ -888,7 +865,7 @@ public class SSH2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
 
         temp_stream =
                 new HintedInputStreamAdapterStream(
-                        null, new ByteArrayInputStream(packet.getPayload().getValue()));
+                        new ByteArrayInputStream(packet.getPayload().getValue()));
         readContainerFromStream(message, context, temp_stream);
     }
 
@@ -898,7 +875,7 @@ public class SSH2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
 
         temp_stream =
                 new HintedInputStreamAdapterStream(
-                        null, new ByteArrayInputStream(packet.getPayload().getValue()));
+                        new ByteArrayInputStream(packet.getPayload().getValue()));
         readContainerFromStream(message, context, temp_stream);
     }
 
@@ -908,7 +885,7 @@ public class SSH2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
 
         temp_stream =
                 new HintedInputStreamAdapterStream(
-                        null, new ByteArrayInputStream(packet.getPayload().getValue()));
+                        new ByteArrayInputStream(packet.getPayload().getValue()));
         readContainerFromStream(message, context, temp_stream);
     }
 
@@ -918,7 +895,7 @@ public class SSH2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
 
         temp_stream =
                 new HintedInputStreamAdapterStream(
-                        null, new ByteArrayInputStream(packet.getPayload().getValue()));
+                        new ByteArrayInputStream(packet.getPayload().getValue()));
         readContainerFromStream(message, context, temp_stream);
     }
 
@@ -928,7 +905,7 @@ public class SSH2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
 
         temp_stream =
                 new HintedInputStreamAdapterStream(
-                        null, new ByteArrayInputStream(packet.getPayload().getValue()));
+                        new ByteArrayInputStream(packet.getPayload().getValue()));
         readContainerFromStream(message, context, temp_stream);
     }
 
@@ -938,7 +915,7 @@ public class SSH2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
 
         temp_stream =
                 new HintedInputStreamAdapterStream(
-                        null, new ByteArrayInputStream(packet.getPayload().getValue()));
+                        new ByteArrayInputStream(packet.getPayload().getValue()));
         readContainerFromStream(message, context, temp_stream);
     }
 
@@ -948,7 +925,7 @@ public class SSH2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
 
         temp_stream =
                 new HintedInputStreamAdapterStream(
-                        null, new ByteArrayInputStream(packet.getPayload().getValue()));
+                        new ByteArrayInputStream(packet.getPayload().getValue()));
         readContainerFromStream(message, context, temp_stream);
     }
 
@@ -958,7 +935,7 @@ public class SSH2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
 
         temp_stream =
                 new HintedInputStreamAdapterStream(
-                        null, new ByteArrayInputStream(packet.getPayload().getValue()));
+                        new ByteArrayInputStream(packet.getPayload().getValue()));
         readContainerFromStream(message, context, temp_stream);
     }
 
@@ -968,7 +945,7 @@ public class SSH2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
 
         temp_stream =
                 new HintedInputStreamAdapterStream(
-                        null, new ByteArrayInputStream(packet.getPayload().getValue()));
+                        new ByteArrayInputStream(packet.getPayload().getValue()));
         readContainerFromStream(message, context, temp_stream);
     }
 
@@ -978,7 +955,7 @@ public class SSH2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
 
         temp_stream =
                 new HintedInputStreamAdapterStream(
-                        null, new ByteArrayInputStream(packet.getPayload().getValue()));
+                        new ByteArrayInputStream(packet.getPayload().getValue()));
         readContainerFromStream(message, context, temp_stream);
     }
 
@@ -988,7 +965,7 @@ public class SSH2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
 
         temp_stream =
                 new HintedInputStreamAdapterStream(
-                        null, new ByteArrayInputStream(packet.getPayload().getValue()));
+                        new ByteArrayInputStream(packet.getPayload().getValue()));
         readContainerFromStream(message, context, temp_stream);
     }
 
@@ -998,7 +975,7 @@ public class SSH2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
 
         temp_stream =
                 new HintedInputStreamAdapterStream(
-                        null, new ByteArrayInputStream(packet.getPayload().getValue()));
+                        new ByteArrayInputStream(packet.getPayload().getValue()));
         readContainerFromStream(message, context, temp_stream);
     }
 
@@ -1008,7 +985,7 @@ public class SSH2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
 
         temp_stream =
                 new HintedInputStreamAdapterStream(
-                        null, new ByteArrayInputStream(packet.getPayload().getValue()));
+                        new ByteArrayInputStream(packet.getPayload().getValue()));
         readContainerFromStream(message, context, temp_stream);
     }
 
@@ -1018,7 +995,7 @@ public class SSH2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
 
         temp_stream =
                 new HintedInputStreamAdapterStream(
-                        null, new ByteArrayInputStream(packet.getPayload().getValue()));
+                        new ByteArrayInputStream(packet.getPayload().getValue()));
         readContainerFromStream(message, context, temp_stream);
     }
 
@@ -1028,7 +1005,7 @@ public class SSH2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
 
         temp_stream =
                 new HintedInputStreamAdapterStream(
-                        null, new ByteArrayInputStream(packet.getPayload().getValue()));
+                        new ByteArrayInputStream(packet.getPayload().getValue()));
         readContainerFromStream(message, context, temp_stream);
     }
 
@@ -1038,7 +1015,7 @@ public class SSH2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
 
         temp_stream =
                 new HintedInputStreamAdapterStream(
-                        null, new ByteArrayInputStream(packet.getPayload().getValue()));
+                        new ByteArrayInputStream(packet.getPayload().getValue()));
         readContainerFromStream(message, context, temp_stream);
     }
 
@@ -1048,7 +1025,7 @@ public class SSH2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
 
         temp_stream =
                 new HintedInputStreamAdapterStream(
-                        null, new ByteArrayInputStream(packet.getPayload().getValue()));
+                        new ByteArrayInputStream(packet.getPayload().getValue()));
         readContainerFromStream(message, context, temp_stream);
     }
 
@@ -1058,7 +1035,7 @@ public class SSH2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
 
         temp_stream =
                 new HintedInputStreamAdapterStream(
-                        null, new ByteArrayInputStream(packet.getPayload().getValue()));
+                        new ByteArrayInputStream(packet.getPayload().getValue()));
         readContainerFromStream(message, context, temp_stream);
     }
 
@@ -1068,7 +1045,7 @@ public class SSH2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
 
         temp_stream =
                 new HintedInputStreamAdapterStream(
-                        null, new ByteArrayInputStream(packet.getPayload().getValue()));
+                        new ByteArrayInputStream(packet.getPayload().getValue()));
         readContainerFromStream(message, context, temp_stream);
     }
 
@@ -1078,7 +1055,7 @@ public class SSH2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
         HintedInputStream temp_stream;
         inputStream =
                 new HintedInputStreamAdapterStream(
-                        null, new ByteArrayInputStream(packet.getPayload().getValue()));
+                        new ByteArrayInputStream(packet.getPayload().getValue()));
         /*        try {
             inputStream = getLowerLayer().getDataStream();
         } catch (IOException e) {
@@ -1095,7 +1072,6 @@ public class SSH2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
                         new ChannelOpenSessionMessage();
                 temp_stream =
                         new HintedInputStreamAdapterStream(
-                                null,
                                 new ByteArrayInputStream(
                                         channelOpenUnknownMessage
                                                 .getCompleteResultingMessage()
@@ -1113,7 +1089,7 @@ public class SSH2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
 
         temp_stream =
                 new HintedInputStreamAdapterStream(
-                        null, new ByteArrayInputStream(packet.getPayload().getValue()));
+                        new ByteArrayInputStream(packet.getPayload().getValue()));
         readContainerFromStream(message, context, temp_stream);
     }
 
@@ -1123,7 +1099,7 @@ public class SSH2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
 
         temp_stream =
                 new HintedInputStreamAdapterStream(
-                        null, new ByteArrayInputStream(packet.getPayload().getValue()));
+                        new ByteArrayInputStream(packet.getPayload().getValue()));
         readContainerFromStream(message, context, temp_stream);
     }
 
@@ -1133,7 +1109,7 @@ public class SSH2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
 
         temp_stream =
                 new HintedInputStreamAdapterStream(
-                        null, new ByteArrayInputStream(packet.getPayload().getValue()));
+                        new ByteArrayInputStream(packet.getPayload().getValue()));
         readContainerFromStream(message, context, temp_stream);
     }
 
@@ -1143,7 +1119,7 @@ public class SSH2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
 
         temp_stream =
                 new HintedInputStreamAdapterStream(
-                        null, new ByteArrayInputStream(packet.getPayload().getValue()));
+                        new ByteArrayInputStream(packet.getPayload().getValue()));
         readContainerFromStream(message, context, temp_stream);
     }
 
@@ -1153,7 +1129,7 @@ public class SSH2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
 
         temp_stream =
                 new HintedInputStreamAdapterStream(
-                        null, new ByteArrayInputStream(packet.getPayload().getValue()));
+                        new ByteArrayInputStream(packet.getPayload().getValue()));
         readContainerFromStream(message, context, temp_stream);
     }
 
@@ -1164,7 +1140,7 @@ public class SSH2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
 
         temp_stream =
                 new HintedInputStreamAdapterStream(
-                        null, new ByteArrayInputStream(packet.getPayload().getValue()));
+                        new ByteArrayInputStream(packet.getPayload().getValue()));
         readContainerFromStream(message, context, temp_stream);
     }
 
@@ -1181,11 +1157,11 @@ public class SSH2Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
     }
 
     @Override
-    public void receiveMoreDataForHint(LayerProcessingHint hint) throws IOException {
+    public void receiveMoreData() throws IOException {
         try {
             HintedInputStream dataStream = null;
             dataStream = getLowerLayer().getDataStream();
-            currentInputStream = new HintedLayerInputStream(null, this);
+            currentInputStream = new HintedLayerInputStream(this);
             currentInputStream.extendStream(dataStream.readAllBytes());
 
         } catch (TimeoutException ex) {

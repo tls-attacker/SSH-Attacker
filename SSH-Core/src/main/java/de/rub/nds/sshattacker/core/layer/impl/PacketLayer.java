@@ -19,8 +19,6 @@ import de.rub.nds.sshattacker.core.layer.constant.ImplementedLayers;
 import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.layer.data.Preparator;
 import de.rub.nds.sshattacker.core.layer.data.Serializer;
-import de.rub.nds.sshattacker.core.layer.hints.LayerProcessingHint;
-import de.rub.nds.sshattacker.core.layer.hints.PacketLayerHint;
 import de.rub.nds.sshattacker.core.layer.stream.HintedLayerInputStream;
 import de.rub.nds.sshattacker.core.packet.AbstractPacket;
 import de.rub.nds.sshattacker.core.packet.BinaryPacket;
@@ -46,7 +44,7 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class PacketLayer extends ProtocolLayer<PacketLayerHint, AbstractPacket> {
+public class PacketLayer extends ProtocolLayer<AbstractPacket> {
 
     private static final Logger LOGGER = LogManager.getLogger();
     private SshContext context;
@@ -138,9 +136,8 @@ public class PacketLayer extends ProtocolLayer<PacketLayerHint, AbstractPacket> 
     }
 
     @Override
-    public void receiveMoreDataForHint(LayerProcessingHint hint) throws IOException {
+    public void receiveMoreData() throws IOException {
         LOGGER.debug("[bro] receiveMoreDataForHint now in Transport");
-        LayerProcessingHint desiredHint = hint;
         InputStream dataStream = getLowerLayer().getDataStream();
         LOGGER.debug("Available Data: {}", dataStream.available());
         AbstractPacketParser parser;
@@ -188,9 +185,7 @@ public class PacketLayer extends ProtocolLayer<PacketLayerHint, AbstractPacket> 
 
         if (currentInputStream == null) {
             // only set new input stream if necessary, extend current stream otherwise
-            currentInputStream = new HintedLayerInputStream(null, this);
-        } else {
-            currentInputStream.setHint(null);
+            currentInputStream = new HintedLayerInputStream(this);
         }
         currentInputStream.extendStream(packet.getPayload().getValue());
     }

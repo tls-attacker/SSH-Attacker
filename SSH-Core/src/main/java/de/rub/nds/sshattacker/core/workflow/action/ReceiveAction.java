@@ -143,7 +143,10 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
                         name = "EcdhKeyExchangeReply"),
                 @XmlElement(type = IgnoreMessage.class, name = "IgnoreMessage"),
                 @XmlElement(type = KeyExchangeInitMessage.class, name = "KeyExchangeInit"),
+                @XmlElement(type = NewCompressMessage.class, name = "NewCompress"),
                 @XmlElement(type = NewKeysMessage.class, name = "NewKeys"),
+                @XmlElement(type = PingMessage.class, name = "Ping"),
+                @XmlElement(type = PongMessage.class, name = "Pong"),
                 @XmlElement(type = RsaKeyExchangeDoneMessage.class, name = "RsaKeyExchangeDone"),
                 @XmlElement(
                         type = RsaKeyExchangePubkeyMessage.class,

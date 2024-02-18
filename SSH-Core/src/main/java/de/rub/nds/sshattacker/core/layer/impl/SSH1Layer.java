@@ -7,17 +7,6 @@
  */
 package de.rub.nds.sshattacker.core.layer.impl;
 
-/*import de.rub.nds.sshattacker.core.constants.SSL2MessageType;
-import de.rub.nds.sshattacker.core.constants.SSL2TotalHeaderLengths;
-import de.rub.nds.sshattacker.core.constants.ssl.SSL2ByteLength;
-import de.rub.nds.sshattacker.core.exceptions.EndOfStreamException;
-import de.rub.nds.sshattacker.core.exceptions.TimeoutException;
-import de.rub.nds.sshattacker.core.layer.LayerConfiguration;
-import de.rub.nds.sshattacker.core.layer.hints.RecordLayerHint;
-import de.rub.nds.sshattacker.core.layer.stream.HintedInputStream;
-import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessagePreparator;
-import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessageSerializer;
-import de.rub.nds.sshattacker.core.protocol.message.*;*/
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.constants.MessageIdConstantSSH1;
@@ -29,9 +18,6 @@ import de.rub.nds.sshattacker.core.layer.LayerProcessingResult;
 import de.rub.nds.sshattacker.core.layer.ProtocolLayer;
 import de.rub.nds.sshattacker.core.layer.constant.ImplementedLayers;
 import de.rub.nds.sshattacker.core.layer.context.SshContext;
-import de.rub.nds.sshattacker.core.layer.hints.LayerProcessingHint;
-import de.rub.nds.sshattacker.core.layer.hints.PacketLayerHint;
-import de.rub.nds.sshattacker.core.layer.hints.PacketLayerHintSSHV1;
 import de.rub.nds.sshattacker.core.layer.stream.HintedInputStream;
 import de.rub.nds.sshattacker.core.layer.stream.HintedInputStreamAdapterStream;
 import de.rub.nds.sshattacker.core.layer.stream.HintedLayerInputStream;
@@ -50,7 +36,7 @@ import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class SSH1Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessage> {
+public class SSH1Layer extends ProtocolLayer<ProtocolMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
     private SshContext context;
@@ -166,7 +152,6 @@ public class SSH1Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
                     return getLayerResult();
                 }
                 LOGGER.debug("[bro] Searching for Hint");
-                LayerProcessingHint tempHint = dataStream.getHint();
 
                 byte[] streamContent;
                 try {
@@ -320,7 +305,7 @@ public class SSH1Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
 
         temp_stream =
                 new HintedInputStreamAdapterStream(
-                        null, new ByteArrayInputStream(packet.getPayload().getValue()));
+                        new ByteArrayInputStream(packet.getPayload().getValue()));
         readContainerFromStream(message, context, temp_stream);
     }
 
@@ -330,7 +315,7 @@ public class SSH1Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
 
         temp_stream =
                 new HintedInputStreamAdapterStream(
-                        null, new ByteArrayInputStream(packet.getPayload().getValue()));
+                        new ByteArrayInputStream(packet.getPayload().getValue()));
         readContainerFromStream(message, context, temp_stream);
     }
 
@@ -340,7 +325,7 @@ public class SSH1Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
 
         temp_stream =
                 new HintedInputStreamAdapterStream(
-                        null, new ByteArrayInputStream(packet.getPayload().getValue()));
+                        new ByteArrayInputStream(packet.getPayload().getValue()));
         readContainerFromStream(message, context, temp_stream);
     }
 
@@ -350,7 +335,7 @@ public class SSH1Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
 
         temp_stream =
                 new HintedInputStreamAdapterStream(
-                        null, new ByteArrayInputStream(packet.getPayload().getValue()));
+                        new ByteArrayInputStream(packet.getPayload().getValue()));
         readContainerFromStream(message, context, temp_stream);
     }
 
@@ -360,125 +345,8 @@ public class SSH1Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
 
         temp_stream =
                 new HintedInputStreamAdapterStream(
-                        null, new ByteArrayInputStream(packet.getPayload().getValue()));
+                        new ByteArrayInputStream(packet.getPayload().getValue()));
         readContainerFromStream(message, context, temp_stream);
-    }
-
-    public void readMessageForHint(PacketLayerHintSSHV1 hint) {
-        switch (hint.getType()) {
-                // use correct parser for the message
-            case SSH_CMSG_AUTH_RHOSTS_RSA:
-                // Read CMSG_AUTH_RHOSTS_RSA
-            case SSH_MSG_DISCONNECT:
-                // Handle SSH_MSG_DISCONNECT message
-                break;
-            case SSH_SMSG_PUBLIC_KEY:
-                // readPublicKeyData();
-                break;
-            case SSH_CMSG_SESSION_KEY:
-                // Handle SSH_CMSG_SESSION_KEY message
-                break;
-            case SSH_CMSG_USER:
-                // Handle SSH_CMSG_USER message
-                break;
-            case SSH_CMSG_AUTH_RHOSTS:
-                // Handle SSH_CMSG_AUTH_RHOSTS message
-                break;
-            case SSH_CMSG_AUTH_RSA:
-                // Handle SSH_CMSG_AUTH_RSA message
-                break;
-            case SSH_SMSG_AUTH_RSA_CHALLENGE:
-                // Handle SSH_SMSG_AUTH_RSA_CHALLENGE message
-                break;
-            case SSH_CMSG_AUTH_RSA_RESPONSE:
-                // Handle SSH_CMSG_AUTH_RSA_RESPONSE message
-                break;
-            case SSH_CMSG_AUTH_PASSWORD:
-                // Handle SSH_CMSG_AUTH_PASSWORD message
-                break;
-            case SSH_CMSG_REQUEST_PTY:
-                // Handle SSH_CMSG_REQUEST_PTY message
-                break;
-            case SSH_CMSG_WINDOW_SIZE:
-                // Handle SSH_CMSG_WINDOW_SIZE message
-                break;
-            case SSH_CMSG_EXEC_SHELL:
-                // Handle SSH_CMSG_EXEC_SHELL message
-                break;
-            case SSH_CMSG_EXEC_CMD:
-                // Handle SSH_CMSG_EXEC_CMD message
-                break;
-            case SSH_SMSG_SUCCESS:
-                // Handle SSH_SMSG_SUCCESS message
-                break;
-            case SSH_SMSG_FAILURE:
-                // Handle SSH_SMSG_FAILURE message
-                break;
-            case SSH_CMSG_STDIN_DATA:
-                // Handle SSH_CMSG_STDIN_DATA message
-                break;
-            case SSH_SMSG_STDOUT_DATA:
-                // Handle SSH_SMSG_STDOUT_DATA message
-                break;
-            case SSH_SMSG_STDERR_DATA:
-                // Handle SSH_SMSG_STDERR_DATA message
-                break;
-            case SSH_CMSG_EOF:
-                // Handle SSH_CMSG_EOF message
-                break;
-            case SSH_SMSG_EXITSTATUS:
-                // Handle SSH_SMSG_EXITSTATUS message
-                break;
-            case SSH_MSG_CHANNEL_OPEN_CONFIRMATION:
-                // Handle SSH_MSG_CHANNEL_OPEN_CONFIRMATION message
-                break;
-            case SSH_MSG_CHANNEL_OPEN_FAILURE:
-                // Handle SSH_MSG_CHANNEL_OPEN_FAILURE message
-                break;
-            case SSH_MSG_CHANNEL_DATA:
-                // Handle SSH_MSG_CHANNEL_DATA message
-                break;
-            case SSH_MSG_CHANNEL_CLOSE:
-                // Handle SSH_MSG_CHANNEL_CLOSE message
-                break;
-            case SSH_MSG_CHANNEL_CLOSE_CONFIRMATION:
-                // Handle SSH_MSG_CHANNEL_CLOSE_CONFIRMATION message
-                break;
-            case SSH_SMSG_X11_OPEN:
-                // Handle SSH_SMSG_X11_OPEN message
-                break;
-            case SSH_CMSG_PORT_FORWARD_REQUEST:
-                // Handle SSH_CMSG_PORT_FORWARD_REQUEST message
-                break;
-            case SSH_MSG_PORT_OPEN:
-                // Handle SSH_MSG_PORT_OPEN message
-                break;
-            case SSH_CMSG_AGENT_REQUEST_FORWARDING:
-                // Handle SSH_CMSG_AGENT_REQUEST_FORWARDING message
-                break;
-            case SSH_SMSG_AGENT_OPEN:
-                // Handle SSH_SMSG_AGENT_OPEN message
-                break;
-            case SSH_MSG_IGNORE:
-                // Handle SSH_MSG_IGNORE message
-                break;
-            case SSH_CMSG_EXIT_CONFIRMATION:
-                // Handle SSH_CMSG_EXIT_CONFIRMATION message
-                break;
-            case SSH_CMSG_X11_REQUEST_FORWARDING:
-                // Handle SSH_CMSG_X11_REQUEST_FORWARDING message
-                break;
-            case SSH_MSG_DEBUG:
-                // Handle SSH_MSG_DEBUG message
-                break;
-            case SSH_CMSG_REQUEST_COMPRESSION:
-                // Handle SSH_CMSG_REQUEST_COMPRESSION message
-                break;
-            default:
-                LOGGER.error("Undefined record layer type, found type {}", hint.getType());
-                throw new RuntimeException();
-                // break;
-        }
     }
 
     private void readPublicKeyData(AbstractPacket<BinaryPacket> packet) {
@@ -487,7 +355,7 @@ public class SSH1Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
 
         temp_stream =
                 new HintedInputStreamAdapterStream(
-                        null, new ByteArrayInputStream(packet.getPayload().getValue()));
+                        new ByteArrayInputStream(packet.getPayload().getValue()));
         readContainerFromStream(message, context, temp_stream);
         // readDataContainer(message, context);
     }
@@ -498,7 +366,7 @@ public class SSH1Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
 
         temp_stream =
                 new HintedInputStreamAdapterStream(
-                        null, new ByteArrayInputStream(packet.getPayload().getValue()));
+                        new ByteArrayInputStream(packet.getPayload().getValue()));
         readContainerFromStream(message, context, temp_stream);
         // readDataContainer(message, context);
     }
@@ -509,7 +377,7 @@ public class SSH1Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
 
         temp_stream =
                 new HintedInputStreamAdapterStream(
-                        null, new ByteArrayInputStream(packet.getPayload().getValue()));
+                        new ByteArrayInputStream(packet.getPayload().getValue()));
         readContainerFromStream(message, context, temp_stream);
 
         // readDataContainer(message, context);
@@ -526,76 +394,12 @@ public class SSH1Layer extends ProtocolLayer<LayerProcessingHint, ProtocolMessag
     }*/
 
     @Override
-    public void receiveMoreDataForHint(LayerProcessingHint hint) throws IOException {
+    public void receiveMoreData() throws IOException {
         try {
             HintedInputStream dataStream = null;
             dataStream = getLowerLayer().getDataStream();
-            if (dataStream.getHint() == null) {
-                LOGGER.warn(
-                        "The SSH layer requires a processing hint. E.g. a record type. Parsing as an unknown fragment");
-                currentInputStream = new HintedLayerInputStream(null, this);
-                currentInputStream.extendStream(dataStream.readAllBytes());
-            } else if (dataStream.getHint() instanceof PacketLayerHint) {
-                PacketLayerHint tempHint = (PacketLayerHint) dataStream.getHint();
-                /*if (tempHint.getType() == ProtocolMessageType.HANDSHAKE) {
-                    DtlsHandshakeMessageFragment fragment = new DtlsHandshakeMessageFragment();
-                    fragment.setEpoch(tempHint.getEpoch());
-                    DtlsHandshakeMessageFragmentParser parser =
-                            fragment.getParser(
-                                    context,
-                                    new ByteArrayInputStream(
-                                            dataStream.readChunk(dataStream.available())));
-                    parser.parse(fragment);
-                    fragment.setCompleteResultingMessage(
-                            fragment.getSerializer(context).serialize());
-                    fragmentManager.addMessageFragment(fragment);
-                    List<DtlsHandshakeMessageFragment> uninterpretedMessageFragments =
-                            fragmentManager.getOrderedCombinedUninterpretedMessageFragments(
-                                    true, false);
-                    // run until we received a complete fragment
-                    if (!uninterpretedMessageFragments.isEmpty()) {
-                        DtlsHandshakeMessageFragment uninterpretedMessageFragment =
-                                uninterpretedMessageFragments.get(0);
-                        addProducedContainer(uninterpretedMessageFragment);
-                        RecordLayerHint currentHint =
-                                new RecordLayerHint(
-                                        uninterpretedMessageFragment.getProtocolMessageType(),
-                                        uninterpretedMessageFragment
-                                                .getMessageSequence()
-                                                .getValue());
-                        byte type = uninterpretedMessageFragment.getType().getValue();
-                        byte[] content =
-                                uninterpretedMessageFragment.getMessageContent().getValue();
-                        byte[] message =
-                                ArrayConverter.concatenate(
-                                        new byte[] {type},
-                                        ArrayConverter.intToBytes(
-                                                content.length,
-                                                HandshakeByteLength.MESSAGE_LENGTH_FIELD),
-                                        content);
-                        if (desiredHint == null || currentHint.equals(desiredHint)) {
-                            if (currentInputStream == null) {
-                                currentInputStream = new HintedLayerInputStream(currentHint, this);
-                            } else {
-                                currentInputStream.setHint(currentHint);
-                            }
-                            currentInputStream.extendStream(message);
-                        } else {
-                            if (nextInputStream == null) {
-                                nextInputStream = new HintedLayerInputStream(currentHint, this);
-                            } else {
-                                nextInputStream.setHint(currentHint);
-                            }
-                            nextInputStream.extendStream(message);
-                        }
-                    } else {
-                        receiveMoreDataForHint(desiredHint);
-                    }
-                } else {
-                    currentInputStream = new HintedLayerInputStream(tempHint, this);
-                    currentInputStream.extendStream(dataStream.readChunk(dataStream.available()));
-                }*/
-            }
+            currentInputStream = new HintedLayerInputStream(this);
+            currentInputStream.extendStream(dataStream.readAllBytes());
         } catch (TimeoutException ex) {
             LOGGER.debug(ex);
             throw ex;
