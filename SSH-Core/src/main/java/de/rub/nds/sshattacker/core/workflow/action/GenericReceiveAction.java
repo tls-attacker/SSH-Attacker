@@ -9,9 +9,11 @@ package de.rub.nds.sshattacker.core.workflow.action;
 
 import de.rub.nds.sshattacker.core.exceptions.ActionExecutionException;
 import de.rub.nds.sshattacker.core.layer.context.SshContext;
+import de.rub.nds.sshattacker.core.packet.AbstractPacket;
 import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessage;
 import de.rub.nds.sshattacker.core.state.State;
 import jakarta.xml.bind.annotation.XmlRootElement;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
@@ -30,6 +32,8 @@ public class GenericReceiveAction extends MessageAction implements ReceivingActi
         super(connectionAlias);
     }
 
+    protected List<AbstractPacket> receivedPackets = new ArrayList<>();
+
     @Override
     public void execute(State state) {
         if (isExecuted()) {
@@ -37,7 +41,10 @@ public class GenericReceiveAction extends MessageAction implements ReceivingActi
         }
         LOGGER.debug("Receiving Messages...");
         SshContext ctx = state.getContext(getConnectionAlias()).getSshContext();
-        receive(ctx, null, null);
+        // receive(ctx, null, null);
+        receive(ctx, messages, packets);
+
+        receivedPackets = packets;
 
         setExecuted(true);
         String received = getReadableString(messages);
@@ -69,5 +76,10 @@ public class GenericReceiveAction extends MessageAction implements ReceivingActi
     @Override
     public List<ProtocolMessage<?>> getReceivedMessages() {
         return messages;
+    }
+
+    @Override
+    public List<AbstractPacket> getReceivedPackets() {
+        return receivedPackets;
     }
 }

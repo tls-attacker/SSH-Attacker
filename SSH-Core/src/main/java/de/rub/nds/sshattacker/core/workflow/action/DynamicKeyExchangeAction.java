@@ -11,6 +11,7 @@ import de.rub.nds.sshattacker.core.connection.AliasedConnection;
 import de.rub.nds.sshattacker.core.constants.KeyExchangeAlgorithm;
 import de.rub.nds.sshattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.sshattacker.core.layer.context.SshContext;
+import de.rub.nds.sshattacker.core.packet.AbstractPacket;
 import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessage;
 import de.rub.nds.sshattacker.core.state.State;
 import de.rub.nds.sshattacker.core.workflow.factory.WorkflowConfigurationFactory;
@@ -27,6 +28,8 @@ public class DynamicKeyExchangeAction extends MessageAction
 
     private static final Logger LOGGER = LogManager.getLogger();
     private List<SshAction> sshActions = new ArrayList<>();
+
+    protected List<AbstractPacket> receivedPackets = new ArrayList<>();
 
     public DynamicKeyExchangeAction() {
         super(AliasedConnection.DEFAULT_CONNECTION_ALIAS);
@@ -56,6 +59,11 @@ public class DynamicKeyExchangeAction extends MessageAction
                 .filter(action -> action instanceof ReceivingAction)
                 .flatMap(action -> ((ReceivingAction) action).getReceivedMessages().stream())
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<AbstractPacket> getReceivedPackets() {
+        return null;
     }
 
     @Override

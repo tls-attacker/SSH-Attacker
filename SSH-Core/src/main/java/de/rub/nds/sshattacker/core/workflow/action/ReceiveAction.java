@@ -181,6 +181,10 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
     /** Set to {@code true} if the {@link ReceiveOption#CHECK_ONLY_EXPECTED} option has been set. */
     @XmlElement protected Boolean checkOnlyExpected = null;
 
+    public List<AbstractPacket> getReceivedPackets() {
+        return receivedPackets;
+    }
+
     /**
      * Set to {@code true} if the {@link
      * ReceiveOption#IGNORE_UNEXPECTED_GLOBAL_REQUESTS_WITHOUT_WANTREPLY} option has been set.
@@ -256,6 +260,8 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
         }
 
         receive(context, expectedMessages, packets);
+
+        receivedPackets = packets;
 
         /*LOGGER.debug("Receiving messages for connection alias '{}'...", getConnectionAlias());
         MessageActionResult result =

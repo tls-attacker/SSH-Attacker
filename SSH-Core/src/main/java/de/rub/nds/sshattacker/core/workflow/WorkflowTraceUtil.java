@@ -8,18 +8,34 @@
 package de.rub.nds.sshattacker.core.workflow;
 
 import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
+import de.rub.nds.sshattacker.core.packet.AbstractPacket;
 import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessage;
 import de.rub.nds.sshattacker.core.workflow.action.ReceivingAction;
 import de.rub.nds.sshattacker.core.workflow.action.SendingAction;
 import de.rub.nds.sshattacker.core.workflow.action.SshAction;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public final class WorkflowTraceUtil {
 
     private static final Logger LOGGER = LogManager.getLogger();
+
+    public static List<AbstractPacket> getAllReceivedPackets(WorkflowTrace trace) {
+        return getAllReceivedPackets(trace, AbstractPacket.class);
+    }
+
+    public static <T extends AbstractPacket> List<T> getAllReceivedPackets(
+            WorkflowTrace trace, Class<T> packetClass) {
+        //noinspection unchecked
+        return trace.getReceivingActions().stream()
+                .flatMap(action -> action.getReceivedPackets().stream())
+                .filter(packetClass::isInstance)
+                .map(packet -> (T) packet)
+                .collect(Collectors.toUnmodifiableList());
+    }
 
     public static ProtocolMessage getFirstReceivedMessage(WorkflowTrace trace) {
         List<ProtocolMessage> messageList = getAllReceivedMessages(trace);

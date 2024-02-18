@@ -282,6 +282,11 @@ public class ForwardMessagesAction extends SshAction implements ReceivingAction,
     }
 
     @Override
+    public List<AbstractPacket> getReceivedPackets() {
+        return null;
+    }
+
+    @Override
     public List<ProtocolMessage<?>> getSendMessages() {
         return sendMessages;
     }
