@@ -7,6 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.workflow;
 
+import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessage;
 import de.rub.nds.sshattacker.core.workflow.action.ReceivingAction;
 import de.rub.nds.sshattacker.core.workflow.action.SendingAction;
@@ -75,6 +76,17 @@ public final class WorkflowTraceUtil {
         return receivedMessage;
     }
 
+    public static List<ProtocolMessage> getAllReceivedMessages(
+            WorkflowTrace trace, MessageIdConstant type) {
+        List<ProtocolMessage> receivedMessage = new LinkedList<>();
+        for (ProtocolMessage message : getAllReceivedMessages(trace)) {
+            if (message.getMessageIdConstant() == type) {
+                receivedMessage.add(message);
+            }
+        }
+        return receivedMessage;
+    }
+
     public static List<ProtocolMessage> getAllSendMessages(WorkflowTrace trace) {
         List<ProtocolMessage> sendMessages = new LinkedList<>();
         for (SendingAction action : trace.getSendingActions()) {
@@ -122,10 +134,6 @@ public final class WorkflowTraceUtil {
                 : action2;
     }
 
-    /**
-     * Returns all Messages of the WorkflowTrace that contain unread bytes. They can be accessed
-     * over the {@link de.rub.nds.tlsattacker.core.layer.LayerProcessingResult}
-     */
     /*
         public static List<MessageAction> getMessageActionsWithUnreadBytes(
                 @Nonnull WorkflowTrace trace) {
