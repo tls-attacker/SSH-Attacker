@@ -199,7 +199,7 @@ public class SSH1Layer extends ProtocolLayer<ProtocolMessage> {
         if (packet instanceof BlobPacket) {
             String rawText = new String(packet.getPayload().getValue(), StandardCharsets.US_ASCII);
             if (rawText.startsWith("SSH-")) {
-                readVersionExchangeProtocolData((BlobPacket) packet);
+                readDataFromStream(new VersionExchangeMessageSSHV1(), (BlobPacket) packet);
                 return;
             } else {
                 final AsciiMessage message = new AsciiMessage();
@@ -217,7 +217,7 @@ public class SSH1Layer extends ProtocolLayer<ProtocolMessage> {
                     LOGGER.warn(
                             "The server reported the maximum number of concurrent unauthenticated connections has been exceeded.");
                 }
-                readASCIIData((BlobPacket) packet);
+                readDataFromStream(new AsciiMessage(), (BlobPacket) packet);
                 return;
             }
         }
@@ -230,58 +230,83 @@ public class SSH1Layer extends ProtocolLayer<ProtocolMessage> {
 
         switch (id) {
             case SSH_MSG_DISCONNECT:
-                LOGGER.debug("[bro] returning SSH_MSG_DISCONNECT Hint");
-                readDisconnectData((BinaryPacket) packet);
+                LOGGER.debug("[bro] Reading SSH_MSG_DISCONNECT Paket");
+                readDataFromStream(new DisconnectMessageSSH1(), (BinaryPacket) packet);
                 break;
             case SSH_CMSG_USER:
-                LOGGER.debug("[bro] returning SSH_CMSG_USER Hint");
-                readUserData((BinaryPacket) packet);
+                LOGGER.debug("[bro] Reading SSH_CMSG_USER Paket");
+                readDataFromStream(new UserMessageSSH1(), (BinaryPacket) packet);
                 break;
             case SSH_SMSG_PUBLIC_KEY:
-                LOGGER.debug("[bro] returning SSH_SMSG_PUBLIC_KEY Hint");
-                readPublicKeyData((BinaryPacket) packet);
+                LOGGER.debug("[bro] Reading SSH_SMSG_PUBLIC_KEY Paket");
+                readDataFromStream(new ServerPublicKeyMessage(), (BinaryPacket) packet);
                 break;
             case SSH_CMSG_SESSION_KEY:
-                LOGGER.debug("[bro] returning SSH_SMSG_PUBLIC_KEY Hint");
-                readSessionKeyData((BinaryPacket) packet);
+                LOGGER.debug("[bro] Reading SSH_CMSG_SESSION_KEY Paket");
+                readDataFromStream(new ClientSessionKeyMessage(), (BinaryPacket) packet);
                 break;
-                // return new PacketLayerHintSSHV1(ProtocolMessageTypeSSHV1.SSH_SMSG_PUBLIC_KEY);
             case SSH_MSG_IGNORE:
-                LOGGER.debug("[bro] returning SSH_MSG_IGNORE Hint");
+                LOGGER.debug("[bro] Reading SSH_MSG_IGNORE Paket");
+                readDataFromStream(new IgnoreMessageSSH1(), (BinaryPacket) packet);
                 break;
-                // return new PacketLayerHint(ProtocolMessageType.SSH_MSG_IGNORE);
             case SSH_MSG_DEBUG:
-                LOGGER.debug("[bro] returning SSH_MSG_DEBUG Hint");
+                LOGGER.debug("[bro] Reading SSH_MSG_DEBUG Paket");
+                readDataFromStream(new DebugMessageSSH1(), (BinaryPacket) packet);
                 break;
-                // return new PacketLayerHint(ProtocolMessageType.SSH_MSG_DEBUG);
+            case SSH_CMSG_EOF:
+                LOGGER.debug("[bro] Reading SSH_CMSG_EOF Paket");
+                readDataFromStream(new EofMessageSSH1(), (BinaryPacket) packet);
+                break;
+            case SSH_CMSG_EXEC_CMD:
+                LOGGER.debug("[bro] Reading SSH_CMSG_EXEC_CMD Paket");
+                readDataFromStream(new ExecCmdMessageSSH1(), (BinaryPacket) packet);
+                break;
+            case SSH_CMSG_EXEC_SHELL:
+                LOGGER.debug("[bro] Reading SSH_CMSG_EXEC_SHELL Paket");
+                readDataFromStream(new ExecShellMessageSSH1(), (BinaryPacket) packet);
+                break;
+            case SSH_CMSG_EXIT_CONFIRMATION:
+                LOGGER.debug("[bro] Reading SSH_CMSG_EXIT_CONFIRMATION Paket");
+                readDataFromStream(new ExitConfirmationMessageSSH1(), (BinaryPacket) packet);
+                break;
+            case SSH_CMSG_STDIN_DATA:
+                LOGGER.debug("[bro] Reading SSH_CMSG_STDIN_DATA Paket");
+                readDataFromStream(new StdinDataMessageSSH1(), (BinaryPacket) packet);
+                break;
+            case SSH_SMSG_STDOUT_DATA:
+                LOGGER.debug("[bro] Reading SSH_SMSG_STDOUT_DATA Paket");
+                readDataFromStream(new StdoutDataMessageSSH1(), (BinaryPacket) packet);
+                break;
+            case SSH_SMSG_STDERR_DATA:
+                LOGGER.debug("[bro] Reading SSH_SMSG_STDERR_DATA Paket");
+                readDataFromStream(new StderrDataMessageSSH1(), (BinaryPacket) packet);
+                break;
             case SSH_MSG_CHANNEL_OPEN_CONFIRMATION:
-                LOGGER.debug("[bro] returning SSH_MSG_CHANNEL_OPEN_CONFIRMATION Hint");
+                LOGGER.debug("[bro] Reading SSH_MSG_CHANNEL_OPEN_CONFIRMATION Paket");
                 break;
-                /*return new PacketLayerHint(
-                ProtocolMessageType.SSH_MSG_CHANNEL_OPEN_CONFIRMATION);*/
+            case SSH_SMSG_EXITSTATUS:
+                LOGGER.debug("[bro] Reading SSH_SMSG_EXITSTATUS Paket");
+                readDataFromStream(new ExitStatusMessageSSH1(), (BinaryPacket) packet);
+                break;
             case SSH_MSG_CHANNEL_OPEN_FAILURE:
-                LOGGER.debug("[bro] returning SSH_MSG_CHANNEL_OPEN_FAILURE Hint");
+                LOGGER.debug("[bro] Reading SSH_MSG_CHANNEL_OPEN_FAILURE Paket");
                 break;
-                // return new PacketLayerHint(ProtocolMessageType.SSH_MSG_CHANNEL_OPEN_FAILURE);
             case SSH_MSG_CHANNEL_DATA:
-                LOGGER.debug("[bro] returning SSH_MSG_CHANNEL_DATA Hint");
+                LOGGER.debug("[bro] Reading SSH_MSG_CHANNEL_DATA Paket");
                 break;
-                // return new PacketLayerHint(ProtocolMessageType.SSH_MSG_CHANNEL_DATA);
             case SSH_MSG_CHANNEL_CLOSE:
-                LOGGER.debug("[bro] returning SSH_MSG_CHANNEL_CLOSE Hint");
+                LOGGER.debug("[bro] Reading SSH_MSG_CHANNEL_CLOSE Paket");
                 break;
-                // return new PacketLayerHint(ProtocolMessageType.SSH_MSG_CHANNEL_CLOSE);
             case SSH_CMSG_AUTH_TIS:
-                LOGGER.debug("[bro] returning SSH_CMSG_AUTH_TIS Hint");
-                readSuccessMessage((BinaryPacket) packet);
+                LOGGER.debug("[bro] Reading SSH_CMSG_AUTH_TIS Paket");
                 break;
             case SSH_SMSG_SUCCESS:
-                LOGGER.debug("[bro] returning SSH_SMSG_SUCCESS Hint");
-                readSuccessMessage((BinaryPacket) packet);
+                LOGGER.debug("[bro] Reading SSH_SMSG_SUCCESS Paket");
+                readDataFromStream(new SuccessMessageSSH1(), (BinaryPacket) packet);
                 break;
             case SSH_SMSG_FAILURE:
-                LOGGER.debug("[bro] returning SSH_SMSG_FAILURE Hint");
-                readFailureMessage((BinaryPacket) packet);
+                LOGGER.debug("[bro] Reading SSH_SMSG_FAILURE Paket");
+                readDataFromStream(new FailureMessageSSH1(), (BinaryPacket) packet);
                 break;
             default:
                 LOGGER.debug(
@@ -293,14 +318,7 @@ public class SSH1Layer extends ProtocolLayer<ProtocolMessage> {
         }
     }
 
-    private void readUnknownProtocolData() {
-        UnknownMessage message = new UnknownMessage();
-        readDataContainer(message, context);
-        getLowerLayer().removeDrainedInputStream();
-    }
-
-    private void readSessionKeyData(AbstractPacket<BinaryPacket> packet) {
-        ClientSessionKeyMessage message = new ClientSessionKeyMessage();
+    private void readDataFromStream(ProtocolMessage<?> message, AbstractPacket<?> packet) {
         HintedInputStream temp_stream;
 
         temp_stream =
@@ -309,89 +327,6 @@ public class SSH1Layer extends ProtocolLayer<ProtocolMessage> {
         readContainerFromStream(message, context, temp_stream);
     }
 
-    private void readDisconnectData(AbstractPacket<BinaryPacket> packet) {
-        DisconnectMessageSSH1 message = new DisconnectMessageSSH1();
-        HintedInputStream temp_stream;
-
-        temp_stream =
-                new HintedInputStreamAdapterStream(
-                        new ByteArrayInputStream(packet.getPayload().getValue()));
-        readContainerFromStream(message, context, temp_stream);
-    }
-
-    private void readUserData(AbstractPacket<BinaryPacket> packet) {
-        UserMessageSSH1 message = new UserMessageSSH1();
-        HintedInputStream temp_stream;
-
-        temp_stream =
-                new HintedInputStreamAdapterStream(
-                        new ByteArrayInputStream(packet.getPayload().getValue()));
-        readContainerFromStream(message, context, temp_stream);
-    }
-
-    private void readSuccessMessage(AbstractPacket<BinaryPacket> packet) {
-        SuccessMessageSSH1 message = new SuccessMessageSSH1();
-        HintedInputStream temp_stream;
-
-        temp_stream =
-                new HintedInputStreamAdapterStream(
-                        new ByteArrayInputStream(packet.getPayload().getValue()));
-        readContainerFromStream(message, context, temp_stream);
-    }
-
-    private void readFailureMessage(AbstractPacket<BinaryPacket> packet) {
-        FailureMessageSSH1 message = new FailureMessageSSH1();
-        HintedInputStream temp_stream;
-
-        temp_stream =
-                new HintedInputStreamAdapterStream(
-                        new ByteArrayInputStream(packet.getPayload().getValue()));
-        readContainerFromStream(message, context, temp_stream);
-    }
-
-    private void readPublicKeyData(AbstractPacket<BinaryPacket> packet) {
-        ServerPublicKeyMessage message = new ServerPublicKeyMessage();
-        HintedInputStream temp_stream;
-
-        temp_stream =
-                new HintedInputStreamAdapterStream(
-                        new ByteArrayInputStream(packet.getPayload().getValue()));
-        readContainerFromStream(message, context, temp_stream);
-        // readDataContainer(message, context);
-    }
-
-    private void readASCIIData(AbstractPacket<BlobPacket> packet) {
-        AsciiMessage message = new AsciiMessage();
-        HintedInputStream temp_stream;
-
-        temp_stream =
-                new HintedInputStreamAdapterStream(
-                        new ByteArrayInputStream(packet.getPayload().getValue()));
-        readContainerFromStream(message, context, temp_stream);
-        // readDataContainer(message, context);
-    }
-
-    private void readVersionExchangeProtocolData(AbstractPacket<BlobPacket> packet) {
-        VersionExchangeMessageSSHV1 message = new VersionExchangeMessageSSHV1();
-        HintedInputStream temp_stream;
-
-        temp_stream =
-                new HintedInputStreamAdapterStream(
-                        new ByteArrayInputStream(packet.getPayload().getValue()));
-        readContainerFromStream(message, context, temp_stream);
-
-        // readDataContainer(message, context);
-    }
-
-    /*private static int resolvePaddedMessageLength(final byte[] totalHeaderLength) {
-        return (totalHeaderLength[0] & SSL2TotalHeaderLengths.ALL_BUT_TWO_BIT.getValue()) << 8
-                | totalHeaderLength[1];
-    }
-
-    private static int resolveUnpaddedMessageLength(final byte[] totalHeaderLength) {
-        return (totalHeaderLength[0] & SSL2TotalHeaderLengths.ALL_BUT_ONE_BIT.getValue()) << 8
-                | totalHeaderLength[1];
-    }*/
 
     @Override
     public void receiveMoreData() throws IOException {
