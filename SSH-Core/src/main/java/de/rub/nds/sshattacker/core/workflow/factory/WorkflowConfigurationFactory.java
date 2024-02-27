@@ -16,6 +16,7 @@ import de.rub.nds.sshattacker.core.constants.RunningModeType;
 import de.rub.nds.sshattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.*;
 import de.rub.nds.sshattacker.core.protocol.connection.message.*;
+import de.rub.nds.sshattacker.core.protocol.ssh1.message.ClientSessionKeyMessage;
 import de.rub.nds.sshattacker.core.protocol.ssh1.message.ServerPublicKeyMessage;
 import de.rub.nds.sshattacker.core.protocol.ssh1.message.VersionExchangeMessageSSHV1;
 import de.rub.nds.sshattacker.core.protocol.transport.message.*;
@@ -229,12 +230,12 @@ public class WorkflowConfigurationFactory {
                             inboundConnection,
                             outboundConnection,
                             ConnectionEndType.SERVER,
-                            new VersionExchangeMessage()),
+                            new VersionExchangeMessageSSHV1()),
                     SshActionFactory.createForwardAction(
                             inboundConnection,
                             outboundConnection,
                             ConnectionEndType.CLIENT,
-                            new VersionExchangeMessage()),
+                            new VersionExchangeMessageSSHV1()),
                     new ChangePacketLayerAction(
                             inboundConnection.getAlias(), PacketLayerType.BINARY_PACKET),
                     new ChangePacketLayerAction(
@@ -243,12 +244,12 @@ public class WorkflowConfigurationFactory {
                             inboundConnection,
                             outboundConnection,
                             ConnectionEndType.CLIENT,
-                            new KeyExchangeInitMessage()),
+                            new ServerPublicKeyMessage()),
                     SshActionFactory.createForwardAction(
                             inboundConnection,
                             outboundConnection,
                             ConnectionEndType.SERVER,
-                            new KeyExchangeInitMessage()));
+                            new ClientSessionKeyMessage()));
         } else {
             AliasedConnection connection = getDefaultConnection();
             workflow.addSshActions(

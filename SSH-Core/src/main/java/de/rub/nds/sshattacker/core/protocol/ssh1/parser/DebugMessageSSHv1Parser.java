@@ -10,13 +10,13 @@ package de.rub.nds.sshattacker.core.protocol.ssh1.parser;
 import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 import de.rub.nds.sshattacker.core.protocol.ssh1.message.DebugMessageSSH1;
+import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.InputStream;
-
 public class DebugMessageSSHv1Parser extends SshMessageParser<DebugMessageSSH1> {
     private static final Logger LOGGER = LogManager.getLogger();
+
     public DebugMessageSSHv1Parser(SshContext context, InputStream stream) {
         super(stream);
     }
@@ -30,7 +30,6 @@ public class DebugMessageSSHv1Parser extends SshMessageParser<DebugMessageSSH1> 
     @Override
     protected void parseMessageSpecificContents(DebugMessageSSH1 message) {
         parseDebugMessage(message);
-
     }
 
     @Override

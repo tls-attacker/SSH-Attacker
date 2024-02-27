@@ -18,8 +18,6 @@ import de.rub.nds.sshattacker.core.protocol.ssh1.handler.IgnoreMessageSSHV1Handl
 import de.rub.nds.sshattacker.core.protocol.ssh1.parser.IgnoreMessageSSHV1Parser;
 import de.rub.nds.sshattacker.core.protocol.ssh1.preparator.IgnoreMessageSSHV1Preparator;
 import de.rub.nds.sshattacker.core.protocol.ssh1.serializer.IgnoreMessageSSHV1Serializier;
-import de.rub.nds.sshattacker.core.protocol.transport.serializer.IgnoreMessageSerializer;
-
 import java.io.InputStream;
 
 public class IgnoreMessageSSH1 extends SshMessage<IgnoreMessageSSH1> {
@@ -35,8 +33,7 @@ public class IgnoreMessageSSH1 extends SshMessage<IgnoreMessageSSH1> {
     }
 
     public void setIgnoreReason(String disconnectReason) {
-        ignoreMessage =
-                ModifiableVariableFactory.safelySetValue(ignoreMessage, disconnectReason);
+        ignoreMessage = ModifiableVariableFactory.safelySetValue(ignoreMessage, disconnectReason);
     }
 
     @Override
@@ -45,8 +42,7 @@ public class IgnoreMessageSSH1 extends SshMessage<IgnoreMessageSSH1> {
     }
 
     @Override
-    public SshMessageParser<IgnoreMessageSSH1> getParser(
-            SshContext context, InputStream stream) {
+    public SshMessageParser<IgnoreMessageSSH1> getParser(SshContext context, InputStream stream) {
         return new IgnoreMessageSSHV1Parser(context, stream);
     }
 

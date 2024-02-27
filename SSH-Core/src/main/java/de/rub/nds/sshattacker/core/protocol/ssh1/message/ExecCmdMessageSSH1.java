@@ -14,15 +14,10 @@ import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
-import de.rub.nds.sshattacker.core.protocol.ssh1.handler.DebugMessageSSHV1Handler;
 import de.rub.nds.sshattacker.core.protocol.ssh1.handler.ExecCmdMessageSSHV1Handler;
-import de.rub.nds.sshattacker.core.protocol.ssh1.parser.DebugMessageSSHv1Parser;
 import de.rub.nds.sshattacker.core.protocol.ssh1.parser.ExecCmdMessageSSHv1Parser;
-import de.rub.nds.sshattacker.core.protocol.ssh1.preparator.DebugMessageSSHV1Preparator;
 import de.rub.nds.sshattacker.core.protocol.ssh1.preparator.ExecCmdMessageSSHV1Preparator;
-import de.rub.nds.sshattacker.core.protocol.ssh1.serializer.DebugMessageSSHV1Serializier;
 import de.rub.nds.sshattacker.core.protocol.ssh1.serializer.ExecCmdMessageSSHV1Serializier;
-
 import java.io.InputStream;
 
 public class ExecCmdMessageSSH1 extends SshMessage<ExecCmdMessageSSH1> {
@@ -38,8 +33,7 @@ public class ExecCmdMessageSSH1 extends SshMessage<ExecCmdMessageSSH1> {
     }
 
     public void setCommand(String disconnectReason) {
-        command =
-                ModifiableVariableFactory.safelySetValue(command, disconnectReason);
+        command = ModifiableVariableFactory.safelySetValue(command, disconnectReason);
     }
 
     @Override
@@ -48,8 +42,7 @@ public class ExecCmdMessageSSH1 extends SshMessage<ExecCmdMessageSSH1> {
     }
 
     @Override
-    public SshMessageParser<ExecCmdMessageSSH1> getParser(
-            SshContext context, InputStream stream) {
+    public SshMessageParser<ExecCmdMessageSSH1> getParser(SshContext context, InputStream stream) {
         return new ExecCmdMessageSSHv1Parser(context, stream);
     }
 

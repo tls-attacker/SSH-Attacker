@@ -27,7 +27,6 @@ import de.rub.nds.sshattacker.core.packet.BlobPacket;
 import de.rub.nds.sshattacker.core.protocol.common.*;
 import de.rub.nds.sshattacker.core.protocol.ssh1.message.*;
 import de.rub.nds.sshattacker.core.protocol.transport.message.AsciiMessage;
-import de.rub.nds.sshattacker.core.protocol.transport.message.UnknownMessage;
 import de.rub.nds.sshattacker.core.protocol.transport.parser.AsciiMessageParser;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -326,7 +325,6 @@ public class SSH1Layer extends ProtocolLayer<ProtocolMessage> {
                         new ByteArrayInputStream(packet.getPayload().getValue()));
         readContainerFromStream(message, context, temp_stream);
     }
-
 
     @Override
     public void receiveMoreData() throws IOException {

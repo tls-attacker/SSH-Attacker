@@ -10,11 +10,9 @@ package de.rub.nds.sshattacker.core.protocol.ssh1.serializer;
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.ssh1.message.StderrDataMessageSSH1;
-import de.rub.nds.sshattacker.core.protocol.ssh1.message.StdinDataMessageSSH1;
+import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import java.nio.charset.StandardCharsets;
 
 public class StderrDataMessageSSHV1Serializier extends SshMessageSerializer<StderrDataMessageSSH1> {
 
@@ -26,9 +24,7 @@ public class StderrDataMessageSSHV1Serializier extends SshMessageSerializer<Stde
 
     private void serializeReason() {
         LOGGER.debug("Description length: " + message.getData().getValue());
-        appendInt(
-                message.getData().getValue().length(),
-                DataFormatConstants.STRING_SIZE_LENGTH);
+        appendInt(message.getData().getValue().length(), DataFormatConstants.STRING_SIZE_LENGTH);
         LOGGER.debug("Description: " + message.getData().getValue());
         appendString(message.getData().getValue(), StandardCharsets.UTF_8);
     }

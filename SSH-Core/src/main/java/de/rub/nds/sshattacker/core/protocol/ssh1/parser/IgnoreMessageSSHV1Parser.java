@@ -12,16 +12,15 @@ import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 import de.rub.nds.sshattacker.core.protocol.ssh1.message.DisconnectMessageSSH1;
 import de.rub.nds.sshattacker.core.protocol.ssh1.message.IgnoreMessageSSH1;
+import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.InputStream;
-
 public class IgnoreMessageSSHV1Parser extends SshMessageParser<IgnoreMessageSSH1> {
     private static final Logger LOGGER = LogManager.getLogger();
+
     public IgnoreMessageSSHV1Parser(SshContext context, InputStream stream) {
         super(stream);
-
     }
 
     private void parseCRC(DisconnectMessageSSH1 message) {
@@ -39,8 +38,6 @@ public class IgnoreMessageSSHV1Parser extends SshMessageParser<IgnoreMessageSSH1
     protected void parseMessageSpecificContents(IgnoreMessageSSH1 message) {
         parseIgnoreMessage(message);
     }
-
-
 
     @Override
     public void parse(IgnoreMessageSSH1 message) {

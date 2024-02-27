@@ -9,7 +9,6 @@ package de.rub.nds.sshattacker.core.protocol.ssh1.handler;
 
 import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
-import de.rub.nds.sshattacker.core.protocol.ssh1.message.ExitConfirmationMessageSSH1;
 import de.rub.nds.sshattacker.core.protocol.ssh1.message.ExitStatusMessageSSH1;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -22,12 +21,8 @@ public class ExitStatusMessageSSHV1Handler extends SshMessageHandler<ExitStatusM
         super(context);
     }
 
-
-
     @Override
     public void adjustContext(ExitStatusMessageSSH1 message) {
-        LOGGER.warn(
-                "Recieved Exit Status {}",
-                message.getExitStatus().getValue());
+        LOGGER.warn("Recieved Exit Status {}", message.getExitStatus().getValue());
     }
 }

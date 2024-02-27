@@ -1,4 +1,3 @@
-
 /*
  * SSH-Attacker - A Modular Penetration Testing Framework for SSH
  *
@@ -11,7 +10,6 @@ package de.rub.nds.sshattacker.core.protocol.ssh1.handler;
 import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.ssh1.message.StderrDataMessageSSH1;
-import de.rub.nds.sshattacker.core.protocol.ssh1.message.StdoutDataMessageSSH1;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -30,9 +28,7 @@ public class StderrDataMessageSSHV1Handler extends SshMessageHandler<StderrDataM
 
     @Override
     public void adjustContext(StderrDataMessageSSH1 message) {
-        LOGGER.warn(
-                "Recieved Stderr Data: {}",
-                message.getData().getValue());
-        //sshContext.setDisconnectMessageReceived(true);
+        LOGGER.warn("Recieved Stderr Data: {}", message.getData().getValue());
+        // sshContext.setDisconnectMessageReceived(true);
     }
 }

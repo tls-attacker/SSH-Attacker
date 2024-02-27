@@ -21,12 +21,9 @@ public class IgnoreMessageSSHV1Handler extends SshMessageHandler<IgnoreMessageSS
         super(context);
     }
 
-
     @Override
     public void adjustContext(IgnoreMessageSSH1 message) {
-        LOGGER.warn(
-                "Recieved a Ignore Message, Reason: {}",
-                message.getIgnoreMessage().getValue());
-        //sshContext.setDisconnectMessageReceived(true);
+        LOGGER.warn("Recieved a Ignore Message, Reason: {}", message.getIgnoreMessage().getValue());
+        // sshContext.setDisconnectMessageReceived(true);
     }
 }

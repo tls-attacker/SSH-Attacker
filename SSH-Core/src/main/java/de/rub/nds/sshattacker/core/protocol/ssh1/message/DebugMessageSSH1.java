@@ -18,7 +18,6 @@ import de.rub.nds.sshattacker.core.protocol.ssh1.handler.DebugMessageSSHV1Handle
 import de.rub.nds.sshattacker.core.protocol.ssh1.parser.DebugMessageSSHv1Parser;
 import de.rub.nds.sshattacker.core.protocol.ssh1.preparator.DebugMessageSSHV1Preparator;
 import de.rub.nds.sshattacker.core.protocol.ssh1.serializer.DebugMessageSSHV1Serializier;
-
 import java.io.InputStream;
 
 public class DebugMessageSSH1 extends SshMessage<DebugMessageSSH1> {
@@ -34,8 +33,7 @@ public class DebugMessageSSH1 extends SshMessage<DebugMessageSSH1> {
     }
 
     public void setDebugMessage(String disconnectReason) {
-        debugMessage =
-                ModifiableVariableFactory.safelySetValue(debugMessage, disconnectReason);
+        debugMessage = ModifiableVariableFactory.safelySetValue(debugMessage, disconnectReason);
     }
 
     @Override
@@ -44,8 +42,7 @@ public class DebugMessageSSH1 extends SshMessage<DebugMessageSSH1> {
     }
 
     @Override
-    public SshMessageParser<DebugMessageSSH1> getParser(
-            SshContext context, InputStream stream) {
+    public SshMessageParser<DebugMessageSSH1> getParser(SshContext context, InputStream stream) {
         return new DebugMessageSSHv1Parser(context, stream);
     }
 

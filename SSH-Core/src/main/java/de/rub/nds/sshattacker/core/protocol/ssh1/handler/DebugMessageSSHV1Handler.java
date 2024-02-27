@@ -23,9 +23,7 @@ public class DebugMessageSSHV1Handler extends SshMessageHandler<DebugMessageSSH1
 
     @Override
     public void adjustContext(DebugMessageSSH1 message) {
-        LOGGER.warn(
-                "Recieved a Ignore Message, Reason: {}",
-                message.getDebugMessage().getValue());
-        sshContext.setDisconnectMessageReceived(true);
+        LOGGER.warn("Recieved a Debug Message, Reason: {}", message.getDebugMessage().getValue());
+        // sshContext.setDisconnectMessageReceived(true);
     }
 }

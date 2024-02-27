@@ -13,14 +13,9 @@ import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.ssh1.handler.EofMessageSSHV1Handler;
-import de.rub.nds.sshattacker.core.protocol.ssh1.handler.SuccessMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.ssh1.parser.EofMessageSSHV1Parser;
-import de.rub.nds.sshattacker.core.protocol.ssh1.parser.SuccessMessageParser;
 import de.rub.nds.sshattacker.core.protocol.ssh1.preparator.EofMessageSSHV1Preparator;
-import de.rub.nds.sshattacker.core.protocol.ssh1.preparator.SuccessMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.ssh1.serializer.EofMessageSSHV1Serializier;
-import de.rub.nds.sshattacker.core.protocol.ssh1.serializer.SuccessMessageSerializier;
-
 import java.io.InputStream;
 
 public class EofMessageSSH1 extends SshMessage<EofMessageSSH1> {

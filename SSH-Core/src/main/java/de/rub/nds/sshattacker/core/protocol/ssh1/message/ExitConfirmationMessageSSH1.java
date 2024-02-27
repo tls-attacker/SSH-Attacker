@@ -12,15 +12,10 @@ import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
-import de.rub.nds.sshattacker.core.protocol.ssh1.handler.EofMessageSSHV1Handler;
 import de.rub.nds.sshattacker.core.protocol.ssh1.handler.ExitConfirmationMessageSSHV1Handler;
-import de.rub.nds.sshattacker.core.protocol.ssh1.parser.EofMessageSSHV1Parser;
 import de.rub.nds.sshattacker.core.protocol.ssh1.parser.ExitConfirmationMessageSSHV1Parser;
-import de.rub.nds.sshattacker.core.protocol.ssh1.preparator.EofMessageSSHV1Preparator;
 import de.rub.nds.sshattacker.core.protocol.ssh1.preparator.ExitConfirmationMessageSSHV1Preparator;
-import de.rub.nds.sshattacker.core.protocol.ssh1.serializer.EofMessageSSHV1Serializier;
 import de.rub.nds.sshattacker.core.protocol.ssh1.serializer.ExitConfirmationMessageSSHV1Serializier;
-
 import java.io.InputStream;
 
 public class ExitConfirmationMessageSSH1 extends SshMessage<ExitConfirmationMessageSSH1> {
@@ -31,7 +26,8 @@ public class ExitConfirmationMessageSSH1 extends SshMessage<ExitConfirmationMess
     }
 
     @Override
-    public SshMessageParser<ExitConfirmationMessageSSH1> getParser(SshContext context, InputStream stream) {
+    public SshMessageParser<ExitConfirmationMessageSSH1> getParser(
+            SshContext context, InputStream stream) {
         return new ExitConfirmationMessageSSHV1Parser(context, stream);
     }
 

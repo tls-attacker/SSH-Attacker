@@ -14,15 +14,10 @@ import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
-import de.rub.nds.sshattacker.core.protocol.ssh1.handler.StdinDataMessageSSHV1Handler;
 import de.rub.nds.sshattacker.core.protocol.ssh1.handler.StdoutDataMessageSSHV1Handler;
-import de.rub.nds.sshattacker.core.protocol.ssh1.parser.StdinDataMessageSSHv1Parser;
 import de.rub.nds.sshattacker.core.protocol.ssh1.parser.StdoutDataMessageSSHv1Parser;
-import de.rub.nds.sshattacker.core.protocol.ssh1.preparator.StdinDataMessageSSHV1Preparator;
 import de.rub.nds.sshattacker.core.protocol.ssh1.preparator.StdoutDataMessageSSHV1Preparator;
-import de.rub.nds.sshattacker.core.protocol.ssh1.serializer.StdinDataMessageSSHV1Serializier;
 import de.rub.nds.sshattacker.core.protocol.ssh1.serializer.StdoutDataMessageSSHV1Serializier;
-
 import java.io.InputStream;
 
 public class StdoutDataMessageSSH1 extends SshMessage<StdoutDataMessageSSH1> {
@@ -38,8 +33,7 @@ public class StdoutDataMessageSSH1 extends SshMessage<StdoutDataMessageSSH1> {
     }
 
     public void setData(String disconnectReason) {
-        data =
-                ModifiableVariableFactory.safelySetValue(data, disconnectReason);
+        data = ModifiableVariableFactory.safelySetValue(data, disconnectReason);
     }
 
     @Override

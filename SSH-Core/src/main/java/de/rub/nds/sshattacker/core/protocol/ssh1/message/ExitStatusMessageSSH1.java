@@ -9,21 +9,15 @@ package de.rub.nds.sshattacker.core.protocol.ssh1.message;
 
 import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
-import de.rub.nds.modifiablevariable.string.ModifiableString;
 import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
-import de.rub.nds.sshattacker.core.protocol.ssh1.handler.ExitConfirmationMessageSSHV1Handler;
 import de.rub.nds.sshattacker.core.protocol.ssh1.handler.ExitStatusMessageSSHV1Handler;
-import de.rub.nds.sshattacker.core.protocol.ssh1.parser.ExitConfirmationMessageSSHV1Parser;
 import de.rub.nds.sshattacker.core.protocol.ssh1.parser.ExitStatusMessageSSHV1Parser;
-import de.rub.nds.sshattacker.core.protocol.ssh1.preparator.ExitConfirmationMessageSSHV1Preparator;
 import de.rub.nds.sshattacker.core.protocol.ssh1.preparator.ExitStatusMessageSSHV1Preparator;
-import de.rub.nds.sshattacker.core.protocol.ssh1.serializer.ExitConfirmationMessageSSHV1Serializier;
 import de.rub.nds.sshattacker.core.protocol.ssh1.serializer.ExitStatusMessageSSHV1Serializier;
-
 import java.io.InputStream;
 
 public class ExitStatusMessageSSH1 extends SshMessage<ExitStatusMessageSSH1> {
@@ -39,8 +33,7 @@ public class ExitStatusMessageSSH1 extends SshMessage<ExitStatusMessageSSH1> {
     }
 
     public void setExitStatus(int exitStatus) {
-        this.exitStatus =
-                ModifiableVariableFactory.safelySetValue(this.exitStatus, exitStatus);
+        this.exitStatus = ModifiableVariableFactory.safelySetValue(this.exitStatus, exitStatus);
     }
 
     @Override
@@ -49,7 +42,8 @@ public class ExitStatusMessageSSH1 extends SshMessage<ExitStatusMessageSSH1> {
     }
 
     @Override
-    public SshMessageParser<ExitStatusMessageSSH1> getParser(SshContext context, InputStream stream) {
+    public SshMessageParser<ExitStatusMessageSSH1> getParser(
+            SshContext context, InputStream stream) {
         return new ExitStatusMessageSSHV1Parser(context, stream);
     }
 

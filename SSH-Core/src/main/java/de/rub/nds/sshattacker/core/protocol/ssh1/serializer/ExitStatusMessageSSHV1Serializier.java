@@ -9,12 +9,9 @@ package de.rub.nds.sshattacker.core.protocol.ssh1.serializer;
 
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
-import de.rub.nds.sshattacker.core.protocol.ssh1.message.ExitConfirmationMessageSSH1;
 import de.rub.nds.sshattacker.core.protocol.ssh1.message.ExitStatusMessageSSH1;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import java.nio.charset.StandardCharsets;
 
 public class ExitStatusMessageSSHV1Serializier extends SshMessageSerializer<ExitStatusMessageSSH1> {
 
@@ -26,9 +23,8 @@ public class ExitStatusMessageSSHV1Serializier extends SshMessageSerializer<Exit
 
     private void serializeExitStatus() {
         LOGGER.debug("Exit Status: " + message.getExitStatus().getValue());
-        appendInt(message.getExitStatus().getValue(),DataFormatConstants.UINT32_SIZE);
+        appendInt(message.getExitStatus().getValue(), DataFormatConstants.UINT32_SIZE);
     }
-
 
     @Override
     public void serializeMessageSpecificContents() {

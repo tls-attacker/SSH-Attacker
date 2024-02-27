@@ -28,9 +28,7 @@ public class ExecCmdMessageSSHV1Handler extends SshMessageHandler<ExecCmdMessage
 
     @Override
     public void adjustContext(ExecCmdMessageSSH1 message) {
-        LOGGER.warn(
-                "Recieved a Command : {}",
-                message.getCommand().getValue());
-        //sshContext.setDisconnectMessageReceived(true);
+        LOGGER.warn("Recieved a Command : {}", message.getCommand().getValue());
+        // sshContext.setDisconnectMessageReceived(true);
     }
 }
