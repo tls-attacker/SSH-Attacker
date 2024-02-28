@@ -70,7 +70,10 @@ public class DynamicKeyExchangeAction extends MessageAction
 
     @Override
     public List<AbstractPacket> getReceivedPackets() {
-        return null;
+        return sshActions.stream()
+                .filter(sshAction -> sshAction instanceof ReceivingAction)
+                .flatMap(sshAction -> ((ReceivingAction) sshAction).getReceivedPackets().stream())
+                .collect(Collectors.toList());
     }
 
     @Override

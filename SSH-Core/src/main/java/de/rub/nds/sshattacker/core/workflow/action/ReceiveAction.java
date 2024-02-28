@@ -12,6 +12,7 @@ import de.rub.nds.sshattacker.core.connection.AliasedConnection;
 import de.rub.nds.sshattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.packet.AbstractPacket;
+import de.rub.nds.sshattacker.core.packet.BinaryPacket;
 import de.rub.nds.sshattacker.core.protocol.authentication.message.*;
 import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessage;
 import de.rub.nds.sshattacker.core.protocol.connection.message.*;
@@ -262,6 +263,15 @@ public class ReceiveAction extends MessageAction implements ReceivingAction {
         receive(context, expectedMessages, packets);
 
         receivedPackets = packets;
+
+        LOGGER.info("Containt {} packets!", packets.size());
+        if (!packets.isEmpty()) {
+            for (AbstractPacket packet : packets) {
+                if (packet instanceof BinaryPacket) {
+                    LOGGER.info("Padding of packet is {}", ((BinaryPacket) packet).getPadding());
+                }
+            }
+        }
 
         /*LOGGER.debug("Receiving messages for connection alias '{}'...", getConnectionAlias());
         MessageActionResult result =

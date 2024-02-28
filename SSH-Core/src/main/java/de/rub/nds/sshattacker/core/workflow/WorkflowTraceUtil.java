@@ -29,6 +29,7 @@ public final class WorkflowTraceUtil {
 
     public static <T extends AbstractPacket> List<T> getAllReceivedPackets(
             WorkflowTrace trace, Class<T> packetClass) {
+
         //noinspection unchecked
         return trace.getReceivingActions().stream()
                 .flatMap(action -> action.getReceivedPackets().stream())
