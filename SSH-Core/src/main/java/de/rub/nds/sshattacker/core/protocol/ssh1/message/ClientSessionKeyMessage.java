@@ -79,6 +79,12 @@ public class ClientSessionKeyMessage extends SshMessage<ClientSessionKeyMessage>
         this.plaintextSessioKey = plaintextSessioKey;
     }
 
+    public void setPlaintextSessioKey(byte[] plaintextSessioKey) {
+        this.plaintextSessioKey =
+                ModifiableVariableFactory.safelySetValue(
+                        this.plaintextSessioKey, plaintextSessioKey);
+    }
+
     public List<ProtocolFlag> getChosenProtocolFlags() {
         return chosenProtocolFlags;
     }

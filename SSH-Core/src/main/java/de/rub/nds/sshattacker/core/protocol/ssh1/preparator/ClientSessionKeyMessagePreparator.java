@@ -7,6 +7,7 @@
  */
 package de.rub.nds.sshattacker.core.protocol.ssh1.preparator;
 
+import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.*;
 import de.rub.nds.sshattacker.core.crypto.cipher.AbstractCipher;
 import de.rub.nds.sshattacker.core.crypto.cipher.CipherFactory;
@@ -75,7 +76,16 @@ public class ClientSessionKeyMessagePreparator
         Random random = new Random();
         byte[] sessionKey = new byte[32];
         random.nextBytes(sessionKey);
-        byte[] plainSessionKey = sessionKey.clone();
+
+        getObject().setPlaintextSessioKey(sessionKey);
+
+        // byte[] plainSessionKey = sessionKey.clone();
+        byte[] plainSessionKey = getObject().getPlaintextSessioKey().getValue();
+        LOGGER.debug(
+                "Original plain Session Key is: {}",
+                ArrayConverter.bytesToRawHexString(sessionKey));
+        LOGGER.debug(
+                "Plain Session Key is: {}", ArrayConverter.bytesToRawHexString(plainSessionKey));
 
         // Use xored sessionkey for transmission
         byte[] sessionID = chooser.getContext().getSshContext().getSshv1SessionID();
@@ -83,6 +93,8 @@ public class ClientSessionKeyMessagePreparator
         for (byte sesseionByte : sessionID) {
             sessionKey[i] = (byte) (sesseionByte ^ sessionKey[i++]);
         }
+
+        LOGGER.debug("XORED Session Key is: {}", ArrayConverter.bytesToRawHexString(sessionKey));
 
         if (serverkey.getPublicKey() instanceof CustomRsaPublicKey) {
             serverPublicKey = (CustomRsaPublicKey) serverkey.getPublicKey();

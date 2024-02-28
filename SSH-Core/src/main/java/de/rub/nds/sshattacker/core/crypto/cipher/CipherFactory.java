@@ -55,8 +55,6 @@ public final class CipherFactory {
             case RSA2048_SHA256:
                 return new OaepCipher(
                         key, "RSA/ECB/OAEPWithSHA-256AndMGF1Padding", "SHA-256", "MGF1");
-            case RSA1024_PCKS1:
-                return new OaepCipher(key, "RSA/ECB/PKCS1Padding", "SHA-1", "MGF1");
             default:
                 LOGGER.warn(
                         "Cannot generate OAEP cipher for key exchange algorithm: '{}' - Using NoneCipher!",
@@ -67,6 +65,10 @@ public final class CipherFactory {
 
     public static AbstractCipher getRsaPkcs1Cipher(Key key) {
         return new RsaPkcs1Cipher(key);
+    }
+
+    public static AbstractCipher getRsaTextbookCipher(Key key) {
+        return new RsaTextbookCipher(key);
     }
 
     private CipherFactory() {

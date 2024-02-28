@@ -47,6 +47,28 @@ public class BleichenbacherWorkflowGenerator {
 
         return trace;
     }
+
+    public static WorkflowTrace generateWorkflow(
+            Config sshConfig, byte[] encryptedSecret, byte[] plainSecret) {
+        WorkflowTrace trace =
+                new WorkflowConfigurationFactory(sshConfig)
+                        .createWorkflowTrace(
+                                WorkflowTraceType.KEX_SSH1_ONLY, RunningModeType.CLIENT);
+
+        trace.addSshAction(new ReceiveAction(new ServerPublicKeyMessage()));
+
+        ClientSessionKeyMessage clientSessionKeyMessage = new ClientSessionKeyMessage();
+        ModifiableByteArray encryptedSecretArray = new ModifiableByteArray();
+        ModifiableByteArray plainSecretArray = new ModifiableByteArray();
+        encryptedSecretArray.setModification(
+                ByteArrayModificationFactory.explicitValue(encryptedSecret));
+        plainSecretArray.setModification(ByteArrayModificationFactory.explicitValue(plainSecret));
+        clientSessionKeyMessage.setEncryptedSessioKey(encryptedSecretArray);
+        clientSessionKeyMessage.setPlaintextSessioKey(plainSecretArray);
+        trace.addSshAction(new SendAction(clientSessionKeyMessage));
+
+        return trace;
+    }
     /**
      * Generates a dynamic workflow that encrypts the given encoded secret during execution
      *
