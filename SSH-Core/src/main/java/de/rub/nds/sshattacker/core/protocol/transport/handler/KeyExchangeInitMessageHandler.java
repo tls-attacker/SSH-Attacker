@@ -360,9 +360,11 @@ public class KeyExchangeInitMessageHandler extends SshMessageHandler<KeyExchange
                             .orElse(null));
         }
 
-        LOGGER.info(
-                "[bro] Picking KEX Algorithm, Setting Hostkey to {}",
-                sshContext.getHostKeyAlgorithm());
+        LOGGER.debug(
+                "[bro] Picking KEX Algorithm, Setting Hostkey to {} \n Mac to {} and {}",
+                sshContext.getHostKeyAlgorithm(),
+                sshContext.getMacAlgorithmClientToServer(),
+                sshContext.getMacAlgorithmServerToClient());
     }
 
     /*@Override

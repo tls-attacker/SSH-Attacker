@@ -75,13 +75,11 @@ public class TcpLayer extends ProtocolLayer<DataContainer> {
                 readByte = context.getTransportHandler().fetchData(1);
                 receiveBuffer = ArrayConverter.concatenate(receiveBuffer, readByte);
             } while (readByte.length > 0 && readByte[0] != CharConstants.NEWLINE);
-
             currentInputStream =
                     new HintedInputStreamAdapterStream(new ByteArrayInputStream(receiveBuffer));
             return currentInputStream;
 
         } else {
-
             currentInputStream =
                     new HintedInputStreamAdapterStream(getTransportHandler().getInputStream());
             return currentInputStream;

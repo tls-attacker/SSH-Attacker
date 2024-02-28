@@ -151,6 +151,7 @@ public class BinaryPacketParser extends AbstractPacketParser<BinaryPacket> {
     }
 
     private void parseEAMPacket(BinaryPacket binaryPacket) throws CryptoException {
+        LOGGER.debug("Parsing EAM");
         binaryPacket.prepareComputations();
         PacketCryptoComputations computations = binaryPacket.getComputations();
         // This cast is safe due to EAM being exclusively used with PacketMacedCipher
@@ -162,11 +163,14 @@ public class BinaryPacketParser extends AbstractPacketParser<BinaryPacket> {
          */
 
         int blockSize = activeDecryptCipher.getEncryptionAlgorithm().getBlockSize();
+        LOGGER.debug("Blocksize is: {}", blockSize);
+
         int decryptedByteCount = 0;
         // Loop required for stream cipher support (effective block length is 1 in this case)
         byte[] firstBlock = new byte[0];
         byte[] firstBlockEncrypted = new byte[0];
         do {
+            LOGGER.debug("Blocksize 2 is: {}", blockSize);
             byte[] block = parseByteArrayField(blockSize);
             byte[] decryptedBlock;
             if (activeDecryptCipher.getEncryptionAlgorithm().getIVSize() > 0) {
@@ -177,11 +181,12 @@ public class BinaryPacketParser extends AbstractPacketParser<BinaryPacket> {
             } else {
                 decryptedBlock = activeDecryptCipher.getCipher().decrypt(block);
             }
+            LOGGER.debug("Decryption Succesfull");
             firstBlock = ArrayConverter.concatenate(firstBlock, decryptedBlock);
             firstBlockEncrypted = ArrayConverter.concatenate(firstBlockEncrypted, block);
             decryptedByteCount += blockSize;
         } while (decryptedByteCount < BinaryPacketConstants.LENGTH_FIELD_LENGTH);
-
+        LOGGER.debug("DONE with Loop");
         computations.setPlainPacketBytes(firstBlock, true);
 
         binaryPacket.setLength(
@@ -193,7 +198,7 @@ public class BinaryPacketParser extends AbstractPacketParser<BinaryPacket> {
                 Bytes.concat(
                         firstBlockEncrypted,
                         parseByteArrayField(binaryPacket.getLength().getValue())));
-
+        LOGGER.debug("Mac Size: {}", activeDecryptCipher.getMacAlgorithm().getOutputSize());
         binaryPacket.setMac(
                 parseByteArrayField(activeDecryptCipher.getMacAlgorithm().getOutputSize()));
     }

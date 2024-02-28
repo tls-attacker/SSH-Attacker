@@ -50,7 +50,14 @@ public class DynamicKeyExchangeAction extends MessageAction
         sshActions =
                 WorkflowConfigurationFactory.createKeyExchangeActions(
                         keyExchangeAlgorithm.getFlowType(), context.getConnection());
-        sshActions.forEach(sshAction -> sshAction.execute(state));
+        // sshActions.forEach(sshAction -> sshAction.execute(state));
+        LOGGER.info("All Actions: {}", sshActions.toString());
+
+        sshActions.forEach(
+                (SshAction sshAction) -> {
+                    sshAction.execute(state);
+                    LOGGER.info("This Action: {}", sshActions.toString());
+                });
     }
 
     @Override
