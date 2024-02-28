@@ -194,10 +194,24 @@ public class BinaryPacketParser extends AbstractPacketParser<BinaryPacket> {
                         Arrays.copyOfRange(
                                 firstBlock, 0, BinaryPacketConstants.LENGTH_FIELD_LENGTH)));
 
+        LOGGER.debug(
+                "Ciphertext Size: {}, first block: {}",
+                binaryPacket.getLength().getValue(),
+                blockSize);
+
         binaryPacket.setCiphertext(
                 Bytes.concat(
                         firstBlockEncrypted,
-                        parseByteArrayField(binaryPacket.getLength().getValue())));
+                        parseByteArrayField(
+                                binaryPacket.getLength().getValue()
+                                        - (firstBlockEncrypted.length
+                                                - BinaryPacketConstants.LENGTH_FIELD_LENGTH))));
+
+        LOGGER.debug(
+                "Ciphertext is: {} in lenght {}",
+                ArrayConverter.bytesToRawHexString(binaryPacket.getCiphertext().getValue()),
+                binaryPacket.getCiphertext().getValue().length);
+
         LOGGER.debug("Mac Size: {}", activeDecryptCipher.getMacAlgorithm().getOutputSize());
         binaryPacket.setMac(
                 parseByteArrayField(activeDecryptCipher.getMacAlgorithm().getOutputSize()));
