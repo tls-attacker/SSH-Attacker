@@ -17,26 +17,10 @@ public class UserAuthUnknownMessageParser
         extends UserAuthRequestMessageParser<UserAuthUnknownMessage> {
 
     private static final Logger LOGGER = LogManager.getLogger();
-    /*
-
-        public UserAuthUnknownMessageParser(byte[] array) {
-            super(array);
-        }
-        public UserAuthUnknownMessageParser(byte[] array, int startPosition) {
-            super(array, startPosition);
-        }
-    */
 
     public UserAuthUnknownMessageParser(InputStream stream) {
         super(stream);
     }
-
-    /*
-        @Override
-        public UserAuthUnknownMessage createMessage() {
-            return new UserAuthUnknownMessage();
-        }
-    */
 
     private void parseMethodSpecificFields(UserAuthUnknownMessage message) {
         message.setMethodSpecificFields(parseByteArrayField(getBytesLeft()));

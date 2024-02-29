@@ -137,17 +137,6 @@ public class UserAuthPasswordMessage extends UserAuthRequestMessage<UserAuthPass
         return new UserAuthPasswordMessageParser(stream);
     }
 
-    /*
-    @Override
-    public SshMessageParser<UserAuthPasswordMessage> getParser(byte[] array) {
-        return new UserAuthPasswordMessageParser(array);
-    }
-
-    @Override
-    public SshMessageParser<UserAuthPasswordMessage> getParser(byte[] array, int startPosition) {
-        return new UserAuthPasswordMessageParser(array, startPosition);
-    }
-    */
     @Override
     public UserAuthPasswordMessagePreparator getPreparator(SshContext context) {
         return new UserAuthPasswordMessagePreparator(context.getChooser(), this);

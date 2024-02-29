@@ -19,15 +19,7 @@ public class UserAuthBannerMessageParser extends SshMessageParser<UserAuthBanner
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    /*    public UserAuthBannerMessageParser(byte[] array) {
-        super(array);
-    }
-
-    public UserAuthBannerMessageParser(byte[] array, int startPosition) {
-        super(array, startPosition);
-    }*/
-
-    public UserAuthBannerMessageParser(InputStream stream) {
+     public UserAuthBannerMessageParser(InputStream stream) {
         super(stream);
     }
 
@@ -43,13 +35,6 @@ public class UserAuthBannerMessageParser extends SshMessageParser<UserAuthBanner
         msg.setMessage(parseByteArrayField(getBytesLeft()));
         LOGGER.debug("Data: {}", msg.getMessage().getValue());
     }
-
-    /*
-        @Override
-        public UserAuthBannerMessage createMessage() {
-            return new UserAuthBannerMessage();
-        }
-    */
 
     private void parseMessage(UserAuthBannerMessage message) {
         message.setMessageLength(parseIntField(DataFormatConstants.STRING_SIZE_LENGTH));

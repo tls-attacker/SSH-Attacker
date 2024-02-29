@@ -23,26 +23,10 @@ public class UserAuthHostbasedMessageParser
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    /*
-        public UserAuthHostbasedMessageParser(byte[] array) {
-            super(array);
-        }
-        public UserAuthHostbasedMessageParser(byte[] array, int startPosition) {
-            super(array, startPosition);
-        }
-    */
 
     public UserAuthHostbasedMessageParser(InputStream stream) {
         super(stream);
     }
-
-    /*
-        @Override
-        protected UserAuthHostbasedMessage createMessage() {
-            return new UserAuthHostbasedMessage();
-        }
-    */
-
     @Override
     public void parse(UserAuthHostbasedMessage message) {
         LOGGER.debug("Parsing UserAuthBannerMessage");

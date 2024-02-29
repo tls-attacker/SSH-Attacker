@@ -20,26 +20,9 @@ public class UserAuthPasswordMessageParser
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    /*
-        public UserAuthPasswordMessageParser(byte[] array) {
-            super(array);
-        }
-        public UserAuthPasswordMessageParser(byte[] array, int startPosition) {
-            super(array, startPosition);
-        }
-
-    */
-
     public UserAuthPasswordMessageParser(InputStream stream) {
         super(stream);
     }
-
-    /*
-        @Override
-        public UserAuthPasswordMessage createMessage() {
-            return new UserAuthPasswordMessage();
-        }
-    */
 
     @Override
     public void parse(UserAuthPasswordMessage message) {

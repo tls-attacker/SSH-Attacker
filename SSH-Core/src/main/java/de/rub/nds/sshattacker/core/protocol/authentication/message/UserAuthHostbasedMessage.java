@@ -275,17 +275,6 @@ public class UserAuthHostbasedMessage extends UserAuthRequestMessage<UserAuthHos
         return new UserAuthHostbasedMessageParser(stream);
     }
 
-    /*
-    @Override
-    public UserAuthHostbasedMessageParser getParser(byte[] array) {
-        return new UserAuthHostbasedMessageParser(array);
-    }
-
-    @Override
-    public UserAuthHostbasedMessageParser getParser(byte[] array, int startPosition) {
-        return new UserAuthHostbasedMessageParser(array, startPosition);
-    }*/
-
     @Override
     public UserAuthHostbasedMessagePreparator getPreparator(SshContext context) {
         return new UserAuthHostbasedMessagePreparator(context.getChooser(), this);

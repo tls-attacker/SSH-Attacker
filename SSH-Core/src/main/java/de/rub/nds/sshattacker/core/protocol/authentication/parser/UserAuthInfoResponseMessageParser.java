@@ -20,25 +20,10 @@ public class UserAuthInfoResponseMessageParser
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    /*
-        public UserAuthInfoResponseMessageParser(byte[] array) {
-            super(array);
-        }
-        public UserAuthInfoResponseMessageParser(byte[] array, int startPosition) {
-            super(array, startPosition);
-        }
-    */
 
     public UserAuthInfoResponseMessageParser(InputStream stream) {
         super(stream);
     }
-
-    /*
-        @Override
-        protected UserAuthInfoResponseMessage createMessage() {
-            return new UserAuthInfoResponseMessage();
-        }
-    */
 
     @Override
     public void parse(UserAuthInfoResponseMessage message) {

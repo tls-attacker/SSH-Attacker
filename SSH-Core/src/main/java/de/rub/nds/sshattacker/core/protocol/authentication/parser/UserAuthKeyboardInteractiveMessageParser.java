@@ -21,25 +21,9 @@ public class UserAuthKeyboardInteractiveMessageParser
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    /*
-        public UserAuthKeyboardInteractiveMessageParser(byte[] array) {
-            super(array);
-        }
-        public UserAuthKeyboardInteractiveMessageParser(byte[] array, int startPosition) {
-            super(array, startPosition);
-        }
-    */
-
     public UserAuthKeyboardInteractiveMessageParser(InputStream stream) {
         super(stream);
     }
-
-    /*
-        @Override
-        protected UserAuthKeyboardInteractiveMessage createMessage() {
-            return new UserAuthKeyboardInteractiveMessage();
-        }
-    */
 
     @Override
     public void parse(UserAuthKeyboardInteractiveMessage message) {

@@ -45,16 +45,6 @@ public class UserAuthUnknownMessage extends UserAuthRequestMessage<UserAuthUnkno
         return new UserAuthUnknownMessageParser(stream);
     }
 
-    /*@Override
-    public SshMessageParser<UserAuthUnknownMessage> getParser(byte[] array) {
-        return new UserAuthUnknownMessageParser(array);
-    }
-
-    @Override
-    public SshMessageParser<UserAuthUnknownMessage> getParser(byte[] array, int startPosition) {
-        return new UserAuthUnknownMessageParser(array, startPosition);
-    }*/
-
     @Override
     public UserAuthUnknownMessagePreparator getPreparator(SshContext context) {
         return new UserAuthUnknownMessagePreparator(context.getChooser(), this);

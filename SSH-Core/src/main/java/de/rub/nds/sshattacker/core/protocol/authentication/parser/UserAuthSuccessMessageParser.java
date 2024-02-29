@@ -17,25 +17,9 @@ public class UserAuthSuccessMessageParser extends SshMessageParser<UserAuthSucce
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    /*
-        public UserAuthSuccessMessageParser(byte[] array) {
-            super(array);
-        }
-        public UserAuthSuccessMessageParser(byte[] array, int startPosition) {
-            super(array, startPosition);
-        }
-    */
-
     public UserAuthSuccessMessageParser(InputStream stream) {
         super(stream);
     }
-
-    /*
-        @Override
-        public UserAuthSuccessMessage createMessage() {
-            return new UserAuthSuccessMessage();
-        }
-    */
 
     @Override
     public void parse(UserAuthSuccessMessage message) {

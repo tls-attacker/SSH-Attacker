@@ -19,24 +19,10 @@ public class UserAuthFailureMessageParser extends SshMessageParser<UserAuthFailu
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    /*
-        public UserAuthFailureMessageParser(byte[] array) {
-            super(array);
-        }
-        public UserAuthFailureMessageParser(byte[] array, int startPosition) {
-            super(array, startPosition);
-        }
-    */
-
     public UserAuthFailureMessageParser(InputStream stream) {
         super(stream);
     }
 
-    /*   @Override
-        public UserAuthFailureMessage createMessage() {
-            return new UserAuthFailureMessage();
-        }
-    */
     @Override
     public void parse(UserAuthFailureMessage message) {
         LOGGER.debug("Parsing UserAuthBannerMessage");

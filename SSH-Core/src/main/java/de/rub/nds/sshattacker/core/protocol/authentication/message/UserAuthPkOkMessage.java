@@ -110,15 +110,6 @@ public class UserAuthPkOkMessage extends SshMessage<UserAuthPkOkMessage> {
     public UserAuthPkOkMessageParser getParser(SshContext context, InputStream stream) {
         return new UserAuthPkOkMessageParser(stream);
     }
-    /*@Override
-    public UserAuthPkOkMessageParser getParser(byte[] array) {
-        return new UserAuthPkOkMessageParser(array);
-    }
-
-    @Override
-    public UserAuthPkOkMessageParser getParser(byte[] array, int startPosition) {
-        return new UserAuthPkOkMessageParser(array, startPosition);
-    }*/
 
     @Override
     public SshMessagePreparator<UserAuthPkOkMessage> getPreparator(SshContext context) {

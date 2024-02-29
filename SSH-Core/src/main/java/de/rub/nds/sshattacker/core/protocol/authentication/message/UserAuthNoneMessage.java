@@ -27,17 +27,6 @@ public class UserAuthNoneMessage extends UserAuthRequestMessage<UserAuthNoneMess
         return new UserAuthNoneMessageParser(stream);
     }
 
-    /*
-    @Override
-    public SshMessageParser<UserAuthNoneMessage> getParser(byte[] array) {
-        return new UserAuthNoneMessageParser(array);
-    }
-
-    @Override
-    public SshMessageParser<UserAuthNoneMessage> getParser(byte[] array, int startPosition) {
-        return new UserAuthNoneMessageParser(array, startPosition);
-    }*/
-
     @Override
     public UserAuthNoneMessagePreparator getPreparator(SshContext context) {
         return new UserAuthNoneMessagePreparator(context.getChooser(), this);

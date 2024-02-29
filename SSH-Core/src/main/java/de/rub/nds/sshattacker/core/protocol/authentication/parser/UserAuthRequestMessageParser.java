@@ -22,13 +22,6 @@ public abstract class UserAuthRequestMessageParser<T extends UserAuthRequestMess
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    /*    public UserAuthRequestMessageParser(byte[] array) {
-        super(array);
-    }
-    public UserAuthRequestMessageParser(byte[] array, int startPosition) {
-        super(array, startPosition);
-    }*/
-
     public UserAuthRequestMessageParser(InputStream stream) {
         super(stream);
     }

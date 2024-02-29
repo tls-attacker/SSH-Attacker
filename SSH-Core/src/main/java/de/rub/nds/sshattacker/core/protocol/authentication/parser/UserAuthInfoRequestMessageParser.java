@@ -22,26 +22,9 @@ public class UserAuthInfoRequestMessageParser extends SshMessageParser<UserAuthI
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    /*
-        public UserAuthInfoRequestMessageParser(byte[] array) {
-            super(array);
-        }
-
-        public UserAuthInfoRequestMessageParser(byte[] array, int startPosition) {
-            super(array, startPosition);
-        }
-    */
-
     public UserAuthInfoRequestMessageParser(InputStream stream) {
         super(stream);
     }
-
-    /*
-        @Override
-        protected UserAuthInfoRequestMessage createMessage() {
-            return new UserAuthInfoRequestMessage();
-        }
-    */
 
     @Override
     public void parse(UserAuthInfoRequestMessage message) {

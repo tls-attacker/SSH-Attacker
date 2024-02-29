@@ -23,25 +23,9 @@ public class UserAuthPubkeyMessageParser
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    /*
-        public UserAuthPubkeyMessageParser(byte[] array) {
-            super(array);
-        }
-        public UserAuthPubkeyMessageParser(byte[] array, int startPosition) {
-            super(array, startPosition);
-        }
-    */
-
     public UserAuthPubkeyMessageParser(InputStream stream) {
         super(stream);
     }
-
-    /*
-        @Override
-        protected UserAuthPubkeyMessage createMessage() {
-            return new UserAuthPubkeyMessage();
-        }
-    */
 
     @Override
     public void parse(UserAuthPubkeyMessage message) {

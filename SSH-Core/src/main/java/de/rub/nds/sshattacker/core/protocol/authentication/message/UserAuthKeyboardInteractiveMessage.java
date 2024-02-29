@@ -116,15 +116,6 @@ public class UserAuthKeyboardInteractiveMessage
             SshContext context, InputStream stream) {
         return new UserAuthKeyboardInteractiveMessageParser(stream);
     }
-    /*@Override
-    public UserAuthKeyboardInteractiveMessageParser getParser(byte[] array) {
-        return new UserAuthKeyboardInteractiveMessageParser(array);
-    }
-
-    @Override
-    public UserAuthKeyboardInteractiveMessageParser getParser(byte[] array, int startPosition) {
-        return new UserAuthKeyboardInteractiveMessageParser(array, startPosition);
-    }*/
 
     @Override
     public UserAuthKeyboardInteractiveMessagePreparator getPreparator(SshContext context) {

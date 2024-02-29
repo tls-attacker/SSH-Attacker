@@ -167,16 +167,6 @@ public class UserAuthPubkeyMessage extends UserAuthRequestMessage<UserAuthPubkey
         return new UserAuthPubkeyMessageParser(stream);
     }
 
-    /*@Override
-    public UserAuthPubkeyMessageParser getParser(byte[] array) {
-        return new UserAuthPubkeyMessageParser(array);
-    }
-
-    @Override
-    public UserAuthPubkeyMessageParser getParser(byte[] array, int startPosition) {
-        return new UserAuthPubkeyMessageParser(array, startPosition);
-    }*/
-
     @Override
     public UserAuthPubkeyMessagePreparator getPreparator(SshContext context) {
         return new UserAuthPubkeyMessagePreparator(context.getChooser(), this);

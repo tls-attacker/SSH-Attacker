@@ -21,25 +21,9 @@ public class UserAuthPkOkMessageParser extends SshMessageParser<UserAuthPkOkMess
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    /*
-        public UserAuthPkOkMessageParser(byte[] array) {
-            super(array);
-        }
-        public UserAuthPkOkMessageParser(byte[] array, int startPosition) {
-            super(array, startPosition);
-        }
-    */
-
     public UserAuthPkOkMessageParser(InputStream stream) {
         super(stream);
     }
-
-    /*
-        @Override
-        protected UserAuthPkOkMessage createMessage() {
-            return new UserAuthPkOkMessage();
-        }
-    */
 
     @Override
     public void parse(UserAuthPkOkMessage message) {

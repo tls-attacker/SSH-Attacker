@@ -16,25 +16,10 @@ public class UserAuthNoneMessageParser extends UserAuthRequestMessageParser<User
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    /*
-        public UserAuthNoneMessageParser(byte[] array) {
-            super(array);
-        }
-        public UserAuthNoneMessageParser(byte[] array, int startPosition) {
-            super(array, startPosition);
-        }
-    */
 
     public UserAuthNoneMessageParser(InputStream stream) {
         super(stream);
     }
-
-    /*
-        @Override
-        public UserAuthNoneMessage createMessage() {
-            return new UserAuthNoneMessage();
-        }
-    */
 
     @Override
     public void parse(UserAuthNoneMessage message) {

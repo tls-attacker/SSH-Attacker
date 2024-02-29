@@ -55,17 +55,6 @@ public class UserAuthInfoResponseMessage extends SshMessage<UserAuthInfoResponse
         return new UserAuthInfoResponseMessageParser(stream);
     }
 
-    /*
-    @Override
-    public UserAuthInfoResponseMessageParser getParser(byte[] array) {
-        return new UserAuthInfoResponseMessageParser(array);
-    }
-
-    @Override
-    public UserAuthInfoResponseMessageParser getParser(byte[] array, int startPosition) {
-        return new UserAuthInfoResponseMessageParser(array, startPosition);
-    }*/
-
     @Override
     public UserAuthInfoResponseMessagePreparator getPreparator(SshContext context) {
         return new UserAuthInfoResponseMessagePreparator(context.getChooser(), this);

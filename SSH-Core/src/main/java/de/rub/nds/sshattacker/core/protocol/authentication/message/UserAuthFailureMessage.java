@@ -137,16 +137,6 @@ public class UserAuthFailureMessage extends SshMessage<UserAuthFailureMessage> {
         return new UserAuthFailureMessageParser(stream);
     }
 
-    /*@Override
-    public UserAuthFailureMessageParser getParser(byte[] array) {
-        return new UserAuthFailureMessageParser(array);
-    }
-
-    @Override
-    public UserAuthFailureMessageParser getParser(byte[] array, int startPosition) {
-        return new UserAuthFailureMessageParser(array, startPosition);
-    }*/
-
     @Override
     public UserAuthFailureMessagePreparator getPreparator(SshContext context) {
         return new UserAuthFailureMessagePreparator(context.getChooser(), this);

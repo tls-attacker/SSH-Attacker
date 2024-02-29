@@ -27,16 +27,6 @@ public class UserAuthSuccessMessage extends SshMessage<UserAuthSuccessMessage> {
         return new UserAuthSuccessMessageParser(stream);
     }
 
-    /*@Override
-    public UserAuthSuccessMessageParser getParser(byte[] array) {
-        return new UserAuthSuccessMessageParser(array);
-    }
-
-    @Override
-    public UserAuthSuccessMessageParser getParser(byte[] array, int startPosition) {
-        return new UserAuthSuccessMessageParser(array, startPosition);
-    }*/
-
     @Override
     public UserAuthSuccessMessagePreparator getPreparator(SshContext context) {
         return new UserAuthSuccessMessagePreparator(context.getChooser(), this);

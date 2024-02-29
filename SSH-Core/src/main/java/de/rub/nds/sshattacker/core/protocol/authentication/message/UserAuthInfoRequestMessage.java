@@ -182,15 +182,6 @@ public class UserAuthInfoRequestMessage extends SshMessage<UserAuthInfoRequestMe
     public UserAuthInfoRequestMessageParser getParser(SshContext context, InputStream stream) {
         return new UserAuthInfoRequestMessageParser(stream);
     }
-    /*@Override
-    public UserAuthInfoRequestMessageParser getParser(byte[] array) {
-        return new UserAuthInfoRequestMessageParser(array);
-    }
-
-    @Override
-    public UserAuthInfoRequestMessageParser getParser(byte[] array, int startPosition) {
-        return new UserAuthInfoRequestMessageParser(array, startPosition);
-    }*/
 
     @Override
     public UserAuthInfoRequestMessagePreparator getPreparator(SshContext context) {
