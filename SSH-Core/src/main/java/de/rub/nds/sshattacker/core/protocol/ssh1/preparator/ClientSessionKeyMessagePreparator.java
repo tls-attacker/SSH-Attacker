@@ -81,6 +81,7 @@ public class ClientSessionKeyMessagePreparator
 
         // byte[] plainSessionKey = sessionKey.clone();
         byte[] plainSessionKey = getObject().getPlaintextSessioKey().getValue();
+        byte[] sharedSecret = plainSessionKey.clone();
         LOGGER.debug(
                 "Original plain Session Key is: {}",
                 ArrayConverter.bytesToRawHexString(sessionKey));
@@ -151,7 +152,11 @@ public class ClientSessionKeyMessagePreparator
 
         getObject().setEncryptedSessioKey(sessionKey);
         chooser.getContext().getSshContext().setSessionKey(plainSessionKey);
-        chooser.getContext().getSshContext().setSharedSecret(plainSessionKey);
+        chooser.getContext().getSshContext().setSharedSecret(sharedSecret);
+        LOGGER.info(
+                "Shared Secret should be: {}",
+                ArrayConverter.bytesToRawHexString(
+                        chooser.getContext().getSshContext().getSharedSecret().orElseThrow()));
     }
 
     @Override
