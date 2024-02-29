@@ -20,7 +20,6 @@ public class UserAuthInfoResponseMessageParser
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-
     public UserAuthInfoResponseMessageParser(InputStream stream) {
         super(stream);
     }

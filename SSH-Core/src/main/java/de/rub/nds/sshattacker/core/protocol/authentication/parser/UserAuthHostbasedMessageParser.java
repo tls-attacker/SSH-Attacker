@@ -23,10 +23,10 @@ public class UserAuthHostbasedMessageParser
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-
     public UserAuthHostbasedMessageParser(InputStream stream) {
         super(stream);
     }
+
     @Override
     public void parse(UserAuthHostbasedMessage message) {
         LOGGER.debug("Parsing UserAuthBannerMessage");

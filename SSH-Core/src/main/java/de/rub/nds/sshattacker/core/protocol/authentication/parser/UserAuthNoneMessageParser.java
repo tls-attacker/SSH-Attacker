@@ -16,7 +16,6 @@ public class UserAuthNoneMessageParser extends UserAuthRequestMessageParser<User
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-
     public UserAuthNoneMessageParser(InputStream stream) {
         super(stream);
     }

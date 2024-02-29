@@ -19,7 +19,7 @@ public class UserAuthBannerMessageParser extends SshMessageParser<UserAuthBanner
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-     public UserAuthBannerMessageParser(InputStream stream) {
+    public UserAuthBannerMessageParser(InputStream stream) {
         super(stream);
     }
 
