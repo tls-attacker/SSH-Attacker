@@ -26,6 +26,7 @@ class TribleDESCipher extends AbstractCipher {
     private final Cipher encCipher1, encCipher2, encCipher3;
     private final Cipher decCipher1, decCipher2, decCipher3;
 
+    /** Class representing the TripleDES cipher. */
     public TribleDESCipher(byte[] key) {
 
         LOGGER.debug("Init with key {}", ArrayConverter.bytesToHexString(key));
@@ -75,6 +76,14 @@ class TribleDESCipher extends AbstractCipher {
         return encrypt(plainData, new byte[8]);
     }
 
+    /**
+     * Encrypts the given plain data using the 3DES (Triple DES) algorithm.
+     *
+     * @param plainData the data to be encrypted
+     * @param iv the initialization vector
+     * @return the encrypted data
+     * @throws CryptoException if an error occurs during the encryption process
+     */
     @Override
     public byte[] encrypt(byte[] plainData, byte[] iv) throws CryptoException {
         // iv = new byte[8];
@@ -105,6 +114,14 @@ class TribleDESCipher extends AbstractCipher {
         return decrypt(encryptedData, new byte[8]);
     }
 
+    /**
+     * Decrypts the given encrypted data using the 3DES (Triple DES) algorithm.
+     *
+     * @param encryptedData the data to be decrypted
+     * @param iv the initialization vector
+     * @return the decrypted data
+     * @throws CryptoException if an error occurs during the decryption process
+     */
     @Override
     public byte[] decrypt(byte[] encryptedData, byte[] iv) throws CryptoException {
         // iv = new byte[8];

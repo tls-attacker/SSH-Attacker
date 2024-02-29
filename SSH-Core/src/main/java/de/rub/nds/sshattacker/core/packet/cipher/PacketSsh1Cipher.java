@@ -73,9 +73,6 @@ public class PacketSsh1Cipher extends PacketCipher {
 
     @Override
     public void encrypt(BinaryPacketSSHv1 packet) {
-
-        LOGGER.debug("Encrypting the Packet now really");
-
         packet.setLength(
                 packet.getCompressedPayload().getValue().length + 4); // +4 for CRC-Checksum
 
@@ -186,12 +183,8 @@ public class PacketSsh1Cipher extends PacketCipher {
         byte[] plainData;
         if (packet instanceof BinaryPacket) {
             plainData = ((BinaryPacket) packet).getComputations().getPlainPacketBytes().getValue();
-            LOGGER.debug(
-                    "PlainData from Computation: {}", ArrayConverter.bytesToHexString(plainData));
         } else {
             plainData = packet.getCompressedPayload().getValue();
-            LOGGER.debug(
-                    "PlainData from Compression: {}", ArrayConverter.bytesToHexString(plainData));
         }
 
         if (encryptionAlgorithm.getIVSize() > 0) {
@@ -395,8 +388,6 @@ public class PacketSsh1Cipher extends PacketCipher {
                 }
             }
             computations.setPlainPacketBytes(plainData);
-            LOGGER.debug("DEBUGGING NOW HIER {}", ArrayConverter.bytesToHexString(plainData));
-
             ModifiableByteArray plain_modifialbel = new ModifiableByteArray();
             plain_modifialbel.setOriginalValue(plainData);
             packet.setPayload(plain_modifialbel);

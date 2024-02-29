@@ -288,7 +288,7 @@ public class PacketMacedCipher extends PacketCipher {
                         isEncryptThenMac() ? 0 : BinaryPacketConstants.PACKET_FIELD_LENGTH);
 
         packet.setPaddingLength(parser.parseByteField(BinaryPacketConstants.PADDING_FIELD_LENGTH));
-        LOGGER.debug("[bro] Padding Lenght:" + packet.getPaddingLength().getValue().intValue());
+        LOGGER.debug("Padding Lenght:" + packet.getPaddingLength().getValue().intValue());
         packet.setCompressedPayload(
                 parser.parseByteArrayField(
                         packet.getLength().getValue()

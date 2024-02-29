@@ -137,14 +137,12 @@ public class PacketLayer extends ProtocolLayer<AbstractPacket> {
 
     @Override
     public void receiveMoreData() throws IOException {
-        LOGGER.debug("[bro] receiveMoreDataForHint now in Transport");
         InputStream dataStream = getLowerLayer().getDataStream();
         LOGGER.debug("Available Data: {}", dataStream.available());
         AbstractPacketParser parser;
         AbstractPacket packet;
-
-        LOGGER.debug("[bro] Receiving a {}", context.getPacketLayer());
         if (context.getPacketLayerType() == PacketLayerType.BINARY_PACKET) {
+            // If we have a SSHv1 connection, parse as sshv1-packet
             if (this.getHigherLayer().getLayerType().getName().equals("SSHV1")) {
                 parser =
                         new BinaryPacketParserSSHv1(
@@ -153,6 +151,7 @@ public class PacketLayer extends ProtocolLayer<AbstractPacket> {
                                 context.getReadSequenceNumber());
                 packet = new BinaryPacketSSHv1();
             } else {
+                // If not, trade it as sshv2-packet
                 parser =
                         new BinaryPacketParser(
                                 dataStream,
@@ -168,18 +167,15 @@ public class PacketLayer extends ProtocolLayer<AbstractPacket> {
             throw new RuntimeException();
         }
 
-        LOGGER.debug("[bro] Parsing a {}", context.getPacketLayer());
         parser.parse(packet);
 
-        LOGGER.debug(
-                "[bro] Recieved Packet: " + packet.getPayload() + " | " + packet.getCiphertext());
+        LOGGER.debug("Recieved Packet: {} | {}", packet.getPayload(), packet.getCiphertext());
 
         decryptPacket(packet);
         decompressPacket(packet);
 
         LOGGER.debug(
-                "[bro] Decompressed Payload: {}",
-                ArrayConverter.bytesToHexString(packet.getPayload()));
+                "Decompressed Payload: {}", ArrayConverter.bytesToHexString(packet.getPayload()));
 
         addProducedContainer(packet);
 
@@ -232,17 +228,15 @@ public class PacketLayer extends ProtocolLayer<AbstractPacket> {
 
     public void updateEncryptionCipher(PacketCipher encryptionCipher) {
         LOGGER.debug(
-                "Activating new EncryptionCipher ("
-                        + encryptionCipher.getClass().getSimpleName()
-                        + ")");
+                "Activating new EncryptionCipher ({})",
+                encryptionCipher.getClass().getSimpleName());
         encryptor.addNewPacketCipher(encryptionCipher);
     }
 
     public void updateDecryptionCipher(PacketCipher decryptionCipher) {
         LOGGER.debug(
-                "Activating new DecryptionCipher ("
-                        + decryptionCipher.getClass().getSimpleName()
-                        + ")");
+                "Activating new DecryptionCipher ({})",
+                decryptionCipher.getClass().getSimpleName());
         decryptor.addNewPacketCipher(decryptionCipher);
     }
 

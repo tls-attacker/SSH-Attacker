@@ -81,7 +81,7 @@ public class LayerStack {
      */
     public LayerStackProcessingResult sendData(List<LayerConfiguration> layerConfigurationList)
             throws IOException {
-        LOGGER.debug("Sending Data");
+        ;
         if (getLayerList().size() != layerConfigurationList.size()) {
             throw new RuntimeException(
                     "Illegal LayerConfiguration list provided. Each layer needs a configuration entry (null is fine too if no explicit configuration is desired). Expected "

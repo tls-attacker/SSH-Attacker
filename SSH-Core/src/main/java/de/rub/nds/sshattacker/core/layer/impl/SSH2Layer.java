@@ -169,230 +169,169 @@ public class SSH2Layer extends ProtocolLayer<ProtocolMessage> {
 
         switch (MessageIdConstant.fromId(packet.getPayload().getValue()[0], context.getContext())) {
             case SSH_MSG_DISCONNECT:
-                LOGGER.debug("[bro] parsing SSH_MSG_DISCONNECT Message");
-                readDisconnect((BinaryPacket) packet);
+                readMessageFromStream(new DisconnectMessage(), (BinaryPacket) packet);
                 return;
             case SSH_MSG_IGNORE:
-                LOGGER.debug("[bro] parsing SSH_MSG_IGNORE Message");
-                readIngoreMessage((BinaryPacket) packet);
+                readMessageFromStream(new IgnoreMessage(), (BinaryPacket) packet);
                 return;
             case SSH_MSG_UNIMPLEMENTED:
-                LOGGER.debug("[bro] parsing SSH_MSG_UNIMPLEMENTED Message");
                 return;
             case SSH_MSG_DEBUG:
-                LOGGER.debug("[bro] parsing SSH_MSG_DEBUG Message");
                 return;
             case SSH_MSG_SERVICE_ACCEPT:
-                LOGGER.debug("[bro] parsing SSH_MSG_SERVICE_ACCEPT Message");
-                readMsgServiceAccept((BinaryPacket) packet);
+                readMessageFromStream(new ServiceAcceptMessage(), (BinaryPacket) packet);
                 return;
             case SSH_MSG_EXT_INFO:
-                LOGGER.debug("[bro] parsing SSH_MSG_EXT_INFO Message");
                 return;
             case SSH_MSG_NEWCOMPRESS:
-                LOGGER.debug("[bro] parsing SSH_MSG_NEWCOMPRESS Message");
                 return;
             case SSH_MSG_KEXINIT:
-                LOGGER.debug("[bro] parsing SSH KEX INIT Message");
-                readKexInitProtocolData((BinaryPacket) packet);
+                readMessageFromStream(new KeyExchangeInitMessage(), (BinaryPacket) packet);
                 return;
             case SSH_MSG_NEWKEYS:
-                LOGGER.debug("[bro] parsing SSH_MSG_NEWKEYS Message");
-                readNewKeysProtocolData((BinaryPacket) packet);
+                readMessageFromStream(new NewKeysMessage(), (BinaryPacket) packet);
                 return;
             case SSH_MSG_KEX_DH_GEX_REQUEST_OLD:
-                LOGGER.debug("[bro] parsing SSH_MSG_KEX_DH_GEX_REQUEST_OLD Message");
-                readGexDHExchangeOldRequest((BinaryPacket) packet);
+                readMessageFromStream(
+                        new DhGexKeyExchangeOldRequestMessage(), (BinaryPacket) packet);
                 return;
             case SSH_MSG_KEX_DH_GEX_REQUEST:
-                LOGGER.debug("[bro] parsing SSH_MSG_KEX_DH_GEX_REQUEST Message");
-                readGexDHExchangeRequest((BinaryPacket) packet);
+                readMessageFromStream(new DhGexKeyExchangeRequestMessage(), (BinaryPacket) packet);
                 return;
             case SSH_MSG_KEX_DH_GEX_GROUP:
-                LOGGER.debug("[bro] parsing SSH_MSG_KEX_DH_GEX_GROUP Message");
-                readGexKeyExchangeGroup((BinaryPacket) packet);
+                readMessageFromStream(new DhGexKeyExchangeGroupMessage(), (BinaryPacket) packet);
                 return;
             case SSH_MSG_KEX_DH_GEX_INIT:
-                LOGGER.debug("[bro] parsing SSH_MSG_KEX_DH_GEX_INIT Message");
-                readGexDHExchangeInitMessage((BinaryPacket) packet);
+                readMessageFromStream(new DhGexKeyExchangeInitMessage(), (BinaryPacket) packet);
                 return;
             case SSH_MSG_KEX_DH_GEX_REPLY:
-                LOGGER.debug("[bro] parsing SSH_MSG_KEX_DH_GEX_REPLY Message");
-                readGexDHExchangeReplyMessage((BinaryPacket) packet);
+                readMessageFromStream(new DhGexKeyExchangeReplyMessage(), (BinaryPacket) packet);
                 return;
             case SSH_MSG_KEXDH_INIT:
-                LOGGER.debug("[bro] parsing SSH_MSG_KEXDH_INIT Message");
-                readDhKeyInitMessage((BinaryPacket) packet);
+                readMessageFromStream(new DhKeyExchangeInitMessage(), (BinaryPacket) packet);
                 return;
             case SSH_MSG_KEXDH_REPLY:
-                LOGGER.debug("[bro] parsing SSH_MSG_KEXDH_REPLY Message");
-                readDhKeyReplyMessage((BinaryPacket) packet);
+                readMessageFromStream(new DhKeyExchangeReplyMessage(), (BinaryPacket) packet);
                 return;
             case SSH_MSG_HBR_INIT:
-                LOGGER.debug("[bro] parsing SSH_MSG_HBR_INIT Message");
-                readHbrInitProtocolData((BinaryPacket) packet);
+                readMessageFromStream(new HybridKeyExchangeInitMessage(), (BinaryPacket) packet);
                 return;
             case SSH_MSG_HBR_REPLY:
-                LOGGER.debug("[bro] parsing SSH_MSG_HBR_REPLY Message");
-                readHbrReplProtocolData((BinaryPacket) packet);
+                readMessageFromStream(new HybridKeyExchangeReplyMessage(), (BinaryPacket) packet);
                 return;
             case SSH_MSG_SERVICE_REQUEST:
-                LOGGER.debug("[bro] parsing SSH_MSG_SERVICE_REQUEST Message");
-                readServiceRequestData((BinaryPacket) packet);
+                readMessageFromStream(new ServiceRequestMessage(), (BinaryPacket) packet);
                 return;
             case SSH_MSG_KEX_ECDH_INIT:
-                LOGGER.debug("[bro] parsing SSH_MSG_KEX_ECDH_INIT Message");
-                readKexECDHInit((BinaryPacket) packet);
+                readMessageFromStream(new EcdhKeyExchangeInitMessage(), (BinaryPacket) packet);
                 return;
             case SSH_MSG_KEX_ECDH_REPLY:
-                LOGGER.debug("[bro] parsing SSH_MSG_KEX_ECDH_REPLY Message");
-                readKexECDHReply((BinaryPacket) packet);
+                readMessageFromStream(new EcdhKeyExchangeReplyMessage(), (BinaryPacket) packet);
                 return;
             case SSH_MSG_ECMQV_INIT:
-                LOGGER.debug("[bro] parsing SSH_MSG_ECMQV_INIT Message");
                 return;
             case SSH_MSG_ECMQV_REPLY:
-                LOGGER.debug("[bro] parsing SSH_MSG_ECMQV_REPLY Message");
                 return;
             case SSH_MSG_KEXRSA_PUBKEY:
-                LOGGER.debug("[bro] parsing SSH_MSG_KEXRSA_PUBKEY Message");
-                readKeyExchangeRSAPubkeyMessage((BinaryPacket) packet);
+                readMessageFromStream(new RsaKeyExchangePubkeyMessage(), (BinaryPacket) packet);
                 return;
             case SSH_MSG_KEXRSA_SECRET:
-                LOGGER.debug("[bro] parsing SSH_MSG_KEXRSA_SECRET Message");
-                readKeyExchangeRSASecret((BinaryPacket) packet);
+                readMessageFromStream(new RsaKeyExchangeSecretMessage(), (BinaryPacket) packet);
                 return;
             case SSH_MSG_KEXRSA_DONE:
-                LOGGER.debug("[bro] parsing SSH_MSG_KEXRSA_DONE Message");
-                readKeyExchangeRSADone((BinaryPacket) packet);
+                readMessageFromStream(new RsaKeyExchangeDoneMessage(), (BinaryPacket) packet);
                 return;
             case SSH_MSG_KEXGSS_INIT:
-                LOGGER.debug("[bro] parsing SSH_MSG_KEXGSS_INIT Message");
                 return;
             case SSH_MSG_KEXGSS_CONTINUE:
-                LOGGER.debug("[bro] parsing SSH_MSG_KEXGSS_CONTINUE Message");
                 return;
             case SSH_MSG_KEXGSS_COMPLETE:
-                LOGGER.debug("[bro] parsing SSH_MSG_KEXGSS_COMPLETE Message");
                 return;
             case SSH_MSG_KEXGSS_HOSTKEY:
-                LOGGER.debug("[bro] parsing SSH_MSG_KEXGSS_HOSTKEY Message");
                 return;
             case SSH_MSG_KEXGSS_ERROR:
-                LOGGER.debug("[bro] parsing SSH_MSG_KEXGSS_ERROR Message");
                 return;
             case SSH_MSG_KEXGSS_GROUPREQ:
-                LOGGER.debug("[bro] parsing SSH_MSG_KEXGSS_GROUPREQ Message");
                 return;
             case SSH_MSG_KEXGSS_GROUP:
-                LOGGER.debug("[bro] parsing SSH_MSG_KEXGSS_GROUP Message");
                 return;
             case SSH_MSG_USERAUTH_REQUEST:
-                LOGGER.debug("[bro] parsing SSH_MSG_USERAUTH_REQUEST Message");
                 readUserAuthReq((BinaryPacket) packet);
                 return;
             case SSH_MSG_USERAUTH_FAILURE:
-                LOGGER.debug("[bro] parsing SSH_MSG_USERAUTH_FAILURE Message");
-                readUserAuthFail((BinaryPacket) packet);
+                readMessageFromStream(new UserAuthFailureMessage(), (BinaryPacket) packet);
                 return;
             case SSH_MSG_USERAUTH_SUCCESS:
-                LOGGER.debug("[bro] parsing SSH_MSG_USERAUTH_SUCCESS Message");
-                readUserAuthSucc((BinaryPacket) packet);
+                readMessageFromStream(new UserAuthSuccessMessage(), (BinaryPacket) packet);
                 return;
             case SSH_MSG_USERAUTH_BANNER:
-                LOGGER.debug("[bro] parsing SSH_MSG_USERAUTH_BANNER Message");
-                readUserAuthBanner((BinaryPacket) packet);
+                readMessageFromStream(new UserAuthBannerMessage(), (BinaryPacket) packet);
                 return;
             case SSH_MSG_USERAUTH_PK_OK:
-                LOGGER.debug("[bro] parsing SSH_MSG_USERAUTH_PK_OK Message");
                 return;
             case SSH_MSG_USERAUTH_PASSWD_CHANGEREQ:
-                LOGGER.debug("[bro] parsing SSH_MSG_USERAUTH_PASSWD_CHANGEREQ Message");
                 return;
             case SSH_MSG_USERAUTH_INFO_REQUEST:
-                LOGGER.debug("[bro] parsing SSH_MSG_USERAUTH_INFO_REQUEST Message");
-                readUserAuthInfoReq((BinaryPacket) packet);
+                readMessageFromStream(new UserAuthInfoRequestMessage(), (BinaryPacket) packet);
                 return;
             case SSH_MSG_USERAUTH_INFO_RESPONSE:
-                LOGGER.debug("[bro] parsing SSH_MSG_USERAUTH_INFO_RESPONSE Message");
-                readUserAuthInfoResp((BinaryPacket) packet);
+                readMessageFromStream(new UserAuthInfoResponseMessage(), (BinaryPacket) packet);
                 return;
             case SSH_MSG_USERAUTH_GSSAPI_RESPONSE:
-                LOGGER.debug("[bro] parsing SSH_MSG_USERAUTH_GSSAPI_RESPONSE Message");
                 return;
             case SSH_MSG_USERAUTH_GSSAPI_TOKEN:
-                LOGGER.debug("[bro] parsing SSH_MSG_USERAUTH_GSSAPI_TOKEN Message");
                 return;
             case SSH_MSG_USERAUTH_GSSAPI_EXCHANGE_COMPLETE:
-                LOGGER.debug("[bro] parsing SSH_MSG_USERAUTH_GSSAPI_EXCHANGE_COMPLETE Message");
                 return;
             case SSH_MSG_USERAUTH_GSSAPI_ERROR:
-                LOGGER.debug("[bro] parsing SSH_MSG_USERAUTH_GSSAPI_ERROR Message");
                 return;
             case SSH_MSG_USERAUTH_GSSAPI_ERRTOK:
-                LOGGER.debug("[bro] parsing SSH_MSG_USERAUTH_GSSAPI_ERRTOK Message");
                 return;
             case SSH_MSG_USERAUTH_GSSAPI_MIC:
-                LOGGER.debug("[bro] parsing SSH_MSG_USERAUTH_GSSAPI_MIC Message");
                 return;
             case SSH_MSG_GLOBAL_REQUEST:
-                LOGGER.debug("[bro] parsing SSH_MSG_GLOBAL_REQUEST Message");
                 readGlobalRequest((BinaryPacket) packet);
                 return;
             case SSH_MSG_REQUEST_SUCCESS:
-                LOGGER.debug("[bro] parsing SSH_MSG_REQUEST_SUCCESS Message");
-                readRequestSuccess((BinaryPacket) packet);
+                readMessageFromStream(new GlobalRequestSuccessMessage(), (BinaryPacket) packet);
                 return;
             case SSH_MSG_REQUEST_FAILURE:
-                LOGGER.debug("[bro] parsing SSH_MSG_REQUEST_FAILURE Message");
-                readRequestFailure((BinaryPacket) packet);
+                readMessageFromStream(new GlobalRequestFailureMessage(), (BinaryPacket) packet);
                 return;
             case SSH_MSG_CHANNEL_OPEN:
-                LOGGER.debug("[bro] parsing SSH_MSG_CHANNEL_OPEN Message");
                 readChannelOpen((BinaryPacket) packet);
                 return;
             case SSH_MSG_CHANNEL_OPEN_CONFIRMATION:
-                LOGGER.debug("[bro] parsing SSH_MSG_CHANNEL_OPEN_CONFIRMATION Message");
-                readChannelOpenConfirmation((BinaryPacket) packet);
+                readMessageFromStream(new ChannelOpenConfirmationMessage(), (BinaryPacket) packet);
                 return;
             case SSH_MSG_CHANNEL_OPEN_FAILURE:
-                LOGGER.debug("[bro] parsing SSH_MSG_CHANNEL_OPEN_FAILURE Message");
-                readChannelOpenFailureMessage((BinaryPacket) packet);
+                readMessageFromStream(new ChannelOpenFailureMessage(), (BinaryPacket) packet);
                 return;
             case SSH_MSG_CHANNEL_WINDOW_ADJUST:
-                LOGGER.debug("[bro] parsing SSH_MSG_CHANNEL_WINDOW_ADJUST Message");
-                readChannelWindowsAdjust((BinaryPacket) packet);
+                readMessageFromStream(new ChannelWindowAdjustMessage(), (BinaryPacket) packet);
                 return;
             case SSH_MSG_CHANNEL_DATA:
-                LOGGER.debug("[bro] parsing SSH_MSG_CHANNEL_DATA Message");
-                readChannelDataMessage((BinaryPacket) packet);
+                readMessageFromStream(new ChannelDataMessage(), (BinaryPacket) packet);
                 return;
             case SSH_MSG_CHANNEL_EXTENDED_DATA:
-                LOGGER.debug("[bro] parsing SSH_MSG_CHANNEL_EXTENDED_DATA Message");
-                readChannelExtendedDataMessage((BinaryPacket) packet);
+                readMessageFromStream(new ChannelExtendedDataMessage(), (BinaryPacket) packet);
                 return;
             case SSH_MSG_CHANNEL_EOF:
-                LOGGER.debug("[bro] parsing SSH_MSG_CHANNEL_EOF Message");
-                readChannelCloseMessage((BinaryPacket) packet);
+                readMessageFromStream(new ChannelEofMessage(), (BinaryPacket) packet);
                 return;
             case SSH_MSG_CHANNEL_CLOSE:
-                LOGGER.debug("[bro] parsing SSH_MSG_CHANNEL_CLOSE Message");
-                readChannelCloseMessage((BinaryPacket) packet);
+                readMessageFromStream(new ChannelCloseMessage(), (BinaryPacket) packet);
                 return;
             case SSH_MSG_CHANNEL_REQUEST:
-                LOGGER.debug("[bro] parsing SSH_MSG_CHANNEL_REQUEST Message");
                 readChannelRequest((BinaryPacket) packet);
                 return;
             case SSH_MSG_CHANNEL_SUCCESS:
-                LOGGER.debug("[bro] parsing SSH_MSG_CHANNEL_SUCCESS Message");
-                readChannelSuccessMessage((BinaryPacket) packet);
+                readMessageFromStream(new ChannelSuccessMessage(), (BinaryPacket) packet);
                 return;
             case SSH_MSG_CHANNEL_FAILURE:
-                LOGGER.debug("[bro] parsing SSH_MSG_CHANNEL_FAILURE Message");
-                readChannelFailureMessage((BinaryPacket) packet);
+                readMessageFromStream(new ChannelFailureMessage(), (BinaryPacket) packet);
                 return;
             case UNKNOWN:
-                LOGGER.debug("[bro] parsing UNKNOWN Message");
                 return;
             default:
                 LOGGER.debug(
@@ -739,308 +678,7 @@ public class SSH2Layer extends ProtocolLayer<ProtocolMessage> {
         readContainerFromStream(message, context, temp_stream);
     }
 
-    private void readIngoreMessage(AbstractPacket<BinaryPacket> packet) {
-        ChannelSuccessMessage message = new ChannelSuccessMessage();
-        HintedInputStream temp_stream;
-
-        temp_stream =
-                new HintedInputStreamAdapterStream(
-                        new ByteArrayInputStream(packet.getPayload().getValue()));
-        readContainerFromStream(message, context, temp_stream);
-    }
-
-    private void readKexECDHInit(AbstractPacket<BinaryPacket> packet) {
-        EcdhKeyExchangeInitMessage message = new EcdhKeyExchangeInitMessage();
-        HintedInputStream temp_stream;
-
-        temp_stream =
-                new HintedInputStreamAdapterStream(
-                        new ByteArrayInputStream(packet.getPayload().getValue()));
-        readContainerFromStream(message, context, temp_stream);
-    }
-
-    private void readKexECDHReply(AbstractPacket<BinaryPacket> packet) {
-        EcdhKeyExchangeReplyMessage message = new EcdhKeyExchangeReplyMessage();
-        HintedInputStream temp_stream;
-
-        temp_stream =
-                new HintedInputStreamAdapterStream(
-                        new ByteArrayInputStream(packet.getPayload().getValue()));
-        readContainerFromStream(message, context, temp_stream);
-    }
-
-    private void readChannelSuccessMessage(AbstractPacket<BinaryPacket> packet) {
-        ChannelSuccessMessage message = new ChannelSuccessMessage();
-        HintedInputStream temp_stream;
-
-        temp_stream =
-                new HintedInputStreamAdapterStream(
-                        new ByteArrayInputStream(packet.getPayload().getValue()));
-        readContainerFromStream(message, context, temp_stream);
-    }
-
-    private void readChannelCloseMessage(AbstractPacket<BinaryPacket> packet) {
-        ChannelCloseMessage message = new ChannelCloseMessage();
-        HintedInputStream temp_stream;
-
-        temp_stream =
-                new HintedInputStreamAdapterStream(
-                        new ByteArrayInputStream(packet.getPayload().getValue()));
-        readContainerFromStream(message, context, temp_stream);
-    }
-
-    private void readChannelEofMessage(AbstractPacket<BinaryPacket> packet) {
-        ChannelEofMessage message = new ChannelEofMessage();
-        HintedInputStream temp_stream;
-
-        temp_stream =
-                new HintedInputStreamAdapterStream(
-                        new ByteArrayInputStream(packet.getPayload().getValue()));
-        readContainerFromStream(message, context, temp_stream);
-    }
-
-    private void readChannelExtendedDataMessage(AbstractPacket<BinaryPacket> packet) {
-        ChannelExtendedDataMessage message = new ChannelExtendedDataMessage();
-        HintedInputStream temp_stream;
-
-        temp_stream =
-                new HintedInputStreamAdapterStream(
-                        new ByteArrayInputStream(packet.getPayload().getValue()));
-        readContainerFromStream(message, context, temp_stream);
-    }
-
-    private void readChannelFailureMessage(AbstractPacket<BinaryPacket> packet) {
-        ChannelFailureMessage message = new ChannelFailureMessage();
-        HintedInputStream temp_stream;
-
-        temp_stream =
-                new HintedInputStreamAdapterStream(
-                        new ByteArrayInputStream(packet.getPayload().getValue()));
-        readContainerFromStream(message, context, temp_stream);
-    }
-
-    private void readChannelOpenFailureMessage(AbstractPacket<BinaryPacket> packet) {
-        ChannelOpenFailureMessage message = new ChannelOpenFailureMessage();
-        HintedInputStream temp_stream;
-
-        temp_stream =
-                new HintedInputStreamAdapterStream(
-                        new ByteArrayInputStream(packet.getPayload().getValue()));
-        readContainerFromStream(message, context, temp_stream);
-    }
-
-    private void readChannelOpenConfirmation(AbstractPacket<BinaryPacket> packet) {
-        ChannelOpenConfirmationMessage message = new ChannelOpenConfirmationMessage();
-        HintedInputStream temp_stream;
-
-        temp_stream =
-                new HintedInputStreamAdapterStream(
-                        new ByteArrayInputStream(packet.getPayload().getValue()));
-        readContainerFromStream(message, context, temp_stream);
-    }
-
-    private void readUserAuthSucc(AbstractPacket<BinaryPacket> packet) {
-        UserAuthSuccessMessage message = new UserAuthSuccessMessage();
-        HintedInputStream temp_stream;
-
-        temp_stream =
-                new HintedInputStreamAdapterStream(
-                        new ByteArrayInputStream(packet.getPayload().getValue()));
-        readContainerFromStream(message, context, temp_stream);
-    }
-
-    private void readDisconnect(AbstractPacket<BinaryPacket> packet) {
-        DisconnectMessage message = new DisconnectMessage();
-        HintedInputStream temp_stream;
-
-        temp_stream =
-                new HintedInputStreamAdapterStream(
-                        new ByteArrayInputStream(packet.getPayload().getValue()));
-        readContainerFromStream(message, context, temp_stream);
-    }
-
-    private void readGexDHExchangeOldRequest(AbstractPacket<BinaryPacket> packet) {
-        DhGexKeyExchangeOldRequestMessage message = new DhGexKeyExchangeOldRequestMessage();
-        HintedInputStream temp_stream;
-
-        temp_stream =
-                new HintedInputStreamAdapterStream(
-                        new ByteArrayInputStream(packet.getPayload().getValue()));
-        readContainerFromStream(message, context, temp_stream);
-    }
-
-    private void readGexKeyExchangeGroup(AbstractPacket<BinaryPacket> packet) {
-        DhGexKeyExchangeGroupMessage message = new DhGexKeyExchangeGroupMessage();
-        HintedInputStream temp_stream;
-
-        temp_stream =
-                new HintedInputStreamAdapterStream(
-                        new ByteArrayInputStream(packet.getPayload().getValue()));
-        readContainerFromStream(message, context, temp_stream);
-    }
-
-    private void readGexDHExchangeRequest(AbstractPacket<BinaryPacket> packet) {
-        DhGexKeyExchangeRequestMessage message = new DhGexKeyExchangeRequestMessage();
-        HintedInputStream temp_stream;
-
-        temp_stream =
-                new HintedInputStreamAdapterStream(
-                        new ByteArrayInputStream(packet.getPayload().getValue()));
-        readContainerFromStream(message, context, temp_stream);
-    }
-
-    private void readUserAuthFail(AbstractPacket<BinaryPacket> packet) {
-        UserAuthFailureMessage message = new UserAuthFailureMessage();
-        HintedInputStream temp_stream;
-
-        temp_stream =
-                new HintedInputStreamAdapterStream(
-                        new ByteArrayInputStream(packet.getPayload().getValue()));
-        readContainerFromStream(message, context, temp_stream);
-    }
-
-    private void readGexDHExchangeInitMessage(AbstractPacket<BinaryPacket> packet) {
-        DhGexKeyExchangeInitMessage message = new DhGexKeyExchangeInitMessage();
-        HintedInputStream temp_stream;
-
-        temp_stream =
-                new HintedInputStreamAdapterStream(
-                        new ByteArrayInputStream(packet.getPayload().getValue()));
-        readContainerFromStream(message, context, temp_stream);
-    }
-
-    private void readDhKeyInitMessage(AbstractPacket<BinaryPacket> packet) {
-        DhKeyExchangeInitMessage message = new DhKeyExchangeInitMessage();
-        HintedInputStream temp_stream;
-
-        temp_stream =
-                new HintedInputStreamAdapterStream(
-                        new ByteArrayInputStream(packet.getPayload().getValue()));
-        readContainerFromStream(message, context, temp_stream);
-    }
-
-    private void readDhKeyReplyMessage(AbstractPacket<BinaryPacket> packet) {
-        DhKeyExchangeReplyMessage message = new DhKeyExchangeReplyMessage();
-        HintedInputStream temp_stream;
-
-        temp_stream =
-                new HintedInputStreamAdapterStream(
-                        new ByteArrayInputStream(packet.getPayload().getValue()));
-        readContainerFromStream(message, context, temp_stream);
-    }
-
-    private void readGexDHExchangeReplyMessage(AbstractPacket<BinaryPacket> packet) {
-        DhGexKeyExchangeReplyMessage message = new DhGexKeyExchangeReplyMessage();
-        HintedInputStream temp_stream;
-
-        temp_stream =
-                new HintedInputStreamAdapterStream(
-                        new ByteArrayInputStream(packet.getPayload().getValue()));
-        readContainerFromStream(message, context, temp_stream);
-    }
-
-    private void readKeyExchangeRSAPubkeyMessage(AbstractPacket<BinaryPacket> packet) {
-        RsaKeyExchangePubkeyMessage message = new RsaKeyExchangePubkeyMessage();
-        HintedInputStream temp_stream;
-
-        temp_stream =
-                new HintedInputStreamAdapterStream(
-                        new ByteArrayInputStream(packet.getPayload().getValue()));
-        readContainerFromStream(message, context, temp_stream);
-    }
-
-    private void readKeyExchangeRSASecret(AbstractPacket<BinaryPacket> packet) {
-        RsaKeyExchangeSecretMessage message = new RsaKeyExchangeSecretMessage();
-        HintedInputStream temp_stream;
-
-        temp_stream =
-                new HintedInputStreamAdapterStream(
-                        new ByteArrayInputStream(packet.getPayload().getValue()));
-        readContainerFromStream(message, context, temp_stream);
-    }
-
-    private void readKeyExchangeRSADone(AbstractPacket<BinaryPacket> packet) {
-        RsaKeyExchangeDoneMessage message = new RsaKeyExchangeDoneMessage();
-        HintedInputStream temp_stream;
-
-        temp_stream =
-                new HintedInputStreamAdapterStream(
-                        new ByteArrayInputStream(packet.getPayload().getValue()));
-        readContainerFromStream(message, context, temp_stream);
-    }
-
-    private void readUserAuthBanner(AbstractPacket<BinaryPacket> packet) {
-        UserAuthBannerMessage message = new UserAuthBannerMessage();
-        HintedInputStream temp_stream;
-
-        temp_stream =
-                new HintedInputStreamAdapterStream(
-                        new ByteArrayInputStream(packet.getPayload().getValue()));
-        readContainerFromStream(message, context, temp_stream);
-    }
-
-    private void readUserAuthInfoReq(AbstractPacket<BinaryPacket> packet) {
-        UserAuthInfoRequestMessage message = new UserAuthInfoRequestMessage();
-        HintedInputStream temp_stream;
-
-        temp_stream =
-                new HintedInputStreamAdapterStream(
-                        new ByteArrayInputStream(packet.getPayload().getValue()));
-        readContainerFromStream(message, context, temp_stream);
-    }
-
-    private void readUserAuthInfoResp(AbstractPacket<BinaryPacket> packet) {
-        UserAuthInfoResponseMessage message = new UserAuthInfoResponseMessage();
-        HintedInputStream temp_stream;
-
-        temp_stream =
-                new HintedInputStreamAdapterStream(
-                        new ByteArrayInputStream(packet.getPayload().getValue()));
-        readContainerFromStream(message, context, temp_stream);
-    }
-
-    private void readRequestSuccess(AbstractPacket<BinaryPacket> packet) {
-        GlobalRequestSuccessMessage message = new GlobalRequestSuccessMessage();
-        HintedInputStream temp_stream;
-
-        temp_stream =
-                new HintedInputStreamAdapterStream(
-                        new ByteArrayInputStream(packet.getPayload().getValue()));
-        readContainerFromStream(message, context, temp_stream);
-    }
-
-    private void readRequestFailure(AbstractPacket<BinaryPacket> packet) {
-        GlobalRequestFailureMessage message = new GlobalRequestFailureMessage();
-        HintedInputStream temp_stream;
-
-        temp_stream =
-                new HintedInputStreamAdapterStream(
-                        new ByteArrayInputStream(packet.getPayload().getValue()));
-        readContainerFromStream(message, context, temp_stream);
-    }
-
-    private void readChannelWindowsAdjust(AbstractPacket<BinaryPacket> packet) {
-        ChannelWindowAdjustMessage message = new ChannelWindowAdjustMessage();
-        HintedInputStream temp_stream;
-
-        temp_stream =
-                new HintedInputStreamAdapterStream(
-                        new ByteArrayInputStream(packet.getPayload().getValue()));
-        readContainerFromStream(message, context, temp_stream);
-    }
-
-    private void readChannelDataMessage(AbstractPacket<BinaryPacket> packet) {
-        ChannelDataMessage message = new ChannelDataMessage();
-        HintedInputStream temp_stream;
-
-        temp_stream =
-                new HintedInputStreamAdapterStream(
-                        new ByteArrayInputStream(packet.getPayload().getValue()));
-        readContainerFromStream(message, context, temp_stream);
-    }
-
-    private void readServiceRequestData(AbstractPacket<BinaryPacket> packet) {
-        ServiceRequestMessage message = new ServiceRequestMessage();
+    private void readMessageFromStream(ProtocolMessage<?> message, AbstractPacket<?> packet) {
         HintedInputStream temp_stream;
 
         temp_stream =
@@ -1081,56 +719,6 @@ public class SSH2Layer extends ProtocolLayer<ProtocolMessage> {
                 LOGGER.debug(
                         "Received unimplemented channel open message type: {}", channelTypeString);
         }
-    }
-
-    private void readMsgServiceAccept(AbstractPacket<BinaryPacket> packet) {
-        ServiceAcceptMessage message = new ServiceAcceptMessage();
-        HintedInputStream temp_stream;
-
-        temp_stream =
-                new HintedInputStreamAdapterStream(
-                        new ByteArrayInputStream(packet.getPayload().getValue()));
-        readContainerFromStream(message, context, temp_stream);
-    }
-
-    private void readHbrReplProtocolData(AbstractPacket<BinaryPacket> packet) {
-        HybridKeyExchangeReplyMessage message = new HybridKeyExchangeReplyMessage();
-        HintedInputStream temp_stream;
-
-        temp_stream =
-                new HintedInputStreamAdapterStream(
-                        new ByteArrayInputStream(packet.getPayload().getValue()));
-        readContainerFromStream(message, context, temp_stream);
-    }
-
-    private void readNewKeysProtocolData(AbstractPacket<BinaryPacket> packet) {
-        NewKeysMessage message = new NewKeysMessage();
-        HintedInputStream temp_stream;
-
-        temp_stream =
-                new HintedInputStreamAdapterStream(
-                        new ByteArrayInputStream(packet.getPayload().getValue()));
-        readContainerFromStream(message, context, temp_stream);
-    }
-
-    private void readKexInitProtocolData(AbstractPacket<BinaryPacket> packet) {
-        KeyExchangeInitMessage message = new KeyExchangeInitMessage();
-        HintedInputStream temp_stream;
-
-        temp_stream =
-                new HintedInputStreamAdapterStream(
-                        new ByteArrayInputStream(packet.getPayload().getValue()));
-        readContainerFromStream(message, context, temp_stream);
-    }
-
-    private void readHbrInitProtocolData(AbstractPacket<BinaryPacket> packet) {
-        HybridKeyExchangeInitMessage message = new HybridKeyExchangeInitMessage();
-        HintedInputStream temp_stream;
-
-        temp_stream =
-                new HintedInputStreamAdapterStream(
-                        new ByteArrayInputStream(packet.getPayload().getValue()));
-        readContainerFromStream(message, context, temp_stream);
     }
 
     private void readVersionExchangeProtocolData(AbstractPacket<BlobPacket> packet) {
