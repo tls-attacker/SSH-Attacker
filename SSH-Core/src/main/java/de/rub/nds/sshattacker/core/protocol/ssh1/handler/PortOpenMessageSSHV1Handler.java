@@ -9,7 +9,6 @@ package de.rub.nds.sshattacker.core.protocol.ssh1.handler;
 
 import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
-import de.rub.nds.sshattacker.core.protocol.ssh1.message.PortForwardRequestMessageSSH1;
 import de.rub.nds.sshattacker.core.protocol.ssh1.message.PortOpenMessageSSH1;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -24,6 +23,11 @@ public class PortOpenMessageSSHV1Handler extends SshMessageHandler<PortOpenMessa
 
     @Override
     public void adjustContext(PortOpenMessageSSH1 message) {
-        LOGGER.warn("Opening Port {} to {} on Channel {} with originator_string{}", message.getPort().getValue(), message.getHostName().getValue(),message.getLocalChannel().getValue(), message.getOriginatorString());
+        LOGGER.warn(
+                "Opening Port {} to {} on Channel {} with originator_string{}",
+                message.getPort().getValue(),
+                message.getHostName().getValue(),
+                message.getLocalChannel().getValue(),
+                message.getOriginatorString());
     }
 }

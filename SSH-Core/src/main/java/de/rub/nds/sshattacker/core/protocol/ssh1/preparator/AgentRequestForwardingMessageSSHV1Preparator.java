@@ -10,16 +10,17 @@ package de.rub.nds.sshattacker.core.protocol.ssh1.preparator;
 import de.rub.nds.sshattacker.core.constants.MessageIdConstantSSH1;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.ssh1.message.AgentRequestForwardingMessageSSH1;
-import de.rub.nds.sshattacker.core.protocol.ssh1.message.EofMessageSSH1;
 import de.rub.nds.sshattacker.core.workflow.chooser.Chooser;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class AgentRequestForwardingMessageSSHV1Preparator extends SshMessagePreparator<AgentRequestForwardingMessageSSH1> {
+public class AgentRequestForwardingMessageSSHV1Preparator
+        extends SshMessagePreparator<AgentRequestForwardingMessageSSH1> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public AgentRequestForwardingMessageSSHV1Preparator(Chooser chooser, AgentRequestForwardingMessageSSH1 message) {
+    public AgentRequestForwardingMessageSSHV1Preparator(
+            Chooser chooser, AgentRequestForwardingMessageSSH1 message) {
         super(chooser, message, MessageIdConstantSSH1.SSH_CMSG_AGENT_REQUEST_FORWARDING);
     }
 

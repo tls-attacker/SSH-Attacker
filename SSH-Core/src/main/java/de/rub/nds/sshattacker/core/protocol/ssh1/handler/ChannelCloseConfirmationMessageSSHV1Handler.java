@@ -10,11 +10,11 @@ package de.rub.nds.sshattacker.core.protocol.ssh1.handler;
 import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.ssh1.message.ChannelCloseConfirmationMessageSSH1;
-import de.rub.nds.sshattacker.core.protocol.ssh1.message.ChannelCloseMessageSSH1;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class ChannelCloseConfirmationMessageSSHV1Handler extends SshMessageHandler<ChannelCloseConfirmationMessageSSH1> {
+public class ChannelCloseConfirmationMessageSSHV1Handler
+        extends SshMessageHandler<ChannelCloseConfirmationMessageSSH1> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -24,6 +24,8 @@ public class ChannelCloseConfirmationMessageSSHV1Handler extends SshMessageHandl
 
     @Override
     public void adjustContext(ChannelCloseConfirmationMessageSSH1 message) {
-        LOGGER.warn("Recieved channel open failure for channel{}", message.getRemoteChannel().getValue());
+        LOGGER.warn(
+                "Recieved channel open failure for channel{}",
+                message.getRemoteChannel().getValue());
     }
 }

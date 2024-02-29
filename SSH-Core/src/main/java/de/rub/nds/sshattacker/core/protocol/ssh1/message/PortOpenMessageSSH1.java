@@ -15,15 +15,10 @@ import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
-import de.rub.nds.sshattacker.core.protocol.ssh1.handler.PortForwardRequestMessageSSHV1Handler;
 import de.rub.nds.sshattacker.core.protocol.ssh1.handler.PortOpenMessageSSHV1Handler;
-import de.rub.nds.sshattacker.core.protocol.ssh1.parser.PortForwardRequestMessageSSHV1Parser;
 import de.rub.nds.sshattacker.core.protocol.ssh1.parser.PortOpenMessageSSHV1Parser;
-import de.rub.nds.sshattacker.core.protocol.ssh1.preparator.PortForwardRequestMessageSSHV1Preparator;
 import de.rub.nds.sshattacker.core.protocol.ssh1.preparator.PortOpenMessageSSHV1Preparator;
-import de.rub.nds.sshattacker.core.protocol.ssh1.serializer.PortForwardRequestMessageSSHV1Serializier;
 import de.rub.nds.sshattacker.core.protocol.ssh1.serializer.PortOpenMessageSSHV1Serializier;
-
 import java.io.InputStream;
 
 public class PortOpenMessageSSH1 extends SshMessage<PortOpenMessageSSH1> {
@@ -42,7 +37,8 @@ public class PortOpenMessageSSH1 extends SshMessage<PortOpenMessageSSH1> {
     }
 
     public void setOriginatorString(String originatorString) {
-        this.originatorString = ModifiableVariableFactory.safelySetValue(this.originatorString, originatorString);
+        this.originatorString =
+                ModifiableVariableFactory.safelySetValue(this.originatorString, originatorString);
     }
 
     public ModifiableString getHostName() {
@@ -58,7 +54,7 @@ public class PortOpenMessageSSH1 extends SshMessage<PortOpenMessageSSH1> {
     }
 
     public void setPort(int port) {
-        this.port = ModifiableVariableFactory.safelySetValue(this.port,port);
+        this.port = ModifiableVariableFactory.safelySetValue(this.port, port);
     }
 
     public void setHostName(ModifiableString hostName) {
@@ -69,11 +65,9 @@ public class PortOpenMessageSSH1 extends SshMessage<PortOpenMessageSSH1> {
         this.hostName = ModifiableVariableFactory.safelySetValue(this.hostName, hostName);
     }
 
-
     public void getHostName(String hostName) {
         this.hostName = ModifiableVariableFactory.safelySetValue(this.hostName, hostName);
     }
-
 
     public ModifiableInteger getLocalChannel() {
         return localChannel;
@@ -84,7 +78,8 @@ public class PortOpenMessageSSH1 extends SshMessage<PortOpenMessageSSH1> {
     }
 
     public void setLocalChannel(int localChannel) {
-        this.localChannel = ModifiableVariableFactory.safelySetValue(this.localChannel, localChannel);
+        this.localChannel =
+                ModifiableVariableFactory.safelySetValue(this.localChannel, localChannel);
     }
 
     @Override
@@ -93,8 +88,7 @@ public class PortOpenMessageSSH1 extends SshMessage<PortOpenMessageSSH1> {
     }
 
     @Override
-    public SshMessageParser<PortOpenMessageSSH1> getParser(
-            SshContext context, InputStream stream) {
+    public SshMessageParser<PortOpenMessageSSH1> getParser(SshContext context, InputStream stream) {
         return new PortOpenMessageSSHV1Parser(context, stream);
     }
 

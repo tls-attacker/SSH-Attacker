@@ -10,13 +10,12 @@ package de.rub.nds.sshattacker.core.protocol.ssh1.serializer;
 import de.rub.nds.sshattacker.core.constants.DataFormatConstants;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.ssh1.message.PortForwardRequestMessageSSH1;
-import de.rub.nds.sshattacker.core.protocol.ssh1.message.X11OpenMessageSSH1;
+import java.nio.charset.StandardCharsets;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.nio.charset.StandardCharsets;
-
-public class PortForwardRequestMessageSSHV1Serializier extends SshMessageSerializer<PortForwardRequestMessageSSH1> {
+public class PortForwardRequestMessageSSHV1Serializier
+        extends SshMessageSerializer<PortForwardRequestMessageSSH1> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -25,7 +24,11 @@ public class PortForwardRequestMessageSSHV1Serializier extends SshMessageSeriali
     }
 
     private void serializeExitStatus() {
-        LOGGER.debug("Forwarding {} to {}:{}", message.getServerPort().getValue(),message.getHostToConnect().getValue(),message.getPortToConnect().getValue());
+        LOGGER.debug(
+                "Forwarding {} to {}:{}",
+                message.getServerPort().getValue(),
+                message.getHostToConnect().getValue(),
+                message.getPortToConnect().getValue());
         appendInt(message.getServerPort().getValue(), DataFormatConstants.UINT32_SIZE);
         appendInt(message.getHostToConnect().getValue().length(), DataFormatConstants.UINT32_SIZE);
         appendString(message.getHostToConnect().getValue(), StandardCharsets.UTF_8);

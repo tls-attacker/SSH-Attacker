@@ -9,11 +9,11 @@ package de.rub.nds.sshattacker.core.protocol.ssh1.serializer;
 
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.ssh1.message.RsaAuthChallengeMessageSSH1;
-import de.rub.nds.sshattacker.core.protocol.ssh1.message.RsaAuthMessageSSH1;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class RsaAuthChallengeMessageSSHV1Serializier extends SshMessageSerializer<RsaAuthChallengeMessageSSH1> {
+public class RsaAuthChallengeMessageSSHV1Serializier
+        extends SshMessageSerializer<RsaAuthChallengeMessageSSH1> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 

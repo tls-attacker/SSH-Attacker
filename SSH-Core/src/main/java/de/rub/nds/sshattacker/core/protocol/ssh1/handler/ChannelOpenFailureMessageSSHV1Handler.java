@@ -13,7 +13,8 @@ import de.rub.nds.sshattacker.core.protocol.ssh1.message.ChannelOpenFailureMessa
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class ChannelOpenFailureMessageSSHV1Handler extends SshMessageHandler<ChannelOpenFailureMessageSSH1> {
+public class ChannelOpenFailureMessageSSHV1Handler
+        extends SshMessageHandler<ChannelOpenFailureMessageSSH1> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -23,6 +24,8 @@ public class ChannelOpenFailureMessageSSHV1Handler extends SshMessageHandler<Cha
 
     @Override
     public void adjustContext(ChannelOpenFailureMessageSSH1 message) {
-        LOGGER.warn("Recieved channel open failure for channel{}", message.getRemoteChannel().getValue());
+        LOGGER.warn(
+                "Recieved channel open failure for channel{}",
+                message.getRemoteChannel().getValue());
     }
 }

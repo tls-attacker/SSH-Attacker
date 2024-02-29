@@ -31,15 +31,6 @@ public class BinaryPacketParserSSHv1 extends AbstractPacketParser<BinaryPacketSS
      */
     private final int sequenceNumber;
 
-    /*
-        public BinaryPacketParser(
-                byte[] array, int startPosition, PacketCipher activeDecryptCipher, int sequenceNumber) {
-            super(array, startPosition);
-            this.activeDecryptCipher = activeDecryptCipher;
-            this.sequenceNumber = sequenceNumber;
-        }
-    */
-
     public BinaryPacketParserSSHv1(
             InputStream stream, PacketCipher activeDecryptCipher, int sequenceNumber) {
         super(stream);
@@ -52,7 +43,6 @@ public class BinaryPacketParserSSHv1 extends AbstractPacketParser<BinaryPacketSS
     public void parse(BinaryPacketSSHv1 binaryPacket) {
         LOGGER.debug("Parsing BinaryPacket from serialized bytes:");
         try {
-            // BinaryPacket binaryPacket = new BinaryPacket();
             if (activeDecryptCipher.getEncryptionAlgorithm()
                     == EncryptionAlgorithm.CHACHA20_POLY1305_OPENSSH_COM) {
                 LOGGER.debug("Packet structure: ChaCha20-Poly1305");
@@ -88,24 +78,8 @@ public class BinaryPacketParserSSHv1 extends AbstractPacketParser<BinaryPacketSS
                         "Encrypted packet bytes: {}",
                         ArrayConverter.bytesToHexString(binaryPacket.getCiphertext().getValue()));
             }
-
-            /*            if (activeDecryptCipher.getEncryptionAlgorithm().getMode() == EncryptionMode.GCM) {
-                LOGGER.debug(
-                        "Authentication tag: {}",
-                        ArrayConverter.bytesToHexString(binaryPacket.getMac()));
-            } else {
-                if (binaryPacket.getMac().getValue().length > 0) {
-                    LOGGER.debug("MAC: {}", ArrayConverter.bytesToHexString(binaryPacket.getMac()));
-                } else {
-                    LOGGER.debug("MAC: [empty]");
-                }
-            }*/
-            // return binaryPacket;
         } catch (CryptoException e) {
             LOGGER.warn("Caught a CryptoException while parsing an encrypted binary packet", e);
-            //
-            //
-            // return null;
         }
     }
 
@@ -191,14 +165,8 @@ public class BinaryPacketParserSSHv1 extends AbstractPacketParser<BinaryPacketSS
             }
             firstBlock = ArrayConverter.concatenate(firstBlock, decryptedBlock);
             decryptedByteCount += blockSize;
-            LOGGER.debug(
-                    "LENGHT_FIELD_LENGHT = {} - DECRYPTED = {} - DECRYPTED_LENGHT = {}",
-                    BinaryPacketConstants.LENGTH_FIELD_LENGTH,
-                    firstBlock,
-                    firstBlock.length);
         } while (decryptedByteCount < BinaryPacketConstants.LENGTH_FIELD_LENGTH);
         // setPointer(pointer);
-        LOGGER.debug("DONE WITH PARSING LENGHT");
         computations.setPlainPacketBytes(firstBlock, true);
 
         binaryPacket.setLength(
@@ -210,19 +178,11 @@ public class BinaryPacketParserSSHv1 extends AbstractPacketParser<BinaryPacketSS
 
         binaryPacket.setCiphertext(
                 parseByteArrayField(paddingLenght + binaryPacket.getLength().getValue()));
-        /*        binaryPacket.setMac(
-        parseByteArrayField(activeDecryptCipher.getMacAlgorithm().getOutputSize()));*/
-        LOGGER.debug("DONE WITH PARSING parseEAMPacket ");
     }
 
     private void parseSSHv1Packet(BinaryPacketSSHv1 binaryPacket) throws CryptoException {
-        LOGGER.debug("PARSING SSHv1Packet");
         binaryPacket.setLength(parseIntField(BinaryPacketConstants.LENGTH_FIELD_LENGTH));
-        LOGGER.debug("LENGHT = {}", binaryPacket.getLength());
-
         int padding_lenght = 8 - (binaryPacket.getLength().getValue() % 8);
-        LOGGER.debug("PADDING LENGHT = {}", padding_lenght);
-
         binaryPacket.setCiphertext(
                 parseByteArrayField(binaryPacket.getLength().getValue() + padding_lenght));
     }

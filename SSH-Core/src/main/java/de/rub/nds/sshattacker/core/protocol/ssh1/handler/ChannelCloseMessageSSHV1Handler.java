@@ -10,7 +10,6 @@ package de.rub.nds.sshattacker.core.protocol.ssh1.handler;
 import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.ssh1.message.ChannelCloseMessageSSH1;
-import de.rub.nds.sshattacker.core.protocol.ssh1.message.ChannelOpenFailureMessageSSH1;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -24,6 +23,8 @@ public class ChannelCloseMessageSSHV1Handler extends SshMessageHandler<ChannelCl
 
     @Override
     public void adjustContext(ChannelCloseMessageSSH1 message) {
-        LOGGER.warn("Recieved channel open failure for channel{}", message.getRemoteChannel().getValue());
+        LOGGER.warn(
+                "Recieved channel open failure for channel{}",
+                message.getRemoteChannel().getValue());
     }
 }

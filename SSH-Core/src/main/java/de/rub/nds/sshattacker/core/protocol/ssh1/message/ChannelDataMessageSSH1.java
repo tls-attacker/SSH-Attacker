@@ -16,14 +16,9 @@ import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.ssh1.handler.ChannelDataMessageSSHV1Handler;
-import de.rub.nds.sshattacker.core.protocol.ssh1.handler.ChannelOpenFailureMessageSSHV1Handler;
 import de.rub.nds.sshattacker.core.protocol.ssh1.parser.ChannelDataMessageSSHV1Parser;
-import de.rub.nds.sshattacker.core.protocol.ssh1.parser.ChannelOpenFailureMessageSSHV1Parser;
 import de.rub.nds.sshattacker.core.protocol.ssh1.preparator.ChannelDataMessageSSHV1Preparator;
-import de.rub.nds.sshattacker.core.protocol.ssh1.preparator.ChannelOpenFailureMessageSSHV1Preparator;
 import de.rub.nds.sshattacker.core.protocol.ssh1.serializer.ChannelDataMessageSSHV1Serializier;
-import de.rub.nds.sshattacker.core.protocol.ssh1.serializer.ChannelOpenFailureMessageSSHV1Serializier;
-
 import java.io.InputStream;
 
 public class ChannelDataMessageSSH1 extends SshMessage<ChannelDataMessageSSH1> {
@@ -43,7 +38,6 @@ public class ChannelDataMessageSSH1 extends SshMessage<ChannelDataMessageSSH1> {
         this.data = ModifiableVariableFactory.safelySetValue(this.data, data);
     }
 
-
     public ModifiableInteger getRemoteChannel() {
         return remoteChannel;
     }
@@ -53,7 +47,8 @@ public class ChannelDataMessageSSH1 extends SshMessage<ChannelDataMessageSSH1> {
     }
 
     public void setRemoteChannel(int remoteChannel) {
-        this.remoteChannel = ModifiableVariableFactory.safelySetValue(this.remoteChannel, remoteChannel);
+        this.remoteChannel =
+                ModifiableVariableFactory.safelySetValue(this.remoteChannel, remoteChannel);
     }
 
     @Override

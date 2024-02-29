@@ -15,15 +15,10 @@ import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
-import de.rub.nds.sshattacker.core.protocol.ssh1.handler.ChannelDataMessageSSHV1Handler;
 import de.rub.nds.sshattacker.core.protocol.ssh1.handler.X11OpenMessageSSHV1Handler;
-import de.rub.nds.sshattacker.core.protocol.ssh1.parser.ChannelDataMessageSSHV1Parser;
 import de.rub.nds.sshattacker.core.protocol.ssh1.parser.X11OpenMessageSSHV1Parser;
-import de.rub.nds.sshattacker.core.protocol.ssh1.preparator.ChannelDataMessageSSHV1Preparator;
 import de.rub.nds.sshattacker.core.protocol.ssh1.preparator.X11OpenMessageSSHV1Preparator;
-import de.rub.nds.sshattacker.core.protocol.ssh1.serializer.ChannelDataMessageSSHV1Serializier;
 import de.rub.nds.sshattacker.core.protocol.ssh1.serializer.X11OpenMessageSSHV1Serializier;
-
 import java.io.InputStream;
 
 public class X11OpenMessageSSH1 extends SshMessage<X11OpenMessageSSH1> {
@@ -40,9 +35,9 @@ public class X11OpenMessageSSH1 extends SshMessage<X11OpenMessageSSH1> {
     }
 
     public void setOriginatorString(String originatorString) {
-        this.originatorString = ModifiableVariableFactory.safelySetValue(this.originatorString, originatorString);
+        this.originatorString =
+                ModifiableVariableFactory.safelySetValue(this.originatorString, originatorString);
     }
-
 
     public ModifiableInteger getLocalChannel() {
         return localChannel;
@@ -53,7 +48,8 @@ public class X11OpenMessageSSH1 extends SshMessage<X11OpenMessageSSH1> {
     }
 
     public void setLocalChannel(int remoteChannel) {
-        this.localChannel = ModifiableVariableFactory.safelySetValue(this.localChannel, remoteChannel);
+        this.localChannel =
+                ModifiableVariableFactory.safelySetValue(this.localChannel, remoteChannel);
     }
 
     @Override
@@ -62,8 +58,7 @@ public class X11OpenMessageSSH1 extends SshMessage<X11OpenMessageSSH1> {
     }
 
     @Override
-    public SshMessageParser<X11OpenMessageSSH1> getParser(
-            SshContext context, InputStream stream) {
+    public SshMessageParser<X11OpenMessageSSH1> getParser(SshContext context, InputStream stream) {
         return new X11OpenMessageSSHV1Parser(context, stream);
     }
 

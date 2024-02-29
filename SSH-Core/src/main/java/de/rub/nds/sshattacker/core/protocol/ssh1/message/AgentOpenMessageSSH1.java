@@ -15,14 +15,9 @@ import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.ssh1.handler.AgentOpenMessageSSHV1Handler;
-import de.rub.nds.sshattacker.core.protocol.ssh1.handler.ExitStatusMessageSSHV1Handler;
 import de.rub.nds.sshattacker.core.protocol.ssh1.parser.AgentOpenMessageSSHV1Parser;
-import de.rub.nds.sshattacker.core.protocol.ssh1.parser.ExitStatusMessageSSHV1Parser;
 import de.rub.nds.sshattacker.core.protocol.ssh1.preparator.AgentOpenMessageSSHV1Preparator;
-import de.rub.nds.sshattacker.core.protocol.ssh1.preparator.ExitStatusMessageSSHV1Preparator;
 import de.rub.nds.sshattacker.core.protocol.ssh1.serializer.AgentOpenMessageSSHV1Serializier;
-import de.rub.nds.sshattacker.core.protocol.ssh1.serializer.ExitStatusMessageSSHV1Serializier;
-
 import java.io.InputStream;
 
 public class AgentOpenMessageSSH1 extends SshMessage<AgentOpenMessageSSH1> {
@@ -38,7 +33,8 @@ public class AgentOpenMessageSSH1 extends SshMessage<AgentOpenMessageSSH1> {
     }
 
     public void setLocalChannel(int localChannel) {
-        this.localChannel = ModifiableVariableFactory.safelySetValue(this.localChannel, localChannel);
+        this.localChannel =
+                ModifiableVariableFactory.safelySetValue(this.localChannel, localChannel);
     }
 
     @Override

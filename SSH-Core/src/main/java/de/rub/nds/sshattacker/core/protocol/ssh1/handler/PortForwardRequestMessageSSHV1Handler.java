@@ -10,11 +10,11 @@ package de.rub.nds.sshattacker.core.protocol.ssh1.handler;
 import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.ssh1.message.PortForwardRequestMessageSSH1;
-import de.rub.nds.sshattacker.core.protocol.ssh1.message.X11OpenMessageSSH1;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class PortForwardRequestMessageSSHV1Handler extends SshMessageHandler<PortForwardRequestMessageSSH1> {
+public class PortForwardRequestMessageSSHV1Handler
+        extends SshMessageHandler<PortForwardRequestMessageSSH1> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -24,6 +24,10 @@ public class PortForwardRequestMessageSSHV1Handler extends SshMessageHandler<Por
 
     @Override
     public void adjustContext(PortForwardRequestMessageSSH1 message) {
-        LOGGER.warn("Forwording Port {} to {}:{}", message.getServerPort().getValue(), message.getHostToConnect().getValue(),message.getPortToConnect().getValue());
+        LOGGER.warn(
+                "Forwording Port {} to {}:{}",
+                message.getServerPort().getValue(),
+                message.getHostToConnect().getValue(),
+                message.getPortToConnect().getValue());
     }
 }

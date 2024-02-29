@@ -16,14 +16,9 @@ import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.ssh1.handler.PortForwardRequestMessageSSHV1Handler;
-import de.rub.nds.sshattacker.core.protocol.ssh1.handler.X11OpenMessageSSHV1Handler;
 import de.rub.nds.sshattacker.core.protocol.ssh1.parser.PortForwardRequestMessageSSHV1Parser;
-import de.rub.nds.sshattacker.core.protocol.ssh1.parser.X11OpenMessageSSHV1Parser;
 import de.rub.nds.sshattacker.core.protocol.ssh1.preparator.PortForwardRequestMessageSSHV1Preparator;
-import de.rub.nds.sshattacker.core.protocol.ssh1.preparator.X11OpenMessageSSHV1Preparator;
 import de.rub.nds.sshattacker.core.protocol.ssh1.serializer.PortForwardRequestMessageSSHV1Serializier;
-import de.rub.nds.sshattacker.core.protocol.ssh1.serializer.X11OpenMessageSSHV1Serializier;
-
 import java.io.InputStream;
 
 public class PortForwardRequestMessageSSH1 extends SshMessage<PortForwardRequestMessageSSH1> {
@@ -32,6 +27,7 @@ public class PortForwardRequestMessageSSH1 extends SshMessage<PortForwardRequest
     private ModifiableString hostToConnect;
 
     private ModifiableInteger portToConnect;
+
     public ModifiableString getHostToConnect() {
         return hostToConnect;
     }
@@ -45,7 +41,8 @@ public class PortForwardRequestMessageSSH1 extends SshMessage<PortForwardRequest
     }
 
     public void setPortToConnect(int portToConnect) {
-        this.portToConnect = ModifiableVariableFactory.safelySetValue(this.portToConnect,portToConnect);
+        this.portToConnect =
+                ModifiableVariableFactory.safelySetValue(this.portToConnect, portToConnect);
     }
 
     public void setHostToConnect(ModifiableString hostToConnect) {
@@ -53,9 +50,9 @@ public class PortForwardRequestMessageSSH1 extends SshMessage<PortForwardRequest
     }
 
     public void setHostToConnect(String hostToConnect) {
-        this.hostToConnect = ModifiableVariableFactory.safelySetValue(this.hostToConnect, hostToConnect);
+        this.hostToConnect =
+                ModifiableVariableFactory.safelySetValue(this.hostToConnect, hostToConnect);
     }
-
 
     public ModifiableInteger getServerPort() {
         return serverPort;

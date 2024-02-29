@@ -15,15 +15,10 @@ import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
-import de.rub.nds.sshattacker.core.protocol.ssh1.handler.EofMessageSSHV1Handler;
 import de.rub.nds.sshattacker.core.protocol.ssh1.handler.RsaAuthMessageSSHV1Handler;
-import de.rub.nds.sshattacker.core.protocol.ssh1.parser.EofMessageSSHV1Parser;
 import de.rub.nds.sshattacker.core.protocol.ssh1.parser.RsaAuthMessageSSHV1Parser;
-import de.rub.nds.sshattacker.core.protocol.ssh1.preparator.EofMessageSSHV1Preparator;
 import de.rub.nds.sshattacker.core.protocol.ssh1.preparator.RsaAuthMessageSSHV1Preparator;
-import de.rub.nds.sshattacker.core.protocol.ssh1.serializer.EofMessageSSHV1Serializier;
 import de.rub.nds.sshattacker.core.protocol.ssh1.serializer.RsaAuthMessageSSHV1Serializier;
-
 import java.io.InputStream;
 
 public class RsaAuthMessageSSH1 extends SshMessage<RsaAuthMessageSSH1> {
@@ -35,12 +30,15 @@ public class RsaAuthMessageSSH1 extends SshMessage<RsaAuthMessageSSH1> {
         return identityPublicModulusBitLenght;
     }
 
-    public void setIdentityPublicModulusBitLenght(ModifiableInteger identityPublicModulusBitLenght) {
+    public void setIdentityPublicModulusBitLenght(
+            ModifiableInteger identityPublicModulusBitLenght) {
         this.identityPublicModulusBitLenght = identityPublicModulusBitLenght;
     }
 
     public void setIdentityPublicModulusBitLenght(int identityPublicModulusBitLenght) {
-        this.identityPublicModulusBitLenght = ModifiableVariableFactory.safelySetValue(this.identityPublicModulusBitLenght,identityPublicModulusBitLenght);
+        this.identityPublicModulusBitLenght =
+                ModifiableVariableFactory.safelySetValue(
+                        this.identityPublicModulusBitLenght, identityPublicModulusBitLenght);
     }
 
     public ModifiableByteArray getIdentityPublicModulus() {
@@ -52,7 +50,9 @@ public class RsaAuthMessageSSH1 extends SshMessage<RsaAuthMessageSSH1> {
     }
 
     public void setIdentityPublicModulus(byte[] identityPublicModulus) {
-        this.identityPublicModulus = ModifiableVariableFactory.safelySetValue(this.identityPublicModulus,identityPublicModulus);
+        this.identityPublicModulus =
+                ModifiableVariableFactory.safelySetValue(
+                        this.identityPublicModulus, identityPublicModulus);
     }
 
     @Override

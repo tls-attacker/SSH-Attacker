@@ -13,17 +13,13 @@ import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.ssh1.handler.AgentRequestForwardingMessageSSHV1Handler;
-import de.rub.nds.sshattacker.core.protocol.ssh1.handler.EofMessageSSHV1Handler;
 import de.rub.nds.sshattacker.core.protocol.ssh1.parser.AgentRequestForwardingMessageSSHV1Parser;
-import de.rub.nds.sshattacker.core.protocol.ssh1.parser.EofMessageSSHV1Parser;
 import de.rub.nds.sshattacker.core.protocol.ssh1.preparator.AgentRequestForwardingMessageSSHV1Preparator;
-import de.rub.nds.sshattacker.core.protocol.ssh1.preparator.EofMessageSSHV1Preparator;
 import de.rub.nds.sshattacker.core.protocol.ssh1.serializer.AgentRequestForwardingMessageSSHV1Serializier;
-import de.rub.nds.sshattacker.core.protocol.ssh1.serializer.EofMessageSSHV1Serializier;
-
 import java.io.InputStream;
 
-public class AgentRequestForwardingMessageSSH1 extends SshMessage<AgentRequestForwardingMessageSSH1> {
+public class AgentRequestForwardingMessageSSH1
+        extends SshMessage<AgentRequestForwardingMessageSSH1> {
 
     @Override
     public AgentRequestForwardingMessageSSHV1Handler getHandler(SshContext context) {
@@ -31,17 +27,20 @@ public class AgentRequestForwardingMessageSSH1 extends SshMessage<AgentRequestFo
     }
 
     @Override
-    public SshMessageParser<AgentRequestForwardingMessageSSH1> getParser(SshContext context, InputStream stream) {
+    public SshMessageParser<AgentRequestForwardingMessageSSH1> getParser(
+            SshContext context, InputStream stream) {
         return new AgentRequestForwardingMessageSSHV1Parser(context, stream);
     }
 
     @Override
-    public SshMessagePreparator<AgentRequestForwardingMessageSSH1> getPreparator(SshContext context) {
+    public SshMessagePreparator<AgentRequestForwardingMessageSSH1> getPreparator(
+            SshContext context) {
         return new AgentRequestForwardingMessageSSHV1Preparator(context.getChooser(), this);
     }
 
     @Override
-    public SshMessageSerializer<AgentRequestForwardingMessageSSH1> getSerializer(SshContext context) {
+    public SshMessageSerializer<AgentRequestForwardingMessageSSH1> getSerializer(
+            SshContext context) {
         return new AgentRequestForwardingMessageSSHV1Serializier(this);
     }
 

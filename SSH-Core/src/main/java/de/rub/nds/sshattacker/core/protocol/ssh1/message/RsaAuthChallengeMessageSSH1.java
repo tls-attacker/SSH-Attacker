@@ -19,7 +19,6 @@ import de.rub.nds.sshattacker.core.protocol.ssh1.handler.RsaAuthChallengeMessage
 import de.rub.nds.sshattacker.core.protocol.ssh1.parser.RsaAuthChallengeMessageSSHV1Parser;
 import de.rub.nds.sshattacker.core.protocol.ssh1.preparator.RsaAuthMessageChallengeSSHV1Preparator;
 import de.rub.nds.sshattacker.core.protocol.ssh1.serializer.RsaAuthChallengeMessageSSHV1Serializier;
-
 import java.io.InputStream;
 
 public class RsaAuthChallengeMessageSSH1 extends SshMessage<RsaAuthChallengeMessageSSH1> {
@@ -36,7 +35,9 @@ public class RsaAuthChallengeMessageSSH1 extends SshMessage<RsaAuthChallengeMess
     }
 
     public void setEncryptedChallengeBitLenght(int identityPublicModulusBitLenght) {
-        this.encryptedChallengeBitLenght = ModifiableVariableFactory.safelySetValue(this.encryptedChallengeBitLenght,identityPublicModulusBitLenght);
+        this.encryptedChallengeBitLenght =
+                ModifiableVariableFactory.safelySetValue(
+                        this.encryptedChallengeBitLenght, identityPublicModulusBitLenght);
     }
 
     public ModifiableByteArray getEncryptedChallenge() {
@@ -48,7 +49,9 @@ public class RsaAuthChallengeMessageSSH1 extends SshMessage<RsaAuthChallengeMess
     }
 
     public void setIdentityPublicModulus(byte[] identityPublicModulus) {
-        this.encryptedChallenge = ModifiableVariableFactory.safelySetValue(this.encryptedChallenge,identityPublicModulus);
+        this.encryptedChallenge =
+                ModifiableVariableFactory.safelySetValue(
+                        this.encryptedChallenge, identityPublicModulus);
     }
 
     @Override
@@ -57,7 +60,8 @@ public class RsaAuthChallengeMessageSSH1 extends SshMessage<RsaAuthChallengeMess
     }
 
     @Override
-    public SshMessageParser<RsaAuthChallengeMessageSSH1> getParser(SshContext context, InputStream stream) {
+    public SshMessageParser<RsaAuthChallengeMessageSSH1> getParser(
+            SshContext context, InputStream stream) {
         return new RsaAuthChallengeMessageSSHV1Parser(context, stream);
     }
 

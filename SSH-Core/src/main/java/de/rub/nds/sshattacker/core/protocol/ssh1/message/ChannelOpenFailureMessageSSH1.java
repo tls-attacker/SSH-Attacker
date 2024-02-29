@@ -17,10 +17,7 @@ import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.ssh1.handler.ChannelOpenFailureMessageSSHV1Handler;
 import de.rub.nds.sshattacker.core.protocol.ssh1.parser.ChannelOpenFailureMessageSSHV1Parser;
 import de.rub.nds.sshattacker.core.protocol.ssh1.preparator.ChannelOpenFailureMessageSSHV1Preparator;
-import de.rub.nds.sshattacker.core.protocol.ssh1.preparator.ExitStatusMessageSSHV1Preparator;
 import de.rub.nds.sshattacker.core.protocol.ssh1.serializer.ChannelOpenFailureMessageSSHV1Serializier;
-import de.rub.nds.sshattacker.core.protocol.ssh1.serializer.ExitStatusMessageSSHV1Serializier;
-
 import java.io.InputStream;
 
 public class ChannelOpenFailureMessageSSH1 extends SshMessage<ChannelOpenFailureMessageSSH1> {
@@ -36,7 +33,8 @@ public class ChannelOpenFailureMessageSSH1 extends SshMessage<ChannelOpenFailure
     }
 
     public void setRemoteChannel(int remoteChannel) {
-        this.remoteChannel = ModifiableVariableFactory.safelySetValue(this.remoteChannel, remoteChannel);
+        this.remoteChannel =
+                ModifiableVariableFactory.safelySetValue(this.remoteChannel, remoteChannel);
     }
 
     @Override

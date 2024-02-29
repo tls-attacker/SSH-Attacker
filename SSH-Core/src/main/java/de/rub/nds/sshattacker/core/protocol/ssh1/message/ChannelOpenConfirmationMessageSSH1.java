@@ -17,13 +17,11 @@ import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
 import de.rub.nds.sshattacker.core.protocol.ssh1.handler.ChannelOpenConfirmationMessageSSHV1Handler;
 import de.rub.nds.sshattacker.core.protocol.ssh1.parser.ChannelOpenConfirmationMessageSSHV1Parser;
 import de.rub.nds.sshattacker.core.protocol.ssh1.preparator.ChannelOpenConfirmationMessageSSHV1Preparator;
-import de.rub.nds.sshattacker.core.protocol.ssh1.preparator.ExitStatusMessageSSHV1Preparator;
 import de.rub.nds.sshattacker.core.protocol.ssh1.serializer.ChannelOpenConfirmationMessageSSHV1Serializier;
-import de.rub.nds.sshattacker.core.protocol.ssh1.serializer.ExitStatusMessageSSHV1Serializier;
-
 import java.io.InputStream;
 
-public class ChannelOpenConfirmationMessageSSH1 extends SshMessage<ChannelOpenConfirmationMessageSSH1> {
+public class ChannelOpenConfirmationMessageSSH1
+        extends SshMessage<ChannelOpenConfirmationMessageSSH1> {
 
     private ModifiableInteger localChannel;
     private ModifiableInteger remoteChannel;
@@ -37,7 +35,8 @@ public class ChannelOpenConfirmationMessageSSH1 extends SshMessage<ChannelOpenCo
     }
 
     public void setLocalChannel(int localChannel) {
-        this.localChannel = ModifiableVariableFactory.safelySetValue(this.localChannel, localChannel);
+        this.localChannel =
+                ModifiableVariableFactory.safelySetValue(this.localChannel, localChannel);
     }
 
     public ModifiableInteger getRemoteChannel() {
@@ -49,7 +48,8 @@ public class ChannelOpenConfirmationMessageSSH1 extends SshMessage<ChannelOpenCo
     }
 
     public void setRemoteChannel(int remoteChannel) {
-        this.remoteChannel = ModifiableVariableFactory.safelySetValue(this.remoteChannel, remoteChannel);
+        this.remoteChannel =
+                ModifiableVariableFactory.safelySetValue(this.remoteChannel, remoteChannel);
     }
 
     @Override
@@ -64,12 +64,14 @@ public class ChannelOpenConfirmationMessageSSH1 extends SshMessage<ChannelOpenCo
     }
 
     @Override
-    public SshMessagePreparator<ChannelOpenConfirmationMessageSSH1> getPreparator(SshContext context) {
+    public SshMessagePreparator<ChannelOpenConfirmationMessageSSH1> getPreparator(
+            SshContext context) {
         return new ChannelOpenConfirmationMessageSSHV1Preparator(context.getChooser(), this);
     }
 
     @Override
-    public SshMessageSerializer<ChannelOpenConfirmationMessageSSH1> getSerializer(SshContext context) {
+    public SshMessageSerializer<ChannelOpenConfirmationMessageSSH1> getSerializer(
+            SshContext context) {
         return new ChannelOpenConfirmationMessageSSHV1Serializier(this);
     }
 

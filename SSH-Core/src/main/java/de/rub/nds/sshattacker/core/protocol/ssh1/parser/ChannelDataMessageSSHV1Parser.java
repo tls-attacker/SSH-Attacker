@@ -10,10 +10,9 @@ package de.rub.nds.sshattacker.core.protocol.ssh1.parser;
 import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
 import de.rub.nds.sshattacker.core.protocol.ssh1.message.ChannelDataMessageSSH1;
+import java.io.InputStream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import java.io.InputStream;
 
 public class ChannelDataMessageSSHV1Parser extends SshMessageParser<ChannelDataMessageSSH1> {
     private static final Logger LOGGER = LogManager.getLogger();

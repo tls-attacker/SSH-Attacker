@@ -10,7 +10,6 @@ package de.rub.nds.sshattacker.core.protocol.ssh1.handler;
 import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
 import de.rub.nds.sshattacker.core.protocol.ssh1.message.ChannelDataMessageSSH1;
-import de.rub.nds.sshattacker.core.protocol.ssh1.message.ChannelOpenFailureMessageSSH1;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -24,6 +23,9 @@ public class ChannelDataMessageSSHV1Handler extends SshMessageHandler<ChannelDat
 
     @Override
     public void adjustContext(ChannelDataMessageSSH1 message) {
-        LOGGER.warn("Recieved channel Data in channel {} with data ", message.getRemoteChannel().getValue(), message.getData().getValue());
+        LOGGER.warn(
+                "Recieved channel Data in channel {} with data ",
+                message.getRemoteChannel().getValue(),
+                message.getData().getValue());
     }
 }

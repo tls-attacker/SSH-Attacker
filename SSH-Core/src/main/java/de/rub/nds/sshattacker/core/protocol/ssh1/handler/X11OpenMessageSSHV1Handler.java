@@ -9,7 +9,6 @@ package de.rub.nds.sshattacker.core.protocol.ssh1.handler;
 
 import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.protocol.common.SshMessageHandler;
-import de.rub.nds.sshattacker.core.protocol.ssh1.message.ChannelDataMessageSSH1;
 import de.rub.nds.sshattacker.core.protocol.ssh1.message.X11OpenMessageSSH1;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -24,6 +23,9 @@ public class X11OpenMessageSSHV1Handler extends SshMessageHandler<X11OpenMessage
 
     @Override
     public void adjustContext(X11OpenMessageSSH1 message) {
-        LOGGER.warn("Recieved channel Data in channel {} with data {}", message.getLocalChannel().getValue(), message.getOriginatorString().getValue());
+        LOGGER.warn(
+                "Recieved channel Data in channel {} with data {}",
+                message.getLocalChannel().getValue(),
+                message.getOriginatorString().getValue());
     }
 }
