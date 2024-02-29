@@ -145,8 +145,8 @@ public abstract class WorkflowExecutor {
             state.setExecutionException(ex);
             throw ex;
         } catch (UnsupportedOperationException
-                 | PreparationException
-                 | ActionExecutionException ex) {
+                | PreparationException
+                | ActionExecutionException ex) {
             state.setExecutionException(ex);
             LOGGER.warn("Not fatal error during action execution, skipping action: {}", action, ex);
             throw new SkipActionException(ex);

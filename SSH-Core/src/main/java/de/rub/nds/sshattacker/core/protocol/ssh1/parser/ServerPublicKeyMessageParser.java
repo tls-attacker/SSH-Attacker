@@ -28,31 +28,6 @@ public class ServerPublicKeyMessageParser extends SshMessageParser<ServerPublicK
     private int agreementSize;
     private int encapsulationSize;
 
-    /*
-        public HybridKeyExchangeReplyMessageParser(
-                byte[] array,
-                int startPosition,
-                HybridKeyExchangeCombiner combiner,
-                int agreementSize,
-                int encapsulationSize) {
-            super(array, startPosition);
-            this.agreementSize = agreementSize;
-            this.encapsulationSize = encapsulationSize;
-            this.combiner = combiner;
-        }
-
-        public HybridKeyExchangeReplyMessageParser(
-                byte[] array,
-                HybridKeyExchangeCombiner combiner,
-                int agreementSize,
-                int encapsulationSize) {
-            super(array);
-            this.agreementSize = agreementSize;
-            this.encapsulationSize = encapsulationSize;
-            this.combiner = combiner;
-        }
-    */
-
     public ServerPublicKeyMessageParser(SshContext context, InputStream stream) {
         super(stream);
 

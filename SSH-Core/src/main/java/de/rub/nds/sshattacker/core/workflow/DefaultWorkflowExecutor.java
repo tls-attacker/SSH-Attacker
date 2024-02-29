@@ -8,9 +8,7 @@
 package de.rub.nds.sshattacker.core.workflow;
 
 import de.rub.nds.sshattacker.core.config.ConfigIO;
-import de.rub.nds.sshattacker.core.exceptions.ActionExecutionException;
 import de.rub.nds.sshattacker.core.exceptions.PreparationException;
-import de.rub.nds.sshattacker.core.exceptions.SkipActionException;
 import de.rub.nds.sshattacker.core.exceptions.WorkflowExecutionException;
 import de.rub.nds.sshattacker.core.state.Context;
 import de.rub.nds.sshattacker.core.state.State;
@@ -47,20 +45,20 @@ public class DefaultWorkflowExecutor extends WorkflowExecutor {
         List<SshAction> sshActions = state.getWorkflowTrace().getSshActions();
         for (SshAction action : sshActions) {
 
-            if ((state.getConfig().getStopActionsAfterDisconnect()
-                    && isDisconnectMessageReceived())) {
+            if (state.getConfig().getStopActionsAfterDisconnect()
+                    && isDisconnectMessageReceived()) {
                 LOGGER.debug(
                         "Skipping all ReceiveActions, received FatalAlert, StopActionsAfterFatal active");
                 break;
             }
-            if ((state.getConfig().getStopActionsAfterIOException() && isIoException())) {
+            if (state.getConfig().getStopActionsAfterIOException() && isIoException()) {
                 LOGGER.debug(
                         "Skipping all Actions, received IO Exception, StopActionsAfterIOException active");
                 break;
             }
 
             try {
-                this.executeAction(action, state);
+                executeAction(action, state);
 
                 // TODO: Implement feature to check if message was received as expected.
                 // We should accept unexpected messages to keep going in case something
