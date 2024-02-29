@@ -31,6 +31,12 @@ public class CRC {
         return result;
     }
 
+    /**
+     * Calculates the cyclic redundancy check (CRC) value for the given data.
+     *
+     * @param data the input data for which the CRC value is calculated
+     * @return the calculated CRC value
+     */
     public long calculateCRC(byte[] data) {
         long curValue = this.init;
         long topBit = 1L << (this.width - 1);
@@ -65,6 +71,10 @@ public class CRC {
         return curValue & mask;
     }
 
+    /**
+     * This class represents a cyclic redundancy check (CRC). It calculates the CRC value for a
+     * given input data. It can be used for any CRC-check calculation.
+     */
     public CRC(
             int width,
             long polynomial,
@@ -85,7 +95,10 @@ public class CRC {
         }
     }
 
-    // Default-Values for SSHv1
+    /**
+     * This class represents a cyclic redundancy check (CRC). It is used to calculate the CRC value
+     * for a given input data. It sets the default values needed for sshv1
+     */
     public CRC() {
 
         this.width = 32;

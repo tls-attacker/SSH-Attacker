@@ -34,6 +34,13 @@ public class RsaTextbookCipher extends AbstractCipher {
         this.key = key;
     }
 
+    /**
+     * Encrypts the given byte array using RSA encryption.
+     *
+     * @param plainData the byte array to be encrypted
+     * @return the encrypted byte array
+     * @throws CryptoException if an error occurs during encryption
+     */
     @Override
     public byte[] encrypt(byte[] plainData) throws CryptoException {
         prepareCipher(Cipher.ENCRYPT_MODE);
@@ -54,6 +61,13 @@ public class RsaTextbookCipher extends AbstractCipher {
         throw new UnsupportedOperationException("AEAD encryption not supported.");
     }
 
+    /**
+     * Decrypts the given byte array using RSA decryption.
+     *
+     * @param encryptedData the byte array to be decrypted
+     * @return the decrypted byte array
+     * @throws CryptoException if an error occurs during decryption
+     */
     @Override
     public byte[] decrypt(byte[] encryptedData) throws CryptoException {
         prepareCipher(Cipher.DECRYPT_MODE);
@@ -79,6 +93,12 @@ public class RsaTextbookCipher extends AbstractCipher {
         return null;
     }
 
+    /**
+     * Prepares the RSA-Cipher for encryption or decryption mode.
+     *
+     * @param mode the mode of the Cipher object. Use Cipher.ENCRYPT_MODE for encryption and
+     *     Cipher.DECRYPT_MODE for decryption.
+     */
     private void prepareCipher(int mode) {
         if (key instanceof CustomRsaPublicKey && mode == Cipher.ENCRYPT_MODE) {
             CustomRsaPublicKey publicKey = (CustomRsaPublicKey) key;
