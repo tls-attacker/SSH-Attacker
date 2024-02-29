@@ -8,12 +8,11 @@
 package de.rub.nds.sshattacker.core.workflow;
 
 import de.rub.nds.sshattacker.core.config.Config;
-import de.rub.nds.sshattacker.core.exceptions.ConfigurationException;
-import de.rub.nds.sshattacker.core.exceptions.TransportHandlerConnectException;
-import de.rub.nds.sshattacker.core.exceptions.WorkflowExecutionException;
+import de.rub.nds.sshattacker.core.exceptions.*;
 import de.rub.nds.sshattacker.core.layer.LayerStackFactory;
 import de.rub.nds.sshattacker.core.state.Context;
 import de.rub.nds.sshattacker.core.state.State;
+import de.rub.nds.sshattacker.core.workflow.action.SshAction;
 import de.rub.nds.sshattacker.core.workflow.action.executor.WorkflowExecutorType;
 import de.rub.nds.tlsattacker.transport.TransportHandlerFactory;
 import java.io.IOException;
@@ -113,11 +112,6 @@ public abstract class WorkflowExecutor {
                     TransportHandlerFactory.createTransportHandler(context.getConnection()));
             context.getTransportHandler()
                     .setResetClientSourcePort(config.isResetClientSourcePort());
-            /*            if (context.getTransportHandler() instanceof ClientTcpTransportHandler) {
-                ((ClientTcpTransportHandler) context.getTransportHandler())
-                        .setRetryFailedSocketInitialization(
-                                config.isRetryFailedClientTcpSocketInitialization());
-            }*/
         }
 
         try {
@@ -140,6 +134,29 @@ public abstract class WorkflowExecutor {
                     "Unable to initialize the transport handler with: "
                             + context.getConnection().toString(),
                     ex);
+        }
+    }
+
+    protected void executeAction(SshAction action, State state) throws SkipActionException {
+        try {
+            action.execute(state);
+        } catch (WorkflowExecutionException ex) {
+            LOGGER.error("Fatal error during action execution, stopping execution: ", ex);
+            state.setExecutionException(ex);
+            throw ex;
+        } catch (UnsupportedOperationException
+                 | PreparationException
+                 | ActionExecutionException ex) {
+            state.setExecutionException(ex);
+            LOGGER.warn("Not fatal error during action execution, skipping action: {}", action, ex);
+            throw new SkipActionException(ex);
+        } catch (Exception ex) {
+            LOGGER.error(
+                    "Unexpected fatal error during action execution, stopping execution: ", ex);
+            state.setExecutionException(ex);
+            throw new WorkflowExecutionException(ex);
+        } finally {
+            state.setEndTimestamp(System.currentTimeMillis());
         }
     }
 

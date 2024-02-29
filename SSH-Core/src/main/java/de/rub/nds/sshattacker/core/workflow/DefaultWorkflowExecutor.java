@@ -92,29 +92,6 @@ public class DefaultWorkflowExecutor extends WorkflowExecutor {
         }
     }
 
-    protected void executeAction(SshAction action, State state) throws SkipActionException {
-        try {
-            action.execute(state);
-        } catch (WorkflowExecutionException ex) {
-            LOGGER.error("Fatal error during action execution, stopping execution: ", ex);
-            state.setExecutionException(ex);
-            throw ex;
-        } catch (UnsupportedOperationException
-                | PreparationException
-                | ActionExecutionException ex) {
-            state.setExecutionException(ex);
-            LOGGER.warn("Not fatal error during action execution, skipping action: " + action, ex);
-            throw new SkipActionException(ex);
-        } catch (Exception ex) {
-            LOGGER.error(
-                    "Unexpected fatal error during action execution, stopping execution: ", ex);
-            state.setExecutionException(ex);
-            throw new WorkflowExecutionException(ex);
-        } finally {
-            state.setEndTimestamp(System.currentTimeMillis());
-        }
-    }
-
     private boolean isDisconnectMessageReceived() {
         for (Context context : state.getAllContexts()) {
             if (context.getSshContext().isDisconnectMessageReceived()) {
