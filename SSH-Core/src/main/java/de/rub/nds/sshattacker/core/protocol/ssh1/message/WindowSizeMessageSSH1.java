@@ -1,0 +1,104 @@
+/*
+ * SSH-Attacker - A Modular Penetration Testing Framework for SSH
+ *
+ * Copyright 2014-2022 Ruhr University Bochum, Paderborn University, and Hackmanit GmbH
+ *
+ * Licensed under Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ */
+package de.rub.nds.sshattacker.core.protocol.ssh1.message;
+
+import de.rub.nds.modifiablevariable.ModifiableVariableFactory;
+import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
+import de.rub.nds.sshattacker.core.layer.context.SshContext;
+import de.rub.nds.sshattacker.core.protocol.common.SshMessage;
+import de.rub.nds.sshattacker.core.protocol.common.SshMessageParser;
+import de.rub.nds.sshattacker.core.protocol.common.SshMessagePreparator;
+import de.rub.nds.sshattacker.core.protocol.common.SshMessageSerializer;
+import de.rub.nds.sshattacker.core.protocol.ssh1.handler.WindowSizeMessageSSHv1Handler;
+import de.rub.nds.sshattacker.core.protocol.ssh1.parser.WindowSizeMessageSSHv1Parser;
+import de.rub.nds.sshattacker.core.protocol.ssh1.preparator.WindowSizeMessageSSHv1Preparator;
+import de.rub.nds.sshattacker.core.protocol.ssh1.serializer.WindowSizeMessageSSHv1Serializier;
+import java.io.InputStream;
+
+public class WindowSizeMessageSSH1 extends SshMessage<WindowSizeMessageSSH1> {
+
+    ModifiableInteger hightRows;
+    ModifiableInteger widthColumns;
+    ModifiableInteger widthPixel;
+    ModifiableInteger hightPixel;
+
+    public ModifiableInteger getHightRows() {
+        return hightRows;
+    }
+
+    public void setHightRows(ModifiableInteger hightRows) {
+        this.hightRows = hightRows;
+    }
+
+    public void setHightRows(int hightRows) {
+        this.hightRows = ModifiableVariableFactory.safelySetValue(this.hightRows, hightRows);
+    }
+
+    public ModifiableInteger getWidthColumns() {
+        return widthColumns;
+    }
+
+    public void setWidthColumns(ModifiableInteger widthColumns) {
+        this.widthColumns = widthColumns;
+    }
+
+    public void setWidthColumns(int widthColumns) {
+        this.widthColumns =
+                ModifiableVariableFactory.safelySetValue(this.widthColumns, widthColumns);
+    }
+
+    public ModifiableInteger getWidthPixel() {
+        return widthPixel;
+    }
+
+    public void setWidthPixel(ModifiableInteger widthPixel) {
+        this.widthPixel = widthPixel;
+    }
+
+    public void setWidthPixel(int widthPixel) {
+        this.widthPixel = ModifiableVariableFactory.safelySetValue(this.widthPixel, widthPixel);
+    }
+
+    public ModifiableInteger getHightPixel() {
+        return hightPixel;
+    }
+
+    public void setHightPixel(ModifiableInteger hightPixel) {
+        this.hightPixel = hightPixel;
+    }
+
+    public void setHightPixel(int hightPixel) {
+        this.hightPixel = ModifiableVariableFactory.safelySetValue(this.hightPixel, hightPixel);
+    }
+
+    @Override
+    public WindowSizeMessageSSHv1Handler getHandler(SshContext context) {
+        return new WindowSizeMessageSSHv1Handler(context);
+    }
+
+    @Override
+    public SshMessageParser<WindowSizeMessageSSH1> getParser(
+            SshContext context, InputStream stream) {
+        return new WindowSizeMessageSSHv1Parser(context, stream);
+    }
+
+    @Override
+    public SshMessagePreparator<WindowSizeMessageSSH1> getPreparator(SshContext context) {
+        return new WindowSizeMessageSSHv1Preparator(context.getChooser(), this);
+    }
+
+    @Override
+    public SshMessageSerializer<WindowSizeMessageSSH1> getSerializer(SshContext context) {
+        return new WindowSizeMessageSSHv1Serializier(this);
+    }
+
+    @Override
+    public String toShortString() {
+        return "SSH_SMSG_SUCCESS";
+    }
+}

@@ -213,6 +213,7 @@ public class SSH1Layer extends ProtocolLayer<ProtocolMessage> {
                 readDataFromStream(new StderrDataMessageSSH1(), (BinaryPacket) packet);
                 break;
             case SSH_MSG_CHANNEL_OPEN_CONFIRMATION:
+                readDataFromStream(new ChannelOpenConfirmationMessageSSH1(), (BinaryPacket) packet);
                 break;
             case SSH_SMSG_EXITSTATUS:
                 readDataFromStream(new ExitStatusMessageSSH1(), (BinaryPacket) packet);
@@ -254,14 +255,29 @@ public class SSH1Layer extends ProtocolLayer<ProtocolMessage> {
             case SSH_SMSG_X11_OPEN:
                 readDataFromStream(new X11OpenMessageSSH1(), (BinaryPacket) packet);
                 break;
-            case SSH_CMSG_AUTH_TIS:
-                break;
             case SSH_SMSG_SUCCESS:
                 readDataFromStream(new SuccessMessageSSH1(), (BinaryPacket) packet);
                 break;
             case SSH_SMSG_FAILURE:
                 readDataFromStream(new FailureMessageSSH1(), (BinaryPacket) packet);
                 break;
+            case SSH_CMSG_AUTH_RSA_RESPONSE:
+                readDataFromStream(new AuthRsaResponseMessageSSH1(), (BinaryPacket) packet);
+                break;
+            case SSH_CMSG_REQUEST_PTY:
+                readDataFromStream(new RequestPtyMessageSSH1(), (BinaryPacket) packet);
+                break;
+            case SSH_CMSG_WINDOW_SIZE:
+                readDataFromStream(new WindowSizeMessageSSH1(), (BinaryPacket) packet);
+                break;
+            case SSH_CMSG_AUTH_RHOSTS_RSA:
+                readDataFromStream(new AuthRhostsRsaMessageSSH1(), (BinaryPacket) packet);
+                break;
+            case SSH_CMSG_REQUEST_COMPRESSION:
+                readDataFromStream(new RequestCompressionMessageSSH1(), (BinaryPacket) packet);
+                break;
+            case SSH_CMSG_X11_REQUEST_FORWARDING:
+                readDataFromStream(new X11RequestForwardMessageSSH1(), (BinaryPacket) packet);
             default:
                 LOGGER.debug(
                         "[bro] cannot identifie {} as {} - returningn null",
