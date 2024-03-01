@@ -49,10 +49,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.security.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 import javax.crypto.NoSuchPaddingException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -512,31 +511,23 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
             LOGGER.info(sendSinglePacket(msg));
         }
 
+        LocalDateTime dateTime = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        formatter = DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss");
+        String formattedDateTime = dateTime.format(formatter);
+        String filename = formattedDateTime + "_benchmark_results.json";
+
         boolean randomKeys = false;
 
         this.oracleType = config.getOracleType();
         this.keyLenght = config.getKeyLenght();
 
-        if (config.isBenchmark()) {
-            try {
-                String str = "Starting.";
-                File output_File = new File("benchmark_results.txt");
-                FileOutputStream outputStream = new FileOutputStream(output_File, true);
-                byte[] strToBytes = str.getBytes();
-                outputStream.write(strToBytes);
-
-                outputStream.close();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        }
-
-        try {
+        /*        try {
             testDifferentPaddings();
         } catch (CryptoException e) {
             throw new RuntimeException(e);
         }
-        System.exit(0);
+        System.exit(0);*/
 
         /*if (!isVulnerable()) {
             LOGGER.warn("The server is not vulnerable to Manger's attack");
@@ -673,6 +664,41 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
             }
         }
 
+        String attackType = "bardou";
+        if (config.isClassic()) attackType = "classic";
+
+        if (config.isBenchmark()) {
+            try {
+
+                JSONObject jo = new JSONObject();
+                jo.put("plaintext", "");
+                jo.put("ciphertext", ArrayConverter.bytesToRawHexString(encryptedSecret));
+                jo.put("time", 0);
+                jo.put("inner_tries", 0);
+                jo.put("outer_tries", 0);
+                jo.put("trimmed_outer", 0);
+                jo.put("trimmed_inner", 0);
+                jo.put("outer_trimmers", 0);
+                jo.put("inner_trimmers", 0);
+                jo.put("serverkey_lenght", serverPublicKey.getModulus().bitLength());
+                jo.put("hostkey_lenght", hostPublicKey.getModulus().bitLength());
+                jo.put("oracle_type", oracleType.toString());
+                jo.put("attack_type", attackType);
+
+                String jsonStr = jo.toJSONString();
+
+                File output_File = new File(filename);
+                FileOutputStream outputStream = new FileOutputStream(output_File);
+                byte[] strToBytes = jsonStr.getBytes();
+                outputStream.write(strToBytes);
+
+                outputStream.close();
+
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
         Bleichenbacher attacker =
                 new Bleichenbacher(encryptedSecret, oracle, hostPublicKey, serverPublicKey);
 
@@ -703,9 +729,6 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
             }
         }
 
-        String attackType = "bardou";
-        if (config.isClassic()) attackType = "classic";
-
         if (config.isBenchmark()) {
             try {
                 JSONObject jo = new JSONObject();
@@ -725,8 +748,8 @@ public class BleichenbacherAttacker extends Attacker<BleichenbacherCommandConfig
 
                 String jsonStr = jo.toJSONString();
 
-                File output_File = new File("benchmark_results.txt");
-                FileOutputStream outputStream = new FileOutputStream(output_File, true);
+                File output_File = new File(filename);
+                FileOutputStream outputStream = new FileOutputStream(output_File);
                 byte[] strToBytes = jsonStr.getBytes();
                 outputStream.write(strToBytes);
 
