@@ -173,8 +173,18 @@ public abstract class ProtocolLayer<ContainerT extends DataContainer> {
                 return currentInputStream;
             } else {
                 LOGGER.debug("Trying to get datastream while no data is available");
+                // this.receiveMoreDataForHint(null);
+                // <--- Testing -->
                 receiveMoreData();
-                return currentInputStream;
+                if (currentInputStream.available() > 0) {
+                    return currentInputStream;
+                } else {
+                    throw new EndOfStreamException(
+                            "The original data stream does not produce any more data and there is no next datastream -> returning now");
+                }
+                /*throw new EndOfStreamException(
+                "The original data stream does not produce any more data and there is no next datastream -> returning now");*/
+                // return currentInputStream;
             }
         }
     }
@@ -204,13 +214,19 @@ public abstract class ProtocolLayer<ContainerT extends DataContainer> {
     public boolean shouldContinueProcessing() {
         if (layerConfiguration != null) {
             if (layerConfiguration instanceof GenericReceiveLayerConfiguration) {
-                return true;
+                // stop collecting more containers, if already got one
+                if (layerConfiguration.getContainerList().size() > 0) {
+                    return false;
+                } else {
+                    return true;
+                }
+
             } else {
                 return layerConfiguration.successRequiresMoreContainers(
                                 getLayerResult().getUsedContainers())
-                        || (isDataBuffered()
+                        || isDataBuffered()
                                 && ((ReceiveLayerConfiguration) layerConfiguration)
-                                        .isProcessTrailingContainers());
+                                        .isProcessTrailingContainers();
             }
         } else {
             return isDataBuffered();

@@ -110,6 +110,7 @@ public class BleichenbacherOracle extends Pkcs1Oracle {
         sshConfig.setWorkflowExecutorShouldClose(false);
         WorkflowTrace trace = BleichenbacherWorkflowGenerator.generateWorkflow(sshConfig, msg);
 
+        // ReceiveAction receiveOracleResultAction = new ReceiveAction(new DisconnectMessage());
         GenericReceiveAction receiveOracleResultAction = new GenericReceiveAction();
         trace.addSshAction(receiveOracleResultAction);
 

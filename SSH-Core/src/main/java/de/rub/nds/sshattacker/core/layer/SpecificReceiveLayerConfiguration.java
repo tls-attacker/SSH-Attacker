@@ -76,11 +76,11 @@ public class SpecificReceiveLayerConfiguration<Container extends DataContainer<?
                 }
             }
 
-            for (; j < list.size(); j++) {
+            /*            for (; j < list.size(); j++) {
                 if (!containerCanBeFiltered(list.get(j)) && !isAllowTrailingContainers()) {
                     return false;
                 }
-            }
+            }*/
         }
         return true;
     }

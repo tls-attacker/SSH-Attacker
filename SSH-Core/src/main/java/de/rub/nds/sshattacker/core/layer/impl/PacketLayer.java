@@ -12,6 +12,8 @@ import de.rub.nds.sshattacker.core.constants.CipherMode;
 import de.rub.nds.sshattacker.core.constants.CompressionAlgorithm;
 import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.constants.PacketLayerType;
+import de.rub.nds.sshattacker.core.exceptions.EndOfStreamException;
+import de.rub.nds.sshattacker.core.exceptions.TimeoutException;
 import de.rub.nds.sshattacker.core.layer.LayerConfiguration;
 import de.rub.nds.sshattacker.core.layer.LayerProcessingResult;
 import de.rub.nds.sshattacker.core.layer.ProtocolLayer;
@@ -137,53 +139,66 @@ public class PacketLayer extends ProtocolLayer<AbstractPacket> {
 
     @Override
     public void receiveMoreData() throws IOException {
-        InputStream dataStream = getLowerLayer().getDataStream();
-        LOGGER.debug("Available Data: {}", dataStream.available());
-        AbstractPacketParser parser;
-        AbstractPacket packet;
-        if (context.getPacketLayerType() == PacketLayerType.BINARY_PACKET) {
-            // If we have a SSHv1 connection, parse as sshv1-packet
-            if (this.getHigherLayer().getLayerType().getName().equals("SSHV1")) {
-                parser =
-                        new BinaryPacketParserSSHv1(
-                                dataStream,
-                                context.getPacketLayer().getDecryptorCipher(),
-                                context.getReadSequenceNumber());
-                packet = new BinaryPacketSSHv1();
+        try {
+            InputStream dataStream = null;
+            try {
+                dataStream = getLowerLayer().getDataStream();
+            } catch (IOException e) {
+                LOGGER.warn("The lower layer did not produce a data stream: ", e);
+                return;
+            }
+            LOGGER.debug("Available Data: {}", dataStream.available());
+            AbstractPacketParser parser;
+            AbstractPacket packet;
+            if (context.getPacketLayerType() == PacketLayerType.BINARY_PACKET) {
+                // If we have a SSHv1 connection, parse as sshv1-packet
+                if (this.getHigherLayer().getLayerType().getName().equals("SSHV1")) {
+                    parser =
+                            new BinaryPacketParserSSHv1(
+                                    dataStream,
+                                    context.getPacketLayer().getDecryptorCipher(),
+                                    context.getReadSequenceNumber());
+                    packet = new BinaryPacketSSHv1();
+                } else {
+                    // If not, trade it as sshv2-packet
+                    parser =
+                            new BinaryPacketParser(
+                                    dataStream,
+                                    context.getPacketLayer().getDecryptorCipher(),
+                                    context.getReadSequenceNumber());
+                    packet = new BinaryPacket();
+                }
+
+            } else if (context.getPacketLayerType() == PacketLayerType.BLOB) {
+                parser = new BlobPacketParser(dataStream);
+                packet = new BlobPacket();
             } else {
-                // If not, trade it as sshv2-packet
-                parser =
-                        new BinaryPacketParser(
-                                dataStream,
-                                context.getPacketLayer().getDecryptorCipher(),
-                                context.getReadSequenceNumber());
-                packet = new BinaryPacket();
+                throw new RuntimeException();
             }
 
-        } else if (context.getPacketLayerType() == PacketLayerType.BLOB) {
-            parser = new BlobPacketParser(dataStream);
-            packet = new BlobPacket();
-        } else {
-            throw new RuntimeException();
+            parser.parse(packet);
+
+            LOGGER.debug("Recieved Packet: {} | {}", packet.getPayload(), packet.getCiphertext());
+
+            decryptPacket(packet);
+            decompressPacket(packet);
+
+            LOGGER.debug(
+                    "Decompressed Payload: {}",
+                    ArrayConverter.bytesToHexString(packet.getPayload()));
+
+            addProducedContainer(packet);
+
+            if (currentInputStream == null) {
+                // only set new input stream if necessary, extend current stream otherwise
+                currentInputStream = new HintedLayerInputStream(this);
+            }
+            currentInputStream.extendStream(packet.getPayload().getValue());
+        } catch (TimeoutException ex) {
+            LOGGER.debug(ex);
+        } catch (EndOfStreamException ex) {
+            LOGGER.debug("Reached end of stream, cannot parse more messages", ex);
         }
-
-        parser.parse(packet);
-
-        LOGGER.debug("Recieved Packet: {} | {}", packet.getPayload(), packet.getCiphertext());
-
-        decryptPacket(packet);
-        decompressPacket(packet);
-
-        LOGGER.debug(
-                "Decompressed Payload: {}", ArrayConverter.bytesToHexString(packet.getPayload()));
-
-        addProducedContainer(packet);
-
-        if (currentInputStream == null) {
-            // only set new input stream if necessary, extend current stream otherwise
-            currentInputStream = new HintedLayerInputStream(this);
-        }
-        currentInputStream.extendStream(packet.getPayload().getValue());
     }
 
     public PacketCipher getEncryptorCipher() {
