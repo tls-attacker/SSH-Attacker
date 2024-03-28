@@ -77,6 +77,29 @@ public class BleichenbacherCommandConfig extends AttackConfig {
                     "If set, the string after this parameter will be send as packet directly to the oracle")
     private String sendSinglePacket = "";
 
+    @Parameter(
+            names = {"-inner"},
+            required = false,
+            description = "Choose if inner padding should be maniulated")
+    private boolean inner = false;
+
+    @Parameter(
+            names = {"-outer"},
+            required = false,
+            description = "Choose if inner padding should be maniulated")
+    private boolean outer = false;
+
+    @Parameter(
+            names = {"-timing"},
+            required = false,
+            description = "Run as Timing-Attack")
+    private boolean timing = false;
+    /** How many rescans should be done */
+    @Parameter(
+            names = {"-intervall"},
+            required = false,
+            description = "define, how often the timing-attack should be tested")
+    private int intervall = 1000;
     /** How many rescans should be done */
     private int numberOfIterations = 3;
 
@@ -154,5 +177,21 @@ public class BleichenbacherCommandConfig extends AttackConfig {
 
     public boolean isClassic() {
         return classic;
+    }
+
+    public boolean isInner() {
+        return inner;
+    }
+
+    public boolean isOuter() {
+        return outer;
+    }
+
+    public boolean isTiming() {
+        return timing;
+    }
+
+    public int getIntervall() {
+        return intervall;
     }
 }

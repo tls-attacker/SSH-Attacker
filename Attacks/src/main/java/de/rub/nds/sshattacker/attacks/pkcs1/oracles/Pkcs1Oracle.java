@@ -24,6 +24,10 @@ public abstract class Pkcs1Oracle {
     @SuppressWarnings("FieldMayBeStatic")
     protected final boolean plaintextOracle = false;
 
+    protected double averageTimeforRequest = 0;
+    protected double averageTimeforRequestInnerOracle = 0;
+    protected double averageTimeforRequestOuterOracle = 0;
+
     /**
      * Gets the block size of the encryption algorithm.
      *

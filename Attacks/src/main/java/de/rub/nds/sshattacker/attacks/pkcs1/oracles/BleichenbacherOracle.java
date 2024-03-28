@@ -8,8 +8,6 @@
 package de.rub.nds.sshattacker.attacks.pkcs1.oracles;
 
 import de.rub.nds.sshattacker.attacks.pkcs1.BleichenbacherWorkflowGenerator;
-import de.rub.nds.sshattacker.attacks.response.ResponseExtractor;
-import de.rub.nds.sshattacker.attacks.response.ResponseFingerprint;
 import de.rub.nds.sshattacker.core.config.Config;
 import de.rub.nds.sshattacker.core.crypto.keys.CustomRsaPublicKey;
 import de.rub.nds.sshattacker.core.exceptions.WorkflowExecutionException;
@@ -23,7 +21,6 @@ import de.rub.nds.sshattacker.core.workflow.WorkflowExecutor;
 import de.rub.nds.sshattacker.core.workflow.WorkflowTrace;
 import de.rub.nds.sshattacker.core.workflow.action.GenericReceiveAction;
 import de.rub.nds.tlsattacker.util.MathHelper;
-import java.io.IOException;
 import java.security.interfaces.RSAPublicKey;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -40,8 +37,10 @@ public class BleichenbacherOracle extends Pkcs1Oracle {
 
     private final int maxAttempts;
 
-    long timeElapsedforAverageCalculation = 0;
-    long timeElapsed = 0;
+    private boolean runningInInner = false;
+
+    private long timeElapsedforAverageCalculation = 0;
+    private long timeElapsed = 0;
 
     /**
      * @param hostPublicKey The public key
@@ -121,21 +120,26 @@ public class BleichenbacherOracle extends Pkcs1Oracle {
         if (numberOfQueries % 500 == 0) {
             LOGGER.warn(
                     String.format(
-                            "[%d] Tries, took per average %f ms per oracle-request, in total %s ms have gone by",
+                            "[%d] Tries, took per average %f ns per oracle-request, in total %s ns have gone by",
                             numberOfQueries,
-                            (timeElapsedforAverageCalculation / (double) 500),
+                            timeElapsedforAverageCalculation / (double) 500,
                             timeElapsed),
                     numberOfQueries,
-                    (timeElapsedforAverageCalculation / 500),
+                    timeElapsedforAverageCalculation / 500,
                     timeElapsed);
+            averageTimeforRequest = (long) (timeElapsedforAverageCalculation / (double) 500);
+            if (runningInInner) averageTimeforRequestInnerOracle = averageTimeforRequest;
+            else {
+                averageTimeforRequestOuterOracle = averageTimeforRequest;
+            }
             timeElapsedforAverageCalculation = 0;
         }
 
         boolean conform[] = {false, false};
         try {
-            long start = System.currentTimeMillis();
+            long start = System.nanoTime();
             workflowExecutor.executeWorkflow();
-            long finish = System.currentTimeMillis();
+            long finish = System.nanoTime();
             timeElapsedforAverageCalculation = timeElapsedforAverageCalculation + (finish - start);
             timeElapsed = timeElapsed + (finish - start);
 
@@ -147,10 +151,12 @@ public class BleichenbacherOracle extends Pkcs1Oracle {
             } else if (lastMessage instanceof FailureMessageSSH1) {
                 LOGGER.debug("Received Failure Message -> the first one was correct :|");
                 conform[0] = true;
+                runningInInner = true;
             } else if (lastMessage instanceof SuccessMessageSSH1) {
                 LOGGER.info("Received Success Message -> both were correct :)");
                 conform[0] = true;
                 conform[1] = true;
+                runningInInner = true;
             } else {
                 LOGGER.fatal("Something gone wrong with the preconfigured oracle....");
             }
@@ -160,7 +166,7 @@ public class BleichenbacherOracle extends Pkcs1Oracle {
                 throw new WorkflowExecutionException("Workflow did not execute as planned!");
             }
 
-            LOGGER.warn("Try #{} took {}ms to query oracle", numberOfQueries, (finish - start));
+            LOGGER.warn("Try #{} took {} ns to query oracle", numberOfQueries, (finish - start));
             // clearConnections(state);
 
         } catch (WorkflowExecutionException e) {
@@ -171,26 +177,5 @@ public class BleichenbacherOracle extends Pkcs1Oracle {
             }
         }
         return conform;
-    }
-
-    private ResponseFingerprint getFingerprint(State state) {
-        if (state.getWorkflowTrace().allActionsExecuted()) {
-            return ResponseExtractor.getFingerprint(state);
-        } else {
-            LOGGER.debug(
-                    "Could not execute Workflow. Something went wrong... Check the debug output for more information");
-        }
-        return null;
-    }
-
-    private void clearConnections(State state) {
-        try {
-            state.getSshContext();
-            if (!state.getSshContext().getTransportHandler().isClosed()) {
-                state.getSshContext().getTransportHandler().closeConnection();
-            }
-        } catch (IOException ex) {
-            LOGGER.debug(ex);
-        }
     }
 }

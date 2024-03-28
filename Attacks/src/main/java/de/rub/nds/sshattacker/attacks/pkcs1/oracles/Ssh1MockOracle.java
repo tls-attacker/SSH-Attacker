@@ -41,6 +41,7 @@ public class Ssh1MockOracle extends Pkcs1Oracle {
     private final RSAPublicKey hostPublicKey;
     private final RSAPublicKey serverPublicKey;
     private final Cipher cipher;
+    private boolean runningInInner = false;
     OracleType oracleType;
 
     public Ssh1MockOracle(
@@ -85,25 +86,28 @@ public class Ssh1MockOracle extends Pkcs1Oracle {
             LOGGER.info(
                     String.format(
                             "[%d] Tries, took per average %f ms per oracle-request, in total %s ms have gone by",
-                            counter,
-                            (timeElapsedforAverageCalculation / (double) 500),
-                            timeElapsed),
+                            counter, timeElapsedforAverageCalculation / (double) 500, timeElapsed),
                     counter,
-                    (timeElapsedforAverageCalculation / 500),
+                    timeElapsedforAverageCalculation / 500,
                     timeElapsed);
-
+            averageTimeforRequest = timeElapsedforAverageCalculation / (double) 500;
+            if (runningInInner) averageTimeforRequestInnerOracle = averageTimeforRequest;
+            else {
+                averageTimeforRequestOuterOracle = averageTimeforRequest;
+            }
             timeElapsedforAverageCalculation = 0;
         }
         if (isPlaintextOracle()) {
             return new boolean[] {true, true};
         } else {
-            long start = System.currentTimeMillis();
+            long start = System.nanoTime();
             if (hostPublicKey.getModulus().bitLength() > serverPublicKey.getModulus().bitLength()) {
 
                 byte[] decrypted_byte = decryptMessage(msg, hostPrivateKey);
 
                 if (decrypted_byte[0] == 0x00 && decrypted_byte[1] == 0x02) {
                     oracleResult[0] = true;
+                    runningInInner = true;
                 }
 
                 if (oracleResult[0]) {
@@ -131,7 +135,7 @@ public class Ssh1MockOracle extends Pkcs1Oracle {
                 }
             }
 
-            long finish = System.currentTimeMillis();
+            long finish = System.nanoTime();
             timeElapsed = timeElapsed + (finish - start);
             timeElapsedforAverageCalculation = timeElapsedforAverageCalculation + (finish - start);
 
@@ -146,17 +150,19 @@ public class Ssh1MockOracle extends Pkcs1Oracle {
         if (counter % 500 == 0) {
             LOGGER.info(
                     String.format(
-                            "[%d] Tries, took per average %f ms per oracle-request, in total %s ms have gone by ",
-                            counter,
-                            (timeElapsedforAverageCalculation / (double) 500),
-                            timeElapsed),
+                            "[%d] Tries, took per average %f ns per oracle-request, in total %s ns have gone by ",
+                            counter, timeElapsedforAverageCalculation / (double) 500, timeElapsed),
                     counter,
-                    (timeElapsedforAverageCalculation / 500),
+                    timeElapsedforAverageCalculation / 500,
                     timeElapsed);
-
+            averageTimeforRequest = timeElapsedforAverageCalculation / (double) 500;
+            if (runningInInner) averageTimeforRequestInnerOracle = averageTimeforRequest;
+            else {
+                averageTimeforRequestOuterOracle = averageTimeforRequest;
+            }
             timeElapsedforAverageCalculation = 0;
         }
-        long start = System.currentTimeMillis();
+        long start = System.nanoTime();
 
         if (isPlaintextOracle()) {
             return new boolean[] {true, true};
@@ -185,6 +191,7 @@ public class Ssh1MockOracle extends Pkcs1Oracle {
                     firstStep = cipher.doFinal(msg);
 
                     oracleResult[0] = true;
+                    runningInInner = true;
 
                     this.cipher.init(Cipher.DECRYPT_MODE, serverPriv);
                     cipher.doFinal(firstStep);
@@ -196,20 +203,21 @@ public class Ssh1MockOracle extends Pkcs1Oracle {
                     firstStep = cipher.doFinal(msg);
 
                     oracleResult[0] = true;
+                    runningInInner = true;
 
                     this.cipher.init(Cipher.DECRYPT_MODE, hostPriv);
                     cipher.doFinal(firstStep);
 
                     oracleResult[1] = true;
                 }
-                long finish = System.currentTimeMillis();
+                long finish = System.nanoTime();
                 timeElapsed = timeElapsed + (finish - start);
                 timeElapsedforAverageCalculation =
                         timeElapsedforAverageCalculation + (finish - start);
                 return oracleResult;
 
             } catch (IllegalBlockSizeException | BadPaddingException e) {
-                long finish = System.currentTimeMillis();
+                long finish = System.nanoTime();
                 timeElapsed = timeElapsed + (finish - start);
                 timeElapsedforAverageCalculation =
                         timeElapsedforAverageCalculation + (finish - start);
