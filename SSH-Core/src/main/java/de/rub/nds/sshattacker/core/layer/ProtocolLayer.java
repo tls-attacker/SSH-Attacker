@@ -180,7 +180,7 @@ public abstract class ProtocolLayer<ContainerT extends DataContainer> {
                     return currentInputStream;
                 } else {
                     throw new EndOfStreamException(
-                            "The original data stream does not produce any more data and there is no next datastream -> returning now");
+                            "The original data stream does not produce any more data and there is no next datastream");
                 }
                 /*throw new EndOfStreamException(
                 "The original data stream does not produce any more data and there is no next datastream -> returning now");*/
@@ -215,7 +215,7 @@ public abstract class ProtocolLayer<ContainerT extends DataContainer> {
         if (layerConfiguration != null) {
             if (layerConfiguration instanceof GenericReceiveLayerConfiguration) {
                 // stop collecting more containers, if already got one
-                if (layerConfiguration.getContainerList().size() > 0) {
+                if (!layerConfiguration.getContainerList().isEmpty()) {
                     return false;
                 } else {
                     return true;
@@ -266,6 +266,7 @@ public abstract class ProtocolLayer<ContainerT extends DataContainer> {
 
     protected void readContainerFromStream(
             ContainerT container, LayerContext context, HintedInputStream inputStream) {
+
         Parser parser = container.getParser(context, inputStream);
         try {
             parser.parse(container);

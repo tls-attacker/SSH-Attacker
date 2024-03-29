@@ -198,6 +198,7 @@ public class PacketLayer extends ProtocolLayer<AbstractPacket> {
             LOGGER.debug(ex);
         } catch (EndOfStreamException ex) {
             LOGGER.debug("Reached end of stream, cannot parse more messages", ex);
+            throw ex;
         }
     }
 
