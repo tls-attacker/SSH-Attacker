@@ -13,9 +13,7 @@ import de.rub.nds.sshattacker.core.exceptions.ParserException;
 import java.io.IOException;
 import java.io.InputStream;
 
-/**
- * Inputstream used in layers, Implements additionally the read chunkg and extend feature
- */
+/** Inputstream used in layers, Implements additionally the read chunkg and extend feature */
 public abstract class LayerInputStream extends InputStream {
 
     protected LayerInputStream() {

@@ -33,17 +33,17 @@ public abstract class ProtocolLayer<ContainerT extends DataContainer> {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private ProtocolLayer<ContainerT> higherLayer = null;
+    private ProtocolLayer<ContainerT> higherLayer;
 
-    private ProtocolLayer<ContainerT> lowerLayer = null;
+    private ProtocolLayer<ContainerT> lowerLayer;
 
     private LayerConfiguration<ContainerT> layerConfiguration;
 
     private List<ContainerT> producedDataContainers;
 
-    protected LayerInputStream currentInputStream = null;
+    protected LayerInputStream currentInputStream;
 
-    protected LayerInputStream nextInputStream = null;
+    protected LayerInputStream nextInputStream;
 
     private LayerType layerType;
 
@@ -260,7 +260,7 @@ public abstract class ProtocolLayer<ContainerT extends DataContainer> {
             handler.adjustContext(container);
             addProducedContainer(container);
         } catch (RuntimeException ex) {
-            setUnreadBytes(parser.getAlreadyParsed());
+            unreadBytes = parser.getAlreadyParsed();
         }
     }
 
@@ -274,7 +274,7 @@ public abstract class ProtocolLayer<ContainerT extends DataContainer> {
             handler.adjustContext(container);
             addProducedContainer(container);
         } catch (RuntimeException ex) {
-            setUnreadBytes(parser.getAlreadyParsed());
+            unreadBytes = parser.getAlreadyParsed();
         }
     }
 
@@ -294,7 +294,7 @@ public abstract class ProtocolLayer<ContainerT extends DataContainer> {
         } catch (PreparationException ex) {
             LOGGER.error(
                     "Could not prepare message "
-                            + dataContainer.toString()
+                            + dataContainer
                             + ". Therefore, we skip it: ",
                     ex);
             return false;

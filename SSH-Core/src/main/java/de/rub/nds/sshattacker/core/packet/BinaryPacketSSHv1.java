@@ -12,7 +12,6 @@ import de.rub.nds.modifiablevariable.ModifiableVariableProperty;
 import de.rub.nds.modifiablevariable.bytearray.ModifiableByteArray;
 import de.rub.nds.modifiablevariable.integer.ModifiableInteger;
 import de.rub.nds.sshattacker.core.layer.context.SshContext;
-import de.rub.nds.sshattacker.core.layer.data.DataContainer;
 import de.rub.nds.sshattacker.core.layer.data.Handler;
 import de.rub.nds.sshattacker.core.packet.parser.BinaryPacketParserSSHv1;
 import de.rub.nds.sshattacker.core.packet.preparator.BinaryPacketPreparatorSSHv1;
@@ -58,8 +57,6 @@ public class BinaryPacketSSHv1 extends AbstractPacket<BinaryPacketSSHv1> {
 
     /** A holder instance for all temporary fields used during crypto computations. */
     private PacketCryptoComputations computations;
-
-    public BinaryPacketSSHv1() {}
 
     public ModifiableInteger getLength() {
         return length;
@@ -140,7 +137,7 @@ public class BinaryPacketSSHv1 extends AbstractPacket<BinaryPacketSSHv1> {
     }
 
     public void setCrcChecksum(byte[] crcChecksum) {
-        CrcChecksum = ModifiableVariableFactory.safelySetValue(this.CrcChecksum, crcChecksum);
+        CrcChecksum = ModifiableVariableFactory.safelySetValue(CrcChecksum, crcChecksum);
     }
 
     @Override
@@ -157,10 +154,10 @@ public class BinaryPacketSSHv1 extends AbstractPacket<BinaryPacketSSHv1> {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        BinaryPacketSSHv1 that = (BinaryPacketSSHv1) o;
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        BinaryPacketSSHv1 that = (BinaryPacketSSHv1) obj;
         return Objects.equals(length, that.length)
                 && Objects.equals(sequenceNumber, that.sequenceNumber)
                 && Objects.equals(computations, that.computations);

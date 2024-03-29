@@ -77,21 +77,13 @@ public class PacketLayer extends ProtocolLayer<AbstractPacket> {
                 if (containerAlreadyUsedByHigherLayer(packet) /*|| skipEmptyRecords(session)*/) {
                     continue;
                 }
+                // AbstractPacket packet = messageLayer.serialize(message);
+                Preparator preparator = packet.getPreparator(context);
+                preparator.prepare();
+                Serializer serializer = packet.getSerializer(context);
+                byte[] serializedMessage = serializer.serialize();
 
-                try {
-                    // AbstractPacket packet = messageLayer.serialize(message);
-                    Preparator preparator = packet.getPreparator(context);
-                    preparator.prepare();
-                    Serializer serializer = packet.getSerializer(context);
-                    byte[] serializedMessage = serializer.serialize();
-
-                    LayerProcessingResult layerProcessingResult =
-                            getLowerLayer().sendData(serializedMessage);
-
-                } catch (IOException e) {
-                    LOGGER.warn("Error while sending packet: " + e.getMessage());
-                    // return new LayerProcessingResult();
-                }
+                getLowerLayer().sendData(serializedMessage);
             }
         }
         return getLayerResult();
@@ -164,7 +156,7 @@ public class PacketLayer extends ProtocolLayer<AbstractPacket> {
                                     context.getReadSequenceNumber());
                     packet = new BinaryPacket();
                 }
-            // BLOB packets do not make a difference between sshv1 and sshv2
+                // BLOB packets do not make a difference between sshv1 and sshv2
             } else if (context.getPacketLayerType() == PacketLayerType.BLOB) {
                 parser = new BlobPacketParser(dataStream);
                 packet = new BlobPacket();
