@@ -17,13 +17,13 @@ import java.io.InputStream;
  * The HintedLayerInputStream is assigned to a layer. When reading data from it, the stream tries to
  * receive more data using the layer it is assigned to.
  */
-public class HintedLayerInputStream extends HintedInputStream {
+public class LayerLayerInputStream extends LayerInputStream {
 
     private final ProtocolLayer<?> layer;
 
     private ByteArrayInputStream stream = new ByteArrayInputStream(new byte[0]);
 
-    public HintedLayerInputStream(ProtocolLayer<?> layer) {
+    public LayerLayerInputStream(ProtocolLayer<?> layer) {
         super();
         this.layer = layer;
     }

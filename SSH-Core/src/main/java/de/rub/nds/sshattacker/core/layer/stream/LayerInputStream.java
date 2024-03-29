@@ -14,12 +14,13 @@ import java.io.IOException;
 import java.io.InputStream;
 
 /**
- * InputStream that contains a LayerProcessingHint. Also provides methods useful when parsing data
- * from byteArrays.
+ * Inputstream used in layers, Implements additionally the read chunkg and extend feature
  */
-public abstract class HintedInputStream extends InputStream {
+public abstract class LayerInputStream extends InputStream {
 
-    public HintedInputStream() {}
+    protected LayerInputStream() {
+        super();
+    }
 
     public byte readByte() throws IOException {
         return (byte) read();

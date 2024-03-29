@@ -10,7 +10,6 @@ package de.rub.nds.sshattacker.core.layer.impl;
 import de.rub.nds.modifiablevariable.util.ArrayConverter;
 import de.rub.nds.sshattacker.core.constants.CipherMode;
 import de.rub.nds.sshattacker.core.constants.CompressionAlgorithm;
-import de.rub.nds.sshattacker.core.constants.MessageIdConstant;
 import de.rub.nds.sshattacker.core.constants.PacketLayerType;
 import de.rub.nds.sshattacker.core.exceptions.EndOfStreamException;
 import de.rub.nds.sshattacker.core.exceptions.TimeoutException;
@@ -21,7 +20,7 @@ import de.rub.nds.sshattacker.core.layer.constant.ImplementedLayers;
 import de.rub.nds.sshattacker.core.layer.context.SshContext;
 import de.rub.nds.sshattacker.core.layer.data.Preparator;
 import de.rub.nds.sshattacker.core.layer.data.Serializer;
-import de.rub.nds.sshattacker.core.layer.stream.HintedLayerInputStream;
+import de.rub.nds.sshattacker.core.layer.stream.LayerLayerInputStream;
 import de.rub.nds.sshattacker.core.packet.AbstractPacket;
 import de.rub.nds.sshattacker.core.packet.BinaryPacket;
 import de.rub.nds.sshattacker.core.packet.BinaryPacketSSHv1;
@@ -188,7 +187,7 @@ public class PacketLayer extends ProtocolLayer<AbstractPacket> {
 
             if (currentInputStream == null) {
                 // only set new input stream if necessary, extend current stream otherwise
-                currentInputStream = new HintedLayerInputStream(this);
+                currentInputStream = new LayerLayerInputStream(this);
             }
             currentInputStream.extendStream(packet.getPayload().getValue());
         } catch (TimeoutException ex) {

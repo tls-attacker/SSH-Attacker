@@ -15,9 +15,9 @@ import de.rub.nds.sshattacker.core.layer.LayerProcessingResult;
 import de.rub.nds.sshattacker.core.layer.ProtocolLayer;
 import de.rub.nds.sshattacker.core.layer.constant.ImplementedLayers;
 import de.rub.nds.sshattacker.core.layer.context.SshContext;
-import de.rub.nds.sshattacker.core.layer.stream.HintedInputStream;
-import de.rub.nds.sshattacker.core.layer.stream.HintedInputStreamAdapterStream;
-import de.rub.nds.sshattacker.core.layer.stream.HintedLayerInputStream;
+import de.rub.nds.sshattacker.core.layer.stream.LayerInputStream;
+import de.rub.nds.sshattacker.core.layer.stream.LayerInputStreamAdapterStream;
+import de.rub.nds.sshattacker.core.layer.stream.LayerLayerInputStream;
 import de.rub.nds.sshattacker.core.packet.AbstractPacket;
 import de.rub.nds.sshattacker.core.packet.BinaryPacket;
 import de.rub.nds.sshattacker.core.packet.BlobPacket;
@@ -96,7 +96,7 @@ public class SSH2Layer extends ProtocolLayer<ProtocolMessage> {
     @Override
     public LayerProcessingResult receiveData() {
         try {
-            HintedInputStream dataStream;
+            LayerInputStream dataStream;
             do {
                 try {
                     dataStream = getLowerLayer().getDataStream();
@@ -344,10 +344,10 @@ public class SSH2Layer extends ProtocolLayer<ProtocolMessage> {
 
     private void readUserAuthReq(AbstractPacket<BinaryPacket> packet) {
         UserAuthUnknownMessage userAuthUnknownMessage = new UserAuthUnknownMessage();
-        HintedInputStream inputStream;
-        HintedInputStream temp_stream;
+        LayerInputStream inputStream;
+        LayerInputStream temp_stream;
         inputStream =
-                new HintedInputStreamAdapterStream(
+                new LayerInputStreamAdapterStream(
                         new ByteArrayInputStream(packet.getPayload().getValue()));
         UserAuthUnknownMessageParser parser = new UserAuthUnknownMessageParser(inputStream);
         parser.parse(userAuthUnknownMessage);
@@ -367,7 +367,7 @@ public class SSH2Layer extends ProtocolLayer<ProtocolMessage> {
                 LOGGER.info("Parsing Authenticationmethod: None");
                 UserAuthNoneMessage userAuthNoneMessage = new UserAuthNoneMessage();
                 temp_stream =
-                        new HintedInputStreamAdapterStream(
+                        new LayerInputStreamAdapterStream(
                                 new ByteArrayInputStream(
                                         userAuthUnknownMessage
                                                 .getCompleteResultingMessage()
@@ -379,7 +379,7 @@ public class SSH2Layer extends ProtocolLayer<ProtocolMessage> {
                 LOGGER.info("Parsing Authenticationmethod: Password");
                 UserAuthPasswordMessage userAuthPasswordMessage = new UserAuthPasswordMessage();
                 temp_stream =
-                        new HintedInputStreamAdapterStream(
+                        new LayerInputStreamAdapterStream(
                                 new ByteArrayInputStream(
                                         userAuthUnknownMessage
                                                 .getCompleteResultingMessage()
@@ -392,7 +392,7 @@ public class SSH2Layer extends ProtocolLayer<ProtocolMessage> {
                 LOGGER.info("Parsing Authenticationmethod: PubKey");
                 UserAuthPubkeyMessage userAuthPubkeyMessage = new UserAuthPubkeyMessage();
                 temp_stream =
-                        new HintedInputStreamAdapterStream(
+                        new LayerInputStreamAdapterStream(
                                 new ByteArrayInputStream(
                                         userAuthUnknownMessage
                                                 .getCompleteResultingMessage()
@@ -404,7 +404,7 @@ public class SSH2Layer extends ProtocolLayer<ProtocolMessage> {
                 LOGGER.info("Parsing Authenticationmethod: Hostbased");
                 UserAuthHostbasedMessage userAuthHostbasedMessage = new UserAuthHostbasedMessage();
                 temp_stream =
-                        new HintedInputStreamAdapterStream(
+                        new LayerInputStreamAdapterStream(
                                 new ByteArrayInputStream(
                                         userAuthUnknownMessage
                                                 .getCompleteResultingMessage()
@@ -416,7 +416,7 @@ public class SSH2Layer extends ProtocolLayer<ProtocolMessage> {
                 UserAuthKeyboardInteractiveMessage userAuthKeyboardInteractiveMessage =
                         new UserAuthKeyboardInteractiveMessage();
                 temp_stream =
-                        new HintedInputStreamAdapterStream(
+                        new LayerInputStreamAdapterStream(
                                 new ByteArrayInputStream(
                                         userAuthUnknownMessage
                                                 .getCompleteResultingMessage()
@@ -436,11 +436,11 @@ public class SSH2Layer extends ProtocolLayer<ProtocolMessage> {
     private void readChannelRequest(AbstractPacket<BinaryPacket> packet) {
         ChannelRequestUnknownMessage channelRequestUnknownMessage =
                 new ChannelRequestUnknownMessage();
-        HintedInputStream inputStream;
-        HintedInputStream temp_stream;
+        LayerInputStream inputStream;
+        LayerInputStream temp_stream;
 
         inputStream =
-                new HintedInputStreamAdapterStream(
+                new LayerInputStreamAdapterStream(
                         new ByteArrayInputStream(packet.getPayload().getValue()));
 
         ChannelRequestUnknownMessageParser parser =
@@ -462,7 +462,7 @@ public class SSH2Layer extends ProtocolLayer<ProtocolMessage> {
                 LOGGER.info("Parsing Authenticationmethod: None");
                 ChannelRequestPtyMessage channelRequestPtyMessage = new ChannelRequestPtyMessage();
                 temp_stream =
-                        new HintedInputStreamAdapterStream(
+                        new LayerInputStreamAdapterStream(
                                 new ByteArrayInputStream(
                                         channelRequestUnknownMessage
                                                 .getCompleteResultingMessage()
@@ -474,7 +474,7 @@ public class SSH2Layer extends ProtocolLayer<ProtocolMessage> {
                 LOGGER.info("Parsing Authenticationmethod: Password");
                 ChannelRequestX11Message channelRequestX11Message = new ChannelRequestX11Message();
                 temp_stream =
-                        new HintedInputStreamAdapterStream(
+                        new LayerInputStreamAdapterStream(
                                 new ByteArrayInputStream(
                                         channelRequestUnknownMessage
                                                 .getCompleteResultingMessage()
@@ -487,7 +487,7 @@ public class SSH2Layer extends ProtocolLayer<ProtocolMessage> {
                 LOGGER.info("Parsing Authenticationmethod: PubKey");
                 ChannelRequestEnvMessage channelRequestEnvMessage = new ChannelRequestEnvMessage();
                 temp_stream =
-                        new HintedInputStreamAdapterStream(
+                        new LayerInputStreamAdapterStream(
                                 new ByteArrayInputStream(
                                         channelRequestUnknownMessage
                                                 .getCompleteResultingMessage()
@@ -500,7 +500,7 @@ public class SSH2Layer extends ProtocolLayer<ProtocolMessage> {
                 ChannelRequestShellMessage channelRequestShellMessage =
                         new ChannelRequestShellMessage();
                 temp_stream =
-                        new HintedInputStreamAdapterStream(
+                        new LayerInputStreamAdapterStream(
                                 new ByteArrayInputStream(
                                         channelRequestUnknownMessage
                                                 .getCompleteResultingMessage()
@@ -512,7 +512,7 @@ public class SSH2Layer extends ProtocolLayer<ProtocolMessage> {
                 ChannelRequestExecMessage channelRequestExecMessage =
                         new ChannelRequestExecMessage();
                 temp_stream =
-                        new HintedInputStreamAdapterStream(
+                        new LayerInputStreamAdapterStream(
                                 new ByteArrayInputStream(
                                         channelRequestUnknownMessage
                                                 .getCompleteResultingMessage()
@@ -524,7 +524,7 @@ public class SSH2Layer extends ProtocolLayer<ProtocolMessage> {
                 ChannelRequestSubsystemMessage channelRequestSubsystemMessage =
                         new ChannelRequestSubsystemMessage();
                 temp_stream =
-                        new HintedInputStreamAdapterStream(
+                        new LayerInputStreamAdapterStream(
                                 new ByteArrayInputStream(
                                         channelRequestUnknownMessage
                                                 .getCompleteResultingMessage()
@@ -536,7 +536,7 @@ public class SSH2Layer extends ProtocolLayer<ProtocolMessage> {
                 ChannelRequestWindowChangeMessage channelRequestWindowChangeMessage =
                         new ChannelRequestWindowChangeMessage();
                 temp_stream =
-                        new HintedInputStreamAdapterStream(
+                        new LayerInputStreamAdapterStream(
                                 new ByteArrayInputStream(
                                         channelRequestUnknownMessage
                                                 .getCompleteResultingMessage()
@@ -547,7 +547,7 @@ public class SSH2Layer extends ProtocolLayer<ProtocolMessage> {
                 ChannelRequestXonXoffMessage channelRequestXonXoffMessage =
                         new ChannelRequestXonXoffMessage();
                 temp_stream =
-                        new HintedInputStreamAdapterStream(
+                        new LayerInputStreamAdapterStream(
                                 new ByteArrayInputStream(
                                         channelRequestUnknownMessage
                                                 .getCompleteResultingMessage()
@@ -558,7 +558,7 @@ public class SSH2Layer extends ProtocolLayer<ProtocolMessage> {
                 ChannelRequestSignalMessage channelRequestSignalMessage =
                         new ChannelRequestSignalMessage();
                 temp_stream =
-                        new HintedInputStreamAdapterStream(
+                        new LayerInputStreamAdapterStream(
                                 new ByteArrayInputStream(
                                         channelRequestUnknownMessage
                                                 .getCompleteResultingMessage()
@@ -569,7 +569,7 @@ public class SSH2Layer extends ProtocolLayer<ProtocolMessage> {
                 ChannelRequestExitStatusMessage channelRequestExitStatusMessage =
                         new ChannelRequestExitStatusMessage();
                 temp_stream =
-                        new HintedInputStreamAdapterStream(
+                        new LayerInputStreamAdapterStream(
                                 new ByteArrayInputStream(
                                         channelRequestUnknownMessage
                                                 .getCompleteResultingMessage()
@@ -580,7 +580,7 @@ public class SSH2Layer extends ProtocolLayer<ProtocolMessage> {
                 ChannelRequestExitSignalMessage channelRequestExitSignalMessage =
                         new ChannelRequestExitSignalMessage();
                 temp_stream =
-                        new HintedInputStreamAdapterStream(
+                        new LayerInputStreamAdapterStream(
                                 new ByteArrayInputStream(
                                         channelRequestUnknownMessage
                                                 .getCompleteResultingMessage()
@@ -591,7 +591,7 @@ public class SSH2Layer extends ProtocolLayer<ProtocolMessage> {
                 ChannelRequestAuthAgentMessage channelRequestAuthAgentMessage =
                         new ChannelRequestAuthAgentMessage();
                 temp_stream =
-                        new HintedInputStreamAdapterStream(
+                        new LayerInputStreamAdapterStream(
                                 new ByteArrayInputStream(
                                         channelRequestUnknownMessage
                                                 .getCompleteResultingMessage()
@@ -609,11 +609,11 @@ public class SSH2Layer extends ProtocolLayer<ProtocolMessage> {
 
     private void readGlobalRequest(AbstractPacket<BinaryPacket> packet) {
         GlobalRequestUnknownMessage globalRequestUnknownMessage = new GlobalRequestUnknownMessage();
-        HintedInputStream inputStream;
-        HintedInputStream temp_stream;
+        LayerInputStream inputStream;
+        LayerInputStream temp_stream;
 
         inputStream =
-                new HintedInputStreamAdapterStream(
+                new LayerInputStreamAdapterStream(
                         new ByteArrayInputStream(packet.getPayload().getValue()));
 
         GlobalRequestUnknownMessageParser parser =
@@ -626,7 +626,7 @@ public class SSH2Layer extends ProtocolLayer<ProtocolMessage> {
                 GlobalRequestTcpIpForwardMessage tcpIpForwardMessage =
                         new GlobalRequestTcpIpForwardMessage();
                 temp_stream =
-                        new HintedInputStreamAdapterStream(
+                        new LayerInputStreamAdapterStream(
                                 new ByteArrayInputStream(
                                         globalRequestUnknownMessage
                                                 .getCompleteResultingMessage()
@@ -636,7 +636,7 @@ public class SSH2Layer extends ProtocolLayer<ProtocolMessage> {
                 GlobalRequestCancelTcpIpForwardMessage cancelTcpIpForwardMessage =
                         new GlobalRequestCancelTcpIpForwardMessage();
                 temp_stream =
-                        new HintedInputStreamAdapterStream(
+                        new LayerInputStreamAdapterStream(
                                 new ByteArrayInputStream(
                                         globalRequestUnknownMessage
                                                 .getCompleteResultingMessage()
@@ -646,7 +646,7 @@ public class SSH2Layer extends ProtocolLayer<ProtocolMessage> {
                 GlobalRequestNoMoreSessionsMessage noMoreSessionsMessage =
                         new GlobalRequestNoMoreSessionsMessage();
                 temp_stream =
-                        new HintedInputStreamAdapterStream(
+                        new LayerInputStreamAdapterStream(
                                 new ByteArrayInputStream(
                                         globalRequestUnknownMessage
                                                 .getCompleteResultingMessage()
@@ -656,7 +656,7 @@ public class SSH2Layer extends ProtocolLayer<ProtocolMessage> {
                 GlobalRequestOpenSshHostKeysMessage openSshHostKeysMessage =
                         new GlobalRequestOpenSshHostKeysMessage();
                 temp_stream =
-                        new HintedInputStreamAdapterStream(
+                        new LayerInputStreamAdapterStream(
                                 new ByteArrayInputStream(
                                         globalRequestUnknownMessage
                                                 .getCompleteResultingMessage()
@@ -670,29 +670,29 @@ public class SSH2Layer extends ProtocolLayer<ProtocolMessage> {
 
     private void readASCIIData(AbstractPacket<BlobPacket> packet) {
         AsciiMessage message = new AsciiMessage();
-        HintedInputStream temp_stream;
+        LayerInputStream temp_stream;
 
         temp_stream =
-                new HintedInputStreamAdapterStream(
+                new LayerInputStreamAdapterStream(
                         new ByteArrayInputStream(packet.getPayload().getValue()));
         readContainerFromStream(message, context, temp_stream);
     }
 
     private void readMessageFromStream(ProtocolMessage<?> message, AbstractPacket<?> packet) {
-        HintedInputStream temp_stream;
+        LayerInputStream temp_stream;
 
         temp_stream =
-                new HintedInputStreamAdapterStream(
+                new LayerInputStreamAdapterStream(
                         new ByteArrayInputStream(packet.getPayload().getValue()));
         readContainerFromStream(message, context, temp_stream);
     }
 
     private void readChannelOpen(AbstractPacket<BinaryPacket> packet) {
         ChannelOpenUnknownMessage channelOpenUnknownMessage = new ChannelOpenUnknownMessage();
-        HintedInputStream inputStream;
-        HintedInputStream temp_stream;
+        LayerInputStream inputStream;
+        LayerInputStream temp_stream;
         inputStream =
-                new HintedInputStreamAdapterStream(
+                new LayerInputStreamAdapterStream(
                         new ByteArrayInputStream(packet.getPayload().getValue()));
 
         ChannelOpenUnknownMessageParser parser = new ChannelOpenUnknownMessageParser(inputStream);
@@ -704,7 +704,7 @@ public class SSH2Layer extends ProtocolLayer<ProtocolMessage> {
                 ChannelOpenSessionMessage channelOpenSessionMessage =
                         new ChannelOpenSessionMessage();
                 temp_stream =
-                        new HintedInputStreamAdapterStream(
+                        new LayerInputStreamAdapterStream(
                                 new ByteArrayInputStream(
                                         channelOpenUnknownMessage
                                                 .getCompleteResultingMessage()
@@ -719,10 +719,10 @@ public class SSH2Layer extends ProtocolLayer<ProtocolMessage> {
     private void readVersionExchangeProtocolData(AbstractPacket<BlobPacket> packet) {
         VersionExchangeMessage message = new VersionExchangeMessage();
 
-        HintedInputStream temp_stream;
+        LayerInputStream temp_stream;
 
         temp_stream =
-                new HintedInputStreamAdapterStream(
+                new LayerInputStreamAdapterStream(
                         new ByteArrayInputStream(packet.getPayload().getValue()));
 
         readContainerFromStream(message, context, temp_stream);
@@ -743,9 +743,9 @@ public class SSH2Layer extends ProtocolLayer<ProtocolMessage> {
     @Override
     public void receiveMoreData() throws IOException {
         try {
-            HintedInputStream dataStream = null;
+            LayerInputStream dataStream = null;
             dataStream = getLowerLayer().getDataStream();
-            currentInputStream = new HintedLayerInputStream(this);
+            currentInputStream = new LayerLayerInputStream(this);
             currentInputStream.extendStream(dataStream.readAllBytes());
 
         } catch (TimeoutException ex) {

@@ -15,8 +15,8 @@ import de.rub.nds.sshattacker.core.layer.ProtocolLayer;
 import de.rub.nds.sshattacker.core.layer.constant.ImplementedLayers;
 import de.rub.nds.sshattacker.core.layer.context.TcpContext;
 import de.rub.nds.sshattacker.core.layer.data.DataContainer;
-import de.rub.nds.sshattacker.core.layer.stream.HintedInputStream;
-import de.rub.nds.sshattacker.core.layer.stream.HintedInputStreamAdapterStream;
+import de.rub.nds.sshattacker.core.layer.stream.LayerInputStream;
+import de.rub.nds.sshattacker.core.layer.stream.LayerInputStreamAdapterStream;
 import de.rub.nds.tlsattacker.transport.tcp.TcpTransportHandler;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -65,7 +65,7 @@ public class TcpLayer extends ProtocolLayer<DataContainer> {
 
     /** Returns the inputStream associated with the TCP socket. */
     @Override
-    public HintedInputStream getDataStream() throws IOException {
+    public LayerInputStream getDataStream() throws IOException {
         getTransportHandler().setTimeout(getTransportHandler().getTimeout());
 
         if (context.getContext().getSshContext().isReceiveAsciiModeEnabled()) {
@@ -76,12 +76,12 @@ public class TcpLayer extends ProtocolLayer<DataContainer> {
                 receiveBuffer = ArrayConverter.concatenate(receiveBuffer, readByte);
             } while (readByte.length > 0 && readByte[0] != CharConstants.NEWLINE);
             currentInputStream =
-                    new HintedInputStreamAdapterStream(new ByteArrayInputStream(receiveBuffer));
+                    new LayerInputStreamAdapterStream(new ByteArrayInputStream(receiveBuffer));
             return currentInputStream;
 
         } else {
             currentInputStream =
-                    new HintedInputStreamAdapterStream(getTransportHandler().getInputStream());
+                    new LayerInputStreamAdapterStream(getTransportHandler().getInputStream());
             return currentInputStream;
         }
     }

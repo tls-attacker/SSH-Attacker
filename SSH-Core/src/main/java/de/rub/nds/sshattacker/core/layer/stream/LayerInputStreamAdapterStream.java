@@ -14,11 +14,11 @@ import java.io.InputStream;
  * HintedInputStream, that wraps around another Stream (used in the {@link
  * de.rub.nds.sshattacker.core.layer.impl.TcpLayer}
  */
-public class HintedInputStreamAdapterStream extends HintedInputStream {
+public class LayerInputStreamAdapterStream extends LayerInputStream {
 
     private InputStream stream;
 
-    public HintedInputStreamAdapterStream(InputStream stream) {
+    public LayerInputStreamAdapterStream(InputStream stream) {
         super();
         this.stream = stream;
     }

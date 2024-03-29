@@ -17,9 +17,9 @@ import de.rub.nds.sshattacker.core.layer.LayerProcessingResult;
 import de.rub.nds.sshattacker.core.layer.ProtocolLayer;
 import de.rub.nds.sshattacker.core.layer.constant.ImplementedLayers;
 import de.rub.nds.sshattacker.core.layer.context.SshContext;
-import de.rub.nds.sshattacker.core.layer.stream.HintedInputStream;
-import de.rub.nds.sshattacker.core.layer.stream.HintedInputStreamAdapterStream;
-import de.rub.nds.sshattacker.core.layer.stream.HintedLayerInputStream;
+import de.rub.nds.sshattacker.core.layer.stream.LayerInputStream;
+import de.rub.nds.sshattacker.core.layer.stream.LayerInputStreamAdapterStream;
+import de.rub.nds.sshattacker.core.layer.stream.LayerLayerInputStream;
 import de.rub.nds.sshattacker.core.packet.AbstractPacket;
 import de.rub.nds.sshattacker.core.packet.BinaryPacket;
 import de.rub.nds.sshattacker.core.packet.BlobPacket;
@@ -101,7 +101,7 @@ public class SSH1Layer extends ProtocolLayer<ProtocolMessage> {
     public LayerProcessingResult receiveData() {
 
         try {
-            HintedInputStream dataStream;
+            LayerInputStream dataStream;
             do {
                 try {
                     dataStream = getLowerLayer().getDataStream();
@@ -289,10 +289,10 @@ public class SSH1Layer extends ProtocolLayer<ProtocolMessage> {
     }
 
     private void readDataFromStream(ProtocolMessage<?> message, AbstractPacket<?> packet) {
-        HintedInputStream temp_stream;
+        LayerInputStream temp_stream;
 
         temp_stream =
-                new HintedInputStreamAdapterStream(
+                new LayerInputStreamAdapterStream(
                         new ByteArrayInputStream(packet.getPayload().getValue()));
         readContainerFromStream(message, context, temp_stream);
     }
@@ -300,9 +300,9 @@ public class SSH1Layer extends ProtocolLayer<ProtocolMessage> {
     @Override
     public void receiveMoreData() throws IOException {
         try {
-            HintedInputStream dataStream = null;
+            LayerInputStream dataStream = null;
             dataStream = getLowerLayer().getDataStream();
-            currentInputStream = new HintedLayerInputStream(this);
+            currentInputStream = new LayerLayerInputStream(this);
             currentInputStream.extendStream(dataStream.readAllBytes());
         } catch (TimeoutException ex) {
             LOGGER.debug(ex);

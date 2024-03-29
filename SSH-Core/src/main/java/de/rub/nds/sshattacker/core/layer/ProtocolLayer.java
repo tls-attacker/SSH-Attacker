@@ -15,7 +15,7 @@ import de.rub.nds.sshattacker.core.layer.data.DataContainer;
 import de.rub.nds.sshattacker.core.layer.data.Handler;
 import de.rub.nds.sshattacker.core.layer.data.Parser;
 import de.rub.nds.sshattacker.core.layer.data.Preparator;
-import de.rub.nds.sshattacker.core.layer.stream.HintedInputStream;
+import de.rub.nds.sshattacker.core.layer.stream.LayerInputStream;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
@@ -41,9 +41,9 @@ public abstract class ProtocolLayer<ContainerT extends DataContainer> {
 
     private List<ContainerT> producedDataContainers;
 
-    protected HintedInputStream currentInputStream = null;
+    protected LayerInputStream currentInputStream = null;
 
-    protected HintedInputStream nextInputStream = null;
+    protected LayerInputStream nextInputStream = null;
 
     private LayerType layerType;
 
@@ -156,7 +156,7 @@ public abstract class ProtocolLayer<ContainerT extends DataContainer> {
      * @throws IOException Some layers might produce IOExceptions when sending or receiving data
      *     over sockets etc.
      */
-    public HintedInputStream getDataStream() throws IOException {
+    public LayerInputStream getDataStream() throws IOException {
         if (currentInputStream == null) {
             receiveMoreData();
             if (currentInputStream == null) {
@@ -244,7 +244,7 @@ public abstract class ProtocolLayer<ContainerT extends DataContainer> {
      * @param context The context of the connection. Keeps parsed and handled values.
      */
     protected void readDataContainer(ContainerT container, LayerContext context) {
-        HintedInputStream inputStream;
+        LayerInputStream inputStream;
         try {
             inputStream = getLowerLayer().getDataStream();
         } catch (IOException e) {
@@ -265,7 +265,7 @@ public abstract class ProtocolLayer<ContainerT extends DataContainer> {
     }
 
     protected void readContainerFromStream(
-            ContainerT container, LayerContext context, HintedInputStream inputStream) {
+            ContainerT container, LayerContext context, LayerInputStream inputStream) {
 
         Parser parser = container.getParser(context, inputStream);
         try {
